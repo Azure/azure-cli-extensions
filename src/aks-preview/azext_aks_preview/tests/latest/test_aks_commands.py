@@ -1448,31 +1448,31 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                      '--enable-custom-ca-trust'
         self.cmd(create_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
-            self.check('agentPoolProfiles[0].enableCustomCaTrust', 'False')
+            self.check('agentPoolProfiles[0].enableCustomCaTrust', 'True')
         ])
 
-        # 2. add nodepool
-        self.cmd('aks nodepool add '
-                 '--resource-group={resource_group} '
-                 '--cluster-name={name} '
-                 '--name={node_pool_name_second} '
-                 '--enable-custom-ca-trust',
-                 checks=[
-                     self.check('provisioningState', 'Succeeded'),
-                     self.check('agentPoolProfiles[0].enableCustomCaTrust', 'False'),
-                     self.check('agentPoolProfiles[1].enableCustomCaTrust', 'True')
-                 ])
-
-        # 3. update nodepool
-        self.cmd('aks nodepool update '
-                 '--resource-group={resource_group} '
-                 '--cluster-name={name} '
-                 '--name={node_pool_name} '
-                 '--enable-custom-ca-trust',
-                 checks=[
-                     self.check('provisioningState', 'Succeeded'),
-                     self.check('agentPoolProfiles[0].enableCustomCaTrust', 'True'),
-                 ])
+        # # 2. add nodepool
+        # self.cmd('aks nodepool add '
+        #          '--resource-group={resource_group} '
+        #          '--cluster-name={name} '
+        #          '--name={node_pool_name_second} '
+        #          '--enable-custom-ca-trust',
+        #          checks=[
+        #              self.check('provisioningState', 'Succeeded'),
+        #              self.check('agentPoolProfiles[0].enableCustomCaTrust', 'False'),
+        #              self.check('agentPoolProfiles[1].enableCustomCaTrust', 'True')
+        #          ])
+        #
+        # # 3. update nodepool
+        # self.cmd('aks nodepool update '
+        #          '--resource-group={resource_group} '
+        #          '--cluster-name={name} '
+        #          '--name={node_pool_name} '
+        #          '--enable-custom-ca-trust',
+        #          checks=[
+        #              self.check('provisioningState', 'Succeeded'),
+        #              self.check('agentPoolProfiles[0].enableCustomCaTrust', 'True'),
+        #          ])
 
         # delete
         self.cmd('aks delete -g {resource_group} -n {name} --yes --no-wait', checks=[self.is_empty()])
