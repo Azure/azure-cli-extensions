@@ -3,6 +3,10 @@
 Release History
 ===============
 
+0.18.0
+++++++
+* Retrieve and redistribute throughput at physical partition level.
+
 0.17.0
 ++++++
 * Add support for new Continuous 7 Days backup mode

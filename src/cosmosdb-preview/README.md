@@ -11,6 +11,7 @@ This package provides commands to
 - Update an Azure Cosmos DB database account to enable materialized views
 - Create/Delete a cosmosdb materialized views builder service resource
 - Provision and update database account with Continuous 7 days backup mode
+- Retrieve and redistribute throughput at physical partition level.
 
 ## How to use ##
 
