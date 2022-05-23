@@ -12,6 +12,11 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+0.5.72
+++++++
+
+* First public release for `az aks draft`
+
 0.5.71
 ++++++
 
