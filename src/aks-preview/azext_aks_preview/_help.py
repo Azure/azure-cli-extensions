@@ -1735,6 +1735,13 @@ helps['aks draft create'] = """
         - name: --download-binary
           type: bool
           short-summary: Automatically download the Draft binary if it is not found on the system
+    examples:
+      - name: Prompts to generate a Dockerfile and deployment files in the current directory.
+        text: az aks draft create
+      - name: Generate only the Dockerfile in the current directory
+        text: az aks draft create --dockerfile-only=true
+      - name: Generate only the deployment files in the current directory
+        text: az aks draft create --dockerfile-only=true
 """
 
 helps['aks draft setup-gh'] = """

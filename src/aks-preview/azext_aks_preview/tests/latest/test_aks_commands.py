@@ -4198,7 +4198,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             self.cmd(update_cmd)
             assert os.path.isfile(f'{tmp_dir}/charts/production.yaml')
 
-    @live_only()
     def test_aks_draft_with_kustomize(self):
         import tempfile, os
 
@@ -4222,7 +4221,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             self.cmd(update_cmd)
             assert os.path.isfile(f'{tmp_dir}/overlays/production/service.yaml')
 
-    @live_only()
     def test_aks_draft_with_manifest(self):
         import tempfile, os
 
