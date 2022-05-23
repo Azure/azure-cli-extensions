@@ -896,11 +896,11 @@ class AKSPreviewContextTestCase(unittest.TestCase):
             ctx_5.get_storage_profile(), storage_profile
         )
 
-        # azuredisk_csi_version value passed and enable-disk-driver passed
+        # disk_driver_version value passed and enable-disk-driver passed
         ctx_6 = AKSPreviewContext(
             self.cmd,
             {
-                "azuredisk_csi_version": "v2",
+                "disk_driver_version": "v2",
             },
             self.models,
             decorator_mode=DecoratorMode.UPDATE,
@@ -932,22 +932,22 @@ class AKSPreviewContextTestCase(unittest.TestCase):
         ctx_7 = AKSPreviewContext(
             self.cmd,
             {
-                "azuredisk_csi_version": "v99",
+                "disk_driver_version": "v99",
             },
             self.models,
             decorator_mode=DecoratorMode.UPDATE,
         )
 
-        # fail on invalid argument value error for azuredisk_csi_version
+        # fail on invalid argument value error for disk_driver_version
         with self.assertRaises(InvalidArgumentValueError):
             ctx_7.get_disk_driver()
 
-        # fail with enable-disk-driver as false and value passed for azuredisk_csi_version
+        # fail with enable-disk-driver as false and value passed for disk_driver_version
         ctx_8 = AKSPreviewContext(
             self.cmd,
             {
                 "disable_disk_driver": True,
-                "azuredisk_csi_version": "v2",
+                "disk_driver_version": "v2",
             },
             self.models,
             decorator_mode=DecoratorMode.UPDATE,
@@ -957,11 +957,11 @@ class AKSPreviewContextTestCase(unittest.TestCase):
         with self.assertRaises(ArgumentUsageError):
             ctx_8.get_disk_driver()
 
-        #  enable-disk-driver, azuredisk_csi_version, enable_file_driver and enable-snapshot-controller passed
+        #  enable-disk-driver, disk_driver_version, enable_file_driver and enable-snapshot-controller passed
         ctx_9 = AKSPreviewContext(
             self.cmd,
             {
-                "azuredisk_csi_version": "v2",
+                "disk_driver_version": "v2",
                 "enable_file_driver": True,
                 "disable_snapshot_controller": True,
             },
@@ -1052,7 +1052,7 @@ class AKSPreviewContextTestCase(unittest.TestCase):
         with self.assertRaises(MutuallyExclusiveArgumentError):
             ctx_4.get_snapshot_controller()
 
-        # default with csi driver enabled flag and no value for azuredisk_csi_version passed
+        # default with csi driver enabled flag and no value for disk_driver_version passed
         ctx_5 = AKSPreviewContext(
             self.cmd,
             {
@@ -1086,12 +1086,12 @@ class AKSPreviewContextTestCase(unittest.TestCase):
             ctx_5.get_storage_profile(), storage_profile
         )
 
-        # azuredisk_csi_version value passed and enable-disk-driver passed
+        # disk_driver_version value passed and enable-disk-driver passed
         ctx_6 = AKSPreviewContext(
             self.cmd,
             {
                 "enable_disk_driver": True,
-                "azuredisk_csi_version": "v2",
+                "disk_driver_version": "v2",
             },
             self.models,
             decorator_mode=DecoratorMode.CREATE,
@@ -1118,22 +1118,22 @@ class AKSPreviewContextTestCase(unittest.TestCase):
             self.cmd,
             {
                 "enable_disk_driver": True,
-                "azuredisk_csi_version": "v99",
+                "disk_driver_version": "v99",
             },
             self.models,
             decorator_mode=DecoratorMode.CREATE,
         )
 
-        # fail on invalid argument value error for azuredisk_csi_version
+        # fail on invalid argument value error for disk_driver_version
         with self.assertRaises(InvalidArgumentValueError):
             ctx_7.get_disk_driver()
 
-        # fail with enable-disk-driver as false and value passed for azuredisk_csi_version
+        # fail with enable-disk-driver as false and value passed for disk_driver_version
         ctx_8 = AKSPreviewContext(
             self.cmd,
             {
                 "disable_disk_driver": True,
-                "azuredisk_csi_version": "v2",
+                "disk_driver_version": "v2",
             },
             self.models,
             decorator_mode=DecoratorMode.CREATE,
@@ -1143,12 +1143,12 @@ class AKSPreviewContextTestCase(unittest.TestCase):
         with self.assertRaises(ArgumentUsageError):
             ctx_8.get_disk_driver()
 
-        #  enable-disk-driver, azuredisk_csi_version, enable_file_driver and enable-snapshot-controller passed
+        #  enable-disk-driver, disk_driver_version, enable_file_driver and enable-snapshot-controller passed
         ctx_9 = AKSPreviewContext(
             self.cmd,
             {
                 "enable_disk_driver": True,
-                "azuredisk_csi_version": "v2",
+                "disk_driver_version": "v2",
                 "enable_file_driver": True,
                 "enable-snapshot-controller": True,
             },

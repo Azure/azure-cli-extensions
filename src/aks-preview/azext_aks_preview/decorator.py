@@ -1685,8 +1685,8 @@ class AKSPreviewContext(AKSContext):
         """
         enable_disk_driver = self.raw_param.get("enable_disk_driver")
         disable_disk_driver = self.raw_param.get("disable_disk_driver")
-        azuredisk_csi_version = self.raw_param.get("azuredisk_csi_version")
-        if not enable_disk_driver and not disable_disk_driver and not azuredisk_csi_version:
+        disk_driver_version = self.raw_param.get("disk_driver_version")
+        if not enable_disk_driver and not disable_disk_driver and not disk_driver_version:
             return None
         profile = self.models.ManagedClusterStorageProfileDiskCSIDriver()
 
@@ -1696,30 +1696,30 @@ class AKSPreviewContext(AKSContext):
                 "--disable-disk-driver at the same time."
             )
 
-        if disable_disk_driver and azuredisk_csi_version:
+        if disable_disk_driver and disk_driver_version:
             raise ArgumentUsageError(
                 "The parameter --disable-disk-driver cannot be used "
-                "when --azuredisk-csi-version is specified.")
+                "when --disk-driver-version is specified.")
 
         # Setting default driver as v1 if not mentioned
-        if not azuredisk_csi_version:
-            azuredisk_csi_version = "v1"
+        if not disk_driver_version:
+            disk_driver_version = "v1"
 
-        if not (azuredisk_csi_version == "v1" or azuredisk_csi_version == "v2"):
+        if not (disk_driver_version == "v1" or disk_driver_version == "v2"):
             raise InvalidArgumentValueError(
-                "Valid values for --azuredisk-csi-version are v1 and v2")
+                "Valid values for --disk-driver-version are v1 and v2")
 
         if self.decorator_mode == DecoratorMode.CREATE:
             if disable_disk_driver:
                 profile.enabled = False
             else:
                 profile.enabled = True
-                profile.version = azuredisk_csi_version
+                profile.version = disk_driver_version
 
         if self.decorator_mode == DecoratorMode.UPDATE:
             if enable_disk_driver:
                 profile.enabled = True
-                profile.version = azuredisk_csi_version
+                profile.version = disk_driver_version
             elif disable_disk_driver:
                 profile.enabled = False
 
@@ -2682,7 +2682,7 @@ class AKSPreviewUpdateDecorator(AKSUpdateDecorator):
                     '"--enable-oidc-issuer" or '
                     '"--http-proxy-config" or '
                     '"--enable-disk-driver" or '
-                    '"--azuredisk-csi-version" or '
+                    '"--disk-driver-version" or '
                     '"--disable-disk-driver" or '
                     '"--enable-file-driver" or '
                     '"--disable-file-driver" or '
