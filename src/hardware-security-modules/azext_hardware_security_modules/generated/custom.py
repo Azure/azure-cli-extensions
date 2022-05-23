@@ -57,18 +57,17 @@ def hardware_security_modules_dedicated_hsm_create(client,
     parameters['management_network_profile'] = {}
     parameters['network_profile'] = {}
     if subnet is not None:
-        parameters['network_profile']['subnet'] = subnet
+        parameters['network_profile']['subnet'] = subnet[0]
     if network_interfaces is not None:
         parameters['network_profile']['network_interfaces'] = network_interfaces
     if management_network_profile_subnet is not None:
-        parameters['management_network_profile']['subnet'] = management_network_profile_subnet
+        parameters['management_network_profile']['subnet'] = management_network_profile_subnet[0]
     if management_network_profile_interfaces is not None:
         parameters['management_network_profile']['network_interfaces'] = management_network_profile_interfaces
     if len(parameters['management_network_profile']) == 0:
         del parameters['management_network_profile']
     if len(parameters['network_profile']) == 0:
         del parameters['network_profile']
-    print(parameters)
     return client.begin_create_or_update(resource_group_name=resource_group_name,
                                          name=name,
                                          parameters=parameters)

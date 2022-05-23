@@ -41,19 +41,20 @@ def load_arguments(self, _):
                    validator=get_default_location_from_resource_group)
         c.argument('zones', nargs='+', help='The Dedicated Hsm zones.')
         c.argument('tags', tags_type)
-        c.argument('sku_name', arg_type=get_enum_type(['SafeNet Luna Network HSM A790', 'payShield10K_LMK1_CPS60',
-                                                       'payShield10K_LMK1_CPS250', 'payShield10K_LMK1_CPS2500',
-                                                       'payShield10K_LMK2_CPS60', 'payShield10K_LMK2_CPS250',
-                                                       'payShield10K_LMK2_CPS2500']), help='SKU of the dedicated HSM',
+        c.argument('sku_name', options_list=['--sku'],
+                   arg_type=get_enum_type(['SafeNet Luna Network HSM A790', 'payShield10K_LMK1_CPS60',
+                                           'payShield10K_LMK1_CPS250', 'payShield10K_LMK1_CPS2500',
+                                           'payShield10K_LMK2_CPS60', 'payShield10K_LMK2_CPS250',
+                                           'payShield10K_LMK2_CPS2500']), help='SKU of the dedicated HSM',
                    arg_group='Sku')
         c.argument('stamp_id', type=str, help='This field will be used when RP does not support Availability zones.')
         c.argument('subnet', action=AddSubnet, nargs='+', help='Specifies the identifier of the subnet.',
                    arg_group='Network Profile')
-        c.argument('network_interfaces', action=AddNetworkInterfaces, nargs='+', help='Specifies the list of resource '
+        c.argument('network_interfaces', options_list=['--network-interfaces', '-i'], action=AddNetworkInterfaces, nargs='+', help='Specifies the list of resource '
                    'Ids for the network interfaces associated with the dedicated HSM.', arg_group='Network Profile')
-        c.argument('management_network_profile_subnet', action=AddSubnet, nargs='+', help='Specifies the identifier of '
+        c.argument('management_network_profile_subnet', options_list=['--mgmt-network-subnet'], action=AddSubnet, nargs='+', help='Specifies the identifier of '
                    'the subnet.', arg_group='Management Network Profile')
-        c.argument('management_network_profile_interfaces', action=AddNetworkInterfaces, nargs='+', help='Specifies the '
+        c.argument('management_network_profile_interfaces', options_list=['--mgmt-network-interfaces', '-m'], action=AddNetworkInterfaces, nargs='+', help='Specifies the '
                    'list of resource Ids for the network interfaces associated with the dedicated HSM.',
                    arg_group='Management Network Profile')
 

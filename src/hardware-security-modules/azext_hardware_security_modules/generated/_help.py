@@ -12,17 +12,12 @@
 from knack.help_files import helps
 
 
-helps['hardware-security-modules'] = '''
-    type: group
-    short-summary: Manage Azure Dedicated HSMResource Provider
-'''
-
-helps['hardware-security-modules dedicated-hsm'] = """
+helps['dedicated-hsm'] = """
     type: group
     short-summary: Manage dedicated hsm with hardware security modules
 """
 
-helps['hardware-security-modules dedicated-hsm list'] = """
+helps['dedicated-hsm list'] = """
     type: command
     short-summary: "The List operation gets information about the dedicated hsms associated with the subscription and \
 within the specified resource group. And The List operation gets information about the dedicated HSMs associated with \
@@ -30,34 +25,34 @@ the subscription."
     examples:
       - name: List dedicated HSM devices in a resource group
         text: |-
-               az hardware-security-modules dedicated-hsm list --resource-group "hsm-group"
+               az dedicated-hsm list --resource-group "hsm-group"
       - name: List dedicated HSM devices in a resource group including payment HSM
         text: |-
-               az hardware-security-modules dedicated-hsm list --resource-group "hsm-group"
+               az dedicated-hsm list --resource-group "hsm-group"
       - name: List dedicated HSM devices in a subscription
         text: |-
-               az hardware-security-modules dedicated-hsm list
+               az dedicated-hsm list
       - name: List dedicated HSM devices in a subscription including payment HSM
         text: |-
-               az hardware-security-modules dedicated-hsm list
+               az dedicated-hsm list
 """
 
-helps['hardware-security-modules dedicated-hsm show'] = """
+helps['dedicated-hsm show'] = """
     type: command
     short-summary: "Gets the specified Azure dedicated HSM."
     examples:
       - name: Get a dedicated HSM
         text: |-
-               az hardware-security-modules dedicated-hsm show --name "hsm1" --resource-group "hsm-group"
+               az dedicated-hsm show --name "hsm1" --resource-group "hsm-group"
       - name: Get a payment HSM
         text: |-
-               az hardware-security-modules dedicated-hsm show --name "hsm1" --resource-group "hsm-group"
+               az dedicated-hsm show --name "hsm1" --resource-group "hsm-group"
       - name: Get a payment HSM with 2018-10-31Preview api version
         text: |-
-               az hardware-security-modules dedicated-hsm show --name "hsm1" --resource-group "hsm-group"
+               az dedicated-hsm show --name "hsm1" --resource-group "hsm-group"
 """
 
-helps['hardware-security-modules dedicated-hsm create'] = """
+helps['dedicated-hsm create'] = """
     type: command
     short-summary: "Create a dedicated HSM in the specified subscription."
     parameters:
@@ -68,7 +63,7 @@ helps['hardware-security-modules dedicated-hsm create'] = """
 
             id: The ARM resource id in the form of /subscriptions/{SubscriptionId}/resourceGroups/{ResourceGroupName}/.\
 ..
-      - name: --network-interfaces
+      - name: --network-interfaces -i
         short-summary: "Specifies the list of resource Ids for the network interfaces associated with the dedicated \
 HSM."
         long-summary: |
@@ -77,97 +72,97 @@ HSM."
             private-ip-address: Private Ip address of the interface
 
             Multiple actions can be specified by using more than one --network-interfaces argument.
-      - name: --api-entity-reference-subnet
+      - name: --mgmt-network-subnet
         short-summary: "Specifies the identifier of the subnet."
         long-summary: |
-            Usage: --api-entity-reference-subnet id=XX
+            Usage: --mgmt-network-subnet id=XX
 
             id: The ARM resource id in the form of /subscriptions/{SubscriptionId}/resourceGroups/{ResourceGroupName}/.\
 ..
-      - name: --network-profile-network-interfaces
+      - name: --mgmt-network-interfaces -m
         short-summary: "Specifies the list of resource Ids for the network interfaces associated with the dedicated \
 HSM."
         long-summary: |
-            Usage: --network-profile-network-interfaces private-ip-address=XX
+            Usage: --mgmt-network-interfaces private-ip-address=XX
 
             private-ip-address: Private Ip address of the interface
 
-            Multiple actions can be specified by using more than one --network-profile-network-interfaces argument.
+            Multiple actions can be specified by using more than one --mgmt-network-interfaces argument.
     examples:
       - name: Create a new or update an existing dedicated HSM
         text: |-
-               az hardware-security-modules dedicated-hsm create --name "hsm1" --location "westus" \
---network-profile-network-interfaces private-ip-address="1.0.0.1" --api-entity-reference-subnet \
+               az dedicated-hsm create --name "hsm1" --location "westus" \
+--network-interfaces private-ip-address="1.0.0.1" --subnet \
 id="/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/hsm-group/providers/Microsoft.Network/virtualNet\
 works/stamp01/subnets/stamp01" --stamp-id "stamp01" --sku-name "SafeNet Luna Network HSM A790" --tags Dept="hsm" \
 Environment="dogfood" --resource-group "hsm-group"
       - name: Create a new or update an existing payment HSM
         text: |-
-               az hardware-security-modules dedicated-hsm create --name "hsm1" --location "westus" \
---network-profile-network-interfaces private-ip-address="1.0.0.1" --api-entity-reference-subnet \
+               az dedicated-hsm create --name "hsm1" --location "westus" \
+--mgmt-network-interfaces private-ip-address="1.0.0.1" --mgmt-network-subnet \
 id="/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/hsm-group/providers/Microsoft.Network/virtualNet\
 works/stamp01/subnets/stamp01" --stamp-id "stamp01" --sku-name "payShield10K_LMK1_CPS60" --tags Dept="hsm" \
 Environment="dogfood" --resource-group "hsm-group"
       - name: Create a new or update an existing payment HSM with management profile
         text: |-
-               az hardware-security-modules dedicated-hsm create --name "hsm1" --location "westus" \
+               az dedicated-hsm create --name "hsm1" --location "westus" \
 --network-interfaces private-ip-address="1.0.0.2" --subnet id="/subscriptions/00000000-0000-0000-0000-000000000000/reso\
 urceGroups/hsm-group/providers/Microsoft.Network/virtualNetworks/stamp01/subnets/stamp01" \
---network-profile-network-interfaces private-ip-address="1.0.0.1" --api-entity-reference-subnet \
+--mgmt-network-interfaces private-ip-address="1.0.0.1" --mgmt-network-subnet \
 id="/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/hsm-group/providers/Microsoft.Network/virtualNet\
-works/stamp01/subnets/stamp01" --stamp-id "stamp01" --sku-name "payShield10K_LMK1_CPS60" --tags Dept="hsm" \
+works/stamp01/subnets/stamp01" --stamp-id "stamp02" --sku-name "payShield10K_LMK1_CPS60" --tags Dept="hsm" \
 Environment="dogfood" --resource-group "hsm-group"
 """
 
-helps['hardware-security-modules dedicated-hsm update'] = """
+helps['dedicated-hsm update'] = """
     type: command
     short-summary: "Update a dedicated HSM in the specified subscription."
     examples:
       - name: Update an existing dedicated HSM
         text: |-
-               az hardware-security-modules dedicated-hsm update --name "hsm1" --tags Dept="hsm" Environment="dogfood" \
+               az dedicated-hsm update --name "hsm1" --tags Dept="hsm" Environment="dogfood" \
 Slice="A" --resource-group "hsm-group"
       - name: Update an existing payment HSM
         text: |-
-               az hardware-security-modules dedicated-hsm update --name "hsm1" --tags Dept="hsm" Environment="dogfood" \
+               az dedicated-hsm update --name "hsm1" --tags Dept="hsm" Environment="dogfood" \
 Slice="A" --resource-group "hsm-group"
 """
 
-helps['hardware-security-modules dedicated-hsm delete'] = """
+helps['dedicated-hsm delete'] = """
     type: command
     short-summary: "Deletes the specified Azure Dedicated HSM."
     examples:
       - name: Delete a dedicated HSM
         text: |-
-               az hardware-security-modules dedicated-hsm delete --name "hsm1" --resource-group "hsm-group"
+               az dedicated-hsm delete --name "hsm1" --resource-group "hsm-group"
 """
 
-helps['hardware-security-modules dedicated-hsm list-outbound-network-dependency-endpoint'] = """
+helps['dedicated-hsm list-outbound-network-dependency-endpoint'] = """
     type: command
     short-summary: "Gets a list of egress endpoints (network endpoints of all outbound dependencies) in the specified \
 dedicated hsm resource. The operation returns properties of each egress endpoint."
     examples:
       - name: List OutboundNetworkDependenciesEndpoints by Managed Cluster
         text: |-
-               az hardware-security-modules dedicated-hsm list-outbound-network-dependency-endpoint --name "hsm1" \
+               az dedicated-hsm list-outbound-network-dependency-endpoint --name "hsm1" \
 --resource-group "hsm-group"
 """
 
-helps['hardware-security-modules dedicated-hsm wait'] = """
+helps['dedicated-hsm wait'] = """
     type: command
-    short-summary: Place the CLI in a waiting state until a condition of the hardware-security-modules dedicated-hsm \
+    short-summary: Place the CLI in a waiting state until a condition of the dedicated-hsm \
 is met.
     examples:
-      - name: Pause executing next line of CLI script until the hardware-security-modules dedicated-hsm is \
+      - name: Pause executing next line of CLI script until the dedicated-hsm is \
 successfully created.
         text: |-
-               az hardware-security-modules dedicated-hsm wait --name "hsm1" --resource-group "hsm-group" --created
-      - name: Pause executing next line of CLI script until the hardware-security-modules dedicated-hsm is \
+               az dedicated-hsm wait --name "hsm1" --resource-group "hsm-group" --created
+      - name: Pause executing next line of CLI script until the dedicated-hsm is \
 successfully updated.
         text: |-
-               az hardware-security-modules dedicated-hsm wait --name "hsm1" --resource-group "hsm-group" --updated
-      - name: Pause executing next line of CLI script until the hardware-security-modules dedicated-hsm is \
+               az dedicated-hsm wait --name "hsm1" --resource-group "hsm-group" --updated
+      - name: Pause executing next line of CLI script until the dedicated-hsm is \
 successfully deleted.
         text: |-
-               az hardware-security-modules dedicated-hsm wait --name "hsm1" --resource-group "hsm-group" --deleted
+               az dedicated-hsm wait --name "hsm1" --resource-group "hsm-group" --deleted
 """

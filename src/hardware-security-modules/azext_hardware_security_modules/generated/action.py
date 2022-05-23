@@ -19,10 +19,10 @@ from collections import defaultdict
 from knack.util import CLIError
 
 
-class AddSubnet(argparse.Action):
+class AddSubnet(argparse._AppendAction):
     def __call__(self, parser, namespace, values, option_string=None):
         action = self.get_action(values, option_string)
-        namespace.subnet = action
+        super(AddSubnet, self).__call__(parser, namespace, action, option_string)
 
     def get_action(self, values, option_string):
         try:
