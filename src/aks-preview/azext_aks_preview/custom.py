@@ -149,7 +149,7 @@ from .vendored_sdks.azure_mgmt_preview_aks.v2022_04_02_preview.models import (
     UserAssignedIdentity,
 )
 
-from .aks_draft.commands import (
+from azext_aks_preview.aks_draft.commands import (
     aks_draft_cmd_create,
     aks_draft_cmd_setup_gh,
     aks_draft_cmd_generate_workflow,
