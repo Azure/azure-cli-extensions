@@ -172,19 +172,20 @@ def _binary_pre_check(download_binary: bool) -> Optional[str]:
     logging.info('The Draft binary check is in progress...')
     draft_binary_path = _get_existing_path()
 
-    if download_binary:
-        return _download_binary()
-
     if draft_binary_path:  # found binary
         if _is_latest_version(draft_binary_path):  # no need to update
             logging.info('Your local version of Draft is up to date.')
         else:  # prompt the user to update
+            if download_binary:
+                return _download_binary()
             msg = 'We have detected a newer version of Draft. Would you like to download it?'
             response = prompt_y_n(msg, default='n')
             if response:
                 return _download_binary()
         return draft_binary_path
     else:  # prompt the user to download binary
+        if download_binary:
+            return _download_binary()
         # If users says no, we error out and tell them that this requires the binary
         msg = 'The required binary was not found. Would you like us to download the required binary for you?'
 

@@ -4175,7 +4175,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             self.is_empty(),
         ])
 
-    @live_only()
     def test_aks_draft_with_helm(self):
         import tempfile, os
 
