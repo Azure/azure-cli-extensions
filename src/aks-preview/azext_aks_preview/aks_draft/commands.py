@@ -281,7 +281,7 @@ def _download_binary(dir_name: str = '.aksdraft') -> Optional[str]:
     # Directory
     if os.path.exists(binary_path) is False:
         os.chdir(str(Path.home()))
-        os.mkdir(dir_name, parents=True, exist_ok=True)
+        Path(dir_name).mkdir(parents=True, exist_ok= True)
         logging.info(f'Directory {dir_name} was created inside of your HOME directory')
 
     if response.ok:
