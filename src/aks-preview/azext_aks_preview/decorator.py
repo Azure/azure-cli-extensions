@@ -2911,32 +2911,6 @@ class AKSPreviewUpdateDecorator(AKSUpdateDecorator):
 
         return mc
 
-    def update_custom_ca_trust(self, mc: ManagedCluster) -> ManagedCluster:
-        """Update Enable Custom CA Trust for the ManagedCluster object.
-
-        :return: the ManagedCluster object
-        """
-        self._ensure_mc(mc)
-
-        def update_custom_ca_trust_in_mc(mc: ManagedCluster, is_enabled: bool):
-            if mc.agent_pool_profiles is None:
-                return mc
-            for ap in mc.agent_pool_profiles:
-                ap.enable_custom_ca_trust = is_enabled
-            return mc
-
-        if self.context.raw_param.get("enable_custom_ca_trust") and self.context.raw_param.get(
-                "disable_custom_ca_trust"):
-            raise InvalidArgumentValueError(
-                "--enable-custom-ca-trust and --disable-custom-ca-trust are conflicting with each other"
-            )
-        if self.context.get_enable_custom_ca_trust():
-            mc = update_custom_ca_trust_in_mc(mc, True)
-        if self.context.get_disable_custom_ca_trust():
-            mc = update_custom_ca_trust_in_mc(mc, False)
-
-        return mc
-
     def update_identity_profile(self, mc: ManagedCluster) -> ManagedCluster:
         """Update identity profile for the ManagedCluster object.
 
@@ -3021,8 +2995,6 @@ class AKSPreviewUpdateDecorator(AKSUpdateDecorator):
         mc = self.update_identity_profile(mc)
 
         mc = self.update_storage_profile(mc)
-
-        mc = self.update_custom_ca_trust(mc)
 
         return mc
 

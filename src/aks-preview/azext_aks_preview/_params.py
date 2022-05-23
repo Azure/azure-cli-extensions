@@ -360,8 +360,6 @@ def load_arguments(self, _):
         c.argument('yes', options_list=[
                    '--yes', '-y'], help='Do not prompt for confirmation.', action='store_true')
         c.argument('aks_custom_headers')
-        c.argument('enable_custom_ca_trust', action='store_true', validator=validate_enable_custom_ca_trust)
-        c.argument('disable_custom_ca_trust', options_list=['--disable-custom-ca-trust', '--dcat'], action='store_true')
         # extensions
         # managed cluster
         c.argument('http_proxy_config')

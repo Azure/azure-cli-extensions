@@ -1448,18 +1448,10 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                      '--enable-custom-ca-trust'
         self.cmd(create_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
-            self.check('agentPoolProfiles[0].enableCustomCaTrust', 'True')
-        ])
-
-        # 2. update
-        update_cmd = 'aks update --resource-group={resource_group} --name={name} ' \
-                     '--disable-custom-ca-trust'
-        self.cmd(update_cmd, checks=[
-            self.check('provisioningState', 'Succeeded'),
             self.check('agentPoolProfiles[0].enableCustomCaTrust', 'False')
         ])
 
-        # 3. add nodepool
+        # 2. add nodepool
         self.cmd('aks nodepool add '
                  '--resource-group={resource_group} '
                  '--cluster-name={name} '
