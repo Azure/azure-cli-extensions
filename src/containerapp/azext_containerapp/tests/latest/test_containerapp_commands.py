@@ -16,7 +16,6 @@ TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 class ContainerappIdentityTests(ScenarioTest):
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="eastus2")
-    @live_only()  # encounters 'CannotOverwriteExistingCassetteException' only when run from recording (passes when run live)
     def test_containerapp_identity_e2e(self, resource_group):
         env_name = self.create_random_name(prefix='containerapp-env', length=24)
         ca_name = self.create_random_name(prefix='containerapp', length=24)
@@ -288,7 +287,7 @@ class ContainerappIngressTests(ScenarioTest):
         self.cmd('containerapp hostname list -g {} -n {}'.format(resource_group, ca_name), checks=[
             JMESPathCheck('length(@)', 0),
         ])
-        
+
         # list hostnames with a wrong location
         self.cmd('containerapp hostname list -g {} -n {} -l "{}"'.format(resource_group, ca_name, "eastus2"), checks={
             JMESPathCheck('length(@)', 0),
