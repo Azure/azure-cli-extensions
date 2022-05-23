@@ -315,9 +315,12 @@ class TestAppDeploy_Enterprise_Patch(BasicTest):
     def test_app_deploy_build_enterprise(self, file_mock):
         file_mock.return_value = mock.MagicMock()
         deployment=self._get_deployment()
-        self._execute('rg', 'asc', 'app', deployment=deployment, artifact_path='my-path', build_env={'BP_JVM_VERSION': '8.*'})
+        self._execute('rg', 'asc', 'app', deployment=deployment, artifact_path='my-path',
+                      build_env={'BP_JVM_VERSION': '8.*'}, build_cpu='2', build_memory='4Gi')
         resource = self.put_build_resource
         self.assertEqual({"BP_JVM_VERSION": "8.*"}, resource.properties.env)
+        self.assertEqual('2', resource.properties.resource_requests.cpu)
+        self.assertEqual('4Gi', resource.properties.resource_requests.memory)
 
     @mock.patch('azext_spring_cloud._deployment_uploadable_factory.FolderUpload.upload_and_build')
     def test_app_deploy_folder_enterprise(self, file_mock):
