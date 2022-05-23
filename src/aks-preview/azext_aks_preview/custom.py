@@ -149,6 +149,14 @@ from .vendored_sdks.azure_mgmt_preview_aks.v2022_04_02_preview.models import (
     UserAssignedIdentity,
 )
 
+from .aks_draft.commands import (
+    aks_draft_cmd_create,
+    aks_draft_cmd_setup_gh,
+    aks_draft_cmd_generate_workflow,
+    aks_draft_cmd_up,
+    aks_draft_cmd_update
+)
+
 logger = get_logger(__name__)
 
 
@@ -2855,6 +2863,55 @@ def _get_http_proxy_config(file_path):
     config_object.trusted_ca = hp_config.get("trustedCa", None)
 
     return config_object
+
+
+def aks_draft_create(destination='.',
+                     app=None,
+                     language=None,
+                     create_config=None,
+                     dockerfile_only=None,
+                     deployment_only=None,
+                     path=None):
+    aks_draft_cmd_create(destination, app, language, create_config, dockerfile_only, deployment_only, path)
+
+
+def aks_draft_setup_gh(app=None,
+                       subscription_id=None,
+                       resource_group=None,
+                       provider="azure",
+                       gh_repo=None,
+                       path=None):
+    aks_draft_cmd_setup_gh(app, subscription_id, resource_group, provider, gh_repo, path)
+
+
+def aks_draft_generate_workflow(cluster_name=None,
+                                registry_name=None,
+                                container_name=None,
+                                resource_group=None,
+                                destination=None,
+                                branch=None,
+                                path=None):
+    aks_draft_cmd_generate_workflow(cluster_name, registry_name, container_name,
+                                    resource_group, destination, branch, path)
+
+
+def aks_draft_up(app=None,
+                 subscription_id=None,
+                 resource_group=None,
+                 provider="azure",
+                 gh_repo=None,
+                 cluster_name=None,
+                 registry_name=None,
+                 container_name=None,
+                 destination=None,
+                 branch=None,
+                 path=None):
+    aks_draft_cmd_up(app, subscription_id, resource_group, provider, gh_repo,
+                     cluster_name, registry_name, container_name, destination, branch, path)
+
+
+def aks_draft_update(host=None, certificate=None, destination=None, path=None):
+    aks_draft_cmd_update(host, certificate, destination, path)
 
 
 def aks_pod_identity_add(cmd, client, resource_group_name, cluster_name,

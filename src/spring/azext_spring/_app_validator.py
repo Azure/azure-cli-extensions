@@ -120,8 +120,16 @@ def validate_cpu(namespace):
     namespace.cpu = validate_cpu_value(namespace.cpu)
 
 
+def validate_build_cpu(namespace):
+    namespace.build_cpu = validate_cpu_value(namespace.build_cpu)
+
+
 def validate_memory(namespace):
     namespace.memory = validate_memory_value(namespace.memory)
+
+
+def validate_build_memory(namespace):
+    namespace.build_memory = validate_memory_value(namespace.build_memory)
 
 
 def _get_app_name_from_namespace(namespace):
