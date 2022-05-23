@@ -1868,4 +1868,7 @@ helps['aks draft update'] = """
         - name: --destination
           type: string
           short-summary: Specify the path to the project directory (default is .).
+        - name: --download-binary
+          type: bool
+          short-summary: Automatically download the Draft binary if it is not found on the system
 """
