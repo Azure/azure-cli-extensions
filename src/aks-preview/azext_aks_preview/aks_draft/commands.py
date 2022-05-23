@@ -5,6 +5,7 @@
 # --------------------------------------------------------------------------------------------
 
 import json
+from posixpath import dirname
 from typing import Dict, List, Optional, Tuple
 import subprocess
 import requests
@@ -169,12 +170,12 @@ def _build_args(args_dict: Dict[str, str] = None, **kwargs) -> List[str]:
 
 # Returns the path to Draft binary. None if missing the required binary
 def _binary_pre_check(download_path: str) -> Optional[str]:
-    logging.info('The Draft binary check is in progress...')
-    draft_binary_path = _get_existing_path()
-
     # if user specifies a download path, download the draft binary to this location and use it as a path
     if download_path:
         return _download_binary(download_path)
+
+    logging.info('The Draft binary check is in progress...')
+    draft_binary_path = _get_existing_path()
 
     if draft_binary_path:  # found binary
         if _is_latest_version(draft_binary_path):  # no need to update
@@ -262,11 +263,9 @@ def _get_potential_paths() -> List[str]:
 
 # Downloads the latest binary to ~/.aksdraft
 # Returns path to the binary if sucessful, None otherwise
-def _download_binary(dir_name: str = '.aksdraft') -> Optional[str]:
+def _download_binary(download_path: str = '~/.aksdraft') -> Optional[str]:
     logging.info('Attempting to download dependency...')
-
-    original_dir = os.getcwd()
-
+    download_path = os.path.expanduser(download_path)
     filename = _get_filename()
     if not filename:
         return None
@@ -276,25 +275,20 @@ def _download_binary(dir_name: str = '.aksdraft') -> Optional[str]:
 
     # Downloading the file by sending the request to the URL
     response = requests.get(url, headers=headers)
-    binary_path = str(Path.home()) + '/' + dir_name
-
-    # Directory
-    if os.path.exists(binary_path) is False:
-        os.chdir(str(Path.home()))
-        Path(dir_name).mkdir(parents=True, exist_ok=True)
-        logging.info(f'Directory {dir_name} was created inside of your HOME directory')
 
     if response.ok:
-        # Split URL to get the file name 'draft-darwin-amd64'
-        os.chdir(dir_name)
+        # Directory
+        if os.path.exists(download_path) is False:
+            Path(download_path).mkdir(parents=True, exist_ok=True)
+            logging.info(f'Directory {download_path} was created inside of your HOME directory')
+        full_path = f'{download_path}/{filename}'
+
         # Writing the file to the local file system
-        with open(filename, 'wb') as output_file:
+        with open(full_path, 'wb') as output_file:
             output_file.write(response.content)
         logging.info(f'Download of Draft binary was successful with a status code: {response.status_code}')
-        os.chmod(binary_path + '/' + filename, 0o755)
-        # set current directory to original
-        os.chdir(original_dir)
-        return binary_path + '/' + filename
+        os.chmod(full_path, 0o755)
+        return full_path
 
     logging.error(f'Download of Draft binary was unsuccessful with a status code: {response.status_code}')
     return None
