@@ -98,6 +98,7 @@ AzureKeyVaultKms = TypeVar('AzureKeyVaultKms')
 ManagedClusterIngressProfile = TypeVar('ManagedClusterIngressProfile')
 ManagedClusterIngressProfileWebAppRouting = TypeVar('ManagedClusterIngressProfileWebAppRouting')
 
+
 # pylint: disable=too-many-instance-attributes,too-few-public-methods
 class AKSPreviewModels(AKSModels):
     def __init__(self, cmd: AzCommandsLoader, resource_type: ResourceType):
@@ -1880,7 +1881,7 @@ class AKSPreviewContext(AKSContext):
         elif self.decorator_mode == DecoratorMode.UPDATE:
             if self.mc.ingress_profile is not None and self.mc.ingress_profile.web_app_routing is not None:
                 profile = self.mc.ingress_profile.web_app_routing
-        
+
         if dns_zone_resource_id is not None:
             profile.dns_zone_resource_id = dns_zone_resource_id
 
