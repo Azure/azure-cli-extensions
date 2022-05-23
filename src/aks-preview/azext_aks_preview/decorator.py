@@ -1867,26 +1867,6 @@ class AKSPreviewContext(AKSContext):
 
         return profile
 
-    def get_web_app_routing_profile(self) -> Optional[ManagedClusterIngressProfileWebAppRouting]:
-        """Obtrain the value of ingress_profile.web_app_routing.
-
-        :return: Optional[ManagedClusterIngressProfileWebAppRouting]
-        """
-        dns_zone_resource_id = self.raw_param.get("dns_zone_resource_id")
-
-        profile = self.models.ManagedClusterIngressProfileWebAppRouting()
-        profile.enabled = True
-        if self.decorator_mode == DecoratorMode.CREATE:
-            profile.enabled = True
-        elif self.decorator_mode == DecoratorMode.UPDATE:
-            if self.mc.ingress_profile is not None and self.mc.ingress_profile.web_app_routing is not None:
-                profile = self.mc.ingress_profile.web_app_routing
-
-        if dns_zone_resource_id is not None:
-            profile.dns_zone_resource_id = dns_zone_resource_id
-
-        return profile
-
     def get_crg_id(self) -> str:
         """Obtain the values of crg_id.
 
@@ -2405,6 +2385,19 @@ class AKSPreviewCreateDecorator(AKSCreateDecorator):
         )
         return gitops_addon_profile
 
+    def build_web_app_routing_profile(self) -> ManagedClusterIngressProfileWebAppRouting:
+        """Build the ingress_profile.web_app_routing profile
+
+        :return: a ManagedClusterIngressProfileWebAppRouting object
+        """
+        profile = self.models.ManagedClusterIngressProfileWebAppRouting(
+            enabled=True,
+        )
+        dns_zone_resource_id = self.context.raw_param.get("dns_zone_resource_id")
+        if dns_zone_resource_id is not None:
+            profile.dns_zone_resource_id = dns_zone_resource_id
+        return profile
+
     def set_up_addon_profiles(self, mc: ManagedCluster) -> ManagedCluster:
         """Set up addon profiles for the ManagedCluster object.
 
@@ -2423,6 +2416,12 @@ class AKSPreviewCreateDecorator(AKSCreateDecorator):
                 CONST_GITOPS_ADDON_NAME
             ] = self.build_gitops_addon_profile()
         mc.addon_profiles = addon_profiles
+
+        if "web_application_routing" in addons:
+            if mc.ingress_profile is None:
+                mc.ingress_profile = self.models.ManagedClusterIngressProfile()
+            mc.ingress_profile.web_app_routing = self.build_web_app_routing_profile()
+
         return mc
 
     def set_up_windows_profile(self, mc: ManagedCluster) -> ManagedCluster:
@@ -2477,23 +2476,6 @@ class AKSPreviewCreateDecorator(AKSCreateDecorator):
         if mc.security_profile is None:
             mc.security_profile = self.models.ManagedClusterSecurityProfile()
         mc.security_profile.workload_identity = profile
-
-        return mc
-
-    def set_up_web_app_routing_profile(self, mc: ManagedCluster) -> ManagedCluster:
-        """Set up web app routing for the IngressProfile of the ManagedCluster object.
-
-        :return: the ManagedCluster object
-        """
-        profile = self.context.get_web_app_routing_profile()
-        if profile is None:
-            if mc.ingress_profile is not None:
-                mc.ingress_profile.web_app_routing = None
-            return mc
-
-        if mc.ingress_profile is None:
-            mc.ingress_profile = self.models.ManagedClusterIngressProfile()
-        mc.ingress_profile.web_app_routing = profile
 
         return mc
 
@@ -2558,7 +2540,6 @@ class AKSPreviewCreateDecorator(AKSCreateDecorator):
         mc = self.set_up_creationdata_of_cluster_snapshot(mc)
 
         mc = self.set_up_storage_profile(mc)
-        mc = self.set_up_web_app_routing_profile(mc)
 
         return mc
 
