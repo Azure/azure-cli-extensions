@@ -4,9 +4,9 @@
 # --------------------------------------------------------------------------------------------
 # pylint: disable=line-too-long, too-many-statements, consider-using-f-string, broad-except, no-member, raise-missing-from
 
+import json
 from knack.util import CLIError
 from knack.log import get_logger
-import json
 from azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.models import (
     ClusterResource,
     ClusterResourceProperties,
@@ -1219,8 +1219,7 @@ def cli_begin_retrieve_sql_container_partition_throughput(client,
             resource_group_name, account_name, database_name, container_name)
     except Exception as ex:
         if ex.error.code == "NotFound":
-            raise CLIError("(NotFound) Container with name '{}' in database '{} could not be found.".format(
-                container_name), format(database_name))
+            raise CLIError("(NotFound) Container with name '{}' in database '{} could not be found.".format(container_name, database_name))
 
     if physical_partition_ids is None and all_partitions is False:
         raise CLIError(
@@ -1230,7 +1229,7 @@ def cli_begin_retrieve_sql_container_partition_throughput(client,
         raise CLIError(
             'Both --physical-partition-ids and --all-partitions cannot be specified together.')
 
-    if all_partitions == True:
+    if all_partitions is True:
         physical_partition_ids = [PhysicalPartitionId(id='-1')]
     else:
         physical_partition_ids_split = physical_partition_ids.split(',')
@@ -1270,8 +1269,7 @@ def cli_begin_redistribute_sql_container_partition_throughput(client,
             resource_group_name, account_name, database_name, container_name)
     except Exception as ex:
         if ex.error.code == "NotFound":
-            raise CLIError("(NotFound) Container with name '{}' in database '{} could not be found.".format(
-                container_name), format(database_name))
+            raise CLIError("(NotFound) Container with name '{}' in database '{} could not be found.".format(container_name, database_name))
 
     if evenly_distribute:
         redistribute_throughput_properties_resource = RedistributeThroughputPropertiesResource(
@@ -1328,17 +1326,16 @@ def cli_begin_retrieve_mongo_container_partition_throughput(client,
                                                             resource_group_name,
                                                             account_name,
                                                             database_name,
-                                                            container_name,
+                                                            collection_name,
                                                             physical_partition_ids=None,
                                                             all_partitions=False):
 
     try:
         client.get_mongo_db_collection(
-            resource_group_name, account_name, database_name, container_name)
+            resource_group_name, account_name, database_name, collection_name)
     except Exception as ex:
         if ex.error.code == "NotFound":
-            raise CLIError("(NotFound) Container with name '{}' in database '{} could not be found.".format(
-                container_name), format(database_name))
+            raise CLIError("(NotFound) Container with name '{}' in database '{} could not be found.".format(collection_name, database_name))
 
     if physical_partition_ids is None and all_partitions is False:
         raise CLIError(
@@ -1348,7 +1345,7 @@ def cli_begin_retrieve_mongo_container_partition_throughput(client,
         raise CLIError(
             'Both --physical-partition-ids and --all-partitions cannot be specified together.')
 
-    if all_partitions == True:
+    if all_partitions is True:
         physical_partition_ids = [PhysicalPartitionId(id='-1')]
     else:
         physical_partition_ids_split = physical_partition_ids.split(',')
@@ -1368,7 +1365,7 @@ def cli_begin_retrieve_mongo_container_partition_throughput(client,
     async_partition_retrieve_throughput_result = client.begin_mongo_db_container_retrieve_throughput_distribution(resource_group_name=resource_group_name,
                                                                                                                   account_name=account_name,
                                                                                                                   database_name=database_name,
-                                                                                                                  container_name=container_name,
+                                                                                                                  collection_name=collection_name,
                                                                                                                   retrieve_throughput_parameters=retrieve_throughput_parameters)
 
     return async_partition_retrieve_throughput_result.result()
@@ -1378,18 +1375,17 @@ def cli_begin_redistribute_mongo_container_partition_throughput(client,
                                                                 resource_group_name,
                                                                 account_name,
                                                                 database_name,
-                                                                container_name,
+                                                                collection_name,
                                                                 evenly_distribute=False,
                                                                 target_physical_partition_throughput_info_list="",
                                                                 source_physical_partition_throughput_info_list=""):
 
     try:
         client.get_mongo_db_collection(
-            resource_group_name, account_name, database_name, container_name)
+            resource_group_name, account_name, database_name, collection_name)
     except Exception as ex:
         if ex.error.code == "NotFound":
-            raise CLIError("(NotFound) Container with name '{}' in database '{} could not be found.".format(
-                container_name), format(database_name))
+            raise CLIError("(NotFound) Container with name '{}' in database '{} could not be found.".format(collection_name, database_name))
 
     if evenly_distribute:
         redistribute_throughput_properties_resource = RedistributeThroughputPropertiesResource(
@@ -1436,7 +1432,7 @@ def cli_begin_redistribute_mongo_container_partition_throughput(client,
     async_partition_redistribute_throughput_result = client.begin_mongo_db_container_redistribute_throughput(resource_group_name=resource_group_name,
                                                                                                              account_name=account_name,
                                                                                                              database_name=database_name,
-                                                                                                             container_name=container_name,
+                                                                                                             collection_name=collection_name,
                                                                                                              redistribute_throughput_parameters=redistribute_throughput_parameters)
 
     return async_partition_redistribute_throughput_result.result()

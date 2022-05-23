@@ -219,3 +219,4 @@ def load_command_table(self, _):
     # Redistribute partition throughput for Mongo collection
     with self.command_group('cosmosdb mongodb collection', cosmosdb_mongo_sdk, client_factory=cf_mongo_db_resources) as g:
         g.custom_command('redistribute-partition-throughput', 'cli_begin_redistribute_mongo_container_partition_throughput', is_preview=True)
+        

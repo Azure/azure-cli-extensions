@@ -675,10 +675,10 @@ helps['cosmosdb mongodb collection retrieve-partition-throughput'] = """
     examples:
       - name: Retrieves container container_name's throughput for specific physical partitions
         text: |-
-               az cosmosdb mongodb collection retrieve-partition-throughput --name account_name --database-name db_name --container-name container_name  --resource-group rg_name --physical-partition-ids "8,9"
+               az cosmosdb mongodb collection retrieve-partition-throughput --name account_name --database-name db_name --collection-name container_name  --resource-group rg_name --physical-partition-ids "8,9"
       - name: Retrieves container container_name's throughput for all physical partitions
         text: |-
-               az cosmosdb mongodb collection retrieve-partition-throughput --name account_name --database-name db_name --container-name container_name  --resource-group rg_name --all-partitions
+               az cosmosdb mongodb collection retrieve-partition-throughput --name account_name --database-name db_name --collection-name container_name  --resource-group rg_name --all-partitions
 """
 
 helps['cosmosdb mongodb collection redistribute-partition-throughput'] = """
@@ -687,8 +687,8 @@ helps['cosmosdb mongodb collection redistribute-partition-throughput'] = """
     examples:
       - name: Evenly distributes the partition throughput for a mongodb collection among all physical partitions
         text: |-
-               az cosmosdb mongodb collection redistribute-partition-throughput --name account_name --database-name db_name --container-name container_name  --resource-group rg_name --evenly-distribute
+               az cosmosdb mongodb collection redistribute-partition-throughput --name account_name --database-name db_name --collection-name container_name  --resource-group rg_name --evenly-distribute
       - name: Redistributes the partition throughput for a mongodb collection from source partitions to target partitions
         text: |-
-               az cosmosdb mongodb collection redistribute-partition-throughput --name account_name --database-name db_name --container-name container_name  --resource-group rg_name --target-physical-partition-throughput-info-list '[{\"id\":8,\"throughput\":1200},{\"id\":6,\"throughput\":1200}]' --source-physical-partition-throughput-info-list '[{\"id\":9}]'        
+               az cosmosdb mongodb collection redistribute-partition-throughput --name account_name --database-name db_name --collection-name container_name  --resource-group rg_name --target-physical-partition-throughput-info-list '[{\"id\":8,\"throughput\":1200},{\"id\":6,\"throughput\":1200}]' --source-physical-partition-throughput-info-list '[{\"id\":9}]'        
 """
