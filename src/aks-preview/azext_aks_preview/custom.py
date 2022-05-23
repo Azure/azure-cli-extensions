@@ -2884,7 +2884,7 @@ def aks_draft_setup_gh(app=None,
                        provider="azure",
                        gh_repo=None,
                        download_binary=None):
-    aks_draft_cmd_setup_gh(app, subscription_id, resource_group, provider, gh_repo)
+    aks_draft_cmd_setup_gh(app, subscription_id, resource_group, provider, gh_repo, download_binary)
 
 
 def aks_draft_generate_workflow(cluster_name=None,
