@@ -1448,17 +1448,15 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                      '--enable-custom-ca-trust'
         self.cmd(create_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
-            self.check('agentPoolProfiles[0].enableCustomCATrust', 'True')
+            self.check('agentPoolProfiles[0].enableCustomCaTrust', 'True')
         ])
 
         # 2. update
-        update_cmd = 'aks create --resource-group={resource_group} --name={name} ' \
-                     '--nodepool-name {node_pool_name} -c 1 ' \
-                     '--ssh-key-value={ssh_key_value} ' \
+        update_cmd = 'aks update --resource-group={resource_group} --name={name} ' \
                      '--disable-custom-ca-trust'
         self.cmd(update_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
-            self.check('agentPoolProfiles[0].enableCustomCATrust', 'False')
+            self.check('agentPoolProfiles[0].enableCustomCaTrust', 'False')
         ])
 
         # 3. add nodepool
@@ -1469,8 +1467,8 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                  '--enable-custom-ca-trust',
                  checks=[
                      self.check('provisioningState', 'Succeeded'),
-                     self.check('agentPoolProfiles[0].enableCustomCATrust', 'False'),
-                     self.check('agentPoolProfiles[1].enableCustomCATrust', 'True')
+                     self.check('agentPoolProfiles[0].enableCustomCaTrust', 'False'),
+                     self.check('agentPoolProfiles[1].enableCustomCaTrust', 'True')
                  ])
 
         # 3. update nodepool
@@ -1481,7 +1479,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                  '--enable-custom-ca-trust',
                  checks=[
                      self.check('provisioningState', 'Succeeded'),
-                     self.check('agentPoolProfiles[0].enableCustomCATrust', 'True'),
+                     self.check('agentPoolProfiles[0].enableCustomCaTrust', 'True'),
                  ])
 
         # delete
