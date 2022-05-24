@@ -19,7 +19,11 @@ import azure.cli.core.keys as keys
 
 from ._helpers import (_fuzzy_match)
 
-from ._consts import ADDONS
+from ._consts import (
+    ADDONS,
+    CONST_AZURE_KEYVAULT_NETWORK_ACCESS_PUBLIC,
+    CONST_AZURE_KEYVAULT_NETWORK_ACCESS_PRIVATE,
+)
 
 logger = get_logger(__name__)
 
@@ -585,6 +589,15 @@ def validate_azure_keyvault_kms_key_id(namespace):
         segments = key_id[len(https_prefix):].split("/")
         if len(segments) != 4 or segments[1] != "keys":
             raise InvalidArgumentValueError(err_msg)
+
+
+def validate_azure_keyvault_kms_key_vault_resource_id(namespace):
+    key_vault_resource_id = namespace.azure_keyvault_kms_key_vault_resource_id
+    if key_vault_resource_id is None or key_vault_resource_id == '':
+        return
+    from msrestazure.tools import is_valid_resource_id
+    if not is_valid_resource_id(key_vault_resource_id):
+        raise CLIError("--azure-keyvault-kms-key-vault-resource-id is not a valid Azure resource ID.")
 
 
 def validate_enable_custom_ca_trust(namespace):

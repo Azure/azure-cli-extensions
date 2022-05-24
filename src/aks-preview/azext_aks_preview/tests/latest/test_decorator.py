@@ -2507,6 +2507,215 @@ class AKSPreviewContextTestCase(unittest.TestCase):
         with self.assertRaises(RequiredArgumentMissingError):
             ctx_5.get_azure_keyvault_kms_key_id()
 
+    def test_get_azure_keyvault_kms_key_vault_network_access(self):
+        key_vault_network_access_1 = "Public"
+        key_vault_network_access_2 = "Private"
+
+        ctx_0 = AKSPreviewContext(
+            self.cmd,
+            {},
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertIsNone(ctx_0.get_azure_keyvault_kms_key_vault_network_access())
+
+        ctx_1 = AKSPreviewContext(
+            self.cmd,
+            {
+                "enable_azure_keyvault_kms": True,
+                "azure_keyvault_kms_key_vault_network_access": key_vault_network_access_1,
+            },
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertEqual(ctx_1.get_azure_keyvault_kms_key_vault_network_access(), key_vault_network_access_1)
+
+        ctx_2 = AKSPreviewContext(
+            self.cmd,
+            {
+                "enable_azure_keyvault_kms": True,
+                "azure_keyvault_kms_key_vault_network_access": key_vault_network_access_2,
+            },
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        security_profile = self.models.ManagedClusterSecurityProfile()
+        security_profile.azure_key_vault_kms = self.models.AzureKeyVaultKms(
+            enabled=True,
+            key_vault_network_access=key_vault_network_access_1,
+        )
+        mc = self.models.ManagedCluster(
+            location="test_location",
+            security_profile=security_profile,
+        )
+        ctx_2.attach_mc(mc)
+        self.assertEqual(ctx_2.get_azure_keyvault_kms_key_vault_network_access(), key_vault_network_access_2)
+
+        ctx_3 = AKSPreviewContext(
+            self.cmd,
+            {
+                "azure_keyvault_kms_key_vault_network_access": key_vault_network_access_2,
+            },
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        with self.assertRaises(RequiredArgumentMissingError):
+            ctx_3.get_azure_keyvault_kms_key_vault_network_access()
+
+        ctx_4 = AKSPreviewContext(
+            self.cmd,
+            {
+                "enable_azure_keyvault_kms": False,
+                "azure_keyvault_kms_key_vault_network_access": key_vault_network_access_2,
+            },
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        with self.assertRaises(RequiredArgumentMissingError):
+            ctx_4.get_azure_keyvault_kms_key_vault_network_access()
+
+    def test_get_azure_keyvault_kms_key_vault_resource_id(self):
+        key_vault_resource_id_1 = "/subscriptions/8ecadfc9-d1a3-4ea4-b844-0d9f87e4d7c8/resourceGroups/foo/providers/Microsoft.KeyVault/vaults/foo"
+        key_vault_resource_id_2 = "/subscriptions/8ecadfc9-d1a3-4ea4-b844-0d9f87e4d7c8/resourceGroups/bar/providers/Microsoft.KeyVault/vaults/bar"
+
+        ctx_0 = AKSPreviewContext(
+            self.cmd,
+            {},
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertIsNone(ctx_0.get_azure_keyvault_kms_key_vault_resource_id())
+
+        ctx_1 = AKSPreviewContext(
+            self.cmd,
+            {
+                "enable_azure_keyvault_kms": True,
+                "azure_keyvault_kms_key_vault_network_access": "Public",
+            },
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertEqual(ctx_1.get_azure_keyvault_kms_key_vault_resource_id(), None)
+
+        ctx_2 = AKSPreviewContext(
+            self.cmd,
+            {
+                "enable_azure_keyvault_kms": True,
+                "azure_keyvault_kms_key_vault_network_access": "Public",
+                "azure_keyvault_kms_key_vault_resource_id": "",
+            },
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertEqual(ctx_2.get_azure_keyvault_kms_key_vault_resource_id(), "")
+
+        ctx_3 = AKSPreviewContext(
+            self.cmd,
+            {
+                "enable_azure_keyvault_kms": True,
+                "azure_keyvault_kms_key_vault_network_access": "Private",
+                "azure_keyvault_kms_key_vault_resource_id": key_vault_resource_id_1,
+            },
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertEqual(ctx_3.get_azure_keyvault_kms_key_vault_resource_id(), key_vault_resource_id_1)
+
+        ctx_4 = AKSPreviewContext(
+            self.cmd,
+            {
+                "enable_azure_keyvault_kms": True,
+                "azure_keyvault_kms_key_vault_network_access": "Private",
+                "azure_keyvault_kms_key_vault_resource_id": key_vault_resource_id_1,
+            },
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        security_profile = self.models.ManagedClusterSecurityProfile()
+        security_profile.azure_key_vault_kms = self.models.AzureKeyVaultKms(
+            enabled=True,
+            key_vault_network_access="Private",
+            key_vault_resource_id=key_vault_resource_id_2,
+        )
+        mc = self.models.ManagedCluster(
+            location="test_location",
+            security_profile=security_profile,
+        )
+        ctx_4.attach_mc(mc)
+        self.assertEqual(ctx_4.get_azure_keyvault_kms_key_vault_resource_id(), key_vault_resource_id_2)
+
+        ctx_5 = AKSPreviewContext(
+            self.cmd,
+            {
+                "enable_azure_keyvault_kms": True,
+                "azure_keyvault_kms_key_vault_network_access": "Private",
+                "azure_keyvault_kms_key_vault_resource_id": key_vault_resource_id_2,
+            },
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        security_profile = self.models.ManagedClusterSecurityProfile()
+        security_profile.azure_key_vault_kms = self.models.AzureKeyVaultKms(
+            enabled=True,
+            key_vault_network_access="Private",
+            key_vault_resource_id=key_vault_resource_id_1,
+        )
+        mc = self.models.ManagedCluster(
+            location="test_location",
+            security_profile=security_profile,
+        )
+        ctx_5.attach_mc(mc)
+        self.assertEqual(ctx_5.get_azure_keyvault_kms_key_vault_resource_id(), key_vault_resource_id_2)
+
+        ctx_6 = AKSPreviewContext(
+            self.cmd,
+            {
+                "azure_keyvault_kms_key_vault_resource_id": key_vault_resource_id_1,
+            },
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        with self.assertRaises(RequiredArgumentMissingError):
+            ctx_6.get_azure_keyvault_kms_key_vault_resource_id()
+
+        ctx_7 = AKSPreviewContext(
+            self.cmd,
+            {
+                "enable_azure_keyvault_kms": False,
+                "azure_keyvault_kms_key_vault_resource_id": key_vault_resource_id_1,
+            },
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        with self.assertRaises(RequiredArgumentMissingError):
+            ctx_7.get_azure_keyvault_kms_key_vault_resource_id()
+
+        ctx_8 = AKSPreviewContext(
+            self.cmd,
+            {
+                "enable_azure_keyvault_kms": True,
+                "azure_keyvault_kms_key_vault_network_access": "Public",
+                "azure_keyvault_kms_key_vault_resource_id": key_vault_resource_id_1,
+            },
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        with self.assertRaises(ArgumentUsageError):
+            ctx_8.get_azure_keyvault_kms_key_vault_resource_id()
+
+        ctx_9 = AKSPreviewContext(
+            self.cmd,
+            {
+                "enable_azure_keyvault_kms": True,
+                "azure_keyvault_kms_key_vault_network_access": "Private",
+                "azure_keyvault_kms_key_vault_resource_id": "",
+            },
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        with self.assertRaises(ArgumentUsageError):
+            ctx_9.get_azure_keyvault_kms_key_vault_resource_id()
+
     def test_get_updated_assign_kubelet_identity(self):
         ctx_0 = AKSPreviewContext(
             self.cmd,
@@ -3711,6 +3920,8 @@ class AKSPreviewCreateDecoratorTestCase(unittest.TestCase):
         self.assertTrue(updated_mc.security_profile.workload_identity.enabled)
 
     def test_set_up_azure_keyvault_kms(self):
+        key_id_1 = "https://fakekeyvault.vault.azure.net/secrets/fakekeyname/fakekeyversion"
+
         dec_1 = AKSPreviewCreateDecorator(
             self.cmd,
             self.client,
@@ -3726,13 +3937,13 @@ class AKSPreviewCreateDecoratorTestCase(unittest.TestCase):
         )
         self.assertEqual(dec_mc_1, ground_truth_mc_1)
 
-        key_id_1 = "https://fakekeyvault.vault.azure.net/secrets/fakekeyname/fakekeyversion"
         dec_2 = AKSPreviewCreateDecorator(
             self.cmd,
             self.client,
             {
                 "enable_azure_keyvault_kms": True,
                 "azure_keyvault_kms_key_id": key_id_1,
+                "azure_keyvault_kms_key_vault_network_access": "Public",
             },
             CUSTOM_MGMT_AKS_PREVIEW,
         )
@@ -3742,6 +3953,7 @@ class AKSPreviewCreateDecoratorTestCase(unittest.TestCase):
         ground_truth_azure_keyvault_kms_profile_2 = self.models.AzureKeyVaultKms(
             enabled=True,
             key_id=key_id_1,
+            key_vault_network_access="Public",
         )
         ground_truth_security_profile_2 = self.models.ManagedClusterSecurityProfile(
             azure_key_vault_kms=ground_truth_azure_keyvault_kms_profile_2,
@@ -3752,6 +3964,36 @@ class AKSPreviewCreateDecoratorTestCase(unittest.TestCase):
         )
 
         self.assertEqual(dec_mc_2, ground_truth_mc_2)
+
+        dec_3 = AKSPreviewCreateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_azure_keyvault_kms": True,
+                "azure_keyvault_kms_key_id": key_id_1,
+                "azure_keyvault_kms_key_vault_network_access": "Private",
+                "azure_keyvault_kms_key_vault_resource_id": "/subscriptions/8ecadfc9-d1a3-4ea4-b844-0d9f87e4d7c8/resourceGroups/foo/providers/Microsoft.KeyVault/vaults/foo",
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_3 = self.models.ManagedCluster(location="test_location")
+        dec_mc_3 = dec_3.set_up_azure_keyvault_kms(mc_3)
+
+        ground_truth_azure_keyvault_kms_profile_3 = self.models.AzureKeyVaultKms(
+            enabled=True,
+            key_id=key_id_1,
+            key_vault_network_access="Private",
+            key_vault_resource_id="/subscriptions/8ecadfc9-d1a3-4ea4-b844-0d9f87e4d7c8/resourceGroups/foo/providers/Microsoft.KeyVault/vaults/foo",
+        )
+        ground_truth_security_profile_3 = self.models.ManagedClusterSecurityProfile(
+            azure_key_vault_kms=ground_truth_azure_keyvault_kms_profile_3,
+        )
+        ground_truth_mc_3 = self.models.ManagedCluster(
+            location="test_location",
+            security_profile=ground_truth_security_profile_3,
+        )
+
+        self.assertEqual(dec_mc_3, ground_truth_mc_3)
 
     def test_set_up_api_server_access_profile(self):
         dec_1 = AKSPreviewCreateDecorator(
@@ -4972,6 +5214,8 @@ class AKSPreviewUpdateDecoratorTestCase(unittest.TestCase):
             {
                 "enable_azure_keyvault_kms": True,
                 "azure_keyvault_kms_key_id": key_id_1,
+                "azure_keyvault_kms_key_vault_network_access": "Private",
+                "azure_keyvault_kms_key_vault_resource_id": "/subscriptions/8ecadfc9-d1a3-4ea4-b844-0d9f87e4d7c8/resourceGroups/foo/providers/Microsoft.KeyVault/vaults/foo",
             },
             CUSTOM_MGMT_AKS_PREVIEW,
         )
@@ -4984,6 +5228,8 @@ class AKSPreviewUpdateDecoratorTestCase(unittest.TestCase):
         ground_truth_azure_keyvault_kms_profile_2 = self.models.AzureKeyVaultKms(
             enabled=True,
             key_id=key_id_1,
+            key_vault_network_access="Private",
+            key_vault_resource_id="/subscriptions/8ecadfc9-d1a3-4ea4-b844-0d9f87e4d7c8/resourceGroups/foo/providers/Microsoft.KeyVault/vaults/foo",
         )
         ground_truth_security_profile_2 = self.models.ManagedClusterSecurityProfile(
             azure_key_vault_kms=ground_truth_azure_keyvault_kms_profile_2,

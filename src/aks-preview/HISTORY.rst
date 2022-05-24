@@ -12,7 +12,7 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
-* Fix: Remove permission prompt when saving config file to symlink with `az aks get-credentials`.
+* Support Key Vault with private link when enabling Azure KeyVault KMS.
 
 0.5.81
 ++++++
@@ -23,6 +23,7 @@ Pending
     * az aks trustedaccess rolebinding list
     * az aks trustedaccess rolebinding show
     * az aks trustedaccess rolebinding delete
+* Fix: Remove permission prompt when saving config file to symlink with `az aks get-credentials`.
 
 0.5.80
 ++++++
