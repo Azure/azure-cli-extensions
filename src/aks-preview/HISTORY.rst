@@ -17,6 +17,16 @@ Pending
 
 * Add command `aks trustedaccess role list`.
 
+0.5.73
+++++++
+
+* Fix import issues with command group `az aks draft`
+
+0.5.72
+++++++
+
+* First public release for `az aks draft`
+
 0.5.71
 ++++++
 

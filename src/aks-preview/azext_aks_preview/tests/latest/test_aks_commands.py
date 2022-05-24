@@ -4110,7 +4110,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         ])
 
     @AllowLargeResponse()
-    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westcentralus')
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westcentralus', preserve_default_location=True)
     def test_aks_create_with_standard_csi_drivers(self, resource_group, resource_group_location):
         aks_name = self.create_random_name('cliakstest', 16)
         self.kwargs.update({
@@ -4123,18 +4123,18 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         create_cmd = 'aks create --resource-group={resource_group} --name={name} --ssh-key-value={ssh_key_value} -o json'
         self.cmd(create_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
-            self.check('storageProfile.diskCsiDriver.enabled', None),
-            self.check('storageProfile.fileCsiDriver.enabled', None),
-            self.check('storageProfile.snapshotController.enabled', None),
+            self.check('storageProfile.diskCsiDriver.enabled', True),
+            self.check('storageProfile.fileCsiDriver.enabled', True),
+            self.check('storageProfile.snapshotController.enabled', True),
         ])
 
         # check standard reconcile scenario
         update_cmd = 'aks update --resource-group={resource_group} --name={name} -y -o json'
         self.cmd(update_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
-            self.check('storageProfile.diskCsiDriver', None),
-            self.check('storageProfile.fileCsiDriver', None),
-            self.check('storageProfile.snapshotController', None),
+            self.check('storageProfile.diskCsiDriver.enabled', True),
+            self.check('storageProfile.fileCsiDriver.enabled', True),
+            self.check('storageProfile.snapshotController.enabled', True),
         ])
 
         # delete
@@ -4182,3 +4182,78 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             self.check(
                 'type', 'Microsoft.ContainerService/locations/trustedaccessroles')
         ])
+
+
+    @live_only() # this test requires live_only because a binary is downloaded
+    def test_aks_draft_with_helm(self):
+        import tempfile, os
+
+        script_dir = os.path.dirname(__file__)
+        create_config = 'aks_draft_config/helm.yaml'
+        abs_file_path = os.path.join(script_dir, create_config)
+
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            # test `create`
+            create_cmd = f'aks draft create --path={tmp_dir} --create-config={abs_file_path} --destination={tmp_dir}'
+            self.cmd(create_cmd)
+            assert os.path.isdir(f'{tmp_dir}/charts') and os.path.isfile(f'{tmp_dir}/Dockerfile')
+
+            # test `generate-workflow`
+            generate_workflow_cmd = f'aks draft generate-workflow --path={tmp_dir} --branch=main --destination={tmp_dir} --cluster-name=someAksCluster --registry-name=someRegistry --resource-group=someResourceGroup --container-name=someContainer'
+            self.cmd(generate_workflow_cmd)
+            assert os.path.isfile(f'{tmp_dir}/charts/production.yaml') and os.path.isfile(f'{tmp_dir}/.github/workflows/azure-kubernetes-service-helm.yml')
+
+            # test `update`
+            update_cmd = f'aks draft update --path={tmp_dir} --destination={tmp_dir} --host=testHost --certificate=testKV'
+            self.cmd(update_cmd)
+            assert os.path.isfile(f'{tmp_dir}/charts/production.yaml')
+
+
+    @live_only() # this test requires live_only because a binary is downloaded
+    def test_aks_draft_with_kustomize(self):
+        import tempfile, os
+
+        script_dir = os.path.dirname(__file__)
+        create_config = 'aks_draft_config/kustomize.yaml'
+        abs_file_path = os.path.join(script_dir, create_config)
+
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            # test `create`
+            create_cmd = f'aks draft create --path={tmp_dir} --create-config={abs_file_path} --destination={tmp_dir}'
+            self.cmd(create_cmd)
+            assert os.path.isdir(f'{tmp_dir}/base') and os.path.isdir(f'{tmp_dir}/overlays/production') and os.path.isfile(f'{tmp_dir}/Dockerfile')
+
+            # test `generate-workflow`
+            generate_workflow_cmd = f'aks draft generate-workflow --path={tmp_dir} --branch=main --destination={tmp_dir} --cluster-name=someAksCluster --registry-name=someRegistry --resource-group=someResourceGroup --container-name=someContainer'
+            self.cmd(generate_workflow_cmd)
+            assert os.path.isfile(f'{tmp_dir}/overlays/production/deployment.yaml') and os.path.isfile(f'{tmp_dir}/.github/workflows/azure-kubernetes-service-kustomize.yml')
+
+            # test `update`
+            update_cmd = f'aks draft update --path={tmp_dir} --destination={tmp_dir} --host=testHost --certificate=testKV'
+            self.cmd(update_cmd)
+            assert os.path.isfile(f'{tmp_dir}/overlays/production/service.yaml')
+
+
+    @live_only() # this test requires live_only because a binary is downloaded
+    def test_aks_draft_with_manifest(self):
+        import tempfile, os
+
+        script_dir = os.path.dirname(__file__)
+        create_config = 'aks_draft_config/manifest.yaml'
+        abs_file_path = os.path.join(script_dir, create_config)
+
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            
+            create_cmd = f'aks draft create --path={tmp_dir} --create-config={abs_file_path} --destination={tmp_dir}'
+            self.cmd(create_cmd)
+            assert os.path.isdir(f'{tmp_dir}/manifests') and os.path.isfile(f'{tmp_dir}/Dockerfile')
+
+            # test `generate-workflow`
+            generate_workflow_cmd = f'aks draft generate-workflow --path={tmp_dir} --branch=main --destination={tmp_dir} --cluster-name=someAksCluster --registry-name=someRegistry --resource-group=someResourceGroup --container-name=someContainer'
+            self.cmd(generate_workflow_cmd)
+            assert os.path.isfile(f'{tmp_dir}/.github/workflows/azure-kubernetes-service.yml')
+
+            # test `update`
+            update_cmd = f'aks draft update --path={tmp_dir} --destination={tmp_dir} --host=testHost --certificate=testKV'
+            self.cmd(update_cmd)
+            assert os.path.isfile(f'{tmp_dir}/manifests/service.yaml')

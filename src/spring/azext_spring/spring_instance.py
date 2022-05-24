@@ -7,6 +7,7 @@
 # pylint: disable=unused-argument, logging-format-interpolation, protected-access, wrong-import-order, too-many-lines
 from ._utils import (wait_till_end, _get_rg_location)
 from .vendored_sdks.appplatform.v2022_01_01_preview import models
+from .vendored_sdks.appplatform.v2022_05_01_preview import models
 from knack.log import get_logger
 from .custom import (_warn_enable_java_agent, _update_application_insights_asc_create)
 from ._build_service import _update_default_build_agent_pool
@@ -56,6 +57,7 @@ class DefaultSpringCloud:
                        zone_redundant=False,
                        sku=None,
                        tags=None,
+                       ingress_read_timeout=None,
                        **_):
         properties = models.ClusterResourceProperties(
             zone_redundant=zone_redundant
@@ -69,6 +71,13 @@ class DefaultSpringCloud:
                 app_network_resource_group=app_network_resource_group,
                 service_runtime_network_resource_group=service_runtime_network_resource_group
             )
+
+        if ingress_read_timeout:
+            ingress_configuration = models.IngressConfig(read_timeout_in_seconds=ingress_read_timeout)
+            if properties.network_profile:
+                properties.network_profile.ingress_config = ingress_configuration
+            else:
+                properties.network_profile = models.NetworkProfile(ingress_config=ingress_configuration)
 
         resource = models.ServiceResource(location=self.location, sku=sku, properties=properties, tags=tags)
         poller = self.client.services.begin_create_or_update(
@@ -127,6 +136,7 @@ def spring_create(cmd, client, resource_group, name,
                   gateway_instance_count=None,
                   enable_api_portal=False,
                   api_portal_instance_count=None,
+                  ingress_read_timeout=None,
                   no_wait=False):
     """
     Because Standard/Basic tier vs. Enterprise tier creation are very different. Here routes the command to different
@@ -144,6 +154,7 @@ def spring_create(cmd, client, resource_group, name,
         'sampling_rate': sampling_rate,
         'disable_app_insights': disable_app_insights,
         'enable_java_agent': enable_java_agent,
+        'ingress_read_timeout': ingress_read_timeout,
         'sku': sku,
         'tags': tags,
         'zone_redundant': zone_redundant,
