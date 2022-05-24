@@ -908,8 +908,7 @@ class AKSPreviewContext(AKSContext):
         """
         from azext_aks_preview._consts import (
             ADDONS, CONST_GITOPS_ADDON_NAME,
-            CONST_MONITORING_USING_AAD_MSI_AUTH,
-            CONST_WEB_APPLICATION_ROUTING_ADDON_NAME)
+            CONST_MONITORING_USING_AAD_MSI_AUTH)
 
         addon_consts = super().get_addon_consts()
         addon_consts["ADDONS"] = ADDONS
@@ -917,7 +916,6 @@ class AKSPreviewContext(AKSContext):
         addon_consts[
             "CONST_MONITORING_USING_AAD_MSI_AUTH"
         ] = CONST_MONITORING_USING_AAD_MSI_AUTH
-        addon_consts["CONST_WEB_APPLICATION_ROUTING_ADDON_NAME"] = CONST_WEB_APPLICATION_ROUTING_ADDON_NAME
         return addon_consts
 
     def get_appgw_subnet_prefix(self) -> Union[str, None]:

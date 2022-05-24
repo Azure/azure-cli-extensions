@@ -86,7 +86,6 @@ CONST_NETWORK_PLUGIN_NONE = "none"
 # consts for addons
 # http application routing
 CONST_HTTP_APPLICATION_ROUTING_ADDON_NAME = "httpApplicationRouting"
-CONST_WEB_APPLICATION_ROUTING_ADDON_NAME = "webApplicationRouting"
 
 # monitoring
 CONST_MONITORING_ADDON_NAME = "omsagent"
@@ -138,7 +137,9 @@ ADDONS = {
     'open-service-mesh': CONST_OPEN_SERVICE_MESH_ADDON_NAME,
     'azure-keyvault-secrets-provider': CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME,
     'gitops': CONST_GITOPS_ADDON_NAME,
-    'web_application_routing': CONST_WEB_APPLICATION_ROUTING_ADDON_NAME
+    # web_application_routing key has no mapping to a name since ingress profile, not addon profile, is
+    # used to contain settings for web_application_routing
+    'web_application_routing': ""
 }
 
 ADDONS_DESCRIPTIONS = {
