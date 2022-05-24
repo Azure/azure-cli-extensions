@@ -14,6 +14,11 @@ Pending
 
 * Refactor: Removed redundant `--disable-workload-identity` flag. User can disable the workload identity feature by using `--enable-workload-identity False`.
 
+0.5.73
+++++++
+
+* Fix import issues with command group `az aks draft`
+
 0.5.72
 ++++++
 
