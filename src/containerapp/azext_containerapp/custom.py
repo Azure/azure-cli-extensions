@@ -16,16 +16,19 @@ from azure.cli.core.azclierror import (
     ResourceNotFoundError,
     CLIError,
     CLIInternalError,
-    InvalidArgumentValueError)
+    InvalidArgumentValueError,
+    ArgumentUsageError)
 from azure.cli.core.commands.client_factory import get_subscription_id
 from azure.cli.core.util import open_page_in_browser
+from azure.cli.command_modules.appservice.utils import _normalize_location
 from knack.log import get_logger
+from knack.prompting import prompt_y_n
 
 from msrestazure.tools import parse_resource_id, is_valid_resource_id
 from msrest.exceptions import DeserializationError
 
 from ._client_factory import handle_raw_exception
-from ._clients import ManagedEnvironmentClient, ContainerAppClient, GitHubActionClient, DaprComponentClient, StorageClient
+from ._clients import ManagedEnvironmentClient, ContainerAppClient, GitHubActionClient, DaprComponentClient, StorageClient, AuthClient
 from ._github_oauth import get_github_access_token
 from ._models import (
     ManagedEnvironment as ManagedEnvironmentModel,
@@ -46,6 +49,8 @@ from ._models import (
     AzureCredentials as AzureCredentialsModel,
     SourceControl as SourceControlModel,
     ManagedServiceIdentity as ManagedServiceIdentityModel,
+    ContainerAppCertificateEnvelope as ContainerAppCertificateEnvelopeModel,
+    ContainerAppCustomDomain as ContainerAppCustomDomainModel,
     AzureFileProperties as AzureFilePropertiesModel)
 from ._utils import (_validate_subscription_registered, _get_location_from_resource_group, _ensure_location_allowed,
                      parse_secret_flags, store_as_secret_and_return_secret_ref, parse_env_var_flags,
@@ -55,11 +60,14 @@ from ._utils import (_validate_subscription_registered, _get_location_from_resou
                      _get_app_from_revision, raise_missing_token_suggestion, _infer_acr_credentials, _remove_registry_secret, _remove_secret,
                      _ensure_identity_resource_id, _remove_dapr_readonly_attributes, _remove_env_vars, _validate_traffic_sum,
                      _update_revision_env_secretrefs, _get_acr_cred, safe_get, await_github_action, repo_url_to_name,
-                     validate_container_app_name, _update_weights)
+                     validate_container_app_name, _update_weights, get_vnet_location, register_provider_if_needed,
+                     generate_randomized_cert_name, _get_name, load_cert_file, check_cert_name_availability,
+                     validate_hostname, patch_new_custom_domain, get_custom_domains)
 
 from ._ssh_utils import (SSH_DEFAULT_ENCODING, WebSocketConnection, read_ssh, get_stdin_writer, SSH_CTRL_C_MSG,
                          SSH_BACKUP_ENCODING)
-from ._constants import MAXIMUM_SECRET_LENGTH
+from ._constants import (MAXIMUM_SECRET_LENGTH, MICROSOFT_SECRET_SETTING_NAME, FACEBOOK_SECRET_SETTING_NAME, GITHUB_SECRET_SETTING_NAME,
+                         GOOGLE_SECRET_SETTING_NAME, TWITTER_SECRET_SETTING_NAME, APPLE_SECRET_SETTING_NAME, CONTAINER_APPS_RP)
 
 logger = get_logger(__name__)
 
@@ -308,7 +316,7 @@ def create_containerapp(cmd,
                         system_assigned=False,
                         disable_warnings=False,
                         user_assigned=None):
-    _validate_subscription_registered(cmd, "Microsoft.App")
+    register_provider_if_needed(cmd, CONTAINER_APPS_RP)
     validate_container_app_name(name)
 
     if yaml:
@@ -340,7 +348,7 @@ def create_containerapp(cmd,
         raise ValidationError("The environment '{}' does not exist. Specify a valid environment".format(managed_env))
 
     location = managed_env_info["location"]
-    _ensure_location_allowed(cmd, location, "Microsoft.App", "containerApps")
+    _ensure_location_allowed(cmd, location, CONTAINER_APPS_RP, "containerApps")
 
     external_ingress = None
     if ingress is not None:
@@ -491,7 +499,7 @@ def update_containerapp_logic(cmd,
                               tags=None,
                               no_wait=False,
                               from_revision=None):
-    _validate_subscription_registered(cmd, "Microsoft.App")
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     if yaml:
         if image or min_replicas or max_replicas or\
@@ -684,7 +692,7 @@ def update_containerapp(cmd,
                         args=None,
                         tags=None,
                         no_wait=False):
-    _validate_subscription_registered(cmd, "Microsoft.App")
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     return update_containerapp_logic(cmd,
                                      name,
@@ -708,7 +716,7 @@ def update_containerapp(cmd,
 
 
 def show_containerapp(cmd, name, resource_group_name):
-    _validate_subscription_registered(cmd, "Microsoft.App")
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     try:
         return ContainerAppClient.show(cmd=cmd, resource_group_name=resource_group_name, name=name)
@@ -717,7 +725,7 @@ def show_containerapp(cmd, name, resource_group_name):
 
 
 def list_containerapp(cmd, resource_group_name=None):
-    _validate_subscription_registered(cmd, "Microsoft.App")
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     try:
         containerapps = []
@@ -732,7 +740,7 @@ def list_containerapp(cmd, resource_group_name=None):
 
 
 def delete_containerapp(cmd, name, resource_group_name, no_wait=False):
-    _validate_subscription_registered(cmd, "Microsoft.App")
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     try:
         return ContainerAppClient.delete(cmd=cmd, name=name, resource_group_name=resource_group_name, no_wait=no_wait)
@@ -754,12 +762,26 @@ def create_managed_environment(cmd,
                                internal_only=False,
                                tags=None,
                                disable_warnings=False,
+                               zone_redundant=False,
                                no_wait=False):
+    if zone_redundant:
+        if not infrastructure_subnet_resource_id:
+            raise RequiredArgumentMissingError("Cannot use --zone-redundant/-z without "
+                                               "--infrastructure-subnet-resource-id/-s")
+        if not is_valid_resource_id(infrastructure_subnet_resource_id):
+            raise ValidationError("--infrastructure-subnet-resource-id must be a valid resource id")
+        vnet_location = get_vnet_location(cmd, infrastructure_subnet_resource_id)
+        if location:
+            if _normalize_location(cmd, location) != vnet_location:
+                raise ValidationError(f"Location '{location}' does not match the subnet's location: '{vnet_location}'. "
+                                      "Please change either --location/-l or --infrastructure-subnet-resource-id/-s")
+        else:
+            location = vnet_location
 
     location = location or _get_location_from_resource_group(cmd.cli_ctx, resource_group_name)
 
-    _validate_subscription_registered(cmd, "Microsoft.App")
-    _ensure_location_allowed(cmd, location, "Microsoft.App", "managedEnvironments")
+    register_provider_if_needed(cmd, CONTAINER_APPS_RP)
+    _ensure_location_allowed(cmd, location, CONTAINER_APPS_RP, "managedEnvironments")
 
     if logs_customer_id is None or logs_key is None:
         logs_customer_id, logs_key = _generate_log_analytics_if_not_provided(cmd, logs_customer_id, logs_key, location, resource_group_name)
@@ -777,6 +799,7 @@ def create_managed_environment(cmd,
     managed_env_def["properties"]["internalLoadBalancerEnabled"] = False
     managed_env_def["properties"]["appLogsConfiguration"] = app_logs_config_def
     managed_env_def["tags"] = tags
+    managed_env_def["properties"]["zoneRedundant"] = zone_redundant
 
     if instrumentation_key is not None:
         managed_env_def["properties"]["daprAIInstrumentationKey"] = instrumentation_key
@@ -826,7 +849,7 @@ def update_managed_environment(cmd,
 
 
 def show_managed_environment(cmd, name, resource_group_name):
-    _validate_subscription_registered(cmd, "Microsoft.App")
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     try:
         return ManagedEnvironmentClient.show(cmd=cmd, resource_group_name=resource_group_name, name=name)
@@ -835,7 +858,7 @@ def show_managed_environment(cmd, name, resource_group_name):
 
 
 def list_managed_environments(cmd, resource_group_name=None):
-    _validate_subscription_registered(cmd, "Microsoft.App")
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     try:
         managed_envs = []
@@ -850,7 +873,7 @@ def list_managed_environments(cmd, resource_group_name=None):
 
 
 def delete_managed_environment(cmd, name, resource_group_name, no_wait=False):
-    _validate_subscription_registered(cmd, "Microsoft.App")
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     try:
         return ManagedEnvironmentClient.delete(cmd=cmd, name=name, resource_group_name=resource_group_name, no_wait=no_wait)
@@ -859,7 +882,7 @@ def delete_managed_environment(cmd, name, resource_group_name, no_wait=False):
 
 
 def assign_managed_identity(cmd, name, resource_group_name, system_assigned=False, user_assigned=None, no_wait=False):
-    _validate_subscription_registered(cmd, "Microsoft.App")
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     assign_system_identity = system_assigned
     if not user_assigned:
@@ -939,7 +962,7 @@ def assign_managed_identity(cmd, name, resource_group_name, system_assigned=Fals
 
 
 def remove_managed_identity(cmd, name, resource_group_name, system_assigned=False, user_assigned=None, no_wait=False):
-    _validate_subscription_registered(cmd, "Microsoft.App")
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     remove_system_identity = system_assigned
     remove_user_identities = user_assigned
@@ -1020,7 +1043,7 @@ def remove_managed_identity(cmd, name, resource_group_name, system_assigned=Fals
 
 
 def show_managed_identity(cmd, name, resource_group_name):
-    _validate_subscription_registered(cmd, "Microsoft.App")
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     try:
         r = ContainerAppClient.show(cmd=cmd, resource_group_name=resource_group_name, name=name)
@@ -1291,7 +1314,7 @@ def copy_revision(cmd,
                   args=None,
                   tags=None,
                   no_wait=False):
-    _validate_subscription_registered(cmd, "Microsoft.App")
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     if not name and not from_revision:
         raise RequiredArgumentMissingError('Usage error: --name is required if not using --from-revision.')
@@ -1322,7 +1345,7 @@ def copy_revision(cmd,
 
 
 def set_revision_mode(cmd, resource_group_name, name, mode, no_wait=False):
-    _validate_subscription_registered(cmd, "Microsoft.App")
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     containerapp_def = None
     try:
@@ -1346,7 +1369,7 @@ def set_revision_mode(cmd, resource_group_name, name, mode, no_wait=False):
 
 
 def add_revision_label(cmd, resource_group_name, revision, label, name=None, no_wait=False):
-    _validate_subscription_registered(cmd, "Microsoft.App")
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     if not name:
         name = _get_app_from_revision(revision)
@@ -1397,7 +1420,7 @@ def add_revision_label(cmd, resource_group_name, revision, label, name=None, no_
 
 
 def remove_revision_label(cmd, resource_group_name, name, label, no_wait=False):
-    _validate_subscription_registered(cmd, "Microsoft.App")
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     containerapp_def = None
     try:
@@ -1438,7 +1461,7 @@ def remove_revision_label(cmd, resource_group_name, name, label, no_wait=False):
 
 
 def show_ingress(cmd, name, resource_group_name):
-    _validate_subscription_registered(cmd, "Microsoft.App")
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     containerapp_def = None
     try:
@@ -1456,7 +1479,7 @@ def show_ingress(cmd, name, resource_group_name):
 
 
 def enable_ingress(cmd, name, resource_group_name, type, target_port, transport="auto", allow_insecure=False, disable_warnings=False, no_wait=False):  # pylint: disable=redefined-builtin
-    _validate_subscription_registered(cmd, "Microsoft.App")
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     containerapp_def = None
     try:
@@ -1496,7 +1519,7 @@ def enable_ingress(cmd, name, resource_group_name, type, target_port, transport=
 
 
 def disable_ingress(cmd, name, resource_group_name, no_wait=False):
-    _validate_subscription_registered(cmd, "Microsoft.App")
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     containerapp_def = None
     try:
@@ -1521,7 +1544,7 @@ def disable_ingress(cmd, name, resource_group_name, no_wait=False):
 
 
 def set_ingress_traffic(cmd, name, resource_group_name, label_weights=None, revision_weights=None, no_wait=False):
-    _validate_subscription_registered(cmd, "Microsoft.App")
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
     if not label_weights and not revision_weights:
         raise ValidationError("Must specify either --label-weight or --revision-weight.")
 
@@ -1569,7 +1592,7 @@ def set_ingress_traffic(cmd, name, resource_group_name, label_weights=None, revi
 
 
 def show_ingress_traffic(cmd, name, resource_group_name):
-    _validate_subscription_registered(cmd, "Microsoft.App")
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     containerapp_def = None
     try:
@@ -1587,7 +1610,7 @@ def show_ingress_traffic(cmd, name, resource_group_name):
 
 
 def show_registry(cmd, name, resource_group_name, server):
-    _validate_subscription_registered(cmd, "Microsoft.App")
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     containerapp_def = None
     try:
@@ -1612,7 +1635,7 @@ def show_registry(cmd, name, resource_group_name, server):
 
 
 def list_registry(cmd, name, resource_group_name):
-    _validate_subscription_registered(cmd, "Microsoft.App")
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     containerapp_def = None
     try:
@@ -1630,7 +1653,7 @@ def list_registry(cmd, name, resource_group_name):
 
 
 def set_registry(cmd, name, resource_group_name, server, username=None, password=None, disable_warnings=False, no_wait=False):
-    _validate_subscription_registered(cmd, "Microsoft.App")
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     containerapp_def = None
     try:
@@ -1704,7 +1727,7 @@ def set_registry(cmd, name, resource_group_name, server, username=None, password
 
 
 def remove_registry(cmd, name, resource_group_name, server, no_wait=False):
-    _validate_subscription_registered(cmd, "Microsoft.App")
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     containerapp_def = None
     try:
@@ -1752,7 +1775,7 @@ def remove_registry(cmd, name, resource_group_name, server, no_wait=False):
 
 
 def list_secrets(cmd, name, resource_group_name, show_values=False):
-    _validate_subscription_registered(cmd, "Microsoft.App")
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     containerapp_def = None
     try:
@@ -1776,7 +1799,7 @@ def list_secrets(cmd, name, resource_group_name, show_values=False):
 
 
 def show_secret(cmd, name, resource_group_name, secret_name):
-    _validate_subscription_registered(cmd, "Microsoft.App")
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     containerapp_def = None
     try:
@@ -1795,7 +1818,7 @@ def show_secret(cmd, name, resource_group_name, secret_name):
 
 
 def remove_secrets(cmd, name, resource_group_name, secret_names, no_wait=False):
-    _validate_subscription_registered(cmd, "Microsoft.App")
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     containerapp_def = None
     try:
@@ -1832,14 +1855,15 @@ def remove_secrets(cmd, name, resource_group_name, secret_names, no_wait=False):
 
 def set_secrets(cmd, name, resource_group_name, secrets,
                 # yaml=None,
+                disable_max_length=False,
                 no_wait=False):
-    _validate_subscription_registered(cmd, "Microsoft.App")
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     for s in secrets:
         if s:
             parsed = s.split("=")
             if parsed:
-                if len(parsed[0]) > MAXIMUM_SECRET_LENGTH:
+                if len(parsed[0]) > MAXIMUM_SECRET_LENGTH and not disable_max_length:
                     raise ValidationError(f"Secret names cannot be longer than {MAXIMUM_SECRET_LENGTH}. "
                                           f"Please shorten {parsed[0]}")
 
@@ -1880,7 +1904,7 @@ def set_secrets(cmd, name, resource_group_name, secrets,
 
 
 def enable_dapr(cmd, name, resource_group_name, dapr_app_id=None, dapr_app_port=None, dapr_app_protocol=None, no_wait=False):
-    _validate_subscription_registered(cmd, "Microsoft.App")
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     containerapp_def = None
     try:
@@ -1919,7 +1943,7 @@ def enable_dapr(cmd, name, resource_group_name, dapr_app_id=None, dapr_app_port=
 
 
 def disable_dapr(cmd, name, resource_group_name, no_wait=False):
-    _validate_subscription_registered(cmd, "Microsoft.App")
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     containerapp_def = None
     try:
@@ -1949,19 +1973,19 @@ def disable_dapr(cmd, name, resource_group_name, no_wait=False):
 
 
 def list_dapr_components(cmd, resource_group_name, environment_name):
-    _validate_subscription_registered(cmd, "Microsoft.App")
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     return DaprComponentClient.list(cmd, resource_group_name, environment_name)
 
 
 def show_dapr_component(cmd, resource_group_name, dapr_component_name, environment_name):
-    _validate_subscription_registered(cmd, "Microsoft.App")
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     return DaprComponentClient.show(cmd, resource_group_name, environment_name, name=dapr_component_name)
 
 
 def create_or_update_dapr_component(cmd, resource_group_name, environment_name, dapr_component_name, yaml):
-    _validate_subscription_registered(cmd, "Microsoft.App")
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     yaml_containerapp = load_yaml_file(yaml)
     if type(yaml_containerapp) != dict:  # pylint: disable=unidiomatic-typecheck
@@ -1997,7 +2021,7 @@ def create_or_update_dapr_component(cmd, resource_group_name, environment_name, 
 
 
 def remove_dapr_component(cmd, resource_group_name, dapr_component_name, environment_name):
-    _validate_subscription_registered(cmd, "Microsoft.App")
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     try:
         DaprComponentClient.show(cmd, resource_group_name, environment_name, name=dapr_component_name)
@@ -2131,6 +2155,7 @@ def containerapp_up(cmd,
     HELLOWORLD = "mcr.microsoft.com/azuredocs/containerapps-helloworld"
     dockerfile = "Dockerfile"  # for now the dockerfile name must be "Dockerfile" (until GH actions API is updated)
 
+    register_provider_if_needed(cmd, CONTAINER_APPS_RP)
     _validate_up_args(cmd, source, image, repo, registry_server)
     validate_container_app_name(name)
     check_env_name_on_rg(cmd, managed_env, resource_group_name, location)
@@ -2315,8 +2340,172 @@ def containerapp_up_logic(cmd, resource_group_name, name, managed_env, image, en
         handle_raw_exception(e)
 
 
+def list_certificates(cmd, name, resource_group_name, location=None, certificate=None, thumbprint=None):
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
+
+    def location_match(c):
+        return c["location"] == location or not location
+
+    def thumbprint_match(c):
+        return c["properties"]["thumbprint"] == thumbprint or not thumbprint
+
+    def both_match(c):
+        return location_match(c) and thumbprint_match(c)
+
+    if certificate:
+        if is_valid_resource_id(certificate):
+            certificate_name = parse_resource_id(certificate)["resource_name"]
+        else:
+            certificate_name = certificate
+        try:
+            r = ManagedEnvironmentClient.show_certificate(cmd, resource_group_name, name, certificate_name)
+            return [r] if both_match(r) else []
+        except Exception as e:
+            handle_raw_exception(e)
+    else:
+        try:
+            r = ManagedEnvironmentClient.list_certificates(cmd, resource_group_name, name)
+            return list(filter(both_match, r))
+        except Exception as e:
+            handle_raw_exception(e)
+
+
+def upload_certificate(cmd, name, resource_group_name, certificate_file, certificate_name=None, certificate_password=None, location=None):
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
+
+    blob, thumbprint = load_cert_file(certificate_file, certificate_password)
+
+    cert_name = None
+    if certificate_name:
+        if not check_cert_name_availability(cmd, resource_group_name, name, certificate_name):
+            msg = 'A certificate with the name {} already exists in {}. If continue with this name, it will be overwritten by the new certificate file.\nOverwrite?'
+            overwrite = prompt_y_n(msg.format(certificate_name, name))
+            if overwrite:
+                cert_name = certificate_name
+        else:
+            cert_name = certificate_name
+
+    while not cert_name:
+        random_name = generate_randomized_cert_name(thumbprint, name, resource_group_name)
+        if check_cert_name_availability(cmd, resource_group_name, name, random_name):
+            cert_name = random_name
+
+    certificate = ContainerAppCertificateEnvelopeModel
+    certificate["properties"]["password"] = certificate_password
+    certificate["properties"]["value"] = blob
+    certificate["location"] = location
+    if not certificate["location"]:
+        try:
+            managed_env = ManagedEnvironmentClient.show(cmd, resource_group_name, name)
+            certificate["location"] = managed_env["location"]
+        except Exception as e:
+            handle_raw_exception(e)
+
+    try:
+        r = ManagedEnvironmentClient.create_or_update_certificate(cmd, resource_group_name, name, cert_name, certificate)
+        return r
+    except Exception as e:
+        handle_raw_exception(e)
+
+
+def delete_certificate(cmd, resource_group_name, name, location=None, certificate=None, thumbprint=None):
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
+
+    if not certificate and not thumbprint:
+        raise RequiredArgumentMissingError('Please specify at least one of parameters: --certificate and --thumbprint')
+    certs = list_certificates(cmd, name, resource_group_name, location, certificate, thumbprint)
+    for cert in certs:
+        try:
+            ManagedEnvironmentClient.delete_certificate(cmd, resource_group_name, name, cert["name"])
+            logger.warning('Successfully deleted certificate: {}'.format(cert["name"]))
+        except Exception as e:
+            handle_raw_exception(e)
+
+
+def upload_ssl(cmd, resource_group_name, name, environment, certificate_file, hostname, certificate_password=None, certificate_name=None, location=None):
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
+
+    passed, message = validate_hostname(cmd, resource_group_name, name, hostname)
+    if not passed:
+        raise ValidationError(message or 'Please configure the DNS records before adding the hostname.')
+
+    custom_domains = get_custom_domains(cmd, resource_group_name, name, location, environment)
+    new_custom_domains = list(filter(lambda c: c["name"] != hostname, custom_domains))
+
+    if is_valid_resource_id(environment):
+        cert = upload_certificate(cmd, _get_name(environment), parse_resource_id(environment)["resource_group"], certificate_file, certificate_name, certificate_password, location)
+    else:
+        cert = upload_certificate(cmd, _get_name(environment), resource_group_name, certificate_file, certificate_name, certificate_password, location)
+    cert_id = cert["id"]
+
+    new_domain = ContainerAppCustomDomainModel
+    new_domain["name"] = hostname
+    new_domain["certificateId"] = cert_id
+    new_custom_domains.append(new_domain)
+
+    return patch_new_custom_domain(cmd, resource_group_name, name, new_custom_domains)
+
+
+def bind_hostname(cmd, resource_group_name, name, hostname, thumbprint=None, certificate=None, location=None, environment=None):
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
+
+    if not thumbprint and not certificate:
+        raise RequiredArgumentMissingError('Please specify at least one of parameters: --certificate and --thumbprint')
+    if not environment and not certificate:
+        raise RequiredArgumentMissingError('Please specify at least one of parameters: --certificate and --environment')
+    if certificate and not is_valid_resource_id(certificate) and not environment:
+        raise RequiredArgumentMissingError('Please specify the parameter: --environment')
+
+    passed, message = validate_hostname(cmd, resource_group_name, name, hostname)
+    if not passed:
+        raise ValidationError(message or 'Please configure the DNS records before adding the hostname.')
+
+    env_name = None
+    cert_name = None
+    cert_id = None
+    if certificate:
+        if is_valid_resource_id(certificate):
+            cert_id = certificate
+        else:
+            cert_name = certificate
+    if environment:
+        env_name = _get_name(environment)
+    if not cert_id:
+        certs = list_certificates(cmd, env_name, resource_group_name, location, cert_name, thumbprint)
+        cert_id = certs[0]["id"]
+
+    custom_domains = get_custom_domains(cmd, resource_group_name, name, location, environment)
+    new_custom_domains = list(filter(lambda c: c["name"] != hostname, custom_domains))
+    new_domain = ContainerAppCustomDomainModel
+    new_domain["name"] = hostname
+    new_domain["certificateId"] = cert_id
+    new_custom_domains.append(new_domain)
+
+    return patch_new_custom_domain(cmd, resource_group_name, name, new_custom_domains)
+
+
+def list_hostname(cmd, resource_group_name, name, location=None):
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
+
+    custom_domains = get_custom_domains(cmd, resource_group_name, name, location)
+    return custom_domains
+
+
+def delete_hostname(cmd, resource_group_name, name, hostname, location=None):
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
+
+    custom_domains = get_custom_domains(cmd, resource_group_name, name, location)
+    new_custom_domains = list(filter(lambda c: c["name"] != hostname, custom_domains))
+    if len(new_custom_domains) == len(custom_domains):
+        raise ResourceNotFoundError("The hostname '{}' in Container app '{}' was not found.".format(hostname, name))
+
+    r = patch_new_custom_domain(cmd, resource_group_name, name, new_custom_domains)
+    logger.warning('Successfully deleted custom domain: {}'.format(hostname))
+    return r
+
+
 def show_storage(cmd, name, storage_name, resource_group_name):
-    _validate_subscription_registered(cmd, "Microsoft.App")
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     try:
         return StorageClient.show(cmd, resource_group_name, name, storage_name)
@@ -2325,7 +2514,7 @@ def show_storage(cmd, name, storage_name, resource_group_name):
 
 
 def list_storage(cmd, name, resource_group_name):
-    _validate_subscription_registered(cmd, "Microsoft.App")
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     try:
         return StorageClient.list(cmd, resource_group_name, name)
@@ -2334,7 +2523,7 @@ def list_storage(cmd, name, resource_group_name):
 
 
 def create_or_update_storage(cmd, storage_name, resource_group_name, name, azure_file_account_name, azure_file_share_name, azure_file_account_key, access_mode, no_wait=False):  # pylint: disable=redefined-builtin
-    _validate_subscription_registered(cmd, "Microsoft.App")
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     if len(azure_file_share_name) < 3:
         raise ValidationError("File share name must be longer than 2 characters.")
@@ -2368,9 +2557,795 @@ def create_or_update_storage(cmd, storage_name, resource_group_name, name, azure
 
 
 def remove_storage(cmd, storage_name, name, resource_group_name, no_wait=False):
-    _validate_subscription_registered(cmd, "Microsoft.App")
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     try:
         return StorageClient.delete(cmd, resource_group_name, name, storage_name, no_wait)
     except CLIError as e:
         handle_raw_exception(e)
+
+
+# TODO: Refactor provider code to make it cleaner
+def update_aad_settings(cmd, resource_group_name, name,
+                        client_id=None, client_secret_setting_name=None,
+                        issuer=None, allowed_token_audiences=None, client_secret=None,
+                        client_secret_certificate_thumbprint=None,
+                        client_secret_certificate_san=None,
+                        client_secret_certificate_issuer=None,
+                        yes=False, tenant_id=None):
+
+    try:
+        show_ingress(cmd, name, resource_group_name)
+    except Exception as e:
+        raise ValidationError("Authentication requires ingress to be enabled for your containerapp.") from e
+
+    if client_secret is not None and client_secret_setting_name is not None:
+        raise ArgumentUsageError('Usage Error: --client-secret and --client-secret-setting-name cannot both be '
+                                 'configured to non empty strings')
+
+    if client_secret_setting_name is not None and client_secret_certificate_thumbprint is not None:
+        raise ArgumentUsageError('Usage Error: --client-secret-setting-name and --thumbprint cannot both be '
+                                 'configured to non empty strings')
+
+    if client_secret is not None and client_secret_certificate_thumbprint is not None:
+        raise ArgumentUsageError('Usage Error: --client-secret and --thumbprint cannot both be '
+                                 'configured to non empty strings')
+
+    if client_secret is not None and client_secret_certificate_san is not None:
+        raise ArgumentUsageError('Usage Error: --client-secret and --san cannot both be '
+                                 'configured to non empty strings')
+
+    if client_secret_setting_name is not None and client_secret_certificate_san is not None:
+        raise ArgumentUsageError('Usage Error: --client-secret-setting-name and --san cannot both be '
+                                 'configured to non empty strings')
+
+    if client_secret_certificate_thumbprint is not None and client_secret_certificate_san is not None:
+        raise ArgumentUsageError('Usage Error: --thumbprint and --san cannot both be '
+                                 'configured to non empty strings')
+
+    if ((client_secret_certificate_san is not None and client_secret_certificate_issuer is None) or
+            (client_secret_certificate_san is None and client_secret_certificate_issuer is not None)):
+        raise ArgumentUsageError('Usage Error: --san and --certificate-issuer must both be '
+                                 'configured to non empty strings')
+
+    if issuer is not None and (tenant_id is not None):
+        raise ArgumentUsageError('Usage Error: --issuer and --tenant-id cannot be configured '
+                                 'to non empty strings at the same time.')
+
+    is_new_aad_app = False
+    existing_auth = {}
+    try:
+        existing_auth = AuthClient.get(cmd=cmd, resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current")["properties"]
+    except:
+        existing_auth = {}
+        existing_auth["platform"] = {}
+        existing_auth["platform"]["enabled"] = True
+        existing_auth["globalValidation"] = {}
+        existing_auth["login"] = {}
+
+    registration = {}
+    validation = {}
+    if "identityProviders" not in existing_auth:
+        existing_auth["identityProviders"] = {}
+    if "azureActiveDirectory" not in existing_auth["identityProviders"]:
+        existing_auth["identityProviders"]["azureActiveDirectory"] = {}
+        is_new_aad_app = True
+
+    if is_new_aad_app and issuer is None and tenant_id is None:
+        raise ArgumentUsageError('Usage Error: Either --issuer or --tenant-id must be specified when configuring the '
+                                 'Microsoft auth registration.')
+
+    if client_secret is not None and not yes:
+        msg = 'Configuring --client-secret will add a secret to the containerapp. Are you sure you want to continue?'
+        if not prompt_y_n(msg, default="n"):
+            raise ArgumentUsageError('Usage Error: --client-secret cannot be used without agreeing to add secret '
+                                     'to the containerapp.')
+
+    openid_issuer = issuer
+    if openid_issuer is None:
+        # cmd.cli_ctx.cloud resolves to whichever cloud the customer is currently logged into
+        authority = cmd.cli_ctx.cloud.endpoints.active_directory
+
+        if tenant_id is not None:
+            openid_issuer = authority + "/" + tenant_id + "/v2.0"
+
+    registration = {}
+    validation = {}
+    if "identityProviders" not in existing_auth:
+        existing_auth["identityProviders"] = {}
+    if "azureActiveDirectory" not in existing_auth["identityProviders"]:
+        existing_auth["identityProviders"]["azureActiveDirectory"] = {}
+    if (client_id is not None or client_secret is not None or
+            client_secret_setting_name is not None or openid_issuer is not None or
+            client_secret_certificate_thumbprint is not None or
+            client_secret_certificate_san is not None or
+            client_secret_certificate_issuer is not None):
+        if "registration" not in existing_auth["identityProviders"]["azureActiveDirectory"]:
+            existing_auth["identityProviders"]["azureActiveDirectory"]["registration"] = {}
+        registration = existing_auth["identityProviders"]["azureActiveDirectory"]["registration"]
+    if allowed_token_audiences is not None:
+        if "validation" not in existing_auth["identityProviders"]["azureActiveDirectory"]:
+            existing_auth["identityProviders"]["azureActiveDirectory"]["validation"] = {}
+        validation = existing_auth["identityProviders"]["azureActiveDirectory"]["validation"]
+
+    if client_id is not None:
+        registration["clientId"] = client_id
+    if client_secret_setting_name is not None:
+        registration["clientSecretSettingName"] = client_secret_setting_name
+    if client_secret is not None:
+        registration["clientSecretSettingName"] = MICROSOFT_SECRET_SETTING_NAME
+        set_secrets(cmd, name, resource_group_name, secrets=[f"{MICROSOFT_SECRET_SETTING_NAME}={client_secret}"], no_wait=True, disable_max_length=True)
+    if client_secret_setting_name is not None or client_secret is not None:
+        fields = ["clientSecretCertificateThumbprint", "clientSecretCertificateSubjectAlternativeName", "clientSecretCertificateIssuer"]
+        for field in [f for f in fields if registration.get(f)]:
+            registration[field] = None
+    if client_secret_certificate_thumbprint is not None:
+        registration["clientSecretCertificateThumbprint"] = client_secret_certificate_thumbprint
+        fields = ["clientSecretSettingName", "clientSecretCertificateSubjectAlternativeName", "clientSecretCertificateIssuer"]
+        for field in [f for f in fields if registration.get(f)]:
+            registration[field] = None
+    if client_secret_certificate_san is not None:
+        registration["clientSecretCertificateSubjectAlternativeName"] = client_secret_certificate_san
+    if client_secret_certificate_issuer is not None:
+        registration["clientSecretCertificateIssuer"] = client_secret_certificate_issuer
+    if client_secret_certificate_san is not None and client_secret_certificate_issuer is not None:
+        if "clientSecretSettingName" in registration:
+            registration["clientSecretSettingName"] = None
+        if "clientSecretCertificateThumbprint" in registration:
+            registration["clientSecretCertificateThumbprint"] = None
+    if openid_issuer is not None:
+        registration["openIdIssuer"] = openid_issuer
+    if allowed_token_audiences is not None:
+        validation["allowedAudiences"] = allowed_token_audiences.split(",")
+        existing_auth["identityProviders"]["azureActiveDirectory"]["validation"] = validation
+    if (client_id is not None or client_secret is not None or
+            client_secret_setting_name is not None or issuer is not None or
+            client_secret_certificate_thumbprint is not None or
+            client_secret_certificate_san is not None or
+            client_secret_certificate_issuer is not None):
+        existing_auth["identityProviders"]["azureActiveDirectory"]["registration"] = registration
+
+    try:
+        updated_auth_settings = AuthClient.create_or_update(cmd=cmd, resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current", auth_config_envelope=existing_auth)["properties"]
+        return updated_auth_settings["identityProviders"]["azureActiveDirectory"]
+    except Exception as e:
+        handle_raw_exception(e)
+
+
+def get_aad_settings(cmd, resource_group_name, name):
+    auth_settings = {}
+    try:
+        auth_settings = AuthClient.get(cmd=cmd, resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current")["properties"]
+    except:
+        pass
+    if "identityProviders" not in auth_settings:
+        return {}
+    if "azureActiveDirectory" not in auth_settings["identityProviders"]:
+        return {}
+    return auth_settings["identityProviders"]["azureActiveDirectory"]
+
+
+def get_facebook_settings(cmd, resource_group_name, name):
+    auth_settings = {}
+    try:
+        auth_settings = AuthClient.get(cmd=cmd, resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current")["properties"]
+    except:
+        pass
+    if "identityProviders" not in auth_settings:
+        return {}
+    if "facebook" not in auth_settings["identityProviders"]:
+        return {}
+    return auth_settings["identityProviders"]["facebook"]
+
+
+def update_facebook_settings(cmd, resource_group_name, name,
+                             app_id=None, app_secret_setting_name=None,
+                             graph_api_version=None, scopes=None, app_secret=None, yes=False):
+    try:
+        show_ingress(cmd, name, resource_group_name)
+    except Exception as e:
+        raise ValidationError("Authentication requires ingress to be enabled for your containerapp.") from e
+
+    if app_secret is not None and app_secret_setting_name is not None:
+        raise ArgumentUsageError('Usage Error: --app-secret and --app-secret-setting-name cannot both be configured '
+                                 'to non empty strings')
+
+    if app_secret is not None and not yes:
+        msg = 'Configuring --client-secret will add a secret to the containerapp. Are you sure you want to continue?'
+        if not prompt_y_n(msg, default="n"):
+            raise ArgumentUsageError('Usage Error: --client-secret cannot be used without agreeing to add secret '
+                                     'to the containerapp.')
+
+    existing_auth = {}
+    try:
+        existing_auth = AuthClient.get(cmd=cmd, resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current")["properties"]
+    except:
+        existing_auth = {}
+        existing_auth["platform"] = {}
+        existing_auth["platform"]["enabled"] = True
+        existing_auth["globalValidation"] = {}
+        existing_auth["login"] = {}
+
+    registration = {}
+    if "identityProviders" not in existing_auth:
+        existing_auth["identityProviders"] = {}
+    if "facebook" not in existing_auth["identityProviders"]:
+        existing_auth["identityProviders"]["facebook"] = {}
+    if app_id is not None or app_secret is not None or app_secret_setting_name is not None:
+        if "registration" not in existing_auth["identityProviders"]["facebook"]:
+            existing_auth["identityProviders"]["facebook"]["registration"] = {}
+        registration = existing_auth["identityProviders"]["facebook"]["registration"]
+    if scopes is not None:
+        if "login" not in existing_auth["identityProviders"]["facebook"]:
+            existing_auth["identityProviders"]["facebook"]["login"] = {}
+
+    if app_id is not None:
+        registration["appId"] = app_id
+    if app_secret_setting_name is not None:
+        registration["appSecretSettingName"] = app_secret_setting_name
+    if app_secret is not None:
+        registration["appSecretSettingName"] = FACEBOOK_SECRET_SETTING_NAME
+        set_secrets(cmd, name, resource_group_name, secrets=[f"{FACEBOOK_SECRET_SETTING_NAME}={app_secret}"], no_wait=True, disable_max_length=True)
+    if graph_api_version is not None:
+        existing_auth["identityProviders"]["facebook"]["graphApiVersion"] = graph_api_version
+    if scopes is not None:
+        existing_auth["identityProviders"]["facebook"]["login"]["scopes"] = scopes.split(",")
+    if app_id is not None or app_secret is not None or app_secret_setting_name is not None:
+        existing_auth["identityProviders"]["facebook"]["registration"] = registration
+
+    try:
+        updated_auth_settings = AuthClient.create_or_update(cmd=cmd, resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current", auth_config_envelope=existing_auth)["properties"]
+        return updated_auth_settings["identityProviders"]["facebook"]
+    except Exception as e:
+        handle_raw_exception(e)
+
+
+def get_github_settings(cmd, resource_group_name, name):
+    auth_settings = {}
+    try:
+        auth_settings = AuthClient.get(cmd=cmd, resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current")["properties"]
+    except:
+        pass
+    if "identityProviders" not in auth_settings:
+        return {}
+    if "gitHub" not in auth_settings["identityProviders"]:
+        return {}
+    return auth_settings["identityProviders"]["gitHub"]
+
+
+def update_github_settings(cmd, resource_group_name, name,
+                           client_id=None, client_secret_setting_name=None,
+                           scopes=None, client_secret=None, yes=False):
+    try:
+        show_ingress(cmd, name, resource_group_name)
+    except Exception as e:
+        raise ValidationError("Authentication requires ingress to be enabled for your containerapp.") from e
+
+    if client_secret is not None and client_secret_setting_name is not None:
+        raise ArgumentUsageError('Usage Error: --client-secret and --client-secret-setting-name cannot '
+                                 'both be configured to non empty strings')
+
+    if client_secret is not None and not yes:
+        msg = 'Configuring --client-secret will add a secret to the containerapp. Are you sure you want to continue?'
+        if not prompt_y_n(msg, default="n"):
+            raise ArgumentUsageError('Usage Error: --client-secret cannot be used without agreeing to add secret '
+                                     'to the containerapp.')
+
+    existing_auth = {}
+    try:
+        existing_auth = AuthClient.get(cmd=cmd, resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current")["properties"]
+    except:
+        existing_auth = {}
+        existing_auth["platform"] = {}
+        existing_auth["platform"]["enabled"] = True
+        existing_auth["globalValidation"] = {}
+        existing_auth["login"] = {}
+
+    registration = {}
+    if "identityProviders" not in existing_auth:
+        existing_auth["identityProviders"] = {}
+    if "gitHub" not in existing_auth["identityProviders"]:
+        existing_auth["identityProviders"]["gitHub"] = {}
+    if client_id is not None or client_secret is not None or client_secret_setting_name is not None:
+        if "registration" not in existing_auth["identityProviders"]["gitHub"]:
+            existing_auth["identityProviders"]["gitHub"]["registration"] = {}
+        registration = existing_auth["identityProviders"]["gitHub"]["registration"]
+    if scopes is not None:
+        if "login" not in existing_auth["identityProviders"]["gitHub"]:
+            existing_auth["identityProviders"]["gitHub"]["login"] = {}
+
+    if client_id is not None:
+        registration["clientId"] = client_id
+    if client_secret_setting_name is not None:
+        registration["clientSecretSettingName"] = client_secret_setting_name
+    if client_secret is not None:
+        registration["clientSecretSettingName"] = GITHUB_SECRET_SETTING_NAME
+        set_secrets(cmd, name, resource_group_name, secrets=[f"{GITHUB_SECRET_SETTING_NAME}={client_secret}"], no_wait=True, disable_max_length=True)
+    if scopes is not None:
+        existing_auth["identityProviders"]["gitHub"]["login"]["scopes"] = scopes.split(",")
+    if client_id is not None or client_secret is not None or client_secret_setting_name is not None:
+        existing_auth["identityProviders"]["gitHub"]["registration"] = registration
+
+    try:
+        updated_auth_settings = AuthClient.create_or_update(cmd=cmd, resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current", auth_config_envelope=existing_auth)["properties"]
+        return updated_auth_settings["identityProviders"]["gitHub"]
+    except Exception as e:
+        handle_raw_exception(e)
+
+
+def get_google_settings(cmd, resource_group_name, name):
+    auth_settings = {}
+    try:
+        auth_settings = AuthClient.get(cmd=cmd, resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current")["properties"]
+    except:
+        pass
+    if "identityProviders" not in auth_settings:
+        return {}
+    if "google" not in auth_settings["identityProviders"]:
+        return {}
+    return auth_settings["identityProviders"]["google"]
+
+
+def update_google_settings(cmd, resource_group_name, name,
+                           client_id=None, client_secret_setting_name=None,
+                           scopes=None, allowed_token_audiences=None, client_secret=None, yes=False):
+    try:
+        show_ingress(cmd, name, resource_group_name)
+    except Exception as e:
+        raise ValidationError("Authentication requires ingress to be enabled for your containerapp.") from e
+
+    if client_secret is not None and client_secret_setting_name is not None:
+        raise ArgumentUsageError('Usage Error: --client-secret and --client-secret-setting-name cannot '
+                                 'both be configured to non empty strings')
+
+    if client_secret is not None and not yes:
+        msg = 'Configuring --client-secret will add a secret to the containerapp. Are you sure you want to continue?'
+        if not prompt_y_n(msg, default="n"):
+            raise ArgumentUsageError('Usage Error: --client-secret cannot be used without agreeing to add secret '
+                                     'to the containerapp.')
+
+    existing_auth = {}
+    try:
+        existing_auth = AuthClient.get(cmd=cmd, resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current")["properties"]
+    except:
+        existing_auth = {}
+        existing_auth["platform"] = {}
+        existing_auth["platform"]["enabled"] = True
+        existing_auth["globalValidation"] = {}
+        existing_auth["login"] = {}
+
+    registration = {}
+    validation = {}
+    if "identityProviders" not in existing_auth:
+        existing_auth["identityProviders"] = {}
+    if "google" not in existing_auth["identityProviders"]:
+        existing_auth["identityProviders"]["google"] = {}
+    if client_id is not None or client_secret is not None or client_secret_setting_name is not None:
+        if "registration" not in existing_auth["identityProviders"]["google"]:
+            existing_auth["identityProviders"]["google"]["registration"] = {}
+        registration = existing_auth["identityProviders"]["google"]["registration"]
+    if scopes is not None:
+        if "login" not in existing_auth["identityProviders"]["google"]:
+            existing_auth["identityProviders"]["google"]["login"] = {}
+    if allowed_token_audiences is not None:
+        if "validation" not in existing_auth["identityProviders"]["google"]:
+            existing_auth["identityProviders"]["google"]["validation"] = {}
+
+    if client_id is not None:
+        registration["clientId"] = client_id
+    if client_secret_setting_name is not None:
+        registration["clientSecretSettingName"] = client_secret_setting_name
+    if client_secret is not None:
+        registration["clientSecretSettingName"] = GOOGLE_SECRET_SETTING_NAME
+        set_secrets(cmd, name, resource_group_name, secrets=[f"{GOOGLE_SECRET_SETTING_NAME}={client_secret}"], no_wait=True, disable_max_length=True)
+    if scopes is not None:
+        existing_auth["identityProviders"]["google"]["login"]["scopes"] = scopes.split(",")
+    if allowed_token_audiences is not None:
+        validation["allowedAudiences"] = allowed_token_audiences.split(",")
+        existing_auth["identityProviders"]["google"]["validation"] = validation
+    if client_id is not None or client_secret is not None or client_secret_setting_name is not None:
+        existing_auth["identityProviders"]["google"]["registration"] = registration
+
+    try:
+        updated_auth_settings = AuthClient.create_or_update(cmd=cmd, resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current", auth_config_envelope=existing_auth)["properties"]
+        return updated_auth_settings["identityProviders"]["google"]
+    except Exception as e:
+        handle_raw_exception(e)
+
+
+def get_twitter_settings(cmd, resource_group_name, name):
+    auth_settings = {}
+    try:
+        auth_settings = AuthClient.get(cmd=cmd, resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current")["properties"]
+    except:
+        pass
+    if "identityProviders" not in auth_settings:
+        return {}
+    if "twitter" not in auth_settings["identityProviders"]:
+        return {}
+    return auth_settings["identityProviders"]["twitter"]
+
+
+def update_twitter_settings(cmd, resource_group_name, name,
+                            consumer_key=None, consumer_secret_setting_name=None,
+                            consumer_secret=None, yes=False):
+    try:
+        show_ingress(cmd, name, resource_group_name)
+    except Exception as e:
+        raise ValidationError("Authentication requires ingress to be enabled for your containerapp.") from e
+
+    if consumer_secret is not None and consumer_secret_setting_name is not None:
+        raise ArgumentUsageError('Usage Error: --consumer-secret and --consumer-secret-setting-name cannot '
+                                 'both be configured to non empty strings')
+
+    if consumer_secret is not None and not yes:
+        msg = 'Configuring --client-secret will add a secret to the containerapp. Are you sure you want to continue?'
+        if not prompt_y_n(msg, default="n"):
+            raise ArgumentUsageError('Usage Error: --client-secret cannot be used without agreeing to add secret '
+                                     'to the containerapp.')
+
+    existing_auth = {}
+    try:
+        existing_auth = AuthClient.get(cmd=cmd, resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current")["properties"]
+    except:
+        existing_auth = {}
+        existing_auth["platform"] = {}
+        existing_auth["platform"]["enabled"] = True
+        existing_auth["globalValidation"] = {}
+        existing_auth["login"] = {}
+
+    registration = {}
+    if "identityProviders" not in existing_auth:
+        existing_auth["identityProviders"] = {}
+    if "twitter" not in existing_auth["identityProviders"]:
+        existing_auth["identityProviders"]["twitter"] = {}
+    if consumer_key is not None or consumer_secret is not None or consumer_secret_setting_name is not None:
+        if "registration" not in existing_auth["identityProviders"]["twitter"]:
+            existing_auth["identityProviders"]["twitter"]["registration"] = {}
+        registration = existing_auth["identityProviders"]["twitter"]["registration"]
+
+    if consumer_key is not None:
+        registration["consumerKey"] = consumer_key
+    if consumer_secret_setting_name is not None:
+        registration["consumerSecretSettingName"] = consumer_secret_setting_name
+    if consumer_secret is not None:
+        registration["consumerSecretSettingName"] = TWITTER_SECRET_SETTING_NAME
+        set_secrets(cmd, name, resource_group_name, secrets=[f"{TWITTER_SECRET_SETTING_NAME}={consumer_secret}"], no_wait=True, disable_max_length=True)
+    if consumer_key is not None or consumer_secret is not None or consumer_secret_setting_name is not None:
+        existing_auth["identityProviders"]["twitter"]["registration"] = registration
+    try:
+        updated_auth_settings = AuthClient.create_or_update(cmd=cmd, resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current", auth_config_envelope=existing_auth)["properties"]
+        return updated_auth_settings["identityProviders"]["twitter"]
+    except Exception as e:
+        handle_raw_exception(e)
+
+
+def get_apple_settings(cmd, resource_group_name, name):
+    auth_settings = {}
+    try:
+        auth_settings = AuthClient.get(cmd=cmd, resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current")["properties"]
+    except:
+        pass
+    if "identityProviders" not in auth_settings:
+        return {}
+    if "apple" not in auth_settings["identityProviders"]:
+        return {}
+    return auth_settings["identityProviders"]["apple"]
+
+
+def update_apple_settings(cmd, resource_group_name, name,
+                          client_id=None, client_secret_setting_name=None,
+                          scopes=None, client_secret=None, yes=False):
+    try:
+        show_ingress(cmd, name, resource_group_name)
+    except Exception as e:
+        raise ValidationError("Authentication requires ingress to be enabled for your containerapp.") from e
+
+    if client_secret is not None and client_secret_setting_name is not None:
+        raise ArgumentUsageError('Usage Error: --client-secret and --client-secret-setting-name '
+                                 'cannot both be configured to non empty strings')
+
+    if client_secret is not None and not yes:
+        msg = 'Configuring --client-secret will add a secret to the containerapp. Are you sure you want to continue?'
+        if not prompt_y_n(msg, default="n"):
+            raise ArgumentUsageError('Usage Error: --client-secret cannot be used without agreeing to add secret '
+                                     'to the containerapp.')
+
+    existing_auth = {}
+    try:
+        existing_auth = AuthClient.get(cmd=cmd, resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current")["properties"]
+    except:
+        existing_auth = {}
+        existing_auth["platform"] = {}
+        existing_auth["platform"]["enabled"] = True
+        existing_auth["globalValidation"] = {}
+        existing_auth["login"] = {}
+
+    registration = {}
+    if "identityProviders" not in existing_auth:
+        existing_auth["identityProviders"] = {}
+    if "apple" not in existing_auth["identityProviders"]:
+        existing_auth["identityProviders"]["apple"] = {}
+    if client_id is not None or client_secret is not None or client_secret_setting_name is not None:
+        if "registration" not in existing_auth["identityProviders"]["apple"]:
+            existing_auth["identityProviders"]["apple"]["registration"] = {}
+        registration = existing_auth["identityProviders"]["apple"]["registration"]
+    if scopes is not None:
+        if "login" not in existing_auth["identityProviders"]["apple"]:
+            existing_auth["identityProviders"]["apple"]["login"] = {}
+
+    if client_id is not None:
+        registration["clientId"] = client_id
+    if client_secret_setting_name is not None:
+        registration["clientSecretSettingName"] = client_secret_setting_name
+    if client_secret is not None:
+        registration["clientSecretSettingName"] = APPLE_SECRET_SETTING_NAME
+        set_secrets(cmd, name, resource_group_name, secrets=[f"{APPLE_SECRET_SETTING_NAME}={client_secret}"], no_wait=True, disable_max_length=True)
+    if scopes is not None:
+        existing_auth["identityProviders"]["apple"]["login"]["scopes"] = scopes.split(",")
+    if client_id is not None or client_secret is not None or client_secret_setting_name is not None:
+        existing_auth["identityProviders"]["apple"]["registration"] = registration
+
+    try:
+        updated_auth_settings = AuthClient.create_or_update(cmd=cmd, resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current", auth_config_envelope=existing_auth)["properties"]
+        return updated_auth_settings["identityProviders"]["apple"]
+    except Exception as e:
+        handle_raw_exception(e)
+
+
+def get_openid_connect_provider_settings(cmd, resource_group_name, name, provider_name):
+    auth_settings = {}
+    try:
+        auth_settings = AuthClient.get(cmd=cmd, resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current")["properties"]
+    except:
+        pass
+    if "identityProviders" not in auth_settings:
+        raise ArgumentUsageError('Usage Error: The following custom OpenID Connect provider '
+                                 'has not been configured: ' + provider_name)
+    if "customOpenIdConnectProviders" not in auth_settings["identityProviders"]:
+        raise ArgumentUsageError('Usage Error: The following custom OpenID Connect provider '
+                                 'has not been configured: ' + provider_name)
+    if provider_name not in auth_settings["identityProviders"]["customOpenIdConnectProviders"]:
+        raise ArgumentUsageError('Usage Error: The following custom OpenID Connect provider '
+                                 'has not been configured: ' + provider_name)
+    return auth_settings["identityProviders"]["customOpenIdConnectProviders"][provider_name]
+
+
+def add_openid_connect_provider_settings(cmd, resource_group_name, name, provider_name,
+                                         client_id=None, client_secret_setting_name=None,
+                                         openid_configuration=None, scopes=None,
+                                         client_secret=None, yes=False):
+    from ._utils import get_oidc_client_setting_app_setting_name
+    try:
+        show_ingress(cmd, name, resource_group_name)
+    except Exception as e:
+        raise ValidationError("Authentication requires ingress to be enabled for your containerapp.") from e
+
+    if client_secret is not None and not yes:
+        msg = 'Configuring --client-secret will add a secret to the containerapp. Are you sure you want to continue?'
+        if not prompt_y_n(msg, default="n"):
+            raise ArgumentUsageError('Usage Error: --client-secret cannot be used without agreeing to add secret '
+                                     'to the containerapp.')
+
+    auth_settings = {}
+    try:
+        auth_settings = AuthClient.get(cmd=cmd, resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current")["properties"]
+    except:
+        auth_settings = {}
+        auth_settings["platform"] = {}
+        auth_settings["platform"]["enabled"] = True
+        auth_settings["globalValidation"] = {}
+        auth_settings["login"] = {}
+
+    if "identityProviders" not in auth_settings:
+        auth_settings["identityProviders"] = {}
+    if "customOpenIdConnectProviders" not in auth_settings["identityProviders"]:
+        auth_settings["identityProviders"]["customOpenIdConnectProviders"] = {}
+    if provider_name in auth_settings["identityProviders"]["customOpenIdConnectProviders"]:
+        raise ArgumentUsageError('Usage Error: The following custom OpenID Connect provider has already been '
+                                 'configured: ' + provider_name + '. Please use `az containerapp auth oidc update` to '
+                                 'update the provider.')
+
+    final_client_secret_setting_name = client_secret_setting_name
+    if client_secret is not None:
+        final_client_secret_setting_name = get_oidc_client_setting_app_setting_name(provider_name)
+        set_secrets(cmd, name, resource_group_name, secrets=[f"{final_client_secret_setting_name}={client_secret}"], no_wait=True, disable_max_length=True)
+
+    auth_settings["identityProviders"]["customOpenIdConnectProviders"][provider_name] = {
+        "registration": {
+            "clientId": client_id,
+            "clientCredential": {
+                "clientSecretSettingName": final_client_secret_setting_name
+            },
+            "openIdConnectConfiguration": {
+                "wellKnownOpenIdConfiguration": openid_configuration
+            }
+        }
+    }
+    login = {}
+    if scopes is not None:
+        login["scopes"] = scopes.split(',')
+    else:
+        login["scopes"] = ["openid"]
+
+    auth_settings["identityProviders"]["customOpenIdConnectProviders"][provider_name]["login"] = login
+
+    try:
+        updated_auth_settings = AuthClient.create_or_update(cmd=cmd, resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current", auth_config_envelope=auth_settings)["properties"]
+        return updated_auth_settings["identityProviders"]["customOpenIdConnectProviders"][provider_name]
+    except Exception as e:
+        handle_raw_exception(e)
+
+
+def update_openid_connect_provider_settings(cmd, resource_group_name, name, provider_name,
+                                            client_id=None, client_secret_setting_name=None,
+                                            openid_configuration=None, scopes=None,
+                                            client_secret=None, yes=False):
+    from ._utils import get_oidc_client_setting_app_setting_name
+    try:
+        show_ingress(cmd, name, resource_group_name)
+    except Exception as e:
+        raise ValidationError("Authentication requires ingress to be enabled for your containerapp.") from e
+
+    if client_secret is not None and not yes:
+        msg = 'Configuring --client-secret will add a secret to the containerapp. Are you sure you want to continue?'
+        if not prompt_y_n(msg, default="n"):
+            raise ArgumentUsageError('Usage Error: --client-secret cannot be used without agreeing to add secret '
+                                     'to the containerapp.')
+
+    auth_settings = {}
+    try:
+        auth_settings = AuthClient.get(cmd=cmd, resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current")["properties"]
+    except:
+        auth_settings = {}
+        auth_settings["platform"] = {}
+        auth_settings["platform"]["enabled"] = True
+        auth_settings["globalValidation"] = {}
+        auth_settings["login"] = {}
+
+    if "identityProviders" not in auth_settings:
+        raise ArgumentUsageError('Usage Error: The following custom OpenID Connect provider '
+                                 'has not been configured: ' + provider_name)
+    if "customOpenIdConnectProviders" not in auth_settings["identityProviders"]:
+        raise ArgumentUsageError('Usage Error: The following custom OpenID Connect provider '
+                                 'has not been configured: ' + provider_name)
+    if provider_name not in auth_settings["identityProviders"]["customOpenIdConnectProviders"]:
+        raise ArgumentUsageError('Usage Error: The following custom OpenID Connect provider '
+                                 'has not been configured: ' + provider_name)
+
+    custom_open_id_connect_providers = auth_settings["identityProviders"]["customOpenIdConnectProviders"]
+    registration = {}
+    if client_id is not None or client_secret_setting_name is not None or openid_configuration is not None:
+        if "registration" not in custom_open_id_connect_providers[provider_name]:
+            custom_open_id_connect_providers[provider_name]["registration"] = {}
+        registration = custom_open_id_connect_providers[provider_name]["registration"]
+
+    if client_secret_setting_name is not None or client_secret is not None:
+        if "clientCredential" not in custom_open_id_connect_providers[provider_name]["registration"]:
+            custom_open_id_connect_providers[provider_name]["registration"]["clientCredential"] = {}
+
+    if openid_configuration is not None:
+        if "openIdConnectConfiguration" not in custom_open_id_connect_providers[provider_name]["registration"]:
+            custom_open_id_connect_providers[provider_name]["registration"]["openIdConnectConfiguration"] = {}
+
+    if scopes is not None:
+        if "login" not in auth_settings["identityProviders"]["customOpenIdConnectProviders"][provider_name]:
+            custom_open_id_connect_providers[provider_name]["login"] = {}
+
+    if client_id is not None:
+        registration["clientId"] = client_id
+    if client_secret_setting_name is not None:
+        registration["clientCredential"]["clientSecretSettingName"] = client_secret_setting_name
+    if client_secret is not None:
+        final_client_secret_setting_name = get_oidc_client_setting_app_setting_name(provider_name)
+        registration["clientSecretSettingName"] = final_client_secret_setting_name
+        set_secrets(cmd, name, resource_group_name, secrets=[f"{final_client_secret_setting_name}={client_secret}"], no_wait=True, disable_max_length=True)
+    if openid_configuration is not None:
+        registration["openIdConnectConfiguration"]["wellKnownOpenIdConfiguration"] = openid_configuration
+    if scopes is not None:
+        custom_open_id_connect_providers[provider_name]["login"]["scopes"] = scopes.split(",")
+    if client_id is not None or client_secret_setting_name is not None or openid_configuration is not None:
+        custom_open_id_connect_providers[provider_name]["registration"] = registration
+    auth_settings["identityProviders"]["customOpenIdConnectProviders"] = custom_open_id_connect_providers
+
+    try:
+        updated_auth_settings = AuthClient.create_or_update(cmd=cmd, resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current", auth_config_envelope=auth_settings)["properties"]
+        return updated_auth_settings["identityProviders"]["customOpenIdConnectProviders"][provider_name]
+    except Exception as e:
+        handle_raw_exception(e)
+
+
+def remove_openid_connect_provider_settings(cmd, resource_group_name, name, provider_name):
+    auth_settings = {}
+    try:
+        auth_settings = AuthClient.get(cmd=cmd, resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current")["properties"]
+    except:
+        pass
+    if "identityProviders" not in auth_settings:
+        raise ArgumentUsageError('Usage Error: The following custom OpenID Connect provider '
+                                 'has not been configured: ' + provider_name)
+    if "customOpenIdConnectProviders" not in auth_settings["identityProviders"]:
+        raise ArgumentUsageError('Usage Error: The following custom OpenID Connect provider '
+                                 'has not been configured: ' + provider_name)
+    if provider_name not in auth_settings["identityProviders"]["customOpenIdConnectProviders"]:
+        raise ArgumentUsageError('Usage Error: The following custom OpenID Connect provider '
+                                 'has not been configured: ' + provider_name)
+    auth_settings["identityProviders"]["customOpenIdConnectProviders"].pop(provider_name, None)
+    try:
+        AuthClient.create_or_update(cmd=cmd, resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current", auth_config_envelope=auth_settings)
+        return {}
+    except Exception as e:
+        handle_raw_exception(e)
+
+
+def update_auth_config(cmd, resource_group_name, name, set_string=None, enabled=None,
+                       runtime_version=None, config_file_path=None, unauthenticated_client_action=None,
+                       redirect_provider=None, enable_token_store=None, require_https=None,
+                       proxy_convention=None, proxy_custom_host_header=None,
+                       proxy_custom_proto_header=None, excluded_paths=None):
+    from ._utils import set_field_in_auth_settings, update_http_settings_in_auth_settings
+    existing_auth = {}
+    try:
+        existing_auth = AuthClient.get(cmd=cmd, resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current")["properties"]
+    except:
+        existing_auth["platform"] = {}
+        existing_auth["platform"]["enabled"] = True
+        existing_auth["globalValidation"] = {}
+        existing_auth["login"] = {}
+
+    existing_auth = set_field_in_auth_settings(existing_auth, set_string)
+
+    if enabled is not None:
+        if "platform" not in existing_auth:
+            existing_auth["platform"] = {}
+        existing_auth["platform"]["enabled"] = enabled
+
+    if runtime_version is not None:
+        if "platform" not in existing_auth:
+            existing_auth["platform"] = {}
+        existing_auth["platform"]["runtimeVersion"] = runtime_version
+
+    if config_file_path is not None:
+        if "platform" not in existing_auth:
+            existing_auth["platform"] = {}
+        existing_auth["platform"]["configFilePath"] = config_file_path
+
+    if unauthenticated_client_action is not None:
+        if "globalValidation" not in existing_auth:
+            existing_auth["globalValidation"] = {}
+        existing_auth["globalValidation"]["unauthenticatedClientAction"] = unauthenticated_client_action
+
+    if redirect_provider is not None:
+        if "globalValidation" not in existing_auth:
+            existing_auth["globalValidation"] = {}
+        existing_auth["globalValidation"]["redirectToProvider"] = redirect_provider
+
+    if enable_token_store is not None:
+        if "login" not in existing_auth:
+            existing_auth["login"] = {}
+        if "tokenStore" not in existing_auth["login"]:
+            existing_auth["login"]["tokenStore"] = {}
+        existing_auth["login"]["tokenStore"]["enabled"] = enable_token_store
+
+    if excluded_paths is not None:
+        if "globalValidation" not in existing_auth:
+            existing_auth["globalValidation"] = {}
+        excluded_paths_list_string = excluded_paths[1:-1]
+        existing_auth["globalValidation"]["excludedPaths"] = excluded_paths_list_string.split(",")
+
+    existing_auth = update_http_settings_in_auth_settings(existing_auth, require_https,
+                                                          proxy_convention, proxy_custom_host_header,
+                                                          proxy_custom_proto_header)
+    try:
+        return AuthClient.create_or_update(cmd=cmd, resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current", auth_config_envelope=existing_auth)
+    except Exception as e:
+        handle_raw_exception(e)
+
+
+def show_auth_config(cmd, resource_group_name, name):
+    auth_settings = {}
+    try:
+        auth_settings = AuthClient.get(cmd=cmd, resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current")["properties"]
+    except:
+        pass
+    return auth_settings
