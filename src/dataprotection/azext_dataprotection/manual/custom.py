@@ -139,6 +139,25 @@ def dataprotection_backup_instance_list_from_resourcegraph(client, datasource_ty
     return response.data
 
 
+def dataprotection_backup_instance_update_msi_permissions(cmd, client, resource_group_name, datasource_type, vault_name, operation, permissions_scope, backup_instance=None):
+    backup_vault = client.get(resource_group_name=resource_group_name,
+                vault_name=vault_name)
+    principal_id = backup_vault.identity.principal_id
+
+    from azure.cli.command_modules.role.custom import list_role_assignments, create_role_assignment
+
+    if datasource_type == 'AzureDisk':
+        role_assignments = [obj['roleDefinitionName'] for obj in list_role_assignments(cmd, assignee=principal_id, scope=backup_instance['properties']['data_source_info']['resource_id'], include_inherited=True)]
+        if 'Disk Backup Reader' not in role_assignments:
+            create_role_assignment(cmd, role='Disk Backup Reader', assignee=principal_id, scope=backup_instance['properties']['data_source_info']['resource_id'])
+
+        role_assignments = [obj['roleDefinitionName'] for obj in list_role_assignments(cmd, assignee=principal_id, scope=backup_instance['properties']['policy_info']['policy_parameters']['data_store_parameters_list'][0]['resource_group_id'], include_inherited=True)]
+        if 'Disk Snapshot Contributor' not in role_assignments:
+            create_role_assignment(cmd, role='Disk Snapshot Contributor', assignee=principal_id, 
+                                    scope=backup_instance['properties']['policy_info']['policy_parameters']['data_store_parameters_list'][0]['resource_group_id'])
+        
+        return "Success in creating the permissions"
+
 def dataprotection_job_list_from_resourcegraph(client, datasource_type, resource_groups=None, vaults=None,
                                                subscriptions=None, start_time=None, end_time=None,
                                                status=None, operation=None, datasource_id=None):

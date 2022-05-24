@@ -33,7 +33,8 @@ from azext_dataprotection.manual.enums import (
     get_job_operation_values,
     get_datasource_types,
     get_rehydration_priority_values,
-    get_secret_store_type_values
+    get_secret_store_type_values,
+    get_backup_operation_values
 )
 
 
@@ -79,6 +80,13 @@ def load_arguments(self, _):
         c.argument('subscriptions', type=str, nargs='+', help="List of subscription Ids.")
         c.argument('protection_status', arg_type=get_enum_type(get_protection_status_values()), nargs='+', help="specify protection status.")
         c.argument('datasource_id', type=str, nargs='+', help="specify datasource id filter to apply.")
+    
+    with self.argument_context('dataprotection backup-instance update-msi-permissions') as c:
+        c.argument('operation', arg_type=get_enum_type(get_backup_operation_values()), help="List of possible operations")
+        c.argument('datasource_type', arg_type=get_enum_type(get_datasource_types()), help="Specify the datasource type of the resource to be backed up")
+        c.argument('vault_name', type=str, help="Name of the vault.")
+        c.argument('backup_instance', type=validate_file_or_dict, help='Request body for operation Expected value: '
+                   'json-string/@json-file.')
 
     with self.argument_context('dataprotection job list-from-resourcegraph') as c:
         c.argument('subscriptions', type=str, nargs='+', help="List of subscription Ids.")
