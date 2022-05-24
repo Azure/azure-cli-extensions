@@ -463,6 +463,26 @@ datafactory pipeline create-run:
     reference_pipeline_run_id:
       rule_exclusions:
       - option_length_too_long
+dataprotection backup-instance restore initialize-for-data-recovery-as-files:
+  parameters:
+    target_blob_container_url:
+      rule_exclusions:
+      - option_length_too_long
+dataprotection backup-vault create:
+  parameters:
+    alerts_for_all_job_failures:
+      rule_exclusions:
+      - option_length_too_long
+dataprotection backup-vault update:
+  parameters:
+    alerts_for_all_job_failures:
+      rule_exclusions:
+      - option_length_too_long
+dataprotection resource-guard update:
+  parameters:
+    critical_operation_exclusion_list:
+      rule_exclusions:
+      - option_length_too_long
 datashare consumer dataset-mapping create:
   parameters:
     share_subscription_name:
