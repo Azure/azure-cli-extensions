@@ -151,12 +151,15 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
         # read the original values passed by the command
         enable_custom_ca_trust = self.raw_param.get("enable_custom_ca_trust")
         disable_custom_ca_trust = self.raw_param.get("disable_custom_ca_trust")
-        print('enable:', enable_custom_ca_trust, 'disable:', disable_custom_ca_trust)
 
         if enable_custom_ca_trust and disable_custom_ca_trust:
                 raise ArgumentUsageError(
                     "enable-custom-ca-trust and disable-custom-ca-trust are mutually exclusive."
                 )
+
+        # try to read the property value corresponding to the parameter from the `mc` object
+        if self.agentpool and self.agentpool.enable_custom_ca_trust is not None:
+            enable_custom_ca_trust = self.agentpool.enable_custom_ca_trust
 
         # this parameter does not need dynamic completion
         # this parameter does not need validation
