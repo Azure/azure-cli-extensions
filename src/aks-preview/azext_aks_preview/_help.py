@@ -362,7 +362,7 @@ helps['aks create'] = """
           short-summary: (PREVIEW) Enable pod identity addon for cluster using Kubnet network plugin.
         - name: --enable-workload-identity
           type: bool
-          short-summary: (PREVIEW) Enable workload identity addon.
+          short-summary: Enable workload identity addon.
         - name: --disable-disk-driver
           type: bool
           short-summary: Disable AzureDisk CSI Driver.
@@ -654,10 +654,7 @@ helps['aks update'] = """
           short-summary: (PREVIEW) Disable Pod Identity addon for cluster.
         - name: --enable-workload-identity
           type: bool
-          short-summary: (PREVIEW) Enable Workload Identity addon for cluster.
-        - name: --disable-workload-identity
-          type: bool
-          short-summary: (PREVIEW) Disable Workload Identity addon for cluster.
+          short-summary: Enable Workload Identity addon for cluster.
         - name: --enable-secret-rotation
           type: bool
           short-summary: Enable secret rotation. Use with azure-keyvault-secrets-provider addon.
@@ -1718,6 +1715,21 @@ helps['aks nodepool snapshot create'] = """
 helps['aks nodepool snapshot delete'] = """
     type: command
     short-summary: Delete a nodepool snapshot.
+"""
+
+helps['aks trustedaccess'] = """
+    type: group
+    short-summary: Commands to manage trusted access security features.
+"""
+
+helps['aks trustedaccess role'] = """
+    type: group
+    short-summary: Commands to manage trusted access roles.
+"""
+
+helps['aks trustedaccess role list'] = """
+    type: command
+    short-summary: List trusted access roles.
 """
 
 helps['aks draft'] = """

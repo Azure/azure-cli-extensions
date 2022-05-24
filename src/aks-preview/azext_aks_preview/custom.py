@@ -784,7 +784,6 @@ def aks_create(cmd,
                auto_upgrade_channel=None,
                enable_pod_identity=False,
                enable_pod_identity_with_kubenet=False,
-               # NOTE: for workload identity flags, we need to know if it's set to True/False or not set (None)
                enable_workload_identity=None,
                enable_encryption_at_host=False,
                enable_ultra_ssd=False,
@@ -875,9 +874,7 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
                enable_pod_identity=False,
                enable_pod_identity_with_kubenet=False,
                disable_pod_identity=False,
-               # NOTE: for workload identity flags, we need to know if it's set to True/False or not set (None)
                enable_workload_identity=None,
-               disable_workload_identity=None,
                enable_secret_rotation=False,
                disable_secret_rotation=False,
                rotation_poll_interval=None,
@@ -3261,3 +3258,7 @@ def aks_nodepool_snapshot_list(cmd, client, resource_group_name=None):  # pylint
         return client.list()
 
     return client.list_by_resource_group(resource_group_name)
+
+
+def aks_trustedaccess_role_list(cmd, client, location):  # pylint: disable=unused-argument
+    return client.list(location)
