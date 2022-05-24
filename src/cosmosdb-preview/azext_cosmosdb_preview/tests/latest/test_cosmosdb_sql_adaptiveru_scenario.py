@@ -42,19 +42,19 @@ class Cosmosdb_previewAdaptiveRUScenarioTest(ScenarioTest):
         self.cmd('az cosmosdb sql container throughput update -g {rg} -a {acc} -d {db_name} -n {col} --throughput 3000').get_output_in_json()
 
         # retrieve throughput for all partitions
-        retrieve_all_throughput = self.cmd('az cosmosdb sql container retrieve-partition-throughput --resource-group {rg} --name {acc} --database-name {db_name} --container-name {col} --all-partitions ').get_output_in_json()
+        retrieve_all_throughput = self.cmd('az cosmosdb sql container retrieve-partition-throughput --resource-group {rg} --account-name {acc} --database-name {db_name} --name {col} --all-partitions ').get_output_in_json()
         print(retrieve_all_throughput)
 
         # retrieve throughput for some partitions
-        retrieve_some_throughput = self.cmd('az cosmosdb sql container retrieve-partition-throughput --resource-group {rg} --name {acc} --database-name {db_name} --container-name {col} --physical-partition-ids "0,1" ').get_output_in_json()
+        retrieve_some_throughput = self.cmd('az cosmosdb sql container retrieve-partition-throughput --resource-group {rg} --account-name {acc} --database-name {db_name} --name {col} --physical-partition-ids "0,1" ').get_output_in_json()
         print(retrieve_some_throughput)
 
         # redistribute throughput
-        adjusted_throughput = self.cmd('az cosmosdb sql container redistribute-partition-throughput --resource-group {rg} --name {acc} --database-name {db_name} --container-name {col} --target-physical-partition-throughput-info-list {tar} --source-physical-partition-throughput-info-list {src}').get_output_in_json()
+        adjusted_throughput = self.cmd('az cosmosdb sql container redistribute-partition-throughput --resource-group {rg} --account-name {acc} --database-name {db_name} --name {col} --target-partition-info {tar} --source-partition-info {src}').get_output_in_json()
         print(adjusted_throughput)
 
         # make throughput equal for all partitions
-        all_equal_throughput = self.cmd('az cosmosdb sql container redistribute-partition-throughput --resource-group {rg} --name {acc} --database-name {db_name} --container-name {col} --evenly-distribute ').get_output_in_json()
+        all_equal_throughput = self.cmd('az cosmosdb sql container redistribute-partition-throughput --resource-group {rg} --account-name {acc} --database-name {db_name} --name {col} --evenly-distribute ').get_output_in_json()
         print(all_equal_throughput)
         
 
@@ -85,17 +85,17 @@ class Cosmosdb_previewAdaptiveRUScenarioTest(ScenarioTest):
         self.cmd('az cosmosdb mongodb collection throughput update -g {rg} -a {acc} -d {db_name} -n {col} --throughput 3000')
 
         # retrieve throughput for all partitions
-        retrieve_all_throughput = self.cmd('az cosmosdb mongodb collection retrieve-partition-throughput --resource-group {rg} --name {acc} --database-name {db_name} --collection-name {col} --all-partitions ').get_output_in_json()
+        retrieve_all_throughput = self.cmd('az cosmosdb mongodb collection retrieve-partition-throughput --resource-group {rg} --account-name {acc} --database-name {db_name} --name {col} --all-partitions ').get_output_in_json()
         print(retrieve_all_throughput)
 
         # retrieve throughput for some partitions
-        retrieve_some_throughput = self.cmd('az cosmosdb mongodb collection retrieve-partition-throughput --resource-group {rg} --name {acc} --database-name {db_name} --collection-name {col} --physical-partition-ids "0,1" ').get_output_in_json()
+        retrieve_some_throughput = self.cmd('az cosmosdb mongodb collection retrieve-partition-throughput --resource-group {rg} --account-name {acc} --database-name {db_name} --name {col} --physical-partition-ids "0,1" ').get_output_in_json()
         print(retrieve_some_throughput)
 
         # redistribute throughput
-        adjusted_throughput = self.cmd('az cosmosdb mongodb collection redistribute-partition-throughput --resource-group {rg} --name {acc} --database-name {db_name} --collection-name {col} --target-physical-partition-throughput-info-list {tar} --source-physical-partition-throughput-info-list {src} ').get_output_in_json()
+        adjusted_throughput = self.cmd('az cosmosdb mongodb collection redistribute-partition-throughput --resource-group {rg} --account-name {acc} --database-name {db_name} --name {col} --target-partition-info {tar} --source-partition-info {src} ').get_output_in_json()
         print(adjusted_throughput)
 
         # make throughput equal for all partitions
-        all_equal_throughput = self.cmd('az cosmosdb mongodb collection redistribute-partition-throughput --resource-group {rg} --name {acc} --database-name {db_name} --collection-name {col} --evenly-distribute ').get_output_in_json()
+        all_equal_throughput = self.cmd('az cosmosdb mongodb collection redistribute-partition-throughput --resource-group {rg} --account-name {acc} --database-name {db_name} --name {col} --evenly-distribute ').get_output_in_json()
         print(all_equal_throughput)
