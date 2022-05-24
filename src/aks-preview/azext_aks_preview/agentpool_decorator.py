@@ -16,7 +16,10 @@ from azure.cli.command_modules.acs.agentpool_decorator import (
     AKSAgentPoolParamDict,
     AKSAgentPoolUpdateDecorator,
 )
-from azure.cli.core.azclierror import InvalidArgumentValueError
+from azure.cli.core.azclierror import (
+    ArgumentUsageError,
+    InvalidArgumentValueError,
+)
 from azure.cli.core.commands import AzCliCommand
 from azure.cli.core.profiles import ResourceType
 from azure.cli.core.util import read_file_content
@@ -140,6 +143,27 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
         # this parameter does not need validation
         return message_of_the_day
 
+    def get_enable_custom_ca_trust(self) -> Union[bool, None]:
+        """Obtain the value of enable_custom_ca_trust.
+
+        :return: bool or None
+        """
+        # read the original values passed by the command
+        enable_custom_ca_trust = self.raw_param.get("enable_custom_ca_trust")
+        disable_custom_ca_trust = self.raw_param.get("disable_custom_ca_trust")
+        print('enable:', enable_custom_ca_trust, 'disable:', disable_custom_ca_trust)
+
+        if enable_custom_ca_trust and disable_custom_ca_trust:
+                raise ArgumentUsageError(
+                    "enable-custom-ca-trust and disable-custom-ca-trust are mutually exclusive."
+                )
+
+        # this parameter does not need dynamic completion
+        # this parameter does not need validation
+        if enable_custom_ca_trust:
+            return True
+        return False
+
     def get_gpu_instance_profile(self) -> Union[str, None]:
         """Obtain the value of gpu_instance_profile.
 
@@ -225,6 +249,16 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
         agentpool.message_of_the_day = self.context.get_message_of_the_day()
         return agentpool
 
+    def set_up_enable_custom_ca_trust(self, agentpool: AgentPool) -> AgentPool:
+        """Set up message of the day for the AgentPool object.
+
+        :return: the AgentPool object
+        """
+        self._ensure_agentpool(agentpool)
+
+        agentpool.enable_custom_ca_trust = self.context.get_enable_custom_ca_trust()
+        return agentpool
+
     def set_up_gpu_propertes(self, agentpool: AgentPool) -> AgentPool:
         """Set up gpu related properties for the AgentPool object.
 
@@ -252,6 +286,8 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
         agentpool = self.set_up_motd(agentpool)
         # set up gpu profiles
         agentpool = self.set_up_gpu_propertes(agentpool)
+        # set up custom ca trust
+        agentpool = self.set_up_enable_custom_ca_trust(agentpool)
         # restore defaults
         agentpool = self._restore_defaults_in_agentpool(agentpool)
         return agentpool

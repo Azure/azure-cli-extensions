@@ -1940,7 +1940,6 @@ def aks_agentpool_update(cmd,   # pylint: disable=unused-argument
             return None
         instance.enable_custom_ca_trust = False
 
-    print('halko', instance.__dict__)
     return sdk_no_wait(no_wait, client.begin_create_or_update, resource_group_name, cluster_name, nodepool_name, instance)
 
 
