@@ -129,21 +129,25 @@ def load_arguments(self, _):
         c.argument('enable_gateway',
                    arg_group="Spring Cloud Gateway",
                    action='store_true',
+                   is_preview=True,
                    help='(Enterprise Tier Only) Enable Spring Cloud Gateway.')
         c.argument('gateway_instance_count',
                    arg_group="Spring Cloud Gateway",
                    type=int,
                    validator=validate_gateway_instance_count,
+                   is_preview=True,
                    help='(Enterprise Tier Only) Number of Spring Cloud Gateway instances.')
         c.argument('enable_api_portal',
                    arg_group="API portal",
                    action='store_true',
+                   is_preview=True,
                    help='(Enterprise Tier Only) Enable API portal.')
         c.argument('api_portal_instance_count',
                    arg_group="API portal",
                    type=int,
                    validator=validate_api_portal_instance_count,
                    options_list=['--api-portal-instance-count', '--ap-instance'],
+                   is_preview=True,
                    help='(Enterprise Tier Only) Number of API portal instances.')
 
     with self.argument_context('spring update') as c:
@@ -332,7 +336,7 @@ def load_arguments(self, _):
             c.argument('config_file_patterns',
                        help="(Enterprise Tier Only) Config file patterns separated with \',\' to decide which patterns "
                             "of Application Configuration Service will be used. Use '\"\"' to clear existing configurations.",
-                       validator=validate_config_file_patterns, is_preview=True)
+                       validator=validate_config_file_patterns)
 
     with self.argument_context('spring app scale') as c:
         c.argument('cpu', arg_type=cpu_type)
