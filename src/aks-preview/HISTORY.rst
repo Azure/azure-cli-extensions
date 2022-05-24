@@ -12,6 +12,8 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+* Refactor: Removed redundant `--disable-workload-identity` flag. User can disable the workload identity feature by using `--enable-workload-identity False`.
+
 0.5.73
 ++++++
 
@@ -85,7 +87,7 @@ Pending
 ++++++
 
 * Update to use 2022-03-02-preview api version.
-* Add support for `--format` parameter in `az aks get-credentials` command.  
+* Add support for `--format` parameter in `az aks get-credentials` command.
 
 0.5.60
 ++++++
