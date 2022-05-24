@@ -200,8 +200,8 @@ def update_addons(cmd,  # pylint: disable=too-many-branches,too-many-statements
                 logAnalyticsConstName = CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID
                 if addon_profile.enabled and check_enabled:
                     raise CLIError('The monitoring addon is already enabled for this managed cluster.\n'
-                                'To change monitoring configuration, run "az aks disable-addons -a monitoring"'
-                                'before enabling it again.')
+                                   'To change monitoring configuration, run "az aks disable-addons -a monitoring"'
+                                   'before enabling it again.')
                 if not workspace_resource_id:
                     workspace_resource_id = ensure_default_log_analytics_workspace_for_monitoring(
                         cmd,
@@ -216,9 +216,9 @@ def update_addons(cmd,  # pylint: disable=too-many-branches,too-many-statements
             elif addon == (CONST_VIRTUAL_NODE_ADDON_NAME + os_type):
                 if addon_profile.enabled and check_enabled:
                     raise CLIError('The virtual-node addon is already enabled for this managed cluster.\n'
-                                'To change virtual-node configuration, run '
-                                '"az aks disable-addons -a virtual-node -g {resource_group_name}" '
-                                'before enabling it again.')
+                                   'To change virtual-node configuration, run '
+                                   '"az aks disable-addons -a virtual-node -g {resource_group_name}" '
+                                   'before enabling it again.')
                 if not subnet_name:
                     raise CLIError(
                         'The aci-connector addon requires setting a subnet name.')
@@ -227,9 +227,9 @@ def update_addons(cmd,  # pylint: disable=too-many-branches,too-many-statements
             elif addon == CONST_INGRESS_APPGW_ADDON_NAME:
                 if addon_profile.enabled and check_enabled:
                     raise CLIError('The ingress-appgw addon is already enabled for this managed cluster.\n'
-                                'To change ingress-appgw configuration, run '
-                                f'"az aks disable-addons -a ingress-appgw -n {name} -g {resource_group_name}" '
-                                'before enabling it again.')
+                                   'To change ingress-appgw configuration, run '
+                                   f'"az aks disable-addons -a ingress-appgw -n {name} -g {resource_group_name}" '
+                                   'before enabling it again.')
                 addon_profile = ManagedClusterAddonProfile(
                     enabled=True, config={})
                 if appgw_name is not None:
@@ -247,17 +247,17 @@ def update_addons(cmd,  # pylint: disable=too-many-branches,too-many-statements
             elif addon == CONST_OPEN_SERVICE_MESH_ADDON_NAME:
                 if addon_profile.enabled and check_enabled:
                     raise CLIError('The open-service-mesh addon is already enabled for this managed cluster.\n'
-                                'To change open-service-mesh configuration, run '
-                                f'"az aks disable-addons -a open-service-mesh -n {name} -g {resource_group_name}" '
-                                'before enabling it again.')
+                                   'To change open-service-mesh configuration, run '
+                                   f'"az aks disable-addons -a open-service-mesh -n {name} -g {resource_group_name}" '
+                                   'before enabling it again.')
                 addon_profile = ManagedClusterAddonProfile(
                     enabled=True, config={})
             elif addon == CONST_CONFCOM_ADDON_NAME:
                 if addon_profile.enabled and check_enabled:
                     raise CLIError('The confcom addon is already enabled for this managed cluster.\n'
-                                'To change confcom configuration, run '
-                                f'"az aks disable-addons -a confcom -n {name} -g {resource_group_name}" '
-                                'before enabling it again.')
+                                   'To change confcom configuration, run '
+                                   f'"az aks disable-addons -a confcom -n {name} -g {resource_group_name}" '
+                                   'before enabling it again.')
                 addon_profile = ManagedClusterAddonProfile(
                     enabled=True, config={CONST_ACC_SGX_QUOTE_HELPER_ENABLED: "false"})
                 if enable_sgxquotehelper:
