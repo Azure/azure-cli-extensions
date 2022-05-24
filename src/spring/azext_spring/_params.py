@@ -146,8 +146,8 @@ def load_arguments(self, _):
                    arg_group="API portal",
                    type=int,
                    validator=validate_api_portal_instance_count,
-                   options_list=['--api-portal-instance-count', '--ap-instance'],
                    is_preview=True,
+                   options_list=['--api-portal-instance-count', '--ap-instance'],
                    help='(Enterprise Tier Only) Number of API portal instances.')
 
     with self.argument_context('spring update') as c:
