@@ -8,6 +8,7 @@
 from asyncio.log import logger
 from ._constant import (MARKETPLACE_OFFER_ID, MARKETPLACE_PUBLISHER_ID)
 
+
 def _spring_list_marketplace_plan(cmd, client):
     # return get_mgmt_service_client(cli_ctx, AppPlatformManagementClient_20220501preview)
     from azure.cli.core.commands.client_factory import get_mgmt_service_client
@@ -22,6 +23,7 @@ def _spring_list_marketplace_plan(cmd, client):
 
 def _is_valid_plan(plan):
     return plan.availabilities
+
 
 def transform_marketplace_plan_output(result):
     def _table_item_view(plan):
