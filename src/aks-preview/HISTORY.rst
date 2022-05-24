@@ -14,6 +14,11 @@ Pending
 
 * Refactor: Removed redundant `--disable-workload-identity` flag. User can disable the workload identity feature by using `--enable-workload-identity False`.
 
+0.5.74
+++++++
+
+* Add command `aks trustedaccess role list`.
+
 0.5.73
 ++++++
 
