@@ -152,11 +152,11 @@ def dataprotection_backup_instance_update_msi_permissions(cmd, client, resource_
         snapshot_rg_scope = backup_instance['properties']['policy_info']['policy_parameters']['data_store_parameters_list'][0]['resource_group_id']
 
         if permissions_scope == 'Resource Group':
-            resource_scope = "/".join(resource_scope.split('/')[:5]) # Snapshot RG is already in RG scope, so change for resource
+            resource_scope = "/".join(resource_scope.split("/")[:5]) # Snapshot RG is already in RG scope, so change for resource
         elif permissions_scope == 'Subscription':
             # Change scope for both resource and Snapshot RG
-            resource_scope = "/".join(resource_scope.split('/')[:3])
-            snapshot_rg_scope = "/".join(snapshot_rg_scope.split('/')[:3])
+            resource_scope = "/".join(resource_scope.split("/")[:3])
+            snapshot_rg_scope = "/".join(snapshot_rg_scope.split("/")[:3])
 
         
         role_assignments = [obj['roleDefinitionName'] for obj in list_role_assignments(cmd, assignee=principal_id, scope=resource_scope, include_inherited=True)]
@@ -165,8 +165,7 @@ def dataprotection_backup_instance_update_msi_permissions(cmd, client, resource_
 
         role_assignments = [obj['roleDefinitionName'] for obj in list_role_assignments(cmd, assignee=principal_id, scope=snapshot_rg_scope, include_inherited=True)]
         if 'Disk Snapshot Contributor' not in role_assignments:
-            create_role_assignment(cmd, role='Disk Snapshot Contributor', assignee=principal_id, 
-                                    scope=snapshot_rg_scope)
+            create_role_assignment(cmd, role='Disk Snapshot Contributor', assignee=principal_id, scope=snapshot_rg_scope)
         
         return "Success in creating the permissions"
 
