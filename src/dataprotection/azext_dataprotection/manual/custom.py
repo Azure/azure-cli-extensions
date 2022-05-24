@@ -147,16 +147,31 @@ def dataprotection_backup_instance_update_msi_permissions(cmd, client, resource_
     from azure.cli.command_modules.role.custom import list_role_assignments, create_role_assignment
 
     if datasource_type == 'AzureDisk':
-        role_assignments = [obj['roleDefinitionName'] for obj in list_role_assignments(cmd, assignee=principal_id, scope=backup_instance['properties']['data_source_info']['resource_id'], include_inherited=True)]
-        if 'Disk Backup Reader' not in role_assignments:
-            create_role_assignment(cmd, role='Disk Backup Reader', assignee=principal_id, scope=backup_instance['properties']['data_source_info']['resource_id'])
+        # Create scope variables for role assignment
+        resource_scope = backup_instance['properties']['data_source_info']['resource_id']
+        snapshot_rg_scope = backup_instance['properties']['policy_info']['policy_parameters']['data_store_parameters_list'][0]['resource_group_id']
 
-        role_assignments = [obj['roleDefinitionName'] for obj in list_role_assignments(cmd, assignee=principal_id, scope=backup_instance['properties']['policy_info']['policy_parameters']['data_store_parameters_list'][0]['resource_group_id'], include_inherited=True)]
+        if permissions_scope == 'Resource Group':
+            resource_scope = "/".join(resource_scope.split('/')[:5]) # Snapshot RG is already in RG scope, so change for resource
+        elif permissions_scope == 'Subscription':
+            # Change scope for both resource and Snapshot RG
+            resource_scope = "/".join(resource_scope.split('/')[:3])
+            snapshot_rg_scope = "/".join(snapshot_rg_scope.split('/')[:3])
+
+        
+        role_assignments = [obj['roleDefinitionName'] for obj in list_role_assignments(cmd, assignee=principal_id, scope=resource_scope, include_inherited=True)]
+        if 'Disk Backup Reader' not in role_assignments:
+            create_role_assignment(cmd, role='Disk Backup Reader', assignee=principal_id, scope=resource_scope)
+
+        role_assignments = [obj['roleDefinitionName'] for obj in list_role_assignments(cmd, assignee=principal_id, scope=snapshot_rg_scope, include_inherited=True)]
         if 'Disk Snapshot Contributor' not in role_assignments:
             create_role_assignment(cmd, role='Disk Snapshot Contributor', assignee=principal_id, 
-                                    scope=backup_instance['properties']['policy_info']['policy_parameters']['data_store_parameters_list'][0]['resource_group_id'])
+                                    scope=snapshot_rg_scope)
         
         return "Success in creating the permissions"
+
+    raise CLIError("Invalid params passed")
+
 
 def dataprotection_job_list_from_resourcegraph(client, datasource_type, resource_groups=None, vaults=None,
                                                subscriptions=None, start_time=None, end_time=None,

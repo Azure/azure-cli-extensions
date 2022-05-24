@@ -68,6 +68,9 @@ def get_secret_store_type_values():
 def get_backup_operation_values():
     return ['Backup']
 
+def get_permission_scope_values():
+    return ['Resource', 'Resource Group', 'Subscription']
+
 
 def get_datasource_types():
     from azext_dataprotection.manual import helpers
