@@ -443,7 +443,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             self.check('addonProfiles.openServiceMesh.enabled', True),
         ])
 
-    @live_only() # live only is required for test environment setup like `az login`
+    @live_only()  # live only is required for test environment setup like `az login`
     @AllowLargeResponse()
     def test_aks_addon_list_available(self):
         list_available_cmd = 'aks addon list-available -o json'
@@ -1378,10 +1378,10 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                  '--node-count=1 '
                  '--os-type Windows '
                  '--os-sku Windows2022',
-            checks=[
-                self.check('provisioningState', 'Succeeded'),
-                self.check('osSku', 'Windows2022'),
-            ])
+                 checks=[
+                     self.check('provisioningState', 'Succeeded'),
+                     self.check('osSku', 'Windows2022'),
+                 ])
 
         # delete
         self.cmd(
@@ -4065,8 +4065,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
         # check standard reconcile scenario
         update_cmd = 'aks update --resource-group={resource_group} --name={name} -y -o json'
-        self.cmd(update_cmd
-        , checks=[
+        self.cmd(update_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
             self.check('storageProfile.diskCsiDriver.enabled', False),
             self.check('storageProfile.fileCsiDriver.enabled', False),
@@ -4086,8 +4085,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
         # check standard reconcile scenario
         update_cmd = 'aks update --resource-group={resource_group} --name={name} -y -o json'
-        self.cmd(update_cmd
-        , checks=[
+        self.cmd(update_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
             self.check('storageProfile.diskCsiDriver.enabled', True),
             self.check('storageProfile.fileCsiDriver.enabled', True),
@@ -4175,6 +4173,17 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             self.is_empty(),
         ])
 
+
+    @live_only()  # live only is required for test environment setup like `az login`
+    @AllowLargeResponse()
+    def test_list_trustedaccess_roles(self):
+        cmd = 'aks trustedaccess role list -l eastus2euap'
+        self.cmd(cmd, checks=[
+            self.check(
+                'type', 'Microsoft.ContainerService/locations/trustedaccessroles')
+        ])
+
+
     @live_only() # this test requires live_only because a binary is downloaded
     def test_aks_draft_with_helm(self):
         import tempfile, os
@@ -4199,6 +4208,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             self.cmd(update_cmd)
             assert os.path.isfile(f'{tmp_dir}/charts/production.yaml')
 
+
     @live_only() # this test requires live_only because a binary is downloaded
     def test_aks_draft_with_kustomize(self):
         import tempfile, os
@@ -4222,6 +4232,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             update_cmd = f'aks draft update --path={tmp_dir} --destination={tmp_dir} --host=testHost --certificate=testKV'
             self.cmd(update_cmd)
             assert os.path.isfile(f'{tmp_dir}/overlays/production/service.yaml')
+
 
     @live_only() # this test requires live_only because a binary is downloaded
     def test_aks_draft_with_manifest(self):
