@@ -367,6 +367,23 @@ def load_arguments(self, _):
             c.argument(
                 'build_env', help='The key-value pairs of env used in build phase.', validator=validate_build_env)
 
+    for scope in ['spring-cloud app create', 'spring-cloud app update', 'spring-cloud app deploy', 'spring-cloud app deployment create', 'spring-cloud app deployment update']:
+        with self.argument_context(scope) as c:
+            c.argument('enable_liveness_probe', arg_type=get_three_state_flag(), 
+                help='If false, will disable the liveness probe of the app instance', arg_group='App Customization')
+            c.argument('enable_readiness_probe', arg_type=get_three_state_flag(), 
+                help='If false, will disable the readiness probe of the app instance', arg_group='App Customization')
+            c.argument('enable_startup_probe', arg_type=get_three_state_flag(), 
+                help='If false, will disable the startup probe of the app instance', arg_group='App Customization')
+            c.argument('liveness_probe_config', type=str,
+                help='A json file path indicates the liveness probe config', arg_group='App Customization')
+            c.argument('readiness_probe_config', type=str,
+                help='A json file path indicates the readiness probe config', arg_group='App Customization')
+            c.argument('startup_probe_config', type=str,
+                help='A json file path indicates the startup probe config', arg_group='App Customization')
+            c.argument('termination_seconds', type=int,
+                help='Set the seconds of termination grace period', arg_group='App Customization')
+
     with self.argument_context('spring-cloud app deploy') as c:
         c.argument('source_path', arg_type=source_path_type, validator=validate_deloy_path)
 

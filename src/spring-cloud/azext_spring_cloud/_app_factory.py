@@ -4,6 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 # pylint: disable=wrong-import-order
+from importlib.resources import path
 from azure.cli.core.azclierror import FileOperationError, InvalidArgumentValueError
 from .vendored_sdks.appplatform.v2022_01_01_preview import models
 from .vendored_sdks.appplatform.v2022_03_01_preview import models as models_20220301preview
