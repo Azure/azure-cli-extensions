@@ -551,6 +551,7 @@ class AKSPreviewAgentPoolAddDecoratorManagedClusterModeTestCase(AKSPreviewAgentP
             enable_encryption_at_host=False,
             enable_ultra_ssd=False,
             enable_fips=False,
+            enable_custom_ca_trust=False,
             mode=CONST_NODEPOOL_MODE_SYSTEM,
             workload_runtime=CONST_WORKLOAD_RUNTIME_OCI_CONTAINER,
         )
