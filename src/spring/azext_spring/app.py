@@ -228,6 +228,8 @@ def app_deploy(cmd, client, resource_group, service, name,
                container_args=None,
                build_env=None,
                builder=None,
+               build_cpu=None,
+               build_memory=None,
                # deployment.settings
                env=None,
                disable_probe=None,
@@ -271,6 +273,8 @@ def app_deploy(cmd, client, resource_group, service, name,
         'container_command': container_command,
         'container_args': container_args,
         'build_env': build_env,
+        'build_cpu': build_cpu,
+        'build_memory': build_memory,
         'builder': builder,
         'no_wait': no_wait
     }

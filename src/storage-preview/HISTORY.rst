@@ -2,6 +2,10 @@
 
 Release History
 ===============
+0.8.3(2022-05-24)
+++++++++++++++++++
+* `az storage account create/update`: Rename `--key-vault-federated-identity-client-id` to `--key-vault-federated-client-id`
+
 0.8.2(2022-04-12)
 ++++++++++++++++++
 * `az storage account create`: Add `--dns-endpoint-type` to support creating accounts in an Azure DNS Zone
