@@ -1853,7 +1853,9 @@ def aks_agentpool_update(cmd,   # pylint: disable=unused-argument
     update_autoscaler = enable_cluster_autoscaler + \
         disable_cluster_autoscaler + update_cluster_autoscaler
 
-    if (update_autoscaler != 1 and not tags and not scale_down_mode and not mode and not max_surge and labels is None and node_taints is None):
+    update_custom_ca_trust = enable_custom_ca_trust + disable_custom_ca_trust
+
+    if (update_autoscaler != 1 and not tags and not scale_down_mode and not mode and not max_surge and labels is None and node_taints is None and not update_custom_ca_trust):
         reconcilePrompt = 'no argument specified to update would you like to reconcile to current settings?'
         if not prompt_y_n(reconcilePrompt, default="n"):
             raise CLIError('Please specify one or more of "--enable-cluster-autoscaler" or '
@@ -1928,8 +1930,8 @@ def aks_agentpool_update(cmd,   # pylint: disable=unused-argument
     if labels is not None:
         instance.node_labels = labels
 
-    if enable_custom_ca_trust is not None:
-        instance.enable_custom_ca_trust = enable_custom_ca_trust
+    if enable_custom_ca_trust:
+        instance.enable_custom_ca_trust = True
 
     if disable_custom_ca_trust:
         if not instance.enable_custom_ca_trust:
@@ -1938,6 +1940,7 @@ def aks_agentpool_update(cmd,   # pylint: disable=unused-argument
             return None
         instance.enable_custom_ca_trust = False
 
+    print('halko', instance.__dict__)
     return sdk_no_wait(no_wait, client.begin_create_or_update, resource_group_name, cluster_name, nodepool_name, instance)
 
 
