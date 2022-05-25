@@ -1701,10 +1701,6 @@ class AKSPreviewContext(AKSContext):
                 "The parameter --disable-disk-driver cannot be used "
                 "when --disk-driver-version is specified.")
 
-        # Setting default driver as v1 if not mentioned
-        if not disk_driver_version:
-            disk_driver_version = "v1"
-
         if not (disk_driver_version == "v1" or disk_driver_version == "v2"):
             raise InvalidArgumentValueError(
                 "Valid values for --disk-driver-version are v1 and v2")
@@ -1714,12 +1710,15 @@ class AKSPreviewContext(AKSContext):
                 profile.enabled = False
             else:
                 profile.enabled = True
+                if not disk_driver_version:
+                    disk_driver_version = "v1"
                 profile.version = disk_driver_version
 
         if self.decorator_mode == DecoratorMode.UPDATE:
             if enable_disk_driver:
                 profile.enabled = True
-                profile.version = disk_driver_version
+                if disk_driver_version:
+                    profile.version = disk_driver_version
             elif disable_disk_driver:
                 profile.enabled = False
 
