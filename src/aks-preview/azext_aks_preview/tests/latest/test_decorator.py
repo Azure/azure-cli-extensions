@@ -942,7 +942,7 @@ class AKSPreviewContextTestCase(unittest.TestCase):
         with self.assertRaises(ArgumentUsageError):
             ctx_8.get_disk_driver()
 
-        #  enable-disk-driver, disk_driver_version, enable_file_driver and enable-snapshot-controller passed
+        #  enable-disk-driver, disk_driver_version, enable_file_driver and enable_snapshot_controller passed
         ctx_9 = AKSPreviewContext(
             self.cmd,
             {
@@ -1123,14 +1123,14 @@ class AKSPreviewContextTestCase(unittest.TestCase):
         with self.assertRaises(ArgumentUsageError):
             ctx_8.get_disk_driver()
 
-        #  enable-disk-driver, disk_driver_version, enable_file_driver and enable-snapshot-controller passed
+        #  enable-disk-driver, disk_driver_version, enable_file_driver and enable_snapshot_controller passed
         ctx_9 = AKSPreviewContext(
             self.cmd,
             {
                 "enable_disk_driver": True,
                 "disk_driver_version": "v2",
                 "enable_file_driver": True,
-                "enable-snapshot-controller": True,
+                "enable_snapshot_controller": True,
             },
             self.models,
             decorator_mode=DecoratorMode.CREATE,
