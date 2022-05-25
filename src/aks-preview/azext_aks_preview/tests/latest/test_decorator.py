@@ -813,7 +813,6 @@ class AKSPreviewContextTestCase(unittest.TestCase):
         )
         mc = self.models.ManagedCluster(
             location="test_location",
-            storage_profile=storage_profile,
         )
         ctx_1.attach_mc(mc)
         self.assertEqual(
@@ -877,7 +876,6 @@ class AKSPreviewContextTestCase(unittest.TestCase):
             self.models.ManagedClusterStorageProfile(
                 disk_csi_driver = self.models.ManagedClusterStorageProfileDiskCSIDriver(
                     enabled = True,
-                    version = "v1",
                 ),
                 file_csi_driver = self.models.ManagedClusterStorageProfileFileCSIDriver(
                     enabled = True,
@@ -889,7 +887,6 @@ class AKSPreviewContextTestCase(unittest.TestCase):
         )
         mc = self.models.ManagedCluster(
             location="test_location",
-            storage_profile=storage_profile,
         )
         ctx_5.attach_mc(mc)
         self.assertEqual(
@@ -900,7 +897,10 @@ class AKSPreviewContextTestCase(unittest.TestCase):
         ctx_6 = AKSPreviewContext(
             self.cmd,
             {
+                "enable_disk_driver": True,
                 "disk_driver_version": "v2",
+                "enable_file_driver": True,
+                "enable_snapshot_controller": True,
             },
             self.models,
             decorator_mode=DecoratorMode.UPDATE,
@@ -921,7 +921,6 @@ class AKSPreviewContextTestCase(unittest.TestCase):
         )
         mc = self.models.ManagedCluster(
             location="test_location",
-            storage_profile=storage_profile,
         )
         ctx_6.attach_mc(mc)
         self.assertEqual(
@@ -953,7 +952,7 @@ class AKSPreviewContextTestCase(unittest.TestCase):
             decorator_mode=DecoratorMode.UPDATE,
         )
 
-        # fail on argument usage error 
+        # fail on argument usage error
         with self.assertRaises(ArgumentUsageError):
             ctx_8.get_disk_driver()
 
@@ -961,8 +960,9 @@ class AKSPreviewContextTestCase(unittest.TestCase):
         ctx_9 = AKSPreviewContext(
             self.cmd,
             {
+                "enable_disk_driver": True,
                 "disk_driver_version": "v2",
-                "enable_file_driver": True,
+                "disable_file_driver": True,
                 "disable_snapshot_controller": True,
             },
             self.models,
@@ -978,13 +978,25 @@ class AKSPreviewContextTestCase(unittest.TestCase):
         )
         mc = self.models.ManagedCluster(
             location="test_location",
-            storage_profile=storage_profile,
         )
         ctx_9.attach_mc(mc)
         self.assertEqual(
             ctx_9.get_storage_profile(), storage_profile
         )
 
+        # fail with enable-disk-driver as false and value passed for disk_driver_version
+        ctx_10 = AKSPreviewContext(
+            self.cmd,
+            {
+                "disk_driver_version": "v2",
+            },
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+
+        # fail on argument usage error
+        with self.assertRaises(ArgumentUsageError):
+            ctx_10.get_disk_driver()
 
     def test_get_disk_driver_create(self):
         # default
@@ -1003,7 +1015,6 @@ class AKSPreviewContextTestCase(unittest.TestCase):
         )
         mc = self.models.ManagedCluster(
             location="test_location",
-            storage_profile=storage_profile,
         )
         ctx_1.attach_mc(mc)
         self.assertEqual(
@@ -1079,7 +1090,6 @@ class AKSPreviewContextTestCase(unittest.TestCase):
         )
         mc = self.models.ManagedCluster(
             location="test_location",
-            storage_profile=storage_profile,
         )
         ctx_5.attach_mc(mc)
         self.assertEqual(
@@ -1106,7 +1116,6 @@ class AKSPreviewContextTestCase(unittest.TestCase):
         )
         mc = self.models.ManagedCluster(
             location="test_location",
-            storage_profile=storage_profile,
         )
         ctx_6.attach_mc(mc)
         self.assertEqual(
@@ -1139,7 +1148,7 @@ class AKSPreviewContextTestCase(unittest.TestCase):
             decorator_mode=DecoratorMode.CREATE,
         )
 
-        # fail on argument usage error 
+        # fail on argument usage error
         with self.assertRaises(ArgumentUsageError):
             ctx_8.get_disk_driver()
 
@@ -1153,7 +1162,7 @@ class AKSPreviewContextTestCase(unittest.TestCase):
                 "enable-snapshot-controller": True,
             },
             self.models,
-            decorator_mode=DecoratorMode.UPDATE,
+            decorator_mode=DecoratorMode.CREATE,
         )
         storage_profile = (
             self.models.ManagedClusterStorageProfile(
@@ -1171,12 +1180,37 @@ class AKSPreviewContextTestCase(unittest.TestCase):
         )
         mc = self.models.ManagedCluster(
             location="test_location",
-            storage_profile=storage_profile,
         )
         ctx_9.attach_mc(mc)
         self.assertEqual(
             ctx_9.get_storage_profile(), storage_profile
         )
+
+        # pass when value passed for disk_driver_version without enable_disk_driver
+        ctx_10 = AKSPreviewContext(
+            self.cmd,
+            {
+                "disk_driver_version": "v2",
+            },
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        storage_profile = (
+            self.models.ManagedClusterStorageProfile(
+                disk_csi_driver = self.models.ManagedClusterStorageProfileDiskCSIDriver(
+                    enabled = True,
+                    version = "v2",
+                ),
+            )
+        )
+        mc = self.models.ManagedCluster(
+            location="test_location",
+        )
+        ctx_10.attach_mc(mc)
+        self.assertEqual(
+            ctx_10.get_storage_profile(), storage_profile
+        )
+
 
     def test_get_enable_pod_security_policy(self):
         # default
