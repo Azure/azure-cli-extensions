@@ -41,7 +41,7 @@ helps['spring create'] = """
 
 helps['spring list-marketplace-plan'] = """
     type: command
-    short-summary: (Enterprise tier only) List Marketplace plan to be purchased.
+    short-summary: (Enterprise Tier Only) List Marketplace plan to be purchased.
     examples:
     - name: List all plans.
       text: az spring list-marketplace-plan -o table
