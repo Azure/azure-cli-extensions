@@ -95,6 +95,8 @@ ManagedClusterAPIServerAccessProfile = TypeVar('ManagedClusterAPIServerAccessPro
 Snapshot = TypeVar("Snapshot")
 ManagedClusterSnapshot = TypeVar("ManagedClusterSnapshot")
 AzureKeyVaultKms = TypeVar('AzureKeyVaultKms')
+ManagedClusterIngressProfile = TypeVar('ManagedClusterIngressProfile')
+ManagedClusterIngressProfileWebAppRouting = TypeVar('ManagedClusterIngressProfileWebAppRouting')
 
 
 # pylint: disable=too-many-instance-attributes,too-few-public-methods
@@ -139,6 +141,16 @@ class AKSPreviewModels(AKSModels):
         )
         self.ManagedClusterSecurityProfile = self.__cmd.get_models(
             "ManagedClusterSecurityProfile",
+            resource_type=self.resource_type,
+            operation_group="managed_clusters",
+        )
+        self.ManagedClusterIngressProfileWebAppRouting = self.__cmd.get_models(
+            "ManagedClusterIngressProfileWebAppRouting",
+            resource_type=self.resource_type,
+            operation_group="managed_clusters",
+        )
+        self.ManagedClusterIngressProfile = self.__cmd.get_models(
+            "ManagedClusterIngressProfile",
             resource_type=self.resource_type,
             operation_group="managed_clusters",
         )
@@ -2391,6 +2403,19 @@ class AKSPreviewCreateDecorator(AKSCreateDecorator):
         )
         return gitops_addon_profile
 
+    def build_web_app_routing_profile(self) -> ManagedClusterIngressProfileWebAppRouting:
+        """Build the ingress_profile.web_app_routing profile
+
+        :return: a ManagedClusterIngressProfileWebAppRouting object
+        """
+        profile = self.models.ManagedClusterIngressProfileWebAppRouting(
+            enabled=True,
+        )
+        dns_zone_resource_id = self.context.raw_param.get("dns_zone_resource_id")
+        if dns_zone_resource_id is not None:
+            profile.dns_zone_resource_id = dns_zone_resource_id
+        return profile
+
     def set_up_addon_profiles(self, mc: ManagedCluster) -> ManagedCluster:
         """Set up addon profiles for the ManagedCluster object.
 
@@ -2409,6 +2434,12 @@ class AKSPreviewCreateDecorator(AKSCreateDecorator):
                 CONST_GITOPS_ADDON_NAME
             ] = self.build_gitops_addon_profile()
         mc.addon_profiles = addon_profiles
+
+        if "web_application_routing" in addons:
+            if mc.ingress_profile is None:
+                mc.ingress_profile = self.models.ManagedClusterIngressProfile()
+            mc.ingress_profile.web_app_routing = self.build_web_app_routing_profile()
+
         return mc
 
     def set_up_windows_profile(self, mc: ManagedCluster) -> ManagedCluster:
