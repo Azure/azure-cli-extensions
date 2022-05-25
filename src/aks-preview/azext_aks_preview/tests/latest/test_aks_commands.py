@@ -377,7 +377,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             self.check('provisioningState', 'Succeeded')
         ])
 
-        # clean up nsg set by policy, which would block creating appgw
+        # clean up nsg set by policy, otherwise would block creating appgw
         update_subnet = 'network vent subnet update -n appgw-subnet --resource-group={resource_group} --vnet-name {vnet_name} ' \
                         '--nsg ""'
         self.cmd(update_subnet, checks=[
