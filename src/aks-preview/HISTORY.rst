@@ -12,6 +12,11 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+0.5.76
+++++++
+
+* Add support to pass csi disk driver version.
+
 0.5.75
 ++++++
 
