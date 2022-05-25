@@ -12,17 +12,26 @@ from urllib.parse import urlparse
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
 from azure.cli.core.azclierror import (ValidationError, RequiredArgumentMissingError, CLIInternalError,
-                                       ResourceNotFoundError, ArgumentUsageError)
+                                       ResourceNotFoundError, ArgumentUsageError, FileOperationError, CLIError)
 from azure.cli.core.commands.client_factory import get_subscription_id
+from azure.cli.command_modules.appservice.utils import _normalize_location
+from azure.cli.command_modules.network._client_factory import network_client_factory
+
 from knack.log import get_logger
 from msrestazure.tools import parse_resource_id, is_valid_resource_id, resource_id
 
-from ._clients import ContainerAppClient
+from ._clients import ContainerAppClient, ManagedEnvironmentClient
 from ._client_factory import handle_raw_exception, providers_client_factory, cf_resource_groups, log_analytics_client_factory, log_analytics_shared_key_client_factory
 from ._constants import (MAXIMUM_CONTAINER_APP_NAME_LENGTH, SHORT_POLLING_INTERVAL_SECS, LONG_POLLING_INTERVAL_SECS,
-                         LOG_ANALYTICS_RP)
+                         LOG_ANALYTICS_RP, CONTAINER_APPS_RP, CHECK_CERTIFICATE_NAME_AVAILABILITY_TYPE)
+from ._models import (ContainerAppCustomDomainEnvelope as ContainerAppCustomDomainEnvelopeModel)
 
 logger = get_logger(__name__)
+
+
+def register_provider_if_needed(cmd, rp_name):
+    if not _is_resource_provider_registered(cmd, rp_name):
+        _register_resource_provider(cmd, rp_name)
 
 
 def validate_container_app_name(name):
@@ -31,126 +40,96 @@ def validate_container_app_name(name):
                               f"Please shorten {name}")
 
 
-# original implementation at azure.cli.command_modules.role.custom.create_service_principal_for_rbac
-# reimplemented to remove incorrect warning statements
-def create_service_principal_for_rbac(  # pylint:disable=too-many-statements,too-many-locals, too-many-branches, unused-argument, inconsistent-return-statements
-        cmd, name=None, years=None, create_cert=False, cert=None, scopes=None, role=None,
-        show_auth_for_sdk=None, skip_assignment=False, keyvault=None):
-    from azure.cli.command_modules.role.custom import (_graph_client_factory, TZ_UTC, _process_service_principal_creds,
-                                                       _validate_app_dates, create_application,
-                                                       _create_service_principal, _create_role_assignment,
-                                                       _error_caused_by_role_assignment_exists)
+def retry_until_success(operation, err_txt, retry_limit, *args, **kwargs):
+    while True:
+        try:
+            return operation(*args, **kwargs)
+        except Exception as e:
+            retry_limit -= 1
+            if retry_limit <= 0:
+                raise CLIInternalError(err_txt) from e
+            time.sleep(5)
+            logger.info(f"Encountered error: {e}. Retrying...")
 
-    if role and not scopes or not role and scopes:
-        raise ArgumentUsageError("Usage error: To create role assignments, specify both --role and --scopes.")
 
-    graph_client = _graph_client_factory(cmd.cli_ctx)
+def get_vnet_location(cmd, subnet_resource_id):
+    parsed_rid = parse_resource_id(subnet_resource_id)
+    vnet_client = network_client_factory(cmd.cli_ctx)
+    location = vnet_client.virtual_networks.get(resource_group_name=parsed_rid.get("resource_group"),
+                                                virtual_network_name=parsed_rid.get("name")).location
+    return _normalize_location(cmd, location)
 
-    years = years or 1
-    _RETRY_TIMES = 36
-    existing_sps = None
 
-    if not name:
-        # No name is provided, create a new one
-        app_display_name = 'azure-cli-' + datetime.utcnow().strftime('%Y-%m-%d-%H-%M-%S')
-    else:
-        app_display_name = name
-        # patch existing app with the same displayName to make the command idempotent
-        query_exp = "displayName eq '{}'".format(name)
-        existing_sps = list(graph_client.service_principals.list(filter=query_exp))
+def _create_application(client, display_name):
+    from azure.cli.command_modules.role.custom import GraphError
+    body = {"displayName": display_name, "keyCredentials": []}
 
-    app_start_date = datetime.now(TZ_UTC)
-    app_end_date = app_start_date + relativedelta(years=years or 1)
-
-    password, public_cert_string, cert_file, cert_start_date, cert_end_date = \
-        _process_service_principal_creds(cmd.cli_ctx, years, app_start_date, app_end_date, cert, create_cert,
-                                         None, keyvault)
-
-    app_start_date, app_end_date, cert_start_date, cert_end_date = \
-        _validate_app_dates(app_start_date, app_end_date, cert_start_date, cert_end_date)
-
-    aad_application = create_application(cmd,
-                                         display_name=app_display_name,
-                                         available_to_other_tenants=False,
-                                         password=password,
-                                         key_value=public_cert_string,
-                                         start_date=app_start_date,
-                                         end_date=app_end_date,
-                                         credential_description='rbac')
-    # pylint: disable=no-member
-    app_id = aad_application.app_id
-
-    # retry till server replication is done
-    aad_sp = existing_sps[0] if existing_sps else None
-    if not aad_sp:
-        for retry_time in range(0, _RETRY_TIMES):
-            try:
-                aad_sp = _create_service_principal(cmd.cli_ctx, app_id, resolve_app=False)
-                break
-            except Exception as ex:  # pylint: disable=broad-except
-                err_msg = str(ex)
-                if retry_time < _RETRY_TIMES and (
-                        ' does not reference ' in err_msg or
-                        ' does not exist ' in err_msg or
-                        'service principal being created must in the local tenant' in err_msg):
-                    logger.warning("Creating service principal failed with error '%s'. Retrying: %s/%s",
-                                   err_msg, retry_time + 1, _RETRY_TIMES)
-                    time.sleep(5)
-                else:
-                    logger.warning(
-                        "Creating service principal failed for '%s'. Trace followed:\n%s",
-                        app_id, ex.response.headers
-                        if hasattr(ex, 'response') else ex)  # pylint: disable=no-member
-                    raise
-    sp_oid = aad_sp.object_id
-
-    if role:
-        for scope in scopes:
-            # logger.warning("Creating '%s' role assignment under scope '%s'", role, scope)
-            # retry till server replication is done
-            for retry_time in range(0, _RETRY_TIMES):
-                try:
-                    _create_role_assignment(cmd.cli_ctx, role, sp_oid, None, scope, resolve_assignee=False,
-                                            assignee_principal_type='ServicePrincipal')
-                    break
-                except Exception as ex:
-                    if retry_time < _RETRY_TIMES and ' does not exist in the directory ' in str(ex):
-                        time.sleep(5)
-                        logger.warning('  Retrying role assignment creation: %s/%s', retry_time + 1,
-                                       _RETRY_TIMES)
-                        continue
-                    if _error_caused_by_role_assignment_exists(ex):
-                        logger.warning('  Role assignment already exists.\n')
-                        break
-
-                    # dump out history for diagnoses
-                    logger.warning('  Role assignment creation failed.\n')
-                    if getattr(ex, 'response', None) is not None:
-                        logger.warning('  role assignment response headers: %s\n',
-                                       ex.response.headers)  # pylint: disable=no-member
-                    raise
-
-    if show_auth_for_sdk:
-        from azure.cli.core._profile import Profile
-        profile = Profile(cli_ctx=cmd.cli_ctx)
-        result = profile.get_sp_auth_info(scopes[0].split('/')[2] if scopes else None,
-                                          app_id, password, cert_file)
-        # sdk-auth file should be in json format all the time, hence the print
-        print(json.dumps(result, indent=2))
-        return
-
-    result = {
-        'appId': app_id,
-        'password': password,
-        'displayName': app_display_name,
-        'tenant': graph_client.config.tenant_id
-    }
-    if cert_file:
-        logger.warning(
-            "Please copy %s to a safe place. When you run 'az login', provide the file path in the --password argument",
-            cert_file)
-        result['fileWithCertAndPrivateKey'] = cert_file
+    try:
+        result = client.application_create(body)
+    except GraphError as ex:
+        if 'insufficient privileges' in str(ex).lower():
+            link = 'https://docs.microsoft.com/azure/azure-resource-manager/resource-group-create-service-principal-portal'  # pylint: disable=line-too-long
+            raise ValidationError("Directory permission is needed for the current user to register the application. "
+                                  "For how to configure, please refer '{}'. Original error: {}".format(link, ex))
+        raise
     return result
+
+
+def _create_service_principal(client, app_id):
+    return client.service_principal_create({"appId": app_id, "accountEnabled": True})
+
+
+def _create_role_assignment(cli_ctx, role, assignee, scope=None):
+    import uuid
+    from azure.cli.core.profiles import ResourceType, get_sdk, supported_api_version
+    from azure.cli.core.commands.client_factory import get_mgmt_service_client
+
+    auth_client = get_mgmt_service_client(cli_ctx, ResourceType.MGMT_AUTHORIZATION)
+    assignments_client = auth_client.role_assignments
+    definitions_client = auth_client.role_definitions
+
+    assignment_name = uuid.uuid4()
+    role_defs = list(definitions_client.list(scope, "roleName eq '{}'".format(role)))
+    role_id = role_defs[0].id
+
+    api_version = supported_api_version(cli_ctx, resource_type=ResourceType.MGMT_AUTHORIZATION, max_api='2015-07-01')
+    RoleAssignmentCreateParameters = get_sdk(cli_ctx, ResourceType.MGMT_AUTHORIZATION,
+                                             'RoleAssignmentProperties' if api_version else 'RoleAssignmentCreateParameters',
+                                             mod='models', operation_group='role_assignments')
+    parameters = RoleAssignmentCreateParameters(role_definition_id=role_id, principal_id=assignee)
+    parameters.principal_type = "ServicePrincipal"
+    return assignments_client.create(scope, assignment_name, parameters)
+
+
+def create_service_principal_for_github_action(cmd, scopes=None, role="contributor"):
+    from azure.cli.command_modules.role import graph_client_factory
+
+    SP_CREATION_ERR_TXT = "Failed to create service principal."
+    RETRY_LIMIT = 36
+
+    client = graph_client_factory(cmd.cli_ctx)
+    now = datetime.utcnow()
+    app_display_name = 'azure-cli-' + now.strftime('%Y-%m-%d-%H-%M-%S')
+    app = retry_until_success(_create_application, SP_CREATION_ERR_TXT, RETRY_LIMIT, client, display_name=app_display_name)
+    sp = retry_until_success(_create_service_principal, SP_CREATION_ERR_TXT, RETRY_LIMIT, client, app_id=app["appId"])
+    for scope in scopes:
+        retry_until_success(_create_role_assignment, SP_CREATION_ERR_TXT, RETRY_LIMIT, cmd.cli_ctx, role=role, assignee=sp["id"], scope=scope)
+    service_principal = retry_until_success(client.service_principal_get, SP_CREATION_ERR_TXT, RETRY_LIMIT, sp["id"])
+
+    body = {
+        "passwordCredential": {
+            "displayName": None,
+            "startDateTime": now.strftime('%Y-%m-%dT%H:%M:%SZ'),
+            "endDateTime": (now + relativedelta(years=1)).strftime('%Y-%m-%dT%H:%M:%SZ'),
+        }
+    }
+    add_password_result = retry_until_success(client.service_principal_add_password, SP_CREATION_ERR_TXT, RETRY_LIMIT, service_principal["id"], body)
+
+    return {
+        'appId': service_principal['appId'],
+        'password': add_password_result['secretText'],
+        'tenant': client.tenant
+    }
 
 
 def is_int(s):
@@ -173,7 +152,7 @@ def get_workflow(github_repo, name):  # pylint: disable=inconsistent-return-stat
     workflows = list(github_repo.get_workflows())
     workflows.sort(key=lambda r: r.created_at, reverse=True)  # sort by latest first
     for wf in workflows:
-        if wf.path.startswith(f".github/workflows/{name}") and "Trigger auto deployment for containerapp" in wf.name:
+        if wf.path.startswith(f".github/workflows/{name}") and "Trigger auto deployment for" in wf.name:
             return wf
 
 
@@ -183,6 +162,7 @@ def trigger_workflow(token, repo, name, branch):
     wf.create_dispatch(branch)
 
 
+# pylint:disable=unused-argument
 def await_github_action(cmd, token, repo, branch, name, resource_group_name, timeout_secs=1200):
     from .custom import show_github_action
     from ._clients import PollingAnimation
@@ -244,7 +224,7 @@ def await_github_action(cmd, token, repo, branch, name, resource_group_name, tim
 
 def repo_url_to_name(repo_url):
     repo = None
-    repo = repo_url.split('/')
+    repo = [s for s in repo_url.split('/') if s]
     if len(repo) >= 2:
         repo = '/'.join(repo[-2:])
     return repo
@@ -495,7 +475,7 @@ def _get_default_containerapps_location(cmd, location=None):
     providers_client = None
     try:
         providers_client = providers_client_factory(cmd.cli_ctx, get_subscription_id(cmd.cli_ctx))
-        resource_types = getattr(providers_client.get("Microsoft.App"), 'resource_types', [])
+        resource_types = getattr(providers_client.get(CONTAINER_APPS_RP), 'resource_types', [])
         res_locations = []
         for res in resource_types:
             if res and getattr(res, 'resource_type', "") == "workspaces":
@@ -829,42 +809,125 @@ def update_nested_dictionary(orig_dict, new_dict):
     return orig_dict
 
 
-def _is_valid_weight(weight):
+def _validate_weight(weight):
     try:
         n = int(weight)
         if 0 <= n <= 100:
             return True
-        return False
-    except ValueError:
-        return False
+        raise ValidationError('Traffic weights must be integers between 0 and 100')
+    except ValueError as ex:
+        raise ValidationError('Traffic weights must be integers between 0 and 100') from ex
 
 
-def _update_traffic_weights(containerapp_def, list_weights):
-    if "traffic" not in containerapp_def["properties"]["configuration"]["ingress"] or list_weights and len(list_weights):
+def _update_revision_weights(containerapp_def, list_weights):
+    old_weight_sum = 0
+    if "traffic" not in containerapp_def["properties"]["configuration"]["ingress"]:
         containerapp_def["properties"]["configuration"]["ingress"]["traffic"] = []
+
+    if not list_weights:
+        return 0
 
     for new_weight in list_weights:
         key_val = new_weight.split('=', 1)
+        if len(key_val) != 2:
+            raise ValidationError('Traffic weights must be in format \"<revision>=<weight> <revision2>=<weight2> ...\"')
+        revision = key_val[0]
+        weight = key_val[1]
+        _validate_weight(weight)
         is_existing = False
 
-        if len(key_val) != 2:
-            raise ValidationError('Traffic weights must be in format \"<revision>=weight <revision2>=<weigh2> ...\"')
-
-        if not _is_valid_weight(key_val[1]):
-            raise ValidationError('Traffic weights must be integers between 0 and 100')
-
+        for existing_weight in containerapp_def["properties"]["configuration"]["ingress"]["traffic"]:
+            if "latestRevision" in existing_weight and existing_weight["latestRevision"]:
+                if revision.lower() == "latest":
+                    old_weight_sum += existing_weight["weight"]
+                    existing_weight["weight"] = weight
+                    is_existing = True
+                    break
+            elif "revisionName" in existing_weight and existing_weight["revisionName"].lower() == revision.lower():
+                old_weight_sum += existing_weight["weight"]
+                existing_weight["weight"] = weight
+                is_existing = True
+                break
         if not is_existing:
             containerapp_def["properties"]["configuration"]["ingress"]["traffic"].append({
-                "revisionName": key_val[0] if key_val[0].lower() != "latest" else None,
-                "weight": int(key_val[1]),
-                "latestRevision": key_val[0].lower() == "latest"
+                "revisionName": revision if revision.lower() != "latest" else None,
+                "weight": int(weight),
+                "latestRevision": revision.lower() == "latest"
             })
+    return old_weight_sum
+
+
+def _append_label_weights(containerapp_def, label_weights, revision_weights):
+    if "traffic" not in containerapp_def["properties"]["configuration"]["ingress"]:
+        containerapp_def["properties"]["configuration"]["ingress"]["traffic"] = []
+
+    if not label_weights:
+        return
+
+    revision_weight_names = [w.split('=', 1)[0].lower() for w in revision_weights]  # this is to check if we already have that revision weight passed
+    for new_weight in label_weights:
+        key_val = new_weight.split('=', 1)
+        if len(key_val) != 2:
+            raise ValidationError('Traffic weights must be in format \"<revision>=<weight> <revision2>=<weight2> ...\"')
+        label = key_val[0]
+        weight = key_val[1]
+        _validate_weight(weight)
+        is_existing = False
+
+        for existing_weight in containerapp_def["properties"]["configuration"]["ingress"]["traffic"]:
+            if "label" in existing_weight and existing_weight["label"].lower() == label.lower():
+                if "revisionName" in existing_weight and existing_weight["revisionName"] and existing_weight["revisionName"].lower() in revision_weight_names:
+                    logger.warning("Already passed value for revision {}, will not overwrite with {}.".format(existing_weight["revisionName"], new_weight))  # pylint: disable=logging-format-interpolation
+                    is_existing = True
+                    break
+                revision_weights.append("{}={}".format(existing_weight["revisionName"] if "revisionName" in existing_weight and existing_weight["revisionName"] else "latest", weight))
+                is_existing = True
+                break
+
+        if not is_existing:
+            raise ValidationError(f"No label {label} assigned to any traffic weight.")
+
+
+def _update_weights(containerapp_def, revision_weights, old_weight_sum):
+
+    new_weight_sum = sum([int(w.split('=', 1)[1]) for w in revision_weights])
+    revision_weight_names = [w.split('=', 1)[0].lower() for w in revision_weights]
+    divisor = sum([int(w["weight"]) for w in containerapp_def["properties"]["configuration"]["ingress"]["traffic"]]) - new_weight_sum
+    round_up = True
+    # if there is no change to be made, don't even try (also can't divide by zero)
+    if divisor == 0:
+        return
+
+    scale_factor = (old_weight_sum - new_weight_sum) / divisor + 1
+
+    for existing_weight in containerapp_def["properties"]["configuration"]["ingress"]["traffic"]:
+        if "latestRevision" in existing_weight and existing_weight["latestRevision"]:
+            if "latest" not in revision_weight_names:
+                existing_weight["weight"], round_up = _round(scale_factor * existing_weight["weight"], round_up)
+        elif "revisionName" in existing_weight and existing_weight["revisionName"].lower() not in revision_weight_names:
+            existing_weight["weight"], round_up = _round(scale_factor * existing_weight["weight"], round_up)
+
+
+# required because what if .5, .5? We need sum to be 100, so can't round up or down both times
+def _round(number, round_up):
+    import math
+    number = round(number, 2)  # required because we are dealing with floats
+    if round_up:
+        return math.ceil(number), not round_up
+    return math.floor(number), not round_up
+
+
+def _validate_traffic_sum(revision_weights):
+    weight_sum = sum([int(w.split('=', 1)[1]) for w in revision_weights if len(w.split('=', 1)) == 2 and _validate_weight(w.split('=', 1)[1])])
+    if weight_sum > 100:
+        raise ValidationError("Traffic sums may not exceed 100.")
 
 
 def _get_app_from_revision(revision):
     if not revision:
         raise ValidationError('Invalid revision. Revision must not be empty')
-
+    if revision.lower() == "latest":
+        raise ValidationError('Please provide a name for your containerapp. Cannot lookup name of containerapp without a full revision name.')
     revision = revision.split('--')
     revision.pop()
     revision = "--".join(revision)
@@ -914,6 +977,15 @@ def get_randomized_name(prefix, name=None, initial="rg"):
     if name is not None:
         return name
     return default
+
+
+def generate_randomized_cert_name(thumbprint, prefix, initial="rg"):
+    from random import randint
+    cert_name = "{}-{}-{}-{:04}".format(prefix[:14], initial[:14], thumbprint[:4].lower(), randint(0, 9999))
+    for c in cert_name:
+        if not (c.isalnum() or c == '-' or c == '.'):
+            cert_name.replace(c, '-')
+    return cert_name.lower()
 
 
 def _set_webapp_up_default_args(cmd, resource_group_name, location, name, registry_server):
@@ -1081,3 +1153,159 @@ def create_new_acr(cmd, registry_name, resource_group_name, location=None, sku="
     lro_poller = client.begin_create(resource_group_name, registry_name, registry)
     acr = LongRunningOperation(cmd.cli_ctx)(lro_poller)
     return acr
+
+
+def set_field_in_auth_settings(auth_settings, set_string):
+    if set_string is not None:
+        split1 = set_string.split("=")
+        fieldName = split1[0]
+        fieldValue = split1[1]
+        split2 = fieldName.split(".")
+        auth_settings = set_field_in_auth_settings_recursive(split2, fieldValue, auth_settings)
+    return auth_settings
+
+
+def set_field_in_auth_settings_recursive(field_name_split, field_value, auth_settings):
+    if len(field_name_split) == 1:
+        if not field_value.startswith('[') or not field_value.endswith(']'):
+            auth_settings[field_name_split[0]] = field_value
+        else:
+            field_value_list_string = field_value[1:-1]
+            auth_settings[field_name_split[0]] = field_value_list_string.split(",")
+        return auth_settings
+
+    remaining_field_names = field_name_split[1:]
+    if field_name_split[0] not in auth_settings:
+        auth_settings[field_name_split[0]] = {}
+    auth_settings[field_name_split[0]] = set_field_in_auth_settings_recursive(remaining_field_names,
+                                                                              field_value,
+                                                                              auth_settings[field_name_split[0]])
+    return auth_settings
+
+
+def update_http_settings_in_auth_settings(auth_settings, require_https, proxy_convention,
+                                          proxy_custom_host_header, proxy_custom_proto_header):
+    if require_https is not None:
+        if "httpSettings" not in auth_settings:
+            auth_settings["httpSettings"] = {}
+        auth_settings["httpSettings"]["requireHttps"] = require_https
+
+    if proxy_convention is not None:
+        if "httpSettings" not in auth_settings:
+            auth_settings["httpSettings"] = {}
+        if "forwardProxy" not in auth_settings["httpSettings"]:
+            auth_settings["httpSettings"]["forwardProxy"] = {}
+        auth_settings["httpSettings"]["forwardProxy"]["convention"] = proxy_convention
+
+    if proxy_custom_host_header is not None:
+        if "httpSettings" not in auth_settings:
+            auth_settings["httpSettings"] = {}
+        if "forwardProxy" not in auth_settings["httpSettings"]:
+            auth_settings["httpSettings"]["forwardProxy"] = {}
+        auth_settings["httpSettings"]["forwardProxy"]["customHostHeaderName"] = proxy_custom_host_header
+
+    if proxy_custom_proto_header is not None:
+        if "httpSettings" not in auth_settings:
+            auth_settings["httpSettings"] = {}
+        if "forwardProxy" not in auth_settings["httpSettings"]:
+            auth_settings["httpSettings"]["forwardProxy"] = {}
+        auth_settings["httpSettings"]["forwardProxy"]["customProtoHeaderName"] = proxy_custom_proto_header
+
+    return auth_settings
+
+
+def get_oidc_client_setting_app_setting_name(provider_name):
+    provider_name_prefix = provider_name.lower()[:10]  # secret names can't be too long
+    return provider_name_prefix + "-authentication-secret"
+
+
+# only accept .pfx or .pem file
+def load_cert_file(file_path, cert_password=None):
+    from base64 import b64encode
+    from OpenSSL import crypto
+    import os
+
+    cert_data = None
+    thumbprint = None
+    blob = None
+    try:
+        with open(file_path, "rb") as f:
+            if os.path.splitext(file_path)[1] in ['.pem']:
+                cert_data = f.read()
+                x509 = crypto.load_certificate(crypto.FILETYPE_PEM, cert_data)
+                digest_algorithm = 'sha256'
+                thumbprint = x509.digest(digest_algorithm).decode("utf-8").replace(':', '')
+                blob = b64encode(cert_data).decode("utf-8")
+            elif os.path.splitext(file_path)[1] in ['.pfx']:
+                cert_data = f.read()
+                try:
+                    p12 = crypto.load_pkcs12(cert_data, cert_password)
+                except Exception as e:
+                    raise FileOperationError('Failed to load the certificate file. This may be due to an incorrect or missing password. Please double check and try again.\nError: {}'.format(e)) from e
+                x509 = p12.get_certificate()
+                digest_algorithm = 'sha256'
+                thumbprint = x509.digest(digest_algorithm).decode("utf-8").replace(':', '')
+                pem_data = crypto.dump_certificate(crypto.FILETYPE_PEM, x509)
+                blob = b64encode(pem_data).decode("utf-8")
+            else:
+                raise FileOperationError('Not a valid file type. Only .PFX and .PEM files are supported.')
+    except Exception as e:
+        raise CLIInternalError(e) from e
+    return blob, thumbprint
+
+
+def check_cert_name_availability(cmd, resource_group_name, name, cert_name):
+    name_availability_request = {}
+    name_availability_request["name"] = cert_name
+    name_availability_request["type"] = CHECK_CERTIFICATE_NAME_AVAILABILITY_TYPE
+    try:
+        r = ManagedEnvironmentClient.check_name_availability(cmd, resource_group_name, name, name_availability_request)
+    except CLIError as e:
+        handle_raw_exception(e)
+    return r["nameAvailable"]
+
+
+def validate_hostname(cmd, resource_group_name, name, hostname):
+    passed = False
+    message = None
+    try:
+        r = ContainerAppClient.validate_domain(cmd, resource_group_name, name, hostname)
+        passed = r["customDomainVerificationTest"] == "Passed" and not r["hasConflictOnManagedEnvironment"]
+        if "customDomainVerificationFailureInfo" in r:
+            message = r["customDomainVerificationFailureInfo"]["message"]
+        elif r["hasConflictOnManagedEnvironment"] and ("conflictingContainerAppResourceId" in r):
+            message = "Custom Domain {} Conflicts on the same environment with {}.".format(hostname, r["conflictingContainerAppResourceId"])
+    except CLIError as e:
+        handle_raw_exception(e)
+    return passed, message
+
+
+def patch_new_custom_domain(cmd, resource_group_name, name, new_custom_domains):
+    envelope = ContainerAppCustomDomainEnvelopeModel
+    envelope["properties"]["configuration"]["ingress"]["customDomains"] = new_custom_domains
+    try:
+        r = ContainerAppClient.update(cmd, resource_group_name, name, envelope)
+    except CLIError as e:
+        handle_raw_exception(e)
+    if "customDomains" in r["properties"]["configuration"]["ingress"]:
+        return list(r["properties"]["configuration"]["ingress"]["customDomains"])
+    else:
+        return []
+
+
+def get_custom_domains(cmd, resource_group_name, name, location=None, environment=None):
+    try:
+        app = ContainerAppClient.show(cmd=cmd, resource_group_name=resource_group_name, name=name)
+        if location:
+            _ensure_location_allowed(cmd, location, "Microsoft.App", "containerApps")
+            if _normalize_location(cmd, app["location"]) != _normalize_location(cmd, location):
+                raise ResourceNotFoundError('Container app {} is not in location {}.'.format(name, location))
+        if environment and (_get_name(environment) != _get_name(app["properties"]["managedEnvironmentId"])):
+            raise ResourceNotFoundError('Container app {} is not under environment {}.'.format(name, environment))
+        if "ingress" in app["properties"]["configuration"] and "customDomains" in app["properties"]["configuration"]["ingress"]:
+            custom_domains = app["properties"]["configuration"]["ingress"]["customDomains"]
+        else:
+            custom_domains = []
+    except CLIError as e:
+        handle_raw_exception(e)
+    return custom_domains

@@ -24,8 +24,6 @@ from knack.arguments import CLIArgumentType
 from ._completers import (
     get_k8s_upgrades_completion_list,
     get_k8s_versions_completion_list,
-    get_cluster_ossku_completion_list,
-    get_nodepool_ossku_completion_list,
     get_vm_size_completion_list,
 )
 from ._consts import (
@@ -246,7 +244,7 @@ def load_arguments(self, _):
                    help='Node pool name, upto 12 alphanumeric characters', validator=validate_nodepool_name)
         c.argument('node_vm_size', options_list=[
                    '--node-vm-size', '-s'], completer=get_vm_size_completion_list)
-        c.argument('os_sku', completer=get_cluster_ossku_completion_list)
+        c.argument('os_sku', arg_type=get_enum_type(node_os_skus))
         c.argument('vnet_subnet_id', validator=validate_vnet_subnet_id)
         c.argument('pod_subnet_id', validator=validate_pod_subnet_id)
         c.argument('enable_node_public_ip', action='store_true')
@@ -285,7 +283,7 @@ def load_arguments(self, _):
         c.argument('http_proxy_config')
         c.argument('enable_pod_security_policy', action='store_true')
         c.argument('enable_pod_identity', action='store_true')
-        c.argument('enable_workload_identity', arg_type=get_three_state_flag(), is_preview=True)
+        c.argument('enable_workload_identity', arg_type=get_three_state_flag())
         c.argument('enable_oidc_issuer', action='store_true', is_preview=True)
         c.argument('enable_azure_keyvault_kms', action='store_true', is_preview=True)
         c.argument('azure_keyvault_kms_key_id', validator=validate_azure_keyvault_kms_key_id, is_preview=True)
@@ -299,6 +297,7 @@ def load_arguments(self, _):
         c.argument('workload_runtime', arg_type=get_enum_type(workload_runtimes), default=CONST_WORKLOAD_RUNTIME_OCI_CONTAINER)
         c.argument('enable_apiserver_vnet_integration', action='store_true', is_preview=True)
         c.argument('apiserver_subnet_id', validator=validate_apiserver_subnet_id, is_preview=True)
+        c.argument('dns-zone-resource-id')
 
     with self.argument_context('aks update') as c:
         # managed cluster paramerters
@@ -366,8 +365,7 @@ def load_arguments(self, _):
         c.argument('disable_pod_security_policy', action='store_true')
         c.argument('enable_pod_identity', action='store_true')
         c.argument('disable_pod_identity', action='store_true')
-        c.argument('enable_workload_identity', arg_type=get_three_state_flag(), is_preview=True)
-        c.argument('disable_workload_identity', arg_type=get_three_state_flag(), is_preview=True)
+        c.argument('enable_workload_identity', arg_type=get_three_state_flag())
         c.argument('enable_oidc_issuer', action='store_true', is_preview=True)
         c.argument('enable_azure_keyvault_kms', action='store_true', is_preview=True)
         c.argument('azure_keyvault_kms_key_id', validator=validate_azure_keyvault_kms_key_id, is_preview=True)
@@ -413,8 +411,7 @@ def load_arguments(self, _):
             c.argument('node_vm_size', options_list=[
                        '--node-vm-size', '-s'], completer=get_vm_size_completion_list)
             c.argument('os_type')
-            c.argument('os_sku', options_list=[
-                       '--os-sku'], completer=get_nodepool_ossku_completion_list)
+            c.argument('os_sku', arg_type=get_enum_type(node_os_skus))
             c.argument('vnet_subnet_id',
                        validator=validate_vnet_subnet_id)
             c.argument('pod_subnet_id',
@@ -516,6 +513,7 @@ def load_arguments(self, _):
         c.argument('workspace_resource_id')
         c.argument('enable_msi_auth_for_monitoring',
                    arg_type=get_three_state_flag(), is_preview=True)
+        c.argument('dns-zone-resource-id')
 
     with self.argument_context('aks addon disable') as c:
         c.argument('addon', options_list=[
@@ -544,6 +542,7 @@ def load_arguments(self, _):
         c.argument('workspace_resource_id')
         c.argument('enable_msi_auth_for_monitoring',
                    arg_type=get_three_state_flag(), is_preview=True)
+        c.argument('dns-zone-resource-id')
 
     with self.argument_context('aks disable-addons') as c:
         c.argument('addons', options_list=[
@@ -572,6 +571,7 @@ def load_arguments(self, _):
         c.argument('workspace_resource_id')
         c.argument('enable_msi_auth_for_monitoring',
                    arg_type=get_three_state_flag(), is_preview=True)
+        c.argument('dns-zone-resource-id')
 
     with self.argument_context('aks get-credentials') as c:
         c.argument('admin', options_list=['--admin', '-a'], default=False)

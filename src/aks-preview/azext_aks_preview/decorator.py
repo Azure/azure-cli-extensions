@@ -95,6 +95,8 @@ ManagedClusterAPIServerAccessProfile = TypeVar('ManagedClusterAPIServerAccessPro
 Snapshot = TypeVar("Snapshot")
 ManagedClusterSnapshot = TypeVar("ManagedClusterSnapshot")
 AzureKeyVaultKms = TypeVar('AzureKeyVaultKms')
+ManagedClusterIngressProfile = TypeVar('ManagedClusterIngressProfile')
+ManagedClusterIngressProfileWebAppRouting = TypeVar('ManagedClusterIngressProfileWebAppRouting')
 
 
 # pylint: disable=too-many-instance-attributes,too-few-public-methods
@@ -139,6 +141,16 @@ class AKSPreviewModels(AKSModels):
         )
         self.ManagedClusterSecurityProfile = self.__cmd.get_models(
             "ManagedClusterSecurityProfile",
+            resource_type=self.resource_type,
+            operation_group="managed_clusters",
+        )
+        self.ManagedClusterIngressProfileWebAppRouting = self.__cmd.get_models(
+            "ManagedClusterIngressProfileWebAppRouting",
+            resource_type=self.resource_type,
+            operation_group="managed_clusters",
+        )
+        self.ManagedClusterIngressProfile = self.__cmd.get_models(
+            "ManagedClusterIngressProfile",
             resource_type=self.resource_type,
             operation_group="managed_clusters",
         )
@@ -1684,6 +1696,8 @@ class AKSPreviewContext(AKSContext):
         """
         enable_disk_driver = self.raw_param.get("enable_disk_driver")
         disable_disk_driver = self.raw_param.get("disable_disk_driver")
+        if not enable_disk_driver and not disable_disk_driver:
+            return None
         profile = self.models.ManagedClusterStorageProfileDiskCSIDriver()
 
         if enable_disk_driver and disable_disk_driver:
@@ -1713,6 +1727,8 @@ class AKSPreviewContext(AKSContext):
         """
         enable_file_driver = self.raw_param.get("enable_file_driver")
         disable_file_driver = self.raw_param.get("disable_file_driver")
+        if not enable_file_driver and not disable_file_driver:
+            return None
         profile = self.models.ManagedClusterStorageProfileFileCSIDriver()
 
         if enable_file_driver and disable_file_driver:
@@ -1742,6 +1758,9 @@ class AKSPreviewContext(AKSContext):
         """
         enable_snapshot_controller = self.raw_param.get("enable_snapshot_controller")
         disable_snapshot_controller = self.raw_param.get("disable_snapshot_controller")
+        if not enable_snapshot_controller and not disable_snapshot_controller:
+            return None
+
         profile = self.models.ManagedClusterStorageProfileSnapshotController()
 
         if enable_snapshot_controller and disable_snapshot_controller:
@@ -1801,32 +1820,23 @@ class AKSPreviewContext(AKSContext):
 
         :return: Optional[ManagedClusterSecurityProfileWorkloadIdentity]
         """
+        # NOTE: enable_workload_identity can be one of:
+        #
+        # - True: sets by user, to enable the workload identity feature
+        # - False: sets by user, to disable the workload identity feature
+        # - None: user unspecified, don't set the profile and let server side to backfill
         enable_workload_identity = self.raw_param.get("enable_workload_identity")
-        disable_workload_identity = self.raw_param.get("disable_workload_identity")
-        if self.decorator_mode == DecoratorMode.CREATE:
-            # CREATE mode has no --disable-workload-identity flag
-            disable_workload_identity = None
 
-        if enable_workload_identity is None and disable_workload_identity is None:
-            # no flags have been set, return None; server side will backfill the default/existing value
+        if enable_workload_identity is None:
             return None
 
-        if enable_workload_identity and disable_workload_identity:
-            raise MutuallyExclusiveArgumentError(
-                "Cannot specify --enable-workload-identity and "
-                "--disable-workload-identity at the same time."
-            )
-
         profile = self.models.ManagedClusterSecurityProfileWorkloadIdentity()
-        if self.decorator_mode == DecoratorMode.CREATE:
-            profile.enabled = bool(enable_workload_identity)
-        elif self.decorator_mode == DecoratorMode.UPDATE:
+        if self.decorator_mode == DecoratorMode.UPDATE:
             if self.mc.security_profile is not None and self.mc.security_profile.workload_identity is not None:
+                # reuse previous profile is has been set
                 profile = self.mc.security_profile.workload_identity
-            if enable_workload_identity:
-                profile.enabled = True
-            elif disable_workload_identity:
-                profile.enabled = False
+
+        profile.enabled = bool(enable_workload_identity)
 
         if profile.enabled:
             # in enable case, we need to check if OIDC issuer has been enabled
@@ -2364,6 +2374,19 @@ class AKSPreviewCreateDecorator(AKSCreateDecorator):
         )
         return gitops_addon_profile
 
+    def build_web_app_routing_profile(self) -> ManagedClusterIngressProfileWebAppRouting:
+        """Build the ingress_profile.web_app_routing profile
+
+        :return: a ManagedClusterIngressProfileWebAppRouting object
+        """
+        profile = self.models.ManagedClusterIngressProfileWebAppRouting(
+            enabled=True,
+        )
+        dns_zone_resource_id = self.context.raw_param.get("dns_zone_resource_id")
+        if dns_zone_resource_id is not None:
+            profile.dns_zone_resource_id = dns_zone_resource_id
+        return profile
+
     def set_up_addon_profiles(self, mc: ManagedCluster) -> ManagedCluster:
         """Set up addon profiles for the ManagedCluster object.
 
@@ -2382,6 +2405,12 @@ class AKSPreviewCreateDecorator(AKSCreateDecorator):
                 CONST_GITOPS_ADDON_NAME
             ] = self.build_gitops_addon_profile()
         mc.addon_profiles = addon_profiles
+
+        if "web_application_routing" in addons:
+            if mc.ingress_profile is None:
+                mc.ingress_profile = self.models.ManagedClusterIngressProfile()
+            mc.ingress_profile.web_app_routing = self.build_web_app_routing_profile()
+
         return mc
 
     def set_up_windows_profile(self, mc: ManagedCluster) -> ManagedCluster:

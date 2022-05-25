@@ -1,0 +1,2875 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - monitor app-insights component show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --app
+      User-Agent:
+      - python/3.9.5 (Windows-10-10.0.19043-SP0) msrest/0.6.21 msrest_azure/0.6.4
+        azure-mgmt-applicationinsights/0.2.0 Azure-SDK-For-Python AZURECLI/2.27.1
+      accept-language:
+      - en-US
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.Insights/components/cli_scenario_test_20210906102205?api-version=2020-02-02-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/microsoft.insights/components/cli_scenario_test_20210906102205","name":"cli_scenario_test_20210906102205","type":"microsoft.insights/components","location":"eastus","tags":{},"kind":"web","etag":"\"1c0138f9-0000-0100-0000-61357b530000\"","properties":{"Ver":"v2","ApplicationId":"cli_scenario_test_20210906102205","AppId":"6b1ab966-0866-4f6d-a01b-fc781bed0e57","Application_Type":"web","Flow_Type":"Bluefield","Request_Source":"rest","InstrumentationKey":"1a5759a2-f52e-4488-b4e8-ee351244ca73","ConnectionString":"InstrumentationKey=1a5759a2-f52e-4488-b4e8-ee351244ca73;IngestionEndpoint=https://eastus-2.in.applicationinsights.azure.com/","Name":"cli_scenario_test_20210906102205","CreationDate":"2021-09-06T02:22:11.602511+00:00","TenantId":"0753feba-86f1-4242-aff1-27938fb04531","provisioningState":"Succeeded","SamplingPercentage":null,"RetentionInDays":90,"IngestionMode":"ApplicationInsights","publicNetworkAccessForIngestion":"Enabled","publicNetworkAccessForQuery":"Enabled"}}'
+    headers:
+      access-control-expose-headers:
+      - Request-Context
+      cache-control:
+      - no-cache
+      content-length:
+      - '1072'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 06 Sep 2021 03:44:49 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:920e14b1-13f3-461a-a4bb-b4fe6f1a4525
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --disable-app-insights --no-wait
+      User-Agent:
+      - AZURECLI/2.27.1 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.5 (Windows-10-10.0.19043-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest10?api-version=2022-05-01-preview
+  response:
+    body:
+      string: '{"properties":{"provisioningState":"Succeeded","version":3,"serviceId":"e2c3dcb4663b49d891a84af0d6fa556f","networkProfile":{"outboundIPs":{"publicIPs":["52.186.105.180"]}}},"type":"Microsoft.AppPlatform/Spring","sku":{"name":"B0","tier":"Basic"},"location":"eastus","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest10","name":"cli-unittest10"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '432'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 06 Sep 2021 03:44:50 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:ccd65fc4-7cd4-497e-8dc8-9a76e9a43ae2
+      server:
+      - nginx/1.17.7
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '11995'
+      x-rp-server-mvid:
+      - 1ad6f767-93a4-44b8-a9d3-86d493cbdd27
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --disable-app-insights --no-wait
+      User-Agent:
+      - AZURECLI/2.27.1 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.5 (Windows-10-10.0.19043-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest10/monitoringSettings/default?api-version=2020-11-01-preview
+  response:
+    body:
+      string: '{"properties":{"appInsightsSamplingRate":10.0,"appInsightsAgentVersions":{"java":"3.1.1"},"provisioningState":"Succeeded","traceEnabled":false,"appInsightsInstrumentationKey":null},"type":"Microsoft.AppPlatform/Spring/monitoringSettings","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest10/monitoringSettings/default","name":"default"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '414'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 06 Sep 2021 03:44:51 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:ccd65fc4-7cd4-497e-8dc8-9a76e9a43ae2
+      server:
+      - nginx/1.17.7
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-rp-server-mvid:
+      - 1ad6f767-93a4-44b8-a9d3-86d493cbdd27
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring app-insights show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --query -o
+      User-Agent:
+      - AZURECLI/2.27.1 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.5 (Windows-10-10.0.19043-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest10/monitoringSettings/default?api-version=2020-11-01-preview
+  response:
+    body:
+      string: '{"properties":{"appInsightsSamplingRate":10.0,"appInsightsAgentVersions":{"java":"3.1.1"},"provisioningState":"Succeeded","traceEnabled":false,"appInsightsInstrumentationKey":null},"type":"Microsoft.AppPlatform/Spring/monitoringSettings","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest10/monitoringSettings/default","name":"default"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '414'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 06 Sep 2021 03:44:52 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:ccd65fc4-7cd4-497e-8dc8-9a76e9a43ae2
+      server:
+      - nginx/1.17.7
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-rp-server-mvid:
+      - 1ad6f767-93a4-44b8-a9d3-86d493cbdd27
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring app-insights show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g
+      User-Agent:
+      - AZURECLI/2.27.1 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.5 (Windows-10-10.0.19043-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest10/monitoringSettings/default?api-version=2020-11-01-preview
+  response:
+    body:
+      string: '{"properties":{"appInsightsSamplingRate":10.0,"appInsightsAgentVersions":{"java":"3.1.1"},"provisioningState":"Succeeded","traceEnabled":false,"appInsightsInstrumentationKey":null},"type":"Microsoft.AppPlatform/Spring/monitoringSettings","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest10/monitoringSettings/default","name":"default"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '414'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 06 Sep 2021 03:44:54 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:ccd65fc4-7cd4-497e-8dc8-9a76e9a43ae2
+      server:
+      - nginx/1.17.7
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-rp-server-mvid:
+      - 1ad6f767-93a4-44b8-a9d3-86d493cbdd27
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --no-wait --app-insights
+      User-Agent:
+      - AZURECLI/2.27.1 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.5 (Windows-10-10.0.19043-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest10?api-version=2022-05-01-preview
+  response:
+    body:
+      string: '{"properties":{"provisioningState":"Succeeded","version":3,"serviceId":"e2c3dcb4663b49d891a84af0d6fa556f","networkProfile":{"outboundIPs":{"publicIPs":["52.186.105.180"]}}},"type":"Microsoft.AppPlatform/Spring","sku":{"name":"B0","tier":"Basic"},"location":"eastus","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest10","name":"cli-unittest10"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '432'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 06 Sep 2021 03:44:56 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:ccd65fc4-7cd4-497e-8dc8-9a76e9a43ae2
+      server:
+      - nginx/1.17.7
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '11996'
+      x-rp-server-mvid:
+      - 1ad6f767-93a4-44b8-a9d3-86d493cbdd27
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --no-wait --app-insights
+      User-Agent:
+      - AZURECLI/2.27.1 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.5 (Windows-10-10.0.19043-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest10/monitoringSettings/default?api-version=2020-11-01-preview
+  response:
+    body:
+      string: '{"properties":{"appInsightsSamplingRate":10.0,"appInsightsAgentVersions":{"java":"3.1.1"},"provisioningState":"Succeeded","traceEnabled":false,"appInsightsInstrumentationKey":null},"type":"Microsoft.AppPlatform/Spring/monitoringSettings","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest10/monitoringSettings/default","name":"default"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '414'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 06 Sep 2021 03:44:57 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:ccd65fc4-7cd4-497e-8dc8-9a76e9a43ae2
+      server:
+      - nginx/1.17.7
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-rp-server-mvid:
+      - 1ad6f767-93a4-44b8-a9d3-86d493cbdd27
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --no-wait --app-insights
+      User-Agent:
+      - AZURECLI/2.27.1 azsdk-python-azure-mgmt-applicationinsights/1.0.0 Python/3.9.5
+        (Windows-10-10.0.19043-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.Insights/components/cli_scenario_test_20210906102205?api-version=2015-05-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/microsoft.insights/components/cli_scenario_test_20210906102205","name":"cli_scenario_test_20210906102205","type":"microsoft.insights/components","location":"eastus","tags":{},"kind":"web","etag":"\"1c0138f9-0000-0100-0000-61357b530000\"","properties":{"Ver":"v2","ApplicationId":"cli_scenario_test_20210906102205","AppId":"6b1ab966-0866-4f6d-a01b-fc781bed0e57","Application_Type":"web","Flow_Type":"Bluefield","Request_Source":"rest","InstrumentationKey":"1a5759a2-f52e-4488-b4e8-ee351244ca73","ConnectionString":"InstrumentationKey=1a5759a2-f52e-4488-b4e8-ee351244ca73;IngestionEndpoint=https://eastus-2.in.applicationinsights.azure.com/","Name":"cli_scenario_test_20210906102205","CreationDate":"2021-09-06T02:22:11.602511+00:00","TenantId":"0753feba-86f1-4242-aff1-27938fb04531","provisioningState":"Succeeded","SamplingPercentage":null,"RetentionInDays":90,"IngestionMode":"ApplicationInsights","publicNetworkAccessForIngestion":"Enabled","publicNetworkAccessForQuery":"Enabled"}}'
+    headers:
+      access-control-expose-headers:
+      - Request-Context
+      cache-control:
+      - no-cache
+      content-length:
+      - '1072'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 06 Sep 2021 03:44:58 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:920e14b1-13f3-461a-a4bb-b4fe6f1a4525
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"traceEnabled": true, "appInsightsInstrumentationKey":
+      "InstrumentationKey=1a5759a2-f52e-4488-b4e8-ee351244ca73;IngestionEndpoint=https://eastus-2.in.applicationinsights.azure.com/"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '199'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -n --no-wait --app-insights
+      User-Agent:
+      - AZURECLI/2.27.1 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.5 (Windows-10-10.0.19043-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest10/monitoringSettings/default?api-version=2020-11-01-preview
+  response:
+    body:
+      string: '{"properties":{"appInsightsSamplingRate":10.0,"appInsightsAgentVersions":{"java":"3.1.1"},"provisioningState":"Updating","traceEnabled":true,"appInsightsInstrumentationKey":"InstrumentationKey=1a5759a2-f52e-4488-b4e8-ee351244ca73;IngestionEndpoint=https://eastus-2.in.applicationinsights.azure.com/"},"type":"Microsoft.AppPlatform/Spring/monitoringSettings","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest10/monitoringSettings/default","name":"default"}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/cli-unittest10/operationId/e89c7106-dc33-4404-a9fa-c7009579b42b?api-version=2020-11-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '534'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 06 Sep 2021 03:44:58 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/eastus/operationResults/e89c7106-dc33-4404-a9fa-c7009579b42b/Spring/cli-unittest10?api-version=2020-11-01-preview
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:ccd65fc4-7cd4-497e-8dc8-9a76e9a43ae2
+      server:
+      - nginx/1.17.7
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1198'
+      x-rp-server-mvid:
+      - 1ad6f767-93a4-44b8-a9d3-86d493cbdd27
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring app-insights show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --query -o
+      User-Agent:
+      - AZURECLI/2.27.1 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.5 (Windows-10-10.0.19043-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest10/monitoringSettings/default?api-version=2020-11-01-preview
+  response:
+    body:
+      string: '{"properties":{"appInsightsSamplingRate":10.0,"appInsightsAgentVersions":{"java":"3.1.1"},"provisioningState":"Updating","traceEnabled":true,"appInsightsInstrumentationKey":"InstrumentationKey=1a5759a2-f52e-4488-b4e8-ee351244ca73;IngestionEndpoint=https://eastus-2.in.applicationinsights.azure.com/"},"type":"Microsoft.AppPlatform/Spring/monitoringSettings","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest10/monitoringSettings/default","name":"default"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '534'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 06 Sep 2021 03:44:59 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:ccd65fc4-7cd4-497e-8dc8-9a76e9a43ae2
+      server:
+      - nginx/1.17.7
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-rp-server-mvid:
+      - 1ad6f767-93a4-44b8-a9d3-86d493cbdd27
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring app-insights show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --query -o
+      User-Agent:
+      - AZURECLI/2.27.1 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.5 (Windows-10-10.0.19043-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest10/monitoringSettings/default?api-version=2020-11-01-preview
+  response:
+    body:
+      string: '{"properties":{"appInsightsSamplingRate":10.0,"appInsightsAgentVersions":{"java":"3.1.1"},"provisioningState":"Updating","traceEnabled":true,"appInsightsInstrumentationKey":"InstrumentationKey=1a5759a2-f52e-4488-b4e8-ee351244ca73;IngestionEndpoint=https://eastus-2.in.applicationinsights.azure.com/"},"type":"Microsoft.AppPlatform/Spring/monitoringSettings","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest10/monitoringSettings/default","name":"default"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '534'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 06 Sep 2021 03:45:04 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:ccd65fc4-7cd4-497e-8dc8-9a76e9a43ae2
+      server:
+      - nginx/1.17.7
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-rp-server-mvid:
+      - 1ad6f767-93a4-44b8-a9d3-86d493cbdd27
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring app-insights show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --query -o
+      User-Agent:
+      - AZURECLI/2.27.1 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.5 (Windows-10-10.0.19043-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest10/monitoringSettings/default?api-version=2020-11-01-preview
+  response:
+    body:
+      string: '{"properties":{"appInsightsSamplingRate":10.0,"appInsightsAgentVersions":{"java":"3.1.1"},"provisioningState":"Succeeded","traceEnabled":true,"appInsightsInstrumentationKey":"InstrumentationKey=1a5759a2-f52e-4488-b4e8-ee351244ca73;IngestionEndpoint=https://eastus-2.in.applicationinsights.azure.com/"},"type":"Microsoft.AppPlatform/Spring/monitoringSettings","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest10/monitoringSettings/default","name":"default"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '535'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 06 Sep 2021 03:45:08 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:ccd65fc4-7cd4-497e-8dc8-9a76e9a43ae2
+      server:
+      - nginx/1.17.7
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-rp-server-mvid:
+      - 1ad6f767-93a4-44b8-a9d3-86d493cbdd27
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring app-insights show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g
+      User-Agent:
+      - AZURECLI/2.27.1 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.5 (Windows-10-10.0.19043-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest10/monitoringSettings/default?api-version=2020-11-01-preview
+  response:
+    body:
+      string: '{"properties":{"appInsightsSamplingRate":10.0,"appInsightsAgentVersions":{"java":"3.1.1"},"provisioningState":"Succeeded","traceEnabled":true,"appInsightsInstrumentationKey":"InstrumentationKey=1a5759a2-f52e-4488-b4e8-ee351244ca73;IngestionEndpoint=https://eastus-2.in.applicationinsights.azure.com/"},"type":"Microsoft.AppPlatform/Spring/monitoringSettings","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest10/monitoringSettings/default","name":"default"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '535'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 06 Sep 2021 03:45:11 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:ccd65fc4-7cd4-497e-8dc8-9a76e9a43ae2
+      server:
+      - nginx/1.17.7
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-rp-server-mvid:
+      - 1ad6f767-93a4-44b8-a9d3-86d493cbdd27
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --disable-app-insights --no-wait
+      User-Agent:
+      - AZURECLI/2.27.1 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.5 (Windows-10-10.0.19043-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest10?api-version=2022-05-01-preview
+  response:
+    body:
+      string: '{"properties":{"provisioningState":"Succeeded","version":3,"serviceId":"e2c3dcb4663b49d891a84af0d6fa556f","networkProfile":{"outboundIPs":{"publicIPs":["52.186.105.180"]}}},"type":"Microsoft.AppPlatform/Spring","sku":{"name":"B0","tier":"Basic"},"location":"eastus","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest10","name":"cli-unittest10"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '432'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 06 Sep 2021 03:45:12 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:ccd65fc4-7cd4-497e-8dc8-9a76e9a43ae2
+      server:
+      - nginx/1.17.7
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '11994'
+      x-rp-server-mvid:
+      - 1ad6f767-93a4-44b8-a9d3-86d493cbdd27
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --disable-app-insights --no-wait
+      User-Agent:
+      - AZURECLI/2.27.1 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.5 (Windows-10-10.0.19043-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest10/monitoringSettings/default?api-version=2020-11-01-preview
+  response:
+    body:
+      string: '{"properties":{"appInsightsSamplingRate":10.0,"appInsightsAgentVersions":{"java":"3.1.1"},"provisioningState":"Succeeded","traceEnabled":true,"appInsightsInstrumentationKey":"InstrumentationKey=1a5759a2-f52e-4488-b4e8-ee351244ca73;IngestionEndpoint=https://eastus-2.in.applicationinsights.azure.com/"},"type":"Microsoft.AppPlatform/Spring/monitoringSettings","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest10/monitoringSettings/default","name":"default"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '535'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 06 Sep 2021 03:45:12 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:ccd65fc4-7cd4-497e-8dc8-9a76e9a43ae2
+      server:
+      - nginx/1.17.7
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-rp-server-mvid:
+      - 1ad6f767-93a4-44b8-a9d3-86d493cbdd27
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"traceEnabled": false}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '39'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -n --disable-app-insights --no-wait
+      User-Agent:
+      - AZURECLI/2.27.1 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.5 (Windows-10-10.0.19043-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest10/monitoringSettings/default?api-version=2020-11-01-preview
+  response:
+    body:
+      string: '{"properties":{"appInsightsSamplingRate":10.0,"appInsightsAgentVersions":{"java":"3.1.1"},"provisioningState":"Updating","traceEnabled":false,"appInsightsInstrumentationKey":null},"type":"Microsoft.AppPlatform/Spring/monitoringSettings","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest10/monitoringSettings/default","name":"default"}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/cli-unittest10/operationId/7a466754-5199-4d15-8d90-0940665ec99f?api-version=2020-11-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '413'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 06 Sep 2021 03:45:13 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/eastus/operationResults/7a466754-5199-4d15-8d90-0940665ec99f/Spring/cli-unittest10?api-version=2020-11-01-preview
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:ccd65fc4-7cd4-497e-8dc8-9a76e9a43ae2
+      server:
+      - nginx/1.17.7
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1197'
+      x-rp-server-mvid:
+      - 1ad6f767-93a4-44b8-a9d3-86d493cbdd27
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring app-insights show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --query -o
+      User-Agent:
+      - AZURECLI/2.27.1 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.5 (Windows-10-10.0.19043-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest10/monitoringSettings/default?api-version=2020-11-01-preview
+  response:
+    body:
+      string: '{"properties":{"appInsightsSamplingRate":10.0,"appInsightsAgentVersions":{"java":"3.1.1"},"provisioningState":"Updating","traceEnabled":false,"appInsightsInstrumentationKey":null},"type":"Microsoft.AppPlatform/Spring/monitoringSettings","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest10/monitoringSettings/default","name":"default"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '413'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 06 Sep 2021 03:45:13 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:ccd65fc4-7cd4-497e-8dc8-9a76e9a43ae2
+      server:
+      - nginx/1.17.7
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-rp-server-mvid:
+      - 1ad6f767-93a4-44b8-a9d3-86d493cbdd27
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring app-insights show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --query -o
+      User-Agent:
+      - AZURECLI/2.27.1 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.5 (Windows-10-10.0.19043-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest10/monitoringSettings/default?api-version=2020-11-01-preview
+  response:
+    body:
+      string: '{"properties":{"appInsightsSamplingRate":10.0,"appInsightsAgentVersions":{"java":"3.1.1"},"provisioningState":"Updating","traceEnabled":false,"appInsightsInstrumentationKey":null},"type":"Microsoft.AppPlatform/Spring/monitoringSettings","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest10/monitoringSettings/default","name":"default"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '413'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 06 Sep 2021 03:45:17 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:ccd65fc4-7cd4-497e-8dc8-9a76e9a43ae2
+      server:
+      - nginx/1.17.7
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-rp-server-mvid:
+      - 1ad6f767-93a4-44b8-a9d3-86d493cbdd27
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring app-insights show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --query -o
+      User-Agent:
+      - AZURECLI/2.27.1 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.5 (Windows-10-10.0.19043-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest10/monitoringSettings/default?api-version=2020-11-01-preview
+  response:
+    body:
+      string: '{"properties":{"appInsightsSamplingRate":10.0,"appInsightsAgentVersions":{"java":"3.1.1"},"provisioningState":"Succeeded","traceEnabled":false,"appInsightsInstrumentationKey":null},"type":"Microsoft.AppPlatform/Spring/monitoringSettings","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest10/monitoringSettings/default","name":"default"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '414'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 06 Sep 2021 03:45:22 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:ccd65fc4-7cd4-497e-8dc8-9a76e9a43ae2
+      server:
+      - nginx/1.17.7
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-rp-server-mvid:
+      - 1ad6f767-93a4-44b8-a9d3-86d493cbdd27
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring app-insights show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g
+      User-Agent:
+      - AZURECLI/2.27.1 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.5 (Windows-10-10.0.19043-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest10/monitoringSettings/default?api-version=2020-11-01-preview
+  response:
+    body:
+      string: '{"properties":{"appInsightsSamplingRate":10.0,"appInsightsAgentVersions":{"java":"3.1.1"},"provisioningState":"Succeeded","traceEnabled":false,"appInsightsInstrumentationKey":null},"type":"Microsoft.AppPlatform/Spring/monitoringSettings","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest10/monitoringSettings/default","name":"default"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '414'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 06 Sep 2021 03:45:22 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:ccd65fc4-7cd4-497e-8dc8-9a76e9a43ae2
+      server:
+      - nginx/1.17.7
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-rp-server-mvid:
+      - 1ad6f767-93a4-44b8-a9d3-86d493cbdd27
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --no-wait --app-insights
+      User-Agent:
+      - AZURECLI/2.27.1 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.5 (Windows-10-10.0.19043-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest10?api-version=2022-05-01-preview
+  response:
+    body:
+      string: '{"properties":{"provisioningState":"Succeeded","version":3,"serviceId":"e2c3dcb4663b49d891a84af0d6fa556f","networkProfile":{"outboundIPs":{"publicIPs":["52.186.105.180"]}}},"type":"Microsoft.AppPlatform/Spring","sku":{"name":"B0","tier":"Basic"},"location":"eastus","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest10","name":"cli-unittest10"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '432'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 06 Sep 2021 03:45:23 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:ccd65fc4-7cd4-497e-8dc8-9a76e9a43ae2
+      server:
+      - nginx/1.17.7
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '11991'
+      x-rp-server-mvid:
+      - 1ad6f767-93a4-44b8-a9d3-86d493cbdd27
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --no-wait --app-insights
+      User-Agent:
+      - AZURECLI/2.27.1 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.5 (Windows-10-10.0.19043-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest10/monitoringSettings/default?api-version=2020-11-01-preview
+  response:
+    body:
+      string: '{"properties":{"appInsightsSamplingRate":10.0,"appInsightsAgentVersions":{"java":"3.1.1"},"provisioningState":"Succeeded","traceEnabled":false,"appInsightsInstrumentationKey":null},"type":"Microsoft.AppPlatform/Spring/monitoringSettings","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest10/monitoringSettings/default","name":"default"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '414'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 06 Sep 2021 03:45:24 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:ccd65fc4-7cd4-497e-8dc8-9a76e9a43ae2
+      server:
+      - nginx/1.17.7
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-rp-server-mvid:
+      - 1ad6f767-93a4-44b8-a9d3-86d493cbdd27
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --no-wait --app-insights
+      User-Agent:
+      - AZURECLI/2.27.1 azsdk-python-azure-mgmt-applicationinsights/1.0.0 Python/3.9.5
+        (Windows-10-10.0.19043-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.Insights/components/cli_scenario_test_20210906102205?api-version=2015-05-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/microsoft.insights/components/cli_scenario_test_20210906102205","name":"cli_scenario_test_20210906102205","type":"microsoft.insights/components","location":"eastus","tags":{},"kind":"web","etag":"\"1c0138f9-0000-0100-0000-61357b530000\"","properties":{"Ver":"v2","ApplicationId":"cli_scenario_test_20210906102205","AppId":"6b1ab966-0866-4f6d-a01b-fc781bed0e57","Application_Type":"web","Flow_Type":"Bluefield","Request_Source":"rest","InstrumentationKey":"1a5759a2-f52e-4488-b4e8-ee351244ca73","ConnectionString":"InstrumentationKey=1a5759a2-f52e-4488-b4e8-ee351244ca73;IngestionEndpoint=https://eastus-2.in.applicationinsights.azure.com/","Name":"cli_scenario_test_20210906102205","CreationDate":"2021-09-06T02:22:11.602511+00:00","TenantId":"0753feba-86f1-4242-aff1-27938fb04531","provisioningState":"Succeeded","SamplingPercentage":null,"RetentionInDays":90,"IngestionMode":"ApplicationInsights","publicNetworkAccessForIngestion":"Enabled","publicNetworkAccessForQuery":"Enabled"}}'
+    headers:
+      access-control-expose-headers:
+      - Request-Context
+      cache-control:
+      - no-cache
+      content-length:
+      - '1072'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 06 Sep 2021 03:45:25 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:920e14b1-13f3-461a-a4bb-b4fe6f1a4525
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"traceEnabled": true, "appInsightsInstrumentationKey":
+      "InstrumentationKey=1a5759a2-f52e-4488-b4e8-ee351244ca73;IngestionEndpoint=https://eastus-2.in.applicationinsights.azure.com/"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '199'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -n --no-wait --app-insights
+      User-Agent:
+      - AZURECLI/2.27.1 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.5 (Windows-10-10.0.19043-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest10/monitoringSettings/default?api-version=2020-11-01-preview
+  response:
+    body:
+      string: '{"properties":{"appInsightsSamplingRate":10.0,"appInsightsAgentVersions":{"java":"3.1.1"},"provisioningState":"Updating","traceEnabled":true,"appInsightsInstrumentationKey":"InstrumentationKey=1a5759a2-f52e-4488-b4e8-ee351244ca73;IngestionEndpoint=https://eastus-2.in.applicationinsights.azure.com/"},"type":"Microsoft.AppPlatform/Spring/monitoringSettings","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest10/monitoringSettings/default","name":"default"}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/cli-unittest10/operationId/c9a75abc-b835-4c75-abd6-7807725e1cd1?api-version=2020-11-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '534'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 06 Sep 2021 03:45:25 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/eastus/operationResults/c9a75abc-b835-4c75-abd6-7807725e1cd1/Spring/cli-unittest10?api-version=2020-11-01-preview
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:ccd65fc4-7cd4-497e-8dc8-9a76e9a43ae2
+      server:
+      - nginx/1.17.7
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1195'
+      x-rp-server-mvid:
+      - 1ad6f767-93a4-44b8-a9d3-86d493cbdd27
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring app-insights show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --query -o
+      User-Agent:
+      - AZURECLI/2.27.1 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.5 (Windows-10-10.0.19043-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest10/monitoringSettings/default?api-version=2020-11-01-preview
+  response:
+    body:
+      string: '{"properties":{"appInsightsSamplingRate":10.0,"appInsightsAgentVersions":{"java":"3.1.1"},"provisioningState":"Updating","traceEnabled":true,"appInsightsInstrumentationKey":"InstrumentationKey=1a5759a2-f52e-4488-b4e8-ee351244ca73;IngestionEndpoint=https://eastus-2.in.applicationinsights.azure.com/"},"type":"Microsoft.AppPlatform/Spring/monitoringSettings","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest10/monitoringSettings/default","name":"default"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '534'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 06 Sep 2021 03:45:26 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:ccd65fc4-7cd4-497e-8dc8-9a76e9a43ae2
+      server:
+      - nginx/1.17.7
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-rp-server-mvid:
+      - 1ad6f767-93a4-44b8-a9d3-86d493cbdd27
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring app-insights show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --query -o
+      User-Agent:
+      - AZURECLI/2.27.1 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.5 (Windows-10-10.0.19043-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest10/monitoringSettings/default?api-version=2020-11-01-preview
+  response:
+    body:
+      string: '{"properties":{"appInsightsSamplingRate":10.0,"appInsightsAgentVersions":{"java":"3.1.1"},"provisioningState":"Updating","traceEnabled":true,"appInsightsInstrumentationKey":"InstrumentationKey=1a5759a2-f52e-4488-b4e8-ee351244ca73;IngestionEndpoint=https://eastus-2.in.applicationinsights.azure.com/"},"type":"Microsoft.AppPlatform/Spring/monitoringSettings","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest10/monitoringSettings/default","name":"default"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '534'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 06 Sep 2021 03:45:30 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:ccd65fc4-7cd4-497e-8dc8-9a76e9a43ae2
+      server:
+      - nginx/1.17.7
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-rp-server-mvid:
+      - 1ad6f767-93a4-44b8-a9d3-86d493cbdd27
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring app-insights show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --query -o
+      User-Agent:
+      - AZURECLI/2.27.1 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.5 (Windows-10-10.0.19043-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest10/monitoringSettings/default?api-version=2020-11-01-preview
+  response:
+    body:
+      string: '{"properties":{"appInsightsSamplingRate":10.0,"appInsightsAgentVersions":{"java":"3.1.1"},"provisioningState":"Succeeded","traceEnabled":true,"appInsightsInstrumentationKey":"InstrumentationKey=1a5759a2-f52e-4488-b4e8-ee351244ca73;IngestionEndpoint=https://eastus-2.in.applicationinsights.azure.com/"},"type":"Microsoft.AppPlatform/Spring/monitoringSettings","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest10/monitoringSettings/default","name":"default"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '535'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 06 Sep 2021 03:45:34 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:ccd65fc4-7cd4-497e-8dc8-9a76e9a43ae2
+      server:
+      - nginx/1.17.7
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-rp-server-mvid:
+      - 1ad6f767-93a4-44b8-a9d3-86d493cbdd27
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring app-insights show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g
+      User-Agent:
+      - AZURECLI/2.27.1 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.5 (Windows-10-10.0.19043-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest10/monitoringSettings/default?api-version=2020-11-01-preview
+  response:
+    body:
+      string: '{"properties":{"appInsightsSamplingRate":10.0,"appInsightsAgentVersions":{"java":"3.1.1"},"provisioningState":"Succeeded","traceEnabled":true,"appInsightsInstrumentationKey":"InstrumentationKey=1a5759a2-f52e-4488-b4e8-ee351244ca73;IngestionEndpoint=https://eastus-2.in.applicationinsights.azure.com/"},"type":"Microsoft.AppPlatform/Spring/monitoringSettings","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest10/monitoringSettings/default","name":"default"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '535'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 06 Sep 2021 03:45:35 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:ccd65fc4-7cd4-497e-8dc8-9a76e9a43ae2
+      server:
+      - nginx/1.17.7
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-rp-server-mvid:
+      - 1ad6f767-93a4-44b8-a9d3-86d493cbdd27
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --disable-app-insights --no-wait
+      User-Agent:
+      - AZURECLI/2.27.1 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.5 (Windows-10-10.0.19043-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest10?api-version=2022-05-01-preview
+  response:
+    body:
+      string: '{"properties":{"provisioningState":"Succeeded","version":3,"serviceId":"e2c3dcb4663b49d891a84af0d6fa556f","networkProfile":{"outboundIPs":{"publicIPs":["52.186.105.180"]}}},"type":"Microsoft.AppPlatform/Spring","sku":{"name":"B0","tier":"Basic"},"location":"eastus","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest10","name":"cli-unittest10"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '432'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 06 Sep 2021 03:45:35 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:ccd65fc4-7cd4-497e-8dc8-9a76e9a43ae2
+      server:
+      - nginx/1.17.7
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '11998'
+      x-rp-server-mvid:
+      - 1ad6f767-93a4-44b8-a9d3-86d493cbdd27
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --disable-app-insights --no-wait
+      User-Agent:
+      - AZURECLI/2.27.1 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.5 (Windows-10-10.0.19043-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest10/monitoringSettings/default?api-version=2020-11-01-preview
+  response:
+    body:
+      string: '{"properties":{"appInsightsSamplingRate":10.0,"appInsightsAgentVersions":{"java":"3.1.1"},"provisioningState":"Succeeded","traceEnabled":true,"appInsightsInstrumentationKey":"InstrumentationKey=1a5759a2-f52e-4488-b4e8-ee351244ca73;IngestionEndpoint=https://eastus-2.in.applicationinsights.azure.com/"},"type":"Microsoft.AppPlatform/Spring/monitoringSettings","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest10/monitoringSettings/default","name":"default"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '535'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 06 Sep 2021 03:45:36 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:ccd65fc4-7cd4-497e-8dc8-9a76e9a43ae2
+      server:
+      - nginx/1.17.7
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-rp-server-mvid:
+      - 1ad6f767-93a4-44b8-a9d3-86d493cbdd27
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"traceEnabled": false}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '39'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -n --disable-app-insights --no-wait
+      User-Agent:
+      - AZURECLI/2.27.1 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.5 (Windows-10-10.0.19043-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest10/monitoringSettings/default?api-version=2020-11-01-preview
+  response:
+    body:
+      string: '{"properties":{"appInsightsSamplingRate":10.0,"appInsightsAgentVersions":{"java":"3.1.1"},"provisioningState":"Updating","traceEnabled":false,"appInsightsInstrumentationKey":null},"type":"Microsoft.AppPlatform/Spring/monitoringSettings","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest10/monitoringSettings/default","name":"default"}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/cli-unittest10/operationId/260640cb-ed50-47fc-b9ce-0d9473f70e4f?api-version=2020-11-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '413'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 06 Sep 2021 03:45:36 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/eastus/operationResults/260640cb-ed50-47fc-b9ce-0d9473f70e4f/Spring/cli-unittest10?api-version=2020-11-01-preview
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:ccd65fc4-7cd4-497e-8dc8-9a76e9a43ae2
+      server:
+      - nginx/1.17.7
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1198'
+      x-rp-server-mvid:
+      - 1ad6f767-93a4-44b8-a9d3-86d493cbdd27
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring app-insights show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --query -o
+      User-Agent:
+      - AZURECLI/2.27.1 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.5 (Windows-10-10.0.19043-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest10/monitoringSettings/default?api-version=2020-11-01-preview
+  response:
+    body:
+      string: '{"properties":{"appInsightsSamplingRate":10.0,"appInsightsAgentVersions":{"java":"3.1.1"},"provisioningState":"Updating","traceEnabled":false,"appInsightsInstrumentationKey":null},"type":"Microsoft.AppPlatform/Spring/monitoringSettings","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest10/monitoringSettings/default","name":"default"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '413'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 06 Sep 2021 03:45:37 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:ccd65fc4-7cd4-497e-8dc8-9a76e9a43ae2
+      server:
+      - nginx/1.17.7
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-rp-server-mvid:
+      - 1ad6f767-93a4-44b8-a9d3-86d493cbdd27
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring app-insights show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --query -o
+      User-Agent:
+      - AZURECLI/2.27.1 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.5 (Windows-10-10.0.19043-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest10/monitoringSettings/default?api-version=2020-11-01-preview
+  response:
+    body:
+      string: '{"properties":{"appInsightsSamplingRate":10.0,"appInsightsAgentVersions":{"java":"3.1.1"},"provisioningState":"Updating","traceEnabled":false,"appInsightsInstrumentationKey":null},"type":"Microsoft.AppPlatform/Spring/monitoringSettings","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest10/monitoringSettings/default","name":"default"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '413'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 06 Sep 2021 03:45:42 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:ccd65fc4-7cd4-497e-8dc8-9a76e9a43ae2
+      server:
+      - nginx/1.17.7
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-rp-server-mvid:
+      - 1ad6f767-93a4-44b8-a9d3-86d493cbdd27
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring app-insights show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --query -o
+      User-Agent:
+      - AZURECLI/2.27.1 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.5 (Windows-10-10.0.19043-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest10/monitoringSettings/default?api-version=2020-11-01-preview
+  response:
+    body:
+      string: '{"properties":{"appInsightsSamplingRate":10.0,"appInsightsAgentVersions":{"java":"3.1.1"},"provisioningState":"Succeeded","traceEnabled":false,"appInsightsInstrumentationKey":null},"type":"Microsoft.AppPlatform/Spring/monitoringSettings","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest10/monitoringSettings/default","name":"default"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '414'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 06 Sep 2021 03:45:45 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:ccd65fc4-7cd4-497e-8dc8-9a76e9a43ae2
+      server:
+      - nginx/1.17.7
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-rp-server-mvid:
+      - 1ad6f767-93a4-44b8-a9d3-86d493cbdd27
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring app-insights show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g
+      User-Agent:
+      - AZURECLI/2.27.1 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.5 (Windows-10-10.0.19043-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest10/monitoringSettings/default?api-version=2020-11-01-preview
+  response:
+    body:
+      string: '{"properties":{"appInsightsSamplingRate":10.0,"appInsightsAgentVersions":{"java":"3.1.1"},"provisioningState":"Succeeded","traceEnabled":false,"appInsightsInstrumentationKey":null},"type":"Microsoft.AppPlatform/Spring/monitoringSettings","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest10/monitoringSettings/default","name":"default"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '414'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 06 Sep 2021 03:45:46 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:ccd65fc4-7cd4-497e-8dc8-9a76e9a43ae2
+      server:
+      - nginx/1.17.7
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-rp-server-mvid:
+      - 1ad6f767-93a4-44b8-a9d3-86d493cbdd27
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --no-wait --app-insights-key
+      User-Agent:
+      - AZURECLI/2.27.1 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.5 (Windows-10-10.0.19043-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest10?api-version=2022-05-01-preview
+  response:
+    body:
+      string: '{"properties":{"provisioningState":"Succeeded","version":3,"serviceId":"e2c3dcb4663b49d891a84af0d6fa556f","networkProfile":{"outboundIPs":{"publicIPs":["52.186.105.180"]}}},"type":"Microsoft.AppPlatform/Spring","sku":{"name":"B0","tier":"Basic"},"location":"eastus","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest10","name":"cli-unittest10"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '432'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 06 Sep 2021 03:45:46 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:ccd65fc4-7cd4-497e-8dc8-9a76e9a43ae2
+      server:
+      - nginx/1.17.7
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '11996'
+      x-rp-server-mvid:
+      - 1ad6f767-93a4-44b8-a9d3-86d493cbdd27
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --no-wait --app-insights-key
+      User-Agent:
+      - AZURECLI/2.27.1 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.5 (Windows-10-10.0.19043-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest10/monitoringSettings/default?api-version=2020-11-01-preview
+  response:
+    body:
+      string: '{"properties":{"appInsightsSamplingRate":10.0,"appInsightsAgentVersions":{"java":"3.1.1"},"provisioningState":"Succeeded","traceEnabled":false,"appInsightsInstrumentationKey":null},"type":"Microsoft.AppPlatform/Spring/monitoringSettings","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest10/monitoringSettings/default","name":"default"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '414'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 06 Sep 2021 03:45:48 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:ccd65fc4-7cd4-497e-8dc8-9a76e9a43ae2
+      server:
+      - nginx/1.17.7
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-rp-server-mvid:
+      - 1ad6f767-93a4-44b8-a9d3-86d493cbdd27
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"traceEnabled": true, "appInsightsInstrumentationKey":
+      "1a5759a2-f52e-4488-b4e8-ee351244ca73"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '111'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -n --no-wait --app-insights-key
+      User-Agent:
+      - AZURECLI/2.27.1 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.5 (Windows-10-10.0.19043-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest10/monitoringSettings/default?api-version=2020-11-01-preview
+  response:
+    body:
+      string: '{"properties":{"appInsightsSamplingRate":10.0,"appInsightsAgentVersions":{"java":"3.1.1"},"provisioningState":"Updating","traceEnabled":true,"appInsightsInstrumentationKey":"1a5759a2-f52e-4488-b4e8-ee351244ca73"},"type":"Microsoft.AppPlatform/Spring/monitoringSettings","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest10/monitoringSettings/default","name":"default"}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/cli-unittest10/operationId/62d6634a-aade-4ab6-8ad9-57fce68249e0?api-version=2020-11-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '446'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 06 Sep 2021 03:45:48 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/eastus/operationResults/62d6634a-aade-4ab6-8ad9-57fce68249e0/Spring/cli-unittest10?api-version=2020-11-01-preview
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:ccd65fc4-7cd4-497e-8dc8-9a76e9a43ae2
+      server:
+      - nginx/1.17.7
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1195'
+      x-rp-server-mvid:
+      - 1ad6f767-93a4-44b8-a9d3-86d493cbdd27
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring app-insights show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --query -o
+      User-Agent:
+      - AZURECLI/2.27.1 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.5 (Windows-10-10.0.19043-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest10/monitoringSettings/default?api-version=2020-11-01-preview
+  response:
+    body:
+      string: '{"properties":{"appInsightsSamplingRate":10.0,"appInsightsAgentVersions":{"java":"3.1.1"},"provisioningState":"Updating","traceEnabled":true,"appInsightsInstrumentationKey":"1a5759a2-f52e-4488-b4e8-ee351244ca73"},"type":"Microsoft.AppPlatform/Spring/monitoringSettings","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest10/monitoringSettings/default","name":"default"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '446'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 06 Sep 2021 03:45:49 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:ccd65fc4-7cd4-497e-8dc8-9a76e9a43ae2
+      server:
+      - nginx/1.17.7
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-rp-server-mvid:
+      - 1ad6f767-93a4-44b8-a9d3-86d493cbdd27
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring app-insights show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --query -o
+      User-Agent:
+      - AZURECLI/2.27.1 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.5 (Windows-10-10.0.19043-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest10/monitoringSettings/default?api-version=2020-11-01-preview
+  response:
+    body:
+      string: '{"properties":{"appInsightsSamplingRate":10.0,"appInsightsAgentVersions":{"java":"3.1.1"},"provisioningState":"Updating","traceEnabled":true,"appInsightsInstrumentationKey":"1a5759a2-f52e-4488-b4e8-ee351244ca73"},"type":"Microsoft.AppPlatform/Spring/monitoringSettings","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest10/monitoringSettings/default","name":"default"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '446'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 06 Sep 2021 03:45:53 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:ccd65fc4-7cd4-497e-8dc8-9a76e9a43ae2
+      server:
+      - nginx/1.17.7
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-rp-server-mvid:
+      - 1ad6f767-93a4-44b8-a9d3-86d493cbdd27
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring app-insights show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --query -o
+      User-Agent:
+      - AZURECLI/2.27.1 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.5 (Windows-10-10.0.19043-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest10/monitoringSettings/default?api-version=2020-11-01-preview
+  response:
+    body:
+      string: '{"properties":{"appInsightsSamplingRate":10.0,"appInsightsAgentVersions":{"java":"3.1.1"},"provisioningState":"Succeeded","traceEnabled":true,"appInsightsInstrumentationKey":"1a5759a2-f52e-4488-b4e8-ee351244ca73"},"type":"Microsoft.AppPlatform/Spring/monitoringSettings","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest10/monitoringSettings/default","name":"default"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '447'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 06 Sep 2021 03:45:56 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:ccd65fc4-7cd4-497e-8dc8-9a76e9a43ae2
+      server:
+      - nginx/1.17.7
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-rp-server-mvid:
+      - 1ad6f767-93a4-44b8-a9d3-86d493cbdd27
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring app-insights show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g
+      User-Agent:
+      - AZURECLI/2.27.1 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.5 (Windows-10-10.0.19043-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest10/monitoringSettings/default?api-version=2020-11-01-preview
+  response:
+    body:
+      string: '{"properties":{"appInsightsSamplingRate":10.0,"appInsightsAgentVersions":{"java":"3.1.1"},"provisioningState":"Succeeded","traceEnabled":true,"appInsightsInstrumentationKey":"1a5759a2-f52e-4488-b4e8-ee351244ca73"},"type":"Microsoft.AppPlatform/Spring/monitoringSettings","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest10/monitoringSettings/default","name":"default"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '447'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 06 Sep 2021 03:45:58 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:ccd65fc4-7cd4-497e-8dc8-9a76e9a43ae2
+      server:
+      - nginx/1.17.7
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-rp-server-mvid:
+      - 1ad6f767-93a4-44b8-a9d3-86d493cbdd27
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --disable-app-insights --no-wait
+      User-Agent:
+      - AZURECLI/2.27.1 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.5 (Windows-10-10.0.19043-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest10?api-version=2022-05-01-preview
+  response:
+    body:
+      string: '{"properties":{"provisioningState":"Succeeded","version":3,"serviceId":"e2c3dcb4663b49d891a84af0d6fa556f","networkProfile":{"outboundIPs":{"publicIPs":["52.186.105.180"]}}},"type":"Microsoft.AppPlatform/Spring","sku":{"name":"B0","tier":"Basic"},"location":"eastus","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest10","name":"cli-unittest10"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '432'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 06 Sep 2021 03:45:58 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:ccd65fc4-7cd4-497e-8dc8-9a76e9a43ae2
+      server:
+      - nginx/1.17.7
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '11997'
+      x-rp-server-mvid:
+      - 1ad6f767-93a4-44b8-a9d3-86d493cbdd27
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --disable-app-insights --no-wait
+      User-Agent:
+      - AZURECLI/2.27.1 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.5 (Windows-10-10.0.19043-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest10/monitoringSettings/default?api-version=2020-11-01-preview
+  response:
+    body:
+      string: '{"properties":{"appInsightsSamplingRate":10.0,"appInsightsAgentVersions":{"java":"3.1.1"},"provisioningState":"Succeeded","traceEnabled":true,"appInsightsInstrumentationKey":"1a5759a2-f52e-4488-b4e8-ee351244ca73"},"type":"Microsoft.AppPlatform/Spring/monitoringSettings","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest10/monitoringSettings/default","name":"default"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '447'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 06 Sep 2021 03:45:59 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:ccd65fc4-7cd4-497e-8dc8-9a76e9a43ae2
+      server:
+      - nginx/1.17.7
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-rp-server-mvid:
+      - 1ad6f767-93a4-44b8-a9d3-86d493cbdd27
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"traceEnabled": false}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '39'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -n --disable-app-insights --no-wait
+      User-Agent:
+      - AZURECLI/2.27.1 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.5 (Windows-10-10.0.19043-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest10/monitoringSettings/default?api-version=2020-11-01-preview
+  response:
+    body:
+      string: '{"properties":{"appInsightsSamplingRate":10.0,"appInsightsAgentVersions":{"java":"3.1.1"},"provisioningState":"Updating","traceEnabled":false,"appInsightsInstrumentationKey":null},"type":"Microsoft.AppPlatform/Spring/monitoringSettings","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest10/monitoringSettings/default","name":"default"}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/cli-unittest10/operationId/c59b1432-a7d2-4f0c-940c-6027faaaa02f?api-version=2020-11-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '413'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 06 Sep 2021 03:46:00 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/eastus/operationResults/c59b1432-a7d2-4f0c-940c-6027faaaa02f/Spring/cli-unittest10?api-version=2020-11-01-preview
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:ccd65fc4-7cd4-497e-8dc8-9a76e9a43ae2
+      server:
+      - nginx/1.17.7
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1197'
+      x-rp-server-mvid:
+      - 1ad6f767-93a4-44b8-a9d3-86d493cbdd27
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring app-insights show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --query -o
+      User-Agent:
+      - AZURECLI/2.27.1 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.5 (Windows-10-10.0.19043-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest10/monitoringSettings/default?api-version=2020-11-01-preview
+  response:
+    body:
+      string: '{"properties":{"appInsightsSamplingRate":10.0,"appInsightsAgentVersions":{"java":"3.1.1"},"provisioningState":"Updating","traceEnabled":false,"appInsightsInstrumentationKey":null},"type":"Microsoft.AppPlatform/Spring/monitoringSettings","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest10/monitoringSettings/default","name":"default"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '413'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 06 Sep 2021 03:46:00 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:ccd65fc4-7cd4-497e-8dc8-9a76e9a43ae2
+      server:
+      - nginx/1.17.7
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-rp-server-mvid:
+      - 1ad6f767-93a4-44b8-a9d3-86d493cbdd27
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring app-insights show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --query -o
+      User-Agent:
+      - AZURECLI/2.27.1 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.5 (Windows-10-10.0.19043-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest10/monitoringSettings/default?api-version=2020-11-01-preview
+  response:
+    body:
+      string: '{"properties":{"appInsightsSamplingRate":10.0,"appInsightsAgentVersions":{"java":"3.1.1"},"provisioningState":"Updating","traceEnabled":false,"appInsightsInstrumentationKey":null},"type":"Microsoft.AppPlatform/Spring/monitoringSettings","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest10/monitoringSettings/default","name":"default"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '413'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 06 Sep 2021 03:46:04 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:ccd65fc4-7cd4-497e-8dc8-9a76e9a43ae2
+      server:
+      - nginx/1.17.7
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-rp-server-mvid:
+      - 1ad6f767-93a4-44b8-a9d3-86d493cbdd27
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring app-insights show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --query -o
+      User-Agent:
+      - AZURECLI/2.27.1 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.5 (Windows-10-10.0.19043-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest10/monitoringSettings/default?api-version=2020-11-01-preview
+  response:
+    body:
+      string: '{"properties":{"appInsightsSamplingRate":10.0,"appInsightsAgentVersions":{"java":"3.1.1"},"provisioningState":"Succeeded","traceEnabled":false,"appInsightsInstrumentationKey":null},"type":"Microsoft.AppPlatform/Spring/monitoringSettings","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest10/monitoringSettings/default","name":"default"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '414'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 06 Sep 2021 03:46:08 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:ccd65fc4-7cd4-497e-8dc8-9a76e9a43ae2
+      server:
+      - nginx/1.17.7
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-rp-server-mvid:
+      - 1ad6f767-93a4-44b8-a9d3-86d493cbdd27
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring app-insights show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g
+      User-Agent:
+      - AZURECLI/2.27.1 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.5 (Windows-10-10.0.19043-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest10/monitoringSettings/default?api-version=2020-11-01-preview
+  response:
+    body:
+      string: '{"properties":{"appInsightsSamplingRate":10.0,"appInsightsAgentVersions":{"java":"3.1.1"},"provisioningState":"Succeeded","traceEnabled":false,"appInsightsInstrumentationKey":null},"type":"Microsoft.AppPlatform/Spring/monitoringSettings","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest10/monitoringSettings/default","name":"default"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '414'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 06 Sep 2021 03:46:08 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:ccd65fc4-7cd4-497e-8dc8-9a76e9a43ae2
+      server:
+      - nginx/1.17.7
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-rp-server-mvid:
+      - 1ad6f767-93a4-44b8-a9d3-86d493cbdd27
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --no-wait --app-insights-key
+      User-Agent:
+      - AZURECLI/2.27.1 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.5 (Windows-10-10.0.19043-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest10?api-version=2022-05-01-preview
+  response:
+    body:
+      string: '{"properties":{"provisioningState":"Succeeded","version":3,"serviceId":"e2c3dcb4663b49d891a84af0d6fa556f","networkProfile":{"outboundIPs":{"publicIPs":["52.186.105.180"]}}},"type":"Microsoft.AppPlatform/Spring","sku":{"name":"B0","tier":"Basic"},"location":"eastus","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest10","name":"cli-unittest10"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '432'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 06 Sep 2021 03:46:09 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:ccd65fc4-7cd4-497e-8dc8-9a76e9a43ae2
+      server:
+      - nginx/1.17.7
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '11993'
+      x-rp-server-mvid:
+      - 1ad6f767-93a4-44b8-a9d3-86d493cbdd27
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --no-wait --app-insights-key
+      User-Agent:
+      - AZURECLI/2.27.1 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.5 (Windows-10-10.0.19043-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest10/monitoringSettings/default?api-version=2020-11-01-preview
+  response:
+    body:
+      string: '{"properties":{"appInsightsSamplingRate":10.0,"appInsightsAgentVersions":{"java":"3.1.1"},"provisioningState":"Succeeded","traceEnabled":false,"appInsightsInstrumentationKey":null},"type":"Microsoft.AppPlatform/Spring/monitoringSettings","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest10/monitoringSettings/default","name":"default"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '414'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 06 Sep 2021 03:46:11 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:ccd65fc4-7cd4-497e-8dc8-9a76e9a43ae2
+      server:
+      - nginx/1.17.7
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-rp-server-mvid:
+      - 1ad6f767-93a4-44b8-a9d3-86d493cbdd27
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"traceEnabled": true, "appInsightsInstrumentationKey":
+      "InstrumentationKey=1a5759a2-f52e-4488-b4e8-ee351244ca73;IngestionEndpoint=https://eastus-2.in.applicationinsights.azure.com/"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '199'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -n --no-wait --app-insights-key
+      User-Agent:
+      - AZURECLI/2.27.1 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.5 (Windows-10-10.0.19043-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest10/monitoringSettings/default?api-version=2020-11-01-preview
+  response:
+    body:
+      string: '{"properties":{"appInsightsSamplingRate":10.0,"appInsightsAgentVersions":{"java":"3.1.1"},"provisioningState":"Updating","traceEnabled":true,"appInsightsInstrumentationKey":"InstrumentationKey=1a5759a2-f52e-4488-b4e8-ee351244ca73;IngestionEndpoint=https://eastus-2.in.applicationinsights.azure.com/"},"type":"Microsoft.AppPlatform/Spring/monitoringSettings","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest10/monitoringSettings/default","name":"default"}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/cli-unittest10/operationId/370de0d5-c30a-4803-a738-0669533dfd7e?api-version=2020-11-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '534'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 06 Sep 2021 03:46:12 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/eastus/operationResults/370de0d5-c30a-4803-a738-0669533dfd7e/Spring/cli-unittest10?api-version=2020-11-01-preview
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:ccd65fc4-7cd4-497e-8dc8-9a76e9a43ae2
+      server:
+      - nginx/1.17.7
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1197'
+      x-rp-server-mvid:
+      - 1ad6f767-93a4-44b8-a9d3-86d493cbdd27
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring app-insights show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --query -o
+      User-Agent:
+      - AZURECLI/2.27.1 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.5 (Windows-10-10.0.19043-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest10/monitoringSettings/default?api-version=2020-11-01-preview
+  response:
+    body:
+      string: '{"properties":{"appInsightsSamplingRate":10.0,"appInsightsAgentVersions":{"java":"3.1.1"},"provisioningState":"Updating","traceEnabled":true,"appInsightsInstrumentationKey":"InstrumentationKey=1a5759a2-f52e-4488-b4e8-ee351244ca73;IngestionEndpoint=https://eastus-2.in.applicationinsights.azure.com/"},"type":"Microsoft.AppPlatform/Spring/monitoringSettings","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest10/monitoringSettings/default","name":"default"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '534'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 06 Sep 2021 03:46:14 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:ccd65fc4-7cd4-497e-8dc8-9a76e9a43ae2
+      server:
+      - nginx/1.17.7
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-rp-server-mvid:
+      - 1ad6f767-93a4-44b8-a9d3-86d493cbdd27
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring app-insights show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --query -o
+      User-Agent:
+      - AZURECLI/2.27.1 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.5 (Windows-10-10.0.19043-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest10/monitoringSettings/default?api-version=2020-11-01-preview
+  response:
+    body:
+      string: '{"properties":{"appInsightsSamplingRate":10.0,"appInsightsAgentVersions":{"java":"3.1.1"},"provisioningState":"Updating","traceEnabled":true,"appInsightsInstrumentationKey":"InstrumentationKey=1a5759a2-f52e-4488-b4e8-ee351244ca73;IngestionEndpoint=https://eastus-2.in.applicationinsights.azure.com/"},"type":"Microsoft.AppPlatform/Spring/monitoringSettings","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest10/monitoringSettings/default","name":"default"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '534'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 06 Sep 2021 03:46:17 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:ccd65fc4-7cd4-497e-8dc8-9a76e9a43ae2
+      server:
+      - nginx/1.17.7
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-rp-server-mvid:
+      - 1ad6f767-93a4-44b8-a9d3-86d493cbdd27
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring app-insights show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --query -o
+      User-Agent:
+      - AZURECLI/2.27.1 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.5 (Windows-10-10.0.19043-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest10/monitoringSettings/default?api-version=2020-11-01-preview
+  response:
+    body:
+      string: '{"properties":{"appInsightsSamplingRate":10.0,"appInsightsAgentVersions":{"java":"3.1.1"},"provisioningState":"Succeeded","traceEnabled":true,"appInsightsInstrumentationKey":"InstrumentationKey=1a5759a2-f52e-4488-b4e8-ee351244ca73;IngestionEndpoint=https://eastus-2.in.applicationinsights.azure.com/"},"type":"Microsoft.AppPlatform/Spring/monitoringSettings","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest10/monitoringSettings/default","name":"default"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '535'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 06 Sep 2021 03:46:21 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:ccd65fc4-7cd4-497e-8dc8-9a76e9a43ae2
+      server:
+      - nginx/1.17.7
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-rp-server-mvid:
+      - 1ad6f767-93a4-44b8-a9d3-86d493cbdd27
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring app-insights show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g
+      User-Agent:
+      - AZURECLI/2.27.1 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.5 (Windows-10-10.0.19043-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest10/monitoringSettings/default?api-version=2020-11-01-preview
+  response:
+    body:
+      string: '{"properties":{"appInsightsSamplingRate":10.0,"appInsightsAgentVersions":{"java":"3.1.1"},"provisioningState":"Succeeded","traceEnabled":true,"appInsightsInstrumentationKey":"InstrumentationKey=1a5759a2-f52e-4488-b4e8-ee351244ca73;IngestionEndpoint=https://eastus-2.in.applicationinsights.azure.com/"},"type":"Microsoft.AppPlatform/Spring/monitoringSettings","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest10/monitoringSettings/default","name":"default"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '535'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 06 Sep 2021 03:46:21 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:ccd65fc4-7cd4-497e-8dc8-9a76e9a43ae2
+      server:
+      - nginx/1.17.7
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-rp-server-mvid:
+      - 1ad6f767-93a4-44b8-a9d3-86d493cbdd27
+    status:
+      code: 200
+      message: OK
+version: 1

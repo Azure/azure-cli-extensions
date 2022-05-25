@@ -71,6 +71,7 @@ class DefaultExtension(PartnerExtensionModel):
         version,
         configuration_settings,
         configuration_protected_settings,
+        original_extension: Extension,
         yes=False,
     ):
         """Default validations & defaults for Update

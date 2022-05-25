@@ -6,6 +6,7 @@
 
 from knack.arguments import CLIArgumentType
 
+from azure.cli.core.commands.validators import get_default_location_from_resource_group
 from azure.cli.core.commands.parameters import (resource_group_name_type, get_location_type,
                                                 file_type,
                                                 get_three_state_flag, get_enum_type, tags_type)
@@ -13,6 +14,7 @@ from azure.cli.core.commands.parameters import (resource_group_name_type, get_lo
 
 from ._validators import (validate_memory, validate_cpu, validate_managed_env_name_or_id, validate_registry_server,
                           validate_registry_user, validate_registry_pass, validate_target_port, validate_ingress)
+from ._constants import UNAUTHENTICATED_CLIENT_ACTION, FORWARD_PROXY_CONVENTION
 
 
 def load_arguments(self, _):
@@ -130,12 +132,14 @@ def load_arguments(self, _):
         c.argument('instrumentation_key', options_list=['--dapr-instrumentation-key'], help='Application Insights instrumentation key used by Dapr to export Service to Service communication telemetry')
 
     with self.argument_context('containerapp env', arg_group='Virtual Network') as c:
-        c.argument('infrastructure_subnet_resource_id', options_list=['--infrastructure-subnet-resource-id'], help='Resource ID of a subnet for infrastructure components and user app containers.')
+        c.argument('infrastructure_subnet_resource_id', options_list=['--infrastructure-subnet-resource-id', '-s'], help='Resource ID of a subnet for infrastructure components and user app containers.')
         c.argument('app_subnet_resource_id', options_list=['--app-subnet-resource-id'], help='Resource ID of a subnet that Container App containers are injected into. This subnet must be in the same VNET as the subnet defined in infrastructureSubnetResourceId.')
         c.argument('docker_bridge_cidr', options_list=['--docker-bridge-cidr'], help='CIDR notation IP range assigned to the Docker bridge. It must not overlap with any Subnet IP ranges or the IP range defined in Platform Reserved CIDR, if defined')
         c.argument('platform_reserved_cidr', options_list=['--platform-reserved-cidr'], help='IP range in CIDR notation that can be reserved for environment infrastructure IP addresses. It must not overlap with any other Subnet IP ranges')
         c.argument('platform_reserved_dns_ip', options_list=['--platform-reserved-dns-ip'], help='An IP address from the IP range defined by Platform Reserved CIDR that will be reserved for the internal DNS server.')
-        c.argument('internal_only', arg_type=get_three_state_flag(), options_list=['--internal-only'], help='Boolean indicating the environment only has an internal load balancer. These environments do not have a public static IP resource, therefore must provide infrastructureSubnetResourceId and appSubnetResourceId if enabling this property')
+        c.argument('internal_only', arg_type=get_three_state_flag(), options_list=['--internal-only'], help='Boolean indicating the environment only has an internal load balancer. These environments do not have a public static IP resource, therefore must provide infrastructureSubnetResourceId if enabling this property')
+    with self.argument_context('containerapp env create') as c:
+        c.argument('zone_redundant', options_list=["--zone-redundant", "-z"], help="Enable zone redundancy on the environment. Cannot be used without --infrastructure-subnet-resource-id. If used with --location, the subnet's location must match")
 
     with self.argument_context('containerapp env update') as c:
         c.argument('name', name_type, help='Name of the Container Apps environment.')
@@ -147,6 +151,28 @@ def load_arguments(self, _):
     with self.argument_context('containerapp env show') as c:
         c.argument('name', name_type, help='Name of the Container Apps Environment.')
 
+    with self.argument_context('containerapp env certificate upload') as c:
+        c.argument('certificate_file', options_list=['--certificate-file', '-f'], help='The filepath of the .pfx or .pem file')
+        c.argument('certificate_name', options_list=['--certificate-name', '-c'], help='Name of the certificate which should be unique within the Container Apps environment.')
+        c.argument('certificate_password', options_list=['--password', '-p'], help='The certificate file password')
+
+    with self.argument_context('containerapp env certificate list') as c:
+        c.argument('name', id_part=None)
+        c.argument('certificate', options_list=['--certificate', '-c'], help='Name or resource id of the certificate.')
+        c.argument('thumbprint', options_list=['--thumbprint', '-t'], help='Thumbprint of the certificate.')
+
+    with self.argument_context('containerapp env certificate delete') as c:
+        c.argument('certificate', options_list=['--certificate', '-c'], help='Name or resource id of the certificate.')
+        c.argument('thumbprint', options_list=['--thumbprint', '-t'], help='Thumbprint of the certificate.')
+
+    with self.argument_context('containerapp env storage') as c:
+        c.argument('name', id_part=None)
+        c.argument('storage_name', help="Name of the storage.")
+        c.argument('access_mode', id_part=None, arg_type=get_enum_type(["ReadWrite", "ReadOnly"]), help="Access mode for the AzureFile storage.")
+        c.argument('azure_file_account_key', options_list=["--azure-file-account-key", "--storage-account-key", "-k"], help="Key of the AzureFile storage account.")
+        c.argument('azure_file_share_name', options_list=["--azure-file-share-name", "--file-share", "-f"], help="Name of the share on the AzureFile storage.")
+        c.argument('azure_file_account_name', options_list=["--azure-file-account-name", "--account-name", "-a"], help="Name of the AzureFile storage account.")
+
     with self.argument_context('containerapp identity') as c:
         c.argument('user_assigned', nargs='+', help="Space-separated user identities.")
         c.argument('system_assigned', help="Boolean indicating whether to assign system-assigned identity.")
@@ -157,7 +183,7 @@ def load_arguments(self, _):
     with self.argument_context('containerapp github-action add') as c:
         c.argument('repo_url', help='The GitHub repository to which the workflow file will be added. In the format: https://github.com/<owner>/<repository-name>')
         c.argument('token', help='A Personal Access Token with write access to the specified repository. For more information: https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token-for-the-command-line')
-        c.argument('branch', options_list=['--branch', '-b'], help='The branch of the GitHub repo. Defaults to "main" if not specified.')
+        c.argument('branch', options_list=['--branch', '-b'], help='The branch of the Github repo. Assumed to be the Github repo\'s default branch if not specified.')
         c.argument('login_with_github', help='Interactively log in with Github to retrieve the Personal Access Token')
         c.argument('registry_url', help='The container registry server, e.g. myregistry.azurecr.io')
         c.argument('registry_username', help='The username of the registry. If using Azure Container Registry, we will try to infer the credentials if not supplied')
@@ -179,6 +205,11 @@ def load_arguments(self, _):
         c.argument('from_revision', help='Revision to copy from. Default: latest revision.')
         c.argument('image', options_list=['--image', '-i'], help="Container image, e.g. publisher/image-name:tag.")
 
+    with self.argument_context('containerapp revision label') as c:
+        c.argument('name', id_part=None)
+        c.argument('revision', help='Name of the revision.')
+        c.argument('label', help='Name of the label.')
+
     with self.argument_context('containerapp ingress') as c:
         c.argument('allow_insecure', help='Allow insecure connections for ingress traffic.')
         c.argument('type', validator=validate_ingress, arg_type=get_enum_type(['internal', 'external']), help="The ingress type.")
@@ -186,13 +217,15 @@ def load_arguments(self, _):
         c.argument('target_port', type=int, validator=validate_target_port, help="The application port used for ingress traffic.")
 
     with self.argument_context('containerapp ingress traffic') as c:
-        c.argument('traffic_weights', nargs='*', options_list=['--traffic-weight'], help="A list of revision weight(s) for the container app. Space-separated values in 'revision_name=weight' format. For latest revision, use 'latest=weight'")
+        c.argument('revision_weights', nargs='+', options_list=['--revision-weight', c.deprecate(target='--traffic-weight', redirect='--revision-weight')], help="A list of revision weight(s) for the container app. Space-separated values in 'revision_name=weight' format. For latest revision, use 'latest=weight'")
+        c.argument('label_weights', nargs='+', options_list=['--label-weight'], help="A list of label weight(s) for the container app. Space-separated values in 'label_name=weight' format.")
 
     with self.argument_context('containerapp secret') as c:
         c.argument('secrets', nargs='+', options_list=['--secrets', '-s'], help="A list of secret(s) for the container app. Space-separated values in 'key=value' format (where 'key' cannot be longer than 20 characters).")
         c.argument('secret_name', help="The name of the secret to show.")
         c.argument('secret_names', nargs='+', help="A list of secret(s) for the container app. Space-separated secret values names.")
         c.argument('show_values', help='Show the secret values.')
+        c.ignore('disable_max_length')
 
     with self.argument_context('containerapp env dapr-component') as c:
         c.argument('dapr_app_id', help="The Dapr app ID.")
@@ -235,9 +268,65 @@ def load_arguments(self, _):
 
     with self.argument_context('containerapp up', arg_group='Github Repo') as c:
         c.argument('repo', help='Create an app via Github Actions. In the format: https://github.com/<owner>/<repository-name> or <owner>/<repository-name>')
-        c.argument('token', help='A Personal Access Token with write access to the specified repository. For more information: https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token-for-the-command-line. If missing (and using --repo), a browser page will be opened to authenticate with Github.')
-        c.argument('branch', options_list=['--branch', '-b'], help='The branch of the GitHub repo. Defaults to "main"')
+        c.argument('token', help='A Personal Access Token with write access to the specified repository. For more information: https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token-for-the-command-line. If not provided or not found in the cache (and using --repo), a browser page will be opened to authenticate with Github.')
+        c.argument('branch', options_list=['--branch', '-b'], help='The branch of the Github repo. Assumed to be the Github repo\'s default branch if not specified.')
         c.argument('context_path', help='Path in the repo from which to run the docker build. Defaults to "./". Dockerfile is assumed to be named "Dockerfile" and in this directory.')
         c.argument('service_principal_client_id', help='The service principal client ID. Used by Github Actions to authenticate with Azure.', options_list=["--service-principal-client-id", "--sp-cid"])
         c.argument('service_principal_client_secret', help='The service principal client secret. Used by Github Actions to authenticate with Azure.', options_list=["--service-principal-client-secret", "--sp-sec"])
         c.argument('service_principal_tenant_id', help='The service principal tenant ID. Used by Github Actions to authenticate with Azure.', options_list=["--service-principal-tenant-id", "--sp-tid"])
+
+    with self.argument_context('containerapp auth') as c:
+        # subgroup update
+        c.argument('client_id', help='The Client ID of the app used for login.')
+        c.argument('client_secret', help='The client secret.')
+        c.argument('client_secret_setting_name', options_list=['--client-secret-name'], help='The app secret name that contains the client secret of the relying party application.')
+        c.argument('issuer', help='The OpenID Connect Issuer URI that represents the entity which issues access tokens for this application.')
+        c.argument('allowed_token_audiences', options_list=['--allowed-token-audiences', '--allowed-audiences'], help='The configuration settings of the allowed list of audiences from which to validate the JWT token.')
+        c.argument('client_secret_certificate_thumbprint', options_list=['--thumbprint', '--client-secret-certificate-thumbprint'], help='Alternative to AAD Client Secret, thumbprint of a certificate used for signing purposes')
+        c.argument('client_secret_certificate_san', options_list=['--san', '--client-secret-certificate-san'], help='Alternative to AAD Client Secret and thumbprint, subject alternative name of a certificate used for signing purposes')
+        c.argument('client_secret_certificate_issuer', options_list=['--certificate-issuer', '--client-secret-certificate-issuer'], help='Alternative to AAD Client Secret and thumbprint, issuer of a certificate used for signing purposes')
+        c.argument('yes', options_list=['--yes', '-y'], help='Do not prompt for confirmation.', action='store_true')
+        c.argument('tenant_id', help='The tenant id of the application.')
+        c.argument('app_id', help='The App ID of the app used for login.')
+        c.argument('app_secret', help='The app secret.')
+        c.argument('app_secret_setting_name', options_list=['--app-secret-name', '--secret-name'], help='The app secret name that contains the app secret.')
+        c.argument('graph_api_version', help='The version of the Facebook api to be used while logging in.')
+        c.argument('scopes', help='A list of the scopes that should be requested while authenticating.')
+        c.argument('consumer_key', help='The OAuth 1.0a consumer key of the Twitter application used for sign-in.')
+        c.argument('consumer_secret', help='The consumer secret.')
+        c.argument('consumer_secret_setting_name', options_list=['--consumer-secret-name', '--secret-name'], help='The consumer secret name that contains the app secret.')
+        c.argument('provider_name', required=True, help='The name of the custom OpenID Connect provider.')
+        c.argument('openid_configuration', help='The endpoint that contains all the configuration endpoints for the provider.')
+        # auth update
+        c.argument('set_string', options_list=['--set'], help='Value of a specific field within the configuration settings for the Azure App Service Authentication / Authorization feature.')
+        c.argument('config_file_path', help='The path of the config file containing auth settings if they come from a file.')
+        c.argument('unauthenticated_client_action', options_list=['--unauthenticated-client-action', '--action'], arg_type=get_enum_type(UNAUTHENTICATED_CLIENT_ACTION), help='The action to take when an unauthenticated client attempts to access the app.')
+        c.argument('redirect_provider', help='The default authentication provider to use when multiple providers are configured.')
+        c.argument('enable_token_store', arg_type=get_three_state_flag(), help='true to durably store platform-specific security tokens that are obtained during login flows; otherwise, false.')
+        c.argument('require_https', arg_type=get_three_state_flag(), help='false if the authentication/authorization responses not having the HTTPS scheme are permissible; otherwise, true.')
+        c.argument('proxy_convention', arg_type=get_enum_type(FORWARD_PROXY_CONVENTION), help='The convention used to determine the url of the request made.')
+        c.argument('proxy_custom_host_header', options_list=['--proxy-custom-host-header', '--custom-host-header'], help='The name of the header containing the host of the request.')
+        c.argument('proxy_custom_proto_header', options_list=['--proxy-custom-proto-header', '--custom-proto-header'], help='The name of the header containing the scheme of the request.')
+        c.argument('excluded_paths', help='The list of paths that should be excluded from authentication rules.')
+        c.argument('enabled', arg_type=get_three_state_flag(), help='true if the Authentication / Authorization feature is enabled for the current app; otherwise, false.')
+        c.argument('runtime_version', help='The RuntimeVersion of the Authentication / Authorization feature in use for the current app.')
+
+    with self.argument_context('containerapp ssl upload') as c:
+        c.argument('hostname', help='The custom domain name.')
+        c.argument('environment', options_list=['--environment', '-e'], help='Name or resource id of the Container App environment.')
+        c.argument('certificate_file', options_list=['--certificate-file', '-f'], help='The filepath of the .pfx or .pem file')
+        c.argument('certificate_password', options_list=['--password', '-p'], help='The certificate file password')
+        c.argument('certificate_name', options_list=['--certificate-name', '-c'], help='Name of the certificate which should be unique within the Container Apps environment.')
+
+    with self.argument_context('containerapp hostname bind') as c:
+        c.argument('hostname', help='The custom domain name.')
+        c.argument('thumbprint', options_list=['--thumbprint', '-t'], help='Thumbprint of the certificate.')
+        c.argument('certificate', options_list=['--certificate', '-c'], help='Name or resource id of the certificate.')
+        c.argument('environment', options_list=['--environment', '-e'], help='Name or resource id of the Container App environment.')
+
+    with self.argument_context('containerapp hostname list') as c:
+        c.argument('name', id_part=None)
+        c.argument('location', arg_type=get_location_type(self.cli_ctx), validator=get_default_location_from_resource_group)
+
+    with self.argument_context('containerapp hostname delete') as c:
+        c.argument('hostname', help='The custom domain name.')
