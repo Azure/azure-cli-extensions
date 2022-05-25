@@ -4232,8 +4232,9 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
         disable_cmd = 'aks disable-addons --addons web_application_routing --resource-group={resource_group} --name={name} -o json'
         self.cmd(disable_cmd, checks=[
-            self.check('provisioningState', 'Succeeded'),
-            self.check('ingressProfile.webAppRouting.enabled', False)
+            self.check('provisioningState', 'Succeeded')
+            # Enable this once the backend bug fix has been rolled out.
+            # self.check('ingressProfile.webAppRouting.enabled', False)
         ])
 
     @live_only()  # live only is required for test environment setup like `az login`
