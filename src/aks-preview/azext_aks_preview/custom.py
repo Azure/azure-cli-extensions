@@ -2079,7 +2079,7 @@ def aks_addon_update(cmd, client, resource_group_name, name, addon, workspace_re
 
     if addon == "web_application_routing":
         if (instance.ingress_profile is None) or (instance.ingress_profile.web_app_routing is None) or not instance.ingress_profile.web_app_routing.enabled:
-            raise CLIError(f'Addon "{addon}" is not enabled in this cluster.')
+            raise InvalidArgumentValueError(f'Addon "{addon}" is not enabled in this cluster.')
     else:
         addon_key = ADDONS[addon]
         if not addon_profiles or addon_key not in addon_profiles or not addon_profiles[addon_key].enabled:
