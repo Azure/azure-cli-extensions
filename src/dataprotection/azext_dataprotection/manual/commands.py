@@ -67,3 +67,6 @@ def load_command_table(self, _):
         g.custom_command('list', 'dataprotection_backup_vault_list')
         g.custom_command('create', 'dataprotection_backup_vault_create', supports_no_wait=True)
         g.custom_command('update', 'dataprotection_backup_vault_update', supports_no_wait=True)
+
+    with self.command_group('dataprotection backup-vault', exception_handler=exception_handler, client_factory=cf_backup_vault) as g:
+        g.custom_command('list-permissions', 'dataprotection_vault_list_scope_permissions')

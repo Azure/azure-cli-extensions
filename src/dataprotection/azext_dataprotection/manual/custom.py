@@ -630,3 +630,18 @@ def restore_initialize_for_item_recovery(client, datasource_type, source_datasto
         restore_request["restore_target_info"]["datasource_set_info"] = helper.get_datasourceset_info(datasource_type, datasource_id, restore_location)
 
     return restore_request
+
+
+def dataprotection_vault_list_scope_permissions(cmd, client, vault_name, resource_group_name, scope=''):
+    if scope == '':
+        raise CLIError('empty scope provided')
+    else:
+        vault_data = client.get(resource_group_name=resource_group_name,
+                      vault_name=vault_name)
+        # print(type(vault_data))
+        principal_id = vault_data.identity.principal_id
+        # return principal_id
+        from azure.cli.command_modules.role.custom import list_role_assignments
+        role_assignments = list_role_assignments(cmd, assignee=principal_id, scope=scope, include_inherited=True)
+        # print(role_assignments[0]['roleDefinitionName'])
+        return [obj['roleDefinitionName'] for obj in role_assignments]
