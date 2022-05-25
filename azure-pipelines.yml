@@ -16,7 +16,8 @@ jobs:
 - job: CredScan
   displayName: "Credential Scan"
   pool:
-    vmImage: "windows-2019"
+    name: 'azure-cli-pool-windows-2019'
+    vmImage: 'windows-2019'
   steps:
   - task: ms-codeanalysis.vss-microsoft-security-code-analysis-devops.build-task-credscan.CredScan@2
     displayName: 'Run Credential Scanner'
@@ -37,6 +38,7 @@ jobs:
 - job: CheckLicenseHeader
   displayName: "Check License"
   pool:
+    name: 'azure-cli-pool-ubuntu-2004'
     vmImage: 'ubuntu-20.04'
   steps:
   - task: UsePythonVersion@0
@@ -68,6 +70,7 @@ jobs:
 - job: StaticAnalysis
   displayName: "Static Analysis"
   pool:
+    name: 'azure-cli-pool-ubuntu-2004'
     vmImage: 'ubuntu-20.04'
   steps:
     - task: UsePythonVersion@0
@@ -82,6 +85,7 @@ jobs:
 - job: IndexVerify
   displayName: "Verify Extensions Index"
   pool:
+    name: 'azure-cli-pool-ubuntu-2004'
     vmImage: 'ubuntu-20.04'
   steps:
   - task: UsePythonVersion@0
@@ -99,6 +103,7 @@ jobs:
 - job: SourceTests
   displayName: "Integration Tests, Build Tests"
   pool:
+    name: 'azure-cli-pool-ubuntu-2004'
     vmImage: 'ubuntu-20.04'
   strategy:
     matrix:
@@ -127,6 +132,7 @@ jobs:
   displayName: "CLI Linter on Modified Extensions"
   condition: and(succeeded(), eq(variables['Build.Reason'], 'PullRequest'))
   pool:
+    name: 'azure-cli-pool-ubuntu-2004'
     vmImage: 'ubuntu-20.04'
   steps:
     - task: UsePythonVersion@0
@@ -163,6 +169,7 @@ jobs:
 - job: IndexRefDocVerify
   displayName: "Verify Ref Docs"
   pool:
+    name: 'azure-cli-pool-ubuntu-2004'
     vmImage: 'ubuntu-20.04'
   steps:
   - task: UsePythonVersion@0
