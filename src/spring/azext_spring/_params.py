@@ -79,8 +79,7 @@ def load_arguments(self, _):
         c.argument('enable_log_stream_public_endpoint',
                    arg_type=get_three_state_flag(),
                    options_list=['--enable-log-stream-public-endpoint', '--enable-lspa'],
-                   help='If true, assign public endpoint for log streaming in vnet injection instance which could be accessed out of virtual network.',
-                   default=False)
+                   help='If true, assign public endpoint for log streaming in vnet injection instance which could be accessed out of virtual network.')
         c.argument('enable_java_agent',
                    arg_group='Application Insights',
                    arg_type=get_three_state_flag(),
@@ -190,8 +189,7 @@ def load_arguments(self, _):
         c.argument('enable_log_stream_public_endpoint',
                    arg_type=get_three_state_flag(),
                    options_list=['--enable-log-stream-public-endpoint', '--enable-lspa'],
-                   help='If true, assign public endpoint for log streaming in vnet injection instance which could be accessed out of virtual network.',
-                   default=False)
+                   help='If true, assign public endpoint for log streaming in vnet injection instance which could be accessed out of virtual network.')
 
     for scope in ['spring create', 'spring update']:
         with self.argument_context(scope) as c:
@@ -211,8 +209,7 @@ def load_arguments(self, _):
                    options_list=['--assign-endpoint', c.deprecate(target='--is-public', redirect='--assign-endpoint', hide=True)])
         c.argument('assign_public_endpoint',
                    arg_type=get_three_state_flag(),
-                   help='If true, assign endpoint URL which could be accessed out of virtual network for vnet injection instance app.',
-                   default=False)
+                   help='If true, assign endpoint URL which could be accessed out of virtual network for vnet injection instance app.')
         c.argument('assign_identity',
                    arg_type=get_three_state_flag(),
                    validator=validate_create_app_with_system_identity_or_warning,
@@ -243,8 +240,7 @@ def load_arguments(self, _):
                    options_list=['--assign-endpoint', c.deprecate(target='--is-public', redirect='--assign-endpoint', hide=True)])
         c.argument('assign_public_endpoint',
                    arg_type=get_three_state_flag(),
-                   help='If true, assign endpoint URL which could be accessed out of virtual network for vnet injection instance app.',
-                   default=False)
+                   help='If true, assign endpoint URL which could be accessed out of virtual network for vnet injection instance app.')
         c.argument('https_only', arg_type=get_three_state_flag(), help='If true, access app via https', default=False)
         c.argument('enable_ingress_to_app_tls', arg_type=get_three_state_flag(),
                    help='If true, enable ingress to app tls',
