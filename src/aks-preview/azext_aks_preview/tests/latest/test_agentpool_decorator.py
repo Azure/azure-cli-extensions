@@ -334,26 +334,6 @@ class AKSPreviewAgentPoolAddDecoratorCommonTestCase(unittest.TestCase):
         )
         self.assertEqual(dec_agentpool_1, ground_truth_agentpool_1)
 
-    def common_set_up_custom_ca_trust(self):
-        dec_1 = AKSPreviewAgentPoolAddDecorator(
-            self.cmd,
-            self.client,
-            {"enable_custom_ca_trust": True},
-            self.resource_type,
-            self.agentpool_decorator_mode,
-        )
-        # fail on passing the wrong agentpool object
-        with self.assertRaises(CLIInternalError):
-            dec_1.set_up_enable_custom_ca_trust(None)
-        agentpool_1 = self.create_initialized_agentpool_instance(restore_defaults=False)
-        dec_1.context.attach_agentpool(agentpool_1)
-        dec_agentpool_1 = dec_1.set_up_enable_custom_ca_trust(agentpool_1)
-        dec_agentpool_1 = self._restore_defaults_in_agentpool(dec_agentpool_1)
-        ground_truth_agentpool_1 = self.create_initialized_agentpool_instance(
-            enable_custom_ca_trust=True,
-        )
-        self.assertEqual(dec_agentpool_1, ground_truth_agentpool_1)
-
     def common_set_up_gpu_propertes(self):
         dec_1 = AKSPreviewAgentPoolAddDecorator(
             self.cmd,
@@ -392,9 +372,6 @@ class AKSPreviewAgentPoolAddDecoratorStandaloneModeTestCase(AKSPreviewAgentPoolA
 
     def test_set_up_motd(self):
         self.common_set_up_motd()
-
-    def test_set_up_custom_ca_trust(self):
-        self.common_set_up_custom_ca_trust()
 
     def test_set_up_gpu_propertes(self):
         self.common_set_up_gpu_propertes()
@@ -458,7 +435,6 @@ class AKSPreviewAgentPoolAddDecoratorStandaloneModeTestCase(AKSPreviewAgentPoolA
             enable_encryption_at_host=False,
             enable_ultra_ssd=False,
             enable_fips=False,
-            enable_custom_ca_trust=False,
             mode=CONST_NODEPOOL_MODE_USER,
             scale_down_mode=CONST_SCALE_DOWN_MODE_DELETE,
             workload_runtime=CONST_WORKLOAD_RUNTIME_OCI_CONTAINER,
@@ -484,9 +460,6 @@ class AKSPreviewAgentPoolAddDecoratorManagedClusterModeTestCase(AKSPreviewAgentP
 
     def test_set_up_motd(self):
         self.common_set_up_motd()
-
-    def test_set_up_custom_ca_trust(self):
-        self.common_set_up_custom_ca_trust()
 
     def test_set_up_gpu_propertes(self):
         self.common_set_up_gpu_propertes()
@@ -551,7 +524,6 @@ class AKSPreviewAgentPoolAddDecoratorManagedClusterModeTestCase(AKSPreviewAgentP
             enable_encryption_at_host=False,
             enable_ultra_ssd=False,
             enable_fips=False,
-            enable_custom_ca_trust=False,
             mode=CONST_NODEPOOL_MODE_SYSTEM,
             workload_runtime=CONST_WORKLOAD_RUNTIME_OCI_CONTAINER,
         )

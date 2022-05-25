@@ -589,7 +589,7 @@ def validate_azure_keyvault_kms_key_id(namespace):
 
 def validate_enable_custom_ca_trust(namespace):
     """Validates Custom CA Trust can only be used on Linux."""
-    if namespace.enable_custom_ca_trust is not None and namespace.enable_custom_ca_trust:
-        if namespace.os_type is not None and namespace.os_type != "Linux":
+    if namespace.enable_custom_ca_trust:
+        if hasattr(namespace, 'os_type') and namespace.os_type != "Linux":
             raise ArgumentUsageError(
                 '--enable_custom_ca_trust can only be set for Linux nodepools')

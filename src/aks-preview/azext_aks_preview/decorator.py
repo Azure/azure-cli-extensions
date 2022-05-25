@@ -489,29 +489,6 @@ class AKSPreviewContext(AKSContext):
         # this parameter does not need validation
         return enable_custom_ca_trust
 
-    def _get_disable_custom_ca_trust(self) -> bool:
-        """Internal function to obtain the value of disable_custom_ca_trust.
-
-        :return: bool
-        """
-        # read the original value passed by the command
-        disable_custom_ca_trust = self.raw_param.get(
-            "disable_custom_ca_trust")
-        # We do not support this option in create mode, therefore we do not read the value from `mc`.
-
-        # this parameter does not need dynamic completion
-        return disable_custom_ca_trust
-
-    def get_disable_custom_ca_trust(self) -> bool:
-        """Obtain the value of disable_custom_ca_trust.
-
-        This function will verify the parameter by default. If both enable_pod_security_policy and
-        disable_pod_security_policy are specified, raise a MutuallyExclusiveArgumentError.
-
-        :return: bool
-        """
-        return self._get_disable_custom_ca_trust()
-
     def get_kubelet_config(self) -> Union[dict, KubeletConfig, None]:
         """Obtain the value of kubelet_config.
 

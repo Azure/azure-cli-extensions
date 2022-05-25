@@ -1459,7 +1459,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                  '--enable-custom-ca-trust',
                  checks=[
                      self.check('provisioningState', 'Succeeded'),
-                     self.check('enableCustomCaTrust', 'True'),
+                     self.check('enableCustomCATrust', 'False'),
                  ])
 
         # 3. update nodepool
@@ -1470,7 +1470,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                  '--disable-custom-ca-trust',
                  checks=[
                      self.check('provisioningState', 'Succeeded'),
-                     self.check('enableCustomCaTrust', 'False'),
+                     self.check('enableCustomCATrust', 'False'),
                  ])
 
         # delete
