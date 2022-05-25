@@ -24,7 +24,8 @@ from ._validators_enterprise import (only_support_enterprise, validate_builder_r
                                      validate_build_env, validate_target_module, validate_runtime_version)
 from ._app_validator import (fulfill_deployment_param, active_deployment_exist,
                              ensure_not_active_deployment, validate_deloy_path, validate_deloyment_create_path,
-                             validate_cpu, validate_memory, fulfill_deployment_param_or_warning, active_deployment_exist_or_warning)
+                             validate_cpu, validate_build_cpu, validate_memory, validate_build_memory,
+                             fulfill_deployment_param_or_warning, active_deployment_exist_or_warning)
 from ._app_managed_identity_validator import (validate_create_app_with_user_identity_or_warning,
                                               validate_create_app_with_system_identity_or_warning,
                                               validate_app_force_set_system_identity_or_warning,
@@ -51,7 +52,9 @@ source_path_type = CLIArgumentType(nargs='?', const='.',
                                    arg_group='Source Code deploy')
 # app cpu and memory
 cpu_type = CLIArgumentType(type=str, help='CPU resource quantity. Should be 500m or number of CPU cores.', validator=validate_cpu)
-memort_type = CLIArgumentType(type=str, help='Memory resource quantity. Should be 512Mi or #Gi, e.g., 1Gi, 3Gi.', validator=validate_memory)
+memory_type = CLIArgumentType(type=str, help='Memory resource quantity. Should be 512Mi or #Gi, e.g., 1Gi, 3Gi.', validator=validate_memory)
+build_cpu_type = CLIArgumentType(type=str, help='CPU resource quantity. Should be 500m or number of CPU cores.', validator=validate_build_cpu)
+build_memory_type = CLIArgumentType(type=str, help='Memory resource quantity. Should be 512Mi or #Gi, e.g., 1Gi, 3Gi.', validator=validate_build_memory)
 
 
 # pylint: disable=too-many-statements
@@ -114,16 +117,13 @@ def load_arguments(self, _):
         c.argument('build_pool_size',
                    arg_type=get_enum_type(['S1', 'S2', 'S3', 'S4', 'S5']),
                    validator=validate_build_pool_size,
-                   is_preview=True,
                    help='(Enterprise Tier Only) Size of build agent pool. See https://aka.ms/azure-spring-cloud-build-service-docs for size info.')
         c.argument('enable_application_configuration_service',
                    action='store_true',
-                   is_preview=True,
                    options_list=['--enable-application-configuration-service', '--enable-acs'],
                    help='(Enterprise Tier Only) Enable Application Configuration Service.')
         c.argument('enable_service_registry',
                    action='store_true',
-                   is_preview=True,
                    options_list=['--enable-service-registry', '--enable-sr'],
                    help='(Enterprise Tier Only) Enable Service Registry.')
         c.argument('enable_gateway',
@@ -181,7 +181,6 @@ def load_arguments(self, _):
                                               hide=True))
         c.argument('build_pool_size',
                    arg_type=get_enum_type(['S1', 'S2', 'S3', 'S4', 'S5']),
-                   is_preview=True,
                    help='(Enterprise Tier Only) Size of build agent pool. See https://aka.ms/azure-spring-cloud-build-service-docs for size info.')
 
     for scope in ['spring create', 'spring update']:
@@ -216,7 +215,7 @@ def load_arguments(self, _):
                    validator=validate_create_app_with_user_identity_or_warning,
                    help="Space-separated user-assigned managed identity resource IDs to assgin to an app.")
         c.argument('cpu', arg_type=cpu_type, default="1")
-        c.argument('memory', arg_type=memort_type, default="1Gi")
+        c.argument('memory', arg_type=memory_type, default="1Gi")
         c.argument('instance_count', type=int,
                    default=1, help='Number of instance.', validator=validate_instance_count)
         c.argument('persistent_storage', type=str,
@@ -337,11 +336,11 @@ def load_arguments(self, _):
             c.argument('config_file_patterns',
                        help="(Enterprise Tier Only) Config file patterns separated with \',\' to decide which patterns "
                             "of Application Configuration Service will be used. Use '\"\"' to clear existing configurations.",
-                       validator=validate_config_file_patterns, is_preview=True)
+                       validator=validate_config_file_patterns)
 
     with self.argument_context('spring app scale') as c:
         c.argument('cpu', arg_type=cpu_type)
-        c.argument('memory', arg_type=memort_type)
+        c.argument('memory', arg_type=memory_type)
         c.argument('instance_count', type=int, help='Number of instance.', validator=validate_instance_count)
 
     for scope in ['spring app deploy', 'spring app deployment create']:
@@ -354,7 +353,7 @@ def load_arguments(self, _):
             c.argument(
                 'disable_validation', arg_type=get_three_state_flag(),
                 help='If true, disable jar validation.')
-            c.argument('builder', help='(Enterprise Tier Only) Build service builder used to build the executable.', default='default', is_preview=True)
+            c.argument('builder', help='(Enterprise Tier Only) Build service builder used to build the executable.', default='default')
             c.argument(
                 'main_entry', options_list=[
                     '--main-entry', '-m'], help="A string containing the path to the .NET executable relative to zip root.")
@@ -377,6 +376,10 @@ def load_arguments(self, _):
                 'container_args', help='The arguments of the container image.', nargs='*', arg_group='Custom Container')
             c.argument(
                 'build_env', build_env_type)
+            c.argument(
+                'build_cpu', arg_type=build_cpu_type, default="1")
+            c.argument(
+                'build_memory', arg_type=build_memory_type, default="2Gi")
 
     with self.argument_context('spring app deploy') as c:
         c.argument('source_path', arg_type=source_path_type, validator=validate_deloy_path)
@@ -388,7 +391,7 @@ def load_arguments(self, _):
         c.argument('skip_clone_settings', help='Create staging deployment will automatically copy settings from production deployment.',
                    action='store_true')
         c.argument('cpu', arg_type=cpu_type)
-        c.argument('memory', arg_type=memort_type)
+        c.argument('memory', arg_type=memory_type)
         c.argument('instance_count', type=int, help='Number of instance.', validator=validate_instance_count)
 
     with self.argument_context('spring app deployment') as c:

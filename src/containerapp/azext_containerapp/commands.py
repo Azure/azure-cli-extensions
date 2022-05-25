@@ -44,7 +44,7 @@ def transform_revision_list_output(revs):
 
 
 def load_command_table(self, _):
-    with self.command_group('containerapp', is_preview=True) as g:
+    with self.command_group('containerapp') as g:
         g.custom_show_command('show', 'show_containerapp', table_transformer=transform_containerapp_output)
         g.custom_command('list', 'list_containerapp', table_transformer=transform_containerapp_list_output)
         g.custom_command('create', 'create_containerapp', supports_no_wait=True, exception_handler=ex_handler_factory(), table_transformer=transform_containerapp_output)
@@ -54,11 +54,11 @@ def load_command_table(self, _):
         g.custom_command('up', 'containerapp_up', supports_no_wait=False, exception_handler=ex_handler_factory())
         g.custom_command('browse', 'open_containerapp_in_browser')
 
-    with self.command_group('containerapp replica', is_preview=True) as g:
+    with self.command_group('containerapp replica') as g:
         g.custom_show_command('show', 'get_replica')  # TODO implement the table transformer
         g.custom_command('list', 'list_replicas')
 
-    with self.command_group('containerapp logs', is_preview=True) as g:
+    with self.command_group('containerapp logs') as g:
         g.custom_show_command('show', 'stream_containerapp_logs', validator=validate_ssh)
 
     with self.command_group('containerapp env') as g:
@@ -73,7 +73,12 @@ def load_command_table(self, _):
         g.custom_command('set', 'create_or_update_dapr_component')
         g.custom_command('remove', 'remove_dapr_component')
 
-    with self.command_group('containerapp env storage') as g:
+    with self.command_group('containerapp env certificate') as g:
+        g.custom_command('list', 'list_certificates')
+        g.custom_command('upload', 'upload_certificate')
+        g.custom_command('delete', 'delete_certificate', confirmation=True, exception_handler=ex_handler_factory())
+
+    with self.command_group('containerapp env storage', is_preview=True) as g:
         g.custom_show_command('show', 'show_storage')
         g.custom_command('list', 'list_storage')
         g.custom_command('set', 'create_or_update_storage', supports_no_wait=True, exception_handler=ex_handler_factory())
@@ -126,3 +131,45 @@ def load_command_table(self, _):
     with self.command_group('containerapp dapr') as g:
         g.custom_command('enable', 'enable_dapr', exception_handler=ex_handler_factory())
         g.custom_command('disable', 'disable_dapr', exception_handler=ex_handler_factory())
+
+    with self.command_group('containerapp auth') as g:
+        g.custom_show_command('show', 'show_auth_config')
+        g.custom_command('update', 'update_auth_config', exception_handler=ex_handler_factory())
+
+    with self.command_group('containerapp auth microsoft') as g:
+        g.custom_show_command('show', 'get_aad_settings')
+        g.custom_command('update', 'update_aad_settings', exception_handler=ex_handler_factory())
+
+    with self.command_group('containerapp auth facebook') as g:
+        g.custom_show_command('show', 'get_facebook_settings')
+        g.custom_command('update', 'update_facebook_settings', exception_handler=ex_handler_factory())
+
+    with self.command_group('containerapp auth github') as g:
+        g.custom_show_command('show', 'get_github_settings')
+        g.custom_command('update', 'update_github_settings', exception_handler=ex_handler_factory())
+
+    with self.command_group('containerapp auth google') as g:
+        g.custom_show_command('show', 'get_google_settings')
+        g.custom_command('update', 'update_google_settings', exception_handler=ex_handler_factory())
+
+    with self.command_group('containerapp auth twitter') as g:
+        g.custom_show_command('show', 'get_twitter_settings')
+        g.custom_command('update', 'update_twitter_settings', exception_handler=ex_handler_factory())
+
+    with self.command_group('containerapp auth apple') as g:
+        g.custom_show_command('show', 'get_apple_settings')
+        g.custom_command('update', 'update_apple_settings', exception_handler=ex_handler_factory())
+
+    with self.command_group('containerapp auth openid-connect') as g:
+        g.custom_show_command('show', 'get_openid_connect_provider_settings')
+        g.custom_command('add', 'add_openid_connect_provider_settings', exception_handler=ex_handler_factory())
+        g.custom_command('update', 'update_openid_connect_provider_settings', exception_handler=ex_handler_factory())
+        g.custom_command('remove', 'remove_openid_connect_provider_settings', confirmation=True)
+
+    with self.command_group('containerapp ssl') as g:
+        g.custom_command('upload', 'upload_ssl', exception_handler=ex_handler_factory())
+
+    with self.command_group('containerapp hostname') as g:
+        g.custom_command('bind', 'bind_hostname', exception_handler=ex_handler_factory())
+        g.custom_command('list', 'list_hostname')
+        g.custom_command('delete', 'delete_hostname', confirmation=True, exception_handler=ex_handler_factory())

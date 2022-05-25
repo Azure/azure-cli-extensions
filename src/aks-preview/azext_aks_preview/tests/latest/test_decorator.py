@@ -2189,19 +2189,6 @@ class AKSPreviewContextTestCase(unittest.TestCase):
         ctx.attach_mc(self.models.ManagedCluster(location="test_location"))
         self.assertIsNone(ctx.get_workload_identity_profile())
 
-    def test_get_workload_identity_profile__update_with_enable_and_disable(self):
-        ctx = AKSPreviewContext(
-            self.cmd,
-            {
-                "enable_workload_identity": True,
-                "disable_workload_identity": True,
-            },
-            self.models, decorator_mode=DecoratorMode.UPDATE
-        )
-        ctx.attach_mc(self.models.ManagedCluster(location="test_location"))
-        with self.assertRaises(MutuallyExclusiveArgumentError):
-            ctx.get_workload_identity_profile()
-
     def test_get_workload_identity_profile__update_with_enable_without_oidc_issuer(self):
         ctx = AKSPreviewContext(
             self.cmd,
@@ -2250,7 +2237,7 @@ class AKSPreviewContextTestCase(unittest.TestCase):
             ctx = AKSPreviewContext(
                 self.cmd,
                 {
-                    "disable_workload_identity": True,
+                    "enable_workload_identity": False,
                 },
                 self.models, decorator_mode=DecoratorMode.UPDATE
             )
