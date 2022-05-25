@@ -2083,7 +2083,7 @@ def aks_addon_update(cmd, client, resource_group_name, name, addon, workspace_re
     else:
         addon_key = ADDONS[addon]
         if not addon_profiles or addon_key not in addon_profiles or not addon_profiles[addon_key].enabled:
-            raise CLIError(f'Addon "{addon}" is not enabled in this cluster.')
+            raise InvalidArgumentValueError(f'Addon "{addon}" is not enabled in this cluster.')
 
     return enable_addons(cmd, client, resource_group_name, name, addon, check_enabled=False,
                          workspace_resource_id=workspace_resource_id,
