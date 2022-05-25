@@ -16,8 +16,6 @@ Pending
 ++++++
 
 * Add support for web application routing.
-
-++++++
 * Refactor: Removed redundant `--disable-workload-identity` flag. User can disable the workload identity feature by using `--enable-workload-identity False`.
 
 0.5.74
