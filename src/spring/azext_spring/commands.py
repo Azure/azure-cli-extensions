@@ -127,7 +127,7 @@ def load_command_table(self, _):
         g.custom_command('create', 'app_create')
         g.custom_command('update', 'app_update', supports_no_wait=True)
 
-    with self.command_group('spring app', client_factory=cf_spring_20220501preview,
+    with self.command_group('spring app', client_factory=cf_spring_20220101preview,
                             exception_handler=handle_asc_exception) as g:
         g.custom_command('set-deployment', 'app_set_deployment',
                          supports_no_wait=True)
