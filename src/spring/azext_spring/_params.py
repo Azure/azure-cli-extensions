@@ -213,7 +213,7 @@ def load_arguments(self, _):
                        help='A json file path indicates the readiness probe config', arg_group='App Customization')
             c.argument('startup_probe_config', type=str,
                        help='A json file path indicates the startup probe config', arg_group='App Customization')
-       
+
     with self.argument_context('spring app create') as c:
         c.argument('assign_endpoint', arg_type=get_three_state_flag(),
                    help='If true, assign endpoint URL for direct access.', default=False,
