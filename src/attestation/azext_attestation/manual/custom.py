@@ -188,7 +188,7 @@ def get_policy(cmd, client, attestation_type, resource_group_name=None, provider
 
     if token:
         import jwt
-        policy = jwt.decode(token, verify=False).get('x-ms-policy', '')
+        policy = jwt.decode(token, algorithms=['RS256'], options={"verify_signature": False}).get('x-ms-policy', '')
         result['Jwt'] = policy
         result['JwtLength'] = len(policy)
         result['Algorithm'] = None
@@ -248,9 +248,7 @@ def set_policy(cmd, client, attestation_type, new_attestation_policy=None, new_a
             new_attestation_policy = \
                 base64.urlsafe_b64encode(new_attestation_policy.encode('ascii')).decode('ascii').strip('=')
             new_attestation_policy = {'AttestationPolicy': new_attestation_policy}
-            new_attestation_policy = jwt.encode(
-                new_attestation_policy, key='', algorithm='none'
-            ).decode('ascii')
+            new_attestation_policy = jwt.encode(new_attestation_policy, 'ascii', algorithms=['RS256'], options={"verify_signature": False})
 
         except TypeError as e:
             print(e)
