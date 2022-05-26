@@ -6,8 +6,7 @@
 # pylint: disable=wrong-import-order
 # pylint: disable=unused-argument, logging-format-interpolation, protected-access, wrong-import-order, too-many-lines
 from ._utils import (wait_till_end, _get_rg_location)
-from .vendored_sdks.appplatform.v2022_01_01_preview import models
-from knack.log import get_logger
+from .vendored_sdks.appplatform.v2022_05_01_preview import models
 from .custom import (_warn_enable_java_agent, _update_application_insights_asc_create)
 from ._build_service import _update_default_build_agent_pool
 from .buildpack_binding import create_default_buildpack_binding_for_application_insights
@@ -19,6 +18,8 @@ from ._tanzu_component import (create_application_configuration_service,
 
 from ._validators import (_parse_sku_name)
 from knack.log import get_logger
+from ._marketplace import _spring_list_marketplace_plan
+from ._constant import (MARKETPLACE_OFFER_ID, MARKETPLACE_PUBLISHER_ID)
 
 logger = get_logger(__name__)
 
@@ -53,13 +54,30 @@ class DefaultSpringCloud:
                        reserved_cidr_range=None,
                        service_runtime_network_resource_group=None,
                        app_network_resource_group=None,
+                       enable_log_stream_public_endpoint=None,
                        zone_redundant=False,
                        sku=None,
                        tags=None,
+                       ingress_read_timeout=None,
+                       marketplace_plan_id=None,
                        **_):
         properties = models.ClusterResourceProperties(
             zone_redundant=zone_redundant
         )
+
+        if enable_log_stream_public_endpoint is not None:
+            properties.vnet_addons = models.ServiceVNetAddons(
+                log_stream_public_endpoint=enable_log_stream_public_endpoint
+            )
+        else:
+            properties.vnet_addons = None
+
+        if marketplace_plan_id:
+            properties.marketplace_resource = models.MarketplaceResource(
+                plan=marketplace_plan_id,
+                product=MARKETPLACE_OFFER_ID,
+                publisher=MARKETPLACE_PUBLISHER_ID
+            )
 
         if service_runtime_subnet or app_subnet or reserved_cidr_range:
             properties.network_profile = models.NetworkProfile(
@@ -69,6 +87,13 @@ class DefaultSpringCloud:
                 app_network_resource_group=app_network_resource_group,
                 service_runtime_network_resource_group=service_runtime_network_resource_group
             )
+
+        if ingress_read_timeout:
+            ingress_configuration = models.IngressConfig(read_timeout_in_seconds=ingress_read_timeout)
+            if properties.network_profile:
+                properties.network_profile.ingress_config = ingress_configuration
+            else:
+                properties.network_profile = models.NetworkProfile(ingress_config=ingress_configuration)
 
         resource = models.ServiceResource(location=self.location, sku=sku, properties=properties, tags=tags)
         poller = self.client.services.begin_create_or_update(
@@ -127,6 +152,9 @@ def spring_create(cmd, client, resource_group, name,
                   gateway_instance_count=None,
                   enable_api_portal=False,
                   api_portal_instance_count=None,
+                  enable_log_stream_public_endpoint=None,
+                  ingress_read_timeout=None,
+                  marketplace_plan_id=None,
                   no_wait=False):
     """
     Because Standard/Basic tier vs. Enterprise tier creation are very different. Here routes the command to different
@@ -144,6 +172,7 @@ def spring_create(cmd, client, resource_group, name,
         'sampling_rate': sampling_rate,
         'disable_app_insights': disable_app_insights,
         'enable_java_agent': enable_java_agent,
+        'ingress_read_timeout': ingress_read_timeout,
         'sku': sku,
         'tags': tags,
         'zone_redundant': zone_redundant,
@@ -154,6 +183,8 @@ def spring_create(cmd, client, resource_group, name,
         'gateway_instance_count': gateway_instance_count,
         'enable_api_portal': enable_api_portal,
         'api_portal_instance_count': api_portal_instance_count,
+        'enable_log_stream_public_endpoint': enable_log_stream_public_endpoint,
+        'marketplace_plan_id': marketplace_plan_id,
         'no_wait': no_wait
     }
 
@@ -169,3 +200,7 @@ def _enable_app_insights(cmd, client, resource_group, name, location, app_insigh
     return create_default_buildpack_binding_for_application_insights(cmd, client, resource_group, name,
                                                                      location, app_insights_key, app_insights,
                                                                      sampling_rate)
+
+
+def spring_list_marketplace_plan(cmd, client):
+    return _spring_list_marketplace_plan(cmd, client)

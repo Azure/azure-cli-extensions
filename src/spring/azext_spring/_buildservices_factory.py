@@ -14,7 +14,7 @@ from azure.cli.core.azclierror import InvalidArgumentValueError, AzureInternalEr
 from msrestazure.tools import parse_resource_id
 from azure.cli.core.commands.client_factory import get_subscription_id
 from msrestazure.azure_exceptions import CloudError
-from .vendored_sdks.appplatform.v2022_01_01_preview import models
+from .vendored_sdks.appplatform.v2022_05_01_preview import models
 from ._deployment_uploadable_factory import uploader_selector
 from ._log_stream import LogStream
 from .vendored_sdks.appplatform.v2022_01_01_preview.models._app_platform_management_client_enums import SupportedRuntimeValue
@@ -58,14 +58,18 @@ class BuildService:
         except AttributeError as e:
             raise AzureInternalError("Failed to get a SAS URL to upload context. Error: {}".format(e))
 
-    def _queue_build(self, relative_path=None, builder=None, build_env=None, app=None, **_):
+    def _queue_build(self, relative_path=None, builder=None, build_env=None, build_cpu=None, build_memory=None, app=None, **_):
         subscription = get_subscription_id(self.cmd.cli_ctx)
         service_resource_id = '/subscriptions/{}/resourceGroups/{}/providers/Microsoft.AppPlatform/Spring/{}'.format(subscription, self.resource_group, self.service)
+        build_resource_requests = models.BuildResourceRequests(
+            cpu=build_cpu,
+            memory=build_memory)
         properties = models.BuildProperties(
             builder='{}/buildservices/default/builders/{}'.format(service_resource_id, builder),
             agent_pool='{}/buildservices/default/agentPools/default'.format(service_resource_id),
             relative_path=relative_path,
-            env=build_env if build_env else None)
+            env=build_env if build_env else None,
+            resource_requests=build_resource_requests)
         build = models.Build(properties=properties)
         try:
             return self.client.build_service.create_or_update_build(self.resource_group,

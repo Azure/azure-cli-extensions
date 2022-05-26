@@ -52,6 +52,13 @@ def app_create(cmd, client, resource_group, service, name,
                enable_persistent_storage=None,
                persistent_storage=None,
                assign_endpoint=None,
+               enable_liveness_probe=None,
+               enable_readiness_probe=None,
+               enable_startup_probe=None,
+               liveness_probe_config=None,
+               readiness_probe_config=None,
+               startup_probe_config=None,
+               assign_public_endpoint=None,
                loaded_public_certificate_file=None):
     '''app_create
     Create app with an active deployment, deployment should be deployed with default banner
@@ -79,6 +86,7 @@ def app_create(cmd, client, resource_group, service, name,
         'enable_persistent_storage': enable_persistent_storage,
         'persistent_storage': persistent_storage,
         'public': assign_endpoint,
+        'public_for_vnet': assign_public_endpoint,
         'loaded_public_certificate_file': loaded_public_certificate_file
     }
     create_deployment_kwargs = {
@@ -90,10 +98,17 @@ def app_create(cmd, client, resource_group, service, name,
         'env': env,
         'runtime_version': runtime_version,
         'jvm_options': jvm_options,
+        'enable_liveness_probe': enable_liveness_probe,
+        'enable_readiness_probe': enable_readiness_probe,
+        'enable_startup_probe': enable_startup_probe,
+        'liveness_probe_config_file_path': liveness_probe_config,
+        'readiness_probe_config_file_path': readiness_probe_config,
+        'startup_probe_config_file_path': startup_probe_config,
     }
     update_app_kwargs = {
         'enable_persistent_storage': enable_persistent_storage,
         'public': assign_endpoint,
+        'public_for_vnet': assign_public_endpoint
     }
 
     deployable = deployable_selector(**create_deployment_kwargs, **basic_kwargs)
@@ -128,6 +143,7 @@ def app_update(cmd, client, resource_group, service, name,
                deployment=None,  # set by validator
                # app
                assign_endpoint=None,
+               assign_public_endpoint=None,
                enable_persistent_storage=None,
                enable_ingress_to_app_tls=None,
                https_only=None,
@@ -141,6 +157,12 @@ def app_update(cmd, client, resource_group, service, name,
                env=None,
                disable_probe=None,
                config_file_patterns=None,
+               enable_liveness_probe=None,
+               enable_readiness_probe=None,
+               enable_startup_probe=None,
+               liveness_probe_config=None,
+               readiness_probe_config=None,
+               startup_probe_config=None,
                # general
                no_wait=False):
     '''app_update
@@ -167,18 +189,24 @@ def app_update(cmd, client, resource_group, service, name,
         'runtime_version': runtime_version,
         'jvm_options': jvm_options,
         'main_entry': main_entry,
-        'source_type': deployment.properties.source.type if deployment else None
+        'source_type': deployment.properties.source.type if deployment else None,
+        'enable_liveness_probe': enable_liveness_probe,
+        'enable_readiness_probe': enable_readiness_probe,
+        'enable_startup_probe': enable_startup_probe,
+        'liveness_probe_config_file_path': liveness_probe_config,
+        'readiness_probe_config_file_path': readiness_probe_config,
+        'startup_probe_config_file_path': startup_probe_config,
     }
 
     app_kwargs = {
         'public': assign_endpoint,
+        'public_for_vnet': assign_public_endpoint,
         'enable_persistent_storage': enable_persistent_storage,
         'persistent_storage': persistent_storage,
         'loaded_public_certificate_file': loaded_public_certificate_file,
         'enable_end_to_end_tls': enable_ingress_to_app_tls,
         'https_only': https_only,
     }
-
     if deployment is None:
         updated_deployment_kwargs = {k: v for k, v in deployment_kwargs.items() if v}
         if updated_deployment_kwargs:
@@ -228,10 +256,18 @@ def app_deploy(cmd, client, resource_group, service, name,
                container_args=None,
                build_env=None,
                builder=None,
+               build_cpu=None,
+               build_memory=None,
                # deployment.settings
                env=None,
                disable_probe=None,
                config_file_patterns=None,
+               enable_liveness_probe=None,
+               enable_readiness_probe=None,
+               enable_startup_probe=None,
+               liveness_probe_config=None,
+               readiness_probe_config=None,
+               startup_probe_config=None,
                # general
                no_wait=False):
     '''app_deploy
@@ -271,7 +307,15 @@ def app_deploy(cmd, client, resource_group, service, name,
         'container_command': container_command,
         'container_args': container_args,
         'build_env': build_env,
+        'build_cpu': build_cpu,
+        'build_memory': build_memory,
         'builder': builder,
+        'enable_liveness_probe': enable_liveness_probe,
+        'enable_readiness_probe': enable_readiness_probe,
+        'enable_startup_probe': enable_startup_probe,
+        'liveness_probe_config_file_path': liveness_probe_config,
+        'readiness_probe_config_file_path': readiness_probe_config,
+        'startup_probe_config_file_path': startup_probe_config,
         'no_wait': no_wait
     }
 
@@ -323,6 +367,12 @@ def deployment_create(cmd, client, resource_group, service, app, name,
                       env=None,
                       disable_probe=None,
                       config_file_patterns=None,
+                      enable_liveness_probe=None,
+                      enable_readiness_probe=None,
+                      enable_startup_probe=None,
+                      liveness_probe_config=None,
+                      readiness_probe_config=None,
+                      startup_probe_config=None,
                       # general
                       no_wait=False):
     '''deployment_create
@@ -364,6 +414,12 @@ def deployment_create(cmd, client, resource_group, service, app, name,
         'instance_count': instance_count,
         'build_env': build_env,
         'builder': builder,
+        'enable_liveness_probe': enable_liveness_probe,
+        'enable_readiness_probe': enable_readiness_probe,
+        'enable_startup_probe': enable_startup_probe,
+        'liveness_probe_config_file_path': liveness_probe_config,
+        'readiness_probe_config_file_path': readiness_probe_config,
+        'startup_probe_config_file_path': startup_probe_config,
         'no_wait': no_wait
     }
 

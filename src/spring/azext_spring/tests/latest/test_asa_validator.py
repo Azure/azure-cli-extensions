@@ -308,20 +308,20 @@ def _mock_not_registered_client(cli_ctx, client_type, **kwargs):
 class TestSkuValidator(unittest.TestCase):
     @mock.patch('azure.cli.core.commands.client_factory.get_mgmt_service_client', _mock_happy_client)
     def test_happy_path(self):
-        ns = Namespace(sku='Enterprise')
+        ns = Namespace(sku='Enterprise', marketplace_plan_id=None)
         validate_sku(_get_test_cmd(), ns)
         self.assertEqual('Enterprise', ns.sku.tier)
 
     @mock.patch('azure.cli.core.commands.client_factory.get_mgmt_service_client', _mock_not_accepted_term_client)
     def test_term_not_accept(self):
-        ns = Namespace(sku='Enterprise')
+        ns = Namespace(sku='Enterprise', marketplace_plan_id=None)
         with self.assertRaises(InvalidArgumentValueError) as context:
             validate_sku(_get_test_cmd(), ns)
         self.assertTrue('Terms for Azure Spring Apps Enterprise is not accepted.' in str(context.exception))
 
     @mock.patch('azure.cli.core.commands.client_factory.get_mgmt_service_client', _mock_not_registered_client)
     def test_provider_not_registered(self):
-        ns = Namespace(sku='Enterprise')
+        ns = Namespace(sku='Enterprise', marketplace_plan_id=None)
         with self.assertRaises(InvalidArgumentValueError) as context:
             validate_sku(_get_test_cmd(), ns)
         self.assertTrue('Microsoft.SaaS resource provider is not registered.' in str(context.exception))

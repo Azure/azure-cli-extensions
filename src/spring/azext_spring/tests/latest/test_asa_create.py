@@ -79,6 +79,17 @@ class TestSpringCloudCreateEnerprise(BasicTest):
         self.assertEqual('E0', resource.sku.name)
         self.assertEqual('Enterprise', resource.sku.tier)
         self.assertEqual(False, resource.properties.zone_redundant)
+        self.assertIsNone(resource.properties.marketplace_resource)
+
+    def test_asc_create_enterprise_with_plan(self):
+        self._execute('rg', 'asc', sku=self._get_sku('Enterprise'), disable_app_insights=True, marketplace_plan_id='my-plan')
+        resource = self.created_resource
+        self.assertEqual('E0', resource.sku.name)
+        self.assertEqual('Enterprise', resource.sku.tier)
+        self.assertEqual(False, resource.properties.zone_redundant)
+        self.assertEqual('my-plan', resource.properties.marketplace_resource.plan)
+        self.assertEqual('azure-spring-cloud-vmware-tanzu-2', resource.properties.marketplace_resource.product)
+        self.assertEqual('vmware-inc', resource.properties.marketplace_resource.publisher)
 
 
 class TestSpringCloudCreateWithAI(BasicTest):
@@ -201,3 +212,31 @@ class TestSpringCloudCreateEnerpriseWithApplicationInsights(BasicTest):
             self.buildpack_binding_resource.properties.launch_properties.properties['connection-string'])
         self.assertEqual(53,
             self.buildpack_binding_resource.properties.launch_properties.properties['sampling-percentage'])
+
+
+class TestSpringAppCreateWithIngressConfig(BasicTest):
+    def test_asa_create_basic_with_ingress_config(self):
+        self._execute('rg', 'asc', sku=self._get_sku('Basic'), ingress_read_timeout=500, disable_app_insights=True)
+        resource = self.created_resource
+        self.assertEqual(500, resource.properties.network_profile.ingress_config.read_timeout_in_seconds)
+
+    def test_asa_create_standard_with_ingress_config(self):
+        self._execute('rg', 'asc', sku=self._get_sku('Standard'), ingress_read_timeout=300, disable_app_insights=True)
+        resource = self.created_resource
+        self.assertEqual(300, resource.properties.network_profile.ingress_config.read_timeout_in_seconds)
+
+    def test_asa_create_enterprise_with_ingress_config(self):
+        self._execute('rg', 'asc', sku=self._get_sku('Enterprise'), ingress_read_timeout=100, disable_app_insights=True)
+        resource = self.created_resource
+        self.assertEqual(100, resource.properties.network_profile.ingress_config.read_timeout_in_seconds)
+
+class TestSpringAppCreateWithLogStreamConfig(BasicTest):
+    def test_asa_create_standard_with_log_stream_config(self):
+        self._execute('rg', 'asc', sku=self._get_sku('Standard'), enable_log_stream_public_endpoint=True, disable_app_insights=True)
+        resource = self.created_resource
+        self.assertEqual(True, resource.properties.vnet_addons.log_stream_public_endpoint)
+
+    def test_asa_create_enterprise_with_log_stream_config(self):
+        self._execute('rg', 'asc', sku=self._get_sku('Enterprise'), enable_log_stream_public_endpoint=True, disable_app_insights=True)
+        resource = self.created_resource
+        self.assertEqual(True, resource.properties.vnet_addons.log_stream_public_endpoint)
