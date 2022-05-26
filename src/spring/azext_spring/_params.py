@@ -209,17 +209,17 @@ def load_arguments(self, _):
 
     for scope in ['spring app create', 'spring app update', 'spring app deploy', 'spring app deployment create', 'spring app deployment update']:
         with self.argument_context(scope) as c:
-            c.argument('enable_liveness_probe', arg_type=get_three_state_flag(),
+            c.argument('enable_liveness_probe', arg_type=get_three_state_flag(), is_preview=True,
                        help='If false, will disable the liveness probe of the app instance', arg_group='App Customization')
-            c.argument('enable_readiness_probe', arg_type=get_three_state_flag(),
+            c.argument('enable_readiness_probe', arg_type=get_three_state_flag(), is_preview=True,
                        help='If false, will disable the readiness probe of the app instance', arg_group='App Customization')
-            c.argument('enable_startup_probe', arg_type=get_three_state_flag(),
+            c.argument('enable_startup_probe', arg_type=get_three_state_flag(), is_preview=True,
                        help='If false, will disable the startup probe of the app instance', arg_group='App Customization')
-            c.argument('liveness_probe_config', type=str,
+            c.argument('liveness_probe_config', type=str, is_preview=True,
                        help='A json file path indicates the liveness probe config', arg_group='App Customization')
-            c.argument('readiness_probe_config', type=str,
+            c.argument('readiness_probe_config', type=str, is_preview=True,
                        help='A json file path indicates the readiness probe config', arg_group='App Customization')
-            c.argument('startup_probe_config', type=str,
+            c.argument('startup_probe_config', type=str, is_preview=True,
                        help='A json file path indicates the startup probe config', arg_group='App Customization')
 
     with self.argument_context('spring app create') as c:
