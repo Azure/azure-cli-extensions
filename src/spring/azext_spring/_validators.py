@@ -20,6 +20,7 @@ from azure.mgmt.core.tools import resource_id
 from knack.log import get_logger
 from ._utils import (ApiType, _get_rg_location, _get_file_type, _get_sku_name)
 from .vendored_sdks.appplatform.v2020_07_01 import models
+from ._constant import (MARKETPLACE_OFFER_ID, MARKETPLACE_PLAN_ID, MARKETPLACE_PUBLISHER_ID)
 
 logger = get_logger(__name__)
 
@@ -47,6 +48,7 @@ def validate_sku(cmd, namespace):
         _validate_saas_provider(cmd, namespace)
         _validate_terms(cmd, namespace)
     else:
+        _check_saas_not_set(cmd, namespace)
         _check_tanzu_components_not_enable(cmd, namespace)
     normalize_sku(cmd, namespace)
 
@@ -54,6 +56,11 @@ def validate_sku(cmd, namespace):
 def normalize_sku(cmd, namespace):
     if namespace.sku:
         namespace.sku = models.Sku(name=_get_sku_name(namespace.sku), tier=namespace.sku)
+
+
+def _check_saas_not_set(cmd, namespace):
+    if namespace.marketplace_plan_id:
+        raise InvalidArgumentValueError('--marketplace-plan-id is supported only when --sku=Enterprise')
 
 
 def _validate_saas_provider(cmd, namespace):
@@ -69,15 +76,18 @@ def _validate_terms(cmd, namespace):
     from azure.mgmt.marketplaceordering import MarketplaceOrderingAgreements
     from azure.cli.core.commands.client_factory import get_mgmt_service_client
     client = get_mgmt_service_client(cmd.cli_ctx, MarketplaceOrderingAgreements).marketplace_agreements
+    plan_id = namespace.marketplace_plan_id or MARKETPLACE_PLAN_ID
     term = client.get(offer_type="virtualmachine",
-                      publisher_id='vmware-inc',
-                      offer_id='azure-spring-cloud-vmware-tanzu-2',
-                      plan_id='tanzu-asc-ent-mtr')
+                      publisher_id=MARKETPLACE_PUBLISHER_ID,
+                      offer_id=MARKETPLACE_OFFER_ID,
+                      plan_id=plan_id)
     if not term.accepted:
         raise InvalidArgumentValueError('Terms for Azure Spring Apps Enterprise is not accepted.\n'
-                                        'Run "az term accept --publisher vmware-inc '
-                                        '--product azure-spring-cloud-vmware-tanzu-2 '
-                                        '--plan tanzu-asc-ent-mtr" to accept the term.')
+                                        'Run "az term accept --publisher {} '
+                                        '--product {} '
+                                        '--plan {}" to accept the term.'.format(MARKETPLACE_PUBLISHER_ID,
+                                                                                MARKETPLACE_OFFER_ID,
+                                                                                plan_id))
 
 
 def _check_tanzu_components_not_enable(cmd, namespace):

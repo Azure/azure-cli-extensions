@@ -7,7 +7,6 @@
 # pylint: disable=unused-argument, logging-format-interpolation, protected-access, wrong-import-order, too-many-lines
 from ._utils import (wait_till_end, _get_rg_location)
 from .vendored_sdks.appplatform.v2022_05_01_preview import models
-from knack.log import get_logger
 from .custom import (_warn_enable_java_agent, _update_application_insights_asc_create)
 from ._build_service import _update_default_build_agent_pool
 from .buildpack_binding import create_default_buildpack_binding_for_application_insights
@@ -19,6 +18,8 @@ from ._tanzu_component import (create_application_configuration_service,
 
 from ._validators import (_parse_sku_name)
 from knack.log import get_logger
+from ._marketplace import _spring_list_marketplace_plan
+from ._constant import (MARKETPLACE_OFFER_ID, MARKETPLACE_PUBLISHER_ID)
 
 logger = get_logger(__name__)
 
@@ -58,6 +59,7 @@ class DefaultSpringCloud:
                        sku=None,
                        tags=None,
                        ingress_read_timeout=None,
+                       marketplace_plan_id=None,
                        **_):
         properties = models.ClusterResourceProperties(
             zone_redundant=zone_redundant
@@ -69,6 +71,13 @@ class DefaultSpringCloud:
             )
         else:
             properties.vnet_addons = None
+
+        if marketplace_plan_id:
+            properties.marketplace_resource = models.MarketplaceResource(
+                plan=marketplace_plan_id,
+                product=MARKETPLACE_OFFER_ID,
+                publisher=MARKETPLACE_PUBLISHER_ID
+            )
 
         if service_runtime_subnet or app_subnet or reserved_cidr_range:
             properties.network_profile = models.NetworkProfile(
@@ -145,6 +154,7 @@ def spring_create(cmd, client, resource_group, name,
                   api_portal_instance_count=None,
                   enable_log_stream_public_endpoint=None,
                   ingress_read_timeout=None,
+                  marketplace_plan_id=None,
                   no_wait=False):
     """
     Because Standard/Basic tier vs. Enterprise tier creation are very different. Here routes the command to different
@@ -174,6 +184,7 @@ def spring_create(cmd, client, resource_group, name,
         'enable_api_portal': enable_api_portal,
         'api_portal_instance_count': api_portal_instance_count,
         'enable_log_stream_public_endpoint': enable_log_stream_public_endpoint,
+        'marketplace_plan_id': marketplace_plan_id,
         'no_wait': no_wait
     }
 
@@ -189,3 +200,7 @@ def _enable_app_insights(cmd, client, resource_group, name, location, app_insigh
     return create_default_buildpack_binding_for_application_insights(cmd, client, resource_group, name,
                                                                      location, app_insights_key, app_insights,
                                                                      sampling_rate)
+
+
+def spring_list_marketplace_plan(cmd, client):
+    return _spring_list_marketplace_plan(cmd, client)
