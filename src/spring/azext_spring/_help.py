@@ -39,6 +39,14 @@ helps['spring create'] = """
         az spring create -n MyService -g MyResourceGroup --sku Enterprise --enable-application-configuration-service --enable-service-registry --enable-gateway --enable-api-portal
 """
 
+helps['spring list-marketplace-plan'] = """
+    type: command
+    short-summary: (Enterprise Tier Only) List Marketplace plan to be purchased.
+    examples:
+    - name: List all plans.
+      text: az spring list-marketplace-plan -o table
+"""
+
 helps['spring update'] = """
     type: command
     short-summary: Update an Azure Spring Apps.
@@ -646,7 +654,7 @@ helps['spring build-service builder create'] = """
     short-summary: Create a builder.
     examples:
         - name: Create a builder using JSON file.
-          text: az spring build-service builder create --name my-builder --builder-json MyJson.json --service clitest --resource-group cli
+          text: az spring build-service builder create --name my-builder --builder-file MyJson.json --service clitest --resource-group cli
 """
 
 helps['spring build-service builder update'] = """
@@ -654,7 +662,7 @@ helps['spring build-service builder update'] = """
     short-summary: Update a builder.
     examples:
         - name: Update a builder using JSON file.
-          text: az spring build-service builder update --name my-builder --builder-json MyJson.json --service clitest --resource-group cli
+          text: az spring build-service builder update --name my-builder --builder-file MyJson.json --service clitest --resource-group cli
 """
 
 helps['spring build-service builder show'] = """
