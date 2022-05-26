@@ -1165,7 +1165,7 @@ def aks_kollect(cmd,    # pylint: disable=too-many-statements,too-many-locals
 
             print()
             print(f"Deploying aks-periscope")
-            
+
             subprocess.check_output(["kubectl", "--kubeconfig", temp_kubeconfig_path, "apply", "-k",
                                      kustomize_folder, "-n", CONST_PERISCOPE_NAMESPACE], stderr=subprocess.STDOUT)
         except subprocess.CalledProcessError as err:
@@ -1195,6 +1195,7 @@ def aks_kollect(cmd,    # pylint: disable=too-many-statements,too-many-locals
     else:
         display_diagnostics_report(temp_kubeconfig_path)
 
+
 def get_kustomize_yaml(storage_account_name,
                        sas_token,
                        container_name,
@@ -1210,7 +1211,7 @@ def get_kustomize_yaml(storage_account_name,
     }
 
     # Create YAML list items for each config variable that has a value
-    diag_content = "\n".join(f'  - {k}="{v}"' for k,v in diag_config_vars.items() if v is not None)
+    diag_content = "\n".join(f'  - {k}="{v}"' for k, v in diag_config_vars.items() if v is not None)
 
     # Build a Kustomize overlay referencing a base for a known release, and using the images from MCR
     # for that release.
@@ -1242,6 +1243,7 @@ secretGenerator:
   - AZURE_BLOB_SAS_KEY=?{sas_token}
   - AZURE_BLOB_CONTAINER_NAME={container_name}
 """
+
 
 def aks_kanalyze(cmd, client, resource_group_name, name):
     colorama.init()
