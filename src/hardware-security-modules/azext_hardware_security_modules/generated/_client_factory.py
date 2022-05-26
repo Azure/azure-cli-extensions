@@ -9,11 +9,12 @@
 # --------------------------------------------------------------------------
 
 
-def cf_hardwaresecuritymodules(cli_ctx, *_):
+def cf_hardware_security_modules_cl(cli_ctx, *_):
     from azure.cli.core.commands.client_factory import get_mgmt_service_client
-    from ..vendored_sdks.hardwaresecuritymodules import AzureDedicatedHSMResourceProvider
-    return get_mgmt_service_client(cli_ctx, AzureDedicatedHSMResourceProvider)
+    from azext_hardware_security_modules.vendored_sdks.hardwaresecuritymodules import AzureDedicatedHSMResourceProvider
+    return get_mgmt_service_client(cli_ctx,
+                                   AzureDedicatedHSMResourceProvider)
 
 
 def cf_dedicated_hsm(cli_ctx, *_):
-    return cf_hardwaresecuritymodules(cli_ctx).dedicated_hsm
+    return cf_hardware_security_modules_cl(cli_ctx).dedicated_hsm
