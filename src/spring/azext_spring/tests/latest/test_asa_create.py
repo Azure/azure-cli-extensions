@@ -229,3 +229,14 @@ class TestSpringAppCreateWithIngressConfig(BasicTest):
         self._execute('rg', 'asc', sku=self._get_sku('Enterprise'), ingress_read_timeout=100, disable_app_insights=True)
         resource = self.created_resource
         self.assertEqual(100, resource.properties.network_profile.ingress_config.read_timeout_in_seconds)
+
+class TestSpringAppCreateWithLogStreamConfig(BasicTest):
+    def test_asa_create_standard_with_log_stream_config(self):
+        self._execute('rg', 'asc', sku=self._get_sku('Standard'), enable_log_stream_public_endpoint=True, disable_app_insights=True)
+        resource = self.created_resource
+        self.assertEqual(True, resource.properties.vnet_addons.log_stream_public_endpoint)
+
+    def test_asa_create_enterprise_with_log_stream_config(self):
+        self._execute('rg', 'asc', sku=self._get_sku('Enterprise'), enable_log_stream_public_endpoint=True, disable_app_insights=True)
+        resource = self.created_resource
+        self.assertEqual(True, resource.properties.vnet_addons.log_stream_public_endpoint)

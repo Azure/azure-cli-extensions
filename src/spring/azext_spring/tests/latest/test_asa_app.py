@@ -657,6 +657,13 @@ class TestAppCreate(BasicTest):
         resource = self.put_app_resource
         self.assertEqual(1, resource.properties.persistent_disk.size_in_gb)
 
+    def test_app_with_assign_public_endpoint(self):
+        self._execute('rg', 'asc', 'app', cpu='500m', memory='2Gi', instance_count=1, assign_public_endpoint=True)
+        resource = self.put_app_resource
+        self.assertEqual(True, resource.properties.vnet_addons.public_endpoint)
+        resource = self.patch_app_resource
+        self.assertEqual(True, resource.properties.vnet_addons.public_endpoint)
+
 
 class TestDeploymentCreate(BasicTest):
     def __init__(self, methodName: str = ...):

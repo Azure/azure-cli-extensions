@@ -76,6 +76,10 @@ def load_arguments(self, _):
         c.argument('service_runtime_subnet', arg_group='VNet Injection', options_list=['--service-runtime-subnet', '--svc-subnet'], help='The name or ID of an existing subnet in "vnet" into which to deploy the Spring Apps service runtime. Required when deploying into a Virtual Network.', validator=validate_vnet)
         c.argument('service_runtime_network_resource_group', arg_group='VNet Injection', options_list=['--service-runtime-network-resource-group', '--svc-nrg'], help='The resource group where all network resources for Azure Spring Apps service runtime will be created in.', validator=validate_node_resource_group)
         c.argument('app_network_resource_group', arg_group='VNet Injection', options_list=['--app-network-resource-group', '--app-nrg'], help='The resource group where all network resources for apps will be created in.', validator=validate_node_resource_group)
+        c.argument('enable_log_stream_public_endpoint',
+                   arg_type=get_three_state_flag(),
+                   options_list=['--enable-log-stream-public-endpoint', '--enable-lspa'],
+                   help='If true, assign public endpoint for log streaming in vnet injection instance which could be accessed out of virtual network.')
         c.argument('enable_java_agent',
                    arg_group='Application Insights',
                    arg_type=get_three_state_flag(),
@@ -186,6 +190,10 @@ def load_arguments(self, _):
         c.argument('build_pool_size',
                    arg_type=get_enum_type(['S1', 'S2', 'S3', 'S4', 'S5']),
                    help='(Enterprise Tier Only) Size of build agent pool. See https://aka.ms/azure-spring-cloud-build-service-docs for size info.')
+        c.argument('enable_log_stream_public_endpoint',
+                   arg_type=get_three_state_flag(),
+                   options_list=['--enable-log-stream-public-endpoint', '--enable-lspa'],
+                   help='If true, assign public endpoint for log streaming in vnet injection instance which could be accessed out of virtual network.')
 
     for scope in ['spring create', 'spring update']:
         with self.argument_context(scope) as c:
@@ -218,6 +226,9 @@ def load_arguments(self, _):
         c.argument('assign_endpoint', arg_type=get_three_state_flag(),
                    help='If true, assign endpoint URL for direct access.', default=False,
                    options_list=['--assign-endpoint', c.deprecate(target='--is-public', redirect='--assign-endpoint', hide=True)])
+        c.argument('assign_public_endpoint',
+                   arg_type=get_three_state_flag(),
+                   help='If true, assign endpoint URL which could be accessed out of virtual network for vnet injection instance app.')
         c.argument('assign_identity',
                    arg_type=get_three_state_flag(),
                    validator=validate_create_app_with_system_identity_or_warning,
@@ -246,6 +257,9 @@ def load_arguments(self, _):
         c.argument('assign_endpoint', arg_type=get_three_state_flag(),
                    help='If true, assign endpoint URL for direct access.',
                    options_list=['--assign-endpoint', c.deprecate(target='--is-public', redirect='--assign-endpoint', hide=True)])
+        c.argument('assign_public_endpoint',
+                   arg_type=get_three_state_flag(),
+                   help='If true, assign endpoint URL which could be accessed out of virtual network for vnet injection instance app.')
         c.argument('https_only', arg_type=get_three_state_flag(), help='If true, access app via https', default=False)
         c.argument('enable_ingress_to_app_tls', arg_type=get_three_state_flag(),
                    help='If true, enable ingress to app tls',
