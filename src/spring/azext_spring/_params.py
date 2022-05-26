@@ -217,7 +217,7 @@ def load_arguments(self, _):
                        help='If false, will disable the startup probe of the app instance', arg_group='App Customization')
             c.argument('liveness_probe_config', type=str, is_preview=True,
                        help='A json file path indicates the liveness probe config', arg_group='App Customization')
-            c.argument('readiness_probe_config', type=str,
+            c.argument('readiness_probe_config', type=str, is_preview=True,
                        help='A json file path indicates the readiness probe config', arg_group='App Customization')
             c.argument('startup_probe_config', type=str, is_preview=True,
                        help='A json file path indicates the startup probe config', arg_group='App Customization')
