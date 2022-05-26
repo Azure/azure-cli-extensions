@@ -624,15 +624,22 @@ class TestAppCreate(BasicTest):
     def test_app_with_persistent_storage(self):
         self._execute('rg', 'asc', 'app', cpu='500m', memory='2Gi', instance_count=1, enable_persistent_storage=True)
         resource = self.put_app_resource
-        self.assertEqual(50, resource.properties.persistent_disk.size_in_gb)
+        self.assertEqual(True, resource.properties.vnet_addons.public_endpoint)
         resource = self.patch_app_resource
-        self.assertEqual(50, resource.properties.persistent_disk.size_in_gb)
+        self.assertEqual(True, resource.properties.vnet_addons.public_endpoint)
 
     def test_app_with_persistent_storage_basic(self):
         client = self._get_basic_mock_client(sku='Basic')
         self._execute('rg', 'asc', 'app', cpu='500m', memory='2Gi', instance_count=1, enable_persistent_storage=True, client=client)
         resource = self.put_app_resource
         self.assertEqual(1, resource.properties.persistent_disk.size_in_gb)
+
+    def test_app_with_assign_public_endpoint(self):
+        self._execute('rg', 'asc', 'app', cpu='500m', memory='2Gi', instance_count=1, assign_public_endpoint=True)
+        resource = self.put_app_resource
+        self.assertEqual(50, resource.properties.persistent_disk.size_in_gb)
+        resource = self.patch_app_resource
+        self.assertEqual(50, resource.properties.persistent_disk.size_in_gb)
 
 
 class TestDeploymentCreate(BasicTest):
