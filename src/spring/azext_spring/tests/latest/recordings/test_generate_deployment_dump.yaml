@@ -15,7 +15,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.32.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.10 (Windows-10-10.0.22000-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-app-dump/deployments/mock-deployment?api-version=2022-05-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-app-dump/deployments/default?api-version=2022-05-01-preview
   response:
     body:
       string: '{"properties":{"source":{"type":"Jar","relativePath":"<default>","runtimeVersion":"Java_8"},"deploymentSettings":{"resourceRequests":{"cpu":"1","memory":"1Gi"},"environmentVariables":null},"provisioningState":"Succeeded","status":"Running","active":true,"instances":[{"name":"test-app-dump-default-23-75bf876455-xz892","status":"Running","discoveryStatus":"UP","startTime":"2022-01-17T21:05:40Z"}]},"type":"Microsoft.AppPlatform/Spring/apps/deployments","sku":{"name":"S0","tier":"Standard","capacity":1},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-app-dump/deployments/default","name":"default","systemData":{"createdBy":"3462cf92-dc17-43c5-8c7e-e50c11a1c181","createdByType":"Application","createdAt":"2022-01-17T21:05:09.7194765Z","lastModifiedBy":"3462cf92-dc17-43c5-8c7e-e50c11a1c181","lastModifiedByType":"Application","lastModifiedAt":"2022-01-17T21:05:27.4994709Z"}}'
@@ -67,7 +67,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.32.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.10 (Windows-10-10.0.22000-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-app-dump/deployments/mock-deployment?api-version=2022-05-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-app-dump/deployments/default?api-version=2022-05-01-preview
   response:
     body:
       string: '{"properties":{"source":{"type":"Jar","relativePath":"<default>","runtimeVersion":"Java_8"},"deploymentSettings":{"resourceRequests":{"cpu":"1","memory":"1Gi"},"environmentVariables":null},"provisioningState":"Succeeded","status":"Running","active":true,"instances":[{"name":"test-app-dump-default-23-75bf876455-xz892","status":"Running","discoveryStatus":"UP","startTime":"2022-01-17T21:05:40Z"}]},"type":"Microsoft.AppPlatform/Spring/apps/deployments","sku":{"name":"S0","tier":"Standard","capacity":1},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-app-dump/deployments/default","name":"default","systemData":{"createdBy":"3462cf92-dc17-43c5-8c7e-e50c11a1c181","createdByType":"Application","createdAt":"2022-01-17T21:05:09.7194765Z","lastModifiedBy":"3462cf92-dc17-43c5-8c7e-e50c11a1c181","lastModifiedByType":"Application","lastModifiedAt":"2022-01-17T21:05:27.4994709Z"}}'
@@ -124,7 +124,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.32.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.10 (Windows-10-10.0.22000-SP0)
     method: POST
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-app-dump/deployments/mock-deployment/generateHeapDump?api-version=2022-05-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-app-dump/deployments/default/generateHeapDump?api-version=2022-05-01-preview
   response:
     body:
       string: '{"appInstance":"test-app-dump-default-23-75bf876455-xz892","filePath":"C:UsersyuwzhoAppDataLocalTempdumpfile.txt","duration":"60s"}'
@@ -141,8 +141,6 @@ interactions:
       - Wed, 19 Jan 2022 03:28:29 GMT
       expires:
       - '-1'
-      location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/eastus2euap/operationResults/a0429aa1-0799-4855-a144-a245ad21685f/Spring/default?api-version=2022-05-01-preview
       pragma:
       - no-cache
       request-context:

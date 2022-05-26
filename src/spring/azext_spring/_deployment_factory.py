@@ -58,9 +58,8 @@ class DefaultDeployment:
         if not enable_startup_probe:
             return models_20220501preview.Probe(disable_probe=True)
 
-        probe=self._load_probe_config(startup_probe_config_file_path)
+        probe = self._load_probe_config(startup_probe_config_file_path)
         return probe
-
 
     def _format_liveness_probe(self, enable_liveness_probe=None, liveness_probe_config_file_path=None, **_):
         if enable_liveness_probe is None:
@@ -69,7 +68,7 @@ class DefaultDeployment:
         if not enable_liveness_probe:
             return models_20220501preview.Probe(disable_probe=True)
 
-        probe=self._load_probe_config(liveness_probe_config_file_path)
+        probe = self._load_probe_config(liveness_probe_config_file_path)
         return probe
 
     def _format_readiness_probe(self, enable_readiness_probe=None, readiness_probe_config_file_path=None, **_):
@@ -79,7 +78,7 @@ class DefaultDeployment:
         if not enable_readiness_probe:
             return models_20220501preview.Probe(disable_probe=True)
 
-        probe=self._load_probe_config(readiness_probe_config_file_path)
+        probe = self._load_probe_config(readiness_probe_config_file_path)
         return probe
 
     def _format_container_probe(self, disable_probe=None, **_):
@@ -160,18 +159,18 @@ class DefaultDeployment:
         probe_action = None
         if data['probe']['probeAction']['type'].casefold() == "HTTPGetAction".casefold():
             probe_action = models_20220501preview.HTTPGetAction(
-                type = "HTTPGetAction",
-                path = data['probe']['probeAction']['path'] if 'path' in data['probe']['probeAction'] else None,
-                scheme = data['probe']['probeAction']['scheme'] if 'scheme' in data['probe']['probeAction'] else None,
+                type="HTTPGetAction",
+                path=data['probe']['probeAction']['path'] if 'path' in data['probe']['probeAction'] else None,
+                scheme=data['probe']['probeAction']['scheme'] if 'scheme' in data['probe']['probeAction'] else None,
             )
         elif data['probe']['probeAction']['type'].casefold() == "TCPSocketAction".casefold():
             probe_action = models_20220501preview.TCPSocketAction(
-                type = "TCPSocketAction",
+                type="TCPSocketAction",
             )
         elif data['probe']['probeAction']['type'].casefold() == "ExecAction".casefold():
             probe_action = models_20220501preview.ExecAction(
-                type = "ExecAction",
-                command= data['probe']['probeAction']['command'] if 'command' in data['probe']['probeAction'] else None,
+                type="ExecAction",
+                command=data['probe']['probeAction']['command'] if 'command' in data['probe']['probeAction'] else None,
             )
         else:
             raise InvalidArgumentValueError("ProbeAction.Type is invalid")
@@ -182,10 +181,11 @@ class DefaultDeployment:
             period_seconds=data['probe']['periodSeconds'] if 'periodSeconds' in data['probe'] else None,
             timeout_seconds=data['probe']['timeoutSeconds'] if 'timeoutSeconds' in data['probe'] else None,
             failure_threshold=data['probe']['failureThreshold'] if 'failureThreshold' in data['probe'] else None,
-            success_threshold=data['probe']['successThreshold'] if 'successThreshold' in data['probe'] else None       
+            success_threshold=data['probe']['successThreshold'] if 'successThreshold' in data['probe'] else None
         )
 
         return probe_settings
+
 
 class EnterpriseDeployment(DefaultDeployment):
     def _get_env(self, env, jvm_options, **_):
