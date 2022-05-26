@@ -129,7 +129,7 @@ def add_signer(cmd, client, signer=None, signer_file=None, resource_group_name=N
             'Algorithm': header.get('alg', ''),
             'JKU': header.get('jku', '')
         })
-        body = jwt.decode(token, verify=False)
+        body = jwt.decode(token, algorithms=['RS256'], options={"verify_signature": False})
         result['Certificates'] = body.get('aas-policyCertificates', {}).get('keys', [])
         result['CertificateCount'] = len(result['Certificates'])
 
@@ -171,7 +171,7 @@ def list_signers(cmd, client, resource_group_name=None, provider_name=None):
             'Algorithm': header.get('alg', ''),
             'JKU': header.get('jku', '')
         })
-        body = jwt.decode(token, verify=False)
+        body = jwt.decode(token, algorithms=['RS256'], options={"verify_signature": False})
         result['Certificates'] = body.get('x-ms-policy-certificates', {}).get('keys', [])
         result['CertificateCount'] = len(result['Certificates'])
 
@@ -195,7 +195,7 @@ def get_policy(cmd, client, attestation_type, resource_group_name=None, provider
 
         if policy:
             try:
-                decoded_policy = jwt.decode(policy, verify=False)
+                decoded_policy = jwt.decode(policy, algorithms=['RS256'], options={"verify_signature": False})
                 decoded_policy = decoded_policy.get('AttestationPolicy', '')
                 try:
                     new_decoded_policy = base64.b64decode(_b64url_to_b64(decoded_policy)).decode('ascii')
