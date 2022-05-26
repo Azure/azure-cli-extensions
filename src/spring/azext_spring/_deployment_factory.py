@@ -5,7 +5,9 @@
 
 # pylint: disable=wrong-import-order
 from azure.cli.core.azclierror import InvalidArgumentValueError
+from azure.cli.core.util import get_file_json
 from .vendored_sdks.appplatform.v2022_01_01_preview import models
+from .vendored_sdks.appplatform.v2022_05_01_preview import models as models_20220501preview
 from ._deployment_source_factory import source_selector
 
 
@@ -23,8 +25,8 @@ class DefaultDeployment:
 
     def format_resource(self, sku=None, instance_count=None, active=None, **kwargs):
         sku.capacity = instance_count
-        return models.DeploymentResource(
-            properties=models.DeploymentResourceProperties(
+        return models_20220501preview.DeploymentResource(
+            properties=models_20220501preview.DeploymentResourceProperties(
                 active=active,
                 source=self.format_source(**kwargs),
                 deployment_settings=self.format_settings(**kwargs)
@@ -33,12 +35,52 @@ class DefaultDeployment:
         )
 
     def format_settings(self, **kwargs):
-        return models.DeploymentSettings(
+        return models_20220501preview.DeploymentSettings(
             resource_requests=self._format_resource_request(**kwargs),
             container_probe_settings=self._format_container_probe(**kwargs),
             environment_variables=self._get_env(**kwargs),
-            addon_configs=self._get_addon_configs(**kwargs)
+            addon_configs=self._get_addon_configs(**kwargs),
+            termination_grace_period_seconds=self._get_termination_grace_period_seconds(**kwargs),
+            startup_probe=self._format_startup_probe(**kwargs),
+            liveness_probe=self._format_liveness_probe(**kwargs),
+            readiness_probe=self._format_readiness_probe(**kwargs)
         )
+
+    def _get_termination_grace_period_seconds(self, termination_seconds=None, **_):
+        if termination_seconds is None:
+            return None
+        return termination_seconds
+
+    def _format_startup_probe(self, enable_startup_probe=None, startup_probe_config_file_path=None, **_):
+        if enable_startup_probe is None:
+            return None
+
+        if not enable_startup_probe:
+            return models_20220501preview.Probe(disable_probe=True)
+
+        probe=self._load_probe_config(startup_probe_config_file_path)
+        return probe
+
+
+    def _format_liveness_probe(self, enable_liveness_probe=None, liveness_probe_config_file_path=None, **_):
+        if enable_liveness_probe is None:
+            return None
+
+        if not enable_liveness_probe:
+            return models_20220501preview.Probe(disable_probe=True)
+
+        probe=self._load_probe_config(liveness_probe_config_file_path)
+        return probe
+
+    def _format_readiness_probe(self, enable_readiness_probe=None, readiness_probe_config_file_path=None, **_):
+        if enable_readiness_probe is None:
+            return None
+
+        if not enable_readiness_probe:
+            return models_20220501preview.Probe(disable_probe=True)
+
+        probe=self._load_probe_config(readiness_probe_config_file_path)
+        return probe
 
     def _format_container_probe(self, disable_probe=None, **_):
         if disable_probe is None:
@@ -101,6 +143,49 @@ class DefaultDeployment:
         return 'Container' in [source_type, deployment_resource.properties.source.type] and \
                deployment_resource.properties.source.type != source_type
 
+    def _load_probe_config(self, probe_config=None, **_):
+        if not probe_config:
+            return
+        data = get_file_json(probe_config, throw_on_empty=False)
+        if not data:
+            return
+
+        if not data.get('probe'):
+            raise InvalidArgumentValueError("Probe must be provided in the json file")
+
+        invalidProperties = not data['probe'].get('probeAction') or \
+            not data['probe'].get('probeAction').get('type')
+        if invalidProperties:
+            raise InvalidArgumentValueError("probeAction, Type mast be provided in the json file")
+        probe_action = None
+        if data['probe']['probeAction']['type'].casefold() == "HTTPGetAction".casefold():
+            probe_action = models_20220501preview.HTTPGetAction(
+                type = "HTTPGetAction",
+                path = data['probe']['probeAction']['path'] if 'path' in data['probe']['probeAction'] else None,
+                scheme = data['probe']['probeAction']['scheme'] if 'scheme' in data['probe']['probeAction'] else None,
+            )
+        elif data['probe']['probeAction']['type'].casefold() == "TCPSocketAction".casefold():
+            probe_action = models_20220501preview.TCPSocketAction(
+                type = "TCPSocketAction",
+            )
+        elif data['probe']['probeAction']['type'].casefold() == "ExecAction".casefold():
+            probe_action = models_20220501preview.ExecAction(
+                type = "ExecAction",
+                command= data['probe']['probeAction']['command'] if 'command' in data['probe']['probeAction'] else None,
+            )
+        else:
+            raise InvalidArgumentValueError("ProbeAction.Type is invalid")
+        probe_settings = models_20220501preview.Probe(
+            probe_action=probe_action,
+            disable_probe=False,
+            initial_delay_seconds=data['probe']['initialDelaySeconds'] if 'initialDelaySeconds' in data['probe'] else None,
+            period_seconds=data['probe']['periodSeconds'] if 'periodSeconds' in data['probe'] else None,
+            timeout_seconds=data['probe']['timeoutSeconds'] if 'timeoutSeconds' in data['probe'] else None,
+            failure_threshold=data['probe']['failureThreshold'] if 'failureThreshold' in data['probe'] else None,
+            success_threshold=data['probe']['successThreshold'] if 'successThreshold' in data['probe'] else None       
+        )
+
+        return probe_settings
 
 class EnterpriseDeployment(DefaultDeployment):
     def _get_env(self, env, jvm_options, **_):
