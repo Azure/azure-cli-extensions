@@ -960,6 +960,12 @@ class AKSPreviewContextTestCase(unittest.TestCase):
                     enabled = True,
                     version = "v2",
                 ),
+                file_csi_driver = self.models.ManagedClusterStorageProfileFileCSIDriver(
+                    enabled = False,
+                ),
+                snapshot_controller = self.models.ManagedClusterStorageProfileSnapshotController(
+                    enabled = False,
+                ),
             )
         )
         mc = self.models.ManagedCluster(
