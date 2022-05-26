@@ -29,5 +29,5 @@ Release History
 
 0.1.5
 +++
-* Requesting VMMServer credentials from the user until they are empty.
+* Requesting VMMServer credentials from the user until they are non-empty.
 * Removing default value for port. Asking for the input. If input is empty, setting port to 8100.
