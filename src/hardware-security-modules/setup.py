@@ -43,7 +43,7 @@ with open('HISTORY.rst', 'r', encoding='utf-8') as f:
     HISTORY = f.read()
 
 setup(
-    name='hardware_security_modules',
+    name='hardware-security-modules',
     version=VERSION,
     description='Microsoft Azure Command-Line Tools AzureDedicatedHSMResourceProvider Extension',
     author='Microsoft Corporation',
