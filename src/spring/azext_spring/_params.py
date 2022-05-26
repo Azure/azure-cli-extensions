@@ -117,16 +117,13 @@ def load_arguments(self, _):
         c.argument('build_pool_size',
                    arg_type=get_enum_type(['S1', 'S2', 'S3', 'S4', 'S5']),
                    validator=validate_build_pool_size,
-                   is_preview=True,
                    help='(Enterprise Tier Only) Size of build agent pool. See https://aka.ms/azure-spring-cloud-build-service-docs for size info.')
         c.argument('enable_application_configuration_service',
                    action='store_true',
-                   is_preview=True,
                    options_list=['--enable-application-configuration-service', '--enable-acs'],
                    help='(Enterprise Tier Only) Enable Application Configuration Service.')
         c.argument('enable_service_registry',
                    action='store_true',
-                   is_preview=True,
                    options_list=['--enable-service-registry', '--enable-sr'],
                    help='(Enterprise Tier Only) Enable Service Registry.')
         c.argument('enable_gateway',
@@ -184,7 +181,6 @@ def load_arguments(self, _):
                                               hide=True))
         c.argument('build_pool_size',
                    arg_type=get_enum_type(['S1', 'S2', 'S3', 'S4', 'S5']),
-                   is_preview=True,
                    help='(Enterprise Tier Only) Size of build agent pool. See https://aka.ms/azure-spring-cloud-build-service-docs for size info.')
 
     for scope in ['spring create', 'spring update']:
@@ -356,7 +352,7 @@ def load_arguments(self, _):
             c.argument('config_file_patterns',
                        help="(Enterprise Tier Only) Config file patterns separated with \',\' to decide which patterns "
                             "of Application Configuration Service will be used. Use '\"\"' to clear existing configurations.",
-                       validator=validate_config_file_patterns, is_preview=True)
+                       validator=validate_config_file_patterns)
 
     with self.argument_context('spring app scale') as c:
         c.argument('cpu', arg_type=cpu_type)
@@ -373,7 +369,7 @@ def load_arguments(self, _):
             c.argument(
                 'disable_validation', arg_type=get_three_state_flag(),
                 help='If true, disable jar validation.')
-            c.argument('builder', help='(Enterprise Tier Only) Build service builder used to build the executable.', default='default', is_preview=True)
+            c.argument('builder', help='(Enterprise Tier Only) Build service builder used to build the executable.', default='default')
             c.argument(
                 'main_entry', options_list=[
                     '--main-entry', '-m'], help="A string containing the path to the .NET executable relative to zip root.")
