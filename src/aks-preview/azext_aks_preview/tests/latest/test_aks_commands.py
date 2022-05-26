@@ -4138,7 +4138,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         create_cmd = 'aks create --resource-group={resource_group} --name={name} --ssh-key-value={ssh_key_value} -o json'
         self.cmd(create_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
-            self.chexck('storageProfile.diskCsiDriver.enabled', True),
+            self.check('storageProfile.diskCsiDriver.enabled', True),
             self.check('storageProfile.diskCsiDriver.version', None),
             self.check('storageProfile.fileCsiDriver.enabled', True),
             self.check('storageProfile.snapshotController.enabled', True),
