@@ -1225,6 +1225,9 @@ helps['aks nodepool update'] = """
         - name: --dcat --disable-custom-ca-trust
           type: bool
           short-summary: Disable Custom CA Trust on agent node pool.
+        - name: --aks-custom-headers
+          type: string
+          short-summary: Send custom headers. When specified, format should be Key1=Value1,Key2=Value2
     examples:
       - name: Reconcile the nodepool back to its current state.
         text: az aks nodepool update -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster

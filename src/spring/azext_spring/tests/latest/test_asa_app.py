@@ -2,11 +2,13 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
+from time import time
 import unittest
+import os
 from azure.cli.core.azclierror import ResourceNotFoundError
 from knack.util import CLIError
 from msrestazure.tools import resource_id
-from ...vendored_sdks.appplatform.v2022_01_01_preview import models
+from ...vendored_sdks.appplatform.v2022_05_01_preview import models
 from ..._utils import _get_sku_name
 from ...app import (app_create, app_update, app_deploy, deployment_create)
 from ...custom import (app_set_deployment, app_unset_deployment)
@@ -22,7 +24,7 @@ from azure.cli.core.commands import AzCliCommand
 from knack.log import get_logger
 
 logger = get_logger(__name__)
-
+TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 def _get_test_cmd():
     cli_ctx = DummyCli()
@@ -463,6 +465,27 @@ class TestAppUpdate(BasicTest):
         self.assertEqual('Java_11', resource.properties.source.runtime_version)
         self.assertEqual('test-option', resource.properties.source.jvm_options)
 
+    def test_app_disable_probes(self):
+        self._execute('rg', 'asc', 'app', deployment=self._get_deployment(), enable_liveness_probe=False,
+        enable_readiness_probe=False, enable_startup_probe=False)
+        resource = self.patch_deployment_resource
+        self.assertEqual(True, resource.properties.deployment_settings.liveness_probe.disable_probe)
+        self.assertEqual(True, resource.properties.deployment_settings.readiness_probe.disable_probe)
+        self.assertEqual(True, resource.properties.deployment_settings.startup_probe.disable_probe)
+
+    def test_app_enable_probe(self):
+        py_path = os.path.abspath(os.path.dirname(__file__))
+        file_path = os.path.join(py_path, 'files/probe.json').replace("\\","/")
+        self._execute('rg', 'asc', 'app', deployment=self._get_deployment(), enable_liveness_probe=True,
+        liveness_probe_config=file_path)
+        resource = self.patch_deployment_resource
+        self.assertEqual(False, resource.properties.deployment_settings.liveness_probe.disable_probe)
+        self.assertEqual(30, resource.properties.deployment_settings.liveness_probe.initial_delay_seconds)
+        self.assertEqual(1, resource.properties.deployment_settings.liveness_probe.success_threshold)
+        self.assertEqual(1, resource.properties.deployment_settings.liveness_probe.timeout_seconds)
+        self.assertEqual(10, resource.properties.deployment_settings.liveness_probe.period_seconds)
+        self.assertEqual(30, resource.properties.deployment_settings.liveness_probe.failure_threshold)
+
     def test_app_update_net_core_main_entry(self):
         deployment=self._get_deployment()
         deployment.properties.source.type = 'NetCoreZip'
@@ -633,6 +656,13 @@ class TestAppCreate(BasicTest):
         self._execute('rg', 'asc', 'app', cpu='500m', memory='2Gi', instance_count=1, enable_persistent_storage=True, client=client)
         resource = self.put_app_resource
         self.assertEqual(1, resource.properties.persistent_disk.size_in_gb)
+
+    def test_app_with_assign_public_endpoint(self):
+        self._execute('rg', 'asc', 'app', cpu='500m', memory='2Gi', instance_count=1, assign_public_endpoint=True)
+        resource = self.put_app_resource
+        self.assertEqual(True, resource.properties.vnet_addons.public_endpoint)
+        resource = self.patch_app_resource
+        self.assertEqual(True, resource.properties.vnet_addons.public_endpoint)
 
 
 class TestDeploymentCreate(BasicTest):
