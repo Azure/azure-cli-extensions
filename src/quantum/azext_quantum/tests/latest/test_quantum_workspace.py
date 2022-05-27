@@ -107,47 +107,47 @@ class QuantumWorkspacesScenarioTest(ScenarioTest):
             self.check("provisioningState", "Deleting")
             ])
 
-            # # Repeat the tests without the "--skip-role-assignment" parameter
-            # test_workspace_temp = get_test_workspace_random_name()
+            # Repeat the tests without the "--skip-role-assignment" parameter
+            test_workspace_temp = get_test_workspace_random_name()
 
-            # # create
-            # self.cmd(f'az quantum workspace create -g {test_resource_group} -w {test_workspace_temp} -l {test_location} -a {test_storage_account} -r {test_provider_sku_list} -o json', checks=[
-            # self.check("name", DEPLOYMENT_NAME_PREFIX + test_workspace_temp),
-            # ])
+            # create
+            self.cmd(f'az quantum workspace create -g {test_resource_group} -w {test_workspace_temp} -l {test_location} -a {test_storage_account} -r {test_provider_sku_list} -o json', checks=[
+            self.check("name", DEPLOYMENT_NAME_PREFIX + test_workspace_temp),
+            ])
 
-            # # delete
-            # self.cmd(f'az quantum workspace delete -g {test_resource_group} -w {test_workspace_temp} -o json', checks=[
-            # self.check("name", test_workspace_temp),
-            # self.check("provisioningState", "Deleting")
-            # ])
+            # delete
+            self.cmd(f'az quantum workspace delete -g {test_resource_group} -w {test_workspace_temp} -o json', checks=[
+            self.check("name", test_workspace_temp),
+            self.check("provisioningState", "Deleting")
+            ])
 
-            # # Create a workspace specifying a storage account that is not Standard_LRS
-            # test_workspace_temp = get_test_workspace_random_name()
+            # Create a workspace specifying a storage account that is not Standard_LRS
+            test_workspace_temp = get_test_workspace_random_name()
 
-            # # create
-            # self.cmd(f'az quantum workspace create -g {test_resource_group} -w {test_workspace_temp} -l {test_location} -a {test_storage_account_grs} -r {test_provider_sku_list} -o json', checks=[
-            # self.check("name", DEPLOYMENT_NAME_PREFIX + test_workspace_temp),
-            # ])
+            # create
+            self.cmd(f'az quantum workspace create -g {test_resource_group} -w {test_workspace_temp} -l {test_location} -a {test_storage_account_grs} -r {test_provider_sku_list} -o json', checks=[
+            self.check("name", DEPLOYMENT_NAME_PREFIX + test_workspace_temp),
+            ])
 
-            # # delete
-            # self.cmd(f'az quantum workspace delete -g {test_resource_group} -w {test_workspace_temp} -o json', checks=[
-            # self.check("name", test_workspace_temp),
-            # self.check("provisioningState", "Deleting")
-            # ])
+            # delete
+            self.cmd(f'az quantum workspace delete -g {test_resource_group} -w {test_workspace_temp} -o json', checks=[
+            self.check("name", test_workspace_temp),
+            self.check("provisioningState", "Deleting")
+            ])
 
-            # # Create a workspace with a maximum length name, but make sure the deployment name was truncated to a valid length
-            # test_workspace_temp = get_test_workspace_random_long_name()
+            # Create a workspace with a maximum length name, but make sure the deployment name was truncated to a valid length
+            test_workspace_temp = get_test_workspace_random_long_name()
 
-            # # create
-            # self.cmd(f'az quantum workspace create -g {test_resource_group} -w {test_workspace_temp} -l {test_location} -a {test_storage_account_grs} -r {test_provider_sku_list} -o json', checks=[
-            # self.check("name", (DEPLOYMENT_NAME_PREFIX + test_workspace_temp)[:64]),
-            # ])
+            # create
+            self.cmd(f'az quantum workspace create -g {test_resource_group} -w {test_workspace_temp} -l {test_location} -a {test_storage_account_grs} -r {test_provider_sku_list} -o json', checks=[
+            self.check("name", (DEPLOYMENT_NAME_PREFIX + test_workspace_temp)[:64]),
+            ])
 
-            # # delete
-            # self.cmd(f'az quantum workspace delete -g {test_resource_group} -w {test_workspace_temp} -o json', checks=[
-            # self.check("name", test_workspace_temp),
-            # self.check("provisioningState", "Deleting")
-            # ])
+            # delete
+            self.cmd(f'az quantum workspace delete -g {test_resource_group} -w {test_workspace_temp} -o json', checks=[
+            self.check("name", test_workspace_temp),
+            self.check("provisioningState", "Deleting")
+            ])
         else:
             self.skipTest(f"Skipping test_workspace_create_destroy: One or more providers in '{test_provider_sku_list}' not found in AZURE_QUANTUM_CAPABILITIES")
 
