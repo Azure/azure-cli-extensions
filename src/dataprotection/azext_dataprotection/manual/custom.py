@@ -147,7 +147,7 @@ def dataprotection_backup_instance_update_msi_permissions(cmd, client, resource_
     role_assignments_arr = []
 
     if operation == 'Backup' and backup_instance is None:
-        raise CLIError("Backup instance needs to be provided when operation is Backup")
+        raise CLIError("--backup-instance needs to be given when --operation is given as Backup")
 
     from azure.cli.command_modules.role.custom import list_role_assignments, create_role_assignment
 
@@ -158,18 +158,18 @@ def dataprotection_backup_instance_update_msi_permissions(cmd, client, resource_
         resource_scope = resource_scope_assignment
         snapshot_rg_scope = snapshot_rg_scope_assignment
 
-        if permissions_scope == 'Resource Group':
+        if permissions_scope == 'ResourceGroup':
             resource_scope_assignment = "/".join(resource_scope_assignment.split("/")[:5])  # Snapshot RG is already in RG scope, so change for resource
         elif permissions_scope == 'Subscription':
             # Change scope for both resource and Snapshot RG
             resource_scope_assignment = "/".join(resource_scope_assignment.split("/")[:3])
             snapshot_rg_scope_assignment = "/".join(snapshot_rg_scope_assignment.split("/")[:3])
 
-        role_assignments = [obj['roleDefinitionName'] for obj in list_role_assignments(cmd, assignee=principal_id, scope=resource_scope, include_inherited=True)]
+        role_assignments = [role_assignment['roleDefinitionName'] for role_assignment in list_role_assignments(cmd, assignee=principal_id, scope=resource_scope, include_inherited=True)]
         if 'Disk Backup Reader' not in role_assignments:
             role_assignments_arr.append(create_role_assignment(cmd, role='Disk Backup Reader', assignee=principal_id, scope=resource_scope_assignment))
 
-        role_assignments = [obj['roleDefinitionName'] for obj in list_role_assignments(cmd, assignee=principal_id, scope=snapshot_rg_scope, include_inherited=True)]
+        role_assignments = [role_assignment['roleDefinitionName'] for role_assignment in list_role_assignments(cmd, assignee=principal_id, scope=snapshot_rg_scope, include_inherited=True)]
         if 'Disk Snapshot Contributor' not in role_assignments:
             role_assignments_arr.append(create_role_assignment(cmd, role='Disk Snapshot Contributor', assignee=principal_id, scope=snapshot_rg_scope_assignment))
 
@@ -179,12 +179,12 @@ def dataprotection_backup_instance_update_msi_permissions(cmd, client, resource_
         storage_account_scope = backup_instance['properties']['data_source_info']['resource_id']
         storage_account_scope_assignment = storage_account_scope
 
-        if permissions_scope == 'Resource Group':
+        if permissions_scope == 'ResourceGroup':
             storage_account_scope_assignment = "/".join(storage_account_scope_assignment.split("/")[:5])
         elif permissions_scope == 'Subscription':
             storage_account_scope_assignment = "/".join(storage_account_scope_assignment.split("/")[:3])
 
-        role_assignments = [obj['roleDefinitionName'] for obj in list_role_assignments(cmd, assignee=principal_id, scope=storage_account_scope, include_inherited=True)]
+        role_assignments = [role_assignment['roleDefinitionName'] for role_assignment in list_role_assignments(cmd, assignee=principal_id, scope=storage_account_scope, include_inherited=True)]
         if 'Storage Account Backup Contributor' not in role_assignments:
             role_assignments_arr.append(create_role_assignment(cmd, role='Storage Account Backup Contributor', assignee=principal_id, scope=storage_account_scope_assignment))
 

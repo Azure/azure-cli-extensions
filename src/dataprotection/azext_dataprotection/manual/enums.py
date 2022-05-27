@@ -70,7 +70,7 @@ def get_backup_operation_values():
 
 
 def get_permission_scope_values():
-    return ['Resource', 'Resource Group', 'Subscription']
+    return ['Resource', 'ResourceGroup', 'Subscription']
 
 
 def get_datasource_types():
