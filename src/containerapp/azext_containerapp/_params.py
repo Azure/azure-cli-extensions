@@ -200,6 +200,7 @@ def load_arguments(self, _):
 
     with self.argument_context('containerapp revision') as c:
         c.argument('revision_name', options_list=['--revision'], help='Name of the revision.')
+        c.argument('all', help='Boolean indicating whether to show inactive revisions.')
 
     with self.argument_context('containerapp revision copy') as c:
         c.argument('from_revision', help='Revision to copy from. Default: latest revision.')
@@ -209,6 +210,10 @@ def load_arguments(self, _):
         c.argument('name', id_part=None)
         c.argument('revision', help='Name of the revision.')
         c.argument('label', help='Name of the label.')
+        c.argument('yes', options_list=['--yes', '-y'], help='Do not prompt for confirmation.')
+
+    with self.argument_context('containerapp revision label') as c:
+        c.argument('labels', nargs='*', help='Labels to be swapped.')
 
     with self.argument_context('containerapp ingress') as c:
         c.argument('allow_insecure', help='Allow insecure connections for ingress traffic.')

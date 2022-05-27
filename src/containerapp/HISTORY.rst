@@ -5,6 +5,9 @@ Release History
 
 0.3.6
 ++++++
+* Added parameter --environment to 'az containerapp list'
+* Added 'az containerapp revision label swap' to swap traffic labels
+* BREAKING CHANGE: 'az containerapp revision list' now shows only active revisions by default, added flag --all to show all revisions
 
 
 0.3.5
