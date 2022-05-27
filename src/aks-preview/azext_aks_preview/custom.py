@@ -147,6 +147,8 @@ from .vendored_sdks.azure_mgmt_preview_aks.v2022_04_02_preview.models import (
     ManagedClusterSnapshot,
     SysctlConfig,
     UserAssignedIdentity,
+    ManagedClusterIngressProfile,
+    ManagedClusterIngressProfileWebAppRouting,
 )
 
 from azext_aks_preview.aks_draft.commands import (
@@ -809,6 +811,7 @@ def aks_create(cmd,
                azure_keyvault_kms_key_id=None,
                enable_apiserver_vnet_integration=False,
                apiserver_subnet_id=None,
+               dns_zone_resource_id=None,
                enable_custom_ca_trust=False,
                yes=False):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
@@ -1364,6 +1367,7 @@ def _handle_addons_args(cmd,  # pylint: disable=too-many-statements
                         aci_subnet_name=None,
                         vnet_subnet_id=None,
                         enable_secret_rotation=False,
+                        dns_zone_resource_id=None,
                         rotation_poll_interval=None,):
     if not addon_profiles:
         addon_profiles = {}
@@ -2068,13 +2072,15 @@ def aks_addon_enable(cmd, client, resource_group_name, name, addon, workspace_re
                      subnet_name=None, appgw_name=None, appgw_subnet_prefix=None, appgw_subnet_cidr=None, appgw_id=None,
                      appgw_subnet_id=None,
                      appgw_watch_namespace=None, enable_sgxquotehelper=False, enable_secret_rotation=False, rotation_poll_interval=None,
-                     no_wait=False, enable_msi_auth_for_monitoring=False):
+                     no_wait=False, enable_msi_auth_for_monitoring=False,
+                     dns_zone_resource_id=None):
     return enable_addons(cmd, client, resource_group_name, name, addon, workspace_resource_id=workspace_resource_id,
                          subnet_name=subnet_name, appgw_name=appgw_name, appgw_subnet_prefix=appgw_subnet_prefix,
                          appgw_subnet_cidr=appgw_subnet_cidr, appgw_id=appgw_id, appgw_subnet_id=appgw_subnet_id,
                          appgw_watch_namespace=appgw_watch_namespace, enable_sgxquotehelper=enable_sgxquotehelper,
                          enable_secret_rotation=enable_secret_rotation, rotation_poll_interval=rotation_poll_interval, no_wait=no_wait,
-                         enable_msi_auth_for_monitoring=enable_msi_auth_for_monitoring)
+                         enable_msi_auth_for_monitoring=enable_msi_auth_for_monitoring,
+                         dns_zone_resource_id=dns_zone_resource_id)
 
 
 def aks_addon_disable(cmd, client, resource_group_name, name, addon, no_wait=False):
@@ -2085,12 +2091,18 @@ def aks_addon_update(cmd, client, resource_group_name, name, addon, workspace_re
                      subnet_name=None, appgw_name=None, appgw_subnet_prefix=None, appgw_subnet_cidr=None, appgw_id=None,
                      appgw_subnet_id=None,
                      appgw_watch_namespace=None, enable_sgxquotehelper=False, enable_secret_rotation=False, rotation_poll_interval=None,
-                     no_wait=False, enable_msi_auth_for_monitoring=False):
-    addon_profiles = client.get(resource_group_name, name).addon_profiles
-    addon_key = ADDONS[addon]
+                     no_wait=False, enable_msi_auth_for_monitoring=False,
+                     dns_zone_resource_id=None):
+    instance = client.get(resource_group_name, name)
+    addon_profiles = instance.addon_profiles
 
-    if not addon_profiles or addon_key not in addon_profiles or not addon_profiles[addon_key].enabled:
-        raise CLIError(f'Addon "{addon}" is not enabled in this cluster.')
+    if addon == "web_application_routing":
+        if (instance.ingress_profile is None) or (instance.ingress_profile.web_app_routing is None) or not instance.ingress_profile.web_app_routing.enabled:
+            raise InvalidArgumentValueError(f'Addon "{addon}" is not enabled in this cluster.')
+    else:
+        addon_key = ADDONS[addon]
+        if not addon_profiles or addon_key not in addon_profiles or not addon_profiles[addon_key].enabled:
+            raise InvalidArgumentValueError(f'Addon "{addon}" is not enabled in this cluster.')
 
     return enable_addons(cmd, client, resource_group_name, name, addon, check_enabled=False,
                          workspace_resource_id=workspace_resource_id,
@@ -2098,7 +2110,8 @@ def aks_addon_update(cmd, client, resource_group_name, name, addon, workspace_re
                          appgw_subnet_cidr=appgw_subnet_cidr, appgw_id=appgw_id, appgw_subnet_id=appgw_subnet_id,
                          appgw_watch_namespace=appgw_watch_namespace, enable_sgxquotehelper=enable_sgxquotehelper,
                          enable_secret_rotation=enable_secret_rotation, rotation_poll_interval=rotation_poll_interval, no_wait=no_wait,
-                         enable_msi_auth_for_monitoring=enable_msi_auth_for_monitoring)
+                         enable_msi_auth_for_monitoring=enable_msi_auth_for_monitoring,
+                         dns_zone_resource_id=dns_zone_resource_id)
 
 
 def aks_disable_addons(cmd, client, resource_group_name, name, addons, no_wait=False):
@@ -2143,7 +2156,8 @@ def aks_disable_addons(cmd, client, resource_group_name, name, addons, no_wait=F
 
 def aks_enable_addons(cmd, client, resource_group_name, name, addons, workspace_resource_id=None,
                       subnet_name=None, appgw_name=None, appgw_subnet_prefix=None, appgw_subnet_cidr=None, appgw_id=None, appgw_subnet_id=None,
-                      appgw_watch_namespace=None, enable_sgxquotehelper=False, enable_secret_rotation=False, rotation_poll_interval=None, no_wait=False, enable_msi_auth_for_monitoring=False):
+                      appgw_watch_namespace=None, enable_sgxquotehelper=False, enable_secret_rotation=False, rotation_poll_interval=None, no_wait=False, enable_msi_auth_for_monitoring=False,
+                      dns_zone_resource_id=None):
 
     instance = client.get(resource_group_name, name)
     # this is overwritten by _update_addons(), so the value needs to be recorded here
@@ -2153,7 +2167,8 @@ def aks_enable_addons(cmd, client, resource_group_name, name, addons, workspace_
     instance = _update_addons(cmd, instance, subscription_id, resource_group_name, name, addons, enable=True,
                               workspace_resource_id=workspace_resource_id, enable_msi_auth_for_monitoring=enable_msi_auth_for_monitoring, subnet_name=subnet_name,
                               appgw_name=appgw_name, appgw_subnet_prefix=appgw_subnet_prefix, appgw_subnet_cidr=appgw_subnet_cidr, appgw_id=appgw_id, appgw_subnet_id=appgw_subnet_id, appgw_watch_namespace=appgw_watch_namespace,
-                              enable_sgxquotehelper=enable_sgxquotehelper, enable_secret_rotation=enable_secret_rotation, rotation_poll_interval=rotation_poll_interval, no_wait=no_wait)
+                              enable_sgxquotehelper=enable_sgxquotehelper, enable_secret_rotation=enable_secret_rotation, rotation_poll_interval=rotation_poll_interval, no_wait=no_wait,
+                              dns_zone_resource_id=dns_zone_resource_id)
 
     if CONST_MONITORING_ADDON_NAME in instance.addon_profiles and instance.addon_profiles[CONST_MONITORING_ADDON_NAME].enabled:
         if CONST_MONITORING_USING_AAD_MSI_AUTH in instance.addon_profiles[CONST_MONITORING_ADDON_NAME].config and \
@@ -2238,6 +2253,7 @@ def _update_addons(cmd,  # pylint: disable=too-many-branches,too-many-statements
                    enable_secret_rotation=False,
                    disable_secret_rotation=False,
                    rotation_poll_interval=None,
+                   dns_zone_resource_id=None,
                    no_wait=False):  # pylint: disable=unused-argument
 
     # parse the comma-separated addons argument
@@ -2249,6 +2265,19 @@ def _update_addons(cmd,  # pylint: disable=too-many-branches,too-many-statements
 
     # for each addons argument
     for addon_arg in addon_args:
+        if addon_arg == "web_application_routing":
+            # web app routing settings are in ingress profile, not addon profile, so deal
+            # with it separately
+            if instance.ingress_profile is None:
+                instance.ingress_profile = ManagedClusterIngressProfile()
+            if instance.ingress_profile.web_app_routing is None:
+                instance.ingress_profile.web_app_routing = ManagedClusterIngressProfileWebAppRouting()
+            instance.ingress_profile.web_app_routing.enabled = enable
+
+            if dns_zone_resource_id is not None:
+                instance.ingress_profile.web_app_routing.dns_zone_resource_id = dns_zone_resource_id
+            continue
+
         if addon_arg not in ADDONS:
             raise CLIError("Invalid addon name: {}.".format(addon_arg))
         addon = ADDONS[addon_arg]
