@@ -1456,21 +1456,11 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                  '--resource-group={resource_group} '
                  '--cluster-name={name} '
                  '--name={node_pool_name_second} '
+                 '--os-type Linux '
                  '--enable-custom-ca-trust',
                  checks=[
                      self.check('provisioningState', 'Succeeded'),
-                     self.check('enableCustomCATrust', 'False'),
-                 ])
-
-        # 3. update nodepool
-        self.cmd('aks nodepool update '
-                 '--resource-group={resource_group} '
-                 '--cluster-name={name} '
-                 '--name={node_pool_name} '
-                 '--disable-custom-ca-trust',
-                 checks=[
-                     self.check('provisioningState', 'Succeeded'),
-                     self.check('enableCustomCATrust', 'False'),
+                     self.check('enableCustomCaTrust', 'True'),
                  ])
 
         # delete
