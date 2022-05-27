@@ -229,7 +229,7 @@ def create(cmd, resource_group_name=None, workspace_name=None, location=None, st
 
     # Until the "--skip-role-assignment" parameter is deprecated, use the old non-ARM code to create a workspace without doing a role assignment
     if skip_role_assignment:
-        _add_quantum_providers(cmd, quantum_workspace, provider_sku_list)
+        _add_quantum_providers(cmd, quantum_workspace, provider_sku_list, auto_accept)
         poller = client.begin_create_or_update(info.resource_group, info.name, quantum_workspace, polling=False)
         while not poller.done():
             time.sleep(POLLING_TIME_DURATION)

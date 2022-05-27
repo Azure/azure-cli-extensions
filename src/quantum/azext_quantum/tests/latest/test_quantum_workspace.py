@@ -234,14 +234,14 @@ class QuantumWorkspacesScenarioTest(ScenarioTest):
         providers_selected = []
         cmd = None
         workspace_location = None
-        _autoadd_providers(cmd, providers_in_region, providers_selected, workspace_location)
+        _autoadd_providers(cmd, providers_in_region, providers_selected, workspace_location, True)
         assert providers_selected[0] == {"provider_id": "foo", "sku": "foo_credits_for_all_plan", "offer_id": "foo_offer", "publisher_id": "foo0123456789"}
 
         # Make sure we get an error message if there are no auto_add providers and providers_selected is empty, like when there's no -r in the command:
         try:
             test_provider.properties.skus[0].auto_add = False
             providers_selected = []
-            _autoadd_providers(cmd, providers_in_region, providers_selected, workspace_location)
+            _autoadd_providers(cmd, providers_in_region, providers_selected, workspace_location, True)
             assert False
         except RequiredArgumentMissingError as e:
             assert str(e) == "A list of Azure Quantum providers and SKUs is required."
