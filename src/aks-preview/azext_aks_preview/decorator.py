@@ -45,6 +45,7 @@ from azext_aks_preview._consts import (
     CONST_OUTBOUND_TYPE_MANAGED_NAT_GATEWAY,
     CONST_OUTBOUND_TYPE_USER_ASSIGNED_NAT_GATEWAY,
     CONST_OUTBOUND_TYPE_USER_DEFINED_ROUTING,
+    CONST_DISK_DRIVER_V1,
 )
 from azext_aks_preview._loadbalancer import create_load_balancer_profile
 from azext_aks_preview._loadbalancer import (
@@ -1724,7 +1725,7 @@ class AKSPreviewContext(AKSContext):
             else:
                 profile.enabled = True
                 if not disk_driver_version:
-                    disk_driver_version = "v1"
+                    disk_driver_version = CONST_DISK_DRIVER_V1
                 profile.version = disk_driver_version
 
         if self.decorator_mode == DecoratorMode.UPDATE:
