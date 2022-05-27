@@ -1258,6 +1258,25 @@ class AzureBackupRule(BasePolicyRule):
         self.trigger = kwargs['trigger']
 
 
+class AzureMonitorAlertSettings(msrest.serialization.Model):
+    """Settings for Azure Monitor based alerts.
+
+    :param alerts_for_all_job_failures:  Possible values include: "Enabled", "Disabled".
+    :type alerts_for_all_job_failures: str or ~azure.mgmt.dataprotection.models.AlertsState
+    """
+
+    _attribute_map = {
+        'alerts_for_all_job_failures': {'key': 'alertsForAllJobFailures', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(AzureMonitorAlertSettings, self).__init__(**kwargs)
+        self.alerts_for_all_job_failures = kwargs.get('alerts_for_all_job_failures', None)
+
+
 class DataStoreParameters(msrest.serialization.Model):
     """Parameters for DataStore.
 
@@ -1657,6 +1676,8 @@ class BackupVault(msrest.serialization.Model):
 
     All required parameters must be populated in order to send to Azure.
 
+    :param monitoring_settings: Monitoring Settings.
+    :type monitoring_settings: ~azure.mgmt.dataprotection.models.MonitoringSettings
     :ivar provisioning_state: Provisioning state of the BackupVault resource. Possible values
      include: "Failed", "Provisioning", "Succeeded", "Unknown", "Updating".
     :vartype provisioning_state: str or ~azure.mgmt.dataprotection.models.ProvisioningState
@@ -1678,6 +1699,7 @@ class BackupVault(msrest.serialization.Model):
     }
 
     _attribute_map = {
+        'monitoring_settings': {'key': 'monitoringSettings', 'type': 'MonitoringSettings'},
         'provisioning_state': {'key': 'provisioningState', 'type': 'str'},
         'resource_move_state': {'key': 'resourceMoveState', 'type': 'str'},
         'resource_move_details': {'key': 'resourceMoveDetails', 'type': 'ResourceMoveDetails'},
@@ -1689,6 +1711,7 @@ class BackupVault(msrest.serialization.Model):
         **kwargs
     ):
         super(BackupVault, self).__init__(**kwargs)
+        self.monitoring_settings = kwargs.get('monitoring_settings', None)
         self.provisioning_state = None
         self.resource_move_state = None
         self.resource_move_details = None
@@ -3062,6 +3085,25 @@ class KubernetesStorageClassRestoreCriteria(ItemLevelRestoreCriteria):
         self.provisioner = kwargs.get('provisioner', None)
 
 
+class MonitoringSettings(msrest.serialization.Model):
+    """Monitoring Settings.
+
+    :param azure_monitor_alert_settings: Settings for Azure Monitor based alerts.
+    :type azure_monitor_alert_settings: ~azure.mgmt.dataprotection.models.AzureMonitorAlertSettings
+    """
+
+    _attribute_map = {
+        'azure_monitor_alert_settings': {'key': 'azureMonitorAlertSettings', 'type': 'AzureMonitorAlertSettings'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(MonitoringSettings, self).__init__(**kwargs)
+        self.azure_monitor_alert_settings = kwargs.get('azure_monitor_alert_settings', None)
+
+
 class OperationExtendedInfo(msrest.serialization.Model):
     """Operation Extended Info.
 
@@ -3172,17 +3214,39 @@ class OperationResource(msrest.serialization.Model):
         self.status = kwargs.get('status', None)
 
 
+class PatchBackupVaultInput(msrest.serialization.Model):
+    """Backup Vault Contract for Patch Backup Vault API.
+
+    :param monitoring_settings: Monitoring Settings.
+    :type monitoring_settings: ~azure.mgmt.dataprotection.models.MonitoringSettings
+    """
+
+    _attribute_map = {
+        'monitoring_settings': {'key': 'monitoringSettings', 'type': 'MonitoringSettings'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(PatchBackupVaultInput, self).__init__(**kwargs)
+        self.monitoring_settings = kwargs.get('monitoring_settings', None)
+
+
 class PatchResourceRequestInput(msrest.serialization.Model):
     """Patch Request content for Microsoft.DataProtection resources.
 
     :param identity: Input Managed Identity Details.
     :type identity: ~azure.mgmt.dataprotection.models.DppIdentityDetails
+    :param properties: Resource properties.
+    :type properties: ~azure.mgmt.dataprotection.models.PatchBackupVaultInput
     :param tags: A set of tags. Resource tags.
     :type tags: dict[str, str]
     """
 
     _attribute_map = {
         'identity': {'key': 'identity', 'type': 'DppIdentityDetails'},
+        'properties': {'key': 'properties', 'type': 'PatchBackupVaultInput'},
         'tags': {'key': 'tags', 'type': '{str}'},
     }
 
@@ -3192,6 +3256,7 @@ class PatchResourceRequestInput(msrest.serialization.Model):
     ):
         super(PatchResourceRequestInput, self).__init__(**kwargs)
         self.identity = kwargs.get('identity', None)
+        self.properties = kwargs.get('properties', None)
         self.tags = kwargs.get('tags', None)
 
 
@@ -3421,9 +3486,9 @@ class ResourceGuard(msrest.serialization.Model):
      the ResourceGuard resource.
     :vartype resource_guard_operations:
      list[~azure.mgmt.dataprotection.models.ResourceGuardOperation]
-    :ivar vault_critical_operation_exclusion_list: List of critical operations which are not
+    :param vault_critical_operation_exclusion_list: List of critical operations which are not
      protected by this resourceGuard.
-    :vartype vault_critical_operation_exclusion_list: list[str]
+    :type vault_critical_operation_exclusion_list: list[str]
     :ivar description: Description about the pre-req steps to perform all the critical operations.
     :vartype description: str
     """
@@ -3432,7 +3497,6 @@ class ResourceGuard(msrest.serialization.Model):
         'provisioning_state': {'readonly': True},
         'allow_auto_approvals': {'readonly': True},
         'resource_guard_operations': {'readonly': True},
-        'vault_critical_operation_exclusion_list': {'readonly': True},
         'description': {'readonly': True},
     }
 
@@ -3452,7 +3516,7 @@ class ResourceGuard(msrest.serialization.Model):
         self.provisioning_state = None
         self.allow_auto_approvals = None
         self.resource_guard_operations = None
-        self.vault_critical_operation_exclusion_list = None
+        self.vault_critical_operation_exclusion_list = kwargs.get('vault_critical_operation_exclusion_list', None)
         self.description = None
 
 

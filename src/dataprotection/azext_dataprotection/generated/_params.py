@@ -46,11 +46,19 @@ def load_arguments(self, _):
         c.argument('type_', options_list=['--type'], type=str, help='The identityType which can be either '
                    'SystemAssigned or None', arg_group='Identity')
         c.argument('storage_settings', action=AddStorageSettings, nargs='+', help='Storage Settings')
+        c.argument('alerts_for_all_job_failures', options_list=['--azure-monitor-alerts-for-job-failures'],
+                   arg_type=get_enum_type(['Enabled', 'Disabled']), help='Property that specifies whether built-in '
+                   'Azure Monitor alerts should be fired for all failed jobs', arg_group='Monitoring Settings Azure '
+                   'Monitor Alert Settings')
 
     with self.argument_context('dataprotection backup-vault update') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('vault_name', type=str, help='The name of the backup vault.', id_part='name')
         c.argument('tags', tags_type)
+        c.argument('alerts_for_all_job_failures', options_list=['--azure-monitor-alerts-for-job-failures'],
+                   arg_type=get_enum_type(['Enabled', 'Disabled']), help='Property that specifies whether built-in '
+                   'Azure Monitor alerts should be fired for all failed jobs', arg_group='Monitoring Settings Azure '
+                   'Monitor Alert Settings')
         c.argument('type_', options_list=['--type'], type=str, help='The identityType which can be either '
                    'SystemAssigned or None', arg_group='Identity')
 
@@ -221,3 +229,26 @@ def load_arguments(self, _):
                    arg_type=get_enum_type(['OperationalStore', 'VaultStore', 'ArchiveStore']))
         c.argument('start_time', type=str, help='Start time for the List Restore Ranges request. ISO 8601 format.')
         c.argument('end_time', type=str, help='End time for the List Restore Ranges request. ISO 8601 format.')
+
+    with self.argument_context('dataprotection resource-guard show') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('resource_guards_name', options_list=['--resource-guard-name', '--name', '-n'], type=str, help='The '
+                   'name of ResourceGuard', id_part='name')
+
+    with self.argument_context('dataprotection resource-guard create') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('resource_guards_name', options_list=['--resource-guard-name', '--name', '-n'], type=str, help='The '
+                   'name of ResourceGuard')
+        c.argument('e_tag', type=str, help='Optional ETag.')
+        c.argument('location', arg_type=get_location_type(self.cli_ctx), required=False,
+                   validator=get_default_location_from_resource_group)
+        c.argument('tags', tags_type)
+        c.argument('type_', options_list=['--type'], type=str, help='The identityType which can be either '
+                   'SystemAssigned or None', arg_group='Identity')
+        c.argument('vault_critical_operation_exclusion_list', nargs='+', help='List of critical operations which are '
+                   'not protected by this resourceGuard')
+
+    with self.argument_context('dataprotection resource-guard delete') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('resource_guards_name', options_list=['--resource-guard-name', '--name', '-n'], type=str, help='The '
+                   'name of ResourceGuard', id_part='name')

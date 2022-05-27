@@ -96,18 +96,6 @@ def step_backup_instance_create(test, checks=None):
              checks=checks)
 
 
-# EXAMPLE: /BackupInstances/post/StopProtection
-@try_manual
-def step_backup_instance_stop_protection(test, checks=None):
-    if checks is None:
-        checks = []
-    test.cmd('az dataprotection backup-instance stop-protection '
-             '--name "{myBackupInstance2}" '
-             '--resource-group "{rg_4}" '
-             '--vault-name "testvault"',
-             checks=checks)
-
-
 # EXAMPLE: /BackupInstances/post/SuspendBackups
 @try_manual
 def step_backup_instance_suspend_backup(test, checks=None):
@@ -277,6 +265,7 @@ def step_backup_vault_create(test, checks=None):
     test.cmd('az dataprotection backup-vault create '
              '--type "None" '
              '--location "WestUS" '
+             '--azure-monitor-alerts-for-job-failures "Enabled" '
              '--storage-settings type="LocallyRedundant" datastore-type="VaultStore" '
              '--tags key1="val1" '
              '--resource-group "{rg}" '
@@ -292,6 +281,7 @@ def step_backup_vault_create2(test, checks=None):
     test.cmd('az dataprotection backup-vault create '
              '--type "systemAssigned" '
              '--location "WestUS" '
+             '--azure-monitor-alerts-for-job-failures "Enabled" '
              '--storage-settings type="LocallyRedundant" datastore-type="VaultStore" '
              '--tags key1="val1" '
              '--resource-group "{rg}" '
@@ -322,6 +312,7 @@ def step_backup_vault_update(test, checks=None):
     if checks is None:
         checks = []
     test.cmd('az dataprotection backup-vault update '
+             '--azure-monitor-alerts-for-job-failures "Enabled" '
              '--tags newKey="newVal" '
              '--resource-group "{rg}" '
              '--vault-name "swaggerExample"',
@@ -357,6 +348,18 @@ def step_backup_instance_resume_protection(test, checks=None):
     if checks is None:
         checks = []
     test.cmd('az dataprotection backup-instance resume-protection '
+             '--name "{myBackupInstance2}" '
+             '--resource-group "{rg_4}" '
+             '--vault-name "testvault"',
+             checks=checks)
+
+
+# EXAMPLE: /BackupInstances/post/StopProtection
+@try_manual
+def step_backup_instance_stop_protection(test, checks=None):
+    if checks is None:
+        checks = []
+    test.cmd('az dataprotection backup-instance stop-protection '
              '--name "{myBackupInstance2}" '
              '--resource-group "{rg_4}" '
              '--vault-name "testvault"',
@@ -431,6 +434,41 @@ def step_recovery_point_list(test, checks=None):
              '--backup-instance-name "{myBackupInstance}" '
              '--resource-group "{rg_2}" '
              '--vault-name "{myBackupVault}"',
+             checks=checks)
+
+
+# EXAMPLE: /ResourceGuards/put/Create ResourceGuard
+@try_manual
+def step_resource_guard_create(test, checks=None):
+    if checks is None:
+        checks = []
+    test.cmd('az dataprotection resource-guard create '
+             '--location "WestUS" '
+             '--tags key1="val1" '
+             '--resource-group "{rg}" '
+             '--resource-guard-name "swaggerExample"',
+             checks=checks)
+
+
+# EXAMPLE: /ResourceGuards/get/Get ResourceGuard
+@try_manual
+def step_resource_guard_show(test, checks=None):
+    if checks is None:
+        checks = []
+    test.cmd('az dataprotection resource-guard show '
+             '--resource-group "{rg}" '
+             '--resource-guard-name "swaggerExample"',
+             checks=checks)
+
+
+# EXAMPLE: /ResourceGuards/delete/Delete ResourceGuard
+@try_manual
+def step_resource_guard_delete(test, checks=None):
+    if checks is None:
+        checks = []
+    test.cmd('az dataprotection resource-guard delete -y '
+             '--resource-group "{rg}" '
+             '--resource-guard-name "swaggerExample"',
              checks=checks)
 
 
