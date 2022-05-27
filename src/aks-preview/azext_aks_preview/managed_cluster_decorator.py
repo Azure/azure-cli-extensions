@@ -223,7 +223,7 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         # read the original value passed by the command
         service_cidrs = self.raw_param.get("service_cidrs")
         # normalize
-        service_cidrs = extract_comma_separated_string(service_cidrs, keep_none=True,  default_value=[])
+        service_cidrs = extract_comma_separated_string(service_cidrs, keep_none=True, default_value=[])
         # try to read the property value corresponding to the parameter from the `mc` object
         if self.mc and self.mc.network_profile and self.mc.network_profile.service_cidrs is not None:
             service_cidrs = self.mc.network_profile.service_cidrs
@@ -294,7 +294,6 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         # this parameter does not need dynamic completion
         # this parameter does not need validation
         return load_balancer_managed_outbound_ip_count
-
 
     def get_load_balancer_managed_outbound_ipv6_count(self) -> Union[int, None]:
         """Obtain the expected count of IPv6 managed outbound IPs.
