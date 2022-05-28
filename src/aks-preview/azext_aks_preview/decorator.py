@@ -99,6 +99,8 @@ ManagedClusterSnapshot = TypeVar("ManagedClusterSnapshot")
 AzureKeyVaultKms = TypeVar('AzureKeyVaultKms')
 ManagedClusterIngressProfile = TypeVar('ManagedClusterIngressProfile')
 ManagedClusterIngressProfileWebAppRouting = TypeVar('ManagedClusterIngressProfileWebAppRouting')
+ManagedClusterWorkloadAutoScalerProfile = TypeVar('ManagedClusterWorkloadAutoScalerProfile')
+ManagedClusterWorkloadAutoScalerProfileKeda = TypeVar('ManagedClusterWorkloadAutoScalerProfileKeda')
 
 
 # pylint: disable=too-many-instance-attributes,too-few-public-methods
@@ -183,6 +185,16 @@ class AKSPreviewModels(AKSModels):
         )
         self.ManagedClusterAPIServerAccessProfile = self.__cmd.get_models(
             "ManagedClusterAPIServerAccessProfile",
+            resource_type=self.resource_type,
+            operation_group="managed_clusters",
+        )
+        self.ManagedClusterWorkloadAutoScalerProfile = self.__cmd.get_models(
+            "ManagedClusterWorkloadAutoScalerProfile",
+            resource_type=self.resource_type,
+            operation_group="managed_clusters",
+        )
+        self.ManagedClusterWorkloadAutoScalerProfileKeda = self.__cmd.get_models(
+            "ManagedClusterWorkloadAutoScalerProfileKeda",
             resource_type=self.resource_type,
             operation_group="managed_clusters",
         )
@@ -2141,6 +2153,76 @@ class AKSPreviewContext(AKSContext):
         """
         return self._get_apiserver_subnet_id(enable_validation=True)
 
+    def _get_enable_keda(self, enable_validation: bool = False) -> bool:
+        """Internal function to obtain the value of enable_keda.
+
+        This function supports the option of enable_validation. When enabled, if both enable_keda and disable_keda are
+        specified, raise a MutuallyExclusiveArgumentError.
+
+        :return: bool
+        """
+        # Read the original value passed by the command.
+        enable_keda = self.raw_param.get("enable_keda")
+
+        # In create mode, try to read the property value corresponding to the parameter from the `mc` object.
+        if self.decorator_mode == DecoratorMode.CREATE:
+            if (
+                self.mc and
+                self.mc.workload_auto_scaler_profile and
+                self.mc.workload_auto_scaler_profile.keda
+            ):
+                enable_keda = self.mc.workload_auto_scaler_profile.keda.enabled
+
+        # This parameter does not need dynamic completion.
+        if enable_validation:
+            if enable_keda and self._get_disable_keda(enable_validation=False):
+                raise MutuallyExclusiveArgumentError(
+                    "Cannot specify --enable-keda and --disable-keda at the same time."
+                )
+
+        return enable_keda
+
+    def get_enable_keda(self) -> bool:
+        """Obtain the value of enable_keda.
+
+        This function will verify the parameter by default. If both enable_keda and disable_keda are specified, raise a
+        MutuallyExclusiveArgumentError.
+
+        :return: bool
+        """
+        return self._get_enable_keda(enable_validation=True)
+
+    def _get_disable_keda(self, enable_validation: bool = False) -> bool:
+        """Internal function to obtain the value of disable_keda.
+
+        This function supports the option of enable_validation. When enabled, if both enable_keda and disable_keda are
+        specified, raise a MutuallyExclusiveArgumentError.
+
+        :return: bool
+        """
+        # Read the original value passed by the command.
+        disable_keda = self.raw_param.get("disable_keda")
+
+        # This option is not supported in create mode, hence we do not read the property value from the `mc` object.
+        # This parameter does not need dynamic completion.
+        if enable_validation:
+            if disable_keda and self._get_enable_keda(enable_validation=False):
+                raise MutuallyExclusiveArgumentError(
+                    "Cannot specify --enable-keda and --disable-keda at the same time."
+                )
+
+        return disable_keda
+
+    def get_disable_keda(self) -> bool:
+        """Obtain the value of disable_keda.
+
+        This function will verify the parameter by default. If both enable_keda and disable_keda are specified, raise a
+        MutuallyExclusiveArgumentError.
+
+        :return: bool
+        """
+        return self._get_disable_keda(enable_validation=True)
+
 
 class AKSPreviewCreateDecorator(AKSCreateDecorator):
     # pylint: disable=super-init-not-called
@@ -2558,6 +2640,21 @@ class AKSPreviewCreateDecorator(AKSCreateDecorator):
 
         return mc
 
+    def set_up_workload_auto_scaler_profile(self, mc: ManagedCluster) -> ManagedCluster:
+        """Set up workload auto-scaler profile for the ManagedCluster object.
+
+        :return: the ManagedCluster object
+        """
+        if not isinstance(mc, self.models.ManagedCluster):
+            raise CLIInternalError(f"Unexpected mc object with type '{type(mc)}'.")
+
+        if self.context.get_enable_keda():
+            if mc.workload_auto_scaler_profile is None:
+                mc.workload_auto_scaler_profile = self.models.ManagedClusterWorkloadAutoScalerProfile()
+            mc.workload_auto_scaler_profile.keda = self.models.ManagedClusterWorkloadAutoScalerProfileKeda(enabled=True)
+
+        return mc
+
     def construct_mc_preview_profile(self) -> ManagedCluster:
         """The overall controller used to construct the preview ManagedCluster profile.
 
@@ -2589,6 +2686,8 @@ class AKSPreviewCreateDecorator(AKSCreateDecorator):
         mc = self.set_up_creationdata_of_cluster_snapshot(mc)
 
         mc = self.set_up_storage_profile(mc)
+
+        mc = self.set_up_workload_auto_scaler_profile(mc)
 
         return mc
 
@@ -2742,7 +2841,7 @@ class AKSPreviewUpdateDecorator(AKSUpdateDecorator):
                     '"--disable-local-accounts" or '
                     '"--enable-public-fqdn" or '
                     '"--disable-public-fqdn"'
-                    '"--enble-windows-gmsa" or '
+                    '"--enable-windows-gmsa" or '
                     '"--nodepool-labels" or '
                     '"--enable-oidc-issuer" or '
                     '"--http-proxy-config" or '
@@ -2755,7 +2854,9 @@ class AKSPreviewUpdateDecorator(AKSUpdateDecorator):
                     '"--disable-snapshot-controller" or '
                     '"--enable-azure-keyvault-kms" or '
                     '"--enable-workload-identity" or '
-                    '"--disable-workload-identity".'
+                    '"--disable-workload-identity" or '
+                    '"--enable-keda" or '
+                    '"--disable-keda".'
                 )
 
     def update_load_balancer_profile(self, mc: ManagedCluster) -> ManagedCluster:
@@ -2980,6 +3081,25 @@ class AKSPreviewUpdateDecorator(AKSUpdateDecorator):
 
         return mc
 
+    def update_workload_auto_scaler_profile(self, mc: ManagedCluster) -> ManagedCluster:
+        """Update workload auto-scaler profile for the ManagedCluster object.
+
+        :return: the ManagedCluster object
+        """
+        self._ensure_mc(mc)
+
+        if self.context.get_enable_keda():
+            if mc.workload_auto_scaler_profile is None:
+                mc.workload_auto_scaler_profile = self.models.ManagedClusterWorkloadAutoScalerProfile()
+            mc.workload_auto_scaler_profile.keda = self.models.ManagedClusterWorkloadAutoScalerProfileKeda(enabled=True)
+
+        if self.context.get_disable_keda():
+            if mc.workload_auto_scaler_profile is None:
+                mc.workload_auto_scaler_profile = self.models.ManagedClusterWorkloadAutoScalerProfile()
+            mc.workload_auto_scaler_profile.keda = self.models.ManagedClusterWorkloadAutoScalerProfileKeda(enabled=False)
+
+        return mc
+
     def patch_mc(self, mc: ManagedCluster) -> ManagedCluster:
         """Helper function to patch the ManagedCluster object.
 
@@ -3026,6 +3146,8 @@ class AKSPreviewUpdateDecorator(AKSUpdateDecorator):
         mc = self.update_identity_profile(mc)
 
         mc = self.update_storage_profile(mc)
+
+        mc = self.update_workload_auto_scaler_profile(mc)
 
         return mc
 

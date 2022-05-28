@@ -447,6 +447,9 @@ helps['aks create'] = """
         - name: --enable-custom-ca-trust
           type: bool
           short-summary: Enable Custom CA Trust on agent node pool.
+        - name: --enable-keda
+          type: bool
+          short-summary: Enable KEDA workload auto-scaler.
     examples:
         - name: Create a Kubernetes cluster with an existing SSH public key.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --ssh-key-value /path/to/publickey
@@ -761,6 +764,12 @@ helps['aks update'] = """
         - name: --apiserver-subnet-id
           type: string
           short-summary: The ID of a subnet in an existing VNet into which to assign control plane apiserver pods(requires --enable-apiserver-vnet-integration)
+        - name: --enable-keda
+          type: bool
+          short-summary: Enable KEDA workload auto-scaler.
+        - name: --disable-keda
+          type: bool
+          short-summary: Disable KEDA workload auto-scaler.
     examples:
       - name: Reconcile the cluster back to its current state.
         text: az aks update -g MyResourceGroup -n MyManagedCluster
