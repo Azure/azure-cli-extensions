@@ -109,6 +109,7 @@ from ._validators import (
     validate_user,
     validate_vm_set_type,
     validate_vnet_subnet_id,
+    validate_enable_custom_ca_trust,
 )
 
 # candidates for enumeration
@@ -299,6 +300,8 @@ def load_arguments(self, _):
         c.argument('enable_apiserver_vnet_integration', action='store_true', is_preview=True)
         c.argument('apiserver_subnet_id', validator=validate_apiserver_subnet_id, is_preview=True)
         c.argument('dns-zone-resource-id')
+        # no validation for aks create because it already only supports Linux.
+        c.argument('enable_custom_ca_trust', action='store_true')
 
     with self.argument_context('aks update') as c:
         # managed cluster paramerters
@@ -445,6 +448,7 @@ def load_arguments(self, _):
             c.argument('kubelet_config')
             c.argument('linux_os_config')
             c.argument('aks_custom_headers')
+            c.argument('enable_custom_ca_trust', action='store_true', validator=validate_enable_custom_ca_trust)
             # extensions
             c.argument('host_group_id', validator=validate_host_group_id, is_preview=True)
             c.argument('crg_id', validator=validate_crg_id, is_preview=True)
@@ -484,6 +488,8 @@ def load_arguments(self, _):
         c.argument('max_surge', validator=validate_max_surge)
         c.argument('mode', arg_type=get_enum_type(node_mode_types))
         c.argument('scale_down_mode', arg_type=get_enum_type(scale_down_modes))
+        c.argument('enable_custom_ca_trust', action='store_true', validator=validate_enable_custom_ca_trust)
+        c.argument('disable_custom_ca_trust', options_list=['--disable-custom-ca-trust', '--dcat'], action='store_true')
 
     with self.argument_context('aks addon show') as c:
         c.argument('addon', options_list=[

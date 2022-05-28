@@ -594,6 +594,27 @@ class AKSPreviewContextTestCase(unittest.TestCase):
         )
         self.assertEqual(ctx_3.get_message_of_the_day(), "W10=")
 
+    def test_get_enable_custom_ca_trust(self):
+        # default
+        ctx_1 = AKSPreviewContext(
+            self.cmd,
+            {"enable_custom_ca_trust": None},
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertEqual(ctx_1.get_enable_custom_ca_trust(), None)
+        agent_pool_profile = self.models.ManagedClusterAgentPoolProfile(
+            name="test_nodepool_name",
+            enable_custom_ca_trust=True,
+        )
+        mc = self.models.ManagedCluster(
+            location="test_location", agent_pool_profiles=[agent_pool_profile]
+        )
+        ctx_1.attach_mc(mc)
+        self.assertEqual(
+            ctx_1.get_enable_custom_ca_trust(), True
+        )
+
     def test_get_kubelet_config(self):
         # default
         ctx_1 = AKSPreviewContext(
@@ -3527,6 +3548,7 @@ class AKSPreviewCreateDecoratorTestCase(unittest.TestCase):
             mode="System",
             enable_auto_scaling=False,
             enable_fips=False,
+            enable_custom_ca_trust=False,
         )
         ssh_config_1 = self.models.ContainerServiceSshConfiguration(
             public_keys=[
