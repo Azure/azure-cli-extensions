@@ -24,6 +24,7 @@ from azure.cli.command_modules.acs.decorator import (
 )
 from azure.cli.core import AzCommandsLoader
 from azure.cli.core.azclierror import (
+    ArgumentUsageError,
     AzCLIError,
     CLIInternalError,
     InvalidArgumentValueError,
@@ -44,6 +45,7 @@ from azext_aks_preview._consts import (
     CONST_OUTBOUND_TYPE_MANAGED_NAT_GATEWAY,
     CONST_OUTBOUND_TYPE_USER_ASSIGNED_NAT_GATEWAY,
     CONST_OUTBOUND_TYPE_USER_DEFINED_ROUTING,
+    CONST_DISK_DRIVER_V1,
 )
 from azext_aks_preview._loadbalancer import create_load_balancer_profile
 from azext_aks_preview._loadbalancer import (
@@ -1721,7 +1723,8 @@ class AKSPreviewContext(AKSContext):
         """
         enable_disk_driver = self.raw_param.get("enable_disk_driver")
         disable_disk_driver = self.raw_param.get("disable_disk_driver")
-        if not enable_disk_driver and not disable_disk_driver:
+        disk_driver_version = self.raw_param.get("disk_driver_version")
+        if not enable_disk_driver and not disable_disk_driver and not disk_driver_version:
             return None
         profile = self.models.ManagedClusterStorageProfileDiskCSIDriver()
 
@@ -1731,15 +1734,30 @@ class AKSPreviewContext(AKSContext):
                 "--disable-disk-driver at the same time."
             )
 
+        if disable_disk_driver and disk_driver_version:
+            raise ArgumentUsageError(
+                "The parameter --disable-disk-driver cannot be used "
+                "when --disk-driver-version is specified.")
+
+        if self.decorator_mode == DecoratorMode.UPDATE and disk_driver_version and not enable_disk_driver:
+            raise ArgumentUsageError(
+                "Parameter --enable-disk-driver is required "
+                "when --disk-driver-version is specified during update.")
+
         if self.decorator_mode == DecoratorMode.CREATE:
             if disable_disk_driver:
                 profile.enabled = False
             else:
                 profile.enabled = True
+                if not disk_driver_version:
+                    disk_driver_version = CONST_DISK_DRIVER_V1
+                profile.version = disk_driver_version
 
         if self.decorator_mode == DecoratorMode.UPDATE:
             if enable_disk_driver:
                 profile.enabled = True
+                if disk_driver_version:
+                    profile.version = disk_driver_version
             elif disable_disk_driver:
                 profile.enabled = False
 
@@ -2716,6 +2734,7 @@ class AKSPreviewUpdateDecorator(AKSUpdateDecorator):
                     '"--enable-oidc-issuer" or '
                     '"--http-proxy-config" or '
                     '"--enable-disk-driver" or '
+                    '"--disk-driver-version" or '
                     '"--disable-disk-driver" or '
                     '"--enable-file-driver" or '
                     '"--disable-file-driver" or '

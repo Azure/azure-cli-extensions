@@ -83,6 +83,10 @@ CONST_NETWORK_PLUGIN_KUBENET = "kubenet"
 CONST_NETWORK_PLUGIN_AZURE = "azure"
 CONST_NETWORK_PLUGIN_NONE = "none"
 
+# disk driver versions
+CONST_DISK_DRIVER_V1 = "v1"
+CONST_DISK_DRIVER_V2 = "v2"
+
 # consts for addons
 # http application routing
 CONST_HTTP_APPLICATION_ROUTING_ADDON_NAME = "httpApplicationRouting"

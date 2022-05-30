@@ -49,6 +49,7 @@ from azure.cli.command_modules.acs._consts import (
     DecoratorMode,
 )
 from azure.cli.core.azclierror import (
+    ArgumentUsageError,
     AzCLIError,
     CLIInternalError,
     InvalidArgumentValueError,
@@ -833,7 +834,6 @@ class AKSPreviewContextTestCase(unittest.TestCase):
         )
         mc = self.models.ManagedCluster(
             location="test_location",
-            storage_profile=storage_profile,
         )
         ctx_1.attach_mc(mc)
         self.assertEqual(
@@ -854,7 +854,7 @@ class AKSPreviewContextTestCase(unittest.TestCase):
         with self.assertRaises(MutuallyExclusiveArgumentError):
             ctx_2.get_disk_driver()
 
-        # custom file alue
+        # custom file value
         ctx_3 = AKSPreviewContext(
             self.cmd,
             {
@@ -868,7 +868,7 @@ class AKSPreviewContextTestCase(unittest.TestCase):
         with self.assertRaises(MutuallyExclusiveArgumentError):
             ctx_3.get_file_driver()
 
-        # custom file alue
+        # custom file value
         ctx_4 = AKSPreviewContext(
             self.cmd,
             {
@@ -908,12 +908,108 @@ class AKSPreviewContextTestCase(unittest.TestCase):
         )
         mc = self.models.ManagedCluster(
             location="test_location",
-            storage_profile=storage_profile,
         )
         ctx_5.attach_mc(mc)
         self.assertEqual(
             ctx_5.get_storage_profile(), storage_profile
         )
+
+        # disk_driver_version value passed and enable-disk-driver passed
+        ctx_6 = AKSPreviewContext(
+            self.cmd,
+            {
+                "enable_disk_driver": True,
+                "disk_driver_version": "v2",
+                "enable_file_driver": True,
+                "enable_snapshot_controller": True,
+            },
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        storage_profile = (
+            self.models.ManagedClusterStorageProfile(
+                disk_csi_driver = self.models.ManagedClusterStorageProfileDiskCSIDriver(
+                    enabled = True,
+                    version = "v2",
+                ),
+                file_csi_driver = self.models.ManagedClusterStorageProfileFileCSIDriver(
+                    enabled = True,
+                ),
+                snapshot_controller = self.models.ManagedClusterStorageProfileSnapshotController(
+                    enabled = True,
+                ),
+            )
+        )
+        mc = self.models.ManagedCluster(
+            location="test_location",
+        )
+        ctx_6.attach_mc(mc)
+        self.assertEqual(
+            ctx_6.get_storage_profile(), storage_profile
+        )
+
+        # fail with enable-disk-driver as false and value passed for disk_driver_version
+        ctx_8 = AKSPreviewContext(
+            self.cmd,
+            {
+                "disable_disk_driver": True,
+                "disk_driver_version": "v2",
+            },
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+
+        # fail on argument usage error
+        with self.assertRaises(ArgumentUsageError):
+            ctx_8.get_disk_driver()
+
+        #  enable-disk-driver, disk_driver_version, enable_file_driver and enable_snapshot_controller passed
+        ctx_9 = AKSPreviewContext(
+            self.cmd,
+            {
+                "enable_disk_driver": True,
+                "disk_driver_version": "v2",
+                "disable_file_driver": True,
+                "disable_snapshot_controller": True,
+            },
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        storage_profile = (
+            self.models.ManagedClusterStorageProfile(
+                disk_csi_driver = self.models.ManagedClusterStorageProfileDiskCSIDriver(
+                    enabled = True,
+                    version = "v2",
+                ),
+                file_csi_driver = self.models.ManagedClusterStorageProfileFileCSIDriver(
+                    enabled = False,
+                ),
+                snapshot_controller = self.models.ManagedClusterStorageProfileSnapshotController(
+                    enabled = False,
+                ),
+            )
+        )
+        mc = self.models.ManagedCluster(
+            location="test_location",
+        )
+        ctx_9.attach_mc(mc)
+        self.assertEqual(
+            ctx_9.get_storage_profile(), storage_profile
+        )
+
+        # fail with enable-disk-driver as false and value passed for disk_driver_version
+        ctx_10 = AKSPreviewContext(
+            self.cmd,
+            {
+                "disk_driver_version": "v2",
+            },
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+
+        # fail on argument usage error
+        with self.assertRaises(ArgumentUsageError):
+            ctx_10.get_disk_driver()
 
     def test_get_disk_driver_create(self):
         # default
@@ -932,7 +1028,6 @@ class AKSPreviewContextTestCase(unittest.TestCase):
         )
         mc = self.models.ManagedCluster(
             location="test_location",
-            storage_profile=storage_profile,
         )
         ctx_1.attach_mc(mc)
         self.assertEqual(
@@ -953,7 +1048,7 @@ class AKSPreviewContextTestCase(unittest.TestCase):
         with self.assertRaises(MutuallyExclusiveArgumentError):
             ctx_2.get_disk_driver()
 
-        # custom file alue
+        # custom file value
         ctx_3 = AKSPreviewContext(
             self.cmd,
             {
@@ -967,7 +1062,7 @@ class AKSPreviewContextTestCase(unittest.TestCase):
         with self.assertRaises(MutuallyExclusiveArgumentError):
             ctx_3.get_file_driver()
 
-        # custom file alue
+        # custom file value
         ctx_4 = AKSPreviewContext(
             self.cmd,
             {
@@ -981,7 +1076,7 @@ class AKSPreviewContextTestCase(unittest.TestCase):
         with self.assertRaises(MutuallyExclusiveArgumentError):
             ctx_4.get_snapshot_controller()
 
-        # default with csi driver enabled flag
+        # default with csi driver enabled flag and no value for disk_driver_version passed
         ctx_5 = AKSPreviewContext(
             self.cmd,
             {
@@ -996,6 +1091,7 @@ class AKSPreviewContextTestCase(unittest.TestCase):
             self.models.ManagedClusterStorageProfile(
                 disk_csi_driver = self.models.ManagedClusterStorageProfileDiskCSIDriver(
                     enabled = True,
+                    version = "v1",
                 ),
                 file_csi_driver = self.models.ManagedClusterStorageProfileFileCSIDriver(
                     enabled = True,
@@ -1007,12 +1103,112 @@ class AKSPreviewContextTestCase(unittest.TestCase):
         )
         mc = self.models.ManagedCluster(
             location="test_location",
-            storage_profile=storage_profile,
         )
         ctx_5.attach_mc(mc)
         self.assertEqual(
             ctx_5.get_storage_profile(), storage_profile
         )
+
+        # disk_driver_version value passed and enable-disk-driver passed
+        ctx_6 = AKSPreviewContext(
+            self.cmd,
+            {
+                "enable_disk_driver": True,
+                "disk_driver_version": "v2",
+            },
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        storage_profile = (
+            self.models.ManagedClusterStorageProfile(
+                disk_csi_driver = self.models.ManagedClusterStorageProfileDiskCSIDriver(
+                    enabled = True,
+                    version = "v2",
+                ),
+            )
+        )
+        mc = self.models.ManagedCluster(
+            location="test_location",
+        )
+        ctx_6.attach_mc(mc)
+        self.assertEqual(
+            ctx_6.get_storage_profile(), storage_profile
+        )
+
+        # fail with enable-disk-driver as false and value passed for disk_driver_version
+        ctx_8 = AKSPreviewContext(
+            self.cmd,
+            {
+                "disable_disk_driver": True,
+                "disk_driver_version": "v2",
+            },
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+
+        # fail on argument usage error
+        with self.assertRaises(ArgumentUsageError):
+            ctx_8.get_disk_driver()
+
+        #  enable-disk-driver, disk_driver_version, enable_file_driver and enable_snapshot_controller passed
+        ctx_9 = AKSPreviewContext(
+            self.cmd,
+            {
+                "enable_disk_driver": True,
+                "disk_driver_version": "v2",
+                "enable_file_driver": True,
+                "enable_snapshot_controller": True,
+            },
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        storage_profile = (
+            self.models.ManagedClusterStorageProfile(
+                disk_csi_driver = self.models.ManagedClusterStorageProfileDiskCSIDriver(
+                    enabled = True,
+                    version = "v2",
+                ),
+                file_csi_driver = self.models.ManagedClusterStorageProfileFileCSIDriver(
+                    enabled = True,
+                ),
+                snapshot_controller = self.models.ManagedClusterStorageProfileSnapshotController(
+                    enabled = True,
+                ),
+            )
+        )
+        mc = self.models.ManagedCluster(
+            location="test_location",
+        )
+        ctx_9.attach_mc(mc)
+        self.assertEqual(
+            ctx_9.get_storage_profile(), storage_profile
+        )
+
+        # pass when value passed for disk_driver_version without enable_disk_driver
+        ctx_10 = AKSPreviewContext(
+            self.cmd,
+            {
+                "disk_driver_version": "v2",
+            },
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        storage_profile = (
+            self.models.ManagedClusterStorageProfile(
+                disk_csi_driver = self.models.ManagedClusterStorageProfileDiskCSIDriver(
+                    enabled = True,
+                    version = "v2",
+                ),
+            )
+        )
+        mc = self.models.ManagedCluster(
+            location="test_location",
+        )
+        ctx_10.attach_mc(mc)
+        self.assertEqual(
+            ctx_10.get_storage_profile(), storage_profile
+        )
+
 
     def test_get_enable_pod_security_policy(self):
         # default

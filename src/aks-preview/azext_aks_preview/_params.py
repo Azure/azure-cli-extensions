@@ -64,6 +64,8 @@ from ._consts import (
     CONST_STABLE_UPGRADE_CHANNEL,
     CONST_WORKLOAD_RUNTIME_OCI_CONTAINER,
     CONST_WORKLOAD_RUNTIME_WASM_WASI,
+    CONST_DISK_DRIVER_V1,
+    CONST_DISK_DRIVER_V2,
 )
 from ._validators import (
     validate_acr,
@@ -132,6 +134,7 @@ gpu_instance_profiles = [
 # consts for ManagedCluster
 load_balancer_skus = [CONST_LOAD_BALANCER_SKU_BASIC, CONST_LOAD_BALANCER_SKU_STANDARD]
 network_plugins = [CONST_NETWORK_PLUGIN_KUBENET, CONST_NETWORK_PLUGIN_AZURE, CONST_NETWORK_PLUGIN_NONE]
+disk_driver_versions = [CONST_DISK_DRIVER_V1, CONST_DISK_DRIVER_V2]
 outbound_types = [
     CONST_OUTBOUND_TYPE_LOAD_BALANCER,
     CONST_OUTBOUND_TYPE_USER_DEFINED_ROUTING,
@@ -269,6 +272,7 @@ def load_arguments(self, _):
         c.argument('enable_fips_image', action='store_true')
         c.argument('kubelet_config')
         c.argument('linux_os_config')
+        c.argument('disk_driver_version', arg_type=get_enum_type(disk_driver_versions))
         c.argument('disable_disk_driver', arg_type=get_three_state_flag())
         c.argument('disable_file_driver', arg_type=get_three_state_flag())
         c.argument('disable_snapshot_controller', arg_type=get_three_state_flag())
@@ -337,6 +341,7 @@ def load_arguments(self, _):
         c.argument('gmsa_dns_server')
         c.argument('gmsa_root_domain_name')
         c.argument('enable_disk_driver', arg_type=get_three_state_flag())
+        c.argument('disk_driver_version', arg_type=get_enum_type(disk_driver_versions))
         c.argument('disable_disk_driver', arg_type=get_three_state_flag())
         c.argument('enable_file_driver', arg_type=get_three_state_flag())
         c.argument('disable_file_driver', arg_type=get_three_state_flag())
