@@ -12,10 +12,15 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+0.5.77
+++++++
+
+* Add support to pass csi `disk-driver-version` for `az aks create` and `az aks update`.
+
 0.5.76
 ++++++
 
-* Add support to pass csi disk driver version.
+* Add support for Custom CA Trust in `az aks create`, `az aks nodepool add`, `az aks nodepool update`.
 
 0.5.75
 ++++++

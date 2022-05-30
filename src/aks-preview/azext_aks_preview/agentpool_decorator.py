@@ -16,7 +16,10 @@ from azure.cli.command_modules.acs.agentpool_decorator import (
     AKSAgentPoolParamDict,
     AKSAgentPoolUpdateDecorator,
 )
-from azure.cli.core.azclierror import InvalidArgumentValueError
+from azure.cli.core.azclierror import (
+    ArgumentUsageError,
+    InvalidArgumentValueError,
+)
 from azure.cli.core.commands import AzCliCommand
 from azure.cli.core.profiles import ResourceType
 from azure.cli.core.util import read_file_content
@@ -51,6 +54,7 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
         agentpool_decorator_mode: AgentPoolDecoratorMode,
     ):
         super().__init__(cmd, raw_parameters, models, decorator_mode, agentpool_decorator_mode)
+        # used to store external functions
         self.__external_functions = None
 
     @property
@@ -252,7 +256,8 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
         agentpool = self.set_up_motd(agentpool)
         # set up gpu profiles
         agentpool = self.set_up_gpu_propertes(agentpool)
-        # restore defaults
+
+        # DO NOT MOVE: keep this at the bottom, restore defaults
         agentpool = self._restore_defaults_in_agentpool(agentpool)
         return agentpool
 

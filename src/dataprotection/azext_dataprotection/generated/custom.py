@@ -7,6 +7,7 @@
 # Changes may cause incorrect behavior and will be lost if the code is
 # regenerated.
 # --------------------------------------------------------------------------
+# pylint: disable=line-too-long
 # pylint: disable=too-many-lines
 
 from knack.util import CLIError
@@ -28,6 +29,7 @@ def dataprotection_backup_vault_create(client,
                                        location=None,
                                        tags=None,
                                        type_=None,
+                                       alerts_for_all_job_failures=None,
                                        no_wait=False):
     parameters = {}
     parameters['e_tag'] = e_tag
@@ -37,6 +39,8 @@ def dataprotection_backup_vault_create(client,
     parameters['identity']['type'] = type_
     parameters['properties'] = {}
     parameters['properties']['storage_settings'] = storage_settings
+    parameters['properties']['azure_monitor_alert_settings'] = {}
+    parameters['properties']['azure_monitor_alert_settings']['alerts_for_all_job_failures'] = alerts_for_all_job_failures
     return sdk_no_wait(no_wait,
                        client.begin_create_or_update,
                        resource_group_name=resource_group_name,
@@ -48,10 +52,13 @@ def dataprotection_backup_vault_update(client,
                                        resource_group_name,
                                        vault_name,
                                        tags=None,
+                                       alerts_for_all_job_failures=None,
                                        type_=None,
                                        no_wait=False):
     parameters = {}
     parameters['tags'] = tags
+    parameters['azure_monitor_alert_settings'] = {}
+    parameters['azure_monitor_alert_settings']['alerts_for_all_job_failures'] = alerts_for_all_job_failures
     parameters['identity'] = {}
     parameters['identity']['type'] = type_
     return sdk_no_wait(no_wait,
@@ -357,3 +364,38 @@ def dataprotection_restorable_time_range_find(client,
                        vault_name=vault_name,
                        backup_instance_name=backup_instance_name,
                        parameters=parameters)
+
+
+def dataprotection_resource_guard_show(client,
+                                       resource_group_name,
+                                       resource_guards_name):
+    return client.get(resource_group_name=resource_group_name,
+                      resource_guards_name=resource_guards_name)
+
+
+def dataprotection_resource_guard_create(client,
+                                         resource_group_name,
+                                         resource_guards_name,
+                                         e_tag=None,
+                                         location=None,
+                                         tags=None,
+                                         type_=None,
+                                         vault_critical_operation_exclusion_list=None):
+    parameters = {}
+    parameters['e_tag'] = e_tag
+    parameters['location'] = location
+    parameters['tags'] = tags
+    parameters['identity'] = {}
+    parameters['identity']['type'] = type_
+    parameters['properties'] = {}
+    parameters['properties']['vault_critical_operation_exclusion_list'] = vault_critical_operation_exclusion_list
+    return client.put(resource_group_name=resource_group_name,
+                      resource_guards_name=resource_guards_name,
+                      parameters=parameters)
+
+
+def dataprotection_resource_guard_delete(client,
+                                         resource_group_name,
+                                         resource_guards_name):
+    return client.delete(resource_group_name=resource_group_name,
+                         resource_guards_name=resource_guards_name)
