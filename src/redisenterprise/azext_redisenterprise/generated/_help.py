@@ -220,7 +220,7 @@ helps['redisenterprise database force-unlink'] = """
     examples:
       - name: How to unlink a database during a regional outage
         text: |-
-               az redisenterprise database force-unlink --cluster-name "cache1" --ids "/subscriptions/subid2/resourceGr\
+               az redisenterprise database force-unlink --cluster-name "cache1" --unlink_ids "/subscriptions/subid2/resourceGr\
 oups/rg2/providers/Microsoft.Cache/redisEnterprise/cache2/databases/default" --resource-group "rg1"
 """
 

@@ -43,6 +43,8 @@ def redisenterprise_create(client,
                            zones=None,
                            minimum_tls_version=None,
                            no_wait=False):
+    print("Bye"*5)
+    exit(1)
     parameters = {}
     if tags is not None:
         parameters['tags'] = tags
@@ -125,6 +127,7 @@ def redisenterprise_database_create(client,
                                     group_nickname=None,
                                     linked_databases=None,
                                     no_wait=False):
+    print("GENERATED"*10,linked_databases)
     parameters = {}
     if client_protocol is not None:
         parameters['client_protocol'] = client_protocol

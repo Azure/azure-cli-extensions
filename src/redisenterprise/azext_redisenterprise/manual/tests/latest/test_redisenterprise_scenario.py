@@ -28,7 +28,7 @@ from .. import (
 def call_scenario1(test, rg):
     from ....tests.latest import test_redisenterprise_scenario as g
     g.setup_scenario1(test)
-    step_create(test, rg, checks=[
+    step_create(test, checks=[
         test.check("name", "default"),
         test.check("resourceGroup", "{rg}"),
         test.check("clientProtocol", "Encrypted"),
@@ -40,7 +40,7 @@ def call_scenario1(test, rg):
         test.check("resourceState", "Running"),
         test.check("type", "Microsoft.Cache/redisEnterprise/databases")
     ])
-    step_show(test, rg, checks=[
+    step_show(test, checks=[
         test.check("name", "{cluster}"),
         test.check("resourceGroup", "{rg}"),
         test.check("location", "East US"),
@@ -67,7 +67,7 @@ def call_scenario1(test, rg):
     g.step_list2(test, checks=[
         test.check("length(@)", 1)
     ])
-    step_database_show(test, rg, checks=[
+    step_database_show(test, checks=[
         test.check("name", "default"),
         test.check("resourceGroup", "{rg}"),
         test.check("clientProtocol", "Encrypted"),
@@ -78,12 +78,12 @@ def call_scenario1(test, rg):
         test.check("resourceState", "Running"),
         test.check("type", "Microsoft.Cache/redisEnterprise/databases")
     ])
-    step_database_list(test, rg, checks=[
+    step_database_list(test, checks=[
         test.check("length(@)", 1)
     ])
-    step_database_list_keys(test, rg, checks=[])
-    step_database_regenerate_key(test, rg, checks=[])
-    step_delete(test, rg, checks=[])
+    step_database_list_keys(test, checks=[])
+    step_database_regenerate_key(test, checks=[])
+    step_delete(test, checks=[])
     g.cleanup_scenario1(test)
 
 
@@ -106,10 +106,10 @@ class Redisenterprisescenario1Test(ScenarioTest):
 
 
 # Testcase: scenario2
-def call_scenario2(test, rg):
+def call_scenario2(test):
     from ....tests.latest import test_redisenterprise_scenario as g
     g.setup_scenario2(test)
-    step_create(test, rg, checks=[
+    step_create(test, checks=[
         test.check("name", "{cluster}"),
         test.check("resourceGroup", "{rg}"),
         test.check("location", "East US"),
@@ -122,7 +122,7 @@ def call_scenario2(test, rg):
         test.check("resourceState", "Running"),
         test.check("type", "Microsoft.Cache/redisEnterprise")
     ])
-    step_show(test, rg, checks=[
+    step_show(test,checks=[
         test.check("name", "{cluster}"),
         test.check("resourceGroup", "{rg}"),
         test.check("location", "East US"),
@@ -140,7 +140,7 @@ def call_scenario2(test, rg):
     g.step_list2(test, checks=[
         test.check("length(@)", 1)
     ])
-    step_database_create(test, rg, checks=[
+    step_database_create(test, checks=[
         test.check("name", "default"),
         test.check("resourceGroup", "{rg}"),
         test.check("clientProtocol", "Plaintext"),
@@ -151,7 +151,7 @@ def call_scenario2(test, rg):
         test.check("resourceState", "Running"),
         test.check("type", "Microsoft.Cache/redisEnterprise/databases")
     ])
-    step_database_show(test, rg, checks=[
+    step_database_show(test, checks=[
         test.check("name", "default"),
         test.check("resourceGroup", "{rg}"),
         test.check("clientProtocol", "Plaintext"),
@@ -162,13 +162,13 @@ def call_scenario2(test, rg):
         test.check("resourceState", "Running"),
         test.check("type", "Microsoft.Cache/redisEnterprise/databases")
     ])
-    step_database_list(test, rg, checks=[
+    step_database_list(test, checks=[
         test.check("length(@)", 1)
     ])
-    step_database_list_keys(test, rg, checks=[])
-    step_database_regenerate_key(test, rg, checks=[])
-    step_database_delete(test, rg, checks=[])
-    step_delete(test, rg, checks=[])
+    step_database_list_keys(test, checks=[])
+    step_database_regenerate_key(test, checks=[])
+    step_database_delete(test, checks=[])
+    step_delete(test, checks=[])
     g.cleanup_scenario2(test)
 
 
@@ -185,8 +185,8 @@ class Redisenterprisescenario2Test(ScenarioTest):
 
     @ResourceGroupPreparer(name_prefix='clitest-redisenterprise-rg2-', key='rg', parameter_name='rg',
                            location='eastus', random_name_length=34)
-    def test_redisenterprise_scenario2(self, rg):
-        #call_scenario2(self, rg)
+    def test_redisenterprise_scenario2(self):
+        # call_scenario2(self)
         calc_coverage(__file__)
         raise_if()
 
@@ -197,13 +197,11 @@ def call_scenario3(test):
     step_create(test, checks=[
         test.check("name", "{cluster31}"),
         test.check("resourceGroup", "{rg31}"),
-        test.check("location", "East US"),
         test.check("sku.name", "EnterpriseFlash_F300"),
         test.check("provisioningState", "Succeeded"),
         test.check("resourceState", "Running"),
         test.check("type", "Microsoft.Cache/redisEnterprise"),
     ], cache_num=1)
-    """
     step_database_create(test, checks=[ 
         test.check("clientProtocol", "Encrypted"),
         test.check("evictionPolicy", "NoEviction"),
@@ -211,13 +209,10 @@ def call_scenario3(test):
         test.check("geoReplication.groupNickname", "groupName"),
         test.check("geoReplication.linkedDatabases[0].id", "/subscriptions/{subscription}/resourceGroups/{rg31}/providers/Microsoft.Cache/redisEnterprise/{cluster31}/databases/{database}"),
     ])
-    """
     # Create second georeplicated cache
     step_create(test, checks=[
-        test.check("name", "{cluster31}"),
-        test.check("resourceGroup", "{rg31}"),
-        test.check("location", "West US"),
-        test.check("sku.name", "EnterpriseFlash_F300"),
+        test.check("name", "default"),
+        test.check("resourceGroup", "{rg32}"),
         test.check("provisioningState", "Succeeded"),
         test.check("resourceState", "Running"),
         test.check("type", "Microsoft.Cache/redisEnterprise/databases"),

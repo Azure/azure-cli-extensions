@@ -20,14 +20,13 @@ def step_create(test, checks=None, cache_num=1):
                  checks=checks)
     elif test.kwargs.get('geo-replication'):
         if cache_num == 1:
-            """
-                test.cmd('az redisenterprise create '
-                         '--cluster-name "{cluster31}" '
-                         '--sku "EnterpriseFlash_F300" '
-                         '--tags tag1="value1" '
-                         '--no-database '
-                         '--resource-group "{rg31}"',
-                         checks=checks)
+            test.cmd('az redisenterprise create '
+                        '--cluster-name "{cluster31}" '
+                        '--sku "EnterpriseFlash_F300" '
+                        '--tags tag1="value1" '
+                        '--no-database '
+                        '--resource-group "{rg31}"',
+                        checks=checks)
             """
             test.cmd('az redisenterprise create '
                      '--location "West US" '
@@ -41,6 +40,7 @@ def step_create(test, checks=None, cache_num=1):
                      '--port 10000 '
                      '--resource-group "{rg31}"',
             checks=checks)            
+            """
         elif cache_num == 2:
                 test.cmd('az redisenterprise create '
                      '--location "West US" '
@@ -79,7 +79,7 @@ def step_database_force_unlink(test, checks=None):
         checks = []
     test.cmd('az redisenterprise database force-unlink '
              '--cluster-name "{cluster32}" '
-             '--ids "/subscriptions/{subscription_id}/resourceGroups/{rg31}/providers/Microsoft.Cache/redisEnterprise/{'
+             '--ids "/subscriptions/{subscription}/resourceGroups/{rg31}/providers/Microsoft.Cache/redisEnterprise/{'
              'myRedisEnterprise2}/databases/{database}" '
              '--resource-group "{rg32}"',
              checks=checks)
@@ -95,7 +95,7 @@ def step_show(test, checks=None):
 
 
 # EXAMPLE: /RedisEnterprise/delete/RedisEnterpriseDelete
-def step_delete(test, rg, checks=None):
+def step_delete(test, checks=None):
     if checks is None:
         checks = []
     test.cmd('az redisenterprise delete -y '
@@ -134,8 +134,8 @@ def step_database_force_unlink(test, checks=None):
         checks = []
     test.cmd('az redisenterprise database force-unlink '
              '--cluster-name "{cluster32}" '
-             '--ids "/subscriptions/{subscription_id}/resourceGroups/{rg31}/providers/Microsoft.Cache/redisEnterprise/{'
-             'cluster31}/databases/{myDatabas}" '
+             '--ids "/subscriptions/{subscription}/resourceGroups/{rg31}/providers/Microsoft.Cache/redisEnterprise/{'
+             'cluster31}/databases/{database}" '
              '--resource-group "{rg32}"',
              checks=checks)
 
@@ -156,7 +156,7 @@ def step_database_show(test, checks=None):
 
 
 # EXAMPLE: /Databases/get/RedisEnterpriseDatabasesListByCluster
-def step_database_list(test, rg, checks=None):
+def step_database_list(test, checks=None):
     if checks is None:
         checks = []
     test.cmd('az redisenterprise database list '
@@ -166,7 +166,7 @@ def step_database_list(test, rg, checks=None):
 
 
 # EXAMPLE: /Databases/post/RedisEnterpriseDatabasesListKeys
-def step_database_list_keys(test, rg, checks=None):
+def step_database_list_keys(test, checks=None):
     if checks is None:
         checks = []
     test.cmd('az redisenterprise database list-keys '
@@ -176,7 +176,7 @@ def step_database_list_keys(test, rg, checks=None):
 
 
 # EXAMPLE: /Databases/post/RedisEnterpriseDatabasesRegenerateKey
-def step_database_regenerate_key(test, rg, checks=None):
+def step_database_regenerate_key(test, checks=None):
     if checks is None:
         checks = []
     test.cmd('az redisenterprise database regenerate-key '
