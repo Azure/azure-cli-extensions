@@ -7,6 +7,13 @@ import json
 from importlib import import_module
 from knack.util import CLIError
 
+critical_operation_map = {"deleteProtection": "/backupFabrics/protectionContainers/protectedItems/delete",
+                          "updateProtection": "/backupFabrics/protectionContainers/protectedItems/write",
+                          "updatePolicy": "/backupPolicies/write",
+                          "deleteRGMapping": "/backupResourceGuardProxies/delete",
+                          "getSecurityPIN": "/backupSecurityPIN/action",
+                          "disableSoftDelete": "/backupconfig/write"}
+
 
 def load_manifest(datasource_type):
     module = import_module('azext_dataprotection.manual.Manifests.' + datasource_type)

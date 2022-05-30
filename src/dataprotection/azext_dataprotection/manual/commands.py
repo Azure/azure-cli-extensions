@@ -9,7 +9,7 @@
 
 from azure.cli.core.commands import CliCommandType
 from azext_dataprotection.generated._client_factory import (
-    cf_backup_instance, cf_backup_vault, cf_backup_policy
+    cf_backup_instance, cf_backup_vault, cf_backup_policy, cf_resource_guard
 )
 
 from azext_dataprotection.manual._client_factory import cf_resource_graph_client
@@ -68,3 +68,8 @@ def load_command_table(self, _):
         g.custom_command('list', 'dataprotection_backup_vault_list')
         g.custom_command('create', 'dataprotection_backup_vault_create', supports_no_wait=True)
         g.custom_command('update', 'dataprotection_backup_vault_update', supports_no_wait=True)
+
+    with self.command_group('dataprotection resource-guard', exception_handler=exception_handler, client_factory=cf_resource_guard) as g:
+        g.custom_command('list', 'dataprotection_resource_guard_list')
+        g.custom_command('list-protected-operations', 'resource_guard_list_protected_operations')
+        g.custom_command('update', 'dataprotection_resource_guard_update')

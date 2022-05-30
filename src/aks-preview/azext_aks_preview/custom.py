@@ -812,6 +812,7 @@ def aks_create(cmd,
                enable_apiserver_vnet_integration=False,
                apiserver_subnet_id=None,
                dns_zone_resource_id=None,
+               enable_custom_ca_trust=False,
                yes=False):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
@@ -902,7 +903,8 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
                enable_azure_keyvault_kms=False,
                azure_keyvault_kms_key_id=None,
                enable_apiserver_vnet_integration=False,
-               apiserver_subnet_id=None):
+               apiserver_subnet_id=None,
+               ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
 
@@ -1651,8 +1653,9 @@ def aks_agentpool_add(cmd,      # pylint: disable=unused-argument,too-many-local
                       message_of_the_day=None,
                       workload_runtime=None,
                       gpu_instance_profile=None,
+                      enable_custom_ca_trust=False,
                       no_wait=False,
-                      aks_custom_headers=None,):
+                      aks_custom_headers=None):
     instances = client.list(resource_group_name, cluster_name)
     for agentpool_profile in instances:
         if agentpool_profile.name == nodepool_name:
@@ -1729,7 +1732,8 @@ def aks_agentpool_add(cmd,      # pylint: disable=unused-argument,too-many-local
         gpu_instance_profile=gpu_instance_profile,
         creation_data=creationData,
         host_group_id=host_group_id,
-        capacity_reservation_group_id=crg_id
+        capacity_reservation_group_id=crg_id,
+        enable_custom_ca_trust=enable_custom_ca_trust
     )
 
     if priority == CONST_SCALE_SET_PRIORITY_SPOT:
@@ -1851,13 +1855,16 @@ def aks_agentpool_update(cmd,   # pylint: disable=unused-argument
                          max_surge=None,
                          mode=None,
                          scale_down_mode=None,
+                         enable_custom_ca_trust=False,
+                         disable_custom_ca_trust=False,
                          no_wait=False,
                          aks_custom_headers=None):
-
     update_autoscaler = enable_cluster_autoscaler + \
         disable_cluster_autoscaler + update_cluster_autoscaler
 
-    if (update_autoscaler != 1 and not tags and not scale_down_mode and not mode and not max_surge and labels is None and node_taints is None):
+    update_custom_ca_trust = enable_custom_ca_trust + disable_custom_ca_trust
+
+    if (update_autoscaler != 1 and not tags and not scale_down_mode and not mode and not max_surge and labels is None and node_taints is None and not update_custom_ca_trust):
         reconcilePrompt = 'no argument specified to update would you like to reconcile to current settings?'
         if not prompt_y_n(reconcilePrompt, default="n"):
             raise CLIError('Please specify one or more of "--enable-cluster-autoscaler" or '
@@ -1931,6 +1938,17 @@ def aks_agentpool_update(cmd,   # pylint: disable=unused-argument
 
     if labels is not None:
         instance.node_labels = labels
+
+    if enable_custom_ca_trust:
+        instance.enable_custom_ca_trust = True
+
+    if disable_custom_ca_trust:
+        if not instance.enable_custom_ca_trust:
+            logger.warning(
+                'Custom CA Trust is already disabled for this node pool.')
+            return None
+        instance.enable_custom_ca_trust = False
+
     return sdk_no_wait(no_wait, client.begin_create_or_update, resource_group_name, cluster_name, nodepool_name, instance)
 
 

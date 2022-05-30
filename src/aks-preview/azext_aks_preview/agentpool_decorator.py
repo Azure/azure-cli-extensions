@@ -16,7 +16,10 @@ from azure.cli.command_modules.acs.agentpool_decorator import (
     AKSAgentPoolParamDict,
     AKSAgentPoolUpdateDecorator,
 )
-from azure.cli.core.azclierror import InvalidArgumentValueError
+from azure.cli.core.azclierror import (
+    ArgumentUsageError,
+    InvalidArgumentValueError,
+)
 from azure.cli.core.commands import AzCliCommand
 from azure.cli.core.profiles import ResourceType
 from azure.cli.core.util import read_file_content

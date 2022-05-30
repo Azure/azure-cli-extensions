@@ -73,6 +73,14 @@ def get_permission_scope_values():
     return ['Resource', 'ResourceGroup', 'Subscription']
 
 
+def get_resource_type_values():
+    return ['Microsoft.RecoveryServices/vaults']
+
+
+def get_critical_operation_values():
+    return ['deleteProtection', 'updateProtection', 'updatePolicy', 'getSecurityPIN']
+
+
 def get_datasource_types():
     from azext_dataprotection.manual import helpers
     return helpers.get_supported_datasource_types()

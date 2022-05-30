@@ -441,6 +441,9 @@ helps['aks create'] = """
         - name: --dns-zone-resource-id
           type: string
           short-summary: The resource ID of the DNS zone resource to use with the web_application_routing addon.
+        - name: --enable-custom-ca-trust
+          type: bool
+          short-summary: Enable Custom CA Trust on agent node pool.
     examples:
         - name: Create a Kubernetes cluster with an existing SSH public key.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --ssh-key-value /path/to/publickey
@@ -504,6 +507,8 @@ helps['aks create'] = """
           text: az aks create -g MyResourceGroup -n MyMC --kubernetes-version 1.20.13 --location westus2 --host-group-id /subscriptions/00000/resourceGroups/AnotherResourceGroup/providers/Microsoft.ContainerService/hostGroups/myHostGroup --node-vm-size VMSize --enable-managed-identity --assign-identity <user_assigned_identity_resource_id>
         - name: Create a kubernetes cluster with no CNI installed.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --network-plugin none
+        - name: Create a kubernetes cluster with Custom CA Trust enabled.
+          text: az aks create -g MyResourceGroup -n MyManagedCluster --enable-custom-ca-trust
 
 """.format(sp_cache=AKS_SERVICE_PRINCIPAL_CACHE)
 
@@ -1129,6 +1134,9 @@ helps['aks nodepool add'] = """
         - name: --message-of-the-day
           type: string
           short-summary: Path to a file containing the desired message of the day. Only valid for linux nodes. Will be written to /etc/motd.
+        - name: --enable-custom-ca-trust
+          type: bool
+          short-summary: Enable Custom CA Trust on agent node pool.
     examples:
         - name: Create a nodepool in an existing AKS cluster with ephemeral os enabled.
           text: az aks nodepool add -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster --node-osdisk-type Ephemeral --node-osdisk-size 48
@@ -1211,6 +1219,12 @@ helps['aks nodepool update'] = """
         - name: --node-taints
           type: string
           short-summary: The node taints for the node pool.
+        - name: --enable-custom-ca-trust
+          type: bool
+          short-summary: Enable Custom CA Trust on agent node pool.
+        - name: --dcat --disable-custom-ca-trust
+          type: bool
+          short-summary: Disable Custom CA Trust on agent node pool.
         - name: --aks-custom-headers
           type: string
           short-summary: Send custom headers. When specified, format should be Key1=Value1,Key2=Value2

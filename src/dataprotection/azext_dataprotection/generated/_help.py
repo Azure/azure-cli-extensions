@@ -52,14 +52,14 @@ helps['dataprotection backup-vault create'] = """
     examples:
       - name: Create BackupVault
         text: |-
-               az dataprotection backup-vault create --type "None" --location "WestUS" --storage-settings \
-type="LocallyRedundant" datastore-type="VaultStore" --tags key1="val1" --resource-group "SampleResourceGroup" \
---vault-name "swaggerExample"
+               az dataprotection backup-vault create --type "None" --location "WestUS" --azure-monitor-alerts-for-job-f\
+ailures "Enabled" --storage-settings type="LocallyRedundant" datastore-type="VaultStore" --tags key1="val1" \
+--resource-group "SampleResourceGroup" --vault-name "swaggerExample"
       - name: Create BackupVault With MSI
         text: |-
-               az dataprotection backup-vault create --type "systemAssigned" --location "WestUS" --storage-settings \
-type="LocallyRedundant" datastore-type="VaultStore" --tags key1="val1" --resource-group "SampleResourceGroup" \
---vault-name "swaggerExample"
+               az dataprotection backup-vault create --type "systemAssigned" --location "WestUS" \
+--azure-monitor-alerts-for-job-failures "Enabled" --storage-settings type="LocallyRedundant" \
+datastore-type="VaultStore" --tags key1="val1" --resource-group "SampleResourceGroup" --vault-name "swaggerExample"
 """
 
 helps['dataprotection backup-vault update'] = """
@@ -69,8 +69,8 @@ resource."
     examples:
       - name: Patch BackupVault
         text: |-
-               az dataprotection backup-vault update --tags newKey="newVal" --resource-group "SampleResourceGroup" \
---vault-name "swaggerExample"
+               az dataprotection backup-vault update --azure-monitor-alerts-for-job-failures "Enabled" --tags \
+newKey="newVal" --resource-group "SampleResourceGroup" --vault-name "swaggerExample"
 """
 
 helps['dataprotection backup-vault delete'] = """
@@ -526,4 +526,39 @@ helps['dataprotection restorable-time-range find'] = """
                az dataprotection restorable-time-range find --backup-instance-name "zblobbackuptestsa58" --end-time \
 "2021-02-24T00:35:17.6829685Z" --source-data-store-type "OperationalStore" --start-time "2020-10-17T23:28:17.6829685Z" \
 --resource-group "Blob-Backup" --vault-name "ZBlobBackupVaultBVTD3"
+"""
+
+helps['dataprotection resource-guard'] = """
+    type: group
+    short-summary: Manage resource guard with dataprotection
+"""
+
+helps['dataprotection resource-guard show'] = """
+    type: command
+    short-summary: "Returns a ResourceGuard belonging to a resource group."
+    examples:
+      - name: Get ResourceGuard
+        text: |-
+               az dataprotection resource-guard show --resource-group "SampleResourceGroup" --resource-guard-name \
+"swaggerExample"
+"""
+
+helps['dataprotection resource-guard create'] = """
+    type: command
+    short-summary: "Creates or updates a ResourceGuard resource belonging to a resource group."
+    examples:
+      - name: Create ResourceGuard
+        text: |-
+               az dataprotection resource-guard create --location "WestUS" --tags key1="val1" --resource-group \
+"SampleResourceGroup" --resource-guard-name "swaggerExample"
+"""
+
+helps['dataprotection resource-guard delete'] = """
+    type: command
+    short-summary: "Deletes a ResourceGuard resource from the resource group."
+    examples:
+      - name: Delete ResourceGuard
+        text: |-
+               az dataprotection resource-guard delete --resource-group "SampleResourceGroup" --resource-guard-name \
+"swaggerExample"
 """

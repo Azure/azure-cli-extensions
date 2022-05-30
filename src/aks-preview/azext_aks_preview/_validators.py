@@ -585,3 +585,11 @@ def validate_azure_keyvault_kms_key_id(namespace):
         segments = key_id[len(https_prefix):].split("/")
         if len(segments) != 4 or segments[1] != "keys":
             raise InvalidArgumentValueError(err_msg)
+
+
+def validate_enable_custom_ca_trust(namespace):
+    """Validates Custom CA Trust can only be used on Linux."""
+    if namespace.enable_custom_ca_trust:
+        if hasattr(namespace, 'os_type') and namespace.os_type != "Linux":
+            raise ArgumentUsageError(
+                '--enable_custom_ca_trust can only be set for Linux nodepools')

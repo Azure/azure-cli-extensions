@@ -215,6 +215,32 @@ helps['dataprotection backup-vault list'] = """
         text: az dataprotection backup-vault list -g sarath-rg
 """
 
+helps['dataprotection resource-guard list'] = """
+    type: command
+    short-summary:  Gets list of ResourceGuards in a subscription or in a resource group.
+    examples:
+      - name: List ResourceGuards in a subscription
+        text: az dataprotection resource-guard list
+      - name: List ResourceGuards in a resource group
+        text: az dataprotection resource-guard list -g sarath-rg
+"""
+
+helps['dataprotection resource-guard list-protected-operations'] = """
+    type: command
+    short-summary:  Lists protected operations associated with a ResourceGuard .
+    examples:
+      - name: List ResourceGuard protected operations
+        text: az dataprotection resource-guard list-protected-operations --resource-group "SampleResourceGroup" --resource-guard-name "swaggerExample" --resource-type "Microsoft.RecoveryServices/vaults"
+"""
+
+helps['dataprotection resource-guard update'] = """
+    type: command
+    short-summary:  Updates protected operations associated with a ResourceGuard .
+    examples:
+      - name: Update ResourceGuard
+        text: az dataprotection resource-guard update --resource-group "SampleResourceGroup" --resource-guard-name "swaggerExample" --resource-type "Microsoft.RecoveryServices/vaults" --critical-operation-exclusion-list deleteProtection getSecurityPIN updatePolicy
+"""
+
 helps['dataprotection backup-instance restore trigger'] = """
     type: command
     short-summary: Triggers restore for a BackupInstance.

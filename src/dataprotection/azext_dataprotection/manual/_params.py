@@ -8,6 +8,7 @@
 # pylint: disable=too-many-statements
 
 from azure.cli.core.commands.parameters import (
+    tags_type,
     get_enum_type,
     resource_group_name_type,
     get_location_type
@@ -35,7 +36,9 @@ from azext_dataprotection.manual.enums import (
     get_rehydration_priority_values,
     get_secret_store_type_values,
     get_backup_operation_values,
-    get_permission_scope_values
+    get_permission_scope_values,
+    get_resource_type_values,
+    get_critical_operation_values
 )
 
 
@@ -181,3 +184,23 @@ def load_arguments(self, _):
 
     with self.argument_context('dataprotection backup-vault list') as c:
         c.argument('resource_group_name', resource_group_name_type)
+
+    with self.argument_context('dataprotection resource-guard list') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+
+    with self.argument_context('dataprotection resource-guard list-protected-operations') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('resource_guards_name', options_list=['--resource-guard-name', '--name', '-n'], type=str, help='The name of '
+                   'ResourceGuard', id_part='name')
+        c.argument('resource_type', arg_type=get_enum_type(get_resource_type_values()), help='Type of the resource associated with the protected operations')
+
+    with self.argument_context('dataprotection resource-guard update') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('resource_guards_name', options_list=['--resource-guard-name', '--name', '-n'], type=str, help='The name of '
+                   'ResourceGuard', id_part='name')
+        c.argument('tags', tags_type)
+        c.argument('type_', options_list=['--type'], type=str, help='The identityType which can be either '
+                   'SystemAssigned or None', arg_group='Identity')
+        c.argument('resource_type', arg_type=get_enum_type(get_resource_type_values()), help='Type of the resource associated with the protected operations')
+        c.argument('critical_operation_exclusion_list', arg_type=get_enum_type(get_critical_operation_values()), nargs='+', help='List of critical operations which are '
+                   'not protected by this resourceGuard')
