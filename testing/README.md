@@ -37,15 +37,27 @@ If you run into issues installing the framework, refer to the [Installation Guid
 
 You can either clone this repo (preferred option, since you will be adding your tests to this suite) or copy the files in this repo locally. Rest of the instructions here assume your working directory is k8spartner-extension-testing.
 
-### Step 3: Update the `k8s-extension`/`k8s-extension-private` .whl package
+### Step 3: Generate `k8s-extension` .whl package
+
+You can perform the generation of the `k8s-extension` .whl package by running the following command
+
+```bash
+azdev setup -r . -e k8s-extension
+azdev extension build k8s-extension
+```
+
+Additional guidance for build the extension .whl package can be found [here](https://github.com/Azure/azure-cli/blob/master/doc/extensions/authoring.md#building)
+
+### Step 4: Update the `k8s-extension`/`k8s-extension-private` .whl package
 
 This integration test suite references the .whl packages found in the `\bin` directory. After generating your `k8s-extension`/`k8s-extension-private` .whl package, copy your updated package into the `\bin` directory.
 
-### Step 4: Create a `settings.json`
+
+### Step 5: Create a `settings.json`
 
 To onboard the AKS and Arc clusters correctly, you will need to create a `settings.json` configuration. Create a new `settings.json` file by copying the contents of the `settings.template.json` into this file. Update the subscription id, resource group, and AKS and Arc cluster name fields with your specific values.
 
-### Step 5: Update the extension version value in `settings.json`
+### Step 6: Update the extension version value in `settings.json`
 
 To ensure that the tests point to your `k8s-extension-private` `.whl` package, change the value of the `k8s-extension-private` to match your package versioning in the format (Major.Minor.Patch.Extension). For example, the `k8s_extension_private-0.1.0.openservicemesh_5-py3-none-any.whl` whl package would have extension versions set to
 ```json
@@ -59,7 +71,7 @@ To ensure that the tests point to your `k8s-extension-private` `.whl` package, c
 
 _Note: Updates to the `connectedk8s` version and `k8s-extension` version can also be made by adding a different version of the `connectedk8s` and `k8s-extension` whl packages and changing the `connectedk8s` and `k8s-extension` values to match the (Major.Minor.Patch) version format shown above_
 
-### Step 6: Run the Bootstrap Command
+### Step 7: Run the Bootstrap Command
 To bootstrap the environment with AKS and Arc clusters, run
 ```powershell
 .\Bootstrap.ps1
