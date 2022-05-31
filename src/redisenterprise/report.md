@@ -228,7 +228,7 @@ BlobContainer?sasKeyParameters" --resource-group "rg1"
 
 ##### <a name="ExamplesDatabasesForceUnlink">Example</a>
 ```
-az redisenterprise database force-unlink --cluster-name "cache1" --ids "/subscriptions/subid2/resourceGroups/rg2/provid\
+az redisenterprise database force-unlink --cluster-name "cache1" --unlink-ids "/subscriptions/subid2/resourceGroups/rg2/provid\
 ers/Microsoft.Cache/redisEnterprise/cache2/databases/default" --resource-group "rg1"
 ```
 ##### <a name="ParametersDatabasesForceUnlink">Parameters</a> 
@@ -236,7 +236,7 @@ ers/Microsoft.Cache/redisEnterprise/cache2/databases/default" --resource-group "
 |------|----|-----------|----------|------------|
 |**--resource-group-name**|string|The name of the resource group. The name is case insensitive.|resource_group_name|resourceGroupName|
 |**--cluster-name**|string|The name of the RedisEnterprise cluster.|cluster_name|clusterName|
-|**--ids**|array|The resource IDs of the database resources to be unlinked.|ids|ids|
+|**--unlink-ids**|array|The resource IDs of the database resources to be unlinked.|unlink-ids|unlink-ids|
 
 #### <a name="DatabasesImport">Command `az redisenterprise database import`</a>
 

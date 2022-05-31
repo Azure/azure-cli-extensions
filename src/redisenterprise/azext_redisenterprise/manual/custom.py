@@ -80,7 +80,6 @@ def redisenterprise_create(cmd,
                            no_wait=False,
                            group_nickname=None,
                            linked_databases=None):
-    print("MANUAL"*10,linked_databases)
     if (no_database and any(x is not None for x in [client_protocol,
                                                     port,
                                                     clustering_policy,

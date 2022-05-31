@@ -79,7 +79,7 @@ def step_database_force_unlink(test, checks=None):
         checks = []
     test.cmd('az redisenterprise database force-unlink '
              '--cluster-name "{cluster32}" '
-             '--ids "/subscriptions/{subscription}/resourceGroups/{rg31}/providers/Microsoft.Cache/redisEnterprise/{'
+             '--unlink-ids "/subscriptions/{subscription}/resourceGroups/{rg31}/providers/Microsoft.Cache/redisEnterprise/{'
              'myRedisEnterprise2}/databases/{database}" '
              '--resource-group "{rg32}"',
              checks=checks)
@@ -88,10 +88,16 @@ def step_database_force_unlink(test, checks=None):
 def step_show(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az redisenterprise show '
-             '--cluster-name "{cluster}" '
-             '--resource-group "{rg}"',
-             checks=checks)
+    if test.kwargs.get('geo-replication'):
+        test.cmd('az redisenterprise show '
+                 '--cluster-name "{cluster32}" '
+                 '--resource-group "{rg32}"',
+                checks=checks)
+    else:
+        test.cmd('az redisenterprise show '
+                 '--cluster-name "{cluster}" '
+                 '--resource-group "{rg}"',
+                 checks=checks)
 
 
 # EXAMPLE: /RedisEnterprise/delete/RedisEnterpriseDelete
@@ -134,7 +140,7 @@ def step_database_force_unlink(test, checks=None):
         checks = []
     test.cmd('az redisenterprise database force-unlink '
              '--cluster-name "{cluster32}" '
-             '--ids "/subscriptions/{subscription}/resourceGroups/{rg31}/providers/Microsoft.Cache/redisEnterprise/{'
+             '--unlink-ids "/subscriptions/{subscription}/resourceGroups/{rg31}/providers/Microsoft.Cache/redisEnterprise/{'
              'cluster31}/databases/{database}" '
              '--resource-group "{rg32}"',
              checks=checks)
@@ -143,16 +149,10 @@ def step_database_force_unlink(test, checks=None):
 def step_database_show(test, checks=None):
     if checks is None:
         checks = []
-    if test.kwargs.get('geo-replication'):
-        test.cmd('az redisenterprise database show '
-                 '--cluster-name "{cluster32}" '
-                 '--resource-group "{rg32}"',
-                 checks=checks)
-    else:
-        test.cmd('az redisenterprise database show '
-                 '--cluster-name "{cluster}" '
-                 '--resource-group "{rg}"',
-                 checks=checks)
+    test.cmd('az redisenterprise database show '
+            '--cluster-name "{cluster}" '
+            '--resource-group "{rg}"',
+            checks=checks)
 
 
 # EXAMPLE: /Databases/get/RedisEnterpriseDatabasesListByCluster

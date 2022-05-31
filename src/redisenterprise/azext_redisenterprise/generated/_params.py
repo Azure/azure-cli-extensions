@@ -145,7 +145,7 @@ def load_arguments(self, _):
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('cluster_name', options_list=['--cluster-name', '--name', '-n'], type=str, help='The name of the '
                    'RedisEnterprise cluster.', id_part='name')
-        c.argument('ids', nargs='+', help='The resource IDs of the database resources to be unlinked.')
+        c.argument('unlink_ids', nargs='+', help='The resource IDs of the database resources to be unlinked.')
 
     with self.argument_context('redisenterprise database import') as c:
         c.argument('resource_group_name', resource_group_name_type)

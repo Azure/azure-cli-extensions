@@ -245,9 +245,8 @@ class Redisenterprisescenario3Test(ScenarioTest):
             'cluster31': self.create_random_name(prefix='clitest-cache31-', length=21),
             'cluster32': self.create_random_name(prefix='clitest-cache32-', length=21),
             'geo-replication': True,
-            'database': 'default',    
-        })
-        
+            'database': 'default',
+        }) 
     @ResourceGroupPreparer(name_prefix='clitest-redisenterprise-rg31-', key='rg31', parameter_name='rg31',
                            location='eastus', random_name_length=34)
     @ResourceGroupPreparer(name_prefix='clitest-redisenterprise-rg32-', key='rg32', parameter_name='rg32',

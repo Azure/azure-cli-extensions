@@ -43,7 +43,6 @@ def redisenterprise_create(client,
                            zones=None,
                            minimum_tls_version=None,
                            no_wait=False):
-    print("Bye"*5)
     exit(1)
     parameters = {}
     if tags is not None:
@@ -127,7 +126,6 @@ def redisenterprise_database_create(client,
                                     group_nickname=None,
                                     linked_databases=None,
                                     no_wait=False):
-    print("GENERATED"*10,linked_databases)
     parameters = {}
     if client_protocol is not None:
         parameters['client_protocol'] = client_protocol
@@ -216,10 +214,10 @@ def redisenterprise_database_export(client,
 def redisenterprise_database_force_unlink(client,
                                           resource_group_name,
                                           cluster_name,
-                                          ids,
+                                          unlink_ids,
                                           no_wait=False):
     parameters = {}
-    parameters['ids'] = ids
+    parameters['ids'] = unlink_ids
     return sdk_no_wait(no_wait,
                        client.begin_force_unlink,
                        resource_group_name=resource_group_name,

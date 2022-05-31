@@ -157,7 +157,7 @@ def step_database_force_unlink(test, checks=None):
         checks = []
     test.cmd('az redisenterprise database force-unlink '
              '--cluster-name "{myRedisEnterprise}" '
-             '--ids "/subscriptions/{subscription_id}/resourceGroups/{rg_2}/providers/Microsoft.Cache/redisEnterprise/{'
+             '--unlink-ids "/subscriptions/{subscription_id}/resourceGroups/{rg_2}/providers/Microsoft.Cache/redisEnterprise/{'
              'myRedisEnterprise2}/databases/{myDatabas}" '
              '--resource-group "{rg}"',
              checks=checks)
