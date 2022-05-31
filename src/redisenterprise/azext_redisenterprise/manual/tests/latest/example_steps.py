@@ -104,10 +104,20 @@ def step_show(test, checks=None):
 def step_delete(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az redisenterprise delete -y '
-             '--cluster-name "{cluster}" '
-             '--resource-group "{rg}"',
-             checks=checks)
+    if test.kwargs.get('geo-replication'):
+        test.cmd('az redisenterprise delete -y '
+                 '--cluster-name "{cluster31}" '
+                 '--resource-group "{rg31}"',
+                 checks=checks)
+        test.cmd('az redisenterprise delete -y '
+                 '--cluster-name "{cluster32}" '
+                 '--resource-group "{rg32}"',
+                 checks=checks)
+    else:
+        test.cmd('az redisenterprise delete -y '
+                 '--cluster-name "{cluster}" '
+                 '--resource-group "{rg}"',
+                 checks=checks)
 
 
 # EXAMPLE: /Databases/put/RedisEnterpriseDatabasesCreate

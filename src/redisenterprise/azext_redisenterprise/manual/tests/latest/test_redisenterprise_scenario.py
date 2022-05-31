@@ -231,7 +231,6 @@ def call_scenario3(test):
     ])
     # placeholders for cleanup
     step_delete(test, checks=[])
-    g.cleanup_scenario3(test)
 
 
 # Test class for scenario3
