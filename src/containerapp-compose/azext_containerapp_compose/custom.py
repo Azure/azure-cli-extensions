@@ -10,12 +10,6 @@ from knack.log import get_logger
 from knack.prompting import prompt, prompt_choice_list
 from pycomposefile import ComposeFile
 
-from ._monkey_patch import (
-    create_containerapp_from_service,
-    create_containerapps_compose_environment,
-    load_yaml_file,
-    ManagedEnvironmentClient)
-
 
 logger = get_logger(__name__)
 
@@ -113,13 +107,19 @@ def create_containerapps_from_compose(cmd,  # pylint: disable=R0914
                                       logs_workspace_name=None,
                                       location=None,
                                       tags=None):
+    from ._monkey_patch import (
+        create_containerapp_from_service,
+        create_containerapps_compose_environment,
+        load_yaml_file,
+        show_managed_environment)
+
     logger.info(   # pylint: disable=W1203
         f"Creating the Container Apps managed environment {managed_env} under {resource_group_name} in {location}.")
 
     try:
-        managed_environment = ManagedEnvironmentClient.show(cmd=cmd,
-                                                            resource_group_name=resource_group_name,
-                                                            name=managed_env)
+        managed_environment = show_managed_environment(cmd=cmd,
+                                                       resource_group_name=resource_group_name,
+                                                       managed_env_name=managed_env)
     except:  # pylint: disable=W0702
         managed_environment = create_containerapps_compose_environment(cmd,
                                                                        managed_env,

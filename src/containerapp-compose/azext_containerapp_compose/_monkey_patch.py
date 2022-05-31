@@ -5,6 +5,16 @@
 
 import sys
 
+from knack.log import get_logger
+from azure.cli.core.azclierror import AzCLIError
+
+
+class RequiredExtensionMissing(AzCLIError):
+    def __init__(self, error_msg) -> None:
+        recommendation = "Please install the containerapp extension: "
+        recommendation += "`az extension add containerapp`"
+        super().__init__(error_msg, recommendation)
+
 
 def uncache(exclude):
     pkgs = []
@@ -44,6 +54,16 @@ def flush(self):  # noqa: W0613 pylint: disable=unused-argument
     pass
 
 
+logger = get_logger(__name__)
+
+
+def log_containerapp_extension_required():
+    message = "Please install the containerapp extension before proceeding with "
+    message += "`az containerapp compose create`"
+    logger.fatal(message)
+    raise RequiredExtensionMissing(message)
+
+
 try:
     from azext_containerapp import custom  # pylint: disable=unused-import
     from azext_containerapp import _utils  # pylint: disable=unused-import
@@ -54,22 +74,9 @@ try:
     from azext_containerapp import _clients  # pylint: disable=unused-import
     from azext_containerapp._clients import ManagedEnvironmentClient   # pylint: disable=unused-import
 except ModuleNotFoundError:
-    from .vendored_sdks.azext_containerapp import custom  # pylint: disable=unused-import
-    from .vendored_sdks.azext_containerapp import _utils  # pylint: disable=unused-import
-    from .vendored_sdks.azext_containerapp import _clients  # pylint: disable=unused-import
-    _clients.PollingAnimation.tick = tick
-    _clients.PollingAnimation.flush = flush
-    uncache("azext_containerapp_compose.vendored_sdks.azext_containerapp")
-    from .vendored_sdks.azext_containerapp import _clients  # pylint: disable=unused-import
-    from .vendored_sdks.azext_containerapp._clients import ManagedEnvironmentClient   # pylint: disable=unused-import
+    log_containerapp_extension_required()
 except ImportError:
-    from .vendored_sdks.azext_containerapp import custom  # pylint: disable=unused-import
-    from .vendored_sdks.azext_containerapp import _utils  # pylint: disable=unused-import
-    from .vendored_sdks.azext_containerapp import _clients  # pylint: disable=unused-import
-    _clients.PollingAnimation.tick = tick
-    _clients.PollingAnimation.flush = flush
-    uncache("azext_containerapp_compose.vendored_sdks.azext_containerapp")
-    from .vendored_sdks.azext_containerapp._clients import ManagedEnvironmentClient   # pylint: disable=unused-import
+    log_containerapp_extension_required()
 
 
 # Monkey patch for log analytics workspace name
@@ -100,3 +107,9 @@ def create_containerapp_from_service(*args, **kwargs):
 
 def load_yaml_file(filename):
     return custom.load_yaml_file(filename)
+
+
+def show_managed_environment(cmd, resource_group_name, managed_env_name):
+    return ManagedEnvironmentClient.show(cmd=cmd,
+                                         resource_group_name=resource_group_name,
+                                         name=managed_env_name)
