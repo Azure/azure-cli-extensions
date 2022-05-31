@@ -461,7 +461,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
     def test_aks_addon_list_available(self):
         list_available_cmd = 'aks addon list-available -o json'
         addon_list = self.cmd(list_available_cmd).get_output_in_json()
-        assert len(addon_list) == 10
+        assert len(addon_list) == 11
         assert addon_list[0]['name'] == "http_application_routing"
         assert addon_list[1]['name'] == "monitoring"
         assert addon_list[2]['name'] == "virtual-node"
@@ -472,6 +472,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         assert addon_list[7]['name'] == "open-service-mesh"
         assert addon_list[8]['name'] == "azure-keyvault-secrets-provider"
         assert addon_list[9]['name'] == "gitops"
+        assert addon_list[10]['name'] == "web_application_routing"
 
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
