@@ -100,7 +100,7 @@ class Redisenterprisescenario1Test(ScenarioTest):
     @ResourceGroupPreparer(name_prefix='clitest-redisenterprise-rg1-', key='rg', parameter_name='rg',
                            location='eastus', random_name_length=34)
     def test_redisenterprise_scenario1(self, rg):
-        #call_scenario1(self, rg)
+        call_scenario1(self, rg)
         calc_coverage(__file__)
         raise_if()
 
@@ -186,7 +186,7 @@ class Redisenterprisescenario2Test(ScenarioTest):
     @ResourceGroupPreparer(name_prefix='clitest-redisenterprise-rg2-', key='rg', parameter_name='rg',
                            location='eastus', random_name_length=34)
     def test_redisenterprise_scenario2(self):
-        # call_scenario2(self)
+        call_scenario2(self)
         calc_coverage(__file__)
         raise_if()
 
