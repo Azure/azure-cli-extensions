@@ -3,16 +3,18 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-import os
 import unittest  # pylint: disable=unused-import
 
-from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
+from azure.cli.testsdk import (ResourceGroupPreparer)
+from azure.cli.testsdk.decorators import serial_test
+from azext_containerapp_compose.tests.latest.common import (ContainerappComposePreviewScenarioTest,  # pylint: disable=unused-import
+                                                            write_test_file,
+                                                            clean_up_test_file,
+                                                            TEST_DIR)
 
 
-TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
-
-
-class ContainerappComposePreviewSecretsScenarioTest(ScenarioTest):
+class ContainerappComposePreviewSecretsScenarioTest(ContainerappComposePreviewScenarioTest):
+    @serial_test()
     @ResourceGroupPreparer(name_prefix='cli_test_containerapp_preview', location='eastus')
     def test_containerapp_compose_create_with_secrets(self, resource_group):
         compose_text = """
@@ -32,14 +34,11 @@ secrets:
     external: true
 """
         compose_file_name = f"{self._testMethodName}_compose.yml"
-        docker_compose_file = open(compose_file_name, "w", encoding='utf-8')
-        _ = docker_compose_file.write(compose_text)
-        docker_compose_file.close()
+        write_test_file(compose_file_name, compose_text)
 
         secrets_file_name = "./my_secret.txt"
-        docker_secrets_file = open(secrets_file_name, "w", encoding='utf-8')
-        _ = docker_secrets_file.write("Lorem Ipsum\n")
-        docker_secrets_file.close()
+        secrets_text = "Lorem Ipsum\n"
+        write_test_file(secrets_file_name, secrets_text)
 
         self.kwargs.update({
             'environment': self.create_random_name(prefix='containerapp-compose', length=24),
@@ -59,12 +58,10 @@ secrets:
             self.check('[?name==`foo`].properties.template.containers[0].env[0].secretRef', ["redis-secret"])  # pylint: disable=C0301
         ])
 
-        if os.path.exists(compose_file_name):
-            os.remove(compose_file_name)
+        clean_up_test_file(compose_file_name)
+        clean_up_test_file(secrets_file_name)
 
-        if os.path.exists(secrets_file_name):
-            os.remove(secrets_file_name)
-
+    @serial_test()
     @ResourceGroupPreparer(name_prefix='cli_test_containerapp_preview', location='eastus')
     def test_containerapp_compose_create_with_secrets_and_existing_environment(self, resource_group):
         compose_text = """
@@ -90,14 +87,11 @@ secrets:
     external: true
 """
         compose_file_name = f"{self._testMethodName}_compose.yml"
-        docker_compose_file = open(compose_file_name, "w", encoding='utf-8')
-        _ = docker_compose_file.write(compose_text)
-        docker_compose_file.close()
+        write_test_file(compose_file_name, compose_text)
 
         secrets_file_name = "./snafu.txt"
-        docker_secrets_file = open(secrets_file_name, "w", encoding='utf-8')
-        _ = docker_secrets_file.write("Lorem Ipsum\n")
-        docker_secrets_file.close()
+        secrets_text = "Lorem Ipsum\n"
+        write_test_file(secrets_file_name, secrets_text)
 
         self.kwargs.update({
             'environment': self.create_random_name(prefix='containerapp-compose', length=24),
@@ -115,12 +109,10 @@ secrets:
             self.check('length([?name==`foo`].properties.template.containers[0].env[].name)', 6),
         ])
 
-        if os.path.exists(compose_file_name):
-            os.remove(compose_file_name)
+        clean_up_test_file(compose_file_name)
+        clean_up_test_file(secrets_file_name)
 
-        if os.path.exists(secrets_file_name):
-            os.remove(secrets_file_name)
-
+    @serial_test()
     @ResourceGroupPreparer(name_prefix='cli_test_containerapp_preview', location='eastus')
     def test_containerapp_compose_create_with_secrets_and_existing_environment_conflict(self, resource_group):
         compose_text = """
@@ -136,14 +128,11 @@ secrets:
     file: ./database__client.txt
 """
         compose_file_name = f"{self._testMethodName}_compose.yml"
-        docker_compose_file = open(compose_file_name, "w", encoding='utf-8')
-        _ = docker_compose_file.write(compose_text)
-        docker_compose_file.close()
+        write_test_file(compose_file_name, compose_text)
 
         secrets_file_name = "./database__client.txt"
-        docker_secrets_file = open(secrets_file_name, "w", encoding='utf-8')
-        _ = docker_secrets_file.write("Lorem Ipsum\n")
-        docker_secrets_file.close()
+        secrets_text = "Lorem Ipsum\n"
+        write_test_file(secrets_file_name, secrets_text)
 
         self.kwargs.update({
             'environment': self.create_random_name(prefix='containerapp-compose', length=24),
@@ -160,8 +149,5 @@ secrets:
         # This test fails with duplicate environment variable names
         self.cmd(command_string, expect_failure=True)
 
-        if os.path.exists(compose_file_name):
-            os.remove(compose_file_name)
-
-        if os.path.exists(secrets_file_name):
-            os.remove(secrets_file_name)
+        clean_up_test_file(compose_file_name)
+        clean_up_test_file(secrets_file_name)

@@ -3,16 +3,18 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-import os
 import unittest  # pylint: disable=unused-import
 
-from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
+from azure.cli.testsdk import (ResourceGroupPreparer)
+from azure.cli.testsdk.decorators import serial_test
+from azext_containerapp_compose.tests.latest.common import (ContainerappComposePreviewScenarioTest,  # pylint: disable=unused-import
+                                                            write_test_file,
+                                                            clean_up_test_file,
+                                                            TEST_DIR)
 
 
-TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
-
-
-class ContainerappComposePreviewReplicasScenarioTest(ScenarioTest):
+class ContainerappComposePreviewReplicasScenarioTest(ContainerappComposePreviewScenarioTest):
+    @serial_test()
     @ResourceGroupPreparer(name_prefix='cli_test_containerapp_preview', location='eastus')
     def test_containerapp_compose_create_with_replicas_global_scale(self, resource_group):
         compose_text = """
@@ -26,9 +28,7 @@ services:
       replicas: 6
 """
         compose_file_name = f"{self._testMethodName}_compose.yml"
-        docker_compose_file = open(compose_file_name, "w", encoding='utf-8')
-        _ = docker_compose_file.write(compose_text)
-        docker_compose_file.close()
+        write_test_file(compose_file_name, compose_text)
 
         self.kwargs.update({
             'environment': self.create_random_name(prefix='containerapp-compose', length=24),
@@ -47,9 +47,9 @@ services:
             self.check('[?name==`foo`].properties.template.scale.maxReplicas', [1]),
         ])
 
-        if os.path.exists(compose_file_name):
-            os.remove(compose_file_name)
+        clean_up_test_file(compose_file_name)
 
+    @serial_test()
     @ResourceGroupPreparer(name_prefix='cli_test_containerapp_preview', location='eastus')
     def test_containerapp_compose_create_with_replicas_replicated_mode(self, resource_group):
         compose_text = """
@@ -62,9 +62,7 @@ services:
       replicas: 6
 """
         compose_file_name = f"{self._testMethodName}_compose.yml"
-        docker_compose_file = open(compose_file_name, "w", encoding='utf-8')
-        _ = docker_compose_file.write(compose_text)
-        docker_compose_file.close()
+        write_test_file(compose_file_name, compose_text)
 
         self.kwargs.update({
             'environment': self.create_random_name(prefix='containerapp-compose', length=24),
@@ -83,5 +81,4 @@ services:
             self.check('[?name==`foo`].properties.template.scale.maxReplicas', [6]),
         ])
 
-        if os.path.exists(compose_file_name):
-            os.remove(compose_file_name)
+        clean_up_test_file(compose_file_name)
