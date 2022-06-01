@@ -11,6 +11,7 @@
 import os
 from azure.cli.testsdk import ScenarioTest
 from azure.cli.testsdk import ResourceGroupPreparer
+from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 from .example_steps import step_create
 from .example_steps import step_show
 from .example_steps import step_list
@@ -90,6 +91,7 @@ class CommunicationScenarioTest(ScenarioTest):
         })
 
 
+    @AllowLargeResponse()
     @ResourceGroupPreparer(name_prefix='clitestcommunication_MyOtherResourceGroup'[:7], key='rg_2',
                            parameter_name='rg_2')
     @ResourceGroupPreparer(name_prefix='clitestcommunication_MyResourceGroup'[:7], key='rg', parameter_name='rg')
