@@ -2110,6 +2110,8 @@ def aks_addon_show(cmd, client, resource_group_name, name, addon):
             "api_key": addon_key,
             "config": mc.ingress_profile.web_app_routing,
         }
+
+    # normal addons
     if not mc.addon_profiles or addon_key not in mc.addon_profiles or not mc.addon_profiles[addon_key].enabled:
         raise InvalidArgumentValueError(f'Addon "{addon}" is not enabled in this cluster.')
     return {
