@@ -132,7 +132,7 @@ CONST_GITOPS_ADDON_NAME = "gitops"
 # web application routing
 # only used as the key of the corresponding description, not to map to the key name in addonProfiles,
 # since its configuration is actually stored in a separate ingress profile
-CONST_WEB_APPLICATION_ROUTING_KEY_NAME = "webApplicationRouting"
+CONST_WEB_APPLICATION_ROUTING_KEY_NAME = "ingress/webApplicationRouting"
 
 # all supported addons
 ADDONS = {
