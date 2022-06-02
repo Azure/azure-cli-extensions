@@ -2064,40 +2064,61 @@ def aks_addon_list_available():
     return available_addons
 
 
-def aks_addon_list(cmd, client, resource_group_name, name):  # pylint: disable=unused-argument
-    addon_profiles = client.get(resource_group_name, name).addon_profiles
-
+# pylint: disable=unused-argument
+def aks_addon_list(cmd, client, resource_group_name, name):
+    mc = client.get(resource_group_name, name)
     current_addons = []
 
-    for name, addon in ADDONS.items():
-        if not addon_profiles or addon not in addon_profiles:
-            current_addons.append({
-                "name": name,
-                "api_key": addon,
-                "enabled": False
-            })
+    for name, addon_key in ADDONS.items():
+        # web_application_routing is a special case, the configuration is stored in a separate profile
+        if name == "web_application_routing":
+            enabled = (
+                True
+                if mc.ingress_profile and
+                mc.ingress_profile.web_app_routing and
+                mc.ingress_profile.web_app_routing.enabled
+                else False
+            )
         else:
-            current_addons.append({
-                "name": name,
-                "api_key": addon,
-                "enabled": addon_profiles[addon].enabled
-            })
+            enabled = (
+                True
+                if mc.addon_profiles and
+                addon_key in mc.addon_profiles and
+                mc.addon_profiles[addon_key].enabled
+                else False
+            )
+        current_addons.append({
+            "name": name,
+            "api_key": addon_key,
+            "enabled": enabled
+        })
 
     return current_addons
 
 
-def aks_addon_show(cmd, client, resource_group_name, name, addon):  # pylint: disable=unused-argument
-    addon_profiles = client.get(resource_group_name, name).addon_profiles
+# pylint: disable=unused-argument
+def aks_addon_show(cmd, client, resource_group_name, name, addon):
+    mc = client.get(resource_group_name, name)
     addon_key = ADDONS[addon]
 
-    if not addon_profiles or addon_key not in addon_profiles or not addon_profiles[addon_key].enabled:
-        raise CLIError(f'Addon "{addon}" is not enabled in this cluster.')
+    # web_application_routing is a special case, the configuration is stored in a separate profile
+    if addon == "web_application_routing":
+        if not mc.ingress_profile and not mc.ingress_profile.web_app_routing and not mc.ingress_profile.web_app_routing.enabled:
+            raise InvalidArgumentValueError(f'Addon "{addon}" is not enabled in this cluster.')
+        return {
+            "name": addon,
+            "api_key": addon_key,
+            "config": mc.ingress_profile.web_app_routing,
+        }
 
+    # normal addons
+    if not mc.addon_profiles or addon_key not in mc.addon_profiles or not mc.addon_profiles[addon_key].enabled:
+        raise InvalidArgumentValueError(f'Addon "{addon}" is not enabled in this cluster.')
     return {
         "name": addon,
         "api_key": addon_key,
-        "config": addon_profiles[addon_key].config,
-        "identity": addon_profiles[addon_key].identity
+        "config": mc.addon_profiles[addon_key].config,
+        "identity": mc.addon_profiles[addon_key].identity
     }
 
 

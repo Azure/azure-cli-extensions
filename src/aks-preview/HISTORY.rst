@@ -12,6 +12,8 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+* Fix `az aks addon list`, `az aks addon list-available` and `az aks addon show` commands when dealing with the web application routing addon.
+
 0.5.78
 ++++++
 
