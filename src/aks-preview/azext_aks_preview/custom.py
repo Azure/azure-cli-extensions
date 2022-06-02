@@ -6,35 +6,26 @@
 import base64
 import binascii
 import datetime
-import errno
 import json
 import os
 import os.path
 import platform
 import re
 import ssl
-import stat
-import subprocess
 import sys
-import tempfile
 import threading
 import time
 import uuid
 import webbrowser
 from math import isnan
 
-import colorama
-import yaml
 from azure.cli.core.api import get_config_dir
 from azure.cli.core.azclierror import (
     ArgumentUsageError,
     InvalidArgumentValueError,
 )
 from azure.cli.core.commands import LongRunningOperation
-from azure.cli.core.commands.client_factory import (
-    get_mgmt_service_client,
-    get_subscription_id,
-)
+from azure.cli.core.commands.client_factory import get_subscription_id
 from azure.cli.core.util import (
     get_file_json,
     in_cloud_console,
@@ -51,12 +42,11 @@ from azure.graphrbac.models import (
 from dateutil.parser import parse
 from dateutil.relativedelta import relativedelta
 from knack.log import get_logger
-from knack.prompting import NoTTYException, prompt_y_n
+from knack.prompting import prompt_y_n
 from knack.util import CLIError
 from msrestazure.azure_exceptions import CloudError
 from six.moves.urllib.error import URLError
 from six.moves.urllib.request import urlopen
-from tabulate import tabulate
 
 from azext_aks_preview._client_factory import (
     CUSTOM_MGMT_AKS_PREVIEW,
@@ -64,12 +54,12 @@ from azext_aks_preview._client_factory import (
     cf_container_registry_service,
     cf_mc_snapshots_client,
     cf_nodepool_snapshots_client,
-    cf_storage,
     get_auth_management_client,
     get_graph_rbac_management_client,
     get_msi_client,
     get_resource_by_name,
 )
+
 from azext_aks_preview._consts import (
     ADDONS,
     ADDONS_DESCRIPTIONS,
@@ -92,11 +82,6 @@ from azext_aks_preview._consts import (
     CONST_MONITORING_USING_AAD_MSI_AUTH,
     CONST_NODEPOOL_MODE_USER,
     CONST_OPEN_SERVICE_MESH_ADDON_NAME,
-    CONST_PERISCOPE_CONTAINER_REGISTRY,
-    CONST_PERISCOPE_IMAGE_VERSION,
-    CONST_PERISCOPE_NAMESPACE,
-    CONST_PERISCOPE_RELEASE_TAG,
-    CONST_PERISCOPE_REPO_ORG,
     CONST_ROTATION_POLL_INTERVAL,
     CONST_SCALE_DOWN_MODE_DELETE,
     CONST_SCALE_SET_PRIORITY_REGULAR,
@@ -106,7 +91,7 @@ from azext_aks_preview._consts import (
     CONST_VIRTUAL_NODE_ADDON_NAME,
     CONST_VIRTUAL_NODE_SUBNET_NAME,
 )
-from azext_aks_preview._helpers import _trim_fqdn_name_containing_hcp
+from azext_aks_preview._helpers import print_or_merge_credentials
 from azext_aks_preview._podidentity import (
     _ensure_managed_identity_operator_permission,
     _ensure_pod_identity_addon_is_enabled,
@@ -161,23 +146,12 @@ from .vendored_sdks.azure_mgmt_preview_aks.v2022_05_02_preview.models import (
     UserAssignedIdentity,
 )
 
+from azext_aks_preview.aks_diagnostics import (
+    aks_kollect_cmd,
+    aks_kanalyze_cmd,
+)
+
 logger = get_logger(__name__)
-
-
-def which(binary):
-    path_var = os.getenv('PATH')
-    if platform.system() == 'Windows':
-        binary = binary + '.exe'
-        parts = path_var.split(';')
-    else:
-        parts = path_var.split(':')
-
-    for part in parts:
-        bin_path = os.path.join(part, binary)
-        if os.path.exists(bin_path) and os.path.isfile(bin_path) and os.access(bin_path, os.X_OK):
-            return bin_path
-
-    return None
 
 
 def wait_then_open(url):
@@ -1033,255 +1007,10 @@ def aks_get_credentials(cmd,    # pylint: disable=unused-argument
     try:
         kubeconfig = credentialResults.kubeconfigs[0].value.decode(
             encoding='UTF-8')
-        _print_or_merge_credentials(
+        print_or_merge_credentials(
             path, kubeconfig, overwrite_existing, context_name)
     except (IndexError, ValueError):
         raise CLIError("Fail to find kubeconfig file.")
-
-
-# pylint: disable=line-too-long
-def aks_kollect(cmd,    # pylint: disable=too-many-statements,too-many-locals
-                client,
-                resource_group_name,
-                name,
-                storage_account=None,
-                sas_token=None,
-                container_logs=None,
-                kube_objects=None,
-                node_logs=None,
-                node_logs_windows=None):
-    colorama.init()
-
-    mc = client.get(resource_group_name, name)
-
-    if not which('kubectl'):
-        raise CLIError('Can not find kubectl executable in PATH')
-
-    storage_account_id = None
-    if storage_account is None:
-        print("No storage account specified. Try getting storage account from diagnostic settings")
-        storage_account_id = get_storage_account_from_diag_settings(
-            cmd.cli_ctx, resource_group_name, name)
-        if storage_account_id is None:
-            raise CLIError(
-                "A storage account must be specified, since there isn't one in the diagnostic settings.")
-
-    from msrestazure.tools import (is_valid_resource_id, parse_resource_id,
-                                   resource_id)
-    if storage_account_id is None:
-        if not is_valid_resource_id(storage_account):
-            storage_account_id = resource_id(
-                subscription=get_subscription_id(cmd.cli_ctx),
-                resource_group=resource_group_name,
-                namespace='Microsoft.Storage', type='storageAccounts',
-                name=storage_account
-            )
-        else:
-            storage_account_id = storage_account
-
-    if is_valid_resource_id(storage_account_id):
-        try:
-            parsed_storage_account = parse_resource_id(storage_account_id)
-        except CloudError as ex:
-            raise CLIError(ex.message)
-    else:
-        raise CLIError("Invalid storage account id %s" % storage_account_id)
-
-    storage_account_name = parsed_storage_account['name']
-
-    readonly_sas_token = None
-    if sas_token is None:
-        storage_client = cf_storage(
-            cmd.cli_ctx, parsed_storage_account['subscription'])
-        storage_account_keys = storage_client.storage_accounts.list_keys(parsed_storage_account['resource_group'],
-                                                                         storage_account_name)
-        kwargs = {
-            'account_name': storage_account_name,
-            'account_key': storage_account_keys.keys[0].value
-        }
-        cloud_storage_client = cloud_storage_account_service_factory(
-            cmd.cli_ctx, kwargs)
-
-        sas_token = cloud_storage_client.generate_shared_access_signature(
-            'b',
-            'sco',
-            'rwdlacup',
-            datetime.datetime.utcnow() + datetime.timedelta(days=1))
-
-        readonly_sas_token = cloud_storage_client.generate_shared_access_signature(
-            'b',
-            'sco',
-            'rl',
-            datetime.datetime.utcnow() + datetime.timedelta(days=1))
-
-        readonly_sas_token = readonly_sas_token.strip('?')
-
-    print()
-    print('This will deploy a daemon set to your cluster to collect logs and diagnostic information and '
-          f'save them to the storage account '
-          f'{colorama.Style.BRIGHT}{colorama.Fore.GREEN}{storage_account_name}{colorama.Style.RESET_ALL} as '
-          f'outlined in {format_hyperlink("http://aka.ms/AKSPeriscope")}.')
-    print()
-    print('If you share access to that storage account to Azure support, you consent to the terms outlined'
-          f' in {format_hyperlink("http://aka.ms/DiagConsent")}.')
-    print()
-    if not prompt_y_n('Do you confirm?', default="n"):
-        return
-
-    print()
-    print("Getting credentials for cluster %s " % name)
-    _, temp_kubeconfig_path = tempfile.mkstemp()
-    aks_get_credentials(cmd, client, resource_group_name,
-                        name, admin=True, path=temp_kubeconfig_path)
-
-    print()
-    print("Starts collecting diag info for cluster %s " % name)
-
-    # Form containerName from fqdn, as it was previously jsut the location of code is changed.
-    # https://docs.microsoft.com/en-us/rest/api/storageservices/naming-and-referencing-containers--blobs--and-metadata#container-names
-    maxContainerNameLength = 63
-    fqdn = mc.fqdn if mc.fqdn is not None else mc.private_fqdn
-    normalized_container_name = fqdn.replace('.', '-')
-    len_of_container_name = normalized_container_name.index("-hcp-")
-    if len_of_container_name == -1:
-        len_of_container_name = maxContainerNameLength
-    container_name = normalized_container_name[:len_of_container_name]
-
-    sas_token = sas_token.strip('?')
-
-    kustomize_yaml = get_kustomize_yaml(storage_account_name, sas_token, container_name, container_logs, kube_objects, node_logs, node_logs_windows)
-    kustomize_folder = tempfile.mkdtemp()
-    kustomize_file_path = os.path.join(kustomize_folder, "kustomization.yaml")
-    try:
-        with os.fdopen(os.open(kustomize_file_path, os.O_RDWR | os.O_CREAT), 'w+t') as kustomize_file:
-            kustomize_file.write(kustomize_yaml)
-
-        try:
-            print()
-            print(f"Cleaning up aks-periscope resources if existing")
-
-            subprocess.call(["kubectl", "--kubeconfig", temp_kubeconfig_path, "delete",
-                             "serviceaccount,configmap,daemonset,secret",
-                             "--all", "-n", CONST_PERISCOPE_NAMESPACE, "--ignore-not-found"],
-                            stderr=subprocess.STDOUT)
-
-            subprocess.call(["kubectl", "--kubeconfig", temp_kubeconfig_path, "delete",
-                             "ClusterRoleBinding",
-                             "aks-periscope-role-binding", "--ignore-not-found"],
-                            stderr=subprocess.STDOUT)
-
-            subprocess.call(["kubectl", "--kubeconfig", temp_kubeconfig_path, "delete",
-                             "ClusterRoleBinding",
-                             "aks-periscope-role-binding-view", "--ignore-not-found"],
-                            stderr=subprocess.STDOUT)
-
-            subprocess.call(["kubectl", "--kubeconfig", temp_kubeconfig_path, "delete",
-                             "ClusterRole",
-                             "aks-periscope-role", "--ignore-not-found"],
-                            stderr=subprocess.STDOUT)
-
-            subprocess.call(["kubectl", "--kubeconfig", temp_kubeconfig_path, "delete",
-                             "--all",
-                             "apd", "-n", CONST_PERISCOPE_NAMESPACE, "--ignore-not-found"],
-                            stderr=subprocess.DEVNULL)
-
-            subprocess.call(["kubectl", "--kubeconfig", temp_kubeconfig_path, "delete",
-                             "CustomResourceDefinition",
-                             "diagnostics.aks-periscope.azure.github.com", "--ignore-not-found"],
-                            stderr=subprocess.STDOUT)
-
-            print()
-            print(f"Deploying aks-periscope")
-
-            subprocess.check_output(["kubectl", "--kubeconfig", temp_kubeconfig_path, "apply", "-k",
-                                     kustomize_folder, "-n", CONST_PERISCOPE_NAMESPACE], stderr=subprocess.STDOUT)
-        except subprocess.CalledProcessError as err:
-            raise CLIError(err.output)
-    finally:
-        os.remove(kustomize_file_path)
-        os.rmdir(kustomize_folder)
-
-    print()
-
-    token_in_storage_account_url = readonly_sas_token if readonly_sas_token is not None else sas_token
-    log_storage_account_url = f"https://{storage_account_name}.blob.core.windows.net/" \
-                              f"{_trim_fqdn_name_containing_hcp(container_name)}?{token_in_storage_account_url}"
-
-    print(f'{colorama.Fore.GREEN}Your logs are being uploaded to storage account {format_bright(storage_account_name)}')
-
-    print()
-    print(f'You can download Azure Storage Explorer here '
-          f'{format_hyperlink("https://azure.microsoft.com/en-us/features/storage-explorer/")}'
-          f' to check the logs by adding the storage account using the following URL:')
-    print(f'{format_hyperlink(log_storage_account_url)}')
-
-    print()
-    if not prompt_y_n('Do you want to see analysis results now?', default="n"):
-        print(f"You can run 'az aks kanalyze -g {resource_group_name} -n {name}' "
-              f"anytime to check the analysis results.")
-    else:
-        display_diagnostics_report(temp_kubeconfig_path)
-
-
-def get_kustomize_yaml(storage_account_name,
-                       sas_token,
-                       container_name,
-                       container_logs=None,
-                       kube_objects=None,
-                       node_logs_linux=None,
-                       node_logs_windows=None):
-    diag_config_vars = {
-        'DIAGNOSTIC_CONTAINERLOGS_LIST': container_logs,
-        'DIAGNOSTIC_KUBEOBJECTS_LIST': kube_objects,
-        'DIAGNOSTIC_NODELOGS_LIST_LINUX': node_logs_linux,
-        'DIAGNOSTIC_NODELOGS_LIST_WINDOWS': node_logs_windows
-    }
-
-    # Create YAML list items for each config variable that has a value
-    diag_content = "\n".join(f'  - {k}="{v}"' for k, v in diag_config_vars.items() if v is not None)
-
-    # Build a Kustomize overlay referencing a base for a known release, and using the images from MCR
-    # for that release.
-    return f"""
-resources:
-- https://github.com/{CONST_PERISCOPE_REPO_ORG}/aks-periscope//deployment/base?ref={CONST_PERISCOPE_RELEASE_TAG}
-
-namespace: {CONST_PERISCOPE_NAMESPACE}
-
-images:
-- name: periscope-linux
-  newName: {CONST_PERISCOPE_CONTAINER_REGISTRY}/aks/periscope
-  newTag: {CONST_PERISCOPE_IMAGE_VERSION}
-- name: periscope-windows
-  newName: {CONST_PERISCOPE_CONTAINER_REGISTRY}/aks/periscope-win
-  newTag: {CONST_PERISCOPE_IMAGE_VERSION}
-
-configMapGenerator:
-- name: diagnostic-config
-  behavior: merge
-  literals:
-{diag_content}
-
-secretGenerator:
-- name: azureblob-secret
-  behavior: replace
-  literals:
-  - AZURE_BLOB_ACCOUNT_NAME={storage_account_name}
-  - AZURE_BLOB_SAS_KEY=?{sas_token}
-  - AZURE_BLOB_CONTAINER_NAME={container_name}
-"""
-
-
-def aks_kanalyze(cmd, client, resource_group_name, name):
-    colorama.init()
-
-    client.get(resource_group_name, name)
-
-    _, temp_kubeconfig_path = tempfile.mkstemp()
-    aks_get_credentials(cmd, client, resource_group_name,
-                        name, admin=True, path=temp_kubeconfig_path)
-
-    display_diagnostics_report(temp_kubeconfig_path)
 
 
 def aks_scale(cmd,  # pylint: disable=unused-argument
@@ -2495,286 +2224,6 @@ def aks_get_os_options(cmd, client, location):    # pylint: disable=unused-argum
     return client.get_os_options(location, resource_type='managedClusters')
 
 
-def _print_or_merge_credentials(path, kubeconfig, overwrite_existing, context_name):
-    """Merge an unencrypted kubeconfig into the file at the specified path, or print it to
-    stdout if the path is "-".
-    """
-    # Special case for printing to stdout
-    if path == "-":
-        print(kubeconfig)
-        return
-
-    # ensure that at least an empty ~/.kube/config exists
-    directory = os.path.dirname(path)
-    if directory and not os.path.exists(directory):
-        try:
-            os.makedirs(directory)
-        except OSError as ex:
-            if ex.errno != errno.EEXIST:
-                raise
-    if not os.path.exists(path):
-        with os.fdopen(os.open(path, os.O_CREAT | os.O_WRONLY, 0o600), 'wt'):
-            pass
-
-    # merge the new kubeconfig into the existing one
-    fd, temp_path = tempfile.mkstemp()
-    additional_file = os.fdopen(fd, 'w+t')
-    try:
-        additional_file.write(kubeconfig)
-        additional_file.flush()
-        merge_kubernetes_configurations(
-            path, temp_path, overwrite_existing, context_name)
-    except yaml.YAMLError as ex:
-        logger.warning(
-            'Failed to merge credentials to kube config file: %s', ex)
-    finally:
-        additional_file.close()
-        os.remove(temp_path)
-
-
-def _handle_merge(existing, addition, key, replace):
-    if not addition[key]:
-        return
-    if existing[key] is None:
-        existing[key] = addition[key]
-        return
-
-    for i in addition[key]:
-        for j in existing[key]:
-            if i['name'] == j['name']:
-                if replace or i == j:
-                    existing[key].remove(j)
-                else:
-                    from knack.prompting import prompt_y_n
-                    msg = 'A different object named {} already exists in your kubeconfig file.\nOverwrite?'
-                    overwrite = False
-                    try:
-                        overwrite = prompt_y_n(msg.format(i['name']))
-                    except NoTTYException:
-                        pass
-                    if overwrite:
-                        existing[key].remove(j)
-                    else:
-                        msg = 'A different object named {} already exists in {} in your kubeconfig file.'
-                        raise CLIError(msg.format(i['name'], key))
-        existing[key].append(i)
-
-
-def load_kubernetes_configuration(filename):
-    try:
-        with open(filename) as stream:
-            return yaml.safe_load(stream)
-    except (IOError, OSError) as ex:
-        if getattr(ex, 'errno', 0) == errno.ENOENT:
-            raise CLIError('{} does not exist'.format(filename))
-    except (yaml.parser.ParserError, UnicodeDecodeError) as ex:
-        raise CLIError('Error parsing {} ({})'.format(filename, str(ex)))
-
-
-def merge_kubernetes_configurations(existing_file, addition_file, replace, context_name=None):
-    existing = load_kubernetes_configuration(existing_file)
-    addition = load_kubernetes_configuration(addition_file)
-
-    if context_name is not None:
-        addition['contexts'][0]['name'] = context_name
-        addition['contexts'][0]['context']['cluster'] = context_name
-        addition['clusters'][0]['name'] = context_name
-        addition['current-context'] = context_name
-
-    # rename the admin context so it doesn't overwrite the user context
-    for ctx in addition.get('contexts', []):
-        try:
-            if ctx['context']['user'].startswith('clusterAdmin'):
-                admin_name = ctx['name'] + '-admin'
-                addition['current-context'] = ctx['name'] = admin_name
-                break
-        except (KeyError, TypeError):
-            continue
-
-    if addition is None:
-        raise CLIError(
-            'failed to load additional configuration from {}'.format(addition_file))
-
-    if existing is None:
-        existing = addition
-    else:
-        _handle_merge(existing, addition, 'clusters', replace)
-        _handle_merge(existing, addition, 'users', replace)
-        _handle_merge(existing, addition, 'contexts', replace)
-        existing['current-context'] = addition['current-context']
-
-    # check that ~/.kube/config is only read- and writable by its owner
-    if platform.system() != "Windows" and not os.path.islink(existing_file):
-        existing_file_perms = "{:o}".format(stat.S_IMODE(os.lstat(existing_file).st_mode))
-        if not existing_file_perms.endswith("600"):
-            logger.warning(
-                '%s has permissions "%s".\nIt should be readable and writable only by its owner.',
-                existing_file,
-                existing_file_perms,
-            )
-
-    with open(existing_file, 'w+') as stream:
-        yaml.safe_dump(existing, stream, default_flow_style=False)
-
-    current_context = addition.get('current-context', 'UNKNOWN')
-    msg = 'Merged "{}" as current context in {}'.format(
-        current_context, existing_file)
-    print(msg)
-
-
-def cloud_storage_account_service_factory(cli_ctx, kwargs):
-    from azure.cli.core.profiles import ResourceType, get_sdk
-    t_cloud_storage_account = get_sdk(
-        cli_ctx, ResourceType.DATA_STORAGE, 'common#CloudStorageAccount')
-    account_name = kwargs.pop('account_name', None)
-    account_key = kwargs.pop('account_key', None)
-    sas_token = kwargs.pop('sas_token', None)
-    kwargs.pop('connection_string', None)
-    return t_cloud_storage_account(account_name, account_key, sas_token)
-
-
-def get_storage_account_from_diag_settings(cli_ctx, resource_group_name, name):
-    from azure.mgmt.monitor import MonitorManagementClient
-    diag_settings_client = get_mgmt_service_client(
-        cli_ctx, MonitorManagementClient).diagnostic_settings
-    subscription_id = get_subscription_id(cli_ctx)
-    aks_resource_id = '/subscriptions/{0}/resourceGroups/{1}/providers/Microsoft.ContainerService' \
-        '/managedClusters/{2}'.format(subscription_id,
-                                      resource_group_name, name)
-    diag_settings = diag_settings_client.list(aks_resource_id)
-    for _, diag_setting in enumerate(diag_settings):
-        if diag_setting:
-            return diag_setting.storage_account_id
-
-    print("No diag settings specified")
-    return None
-
-
-def display_diagnostics_report(temp_kubeconfig_path):   # pylint: disable=too-many-statements
-    if not which('kubectl'):
-        raise CLIError('Can not find kubectl executable in PATH')
-
-    nodes = subprocess.check_output(
-        ["kubectl", "--kubeconfig", temp_kubeconfig_path,
-            "get", "node", "--no-headers"],
-        universal_newlines=True)
-    logger.debug(nodes)
-    node_lines = nodes.splitlines()
-    ready_nodes = {}
-    for node_line in node_lines:
-        columns = node_line.split()
-        logger.debug(node_line)
-        if columns[1] != "Ready":
-            logger.warning(
-                "Node %s is not Ready. Current state is: %s.", columns[0], columns[1])
-        else:
-            ready_nodes[columns[0]] = False
-
-    logger.debug('There are %s ready nodes in the cluster',
-                 str(len(ready_nodes)))
-
-    if not ready_nodes:
-        logger.warning(
-            'No nodes are ready in the current cluster. Diagnostics info might not be available.')
-
-    network_config_array = []
-    network_status_array = []
-    apds_created = False
-
-    max_retry = 10
-    for retry in range(0, max_retry):
-        if not apds_created:
-            apd = subprocess.check_output(
-                ["kubectl", "--kubeconfig", temp_kubeconfig_path, "get",
-                    "apd", "-n", CONST_PERISCOPE_NAMESPACE, "--no-headers"],
-                universal_newlines=True
-            )
-            apd_lines = apd.splitlines()
-            if apd_lines and 'No resources found' in apd_lines[0]:
-                apd_lines.pop(0)
-
-            print("Got {} diagnostic results for {} ready nodes{}\r".format(len(apd_lines),
-                                                                            len(ready_nodes),
-                                                                            '.' * retry), end='')
-            if len(apd_lines) < len(ready_nodes):
-                time.sleep(3)
-            else:
-                apds_created = True
-                print()
-        else:
-            for node_name in ready_nodes:
-                if ready_nodes[node_name]:
-                    continue
-                apdName = "aks-periscope-diagnostic-" + node_name
-                try:
-                    network_config = subprocess.check_output(
-                        ["kubectl", "--kubeconfig", temp_kubeconfig_path,
-                         "get", "apd", apdName, "-n",
-                         CONST_PERISCOPE_NAMESPACE, "-o=jsonpath={.spec.networkconfig}"],
-                        universal_newlines=True)
-                    logger.debug('Dns status for node %s is %s',
-                                 node_name, network_config)
-                    network_status = subprocess.check_output(
-                        ["kubectl", "--kubeconfig", temp_kubeconfig_path,
-                         "get", "apd", apdName, "-n",
-                         CONST_PERISCOPE_NAMESPACE, "-o=jsonpath={.spec.networkoutbound}"],
-                        universal_newlines=True)
-                    logger.debug('Network status for node %s is %s',
-                                 node_name, network_status)
-
-                    if not network_config or not network_status:
-                        print("The diagnostics information for node {} is not ready yet. "
-                              "Will try again in 10 seconds.".format(node_name))
-                        time.sleep(10)
-                        break
-
-                    network_config_array += json.loads(
-                        '[' + network_config + ']')
-                    network_status_object = json.loads(network_status)
-                    network_status_array += format_diag_status(
-                        network_status_object)
-                    ready_nodes[node_name] = True
-                except subprocess.CalledProcessError as err:
-                    raise CLIError(err.output)
-
-    print()
-    if network_config_array:
-        print("Below are the network configuration for each node: ")
-        print()
-        print(tabulate(network_config_array, headers="keys", tablefmt='simple'))
-        print()
-    else:
-        logger.warning("Could not get network config. "
-                       "Please run 'az aks kanalyze' command later to get the analysis results.")
-
-    if network_status_array:
-        print("Below are the network connectivity results for each node:")
-        print()
-        print(tabulate(network_status_array, headers="keys", tablefmt='simple'))
-    else:
-        logger.warning("Could not get networking status. "
-                       "Please run 'az aks kanalyze' command later to get the analysis results.")
-
-
-def format_diag_status(diag_status):
-    for diag in diag_status:
-        if diag["Status"]:
-            if "Error:" in diag["Status"]:
-                diag["Status"] = f'{colorama.Fore.RED}{diag["Status"]}{colorama.Style.RESET_ALL}'
-            else:
-                diag["Status"] = f'{colorama.Fore.GREEN}{diag["Status"]}{colorama.Style.RESET_ALL}'
-
-    return diag_status
-
-
-def format_bright(msg):
-    return f'\033[1m{colorama.Style.BRIGHT}{msg}{colorama.Style.RESET_ALL}'
-
-
-def format_hyperlink(the_link):
-    return f'\033[1m{colorama.Style.BRIGHT}{colorama.Fore.BLUE}{the_link}{colorama.Style.RESET_ALL}'
-
-
 def get_aks_custom_headers(aks_custom_headers=None):
     headers = {}
     if aks_custom_headers is not None:
@@ -3053,6 +2502,24 @@ def aks_draft_up(app=None,
 
 def aks_draft_update(host=None, certificate=None, destination=None, path=None):
     aks_draft_cmd_update(host, certificate, destination, path)
+
+
+def aks_kollect(cmd,    # pylint: disable=too-many-statements,too-many-locals
+                client,
+                resource_group_name,
+                name,
+                storage_account=None,
+                sas_token=None,
+                container_logs=None,
+                kube_objects=None,
+                node_logs=None,
+                node_logs_windows=None):
+    aks_kollect_cmd(cmd, client, resource_group_name, name, storage_account, sas_token,
+                    container_logs, kube_objects, node_logs, node_logs_windows)
+
+
+def aks_kanalyze(client, resource_group_name, name):
+    aks_kanalyze_cmd(client, resource_group_name, name)
 
 
 def aks_pod_identity_add(cmd, client, resource_group_name, cluster_name,
