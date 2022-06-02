@@ -54,15 +54,8 @@ logger = get_logger(__name__)
 
 # type variables
 ContainerServiceClient = TypeVar("ContainerServiceClient")
-Identity = TypeVar("Identity")
 ManagedCluster = TypeVar("ManagedCluster")
-ManagedClusterLoadBalancerProfile = TypeVar("ManagedClusterLoadBalancerProfile")
-ManagedClusterPropertiesAutoScalerProfile = TypeVar("ManagedClusterPropertiesAutoScalerProfile")
-ResourceReference = TypeVar("ResourceReference")
 ManagedClusterAddonProfile = TypeVar("ManagedClusterAddonProfile")
-Snapshot = TypeVar("Snapshot")
-KubeletConfig = TypeVar("KubeletConfig")
-LinuxOSConfig = TypeVar("LinuxOSConfig")
 ManagedClusterHTTPProxyConfig = TypeVar("ManagedClusterHTTPProxyConfig")
 ManagedClusterSecurityProfileWorkloadIdentity = TypeVar("ManagedClusterSecurityProfileWorkloadIdentity")
 ManagedClusterOIDCIssuerProfile = TypeVar("ManagedClusterOIDCIssuerProfile")
@@ -71,6 +64,7 @@ ManagedClusterStorageProfile = TypeVar('ManagedClusterStorageProfile')
 ManagedClusterStorageProfileDiskCSIDriver = TypeVar('ManagedClusterStorageProfileDiskCSIDriver')
 ManagedClusterStorageProfileFileCSIDriver = TypeVar('ManagedClusterStorageProfileFileCSIDriver')
 ManagedClusterStorageProfileSnapshotController = TypeVar('ManagedClusterStorageProfileSnapshotController')
+ManagedClusterIngressProfileWebAppRouting = TypeVar("ManagedClusterIngressProfileWebAppRouting")
 
 
 # pylint: disable=too-few-public-methods
@@ -232,8 +226,8 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         # this parameter does not need validation
         return service_cidrs
 
-    def get_ip_families(self):
-        """Obtain the CIDR ranges for the service subnet.
+    def get_ip_families(self) -> Union[List[str], None]:
+        """Obtain the value of ip_families.
 
         :return: List[str] or None
         """
@@ -1026,6 +1020,26 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         """
         return self._get_apiserver_subnet_id(enable_validation=True)
 
+    def get_dns_zone_resource_id(self) -> Union[str, None]:
+        """Obtain the value of ip_families.
+
+        :return: string or None
+        """
+        # read the original value passed by the command
+        dns_zone_resource_id = self.raw_param.get("dns_zone_resource_id")
+        # try to read the property value corresponding to the parameter from the `mc` object
+        if (
+            self.mc and
+            self.mc.ingress_profile and
+            self.mc.ingress_profile.web_app_routing and
+            self.mc.ingress_profile.web_app_routing.dns_zone_resource_id is not None
+        ):
+            dns_zone_resource_id = self.mc.ingress_profile.web_app_routing.dns_zone_resource_id
+
+        # this parameter does not need dynamic completion
+        # this parameter does not need validation
+        return dns_zone_resource_id
+
 
 class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
     def __init__(
@@ -1272,6 +1286,22 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
 
         return mc
 
+    def set_up_ingress_web_app_routing(self, mc: ManagedCluster) -> ManagedCluster:
+        """Set up web app routing profile in ingress profile for the ManagedCluster object.
+
+        :return: the ManagedCluster object
+        """
+        addons = self.context.get_enable_addons()
+        if "web_application_routing" in addons:
+            if mc.ingress_profile is None:
+                mc.ingress_profile = self.models.ManagedClusterIngressProfile()
+            dns_zone_resource_id = self.context.get_dns_zone_resource_id()
+            mc.ingress_profile.web_app_routing = self.models.ManagedClusterIngressProfileWebAppRouting(
+                enabled=True,
+                dns_zone_resource_id=dns_zone_resource_id,
+            )
+        return mc
+
     def construct_mc_profile_preview(self, bypass_restore_defaults: bool = False) -> ManagedCluster:
         """The overall controller used to construct the default ManagedCluster profile.
 
@@ -1304,6 +1334,8 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         mc = self.set_up_creationdata_of_cluster_snapshot(mc)
         # set up storage profile
         mc = self.set_up_storage_profile(mc)
+        # set up ingress web app routing profile
+        mc = self.set_up_ingress_web_app_routing(mc)
 
         # DO NOT MOVE: keep this at the bottom, restore defaults
         mc = self._restore_defaults_in_mc(mc)
