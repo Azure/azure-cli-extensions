@@ -19,7 +19,6 @@ Pending
 
 * Prompt when disabling CSI Drivers.
 
-
 0.5.77
 ++++++
 
