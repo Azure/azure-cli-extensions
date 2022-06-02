@@ -91,8 +91,7 @@ def build(cmd, target_id=None, project=None, target_capability=None):
     raise AzureInternalError("Failed to compile program.")
 
 
-def _generate_submit_args(program_args, ws, target, token, project, job_name, shots, storage, job_params,
-                          target_capability):
+def _generate_submit_args(program_args, ws, target, token, project, job_name, shots, storage, job_params):
     """ Generates the list of arguments for calling submit on a Q# project """
 
     args = ["dotnet", "run", "--no-build"]
@@ -145,10 +144,6 @@ def _generate_submit_args(program_args, ws, target, token, project, job_name, sh
         for k, v in job_params.items():
             args.append(f"{k}={v}")
 
-    if target_capability:
-        args.append("--target-capability")
-        args.append(target_capability)
-
     args.extend(program_args)
 
     logger.debug("Running project with arguments:")
@@ -193,8 +188,7 @@ def submit(cmd, program_args, resource_group_name=None, workspace_name=None, loc
     target = TargetInfo(cmd, target_id)
     token = _get_data_credentials(cmd.cli_ctx, ws.subscription).get_token().token
 
-    args = _generate_submit_args(program_args, ws, target, token, project, job_name, shots, storage, job_params,
-                                 target_capability)
+    args = _generate_submit_args(program_args, ws, target, token, project, job_name, shots, storage, job_params)
     _set_cli_version()
 
     knack_logger.warning('Submitting job...')
