@@ -4113,7 +4113,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         self.cmd(create_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
             self.check('storageProfile.diskCsiDriver.enabled', False),
-            self.check('storageProfile.diskCsiDriver.version', None),
+            self.check('storageProfile.diskCsiDriver.version', "v1"),
             self.check('storageProfile.fileCsiDriver.enabled', False),
             self.check('storageProfile.snapshotController.enabled', False),
         ])
@@ -4123,7 +4123,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         self.cmd(update_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
             self.check('storageProfile.diskCsiDriver.enabled', False),
-            self.check('storageProfile.diskCsiDriver.version', None),
+            self.check('storageProfile.diskCsiDriver.version', "v1"),
             self.check('storageProfile.fileCsiDriver.enabled', False),
             self.check('storageProfile.snapshotController.enabled', False),
         ])
@@ -4135,7 +4135,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         self.cmd(enable_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
             self.check('storageProfile.diskCsiDriver.enabled', True),
-            self.check('storageProfile.diskCsiDriver.version', None),
+            self.check('storageProfile.diskCsiDriver.version', "v1"),
             self.check('storageProfile.fileCsiDriver.enabled', True),
             self.check('storageProfile.snapshotController.enabled', True),
         ])
@@ -4145,7 +4145,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         self.cmd(update_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
             self.check('storageProfile.diskCsiDriver.enabled', True),
-            self.check('storageProfile.diskCsiDriver.version', None),
+            self.check('storageProfile.diskCsiDriver.version', "v1"),
             self.check('storageProfile.fileCsiDriver.enabled', True),
             self.check('storageProfile.snapshotController.enabled', True),
         ])
@@ -4157,7 +4157,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         self.cmd(disable_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
             self.check('storageProfile.diskCsiDriver.enabled', False),
-            self.check('storageProfile.diskCsiDriver.version', None),
+            self.check('storageProfile.diskCsiDriver.version', "v1"),
             self.check('storageProfile.fileCsiDriver.enabled', False),
             self.check('storageProfile.snapshotController.enabled', False),
         ])
@@ -4183,7 +4183,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         self.cmd(create_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
             self.check('storageProfile.diskCsiDriver.enabled', True),
-            self.check('storageProfile.diskCsiDriver.version', None),
+            self.check('storageProfile.diskCsiDriver.version', "v1"),
             self.check('storageProfile.fileCsiDriver.enabled', True),
             self.check('storageProfile.snapshotController.enabled', True),
         ])
@@ -4193,7 +4193,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         self.cmd(update_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
             self.check('storageProfile.diskCsiDriver.enabled', True),
-            self.check('storageProfile.diskCsiDriver.version', None),
+            self.check('storageProfile.diskCsiDriver.version', "v1"),
             self.check('storageProfile.fileCsiDriver.enabled', True),
             self.check('storageProfile.snapshotController.enabled', True),
         ])
