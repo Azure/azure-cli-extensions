@@ -5,11 +5,14 @@
 
 import base64
 import os
+import pty
+import subprocess
 import tempfile
 
 from azure.cli.testsdk import (
     ScenarioTest, live_only)
 from azure.cli.command_modules.acs._format import version_to_tuple
+from azure.cli.testsdk import CliTestError
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 from knack.util import CLIError
 from azure.core.exceptions import HttpResponseError
@@ -458,7 +461,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
     def test_aks_addon_list_available(self):
         list_available_cmd = 'aks addon list-available -o json'
         addon_list = self.cmd(list_available_cmd).get_output_in_json()
-        assert len(addon_list) == 10
+        assert len(addon_list) == 11
         assert addon_list[0]['name'] == "http_application_routing"
         assert addon_list[1]['name'] == "monitoring"
         assert addon_list[2]['name'] == "virtual-node"
@@ -469,6 +472,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         assert addon_list[7]['name'] == "open-service-mesh"
         assert addon_list[8]['name'] == "azure-keyvault-secrets-provider"
         assert addon_list[9]['name'] == "gitops"
+        assert addon_list[10]['name'] == "web_application_routing"
 
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
@@ -4093,7 +4097,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         ])
 
     @AllowLargeResponse()
-    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westcentralus')
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westcentralus', preserve_default_location=True)
     def test_aks_create_and_update_with_csi_drivers_extensibility(self, resource_group, resource_group_location):
         aks_name = self.create_random_name('cliakstest', 16)
         self.kwargs.update({
@@ -4109,7 +4113,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         self.cmd(create_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
             self.check('storageProfile.diskCsiDriver.enabled', False),
-            self.check('storageProfile.diskCsiDriver.version', None),
+            self.check('storageProfile.diskCsiDriver.version', "v1"),
             self.check('storageProfile.fileCsiDriver.enabled', False),
             self.check('storageProfile.snapshotController.enabled', False),
         ])
@@ -4119,7 +4123,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         self.cmd(update_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
             self.check('storageProfile.diskCsiDriver.enabled', False),
-            self.check('storageProfile.diskCsiDriver.version', None),
+            self.check('storageProfile.diskCsiDriver.version', "v1"),
             self.check('storageProfile.fileCsiDriver.enabled', False),
             self.check('storageProfile.snapshotController.enabled', False),
         ])
@@ -4131,7 +4135,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         self.cmd(enable_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
             self.check('storageProfile.diskCsiDriver.enabled', True),
-            self.check('storageProfile.diskCsiDriver.version', None),
+            self.check('storageProfile.diskCsiDriver.version', "v1"),
             self.check('storageProfile.fileCsiDriver.enabled', True),
             self.check('storageProfile.snapshotController.enabled', True),
         ])
@@ -4141,7 +4145,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         self.cmd(update_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
             self.check('storageProfile.diskCsiDriver.enabled', True),
-            self.check('storageProfile.diskCsiDriver.version', None),
+            self.check('storageProfile.diskCsiDriver.version', "v1"),
             self.check('storageProfile.fileCsiDriver.enabled', True),
             self.check('storageProfile.snapshotController.enabled', True),
         ])
@@ -4149,11 +4153,11 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         disable_cmd = 'aks update --resource-group={resource_group} --name={name} -o json \
                         --disable-disk-driver \
                         --disable-file-driver \
-                        --disable-snapshot-controller'
+                        --disable-snapshot-controller -y'
         self.cmd(disable_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
             self.check('storageProfile.diskCsiDriver.enabled', False),
-            self.check('storageProfile.diskCsiDriver.version', None),
+            self.check('storageProfile.diskCsiDriver.version', "v1"),
             self.check('storageProfile.fileCsiDriver.enabled', False),
             self.check('storageProfile.snapshotController.enabled', False),
         ])
@@ -4179,7 +4183,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         self.cmd(create_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
             self.check('storageProfile.diskCsiDriver.enabled', True),
-            self.check('storageProfile.diskCsiDriver.version', None),
+            self.check('storageProfile.diskCsiDriver.version', "v1"),
             self.check('storageProfile.fileCsiDriver.enabled', True),
             self.check('storageProfile.snapshotController.enabled', True),
         ])
@@ -4189,7 +4193,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         self.cmd(update_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
             self.check('storageProfile.diskCsiDriver.enabled', True),
-            self.check('storageProfile.diskCsiDriver.version', None),
+            self.check('storageProfile.diskCsiDriver.version', "v1"),
             self.check('storageProfile.fileCsiDriver.enabled', True),
             self.check('storageProfile.snapshotController.enabled', True),
         ])
@@ -4201,7 +4205,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         ])
 
     @AllowLargeResponse()
-    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='eastus2euap')
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='eastus2euap', preserve_default_location=True)
     def test_aks_create_with_csi_driver_v2(self, resource_group, resource_group_location):
         aks_name = self.create_random_name('cliakstest', 16)
         self.kwargs.update({
@@ -4245,7 +4249,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         self.cmd(create_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
             self.check('storageProfile.diskCsiDriver.enabled', False),
-            self.check('storageProfile.diskCsiDriver.version', None),
+            self.check('storageProfile.diskCsiDriver.version', "v1"),
             self.check('storageProfile.fileCsiDriver.enabled', False),
             self.check('storageProfile.snapshotController.enabled', False),
         ])
@@ -4442,3 +4446,82 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             update_cmd = f'aks draft update --path={tmp_dir} --destination={tmp_dir} --host=testHost --certificate=testKV'
             self.cmd(update_cmd)
             assert os.path.isfile(f'{tmp_dir}/manifests/service.yaml')
+
+    @live_only() # because we're downloading a binary, and we're not testing the output of any ARM requests.
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='centraluseuap')
+    def test_aks_kollect(self, resource_group, resource_group_location):
+        aks_name = self.create_random_name('cliakstest', 16)
+        stg_acct_name = self.create_random_name('cliaksteststg', 24)
+        self.kwargs.update({
+            'resource_group': resource_group,
+            'location': resource_group_location,
+            'aks_name': aks_name,
+            'stg_acct_name': stg_acct_name,
+            'ssh_key_value': self.generate_ssh_keys()
+        })
+
+        create_aks_cmd = 'aks create --resource-group={resource_group} --name={aks_name} --location={location} --ssh-key-value={ssh_key_value} -o json'
+        self.cmd(create_aks_cmd, checks=[
+            self.check('provisioningState', 'Succeeded')
+        ])
+
+        create_stg_cmd = 'storage account create --resource-group={resource_group} --name={stg_acct_name} --location={location} -o json'
+        self.cmd(create_stg_cmd, checks=[
+            self.check('provisioningState', 'Succeeded')
+        ])
+
+        # Install kubectl (required by the 'kollect' command, and to perform verification of deployed resources).
+        try:
+            subprocess.call(['az', 'aks', 'install-cli'])
+        except subprocess.CalledProcessError as err:
+            raise CliTestError(f"Failed to install kubectl with error: '{err}'")
+
+        # Create kubeconfig file
+        fd, kubeconfig_path = tempfile.mkstemp()
+        self.kwargs.update({ 'kubeconfig_path': kubeconfig_path })
+        try:
+            get_credential_cmd = 'aks get-credentials --resource-group={resource_group} --name={aks_name} -f {kubeconfig_path}'
+            self.cmd(get_credential_cmd)
+        finally:
+            os.close(fd)
+
+        # The kollect command is interactive, with two prompts requiring 'y|n' followed by newline.
+        # The prompting library used by the CLI checks for the presence of a TTY, so just passing these as input is not
+        # sufficient and will raise an exception; we also need to attach a pseudo-TTY to the process.
+        ptyInFd, ptyOutFd = pty.openpty()
+        try:
+            with os.fdopen(ptyInFd, 'w', closefd=False) as ptyIn:
+                kollect_cmd = ['az', 'aks', 'kollect', '--resource-group', resource_group, '--name', aks_name, '--storage-account', stg_acct_name]
+
+                # For this test, the first input should be 'y' (to confirm), and the second should be 'n' (to see analysis results).
+                # Write these to our PTY (they will be buffered until the command attempts to read them).
+                kollect_stdin_responses = ['y\n', 'n\n']
+                ptyIn.write(''.join(kollect_stdin_responses))
+
+                kollect_output = subprocess.check_output(kollect_cmd, stdin=ptyOutFd, stderr=subprocess.STDOUT, text=True)
+        except subprocess.CalledProcessError as err:
+            raise CliTestError(f"Failed to kollect with exit code {err.returncode}. Output:\n{err.output}")
+        finally:
+            os.close(ptyOutFd)
+            os.close(ptyInFd)
+
+        # Check expected output of kollect command
+        for pattern in [
+            f"This will deploy a daemon set to your cluster to collect logs and diagnostic information and save them to the storage account {stg_acct_name}",
+            f"Your logs are being uploaded to storage account {stg_acct_name}",
+            f"You can run 'az aks kanalyze -g {resource_group} -n {aks_name}' anytime to check the analysis results"
+        ]:
+            if not pattern in kollect_output:
+                raise CliTestError(f"Output from kollect did not contain '{pattern}'. Output:\n{kollect_output}")
+
+        # Invoke kubectl to get the daemonsets deployed to the cluster
+        k_get_daemonset_cmd = ["kubectl", "get", "daemonset", "-n", "aks-periscope", "-o", "name", "--kubeconfig", kubeconfig_path]
+        k_get_daemonset_output = subprocess.check_output(k_get_daemonset_cmd, text=True)
+
+        # Check expected output of 'kubectl get daemonset' command
+        for pattern in [
+            "daemonset.apps/aks-periscope",
+            "daemonset.apps/aks-periscope-win"
+        ]:
+            if not pattern in k_get_daemonset_output:
+                raise CliTestError(f"Output from 'kubectl get daemonset' did not contain '{pattern}'. Output:\n{k_get_daemonset_output}")

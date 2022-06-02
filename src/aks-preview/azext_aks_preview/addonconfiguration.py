@@ -21,7 +21,7 @@ from ._consts import ADDONS, CONST_VIRTUAL_NODE_ADDON_NAME, CONST_MONITORING_ADD
     CONST_INGRESS_APPGW_WATCH_NAMESPACE, CONST_OPEN_SERVICE_MESH_ADDON_NAME, CONST_CONFCOM_ADDON_NAME, \
     CONST_ACC_SGX_QUOTE_HELPER_ENABLED, CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME, CONST_SECRET_ROTATION_ENABLED, CONST_ROTATION_POLL_INTERVAL, \
     CONST_KUBE_DASHBOARD_ADDON_NAME
-from .vendored_sdks.azure_mgmt_preview_aks.v2022_04_02_preview.models import (
+from .vendored_sdks.azure_mgmt_preview_aks.v2022_05_02_preview.models import (
     ManagedClusterIngressProfile,
     ManagedClusterIngressProfileWebAppRouting,
 )

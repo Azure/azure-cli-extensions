@@ -12,6 +12,14 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+* Fix `az aks addon list`, `az aks addon list-available` and `az aks addon show` commands when dealing with the web application routing addon.
+* Update to use 2022-05-02-preview api version.
+
+0.5.78
+++++++
+
+* Prompt when disabling CSI Drivers.
+
 0.5.77
 ++++++
 
