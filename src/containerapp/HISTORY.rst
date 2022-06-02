@@ -8,6 +8,7 @@ Release History
 * Added parameter --environment to 'az containerapp list'
 * Added 'az containerapp revision label swap' to swap traffic labels
 * BREAKING CHANGE: 'az containerapp revision list' now shows only active revisions by default, added flag --all to show all revisions
+* Fixed bug with 'az containerapp auth update' when using --unauthenticated-client-action
 
 
 0.3.5
