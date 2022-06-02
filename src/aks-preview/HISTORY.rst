@@ -13,6 +13,7 @@ Pending
 +++++++
 
 * Fix `az aks addon list`, `az aks addon list-available` and `az aks addon show` commands when dealing with the web application routing addon.
+* Update to use 2022-05-02-preview api version.
 
 0.5.78
 ++++++
