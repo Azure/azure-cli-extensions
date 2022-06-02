@@ -4149,7 +4149,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         disable_cmd = 'aks update --resource-group={resource_group} --name={name} -o json \
                         --disable-disk-driver \
                         --disable-file-driver \
-                        --disable-snapshot-controller'
+                        --disable-snapshot-controller -y'
         self.cmd(disable_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
             self.check('storageProfile.diskCsiDriver.enabled', False),
