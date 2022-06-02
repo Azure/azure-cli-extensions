@@ -852,7 +852,10 @@ helps['aks kollect'] = """
             for example, kube-system/deployment/tunnelfront.
         - name: --node-logs
           type: string
-          short-summary: The list of node logs to collect. For example, /var/log/cloud-init.log
+          short-summary: The list of node logs to collect for Linux nodes. For example, /var/log/cloud-init.log
+        - name: --node-logs-windows
+          type: string
+          short-summary: The list of node logs to collect for Windows nodes. For example, C:\\AzureData\\CustomDataSetupScript.log
     examples:
       - name: using storage account name and a shared access signature token with write permission
         text: az aks kollect -g MyResourceGroup -n MyManagedCluster --storage-account MyStorageAccount --sas-token "MySasToken"

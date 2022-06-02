@@ -41,7 +41,7 @@ setup(
     classifiers=CLASSIFIERS,
     packages=find_packages(exclude=["tests"]),
     package_data={
-        "azext_aks_preview": ["azext_metadata.json", "deploymentyaml/*.yaml"]
+        "azext_aks_preview": ["azext_metadata.json"]
     },
     install_requires=DEPENDENCIES,
 )
