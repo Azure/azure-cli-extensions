@@ -72,7 +72,7 @@ def build(cmd, target_id=None, project=None, target_capability=None):
     args.append(f"-property:ExecutionTarget={target.target_id}")
 
     if target_capability:
-        args.append(f"-property:RuntimeCapability={target_capability}")
+        args.append(f"-property:TargetCapability={target_capability}")
 
     logger.debug("Building project with arguments:")
     logger.debug(args)
