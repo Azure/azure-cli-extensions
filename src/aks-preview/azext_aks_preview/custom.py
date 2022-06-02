@@ -136,7 +136,7 @@ from .addonconfiguration import (
 from .maintenanceconfiguration import (
     aks_maintenanceconfiguration_update_internal,
 )
-from .vendored_sdks.azure_mgmt_preview_aks.v2022_04_02_preview.models import (
+from .vendored_sdks.azure_mgmt_preview_aks.v2022_05_02_preview.models import (
     AgentPool,
     AgentPoolUpgradeSettings,
     ContainerServiceStorageProfileTypes,
