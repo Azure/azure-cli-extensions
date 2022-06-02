@@ -36,10 +36,10 @@ def auto_merge(headers, number):
 
 
 def main():
-    with open('./token.txt') as f:
+    with open('/tmp/token.txt') as f:
         token = f.read()
     headers = {'Authorization': 'token %s' % token}
-    with open('./create_pr.json') as f:
+    with open('/tmp/create_pr.json') as f:
         ref = f.read()
     number = json.loads(ref)['number']
     auto_merge(headers, number)
