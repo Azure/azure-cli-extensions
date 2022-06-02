@@ -8,6 +8,7 @@
 # regenerated.
 # --------------------------------------------------------------------------
 # pylint: disable=unused-import
+# test
 
 from azure.cli.core import AzCommandsLoader
 import azext_desktopvirtualization._help
