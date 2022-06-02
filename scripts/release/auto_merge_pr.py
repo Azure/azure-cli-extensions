@@ -8,8 +8,9 @@
 import json
 import logging
 import requests
-import subprocess
 import shlex
+import subprocess
+import sys
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
