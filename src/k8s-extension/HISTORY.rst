@@ -3,6 +3,11 @@
 Release History
 ===============
 
+1.2.3
+++++++++++++++++++
+* microsoft.azureml.kubernetes: remove deprecated warning message.
+
+
 1.2.2
 ++++++++++++++++++
 * microsoft.azureml.kubernetes: Disable service bus by default, do not create relay for managed clusters.
