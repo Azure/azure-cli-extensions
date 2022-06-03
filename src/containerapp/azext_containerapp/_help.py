@@ -86,6 +86,98 @@ helps['containerapp list'] = """
           az containerapp list -g MyResourceGroup
 """
 
+helps['containerapp exec'] = """
+    type: command
+    short-summary: Open an SSH-like interactive shell within a container app replica
+    examples:
+    - name: exec into a container app
+      text: |
+          az containerapp exec -n MyContainerapp -g MyResourceGroup
+    - name: exec into a particular container app replica and revision
+      text: |
+          az containerapp exec -n MyContainerapp -g MyResourceGroup --replica MyReplica --revision MyRevision
+    - name: open a bash shell in a containerapp
+      text: |
+          az containerapp exec -n MyContainerapp -g MyResourceGroup --command bash
+"""
+
+helps['containerapp browse'] = """
+    type: command
+    short-summary: Open a containerapp in the browser, if possible
+    examples:
+    - name: open a containerapp in the browser
+      text: |
+          az containerapp browse -n MyContainerapp -g MyResourceGroup
+"""
+
+helps['containerapp up'] = """
+    type: command
+    short-summary: Create or update a container app as well as any associated resources (ACR, resource group, container apps environment, GitHub Actions, etc.)
+    examples:
+    - name: Create a container app from a dockerfile in a GitHub repo (setting up github actions)
+      text: |
+          az containerapp up -n MyContainerapp --repo https://github.com/myAccount/myRepo
+    - name: Create a container app from a dockerfile in a local directory
+      text: |
+          az containerapp up -n MyContainerapp --source .
+    - name: Create a container app from an image in a registry
+      text: |
+          az containerapp up -n MyContainerapp --image myregistry.azurecr.io/myImage:myTag
+    - name: Create a container app from an image in a registry with ingress enabled and a specified environment
+      text: |
+          az containerapp up -n MyContainerapp --image myregistry.azurecr.io/myImage:myTag --ingress external --target-port 80 --environment MyEnv
+"""
+
+helps['containerapp logs'] = """
+    type: group
+    short-summary: Show container app logs
+"""
+
+helps['containerapp logs show'] = """
+    type: command
+    short-summary: Show past logs and/or print logs in real time (with the --follow parameter). Note that the logs are only taken from one revision, replica, and container.
+    examples:
+    - name: Fetch the past 20 lines of logs from an app and return
+      text: |
+          az containerapp logs show -n MyContainerapp -g MyResourceGroup
+    - name: Fetch 30 lines of past logs logs from an app and print logs as they come in
+      text: |
+          az containerapp logs show -n MyContainerapp -g MyResourceGroup --follow --tail 30
+    - name: Fetch logs for a particular revision, replica, and container
+      text: |
+          az containerapp logs show -n MyContainerapp -g MyResourceGroup --replica MyReplica --revision MyRevision --container MyContainer
+"""
+
+# Replica Commands
+helps['containerapp replica'] = """
+    type: group
+    short-summary: Manage container app replicas
+"""
+
+helps['containerapp replica list'] = """
+    type: command
+    short-summary: List a container app revision's replica
+    examples:
+    - name: List a container app's replicas in the latest revision
+      text: |
+          az containerapp replica list -n MyContainerapp -g MyResourceGroup
+    - name: List a container app's replicas in a particular revision
+      text: |
+          az containerapp replica list -n MyContainerapp -g MyResourceGroup --revision MyRevision
+"""
+
+helps['containerapp replica show'] = """
+    type: command
+    short-summary: Show a container app replica
+    examples:
+    - name: Show a replica from the latest revision
+      text: |
+          az containerapp replica show -n MyContainerapp -g MyResourceGroup --replica MyReplica
+    - name: Show a replica from the a particular revision
+      text: |
+          az containerapp replica show -n MyContainerapp -g MyResourceGroup --replica MyReplica --revision MyRevision
+"""
+
 # Revision Commands
 helps['containerapp revision'] = """
     type: group
@@ -169,6 +261,32 @@ helps['containerapp revision copy'] = """
     - name: Create a revision based on a previous revision.
       text: |
           az containerapp revision copy -n MyContainerapp -g MyResourceGroup --cpu 0.75 --memory 1.5Gi
+"""
+
+helps['containerapp revision label'] = """
+    type: group
+    short-summary: Manage revision labels assigned to traffic weights.
+"""
+
+helps['containerapp revision label add'] = """
+    type: command
+    short-summary: Set a revision label to a revision with an associated traffic weight.
+    examples:
+    - name: Add a label to the latest revision.
+      text: |
+          az containerapp revision label add -n MyContainerapp -g MyResourceGroup --label myLabel --revision latest
+    - name: Add a label to a previous revision.
+      text: |
+          az containerapp revision label add -g MyResourceGroup --label myLabel --revision revisionName
+"""
+
+helps['containerapp revision label remove'] = """
+    type: command
+    short-summary: Remove a revision label from a revision with an associated traffic weight.
+    examples:
+    - name: Remove a label.
+      text: |
+          az containerapp revision label remove -n MyContainerapp -g MyResourceGroup --label myLabel
 """
 
 # Environment Commands
@@ -262,6 +380,98 @@ helps['containerapp env dapr-component remove'] = """
     - name: Remove a Dapr component from a Container Apps environment.
       text: |
           az containerapp env dapr-component remove -g MyResourceGroup --dapr-component-name MyDaprComponentName --name MyEnvironment
+"""
+
+helps['containerapp env storage'] = """
+    type: group
+    short-summary: Commands to manage storage for the Container Apps environment.
+"""
+
+helps['containerapp env storage list'] = """
+    type: command
+    short-summary: List the storages for an environment.
+    examples:
+    - name: List the storages for an environment.
+      text: |
+          az containerapp env storage list -g MyResourceGroup -n MyEnvironment
+"""
+
+helps['containerapp env storage show'] = """
+    type: command
+    short-summary: Show the details of a storage.
+    examples:
+    - name: Show the details of a storage.
+      text: |
+          az containerapp env storage show -g MyResourceGroup --storage-name MyStorageName -n MyEnvironment
+"""
+
+helps['containerapp env storage set'] = """
+    type: command
+    short-summary: Create or update a storage.
+    examples:
+    - name: Create a storage.
+      text: |
+          az containerapp env storage set -g MyResourceGroup -n MyEnv --storage-name MyStorageName --access-mode ReadOnly --azure-file-account-key MyAccountKey --azure-file-account-name MyAccountName --azure-file-share-name MyShareName
+"""
+
+helps['containerapp env storage remove'] = """
+    type: command
+    short-summary: Remove a storage from an environment.
+    examples:
+    - name: Remove a storage from a Container Apps environment.
+      text: |
+          az containerapp env storage remove -g MyResourceGroup --storage-name MyStorageName -n MyEnvironment
+"""
+
+# Certificates Commands
+helps['containerapp env certificate'] = """
+    type: group
+    short-summary: Commands to manage certificates for the Container Apps environment.
+"""
+
+helps['containerapp env certificate list'] = """
+    type: command
+    short-summary: List certificates for an environment.
+    examples:
+    - name: List certificates for an environment.
+      text: |
+          az containerapp env certificate list -g MyResourceGroup --name MyEnvironment
+    - name: List certificates by certificate id.
+      text: |
+          az containerapp env certificate list -g MyResourceGroup --name MyEnvironment --certificate MyCertificateId
+    - name: List certificates by certificate name.
+      text: |
+          az containerapp env certificate list -g MyResourceGroup --name MyEnvironment --certificate MyCertificateName
+    - name: List certificates by certificate thumbprint.
+      text: |
+          az containerapp env certificate list -g MyResourceGroup --name MyEnvironment --thumbprint MyCertificateThumbprint
+"""
+
+helps['containerapp env certificate upload'] = """
+    type: command
+    short-summary: Add or update a certificate.
+    examples:
+    - name: Add or update a certificate.
+      text: |
+          az containerapp env certificate upload -g MyResourceGroup --name MyEnvironment --certificate-file MyFilepath
+    - name: Add or update a certificate with a user-provided certificate name.
+      text: |
+          az containerapp env certificate upload -g MyResourceGroup --name MyEnvironment --certificate-file MyFilepath --certificate-name MyCertificateName
+"""
+
+helps['containerapp env certificate delete'] = """
+    type: command
+    short-summary: Delete a certificate from the Container Apps environment.
+    examples:
+    - name: Delete a certificate from the Container Apps environment by certificate name
+      text: |
+          az containerapp env certificate delete -g MyResourceGroup --name MyEnvironment --certificate MyCertificateName
+    - name: Delete a certificate from the Container Apps environment by certificate id
+      text: |
+          az containerapp env certificate delete -g MyResourceGroup --name MyEnvironment --certificate MyCertificateId
+    - name: Delete a certificate from the Container Apps environment by certificate thumbprint
+      text: |
+          az containerapp env certificate delete -g MyResourceGroup --name MyEnvironment --thumbprint MyCertificateThumbprint
 """
 
 # Identity Commands
@@ -367,12 +577,18 @@ helps['containerapp ingress traffic set'] = """
     type: command
     short-summary: Configure traffic-splitting for a container app.
     examples:
-    - name: Route 100%% of a container app's traffic to its latest revision.
+    - name: Route 100% of a container app's traffic to its latest revision.
       text: |
-          az containerapp ingress traffic set -n MyContainerapp -g MyResourceGroup --traffic-weight latest=100
+          az containerapp ingress traffic set -n MyContainerapp -g MyResourceGroup --revision-weight latest=100
     - name: Split a container app's traffic between two revisions.
       text: |
-          az containerapp ingress traffic set -n MyContainerapp -g MyResourceGroup --traffic-weight latest=80 MyRevisionName=20
+          az containerapp ingress traffic set -n MyContainerapp -g MyResourceGroup --revision-weight latest=80 MyRevisionName=20
+    - name: Split a container app's traffic between two labels.
+      text: |
+          az containerapp ingress traffic set -n MyContainerapp -g MyResourceGroup --label-weight myLabel=80 myLabel2=20
+    - name: Split a container app's traffic between a label and a revision.
+      text: |
+          az containerapp ingress traffic set -n MyContainerapp -g MyResourceGroup --revision-weight latest=80 --label-weight myLabel=20
 """
 
 helps['containerapp ingress traffic show'] = """
@@ -479,7 +695,7 @@ helps['containerapp github-action'] = """
 
 helps['containerapp github-action add'] = """
     type: command
-    short-summary: Add a Github Actions workflow to a repository to deploy a container app.
+    short-summary: Add a GitHub Actions workflow to a repository to deploy a container app.
     examples:
     - name: Add GitHub Actions, using Azure Container Registry and personal access token.
       text: az containerapp github-action add -g MyResourceGroup -n MyContainerapp --repo-url https://github.com/userid/repo --branch main
@@ -547,4 +763,268 @@ helps['containerapp dapr disable'] = """
     - name: Disable Dapr for a container app.
       text: |
           az containerapp dapr disable -n MyContainerapp -g MyResourceGroup
+"""
+
+# custom domain Commands
+helps['containerapp ssl'] = """
+    type: group
+    short-summary: Upload certificate to a managed environment, add hostname to an app in that environment, and bind the certificate to the hostname
+"""
+
+helps['containerapp ssl upload'] = """
+    type: command
+    short-summary: Upload certificate to a managed environment, add hostname to an app in that environment, and bind the certificate to the hostname
+"""
+
+helps['containerapp hostname'] = """
+    type: group
+    short-summary: Commands to manage hostnames of a container app.
+"""
+
+helps['containerapp hostname bind'] = """
+    type: command
+    short-summary: Add or update the hostname and binding with an existing certificate.
+    examples:
+    - name: Add or update hostname and binding.
+      text: |
+          az containerapp hostname bind -n MyContainerapp -g MyResourceGroup --hostname MyHostname --certificate MyCertificateId
+"""
+
+helps['containerapp hostname delete'] = """
+    type: command
+    short-summary: Delete hostnames from a container app.
+    examples:
+    - name: Delete secrets from a container app.
+      text: |
+          az containerapp hostname delete -n MyContainerapp -g MyResourceGroup --hostname MyHostname
+"""
+
+helps['containerapp hostname list'] = """
+    type: command
+    short-summary: List the hostnames of a container app.
+    examples:
+    - name: List the hostnames of a container app.
+      text: |
+          az containerapp hostname list -n MyContainerapp -g MyResourceGroup
+"""
+
+# Auth commands
+helps['containerapp auth'] = """
+type: group
+short-summary: Manage containerapp authentication and authorization.
+"""
+
+helps['containerapp auth show'] = """
+type: command
+short-summary: Show the authentication settings for the containerapp.
+examples:
+  - name: Show the authentication settings for the containerapp.
+    text: az containerapp auth show --name MyContainerapp --resource-group MyResourceGroup
+"""
+
+helps['containerapp auth update'] = """
+type: command
+short-summary: Update the authentication settings for the containerapp.
+examples:
+  - name: Update the client ID of the AAD provider already configured.
+    text: |
+        az containerapp auth update -g myResourceGroup --name MyContainerapp --set identityProviders.azureActiveDirectory.registration.clientId=my-client-id
+  - name: Configure the app with file based authentication by setting the config file path.
+    text: |
+        az containerapp auth update -g myResourceGroup --name MyContainerapp --config-file-path D:\\home\\site\\wwwroot\\auth.json
+  - name: Configure the app to allow unauthenticated requests to hit the app.
+    text: |
+        az containerapp auth update -g myResourceGroup --name MyContainerapp --unauthenticated-client-action AllowAnonymous
+  - name: Configure the app to redirect unauthenticated requests to the Facebook provider.
+    text: |
+        az containerapp auth update -g myResourceGroup --name MyContainerapp --redirect-provider Facebook
+  - name: Configure the app to listen to the forward headers X-FORWARDED-HOST and X-FORWARDED-PROTO.
+    text: |
+        az containerapp auth update -g myResourceGroup --name MyContainerapp --proxy-convention Standard
+"""
+
+helps['containerapp auth apple'] = """
+type: group
+short-summary: Manage containerapp authentication and authorization of the Apple identity provider.
+"""
+
+helps['containerapp auth apple show'] = """
+type: command
+short-summary: Show the authentication settings for the Apple identity provider.
+examples:
+  - name: Show the authentication settings for the Apple identity provider.
+    text: az containerapp auth apple show --name MyContainerapp --resource-group MyResourceGroup
+"""
+
+helps['containerapp auth apple update'] = """
+type: command
+short-summary: Update the client id and client secret for the Apple identity provider.
+examples:
+  - name: Update the client id and client secret for the Apple identity provider.
+    text: |
+        az containerapp auth apple update  -g myResourceGroup --name MyContainerapp \\
+          --client-id my-client-id --client-secret very_secret_password
+"""
+
+helps['containerapp auth facebook'] = """
+type: group
+short-summary: Manage containerapp authentication and authorization of the Facebook identity provider.
+"""
+
+helps['containerapp auth facebook show'] = """
+type: command
+short-summary: Show the authentication settings for the Facebook identity provider.
+examples:
+  - name: Show the authentication settings for the Facebook identity provider.
+    text: az containerapp auth facebook show --name MyContainerapp --resource-group MyResourceGroup
+"""
+
+helps['containerapp auth facebook update'] = """
+type: command
+short-summary: Update the app id and app secret for the Facebook identity provider.
+examples:
+  - name: Update the app id and app secret for the Facebook identity provider.
+    text: |
+        az containerapp auth facebook update  -g myResourceGroup --name MyContainerapp \\
+          --app-id my-client-id --app-secret very_secret_password
+"""
+
+helps['containerapp auth github'] = """
+type: group
+short-summary: Manage containerapp authentication and authorization of the GitHub identity provider.
+"""
+
+helps['containerapp auth github show'] = """
+type: command
+short-summary: Show the authentication settings for the GitHub identity provider.
+examples:
+  - name: Show the authentication settings for the GitHub identity provider.
+    text: az containerapp auth github show --name MyContainerapp --resource-group MyResourceGroup
+"""
+
+helps['containerapp auth github update'] = """
+type: command
+short-summary: Update the client id and client secret for the GitHub identity provider.
+examples:
+  - name: Update the client id and client secret for the GitHub identity provider.
+    text: |
+        az containerapp auth github update  -g myResourceGroup --name MyContainerapp \\
+          --client-id my-client-id --client-secret very_secret_password
+"""
+
+helps['containerapp auth google'] = """
+type: group
+short-summary: Manage containerapp authentication and authorization of the Google identity provider.
+"""
+
+helps['containerapp auth google show'] = """
+type: command
+short-summary: Show the authentication settings for the Google identity provider.
+examples:
+  - name: Show the authentication settings for the Google identity provider.
+    text: az containerapp auth google show --name MyContainerapp --resource-group MyResourceGroup
+"""
+
+helps['containerapp auth google update'] = """
+type: command
+short-summary: Update the client id and client secret for the Google identity provider.
+examples:
+  - name: Update the client id and client secret for the Google identity provider.
+    text: |
+        az containerapp auth google update  -g myResourceGroup --name MyContainerapp \\
+          --client-id my-client-id --client-secret very_secret_password
+"""
+
+helps['containerapp auth microsoft'] = """
+type: group
+short-summary: Manage containerapp authentication and authorization of the Microsoft identity provider.
+"""
+
+helps['containerapp auth microsoft show'] = """
+type: command
+short-summary: Show the authentication settings for the Azure Active Directory identity provider.
+examples:
+  - name: Show the authentication settings for the Azure Active Directory identity provider.
+    text: az containerapp auth microsoft show --name MyContainerapp --resource-group MyResourceGroup
+"""
+
+helps['containerapp auth microsoft update'] = """
+type: command
+short-summary: Update the client id and client secret for the Azure Active Directory identity provider.
+examples:
+  - name: Update the open id issuer, client id and client secret for the Azure Active Directory identity provider.
+    text: |
+        az containerapp auth microsoft update  -g myResourceGroup --name MyContainerapp \\
+          --client-id my-client-id --client-secret very_secret_password \\
+          --issuer https://sts.windows.net/54826b22-38d6-4fb2-bad9-b7983a3e9c5a/
+"""
+
+helps['containerapp auth openid-connect'] = """
+type: group
+short-summary: Manage containerapp authentication and authorization of the custom OpenID Connect identity providers.
+"""
+
+helps['containerapp auth openid-connect show'] = """
+type: command
+short-summary: Show the authentication settings for the custom OpenID Connect identity provider.
+examples:
+  - name: Show the authentication settings for the custom OpenID Connect identity provider.
+    text: az containerapp auth openid-connect show --name MyContainerapp --resource-group MyResourceGroup \\
+            --provider-name myOpenIdConnectProvider
+"""
+
+helps['containerapp auth openid-connect add'] = """
+type: command
+short-summary: Configure a new custom OpenID Connect identity provider.
+examples:
+  - name: Configure a new custom OpenID Connect identity provider.
+    text: |
+        az containerapp auth openid-connect add -g myResourceGroup --name MyContainerapp \\
+          --provider-name myOpenIdConnectProvider --client-id my-client-id \\
+          --client-secret-name MY_SECRET_APP_SETTING \\
+          --openid-configuration https://myopenidprovider.net/.well-known/openid-configuration
+"""
+
+helps['containerapp auth openid-connect update'] = """
+type: command
+short-summary: Update the client id and client secret setting name for an existing custom OpenID Connect identity provider.
+examples:
+  - name: Update the client id and client secret setting name for an existing custom OpenID Connect identity provider.
+    text: |
+        az containerapp auth openid-connect update -g myResourceGroup --name MyContainerapp \\
+          --provider-name myOpenIdConnectProvider --client-id my-client-id \\
+          --client-secret-name MY_SECRET_APP_SETTING
+"""
+
+helps['containerapp auth openid-connect remove'] = """
+type: command
+short-summary: Removes an existing custom OpenID Connect identity provider.
+examples:
+  - name: Removes an existing custom OpenID Connect identity provider.
+    text: |
+        az containerapp auth openid-connect remove --name MyContainerapp --resource-group MyResourceGroup \\
+          --provider-name myOpenIdConnectProvider
+"""
+
+helps['containerapp auth twitter'] = """
+type: group
+short-summary: Manage containerapp authentication and authorization of the Twitter identity provider.
+"""
+
+helps['containerapp auth twitter show'] = """
+type: command
+short-summary: Show the authentication settings for the Twitter identity provider.
+examples:
+  - name: Show the authentication settings for the Twitter identity provider.
+    text: az containerapp auth twitter show --name MyContainerapp --resource-group MyResourceGroup
+"""
+
+helps['containerapp auth twitter update'] = """
+type: command
+short-summary: Update the consumer key and consumer secret for the Twitter identity provider.
+examples:
+  - name: Update the consumer key and consumer secret for the Twitter identity provider.
+    text: |
+        az containerapp auth twitter update  -g myResourceGroup --name MyContainerapp \\
+          --consumer-key my-client-id --consumer-secret very_secret_password
 """

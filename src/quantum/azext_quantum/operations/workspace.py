@@ -30,6 +30,7 @@ DEFAULT_STORAGE_SKU_TIER = 'Standard'
 DEFAULT_STORAGE_KIND = 'Storage'
 SUPPORTED_STORAGE_SKU_TIERS = ['Standard']
 SUPPORTED_STORAGE_KINDS = ['Storage', 'StorageV2']
+DEPLOYMENT_NAME_PREFIX = 'Microsoft.AzureQuantum-'
 
 POLLING_TIME_DURATION = 3  # Seconds
 MAX_RETRIES_ROLE_ASSIGNMENT = 20
@@ -178,7 +179,11 @@ def create(cmd, resource_group_name=None, workspace_name=None, location=None, st
     if not location:
         raise RequiredArgumentMissingError("A location for the new quantum workspace is required.")
     if provider_sku_list is None:
-        raise RequiredArgumentMissingError("A list of Azure Quantum providers and SKUs is required.")
+        raise RequiredArgumentMissingError("A list of Azure Quantum providers and SKUs is required.",
+                                           "Supply the missing -r parameter. For example:\n"
+                                           "\t-r \"Microsoft/Basic, Microsoft.FleetManagement/Basic\"\n"
+                                           "To display a list of Provider IDs and their SKUs, use the following command:\n"
+                                           "\taz quantum offerings list -l MyLocation -o table")
     info = WorkspaceInfo(cmd, resource_group_name, workspace_name, location)
     if not info.resource_group:
         raise ResourceNotFoundError("Please run 'az quantum workspace set' first to select a default resource group.")
@@ -253,7 +258,7 @@ def create(cmd, resource_group_name=None, workspace_name=None, location=None, st
 
     deployment_async_operation = arm_client.deployments.begin_create_or_update(
         info.resource_group,
-        workspace_name,     # Note: This is actually specifying a the deployment name, but workspace_name is used here in test_quantum_workspace.py
+        (DEPLOYMENT_NAME_PREFIX + workspace_name)[:64],
         {'properties': deployment_properties}
     )
 

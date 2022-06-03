@@ -2,7 +2,14 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
-from ._consts import CONST_CONTAINER_NAME_MAX_LENGTH
+import re
+
+from azure.cli.command_modules.acs._helpers import map_azure_error_to_cli_error
+from azure.cli.core.azclierror import InvalidArgumentValueError, ResourceNotFoundError
+from azure.core.exceptions import AzureError
+
+from azext_aks_preview._client_factory import cf_nodepool_snapshots, cf_mc_snapshots
+from azext_aks_preview._consts import CONST_CONTAINER_NAME_MAX_LENGTH
 
 
 def _trim_fqdn_name_containing_hcp(normalized_fqdn: str) -> str:
@@ -65,3 +72,56 @@ def _fuzzy_match(query, arr):
             matches.append(word)
 
     return matches
+
+
+def get_nodepool_snapshot_by_snapshot_id(cli_ctx, snapshot_id):
+    _re_snapshot_resource_id = re.compile(
+        r"/subscriptions/(.*?)/resourcegroups/(.*?)/providers/microsoft.containerservice/snapshots/(.*)",
+        flags=re.IGNORECASE,
+    )
+    snapshot_id = snapshot_id.lower()
+    match = _re_snapshot_resource_id.search(snapshot_id)
+    if match:
+        resource_group_name = match.group(2)
+        snapshot_name = match.group(3)
+        return get_nodepool_snapshot(cli_ctx, resource_group_name, snapshot_name)
+    raise InvalidArgumentValueError("Cannot parse snapshot name from provided resource id '{}'.".format(snapshot_id))
+
+
+def get_nodepool_snapshot(cli_ctx, resource_group_name, snapshot_name):
+    snapshot_client = cf_nodepool_snapshots(cli_ctx)
+    try:
+        snapshot = snapshot_client.get(resource_group_name, snapshot_name)
+    # track 2 sdk raise exception from azure.core.exceptions
+    except AzureError as ex:
+        if "not found" in ex.message:
+            raise ResourceNotFoundError("Snapshot '{}' not found.".format(snapshot_name))
+        raise map_azure_error_to_cli_error(ex)
+    return snapshot
+
+
+def get_cluster_snapshot_by_snapshot_id(cli_ctx, snapshot_id):
+    _re_mc_snapshot_resource_id = re.compile(
+        r"/subscriptions/(.*?)/resourcegroups/(.*?)/providers/microsoft.containerservice/managedclustersnapshots/(.*)",
+        flags=re.IGNORECASE,
+    )
+    snapshot_id = snapshot_id.lower()
+    match = _re_mc_snapshot_resource_id.search(snapshot_id)
+    if match:
+        resource_group_name = match.group(2)
+        snapshot_name = match.group(3)
+        return get_cluster_snapshot(cli_ctx, resource_group_name, snapshot_name)
+    raise InvalidArgumentValueError(
+        "Cannot parse snapshot name from provided resource id {}.".format(snapshot_id))
+
+
+def get_cluster_snapshot(cli_ctx, resource_group_name, snapshot_name):
+    snapshot_client = cf_mc_snapshots(cli_ctx)
+    try:
+        snapshot = snapshot_client.get(resource_group_name, snapshot_name)
+    # track 2 sdk raise exception from azure.core.exceptions
+    except AzureError as ex:
+        if "not found" in ex.message:
+            raise ResourceNotFoundError("Managed cluster snapshot '{}' not found.".format(snapshot_name))
+        raise map_azure_error_to_cli_error(ex)
+    return snapshot

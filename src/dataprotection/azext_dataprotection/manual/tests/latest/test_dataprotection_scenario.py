@@ -4,22 +4,32 @@
 # --------------------------------------------------------------------------------------------
 # pylint: disable=line-too-long
 # pylint: disable=unused-import
-
+import time
+from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 
 def setup(test):
-    # import time
     test.kwargs.update({
         "vaultName": "cli-test-new-vault",
         "rg": "sarath-rg",
         "diskname": "cli-test-disk-new",
         "restorediskname": "cli-test-disk-new-restored",
-        "policyname": "diskpolicy"
+        "policyname": "diskpolicy",
+        "resourceGuardName": "cli-test-resource-guard"
     })
     account_res = test.cmd('az account show').get_output_in_json()
     vault_res = test.cmd('az dataprotection backup-vault create '
                          '-g "{rg}" --vault-name "{vaultName}" -l centraluseuap '
                          '--storage-settings datastore-type="VaultStore" type="LocallyRedundant" --type SystemAssigned',
                          checks=[]).get_output_in_json()
+
+    # Update DPP Alerts
+    test.cmd('az dataprotection backup-vault update -g "{rg}" --vault-name "{vaultName}" --azure-monitor-alerts-for-job-failures enabled',checks=[
+        test.check('properties.monitoringSettings.azureMonitorAlertSettings.alertsForAllJobFailures', 'Enabled')
+    ])
+
+    test.cmd('az dataprotection backup-vault update -g "{rg}" --vault-name "{vaultName}" --azure-monitor-alerts-for-job-failures disabled',checks=[
+        test.check('properties.monitoringSettings.azureMonitorAlertSettings.alertsForAllJobFailures', 'Disabled')
+    ])         
 
     disk_response = test.cmd('az disk create -g "{rg}" -n "{diskname}" --size-gb 4').get_output_in_json()
     test.kwargs.update({
@@ -33,6 +43,25 @@ def setup(test):
     # test.cmd('az role assignment create --assignee "{principalId}" --role "Disk Backup Reader" --scope "{diskid}"')
     # test.cmd('az role assignment create --assignee "{principalId}" --role "Disk Snapshot Contributor" --scope "{rgid}"')
     # test.cmd('az role assignment create --assignee "{principalId}" --role "Disk Restore Operator" --scope "{rgid}"')
+
+
+def test_resource_guard(test):
+    test.cmd('az dataprotection resource-guard create -g "{rg}" -n "{resourceGuardName}"', checks=[
+        test.check('name', "{resourceGuardName}")
+    ])
+
+    test.cmd('az dataprotection resource-guard list -g "{rg}"', checks=[
+        test.check("length([?name == '{resourceGuardName}'])", 1)
+    ])
+
+    test.cmd('az dataprotection resource-guard update -g "{rg}" -n "{resourceGuardName}" --resource-type "Microsoft.RecoveryServices/vaults" --critical-operation-exclusion-list deleteProtection getSecurityPIN', checks=[
+        test.check('name', "{resourceGuardName}"),
+        test.check('length(properties.vaultCriticalOperationExclusionList)', 2)
+    ])
+
+    test.cmd('az dataprotection resource-guard list-protected-operations -g "{rg}" -n "{resourceGuardName}" --resource-type "Microsoft.RecoveryServices/vaults"', checks=[
+        test.check('length(@)', 4)
+    ])
 
 
 def create_policy(test):
@@ -65,6 +94,32 @@ def create_policy(test):
     test.cmd('az dataprotection backup-policy create -n diskhourlypolicy --policy "{policyjson}" -g "{rg}" --vault-name "{vaultName}"')
 
 
+def stop_resume_protection(test):
+    test.cmd('az dataprotection backup-instance stop-protection -n "{backup_instance_name}" -g "{rg}" --vault-name "{vaultName}"')
+
+    test.cmd('az dataprotection backup-instance show -n "{backup_instance_name}" -g "{rg}" --vault-name "{vaultName}"',checks=[
+        test.check('properties.currentProtectionState','ProtectionStopped')
+    ])
+
+    test.cmd('az dataprotection backup-instance resume-protection -n "{backup_instance_name}" -g "{rg}" --vault-name "{vaultName}"')
+
+    test.cmd('az dataprotection backup-instance show -n "{backup_instance_name}" -g "{rg}" --vault-name "{vaultName}"',checks=[
+        test.check('properties.currentProtectionState','ProtectionConfigured')
+    ])
+
+    test.cmd('az dataprotection backup-instance suspend-backup -n "{backup_instance_name}" -g "{rg}" --vault-name "{vaultName}"')
+
+    test.cmd('az dataprotection backup-instance show -n "{backup_instance_name}" -g "{rg}" --vault-name "{vaultName}"',checks=[
+        test.check('properties.currentProtectionState','BackupsSuspended')
+    ])
+
+    test.cmd('az dataprotection backup-instance resume-protection -n "{backup_instance_name}" -g "{rg}" --vault-name "{vaultName}"')
+
+    test.cmd('az dataprotection backup-instance show -n "{backup_instance_name}" -g "{rg}" --vault-name "{vaultName}"',checks=[
+        test.check('properties.currentProtectionState','ProtectionConfigured')
+    ])
+
+
 def trigger_disk_backup(test):
     # import time
     response_json = test.cmd('az dataprotection backup-instance adhoc-backup -n "{backup_instance_name}" -g "{rg}" --vault-name "{vaultName}" --rule-name BackupHourly --retention-tag-override Default').get_output_in_json()
@@ -72,7 +127,7 @@ def trigger_disk_backup(test):
     test.kwargs.update({"backup_job_id": response_json["jobId"]})
     while job_status != "Completed":
         # run the below code only in record mode
-        # time.sleep(10)
+        time.sleep(10)
         job_response = test.cmd('az dataprotection job show --ids "{backup_job_id}"').get_output_in_json()
         job_status = job_response["properties"]["status"]
         if job_status not in ["Completed", "InProgress"]:
@@ -80,7 +135,6 @@ def trigger_disk_backup(test):
 
 
 def trigger_disk_restore(test):
-    # import time
     rp_json = test.cmd('az dataprotection recovery-point list --backup-instance-name "{backup_instance_name}" -g "{rg}" --vault-name "{vaultName}"').get_output_in_json()
     test.kwargs.update({"rp_id": rp_json[0]["name"]})
     split_disk_id = test.kwargs["diskid"].split("/")
@@ -100,7 +154,7 @@ def trigger_disk_restore(test):
     test.kwargs.update({"backup_job_id": response_json["jobId"]})
     while job_status != "Completed":
         # run the below code only in record mode
-        # time.sleep(10)
+        time.sleep(10)
         job_response = test.cmd('az dataprotection job show --ids "{backup_job_id}"').get_output_in_json()
         job_status = job_response["properties"]["status"]
         if job_status not in ["Completed", "InProgress"]:
@@ -108,7 +162,6 @@ def trigger_disk_restore(test):
 
 
 def configure_backup(test):
-    import time
     backup_instance_guid = "b7e6f082-b310-11eb-8f55-9cfce85d4fae"
     backup_instance_json = test.cmd('az dataprotection backup-instance initialize --datasource-type AzureDisk'
                                     ' -l centraluseuap --policy-id "{policyid}" --datasource-id "{diskid}"').get_output_in_json()
@@ -124,7 +177,7 @@ def configure_backup(test):
     protection_status = backup_instance_res["status"]
     while protection_status != "ProtectionConfigured":
         # run the below line only in record mode
-        # time.sleep(10)
+        time.sleep(10)
         backup_instance_res = test.cmd('az dataprotection backup-instance list -g "{rg}" --vault-name "{vaultName}" --query "[0].properties.protectionStatus"').get_output_in_json()
         protection_status = backup_instance_res["status"]
 
@@ -138,17 +191,21 @@ def delete_backup(test):
 
 def cleanup(test):
     delete_backup(test)
+    test.cmd('az dataprotection resource-guard delete -g "{rg}" -n "{resourceGuardName}" -y')
     test.cmd('az dataprotection backup-vault delete '
              ' -g "{rg}" --vault-name "{vaultName}" --yes')
     test.cmd('az disk delete --name "{diskname}" --resource-group "{rg}" --yes')
     test.cmd('az disk delete --name "{restorediskname}" --resource-group "{rg}" --yes')
 
 
+@AllowLargeResponse()
 def call_scenario(test):
     setup(test)
     try:
+        test_resource_guard(test)
         create_policy(test)
         configure_backup(test)
+        stop_resume_protection(test)
         trigger_disk_backup(test)
         trigger_disk_restore(test)
     except Exception as e:

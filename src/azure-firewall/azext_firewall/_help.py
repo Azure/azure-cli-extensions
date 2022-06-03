@@ -349,7 +349,7 @@ helps['network firewall policy intrusion-detection'] = """
 
 helps['network firewall policy intrusion-detection add'] = """
     type: command
-    short-summary: Add overrided intrusion signature or a bypass rule for intrusion detection
+    short-summary: Add overrided intrusion signature or a bypass rule or private ranges list for intrusion detection
 """
 
 helps['network firewall policy intrusion-detection list'] = """

@@ -188,6 +188,9 @@ aks update:
     enable_pod_identity_with_kubenet:
       rule_exclusions:
       - option_length_too_long
+    assign_kubelet_identity:
+      rule_exclusions:
+      - option_length_too_long
 arcdata dc create:
   parameters:
     logs_ui_private_key_file:
@@ -200,6 +203,22 @@ arcdata dc create:
       rule_exclusions:
       - option_length_too_long
     metrics_ui_public_key_file:
+      rule_exclusions:
+      - option_length_too_long
+arcdata ad-connector create:
+  parameters:
+    domain_service_account_secret:
+      rule_exclusions:
+      - option_length_too_long
+    secondary_domain_controllers:
+      rule_exclusions:
+      - option_length_too_long
+arcdata ad-connector update:
+  parameters:
+    domain_service_account_secret:
+      rule_exclusions:
+      - option_length_too_long
+    secondary_domain_controllers:
       rule_exclusions:
       - option_length_too_long
 sql mi-arc update:
@@ -461,6 +480,26 @@ datafactory integration-runtime-node update:
 datafactory pipeline create-run:
   parameters:
     reference_pipeline_run_id:
+      rule_exclusions:
+      - option_length_too_long
+dataprotection backup-instance restore initialize-for-data-recovery-as-files:
+  parameters:
+    target_blob_container_url:
+      rule_exclusions:
+      - option_length_too_long
+dataprotection backup-vault create:
+  parameters:
+    alerts_for_all_job_failures:
+      rule_exclusions:
+      - option_length_too_long
+dataprotection backup-vault update:
+  parameters:
+    alerts_for_all_job_failures:
+      rule_exclusions:
+      - option_length_too_long
+dataprotection resource-guard update:
+  parameters:
+    critical_operation_exclusion_list:
       rule_exclusions:
       - option_length_too_long
 datashare consumer dataset-mapping create:

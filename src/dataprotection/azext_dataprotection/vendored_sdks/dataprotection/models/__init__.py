@@ -31,6 +31,7 @@ try:
     from ._models_py3 import AzureBackupRestoreRequest
     from ._models_py3 import AzureBackupRestoreWithRehydrationRequest
     from ._models_py3 import AzureBackupRule
+    from ._models_py3 import AzureMonitorAlertSettings
     from ._models_py3 import AzureOperationalStoreParameters
     from ._models_py3 import AzureRetentionRule
     from ._models_py3 import BackupCriteria
@@ -85,9 +86,13 @@ try:
     from ._models_py3 import ItemLevelRestoreTargetInfo
     from ._models_py3 import JobExtendedInfo
     from ._models_py3 import JobSubTask
+    from ._models_py3 import KubernetesPvRestoreCriteria
+    from ._models_py3 import KubernetesStorageClassRestoreCriteria
+    from ._models_py3 import MonitoringSettings
     from ._models_py3 import OperationExtendedInfo
     from ._models_py3 import OperationJobExtendedInfo
     from ._models_py3 import OperationResource
+    from ._models_py3 import PatchBackupVaultInput
     from ._models_py3 import PatchResourceRequestInput
     from ._models_py3 import PolicyInfo
     from ._models_py3 import PolicyParameters
@@ -113,6 +118,7 @@ try:
     from ._models_py3 import SourceLifeCycle
     from ._models_py3 import StorageSetting
     from ._models_py3 import SupportedFeature
+    from ._models_py3 import SyncBackupInstanceRequest
     from ._models_py3 import SystemData
     from ._models_py3 import TaggingCriteria
     from ._models_py3 import TargetCopySetting
@@ -147,6 +153,7 @@ except (SyntaxError, ImportError):
     from ._models import AzureBackupRestoreRequest  # type: ignore
     from ._models import AzureBackupRestoreWithRehydrationRequest  # type: ignore
     from ._models import AzureBackupRule  # type: ignore
+    from ._models import AzureMonitorAlertSettings  # type: ignore
     from ._models import AzureOperationalStoreParameters  # type: ignore
     from ._models import AzureRetentionRule  # type: ignore
     from ._models import BackupCriteria  # type: ignore
@@ -201,9 +208,13 @@ except (SyntaxError, ImportError):
     from ._models import ItemLevelRestoreTargetInfo  # type: ignore
     from ._models import JobExtendedInfo  # type: ignore
     from ._models import JobSubTask  # type: ignore
+    from ._models import KubernetesPvRestoreCriteria  # type: ignore
+    from ._models import KubernetesStorageClassRestoreCriteria  # type: ignore
+    from ._models import MonitoringSettings  # type: ignore
     from ._models import OperationExtendedInfo  # type: ignore
     from ._models import OperationJobExtendedInfo  # type: ignore
     from ._models import OperationResource  # type: ignore
+    from ._models import PatchBackupVaultInput  # type: ignore
     from ._models import PatchResourceRequestInput  # type: ignore
     from ._models import PolicyInfo  # type: ignore
     from ._models import PolicyParameters  # type: ignore
@@ -229,6 +240,7 @@ except (SyntaxError, ImportError):
     from ._models import SourceLifeCycle  # type: ignore
     from ._models import StorageSetting  # type: ignore
     from ._models import SupportedFeature  # type: ignore
+    from ._models import SyncBackupInstanceRequest  # type: ignore
     from ._models import SystemData  # type: ignore
     from ._models import TaggingCriteria  # type: ignore
     from ._models import TargetCopySetting  # type: ignore
@@ -241,6 +253,7 @@ except (SyntaxError, ImportError):
 
 from ._data_protection_client_enums import (
     AbsoluteMarker,
+    AlertsState,
     CreatedByType,
     CurrentProtectionState,
     DataStoreTypes,
@@ -260,6 +273,8 @@ from ._data_protection_client_enums import (
     Status,
     StorageSettingStoreTypes,
     StorageSettingTypes,
+    SyncType,
+    ValidationType,
     WeekNumber,
 )
 
@@ -288,6 +303,7 @@ __all__ = [
     'AzureBackupRestoreRequest',
     'AzureBackupRestoreWithRehydrationRequest',
     'AzureBackupRule',
+    'AzureMonitorAlertSettings',
     'AzureOperationalStoreParameters',
     'AzureRetentionRule',
     'BackupCriteria',
@@ -342,9 +358,13 @@ __all__ = [
     'ItemLevelRestoreTargetInfo',
     'JobExtendedInfo',
     'JobSubTask',
+    'KubernetesPvRestoreCriteria',
+    'KubernetesStorageClassRestoreCriteria',
+    'MonitoringSettings',
     'OperationExtendedInfo',
     'OperationJobExtendedInfo',
     'OperationResource',
+    'PatchBackupVaultInput',
     'PatchResourceRequestInput',
     'PolicyInfo',
     'PolicyParameters',
@@ -370,6 +390,7 @@ __all__ = [
     'SourceLifeCycle',
     'StorageSetting',
     'SupportedFeature',
+    'SyncBackupInstanceRequest',
     'SystemData',
     'TaggingCriteria',
     'TargetCopySetting',
@@ -380,6 +401,7 @@ __all__ = [
     'ValidateForBackupRequest',
     'ValidateRestoreRequestObject',
     'AbsoluteMarker',
+    'AlertsState',
     'CreatedByType',
     'CurrentProtectionState',
     'DataStoreTypes',
@@ -399,5 +421,7 @@ __all__ = [
     'Status',
     'StorageSettingStoreTypes',
     'StorageSettingTypes',
+    'SyncType',
+    'ValidationType',
     'WeekNumber',
 ]

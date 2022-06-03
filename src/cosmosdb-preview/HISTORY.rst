@@ -2,6 +2,16 @@
 
 Release History
 ===============
+
+0.17.0
+++++++
+* Add support for new Continuous 7 Days backup mode
+* Add oldest restorable timestamp to indicate when the accounts can be restored to
+
+0.16.0
+++++++
+* Create and manage data transfer jobs.
+
 0.15.0
 ++++++
 * Add `--enable-materialized-views` parameter for create/update database account.
