@@ -10,7 +10,7 @@ from codecs import open
 from setuptools import setup, find_packages
 
 # HISTORY.rst entry.
-VERSION = '0.1.0'
+VERSION = '0.4.0'
 try:
     from azext_dataprotection.manual.version import VERSION
 except ImportError:
@@ -30,7 +30,7 @@ CLASSIFIERS = [
     'License :: OSI Approved :: MIT License',
 ]
 
-DEPENDENCIES = ["azure-mgmt-resourcegraph"]
+DEPENDENCIES = []
 
 try:
     from azext_dataprotection.manual.dependency import DEPENDENCIES

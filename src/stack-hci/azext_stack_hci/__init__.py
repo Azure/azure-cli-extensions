@@ -7,25 +7,22 @@
 # Changes may cause incorrect behavior and will be lost if the code is
 # regenerated.
 # --------------------------------------------------------------------------
+# pylint: disable=unused-import
 
+import azext_stack_hci._help
 from azure.cli.core import AzCommandsLoader
-from azext_stack_hci.generated._help import helps  # pylint: disable=unused-import
-try:
-    from azext_stack_hci.manual._help import helps  # pylint: disable=reimported
-except ImportError:
-    pass
 
 
 class AzureStackHCIClientCommandsLoader(AzCommandsLoader):
 
     def __init__(self, cli_ctx=None):
         from azure.cli.core.commands import CliCommandType
-        from azext_stack_hci.generated._client_factory import cf_stack_hci
-        azure_stack_hci_custom = CliCommandType(
+        from azext_stack_hci.generated._client_factory import cf_stack_hci_cl
+        stack_hci_custom = CliCommandType(
             operations_tmpl='azext_stack_hci.custom#{}',
-            client_factory=cf_stack_hci)
-        parent = super(AzureStackHCIClientCommandsLoader, self)
-        parent.__init__(cli_ctx=cli_ctx, custom_command_type=azure_stack_hci_custom)
+            client_factory=cf_stack_hci_cl)
+        parent = super()
+        parent.__init__(cli_ctx=cli_ctx, custom_command_type=stack_hci_custom)
 
     def load_command_table(self, args):
         from azext_stack_hci.generated.commands import load_command_table
@@ -33,8 +30,11 @@ class AzureStackHCIClientCommandsLoader(AzCommandsLoader):
         try:
             from azext_stack_hci.manual.commands import load_command_table as load_command_table_manual
             load_command_table_manual(self, args)
-        except ImportError:
-            pass
+        except ImportError as e:
+            if e.name.endswith('manual.commands'):
+                pass
+            else:
+                raise e
         return self.command_table
 
     def load_arguments(self, command):
@@ -43,8 +43,11 @@ class AzureStackHCIClientCommandsLoader(AzCommandsLoader):
         try:
             from azext_stack_hci.manual._params import load_arguments as load_arguments_manual
             load_arguments_manual(self, command)
-        except ImportError:
-            pass
+        except ImportError as e:
+            if e.name.endswith('manual._params'):
+                pass
+            else:
+                raise e
 
 
 COMMAND_LOADER_CLS = AzureStackHCIClientCommandsLoader

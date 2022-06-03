@@ -57,6 +57,7 @@ class AzureMLKubernetes(DefaultExtension):
         self.AZURE_LOG_ANALYTICS_CONNECTION_STRING = 'azure_log_analytics.connection_string'
         self.JOB_SCHEDULER_LOCATION_KEY = 'jobSchedulerLocation'
         self.CLUSTER_NAME_FRIENDLY_KEY = 'cluster_name_friendly'
+        self.NGINX_INGRESS_ENABLED_KEY = 'nginxIngress.enabled'
 
         # component flag
         self.ENABLE_TRAINING = 'enableTraining'
@@ -66,6 +67,10 @@ class AzureMLKubernetes(DefaultExtension):
         self.RELAY_SERVER_CONNECTION_STRING = 'relayServerConnectionString'  # create relay connection string if None
         self.SERVICE_BUS_CONNECTION_STRING = 'serviceBusConnectionString'  # create service bus if None
         self.LOG_ANALYTICS_WS_ENABLED = 'logAnalyticsWS'  # create log analytics workspace if true
+        # default to false when creating the extension
+        self.SERVICE_BUS_ENABLED = 'servicebus.enabled'
+        # default to false if cluster is AKS when creating the extension
+        self.RELAY_SERVER_ENABLED = 'relayserver.enabled'
 
         # constants for azure resources creation
         self.RELAY_HC_AUTH_NAME = 'azureml_rw'
@@ -83,7 +88,7 @@ class AzureMLKubernetes(DefaultExtension):
 
         self.inferenceRouterServiceType = 'inferenceRouterServiceType'
         self.internalLoadBalancerProvider = 'internalLoadBalancerProvider'
-        self.inferenceLoadBalancerHA = 'inferenceLoadBalancerHA'
+        self.inferenceRouterHA = 'inferenceRouterHA'
 
         # constants for existing AKS to AMLARC migration
         self.IS_AKS_MIGRATION = 'isAKSMigration'
@@ -106,9 +111,10 @@ class AzureMLKubernetes(DefaultExtension):
                configuration_settings_file, configuration_protected_settings_file):
         if scope == 'namespace':
             raise InvalidArgumentValueError("Invalid scope '{}'.  This extension can't be installed "
-                                            "only at 'cluster' scope.".format(scope))
-        if not release_namespace:
-            release_namespace = self.DEFAULT_RELEASE_NAMESPACE
+                                            "only at 'cluster' scope. "
+                                            "Check https://aka.ms/arcmltsg for more information.".format(scope))
+        # set release name explicitly to azureml
+        release_namespace = self.DEFAULT_RELEASE_NAMESPACE
         scope_cluster = ScopeCluster(release_namespace=release_namespace)
         ext_scope = Scope(cluster=scope_cluster, namespace=None)
 
@@ -136,6 +142,8 @@ class AzureMLKubernetes(DefaultExtension):
                         nodeCount += agent['count']
                     if nodeCount < 3:
                         configuration_settings['clusterPurpose'] = 'DevTest'
+                if resource.properties.get('distribution', '').lower() == self.OPEN_SHIFT:
+                    configuration_settings[self.OPEN_SHIFT] = 'true'
             except:
                 pass
         except CloudError as ex:
@@ -150,6 +158,20 @@ class AzureMLKubernetes(DefaultExtension):
             self.JOB_SCHEDULER_LOCATION_KEY, cluster_location)
         configuration_settings[self.CLUSTER_NAME_FRIENDLY_KEY] = configuration_settings.get(
             self.CLUSTER_NAME_FRIENDLY_KEY, cluster_name)
+        # do not enable service bus by default
+        configuration_settings[self.SERVICE_BUS_ENABLED] = configuration_settings.get(self.SERVICE_BUS_ENABLED, 'false')
+
+        # do not enable relay for managed cluster(AKS) by default, do not enable nginx for ARC by default
+        if cluster_type == "managedClusters":
+            configuration_settings[self.RELAY_SERVER_ENABLED] = configuration_settings.get(self.RELAY_SERVER_ENABLED,
+                                                                                           'false')
+            configuration_settings[self.NGINX_INGRESS_ENABLED_KEY] = configuration_settings.get(
+                self.NGINX_INGRESS_ENABLED_KEY, 'true')
+        else:
+            configuration_settings[self.RELAY_SERVER_ENABLED] = configuration_settings.get(self.RELAY_SERVER_ENABLED,
+                                                                                           'true')
+            configuration_settings[self.NGINX_INGRESS_ENABLED_KEY] = configuration_settings.get(
+                self.NGINX_INGRESS_ENABLED_KEY, 'false')
 
         # create Azure resources need by the extension based on the config.
         self.__create_required_resource(
@@ -186,7 +208,14 @@ class AzureMLKubernetes(DefaultExtension):
         user_confirmation_factory(cmd, yes)
 
     def Update(self, cmd, resource_group_name, cluster_name, auto_upgrade_minor_version, release_train, version, configuration_settings,
-               configuration_protected_settings, yes=False):
+               configuration_protected_settings, original_extension, yes=False):
+        input_configuration_settings = copy.deepcopy(configuration_settings)
+        input_configuration_protected_settings = copy.deepcopy(configuration_protected_settings)
+        # configuration_settings and configuration_protected_settings can be none, so need to set them to empty dict
+        if configuration_settings is None:
+            configuration_settings = {}
+        if configuration_protected_settings is None:
+            configuration_protected_settings = {}
         self.__normalize_config(configuration_settings, configuration_protected_settings)
 
         # Prompt message to ask customer to confirm again
@@ -281,7 +310,11 @@ class AzureMLKubernetes(DefaultExtension):
                 except azure.core.exceptions.HttpResponseError:
                     logger.info("Failed to get log analytics connection string.")
 
-            if self.RELAY_SERVER_CONNECTION_STRING not in configuration_protected_settings:
+            original_extension_config_settings = original_extension.configuration_settings
+            if original_extension_config_settings is None:
+                original_extension_config_settings = {}
+            if original_extension_config_settings.get(self.RELAY_SERVER_ENABLED).lower() != 'false' \
+                    and self.RELAY_SERVER_CONNECTION_STRING not in configuration_protected_settings:
                 try:
                     relay_connection_string, _, _ = _get_relay_connection_str(
                         cmd, subscription_id, resource_group_name, cluster_name, '', self.RELAY_HC_AUTH_NAME, True)
@@ -289,10 +322,13 @@ class AzureMLKubernetes(DefaultExtension):
                     logger.info("Get relay connection string succeeded.")
                 except azure.mgmt.relay.models.ErrorResponseException as ex:
                     if ex.response.status_code == 404:
-                        raise ResourceNotFoundError("Relay server not found.") from ex
-                    raise AzureResponseError("Failed to get relay connection string.") from ex
+                        raise ResourceNotFoundError("Relay server not found. "
+                                                    "Check https://aka.ms/arcmltsg for more information.") from ex
+                    raise AzureResponseError("Failed to get relay connection string."
+                                             "Check https://aka.ms/arcmltsg for more information.") from ex
 
-            if self.SERVICE_BUS_CONNECTION_STRING not in configuration_protected_settings:
+            if original_extension_config_settings.get(self.SERVICE_BUS_ENABLED).lower() != 'false' \
+                    and self.SERVICE_BUS_CONNECTION_STRING not in configuration_protected_settings:
                 try:
                     service_bus_connection_string, _ = _get_service_bus_connection_string(
                         cmd, subscription_id, resource_group_name, cluster_name, '', {}, True)
@@ -300,8 +336,10 @@ class AzureMLKubernetes(DefaultExtension):
                     logger.info("Get service bus connection string succeeded.")
                 except azure.core.exceptions.HttpResponseError as ex:
                     if ex.response.status_code == 404:
-                        raise ResourceNotFoundError("Service bus not found.") from ex
-                    raise AzureResponseError("Failed to get service bus connection string.") from ex
+                        raise ResourceNotFoundError("Service bus not found."
+                                                    "Check https://aka.ms/arcmltsg for more information.") from ex
+                    raise AzureResponseError("Failed to get service bus connection string."
+                                             "Check https://aka.ms/arcmltsg for more information.") from ex
 
             configuration_protected_settings = _dereference(self.reference_mapping, configuration_protected_settings)
 
@@ -314,6 +352,13 @@ class AzureMLKubernetes(DefaultExtension):
                 if fe_ssl_cert_file and fe_ssl_key_file:
                     self.__set_inference_ssl_from_file(configuration_protected_settings, fe_ssl_cert_file, fe_ssl_key_file)
 
+        # if no entries are existed in configuration_protected_settings, configuration_settings, return whatever passed
+        #  in the Update function(empty dict or None).
+        if len(configuration_settings) == 0:
+            configuration_settings = input_configuration_settings
+        if len(configuration_protected_settings) == 0:
+            configuration_protected_settings = input_configuration_protected_settings
+
         return PatchExtension(auto_upgrade_minor_version=auto_upgrade_minor_version,
                               release_train=release_train,
                               version=version,
@@ -322,10 +367,10 @@ class AzureMLKubernetes(DefaultExtension):
 
     def __normalize_config(self, configuration_settings, configuration_protected_settings):
         # inference
-        isTestCluster = _get_value_from_config_protected_config(
-            self.inferenceLoadBalancerHA, configuration_settings, configuration_protected_settings)
-        if isTestCluster is not None:
-            isTestCluster = str(isTestCluster).lower() == 'false'
+        inferenceRouterHA = _get_value_from_config_protected_config(
+            self.inferenceRouterHA, configuration_settings, configuration_protected_settings)
+        if inferenceRouterHA is not None:
+            isTestCluster = str(inferenceRouterHA).lower() == 'false'
             if isTestCluster:
                 configuration_settings['clusterPurpose'] = 'DevTest'
             else:
@@ -334,9 +379,9 @@ class AzureMLKubernetes(DefaultExtension):
         inferenceRouterServiceType = _get_value_from_config_protected_config(
             self.inferenceRouterServiceType, configuration_settings, configuration_protected_settings)
         if inferenceRouterServiceType:
-            if inferenceRouterServiceType.lower() != 'nodeport' and inferenceRouterServiceType.lower() != 'loadbalancer':
+            if not _is_valid_service_type(inferenceRouterServiceType):
                 raise InvalidArgumentValueError(
-                    "inferenceRouterServiceType only supports nodePort or loadBalancer."
+                    "inferenceRouterServiceType only supports NodePort or LoadBalancer or ClusterIP."
                     "Check https://aka.ms/arcmltsg for more information.")
 
             feIsNodePort = str(inferenceRouterServiceType).lower() == 'nodeport'
@@ -359,7 +404,8 @@ class AzureMLKubernetes(DefaultExtension):
             for key in dup_keys:
                 logger.warning(
                     'Duplicate keys found in both configuration settings and configuration protected setttings: %s', key)
-            raise InvalidArgumentValueError("Duplicate keys found.")
+            raise InvalidArgumentValueError("Duplicate keys found."
+                                            "Check https://aka.ms/arcmltsg for more information.")
 
         enable_training = _get_value_from_config_protected_config(
             self.ENABLE_TRAINING, configuration_settings, configuration_protected_settings)
@@ -386,9 +432,9 @@ class AzureMLKubernetes(DefaultExtension):
         configuration_protected_settings.pop(self.ENABLE_INFERENCE, None)
 
     def __validate_scoring_fe_settings(self, configuration_settings, configuration_protected_settings, release_namespace):
-        isTestCluster = _get_value_from_config_protected_config(
-            self.inferenceLoadBalancerHA, configuration_settings, configuration_protected_settings)
-        isTestCluster = str(isTestCluster).lower() == 'false'
+        inferenceRouterHA = _get_value_from_config_protected_config(
+            self.inferenceRouterHA, configuration_settings, configuration_protected_settings)
+        isTestCluster = True if inferenceRouterHA is not None and str(inferenceRouterHA).lower() == 'false' else False
         if isTestCluster:
             configuration_settings['clusterPurpose'] = 'DevTest'
         else:
@@ -424,10 +470,10 @@ class AzureMLKubernetes(DefaultExtension):
 
         inferenceRouterServiceType = _get_value_from_config_protected_config(
             self.inferenceRouterServiceType, configuration_settings, configuration_protected_settings)
-        if not inferenceRouterServiceType or (inferenceRouterServiceType.lower() != 'nodeport' and inferenceRouterServiceType.lower() != 'loadbalancer'):
+        if not _is_valid_service_type(inferenceRouterServiceType):
             raise InvalidArgumentValueError(
                 "To use inference, "
-                "please specify inferenceRouterServiceType=nodePort or inferenceRouterServiceType=loadBalancer in --configuration-settings and also set internalLoadBalancerProvider=azure if your aks only supports internal load balancer."
+                "please specify inferenceRouterServiceType=ClusterIP or inferenceRouterServiceType=NodePort or inferenceRouterServiceType=LoadBalancer in --configuration-settings and also set internalLoadBalancerProvider=azure if your aks only supports internal load balancer."
                 "Check https://aka.ms/arcmltsg for more information.")
 
         feIsNodePort = str(inferenceRouterServiceType).lower() == 'nodeport'
@@ -437,7 +483,8 @@ class AzureMLKubernetes(DefaultExtension):
 
         if feIsNodePort and feIsInternalLoadBalancer:
             raise MutuallyExclusiveArgumentError(
-                "When using nodePort as inferenceRouterServiceType, no need to specify internalLoadBalancerProvider.")
+                "When using nodePort as inferenceRouterServiceType, no need to specify internalLoadBalancerProvider."
+                "Check https://aka.ms/arcmltsg for more information.")
         if feIsNodePort:
             configuration_settings['scoringFe.serviceType.nodePort'] = feIsNodePort
         elif feIsInternalLoadBalancer:
@@ -494,7 +541,8 @@ class AzureMLKubernetes(DefaultExtension):
             configuration_settings[self.AZURE_LOG_ANALYTICS_CUSTOMER_ID_KEY] = ws_costumer_id
             configuration_protected_settings[self.AZURE_LOG_ANALYTICS_CONNECTION_STRING] = shared_key
 
-        if not configuration_settings.get(self.RELAY_SERVER_CONNECTION_STRING) and \
+        if str(configuration_settings.get(self.RELAY_SERVER_ENABLED)).lower() != 'false' and \
+                not configuration_settings.get(self.RELAY_SERVER_CONNECTION_STRING) and \
                 not configuration_protected_settings.get(self.RELAY_SERVER_CONNECTION_STRING):
             logger.info('==== BEGIN RELAY CREATION ====')
             relay_connection_string, hc_resource_id, hc_name = _get_relay_connection_str(
@@ -504,7 +552,8 @@ class AzureMLKubernetes(DefaultExtension):
             configuration_settings[self.HC_RESOURCE_ID_KEY] = hc_resource_id
             configuration_settings[self.RELAY_HC_NAME_KEY] = hc_name
 
-        if not configuration_settings.get(self.SERVICE_BUS_CONNECTION_STRING) and \
+        if str(configuration_settings.get(self.SERVICE_BUS_ENABLED)).lower() != 'false' and \
+                not configuration_settings.get(self.SERVICE_BUS_CONNECTION_STRING) and \
                 not configuration_protected_settings.get(self.SERVICE_BUS_CONNECTION_STRING):
             logger.info('==== BEGIN SERVICE BUS CREATION ====')
             topic_sub_mapping = {
@@ -676,9 +725,11 @@ def _dereference(ref_mapping_dict: Dict[str, List], output_dict: Dict[str, Any])
 
 
 def _get_value_from_config_protected_config(key, config, protected_config):
-    if key in config:
+    if config is not None and key in config:
         return config[key]
-    return protected_config.get(key)
+    if protected_config is not None:
+        return protected_config.get(key)
+    return None
 
 
 def _check_nodeselector_existed(configuration_settings, configuration_protected_settings):
@@ -690,3 +741,10 @@ def _check_nodeselector_existed(configuration_settings, configuration_protected_
             if "nodeSelector" in key:
                 return True
     return False
+
+
+def _is_valid_service_type(service_type):
+    if service_type:
+        return service_type.lower() == 'nodeport' or service_type.lower() == 'loadbalancer' or service_type.lower() == 'clusterip'
+    else:
+        return False

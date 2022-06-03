@@ -10,11 +10,13 @@ from knack.help_files import helps  # pylint: disable=unused-import
 helps['managed-cassandra'] = """
 type: group
 short-summary: Azure Managed Cassandra.
+long-summary: See https://docs.microsoft.com/en-us/azure/managed-instance-apache-cassandra/manage-resources-cli for Cassandra API samples.
 """
 
 helps['managed-cassandra cluster'] = """
 type: group
 short-summary: Azure Managed Cassandra Cluster.
+long-summary: See https://docs.microsoft.com/en-us/azure/managed-instance-apache-cassandra/manage-resources-cli for Cassandra API samples.
 """
 
 helps['managed-cassandra cluster create'] = """
@@ -535,4 +537,110 @@ short-summary: Retrieves latest restorable timestamp for the given gremlin graph
 helps['cosmosdb table retrieve-latest-backup-time'] = """
 type: command
 short-summary: Retrieves latest restorable timestamp for the given table in given region.
+"""
+
+helps['cosmosdb dts copy'] = """
+    type: command
+    short-summary: "Creates a Data Transfer Copy Job."
+    parameters:
+      - name: --source-cassandra-table
+        short-summary: "Source cassandra table"
+        long-summary: |
+            Usage: --source-cassandra-table keyspace=XX table=XX'
+            keyspace: Keyspace name of CosmosDB Cassandra.
+            table: Table name of CosmosDB Cassandra.
+      - name: --dest-cassandra-table
+        short-summary: "Destination cassandra table"
+        long-summary: |
+            Usage: --dest-cassandra-table keyspace=XX table=XX'
+            keyspace: Keyspace name of CosmosDB Cassandra.
+            table: Table name of CosmosDB Cassandra.
+      - name: --source-sql-container
+        short-summary: "Source sql container"
+        long-summary: |
+            Usage: --source-sql-container database=XX container=XX'
+            database: Database name of CosmosDB Sql.
+            container: Container name of CosmosDB Sql.
+      - name: --dest-sql-container
+        short-summary: "Destination sql container"
+        long-summary: |
+            Usage: --dest-sql-container database=XX container=XX'
+            database: Database name of CosmosDB Sql.
+            container: Container name of CosmosDB Sql.
+
+    examples:
+      - name: Copy sql container
+        text: |-
+          az cosmosdb dts copy -g "rg1" --job-name "j1" --account-name "db1" --source-sql-container database=db1 container=c1 --dest-sql-container database=db2 container=c2
+      - name: Copy cassandra table
+        text: |-
+          az cosmosdb dts copy -g "rg1" --job-name "j1" --account-name "db1" --source-cassandra-table keyspace=k1 table=t1 --dest-cassandra-table keyspace=k1 table=t1
+"""
+
+helps['cosmosdb dts'] = """
+    type: group
+    short-summary: Manage data transfer job with cosmosdb
+"""
+
+helps['cosmosdb dts list'] = """
+    type: command
+    short-summary: "Get a list of Data Transfer Jobs."
+    examples:
+      - name: List all jobs
+        text: |-
+               az cosmosdb dts list --account-name "ddb1" -g "rg1"
+"""
+
+helps['cosmosdb dts show'] = """
+    type: command
+    short-summary: "Get a Data Transfer Job."
+    examples:
+      - name: Show details of job j1
+        text: |-
+               az cosmosdb dts show --account-name "ddb1" --job-name "j1" -g "rg1"
+"""
+
+helps['cosmosdb dts pause'] = """
+    type: command
+    short-summary: "Pause a Data Transfer Job."
+    examples:
+      - name: Pause job j1
+        text: |-
+               az cosmosdb dts pause --account-name "ddb1" --job-name "j1" -g "rg1"
+"""
+
+helps['cosmosdb dts resume'] = """
+    type: command
+    short-summary: "Resumes a Data Transfer Job."
+    examples:
+      - name: Resume job j1
+        text: |-
+               az cosmosdb dts resume --account-name "ddb1" --job-name "j1" -g "rg1"
+"""
+
+helps['cosmosdb dts cancel'] = """
+    type: command
+    short-summary: "Cancels a Data Transfer Job."
+    examples:
+      - name: Cancel job j1
+        text: |-
+               az cosmosdb dts cancel --account-name "ddb1" --job-name "j1" -g "rg1"
+"""
+
+helps['cosmosdb sql container merge'] = """
+    type: command
+    short-summary: "Merges the partitions of a sql container."
+    examples:
+      - name: merge partitions of container my-container
+        text: |-
+               az cosmosdb sql container merge -g my-resource-group -a my-account -d my-db --name my-container
+"""
+
+helps['cosmosdb mongodb collection merge'] = """
+    type: command
+    short-summary: "Merges the partitions of a mongodb collection."
+    examples:
+      - name: merge partitions of collection my-mongodb-collection
+        text: |-
+               az cosmosdb mongodb collection merge -g my-resource-group -a my-account -d my-db --name my-mongodb-collection
 """
