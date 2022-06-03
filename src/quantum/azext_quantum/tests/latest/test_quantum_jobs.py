@@ -16,7 +16,7 @@ from ..._client_factory import _get_data_credentials
 from ...commands import transform_output
 from ...operations.workspace import WorkspaceInfo
 from ...operations.target import TargetInfo
-from ...operations.job import _generate_submit_args, _parse_blob_url, _validate_max_poll_wait_secs
+from ...operations.job import _generate_submit_args, _parse_blob_url, _validate_max_poll_wait_secs, build
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
@@ -30,6 +30,11 @@ class QuantumJobsScenarioTest(ScenarioTest):
         # list
         targets = self.cmd('az quantum target list -o json').get_output_in_json()
         assert len(targets) > 0
+
+    @live_only()
+    def test_build(self):
+        result = build(self, target_id='ionq.simulator', project='src\\quantum\\azext_quantum\\tests\\latest\\source_for_build_test\\QuantumRNG.csproj', target_capability='foo')
+        assert result == {'result': 'ok'}
 
     @live_only()
     def test_submit_args(self):
