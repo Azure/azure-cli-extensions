@@ -8,7 +8,7 @@ Release History
 * Added parameter --environment to 'az containerapp list'
 * Added 'az containerapp revision label swap' to swap traffic labels
 * BREAKING CHANGE: 'az containerapp revision list' now shows only active revisions by default, added flag --all to show all revisions
-* Fixed but with 'az containerapp up' where custom domains would be removed when updating existing containerapp
+* Fixed bug with 'az containerapp up' where custom domains would be removed when updating existing containerapp
 * Fixed bug with 'az containerapp auth update' when using --unauthenticated-client-action
 
 0.3.5
