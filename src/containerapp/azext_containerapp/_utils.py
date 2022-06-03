@@ -292,24 +292,26 @@ def _ensure_location_allowed(cmd, location, resource_provider, resource_type):
     providers_client = None
     try:
         providers_client = providers_client_factory(cmd.cli_ctx, get_subscription_id(cmd.cli_ctx))
+    except Exception as ex:
+        handle_raw_exception(ex)
 
-        if providers_client is not None:
+    if providers_client is not None:
+        try:
             resource_types = getattr(providers_client.get(resource_provider), 'resource_types', [])
-            res_locations = []
-            for res in resource_types:
-                if res and getattr(res, 'resource_type', "") == resource_type:
-                    res_locations = getattr(res, 'locations', [])
+        except Exception as ex:
+            handle_raw_exception(ex)
 
-            res_locations = [res_loc.lower().replace(" ", "").replace("(", "").replace(")", "") for res_loc in res_locations if res_loc.strip()]
+        res_locations = []
+        for res in resource_types:
+            if res and getattr(res, 'resource_type', "") == resource_type:
+                res_locations = getattr(res, 'locations', [])
 
-            location_formatted = location.lower().replace(" ", "")
-            if location_formatted not in res_locations:
-                raise ValidationError("Location '{}' is not currently supported. To get list of supported locations, run `az provider show -n {} --query \"resourceTypes[?resourceType=='{}'].locations\"`".format(
-                    location, resource_provider, resource_type))
-    except ValidationError as ex:
-        raise ex
-    except Exception:  # pylint: disable=broad-except
-        pass
+        res_locations = [res_loc.lower().replace(" ", "").replace("(", "").replace(")", "") for res_loc in res_locations if res_loc.strip()]
+
+        location_formatted = location.lower().replace(" ", "")
+        if location_formatted not in res_locations:
+            raise ValidationError("Location '{}' is not currently supported. To get list of supported locations, run `az provider show -n {} --query \"resourceTypes[?resourceType=='{}'].locations\"`"
+                                 .format(location, resource_provider, resource_type))
 
 
 def parse_env_var_flags(env_list, is_update_containerapp=False):
@@ -531,33 +533,40 @@ def _generate_log_analytics_if_not_provided(cmd, logs_customer_id, logs_key, loc
     if logs_customer_id is None and logs_key is None:
         logger.warning("No Log Analytics workspace provided.")
         _validate_subscription_registered(cmd, LOG_ANALYTICS_RP)
+
         try:
             log_analytics_client = log_analytics_client_factory(cmd.cli_ctx)
             log_analytics_shared_key_client = log_analytics_shared_key_client_factory(cmd.cli_ctx)
+        except Exception as ex:
+            handle_raw_exception(ex)
 
-            log_analytics_location = location
-            try:
-                _ensure_location_allowed(cmd, log_analytics_location, LOG_ANALYTICS_RP, "workspaces")
-            except Exception:  # pylint: disable=broad-except
-                log_analytics_location = _get_default_log_analytics_location(cmd)
+        log_analytics_location = location
+        try:
+            _ensure_location_allowed(cmd, log_analytics_location, LOG_ANALYTICS_RP, "workspaces")
+        except ValidationError:  # pylint: disable=broad-except
+            log_analytics_location = _get_default_log_analytics_location(cmd)
 
-            from azure.cli.core.commands import LongRunningOperation
-            from azure.mgmt.loganalytics.models import Workspace
+        from azure.cli.core.commands import LongRunningOperation
+        from azure.mgmt.loganalytics.models import Workspace
 
-            workspace_name = _generate_log_analytics_workspace_name(resource_group_name)
-            workspace_instance = Workspace(location=log_analytics_location)
-            logger.warning("Generating a Log Analytics workspace with name \"{}\"".format(workspace_name))  # pylint: disable=logging-format-interpolation
+        workspace_name = _generate_log_analytics_workspace_name(resource_group_name)
+        workspace_instance = Workspace(location=log_analytics_location)
+        logger.warning("Generating a Log Analytics workspace with name \"{}\"".format(workspace_name))  # pylint: disable=logging-format-interpolation
 
+        try:
             poller = log_analytics_client.begin_create_or_update(resource_group_name, workspace_name, workspace_instance)
             log_analytics_workspace = LongRunningOperation(cmd.cli_ctx)(poller)
+        except Exception as ex:
+            handle_raw_exception(ex)
 
-            logs_customer_id = log_analytics_workspace.customer_id
+        logs_customer_id = log_analytics_workspace.customer_id
+        try:
             logs_key = log_analytics_shared_key_client.get_shared_keys(
                 workspace_name=workspace_name,
                 resource_group_name=resource_group_name).primary_shared_key
-
         except Exception as ex:
-            raise ValidationError("Unable to generate a Log Analytics workspace. You can use \"az monitor log-analytics workspace create\" to create one and supply --logs-customer-id and --logs-key") from ex
+            handle_raw_exception(ex)
+
     elif logs_customer_id is None:
         raise ValidationError("Usage error: Supply the --logs-customer-id associated with the --logs-key")
     elif logs_key is None:  # Try finding the logs-key
@@ -566,7 +575,11 @@ def _generate_log_analytics_if_not_provided(cmd, logs_customer_id, logs_key, loc
 
         log_analytics_name = None
         log_analytics_rg = None
-        log_analytics = log_analytics_client.list()
+
+        try:
+            log_analytics = log_analytics_client.list()
+        except Exception as ex:
+            handle_raw_exception(ex)
 
         for la in log_analytics:
             if la.customer_id and la.customer_id.lower() == logs_customer_id.lower():
@@ -577,7 +590,10 @@ def _generate_log_analytics_if_not_provided(cmd, logs_customer_id, logs_key, loc
         if log_analytics_name is None:
             raise ValidationError('Usage error: Supply the --logs-key associated with the --logs-customer-id')
 
-        shared_keys = log_analytics_shared_key_client.get_shared_keys(workspace_name=log_analytics_name, resource_group_name=log_analytics_rg)
+        try:
+            shared_keys = log_analytics_shared_key_client.get_shared_keys(workspace_name=log_analytics_name, resource_group_name=log_analytics_rg)
+        except Exception as ex:
+            handle_raw_exception(ex)
 
         if not shared_keys or not shared_keys.primary_shared_key:
             raise ValidationError('Usage error: Supply the --logs-key associated with the --logs-customer-id')
