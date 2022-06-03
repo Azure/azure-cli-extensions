@@ -222,6 +222,9 @@ def _get_app_resource_id_by_name(client, resource_group, service, app_name):
 
 
 def _create_or_update_routes_properties(routes_file, routes_json, route_properties):
+    if routes_file is None and routes_json is None:
+        return route_properties
+
     if routes_file is not None:
         with open(routes_file, 'r') as json_file:
             raw_json = json.load(json_file)
