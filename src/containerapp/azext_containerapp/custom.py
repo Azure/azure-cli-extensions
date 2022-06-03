@@ -2344,7 +2344,10 @@ def containerapp_up_logic(cmd, resource_group_name, name, managed_env, image, en
 
     ingress_def = None
     if target_port is not None and ingress is not None:
-        ingress_def = IngressModel
+        if ca_exists:
+            ingress_def = containerapp_def["properties"]["configuration"]["ingress"]
+        else:
+            ingress_def = IngressModel
         ingress_def["external"] = external_ingress
         ingress_def["targetPort"] = target_port
         containerapp_def["properties"]["configuration"]["ingress"] = ingress_def
