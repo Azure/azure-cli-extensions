@@ -306,6 +306,7 @@ def load_arguments(self, _):
         c.argument('dns-zone-resource-id')
         # no validation for aks create because it already only supports Linux.
         c.argument('enable_custom_ca_trust', action='store_true')
+        c.argument('enable_keda', action='store_true', is_preview=True)
 
     with self.argument_context('aks update') as c:
         # managed cluster paramerters
@@ -380,6 +381,8 @@ def load_arguments(self, _):
         c.argument('azure_keyvault_kms_key_id', validator=validate_azure_keyvault_kms_key_id, is_preview=True)
         c.argument('enable_apiserver_vnet_integration', action='store_true', is_preview=True)
         c.argument('apiserver_subnet_id', validator=validate_apiserver_subnet_id, is_preview=True)
+        c.argument('enable_keda', action='store_true', is_preview=True)
+        c.argument('disable_keda', action='store_true', is_preview=True)
 
     with self.argument_context('aks scale') as c:
         c.argument('nodepool_name',

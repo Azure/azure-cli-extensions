@@ -819,6 +819,7 @@ def aks_create(cmd,
                apiserver_subnet_id=None,
                dns_zone_resource_id=None,
                enable_custom_ca_trust=False,
+               enable_keda=False,
                yes=False):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
@@ -911,6 +912,8 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
                azure_keyvault_kms_key_id=None,
                enable_apiserver_vnet_integration=False,
                apiserver_subnet_id=None,
+               enable_keda=False,
+               disable_keda=False,
                ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
