@@ -1,5 +1,9 @@
 Release History
 ===============
+1.1.1
+---
+* Support configure OpenAPI URI in Spring Cloud Gateway route configs.
+
 1.1.0
 ---
 * Command `az spring create` has new argument "--ingress-read-timeout" to set ingress read timeout when create Azure Spring Apps.
