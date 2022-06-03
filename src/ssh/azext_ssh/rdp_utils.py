@@ -31,6 +31,7 @@ def start_rdp_connection(ssh_info, delete_keys, delete_cert):
     rdp_process.start()
 
     start_ssh_tunnel(ssh_info, ssh_conn)
+    ssh_utils.do_cleanup(delete_keys, delete_cert, ssh_info.cert_file, ssh_info.private_key_file, ssh_info.public_key_file)
     
     if rdp_process.is_alive():
         # This is also temporary, because I need to figure out how to kill the process smoothly if needed
@@ -40,10 +41,10 @@ def start_rdp_connection(ssh_info, delete_keys, delete_cert):
             return
 
 
-def start_ssh_tunnel(op_info, ssh_conn):
+def start_ssh_tunnel(op_info, ssh_conn, delete_keys, delete_cert):
     try:
-        # About cleanup: For now, since it's windows only, we won't ever need to clear credentials.
-        # Unless --force-delete-credentials is used, but let's ignore that for now.
+        # About cleanup: It is possible to RDP into Linux machines (see https://docs.microsoft.com/en-us/azure/virtual-machines/linux/use-remote-desktop?tabs=azure-cli)
+        # Clean-up is necessary
         env = os.environ.copy()
         if op_info.is_arc():
             env['SSHPROXY_RELAY_INFO'] = connectivity_utils.format_relay_info_string(op_info.relay_info)
@@ -65,6 +66,7 @@ def start_ssh_tunnel(op_info, ssh_conn):
         ssh_sub = subprocess.Popen(command, shell=True, stderr=subprocess.PIPE, env=env, universal_newlines=True, encoding='utf-8')
     except Exception as e:
         ssh_conn.send("SSH_FAIL")
+        ssh_utils.do_cleanup(delete_keys, delete_cert, op_info.cert_file, op_info.private_key_file, op_info.public_key_file)
         raise e
     
     log_list = []
@@ -78,6 +80,7 @@ def start_ssh_tunnel(op_info, ssh_conn):
             # Is this message coming from upstream? Check today.
             if "debug1: Entering interactive session." in next_line:
                 ssh_conn.send("SSH_OK")
+                ssh_utils.do_cleanup(delete_keys, delete_cert, op_info.cert_file, op_info.private_key_file, op_info.public_key_file)
                 break
         except:
             ssh_conn.send("SSH_FAIL")

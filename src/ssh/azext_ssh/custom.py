@@ -57,7 +57,7 @@ def ssh_vm(cmd, resource_group_name=None, vm_name=None, ssh_ip=None, public_key_
     op_call = ssh_utils.start_ssh_connection
     if winrdp:
         if platform.system() != 'Windows':
-            raise azclierror.BadRequestError("Platform is not supported for this command. Supported platforms: Windows")
+            raise azclierror.BadRequestError("RDP connection is not supported for this platform. Supported platforms: Windows")
         op_call = rdp_utils.start_rdp_connection
 
     ssh_session = ssh_info.SSHSession(resource_group_name, vm_name, ssh_ip, public_key_file,
@@ -426,9 +426,6 @@ def _decide_resource_type(cmd, op_info):
             raise azclierror.RequiredArgumentMissingError("SSH Login using AAD credentials is not currently supported "
                                                           "for Windows.",
                                                           Fore.YELLOW + "Please provide --local-user." + Style.RESET_ALL)
-    else:
-        if op_info.winrdp:
-            raise azclierror.BadRequestError("OS type on target resource doesn't support RDP connections.")
 
     if os_type:
         telemetry.add_extension_event('ssh', {'Context.Default.AzureCLI.TargetOSType': os_type})
