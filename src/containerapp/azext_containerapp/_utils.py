@@ -70,7 +70,7 @@ def _create_application(client, display_name):
         if 'insufficient privileges' in str(ex).lower():
             link = 'https://docs.microsoft.com/azure/azure-resource-manager/resource-group-create-service-principal-portal'  # pylint: disable=line-too-long
             raise ValidationError("Directory permission is needed for the current user to register the application. "
-                                  "For how to configure, please refer '{}'. Original error: {}".format(link, ex))
+                                  "For how to configure, please refer '{}'. Original error: {}".format(link, ex)) from ex
         raise
     return result
 
@@ -310,8 +310,7 @@ def _ensure_location_allowed(cmd, location, resource_provider, resource_type):
 
         location_formatted = location.lower().replace(" ", "")
         if location_formatted not in res_locations:
-            raise ValidationError("Location '{}' is not currently supported. To get list of supported locations, run `az provider show -n {} --query \"resourceTypes[?resourceType=='{}'].locations\"`"
-                                 .format(location, resource_provider, resource_type))
+            raise ValidationError(f"Location '{location}' is not currently supported. To get list of supported locations, run `az provider show -n {resource_provider} --query \"resourceTypes[?resourceType=='{resource_type}'].locations\"`")
 
 
 def parse_env_var_flags(env_list, is_update_containerapp=False):

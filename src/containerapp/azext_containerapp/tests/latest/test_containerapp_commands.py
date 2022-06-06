@@ -229,7 +229,7 @@ class ContainerappIngressTests(ScenarioTest):
             time.sleep(5)
             containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
 
-        self.cmd('containerapp create -g {} -n {} --environment {} --ingress external --target-port 80'.format(resource_group, ca_name, env_name))
+        self.cmd('containerapp create -g {} -n {} --environment {} --ingress external --target-port 80 --revisions-mode multiple'.format(resource_group, ca_name, env_name))
 
         self.cmd('containerapp ingress show -g {} -n {}'.format(resource_group, ca_name), checks=[
             JMESPathCheck('external', True),
@@ -542,7 +542,7 @@ class ContainerappRevisionTests(ScenarioTest):
                 self.assertEqual(traffic["weight"], 50)
 
         traffic_weight = self.cmd(f"containerapp revision label swap -g {resource_group} -n {ca_name} --labels {labels[0]} {labels[1]}").get_output_in_json()
- 
+
         for revision in revision_names:
             traffic = [w for w in traffic_weight if "revisionName" in w and w["revisionName"] == revision][0]
             self.assertEqual(traffic["label"], labels[(revision_names.index(revision) + 1) % 2])
