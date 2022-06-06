@@ -3,6 +3,15 @@
 Release History
 ===============
 
+0.3.5
+++++++
+* Add parameter --zone-redundant to 'az containerapp env create'
+* Added 'az containerapp env certificate' to manage certificates in a container app environment
+* Added 'az containerapp hostname' to manage hostnames in a container app
+* Added 'az containerapp ssl upload' to upload a certificate, add a hostname and the binding to a container app
+* Added 'az containerapp auth' to manage AuthConfigs for a containerapp
+* Require Azure CLI version of at least 2.37.0
+
 0.3.4
 ++++++
 * BREAKING CHANGE: 'az containerapp up' and 'az containerapp github-action add' now use the github repo's default branch instead of "main"
