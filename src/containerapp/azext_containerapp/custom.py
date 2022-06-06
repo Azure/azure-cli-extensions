@@ -1445,13 +1445,10 @@ def add_revision_label(cmd, resource_group_name, revision, label, name=None, no_
         handle_raw_exception(e)
 
 
-def swap_revision_label(cmd, name, resource_group_name, labels, no_wait=False):
+def swap_revision_label(cmd, name, resource_group_name, source_label, target_label, no_wait=False):
     _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
-    if not labels or len(labels) != 2:
-        raise ArgumentUsageError("Usage error: --labels requires two labels to be swapped.")
-
-    if labels[0] == labels[1]:
+    if source_label == target_label:
         raise ArgumentUsageError("Label names to be swapped must be different.")
 
     containerapp_def = None
@@ -1468,24 +1465,24 @@ def swap_revision_label(cmd, name, resource_group_name, labels, no_wait=False):
 
     traffic_weight = containerapp_def['properties']['configuration']['ingress']['traffic'] if 'traffic' in containerapp_def['properties']['configuration']['ingress'] else {}
 
-    label1_found = False
-    label2_found = False
+    source_label_found = False
+    target_label_found = False
     for weight in traffic_weight:
         if "label" in weight:
-            if weight["label"].lower() == labels[0].lower():
-                if not label1_found:
-                    label1_found = True
-                    weight["label"] = labels[1]
-            elif weight["label"].lower() == labels[1].lower():
-                if not label2_found:
-                    label2_found = True
-                    weight["label"] = labels[0]
-    if not label1_found and not label2_found:
-        raise ArgumentUsageError(f"Could not find label '{labels[0]}' nor label '{labels[1]}' in traffic.")
-    if not label1_found:
-        raise ArgumentUsageError(f"Could not find label '{labels[0]}' in traffic.")
-    if not label2_found:
-        raise ArgumentUsageError(f"Could not find label '{labels[1]}' in traffic.")
+            if weight["label"].lower() == source_label.lower():
+                if not source_label_found:
+                    source_label_found = True
+                    weight["label"] = target_label
+            elif weight["label"].lower() == target_label.lower():
+                if not target_label_found:
+                    target_label_found = True
+                    weight["label"] = source_label
+    if not source_label_found and not target_label_found:
+        raise ArgumentUsageError(f"Could not find label '{source_label}' nor label '{target_label}' in traffic.")
+    if not source_label_found:
+        raise ArgumentUsageError(f"Could not find label '{source_label}' in traffic.")
+    if not target_label_found:
+        raise ArgumentUsageError(f"Could not find label '{target_label}' in traffic.")
 
     containerapp_patch_def = {}
     containerapp_patch_def['properties'] = {}
