@@ -915,7 +915,8 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
                apiserver_subnet_id=None,
                enable_keda=False,
                disable_keda=False,
-               enable_namespace_resources=False
+               enable_namespace_resources=False,
+               disable_namespace_resources=False
                ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()

@@ -3048,6 +3048,8 @@ class AKSPreviewUpdateDecorator(AKSUpdateDecorator):
         """
         if self.context.raw_param.get("enable_namespace_resources"):
             mc.enable_namespace_resources = True
+        elif self.context.raw_param.get("disable_namespace_resources"):
+            mc.enable_namespace_resources = False
         return mc
 
     def update_storage_profile(self, mc: ManagedCluster) -> ManagedCluster:

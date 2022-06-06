@@ -381,6 +381,7 @@ def load_arguments(self, _):
         c.argument('enable_azure_keyvault_kms', action='store_true', is_preview=True)
         c.argument('azure_keyvault_kms_key_id', validator=validate_azure_keyvault_kms_key_id, is_preview=True)
         c.argument('enable_namespace_resources', help='Enables namespace as an ARM resource')
+        c.argument('disable_namespace_resources', help='Disables namespace as an ARM resource')
         c.argument('enable_apiserver_vnet_integration', action='store_true', is_preview=True)
         c.argument('apiserver_subnet_id', validator=validate_apiserver_subnet_id, is_preview=True)
         c.argument('enable_keda', action='store_true', is_preview=True)
