@@ -312,6 +312,10 @@ helps['containerapp env create'] = """
       text: |
           az containerapp env create -n MyContainerappEnvironment -g MyResourceGroup \\
               --location eastus2
+    - name: Create a zone-redundant environment
+      text: |
+          az containerapp env create -n MyContainerappEnvironment -g MyResourceGroup \\
+              --location eastus2 --zone-redundant
     - name: Create an environment with an existing Log Analytics workspace.
       text: |
           az containerapp env create -n MyContainerappEnvironment -g MyResourceGroup \\
