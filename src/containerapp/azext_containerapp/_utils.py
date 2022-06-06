@@ -12,7 +12,7 @@ from urllib.parse import urlparse
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
 from azure.cli.core.azclierror import (ValidationError, RequiredArgumentMissingError, CLIInternalError,
-                                       ResourceNotFoundError, ArgumentUsageError, FileOperationError, CLIError)
+                                       ResourceNotFoundError, FileOperationError, CLIError)
 from azure.cli.core.commands.client_factory import get_subscription_id
 from azure.cli.command_modules.appservice.utils import _normalize_location
 from azure.cli.command_modules.network._client_factory import network_client_factory
@@ -1293,7 +1293,7 @@ def check_cert_name_availability(cmd, resource_group_name, name, cert_name):
         r = ManagedEnvironmentClient.check_name_availability(cmd, resource_group_name, name, name_availability_request)
     except CLIError as e:
         handle_raw_exception(e)
-    return r["nameAvailable"]
+    return r
 
 
 def validate_hostname(cmd, resource_group_name, name, hostname):
