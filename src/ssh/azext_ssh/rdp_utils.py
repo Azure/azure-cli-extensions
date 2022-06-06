@@ -95,7 +95,9 @@ def start_ssh_tunnel(op_info, ssh_conn):
         command = command + op_info.build_args() + op_info.ssh_args
 
         logger.debug(f"Startng SSH tunnel with command: {command}")
-        ssh_sub = subprocess.Popen(command, shell=True, stderr=subprocess.PIPE, env=env, universal_newlines=True, encoding='utf-8')
+
+        # It seems like "universal newlines and shell might not be necessary. Continue with further testing."
+        ssh_sub = subprocess.Popen(command, stderr=subprocess.PIPE, env=env, encoding='utf-8')
 
         return ssh_sub, print_ssh_logs
     
@@ -130,7 +132,9 @@ def wait_for_rdp_conclusion(ssh_conn, ssh_process):
     while True:
         msg = ssh_conn.recv()
         if msg == "RDP_CLOSE":
-            kill_process(ssh_process.pid) 
+            #kill_process(ssh_process.pid)
+            #without shell, .terminate() is enough
+            ssh_process.terminate()
             break
         
 
