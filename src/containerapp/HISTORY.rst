@@ -10,7 +10,7 @@ Release History
 * BREAKING CHANGE: 'az containerapp revision list' now shows only active revisions by default, added flag --all to show all revisions
 * Fixed bug with 'az containerapp up' where custom domains would be removed when updating existing containerapp
 * Fixed bug with 'az containerapp auth update' when using --unauthenticated-client-action
-* BREAKING CHANGE: 'az containerapp env certificate upload' now overwrites the existing certificate by default. Added flag --overwrite to show the prompt for confirmation of overwriting the existing certificate.
+* BREAKING CHANGE: 'az containerapp env certificate upload' does not prompt by default when re-uploading an existing certificate. Added --show-prompt to show prompts on re-upload.
 * Fixed bug with 'az containerapp env certificate upload' where it shows a misleading message for invalid certificate name
 
 0.3.5

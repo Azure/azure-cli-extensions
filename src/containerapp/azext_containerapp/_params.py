@@ -155,7 +155,7 @@ def load_arguments(self, _):
         c.argument('certificate_file', options_list=['--certificate-file', '-f'], help='The filepath of the .pfx or .pem file')
         c.argument('certificate_name', options_list=['--certificate-name', '-c'], help='Name of the certificate which should be unique within the Container Apps environment.')
         c.argument('certificate_password', options_list=['--password', '-p'], help='The certificate file password')
-        c.argument('prompt', options_list=['--overwrite'], help='Boolean indicating whether to show a prompt for confirmation of overwriting the existing certificate.')
+        c.argument('prompt', options_list=['--show-prompt'], help='Show prompt to upload an existing certificate.')
 
     with self.argument_context('containerapp env certificate list') as c:
         c.argument('name', id_part=None)
