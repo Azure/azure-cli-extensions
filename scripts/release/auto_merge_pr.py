@@ -25,7 +25,7 @@ def auto_merge(headers, number):
     logger.debug(merge_url)
     # merge_method: merge, squash or rebase
     body = {
-        'merge_method': 'rebase'
+        'merge_method': 'squash'
     }
     try:
         r = requests.put(merge_url, json=body, headers=headers)
