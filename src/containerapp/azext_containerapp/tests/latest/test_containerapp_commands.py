@@ -541,7 +541,7 @@ class ContainerappRevisionTests(ScenarioTest):
             else:
                 self.assertEqual(traffic["weight"], 50)
 
-        traffic_weight = self.cmd(f"containerapp revision label swap -g {resource_group} -n {ca_name} --labels {labels[0]} {labels[1]}").get_output_in_json()
+        traffic_weight = self.cmd(f"containerapp revision label swap -g {resource_group} -n {ca_name} --source {labels[0]} --target {labels[1]}").get_output_in_json()
 
         for revision in revision_names:
             traffic = [w for w in traffic_weight if "revisionName" in w and w["revisionName"] == revision][0]
