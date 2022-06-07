@@ -12,6 +12,7 @@ Release History
 * Fixed bug with 'az containerapp auth update' when using --unauthenticated-client-action
 * BREAKING CHANGE: 'az containerapp env certificate upload' does not prompt by default when re-uploading an existing certificate. Added --show-prompt to show prompts on re-upload.
 * Fixed bug with 'az containerapp env certificate upload' where it shows a misleading message for invalid certificate name
+* 'az containerapp registry set': allow authenticating with managed identity (MSI) instead of ACR username & password
 
 0.3.5
 ++++++
