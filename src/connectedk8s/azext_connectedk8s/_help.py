@@ -43,8 +43,6 @@ helps['connectedk8s update'] = """
       text: az connectedk8s update -g resourceGroupName -n connectedClusterName --disable-proxy
     - name: Disable auto-upgrade of agents
       text: az connectedk8s update -g resourceGroupName -n connectedClusterName --auto-upgrade false
-    - name: Update a connected cluster to enable private link feature by specifying private link parameters.
-      text: az connectedk8s update -g resourceGroupName -n connectedClusterName --enable-private-link true --private-link-scope-resource-id pls/resource/arm/id
 """
 
 helps['connectedk8s upgrade'] = """

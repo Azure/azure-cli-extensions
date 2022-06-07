@@ -39,14 +39,14 @@ from azext_connectedk8s._client_factory import cf_resource_groups
 from azext_connectedk8s._client_factory import _resource_client_factory
 from azext_connectedk8s._client_factory import _resource_providers_client
 from azext_connectedk8s._client_factory import get_graph_client_service_principals
-from azext_connectedk8s._client_factory import cf_connected_cluster_prev_2021_04_01
+from azext_connectedk8s._client_factory import cf_connected_cluster_prev_2022_05_01
 import azext_connectedk8s._constants as consts
 import azext_connectedk8s._utils as utils
 import azext_connectedk8s._clientproxyutils as clientproxyutils
 from glob import glob
 from .vendored_sdks.models import ConnectedCluster, ConnectedClusterIdentity, ConnectedClusterPatch, ListClusterUserCredentialProperties
-from .vendored_sdks.preview_2021_04_01.models import ConnectedCluster as ConnectedClusterPreview
-from .vendored_sdks.preview_2021_04_01.models import ConnectedClusterPatch as ConnectedClusterPatchPreview
+from .vendored_sdks.preview_2022_05_01.models import ConnectedCluster as ConnectedClusterPreview
+from .vendored_sdks.preview_2022_05_01.models import ConnectedClusterPatch as ConnectedClusterPatchPreview
 from threading import Timer, Thread
 import sys
 import hashlib
@@ -105,7 +105,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
 
     # Set preview client if private link properties are provided.
     if enable_private_link is not None:
-        client = cf_connected_cluster_prev_2021_04_01(cmd.cli_ctx, None)
+        client = cf_connected_cluster_prev_2022_05_01(cmd.cli_ctx, None)
 
     # Checking whether optional extra values file has been provided.
     values_file_provided, values_file = utils.get_values_file()
@@ -616,17 +616,10 @@ def generate_request_payload(configuration, location, public_key, tags, kubernet
     return cc
 
 
-def generate_patch_payload(tags, enable_private_link, private_link_scope_resource_id):
+def generate_patch_payload(tags):
     cc = ConnectedClusterPatch(
         tags=tags
     )
-    if enable_private_link is not None:
-        private_link_state = "Enabled" if enable_private_link is True else "Disabled"
-        cc = ConnectedClusterPatchPreview(
-            tags=tags,
-            private_link_scope_resource_id=private_link_scope_resource_id,
-            private_link_state=private_link_state
-        )
     return cc
 
 
@@ -693,13 +686,13 @@ def get_server_address(kube_config, kube_context):
 
 def get_connectedk8s(cmd, client, resource_group_name, cluster_name):
     # Override preview client to show private link properties to customers
-    client = cf_connected_cluster_prev_2021_04_01(cmd.cli_ctx, None)
+    client = cf_connected_cluster_prev_2022_05_01(cmd.cli_ctx, None)
     return client.get(resource_group_name, cluster_name)
 
 
 def list_connectedk8s(cmd, client, resource_group_name=None):
     # Override preview client to show private link properties to customers
-    client = cf_connected_cluster_prev_2021_04_01(cmd.cli_ctx, None)
+    client = cf_connected_cluster_prev_2022_05_01(cmd.cli_ctx, None)
     if not resource_group_name:
         return client.list_by_subscription()
     return client.list_by_resource_group(resource_group_name)
@@ -802,14 +795,10 @@ def create_cc_resource(client, resource_group_name, cluster_name, cc, no_wait):
         utils.arm_exception_handler(e, consts.Create_ConnectedCluster_Fault_Type, 'Unable to create connected cluster resource')
 
 
-def patch_cc_resource(client, resource_group_name, cluster_name, cc, no_wait, preview_sdk=False):
+def patch_cc_resource(client, resource_group_name, cluster_name, cc):
     try:
-        if preview_sdk:
-            return sdk_no_wait(no_wait, client.begin_update, resource_group_name=resource_group_name,
-                               cluster_name=cluster_name, connected_cluster_patch=cc).result()
-        else:
-            return sdk_no_wait(no_wait, client.update, resource_group_name=resource_group_name,
-                               cluster_name=cluster_name, connected_cluster_patch=cc)
+        return client.update(resource_group_name=resource_group_name,
+                             cluster_name=cluster_name, connected_cluster_patch=cc)
     except Exception as e:
         utils.arm_exception_handler(e, consts.Update_ConnectedCluster_Fault_Type, 'Unable to update connected cluster resource')
 
@@ -823,9 +812,9 @@ def delete_cc_resource(client, resource_group_name, cluster_name, no_wait):
         utils.arm_exception_handler(e, consts.Delete_ConnectedCluster_Fault_Type, 'Unable to delete connected cluster resource')
 
 
-def update_connected_cluster_internal(client, resource_group_name, cluster_name, tags=None, enable_private_link=None, private_link_scope_resource_id=None, no_wait=False, preview_sdk=False):
-    cc = generate_patch_payload(tags, enable_private_link, private_link_scope_resource_id)
-    return patch_cc_resource(client, resource_group_name, cluster_name, cc, no_wait, preview_sdk)
+def update_connected_cluster_internal(client, resource_group_name, cluster_name, tags=None):
+    cc = generate_patch_payload(tags)
+    return patch_cc_resource(client, resource_group_name, cluster_name, cc)
 
 
 # pylint:disable=unused-argument
@@ -836,7 +825,7 @@ def update_connected_cluster_internal(client, resource_group_name, cluster_name,
 
 
 def update_connected_cluster(cmd, client, resource_group_name, cluster_name, https_proxy="", http_proxy="", no_proxy="", proxy_cert="",
-                             disable_proxy=False, kube_config=None, kube_context=None, auto_upgrade=None, no_wait=False, tags=None, enable_private_link=None, private_link_scope_resource_id=None):
+                             disable_proxy=False, kube_config=None, kube_context=None, auto_upgrade=None, tags=None):
 
     # Send cloud information to telemetry
     send_cloud_telemetry(cmd)
@@ -861,24 +850,11 @@ def update_connected_cluster(cmd, client, resource_group_name, cluster_name, htt
 
     proxy_cert = proxy_cert.replace('\\', r'\\\\')
 
-    # Prompt if private link is getting enabled
-    if enable_private_link is True:
-        if os.getenv('SKIP_PROMPT') != "true":
-            if not prompt_y_n("The Cluster Connect and Custom Location features are not supported by Private Link at this time. Enabling Private Link will disable these features. Are you sure you want to continue?"):
-                return
-
-    # Set preview client if private link properties are provided.
-    preview_sdk = False
-    connected_cluster = get_connectedk8s(cmd, client, resource_group_name, cluster_name)
-    if enable_private_link is not None or connected_cluster.private_link_state.lower() == "enabled":
-        client = cf_connected_cluster_prev_2021_04_01(cmd.cli_ctx, None)
-        preview_sdk = True
-
     # Patching the connected cluster ARM resource
-    patch_cc_response = update_connected_cluster_internal(client, resource_group_name, cluster_name, tags, enable_private_link, private_link_scope_resource_id, no_wait, preview_sdk)
+    patch_cc_response = update_connected_cluster_internal(client, resource_group_name, cluster_name, tags)
 
     proxy_params_unset = (https_proxy == "" and http_proxy == "" and no_proxy == "" and proxy_cert == "" and not disable_proxy)
-    if proxy_params_unset and not auto_upgrade and not tags and enable_private_link is None:
+    if proxy_params_unset and not auto_upgrade and not tags:
         raise RequiredArgumentMissingError(consts.No_Param_Error)
 
     if (https_proxy or http_proxy or no_proxy) and disable_proxy:
@@ -913,6 +889,7 @@ def update_connected_cluster(cmd, client, resource_group_name, cluster_name, htt
     release_namespace = validate_release_namespace(client, cluster_name, resource_group_name, configuration, kube_config, kube_context, helm_client_location)
 
     # Fetch Connected Cluster for agent version
+    connected_cluster = get_connectedk8s(cmd, client, resource_group_name, cluster_name)
     api_instance = kube_client.CoreV1Api(kube_client.ApiClient(configuration))
     node_api_response = None
 
@@ -999,12 +976,6 @@ def update_connected_cluster(cmd, client, resource_group_name, cluster_name, htt
         cmd_helm_upgrade.extend(["--kubeconfig", kube_config])
     if kube_context:
         cmd_helm_upgrade.extend(["--kube-context", kube_context])
-    if enable_private_link is True:
-        # Disable cluster-connect
-        cmd_helm_upgrade.extend(["--set", "systemDefaultValues.clusterconnect-agent.enabled=false"])
-        # Disable custom location
-        cmd_helm_upgrade.extend(["--set", "systemDefaultValues.customLocations.enabled=false"])
-        cmd_helm_upgrade.extend(["--set", "systemDefaultValues.customLocations.oid={}".format("")])
     response_helm_upgrade = Popen(cmd_helm_upgrade, stdout=PIPE, stderr=PIPE)
     _, error_helm_upgrade = response_helm_upgrade.communicate()
     if response_helm_upgrade.returncode != 0:
