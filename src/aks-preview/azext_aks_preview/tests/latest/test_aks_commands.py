@@ -317,6 +317,11 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             self.check('enableNamespaceResources', True)
         ])
 
+        update_cmd = 'aks update --resource-group={resource_group} --name={name} --disable-namespace-resources'
+        self.cmd(update_cmd, checks=[
+            self.check('enableNamespaceResources', False)
+        ])
+
     @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
     def test_aks_get_credentials_at_namespace_scope(self, resource_group):
         aks_name = self.create_random_name('cliakstest', 16)
