@@ -5,7 +5,7 @@ Release History
 
 0.1.7
 ++++++
-* Allow creating kubernetes function apps without storage accounts
+* Allow creating kubernetes function apps without storage accounts 
 
 0.1.6
 ++++++
