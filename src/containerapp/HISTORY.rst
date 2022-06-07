@@ -5,12 +5,12 @@ Release History
 
 0.3.6
 ++++++
+* BREAKING CHANGE: 'az containerapp revision list' now shows only active revisions by default, added flag --all to show all revisions
+* BREAKING CHANGE: 'az containerapp env certificate upload' does not prompt by default when re-uploading an existing certificate. Added --show-prompt to show prompts on re-upload.
 * Added parameter --environment to 'az containerapp list'
 * Added 'az containerapp revision label swap' to swap traffic labels
-* BREAKING CHANGE: 'az containerapp revision list' now shows only active revisions by default, added flag --all to show all revisions
 * Fixed bug with 'az containerapp up' where custom domains would be removed when updating existing containerapp
 * Fixed bug with 'az containerapp auth update' when using --unauthenticated-client-action
-* BREAKING CHANGE: 'az containerapp env certificate upload' does not prompt by default when re-uploading an existing certificate. Added --show-prompt to show prompts on re-upload.
 * Fixed bug with 'az containerapp env certificate upload' where it shows a misleading message for invalid certificate name
 * 'az containerapp registry set': allow authenticating with managed identity (MSI) instead of ACR username & password
 

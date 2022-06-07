@@ -155,7 +155,7 @@ def load_arguments(self, _):
         c.argument('certificate_file', options_list=['--certificate-file', '-f'], help='The filepath of the .pfx or .pem file')
         c.argument('certificate_name', options_list=['--certificate-name', '-c'], help='Name of the certificate which should be unique within the Container Apps environment.')
         c.argument('certificate_password', options_list=['--password', '-p'], help='The certificate file password')
-        c.argument('prompt', options_list=['--show-prompt'], help='Show prompt to upload an existing certificate.')
+        c.argument('prompt', options_list=['--show-prompt'], action='store_true', help='Show prompt to upload an existing certificate.')
 
     with self.argument_context('containerapp env certificate list') as c:
         c.argument('name', id_part=None)
@@ -201,7 +201,7 @@ def load_arguments(self, _):
 
     with self.argument_context('containerapp revision') as c:
         c.argument('revision_name', options_list=['--revision'], help='Name of the revision.')
-        c.argument('all', help='Boolean indicating whether to show inactive revisions.')
+        c.argument('all', help='Show inactive revisions.', action='store_true')
 
     with self.argument_context('containerapp revision copy') as c:
         c.argument('from_revision', help='Revision to copy from. Default: latest revision.')
@@ -211,7 +211,7 @@ def load_arguments(self, _):
         c.argument('name', id_part=None)
         c.argument('revision', help='Name of the revision.')
         c.argument('label', help='Name of the label.')
-        c.argument('yes', options_list=['--yes', '-y'], help='Do not prompt for confirmation.')
+        c.argument('yes', options_list=['--no-prompt', '--yes', '-y'], help='Do not prompt for confirmation.', action='store_true')
 
     with self.argument_context('containerapp revision label') as c:
         c.argument('source_label', options_list=['--source'], help='Source label to be swapped.')
