@@ -38,11 +38,15 @@ def auto_merge(headers, number):
 
 
 def main():
-    with open('/tmp/token.txt') as f:
-        token = f.readline().replace("\n", "")
+    try:
+        with open('/tmp/token.txt') as f:
+            token = f.readline().replace("\n", "")
+        with open('/tmp/create_pr.json') as f:
+            ref = f.read()
+    except FileNotFoundError:
+        logger.debug('no PR create, no need to merge PR')
+        sys.exit(0)
     headers = {'Authorization': 'token %s' % token}
-    with open('/tmp/create_pr.json') as f:
-        ref = f.read()
     number = json.loads(ref)['number']
     auto_merge(headers, number)
 
