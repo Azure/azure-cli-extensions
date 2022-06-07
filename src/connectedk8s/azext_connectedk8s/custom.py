@@ -850,6 +850,11 @@ def update_connected_cluster(cmd, client, resource_group_name, cluster_name, htt
 
     proxy_cert = proxy_cert.replace('\\', r'\\\\')
 
+    # Set preview client if cluster is private link enabled.
+    connected_cluster = get_connectedk8s(cmd, client, resource_group_name, cluster_name)
+    if connected_cluster.private_link_state.lower() == "enabled":
+        client = cf_connected_cluster_prev_2022_05_01(cmd.cli_ctx, None)
+
     # Patching the connected cluster ARM resource
     patch_cc_response = update_connected_cluster_internal(client, resource_group_name, cluster_name, tags)
 
@@ -889,7 +894,6 @@ def update_connected_cluster(cmd, client, resource_group_name, cluster_name, htt
     release_namespace = validate_release_namespace(client, cluster_name, resource_group_name, configuration, kube_config, kube_context, helm_client_location)
 
     # Fetch Connected Cluster for agent version
-    connected_cluster = get_connectedk8s(cmd, client, resource_group_name, cluster_name)
     api_instance = kube_client.CoreV1Api(kube_client.ApiClient(configuration))
     node_api_response = None
 
