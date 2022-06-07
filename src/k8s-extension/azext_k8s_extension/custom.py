@@ -245,7 +245,7 @@ def update_k8s_extension(
         or configuration_protected_settings_file
     ):
         msg = (
-            "Updating properties in --config-settings or --config-protected-settings may lead to undesirable state"
+            "Updating properties in --configuration-settings or --configuration-protected-settings may lead to undesirable state"
             " if the cluster extension type does not support it. Please refer to the documentation of the"
             " cluster extension service to check if updates to these properties is supported."
             " Do you wish to proceed?"
