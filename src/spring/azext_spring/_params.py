@@ -153,10 +153,6 @@ def load_arguments(self, _):
                    is_preview=True,
                    options_list=['--api-portal-instance-count', '--ap-instance'],
                    help='(Enterprise Tier Only) Number of API portal instances.')
-        c.argument('marketplace_plan_id',
-                   is_preview=True,
-                   help='(Enterprise Tier Only) Specify a different Marketplace plan to purchase with Spring instance. '
-                        'List all plans by running `az spring list-marketplace-plan -o table`.')
 
     with self.argument_context('spring update') as c:
         c.argument('sku', arg_type=sku_type, validator=normalize_sku)
