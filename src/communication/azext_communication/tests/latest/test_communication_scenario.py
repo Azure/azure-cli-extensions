@@ -60,9 +60,6 @@ def call_scenario(test, rg_2, rg):
     step_list(test, rg_2, rg, checks=[
         test.check('length(@)', 1),
     ])
-    step_list2(test, rg_2, rg, checks=[
-        test.check('length(@)', 1),
-    ])
     step_update(test, rg_2, rg, checks=[
         test.check("name", "{myCommunicationService}", case_sensitive=False),
         test.check("location", "Global", case_sensitive=False),
