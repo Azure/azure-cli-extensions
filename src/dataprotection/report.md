@@ -15,6 +15,7 @@
 |az dataprotection recovery-point|RecoveryPoints|[commands](#CommandsInRecoveryPoints)|
 |az dataprotection job|Jobs|[commands](#CommandsInJobs)|
 |az dataprotection restorable-time-range|RestorableTimeRanges|[commands](#CommandsInRestorableTimeRanges)|
+|az dataprotection resource-guard|ResourceGuards|[commands](#CommandsInResourceGuards)|
 
 ## COMMANDS
 ### <a name="CommandsInBackupInstances">Commands in `az dataprotection backup-instance` group</a>
@@ -59,6 +60,13 @@
 |---------|------------|--------|-----------|
 |[az dataprotection recovery-point list](#RecoveryPointsList)|List|[Parameters](#ParametersRecoveryPointsList)|[Example](#ExamplesRecoveryPointsList)|
 |[az dataprotection recovery-point show](#RecoveryPointsGet)|Get|[Parameters](#ParametersRecoveryPointsGet)|[Example](#ExamplesRecoveryPointsGet)|
+
+### <a name="CommandsInResourceGuards">Commands in `az dataprotection resource-guard` group</a>
+|CLI Command|Operation Swagger name|Parameters|Examples|
+|---------|------------|--------|-----------|
+|[az dataprotection resource-guard show](#ResourceGuardsGet)|Get|[Parameters](#ParametersResourceGuardsGet)|[Example](#ExamplesResourceGuardsGet)|
+|[az dataprotection resource-guard create](#ResourceGuardsPut)|Put|[Parameters](#ParametersResourceGuardsPut)|[Example](#ExamplesResourceGuardsPut)|
+|[az dataprotection resource-guard delete](#ResourceGuardsDelete)|Delete|[Parameters](#ParametersResourceGuardsDelete)|[Example](#ExamplesResourceGuardsDelete)|
 
 ### <a name="CommandsInRestorableTimeRanges">Commands in `az dataprotection restorable-time-range` group</a>
 |CLI Command|Operation Swagger name|Parameters|Examples|
@@ -405,14 +413,15 @@ az dataprotection backup-vault show --resource-group "SampleResourceGroup" --vau
 
 ##### <a name="ExamplesBackupVaultsCreateOrUpdate#Create">Example</a>
 ```
-az dataprotection backup-vault create --type "None" --location "WestUS" --storage-settings type="LocallyRedundant" \
-datastore-type="VaultStore" --tags key1="val1" --resource-group "SampleResourceGroup" --vault-name "swaggerExample"
+az dataprotection backup-vault create --type "None" --location "WestUS" --azure-monitor-alerts-for-job-failures \
+"Enabled" --storage-settings type="LocallyRedundant" datastore-type="VaultStore" --tags key1="val1" --resource-group \
+"SampleResourceGroup" --vault-name "swaggerExample"
 ```
 ##### <a name="ExamplesBackupVaultsCreateOrUpdate#Create">Example</a>
 ```
-az dataprotection backup-vault create --type "systemAssigned" --location "WestUS" --storage-settings \
-type="LocallyRedundant" datastore-type="VaultStore" --tags key1="val1" --resource-group "SampleResourceGroup" \
---vault-name "swaggerExample"
+az dataprotection backup-vault create --type "systemAssigned" --location "WestUS" --azure-monitor-alerts-for-job-failur\
+es "Enabled" --storage-settings type="LocallyRedundant" datastore-type="VaultStore" --tags key1="val1" \
+--resource-group "SampleResourceGroup" --vault-name "swaggerExample"
 ```
 ##### <a name="ParametersBackupVaultsCreateOrUpdate#Create">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
@@ -424,13 +433,14 @@ type="LocallyRedundant" datastore-type="VaultStore" --tags key1="val1" --resourc
 |**--location**|string|Resource location.|location|location|
 |**--tags**|dictionary|Resource tags.|tags|tags|
 |**--type**|string|The identityType which can be either SystemAssigned or None|type|type|
+|**--alerts-for-all-job-failures**|choice||alerts_for_all_job_failures|alertsForAllJobFailures|
 
 #### <a name="BackupVaultsUpdate">Command `az dataprotection backup-vault update`</a>
 
 ##### <a name="ExamplesBackupVaultsUpdate">Example</a>
 ```
-az dataprotection backup-vault update --tags newKey="newVal" --resource-group "SampleResourceGroup" --vault-name \
-"swaggerExample"
+az dataprotection backup-vault update --azure-monitor-alerts-for-job-failures "Enabled" --tags newKey="newVal" \
+--resource-group "SampleResourceGroup" --vault-name "swaggerExample"
 ```
 ##### <a name="ParametersBackupVaultsUpdate">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
@@ -438,6 +448,7 @@ az dataprotection backup-vault update --tags newKey="newVal" --resource-group "S
 |**--resource-group-name**|string|The name of the resource group where the backup vault is present.|resource_group_name|resourceGroupName|
 |**--vault-name**|string|The name of the backup vault.|vault_name|vaultName|
 |**--tags**|dictionary|Resource tags.|tags|tags|
+|**--alerts-for-all-job-failures**|choice||alerts_for_all_job_failures|alertsForAllJobFailures|
 |**--type**|string|The identityType which can be either SystemAssigned or None|type|type|
 
 #### <a name="BackupVaultsDelete">Command `az dataprotection backup-vault delete`</a>
@@ -510,6 +521,49 @@ az dataprotection recovery-point show --backup-instance-name "testInstance1" --r
 |**--vault-name**|string|The name of the backup vault.|vault_name|vaultName|
 |**--backup-instance-name**|string|The name of the backup instance|backup_instance_name|backupInstanceName|
 |**--recovery-point-id**|string||recovery_point_id|recoveryPointId|
+
+### group `az dataprotection resource-guard`
+#### <a name="ResourceGuardsGet">Command `az dataprotection resource-guard show`</a>
+
+##### <a name="ExamplesResourceGuardsGet">Example</a>
+```
+az dataprotection resource-guard show --resource-group "SampleResourceGroup" --resource-guard-name "swaggerExample"
+```
+##### <a name="ParametersResourceGuardsGet">Parameters</a> 
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+|**--resource-group-name**|string|The name of the resource group where the backup vault is present.|resource_group_name|resourceGroupName|
+|**--resource-guards-name**|string|The name of ResourceGuard|resource_guards_name|resourceGuardsName|
+
+#### <a name="ResourceGuardsPut">Command `az dataprotection resource-guard create`</a>
+
+##### <a name="ExamplesResourceGuardsPut">Example</a>
+```
+az dataprotection resource-guard create --location "WestUS" --tags key1="val1" --resource-group "SampleResourceGroup" \
+--resource-guard-name "swaggerExample"
+```
+##### <a name="ParametersResourceGuardsPut">Parameters</a> 
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+|**--resource-group-name**|string|The name of the resource group where the backup vault is present.|resource_group_name|resourceGroupName|
+|**--resource-guards-name**|string|The name of ResourceGuard|resource_guards_name|resourceGuardsName|
+|**--e-tag**|string|Optional ETag.|e_tag|eTag|
+|**--location**|string|Resource location.|location|location|
+|**--tags**|dictionary|Resource tags.|tags|tags|
+|**--type**|string|The identityType which can be either SystemAssigned or None|type|type|
+|**--vault-critical-operation-exclusion-list**|array|List of critical operations which are not protected by this resourceGuard|vault_critical_operation_exclusion_list|vaultCriticalOperationExclusionList|
+
+#### <a name="ResourceGuardsDelete">Command `az dataprotection resource-guard delete`</a>
+
+##### <a name="ExamplesResourceGuardsDelete">Example</a>
+```
+az dataprotection resource-guard delete --resource-group "SampleResourceGroup" --resource-guard-name "swaggerExample"
+```
+##### <a name="ParametersResourceGuardsDelete">Parameters</a> 
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+|**--resource-group-name**|string|The name of the resource group where the backup vault is present.|resource_group_name|resourceGroupName|
+|**--resource-guards-name**|string|The name of ResourceGuard|resource_guards_name|resourceGuardsName|
 
 ### group `az dataprotection restorable-time-range`
 #### <a name="RestorableTimeRangesFind">Command `az dataprotection restorable-time-range find`</a>

@@ -5,8 +5,9 @@ Release History
 
 1.2.3
 ++++++++++++++++++
+* Fix warning message returned on PATCH
 * microsoft.azureml.kubernetes: remove deprecated warning message.
-
+* microsoft.azureml.kubernetes: Use cluster scale to control clusterPurpose and inferenceRouterHA
 
 1.2.2
 ++++++++++++++++++

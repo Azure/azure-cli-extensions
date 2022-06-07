@@ -13,7 +13,7 @@ from ._validators import (validate_env, validate_cosmos_type, validate_resource_
                           validate_vnet, validate_vnet_required_parameters, validate_node_resource_group,
                           validate_tracing_parameters_asc_create, validate_tracing_parameters_asc_update,
                           validate_app_insights_parameters, validate_instance_count, validate_java_agent_parameters,
-                          validate_jar)
+                          validate_ingress_timeout, validate_jar)
 from ._validators_enterprise import (only_support_enterprise, validate_builder_resource, validate_builder_create,
                                      validate_builder_update, validate_build_pool_size,
                                      validate_git_uri, validate_acs_patterns, validate_config_file_patterns,
@@ -24,7 +24,8 @@ from ._validators_enterprise import (only_support_enterprise, validate_builder_r
                                      validate_build_env, validate_target_module, validate_runtime_version)
 from ._app_validator import (fulfill_deployment_param, active_deployment_exist,
                              ensure_not_active_deployment, validate_deloy_path, validate_deloyment_create_path,
-                             validate_cpu, validate_memory, fulfill_deployment_param_or_warning, active_deployment_exist_or_warning)
+                             validate_cpu, validate_build_cpu, validate_memory, validate_build_memory,
+                             fulfill_deployment_param_or_warning, active_deployment_exist_or_warning)
 from ._app_managed_identity_validator import (validate_create_app_with_user_identity_or_warning,
                                               validate_create_app_with_system_identity_or_warning,
                                               validate_app_force_set_system_identity_or_warning,
@@ -51,7 +52,9 @@ source_path_type = CLIArgumentType(nargs='?', const='.',
                                    arg_group='Source Code deploy')
 # app cpu and memory
 cpu_type = CLIArgumentType(type=str, help='CPU resource quantity. Should be 500m or number of CPU cores.', validator=validate_cpu)
-memort_type = CLIArgumentType(type=str, help='Memory resource quantity. Should be 512Mi or #Gi, e.g., 1Gi, 3Gi.', validator=validate_memory)
+memory_type = CLIArgumentType(type=str, help='Memory resource quantity. Should be 512Mi or #Gi, e.g., 1Gi, 3Gi.', validator=validate_memory)
+build_cpu_type = CLIArgumentType(type=str, help='CPU resource quantity. Should be 500m or number of CPU cores.', validator=validate_build_cpu)
+build_memory_type = CLIArgumentType(type=str, help='Memory resource quantity. Should be 512Mi or #Gi, e.g., 1Gi, 3Gi.', validator=validate_build_memory)
 
 
 # pylint: disable=too-many-statements
@@ -73,6 +76,10 @@ def load_arguments(self, _):
         c.argument('service_runtime_subnet', arg_group='VNet Injection', options_list=['--service-runtime-subnet', '--svc-subnet'], help='The name or ID of an existing subnet in "vnet" into which to deploy the Spring Apps service runtime. Required when deploying into a Virtual Network.', validator=validate_vnet)
         c.argument('service_runtime_network_resource_group', arg_group='VNet Injection', options_list=['--service-runtime-network-resource-group', '--svc-nrg'], help='The resource group where all network resources for Azure Spring Apps service runtime will be created in.', validator=validate_node_resource_group)
         c.argument('app_network_resource_group', arg_group='VNet Injection', options_list=['--app-network-resource-group', '--app-nrg'], help='The resource group where all network resources for apps will be created in.', validator=validate_node_resource_group)
+        c.argument('enable_log_stream_public_endpoint',
+                   arg_type=get_three_state_flag(),
+                   options_list=['--enable-log-stream-public-endpoint', '--enable-lspa'],
+                   help='If true, assign public endpoint for log streaming in vnet injection instance which could be accessed out of virtual network.')
         c.argument('enable_java_agent',
                    arg_group='Application Insights',
                    arg_type=get_three_state_flag(),
@@ -107,19 +114,20 @@ def load_arguments(self, _):
                    help="Create your Azure Spring Apps service in an Azure availability zone or not, "
                         "this could only be supported in several regions at the moment.",
                    default=False, is_preview=True)
+        c.argument('ingress_read_timeout',
+                   type=int,
+                   help='Ingress read timeout value in seconds. Default 300, Minimum is 1, maximum is 1800.',
+                   validator=validate_ingress_timeout)
         c.argument('build_pool_size',
                    arg_type=get_enum_type(['S1', 'S2', 'S3', 'S4', 'S5']),
                    validator=validate_build_pool_size,
-                   is_preview=True,
                    help='(Enterprise Tier Only) Size of build agent pool. See https://aka.ms/azure-spring-cloud-build-service-docs for size info.')
         c.argument('enable_application_configuration_service',
                    action='store_true',
-                   is_preview=True,
                    options_list=['--enable-application-configuration-service', '--enable-acs'],
                    help='(Enterprise Tier Only) Enable Application Configuration Service.')
         c.argument('enable_service_registry',
                    action='store_true',
-                   is_preview=True,
                    options_list=['--enable-service-registry', '--enable-sr'],
                    help='(Enterprise Tier Only) Enable Service Registry.')
         c.argument('enable_gateway',
@@ -148,6 +156,10 @@ def load_arguments(self, _):
 
     with self.argument_context('spring update') as c:
         c.argument('sku', arg_type=sku_type, validator=normalize_sku)
+        c.argument('ingress_read_timeout',
+                   type=int,
+                   help='Ingress read timeout value in seconds. Minimum is 1, maximum is 1800.',
+                   validator=validate_ingress_timeout)
         c.argument('app_insights_key',
                    help="Connection string (recommended) or Instrumentation key of the existing Application Insights.",
                    validator=validate_tracing_parameters_asc_update,
@@ -173,8 +185,11 @@ def load_arguments(self, _):
                                               hide=True))
         c.argument('build_pool_size',
                    arg_type=get_enum_type(['S1', 'S2', 'S3', 'S4', 'S5']),
-                   is_preview=True,
                    help='(Enterprise Tier Only) Size of build agent pool. See https://aka.ms/azure-spring-cloud-build-service-docs for size info.')
+        c.argument('enable_log_stream_public_endpoint',
+                   arg_type=get_three_state_flag(),
+                   options_list=['--enable-log-stream-public-endpoint', '--enable-lspa'],
+                   help='If true, assign public endpoint for log streaming in vnet injection instance which could be accessed out of virtual network.')
 
     for scope in ['spring create', 'spring update']:
         with self.argument_context(scope) as c:
@@ -188,10 +203,28 @@ def load_arguments(self, _):
         c.argument('service', service_name_type)
         c.argument('name', name_type, help='Name of app.')
 
+    for scope in ['spring app create', 'spring app update', 'spring app deploy', 'spring app deployment create', 'spring app deployment update']:
+        with self.argument_context(scope) as c:
+            c.argument('enable_liveness_probe', arg_type=get_three_state_flag(), is_preview=True,
+                       help='If false, will disable the liveness probe of the app instance', arg_group='App Customization')
+            c.argument('enable_readiness_probe', arg_type=get_three_state_flag(), is_preview=True,
+                       help='If false, will disable the readiness probe of the app instance', arg_group='App Customization')
+            c.argument('enable_startup_probe', arg_type=get_three_state_flag(), is_preview=True,
+                       help='If false, will disable the startup probe of the app instance', arg_group='App Customization')
+            c.argument('liveness_probe_config', type=str, is_preview=True,
+                       help='A json file path indicates the liveness probe config', arg_group='App Customization')
+            c.argument('readiness_probe_config', type=str, is_preview=True,
+                       help='A json file path indicates the readiness probe config', arg_group='App Customization')
+            c.argument('startup_probe_config', type=str, is_preview=True,
+                       help='A json file path indicates the startup probe config', arg_group='App Customization')
+
     with self.argument_context('spring app create') as c:
         c.argument('assign_endpoint', arg_type=get_three_state_flag(),
                    help='If true, assign endpoint URL for direct access.', default=False,
                    options_list=['--assign-endpoint', c.deprecate(target='--is-public', redirect='--assign-endpoint', hide=True)])
+        c.argument('assign_public_endpoint',
+                   arg_type=get_three_state_flag(),
+                   help='If true, assign endpoint URL which could be accessed out of virtual network for vnet injection instance app.')
         c.argument('assign_identity',
                    arg_type=get_three_state_flag(),
                    validator=validate_create_app_with_system_identity_or_warning,
@@ -208,7 +241,7 @@ def load_arguments(self, _):
                    validator=validate_create_app_with_user_identity_or_warning,
                    help="Space-separated user-assigned managed identity resource IDs to assgin to an app.")
         c.argument('cpu', arg_type=cpu_type, default="1")
-        c.argument('memory', arg_type=memort_type, default="1Gi")
+        c.argument('memory', arg_type=memory_type, default="1Gi")
         c.argument('instance_count', type=int,
                    default=1, help='Number of instance.', validator=validate_instance_count)
         c.argument('persistent_storage', type=str,
@@ -220,6 +253,9 @@ def load_arguments(self, _):
         c.argument('assign_endpoint', arg_type=get_three_state_flag(),
                    help='If true, assign endpoint URL for direct access.',
                    options_list=['--assign-endpoint', c.deprecate(target='--is-public', redirect='--assign-endpoint', hide=True)])
+        c.argument('assign_public_endpoint',
+                   arg_type=get_three_state_flag(),
+                   help='If true, assign endpoint URL which could be accessed out of virtual network for vnet injection instance app.')
         c.argument('https_only', arg_type=get_three_state_flag(), help='If true, access app via https', default=False)
         c.argument('enable_ingress_to_app_tls', arg_type=get_three_state_flag(),
                    help='If true, enable ingress to app tls',
@@ -329,11 +365,11 @@ def load_arguments(self, _):
             c.argument('config_file_patterns',
                        help="(Enterprise Tier Only) Config file patterns separated with \',\' to decide which patterns "
                             "of Application Configuration Service will be used. Use '\"\"' to clear existing configurations.",
-                       validator=validate_config_file_patterns, is_preview=True)
+                       validator=validate_config_file_patterns)
 
     with self.argument_context('spring app scale') as c:
         c.argument('cpu', arg_type=cpu_type)
-        c.argument('memory', arg_type=memort_type)
+        c.argument('memory', arg_type=memory_type)
         c.argument('instance_count', type=int, help='Number of instance.', validator=validate_instance_count)
 
     for scope in ['spring app deploy', 'spring app deployment create']:
@@ -346,7 +382,7 @@ def load_arguments(self, _):
             c.argument(
                 'disable_validation', arg_type=get_three_state_flag(),
                 help='If true, disable jar validation.')
-            c.argument('builder', help='(Enterprise Tier Only) Build service builder used to build the executable.', default='default', is_preview=True)
+            c.argument('builder', help='(Enterprise Tier Only) Build service builder used to build the executable.', default='default')
             c.argument(
                 'main_entry', options_list=[
                     '--main-entry', '-m'], help="A string containing the path to the .NET executable relative to zip root.")
@@ -369,6 +405,10 @@ def load_arguments(self, _):
                 'container_args', help='The arguments of the container image.', nargs='*', arg_group='Custom Container')
             c.argument(
                 'build_env', build_env_type)
+            c.argument(
+                'build_cpu', arg_type=build_cpu_type, default="1")
+            c.argument(
+                'build_memory', arg_type=build_memory_type, default="2Gi")
 
     with self.argument_context('spring app deploy') as c:
         c.argument('source_path', arg_type=source_path_type, validator=validate_deloy_path)
@@ -380,7 +420,7 @@ def load_arguments(self, _):
         c.argument('skip_clone_settings', help='Create staging deployment will automatically copy settings from production deployment.',
                    action='store_true')
         c.argument('cpu', arg_type=cpu_type)
-        c.argument('memory', arg_type=memort_type)
+        c.argument('memory', arg_type=memory_type)
         c.argument('instance_count', type=int, help='Number of instance.', validator=validate_instance_count)
 
     with self.argument_context('spring app deployment') as c:
