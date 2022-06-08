@@ -35,7 +35,7 @@ class QuantumJobsScenarioTest(ScenarioTest):
         result = build(self, target_id='ionq.simulator', project='src\\quantum\\azext_quantum\\tests\\latest\\source_for_build_test\\QuantumRNG.csproj', target_capability='foobar')
         assert result == {'result': 'ok'}
 
-        self.testfile = open(os.path.join(os.path.dirname(__file__), 'source_for_build_test\\obj\\qsharp\\config\\qsc.rsp'))
+        self.testfile = open(os.path.join(os.path.dirname(__file__), 'source_for_build_test/obj/qsharp/config/qsc.rsp'))
         self.testdata = self.testfile.read()
         self.assertIn('TargetCapability:foobar', self.testdata)
         self.testfile.close()
