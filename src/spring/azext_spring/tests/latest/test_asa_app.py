@@ -267,20 +267,20 @@ class TestAppDeploy_Enterprise_Patch(BasicTest):
         resp.upload_url = 'https://mystorage.file.core.windows.net/root/my-relative-path?sv=2018-03-28&sr=f&sig=my-fake-pass&se=2021-12-28T06%3A43%3A17Z&sp=w'
         return resp
     
-    def verify_build_args(self, client, *args):
+    def verify_build_args(self, client, *args, **kwargs):
         build_args = client.build_service.create_or_update_build.call_args_list
 
         if build_args and build_args[0]:
             self.assertEqual(1, len(build_args))
             self.assertEqual(5, len(build_args[0][0]))
-            self.assertEqual(args[0:2]+('default',)+(args[2] + '-' + args[3],), build_args[0][0][0:4])
+            self.assertEqual(args[0:2]+('default',)+(args[2] + '-' + kwargs[0],), build_args[0][0][0:4])
             self.put_build_resource = build_args[0][0][4]
 
     def _execute(self, *args, **kwargs):
         client = kwargs.pop('client', None) or self._get_basic_mock_client()
         app_deploy(_get_test_cmd(), client, *args, **kwargs)
 
-        self.verify_build_args(client, *args)
+        self.verify_build_args(client, *args, **kwargs)
 
         call_args = client.deployments.begin_update.call_args_list
         self.assertEqual(1, len(call_args))
