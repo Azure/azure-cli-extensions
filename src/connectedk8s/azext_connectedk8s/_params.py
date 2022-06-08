@@ -22,8 +22,6 @@ features_types = CLIArgumentType(
 def load_arguments(self, _):
 
     pls_arm_id_type = CLIArgumentType(options_list=['--private-link-scope-resource-id', '--pls-arm-id'], arg_group='PrivateLink', help='ARM resource id of the private link scope resource to which this connected cluster is associated.', is_preview=True)
-    enable_private_link_type = get_three_state_flag()
-    enable_private_link_type.update(arg_group='PrivateLink', help='Flag to enable/disable private link support on a connected cluster resource. Allowed values: false, true.', is_preview=True, validator=validate_private_link_properties)
 
     with self.argument_context('connectedk8s connect') as c:
         c.argument('tags', tags_type)
@@ -39,7 +37,7 @@ def load_arguments(self, _):
         c.argument('infrastructure', options_list=['--infrastructure'], help='The infrastructure on which the Kubernetes cluster represented by this connected cluster will be running on.', arg_type=get_enum_type(Infrastructure_Enum_Values))
         c.argument('disable_auto_upgrade', options_list=['--disable-auto-upgrade'], action='store_true', help='Flag to disable auto upgrade of arc agents.')
         c.argument('cl_oid', options_list=['--custom-locations-oid'], help="OID of 'custom-locations' app")
-        c.argument('enable_private_link', enable_private_link_type)
+        c.argument('enable_private_link', arg_type=get_three_state_flag(), arg_group='PrivateLink', help='Flag to enable/disable private link support on a connected cluster resource. Allowed values: false, true.', is_preview=True, validator=validate_private_link_properties)
         c.argument('private_link_scope_resource_id', pls_arm_id_type)
         c.argument('onboarding_timeout', options_list=['--onboarding-timeout'], arg_group='Timeout', help='Time required (in seconds) for the arc-agent pods to be installed on the kubernetes cluster. Override this value if the hardware/network constraints on your cluster requires more time for installing the arc-agent pods.')
         c.argument('no_wait', options_list=['--no-wait'], arg_group='Timeout', help="Do not wait for the long-running operation to finish.")
