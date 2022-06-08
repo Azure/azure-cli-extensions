@@ -3,6 +3,9 @@
 Release History
 ===============
 
+0.3.7
+++++++
+
 0.3.6
 ++++++
 * BREAKING CHANGE: 'az containerapp revision list' now shows only active revisions by default, added flag --all to show all revisions
