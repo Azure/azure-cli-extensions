@@ -273,7 +273,7 @@ class TestAppDeploy_Enterprise_Patch(BasicTest):
         if build_args and build_args[0]:
             self.assertEqual(1, len(build_args))
             self.assertEqual(5, len(build_args[0][0]))
-            self.assertEqual(args[0:2]+('default',)+(args[2]+args[3],), build_args[0][0][0:4])
+            self.assertEqual(args[0:2]+('default',)+(args[2] + '-' + args[3],), build_args[0][0][0:4])
             self.put_build_resource = build_args[0][0][4]
 
     def _execute(self, *args, **kwargs):
