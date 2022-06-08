@@ -106,6 +106,7 @@ def load_command_table(self, _):
     with self.command_group('containerapp revision label') as g:
         g.custom_command('add', 'add_revision_label')
         g.custom_command('remove', 'remove_revision_label')
+        g.custom_command('swap', 'swap_revision_label')
 
     with self.command_group('containerapp ingress') as g:
         g.custom_command('enable', 'enable_ingress', exception_handler=ex_handler_factory())
