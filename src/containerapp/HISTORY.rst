@@ -5,6 +5,7 @@ Release History
 
 0.3.7
 ++++++
+* 'az containerapp env create': fixed bug where "--internal-only" didn't work
 
 0.3.6
 ++++++

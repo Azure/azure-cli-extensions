@@ -807,7 +807,6 @@ def create_managed_environment(cmd,
 
     managed_env_def = ManagedEnvironmentModel
     managed_env_def["location"] = location
-    managed_env_def["properties"]["internalLoadBalancerEnabled"] = False
     managed_env_def["properties"]["appLogsConfiguration"] = app_logs_config_def
     managed_env_def["tags"] = tags
     managed_env_def["properties"]["zoneRedundant"] = zone_redundant
@@ -835,7 +834,7 @@ def create_managed_environment(cmd,
     if internal_only:
         if not infrastructure_subnet_resource_id:
             raise ValidationError('Infrastructure subnet resource ID needs to be supplied for internal only environments.')
-        managed_env_def["properties"]["internalLoadBalancerEnabled"] = True
+        managed_env_def["properties"]["vnetConfiguration"]["internal"] = True
 
     try:
         r = ManagedEnvironmentClient.create(
