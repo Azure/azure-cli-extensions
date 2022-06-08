@@ -75,7 +75,7 @@ class BuildService:
             return self.client.build_service.create_or_update_build(self.resource_group,
                                                                     self.service,
                                                                     self.name,
-                                                                    app+"-"+deployment,
+                                                                    app + "-" + deployment,
                                                                     build).properties.triggered_build_result.id
         except (AttributeError, CloudError) as e:
             raise DeploymentError("Failed to create or update a build. Error: {}".format(e.message))
