@@ -51,7 +51,9 @@ def start_ssh_connection(op_info, delete_keys, delete_cert):
         log_file, ssh_arg_list, cleanup_process = _start_cleanup(op_info.cert_file, op_info.private_key_file,
                                                                  op_info.public_key_file, op_info.delete_credentials,
                                                                  delete_keys, delete_cert, ssh_arg_list)
-        command = command + op_info.build_args() + ssh_arg_list
+        command = command + op_info.build_args() + [
+            "-o", "ConnectTimeout=10",  # To override the default 2-min timeout when target unreachable
+            ] + ssh_arg_list
 
         connection_duration = time.time()
         logger.debug("Running ssh command %s", ' '.join(command))
