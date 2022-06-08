@@ -4,6 +4,8 @@ import subprocess
 import multiprocessing as mp
 import os
 import psutil
+import queue
+import threading
 
 import colorama
 from colorama import Fore
@@ -30,18 +32,22 @@ def start_rdp_connection(ssh_info, delete_keys, delete_cert):
         else:
             ssh_info.ssh_args = ['-L', f"{local_port}:localhost:{resource_port}", "-N"] + ssh_info.ssh_args
 
-        rdp_conn, ssh_conn = mp.Pipe()
-        rdp_process = mp.Process(target=call_rdp, args=(rdp_conn, local_port))
-        rdp_process.start()
+        q = queue.Queue()
+        rdp_thread = threading.Thread(target=call_rdp, args=(q, local_port))
+        print("Start RDP Thread")
+        rdp_thread.start()
+        #rdp_conn, ssh_conn = mp.Pipe()
+        #rdp_process = mp.Process(target=call_rdp, args=(rdp_conn, local_port))
+        #rdp_process.start()
 
-        ssh_process, print_ssh_logs = start_ssh_tunnel(ssh_info, ssh_conn)
-        ssh_sucess, log_list = wait_for_ssh_connection(ssh_process, print_ssh_logs, ssh_conn)
+        ssh_process, print_ssh_logs = start_ssh_tunnel(ssh_info, q)
+        ssh_sucess, log_list = wait_for_ssh_connection(ssh_process, print_ssh_logs, q)
         
         # whether the connection succeeds or fails, we will want to clean-up credentials either way
         ssh_utils.do_cleanup(delete_keys, delete_cert, ssh_info.cert_file, ssh_info.private_key_file, ssh_info.public_key_file)
         
         if ssh_sucess:
-            wait_for_rdp_conclusion(ssh_conn, ssh_process)
+            wait_for_rdp_conclusion(q, ssh_process)
         
         print_error_messages_from_log(log_list, print_ssh_logs, ssh_process)
         
@@ -75,7 +81,7 @@ def _get_open_port():
         return s.getsockname()[1]
 
 
-def start_ssh_tunnel(op_info, ssh_conn):
+def start_ssh_tunnel(op_info, q):
     try:
         env = os.environ.copy()
         if op_info.is_arc():
@@ -95,18 +101,18 @@ def start_ssh_tunnel(op_info, ssh_conn):
         command = command + op_info.build_args() + op_info.ssh_args
 
         logger.debug(f"Startng SSH tunnel with command: {command}")
-
+        print("starting ssh")
         # It seems like "universal newlines and shell might not be necessary. Continue with further testing."
         ssh_sub = subprocess.Popen(command, stderr=subprocess.PIPE, env=env, encoding='utf-8')
 
         return ssh_sub, print_ssh_logs
     
     except Exception as e:
-        ssh_conn.send("SSH_FAIL")
+        q.send("SSH_FAIL")
         raise e
 
 
-def wait_for_ssh_connection(ssh_sub, print_ssh_logs, ssh_conn):
+def wait_for_ssh_connection(ssh_sub, print_ssh_logs, q):
     log_list = []
     ssh_sucess = False
     while True:
@@ -116,26 +122,30 @@ def wait_for_ssh_connection(ssh_sub, print_ssh_logs, ssh_conn):
         else:
             log_list.append(next_line)
         if "debug1: Entering interactive session." in next_line:
-            ssh_conn.send("SSH_OK")
+            print("SSH succeeded")
+            q.put("SSH_OK")
+            print(q)
             ssh_sucess = True
             break
 
         if ssh_sub.poll() is not None:
-            ssh_conn.send("SSH_FAIL")
+            q.put("SSH_FAIL")
             ssh_sucess = False
             break
 
     return ssh_sucess, log_list
 
 
-def wait_for_rdp_conclusion(ssh_conn, ssh_process):
+def wait_for_rdp_conclusion(q, ssh_process):
     while True:
-        msg = ssh_conn.recv()
+        msg = q.get()
         if msg == "RDP_CLOSE":
             #kill_process(ssh_process.pid)
             #without shell, .terminate() is enough
             ssh_process.terminate()
             break
+        # check if ssh_process is still alive?
+        # Is that eve necessary? If we ctrl+c, will it close the thread?
         
 
 def print_error_messages_from_log(log_list, print_ssh_logs, ssh_process):
@@ -149,18 +159,20 @@ def print_error_messages_from_log(log_list, print_ssh_logs, ssh_process):
         next_line = ssh_process.stderr.readline()
     
     # Print error messages on log
+    # If ssh_process is terminated, then the return code is not 0. See about that.
     if ssh_process.returncode != 0 and not print_ssh_logs:
         for line in log_list:
             if "debug1:" not in line:
                 print(line)
 
 
-def call_rdp(rdp_conn, local_port):
+def call_rdp(q, local_port):
     from azure.cli.command_modules.network._process_helper import launch_and_wait
-    
+    print("rdp waiting")
     # Wait for SSH connection
     while True:
-        msg = rdp_conn.recv()
+        #msg = rdp_conn.recv()
+        msg = q.get()
         if msg == "SSH_OK":
             break
         elif msg == "SSH_FAIL":
@@ -169,10 +181,11 @@ def call_rdp(rdp_conn, local_port):
     # Launch RDP process
     if platform.system() == 'Windows':
         colorama.init()
-        print(Fore.GREEN + f"Launching Remote Desktop Connection process." + Style.RESET_ALL)
+        print(Fore.GREEN + f"Launching Remote Desktop Connection" + Style.RESET_ALL)
         command = [_get_rdp_path(), f"/v:localhost:{local_port}"]
         launch_and_wait(command)
-        rdp_conn.send("RDP_CLOSE")
+        #rdp_conn.send("RDP_CLOSE")
+        q.put("RDP_CLOSE")
 
 
 # Cut "get ssh path into get system32 folder and get ssh path?"
