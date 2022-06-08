@@ -24,6 +24,7 @@ def auto_merge(headers, number):
     merge_url = f'https://api.github.com/repos/Azure/azure-cli-extensions/pulls/{number}/merge'
     logger.debug(merge_url)
     # merge_method: merge, squash or rebase
+    # we use `sqush and merge` button
     body = {
         'merge_method': 'squash'
     }
@@ -39,14 +40,17 @@ def auto_merge(headers, number):
 
 def main():
     try:
+        # get azclibot token
         with open('/tmp/token.txt') as f:
             token = f.readline().replace("\n", "")
+        # get create_pr response
         with open('/tmp/create_pr.json') as f:
             ref = f.read()
     except FileNotFoundError:
         logger.debug('no PR create, no need to merge PR')
         sys.exit(0)
     headers = {'Authorization': 'token %s' % token}
+    # get pr id
     number = json.loads(ref)['number']
     auto_merge(headers, number)
 
