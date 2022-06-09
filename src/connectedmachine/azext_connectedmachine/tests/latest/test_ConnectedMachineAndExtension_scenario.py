@@ -72,6 +72,7 @@ def test_machine_and_extension(test):
              '--settings "{{\\"commandToExecute\\":\\"hostname\\"}}"',
             checks=[
                 test.check('name', '{customScriptName}'),
+                test.check('properties.enableAutomaticUpgrade', True),
                 test.check('properties.typeHandlerVersion', '1.10.10'),
                 test.check('properties.settings.commandToExecute', 'hostname')
     ])
@@ -99,11 +100,13 @@ def test_machine_and_extension(test):
 
     test.cmd('az connectedmachine extension update '
              '--name "{customScriptName}" '
+             '--enable-auto-upgrade false '
              '--settings "{{\\"commandToExecute\\":\\"dir\\"}}" '
              '--machine-name "{machine}" '
              '--resource-group "{rg}"',
              checks=[
                 test.check('name', '{customScriptName}'),
+                test.check('properties.enableAutomaticUpgrade', False),
                 test.check('properties.provisioningState', 'Succeeded'),
                 test.check('properties.settings.commandToExecute', 'dir'),
                 test.check('properties.typeHandlerVersion', '1.10.12')

@@ -13,13 +13,23 @@ def setup(test):
         "rg": "sarath-rg",
         "diskname": "cli-test-disk-new",
         "restorediskname": "cli-test-disk-new-restored",
-        "policyname": "diskpolicy"
+        "policyname": "diskpolicy",
+        "resourceGuardName": "cli-test-resource-guard"
     })
     account_res = test.cmd('az account show').get_output_in_json()
     vault_res = test.cmd('az dataprotection backup-vault create '
                          '-g "{rg}" --vault-name "{vaultName}" -l centraluseuap '
                          '--storage-settings datastore-type="VaultStore" type="LocallyRedundant" --type SystemAssigned',
                          checks=[]).get_output_in_json()
+
+    # Update DPP Alerts
+    test.cmd('az dataprotection backup-vault update -g "{rg}" --vault-name "{vaultName}" --azure-monitor-alerts-for-job-failures enabled',checks=[
+        test.check('properties.monitoringSettings.azureMonitorAlertSettings.alertsForAllJobFailures', 'Enabled')
+    ])
+
+    test.cmd('az dataprotection backup-vault update -g "{rg}" --vault-name "{vaultName}" --azure-monitor-alerts-for-job-failures disabled',checks=[
+        test.check('properties.monitoringSettings.azureMonitorAlertSettings.alertsForAllJobFailures', 'Disabled')
+    ])         
 
     disk_response = test.cmd('az disk create -g "{rg}" -n "{diskname}" --size-gb 4').get_output_in_json()
     test.kwargs.update({
@@ -33,6 +43,25 @@ def setup(test):
     # test.cmd('az role assignment create --assignee "{principalId}" --role "Disk Backup Reader" --scope "{diskid}"')
     # test.cmd('az role assignment create --assignee "{principalId}" --role "Disk Snapshot Contributor" --scope "{rgid}"')
     # test.cmd('az role assignment create --assignee "{principalId}" --role "Disk Restore Operator" --scope "{rgid}"')
+
+
+def test_resource_guard(test):
+    test.cmd('az dataprotection resource-guard create -g "{rg}" -n "{resourceGuardName}"', checks=[
+        test.check('name', "{resourceGuardName}")
+    ])
+
+    test.cmd('az dataprotection resource-guard list -g "{rg}"', checks=[
+        test.check("length([?name == '{resourceGuardName}'])", 1)
+    ])
+
+    test.cmd('az dataprotection resource-guard update -g "{rg}" -n "{resourceGuardName}" --resource-type "Microsoft.RecoveryServices/vaults" --critical-operation-exclusion-list deleteProtection getSecurityPIN', checks=[
+        test.check('name', "{resourceGuardName}"),
+        test.check('length(properties.vaultCriticalOperationExclusionList)', 2)
+    ])
+
+    test.cmd('az dataprotection resource-guard list-protected-operations -g "{rg}" -n "{resourceGuardName}" --resource-type "Microsoft.RecoveryServices/vaults"', checks=[
+        test.check('length(@)', 4)
+    ])
 
 
 def create_policy(test):
@@ -162,6 +191,7 @@ def delete_backup(test):
 
 def cleanup(test):
     delete_backup(test)
+    test.cmd('az dataprotection resource-guard delete -g "{rg}" -n "{resourceGuardName}" -y')
     test.cmd('az dataprotection backup-vault delete '
              ' -g "{rg}" --vault-name "{vaultName}" --yes')
     test.cmd('az disk delete --name "{diskname}" --resource-group "{rg}" --yes')
@@ -172,6 +202,7 @@ def cleanup(test):
 def call_scenario(test):
     setup(test)
     try:
+        test_resource_guard(test)
         create_policy(test)
         configure_backup(test)
         stop_resume_protection(test)

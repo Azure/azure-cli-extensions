@@ -38,16 +38,15 @@ from ._utils import (
     _get_default_containerapps_location,
     safe_get,
     is_int,
-    create_service_principal_for_rbac,
+    create_service_principal_for_github_action,
     repo_url_to_name,
     get_container_app_if_exists,
     trigger_workflow,
     _ensure_location_allowed,
-    _is_resource_provider_registered,
-    _register_resource_provider
+    register_provider_if_needed
 )
 
-from ._constants import MAXIMUM_SECRET_LENGTH, LOG_ANALYTICS_RP
+from ._constants import MAXIMUM_SECRET_LENGTH, LOG_ANALYTICS_RP, CONTAINER_APPS_RP, ACR_IMAGE_SUFFIX
 
 from .custom import (
     create_managed_environment,
@@ -56,6 +55,8 @@ from .custom import (
     list_managed_environments,
     create_or_update_github_action,
 )
+
+from ._github_oauth import load_github_token_from_cache, get_github_access_token
 
 logger = get_logger(__name__)
 
@@ -194,8 +195,7 @@ class ContainerAppEnvironment(Resource):
 
     def create(self):
         self.location = validate_environment_location(self.cmd, self.location)
-        if not _is_resource_provider_registered(self.cmd, LOG_ANALYTICS_RP):
-            _register_resource_provider(self.cmd, LOG_ANALYTICS_RP)
+        register_provider_if_needed(self.cmd, LOG_ANALYTICS_RP)
         env = create_managed_environment(
             self.cmd,
             self.name,
@@ -214,7 +214,7 @@ class ContainerAppEnvironment(Resource):
             rid = resource_id(
                 subscription=get_subscription_id(self.cmd.cli_ctx),
                 resource_group=self.resource_group.name,
-                namespace="Microsoft.App",
+                namespace=CONTAINER_APPS_RP,
                 type="managedEnvironments",
                 name=self.name,
             )
@@ -297,7 +297,7 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
     def create_acr(self):
         registry_rg = self.resource_group
         url = self.registry_server
-        registry_name = url[: url.rindex(".azurecr.io")]
+        registry_name = url[: url.rindex(ACR_IMAGE_SUFFIX)]
         location = "eastus"
         if self.env.location and self.env.location.lower() != "northcentralusstage":
             location = self.env.location
@@ -350,9 +350,9 @@ def _create_service_principal(cmd, resource_group_name, env_resource_group_name)
         scopes.append(
             f"/subscriptions/{get_subscription_id(cmd.cli_ctx)}/resourceGroups/{env_resource_group_name}"
         )
-    sp = create_service_principal_for_rbac(cmd, scopes=scopes, role="contributor")
+    sp = create_service_principal_for_github_action(cmd, scopes=scopes, role="contributor")
 
-    logger.warning(f"Created service principal: {sp['displayName']} with ID {sp['appId']}")
+    logger.warning(f"Created service principal with ID {sp['appId']}")
 
     return sp["appId"], sp["password"], sp["tenant"]
 
@@ -404,6 +404,8 @@ def _get_dockerfile_content_from_repo(
     repo = repo_url_to_name(repo_url)
     try:
         r = g.get_repo(repo)
+        if not branch:
+            branch = r.default_branch
     except Exception as e:
         raise ValidationError(f"Could not find repo {repo_url}") from e
     try:
@@ -611,7 +613,7 @@ def _get_registry_from_app(app):
 
 
 def _get_acr_rg(app):
-    registry_name = app.registry_server[: app.registry_server.rindex(".azurecr.io")]
+    registry_name = app.registry_server[: app.registry_server.rindex(ACR_IMAGE_SUFFIX)]
     client = get_mgmt_service_client(
         app.cmd.cli_ctx, ContainerRegistryManagementClient
     ).registries
@@ -661,11 +663,11 @@ def _get_registry_details(cmd, app: "ContainerApp", source):
         registry_name, registry_rg = find_existing_acr(cmd, app)
         if registry_name and registry_rg:
             _set_acr_creds(cmd, app, registry_name)
-            app.registry_server = registry_name + ".azurecr.io"
+            app.registry_server = registry_name + ACR_IMAGE_SUFFIX
         else:
             registry_rg = app.resource_group.name
             registry_name = _get_default_registry_name(app)
-            app.registry_server = registry_name + ".azurecr.io"
+            app.registry_server = registry_name + ACR_IMAGE_SUFFIX
             app.should_create_acr = True
 
     app.acr = AzureContainerRegistry(
@@ -805,7 +807,7 @@ def validate_environment_location(cmd, location):
     from ._constants import MAX_ENV_PER_LOCATION
     env_list = list_managed_environments(cmd)
 
-    locations = [l["location"] for l in env_list]
+    locations = [loc["location"] for loc in env_list]
     locations = list(set(locations))  # remove duplicates
 
     location_count = {}
@@ -818,15 +820,15 @@ def validate_environment_location(cmd, location):
             disallowed_locations.append(value)
 
     res_locations = list_environment_locations(cmd)
-    res_locations = [l for l in res_locations if l not in disallowed_locations]
+    res_locations = [loc for loc in res_locations if loc not in disallowed_locations]
 
     allowed_locs = ", ".join(res_locations)
 
     if location:
         try:
-            _ensure_location_allowed(cmd, location, "Microsoft.App", "managedEnvironments")
-        except Exception:  # pylint: disable=broad-except
-            raise ValidationError("You cannot create a Containerapp environment in location {}. List of eligible locations: {}.".format(location, allowed_locs))
+            _ensure_location_allowed(cmd, location, CONTAINER_APPS_RP, "managedEnvironments")
+        except Exception as e:  # pylint: disable=broad-except
+            raise ValidationError("You cannot create a Containerapp environment in location {}. List of eligible locations: {}.".format(location, allowed_locs)) from e
 
     if len(res_locations) > 0:
         if not location:
@@ -842,7 +844,7 @@ def validate_environment_location(cmd, location):
 def list_environment_locations(cmd):
     from ._utils import providers_client_factory
     providers_client = providers_client_factory(cmd.cli_ctx, get_subscription_id(cmd.cli_ctx))
-    resource_types = getattr(providers_client.get("Microsoft.App"), 'resource_types', [])
+    resource_types = getattr(providers_client.get(CONTAINER_APPS_RP), 'resource_types', [])
     res_locations = []
     for res in resource_types:
         if res and getattr(res, 'resource_type', "") == "managedEnvironments":
@@ -855,13 +857,24 @@ def list_environment_locations(cmd):
 
 def check_env_name_on_rg(cmd, managed_env, resource_group_name, location):
     if location:
-        _ensure_location_allowed(cmd, location, "Microsoft.App", "managedEnvironments")
+        _ensure_location_allowed(cmd, location, CONTAINER_APPS_RP, "managedEnvironments")
     if managed_env and resource_group_name and location:
         env_def = None
         try:
             env_def = ManagedEnvironmentClient.show(cmd, resource_group_name, parse_resource_id(managed_env)["name"])
-        except:
+        except:  # pylint: disable=bare-except
             pass
         if env_def:
             if location != env_def["location"]:
                 raise ValidationError("Environment {} already exists in resource group {} on location {}, cannot change location of existing environment to {}.".format(parse_resource_id(managed_env)["name"], resource_group_name, env_def["location"], location))
+
+
+def get_token(cmd, repo, token):
+    if not repo:
+        return None
+    if token:
+        return token
+    token = load_github_token_from_cache(cmd, repo)
+    if not token:
+        token = get_github_access_token(cmd, ["admin:repo_hook", "repo", "workflow"], token)
+    return token

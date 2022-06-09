@@ -21,6 +21,7 @@ from ... import models
 T = TypeVar('T')
 ClsType = Optional[Callable[[PipelineResponse[HttpRequest, AsyncHttpResponse], T, Dict[str, Any]], Any]]
 
+
 class CommunicationServiceOperations:
     """CommunicationServiceOperations async operations.
 
@@ -508,7 +509,7 @@ class CommunicationServiceOperations:
             deserialized = self._deserialize('CommunicationServiceResource', pipeline_response)
 
         if response.status_code == 201:
-            response_headers['Azure-AsyncOperation']=self._deserialize('str', response.headers.get('Azure-AsyncOperation'))
+            response_headers['Azure-AsyncOperation'] = self._deserialize('str', response.headers.get('Azure-AsyncOperation'))
             deserialized = self._deserialize('CommunicationServiceResource', pipeline_response)
 
         if cls:
@@ -556,7 +557,7 @@ class CommunicationServiceOperations:
                 resource_group_name=resource_group_name,
                 communication_service_name=communication_service_name,
                 parameters=parameters,
-                cls=lambda x,y,z: x,
+                cls=lambda x, y, z: x,
                 **kwargs
             )
 
@@ -566,7 +567,7 @@ class CommunicationServiceOperations:
         def get_long_running_output(pipeline_response):
             response_headers = {}
             response = pipeline_response.http_response
-            response_headers['Azure-AsyncOperation']=self._deserialize('str', response.headers.get('Azure-AsyncOperation'))
+            response_headers['Azure-AsyncOperation'] = self._deserialize('str', response.headers.get('Azure-AsyncOperation'))
             deserialized = self._deserialize('CommunicationServiceResource', pipeline_response)
 
             if cls:
@@ -579,9 +580,12 @@ class CommunicationServiceOperations:
             'communicationServiceName': self._serialize.url("communication_service_name", communication_service_name, 'str', max_length=63, min_length=1, pattern=r'^[-\w]+$'),
         }
 
-        if polling is True: polling_method = AsyncARMPolling(lro_delay, lro_options={'final-state-via': 'azure-async-operation'}, path_format_arguments=path_format_arguments,  **kwargs)
-        elif polling is False: polling_method = AsyncNoPolling()
-        else: polling_method = polling
+        if polling is True:
+            polling_method = AsyncARMPolling(lro_delay, lro_options={'final-state-via': 'azure-async-operation'}, path_format_arguments=path_format_arguments, **kwargs)
+        elif polling is False:
+            polling_method = AsyncNoPolling()
+        else:
+            polling_method = polling
         if cont_token:
             return AsyncLROPoller.from_continuation_token(
                 polling_method=polling_method,
@@ -635,7 +639,7 @@ class CommunicationServiceOperations:
 
         response_headers = {}
         if response.status_code == 202:
-            response_headers['location']=self._deserialize('str', response.headers.get('location'))
+            response_headers['location'] = self._deserialize('str', response.headers.get('location'))
 
         if cls:
             return cls(pipeline_response, None, response_headers)
@@ -677,7 +681,7 @@ class CommunicationServiceOperations:
             raw_result = await self._delete_initial(
                 resource_group_name=resource_group_name,
                 communication_service_name=communication_service_name,
-                cls=lambda x,y,z: x,
+                cls=lambda x, y, z: x,
                 **kwargs
             )
 
@@ -694,9 +698,12 @@ class CommunicationServiceOperations:
             'communicationServiceName': self._serialize.url("communication_service_name", communication_service_name, 'str', max_length=63, min_length=1, pattern=r'^[-\w]+$'),
         }
 
-        if polling is True: polling_method = AsyncARMPolling(lro_delay, lro_options={'final-state-via': 'location'}, path_format_arguments=path_format_arguments,  **kwargs)
-        elif polling is False: polling_method = AsyncNoPolling()
-        else: polling_method = polling
+        if polling is True:
+            polling_method = AsyncARMPolling(lro_delay, lro_options={'final-state-via': 'location'}, path_format_arguments=path_format_arguments, **kwargs)
+        elif polling is False:
+            polling_method = AsyncNoPolling()
+        else:
+            polling_method = polling
         if cont_token:
             return AsyncLROPoller.from_continuation_token(
                 polling_method=polling_method,

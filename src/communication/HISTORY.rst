@@ -3,6 +3,11 @@
 Release History
 ===============
 
+1.1.1
+++++++
+* Fix codestyle issues in communiction command group.
+
+
 1.1.0
 ++++++
 * Add communication identity command group.
