@@ -193,7 +193,7 @@ def load_command_table(self, _):
     # AKS trusted access rolebinding commands
     with self.command_group('aks trustedaccess rolebinding', trustedaccess_role_binding_sdk, client_factory=cf_trustedaccess_role_binding) as g:
         g.custom_command('list', 'aks_trustedaccess_role_binding_list')
-        g.custom_command('get', 'aks_trustedaccess_role_binding_get')
-        g.custom_command('create', 'aks_trustedaccess_role_binding_create_or_update', supports_no_wait=True)
-        g.custom_command('update', 'aks_trustedaccess_role_binding_create_or_update', supports_no_wait=True)
-        g.custom_command('delete', 'aks_trustedaccess_role_binding_delete', supports_no_wait=True)
+        g.custom_command('show', 'aks_trustedaccess_role_binding_get')
+        g.custom_command('create', 'aks_trustedaccess_role_binding_create_or_update')
+        g.custom_command('update', 'aks_trustedaccess_role_binding_create_or_update')
+        g.custom_command('delete', 'aks_trustedaccess_role_binding_delete', confirmation=True)

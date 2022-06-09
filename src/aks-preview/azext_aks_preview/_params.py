@@ -683,7 +683,7 @@ def load_arguments(self, _):
     with self.argument_context('aks trustedaccess rolebinding') as c:
         c.argument('cluster_name', help='The cluster name.')
 
-    for scope in ['aks trustedaccess rolebinding get', 'aks trustedaccess rolebinding create',
+    for scope in ['aks trustedaccess rolebinding show', 'aks trustedaccess rolebinding create',
                   'aks trustedaccess rolebinding update', 'aks trustedaccess rolebinding delete']:
         with self.argument_context(scope) as c:
             c.argument('role_binding_name', options_list=[

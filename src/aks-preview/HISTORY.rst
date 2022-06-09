@@ -21,7 +21,7 @@ Pending
     * az aks trustedaccess rolebinding create
     * az aks trustedaccess rolebinding update
     * az aks trustedaccess rolebinding list
-    * az aks trustedaccess rolebinding get
+    * az aks trustedaccess rolebinding show
     * az aks trustedaccess rolebinding delete
 
 0.5.80
