@@ -101,14 +101,13 @@ def start_ssh_tunnel(op_info, q):
         command = command + op_info.build_args() + op_info.ssh_args
 
         logger.debug(f"Startng SSH tunnel with command: {command}")
-        print("starting ssh")
         # It seems like "universal newlines and shell might not be necessary. Continue with further testing."
-        ssh_sub = subprocess.Popen(command, stderr=subprocess.PIPE, env=env, encoding='utf-8')
+        ssh_sub = subprocess.Popen(command, shell=True, universal_newlines=True, stderr=subprocess.PIPE, env=env, encoding='utf-8')
 
         return ssh_sub, print_ssh_logs
     
     except Exception as e:
-        q.send("SSH_FAIL")
+        q.put("SSH_FAIL")
         raise e
 
 
@@ -122,7 +121,6 @@ def wait_for_ssh_connection(ssh_sub, print_ssh_logs, q):
         else:
             log_list.append(next_line)
         if "debug1: Entering interactive session." in next_line:
-            print("SSH succeeded")
             q.put("SSH_OK")
             print(q)
             ssh_sucess = True
