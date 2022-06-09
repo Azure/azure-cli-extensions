@@ -39,8 +39,8 @@ MAX_POLLS_CREATE_WORKSPACE = 300
 
 C4A_TERMS_ACCEPTANCE_MESSAGE = "\nBy continuing you accept the Azure Quantum terms and conditions and privacy policy and agree that " \
                                "Microsoft can share your account details with the quantum provider for their transactional purposes.\n\n" \
-                               "https://privacy.microsoft.com/en-us/privacystatement\n" \
-                               "https://azure.microsoft.com/en-us/support/legal/preview-supplemental-terms/\n\n" \
+                               "https://privacy.microsoft.com/privacystatement\n" \
+                               "https://azure.microsoft.com/support/legal/preview-supplemental-terms/\n\n" \
                                "Continue? (Y/N) "
 
 
