@@ -1,0 +1,19 @@
+Running /data/manager
+Registered heartbeat metric successfully
+MICROSOFT SOFTWARE LICENSE TERMS
+MICROSOFT Azure Arc for Kubernetes
+__________________________________
+This software is licensed to you as part of your or your company's subscription license for Microsoft Azure Services. You may only use the software with Microsoft Azure Services and subject to the terms and conditions of the agreement under which you obtained Microsoft Azure Services. If you do not have an active subscription license for Microsoft Azure Services, you may not use the software. Microsoft Azure Legal Information: https://azure.microsoft.com/en-us/support/legal/
+
+I0603 21:28:36.858899       8 deleg.go:130] leader "msg"="Trying to become the leader."  
+I0603 21:28:38.509820       8 request.go:665] Waited for 1.047692558s due to client-side throttling, not priority and fairness, request: GET:https://10.0.0.1:443/apis/flowcontrol.apiserver.k8s.io/v1beta1?timeout=32s
+I0603 21:28:39.371618       8 deleg.go:130] leader "msg"="No pre-existing lock was found."  
+I0603 21:28:39.377320       8 deleg.go:130] leader "msg"="Became the leader."  
+I0603 21:28:41.881516       8 deleg.go:130] controller-runtime/metrics "msg"="metrics server is starting to listen"  "addr"=":8080"
+I0603 21:28:41.881884       8 deleg.go:130] setup "msg"="starting manager"  
+I0603 21:28:41.882321       8 deleg.go:130]  "msg"="starting metrics server"  "path"="/metrics"
+I0603 21:28:41.882784       8 controller.go:178] controller/gitconfig "msg"="Starting EventSource" "reconciler group"="clusterconfig.azure.com" "reconciler kind"="GitConfig" "source"={"Type":{"metadata":{"creationTimestamp":null},"spec":{"operatorParams":"","operatorClientLocation":"","operatorType":"","giturl":"","sshKnownHostsContents":"","operatorInstanceName":"","operatorScope":"","deleteOperator":false,"enableHelmOperator":false,"correlationId":"","helmOperatorProperties":{"repoUrl":"","chartName":"","chartVersion":"","chartValues":""},"protectedParameters":{"referenceName":"","version":""}},"status":{"configAppliedTime":"","status":"","message":"","publicKey":"","lastGitCommitInformation":"","mostRecentEventsFromFlux":null,"errorsInTheLastSynced":"","lastPolledStatusTime":"","proxyConfigHash":"","isSyncedWithAzure":false,"retryCountPublicKey":0}}}
+I0603 21:28:41.882821       8 controller.go:186] controller/gitconfig "msg"="Starting Controller" "reconciler group"="clusterconfig.azure.com" "reconciler kind"="GitConfig" 
+I0603 21:28:41.983778       8 controller.go:220] controller/gitconfig "msg"="Starting workers" "reconciler group"="clusterconfig.azure.com" "reconciler kind"="GitConfig" "worker count"=1
+W0604 07:42:38.124991       8 reflector.go:441] pkg/mod/k8s.io/client-go@v0.22.2/tools/cache/reflector.go:167: watch of *v1beta1.GitConfig ended with: an error on the server ("unable to decode an event from the watch stream: http2: client connection lost") has prevented the request from succeeding
+W0604 19:01:22.701522       8 reflector.go:441] pkg/mod/k8s.io/client-go@v0.22.2/tools/cache/reflector.go:167: watch of *v1beta1.GitConfig ended with: an error on the server ("unable to decode an event from the watch stream: http2: client connection lost") has prevented the request from succeeding

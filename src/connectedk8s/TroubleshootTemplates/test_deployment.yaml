@@ -1,0 +1,18 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: testdeployment
+  labels:
+    app: networktest
+spec:
+  template:
+    metadata:
+      labels:
+        app: networktest
+    spec:
+      containers: 
+      - name: networktest1
+        image: svacr1.azurecr.io/networkcheck:3.0
+      restartPolicy: Never
+  backoffLimit: 4
+

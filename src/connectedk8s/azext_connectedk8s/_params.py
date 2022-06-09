@@ -20,6 +20,17 @@ features_types = CLIArgumentType(
 
 def load_arguments(self, _):
 
+    with self.argument_context('connectedk8s troubleshoot') as c:
+        c.argument('tags', tags_type)
+        c.argument('location', arg_type=get_location_type(self.cli_ctx), validator=get_default_location_from_resource_group)
+        c.argument('cluster_name', options_list=['--name', '-n'], help='The name of the connected cluster.')
+        c.argument('kube_config', options_list=['--kube-config'], help='Path to the kube config file.')
+        c.argument('kube_context', options_list=['--kube-context'], help='Kubconfig context from current machine.')
+        c.argument('https_proxy', options_list=['--proxy-https'], arg_group='Proxy', help='Https proxy URL to be used.')
+        c.argument('http_proxy', options_list=['--proxy-http'], arg_group='Proxy', help='Http proxy URL to be used.')
+        c.argument('no_proxy', options_list=['--proxy-skip-range'], arg_group='Proxy', help='List of URLs/CIDRs for which proxy should not to be used.')
+        c.argument('proxy_cert', options_list=['--proxy-cert'], arg_group='Proxy', type=file_type, completer=FilesCompleter(), help='Path to the certificate file for proxy')
+
     with self.argument_context('connectedk8s connect') as c:
         c.argument('tags', tags_type)
         c.argument('location', arg_type=get_location_type(self.cli_ctx), validator=get_default_location_from_resource_group)

@@ -1,0 +1,21 @@
+Running /data/manager
+Registered heartbeat metric successfully
+MICROSOFT SOFTWARE LICENSE TERMS
+MICROSOFT Azure Arc for Kubernetes
+__________________________________
+This software is licensed to you as part of your or your company's subscription license for Microsoft Azure Services. You may only use the software with Microsoft Azure Services and subject to the terms and conditions of the agreement under which you obtained Microsoft Azure Services. If you do not have an active subscription license for Microsoft Azure Services, you may not use the software. Microsoft Azure Legal Information: https://azure.microsoft.com/en-us/support/legal/
+
+I0607 21:31:17.019463       7 logr.go:252] leader "msg"="Trying to become the leader."  
+I0607 21:31:17.539113       7 logr.go:252] leader "msg"="Found existing lock"  "LockOwner"="controller-manager-867fdfdcd6-8k7mv"
+I0607 21:31:17.577196       7 logr.go:252] leader "msg"="Not the leader. Waiting."  
+I0607 21:31:18.694437       7 logr.go:252] leader "msg"="Not the leader. Waiting."  
+I0607 21:31:21.068862       7 logr.go:252] leader "msg"="Not the leader. Waiting."  
+I0607 21:31:25.139924       7 logr.go:252] leader "msg"="Not the leader. Waiting."  
+I0607 21:31:34.023150       7 logr.go:252] leader "msg"="Not the leader. Waiting."  
+I0607 21:31:52.566535       7 logr.go:252] leader "msg"="Became the leader."  
+I0607 21:31:53.070976       7 logr.go:252] controller-runtime/metrics "msg"="Metrics server is starting to listen"  "addr"=":8080"
+I0607 21:31:53.071969       7 logr.go:252] setup "msg"="starting manager"  
+I0607 21:31:53.072371       7 internal.go:362]  "msg"="Starting server" "addr"={"IP":"::","Port":8080,"Zone":""} "kind"="metrics" "path"="/metrics" 
+I0607 21:31:53.072547       7 controller.go:178] controller/gitconfig "msg"="Starting EventSource" "reconciler group"="clusterconfig.azure.com" "reconciler kind"="GitConfig" "source"="kind source: *v1beta1.GitConfig"
+I0607 21:31:53.072566       7 controller.go:186] controller/gitconfig "msg"="Starting Controller" "reconciler group"="clusterconfig.azure.com" "reconciler kind"="GitConfig" 
+I0607 21:31:53.173922       7 controller.go:220] controller/gitconfig "msg"="Starting workers" "reconciler group"="clusterconfig.azure.com" "reconciler kind"="GitConfig" "worker count"=1
