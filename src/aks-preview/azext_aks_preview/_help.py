@@ -1767,6 +1767,36 @@ helps['aks trustedaccess role list'] = """
     short-summary: List trusted access roles.
 """
 
+helps['aks trustedaccess rolebinding'] = """
+    type: group
+    short-summary: Commands to manage trusted access role bindings.
+"""
+
+helps['aks trustedaccess rolebinding list'] = """
+    type: command
+    short-summary: List all the trusted access role bindings.
+"""
+
+helps['aks trustedaccess rolebinding get'] = """
+    type: command
+    short-summary: Get the specific trusted access role binding according to binding name.
+"""
+
+helps['aks trustedaccess rolebinding create'] = """
+    type: command
+    short-summary: Create a new trusted access role binding.
+"""
+
+helps['aks trustedaccess rolebinding update'] = """
+    type: command
+    short-summary: Update a trusted access role binding.
+"""
+
+helps['aks trustedaccess rolebinding delete'] = """
+    type: command
+    short-summary: Delete a trusted access role binding according to name.
+"""
+
 helps['aks draft'] = """
     type: group
     short-summary: Commands to build deployment files in a project directory and deploy to an AKS cluster.
