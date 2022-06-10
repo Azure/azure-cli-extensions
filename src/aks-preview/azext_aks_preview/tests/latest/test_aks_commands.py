@@ -4595,7 +4595,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
-    def test_aks_availability_zones(self, resource_group, resource_group_location, sp_name, sp_password):
+    def test_aks_availability_zones(self, resource_group, resource_group_location):
         # kwargs for string formatting
         aks_name = self.create_random_name('cliakstest', 16)
         nodepool2_name = "nodepool2"
