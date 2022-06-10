@@ -62,6 +62,7 @@ def step_create(test, checks=None, cache_num=1):
                  '--resource-group "{rg}"',
                  checks=checks)
 
+
 # EXAMPLE: /Databases/post/RedisEnterpriseDatabasesForceUnlink - unlinking a database during a regional outage
 def step_database_force_unlink(test, checks=None):
     if checks is None:
@@ -72,6 +73,7 @@ def step_database_force_unlink(test, checks=None):
              'myRedisEnterprise2}/databases/{database}" '
              '--resource-group "{rg32}"',
              checks=checks)
+
 
 # EXAMPLE: /RedisEnterprise/get/RedisEnterpriseGet
 def step_show(test, checks=None):

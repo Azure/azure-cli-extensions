@@ -28,6 +28,7 @@ def _get_cluster_with_databases(cluster,
         result['databases'].append(database)
     return result
 
+
 def redisenterprise_update(client,
                            resource_group_name,
                            cluster_name,
@@ -52,6 +53,7 @@ def redisenterprise_update(client,
                        resource_group_name=resource_group_name,
                        cluster_name=cluster_name,
                        parameters=parameters)
+
 
 def redisenterprise_list(cmd,
                          client,
