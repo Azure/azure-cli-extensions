@@ -2159,6 +2159,7 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
             enable_fips=False,
             mode=CONST_NODEPOOL_MODE_SYSTEM,
             workload_runtime=CONST_WORKLOAD_RUNTIME_OCI_CONTAINER,
+            enable_custom_ca_trust=False,
         )
         ssh_config_1 = self.models.ContainerServiceSshConfiguration(
             public_keys=[self.models.ContainerServiceSshPublicKey(key_data=public_key)]
