@@ -24,8 +24,8 @@ def issue_access_token(client, scopes, userid=None):
     return user_token_data
 
 
-def communication_send_sms(client, sender, recipient, message):
-    return client.send(from_=sender, to=recipient, message=message)
+def communication_send_sms(client, sender, recipients, message):
+    return client.send(from_=sender, to=recipients, message=message)
 
 
 def communication_list_phonenumbers(client):

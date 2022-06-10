@@ -136,12 +136,12 @@ helps['communication sms'] = """
 
 helps['communication sms send-sms'] = """
     type: command
-    short-summary: "Sends an SMS from the sender phone number to the recipient phone number."
+    short-summary: "Sends an SMS from the sender phone number to the recipient(s) phone number."
     examples:
       - name: send sms
         text: |-
                az communication sms send-sms --sender "+1833xxxxxxx" \
---recipient "+1425xxxxxxx" --message "Hello there!!"
+--recipient "+1425xxxxxxx" "+1426xxxxxxx" "+1427xxxxxxx" --message "Hello there!!"
 """
 
 helps['communication phonenumbers'] = """

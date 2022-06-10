@@ -58,7 +58,7 @@ az communication identity issue-access-token --scope chat voip --userid "8:acs:x
 ##### Send-SMS #####
 ```
 az communication sms send-sms --sender "+1833xxxxxxx" \
-    --recipient "+1425xxxxxxx" --message "Hello there!!"
+    --recipient "+1425xxxxxxx" "+1426xxxxxxx" "+1427xxxxxxx" --message "Hello there!!"
 ```
 ##### List-Phonenumbers #####
 ```
