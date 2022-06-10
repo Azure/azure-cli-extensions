@@ -31,7 +31,7 @@ az automation runbook create \
     --location westus
 ```
 
-##### Set runbook content (Download [AzureAutomationTutorial.ps1](https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/101-automation/scripts/AzureAutomationTutorial.ps1) as an example)
+##### Set runbook content (Download [AzureAutomationTutorial.ps1](https://github.com/Azure/azure-quickstart-templates/blob/master/quickstarts/microsoft.automation/101-automation/scripts/AzureAutomationTutorial.ps1) as an example)
 ```
 az automation runbook replace-content \
     --resource-group groupName \
