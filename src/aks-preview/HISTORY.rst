@@ -12,6 +12,11 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+0.5.80
+++++++
+
+* Fix the value of option --zones not being transmitted correctly for `az aks nodepool add`, see issue `\#4953 <https://github.com/Azure/azure-cli-extensions/issues/4953>`_.
+
 0.5.79
 ++++++
 
