@@ -7,6 +7,9 @@
 
 
 # EXAMPLE: /RedisEnterprise/put/RedisEnterpriseCreate
+
+# NOTE: Functions will always first be looked up in manual/custom.py followed by generated/custom.py
+
 def step_create(test, checks=None, cache_num=1):
     if checks is None:
         checks = []
@@ -27,20 +30,6 @@ def step_create(test, checks=None, cache_num=1):
                         '--no-database '
                         '--resource-group "{rg31}"',
                         checks=checks)
-            """
-            test.cmd('az redisenterprise create '
-                     '--location "West US" '
-                     '--cluster-name "{cluster31}" '
-                     '--sku "EnterpriseFlash_F300" '
-                     '--client-protocol "Encrypted" '
-                     '--clustering-policy "EnterpriseCluster" '
-                     '--eviction-policy "NoEviction" '
-                     '--group-nickname "groupName" '
-                     '--linked-databases id="/subscriptions/{subscription}/resourceGroups/{rg31}/providers/Microsoft.Cache/redisEnterprise/{cluster31}/databases/{database}" '
-                     '--port 10000 '
-                     '--resource-group "{rg31}"',
-            checks=checks)            
-            """
         elif cache_num == 2:
                 test.cmd('az redisenterprise create '
                      '--location "West US" '
