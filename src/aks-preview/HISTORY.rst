@@ -12,6 +12,8 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+* Fix: Remove permission prompt when saving config file to symlink with `az aks get-credentials`.
+
 0.5.80
 ++++++
 
