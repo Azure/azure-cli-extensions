@@ -28,6 +28,30 @@ def _get_cluster_with_databases(cluster,
         result['databases'].append(database)
     return result
 
+def redisenterprise_update(client,
+                           resource_group_name,
+                           cluster_name,
+                           sku=None,
+                           capacity=None,
+                           tags=None,
+                           minimum_tls_version=None,
+                           no_wait=False):
+    parameters = {}
+    parameters['sku'] = {}
+    parameters['sku']['name'] = sku
+    if capacity is not None:
+        parameters['sku']['capacity'] = capacity
+    if len(parameters['sku']) == 0:
+        del parameters['sku']
+    if tags is not None:
+        parameters['tags'] = tags
+    if minimum_tls_version is not None:
+        parameters['minimum_tls_version'] = minimum_tls_version
+    return sdk_no_wait(no_wait,
+                       client.begin_update,
+                       resource_group_name=resource_group_name,
+                       cluster_name=cluster_name,
+                       parameters=parameters)
 
 def redisenterprise_list(cmd,
                          client,
