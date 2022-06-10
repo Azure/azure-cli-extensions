@@ -3,6 +3,11 @@
 Release History
 ===============
 
+1.1.2
+++++++
+* Add support for multiple SMS recipients.
+
+
 1.1.1
 ++++++
 * Fix codestyle issues in communiction command group.
