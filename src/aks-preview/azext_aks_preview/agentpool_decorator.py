@@ -215,9 +215,7 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
         """
         # read the original value passed by the command
         disable_custom_ca_trust = self.raw_param.get("disable_custom_ca_trust")
-        # try to read the property value corresponding to the parameter from the `agentpool` object
-        if self.agentpool and self.agentpool.enable_custom_ca_trust is not None:
-            disable_custom_ca_trust = not self.agentpool.enable_custom_ca_trust
+        # This option is not supported in create mode, so its value is not read from `agentpool`.
 
         # this parameter does not need dynamic completion
         # validation
@@ -391,6 +389,9 @@ class AKSPreviewAgentPoolUpdateDecorator(AKSAgentPoolUpdateDecorator):
 
         :return: the AgentPool object
         """
-        # fetch and update the default AgentPool profile
+        # DO NOT MOVE: keep this on top, fetch and update the default AgentPool profile
         agentpool = self.update_agentpool_profile_default(agentpools)
+
+        # update custom ca trust
+        agentpool = self.update_custom_ca_trust(agentpool)
         return agentpool
