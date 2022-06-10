@@ -90,6 +90,7 @@ def load_arguments(self, _):
         c.argument('datasource_type', arg_type=get_enum_type(get_datasource_types()), help="Specify the datasource type of the resource to be backed up")
         c.argument('vault_name', type=str, help="Name of the vault.")
         c.argument('permissions_scope', arg_type=get_enum_type(get_permission_scope_values()), help="Scope for assigning permissions to the backup vault")
+        c.argument('keyvault_id', type=str, help='ARM id of the key vault')
         c.argument('backup_instance', type=validate_file_or_dict, help='Request body for operation Expected value: '
                    'json-string/@json-file.')
 
