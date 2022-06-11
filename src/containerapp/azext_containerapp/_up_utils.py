@@ -46,7 +46,7 @@ from ._utils import (
     register_provider_if_needed
 )
 
-from ._constants import MAXIMUM_SECRET_LENGTH, LOG_ANALYTICS_RP, CONTAINER_APPS_RP
+from ._constants import MAXIMUM_SECRET_LENGTH, LOG_ANALYTICS_RP, CONTAINER_APPS_RP, ACR_IMAGE_SUFFIX
 
 from .custom import (
     create_managed_environment,
@@ -297,7 +297,7 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
     def create_acr(self):
         registry_rg = self.resource_group
         url = self.registry_server
-        registry_name = url[: url.rindex(".azurecr.io")]
+        registry_name = url[: url.rindex(ACR_IMAGE_SUFFIX)]
         location = "eastus"
         if self.env.location and self.env.location.lower() != "northcentralusstage":
             location = self.env.location
@@ -613,7 +613,7 @@ def _get_registry_from_app(app):
 
 
 def _get_acr_rg(app):
-    registry_name = app.registry_server[: app.registry_server.rindex(".azurecr.io")]
+    registry_name = app.registry_server[: app.registry_server.rindex(ACR_IMAGE_SUFFIX)]
     client = get_mgmt_service_client(
         app.cmd.cli_ctx, ContainerRegistryManagementClient
     ).registries
@@ -663,11 +663,11 @@ def _get_registry_details(cmd, app: "ContainerApp", source):
         registry_name, registry_rg = find_existing_acr(cmd, app)
         if registry_name and registry_rg:
             _set_acr_creds(cmd, app, registry_name)
-            app.registry_server = registry_name + ".azurecr.io"
+            app.registry_server = registry_name + ACR_IMAGE_SUFFIX
         else:
             registry_rg = app.resource_group.name
             registry_name = _get_default_registry_name(app)
-            app.registry_server = registry_name + ".azurecr.io"
+            app.registry_server = registry_name + ACR_IMAGE_SUFFIX
             app.should_create_acr = True
 
     app.acr = AzureContainerRegistry(

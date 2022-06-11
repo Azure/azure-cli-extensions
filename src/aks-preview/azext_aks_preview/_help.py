@@ -366,6 +366,9 @@ helps['aks create'] = """
         - name: --disable-disk-driver
           type: bool
           short-summary: Disable AzureDisk CSI Driver.
+        - name: --disk-driver-version
+          type: string
+          short-summary: Specify AzureDisk CSI Driver version.
         - name: --disable-file-driver
           type: bool
           short-summary: Disable AzureFile CSI Driver.
@@ -444,6 +447,9 @@ helps['aks create'] = """
         - name: --enable-custom-ca-trust
           type: bool
           short-summary: Enable Custom CA Trust on agent node pool.
+        - name: --enable-keda
+          type: bool
+          short-summary: Enable KEDA workload auto-scaler.
     examples:
         - name: Create a Kubernetes cluster with an existing SSH public key.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --ssh-key-value /path/to/publickey
@@ -672,6 +678,9 @@ helps['aks update'] = """
         - name: --enable-disk-driver
           type: bool
           short-summary: Enable AzureDisk CSI Driver.
+        - name: --disk-driver-version
+          type: string
+          short-summary: Specify AzureDisk CSI Driver version.
         - name: --disable-disk-driver
           type: bool
           short-summary: Disable AzureDisk CSI Driver.
@@ -755,6 +764,12 @@ helps['aks update'] = """
         - name: --apiserver-subnet-id
           type: string
           short-summary: The ID of a subnet in an existing VNet into which to assign control plane apiserver pods(requires --enable-apiserver-vnet-integration)
+        - name: --enable-keda
+          type: bool
+          short-summary: Enable KEDA workload auto-scaler.
+        - name: --disable-keda
+          type: bool
+          short-summary: Disable KEDA workload auto-scaler.
     examples:
       - name: Reconcile the cluster back to its current state.
         text: az aks update -g MyResourceGroup -n MyManagedCluster
@@ -846,7 +861,10 @@ helps['aks kollect'] = """
             for example, kube-system/deployment/tunnelfront.
         - name: --node-logs
           type: string
-          short-summary: The list of node logs to collect. For example, /var/log/cloud-init.log
+          short-summary: The list of node logs to collect for Linux nodes. For example, /var/log/cloud-init.log
+        - name: --node-logs-windows
+          type: string
+          short-summary: The list of node logs to collect for Windows nodes. For example, C:\\AzureData\\CustomDataSetupScript.log
     examples:
       - name: using storage account name and a shared access signature token with write permission
         text: az aks kollect -g MyResourceGroup -n MyManagedCluster --storage-account MyStorageAccount --sas-token "MySasToken"
@@ -1792,7 +1810,7 @@ helps['aks draft create'] = """
 
 helps['aks draft setup-gh'] = """
     type: command
-    short-summary: Set up Github OIDC for your application
+    short-summary: Set up GitHub OIDC for your application
     parameters:
         - name: --app
           type: string
@@ -1808,25 +1826,25 @@ helps['aks draft setup-gh'] = """
           short-summary: Specify the cloud provider (default is azure).
         - name: --gh-repo
           type: string
-          short-summary: Specify the the github repository (organization/repo_name).
+          short-summary: Specify the the GitHub repository (organization/repo_name).
         - name: --path
           type: string
           short-summary: Automatically download and use the Draft binary at the specified location.
     examples:
-      - name: Prompt to setup the Github OIDC for a repository.
+      - name: Prompt to setup the GitHub OIDC for a repository.
         text: az aks draft setup-gh
-      - name: Setup the github OIDC on Azure for a specific repository.
+      - name: Setup the GitHub OIDC on Azure for a specific repository.
         text: az aks draft setup-gh --provider=azure --gh-repo=some_organization/some_repo
-      - name: Setup the github OIDC on Azure with subscription ID and resource group.
+      - name: Setup the GitHub OIDC on Azure with subscription ID and resource group.
         text: az aks draft setup-gh --provider=azure --subscription-id=some_subscription --resource-group=some_rg
-      - name: Setup the github OIDC with an application name on Azure with subscription ID and resource group for a specific repository.
+      - name: Setup the GitHub OIDC with an application name on Azure with subscription ID and resource group for a specific repository.
         text: az aks draft setup-gh --app=some_app --provider=azure --subscription-id=some_subscription --resource-group=some_rg --gh-repo=some_organization/some_repo
 """
 
 helps['aks draft generate-workflow'] = """
     type: command
-    short-summary: Generate a Github workflow for automatic build and deploy to AKS
-    long-summary: Before running this command, Make sure you have set up Github OIDC for your application.
+    short-summary: Generate a GitHub workflow for automatic build and deploy to AKS
+    long-summary: Before running this command, Make sure you have set up GitHub OIDC for your application.
                   You also need to create a resource group, a container registry and a Kubernetes cluster on Azure and
                   link the three resources using `az aks update -n <cluster-name> -g <resource-group-name> --attach-acr <acr-name>`.
     parameters:
@@ -1847,24 +1865,24 @@ helps['aks draft generate-workflow'] = """
           short-summary: Specify the name of the container image.
         - name: --branch
           type: string
-          short-summary: Specify the Github branch to automatically deploy from.
+          short-summary: Specify the GitHub branch to automatically deploy from.
         - name: --path
           type: string
           short-summary: Automatically download and use the Draft binary at the specified location.
     examples:
-      - name: Prompt to generate a Github workflow in the current directory.
+      - name: Prompt to generate a GitHub workflow in the current directory.
         text: az aks draft generate-workflow
-      - name: Prompt to generate a Github workflow in a specific project directory.
+      - name: Prompt to generate a GitHub workflow in a specific project directory.
         text: az aks draft generate-workflow --destination=/projects/some_project
-      - name: Generate a Github workflow with a resource group, an AKS cluster name, a container registry name in a specific project directory.
+      - name: Generate a GitHub workflow with a resource group, an AKS cluster name, a container registry name in a specific project directory.
         text: az aks draft generate-workflow --resource-group=some_rg --cluster-name=some_cluster --registry-name=some_registry --destination=/projects/some_project
-      - name: Generate a Github workflow that deploys from the main branch with a resource group, an AKS cluster name, a container registry name, and a container image name in a specific project directory.
+      - name: Generate a GitHub workflow that deploys from the main branch with a resource group, an AKS cluster name, a container registry name, and a container image name in a specific project directory.
         text: az aks draft generate-workflow --branch=main --resource-group=some_rg --cluster-name=some_cluster --registry-name=some_registry --container-name=some_image --destination=/projects/some_project
 """
 
 helps['aks draft up'] = """
     type: command
-    short-summary: Set up Github OIDC and generate a Github workflow for automatic build and deploy to AKS
+    short-summary: Set up GitHub OIDC and generate a GitHub workflow for automatic build and deploy to AKS
     long-summary: This command combines `az aks draft setup-gh` and `az aks draft generate-workflow`.
                   Before running this command, create a resource group, a container registry and a Kubernetes cluster on Azure and
                   link the three resources using `az aks update -n <cluster-name> -g <resource-group-name> --attach-acr <acr-name>`.
@@ -1883,7 +1901,7 @@ helps['aks draft up'] = """
           short-summary: Specify the cloud provider (default is azure).
         - name: --gh-repo
           type: string
-          short-summary: Specify the the github repository (organization/repo_name).
+          short-summary: Specify the the GitHub repository (organization/repo_name).
         - name: --cluster-name
           type: string
           short-summary: Specify the AKS cluster name.
@@ -1898,16 +1916,16 @@ helps['aks draft up'] = """
           short-summary: Specify the path to the project directory (default is .).
         - name: --branch
           type: string
-          short-summary: Specify the Github branch to automatically deploy from.
+          short-summary: Specify the GitHub branch to automatically deploy from.
         - name: --path
           type: string
           short-summary: Automatically download and use the Draft binary at the specified location.
     examples:
-      - name: Prompt to setup the Github OIDC then generate a Github workflow in the current directory.
+      - name: Prompt to setup the GitHub OIDC then generate a GitHub workflow in the current directory.
         text: az aks draft up
-      - name: Prompt to setup the Github OIDC then generate a Github workflow in a specific project directory.
+      - name: Prompt to setup the GitHub OIDC then generate a GitHub workflow in a specific project directory.
         text: az aks draft up --destination=/projects/some_project
-      - name: Prompt to setup the Github OIDC for a specific repository then generate a Github workflow in a specific project directory.
+      - name: Prompt to setup the GitHub OIDC for a specific repository then generate a GitHub workflow in a specific project directory.
         text: az aks draft up --gh-repo=some_organization/some_repo --destination=/projects/some_project
 """
 

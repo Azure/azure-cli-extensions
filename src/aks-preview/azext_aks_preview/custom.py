@@ -93,6 +93,11 @@ from ._consts import (
     CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID,
     CONST_MONITORING_USING_AAD_MSI_AUTH,
     CONST_OPEN_SERVICE_MESH_ADDON_NAME,
+    CONST_PERISCOPE_REPO_ORG,
+    CONST_PERISCOPE_CONTAINER_REGISTRY,
+    CONST_PERISCOPE_RELEASE_TAG,
+    CONST_PERISCOPE_IMAGE_VERSION,
+    CONST_PERISCOPE_NAMESPACE,
     CONST_ROTATION_POLL_INTERVAL,
     CONST_SCALE_DOWN_MODE_DELETE,
     CONST_SCALE_SET_PRIORITY_REGULAR,
@@ -131,7 +136,7 @@ from .addonconfiguration import (
 from .maintenanceconfiguration import (
     aks_maintenanceconfiguration_update_internal,
 )
-from .vendored_sdks.azure_mgmt_preview_aks.v2022_04_02_preview.models import (
+from .vendored_sdks.azure_mgmt_preview_aks.v2022_05_02_preview.models import (
     AgentPool,
     AgentPoolUpgradeSettings,
     ContainerServiceStorageProfileTypes,
@@ -789,9 +794,10 @@ def aks_create(cmd,
                enable_ultra_ssd=False,
                edge_zone=None,
                enable_secret_rotation=False,
-               disable_disk_driver=None,
-               disable_file_driver=None,
-               disable_snapshot_controller=None,
+               disk_driver_version=None,
+               disable_disk_driver=False,
+               disable_file_driver=False,
+               disable_snapshot_controller=False,
                rotation_poll_interval=None,
                disable_local_accounts=False,
                no_wait=False,
@@ -813,6 +819,7 @@ def aks_create(cmd,
                apiserver_subnet_id=None,
                dns_zone_resource_id=None,
                enable_custom_ca_trust=False,
+               enable_keda=False,
                yes=False):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
@@ -879,12 +886,13 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
                enable_secret_rotation=False,
                disable_secret_rotation=False,
                rotation_poll_interval=None,
-               enable_disk_driver=None,
-               disable_disk_driver=None,
-               enable_file_driver=None,
-               disable_file_driver=None,
-               enable_snapshot_controller=None,
-               disable_snapshot_controller=None,
+               enable_disk_driver=False,
+               disk_driver_version=None,
+               disable_disk_driver=False,
+               enable_file_driver=False,
+               disable_file_driver=False,
+               enable_snapshot_controller=False,
+               disable_snapshot_controller=False,
                disable_local_accounts=False,
                enable_local_accounts=False,
                enable_public_fqdn=False,
@@ -904,6 +912,8 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
                azure_keyvault_kms_key_id=None,
                enable_apiserver_vnet_integration=False,
                apiserver_subnet_id=None,
+               enable_keda=False,
+               disable_keda=False,
                ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
@@ -1014,7 +1024,8 @@ def aks_kollect(cmd,    # pylint: disable=too-many-statements,too-many-locals
                 sas_token=None,
                 container_logs=None,
                 kube_objects=None,
-                node_logs=None):
+                node_logs=None,
+                node_logs_windows=None):
     colorama.init()
 
     mc = client.get(resource_group_name, name)
@@ -1113,37 +1124,21 @@ def aks_kollect(cmd,    # pylint: disable=too-many-statements,too-many-locals
     container_name = normalized_container_name[:len_of_container_name]
 
     sas_token = sas_token.strip('?')
-    deployment_yaml = _read_periscope_yaml()
-    deployment_yaml = deployment_yaml.replace(
-        "# <accountName, string>", storage_account_name)
-    deployment_yaml = deployment_yaml.replace("# <saskey, base64 encoded>",
-                                              (base64.b64encode(bytes("?" + sas_token, 'ascii'))).decode('ascii'))
-    deployment_yaml = deployment_yaml.replace(
-        "# <containerName, string>", container_name)
 
-    yaml_lines = deployment_yaml.splitlines()
-    for index, line in enumerate(yaml_lines):
-        if "DIAGNOSTIC_CONTAINERLOGS_LIST" in line and container_logs is not None:
-            yaml_lines[index] = line + ' ' + container_logs
-        if "DIAGNOSTIC_KUBEOBJECTS_LIST" in line and kube_objects is not None:
-            yaml_lines[index] = line + ' ' + kube_objects
-        if "DIAGNOSTIC_NODELOGS_LIST" in line and node_logs is not None:
-            yaml_lines[index] = line + ' ' + node_logs
-    deployment_yaml = '\n'.join(yaml_lines)
-
-    fd, temp_yaml_path = tempfile.mkstemp()
-    temp_yaml_file = os.fdopen(fd, 'w+t')
+    kustomize_yaml = get_kustomize_yaml(storage_account_name, sas_token, container_name, container_logs, kube_objects, node_logs, node_logs_windows)
+    kustomize_folder = tempfile.mkdtemp()
+    kustomize_file_path = os.path.join(kustomize_folder, "kustomization.yaml")
     try:
-        temp_yaml_file.write(deployment_yaml)
-        temp_yaml_file.flush()
-        temp_yaml_file.close()
+        with os.fdopen(os.open(kustomize_file_path, os.O_RDWR | os.O_CREAT), 'w+t') as kustomize_file:
+            kustomize_file.write(kustomize_yaml)
+
         try:
             print()
-            print("Cleaning up aks-periscope resources if existing")
+            print(f"Cleaning up aks-periscope resources if existing")
 
             subprocess.call(["kubectl", "--kubeconfig", temp_kubeconfig_path, "delete",
                              "serviceaccount,configmap,daemonset,secret",
-                             "--all", "-n", "aks-periscope", "--ignore-not-found"],
+                             "--all", "-n", CONST_PERISCOPE_NAMESPACE, "--ignore-not-found"],
                             stderr=subprocess.STDOUT)
 
             subprocess.call(["kubectl", "--kubeconfig", temp_kubeconfig_path, "delete",
@@ -1163,7 +1158,7 @@ def aks_kollect(cmd,    # pylint: disable=too-many-statements,too-many-locals
 
             subprocess.call(["kubectl", "--kubeconfig", temp_kubeconfig_path, "delete",
                              "--all",
-                             "apd", "-n", "aks-periscope", "--ignore-not-found"],
+                             "apd", "-n", CONST_PERISCOPE_NAMESPACE, "--ignore-not-found"],
                             stderr=subprocess.DEVNULL)
 
             subprocess.call(["kubectl", "--kubeconfig", temp_kubeconfig_path, "delete",
@@ -1172,13 +1167,15 @@ def aks_kollect(cmd,    # pylint: disable=too-many-statements,too-many-locals
                             stderr=subprocess.STDOUT)
 
             print()
-            print("Deploying aks-periscope")
-            subprocess.check_output(["kubectl", "--kubeconfig", temp_kubeconfig_path, "apply", "-f",
-                                     temp_yaml_path, "-n", "aks-periscope"], stderr=subprocess.STDOUT)
+            print(f"Deploying aks-periscope")
+
+            subprocess.check_output(["kubectl", "--kubeconfig", temp_kubeconfig_path, "apply", "-k",
+                                     kustomize_folder, "-n", CONST_PERISCOPE_NAMESPACE], stderr=subprocess.STDOUT)
         except subprocess.CalledProcessError as err:
             raise CLIError(err.output)
     finally:
-        os.remove(temp_yaml_path)
+        os.remove(kustomize_file_path)
+        os.rmdir(kustomize_folder)
 
     print()
 
@@ -1202,14 +1199,53 @@ def aks_kollect(cmd,    # pylint: disable=too-many-statements,too-many-locals
         display_diagnostics_report(temp_kubeconfig_path)
 
 
-def _read_periscope_yaml():
-    curr_dir = os.path.dirname(os.path.realpath(__file__))
-    periscope_yaml_file = os.path.join(
-        curr_dir, "deploymentyaml", "aks-periscope.yaml")
-    yaml_file = open(periscope_yaml_file, "r")
-    data_loaded = yaml_file.read()
+def get_kustomize_yaml(storage_account_name,
+                       sas_token,
+                       container_name,
+                       container_logs=None,
+                       kube_objects=None,
+                       node_logs_linux=None,
+                       node_logs_windows=None):
+    diag_config_vars = {
+        'DIAGNOSTIC_CONTAINERLOGS_LIST': container_logs,
+        'DIAGNOSTIC_KUBEOBJECTS_LIST': kube_objects,
+        'DIAGNOSTIC_NODELOGS_LIST_LINUX': node_logs_linux,
+        'DIAGNOSTIC_NODELOGS_LIST_WINDOWS': node_logs_windows
+    }
 
-    return data_loaded
+    # Create YAML list items for each config variable that has a value
+    diag_content = "\n".join(f'  - {k}="{v}"' for k, v in diag_config_vars.items() if v is not None)
+
+    # Build a Kustomize overlay referencing a base for a known release, and using the images from MCR
+    # for that release.
+    return f"""
+resources:
+- https://github.com/{CONST_PERISCOPE_REPO_ORG}/aks-periscope//deployment/base?ref={CONST_PERISCOPE_RELEASE_TAG}
+
+namespace: {CONST_PERISCOPE_NAMESPACE}
+
+images:
+- name: periscope-linux
+  newName: {CONST_PERISCOPE_CONTAINER_REGISTRY}/aks/periscope
+  newTag: {CONST_PERISCOPE_IMAGE_VERSION}
+- name: periscope-windows
+  newName: {CONST_PERISCOPE_CONTAINER_REGISTRY}/aks/periscope-win
+  newTag: {CONST_PERISCOPE_IMAGE_VERSION}
+
+configMapGenerator:
+- name: diagnostic-config
+  behavior: merge
+  literals:
+{diag_content}
+
+secretGenerator:
+- name: azureblob-secret
+  behavior: replace
+  literals:
+  - AZURE_BLOB_ACCOUNT_NAME={storage_account_name}
+  - AZURE_BLOB_SAS_KEY=?{sas_token}
+  - AZURE_BLOB_CONTAINER_NAME={container_name}
+"""
 
 
 def aks_kanalyze(cmd, client, resource_group_name, name):
@@ -1718,7 +1754,7 @@ def aks_agentpool_add(cmd,      # pylint: disable=unused-argument,too-many-local
         agent_pool_type="VirtualMachineScaleSets",
         max_pods=int(max_pods) if max_pods else None,
         orchestrator_version=kubernetes_version,
-        availability_zones=node_zones,
+        availability_zones=zones if zones else node_zones,
         enable_node_public_ip=enable_node_public_ip,
         node_public_ip_prefix_id=node_public_ip_prefix_id,
         node_taints=taints_array,
@@ -2031,40 +2067,61 @@ def aks_addon_list_available():
     return available_addons
 
 
-def aks_addon_list(cmd, client, resource_group_name, name):  # pylint: disable=unused-argument
-    addon_profiles = client.get(resource_group_name, name).addon_profiles
-
+# pylint: disable=unused-argument
+def aks_addon_list(cmd, client, resource_group_name, name):
+    mc = client.get(resource_group_name, name)
     current_addons = []
 
-    for name, addon in ADDONS.items():
-        if not addon_profiles or addon not in addon_profiles:
-            current_addons.append({
-                "name": name,
-                "api_key": addon,
-                "enabled": False
-            })
+    for name, addon_key in ADDONS.items():
+        # web_application_routing is a special case, the configuration is stored in a separate profile
+        if name == "web_application_routing":
+            enabled = (
+                True
+                if mc.ingress_profile and
+                mc.ingress_profile.web_app_routing and
+                mc.ingress_profile.web_app_routing.enabled
+                else False
+            )
         else:
-            current_addons.append({
-                "name": name,
-                "api_key": addon,
-                "enabled": addon_profiles[addon].enabled
-            })
+            enabled = (
+                True
+                if mc.addon_profiles and
+                addon_key in mc.addon_profiles and
+                mc.addon_profiles[addon_key].enabled
+                else False
+            )
+        current_addons.append({
+            "name": name,
+            "api_key": addon_key,
+            "enabled": enabled
+        })
 
     return current_addons
 
 
-def aks_addon_show(cmd, client, resource_group_name, name, addon):  # pylint: disable=unused-argument
-    addon_profiles = client.get(resource_group_name, name).addon_profiles
+# pylint: disable=unused-argument
+def aks_addon_show(cmd, client, resource_group_name, name, addon):
+    mc = client.get(resource_group_name, name)
     addon_key = ADDONS[addon]
 
-    if not addon_profiles or addon_key not in addon_profiles or not addon_profiles[addon_key].enabled:
-        raise CLIError(f'Addon "{addon}" is not enabled in this cluster.')
+    # web_application_routing is a special case, the configuration is stored in a separate profile
+    if addon == "web_application_routing":
+        if not mc.ingress_profile and not mc.ingress_profile.web_app_routing and not mc.ingress_profile.web_app_routing.enabled:
+            raise InvalidArgumentValueError(f'Addon "{addon}" is not enabled in this cluster.')
+        return {
+            "name": addon,
+            "api_key": addon_key,
+            "config": mc.ingress_profile.web_app_routing,
+        }
 
+    # normal addons
+    if not mc.addon_profiles or addon_key not in mc.addon_profiles or not mc.addon_profiles[addon_key].enabled:
+        raise InvalidArgumentValueError(f'Addon "{addon}" is not enabled in this cluster.')
     return {
         "name": addon,
         "api_key": addon_key,
-        "config": addon_profiles[addon_key].config,
-        "identity": addon_profiles[addon_key].identity
+        "config": mc.addon_profiles[addon_key].config,
+        "identity": mc.addon_profiles[addon_key].identity
     }
 
 
@@ -2513,12 +2570,14 @@ def merge_kubernetes_configurations(existing_file, addition_file, replace, conte
         existing['current-context'] = addition['current-context']
 
     # check that ~/.kube/config is only read- and writable by its owner
-    if platform.system() != 'Windows':
-        existing_file_perms = "{:o}".format(
-            stat.S_IMODE(os.lstat(existing_file).st_mode))
-        if not existing_file_perms.endswith('600'):
-            logger.warning('%s has permissions "%s".\nIt should be readable and writable only by its owner.',
-                           existing_file, existing_file_perms)
+    if platform.system() != "Windows" and not os.path.islink(existing_file):
+        existing_file_perms = "{:o}".format(stat.S_IMODE(os.lstat(existing_file).st_mode))
+        if not existing_file_perms.endswith("600"):
+            logger.warning(
+                '%s has permissions "%s".\nIt should be readable and writable only by its owner.',
+                existing_file,
+                existing_file_perms,
+            )
 
     with open(existing_file, 'w+') as stream:
         yaml.safe_dump(existing, stream, default_flow_style=False)
@@ -2593,7 +2652,7 @@ def display_diagnostics_report(temp_kubeconfig_path):   # pylint: disable=too-ma
         if not apds_created:
             apd = subprocess.check_output(
                 ["kubectl", "--kubeconfig", temp_kubeconfig_path, "get",
-                    "apd", "-n", "aks-periscope", "--no-headers"],
+                    "apd", "-n", CONST_PERISCOPE_NAMESPACE, "--no-headers"],
                 universal_newlines=True
             )
             apd_lines = apd.splitlines()
@@ -2617,14 +2676,14 @@ def display_diagnostics_report(temp_kubeconfig_path):   # pylint: disable=too-ma
                     network_config = subprocess.check_output(
                         ["kubectl", "--kubeconfig", temp_kubeconfig_path,
                          "get", "apd", apdName, "-n",
-                         "aks-periscope", "-o=jsonpath={.spec.networkconfig}"],
+                         CONST_PERISCOPE_NAMESPACE, "-o=jsonpath={.spec.networkconfig}"],
                         universal_newlines=True)
                     logger.debug('Dns status for node %s is %s',
                                  node_name, network_config)
                     network_status = subprocess.check_output(
                         ["kubectl", "--kubeconfig", temp_kubeconfig_path,
                          "get", "apd", apdName, "-n",
-                         "aks-periscope", "-o=jsonpath={.spec.networkoutbound}"],
+                         CONST_PERISCOPE_NAMESPACE, "-o=jsonpath={.spec.networkoutbound}"],
                         universal_newlines=True)
                     logger.debug('Network status for node %s is %s',
                                  node_name, network_status)

@@ -64,6 +64,8 @@ from ._consts import (
     CONST_STABLE_UPGRADE_CHANNEL,
     CONST_WORKLOAD_RUNTIME_OCI_CONTAINER,
     CONST_WORKLOAD_RUNTIME_WASM_WASI,
+    CONST_DISK_DRIVER_V1,
+    CONST_DISK_DRIVER_V2,
 )
 from ._validators import (
     validate_acr,
@@ -132,6 +134,7 @@ gpu_instance_profiles = [
 # consts for ManagedCluster
 load_balancer_skus = [CONST_LOAD_BALANCER_SKU_BASIC, CONST_LOAD_BALANCER_SKU_STANDARD]
 network_plugins = [CONST_NETWORK_PLUGIN_KUBENET, CONST_NETWORK_PLUGIN_AZURE, CONST_NETWORK_PLUGIN_NONE]
+disk_driver_versions = [CONST_DISK_DRIVER_V1, CONST_DISK_DRIVER_V2]
 outbound_types = [
     CONST_OUTBOUND_TYPE_LOAD_BALANCER,
     CONST_OUTBOUND_TYPE_USER_DEFINED_ROUTING,
@@ -225,6 +228,10 @@ def load_arguments(self, _):
         c.argument('gmsa_root_domain_name')
         c.argument('attach_acr', acr_arg_type)
         c.argument('skip_subnet_role_assignment', action='store_true')
+        c.argument('disk_driver_version', arg_type=get_enum_type(disk_driver_versions))
+        c.argument('disable_disk_driver', action='store_true')
+        c.argument('disable_file_driver', action='store_true')
+        c.argument('disable_snapshot_controller', action='store_true')
         # addons
         c.argument('enable_addons', options_list=['--enable-addons', '-a'], validator=validate_addons)
         c.argument('workspace_resource_id')
@@ -269,9 +276,6 @@ def load_arguments(self, _):
         c.argument('enable_fips_image', action='store_true')
         c.argument('kubelet_config')
         c.argument('linux_os_config')
-        c.argument('disable_disk_driver', arg_type=get_three_state_flag())
-        c.argument('disable_file_driver', arg_type=get_three_state_flag())
-        c.argument('disable_snapshot_controller', arg_type=get_three_state_flag())
         c.argument('yes', options_list=[
                    '--yes', '-y'], help='Do not prompt for confirmation.', action='store_true')
         c.argument('aks_custom_headers')
@@ -302,6 +306,7 @@ def load_arguments(self, _):
         c.argument('dns-zone-resource-id')
         # no validation for aks create because it already only supports Linux.
         c.argument('enable_custom_ca_trust', action='store_true')
+        c.argument('enable_keda', action='store_true', is_preview=True)
 
     with self.argument_context('aks update') as c:
         # managed cluster paramerters
@@ -336,12 +341,13 @@ def load_arguments(self, _):
         c.argument('enable_windows_gmsa', action='store_true')
         c.argument('gmsa_dns_server')
         c.argument('gmsa_root_domain_name')
-        c.argument('enable_disk_driver', arg_type=get_three_state_flag())
-        c.argument('disable_disk_driver', arg_type=get_three_state_flag())
-        c.argument('enable_file_driver', arg_type=get_three_state_flag())
-        c.argument('disable_file_driver', arg_type=get_three_state_flag())
-        c.argument('enable_snapshot_controller', arg_type=get_three_state_flag())
-        c.argument('disable_snapshot_controller', arg_type=get_three_state_flag())
+        c.argument('enable_disk_driver', action='store_true')
+        c.argument('disk_driver_version', arg_type=get_enum_type(disk_driver_versions))
+        c.argument('disable_disk_driver', action='store_true')
+        c.argument('enable_file_driver', action='store_true')
+        c.argument('disable_file_driver', action='store_true')
+        c.argument('enable_snapshot_controller', action='store_true')
+        c.argument('disable_snapshot_controller', action='store_true')
         c.argument('attach_acr', acr_arg_type, validator=validate_acr)
         c.argument('detach_acr', acr_arg_type, validator=validate_acr)
         # addons
@@ -375,6 +381,8 @@ def load_arguments(self, _):
         c.argument('azure_keyvault_kms_key_id', validator=validate_azure_keyvault_kms_key_id, is_preview=True)
         c.argument('enable_apiserver_vnet_integration', action='store_true', is_preview=True)
         c.argument('apiserver_subnet_id', validator=validate_apiserver_subnet_id, is_preview=True)
+        c.argument('enable_keda', action='store_true', is_preview=True)
+        c.argument('disable_keda', action='store_true', is_preview=True)
 
     with self.argument_context('aks scale') as c:
         c.argument('nodepool_name',

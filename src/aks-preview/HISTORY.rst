@@ -12,8 +12,33 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+* Fix: Remove permission prompt when saving config file to symlink with `az aks get-credentials`.
+
+0.5.80
+++++++
+
+* Fix the value of option --zones not being transmitted correctly for `az aks nodepool add`, see issue `\#4953 <https://github.com/Azure/azure-cli-extensions/issues/4953>`_.
+
+0.5.79
+++++++
+
+* Add support for KEDA workload auto-scaler.
+* Fix `az aks addon list`, `az aks addon list-available` and `az aks addon show` commands when dealing with the web application routing addon.
+* Update to use 2022-05-02-preview api version.
+
+0.5.78
+++++++
+
+* Prompt when disabling CSI Drivers.
+
+0.5.77
+++++++
+
+* Add support to pass csi `disk-driver-version` for `az aks create` and `az aks update`.
+
 0.5.76
 ++++++
+
 * Add support for Custom CA Trust in `az aks create`, `az aks nodepool add`, `az aks nodepool update`.
 
 0.5.75
