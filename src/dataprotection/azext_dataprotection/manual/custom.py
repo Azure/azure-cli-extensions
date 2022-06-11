@@ -262,142 +262,110 @@ def dataprotection_backup_instance_update_msi_permissions(cmd, client, resource_
 
     role_assignments_arr = []
 
-    # print(type(cmd))
-    # print(vars(cmd))
-    # print("\n\n")
-    # print(cmd.command_kwargs)
-    # print("\n\n")
-
     if operation == 'Backup' and backup_instance is None:
         raise CLIError("--backup-instance needs to be given when --operation is given as Backup")
 
+    if not keyvault_id and datasource_type == 'AzureDatabaseForPostgreSQL':
+        raise CLIError("--keyvault-id needs to be given when --datasource-type is AzureDatabaseForPostgreSQL")
+
     from azure.cli.command_modules.role.custom import list_role_assignments, create_role_assignment
 
-    if datasource_type == 'AzureDisk':
-        # Create scope variables for role assignment
-        resource_scope_assignment = backup_instance['properties']['data_source_info']['resource_id']
-        snapshot_rg_scope_assignment = backup_instance['properties']['policy_info']['policy_parameters']['data_store_parameters_list'][0]['resource_group_id']
-        resource_scope = resource_scope_assignment
-        snapshot_rg_scope = snapshot_rg_scope_assignment
+    manifest = helper.load_manifest(datasource_type)
+    resource_map = {}
 
-        if permissions_scope == 'ResourceGroup':
-            resource_scope_assignment = "/".join(resource_scope_assignment.split("/")[:5])  # Snapshot RG is already in RG scope, so change for resource
-        elif permissions_scope == 'Subscription':
-            # Change scope for both resource and Snapshot RG
-            resource_scope_assignment = "/".join(resource_scope_assignment.split("/")[:3])
-            snapshot_rg_scope_assignment = "/".join(snapshot_rg_scope_assignment.split("/")[:3])
-
-        role_assignments = [role_assignment['roleDefinitionName'] for role_assignment in list_role_assignments(cmd, assignee=principal_id, scope=resource_scope, include_inherited=True)]
-        if 'Disk Backup Reader' not in role_assignments:
-            role_assignments_arr.append(create_role_assignment(cmd, role='Disk Backup Reader', assignee=principal_id, scope=resource_scope_assignment))
-
-        role_assignments = [role_assignment['roleDefinitionName'] for role_assignment in list_role_assignments(cmd, assignee=principal_id, scope=snapshot_rg_scope, include_inherited=True)]
-        if 'Disk Snapshot Contributor' not in role_assignments:
-            role_assignments_arr.append(create_role_assignment(cmd, role='Disk Snapshot Contributor', assignee=principal_id, scope=snapshot_rg_scope_assignment))
-
-        return role_assignments_arr
-
-    if datasource_type == 'AzureBlob':
-        storage_account_scope = backup_instance['properties']['data_source_info']['resource_id']
-        storage_account_scope_assignment = storage_account_scope
-
-        if permissions_scope == 'ResourceGroup':
-            storage_account_scope_assignment = "/".join(storage_account_scope_assignment.split("/")[:5])
-        elif permissions_scope == 'Subscription':
-            storage_account_scope_assignment = "/".join(storage_account_scope_assignment.split("/")[:3])
-
-        role_assignments = [role_assignment['roleDefinitionName'] for role_assignment in list_role_assignments(cmd, assignee=principal_id, scope=storage_account_scope, include_inherited=True)]
-        if 'Storage Account Backup Contributor' not in role_assignments:
-            role_assignments_arr.append(create_role_assignment(cmd, role='Storage Account Backup Contributor', assignee=principal_id, scope=storage_account_scope_assignment))
-
-        return role_assignments_arr
-
-    if datasource_type == 'AzureDatabaseForPostgreSQL':
-        db_scope = backup_instance['properties']['data_source_info']['resource_id']
-        server_scope_arr = db_scope.split("/")
-        server_scope = "/".join(server_scope_arr[:9])
-        # print(server_scope)
-        # print("\n\n")
-        server_name = server_scope_arr[8]
-        server_scope_assign = server_scope
-        server_rg = server_scope_arr[4]
-
-        if permissions_scope == 'ResourceGroup':
-            server_scope_assign = "/".join(server_scope_assign.split("/")[:5])
-        elif permissions_scope == 'Subscription':
-            server_scope_assign = "/".join(server_scope_assign.split("/")[:3])
-
-        role_assignments = [role_assignment['roleDefinitionName'] for role_assignment in list_role_assignments(cmd, assignee=principal_id, scope=server_scope, include_inherited=True)]
-        if 'Reader' not in role_assignments:
-            role_assignments_arr.append(create_role_assignment(cmd, role='Reader', assignee=principal_id, scope=server_scope_assign))
-
-        from azure.cli.core.profiles import get_api_version, ResourceType
-
-        from azure.cli.command_modules.keyvault._client_factory import (
-            get_client, get_client_factory, Clients, is_azure_stack_profile)
-
-        _keyvault_scope_arr = keyvault_id.split('/')
-        keyvault_name = _keyvault_scope_arr[-1]
-        keyvault_rg = _keyvault_scope_arr[4]
-        keyvault_subscription = _keyvault_scope_arr[2]
-
+    keyvault_client = None
+    keyvault = None
+    keyvault_subscription = None
+    keyvault_scope_arr = None
+    keyvault_name = None
+    keyvault_rg = None
+    if manifest['supportSecretStoreAuthentication']:
         cmd.command_kwargs['operation_group'] = 'vaults'
 
-        # mgmt_vaults_entity = get_client(cmd.cli_ctx, ResourceType.MGMT_KEYVAULT, Clients.vaults)
-        # keyvault_client = mgmt_vaults_entity.client_factory(cmd.cli_ctx, None)
+        from azure.cli.core.profiles import ResourceType
+        from azure.cli.command_modules.keyvault._client_factory import Clients
         from azure.cli.core.commands.client_factory import get_mgmt_service_client
+
+        keyvault_scope_arr = keyvault_id.split("/")
+        keyvault_subscription = keyvault_scope_arr[2]
+        keyvault_name = keyvault_scope_arr[-1]
+        keyvault_rg = keyvault_scope_arr[4]
+
         keyvault_client = getattr(get_mgmt_service_client(cmd.cli_ctx, ResourceType.MGMT_KEYVAULT, subscription_id=keyvault_subscription), Clients.vaults)
-        # print(keyvault_client)
+
         keyvault = keyvault_client.get(resource_group_name=keyvault_rg, vault_name=keyvault_name)
-        # print("Keyvault before doing any changes: \n\n")
-        # print(keyvault.properties.access_policies)
-        # print("\n\n")
-        keyvault_scope = keyvault_id
-        keyvault_scope_assign = keyvault_scope
-        keyvault_secret_permissions_object = {policy.object_id: policy.permissions.secrets for policy in keyvault.properties.access_policies}
 
-        # print("Keyvault properties before set policy but after object creation: ")
-        # print(keyvault.properties.access_policies)
-        # print("\n\n")
-        if permissions_scope == 'ResourceGroup':
-            keyvault_scope_assign = "/".join(keyvault_scope_assign.split("/")[:5])
-        elif permissions_scope == 'Subscription':
-            keyvault_scope_assign = "/".join(keyvault_scope_assign.split("/")[:3])
+        if keyvault.properties.public_network_access == 'Disabled':
+            raise CLIError("Keyvault needs to have public network access enabled")
 
-        if keyvault.properties.enable_rbac_authorization:  
-            role_assignments = [role_assignment['roleDefinitionName'] for role_assignment in list_role_assignments(cmd, assignee=principal_id, scope=keyvault_scope)]
-            if 'Key Vault Secrets User' not in role_assignments:
-                role_assignments_arr.append(create_role_assignment(cmd, role='Key Vault Secrets User', assignee=principal_id, scope=keyvault_scope_assign))
+        keyvault_network_rules = keyvault.properties.network_acls
+        if keyvault_network_rules and keyvault_network_rules.default_action == 'Deny':
+            raise CLIError("Keyvault needs to have public network access enabled")
+
+        keyvault_permission_models = manifest['secretStorePermissions']
+        if keyvault.properties.enable_rbac_authorization:
+            keyvault_rbac_model = keyvault_permission_models['rbacModel']
+            role = keyvault_rbac_model['roleDefinitionName']
+
+            keyvault_assignment_scope = keyvault_id
+            if permissions_scope == 'ResourceGroup':
+                keyvault_assignment_scope = "/".join(keyvault_assignment_scope.split("/")[:5])
+            elif permissions_scope == 'Subscription':
+                keyvault_assignment_scope = "/".join(keyvault_assignment_scope.split("/")[:3])
+
+            role_assignment = list_role_assignments(cmd, assignee=principal_id, role=role, scope=keyvault_id, include_inherited=True)
+            if not role_assignment:
+                role_assignments_arr.append(create_role_assignment(cmd, assignee=principal_id, role=role, scope=keyvault_assignment_scope))
+
         else:
+            keyvault_permissions_map = {policy.object_id: policy.permissions for policy in keyvault.properties.access_policies}
             from azure.cli.command_modules.keyvault.custom import set_policy
+            vault_access_policy_model = keyvault_permission_models['vaultAccessPolicyModel']
+            access_policies = vault_access_policy_model['access_policies']
+            vault_permissions = access_policies['permissions']
 
-            secret_permissions_arr = ['Get', 'List']
-            if principal_id in keyvault_secret_permissions_object:
-                secret_permissions_arr = keyvault_secret_permissions_object[principal_id]
-                # print("Parameters of secret arr: ")
-                # print(type(secret_permissions_arr))
-                # print(secret_permissions_arr)
-                # print("\n\n")
-                for permission in ['Get', 'List']:
-                    if permission not in  secret_permissions_arr:
-                        secret_permissions_arr.append(permission)
+            vault_secret_permissions = vault_permissions['secrets']
+            secrets_array = keyvault_permissions_map[principal_id].secrets
 
-            print("Keyvault permissions before set policy: \n\n")
-            print(keyvault.properties.access_policies)
-            
-            keyvault = set_policy(cmd, keyvault_client, keyvault_rg, keyvault_name, object_id=principal_id, secret_permissions=secret_permissions_arr)
-            # keyvault.properties.access_policies.permissions.secrets = secret_permissions_arr
-            keyvault = keyvault.result()
-            # print("Keyvault permissions after set policy: \n\n")
-            # print(keyvault.properties.access_policies)
+            for permission in vault_secret_permissions:
+                if permission not in secrets_array:
+                    secrets_array.append(permission)
 
+            set_policy(cmd, keyvault_client, keyvault_rg, keyvault_name, object_id=principal_id, secret_permissions=secrets_array)
 
-        # Network line of sight access on the server
+    for role_object in manifest['backupVaultPermissions']:
+        resource_id = backup_instance
+        for field in role_object['accessMethod']:
+            resource_id = resource_id[field]
+
+        if role_object['truncate']:
+            resource_id = "/".join(resource_id.split("/")[:role_object['truncate']])
+
+        resource_map[role_object['assignedOn']] = resource_id
+
+        assignment_scope = resource_id
+        if permissions_scope == 'ResourceGroup':
+            assignment_scope = "/".join(assignment_scope.split("/")[:5])
+        elif permissions_scope == 'Subscription':
+            assignment_scope = "/".join(assignment_scope.split("/")[:3])
+
+        role_assignments = list_role_assignments(cmd, assignee=principal_id, role=role_object['roleDefinitionName'],
+                                                 scope=resource_id, include_inherited=True)
+        if not role_assignments:
+            role_assignments_arr.append(create_role_assignment(cmd, assignee=principal_id, role=role_object['roleDefinitionName'],
+                                                               scope=assignment_scope))
+
+    # Network line of sight access on server, if that is the datasource type
+    if datasource_type == 'AzureDatabaseForPostgreSQL':
+        server_id = resource_map[datasource_type]
+        server_scope_arr = server_id.split("/")
+        server_name = server_scope_arr[-1]
+        server_rg = server_scope_arr[4]
         from azure.cli.command_modules.rdbms._client_factory import cf_postgres_firewall_rules
         postgres_firewall_client = cf_postgres_firewall_rules(cmd.cli_ctx, None)
-        # print("RG: {}, Server: {}".format(server_rg, server_name))
+
         firewall_rule_list = postgres_firewall_client.list_by_server(resource_group_name=server_rg, server_name=server_name)
-        
+
         allow_access_to_azure_ips = False
         for rule in firewall_rule_list:
             if rule.start_ip_address == rule.end_ip_address and rule.start_ip_address == '0.0.0.0':
@@ -410,37 +378,7 @@ def dataprotection_backup_instance_update_msi_permissions(cmd, client, resource_
 
             role_assignments_arr.append(postgres_firewall_client.begin_create_or_update(server_rg, server_name, firewall_rule_name, parameters))
 
-
-
-        # Network line of sight access on the keyvault
-        # print(keyvault.properties.network_acls.bypass == 'None')
-        
-        if keyvault.properties.public_network_access == 'Disabled':
-            raise CLIError("Keyvault needs to have public network access enabled.")
-
-        from azure.cli.command_modules.keyvault.custom import _create_network_rule_set, update_vault_setter
-        keyvault_copy = keyvault
-        update=False
-        if keyvault_copy.properties.network_acls is None:
-            keyvault_copy.properties.network_acls = _create_network_rule_set(cmd, bypass='AzureServices', default_action='Allow')
-            update=True
-        elif keyvault_copy.properties.network_acls.bypass == 'None' or keyvault_copy.properties.network_acls.default_action == 'Deny':
-            keyvault_copy.properties.network_acls.bypass = 'AzureServices'
-            keyvault_copy.properties.network_acls.default_action = 'Allow'
-            update=True
-
-        if update:
-            # print('Updating...')
-            # print("\n\nKeyvault properties for backup vault: \n\n")
-            # print(keyvault_copy.properties.access_policies)
-            print(update_vault_setter(cmd, keyvault_client, keyvault_copy, resource_group_name=keyvault_rg, vault_name=keyvault_name))
-        
-
-        return role_assignments_arr
-
-
-
-    raise CLIError("Invalid params passed")
+    return role_assignments_arr
 
 
 def dataprotection_job_list_from_resourcegraph(client, datasource_type, resource_groups=None, vaults=None,

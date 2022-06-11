@@ -13,6 +13,30 @@ manifest = '''
   "allowedRestoreTargetTypes": [ "AlternateLocation", "RestoreAsFiles" ],
   "itemLevelRecoveyEnabled": false,
   "supportSecretStoreAuthentication": true,
+  "backupVaultPermissions": [
+    {
+      "roleDefinitionName": "Reader",
+      "assignedOn": "AzureDatabaseForPostgreSQL",
+      "accessMethod": [
+        "properties",
+        "data_source_info",
+        "resource_id"
+      ],
+      "truncate": 9
+    }
+  ],
+  "secretStorePermissions": {
+    "rbacModel": {
+      "roleDefinitionName": "Key Vault Secrets User"
+    },
+    "vaultAccessPolicyModel": {
+      "access_policies": {
+        "permissions": {
+          "secrets": [ "Get", "List" ]
+        }
+      }
+    }
+  },
   "policySettings": {
     "supportedRetentionTags": [ "Weekly", "Monthly", "Yearly" ],
     "supportedDatastoreTypes": [ "VaultStore", "ArchiveStore" ],
