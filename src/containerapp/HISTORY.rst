@@ -6,6 +6,7 @@ Release History
 0.3.7
 ++++++
 * 'az containerapp env create': fixed bug where "--internal-only" didn't work
+* 'az containerapp registry set': remove username/password if setting identity and vice versa
 
 0.3.6
 ++++++

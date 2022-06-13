@@ -1729,6 +1729,7 @@ def set_registry(cmd, name, resource_group_name, server, username=None, password
             updating_existing_registry = True
             if username:
                 r["username"] = username
+                r["identity"] = None
             if password:
                 r["passwordSecretRef"] = store_as_secret_and_return_secret_ref(
                     containerapp_def["properties"]["configuration"]["secrets"],
@@ -1736,8 +1737,11 @@ def set_registry(cmd, name, resource_group_name, server, username=None, password
                     r["server"],
                     password,
                     update_existing_secret=True)
+                r["identity"] = None
             if identity:
                 r["identity"] = identity
+                r["username"] = None
+                r["passwordSecretRef"] = None
 
     # If not updating existing registry, add as new registry
     if not updating_existing_registry:
