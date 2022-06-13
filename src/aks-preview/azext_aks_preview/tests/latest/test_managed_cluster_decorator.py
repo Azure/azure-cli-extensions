@@ -1665,6 +1665,174 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         ctx_1.attach_mc(mc_1)
         self.assertEqual(ctx_1.get_dns_zone_resource_id(), "test_mc_dns_zone_resource_id")
 
+    def test_get_enable_keda(self):
+        # Returns the value of enable_keda if keda is None in existing profile.
+        ctx_1 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({}),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertIsNone(ctx_1.get_enable_keda())
+
+        ctx_2 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({"enable_keda": False}),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertFalse(ctx_2.get_enable_keda())
+
+        ctx_3 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({"enable_keda": True}),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertTrue(ctx_3.get_enable_keda())
+
+        keda_none_mc = self.models.ManagedCluster(
+            location="test_location",
+            workload_auto_scaler_profile=self.models.ManagedClusterWorkloadAutoScalerProfile(),
+        )
+
+        keda_false_mc = self.models.ManagedCluster(
+            location="test_location",
+            workload_auto_scaler_profile=self.models.ManagedClusterWorkloadAutoScalerProfile(
+                keda=self.models.ManagedClusterWorkloadAutoScalerProfileKeda(
+                    enabled=False
+                )
+            ),
+        )
+
+        keda_true_mc = self.models.ManagedCluster(
+            location="test_location",
+            workload_auto_scaler_profile=self.models.ManagedClusterWorkloadAutoScalerProfile(
+                keda=self.models.ManagedClusterWorkloadAutoScalerProfileKeda(
+                    enabled=True
+                )
+            ),
+        )
+
+        # Returns the value of keda in existing profile if enable_keda is None.
+        ctx_4 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({}),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        ctx_4.attach_mc(keda_none_mc)
+        self.assertIsNone(ctx_4.get_enable_keda())
+
+        ctx_5 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({}),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        ctx_5.attach_mc(keda_false_mc)
+        self.assertFalse(ctx_5.get_enable_keda())
+
+        ctx_6 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({}),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        ctx_6.attach_mc(keda_true_mc)
+        self.assertTrue(ctx_6.get_enable_keda())
+
+        # Ignores the value of keda in existing profile in update-mode.
+        ctx_7 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({}),
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        ctx_7.attach_mc(keda_true_mc)
+        self.assertIsNone(ctx_7.get_enable_keda())
+
+        # Throws exception when both enable_keda and disable_keda are True.
+        ctx_8 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict(
+                {"enable_keda": True, "disable_keda": True}
+            ),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        with self.assertRaises(MutuallyExclusiveArgumentError):
+            ctx_8.get_enable_keda()
+
+        # Throws exception when disable_keda and the value of keda in existing profile are True.
+        ctx_9 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({"disable_keda": True}),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        ctx_9.attach_mc(keda_true_mc)
+        with self.assertRaises(MutuallyExclusiveArgumentError):
+            ctx_9.get_enable_keda()
+
+    def test_get_disable_keda(self):
+        # Returns the value of disable_keda.
+        ctx_1 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({}),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertIsNone(ctx_1.get_disable_keda())
+
+        ctx_2 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({"disable_keda": False}),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertFalse(ctx_2.get_disable_keda())
+
+        ctx_3 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({"disable_keda": True}),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertTrue(ctx_3.get_disable_keda())
+
+        # Throws exception when both enable_keda and disable_keda are True.
+        ctx_4 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict(
+                {"enable_keda": True, "disable_keda": True}
+            ),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        with self.assertRaises(MutuallyExclusiveArgumentError):
+            ctx_4.get_disable_keda()
+
+        keda_true_mc = self.models.ManagedCluster(
+            location="test_location",
+            workload_auto_scaler_profile=self.models.ManagedClusterWorkloadAutoScalerProfile(
+                keda=self.models.ManagedClusterWorkloadAutoScalerProfileKeda(
+                    enabled=True
+                )
+            ),
+        )
+
+        # Throws exception when disable_keda and the value of keda in existing profile are True.
+        ctx_5 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({"disable_keda": True}),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        ctx_5.attach_mc(keda_true_mc)
+        with self.assertRaises(MutuallyExclusiveArgumentError):
+            ctx_5.get_disable_keda()
+
 
 class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
     def setUp(self):
@@ -2247,6 +2415,55 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
             location="test_location", ingress_profile=ground_truth_ingress_profile_1
         )
         self.assertEqual(dec_mc_1, ground_truth_mc_1)
+
+    def test_set_up_workload_auto_scaler_profile(self):
+        # Throws exception when incorrect mc object is passed.
+        dec_1 = AKSPreviewManagedClusterCreateDecorator(
+            self.cmd, self.client, {}, CUSTOM_MGMT_AKS_PREVIEW
+        )
+        with self.assertRaisesRegex(
+            CLIInternalError,
+            "^Unexpected mc object with type '<class 'NoneType'>'\.$",
+        ):
+            dec_1.set_up_workload_auto_scaler_profile(None)
+
+        # Sets profile to None without raw parameters.
+        dec_2 = AKSPreviewManagedClusterCreateDecorator(
+            self.cmd, self.client, {}, CUSTOM_MGMT_AKS_PREVIEW
+        )
+        mc_in = self.models.ManagedCluster(location="test_location")
+        dec_2.context.attach_mc(mc_in)
+        mc_out = dec_2.set_up_workload_auto_scaler_profile(mc_in)
+        self.assertEqual(mc_out, mc_in)
+        self.assertIsNone(mc_out.workload_auto_scaler_profile)
+
+        # Sets profile to None if enable_keda is False.
+        dec_3 = AKSPreviewManagedClusterCreateDecorator(
+            self.cmd,
+            self.client,
+            {"enable_keda": False},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_in = self.models.ManagedCluster(location="test_location")
+        dec_3.context.attach_mc(mc_in)
+        mc_out = dec_3.set_up_workload_auto_scaler_profile(mc_in)
+        self.assertEqual(mc_out, mc_in)
+        self.assertIsNone(mc_out.workload_auto_scaler_profile)
+
+        # Sets profile with keda enabled if enable_keda is True.
+        dec_4 = AKSPreviewManagedClusterCreateDecorator(
+            self.cmd,
+            self.client,
+            {"enable_keda": True},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_in = self.models.ManagedCluster(location="test_location")
+        dec_4.context.attach_mc(mc_in)
+        mc_out = dec_4.set_up_workload_auto_scaler_profile(mc_in)
+        self.assertEqual(mc_out, mc_in)
+        self.assertIsNotNone(mc_out.workload_auto_scaler_profile)
+        self.assertIsNotNone(mc_out.workload_auto_scaler_profile.keda)
+        self.assertTrue(mc_out.workload_auto_scaler_profile.keda.enabled)
 
     def test_construct_mc_profile_preview(self):
         import inspect
@@ -3166,6 +3383,89 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             location="test_location", storage_profile=ground_truth_storage_profile_2
         )
         self.assertEqual(dec_mc_2, ground_truth_mc_2)
+
+    def test_update_workload_auto_scaler_profile(self):
+        # Throws exception when incorrect mc object is passed.
+        dec_1 = AKSPreviewManagedClusterUpdateDecorator(self.cmd, self.client, {}, CUSTOM_MGMT_AKS_PREVIEW)
+        with self.assertRaisesRegex(CLIInternalError, "^Unexpected mc object with type '<class 'NoneType'>'\.$"):
+            dec_1.update_workload_auto_scaler_profile(None)
+
+        # Throws exception when the mc object passed does not match the one in context.
+        dec_2 = AKSPreviewManagedClusterUpdateDecorator(self.cmd, self.client, {}, CUSTOM_MGMT_AKS_PREVIEW)
+        with self.assertRaisesRegex(CLIInternalError, "^Inconsistent state detected\. The incoming `mc` is not the same as the `mc` in the context\.$"):
+            mc_in = self.models.ManagedCluster(location="test_location")
+            dec_2.update_workload_auto_scaler_profile(mc_in)
+
+        # Leaves profile as None without raw parameters.
+        dec_3 = AKSPreviewManagedClusterUpdateDecorator(self.cmd, self.client, {}, CUSTOM_MGMT_AKS_PREVIEW)
+        mc_in = self.models.ManagedCluster(location="test_location")
+        dec_3.context.attach_mc(mc_in)
+        mc_out = dec_3.update_workload_auto_scaler_profile(mc_in)
+        self.assertEqual(mc_out, mc_in)
+        self.assertIsNone(mc_out.workload_auto_scaler_profile)
+
+        # Leaves existing profile untouched without raw parameters.
+        dec_4 = AKSPreviewManagedClusterUpdateDecorator(self.cmd, self.client, {}, CUSTOM_MGMT_AKS_PREVIEW)
+        profile = self.models.ManagedClusterWorkloadAutoScalerProfile(
+            keda = self.models.ManagedClusterWorkloadAutoScalerProfileKeda(enabled=True))
+        mc_in = self.models.ManagedCluster(location="test_location", workload_auto_scaler_profile = profile)
+        dec_4.context.attach_mc(mc_in)
+        mc_out = dec_4.update_workload_auto_scaler_profile(mc_in)
+        self.assertEqual(mc_out, mc_in)
+        self.assertEqual(mc_out.workload_auto_scaler_profile, profile)
+        self.assertIsNotNone(mc_out.workload_auto_scaler_profile.keda)
+        self.assertTrue(mc_out.workload_auto_scaler_profile.keda.enabled)
+
+        # Enables keda when enable_keda is True.
+        dec_5 = AKSPreviewManagedClusterUpdateDecorator(self.cmd, self.client, {"enable_keda": True}, CUSTOM_MGMT_AKS_PREVIEW)
+        mc_in = self.models.ManagedCluster(location="test_location")
+        dec_5.context.attach_mc(mc_in)
+        mc_out = dec_5.update_workload_auto_scaler_profile(mc_in)
+        self.assertEqual(mc_out, mc_in)
+        self.assertIsNotNone(mc_out.workload_auto_scaler_profile)
+        self.assertIsNotNone(mc_out.workload_auto_scaler_profile.keda)
+        self.assertTrue(mc_out.workload_auto_scaler_profile.keda.enabled)
+
+        # Enables keda in existing profile when enable_keda is True.
+        dec_6 = AKSPreviewManagedClusterUpdateDecorator(self.cmd, self.client, {"enable_keda": True}, CUSTOM_MGMT_AKS_PREVIEW)
+        profile = self.models.ManagedClusterWorkloadAutoScalerProfile(
+            keda = self.models.ManagedClusterWorkloadAutoScalerProfileKeda(enabled=False))
+        mc_in = self.models.ManagedCluster(location="test_location", workload_auto_scaler_profile = profile)
+        dec_6.context.attach_mc(mc_in)
+        mc_out = dec_6.update_workload_auto_scaler_profile(mc_in)
+        self.assertEqual(mc_out, mc_in)
+        self.assertEqual(mc_out.workload_auto_scaler_profile, profile)
+        self.assertIsNotNone(mc_out.workload_auto_scaler_profile.keda)
+        self.assertTrue(mc_out.workload_auto_scaler_profile.keda.enabled)
+
+        # Disables keda when disable_keda is True.
+        dec_7 = AKSPreviewManagedClusterUpdateDecorator(self.cmd, self.client, {"disable_keda": True}, CUSTOM_MGMT_AKS_PREVIEW)
+        mc_in = self.models.ManagedCluster(location="test_location")
+        dec_7.context.attach_mc(mc_in)
+        mc_out = dec_7.update_workload_auto_scaler_profile(mc_in)
+        self.assertEqual(mc_out, mc_in)
+        self.assertIsNotNone(mc_out.workload_auto_scaler_profile)
+        self.assertIsNotNone(mc_out.workload_auto_scaler_profile.keda)
+        self.assertFalse(mc_out.workload_auto_scaler_profile.keda.enabled)
+
+        # Disables keda in existing profile when disable_keda is True.
+        dec_8 = AKSPreviewManagedClusterUpdateDecorator(self.cmd, self.client, {"disable_keda": True}, CUSTOM_MGMT_AKS_PREVIEW)
+        profile = self.models.ManagedClusterWorkloadAutoScalerProfile(
+            keda = self.models.ManagedClusterWorkloadAutoScalerProfileKeda(enabled=True))
+        mc_in = self.models.ManagedCluster(location="test_location", workload_auto_scaler_profile = profile)
+        dec_8.context.attach_mc(mc_in)
+        mc_out = dec_8.update_workload_auto_scaler_profile(mc_in)
+        self.assertEqual(mc_out, mc_in)
+        self.assertEqual(mc_out.workload_auto_scaler_profile, profile)
+        self.assertIsNotNone(mc_out.workload_auto_scaler_profile.keda)
+        self.assertFalse(mc_out.workload_auto_scaler_profile.keda.enabled)
+
+        # Throws exception when both enable_keda and disable_keda are True.
+        dec_9 = AKSPreviewManagedClusterUpdateDecorator(self.cmd, self.client, {"enable_keda": True, "disable_keda": True}, CUSTOM_MGMT_AKS_PREVIEW)
+        mc_in = self.models.ManagedCluster(location="test_location")
+        dec_9.context.attach_mc(mc_in)
+        with self.assertRaises(MutuallyExclusiveArgumentError):
+            mc_out = dec_9.update_workload_auto_scaler_profile(mc_in)
 
     def test_update_mc_profile_preview(self):
         import inspect

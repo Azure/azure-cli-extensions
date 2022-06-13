@@ -13,6 +13,7 @@ from azure.cli.command_modules.acs._consts import (
 )
 from azure.cli.command_modules.acs._helpers import (
     check_is_msi_cluster,
+    format_parameter_name_to_option_name,
     safe_lower,
 )
 from azure.cli.command_modules.acs._validators import (
@@ -1075,6 +1076,76 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         # this parameter does not need validation
         return dns_zone_resource_id
 
+    def _get_enable_keda(self, enable_validation: bool = False) -> bool:
+        """Internal function to obtain the value of enable_keda.
+
+        This function supports the option of enable_validation. When enabled, if both enable_keda and disable_keda are
+        specified, raise a MutuallyExclusiveArgumentError.
+
+        :return: bool
+        """
+        # Read the original value passed by the command.
+        enable_keda = self.raw_param.get("enable_keda")
+
+        # In create mode, try to read the property value corresponding to the parameter from the `mc` object.
+        if self.decorator_mode == DecoratorMode.CREATE:
+            if (
+                self.mc and
+                self.mc.workload_auto_scaler_profile and
+                self.mc.workload_auto_scaler_profile.keda
+            ):
+                enable_keda = self.mc.workload_auto_scaler_profile.keda.enabled
+
+        # This parameter does not need dynamic completion.
+        if enable_validation:
+            if enable_keda and self._get_disable_keda(enable_validation=False):
+                raise MutuallyExclusiveArgumentError(
+                    "Cannot specify --enable-keda and --disable-keda at the same time."
+                )
+
+        return enable_keda
+
+    def get_enable_keda(self) -> bool:
+        """Obtain the value of enable_keda.
+
+        This function will verify the parameter by default. If both enable_keda and disable_keda are specified, raise a
+        MutuallyExclusiveArgumentError.
+
+        :return: bool
+        """
+        return self._get_enable_keda(enable_validation=True)
+
+    def _get_disable_keda(self, enable_validation: bool = False) -> bool:
+        """Internal function to obtain the value of disable_keda.
+
+        This function supports the option of enable_validation. When enabled, if both enable_keda and disable_keda are
+        specified, raise a MutuallyExclusiveArgumentError.
+
+        :return: bool
+        """
+        # Read the original value passed by the command.
+        disable_keda = self.raw_param.get("disable_keda")
+
+        # This option is not supported in create mode, hence we do not read the property value from the `mc` object.
+        # This parameter does not need dynamic completion.
+        if enable_validation:
+            if disable_keda and self._get_enable_keda(enable_validation=False):
+                raise MutuallyExclusiveArgumentError(
+                    "Cannot specify --enable-keda and --disable-keda at the same time."
+                )
+
+        return disable_keda
+
+    def get_disable_keda(self) -> bool:
+        """Obtain the value of disable_keda.
+
+        This function will verify the parameter by default. If both enable_keda and disable_keda are specified, raise a
+        MutuallyExclusiveArgumentError.
+
+        :return: bool
+        """
+        return self._get_disable_keda(enable_validation=True)
+
 
 class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
     def __init__(
@@ -1317,6 +1388,8 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
 
         :return: the ManagedCluster object
         """
+        self._ensure_mc(mc)
+
         mc.storage_profile = self.context.get_storage_profile()
 
         return mc
@@ -1326,6 +1399,8 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
 
         :return: the ManagedCluster object
         """
+        self._ensure_mc(mc)
+
         addons = self.context.get_enable_addons()
         if "web_application_routing" in addons:
             if mc.ingress_profile is None:
@@ -1335,6 +1410,20 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
                 enabled=True,
                 dns_zone_resource_id=dns_zone_resource_id,
             )
+        return mc
+
+    def set_up_workload_auto_scaler_profile(self, mc: ManagedCluster) -> ManagedCluster:
+        """Set up workload auto-scaler profile for the ManagedCluster object.
+
+        :return: the ManagedCluster object
+        """
+        self._ensure_mc(mc)
+
+        if self.context.get_enable_keda():
+            if mc.workload_auto_scaler_profile is None:
+                mc.workload_auto_scaler_profile = self.models.ManagedClusterWorkloadAutoScalerProfile()
+            mc.workload_auto_scaler_profile.keda = self.models.ManagedClusterWorkloadAutoScalerProfileKeda(enabled=True)
+
         return mc
 
     def construct_mc_profile_preview(self, bypass_restore_defaults: bool = False) -> ManagedCluster:
@@ -1371,6 +1460,8 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         mc = self.set_up_storage_profile(mc)
         # set up ingress web app routing profile
         mc = self.set_up_ingress_web_app_routing(mc)
+        # set up workload auto scaler profile
+        mc = self.set_up_workload_auto_scaler_profile(mc)
 
         # DO NOT MOVE: keep this at the bottom, restore defaults
         mc = self._restore_defaults_in_mc(mc)
@@ -1442,66 +1533,15 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
             reconcilePrompt = 'no argument specified to update would you like to reconcile to current settings?'
             if not prompt_y_n(reconcilePrompt, default="n"):
                 # Note: Uncomment the followings to automatically generate the error message.
-                # option_names = [
-                #     '"{}"'.format(format_parameter_name_to_option_name(x))
-                #     for x in self.context.raw_param.keys()
-                #     if x not in excluded_keys
-                # ]
-                # error_msg = "Please specify one or more of {}.".format(
-                #     " or ".join(option_names)
-                # )
-                # raise RequiredArgumentMissingError(error_msg)
-                raise RequiredArgumentMissingError(
-                    'Please specify "--enable-cluster-autoscaler" or '
-                    '"--disable-cluster-autoscaler" or '
-                    '"--update-cluster-autoscaler" or '
-                    '"--cluster-autoscaler-profile" or '
-                    '"--enable-pod-security-policy" or '
-                    '"--disable-pod-security-policy" or '
-                    '"--api-server-authorized-ip-ranges" or '
-                    '"--attach-acr" or '
-                    '"--detach-acr" or '
-                    '"--uptime-sla" or '
-                    '"--no-uptime-sla" or '
-                    '"--load-balancer-managed-outbound-ip-count" or '
-                    '"--load-balancer-outbound-ips" or '
-                    '"--load-balancer-outbound-ip-prefixes" or '
-                    '"--nat-gateway-managed-outbound-ip-count" or '
-                    '"--nat-gateway-idle-timeout" or '
-                    '"--enable-aad" or '
-                    '"--aad-tenant-id" or '
-                    '"--aad-admin-group-object-ids" or '
-                    '"--enable-ahub" or '
-                    '"--disable-ahub" or '
-                    '"--enable-managed-identity" or '
-                    '"--enable-pod-identity" or '
-                    '"--disable-pod-identity" or '
-                    '"--auto-upgrade-channel" or '
-                    '"--enable-secret-rotation" or '
-                    '"--disable-secret-rotation" or '
-                    '"--rotation-poll-interval" or '
-                    '"--tags" or '
-                    '"--windows-admin-password" or '
-                    '"--enable-azure-rbac" or '
-                    '"--disable-azure-rbac" or '
-                    '"--enable-local-accounts" or '
-                    '"--disable-local-accounts" or '
-                    '"--enable-public-fqdn" or '
-                    '"--disable-public-fqdn"'
-                    '"--enble-windows-gmsa" or '
-                    '"--nodepool-labels" or '
-                    '"--enable-oidc-issuer" or '
-                    '"--http-proxy-config" or '
-                    '"--enable-disk-driver" or '
-                    '"--disable-disk-driver" or '
-                    '"--enable-file-driver" or '
-                    '"--disable-file-driver" or '
-                    '"--enable-snapshot-controller" or '
-                    '"--disable-snapshot-controller" or '
-                    '"--enable-azure-keyvault-kms" or '
-                    '"--enable-workload-identity" or '
-                    '"--disable-workload-identity".'
+                option_names = [
+                    '"{}"'.format(format_parameter_name_to_option_name(x))
+                    for x in self.context.raw_param.keys()
+                    if x not in excluded_keys
+                ]
+                error_msg = "Please specify one or more of {}.".format(
+                    " or ".join(option_names)
                 )
+                raise RequiredArgumentMissingError(error_msg)
 
     def update_load_balancer_profile(self, mc: ManagedCluster) -> ManagedCluster:
         """Update load balancer profile for the ManagedCluster object.
@@ -1659,6 +1699,25 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
 
         return mc
 
+    def update_workload_auto_scaler_profile(self, mc: ManagedCluster) -> ManagedCluster:
+        """Update workload auto-scaler profile for the ManagedCluster object.
+
+        :return: the ManagedCluster object
+        """
+        self._ensure_mc(mc)
+
+        if self.context.get_enable_keda():
+            if mc.workload_auto_scaler_profile is None:
+                mc.workload_auto_scaler_profile = self.models.ManagedClusterWorkloadAutoScalerProfile()
+            mc.workload_auto_scaler_profile.keda = self.models.ManagedClusterWorkloadAutoScalerProfileKeda(enabled=True)
+
+        if self.context.get_disable_keda():
+            if mc.workload_auto_scaler_profile is None:
+                mc.workload_auto_scaler_profile = self.models.ManagedClusterWorkloadAutoScalerProfile()
+            mc.workload_auto_scaler_profile.keda = self.models.ManagedClusterWorkloadAutoScalerProfileKeda(enabled=False)
+
+        return mc
+
     def update_mc_profile_preview(self) -> ManagedCluster:
         """The overall controller used to update the preview ManagedCluster profile.
 
@@ -1688,5 +1747,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         mc = self.update_azure_keyvault_kms(mc)
         # update stroage profile
         mc = self.update_storage_profile(mc)
+        # update workload auto scaler profile
+        mc = self.update_workload_auto_scaler_profile(mc)
 
         return mc
