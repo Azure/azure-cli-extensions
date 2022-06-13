@@ -2237,7 +2237,8 @@ def containerapp_up(cmd,
     env.create_if_needed(name)
 
     if source or repo:
-        _get_registry_from_app(app)  # if the app exists, get the registry
+        if not registry_server:
+            _get_registry_from_app(app, source)  # if the app exists, get the registry
         _get_registry_details(cmd, app, source)  # fetch ACR creds from arguments registry arguments
 
     app.create_acr_if_needed()
