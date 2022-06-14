@@ -14,6 +14,16 @@ Pending
 
 * Fix: Remove permission prompt when saving config file to symlink with `az aks get-credentials`.
 
+0.5.81
+++++++
+
+* Add Trusted Access Role Binding commands
+    * az aks trustedaccess rolebinding create
+    * az aks trustedaccess rolebinding update
+    * az aks trustedaccess rolebinding list
+    * az aks trustedaccess rolebinding show
+    * az aks trustedaccess rolebinding delete
+
 0.5.80
 ++++++
 

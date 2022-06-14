@@ -154,6 +154,7 @@ from .vendored_sdks.azure_mgmt_preview_aks.v2022_05_02_preview.models import (
     UserAssignedIdentity,
     ManagedClusterIngressProfile,
     ManagedClusterIngressProfileWebAppRouting,
+    TrustedAccessRoleBinding,
 )
 
 from azext_aks_preview.aks_draft.commands import (
@@ -3340,3 +3341,21 @@ def aks_nodepool_snapshot_list(cmd, client, resource_group_name=None):  # pylint
 
 def aks_trustedaccess_role_list(cmd, client, location):  # pylint: disable=unused-argument
     return client.list(location)
+
+
+def aks_trustedaccess_role_binding_list(cmd, client, resource_group_name, cluster_name):   # pylint: disable=unused-argument
+    return client.list(resource_group_name, cluster_name)
+
+
+def aks_trustedaccess_role_binding_get(cmd, client, resource_group_name, cluster_name, role_binding_name):
+    return client.get(resource_group_name, cluster_name, role_binding_name)
+
+
+def aks_trustedaccess_role_binding_create_or_update(cmd, client, resource_group_name, cluster_name, role_binding_name,
+                                                    source_resource_id, roles):
+    roleBinding = TrustedAccessRoleBinding(source_resource_id=source_resource_id, roles=roles)
+    return client.create_or_update(resource_group_name, cluster_name, role_binding_name, roleBinding)
+
+
+def aks_trustedaccess_role_binding_delete(cmd, client, resource_group_name, cluster_name, role_binding_name):
+    return client.delete(resource_group_name, cluster_name, role_binding_name)

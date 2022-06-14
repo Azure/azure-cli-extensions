@@ -680,6 +680,22 @@ def load_arguments(self, _):
             c.argument('yes', options_list=[
                        '--yes', '-y'], help='Do not prompt for confirmation.', action='store_true')
 
+    with self.argument_context('aks trustedaccess rolebinding') as c:
+        c.argument('cluster_name', help='The cluster name.')
+
+    for scope in ['aks trustedaccess rolebinding show', 'aks trustedaccess rolebinding create',
+                  'aks trustedaccess rolebinding update', 'aks trustedaccess rolebinding delete']:
+        with self.argument_context(scope) as c:
+            c.argument('role_binding_name', options_list=[
+                       '--name', '-n'], required=True, help='The role binding name.')
+
+    for scope in ['aks trustedaccess rolebinding create', 'aks trustedaccess rolebinding update']:
+        with self.argument_context(scope) as c:
+            c.argument('roles', nargs='*',
+                       help='space-separated roles: Microsoft.Demo/samples/reader Microsoft.Demo/samples/writer ...')
+            c.argument('source_resource_id', options_list=['--source-resource-id', '-s'],
+                       help='The source resource id of the binding')
+
 
 def _get_default_install_location(exe_name):
     system = platform.system()
