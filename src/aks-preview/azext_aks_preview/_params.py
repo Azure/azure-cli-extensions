@@ -405,7 +405,7 @@ def load_arguments(self, _):
         with self.argument_context('aks nodepool ' + sub_command) as c:
             c.argument('nodepool_name', options_list=['--nodepool-name', '--name', '-n'], validator=validate_nodepool_name, help='The node pool name.')
 
-    with self.argument_context(scope) as c:
+    with self.argument_context('aks nodepool add') as c:
         c.argument('node_vm_size', options_list=['--node-vm-size', '-s'], completer=get_vm_size_completion_list)
         c.argument('os_type')
         c.argument('os_sku', arg_type=get_enum_type(node_os_skus))
