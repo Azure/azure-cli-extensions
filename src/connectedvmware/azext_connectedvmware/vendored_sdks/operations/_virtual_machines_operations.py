@@ -1,3 +1,4 @@
+# pylint: disable=too-many-lines
 # coding=utf-8
 # --------------------------------------------------------------------------
 # Copyright (c) Microsoft Corporation. All rights reserved.
@@ -6,25 +7,371 @@
 # Changes may cause incorrect behavior and will be lost if the code is regenerated.
 # --------------------------------------------------------------------------
 from typing import TYPE_CHECKING
-import warnings
+
+from msrest import Serializer
 
 from azure.core.exceptions import ClientAuthenticationError, HttpResponseError, ResourceExistsError, ResourceNotFoundError, map_error
 from azure.core.paging import ItemPaged
 from azure.core.pipeline import PipelineResponse
-from azure.core.pipeline.transport import HttpRequest, HttpResponse
+from azure.core.pipeline.transport import HttpResponse
 from azure.core.polling import LROPoller, NoPolling, PollingMethod
+from azure.core.rest import HttpRequest
+from azure.core.tracing.decorator import distributed_trace
 from azure.mgmt.core.exceptions import ARMErrorFormat
 from azure.mgmt.core.polling.arm_polling import ARMPolling
 
 from .. import models as _models
+from .._vendor import _convert_request, _format_url_section
 
 if TYPE_CHECKING:
     # pylint: disable=unused-import,ungrouped-imports
-    from typing import Any, Callable, Dict, Generic, Iterable, Optional, TypeVar, Union
-
+    from typing import Any, Callable, Dict, Iterable, Optional, TypeVar, Union
     T = TypeVar('T')
     ClsType = Optional[Callable[[PipelineResponse[HttpRequest, HttpResponse], T, Dict[str, Any]], Any]]
 
+_SERIALIZER = Serializer()
+_SERIALIZER.client_side_validation = False
+# fmt: off
+
+def build_create_request_initial(
+    subscription_id,  # type: str
+    resource_group_name,  # type: str
+    virtual_machine_name,  # type: str
+    **kwargs  # type: Any
+):
+    # type: (...) -> HttpRequest
+    api_version = kwargs.pop('api_version', "2020-10-01-preview")  # type: str
+    content_type = kwargs.pop('content_type', None)  # type: Optional[str]
+
+    accept = "application/json"
+    # Construct URL
+    _url = kwargs.pop("template_url", "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ConnectedVMwarevSphere/virtualMachines/{virtualMachineName}")  # pylint: disable=line-too-long
+    path_format_arguments = {
+        "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, 'str'),
+        "resourceGroupName": _SERIALIZER.url("resource_group_name", resource_group_name, 'str'),
+        "virtualMachineName": _SERIALIZER.url("virtual_machine_name", virtual_machine_name, 'str'),
+    }
+
+    _url = _format_url_section(_url, **path_format_arguments)
+
+    # Construct parameters
+    _query_parameters = kwargs.pop("params", {})  # type: Dict[str, Any]
+    _query_parameters['api-version'] = _SERIALIZER.query("api_version", api_version, 'str')
+
+    # Construct headers
+    _header_parameters = kwargs.pop("headers", {})  # type: Dict[str, Any]
+    if content_type is not None:
+        _header_parameters['Content-Type'] = _SERIALIZER.header("content_type", content_type, 'str')
+    _header_parameters['Accept'] = _SERIALIZER.header("accept", accept, 'str')
+
+    return HttpRequest(
+        method="PUT",
+        url=_url,
+        params=_query_parameters,
+        headers=_header_parameters,
+        **kwargs
+    )
+
+
+def build_get_request(
+    subscription_id,  # type: str
+    resource_group_name,  # type: str
+    virtual_machine_name,  # type: str
+    **kwargs  # type: Any
+):
+    # type: (...) -> HttpRequest
+    api_version = kwargs.pop('api_version', "2020-10-01-preview")  # type: str
+
+    accept = "application/json"
+    # Construct URL
+    _url = kwargs.pop("template_url", "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ConnectedVMwarevSphere/virtualMachines/{virtualMachineName}")  # pylint: disable=line-too-long
+    path_format_arguments = {
+        "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, 'str'),
+        "resourceGroupName": _SERIALIZER.url("resource_group_name", resource_group_name, 'str'),
+        "virtualMachineName": _SERIALIZER.url("virtual_machine_name", virtual_machine_name, 'str'),
+    }
+
+    _url = _format_url_section(_url, **path_format_arguments)
+
+    # Construct parameters
+    _query_parameters = kwargs.pop("params", {})  # type: Dict[str, Any]
+    _query_parameters['api-version'] = _SERIALIZER.query("api_version", api_version, 'str')
+
+    # Construct headers
+    _header_parameters = kwargs.pop("headers", {})  # type: Dict[str, Any]
+    _header_parameters['Accept'] = _SERIALIZER.header("accept", accept, 'str')
+
+    return HttpRequest(
+        method="GET",
+        url=_url,
+        params=_query_parameters,
+        headers=_header_parameters,
+        **kwargs
+    )
+
+
+def build_update_request_initial(
+    subscription_id,  # type: str
+    resource_group_name,  # type: str
+    virtual_machine_name,  # type: str
+    **kwargs  # type: Any
+):
+    # type: (...) -> HttpRequest
+    api_version = kwargs.pop('api_version', "2020-10-01-preview")  # type: str
+    content_type = kwargs.pop('content_type', None)  # type: Optional[str]
+
+    accept = "application/json"
+    # Construct URL
+    _url = kwargs.pop("template_url", "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ConnectedVMwarevSphere/virtualMachines/{virtualMachineName}")  # pylint: disable=line-too-long
+    path_format_arguments = {
+        "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, 'str'),
+        "resourceGroupName": _SERIALIZER.url("resource_group_name", resource_group_name, 'str'),
+        "virtualMachineName": _SERIALIZER.url("virtual_machine_name", virtual_machine_name, 'str'),
+    }
+
+    _url = _format_url_section(_url, **path_format_arguments)
+
+    # Construct parameters
+    _query_parameters = kwargs.pop("params", {})  # type: Dict[str, Any]
+    _query_parameters['api-version'] = _SERIALIZER.query("api_version", api_version, 'str')
+
+    # Construct headers
+    _header_parameters = kwargs.pop("headers", {})  # type: Dict[str, Any]
+    if content_type is not None:
+        _header_parameters['Content-Type'] = _SERIALIZER.header("content_type", content_type, 'str')
+    _header_parameters['Accept'] = _SERIALIZER.header("accept", accept, 'str')
+
+    return HttpRequest(
+        method="PATCH",
+        url=_url,
+        params=_query_parameters,
+        headers=_header_parameters,
+        **kwargs
+    )
+
+
+def build_delete_request_initial(
+    subscription_id,  # type: str
+    resource_group_name,  # type: str
+    virtual_machine_name,  # type: str
+    **kwargs  # type: Any
+):
+    # type: (...) -> HttpRequest
+    api_version = kwargs.pop('api_version', "2020-10-01-preview")  # type: str
+    force = kwargs.pop('force', None)  # type: Optional[bool]
+
+    accept = "application/json"
+    # Construct URL
+    _url = kwargs.pop("template_url", "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ConnectedVMwarevSphere/virtualMachines/{virtualMachineName}")  # pylint: disable=line-too-long
+    path_format_arguments = {
+        "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, 'str'),
+        "resourceGroupName": _SERIALIZER.url("resource_group_name", resource_group_name, 'str'),
+        "virtualMachineName": _SERIALIZER.url("virtual_machine_name", virtual_machine_name, 'str'),
+    }
+
+    _url = _format_url_section(_url, **path_format_arguments)
+
+    # Construct parameters
+    _query_parameters = kwargs.pop("params", {})  # type: Dict[str, Any]
+    _query_parameters['api-version'] = _SERIALIZER.query("api_version", api_version, 'str')
+    if force is not None:
+        _query_parameters['force'] = _SERIALIZER.query("force", force, 'bool')
+
+    # Construct headers
+    _header_parameters = kwargs.pop("headers", {})  # type: Dict[str, Any]
+    _header_parameters['Accept'] = _SERIALIZER.header("accept", accept, 'str')
+
+    return HttpRequest(
+        method="DELETE",
+        url=_url,
+        params=_query_parameters,
+        headers=_header_parameters,
+        **kwargs
+    )
+
+
+def build_stop_request_initial(
+    subscription_id,  # type: str
+    resource_group_name,  # type: str
+    virtual_machine_name,  # type: str
+    **kwargs  # type: Any
+):
+    # type: (...) -> HttpRequest
+    api_version = kwargs.pop('api_version', "2020-10-01-preview")  # type: str
+    content_type = kwargs.pop('content_type', None)  # type: Optional[str]
+
+    accept = "application/json"
+    # Construct URL
+    _url = kwargs.pop("template_url", "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ConnectedVMwarevSphere/virtualMachines/{virtualMachineName}/stop")  # pylint: disable=line-too-long
+    path_format_arguments = {
+        "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, 'str'),
+        "resourceGroupName": _SERIALIZER.url("resource_group_name", resource_group_name, 'str'),
+        "virtualMachineName": _SERIALIZER.url("virtual_machine_name", virtual_machine_name, 'str'),
+    }
+
+    _url = _format_url_section(_url, **path_format_arguments)
+
+    # Construct parameters
+    _query_parameters = kwargs.pop("params", {})  # type: Dict[str, Any]
+    _query_parameters['api-version'] = _SERIALIZER.query("api_version", api_version, 'str')
+
+    # Construct headers
+    _header_parameters = kwargs.pop("headers", {})  # type: Dict[str, Any]
+    if content_type is not None:
+        _header_parameters['Content-Type'] = _SERIALIZER.header("content_type", content_type, 'str')
+    _header_parameters['Accept'] = _SERIALIZER.header("accept", accept, 'str')
+
+    return HttpRequest(
+        method="POST",
+        url=_url,
+        params=_query_parameters,
+        headers=_header_parameters,
+        **kwargs
+    )
+
+
+def build_start_request_initial(
+    subscription_id,  # type: str
+    resource_group_name,  # type: str
+    virtual_machine_name,  # type: str
+    **kwargs  # type: Any
+):
+    # type: (...) -> HttpRequest
+    api_version = kwargs.pop('api_version', "2020-10-01-preview")  # type: str
+
+    accept = "application/json"
+    # Construct URL
+    _url = kwargs.pop("template_url", "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ConnectedVMwarevSphere/virtualMachines/{virtualMachineName}/start")  # pylint: disable=line-too-long
+    path_format_arguments = {
+        "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, 'str'),
+        "resourceGroupName": _SERIALIZER.url("resource_group_name", resource_group_name, 'str'),
+        "virtualMachineName": _SERIALIZER.url("virtual_machine_name", virtual_machine_name, 'str'),
+    }
+
+    _url = _format_url_section(_url, **path_format_arguments)
+
+    # Construct parameters
+    _query_parameters = kwargs.pop("params", {})  # type: Dict[str, Any]
+    _query_parameters['api-version'] = _SERIALIZER.query("api_version", api_version, 'str')
+
+    # Construct headers
+    _header_parameters = kwargs.pop("headers", {})  # type: Dict[str, Any]
+    _header_parameters['Accept'] = _SERIALIZER.header("accept", accept, 'str')
+
+    return HttpRequest(
+        method="POST",
+        url=_url,
+        params=_query_parameters,
+        headers=_header_parameters,
+        **kwargs
+    )
+
+
+def build_restart_request_initial(
+    subscription_id,  # type: str
+    resource_group_name,  # type: str
+    virtual_machine_name,  # type: str
+    **kwargs  # type: Any
+):
+    # type: (...) -> HttpRequest
+    api_version = kwargs.pop('api_version', "2020-10-01-preview")  # type: str
+
+    accept = "application/json"
+    # Construct URL
+    _url = kwargs.pop("template_url", "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ConnectedVMwarevSphere/virtualMachines/{virtualMachineName}/restart")  # pylint: disable=line-too-long
+    path_format_arguments = {
+        "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, 'str'),
+        "resourceGroupName": _SERIALIZER.url("resource_group_name", resource_group_name, 'str'),
+        "virtualMachineName": _SERIALIZER.url("virtual_machine_name", virtual_machine_name, 'str'),
+    }
+
+    _url = _format_url_section(_url, **path_format_arguments)
+
+    # Construct parameters
+    _query_parameters = kwargs.pop("params", {})  # type: Dict[str, Any]
+    _query_parameters['api-version'] = _SERIALIZER.query("api_version", api_version, 'str')
+
+    # Construct headers
+    _header_parameters = kwargs.pop("headers", {})  # type: Dict[str, Any]
+    _header_parameters['Accept'] = _SERIALIZER.header("accept", accept, 'str')
+
+    return HttpRequest(
+        method="POST",
+        url=_url,
+        params=_query_parameters,
+        headers=_header_parameters,
+        **kwargs
+    )
+
+
+def build_list_request(
+    subscription_id,  # type: str
+    **kwargs  # type: Any
+):
+    # type: (...) -> HttpRequest
+    api_version = kwargs.pop('api_version', "2020-10-01-preview")  # type: str
+
+    accept = "application/json"
+    # Construct URL
+    _url = kwargs.pop("template_url", "/subscriptions/{subscriptionId}/providers/Microsoft.ConnectedVMwarevSphere/virtualMachines")  # pylint: disable=line-too-long
+    path_format_arguments = {
+        "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, 'str'),
+    }
+
+    _url = _format_url_section(_url, **path_format_arguments)
+
+    # Construct parameters
+    _query_parameters = kwargs.pop("params", {})  # type: Dict[str, Any]
+    _query_parameters['api-version'] = _SERIALIZER.query("api_version", api_version, 'str')
+
+    # Construct headers
+    _header_parameters = kwargs.pop("headers", {})  # type: Dict[str, Any]
+    _header_parameters['Accept'] = _SERIALIZER.header("accept", accept, 'str')
+
+    return HttpRequest(
+        method="GET",
+        url=_url,
+        params=_query_parameters,
+        headers=_header_parameters,
+        **kwargs
+    )
+
+
+def build_list_by_resource_group_request(
+    subscription_id,  # type: str
+    resource_group_name,  # type: str
+    **kwargs  # type: Any
+):
+    # type: (...) -> HttpRequest
+    api_version = kwargs.pop('api_version', "2020-10-01-preview")  # type: str
+
+    accept = "application/json"
+    # Construct URL
+    _url = kwargs.pop("template_url", "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ConnectedVMwarevSphere/virtualMachines")  # pylint: disable=line-too-long
+    path_format_arguments = {
+        "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, 'str'),
+        "resourceGroupName": _SERIALIZER.url("resource_group_name", resource_group_name, 'str'),
+    }
+
+    _url = _format_url_section(_url, **path_format_arguments)
+
+    # Construct parameters
+    _query_parameters = kwargs.pop("params", {})  # type: Dict[str, Any]
+    _query_parameters['api-version'] = _SERIALIZER.query("api_version", api_version, 'str')
+
+    # Construct headers
+    _header_parameters = kwargs.pop("headers", {})  # type: Dict[str, Any]
+    _header_parameters['Accept'] = _SERIALIZER.header("accept", accept, 'str')
+
+    return HttpRequest(
+        method="GET",
+        url=_url,
+        params=_query_parameters,
+        headers=_header_parameters,
+        **kwargs
+    )
+
+# fmt: on
 class VirtualMachinesOperations(object):
     """VirtualMachinesOperations operations.
 
@@ -60,42 +407,37 @@ class VirtualMachinesOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2020-10-01-preview"
-        content_type = kwargs.pop("content_type", "application/json")
-        accept = "application/json"
 
-        # Construct URL
-        url = self._create_initial.metadata['url']  # type: ignore
-        path_format_arguments = {
-            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
-            'virtualMachineName': self._serialize.url("virtual_machine_name", virtual_machine_name, 'str'),
-        }
-        url = self._client.format_url(url, **path_format_arguments)
+        api_version = kwargs.pop('api_version', "2020-10-01-preview")  # type: str
+        content_type = kwargs.pop('content_type', "application/json")  # type: Optional[str]
 
-        # Construct parameters
-        query_parameters = {}  # type: Dict[str, Any]
-        query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
-
-        # Construct headers
-        header_parameters = {}  # type: Dict[str, Any]
-        header_parameters['Content-Type'] = self._serialize.header("content_type", content_type, 'str')
-        header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
-
-        body_content_kwargs = {}  # type: Dict[str, Any]
         if body is not None:
-            body_content = self._serialize.body(body, 'VirtualMachine')
+            _json = self._serialize.body(body, 'VirtualMachine')
         else:
-            body_content = None
-        body_content_kwargs['content'] = body_content
-        request = self._client.put(url, query_parameters, header_parameters, **body_content_kwargs)
-        pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
+            _json = None
+
+        request = build_create_request_initial(
+            subscription_id=self._config.subscription_id,
+            resource_group_name=resource_group_name,
+            virtual_machine_name=virtual_machine_name,
+            api_version=api_version,
+            content_type=content_type,
+            json=_json,
+            template_url=self._create_initial.metadata['url'],
+        )
+        request = _convert_request(request)
+        request.url = self._client.format_url(request.url)
+
+        pipeline_response = self._client._pipeline.run(  # pylint: disable=protected-access
+            request,
+            stream=False,
+            **kwargs
+        )
         response = pipeline_response.http_response
 
         if response.status_code not in [200, 201]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, response)
-            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
+            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
         if response.status_code == 200:
             deserialized = self._deserialize('VirtualMachine', pipeline_response)
@@ -107,8 +449,11 @@ class VirtualMachinesOperations(object):
             return cls(pipeline_response, deserialized, {})
 
         return deserialized
-    _create_initial.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ConnectedVMwarevSphere/virtualMachines/{virtualMachineName}'}  # type: ignore
 
+    _create_initial.metadata = {'url': "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ConnectedVMwarevSphere/virtualMachines/{virtualMachineName}"}  # type: ignore
+
+
+    @distributed_trace
     def begin_create(
         self,
         resource_group_name,  # type: str
@@ -129,14 +474,19 @@ class VirtualMachinesOperations(object):
         :type body: ~azure.mgmt.connectedvmware.models.VirtualMachine
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: By default, your polling method will be ARMPolling.
-         Pass in False for this operation to not poll, or pass in your own initialized polling object for a personal polling strategy.
+        :keyword polling: By default, your polling method will be ARMPolling. Pass in False for this
+         operation to not poll, or pass in your own initialized polling object for a personal polling
+         strategy.
         :paramtype polling: bool or ~azure.core.polling.PollingMethod
-        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
-        :return: An instance of LROPoller that returns either VirtualMachine or the result of cls(response)
+        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
+         Retry-After header is present.
+        :return: An instance of LROPoller that returns either VirtualMachine or the result of
+         cls(response)
         :rtype: ~azure.core.polling.LROPoller[~azure.mgmt.connectedvmware.models.VirtualMachine]
-        :raises ~azure.core.exceptions.HttpResponseError:
+        :raises: ~azure.core.exceptions.HttpResponseError
         """
+        api_version = kwargs.pop('api_version', "2020-10-01-preview")  # type: str
+        content_type = kwargs.pop('content_type', "application/json")  # type: Optional[str]
         polling = kwargs.pop('polling', True)  # type: Union[bool, PollingMethod]
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.VirtualMachine"]
         lro_delay = kwargs.pop(
@@ -149,27 +499,22 @@ class VirtualMachinesOperations(object):
                 resource_group_name=resource_group_name,
                 virtual_machine_name=virtual_machine_name,
                 body=body,
+                api_version=api_version,
+                content_type=content_type,
                 cls=lambda x,y,z: x,
                 **kwargs
             )
-
         kwargs.pop('error_map', None)
-        kwargs.pop('content_type', None)
 
         def get_long_running_output(pipeline_response):
+            response = pipeline_response.http_response
             deserialized = self._deserialize('VirtualMachine', pipeline_response)
-
             if cls:
                 return cls(pipeline_response, deserialized, {})
             return deserialized
 
-        path_format_arguments = {
-            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
-            'virtualMachineName': self._serialize.url("virtual_machine_name", virtual_machine_name, 'str'),
-        }
 
-        if polling is True: polling_method = ARMPolling(lro_delay, lro_options={'final-state-via': 'azure-async-operation'}, path_format_arguments=path_format_arguments,  **kwargs)
+        if polling is True: polling_method = ARMPolling(lro_delay, lro_options={'final-state-via': 'azure-async-operation'}, **kwargs)
         elif polling is False: polling_method = NoPolling()
         else: polling_method = polling
         if cont_token:
@@ -179,10 +524,11 @@ class VirtualMachinesOperations(object):
                 client=self._client,
                 deserialization_callback=get_long_running_output
             )
-        else:
-            return LROPoller(self._client, raw_result, get_long_running_output, polling_method)
-    begin_create.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ConnectedVMwarevSphere/virtualMachines/{virtualMachineName}'}  # type: ignore
+        return LROPoller(self._client, raw_result, get_long_running_output, polling_method)
 
+    begin_create.metadata = {'url': "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ConnectedVMwarevSphere/virtualMachines/{virtualMachineName}"}  # type: ignore
+
+    @distributed_trace
     def get(
         self,
         resource_group_name,  # type: str
@@ -208,33 +554,30 @@ class VirtualMachinesOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2020-10-01-preview"
-        accept = "application/json"
 
-        # Construct URL
-        url = self.get.metadata['url']  # type: ignore
-        path_format_arguments = {
-            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
-            'virtualMachineName': self._serialize.url("virtual_machine_name", virtual_machine_name, 'str'),
-        }
-        url = self._client.format_url(url, **path_format_arguments)
+        api_version = kwargs.pop('api_version', "2020-10-01-preview")  # type: str
 
-        # Construct parameters
-        query_parameters = {}  # type: Dict[str, Any]
-        query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
+        
+        request = build_get_request(
+            subscription_id=self._config.subscription_id,
+            resource_group_name=resource_group_name,
+            virtual_machine_name=virtual_machine_name,
+            api_version=api_version,
+            template_url=self.get.metadata['url'],
+        )
+        request = _convert_request(request)
+        request.url = self._client.format_url(request.url)
 
-        # Construct headers
-        header_parameters = {}  # type: Dict[str, Any]
-        header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
-
-        request = self._client.get(url, query_parameters, header_parameters)
-        pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
+        pipeline_response = self._client._pipeline.run(  # pylint: disable=protected-access
+            request,
+            stream=False,
+            **kwargs
+        )
         response = pipeline_response.http_response
 
         if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, response)
+            error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
             raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         deserialized = self._deserialize('VirtualMachine', pipeline_response)
@@ -243,7 +586,9 @@ class VirtualMachinesOperations(object):
             return cls(pipeline_response, deserialized, {})
 
         return deserialized
-    get.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ConnectedVMwarevSphere/virtualMachines/{virtualMachineName}'}  # type: ignore
+
+    get.metadata = {'url': "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ConnectedVMwarevSphere/virtualMachines/{virtualMachineName}"}  # type: ignore
+
 
     def _update_initial(
         self,
@@ -252,49 +597,45 @@ class VirtualMachinesOperations(object):
         body=None,  # type: Optional["_models.VirtualMachineUpdate"]
         **kwargs  # type: Any
     ):
-        # type: (...) -> "_models.VirtualMachine"
-        cls = kwargs.pop('cls', None)  # type: ClsType["_models.VirtualMachine"]
+        # type: (...) -> Optional["_models.VirtualMachine"]
+        cls = kwargs.pop('cls', None)  # type: ClsType[Optional["_models.VirtualMachine"]]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2020-10-01-preview"
-        content_type = kwargs.pop("content_type", "application/json")
-        accept = "application/json"
 
-        # Construct URL
-        url = self._update_initial.metadata['url']  # type: ignore
-        path_format_arguments = {
-            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
-            'virtualMachineName': self._serialize.url("virtual_machine_name", virtual_machine_name, 'str'),
-        }
-        url = self._client.format_url(url, **path_format_arguments)
+        api_version = kwargs.pop('api_version', "2020-10-01-preview")  # type: str
+        content_type = kwargs.pop('content_type', "application/json")  # type: Optional[str]
 
-        # Construct parameters
-        query_parameters = {}  # type: Dict[str, Any]
-        query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
-
-        # Construct headers
-        header_parameters = {}  # type: Dict[str, Any]
-        header_parameters['Content-Type'] = self._serialize.header("content_type", content_type, 'str')
-        header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
-
-        body_content_kwargs = {}  # type: Dict[str, Any]
         if body is not None:
-            body_content = self._serialize.body(body, 'VirtualMachineUpdate')
+            _json = self._serialize.body(body, 'VirtualMachineUpdate')
         else:
-            body_content = None
-        body_content_kwargs['content'] = body_content
-        request = self._client.patch(url, query_parameters, header_parameters, **body_content_kwargs)
-        pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
+            _json = None
+
+        request = build_update_request_initial(
+            subscription_id=self._config.subscription_id,
+            resource_group_name=resource_group_name,
+            virtual_machine_name=virtual_machine_name,
+            api_version=api_version,
+            content_type=content_type,
+            json=_json,
+            template_url=self._update_initial.metadata['url'],
+        )
+        request = _convert_request(request)
+        request.url = self._client.format_url(request.url)
+
+        pipeline_response = self._client._pipeline.run(  # pylint: disable=protected-access
+            request,
+            stream=False,
+            **kwargs
+        )
         response = pipeline_response.http_response
 
-        if response.status_code not in [200, 201]:
+        if response.status_code not in [200, 201, 202]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, response)
-            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
+            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
+        deserialized = None
         if response.status_code == 200:
             deserialized = self._deserialize('VirtualMachine', pipeline_response)
 
@@ -305,8 +646,11 @@ class VirtualMachinesOperations(object):
             return cls(pipeline_response, deserialized, {})
 
         return deserialized
-    _update_initial.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ConnectedVMwarevSphere/virtualMachines/{virtualMachineName}'}  # type: ignore
 
+    _update_initial.metadata = {'url': "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ConnectedVMwarevSphere/virtualMachines/{virtualMachineName}"}  # type: ignore
+
+
+    @distributed_trace
     def begin_update(
         self,
         resource_group_name,  # type: str
@@ -327,14 +671,19 @@ class VirtualMachinesOperations(object):
         :type body: ~azure.mgmt.connectedvmware.models.VirtualMachineUpdate
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: By default, your polling method will be ARMPolling.
-         Pass in False for this operation to not poll, or pass in your own initialized polling object for a personal polling strategy.
+        :keyword polling: By default, your polling method will be ARMPolling. Pass in False for this
+         operation to not poll, or pass in your own initialized polling object for a personal polling
+         strategy.
         :paramtype polling: bool or ~azure.core.polling.PollingMethod
-        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
-        :return: An instance of LROPoller that returns either VirtualMachine or the result of cls(response)
+        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
+         Retry-After header is present.
+        :return: An instance of LROPoller that returns either VirtualMachine or the result of
+         cls(response)
         :rtype: ~azure.core.polling.LROPoller[~azure.mgmt.connectedvmware.models.VirtualMachine]
-        :raises ~azure.core.exceptions.HttpResponseError:
+        :raises: ~azure.core.exceptions.HttpResponseError
         """
+        api_version = kwargs.pop('api_version', "2020-10-01-preview")  # type: str
+        content_type = kwargs.pop('content_type', "application/json")  # type: Optional[str]
         polling = kwargs.pop('polling', True)  # type: Union[bool, PollingMethod]
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.VirtualMachine"]
         lro_delay = kwargs.pop(
@@ -347,27 +696,22 @@ class VirtualMachinesOperations(object):
                 resource_group_name=resource_group_name,
                 virtual_machine_name=virtual_machine_name,
                 body=body,
+                api_version=api_version,
+                content_type=content_type,
                 cls=lambda x,y,z: x,
                 **kwargs
             )
-
         kwargs.pop('error_map', None)
-        kwargs.pop('content_type', None)
 
         def get_long_running_output(pipeline_response):
+            response = pipeline_response.http_response
             deserialized = self._deserialize('VirtualMachine', pipeline_response)
-
             if cls:
                 return cls(pipeline_response, deserialized, {})
             return deserialized
 
-        path_format_arguments = {
-            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
-            'virtualMachineName': self._serialize.url("virtual_machine_name", virtual_machine_name, 'str'),
-        }
 
-        if polling is True: polling_method = ARMPolling(lro_delay, path_format_arguments=path_format_arguments,  **kwargs)
+        if polling is True: polling_method = ARMPolling(lro_delay, **kwargs)
         elif polling is False: polling_method = NoPolling()
         else: polling_method = polling
         if cont_token:
@@ -377,11 +721,11 @@ class VirtualMachinesOperations(object):
                 client=self._client,
                 deserialization_callback=get_long_running_output
             )
-        else:
-            return LROPoller(self._client, raw_result, get_long_running_output, polling_method)
-    begin_update.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ConnectedVMwarevSphere/virtualMachines/{virtualMachineName}'}  # type: ignore
+        return LROPoller(self._client, raw_result, get_long_running_output, polling_method)
 
-    def _delete_initial(
+    begin_update.metadata = {'url': "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ConnectedVMwarevSphere/virtualMachines/{virtualMachineName}"}  # type: ignore
+
+    def _delete_initial(  # pylint: disable=inconsistent-return-statements
         self,
         resource_group_name,  # type: str
         virtual_machine_name,  # type: str
@@ -394,43 +738,40 @@ class VirtualMachinesOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2020-10-01-preview"
-        accept = "application/json"
 
-        # Construct URL
-        url = self._delete_initial.metadata['url']  # type: ignore
-        path_format_arguments = {
-            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
-            'virtualMachineName': self._serialize.url("virtual_machine_name", virtual_machine_name, 'str'),
-        }
-        url = self._client.format_url(url, **path_format_arguments)
+        api_version = kwargs.pop('api_version', "2020-10-01-preview")  # type: str
 
-        # Construct parameters
-        query_parameters = {}  # type: Dict[str, Any]
-        query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
-        if force is not None:
-            query_parameters['force'] = self._serialize.query("force", force, 'bool')
+        
+        request = build_delete_request_initial(
+            subscription_id=self._config.subscription_id,
+            resource_group_name=resource_group_name,
+            virtual_machine_name=virtual_machine_name,
+            api_version=api_version,
+            force=force,
+            template_url=self._delete_initial.metadata['url'],
+        )
+        request = _convert_request(request)
+        request.url = self._client.format_url(request.url)
 
-        # Construct headers
-        header_parameters = {}  # type: Dict[str, Any]
-        header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
-
-        request = self._client.delete(url, query_parameters, header_parameters)
-        pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
+        pipeline_response = self._client._pipeline.run(  # pylint: disable=protected-access
+            request,
+            stream=False,
+            **kwargs
+        )
         response = pipeline_response.http_response
 
         if response.status_code not in [200, 202, 204]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, response)
-            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
+            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
         if cls:
             return cls(pipeline_response, None, {})
 
-    _delete_initial.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ConnectedVMwarevSphere/virtualMachines/{virtualMachineName}'}  # type: ignore
+    _delete_initial.metadata = {'url': "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ConnectedVMwarevSphere/virtualMachines/{virtualMachineName}"}  # type: ignore
 
-    def begin_delete(
+
+    @distributed_trace
+    def begin_delete(  # pylint: disable=inconsistent-return-statements
         self,
         resource_group_name,  # type: str
         virtual_machine_name,  # type: str
@@ -450,14 +791,17 @@ class VirtualMachinesOperations(object):
         :type force: bool
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: By default, your polling method will be ARMPolling.
-         Pass in False for this operation to not poll, or pass in your own initialized polling object for a personal polling strategy.
+        :keyword polling: By default, your polling method will be ARMPolling. Pass in False for this
+         operation to not poll, or pass in your own initialized polling object for a personal polling
+         strategy.
         :paramtype polling: bool or ~azure.core.polling.PollingMethod
-        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
+        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
+         Retry-After header is present.
         :return: An instance of LROPoller that returns either None or the result of cls(response)
         :rtype: ~azure.core.polling.LROPoller[None]
-        :raises ~azure.core.exceptions.HttpResponseError:
+        :raises: ~azure.core.exceptions.HttpResponseError
         """
+        api_version = kwargs.pop('api_version', "2020-10-01-preview")  # type: str
         polling = kwargs.pop('polling', True)  # type: Union[bool, PollingMethod]
         cls = kwargs.pop('cls', None)  # type: ClsType[None]
         lro_delay = kwargs.pop(
@@ -470,24 +814,18 @@ class VirtualMachinesOperations(object):
                 resource_group_name=resource_group_name,
                 virtual_machine_name=virtual_machine_name,
                 force=force,
+                api_version=api_version,
                 cls=lambda x,y,z: x,
                 **kwargs
             )
-
         kwargs.pop('error_map', None)
-        kwargs.pop('content_type', None)
 
         def get_long_running_output(pipeline_response):
             if cls:
                 return cls(pipeline_response, None, {})
 
-        path_format_arguments = {
-            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
-            'virtualMachineName': self._serialize.url("virtual_machine_name", virtual_machine_name, 'str'),
-        }
 
-        if polling is True: polling_method = ARMPolling(lro_delay, path_format_arguments=path_format_arguments,  **kwargs)
+        if polling is True: polling_method = ARMPolling(lro_delay, **kwargs)
         elif polling is False: polling_method = NoPolling()
         else: polling_method = polling
         if cont_token:
@@ -497,11 +835,11 @@ class VirtualMachinesOperations(object):
                 client=self._client,
                 deserialization_callback=get_long_running_output
             )
-        else:
-            return LROPoller(self._client, raw_result, get_long_running_output, polling_method)
-    begin_delete.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ConnectedVMwarevSphere/virtualMachines/{virtualMachineName}'}  # type: ignore
+        return LROPoller(self._client, raw_result, get_long_running_output, polling_method)
 
-    def _stop_initial(
+    begin_delete.metadata = {'url': "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ConnectedVMwarevSphere/virtualMachines/{virtualMachineName}"}  # type: ignore
+
+    def _stop_initial(  # pylint: disable=inconsistent-return-statements
         self,
         resource_group_name,  # type: str
         virtual_machine_name,  # type: str
@@ -514,49 +852,46 @@ class VirtualMachinesOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2020-10-01-preview"
-        content_type = kwargs.pop("content_type", "application/json")
-        accept = "application/json"
 
-        # Construct URL
-        url = self._stop_initial.metadata['url']  # type: ignore
-        path_format_arguments = {
-            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
-            'virtualMachineName': self._serialize.url("virtual_machine_name", virtual_machine_name, 'str'),
-        }
-        url = self._client.format_url(url, **path_format_arguments)
+        api_version = kwargs.pop('api_version', "2020-10-01-preview")  # type: str
+        content_type = kwargs.pop('content_type', "application/json")  # type: Optional[str]
 
-        # Construct parameters
-        query_parameters = {}  # type: Dict[str, Any]
-        query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
-
-        # Construct headers
-        header_parameters = {}  # type: Dict[str, Any]
-        header_parameters['Content-Type'] = self._serialize.header("content_type", content_type, 'str')
-        header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
-
-        body_content_kwargs = {}  # type: Dict[str, Any]
         if body is not None:
-            body_content = self._serialize.body(body, 'StopVirtualMachineOptions')
+            _json = self._serialize.body(body, 'StopVirtualMachineOptions')
         else:
-            body_content = None
-        body_content_kwargs['content'] = body_content
-        request = self._client.post(url, query_parameters, header_parameters, **body_content_kwargs)
-        pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
+            _json = None
+
+        request = build_stop_request_initial(
+            subscription_id=self._config.subscription_id,
+            resource_group_name=resource_group_name,
+            virtual_machine_name=virtual_machine_name,
+            api_version=api_version,
+            content_type=content_type,
+            json=_json,
+            template_url=self._stop_initial.metadata['url'],
+        )
+        request = _convert_request(request)
+        request.url = self._client.format_url(request.url)
+
+        pipeline_response = self._client._pipeline.run(  # pylint: disable=protected-access
+            request,
+            stream=False,
+            **kwargs
+        )
         response = pipeline_response.http_response
 
         if response.status_code not in [200, 202]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, response)
-            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
+            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
         if cls:
             return cls(pipeline_response, None, {})
 
-    _stop_initial.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ConnectedVMwarevSphere/virtualMachines/{virtualMachineName}/stop'}  # type: ignore
+    _stop_initial.metadata = {'url': "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ConnectedVMwarevSphere/virtualMachines/{virtualMachineName}/stop"}  # type: ignore
 
-    def begin_stop(
+
+    @distributed_trace
+    def begin_stop(  # pylint: disable=inconsistent-return-statements
         self,
         resource_group_name,  # type: str
         virtual_machine_name,  # type: str
@@ -576,14 +911,18 @@ class VirtualMachinesOperations(object):
         :type body: ~azure.mgmt.connectedvmware.models.StopVirtualMachineOptions
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: By default, your polling method will be ARMPolling.
-         Pass in False for this operation to not poll, or pass in your own initialized polling object for a personal polling strategy.
+        :keyword polling: By default, your polling method will be ARMPolling. Pass in False for this
+         operation to not poll, or pass in your own initialized polling object for a personal polling
+         strategy.
         :paramtype polling: bool or ~azure.core.polling.PollingMethod
-        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
+        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
+         Retry-After header is present.
         :return: An instance of LROPoller that returns either None or the result of cls(response)
         :rtype: ~azure.core.polling.LROPoller[None]
-        :raises ~azure.core.exceptions.HttpResponseError:
+        :raises: ~azure.core.exceptions.HttpResponseError
         """
+        api_version = kwargs.pop('api_version', "2020-10-01-preview")  # type: str
+        content_type = kwargs.pop('content_type', "application/json")  # type: Optional[str]
         polling = kwargs.pop('polling', True)  # type: Union[bool, PollingMethod]
         cls = kwargs.pop('cls', None)  # type: ClsType[None]
         lro_delay = kwargs.pop(
@@ -596,24 +935,19 @@ class VirtualMachinesOperations(object):
                 resource_group_name=resource_group_name,
                 virtual_machine_name=virtual_machine_name,
                 body=body,
+                api_version=api_version,
+                content_type=content_type,
                 cls=lambda x,y,z: x,
                 **kwargs
             )
-
         kwargs.pop('error_map', None)
-        kwargs.pop('content_type', None)
 
         def get_long_running_output(pipeline_response):
             if cls:
                 return cls(pipeline_response, None, {})
 
-        path_format_arguments = {
-            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
-            'virtualMachineName': self._serialize.url("virtual_machine_name", virtual_machine_name, 'str'),
-        }
 
-        if polling is True: polling_method = ARMPolling(lro_delay, path_format_arguments=path_format_arguments,  **kwargs)
+        if polling is True: polling_method = ARMPolling(lro_delay, **kwargs)
         elif polling is False: polling_method = NoPolling()
         else: polling_method = polling
         if cont_token:
@@ -623,11 +957,11 @@ class VirtualMachinesOperations(object):
                 client=self._client,
                 deserialization_callback=get_long_running_output
             )
-        else:
-            return LROPoller(self._client, raw_result, get_long_running_output, polling_method)
-    begin_stop.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ConnectedVMwarevSphere/virtualMachines/{virtualMachineName}/stop'}  # type: ignore
+        return LROPoller(self._client, raw_result, get_long_running_output, polling_method)
 
-    def _start_initial(
+    begin_stop.metadata = {'url': "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ConnectedVMwarevSphere/virtualMachines/{virtualMachineName}/stop"}  # type: ignore
+
+    def _start_initial(  # pylint: disable=inconsistent-return-statements
         self,
         resource_group_name,  # type: str
         virtual_machine_name,  # type: str
@@ -639,41 +973,39 @@ class VirtualMachinesOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2020-10-01-preview"
-        accept = "application/json"
 
-        # Construct URL
-        url = self._start_initial.metadata['url']  # type: ignore
-        path_format_arguments = {
-            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
-            'virtualMachineName': self._serialize.url("virtual_machine_name", virtual_machine_name, 'str'),
-        }
-        url = self._client.format_url(url, **path_format_arguments)
+        api_version = kwargs.pop('api_version', "2020-10-01-preview")  # type: str
 
-        # Construct parameters
-        query_parameters = {}  # type: Dict[str, Any]
-        query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
+        
+        request = build_start_request_initial(
+            subscription_id=self._config.subscription_id,
+            resource_group_name=resource_group_name,
+            virtual_machine_name=virtual_machine_name,
+            api_version=api_version,
+            template_url=self._start_initial.metadata['url'],
+        )
+        request = _convert_request(request)
+        request.url = self._client.format_url(request.url)
 
-        # Construct headers
-        header_parameters = {}  # type: Dict[str, Any]
-        header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
-
-        request = self._client.post(url, query_parameters, header_parameters)
-        pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
+        pipeline_response = self._client._pipeline.run(  # pylint: disable=protected-access
+            request,
+            stream=False,
+            **kwargs
+        )
         response = pipeline_response.http_response
 
         if response.status_code not in [200, 202]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, response)
-            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
+            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
         if cls:
             return cls(pipeline_response, None, {})
 
-    _start_initial.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ConnectedVMwarevSphere/virtualMachines/{virtualMachineName}/start'}  # type: ignore
+    _start_initial.metadata = {'url': "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ConnectedVMwarevSphere/virtualMachines/{virtualMachineName}/start"}  # type: ignore
 
-    def begin_start(
+
+    @distributed_trace
+    def begin_start(  # pylint: disable=inconsistent-return-statements
         self,
         resource_group_name,  # type: str
         virtual_machine_name,  # type: str
@@ -690,14 +1022,17 @@ class VirtualMachinesOperations(object):
         :type virtual_machine_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: By default, your polling method will be ARMPolling.
-         Pass in False for this operation to not poll, or pass in your own initialized polling object for a personal polling strategy.
+        :keyword polling: By default, your polling method will be ARMPolling. Pass in False for this
+         operation to not poll, or pass in your own initialized polling object for a personal polling
+         strategy.
         :paramtype polling: bool or ~azure.core.polling.PollingMethod
-        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
+        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
+         Retry-After header is present.
         :return: An instance of LROPoller that returns either None or the result of cls(response)
         :rtype: ~azure.core.polling.LROPoller[None]
-        :raises ~azure.core.exceptions.HttpResponseError:
+        :raises: ~azure.core.exceptions.HttpResponseError
         """
+        api_version = kwargs.pop('api_version', "2020-10-01-preview")  # type: str
         polling = kwargs.pop('polling', True)  # type: Union[bool, PollingMethod]
         cls = kwargs.pop('cls', None)  # type: ClsType[None]
         lro_delay = kwargs.pop(
@@ -709,24 +1044,18 @@ class VirtualMachinesOperations(object):
             raw_result = self._start_initial(
                 resource_group_name=resource_group_name,
                 virtual_machine_name=virtual_machine_name,
+                api_version=api_version,
                 cls=lambda x,y,z: x,
                 **kwargs
             )
-
         kwargs.pop('error_map', None)
-        kwargs.pop('content_type', None)
 
         def get_long_running_output(pipeline_response):
             if cls:
                 return cls(pipeline_response, None, {})
 
-        path_format_arguments = {
-            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
-            'virtualMachineName': self._serialize.url("virtual_machine_name", virtual_machine_name, 'str'),
-        }
 
-        if polling is True: polling_method = ARMPolling(lro_delay, path_format_arguments=path_format_arguments,  **kwargs)
+        if polling is True: polling_method = ARMPolling(lro_delay, **kwargs)
         elif polling is False: polling_method = NoPolling()
         else: polling_method = polling
         if cont_token:
@@ -736,11 +1065,11 @@ class VirtualMachinesOperations(object):
                 client=self._client,
                 deserialization_callback=get_long_running_output
             )
-        else:
-            return LROPoller(self._client, raw_result, get_long_running_output, polling_method)
-    begin_start.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ConnectedVMwarevSphere/virtualMachines/{virtualMachineName}/start'}  # type: ignore
+        return LROPoller(self._client, raw_result, get_long_running_output, polling_method)
 
-    def _restart_initial(
+    begin_start.metadata = {'url': "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ConnectedVMwarevSphere/virtualMachines/{virtualMachineName}/start"}  # type: ignore
+
+    def _restart_initial(  # pylint: disable=inconsistent-return-statements
         self,
         resource_group_name,  # type: str
         virtual_machine_name,  # type: str
@@ -752,41 +1081,39 @@ class VirtualMachinesOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2020-10-01-preview"
-        accept = "application/json"
 
-        # Construct URL
-        url = self._restart_initial.metadata['url']  # type: ignore
-        path_format_arguments = {
-            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
-            'virtualMachineName': self._serialize.url("virtual_machine_name", virtual_machine_name, 'str'),
-        }
-        url = self._client.format_url(url, **path_format_arguments)
+        api_version = kwargs.pop('api_version', "2020-10-01-preview")  # type: str
 
-        # Construct parameters
-        query_parameters = {}  # type: Dict[str, Any]
-        query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
+        
+        request = build_restart_request_initial(
+            subscription_id=self._config.subscription_id,
+            resource_group_name=resource_group_name,
+            virtual_machine_name=virtual_machine_name,
+            api_version=api_version,
+            template_url=self._restart_initial.metadata['url'],
+        )
+        request = _convert_request(request)
+        request.url = self._client.format_url(request.url)
 
-        # Construct headers
-        header_parameters = {}  # type: Dict[str, Any]
-        header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
-
-        request = self._client.post(url, query_parameters, header_parameters)
-        pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
+        pipeline_response = self._client._pipeline.run(  # pylint: disable=protected-access
+            request,
+            stream=False,
+            **kwargs
+        )
         response = pipeline_response.http_response
 
         if response.status_code not in [200, 202]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, response)
-            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
+            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
         if cls:
             return cls(pipeline_response, None, {})
 
-    _restart_initial.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ConnectedVMwarevSphere/virtualMachines/{virtualMachineName}/restart'}  # type: ignore
+    _restart_initial.metadata = {'url': "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ConnectedVMwarevSphere/virtualMachines/{virtualMachineName}/restart"}  # type: ignore
 
-    def begin_restart(
+
+    @distributed_trace
+    def begin_restart(  # pylint: disable=inconsistent-return-statements
         self,
         resource_group_name,  # type: str
         virtual_machine_name,  # type: str
@@ -803,14 +1130,17 @@ class VirtualMachinesOperations(object):
         :type virtual_machine_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: By default, your polling method will be ARMPolling.
-         Pass in False for this operation to not poll, or pass in your own initialized polling object for a personal polling strategy.
+        :keyword polling: By default, your polling method will be ARMPolling. Pass in False for this
+         operation to not poll, or pass in your own initialized polling object for a personal polling
+         strategy.
         :paramtype polling: bool or ~azure.core.polling.PollingMethod
-        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
+        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
+         Retry-After header is present.
         :return: An instance of LROPoller that returns either None or the result of cls(response)
         :rtype: ~azure.core.polling.LROPoller[None]
-        :raises ~azure.core.exceptions.HttpResponseError:
+        :raises: ~azure.core.exceptions.HttpResponseError
         """
+        api_version = kwargs.pop('api_version', "2020-10-01-preview")  # type: str
         polling = kwargs.pop('polling', True)  # type: Union[bool, PollingMethod]
         cls = kwargs.pop('cls', None)  # type: ClsType[None]
         lro_delay = kwargs.pop(
@@ -822,24 +1152,18 @@ class VirtualMachinesOperations(object):
             raw_result = self._restart_initial(
                 resource_group_name=resource_group_name,
                 virtual_machine_name=virtual_machine_name,
+                api_version=api_version,
                 cls=lambda x,y,z: x,
                 **kwargs
             )
-
         kwargs.pop('error_map', None)
-        kwargs.pop('content_type', None)
 
         def get_long_running_output(pipeline_response):
             if cls:
                 return cls(pipeline_response, None, {})
 
-        path_format_arguments = {
-            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
-            'virtualMachineName': self._serialize.url("virtual_machine_name", virtual_machine_name, 'str'),
-        }
 
-        if polling is True: polling_method = ARMPolling(lro_delay, path_format_arguments=path_format_arguments,  **kwargs)
+        if polling is True: polling_method = ARMPolling(lro_delay, **kwargs)
         elif polling is False: polling_method = NoPolling()
         else: polling_method = polling
         if cont_token:
@@ -849,10 +1173,11 @@ class VirtualMachinesOperations(object):
                 client=self._client,
                 deserialization_callback=get_long_running_output
             )
-        else:
-            return LROPoller(self._client, raw_result, get_long_running_output, polling_method)
-    begin_restart.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ConnectedVMwarevSphere/virtualMachines/{virtualMachineName}/restart'}  # type: ignore
+        return LROPoller(self._client, raw_result, get_long_running_output, polling_method)
 
+    begin_restart.metadata = {'url': "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ConnectedVMwarevSphere/virtualMachines/{virtualMachineName}/restart"}  # type: ignore
+
+    @distributed_trace
     def list(
         self,
         **kwargs  # type: Any
@@ -867,39 +1192,38 @@ class VirtualMachinesOperations(object):
         :rtype: ~azure.core.paging.ItemPaged[~azure.mgmt.connectedvmware.models.VirtualMachinesList]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
+        api_version = kwargs.pop('api_version', "2020-10-01-preview")  # type: str
+
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.VirtualMachinesList"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2020-10-01-preview"
-        accept = "application/json"
-
         def prepare_request(next_link=None):
-            # Construct headers
-            header_parameters = {}  # type: Dict[str, Any]
-            header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
-
             if not next_link:
-                # Construct URL
-                url = self.list.metadata['url']  # type: ignore
-                path_format_arguments = {
-                    'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
-                }
-                url = self._client.format_url(url, **path_format_arguments)
-                # Construct parameters
-                query_parameters = {}  # type: Dict[str, Any]
-                query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
+                
+                request = build_list_request(
+                    subscription_id=self._config.subscription_id,
+                    api_version=api_version,
+                    template_url=self.list.metadata['url'],
+                )
+                request = _convert_request(request)
+                request.url = self._client.format_url(request.url)
 
-                request = self._client.get(url, query_parameters, header_parameters)
             else:
-                url = next_link
-                query_parameters = {}  # type: Dict[str, Any]
-                request = self._client.get(url, query_parameters, header_parameters)
+                
+                request = build_list_request(
+                    subscription_id=self._config.subscription_id,
+                    api_version=api_version,
+                    template_url=next_link,
+                )
+                request = _convert_request(request)
+                request.url = self._client.format_url(request.url)
+                request.method = "GET"
             return request
 
         def extract_data(pipeline_response):
-            deserialized = self._deserialize('VirtualMachinesList', pipeline_response)
+            deserialized = self._deserialize("VirtualMachinesList", pipeline_response)
             list_of_elem = deserialized.value
             if cls:
                 list_of_elem = cls(list_of_elem)
@@ -908,21 +1232,27 @@ class VirtualMachinesOperations(object):
         def get_next(next_link=None):
             request = prepare_request(next_link)
 
-            pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
+            pipeline_response = self._client._pipeline.run(  # pylint: disable=protected-access
+                request,
+                stream=False,
+                **kwargs
+            )
             response = pipeline_response.http_response
 
             if response.status_code not in [200]:
-                error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, response)
                 map_error(status_code=response.status_code, response=response, error_map=error_map)
+                error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
                 raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
             return pipeline_response
 
+
         return ItemPaged(
             get_next, extract_data
         )
-    list.metadata = {'url': '/subscriptions/{subscriptionId}/providers/Microsoft.ConnectedVMwarevSphere/virtualMachines'}  # type: ignore
+    list.metadata = {'url': "/subscriptions/{subscriptionId}/providers/Microsoft.ConnectedVMwarevSphere/virtualMachines"}  # type: ignore
 
+    @distributed_trace
     def list_by_resource_group(
         self,
         resource_group_name,  # type: str
@@ -940,40 +1270,40 @@ class VirtualMachinesOperations(object):
         :rtype: ~azure.core.paging.ItemPaged[~azure.mgmt.connectedvmware.models.VirtualMachinesList]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
+        api_version = kwargs.pop('api_version', "2020-10-01-preview")  # type: str
+
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.VirtualMachinesList"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2020-10-01-preview"
-        accept = "application/json"
-
         def prepare_request(next_link=None):
-            # Construct headers
-            header_parameters = {}  # type: Dict[str, Any]
-            header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
-
             if not next_link:
-                # Construct URL
-                url = self.list_by_resource_group.metadata['url']  # type: ignore
-                path_format_arguments = {
-                    'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
-                    'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
-                }
-                url = self._client.format_url(url, **path_format_arguments)
-                # Construct parameters
-                query_parameters = {}  # type: Dict[str, Any]
-                query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
+                
+                request = build_list_by_resource_group_request(
+                    subscription_id=self._config.subscription_id,
+                    resource_group_name=resource_group_name,
+                    api_version=api_version,
+                    template_url=self.list_by_resource_group.metadata['url'],
+                )
+                request = _convert_request(request)
+                request.url = self._client.format_url(request.url)
 
-                request = self._client.get(url, query_parameters, header_parameters)
             else:
-                url = next_link
-                query_parameters = {}  # type: Dict[str, Any]
-                request = self._client.get(url, query_parameters, header_parameters)
+                
+                request = build_list_by_resource_group_request(
+                    subscription_id=self._config.subscription_id,
+                    resource_group_name=resource_group_name,
+                    api_version=api_version,
+                    template_url=next_link,
+                )
+                request = _convert_request(request)
+                request.url = self._client.format_url(request.url)
+                request.method = "GET"
             return request
 
         def extract_data(pipeline_response):
-            deserialized = self._deserialize('VirtualMachinesList', pipeline_response)
+            deserialized = self._deserialize("VirtualMachinesList", pipeline_response)
             list_of_elem = deserialized.value
             if cls:
                 list_of_elem = cls(list_of_elem)
@@ -982,17 +1312,22 @@ class VirtualMachinesOperations(object):
         def get_next(next_link=None):
             request = prepare_request(next_link)
 
-            pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
+            pipeline_response = self._client._pipeline.run(  # pylint: disable=protected-access
+                request,
+                stream=False,
+                **kwargs
+            )
             response = pipeline_response.http_response
 
             if response.status_code not in [200]:
-                error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, response)
                 map_error(status_code=response.status_code, response=response, error_map=error_map)
+                error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
                 raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
             return pipeline_response
 
+
         return ItemPaged(
             get_next, extract_data
         )
-    list_by_resource_group.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ConnectedVMwarevSphere/virtualMachines'}  # type: ignore
+    list_by_resource_group.metadata = {'url': "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ConnectedVMwarevSphere/virtualMachines"}  # type: ignore
