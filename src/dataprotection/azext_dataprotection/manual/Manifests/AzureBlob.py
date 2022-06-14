@@ -16,13 +16,7 @@ manifest = '''
   "backupVaultPermissions": [
     {
       "roleDefinitionName": "Storage Account Backup Contributor",
-      "assignedOn": "storageGroup",
-      "accessMethod": [
-        "properties",
-        "data_source_info",
-        "resource_id"
-      ],
-      "truncate": null
+      "type": "DataSource"
     }
   ],
   "policySettings": {

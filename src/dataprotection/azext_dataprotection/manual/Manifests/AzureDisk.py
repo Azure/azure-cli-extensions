@@ -16,26 +16,11 @@ manifest = '''
     "backupVaultPermissions": [
         {
             "roleDefinitionName": "Disk Backup Reader",
-            "assignedOn": "AzureDisk",
-            "accessMethod": [
-                "properties",
-                "data_source_info",
-                "resource_id"
-            ],
-            "truncate": null
+            "type": "DataSource"
         },
         {
             "roleDefinitionName": "Disk Snapshot Contributor",
-            "assignedOn": "SnapshotRG",
-            "accessMethod": [
-                "properties",
-                "policy_info",
-                "policy_parameters",
-                "data_store_parameters_list",
-                0,
-                "resource_group_id"
-            ],
-            "truncate": null
+            "type": "SnapshotRG"
         }
     ],
     "policySettings": {

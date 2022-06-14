@@ -271,12 +271,10 @@ def dataprotection_backup_instance_update_msi_permissions(cmd, client, resource_
     from azure.cli.command_modules.role.custom import list_role_assignments, create_role_assignment
 
     manifest = helper.load_manifest(datasource_type)
-    resource_map = {}
 
     keyvault_client = None
     keyvault = None
     keyvault_subscription = None
-    keyvault_scope_arr = None
     keyvault_name = None
     keyvault_rg = None
     if manifest['supportSecretStoreAuthentication']:
@@ -286,10 +284,10 @@ def dataprotection_backup_instance_update_msi_permissions(cmd, client, resource_
         from azure.cli.command_modules.keyvault._client_factory import Clients
         from azure.cli.core.commands.client_factory import get_mgmt_service_client
 
-        keyvault_scope_arr = keyvault_id.split("/")
-        keyvault_subscription = keyvault_scope_arr[2]
-        keyvault_name = keyvault_scope_arr[-1]
-        keyvault_rg = keyvault_scope_arr[4]
+        keyvault_params = helper.get_keyvault_parameters_from_id(keyvault_id)
+        keyvault_subscription = keyvault_params['vault_sub']
+        keyvault_name = keyvault_params['vault_name']
+        keyvault_rg = keyvault_params['vault_rg']
 
         keyvault_client = getattr(get_mgmt_service_client(cmd.cli_ctx, ResourceType.MGMT_KEYVAULT, subscription_id=keyvault_subscription), Clients.vaults)
 
@@ -307,11 +305,7 @@ def dataprotection_backup_instance_update_msi_permissions(cmd, client, resource_
             keyvault_rbac_model = keyvault_permission_models['rbacModel']
             role = keyvault_rbac_model['roleDefinitionName']
 
-            keyvault_assignment_scope = keyvault_id
-            if permissions_scope == 'ResourceGroup':
-                keyvault_assignment_scope = "/".join(keyvault_assignment_scope.split("/")[:5])
-            elif permissions_scope == 'Subscription':
-                keyvault_assignment_scope = "/".join(keyvault_assignment_scope.split("/")[:3])
+            keyvault_assignment_scope = helper.truncate_id_using_scope(keyvault_id, permissions_scope)
 
             role_assignment = list_role_assignments(cmd, assignee=principal_id, role=role, scope=keyvault_id, include_inherited=True)
             if not role_assignment:
@@ -327,27 +321,22 @@ def dataprotection_backup_instance_update_msi_permissions(cmd, client, resource_
             vault_secret_permissions = vault_permissions['secrets']
             secrets_array = keyvault_permissions_map[principal_id].secrets
 
+            permissions_set = True
             for permission in vault_secret_permissions:
                 if permission not in secrets_array:
+                    permissions_set = False
                     secrets_array.append(permission)
 
-            set_policy(cmd, keyvault_client, keyvault_rg, keyvault_name, object_id=principal_id, secret_permissions=secrets_array)
+            if not permissions_set:
+                set_policy(cmd, keyvault_client, keyvault_rg, keyvault_name, object_id=principal_id, secret_permissions=secrets_array)
 
     for role_object in manifest['backupVaultPermissions']:
-        resource_id = backup_instance
-        for field in role_object['accessMethod']:
-            resource_id = resource_id[field]
+        resource_id = helper.get_resource_id_from_backup_instance(backup_instance, role_object['type'])
 
-        if role_object['truncate']:
-            resource_id = "/".join(resource_id.split("/")[:role_object['truncate']])
+        if datasource_type == 'AzureDatabaseForPostgreSQL':
+            resource_id = "/".join(resource_id.split("/")[:9])
 
-        resource_map[role_object['assignedOn']] = resource_id
-
-        assignment_scope = resource_id
-        if permissions_scope == 'ResourceGroup':
-            assignment_scope = "/".join(assignment_scope.split("/")[:5])
-        elif permissions_scope == 'Subscription':
-            assignment_scope = "/".join(assignment_scope.split("/")[:3])
+        assignment_scope = helper.truncate_id_using_scope(resource_id, permissions_scope)
 
         role_assignments = list_role_assignments(cmd, assignee=principal_id, role=role_object['roleDefinitionName'],
                                                  scope=resource_id, include_inherited=True)
@@ -357,10 +346,9 @@ def dataprotection_backup_instance_update_msi_permissions(cmd, client, resource_
 
     # Network line of sight access on server, if that is the datasource type
     if datasource_type == 'AzureDatabaseForPostgreSQL':
-        server_id = resource_map[datasource_type]
-        server_scope_arr = server_id.split("/")
-        server_name = server_scope_arr[-1]
-        server_rg = server_scope_arr[4]
+        server_params = helper.get_server_parameters_from_db_id(backup_instance['properties']['data_source_info']['resource_id'])
+        server_name = server_params['server_name']
+        server_rg = server_params['server_rg']
         from azure.cli.command_modules.rdbms._client_factory import cf_postgres_firewall_rules
         postgres_firewall_client = cf_postgres_firewall_rules(cmd.cli_ctx, None)
 
@@ -372,7 +360,7 @@ def dataprotection_backup_instance_update_msi_permissions(cmd, client, resource_
                 allow_access_to_azure_ips = True
                 break
 
-        if allow_access_to_azure_ips is False:
+        if not allow_access_to_azure_ips:
             firewall_rule_name = 'AllowAllWindowsAzureIps'
             parameters = {'name': firewall_rule_name, 'start_ip_address': '0.0.0.0', 'end_ip_address': '0.0.0.0'}
 

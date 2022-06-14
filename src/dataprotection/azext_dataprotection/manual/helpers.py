@@ -92,3 +92,47 @@ def get_backup_frequency_from_time_interval(repeating_time_intervals):
 def get_tagging_priority(name):
     priorityMap = {"Default": 99, "Daily": 25, "Weekly": 20, "Monthly": 15, "Yearly": 10}
     return priorityMap[name]
+
+
+def truncate_id_using_scope(arm_id, scope):
+    scope_map = {"Subscription": 3, "ResourceGroup": 5, "Resource": None}
+    return "/".join(arm_id.split("/")[:scope_map[scope]])
+
+
+def get_sub_id_from_arm_id(arm_id):
+    return truncate_id_using_scope(arm_id, "Subscription")
+
+
+def get_rg_id_from_arm_id(arm_id):
+    return truncate_id_using_scope(arm_id, "ResourceGroup")
+
+
+def get_server_parameters_from_db_id(arm_id):
+    server_params = {}
+
+    server_scope_list = arm_id.split("/")
+    server_params['server_id'] = "/".join(server_scope_list[:9])
+    server_params['server_rg'] = server_scope_list[4]
+    server_params['server_name'] = server_scope_list[8]
+    return server_params
+
+
+def get_keyvault_parameters_from_id(arm_id):
+    vault_params = {}
+
+    vault_scope_list = arm_id.split("/")
+    vault_params['vault_name'] = vault_scope_list[-1]
+    vault_params['vault_rg'] = vault_scope_list[4]
+    vault_params['vault_sub'] = vault_scope_list[2]
+    return vault_params
+
+
+def get_resource_id_from_backup_instance(backup_instance, role_type):
+    resource_id = None
+
+    if role_type == 'DataSource':
+        resource_id = backup_instance['properties']['data_source_info']['resource_id']
+    elif role_type == 'SnapshotRG':
+        resource_id = backup_instance['properties']['policy_info']['policy_parameters']['data_store_parameters_list'][0]['resource_group_id']
+
+    return resource_id

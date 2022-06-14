@@ -16,13 +16,7 @@ manifest = '''
   "backupVaultPermissions": [
     {
       "roleDefinitionName": "Reader",
-      "assignedOn": "AzureDatabaseForPostgreSQL",
-      "accessMethod": [
-        "properties",
-        "data_source_info",
-        "resource_id"
-      ],
-      "truncate": 9
+      "type": "DataSource"
     }
   ],
   "secretStorePermissions": {
