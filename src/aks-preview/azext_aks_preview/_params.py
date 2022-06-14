@@ -287,6 +287,7 @@ def load_arguments(self, _):
         c.argument('load_balancer_managed_outbound_ipv6_count', type=int)
         c.argument('enable_pod_security_policy', action='store_true')
         c.argument('enable_pod_identity', action='store_true')
+        c.argument('enable_pod_identity_with_kubenet', action='store_true')
         c.argument('enable_workload_identity', arg_type=get_three_state_flag())
         c.argument('enable_oidc_issuer', action='store_true', is_preview=True)
         c.argument('enable_azure_keyvault_kms', action='store_true', is_preview=True)
@@ -315,7 +316,6 @@ def load_arguments(self, _):
         c.argument('disable_local_accounts', action='store_true')
         c.argument('enable_local_accounts', action='store_true')
         c.argument('load_balancer_managed_outbound_ip_count', type=int)
-        c.argument('load_balancer_managed_outbound_ipv6_count', type=int)
         c.argument('load_balancer_outbound_ips', validator=validate_load_balancer_outbound_ips)
         c.argument('load_balancer_outbound_ip_prefixes', validator=validate_load_balancer_outbound_ip_prefixes)
         c.argument('load_balancer_outbound_ports', type=int, validator=validate_load_balancer_outbound_ports)
@@ -369,9 +369,11 @@ def load_arguments(self, _):
         # extensions
         # managed cluster
         c.argument('http_proxy_config')
+        c.argument('load_balancer_managed_outbound_ipv6_count', type=int)
         c.argument('enable_pod_security_policy', action='store_true')
         c.argument('disable_pod_security_policy', action='store_true')
         c.argument('enable_pod_identity', action='store_true')
+        c.argument('enable_pod_identity_with_kubenet', action='store_true')
         c.argument('disable_pod_identity', action='store_true')
         c.argument('enable_workload_identity', arg_type=get_three_state_flag())
         c.argument('enable_oidc_issuer', action='store_true', is_preview=True)
