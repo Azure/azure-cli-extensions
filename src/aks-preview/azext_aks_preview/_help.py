@@ -190,9 +190,6 @@ helps['aks create'] = """
         - name: --disable-rbac
           type: bool
           short-summary: Disable Kubernetes Role-Based Access Control.
-        - name: --enable-rbac -r
-          type: bool
-          short-summary: "Enable Kubernetes Role-Based Access Control. Default: enabled."
         - name: --max-pods -m
           type: int
           short-summary: The maximum number of pods deployable to a node.
@@ -263,9 +260,6 @@ helps['aks create'] = """
         - name: --max-count
           type: int
           short-summary: Maximum nodes count used for autoscaler, when "--enable-cluster-autoscaler" specified. Please specify the value in the range of [1, 1000].
-        - name: --cluster-autoscaler-profile
-          type: list
-          short-summary: Space-separated list of key=value pairs for configuring cluster autoscaler. Pass an empty string to clear the profile.
         - name: --vm-set-type
           type: string
           short-summary: Agent pool vm set type. VirtualMachineScaleSets or AvailabilitySet.
@@ -580,9 +574,6 @@ helps['aks update'] = """
         - name: --no-uptime-sla
           type: bool
           short-summary: Change a paid managed cluster to a free one.
-        - name: --cluster-autoscaler-profile
-          type: list
-          short-summary: Space-separated list of key=value pairs for configuring cluster autoscaler. Pass an empty string to clear the profile.
         - name: --load-balancer-managed-outbound-ip-count
           type: int
           short-summary: Load balancer managed outbound IP count.
