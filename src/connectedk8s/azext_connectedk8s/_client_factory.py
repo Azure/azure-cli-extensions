@@ -9,10 +9,14 @@ from azure.cli.core.commands.client_factory import configure_common_settings
 from azure.cli.core.commands.client_factory import get_subscription_id
 from azure.graphrbac import GraphRbacManagementClient
 
+# temp: test custom header
+client_kwargs = {}
+headers = {'x-ms-client-request-id':'123'}
+client_kwargs['headers'] = headers
 
 def cf_connectedk8s(cli_ctx, *_):
     from azext_connectedk8s.vendored_sdks import ConnectedKubernetesClient
-    return get_mgmt_service_client(cli_ctx, ConnectedKubernetesClient)
+    return get_mgmt_service_client(cli_ctx, ConnectedKubernetesClient, **client_kwargs)
 
 
 def cf_connected_cluster(cli_ctx, _):
@@ -21,7 +25,7 @@ def cf_connected_cluster(cli_ctx, _):
 
 def cf_connectedk8s_prev_2021_04_01(cli_ctx, *_):
     from azext_connectedk8s.vendored_sdks.preview_2021_04_01 import ConnectedKubernetesClient
-    return get_mgmt_service_client(cli_ctx, ConnectedKubernetesClient)
+    return get_mgmt_service_client(cli_ctx, ConnectedKubernetesClient, **client_kwargs)
 
 
 def cf_connected_cluster_prev_2021_04_01(cli_ctx, _):
@@ -30,16 +34,16 @@ def cf_connected_cluster_prev_2021_04_01(cli_ctx, _):
 
 def cf_resource_groups(cli_ctx, subscription_id=None):
     return get_mgmt_service_client(cli_ctx, ResourceType.MGMT_RESOURCE_RESOURCES,
-                                   subscription_id=subscription_id).resource_groups
+                                   subscription_id=subscription_id, **client_kwargs).resource_groups
 
 
 def _resource_client_factory(cli_ctx, subscription_id=None):
-    return get_mgmt_service_client(cli_ctx, ResourceType.MGMT_RESOURCE_RESOURCES, subscription_id=subscription_id)
+    return get_mgmt_service_client(cli_ctx, ResourceType.MGMT_RESOURCE_RESOURCES, subscription_id=subscription_id, **client_kwargs)
 
 
 def _resource_providers_client(cli_ctx):
     from azure.mgmt.resource import ResourceManagementClient
-    return get_mgmt_service_client(cli_ctx, ResourceManagementClient).providers
+    return get_mgmt_service_client(cli_ctx, ResourceManagementClient, **client_kwargs).providers
 
     # Alternate: This should also work
     # subscription_id = get_subscription_id(cli_ctx)
