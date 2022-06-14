@@ -60,7 +60,7 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, https_proxy="",
                         kube_config=None, kube_context=None, no_wait=False, tags=None, distribution='auto', infrastructure='auto',
                         disable_auto_upgrade=False, cl_oid=None,):
 
-    print("\nDiagnoser running. This may take a while ...\n")
+    logger.warning("\nDiagnoser running. This may take a while ...\n")
     #Setting kube_config
     kube_config = set_kube_config(kube_config)
 
@@ -77,7 +77,7 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, https_proxy="",
 
     # Fetch Connected Cluster for agent version
     connected_cluster = get_connectedk8s(cmd, client, resource_group_name, cluster_name)
-
+    
     if troubleshootutils.check_connectivity() == False:
         return
     #Creating timestamp folder to store all the diagnoser logs 
@@ -93,8 +93,8 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, https_proxy="",
         time_stamp+=elements
 
     troubleshootutils.GeneratingFolder(time_stamp)
-
-    with open("Diagnoser\ "+time_stamp+"\ Connected_cluster_resource.txt",'w+') as cc:
+    
+    with open("C:\\Users\\t-svagadia\\Diagnoser\ "+time_stamp+"\\Connected_cluster_resource.txt",'w+') as cc:
         cc.write(str(connected_cluster))
 
     #For storing all the agent logs using the CoreV1Api
@@ -141,7 +141,11 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, https_proxy="",
     azure_arc_agent_version = registry_path.split(':')[1]
     telemetry.add_extension_event('connectedk8s', {'Context.Default.AzureCLI.AgentVersion': azure_arc_agent_version})
 
-    
+    # Get helm chart path
+    chart_path = utils.get_chart_path(registry_path, kube_config, kube_context, helm_client_location)
+    #print(chart_path)
+
+
     troubleshootutils.check_agent_version(connected_cluster, azure_arc_agent_version)
 
 
@@ -179,8 +183,8 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, https_proxy="",
     except Exception as e:
         logger.warning("Failed to validate if the active namespace exists on the kubernetes cluster. Exception: {}".format(str(e)))
 
+
     troubleshootutils.check_outbound(api_instance,api_instance3,time_stamp,current_k8s_namespace)
-    #troubleshootutils.check_dns(api_instance,time_stamp)
 
     print("Diagnoser successfully executed without any error. For further help please contact the team.\n")
 
