@@ -1425,7 +1425,7 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
 
         :return: the ManagedCluster object
         """
-        # construct the default AgentPool profile
+        # DO NOT MOVE: keep this on top, construct the default AgentPool profile
         mc = self.construct_mc_profile_default(bypass_restore_defaults=True)
 
         # set up http proxy config
@@ -1717,8 +1717,9 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
 
         :return: the ManagedCluster object
         """
-        # update the default ManagedCluster profile
+        # DO NOT MOVE: keep this on top, fetch and update the default ManagedCluster profile
         mc = self.update_mc_profile_default()
+
         # set up http proxy config
         mc = self.update_http_proxy_config(mc)
         # update pod security policy

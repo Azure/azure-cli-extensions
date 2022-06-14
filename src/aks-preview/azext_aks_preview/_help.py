@@ -450,6 +450,12 @@ helps['aks create'] = """
         - name: --enable-keda
           type: bool
           short-summary: Enable KEDA workload auto-scaler.
+        - name: --enable-defender
+          type: bool
+          short-summary: Enable Microsoft Defender security profile.
+        - name: --defender-config
+          type: string
+          short-summary: Path to JSON file containing Microsoft Defender profile configurations.
     examples:
         - name: Create a Kubernetes cluster with an existing SSH public key.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --ssh-key-value /path/to/publickey
@@ -770,6 +776,15 @@ helps['aks update'] = """
         - name: --disable-keda
           type: bool
           short-summary: Disable KEDA workload auto-scaler.
+        - name: --enable-defender
+          type: bool
+          short-summary: Enable Microsoft Defender security profile.
+        - name: --disable-defender
+          type: bool
+          short-summary: Disable defender profile.
+        - name: --defender-config
+          type: string
+          short-summary: Path to JSON file containing Microsoft Defender profile configurations.
     examples:
       - name: Reconcile the cluster back to its current state.
         text: az aks update -g MyResourceGroup -n MyManagedCluster
