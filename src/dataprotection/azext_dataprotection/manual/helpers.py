@@ -133,6 +133,7 @@ def get_resource_id_from_backup_instance(backup_instance, role_type):
     if role_type == 'DataSource':
         resource_id = backup_instance['properties']['data_source_info']['resource_id']
     elif role_type == 'SnapshotRG':
-        resource_id = backup_instance['properties']['policy_info']['policy_parameters']['data_store_parameters_list'][0]['resource_group_id']
+        data_stores = backup_instance['properties']['policy_info']['policy_parameters']['data_store_parameters_list']
+        resource_id = data_stores[0]['resource_group_id']
 
     return resource_id
