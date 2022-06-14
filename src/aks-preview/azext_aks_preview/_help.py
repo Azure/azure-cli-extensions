@@ -318,9 +318,6 @@ helps['aks create'] = """
         - name: --appgw-name
           type: string
           short-summary: Name of the application gateway to create/use in the node resource group. Use with ingress-azure addon.
-        - name: --appgw-subnet-prefix
-          type: string
-          short-summary: Subnet Prefix to use for a new subnet created to deploy the Application Gateway. Use with ingress-azure addon.
         - name: --appgw-subnet-cidr
           type: string
           short-summary: Subnet CIDR to use for a new subnet created to deploy the Application Gateway. Use with ingress-azure addon.

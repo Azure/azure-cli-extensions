@@ -564,7 +564,7 @@ def load_arguments(self, _):
         c.argument('appgw_name', arg_group='Application Gateway')
         c.argument('appgw_subnet_prefix', arg_group='Application Gateway', deprecate_info=c.deprecate(redirect='--appgw-subnet-cidr', hide=True))
         c.argument('appgw_subnet_cidr', arg_group='Application Gateway')
-        c.argument('appgw_id',  arg_group='Application Gateway')
+        c.argument('appgw_id', arg_group='Application Gateway')
         c.argument('appgw_subnet_id', arg_group='Application Gateway')
         c.argument('appgw_watch_namespace', arg_group='Application Gateway')
         c.argument('enable_secret_rotation', action='store_true')
