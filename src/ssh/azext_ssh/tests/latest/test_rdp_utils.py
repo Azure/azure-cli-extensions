@@ -13,15 +13,6 @@ from azext_ssh import _process_helper
 
 
 class RDPUtilsTest(unittest.TestCase):
-    @mock.patch.object(rdp_utils, '_get_rdp_path')
-    @mock.patch.object(_process_helper, 'launch_and_wait')
-    def test_call_rdp(self, mock_launch, mock_path):
-        mock_path.return_value = 'rdp'
-        expected_command = ['rdp', '/v:localhost:0']
-        rdp_utils.call_rdp(0)
-        mock_path.assert_called_once_with()
-        mock_launch.assert_called_once_with(expected_command)
-
     @mock.patch('os.environ.copy')
     @mock.patch.object(ssh_utils, 'get_ssh_client_path')
     @mock.patch('azext_ssh.custom.connectivity_utils.format_relay_info_string')
