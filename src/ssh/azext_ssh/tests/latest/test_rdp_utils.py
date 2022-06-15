@@ -9,8 +9,6 @@ from unittest import mock
 from azext_ssh import rdp_utils
 from azext_ssh import ssh_info
 from azext_ssh import ssh_utils
-from azext_ssh import _process_helper
-
 
 class RDPUtilsTest(unittest.TestCase):
     @mock.patch('os.environ.copy')
