@@ -43,7 +43,6 @@ def start_rdp_connection(ssh_info, delete_keys, delete_cert):
         ssh_success, log_list = wait_for_ssh_connection(ssh_process, print_ssh_logs)
         ssh_utils.do_cleanup(delete_keys, delete_cert, ssh_info.cert_file, ssh_info.private_key_file,
                              ssh_info.public_key_file)
-        print(ssh_process.poll())
         if ssh_success and ssh_process.poll() is None:
             call_rdp(local_port)
 

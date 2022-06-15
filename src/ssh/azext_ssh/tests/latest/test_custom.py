@@ -5,7 +5,8 @@
 import io
 import unittest
 from unittest import mock
-from azext_ssh import custom, rdp_utils
+from azext_ssh import custom
+from azext_ssh import rdp_utils
 from azext_ssh import ssh_utils
 from azext_ssh import ssh_info
 
