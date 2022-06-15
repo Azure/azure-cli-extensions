@@ -41,9 +41,6 @@ def ssh_vm(cmd, resource_group_name=None, vm_name=None, ssh_ip=None, public_key_
     if delete_credentials and os.environ.get("AZUREPS_HOST_ENVIRONMENT") != "cloud-shell/1.0":
         raise azclierror.ArgumentUsageError("Can't use --delete-private-key outside an Azure Cloud Shell session.")
 
-    if winrdp:
-        logger.warning("RDP feature is in preview.")
-
     # include openssh client logs to --debug output to make it easier to users to debug connection issued.
     if '--debug' in cmd.cli_ctx.data['safe_params'] and set(['-v', '-vv', '-vvv']).isdisjoint(ssh_args):
         ssh_args = ['-vvv'] if not ssh_args else ['-vvv'] + ssh_args
@@ -58,6 +55,7 @@ def ssh_vm(cmd, resource_group_name=None, vm_name=None, ssh_ip=None, public_key_
         if platform.system() != 'Windows':
             raise azclierror.BadRequestError("RDP connection is not supported for this platform. "
                                              "Supported platforms: Windows")
+        logger.warning("RDP feature is in preview.")
         op_call = rdp_utils.start_rdp_connection
 
     ssh_session = ssh_info.SSHSession(resource_group_name, vm_name, ssh_ip, public_key_file,
