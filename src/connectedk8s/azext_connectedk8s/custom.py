@@ -55,11 +55,20 @@ logger = get_logger(__name__)
 # pylint: disable=too-many-branches
 # pylint: disable=too-many-statements
 # pylint: disable=line-too-long
+# pylint:disable=unused-argument
+# pylint: disable=too-many-locals
+# pylint: disable=too-many-branches
+# pylint: disable=too-many-statements
+# pylint: disable=line-too-long
 
 def troubleshoot(cmd, client, resource_group_name, cluster_name, https_proxy="", http_proxy="", no_proxy="", proxy_cert="", location=None,
                         kube_config=None, kube_context=None, no_wait=False, tags=None, distribution='auto', infrastructure='auto',
                         disable_auto_upgrade=False, cl_oid=None,):
 
+    outbound_check=False
+    msi_check=False
+    agent_version_check=False
+    arc_agent_state_check=False
     logger.warning("\nDiagnoser running. This may take a while ...\n")
     #Setting kube_config
     kube_config = set_kube_config(kube_config)
@@ -74,12 +83,11 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, https_proxy="",
     check_kube_connection(configuration)
     utils.try_list_node_fix()
 
-
     # Fetch Connected Cluster for agent version
     connected_cluster = get_connectedk8s(cmd, client, resource_group_name, cluster_name)
     
-    if troubleshootutils.check_connectivity() == False:
-        return
+    connectivity_check=troubleshootutils.check_connectivity() 
+
     #Creating timestamp folder to store all the diagnoser logs 
     time_generation = time.ctime(time.time())
     time_stamp=""
@@ -110,83 +118,86 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, https_proxy="",
     troubleshootutils.deployments_logger(api_instance2,time_stamp)
 
 
-    troubleshootutils.check_agent_state(api_instance,time_stamp)
-
-   
-    troubleshootutils.check_msi_expirytime(connected_cluster,time_stamp)
-
-    helm_client_location = install_helm_client()
-
-    # Checking whether optional extra values file has been provided.
-    values_file_provided, values_file = utils.get_values_file()
-
-    # Validate the helm environment file for Dogfood.
-    dp_endpoint_dogfood = None
-    release_train_dogfood = None
-    if cmd.cli_ctx.cloud.endpoints.resource_manager == consts.Dogfood_RMEndpoint:
-        azure_cloud = consts.Azure_DogfoodCloudName
-        dp_endpoint_dogfood, release_train_dogfood = validate_env_file_dogfood(values_file, values_file_provided)
-
-    # Adding helm repo
-    if os.getenv('HELMREPONAME') and os.getenv('HELMREPOURL'):
-        utils.add_helm_repo(kube_config, kube_context, helm_client_location)
-
-    # Setting the config dataplane endpoint
-    config_dp_endpoint = get_config_dp_endpoint(cmd, connected_cluster.location)
-
-    # Retrieving Helm chart OCI Artifact location
-    registry_path = os.getenv('HELMREGISTRY') if os.getenv('HELMREGISTRY') else utils.get_helm_registry(cmd, config_dp_endpoint, dp_endpoint_dogfood, release_train_dogfood)
-    
-    # Get azure-arc agent version for telemetry
-    azure_arc_agent_version = registry_path.split(':')[1]
-    telemetry.add_extension_event('connectedk8s', {'Context.Default.AzureCLI.AgentVersion': azure_arc_agent_version})
-
-    # Get helm chart path
-    chart_path = utils.get_chart_path(registry_path, kube_config, kube_context, helm_client_location)
-    #print(chart_path)
+    arc_agent_state_check= troubleshootutils.check_agent_state(api_instance,time_stamp)
 
 
-    troubleshootutils.check_agent_version(connected_cluster, azure_arc_agent_version)
+    if(arc_agent_state_check):
+        pass
+    else:
+        msi_check=troubleshootutils.check_msi_expirytime(connected_cluster,time_stamp)
+
+        helm_client_location = install_helm_client()
+
+        # Checking whether optional extra values file has been provided.
+        values_file_provided, values_file = utils.get_values_file()
+
+        # Validate the helm environment file for Dogfood.
+        dp_endpoint_dogfood = None
+        release_train_dogfood = None
+        if cmd.cli_ctx.cloud.endpoints.resource_manager == consts.Dogfood_RMEndpoint:
+            azure_cloud = consts.Azure_DogfoodCloudName
+            dp_endpoint_dogfood, release_train_dogfood = validate_env_file_dogfood(values_file, values_file_provided)
+
+        # Adding helm repo
+        if os.getenv('HELMREPONAME') and os.getenv('HELMREPOURL'):
+            utils.add_helm_repo(kube_config, kube_context, helm_client_location)
+
+        # Setting the config dataplane endpoint
+        config_dp_endpoint = get_config_dp_endpoint(cmd, connected_cluster.location)
+
+        # Retrieving Helm chart OCI Artifact location
+        registry_path = os.getenv('HELMREGISTRY') if os.getenv('HELMREGISTRY') else utils.get_helm_registry(cmd, config_dp_endpoint, dp_endpoint_dogfood, release_train_dogfood)
+        
+        # Get azure-arc agent version for telemetry
+        azure_arc_agent_version = registry_path.split(':')[1]
+        
+
+        telemetry.add_extension_event('connectedk8s', {'Context.Default.AzureCLI.AgentVersion': azure_arc_agent_version})
+
+        
+        agent_version_check=troubleshootutils.check_agent_version(connected_cluster, azure_arc_agent_version)
 
 
-    api_instance3 = kube_client.BatchV1Api(kube_client.ApiClient(configuration))
-    node_api_response = utils.validate_node_api_response(api_instance3, None)
+        api_instance3 = kube_client.BatchV1Api(kube_client.ApiClient(configuration))
+        node_api_response = utils.validate_node_api_response(api_instance3, None)
 
-    
-    try:
-        k8s_contexts = config.list_kube_config_contexts()  # returns tuple of (all_contexts, current_context)
-        if kube_context:  # if custom kube-context is specified
-            if k8s_contexts[1].get('name') == kube_context:
-                current_k8s_context = k8s_contexts[1]
+        
+        try:
+            k8s_contexts = config.list_kube_config_contexts()  # returns tuple of (all_contexts, current_context)
+            if kube_context:  # if custom kube-context is specified
+                if k8s_contexts[1].get('name') == kube_context:
+                    current_k8s_context = k8s_contexts[1]
+                else:
+                    for context in k8s_contexts[0]:
+                        if context.get('name') == kube_context:
+                            current_k8s_context = context
+                            break
             else:
-                for context in k8s_contexts[0]:
-                    if context.get('name') == kube_context:
-                        current_k8s_context = context
-                        break
-        else:
-            current_k8s_context = k8s_contexts[1]
+                current_k8s_context = k8s_contexts[1]
 
-        current_k8s_namespace = current_k8s_context.get('context').get('namespace', "default")  # Take "default" namespace, if not specified in the kube-config
-        namespace_exists = False
-        k8s_v1 = kube_client.CoreV1Api()
-        k8s_ns = k8s_v1.list_namespace()
-        for ns in k8s_ns.items:
-            if ns.metadata.name == current_k8s_namespace:
-                namespace_exists = True
-                break
-        if namespace_exists is False:
-            telemetry.set_exception(exception="Namespace doesn't exist", fault_type=consts.Default_Namespace_Does_Not_Exist_Fault_Type,
-                                    summary="The default namespace defined in the kubeconfig doesn't exist on the kubernetes cluster.")
-            raise ValidationError("The default namespace '{}' defined in the kubeconfig doesn't exist on the kubernetes cluster.".format(current_k8s_namespace))
-    except ValidationError as e:
-        raise e
-    except Exception as e:
-        logger.warning("Failed to validate if the active namespace exists on the kubernetes cluster. Exception: {}".format(str(e)))
+            current_k8s_namespace = current_k8s_context.get('context').get('namespace', "default")  # Take "default" namespace, if not specified in the kube-config
+            namespace_exists = False
+            k8s_v1 = kube_client.CoreV1Api()
+            k8s_ns = k8s_v1.list_namespace()
+            for ns in k8s_ns.items:
+                if ns.metadata.name == current_k8s_namespace:
+                    namespace_exists = True
+                    break
+            if namespace_exists is False:
+                telemetry.set_exception(exception="Namespace doesn't exist", fault_type=consts.Default_Namespace_Does_Not_Exist_Fault_Type,
+                                        summary="The default namespace defined in the kubeconfig doesn't exist on the kubernetes cluster.")
+                raise ValidationError("The default namespace '{}' defined in the kubeconfig doesn't exist on the kubernetes cluster.".format(current_k8s_namespace))
+        except ValidationError as e:
+            raise e
+        except Exception as e:
+            logger.warning("Failed to validate if the active namespace exists on the kubernetes cluster. Exception: {}".format(str(e)))
 
-
-    troubleshootutils.check_outbound(api_instance,api_instance3,time_stamp,current_k8s_namespace)
-
-    print("Diagnoser successfully executed without any error. For further help please contact the team.\n")
+        outbound_check=troubleshootutils.check_outbound(api_instance,api_instance3,time_stamp,current_k8s_namespace)
+        #troubleshootutils.check_dns(api_instance,time_stamp)
+    if (outbound_check or msi_check or agent_version_check or arc_agent_state_check):
+        logger.warning("For further assistance please contact the team.\n")
+    else:
+        logger.warning("Diagnoser could not find any issues with the cluster. For further help please contact the team.\n")
 
 
 

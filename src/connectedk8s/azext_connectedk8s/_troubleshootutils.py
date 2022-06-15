@@ -162,7 +162,8 @@ def check_agent_state(api_instance,time_stamp):
                 counter=1
         if counter:
             print("Error: One or More Azure Arc agents are in Pending state. It may be caused due to insufficient resource availability in the cluster.\n Learn more at scaleup link. \n")
-                   
+            return True
+        return False                 
 
 
 def check_msi_expirytime(connected_cluster,time_stamp):
@@ -174,7 +175,8 @@ def check_msi_expirytime(connected_cluster,time_stamp):
 
     if (Expiry_date<Current_date):
         print("Error: Your MSI certificate has expired. To resolve this issue you can delete the cluster and reconnect it to azure arc.\n For further help visit this link:\n")
-
+        return True
+    return False
     
 
 def check_agent_version(connected_cluster,azure_arc_agent_version):
@@ -185,14 +187,16 @@ def check_agent_version(connected_cluster,azure_arc_agent_version):
 
     if((int(user_version[0])<int(agent_version[0])) or (int(agent_version[1])-int(user_version[1])>2)):
         logger.warning("Error: We found that you are on an older agent version thats not supported.\n Please visit this link to know the agent version support policy 'link'.\n")
+        return True
+    return False
 
     
 
 def check_outbound(api_instance,api_instance3,time_stamp,namespace):
 
+    network_check=False
     namespace="default"
     path="TroubleshootTemplates\\test_deployment.yaml"
-
     config.load_kube_config()
     k8s_client = client.ApiClient()
     yaml_file = "TroubleshootTemplates\\test_deployment.yaml"
@@ -220,6 +224,7 @@ def check_outbound(api_instance,api_instance3,time_stamp,namespace):
             continue
     
     if(counter==0):
+        
         subprocess.run(["kubectl", "delete", "-f", "TroubleshootTemplates\\test_deployment.yaml"],stdout=subprocess.DEVNULL)
         print("Container not created.")
     else:
@@ -239,7 +244,7 @@ def check_outbound(api_instance,api_instance3,time_stamp,namespace):
                     network_log=api_instance.read_namespaced_pod_log(name=pod_name,container="networktest1", namespace = namespace)
 
 
-            diagnostic_container_check(network_log,time_stamp)
+            network_check=diagnostic_container_check(network_log,time_stamp)
             subprocess.run(["kubectl", "delete", "-f", "TroubleshootTemplates\\test_deployment.yaml"],stdout=subprocess.DEVNULL)
            
             # api_instance3.delete_namespaced_job(job_name,namespace)
@@ -249,6 +254,7 @@ def check_outbound(api_instance,api_instance3,time_stamp,namespace):
             subprocess.run(["kubectl", "delete", "-f", "TroubleshootTemplates\\test_deployment.yaml"],stdout=subprocess.DEVNULL)
             print("Some error occured during execution.")
 
+    return network_check
 
 
 def diagnostic_container_check(network_log,time_stamp):
@@ -258,18 +264,24 @@ def diagnostic_container_check(network_log,time_stamp):
     dns_check=network_log[0:len(network_log)-5:]
     # print(dns_check)                
     # print(outbound_check)
+    error_counter=0
     if(outbound_check!="000" ):
         with open("C:\\Users\\t-svagadia\\Diagnoser\ "+ time_stamp+"\Outbound_Network_Check.txt",'w+') as dns:
             dns.write("Response code "+outbound_check+": Your Outbound network connectivity is working fine.")
     else:
-        print("Error: Unable to reach outbound public internet from within the cluster. Seems your outbound network is down for some reason.\n To know more please visit this 'link' \n")
+        error_counter=1
+        print("Error: We found an issue with Outbound network connectivity from the cluster.\n To know more please visit this 'link' \n")
         with open("C:\\Users\\t-svagadia\\Diagnoser\ "+ time_stamp+"\Outbound_Check.txt",'w+') as dns:
-            dns.write("Response code "+outbound_check+": Your outbound network connectivity is down for some reasons.")
+            dns.write("Response code "+outbound_check+": We found an issue with Outbound network connectivity from the cluster.")
 
     if("NXDOMAIN" in dns_check or "connection timed out" in dns_check):
-        print("Error: There is some error with your DNS connectivity inside the cluster.\n For further help please visit 'link'.\n")
+        error_counter=1
+        print("Error: We found an issue with the DNS resolution on your cluster.\n For further help please visit 'link'.\n")
         with open("C:\\Users\\t-svagadia\\Diagnoser\ "+ time_stamp+"\DNS_Check.txt",'w+') as dns:
-            dns.write("Response code "+dns_check+": For some reason your cluster DNS is not working properly.")
+            dns.write(dns_check+": We found an issue with the DNS resolution on your cluster.")
     else:
         with open("C:\\Users\\t-svagadia\\Diagnoser\ "+ time_stamp+"\DNS_Check.txt",'w+') as dns:
-            dns.write("Response code "+dns_check+": Your Cluster DNS is working properly.")
+            dns.write(dns_check+": Your Cluster DNS is working properly.")
+    if(error_counter):
+        return True
+    return False
