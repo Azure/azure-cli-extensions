@@ -344,8 +344,7 @@ def load_arguments(self, _):
             help="Username password credentials to use for connecting to the VM.",
         )
         c.argument(
-            'https_proxy', options_list=['--https-proxy'],
-            help="HTTPS proxy server url for the VM.",
+            'https_proxy', help="HTTPS proxy server url for the VM.",
         )
 
     with self.argument_context('connectedvmware vm guest-agent show') as c:

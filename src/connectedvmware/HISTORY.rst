@@ -7,7 +7,7 @@ Release History
 ++++++
 * Proxy support in vm guest agent.
 * Deprecate support to create resource from moref id.
-* Fixed guest-agent enable issue. 
+* [BREAKING CHANGE] Fixed guest-agent enable issue. 
 
 0.1.6
 ++++++

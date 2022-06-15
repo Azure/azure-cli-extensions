@@ -2,7 +2,6 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
-# pylint: disable= consider-using-dict-items, consider-using-f-string
 
 from knack.util import CLIError
 from azure.cli.core.commands.client_factory import get_subscription_id
@@ -62,6 +61,6 @@ def create_dictionary_from_arg_string(values, option_string=None):
             params_dict[key.lower()] = value
         except ValueError as item_no_exist:
             raise CLIError(
-                'usage error: {} KEY=VALUE [KEY=VALUE ...]'.format(option_string)
+                f'usage error: {option_string} KEY=VALUE [KEY=VALUE ...]'
             ) from item_no_exist
     return params_dict

@@ -88,8 +88,8 @@ helps[
         text: |-
                az connectedvmware cluster create --custom-location "custom location name" \
                --location "location name" --inventory-item "name or id the inventory item" \
-               --name "cluster name" --resource-group "resource group name" --vcenter "name \
-               or id of the vcenter"
+               --name "cluster name" --resource-group "resource group name" \
+               --vcenter "name or id of the vcenter"
 """
 
 helps[
@@ -144,8 +144,8 @@ helps[
         text: |-
                az connectedvmware datastore create --custom-location "custom location name" \
                --location "location name" --inventory-item "name or id the inventory item" \
-               --name "datastore name" --resource-group "resource group name" --vcenter \
-               "name or id of the vcenter"
+               --name "datastore name" --resource-group "resource group name" \
+               --vcenter "name or id of the vcenter"
 """
 
 helps[
@@ -200,8 +200,8 @@ helps[
         text: |-
                az connectedvmware host create --custom-location "custom location name" \
                --location "location name" --inventory-item "name or id the inventory item" \
-               --name "host name" --resource-group "resource group name" --vcenter "name or \
-               id of the vcenter"
+               --name "host name" --resource-group "resource group name" \
+               --vcenter "name or id of the vcenter"
 """
 
 helps[
@@ -716,8 +716,8 @@ helps[
         text: |-
                az connectedvmware vm-template create --custom-location "custom location name" \
                --location "location name" --inventory-item "name or id the inventory item" \
-               --name "vm template name" --resource-group "resource group name" --vcenter \
-               "name or id of the vcenter"
+               --name "vm template name" --resource-group "resource group name" \
+               --vcenter "name or id of the vcenter"
 """
 
 helps[
