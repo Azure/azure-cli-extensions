@@ -34,6 +34,7 @@ def delete_file(file_path, message, warning=False):
             os.remove(file_path)
         except Exception as e:
             if warning:
+                print(e)
                 logger.warning(message)
             else:
                 raise azclierror.FileOperationError(message + "Error: " + str(e)) from e
