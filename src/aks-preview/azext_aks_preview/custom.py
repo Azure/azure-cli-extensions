@@ -1,4 +1,3 @@
-# pylint: disable=too-many-lines
 # --------------------------------------------------------------------------------------------
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
@@ -24,8 +23,8 @@ import uuid
 import webbrowser
 from math import isnan
 
-import colorama  # pylint: disable=import-error
-import yaml  # pylint: disable=import-error
+import colorama
+import yaml
 from azure.cli.core.api import get_config_dir
 from azure.cli.core.azclierror import (
     ArgumentUsageError,
@@ -49,30 +48,29 @@ from azure.graphrbac.models import (
     PasswordCredential,
     ServicePrincipalCreateParameters,
 )
-from dateutil.parser import parse  # pylint: disable=import-error
-from dateutil.relativedelta import relativedelta  # pylint: disable=import-error
+from dateutil.parser import parse
+from dateutil.relativedelta import relativedelta
 from knack.log import get_logger
-from knack.prompting import NoTTYException, prompt_pass, prompt_y_n
+from knack.prompting import NoTTYException, prompt_y_n
 from knack.util import CLIError
 from msrestazure.azure_exceptions import CloudError
-from six.moves.urllib.error import URLError  # pylint: disable=import-error
-from six.moves.urllib.request import urlopen  # pylint: disable=import-error
-from tabulate import tabulate  # pylint: disable=import-error
+from six.moves.urllib.error import URLError
+from six.moves.urllib.request import urlopen
+from tabulate import tabulate
 
-from azext_aks_preview._client_factory import CUSTOM_MGMT_AKS_PREVIEW
-
-from ._client_factory import (
+from azext_aks_preview._client_factory import (
+    CUSTOM_MGMT_AKS_PREVIEW,
     cf_agent_pools,
     cf_container_registry_service,
-    cf_nodepool_snapshots_client,
     cf_mc_snapshots_client,
+    cf_nodepool_snapshots_client,
     cf_storage,
     get_auth_management_client,
     get_graph_rbac_management_client,
     get_msi_client,
     get_resource_by_name,
 )
-from ._consts import (
+from azext_aks_preview._consts import (
     ADDONS,
     ADDONS_DESCRIPTIONS,
     CONST_ACC_SGX_QUOTE_HELPER_ENABLED,
@@ -92,12 +90,13 @@ from ._consts import (
     CONST_MONITORING_ADDON_NAME,
     CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID,
     CONST_MONITORING_USING_AAD_MSI_AUTH,
+    CONST_NODEPOOL_MODE_USER,
     CONST_OPEN_SERVICE_MESH_ADDON_NAME,
-    CONST_PERISCOPE_REPO_ORG,
     CONST_PERISCOPE_CONTAINER_REGISTRY,
-    CONST_PERISCOPE_RELEASE_TAG,
     CONST_PERISCOPE_IMAGE_VERSION,
     CONST_PERISCOPE_NAMESPACE,
+    CONST_PERISCOPE_RELEASE_TAG,
+    CONST_PERISCOPE_REPO_ORG,
     CONST_ROTATION_POLL_INTERVAL,
     CONST_SCALE_DOWN_MODE_DELETE,
     CONST_SCALE_SET_PRIORITY_REGULAR,
@@ -107,24 +106,22 @@ from ._consts import (
     CONST_VIRTUAL_NODE_ADDON_NAME,
     CONST_VIRTUAL_NODE_SUBNET_NAME,
 )
-from ._helpers import (
-    _trim_fqdn_name_containing_hcp,
-)
-from ._podidentity import (
+from azext_aks_preview._helpers import _trim_fqdn_name_containing_hcp
+from azext_aks_preview._podidentity import (
     _ensure_managed_identity_operator_permission,
     _ensure_pod_identity_addon_is_enabled,
     _fill_defaults_for_pod_identity_profile,
     _update_addon_pod_identity,
 )
-from ._resourcegroup import get_rg_location
-from ._roleassignments import (
+from azext_aks_preview._resourcegroup import get_rg_location
+from azext_aks_preview._roleassignments import (
     add_role_assignment,
     build_role_scope,
     create_role_assignment,
     resolve_object_id,
     resolve_role_id,
 )
-from .addonconfiguration import (
+from azext_aks_preview.addonconfiguration import (
     add_ingress_appgw_addon_role_assignment,
     add_monitoring_role_assignment,
     add_virtual_node_role_assignment,
@@ -133,9 +130,17 @@ from .addonconfiguration import (
     ensure_default_log_analytics_workspace_for_monitoring,
     sanitize_loganalytics_ws_resource_id,
 )
-from .maintenanceconfiguration import (
+from azext_aks_preview.aks_draft.commands import (
+    aks_draft_cmd_create,
+    aks_draft_cmd_generate_workflow,
+    aks_draft_cmd_setup_gh,
+    aks_draft_cmd_up,
+    aks_draft_cmd_update,
+)
+from azext_aks_preview.maintenanceconfiguration import (
     aks_maintenanceconfiguration_update_internal,
 )
+
 from .vendored_sdks.azure_mgmt_preview_aks.v2022_05_02_preview.models import (
     AgentPool,
     AgentPoolUpgradeSettings,
@@ -145,23 +150,15 @@ from .vendored_sdks.azure_mgmt_preview_aks.v2022_05_02_preview.models import (
     LinuxOSConfig,
     ManagedClusterAddonProfile,
     ManagedClusterHTTPProxyConfig,
-    ManagedClusterPodIdentity,
-    ManagedClusterPodIdentityException,
-    PowerState,
-    Snapshot,
-    ManagedClusterSnapshot,
-    SysctlConfig,
-    UserAssignedIdentity,
     ManagedClusterIngressProfile,
     ManagedClusterIngressProfileWebAppRouting,
-)
-
-from azext_aks_preview.aks_draft.commands import (
-    aks_draft_cmd_create,
-    aks_draft_cmd_setup_gh,
-    aks_draft_cmd_generate_workflow,
-    aks_draft_cmd_up,
-    aks_draft_cmd_update
+    ManagedClusterPodIdentity,
+    ManagedClusterPodIdentityException,
+    ManagedClusterSnapshot,
+    PowerState,
+    Snapshot,
+    SysctlConfig,
+    UserAssignedIdentity,
 )
 
 logger = get_logger(__name__)
@@ -690,142 +687,152 @@ def aks_maintenanceconfiguration_update(
     return aks_maintenanceconfiguration_update_internal(cmd, client, resource_group_name, cluster_name, config_name, config_file, weekday, start_hour)
 
 
-# pylint: disable=unused-argument,too-many-locals
-def aks_create(cmd,
-               client,
-               resource_group_name,
-               name,
-               ssh_key_value,
-               dns_name_prefix=None,
-               location=None,
-               admin_username="azureuser",
-               windows_admin_username=None,
-               windows_admin_password=None,
-               enable_ahub=False,
-               kubernetes_version='',
-               node_vm_size=None,
-               node_osdisk_type=None,
-               node_osdisk_size=0,
-               node_osdisk_diskencryptionset_id=None,
-               node_count=3,
-               nodepool_name="nodepool1",
-               nodepool_tags=None,
-               nodepool_labels=None,
-               service_principal=None, client_secret=None,
-               no_ssh_key=False,
-               disable_rbac=None,
-               enable_rbac=None,
-               enable_vmss=None,
-               vm_set_type=None,
-               skip_subnet_role_assignment=False,
-               os_sku=None,
-               enable_fips_image=False,
-               enable_cluster_autoscaler=False,
-               cluster_autoscaler_profile=None,
-               network_plugin=None,
-               network_policy=None,
-               pod_cidr=None,
-               service_cidr=None,
-               pod_cidrs=None,
-               service_cidrs=None,
-               ip_families=None,
-               dns_service_ip=None,
-               docker_bridge_address=None,
-               load_balancer_sku=None,
-               load_balancer_managed_outbound_ip_count=None,
-               load_balancer_managed_outbound_ipv6_count=None,
-               load_balancer_outbound_ips=None,
-               load_balancer_outbound_ip_prefixes=None,
-               load_balancer_outbound_ports=None,
-               load_balancer_idle_timeout=None,
-               nat_gateway_managed_outbound_ip_count=None,
-               nat_gateway_idle_timeout=None,
-               outbound_type=None,
-               enable_addons=None,
-               workspace_resource_id=None,
-               enable_msi_auth_for_monitoring=False,
-               min_count=None,
-               max_count=None,
-               vnet_subnet_id=None,
-               pod_subnet_id=None,
-               ppg=None,
-               max_pods=0,
-               aad_client_app_id=None,
-               aad_server_app_id=None,
-               aad_server_app_secret=None,
-               aad_tenant_id=None,
-               tags=None,
-               node_zones=None,
-               zones=None,
-               enable_node_public_ip=False,
-               node_public_ip_prefix_id=None,
-               generate_ssh_keys=False,  # pylint: disable=unused-argument
-               enable_pod_security_policy=False,
-               node_resource_group=None,
-               uptime_sla=False,
-               attach_acr=None,
-               enable_private_cluster=False,
-               private_dns_zone=None,
-               enable_managed_identity=True,
-               fqdn_subdomain=None,
-               disable_public_fqdn=False,
-               api_server_authorized_ip_ranges=None,
-               aks_custom_headers=None,
-               appgw_name=None,
-               appgw_subnet_prefix=None,
-               appgw_subnet_cidr=None,
-               appgw_id=None,
-               appgw_subnet_id=None,
-               appgw_watch_namespace=None,
-               enable_aad=False,
-               enable_azure_rbac=False,
-               aad_admin_group_object_ids=None,
-               aci_subnet_name=None,
-               enable_sgxquotehelper=False,
-               kubelet_config=None,
-               linux_os_config=None,
-               http_proxy_config=None,
-               assign_identity=None,
-               auto_upgrade_channel=None,
-               enable_pod_identity=False,
-               enable_pod_identity_with_kubenet=False,
-               enable_workload_identity=None,
-               enable_encryption_at_host=False,
-               enable_ultra_ssd=False,
-               edge_zone=None,
-               enable_secret_rotation=False,
-               disk_driver_version=None,
-               disable_disk_driver=False,
-               disable_file_driver=False,
-               disable_snapshot_controller=False,
-               rotation_poll_interval=None,
-               disable_local_accounts=False,
-               no_wait=False,
-               assign_kubelet_identity=None,
-               workload_runtime=None,
-               gpu_instance_profile=None,
-               enable_windows_gmsa=False,
-               gmsa_dns_server=None,
-               gmsa_root_domain_name=None,
-               snapshot_id=None,
-               cluster_snapshot_id=None,
-               enable_oidc_issuer=False,
-               host_group_id=None,
-               crg_id=None,
-               message_of_the_day=None,
-               enable_azure_keyvault_kms=False,
-               azure_keyvault_kms_key_id=None,
-               enable_apiserver_vnet_integration=False,
-               apiserver_subnet_id=None,
-               dns_zone_resource_id=None,
-               enable_custom_ca_trust=False,
-               enable_keda=False,
-               yes=False):
+# pylint: disable=too-many-locals
+def aks_create(
+    cmd,
+    client,
+    resource_group_name,
+    name,
+    ssh_key_value,
+    location=None,
+    kubernetes_version="",
+    tags=None,
+    dns_name_prefix=None,
+    node_osdisk_diskencryptionset_id=None,
+    disable_local_accounts=False,
+    disable_rbac=None,
+    edge_zone=None,
+    admin_username="azureuser",
+    generate_ssh_keys=False,
+    no_ssh_key=False,
+    pod_cidr=None,
+    service_cidr=None,
+    dns_service_ip=None,
+    docker_bridge_address=None,
+    load_balancer_sku=None,
+    load_balancer_managed_outbound_ip_count=None,
+    load_balancer_outbound_ips=None,
+    load_balancer_outbound_ip_prefixes=None,
+    load_balancer_outbound_ports=None,
+    load_balancer_idle_timeout=None,
+    nat_gateway_managed_outbound_ip_count=None,
+    nat_gateway_idle_timeout=None,
+    outbound_type=None,
+    network_plugin=None,
+    network_policy=None,
+    auto_upgrade_channel=None,
+    cluster_autoscaler_profile=None,
+    uptime_sla=False,
+    fqdn_subdomain=None,
+    api_server_authorized_ip_ranges=None,
+    enable_private_cluster=False,
+    private_dns_zone=None,
+    disable_public_fqdn=False,
+    service_principal=None,
+    client_secret=None,
+    enable_managed_identity=True,
+    assign_identity=None,
+    assign_kubelet_identity=None,
+    enable_aad=False,
+    enable_azure_rbac=False,
+    aad_admin_group_object_ids=None,
+    aad_client_app_id=None,
+    aad_server_app_id=None,
+    aad_server_app_secret=None,
+    aad_tenant_id=None,
+    windows_admin_username=None,
+    windows_admin_password=None,
+    enable_ahub=False,
+    enable_windows_gmsa=False,
+    gmsa_dns_server=None,
+    gmsa_root_domain_name=None,
+    attach_acr=None,
+    skip_subnet_role_assignment=False,
+    node_resource_group=None,
+    enable_defender=False,
+    defender_config=None,
+    # addons
+    enable_addons=None,
+    workspace_resource_id=None,
+    enable_msi_auth_for_monitoring=False,
+    aci_subnet_name=None,
+    appgw_name=None,
+    appgw_subnet_cidr=None,
+    appgw_id=None,
+    appgw_subnet_id=None,
+    appgw_watch_namespace=None,
+    enable_sgxquotehelper=False,
+    enable_secret_rotation=False,
+    rotation_poll_interval=None,
+    # nodepool paramerters
+    nodepool_name="nodepool1",
+    node_vm_size=None,
+    os_sku=None,
+    snapshot_id=None,
+    vnet_subnet_id=None,
+    pod_subnet_id=None,
+    enable_node_public_ip=False,
+    node_public_ip_prefix_id=None,
+    enable_cluster_autoscaler=False,
+    min_count=None,
+    max_count=None,
+    node_count=3,
+    nodepool_tags=None,
+    nodepool_labels=None,
+    node_osdisk_type=None,
+    node_osdisk_size=0,
+    vm_set_type=None,
+    # TODO: remove node_zones after cli 2.38.0 release
+    node_zones=None,
+    zones=None,
+    ppg=None,
+    max_pods=0,
+    enable_encryption_at_host=False,
+    enable_ultra_ssd=False,
+    enable_fips_image=False,
+    kubelet_config=None,
+    linux_os_config=None,
+    no_wait=False,
+    yes=False,
+    aks_custom_headers=None,
+    # extensions
+    # managed cluster
+    http_proxy_config=None,
+    ip_families=None,
+    pod_cidrs=None,
+    service_cidrs=None,
+    load_balancer_managed_outbound_ipv6_count=None,
+    enable_pod_security_policy=False,
+    enable_pod_identity=False,
+    enable_pod_identity_with_kubenet=False,
+    enable_workload_identity=None,
+    enable_oidc_issuer=False,
+    enable_azure_keyvault_kms=False,
+    azure_keyvault_kms_key_id=None,
+    cluster_snapshot_id=None,
+    disk_driver_version=None,
+    disable_disk_driver=False,
+    disable_file_driver=False,
+    disable_snapshot_controller=False,
+    enable_apiserver_vnet_integration=False,
+    apiserver_subnet_id=None,
+    dns_zone_resource_id=None,
+    enable_keda=False,
+    # nodepool
+    host_group_id=None,
+    crg_id=None,
+    message_of_the_day=None,
+    gpu_instance_profile=None,
+    workload_runtime=None,
+    enable_custom_ca_trust=False,
+):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
 
-    from azure.cli.command_modules.acs._consts import DecoratorEarlyExitException
+    from azure.cli.command_modules.acs._consts import \
+        DecoratorEarlyExitException
     from azure.cli.command_modules.acs.decorator import AKSParamDict
+
     from .decorator import AKSPreviewCreateDecorator
 
     # decorator pattern
@@ -845,81 +852,94 @@ def aks_create(cmd,
     return aks_create_decorator.create_mc_preview(mc)
 
 
-def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,too-many-locals
-               client,
-               resource_group_name,
-               name,
-               enable_cluster_autoscaler=False,
-               disable_cluster_autoscaler=False,
-               update_cluster_autoscaler=False,
-               cluster_autoscaler_profile=None,
-               min_count=None, max_count=None, no_wait=False,
-               load_balancer_managed_outbound_ip_count=None,
-               load_balancer_managed_outbound_ipv6_count=None,
-               load_balancer_outbound_ips=None,
-               load_balancer_outbound_ip_prefixes=None,
-               load_balancer_outbound_ports=None,
-               load_balancer_idle_timeout=None,
-               nat_gateway_managed_outbound_ip_count=None,
-               nat_gateway_idle_timeout=None,
-               api_server_authorized_ip_ranges=None,
-               enable_pod_security_policy=False,
-               disable_pod_security_policy=False,
-               attach_acr=None,
-               detach_acr=None,
-               uptime_sla=False,
-               no_uptime_sla=False,
-               enable_aad=False,
-               aad_tenant_id=None,
-               aad_admin_group_object_ids=None,
-               enable_ahub=False,
-               disable_ahub=False,
-               aks_custom_headers=None,
-               auto_upgrade_channel=None,
-               enable_managed_identity=False,
-               assign_identity=None,
-               assign_kubelet_identity=None,
-               enable_pod_identity=False,
-               enable_pod_identity_with_kubenet=False,
-               disable_pod_identity=False,
-               enable_workload_identity=None,
-               enable_secret_rotation=False,
-               disable_secret_rotation=False,
-               rotation_poll_interval=None,
-               enable_disk_driver=False,
-               disk_driver_version=None,
-               disable_disk_driver=False,
-               enable_file_driver=False,
-               disable_file_driver=False,
-               enable_snapshot_controller=False,
-               disable_snapshot_controller=False,
-               disable_local_accounts=False,
-               enable_local_accounts=False,
-               enable_public_fqdn=False,
-               disable_public_fqdn=False,
-               yes=False,
-               tags=None,
-               nodepool_labels=None,
-               windows_admin_password=None,
-               enable_azure_rbac=False,
-               disable_azure_rbac=False,
-               enable_windows_gmsa=False,
-               gmsa_dns_server=None,
-               gmsa_root_domain_name=None,
-               enable_oidc_issuer=False,
-               http_proxy_config=None,
-               enable_azure_keyvault_kms=False,
-               azure_keyvault_kms_key_id=None,
-               enable_apiserver_vnet_integration=False,
-               apiserver_subnet_id=None,
-               enable_keda=False,
-               disable_keda=False,
-               ):
+# pylint: disable=too-many-locals
+def aks_update(
+    cmd,
+    client,
+    resource_group_name,
+    name,
+    tags=None,
+    disable_local_accounts=False,
+    enable_local_accounts=False,
+    load_balancer_managed_outbound_ip_count=None,
+    load_balancer_outbound_ips=None,
+    load_balancer_outbound_ip_prefixes=None,
+    load_balancer_outbound_ports=None,
+    load_balancer_idle_timeout=None,
+    nat_gateway_managed_outbound_ip_count=None,
+    nat_gateway_idle_timeout=None,
+    auto_upgrade_channel=None,
+    cluster_autoscaler_profile=None,
+    uptime_sla=False,
+    no_uptime_sla=False,
+    api_server_authorized_ip_ranges=None,
+    enable_public_fqdn=False,
+    disable_public_fqdn=False,
+    enable_managed_identity=False,
+    assign_identity=None,
+    assign_kubelet_identity=None,
+    enable_aad=False,
+    enable_azure_rbac=False,
+    disable_azure_rbac=False,
+    aad_tenant_id=None,
+    aad_admin_group_object_ids=None,
+    windows_admin_password=None,
+    enable_ahub=False,
+    disable_ahub=False,
+    enable_windows_gmsa=False,
+    gmsa_dns_server=None,
+    gmsa_root_domain_name=None,
+    attach_acr=None,
+    detach_acr=None,
+    enable_defender=False,
+    disable_defender=False,
+    defender_config=None,
+    # addons
+    enable_secret_rotation=False,
+    disable_secret_rotation=False,
+    rotation_poll_interval=None,
+    # nodepool paramerters
+    enable_cluster_autoscaler=False,
+    disable_cluster_autoscaler=False,
+    update_cluster_autoscaler=False,
+    min_count=None,
+    max_count=None,
+    nodepool_labels=None,
+    no_wait=False,
+    yes=False,
+    aks_custom_headers=None,
+    # extensions
+    # managed cluster
+    http_proxy_config=None,
+    load_balancer_managed_outbound_ipv6_count=None,
+    enable_pod_security_policy=False,
+    disable_pod_security_policy=False,
+    enable_pod_identity=False,
+    enable_pod_identity_with_kubenet=False,
+    disable_pod_identity=False,
+    enable_workload_identity=None,
+    enable_oidc_issuer=False,
+    enable_azure_keyvault_kms=False,
+    azure_keyvault_kms_key_id=None,
+    enable_disk_driver=False,
+    disk_driver_version=None,
+    disable_disk_driver=False,
+    enable_file_driver=False,
+    disable_file_driver=False,
+    enable_snapshot_controller=False,
+    disable_snapshot_controller=False,
+    enable_apiserver_vnet_integration=False,
+    apiserver_subnet_id=None,
+    enable_keda=False,
+    disable_keda=False,
+):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
 
-    from azure.cli.command_modules.acs._consts import DecoratorEarlyExitException
+    from azure.cli.command_modules.acs._consts import \
+        DecoratorEarlyExitException
     from azure.cli.command_modules.acs.decorator import AKSParamDict
+
     from .decorator import AKSPreviewUpdateDecorator
 
     # decorator pattern
@@ -1646,52 +1666,57 @@ def aks_agentpool_list(cmd,     # pylint: disable=unused-argument
     return client.list(resource_group_name, cluster_name)
 
 
-def aks_agentpool_add(cmd,      # pylint: disable=unused-argument,too-many-locals
-                      client,
-                      resource_group_name,
-                      cluster_name,
-                      nodepool_name,
-                      kubernetes_version=None,
-                      node_vm_size=None,
-                      os_type=None,
-                      os_sku=None,
-                      vnet_subnet_id=None,
-                      pod_subnet_id=None,
-                      enable_node_public_ip=False,
-                      node_public_ip_prefix_id=None,
-                      enable_cluster_autoscaler=False,
-                      min_count=None,
-                      max_count=None,
-                      node_count=3,
-                      priority=CONST_SCALE_SET_PRIORITY_REGULAR,
-                      eviction_policy=CONST_SPOT_EVICTION_POLICY_DELETE,
-                      spot_max_price=float('nan'),
-                      labels=None,
-                      tags=None,
-                      node_taints=None,
-                      node_osdisk_type=None,
-                      node_osdisk_size=0,
-                      max_surge=None,
-                      mode="User",
-                      scale_down_mode=CONST_SCALE_DOWN_MODE_DELETE,
-                      max_pods=0,
-                      node_zones=None,
-                      zones=None,
-                      ppg=None,
-                      enable_encryption_at_host=False,
-                      enable_ultra_ssd=False,
-                      enable_fips_image=False,
-                      kubelet_config=None,
-                      linux_os_config=None,
-                      snapshot_id=None,
-                      host_group_id=None,
-                      crg_id=None,
-                      message_of_the_day=None,
-                      workload_runtime=None,
-                      gpu_instance_profile=None,
-                      enable_custom_ca_trust=False,
-                      no_wait=False,
-                      aks_custom_headers=None):
+# pylint: disable=too-many-locals
+def aks_agentpool_add(
+    cmd,
+    client,
+    resource_group_name,
+    cluster_name,
+    nodepool_name,
+    kubernetes_version=None,
+    node_vm_size=None,
+    os_type=None,
+    os_sku=None,
+    snapshot_id=None,
+    vnet_subnet_id=None,
+    pod_subnet_id=None,
+    enable_node_public_ip=False,
+    node_public_ip_prefix_id=None,
+    enable_cluster_autoscaler=False,
+    min_count=None,
+    max_count=None,
+    node_count=3,
+    priority=CONST_SCALE_SET_PRIORITY_REGULAR,
+    eviction_policy=CONST_SPOT_EVICTION_POLICY_DELETE,
+    spot_max_price=float("nan"),
+    labels=None,
+    tags=None,
+    node_taints=None,
+    node_osdisk_type=None,
+    node_osdisk_size=0,
+    max_surge=None,
+    mode=CONST_NODEPOOL_MODE_USER,
+    scale_down_mode=CONST_SCALE_DOWN_MODE_DELETE,
+    max_pods=0,
+    # TODO: remove node_zones after cli 2.38.0 release
+    node_zones=None,
+    zones=None,
+    ppg=None,
+    enable_encryption_at_host=False,
+    enable_ultra_ssd=False,
+    enable_fips_image=False,
+    kubelet_config=None,
+    linux_os_config=None,
+    no_wait=False,
+    aks_custom_headers=None,
+    # extensions
+    host_group_id=None,
+    crg_id=None,
+    message_of_the_day=None,
+    workload_runtime=None,
+    gpu_instance_profile=None,
+    enable_custom_ca_trust=False,
+):
     instances = client.list(resource_group_name, cluster_name)
     for agentpool_profile in instances:
         if agentpool_profile.name == nodepool_name:
@@ -1754,7 +1779,7 @@ def aks_agentpool_add(cmd,      # pylint: disable=unused-argument,too-many-local
         agent_pool_type="VirtualMachineScaleSets",
         max_pods=int(max_pods) if max_pods else None,
         orchestrator_version=kubernetes_version,
-        availability_zones=node_zones,
+        availability_zones=zones if zones else node_zones,
         enable_node_public_ip=enable_node_public_ip,
         node_public_ip_prefix_id=node_public_ip_prefix_id,
         node_taints=taints_array,
@@ -1801,100 +1826,30 @@ def aks_agentpool_add(cmd,      # pylint: disable=unused-argument,too-many-local
     return sdk_no_wait(no_wait, client.begin_create_or_update, resource_group_name, cluster_name, nodepool_name, agent_pool, headers=headers)
 
 
-def aks_agentpool_scale(cmd,    # pylint: disable=unused-argument
-                        client,
-                        resource_group_name,
-                        cluster_name,
-                        nodepool_name,
-                        node_count=3,
-                        no_wait=False):
-    instance = client.get(resource_group_name, cluster_name, nodepool_name)
-    new_node_count = int(node_count)
-    if instance.enable_auto_scaling:
-        raise CLIError("Cannot scale cluster autoscaler enabled node pool.")
-    if new_node_count == instance.count:
-        raise CLIError(
-            "The new node count is the same as the current node count.")
-    instance.count = new_node_count  # pylint: disable=no-member
-    return sdk_no_wait(no_wait, client.begin_create_or_update, resource_group_name, cluster_name, nodepool_name, instance)
-
-
-def aks_agentpool_upgrade(cmd,  # pylint: disable=unused-argument
-                          client,
-                          resource_group_name,
-                          cluster_name,
-                          nodepool_name,
-                          kubernetes_version='',
-                          no_wait=False,
-                          node_image_only=False,
-                          max_surge=None,
-                          aks_custom_headers=None,
-                          snapshot_id=None):
-
-    if kubernetes_version != '' and node_image_only:
-        raise CLIError('Conflicting flags. Upgrading the Kubernetes version will also upgrade node image version.'
-                       'If you only want to upgrade the node version please use the "--node-image-only" option only.')
-
-    if node_image_only:
-        return _upgrade_single_nodepool_image_version(no_wait,
-                                                      client,
-                                                      resource_group_name,
-                                                      cluster_name,
-                                                      nodepool_name,
-                                                      snapshot_id)
-
-    creationData = None
-    if snapshot_id:
-        snapshot = _get_snapshot(cmd.cli_ctx, snapshot_id)
-        if not kubernetes_version and not node_image_only:
-            kubernetes_version = snapshot.kubernetes_version
-
-        creationData = CreationData(
-            source_resource_id=snapshot_id
-        )
-
-    instance = client.get(resource_group_name, cluster_name, nodepool_name)
-    instance.orchestrator_version = kubernetes_version
-    instance.creation_data = creationData
-
-    if not instance.upgrade_settings:
-        instance.upgrade_settings = AgentPoolUpgradeSettings()
-
-    if max_surge:
-        instance.upgrade_settings.max_surge = max_surge
-
-    headers = get_aks_custom_headers(aks_custom_headers)
-
-    return sdk_no_wait(no_wait, client.begin_create_or_update, resource_group_name, cluster_name, nodepool_name, instance, headers=headers)
-
-
-def aks_agentpool_get_upgrade_profile(cmd,   # pylint: disable=unused-argument
-                                      client,
-                                      resource_group_name,
-                                      cluster_name,
-                                      nodepool_name):
-    return client.get_upgrade_profile(resource_group_name, cluster_name, nodepool_name)
-
-
-def aks_agentpool_update(cmd,   # pylint: disable=unused-argument
-                         client,
-                         resource_group_name,
-                         cluster_name,
-                         nodepool_name,
-                         enable_cluster_autoscaler=False,
-                         disable_cluster_autoscaler=False,
-                         update_cluster_autoscaler=False,
-                         min_count=None, max_count=None,
-                         labels=None,
-                         tags=None,
-                         node_taints=None,
-                         max_surge=None,
-                         mode=None,
-                         scale_down_mode=None,
-                         enable_custom_ca_trust=False,
-                         disable_custom_ca_trust=False,
-                         no_wait=False,
-                         aks_custom_headers=None):
+# pylint: disable=too-many-locals
+def aks_agentpool_update(
+    cmd,
+    client,
+    resource_group_name,
+    cluster_name,
+    nodepool_name,
+    enable_cluster_autoscaler=False,
+    disable_cluster_autoscaler=False,
+    update_cluster_autoscaler=False,
+    min_count=None,
+    max_count=None,
+    labels=None,
+    tags=None,
+    node_taints=None,
+    max_surge=None,
+    mode=None,
+    scale_down_mode=None,
+    no_wait=False,
+    aks_custom_headers=None,
+    # extensions
+    enable_custom_ca_trust=False,
+    disable_custom_ca_trust=False,
+):
     update_autoscaler = enable_cluster_autoscaler + \
         disable_cluster_autoscaler + update_cluster_autoscaler
 
@@ -1986,6 +1941,81 @@ def aks_agentpool_update(cmd,   # pylint: disable=unused-argument
         instance.enable_custom_ca_trust = False
 
     return sdk_no_wait(no_wait, client.begin_create_or_update, resource_group_name, cluster_name, nodepool_name, instance)
+
+
+def aks_agentpool_scale(cmd,    # pylint: disable=unused-argument
+                        client,
+                        resource_group_name,
+                        cluster_name,
+                        nodepool_name,
+                        node_count=3,
+                        no_wait=False):
+    instance = client.get(resource_group_name, cluster_name, nodepool_name)
+    new_node_count = int(node_count)
+    if instance.enable_auto_scaling:
+        raise CLIError("Cannot scale cluster autoscaler enabled node pool.")
+    if new_node_count == instance.count:
+        raise CLIError(
+            "The new node count is the same as the current node count.")
+    instance.count = new_node_count  # pylint: disable=no-member
+    return sdk_no_wait(no_wait, client.begin_create_or_update, resource_group_name, cluster_name, nodepool_name, instance)
+
+
+def aks_agentpool_upgrade(cmd,  # pylint: disable=unused-argument
+                          client,
+                          resource_group_name,
+                          cluster_name,
+                          nodepool_name,
+                          kubernetes_version='',
+                          no_wait=False,
+                          node_image_only=False,
+                          max_surge=None,
+                          aks_custom_headers=None,
+                          snapshot_id=None):
+
+    if kubernetes_version != '' and node_image_only:
+        raise CLIError('Conflicting flags. Upgrading the Kubernetes version will also upgrade node image version.'
+                       'If you only want to upgrade the node version please use the "--node-image-only" option only.')
+
+    if node_image_only:
+        return _upgrade_single_nodepool_image_version(no_wait,
+                                                      client,
+                                                      resource_group_name,
+                                                      cluster_name,
+                                                      nodepool_name,
+                                                      snapshot_id)
+
+    creationData = None
+    if snapshot_id:
+        snapshot = _get_snapshot(cmd.cli_ctx, snapshot_id)
+        if not kubernetes_version and not node_image_only:
+            kubernetes_version = snapshot.kubernetes_version
+
+        creationData = CreationData(
+            source_resource_id=snapshot_id
+        )
+
+    instance = client.get(resource_group_name, cluster_name, nodepool_name)
+    instance.orchestrator_version = kubernetes_version
+    instance.creation_data = creationData
+
+    if not instance.upgrade_settings:
+        instance.upgrade_settings = AgentPoolUpgradeSettings()
+
+    if max_surge:
+        instance.upgrade_settings.max_surge = max_surge
+
+    headers = get_aks_custom_headers(aks_custom_headers)
+
+    return sdk_no_wait(no_wait, client.begin_create_or_update, resource_group_name, cluster_name, nodepool_name, instance, headers=headers)
+
+
+def aks_agentpool_get_upgrade_profile(cmd,   # pylint: disable=unused-argument
+                                      client,
+                                      resource_group_name,
+                                      cluster_name,
+                                      nodepool_name):
+    return client.get_upgrade_profile(resource_group_name, cluster_name, nodepool_name)
 
 
 def aks_agentpool_stop(cmd,   # pylint: disable=unused-argument
@@ -2570,12 +2600,14 @@ def merge_kubernetes_configurations(existing_file, addition_file, replace, conte
         existing['current-context'] = addition['current-context']
 
     # check that ~/.kube/config is only read- and writable by its owner
-    if platform.system() != 'Windows':
-        existing_file_perms = "{:o}".format(
-            stat.S_IMODE(os.lstat(existing_file).st_mode))
-        if not existing_file_perms.endswith('600'):
-            logger.warning('%s has permissions "%s".\nIt should be readable and writable only by its owner.',
-                           existing_file, existing_file_perms)
+    if platform.system() != "Windows" and not os.path.islink(existing_file):
+        existing_file_perms = "{:o}".format(stat.S_IMODE(os.lstat(existing_file).st_mode))
+        if not existing_file_perms.endswith("600"):
+            logger.warning(
+                '%s has permissions "%s".\nIt should be readable and writable only by its owner.',
+                existing_file,
+                existing_file_perms,
+            )
 
     with open(existing_file, 'w+') as stream:
         yaml.safe_dump(existing, stream, default_flow_style=False)
@@ -3338,3 +3370,26 @@ def aks_nodepool_snapshot_list(cmd, client, resource_group_name=None):  # pylint
 
 def aks_trustedaccess_role_list(cmd, client, location):  # pylint: disable=unused-argument
     return client.list(location)
+
+
+def aks_trustedaccess_role_binding_list(cmd, client, resource_group_name, cluster_name):   # pylint: disable=unused-argument
+    return client.list(resource_group_name, cluster_name)
+
+
+def aks_trustedaccess_role_binding_get(cmd, client, resource_group_name, cluster_name, role_binding_name):
+    return client.get(resource_group_name, cluster_name, role_binding_name)
+
+
+def aks_trustedaccess_role_binding_create_or_update(cmd, client, resource_group_name, cluster_name, role_binding_name,
+                                                    source_resource_id, roles):
+    TrustedAccessRoleBinding = cmd.get_models(
+        "TrustedAccessRoleBinding",
+        resource_type=CUSTOM_MGMT_AKS_PREVIEW,
+        operation_group="trusted_access_role_bindings",
+    )
+    roleBinding = TrustedAccessRoleBinding(source_resource_id=source_resource_id, roles=roles)
+    return client.create_or_update(resource_group_name, cluster_name, role_binding_name, roleBinding)
+
+
+def aks_trustedaccess_role_binding_delete(cmd, client, resource_group_name, cluster_name, role_binding_name):
+    return client.delete(resource_group_name, cluster_name, role_binding_name)

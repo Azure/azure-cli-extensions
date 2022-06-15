@@ -3,22 +3,21 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-import base64
 import os
 import pty
 import subprocess
 import tempfile
 
-from azure.cli.testsdk import (
-    ScenarioTest, live_only)
+from azext_aks_preview.tests.latest.custom_preparers import (
+    AKSCustomResourceGroupPreparer,
+)
+from azext_aks_preview.tests.latest.recording_processors import KeyReplacer
 from azure.cli.command_modules.acs._format import version_to_tuple
-from azure.cli.testsdk import CliTestError
+from azure.cli.core.azclierror import BadRequestError
+from azure.cli.testsdk import CliTestError, ScenarioTest, live_only
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
-from knack.util import CLIError
 from azure.core.exceptions import HttpResponseError
-
-from .recording_processors import KeyReplacer
-from .custom_preparers import AKSCustomResourceGroupPreparer
+from knack.util import CLIError
 
 
 def _get_test_data_file(filename):
@@ -273,26 +272,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
         create_cmd = 'aks create --resource-group={resource_group} --name={name} --enable-managed-identity ' \
                      '-a ingress-appgw --appgw-subnet-cidr 10.232.0.0/16 ' \
-                     '--ssh-key-value={ssh_key_value} -o json'
-        self.cmd(create_cmd, checks=[
-            self.check('provisioningState', 'Succeeded'),
-            self.check('addonProfiles.ingressApplicationGateway.enabled', True),
-            self.check(
-                'addonProfiles.ingressApplicationGateway.config.subnetCIDR', "10.232.0.0/16")
-        ])
-
-    @AllowLargeResponse()
-    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
-    def test_aks_create_with_ingress_appgw_addon_with_deprecated_subet_prefix(self, resource_group, resource_group_location):
-        aks_name = self.create_random_name('cliakstest', 16)
-        self.kwargs.update({
-            'resource_group': resource_group,
-            'name': aks_name,
-            'ssh_key_value': self.generate_ssh_keys()
-        })
-
-        create_cmd = 'aks create --resource-group={resource_group} --name={name} --enable-managed-identity ' \
-                     '-a ingress-appgw --appgw-subnet-prefix 10.232.0.0/16 ' \
                      '--ssh-key-value={ssh_key_value} -o json'
         self.cmd(create_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
@@ -4336,7 +4315,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         try:
             self.cmd(create_cmd, checks=[])
             raise Exception("didn't get expected failure")
-        except HttpResponseError:
+        except (HttpResponseError, BadRequestError):
             # expected failure
             pass
 
@@ -4592,3 +4571,39 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         ]:
             if not pattern in k_get_daemonset_output:
                 raise CliTestError(f"Output from 'kubectl get daemonset' did not contain '{pattern}'. Output:\n{k_get_daemonset_output}")
+
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='eastus', preserve_default_location=True)
+    def test_aks_availability_zones(self, resource_group, resource_group_location):
+        # kwargs for string formatting
+        aks_name = self.create_random_name('cliakstest', 16)
+        nodepool2_name = "nodepool2"
+        self.kwargs.update({
+            'resource_group': resource_group,
+            'name': aks_name,
+            'ssh_key_value': self.generate_ssh_keys(),
+            'nodepool2_name': nodepool2_name,
+            'zones': "1 2 3"
+        })
+
+        # create
+        create_cmd = 'aks create --resource-group={resource_group} --name={name} ' \
+                     '--node-count=1 --ssh-key-value={ssh_key_value} --zones {zones}'
+        self.cmd(create_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.check('agentPoolProfiles[0].availabilityZones[0]', '1'),
+            self.check('agentPoolProfiles[0].availabilityZones[1]', '2'),
+            self.check('agentPoolProfiles[0].availabilityZones[2]', '3'),
+        ])
+
+        # nodepool add
+        self.cmd('aks nodepool add --resource-group={resource_group} --cluster-name={name} --name={nodepool2_name} --node-count=1 --zones {zones}', checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.check('availabilityZones[0]', '1'),
+            self.check('availabilityZones[1]', '2'),
+            self.check('availabilityZones[2]', '3'),
+        ])
+
+        # delete
+        self.cmd(
+            'aks delete -g {resource_group} -n {name} --yes --no-wait', checks=[self.is_empty()])

@@ -11,6 +11,7 @@
 import os
 from azure.cli.testsdk import ScenarioTest
 from azure.cli.testsdk import ResourceGroupPreparer
+from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 from .example_steps import step_create
 from .example_steps import step_show
 from .example_steps import step_list
@@ -59,9 +60,6 @@ def call_scenario(test, rg_2, rg):
     step_list(test, rg_2, rg, checks=[
         test.check('length(@)', 1),
     ])
-    step_list2(test, rg_2, rg, checks=[
-        test.check('length(@)', 1),
-    ])
     step_update(test, rg_2, rg, checks=[
         test.check("name", "{myCommunicationService}", case_sensitive=False),
         test.check("location", "Global", case_sensitive=False),
@@ -90,6 +88,7 @@ class CommunicationScenarioTest(ScenarioTest):
         })
 
 
+    @AllowLargeResponse()
     @ResourceGroupPreparer(name_prefix='clitestcommunication_MyOtherResourceGroup'[:7], key='rg_2',
                            parameter_name='rg_2')
     @ResourceGroupPreparer(name_prefix='clitestcommunication_MyResourceGroup'[:7], key='rg', parameter_name='rg')
