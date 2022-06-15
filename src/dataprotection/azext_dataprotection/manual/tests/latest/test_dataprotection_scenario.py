@@ -14,7 +14,9 @@ def setup(test):
         "diskname": "cli-test-disk-new",
         "restorediskname": "cli-test-disk-new-restored",
         "policyname": "diskpolicy",
-        "resourceGuardName": "cli-test-resource-guard"
+        "storagepolicyname": "storagepolicy",
+        "resourceGuardName": "cli-test-resource-guard",
+        "storageaccountname": "cliteststoreaccount"
     })
     account_res = test.cmd('az account show').get_output_in_json()
     vault_res = test.cmd('az dataprotection backup-vault create '
@@ -32,9 +34,11 @@ def setup(test):
     ])         
 
     disk_response = test.cmd('az disk create -g "{rg}" -n "{diskname}" --size-gb 4').get_output_in_json()
+    storage_account_response = test.cmd('az storage account create -g "{rg}" -n "{storageaccountname}" -l centraluseuap').get_output_in_json()
     test.kwargs.update({
         "principalId": vault_res["identity"]["principalId"],
         "diskid": disk_response["id"],
+        "storageaccountid": storage_account_response["id"],
         "rgid": "/subscriptions/" + account_res["id"] + "/resourceGroups/sarath-rg"
     })
 
@@ -68,8 +72,15 @@ def create_policy(test):
     test.kwargs.update({"policyjson": policy_json})
     test.cmd('az dataprotection backup-policy create -n "{policyname}" --policy "{policyjson}" -g "{rg}" --vault-name "{vaultName}"')
 
+    storage_policy_json = test.cmd('az dataprotection backup-policy get-default-policy-template --datasource-type AzureBlob').get_output_in_json()
+    test.kwargs.update({"storagepolicyjson": storage_policy_json})
+    test.cmd('az dataprotection backup-policy create -n "{storagepolicyname}" --policy "{storagepolicyjson}" -g "{rg}" --vault-name "{vaultName}"')
+
     policy_id = test.cmd('az dataprotection backup-policy show -g "{rg}" --vault-name "{vaultName}" -n "{policyname}" --query "id"').get_output_in_json()
     test.kwargs.update({"policyid": policy_id})
+
+    storage_policy_id = test.cmd('az dataprotection backup-policy show -g "{rg}" --vault-name "{vaultName}" -n "{storagepolicyname}" --query "id"').get_output_in_json()
+    test.kwargs.update({"storagepolicyid": storage_policy_id})
 
     lifecycle_json = test.cmd('az dataprotection backup-policy retention-rule create-lifecycle'
                               ' --count 12 --type Days --source-datastore OperationalStore').get_output_in_json()
@@ -171,13 +182,26 @@ def initialize_backup_instance(test):
         "backup_instance_name": backup_instance_json["backup_instance_name"]
     })
 
+    backup_instance_json = test.cmd('az dataprotection backup-instance initialize --datasource-type AzureBlob'
+                                    ' -l centraluseuap --policy-id "{storagepolicyid}" --datasource-id "{storageaccountid}"').get_output_in_json()
+    backup_instance_json["backup_instance_name"] = test.kwargs['storageaccountname'] + "-" + test.kwargs['storageaccountname'] + "-" + backup_instance_guid
+    test.kwargs.update({
+        "storage_backup_instance_json": backup_instance_json,
+        "storage_backup_instance_name": backup_instance_json["backup_instance_name"]
+    })
+
 
 def assign_permissions_and_validate(test):
     test.cmd('az dataprotection backup-instance validate-for-backup -g "{rg}" --vault-name "{vaultName}" --backup-instance "{backup_instance_json}"', expect_failure=True)
-    # output = test.cmd('az dataprotection backup-instance update-msi-permissions --datasource-type AzureDisk --operation Backup --permissions-scope Resource -g "{rg}" --vault-name "{vaultName}" --backup-instance "{backup_instance_json}"').get_output_in_json()
+    test.cmd('az dataprotection backup-instance validate-for-backup -g "{rg}" --vault-name "{vaultName}" --backup-instance "{storage_backup_instance_json}"', expect_failure=True)
+    # test.cmd('az dataprotection backup-instance update-msi-permissions --datasource-type AzureDisk --operation Backup --permissions-scope Resource -g "{rg}" --vault-name "{vaultName}" --backup-instance "{backup_instance_json}"').get_output_in_json()
+    # test.cmd('az dataprotection backup-instance update-msi-permissions --datasource-type AzureBlob --operation Backup --permissions-scope Resource -g "{rg}" --vault-name "{vaultName}" --backup-instance "{storage_backup_instance_json}"').get_output_in_json()
     # test.cmd('az role assignment create --assignee "{principalId}" --role "Disk Restore Operator" --scope "{rgid}"')
     # time.sleep(120) # Wait for permissions to propagate
     test.cmd('az dataprotection backup-instance validate-for-backup -g "{rg}" --vault-name "{vaultName}" --backup-instance "{backup_instance_json}"', checks=[
+        test.check('objectType', 'OperationJobExtendedInfo')
+    ])
+    test.cmd('az dataprotection backup-instance validate-for-backup -g "{rg}" --vault-name "{vaultName}" --backup-instance "{storage_backup_instance_json}"', checks=[
         test.check('objectType', 'OperationJobExtendedInfo')
     ])
 
@@ -193,12 +217,15 @@ def configure_backup(test):
         backup_instance_res = test.cmd('az dataprotection backup-instance list -g "{rg}" --vault-name "{vaultName}" --query "[0].properties.protectionStatus"').get_output_in_json()
         protection_status = backup_instance_res["status"]
 
+    test.cmd('az dataprotection backup-instance create -g "{rg}" --vault-name "{vaultName}" --backup-instance "{storage_backup_instance_json}"')
+    
     # run the below line only in record mode
     time.sleep(30)
 
 
 def delete_backup(test):
     test.cmd('az dataprotection backup-instance delete -g "{rg}" --vault-name "{vaultName}" -n "{backup_instance_name}" --yes')
+    test.cmd('az dataprotection backup-instance delete -g "{rg}" --vault-name "{vaultName}" -n "{storage_backup_instance_name}" --yes')
 
 
 def cleanup(test):
@@ -208,6 +235,7 @@ def cleanup(test):
              ' -g "{rg}" --vault-name "{vaultName}" --yes')
     test.cmd('az disk delete --name "{diskname}" --resource-group "{rg}" --yes')
     test.cmd('az disk delete --name "{restorediskname}" --resource-group "{rg}" --yes')
+    test.cmd('az storage account delete --name "{storageaccountname}" --resource-group "{rg}" --yes')
 
 
 @AllowLargeResponse()
