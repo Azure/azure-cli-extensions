@@ -174,9 +174,9 @@ def initialize_backup_instance(test):
 
 def assign_permissions_and_validate(test):
     test.cmd('az dataprotection backup-instance validate-for-backup -g "{rg}" --vault-name "{vaultName}" --backup-instance "{backup_instance_json}"', expect_failure=True)
-    output = test.cmd('az dataprotection backup-instance update-msi-permissions --datasource-type AzureDisk --operation Backup --permissions-scope Resource -g "{rg}" --vault-name "{vaultName}" --backup-instance "{backup_instance_json}"').get_output_in_json()
-    test.cmd('az role assignment create --assignee "{principalId}" --role "Disk Restore Operator" --scope "{rgid}"')
-    time.sleep(120) # Wait for permissions to propagate
+    # output = test.cmd('az dataprotection backup-instance update-msi-permissions --datasource-type AzureDisk --operation Backup --permissions-scope Resource -g "{rg}" --vault-name "{vaultName}" --backup-instance "{backup_instance_json}"').get_output_in_json()
+    # test.cmd('az role assignment create --assignee "{principalId}" --role "Disk Restore Operator" --scope "{rgid}"')
+    # time.sleep(120) # Wait for permissions to propagate
     test.cmd('az dataprotection backup-instance validate-for-backup -g "{rg}" --vault-name "{vaultName}" --backup-instance "{backup_instance_json}"', checks=[
         test.check('objectType', 'OperationJobExtendedInfo')
     ])
@@ -217,7 +217,7 @@ def call_scenario(test):
         test_resource_guard(test)
         create_policy(test)
         initialize_backup_instance(test)
-        # assign_permissions_and_validate(test)
+        assign_permissions_and_validate(test)
         configure_backup(test)
         stop_resume_protection(test)
         trigger_disk_backup(test)
