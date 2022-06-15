@@ -12,7 +12,7 @@ from ipaddress import ip_network
 
 from knack.log import get_logger
 
-from azure.cli.core.azclierror import InvalidArgumentValueError, ArgumentUsageError
+from azure.cli.core.azclierror import InvalidArgumentValueError, ArgumentUsageError, RequiredArgumentMissingError
 from azure.cli.core.commands.validators import validate_tag
 from azure.cli.core.util import CLIError
 import azure.cli.core.keys as keys
@@ -593,3 +593,13 @@ def validate_enable_custom_ca_trust(namespace):
         if hasattr(namespace, 'os_type') and namespace.os_type != "Linux":
             raise ArgumentUsageError(
                 '--enable_custom_ca_trust can only be set for Linux nodepools')
+
+
+def validate_defender_config_parameter(namespace):
+    if namespace.defender_config and not namespace.enable_defender:
+        raise RequiredArgumentMissingError("Please specify --enable-defnder")
+
+
+def validate_defender_disable_and_enable_parameters(namespace):
+    if namespace.disable_defender and namespace.enable_defender:
+        raise ArgumentUsageError('Providing both --disable-defender and --enable-defender flags is invalid')
