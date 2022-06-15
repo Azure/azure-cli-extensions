@@ -21,7 +21,6 @@ from ._transformers import (transform_spring_table_output,
                             transform_service_registry_output,
                             transform_spring_cloud_gateway_output,
                             transform_api_portal_output)
-from ._marketplace import (transform_marketplace_plan_output)
 from ._validators_enterprise import (validate_gateway_update, validate_api_portal_update)
 from ._app_managed_identity_validator import (validate_app_identity_remove_or_warning,
                                               validate_app_identity_assign_or_warning)
@@ -92,9 +91,6 @@ def load_command_table(self, _):
     with self.command_group('spring', custom_command_type=spring_routing_util,
                             exception_handler=handle_asc_exception) as g:
         g.custom_command('create', 'spring_create', supports_no_wait=True)
-        g.custom_command('list-marketplace-plan', 'spring_list_marketplace_plan',
-                         is_preview=True,
-                         table_transformer=transform_marketplace_plan_output)
 
     with self.command_group('spring', client_factory=cf_spring_20220501preview,
                             exception_handler=handle_asc_exception) as g:

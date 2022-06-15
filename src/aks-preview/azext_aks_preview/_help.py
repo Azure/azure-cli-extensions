@@ -190,9 +190,6 @@ helps['aks create'] = """
         - name: --disable-rbac
           type: bool
           short-summary: Disable Kubernetes Role-Based Access Control.
-        - name: --enable-rbac -r
-          type: bool
-          short-summary: "Enable Kubernetes Role-Based Access Control. Default: enabled."
         - name: --max-pods -m
           type: int
           short-summary: The maximum number of pods deployable to a node.
@@ -263,9 +260,6 @@ helps['aks create'] = """
         - name: --max-count
           type: int
           short-summary: Maximum nodes count used for autoscaler, when "--enable-cluster-autoscaler" specified. Please specify the value in the range of [1, 1000].
-        - name: --cluster-autoscaler-profile
-          type: list
-          short-summary: Space-separated list of key=value pairs for configuring cluster autoscaler. Pass an empty string to clear the profile.
         - name: --vm-set-type
           type: string
           short-summary: Agent pool vm set type. VirtualMachineScaleSets or AvailabilitySet.
@@ -324,9 +318,6 @@ helps['aks create'] = """
         - name: --appgw-name
           type: string
           short-summary: Name of the application gateway to create/use in the node resource group. Use with ingress-azure addon.
-        - name: --appgw-subnet-prefix
-          type: string
-          short-summary: Subnet Prefix to use for a new subnet created to deploy the Application Gateway. Use with ingress-azure addon.
         - name: --appgw-subnet-cidr
           type: string
           short-summary: Subnet CIDR to use for a new subnet created to deploy the Application Gateway. Use with ingress-azure addon.
@@ -450,6 +441,12 @@ helps['aks create'] = """
         - name: --enable-keda
           type: bool
           short-summary: Enable KEDA workload auto-scaler.
+        - name: --enable-defender
+          type: bool
+          short-summary: Enable Microsoft Defender security profile.
+        - name: --defender-config
+          type: string
+          short-summary: Path to JSON file containing Microsoft Defender profile configurations.
     examples:
         - name: Create a Kubernetes cluster with an existing SSH public key.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --ssh-key-value /path/to/publickey
@@ -574,9 +571,6 @@ helps['aks update'] = """
         - name: --no-uptime-sla
           type: bool
           short-summary: Change a paid managed cluster to a free one.
-        - name: --cluster-autoscaler-profile
-          type: list
-          short-summary: Space-separated list of key=value pairs for configuring cluster autoscaler. Pass an empty string to clear the profile.
         - name: --load-balancer-managed-outbound-ip-count
           type: int
           short-summary: Load balancer managed outbound IP count.
@@ -770,6 +764,15 @@ helps['aks update'] = """
         - name: --disable-keda
           type: bool
           short-summary: Disable KEDA workload auto-scaler.
+        - name: --enable-defender
+          type: bool
+          short-summary: Enable Microsoft Defender security profile.
+        - name: --disable-defender
+          type: bool
+          short-summary: Disable defender profile.
+        - name: --defender-config
+          type: string
+          short-summary: Path to JSON file containing Microsoft Defender profile configurations.
     examples:
       - name: Reconcile the cluster back to its current state.
         text: az aks update -g MyResourceGroup -n MyManagedCluster
@@ -1765,6 +1768,68 @@ helps['aks trustedaccess role'] = """
 helps['aks trustedaccess role list'] = """
     type: command
     short-summary: List trusted access roles.
+"""
+
+helps['aks trustedaccess rolebinding'] = """
+    type: group
+    short-summary: Commands to manage trusted access role bindings.
+"""
+
+helps['aks trustedaccess rolebinding list'] = """
+    type: command
+    short-summary: List all the trusted access role bindings.
+"""
+
+helps['aks trustedaccess rolebinding show'] = """
+    type: command
+    short-summary: Get the specific trusted access role binding according to binding name.
+    parameters:
+        - name: --name -n
+          type: string
+          short-summary: Specify the role binding name.
+"""
+
+helps['aks trustedaccess rolebinding create'] = """
+    type: command
+    short-summary: Create a new trusted access role binding.
+    parameters:
+        - name: --name -n
+          type: string
+          short-summary: Specify the role binding name.
+        - name: --roles
+          type: string
+          short-summary: Specify the space-separated roles.
+        - name: --source-resource-id -s
+          type: string
+          short-summary: Specify the source resource id of the binding.
+
+    examples:
+        - name: Create a new trusted access role binding
+          text: az aks trustedaccess rolebinding create -g myResourceGroup --cluster-name myCluster -n bindingName -s /subscriptions/0000/resourceGroups/myResourceGroup/providers/Microsoft.Demo/samples --roles Microsoft.Demo/samples/reader Microsoft.Demo/samples/writer
+"""
+
+helps['aks trustedaccess rolebinding update'] = """
+    type: command
+    short-summary: Update a trusted access role binding.
+    parameters:
+        - name: --name -n
+          type: string
+          short-summary: Specify the role binding name.
+        - name: --roles
+          type: string
+          short-summary: Specify the space-separated roles.
+        - name: --source-resource-id -s
+          type: string
+          short-summary: Specify the source resource id of the binding.
+"""
+
+helps['aks trustedaccess rolebinding delete'] = """
+    type: command
+    short-summary: Delete a trusted access role binding according to name.
+    parameters:
+        - name: --name -n
+          type: string
+          short-summary: Specify the role binding name.
 """
 
 helps['aks draft'] = """

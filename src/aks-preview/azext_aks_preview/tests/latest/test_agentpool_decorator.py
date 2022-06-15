@@ -28,7 +28,7 @@ from azure.cli.command_modules.acs._consts import (
 )
 from azure.cli.command_modules.acs.agentpool_decorator import AKSAgentPoolParamDict
 from azure.cli.command_modules.acs.tests.latest.mocks import MockCLI, MockClient, MockCmd
-from azure.cli.core.azclierror import CLIInternalError, InvalidArgumentValueError
+from azure.cli.core.azclierror import CLIInternalError, InvalidArgumentValueError, MutuallyExclusiveArgumentError
 
 
 class AKSPreviewAgentPoolContextCommonTestCase(unittest.TestCase):
@@ -194,6 +194,69 @@ class AKSPreviewAgentPoolContextCommonTestCase(unittest.TestCase):
         ctx_1.attach_agentpool(agentpool_1)
         self.assertEqual(ctx_1.get_workload_runtime(), "test_workload_runtime")
 
+    def common_get_enable_custom_ca_trust(self):
+        # default
+        ctx_1 = AKSPreviewAgentPoolContext(
+            self.cmd,
+            AKSAgentPoolParamDict({"enable_custom_ca_trust": True}),
+            self.models,
+            DecoratorMode.CREATE,
+            self.agentpool_decorator_mode,
+        )
+        self.assertEqual(ctx_1.get_enable_custom_ca_trust(), True)
+        agentpool_1 = self.create_initialized_agentpool_instance(enable_custom_ca_trust=False)
+        ctx_1.attach_agentpool(agentpool_1)
+        self.assertEqual(ctx_1.get_enable_custom_ca_trust(), False)
+
+        # custom
+        ctx_2 = AKSPreviewAgentPoolContext(
+            self.cmd,
+            AKSAgentPoolParamDict({"enable_custom_ca_trust": True}),
+            self.models,
+            DecoratorMode.UPDATE,
+            self.agentpool_decorator_mode,
+        )
+        self.assertEqual(ctx_2.get_enable_custom_ca_trust(), True)
+        agentpool_2 = self.create_initialized_agentpool_instance(enable_custom_ca_trust=False)
+        ctx_2.attach_agentpool(agentpool_2)
+        self.assertEqual(ctx_2.get_enable_custom_ca_trust(), True)
+
+        # custom
+        ctx_3 = AKSPreviewAgentPoolContext(
+            self.cmd,
+            AKSAgentPoolParamDict({"enable_custom_ca_trust": True, "disable_custom_ca_trust": True}),
+            self.models,
+            DecoratorMode.UPDATE,
+            self.agentpool_decorator_mode,
+        )
+        with self.assertRaises(MutuallyExclusiveArgumentError):
+            ctx_3.get_enable_custom_ca_trust()
+
+    def common_get_disable_custom_ca_trust(self):
+        # default
+        ctx_1 = AKSPreviewAgentPoolContext(
+            self.cmd,
+            AKSAgentPoolParamDict({"disable_custom_ca_trust": True}),
+            self.models,
+            DecoratorMode.UPDATE,
+            self.agentpool_decorator_mode,
+        )
+        self.assertEqual(ctx_1.get_disable_custom_ca_trust(), True)
+        agentpool_1 = self.create_initialized_agentpool_instance(enable_custom_ca_trust=True)
+        ctx_1.attach_agentpool(agentpool_1)
+        self.assertEqual(ctx_1.get_disable_custom_ca_trust(), True)
+
+        # custom
+        ctx_2 = AKSPreviewAgentPoolContext(
+            self.cmd,
+            AKSAgentPoolParamDict({"enable_custom_ca_trust": True, "disable_custom_ca_trust": True}),
+            self.models,
+            DecoratorMode.UPDATE,
+            self.agentpool_decorator_mode,
+        )
+        with self.assertRaises(MutuallyExclusiveArgumentError):
+            ctx_2.get_disable_custom_ca_trust()
+
 
 class AKSPreviewAgentPoolContextStandaloneModeTestCase(AKSPreviewAgentPoolContextCommonTestCase):
     def setUp(self):
@@ -223,6 +286,12 @@ class AKSPreviewAgentPoolContextStandaloneModeTestCase(AKSPreviewAgentPoolContex
     def test_get_workload_runtime(self):
         self.common_get_workload_runtime()
 
+    def test_get_enable_custom_ca_trust(self):
+        self.common_get_enable_custom_ca_trust()
+
+    def test_get_disable_custom_ca_trust(self):
+        self.common_get_disable_custom_ca_trust()
+
 
 class AKSPreviewAgentPoolContextManagedClusterModeTestCase(AKSPreviewAgentPoolContextCommonTestCase):
     def setUp(self):
@@ -251,6 +320,12 @@ class AKSPreviewAgentPoolContextManagedClusterModeTestCase(AKSPreviewAgentPoolCo
 
     def test_get_workload_runtime(self):
         self.common_get_workload_runtime()
+
+    def test_get_enable_custom_ca_trust(self):
+        self.common_get_enable_custom_ca_trust()
+
+    def test_get_disable_custom_ca_trust(self):
+        self.common_get_disable_custom_ca_trust()
 
 
 class AKSPreviewAgentPoolAddDecoratorCommonTestCase(unittest.TestCase):
@@ -344,14 +419,34 @@ class AKSPreviewAgentPoolAddDecoratorCommonTestCase(unittest.TestCase):
         )
         # fail on passing the wrong agentpool object
         with self.assertRaises(CLIInternalError):
-            dec_1.set_up_gpu_propertes(None)
+            dec_1.set_up_gpu_properties(None)
         agentpool_1 = self.create_initialized_agentpool_instance(restore_defaults=False)
         dec_1.context.attach_agentpool(agentpool_1)
-        dec_agentpool_1 = dec_1.set_up_gpu_propertes(agentpool_1)
+        dec_agentpool_1 = dec_1.set_up_gpu_properties(agentpool_1)
         dec_agentpool_1 = self._restore_defaults_in_agentpool(dec_agentpool_1)
         ground_truth_agentpool_1 = self.create_initialized_agentpool_instance(
             gpu_instance_profile="test_gpu_instance_profile",
             workload_runtime="test_workload_runtime",
+        )
+        self.assertEqual(dec_agentpool_1, ground_truth_agentpool_1)
+
+    def common_set_up_custom_ca_trust(self):
+        dec_1 = AKSPreviewAgentPoolAddDecorator(
+            self.cmd,
+            self.client,
+            {"enable_custom_ca_trust": True},
+            self.resource_type,
+            self.agentpool_decorator_mode,
+        )
+        # fail on passing the wrong agentpool object
+        with self.assertRaises(CLIInternalError):
+            dec_1.set_up_custom_ca_trust(None)
+        agentpool_1 = self.create_initialized_agentpool_instance(restore_defaults=False)
+        dec_1.context.attach_agentpool(agentpool_1)
+        dec_agentpool_1 = dec_1.set_up_custom_ca_trust(agentpool_1)
+        dec_agentpool_1 = self._restore_defaults_in_agentpool(dec_agentpool_1)
+        ground_truth_agentpool_1 = self.create_initialized_agentpool_instance(
+            enable_custom_ca_trust=True,
         )
         self.assertEqual(dec_agentpool_1, ground_truth_agentpool_1)
 
@@ -375,6 +470,9 @@ class AKSPreviewAgentPoolAddDecoratorStandaloneModeTestCase(AKSPreviewAgentPoolA
 
     def test_set_up_gpu_propertes(self):
         self.common_set_up_gpu_propertes()
+
+    def test_set_up_custom_ca_trust(self):
+        self.common_set_up_custom_ca_trust()
 
     def test_construct_agentpool_profile_preview(self):
         import inspect
@@ -438,6 +536,7 @@ class AKSPreviewAgentPoolAddDecoratorStandaloneModeTestCase(AKSPreviewAgentPoolA
             mode=CONST_NODEPOOL_MODE_USER,
             scale_down_mode=CONST_SCALE_DOWN_MODE_DELETE,
             workload_runtime=CONST_WORKLOAD_RUNTIME_OCI_CONTAINER,
+            enable_custom_ca_trust=False,
         )
         self.assertEqual(dec_agentpool_1, ground_truth_agentpool_1)
 
@@ -463,6 +562,9 @@ class AKSPreviewAgentPoolAddDecoratorManagedClusterModeTestCase(AKSPreviewAgentP
 
     def test_set_up_gpu_propertes(self):
         self.common_set_up_gpu_propertes()
+
+    def test_set_up_custom_ca_trust(self):
+        self.common_set_up_custom_ca_trust()
 
     def test_construct_agentpool_profile_preview(self):
         import inspect
@@ -526,6 +628,7 @@ class AKSPreviewAgentPoolAddDecoratorManagedClusterModeTestCase(AKSPreviewAgentP
             enable_fips=False,
             mode=CONST_NODEPOOL_MODE_SYSTEM,
             workload_runtime=CONST_WORKLOAD_RUNTIME_OCI_CONTAINER,
+            enable_custom_ca_trust=False,
         )
         self.assertEqual(dec_agentpool_1, ground_truth_agentpool_1)
 
@@ -573,6 +676,47 @@ class AKSPreviewAgentPoolUpdateDecoratorCommonTestCase(unittest.TestCase):
             self._restore_defaults_in_agentpool(agentpool)
         return agentpool
 
+    def common_update_custom_ca_trust(self):
+        dec_1 = AKSPreviewAgentPoolUpdateDecorator(
+            self.cmd,
+            self.client,
+            {"enable_custom_ca_trust": True, "disable_custom_ca_trust": False},
+            self.resource_type,
+            self.agentpool_decorator_mode,
+        )
+        # fail on passing the wrong agentpool object
+        with self.assertRaises(CLIInternalError):
+            dec_1.update_vm_properties(None)
+        agentpool_1 = self.create_initialized_agentpool_instance(
+            enable_custom_ca_trust=False,
+        )
+        dec_1.context.attach_agentpool(agentpool_1)
+        dec_agentpool_1 = dec_1.update_custom_ca_trust(agentpool_1)
+        grond_truth_agentpool_1 = self.create_initialized_agentpool_instance(
+            enable_custom_ca_trust=True,
+        )
+        self.assertEqual(dec_agentpool_1, grond_truth_agentpool_1)
+
+        dec_2 = AKSPreviewAgentPoolUpdateDecorator(
+            self.cmd,
+            self.client,
+            {"enable_custom_ca_trust": False, "disable_custom_ca_trust": True},
+            self.resource_type,
+            self.agentpool_decorator_mode,
+        )
+        # fail on passing the wrong agentpool object
+        with self.assertRaises(CLIInternalError):
+            dec_2.update_vm_properties(None)
+        agentpool_2 = self.create_initialized_agentpool_instance(
+            enable_custom_ca_trust=True,
+        )
+        dec_2.context.attach_agentpool(agentpool_2)
+        dec_agentpool_2 = dec_2.update_custom_ca_trust(agentpool_2)
+        grond_truth_agentpool_2 = self.create_initialized_agentpool_instance(
+            enable_custom_ca_trust=False,
+        )
+        self.assertEqual(dec_agentpool_2, grond_truth_agentpool_2)
+
 
 class AKSPreviewAgentPoolUpdateDecoratorStandaloneModeTestCase(AKSPreviewAgentPoolUpdateDecoratorCommonTestCase):
     def setUp(self):
@@ -584,6 +728,9 @@ class AKSPreviewAgentPoolUpdateDecoratorStandaloneModeTestCase(AKSPreviewAgentPo
         self.agentpool_decorator_mode = AgentPoolDecoratorMode.STANDALONE
         self.models = AKSPreviewAgentPoolModels(self.cmd, self.resource_type, self.agentpool_decorator_mode)
         self.client = MockClient()
+
+    def test_update_custom_ca_trust(self):
+        self.common_update_custom_ca_trust()
 
     def test_update_agentpool_profile_preview(self):
         import inspect
@@ -644,6 +791,9 @@ class AKSPreviewAgentPoolUpdateDecoratorManagedClusterModeTestCase(AKSPreviewAge
         self.agentpool_decorator_mode = AgentPoolDecoratorMode.MANAGED_CLUSTER
         self.models = AKSPreviewAgentPoolModels(self.cmd, self.resource_type, self.agentpool_decorator_mode)
         self.client = MockClient()
+
+    def test_update_custom_ca_trust(self):
+        self.common_update_custom_ca_trust()
 
     def test_update_agentpool_profile_preview(self):
         import inspect
