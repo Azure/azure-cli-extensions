@@ -38,10 +38,12 @@ class SshCustomCommandTest(unittest.TestCase):
     @mock.patch('azext_ssh.custom._assert_args')
     @mock.patch('azext_ssh.ssh_info.SSHSession')
     @mock.patch('azext_ssh.custom._decide_resource_type')
-    def test_ssh_vm_rdp(self, mock_type, mock_info, mock_assert, mock_do_op):      
+    @mock.patch('platform.system')
+    def test_ssh_vm_rdp(self, mock_sys, mock_type, mock_info, mock_assert, mock_do_op):      
         cmd = mock.Mock()
         ssh_info = mock.Mock()
         mock_info.return_value = ssh_info
+        mock_sys.return_value = 'Windows'
 
         cmd.cli_ctx.data = {'safe_params': []}
         
