@@ -32,8 +32,8 @@ helps[
         text: |-
                az connectedvmware resource-pool create --custom-location "custom location name" \
                --location "location name" --inventory-item "name or id the inventory item" \
-               --name "resource pool name" --resource-group "resource group name" --vcenter \
-               "name or id of the vcenter"
+               --name "resource pool name" --resource-group "resource group name" \
+               --vcenter "name or id of the vcenter"
 """
 
 helps[
