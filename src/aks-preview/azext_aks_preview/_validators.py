@@ -597,7 +597,7 @@ def validate_azure_keyvault_kms_key_vault_resource_id(namespace):
         return
     from msrestazure.tools import is_valid_resource_id
     if not is_valid_resource_id(key_vault_resource_id):
-        raise CLIError("--azure-keyvault-kms-key-vault-resource-id is not a valid Azure resource ID.")
+        raise InvalidArgumentValueError("--azure-keyvault-kms-key-vault-resource-id is not a valid Azure resource ID.")
 
 
 def validate_enable_custom_ca_trust(namespace):
