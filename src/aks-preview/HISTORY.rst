@@ -12,7 +12,8 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
-* Fix: Remove permission prompt when saving config file to symlink with `az aks get-credentials`.
+* Update the minimum required cli core version to `2.35.0`.
+* Enable v2 decorator pattern.
 
 0.5.81
 ++++++
@@ -23,6 +24,7 @@ Pending
     * az aks trustedaccess rolebinding list
     * az aks trustedaccess rolebinding show
     * az aks trustedaccess rolebinding delete
+* Fix: Remove permission prompt when saving config file to symlink with `az aks get-credentials`.
 
 0.5.80
 ++++++
