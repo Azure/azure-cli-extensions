@@ -9,11 +9,12 @@ from unittest import mock
 from azext_ssh import rdp_utils
 from azext_ssh import ssh_info
 from azext_ssh import ssh_utils
+from azext_ssh import _process_helper
 
 
 class RDPUtilsTest(unittest.TestCase):
     @mock.patch.object(rdp_utils, '_get_rdp_path')
-    @mock.patch('azure.cli.command_modules.network._process_helper.launch_and_wait')
+    @mock.patch.object(_process_helper, 'launch_and_wait')
     def test_call_rdp(self, mock_launch, mock_path):
         mock_path.return_value = 'rdp'
         expected_command = ['rdp', '/v:localhost:0']

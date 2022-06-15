@@ -68,7 +68,7 @@ def start_rdp_connection(ssh_info, delete_keys, delete_cert):
 
 
 def call_rdp(local_port):
-    from azure.cli.command_modules.network._process_helper import launch_and_wait
+    from azext_ssh._process_helper import launch_and_wait
     if platform.system() == 'Windows':
         colorama.init()
         print(Fore.GREEN + "Launching Remote Desktop Connection" + Style.RESET_ALL)
