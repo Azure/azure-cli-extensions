@@ -174,8 +174,7 @@ def trigger_disk_restore(test):
 def initialize_backup_instance(test):
     backup_instance_guid = "b7e6f082-b310-11eb-8f55-9cfce85d4fae"
     backup_instance_json = test.cmd('az dataprotection backup-instance initialize --datasource-type AzureDisk'
-                                    ' -l centraluseuap --policy-id "{policyid}" --datasource-id "{diskid}"').get_output_in_json()
-    backup_instance_json["properties"]["policy_info"]["policy_parameters"]["data_store_parameters_list"][0]["resource_group_id"] = test.kwargs["rgid"]
+                                    ' -l centraluseuap --policy-id "{policyid}" --datasource-id "{diskid}" --snapshot-rg "{rg}"').get_output_in_json()
     backup_instance_json["backup_instance_name"] = test.kwargs['diskname'] + "-" + test.kwargs['diskname'] + "-" + backup_instance_guid
     test.kwargs.update({
         "backup_instance_json": backup_instance_json,

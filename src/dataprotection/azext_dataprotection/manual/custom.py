@@ -190,7 +190,6 @@ def dataprotection_backup_instance_initialize(datasource_type, datasource_id, da
                 {
                     "object_type": "AzureOperationalStoreParameters",
                     "data_store_type": "OperationalStore",
-                    # "resource_group_id": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}"
                     "resource_group_id": disk_sub_id + "/resourceGroups/" + snapshot_resource_group_name
                 }
             ]
