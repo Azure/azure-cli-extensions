@@ -170,7 +170,7 @@ def dataprotection_backup_instance_validate_for_backup(client, vault_name, resou
 
 
 def dataprotection_backup_instance_initialize(datasource_type, datasource_id, datasource_location, policy_id,
-                                              secret_store_type=None, secret_store_uri=None, 
+                                              secret_store_type=None, secret_store_uri=None,
                                               snapshot_resource_group_name=None):
     datasource_info = helper.get_datasource_info(datasource_type, datasource_id, datasource_location)
     datasourceset_info = None
@@ -268,7 +268,7 @@ def dataprotection_backup_instance_update_msi_permissions(cmd, client, resource_
     role_assignments_arr = []
 
     if backup_instance['properties']['data_source_info']['resource_location'] != backup_vault.location:
-        raise CLIError("Location of data source needs to be the same as backup vault.\nMake sure the datasource "\
+        raise CLIError("Location of data source needs to be the same as backup vault.\nMake sure the datasource "
                        "and vault are chosen properly")
 
     if operation == 'Backup' and backup_instance is None:
