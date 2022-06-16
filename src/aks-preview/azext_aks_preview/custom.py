@@ -805,27 +805,24 @@ def aks_create(
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
 
-    from azure.cli.command_modules.acs._consts import \
-        DecoratorEarlyExitException
-    from azure.cli.command_modules.acs.decorator import AKSParamDict
-
-    from .decorator import AKSPreviewCreateDecorator
+    from azure.cli.command_modules.acs._consts import DecoratorEarlyExitException
+    from azext_aks_preview.managed_cluster_decorator import AKSPreviewManagedClusterCreateDecorator
 
     # decorator pattern
-    aks_create_decorator = AKSPreviewCreateDecorator(
+    aks_create_decorator = AKSPreviewManagedClusterCreateDecorator(
         cmd=cmd,
         client=client,
-        raw_parameters=AKSParamDict(raw_parameters),
+        raw_parameters=raw_parameters,
         resource_type=CUSTOM_MGMT_AKS_PREVIEW,
     )
     try:
         # construct mc profile
-        mc = aks_create_decorator.construct_mc_preview_profile()
+        mc = aks_create_decorator.construct_mc_profile_preview()
     except DecoratorEarlyExitException:
         # exit gracefully
         return None
     # send request to create a real managed cluster
-    return aks_create_decorator.create_mc_preview(mc)
+    return aks_create_decorator.create_mc(mc)
 
 
 # pylint: disable=too-many-locals
@@ -914,27 +911,24 @@ def aks_update(
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
 
-    from azure.cli.command_modules.acs._consts import \
-        DecoratorEarlyExitException
-    from azure.cli.command_modules.acs.decorator import AKSParamDict
-
-    from .decorator import AKSPreviewUpdateDecorator
+    from azure.cli.command_modules.acs._consts import DecoratorEarlyExitException
+    from azext_aks_preview.managed_cluster_decorator import AKSPreviewManagedClusterUpdateDecorator
 
     # decorator pattern
-    aks_update_decorator = AKSPreviewUpdateDecorator(
+    aks_update_decorator = AKSPreviewManagedClusterUpdateDecorator(
         cmd=cmd,
         client=client,
-        raw_parameters=AKSParamDict(raw_parameters),
+        raw_parameters=raw_parameters,
         resource_type=CUSTOM_MGMT_AKS_PREVIEW,
     )
     try:
         # update mc profile
-        mc = aks_update_decorator.update_mc_preview_profile()
+        mc = aks_update_decorator.update_mc_profile_preview()
     except DecoratorEarlyExitException:
         # exit gracefully
         return None
     # send request to update the real managed cluster
-    return aks_update_decorator.update_mc_preview(mc)
+    return aks_update_decorator.update_mc(mc)
 
 
 # pylint: disable=unused-argument
@@ -1450,113 +1444,27 @@ def aks_agentpool_add(
     gpu_instance_profile=None,
     enable_custom_ca_trust=False,
 ):
-    instances = client.list(resource_group_name, cluster_name)
-    for agentpool_profile in instances:
-        if agentpool_profile.name == nodepool_name:
-            raise CLIError("Node pool {} already exists, please try a different name, "
-                           "use 'aks nodepool list' to get current list of node pool".format(nodepool_name))
+    # DO NOT MOVE: get all the original parameters and save them as a dictionary
+    raw_parameters = locals()
 
-    upgradeSettings = AgentPoolUpgradeSettings()
-    taints_array = []
-
-    creationData = None
-    if snapshot_id:
-        snapshot = _get_snapshot(cmd.cli_ctx, snapshot_id)
-        if not kubernetes_version:
-            kubernetes_version = snapshot.kubernetes_version
-        if not os_type:
-            os_type = snapshot.os_type
-        if not os_sku:
-            os_sku = snapshot.os_sku
-        if not node_vm_size:
-            node_vm_size = snapshot.vm_size
-
-        creationData = CreationData(
-            source_resource_id=snapshot_id
-        )
-
-    if not os_type:
-        os_type = "Linux"
-
-    if node_taints is not None:
-        for taint in node_taints.split(','):
-            try:
-                taint = taint.strip()
-                taints_array.append(taint)
-            except ValueError:
-                raise CLIError(
-                    'Taint does not match allowed values. Expect value such as "special=true:NoSchedule".')
-
-    if node_vm_size is None:
-        if os_type == "Windows":
-            node_vm_size = "Standard_D2s_v3"
-        else:
-            node_vm_size = "Standard_DS2_v2"
-
-    if max_surge:
-        upgradeSettings.max_surge = max_surge
-
-    agent_pool = AgentPool(
-        name=nodepool_name,
-        tags=tags,
-        node_labels=labels,
-        count=int(node_count),
-        vm_size=node_vm_size,
-        os_type=os_type,
-        os_sku=os_sku,
-        enable_fips=enable_fips_image,
-        storage_profile=ContainerServiceStorageProfileTypes.managed_disks,
-        vnet_subnet_id=vnet_subnet_id,
-        pod_subnet_id=pod_subnet_id,
-        proximity_placement_group_id=ppg,
-        agent_pool_type="VirtualMachineScaleSets",
-        max_pods=int(max_pods) if max_pods else None,
-        orchestrator_version=kubernetes_version,
-        availability_zones=zones if zones else node_zones,
-        enable_node_public_ip=enable_node_public_ip,
-        node_public_ip_prefix_id=node_public_ip_prefix_id,
-        node_taints=taints_array,
-        scale_set_priority=priority,
-        scale_down_mode=scale_down_mode,
-        upgrade_settings=upgradeSettings,
-        enable_encryption_at_host=enable_encryption_at_host,
-        enable_ultra_ssd=enable_ultra_ssd,
-        mode=mode,
-        workload_runtime=workload_runtime,
-        gpu_instance_profile=gpu_instance_profile,
-        creation_data=creationData,
-        host_group_id=host_group_id,
-        capacity_reservation_group_id=crg_id,
-        enable_custom_ca_trust=enable_custom_ca_trust
+    # decorator pattern
+    from azure.cli.command_modules.acs._consts import AgentPoolDecoratorMode, DecoratorEarlyExitException
+    from azext_aks_preview.agentpool_decorator import AKSPreviewAgentPoolAddDecorator
+    aks_agentpool_add_decorator = AKSPreviewAgentPoolAddDecorator(
+        cmd=cmd,
+        client=client,
+        raw_parameters=raw_parameters,
+        resource_type=CUSTOM_MGMT_AKS_PREVIEW,
+        agentpool_decorator_mode=AgentPoolDecoratorMode.STANDALONE,
     )
-
-    if priority == CONST_SCALE_SET_PRIORITY_SPOT:
-        agent_pool.scale_set_eviction_policy = eviction_policy
-        if isnan(spot_max_price):
-            spot_max_price = -1
-        agent_pool.spot_max_price = spot_max_price
-
-    _check_cluster_autoscaler_flag(
-        enable_cluster_autoscaler, min_count, max_count, node_count, agent_pool)
-
-    if node_osdisk_size:
-        agent_pool.os_disk_size_gb = int(node_osdisk_size)
-
-    if node_osdisk_type:
-        agent_pool.os_disk_type = node_osdisk_type
-
-    if kubelet_config:
-        agent_pool.kubelet_config = _get_kubelet_config(kubelet_config)
-
-    if linux_os_config:
-        agent_pool.linux_os_config = _get_linux_os_config(linux_os_config)
-
-    if message_of_the_day:
-        agent_pool.message_of_the_day = _get_message_of_the_day(
-            message_of_the_day)
-
-    headers = get_aks_custom_headers(aks_custom_headers)
-    return sdk_no_wait(no_wait, client.begin_create_or_update, resource_group_name, cluster_name, nodepool_name, agent_pool, headers=headers)
+    try:
+        # construct agentpool profile
+        agentpool = aks_agentpool_add_decorator.construct_agentpool_profile_preview()
+    except DecoratorEarlyExitException:
+        # exit gracefully
+        return None
+    # send request to add a real agentpool
+    return aks_agentpool_add_decorator.add_agentpool(agentpool)
 
 
 # pylint: disable=too-many-locals
@@ -1583,97 +1491,27 @@ def aks_agentpool_update(
     enable_custom_ca_trust=False,
     disable_custom_ca_trust=False,
 ):
-    update_autoscaler = enable_cluster_autoscaler + \
-        disable_cluster_autoscaler + update_cluster_autoscaler
+    # DO NOT MOVE: get all the original parameters and save them as a dictionary
+    raw_parameters = locals()
 
-    update_custom_ca_trust = enable_custom_ca_trust + disable_custom_ca_trust
-
-    if (update_autoscaler != 1 and not tags and not scale_down_mode and not mode and not max_surge and labels is None and node_taints is None and not update_custom_ca_trust):
-        reconcilePrompt = 'no argument specified to update would you like to reconcile to current settings?'
-        if not prompt_y_n(reconcilePrompt, default="n"):
-            raise CLIError('Please specify one or more of "--enable-cluster-autoscaler" or '
-                           '"--disable-cluster-autoscaler" or '
-                           '"--update-cluster-autoscaler" or '
-                           '"--tags" or "--mode" or "--max-surge" or "--scale-down-mode" or "--labels" or "--node-taints')
-
-    instance = client.get(resource_group_name, cluster_name, nodepool_name)
-
-    if node_taints is not None:
-        taints_array = []
-        if node_taints != '':
-            for taint in node_taints.split(','):
-                try:
-                    taint = taint.strip()
-                    taints_array.append(taint)
-                except ValueError:
-                    raise InvalidArgumentValueError(
-                        'Taint does not match allowed values. Expect value such as "special=true:NoSchedule".')
-        instance.node_taints = taints_array
-
-    if min_count is None or max_count is None:
-        if enable_cluster_autoscaler or update_cluster_autoscaler:
-            raise CLIError('Please specify both min-count and max-count when --enable-cluster-autoscaler or '
-                           '--update-cluster-autoscaler set.')
-    if min_count is not None and max_count is not None:
-        if int(min_count) > int(max_count):
-            raise CLIError(
-                'value of min-count should be less than or equal to value of max-count.')
-
-    if enable_cluster_autoscaler:
-        if instance.enable_auto_scaling:
-            logger.warning('Autoscaler is already enabled for this node pool.\n'
-                           'Please run "az aks nodepool update --update-cluster-autoscaler" '
-                           'if you want to update min-count or max-count.')
-            return None
-        instance.min_count = int(min_count)
-        instance.max_count = int(max_count)
-        instance.enable_auto_scaling = True
-
-    if update_cluster_autoscaler:
-        if not instance.enable_auto_scaling:
-            raise CLIError('Autoscaler is not enabled for this node pool.\n'
-                           'Run "az aks nodepool update --enable-cluster-autoscaler" '
-                           'to enable cluster with min-count and max-count.')
-        instance.min_count = int(min_count)
-        instance.max_count = int(max_count)
-
-    if not instance.upgrade_settings:
-        instance.upgrade_settings = AgentPoolUpgradeSettings()
-
-    if max_surge:
-        instance.upgrade_settings.max_surge = max_surge
-
-    if disable_cluster_autoscaler:
-        if not instance.enable_auto_scaling:
-            logger.warning(
-                'Autoscaler is already disabled for this node pool.')
-            return None
-        instance.enable_auto_scaling = False
-        instance.min_count = None
-        instance.max_count = None
-
-    instance.tags = tags
-
-    if scale_down_mode is not None:
-        instance.scale_down_mode = scale_down_mode
-
-    if mode is not None:
-        instance.mode = mode
-
-    if labels is not None:
-        instance.node_labels = labels
-
-    if enable_custom_ca_trust:
-        instance.enable_custom_ca_trust = True
-
-    if disable_custom_ca_trust:
-        if not instance.enable_custom_ca_trust:
-            logger.warning(
-                'Custom CA Trust is already disabled for this node pool.')
-            return None
-        instance.enable_custom_ca_trust = False
-
-    return sdk_no_wait(no_wait, client.begin_create_or_update, resource_group_name, cluster_name, nodepool_name, instance)
+    # decorator pattern
+    from azure.cli.command_modules.acs._consts import AgentPoolDecoratorMode, DecoratorEarlyExitException
+    from azext_aks_preview.agentpool_decorator import AKSPreviewAgentPoolUpdateDecorator
+    aks_agentpool_update_decorator = AKSPreviewAgentPoolUpdateDecorator(
+        cmd=cmd,
+        client=client,
+        raw_parameters=raw_parameters,
+        resource_type=CUSTOM_MGMT_AKS_PREVIEW,
+        agentpool_decorator_mode=AgentPoolDecoratorMode.STANDALONE,
+    )
+    try:
+        # update agentpool profile
+        agentpool = aks_agentpool_update_decorator.update_agentpool_profile_preview()
+    except DecoratorEarlyExitException:
+        # exit gracefully
+        return None
+    # send request to update the real agentpool
+    return aks_agentpool_update_decorator.update_agentpool(agentpool)
 
 
 def aks_agentpool_scale(cmd,    # pylint: disable=unused-argument
