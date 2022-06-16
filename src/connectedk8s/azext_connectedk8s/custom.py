@@ -41,6 +41,7 @@ from azext_connectedk8s._client_factory import _resource_providers_client
 from azext_connectedk8s._client_factory import get_graph_client_service_principals
 import azext_connectedk8s._constants as consts
 import azext_connectedk8s._utils as utils
+import azext_connectedk8s._validators as validators
 import azext_connectedk8s._clientproxyutils as clientproxyutils
 from glob import glob
 from .vendored_sdks.models import ConnectedCluster, ConnectedClusterIdentity, ListClusterUserCredentialProperties
@@ -56,11 +57,13 @@ logger = get_logger(__name__)
 # pylint: disable=line-too-long
 
 
-def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_proxy="", http_proxy="", no_proxy="", proxy_cert="", location=None,
+def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlation_id, https_proxy="", http_proxy="", no_proxy="", proxy_cert="", location=None,
                         kube_config=None, kube_context=None, no_wait=False, tags=None, distribution='auto', infrastructure='auto',
                         disable_auto_upgrade=False, cl_oid=None, onboarding_timeout="600"):
     logger.warning("This operation might take a while...\n")
     logger.warning("dev test")
+    #cmd.cli_ctx.data['headers']['x-ms-client-request-id'] = "123"
+    validators.override_client_request_id_header(cmd, correlation_id)
 
     # Setting subscription id and tenant Id
     subscription_id = get_subscription_id(cmd.cli_ctx)

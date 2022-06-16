@@ -17,3 +17,6 @@ def example_name_or_id_validator(cmd, namespace):
                 type='storageAccounts',
                 name=namespace.storage_account
             )
+
+def override_client_request_id_header(cmd, correlation_id):
+    cmd.cli_ctx.data['headers']['x-ms-client-request-id'] = correlation_id
