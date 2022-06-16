@@ -9,7 +9,7 @@ import unittest
 
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse, live_only
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
-from azure.cli.core.azclierror import InvalidArgumentValueError
+from azure.cli.core.azclierror import InvalidArgumentValueError, AzureInternalError
 
 from .utils import get_test_subscription_id, get_test_resource_group, get_test_workspace, get_test_workspace_location
 from ..._client_factory import _get_data_credentials
@@ -32,13 +32,19 @@ class QuantumJobsScenarioTest(ScenarioTest):
         assert len(targets) > 0
 
     def test_build(self):
-        result = build(self, target_id='ionq.simulator', project='src\\quantum\\azext_quantum\\tests\\latest\\source_for_build_test\\QuantumRNG.csproj', target_capability='foobar')
+        result = build(self, target_id='ionq.simulator', project='src\\quantum\\azext_quantum\\tests\\latest\\source_for_build_test\\QuantumRNG.csproj', target_capability='BasicQuantumFunctionality')
         assert result == {'result': 'ok'}
 
         self.testfile = open(os.path.join(os.path.dirname(__file__), 'source_for_build_test/obj/qsharp/config/qsc.rsp'))
         self.testdata = self.testfile.read()
-        self.assertIn('TargetCapability:foobar', self.testdata)
+        self.assertIn('TargetCapability:BasicQuantumFunctionality', self.testdata)
         self.testfile.close()
+
+        try:
+            build(self, target_id='ionq.simulator', project='src\\quantum\\azext_quantum\\tests\\latest\\source_for_build_test\\QuantumRNG.csproj', target_capability='BogusQuantumFunctionality')
+            assert False
+        except AzureInternalError as e:
+            assert str(e) == "Failed to compile program."
 
     @live_only()
     def test_submit_args(self):
