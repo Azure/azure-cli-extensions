@@ -68,13 +68,13 @@ def start_rdp_connection(ssh_info, delete_keys, delete_cert):
 
 
 def call_rdp(local_port):
-    from azure.cli.command_modules.network._process_helper import launch_and_wait
+    from . import _process_helper
     if platform.system() == 'Windows':
         colorama.init()
         print(Fore.GREEN + "Launching Remote Desktop Connection" + Style.RESET_ALL)
         print(Fore.YELLOW + "To close this session, close the Remote Desktop Connection window." + Style.RESET_ALL)
         command = [_get_rdp_path(), f"/v:localhost:{local_port}"]
-        launch_and_wait(command)
+        _process_helper.launch_and_wait(command)
 
 
 def is_local_port_open(local_port):
