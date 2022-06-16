@@ -9,14 +9,8 @@ from azure.cli.core.commands.client_factory import configure_common_settings
 from azure.cli.core.commands.client_factory import get_subscription_id
 from azure.graphrbac import GraphRbacManagementClient
 
-# temp: test custom header
-client_kwargs = {}
-headers = {'x-ms-client-request-id':'123'}
-client_kwargs['headers'] = headers
-
 def cf_connectedk8s(cli_ctx, *_):
     from azext_connectedk8s.vendored_sdks import ConnectedKubernetesClient
-    #cli_ctx.data['headers']['x-ms-client-request-id'] = "123"
     return get_mgmt_service_client(cli_ctx, ConnectedKubernetesClient)
 
 
