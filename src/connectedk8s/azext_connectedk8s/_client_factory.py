@@ -9,6 +9,7 @@ from azure.cli.core.commands.client_factory import configure_common_settings
 from azure.cli.core.commands.client_factory import get_subscription_id
 from azure.graphrbac import GraphRbacManagementClient
 
+
 def cf_connectedk8s(cli_ctx, *_):
     from azext_connectedk8s.vendored_sdks import ConnectedKubernetesClient
     return get_mgmt_service_client(cli_ctx, ConnectedKubernetesClient)

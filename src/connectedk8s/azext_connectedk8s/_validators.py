@@ -4,6 +4,7 @@
 # --------------------------------------------------------------------------------------------
 import azext_connectedk8s._constants as consts
 
+
 def example_name_or_id_validator(cmd, namespace):
     # Example of a storage account name or ID validator.
     from azure.cli.core.commands.client_factory import get_subscription_id
@@ -17,6 +18,7 @@ def example_name_or_id_validator(cmd, namespace):
                 type='storageAccounts',
                 name=namespace.storage_account
             )
+
 
 def override_client_request_id_header(cmd, namespace):
     if namespace.correlation_id is not None:
