@@ -9,10 +9,10 @@ If there is no rush to release a new version, please just add a description of t
 
 To release a new version, please select a new version number (usually plus 1 to the minor of the current latest version number), and then add a new section named as the new version number in this file, the content should include the new modifications and everything from the *Pending* section. Finally, update the `VERSION` in `setup.py` with this new version number.
 
-Pending
+0.5.82
 +++++++
 
-* Fix: Remove permission prompt when saving config file to symlink with `az aks get-credentials`.
+* Support Key Vault with private link when enabling Azure KeyVault KMS.
 
 0.5.81
 ++++++
@@ -23,6 +23,7 @@ Pending
     * az aks trustedaccess rolebinding list
     * az aks trustedaccess rolebinding show
     * az aks trustedaccess rolebinding delete
+* Fix: Remove permission prompt when saving config file to symlink with `az aks get-credentials`.
 
 0.5.80
 ++++++

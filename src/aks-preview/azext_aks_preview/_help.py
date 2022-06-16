@@ -432,6 +432,13 @@ helps['aks create'] = """
         - name: --azure-keyvault-kms-key-id
           type: string
           short-summary: Identifier of Azure Key Vault key.
+        - name: --azure-keyvault-kms-key-vault-network-access
+          type: string
+          short-summary: Network Access of Azure Key Vault.
+          long-summary: Allowed values are "Public", "Private". If not set, defaults to type "Public". Requires --azure-keyvault-kms-key-id to be used.
+        - name: --azure-keyvault-kms-key-vault-resource-id
+          type: string
+          short-summary: Resource ID of Azure Key Vault.
         - name: --dns-zone-resource-id
           type: string
           short-summary: The resource ID of the DNS zone resource to use with the web_application_routing addon.
@@ -752,6 +759,13 @@ helps['aks update'] = """
         - name: --azure-keyvault-kms-key-id
           type: string
           short-summary: Identifier of Azure Key Vault key.
+        - name: --azure-keyvault-kms-key-vault-network-access
+          type: string
+          short-summary: Network Access of Azure Key Vault.
+          long-summary: Allowed values are "Public", "Private". If not set, defaults to type "Public". Requires --azure-keyvault-kms-key-id to be used.
+        - name: --azure-keyvault-kms-key-vault-resource-id
+          type: string
+          short-summary: Resource ID of Azure Key Vault.
         - name: --enable-apiserver-vnet-integration
           type: bool
           short-summary: Enable integration of user vnet with control plane apiserver pods.

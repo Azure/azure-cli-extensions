@@ -66,6 +66,8 @@ from ._consts import (
     CONST_WORKLOAD_RUNTIME_WASM_WASI,
     CONST_DISK_DRIVER_V1,
     CONST_DISK_DRIVER_V2,
+    CONST_AZURE_KEYVAULT_NETWORK_ACCESS_PUBLIC,
+    CONST_AZURE_KEYVAULT_NETWORK_ACCESS_PRIVATE,
 )
 from ._validators import (
     validate_acr,
@@ -75,6 +77,7 @@ from ._validators import (
     validate_assign_identity,
     validate_assign_kubelet_identity,
     validate_azure_keyvault_kms_key_id,
+    validate_azure_keyvault_kms_key_vault_resource_id,
     validate_cluster_id,
     validate_cluster_snapshot_id,
     validate_create_parameters,
@@ -153,6 +156,8 @@ auto_upgrade_channels = [
 
 # consts for credential
 credential_formats = [CONST_CREDENTIAL_FORMAT_AZURE, CONST_CREDENTIAL_FORMAT_EXEC]
+
+keyvault_network_access_types = [CONST_AZURE_KEYVAULT_NETWORK_ACCESS_PUBLIC, CONST_AZURE_KEYVAULT_NETWORK_ACCESS_PRIVATE]
 
 
 def load_arguments(self, _):
@@ -292,6 +297,8 @@ def load_arguments(self, _):
         c.argument('enable_oidc_issuer', action='store_true', is_preview=True)
         c.argument('enable_azure_keyvault_kms', action='store_true', is_preview=True)
         c.argument('azure_keyvault_kms_key_id', validator=validate_azure_keyvault_kms_key_id, is_preview=True)
+        c.argument('azure_keyvault_kms_key_vault_network_access', arg_type=get_enum_type(keyvault_network_access_types), default=CONST_AZURE_KEYVAULT_NETWORK_ACCESS_PUBLIC, is_preview=True)
+        c.argument('azure_keyvault_kms_key_vault_resource_id', validator=validate_azure_keyvault_kms_key_vault_resource_id, is_preview=True)
         c.argument('cluster_snapshot_id', validator=validate_cluster_snapshot_id, is_preview=True)
         c.argument('disk_driver_version', arg_type=get_enum_type(disk_driver_versions))
         c.argument('disable_disk_driver', action='store_true')
@@ -379,6 +386,8 @@ def load_arguments(self, _):
         c.argument('enable_oidc_issuer', action='store_true', is_preview=True)
         c.argument('enable_azure_keyvault_kms', action='store_true', is_preview=True)
         c.argument('azure_keyvault_kms_key_id', validator=validate_azure_keyvault_kms_key_id, is_preview=True)
+        c.argument('azure_keyvault_kms_key_vault_network_access', arg_type=get_enum_type(keyvault_network_access_types), is_preview=True)
+        c.argument('azure_keyvault_kms_key_vault_resource_id', validator=validate_azure_keyvault_kms_key_vault_resource_id, is_preview=True)
         c.argument('enable_disk_driver', action='store_true')
         c.argument('disk_driver_version', arg_type=get_enum_type(disk_driver_versions))
         c.argument('disable_disk_driver', action='store_true')
