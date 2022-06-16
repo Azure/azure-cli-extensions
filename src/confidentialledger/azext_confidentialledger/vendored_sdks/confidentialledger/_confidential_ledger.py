@@ -28,9 +28,9 @@ class ConfidentialLedger(ConfidentialLedgerOperationsMixin):
     """Microsoft Azure Confidential Compute Ledger Control Plane REST API version 2020-12-01-preview.
 
     :ivar operations: Operations operations
-    :vartype operations: confidential_ledger.operations.Operations
+    :vartype operations: azure.mgmt.confidentialledger.operations.Operations
     :ivar ledger: LedgerOperations operations
-    :vartype ledger: confidential_ledger.operations.LedgerOperations
+    :vartype ledger: azure.mgmt.confidentialledger.operations.LedgerOperations
     :param credential: Credential needed for the client to connect to Azure.
     :type credential: ~azure.core.credentials.TokenCredential
     :param subscription_id: The Azure subscription ID. This is a GUID-formatted string (e.g. 00000000-0000-0000-0000-000000000000).

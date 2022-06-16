@@ -9,9 +9,8 @@
 # --------------------------------------------------------------------------
 # pylint: disable=unused-import
 
-from azure.cli.core import AzCommandsLoader
-
 import azext_confidentialledger._help
+from azure.cli.core import AzCommandsLoader
 
 
 class ConfidentialLedgerCommandsLoader(AzCommandsLoader):
@@ -22,7 +21,8 @@ class ConfidentialLedgerCommandsLoader(AzCommandsLoader):
         confidentialledger_custom = CliCommandType(
             operations_tmpl='azext_confidentialledger.custom#{}',
             client_factory=cf_confidentialledger_cl)
-        super().__init__(cli_ctx=cli_ctx, custom_command_type=confidentialledger_custom)
+        parent = super(ConfidentialLedgerCommandsLoader, self)
+        parent.__init__(cli_ctx=cli_ctx, custom_command_type=confidentialledger_custom)
 
     def load_command_table(self, args):
         from azext_confidentialledger.generated.commands import load_command_table

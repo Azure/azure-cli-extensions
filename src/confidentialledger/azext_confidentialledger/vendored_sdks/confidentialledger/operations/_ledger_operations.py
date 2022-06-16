@@ -32,7 +32,7 @@ class LedgerOperations(object):
     instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~confidential_ledger.models
+    :type models: ~azure.mgmt.confidentialledger.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -64,7 +64,7 @@ class LedgerOperations(object):
         :type ledger_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: ConfidentialLedger, or the result of cls(response)
-        :rtype: ~confidential_ledger.models.ConfidentialLedger
+        :rtype: ~azure.mgmt.confidentialledger.models.ConfidentialLedger
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.ConfidentialLedger"]
@@ -72,7 +72,7 @@ class LedgerOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-05-13-preview"
+        api_version = "2022-05-13"
         accept = "application/json"
 
         # Construct URL
@@ -121,7 +121,7 @@ class LedgerOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-05-13-preview"
+        api_version = "2022-05-13"
         accept = "application/json"
 
         # Construct URL
@@ -235,7 +235,7 @@ class LedgerOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-05-13-preview"
+        api_version = "2022-05-13"
         content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
 
@@ -296,7 +296,7 @@ class LedgerOperations(object):
         :param ledger_name: Name of the Confidential Ledger.
         :type ledger_name: str
         :param confidential_ledger: Confidential Ledger Create Request Body.
-        :type confidential_ledger: ~confidential_ledger.models.ConfidentialLedger
+        :type confidential_ledger: ~azure.mgmt.confidentialledger.models.ConfidentialLedger
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: True for ARMPolling, False for no polling, or a
@@ -304,7 +304,7 @@ class LedgerOperations(object):
         :paramtype polling: bool or ~azure.core.polling.PollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
         :return: An instance of LROPoller that returns either ConfidentialLedger or the result of cls(response)
-        :rtype: ~azure.core.polling.LROPoller[~confidential_ledger.models.ConfidentialLedger]
+        :rtype: ~azure.core.polling.LROPoller[~azure.mgmt.confidentialledger.models.ConfidentialLedger]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         polling = kwargs.pop('polling', True)  # type: Union[bool, PollingMethod]
@@ -366,7 +366,7 @@ class LedgerOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-05-13-preview"
+        api_version = "2022-05-13"
         content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
 
@@ -427,7 +427,7 @@ class LedgerOperations(object):
         :param ledger_name: Name of the Confidential Ledger.
         :type ledger_name: str
         :param confidential_ledger: Confidential Ledger request body for Updating Ledger.
-        :type confidential_ledger: ~confidential_ledger.models.ConfidentialLedger
+        :type confidential_ledger: ~azure.mgmt.confidentialledger.models.ConfidentialLedger
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: True for ARMPolling, False for no polling, or a
@@ -435,7 +435,7 @@ class LedgerOperations(object):
         :paramtype polling: bool or ~azure.core.polling.PollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
         :return: An instance of LROPoller that returns either ConfidentialLedger or the result of cls(response)
-        :rtype: ~azure.core.polling.LROPoller[~confidential_ledger.models.ConfidentialLedger]
+        :rtype: ~azure.core.polling.LROPoller[~azure.mgmt.confidentialledger.models.ConfidentialLedger]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         polling = kwargs.pop('polling', True)  # type: Union[bool, PollingMethod]
@@ -501,7 +501,7 @@ class LedgerOperations(object):
         :type filter: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either ConfidentialLedgerList or the result of cls(response)
-        :rtype: ~azure.core.paging.ItemPaged[~confidential_ledger.models.ConfidentialLedgerList]
+        :rtype: ~azure.core.paging.ItemPaged[~azure.mgmt.confidentialledger.models.ConfidentialLedgerList]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.ConfidentialLedgerList"]
@@ -509,7 +509,7 @@ class LedgerOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-05-13-preview"
+        api_version = "2022-05-13"
         accept = "application/json"
 
         def prepare_request(next_link=None):
@@ -577,7 +577,7 @@ class LedgerOperations(object):
         :type filter: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either ConfidentialLedgerList or the result of cls(response)
-        :rtype: ~azure.core.paging.ItemPaged[~confidential_ledger.models.ConfidentialLedgerList]
+        :rtype: ~azure.core.paging.ItemPaged[~azure.mgmt.confidentialledger.models.ConfidentialLedgerList]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.ConfidentialLedgerList"]
@@ -585,7 +585,7 @@ class LedgerOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-05-13-preview"
+        api_version = "2022-05-13"
         accept = "application/json"
 
         def prepare_request(next_link=None):

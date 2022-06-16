@@ -33,10 +33,10 @@ class ConfidentialLedgerOperationsMixin(object):
         """To check whether a resource name is available.
 
         :param name_availability_request: Name availability request payload.
-        :type name_availability_request: ~confidential_ledger.models.CheckNameAvailabilityRequest
+        :type name_availability_request: ~azure.mgmt.confidentialledger.models.CheckNameAvailabilityRequest
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: CheckNameAvailabilityResponse, or the result of cls(response)
-        :rtype: ~confidential_ledger.models.CheckNameAvailabilityResponse
+        :rtype: ~azure.mgmt.confidentialledger.models.CheckNameAvailabilityResponse
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.CheckNameAvailabilityResponse"]
@@ -44,7 +44,7 @@ class ConfidentialLedgerOperationsMixin(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-05-13-preview"
+        api_version = "2022-05-13"
         content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
 

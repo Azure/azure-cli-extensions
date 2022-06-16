@@ -24,7 +24,7 @@ class AadBasedSecurityPrincipal(msrest.serialization.Model):
     :type tenant_id: str
     :param ledger_role_name: LedgerRole associated with the Security Principal of Ledger. Possible
      values include: "Reader", "Contributor", "Administrator".
-    :type ledger_role_name: str or ~confidential_ledger.models.LedgerRoleName
+    :type ledger_role_name: str or ~azure.mgmt.confidentialledger.models.LedgerRoleName
     """
 
     _attribute_map = {
@@ -54,7 +54,7 @@ class CertBasedSecurityPrincipal(msrest.serialization.Model):
     :type cert: str
     :param ledger_role_name: LedgerRole associated with the Security Principal of Ledger. Possible
      values include: "Reader", "Contributor", "Administrator".
-    :type ledger_role_name: str or ~confidential_ledger.models.LedgerRoleName
+    :type ledger_role_name: str or ~azure.mgmt.confidentialledger.models.LedgerRoleName
     """
 
     _attribute_map = {
@@ -107,7 +107,7 @@ class CheckNameAvailabilityResponse(msrest.serialization.Model):
     :type name_available: bool
     :param reason: The reason why the given name is not available. Possible values include:
      "Invalid", "AlreadyExists".
-    :type reason: str or ~confidential_ledger.models.CheckNameAvailabilityReason
+    :type reason: str or ~azure.mgmt.confidentialledger.models.CheckNameAvailabilityReason
     :param message: Detailed reason why the given name is available.
     :type message: str
     """
@@ -186,7 +186,7 @@ class Resource(msrest.serialization.Model):
     :ivar type: The type of the resource.
     :vartype type: str
     :ivar system_data: Metadata pertaining to creation and last modification of the resource.
-    :vartype system_data: ~confidential_ledger.models.SystemData
+    :vartype system_data: ~azure.mgmt.confidentialledger.models.SystemData
     """
 
     _validation = {
@@ -230,9 +230,9 @@ class ConfidentialLedger(Resource, ResourceLocation, Tags):
     :ivar type: The type of the resource.
     :vartype type: str
     :ivar system_data: Metadata pertaining to creation and last modification of the resource.
-    :vartype system_data: ~confidential_ledger.models.SystemData
+    :vartype system_data: ~azure.mgmt.confidentialledger.models.SystemData
     :param properties: Properties of Confidential Ledger Resource.
-    :type properties: ~confidential_ledger.models.LedgerProperties
+    :type properties: ~azure.mgmt.confidentialledger.models.LedgerProperties
     """
 
     _validation = {
@@ -282,7 +282,7 @@ class ConfidentialLedgerList(msrest.serialization.Model):
     """Object that includes an array of Confidential Ledgers and a possible link for next set.
 
     :param value: List of Confidential Ledgers.
-    :type value: list[~confidential_ledger.models.ConfidentialLedger]
+    :type value: list[~azure.mgmt.confidentialledger.models.ConfidentialLedger]
     :param next_link: The URL the client should use to fetch the next page (per server side
      paging).
     :type next_link: str
@@ -347,9 +347,9 @@ class ErrorDetail(msrest.serialization.Model):
     :ivar target: The error target.
     :vartype target: str
     :ivar details: The error details.
-    :vartype details: list[~confidential_ledger.models.ErrorDetail]
+    :vartype details: list[~azure.mgmt.confidentialledger.models.ErrorDetail]
     :ivar additional_info: The error additional info.
-    :vartype additional_info: list[~confidential_ledger.models.ErrorAdditionalInfo]
+    :vartype additional_info: list[~azure.mgmt.confidentialledger.models.ErrorAdditionalInfo]
     """
 
     _validation = {
@@ -384,7 +384,7 @@ class ErrorResponse(msrest.serialization.Model):
     """Common error response for all Azure Resource Manager APIs to return error details for failed operations. (This also follows the OData error response format.).
 
     :param error: The error object.
-    :type error: ~confidential_ledger.models.ErrorDetail
+    :type error: ~azure.mgmt.confidentialledger.models.ErrorDetail
     """
 
     _attribute_map = {
@@ -416,16 +416,16 @@ class LedgerProperties(msrest.serialization.Model):
     :vartype ledger_internal_namespace: str
     :param ledger_type: Type of Confidential Ledger. Possible values include: "Unknown", "Public",
      "Private".
-    :type ledger_type: str or ~confidential_ledger.models.LedgerType
+    :type ledger_type: str or ~azure.mgmt.confidentialledger.models.LedgerType
     :ivar provisioning_state: Provisioning state of Ledger Resource. Possible values include:
      "Unknown", "Succeeded", "Failed", "Canceled", "Creating", "Deleting", "Updating".
-    :vartype provisioning_state: str or ~confidential_ledger.models.ProvisioningState
+    :vartype provisioning_state: str or ~azure.mgmt.confidentialledger.models.ProvisioningState
     :param aad_based_security_principals: Array of all AAD based Security Principals.
     :type aad_based_security_principals:
-     list[~confidential_ledger.models.AadBasedSecurityPrincipal]
+     list[~azure.mgmt.confidentialledger.models.AadBasedSecurityPrincipal]
     :param cert_based_security_principals: Array of all cert based Security Principals.
     :type cert_based_security_principals:
-     list[~confidential_ledger.models.CertBasedSecurityPrincipal]
+     list[~azure.mgmt.confidentialledger.models.CertBasedSecurityPrincipal]
     """
 
     _validation = {
@@ -474,7 +474,7 @@ class ResourceProviderOperationDefinition(msrest.serialization.Model):
     :param is_data_action: Indicates whether the operation is data action or not.
     :type is_data_action: bool
     :param display: Details about the operations.
-    :type display: ~confidential_ledger.models.ResourceProviderOperationDisplay
+    :type display: ~azure.mgmt.confidentialledger.models.ResourceProviderOperationDisplay
     """
 
     _attribute_map = {
@@ -539,7 +539,7 @@ class ResourceProviderOperationList(msrest.serialization.Model):
     Variables are only populated by the server, and will be ignored when sending a request.
 
     :ivar value: Resource provider operations list.
-    :vartype value: list[~confidential_ledger.models.ResourceProviderOperationDefinition]
+    :vartype value: list[~azure.mgmt.confidentialledger.models.ResourceProviderOperationDefinition]
     :ivar next_link: The URI that can be used to request the next page for list of Azure
      operations.
     :vartype next_link: str
@@ -571,14 +571,14 @@ class SystemData(msrest.serialization.Model):
     :type created_by: str
     :param created_by_type: The type of identity that created the resource. Possible values
      include: "User", "Application", "ManagedIdentity", "Key".
-    :type created_by_type: str or ~confidential_ledger.models.CreatedByType
+    :type created_by_type: str or ~azure.mgmt.confidentialledger.models.CreatedByType
     :param created_at: The timestamp of resource creation (UTC).
     :type created_at: ~datetime.datetime
     :param last_modified_by: The identity that last modified the resource.
     :type last_modified_by: str
     :param last_modified_by_type: The type of identity that last modified the resource. Possible
      values include: "User", "Application", "ManagedIdentity", "Key".
-    :type last_modified_by_type: str or ~confidential_ledger.models.CreatedByType
+    :type last_modified_by_type: str or ~azure.mgmt.confidentialledger.models.CreatedByType
     :param last_modified_at: The timestamp of resource last modification (UTC).
     :type last_modified_at: ~datetime.datetime
     """

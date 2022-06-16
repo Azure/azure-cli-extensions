@@ -30,7 +30,7 @@ class Operations(object):
     instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~confidential_ledger.models
+    :type models: ~azure.mgmt.confidentialledger.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -56,7 +56,7 @@ class Operations(object):
 
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either ResourceProviderOperationList or the result of cls(response)
-        :rtype: ~azure.core.paging.ItemPaged[~confidential_ledger.models.ResourceProviderOperationList]
+        :rtype: ~azure.core.paging.ItemPaged[~azure.mgmt.confidentialledger.models.ResourceProviderOperationList]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.ResourceProviderOperationList"]
@@ -64,7 +64,7 @@ class Operations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-05-13-preview"
+        api_version = "2022-05-13"
         accept = "application/json"
 
         def prepare_request(next_link=None):
