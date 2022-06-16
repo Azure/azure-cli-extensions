@@ -170,7 +170,8 @@ def dataprotection_backup_instance_validate_for_backup(client, vault_name, resou
 
 
 def dataprotection_backup_instance_initialize(datasource_type, datasource_id, datasource_location, policy_id,
-                                              secret_store_type=None, secret_store_uri=None):
+                                              secret_store_type=None, secret_store_uri=None, 
+                                              snapshot_resource_group_name=None):
     datasource_info = helper.get_datasource_info(datasource_type, datasource_id, datasource_location)
     datasourceset_info = None
     manifest = helper.load_manifest(datasource_type)
@@ -180,12 +181,17 @@ def dataprotection_backup_instance_initialize(datasource_type, datasource_id, da
     policy_parameters = None
     # Azure Disk specific code for adding datastoreparameter list in the json
     if datasource_type == "AzureDisk":
+        if snapshot_resource_group_name is None:
+            raise CLIError("--snapshot-resource-group-name must be provided when initializing AzureDisk workload")
+
+        disk_sub_id = helper.get_sub_id_from_arm_id(datasource_id)
         policy_parameters = {
             "data_store_parameters_list": [
                 {
                     "object_type": "AzureOperationalStoreParameters",
                     "data_store_type": "OperationalStore",
-                    "resource_group_id": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}"
+                    # "resource_group_id": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}"
+                    "resource_group_id": disk_sub_id + "/resourceGroups/" + snapshot_resource_group_name
                 }
             ]
         }
@@ -261,6 +267,10 @@ def dataprotection_backup_instance_update_msi_permissions(cmd, client, resource_
     principal_id = backup_vault.identity.principal_id
 
     role_assignments_arr = []
+
+    if backup_instance['properties']['data_source_info']['resource_location'] != backup_vault.location:
+        raise CLIError("Location of data source needs to be the same as backup vault.\nMake sure the datasource "\
+                       "and vault are chosen properly")
 
     if operation == 'Backup' and backup_instance is None:
         raise CLIError("--backup-instance needs to be given when --operation is given as Backup")
