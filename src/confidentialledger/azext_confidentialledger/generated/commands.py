@@ -32,8 +32,6 @@ def load_command_table(self, _):
                                         
                                     
                                     
-                                        , is_experimental=True
-                                    
                                     
                                 
                             ) as g:
