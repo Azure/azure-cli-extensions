@@ -10,10 +10,11 @@ from ._confidential_ledger import ConfidentialLedger
 from ._version import VERSION
 
 __version__ = VERSION
-__all__ = ['ConfidentialLedger']
+__all__ = ["ConfidentialLedger"]
 
 try:
     from ._patch import patch_sdk  # type: ignore
+
     patch_sdk()
 except ImportError:
     pass
