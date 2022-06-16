@@ -41,7 +41,6 @@ from azext_connectedk8s._client_factory import _resource_providers_client
 from azext_connectedk8s._client_factory import get_graph_client_service_principals
 import azext_connectedk8s._constants as consts
 import azext_connectedk8s._utils as utils
-import azext_connectedk8s._validators as validators
 import azext_connectedk8s._clientproxyutils as clientproxyutils
 from glob import glob
 from .vendored_sdks.models import ConnectedCluster, ConnectedClusterIdentity, ListClusterUserCredentialProperties
