@@ -260,7 +260,12 @@ def dataprotection_backup_instance_list_from_resourcegraph(client, datasource_ty
     return response.data
 
 
-def dataprotection_backup_instance_update_msi_permissions(cmd, client, resource_group_name, datasource_type, vault_name, operation, permissions_scope, backup_instance=None, keyvault_id=None):
+def dataprotection_backup_instance_update_msi_permissions(cmd, client, resource_group_name, datasource_type, vault_name, operation, permissions_scope, backup_instance=None, keyvault_id=None, yes=False):
+    from knack.prompting import prompt_y_n
+    msg = helper.get_help_text_on_grant_permissions(datasource_type)
+    if not yes and not prompt_y_n(msg):
+        return None
+
     backup_vault = client.get(resource_group_name=resource_group_name,
                               vault_name=vault_name)
     principal_id = backup_vault.identity.principal_id
@@ -290,7 +295,7 @@ def dataprotection_backup_instance_update_msi_permissions(cmd, client, resource_
         cmd.command_kwargs['operation_group'] = 'vaults'
 
         from azure.cli.core.profiles import ResourceType
-        from azure.cli.command_modules.keyvault._client_factory import Clients
+        from azure.cli.command_modules.keyvault._client_factory import Clients, get_client
         from azure.cli.core.commands.client_factory import get_mgmt_service_client
 
         keyvault_params = helper.get_keyvault_parameters_from_id(keyvault_id)
@@ -302,11 +307,22 @@ def dataprotection_backup_instance_update_msi_permissions(cmd, client, resource_
 
         keyvault = keyvault_client.get(resource_group_name=keyvault_rg, vault_name=keyvault_name)
 
-        if keyvault.properties.public_network_access == 'Disabled':
-            raise CLIError("Keyvault needs to have public network access enabled")
+        # Check if the secret URI provided in backup instance is a valid secret
+        data_entity = get_client(cmd.cli_ctx, ResourceType.DATA_KEYVAULT)
+        data_client = data_entity.client_factory(cmd.cli_ctx, None)
+        secrets_list = data_client.get_secrets(vault_base_url=keyvault.properties.vault_uri)
+        given_secret_uri = backup_instance['properties']['datasource_auth_credentials']['secret_store_resource']['uri']
+        given_secret_id = helper.get_secret_params_from_uri(given_secret_uri)['secret_id']
+        valid_secret = False
+        for secret in secrets_list:
+            if given_secret_id == secret.id:
+                valid_secret = True
+                break
 
-        keyvault_network_rules = keyvault.properties.network_acls
-        if keyvault_network_rules and keyvault_network_rules.default_action == 'Deny':
+        if not valid_secret:
+            raise CLIError("Secret URI provided is not valid")
+
+        if keyvault.properties.public_network_access == 'Disabled':
             raise CLIError("Keyvault needs to have public network access enabled")
 
         keyvault_permission_models = manifest['secretStorePermissions']
@@ -338,6 +354,17 @@ def dataprotection_backup_instance_update_msi_permissions(cmd, client, resource_
 
             if not permissions_set:
                 set_policy(cmd, keyvault_client, keyvault_rg, keyvault_name, object_id=principal_id, secret_permissions=secrets_array)
+
+        from azure.cli.command_modules.keyvault.custom import update_vault_setter
+
+        update = False
+        if keyvault.properties.network_acls:
+            if keyvault.properties.network_acls.bypass == 'None':
+                keyvault.properties.network_acls.bypass = 'AzureServices'
+                update = True
+
+            if update:
+                update_vault_setter(cmd, keyvault_client, keyvault, resource_group_name=keyvault_rg, vault_name=keyvault_name)
 
     for role_object in manifest['backupVaultPermissions']:
         resource_id = helper.get_resource_id_from_backup_instance(backup_instance, role_object['type'])

@@ -137,3 +137,34 @@ def get_resource_id_from_backup_instance(backup_instance, role_type):
         resource_id = data_stores[0]['resource_group_id']
 
     return resource_id
+
+
+def get_secret_params_from_uri(secret_uri):
+    secret_params = {}
+
+    secret_params_arr = secret_uri.split("/")
+    secret_params['name'] = secret_params_arr[4]
+
+    if len(secret_params_arr) >= 6:
+        secret_params['version'] = secret_params_arr[5]
+
+    secret_params['secret_id'] = "/".join(secret_params_arr[:5])
+    return secret_params
+
+
+def get_help_text_on_grant_permissions(datasource_type):
+    help_text = "This command will attempt to automatically grant the following access to the backup vault:\n"
+
+    if datasource_type == 'AzureDatabaseForPostgreSQL':
+        help_text += ("1. Backup vault's identity access on the Postgres server and the key vault\n"
+                      "2. 'Allow all Azure Services' under network connectivity in the Postgres server\n"
+                      "3. 'Allow Trusted Azure Services' under network connectivity in the Key vault")
+
+    if datasource_type == 'AzureBlob':
+        help_text += "Backup vault's identity access on the storage account"
+
+    if datasource_type == 'AzureDisk':
+        help_text += "Backup vault's identity access on the disk and snapshot resource group"
+
+    help_text += "\nAre you sure you want to continue?"
+    return help_text
