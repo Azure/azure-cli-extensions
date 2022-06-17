@@ -12,6 +12,24 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+* Update the minimum required cli core version to `2.37.0`.
+* Enable v2 decorator pattern.
+* Fix container name inconsistency for private clusters in kollect command.
+
+0.5.82
++++++++
+
+* Support Key Vault with private link when enabling Azure KeyVault KMS.
+
+0.5.81
+++++++
+
+* Add Trusted Access Role Binding commands
+    * az aks trustedaccess rolebinding create
+    * az aks trustedaccess rolebinding update
+    * az aks trustedaccess rolebinding list
+    * az aks trustedaccess rolebinding show
+    * az aks trustedaccess rolebinding delete
 * Fix: Remove permission prompt when saving config file to symlink with `az aks get-credentials`.
 
 0.5.80
