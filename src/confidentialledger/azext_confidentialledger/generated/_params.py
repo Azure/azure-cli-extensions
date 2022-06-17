@@ -67,12 +67,14 @@ def load_arguments(self, _):
         )
         c.argument(
             "aad_based_security_principals",
+            options_list=["--aad-based-security-principals", "--aad-based-user"],
             action=AddAadBasedSecurityPrincipals,
             nargs="+",
             help="Array of " "all AAD based Security Principals.",
         )
         c.argument(
             "cert_based_security_principals",
+            options_list=["--cert-based-security-principals", "--cert-based-user"],
             action=AddCertBasedSecurityPrincipals,
             nargs="+",
             help="Array of " "all cert based Security Principals.",
@@ -101,12 +103,14 @@ def load_arguments(self, _):
         )
         c.argument(
             "aad_based_security_principals",
+            options_list=["--aad-based-security-principals", "--aad-based-user"],
             action=AddAadBasedSecurityPrincipals,
             nargs="+",
             help="Array of " "all AAD based Security Principals.",
         )
         c.argument(
             "cert_based_security_principals",
+            options_list=["--cert-based-security-principals", "--cert-based-user"],
             action=AddCertBasedSecurityPrincipals,
             nargs="+",
             help="Array of " "all cert based Security Principals.",
