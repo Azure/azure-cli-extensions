@@ -51,31 +51,31 @@ helps[
     type: command
     short-summary: "Creates a  Confidential Ledger with the specified ledger parameters."
     parameters:
-      - name: --aad-based-security-principals,--aad-based-user
+      - name: --aad-based-security-principals
         short-summary: "Array of all AAD based Security Principals."
         long-summary: |
-            Usage: --aad-based-security-principals,--aad-based-user principal-id=XX tenant-id=XX ledger-role-name=XX
+            Usage: --aad-based-security-principals principal-id=XX tenant-id=XX ledger-role-name=XX
 
             principal-id: UUID/GUID based Principal Id of the Security Principal
             tenant-id: UUID/GUID based Tenant Id of the Security Principal
             ledger-role-name: LedgerRole associated with the Security Principal of Ledger
 
-            Multiple actions can be specified by using more than one --aad-based-security-principals,--aad-based-user argument.
-      - name: --cert-based-security-principals,--cert-based-user
+            Multiple actions can be specified by using more than one --aad-based-security-principals argument.
+      - name: --cert-based-security-principals
         short-summary: "Array of all cert based Security Principals."
         long-summary: |
-            Usage: --cert-based-security-principals,--cert-based-user cert=XX ledger-role-name=XX
+            Usage: --cert-based-security-principals cert=XX ledger-role-name=XX
 
             cert: Public key of the user cert (.pem or .cer)
             ledger-role-name: LedgerRole associated with the Security Principal of Ledger
 
-            Multiple actions can be specified by using more than one --cert-based-security-principals,--cert-based-user argument.
+            Multiple actions can be specified by using more than one --cert-based-security-principals argument.
     examples:
       - name: ConfidentialLedgerCreate
         text: |-
-               az confidentialledger create --location "EastUS" --aad-based-security-principals,--aad-based-user \
+               az confidentialledger create --location "EastUS" --aad-based-security-principals \
 ledger-role-name="Administrator" principal-id="34621747-6fc8-4771-a2eb-72f31c461f2e" tenant-id="bce123b9-2b7b-4975-8360\
--5ca0b9b1cd08" --cert-based-security-principals,--cert-based-user cert="-----BEGIN CERTIFICATE-----MIIBsjCCATigAwIBAgIUZWIbyG79TniQLd2UxJ\
+-5ca0b9b1cd08" --cert-based-security-principals cert="-----BEGIN CERTIFICATE-----MIIBsjCCATigAwIBAgIUZWIbyG79TniQLd2UxJ\
 uU74tqrKcwCgYIKoZIzj0EAwMwEDEOMAwGA1UEAwwFdXNlcjAwHhcNMjEwMzE2MTgwNjExWhcNMjIwMzE2MTgwNjExWjAQMQ4wDAYDVQQDDAV1c2VyMDB2M\
 BAGByqGSM49AgEGBSuBBAAiA2IABBiWSo/j8EFit7aUMm5lF+lUmCu+IgfnpFD+7QMgLKtxRJ3aGSqgS/GpqcYVGddnODtSarNE/HyGKUFUolLPQ5ybHcou\
 Uk0kyfA7XMeSoUA4lBz63Wha8wmXo+NdBRo39qNTMFEwHQYDVR0OBBYEFPtuhrwgGjDFHeUUT4nGsXaZn69KMB8GA1UdIwQYMBaAFPtuhrwgGjDFHeUUT4n\
@@ -91,31 +91,31 @@ helps[
     type: command
     short-summary: "Updates properties of Confidential Ledger."
     parameters:
-      - name: --aad-based-security-principals,--aad-based-user
+      - name: --aad-based-security-principals
         short-summary: "Array of all AAD based Security Principals."
         long-summary: |
-            Usage: --aad-based-security-principals,--aad-based-user principal-id=XX tenant-id=XX ledger-role-name=XX
+            Usage: --aad-based-security-principals principal-id=XX tenant-id=XX ledger-role-name=XX
 
             principal-id: UUID/GUID based Principal Id of the Security Principal
             tenant-id: UUID/GUID based Tenant Id of the Security Principal
             ledger-role-name: LedgerRole associated with the Security Principal of Ledger
 
-            Multiple actions can be specified by using more than one --aad-based-security-principals,--aad-based-user argument.
-      - name: --cert-based-security-principals,--cert-based-user
+            Multiple actions can be specified by using more than one --aad-based-security-principals argument.
+      - name: --cert-based-security-principals
         short-summary: "Array of all cert based Security Principals."
         long-summary: |
-            Usage: --cert-based-security-principals,--cert-based-user cert=XX ledger-role-name=XX
+            Usage: --cert-based-security-principals cert=XX ledger-role-name=XX
 
             cert: Public key of the user cert (.pem or .cer)
             ledger-role-name: LedgerRole associated with the Security Principal of Ledger
 
-            Multiple actions can be specified by using more than one --cert-based-security-principals,--cert-based-user argument.
+            Multiple actions can be specified by using more than one --cert-based-security-principals argument.
     examples:
       - name: ConfidentialLedgerUpdate
         text: |-
-               az confidentialledger update --location "EastUS" --aad-based-security-principals,--aad-based-user \
+               az confidentialledger update --location "EastUS" --aad-based-security-principals \
 ledger-role-name="Administrator" principal-id="34621747-6fc8-4771-a2eb-72f31c461f2e" tenant-id="bce123b9-2b7b-4975-8360\
--5ca0b9b1cd08" --cert-based-security-principals,--cert-based-user cert="-----BEGIN CERTIFICATE-----\\nMIIDUjCCAjqgAwIBAgIQJ2IrDBawSkiAbkB\
+-5ca0b9b1cd08" --cert-based-security-principals cert="-----BEGIN CERTIFICATE-----\\nMIIDUjCCAjqgAwIBAgIQJ2IrDBawSkiAbkB\
 YmiAopDANBgkqhkiG9w0BAQsFADAmMSQwIgYDVQQDExtTeW50aGV0aWNzIExlZGdlciBVc2VyIENlcnQwHhcNMjAwOTIzMjIxODQ2WhcNMjEwOTIzMjIyOD\
 Q2WjAmMSQwIgYDVQQDExtTeW50aGV0aWNzIExlZGdlciBVc2VyIENlcnQwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCX2s/Eu4q/eQ63N+Uge\
 g5oAciZua/YCJr41c/696szvSY7Zg1SNJlW88/nbz70+QpO55OmqlEE3QCU+T0Vl/h0Gf//n1PYcoBbTGUnYEmV+fTTHict6rFiEwrGJ62tvcpYgwapInSL\
