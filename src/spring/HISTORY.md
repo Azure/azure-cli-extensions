@@ -1,5 +1,8 @@
 Release History
 ===============
+1.1.1
+* Remove preview tag for Spring Cloud Gateway and API portal
+
 1.1.0
 ---
 * Command `az spring create` has new argument "--ingress-read-timeout" to set ingress read timeout when create Azure Spring Apps.
