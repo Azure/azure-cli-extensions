@@ -12,8 +12,8 @@ from ..storage_test_util import StorageScenarioMixin
 class StorageBlobScenarioTest(StorageScenarioMixin, ScenarioTest):
     @ResourceGroupPreparer(name_prefix='clitest')
     @StorageAccountPreparer(name_prefix='storage', kind='StorageV2', location='eastus2', sku='Standard_RAGZRS')
-    def test_storage_blob_list_scenarios(self, resource_group, storage_account):
-        account_info = self.get_account_info(resource_group, storage_account)
+    def test_storage_blob_list_scenarios(self, resource_group, storage_account_info):
+        account_info = storage_account_info
         container = self.create_container(account_info, prefix="con")
 
         local_file = self.create_temp_file(128)
@@ -184,9 +184,9 @@ class StorageBlobScenarioTest(StorageScenarioMixin, ScenarioTest):
 
     @ResourceGroupPreparer(name_prefix='clitest')
     @StorageAccountPreparer(name_prefix='blobtag', kind='StorageV2', location='eastus2euap')
-    def test_storage_blob_tags_scenario(self, resource_group, storage_account):
+    def test_storage_blob_tags_scenario(self, resource_group, storage_account_info):
         import time
-        account_info = self.get_account_info(resource_group, storage_account)
+        account_info = storage_account_info
         container1 = self.create_container(account_info, prefix="cont1")
         container2 = self.create_container(account_info, prefix="cont2")
 
@@ -315,8 +315,8 @@ class StorageBlobScenarioTest(StorageScenarioMixin, ScenarioTest):
 
     @ResourceGroupPreparer(name_prefix='clitest')
     @StorageAccountPreparer(name_prefix='storage', kind='StorageV2', location='eastus2', sku='Standard_RAGZRS')
-    def test_storage_blob_upload_scenarios(self, resource_group, storage_account):
-        account_info = self.get_account_info(resource_group, storage_account)
+    def test_storage_blob_upload_scenarios(self, resource_group, storage_account_info):
+        account_info = storage_account_info
         container = self.create_container(account_info, prefix="con")
 
         local_file = self.create_temp_file(128)
@@ -348,8 +348,8 @@ class StorageBlobScenarioTest(StorageScenarioMixin, ScenarioTest):
 class StorageContainerScenarioTest(StorageScenarioMixin, ScenarioTest):
     @ResourceGroupPreparer(name_prefix='clitest')
     @StorageAccountPreparer(kind='StorageV2', name_prefix='clitest', location='eastus2euap')
-    def test_storage_container_list_scenarios(self, resource_group, storage_account):
-        account_info = self.get_account_info(resource_group, storage_account)
+    def test_storage_container_list_scenarios(self, resource_group, storage_account_info):
+        account_info = storage_account_info
         container1 = self.create_container(account_info, prefix="con1")
         container2 = self.create_container(account_info, prefix="con2")
         self.cmd('storage account blob-service-properties update -n {sa} -g {rg} --container-delete-retention-days 7 '

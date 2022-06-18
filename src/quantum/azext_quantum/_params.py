@@ -2,10 +2,12 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
-# pylint: disable=line-too-long,protected-access
+
+# pylint: disable=line-too-long,protected-access,no-self-use,too-many-statements
 
 import argparse
-from knack.arguments import CLIArgumentType, CLIError
+from knack.arguments import CLIArgumentType
+from azure.cli.core.azclierror import InvalidArgumentValueError
 
 
 class JobParamsAction(argparse._AppendAction):
@@ -19,8 +21,8 @@ class JobParamsAction(argparse._AppendAction):
             try:
                 key, value = item.split('=', 1)
                 params[key] = value
-            except ValueError:
-                raise CLIError('Usage error: {} KEY=VALUE [KEY=VALUE ...]'.format(option_string))
+            except ValueError as e:
+                raise InvalidArgumentValueError('Usage error: {} KEY=VALUE [KEY=VALUE ...]'.format(option_string)) from e
         return params
 
 
@@ -41,7 +43,7 @@ def load_arguments(self, _):
     skip_role_assignment_type = CLIArgumentType(help='Skip the role assignment step for the quantum workspace in the storage account.')
     provider_id_type = CLIArgumentType(options_list=['--provider-id', '-p'], help='Identifier of an Azure Quantum provider.')
     sku_type = CLIArgumentType(options_list=['--sku', '-k'], help='Identify a plan or SKU offered by an Azure Quantum provider.')
-    provider_sku_list_type = CLIArgumentType(options_list=['--provider-sku-list', '-r'], help='Comma separated list of Provider/SKU pairs.')
+    provider_sku_list_type = CLIArgumentType(options_list=['--provider-sku-list', '-r'], help='Comma separated list of Provider/SKU pairs. Separate the Provider and SKU with a slash. Enclose the entire list in quotes. Values from `az quantum offerings list -l <location> -o table`')
 
     with self.argument_context('quantum workspace') as c:
         c.argument('workspace_name', workspace_name_type)

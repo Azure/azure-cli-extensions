@@ -7,7 +7,7 @@
 # pylint: disable=redefined-outer-name
 # pylint: disable=no-member
 
-from azext_k8s_extension.partner_extensions.DefaultExtension import DefaultExtension
+import json
 from knack.log import get_logger
 
 from azure.cli.core.azclierror import InvalidArgumentValueError
@@ -20,8 +20,7 @@ import requests
 from .DefaultExtension import DefaultExtension
 
 from ..vendored_sdks.models import (
-    ExtensionInstance,
-    ExtensionInstanceUpdate,
+    Extension,
     ScopeCluster,
     Scope
 )
@@ -37,10 +36,8 @@ class OpenServiceMesh(DefaultExtension):
                scope, auto_upgrade_minor_version, release_train, version, target_namespace,
                release_namespace, configuration_settings, configuration_protected_settings,
                configuration_settings_file, configuration_protected_settings_file):
-
         """ExtensionType 'microsoft.openservicemesh' specific validations & defaults for Create
-           Must create and return a valid 'ExtensionInstance' object.
-
+           Must create and return a valid 'Extension' object.
         """
         # NOTE-1: Replace default scope creation with your customization, if required
         # Scope must always be cluster
@@ -52,12 +49,12 @@ class OpenServiceMesh(DefaultExtension):
         scope_cluster = ScopeCluster(release_namespace=release_namespace)
         ext_scope = Scope(cluster=scope_cluster, namespace=None)
 
-        # NOTE-2: Return a valid ExtensionInstance object, Instance name and flag for Identity
-        create_identity = False
+        # NOTE-2: Return a valid Extension object, Instance name and flag for Identity
+        create_identity = True
 
-        _validate_tested_distro(cmd, resource_group_name, cluster_name, version)
+        _validate_tested_distro(cmd, resource_group_name, cluster_name, version, release_train)
 
-        extension_instance = ExtensionInstance(
+        extension = Extension(
             extension_type=extension_type,
             auto_upgrade_minor_version=auto_upgrade_minor_version,
             release_train=release_train,
@@ -68,36 +65,15 @@ class OpenServiceMesh(DefaultExtension):
             identity=None,
             location=""
         )
-        return extension_instance, name, create_identity
-
-    def Update(self, extension, auto_upgrade_minor_version, release_train, version):
-        """ExtensionType 'microsoft.openservicemesh' specific validations & defaults for Update
-           Must create and return a valid 'ExtensionInstanceUpdate' object.
-
-        """
-        #  auto-upgrade-minor-version MUST be set to False if release_train is staging or pilot
-        if release_train.lower() in ['staging', 'pilot']:
-            if auto_upgrade_minor_version or auto_upgrade_minor_version is None:
-                auto_upgrade_minor_version = False
-                # Set version to None to always get the latest version - user cannot override
-                version = None
-                logger.warning("Setting auto-upgrade-minor-version to False since release-train is '%s'", release_train)
-
-        return ExtensionInstanceUpdate(
-            auto_upgrade_minor_version=auto_upgrade_minor_version,
-            release_train=release_train,
-            version=version
-        )
+        return extension, name, create_identity
 
 
-def _validate_tested_distro(cmd, cluster_resource_group_name, cluster_name, extension_version):
+def _validate_tested_distro(cmd, cluster_resource_group_name, cluster_name, extension_version, extension_release_train):
 
     field_unavailable_error = '\"testedDistros\" field unavailable for version {0} of microsoft.openservicemesh, ' \
         'cannot determine if this Kubernetes distribution has been properly tested'.format(extension_version)
 
-    if version.parse(str(extension_version)) <= version.parse("0.8.3"):
-        logger.warning(field_unavailable_error)
-        return
+    logger.debug('Input version: %s', extension_version)
 
     subscription_id = get_subscription_id(cmd.cli_ctx)
     resources = cf_resources(cmd.cli_ctx, subscription_id)
@@ -105,8 +81,30 @@ def _validate_tested_distro(cmd, cluster_resource_group_name, cluster_name, exte
     cluster_resource_id = '/subscriptions/{0}/resourceGroups/{1}/providers/Microsoft.Kubernetes' \
         '/connectedClusters/{2}'.format(subscription_id, cluster_resource_group_name, cluster_name)
 
-    resource = resources.get_by_id(cluster_resource_id, '2020-01-01-preview')
+    resource = resources.get_by_id(cluster_resource_id, '2021-10-01')
+    cluster_location = resource.location
     cluster_distro = resource.properties['distribution'].lower()
+
+    if extension_version is None and extension_release_train != "staging":
+        if str(cluster_location) == "eastus2euap":
+            ring = "canary"
+        else:
+            ring = "batch1"
+
+        if extension_release_train is None:
+            extension_release_train = "stable"
+
+        req_url = 'https://mcr.microsoft.com/v2/oss/openservicemesh/{0}/{1}/osm-arc/tags/list'\
+            .format(ring, extension_release_train)
+        req = requests.get(url=req_url)
+        req_json = json.loads(req.text)
+        tags = req_json['tags']
+
+        extension_version = tags[len(tags) - 1]
+
+    if version.parse(str(extension_version)) <= version.parse("0.8.3"):
+        logger.warning(field_unavailable_error)
+        return
 
     if cluster_distro == "general":
         logger.warning('Unable to determine if distro has been tested for microsoft.openservicemesh, '

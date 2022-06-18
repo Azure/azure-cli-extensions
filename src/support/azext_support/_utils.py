@@ -6,8 +6,9 @@
 import re
 
 from azure.cli.core._profile import Profile
-from knack.log import get_logger
+from azure.cli.core.azclierror import UnauthorizedError
 from knack.util import CLIError
+from knack.log import get_logger
 
 logger = get_logger(__name__)
 
@@ -48,8 +49,9 @@ def get_bearer_token(cmd, tenant_id):
     try:
         logger.debug("Retrieving access token for tenant %s", tenant_id)
         creds, _, _ = client.get_raw_token(tenant=tenant_id)
-    except CLIError:
-        raise CLIError("Can't find authorization for {0}. ".format(tenant_id) +
-                       "Run \'az login -t <tenant_name> --allow-no-subscriptions\' and try again.")
+    except CLIError as unauthorized_error:
+        raise UnauthorizedError("Can't find authorization for {0}. ".format(tenant_id) +
+                                "Run \'az login -t <tenant_name> --allow-no-subscriptions\' and try again.") from \
+            unauthorized_error
 
     return "Bearer " + creds[1]

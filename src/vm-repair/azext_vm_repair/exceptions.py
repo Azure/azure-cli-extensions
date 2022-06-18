@@ -30,3 +30,7 @@ class SkuDoesNotSupportHyperV(Exception):
 
 class ScriptReturnsError(Exception):
     """Raised when run script returns error"""
+
+
+class SuseNotAvailableError(Exception):
+    """Raised when SUSE image not available"""

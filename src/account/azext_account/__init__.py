@@ -19,8 +19,7 @@ class SubscriptionClientCommandsLoader(AzCommandsLoader):
         account_custom = CliCommandType(
             operations_tmpl='azext_account.custom#{}',
             client_factory=cf_account)
-        super(SubscriptionClientCommandsLoader, self).__init__(cli_ctx=cli_ctx,
-                                                               custom_command_type=account_custom)
+        super().__init__(cli_ctx=cli_ctx, custom_command_type=account_custom)
 
     def load_command_table(self, args):
         from azext_account.generated.commands import load_command_table

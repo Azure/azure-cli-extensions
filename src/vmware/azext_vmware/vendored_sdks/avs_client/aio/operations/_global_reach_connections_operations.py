@@ -67,7 +67,7 @@ class GlobalReachConnectionsOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-06-01"
+        api_version = "2021-12-01"
         accept = "application/json"
 
         def prepare_request(next_link=None):
@@ -80,7 +80,7 @@ class GlobalReachConnectionsOperations:
                 url = self.list.metadata['url']  # type: ignore
                 path_format_arguments = {
                     'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
-                    'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
+                    'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
                     'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str'),
                 }
                 url = self._client.format_url(url, **path_format_arguments)
@@ -146,14 +146,14 @@ class GlobalReachConnectionsOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-06-01"
+        api_version = "2021-12-01"
         accept = "application/json"
 
         # Construct URL
         url = self.get.metadata['url']  # type: ignore
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
             'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str'),
             'globalReachConnectionName': self._serialize.url("global_reach_connection_name", global_reach_connection_name, 'str'),
         }
@@ -188,8 +188,7 @@ class GlobalReachConnectionsOperations:
         resource_group_name: str,
         private_cloud_name: str,
         global_reach_connection_name: str,
-        authorization_key: Optional[str] = None,
-        peer_express_route_circuit: Optional[str] = None,
+        global_reach_connection: "_models.GlobalReachConnection",
         **kwargs: Any
     ) -> "_models.GlobalReachConnection":
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.GlobalReachConnection"]
@@ -197,9 +196,7 @@ class GlobalReachConnectionsOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-
-        _global_reach_connection = _models.GlobalReachConnection(authorization_key=authorization_key, peer_express_route_circuit=peer_express_route_circuit)
-        api_version = "2021-06-01"
+        api_version = "2021-12-01"
         content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
 
@@ -207,7 +204,7 @@ class GlobalReachConnectionsOperations:
         url = self._create_or_update_initial.metadata['url']  # type: ignore
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
             'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str'),
             'globalReachConnectionName': self._serialize.url("global_reach_connection_name", global_reach_connection_name, 'str'),
         }
@@ -223,7 +220,7 @@ class GlobalReachConnectionsOperations:
         header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
 
         body_content_kwargs = {}  # type: Dict[str, Any]
-        body_content = self._serialize.body(_global_reach_connection, 'GlobalReachConnection')
+        body_content = self._serialize.body(global_reach_connection, 'GlobalReachConnection')
         body_content_kwargs['content'] = body_content
         request = self._client.put(url, query_parameters, header_parameters, **body_content_kwargs)
         pipeline_response = await self._client._pipeline.run(request, stream=False, **kwargs)
@@ -250,8 +247,7 @@ class GlobalReachConnectionsOperations:
         resource_group_name: str,
         private_cloud_name: str,
         global_reach_connection_name: str,
-        authorization_key: Optional[str] = None,
-        peer_express_route_circuit: Optional[str] = None,
+        global_reach_connection: "_models.GlobalReachConnection",
         **kwargs: Any
     ) -> AsyncLROPoller["_models.GlobalReachConnection"]:
         """Create or update a global reach connection in a private cloud.
@@ -264,12 +260,8 @@ class GlobalReachConnectionsOperations:
         :type private_cloud_name: str
         :param global_reach_connection_name: Name of the global reach connection in the private cloud.
         :type global_reach_connection_name: str
-        :param authorization_key: Authorization key from the peer express route used for the global
-         reach connection.
-        :type authorization_key: str
-        :param peer_express_route_circuit: Identifier of the ExpressRoute Circuit to peer with in the
-         global reach connection.
-        :type peer_express_route_circuit: str
+        :param global_reach_connection: A global reach connection in the private cloud.
+        :type global_reach_connection: ~avs_client.models.GlobalReachConnection
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: By default, your polling method will be AsyncARMPolling.
@@ -292,8 +284,7 @@ class GlobalReachConnectionsOperations:
                 resource_group_name=resource_group_name,
                 private_cloud_name=private_cloud_name,
                 global_reach_connection_name=global_reach_connection_name,
-                authorization_key=authorization_key,
-                peer_express_route_circuit=peer_express_route_circuit,
+                global_reach_connection=global_reach_connection,
                 cls=lambda x,y,z: x,
                 **kwargs
             )
@@ -310,7 +301,7 @@ class GlobalReachConnectionsOperations:
 
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
             'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str'),
             'globalReachConnectionName': self._serialize.url("global_reach_connection_name", global_reach_connection_name, 'str'),
         }
@@ -341,14 +332,14 @@ class GlobalReachConnectionsOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-06-01"
+        api_version = "2021-12-01"
         accept = "application/json"
 
         # Construct URL
         url = self._delete_initial.metadata['url']  # type: ignore
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
             'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str'),
             'globalReachConnectionName': self._serialize.url("global_reach_connection_name", global_reach_connection_name, 'str'),
         }
@@ -427,7 +418,7 @@ class GlobalReachConnectionsOperations:
 
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
             'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str'),
             'globalReachConnectionName': self._serialize.url("global_reach_connection_name", global_reach_connection_name, 'str'),
         }

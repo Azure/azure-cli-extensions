@@ -17,8 +17,8 @@ def k8s_extension_show_table_format(result):
 def __get_table_row(result):
     return OrderedDict([
         ('name', result['name']),
-        ('extensionType', result['extensionType']),
-        ('version', result['version']),
-        ('installState', result['installState']),
-        ('lastModifiedTime', result['lastModifiedTime'])
+        ('extensionType', result.get('extensionType', '')),
+        ('version', result.get('version', '')),
+        ('provisioningState', result.get('provisioningState', '')),
+        ('lastModifiedAt', result.get('systemData', {}).get('lastModifiedAt', '')),
     ])

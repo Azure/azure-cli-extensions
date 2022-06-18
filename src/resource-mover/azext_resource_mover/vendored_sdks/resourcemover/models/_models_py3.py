@@ -6,6 +6,7 @@
 # Changes may cause incorrect behavior and will be lost if the code is regenerated.
 # --------------------------------------------------------------------------
 
+import datetime
 from typing import Dict, List, Optional, Union
 
 import msrest.serialization
@@ -120,6 +121,8 @@ class AvailabilitySetResourceSettings(ResourceSettings):
     :type resource_type: str
     :param target_resource_name: Required. Gets or sets the target Resource name.
     :type target_resource_name: str
+    :param tags: A set of tags. Gets or sets the Resource tags.
+    :type tags: dict[str, str]
     :param fault_domain: Gets or sets the target fault domain.
     :type fault_domain: int
     :param update_domain: Gets or sets the target update domain.
@@ -136,6 +139,7 @@ class AvailabilitySetResourceSettings(ResourceSettings):
     _attribute_map = {
         'resource_type': {'key': 'resourceType', 'type': 'str'},
         'target_resource_name': {'key': 'targetResourceName', 'type': 'str'},
+        'tags': {'key': 'tags', 'type': '{str}'},
         'fault_domain': {'key': 'faultDomain', 'type': 'int'},
         'update_domain': {'key': 'updateDomain', 'type': 'int'},
     }
@@ -144,12 +148,14 @@ class AvailabilitySetResourceSettings(ResourceSettings):
         self,
         *,
         target_resource_name: str,
+        tags: Optional[Dict[str, str]] = None,
         fault_domain: Optional[int] = None,
         update_domain: Optional[int] = None,
         **kwargs
     ):
         super(AvailabilitySetResourceSettings, self).__init__(target_resource_name=target_resource_name, **kwargs)
         self.resource_type = 'Microsoft.Compute/availabilitySets'  # type: str
+        self.tags = tags
         self.fault_domain = fault_domain
         self.update_domain = update_domain
 
@@ -695,6 +701,8 @@ class LoadBalancerResourceSettings(ResourceSettings):
     :type resource_type: str
     :param target_resource_name: Required. Gets or sets the target Resource name.
     :type target_resource_name: str
+    :param tags: A set of tags. Gets or sets the Resource tags.
+    :type tags: dict[str, str]
     :param sku: Gets or sets load balancer sku (Basic/Standard).
     :type sku: str
     :param frontend_ip_configurations: Gets or sets the frontend IP configurations of the load
@@ -718,6 +726,7 @@ class LoadBalancerResourceSettings(ResourceSettings):
     _attribute_map = {
         'resource_type': {'key': 'resourceType', 'type': 'str'},
         'target_resource_name': {'key': 'targetResourceName', 'type': 'str'},
+        'tags': {'key': 'tags', 'type': '{str}'},
         'sku': {'key': 'sku', 'type': 'str'},
         'frontend_ip_configurations': {'key': 'frontendIPConfigurations', 'type': '[LbFrontendIpConfigurationResourceSettings]'},
         'backend_address_pools': {'key': 'backendAddressPools', 'type': '[LbBackendAddressPoolResourceSettings]'},
@@ -728,6 +737,7 @@ class LoadBalancerResourceSettings(ResourceSettings):
         self,
         *,
         target_resource_name: str,
+        tags: Optional[Dict[str, str]] = None,
         sku: Optional[str] = None,
         frontend_ip_configurations: Optional[List["LbFrontendIpConfigurationResourceSettings"]] = None,
         backend_address_pools: Optional[List["LbBackendAddressPoolResourceSettings"]] = None,
@@ -736,6 +746,7 @@ class LoadBalancerResourceSettings(ResourceSettings):
     ):
         super(LoadBalancerResourceSettings, self).__init__(target_resource_name=target_resource_name, **kwargs)
         self.resource_type = 'Microsoft.Network/loadBalancers'  # type: str
+        self.tags = tags
         self.sku = sku
         self.frontend_ip_configurations = frontend_ip_configurations
         self.backend_address_pools = backend_address_pools
@@ -785,6 +796,8 @@ class MoveCollection(msrest.serialization.Model):
     :type identity: ~resource_mover_service_api.models.Identity
     :param properties: Defines the move collection properties.
     :type properties: ~resource_mover_service_api.models.MoveCollectionProperties
+    :ivar system_data: Metadata pertaining to creation and last modification of the resource.
+    :vartype system_data: ~resource_mover_service_api.models.SystemData
     """
 
     _validation = {
@@ -792,6 +805,7 @@ class MoveCollection(msrest.serialization.Model):
         'name': {'readonly': True},
         'type': {'readonly': True},
         'etag': {'readonly': True},
+        'system_data': {'readonly': True},
     }
 
     _attribute_map = {
@@ -803,6 +817,7 @@ class MoveCollection(msrest.serialization.Model):
         'location': {'key': 'location', 'type': 'str'},
         'identity': {'key': 'identity', 'type': 'Identity'},
         'properties': {'key': 'properties', 'type': 'MoveCollectionProperties'},
+        'system_data': {'key': 'systemData', 'type': 'SystemData'},
     }
 
     def __init__(
@@ -823,6 +838,7 @@ class MoveCollection(msrest.serialization.Model):
         self.location = location
         self.identity = identity
         self.properties = properties
+        self.system_data = None
 
 
 class MoveCollectionProperties(msrest.serialization.Model):
@@ -976,12 +992,15 @@ class MoveResource(msrest.serialization.Model):
     :vartype type: str
     :param properties: Defines the move resource properties.
     :type properties: ~resource_mover_service_api.models.MoveResourceProperties
+    :ivar system_data: Metadata pertaining to creation and last modification of the resource.
+    :vartype system_data: ~resource_mover_service_api.models.SystemData
     """
 
     _validation = {
         'id': {'readonly': True},
         'name': {'readonly': True},
         'type': {'readonly': True},
+        'system_data': {'readonly': True},
     }
 
     _attribute_map = {
@@ -989,6 +1008,7 @@ class MoveResource(msrest.serialization.Model):
         'name': {'key': 'name', 'type': 'str'},
         'type': {'key': 'type', 'type': 'str'},
         'properties': {'key': 'properties', 'type': 'MoveResourceProperties'},
+        'system_data': {'key': 'systemData', 'type': 'SystemData'},
     }
 
     def __init__(
@@ -1002,6 +1022,7 @@ class MoveResource(msrest.serialization.Model):
         self.name = None
         self.type = None
         self.properties = properties
+        self.system_data = None
 
 
 class MoveResourceCollection(msrest.serialization.Model):
@@ -1401,6 +1422,8 @@ class NetworkInterfaceResourceSettings(ResourceSettings):
     :type resource_type: str
     :param target_resource_name: Required. Gets or sets the target Resource name.
     :type target_resource_name: str
+    :param tags: A set of tags. Gets or sets the Resource tags.
+    :type tags: dict[str, str]
     :param ip_configurations: Gets or sets the IP configurations of the NIC.
     :type ip_configurations:
      list[~resource_mover_service_api.models.NicIpConfigurationResourceSettings]
@@ -1417,6 +1440,7 @@ class NetworkInterfaceResourceSettings(ResourceSettings):
     _attribute_map = {
         'resource_type': {'key': 'resourceType', 'type': 'str'},
         'target_resource_name': {'key': 'targetResourceName', 'type': 'str'},
+        'tags': {'key': 'tags', 'type': '{str}'},
         'ip_configurations': {'key': 'ipConfigurations', 'type': '[NicIpConfigurationResourceSettings]'},
         'enable_accelerated_networking': {'key': 'enableAcceleratedNetworking', 'type': 'bool'},
     }
@@ -1425,12 +1449,14 @@ class NetworkInterfaceResourceSettings(ResourceSettings):
         self,
         *,
         target_resource_name: str,
+        tags: Optional[Dict[str, str]] = None,
         ip_configurations: Optional[List["NicIpConfigurationResourceSettings"]] = None,
         enable_accelerated_networking: Optional[bool] = None,
         **kwargs
     ):
         super(NetworkInterfaceResourceSettings, self).__init__(target_resource_name=target_resource_name, **kwargs)
         self.resource_type = 'Microsoft.Network/networkInterfaces'  # type: str
+        self.tags = tags
         self.ip_configurations = ip_configurations
         self.enable_accelerated_networking = enable_accelerated_networking
 
@@ -1445,6 +1471,8 @@ class NetworkSecurityGroupResourceSettings(ResourceSettings):
     :type resource_type: str
     :param target_resource_name: Required. Gets or sets the target Resource name.
     :type target_resource_name: str
+    :param tags: A set of tags. Gets or sets the Resource tags.
+    :type tags: dict[str, str]
     :param security_rules: Gets or sets Security rules of network security group.
     :type security_rules: list[~resource_mover_service_api.models.NsgSecurityRule]
     """
@@ -1457,6 +1485,7 @@ class NetworkSecurityGroupResourceSettings(ResourceSettings):
     _attribute_map = {
         'resource_type': {'key': 'resourceType', 'type': 'str'},
         'target_resource_name': {'key': 'targetResourceName', 'type': 'str'},
+        'tags': {'key': 'tags', 'type': '{str}'},
         'security_rules': {'key': 'securityRules', 'type': '[NsgSecurityRule]'},
     }
 
@@ -1464,11 +1493,13 @@ class NetworkSecurityGroupResourceSettings(ResourceSettings):
         self,
         *,
         target_resource_name: str,
+        tags: Optional[Dict[str, str]] = None,
         security_rules: Optional[List["NsgSecurityRule"]] = None,
         **kwargs
     ):
         super(NetworkSecurityGroupResourceSettings, self).__init__(target_resource_name=target_resource_name, **kwargs)
         self.resource_type = 'Microsoft.Network/networkSecurityGroups'  # type: str
+        self.tags = tags
         self.security_rules = security_rules
 
 
@@ -1912,6 +1943,8 @@ class PublicIpAddressResourceSettings(ResourceSettings):
     :type resource_type: str
     :param target_resource_name: Required. Gets or sets the target Resource name.
     :type target_resource_name: str
+    :param tags: A set of tags. Gets or sets the Resource tags.
+    :type tags: dict[str, str]
     :param domain_name_label: Gets or sets the domain name label.
     :type domain_name_label: str
     :param fqdn: Gets or sets the fully qualified domain name.
@@ -1932,6 +1965,7 @@ class PublicIpAddressResourceSettings(ResourceSettings):
     _attribute_map = {
         'resource_type': {'key': 'resourceType', 'type': 'str'},
         'target_resource_name': {'key': 'targetResourceName', 'type': 'str'},
+        'tags': {'key': 'tags', 'type': '{str}'},
         'domain_name_label': {'key': 'domainNameLabel', 'type': 'str'},
         'fqdn': {'key': 'fqdn', 'type': 'str'},
         'public_ip_allocation_method': {'key': 'publicIpAllocationMethod', 'type': 'str'},
@@ -1943,6 +1977,7 @@ class PublicIpAddressResourceSettings(ResourceSettings):
         self,
         *,
         target_resource_name: str,
+        tags: Optional[Dict[str, str]] = None,
         domain_name_label: Optional[str] = None,
         fqdn: Optional[str] = None,
         public_ip_allocation_method: Optional[str] = None,
@@ -1952,6 +1987,7 @@ class PublicIpAddressResourceSettings(ResourceSettings):
     ):
         super(PublicIpAddressResourceSettings, self).__init__(target_resource_name=target_resource_name, **kwargs)
         self.resource_type = 'Microsoft.Network/publicIPAddresses'  # type: str
+        self.tags = tags
         self.domain_name_label = domain_name_label
         self.fqdn = fqdn
         self.public_ip_allocation_method = public_ip_allocation_method
@@ -2090,6 +2126,8 @@ class SqlDatabaseResourceSettings(ResourceSettings):
     :type resource_type: str
     :param target_resource_name: Required. Gets or sets the target Resource name.
     :type target_resource_name: str
+    :param tags: A set of tags. Gets or sets the Resource tags.
+    :type tags: dict[str, str]
     :param zone_redundant: Defines the zone redundant resource setting. Possible values include:
      "Enable", "Disable".
     :type zone_redundant: str or ~resource_mover_service_api.models.ZoneRedundant
@@ -2103,6 +2141,7 @@ class SqlDatabaseResourceSettings(ResourceSettings):
     _attribute_map = {
         'resource_type': {'key': 'resourceType', 'type': 'str'},
         'target_resource_name': {'key': 'targetResourceName', 'type': 'str'},
+        'tags': {'key': 'tags', 'type': '{str}'},
         'zone_redundant': {'key': 'zoneRedundant', 'type': 'str'},
     }
 
@@ -2110,11 +2149,13 @@ class SqlDatabaseResourceSettings(ResourceSettings):
         self,
         *,
         target_resource_name: str,
+        tags: Optional[Dict[str, str]] = None,
         zone_redundant: Optional[Union[str, "ZoneRedundant"]] = None,
         **kwargs
     ):
         super(SqlDatabaseResourceSettings, self).__init__(target_resource_name=target_resource_name, **kwargs)
         self.resource_type = 'Microsoft.Sql/servers/databases'  # type: str
+        self.tags = tags
         self.zone_redundant = zone_redundant
 
 
@@ -2128,6 +2169,8 @@ class SqlElasticPoolResourceSettings(ResourceSettings):
     :type resource_type: str
     :param target_resource_name: Required. Gets or sets the target Resource name.
     :type target_resource_name: str
+    :param tags: A set of tags. Gets or sets the Resource tags.
+    :type tags: dict[str, str]
     :param zone_redundant: Defines the zone redundant resource setting. Possible values include:
      "Enable", "Disable".
     :type zone_redundant: str or ~resource_mover_service_api.models.ZoneRedundant
@@ -2141,6 +2184,7 @@ class SqlElasticPoolResourceSettings(ResourceSettings):
     _attribute_map = {
         'resource_type': {'key': 'resourceType', 'type': 'str'},
         'target_resource_name': {'key': 'targetResourceName', 'type': 'str'},
+        'tags': {'key': 'tags', 'type': '{str}'},
         'zone_redundant': {'key': 'zoneRedundant', 'type': 'str'},
     }
 
@@ -2148,11 +2192,13 @@ class SqlElasticPoolResourceSettings(ResourceSettings):
         self,
         *,
         target_resource_name: str,
+        tags: Optional[Dict[str, str]] = None,
         zone_redundant: Optional[Union[str, "ZoneRedundant"]] = None,
         **kwargs
     ):
         super(SqlElasticPoolResourceSettings, self).__init__(target_resource_name=target_resource_name, **kwargs)
         self.resource_type = 'Microsoft.Sql/servers/elasticPools'  # type: str
+        self.tags = tags
         self.zone_redundant = zone_redundant
 
 
@@ -2302,6 +2348,54 @@ class SummaryCollection(msrest.serialization.Model):
         self.summary = summary
 
 
+class SystemData(msrest.serialization.Model):
+    """Metadata pertaining to creation and last modification of the resource.
+
+    :param created_by: The identity that created the resource.
+    :type created_by: str
+    :param created_by_type: The type of identity that created the resource. Possible values
+     include: "User", "Application", "ManagedIdentity", "Key".
+    :type created_by_type: str or ~resource_mover_service_api.models.CreatedByType
+    :param created_at: The timestamp of resource creation (UTC).
+    :type created_at: ~datetime.datetime
+    :param last_modified_by: The identity that last modified the resource.
+    :type last_modified_by: str
+    :param last_modified_by_type: The type of identity that last modified the resource. Possible
+     values include: "User", "Application", "ManagedIdentity", "Key".
+    :type last_modified_by_type: str or ~resource_mover_service_api.models.CreatedByType
+    :param last_modified_at: The timestamp of resource last modification (UTC).
+    :type last_modified_at: ~datetime.datetime
+    """
+
+    _attribute_map = {
+        'created_by': {'key': 'createdBy', 'type': 'str'},
+        'created_by_type': {'key': 'createdByType', 'type': 'str'},
+        'created_at': {'key': 'createdAt', 'type': 'iso-8601'},
+        'last_modified_by': {'key': 'lastModifiedBy', 'type': 'str'},
+        'last_modified_by_type': {'key': 'lastModifiedByType', 'type': 'str'},
+        'last_modified_at': {'key': 'lastModifiedAt', 'type': 'iso-8601'},
+    }
+
+    def __init__(
+        self,
+        *,
+        created_by: Optional[str] = None,
+        created_by_type: Optional[Union[str, "CreatedByType"]] = None,
+        created_at: Optional[datetime.datetime] = None,
+        last_modified_by: Optional[str] = None,
+        last_modified_by_type: Optional[Union[str, "CreatedByType"]] = None,
+        last_modified_at: Optional[datetime.datetime] = None,
+        **kwargs
+    ):
+        super(SystemData, self).__init__(**kwargs)
+        self.created_by = created_by
+        self.created_by_type = created_by_type
+        self.created_at = created_at
+        self.last_modified_by = last_modified_by
+        self.last_modified_by_type = last_modified_by_type
+        self.last_modified_at = last_modified_at
+
+
 class UnresolvedDependenciesFilter(msrest.serialization.Model):
     """Unresolved dependencies contract.
 
@@ -2448,6 +2542,10 @@ class VirtualMachineResourceSettings(ResourceSettings):
     :type resource_type: str
     :param target_resource_name: Required. Gets or sets the target Resource name.
     :type target_resource_name: str
+    :param tags: A set of tags. Gets or sets the Resource tags.
+    :type tags: dict[str, str]
+    :param user_managed_identities: Gets or sets user-managed identities.
+    :type user_managed_identities: list[str]
     :param target_availability_zone: Gets or sets the target availability zone. Possible values
      include: "1", "2", "3", "NA".
     :type target_availability_zone: str or
@@ -2467,6 +2565,8 @@ class VirtualMachineResourceSettings(ResourceSettings):
     _attribute_map = {
         'resource_type': {'key': 'resourceType', 'type': 'str'},
         'target_resource_name': {'key': 'targetResourceName', 'type': 'str'},
+        'tags': {'key': 'tags', 'type': '{str}'},
+        'user_managed_identities': {'key': 'userManagedIdentities', 'type': '[str]'},
         'target_availability_zone': {'key': 'targetAvailabilityZone', 'type': 'str'},
         'target_vm_size': {'key': 'targetVmSize', 'type': 'str'},
         'target_availability_set_id': {'key': 'targetAvailabilitySetId', 'type': 'str'},
@@ -2476,6 +2576,8 @@ class VirtualMachineResourceSettings(ResourceSettings):
         self,
         *,
         target_resource_name: str,
+        tags: Optional[Dict[str, str]] = None,
+        user_managed_identities: Optional[List[str]] = None,
         target_availability_zone: Optional[Union[str, "TargetAvailabilityZone"]] = None,
         target_vm_size: Optional[str] = None,
         target_availability_set_id: Optional[str] = None,
@@ -2483,6 +2585,8 @@ class VirtualMachineResourceSettings(ResourceSettings):
     ):
         super(VirtualMachineResourceSettings, self).__init__(target_resource_name=target_resource_name, **kwargs)
         self.resource_type = 'Microsoft.Compute/virtualMachines'  # type: str
+        self.tags = tags
+        self.user_managed_identities = user_managed_identities
         self.target_availability_zone = target_availability_zone
         self.target_vm_size = target_vm_size
         self.target_availability_set_id = target_availability_set_id
@@ -2498,6 +2602,8 @@ class VirtualNetworkResourceSettings(ResourceSettings):
     :type resource_type: str
     :param target_resource_name: Required. Gets or sets the target Resource name.
     :type target_resource_name: str
+    :param tags: A set of tags. Gets or sets the Resource tags.
+    :type tags: dict[str, str]
     :param enable_ddos_protection: Gets or sets a value indicating whether gets or sets whether the
      DDOS protection should be switched on.
     :type enable_ddos_protection: bool
@@ -2519,6 +2625,7 @@ class VirtualNetworkResourceSettings(ResourceSettings):
     _attribute_map = {
         'resource_type': {'key': 'resourceType', 'type': 'str'},
         'target_resource_name': {'key': 'targetResourceName', 'type': 'str'},
+        'tags': {'key': 'tags', 'type': '{str}'},
         'enable_ddos_protection': {'key': 'enableDdosProtection', 'type': 'bool'},
         'address_space': {'key': 'addressSpace', 'type': '[str]'},
         'dns_servers': {'key': 'dnsServers', 'type': '[str]'},
@@ -2529,6 +2636,7 @@ class VirtualNetworkResourceSettings(ResourceSettings):
         self,
         *,
         target_resource_name: str,
+        tags: Optional[Dict[str, str]] = None,
         enable_ddos_protection: Optional[bool] = None,
         address_space: Optional[List[str]] = None,
         dns_servers: Optional[List[str]] = None,
@@ -2537,6 +2645,7 @@ class VirtualNetworkResourceSettings(ResourceSettings):
     ):
         super(VirtualNetworkResourceSettings, self).__init__(target_resource_name=target_resource_name, **kwargs)
         self.resource_type = 'Microsoft.Network/virtualNetworks'  # type: str
+        self.tags = tags
         self.enable_ddos_protection = enable_ddos_protection
         self.address_space = address_space
         self.dns_servers = dns_servers

@@ -26,28 +26,28 @@ def load_command_table(self, _):
     )
 
     network_firewall_sdk = CliCommandType(
-        operations_tmpl='azext_firewall.vendored_sdks.v2020_07_01.operations#AzureFirewallsOperations.{}',
+        operations_tmpl='azext_firewall.vendored_sdks.v2021_08_01.operations#AzureFirewallsOperations.{}',
         client_factory=cf_firewalls,
         resource_type=CUSTOM_FIREWALL,
         min_api='2018-08-01'
     )
 
     network_firewall_fqdn_tags_sdk = CliCommandType(
-        operations_tmpl='azext_firewall.vendored_sdks.v2020_07_01.operations#AzureFirewallFqdnTagsOperations.{}',
+        operations_tmpl='azext_firewall.vendored_sdks.v2021_08_01.operations#AzureFirewallFqdnTagsOperations.{}',
         client_factory=cf_firewall_fqdn_tags,
         resource_type=CUSTOM_FIREWALL,
         min_api='2018-08-01'
     )
 
     network_firewall_policies_sdk = CliCommandType(
-        operations_tmpl='azext_firewall.vendored_sdks.v2020_07_01.operations#FirewallPoliciesOperations.{}',
+        operations_tmpl='azext_firewall.vendored_sdks.v2021_08_01.operations#FirewallPoliciesOperations.{}',
         client_factory=cf_firewall_policies,
         resource_type=CUSTOM_FIREWALL,
         min_api='2019-07-01'
     )
 
     network_firewall_policy_rule_groups = CliCommandType(
-        operations_tmpl='azext_firewall.vendored_sdks.v2020_07_01.operations#FirewallPolicyRuleCollectionGroupsOperations.{}',
+        operations_tmpl='azext_firewall.vendored_sdks.v2021_08_01.operations#FirewallPolicyRuleCollectionGroupsOperations.{}',
         client_factory=cf_firewall_policy_rule_collection_groups,
         resource_type=CUSTOM_FIREWALL,
         min_api='2019-07-01'
@@ -99,11 +99,11 @@ def load_command_table(self, _):
     }
 
     for rule_type, af_rule in af_rules.items():
-        with self.command_group('network firewall {}'.format(af_rule['scope']), network_firewall_sdk) as g:
-            g.custom_command('create', 'create_af_{}'.format(rule_type), validator=af_rule['validator'])
-            g.custom_command('list', build_af_rule_list(rule_type, '{}_collections'.format(rule_type)))
-            g.custom_show_command('show', build_af_rule_show(rule_type, '{}_collections'.format(rule_type)))
-            g.custom_command('delete', build_af_rule_delete(rule_type, '{}_collections'.format(rule_type)))
+        with self.command_group(f'network firewall {af_rule["scope"]}', network_firewall_sdk) as g:
+            g.custom_command('create', f'create_af_{rule_type}', validator=af_rule['validator'])
+            g.custom_command('list', build_af_rule_list(rule_type, f'{rule_type}_collections'))
+            g.custom_show_command('show', build_af_rule_show(rule_type, f'{rule_type}_collections'))
+            g.custom_command('delete', build_af_rule_delete(rule_type, f'{rule_type}_collections'))
 
     af_collections = {
         'network_rule_collections': 'network-rule collection',
@@ -111,7 +111,7 @@ def load_command_table(self, _):
         'application_rule_collections': 'application-rule collection'
     }
     for subresource, scope in af_collections.items():
-        with self.command_group('network firewall {}'.format(scope), network_util) as g:
+        with self.command_group(f'network firewall {scope}', network_util) as g:
             g.command('list', list_network_resource_property('azure_firewalls', subresource))
             g.show_command('show', get_network_resource_property_entry('azure_firewalls', subresource))
             g.command('delete', delete_network_resource_property_entry('azure_firewalls', subresource))
@@ -131,7 +131,7 @@ def load_command_table(self, _):
                                  setter_type=network_firewall_policies_custom,
                                  exception_handler=exception_handler)
 
-    with self.command_group('network firewall policy intrusion-detection', resource_type=CUSTOM_FIREWALL, min_api='2020-07-01', is_preview=True) as g:
+    with self.command_group('network firewall policy intrusion-detection', resource_type=CUSTOM_FIREWALL, min_api='2021-08-01', is_preview=True) as g:
         g.custom_command('add', 'add_firewall_policy_intrusion_detection_config', exception_handler=exception_handler)
         g.custom_command('remove', 'remove_firewall_policy_intrusion_detection_config')
         g.custom_command('list', 'list_firewall_policy_intrusion_detection_config')

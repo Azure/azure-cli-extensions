@@ -14,8 +14,8 @@ class StorageFileShareScenarios(StorageScenarioMixin, ScenarioTest):
 
     @ResourceGroupPreparer()
     @StorageAccountPreparer()
-    def test_storage_file_upload_small_file_v2(self, resource_group, storage_account):
-        account_info = self.get_account_info(resource_group, storage_account)
+    def test_storage_file_upload_small_file_v2(self, resource_group, storage_account_info):
+        account_info = storage_account_info
         share_name = self.create_share(account_info)
 
         curr_dir = os.path.dirname(os.path.realpath(__file__))

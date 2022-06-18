@@ -12,13 +12,14 @@ from azure.core.configuration import Configuration
 from azure.core.pipeline import policies
 from azure.mgmt.core.policies import ARMHttpLoggingPolicy
 
+from ._version import VERSION
+
 if TYPE_CHECKING:
     # pylint: disable=unused-import,ungrouped-imports
     from typing import Any
 
     from azure.core.credentials import TokenCredential
 
-VERSION = "unknown"
 
 class StoragePoolManagementConfiguration(Configuration):
     """Configuration for StoragePoolManagement.
@@ -47,9 +48,9 @@ class StoragePoolManagementConfiguration(Configuration):
 
         self.credential = credential
         self.subscription_id = subscription_id
-        self.api_version = "2021-04-01-preview"
+        self.api_version = "2021-08-01"
         self.credential_scopes = kwargs.pop('credential_scopes', ['https://management.azure.com/.default'])
-        kwargs.setdefault('sdk_moniker', 'storagepoolmanagement/{}'.format(VERSION))
+        kwargs.setdefault('sdk_moniker', 'mgmt-storagepool/{}'.format(VERSION))
         self._configure(**kwargs)
 
     def _configure(

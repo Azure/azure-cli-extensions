@@ -6,8 +6,8 @@
 
 def cf_databricks(cli_ctx, *_):
     from azure.cli.core.commands.client_factory import get_mgmt_service_client
-    from .vendored_sdks.databricks import DatabricksClient
-    return get_mgmt_service_client(cli_ctx, DatabricksClient)
+    from .vendored_sdks.databricks import AzureDatabricksManagementClient
+    return get_mgmt_service_client(cli_ctx, AzureDatabricksManagementClient)
 
 
 def cf_workspaces(cli_ctx, *_):

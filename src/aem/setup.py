@@ -8,7 +8,7 @@
 from codecs import open
 from setuptools import setup, find_packages
 
-VERSION = "0.2.2"
+VERSION = "0.3.0"
 
 CLASSIFIERS = [
     'Development Status :: 4 - Beta',
@@ -32,7 +32,7 @@ setup(
     license='MIT',
     author='Yugang Wang',
     author_email='yugangw@microsoft.com',
-    url='https://github.com/Azure/azure-cli-extensions',
+    url='https://github.com/Azure/azure-cli-extensions/tree/main/src/aem',
     classifiers=CLASSIFIERS,
     package_data={'azext_aem': ['azext_metadata.json']},
     packages=find_packages(exclude=["tests"]),

@@ -33,7 +33,7 @@ setup(
     license='MIT',
     author='Microsoft Corporation',
     author_email='azpycli@microsoft.com',
-    url='https://github.com/Azure/azure-cli-extensions/tree/master/src/virtual-network-tap',
+    url='https://github.com/Azure/azure-cli-extensions/tree/main/src/virtual-network-tap',
     classifiers=CLASSIFIERS,
     package_data={'azext_vnettap': ['azext_metadata.json']},
     packages=find_packages(),

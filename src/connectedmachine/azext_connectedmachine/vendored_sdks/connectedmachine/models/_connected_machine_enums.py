@@ -26,6 +26,13 @@ class _CaseInsensitiveEnumMeta(EnumMeta):
             raise AttributeError(name)
 
 
+class AssessmentModeTypes(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+    """Specifies the assessment mode.
+    """
+
+    IMAGE_DEFAULT = "ImageDefault"
+    AUTOMATIC_BY_PLATFORM = "AutomaticByPlatform"
+
 class CreatedByType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """The type of identity that created the resource.
     """
@@ -38,6 +45,15 @@ class CreatedByType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
 class InstanceViewTypes(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
 
     INSTANCE_VIEW = "instanceView"
+
+class PatchModeTypes(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+    """Specifies the patch mode.
+    """
+
+    IMAGE_DEFAULT = "ImageDefault"
+    AUTOMATIC_BY_PLATFORM = "AutomaticByPlatform"
+    AUTOMATIC_BY_OS = "AutomaticByOS"
+    MANUAL = "Manual"
 
 class PublicNetworkAccessType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """The network access policy to determine if Azure Arc agents can use public Azure Arc service

@@ -3,6 +3,61 @@
 Release History
 ===============
 
+1.2.3
+++++++++++++++++++
+* Fix warning message returned on PATCH
+* microsoft.azureml.kubernetes: remove deprecated warning message.
+* microsoft.azureml.kubernetes: Use cluster scale to control clusterPurpose and inferenceRouterHA
+
+1.2.2
+++++++++++++++++++
+* microsoft.azureml.kubernetes: Disable service bus by default, do not create relay for managed clusters.
+* microsoft.azureml.kubernetes: Rename inferenceLoadBalancerHA to inferenceRouterHA and unify related logic.
+
+1.2.1
+++++++++++++++++++
+* Provide no default values for Patch of Extension
+* microsoft.azureml.kubernetes: clusterip
+
+1.2.0
+++++++++++++++++++
+* microsoft.azureml.kubernetes: Update AzureMLKubernetes install parameters on inferenceRouterServiceType and internalLoadBalancerProvider
+* microsoft.openservicemesh: Change extension validation logic osm-arc 
+* microsoft.azuremonitor.containers: Add Managed Identity Auth support for ContainerInsights Extension 
+* microsoft.azuremonitor.containers: Bring back containerInsights solution addition in MSI mode 
+
+1.1.0
+++++++++++++++++++
+* Migrate Extensions api-version to 2022-03-01
+* microsoft.azureml.kubernetes: Remove inference private review warning message
+* microsoft.openservicemesh: Enable System-assigned identity
+
+1.0.4
+++++++++++++++++++
+* microsoft.azureml.kubernetes: Support SSL secret
+
+1.0.3
+++++++++++++++++++
+* Remove identity creation for calls to Microsoft.ResourceConnector
+
+1.0.2
+++++++++++++++++++
+* Update api-version for calls to Microsoft.ResourceConnector to 2021-10-31-preview
+* Update api-version for calls to Microsoft.ContainerService to 2021-10-01
+* Update api-version for calls to Microsoft.Kubernetes to 2021-10-01
+* microsoft.azureml.kubernetes: Add one more prompt for amlarc extension update
+
+1.0.1
+++++++++++++++++++
+* microsoft.azureml.kubernetes: Retrieve relay and service bus connection string when update the configuration protected settings of the extension.
+
+1.0.0
+++++++++++++++++++
+* Switch to GA api-version of Extensions (2021-09-01)
+* Support Extensions PATCH
+* Enable Dapr extension type
+* Enable ManagedClusters clusterType
+
 0.7.1
 ++++++++++++++++++
 * Fix DF resource manager endpoint check

@@ -28,6 +28,8 @@ from .operations import GlobalReachConnectionsOperations
 from .operations import WorkloadNetworksOperations
 from .operations import CloudLinksOperations
 from .operations import AddonsOperations
+from .operations import VirtualMachinesOperations
+from .operations import PlacementPoliciesOperations
 from .operations import ScriptPackagesOperations
 from .operations import ScriptCmdletsOperations
 from .operations import ScriptExecutionsOperations
@@ -59,6 +61,10 @@ class AVSClient(object):
     :vartype cloud_links: avs_client.aio.operations.CloudLinksOperations
     :ivar addons: AddonsOperations operations
     :vartype addons: avs_client.aio.operations.AddonsOperations
+    :ivar virtual_machines: VirtualMachinesOperations operations
+    :vartype virtual_machines: avs_client.aio.operations.VirtualMachinesOperations
+    :ivar placement_policies: PlacementPoliciesOperations operations
+    :vartype placement_policies: avs_client.aio.operations.PlacementPoliciesOperations
     :ivar script_packages: ScriptPackagesOperations operations
     :vartype script_packages: avs_client.aio.operations.ScriptPackagesOperations
     :ivar script_cmdlets: ScriptCmdletsOperations operations
@@ -111,6 +117,10 @@ class AVSClient(object):
         self.cloud_links = CloudLinksOperations(
             self._client, self._config, self._serialize, self._deserialize)
         self.addons = AddonsOperations(
+            self._client, self._config, self._serialize, self._deserialize)
+        self.virtual_machines = VirtualMachinesOperations(
+            self._client, self._config, self._serialize, self._deserialize)
+        self.placement_policies = PlacementPoliciesOperations(
             self._client, self._config, self._serialize, self._deserialize)
         self.script_packages = ScriptPackagesOperations(
             self._client, self._config, self._serialize, self._deserialize)

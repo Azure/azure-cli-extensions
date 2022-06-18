@@ -49,7 +49,7 @@ setup(
     # TODO: Update author and email, if applicable
     author='Microsoft Corporation',
     author_email='azpycli@microsoft.com',
-    url='https://github.com/Azure/azure-cli-extensions/tree/master/src/databox',
+    url='https://github.com/Azure/azure-cli-extensions/tree/main/src/databox',
     long_description=README + '\n\n' + HISTORY,
     license='MIT',
     classifiers=CLASSIFIERS,

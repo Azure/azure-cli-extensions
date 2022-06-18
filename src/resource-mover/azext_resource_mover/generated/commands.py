@@ -9,19 +9,40 @@
 # --------------------------------------------------------------------------
 # pylint: disable=too-many-statements
 # pylint: disable=too-many-locals
+# pylint: disable=bad-continuation
+# pylint: disable=line-too-long
 
 from azure.cli.core.commands import CliCommandType
+from azext_resource_mover.generated._client_factory import (
+    cf_move_collection,
+    cf_move_resource,
+    cf_unresolved_dependency,
+)
+
+
+resource_mover_move_collection = CliCommandType(
+    operations_tmpl='azext_resource_mover.vendored_sdks.resourcemover.operations._move_collections_operations#MoveCollectionsOperations.{}',
+    client_factory=cf_move_collection,
+)
+
+
+resource_mover_unresolved_dependency = CliCommandType(
+    operations_tmpl='azext_resource_mover.vendored_sdks.resourcemover.operations._unresolved_dependencies_operations#UnresolvedDependenciesOperations.{}',
+    client_factory=cf_unresolved_dependency,
+)
+
+
+resource_mover_move_resource = CliCommandType(
+    operations_tmpl='azext_resource_mover.vendored_sdks.resourcemover.operations._move_resources_operations#MoveResourcesOperations.{}',
+    client_factory=cf_move_resource,
+)
 
 
 def load_command_table(self, _):
 
-    from azext_resource_mover.generated._client_factory import cf_move_collection
-    resource_mover_move_collection = CliCommandType(
-        operations_tmpl='azext_resource_mover.vendored_sdks.resourcemover.operations._move_collections_operations#MoveC'
-        'ollectionsOperations.{}',
-        client_factory=cf_move_collection)
-    with self.command_group('resource-mover move-collection', resource_mover_move_collection,
-                            client_factory=cf_move_collection) as g:
+    with self.command_group(
+        'resource-mover move-collection', resource_mover_move_collection, client_factory=cf_move_collection
+    ) as g:
         g.custom_command('list', 'resource_mover_move_collection_list')
         g.custom_show_command('show', 'resource_mover_move_collection_show')
         g.custom_command('create', 'resource_mover_move_collection_create')
@@ -33,31 +54,24 @@ def load_command_table(self, _):
         g.custom_command('initiate-move', 'resource_mover_move_collection_initiate_move', supports_no_wait=True)
         g.custom_command('list-required-for', 'resource_mover_move_collection_list_required_for')
         g.custom_command('prepare', 'resource_mover_move_collection_prepare', supports_no_wait=True)
-        g.custom_command('resolve-dependency', 'resource_mover_move_collection_resolve_dependency',
-                         supports_no_wait=True)
+        g.custom_command(
+            'resolve-dependency', 'resource_mover_move_collection_resolve_dependency', supports_no_wait=True
+        )
         g.custom_wait_command('wait', 'resource_mover_move_collection_show')
 
-    from azext_resource_mover.generated._client_factory import cf_move_resource
-    resource_mover_move_resource = CliCommandType(
-        operations_tmpl='azext_resource_mover.vendored_sdks.resourcemover.operations._move_resources_operations#MoveRes'
-        'ourcesOperations.{}',
-        client_factory=cf_move_resource)
-    with self.command_group('resource-mover move-resource', resource_mover_move_resource,
-                            client_factory=cf_move_resource) as g:
+    with self.command_group(
+        'resource-mover move-collection', resource_mover_unresolved_dependency, client_factory=cf_unresolved_dependency
+    ) as g:
+        g.custom_command('list-unresolved-dependency', 'resource_mover_move_collection_list_unresolved_dependency')
+
+    with self.command_group(
+        'resource-mover move-resource', resource_mover_move_resource, client_factory=cf_move_resource
+    ) as g:
         g.custom_command('list', 'resource_mover_move_resource_list')
         g.custom_show_command('show', 'resource_mover_move_resource_show')
         g.custom_command('delete', 'resource_mover_move_resource_delete', supports_no_wait=True, confirmation=True)
         g.custom_command('add', 'resource_mover_move_resource_add', supports_no_wait=True)
         g.custom_wait_command('wait', 'resource_mover_move_resource_show')
-
-    from azext_resource_mover.generated._client_factory import cf_unresolved_dependency
-    resource_mover_unresolved_dependency = CliCommandType(
-        operations_tmpl='azext_resource_mover.vendored_sdks.resourcemover.operations._unresolved_dependencies_operation'
-        's#UnresolvedDependenciesOperations.{}',
-        client_factory=cf_unresolved_dependency)
-    with self.command_group('resource-mover move-collection', resource_mover_unresolved_dependency,
-                            client_factory=cf_unresolved_dependency) as g:
-        g.custom_command('list-unresolved-dependency', 'resource_mover_move_collection_list_unresolved_dependency')
 
     with self.command_group('resource-mover', is_experimental=True):
         pass

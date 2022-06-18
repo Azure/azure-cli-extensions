@@ -17,9 +17,9 @@ interactions:
       ParameterSetName:
       - -g -c -n --linked-cloud
       User-Agent:
-      - AZURECLI/2.18.0 azsdk-python-mgmt-avs/0.1.0 Python/3.8.7 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.27.1 azsdk-python-mgmt-avs/0.1.0 Python/3.8.10 (Windows-10-10.0.22000-SP0)
     method: PUT
-    uri: https://localhost:8866/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_hcx000001/providers/Microsoft.AVS/privateClouds/cloud1/cloudLinks/cloudLink1?api-version=2021-06-01
+    uri: https://localhost:8888/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_hcx000001/providers/Microsoft.AVS/privateClouds/cloud1/cloudLinks/cloudLink1?api-version=2021-12-01
   response:
     body:
       string: '{"id":"/subscriptions/{subscription-id}/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/cloudLinks/cloudLink1","name":"cloudLink1","type":"Microsoft.AVS/privateClouds/cloudLinks","properties":{"status":"Active","linkedCloud":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mygroup/providers/Microsoft.AVS/privateClouds/cloud2"}}'
@@ -29,7 +29,9 @@ interactions:
       content-type:
       - application/json
       date:
-      - Mon, 12 Jul 2021 22:04:02 GMT
+      - Thu, 18 Nov 2021 21:47:37 GMT
+      server:
+      - Rocket
     status:
       code: 200
       message: OK
@@ -47,9 +49,9 @@ interactions:
       ParameterSetName:
       - -g -c
       User-Agent:
-      - AZURECLI/2.18.0 azsdk-python-mgmt-avs/0.1.0 Python/3.8.7 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.27.1 azsdk-python-mgmt-avs/0.1.0 Python/3.8.10 (Windows-10-10.0.22000-SP0)
     method: GET
-    uri: https://localhost:8866/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_hcx000001/providers/Microsoft.AVS/privateClouds/cloud1/cloudLinks?api-version=2021-06-01
+    uri: https://localhost:8888/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_hcx000001/providers/Microsoft.AVS/privateClouds/cloud1/cloudLinks?api-version=2021-12-01
   response:
     body:
       string: '{"value":[{"id":"/subscriptions/{subscription-id}/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/cloudLinks/cloudLink1","name":"cloudLink1","type":"Microsoft.AVS/privateClouds/cloudLinks","properties":{"status":"Active","linkedCloud":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mygroup/providers/Microsoft.AVS/privateClouds/cloud2"}}]}'
@@ -59,7 +61,9 @@ interactions:
       content-type:
       - application/json
       date:
-      - Mon, 12 Jul 2021 22:04:04 GMT
+      - Thu, 18 Nov 2021 21:47:41 GMT
+      server:
+      - Rocket
     status:
       code: 200
       message: OK
@@ -77,9 +81,9 @@ interactions:
       ParameterSetName:
       - -g -c -n
       User-Agent:
-      - AZURECLI/2.18.0 azsdk-python-mgmt-avs/0.1.0 Python/3.8.7 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.27.1 azsdk-python-mgmt-avs/0.1.0 Python/3.8.10 (Windows-10-10.0.22000-SP0)
     method: GET
-    uri: https://localhost:8866/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_hcx000001/providers/Microsoft.AVS/privateClouds/cloud1/cloudLinks/cloudLink1?api-version=2021-06-01
+    uri: https://localhost:8888/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_hcx000001/providers/Microsoft.AVS/privateClouds/cloud1/cloudLinks/cloudLink1?api-version=2021-12-01
   response:
     body:
       string: '{"id":"/subscriptions/{subscription-id}/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/cloudLinks/cloudLink1","name":"cloudLink1","type":"Microsoft.AVS/privateClouds/cloudLinks","properties":{"status":"Active","linkedCloud":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mygroup/providers/Microsoft.AVS/privateClouds/cloud2"}}'
@@ -89,7 +93,9 @@ interactions:
       content-type:
       - application/json
       date:
-      - Mon, 12 Jul 2021 22:04:06 GMT
+      - Thu, 18 Nov 2021 21:47:46 GMT
+      server:
+      - Rocket
     status:
       code: 200
       message: OK
@@ -107,11 +113,11 @@ interactions:
       Content-Length:
       - '0'
       ParameterSetName:
-      - -g -c -n
+      - -g -c -n --yes
       User-Agent:
-      - AZURECLI/2.18.0 azsdk-python-mgmt-avs/0.1.0 Python/3.8.7 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.27.1 azsdk-python-mgmt-avs/0.1.0 Python/3.8.10 (Windows-10-10.0.22000-SP0)
     method: DELETE
-    uri: https://localhost:8866/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_hcx000001/providers/Microsoft.AVS/privateClouds/cloud1/cloudLinks/cloudLink1?api-version=2021-06-01
+    uri: https://localhost:8888/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_hcx000001/providers/Microsoft.AVS/privateClouds/cloud1/cloudLinks/cloudLink1?api-version=2021-12-01
   response:
     body:
       string: ''
@@ -119,7 +125,9 @@ interactions:
       content-length:
       - '0'
       date:
-      - Mon, 12 Jul 2021 22:04:08 GMT
+      - Thu, 18 Nov 2021 21:47:50 GMT
+      server:
+      - Rocket
     status:
       code: 200
       message: OK

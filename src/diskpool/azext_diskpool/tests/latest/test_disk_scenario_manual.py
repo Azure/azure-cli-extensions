@@ -13,7 +13,7 @@ from azure.cli.testsdk import ResourceGroupPreparer
 
 
 class DiskpoolScenarioTest(ScenarioTest):
-    @ResourceGroupPreparer(name_prefix='clitest', location='eastus', random_name_length=16)
+    @ResourceGroupPreparer(name_prefix='clitest', location='eastus2euap', random_name_length=16)
     def test_diskpool_scenario_manual(self, resource_group):
         self.kwargs.update({
             'rg': resource_group,
@@ -22,9 +22,9 @@ class DiskpoolScenarioTest(ScenarioTest):
             'vnet': self.create_random_name(prefix='vnet', length=10),
             'subnet': self.create_random_name(prefix='subnet', length=10),
             'subnetPrefix': '10.0.0.0/24',
-            'zone': "3",
+            'zone': "1",
             'diskPoolName': self.create_random_name(prefix='diskpool', length=16),
-            'location': 'eastus',
+            'location': 'westeurope',
             'targetName': self.create_random_name(prefix='iscsi', length=10),
             'storagePoolObjectId': '09f10f07-08cf-4ab7-be0f-e9ae3d72b9ad'
         })
@@ -45,24 +45,27 @@ class DiskpoolScenarioTest(ScenarioTest):
         self.kwargs['subnetId'] = result['id']
 
         # Create a Disk Pool
+        # TODO: remove --additional-capabilities when service is ready
         self.cmd('disk-pool create --name {diskPoolName} --resource-group {rg} --location {location} '
-                 '--availability-zones {zone} --subnet-id {subnetId} --sku name="Standard" tier="Standard" '
-                 '--disks {diskId}', checks=[self.check('name', '{diskPoolName}'),
-                                             self.check('availabilityZones[0]', '{zone}'),
-                                             self.check('disks[0].id', '{diskId}'),
-                                             self.check('subnetId', '{subnetId}'),
-                                             self.check('tier', 'Standard')])
+                 '--availability-zones {zone} --subnet-id {subnetId} --sku name="Standard_S1" tier="Standard" '
+                 '--disks {diskId} --additional-capabilities DiskPool.SkipInfrastructureDeployment',
+                 checks=[self.check('name', '{diskPoolName}'),
+                         self.check('availabilityZones[0]', '{zone}'),
+                         self.check('disks[0].id', '{diskId}'),
+                         self.check('subnetId', '{subnetId}'),
+                         self.check('tier', 'Standard')])
         self.cmd('disk-pool show --name {diskPoolName} --resource-group {rg}',
                  checks=[self.check('name', '{diskPoolName}'),
                          self.check('availabilityZones[0]', '{zone}'),
                          self.check('disks[0].id', '{diskId}'),
                          self.check('subnetId', '{subnetId}'),
                          self.check('tier', 'Standard')])
+        self.cmd('disk-pool redeploy --name {diskPoolName} --resource-group {rg}')
         self.cmd('disk-pool list --resource-group {rg}',
                  checks=[self.check('length(@)', 1)])
 
         self.cmd('disk-pool list-outbound-network-dependency-endpoint --name {diskPoolName} --resource-group {rg}',
-                 checks=[self.check('length(@)', 4)])
+                 checks=[self.check('length(@)', 5)])
 
         # Create an ISCSI target
         self.cmd('disk-pool iscsi-target create --name {targetName} --disk-pool-name {diskPoolName} '
@@ -111,5 +114,7 @@ class DiskpoolScenarioTest(ScenarioTest):
                  checks=[self.check('length(@)', 0)])
 
     def test_diskpool_list_sku_scenario_manual(self):
-        result = self.cmd('disk-pool list-skus -l eastus ').get_output_in_json()
+        result = self.cmd('disk-pool list-skus -l eastus2euap ').get_output_in_json()
+        self.assertIsNotNone(result)
+        result = self.cmd('disk-pool list-zones -l eastus2euap ').get_output_in_json()
         self.assertIsNotNone(result)

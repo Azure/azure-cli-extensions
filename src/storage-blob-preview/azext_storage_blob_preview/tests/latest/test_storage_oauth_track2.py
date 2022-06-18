@@ -60,10 +60,10 @@ class StorageOauthTests(StorageScenarioMixin, ScenarioTest):
 
     @ResourceGroupPreparer()
     @StorageAccountPreparer()
-    def test_storage_append_blob_upload_oauth(self, resource_group, storage_account):
-        account_info = self.get_account_info(resource_group, storage_account)
+    def test_storage_append_blob_upload_oauth(self, resource_group, storage_account_info):
+        account_info = storage_account_info
         self.kwargs = {
-            'account': storage_account,
+            'account': storage_account_info[0],
             'container': self.create_container(account_info),
             'local_file': self.create_temp_file(1, full_random=False),
             'blob': self.create_random_name('blob', 16)
@@ -105,12 +105,12 @@ class StorageOauthTests(StorageScenarioMixin, ScenarioTest):
 
     @ResourceGroupPreparer()
     @StorageAccountPreparer()
-    def test_storage_blob_show_oauth(self, resource_group, storage_account):
-        account_info = self.get_account_info(resource_group, storage_account)
+    def test_storage_blob_show_oauth(self, resource_group, storage_account_info):
+        account_info = storage_account_info
 
         self.kwargs.update({
             'rg': resource_group,
-            'account': storage_account,
+            'account': storage_account_info[0],
             'container': self.create_container(account_info=account_info),
             'local_file': self.create_temp_file(128),
             'block': self.create_random_name(prefix='block', length=12),

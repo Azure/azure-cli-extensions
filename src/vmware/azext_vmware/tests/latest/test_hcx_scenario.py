@@ -32,21 +32,21 @@ class VmwareHcxScenarioTest(ScenarioTest):
         count = len(self.cmd('vmware addon list -g {rg} -c {privatecloud}').get_output_in_json())
         self.assertEqual(count, 1, 'addon count expected to be 1')
 
-        # hcx-enterprise-site list should report 0
+        # hcx-enterprise-site list should report 1
         count = len(self.cmd('vmware hcx-enterprise-site list -g {rg} -c {privatecloud}').get_output_in_json())
-        self.assertEqual(count, 0, 'hcx-enterprise-site count expected to be 0')
+        self.assertEqual(count, 1, 'hcx-enterprise-site count expected to be 1')
 
         # create authorization
         self.cmd('vmware hcx-enterprise-site create -g {rg} -c {privatecloud} -n myhcx')
 
         # hcx-enterprise-site list should report 1
         count = len(self.cmd('vmware hcx-enterprise-site list -g {rg} -c {privatecloud}').get_output_in_json())
-        self.assertEqual(count, 1, 'hcx-enterprise-site count expected to be 0')
+        self.assertEqual(count, 1, 'hcx-enterprise-site count expected to be 1')
 
         self.cmd('vmware hcx-enterprise-site show -g {rg} -c {privatecloud} -n myhcx')
 
-        self.cmd('vmware hcx-enterprise-site delete -g {rg} -c {privatecloud} -n myhcx')
+        self.cmd('vmware hcx-enterprise-site delete -g {rg} -c {privatecloud} -n myhcx --yes')
 
-        # hcx-enterprise-site list should report 0
+        # hcx-enterprise-site list should report 1
         count = len(self.cmd('vmware hcx-enterprise-site list -g {rg} -c {privatecloud}').get_output_in_json())
-        self.assertEqual(count, 0, 'hcx-enterprise-site count expected to be 0')
+        self.assertEqual(count, 1, 'hcx-enterprise-site count expected to be 1')

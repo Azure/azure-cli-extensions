@@ -10,11 +10,7 @@ from codecs import open
 from setuptools import setup, find_packages
 
 # HISTORY.rst entry.
-VERSION = '0.1.1'
-try:
-    from .manual.version import VERSION
-except ImportError:
-    pass
+VERSION = '0.2.0'
 
 # The full list of classifiers is available at
 # https://pypi.python.org/pypi?%3Aaction=list_classifiers
@@ -31,10 +27,6 @@ CLASSIFIERS = [
 ]
 
 DEPENDENCIES = []
-try:
-    from .manual.dependency import DEPENDENCIES
-except ImportError:
-    pass
 
 with open('README.md', 'r', encoding='utf-8') as f:
     README = f.read()
@@ -47,7 +39,7 @@ setup(
     description='Microsoft Azure Command-Line Tools DesktopVirtualizationAPIClient Extension',
     author='Microsoft Corporation',
     author_email='azpycli@microsoft.com',
-    url='https://github.com/Azure/azure-cli-extensions/tree/master/src/desktopvirtualization',
+    url='https://github.com/Azure/azure-cli-extensions/tree/main/src/desktopvirtualization',
     long_description=README + '\n\n' + HISTORY,
     license='MIT',
     classifiers=CLASSIFIERS,

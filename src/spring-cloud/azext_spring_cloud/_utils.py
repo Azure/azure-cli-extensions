@@ -5,6 +5,7 @@
 import json
 from enum import Enum
 import os
+from time import sleep
 import codecs
 import tarfile
 import tempfile
@@ -21,7 +22,7 @@ from ._client_factory import cf_resource_groups
 logger = get_logger(__name__)
 
 
-def _get_upload_local_file(runtime_version, artifact_path=None, source_path=None):
+def _get_upload_local_file(runtime_version, artifact_path=None, source_path=None, container_image=None):
     file_type = None
     file_path = None
     if artifact_path is not None:
@@ -32,6 +33,8 @@ def _get_upload_local_file(runtime_version, artifact_path=None, source_path=None
         ), 'build_archive_{}.tar.gz'.format(uuid.uuid4().hex))
         _pack_source_code(os.path.abspath(source_path), file_path)
         file_type = "Source"
+    elif container_image is not None:
+        file_type = 'Container'
     return file_type, file_path
 
 
@@ -220,6 +223,8 @@ def _get_sku_name(tier):  # pylint: disable=too-many-return-statements
         return 'B0'
     if tier == 'STANDARD':
         return 'S0'
+    if tier == 'ENTERPRISE':
+        return 'E0'
     raise CLIError("Invalid sku(pricing tier), please refer to command help for valid values")
 
 
@@ -228,6 +233,8 @@ def _get_persistent_disk_size(tier):  # pylint: disable=too-many-return-statemen
     if tier == 'BASIC':
         return 1
     if tier == 'STANDARD':
+        return 50
+    if tier == 'ENTERPRISE':
         return 50
     return 50
 
@@ -241,11 +248,34 @@ def get_portal_uri(cli_ctx):
         return 'https://portal.azure.com'
 
 
+def get_spring_cloud_sku(client, resource_group, name):
+    return client.services.get(resource_group, name).sku
+
+
+def convert_argument_to_parameter_list(args):
+    return ', '.join([convert_argument_to_parameter(x) for x in args])
+
+
+def convert_argument_to_parameter(arg):
+    return '--{}'.format(arg.replace('_', '-'))
+
+
+def wait_till_end(cmd, *pollers):
+    if not pollers:
+        return
+    progress_bar = cmd.cli_ctx.get_progress_controller()
+    progress_bar.add(message='Running')
+    progress_bar.begin()
+    while any(x and not x.done() for x in pollers):
+        progress_bar.add(message='Running')
+        sleep(5)
+
+
 def handle_asc_exception(ex):
     try:
         raise CLIError(ex.inner_exception.error.message)
     except AttributeError:
-        if hasattr(ex, 'response'):
+        if hasattr(ex, 'response') and ex.response.internal_response.text:
             response_dict = json.loads(ex.response.internal_response.text)
             raise CLIError(response_dict["error"]["message"])
         else:

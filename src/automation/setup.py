@@ -48,7 +48,7 @@ setup(
     description='Microsoft Azure Command-Line Tools AutomationClient Extension',
     author='Microsoft Corporation',
     author_email='azpycli@microsoft.com',
-    url='https://github.com/Azure/azure-cli-extensions/tree/master/src/automation',
+    url='https://github.com/Azure/azure-cli-extensions/tree/main/src/automation',
     long_description=README + '\n\n' + HISTORY,
     license='MIT',
     classifiers=CLASSIFIERS,

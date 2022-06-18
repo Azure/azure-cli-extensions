@@ -3,7 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-# pylint: disable=line-too-long
+# pylint: disable=line-too-long,unused-argument
 
 from .operations.workspace import WorkspaceInfo
 from .operations.target import TargetInfo

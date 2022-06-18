@@ -7,7 +7,7 @@ import os
 import time
 import unittest
 
-from azure_devtools.scenario_tests import AllowLargeResponse
+from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, KeyVaultPreparer)
 from msrestazure.tools import resource_id
 
@@ -123,6 +123,30 @@ class DatabricksClientScenarioTest(ScenarioTest):
         self.cmd('az databricks workspace delete '
                  '--resource-group {rg} '
                  '--name {custom_workspace_name} '
+                 '-y',
+                 checks=[])
+
+    @ResourceGroupPreparer(name_prefix='cli_test_databricks_v1', location="westus")
+    def test_databricks_v1(self, resource_group):
+        self.kwargs.update({
+            'workspace_name': 'my-test-workspace'
+        })
+
+        self.cmd('az databricks workspace create '
+                 '--resource-group {rg} '
+                 '--name {workspace_name} '
+                 '--location westus '
+                 '--sku premium '
+                 '--public-network-access Enabled '
+                 '--required-nsg-rules AllRules',
+                 checks=[self.check('name', '{workspace_name}'),
+                         self.check('sku.name', 'premium'),
+                         self.check('publicNetworkAccess', 'Enabled'),
+                         self.check('requiredNsgRules', 'AllRules')])
+
+        self.cmd('az databricks workspace delete '
+                 '--resource-group {rg} '
+                 '--name {workspace_name} '
                  '-y',
                  checks=[])
 

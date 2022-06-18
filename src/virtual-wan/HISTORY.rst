@@ -3,6 +3,20 @@
 Release History
 ===============
 
+0.2.12
+++++++
+* `az network vhub create`: Add new parameter `--hub-routing-preference`.
+* `az network vhub update`: Add new parameter `--hub-routing-preference`.
+* Bump api version from 2020-05-01 to 2021-08-01.
+
+0.2.11
+++++++
+* add new command group: `az network vpn-gateway connection vpn-site-link-conn`.
+* add new command group: `az network vpn-gateway connection vpn-site-link-conn ipsec-policy`.
+* add new command group: `az network vpn-site link`.
+* `az network vpn-gateway connection`: support new parameters `--vpn-site-link` and `--with-link`.
+* `az network vpn-site`: support new parameter `--with-link`.
+
 0.2.10
 ++++++
 * add new command group: `az network vhub bgpconnection`.

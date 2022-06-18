@@ -8,6 +8,9 @@
 
 from ._operations import Operations
 from ._resource_pools_operations import ResourcePoolsOperations
+from ._clusters_operations import ClustersOperations
+from ._hosts_operations import HostsOperations
+from ._datastores_operations import DatastoresOperations
 from ._vcenters_operations import VCentersOperations
 from ._virtual_machines_operations import VirtualMachinesOperations
 from ._virtual_machine_templates_operations import VirtualMachineTemplatesOperations
@@ -15,11 +18,14 @@ from ._virtual_networks_operations import VirtualNetworksOperations
 from ._inventory_items_operations import InventoryItemsOperations
 from ._hybrid_identity_metadata_operations import HybridIdentityMetadataOperations
 from ._machine_extensions_operations import MachineExtensionsOperations
-from ._guest_agent_operations import GuestAgentOperations
+from ._guest_agents_operations import GuestAgentsOperations
 
 __all__ = [
     'Operations',
     'ResourcePoolsOperations',
+    'ClustersOperations',
+    'HostsOperations',
+    'DatastoresOperations',
     'VCentersOperations',
     'VirtualMachinesOperations',
     'VirtualMachineTemplatesOperations',
@@ -27,5 +33,5 @@ __all__ = [
     'InventoryItemsOperations',
     'HybridIdentityMetadataOperations',
     'MachineExtensionsOperations',
-    'GuestAgentOperations',
+    'GuestAgentsOperations',
 ]

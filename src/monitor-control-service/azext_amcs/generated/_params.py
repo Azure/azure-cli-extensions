@@ -32,6 +32,8 @@ def load_arguments(self, _):
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('data_collection_rule_name', options_list=['--rule-name'], type=str, help='The name of the data '
                    'collection rule. The name is case insensitive.')
+        c.argument('data_collection_endpoint_name', options_list=['--endpoint-name'], type=str, help='The name of the data collection endpoint. The name '
+                   'is case insensitive.')
         c.argument('resource_uri', options_list=['--resource'], type=str, help='The identifier of the resource.')
 
     with self.argument_context('monitor data-collection rule association show') as c:

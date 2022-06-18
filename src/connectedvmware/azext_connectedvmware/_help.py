@@ -31,8 +31,9 @@ helps[
       - name: Create resource pool
         text: |-
                az connectedvmware resource-pool create --custom-location "custom location name" \
-                --location "" --mo-ref-id "mo-ref id of the resource in vc" --name "resource pool name" \
-                --resource-group "resource group name" --vcenter "name or id of the vcenter"
+               --location "location name" --inventory-item "name or id the inventory item" \
+               --name "resource pool name" --resource-group "resource group name" \
+               --vcenter "name or id of the vcenter"
 """
 
 helps[
@@ -71,6 +72,174 @@ helps[
 """
 
 helps[
+    'connectedvmware cluster'
+] = """
+    type: group
+    short-summary: cluster resource
+"""
+
+helps[
+    'connectedvmware cluster create'
+] = """
+    type: command
+    short-summary: "Create a cluster resource"
+    examples:
+      - name: Create cluster
+        text: |-
+               az connectedvmware cluster create --custom-location "custom location name" \
+               --location "location name" --inventory-item "name or id the inventory item" \
+               --name "cluster name" --resource-group "resource group name" \
+               --vcenter "name or id of the vcenter"
+"""
+
+helps[
+    'connectedvmware cluster delete'
+] = """
+    type: command
+    short-summary: "Delete cluster resource"
+    examples:
+      - name: Delete cluster
+        text: |-
+               az connectedvmware cluster delete --ids "resource id" --name "cluster name" \
+               --resource-group "resource group name" --subscription "Name or ID of subscription"
+"""
+
+helps[
+    'connectedvmware cluster list'
+] = """
+    type: command
+    short-summary: "Retrieve a list of cluster of given resource group"
+    examples:
+      - name: Retrieve a list of cluster
+        text: |-
+               az connectedvmware cluster list --resource-group "resource group name"
+"""
+
+helps[
+    'connectedvmware cluster show'
+] = """
+    type: command
+    short-summary: "Get details of a cluster by id, resource-group, cluster name, or subscription"
+    examples:
+      - name: Get details of a cluster
+        text: |-
+               az connectedvmware cluster show --ids "resource id" --name "cluster name" \
+               --resource-group "resource group name" --subscription "Name or ID of subscription"
+"""
+
+helps[
+    'connectedvmware datastore'
+] = """
+    type: group
+    short-summary: datastore resource
+"""
+
+helps[
+    'connectedvmware datastore create'
+] = """
+    type: command
+    short-summary: "Create a datastore resource"
+    examples:
+      - name: Create datastore
+        text: |-
+               az connectedvmware datastore create --custom-location "custom location name" \
+               --location "location name" --inventory-item "name or id the inventory item" \
+               --name "datastore name" --resource-group "resource group name" \
+               --vcenter "name or id of the vcenter"
+"""
+
+helps[
+    'connectedvmware datastore delete'
+] = """
+    type: command
+    short-summary: "Delete datastore resource"
+    examples:
+      - name: Delete datastore
+        text: |-
+               az connectedvmware datastore delete --ids "resource id" --name "datastore name" \
+               --resource-group "resource group name" --subscription "Name or ID of subscription"
+"""
+
+helps[
+    'connectedvmware datastore list'
+] = """
+    type: command
+    short-summary: "Retrieve a list of datastore of given resource group"
+    examples:
+      - name: Retrieve a list of datastore
+        text: |-
+               az connectedvmware datastore list --resource-group "resource group name"
+"""
+
+helps[
+    'connectedvmware datastore show'
+] = """
+    type: command
+    short-summary: "Get details of a datastore by id, resource-group, datastore name, or subscription"
+    examples:
+      - name: Get details of a datastore
+        text: |-
+               az connectedvmware datastore show --ids "resource id" --name "datastore name" \
+               --resource-group "resource group name" --subscription "Name or ID of subscription"
+"""
+
+helps[
+    'connectedvmware host'
+] = """
+    type: group
+    short-summary: host resource
+"""
+
+helps[
+    'connectedvmware host create'
+] = """
+    type: command
+    short-summary: "Create a host resource"
+    examples:
+      - name: Create host
+        text: |-
+               az connectedvmware host create --custom-location "custom location name" \
+               --location "location name" --inventory-item "name or id the inventory item" \
+               --name "host name" --resource-group "resource group name" \
+               --vcenter "name or id of the vcenter"
+"""
+
+helps[
+    'connectedvmware host delete'
+] = """
+    type: command
+    short-summary: "Delete host resource"
+    examples:
+      - name: Delete host
+        text: |-
+               az connectedvmware host delete --ids "resource id" --name "host name" \
+               --resource-group "resource group name" --subscription "Name or ID of subscription"
+"""
+
+helps[
+    'connectedvmware host list'
+] = """
+    type: command
+    short-summary: "Retrieve a list of host of given resource group"
+    examples:
+      - name: Retrieve a list of host
+        text: |-
+               az connectedvmware host list --resource-group "resource group name"
+"""
+
+helps[
+    'connectedvmware host show'
+] = """
+    type: command
+    short-summary: "Get details of a host by id, resource-group, host name, or subscription"
+    examples:
+      - name: Get details of a host
+        text: |-
+               az connectedvmware host show --ids "resource id" --name "host name" \
+               --resource-group "resource group name" --subscription "Name or ID of subscription"
+"""
+
+helps[
     'connectedvmware vcenter'
 ] = """
     type: group
@@ -87,8 +256,7 @@ helps[
         text: |-
                az connectedvmware vcenter connect --custom-location "custom location name" \
                --fqdn "vcenter fqdn/ip" --username "vcenter user name" --password "vcenter password" \
-               --resource-group "resource group name" --subscription "Name or ID of subscription" \
-               --location "region name" --name "vcenter name"
+               --resource-group "resource group name" --location "location name" --name "vcenter name"
 """
 
 helps[
@@ -127,6 +295,37 @@ helps[
 """
 
 helps[
+    'connectedvmware vcenter inventory-item'
+] = """
+    type: group
+    short-summary: inventory item resource.
+"""
+
+helps[
+    'connectedvmware vcenter inventory-item list'
+] = """
+    type: command
+    short-summary: "Retrieve a list of inventory item given by resource group and vcenter name."
+    examples:
+      - name: Retrieve a list of inventory item
+        text: |-
+               az connectedvmware vcenter inventory-item list --resource-group "resource group name" \
+               --vcenter "name of the vcenter"
+"""
+
+helps[
+    'connectedvmware vcenter inventory-item show'
+] = """
+    type: command
+    short-summary: "Get details of a inventory item by inventory item name or id, resource-group and vcenter name."
+    examples:
+      - name: Get details of a inventory item
+        text: |-
+               az connectedvmware vcenter inventory-item show --inventory-item "inventory item name" \
+               --resource-group "resource group name" --vcenter "name of the vcenter"
+"""
+
+helps[
     'connectedvmware virtual-network'
 ] = """
     type: group
@@ -142,9 +341,9 @@ helps[
       - name: Create virtual network
         text: |-
                az connectedvmware virtual-network create --custom-location "custom location name" \
-               --location "region name" --mo-ref-id "mo-ref id of the resource in vc" --name \
-               "virtual network name" --resource-group "resource group name" --vcenter "name or id of \
-               the vcenter" --inventory-item "inventory item name or id"
+               --location "location name" --inventory-item "name or id the inventory item" \
+               --name "virtual network name" --resource-group "resource group name" \
+               --vcenter "name or id of the vcenter"
 """
 
 helps[
@@ -197,9 +396,10 @@ helps[
     examples:
       - name: Create vm
         text: |-
-               az connectedvmware vm create --custom-location "custom location name" --location \
-               "Region name" --name "virtual network name" --resource-group "resource group name" \
-               --vcenter "name or id of the vcenter" --inventory-item "inventory item name or id"
+               az connectedvmware vm create --custom-location "custom location name" \
+               --location "location name" --inventory-item "name or id of the inventory item" \
+               --name "virtual machine name" --resource-group "resource group name" \
+               --vcenter "name or id of the vcenter"
 """
 
 helps[
@@ -410,6 +610,96 @@ helps[
 """
 
 helps[
+    'connectedvmware vm guest-agent'
+] = """
+    type: group
+    short-summary: vm guest agent.
+"""
+
+helps[
+    'connectedvmware vm guest-agent enable'
+] = """
+    type: command
+    short-summary: "Enable guest agent on the vm"
+    examples:
+      - name: Enable guest agent on the vm
+        text: |-
+               az connectedvmware vm guest-agent enable --username "vm user name" --password "vm password" \
+               --resource-group "resource group name" --subscription "Name or ID of subscription" \
+               --vm-name "vm name"
+"""
+
+helps[
+    'connectedvmware vm guest-agent show'
+] = """
+    type: command
+    short-summary: "Get details of a guest agent by guest agent name, resource-group and vm name."
+    examples:
+      - name: Get details of a guest agent
+        text: |-
+               az connectedvmware vm guest-agent show --resource-group "resource group name" \
+               --vm-name "name of the vm"
+"""
+
+helps['connectedvmware vm extension'] = """
+    type: group
+    short-summary: Manage vm extension with connectedvmware
+"""
+
+helps['connectedvmware vm extension list'] = """
+    type: command
+    short-summary: "The operation to get all extensions of a non-Azure vm."
+    examples:
+      - name: Get all VM Extensions
+        text: |-
+               az connectedvmware vm extension list --vm-name "vm name" --resource-group "myResourceGroup"
+"""
+
+helps['connectedvmware vm extension show'] = """
+    type: command
+    short-summary: "The operation to get the extension."
+    examples:
+      - name: Get VM Extension
+        text: |-
+               az connectedvmware vm extension show --name "CustomScriptExtension" --vm-name "vm name" \
+--resource-group "myResourceGroup"
+"""
+
+helps['connectedvmware vm extension create'] = """
+    type: command
+    short-summary: "The operation to create the extension."
+    examples:
+      - name: Create a VM Extension
+        text: |-
+               az connectedvmware vm extension create --name "CustomScriptExtension" --location "eastus2euap" --type \
+"CustomScriptExtension" --publisher "Microsoft.Compute" --settings "{\\"commandToExecute\\":\\"powershell.exe -c \
+\\\\\\"Get-Process | Where-Object { $_.CPU -gt 10000 }\\\\\\"\\"}" --type-handler-version "1.10" --vm-name \
+"vm name" --resource-group "myResourceGroup"
+"""
+
+helps['connectedvmware vm extension update'] = """
+    type: command
+    short-summary: "The operation to update the extension."
+    examples:
+      - name: Update a VM Extension
+        text: |-
+               az connectedvmware vm extension update --name "CustomScriptExtension" --type "CustomScriptExtension" \
+--publisher "Microsoft.Compute" --settings "{\\"commandToExecute\\":\\"powershell.exe -c \\\\\\"Get-Process | \
+Where-Object { $_.CPU -lt 100 }\\\\\\"\\"}" --type-handler-version "1.10" --vm-name "vm name" --resource-group \
+"myResourceGroup"
+"""
+
+helps['connectedvmware vm extension delete'] = """
+    type: command
+    short-summary: "The operation to delete the extension."
+    examples:
+      - name: Delete a VM Extension
+        text: |-
+               az connectedvmware vm extension delete --name "vm extension name" --vm-name "vm name" --resource-group \
+"myResourceGroup"
+"""
+
+helps[
     'connectedvmware vm-template'
 ] = """
     type: group
@@ -425,9 +715,9 @@ helps[
       - name: Create vm template
         text: |-
                az connectedvmware vm-template create --custom-location "custom location name" \
-               --location "region name" --mo-ref-id "mo-ref id of the resource in vc" --name \
-               "vm template name" --resource-group "resource group name" --vcenter "name or id of \
-               the vcenter" --inventory-item "inventory item name or id"
+               --location "location name" --inventory-item "name or id the inventory item" \
+               --name "vm template name" --resource-group "resource group name" \
+               --vcenter "name or id of the vcenter"
 """
 
 helps[
@@ -463,35 +753,4 @@ helps[
         text: |-
                az connectedvmware vm-template show --ids "resource id" --name "vm template name" \
                --resource-group "resource group name" --subscription "Name or ID of subscription"
-"""
-
-helps[
-    'connectedvmware inventory-item'
-] = """
-    type: group
-    short-summary: inventory item resource.
-"""
-
-helps[
-    'connectedvmware inventory-item list'
-] = """
-    type: command
-    short-summary: "Retrieve a list of inventory item given by resource group and vcenter name."
-    examples:
-      - name: Retrieve a list of inventory item
-        text: |-
-               az connectedvmware inventory-item list --resource-group "resource group name" \
-               --vcenter-name "name of the vcenter"
-"""
-
-helps[
-    'connectedvmware inventory-item show'
-] = """
-    type: command
-    short-summary: "Get details of a inventory item by inventory item name or id, resource-group and vcenter name."
-    examples:
-      - name: Get details of a vm template
-        text: |-
-               az connectedvmware inventory-item show --inventory-item-name "inventory item name" \
-               --resource-group "resource group name" --vcenter-name "name of the vcenter"
 """
