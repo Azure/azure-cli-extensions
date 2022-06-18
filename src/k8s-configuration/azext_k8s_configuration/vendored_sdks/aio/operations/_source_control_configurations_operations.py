@@ -28,7 +28,7 @@ class SourceControlConfigurationsOperations:
     instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~azure.mgmt.kubernetesconfiguration.v2021_03_01.models
+    :type models: ~azure.mgmt.kubernetesconfiguration.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -50,7 +50,7 @@ class SourceControlConfigurationsOperations:
         cluster_resource_name: Union[str, "_models.Enum1"],
         cluster_name: str,
         source_control_configuration_name: str,
-        **kwargs: Any
+        **kwargs
     ) -> "_models.SourceControlConfiguration":
         """Gets details of the Source Control Configuration.
 
@@ -58,17 +58,17 @@ class SourceControlConfigurationsOperations:
         :type resource_group_name: str
         :param cluster_rp: The Kubernetes cluster RP - either Microsoft.ContainerService (for AKS
          clusters) or Microsoft.Kubernetes (for OnPrem K8S clusters).
-        :type cluster_rp: str or ~azure.mgmt.kubernetesconfiguration.v2021_03_01.models.Enum0
+        :type cluster_rp: str or ~azure.mgmt.kubernetesconfiguration.models.Enum0
         :param cluster_resource_name: The Kubernetes cluster resource name - either managedClusters
          (for AKS clusters) or connectedClusters (for OnPrem K8S clusters).
-        :type cluster_resource_name: str or ~azure.mgmt.kubernetesconfiguration.v2021_03_01.models.Enum1
+        :type cluster_resource_name: str or ~azure.mgmt.kubernetesconfiguration.models.Enum1
         :param cluster_name: The name of the kubernetes cluster.
         :type cluster_name: str
         :param source_control_configuration_name: Name of the Source Control Configuration.
         :type source_control_configuration_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: SourceControlConfiguration, or the result of cls(response)
-        :rtype: ~azure.mgmt.kubernetesconfiguration.v2021_03_01.models.SourceControlConfiguration
+        :rtype: ~azure.mgmt.kubernetesconfiguration.models.SourceControlConfiguration
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.SourceControlConfiguration"]
@@ -76,7 +76,7 @@ class SourceControlConfigurationsOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-03-01"
+        api_version = "2020-10-01-preview"
         accept = "application/json"
 
         # Construct URL
@@ -105,7 +105,7 @@ class SourceControlConfigurationsOperations:
 
         if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, response)
+            error = self._deserialize(_models.ErrorResponse, response)
             raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         deserialized = self._deserialize('SourceControlConfiguration', pipeline_response)
@@ -124,7 +124,7 @@ class SourceControlConfigurationsOperations:
         cluster_name: str,
         source_control_configuration_name: str,
         source_control_configuration: "_models.SourceControlConfiguration",
-        **kwargs: Any
+        **kwargs
     ) -> "_models.SourceControlConfiguration":
         """Create a new Kubernetes Source Control Configuration.
 
@@ -132,19 +132,19 @@ class SourceControlConfigurationsOperations:
         :type resource_group_name: str
         :param cluster_rp: The Kubernetes cluster RP - either Microsoft.ContainerService (for AKS
          clusters) or Microsoft.Kubernetes (for OnPrem K8S clusters).
-        :type cluster_rp: str or ~azure.mgmt.kubernetesconfiguration.v2021_03_01.models.Enum0
+        :type cluster_rp: str or ~azure.mgmt.kubernetesconfiguration.models.Enum0
         :param cluster_resource_name: The Kubernetes cluster resource name - either managedClusters
          (for AKS clusters) or connectedClusters (for OnPrem K8S clusters).
-        :type cluster_resource_name: str or ~azure.mgmt.kubernetesconfiguration.v2021_03_01.models.Enum1
+        :type cluster_resource_name: str or ~azure.mgmt.kubernetesconfiguration.models.Enum1
         :param cluster_name: The name of the kubernetes cluster.
         :type cluster_name: str
         :param source_control_configuration_name: Name of the Source Control Configuration.
         :type source_control_configuration_name: str
         :param source_control_configuration: Properties necessary to Create KubernetesConfiguration.
-        :type source_control_configuration: ~azure.mgmt.kubernetesconfiguration.v2021_03_01.models.SourceControlConfiguration
+        :type source_control_configuration: ~azure.mgmt.kubernetesconfiguration.models.SourceControlConfiguration
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: SourceControlConfiguration, or the result of cls(response)
-        :rtype: ~azure.mgmt.kubernetesconfiguration.v2021_03_01.models.SourceControlConfiguration
+        :rtype: ~azure.mgmt.kubernetesconfiguration.models.SourceControlConfiguration
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.SourceControlConfiguration"]
@@ -152,7 +152,7 @@ class SourceControlConfigurationsOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-03-01"
+        api_version = "2020-10-01-preview"
         content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
 
@@ -186,7 +186,7 @@ class SourceControlConfigurationsOperations:
 
         if response.status_code not in [200, 201]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, response)
+            error = self._deserialize(_models.ErrorResponse, response)
             raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         if response.status_code == 200:
@@ -208,14 +208,14 @@ class SourceControlConfigurationsOperations:
         cluster_resource_name: Union[str, "_models.Enum1"],
         cluster_name: str,
         source_control_configuration_name: str,
-        **kwargs: Any
+        **kwargs
     ) -> None:
         cls = kwargs.pop('cls', None)  # type: ClsType[None]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-03-01"
+        api_version = "2020-10-01-preview"
         accept = "application/json"
 
         # Construct URL
@@ -244,7 +244,7 @@ class SourceControlConfigurationsOperations:
 
         if response.status_code not in [200, 204]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, response)
+            error = self._deserialize(_models.ErrorResponse, response)
             raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         if cls:
@@ -259,7 +259,7 @@ class SourceControlConfigurationsOperations:
         cluster_resource_name: Union[str, "_models.Enum1"],
         cluster_name: str,
         source_control_configuration_name: str,
-        **kwargs: Any
+        **kwargs
     ) -> AsyncLROPoller[None]:
         """This will delete the YAML file used to set up the Source control configuration, thus stopping
         future sync from the source repo.
@@ -268,18 +268,18 @@ class SourceControlConfigurationsOperations:
         :type resource_group_name: str
         :param cluster_rp: The Kubernetes cluster RP - either Microsoft.ContainerService (for AKS
          clusters) or Microsoft.Kubernetes (for OnPrem K8S clusters).
-        :type cluster_rp: str or ~azure.mgmt.kubernetesconfiguration.v2021_03_01.models.Enum0
+        :type cluster_rp: str or ~azure.mgmt.kubernetesconfiguration.models.Enum0
         :param cluster_resource_name: The Kubernetes cluster resource name - either managedClusters
          (for AKS clusters) or connectedClusters (for OnPrem K8S clusters).
-        :type cluster_resource_name: str or ~azure.mgmt.kubernetesconfiguration.v2021_03_01.models.Enum1
+        :type cluster_resource_name: str or ~azure.mgmt.kubernetesconfiguration.models.Enum1
         :param cluster_name: The name of the kubernetes cluster.
         :type cluster_name: str
         :param source_control_configuration_name: Name of the Source Control Configuration.
         :type source_control_configuration_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: By default, your polling method will be AsyncARMPolling.
-         Pass in False for this operation to not poll, or pass in your own initialized polling object for a personal polling strategy.
+        :keyword polling: True for ARMPolling, False for no polling, or a
+         polling object for personal polling strategy
         :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns either None or the result of cls(response)
@@ -340,7 +340,7 @@ class SourceControlConfigurationsOperations:
         cluster_rp: Union[str, "_models.Enum0"],
         cluster_resource_name: Union[str, "_models.Enum1"],
         cluster_name: str,
-        **kwargs: Any
+        **kwargs
     ) -> AsyncIterable["_models.SourceControlConfigurationList"]:
         """List all Source Control Configurations.
 
@@ -348,15 +348,15 @@ class SourceControlConfigurationsOperations:
         :type resource_group_name: str
         :param cluster_rp: The Kubernetes cluster RP - either Microsoft.ContainerService (for AKS
          clusters) or Microsoft.Kubernetes (for OnPrem K8S clusters).
-        :type cluster_rp: str or ~azure.mgmt.kubernetesconfiguration.v2021_03_01.models.Enum0
+        :type cluster_rp: str or ~azure.mgmt.kubernetesconfiguration.models.Enum0
         :param cluster_resource_name: The Kubernetes cluster resource name - either managedClusters
          (for AKS clusters) or connectedClusters (for OnPrem K8S clusters).
-        :type cluster_resource_name: str or ~azure.mgmt.kubernetesconfiguration.v2021_03_01.models.Enum1
+        :type cluster_resource_name: str or ~azure.mgmt.kubernetesconfiguration.models.Enum1
         :param cluster_name: The name of the kubernetes cluster.
         :type cluster_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either SourceControlConfigurationList or the result of cls(response)
-        :rtype: ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.kubernetesconfiguration.v2021_03_01.models.SourceControlConfigurationList]
+        :rtype: ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.kubernetesconfiguration.models.SourceControlConfigurationList]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.SourceControlConfigurationList"]
@@ -364,7 +364,7 @@ class SourceControlConfigurationsOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-03-01"
+        api_version = "2020-10-01-preview"
         accept = "application/json"
 
         def prepare_request(next_link=None):
@@ -408,7 +408,7 @@ class SourceControlConfigurationsOperations:
             response = pipeline_response.http_response
 
             if response.status_code not in [200]:
-                error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, response)
+                error = self._deserialize(_models.ErrorResponse, response)
                 map_error(status_code=response.status_code, response=response, error_map=error_map)
                 raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 

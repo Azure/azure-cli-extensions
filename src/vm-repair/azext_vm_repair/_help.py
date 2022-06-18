@@ -22,6 +22,9 @@ helps['vm repair create'] = """
         - name: Create a repair VM and set the VM authentication
           text: >
             az vm repair create -g MyResourceGroup -n myVM --repair-username username --repair-password password!234 --verbose
+        - name: Create a repair VM of a specific distro or a specific URN could also be provided
+          text: >
+            az vm repair create -g MyResourceGroup -n myVM --distro 'rhel7|sles12|ubuntu20|centos6|oracle8|sles15'
 """
 
 helps['vm repair restore'] = """
@@ -52,6 +55,9 @@ helps['vm repair run'] = """
         - name: Run a local custom script on the VM.
           text: >
             az vm repair run -g MyResourceGroup -n MySourceWinVM --custom-script-file ./file.ps1 --verbose
+        - name: Run unverified script from your fork of https://github.com/Azure/repair-script-library
+          text: >
+            az vm repair run -g MyResourceGroup -n MySourceWinVM --preview "https://github.com/haagha/repair-script-library/blob/master/map.json" --run-id test
 """
 
 helps['vm repair list-scripts'] = """
@@ -67,4 +73,7 @@ helps['vm repair list-scripts'] = """
         - name: List scripts with test in its description.
           text: >
             az vm repair list-scripts --query "[?contains(description, 'test')]"
+        - name: List unverified script from your fork of https://github.com/Azure/repair-script-library
+          text: >
+            az vm repair list-scripts --preview "https://github.com/haagha/repair-script-library/blob/master/map.json"
 """

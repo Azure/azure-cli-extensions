@@ -1,0 +1,2879 @@
+interactions:
+- request:
+    body: '{"location": "westus2"}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis workspace create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '23'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --resource-group --location --name
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.HealthcareApis/workspaces/myworkspace000004?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.HealthcareApis/workspaces/myworkspace000004","name":"myworkspace000004","type":"Microsoft.HealthcareApis/workspaces","etag":"\"e000871b-0000-0400-0000-627a16780000\"","location":"westus2","properties":{"privateEndpointConnections":[],"publicNetworkAccess":"Enabled","provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '407'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 10 May 2022 07:38:34 GMT
+      etag:
+      - '"e000871b-0000-0400-0000-627a16780000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1198'
+      x-request-id:
+      - 9ed6aa29fb57d9498e01609b8e31b2c5
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis workspace wait
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --created --resource-group --name
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.HealthcareApis/workspaces/myworkspace000004?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.HealthcareApis/workspaces/myworkspace000004","name":"myworkspace000004","type":"Microsoft.HealthcareApis/workspaces","etag":"\"e000871b-0000-0400-0000-627a16780000\"","location":"westus2","properties":{"privateEndpointConnections":[],"publicNetworkAccess":"Enabled","provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '407'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 10 May 2022 07:38:37 GMT
+      etag:
+      - '"e000871b-0000-0400-0000-627a16780000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - 9daf88e45b6d8d4ca5023eab7bd145f1
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"identity": {"type": "SystemAssigned"}, "location": "westus2", "tags":
+      {"additionalProp1": "string", "additionalProp2": "string", "additionalProp3":
+      "string"}, "properties": {"ingestionEndpointConfiguration": {"eventHubName":
+      "MyEventHubName", "consumerGroup": "ConsumerGroupA", "fullyQualifiedEventHubNamespace":
+      "myeventhub.servicesbus.windows.net"}, "deviceMapping": {"content": {"template":
+      [{"template": {"deviceIdExpression": "$.deviceid", "timestampExpression": "$.measurementdatetime",
+      "typeMatchExpression": "$..[?(@heartrate)]", "typeName": "heartrate", "values":
+      [{"required": "true", "valueExpression": "$.heartrate", "valueName": "hr"}]},
+      "templateType": "JsonPathContent"}], "templateType": "CollectionContent"}}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis workspace iot-connector create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '729'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --identity-type --location --content --ingestion-endpoint-configuration --tags
+        --name --resource-group --workspace-name
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.HealthcareApis/workspaces/myworkspace000004/iotconnectors/myiot000003?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.HealthcareApis/workspaces/myworkspace000004/iotconnectors/myiot000003","name":"myworkspace000004/myiot000003","type":"Microsoft.HealthcareApis/workspaces/iotconnectors","etag":"\"e000f21d-0000-0400-0000-627a16860000\"","location":"westus2","tags":{"additionalProp1":"string","additionalProp2":"string","additionalProp3":"string"},"properties":{"ingestionEndpointConfiguration":{"eventHubName":"MyEventHubName","consumerGroup":"ConsumerGroupA","fullyQualifiedEventHubNamespace":"myeventhub.servicesbus.windows.net"},"deviceMapping":{"content":{"template":[{"template":{"deviceIdExpression":"$.deviceid","timestampExpression":"$.measurementdatetime","typeMatchExpression":"$..[?(@heartrate)]","typeName":"heartrate","values":[{"required":"true","valueExpression":"$.heartrate","valueName":"hr"}]},"templateType":"JsonPathContent"}],"templateType":"CollectionContent"}},"provisioningState":"Creating"},"identity":{"principalId":"4c0fafd6-7cd9-4825-b8c5-de72f140ac92","tenantId":"54826b22-38d6-4fb2-bad9-b7b93a3e9c5a","type":"SystemAssigned"}}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/i56w6ng7yo05aikg5x4m1ybpd?api-version=2021-11-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '1147'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 10 May 2022 07:38:49 GMT
+      etag:
+      - '"e000f21d-0000-0400-0000-627a16860000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1197'
+      x-request-id:
+      - 2dfa87663682f043ac8df939a28850cf
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis workspace iot-connector create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --identity-type --location --content --ingestion-endpoint-configuration --tags
+        --name --resource-group --workspace-name
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/i56w6ng7yo05aikg5x4m1ybpd?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/i56w6ng7yo05aikg5x4m1ybpd","name":"i56w6ng7yo05aikg5x4m1ybpd","status":"Running","startTime":"2022-05-10T07:38:46.1274444Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '253'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 10 May 2022 07:39:21 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - 8243f5f155cb974994db73d15787a2c1
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis workspace iot-connector create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --identity-type --location --content --ingestion-endpoint-configuration --tags
+        --name --resource-group --workspace-name
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/i56w6ng7yo05aikg5x4m1ybpd?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/i56w6ng7yo05aikg5x4m1ybpd","name":"i56w6ng7yo05aikg5x4m1ybpd","status":"Running","startTime":"2022-05-10T07:38:46.1274444Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '253'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 10 May 2022 07:39:52 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - 172d727fe3717442aa7ac20de01d77fb
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis workspace iot-connector create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --identity-type --location --content --ingestion-endpoint-configuration --tags
+        --name --resource-group --workspace-name
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/i56w6ng7yo05aikg5x4m1ybpd?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/i56w6ng7yo05aikg5x4m1ybpd","name":"i56w6ng7yo05aikg5x4m1ybpd","status":"Running","startTime":"2022-05-10T07:38:46.1274444Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '253'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 10 May 2022 07:40:23 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - 6be066eba36b5a44b937ffd4df29e930
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis workspace iot-connector create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --identity-type --location --content --ingestion-endpoint-configuration --tags
+        --name --resource-group --workspace-name
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/i56w6ng7yo05aikg5x4m1ybpd?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/i56w6ng7yo05aikg5x4m1ybpd","name":"i56w6ng7yo05aikg5x4m1ybpd","status":"Running","startTime":"2022-05-10T07:38:46.1274444Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '253'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 10 May 2022 07:40:56 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - 5bb58b81d6cf9f43803a3c59d55b277f
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis workspace iot-connector create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --identity-type --location --content --ingestion-endpoint-configuration --tags
+        --name --resource-group --workspace-name
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/i56w6ng7yo05aikg5x4m1ybpd?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/i56w6ng7yo05aikg5x4m1ybpd","name":"i56w6ng7yo05aikg5x4m1ybpd","status":"Running","startTime":"2022-05-10T07:38:46.1274444Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '253'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 10 May 2022 07:41:26 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - d046e22323c1c44488177d8a3156909c
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis workspace iot-connector create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --identity-type --location --content --ingestion-endpoint-configuration --tags
+        --name --resource-group --workspace-name
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/i56w6ng7yo05aikg5x4m1ybpd?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/i56w6ng7yo05aikg5x4m1ybpd","name":"i56w6ng7yo05aikg5x4m1ybpd","status":"Running","startTime":"2022-05-10T07:38:46.1274444Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '253'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 10 May 2022 07:41:57 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - 12317a5b7cdaf5438be2048501c3c089
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis workspace iot-connector create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --identity-type --location --content --ingestion-endpoint-configuration --tags
+        --name --resource-group --workspace-name
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/i56w6ng7yo05aikg5x4m1ybpd?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/i56w6ng7yo05aikg5x4m1ybpd","name":"i56w6ng7yo05aikg5x4m1ybpd","status":"Running","startTime":"2022-05-10T07:38:46.1274444Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '253'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 10 May 2022 07:42:28 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - 4e2e0ad8ee26454e8a6282123df04920
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis workspace iot-connector create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --identity-type --location --content --ingestion-endpoint-configuration --tags
+        --name --resource-group --workspace-name
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/i56w6ng7yo05aikg5x4m1ybpd?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/i56w6ng7yo05aikg5x4m1ybpd","name":"i56w6ng7yo05aikg5x4m1ybpd","status":"Running","startTime":"2022-05-10T07:38:46.1274444Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '253'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 10 May 2022 07:42:59 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - 2a3bd061fbf0144591b4a601b1c00a6f
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis workspace iot-connector create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --identity-type --location --content --ingestion-endpoint-configuration --tags
+        --name --resource-group --workspace-name
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/i56w6ng7yo05aikg5x4m1ybpd?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/i56w6ng7yo05aikg5x4m1ybpd","name":"i56w6ng7yo05aikg5x4m1ybpd","status":"Running","startTime":"2022-05-10T07:38:46.1274444Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '253'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 10 May 2022 07:43:29 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - 11f9f17ee420d745bb5a2b3f38d58c0a
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis workspace iot-connector create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --identity-type --location --content --ingestion-endpoint-configuration --tags
+        --name --resource-group --workspace-name
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/i56w6ng7yo05aikg5x4m1ybpd?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/i56w6ng7yo05aikg5x4m1ybpd","name":"i56w6ng7yo05aikg5x4m1ybpd","status":"Succeeded","startTime":"2022-05-10T07:38:46.1274444Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '255'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 10 May 2022 07:44:00 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - 8916932c5b80dd46bbe4c8cc258b63a8
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis workspace iot-connector create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --identity-type --location --content --ingestion-endpoint-configuration --tags
+        --name --resource-group --workspace-name
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.HealthcareApis/workspaces/myworkspace000004/iotconnectors/myiot000003?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.HealthcareApis/workspaces/myworkspace000004/iotconnectors/myiot000003","name":"myworkspace000004/myiot000003","type":"Microsoft.HealthcareApis/workspaces/iotconnectors","etag":"\"e000d33c-0000-0400-0000-627a17a30000\"","location":"westus2","tags":{"additionalProp1":"string","additionalProp2":"string","additionalProp3":"string"},"properties":{"ingestionEndpointConfiguration":{"eventHubName":"MyEventHubName","consumerGroup":"ConsumerGroupA","fullyQualifiedEventHubNamespace":"myeventhub.servicesbus.windows.net"},"deviceMapping":{"content":{"template":[{"template":{"deviceIdExpression":"$.deviceid","timestampExpression":"$.measurementdatetime","typeMatchExpression":"$..[?(@heartrate)]","typeName":"heartrate","values":[{"required":"true","valueExpression":"$.heartrate","valueName":"hr"}]},"templateType":"JsonPathContent"}],"templateType":"CollectionContent"}},"provisioningState":"Succeeded"},"identity":{"principalId":"4c0fafd6-7cd9-4825-b8c5-de72f140ac92","tenantId":"54826b22-38d6-4fb2-bad9-b7b93a3e9c5a","type":"SystemAssigned"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1148'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 10 May 2022 07:44:01 GMT
+      etag:
+      - '"e000d33c-0000-0400-0000-627a17a30000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - ce339a1bcdafb148a139dc6a8369c967
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis workspace iot-connector wait
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --created --name --resource-group --workspace-name
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.HealthcareApis/workspaces/myworkspace000004/iotconnectors/myiot000003?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.HealthcareApis/workspaces/myworkspace000004/iotconnectors/myiot000003","name":"myworkspace000004/myiot000003","type":"Microsoft.HealthcareApis/workspaces/iotconnectors","etag":"\"e000d33c-0000-0400-0000-627a17a30000\"","location":"westus2","tags":{"additionalProp1":"string","additionalProp2":"string","additionalProp3":"string"},"properties":{"ingestionEndpointConfiguration":{"eventHubName":"MyEventHubName","consumerGroup":"ConsumerGroupA","fullyQualifiedEventHubNamespace":"myeventhub.servicesbus.windows.net"},"deviceMapping":{"content":{"template":[{"template":{"deviceIdExpression":"$.deviceid","timestampExpression":"$.measurementdatetime","typeMatchExpression":"$..[?(@heartrate)]","typeName":"heartrate","values":[{"required":"true","valueExpression":"$.heartrate","valueName":"hr"}]},"templateType":"JsonPathContent"}],"templateType":"CollectionContent"}},"provisioningState":"Succeeded"},"identity":{"principalId":"4c0fafd6-7cd9-4825-b8c5-de72f140ac92","tenantId":"54826b22-38d6-4fb2-bad9-b7b93a3e9c5a","type":"SystemAssigned"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1148'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 10 May 2022 07:44:02 GMT
+      etag:
+      - '"e000d33c-0000-0400-0000-627a17a30000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - 8bf221854c9e274f98d1ee9e967769bd
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis workspace iot-connector show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group --workspace-name
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.HealthcareApis/workspaces/myworkspace000004/iotconnectors/myiot000003?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.HealthcareApis/workspaces/myworkspace000004/iotconnectors/myiot000003","name":"myworkspace000004/myiot000003","type":"Microsoft.HealthcareApis/workspaces/iotconnectors","etag":"\"e000d33c-0000-0400-0000-627a17a30000\"","location":"westus2","tags":{"additionalProp1":"string","additionalProp2":"string","additionalProp3":"string"},"properties":{"ingestionEndpointConfiguration":{"eventHubName":"MyEventHubName","consumerGroup":"ConsumerGroupA","fullyQualifiedEventHubNamespace":"myeventhub.servicesbus.windows.net"},"deviceMapping":{"content":{"template":[{"template":{"deviceIdExpression":"$.deviceid","timestampExpression":"$.measurementdatetime","typeMatchExpression":"$..[?(@heartrate)]","typeName":"heartrate","values":[{"required":"true","valueExpression":"$.heartrate","valueName":"hr"}]},"templateType":"JsonPathContent"}],"templateType":"CollectionContent"}},"provisioningState":"Succeeded"},"identity":{"principalId":"4c0fafd6-7cd9-4825-b8c5-de72f140ac92","tenantId":"54826b22-38d6-4fb2-bad9-b7b93a3e9c5a","type":"SystemAssigned"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1148'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 10 May 2022 07:44:03 GMT
+      etag:
+      - '"e000d33c-0000-0400-0000-627a17a30000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - aed54ae39432234583af1d4c2ed54812
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis workspace iot-connector list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --workspace-name
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.HealthcareApis/workspaces/myworkspace000004/iotconnectors?api-version=2021-11-01
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.HealthcareApis/workspaces/myworkspace000004/iotconnectors/myiot000003","name":"myworkspace000004/myiot000003","type":"Microsoft.HealthcareApis/workspaces/iotconnectors","etag":"\"e000d33c-0000-0400-0000-627a17a30000\"","location":"westus2","tags":{"additionalProp1":"string","additionalProp2":"string","additionalProp3":"string"},"properties":{"ingestionEndpointConfiguration":{"eventHubName":"MyEventHubName","consumerGroup":"ConsumerGroupA","fullyQualifiedEventHubNamespace":"myeventhub.servicesbus.windows.net"},"deviceMapping":{"content":{"template":[{"template":{"deviceIdExpression":"$.deviceid","timestampExpression":"$.measurementdatetime","typeMatchExpression":"$..[?(@heartrate)]","typeName":"heartrate","values":[{"required":"true","valueExpression":"$.heartrate","valueName":"hr"}]},"templateType":"JsonPathContent"}],"templateType":"CollectionContent"}},"provisioningState":"Succeeded"},"identity":{"principalId":"4c0fafd6-7cd9-4825-b8c5-de72f140ac92","tenantId":"54826b22-38d6-4fb2-bad9-b7b93a3e9c5a","type":"SystemAssigned"}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1160'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 10 May 2022 07:44:03 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - 1cef072fc48c4d4ba07737ce1afb7ca2
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"identity": {"type": "SystemAssigned"}, "tags": {"additionalProp1": "string",
+      "additionalProp2": "string", "additionalProp3": "string"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis workspace iot-connector update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '137'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --name --identity-type --tags --resource-group --workspace-name
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: PATCH
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.HealthcareApis/workspaces/myworkspace000004/iotconnectors/myiot000003?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.HealthcareApis/workspaces/myworkspace000004/iotconnectors/myiot000003","name":"myworkspace000004/myiot000003","type":"Microsoft.HealthcareApis/workspaces/iotconnectors","etag":"\"e000c63e-0000-0400-0000-627a17c70000\"","location":"westus2","tags":{"additionalProp1":"string","additionalProp2":"string","additionalProp3":"string"},"properties":{"ingestionEndpointConfiguration":{"eventHubName":"MyEventHubName","consumerGroup":"ConsumerGroupA","fullyQualifiedEventHubNamespace":"myeventhub.servicesbus.windows.net"},"deviceMapping":{"content":{"template":[{"template":{"deviceIdExpression":"$.deviceid","timestampExpression":"$.measurementdatetime","typeMatchExpression":"$..[?(@heartrate)]","typeName":"heartrate","values":[{"required":"true","valueExpression":"$.heartrate","valueName":"hr"}]},"templateType":"JsonPathContent"}],"templateType":"CollectionContent"}},"provisioningState":"Accepted"},"identity":{"principalId":"4c0fafd6-7cd9-4825-b8c5-de72f140ac92","tenantId":"54826b22-38d6-4fb2-bad9-b7b93a3e9c5a","type":"SystemAssigned"}}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/krefs3ucteqsxqjpj0aji6skb?api-version=2021-11-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '1147'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 10 May 2022 07:44:06 GMT
+      etag:
+      - '"e000c63e-0000-0400-0000-627a17c70000"'
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/krefs3ucteqsxqjpj0aji6skb?api-version=2021-11-01&operationResultResponseType=Location
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-request-id:
+      - 4a9bf4520e04944f95848d36137635c3
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis workspace iot-connector update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --identity-type --tags --resource-group --workspace-name
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/krefs3ucteqsxqjpj0aji6skb?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/krefs3ucteqsxqjpj0aji6skb","name":"krefs3ucteqsxqjpj0aji6skb","status":"Running","startTime":"2022-05-10T07:44:07.1627839Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '253'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 10 May 2022 07:44:37 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - 4b6b5e384e1aa34694c78a51830cf7cc
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis workspace iot-connector update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --identity-type --tags --resource-group --workspace-name
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/krefs3ucteqsxqjpj0aji6skb?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/krefs3ucteqsxqjpj0aji6skb","name":"krefs3ucteqsxqjpj0aji6skb","status":"Succeeded","startTime":"2022-05-10T07:44:07.1627839Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '255'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 10 May 2022 07:45:07 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - 01828a2c56b8674fb2bdefb6b059ec33
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis workspace iot-connector update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --identity-type --tags --resource-group --workspace-name
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.HealthcareApis/workspaces/myworkspace000004/iotconnectors/myiot000003?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.HealthcareApis/workspaces/myworkspace000004/iotconnectors/myiot000003","name":"myworkspace000004/myiot000003","type":"Microsoft.HealthcareApis/workspaces/iotconnectors","etag":"\"e0005448-0000-0400-0000-627a17f30000\"","location":"westus2","tags":{"additionalProp1":"string","additionalProp2":"string","additionalProp3":"string"},"properties":{"ingestionEndpointConfiguration":{"eventHubName":"MyEventHubName","consumerGroup":"ConsumerGroupA","fullyQualifiedEventHubNamespace":"myeventhub.servicesbus.windows.net"},"deviceMapping":{"content":{"template":[{"template":{"deviceIdExpression":"$.deviceid","timestampExpression":"$.measurementdatetime","typeMatchExpression":"$..[?(@heartrate)]","typeName":"heartrate","values":[{"required":"true","valueExpression":"$.heartrate","valueName":"hr"}]},"templateType":"JsonPathContent"}],"templateType":"CollectionContent"}},"provisioningState":"Succeeded"},"identity":{"principalId":"4c0fafd6-7cd9-4825-b8c5-de72f140ac92","tenantId":"54826b22-38d6-4fb2-bad9-b7b93a3e9c5a","type":"SystemAssigned"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1148'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 10 May 2022 07:45:07 GMT
+      etag:
+      - '"e0005448-0000-0400-0000-627a17f30000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - 5f6c3f2893f9bb4b9866b07d6acf52c8
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"identity": {"type": "SystemAssigned"}, "location": "westus2", "tags":
+      {"additionalProp1": "string", "additionalProp2": "string", "additionalProp3":
+      "string"}, "kind": "fhir-R4", "properties": {"authenticationConfiguration":
+      {"authority": "https://login.microsoftonline.com/abfde7b2-df0f-47e6-aabf-2462b07508dc",
+      "audience": "https://azurehealthcareapis.com", "smartProxyEnabled": true}, "corsConfiguration":
+      {"origins": ["*"], "headers": ["*"], "methods": ["DELETE", "GET", "OPTIONS",
+      "PATCH", "POST", "PUT"], "maxAge": 1440, "allowCredentials": false}, "exportConfiguration":
+      {"storageAccountName": "clitest000002"}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis workspace fhir-service create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '620'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --name --identity-type --kind --location --authentication-configuration --cors-configuration
+        --export-configuration-storage-account-name --tags --resource-group --workspace-name
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.HealthcareApis/workspaces/myworkspace000004/fhirservices/myfhirservice2000011?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.HealthcareApis/workspaces/myworkspace000004/fhirservices/myfhirservice2000011","name":"myworkspace000004/myfhirservice2000011","type":"Microsoft.HealthcareApis/workspaces/fhirservices","etag":"\"e0005e4a-0000-0400-0000-627a180b0000\"","location":"westus2","kind":"fhir-R4","tags":{"additionalProp1":"string","additionalProp2":"string","additionalProp3":"string"},"properties":{"accessPolicies":[],"acrConfiguration":{"loginServers":[]},"authenticationConfiguration":{"authority":"https://login.microsoftonline.com/abfde7b2-df0f-47e6-aabf-2462b07508dc","audience":"https://azurehealthcareapis.com","smartProxyEnabled":true},"corsConfiguration":{"origins":["*"],"headers":["*"],"methods":["DELETE","GET","OPTIONS","PATCH","POST","PUT"],"maxAge":1440,"allowCredentials":false},"exportConfiguration":{"storageAccountName":"clitest000002"},"resourceVersionPolicyConfiguration":{"default":"versioned"},"eventState":"Disabled","privateEndpointConnections":[],"publicNetworkAccess":"Enabled","provisioningState":"Creating"},"identity":{"principalId":"bd1b7ee9-8b8e-4981-ad37-3cb33ac7b2f0","tenantId":"54826b22-38d6-4fb2-bad9-b7b93a3e9c5a","type":"SystemAssigned"}}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/3lql2mzknlx6xcvyq3ai86jyz?api-version=2021-11-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '1264'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 10 May 2022 07:45:16 GMT
+      etag:
+      - '"e0005e4a-0000-0400-0000-627a180b0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1197'
+      x-request-id:
+      - 84ddc5535e8a97449771adec07fbad02
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis workspace fhir-service create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --identity-type --kind --location --authentication-configuration --cors-configuration
+        --export-configuration-storage-account-name --tags --resource-group --workspace-name
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/3lql2mzknlx6xcvyq3ai86jyz?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/3lql2mzknlx6xcvyq3ai86jyz","name":"3lql2mzknlx6xcvyq3ai86jyz","status":"Running","startTime":"2022-05-10T07:45:15.1615446Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '253'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 10 May 2022 07:45:47 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - ba4b8c65ee4dc745a090f6414aa8d233
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis workspace fhir-service create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --identity-type --kind --location --authentication-configuration --cors-configuration
+        --export-configuration-storage-account-name --tags --resource-group --workspace-name
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/3lql2mzknlx6xcvyq3ai86jyz?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/3lql2mzknlx6xcvyq3ai86jyz","name":"3lql2mzknlx6xcvyq3ai86jyz","status":"Running","startTime":"2022-05-10T07:45:15.1615446Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '253'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 10 May 2022 07:46:17 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - d676fe7bc4fff94cb30be3629112a425
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis workspace fhir-service create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --identity-type --kind --location --authentication-configuration --cors-configuration
+        --export-configuration-storage-account-name --tags --resource-group --workspace-name
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/3lql2mzknlx6xcvyq3ai86jyz?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/3lql2mzknlx6xcvyq3ai86jyz","name":"3lql2mzknlx6xcvyq3ai86jyz","status":"Running","startTime":"2022-05-10T07:45:15.1615446Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '253'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 10 May 2022 07:46:47 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - 63d820ce856afb4aa51488cc0031c90e
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis workspace fhir-service create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --identity-type --kind --location --authentication-configuration --cors-configuration
+        --export-configuration-storage-account-name --tags --resource-group --workspace-name
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/3lql2mzknlx6xcvyq3ai86jyz?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/3lql2mzknlx6xcvyq3ai86jyz","name":"3lql2mzknlx6xcvyq3ai86jyz","status":"Running","startTime":"2022-05-10T07:45:15.1615446Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '253'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 10 May 2022 07:47:17 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - 5f920a02b0d2ce419d14fc03b4e38671
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis workspace fhir-service create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --identity-type --kind --location --authentication-configuration --cors-configuration
+        --export-configuration-storage-account-name --tags --resource-group --workspace-name
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/3lql2mzknlx6xcvyq3ai86jyz?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/3lql2mzknlx6xcvyq3ai86jyz","name":"3lql2mzknlx6xcvyq3ai86jyz","status":"Running","startTime":"2022-05-10T07:45:15.1615446Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '253'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 10 May 2022 07:47:47 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - c6674e7010c0014ba74d82136b13f6ec
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis workspace fhir-service create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --identity-type --kind --location --authentication-configuration --cors-configuration
+        --export-configuration-storage-account-name --tags --resource-group --workspace-name
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/3lql2mzknlx6xcvyq3ai86jyz?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/3lql2mzknlx6xcvyq3ai86jyz","name":"3lql2mzknlx6xcvyq3ai86jyz","status":"Running","startTime":"2022-05-10T07:45:15.1615446Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '253'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 10 May 2022 07:48:18 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - 13121ecef78b4149a29ed42ab300547b
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis workspace fhir-service create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --identity-type --kind --location --authentication-configuration --cors-configuration
+        --export-configuration-storage-account-name --tags --resource-group --workspace-name
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/3lql2mzknlx6xcvyq3ai86jyz?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/3lql2mzknlx6xcvyq3ai86jyz","name":"3lql2mzknlx6xcvyq3ai86jyz","status":"Running","startTime":"2022-05-10T07:45:15.1615446Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '253'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 10 May 2022 07:48:48 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - a8729c8706dc3f428d389ee79165cdbc
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis workspace fhir-service create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --identity-type --kind --location --authentication-configuration --cors-configuration
+        --export-configuration-storage-account-name --tags --resource-group --workspace-name
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/3lql2mzknlx6xcvyq3ai86jyz?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/3lql2mzknlx6xcvyq3ai86jyz","name":"3lql2mzknlx6xcvyq3ai86jyz","status":"Running","startTime":"2022-05-10T07:45:15.1615446Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '253'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 10 May 2022 07:49:19 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - 41851bf726237c44b7937e29001f5bec
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis workspace fhir-service create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --identity-type --kind --location --authentication-configuration --cors-configuration
+        --export-configuration-storage-account-name --tags --resource-group --workspace-name
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/3lql2mzknlx6xcvyq3ai86jyz?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/3lql2mzknlx6xcvyq3ai86jyz","name":"3lql2mzknlx6xcvyq3ai86jyz","status":"Running","startTime":"2022-05-10T07:45:15.1615446Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '253'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 10 May 2022 07:49:50 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - e398a319d1e2ed4b92d712849e0d5a26
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis workspace fhir-service create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --identity-type --kind --location --authentication-configuration --cors-configuration
+        --export-configuration-storage-account-name --tags --resource-group --workspace-name
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/3lql2mzknlx6xcvyq3ai86jyz?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/3lql2mzknlx6xcvyq3ai86jyz","name":"3lql2mzknlx6xcvyq3ai86jyz","status":"Running","startTime":"2022-05-10T07:45:15.1615446Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '253'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 10 May 2022 07:50:20 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - 384f0dbec59c1942a1997205f4316576
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis workspace fhir-service create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --identity-type --kind --location --authentication-configuration --cors-configuration
+        --export-configuration-storage-account-name --tags --resource-group --workspace-name
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/3lql2mzknlx6xcvyq3ai86jyz?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/3lql2mzknlx6xcvyq3ai86jyz","name":"3lql2mzknlx6xcvyq3ai86jyz","status":"Running","startTime":"2022-05-10T07:45:15.1615446Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '253'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 10 May 2022 07:50:50 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - 6471cacb8ac98e4381a4a45a2a3dc08f
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis workspace fhir-service create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --identity-type --kind --location --authentication-configuration --cors-configuration
+        --export-configuration-storage-account-name --tags --resource-group --workspace-name
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/3lql2mzknlx6xcvyq3ai86jyz?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/3lql2mzknlx6xcvyq3ai86jyz","name":"3lql2mzknlx6xcvyq3ai86jyz","status":"Running","startTime":"2022-05-10T07:45:15.1615446Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '253'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 10 May 2022 07:51:20 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - 27ad5b1321bc664a8153c6dd9186319e
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis workspace fhir-service create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --identity-type --kind --location --authentication-configuration --cors-configuration
+        --export-configuration-storage-account-name --tags --resource-group --workspace-name
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/3lql2mzknlx6xcvyq3ai86jyz?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/3lql2mzknlx6xcvyq3ai86jyz","name":"3lql2mzknlx6xcvyq3ai86jyz","status":"Running","startTime":"2022-05-10T07:45:15.1615446Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '253'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 10 May 2022 07:51:51 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - 23992a75d819bc45b6406ab8d475d197
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis workspace fhir-service create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --identity-type --kind --location --authentication-configuration --cors-configuration
+        --export-configuration-storage-account-name --tags --resource-group --workspace-name
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/3lql2mzknlx6xcvyq3ai86jyz?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/3lql2mzknlx6xcvyq3ai86jyz","name":"3lql2mzknlx6xcvyq3ai86jyz","status":"Running","startTime":"2022-05-10T07:45:15.1615446Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '253'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 10 May 2022 07:52:21 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - 9fde9c421fff5b4a8c99a40b13a26bd1
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis workspace fhir-service create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --identity-type --kind --location --authentication-configuration --cors-configuration
+        --export-configuration-storage-account-name --tags --resource-group --workspace-name
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/3lql2mzknlx6xcvyq3ai86jyz?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/3lql2mzknlx6xcvyq3ai86jyz","name":"3lql2mzknlx6xcvyq3ai86jyz","status":"Running","startTime":"2022-05-10T07:45:15.1615446Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '253'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 10 May 2022 07:52:51 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - 771e668be6b55f44b4f336bad7540bce
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis workspace fhir-service create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --identity-type --kind --location --authentication-configuration --cors-configuration
+        --export-configuration-storage-account-name --tags --resource-group --workspace-name
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/3lql2mzknlx6xcvyq3ai86jyz?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/3lql2mzknlx6xcvyq3ai86jyz","name":"3lql2mzknlx6xcvyq3ai86jyz","status":"Succeeded","startTime":"2022-05-10T07:45:15.1615446Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '255'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 10 May 2022 07:53:21 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - 9dac67ba9ba30f4fa985eeb5f33fd726
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis workspace fhir-service create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --identity-type --kind --location --authentication-configuration --cors-configuration
+        --export-configuration-storage-account-name --tags --resource-group --workspace-name
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.HealthcareApis/workspaces/myworkspace000004/fhirservices/myfhirservice2000011?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.HealthcareApis/workspaces/myworkspace000004/fhirservices/myfhirservice2000011","name":"myworkspace000004/myfhirservice2000011","type":"Microsoft.HealthcareApis/workspaces/fhirservices","etag":"\"e000a584-0000-0400-0000-627a19e70000\"","location":"westus2","kind":"fhir-R4","tags":{"additionalProp1":"string","additionalProp2":"string","additionalProp3":"string"},"properties":{"accessPolicies":[],"acrConfiguration":{"loginServers":[]},"authenticationConfiguration":{"authority":"https://login.microsoftonline.com/abfde7b2-df0f-47e6-aabf-2462b07508dc","audience":"https://azurehealthcareapis.com","smartProxyEnabled":true},"corsConfiguration":{"origins":["*"],"headers":["*"],"methods":["DELETE","GET","OPTIONS","PATCH","POST","PUT"],"maxAge":1440,"allowCredentials":false},"exportConfiguration":{"storageAccountName":"clitest000002"},"resourceVersionPolicyConfiguration":{"default":"versioned"},"eventState":"Disabled","privateEndpointConnections":[],"publicNetworkAccess":"Enabled","provisioningState":"Succeeded"},"identity":{"principalId":"bd1b7ee9-8b8e-4981-ad37-3cb33ac7b2f0","tenantId":"54826b22-38d6-4fb2-bad9-b7b93a3e9c5a","type":"SystemAssigned"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1265'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 10 May 2022 07:53:21 GMT
+      etag:
+      - '"e000a584-0000-0400-0000-627a19e70000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - 27bced19a6032a46bb303d6f836d2edf
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "westus2", "properties": {"resourceIdentityResolutionType":
+      "Create", "fhirServiceResourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.HealthcareApis/workspaces/myworkspace000004/fhirservices/myfhirservice2000011",
+      "fhirMapping": {"content": {"template": [{"template": {"codes": [{"code": "8867-4",
+      "display": "Heart rate", "system": "http://loinc.org"}], "periodInterval": 60,
+      "typeName": "heartrate", "value": {"defaultPeriod": 5000, "unit": "count/min",
+      "valueName": "hr", "valueType": "SampledData"}}, "templateType": "CodeValueFhir"}],
+      "templateType": "CollectionFhirTemplate"}}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis workspace iot-connector fhir-destination create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '660'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --fhir-destination-name --iot-connector-name --location --content --fhir-service-resource-id
+        --resource-identity-resolution-type --resource-group --workspace-name
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.HealthcareApis/workspaces/myworkspace000004/iotconnectors/myiot000003/fhirdestinations/myfhirdest000005?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.HealthcareApis/workspaces/myworkspace000004/iotconnectors/myiot000003/fhirdestinations/myfhirdest000005","name":"myworkspace000004/myiot000003/myfhirdest000005","type":"Microsoft.HealthcareApis/workspaces/iotconnectors/fhirdestinations","etag":"\"e0002486-0000-0400-0000-627a19f30000\"","location":"westus2","properties":{"resourceIdentityResolutionType":"Create","fhirServiceResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.HealthcareApis/workspaces/myworkspace000004/fhirservices/myfhirservice2000011","fhirMapping":{"content":{"template":[{"template":{"codes":[{"code":"8867-4","display":"Heart
+        rate","system":"http://loinc.org"}],"periodInterval":60,"typeName":"heartrate","value":{"defaultPeriod":5000,"unit":"count/min","valueName":"hr","valueType":"SampledData"}},"templateType":"CodeValueFhir"}],"templateType":"CollectionFhirTemplate"}},"provisioningState":"Creating"}}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/jdrq8kggzp0m1gqbx9xx7ctxo?api-version=2021-11-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '1051'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 10 May 2022 07:53:23 GMT
+      etag:
+      - '"e0002486-0000-0400-0000-627a19f30000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1198'
+      x-request-id:
+      - 93712248b4d4884d934a3e677a4b452c
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis workspace iot-connector fhir-destination create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --fhir-destination-name --iot-connector-name --location --content --fhir-service-resource-id
+        --resource-identity-resolution-type --resource-group --workspace-name
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/jdrq8kggzp0m1gqbx9xx7ctxo?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/jdrq8kggzp0m1gqbx9xx7ctxo","name":"jdrq8kggzp0m1gqbx9xx7ctxo","status":"Succeeded","startTime":"2022-05-10T07:53:23.9647614Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '255'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 10 May 2022 07:53:53 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - 912e4b7ac94f314fbd51f1d50d4e2a6a
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis workspace iot-connector fhir-destination create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --fhir-destination-name --iot-connector-name --location --content --fhir-service-resource-id
+        --resource-identity-resolution-type --resource-group --workspace-name
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.HealthcareApis/workspaces/myworkspace000004/iotconnectors/myiot000003/fhirdestinations/myfhirdest000005?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.HealthcareApis/workspaces/myworkspace000004/iotconnectors/myiot000003/fhirdestinations/myfhirdest000005","name":"myworkspace000004/myiot000003/myfhirdest000005","type":"Microsoft.HealthcareApis/workspaces/iotconnectors/fhirdestinations","etag":"\"e000c988-0000-0400-0000-627a1a090000\"","location":"westus2","properties":{"resourceIdentityResolutionType":"Create","fhirServiceResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.HealthcareApis/workspaces/myworkspace000004/fhirservices/myfhirservice2000011","fhirMapping":{"content":{"template":[{"template":{"codes":[{"code":"8867-4","display":"Heart
+        rate","system":"http://loinc.org"}],"periodInterval":60,"typeName":"heartrate","value":{"defaultPeriod":5000,"unit":"count/min","valueName":"hr","valueType":"SampledData"}},"templateType":"CodeValueFhir"}],"templateType":"CollectionFhirTemplate"}},"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1052'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 10 May 2022 07:53:53 GMT
+      etag:
+      - '"e000c988-0000-0400-0000-627a1a090000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - d7f045bc31ef2d449d4052cab5686518
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis workspace iot-connector fhir-destination show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --fhir-destination-name --iot-connector-name --resource-group --workspace-name
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.HealthcareApis/workspaces/myworkspace000004/iotconnectors/myiot000003/fhirdestinations/myfhirdest000005?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.HealthcareApis/workspaces/myworkspace000004/iotconnectors/myiot000003/fhirdestinations/myfhirdest000005","name":"myworkspace000004/myiot000003/myfhirdest000005","type":"Microsoft.HealthcareApis/workspaces/iotconnectors/fhirdestinations","etag":"\"e000c988-0000-0400-0000-627a1a090000\"","location":"westus2","properties":{"resourceIdentityResolutionType":"Create","fhirServiceResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.HealthcareApis/workspaces/myworkspace000004/fhirservices/myfhirservice2000011","fhirMapping":{"content":{"template":[{"template":{"codes":[{"code":"8867-4","display":"Heart
+        rate","system":"http://loinc.org"}],"periodInterval":60,"typeName":"heartrate","value":{"defaultPeriod":5000,"unit":"count/min","valueName":"hr","valueType":"SampledData"}},"templateType":"CodeValueFhir"}],"templateType":"CollectionFhirTemplate"}},"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1052'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 10 May 2022 07:53:55 GMT
+      etag:
+      - '"e000c988-0000-0400-0000-627a1a090000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - 2f6ce19dd4c2744bba197532e36a1299
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis workspace iot-connector fhir-destination list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --iot-connector-name --resource-group --workspace-name
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.HealthcareApis/workspaces/myworkspace000004/iotconnectors/myiot000003/fhirdestinations?api-version=2021-11-01
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.HealthcareApis/workspaces/myworkspace000004/iotconnectors/myiot000003/fhirdestinations/myfhirdest000005","name":"myworkspace000004/myiot000003/myfhirdest000005","type":"Microsoft.HealthcareApis/workspaces/iotconnectors/fhirdestinations","etag":"\"e000c988-0000-0400-0000-627a1a090000\"","location":"westus2","properties":{"resourceIdentityResolutionType":"Create","fhirServiceResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.HealthcareApis/workspaces/myworkspace000004/fhirservices/myfhirservice2000011","fhirMapping":{"content":{"template":[{"template":{"codes":[{"code":"8867-4","display":"Heart
+        rate","system":"http://loinc.org"}],"periodInterval":60,"typeName":"heartrate","value":{"defaultPeriod":5000,"unit":"count/min","valueName":"hr","valueType":"SampledData"}},"templateType":"CodeValueFhir"}],"templateType":"CollectionFhirTemplate"}},"provisioningState":"Succeeded"}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1064'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 10 May 2022 07:53:55 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - 0aea18b08f9f51489b8684d5b6ea3819
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis workspace iot-connector fhir-destination delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -y --fhir-destination-name --iot-connector-name --resource-group --workspace-name
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.HealthcareApis/workspaces/myworkspace000004/iotconnectors/myiot000003/fhirdestinations/myfhirdest000005?api-version=2021-11-01
+  response:
+    body:
+      string: ''
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/m15t8anii6rn9kbf6aow3qnp0?api-version=2021-11-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Tue, 10 May 2022 07:53:56 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/m15t8anii6rn9kbf6aow3qnp0?api-version=2021-11-01&operationResultResponseType=Location
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14998'
+      x-request-id:
+      - 9dd0ad31798a48478ddbe0e162e7aca6
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis workspace iot-connector fhir-destination delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -y --fhir-destination-name --iot-connector-name --resource-group --workspace-name
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/m15t8anii6rn9kbf6aow3qnp0?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/m15t8anii6rn9kbf6aow3qnp0","name":"m15t8anii6rn9kbf6aow3qnp0","status":"Succeeded","startTime":"2022-05-10T07:53:56.7564547Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '255'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 10 May 2022 07:54:26 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - 2c3efbccbfc3d64da4529e9c20fc11f0
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis workspace iot-connector delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -y --name --resource-group --workspace-name
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.HealthcareApis/workspaces/myworkspace000004/iotconnectors/myiot000003?api-version=2021-11-01
+  response:
+    body:
+      string: ''
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/482tn5e1z5vx08pml83lp3nru?api-version=2021-11-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Tue, 10 May 2022 07:54:28 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/482tn5e1z5vx08pml83lp3nru?api-version=2021-11-01&operationResultResponseType=Location
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14999'
+      x-request-id:
+      - 8f5f9077f8d8df4aac1c6f403718064c
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis workspace iot-connector delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -y --name --resource-group --workspace-name
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/482tn5e1z5vx08pml83lp3nru?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/482tn5e1z5vx08pml83lp3nru","name":"482tn5e1z5vx08pml83lp3nru","status":"Running","startTime":"2022-05-10T07:54:28.8194071Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '253'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 10 May 2022 07:54:58 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - 0a94f8a5bc738a42b74e36d6fca9c72b
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis workspace iot-connector delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -y --name --resource-group --workspace-name
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/482tn5e1z5vx08pml83lp3nru?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/482tn5e1z5vx08pml83lp3nru","name":"482tn5e1z5vx08pml83lp3nru","status":"Running","startTime":"2022-05-10T07:54:28.8194071Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '253'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 10 May 2022 07:55:29 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - cdb394fd10ae8e4baa0570544749facb
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis workspace iot-connector delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -y --name --resource-group --workspace-name
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/482tn5e1z5vx08pml83lp3nru?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/482tn5e1z5vx08pml83lp3nru","name":"482tn5e1z5vx08pml83lp3nru","status":"Running","startTime":"2022-05-10T07:54:28.8194071Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '253'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 10 May 2022 07:55:59 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - b81bbc950f479c43a7bd01a27141bc21
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis workspace iot-connector delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -y --name --resource-group --workspace-name
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/482tn5e1z5vx08pml83lp3nru?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/482tn5e1z5vx08pml83lp3nru","name":"482tn5e1z5vx08pml83lp3nru","status":"Running","startTime":"2022-05-10T07:54:28.8194071Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '253'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 10 May 2022 07:56:29 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - f8fbc88861d0c740968bb1a535213a11
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis workspace iot-connector delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -y --name --resource-group --workspace-name
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/482tn5e1z5vx08pml83lp3nru?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/482tn5e1z5vx08pml83lp3nru","name":"482tn5e1z5vx08pml83lp3nru","status":"Running","startTime":"2022-05-10T07:54:28.8194071Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '253'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 10 May 2022 07:57:00 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - b3dcd371b93c574880237789fa4a1a0d
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis workspace iot-connector delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -y --name --resource-group --workspace-name
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/482tn5e1z5vx08pml83lp3nru?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/482tn5e1z5vx08pml83lp3nru","name":"482tn5e1z5vx08pml83lp3nru","status":"Succeeded","startTime":"2022-05-10T07:54:28.8194071Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '255'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 10 May 2022 07:57:30 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - df33b4a68d7b7f409d19e9265e744a2c
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis workspace fhir-service delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -y --name --resource-group --workspace-name
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.HealthcareApis/workspaces/myworkspace000004/fhirservices/myfhirservice2000011?api-version=2021-11-01
+  response:
+    body:
+      string: ''
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/1b7vrxi168pl1qzfnm473noi7?api-version=2021-11-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Tue, 10 May 2022 07:57:32 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/1b7vrxi168pl1qzfnm473noi7?api-version=2021-11-01&operationResultResponseType=Location
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14998'
+      x-request-id:
+      - e28c70a17b83e94ba6f3701a6d8f4ae3
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis workspace fhir-service delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -y --name --resource-group --workspace-name
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/1b7vrxi168pl1qzfnm473noi7?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/1b7vrxi168pl1qzfnm473noi7","name":"1b7vrxi168pl1qzfnm473noi7","status":"Running","startTime":"2022-05-10T07:57:32.9618262Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '253'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 10 May 2022 07:58:02 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - 300b7f7674ca3c47968485fcd9d7acf2
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis workspace fhir-service delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -y --name --resource-group --workspace-name
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/1b7vrxi168pl1qzfnm473noi7?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/1b7vrxi168pl1qzfnm473noi7","name":"1b7vrxi168pl1qzfnm473noi7","status":"Running","startTime":"2022-05-10T07:57:32.9618262Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '253'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 10 May 2022 07:58:33 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - ea57265af4d63a449ef62767dd3f021b
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis workspace fhir-service delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -y --name --resource-group --workspace-name
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/1b7vrxi168pl1qzfnm473noi7?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/1b7vrxi168pl1qzfnm473noi7","name":"1b7vrxi168pl1qzfnm473noi7","status":"Running","startTime":"2022-05-10T07:57:32.9618262Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '253'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 10 May 2022 07:59:03 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - cb756e6934dc5a4cbe76e0611340405b
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis workspace fhir-service delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -y --name --resource-group --workspace-name
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/1b7vrxi168pl1qzfnm473noi7?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/1b7vrxi168pl1qzfnm473noi7","name":"1b7vrxi168pl1qzfnm473noi7","status":"Succeeded","startTime":"2022-05-10T07:57:32.9618262Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '255'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 10 May 2022 07:59:33 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - 8c93917fe50f864ab0ee626afe83a580
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis workspace delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -y --resource-group --name
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.HealthcareApis/workspaces/myworkspace000004?api-version=2021-11-01
+  response:
+    body:
+      string: ''
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/6qldr3orktqjdqunhh64vznqy?api-version=2021-11-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Tue, 10 May 2022 07:59:36 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/6qldr3orktqjdqunhh64vznqy?api-version=2021-11-01&operationResultResponseType=Location
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14997'
+      x-request-id:
+      - 4c4a58a0723e824e891f5ec0a37b7d5f
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis workspace delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -y --resource-group --name
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/6qldr3orktqjdqunhh64vznqy?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/6qldr3orktqjdqunhh64vznqy","name":"6qldr3orktqjdqunhh64vznqy","status":"Succeeded","startTime":"2022-05-10T07:59:36.776118Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '254'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 10 May 2022 08:00:07 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - 47ed32de5028424dae9ebf68c0de4f8e
+    status:
+      code: 200
+      message: OK
+version: 1

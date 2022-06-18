@@ -7,12 +7,312 @@
 # --------------------------------------------------------------------------
 
 import datetime
-from typing import Dict, List, Optional, Union
+from typing import Any, Dict, List, Optional, Union
 
 from azure.core.exceptions import HttpResponseError
 import msrest.serialization
 
 from ._azure_arc_vmware_management_service_api_enums import *
+
+
+class Cluster(msrest.serialization.Model):
+    """Define the cluster.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    All required parameters must be populated in order to send to Azure.
+
+    :ivar location: Required. Gets or sets the location.
+    :vartype location: str
+    :ivar extended_location: Gets or sets the extended location.
+    :vartype extended_location: ~azure.mgmt.connectedvmware.models.ExtendedLocation
+    :ivar system_data: The system data.
+    :vartype system_data: ~azure.mgmt.connectedvmware.models.SystemData
+    :ivar tags: A set of tags. Gets or sets the Resource tags.
+    :vartype tags: dict[str, str]
+    :ivar name: Gets or sets the name.
+    :vartype name: str
+    :ivar id: Gets or sets the Id.
+    :vartype id: str
+    :ivar type: Gets or sets the type of the resource.
+    :vartype type: str
+    :ivar kind: Metadata used by portal/tooling/etc to render different UX experiences for
+     resources of the same type; e.g. ApiApps are a kind of Microsoft.Web/sites type.  If supported,
+     the resource provider must validate and persist this value.
+    :vartype kind: str
+    :ivar uuid: Gets or sets a unique identifier for this resource.
+    :vartype uuid: str
+    :ivar v_center_id: Gets or sets the ARM Id of the vCenter resource in which this cluster
+     resides.
+    :vartype v_center_id: str
+    :ivar mo_ref_id: Gets or sets the vCenter MoRef (Managed Object Reference) ID for the cluster.
+    :vartype mo_ref_id: str
+    :ivar inventory_item_id: Gets or sets the inventory Item ID for the cluster.
+    :vartype inventory_item_id: str
+    :ivar mo_name: Gets or sets the vCenter Managed Object name for the cluster.
+    :vartype mo_name: str
+    :ivar statuses: The resource status information.
+    :vartype statuses: list[~azure.mgmt.connectedvmware.models.ResourceStatus]
+    :ivar custom_resource_name: Gets the name of the corresponding resource in Kubernetes.
+    :vartype custom_resource_name: str
+    :ivar datastore_ids: Gets or sets the datastore ARM ids.
+    :vartype datastore_ids: list[str]
+    :ivar network_ids: Gets or sets the network ARM ids.
+    :vartype network_ids: list[str]
+    :ivar provisioning_state: Gets or sets the provisioning state.
+    :vartype provisioning_state: str
+    """
+
+    _validation = {
+        'location': {'required': True},
+        'system_data': {'readonly': True},
+        'name': {'readonly': True},
+        'id': {'readonly': True},
+        'type': {'readonly': True},
+        'uuid': {'readonly': True},
+        'mo_name': {'readonly': True},
+        'statuses': {'readonly': True},
+        'custom_resource_name': {'readonly': True},
+        'datastore_ids': {'readonly': True},
+        'network_ids': {'readonly': True},
+        'provisioning_state': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'location': {'key': 'location', 'type': 'str'},
+        'extended_location': {'key': 'extendedLocation', 'type': 'ExtendedLocation'},
+        'system_data': {'key': 'systemData', 'type': 'SystemData'},
+        'tags': {'key': 'tags', 'type': '{str}'},
+        'name': {'key': 'name', 'type': 'str'},
+        'id': {'key': 'id', 'type': 'str'},
+        'type': {'key': 'type', 'type': 'str'},
+        'kind': {'key': 'kind', 'type': 'str'},
+        'uuid': {'key': 'properties.uuid', 'type': 'str'},
+        'v_center_id': {'key': 'properties.vCenterId', 'type': 'str'},
+        'mo_ref_id': {'key': 'properties.moRefId', 'type': 'str'},
+        'inventory_item_id': {'key': 'properties.inventoryItemId', 'type': 'str'},
+        'mo_name': {'key': 'properties.moName', 'type': 'str'},
+        'statuses': {'key': 'properties.statuses', 'type': '[ResourceStatus]'},
+        'custom_resource_name': {'key': 'properties.customResourceName', 'type': 'str'},
+        'datastore_ids': {'key': 'properties.datastoreIds', 'type': '[str]'},
+        'network_ids': {'key': 'properties.networkIds', 'type': '[str]'},
+        'provisioning_state': {'key': 'properties.provisioningState', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        *,
+        location: str,
+        extended_location: Optional["ExtendedLocation"] = None,
+        tags: Optional[Dict[str, str]] = None,
+        kind: Optional[str] = None,
+        v_center_id: Optional[str] = None,
+        mo_ref_id: Optional[str] = None,
+        inventory_item_id: Optional[str] = None,
+        **kwargs
+    ):
+        """
+        :keyword location: Required. Gets or sets the location.
+        :paramtype location: str
+        :keyword extended_location: Gets or sets the extended location.
+        :paramtype extended_location: ~azure.mgmt.connectedvmware.models.ExtendedLocation
+        :keyword tags: A set of tags. Gets or sets the Resource tags.
+        :paramtype tags: dict[str, str]
+        :keyword kind: Metadata used by portal/tooling/etc to render different UX experiences for
+         resources of the same type; e.g. ApiApps are a kind of Microsoft.Web/sites type.  If supported,
+         the resource provider must validate and persist this value.
+        :paramtype kind: str
+        :keyword v_center_id: Gets or sets the ARM Id of the vCenter resource in which this cluster
+         resides.
+        :paramtype v_center_id: str
+        :keyword mo_ref_id: Gets or sets the vCenter MoRef (Managed Object Reference) ID for the
+         cluster.
+        :paramtype mo_ref_id: str
+        :keyword inventory_item_id: Gets or sets the inventory Item ID for the cluster.
+        :paramtype inventory_item_id: str
+        """
+        super(Cluster, self).__init__(**kwargs)
+        self.location = location
+        self.extended_location = extended_location
+        self.system_data = None
+        self.tags = tags
+        self.name = None
+        self.id = None
+        self.type = None
+        self.kind = kind
+        self.uuid = None
+        self.v_center_id = v_center_id
+        self.mo_ref_id = mo_ref_id
+        self.inventory_item_id = inventory_item_id
+        self.mo_name = None
+        self.statuses = None
+        self.custom_resource_name = None
+        self.datastore_ids = None
+        self.network_ids = None
+        self.provisioning_state = None
+
+
+class InventoryItemProperties(msrest.serialization.Model):
+    """Defines the resource properties.
+
+    You probably want to use the sub-classes and not this class directly. Known
+    sub-classes are: ClusterInventoryItem, DatastoreInventoryItem, HostInventoryItem, ResourcePoolInventoryItem, VirtualMachineInventoryItem, VirtualMachineTemplateInventoryItem, VirtualNetworkInventoryItem.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    All required parameters must be populated in order to send to Azure.
+
+    :ivar inventory_type: Required. They inventory type.Constant filled by server. Possible values
+     include: "ResourcePool", "VirtualMachine", "VirtualMachineTemplate", "VirtualNetwork",
+     "Cluster", "Datastore", "Host".
+    :vartype inventory_type: str or ~azure.mgmt.connectedvmware.models.InventoryType
+    :ivar managed_resource_id: Gets or sets the tracked resource id corresponding to the inventory
+     resource.
+    :vartype managed_resource_id: str
+    :ivar mo_ref_id: Gets or sets the MoRef (Managed Object Reference) ID for the inventory item.
+    :vartype mo_ref_id: str
+    :ivar mo_name: Gets or sets the vCenter Managed Object name for the inventory item.
+    :vartype mo_name: str
+    :ivar provisioning_state: Gets or sets the provisioning state.
+    :vartype provisioning_state: str
+    """
+
+    _validation = {
+        'inventory_type': {'required': True},
+        'provisioning_state': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'inventory_type': {'key': 'inventoryType', 'type': 'str'},
+        'managed_resource_id': {'key': 'managedResourceId', 'type': 'str'},
+        'mo_ref_id': {'key': 'moRefId', 'type': 'str'},
+        'mo_name': {'key': 'moName', 'type': 'str'},
+        'provisioning_state': {'key': 'provisioningState', 'type': 'str'},
+    }
+
+    _subtype_map = {
+        'inventory_type': {'Cluster': 'ClusterInventoryItem', 'Datastore': 'DatastoreInventoryItem', 'Host': 'HostInventoryItem', 'ResourcePool': 'ResourcePoolInventoryItem', 'VirtualMachine': 'VirtualMachineInventoryItem', 'VirtualMachineTemplate': 'VirtualMachineTemplateInventoryItem', 'VirtualNetwork': 'VirtualNetworkInventoryItem'}
+    }
+
+    def __init__(
+        self,
+        *,
+        managed_resource_id: Optional[str] = None,
+        mo_ref_id: Optional[str] = None,
+        mo_name: Optional[str] = None,
+        **kwargs
+    ):
+        """
+        :keyword managed_resource_id: Gets or sets the tracked resource id corresponding to the
+         inventory resource.
+        :paramtype managed_resource_id: str
+        :keyword mo_ref_id: Gets or sets the MoRef (Managed Object Reference) ID for the inventory
+         item.
+        :paramtype mo_ref_id: str
+        :keyword mo_name: Gets or sets the vCenter Managed Object name for the inventory item.
+        :paramtype mo_name: str
+        """
+        super(InventoryItemProperties, self).__init__(**kwargs)
+        self.inventory_type = None  # type: Optional[str]
+        self.managed_resource_id = managed_resource_id
+        self.mo_ref_id = mo_ref_id
+        self.mo_name = mo_name
+        self.provisioning_state = None
+
+
+class ClusterInventoryItem(InventoryItemProperties):
+    """The cluster inventory item.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    All required parameters must be populated in order to send to Azure.
+
+    :ivar inventory_type: Required. They inventory type.Constant filled by server. Possible values
+     include: "ResourcePool", "VirtualMachine", "VirtualMachineTemplate", "VirtualNetwork",
+     "Cluster", "Datastore", "Host".
+    :vartype inventory_type: str or ~azure.mgmt.connectedvmware.models.InventoryType
+    :ivar managed_resource_id: Gets or sets the tracked resource id corresponding to the inventory
+     resource.
+    :vartype managed_resource_id: str
+    :ivar mo_ref_id: Gets or sets the MoRef (Managed Object Reference) ID for the inventory item.
+    :vartype mo_ref_id: str
+    :ivar mo_name: Gets or sets the vCenter Managed Object name for the inventory item.
+    :vartype mo_name: str
+    :ivar provisioning_state: Gets or sets the provisioning state.
+    :vartype provisioning_state: str
+    """
+
+    _validation = {
+        'inventory_type': {'required': True},
+        'provisioning_state': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'inventory_type': {'key': 'inventoryType', 'type': 'str'},
+        'managed_resource_id': {'key': 'managedResourceId', 'type': 'str'},
+        'mo_ref_id': {'key': 'moRefId', 'type': 'str'},
+        'mo_name': {'key': 'moName', 'type': 'str'},
+        'provisioning_state': {'key': 'provisioningState', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        *,
+        managed_resource_id: Optional[str] = None,
+        mo_ref_id: Optional[str] = None,
+        mo_name: Optional[str] = None,
+        **kwargs
+    ):
+        """
+        :keyword managed_resource_id: Gets or sets the tracked resource id corresponding to the
+         inventory resource.
+        :paramtype managed_resource_id: str
+        :keyword mo_ref_id: Gets or sets the MoRef (Managed Object Reference) ID for the inventory
+         item.
+        :paramtype mo_ref_id: str
+        :keyword mo_name: Gets or sets the vCenter Managed Object name for the inventory item.
+        :paramtype mo_name: str
+        """
+        super(ClusterInventoryItem, self).__init__(managed_resource_id=managed_resource_id, mo_ref_id=mo_ref_id, mo_name=mo_name, **kwargs)
+        self.inventory_type = 'Cluster'  # type: str
+
+
+class ClustersList(msrest.serialization.Model):
+    """List of Clusters.
+
+    All required parameters must be populated in order to send to Azure.
+
+    :ivar next_link: Url to follow for getting next page of Clusters.
+    :vartype next_link: str
+    :ivar value: Required. Array of Clusters.
+    :vartype value: list[~azure.mgmt.connectedvmware.models.Cluster]
+    """
+
+    _validation = {
+        'value': {'required': True},
+    }
+
+    _attribute_map = {
+        'next_link': {'key': 'nextLink', 'type': 'str'},
+        'value': {'key': 'value', 'type': '[Cluster]'},
+    }
+
+    def __init__(
+        self,
+        *,
+        value: List["Cluster"],
+        next_link: Optional[str] = None,
+        **kwargs
+    ):
+        """
+        :keyword next_link: Url to follow for getting next page of Clusters.
+        :paramtype next_link: str
+        :keyword value: Required. Array of Clusters.
+        :paramtype value: list[~azure.mgmt.connectedvmware.models.Cluster]
+        """
+        super(ClustersList, self).__init__(**kwargs)
+        self.next_link = next_link
+        self.value = value
 
 
 class Condition(msrest.serialization.Model):
@@ -48,11 +348,252 @@ class Condition(msrest.serialization.Model):
         self,
         **kwargs
     ):
+        """
+        """
         super(Condition, self).__init__(**kwargs)
         self.status = None
         self.reason = None
         self.message = None
         self.severity = None
+
+
+class Datastore(msrest.serialization.Model):
+    """Define the datastore.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    All required parameters must be populated in order to send to Azure.
+
+    :ivar location: Required. Gets or sets the location.
+    :vartype location: str
+    :ivar extended_location: Gets or sets the extended location.
+    :vartype extended_location: ~azure.mgmt.connectedvmware.models.ExtendedLocation
+    :ivar system_data: The system data.
+    :vartype system_data: ~azure.mgmt.connectedvmware.models.SystemData
+    :ivar tags: A set of tags. Gets or sets the Resource tags.
+    :vartype tags: dict[str, str]
+    :ivar name: Gets or sets the name.
+    :vartype name: str
+    :ivar id: Gets or sets the Id.
+    :vartype id: str
+    :ivar type: Gets or sets the type of the resource.
+    :vartype type: str
+    :ivar kind: Metadata used by portal/tooling/etc to render different UX experiences for
+     resources of the same type; e.g. ApiApps are a kind of Microsoft.Web/sites type.  If supported,
+     the resource provider must validate and persist this value.
+    :vartype kind: str
+    :ivar uuid: Gets or sets a unique identifier for this resource.
+    :vartype uuid: str
+    :ivar v_center_id: Gets or sets the ARM Id of the vCenter resource in which this datastore
+     resides.
+    :vartype v_center_id: str
+    :ivar mo_ref_id: Gets or sets the vCenter MoRef (Managed Object Reference) ID for the
+     datastore.
+    :vartype mo_ref_id: str
+    :ivar inventory_item_id: Gets or sets the inventory Item ID for the datastore.
+    :vartype inventory_item_id: str
+    :ivar mo_name: Gets or sets the vCenter Managed Object name for the datastore.
+    :vartype mo_name: str
+    :ivar statuses: The resource status information.
+    :vartype statuses: list[~azure.mgmt.connectedvmware.models.ResourceStatus]
+    :ivar custom_resource_name: Gets the name of the corresponding resource in Kubernetes.
+    :vartype custom_resource_name: str
+    :ivar provisioning_state: Provisioning state of the resource. Possible values include:
+     "Succeeded", "Failed", "Canceled", "Provisioning", "Updating", "Deleting", "Accepted",
+     "Created".
+    :vartype provisioning_state: str or ~azure.mgmt.connectedvmware.models.ProvisioningState
+    """
+
+    _validation = {
+        'location': {'required': True},
+        'system_data': {'readonly': True},
+        'name': {'readonly': True},
+        'id': {'readonly': True},
+        'type': {'readonly': True},
+        'uuid': {'readonly': True},
+        'mo_name': {'readonly': True},
+        'statuses': {'readonly': True},
+        'custom_resource_name': {'readonly': True},
+        'provisioning_state': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'location': {'key': 'location', 'type': 'str'},
+        'extended_location': {'key': 'extendedLocation', 'type': 'ExtendedLocation'},
+        'system_data': {'key': 'systemData', 'type': 'SystemData'},
+        'tags': {'key': 'tags', 'type': '{str}'},
+        'name': {'key': 'name', 'type': 'str'},
+        'id': {'key': 'id', 'type': 'str'},
+        'type': {'key': 'type', 'type': 'str'},
+        'kind': {'key': 'kind', 'type': 'str'},
+        'uuid': {'key': 'properties.uuid', 'type': 'str'},
+        'v_center_id': {'key': 'properties.vCenterId', 'type': 'str'},
+        'mo_ref_id': {'key': 'properties.moRefId', 'type': 'str'},
+        'inventory_item_id': {'key': 'properties.inventoryItemId', 'type': 'str'},
+        'mo_name': {'key': 'properties.moName', 'type': 'str'},
+        'statuses': {'key': 'properties.statuses', 'type': '[ResourceStatus]'},
+        'custom_resource_name': {'key': 'properties.customResourceName', 'type': 'str'},
+        'provisioning_state': {'key': 'properties.provisioningState', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        *,
+        location: str,
+        extended_location: Optional["ExtendedLocation"] = None,
+        tags: Optional[Dict[str, str]] = None,
+        kind: Optional[str] = None,
+        v_center_id: Optional[str] = None,
+        mo_ref_id: Optional[str] = None,
+        inventory_item_id: Optional[str] = None,
+        **kwargs
+    ):
+        """
+        :keyword location: Required. Gets or sets the location.
+        :paramtype location: str
+        :keyword extended_location: Gets or sets the extended location.
+        :paramtype extended_location: ~azure.mgmt.connectedvmware.models.ExtendedLocation
+        :keyword tags: A set of tags. Gets or sets the Resource tags.
+        :paramtype tags: dict[str, str]
+        :keyword kind: Metadata used by portal/tooling/etc to render different UX experiences for
+         resources of the same type; e.g. ApiApps are a kind of Microsoft.Web/sites type.  If supported,
+         the resource provider must validate and persist this value.
+        :paramtype kind: str
+        :keyword v_center_id: Gets or sets the ARM Id of the vCenter resource in which this datastore
+         resides.
+        :paramtype v_center_id: str
+        :keyword mo_ref_id: Gets or sets the vCenter MoRef (Managed Object Reference) ID for the
+         datastore.
+        :paramtype mo_ref_id: str
+        :keyword inventory_item_id: Gets or sets the inventory Item ID for the datastore.
+        :paramtype inventory_item_id: str
+        """
+        super(Datastore, self).__init__(**kwargs)
+        self.location = location
+        self.extended_location = extended_location
+        self.system_data = None
+        self.tags = tags
+        self.name = None
+        self.id = None
+        self.type = None
+        self.kind = kind
+        self.uuid = None
+        self.v_center_id = v_center_id
+        self.mo_ref_id = mo_ref_id
+        self.inventory_item_id = inventory_item_id
+        self.mo_name = None
+        self.statuses = None
+        self.custom_resource_name = None
+        self.provisioning_state = None
+
+
+class DatastoreInventoryItem(InventoryItemProperties):
+    """The datastore inventory item.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    All required parameters must be populated in order to send to Azure.
+
+    :ivar inventory_type: Required. They inventory type.Constant filled by server. Possible values
+     include: "ResourcePool", "VirtualMachine", "VirtualMachineTemplate", "VirtualNetwork",
+     "Cluster", "Datastore", "Host".
+    :vartype inventory_type: str or ~azure.mgmt.connectedvmware.models.InventoryType
+    :ivar managed_resource_id: Gets or sets the tracked resource id corresponding to the inventory
+     resource.
+    :vartype managed_resource_id: str
+    :ivar mo_ref_id: Gets or sets the MoRef (Managed Object Reference) ID for the inventory item.
+    :vartype mo_ref_id: str
+    :ivar mo_name: Gets or sets the vCenter Managed Object name for the inventory item.
+    :vartype mo_name: str
+    :ivar provisioning_state: Gets or sets the provisioning state.
+    :vartype provisioning_state: str
+    :ivar capacity_gb: Gets or sets Maximum capacity of this datastore, in GBs.
+    :vartype capacity_gb: long
+    :ivar free_space_gb: Gets or sets Available space of this datastore, in GBs.
+    :vartype free_space_gb: long
+    """
+
+    _validation = {
+        'inventory_type': {'required': True},
+        'provisioning_state': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'inventory_type': {'key': 'inventoryType', 'type': 'str'},
+        'managed_resource_id': {'key': 'managedResourceId', 'type': 'str'},
+        'mo_ref_id': {'key': 'moRefId', 'type': 'str'},
+        'mo_name': {'key': 'moName', 'type': 'str'},
+        'provisioning_state': {'key': 'provisioningState', 'type': 'str'},
+        'capacity_gb': {'key': 'capacityGB', 'type': 'long'},
+        'free_space_gb': {'key': 'freeSpaceGB', 'type': 'long'},
+    }
+
+    def __init__(
+        self,
+        *,
+        managed_resource_id: Optional[str] = None,
+        mo_ref_id: Optional[str] = None,
+        mo_name: Optional[str] = None,
+        capacity_gb: Optional[int] = None,
+        free_space_gb: Optional[int] = None,
+        **kwargs
+    ):
+        """
+        :keyword managed_resource_id: Gets or sets the tracked resource id corresponding to the
+         inventory resource.
+        :paramtype managed_resource_id: str
+        :keyword mo_ref_id: Gets or sets the MoRef (Managed Object Reference) ID for the inventory
+         item.
+        :paramtype mo_ref_id: str
+        :keyword mo_name: Gets or sets the vCenter Managed Object name for the inventory item.
+        :paramtype mo_name: str
+        :keyword capacity_gb: Gets or sets Maximum capacity of this datastore, in GBs.
+        :paramtype capacity_gb: long
+        :keyword free_space_gb: Gets or sets Available space of this datastore, in GBs.
+        :paramtype free_space_gb: long
+        """
+        super(DatastoreInventoryItem, self).__init__(managed_resource_id=managed_resource_id, mo_ref_id=mo_ref_id, mo_name=mo_name, **kwargs)
+        self.inventory_type = 'Datastore'  # type: str
+        self.capacity_gb = capacity_gb
+        self.free_space_gb = free_space_gb
+
+
+class DatastoresList(msrest.serialization.Model):
+    """List of Datastores.
+
+    All required parameters must be populated in order to send to Azure.
+
+    :ivar next_link: Url to follow for getting next page of Datastores.
+    :vartype next_link: str
+    :ivar value: Required. Array of Datastores.
+    :vartype value: list[~azure.mgmt.connectedvmware.models.Datastore]
+    """
+
+    _validation = {
+        'value': {'required': True},
+    }
+
+    _attribute_map = {
+        'next_link': {'key': 'nextLink', 'type': 'str'},
+        'value': {'key': 'value', 'type': '[Datastore]'},
+    }
+
+    def __init__(
+        self,
+        *,
+        value: List["Datastore"],
+        next_link: Optional[str] = None,
+        **kwargs
+    ):
+        """
+        :keyword next_link: Url to follow for getting next page of Datastores.
+        :paramtype next_link: str
+        :keyword value: Required. Array of Datastores.
+        :paramtype value: list[~azure.mgmt.connectedvmware.models.Datastore]
+        """
+        super(DatastoresList, self).__init__(**kwargs)
+        self.next_link = next_link
+        self.value = value
 
 
 class ErrorDefinition(msrest.serialization.Model):
@@ -65,7 +606,7 @@ class ErrorDefinition(msrest.serialization.Model):
     :ivar message: Description of the error.
     :vartype message: str
     :ivar details: Internal error details.
-    :vartype details: list[~azure_arc_vmware_management_service_api.models.ErrorDefinition]
+    :vartype details: list[~azure.mgmt.connectedvmware.models.ErrorDefinition]
     """
 
     _validation = {
@@ -84,17 +625,72 @@ class ErrorDefinition(msrest.serialization.Model):
         self,
         **kwargs
     ):
+        """
+        """
         super(ErrorDefinition, self).__init__(**kwargs)
         self.code = None
         self.message = None
         self.details = None
 
 
+class ErrorDetail(msrest.serialization.Model):
+    """Error details.
+
+    All required parameters must be populated in order to send to Azure.
+
+    :ivar code: Required. The error's code.
+    :vartype code: str
+    :ivar message: Required. A human readable error message.
+    :vartype message: str
+    :ivar target: Indicates which property in the request is responsible for the error.
+    :vartype target: str
+    :ivar details: Additional error details.
+    :vartype details: list[~azure.mgmt.connectedvmware.models.ErrorDetail]
+    """
+
+    _validation = {
+        'code': {'required': True},
+        'message': {'required': True},
+    }
+
+    _attribute_map = {
+        'code': {'key': 'code', 'type': 'str'},
+        'message': {'key': 'message', 'type': 'str'},
+        'target': {'key': 'target', 'type': 'str'},
+        'details': {'key': 'details', 'type': '[ErrorDetail]'},
+    }
+
+    def __init__(
+        self,
+        *,
+        code: str,
+        message: str,
+        target: Optional[str] = None,
+        details: Optional[List["ErrorDetail"]] = None,
+        **kwargs
+    ):
+        """
+        :keyword code: Required. The error's code.
+        :paramtype code: str
+        :keyword message: Required. A human readable error message.
+        :paramtype message: str
+        :keyword target: Indicates which property in the request is responsible for the error.
+        :paramtype target: str
+        :keyword details: Additional error details.
+        :paramtype details: list[~azure.mgmt.connectedvmware.models.ErrorDetail]
+        """
+        super(ErrorDetail, self).__init__(**kwargs)
+        self.code = code
+        self.message = message
+        self.target = target
+        self.details = details
+
+
 class ErrorResponse(msrest.serialization.Model):
     """Error response.
 
-    :param error: The error details.
-    :type error: ~azure_arc_vmware_management_service_api.models.ErrorDefinition
+    :ivar error: The error details.
+    :vartype error: ~azure.mgmt.connectedvmware.models.ErrorDefinition
     """
 
     _attribute_map = {
@@ -107,6 +703,10 @@ class ErrorResponse(msrest.serialization.Model):
         error: Optional["ErrorDefinition"] = None,
         **kwargs
     ):
+        """
+        :keyword error: The error details.
+        :paramtype error: ~azure.mgmt.connectedvmware.models.ErrorDefinition
+        """
         super(ErrorResponse, self).__init__(**kwargs)
         self.error = error
 
@@ -114,10 +714,10 @@ class ErrorResponse(msrest.serialization.Model):
 class ExtendedLocation(msrest.serialization.Model):
     """The extended location.
 
-    :param type: The extended location type.
-    :type type: str
-    :param name: The extended location name.
-    :type name: str
+    :ivar type: The extended location type.
+    :vartype type: str
+    :ivar name: The extended location name.
+    :vartype name: str
     """
 
     _attribute_map = {
@@ -132,6 +732,12 @@ class ExtendedLocation(msrest.serialization.Model):
         name: Optional[str] = None,
         **kwargs
     ):
+        """
+        :keyword type: The extended location type.
+        :paramtype type: str
+        :keyword name: The extended location name.
+        :paramtype name: str
+        """
         super(ExtendedLocation, self).__init__(**kwargs)
         self.type = type
         self.name = name
@@ -168,6 +774,8 @@ class Resource(msrest.serialization.Model):
         self,
         **kwargs
     ):
+        """
+        """
         super(Resource, self).__init__(**kwargs)
         self.id = None
         self.name = None
@@ -175,7 +783,7 @@ class Resource(msrest.serialization.Model):
 
 
 class ProxyResource(Resource):
-    """The resource model definition for an Azure Resource Manager proxy resource. It will have everything other than required location and tags.
+    """The resource model definition for a Azure Resource Manager proxy resource. It will not have tags and a location.
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
@@ -205,6 +813,8 @@ class ProxyResource(Resource):
         self,
         **kwargs
     ):
+        """
+        """
         super(ProxyResource, self).__init__(**kwargs)
 
 
@@ -222,15 +832,22 @@ class GuestAgent(ProxyResource):
      "Microsoft.Storage/storageAccounts".
     :vartype type: str
     :ivar system_data: The system data.
-    :vartype system_data: ~azure_arc_vmware_management_service_api.models.SystemData
-    :param credentials: Username / Password Credentials to provision guest agent.
-    :type credentials: ~azure_arc_vmware_management_service_api.models.GuestCredential
-    :param provisioning_action: Gets or sets the guest agent provisioning action. Possible values
+    :vartype system_data: ~azure.mgmt.connectedvmware.models.SystemData
+    :ivar uuid: Gets or sets a unique identifier for this resource.
+    :vartype uuid: str
+    :ivar credentials: Username / Password Credentials to provision guest agent.
+    :vartype credentials: ~azure.mgmt.connectedvmware.models.GuestCredential
+    :ivar http_proxy_config: HTTP Proxy configuration for the VM.
+    :vartype http_proxy_config: ~azure.mgmt.connectedvmware.models.HttpProxyConfiguration
+    :ivar provisioning_action: Gets or sets the guest agent provisioning action. Possible values
      include: "install", "uninstall", "repair".
-    :type provisioning_action: str or
-     ~azure_arc_vmware_management_service_api.models.ProvisioningAction
+    :vartype provisioning_action: str or ~azure.mgmt.connectedvmware.models.ProvisioningAction
     :ivar status: Gets or sets the guest agent status.
     :vartype status: str
+    :ivar custom_resource_name: Gets the name of the corresponding resource in Kubernetes.
+    :vartype custom_resource_name: str
+    :ivar statuses: The resource status information.
+    :vartype statuses: list[~azure.mgmt.connectedvmware.models.ResourceStatus]
     :ivar provisioning_state: Gets or sets the provisioning state.
     :vartype provisioning_state: str
     """
@@ -240,7 +857,10 @@ class GuestAgent(ProxyResource):
         'name': {'readonly': True},
         'type': {'readonly': True},
         'system_data': {'readonly': True},
+        'uuid': {'readonly': True},
         'status': {'readonly': True},
+        'custom_resource_name': {'readonly': True},
+        'statuses': {'readonly': True},
         'provisioning_state': {'readonly': True},
     }
 
@@ -249,9 +869,13 @@ class GuestAgent(ProxyResource):
         'name': {'key': 'name', 'type': 'str'},
         'type': {'key': 'type', 'type': 'str'},
         'system_data': {'key': 'systemData', 'type': 'SystemData'},
+        'uuid': {'key': 'properties.uuid', 'type': 'str'},
         'credentials': {'key': 'properties.credentials', 'type': 'GuestCredential'},
+        'http_proxy_config': {'key': 'properties.httpProxyConfig', 'type': 'HttpProxyConfiguration'},
         'provisioning_action': {'key': 'properties.provisioningAction', 'type': 'str'},
         'status': {'key': 'properties.status', 'type': 'str'},
+        'custom_resource_name': {'key': 'properties.customResourceName', 'type': 'str'},
+        'statuses': {'key': 'properties.statuses', 'type': '[ResourceStatus]'},
         'provisioning_state': {'key': 'properties.provisioningState', 'type': 'str'},
     }
 
@@ -259,14 +883,28 @@ class GuestAgent(ProxyResource):
         self,
         *,
         credentials: Optional["GuestCredential"] = None,
+        http_proxy_config: Optional["HttpProxyConfiguration"] = None,
         provisioning_action: Optional[Union[str, "ProvisioningAction"]] = None,
         **kwargs
     ):
+        """
+        :keyword credentials: Username / Password Credentials to provision guest agent.
+        :paramtype credentials: ~azure.mgmt.connectedvmware.models.GuestCredential
+        :keyword http_proxy_config: HTTP Proxy configuration for the VM.
+        :paramtype http_proxy_config: ~azure.mgmt.connectedvmware.models.HttpProxyConfiguration
+        :keyword provisioning_action: Gets or sets the guest agent provisioning action. Possible values
+         include: "install", "uninstall", "repair".
+        :paramtype provisioning_action: str or ~azure.mgmt.connectedvmware.models.ProvisioningAction
+        """
         super(GuestAgent, self).__init__(**kwargs)
         self.system_data = None
+        self.uuid = None
         self.credentials = credentials
+        self.http_proxy_config = http_proxy_config
         self.provisioning_action = provisioning_action
         self.status = None
+        self.custom_resource_name = None
+        self.statuses = None
         self.provisioning_state = None
 
 
@@ -275,10 +913,10 @@ class GuestAgentList(msrest.serialization.Model):
 
     All required parameters must be populated in order to send to Azure.
 
-    :param next_link: Url to follow for getting next page of GuestAgent.
-    :type next_link: str
-    :param value: Required. Array of GuestAgent.
-    :type value: list[~azure_arc_vmware_management_service_api.models.GuestAgent]
+    :ivar next_link: Url to follow for getting next page of GuestAgent.
+    :vartype next_link: str
+    :ivar value: Required. Array of GuestAgent.
+    :vartype value: list[~azure.mgmt.connectedvmware.models.GuestAgent]
     """
 
     _validation = {
@@ -297,18 +935,72 @@ class GuestAgentList(msrest.serialization.Model):
         next_link: Optional[str] = None,
         **kwargs
     ):
+        """
+        :keyword next_link: Url to follow for getting next page of GuestAgent.
+        :paramtype next_link: str
+        :keyword value: Required. Array of GuestAgent.
+        :paramtype value: list[~azure.mgmt.connectedvmware.models.GuestAgent]
+        """
         super(GuestAgentList, self).__init__(**kwargs)
         self.next_link = next_link
         self.value = value
 
 
+class GuestAgentProfile(msrest.serialization.Model):
+    """Defines the resource properties.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar vm_uuid: Specifies the VM's unique SMBIOS ID.
+    :vartype vm_uuid: str
+    :ivar status: The status of the hybrid machine agent. Possible values include: "Connected",
+     "Disconnected", "Error".
+    :vartype status: str or ~azure.mgmt.connectedvmware.models.StatusTypes
+    :ivar last_status_change: The time of the last status change.
+    :vartype last_status_change: ~datetime.datetime
+    :ivar agent_version: The hybrid machine agent full version.
+    :vartype agent_version: str
+    :ivar error_details: Details about the error state.
+    :vartype error_details: list[~azure.mgmt.connectedvmware.models.ErrorDetail]
+    """
+
+    _validation = {
+        'vm_uuid': {'readonly': True},
+        'status': {'readonly': True},
+        'last_status_change': {'readonly': True},
+        'agent_version': {'readonly': True},
+        'error_details': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'vm_uuid': {'key': 'vmUuid', 'type': 'str'},
+        'status': {'key': 'status', 'type': 'str'},
+        'last_status_change': {'key': 'lastStatusChange', 'type': 'iso-8601'},
+        'agent_version': {'key': 'agentVersion', 'type': 'str'},
+        'error_details': {'key': 'errorDetails', 'type': '[ErrorDetail]'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        """
+        """
+        super(GuestAgentProfile, self).__init__(**kwargs)
+        self.vm_uuid = None
+        self.status = None
+        self.last_status_change = None
+        self.agent_version = None
+        self.error_details = None
+
+
 class GuestCredential(msrest.serialization.Model):
     """Username / Password Credentials to connect to guest.
 
-    :param username: Gets or sets username to connect with the guest.
-    :type username: str
-    :param password: Gets or sets the password to connect with the guest.
-    :type password: str
+    :ivar username: Gets or sets username to connect with the guest.
+    :vartype username: str
+    :ivar password: Gets or sets the password to connect with the guest.
+    :vartype password: str
     """
 
     _attribute_map = {
@@ -323,6 +1015,12 @@ class GuestCredential(msrest.serialization.Model):
         password: Optional[str] = None,
         **kwargs
     ):
+        """
+        :keyword username: Gets or sets username to connect with the guest.
+        :paramtype username: str
+        :keyword password: Gets or sets the password to connect with the guest.
+        :paramtype password: str
+        """
         super(GuestCredential, self).__init__(**kwargs)
         self.username = username
         self.password = password
@@ -333,13 +1031,13 @@ class HardwareProfile(msrest.serialization.Model):
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
-    :param memory_size_mb: Gets or sets memory size in MBs for the vm.
-    :type memory_size_mb: int
-    :param num_cp_us: Gets or sets the number of vCPUs for the vm.
-    :type num_cp_us: int
-    :param num_cores_per_socket: Gets or sets the number of cores per socket for the vm. Defaults
-     to 1 if unspecified.
-    :type num_cores_per_socket: int
+    :ivar memory_size_mb: Gets or sets memory size in MBs for the vm.
+    :vartype memory_size_mb: int
+    :ivar num_cp_us: Gets or sets the number of vCPUs for the vm.
+    :vartype num_cp_us: int
+    :ivar num_cores_per_socket: Gets or sets the number of cores per socket for the vm. Defaults to
+     1 if unspecified.
+    :vartype num_cores_per_socket: int
     :ivar cpu_hot_add_enabled: Gets or sets a value indicating whether virtual processors can be
      added while this virtual machine is running.
     :vartype cpu_hot_add_enabled: bool
@@ -374,6 +1072,15 @@ class HardwareProfile(msrest.serialization.Model):
         num_cores_per_socket: Optional[int] = None,
         **kwargs
     ):
+        """
+        :keyword memory_size_mb: Gets or sets memory size in MBs for the vm.
+        :paramtype memory_size_mb: int
+        :keyword num_cp_us: Gets or sets the number of vCPUs for the vm.
+        :paramtype num_cp_us: int
+        :keyword num_cores_per_socket: Gets or sets the number of cores per socket for the vm. Defaults
+         to 1 if unspecified.
+        :paramtype num_cores_per_socket: int
+        """
         super(HardwareProfile, self).__init__(**kwargs)
         self.memory_size_mb = memory_size_mb
         self.num_cp_us = num_cp_us
@@ -381,6 +1088,258 @@ class HardwareProfile(msrest.serialization.Model):
         self.cpu_hot_add_enabled = None
         self.cpu_hot_remove_enabled = None
         self.memory_hot_add_enabled = None
+
+
+class Host(msrest.serialization.Model):
+    """Define the host.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    All required parameters must be populated in order to send to Azure.
+
+    :ivar location: Required. Gets or sets the location.
+    :vartype location: str
+    :ivar extended_location: Gets or sets the extended location.
+    :vartype extended_location: ~azure.mgmt.connectedvmware.models.ExtendedLocation
+    :ivar system_data: The system data.
+    :vartype system_data: ~azure.mgmt.connectedvmware.models.SystemData
+    :ivar tags: A set of tags. Gets or sets the Resource tags.
+    :vartype tags: dict[str, str]
+    :ivar name: Gets or sets the name.
+    :vartype name: str
+    :ivar id: Gets or sets the Id.
+    :vartype id: str
+    :ivar type: Gets or sets the type of the resource.
+    :vartype type: str
+    :ivar kind: Metadata used by portal/tooling/etc to render different UX experiences for
+     resources of the same type; e.g. ApiApps are a kind of Microsoft.Web/sites type.  If supported,
+     the resource provider must validate and persist this value.
+    :vartype kind: str
+    :ivar uuid: Gets or sets a unique identifier for this resource.
+    :vartype uuid: str
+    :ivar v_center_id: Gets or sets the ARM Id of the vCenter resource in which this host resides.
+    :vartype v_center_id: str
+    :ivar mo_ref_id: Gets or sets the vCenter MoRef (Managed Object Reference) ID for the host.
+    :vartype mo_ref_id: str
+    :ivar inventory_item_id: Gets or sets the inventory Item ID for the host.
+    :vartype inventory_item_id: str
+    :ivar mo_name: Gets or sets the vCenter Managed Object name for the host.
+    :vartype mo_name: str
+    :ivar statuses: The resource status information.
+    :vartype statuses: list[~azure.mgmt.connectedvmware.models.ResourceStatus]
+    :ivar custom_resource_name: Gets the name of the corresponding resource in Kubernetes.
+    :vartype custom_resource_name: str
+    :ivar provisioning_state: Gets or sets the provisioning state.
+    :vartype provisioning_state: str
+    """
+
+    _validation = {
+        'location': {'required': True},
+        'system_data': {'readonly': True},
+        'name': {'readonly': True},
+        'id': {'readonly': True},
+        'type': {'readonly': True},
+        'uuid': {'readonly': True},
+        'mo_name': {'readonly': True},
+        'statuses': {'readonly': True},
+        'custom_resource_name': {'readonly': True},
+        'provisioning_state': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'location': {'key': 'location', 'type': 'str'},
+        'extended_location': {'key': 'extendedLocation', 'type': 'ExtendedLocation'},
+        'system_data': {'key': 'systemData', 'type': 'SystemData'},
+        'tags': {'key': 'tags', 'type': '{str}'},
+        'name': {'key': 'name', 'type': 'str'},
+        'id': {'key': 'id', 'type': 'str'},
+        'type': {'key': 'type', 'type': 'str'},
+        'kind': {'key': 'kind', 'type': 'str'},
+        'uuid': {'key': 'properties.uuid', 'type': 'str'},
+        'v_center_id': {'key': 'properties.vCenterId', 'type': 'str'},
+        'mo_ref_id': {'key': 'properties.moRefId', 'type': 'str'},
+        'inventory_item_id': {'key': 'properties.inventoryItemId', 'type': 'str'},
+        'mo_name': {'key': 'properties.moName', 'type': 'str'},
+        'statuses': {'key': 'properties.statuses', 'type': '[ResourceStatus]'},
+        'custom_resource_name': {'key': 'properties.customResourceName', 'type': 'str'},
+        'provisioning_state': {'key': 'properties.provisioningState', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        *,
+        location: str,
+        extended_location: Optional["ExtendedLocation"] = None,
+        tags: Optional[Dict[str, str]] = None,
+        kind: Optional[str] = None,
+        v_center_id: Optional[str] = None,
+        mo_ref_id: Optional[str] = None,
+        inventory_item_id: Optional[str] = None,
+        **kwargs
+    ):
+        """
+        :keyword location: Required. Gets or sets the location.
+        :paramtype location: str
+        :keyword extended_location: Gets or sets the extended location.
+        :paramtype extended_location: ~azure.mgmt.connectedvmware.models.ExtendedLocation
+        :keyword tags: A set of tags. Gets or sets the Resource tags.
+        :paramtype tags: dict[str, str]
+        :keyword kind: Metadata used by portal/tooling/etc to render different UX experiences for
+         resources of the same type; e.g. ApiApps are a kind of Microsoft.Web/sites type.  If supported,
+         the resource provider must validate and persist this value.
+        :paramtype kind: str
+        :keyword v_center_id: Gets or sets the ARM Id of the vCenter resource in which this host
+         resides.
+        :paramtype v_center_id: str
+        :keyword mo_ref_id: Gets or sets the vCenter MoRef (Managed Object Reference) ID for the host.
+        :paramtype mo_ref_id: str
+        :keyword inventory_item_id: Gets or sets the inventory Item ID for the host.
+        :paramtype inventory_item_id: str
+        """
+        super(Host, self).__init__(**kwargs)
+        self.location = location
+        self.extended_location = extended_location
+        self.system_data = None
+        self.tags = tags
+        self.name = None
+        self.id = None
+        self.type = None
+        self.kind = kind
+        self.uuid = None
+        self.v_center_id = v_center_id
+        self.mo_ref_id = mo_ref_id
+        self.inventory_item_id = inventory_item_id
+        self.mo_name = None
+        self.statuses = None
+        self.custom_resource_name = None
+        self.provisioning_state = None
+
+
+class HostInventoryItem(InventoryItemProperties):
+    """The host inventory item.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    All required parameters must be populated in order to send to Azure.
+
+    :ivar inventory_type: Required. They inventory type.Constant filled by server. Possible values
+     include: "ResourcePool", "VirtualMachine", "VirtualMachineTemplate", "VirtualNetwork",
+     "Cluster", "Datastore", "Host".
+    :vartype inventory_type: str or ~azure.mgmt.connectedvmware.models.InventoryType
+    :ivar managed_resource_id: Gets or sets the tracked resource id corresponding to the inventory
+     resource.
+    :vartype managed_resource_id: str
+    :ivar mo_ref_id: Gets or sets the MoRef (Managed Object Reference) ID for the inventory item.
+    :vartype mo_ref_id: str
+    :ivar mo_name: Gets or sets the vCenter Managed Object name for the inventory item.
+    :vartype mo_name: str
+    :ivar provisioning_state: Gets or sets the provisioning state.
+    :vartype provisioning_state: str
+    :ivar parent: Parent host inventory resource details.
+    :vartype parent: ~azure.mgmt.connectedvmware.models.InventoryItemDetails
+    """
+
+    _validation = {
+        'inventory_type': {'required': True},
+        'provisioning_state': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'inventory_type': {'key': 'inventoryType', 'type': 'str'},
+        'managed_resource_id': {'key': 'managedResourceId', 'type': 'str'},
+        'mo_ref_id': {'key': 'moRefId', 'type': 'str'},
+        'mo_name': {'key': 'moName', 'type': 'str'},
+        'provisioning_state': {'key': 'provisioningState', 'type': 'str'},
+        'parent': {'key': 'parent', 'type': 'InventoryItemDetails'},
+    }
+
+    def __init__(
+        self,
+        *,
+        managed_resource_id: Optional[str] = None,
+        mo_ref_id: Optional[str] = None,
+        mo_name: Optional[str] = None,
+        parent: Optional["InventoryItemDetails"] = None,
+        **kwargs
+    ):
+        """
+        :keyword managed_resource_id: Gets or sets the tracked resource id corresponding to the
+         inventory resource.
+        :paramtype managed_resource_id: str
+        :keyword mo_ref_id: Gets or sets the MoRef (Managed Object Reference) ID for the inventory
+         item.
+        :paramtype mo_ref_id: str
+        :keyword mo_name: Gets or sets the vCenter Managed Object name for the inventory item.
+        :paramtype mo_name: str
+        :keyword parent: Parent host inventory resource details.
+        :paramtype parent: ~azure.mgmt.connectedvmware.models.InventoryItemDetails
+        """
+        super(HostInventoryItem, self).__init__(managed_resource_id=managed_resource_id, mo_ref_id=mo_ref_id, mo_name=mo_name, **kwargs)
+        self.inventory_type = 'Host'  # type: str
+        self.parent = parent
+
+
+class HostsList(msrest.serialization.Model):
+    """List of Hosts.
+
+    All required parameters must be populated in order to send to Azure.
+
+    :ivar next_link: Url to follow for getting next page of Hosts.
+    :vartype next_link: str
+    :ivar value: Required. Array of Hosts.
+    :vartype value: list[~azure.mgmt.connectedvmware.models.Host]
+    """
+
+    _validation = {
+        'value': {'required': True},
+    }
+
+    _attribute_map = {
+        'next_link': {'key': 'nextLink', 'type': 'str'},
+        'value': {'key': 'value', 'type': '[Host]'},
+    }
+
+    def __init__(
+        self,
+        *,
+        value: List["Host"],
+        next_link: Optional[str] = None,
+        **kwargs
+    ):
+        """
+        :keyword next_link: Url to follow for getting next page of Hosts.
+        :paramtype next_link: str
+        :keyword value: Required. Array of Hosts.
+        :paramtype value: list[~azure.mgmt.connectedvmware.models.Host]
+        """
+        super(HostsList, self).__init__(**kwargs)
+        self.next_link = next_link
+        self.value = value
+
+
+class HttpProxyConfiguration(msrest.serialization.Model):
+    """HTTP Proxy configuration for the VM.
+
+    :ivar https_proxy: Gets or sets httpsProxy url.
+    :vartype https_proxy: str
+    """
+
+    _attribute_map = {
+        'https_proxy': {'key': 'httpsProxy', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        *,
+        https_proxy: Optional[str] = None,
+        **kwargs
+    ):
+        """
+        :keyword https_proxy: Gets or sets httpsProxy url.
+        :paramtype https_proxy: str
+        """
+        super(HttpProxyConfiguration, self).__init__(**kwargs)
+        self.https_proxy = https_proxy
 
 
 class HybridIdentityMetadata(ProxyResource):
@@ -397,13 +1356,13 @@ class HybridIdentityMetadata(ProxyResource):
      "Microsoft.Storage/storageAccounts".
     :vartype type: str
     :ivar system_data: The system data.
-    :vartype system_data: ~azure_arc_vmware_management_service_api.models.SystemData
-    :param vm_id: Gets or sets the Vm Id.
-    :type vm_id: str
-    :param public_key: Gets or sets the Public Key.
-    :type public_key: str
+    :vartype system_data: ~azure.mgmt.connectedvmware.models.SystemData
+    :ivar vm_id: Gets or sets the Vm Id.
+    :vartype vm_id: str
+    :ivar public_key: Gets or sets the Public Key.
+    :vartype public_key: str
     :ivar identity: The identity of the resource.
-    :vartype identity: ~azure_arc_vmware_management_service_api.models.Identity
+    :vartype identity: ~azure.mgmt.connectedvmware.models.Identity
     :ivar provisioning_state: Gets or sets the provisioning state.
     :vartype provisioning_state: str
     """
@@ -435,6 +1394,12 @@ class HybridIdentityMetadata(ProxyResource):
         public_key: Optional[str] = None,
         **kwargs
     ):
+        """
+        :keyword vm_id: Gets or sets the Vm Id.
+        :paramtype vm_id: str
+        :keyword public_key: Gets or sets the Public Key.
+        :paramtype public_key: str
+        """
         super(HybridIdentityMetadata, self).__init__(**kwargs)
         self.system_data = None
         self.vm_id = vm_id
@@ -448,10 +1413,10 @@ class HybridIdentityMetadataList(msrest.serialization.Model):
 
     All required parameters must be populated in order to send to Azure.
 
-    :param next_link: Url to follow for getting next page of HybridIdentityMetadata.
-    :type next_link: str
-    :param value: Required. Array of HybridIdentityMetadata.
-    :type value: list[~azure_arc_vmware_management_service_api.models.HybridIdentityMetadata]
+    :ivar next_link: Url to follow for getting next page of HybridIdentityMetadata.
+    :vartype next_link: str
+    :ivar value: Required. Array of HybridIdentityMetadata.
+    :vartype value: list[~azure.mgmt.connectedvmware.models.HybridIdentityMetadata]
     """
 
     _validation = {
@@ -470,6 +1435,12 @@ class HybridIdentityMetadataList(msrest.serialization.Model):
         next_link: Optional[str] = None,
         **kwargs
     ):
+        """
+        :keyword next_link: Url to follow for getting next page of HybridIdentityMetadata.
+        :paramtype next_link: str
+        :keyword value: Required. Array of HybridIdentityMetadata.
+        :paramtype value: list[~azure.mgmt.connectedvmware.models.HybridIdentityMetadata]
+        """
         super(HybridIdentityMetadataList, self).__init__(**kwargs)
         self.next_link = next_link
         self.value = value
@@ -486,9 +1457,9 @@ class Identity(msrest.serialization.Model):
     :vartype principal_id: str
     :ivar tenant_id: The tenant of managed service identity.
     :vartype tenant_id: str
-    :param type: Required. The type of managed service identity. Possible values include: "None",
+    :ivar type: Required. The type of managed service identity. Possible values include: "None",
      "SystemAssigned".
-    :type type: str or ~azure_arc_vmware_management_service_api.models.IdentityType
+    :vartype type: str or ~azure.mgmt.connectedvmware.models.IdentityType
     """
 
     _validation = {
@@ -509,6 +1480,11 @@ class Identity(msrest.serialization.Model):
         type: Union[str, "IdentityType"],
         **kwargs
     ):
+        """
+        :keyword type: Required. The type of managed service identity. Possible values include: "None",
+         "SystemAssigned".
+        :paramtype type: str or ~azure.mgmt.connectedvmware.models.IdentityType
+        """
         super(Identity, self).__init__(**kwargs)
         self.principal_id = None
         self.tenant_id = None
@@ -531,17 +1507,22 @@ class InventoryItem(ProxyResource):
      "Microsoft.Storage/storageAccounts".
     :vartype type: str
     :ivar system_data: The system data.
-    :vartype system_data: ~azure_arc_vmware_management_service_api.models.SystemData
-    :param inventory_type: Required. They inventory type.Constant filled by server.  Possible
-     values include: "ResourcePool", "VirtualMachine", "VirtualMachineTemplate", "VirtualNetwork".
-    :type inventory_type: str or ~azure_arc_vmware_management_service_api.models.InventoryType
-    :param managed_resource_id: Gets or sets the tracked resource id corresponding to the inventory
+    :vartype system_data: ~azure.mgmt.connectedvmware.models.SystemData
+    :ivar kind: Metadata used by portal/tooling/etc to render different UX experiences for
+     resources of the same type; e.g. ApiApps are a kind of Microsoft.Web/sites type.  If supported,
+     the resource provider must validate and persist this value.
+    :vartype kind: str
+    :ivar inventory_type: Required. They inventory type.Constant filled by server. Possible values
+     include: "ResourcePool", "VirtualMachine", "VirtualMachineTemplate", "VirtualNetwork",
+     "Cluster", "Datastore", "Host".
+    :vartype inventory_type: str or ~azure.mgmt.connectedvmware.models.InventoryType
+    :ivar managed_resource_id: Gets or sets the tracked resource id corresponding to the inventory
      resource.
-    :type managed_resource_id: str
-    :param mo_ref_id: Gets or sets the MoRef (Managed Object Reference) ID for the inventory item.
-    :type mo_ref_id: str
-    :param mo_name: Gets or sets the vCenter Managed Object name for the inventory item.
-    :type mo_name: str
+    :vartype managed_resource_id: str
+    :ivar mo_ref_id: Gets or sets the MoRef (Managed Object Reference) ID for the inventory item.
+    :vartype mo_ref_id: str
+    :ivar mo_name: Gets or sets the vCenter Managed Object name for the inventory item.
+    :vartype mo_name: str
     :ivar provisioning_state: Gets or sets the provisioning state.
     :vartype provisioning_state: str
     """
@@ -560,6 +1541,7 @@ class InventoryItem(ProxyResource):
         'name': {'key': 'name', 'type': 'str'},
         'type': {'key': 'type', 'type': 'str'},
         'system_data': {'key': 'systemData', 'type': 'SystemData'},
+        'kind': {'key': 'kind', 'type': 'str'},
         'inventory_type': {'key': 'properties.inventoryType', 'type': 'str'},
         'managed_resource_id': {'key': 'properties.managedResourceId', 'type': 'str'},
         'mo_ref_id': {'key': 'properties.moRefId', 'type': 'str'},
@@ -570,13 +1552,29 @@ class InventoryItem(ProxyResource):
     def __init__(
         self,
         *,
+        kind: Optional[str] = None,
         managed_resource_id: Optional[str] = None,
         mo_ref_id: Optional[str] = None,
         mo_name: Optional[str] = None,
         **kwargs
     ):
+        """
+        :keyword kind: Metadata used by portal/tooling/etc to render different UX experiences for
+         resources of the same type; e.g. ApiApps are a kind of Microsoft.Web/sites type.  If supported,
+         the resource provider must validate and persist this value.
+        :paramtype kind: str
+        :keyword managed_resource_id: Gets or sets the tracked resource id corresponding to the
+         inventory resource.
+        :paramtype managed_resource_id: str
+        :keyword mo_ref_id: Gets or sets the MoRef (Managed Object Reference) ID for the inventory
+         item.
+        :paramtype mo_ref_id: str
+        :keyword mo_name: Gets or sets the vCenter Managed Object name for the inventory item.
+        :paramtype mo_name: str
+        """
         super(InventoryItem, self).__init__(**kwargs)
         self.system_data = None
+        self.kind = kind
         self.inventory_type = None  # type: Optional[str]
         self.managed_resource_id = managed_resource_id
         self.mo_ref_id = mo_ref_id
@@ -587,10 +1585,10 @@ class InventoryItem(ProxyResource):
 class InventoryItemDetails(msrest.serialization.Model):
     """Defines the resource properties.
 
-    :param inventory_item_id: Gets or sets the inventory Item ID for the resource.
-    :type inventory_item_id: str
-    :param mo_name: Gets or sets the vCenter Managed Object name for the resource.
-    :type mo_name: str
+    :ivar inventory_item_id: Gets or sets the inventory Item ID for the resource.
+    :vartype inventory_item_id: str
+    :ivar mo_name: Gets or sets the vCenter Managed Object name for the resource.
+    :vartype mo_name: str
     """
 
     _attribute_map = {
@@ -605,66 +1603,15 @@ class InventoryItemDetails(msrest.serialization.Model):
         mo_name: Optional[str] = None,
         **kwargs
     ):
+        """
+        :keyword inventory_item_id: Gets or sets the inventory Item ID for the resource.
+        :paramtype inventory_item_id: str
+        :keyword mo_name: Gets or sets the vCenter Managed Object name for the resource.
+        :paramtype mo_name: str
+        """
         super(InventoryItemDetails, self).__init__(**kwargs)
         self.inventory_item_id = inventory_item_id
         self.mo_name = mo_name
-
-
-class InventoryItemProperties(msrest.serialization.Model):
-    """Defines the resource properties.
-
-    You probably want to use the sub-classes and not this class directly. Known
-    sub-classes are: ResourcePoolInventoryItem, VirtualMachineInventoryItem, VirtualMachineTemplateInventoryItem, VirtualNetworkInventoryItem.
-
-    Variables are only populated by the server, and will be ignored when sending a request.
-
-    All required parameters must be populated in order to send to Azure.
-
-    :param inventory_type: Required. They inventory type.Constant filled by server.  Possible
-     values include: "ResourcePool", "VirtualMachine", "VirtualMachineTemplate", "VirtualNetwork".
-    :type inventory_type: str or ~azure_arc_vmware_management_service_api.models.InventoryType
-    :param managed_resource_id: Gets or sets the tracked resource id corresponding to the inventory
-     resource.
-    :type managed_resource_id: str
-    :param mo_ref_id: Gets or sets the MoRef (Managed Object Reference) ID for the inventory item.
-    :type mo_ref_id: str
-    :param mo_name: Gets or sets the vCenter Managed Object name for the inventory item.
-    :type mo_name: str
-    :ivar provisioning_state: Gets or sets the provisioning state.
-    :vartype provisioning_state: str
-    """
-
-    _validation = {
-        'inventory_type': {'required': True},
-        'provisioning_state': {'readonly': True},
-    }
-
-    _attribute_map = {
-        'inventory_type': {'key': 'inventoryType', 'type': 'str'},
-        'managed_resource_id': {'key': 'managedResourceId', 'type': 'str'},
-        'mo_ref_id': {'key': 'moRefId', 'type': 'str'},
-        'mo_name': {'key': 'moName', 'type': 'str'},
-        'provisioning_state': {'key': 'provisioningState', 'type': 'str'},
-    }
-
-    _subtype_map = {
-        'inventory_type': {'ResourcePool': 'ResourcePoolInventoryItem', 'VirtualMachine': 'VirtualMachineInventoryItem', 'VirtualMachineTemplate': 'VirtualMachineTemplateInventoryItem', 'VirtualNetwork': 'VirtualNetworkInventoryItem'}
-    }
-
-    def __init__(
-        self,
-        *,
-        managed_resource_id: Optional[str] = None,
-        mo_ref_id: Optional[str] = None,
-        mo_name: Optional[str] = None,
-        **kwargs
-    ):
-        super(InventoryItemProperties, self).__init__(**kwargs)
-        self.inventory_type = None  # type: Optional[str]
-        self.managed_resource_id = managed_resource_id
-        self.mo_ref_id = mo_ref_id
-        self.mo_name = mo_name
-        self.provisioning_state = None
 
 
 class InventoryItemsList(msrest.serialization.Model):
@@ -672,10 +1619,10 @@ class InventoryItemsList(msrest.serialization.Model):
 
     All required parameters must be populated in order to send to Azure.
 
-    :param next_link: Url to follow for getting next page of InventoryItems.
-    :type next_link: str
-    :param value: Required. Array of InventoryItems.
-    :type value: list[~azure_arc_vmware_management_service_api.models.InventoryItem]
+    :ivar next_link: Url to follow for getting next page of InventoryItems.
+    :vartype next_link: str
+    :ivar value: Required. Array of InventoryItems.
+    :vartype value: list[~azure.mgmt.connectedvmware.models.InventoryItem]
     """
 
     _validation = {
@@ -694,6 +1641,12 @@ class InventoryItemsList(msrest.serialization.Model):
         next_link: Optional[str] = None,
         **kwargs
     ):
+        """
+        :keyword next_link: Url to follow for getting next page of InventoryItems.
+        :paramtype next_link: str
+        :keyword value: Required. Array of InventoryItems.
+        :paramtype value: list[~azure.mgmt.connectedvmware.models.InventoryItem]
+        """
         super(InventoryItemsList, self).__init__(**kwargs)
         self.next_link = next_link
         self.value = value
@@ -704,42 +1657,42 @@ class MachineExtension(msrest.serialization.Model):
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
-    :param location: Gets or sets the location.
-    :type location: str
+    :ivar location: Gets or sets the location.
+    :vartype location: str
     :ivar system_data: The system data.
-    :vartype system_data: ~azure_arc_vmware_management_service_api.models.SystemData
-    :param tags: A set of tags. Gets or sets the Resource tags.
-    :type tags: dict[str, str]
+    :vartype system_data: ~azure.mgmt.connectedvmware.models.SystemData
+    :ivar tags: A set of tags. Gets or sets the Resource tags.
+    :vartype tags: dict[str, str]
     :ivar name: Gets or sets the name.
     :vartype name: str
     :ivar id: Gets or sets the Id.
     :vartype id: str
     :ivar type: Gets or sets the type of the resource.
     :vartype type: str
-    :param force_update_tag: How the extension handler should be forced to update even if the
+    :ivar force_update_tag: How the extension handler should be forced to update even if the
      extension configuration has not changed.
-    :type force_update_tag: str
-    :param publisher: The name of the extension handler publisher.
-    :type publisher: str
-    :param type_properties_type: Specifies the type of the extension; an example is
+    :vartype force_update_tag: str
+    :ivar publisher: The name of the extension handler publisher.
+    :vartype publisher: str
+    :ivar type_properties_type: Specifies the type of the extension; an example is
      "CustomScriptExtension".
-    :type type_properties_type: str
-    :param type_handler_version: Specifies the version of the script handler.
-    :type type_handler_version: str
-    :param auto_upgrade_minor_version: Indicates whether the extension should use a newer minor
+    :vartype type_properties_type: str
+    :ivar type_handler_version: Specifies the version of the script handler.
+    :vartype type_handler_version: str
+    :ivar auto_upgrade_minor_version: Indicates whether the extension should use a newer minor
      version if one is available at deployment time. Once deployed, however, the extension will not
      upgrade minor versions unless redeployed, even with this property set to true.
-    :type auto_upgrade_minor_version: bool
-    :param settings: Json formatted public settings for the extension.
-    :type settings: object
-    :param protected_settings: The extension can contain either protectedSettings or
+    :vartype auto_upgrade_minor_version: bool
+    :ivar settings: Json formatted public settings for the extension.
+    :vartype settings: any
+    :ivar protected_settings: The extension can contain either protectedSettings or
      protectedSettingsFromKeyVault or no protected settings at all.
-    :type protected_settings: object
+    :vartype protected_settings: any
     :ivar provisioning_state: The provisioning state, which only appears in the response.
     :vartype provisioning_state: str
-    :param instance_view: The machine extension instance view.
-    :type instance_view:
-     ~azure_arc_vmware_management_service_api.models.MachineExtensionPropertiesInstanceView
+    :ivar instance_view: The machine extension instance view.
+    :vartype instance_view:
+     ~azure.mgmt.connectedvmware.models.MachineExtensionPropertiesInstanceView
     """
 
     _validation = {
@@ -778,11 +1731,39 @@ class MachineExtension(msrest.serialization.Model):
         type_properties_type: Optional[str] = None,
         type_handler_version: Optional[str] = None,
         auto_upgrade_minor_version: Optional[bool] = None,
-        settings: Optional[object] = None,
-        protected_settings: Optional[object] = None,
+        settings: Optional[Any] = None,
+        protected_settings: Optional[Any] = None,
         instance_view: Optional["MachineExtensionPropertiesInstanceView"] = None,
         **kwargs
     ):
+        """
+        :keyword location: Gets or sets the location.
+        :paramtype location: str
+        :keyword tags: A set of tags. Gets or sets the Resource tags.
+        :paramtype tags: dict[str, str]
+        :keyword force_update_tag: How the extension handler should be forced to update even if the
+         extension configuration has not changed.
+        :paramtype force_update_tag: str
+        :keyword publisher: The name of the extension handler publisher.
+        :paramtype publisher: str
+        :keyword type_properties_type: Specifies the type of the extension; an example is
+         "CustomScriptExtension".
+        :paramtype type_properties_type: str
+        :keyword type_handler_version: Specifies the version of the script handler.
+        :paramtype type_handler_version: str
+        :keyword auto_upgrade_minor_version: Indicates whether the extension should use a newer minor
+         version if one is available at deployment time. Once deployed, however, the extension will not
+         upgrade minor versions unless redeployed, even with this property set to true.
+        :paramtype auto_upgrade_minor_version: bool
+        :keyword settings: Json formatted public settings for the extension.
+        :paramtype settings: any
+        :keyword protected_settings: The extension can contain either protectedSettings or
+         protectedSettingsFromKeyVault or no protected settings at all.
+        :paramtype protected_settings: any
+        :keyword instance_view: The machine extension instance view.
+        :paramtype instance_view:
+         ~azure.mgmt.connectedvmware.models.MachineExtensionPropertiesInstanceView
+        """
         super(MachineExtension, self).__init__(**kwargs)
         self.location = location
         self.system_data = None
@@ -812,9 +1793,8 @@ class MachineExtensionInstanceView(msrest.serialization.Model):
     :vartype type: str
     :ivar type_handler_version: Specifies the version of the script handler.
     :vartype type_handler_version: str
-    :param status: Instance view status.
-    :type status:
-     ~azure_arc_vmware_management_service_api.models.MachineExtensionInstanceViewStatus
+    :ivar status: Instance view status.
+    :vartype status: ~azure.mgmt.connectedvmware.models.MachineExtensionInstanceViewStatus
     """
 
     _validation = {
@@ -836,6 +1816,10 @@ class MachineExtensionInstanceView(msrest.serialization.Model):
         status: Optional["MachineExtensionInstanceViewStatus"] = None,
         **kwargs
     ):
+        """
+        :keyword status: Instance view status.
+        :paramtype status: ~azure.mgmt.connectedvmware.models.MachineExtensionInstanceViewStatus
+        """
         super(MachineExtensionInstanceView, self).__init__(**kwargs)
         self.name = None
         self.type = None
@@ -851,7 +1835,7 @@ class MachineExtensionInstanceViewStatus(msrest.serialization.Model):
     :ivar code: The status code.
     :vartype code: str
     :ivar level: The level code. Possible values include: "Info", "Warning", "Error".
-    :vartype level: str or ~azure_arc_vmware_management_service_api.models.StatusLevelTypes
+    :vartype level: str or ~azure.mgmt.connectedvmware.models.StatusLevelTypes
     :ivar display_status: The short localizable label for the status.
     :vartype display_status: str
     :ivar message: The detailed status message, including for alerts and error messages.
@@ -880,6 +1864,8 @@ class MachineExtensionInstanceViewStatus(msrest.serialization.Model):
         self,
         **kwargs
     ):
+        """
+        """
         super(MachineExtensionInstanceViewStatus, self).__init__(**kwargs)
         self.code = None
         self.level = None
@@ -899,9 +1885,8 @@ class MachineExtensionPropertiesInstanceView(MachineExtensionInstanceView):
     :vartype type: str
     :ivar type_handler_version: Specifies the version of the script handler.
     :vartype type_handler_version: str
-    :param status: Instance view status.
-    :type status:
-     ~azure_arc_vmware_management_service_api.models.MachineExtensionInstanceViewStatus
+    :ivar status: Instance view status.
+    :vartype status: ~azure.mgmt.connectedvmware.models.MachineExtensionInstanceViewStatus
     """
 
     _validation = {
@@ -923,17 +1908,21 @@ class MachineExtensionPropertiesInstanceView(MachineExtensionInstanceView):
         status: Optional["MachineExtensionInstanceViewStatus"] = None,
         **kwargs
     ):
+        """
+        :keyword status: Instance view status.
+        :paramtype status: ~azure.mgmt.connectedvmware.models.MachineExtensionInstanceViewStatus
+        """
         super(MachineExtensionPropertiesInstanceView, self).__init__(status=status, **kwargs)
 
 
 class MachineExtensionsListResult(msrest.serialization.Model):
     """Describes the Machine Extensions List Result.
 
-    :param value: The list of extensions.
-    :type value: list[~azure_arc_vmware_management_service_api.models.MachineExtension]
-    :param next_link: The uri to fetch the next page of machine extensions. Call ListNext() with
+    :ivar value: The list of extensions.
+    :vartype value: list[~azure.mgmt.connectedvmware.models.MachineExtension]
+    :ivar next_link: The uri to fetch the next page of machine extensions. Call ListNext() with
      this to fetch the next page of extensions.
-    :type next_link: str
+    :vartype next_link: str
     """
 
     _attribute_map = {
@@ -948,6 +1937,13 @@ class MachineExtensionsListResult(msrest.serialization.Model):
         next_link: Optional[str] = None,
         **kwargs
     ):
+        """
+        :keyword value: The list of extensions.
+        :paramtype value: list[~azure.mgmt.connectedvmware.models.MachineExtension]
+        :keyword next_link: The uri to fetch the next page of machine extensions. Call ListNext() with
+         this to fetch the next page of extensions.
+        :paramtype next_link: str
+        """
         super(MachineExtensionsListResult, self).__init__(**kwargs)
         self.value = value
         self.next_link = next_link
@@ -956,8 +1952,8 @@ class MachineExtensionsListResult(msrest.serialization.Model):
 class ResourcePatch(msrest.serialization.Model):
     """Object containing updates for patch operations.
 
-    :param tags: A set of tags. Resource tags.
-    :type tags: dict[str, str]
+    :ivar tags: A set of tags. Resource tags.
+    :vartype tags: dict[str, str]
     """
 
     _attribute_map = {
@@ -970,6 +1966,10 @@ class ResourcePatch(msrest.serialization.Model):
         tags: Optional[Dict[str, str]] = None,
         **kwargs
     ):
+        """
+        :keyword tags: A set of tags. Resource tags.
+        :paramtype tags: dict[str, str]
+        """
         super(ResourcePatch, self).__init__(**kwargs)
         self.tags = tags
 
@@ -977,26 +1977,26 @@ class ResourcePatch(msrest.serialization.Model):
 class MachineExtensionUpdate(ResourcePatch):
     """Describes a Machine Extension Update.
 
-    :param tags: A set of tags. Resource tags.
-    :type tags: dict[str, str]
-    :param force_update_tag: How the extension handler should be forced to update even if the
+    :ivar tags: A set of tags. Resource tags.
+    :vartype tags: dict[str, str]
+    :ivar force_update_tag: How the extension handler should be forced to update even if the
      extension configuration has not changed.
-    :type force_update_tag: str
-    :param publisher: The name of the extension handler publisher.
-    :type publisher: str
-    :param type: Specifies the type of the extension; an example is "CustomScriptExtension".
-    :type type: str
-    :param type_handler_version: Specifies the version of the script handler.
-    :type type_handler_version: str
-    :param auto_upgrade_minor_version: Indicates whether the extension should use a newer minor
+    :vartype force_update_tag: str
+    :ivar publisher: The name of the extension handler publisher.
+    :vartype publisher: str
+    :ivar type: Specifies the type of the extension; an example is "CustomScriptExtension".
+    :vartype type: str
+    :ivar type_handler_version: Specifies the version of the script handler.
+    :vartype type_handler_version: str
+    :ivar auto_upgrade_minor_version: Indicates whether the extension should use a newer minor
      version if one is available at deployment time. Once deployed, however, the extension will not
      upgrade minor versions unless redeployed, even with this property set to true.
-    :type auto_upgrade_minor_version: bool
-    :param settings: Json formatted public settings for the extension.
-    :type settings: object
-    :param protected_settings: The extension can contain either protectedSettings or
+    :vartype auto_upgrade_minor_version: bool
+    :ivar settings: Json formatted public settings for the extension.
+    :vartype settings: any
+    :ivar protected_settings: The extension can contain either protectedSettings or
      protectedSettingsFromKeyVault or no protected settings at all.
-    :type protected_settings: object
+    :vartype protected_settings: any
     """
 
     _attribute_map = {
@@ -1019,10 +2019,32 @@ class MachineExtensionUpdate(ResourcePatch):
         type: Optional[str] = None,
         type_handler_version: Optional[str] = None,
         auto_upgrade_minor_version: Optional[bool] = None,
-        settings: Optional[object] = None,
-        protected_settings: Optional[object] = None,
+        settings: Optional[Any] = None,
+        protected_settings: Optional[Any] = None,
         **kwargs
     ):
+        """
+        :keyword tags: A set of tags. Resource tags.
+        :paramtype tags: dict[str, str]
+        :keyword force_update_tag: How the extension handler should be forced to update even if the
+         extension configuration has not changed.
+        :paramtype force_update_tag: str
+        :keyword publisher: The name of the extension handler publisher.
+        :paramtype publisher: str
+        :keyword type: Specifies the type of the extension; an example is "CustomScriptExtension".
+        :paramtype type: str
+        :keyword type_handler_version: Specifies the version of the script handler.
+        :paramtype type_handler_version: str
+        :keyword auto_upgrade_minor_version: Indicates whether the extension should use a newer minor
+         version if one is available at deployment time. Once deployed, however, the extension will not
+         upgrade minor versions unless redeployed, even with this property set to true.
+        :paramtype auto_upgrade_minor_version: bool
+        :keyword settings: Json formatted public settings for the extension.
+        :paramtype settings: any
+        :keyword protected_settings: The extension can contain either protectedSettings or
+         protectedSettingsFromKeyVault or no protected settings at all.
+        :paramtype protected_settings: any
+        """
         super(MachineExtensionUpdate, self).__init__(tags=tags, **kwargs)
         self.force_update_tag = force_update_tag
         self.publisher = publisher
@@ -1038,8 +2060,8 @@ class NetworkInterface(msrest.serialization.Model):
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
-    :param name: Gets or sets the name of the network interface.
-    :type name: str
+    :ivar name: Gets or sets the name of the network interface.
+    :vartype name: str
     :ivar label: Gets or sets the label of the virtual network in vCenter that the nic is connected
      to.
     :vartype label: str
@@ -1047,15 +2069,15 @@ class NetworkInterface(msrest.serialization.Model):
     :vartype ip_addresses: list[str]
     :ivar mac_address: Gets or sets the NIC MAC address.
     :vartype mac_address: str
-    :param network_id: Gets or sets the ARM Id of the network resource to connect the virtual
+    :ivar network_id: Gets or sets the ARM Id of the network resource to connect the virtual
      machine.
-    :type network_id: str
-    :param nic_type: NIC type. Possible values include: "vmxnet3", "vmxnet2", "vmxnet", "e1000",
+    :vartype network_id: str
+    :ivar nic_type: NIC type. Possible values include: "vmxnet3", "vmxnet2", "vmxnet", "e1000",
      "e1000e", "pcnet32".
-    :type nic_type: str or ~azure_arc_vmware_management_service_api.models.NICType
-    :param power_on_boot: Gets or sets the power on boot. Possible values include: "enabled",
+    :vartype nic_type: str or ~azure.mgmt.connectedvmware.models.NICType
+    :ivar power_on_boot: Gets or sets the power on boot. Possible values include: "enabled",
      "disabled".
-    :type power_on_boot: str or ~azure_arc_vmware_management_service_api.models.PowerOnBootOption
+    :vartype power_on_boot: str or ~azure.mgmt.connectedvmware.models.PowerOnBootOption
     :ivar network_mo_ref_id: Gets or sets the vCenter MoRef (Managed Object Reference) ID of the
      virtual network
      that the nic is connected to.
@@ -1063,10 +2085,10 @@ class NetworkInterface(msrest.serialization.Model):
     :ivar network_mo_name: Gets or sets the name of the virtual network in vCenter that the nic is
      connected to.
     :vartype network_mo_name: str
-    :param device_key: Gets or sets the device key value.
-    :type device_key: int
-    :param ip_settings: Gets or sets the ipsettings.
-    :type ip_settings: ~azure_arc_vmware_management_service_api.models.NicIPSettings
+    :ivar device_key: Gets or sets the device key value.
+    :vartype device_key: int
+    :ivar ip_settings: Gets or sets the ipsettings.
+    :vartype ip_settings: ~azure.mgmt.connectedvmware.models.NicIPSettings
     """
 
     _validation = {
@@ -1102,6 +2124,23 @@ class NetworkInterface(msrest.serialization.Model):
         ip_settings: Optional["NicIPSettings"] = None,
         **kwargs
     ):
+        """
+        :keyword name: Gets or sets the name of the network interface.
+        :paramtype name: str
+        :keyword network_id: Gets or sets the ARM Id of the network resource to connect the virtual
+         machine.
+        :paramtype network_id: str
+        :keyword nic_type: NIC type. Possible values include: "vmxnet3", "vmxnet2", "vmxnet", "e1000",
+         "e1000e", "pcnet32".
+        :paramtype nic_type: str or ~azure.mgmt.connectedvmware.models.NICType
+        :keyword power_on_boot: Gets or sets the power on boot. Possible values include: "enabled",
+         "disabled".
+        :paramtype power_on_boot: str or ~azure.mgmt.connectedvmware.models.PowerOnBootOption
+        :keyword device_key: Gets or sets the device key value.
+        :paramtype device_key: int
+        :keyword ip_settings: Gets or sets the ipsettings.
+        :paramtype ip_settings: ~azure.mgmt.connectedvmware.models.NicIPSettings
+        """
         super(NetworkInterface, self).__init__(**kwargs)
         self.name = name
         self.label = None
@@ -1119,19 +2158,19 @@ class NetworkInterface(msrest.serialization.Model):
 class NetworkInterfaceUpdate(msrest.serialization.Model):
     """Defines the network interface update.
 
-    :param name: Gets or sets the name of the network interface.
-    :type name: str
-    :param network_id: Gets or sets the ARM Id of the network resource to connect the virtual
+    :ivar name: Gets or sets the name of the network interface.
+    :vartype name: str
+    :ivar network_id: Gets or sets the ARM Id of the network resource to connect the virtual
      machine.
-    :type network_id: str
-    :param nic_type: NIC type. Possible values include: "vmxnet3", "vmxnet2", "vmxnet", "e1000",
+    :vartype network_id: str
+    :ivar nic_type: NIC type. Possible values include: "vmxnet3", "vmxnet2", "vmxnet", "e1000",
      "e1000e", "pcnet32".
-    :type nic_type: str or ~azure_arc_vmware_management_service_api.models.NICType
-    :param power_on_boot: Gets or sets the power on boot. Possible values include: "enabled",
+    :vartype nic_type: str or ~azure.mgmt.connectedvmware.models.NICType
+    :ivar power_on_boot: Gets or sets the power on boot. Possible values include: "enabled",
      "disabled".
-    :type power_on_boot: str or ~azure_arc_vmware_management_service_api.models.PowerOnBootOption
-    :param device_key: Gets or sets the device key value.
-    :type device_key: int
+    :vartype power_on_boot: str or ~azure.mgmt.connectedvmware.models.PowerOnBootOption
+    :ivar device_key: Gets or sets the device key value.
+    :vartype device_key: int
     """
 
     _attribute_map = {
@@ -1152,6 +2191,21 @@ class NetworkInterfaceUpdate(msrest.serialization.Model):
         device_key: Optional[int] = None,
         **kwargs
     ):
+        """
+        :keyword name: Gets or sets the name of the network interface.
+        :paramtype name: str
+        :keyword network_id: Gets or sets the ARM Id of the network resource to connect the virtual
+         machine.
+        :paramtype network_id: str
+        :keyword nic_type: NIC type. Possible values include: "vmxnet3", "vmxnet2", "vmxnet", "e1000",
+         "e1000e", "pcnet32".
+        :paramtype nic_type: str or ~azure.mgmt.connectedvmware.models.NICType
+        :keyword power_on_boot: Gets or sets the power on boot. Possible values include: "enabled",
+         "disabled".
+        :paramtype power_on_boot: str or ~azure.mgmt.connectedvmware.models.PowerOnBootOption
+        :keyword device_key: Gets or sets the device key value.
+        :paramtype device_key: int
+        """
         super(NetworkInterfaceUpdate, self).__init__(**kwargs)
         self.name = name
         self.network_id = network_id
@@ -1163,10 +2217,9 @@ class NetworkInterfaceUpdate(msrest.serialization.Model):
 class NetworkProfile(msrest.serialization.Model):
     """Defines the resource properties.
 
-    :param network_interfaces: Gets or sets the list of network interfaces associated with the
+    :ivar network_interfaces: Gets or sets the list of network interfaces associated with the
      virtual machine.
-    :type network_interfaces:
-     list[~azure_arc_vmware_management_service_api.models.NetworkInterface]
+    :vartype network_interfaces: list[~azure.mgmt.connectedvmware.models.NetworkInterface]
     """
 
     _attribute_map = {
@@ -1179,6 +2232,11 @@ class NetworkProfile(msrest.serialization.Model):
         network_interfaces: Optional[List["NetworkInterface"]] = None,
         **kwargs
     ):
+        """
+        :keyword network_interfaces: Gets or sets the list of network interfaces associated with the
+         virtual machine.
+        :paramtype network_interfaces: list[~azure.mgmt.connectedvmware.models.NetworkInterface]
+        """
         super(NetworkProfile, self).__init__(**kwargs)
         self.network_interfaces = network_interfaces
 
@@ -1186,10 +2244,9 @@ class NetworkProfile(msrest.serialization.Model):
 class NetworkProfileUpdate(msrest.serialization.Model):
     """Defines the update resource properties.
 
-    :param network_interfaces: Gets or sets the list of network interfaces associated with the
+    :ivar network_interfaces: Gets or sets the list of network interfaces associated with the
      virtual machine.
-    :type network_interfaces:
-     list[~azure_arc_vmware_management_service_api.models.NetworkInterfaceUpdate]
+    :vartype network_interfaces: list[~azure.mgmt.connectedvmware.models.NetworkInterfaceUpdate]
     """
 
     _attribute_map = {
@@ -1202,6 +2259,11 @@ class NetworkProfileUpdate(msrest.serialization.Model):
         network_interfaces: Optional[List["NetworkInterfaceUpdate"]] = None,
         **kwargs
     ):
+        """
+        :keyword network_interfaces: Gets or sets the list of network interfaces associated with the
+         virtual machine.
+        :paramtype network_interfaces: list[~azure.mgmt.connectedvmware.models.NetworkInterfaceUpdate]
+        """
         super(NetworkProfileUpdate, self).__init__(**kwargs)
         self.network_interfaces = network_interfaces
 
@@ -1235,6 +2297,8 @@ class NicIPAddressSettings(msrest.serialization.Model):
         self,
         **kwargs
     ):
+        """
+        """
         super(NicIPAddressSettings, self).__init__(**kwargs)
         self.allocation_method = None
         self.ip_address = None
@@ -1246,26 +2310,24 @@ class NicIPSettings(msrest.serialization.Model):
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
-    :param allocation_method: Gets or sets the nic allocation method. Possible values include:
+    :ivar allocation_method: Gets or sets the nic allocation method. Possible values include:
      "unset", "dynamic", "static", "linklayer", "random", "other".
-    :type allocation_method: str or
-     ~azure_arc_vmware_management_service_api.models.IPAddressAllocationMethod
-    :param dns_servers: Gets or sets the dns servers.
-    :type dns_servers: list[str]
-    :param gateway: Gets or sets the gateway.
-    :type gateway: list[str]
-    :param ip_address: Gets or sets the ip address for the nic.
-    :type ip_address: str
-    :param subnet_mask: Gets or sets the mask.
-    :type subnet_mask: str
+    :vartype allocation_method: str or ~azure.mgmt.connectedvmware.models.IPAddressAllocationMethod
+    :ivar dns_servers: Gets or sets the dns servers.
+    :vartype dns_servers: list[str]
+    :ivar gateway: Gets or sets the gateway.
+    :vartype gateway: list[str]
+    :ivar ip_address: Gets or sets the ip address for the nic.
+    :vartype ip_address: str
+    :ivar subnet_mask: Gets or sets the mask.
+    :vartype subnet_mask: str
     :ivar primary_wins_server: Gets or sets the primary server.
     :vartype primary_wins_server: str
     :ivar secondary_wins_server: Gets or sets the secondary server.
     :vartype secondary_wins_server: str
     :ivar ip_address_info: Gets or sets the IP address information being reported for this NIC.
      This contains the same IPv4 information above plus IPV6 information.
-    :vartype ip_address_info:
-     list[~azure_arc_vmware_management_service_api.models.NicIPAddressSettings]
+    :vartype ip_address_info: list[~azure.mgmt.connectedvmware.models.NicIPAddressSettings]
     """
 
     _validation = {
@@ -1295,6 +2357,20 @@ class NicIPSettings(msrest.serialization.Model):
         subnet_mask: Optional[str] = None,
         **kwargs
     ):
+        """
+        :keyword allocation_method: Gets or sets the nic allocation method. Possible values include:
+         "unset", "dynamic", "static", "linklayer", "random", "other".
+        :paramtype allocation_method: str or
+         ~azure.mgmt.connectedvmware.models.IPAddressAllocationMethod
+        :keyword dns_servers: Gets or sets the dns servers.
+        :paramtype dns_servers: list[str]
+        :keyword gateway: Gets or sets the gateway.
+        :paramtype gateway: list[str]
+        :keyword ip_address: Gets or sets the ip address for the nic.
+        :paramtype ip_address: str
+        :keyword subnet_mask: Gets or sets the mask.
+        :paramtype subnet_mask: str
+        """
         super(NicIPSettings, self).__init__(**kwargs)
         self.allocation_method = allocation_method
         self.dns_servers = dns_servers
@@ -1309,12 +2385,12 @@ class NicIPSettings(msrest.serialization.Model):
 class Operation(msrest.serialization.Model):
     """Operation provided by provider.
 
-    :param name: Name of the operation.
-    :type name: str
-    :param is_data_action: Indicates whether the operation is data action or not.
-    :type is_data_action: bool
-    :param display: Properties of the operation.
-    :type display: ~azure_arc_vmware_management_service_api.models.OperationDisplay
+    :ivar name: Name of the operation.
+    :vartype name: str
+    :ivar is_data_action: Indicates whether the operation is data action or not.
+    :vartype is_data_action: bool
+    :ivar display: Properties of the operation.
+    :vartype display: ~azure.mgmt.connectedvmware.models.OperationDisplay
     """
 
     _attribute_map = {
@@ -1331,6 +2407,14 @@ class Operation(msrest.serialization.Model):
         display: Optional["OperationDisplay"] = None,
         **kwargs
     ):
+        """
+        :keyword name: Name of the operation.
+        :paramtype name: str
+        :keyword is_data_action: Indicates whether the operation is data action or not.
+        :paramtype is_data_action: bool
+        :keyword display: Properties of the operation.
+        :paramtype display: ~azure.mgmt.connectedvmware.models.OperationDisplay
+        """
         super(Operation, self).__init__(**kwargs)
         self.name = name
         self.is_data_action = is_data_action
@@ -1340,14 +2424,14 @@ class Operation(msrest.serialization.Model):
 class OperationDisplay(msrest.serialization.Model):
     """Properties of the operation.
 
-    :param provider: Provider name.
-    :type provider: str
-    :param resource: Resource name.
-    :type resource: str
-    :param operation: Operation name.
-    :type operation: str
-    :param description: Description of the operation.
-    :type description: str
+    :ivar provider: Provider name.
+    :vartype provider: str
+    :ivar resource: Resource name.
+    :vartype resource: str
+    :ivar operation: Operation name.
+    :vartype operation: str
+    :ivar description: Description of the operation.
+    :vartype description: str
     """
 
     _attribute_map = {
@@ -1366,6 +2450,16 @@ class OperationDisplay(msrest.serialization.Model):
         description: Optional[str] = None,
         **kwargs
     ):
+        """
+        :keyword provider: Provider name.
+        :paramtype provider: str
+        :keyword resource: Resource name.
+        :paramtype resource: str
+        :keyword operation: Operation name.
+        :paramtype operation: str
+        :keyword description: Description of the operation.
+        :paramtype description: str
+        """
         super(OperationDisplay, self).__init__(**kwargs)
         self.provider = provider
         self.resource = resource
@@ -1378,10 +2472,10 @@ class OperationsList(msrest.serialization.Model):
 
     All required parameters must be populated in order to send to Azure.
 
-    :param next_link: Url to follow for getting next page of operations.
-    :type next_link: str
-    :param value: Required. Array of operations.
-    :type value: list[~azure_arc_vmware_management_service_api.models.Operation]
+    :ivar next_link: Url to follow for getting next page of operations.
+    :vartype next_link: str
+    :ivar value: Required. Array of operations.
+    :vartype value: list[~azure.mgmt.connectedvmware.models.Operation]
     """
 
     _validation = {
@@ -1400,6 +2494,12 @@ class OperationsList(msrest.serialization.Model):
         next_link: Optional[str] = None,
         **kwargs
     ):
+        """
+        :keyword next_link: Url to follow for getting next page of operations.
+        :paramtype next_link: str
+        :keyword value: Required. Array of operations.
+        :paramtype value: list[~azure.mgmt.connectedvmware.models.Operation]
+        """
         super(OperationsList, self).__init__(**kwargs)
         self.next_link = next_link
         self.value = value
@@ -1410,15 +2510,15 @@ class OsProfile(msrest.serialization.Model):
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
-    :param computer_name: Gets or sets computer name.
-    :type computer_name: str
-    :param admin_username: Gets or sets administrator username.
-    :type admin_username: str
-    :param admin_password: Gets or sets administrator password.
-    :type admin_password: str
+    :ivar computer_name: Gets or sets computer name.
+    :vartype computer_name: str
+    :ivar admin_username: Gets or sets administrator username.
+    :vartype admin_username: str
+    :ivar admin_password: Gets or sets administrator password.
+    :vartype admin_password: str
     :ivar os_type: Gets or sets the type of the os. Possible values include: "Windows", "Linux",
      "Other".
-    :vartype os_type: str or ~azure_arc_vmware_management_service_api.models.OsType
+    :vartype os_type: str or ~azure.mgmt.connectedvmware.models.OsType
     :ivar os_name: Gets or sets os name.
     :vartype os_name: str
     :ivar tools_running_status: Gets or sets the current running status of VMware Tools running in
@@ -1432,7 +2532,6 @@ class OsProfile(msrest.serialization.Model):
     """
 
     _validation = {
-        'os_type': {'readonly': True},
         'os_name': {'readonly': True},
         'tools_running_status': {'readonly': True},
         'tools_version_status': {'readonly': True},
@@ -1456,17 +2555,83 @@ class OsProfile(msrest.serialization.Model):
         computer_name: Optional[str] = None,
         admin_username: Optional[str] = None,
         admin_password: Optional[str] = None,
+        os_type: Optional[Union[str, "OsType"]] = None,
         **kwargs
     ):
+        """
+        :keyword computer_name: Gets or sets computer name.
+        :paramtype computer_name: str
+        :keyword admin_username: Gets or sets administrator username.
+        :paramtype admin_username: str
+        :keyword admin_password: Gets or sets administrator password.
+        :paramtype admin_password: str
+        :keyword os_type: Gets or sets the type of the os. Possible values include: "Windows", "Linux",
+         "Other".
+        :paramtype os_type: str or ~azure.mgmt.connectedvmware.models.OsType
+        """
         super(OsProfile, self).__init__(**kwargs)
         self.computer_name = computer_name
         self.admin_username = admin_username
         self.admin_password = admin_password
-        self.os_type = None
+        self.os_type = os_type
         self.os_name = None
         self.tools_running_status = None
         self.tools_version_status = None
         self.tools_version = None
+
+
+class PlacementProfile(msrest.serialization.Model):
+    """Defines the resource properties.
+
+    :ivar resource_pool_id: Gets or sets the ARM Id of the resourcePool resource on which this
+     virtual machine will deploy.
+    :vartype resource_pool_id: str
+    :ivar cluster_id: Gets or sets the ARM Id of the cluster resource on which this virtual machine
+     will deploy.
+    :vartype cluster_id: str
+    :ivar host_id: Gets or sets the ARM Id of the host resource on which this virtual machine will
+     deploy.
+    :vartype host_id: str
+    :ivar datastore_id: Gets or sets the ARM Id of the datastore resource on which the data for the
+     virtual machine will be kept.
+    :vartype datastore_id: str
+    """
+
+    _attribute_map = {
+        'resource_pool_id': {'key': 'resourcePoolId', 'type': 'str'},
+        'cluster_id': {'key': 'clusterId', 'type': 'str'},
+        'host_id': {'key': 'hostId', 'type': 'str'},
+        'datastore_id': {'key': 'datastoreId', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        *,
+        resource_pool_id: Optional[str] = None,
+        cluster_id: Optional[str] = None,
+        host_id: Optional[str] = None,
+        datastore_id: Optional[str] = None,
+        **kwargs
+    ):
+        """
+        :keyword resource_pool_id: Gets or sets the ARM Id of the resourcePool resource on which this
+         virtual machine will deploy.
+        :paramtype resource_pool_id: str
+        :keyword cluster_id: Gets or sets the ARM Id of the cluster resource on which this virtual
+         machine will deploy.
+        :paramtype cluster_id: str
+        :keyword host_id: Gets or sets the ARM Id of the host resource on which this virtual machine
+         will deploy.
+        :paramtype host_id: str
+        :keyword datastore_id: Gets or sets the ARM Id of the datastore resource on which the data for
+         the virtual machine will be kept.
+        :paramtype datastore_id: str
+        """
+        super(PlacementProfile, self).__init__(**kwargs)
+        self.resource_pool_id = resource_pool_id
+        self.cluster_id = cluster_id
+        self.host_id = host_id
+        self.datastore_id = datastore_id
 
 
 class ResourcePool(msrest.serialization.Model):
@@ -1476,34 +2641,34 @@ class ResourcePool(msrest.serialization.Model):
 
     All required parameters must be populated in order to send to Azure.
 
-    :param location: Required. Gets or sets the location.
-    :type location: str
-    :param extended_location: Gets or sets the extended location.
-    :type extended_location: ~azure_arc_vmware_management_service_api.models.ExtendedLocation
+    :ivar location: Required. Gets or sets the location.
+    :vartype location: str
+    :ivar extended_location: Gets or sets the extended location.
+    :vartype extended_location: ~azure.mgmt.connectedvmware.models.ExtendedLocation
     :ivar system_data: The system data.
-    :vartype system_data: ~azure_arc_vmware_management_service_api.models.SystemData
-    :param tags: A set of tags. Gets or sets the Resource tags.
-    :type tags: dict[str, str]
+    :vartype system_data: ~azure.mgmt.connectedvmware.models.SystemData
+    :ivar tags: A set of tags. Gets or sets the Resource tags.
+    :vartype tags: dict[str, str]
     :ivar name: Gets or sets the name.
     :vartype name: str
     :ivar id: Gets or sets the Id.
     :vartype id: str
     :ivar type: Gets or sets the type of the resource.
     :vartype type: str
-    :param kind: Metadata used by portal/tooling/etc to render different UX experiences for
+    :ivar kind: Metadata used by portal/tooling/etc to render different UX experiences for
      resources of the same type; e.g. ApiApps are a kind of Microsoft.Web/sites type.  If supported,
      the resource provider must validate and persist this value.
-    :type kind: str
+    :vartype kind: str
     :ivar uuid: Gets or sets a unique identifier for this resource.
     :vartype uuid: str
-    :param v_center_id: Gets or sets the ARM Id of the vCenter resource in which this resource pool
+    :ivar v_center_id: Gets or sets the ARM Id of the vCenter resource in which this resource pool
      resides.
-    :type v_center_id: str
-    :param mo_ref_id: Gets or sets the vCenter MoRef (Managed Object Reference) ID for the resource
+    :vartype v_center_id: str
+    :ivar mo_ref_id: Gets or sets the vCenter MoRef (Managed Object Reference) ID for the resource
      pool.
-    :type mo_ref_id: str
-    :param inventory_item_id: Gets or sets the inventory Item ID for the resource pool.
-    :type inventory_item_id: str
+    :vartype mo_ref_id: str
+    :ivar inventory_item_id: Gets or sets the inventory Item ID for the resource pool.
+    :vartype inventory_item_id: str
     :ivar mo_name: Gets or sets the vCenter Managed Object name for the resource pool.
     :vartype mo_name: str
     :ivar cpu_shares_level: Gets or sets CPUSharesLevel which specifies the CPU allocation level
@@ -1530,6 +2695,8 @@ class ResourcePool(msrest.serialization.Model):
     :vartype mem_limit_mb: long
     :ivar custom_resource_name: Gets the name of the corresponding resource in Kubernetes.
     :vartype custom_resource_name: str
+    :ivar statuses: The resource status information.
+    :vartype statuses: list[~azure.mgmt.connectedvmware.models.ResourceStatus]
     :ivar provisioning_state: Gets or sets the provisioning state.
     :vartype provisioning_state: str
     """
@@ -1549,6 +2716,7 @@ class ResourcePool(msrest.serialization.Model):
         'mem_reservation_mb': {'readonly': True},
         'mem_limit_mb': {'readonly': True},
         'custom_resource_name': {'readonly': True},
+        'statuses': {'readonly': True},
         'provisioning_state': {'readonly': True},
     }
 
@@ -1573,6 +2741,7 @@ class ResourcePool(msrest.serialization.Model):
         'mem_reservation_mb': {'key': 'properties.memReservationMB', 'type': 'long'},
         'mem_limit_mb': {'key': 'properties.memLimitMB', 'type': 'long'},
         'custom_resource_name': {'key': 'properties.customResourceName', 'type': 'str'},
+        'statuses': {'key': 'properties.statuses', 'type': '[ResourceStatus]'},
         'provisioning_state': {'key': 'properties.provisioningState', 'type': 'str'},
     }
 
@@ -1588,6 +2757,26 @@ class ResourcePool(msrest.serialization.Model):
         inventory_item_id: Optional[str] = None,
         **kwargs
     ):
+        """
+        :keyword location: Required. Gets or sets the location.
+        :paramtype location: str
+        :keyword extended_location: Gets or sets the extended location.
+        :paramtype extended_location: ~azure.mgmt.connectedvmware.models.ExtendedLocation
+        :keyword tags: A set of tags. Gets or sets the Resource tags.
+        :paramtype tags: dict[str, str]
+        :keyword kind: Metadata used by portal/tooling/etc to render different UX experiences for
+         resources of the same type; e.g. ApiApps are a kind of Microsoft.Web/sites type.  If supported,
+         the resource provider must validate and persist this value.
+        :paramtype kind: str
+        :keyword v_center_id: Gets or sets the ARM Id of the vCenter resource in which this resource
+         pool resides.
+        :paramtype v_center_id: str
+        :keyword mo_ref_id: Gets or sets the vCenter MoRef (Managed Object Reference) ID for the
+         resource pool.
+        :paramtype mo_ref_id: str
+        :keyword inventory_item_id: Gets or sets the inventory Item ID for the resource pool.
+        :paramtype inventory_item_id: str
+        """
         super(ResourcePool, self).__init__(**kwargs)
         self.location = location
         self.extended_location = extended_location
@@ -1609,6 +2798,7 @@ class ResourcePool(msrest.serialization.Model):
         self.mem_reservation_mb = None
         self.mem_limit_mb = None
         self.custom_resource_name = None
+        self.statuses = None
         self.provisioning_state = None
 
 
@@ -1619,20 +2809,21 @@ class ResourcePoolInventoryItem(InventoryItemProperties):
 
     All required parameters must be populated in order to send to Azure.
 
-    :param inventory_type: Required. They inventory type.Constant filled by server.  Possible
-     values include: "ResourcePool", "VirtualMachine", "VirtualMachineTemplate", "VirtualNetwork".
-    :type inventory_type: str or ~azure_arc_vmware_management_service_api.models.InventoryType
-    :param managed_resource_id: Gets or sets the tracked resource id corresponding to the inventory
+    :ivar inventory_type: Required. They inventory type.Constant filled by server. Possible values
+     include: "ResourcePool", "VirtualMachine", "VirtualMachineTemplate", "VirtualNetwork",
+     "Cluster", "Datastore", "Host".
+    :vartype inventory_type: str or ~azure.mgmt.connectedvmware.models.InventoryType
+    :ivar managed_resource_id: Gets or sets the tracked resource id corresponding to the inventory
      resource.
-    :type managed_resource_id: str
-    :param mo_ref_id: Gets or sets the MoRef (Managed Object Reference) ID for the inventory item.
-    :type mo_ref_id: str
-    :param mo_name: Gets or sets the vCenter Managed Object name for the inventory item.
-    :type mo_name: str
+    :vartype managed_resource_id: str
+    :ivar mo_ref_id: Gets or sets the MoRef (Managed Object Reference) ID for the inventory item.
+    :vartype mo_ref_id: str
+    :ivar mo_name: Gets or sets the vCenter Managed Object name for the inventory item.
+    :vartype mo_name: str
     :ivar provisioning_state: Gets or sets the provisioning state.
     :vartype provisioning_state: str
-    :param parent: Parent resourcePool inventory resource details.
-    :type parent: ~azure_arc_vmware_management_service_api.models.InventoryItemDetails
+    :ivar parent: Parent resourcePool inventory resource details.
+    :vartype parent: ~azure.mgmt.connectedvmware.models.InventoryItemDetails
     """
 
     _validation = {
@@ -1658,6 +2849,18 @@ class ResourcePoolInventoryItem(InventoryItemProperties):
         parent: Optional["InventoryItemDetails"] = None,
         **kwargs
     ):
+        """
+        :keyword managed_resource_id: Gets or sets the tracked resource id corresponding to the
+         inventory resource.
+        :paramtype managed_resource_id: str
+        :keyword mo_ref_id: Gets or sets the MoRef (Managed Object Reference) ID for the inventory
+         item.
+        :paramtype mo_ref_id: str
+        :keyword mo_name: Gets or sets the vCenter Managed Object name for the inventory item.
+        :paramtype mo_name: str
+        :keyword parent: Parent resourcePool inventory resource details.
+        :paramtype parent: ~azure.mgmt.connectedvmware.models.InventoryItemDetails
+        """
         super(ResourcePoolInventoryItem, self).__init__(managed_resource_id=managed_resource_id, mo_ref_id=mo_ref_id, mo_name=mo_name, **kwargs)
         self.inventory_type = 'ResourcePool'  # type: str
         self.parent = parent
@@ -1668,10 +2871,10 @@ class ResourcePoolsList(msrest.serialization.Model):
 
     All required parameters must be populated in order to send to Azure.
 
-    :param next_link: Url to follow for getting next page of ResourcePools.
-    :type next_link: str
-    :param value: Required. Array of ResourcePools.
-    :type value: list[~azure_arc_vmware_management_service_api.models.ResourcePool]
+    :ivar next_link: Url to follow for getting next page of ResourcePools.
+    :vartype next_link: str
+    :ivar value: Required. Array of ResourcePools.
+    :vartype value: list[~azure.mgmt.connectedvmware.models.ResourcePool]
     """
 
     _validation = {
@@ -1690,18 +2893,76 @@ class ResourcePoolsList(msrest.serialization.Model):
         next_link: Optional[str] = None,
         **kwargs
     ):
+        """
+        :keyword next_link: Url to follow for getting next page of ResourcePools.
+        :paramtype next_link: str
+        :keyword value: Required. Array of ResourcePools.
+        :paramtype value: list[~azure.mgmt.connectedvmware.models.ResourcePool]
+        """
         super(ResourcePoolsList, self).__init__(**kwargs)
         self.next_link = next_link
         self.value = value
 
 
+class ResourceStatus(msrest.serialization.Model):
+    """The resource status information.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar type: The type of the condition.
+    :vartype type: str
+    :ivar status: Status of the condition.
+    :vartype status: str
+    :ivar reason: The reason for the condition's status.
+    :vartype reason: str
+    :ivar message: A human readable message indicating details about the status.
+    :vartype message: str
+    :ivar severity: Severity with which to treat failures of this type of condition.
+    :vartype severity: str
+    :ivar last_updated_at: The last update time for this condition.
+    :vartype last_updated_at: ~datetime.datetime
+    """
+
+    _validation = {
+        'type': {'readonly': True},
+        'status': {'readonly': True},
+        'reason': {'readonly': True},
+        'message': {'readonly': True},
+        'severity': {'readonly': True},
+        'last_updated_at': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'type': {'key': 'type', 'type': 'str'},
+        'status': {'key': 'status', 'type': 'str'},
+        'reason': {'key': 'reason', 'type': 'str'},
+        'message': {'key': 'message', 'type': 'str'},
+        'severity': {'key': 'severity', 'type': 'str'},
+        'last_updated_at': {'key': 'lastUpdatedAt', 'type': 'iso-8601'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        """
+        """
+        super(ResourceStatus, self).__init__(**kwargs)
+        self.type = None
+        self.status = None
+        self.reason = None
+        self.message = None
+        self.severity = None
+        self.last_updated_at = None
+
+
 class StopVirtualMachineOptions(msrest.serialization.Model):
     """Defines the stop action properties.
 
-    :param skip_shutdown: Gets or sets a value indicating whether to request non-graceful VM
+    :ivar skip_shutdown: Gets or sets a value indicating whether to request non-graceful VM
      shutdown. True value for this flag indicates non-graceful shutdown whereas false indicates
      otherwise. Defaults to false.
-    :type skip_shutdown: bool
+    :vartype skip_shutdown: bool
     """
 
     _attribute_map = {
@@ -1714,6 +2975,12 @@ class StopVirtualMachineOptions(msrest.serialization.Model):
         skip_shutdown: Optional[bool] = False,
         **kwargs
     ):
+        """
+        :keyword skip_shutdown: Gets or sets a value indicating whether to request non-graceful VM
+         shutdown. True value for this flag indicates non-graceful shutdown whereas false indicates
+         otherwise. Defaults to false.
+        :paramtype skip_shutdown: bool
+        """
         super(StopVirtualMachineOptions, self).__init__(**kwargs)
         self.skip_shutdown = skip_shutdown
 
@@ -1723,12 +2990,11 @@ class StorageProfile(msrest.serialization.Model):
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
-    :param disks: Gets or sets the list of virtual disks associated with the virtual machine.
-    :type disks: list[~azure_arc_vmware_management_service_api.models.VirtualDisk]
+    :ivar disks: Gets or sets the list of virtual disks associated with the virtual machine.
+    :vartype disks: list[~azure.mgmt.connectedvmware.models.VirtualDisk]
     :ivar scsi_controllers: Gets or sets the list of virtual SCSI controllers associated with the
      virtual machine.
-    :vartype scsi_controllers:
-     list[~azure_arc_vmware_management_service_api.models.VirtualSCSIController]
+    :vartype scsi_controllers: list[~azure.mgmt.connectedvmware.models.VirtualSCSIController]
     """
 
     _validation = {
@@ -1746,6 +3012,10 @@ class StorageProfile(msrest.serialization.Model):
         disks: Optional[List["VirtualDisk"]] = None,
         **kwargs
     ):
+        """
+        :keyword disks: Gets or sets the list of virtual disks associated with the virtual machine.
+        :paramtype disks: list[~azure.mgmt.connectedvmware.models.VirtualDisk]
+        """
         super(StorageProfile, self).__init__(**kwargs)
         self.disks = disks
         self.scsi_controllers = None
@@ -1754,8 +3024,8 @@ class StorageProfile(msrest.serialization.Model):
 class StorageProfileUpdate(msrest.serialization.Model):
     """Defines the resource update properties.
 
-    :param disks: Gets or sets the list of virtual disks associated with the virtual machine.
-    :type disks: list[~azure_arc_vmware_management_service_api.models.VirtualDiskUpdate]
+    :ivar disks: Gets or sets the list of virtual disks associated with the virtual machine.
+    :vartype disks: list[~azure.mgmt.connectedvmware.models.VirtualDiskUpdate]
     """
 
     _attribute_map = {
@@ -1768,6 +3038,10 @@ class StorageProfileUpdate(msrest.serialization.Model):
         disks: Optional[List["VirtualDiskUpdate"]] = None,
         **kwargs
     ):
+        """
+        :keyword disks: Gets or sets the list of virtual disks associated with the virtual machine.
+        :paramtype disks: list[~azure.mgmt.connectedvmware.models.VirtualDiskUpdate]
+        """
         super(StorageProfileUpdate, self).__init__(**kwargs)
         self.disks = disks
 
@@ -1775,21 +3049,20 @@ class StorageProfileUpdate(msrest.serialization.Model):
 class SystemData(msrest.serialization.Model):
     """Metadata pertaining to creation and last modification of the resource.
 
-    :param created_by: The identity that created the resource.
-    :type created_by: str
-    :param created_by_type: The type of identity that created the resource. Possible values
-     include: "User", "Application", "ManagedIdentity", "Key".
-    :type created_by_type: str or ~azure_arc_vmware_management_service_api.models.CreatedByType
-    :param created_at: The timestamp of resource creation (UTC).
-    :type created_at: ~datetime.datetime
-    :param last_modified_by: The identity that last modified the resource.
-    :type last_modified_by: str
-    :param last_modified_by_type: The type of identity that last modified the resource. Possible
+    :ivar created_by: The identity that created the resource.
+    :vartype created_by: str
+    :ivar created_by_type: The type of identity that created the resource. Possible values include:
+     "User", "Application", "ManagedIdentity", "Key".
+    :vartype created_by_type: str or ~azure.mgmt.connectedvmware.models.CreatedByType
+    :ivar created_at: The timestamp of resource creation (UTC).
+    :vartype created_at: ~datetime.datetime
+    :ivar last_modified_by: The identity that last modified the resource.
+    :vartype last_modified_by: str
+    :ivar last_modified_by_type: The type of identity that last modified the resource. Possible
      values include: "User", "Application", "ManagedIdentity", "Key".
-    :type last_modified_by_type: str or
-     ~azure_arc_vmware_management_service_api.models.CreatedByType
-    :param last_modified_at: The type of identity that last modified the resource.
-    :type last_modified_at: ~datetime.datetime
+    :vartype last_modified_by_type: str or ~azure.mgmt.connectedvmware.models.CreatedByType
+    :ivar last_modified_at: The timestamp of resource last modification (UTC).
+    :vartype last_modified_at: ~datetime.datetime
     """
 
     _attribute_map = {
@@ -1812,6 +3085,22 @@ class SystemData(msrest.serialization.Model):
         last_modified_at: Optional[datetime.datetime] = None,
         **kwargs
     ):
+        """
+        :keyword created_by: The identity that created the resource.
+        :paramtype created_by: str
+        :keyword created_by_type: The type of identity that created the resource. Possible values
+         include: "User", "Application", "ManagedIdentity", "Key".
+        :paramtype created_by_type: str or ~azure.mgmt.connectedvmware.models.CreatedByType
+        :keyword created_at: The timestamp of resource creation (UTC).
+        :paramtype created_at: ~datetime.datetime
+        :keyword last_modified_by: The identity that last modified the resource.
+        :paramtype last_modified_by: str
+        :keyword last_modified_by_type: The type of identity that last modified the resource. Possible
+         values include: "User", "Application", "ManagedIdentity", "Key".
+        :paramtype last_modified_by_type: str or ~azure.mgmt.connectedvmware.models.CreatedByType
+        :keyword last_modified_at: The timestamp of resource last modification (UTC).
+        :paramtype last_modified_at: ~datetime.datetime
+        """
         super(SystemData, self).__init__(**kwargs)
         self.created_by = created_by
         self.created_by_type = created_by_type
@@ -1828,30 +3117,30 @@ class VCenter(msrest.serialization.Model):
 
     All required parameters must be populated in order to send to Azure.
 
-    :param location: Required. Gets or sets the location.
-    :type location: str
-    :param extended_location: Gets or sets the extended location.
-    :type extended_location: ~azure_arc_vmware_management_service_api.models.ExtendedLocation
+    :ivar location: Required. Gets or sets the location.
+    :vartype location: str
+    :ivar extended_location: Gets or sets the extended location.
+    :vartype extended_location: ~azure.mgmt.connectedvmware.models.ExtendedLocation
     :ivar system_data: The system data.
-    :vartype system_data: ~azure_arc_vmware_management_service_api.models.SystemData
-    :param tags: A set of tags. Gets or sets the Resource tags.
-    :type tags: dict[str, str]
+    :vartype system_data: ~azure.mgmt.connectedvmware.models.SystemData
+    :ivar tags: A set of tags. Gets or sets the Resource tags.
+    :vartype tags: dict[str, str]
     :ivar name: Gets or sets the name.
     :vartype name: str
     :ivar id: Gets or sets the Id.
     :vartype id: str
     :ivar type: Gets or sets the type of the resource.
     :vartype type: str
-    :param kind: Metadata used by portal/tooling/etc to render different UX experiences for
+    :ivar kind: Metadata used by portal/tooling/etc to render different UX experiences for
      resources of the same type; e.g. ApiApps are a kind of Microsoft.Web/sites type.  If supported,
      the resource provider must validate and persist this value.
-    :type kind: str
+    :vartype kind: str
     :ivar uuid: Gets or sets a unique identifier for this resource.
     :vartype uuid: str
-    :param fqdn: Required. Gets or sets the FQDN/IPAddress of the vCenter.
-    :type fqdn: str
-    :param port: Gets or sets the port of the vCenter.
-    :type port: int
+    :ivar fqdn: Required. Gets or sets the FQDN/IPAddress of the vCenter.
+    :vartype fqdn: str
+    :ivar port: Gets or sets the port of the vCenter.
+    :vartype port: int
     :ivar version: Gets or sets the version of the vCenter.
     :vartype version: str
     :ivar instance_uuid: Gets or sets the instance UUID of the vCenter.
@@ -1860,8 +3149,10 @@ class VCenter(msrest.serialization.Model):
     :vartype connection_status: str
     :ivar custom_resource_name: Gets the name of the corresponding resource in Kubernetes.
     :vartype custom_resource_name: str
-    :param credentials: Username / Password Credentials to connect to vcenter.
-    :type credentials: ~azure_arc_vmware_management_service_api.models.VICredential
+    :ivar credentials: Username / Password Credentials to connect to vcenter.
+    :vartype credentials: ~azure.mgmt.connectedvmware.models.VICredential
+    :ivar statuses: The resource status information.
+    :vartype statuses: list[~azure.mgmt.connectedvmware.models.ResourceStatus]
     :ivar provisioning_state: Gets or sets the provisioning state.
     :vartype provisioning_state: str
     """
@@ -1879,6 +3170,7 @@ class VCenter(msrest.serialization.Model):
         'instance_uuid': {'readonly': True},
         'connection_status': {'readonly': True},
         'custom_resource_name': {'readonly': True},
+        'statuses': {'readonly': True},
         'provisioning_state': {'readonly': True},
     }
 
@@ -1899,6 +3191,7 @@ class VCenter(msrest.serialization.Model):
         'connection_status': {'key': 'properties.connectionStatus', 'type': 'str'},
         'custom_resource_name': {'key': 'properties.customResourceName', 'type': 'str'},
         'credentials': {'key': 'properties.credentials', 'type': 'VICredential'},
+        'statuses': {'key': 'properties.statuses', 'type': '[ResourceStatus]'},
         'provisioning_state': {'key': 'properties.provisioningState', 'type': 'str'},
     }
 
@@ -1914,6 +3207,24 @@ class VCenter(msrest.serialization.Model):
         credentials: Optional["VICredential"] = None,
         **kwargs
     ):
+        """
+        :keyword location: Required. Gets or sets the location.
+        :paramtype location: str
+        :keyword extended_location: Gets or sets the extended location.
+        :paramtype extended_location: ~azure.mgmt.connectedvmware.models.ExtendedLocation
+        :keyword tags: A set of tags. Gets or sets the Resource tags.
+        :paramtype tags: dict[str, str]
+        :keyword kind: Metadata used by portal/tooling/etc to render different UX experiences for
+         resources of the same type; e.g. ApiApps are a kind of Microsoft.Web/sites type.  If supported,
+         the resource provider must validate and persist this value.
+        :paramtype kind: str
+        :keyword fqdn: Required. Gets or sets the FQDN/IPAddress of the vCenter.
+        :paramtype fqdn: str
+        :keyword port: Gets or sets the port of the vCenter.
+        :paramtype port: int
+        :keyword credentials: Username / Password Credentials to connect to vcenter.
+        :paramtype credentials: ~azure.mgmt.connectedvmware.models.VICredential
+        """
         super(VCenter, self).__init__(**kwargs)
         self.location = location
         self.extended_location = extended_location
@@ -1931,6 +3242,7 @@ class VCenter(msrest.serialization.Model):
         self.connection_status = None
         self.custom_resource_name = None
         self.credentials = credentials
+        self.statuses = None
         self.provisioning_state = None
 
 
@@ -1939,10 +3251,10 @@ class VCentersList(msrest.serialization.Model):
 
     All required parameters must be populated in order to send to Azure.
 
-    :param next_link: Url to follow for getting next page of VCenters.
-    :type next_link: str
-    :param value: Required. Array of VCenters.
-    :type value: list[~azure_arc_vmware_management_service_api.models.VCenter]
+    :ivar next_link: Url to follow for getting next page of VCenters.
+    :vartype next_link: str
+    :ivar value: Required. Array of VCenters.
+    :vartype value: list[~azure.mgmt.connectedvmware.models.VCenter]
     """
 
     _validation = {
@@ -1961,6 +3273,12 @@ class VCentersList(msrest.serialization.Model):
         next_link: Optional[str] = None,
         **kwargs
     ):
+        """
+        :keyword next_link: Url to follow for getting next page of VCenters.
+        :paramtype next_link: str
+        :keyword value: Required. Array of VCenters.
+        :paramtype value: list[~azure.mgmt.connectedvmware.models.VCenter]
+        """
         super(VCentersList, self).__init__(**kwargs)
         self.next_link = next_link
         self.value = value
@@ -1969,10 +3287,10 @@ class VCentersList(msrest.serialization.Model):
 class VICredential(msrest.serialization.Model):
     """Username / Password Credentials to connect to vcenter.
 
-    :param username: Gets or sets username to connect with the vCenter.
-    :type username: str
-    :param password: Gets or sets the password to connect with the vCenter.
-    :type password: str
+    :ivar username: Gets or sets username to connect with the vCenter.
+    :vartype username: str
+    :ivar password: Gets or sets the password to connect with the vCenter.
+    :vartype password: str
     """
 
     _attribute_map = {
@@ -1987,6 +3305,12 @@ class VICredential(msrest.serialization.Model):
         password: Optional[str] = None,
         **kwargs
     ):
+        """
+        :keyword username: Gets or sets username to connect with the vCenter.
+        :paramtype username: str
+        :keyword password: Gets or sets the password to connect with the vCenter.
+        :paramtype password: str
+        """
         super(VICredential, self).__init__(**kwargs)
         self.username = username
         self.password = password
@@ -1997,23 +3321,28 @@ class VirtualDisk(msrest.serialization.Model):
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
-    :param name: Gets or sets the name of the virtual disk.
-    :type name: str
+    :ivar name: Gets or sets the name of the virtual disk.
+    :vartype name: str
     :ivar label: Gets or sets the label of the virtual disk in vCenter.
     :vartype label: str
     :ivar disk_object_id: Gets or sets the disk object id.
     :vartype disk_object_id: str
-    :param disk_size_gb: Gets or sets the disk total size.
-    :type disk_size_gb: int
-    :param device_key: Gets or sets the device key value.
-    :type device_key: int
-    :param disk_mode: Gets or sets the disk mode. Possible values include: "persistent",
+    :ivar disk_size_gb: Gets or sets the disk total size.
+    :vartype disk_size_gb: int
+    :ivar device_key: Gets or sets the device key value.
+    :vartype device_key: int
+    :ivar disk_mode: Gets or sets the disk mode. Possible values include: "persistent",
      "independent_persistent", "independent_nonpersistent".
-    :type disk_mode: str or ~azure_arc_vmware_management_service_api.models.DiskMode
-    :param controller_key: Gets or sets the controller id.
-    :type controller_key: int
-    :param unit_number: Gets or sets the unit number of the disk on the controller.
-    :type unit_number: int
+    :vartype disk_mode: str or ~azure.mgmt.connectedvmware.models.DiskMode
+    :ivar controller_key: Gets or sets the controller id.
+    :vartype controller_key: int
+    :ivar unit_number: Gets or sets the unit number of the disk on the controller.
+    :vartype unit_number: int
+    :ivar device_name: Gets or sets the device name.
+    :vartype device_name: str
+    :ivar disk_type: Gets or sets the disk backing type. Possible values include: "flat", "pmem",
+     "rawphysical", "rawvirtual", "sparse", "sesparse", "unknown".
+    :vartype disk_type: str or ~azure.mgmt.connectedvmware.models.DiskType
     """
 
     _validation = {
@@ -2030,6 +3359,8 @@ class VirtualDisk(msrest.serialization.Model):
         'disk_mode': {'key': 'diskMode', 'type': 'str'},
         'controller_key': {'key': 'controllerKey', 'type': 'int'},
         'unit_number': {'key': 'unitNumber', 'type': 'int'},
+        'device_name': {'key': 'deviceName', 'type': 'str'},
+        'disk_type': {'key': 'diskType', 'type': 'str'},
     }
 
     def __init__(
@@ -2041,8 +3372,30 @@ class VirtualDisk(msrest.serialization.Model):
         disk_mode: Optional[Union[str, "DiskMode"]] = None,
         controller_key: Optional[int] = None,
         unit_number: Optional[int] = None,
+        device_name: Optional[str] = None,
+        disk_type: Optional[Union[str, "DiskType"]] = None,
         **kwargs
     ):
+        """
+        :keyword name: Gets or sets the name of the virtual disk.
+        :paramtype name: str
+        :keyword disk_size_gb: Gets or sets the disk total size.
+        :paramtype disk_size_gb: int
+        :keyword device_key: Gets or sets the device key value.
+        :paramtype device_key: int
+        :keyword disk_mode: Gets or sets the disk mode. Possible values include: "persistent",
+         "independent_persistent", "independent_nonpersistent".
+        :paramtype disk_mode: str or ~azure.mgmt.connectedvmware.models.DiskMode
+        :keyword controller_key: Gets or sets the controller id.
+        :paramtype controller_key: int
+        :keyword unit_number: Gets or sets the unit number of the disk on the controller.
+        :paramtype unit_number: int
+        :keyword device_name: Gets or sets the device name.
+        :paramtype device_name: str
+        :keyword disk_type: Gets or sets the disk backing type. Possible values include: "flat",
+         "pmem", "rawphysical", "rawvirtual", "sparse", "sesparse", "unknown".
+        :paramtype disk_type: str or ~azure.mgmt.connectedvmware.models.DiskType
+        """
         super(VirtualDisk, self).__init__(**kwargs)
         self.name = name
         self.label = None
@@ -2052,24 +3405,31 @@ class VirtualDisk(msrest.serialization.Model):
         self.disk_mode = disk_mode
         self.controller_key = controller_key
         self.unit_number = unit_number
+        self.device_name = device_name
+        self.disk_type = disk_type
 
 
 class VirtualDiskUpdate(msrest.serialization.Model):
     """Defines the virtual disk update.
 
-    :param name: Gets or sets the name of the virtual disk.
-    :type name: str
-    :param disk_size_gb: Gets or sets the disk total size.
-    :type disk_size_gb: int
-    :param device_key: Gets or sets the device key value.
-    :type device_key: int
-    :param disk_mode: Gets or sets the disk mode. Possible values include: "persistent",
+    :ivar name: Gets or sets the name of the virtual disk.
+    :vartype name: str
+    :ivar disk_size_gb: Gets or sets the disk total size.
+    :vartype disk_size_gb: int
+    :ivar device_key: Gets or sets the device key value.
+    :vartype device_key: int
+    :ivar disk_mode: Gets or sets the disk mode. Possible values include: "persistent",
      "independent_persistent", "independent_nonpersistent".
-    :type disk_mode: str or ~azure_arc_vmware_management_service_api.models.DiskMode
-    :param controller_key: Gets or sets the controller id.
-    :type controller_key: int
-    :param unit_number: Gets or sets the unit number of the disk on the controller.
-    :type unit_number: int
+    :vartype disk_mode: str or ~azure.mgmt.connectedvmware.models.DiskMode
+    :ivar controller_key: Gets or sets the controller id.
+    :vartype controller_key: int
+    :ivar unit_number: Gets or sets the unit number of the disk on the controller.
+    :vartype unit_number: int
+    :ivar device_name: Gets or sets the device name.
+    :vartype device_name: str
+    :ivar disk_type: Gets or sets the disk backing type. Possible values include: "flat", "pmem",
+     "rawphysical", "rawvirtual", "sparse", "sesparse", "unknown".
+    :vartype disk_type: str or ~azure.mgmt.connectedvmware.models.DiskType
     """
 
     _attribute_map = {
@@ -2079,6 +3439,8 @@ class VirtualDiskUpdate(msrest.serialization.Model):
         'disk_mode': {'key': 'diskMode', 'type': 'str'},
         'controller_key': {'key': 'controllerKey', 'type': 'int'},
         'unit_number': {'key': 'unitNumber', 'type': 'int'},
+        'device_name': {'key': 'deviceName', 'type': 'str'},
+        'disk_type': {'key': 'diskType', 'type': 'str'},
     }
 
     def __init__(
@@ -2090,8 +3452,30 @@ class VirtualDiskUpdate(msrest.serialization.Model):
         disk_mode: Optional[Union[str, "DiskMode"]] = None,
         controller_key: Optional[int] = None,
         unit_number: Optional[int] = None,
+        device_name: Optional[str] = None,
+        disk_type: Optional[Union[str, "DiskType"]] = None,
         **kwargs
     ):
+        """
+        :keyword name: Gets or sets the name of the virtual disk.
+        :paramtype name: str
+        :keyword disk_size_gb: Gets or sets the disk total size.
+        :paramtype disk_size_gb: int
+        :keyword device_key: Gets or sets the device key value.
+        :paramtype device_key: int
+        :keyword disk_mode: Gets or sets the disk mode. Possible values include: "persistent",
+         "independent_persistent", "independent_nonpersistent".
+        :paramtype disk_mode: str or ~azure.mgmt.connectedvmware.models.DiskMode
+        :keyword controller_key: Gets or sets the controller id.
+        :paramtype controller_key: int
+        :keyword unit_number: Gets or sets the unit number of the disk on the controller.
+        :paramtype unit_number: int
+        :keyword device_name: Gets or sets the device name.
+        :paramtype device_name: str
+        :keyword disk_type: Gets or sets the disk backing type. Possible values include: "flat",
+         "pmem", "rawphysical", "rawvirtual", "sparse", "sesparse", "unknown".
+        :paramtype disk_type: str or ~azure.mgmt.connectedvmware.models.DiskType
+        """
         super(VirtualDiskUpdate, self).__init__(**kwargs)
         self.name = name
         self.disk_size_gb = disk_size_gb
@@ -2099,6 +3483,8 @@ class VirtualDiskUpdate(msrest.serialization.Model):
         self.disk_mode = disk_mode
         self.controller_key = controller_key
         self.unit_number = unit_number
+        self.device_name = device_name
+        self.disk_type = disk_type
 
 
 class VirtualMachine(msrest.serialization.Model):
@@ -2108,61 +3494,71 @@ class VirtualMachine(msrest.serialization.Model):
 
     All required parameters must be populated in order to send to Azure.
 
-    :param location: Required. Gets or sets the location.
-    :type location: str
-    :param extended_location: Gets or sets the extended location.
-    :type extended_location: ~azure_arc_vmware_management_service_api.models.ExtendedLocation
+    :ivar location: Required. Gets or sets the location.
+    :vartype location: str
+    :ivar extended_location: Gets or sets the extended location.
+    :vartype extended_location: ~azure.mgmt.connectedvmware.models.ExtendedLocation
     :ivar system_data: The system data.
-    :vartype system_data: ~azure_arc_vmware_management_service_api.models.SystemData
-    :param tags: A set of tags. Gets or sets the Resource tags.
-    :type tags: dict[str, str]
+    :vartype system_data: ~azure.mgmt.connectedvmware.models.SystemData
+    :ivar tags: A set of tags. Gets or sets the Resource tags.
+    :vartype tags: dict[str, str]
     :ivar name: Gets or sets the name.
     :vartype name: str
     :ivar id: Gets or sets the Id.
     :vartype id: str
     :ivar type: Gets or sets the type of the resource.
     :vartype type: str
-    :param kind: Metadata used by portal/tooling/etc to render different UX experiences for
+    :ivar kind: Metadata used by portal/tooling/etc to render different UX experiences for
      resources of the same type; e.g. ApiApps are a kind of Microsoft.Web/sites type.  If supported,
      the resource provider must validate and persist this value.
-    :type kind: str
-    :param identity: The identity of the resource.
-    :type identity: ~azure_arc_vmware_management_service_api.models.Identity
-    :param resource_pool_id: Gets or sets the ARM Id of the resourcePool resource on which this
+    :vartype kind: str
+    :ivar identity: The identity of the resource.
+    :vartype identity: ~azure.mgmt.connectedvmware.models.Identity
+    :ivar resource_pool_id: Gets or sets the ARM Id of the resourcePool resource on which this
      virtual machine will
      deploy.
-    :type resource_pool_id: str
-    :param template_id: Gets or sets the ARM Id of the template resource to deploy the virtual
+    :vartype resource_pool_id: str
+    :ivar template_id: Gets or sets the ARM Id of the template resource to deploy the virtual
      machine.
-    :type template_id: str
-    :param v_center_id: Gets or sets the ARM Id of the vCenter resource in which this resource pool
+    :vartype template_id: str
+    :ivar v_center_id: Gets or sets the ARM Id of the vCenter resource in which this resource pool
      resides.
-    :type v_center_id: str
-    :param os_profile: OS properties.
-    :type os_profile: ~azure_arc_vmware_management_service_api.models.OsProfile
-    :param hardware_profile: Hardware properties.
-    :type hardware_profile: ~azure_arc_vmware_management_service_api.models.HardwareProfile
-    :param network_profile: Network properties.
-    :type network_profile: ~azure_arc_vmware_management_service_api.models.NetworkProfile
-    :param storage_profile: Storage properties.
-    :type storage_profile: ~azure_arc_vmware_management_service_api.models.StorageProfile
-    :param mo_ref_id: Gets or sets the vCenter MoRef (Managed Object Reference) ID for the virtual
+    :vartype v_center_id: str
+    :ivar placement_profile: Placement properties.
+    :vartype placement_profile: ~azure.mgmt.connectedvmware.models.PlacementProfile
+    :ivar os_profile: OS properties.
+    :vartype os_profile: ~azure.mgmt.connectedvmware.models.OsProfile
+    :ivar hardware_profile: Hardware properties.
+    :vartype hardware_profile: ~azure.mgmt.connectedvmware.models.HardwareProfile
+    :ivar network_profile: Network properties.
+    :vartype network_profile: ~azure.mgmt.connectedvmware.models.NetworkProfile
+    :ivar storage_profile: Storage properties.
+    :vartype storage_profile: ~azure.mgmt.connectedvmware.models.StorageProfile
+    :ivar guest_agent_profile: Guest agent status properties.
+    :vartype guest_agent_profile: ~azure.mgmt.connectedvmware.models.GuestAgentProfile
+    :ivar mo_ref_id: Gets or sets the vCenter MoRef (Managed Object Reference) ID for the virtual
      machine.
-    :type mo_ref_id: str
-    :param inventory_item_id: Gets or sets the inventory Item ID for the virtual machine.
-    :type inventory_item_id: str
+    :vartype mo_ref_id: str
+    :ivar inventory_item_id: Gets or sets the inventory Item ID for the virtual machine.
+    :vartype inventory_item_id: str
     :ivar mo_name: Gets or sets the vCenter Managed Object name for the virtual machine.
     :vartype mo_name: str
     :ivar folder_path: Gets or sets the folder path of the vm.
     :vartype folder_path: str
     :ivar instance_uuid: Gets or sets the instance uuid of the vm.
     :vartype instance_uuid: str
+    :ivar smbios_uuid: Gets or sets the SMBIOS UUID of the vm.
+    :vartype smbios_uuid: str
+    :ivar firmware_type: Firmware type. Possible values include: "bios", "efi".
+    :vartype firmware_type: str or ~azure.mgmt.connectedvmware.models.FirmwareType
     :ivar power_state: Gets the power state of the virtual machine.
     :vartype power_state: str
     :ivar custom_resource_name: Gets the name of the corresponding resource in Kubernetes.
     :vartype custom_resource_name: str
     :ivar uuid: Gets or sets a unique identifier for this resource.
     :vartype uuid: str
+    :ivar statuses: The resource status information.
+    :vartype statuses: list[~azure.mgmt.connectedvmware.models.ResourceStatus]
     :ivar provisioning_state: Gets or sets the provisioning state.
     :vartype provisioning_state: str
     :ivar vm_id: Gets or sets a unique identifier for the vm resource.
@@ -2181,6 +3577,7 @@ class VirtualMachine(msrest.serialization.Model):
         'power_state': {'readonly': True},
         'custom_resource_name': {'readonly': True},
         'uuid': {'readonly': True},
+        'statuses': {'readonly': True},
         'provisioning_state': {'readonly': True},
         'vm_id': {'readonly': True},
     }
@@ -2198,18 +3595,23 @@ class VirtualMachine(msrest.serialization.Model):
         'resource_pool_id': {'key': 'properties.resourcePoolId', 'type': 'str'},
         'template_id': {'key': 'properties.templateId', 'type': 'str'},
         'v_center_id': {'key': 'properties.vCenterId', 'type': 'str'},
+        'placement_profile': {'key': 'properties.placementProfile', 'type': 'PlacementProfile'},
         'os_profile': {'key': 'properties.osProfile', 'type': 'OsProfile'},
         'hardware_profile': {'key': 'properties.hardwareProfile', 'type': 'HardwareProfile'},
         'network_profile': {'key': 'properties.networkProfile', 'type': 'NetworkProfile'},
         'storage_profile': {'key': 'properties.storageProfile', 'type': 'StorageProfile'},
+        'guest_agent_profile': {'key': 'properties.guestAgentProfile', 'type': 'GuestAgentProfile'},
         'mo_ref_id': {'key': 'properties.moRefId', 'type': 'str'},
         'inventory_item_id': {'key': 'properties.inventoryItemId', 'type': 'str'},
         'mo_name': {'key': 'properties.moName', 'type': 'str'},
         'folder_path': {'key': 'properties.folderPath', 'type': 'str'},
         'instance_uuid': {'key': 'properties.instanceUuid', 'type': 'str'},
+        'smbios_uuid': {'key': 'properties.smbiosUuid', 'type': 'str'},
+        'firmware_type': {'key': 'properties.firmwareType', 'type': 'str'},
         'power_state': {'key': 'properties.powerState', 'type': 'str'},
         'custom_resource_name': {'key': 'properties.customResourceName', 'type': 'str'},
         'uuid': {'key': 'properties.uuid', 'type': 'str'},
+        'statuses': {'key': 'properties.statuses', 'type': '[ResourceStatus]'},
         'provisioning_state': {'key': 'properties.provisioningState', 'type': 'str'},
         'vm_id': {'key': 'properties.vmId', 'type': 'str'},
     }
@@ -2225,14 +3627,63 @@ class VirtualMachine(msrest.serialization.Model):
         resource_pool_id: Optional[str] = None,
         template_id: Optional[str] = None,
         v_center_id: Optional[str] = None,
+        placement_profile: Optional["PlacementProfile"] = None,
         os_profile: Optional["OsProfile"] = None,
         hardware_profile: Optional["HardwareProfile"] = None,
         network_profile: Optional["NetworkProfile"] = None,
         storage_profile: Optional["StorageProfile"] = None,
+        guest_agent_profile: Optional["GuestAgentProfile"] = None,
         mo_ref_id: Optional[str] = None,
         inventory_item_id: Optional[str] = None,
+        smbios_uuid: Optional[str] = None,
+        firmware_type: Optional[Union[str, "FirmwareType"]] = None,
         **kwargs
     ):
+        """
+        :keyword location: Required. Gets or sets the location.
+        :paramtype location: str
+        :keyword extended_location: Gets or sets the extended location.
+        :paramtype extended_location: ~azure.mgmt.connectedvmware.models.ExtendedLocation
+        :keyword tags: A set of tags. Gets or sets the Resource tags.
+        :paramtype tags: dict[str, str]
+        :keyword kind: Metadata used by portal/tooling/etc to render different UX experiences for
+         resources of the same type; e.g. ApiApps are a kind of Microsoft.Web/sites type.  If supported,
+         the resource provider must validate and persist this value.
+        :paramtype kind: str
+        :keyword identity: The identity of the resource.
+        :paramtype identity: ~azure.mgmt.connectedvmware.models.Identity
+        :keyword resource_pool_id: Gets or sets the ARM Id of the resourcePool resource on which this
+         virtual machine will
+         deploy.
+        :paramtype resource_pool_id: str
+        :keyword template_id: Gets or sets the ARM Id of the template resource to deploy the virtual
+         machine.
+        :paramtype template_id: str
+        :keyword v_center_id: Gets or sets the ARM Id of the vCenter resource in which this resource
+         pool resides.
+        :paramtype v_center_id: str
+        :keyword placement_profile: Placement properties.
+        :paramtype placement_profile: ~azure.mgmt.connectedvmware.models.PlacementProfile
+        :keyword os_profile: OS properties.
+        :paramtype os_profile: ~azure.mgmt.connectedvmware.models.OsProfile
+        :keyword hardware_profile: Hardware properties.
+        :paramtype hardware_profile: ~azure.mgmt.connectedvmware.models.HardwareProfile
+        :keyword network_profile: Network properties.
+        :paramtype network_profile: ~azure.mgmt.connectedvmware.models.NetworkProfile
+        :keyword storage_profile: Storage properties.
+        :paramtype storage_profile: ~azure.mgmt.connectedvmware.models.StorageProfile
+        :keyword guest_agent_profile: Guest agent status properties.
+        :paramtype guest_agent_profile: ~azure.mgmt.connectedvmware.models.GuestAgentProfile
+        :keyword mo_ref_id: Gets or sets the vCenter MoRef (Managed Object Reference) ID for the
+         virtual machine.
+        :paramtype mo_ref_id: str
+        :keyword inventory_item_id: Gets or sets the inventory Item ID for the virtual machine.
+        :paramtype inventory_item_id: str
+        :keyword smbios_uuid: Gets or sets the SMBIOS UUID of the vm.
+        :paramtype smbios_uuid: str
+        :keyword firmware_type: Firmware type. Possible values include: "bios", "efi".
+        :paramtype firmware_type: str or ~azure.mgmt.connectedvmware.models.FirmwareType
+        """
         super(VirtualMachine, self).__init__(**kwargs)
         self.location = location
         self.extended_location = extended_location
@@ -2246,18 +3697,23 @@ class VirtualMachine(msrest.serialization.Model):
         self.resource_pool_id = resource_pool_id
         self.template_id = template_id
         self.v_center_id = v_center_id
+        self.placement_profile = placement_profile
         self.os_profile = os_profile
         self.hardware_profile = hardware_profile
         self.network_profile = network_profile
         self.storage_profile = storage_profile
+        self.guest_agent_profile = guest_agent_profile
         self.mo_ref_id = mo_ref_id
         self.inventory_item_id = inventory_item_id
         self.mo_name = None
         self.folder_path = None
         self.instance_uuid = None
+        self.smbios_uuid = smbios_uuid
+        self.firmware_type = firmware_type
         self.power_state = None
         self.custom_resource_name = None
         self.uuid = None
+        self.statuses = None
         self.provisioning_state = None
         self.vm_id = None
 
@@ -2269,39 +3725,55 @@ class VirtualMachineInventoryItem(InventoryItemProperties):
 
     All required parameters must be populated in order to send to Azure.
 
-    :param inventory_type: Required. They inventory type.Constant filled by server.  Possible
-     values include: "ResourcePool", "VirtualMachine", "VirtualMachineTemplate", "VirtualNetwork".
-    :type inventory_type: str or ~azure_arc_vmware_management_service_api.models.InventoryType
-    :param managed_resource_id: Gets or sets the tracked resource id corresponding to the inventory
+    :ivar inventory_type: Required. They inventory type.Constant filled by server. Possible values
+     include: "ResourcePool", "VirtualMachine", "VirtualMachineTemplate", "VirtualNetwork",
+     "Cluster", "Datastore", "Host".
+    :vartype inventory_type: str or ~azure.mgmt.connectedvmware.models.InventoryType
+    :ivar managed_resource_id: Gets or sets the tracked resource id corresponding to the inventory
      resource.
-    :type managed_resource_id: str
-    :param mo_ref_id: Gets or sets the MoRef (Managed Object Reference) ID for the inventory item.
-    :type mo_ref_id: str
-    :param mo_name: Gets or sets the vCenter Managed Object name for the inventory item.
-    :type mo_name: str
+    :vartype managed_resource_id: str
+    :ivar mo_ref_id: Gets or sets the MoRef (Managed Object Reference) ID for the inventory item.
+    :vartype mo_ref_id: str
+    :ivar mo_name: Gets or sets the vCenter Managed Object name for the inventory item.
+    :vartype mo_name: str
     :ivar provisioning_state: Gets or sets the provisioning state.
     :vartype provisioning_state: str
     :ivar os_type: Gets or sets the type of the os. Possible values include: "Windows", "Linux",
      "Other".
-    :vartype os_type: str or ~azure_arc_vmware_management_service_api.models.OsType
-    :param os_name: Gets or sets os name.
-    :type os_name: str
-    :param ip_addresses: Gets or sets the nic ip addresses.
-    :type ip_addresses: list[str]
-    :param folder_path: Gets or sets the folder path of the vm.
-    :type folder_path: str
-    :param host: Host inventory resource details.
-    :type host: ~azure_arc_vmware_management_service_api.models.InventoryItemDetails
-    :param resource_pool: ResourcePool inventory resource details.
-    :type resource_pool: ~azure_arc_vmware_management_service_api.models.InventoryItemDetails
-    :param instance_uuid: Gets or sets the instance uuid of the vm.
-    :type instance_uuid: str
+    :vartype os_type: str or ~azure.mgmt.connectedvmware.models.OsType
+    :ivar os_name: Gets or sets os name.
+    :vartype os_name: str
+    :ivar ip_addresses: Gets or sets the nic ip addresses.
+    :vartype ip_addresses: list[str]
+    :ivar folder_path: Gets or sets the folder path of the vm.
+    :vartype folder_path: str
+    :ivar host: Host inventory resource details.
+    :vartype host: ~azure.mgmt.connectedvmware.models.InventoryItemDetails
+    :ivar resource_pool: ResourcePool inventory resource details.
+    :vartype resource_pool: ~azure.mgmt.connectedvmware.models.InventoryItemDetails
+    :ivar instance_uuid: Gets or sets the instance uuid of the vm.
+    :vartype instance_uuid: str
+    :ivar smbios_uuid: Gets or sets the SMBIOS UUID of the vm.
+    :vartype smbios_uuid: str
+    :ivar power_state: Gets the power state of the virtual machine.
+    :vartype power_state: str
+    :ivar tools_running_status: Gets or sets the current running status of VMware Tools running in
+     the guest operating system.
+    :vartype tools_running_status: str
+    :ivar tools_version_status: Gets or sets the current version status of VMware Tools installed
+     in the guest operating system.
+    :vartype tools_version_status: str
+    :ivar tools_version: Gets or sets the current version of VMware Tools.
+    :vartype tools_version: str
     """
 
     _validation = {
         'inventory_type': {'required': True},
         'provisioning_state': {'readonly': True},
-        'os_type': {'readonly': True},
+        'power_state': {'readonly': True},
+        'tools_running_status': {'readonly': True},
+        'tools_version_status': {'readonly': True},
+        'tools_version': {'readonly': True},
     }
 
     _attribute_map = {
@@ -2317,6 +3789,11 @@ class VirtualMachineInventoryItem(InventoryItemProperties):
         'host': {'key': 'host', 'type': 'InventoryItemDetails'},
         'resource_pool': {'key': 'resourcePool', 'type': 'InventoryItemDetails'},
         'instance_uuid': {'key': 'instanceUuid', 'type': 'str'},
+        'smbios_uuid': {'key': 'smbiosUuid', 'type': 'str'},
+        'power_state': {'key': 'powerState', 'type': 'str'},
+        'tools_running_status': {'key': 'toolsRunningStatus', 'type': 'str'},
+        'tools_version_status': {'key': 'toolsVersionStatus', 'type': 'str'},
+        'tools_version': {'key': 'toolsVersion', 'type': 'str'},
     }
 
     def __init__(
@@ -2325,23 +3802,57 @@ class VirtualMachineInventoryItem(InventoryItemProperties):
         managed_resource_id: Optional[str] = None,
         mo_ref_id: Optional[str] = None,
         mo_name: Optional[str] = None,
+        os_type: Optional[Union[str, "OsType"]] = None,
         os_name: Optional[str] = None,
         ip_addresses: Optional[List[str]] = None,
         folder_path: Optional[str] = None,
         host: Optional["InventoryItemDetails"] = None,
         resource_pool: Optional["InventoryItemDetails"] = None,
         instance_uuid: Optional[str] = None,
+        smbios_uuid: Optional[str] = None,
         **kwargs
     ):
+        """
+        :keyword managed_resource_id: Gets or sets the tracked resource id corresponding to the
+         inventory resource.
+        :paramtype managed_resource_id: str
+        :keyword mo_ref_id: Gets or sets the MoRef (Managed Object Reference) ID for the inventory
+         item.
+        :paramtype mo_ref_id: str
+        :keyword mo_name: Gets or sets the vCenter Managed Object name for the inventory item.
+        :paramtype mo_name: str
+        :keyword os_type: Gets or sets the type of the os. Possible values include: "Windows", "Linux",
+         "Other".
+        :paramtype os_type: str or ~azure.mgmt.connectedvmware.models.OsType
+        :keyword os_name: Gets or sets os name.
+        :paramtype os_name: str
+        :keyword ip_addresses: Gets or sets the nic ip addresses.
+        :paramtype ip_addresses: list[str]
+        :keyword folder_path: Gets or sets the folder path of the vm.
+        :paramtype folder_path: str
+        :keyword host: Host inventory resource details.
+        :paramtype host: ~azure.mgmt.connectedvmware.models.InventoryItemDetails
+        :keyword resource_pool: ResourcePool inventory resource details.
+        :paramtype resource_pool: ~azure.mgmt.connectedvmware.models.InventoryItemDetails
+        :keyword instance_uuid: Gets or sets the instance uuid of the vm.
+        :paramtype instance_uuid: str
+        :keyword smbios_uuid: Gets or sets the SMBIOS UUID of the vm.
+        :paramtype smbios_uuid: str
+        """
         super(VirtualMachineInventoryItem, self).__init__(managed_resource_id=managed_resource_id, mo_ref_id=mo_ref_id, mo_name=mo_name, **kwargs)
         self.inventory_type = 'VirtualMachine'  # type: str
-        self.os_type = None
+        self.os_type = os_type
         self.os_name = os_name
         self.ip_addresses = ip_addresses
         self.folder_path = folder_path
         self.host = host
         self.resource_pool = resource_pool
         self.instance_uuid = instance_uuid
+        self.smbios_uuid = smbios_uuid
+        self.power_state = None
+        self.tools_running_status = None
+        self.tools_version_status = None
+        self.tools_version = None
 
 
 class VirtualMachinesList(msrest.serialization.Model):
@@ -2349,10 +3860,10 @@ class VirtualMachinesList(msrest.serialization.Model):
 
     All required parameters must be populated in order to send to Azure.
 
-    :param next_link: Url to follow for getting next page of VirtualMachines.
-    :type next_link: str
-    :param value: Required. Array of VirtualMachines.
-    :type value: list[~azure_arc_vmware_management_service_api.models.VirtualMachine]
+    :ivar next_link: Url to follow for getting next page of VirtualMachines.
+    :vartype next_link: str
+    :ivar value: Required. Array of VirtualMachines.
+    :vartype value: list[~azure.mgmt.connectedvmware.models.VirtualMachine]
     """
 
     _validation = {
@@ -2371,6 +3882,12 @@ class VirtualMachinesList(msrest.serialization.Model):
         next_link: Optional[str] = None,
         **kwargs
     ):
+        """
+        :keyword next_link: Url to follow for getting next page of VirtualMachines.
+        :paramtype next_link: str
+        :keyword value: Required. Array of VirtualMachines.
+        :paramtype value: list[~azure.mgmt.connectedvmware.models.VirtualMachine]
+        """
         super(VirtualMachinesList, self).__init__(**kwargs)
         self.next_link = next_link
         self.value = value
@@ -2383,35 +3900,35 @@ class VirtualMachineTemplate(msrest.serialization.Model):
 
     All required parameters must be populated in order to send to Azure.
 
-    :param location: Required. Gets or sets the location.
-    :type location: str
-    :param extended_location: Gets or sets the extended location.
-    :type extended_location: ~azure_arc_vmware_management_service_api.models.ExtendedLocation
+    :ivar location: Required. Gets or sets the location.
+    :vartype location: str
+    :ivar extended_location: Gets or sets the extended location.
+    :vartype extended_location: ~azure.mgmt.connectedvmware.models.ExtendedLocation
     :ivar system_data: The system data.
-    :vartype system_data: ~azure_arc_vmware_management_service_api.models.SystemData
-    :param tags: A set of tags. Gets or sets the Resource tags.
-    :type tags: dict[str, str]
+    :vartype system_data: ~azure.mgmt.connectedvmware.models.SystemData
+    :ivar tags: A set of tags. Gets or sets the Resource tags.
+    :vartype tags: dict[str, str]
     :ivar name: Gets or sets the name.
     :vartype name: str
     :ivar id: Gets or sets the Id.
     :vartype id: str
     :ivar type: Gets or sets the type of the resource.
     :vartype type: str
-    :param kind: Metadata used by portal/tooling/etc to render different UX experiences for
+    :ivar kind: Metadata used by portal/tooling/etc to render different UX experiences for
      resources of the same type; e.g. ApiApps are a kind of Microsoft.Web/sites type.  If supported,
      the resource provider must validate and persist this value.
-    :type kind: str
+    :vartype kind: str
     :ivar uuid: Gets or sets a unique identifier for this resource.
     :vartype uuid: str
-    :param v_center_id: Gets or sets the ARM Id of the vCenter resource in which this template
+    :ivar v_center_id: Gets or sets the ARM Id of the vCenter resource in which this template
      resides.
-    :type v_center_id: str
-    :param mo_ref_id: Gets or sets the vCenter MoRef (Managed Object Reference) ID for the virtual
+    :vartype v_center_id: str
+    :ivar mo_ref_id: Gets or sets the vCenter MoRef (Managed Object Reference) ID for the virtual
      machine
      template.
-    :type mo_ref_id: str
-    :param inventory_item_id: Gets or sets the inventory Item ID for the virtual machine template.
-    :type inventory_item_id: str
+    :vartype mo_ref_id: str
+    :ivar inventory_item_id: Gets or sets the inventory Item ID for the virtual machine template.
+    :vartype inventory_item_id: str
     :ivar mo_name: Gets or sets the vCenter Managed Object name for the virtual machine template.
     :vartype mo_name: str
     :ivar memory_size_mb: Gets or sets memory size in MBs for the template.
@@ -2423,18 +3940,26 @@ class VirtualMachineTemplate(msrest.serialization.Model):
     :vartype num_cores_per_socket: int
     :ivar os_type: Gets or sets the type of the os. Possible values include: "Windows", "Linux",
      "Other".
-    :vartype os_type: str or ~azure_arc_vmware_management_service_api.models.OsType
+    :vartype os_type: str or ~azure.mgmt.connectedvmware.models.OsType
     :ivar os_name: Gets or sets os name.
     :vartype os_name: str
     :ivar folder_path: Gets or sets the folder path of the template.
     :vartype folder_path: str
     :ivar network_interfaces: Gets or sets the network interfaces of the template.
-    :vartype network_interfaces:
-     list[~azure_arc_vmware_management_service_api.models.NetworkInterface]
+    :vartype network_interfaces: list[~azure.mgmt.connectedvmware.models.NetworkInterface]
     :ivar disks: Gets or sets the disks the template.
-    :vartype disks: list[~azure_arc_vmware_management_service_api.models.VirtualDisk]
+    :vartype disks: list[~azure.mgmt.connectedvmware.models.VirtualDisk]
     :ivar custom_resource_name: Gets the name of the corresponding resource in Kubernetes.
     :vartype custom_resource_name: str
+    :ivar tools_version_status: Gets or sets the current version status of VMware Tools installed
+     in the guest operating system.
+    :vartype tools_version_status: str
+    :ivar tools_version: Gets or sets the current version of VMware Tools.
+    :vartype tools_version: str
+    :ivar firmware_type: Firmware type. Possible values include: "bios", "efi".
+    :vartype firmware_type: str or ~azure.mgmt.connectedvmware.models.FirmwareType
+    :ivar statuses: The resource status information.
+    :vartype statuses: list[~azure.mgmt.connectedvmware.models.ResourceStatus]
     :ivar provisioning_state: Gets or sets the provisioning state.
     :vartype provisioning_state: str
     """
@@ -2456,6 +3981,10 @@ class VirtualMachineTemplate(msrest.serialization.Model):
         'network_interfaces': {'readonly': True},
         'disks': {'readonly': True},
         'custom_resource_name': {'readonly': True},
+        'tools_version_status': {'readonly': True},
+        'tools_version': {'readonly': True},
+        'firmware_type': {'readonly': True},
+        'statuses': {'readonly': True},
         'provisioning_state': {'readonly': True},
     }
 
@@ -2482,6 +4011,10 @@ class VirtualMachineTemplate(msrest.serialization.Model):
         'network_interfaces': {'key': 'properties.networkInterfaces', 'type': '[NetworkInterface]'},
         'disks': {'key': 'properties.disks', 'type': '[VirtualDisk]'},
         'custom_resource_name': {'key': 'properties.customResourceName', 'type': 'str'},
+        'tools_version_status': {'key': 'properties.toolsVersionStatus', 'type': 'str'},
+        'tools_version': {'key': 'properties.toolsVersion', 'type': 'str'},
+        'firmware_type': {'key': 'properties.firmwareType', 'type': 'str'},
+        'statuses': {'key': 'properties.statuses', 'type': '[ResourceStatus]'},
         'provisioning_state': {'key': 'properties.provisioningState', 'type': 'str'},
     }
 
@@ -2497,6 +4030,28 @@ class VirtualMachineTemplate(msrest.serialization.Model):
         inventory_item_id: Optional[str] = None,
         **kwargs
     ):
+        """
+        :keyword location: Required. Gets or sets the location.
+        :paramtype location: str
+        :keyword extended_location: Gets or sets the extended location.
+        :paramtype extended_location: ~azure.mgmt.connectedvmware.models.ExtendedLocation
+        :keyword tags: A set of tags. Gets or sets the Resource tags.
+        :paramtype tags: dict[str, str]
+        :keyword kind: Metadata used by portal/tooling/etc to render different UX experiences for
+         resources of the same type; e.g. ApiApps are a kind of Microsoft.Web/sites type.  If supported,
+         the resource provider must validate and persist this value.
+        :paramtype kind: str
+        :keyword v_center_id: Gets or sets the ARM Id of the vCenter resource in which this template
+         resides.
+        :paramtype v_center_id: str
+        :keyword mo_ref_id: Gets or sets the vCenter MoRef (Managed Object Reference) ID for the
+         virtual machine
+         template.
+        :paramtype mo_ref_id: str
+        :keyword inventory_item_id: Gets or sets the inventory Item ID for the virtual machine
+         template.
+        :paramtype inventory_item_id: str
+        """
         super(VirtualMachineTemplate, self).__init__(**kwargs)
         self.location = location
         self.extended_location = extended_location
@@ -2520,6 +4075,10 @@ class VirtualMachineTemplate(msrest.serialization.Model):
         self.network_interfaces = None
         self.disks = None
         self.custom_resource_name = None
+        self.tools_version_status = None
+        self.tools_version = None
+        self.firmware_type = None
+        self.statuses = None
         self.provisioning_state = None
 
 
@@ -2530,38 +4089,38 @@ class VirtualMachineTemplateInventoryItem(InventoryItemProperties):
 
     All required parameters must be populated in order to send to Azure.
 
-    :param inventory_type: Required. They inventory type.Constant filled by server.  Possible
-     values include: "ResourcePool", "VirtualMachine", "VirtualMachineTemplate", "VirtualNetwork".
-    :type inventory_type: str or ~azure_arc_vmware_management_service_api.models.InventoryType
-    :param managed_resource_id: Gets or sets the tracked resource id corresponding to the inventory
+    :ivar inventory_type: Required. They inventory type.Constant filled by server. Possible values
+     include: "ResourcePool", "VirtualMachine", "VirtualMachineTemplate", "VirtualNetwork",
+     "Cluster", "Datastore", "Host".
+    :vartype inventory_type: str or ~azure.mgmt.connectedvmware.models.InventoryType
+    :ivar managed_resource_id: Gets or sets the tracked resource id corresponding to the inventory
      resource.
-    :type managed_resource_id: str
-    :param mo_ref_id: Gets or sets the MoRef (Managed Object Reference) ID for the inventory item.
-    :type mo_ref_id: str
-    :param mo_name: Gets or sets the vCenter Managed Object name for the inventory item.
-    :type mo_name: str
+    :vartype managed_resource_id: str
+    :ivar mo_ref_id: Gets or sets the MoRef (Managed Object Reference) ID for the inventory item.
+    :vartype mo_ref_id: str
+    :ivar mo_name: Gets or sets the vCenter Managed Object name for the inventory item.
+    :vartype mo_name: str
     :ivar provisioning_state: Gets or sets the provisioning state.
     :vartype provisioning_state: str
-    :param memory_size_mb: Gets or sets memory size in MBs for the template.
-    :type memory_size_mb: int
-    :param num_cp_us: Gets or sets the number of vCPUs for the template.
-    :type num_cp_us: int
-    :param num_cores_per_socket: Gets or sets the number of cores per socket for the template.
+    :ivar memory_size_mb: Gets or sets memory size in MBs for the template.
+    :vartype memory_size_mb: int
+    :ivar num_cp_us: Gets or sets the number of vCPUs for the template.
+    :vartype num_cp_us: int
+    :ivar num_cores_per_socket: Gets or sets the number of cores per socket for the template.
      Defaults to 1 if unspecified.
-    :type num_cores_per_socket: int
+    :vartype num_cores_per_socket: int
     :ivar os_type: Gets or sets the type of the os. Possible values include: "Windows", "Linux",
      "Other".
-    :vartype os_type: str or ~azure_arc_vmware_management_service_api.models.OsType
-    :param os_name: Gets or sets os name.
-    :type os_name: str
-    :param folder_path: Gets or sets the folder path of the template.
-    :type folder_path: str
+    :vartype os_type: str or ~azure.mgmt.connectedvmware.models.OsType
+    :ivar os_name: Gets or sets os name.
+    :vartype os_name: str
+    :ivar folder_path: Gets or sets the folder path of the template.
+    :vartype folder_path: str
     """
 
     _validation = {
         'inventory_type': {'required': True},
         'provisioning_state': {'readonly': True},
-        'os_type': {'readonly': True},
     }
 
     _attribute_map = {
@@ -2587,16 +4146,41 @@ class VirtualMachineTemplateInventoryItem(InventoryItemProperties):
         memory_size_mb: Optional[int] = None,
         num_cp_us: Optional[int] = None,
         num_cores_per_socket: Optional[int] = None,
+        os_type: Optional[Union[str, "OsType"]] = None,
         os_name: Optional[str] = None,
         folder_path: Optional[str] = None,
         **kwargs
     ):
+        """
+        :keyword managed_resource_id: Gets or sets the tracked resource id corresponding to the
+         inventory resource.
+        :paramtype managed_resource_id: str
+        :keyword mo_ref_id: Gets or sets the MoRef (Managed Object Reference) ID for the inventory
+         item.
+        :paramtype mo_ref_id: str
+        :keyword mo_name: Gets or sets the vCenter Managed Object name for the inventory item.
+        :paramtype mo_name: str
+        :keyword memory_size_mb: Gets or sets memory size in MBs for the template.
+        :paramtype memory_size_mb: int
+        :keyword num_cp_us: Gets or sets the number of vCPUs for the template.
+        :paramtype num_cp_us: int
+        :keyword num_cores_per_socket: Gets or sets the number of cores per socket for the template.
+         Defaults to 1 if unspecified.
+        :paramtype num_cores_per_socket: int
+        :keyword os_type: Gets or sets the type of the os. Possible values include: "Windows", "Linux",
+         "Other".
+        :paramtype os_type: str or ~azure.mgmt.connectedvmware.models.OsType
+        :keyword os_name: Gets or sets os name.
+        :paramtype os_name: str
+        :keyword folder_path: Gets or sets the folder path of the template.
+        :paramtype folder_path: str
+        """
         super(VirtualMachineTemplateInventoryItem, self).__init__(managed_resource_id=managed_resource_id, mo_ref_id=mo_ref_id, mo_name=mo_name, **kwargs)
         self.inventory_type = 'VirtualMachineTemplate'  # type: str
         self.memory_size_mb = memory_size_mb
         self.num_cp_us = num_cp_us
         self.num_cores_per_socket = num_cores_per_socket
-        self.os_type = None
+        self.os_type = os_type
         self.os_name = os_name
         self.folder_path = folder_path
 
@@ -2606,10 +4190,10 @@ class VirtualMachineTemplatesList(msrest.serialization.Model):
 
     All required parameters must be populated in order to send to Azure.
 
-    :param next_link: Url to follow for getting next page of VirtualMachineTemplates.
-    :type next_link: str
-    :param value: Required. Array of VirtualMachineTemplates.
-    :type value: list[~azure_arc_vmware_management_service_api.models.VirtualMachineTemplate]
+    :ivar next_link: Url to follow for getting next page of VirtualMachineTemplates.
+    :vartype next_link: str
+    :ivar value: Required. Array of VirtualMachineTemplates.
+    :vartype value: list[~azure.mgmt.connectedvmware.models.VirtualMachineTemplate]
     """
 
     _validation = {
@@ -2628,6 +4212,12 @@ class VirtualMachineTemplatesList(msrest.serialization.Model):
         next_link: Optional[str] = None,
         **kwargs
     ):
+        """
+        :keyword next_link: Url to follow for getting next page of VirtualMachineTemplates.
+        :paramtype next_link: str
+        :keyword value: Required. Array of VirtualMachineTemplates.
+        :paramtype value: list[~azure.mgmt.connectedvmware.models.VirtualMachineTemplate]
+        """
         super(VirtualMachineTemplatesList, self).__init__(**kwargs)
         self.next_link = next_link
         self.value = value
@@ -2636,16 +4226,16 @@ class VirtualMachineTemplatesList(msrest.serialization.Model):
 class VirtualMachineUpdate(msrest.serialization.Model):
     """Defines the virtualMachineUpdate.
 
-    :param tags: A set of tags. Gets or sets the Resource tags.
-    :type tags: dict[str, str]
-    :param identity: The identity of the resource.
-    :type identity: ~azure_arc_vmware_management_service_api.models.Identity
-    :param hardware_profile: Defines the resource properties.
-    :type hardware_profile: ~azure_arc_vmware_management_service_api.models.HardwareProfile
-    :param storage_profile: Defines the resource update properties.
-    :type storage_profile: ~azure_arc_vmware_management_service_api.models.StorageProfileUpdate
-    :param network_profile: Defines the update resource properties.
-    :type network_profile: ~azure_arc_vmware_management_service_api.models.NetworkProfileUpdate
+    :ivar tags: A set of tags. Gets or sets the Resource tags.
+    :vartype tags: dict[str, str]
+    :ivar identity: The identity of the resource.
+    :vartype identity: ~azure.mgmt.connectedvmware.models.Identity
+    :ivar hardware_profile: Defines the resource properties.
+    :vartype hardware_profile: ~azure.mgmt.connectedvmware.models.HardwareProfile
+    :ivar storage_profile: Defines the resource update properties.
+    :vartype storage_profile: ~azure.mgmt.connectedvmware.models.StorageProfileUpdate
+    :ivar network_profile: Defines the update resource properties.
+    :vartype network_profile: ~azure.mgmt.connectedvmware.models.NetworkProfileUpdate
     """
 
     _attribute_map = {
@@ -2666,6 +4256,18 @@ class VirtualMachineUpdate(msrest.serialization.Model):
         network_profile: Optional["NetworkProfileUpdate"] = None,
         **kwargs
     ):
+        """
+        :keyword tags: A set of tags. Gets or sets the Resource tags.
+        :paramtype tags: dict[str, str]
+        :keyword identity: The identity of the resource.
+        :paramtype identity: ~azure.mgmt.connectedvmware.models.Identity
+        :keyword hardware_profile: Defines the resource properties.
+        :paramtype hardware_profile: ~azure.mgmt.connectedvmware.models.HardwareProfile
+        :keyword storage_profile: Defines the resource update properties.
+        :paramtype storage_profile: ~azure.mgmt.connectedvmware.models.StorageProfileUpdate
+        :keyword network_profile: Defines the update resource properties.
+        :paramtype network_profile: ~azure.mgmt.connectedvmware.models.NetworkProfileUpdate
+        """
         super(VirtualMachineUpdate, self).__init__(**kwargs)
         self.tags = tags
         self.identity = identity
@@ -2681,38 +4283,40 @@ class VirtualNetwork(msrest.serialization.Model):
 
     All required parameters must be populated in order to send to Azure.
 
-    :param location: Required. Gets or sets the location.
-    :type location: str
-    :param extended_location: Gets or sets the extended location.
-    :type extended_location: ~azure_arc_vmware_management_service_api.models.ExtendedLocation
+    :ivar location: Required. Gets or sets the location.
+    :vartype location: str
+    :ivar extended_location: Gets or sets the extended location.
+    :vartype extended_location: ~azure.mgmt.connectedvmware.models.ExtendedLocation
     :ivar system_data: The system data.
-    :vartype system_data: ~azure_arc_vmware_management_service_api.models.SystemData
-    :param tags: A set of tags. Gets or sets the Resource tags.
-    :type tags: dict[str, str]
+    :vartype system_data: ~azure.mgmt.connectedvmware.models.SystemData
+    :ivar tags: A set of tags. Gets or sets the Resource tags.
+    :vartype tags: dict[str, str]
     :ivar name: Gets or sets the name.
     :vartype name: str
     :ivar id: Gets or sets the Id.
     :vartype id: str
     :ivar type: Gets or sets the type of the resource.
     :vartype type: str
-    :param kind: Metadata used by portal/tooling/etc to render different UX experiences for
+    :ivar kind: Metadata used by portal/tooling/etc to render different UX experiences for
      resources of the same type; e.g. ApiApps are a kind of Microsoft.Web/sites type.  If supported,
      the resource provider must validate and persist this value.
-    :type kind: str
+    :vartype kind: str
     :ivar uuid: Gets or sets a unique identifier for this resource.
     :vartype uuid: str
-    :param v_center_id: Gets or sets the ARM Id of the vCenter resource in which this template
+    :ivar v_center_id: Gets or sets the ARM Id of the vCenter resource in which this template
      resides.
-    :type v_center_id: str
-    :param mo_ref_id: Gets or sets the vCenter MoRef (Managed Object Reference) ID for the virtual
+    :vartype v_center_id: str
+    :ivar mo_ref_id: Gets or sets the vCenter MoRef (Managed Object Reference) ID for the virtual
      network.
-    :type mo_ref_id: str
-    :param inventory_item_id: Gets or sets the inventory Item ID for the virtual network.
-    :type inventory_item_id: str
+    :vartype mo_ref_id: str
+    :ivar inventory_item_id: Gets or sets the inventory Item ID for the virtual network.
+    :vartype inventory_item_id: str
     :ivar mo_name: Gets or sets the vCenter Managed Object name for the virtual network.
     :vartype mo_name: str
     :ivar custom_resource_name: Gets the name of the corresponding resource in Kubernetes.
     :vartype custom_resource_name: str
+    :ivar statuses: The resource status information.
+    :vartype statuses: list[~azure.mgmt.connectedvmware.models.ResourceStatus]
     :ivar provisioning_state: Gets or sets the provisioning state.
     :vartype provisioning_state: str
     """
@@ -2726,6 +4330,7 @@ class VirtualNetwork(msrest.serialization.Model):
         'uuid': {'readonly': True},
         'mo_name': {'readonly': True},
         'custom_resource_name': {'readonly': True},
+        'statuses': {'readonly': True},
         'provisioning_state': {'readonly': True},
     }
 
@@ -2744,6 +4349,7 @@ class VirtualNetwork(msrest.serialization.Model):
         'inventory_item_id': {'key': 'properties.inventoryItemId', 'type': 'str'},
         'mo_name': {'key': 'properties.moName', 'type': 'str'},
         'custom_resource_name': {'key': 'properties.customResourceName', 'type': 'str'},
+        'statuses': {'key': 'properties.statuses', 'type': '[ResourceStatus]'},
         'provisioning_state': {'key': 'properties.provisioningState', 'type': 'str'},
     }
 
@@ -2759,6 +4365,26 @@ class VirtualNetwork(msrest.serialization.Model):
         inventory_item_id: Optional[str] = None,
         **kwargs
     ):
+        """
+        :keyword location: Required. Gets or sets the location.
+        :paramtype location: str
+        :keyword extended_location: Gets or sets the extended location.
+        :paramtype extended_location: ~azure.mgmt.connectedvmware.models.ExtendedLocation
+        :keyword tags: A set of tags. Gets or sets the Resource tags.
+        :paramtype tags: dict[str, str]
+        :keyword kind: Metadata used by portal/tooling/etc to render different UX experiences for
+         resources of the same type; e.g. ApiApps are a kind of Microsoft.Web/sites type.  If supported,
+         the resource provider must validate and persist this value.
+        :paramtype kind: str
+        :keyword v_center_id: Gets or sets the ARM Id of the vCenter resource in which this template
+         resides.
+        :paramtype v_center_id: str
+        :keyword mo_ref_id: Gets or sets the vCenter MoRef (Managed Object Reference) ID for the
+         virtual network.
+        :paramtype mo_ref_id: str
+        :keyword inventory_item_id: Gets or sets the inventory Item ID for the virtual network.
+        :paramtype inventory_item_id: str
+        """
         super(VirtualNetwork, self).__init__(**kwargs)
         self.location = location
         self.extended_location = extended_location
@@ -2774,6 +4400,7 @@ class VirtualNetwork(msrest.serialization.Model):
         self.inventory_item_id = inventory_item_id
         self.mo_name = None
         self.custom_resource_name = None
+        self.statuses = None
         self.provisioning_state = None
 
 
@@ -2784,16 +4411,17 @@ class VirtualNetworkInventoryItem(InventoryItemProperties):
 
     All required parameters must be populated in order to send to Azure.
 
-    :param inventory_type: Required. They inventory type.Constant filled by server.  Possible
-     values include: "ResourcePool", "VirtualMachine", "VirtualMachineTemplate", "VirtualNetwork".
-    :type inventory_type: str or ~azure_arc_vmware_management_service_api.models.InventoryType
-    :param managed_resource_id: Gets or sets the tracked resource id corresponding to the inventory
+    :ivar inventory_type: Required. They inventory type.Constant filled by server. Possible values
+     include: "ResourcePool", "VirtualMachine", "VirtualMachineTemplate", "VirtualNetwork",
+     "Cluster", "Datastore", "Host".
+    :vartype inventory_type: str or ~azure.mgmt.connectedvmware.models.InventoryType
+    :ivar managed_resource_id: Gets or sets the tracked resource id corresponding to the inventory
      resource.
-    :type managed_resource_id: str
-    :param mo_ref_id: Gets or sets the MoRef (Managed Object Reference) ID for the inventory item.
-    :type mo_ref_id: str
-    :param mo_name: Gets or sets the vCenter Managed Object name for the inventory item.
-    :type mo_name: str
+    :vartype managed_resource_id: str
+    :ivar mo_ref_id: Gets or sets the MoRef (Managed Object Reference) ID for the inventory item.
+    :vartype mo_ref_id: str
+    :ivar mo_name: Gets or sets the vCenter Managed Object name for the inventory item.
+    :vartype mo_name: str
     :ivar provisioning_state: Gets or sets the provisioning state.
     :vartype provisioning_state: str
     """
@@ -2819,6 +4447,16 @@ class VirtualNetworkInventoryItem(InventoryItemProperties):
         mo_name: Optional[str] = None,
         **kwargs
     ):
+        """
+        :keyword managed_resource_id: Gets or sets the tracked resource id corresponding to the
+         inventory resource.
+        :paramtype managed_resource_id: str
+        :keyword mo_ref_id: Gets or sets the MoRef (Managed Object Reference) ID for the inventory
+         item.
+        :paramtype mo_ref_id: str
+        :keyword mo_name: Gets or sets the vCenter Managed Object name for the inventory item.
+        :paramtype mo_name: str
+        """
         super(VirtualNetworkInventoryItem, self).__init__(managed_resource_id=managed_resource_id, mo_ref_id=mo_ref_id, mo_name=mo_name, **kwargs)
         self.inventory_type = 'VirtualNetwork'  # type: str
 
@@ -2828,10 +4466,10 @@ class VirtualNetworksList(msrest.serialization.Model):
 
     All required parameters must be populated in order to send to Azure.
 
-    :param next_link: Url to follow for getting next page of VirtualNetworks.
-    :type next_link: str
-    :param value: Required. Array of VirtualNetworks.
-    :type value: list[~azure_arc_vmware_management_service_api.models.VirtualNetwork]
+    :ivar next_link: Url to follow for getting next page of VirtualNetworks.
+    :vartype next_link: str
+    :ivar value: Required. Array of VirtualNetworks.
+    :vartype value: list[~azure.mgmt.connectedvmware.models.VirtualNetwork]
     """
 
     _validation = {
@@ -2850,6 +4488,12 @@ class VirtualNetworksList(msrest.serialization.Model):
         next_link: Optional[str] = None,
         **kwargs
     ):
+        """
+        :keyword next_link: Url to follow for getting next page of VirtualNetworks.
+        :paramtype next_link: str
+        :keyword value: Required. Array of VirtualNetworks.
+        :paramtype value: list[~azure.mgmt.connectedvmware.models.VirtualNetwork]
+        """
         super(VirtualNetworksList, self).__init__(**kwargs)
         self.next_link = next_link
         self.value = value
@@ -2858,18 +4502,18 @@ class VirtualNetworksList(msrest.serialization.Model):
 class VirtualSCSIController(msrest.serialization.Model):
     """This data object type contains the properties of a SCSI controller device attached to a virtual machine that is reported by the controller.
 
-    :param type: Gets or sets the controller type. Possible values include: "lsilogic", "buslogic",
+    :ivar type: Gets or sets the controller type. Possible values include: "lsilogic", "buslogic",
      "pvscsi", "lsilogicsas".
-    :type type: str or ~azure_arc_vmware_management_service_api.models.SCSIControllerType
-    :param controller_key: Gets or sets the key of the controller.
-    :type controller_key: int
-    :param bus_number: Gets or sets the bus number of the controller.
-    :type bus_number: int
-    :param scsi_ctlr_unit_number: Gets or sets the SCSI controller unit number.
-    :type scsi_ctlr_unit_number: int
-    :param sharing: Gets or sets the sharing mode. Possible values include: "noSharing",
+    :vartype type: str or ~azure.mgmt.connectedvmware.models.SCSIControllerType
+    :ivar controller_key: Gets or sets the key of the controller.
+    :vartype controller_key: int
+    :ivar bus_number: Gets or sets the bus number of the controller.
+    :vartype bus_number: int
+    :ivar scsi_ctlr_unit_number: Gets or sets the SCSI controller unit number.
+    :vartype scsi_ctlr_unit_number: int
+    :ivar sharing: Gets or sets the sharing mode. Possible values include: "noSharing",
      "physicalSharing", "virtualSharing".
-    :type sharing: str or ~azure_arc_vmware_management_service_api.models.VirtualSCSISharing
+    :vartype sharing: str or ~azure.mgmt.connectedvmware.models.VirtualSCSISharing
     """
 
     _attribute_map = {
@@ -2890,6 +4534,20 @@ class VirtualSCSIController(msrest.serialization.Model):
         sharing: Optional[Union[str, "VirtualSCSISharing"]] = None,
         **kwargs
     ):
+        """
+        :keyword type: Gets or sets the controller type. Possible values include: "lsilogic",
+         "buslogic", "pvscsi", "lsilogicsas".
+        :paramtype type: str or ~azure.mgmt.connectedvmware.models.SCSIControllerType
+        :keyword controller_key: Gets or sets the key of the controller.
+        :paramtype controller_key: int
+        :keyword bus_number: Gets or sets the bus number of the controller.
+        :paramtype bus_number: int
+        :keyword scsi_ctlr_unit_number: Gets or sets the SCSI controller unit number.
+        :paramtype scsi_ctlr_unit_number: int
+        :keyword sharing: Gets or sets the sharing mode. Possible values include: "noSharing",
+         "physicalSharing", "virtualSharing".
+        :paramtype sharing: str or ~azure.mgmt.connectedvmware.models.VirtualSCSISharing
+        """
         super(VirtualSCSIController, self).__init__(**kwargs)
         self.type = type
         self.controller_key = controller_key

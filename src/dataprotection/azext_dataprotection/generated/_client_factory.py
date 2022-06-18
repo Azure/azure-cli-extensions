@@ -38,3 +38,7 @@ def cf_job(cli_ctx, *_):
 
 def cf_restorable_time_range(cli_ctx, *_):
     return cf_dataprotection_cl(cli_ctx).restorable_time_ranges
+
+
+def cf_resource_guard(cli_ctx, *_):
+    return cf_dataprotection_cl(cli_ctx).resource_guards

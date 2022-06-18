@@ -4,6 +4,7 @@
 # --------------------------------------------------------------------------------------------
 # pylint: disable=line-too-long
 
+from azure.cli.core.azclierror import ResourceNotFoundError
 from .vendored_sdks.containerregistry.v2019_12_01_preview.models._models_py3 import ExportPipeline, ExportPipelineTargetProperties
 from .vendored_sdks.containerregistry.v2019_12_01_preview.models._container_registry_management_client_enums import PipelineSourceType
 from .utility_functions import create_identity_properties
@@ -45,6 +46,14 @@ def get_exportpipeline(client, resource_group_name, registry_name, export_pipeli
 
 def delete_exportpipeline(client, resource_group_name, registry_name, export_pipeline_name):
     '''Delete an export pipeline.'''
+
+    try:
+        client.export_pipelines.get(resource_group_name=resource_group_name,
+                                    registry_name=registry_name,
+                                    export_pipeline_name=export_pipeline_name)
+
+    except Exception as e:
+        raise ResourceNotFoundError(f'Export pipeline {export_pipeline_name} not found on registry {registry_name} in the {resource_group_name} resource group.') from e
 
     return client.export_pipelines.begin_delete(resource_group_name=resource_group_name,
                                                 registry_name=registry_name,

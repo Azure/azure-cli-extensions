@@ -48,7 +48,7 @@ setup(
     author='Microsoft Corporation',
     author_email='azpycli@microsoft.com',
     # TODO: change to your extension source code repo if the code will not be put in azure-cli-extensions repo
-    url='https://github.com/Azure/azure-cli-extensions/tree/master/src/serialconsole',
+    url='https://github.com/Azure/azure-cli-extensions/tree/main/src/serialconsole',
     long_description=README + '\n\n' + HISTORY,
     license='MIT',
     classifiers=CLASSIFIERS,

@@ -2,10 +2,15 @@
 set -ex
 
 # Install CLI & CLI testsdk
-echo "Installing azure-cli-testsdk and azure-cli..."
-pip install --pre azure-cli --extra-index-url https://azurecliprod.blob.core.windows.net/edge
-pip install "git+https://github.com/Azure/azure-cli@dev#egg=azure-cli-testsdk&subdirectory=src/azure-cli-testsdk" -q
+echo "Installing azure-cli-testsdk, azure-cli-core, azure-cli from source code"
+git clone https://github.com/Azure/azure-cli --depth 1
+find azure-cli/src/ -name setup.py -type f | xargs -I {} dirname {} | grep -v azure-cli-testsdk | xargs -I {} pip install --editable {} --no-deps
+pip install --editable azure-cli/src/azure-cli-testsdk
+pip install -r azure-cli/src/azure-cli/requirements.py3.$(uname).txt
 echo "Installed."
+
+pip list -v
+az --version
 
 python ./scripts/ci/test_source.py -v
 

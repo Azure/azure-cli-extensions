@@ -78,7 +78,7 @@ def load_tickets_argument(self, _):
         c.argument('contact_last_name', help='Last Name')
         c.argument('contact_method', arg_type=get_enum_type(['email', 'phone']), help='Preferred contact method')
         c.argument('contact_email', help='Primary email address')
-        c.argument('contact_additional_emails', nargs='+', help='Space seperated list of additional email addresses. ' +
+        c.argument('contact_additional_emails', nargs='+', help='Space-separated list of additional email addresses. ' +
                    'Additional email addresses will be copied on any correspondence about the support ticket.')
         c.argument('contact_phone_number', help='Phone number. This is required if preferred contact method is phone.')
         c.argument('contact_timezone', arg_type=timezone_type_for_update)
@@ -110,7 +110,7 @@ def load_tickets_argument(self, _):
         c.argument('contact_method', arg_type=get_enum_type(['email', 'phone']), help='Preferred contact method',
                    required=True)
         c.argument('contact_email', help='Primary email address', required=True)
-        c.argument('contact_additional_emails', nargs='+', help='Space seperated list of additional email addresses. ' +
+        c.argument('contact_additional_emails', nargs='+', help='Space-separated list of additional email addresses. ' +
                    'Additional email addresses will be copied on any correspondence about the support ticket.')
         c.argument('contact_phone_number', help='Phone number. This is required if preferred contact method is phone.')
         c.argument('contact_timezone', arg_type=timezone_type_for_create)
@@ -125,9 +125,9 @@ def load_tickets_argument(self, _):
         c.argument('quota_change_version', help='Quota change request version.')
         c.argument('quota_change_subtype', help='Required for certain quota types when there is a sub type that ' +
                    'you are requesting quota increase for. Example: Batch')
-        c.argument('quota_change_regions', nargs='+', help='Space seperated list of region for which ' +
+        c.argument('quota_change_regions', nargs='+', help='Space-separated list of region for which ' +
                    'the quota increase request is being made.')
-        c.argument('quota_change_payload', nargs='+', help='Space seperated list of serialized payload of the ' +
+        c.argument('quota_change_payload', nargs='+', help='Space -separated list of serialized payload of the ' +
                    'quota increase request corresponding to regions. Visit ' +
                    'https://aka.ms/supportrpquotarequestpayload for details.')
 

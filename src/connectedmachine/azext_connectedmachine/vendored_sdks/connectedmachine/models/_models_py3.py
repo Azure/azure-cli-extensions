@@ -15,6 +15,119 @@ import msrest.serialization
 from ._connected_machine_enums import *
 
 
+class AgentConfiguration(msrest.serialization.Model):
+    """Configurable properties that the user can set locally via the azcmagent config command, or remotely via ARM.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar proxy_url: Specifies the URL of the proxy to be used.
+    :vartype proxy_url: str
+    :ivar incoming_connections_ports: Specifies the list of ports that the agent will be able to
+     listen on.
+    :vartype incoming_connections_ports: list[str]
+    :ivar extensions_allow_list: Array of extensions that are allowed to be installed or updated.
+    :vartype extensions_allow_list: list[~azure.mgmt.hybridcompute.models.ConfigurationExtension]
+    :ivar extensions_block_list: Array of extensions that are blocked (cannot be installed or
+     updated).
+    :vartype extensions_block_list: list[~azure.mgmt.hybridcompute.models.ConfigurationExtension]
+    :ivar proxy_bypass: List of service names which should not use the specified proxy server.
+    :vartype proxy_bypass: list[str]
+    :ivar extensions_enabled: Specifies whether the extension service is enabled or disabled.
+    :vartype extensions_enabled: str
+    :ivar guest_configuration_enabled: Specified whether the guest configuration service is enabled
+     or disabled.
+    :vartype guest_configuration_enabled: str
+    """
+
+    _validation = {
+        'proxy_url': {'readonly': True},
+        'incoming_connections_ports': {'readonly': True},
+        'extensions_allow_list': {'readonly': True},
+        'extensions_block_list': {'readonly': True},
+        'proxy_bypass': {'readonly': True},
+        'extensions_enabled': {'readonly': True},
+        'guest_configuration_enabled': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'proxy_url': {'key': 'proxyUrl', 'type': 'str'},
+        'incoming_connections_ports': {'key': 'incomingConnectionsPorts', 'type': '[str]'},
+        'extensions_allow_list': {'key': 'extensionsAllowList', 'type': '[ConfigurationExtension]'},
+        'extensions_block_list': {'key': 'extensionsBlockList', 'type': '[ConfigurationExtension]'},
+        'proxy_bypass': {'key': 'proxyBypass', 'type': '[str]'},
+        'extensions_enabled': {'key': 'extensionsEnabled', 'type': 'str'},
+        'guest_configuration_enabled': {'key': 'guestConfigurationEnabled', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(AgentConfiguration, self).__init__(**kwargs)
+        self.proxy_url = None
+        self.incoming_connections_ports = None
+        self.extensions_allow_list = None
+        self.extensions_block_list = None
+        self.proxy_bypass = None
+        self.extensions_enabled = None
+        self.guest_configuration_enabled = None
+
+
+class CloudMetadata(msrest.serialization.Model):
+    """The metadata of the cloud environment (Azure/GCP/AWS/OCI...).
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar provider: Specifies the cloud provider (Azure/AWS/GCP...).
+    :vartype provider: str
+    """
+
+    _validation = {
+        'provider': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'provider': {'key': 'provider', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(CloudMetadata, self).__init__(**kwargs)
+        self.provider = None
+
+
+class ConfigurationExtension(msrest.serialization.Model):
+    """Describes properties that can identify extensions.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar publisher: Publisher of the extension.
+    :vartype publisher: str
+    :ivar type: Type of the extension.
+    :vartype type: str
+    """
+
+    _validation = {
+        'publisher': {'readonly': True},
+        'type': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'publisher': {'key': 'publisher', 'type': 'str'},
+        'type': {'key': 'type', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(ConfigurationExtension, self).__init__(**kwargs)
+        self.publisher = None
+        self.type = None
+
+
 class ConnectionDetail(msrest.serialization.Model):
     """ConnectionDetail.
 
@@ -328,17 +441,22 @@ class HybridComputePrivateLinkScopeProperties(msrest.serialization.Model):
     :vartype provisioning_state: str
     :ivar private_link_scope_id: The Guid id of the private link scope.
     :vartype private_link_scope_id: str
+    :ivar private_endpoint_connections: The collection of associated Private Endpoint Connections.
+    :vartype private_endpoint_connections:
+     list[~azure.mgmt.hybridcompute.models.PrivateEndpointConnectionDataModel]
     """
 
     _validation = {
         'provisioning_state': {'readonly': True},
         'private_link_scope_id': {'readonly': True},
+        'private_endpoint_connections': {'readonly': True},
     }
 
     _attribute_map = {
         'public_network_access': {'key': 'publicNetworkAccess', 'type': 'str'},
         'provisioning_state': {'key': 'provisioningState', 'type': 'str'},
         'private_link_scope_id': {'key': 'privateLinkScopeId', 'type': 'str'},
+        'private_endpoint_connections': {'key': 'privateEndpointConnections', 'type': '[PrivateEndpointConnectionDataModel]'},
     }
 
     def __init__(
@@ -351,6 +469,7 @@ class HybridComputePrivateLinkScopeProperties(msrest.serialization.Model):
         self.public_network_access = public_network_access
         self.provisioning_state = None
         self.private_link_scope_id = None
+        self.private_endpoint_connections = None
 
 
 class Identity(msrest.serialization.Model):
@@ -724,6 +843,9 @@ class MachineExtensionProperties(msrest.serialization.Model):
     :type type: str
     :param type_handler_version: Specifies the version of the script handler.
     :type type_handler_version: str
+    :param enable_automatic_upgrade: Indicates whether the extension should be automatically
+     upgraded by the platform if there is a newer version available.
+    :type enable_automatic_upgrade: bool
     :param auto_upgrade_minor_version: Indicates whether the extension should use a newer minor
      version if one is available at deployment time. Once deployed, however, the extension will not
      upgrade minor versions unless redeployed, even with this property set to true.
@@ -748,6 +870,7 @@ class MachineExtensionProperties(msrest.serialization.Model):
         'publisher': {'key': 'publisher', 'type': 'str'},
         'type': {'key': 'type', 'type': 'str'},
         'type_handler_version': {'key': 'typeHandlerVersion', 'type': 'str'},
+        'enable_automatic_upgrade': {'key': 'enableAutomaticUpgrade', 'type': 'bool'},
         'auto_upgrade_minor_version': {'key': 'autoUpgradeMinorVersion', 'type': 'bool'},
         'settings': {'key': 'settings', 'type': 'object'},
         'protected_settings': {'key': 'protectedSettings', 'type': 'object'},
@@ -762,6 +885,7 @@ class MachineExtensionProperties(msrest.serialization.Model):
         publisher: Optional[str] = None,
         type: Optional[str] = None,
         type_handler_version: Optional[str] = None,
+        enable_automatic_upgrade: Optional[bool] = None,
         auto_upgrade_minor_version: Optional[bool] = None,
         settings: Optional[object] = None,
         protected_settings: Optional[object] = None,
@@ -773,6 +897,7 @@ class MachineExtensionProperties(msrest.serialization.Model):
         self.publisher = publisher
         self.type = type
         self.type_handler_version = type_handler_version
+        self.enable_automatic_upgrade = enable_automatic_upgrade
         self.auto_upgrade_minor_version = auto_upgrade_minor_version
         self.settings = settings
         self.protected_settings = protected_settings
@@ -865,6 +990,9 @@ class MachineExtensionUpdateProperties(msrest.serialization.Model):
     :type type: str
     :param type_handler_version: Specifies the version of the script handler.
     :type type_handler_version: str
+    :param enable_automatic_upgrade: Indicates whether the extension should be automatically
+     upgraded by the platform if there is a newer version available.
+    :type enable_automatic_upgrade: bool
     :param auto_upgrade_minor_version: Indicates whether the extension should use a newer minor
      version if one is available at deployment time. Once deployed, however, the extension will not
      upgrade minor versions unless redeployed, even with this property set to true.
@@ -881,6 +1009,7 @@ class MachineExtensionUpdateProperties(msrest.serialization.Model):
         'publisher': {'key': 'publisher', 'type': 'str'},
         'type': {'key': 'type', 'type': 'str'},
         'type_handler_version': {'key': 'typeHandlerVersion', 'type': 'str'},
+        'enable_automatic_upgrade': {'key': 'enableAutomaticUpgrade', 'type': 'bool'},
         'auto_upgrade_minor_version': {'key': 'autoUpgradeMinorVersion', 'type': 'bool'},
         'settings': {'key': 'settings', 'type': 'object'},
         'protected_settings': {'key': 'protectedSettings', 'type': 'object'},
@@ -893,6 +1022,7 @@ class MachineExtensionUpdateProperties(msrest.serialization.Model):
         publisher: Optional[str] = None,
         type: Optional[str] = None,
         type_handler_version: Optional[str] = None,
+        enable_automatic_upgrade: Optional[bool] = None,
         auto_upgrade_minor_version: Optional[bool] = None,
         settings: Optional[object] = None,
         protected_settings: Optional[object] = None,
@@ -903,6 +1033,7 @@ class MachineExtensionUpdateProperties(msrest.serialization.Model):
         self.publisher = publisher
         self.type = type
         self.type_handler_version = type_handler_version
+        self.enable_automatic_upgrade = enable_automatic_upgrade
         self.auto_upgrade_minor_version = auto_upgrade_minor_version
         self.settings = settings
         self.protected_settings = protected_settings
@@ -969,8 +1100,15 @@ class MachineProperties(msrest.serialization.Model):
 
     :param location_data: Metadata pertaining to the geographic location of the resource.
     :type location_data: ~azure.mgmt.hybridcompute.models.LocationData
-    :ivar os_profile: Specifies the operating system settings for the hybrid machine.
-    :vartype os_profile: ~azure.mgmt.hybridcompute.models.OsProfile
+    :ivar agent_configuration: Configurable properties that the user can set locally via the
+     azcmagent config command, or remotely via ARM.
+    :vartype agent_configuration: ~azure.mgmt.hybridcompute.models.AgentConfiguration
+    :param service_statuses: Statuses of dependent services that are reported back to ARM.
+    :type service_statuses: ~azure.mgmt.hybridcompute.models.ServiceStatuses
+    :param cloud_metadata: The metadata of the cloud environment (Azure/GCP/AWS/OCI...).
+    :type cloud_metadata: ~azure.mgmt.hybridcompute.models.CloudMetadata
+    :param os_profile: Specifies the operating system settings for the hybrid machine.
+    :type os_profile: ~azure.mgmt.hybridcompute.models.OsProfile
     :ivar provisioning_state: The provisioning state, which only appears in the response.
     :vartype provisioning_state: str
     :ivar status: The status of the hybrid machine agent. Possible values include: "Connected",
@@ -995,6 +1133,8 @@ class MachineProperties(msrest.serialization.Model):
     :vartype os_name: str
     :ivar os_version: The version of Operating System running on the hybrid machine.
     :vartype os_version: str
+    :param os_type: The type of Operating System (windows/linux).
+    :type os_type: str
     :ivar vm_uuid: Specifies the Arc Machine's unique SMBIOS ID.
     :vartype vm_uuid: str
     :param extensions: Machine Extensions information.
@@ -1013,12 +1153,14 @@ class MachineProperties(msrest.serialization.Model):
     :param parent_cluster_resource_id: The resource id of the parent cluster (Azure HCI) this
      machine is assigned to, if any.
     :type parent_cluster_resource_id: str
+    :param mssql_discovered: Specifies whether any MS SQL instance is discovered on the machine.
+    :type mssql_discovered: str
     :ivar detected_properties: Detected properties from the machine.
     :vartype detected_properties: dict[str, str]
     """
 
     _validation = {
-        'os_profile': {'readonly': True},
+        'agent_configuration': {'readonly': True},
         'provisioning_state': {'readonly': True},
         'status': {'readonly': True},
         'last_status_change': {'readonly': True},
@@ -1038,6 +1180,9 @@ class MachineProperties(msrest.serialization.Model):
 
     _attribute_map = {
         'location_data': {'key': 'locationData', 'type': 'LocationData'},
+        'agent_configuration': {'key': 'agentConfiguration', 'type': 'AgentConfiguration'},
+        'service_statuses': {'key': 'serviceStatuses', 'type': 'ServiceStatuses'},
+        'cloud_metadata': {'key': 'cloudMetadata', 'type': 'CloudMetadata'},
         'os_profile': {'key': 'osProfile', 'type': 'OsProfile'},
         'provisioning_state': {'key': 'provisioningState', 'type': 'str'},
         'status': {'key': 'status', 'type': 'str'},
@@ -1050,6 +1195,7 @@ class MachineProperties(msrest.serialization.Model):
         'client_public_key': {'key': 'clientPublicKey', 'type': 'str'},
         'os_name': {'key': 'osName', 'type': 'str'},
         'os_version': {'key': 'osVersion', 'type': 'str'},
+        'os_type': {'key': 'osType', 'type': 'str'},
         'vm_uuid': {'key': 'vmUuid', 'type': 'str'},
         'extensions': {'key': 'extensions', 'type': '[MachineExtensionInstanceView]'},
         'os_sku': {'key': 'osSku', 'type': 'str'},
@@ -1058,6 +1204,7 @@ class MachineProperties(msrest.serialization.Model):
         'dns_fqdn': {'key': 'dnsFqdn', 'type': 'str'},
         'private_link_scope_resource_id': {'key': 'privateLinkScopeResourceId', 'type': 'str'},
         'parent_cluster_resource_id': {'key': 'parentClusterResourceId', 'type': 'str'},
+        'mssql_discovered': {'key': 'mssqlDiscovered', 'type': 'str'},
         'detected_properties': {'key': 'detectedProperties', 'type': '{str}'},
     }
 
@@ -1065,16 +1212,24 @@ class MachineProperties(msrest.serialization.Model):
         self,
         *,
         location_data: Optional["LocationData"] = None,
+        service_statuses: Optional["ServiceStatuses"] = None,
+        cloud_metadata: Optional["CloudMetadata"] = None,
+        os_profile: Optional["OsProfile"] = None,
         vm_id: Optional[str] = None,
         client_public_key: Optional[str] = None,
+        os_type: Optional[str] = None,
         extensions: Optional[List["MachineExtensionInstanceView"]] = None,
         private_link_scope_resource_id: Optional[str] = None,
         parent_cluster_resource_id: Optional[str] = None,
+        mssql_discovered: Optional[str] = None,
         **kwargs
     ):
         super(MachineProperties, self).__init__(**kwargs)
         self.location_data = location_data
-        self.os_profile = None
+        self.agent_configuration = None
+        self.service_statuses = service_statuses
+        self.cloud_metadata = cloud_metadata
+        self.os_profile = os_profile
         self.provisioning_state = None
         self.status = None
         self.last_status_change = None
@@ -1086,6 +1241,7 @@ class MachineProperties(msrest.serialization.Model):
         self.client_public_key = client_public_key
         self.os_name = None
         self.os_version = None
+        self.os_type = os_type
         self.vm_uuid = None
         self.extensions = extensions
         self.os_sku = None
@@ -1094,6 +1250,7 @@ class MachineProperties(msrest.serialization.Model):
         self.dns_fqdn = None
         self.private_link_scope_resource_id = private_link_scope_resource_id
         self.parent_cluster_resource_id = parent_cluster_resource_id
+        self.mssql_discovered = mssql_discovered
         self.detected_properties = None
 
 
@@ -1132,6 +1289,10 @@ class MachineUpdateProperties(msrest.serialization.Model):
 
     :param location_data: Metadata pertaining to the geographic location of the resource.
     :type location_data: ~azure.mgmt.hybridcompute.models.LocationData
+    :param os_profile: Specifies the operating system settings for the hybrid machine.
+    :type os_profile: ~azure.mgmt.hybridcompute.models.OsProfile
+    :param cloud_metadata: The metadata of the cloud environment (Azure/GCP/AWS/OCI...).
+    :type cloud_metadata: ~azure.mgmt.hybridcompute.models.CloudMetadata
     :param parent_cluster_resource_id: The resource id of the parent cluster (Azure HCI) this
      machine is assigned to, if any.
     :type parent_cluster_resource_id: str
@@ -1142,6 +1303,8 @@ class MachineUpdateProperties(msrest.serialization.Model):
 
     _attribute_map = {
         'location_data': {'key': 'locationData', 'type': 'LocationData'},
+        'os_profile': {'key': 'osProfile', 'type': 'OsProfile'},
+        'cloud_metadata': {'key': 'cloudMetadata', 'type': 'CloudMetadata'},
         'parent_cluster_resource_id': {'key': 'parentClusterResourceId', 'type': 'str'},
         'private_link_scope_resource_id': {'key': 'privateLinkScopeResourceId', 'type': 'str'},
     }
@@ -1150,12 +1313,16 @@ class MachineUpdateProperties(msrest.serialization.Model):
         self,
         *,
         location_data: Optional["LocationData"] = None,
+        os_profile: Optional["OsProfile"] = None,
+        cloud_metadata: Optional["CloudMetadata"] = None,
         parent_cluster_resource_id: Optional[str] = None,
         private_link_scope_resource_id: Optional[str] = None,
         **kwargs
     ):
         super(MachineUpdateProperties, self).__init__(**kwargs)
         self.location_data = location_data
+        self.os_profile = os_profile
+        self.cloud_metadata = cloud_metadata
         self.parent_cluster_resource_id = parent_cluster_resource_id
         self.private_link_scope_resource_id = private_link_scope_resource_id
 
@@ -1196,17 +1363,21 @@ class OperationValue(msrest.serialization.Model):
     :vartype name: str
     :param display: Display properties.
     :type display: ~azure.mgmt.hybridcompute.models.OperationValueDisplay
+    :ivar is_data_action: This property indicates if the operation is an action or a data action.
+    :vartype is_data_action: bool
     """
 
     _validation = {
         'origin': {'readonly': True},
         'name': {'readonly': True},
+        'is_data_action': {'readonly': True},
     }
 
     _attribute_map = {
         'origin': {'key': 'origin', 'type': 'str'},
         'name': {'key': 'name', 'type': 'str'},
         'display': {'key': 'display', 'type': 'OperationValueDisplay'},
+        'is_data_action': {'key': 'isDataAction', 'type': 'bool'},
     }
 
     def __init__(
@@ -1219,6 +1390,7 @@ class OperationValue(msrest.serialization.Model):
         self.origin = None
         self.name = None
         self.display = display
+        self.is_data_action = None
 
 
 class OperationValueDisplay(msrest.serialization.Model):
@@ -1268,6 +1440,10 @@ class OsProfile(msrest.serialization.Model):
 
     :ivar computer_name: Specifies the host OS name of the hybrid machine.
     :vartype computer_name: str
+    :param windows_configuration: Specifies the windows configuration for update management.
+    :type windows_configuration: ~azure.mgmt.hybridcompute.models.OsProfileWindowsConfiguration
+    :param linux_configuration: Specifies the linux configuration for update management.
+    :type linux_configuration: ~azure.mgmt.hybridcompute.models.OsProfileLinuxConfiguration
     """
 
     _validation = {
@@ -1276,14 +1452,77 @@ class OsProfile(msrest.serialization.Model):
 
     _attribute_map = {
         'computer_name': {'key': 'computerName', 'type': 'str'},
+        'windows_configuration': {'key': 'windowsConfiguration', 'type': 'OsProfileWindowsConfiguration'},
+        'linux_configuration': {'key': 'linuxConfiguration', 'type': 'OsProfileLinuxConfiguration'},
     }
 
     def __init__(
         self,
+        *,
+        windows_configuration: Optional["OsProfileWindowsConfiguration"] = None,
+        linux_configuration: Optional["OsProfileLinuxConfiguration"] = None,
         **kwargs
     ):
         super(OsProfile, self).__init__(**kwargs)
         self.computer_name = None
+        self.windows_configuration = windows_configuration
+        self.linux_configuration = linux_configuration
+
+
+class OsProfileLinuxConfiguration(msrest.serialization.Model):
+    """Specifies the linux configuration for update management.
+
+    :param assessment_mode: Specifies the assessment mode. Possible values include: "ImageDefault",
+     "AutomaticByPlatform".
+    :type assessment_mode: str or ~azure.mgmt.hybridcompute.models.AssessmentModeTypes
+    :param patch_mode: Specifies the patch mode. Possible values include: "ImageDefault",
+     "AutomaticByPlatform", "AutomaticByOS", "Manual".
+    :type patch_mode: str or ~azure.mgmt.hybridcompute.models.PatchModeTypes
+    """
+
+    _attribute_map = {
+        'assessment_mode': {'key': 'patchSettings.assessmentMode', 'type': 'str'},
+        'patch_mode': {'key': 'patchSettings.patchMode', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        *,
+        assessment_mode: Optional[Union[str, "AssessmentModeTypes"]] = None,
+        patch_mode: Optional[Union[str, "PatchModeTypes"]] = None,
+        **kwargs
+    ):
+        super(OsProfileLinuxConfiguration, self).__init__(**kwargs)
+        self.assessment_mode = assessment_mode
+        self.patch_mode = patch_mode
+
+
+class OsProfileWindowsConfiguration(msrest.serialization.Model):
+    """Specifies the windows configuration for update management.
+
+    :param assessment_mode: Specifies the assessment mode. Possible values include: "ImageDefault",
+     "AutomaticByPlatform".
+    :type assessment_mode: str or ~azure.mgmt.hybridcompute.models.AssessmentModeTypes
+    :param patch_mode: Specifies the patch mode. Possible values include: "ImageDefault",
+     "AutomaticByPlatform", "AutomaticByOS", "Manual".
+    :type patch_mode: str or ~azure.mgmt.hybridcompute.models.PatchModeTypes
+    """
+
+    _attribute_map = {
+        'assessment_mode': {'key': 'patchSettings.assessmentMode', 'type': 'str'},
+        'patch_mode': {'key': 'patchSettings.patchMode', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        *,
+        assessment_mode: Optional[Union[str, "AssessmentModeTypes"]] = None,
+        patch_mode: Optional[Union[str, "PatchModeTypes"]] = None,
+        **kwargs
+    ):
+        super(OsProfileWindowsConfiguration, self).__init__(**kwargs)
+        self.assessment_mode = assessment_mode
+        self.patch_mode = patch_mode
 
 
 class PrivateEndpointConnection(Resource):
@@ -1331,6 +1570,47 @@ class PrivateEndpointConnection(Resource):
         self.system_data = None
 
 
+class PrivateEndpointConnectionDataModel(msrest.serialization.Model):
+    """The Data Model for a Private Endpoint Connection associated with a Private Link Scope.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar id: The ARM Resource Id of the Private Endpoint.
+    :vartype id: str
+    :ivar name: The Name of the Private Endpoint.
+    :vartype name: str
+    :ivar type: Azure resource type.
+    :vartype type: str
+    :param properties: The Private Endpoint Connection properties.
+    :type properties: ~azure.mgmt.hybridcompute.models.PrivateEndpointConnectionProperties
+    """
+
+    _validation = {
+        'id': {'readonly': True},
+        'name': {'readonly': True},
+        'type': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'id': {'key': 'id', 'type': 'str'},
+        'name': {'key': 'name', 'type': 'str'},
+        'type': {'key': 'type', 'type': 'str'},
+        'properties': {'key': 'properties', 'type': 'PrivateEndpointConnectionProperties'},
+    }
+
+    def __init__(
+        self,
+        *,
+        properties: Optional["PrivateEndpointConnectionProperties"] = None,
+        **kwargs
+    ):
+        super(PrivateEndpointConnectionDataModel, self).__init__(**kwargs)
+        self.id = None
+        self.name = None
+        self.type = None
+        self.properties = properties
+
+
 class PrivateEndpointConnectionListResult(msrest.serialization.Model):
     """A list of private endpoint connections.
 
@@ -1374,16 +1654,20 @@ class PrivateEndpointConnectionProperties(msrest.serialization.Model):
      ~azure.mgmt.hybridcompute.models.PrivateLinkServiceConnectionStateProperty
     :ivar provisioning_state: State of the private endpoint connection.
     :vartype provisioning_state: str
+    :ivar group_ids: List of group IDs.
+    :vartype group_ids: list[str]
     """
 
     _validation = {
         'provisioning_state': {'readonly': True},
+        'group_ids': {'readonly': True},
     }
 
     _attribute_map = {
         'private_endpoint': {'key': 'privateEndpoint', 'type': 'PrivateEndpointProperty'},
         'private_link_service_connection_state': {'key': 'privateLinkServiceConnectionState', 'type': 'PrivateLinkServiceConnectionStateProperty'},
         'provisioning_state': {'key': 'provisioningState', 'type': 'str'},
+        'group_ids': {'key': 'groupIds', 'type': '[str]'},
     }
 
     def __init__(
@@ -1397,6 +1681,7 @@ class PrivateEndpointConnectionProperties(msrest.serialization.Model):
         self.private_endpoint = private_endpoint
         self.private_link_service_connection_state = private_link_service_connection_state
         self.provisioning_state = None
+        self.group_ids = None
 
 
 class PrivateEndpointProperty(msrest.serialization.Model):
@@ -1640,6 +1925,59 @@ class ProxyResource(Resource):
         **kwargs
     ):
         super(ProxyResource, self).__init__(**kwargs)
+
+
+class ServiceStatus(msrest.serialization.Model):
+    """Describes the status and behavior of a service.
+
+    :param status: The current status of the service.
+    :type status: str
+    :param startup_type: The behavior of the service when the Arc-enabled machine starts up.
+    :type startup_type: str
+    """
+
+    _attribute_map = {
+        'status': {'key': 'status', 'type': 'str'},
+        'startup_type': {'key': 'startupType', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        *,
+        status: Optional[str] = None,
+        startup_type: Optional[str] = None,
+        **kwargs
+    ):
+        super(ServiceStatus, self).__init__(**kwargs)
+        self.status = status
+        self.startup_type = startup_type
+
+
+class ServiceStatuses(msrest.serialization.Model):
+    """Reports the state and behavior of dependent services.
+
+    :param extension_service: The state of the extension service on the Arc-enabled machine.
+    :type extension_service: ~azure.mgmt.hybridcompute.models.ServiceStatus
+    :param guest_configuration_service: The state of the guest configuration service on the Arc-
+     enabled machine.
+    :type guest_configuration_service: ~azure.mgmt.hybridcompute.models.ServiceStatus
+    """
+
+    _attribute_map = {
+        'extension_service': {'key': 'extensionService', 'type': 'ServiceStatus'},
+        'guest_configuration_service': {'key': 'guestConfigurationService', 'type': 'ServiceStatus'},
+    }
+
+    def __init__(
+        self,
+        *,
+        extension_service: Optional["ServiceStatus"] = None,
+        guest_configuration_service: Optional["ServiceStatus"] = None,
+        **kwargs
+    ):
+        super(ServiceStatuses, self).__init__(**kwargs)
+        self.extension_service = extension_service
+        self.guest_configuration_service = guest_configuration_service
 
 
 class SystemData(msrest.serialization.Model):

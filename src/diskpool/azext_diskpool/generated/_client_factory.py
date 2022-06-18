@@ -20,5 +20,13 @@ def cf_disk_pool(cli_ctx, *_):
     return cf_diskpool_cl(cli_ctx).disk_pools
 
 
+def cf_disk_pool_zone(cli_ctx, *_):
+    return cf_diskpool_cl(cli_ctx).disk_pool_zones
+
+
+def cf_resource_sku(cli_ctx, *_):
+    return cf_diskpool_cl(cli_ctx).resource_skus
+
+
 def cf_iscsi_target(cli_ctx, *_):
     return cf_diskpool_cl(cli_ctx).iscsi_targets

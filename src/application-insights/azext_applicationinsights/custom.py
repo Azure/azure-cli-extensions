@@ -4,6 +4,8 @@
 # --------------------------------------------------------------------------------------------
 
 # pylint: disable=line-too-long, protected-access
+# pylint: disable=raise-missing-from
+# pylint: disable=too-many-statements, too-many-locals, too-many-branches
 
 import datetime
 import isodate
@@ -152,9 +154,9 @@ def connect_webapp(cmd, client, resource_group_name, application, app_service, e
 
     app_insights = client.get(resource_group_name, application)
     if app_insights is None or app_insights.instrumentation_key is None:
-        raise InvalidArgumentValueError("App Insights {} under resource group {} was not found.".format(application, resource_group_name))
+        raise InvalidArgumentValueError(f"App Insights {application} under resource group {resource_group_name} was not found.")
 
-    settings = ["APPINSIGHTS_INSTRUMENTATIONKEY={}".format(app_insights.instrumentation_key)]
+    settings = [f"APPINSIGHTS_INSTRUMENTATIONKEY={app_insights.instrumentation_key}"]
     if enable_profiler is True:
         settings.append("APPINSIGHTS_PROFILERFEATURE_VERSION=1.0.0")
     elif enable_profiler is False:
@@ -171,9 +173,9 @@ def connect_function(cmd, client, resource_group_name, application, app_service)
     from azure.cli.command_modules.appservice.custom import update_app_settings
     app_insights = client.get(resource_group_name, application)
     if app_insights is None or app_insights.instrumentation_key is None:
-        raise InvalidArgumentValueError("App Insights {} under resource group {} was not found.".format(application, resource_group_name))
+        raise InvalidArgumentValueError(f"App Insights {application} under resource group {resource_group_name} was not found.")
 
-    settings = ["APPINSIGHTS_INSTRUMENTATIONKEY={}".format(app_insights.instrumentation_key)]
+    settings = [f"APPINSIGHTS_INSTRUMENTATIONKEY={app_insights.instrumentation_key}"]
     return update_app_settings(cmd, resource_group_name, app_service, settings)
 
 
@@ -299,8 +301,8 @@ def create_export_configuration(cmd, client, application, resource_group_name, r
             break
 
     if not storage_account:
-        raise CLIError("Destination storage account {} does not exist, "
-                       "use 'az storage account list' to get storage account list".format(dest_account))
+        raise CLIError(f"Destination storage account {dest_account} does not exist, "
+                       "use 'az storage account list' to get storage account list")
 
     dest_address = getattr(storage_account.primary_endpoints, dest_type.lower(), '')
     dest_address += dest_container + '?' + dest_sas
@@ -352,8 +354,8 @@ def update_export_configuration(cmd, client, application, resource_group_name, e
                 break
 
         if not storage_account:
-            raise CLIError("Destination storage account {} does not exist, "
-                           "use 'az storage account list' to get storage account list".format(dest_account))
+            raise CLIError(f"Destination storage account {dest_account} does not exist, "
+                           "use 'az storage account list' to get storage account list")
 
         dest_address = getattr(storage_account.primary_endpoints, dest_type.lower(), '')
         dest_address += dest_container + '?' + dest_sas
@@ -372,3 +374,194 @@ def get_export_configuration(client, application, resource_group_name, export_id
 
 def delete_export_configuration(client, application, resource_group_name, export_id):
     return client.delete(resource_group_name, application, export_id)
+
+
+def list_web_tests(client, component_name=None, resource_group_name=None):
+    if component_name is not None and resource_group_name:
+        return client.list_by_component(component_name=component_name, resource_group_name=resource_group_name)
+    if resource_group_name:
+        return client.list_by_resource_group(resource_group_name=resource_group_name)
+    return client.list()
+
+
+def get_web_test(client, resource_group_name, web_test_name):
+    return client.get(resource_group_name=resource_group_name, web_test_name=web_test_name)
+
+
+def create_web_test(client,
+                    resource_group_name,
+                    web_test_name,
+                    location,
+                    tags=None,
+                    kind=None,
+                    synthetic_monitor_id=None,
+                    web_test_properties_name_web_test_name=None,
+                    description=None,
+                    enabled=None,
+                    frequency=None,
+                    timeout=None,
+                    web_test_kind=None,
+                    retry_enabled=None,
+                    locations=None,
+                    content_validation=None,
+                    ssl_check=None,
+                    ssl_cert_remaining_lifetime_check=None,
+                    expected_http_status_code=None,
+                    ignore_https_status_code=None,
+                    request_url=None,
+                    headers=None,
+                    http_verb=None,
+                    request_body=None,
+                    parse_dependent_requests=None,
+                    follow_redirects=None,
+                    web_test=None):
+    web_test_definition = {}
+    web_test_definition['location'] = location
+    if tags is not None:
+        web_test_definition['tags'] = tags
+    if kind is not None:
+        web_test_definition['kind'] = kind
+    else:
+        web_test_definition['kind'] = "ping"
+    if synthetic_monitor_id is not None:
+        web_test_definition['synthetic_monitor_id'] = synthetic_monitor_id
+    if web_test_properties_name_web_test_name is not None:
+        web_test_definition['web_test_name'] = web_test_properties_name_web_test_name
+    if description is not None:
+        web_test_definition['description'] = description
+    if enabled is not None:
+        web_test_definition['enabled'] = enabled
+    if frequency is not None:
+        web_test_definition['frequency'] = frequency
+    else:
+        web_test_definition['frequency'] = 300
+    if timeout is not None:
+        web_test_definition['timeout'] = timeout
+    else:
+        web_test_definition['timeout'] = 30
+    if web_test_kind is not None:
+        web_test_definition['web_test_kind'] = web_test_kind
+    else:
+        web_test_definition['web_test_kind'] = "ping"
+    if retry_enabled is not None:
+        web_test_definition['retry_enabled'] = retry_enabled
+    if locations is not None:
+        web_test_definition['locations'] = locations
+    web_test_definition['validation_rules'] = {}
+    if content_validation is not None:
+        web_test_definition['validation_rules']['content_validation'] = content_validation
+    if ssl_check is not None:
+        web_test_definition['validation_rules']['ssl_check'] = ssl_check
+    if ssl_cert_remaining_lifetime_check is not None:
+        web_test_definition['validation_rules']['ssl_cert_remaining_lifetime_check'] = ssl_cert_remaining_lifetime_check
+    if expected_http_status_code is not None:
+        web_test_definition['validation_rules']['expected_http_status_code'] = expected_http_status_code
+    if ignore_https_status_code is not None:
+        web_test_definition['validation_rules']['ignore_https_status_code'] = ignore_https_status_code
+    if len(web_test_definition['validation_rules']) == 0:
+        del web_test_definition['validation_rules']
+    web_test_definition['request'] = {}
+    if request_url is not None:
+        web_test_definition['request']['request_url'] = request_url
+    if headers is not None:
+        web_test_definition['request']['headers'] = headers
+    if http_verb is not None:
+        web_test_definition['request']['http_verb'] = http_verb
+    if request_body is not None:
+        web_test_definition['request']['request_body'] = request_body
+    if parse_dependent_requests is not None:
+        web_test_definition['request']['parse_dependent_requests'] = parse_dependent_requests
+    if follow_redirects is not None:
+        web_test_definition['request']['follow_redirects'] = follow_redirects
+    if len(web_test_definition['request']) == 0:
+        del web_test_definition['request']
+    web_test_definition['configuration'] = {}
+    if web_test is not None:
+        web_test_definition['configuration']['web_test'] = web_test
+    if len(web_test_definition['configuration']) == 0:
+        del web_test_definition['configuration']
+    return client.create_or_update(resource_group_name=resource_group_name,
+                                   web_test_name=web_test_name,
+                                   web_test_definition=web_test_definition)
+
+
+# pylint: disable=unused-argument
+def update_web_test(instance,
+                    resource_group_name,
+                    web_test_name,
+                    location,
+                    tags=None,
+                    kind=None,
+                    synthetic_monitor_id=None,
+                    web_test_properties_name_web_test_name=None,
+                    description=None,
+                    enabled=None,
+                    frequency=None,
+                    timeout=None,
+                    web_test_kind=None,
+                    retry_enabled=None,
+                    locations=None,
+                    content_validation=None,
+                    ssl_check=None,
+                    ssl_cert_remaining_lifetime_check=None,
+                    expected_http_status_code=None,
+                    ignore_https_status_code=None,
+                    request_url=None,
+                    headers=None,
+                    http_verb=None,
+                    request_body=None,
+                    parse_dependent_requests=None,
+                    follow_redirects=None,
+                    web_test=None):
+    instance.location = location
+    if tags is not None:
+        instance.tags = tags
+    if kind is not None:
+        instance.kind = kind
+    if synthetic_monitor_id is not None:
+        instance.synthetic_monitor_id = synthetic_monitor_id
+    if web_test_properties_name_web_test_name is not None:
+        instance.web_test_name = web_test_properties_name_web_test_name
+    if description is not None:
+        instance.description = description
+    if enabled is not None:
+        instance.enabled = enabled
+    if frequency is not None:
+        instance.frequency = frequency
+    if timeout is not None:
+        instance.timeout = timeout
+    if web_test_kind is not None:
+        instance.web_test_kind = web_test_kind
+    if retry_enabled is not None:
+        instance.retry_enabled = retry_enabled
+    if locations is not None:
+        instance.locations = locations
+    if content_validation is not None:
+        instance.validation_rules.content_validation = content_validation
+    if ssl_check is not None:
+        instance.validation_rules.ssl_check = ssl_check
+    if ssl_cert_remaining_lifetime_check is not None:
+        instance.validation_rules.ssl_cert_remaining_lifetime_check = ssl_cert_remaining_lifetime_check
+    if expected_http_status_code is not None:
+        instance.validation_rules.expected_http_status_code = expected_http_status_code
+    if ignore_https_status_code is not None:
+        instance.validation_rules.ignore_https_status_code = ignore_https_status_code
+    if request_url is not None:
+        instance.request.request_url = request_url
+    if headers is not None:
+        instance.request.headers = headers
+    if http_verb is not None:
+        instance.request.http_verb = http_verb
+    if request_body is not None:
+        instance.request.request_body = request_body
+    if parse_dependent_requests is not None:
+        instance.request.parse_dependent_requests = parse_dependent_requests
+    if follow_redirects is not None:
+        instance.request.follow_redirects = follow_redirects
+    if web_test is not None:
+        instance.configuration.web_test = web_test
+    return instance
+
+
+def delete_web_test(client, resource_group_name, web_test_name):
+    return client.delete(resource_group_name=resource_group_name, web_test_name=web_test_name)

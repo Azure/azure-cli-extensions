@@ -4,14 +4,13 @@
 # --------------------------------------------------------------------------------------------
 
 import json
-import datetime
 from knack.log import get_logger
 from knack.util import CLIError
 from azure.cli.core.azclierror import ArgumentUsageError, ClientRequestError
 from azure.cli.core.commands import LongRunningOperation
-from azure.cli.core.commands.client_factory import get_subscription_id, get_mgmt_service_client
+from azure.cli.core.commands.client_factory import get_subscription_id
 from azure.cli.core.util import sdk_no_wait
-from azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks.v2021_08_01.models import ManagedClusterAddonProfile
+from azext_aks_preview._client_factory import CUSTOM_MGMT_AKS_PREVIEW
 from ._client_factory import cf_resources, cf_resource_groups
 from ._resourcegroup import get_rg_location
 from ._roleassignments import add_role_assignment
@@ -20,8 +19,12 @@ from ._consts import ADDONS, CONST_VIRTUAL_NODE_ADDON_NAME, CONST_MONITORING_ADD
     CONST_VIRTUAL_NODE_SUBNET_NAME, CONST_INGRESS_APPGW_ADDON_NAME, CONST_INGRESS_APPGW_APPLICATION_GATEWAY_NAME, \
     CONST_INGRESS_APPGW_SUBNET_CIDR, CONST_INGRESS_APPGW_APPLICATION_GATEWAY_ID, CONST_INGRESS_APPGW_SUBNET_ID, \
     CONST_INGRESS_APPGW_WATCH_NAMESPACE, CONST_OPEN_SERVICE_MESH_ADDON_NAME, CONST_CONFCOM_ADDON_NAME, \
-    CONST_ACC_SGX_QUOTE_HELPER_ENABLED, CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME, CONST_SECRET_ROTATION_ENABLED, \
+    CONST_ACC_SGX_QUOTE_HELPER_ENABLED, CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME, CONST_SECRET_ROTATION_ENABLED, CONST_ROTATION_POLL_INTERVAL, \
     CONST_KUBE_DASHBOARD_ADDON_NAME
+from .vendored_sdks.azure_mgmt_preview_aks.v2022_05_02_preview.models import (
+    ManagedClusterIngressProfile,
+    ManagedClusterIngressProfileWebAppRouting,
+)
 
 logger = get_logger(__name__)
 
@@ -42,7 +45,9 @@ def enable_addons(cmd,
                   appgw_watch_namespace=None,
                   enable_sgxquotehelper=False,
                   enable_secret_rotation=False,
+                  rotation_poll_interval=None,
                   no_wait=False,
+                  dns_zone_resource_id=None,
                   enable_msi_auth_for_monitoring=False):
     instance = client.get(resource_group_name, name)
     # this is overwritten by _update_addons(), so the value needs to be recorded here
@@ -57,7 +62,8 @@ def enable_addons(cmd,
                              appgw_subnet_cidr=appgw_subnet_cidr, appgw_id=appgw_id, appgw_subnet_id=appgw_subnet_id,
                              appgw_watch_namespace=appgw_watch_namespace,
                              enable_sgxquotehelper=enable_sgxquotehelper,
-                             enable_secret_rotation=enable_secret_rotation, no_wait=no_wait)
+                             enable_secret_rotation=enable_secret_rotation, rotation_poll_interval=rotation_poll_interval, no_wait=no_wait,
+                             dns_zone_resource_id=dns_zone_resource_id)
 
     if CONST_MONITORING_ADDON_NAME in instance.addon_profiles and instance.addon_profiles[
        CONST_MONITORING_ADDON_NAME].enabled:
@@ -141,6 +147,8 @@ def update_addons(cmd,  # pylint: disable=too-many-branches,too-many-statements
                   appgw_watch_namespace=None,
                   enable_sgxquotehelper=False,
                   enable_secret_rotation=False,
+                  rotation_poll_interval=None,
+                  dns_zone_resource_id=None,
                   no_wait=False):  # pylint: disable=unused-argument
     # parse the comma-separated addons argument
     addon_args = addons.split(',')
@@ -149,8 +157,28 @@ def update_addons(cmd,  # pylint: disable=too-many-branches,too-many-statements
 
     os_type = 'Linux'
 
+    # load model
+    ManagedClusterAddonProfile = cmd.get_models(
+        "ManagedClusterAddonProfile",
+        resource_type=CUSTOM_MGMT_AKS_PREVIEW,
+        operation_group="managed_clusters",
+    )
+
     # for each addons argument
     for addon_arg in addon_args:
+        if addon_arg == "web_application_routing":
+            # web app routing settings are in ingress profile, not addon profile, so deal
+            # with it separately
+            if instance.ingress_profile is None:
+                instance.ingress_profile = ManagedClusterIngressProfile()
+            if instance.ingress_profile.web_app_routing is None:
+                instance.ingress_profile.web_app_routing = ManagedClusterIngressProfileWebAppRouting()
+            instance.ingress_profile.web_app_routing.enabled = enable
+
+            if dns_zone_resource_id is not None:
+                instance.ingress_profile.web_app_routing.dns_zone_resource_id = dns_zone_resource_id
+            continue
+
         if addon_arg not in ADDONS:
             raise CLIError("Invalid addon name: {}.".format(addon_arg))
         addon = ADDONS[addon_arg]
@@ -242,9 +270,11 @@ def update_addons(cmd,  # pylint: disable=too-many-branches,too-many-statements
                         f'"az aks disable-addons -a azure-keyvault-secrets-provider -n {name} -g {resource_group_name}" '
                         'before enabling it again.')
                 addon_profile = ManagedClusterAddonProfile(
-                    enabled=True, config={CONST_SECRET_ROTATION_ENABLED: "false"})
+                    enabled=True, config={CONST_SECRET_ROTATION_ENABLED: "false", CONST_ROTATION_POLL_INTERVAL: "2m"})
                 if enable_secret_rotation:
                     addon_profile.config[CONST_SECRET_ROTATION_ENABLED] = "true"
+                if rotation_poll_interval is not None:
+                    addon_profile.config[CONST_ROTATION_POLL_INTERVAL] = rotation_poll_interval
                 addon_profiles[CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME] = addon_profile
             addon_profiles[addon] = addon_profile
         else:
@@ -260,9 +290,8 @@ def update_addons(cmd,  # pylint: disable=too-many-branches,too-many-statements
 
     instance.addon_profiles = addon_profiles
 
-    # null out the SP and AAD profile because otherwise validation complains
+    # null out the SP profile because otherwise validation complains
     instance.service_principal_profile = None
-    instance.aad_profile = None
 
     return instance
 
@@ -514,7 +543,7 @@ def ensure_container_insights_for_monitoring(cmd,
 
     if aad_route:
         cluster_resource_id = f"/subscriptions/{cluster_subscription}/resourceGroups/{cluster_resource_group_name}/providers/Microsoft.ContainerService/managedClusters/{cluster_name}"
-        dataCollectionRuleName = f"DCR-{workspace_name}"
+        dataCollectionRuleName = f"MSCI-{workspace_name}"
         dcr_resource_id = f"/subscriptions/{subscription_id}/resourceGroups/{resource_group}/providers/Microsoft.Insights/dataCollectionRules/{dataCollectionRuleName}"
         from azure.cli.core.util import send_raw_request
         from azure.cli.core.profiles import ResourceType
@@ -653,121 +682,6 @@ def ensure_container_insights_for_monitoring(cmd,
                     error = e
             else:
                 raise error
-
-    else:
-        # legacy auth with LA workspace solution
-        unix_time_in_millis = int(
-            (datetime.datetime.utcnow() - datetime.datetime.utcfromtimestamp(0)).total_seconds() * 1000.0)
-
-        solution_deployment_name = 'ContainerInsights-{}'.format(
-            unix_time_in_millis)
-
-        # pylint: disable=line-too-long
-        template = {
-            "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
-            "contentVersion": "1.0.0.0",
-            "parameters": {
-                "workspaceResourceId": {
-                    "type": "string",
-                    "metadata": {
-                        "description": "Azure Monitor Log Analytics Resource ID"
-                    }
-                },
-                "workspaceRegion": {
-                    "type": "string",
-                    "metadata": {
-                        "description": "Azure Monitor Log Analytics workspace region"
-                    }
-                },
-                "solutionDeploymentName": {
-                    "type": "string",
-                    "metadata": {
-                        "description": "Name of the solution deployment"
-                    }
-                }
-            },
-            "resources": [
-                {
-                    "type": "Microsoft.Resources/deployments",
-                    "name": "[parameters('solutionDeploymentName')]",
-                    "apiVersion": "2017-05-10",
-                    "subscriptionId": "[split(parameters('workspaceResourceId'),'/')[2]]",
-                    "resourceGroup": "[split(parameters('workspaceResourceId'),'/')[4]]",
-                    "properties": {
-                        "mode": "Incremental",
-                        "template": {
-                            "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
-                            "contentVersion": "1.0.0.0",
-                            "parameters": {},
-                            "variables": {},
-                            "resources": [
-                                {
-                                    "apiVersion": "2015-11-01-preview",
-                                    "type": "Microsoft.OperationsManagement/solutions",
-                                    "location": "[parameters('workspaceRegion')]",
-                                    "name": "[Concat('ContainerInsights', '(', split(parameters('workspaceResourceId'),'/')[8], ')')]",
-                                    "properties": {
-                                        "workspaceResourceId": "[parameters('workspaceResourceId')]"
-                                    },
-                                    "plan": {
-                                        "name": "[Concat('ContainerInsights', '(', split(parameters('workspaceResourceId'),'/')[8], ')')]",
-                                        "product": "[Concat('OMSGallery/', 'ContainerInsights')]",
-                                        "promotionCode": "",
-                                        "publisher": "Microsoft"
-                                    }
-                                }
-                            ]
-                        },
-                        "parameters": {}
-                    }
-                }
-            ]
-        }
-
-        params = {
-            "workspaceResourceId": {
-                "value": workspace_resource_id
-            },
-            "workspaceRegion": {
-                "value": location
-            },
-            "solutionDeploymentName": {
-                "value": solution_deployment_name
-            }
-        }
-
-        deployment_name = 'aks-monitoring-{}'.format(unix_time_in_millis)
-        # publish the Container Insights solution to the Log Analytics workspace
-        return _invoke_deployment(cmd, resource_group, deployment_name, template, params,
-                                  validate=False, no_wait=False, subscription_id=subscription_id)
-
-
-def _invoke_deployment(cmd, resource_group_name, deployment_name, template, parameters, validate, no_wait,
-                       subscription_id=None):
-    from azure.cli.core.profiles import ResourceType
-    DeploymentProperties = cmd.get_models(
-        'DeploymentProperties', resource_type=ResourceType.MGMT_RESOURCE_RESOURCES)
-    properties = DeploymentProperties(
-        template=template, parameters=parameters, mode='incremental')
-    smc = get_mgmt_service_client(cmd.cli_ctx, ResourceType.MGMT_RESOURCE_RESOURCES,
-                                  subscription_id=subscription_id).deployments
-    if validate:
-        logger.info('==== BEGIN TEMPLATE ====')
-        logger.info(json.dumps(template, indent=2))
-        logger.info('==== END TEMPLATE ====')
-
-    Deployment = cmd.get_models(
-        'Deployment', resource_type=ResourceType.MGMT_RESOURCE_RESOURCES)
-    deployment = Deployment(properties=properties)
-    if validate:
-        if cmd.supported_api_version(min_api='2019-10-01', resource_type=ResourceType.MGMT_RESOURCE_RESOURCES):
-            validation_poller = smc.begin_validate(
-                resource_group_name, deployment_name, deployment)
-            return LongRunningOperation(cmd.cli_ctx)(validation_poller)
-        else:
-            return smc.validate(resource_group_name, deployment_name, deployment)
-
-    return sdk_no_wait(no_wait, smc.begin_create_or_update, resource_group_name, deployment_name, deployment)
 
 
 def add_monitoring_role_assignment(result, cluster_resource_id, cmd):

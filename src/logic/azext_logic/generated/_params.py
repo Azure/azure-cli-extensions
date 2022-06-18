@@ -38,7 +38,7 @@ def load_arguments(self, _):
                    help='The resource group name.')
         c.argument('name', options_list=[
                    '--name', '-n'], help='The workflow name.')
-        c.argument('definition', type=validate_file_or_dict, help='Path to a workflow defintion JSON file (see README.md for more info on this). ' +
+        c.argument('definition', type=validate_file_or_dict, help='Path to a workflow defintion JSON file (see https://github.com/Azure/azure-cli-extensions/blob/main/src/logic/README.md for more info on this). ' +
                    'This JSON format should match what the logic app design tool exports', completer=FilesCompleter())
         c.argument('location', arg_type=get_location_type(
             self.cli_ctx), validator=get_default_location_from_resource_group)
@@ -49,7 +49,7 @@ def load_arguments(self, _):
         c.argument('endpoints_configuration', arg_type=CLIArgumentType(options_list=['--endpoints-configuration'],
                                                                        help='The endpoints configuration.'))
         c.argument('access_control', arg_type=CLIArgumentType(options_list=['--access-control'], help='The access contr'
-                                                              'ol configuration controls access to this workflow. See README.md for more information'))
+                                                              'ol configuration controls access to this workflow. See https://github.com/Azure/azure-cli-extensions/blob/main/src/logic/README.md for more information'))
         c.argument('state', arg_type=get_enum_type(['NotSpecified', 'Completed', 'Enabled', 'Disabled', 'Deleted', 'Sus'
                                                     'pended']), help='The state.')
         c.argument('tags', tags_type, help='The resource tags.')
@@ -61,7 +61,7 @@ def load_arguments(self, _):
                    '--name', '-n'], help='The workflow name.')
         c.argument('state', arg_type=get_enum_type(['NotSpecified', 'Completed', 'Enabled', 'Disabled', 'Deleted', 'Sus'
                                                     'pended']), help='The state.')
-        c.argument('definition', type=validate_file_or_dict, help='Path to a workflow defintion JSON file (see README.md for more info on this). ' +
+        c.argument('definition', type=validate_file_or_dict, help='Path to a workflow defintion JSON file (see https://github.com/Azure/azure-cli-extensions/blob/main/src/logic/README.md for more info on this). ' +
                    'This JSON format should match what the logic app design tool exports', completer=FilesCompleter())
         c.argument('tags', tags_type, help='The resource tags.')
 
@@ -94,7 +94,7 @@ def load_arguments(self, _):
         c.argument('sku', type=str, help='The integration account sku.')
         c.argument('integration_service_environment', arg_type=CLIArgumentType(options_list=['--integration-service-env'
                                                                                              'ironment'], help='The integration se'
-                                                                               'rvice environment. See README.md For more information'))
+                                                                               'rvice environment. See https://github.com/Azure/azure-cli-extensions/blob/main/src/logic/README.md For more information'))
         c.argument('state', arg_type=get_enum_type(['NotSpecified', 'Completed', 'Enabled', 'Disabled', 'Deleted', 'Sus'
                                                     'pended']), help='The workflow state.')
 
@@ -107,7 +107,7 @@ def load_arguments(self, _):
         c.argument('sku', type=str, help='The integration account sku.')
         c.argument('integration_service_environment', arg_type=CLIArgumentType(options_list=['--integration-service-env'
                                                                                              'ironment'], help='The integration se'
-                                                                               'rvice environment. See README.md For more information'))
+                                                                               'rvice environment. See https://github.com/Azure/azure-cli-extensions/blob/main/src/logic/README.md For more information'))
         c.argument('state', arg_type=get_enum_type(['NotSpecified', 'Completed', 'Enabled', 'Disabled', 'Deleted', 'Sus'
                                                     'pended']), help='The workflow state.')
 

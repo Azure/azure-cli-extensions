@@ -9,7 +9,7 @@ from .._client_factory import cf_providers
 from .workspace import WorkspaceInfo
 
 
-class TargetInfo(object):
+class TargetInfo:
     def __init__(self, cmd, target_id=None):
 
         def select_value(key, value):

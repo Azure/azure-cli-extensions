@@ -14,10 +14,9 @@ import re
 from knack.util import CLIError
 from knack.log import get_logger
 from azure.cli.core.util import sdk_no_wait
-from azure.mgmt.resourcegraph.models import \
+from azext_dataprotection.vendored_sdks.resourcegraph.models import \
     QueryRequest, QueryRequestOptions
-import azext_dataprotection.manual.helpers as helper
-import azext_dataprotection.manual.backupcenter_helper as backupcenter_helper
+from azext_dataprotection.manual import backupcenter_helper, helpers as helper
 
 logger = get_logger(__name__)
 
@@ -26,6 +25,122 @@ def dataprotection_backup_vault_list(client, resource_group_name=None):
     if resource_group_name is not None:
         return client.get_in_resource_group(resource_group_name=resource_group_name)
     return client.get_in_subscription()
+
+
+def dataprotection_backup_vault_create(client,
+                                       resource_group_name,
+                                       vault_name,
+                                       storage_settings,
+                                       e_tag=None,
+                                       location=None,
+                                       tags=None,
+                                       type_=None,
+                                       alerts_for_all_job_failures=None,
+                                       no_wait=False):
+    parameters = {}
+    parameters['e_tag'] = e_tag
+    parameters['location'] = location
+    parameters['tags'] = tags
+    if type_ is not None:
+        parameters['identity'] = {}
+        parameters['identity']['type'] = type_
+    parameters['properties'] = {}
+    parameters['properties']['storage_settings'] = storage_settings
+    if alerts_for_all_job_failures is not None:
+        parameters['properties']['monitoring_settings'] = {}
+        parameters['properties']['monitoring_settings']['azure_monitor_alert_settings'] = {}
+        parameters['properties']['monitoring_settings']['azure_monitor_alert_settings']['alerts_for_all_job_failures'] = alerts_for_all_job_failures
+    return sdk_no_wait(no_wait,
+                       client.begin_create_or_update,
+                       resource_group_name=resource_group_name,
+                       vault_name=vault_name,
+                       parameters=parameters)
+
+
+def dataprotection_backup_vault_update(client,
+                                       resource_group_name,
+                                       vault_name,
+                                       tags=None,
+                                       alerts_for_all_job_failures=None,
+                                       type_=None,
+                                       no_wait=False):
+    parameters = {}
+    parameters['tags'] = tags
+    if alerts_for_all_job_failures is not None:
+        parameters['properties'] = {}
+        parameters['properties']['monitoring_settings'] = {}
+        parameters['properties']['monitoring_settings']['azure_monitor_alert_settings'] = {}
+        parameters['properties']['monitoring_settings']['azure_monitor_alert_settings']['alerts_for_all_job_failures'] = alerts_for_all_job_failures
+    if type_ is not None:
+        parameters['identity'] = {}
+        parameters['identity']['type'] = type_
+    return sdk_no_wait(no_wait,
+                       client.begin_update,
+                       resource_group_name=resource_group_name,
+                       vault_name=vault_name,
+                       parameters=parameters)
+
+
+def dataprotection_resource_guard_list(client, resource_group_name=None):
+    if resource_group_name is not None:
+        return client.get_resources_in_resource_group(resource_group_name=resource_group_name)
+    return client.get_resources_in_subscription()
+
+
+def resource_guard_list_protected_operations(client, resource_group_name, resource_guards_name, resource_type):
+    resource_guard_object = client.get(resource_group_name, resource_guards_name)
+    protected_operations = resource_guard_object.properties.resource_guard_operations
+    resource_type_protected_operation = []
+    for protected_operation in protected_operations:
+        if resource_type in protected_operation.vault_critical_operation:
+            resource_type_protected_operation.append(protected_operation)
+    return resource_type_protected_operation
+
+
+def dataprotection_resource_guard_create(client,
+                                         resource_group_name,
+                                         resource_guards_name,
+                                         e_tag=None,
+                                         location=None,
+                                         tags=None,
+                                         type_=None):
+    parameters = {}
+    parameters['e_tag'] = e_tag
+    parameters['location'] = location
+    parameters['tags'] = tags
+    if type_ is not None:
+        parameters['identity'] = {}
+        parameters['identity']['type'] = type_
+    parameters['properties'] = {}
+    return client.put(resource_group_name=resource_group_name,
+                      resource_guards_name=resource_guards_name,
+                      parameters=parameters)
+
+
+def dataprotection_resource_guard_update(client,
+                                         resource_group_name,
+                                         resource_guards_name,
+                                         tags=None,
+                                         type_=None,
+                                         resource_type=None,
+                                         critical_operation_exclusion_list=None):
+    resource_guard_object = client.get(resource_group_name, resource_guards_name)
+    parameters = {}
+    parameters['e_tag'] = resource_guard_object.e_tag
+    parameters['location'] = resource_guard_object.location
+    parameters['tags'] = tags
+    if type_ is not None:
+        parameters['identity'] = {}
+        parameters['identity']['type'] = type_
+    if resource_type is not None and critical_operation_exclusion_list is not None:
+        critical_operation_list = []
+        for critical_operation in critical_operation_exclusion_list:
+            critical_operation_list.append(resource_type + helper.critical_operation_map[critical_operation])
+        parameters['properties'] = {}
+        parameters['properties']['vault_critical_operation_exclusion_list'] = critical_operation_list
+    return client.put(resource_group_name=resource_group_name,
+                      resource_guards_name=resource_guards_name,
+                      parameters=parameters)
 
 
 def dataprotection_backup_instance_create(client, vault_name, resource_group_name, backup_instance, no_wait=False):
@@ -37,7 +152,7 @@ def dataprotection_backup_instance_create(client, vault_name, resource_group_nam
     validate_for_backup_request['backup_instance'] = validate_backup_instance['properties']
 
     sdk_no_wait(no_wait, client.begin_validate_for_backup, vault_name=vault_name,
-                resource_group_name=resource_group_name, parameters=validate_for_backup_request)
+                resource_group_name=resource_group_name, parameters=validate_for_backup_request).result()
     return sdk_no_wait(no_wait,
                        client.begin_create_or_update,
                        vault_name=vault_name,

@@ -13,7 +13,7 @@ from knack.help_files import helps
 
 helps['resource-mover'] = """
     type: group
-    short-summary: Move resources in Azure
+    short-summary: Manage Resource Mover Service API
 """
 
 helps['resource-mover move-collection'] = """
@@ -245,7 +245,8 @@ dependent resource.
                    "targetAvailabilitySetId": "/subscriptions/subID/resourceGroups/eastusRG/providers/Microsoft.Compute/availabilitySets/MyAVSet",
                    "targetAvailabilityZone": "2",
                    "targetResourceName": "MyVM-target",
-                   "targetVmSize": null
+                   "targetVmSize": null,
+                   "userManagedIdentities": [/subscriptions/subid/resourceGroups/eastusRG/providers/Microsoft.ManagedIdentity/userAssignedIdentities/umi1]
                }'
 """
 

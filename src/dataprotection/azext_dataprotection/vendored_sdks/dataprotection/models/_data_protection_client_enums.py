@@ -34,6 +34,11 @@ class AbsoluteMarker(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     FIRST_OF_WEEK = "FirstOfWeek"
     FIRST_OF_YEAR = "FirstOfYear"
 
+class AlertsState(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+
+    ENABLED = "Enabled"
+    DISABLED = "Disabled"
+
 class CreatedByType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """The type of identity that created the resource.
     """
@@ -216,6 +221,21 @@ class StorageSettingTypes(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
 
     GEO_REDUNDANT = "GeoRedundant"
     LOCALLY_REDUNDANT = "LocallyRedundant"
+
+class SyncType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+    """Field indicating sync type e.g. to sync only in case of failure or in all cases
+    """
+
+    DEFAULT = "Default"
+    FORCE_RESYNC = "ForceResync"
+
+class ValidationType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+    """Specifies the type of validation. In case of DeepValidation, all validations from
+    /validateForBackup API will run again.
+    """
+
+    SHALLOW_VALIDATION = "ShallowValidation"
+    DEEP_VALIDATION = "DeepValidation"
 
 class WeekNumber(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
 

@@ -5,8 +5,7 @@
 
 from azure.cli.core.commands.parameters import (
     get_enum_type,
-    get_three_state_flag,
-    tags_type
+    get_three_state_flag
 )
 from azure.cli.core.commands.validators import get_default_location_from_resource_group
 from . import consts
@@ -19,7 +18,6 @@ from .action import (
 
 def load_arguments(self, _):
     with self.argument_context(consts.EXTENSION_NAME) as c:
-        c.argument('tags', tags_type)
         c.argument('location',
                    validator=get_default_location_from_resource_group)
         c.argument('name',
@@ -51,23 +49,23 @@ def load_arguments(self, _):
                    help='Specify the release train for the extension type.')
         c.argument('configuration_settings',
                    arg_group="Configuration",
-                   options_list=['--configuration-settings', '--config'],
+                   options_list=['--configuration-settings', '--config-settings', '--config'],
                    action=AddConfigurationSettings,
                    nargs='+',
                    help='Configuration Settings as key=value pair.  Repeat parameter for each setting')
         c.argument('configuration_protected_settings',
                    arg_group="Configuration",
-                   options_list=['--configuration-protected-settings', '--config-protected'],
+                   options_list=['--configuration-protected-settings', '--config-protected-settings', '--config-protected'],
                    action=AddConfigurationProtectedSettings,
                    nargs='+',
                    help='Configuration Protected Settings as key=value pair.  Repeat parameter for each setting')
         c.argument('configuration_settings_file',
                    arg_group="Configuration",
-                   options_list=['--configuration-settings-file', '--config-file'],
+                   options_list=['--configuration-settings-file', '--config-settings-file', '--config-file'],
                    help='JSON file path for configuration-settings')
         c.argument('configuration_protected_settings_file',
                    arg_group="Configuration",
-                   options_list=['--configuration-protected-settings-file', '--config-protected-file'],
+                   options_list=['--configuration-protected-settings-file', '--config-protected-settings-file', '--config-protected-file'],
                    help='JSON file path for configuration-protected-settings')
         c.argument('release_namespace',
                    help='Specify the namespace to install the extension release.')
@@ -75,7 +73,14 @@ def load_arguments(self, _):
                    help='Specify the target namespace to install to for the extension instance. This'
                    ' parameter is required if extension scope is set to \'namespace\'')
 
+    with self.argument_context(f"{consts.EXTENSION_NAME} update") as c:
+        c.argument('yes',
+                   options_list=['--yes', '-y'],
+                   help='Ignore confirmation prompts')
+
     with self.argument_context(f"{consts.EXTENSION_NAME} delete") as c:
         c.argument('yes',
                    options_list=['--yes', '-y'],
                    help='Ignore confirmation prompts')
+        c.argument('force',
+                   help='Specify whether to force delete the extension from the cluster.')
