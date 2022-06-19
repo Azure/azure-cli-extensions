@@ -89,9 +89,15 @@ def network_manager_update(instance,
 
 def network_manager_delete(client,
                            resource_group_name,
-                           network_manager_name):
-    return client.delete(resource_group_name=resource_group_name,
-                         network_manager_name=network_manager_name)
+                           network_manager_name,
+                           force=False):
+    if force is False:
+        print("The '-force' flag was not provided for the delete operation. "
+              "If this resource or any of its child resources are part of a deployed configuration, "
+              "this delete will fail.")
+    return client.begin_delete(resource_group_name=resource_group_name,
+                               network_manager_name=network_manager_name,
+                               force=force)
 
 
 def network_manager_commit_post(cmd,
@@ -321,7 +327,7 @@ def network_manager_connect_config_delete(client,
                                           resource_group_name,
                                           network_manager_name,
                                           configuration_name):
-    return client.delete(resource_group_name=resource_group_name,
+    return client.begin_delete(resource_group_name=resource_group_name,
                          network_manager_name=network_manager_name,
                          configuration_name=configuration_name)
 
@@ -350,14 +356,12 @@ def network_manager_group_create(client,
                                  resource_group_name,
                                  network_manager_name,
                                  network_group_name,
-                                 member_type,
                                  if_match=None,
                                  display_name=None,
                                  description=None):
     parameters = {}
     parameters['display_name'] = display_name
     parameters['description'] = description
-    parameters['member_type'] = member_type
     return client.create_or_update(resource_group_name=resource_group_name,
                                    network_manager_name=network_manager_name,
                                    network_group_name=network_group_name,
@@ -387,10 +391,10 @@ def network_manager_group_delete(client,
                                  network_manager_name,
                                  network_group_name,
                                  force=None):
-    return client.delete(resource_group_name=resource_group_name,
-                         network_manager_name=network_manager_name,
-                         network_group_name=network_group_name,
-                         force=force)
+    return client.begin_delete(resource_group_name=resource_group_name,
+                               network_manager_name=network_manager_name,
+                               network_group_name=network_group_name,
+                               force=force)
 
 
 def network_manager_security_user_config_list(client,
@@ -453,9 +457,9 @@ def network_manager_security_user_config_delete(client,
                                                 resource_group_name,
                                                 network_manager_name,
                                                 configuration_name):
-    return client.delete(resource_group_name=resource_group_name,
-                         network_manager_name=network_manager_name,
-                         configuration_name=configuration_name)
+    return client.begin_delete(resource_group_name=resource_group_name,
+                               network_manager_name=network_manager_name,
+                               configuration_name=configuration_name)
 
 
 def network_manager_security_admin_config_list(client,
@@ -522,10 +526,10 @@ def network_manager_security_admin_config_delete(client,
                                                  network_manager_name,
                                                  configuration_name,
                                                  force=None):
-    return client.delete(resource_group_name=resource_group_name,
-                         network_manager_name=network_manager_name,
-                         configuration_name=configuration_name,
-                         force=force)
+    return client.begin_delete(resource_group_name=resource_group_name,
+                               network_manager_name=network_manager_name,
+                               configuration_name=configuration_name,
+                               force=force)
 
 
 def network_manager_admin_rule_collection_list(client,
@@ -593,7 +597,7 @@ def network_manager_admin_rule_collection_delete(client,
                                                  network_manager_name,
                                                  configuration_name,
                                                  rule_collection_name):
-    return client.delete(resource_group_name=resource_group_name,
+    return client.begin_delete(resource_group_name=resource_group_name,
                          network_manager_name=network_manager_name,
                          configuration_name=configuration_name,
                          rule_collection_name=rule_collection_name)
@@ -717,7 +721,7 @@ def network_manager_admin_rule_delete(client,
                                       configuration_name,
                                       rule_collection_name,
                                       rule_name):
-    return client.delete(resource_group_name=resource_group_name,
+    return client.begin_delete(resource_group_name=resource_group_name,
                          network_manager_name=network_manager_name,
                          configuration_name=configuration_name,
                          rule_collection_name=rule_collection_name,
@@ -789,7 +793,7 @@ def network_manager_admin_rule_delete(client,
 #                                                 network_manager_name,
 #                                                 configuration_name,
 #                                                 rule_collection_name):
-#     return client.delete(resource_group_name=resource_group_name,
+#     return client.begin_delete(resource_group_name=resource_group_name,
 #                          network_manager_name=network_manager_name,
 #                          configuration_name=configuration_name,
 #                          rule_collection_name=rule_collection_name)
@@ -904,7 +908,7 @@ def network_manager_admin_rule_delete(client,
 #                                      configuration_name,
 #                                      rule_collection_name,
 #                                      rule_name):
-#     return client.delete(resource_group_name=resource_group_name,
+#     return client.begin_delete(resource_group_name=resource_group_name,
 #                          network_manager_name=network_manager_name,
 #                          configuration_name=configuration_name,
 #                          rule_collection_name=rule_collection_name,
@@ -955,7 +959,7 @@ def network_manager_vnet_security_perimeter_show(client,
 def network_manager_vnet_security_perimeter_delete(client,
                                                    resource_group_name,
                                                    network_security_perimeter_name):
-    return client.delete(resource_group_name=resource_group_name,
+    return client.begin_delete(resource_group_name=resource_group_name,
                          network_security_perimeter_name=network_security_perimeter_name)
 
 
@@ -1044,7 +1048,7 @@ def network_manager_connection_subscription_delete(client,
 #                                                        resource_group_name,
 #                                                        network_manager_connection_name,
 #                                                        management_group_id):
-#     return client.delete(resource_group_name=resource_group_name,
+#     return client.begin_delete(resource_group_name=resource_group_name,
 #                          network_manager_connection_name=network_manager_connection_name,
 #                          management_group_id=management_group_id)
 

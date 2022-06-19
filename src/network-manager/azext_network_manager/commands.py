@@ -27,12 +27,12 @@ def load_command_table(self, _):
     )
 
     network_connectivityconfiguration = CliCommandType(
-        operations_tmpl='azext_network_manager.vendored_sdks.operations._connectivity_configurations_operations#ConnectivityConfigurationsOperations.{}',
+        operations_tmpl='azext_network_manager.vendored_sdks.operations._operations#ConnectivityConfigurationsOperations.{}',
         client_factory=cf_connectivityconfiguration
     )
 
     network_networkgroup = CliCommandType(
-        operations_tmpl='azext_network_manager.vendored_sdks.operations._network_groups_operations#NetworkGroupsOperations.{}',
+        operations_tmpl='azext_network_manager.vendored_sdks.operations._operations#NetworkGroupsOperations.{}',
         client_factory=cf_networkgroup
     )
 
@@ -42,17 +42,17 @@ def load_command_table(self, _):
     )
 
     network_securityadminconfiguration = CliCommandType(
-        operations_tmpl='azext_network_manager.vendored_sdks.operations._security_admin_configurations_operations#SecurityAdminConfigurationsOperations.{}',
+        operations_tmpl='azext_network_manager.vendored_sdks.operations._operations#SecurityAdminConfigurationsOperations.{}',
         client_factory=cf_securityadminconfiguration
     )
 
     network_adminrule = CliCommandType(
-        operations_tmpl='azext_network_manager.vendored_sdks.operations._admin_rules_operations#AdminRulesOperations.{}',
+        operations_tmpl='azext_network_manager.vendored_sdks.operations._operations#AdminRulesOperations.{}',
         client_factory=cf_adminrule
     )
 
     network_adminrulecollection = CliCommandType(
-        operations_tmpl='azext_network_manager.vendored_sdks.operations._admin_rule_collections_operations#AdminRuleCollectionsOperations.{}',
+        operations_tmpl='azext_network_manager.vendored_sdks.operations._operations#AdminRuleCollectionsOperations.{}',
         client_factory=cf_adminrulecollection
     )
 
@@ -67,7 +67,7 @@ def load_command_table(self, _):
     # )
 
     network_scopeconnection = CliCommandType(
-        operations_tmpl='azext_network_manager.vendored_sdks.operations._scope_connections_operations#ScopeConnectionsOperations.{}',
+        operations_tmpl='azext_network_manager.vendored_sdks.operations._operations#ScopeConnectionsOperations.{}',
         client_factory=cf_scopeconnection
     )
 
@@ -77,7 +77,7 @@ def load_command_table(self, _):
     )
 
     network_subscriptionconnection = CliCommandType(
-        operations_tmpl='azext_network_manager.vendored_sdks.operations._subscription_network_manager_connections_operations#SubscriptionNetworkManagerConnectionsOperations.{}',
+        operations_tmpl='azext_network_manager.vendored_sdks.operations._operations#SubscriptionNetworkManagerConnectionsOperations.{}',
         client_factory=cf_subscriptionconnection
     )
 
