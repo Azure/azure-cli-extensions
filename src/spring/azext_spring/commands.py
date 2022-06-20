@@ -7,7 +7,8 @@
 from azure.cli.core.commands import CliCommandType
 from azext_spring._utils import handle_asc_exception
 
-from ._client_factory import (cf_spring_20220301preview,
+from ._client_factory import (cf_spring_20220501preview,
+                              cf_spring_20220301preview,
                               cf_spring_20220101preview,
                               cf_spring_20201101preview,
                               cf_config_servers)
@@ -29,12 +30,12 @@ from ._app_managed_identity_validator import (validate_app_identity_remove_or_wa
 def load_command_table(self, _):
     spring_routing_util = CliCommandType(
         operations_tmpl='azext_spring.spring_instance#{}',
-        client_factory=cf_spring_20220101preview
+        client_factory=cf_spring_20220501preview
     )
 
     app_command = CliCommandType(
         operations_tmpl='azext_spring.app#{}',
-        client_factory=cf_spring_20220301preview
+        client_factory=cf_spring_20220501preview
     )
 
     app_managed_identity_command = CliCommandType(
@@ -91,7 +92,7 @@ def load_command_table(self, _):
                             exception_handler=handle_asc_exception) as g:
         g.custom_command('create', 'spring_create', supports_no_wait=True)
 
-    with self.command_group('spring', client_factory=cf_spring_20220101preview,
+    with self.command_group('spring', client_factory=cf_spring_20220501preview,
                             exception_handler=handle_asc_exception) as g:
         g.custom_command('update', 'spring_update', supports_no_wait=True)
         g.custom_command('delete', 'spring_delete', supports_no_wait=True)
@@ -125,9 +126,8 @@ def load_command_table(self, _):
                             exception_handler=handle_asc_exception) as g:
         g.custom_command('create', 'app_create')
         g.custom_command('update', 'app_update', supports_no_wait=True)
-        g.custom_command('deploy', 'app_deploy', supports_no_wait=True)
 
-    with self.command_group('spring app', client_factory=cf_spring_20220101preview,
+    with self.command_group('spring app', client_factory=cf_spring_20220501preview,
                             exception_handler=handle_asc_exception) as g:
         g.custom_command('set-deployment', 'app_set_deployment',
                          supports_no_wait=True)
@@ -139,8 +139,7 @@ def load_command_table(self, _):
         g.custom_command('list', 'app_list',
                          table_transformer=transform_app_table_output)
         g.custom_show_command(
-            'show', 'app_get', table_transformer=transform_app_table_output,
-            client_factory=cf_spring_20220301preview)
+            'show', 'app_get', table_transformer=transform_app_table_output)
         g.custom_command('start', 'app_start', supports_no_wait=True)
         g.custom_command('stop', 'app_stop', supports_no_wait=True)
         g.custom_command('restart', 'app_restart', supports_no_wait=True)
@@ -160,11 +159,15 @@ def load_command_table(self, _):
                             exception_handler=handle_asc_exception) as g:
         g.custom_command('tail', 'app_tail_log')
 
-    with self.command_group('spring app deployment', custom_command_type=app_command,
+    with self.command_group('spring app', custom_command_type=app_command, client_factory=cf_spring_20220501preview,
+                            exception_handler=handle_asc_exception) as g:
+        g.custom_command('deploy', 'app_deploy', supports_no_wait=True)
+
+    with self.command_group('spring app deployment', custom_command_type=app_command, client_factory=cf_spring_20220501preview,
                             exception_handler=handle_asc_exception) as g:
         g.custom_command('create', 'deployment_create', supports_no_wait=True)
 
-    with self.command_group('spring app deployment', client_factory=cf_spring_20220101preview,
+    with self.command_group('spring app deployment', client_factory=cf_spring_20220501preview,
                             exception_handler=handle_asc_exception) as g:
         g.custom_command('list', 'deployment_list',
                          table_transformer=transform_spring_deployment_output)
@@ -220,8 +223,7 @@ def load_command_table(self, _):
 
     with self.command_group('spring service-registry',
                             custom_command_type=service_registry_cmd_group,
-                            exception_handler=handle_asc_exception,
-                            is_preview=True) as g:
+                            exception_handler=handle_asc_exception) as g:
         g.custom_show_command('show', 'service_registry_show',
                               table_transformer=transform_service_registry_output)
         g.custom_command('bind', 'service_registry_bind')
@@ -229,8 +231,7 @@ def load_command_table(self, _):
 
     with self.command_group('spring application-configuration-service',
                             custom_command_type=application_configuration_service_cmd_group,
-                            exception_handler=handle_asc_exception,
-                            is_preview=True) as g:
+                            exception_handler=handle_asc_exception) as g:
         g.custom_command('clear', 'application_configuration_service_clear')
         g.custom_show_command('show', 'application_configuration_service_show',
                               table_transformer=transform_application_configuration_service_output)
@@ -294,7 +295,7 @@ def load_command_table(self, _):
 
     with self.command_group('spring build-service builder',
                             custom_command_type=builder_cmd_group,
-                            exception_handler=handle_asc_exception, is_preview=True) as g:
+                            exception_handler=handle_asc_exception) as g:
         g.custom_command('create', 'create_or_update_builder', supports_no_wait=True)
         g.custom_command('update', 'create_or_update_builder', supports_no_wait=True)
         g.custom_show_command('show', 'builder_show')
@@ -302,14 +303,14 @@ def load_command_table(self, _):
 
     with self.command_group('spring build-service builder buildpack-binding',
                             custom_command_type=buildpack_binding_cmd_group,
-                            exception_handler=handle_asc_exception, is_preview=True) as g:
+                            exception_handler=handle_asc_exception) as g:
         g.custom_command('create', 'create_or_update_buildpack_binding')
         g.custom_command('set', 'create_or_update_buildpack_binding')
         g.custom_show_command('show', 'buildpack_binding_show')
         g.custom_command('list', 'buildpack_binding_list')
         g.custom_command('delete', 'buildpack_binding_delete', confirmation=True)
 
-    with self.command_group('spring build-service', exception_handler=handle_asc_exception, is_preview=True):
+    with self.command_group('spring build-service', exception_handler=handle_asc_exception):
         pass
 
     with self.command_group('spring', exception_handler=handle_asc_exception):

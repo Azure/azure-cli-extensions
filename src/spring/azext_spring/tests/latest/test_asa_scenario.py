@@ -109,9 +109,9 @@ class StartStopAscTest(ScenarioTest):
 
     def test_stop_and_start_service(self):
         self.kwargs.update({
-            'serviceName': 'cli-unittest',
-            'resource_group': 'cli',
-            'location': 'eastus'
+            'serviceName': 'cli-unittest-start-stop',
+            'resource_group': 'cli-group',
+            'location': 'eastus2euap'
         })
 
         self.cmd('group create -n {resource_group} -l {location}')
@@ -217,13 +217,4 @@ class CustomImageTest(ScenarioTest):
         self.cmd('spring app deployment create -g {resourceGroup} -s {serviceName} --app {app} -n green'
                  + ' --container-image {containerImage} --registry-username PLACEHOLDER --registry-password PLACEHOLDER', checks=[
             self.check('name', 'green'),
-        ])
-
-        with self.assertRaisesRegexp(CLIError, "Failed to wait for deployment instances to be ready"):
-            self.cmd('spring app deploy -g {resourceGroup} -s {serviceName} -n {app} --artifact-path {file}')
-
-        self.cmd('spring app deployment show -g {resourceGroup} -s {serviceName} -n default --app {app} ', checks=[
-            self.check('name', 'default'),
-            self.check('properties.source.type', 'Jar'),
-            self.check('properties.source.runtimeVersion', 'Java_8'),
         ])

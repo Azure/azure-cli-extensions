@@ -267,3 +267,25 @@ class GenerateDumpTest(ScenarioTest):
         self.kwargs['instance'] = result['properties'].get('instances', [{}])[0].get('name')
         self.assertTrue(self.kwargs['instance'])
         self.cmd('spring app deployment generate-heap-dump -g {resourceGroup} -s {serviceName} --app {app} --deployment {deployment} --app-instance {instance} --file-path {path}')
+
+
+@record_only()
+class VnetPublicEndpointTest(ScenarioTest):
+    def test_vnet_public_endpoint(self):
+        self.kwargs.update({
+            'app': 'test-app',
+            'serviceName': 'cli-unittest',
+            'rg': 'cli'
+        })
+
+        self.cmd('spring app create -n {app} -g {rg} -s {serviceName} --assign-public-endpoint true', checks=[
+            self.check('properties.vnetAddons.publicEndpoint', True)
+        ])
+
+        self.cmd('spring app update -n {app} -g {rg} -s {serviceName} --assign-public-endpoint false', checks=[
+            self.check('properties.vnetAddons.publicEndpoint', False)
+        ])
+
+        self.cmd('spring app update -n {app} -g {rg} -s {serviceName} --assign-public-endpoint true', checks=[
+            self.check('properties.vnetAddons.publicEndpoint', True)
+        ])

@@ -9,6 +9,7 @@
 from enum import Enum, EnumMeta
 from six import with_metaclass
 
+
 class _CaseInsensitiveEnumMeta(EnumMeta):
     def __getitem__(self, name):
         return super().__getitem__(name.upper())
@@ -32,6 +33,7 @@ class ActionType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
 
     INTERNAL = "Internal"
 
+
 class CreatedByType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """The type of identity that created the resource.
     """
@@ -41,12 +43,14 @@ class CreatedByType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     MANAGED_IDENTITY = "ManagedIdentity"
     KEY = "Key"
 
+
 class KeyType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """The keyType to regenerate. Must be either 'primary' or 'secondary'(case-insensitive).
     """
 
     PRIMARY = "Primary"
     SECONDARY = "Secondary"
+
 
 class Origin(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """The intended executor of the operation; as in Resource Based Access Control (RBAC) and audit
@@ -56,6 +60,7 @@ class Origin(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     USER = "user"
     SYSTEM = "system"
     USER_SYSTEM = "user,system"
+
 
 class ProvisioningState(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """Provisioning state of the resource.

@@ -20,6 +20,7 @@ from azure.mgmt.core.tools import resource_id
 from knack.log import get_logger
 from ._utils import (ApiType, _get_rg_location, _get_file_type, _get_sku_name)
 from .vendored_sdks.appplatform.v2020_07_01 import models
+from ._constant import (MARKETPLACE_OFFER_ID, MARKETPLACE_PLAN_ID, MARKETPLACE_PUBLISHER_ID)
 
 logger = get_logger(__name__)
 
@@ -70,14 +71,16 @@ def _validate_terms(cmd, namespace):
     from azure.cli.core.commands.client_factory import get_mgmt_service_client
     client = get_mgmt_service_client(cmd.cli_ctx, MarketplaceOrderingAgreements).marketplace_agreements
     term = client.get(offer_type="virtualmachine",
-                      publisher_id='vmware-inc',
-                      offer_id='azure-spring-cloud-vmware-tanzu-2',
-                      plan_id='tanzu-asc-ent-mtr')
+                      publisher_id=MARKETPLACE_PUBLISHER_ID,
+                      offer_id=MARKETPLACE_OFFER_ID,
+                      plan_id=MARKETPLACE_PLAN_ID)
     if not term.accepted:
         raise InvalidArgumentValueError('Terms for Azure Spring Apps Enterprise is not accepted.\n'
-                                        'Run "az term accept --publisher vmware-inc '
-                                        '--product azure-spring-cloud-vmware-tanzu-2 '
-                                        '--plan tanzu-asc-ent-mtr" to accept the term.')
+                                        'Run "az term accept --publisher {} '
+                                        '--product {} '
+                                        '--plan {}" to accept the term.'.format(MARKETPLACE_PUBLISHER_ID,
+                                                                                MARKETPLACE_OFFER_ID,
+                                                                                MARKETPLACE_PLAN_ID))
 
 
 def _check_tanzu_components_not_enable(cmd, namespace):
@@ -198,6 +201,12 @@ def validate_log_since(namespace):
 def validate_jvm_options(namespace):
     if namespace.jvm_options is not None:
         namespace.jvm_options = namespace.jvm_options.strip('\'')
+
+
+def validate_ingress_timeout(namespace):
+    if namespace.ingress_read_timeout is not None and (namespace.ingress_read_timeout < 1 or
+                                                       namespace.ingress_read_timeout > 1800):
+        raise InvalidArgumentValueError("Invalid value: Ingress read timeout must be in the range [1,1800].")
 
 
 def validate_tracing_parameters_asc_create(namespace):

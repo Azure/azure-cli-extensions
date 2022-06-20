@@ -3,6 +3,11 @@
 Release History
 ===============
 
+0.4.0
+++++++
+* `az dataprotection resource-guard`: Onboard ResourceGuard to dataprotection extension
+* `az dataprotection backup-vault create/update`: Add support for Azure Monitor based alerts
+
 0.3.0
 ++++++
 * API version upgrade with bug fixes
