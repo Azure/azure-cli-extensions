@@ -75,14 +75,14 @@ def check_connectivity():
 
 def GeneratingFolder(time_stamp):
     #Creating the Diagnoser Folder and adding it if its not already present
-    path="C:\\Users\\t-svagadia\\Diagnoser"
+    path="C:\\Users\\t-svagadia\\DiagnosticLogs"
     try:
         os.mkdir(path)
     except FileExistsError:
         pass
 
     #Creating Subfolder with the given timestamp to store all the logs 
-    path="C:\\Users\\t-svagadia\\Diagnoser\ "+time_stamp
+    path="C:\\Users\\t-svagadia\\DiagnosticLogs\ "+time_stamp
     try:
         os.mkdir(path)
     except FileExistsError:
@@ -99,13 +99,13 @@ def agents_logger(api_instance,time_stamp):
 
         #Fethcing the current Pod name and creating a folder with that name inside the timestamp folder
         agent_name=agent_pod.metadata.name
-        path=("C:\\Users\\t-svagadia\\Diagnoser\ "+ time_stamp+"\Arc_Agents_logs")
+        path=("C:\\Users\\t-svagadia\\DiagnosticLogs\ "+ time_stamp+"\Arc_Agents_logs")
         try:
             os.mkdir(path)
         except FileExistsError:
             pass
 
-        path=("C:\\Users\\t-svagadia\\Diagnoser\ "+ time_stamp+"\Arc_Agents_logs\ "+agent_name)
+        path=("C:\\Users\\t-svagadia\\DiagnosticLogs\ "+ time_stamp+"\Arc_Agents_logs\ "+agent_name)
         try:
             os.mkdir(path)
         except FileExistsError:
@@ -119,7 +119,7 @@ def agents_logger(api_instance,time_stamp):
             
             #Creating a text file with the name of the container and adding that containers logs in it
             container_log=api_instance.read_namespaced_pod_log(name=agent_name,container=container_name,namespace = "azure-arc")
-            with open("C:\\Users\\t-svagadia\\Diagnoser\ "+ time_stamp+"\Arc_Agents_logs\ "+agent_name+"\ "+container_name+".txt",'w+') as container_file:
+            with open("C:\\Users\\t-svagadia\\DiagnosticLogs\ "+ time_stamp+"\Arc_Agents_logs\ "+agent_name+"\ "+container_name+".txt",'w+') as container_file:
                 container_file.write(str(container_log))
 
 
@@ -127,7 +127,7 @@ def agents_logger(api_instance,time_stamp):
 def deployments_logger(api_instance, time_stamp):
 
     #Creating new Deployment Logs folder in the given timestamp folder
-    path="C:\\Users\\t-svagadia\\Diagnoser\ "+time_stamp+"\Deployment_logs"  
+    path="C:\\Users\\t-svagadia\\DiagnosticLogs\ "+time_stamp+"\Deployment_logs"  
     try:
         os.mkdir(path)
     except FileExistsError:
@@ -143,13 +143,13 @@ def deployments_logger(api_instance, time_stamp):
         deployment_name=deployment.metadata.name
 
         #Creating a text file with the name of the deployment and adding deployment status in it
-        with open("C:\\Users\\t-svagadia\\Diagnoser\ "+ time_stamp+"\Deployment_logs\ "+deployment_name+".txt",'w+') as deployment_file:
+        with open("C:\\Users\\t-svagadia\\DiagnosticLogs\ "+ time_stamp+"\Deployment_logs\ "+deployment_name+".txt",'w+') as deployment_file:
             deployment_file.write(str(deployment.status))
         
     
 def check_agent_state(api_instance,time_stamp):
 
-    with open("C:\\Users\\t-svagadia\\Diagnoser\ "+ time_stamp+"\Agent_State.txt",'w+') as agent_state:
+    with open("C:\\Users\\t-svagadia\\DiagnosticLogs\ "+ time_stamp+"\Agent_State.txt",'w+') as agent_state:
 
         agents = api_instance.list_namespaced_pod(namespace="azure-arc")
         if not agents.items:
@@ -161,7 +161,7 @@ def check_agent_state(api_instance,time_stamp):
             if each_agent.status.phase == 'Pending' or each_agent.status.phase=="pending":
                 counter=1
         if counter:
-            print("Error: One or More Azure Arc agents are in Pending state. It may be caused due to insufficient resource availability in the cluster.\n Learn more at scaleup link. \n")
+            print("Error: One or more Azure Arc agents are in pending state. It may be caused due to insufficient resource availability on the cluster.\n For more details on resource requirement visit 'aka.ms\\arcenabledkubernetesresourcerequirement'. \n")
             return True
         return False                 
 
@@ -226,7 +226,7 @@ def check_outbound(api_instance,api_instance3,time_stamp,namespace):
     if(counter==0):
         
         subprocess.run(["kubectl", "delete", "-f", "TroubleshootTemplates\\test_deployment.yaml"],stdout=subprocess.DEVNULL)
-        print("Container not created.")
+        #print("Container not created.")
     else:
         try:
             job_name="testdeployment"
@@ -265,23 +265,25 @@ def diagnostic_container_check(network_log,time_stamp):
     # print(dns_check)                
     # print(outbound_check)
     error_counter=0
-    if(outbound_check!="000" ):
-        with open("C:\\Users\\t-svagadia\\Diagnoser\ "+ time_stamp+"\Outbound_Network_Check.txt",'w+') as dns:
-            dns.write("Response code "+outbound_check+": Your Outbound network connectivity is working fine.")
-    else:
-        error_counter=1
-        print("Error: We found an issue with Outbound network connectivity from the cluster.\n To know more please visit this 'link' \n")
-        with open("C:\\Users\\t-svagadia\\Diagnoser\ "+ time_stamp+"\Outbound_Check.txt",'w+') as dns:
-            dns.write("Response code "+outbound_check+": We found an issue with Outbound network connectivity from the cluster.")
 
     if("NXDOMAIN" in dns_check or "connection timed out" in dns_check):
         error_counter=1
-        print("Error: We found an issue with the DNS resolution on your cluster.\n For further help please visit 'link'.\n")
-        with open("C:\\Users\\t-svagadia\\Diagnoser\ "+ time_stamp+"\DNS_Check.txt",'w+') as dns:
-            dns.write(dns_check+": We found an issue with the DNS resolution on your cluster.")
+        print("Error: We found an issue with the DNS resolution on your cluster.\nFor details about debugging DNS issues visit 'https://kubernetes.io/docs/tasks/administer-cluster/dns-debugging-resolution/'.\n")
+        with open("C:\\Users\\t-svagadia\\DiagnosticLogs\ "+ time_stamp+"\DNS_Check.txt",'w+') as dns:
+            dns.write(dns_check+"\nWe found an issue with the DNS resolution on your cluster.")
     else:
-        with open("C:\\Users\\t-svagadia\\Diagnoser\ "+ time_stamp+"\DNS_Check.txt",'w+') as dns:
-            dns.write(dns_check+": Your Cluster DNS is working properly.")
+        with open("C:\\Users\\t-svagadia\\DiagnosticLogs\ "+ time_stamp+"\DNS_Check.txt",'w+') as dns:
+            dns.write(dns_check+"\nCluster DNS check passed successfully.")
+
+    if(outbound_check!="000" ):
+        with open("C:\\Users\\t-svagadia\\DiagnosticLogs\ "+ time_stamp+"\Outbound_Network_Connectivity_Check.txt",'w+') as dns:
+            dns.write("Response code "+outbound_check+"\nOutbound network connectivity check passed successfully.")
+    else:
+        error_counter=1
+        print("Error: We found an issue with outbound network connectivity from the cluster.\nIf your cluster is behind an outbound proxy server, please ensure that you have passed proxy paramaters during the onboarding of your cluster.\nFor more details visit 'https://docs.microsoft.com/en-us/azure/azure-arc/kubernetes/quickstart-connect-cluster?tabs=azure-cli#connect-using-an-outbound-proxy-server'.\nPlease ensure to meet the following network requirements 'https://docs.microsoft.com/en-us/azure/azure-arc/kubernetes/quickstart-connect-cluster?tabs=azure-cli#meet-network-requirements' \n")
+        with open("C:\\Users\\t-svagadia\\DiagnosticLogs\ "+ time_stamp+"\Outbound_Network_Connectivity_Check.txt",'w+') as dns:
+            dns.write("Response code "+outbound_check+"\nWe found an issue with Outbound network connectivity from the cluster.")
+
     if(error_counter):
         return True
     return False

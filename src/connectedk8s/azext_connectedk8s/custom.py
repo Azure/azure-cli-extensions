@@ -102,7 +102,7 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, https_proxy="",
 
     troubleshootutils.GeneratingFolder(time_stamp)
     
-    with open("C:\\Users\\t-svagadia\\Diagnoser\ "+time_stamp+"\\Connected_cluster_resource.txt",'w+') as cc:
+    with open("C:\\Users\\t-svagadia\\DiagnosticLogs\ "+time_stamp+"\\Connected_cluster_resource.txt",'w+') as cc:
         cc.write(str(connected_cluster))
 
     #For storing all the agent logs using the CoreV1Api
@@ -195,9 +195,9 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, https_proxy="",
         outbound_check=troubleshootutils.check_outbound(api_instance,api_instance3,time_stamp,current_k8s_namespace)
         #troubleshootutils.check_dns(api_instance,time_stamp)
     if (outbound_check or msi_check or agent_version_check or arc_agent_state_check):
-        logger.warning("For further assistance please contact the team.\n")
+        logger.warning("For more results from the diagnoser refer to the logs collected at \"C:\\Users\\t-svagadia\\DiagnosticLogs\". \nThese logs can be attached while filing a support ticket for further assistance.\n")
     else:
-        logger.warning("Diagnoser could not find any issues with the cluster. For further help please contact the team.\n")
+        logger.warning("Diagnoser could not find any issues with the cluster. \nFor more results from the diagnoser refer to the logs collected at \"C:\\Users\\t-svagadia\\DiagnosticLogs\". These logs can be attached while filing a support ticket for further assistance.\n")
 
 
 
