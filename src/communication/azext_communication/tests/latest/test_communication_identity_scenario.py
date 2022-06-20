@@ -45,3 +45,13 @@ class CommunicationIdentityScenarios(ScenarioTest):
         val = self.cmd(
             'az communication identity issue-access-token --scope chat --userid {id}').get_output_in_json()
         self.assertIsNotNone(val['token'])
+    
+    @ResourceGroupPreparer(name_prefix='clitestcommunication_MyResourceGroup'[:7], key='rg', parameter_name='rg')
+    @CommunicationResourcePreparer(resource_group_parameter_name='rg')
+    def test_issue_access_token_with_multiple_scopes(self, communication_resource_info):
+
+        os.environ['AZURE_COMMUNICATION_CONNECTION_STRING'] = communication_resource_info[1]
+
+        val = self.cmd(
+            'az communication identity issue-access-token --scope voip chat').get_output_in_json()
+        self.assertIsNotNone(val['token'])

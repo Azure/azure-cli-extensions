@@ -12,6 +12,43 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+* Update the minimum required cli core version to `2.37.0`.
+* Enable v2 decorator pattern.
+* Fix container name inconsistency for private clusters in kollect command.
+
+0.5.82
++++++++
+
+* Support Key Vault with private link when enabling Azure KeyVault KMS.
+
+0.5.81
+++++++
+
+* Add Trusted Access Role Binding commands
+    * az aks trustedaccess rolebinding create
+    * az aks trustedaccess rolebinding update
+    * az aks trustedaccess rolebinding list
+    * az aks trustedaccess rolebinding show
+    * az aks trustedaccess rolebinding delete
+* Fix: Remove permission prompt when saving config file to symlink with `az aks get-credentials`.
+
+0.5.80
+++++++
+
+* Fix the value of option --zones not being transmitted correctly for `az aks nodepool add`, see issue `\#4953 <https://github.com/Azure/azure-cli-extensions/issues/4953>`_.
+
+0.5.79
+++++++
+
+* Add support for KEDA workload auto-scaler.
+* Fix `az aks addon list`, `az aks addon list-available` and `az aks addon show` commands when dealing with the web application routing addon.
+* Update to use 2022-05-02-preview api version.
+
+0.5.78
+++++++
+
+* Prompt when disabling CSI Drivers.
+
 0.5.77
 ++++++
 

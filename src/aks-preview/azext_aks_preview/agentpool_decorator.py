@@ -17,8 +17,8 @@ from azure.cli.command_modules.acs.agentpool_decorator import (
     AKSAgentPoolUpdateDecorator,
 )
 from azure.cli.core.azclierror import (
-    ArgumentUsageError,
     InvalidArgumentValueError,
+    MutuallyExclusiveArgumentError,
 )
 from azure.cli.core.commands import AzCliCommand
 from azure.cli.core.profiles import ResourceType
@@ -174,6 +174,65 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
         # this parameter does not need validation
         return workload_runtime
 
+    def _get_enable_custom_ca_trust(self, enable_validation: bool = False) -> bool:
+        """Internal function to obtain the value of enable_custom_ca_trust.
+
+        This function supports the option of enable_validation. When enabled, if both enable_custom_ca_trust and
+        disable_custom_ca_trust are specified, raise a MutuallyExclusiveArgumentError.
+
+        :return: bool
+        """
+        # read the original value passed by the command
+        enable_custom_ca_trust = self.raw_param.get("enable_custom_ca_trust")
+        # In create mode, try to read the property value corresponding to the parameter from the `agentpool` object
+        if self.decorator_mode == DecoratorMode.CREATE:
+            if self.agentpool and self.agentpool.enable_custom_ca_trust is not None:
+                enable_custom_ca_trust = self.agentpool.enable_custom_ca_trust
+
+        # this parameter does not need dynamic completion
+        # validation
+        if enable_validation:
+            if enable_custom_ca_trust and self._get_disable_custom_ca_trust(enable_validation=False):
+                raise MutuallyExclusiveArgumentError(
+                    'Cannot specify "--enable-custom-ca-trust" and "--disable-custom-ca-trust" at the same time'
+                )
+        return enable_custom_ca_trust
+
+    def get_enable_custom_ca_trust(self) -> bool:
+        """Obtain the value of enable_custom_ca_trust.
+
+        :return: bool
+        """
+        return self._get_enable_custom_ca_trust(enable_validation=True)
+
+    def _get_disable_custom_ca_trust(self, enable_validation: bool = False) -> bool:
+        """Internal function to obtain the value of disable_custom_ca_trust.
+
+        This function supports the option of enable_validation. When enabled, if both enable_custom_ca_trust and
+        disable_custom_ca_trust are specified, raise a MutuallyExclusiveArgumentError.
+
+        :return: bool
+        """
+        # read the original value passed by the command
+        disable_custom_ca_trust = self.raw_param.get("disable_custom_ca_trust")
+        # This option is not supported in create mode, so its value is not read from `agentpool`.
+
+        # this parameter does not need dynamic completion
+        # validation
+        if enable_validation:
+            if disable_custom_ca_trust and self._get_enable_custom_ca_trust(enable_validation=False):
+                raise MutuallyExclusiveArgumentError(
+                    'Cannot specify "--enable-custom-ca-trust" and "--disable-custom-ca-trust" at the same time'
+                )
+        return disable_custom_ca_trust
+
+    def get_disable_custom_ca_trust(self) -> bool:
+        """Obtain the value of disable_custom_ca_trust.
+
+        :return: bool
+        """
+        return self._get_disable_custom_ca_trust(enable_validation=True)
+
 
 class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
     def __init__(
@@ -229,7 +288,7 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
         agentpool.message_of_the_day = self.context.get_message_of_the_day()
         return agentpool
 
-    def set_up_gpu_propertes(self, agentpool: AgentPool) -> AgentPool:
+    def set_up_gpu_properties(self, agentpool: AgentPool) -> AgentPool:
         """Set up gpu related properties for the AgentPool object.
 
         :return: the AgentPool object
@@ -240,6 +299,16 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
         agentpool.workload_runtime = self.context.get_workload_runtime()
         return agentpool
 
+    def set_up_custom_ca_trust(self, agentpool: AgentPool) -> AgentPool:
+        """Set up custom ca trust property for the AgentPool object.
+
+        :return: the AgentPool object
+        """
+        self._ensure_agentpool(agentpool)
+
+        agentpool.enable_custom_ca_trust = self.context.get_enable_custom_ca_trust()
+        return agentpool
+
     def construct_agentpool_profile_preview(self) -> AgentPool:
         """The overall controller used to construct the preview AgentPool profile.
 
@@ -248,14 +317,17 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
 
         :return: the AgentPool object
         """
-        # construct the default AgentPool profile
+        # DO NOT MOVE: keep this on top, construct the default AgentPool profile
         agentpool = self.construct_agentpool_profile_default(bypass_restore_defaults=True)
+
         # set up preview vm properties
         agentpool = self.set_up_preview_vm_properties(agentpool)
         # set up message of the day
         agentpool = self.set_up_motd(agentpool)
         # set up gpu profiles
-        agentpool = self.set_up_gpu_propertes(agentpool)
+        agentpool = self.set_up_gpu_properties(agentpool)
+        # set up custom ca trust
+        agentpool = self.set_up_custom_ca_trust(agentpool)
 
         # DO NOT MOVE: keep this at the bottom, restore defaults
         agentpool = self._restore_defaults_in_agentpool(agentpool)
@@ -295,6 +367,20 @@ class AKSPreviewAgentPoolUpdateDecorator(AKSAgentPoolUpdateDecorator):
             self.agentpool_decorator_mode,
         )
 
+    def update_custom_ca_trust(self, agentpool: AgentPool) -> AgentPool:
+        """Update custom ca trust property for the AgentPool object.
+
+        :return: the AgentPool object
+        """
+        self._ensure_agentpool(agentpool)
+
+        if self.context.get_enable_custom_ca_trust():
+            agentpool.enable_custom_ca_trust = True
+
+        if self.context.get_disable_custom_ca_trust():
+            agentpool.enable_custom_ca_trust = False
+        return agentpool
+
     def update_agentpool_profile_preview(self, agentpools: List[AgentPool] = None) -> AgentPool:
         """The overall controller used to update the preview AgentPool profile.
 
@@ -303,6 +389,9 @@ class AKSPreviewAgentPoolUpdateDecorator(AKSAgentPoolUpdateDecorator):
 
         :return: the AgentPool object
         """
-        # fetch and update the default AgentPool profile
+        # DO NOT MOVE: keep this on top, fetch and update the default AgentPool profile
         agentpool = self.update_agentpool_profile_default(agentpools)
+
+        # update custom ca trust
+        agentpool = self.update_custom_ca_trust(agentpool)
         return agentpool

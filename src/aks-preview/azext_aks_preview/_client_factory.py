@@ -22,6 +22,10 @@ def cf_trustedaccess_role(cli_ctx, *_):
     return get_container_service_client(cli_ctx).trusted_access_roles
 
 
+def cf_trustedaccess_role_binding(cli_ctx, *_):
+    return get_container_service_client(cli_ctx).trusted_access_role_bindings
+
+
 def cf_container_services(cli_ctx, *_):
     return get_container_service_client(cli_ctx).container_services
 

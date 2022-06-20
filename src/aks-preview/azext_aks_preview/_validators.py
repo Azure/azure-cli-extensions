@@ -12,14 +12,18 @@ from ipaddress import ip_network
 
 from knack.log import get_logger
 
-from azure.cli.core.azclierror import InvalidArgumentValueError, ArgumentUsageError
+from azure.cli.core.azclierror import InvalidArgumentValueError, ArgumentUsageError, RequiredArgumentMissingError
 from azure.cli.core.commands.validators import validate_tag
 from azure.cli.core.util import CLIError
 import azure.cli.core.keys as keys
 
 from ._helpers import (_fuzzy_match)
 
-from ._consts import ADDONS
+from ._consts import (
+    ADDONS,
+    CONST_AZURE_KEYVAULT_NETWORK_ACCESS_PUBLIC,
+    CONST_AZURE_KEYVAULT_NETWORK_ACCESS_PRIVATE,
+)
 
 logger = get_logger(__name__)
 
@@ -587,9 +591,28 @@ def validate_azure_keyvault_kms_key_id(namespace):
             raise InvalidArgumentValueError(err_msg)
 
 
+def validate_azure_keyvault_kms_key_vault_resource_id(namespace):
+    key_vault_resource_id = namespace.azure_keyvault_kms_key_vault_resource_id
+    if key_vault_resource_id is None or key_vault_resource_id == '':
+        return
+    from msrestazure.tools import is_valid_resource_id
+    if not is_valid_resource_id(key_vault_resource_id):
+        raise InvalidArgumentValueError("--azure-keyvault-kms-key-vault-resource-id is not a valid Azure resource ID.")
+
+
 def validate_enable_custom_ca_trust(namespace):
     """Validates Custom CA Trust can only be used on Linux."""
     if namespace.enable_custom_ca_trust:
         if hasattr(namespace, 'os_type') and namespace.os_type != "Linux":
             raise ArgumentUsageError(
                 '--enable_custom_ca_trust can only be set for Linux nodepools')
+
+
+def validate_defender_config_parameter(namespace):
+    if namespace.defender_config and not namespace.enable_defender:
+        raise RequiredArgumentMissingError("Please specify --enable-defnder")
+
+
+def validate_defender_disable_and_enable_parameters(namespace):
+    if namespace.disable_defender and namespace.enable_defender:
+        raise ArgumentUsageError('Providing both --disable-defender and --enable-defender flags is invalid')

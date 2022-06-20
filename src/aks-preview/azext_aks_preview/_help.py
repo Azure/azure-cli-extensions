@@ -190,9 +190,6 @@ helps['aks create'] = """
         - name: --disable-rbac
           type: bool
           short-summary: Disable Kubernetes Role-Based Access Control.
-        - name: --enable-rbac -r
-          type: bool
-          short-summary: "Enable Kubernetes Role-Based Access Control. Default: enabled."
         - name: --max-pods -m
           type: int
           short-summary: The maximum number of pods deployable to a node.
@@ -263,9 +260,6 @@ helps['aks create'] = """
         - name: --max-count
           type: int
           short-summary: Maximum nodes count used for autoscaler, when "--enable-cluster-autoscaler" specified. Please specify the value in the range of [1, 1000].
-        - name: --cluster-autoscaler-profile
-          type: list
-          short-summary: Space-separated list of key=value pairs for configuring cluster autoscaler. Pass an empty string to clear the profile.
         - name: --vm-set-type
           type: string
           short-summary: Agent pool vm set type. VirtualMachineScaleSets or AvailabilitySet.
@@ -324,9 +318,6 @@ helps['aks create'] = """
         - name: --appgw-name
           type: string
           short-summary: Name of the application gateway to create/use in the node resource group. Use with ingress-azure addon.
-        - name: --appgw-subnet-prefix
-          type: string
-          short-summary: Subnet Prefix to use for a new subnet created to deploy the Application Gateway. Use with ingress-azure addon.
         - name: --appgw-subnet-cidr
           type: string
           short-summary: Subnet CIDR to use for a new subnet created to deploy the Application Gateway. Use with ingress-azure addon.
@@ -441,12 +432,28 @@ helps['aks create'] = """
         - name: --azure-keyvault-kms-key-id
           type: string
           short-summary: Identifier of Azure Key Vault key.
+        - name: --azure-keyvault-kms-key-vault-network-access
+          type: string
+          short-summary: Network Access of Azure Key Vault.
+          long-summary: Allowed values are "Public", "Private". If not set, defaults to type "Public". Requires --azure-keyvault-kms-key-id to be used.
+        - name: --azure-keyvault-kms-key-vault-resource-id
+          type: string
+          short-summary: Resource ID of Azure Key Vault.
         - name: --dns-zone-resource-id
           type: string
           short-summary: The resource ID of the DNS zone resource to use with the web_application_routing addon.
         - name: --enable-custom-ca-trust
           type: bool
           short-summary: Enable Custom CA Trust on agent node pool.
+        - name: --enable-keda
+          type: bool
+          short-summary: Enable KEDA workload auto-scaler.
+        - name: --enable-defender
+          type: bool
+          short-summary: Enable Microsoft Defender security profile.
+        - name: --defender-config
+          type: string
+          short-summary: Path to JSON file containing Microsoft Defender profile configurations.
     examples:
         - name: Create a Kubernetes cluster with an existing SSH public key.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --ssh-key-value /path/to/publickey
@@ -571,9 +578,6 @@ helps['aks update'] = """
         - name: --no-uptime-sla
           type: bool
           short-summary: Change a paid managed cluster to a free one.
-        - name: --cluster-autoscaler-profile
-          type: list
-          short-summary: Space-separated list of key=value pairs for configuring cluster autoscaler. Pass an empty string to clear the profile.
         - name: --load-balancer-managed-outbound-ip-count
           type: int
           short-summary: Load balancer managed outbound IP count.
@@ -755,12 +759,34 @@ helps['aks update'] = """
         - name: --azure-keyvault-kms-key-id
           type: string
           short-summary: Identifier of Azure Key Vault key.
+        - name: --azure-keyvault-kms-key-vault-network-access
+          type: string
+          short-summary: Network Access of Azure Key Vault.
+          long-summary: Allowed values are "Public", "Private". If not set, defaults to type "Public". Requires --azure-keyvault-kms-key-id to be used.
+        - name: --azure-keyvault-kms-key-vault-resource-id
+          type: string
+          short-summary: Resource ID of Azure Key Vault.
         - name: --enable-apiserver-vnet-integration
           type: bool
           short-summary: Enable integration of user vnet with control plane apiserver pods.
         - name: --apiserver-subnet-id
           type: string
           short-summary: The ID of a subnet in an existing VNet into which to assign control plane apiserver pods(requires --enable-apiserver-vnet-integration)
+        - name: --enable-keda
+          type: bool
+          short-summary: Enable KEDA workload auto-scaler.
+        - name: --disable-keda
+          type: bool
+          short-summary: Disable KEDA workload auto-scaler.
+        - name: --enable-defender
+          type: bool
+          short-summary: Enable Microsoft Defender security profile.
+        - name: --disable-defender
+          type: bool
+          short-summary: Disable defender profile.
+        - name: --defender-config
+          type: string
+          short-summary: Path to JSON file containing Microsoft Defender profile configurations.
     examples:
       - name: Reconcile the cluster back to its current state.
         text: az aks update -g MyResourceGroup -n MyManagedCluster
@@ -852,7 +878,10 @@ helps['aks kollect'] = """
             for example, kube-system/deployment/tunnelfront.
         - name: --node-logs
           type: string
-          short-summary: The list of node logs to collect. For example, /var/log/cloud-init.log
+          short-summary: The list of node logs to collect for Linux nodes. For example, /var/log/cloud-init.log
+        - name: --node-logs-windows
+          type: string
+          short-summary: The list of node logs to collect for Windows nodes. For example, C:\\AzureData\\CustomDataSetupScript.log
     examples:
       - name: using storage account name and a shared access signature token with write permission
         text: az aks kollect -g MyResourceGroup -n MyManagedCluster --storage-account MyStorageAccount --sas-token "MySasToken"
@@ -1755,6 +1784,68 @@ helps['aks trustedaccess role list'] = """
     short-summary: List trusted access roles.
 """
 
+helps['aks trustedaccess rolebinding'] = """
+    type: group
+    short-summary: Commands to manage trusted access role bindings.
+"""
+
+helps['aks trustedaccess rolebinding list'] = """
+    type: command
+    short-summary: List all the trusted access role bindings.
+"""
+
+helps['aks trustedaccess rolebinding show'] = """
+    type: command
+    short-summary: Get the specific trusted access role binding according to binding name.
+    parameters:
+        - name: --name -n
+          type: string
+          short-summary: Specify the role binding name.
+"""
+
+helps['aks trustedaccess rolebinding create'] = """
+    type: command
+    short-summary: Create a new trusted access role binding.
+    parameters:
+        - name: --name -n
+          type: string
+          short-summary: Specify the role binding name.
+        - name: --roles
+          type: string
+          short-summary: Specify the space-separated roles.
+        - name: --source-resource-id -s
+          type: string
+          short-summary: Specify the source resource id of the binding.
+
+    examples:
+        - name: Create a new trusted access role binding
+          text: az aks trustedaccess rolebinding create -g myResourceGroup --cluster-name myCluster -n bindingName -s /subscriptions/0000/resourceGroups/myResourceGroup/providers/Microsoft.Demo/samples --roles Microsoft.Demo/samples/reader Microsoft.Demo/samples/writer
+"""
+
+helps['aks trustedaccess rolebinding update'] = """
+    type: command
+    short-summary: Update a trusted access role binding.
+    parameters:
+        - name: --name -n
+          type: string
+          short-summary: Specify the role binding name.
+        - name: --roles
+          type: string
+          short-summary: Specify the space-separated roles.
+        - name: --source-resource-id -s
+          type: string
+          short-summary: Specify the source resource id of the binding.
+"""
+
+helps['aks trustedaccess rolebinding delete'] = """
+    type: command
+    short-summary: Delete a trusted access role binding according to name.
+    parameters:
+        - name: --name -n
+          type: string
+          short-summary: Specify the role binding name.
+"""
+
 helps['aks draft'] = """
     type: group
     short-summary: Commands to build deployment files in a project directory and deploy to an AKS cluster.
@@ -1798,7 +1889,7 @@ helps['aks draft create'] = """
 
 helps['aks draft setup-gh'] = """
     type: command
-    short-summary: Set up Github OIDC for your application
+    short-summary: Set up GitHub OIDC for your application
     parameters:
         - name: --app
           type: string
@@ -1814,25 +1905,25 @@ helps['aks draft setup-gh'] = """
           short-summary: Specify the cloud provider (default is azure).
         - name: --gh-repo
           type: string
-          short-summary: Specify the the github repository (organization/repo_name).
+          short-summary: Specify the the GitHub repository (organization/repo_name).
         - name: --path
           type: string
           short-summary: Automatically download and use the Draft binary at the specified location.
     examples:
-      - name: Prompt to setup the Github OIDC for a repository.
+      - name: Prompt to setup the GitHub OIDC for a repository.
         text: az aks draft setup-gh
-      - name: Setup the github OIDC on Azure for a specific repository.
+      - name: Setup the GitHub OIDC on Azure for a specific repository.
         text: az aks draft setup-gh --provider=azure --gh-repo=some_organization/some_repo
-      - name: Setup the github OIDC on Azure with subscription ID and resource group.
+      - name: Setup the GitHub OIDC on Azure with subscription ID and resource group.
         text: az aks draft setup-gh --provider=azure --subscription-id=some_subscription --resource-group=some_rg
-      - name: Setup the github OIDC with an application name on Azure with subscription ID and resource group for a specific repository.
+      - name: Setup the GitHub OIDC with an application name on Azure with subscription ID and resource group for a specific repository.
         text: az aks draft setup-gh --app=some_app --provider=azure --subscription-id=some_subscription --resource-group=some_rg --gh-repo=some_organization/some_repo
 """
 
 helps['aks draft generate-workflow'] = """
     type: command
-    short-summary: Generate a Github workflow for automatic build and deploy to AKS
-    long-summary: Before running this command, Make sure you have set up Github OIDC for your application.
+    short-summary: Generate a GitHub workflow for automatic build and deploy to AKS
+    long-summary: Before running this command, Make sure you have set up GitHub OIDC for your application.
                   You also need to create a resource group, a container registry and a Kubernetes cluster on Azure and
                   link the three resources using `az aks update -n <cluster-name> -g <resource-group-name> --attach-acr <acr-name>`.
     parameters:
@@ -1853,24 +1944,24 @@ helps['aks draft generate-workflow'] = """
           short-summary: Specify the name of the container image.
         - name: --branch
           type: string
-          short-summary: Specify the Github branch to automatically deploy from.
+          short-summary: Specify the GitHub branch to automatically deploy from.
         - name: --path
           type: string
           short-summary: Automatically download and use the Draft binary at the specified location.
     examples:
-      - name: Prompt to generate a Github workflow in the current directory.
+      - name: Prompt to generate a GitHub workflow in the current directory.
         text: az aks draft generate-workflow
-      - name: Prompt to generate a Github workflow in a specific project directory.
+      - name: Prompt to generate a GitHub workflow in a specific project directory.
         text: az aks draft generate-workflow --destination=/projects/some_project
-      - name: Generate a Github workflow with a resource group, an AKS cluster name, a container registry name in a specific project directory.
+      - name: Generate a GitHub workflow with a resource group, an AKS cluster name, a container registry name in a specific project directory.
         text: az aks draft generate-workflow --resource-group=some_rg --cluster-name=some_cluster --registry-name=some_registry --destination=/projects/some_project
-      - name: Generate a Github workflow that deploys from the main branch with a resource group, an AKS cluster name, a container registry name, and a container image name in a specific project directory.
+      - name: Generate a GitHub workflow that deploys from the main branch with a resource group, an AKS cluster name, a container registry name, and a container image name in a specific project directory.
         text: az aks draft generate-workflow --branch=main --resource-group=some_rg --cluster-name=some_cluster --registry-name=some_registry --container-name=some_image --destination=/projects/some_project
 """
 
 helps['aks draft up'] = """
     type: command
-    short-summary: Set up Github OIDC and generate a Github workflow for automatic build and deploy to AKS
+    short-summary: Set up GitHub OIDC and generate a GitHub workflow for automatic build and deploy to AKS
     long-summary: This command combines `az aks draft setup-gh` and `az aks draft generate-workflow`.
                   Before running this command, create a resource group, a container registry and a Kubernetes cluster on Azure and
                   link the three resources using `az aks update -n <cluster-name> -g <resource-group-name> --attach-acr <acr-name>`.
@@ -1889,7 +1980,7 @@ helps['aks draft up'] = """
           short-summary: Specify the cloud provider (default is azure).
         - name: --gh-repo
           type: string
-          short-summary: Specify the the github repository (organization/repo_name).
+          short-summary: Specify the the GitHub repository (organization/repo_name).
         - name: --cluster-name
           type: string
           short-summary: Specify the AKS cluster name.
@@ -1904,16 +1995,16 @@ helps['aks draft up'] = """
           short-summary: Specify the path to the project directory (default is .).
         - name: --branch
           type: string
-          short-summary: Specify the Github branch to automatically deploy from.
+          short-summary: Specify the GitHub branch to automatically deploy from.
         - name: --path
           type: string
           short-summary: Automatically download and use the Draft binary at the specified location.
     examples:
-      - name: Prompt to setup the Github OIDC then generate a Github workflow in the current directory.
+      - name: Prompt to setup the GitHub OIDC then generate a GitHub workflow in the current directory.
         text: az aks draft up
-      - name: Prompt to setup the Github OIDC then generate a Github workflow in a specific project directory.
+      - name: Prompt to setup the GitHub OIDC then generate a GitHub workflow in a specific project directory.
         text: az aks draft up --destination=/projects/some_project
-      - name: Prompt to setup the Github OIDC for a specific repository then generate a Github workflow in a specific project directory.
+      - name: Prompt to setup the GitHub OIDC for a specific repository then generate a GitHub workflow in a specific project directory.
         text: az aks draft up --gh-repo=some_organization/some_repo --destination=/projects/some_project
 """
 

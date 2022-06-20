@@ -114,6 +114,17 @@ class AKSPreviewModelsTestCase(unittest.TestCase):
             getattr(module, "ManagedClusterPodIdentityException"),
         )
 
+        # workload auto-scaler profile models
+        self.assertEqual(
+            models.ManagedClusterWorkloadAutoScalerProfile,
+            getattr(module, "ManagedClusterWorkloadAutoScalerProfile")
+        )
+
+        self.assertEqual(
+            models.ManagedClusterWorkloadAutoScalerProfileKeda,
+            getattr(module, "ManagedClusterWorkloadAutoScalerProfileKeda")
+        )
+
 
 class AKSPreviewContextTestCase(unittest.TestCase):
     def setUp(self):
@@ -817,7 +828,7 @@ class AKSPreviewContextTestCase(unittest.TestCase):
         ctx_1.attach_mc(mc)
         self.assertEqual(ctx_1.get_nat_gateway_idle_timeout(), 20)
 
-    def test_get_disk_driver_update(self):
+    def test_get_storage_profile_update(self):
         # default
         ctx_1 = AKSPreviewContext(
             self.cmd,
@@ -846,6 +857,7 @@ class AKSPreviewContextTestCase(unittest.TestCase):
             {
                 "enable_disk_driver": True,
                 "disable_disk_driver": True,
+                "yes": True,
             },
             self.models,
             decorator_mode=DecoratorMode.UPDATE,
@@ -971,6 +983,7 @@ class AKSPreviewContextTestCase(unittest.TestCase):
                 "disk_driver_version": "v2",
                 "disable_file_driver": True,
                 "disable_snapshot_controller": True,
+                "yes": True,
             },
             self.models,
             decorator_mode=DecoratorMode.UPDATE,
@@ -1011,7 +1024,53 @@ class AKSPreviewContextTestCase(unittest.TestCase):
         with self.assertRaises(ArgumentUsageError):
             ctx_10.get_disk_driver()
 
-    def test_get_disk_driver_create(self):
+        # fail on prompt_y_n not specified when disabling disk driver
+        ctx_11 = AKSPreviewContext(
+            self.cmd,
+            {
+                "disable_disk_driver": True,
+            },
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        with patch(
+            "azext_aks_preview.decorator.prompt_y_n",
+            return_value=False,
+        ), self.assertRaises(DecoratorEarlyExitException):
+            ctx_11.get_disk_driver()
+
+        # fail on prompt_y_n not specified when disabling file driver
+        ctx_12 = AKSPreviewContext(
+            self.cmd,
+            {
+                "disable_file_driver": True,
+            },
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        with patch(
+            "azext_aks_preview.decorator.prompt_y_n",
+            return_value=False,
+        ), self.assertRaises(DecoratorEarlyExitException):
+            ctx_12.get_file_driver()
+
+        # fail on prompt_y_n not specified when disabling snapshot controller
+        ctx_13 = AKSPreviewContext(
+            self.cmd,
+            {
+                "disable_snapshot_controller": True,
+            },
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        with patch(
+            "azext_aks_preview.decorator.prompt_y_n",
+            return_value=False,
+        ), self.assertRaises(DecoratorEarlyExitException):
+            ctx_13.get_snapshot_controller()
+
+
+    def test_get_storage_profile_create(self):
         # default
         ctx_1 = AKSPreviewContext(
             self.cmd,
@@ -2448,6 +2507,215 @@ class AKSPreviewContextTestCase(unittest.TestCase):
         with self.assertRaises(RequiredArgumentMissingError):
             ctx_5.get_azure_keyvault_kms_key_id()
 
+    def test_get_azure_keyvault_kms_key_vault_network_access(self):
+        key_vault_network_access_1 = "Public"
+        key_vault_network_access_2 = "Private"
+
+        ctx_0 = AKSPreviewContext(
+            self.cmd,
+            {},
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertIsNone(ctx_0.get_azure_keyvault_kms_key_vault_network_access())
+
+        ctx_1 = AKSPreviewContext(
+            self.cmd,
+            {
+                "enable_azure_keyvault_kms": True,
+                "azure_keyvault_kms_key_vault_network_access": key_vault_network_access_1,
+            },
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertEqual(ctx_1.get_azure_keyvault_kms_key_vault_network_access(), key_vault_network_access_1)
+
+        ctx_2 = AKSPreviewContext(
+            self.cmd,
+            {
+                "enable_azure_keyvault_kms": True,
+                "azure_keyvault_kms_key_vault_network_access": key_vault_network_access_2,
+            },
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        security_profile = self.models.ManagedClusterSecurityProfile()
+        security_profile.azure_key_vault_kms = self.models.AzureKeyVaultKms(
+            enabled=True,
+            key_vault_network_access=key_vault_network_access_1,
+        )
+        mc = self.models.ManagedCluster(
+            location="test_location",
+            security_profile=security_profile,
+        )
+        ctx_2.attach_mc(mc)
+        self.assertEqual(ctx_2.get_azure_keyvault_kms_key_vault_network_access(), key_vault_network_access_2)
+
+        ctx_3 = AKSPreviewContext(
+            self.cmd,
+            {
+                "azure_keyvault_kms_key_vault_network_access": key_vault_network_access_2,
+            },
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        with self.assertRaises(RequiredArgumentMissingError):
+            ctx_3.get_azure_keyvault_kms_key_vault_network_access()
+
+        ctx_4 = AKSPreviewContext(
+            self.cmd,
+            {
+                "enable_azure_keyvault_kms": False,
+                "azure_keyvault_kms_key_vault_network_access": key_vault_network_access_2,
+            },
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        with self.assertRaises(RequiredArgumentMissingError):
+            ctx_4.get_azure_keyvault_kms_key_vault_network_access()
+
+    def test_get_azure_keyvault_kms_key_vault_resource_id(self):
+        key_vault_resource_id_1 = "/subscriptions/8ecadfc9-d1a3-4ea4-b844-0d9f87e4d7c8/resourceGroups/foo/providers/Microsoft.KeyVault/vaults/foo"
+        key_vault_resource_id_2 = "/subscriptions/8ecadfc9-d1a3-4ea4-b844-0d9f87e4d7c8/resourceGroups/bar/providers/Microsoft.KeyVault/vaults/bar"
+
+        ctx_0 = AKSPreviewContext(
+            self.cmd,
+            {},
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertIsNone(ctx_0.get_azure_keyvault_kms_key_vault_resource_id())
+
+        ctx_1 = AKSPreviewContext(
+            self.cmd,
+            {
+                "enable_azure_keyvault_kms": True,
+                "azure_keyvault_kms_key_vault_network_access": "Public",
+            },
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertEqual(ctx_1.get_azure_keyvault_kms_key_vault_resource_id(), None)
+
+        ctx_2 = AKSPreviewContext(
+            self.cmd,
+            {
+                "enable_azure_keyvault_kms": True,
+                "azure_keyvault_kms_key_vault_network_access": "Public",
+                "azure_keyvault_kms_key_vault_resource_id": "",
+            },
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertEqual(ctx_2.get_azure_keyvault_kms_key_vault_resource_id(), "")
+
+        ctx_3 = AKSPreviewContext(
+            self.cmd,
+            {
+                "enable_azure_keyvault_kms": True,
+                "azure_keyvault_kms_key_vault_network_access": "Private",
+                "azure_keyvault_kms_key_vault_resource_id": key_vault_resource_id_1,
+            },
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertEqual(ctx_3.get_azure_keyvault_kms_key_vault_resource_id(), key_vault_resource_id_1)
+
+        ctx_4 = AKSPreviewContext(
+            self.cmd,
+            {
+                "enable_azure_keyvault_kms": True,
+                "azure_keyvault_kms_key_vault_network_access": "Private",
+                "azure_keyvault_kms_key_vault_resource_id": key_vault_resource_id_1,
+            },
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        security_profile = self.models.ManagedClusterSecurityProfile()
+        security_profile.azure_key_vault_kms = self.models.AzureKeyVaultKms(
+            enabled=True,
+            key_vault_network_access="Private",
+            key_vault_resource_id=key_vault_resource_id_2,
+        )
+        mc = self.models.ManagedCluster(
+            location="test_location",
+            security_profile=security_profile,
+        )
+        ctx_4.attach_mc(mc)
+        self.assertEqual(ctx_4.get_azure_keyvault_kms_key_vault_resource_id(), key_vault_resource_id_2)
+
+        ctx_5 = AKSPreviewContext(
+            self.cmd,
+            {
+                "enable_azure_keyvault_kms": True,
+                "azure_keyvault_kms_key_vault_network_access": "Private",
+                "azure_keyvault_kms_key_vault_resource_id": key_vault_resource_id_2,
+            },
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        security_profile = self.models.ManagedClusterSecurityProfile()
+        security_profile.azure_key_vault_kms = self.models.AzureKeyVaultKms(
+            enabled=True,
+            key_vault_network_access="Private",
+            key_vault_resource_id=key_vault_resource_id_1,
+        )
+        mc = self.models.ManagedCluster(
+            location="test_location",
+            security_profile=security_profile,
+        )
+        ctx_5.attach_mc(mc)
+        self.assertEqual(ctx_5.get_azure_keyvault_kms_key_vault_resource_id(), key_vault_resource_id_2)
+
+        ctx_6 = AKSPreviewContext(
+            self.cmd,
+            {
+                "azure_keyvault_kms_key_vault_resource_id": key_vault_resource_id_1,
+            },
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        with self.assertRaises(RequiredArgumentMissingError):
+            ctx_6.get_azure_keyvault_kms_key_vault_resource_id()
+
+        ctx_7 = AKSPreviewContext(
+            self.cmd,
+            {
+                "enable_azure_keyvault_kms": False,
+                "azure_keyvault_kms_key_vault_resource_id": key_vault_resource_id_1,
+            },
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        with self.assertRaises(RequiredArgumentMissingError):
+            ctx_7.get_azure_keyvault_kms_key_vault_resource_id()
+
+        ctx_8 = AKSPreviewContext(
+            self.cmd,
+            {
+                "enable_azure_keyvault_kms": True,
+                "azure_keyvault_kms_key_vault_network_access": "Public",
+                "azure_keyvault_kms_key_vault_resource_id": key_vault_resource_id_1,
+            },
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        with self.assertRaises(ArgumentUsageError):
+            ctx_8.get_azure_keyvault_kms_key_vault_resource_id()
+
+        ctx_9 = AKSPreviewContext(
+            self.cmd,
+            {
+                "enable_azure_keyvault_kms": True,
+                "azure_keyvault_kms_key_vault_network_access": "Private",
+                "azure_keyvault_kms_key_vault_resource_id": "",
+            },
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        with self.assertRaises(ArgumentUsageError):
+            ctx_9.get_azure_keyvault_kms_key_vault_resource_id()
+
     def test_get_updated_assign_kubelet_identity(self):
         ctx_0 = AKSPreviewContext(
             self.cmd,
@@ -2629,6 +2897,87 @@ class AKSPreviewContextTestCase(unittest.TestCase):
         )
         with self.assertRaises(RequiredArgumentMissingError):
             ctx_6.get_apiserver_subnet_id()
+
+    def test_get_enable_keda(self):
+        # Returns the value of enable_keda if keda is None in existing profile.
+        ctx = AKSPreviewContext(self.cmd, {}, self.models, decorator_mode=DecoratorMode.CREATE)
+        self.assertIsNone(ctx.get_enable_keda())
+
+        ctx = AKSPreviewContext(self.cmd, {"enable_keda": False}, self.models, decorator_mode=DecoratorMode.CREATE)
+        self.assertFalse(ctx.get_enable_keda())
+
+        ctx = AKSPreviewContext(self.cmd, {"enable_keda": True}, self.models, decorator_mode=DecoratorMode.CREATE)
+        self.assertTrue(ctx.get_enable_keda())
+
+        keda_none_mc = self.models.ManagedCluster(
+            location="test_location",
+            workload_auto_scaler_profile=self.models.ManagedClusterWorkloadAutoScalerProfile())
+
+        keda_false_mc = self.models.ManagedCluster(
+            location="test_location",
+            workload_auto_scaler_profile=self.models.ManagedClusterWorkloadAutoScalerProfile(
+                keda=self.models.ManagedClusterWorkloadAutoScalerProfileKeda(enabled=False)))
+
+        keda_true_mc = self.models.ManagedCluster(
+            location="test_location",
+            workload_auto_scaler_profile=self.models.ManagedClusterWorkloadAutoScalerProfile(
+                keda=self.models.ManagedClusterWorkloadAutoScalerProfileKeda(enabled=True)))
+
+        # Returns the value of keda in existing profile if enable_keda is None.
+        ctx = AKSPreviewContext(self.cmd, {}, self.models, decorator_mode=DecoratorMode.CREATE)
+        ctx.attach_mc(keda_none_mc)
+        self.assertIsNone(ctx.get_enable_keda())
+
+        ctx = AKSPreviewContext(self.cmd, {}, self.models, decorator_mode=DecoratorMode.CREATE)
+        ctx.attach_mc(keda_false_mc)
+        self.assertFalse(ctx.get_enable_keda())
+
+        ctx = AKSPreviewContext(self.cmd, {}, self.models, decorator_mode=DecoratorMode.CREATE)
+        ctx.attach_mc(keda_true_mc)
+        self.assertTrue(ctx.get_enable_keda())
+
+        # Ignores the value of keda in existing profile in update-mode.
+        ctx = AKSPreviewContext(self.cmd, {}, self.models, decorator_mode=DecoratorMode.UPDATE)
+        ctx.attach_mc(keda_true_mc)
+        self.assertIsNone(ctx.get_enable_keda())
+
+        # Throws exception when both enable_keda and disable_keda are True.
+        ctx = AKSPreviewContext(self.cmd, {"enable_keda": True, "disable_keda": True}, self.models, decorator_mode=DecoratorMode.CREATE)
+        with self.assertRaises(MutuallyExclusiveArgumentError):
+            ctx.get_enable_keda()
+
+        # Throws exception when disable_keda and the value of keda in existing profile are True.
+        ctx = AKSPreviewContext(self.cmd, {"disable_keda": True}, self.models, decorator_mode=DecoratorMode.CREATE)
+        ctx.attach_mc(keda_true_mc)
+        with self.assertRaises(MutuallyExclusiveArgumentError):
+            ctx.get_enable_keda()
+
+    def test_get_disable_keda(self):
+        # Returns the value of disable_keda.
+        ctx = AKSPreviewContext(self.cmd, {}, self.models, decorator_mode=DecoratorMode.CREATE)
+        self.assertIsNone(ctx.get_disable_keda())
+
+        ctx = AKSPreviewContext(self.cmd, {"disable_keda": False}, self.models, decorator_mode=DecoratorMode.CREATE)
+        self.assertFalse(ctx.get_disable_keda())
+
+        ctx = AKSPreviewContext(self.cmd, {"disable_keda": True}, self.models, decorator_mode=DecoratorMode.CREATE)
+        self.assertTrue(ctx.get_disable_keda())
+
+        # Throws exception when both enable_keda and disable_keda are True.
+        ctx = AKSPreviewContext(self.cmd, {"enable_keda": True, "disable_keda": True}, self.models, decorator_mode=DecoratorMode.CREATE)
+        with self.assertRaises(MutuallyExclusiveArgumentError):
+            ctx.get_disable_keda()
+
+        keda_true_mc = self.models.ManagedCluster(
+            location="test_location",
+            workload_auto_scaler_profile=self.models.ManagedClusterWorkloadAutoScalerProfile(
+                keda=self.models.ManagedClusterWorkloadAutoScalerProfileKeda(enabled=True)))
+
+        # Throws exception when disable_keda and the value of keda in existing profile are True.
+        ctx = AKSPreviewContext(self.cmd, {"disable_keda": True}, self.models, decorator_mode=DecoratorMode.CREATE)
+        ctx.attach_mc(keda_true_mc)
+        with self.assertRaises(MutuallyExclusiveArgumentError):
+            ctx.get_disable_keda()
 
 
 class AKSPreviewCreateDecoratorTestCase(unittest.TestCase):
@@ -3571,6 +3920,8 @@ class AKSPreviewCreateDecoratorTestCase(unittest.TestCase):
         self.assertTrue(updated_mc.security_profile.workload_identity.enabled)
 
     def test_set_up_azure_keyvault_kms(self):
+        key_id_1 = "https://fakekeyvault.vault.azure.net/secrets/fakekeyname/fakekeyversion"
+
         dec_1 = AKSPreviewCreateDecorator(
             self.cmd,
             self.client,
@@ -3586,13 +3937,13 @@ class AKSPreviewCreateDecoratorTestCase(unittest.TestCase):
         )
         self.assertEqual(dec_mc_1, ground_truth_mc_1)
 
-        key_id_1 = "https://fakekeyvault.vault.azure.net/secrets/fakekeyname/fakekeyversion"
         dec_2 = AKSPreviewCreateDecorator(
             self.cmd,
             self.client,
             {
                 "enable_azure_keyvault_kms": True,
                 "azure_keyvault_kms_key_id": key_id_1,
+                "azure_keyvault_kms_key_vault_network_access": "Public",
             },
             CUSTOM_MGMT_AKS_PREVIEW,
         )
@@ -3602,6 +3953,7 @@ class AKSPreviewCreateDecoratorTestCase(unittest.TestCase):
         ground_truth_azure_keyvault_kms_profile_2 = self.models.AzureKeyVaultKms(
             enabled=True,
             key_id=key_id_1,
+            key_vault_network_access="Public",
         )
         ground_truth_security_profile_2 = self.models.ManagedClusterSecurityProfile(
             azure_key_vault_kms=ground_truth_azure_keyvault_kms_profile_2,
@@ -3612,6 +3964,36 @@ class AKSPreviewCreateDecoratorTestCase(unittest.TestCase):
         )
 
         self.assertEqual(dec_mc_2, ground_truth_mc_2)
+
+        dec_3 = AKSPreviewCreateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_azure_keyvault_kms": True,
+                "azure_keyvault_kms_key_id": key_id_1,
+                "azure_keyvault_kms_key_vault_network_access": "Private",
+                "azure_keyvault_kms_key_vault_resource_id": "/subscriptions/8ecadfc9-d1a3-4ea4-b844-0d9f87e4d7c8/resourceGroups/foo/providers/Microsoft.KeyVault/vaults/foo",
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_3 = self.models.ManagedCluster(location="test_location")
+        dec_mc_3 = dec_3.set_up_azure_keyvault_kms(mc_3)
+
+        ground_truth_azure_keyvault_kms_profile_3 = self.models.AzureKeyVaultKms(
+            enabled=True,
+            key_id=key_id_1,
+            key_vault_network_access="Private",
+            key_vault_resource_id="/subscriptions/8ecadfc9-d1a3-4ea4-b844-0d9f87e4d7c8/resourceGroups/foo/providers/Microsoft.KeyVault/vaults/foo",
+        )
+        ground_truth_security_profile_3 = self.models.ManagedClusterSecurityProfile(
+            azure_key_vault_kms=ground_truth_azure_keyvault_kms_profile_3,
+        )
+        ground_truth_mc_3 = self.models.ManagedCluster(
+            location="test_location",
+            security_profile=ground_truth_security_profile_3,
+        )
+
+        self.assertEqual(dec_mc_3, ground_truth_mc_3)
 
     def test_set_up_api_server_access_profile(self):
         dec_1 = AKSPreviewCreateDecorator(
@@ -3654,8 +4036,6 @@ class AKSPreviewCreateDecoratorTestCase(unittest.TestCase):
             location="test_location",
             api_server_access_profile=ground_truth_api_server_access_profile_2,
         )
-        print(dec_mc_2.api_server_access_profile)
-        print(ground_truth_api_server_access_profile_2)
         self.assertEqual(dec_mc_2, ground_truth_mc_2)
 
     def test_set_up_creationdata_of_cluster_snapshot(self):
@@ -3675,6 +4055,35 @@ class AKSPreviewCreateDecoratorTestCase(unittest.TestCase):
         ground_truth_mc_1 = self.models.ManagedCluster(
             location="test_location", creation_data=cd)
         self.assertEqual(dec_mc_1, ground_truth_mc_1)
+
+    def test_set_up_workload_auto_scaler_profile(self):
+        # Throws exception when incorrect mc object is passed.
+        dec = AKSPreviewCreateDecorator(self.cmd, self.client, {}, CUSTOM_MGMT_AKS_PREVIEW)
+        with self.assertRaisesRegex(CLIInternalError, "^Unexpected mc object with type '<class 'NoneType'>'\.$"):
+            dec.set_up_workload_auto_scaler_profile(None)
+
+        # Sets profile to None without raw parameters.
+        dec = AKSPreviewCreateDecorator(self.cmd, self.client, {}, CUSTOM_MGMT_AKS_PREVIEW)
+        mc_in = self.models.ManagedCluster(location="test_location")
+        mc_out = dec.set_up_workload_auto_scaler_profile(mc_in)
+        self.assertEqual(mc_out, mc_in)
+        self.assertIsNone(mc_out.workload_auto_scaler_profile)
+
+        # Sets profile to None if enable_keda is False.
+        dec = AKSPreviewCreateDecorator(self.cmd, self.client, {"enable_keda": False}, CUSTOM_MGMT_AKS_PREVIEW)
+        mc_in = self.models.ManagedCluster(location="test_location")
+        mc_out = dec.set_up_workload_auto_scaler_profile(mc_in)
+        self.assertEqual(mc_out, mc_in)
+        self.assertIsNone(mc_out.workload_auto_scaler_profile)
+
+        # Sets profile with keda enabled if enable_keda is True.
+        dec = AKSPreviewCreateDecorator(self.cmd, self.client, {"enable_keda": True}, CUSTOM_MGMT_AKS_PREVIEW)
+        mc_in = self.models.ManagedCluster(location="test_location")
+        mc_out = dec.set_up_workload_auto_scaler_profile(mc_in)
+        self.assertEqual(mc_out, mc_in)
+        self.assertIsNotNone(mc_out.workload_auto_scaler_profile)
+        self.assertIsNotNone(mc_out.workload_auto_scaler_profile.keda)
+        self.assertTrue(mc_out.workload_auto_scaler_profile.keda.enabled)
 
     def test_construct_mc_preview_profile(self):
         import inspect
@@ -4805,6 +5214,8 @@ class AKSPreviewUpdateDecoratorTestCase(unittest.TestCase):
             {
                 "enable_azure_keyvault_kms": True,
                 "azure_keyvault_kms_key_id": key_id_1,
+                "azure_keyvault_kms_key_vault_network_access": "Private",
+                "azure_keyvault_kms_key_vault_resource_id": "/subscriptions/8ecadfc9-d1a3-4ea4-b844-0d9f87e4d7c8/resourceGroups/foo/providers/Microsoft.KeyVault/vaults/foo",
             },
             CUSTOM_MGMT_AKS_PREVIEW,
         )
@@ -4817,6 +5228,8 @@ class AKSPreviewUpdateDecoratorTestCase(unittest.TestCase):
         ground_truth_azure_keyvault_kms_profile_2 = self.models.AzureKeyVaultKms(
             enabled=True,
             key_id=key_id_1,
+            key_vault_network_access="Private",
+            key_vault_resource_id="/subscriptions/8ecadfc9-d1a3-4ea4-b844-0d9f87e4d7c8/resourceGroups/foo/providers/Microsoft.KeyVault/vaults/foo",
         )
         ground_truth_security_profile_2 = self.models.ManagedClusterSecurityProfile(
             azure_key_vault_kms=ground_truth_azure_keyvault_kms_profile_2,
@@ -5003,6 +5416,88 @@ class AKSPreviewUpdateDecoratorTestCase(unittest.TestCase):
             )
             self.assertEqual(dec_mc_5, ground_truth_mc_5)
 
+    def test_update_workload_auto_scaler_profile(self):
+        # Throws exception when incorrect mc object is passed.
+        dec = AKSPreviewUpdateDecorator(self.cmd, self.client, {}, CUSTOM_MGMT_AKS_PREVIEW)
+        with self.assertRaisesRegex(CLIInternalError, "^Unexpected mc object with type '<class 'NoneType'>'\.$"):
+            dec.update_workload_auto_scaler_profile(None)
+
+        # Throws exception when the mc object passed does not match the one in context.
+        dec = AKSPreviewUpdateDecorator(self.cmd, self.client, {}, CUSTOM_MGMT_AKS_PREVIEW)
+        with self.assertRaisesRegex(CLIInternalError, "^Inconsistent state detected\. The incoming `mc` is not the same as the `mc` in the context\.$"):
+            mc_in = self.models.ManagedCluster(location="test_location")
+            dec.update_workload_auto_scaler_profile(mc_in)
+
+        # Leaves profile as None without raw parameters.
+        dec = AKSPreviewUpdateDecorator(self.cmd, self.client, {}, CUSTOM_MGMT_AKS_PREVIEW)
+        mc_in = self.models.ManagedCluster(location="test_location")
+        dec.context.attach_mc(mc_in)
+        mc_out = dec.update_workload_auto_scaler_profile(mc_in)
+        self.assertEqual(mc_out, mc_in)
+        self.assertIsNone(mc_out.workload_auto_scaler_profile)
+
+        # Leaves existing profile untouched without raw parameters.
+        dec = AKSPreviewUpdateDecorator(self.cmd, self.client, {}, CUSTOM_MGMT_AKS_PREVIEW)
+        profile = self.models.ManagedClusterWorkloadAutoScalerProfile(
+            keda = self.models.ManagedClusterWorkloadAutoScalerProfileKeda(enabled=True))
+        mc_in = self.models.ManagedCluster(location="test_location", workload_auto_scaler_profile = profile)
+        dec.context.attach_mc(mc_in)
+        mc_out = dec.update_workload_auto_scaler_profile(mc_in)
+        self.assertEqual(mc_out, mc_in)
+        self.assertEqual(mc_out.workload_auto_scaler_profile, profile)
+        self.assertIsNotNone(mc_out.workload_auto_scaler_profile.keda)
+        self.assertTrue(mc_out.workload_auto_scaler_profile.keda.enabled)
+
+        # Enables keda when enable_keda is True.
+        dec = AKSPreviewUpdateDecorator(self.cmd, self.client, {"enable_keda": True}, CUSTOM_MGMT_AKS_PREVIEW)
+        mc_in = self.models.ManagedCluster(location="test_location")
+        dec.context.attach_mc(mc_in)
+        mc_out = dec.update_workload_auto_scaler_profile(mc_in)
+        self.assertEqual(mc_out, mc_in)
+        self.assertIsNotNone(mc_out.workload_auto_scaler_profile)
+        self.assertIsNotNone(mc_out.workload_auto_scaler_profile.keda)
+        self.assertTrue(mc_out.workload_auto_scaler_profile.keda.enabled)
+
+        # Enables keda in existing profile when enable_keda is True.
+        dec = AKSPreviewUpdateDecorator(self.cmd, self.client, {"enable_keda": True}, CUSTOM_MGMT_AKS_PREVIEW)
+        profile = self.models.ManagedClusterWorkloadAutoScalerProfile(
+            keda = self.models.ManagedClusterWorkloadAutoScalerProfileKeda(enabled=False))
+        mc_in = self.models.ManagedCluster(location="test_location", workload_auto_scaler_profile = profile)
+        dec.context.attach_mc(mc_in)
+        mc_out = dec.update_workload_auto_scaler_profile(mc_in)
+        self.assertEqual(mc_out, mc_in)
+        self.assertEqual(mc_out.workload_auto_scaler_profile, profile)
+        self.assertIsNotNone(mc_out.workload_auto_scaler_profile.keda)
+        self.assertTrue(mc_out.workload_auto_scaler_profile.keda.enabled)
+
+        # Disables keda when disable_keda is True.
+        dec = AKSPreviewUpdateDecorator(self.cmd, self.client, {"disable_keda": True}, CUSTOM_MGMT_AKS_PREVIEW)
+        mc_in = self.models.ManagedCluster(location="test_location")
+        dec.context.attach_mc(mc_in)
+        mc_out = dec.update_workload_auto_scaler_profile(mc_in)
+        self.assertEqual(mc_out, mc_in)
+        self.assertIsNotNone(mc_out.workload_auto_scaler_profile)
+        self.assertIsNotNone(mc_out.workload_auto_scaler_profile.keda)
+        self.assertFalse(mc_out.workload_auto_scaler_profile.keda.enabled)
+
+        # Disables keda in existing profile when disable_keda is True.
+        dec = AKSPreviewUpdateDecorator(self.cmd, self.client, {"disable_keda": True}, CUSTOM_MGMT_AKS_PREVIEW)
+        profile = self.models.ManagedClusterWorkloadAutoScalerProfile(
+            keda = self.models.ManagedClusterWorkloadAutoScalerProfileKeda(enabled=True))
+        mc_in = self.models.ManagedCluster(location="test_location", workload_auto_scaler_profile = profile)
+        dec.context.attach_mc(mc_in)
+        mc_out = dec.update_workload_auto_scaler_profile(mc_in)
+        self.assertEqual(mc_out, mc_in)
+        self.assertEqual(mc_out.workload_auto_scaler_profile, profile)
+        self.assertIsNotNone(mc_out.workload_auto_scaler_profile.keda)
+        self.assertFalse(mc_out.workload_auto_scaler_profile.keda.enabled)
+
+        # Throws exception when both enable_keda and disable_keda are True.
+        dec = AKSPreviewUpdateDecorator(self.cmd, self.client, {"enable_keda": True, "disable_keda": True}, CUSTOM_MGMT_AKS_PREVIEW)
+        mc_in = self.models.ManagedCluster(location="test_location")
+        dec.context.attach_mc(mc_in)
+        with self.assertRaises(MutuallyExclusiveArgumentError):
+            mc_out = dec.update_workload_auto_scaler_profile(mc_in)
 
     def test_patch_mc(self):
         # custom value

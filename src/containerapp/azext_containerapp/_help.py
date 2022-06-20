@@ -289,6 +289,15 @@ helps['containerapp revision label remove'] = """
           az containerapp revision label remove -n MyContainerapp -g MyResourceGroup --label myLabel
 """
 
+helps['containerapp revision label swap'] = """
+    type: command
+    short-summary: Swap a revision label between two revisions with associated traffic weights.
+    examples:
+    - name: Swap a revision label between two revisions.
+      text: |
+          az containerapp revision label swap -n MyContainerapp -g MyResourceGroup --source myLabel1 --target myLabel2
+"""
+
 # Environment Commands
 helps['containerapp env'] = """
     type: group
@@ -303,6 +312,10 @@ helps['containerapp env create'] = """
       text: |
           az containerapp env create -n MyContainerappEnvironment -g MyResourceGroup \\
               --location eastus2
+    - name: Create a zone-redundant environment
+      text: |
+          az containerapp env create -n MyContainerappEnvironment -g MyResourceGroup \\
+              --location eastus2 --zone-redundant
     - name: Create an environment with an existing Log Analytics workspace.
       text: |
           az containerapp env create -n MyContainerappEnvironment -g MyResourceGroup \\
