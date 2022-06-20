@@ -3320,7 +3320,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         self.cmd(create_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
             self.check('networkProfile.networkPluginMode', 'overlay'),
-            self.check('networkProfile.podCidr', '10.244.0.0/16'),
         ])
 
         # delete
