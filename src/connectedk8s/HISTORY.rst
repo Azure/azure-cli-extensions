@@ -2,6 +2,11 @@
 
 Release History
 ===============
+1.2.9
+++++++
+
+* Add correlation-id parameter to internally track onboarding sources
+
 1.2.8
 ++++++
 
