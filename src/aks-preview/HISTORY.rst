@@ -16,6 +16,11 @@ Pending
 * Enable v2 decorator pattern.
 * Fix container name inconsistency for private clusters in kollect command.
 
+0.5.83
++++++++
+
+* Support network plugin mode for enabling Azure CNI Overlay preview feature.
+
 0.5.82
 +++++++
 
