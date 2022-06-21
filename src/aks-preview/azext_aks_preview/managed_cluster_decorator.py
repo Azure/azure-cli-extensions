@@ -298,6 +298,13 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         # this parameter does not need validation
         return load_balancer_managed_outbound_ip_count
 
+    def get_network_plugin_mode(self) -> Union[str, None]:
+        """Get the value of network_plugin_mode
+
+        :return: str or None
+        """
+        return self.raw_param.get('network_plugin_mode')
+
     def get_load_balancer_managed_outbound_ipv6_count(self) -> Union[int, None]:
         """Obtain the expected count of IPv6 managed outbound IPs.
 
@@ -1309,7 +1316,8 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
     def set_up_network_profile(self, mc: ManagedCluster) -> ManagedCluster:
         """Set up network profile for the ManagedCluster object.
 
-        Note: Inherited and extended in aks-preview to set ipv6 configs.
+        Note: Inherited and extended in aks-preview to set ipv6 configs and 
+        network plugin mode.
 
         :return: the ManagedCluster object
         """
@@ -1337,6 +1345,9 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
                 self.context.get_load_balancer_idle_timeout(),
                 models=self.models.load_balancer_models,
             )
+
+        network_profile.network_plugin_mode = self.context.get_network_plugin_mode()
+
         return mc
 
     def set_up_api_server_access_profile(self, mc: ManagedCluster) -> ManagedCluster:
