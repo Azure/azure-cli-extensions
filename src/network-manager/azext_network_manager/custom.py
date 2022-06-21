@@ -11,13 +11,15 @@
 # pylint: disable=unused-argument
 from knack.util import CLIError
 
+from azure.cli.core.util import user_confirmation
 from ._client_factory import (
     cf_networkmanagercommit,
     cf_networkmanagerdeploymentstatus,
     cf_networkmanagementclient,
     cf_activesecurityuserrule,
     cf_effectivevirtualnetwork,
-    cf_listeffectivevirtualnetwork
+    cf_listeffectivevirtualnetwork,
+    cf_staticmembers, cf_network_cl
 )
 
 
@@ -90,11 +92,12 @@ def network_manager_update(instance,
 def network_manager_delete(client,
                            resource_group_name,
                            network_manager_name,
-                           force=False):
-    if force is False:
-        print("The '-force' flag was not provided for the delete operation. "
-              "If this resource or any of its child resources are part of a deployed configuration, "
-              "this delete will fail.")
+                           force=None):
+    from azure.cli.core.util import user_confirmation
+    if force is None or force is False:
+        user_confirmation('The \'--force\' flag was not provided for the delete operation. '
+                          'If this resource or any of its child resources are part of a deployed configuration, '
+                          'this delete will fail. Would you like to proceed? \n')
     return client.begin_delete(resource_group_name=resource_group_name,
                                network_manager_name=network_manager_name,
                                force=force)
@@ -326,10 +329,16 @@ def network_manager_connect_config_update(instance,
 def network_manager_connect_config_delete(client,
                                           resource_group_name,
                                           network_manager_name,
-                                          configuration_name):
+                                          configuration_name,
+                                          force=None):
+    if force is None or force is False:
+        user_confirmation('The \'--force\' flag was not provided for the delete operation. '
+                          'If this resource or any of its child resources are part of a deployed configuration, '
+                          'this delete will fail. Would you like to proceed? \n')
     return client.begin_delete(resource_group_name=resource_group_name,
-                         network_manager_name=network_manager_name,
-                         configuration_name=configuration_name)
+                               network_manager_name=network_manager_name,
+                               configuration_name=configuration_name,
+                               force=force)
 
 
 def network_manager_group_list(client,
@@ -375,14 +384,11 @@ def network_manager_group_update(instance,
                                  network_group_name,
                                  if_match=None,
                                  display_name=None,
-                                 description=None,
-                                 member_type=None):
+                                 description=None):
     if display_name is not None:
         instance.display_name = display_name
     if description is not None:
         instance.description = description
-    if member_type is not None:
-        instance.member_type = member_type
     return instance
 
 
@@ -391,75 +397,79 @@ def network_manager_group_delete(client,
                                  network_manager_name,
                                  network_group_name,
                                  force=None):
+    if force is None or force is False:
+        user_confirmation('The \'--force\' flag was not provided for the delete operation. '
+                          'If this resource or any of its child resources are part of a deployed configuration, '
+                          'this delete will fail. Would you like to proceed? \n')
     return client.begin_delete(resource_group_name=resource_group_name,
                                network_manager_name=network_manager_name,
                                network_group_name=network_group_name,
                                force=force)
 
 
-def network_manager_security_user_config_list(client,
-                                              resource_group_name,
-                                              network_manager_name,
-                                              top=None,
-                                              skip_token=None):
-    return client.list(resource_group_name=resource_group_name,
-                       network_manager_name=network_manager_name,
-                       top=top,
-                       skip_token=skip_token)
+# def network_manager_security_user_config_list(client,
+#                                               resource_group_name,
+#                                               network_manager_name,
+#                                               top=None,
+#                                               skip_token=None):
+#     return client.list(resource_group_name=resource_group_name,
+#                        network_manager_name=network_manager_name,
+#                        top=top,
+#                        skip_token=skip_token)
 
 
-def network_manager_security_user_config_show(client,
-                                              resource_group_name,
-                                              network_manager_name,
-                                              configuration_name):
-    return client.get(resource_group_name=resource_group_name,
-                      network_manager_name=network_manager_name,
-                      configuration_name=configuration_name)
+# def network_manager_security_user_config_show(client,
+#                                               resource_group_name,
+#                                               network_manager_name,
+#                                               configuration_name):
+#     return client.get(resource_group_name=resource_group_name,
+#                       network_manager_name=network_manager_name,
+#                       configuration_name=configuration_name)
 
 
-def network_manager_security_user_config_create(client,
-                                                resource_group_name,
-                                                network_manager_name,
-                                                configuration_name,
-                                                display_name=None,
-                                                description=None,
-                                                delete_existing_ns_gs=None):
-    security_configuration = {}
-    security_configuration['display_name'] = display_name
-    security_configuration['description'] = description
-    security_configuration['delete_existing_ns_gs'] = delete_existing_ns_gs
-    return client.create_or_update(resource_group_name=resource_group_name,
-                                   network_manager_name=network_manager_name,
-                                   configuration_name=configuration_name,
-                                   security_user_configuration=security_configuration)
+# def network_manager_security_user_config_create(client,
+#                                                 resource_group_name,
+#                                                 network_manager_name,
+#                                                 configuration_name,
+#                                                 display_name=None,
+#                                                 description=None,
+#                                                 delete_existing_ns_gs=None):
+#     security_configuration = {}
+#     security_configuration['display_name'] = display_name
+#     security_configuration['description'] = description
+#     security_configuration['delete_existing_ns_gs'] = delete_existing_ns_gs
+#     return client.create_or_update(resource_group_name=resource_group_name,
+#                                    network_manager_name=network_manager_name,
+#                                    configuration_name=configuration_name,
+#                                    security_user_configuration=security_configuration)
 
 
-def network_manager_security_user_config_update(instance,
-                                                resource_group_name,
-                                                network_manager_name,
-                                                configuration_name,
-                                                display_name=None,
-                                                description=None,
-                                                security_type=None,
-                                                delete_existing_ns_gs=None):
-    if display_name is not None:
-        instance.display_name = display_name
-    if description is not None:
-        instance.description = description
-    if security_type is not None:
-        instance.security_type = security_type
-    if delete_existing_ns_gs is not None:
-        instance.delete_existing_ns_gs = delete_existing_ns_gs
-    return instance
+# def network_manager_security_user_config_update(instance,
+#                                                 resource_group_name,
+#                                                 network_manager_name,
+#                                                 configuration_name,
+#                                                 display_name=None,
+#                                                 description=None,
+#                                                 security_type=None,
+#                                                 delete_existing_ns_gs=None):
+#     if display_name is not None:
+#         instance.display_name = display_name
+#     if description is not None:
+#         instance.description = description
+#     if security_type is not None:
+#         instance.security_type = security_type
+#     if delete_existing_ns_gs is not None:
+#         instance.delete_existing_ns_gs = delete_existing_ns_gs
+#     return instance
 
 
-def network_manager_security_user_config_delete(client,
-                                                resource_group_name,
-                                                network_manager_name,
-                                                configuration_name):
-    return client.begin_delete(resource_group_name=resource_group_name,
-                               network_manager_name=network_manager_name,
-                               configuration_name=configuration_name)
+# def network_manager_security_user_config_delete(client,
+#                                                 resource_group_name,
+#                                                 network_manager_name,
+#                                                 configuration_name):
+#     return client.begin_delete(resource_group_name=resource_group_name,
+#                                network_manager_name=network_manager_name,
+#                                configuration_name=configuration_name)
 
 
 def network_manager_security_admin_config_list(client,
@@ -526,6 +536,10 @@ def network_manager_security_admin_config_delete(client,
                                                  network_manager_name,
                                                  configuration_name,
                                                  force=None):
+    if force is None or force is False:
+        user_confirmation('The \'--force\' flag was not provided for the delete operation. '
+                          'If this resource or any of its child resources are part of a deployed configuration, '
+                          'this delete will fail. Would you like to proceed? \n')
     return client.begin_delete(resource_group_name=resource_group_name,
                                network_manager_name=network_manager_name,
                                configuration_name=configuration_name,
@@ -596,11 +610,17 @@ def network_manager_admin_rule_collection_delete(client,
                                                  resource_group_name,
                                                  network_manager_name,
                                                  configuration_name,
-                                                 rule_collection_name):
+                                                 rule_collection_name,
+                                                 force=None):
+    if force is None or force is False:
+        user_confirmation('The \'--force\' flag was not provided for the delete operation. '
+                          'If this resource or any of its child resources are part of a deployed configuration, '
+                          'this delete will fail. Would you like to proceed? \n')
     return client.begin_delete(resource_group_name=resource_group_name,
-                         network_manager_name=network_manager_name,
-                         configuration_name=configuration_name,
-                         rule_collection_name=rule_collection_name)
+                               network_manager_name=network_manager_name,
+                               configuration_name=configuration_name,
+                               rule_collection_name=rule_collection_name,
+                               force=force)
 
 
 def network_manager_admin_rule_create(client,
@@ -720,12 +740,18 @@ def network_manager_admin_rule_delete(client,
                                       network_manager_name,
                                       configuration_name,
                                       rule_collection_name,
-                                      rule_name):
+                                      rule_name,
+                                      force=None):
+    if force is None or force is False:
+        user_confirmation('The \'--force\' flag was not provided for the delete operation. '
+                          'If this resource or any of its child resources are part of a deployed configuration, '
+                          'this delete will fail. Would you like to proceed? \n')
     return client.begin_delete(resource_group_name=resource_group_name,
-                         network_manager_name=network_manager_name,
-                         configuration_name=configuration_name,
-                         rule_collection_name=rule_collection_name,
-                         rule_name=rule_name)
+                               network_manager_name=network_manager_name,
+                               configuration_name=configuration_name,
+                               rule_collection_name=rule_collection_name,
+                               rule_name=rule_name,
+                               force=force)
 
 
 # def network_manager_user_rule_collection_list(client,
@@ -1119,19 +1145,23 @@ def network_manager_group_static_member_list(client,
                        skip_token=skip_token)
 
 
-def network_manager_group_static_member_create(client,
+def network_manager_group_static_member_create(cmd,
+                                               client,
                                                resource_group_name,
                                                network_manager_name,
                                                network_group_name,
                                                static_member_name,
                                                resource_id):
+    from azure.mgmt.core.tools import parse_resource_id
     parameters = {}
     parameters['resource_id'] = resource_id
-    return client.create_or_update(resource_group_name=resource_group_name,
-                                   network_manager_name=network_manager_name,
-                                   network_group_name=network_group_name,
-                                   static_member_name=static_member_name,
-                                   parameters=parameters)
+    aux_subscription = parse_resource_id(resource_id)['subscription']
+    ncf =cf_network_cl(cmd.cli_ctx, aux_subscriptions=[aux_subscription])
+    return ncf.static_members.create_or_update(resource_group_name=resource_group_name,
+                                               network_manager_name=network_manager_name,
+                                               network_group_name=network_group_name,
+                                               static_member_name=static_member_name,
+                                               parameters=parameters)
 
 
 # def network_manager_group_static_member_update(instance, resource_id):

@@ -48,7 +48,7 @@ class NetworkScenarioTest(ScenarioTest):
 
         self.cmd('network manager list --resource-group {rg}')
 
-        self.cmd('network manager delete --resource-group {rg} --name {name} --yes')
+        self.cmd('network manager delete --resource-group {rg} --name {name} --force --yes')
 
     @ResourceGroupPreparer(name_prefix='test_network_manager_group', location='eastus2euap')
     def test_network_manager_group_crud(self, resource_group):
@@ -75,7 +75,7 @@ class NetworkScenarioTest(ScenarioTest):
         self.cmd('network manager group show -g {rg} --name {name} --network-manager-name {manager_name}')
         self.cmd('network manager group list -g {rg} --network-manager-name {manager_name}')
         self.cmd('network manager group delete -g {rg} --name {name} --network-manager-name {manager_name} --force --yes')
-        self.cmd('network manager delete --resource-group {rg} --name {manager_name} --yes')
+        self.cmd('network manager delete --resource-group {rg} --name {manager_name} --force --yes')
 
     @ResourceGroupPreparer(name_prefix='test_network_manager_static_member', location='eastus2euap')
     @VirtualNetworkPreparer()
@@ -109,7 +109,7 @@ class NetworkScenarioTest(ScenarioTest):
         self.cmd('network manager group static-member delete -g {rg} --name {name} --network-group-name {group_name} --network-manager-name {manager_name} --yes')
 
         self.cmd('network manager group delete -g {rg} --name {group_name} --network-manager-name {manager_name} --force --yes')
-        self.cmd('network manager delete --resource-group {rg} --name {manager_name} --yes')
+        self.cmd('network manager delete --resource-group {rg} --name {manager_name} --force --yes')
 
     @unittest.skip('skip')
     @ResourceGroupPreparer(name_prefix='test_network_manager_security_user_config', location='eastus2euap')
@@ -171,7 +171,7 @@ class NetworkScenarioTest(ScenarioTest):
         # self.cmd('network manager post-commit --network-manager-name {manager_name} --commit-type "SecurityAdmin" --target-locations "eastus2euap" -g {rg} ')
 
         self.cmd('network manager security-admin-config delete --configuration-name {name} --network-manager-name {manager_name} -g {rg} --force --yes')
-        self.cmd('network manager delete --resource-group {rg} --name {manager_name} --yes')
+        self.cmd('network manager delete --resource-group {rg} --name {manager_name} --force --yes')
 
     @ResourceGroupPreparer(name_prefix='test_network_manager_admin_rule_crud', location='eastus2euap')
     @VirtualNetworkPreparer()
@@ -217,11 +217,11 @@ class NetworkScenarioTest(ScenarioTest):
         self.cmd('network manager security-admin-config rule-collection rule update -g {rg} --network-manager-name {manager_name} --configuration-name {config_name} --rule-collection-name {collection_name} --rule-name {rule_name} '
                  '--access "Deny"')
         self.cmd('network manager security-admin-config rule-collection rule list -g {rg} --network-manager-name {manager_name} --configuration-name {config_name} --rule-collection-name {collection_name}')
-        self.cmd('network manager security-admin-config rule-collection rule delete -g {rg} --network-manager-name {manager_name} --configuration-name {config_name} --rule-collection-name {collection_name} --rule-name {rule_name} --yes')
+        self.cmd('network manager security-admin-config rule-collection rule delete -g {rg} --network-manager-name {manager_name} --configuration-name {config_name} --rule-collection-name {collection_name} --rule-name {rule_name} --force --yes')
 
         self.cmd('network manager security-admin-config delete --configuration-name {config_name} --network-manager-name {manager_name} -g {rg} --force --yes')
         self.cmd('network manager group delete -g {rg} --name {group_name} --network-manager-name {manager_name} --force --yes')
-        self.cmd('network manager delete --resource-group {rg} --name {manager_name} --yes')
+        self.cmd('network manager delete --resource-group {rg} --name {manager_name} --force --yes')
 
 
     @ResourceGroupPreparer(name_prefix='test_network_manager_admin_rule_collection_crud', location='eastus2euap')
@@ -247,7 +247,7 @@ class NetworkScenarioTest(ScenarioTest):
                  '--resource-group {rg}')
 
         self.cmd('network manager group create --name {group_name} --network-manager-name {manager_name} --description {description} '
-                 '--display-name ASampleGroup --member-type "Microsoft.Network/virtualNetworks" -g {rg} ')
+                 '--display-name ASampleGroup -g {rg} ')
 
         self.cmd('network manager group static-member create --name {name} --network-group-name {group_name} --network-manager-name {manager_name} '
                  '--resource-id="{sub}/resourceGroups/{rg}/providers/Microsoft.Network/virtualnetworks/{virtual_network}"  -g {rg} ')
@@ -266,10 +266,10 @@ class NetworkScenarioTest(ScenarioTest):
 
         self.cmd('network manager security-admin-config rule-collection list -g {rg} --configuration-name {config_name} --network-manager-name {manager_name}')
 
-        self.cmd('network manager security-admin-config rule-collection delete -g {rg} --configuration-name {config_name} --network-manager-name {manager_name} --rule-collection-name {collection_name} --yes')
+        self.cmd('network manager security-admin-config rule-collection delete -g {rg} --configuration-name {config_name} --network-manager-name {manager_name} --rule-collection-name {collection_name} --force --yes')
         self.cmd('network manager security-admin-config delete --configuration-name {config_name} --network-manager-name {manager_name} -g {rg} --force --yes')
         self.cmd('network manager group delete -g {rg} --name {group_name} --network-manager-name {manager_name} --force --yes')
-        self.cmd('network manager delete --resource-group {rg} --name {manager_name} --yes')
+        self.cmd('network manager delete --resource-group {rg} --name {manager_name} --force --yes')
 
     @unittest.skip('skip')
     @ResourceGroupPreparer(name_prefix='test_network_manager_user_rule_crud', location='eastus2euap')
@@ -355,7 +355,7 @@ class NetworkScenarioTest(ScenarioTest):
         self.cmd('network manager security-user-config rule-collection list -g {rg} --configuration-name {config_name} --network-manager-name {manager_name}')
         self.cmd('network manager security-user-config rule-collection delete -g {rg} --configuration-name {config_name} --network-manager-name {manager_name} --rule-collection-name {collection_name} --yes')
         self.cmd('network manager security-user-config delete --configuration-name {config_name} --network-manager-name {manager_name} -g {rg} --yes')
-        self.cmd('network manager group delete -g {rg} --name {group_name} --network-manager-name {manager_name} --yes')
+        self.cmd('network manager group delete -g {rg} --name {group_name} --network-manager-name {manager_name} --force --yes')
 
     @ResourceGroupPreparer(name_prefix='test_network_manager_connect_config_crud', location='eastus2euap')
     @VirtualNetworkPreparer()
@@ -378,7 +378,7 @@ class NetworkScenarioTest(ScenarioTest):
                  '--resource-group {rg}')
 
         self.cmd('network manager group create --name {group_name} --network-manager-name {manager_name} --description {description} '
-                 '--display-name ASampleGroup --member-type "Microsoft.Network/virtualNetworks" -g {rg} ')
+                 '--display-name ASampleGroup -g {rg} ')
         
         self.cmd('network manager group static-member create --name {name} --network-group-name {group_name} --network-manager-name {manager_name} '
                  '--resource-id="{sub}/resourceGroups/{rg}/providers/Microsoft.Network/virtualnetworks/{virtual_network}"  -g {rg} ')
@@ -391,10 +391,10 @@ class NetworkScenarioTest(ScenarioTest):
         self.cmd('network manager connect-config show --configuration-name {config_name} --network-manager-name {manager_name} -g {rg}')
         self.cmd('network manager connect-config update --configuration-name {config_name} --network-manager-name {manager_name} -g {rg}')
         self.cmd('network manager connect-config list --network-manager-name {manager_name} -g {rg}')
-        self.cmd('network manager connect-config delete --configuration-name {config_name} --network-manager-name {manager_name} -g {rg} --yes')
+        self.cmd('network manager connect-config delete --configuration-name {config_name} --network-manager-name {manager_name} -g {rg} --force --yes')
  
         self.cmd('network manager group delete -g {rg} --name {group_name} --network-manager-name {manager_name} --force --yes')
-        self.cmd('network manager delete --resource-group {rg} --name {manager_name} --yes')
+        self.cmd('network manager delete --resource-group {rg} --name {manager_name} --force --yes')
 
 
     @ResourceGroupPreparer(name_prefix='test_network_manager_list_queries', location='eastus2euap')
@@ -418,13 +418,14 @@ class NetworkScenarioTest(ScenarioTest):
                  '--resource-group {rg}')
 
         self.cmd('network manager group create --name {group_name} --network-manager-name {manager_name} --description {description} '
-                 '--display-name ASampleGroup --member-type "Microsoft.Network/virtualNetworks" -g {rg} ')
+                 '--display-name ASampleGroup -g {rg} ')
 
         self.cmd('network manager group static-member create --name {name} --network-group-name {group_name} --network-manager-name {manager_name} '
                  '--resource-id="{sub}/resourceGroups/{rg}/providers/Microsoft.Network/virtualnetworks/{virtual_network}"  -g {rg} ')
 
         self.cmd('network manager list-deploy-status --network-manager-name {manager_name} --deployment-types "Connectivity" --regions "eastus2euap" --resource-group {rg}')
-        self.cmd('network manager group list-effect-vnet --network-group-name {group_name} --network-manager-name {manager_name} --resource-group {rg}')
+        # These commands are not provided in api version 2022-01-01
+        # self.cmd('network manager group list-effect-vnet --network-group-name {group_name} --network-manager-name {manager_name} --resource-group {rg}')
         # self.cmd('network manager list-effect-vnet --network-manager-name {manager_name} --resource-group {rg}')
         self.cmd('network manager list-active-connectivity-config --network-manager-name {manager_name} --resource-group {rg} --regions eastus westus')
         self.cmd('network manager list-effective-connectivity-config --virtual-network-name {virtual_network} -g {rg}')
@@ -434,7 +435,7 @@ class NetworkScenarioTest(ScenarioTest):
         # self.cmd('network manager list-active-security-user-rule --network-manager-name {manager_name} -g {rg} --region eastus2euap')
 
         self.cmd('network manager group delete -g {rg} --name {group_name} --network-manager-name {manager_name} --force --yes')
-        self.cmd('network manager delete --resource-group {rg} --name {manager_name} --yes')
+        self.cmd('network manager delete --resource-group {rg} --name {manager_name} --force --yes')
 
 
     @ResourceGroupPreparer(name_prefix='test_network_manager_scope_connection', location='eastus2euap')
@@ -467,7 +468,7 @@ class NetworkScenarioTest(ScenarioTest):
 
         self.cmd('network manager scope-connection delete -g {rg} --network-manager-name {manager_name} --name {connection_name} --yes')
 
-        self.cmd('network manager delete --resource-group {rg} --name {manager_name} --yes')
+        self.cmd('network manager delete --resource-group {rg} --name {manager_name} --force --yes')
 
     @ResourceGroupPreparer(name_prefix='test_network_manager_connection_subscription', location='eastus2euap')
     def test_network_manager_connection_subscription(self, resource_group):
@@ -495,7 +496,7 @@ class NetworkScenarioTest(ScenarioTest):
         self.cmd('network manager connection subscription list')
 
         self.cmd('network manager connection subscription delete --connection-name {connection_name} --yes')
-        self.cmd('network manager delete --resource-group {rg} --name {manager_name} --yes')
+        self.cmd('network manager delete --resource-group {rg} --name {manager_name} --force --yes')
 
     @ResourceGroupPreparer(name_prefix='test_network_manager_security_admin_config_v2', location='eastus2euap')
     def test_network_manager_security_admin_config_v2(self, resource_group):
@@ -525,7 +526,7 @@ class NetworkScenarioTest(ScenarioTest):
         self.cmd('network manager security-admin-config show --configuration-name {name} --network-manager-name {manager_name} -g {rg}')
 
         self.cmd('network manager security-admin-config delete --configuration-name {name} --network-manager-name {manager_name} -g {rg} --force --yes')
-        self.cmd('network manager delete --resource-group {rg} --name {manager_name} --yes')
+        self.cmd('network manager delete --resource-group {rg} --name {manager_name} --force --yes')
 #     @ResourceGroupPreparer(name_prefix='test_network_manager_connection_crud', location='eastus2euap')
 #     def test_network_manager_scope_connection(self, resource_group):
 #
