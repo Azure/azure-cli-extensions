@@ -1316,7 +1316,7 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
     def set_up_network_profile(self, mc: ManagedCluster) -> ManagedCluster:
         """Set up network profile for the ManagedCluster object.
 
-        Note: Inherited and extended in aks-preview to set ipv6 configs and 
+        Note: Inherited and extended in aks-preview to set ipv6 configs and
         network plugin mode.
 
         :return: the ManagedCluster object
