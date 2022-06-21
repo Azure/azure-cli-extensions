@@ -63,14 +63,16 @@ from ._utils import (_validate_subscription_registered, _get_location_from_resou
                      _update_revision_env_secretrefs, _get_acr_cred, safe_get, await_github_action, repo_url_to_name,
                      validate_container_app_name, _update_weights, get_vnet_location, register_provider_if_needed,
                      generate_randomized_cert_name, _get_name, load_cert_file, check_cert_name_availability,
-                     validate_hostname, patch_new_custom_domain, get_custom_domains, _validate_revision_name, set_managed_identity)
+                     validate_hostname, patch_new_custom_domain, get_custom_domains, _validate_revision_name, set_managed_identity,
+                     create_acrpull_role_assignment, is_registry_msi_system)
+from ._validators import validate_create
 
 
 from ._ssh_utils import (SSH_DEFAULT_ENCODING, WebSocketConnection, read_ssh, get_stdin_writer, SSH_CTRL_C_MSG,
                          SSH_BACKUP_ENCODING)
 from ._constants import (MAXIMUM_SECRET_LENGTH, MICROSOFT_SECRET_SETTING_NAME, FACEBOOK_SECRET_SETTING_NAME, GITHUB_SECRET_SETTING_NAME,
                          GOOGLE_SECRET_SETTING_NAME, TWITTER_SECRET_SETTING_NAME, APPLE_SECRET_SETTING_NAME, CONTAINER_APPS_RP,
-                         NAME_INVALID, NAME_ALREADY_EXISTS, ACR_IMAGE_SUFFIX)
+                         NAME_INVALID, NAME_ALREADY_EXISTS, ACR_IMAGE_SUFFIX, HELLO_WORLD_IMAGE)
 
 logger = get_logger(__name__)
 
@@ -318,9 +320,15 @@ def create_containerapp(cmd,
                         no_wait=False,
                         system_assigned=False,
                         disable_warnings=False,
-                        user_assigned=None):
+                        user_assigned=None,
+                        registry_identity=None):
     register_provider_if_needed(cmd, CONTAINER_APPS_RP)
     validate_container_app_name(name)
+    validate_create(registry_identity, registry_pass, registry_user, registry_server, no_wait)
+
+    if registry_identity and not is_registry_msi_system(registry_identity):
+        logger.info("Creating an acrpull role assignment for the registry identity")
+        create_acrpull_role_assignment(cmd, registry_server, registry_identity)
 
     if yaml:
         if image or managed_env or min_replicas or max_replicas or target_port or ingress or\
@@ -331,7 +339,7 @@ def create_containerapp(cmd,
         return create_containerapp_yaml(cmd=cmd, name=name, resource_group_name=resource_group_name, file_name=yaml, no_wait=no_wait)
 
     if not image:
-        image = "mcr.microsoft.com/azuredocs/containerapps-helloworld:latest"
+        image = HELLO_WORLD_IMAGE
 
     if managed_env is None:
         raise RequiredArgumentMissingError('Usage error: --environment is required if not using --yaml')
@@ -372,19 +380,22 @@ def create_containerapp(cmd,
         secrets_def = parse_secret_flags(secrets)
 
     registries_def = None
-    if registry_server is not None:
+    if registry_server is not None and not is_registry_msi_system(registry_identity):
         registries_def = RegistryCredentialsModel
+        registries_def["server"] = registry_server
 
         # Infer credentials if not supplied and its azurecr
-        if registry_user is None or registry_pass is None:
+        if (registry_user is None or registry_pass is None) and registry_identity is None:
             registry_user, registry_pass = _infer_acr_credentials(cmd, registry_server, disable_warnings)
 
-        registries_def["server"] = registry_server
-        registries_def["username"] = registry_user
+        if not registry_identity:
+            registries_def["username"] = registry_user
 
-        if secrets_def is None:
-            secrets_def = []
-        registries_def["passwordSecretRef"] = store_as_secret_and_return_secret_ref(secrets_def, registry_user, registry_server, registry_pass, disable_warnings=disable_warnings)
+            if secrets_def is None:
+                secrets_def = []
+            registries_def["passwordSecretRef"] = store_as_secret_and_return_secret_ref(secrets_def, registry_user, registry_server, registry_pass, disable_warnings=disable_warnings)
+        else:
+            registries_def["identity"] = registry_identity
 
     dapr_def = None
     if dapr_enabled:
@@ -440,7 +451,7 @@ def create_containerapp(cmd,
 
     container_def = ContainerModel
     container_def["name"] = container_name if container_name else name
-    container_def["image"] = image
+    container_def["image"] = image if not is_registry_msi_system(registry_identity) else HELLO_WORLD_IMAGE
     if env_vars is not None:
         container_def["env"] = parse_env_var_flags(env_vars)
     if startup_command is not None:
@@ -465,9 +476,31 @@ def create_containerapp(cmd,
     containerapp_def["properties"]["template"] = template_def
     containerapp_def["tags"] = tags
 
+    if registry_identity:
+        if is_registry_msi_system(registry_identity):
+            set_managed_identity(cmd, resource_group_name, containerapp_def, system_assigned=True)
+        else:
+            set_managed_identity(cmd, resource_group_name, containerapp_def, user_assigned=[registry_identity])
+
     try:
         r = ContainerAppClient.create_or_update(
             cmd=cmd, resource_group_name=resource_group_name, name=name, container_app_envelope=containerapp_def, no_wait=no_wait)
+
+        if is_registry_msi_system(registry_identity):
+            while r["properties"]["provisioningState"] == "InProgress":
+                r = ContainerAppClient.show(cmd, resource_group_name, name)
+                time.sleep(10)
+            logger.info("Creating an acrpull role assignment for the system identity")
+            system_sp = r["identity"]["principalId"]
+            create_acrpull_role_assignment(cmd, registry_server, registry_identity=None, service_principal=system_sp)
+            container_def["image"] = image
+
+            registries_def = RegistryCredentialsModel
+            registries_def["server"] = registry_server
+            registries_def["identity"] = registry_identity
+            config_def["registries"] = [registries_def]
+
+            r = ContainerAppClient.create_or_update(cmd=cmd, resource_group_name=resource_group_name, name=name, container_app_envelope=containerapp_def, no_wait=no_wait)
 
         if "properties" in r and "provisioningState" in r["properties"] and r["properties"]["provisioningState"].lower() == "waiting" and not no_wait:
             not disable_warnings and logger.warning('Containerapp creation in progress. Please monitor the creation using `az containerapp show -n {} -g {}`'.format(name, resource_group_name))
@@ -2276,7 +2309,7 @@ def containerapp_up_logic(cmd, resource_group_name, name, managed_env, image, en
 
     # When using repo, image is not passed, so we have to assign it a value (will be overwritten with gh-action)
     if image is None:
-        image = "mcr.microsoft.com/azuredocs/containerapps-helloworld:latest"
+        image = HELLO_WORLD_IMAGE
 
     if not ca_exists:
         containerapp_def = None

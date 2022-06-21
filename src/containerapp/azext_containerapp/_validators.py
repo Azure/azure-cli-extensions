@@ -4,12 +4,26 @@
 # --------------------------------------------------------------------------------------------
 # pylint: disable=line-too-long
 
-from azure.cli.core.azclierror import (ValidationError, ResourceNotFoundError)
+from azure.cli.core.azclierror import (ValidationError, ResourceNotFoundError, InvalidArgumentValueError,
+                                       MutuallyExclusiveArgumentError)
+from msrestazure.tools import is_valid_resource_id
 
 from ._clients import ContainerAppClient
 from ._ssh_utils import ping_container_app
-from ._utils import safe_get
+from ._utils import safe_get, is_registry_msi_system
 from ._constants import ACR_IMAGE_SUFFIX
+
+
+# called directly from custom method bc otherwise it disrupts the --environment auto RID functionality
+def validate_create(registry_identity, registry_pass, registry_user, registry_server, no_wait):
+    if registry_identity and (registry_pass or registry_user):
+        raise MutuallyExclusiveArgumentError("Cannot provide both registry identity and username/password")
+    if is_registry_msi_system(registry_identity) and no_wait:
+        raise MutuallyExclusiveArgumentError("--no-wait is not supported with system registry identity")
+    if registry_identity and not is_valid_resource_id(registry_identity) and not is_registry_msi_system(registry_identity):
+        raise InvalidArgumentValueError("--registry-identity must be an identity resource ID or 'system'")
+    if registry_identity and ACR_IMAGE_SUFFIX not in (registry_server or ""):
+        raise InvalidArgumentValueError("--registry-identity: expected an ACR registry (*.azurecr.io) for --registry-server")
 
 
 def _is_number(s):
@@ -45,7 +59,7 @@ def validate_cpu(namespace):
 
 def validate_managed_env_name_or_id(cmd, namespace):
     from azure.cli.core.commands.client_factory import get_subscription_id
-    from msrestazure.tools import is_valid_resource_id, resource_id
+    from msrestazure.tools import resource_id
 
     if namespace.managed_env:
         if not is_valid_resource_id(namespace.managed_env):

@@ -29,3 +29,5 @@ CHECK_CERTIFICATE_NAME_AVAILABILITY_TYPE = "Microsoft.App/managedEnvironments/ce
 
 NAME_INVALID = "Invalid"
 NAME_ALREADY_EXISTS = "AlreadyExists"
+
+HELLO_WORLD_IMAGE = "mcr.microsoft.com/azuredocs/containerapps-helloworld:latest"

@@ -12,10 +12,15 @@ from urllib.parse import urlparse
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
 from azure.cli.core.azclierror import (ValidationError, RequiredArgumentMissingError, CLIInternalError,
-                                       ResourceNotFoundError, FileOperationError, CLIError)
+                                       ResourceNotFoundError, FileOperationError, CLIError, InvalidArgumentValueError)
 from azure.cli.core.commands.client_factory import get_subscription_id
 from azure.cli.command_modules.appservice.utils import _normalize_location
 from azure.cli.command_modules.network._client_factory import network_client_factory
+from azure.cli.command_modules.role.custom import create_role_assignment
+from azure.cli.command_modules.acr.custom import acr_show
+from azure.cli.core.commands.client_factory import get_mgmt_service_client
+from azure.cli.core.profiles import ResourceType
+from azure.mgmt.containerregistry import ContainerRegistryManagementClient
 
 from knack.log import get_logger
 from msrestazure.tools import parse_resource_id, is_valid_resource_id, resource_id
@@ -1401,3 +1406,27 @@ def set_managed_identity(cmd, resource_group_name, containerapp_def, system_assi
 
             if not isExisting:
                 containerapp_def["identity"]["userAssignedIdentities"][r] = {}
+
+
+def create_acrpull_role_assignment(cmd, registry_server, registry_identity=None, service_principal=None):
+    if registry_identity:
+        registry_identity_parsed = parse_resource_id(registry_identity)
+        registry_identity_name, registry_identity_rg = registry_identity_parsed.get("name"), registry_identity_parsed.get("resource_group")
+        sp_id = get_mgmt_service_client(cmd.cli_ctx, ResourceType.MGMT_MSI).user_assigned_identities.get(resource_name=registry_identity_name, resource_group_name=registry_identity_rg).principal_id
+    else:
+        sp_id = service_principal
+
+    client = get_mgmt_service_client(cmd.cli_ctx, ContainerRegistryManagementClient).registries
+    acr_id = acr_show(cmd, client, registry_server[: registry_server.rindex(ACR_IMAGE_SUFFIX)]).id
+    try:
+        create_role_assignment(cmd, role="acrpull", assignee=sp_id, scope=acr_id)
+    except Exception as e:
+        logger.warning(f"Role assignment failed with error message: \"{' '.join(e.args)}\". \n"
+                       f"To add the role assignment manually, please run 'az role assignment create --assignee {sp_id} --scope {acr_id} --role acrpull'. \n"
+                       "You may have to restart the containerapp with 'az containerapp revision restart'.")
+
+
+def is_registry_msi_system(identity):
+    if identity is None:
+        return False
+    return identity.lower() == "system"
