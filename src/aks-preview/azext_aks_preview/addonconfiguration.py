@@ -11,16 +11,30 @@ from azure.cli.core.commands import LongRunningOperation
 from azure.cli.core.commands.client_factory import get_subscription_id
 from azure.cli.core.util import sdk_no_wait
 from azext_aks_preview._client_factory import CUSTOM_MGMT_AKS_PREVIEW
-from ._client_factory import cf_resources, cf_resource_groups
-from ._resourcegroup import get_rg_location
-from ._roleassignments import add_role_assignment
-from ._consts import ADDONS, CONST_VIRTUAL_NODE_ADDON_NAME, CONST_MONITORING_ADDON_NAME, \
-    CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID, CONST_MONITORING_USING_AAD_MSI_AUTH, \
-    CONST_VIRTUAL_NODE_SUBNET_NAME, CONST_INGRESS_APPGW_ADDON_NAME, CONST_INGRESS_APPGW_APPLICATION_GATEWAY_NAME, \
-    CONST_INGRESS_APPGW_SUBNET_CIDR, CONST_INGRESS_APPGW_APPLICATION_GATEWAY_ID, CONST_INGRESS_APPGW_SUBNET_ID, \
-    CONST_INGRESS_APPGW_WATCH_NAMESPACE, CONST_OPEN_SERVICE_MESH_ADDON_NAME, CONST_CONFCOM_ADDON_NAME, \
-    CONST_ACC_SGX_QUOTE_HELPER_ENABLED, CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME, CONST_SECRET_ROTATION_ENABLED, CONST_ROTATION_POLL_INTERVAL, \
-    CONST_KUBE_DASHBOARD_ADDON_NAME
+from azext_aks_preview._client_factory import cf_resources, cf_resource_groups
+from azext_aks_preview._resourcegroup import get_rg_location
+from azext_aks_preview._roleassignments import add_role_assignment
+from azext_aks_preview._consts import (
+    ADDONS,
+    CONST_VIRTUAL_NODE_ADDON_NAME,
+    CONST_MONITORING_ADDON_NAME,
+    CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID,
+    CONST_MONITORING_USING_AAD_MSI_AUTH,
+    CONST_VIRTUAL_NODE_SUBNET_NAME,
+    CONST_INGRESS_APPGW_ADDON_NAME,
+    CONST_INGRESS_APPGW_APPLICATION_GATEWAY_NAME,
+    CONST_INGRESS_APPGW_SUBNET_CIDR,
+    CONST_INGRESS_APPGW_APPLICATION_GATEWAY_ID,
+    CONST_INGRESS_APPGW_SUBNET_ID,
+    CONST_INGRESS_APPGW_WATCH_NAMESPACE,
+    CONST_OPEN_SERVICE_MESH_ADDON_NAME,
+    CONST_CONFCOM_ADDON_NAME,
+    CONST_ACC_SGX_QUOTE_HELPER_ENABLED,
+    CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME,
+    CONST_SECRET_ROTATION_ENABLED,
+    CONST_ROTATION_POLL_INTERVAL,
+    CONST_KUBE_DASHBOARD_ADDON_NAME,
+)
 from .vendored_sdks.azure_mgmt_preview_aks.v2022_05_02_preview.models import (
     ManagedClusterIngressProfile,
     ManagedClusterIngressProfileWebAppRouting,
