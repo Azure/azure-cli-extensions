@@ -5,7 +5,7 @@ Release History
 
 0.3.8
 ++++++
-* TODO
+* 'az containerapp create': allow authenticating with managed identity (MSI) instead of ACR username & password
 
 0.3.7
 ++++++
