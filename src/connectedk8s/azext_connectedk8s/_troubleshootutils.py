@@ -181,7 +181,7 @@ def check_agent_state(corev1_api_instance, time_stamp):
             print("Error: One or more Azure Arc agents are in pending state. It may be caused due to insufficient resource availability on the cluster.\n For more details on resource requirement visit 'aka.ms\\arcenabledkubernetesresourcerequirement'. \n")
             return False
 
-        return True     
+        return True
 
 
 def check_agent_version(connected_cluster, azure_arc_agent_version):
