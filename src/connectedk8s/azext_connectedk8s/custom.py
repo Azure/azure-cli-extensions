@@ -10,7 +10,6 @@ import json
 import tempfile
 import time
 import base64
-import subprocess
 from subprocess import Popen, PIPE, run, STDOUT, call, DEVNULL
 from base64 import b64encode, b64decode
 import stat
@@ -62,145 +61,107 @@ logger = get_logger(__name__)
 # pylint: disable=too-many-statements
 # pylint: disable=line-too-long
 
-def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=None, kube_context=None, no_wait=False, tags=None, distribution='auto', infrastructure='auto',
+def troubleshoot(cmd, client, resource_group_name, cluster_name, https_proxy="", http_proxy="", no_proxy="", proxy_cert="", location=None,
+                        kube_config=None, kube_context=None, no_wait=False, tags=None, distribution='auto', infrastructure='auto',
                         disable_auto_upgrade=False, cl_oid=None,):
 
+    outbound_check=False
+    msi_check=False
+    agent_version_check=False
+    arc_agent_state_check=False
+    logger.warning("\nDiagnoser running. This may take a while ...\n")
+    #Setting kube_config
+    kube_config = set_kube_config(kube_config)
 
-    try:
-        logger.warning("\nDiagnoser running. This may take a while ...\n")
+    # Loading the kubeconfig file in kubernetes client configuration
+    load_kube_config(kube_config, kube_context)
+    configuration = kube_client.Configuration()
 
-        # Setting default values for all checks as True
-        msi_cert_expiry_check=True
-        kap_security_policy_check=True
-        kap_cert_check=True
-        diagnoser_check=True
-        msi_cert_check=True
-        agent_version_check=True
-        arc_agent_state_check=True
+    # Checking the connection to kubernetes cluster.
+    # This check was added to avoid large timeouts when connecting to AAD Enabled AKS clusters
+    # if the user had not logged in.
+    check_kube_connection(configuration)
+    utils.try_list_node_fix()
+
+    # Fetch Connected Cluster for agent version
+    connected_cluster = get_connectedk8s(cmd, client, resource_group_name, cluster_name)
+    
+    connectivity_check=troubleshootutils.check_connectivity() 
+
+    #Creating timestamp folder to store all the diagnoser logs 
+    time_generation = time.ctime(time.time())
+    time_stamp=""
+    for elements in time_generation:
+        if(elements==' '):
+            time_stamp+='-'
+            continue
+        elif(elements==':'):
+            time_stamp+='.'
+            continue
+        time_stamp+=elements
+
+    troubleshootutils.GeneratingFolder(time_stamp)
+    
+    with open("C:\\Users\\t-svagadia\\DiagnosticLogs\ "+time_stamp+"\\Connected_cluster_resource.txt",'w+') as cc:
+        cc.write(str(connected_cluster))
+
+    #For storing all the agent logs using the CoreV1Api
+    api_instance = kube_client.CoreV1Api(kube_client.ApiClient(configuration))
+    node_api_response = utils.validate_node_api_response(api_instance, None)
+
+    
+    troubleshootutils.agents_logger(api_instance,time_stamp)
+
+    #For storing all the deployments logs using the AppsV1Api
+    api_instance2 = kube_client.AppsV1Api(kube_client.ApiClient(configuration))
+    node_api_response = utils.validate_node_api_response(api_instance2, None)
+    troubleshootutils.deployments_logger(api_instance2,time_stamp)
 
 
-        #Setting kube_config
-        kube_config = set_kube_config(kube_config)
+    arc_agent_state_check= troubleshootutils.check_agent_state(api_instance,time_stamp)
 
-        # Loading the kubeconfig file in kubernetes client configuration
-        load_kube_config(kube_config, kube_context)
-        configuration = kube_client.Configuration()
 
-        # Checking the connection to kubernetes cluster.
-        # This check was added to avoid large timeouts when connecting to AAD Enabled AKS clusters
-        # if the user had not logged in.
-        check_kube_connection(configuration)
-        utils.try_list_node_fix()
+    if(arc_agent_state_check):
+        pass
+    else:
+        msi_check=troubleshootutils.check_msi_expirytime(connected_cluster,time_stamp)
 
-        # Fetch Connected Cluster for agent version
-        connected_cluster = get_connectedk8s(cmd, client, resource_group_name, cluster_name)
+        helm_client_location = install_helm_client()
+
+        # Checking whether optional extra values file has been provided.
+        values_file_provided, values_file = utils.get_values_file()
+
+        # Validate the helm environment file for Dogfood.
+        dp_endpoint_dogfood = None
+        release_train_dogfood = None
+        if cmd.cli_ctx.cloud.endpoints.resource_manager == consts.Dogfood_RMEndpoint:
+            azure_cloud = consts.Azure_DogfoodCloudName
+            dp_endpoint_dogfood, release_train_dogfood = validate_env_file_dogfood(values_file, values_file_provided)
+
+        # Adding helm repo
+        if os.getenv('HELMREPONAME') and os.getenv('HELMREPOURL'):
+            utils.add_helm_repo(kube_config, kube_context, helm_client_location)
+
+        # Setting the config dataplane endpoint
+        config_dp_endpoint = get_config_dp_endpoint(cmd, connected_cluster.location)
+
+        # Retrieving Helm chart OCI Artifact location
+        registry_path = os.getenv('HELMREGISTRY') if os.getenv('HELMREGISTRY') else utils.get_helm_registry(cmd, config_dp_endpoint, dp_endpoint_dogfood, release_train_dogfood)
         
-        # To check for internet connectivity
-        for counter in range(3):
-            if troubleshootutils.check_internet_connectivity():
-                break
-            elif(counter==3 and troubleshootutils.check_internet_connectivity()==False):
-                print("Error: There is problem with the internet connection. Please check it and then try again.\n")
-                return 
-            else:
-                time.sleep(2)
-
-        # Creating timestamp folder to store all the diagnoser logs 
-        current_time = time.ctime(time.time())
-        time_stamp=""
-        for elements in current_time:
-            if(elements==' '):
-                time_stamp+='-'
-                continue
-            elif(elements==':'):
-                time_stamp+='.'
-                continue
-            time_stamp+=elements
-
-
-        # Generate the diagnostic folder in a given location
-        troubleshootutils.create_folder_diagnosticlogs(time_stamp)
+        # Get azure-arc agent version for telemetry
+        azure_arc_agent_version = registry_path.split(':')[1]
         
 
-        with open("C:\\Users\\t-svagadia\\diagnostic_logs\ "+time_stamp+"\\Connected_cluster_resource.txt",'w+') as cc:
-            cc.write(str(connected_cluster))
+        telemetry.add_extension_event('connectedk8s', {'Context.Default.AzureCLI.AgentVersion': azure_arc_agent_version})
 
         
-        corev1_api_instance = kube_client.CoreV1Api(kube_client.ApiClient(configuration))
-
-        #Check if agents have been added to the cluster
-        arc_agents_pod_list = corev1_api_instance.list_namespaced_pod(namespace="azure-arc")
-
-        # To verify if arc agents have been added to the cluster
-        if arc_agents_pod_list.items:
-
-            # For storing all the agent logs using the CoreV1Api
-            troubleshootutils.arc_agents_logger(corev1_api_instance,time_stamp)
+        agent_version_check=troubleshootutils.check_agent_version(connected_cluster, azure_arc_agent_version)
 
 
+        api_instance3 = kube_client.BatchV1Api(kube_client.ApiClient(configuration))
+        node_api_response = utils.validate_node_api_response(api_instance3, None)
 
-            # For storing all the deployments logs using the AppsV1Api
-            appv1_api_instance = kube_client.AppsV1Api(kube_client.ApiClient(configuration))
-            node_api_response = utils.validate_node_api_response(appv1_api_instance, None)
-            troubleshootutils.deployments_logger(appv1_api_instance,time_stamp)
-
-
-            # Check for the azure arc agent states
-            arc_agent_state_check= troubleshootutils.check_agent_state(corev1_api_instance,time_stamp)
-
-            
-
-            # Check for msi certificate
-            msi_cert_check=troubleshootutils.check_msi_certificate(connected_cluster,corev1_api_instance)
-
-            # If msi certificate present then only we will perform msi certificate expiry check
-            if msi_cert_check:
-                msi_cert_expiry_check=troubleshootutils.check_msi_expiry(connected_cluster,corev1_api_instance)
-
-            # If msi certificate present then only we will do Kube aad proxy checks
-            if msi_cert_check:
-                kap_security_policy_check=troubleshootutils.check_cluster_security_policy(corev1_api_instance)
-
-                # If no security policy is present in cluster then we can check for the Kube aad proxy certificate
-                if(kap_security_policy_check):
-                    kap_cert_check=troubleshootutils.check_kap_cert(corev1_api_instance)
-
-
-            helm_client_location = install_helm_client()
-
-            # Checking whether optional extra values file has been provided.
-            values_file_provided, values_file = utils.get_values_file()
-
-            # Validate the helm environment file for Dogfood.
-            dp_endpoint_dogfood = None
-            release_train_dogfood = None
-            if cmd.cli_ctx.cloud.endpoints.resource_manager == consts.Dogfood_RMEndpoint:
-                azure_cloud = consts.Azure_DogfoodCloudName
-                dp_endpoint_dogfood, release_train_dogfood = validate_env_file_dogfood(values_file, values_file_provided)
-
-            # Adding helm repo
-            if os.getenv('HELMREPONAME') and os.getenv('HELMREPOURL'):
-                utils.add_helm_repo(kube_config, kube_context, helm_client_location)
-
-            # Setting the config dataplane endpoint
-            config_dp_endpoint = get_config_dp_endpoint(cmd, connected_cluster.location)
-
-            # Retrieving Helm chart OCI Artifact location
-            registry_path = os.getenv('HELMREGISTRY') if os.getenv('HELMREGISTRY') else utils.get_helm_registry(cmd, config_dp_endpoint, dp_endpoint_dogfood, release_train_dogfood)
-            
-            # Get azure-arc agent version for telemetry
-            azure_arc_agent_version = registry_path.split(':')[1]
-
-            
-            # Check for agent verison comaptibility
-            agent_version_check=troubleshootutils.check_agent_version(connected_cluster, azure_arc_agent_version)
-        else:
-            print("Error : Arc Agents have not been added to cluster. Please delete and reconnect the Kubernetes Cluster\n") 
-
-        batchv1_api_instance = kube_client.BatchV1Api(kube_client.ApiClient(configuration))
-        node_api_response = utils.validate_node_api_response(batchv1_api_instance, None)
-
-        # Fetching the current kubernetes namespace to deploy the job
+        
         try:
             k8s_contexts = config.list_kube_config_contexts()  # returns tuple of (all_contexts, current_context)
             if kube_context:  # if custom kube-context is specified
@@ -230,22 +191,14 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
             raise e
         except Exception as e:
             logger.warning("Failed to validate if the active namespace exists on the kubernetes cluster. Exception: {}".format(str(e)))
-         
 
+        outbound_check=troubleshootutils.check_outbound(api_instance,api_instance3,time_stamp,current_k8s_namespace)
+        #troubleshootutils.check_dns(api_instance,time_stamp)
+    if (outbound_check or msi_check or agent_version_check or arc_agent_state_check):
+        logger.warning("For more results from the diagnoser refer to the logs collected at \"C:\\Users\\t-svagadia\\DiagnosticLogs\". \nThese logs can be attached while filing a support ticket for further assistance.\n")
+    else:
+        logger.warning("Diagnoser could not find any issues with the cluster. \nFor more results from the diagnoser refer to the logs collected at \"C:\\Users\\t-svagadia\\DiagnosticLogs\". These logs can be attached while filing a support ticket for further assistance.\n")
 
-        # Executing the Diagnoser job check in the given namespace
-        diagnoser_check=troubleshootutils.diagnoser_container_check(corev1_api_instance,batchv1_api_instance,time_stamp,current_k8s_namespace)
-
-
-        # Depending on whether all tests passes we will give the output
-        if (diagnoser_check and msi_cert_check and agent_version_check and arc_agent_state_check and msi_cert_expiry_check and kap_cert_check and kap_security_policy_check):
-            logger.warning("Diagnoser could not find any issues with the cluster. \nFor more results from the diagnoser refer to the logs collected at \"C:\\Users\\t-svagadia\\DiagnosticLogs\". These logs can be attached while filing a support ticket for further assistance.\n")
-        else:
-            logger.warning("For more results from the diagnoser refer to the logs collected at \"C:\\Users\\t-svagadia\\DiagnosticLogs\". \nThese logs can be attached while filing a support ticket for further assistance.\n")
-
-    except KeyboardInterrupt:
-        raise ManualInterrupt('Process terminated externally.')
-        
 
 
 def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_proxy="", http_proxy="", no_proxy="", proxy_cert="", location=None,
