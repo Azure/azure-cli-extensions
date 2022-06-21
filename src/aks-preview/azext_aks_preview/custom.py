@@ -2388,10 +2388,9 @@ def aks_pod_identity_add(cmd, client, resource_group_name, cluster_name,
         pod_identity.binding_selector = binding_selector
     pod_identities.append(pod_identity)
 
-    from azext_aks_preview.decorator import AKSPreviewModels
-
+    from azext_aks_preview.managed_cluster_decorator import AKSPreviewManagedClusterModels
     # store all the models used by pod identity
-    pod_identity_models = AKSPreviewModels(
+    pod_identity_models = AKSPreviewManagedClusterModels(
         cmd, CUSTOM_MGMT_AKS_PREVIEW).pod_identity_models
     _update_addon_pod_identity(
         instance, enable=True,
@@ -2418,10 +2417,9 @@ def aks_pod_identity_delete(cmd, client, resource_group_name, cluster_name,
                 continue
             pod_identities.append(pod_identity)
 
-    from azext_aks_preview.decorator import AKSPreviewModels
-
+    from azext_aks_preview.managed_cluster_decorator import AKSPreviewManagedClusterModels
     # store all the models used by pod identity
-    pod_identity_models = AKSPreviewModels(
+    pod_identity_models = AKSPreviewManagedClusterModels(
         cmd, CUSTOM_MGMT_AKS_PREVIEW).pod_identity_models
     _update_addon_pod_identity(
         instance, enable=True,
@@ -2451,10 +2449,9 @@ def aks_pod_identity_exception_add(cmd, client, resource_group_name, cluster_nam
         name=exc_name, namespace=exc_namespace, pod_labels=pod_labels)
     pod_identity_exceptions.append(exc)
 
-    from azext_aks_preview.decorator import AKSPreviewModels
-
+    from azext_aks_preview.managed_cluster_decorator import AKSPreviewManagedClusterModels
     # store all the models used by pod identity
-    pod_identity_models = AKSPreviewModels(
+    pod_identity_models = AKSPreviewManagedClusterModels(
         cmd, CUSTOM_MGMT_AKS_PREVIEW).pod_identity_models
     _update_addon_pod_identity(
         instance, enable=True,
@@ -2480,10 +2477,9 @@ def aks_pod_identity_exception_delete(cmd, client, resource_group_name, cluster_
                 continue
             pod_identity_exceptions.append(exc)
 
-    from azext_aks_preview.decorator import AKSPreviewModels
-
+    from azext_aks_preview.managed_cluster_decorator import AKSPreviewManagedClusterModels
     # store all the models used by pod identity
-    pod_identity_models = AKSPreviewModels(
+    pod_identity_models = AKSPreviewManagedClusterModels(
         cmd, CUSTOM_MGMT_AKS_PREVIEW).pod_identity_models
     _update_addon_pod_identity(
         instance, enable=True,
@@ -2517,10 +2513,9 @@ def aks_pod_identity_exception_update(cmd, client, resource_group_name, cluster_
         raise CLIError(
             'pod identity exception {}/{} not found'.format(exc_namespace, exc_name))
 
-    from azext_aks_preview.decorator import AKSPreviewModels
-
+    from azext_aks_preview.managed_cluster_decorator import AKSPreviewManagedClusterModels
     # store all the models used by pod identity
-    pod_identity_models = AKSPreviewModels(
+    pod_identity_models = AKSPreviewManagedClusterModels(
         cmd, CUSTOM_MGMT_AKS_PREVIEW).pod_identity_models
     _update_addon_pod_identity(
         instance, enable=True,
