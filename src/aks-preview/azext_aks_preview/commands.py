@@ -16,7 +16,6 @@ from ._format import aks_show_table_format
 from ._format import aks_addon_list_available_table_format, aks_addon_list_table_format, aks_addon_show_table_format
 from ._format import aks_agentpool_show_table_format
 from ._format import aks_agentpool_list_table_format
-from ._format import aks_versions_table_format
 from ._format import aks_upgrades_table_format
 from ._format import aks_pod_identities_table_format
 from ._format import aks_pod_identity_exceptions_table_format

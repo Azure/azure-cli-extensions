@@ -127,9 +127,7 @@ from azext_aks_preview.maintenanceconfiguration import (
 )
 
 from .vendored_sdks.azure_mgmt_preview_aks.v2022_05_02_preview.models import (
-    AgentPool,
     AgentPoolUpgradeSettings,
-    ContainerServiceStorageProfileTypes,
     CreationData,
     KubeletConfig,
     LinuxOSConfig,
