@@ -62,9 +62,10 @@ logger = get_logger(__name__)
 # pylint: disable=too-many-statements
 # pylint: disable=line-too-long
 
-def connect(host = 'http://portal.azure.com'):
+
+def connect(host='http://portal.azure.com'):
     try:
-        urllib.request.urlopen(host) #Python 3.x
+        urllib.request.urlopen(host)
         return True
     except:
         return False
@@ -78,7 +79,7 @@ def check_internet_connectivity():
 
 
 def create_folder_diagnosticlogs(time_stamp):
- 
+
     # Creating the Diagnoser Folder and adding it if its not already present
     path = "C:\\Users\\t-svagadia\\diagnostic_logs"
     try:
@@ -87,7 +88,7 @@ def create_folder_diagnosticlogs(time_stamp):
         pass
 
     # Creating Subfolder with the given timestamp to store all the logs
-    path = "C:\\Users\\t-svagadia\\diagnostic_logs\ "+time_stamp
+    path = "C:\\Users\\t-svagadia\\diagnostic_logs\ " + time_stamp
     try:
         os.mkdir(path)
     except FileExistsError:
@@ -97,20 +98,20 @@ def create_folder_diagnosticlogs(time_stamp):
 def arc_agents_logger(corev1_api_instance, time_stamp):
 
     # To retrieve all of the arc agents pods that are presesnt in the Cluster
-    arc_agents_pod_list = corev1_api_instance.list_namespaced_pod(namespace = "azure-arc")
+    arc_agents_pod_list = corev1_api_instance.list_namespaced_pod(namespace="azure-arc")
 
     # Traversing thorugh all agents
     for each_agent_pod in arc_agents_pod_list.items:
 
         # Fethcing the current Pod name and creating a folder with that name inside the timestamp folder
         agent_name = each_agent_pod.metadata.name
-        path = ("C:\\Users\\t-svagadia\\diagnostic_logs\ "+ time_stamp+"\Arc_Agents_logs")
+        path = ("C:\\Users\\t-svagadia\\diagnostic_logs\ " + time_stamp + "\Arc_Agents_logs")
         try:
             os.mkdir(path)
         except FileExistsError:
             pass
 
-        path = ("C:\\Users\\t-svagadia\\diagnostic_logs\ "+ time_stamp+"\Arc_Agents_logs\ "+agent_name)
+        path = ("C:\\Users\\t-svagadia\\diagnostic_logs\ " + time_stamp + "\Arc_Agents_logs\ " + agent_name)
         try:
             os.mkdir(path)
         except FileExistsError:
@@ -123,23 +124,23 @@ def arc_agents_logger(corev1_api_instance, time_stamp):
         # Traversing through all of the containers present inside each pods
         for each_container in each_agent_pod.spec.containers:
 
-            #Fetching the Container name
+            # Fetching the Container name
             container_name = each_container.name
 
             # Creating a text file with the name of the container and adding that containers logs in it
-            container_log = corev1_api_instance.read_namespaced_pod_log(name = agent_name,container = container_name,namespace = "azure-arc")
-            with open("C:\\Users\\t-svagadia\\diagnostic_logs\ "+ time_stamp+"\Arc_Agents_logs\ "+agent_name+"\ "+container_name+".txt",'w+') as container_file:
+            container_log = corev1_api_instance.read_namespaced_pod_log(name=agent_name, container=container_name, namespace="azure-arc")
+            with open("C:\\Users\\t-svagadia\\diagnostic_logs\ " + time_stamp + "\Arc_Agents_logs\ " + agent_name + "\ " + container_name + ".txt", 'w+') as container_file:
                 container_file.write(str(container_log))
 
 
 def deployments_logger(appv1_api_instance, time_stamp):
 
     # Creating new Deployment Logs folder in the given timestamp folder
-    path = "C:\\Users\\t-svagadia\\diagnostic_logs\ "+time_stamp+"\Deployment_logs"  
+    path = "C:\\Users\\t-svagadia\\diagnostic_logs\ " + time_stamp + "\Deployment_logs"
     try:
         os.mkdir(path)
     except FileExistsError:
-        pass 
+        pass
 
     # To retrieve all the the deployements that are present in the Cluster
     deployments_list = appv1_api_instance.list_namespaced_deployment("azure-arc")
@@ -151,28 +152,28 @@ def deployments_logger(appv1_api_instance, time_stamp):
         deployment_name = deployment.metadata.name
 
         # Creating a text file with the name of the deployment and adding deployment status in it
-        with open("C:\\Users\\t-svagadia\\diagnostic_logs\ "+ time_stamp+"\Deployment_logs\ "+deployment_name+".txt",'w+') as deployment_file:
+        with open("C:\\Users\\t-svagadia\\diagnostic_logs\ " + time_stamp + "\Deployment_logs\ " + deployment_name + ".txt", 'w+') as deployment_file:
             deployment_file.write(str(deployment.status))
 
-    
+
 def check_agent_state(corev1_api_instance, time_stamp):
 
-    with open("C:\\Users\\t-svagadia\\diagnostic_logs\ "+ time_stamp+"\Agent_State.txt",'w+') as agent_state:
+    with open("C:\\Users\\t-svagadia\\diagnostic_logs\ " + time_stamp + "\Agent_State.txt", 'w+') as agent_state:
 
         # To retrieve all of the arc agent pods that are presesnt in the Cluster
-        arc_agents_pod_list = corev1_api_instance.list_namespaced_pod(namespace = "azure-arc")
+        arc_agents_pod_list = corev1_api_instance.list_namespaced_pod(namespace="azure-arc")
 
         # Check if any arc agent other than kube aadp proxy is not in Running state
         counter = 0
         for each_agent_pod in arc_agents_pod_list.items:
 
             # Storing the state of the arc agent in the user machine
-            agent_state.write(each_agent_pod.metadata.name+" = "+each_agent_pod.status.phase+"\n")
+            agent_state.write(each_agent_pod.metadata.name + " = " + each_agent_pod.status.phase + "\n")
 
             # If the agent is Kube add proxy we will continue with the next agent
             if(each_agent_pod.metadata.name.startswith("kube-aad-proxy")):
                 continue
-            if each_agent_pod.status.phase != 'Running' :
+            if each_agent_pod.status.phase != 'Running':
                 counter = 1
 
         # Displaying error if the arc agents are in pending state.
@@ -180,7 +181,7 @@ def check_agent_state(corev1_api_instance, time_stamp):
             print("Error: One or more Azure Arc agents are in pending state. It may be caused due to insufficient resource availability on the cluster.\n For more details on resource requirement visit 'aka.ms\\arcenabledkubernetesresourcerequirement'. \n")
             return False
 
-        return True                 
+        return True          
 
 
 def check_agent_version(connected_cluster, azure_arc_agent_version):
@@ -195,7 +196,7 @@ def check_agent_version(connected_cluster, azure_arc_agent_version):
     latest_agent_version = azure_arc_agent_version.split('.')
 
     # Comparing if the user version is comaptible or not
-    if((int(current_user_version[0])<int(latest_agent_version[0])) or (int(latest_agent_version[1])-int(current_user_version[1])>2)):
+    if((int(current_user_version[0]) < int(latest_agent_version[0])) or (int(latest_agent_version[1]) - int(current_user_version[1]) > 2)):
         logger.warning("Error: We found that you are on an older agent version thats not supported.\n Please visit this link to know the agent version support policy 'link'.\n")
         return False
 
@@ -215,17 +216,17 @@ def executing_diagnoser_job(corev1_api_instance, batchv1_api_instance, namespace
         k8s_client = client.ApiClient()
         yaml_file = "TroubleshootTemplates\\diagnoser_job.yaml"
         try:
-            utils.create_from_yaml(k8s_client, yaml_file)  
+            utils.create_from_yaml(k8s_client, yaml_file)
         except Exception as e:
             pass
 
         # Watching for diagnosercontianer to reach in completed stage
         w = watch.Watch()
         counter = 0
-        for event in w.stream(batchv1_api_instance.list_namespaced_job, namespace = namespace, label_selector = "", timeout_seconds = 90):
+        for event in w.stream(batchv1_api_instance.list_namespaced_job, namespace=namespace, label_selector="", timeout_seconds=90):
             try:
-                if event["object"].metadata.name =="diagnosercontainer" and event["object"].status.conditions[0].type== "Complete":
-                    counter=1
+                if event["object"].metadata.name == "diagnosercontainer" and event["object"].status.conditions[0].type == "Complete":
+                    counter = 1
                     w.stop()
 
             except Exception as e:
@@ -236,39 +237,36 @@ def executing_diagnoser_job(corev1_api_instance, batchv1_api_instance, namespace
         # If container not created then clearing all the reosurce with proper error message
         if(counter == 0):
 
-            subprocess.run(["kubectl", "delete", "-f", "TroubleshootTemplates\\diagnoser_job.yaml"], stdout = subprocess.DEVNULL, stderr = subprocess.DEVNULL)
-            #print("Container not created.")
+            subprocess.run(["kubectl", "delete", "-f", "TroubleshootTemplates\\diagnoser_job.yaml"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
         else:
 
-            #Fetching the Diagnoser Container logs
+            # Fetching the Diagnoser Container logs
             try:
 
                 job_name = "diagnosercontainer"
 
                 all_pods = corev1_api_instance.list_namespaced_pod(namespace)
-                # Traversing thorugh all agents 
+                # Traversing thorugh all agents
                 for each_pod in all_pods.items:
 
-                    #Fethcing the current Pod name and creating a folder with that name inside the timestamp folder
+                    # Fethcing the current Pod name and creating a folder with that name inside the timestamp folder
                     pod_name = each_pod.metadata.name
 
                     if(pod_name.startswith(job_name)):
-                        #print(pod_name)
-                        #Creating a text file with the name of the container and adding that containers logs in it
-                        diagnoser_container_log = corev1_api_instance.read_namespaced_pod_log(name = pod_name, container = "networktest1", namespace = namespace)
+
+                        # Creating a text file with the name of the container and adding that containers logs in it
+                        diagnoser_container_log = corev1_api_instance.read_namespaced_pod_log(name=pod_name, container="networktest1", namespace=namespace)
 
                 # Clearing all the resources after fetching the diagnoser container logs
-                subprocess.run(["kubectl", "delete", "-f", "TroubleshootTemplates\\diagnoser_job.yaml"], stdout = subprocess.DEVNULL, stderr = subprocess.DEVNULL)
-            
+                subprocess.run(["kubectl", "delete", "-f", "TroubleshootTemplates\\diagnoser_job.yaml"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
             except Exception as e:
-                subprocess.run(["kubectl", "delete", "-f", "TroubleshootTemplates\\diagnoser_job.yaml"], stdout = subprocess.DEVNULL, stderr = subprocess.DEVNULL)
-
+                subprocess.run(["kubectl", "delete", "-f", "TroubleshootTemplates\\diagnoser_job.yaml"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
     except KeyboardInterrupt:
         # If process terminated by user then delete the resources if any added to the cluster.
-        subprocess.run(["kubectl", "delete", "-f", "TroubleshootTemplates\\diagnoser_job.yaml"], stdout = subprocess.DEVNULL, stderr = subprocess.DEVNULL)
+        subprocess.run(["kubectl", "delete", "-f", "TroubleshootTemplates\\diagnoser_job.yaml"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
     return diagnoser_container_log
 
@@ -294,18 +292,18 @@ def diagnoser_container_check(corev1_api_instance, batchv1_api_instance, time_st
 def check_cluster_DNS(diagnoser_container_log, time_stamp):
 
     # To retreive only the DNS lookup result from the diagnoser container logs
-    dns_check = diagnoser_container_log[0:len(diagnoser_container_log)-5:]
+    dns_check = diagnoser_container_log[0:len(diagnoser_container_log) - 5:]
 
     # Validating if DNS is working or not and displaying proper result
     if("NXDOMAIN" in dns_check or "connection timed out" in dns_check):
         print("Error: We found an issue with the DNS resolution on your cluster. For details about debugging DNS issues visit 'https://kubernetes.io/docs/tasks/administer-cluster/dns-debugging-resolution/'.\n")
-        with open("C:\\Users\\t-svagadia\\diagnostic_logs\ "+ time_stamp+"\DNS_Check.txt",'w+') as dns:
-            dns.write(dns_check+"\nWe found an issue with the DNS resolution on your cluster.")
+        with open("C:\\Users\\t-svagadia\\diagnostic_logs\ " + time_stamp + "\DNS_Check.txt", 'w+') as dns:
+            dns.write(dns_check + "\nWe found an issue with the DNS resolution on your cluster.")
             return False
 
     else:
-        with open("C:\\Users\\t-svagadia\\diagnostic_logs\ "+ time_stamp+"\DNS_Check.txt",'w+') as dns:
-            dns.write(dns_check+"\nCluster DNS check passed successfully.")
+        with open("C:\\Users\\t-svagadia\\diagnostic_logs\ " + time_stamp + "\DNS_Check.txt", 'w+') as dns:
+            dns.write(dns_check + "\nCluster DNS check passed successfully.")
             return True
 
 
@@ -316,13 +314,13 @@ def check_cluster_outbound_connectivity(diagnoser_container_log, time_stamp):
 
     # Validating if outbound connectiivty is working or not and displaying proper result
     if(outbound_check != "000"):
-        with open("C:\\Users\\t-svagadia\\diagnostic_logs\ "+ time_stamp+"\Outbound_Network_Connectivity_Check.txt",'w+') as dns:
-            dns.write("Response code "+outbound_check+"\nOutbound network connectivity check passed successfully.")
+        with open("C:\\Users\\t-svagadia\\diagnostic_logs\ " + time_stamp + "\Outbound_Network_Connectivity_Check.txt", 'w+') as dns:
+            dns.write("Response code " + outbound_check + "\nOutbound network connectivity check passed successfully.")
             return True
     else:
         print("Error: We found an issue with outbound network connectivity from the cluster.\nIf your cluster is behind an outbound proxy server, please ensure that you have passed proxy paramaters during the onboarding of your cluster.\nFor more details visit 'https://docs.microsoft.com/en-us/azure/azure-arc/kubernetes/quickstart-connect-cluster?tabs=azure-cli#connect-using-an-outbound-proxy-server'.\nPlease ensure to meet the following network requirements 'https://docs.microsoft.com/en-us/azure/azure-arc/kubernetes/quickstart-connect-cluster?tabs=azure-cli#meet-network-requirements' \n")
-        with open("C:\\Users\\t-svagadia\\diagnostic_logs\ "+ time_stamp+"\Outbound_Network_Connectivity_Check.txt",'w+') as dns:
-            dns.write("Response code "+outbound_check+"\nWe found an issue with Outbound network connectivity from the cluster.")
+        with open("C:\\Users\\t-svagadia\\diagnostic_logs\ " + time_stamp+ "\Outbound_Network_Connectivity_Check.txt", 'w+') as dns:
+            dns.write("Response code " + outbound_check + "\nWe found an issue with Outbound network connectivity from the cluster.")
             return False
 
 
@@ -332,7 +330,7 @@ def check_msi_certificate(corev1_api_instance):
     msi_cert_present = False
 
     # Going thorugh all the secrets in azure-arc
-    all_secrets_azurearc = corev1_api_instance.list_namespaced_secret(namespace = "azure-arc")
+    all_secrets_azurearc = corev1_api_instance.list_namespaced_secret(namespace="azure-arc")
 
     for secrets in all_secrets_azurearc.items:
 
@@ -354,8 +352,8 @@ def check_cluster_security_policy(corev1_api_instance):
     kap_pod_present = False
     cluster_connect_feature = False
 
-    #CMD command to get helm values in azure arc and converting it to json format
-    command = ["helm", "get", "values", "azure-arc","-o","json"]
+    # CMD command to get helm values in azure arc and converting it to json format
+    command = ["helm", "get", "values", "azure-arc", "-o", "json"]
 
     # Using subprocess to execute the helm get values command and fetching the output
     p = subprocess.Popen(command, stdout=subprocess.PIPE)
@@ -366,7 +364,7 @@ def check_cluster_security_policy(corev1_api_instance):
     cluster_connect_feature = my_json["systemDefaultValues"]["clusterconnect-agent"]["enabled"]
 
     # To retrieve all of the arc agent pods that are presesnt in the Cluster
-    arc_agents_pod_list = corev1_api_instance.list_namespaced_pod(namespace = "azure-arc")
+    arc_agents_pod_list = corev1_api_instance.list_namespaced_pod(namespace="azure-arc")
 
     # Traversing thorugh all agents and checking if the Kube aad proxy pod is present or not
     for each_agent_pod in arc_agents_pod_list.items:
@@ -405,7 +403,7 @@ def check_kap_cert(corev1_api_instance):
 
         # If name of secret is kube-aad-proxy-certificate then we stop there
         if(secrets.metadata.name == "kube-aad-proxy-certificate"):
-            kap_cert_present=True
+            kap_cert_present = True
 
     if not kap_cert_present and kap_pod_status == "ContainerCreating":
         print("Error: Unable to pull Kube aad proxy certificate.\n Refer this link to for more information 'kap_cert_link'. \n")
@@ -420,12 +418,12 @@ def check_msi_expiry(connected_cluster):
     Expiry_date = str(connected_cluster.managed_identity_certificate_expiration_time)
 
     # Fetch the current time and format it same as msi certificate
-    Current_date_temp = datetime.datetime.now().utcnow().replace(microsecond=0,tzinfo=datetime.timezone.utc).isoformat()
-    Current_date=Current_date_temp.replace('T',' ')
+    Current_date_temp = datetime.datetime.now().utcnow().replace(microsecond=0, tzinfo=datetime.timezone.utc).isoformat()
+    Current_date = Current_date_temp.replace('T', ' ')
 
     # Check if expiry date is lesser than current time
-    if (Expiry_date<Current_date):
+    if (Expiry_date < Current_date):
         print("Error: Your MSI certificate has expired. To resolve this issue you can delete the cluster and reconnect it to azure arc.\n For further help visit this link:\n")
         return False
-    
+
     return True

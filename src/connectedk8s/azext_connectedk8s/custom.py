@@ -63,7 +63,7 @@ logger = get_logger(__name__)
 # pylint: disable=line-too-long
 
 
-def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config = None, kube_context = None, no_wait = False, tags = None):
+def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=None, kube_context=None, no_wait=False, tags=None):
 
     try:
         logger.warning("\nDiagnoser running. This may take a while ...\n")
@@ -116,14 +116,14 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config = N
             time_stamp += elements
 
         # Generate the diagnostic folder in a given location
-        troubleshootutils.create_folder_diagnosticlogs(time_stamp)   
+        troubleshootutils.create_folder_diagnosticlogs(time_stamp)
 
-        with open("C:\\Users\\t-svagadia\\diagnostic_logs\ "+time_stamp+"\\Connected_cluster_resource.txt",'w+') as cc:
+        with open("C:\\Users\\t-svagadia\\diagnostic_logs\ " + time_stamp + "\\Connected_cluster_resource.txt", 'w+') as cc:
             cc.write(str(connected_cluster))
-        
+
         corev1_api_instance = kube_client.CoreV1Api(kube_client.ApiClient(configuration))
 
-        #Check if agents have been added to the cluster
+        # Check if agents have been added to the cluster
         arc_agents_pod_list = corev1_api_instance.list_namespaced_pod(namespace="azure-arc")
 
         # To verify if arc agents have been added to the cluster
@@ -134,14 +134,14 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config = N
 
             # For storing all the deployments logs using the AppsV1Api
             appv1_api_instance = kube_client.AppsV1Api(kube_client.ApiClient(configuration))
-            node_api_response = utils.validate_node_api_response(appv1_api_instance, None)
+            utils.validate_node_api_response(appv1_api_instance, None)
             troubleshootutils.deployments_logger(appv1_api_instance, time_stamp)
 
             # Check for the azure arc agent states
             arc_agent_state_check = troubleshootutils.check_agent_state(corev1_api_instance, time_stamp)
 
             # Check for msi certificate
-            msi_cert_check=troubleshootutils.check_msi_certificate(corev1_api_instance)
+            msi_cert_check = troubleshootutils.check_msi_certificate(corev1_api_instance)
 
             # If msi certificate present then only we will perform msi certificate expiry check
             if msi_cert_check:
@@ -230,7 +230,7 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config = N
 
     except KeyboardInterrupt:
         raise ManualInterrupt('Process terminated externally.')
-  
+
 
 def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_proxy="", http_proxy="", no_proxy="", proxy_cert="", location=None,
                         kube_config=None, kube_context=None, no_wait=False, tags=None, distribution='auto', infrastructure='auto',
