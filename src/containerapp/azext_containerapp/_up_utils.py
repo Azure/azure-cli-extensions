@@ -592,24 +592,19 @@ def _get_acr_from_image(cmd, app):
             )
 
 
-def _get_registry_from_app(app):
+def _get_registry_from_app(app, source):
     containerapp_def = app.get()
+    existing_registries = safe_get(containerapp_def, "properties", "configuration", "registries", default=[])
+    if source:
+        existing_registries = [r for r in existing_registries if ACR_IMAGE_SUFFIX in r["server"]]
     if containerapp_def:
-        if (
-            len(
-                safe_get(
-                    containerapp_def,
-                    "properties",
-                    "configuration",
-                    "registries",
-                    default=[],
-                )
-            )
-            == 1
-        ):
-            app.registry_server = containerapp_def["properties"]["configuration"][
-                "registries"
-            ][0]["server"]
+        if len(existing_registries) == 1:
+            app.registry_server = existing_registries[0]["server"]
+        elif len(existing_registries) > 1:  # default to registry in image if possible, otherwise don't infer
+            containers = safe_get(containerapp_def, "properties", "template", "containers", default=[])
+            image_server = next(c["image"] for c in containers if c["name"].lower() == app.name.lower()).split('/')[0]
+            if image_server in [r["server"] for r in existing_registries]:
+                app.registry_server = image_server
 
 
 def _get_acr_rg(app):
