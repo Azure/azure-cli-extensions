@@ -3,6 +3,10 @@
 Release History
 ===============
 
+0.3.8
+++++++
+* TODO
+
 0.3.7
 ++++++
 * Fixed bug with 'az containerapp up' where --registry-server was ignored
