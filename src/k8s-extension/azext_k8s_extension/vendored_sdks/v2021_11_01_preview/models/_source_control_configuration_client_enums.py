@@ -6,47 +6,19 @@
 # Changes may cause incorrect behavior and will be lost if the code is regenerated.
 # --------------------------------------------------------------------------
 
-<<<<<<< HEAD
 from enum import Enum
 from six import with_metaclass
 from azure.core import CaseInsensitiveEnumMeta
 
 
 class ClusterTypes(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
-=======
-from enum import Enum, EnumMeta
-from six import with_metaclass
-
-class _CaseInsensitiveEnumMeta(EnumMeta):
-    def __getitem__(self, name):
-        return super().__getitem__(name.upper())
-
-    def __getattr__(cls, name):
-        """Return the enum member matching `name`
-        We use __getattr__ instead of descriptors or inserting into the enum
-        class' __dict__ in order to support `name` and `value` being both
-        properties for enum members (which live in the class' __dict__) and
-        enum members themselves.
-        """
-        try:
-            return cls._member_map_[name.upper()]
-        except KeyError:
-            raise AttributeError(name)
-
-
-class ClusterTypes(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
->>>>>>> 331f997c (updating to the latest vendored sdk)
     """Cluster types
     """
 
     CONNECTED_CLUSTERS = "connectedClusters"
     MANAGED_CLUSTERS = "managedClusters"
 
-<<<<<<< HEAD
 class ComplianceStateType(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
-=======
-class ComplianceStateType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
->>>>>>> 331f997c (updating to the latest vendored sdk)
     """The compliance state of the configuration.
     """
 
@@ -56,11 +28,7 @@ class ComplianceStateType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     INSTALLED = "Installed"
     FAILED = "Failed"
 
-<<<<<<< HEAD
 class CreatedByType(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
-=======
-class CreatedByType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
->>>>>>> 331f997c (updating to the latest vendored sdk)
     """The type of identity that created the resource.
     """
 
@@ -69,29 +37,17 @@ class CreatedByType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     MANAGED_IDENTITY = "ManagedIdentity"
     KEY = "Key"
 
-<<<<<<< HEAD
 class Enum0(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
-=======
-class Enum0(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
->>>>>>> 331f997c (updating to the latest vendored sdk)
 
     MICROSOFT_CONTAINER_SERVICE = "Microsoft.ContainerService"
     MICROSOFT_KUBERNETES = "Microsoft.Kubernetes"
 
-<<<<<<< HEAD
 class Enum1(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
-=======
-class Enum1(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
->>>>>>> 331f997c (updating to the latest vendored sdk)
 
     MANAGED_CLUSTERS = "managedClusters"
     CONNECTED_CLUSTERS = "connectedClusters"
 
-<<<<<<< HEAD
 class FluxComplianceState(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
-=======
-class FluxComplianceState(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
->>>>>>> 331f997c (updating to the latest vendored sdk)
     """Compliance state of the cluster object.
     """
 
@@ -101,11 +57,7 @@ class FluxComplianceState(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     SUSPENDED = "Suspended"
     UNKNOWN = "Unknown"
 
-<<<<<<< HEAD
 class KustomizationValidationType(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
-=======
-class KustomizationValidationType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
->>>>>>> 331f997c (updating to the latest vendored sdk)
     """Specify whether to validate the Kubernetes objects referenced in the Kustomization before
     applying them to the cluster.
     """
@@ -114,11 +66,7 @@ class KustomizationValidationType(with_metaclass(_CaseInsensitiveEnumMeta, str, 
     CLIENT = "client"
     SERVER = "server"
 
-<<<<<<< HEAD
 class LevelType(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
-=======
-class LevelType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
->>>>>>> 331f997c (updating to the latest vendored sdk)
     """Level of the status.
     """
 
@@ -126,11 +74,7 @@ class LevelType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     WARNING = "Warning"
     INFORMATION = "Information"
 
-<<<<<<< HEAD
 class MessageLevelType(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
-=======
-class MessageLevelType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
->>>>>>> 331f997c (updating to the latest vendored sdk)
     """Level of the message.
     """
 
@@ -138,32 +82,20 @@ class MessageLevelType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     WARNING = "Warning"
     INFORMATION = "Information"
 
-<<<<<<< HEAD
 class OperatorScopeType(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
-=======
-class OperatorScopeType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
->>>>>>> 331f997c (updating to the latest vendored sdk)
     """Scope at which the operator will be installed.
     """
 
     CLUSTER = "cluster"
     NAMESPACE = "namespace"
 
-<<<<<<< HEAD
 class OperatorType(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
-=======
-class OperatorType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
->>>>>>> 331f997c (updating to the latest vendored sdk)
     """Type of the operator
     """
 
     FLUX = "Flux"
 
-<<<<<<< HEAD
 class ProvisioningState(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
-=======
-class ProvisioningState(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
->>>>>>> 331f997c (updating to the latest vendored sdk)
     """The provisioning state of the resource.
     """
 
@@ -174,11 +106,7 @@ class ProvisioningState(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     UPDATING = "Updating"
     DELETING = "Deleting"
 
-<<<<<<< HEAD
 class ProvisioningStateType(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
-=======
-class ProvisioningStateType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
->>>>>>> 331f997c (updating to the latest vendored sdk)
     """The provisioning state of the resource provider.
     """
 
@@ -188,22 +116,14 @@ class ProvisioningStateType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum))
     SUCCEEDED = "Succeeded"
     FAILED = "Failed"
 
-<<<<<<< HEAD
 class ScopeType(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
-=======
-class ScopeType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
->>>>>>> 331f997c (updating to the latest vendored sdk)
     """Scope at which the configuration will be installed.
     """
 
     CLUSTER = "cluster"
     NAMESPACE = "namespace"
 
-<<<<<<< HEAD
 class SourceKindType(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
-=======
-class SourceKindType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
->>>>>>> 331f997c (updating to the latest vendored sdk)
     """Source Kind to pull the configuration data from.
     """
 

@@ -10,11 +10,7 @@ from typing import Any, TYPE_CHECKING
 
 from azure.core.configuration import Configuration
 from azure.core.pipeline import policies
-<<<<<<< HEAD
 from azure.mgmt.core.policies import ARMHttpLoggingPolicy, AsyncARMChallengeAuthenticationPolicy
-=======
-from azure.mgmt.core.policies import ARMHttpLoggingPolicy
->>>>>>> 331f997c (updating to the latest vendored sdk)
 
 from .._version import VERSION
 
@@ -41,18 +37,11 @@ class SourceControlConfigurationClientConfiguration(Configuration):
         subscription_id: str,
         **kwargs: Any
     ) -> None:
-<<<<<<< HEAD
         super(SourceControlConfigurationClientConfiguration, self).__init__(**kwargs)
-=======
->>>>>>> 331f997c (updating to the latest vendored sdk)
         if credential is None:
             raise ValueError("Parameter 'credential' must not be None.")
         if subscription_id is None:
             raise ValueError("Parameter 'subscription_id' must not be None.")
-<<<<<<< HEAD
-=======
-        super(SourceControlConfigurationClientConfiguration, self).__init__(**kwargs)
->>>>>>> 331f997c (updating to the latest vendored sdk)
 
         self.credential = credential
         self.subscription_id = subscription_id
@@ -75,8 +64,4 @@ class SourceControlConfigurationClientConfiguration(Configuration):
         self.redirect_policy = kwargs.get('redirect_policy') or policies.AsyncRedirectPolicy(**kwargs)
         self.authentication_policy = kwargs.get('authentication_policy')
         if self.credential and not self.authentication_policy:
-<<<<<<< HEAD
             self.authentication_policy = AsyncARMChallengeAuthenticationPolicy(self.credential, *self.credential_scopes, **kwargs)
-=======
-            self.authentication_policy = policies.AsyncBearerTokenCredentialPolicy(self.credential, *self.credential_scopes, **kwargs)
->>>>>>> 331f997c (updating to the latest vendored sdk)
