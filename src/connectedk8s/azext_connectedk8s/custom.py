@@ -62,24 +62,22 @@ logger = get_logger(__name__)
 # pylint: disable=too-many-statements
 # pylint: disable=line-too-long
 
-def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=None, kube_context=None, no_wait=False, tags=None, distribution='auto', infrastructure='auto',
-                        disable_auto_upgrade=False, cl_oid=None,):
 
+def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config = None, kube_context = None, no_wait = False, tags = None):
 
     try:
         logger.warning("\nDiagnoser running. This may take a while ...\n")
 
         # Setting default values for all checks as True
-        msi_cert_expiry_check=True
-        kap_security_policy_check=True
-        kap_cert_check=True
-        diagnoser_check=True
-        msi_cert_check=True
-        agent_version_check=True
-        arc_agent_state_check=True
+        msi_cert_expiry_check = True
+        kap_security_policy_check = True
+        kap_cert_check = True
+        diagnoser_check = True
+        msi_cert_check = True
+        agent_version_check = True
+        arc_agent_state_check = True
 
-
-        #Setting kube_config
+        # Setting kube_config
         kube_config = set_kube_config(kube_config)
 
         # Loading the kubeconfig file in kubernetes client configuration
@@ -94,37 +92,34 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
 
         # Fetch Connected Cluster for agent version
         connected_cluster = get_connectedk8s(cmd, client, resource_group_name, cluster_name)
-        
+
         # To check for internet connectivity
         for counter in range(3):
             if troubleshootutils.check_internet_connectivity():
                 break
-            elif(counter==3 and troubleshootutils.check_internet_connectivity()==False):
+            elif(counter == 3 and troubleshootutils.check_internet_connectivity() is False):
                 print("Error: There is problem with the internet connection. Please check it and then try again.\n")
-                return 
+                return
             else:
                 time.sleep(2)
 
-        # Creating timestamp folder to store all the diagnoser logs 
+        # Creating timestamp folder to store all the diagnoser logs
         current_time = time.ctime(time.time())
-        time_stamp=""
+        time_stamp = ""
         for elements in current_time:
-            if(elements==' '):
-                time_stamp+='-'
+            if(elements == ' '):
+                time_stamp += '-'
                 continue
-            elif(elements==':'):
-                time_stamp+='.'
+            elif(elements == ':'):
+                time_stamp += '.'
                 continue
-            time_stamp+=elements
-
+            time_stamp += elements
 
         # Generate the diagnostic folder in a given location
-        troubleshootutils.create_folder_diagnosticlogs(time_stamp)
-        
+        troubleshootutils.create_folder_diagnosticlogs(time_stamp)   
 
         with open("C:\\Users\\t-svagadia\\diagnostic_logs\ "+time_stamp+"\\Connected_cluster_resource.txt",'w+') as cc:
             cc.write(str(connected_cluster))
-
         
         corev1_api_instance = kube_client.CoreV1Api(kube_client.ApiClient(configuration))
 
@@ -135,36 +130,30 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
         if arc_agents_pod_list.items:
 
             # For storing all the agent logs using the CoreV1Api
-            troubleshootutils.arc_agents_logger(corev1_api_instance,time_stamp)
-
-
+            troubleshootutils.arc_agents_logger(corev1_api_instance, time_stamp)
 
             # For storing all the deployments logs using the AppsV1Api
             appv1_api_instance = kube_client.AppsV1Api(kube_client.ApiClient(configuration))
             node_api_response = utils.validate_node_api_response(appv1_api_instance, None)
-            troubleshootutils.deployments_logger(appv1_api_instance,time_stamp)
-
+            troubleshootutils.deployments_logger(appv1_api_instance, time_stamp)
 
             # Check for the azure arc agent states
-            arc_agent_state_check= troubleshootutils.check_agent_state(corev1_api_instance,time_stamp)
-
-            
+            arc_agent_state_check = troubleshootutils.check_agent_state(corev1_api_instance, time_stamp)
 
             # Check for msi certificate
-            msi_cert_check=troubleshootutils.check_msi_certificate(connected_cluster,corev1_api_instance)
+            msi_cert_check=troubleshootutils.check_msi_certificate(corev1_api_instance)
 
             # If msi certificate present then only we will perform msi certificate expiry check
             if msi_cert_check:
-                msi_cert_expiry_check=troubleshootutils.check_msi_expiry(connected_cluster,corev1_api_instance)
+                msi_cert_expiry_check = troubleshootutils.check_msi_expiry(connected_cluster)
 
             # If msi certificate present then only we will do Kube aad proxy checks
             if msi_cert_check:
-                kap_security_policy_check=troubleshootutils.check_cluster_security_policy(corev1_api_instance)
+                kap_security_policy_check = troubleshootutils.check_cluster_security_policy(corev1_api_instance)
 
                 # If no security policy is present in cluster then we can check for the Kube aad proxy certificate
                 if(kap_security_policy_check):
-                    kap_cert_check=troubleshootutils.check_kap_cert(corev1_api_instance)
-
+                    kap_cert_check = troubleshootutils.check_kap_cert(corev1_api_instance)
 
             helm_client_location = install_helm_client()
 
@@ -175,7 +164,7 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
             dp_endpoint_dogfood = None
             release_train_dogfood = None
             if cmd.cli_ctx.cloud.endpoints.resource_manager == consts.Dogfood_RMEndpoint:
-                azure_cloud = consts.Azure_DogfoodCloudName
+                consts.Azure_DogfoodCloudName
                 dp_endpoint_dogfood, release_train_dogfood = validate_env_file_dogfood(values_file, values_file_provided)
 
             # Adding helm repo
@@ -187,18 +176,17 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
 
             # Retrieving Helm chart OCI Artifact location
             registry_path = os.getenv('HELMREGISTRY') if os.getenv('HELMREGISTRY') else utils.get_helm_registry(cmd, config_dp_endpoint, dp_endpoint_dogfood, release_train_dogfood)
-            
+
             # Get azure-arc agent version for telemetry
             azure_arc_agent_version = registry_path.split(':')[1]
 
-            
             # Check for agent verison comaptibility
-            agent_version_check=troubleshootutils.check_agent_version(connected_cluster, azure_arc_agent_version)
+            agent_version_check = troubleshootutils.check_agent_version(connected_cluster, azure_arc_agent_version)
         else:
-            print("Error : Arc Agents have not been added to cluster. Please delete and reconnect the Kubernetes Cluster\n") 
+            print("Error : Arc Agents have not been added to cluster. Please delete and reconnect the Kubernetes Cluster\n")
 
         batchv1_api_instance = kube_client.BatchV1Api(kube_client.ApiClient(configuration))
-        node_api_response = utils.validate_node_api_response(batchv1_api_instance, None)
+        utils.validate_node_api_response(batchv1_api_instance, None)
 
         # Fetching the current kubernetes namespace to deploy the job
         try:
@@ -230,12 +218,9 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
             raise e
         except Exception as e:
             logger.warning("Failed to validate if the active namespace exists on the kubernetes cluster. Exception: {}".format(str(e)))
-         
-
 
         # Executing the Diagnoser job check in the given namespace
-        diagnoser_check=troubleshootutils.diagnoser_container_check(corev1_api_instance,batchv1_api_instance,time_stamp,current_k8s_namespace)
-
+        diagnoser_check = troubleshootutils.diagnoser_container_check(corev1_api_instance, batchv1_api_instance, time_stamp, current_k8s_namespace)
 
         # Depending on whether all tests passes we will give the output
         if (diagnoser_check and msi_cert_check and agent_version_check and arc_agent_state_check and msi_cert_expiry_check and kap_cert_check and kap_security_policy_check):
@@ -245,8 +230,7 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
 
     except KeyboardInterrupt:
         raise ManualInterrupt('Process terminated externally.')
-        
-
+  
 
 def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_proxy="", http_proxy="", no_proxy="", proxy_cert="", location=None,
                         kube_config=None, kube_context=None, no_wait=False, tags=None, distribution='auto', infrastructure='auto',
@@ -971,7 +955,6 @@ def update_agents(cmd, client, resource_group_name, cluster_name, https_proxy=""
 
     # Send cloud information to telemetry
     send_cloud_telemetry(cmd)
-
 
     # Setting kubeconfig
     kube_config = set_kube_config(kube_config)
