@@ -320,15 +320,16 @@ def dataprotection_backup_instance_update_msi_permissions(cmd, client, resource_
                 break
 
         if not valid_secret:
-            raise CLIError("Secret URI provided is not valid")
+            raise CLIError("The secret URI provided in the --backup-instance is not associated with the "
+                           "--keyvault-id provided. Please input a valid combination of secret URI and "
+                           "--keyvault-id.")
 
         if keyvault.properties.public_network_access == 'Disabled':
             raise CLIError("Keyvault needs to have public network access enabled")
 
         keyvault_permission_models = manifest['secretStorePermissions']
         if keyvault.properties.enable_rbac_authorization:
-            keyvault_rbac_model = keyvault_permission_models['rbacModel']
-            role = keyvault_rbac_model['roleDefinitionName']
+            role = keyvault_permission_models['rbacModel']['roleDefinitionName']
 
             keyvault_assignment_scope = helper.truncate_id_using_scope(keyvault_id, permissions_scope)
 
@@ -337,14 +338,17 @@ def dataprotection_backup_instance_update_msi_permissions(cmd, client, resource_
                 role_assignments_arr.append(create_role_assignment(cmd, assignee=principal_id, role=role, scope=keyvault_assignment_scope))
 
         else:
-            keyvault_permissions_map = {policy.object_id: policy.permissions for policy in keyvault.properties.access_policies}
             from azure.cli.command_modules.keyvault.custom import set_policy
-            vault_access_policy_model = keyvault_permission_models['vaultAccessPolicyModel']
-            access_policies = vault_access_policy_model['access_policies']
-            vault_permissions = access_policies['permissions']
+            vault_secret_permissions = (keyvault_permission_models['vaultAccessPolicyModel']
+                                        ['access_policies']
+                                        ['permissions']
+                                        ['secrets'])
 
-            vault_secret_permissions = vault_permissions['secrets']
-            secrets_array = keyvault_permissions_map[principal_id].secrets
+            secrets_array = []
+            for policy in keyvault.properties.access_policies:
+                if policy.object_id == principal_id:
+                    secrets_array = policy.permissions.secrets
+                    break
 
             permissions_set = True
             for permission in vault_secret_permissions:
@@ -357,13 +361,9 @@ def dataprotection_backup_instance_update_msi_permissions(cmd, client, resource_
 
         from azure.cli.command_modules.keyvault.custom import update_vault_setter
 
-        update = False
         if keyvault.properties.network_acls:
             if keyvault.properties.network_acls.bypass == 'None':
                 keyvault.properties.network_acls.bypass = 'AzureServices'
-                update = True
-
-            if update:
                 update_vault_setter(cmd, keyvault_client, keyvault, resource_group_name=keyvault_rg, vault_name=keyvault_name)
 
     for role_object in manifest['backupVaultPermissions']:
