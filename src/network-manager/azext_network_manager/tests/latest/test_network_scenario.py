@@ -198,7 +198,7 @@ class NetworkScenarioTest(ScenarioTest):
                  '--resource-group {rg}')
 
         self.cmd('network manager group create --name {group_name} --network-manager-name {manager_name} --description {description} '
-                 ' --display-name ASampleGroup --member-type "Microsoft.Network/virtualNetworks" -g {rg} ')
+                 ' --display-name ASampleGroup -g {rg} ')
 
         self.cmd('network manager group static-member create --name {name} --network-group-name {group_name} --network-manager-name {manager_name} '
                  '--resource-id="{sub}/resourceGroups/{rg}/providers/Microsoft.Network/virtualnetworks/{virtual_network}"  -g {rg} ')
@@ -294,7 +294,7 @@ class NetworkScenarioTest(ScenarioTest):
                  '--resource-group {rg}')
 
         self.cmd('network manager group create --name {group_name} --network-manager-name {manager_name} --description {description} '
-                 '--display-name ASampleGroup --member-type "Microsoft.Network/virtualNetworks" -g {rg} ')
+                 '--display-name ASampleGroup -g {rg} ')
 
         self.cmd('network manager group static-member create --name {name} --network-group-name {group_name} --network-manager-name {manager_name} '
                  '--resource-id="{sub}/resourceGroups/{rg}/providers/Microsoft.Network/virtualnetworks/{virtual_network}"  -g {rg} ')

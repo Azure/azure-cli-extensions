@@ -137,19 +137,19 @@ def network_manager_deploy_status_list(cmd,
                        parameters=parameters)
 
 
-def network_manager_effect_vnet_list_by_network_group(cmd,
-                                                      client,
-                                                      resource_group_name,
-                                                      network_manager_name,
-                                                      network_group_name,
-                                                      skip_token=None):
-    client = cf_listeffectivevirtualnetwork(cmd.cli_ctx)
-    parameters = {}
-    parameters['skip_token'] = skip_token
-    return client.by_network_group(resource_group_name=resource_group_name,
-                                   network_manager_name=network_manager_name,
-                                   network_group_name=network_group_name,
-                                   parameters=parameters)
+# def network_manager_effect_vnet_list_by_network_group(cmd,
+#                                                       client,
+#                                                       resource_group_name,
+#                                                       network_manager_name,
+#                                                       network_group_name,
+#                                                       skip_token=None):
+#     client = cf_listeffectivevirtualnetwork(cmd.cli_ctx)
+#     parameters = {}
+#     parameters['skip_token'] = skip_token
+#     return client.by_network_group(resource_group_name=resource_group_name,
+#                                    network_manager_name=network_manager_name,
+#                                    network_group_name=network_group_name,
+#                                    parameters=parameters)
 
 
 # def network_manager_effect_vnet_list_by_network_manager(cmd,
@@ -986,7 +986,7 @@ def network_manager_vnet_security_perimeter_delete(client,
                                                    resource_group_name,
                                                    network_security_perimeter_name):
     return client.begin_delete(resource_group_name=resource_group_name,
-                         network_security_perimeter_name=network_security_perimeter_name)
+                               network_security_perimeter_name=network_security_perimeter_name)
 
 
 def network_manager_perimeter_associable_resource_type_list(client,
@@ -1156,7 +1156,7 @@ def network_manager_group_static_member_create(cmd,
     parameters = {}
     parameters['resource_id'] = resource_id
     aux_subscription = parse_resource_id(resource_id)['subscription']
-    ncf =cf_network_cl(cmd.cli_ctx, aux_subscriptions=[aux_subscription])
+    ncf = cf_network_cl(cmd.cli_ctx, aux_subscriptions=[aux_subscription])
     return ncf.static_members.create_or_update(resource_group_name=resource_group_name,
                                                network_manager_name=network_manager_name,
                                                network_group_name=network_group_name,

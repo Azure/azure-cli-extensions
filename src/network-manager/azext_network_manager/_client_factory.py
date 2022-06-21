@@ -31,8 +31,8 @@ def cf_connectivityconfiguration(cli_ctx, *_):
     return cf_network_cl(cli_ctx).connectivity_configurations
 
 
-# def cf_listeffectivevirtualnetwork(cli_ctx, *_):
-#     return cf_network_cl(cli_ctx).list_effective_virtual_networks
+def cf_listeffectivevirtualnetwork(cli_ctx, *_):
+    return cf_network_cl(cli_ctx).list_effective_virtual_networks
 
 
 def cf_effectivevirtualnetwork(cli_ctx, *_):

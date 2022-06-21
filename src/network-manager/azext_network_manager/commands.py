@@ -36,10 +36,10 @@ def load_command_table(self, _):
         client_factory=cf_networkgroup
     )
 
-    network_securityuserconfiguration = CliCommandType(
-        operations_tmpl='azext_network_manager.vendored_sdks.operations._security_user_configurations_operations#SecurityUserConfigurationsOperations.{}',
-        client_factory=cf_securityuserconfiguration
-    )
+    # network_securityuserconfiguration = CliCommandType(
+    #     operations_tmpl='azext_network_manager.vendored_sdks.operations._security_user_configurations_operations#SecurityUserConfigurationsOperations.{}',
+    #     client_factory=cf_securityuserconfiguration
+    # )
 
     network_securityadminconfiguration = CliCommandType(
         operations_tmpl='azext_network_manager.vendored_sdks.operations._operations#SecurityAdminConfigurationsOperations.{}',

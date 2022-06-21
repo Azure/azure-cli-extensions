@@ -12,7 +12,6 @@ Release History
 * 'az network manager security-admin-config rule-collection delete': add parameter 'force'
 * 'az network manager security-admin-config rule-collection rule delete': add parameter 'force'
 
-
 0.5.0
 +++++
 * 'az network manager list-effect-vnet': hide this command
