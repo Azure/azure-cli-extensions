@@ -16,7 +16,18 @@ def setup(test):
         "policyname": "diskpolicy",
         "storagepolicyname": "storagepolicy",
         "resourceGuardName": "cli-test-resource-guard",
-        "storageaccountname": "cliteststoreaccount"
+        "storageaccountname": "cliteststoreaccount",
+        "ossserver": "oss-clitest-server",
+        "ossdb": "postgres",
+        "ossdbid": "/subscriptions/38304e13-357e-405e-9e9a-220351dcce8c/resourceGroups/oss-clitest-rg/providers/Microsoft.DBforPostgreSQL/servers/oss-clitest-server/databases/postgres",
+        "serverpolicyid": "/subscriptions/38304e13-357e-405e-9e9a-220351dcce8c/resourceGroups/oss-clitest-rg/providers/Microsoft.DataProtection/backupVaults/oss-clitest-vault/backupPolicies/oss-clitest-policy",
+        "secretstoreuri": "https://oss-clitest-keyvault.vault.azure.net/secrets/oss-clitest-secret",
+        "serverrgname": "oss-clitest-rg",
+        "servervaultname": "oss-clitest-vault",
+        "keyvaultid":  "/subscriptions/38304e13-357e-405e-9e9a-220351dcce8c/resourceGroups/oss-clitest-rg/providers/Microsoft.KeyVault/vaults/oss-clitest-keyvault",
+        "keyvaultname": "oss-clitest-keyvault",
+        "serverid": "/subscriptions/38304e13-357e-405e-9e9a-220351dcce8c/resourceGroups/oss-clitest-rg/providers/Microsoft.DBforPostgreSQL/servers/oss-clitest-server",
+        "servervaultprincipalid": "b864e281-c12e-45c6-a0c7-6046a7de5481"
     })
     account_res = test.cmd('az account show').get_output_in_json()
     vault_res = test.cmd('az dataprotection backup-vault create '
@@ -189,12 +200,23 @@ def initialize_backup_instance(test):
         "storage_backup_instance_name": backup_instance_json["backup_instance_name"]
     })
 
+    backup_instance_guid = "faec6818-0720-11ec-bd1b-c8f750f92764"
+    backup_instance_json = test.cmd('az dataprotection backup-instance initialize --datasource-type AzureDatabaseForPostgreSQL'
+                                    ' -l centraluseuap --policy-id "{serverpolicyid}" --datasource-id "{ossdbid}" --secret-store-type AzureKeyVault --secret-store-uri "{secretstoreuri}"').get_output_in_json()
+    backup_instance_json["backup_instance_name"] = test.kwargs['ossserver'] + "-" + test.kwargs['ossdb'] + "-" + backup_instance_guid
+    test.kwargs.update({
+        "server_backup_instance_json": backup_instance_json,
+        "server_backup_instance_name": backup_instance_json["backup_instance_name"]
+    })
+
 
 def assign_permissions_and_validate(test):
     test.cmd('az dataprotection backup-instance validate-for-backup -g "{rg}" --vault-name "{vaultName}" --backup-instance "{backup_instance_json}"', expect_failure=True)
     test.cmd('az dataprotection backup-instance validate-for-backup -g "{rg}" --vault-name "{vaultName}" --backup-instance "{storage_backup_instance_json}"', expect_failure=True)
+    test.cmd('az dataprotection backup-instance validate-for-backup -g "{serverrgname}" --vault-name "{servervaultname}" --backup-instance "{server_backup_instance_json}"', expect_failure=True)
     # test.cmd('az dataprotection backup-instance update-msi-permissions --datasource-type AzureDisk --operation Backup --permissions-scope Resource -g "{rg}" --vault-name "{vaultName}" --backup-instance "{backup_instance_json}" --yes').get_output_in_json()
     # test.cmd('az dataprotection backup-instance update-msi-permissions --datasource-type AzureBlob --operation Backup --permissions-scope Resource -g "{rg}" --vault-name "{vaultName}" --backup-instance "{storage_backup_instance_json}" --yes').get_output_in_json()
+    # test.cmd('az dataprotection backup-instance update-msi-permissions --datasource-type AzureDatabaseForPostgreSQL --permissions-scope Resource -g "{serverrgname}" --vault-name "{servervaultname}" --operation Backup --backup-instance "{server_backup_instance_json}" --keyvault-id "{keyvaultid}" --yes')
     # test.cmd('az role assignment create --assignee "{principalId}" --role "Disk Restore Operator" --scope "{rgid}"')
     # time.sleep(120) # Wait for permissions to propagate
     test.cmd('az dataprotection backup-instance validate-for-backup -g "{rg}" --vault-name "{vaultName}" --backup-instance "{backup_instance_json}"', checks=[
@@ -203,6 +225,12 @@ def assign_permissions_and_validate(test):
     test.cmd('az dataprotection backup-instance validate-for-backup -g "{rg}" --vault-name "{vaultName}" --backup-instance "{storage_backup_instance_json}"', checks=[
         test.check('objectType', 'OperationJobExtendedInfo')
     ])
+    test.cmd('az dataprotection backup-instance validate-for-backup -g "{serverrgname}" --vault-name "{servervaultname}" --backup-instance "{server_backup_instance_json}"', checks=[
+        test.check('objectType', 'OperationJobExtendedInfo')
+    ])
+    # test.cmd('az role assignment delete --assignee "{servervaultprincipalid}" --role Reader --scope "{serverid}"')
+    test.cmd('az postgres server firewall-rule delete -g "{serverrgname}" -s "{ossserver}" -n AllowAllWindowsAzureIps --yes')
+    # test.cmd('az keyvault delete-policy -g "{serverrgname}" -n "{keyvaultname}" --object-id "{servervaultprincipalid}"')
 
 
 def configure_backup(test):
