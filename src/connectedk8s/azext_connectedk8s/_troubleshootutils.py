@@ -181,7 +181,7 @@ def check_agent_state(corev1_api_instance, time_stamp):
             print("Error: One or more Azure Arc agents are in pending state. It may be caused due to insufficient resource availability on the cluster.\n For more details on resource requirement visit 'aka.ms\\arcenabledkubernetesresourcerequirement'. \n")
             return False
 
-        return True          
+        return True     
 
 
 def check_agent_version(connected_cluster, azure_arc_agent_version):
@@ -319,7 +319,7 @@ def check_cluster_outbound_connectivity(diagnoser_container_log, time_stamp):
             return True
     else:
         print("Error: We found an issue with outbound network connectivity from the cluster.\nIf your cluster is behind an outbound proxy server, please ensure that you have passed proxy paramaters during the onboarding of your cluster.\nFor more details visit 'https://docs.microsoft.com/en-us/azure/azure-arc/kubernetes/quickstart-connect-cluster?tabs=azure-cli#connect-using-an-outbound-proxy-server'.\nPlease ensure to meet the following network requirements 'https://docs.microsoft.com/en-us/azure/azure-arc/kubernetes/quickstart-connect-cluster?tabs=azure-cli#meet-network-requirements' \n")
-        with open("C:\\Users\\t-svagadia\\diagnostic_logs\ " + time_stamp+ "\Outbound_Network_Connectivity_Check.txt", 'w+') as dns:
+        with open("C:\\Users\\t-svagadia\\diagnostic_logs\ " + time_stamp + "\Outbound_Network_Connectivity_Check.txt", 'w+') as dns:
             dns.write("Response code " + outbound_check + "\nWe found an issue with Outbound network connectivity from the cluster.")
             return False
 
