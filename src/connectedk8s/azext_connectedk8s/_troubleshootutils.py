@@ -210,7 +210,6 @@ def executing_diagnoser_job(corev1_api_instance, batchv1_api_instance, namespace
 
     # To handle the user keyboard Interrupt
     try:
-
         # Executing the diagnoser_job.yaml
         config.load_kube_config()
         k8s_client = client.ApiClient()

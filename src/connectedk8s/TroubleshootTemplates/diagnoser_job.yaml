@@ -10,9 +10,9 @@ metadata:
   namespace: default
   name: secret-reader
 rules:
-- apiGroups: [""] # "" indicates the core API group
+- apiGroups: [""] 
   resources: ["secrets"]
-  verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+  verbs: ["get", "list"]
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
@@ -20,13 +20,12 @@ metadata:
   name: read-pods
   namespace: default
 subjects:
-# You can specify more than one "subject"
 - kind: ServiceAccount
   name: azure-arc-troubleshoot
   namespace: default
 roleRef:
-  kind: Role #this must be Role or ClusterRole
-  name: secret-reader # this must match the name of the Role or ClusterRole you wish to bind to
+  kind: Role 
+  name: secret-reader 
   namespace: default
 ---
 apiVersion: batch/v1
