@@ -4269,14 +4269,12 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         create_cmd = 'aks create --resource-group={resource_group} --name={name} --ssh-key-value={ssh_key_value} -o json \
                         --disable-disk-driver \
                         --disable-file-driver \
-                        --enable-blob-driver \
                         --disable-snapshot-controller'
         self.cmd(create_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
             self.check('storageProfile.diskCsiDriver.enabled', False),
             self.check('storageProfile.diskCsiDriver.version', "v1"),
             self.check('storageProfile.fileCsiDriver.enabled', False),
-            self.check('storageProfile.blobCsiDriver.enabled', True),
             self.check('storageProfile.snapshotController.enabled', False),
         ])
 
@@ -4287,21 +4285,18 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             self.check('storageProfile.diskCsiDriver.enabled', False),
             self.check('storageProfile.diskCsiDriver.version', "v1"),
             self.check('storageProfile.fileCsiDriver.enabled', False),
-            self.check('storageProfile.blobCsiDriver.enabled', True),
             self.check('storageProfile.snapshotController.enabled', False),
         ])
 
         enable_cmd = 'aks update --resource-group={resource_group} --name={name} -o json \
                         --enable-disk-driver \
                         --enable-file-driver \
-                        --enable-snapshot-controller \
-                        --disbale-blob-driver -y'
+                        --enable-snapshot-controller'
         self.cmd(enable_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
             self.check('storageProfile.diskCsiDriver.enabled', True),
             self.check('storageProfile.diskCsiDriver.version', "v1"),
             self.check('storageProfile.fileCsiDriver.enabled', True),
-            self.check('storageProfile.blobCsiDriver.enabled', False),
             self.check('storageProfile.snapshotController.enabled', True),
         ])
 
@@ -4312,21 +4307,18 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             self.check('storageProfile.diskCsiDriver.enabled', True),
             self.check('storageProfile.diskCsiDriver.version', "v1"),
             self.check('storageProfile.fileCsiDriver.enabled', True),
-            self.check('storageProfile.blobCsiDriver.enabled', False),
             self.check('storageProfile.snapshotController.enabled', True),
         ])
 
         disable_cmd = 'aks update --resource-group={resource_group} --name={name} -o json \
                         --disable-disk-driver \
                         --disable-file-driver \
-                        --disable-snapshot-controller \
-                        --enable-blob-driver -y'
+                        --disable-snapshot-controller'
         self.cmd(disable_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
             self.check('storageProfile.diskCsiDriver.enabled', False),
             self.check('storageProfile.diskCsiDriver.version', "v1"),
             self.check('storageProfile.fileCsiDriver.enabled', False),
-            self.check('storageProfile.blobCsiDriver.enabled', True),
             self.check('storageProfile.snapshotController.enabled', False),
         ])
 
@@ -4353,7 +4345,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             self.check('storageProfile.diskCsiDriver.enabled', True),
             self.check('storageProfile.diskCsiDriver.version', "v1"),
             self.check('storageProfile.fileCsiDriver.enabled', True),
-            self.check('storageProfile.blobCsiDriver.enabled', False),
             self.check('storageProfile.snapshotController.enabled', True),
         ])
 
@@ -4364,7 +4355,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             self.check('storageProfile.diskCsiDriver.enabled', True),
             self.check('storageProfile.diskCsiDriver.version', "v1"),
             self.check('storageProfile.fileCsiDriver.enabled', True),
-            self.check('storageProfile.blobCsiDriver.enabled', False),
             self.check('storageProfile.snapshotController.enabled', True),
         ])
 
