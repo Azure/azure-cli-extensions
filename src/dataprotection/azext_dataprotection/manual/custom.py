@@ -181,19 +181,20 @@ def dataprotection_backup_instance_initialize(datasource_type, datasource_id, da
     policy_parameters = None
     # Azure Disk specific code for adding datastoreparameter list in the json
     if datasource_type == "AzureDisk":
-        if snapshot_resource_group_name is None:
-            raise CLIError("--snapshot-resource-group-name must be provided when initializing AzureDisk workload")
-
-        disk_sub_id = helper.get_sub_id_from_arm_id(datasource_id)
         policy_parameters = {
             "data_store_parameters_list": [
                 {
                     "object_type": "AzureOperationalStoreParameters",
                     "data_store_type": "OperationalStore",
-                    "resource_group_id": disk_sub_id + "/resourceGroups/" + snapshot_resource_group_name
+                    "resource_group_id": helper.get_rg_id_from_arm_id(datasource_id)
                 }
             ]
         }
+
+        if snapshot_resource_group_name:
+            disk_sub_id = helper.get_sub_id_from_arm_id(datasource_id)
+            policy_parameters["data_store_parameters_list"][0]["resource_group_id"] = (disk_sub_id + "/resourceGroups/"
+                                                                                       + snapshot_resource_group_name)
 
     datasource_auth_credentials_info = None
     if manifest["supportSecretStoreAuthentication"]:
@@ -283,6 +284,10 @@ def dataprotection_backup_instance_update_msi_permissions(cmd, client, resource_
         raise CLIError("--keyvault-id needs to be given when --datasource-type is AzureDatabaseForPostgreSQL")
 
     from azure.cli.command_modules.role.custom import list_role_assignments, create_role_assignment
+    from msrestazure.tools import is_valid_resource_id, parse_resource_id
+
+    if not is_valid_resource_id(keyvault_id):
+        raise CLIError("Please provide a valid keyvault ID")
 
     manifest = helper.load_manifest(datasource_type)
 
@@ -298,10 +303,10 @@ def dataprotection_backup_instance_update_msi_permissions(cmd, client, resource_
         from azure.cli.command_modules.keyvault._client_factory import Clients, get_client
         from azure.cli.core.commands.client_factory import get_mgmt_service_client
 
-        keyvault_params = helper.get_keyvault_parameters_from_id(keyvault_id)
-        keyvault_subscription = keyvault_params['vault_sub']
-        keyvault_name = keyvault_params['vault_name']
-        keyvault_rg = keyvault_params['vault_rg']
+        keyvault_params = parse_resource_id(keyvault_id)
+        keyvault_subscription = keyvault_params['subscription']
+        keyvault_name = keyvault_params['name']
+        keyvault_rg = keyvault_params['resource_group']
 
         keyvault_client = getattr(get_mgmt_service_client(cmd.cli_ctx, ResourceType.MGMT_KEYVAULT, subscription_id=keyvault_subscription), Clients.vaults)
 
@@ -357,7 +362,8 @@ def dataprotection_backup_instance_update_msi_permissions(cmd, client, resource_
                     secrets_array.append(permission)
 
             if not permissions_set:
-                set_policy(cmd, keyvault_client, keyvault_rg, keyvault_name, object_id=principal_id, secret_permissions=secrets_array)
+                keyvault = set_policy(cmd, keyvault_client, keyvault_rg, keyvault_name, object_id=principal_id, secret_permissions=secrets_array)
+                keyvault = keyvault.result()
 
         from azure.cli.command_modules.keyvault.custom import update_vault_setter
 
@@ -368,9 +374,7 @@ def dataprotection_backup_instance_update_msi_permissions(cmd, client, resource_
 
     for role_object in manifest['backupVaultPermissions']:
         resource_id = helper.get_resource_id_from_backup_instance(backup_instance, role_object['type'])
-
-        if datasource_type == 'AzureDatabaseForPostgreSQL':
-            resource_id = "/".join(resource_id.split("/")[:9])
+        resource_id = helper.truncate_id_using_scope(resource_id, "Resource")
 
         assignment_scope = helper.truncate_id_using_scope(resource_id, permissions_scope)
 
@@ -382,9 +386,9 @@ def dataprotection_backup_instance_update_msi_permissions(cmd, client, resource_
 
     # Network line of sight access on server, if that is the datasource type
     if datasource_type == 'AzureDatabaseForPostgreSQL':
-        server_params = helper.get_server_parameters_from_db_id(backup_instance['properties']['data_source_info']['resource_id'])
-        server_name = server_params['server_name']
-        server_rg = server_params['server_rg']
+        server_params = parse_resource_id(backup_instance['properties']['data_source_info']['resource_id'])
+        server_name = server_params['name']
+        server_rg = server_params['resource_group']
         from azure.cli.command_modules.rdbms._client_factory import cf_postgres_firewall_rules
         postgres_firewall_client = cf_postgres_firewall_rules(cmd.cli_ctx, None)
 

@@ -2,6 +2,10 @@
 
 Release History
 ===============
+0.5.0
+++++++
+* `az dataprotection backup-instance update-msi-permissions`: New command to grant missing permissions to backup vault MSI
+* `az dataprotection backup-instance initialize`: Added optional `--snapshot-resource-group-name` parameter
 
 0.4.0
 ++++++

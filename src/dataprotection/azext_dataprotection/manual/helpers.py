@@ -6,6 +6,7 @@
 import json
 from importlib import import_module
 from knack.util import CLIError
+from msrestazure.tools import is_valid_resource_id, parse_resource_id
 
 critical_operation_map = {"deleteProtection": "/backupFabrics/protectionContainers/protectedItems/delete",
                           "updateProtection": "/backupFabrics/protectionContainers/protectedItems/write",
@@ -95,8 +96,29 @@ def get_tagging_priority(name):
 
 
 def truncate_id_using_scope(arm_id, scope):
-    scope_map = {"Subscription": 3, "ResourceGroup": 5, "Resource": None}
-    return "/".join(arm_id.split("/")[:scope_map[scope]])
+    if not is_valid_resource_id(arm_id):
+        raise CLIError("Please give a valid ARM ID")
+
+    resource_params = parse_resource_id(arm_id)
+    result_id = ""
+
+    if "subscription" in resource_params:
+        result_id += "/subscriptions/" + resource_params["subscription"]
+
+    if scope == "Subscription":
+        return result_id
+
+    if "resource_group" in resource_params:
+        result_id += "/resourceGroups/" + resource_params["resource_group"]
+
+    if scope == "ResourceGroup":
+        return result_id
+
+    if "name" in resource_params:
+        result_id += "/providers/" + resource_params["namespace"] + "/" + resource_params["type"] + "/"
+        result_id += resource_params["name"]
+
+    return result_id
 
 
 def get_sub_id_from_arm_id(arm_id):
@@ -105,26 +127,6 @@ def get_sub_id_from_arm_id(arm_id):
 
 def get_rg_id_from_arm_id(arm_id):
     return truncate_id_using_scope(arm_id, "ResourceGroup")
-
-
-def get_server_parameters_from_db_id(arm_id):
-    server_params = {}
-
-    server_scope_list = arm_id.split("/")
-    server_params['server_id'] = "/".join(server_scope_list[:9])
-    server_params['server_rg'] = server_scope_list[4]
-    server_params['server_name'] = server_scope_list[8]
-    return server_params
-
-
-def get_keyvault_parameters_from_id(arm_id):
-    vault_params = {}
-
-    vault_scope_list = arm_id.split("/")
-    vault_params['vault_name'] = vault_scope_list[-1]
-    vault_params['vault_rg'] = vault_scope_list[4]
-    vault_params['vault_sub'] = vault_scope_list[2]
-    return vault_params
 
 
 def get_resource_id_from_backup_instance(backup_instance, role_type):
