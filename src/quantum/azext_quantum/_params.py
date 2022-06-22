@@ -35,7 +35,7 @@ def load_arguments(self, _):
     job_name_type = CLIArgumentType(help='A friendly name to give to this run of the program.')
     job_id_type = CLIArgumentType(options_list=['--job-id', '-j'], help='Job unique identifier in GUID format.')
     job_params_type = CLIArgumentType(options_list=['--job-params'], help='Job parameters passed to the target as a list of key=value pairs.', action=JobParamsAction, nargs='+')
-    target_capability_type = CLIArgumentType(options_list=['--target-capability'], help='Target-capability parameter passed to the target.')
+    target_capability_type = CLIArgumentType(options_list=['--target-capability'], help='Target-capability parameter passed to the compiler.')
     shots_type = CLIArgumentType(help='The number of times to run the Q# program on the given target.')
     no_build_type = CLIArgumentType(help='If specified, the Q# program is not built before submitting.')
     storage_type = CLIArgumentType(help='If specified, the ConnectionString of an Azure Storage is used to store job data and results.')
