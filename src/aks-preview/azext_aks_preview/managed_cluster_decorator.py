@@ -729,9 +729,30 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         """
         # read the original value passed by the command
         azure_keyvault_kms_key_vault_network_access = self.raw_param.get(
-            "azure_keyvault_kms_key_vault_network_access")
-        # Do not read the property value corresponding to the parameter from the `mc` object in create mode,
-        # because keyVaultNetworkAccess has the default value "Public" in azure-rest-api-specs.
+            "azure_keyvault_kms_key_vault_network_access"
+        )
+        if self.decorator_mode == DecoratorMode.CREATE:
+            pass
+            # Do not read the property value corresponding to the parameter from the `mc` object in create mode,
+            # because keyVaultNetworkAccess has the default value "Public" in azure-rest-api-specs, to avoid
+            # accidentally overwriting user-specified values.
+        else:
+            # backfill from existing mc, temp fix before rp handles the backfill
+            if (
+                azure_keyvault_kms_key_vault_network_access is None and
+                self.mc and
+                self.mc.security_profile and
+                self.mc.security_profile.azure_key_vault_kms and
+                self.mc.security_profile.azure_key_vault_kms.key_vault_network_access is not None
+            ):
+                azure_keyvault_kms_key_vault_network_access = (
+                    self.mc.security_profile.azure_key_vault_kms.key_vault_network_access
+                )
+            # backfill to default value, temp fix before rp handles the backfill
+            if azure_keyvault_kms_key_vault_network_access is None:
+                azure_keyvault_kms_key_vault_network_access = CONST_AZURE_KEYVAULT_NETWORK_ACCESS_PUBLIC
+
+        # validation
         if enable_validation:
             enable_azure_keyvault_kms = self._get_enable_azure_keyvault_kms(
                 enable_validation=False)
@@ -767,8 +788,8 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         """
         # read the original value passed by the command
         azure_keyvault_kms_key_vault_resource_id = self.raw_param.get(
-            "azure_keyvault_kms_key_vault_resource_id")
-        # In create mode, try to read the property value corresponding to the parameter from the `mc` object.
+            "azure_keyvault_kms_key_vault_resource_id"
+        )
         if self.decorator_mode == DecoratorMode.CREATE:
             if (
                 self.mc and
@@ -779,7 +800,19 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
                 azure_keyvault_kms_key_vault_resource_id = (
                     self.mc.security_profile.azure_key_vault_kms.key_vault_resource_id
                 )
+        else:
+            # backfill from existing mc, temp fix before rp handles the backfill
+            if (
+                azure_keyvault_kms_key_vault_resource_id is None and
+                self.mc.security_profile and
+                self.mc.security_profile.azure_key_vault_kms and
+                self.mc.security_profile.azure_key_vault_kms.key_vault_resource_id is not None
+            ):
+                azure_keyvault_kms_key_vault_resource_id = (
+                    self.mc.security_profile.azure_key_vault_kms.key_vault_resource_id
+                )
 
+        # validation
         if enable_validation:
             enable_azure_keyvault_kms = self._get_enable_azure_keyvault_kms(
                 enable_validation=False)
@@ -1830,18 +1863,31 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         self._ensure_mc(mc)
 
         if self.context.get_enable_azure_keyvault_kms():
-            key_id = self.context.get_azure_keyvault_kms_key_id()
-            if key_id:
-                if mc.security_profile is None:
-                    mc.security_profile = self.models.ManagedClusterSecurityProfile()
-                mc.security_profile.azure_key_vault_kms = self.models.AzureKeyVaultKms(
-                    enabled=True,
-                    key_id=key_id,
+            # get kms profile
+            if mc.security_profile is None:
+                mc.security_profile = self.models.ManagedClusterSecurityProfile()
+            azure_key_vault_kms_profile = mc.security_profile.azure_key_vault_kms
+            if azure_key_vault_kms_profile is None:
+                azure_key_vault_kms_profile = self.models.AzureKeyVaultKms()
+                mc.security_profile.azure_key_vault_kms = azure_key_vault_kms_profile
+
+            # set enabled
+            azure_key_vault_kms_profile.enabled = True
+            # set key id
+            azure_key_vault_kms_profile.key_id = self.context.get_azure_keyvault_kms_key_id()
+            # set network access, should never be None for now, can be safely assigned, temp fix for rp
+            # the value is obtained from user input or backfilled from existing mc or to default value
+            azure_key_vault_kms_profile.key_vault_network_access = (
+                self.context.get_azure_keyvault_kms_key_vault_network_access()
+            )
+            # set key vault id
+            if (
+                azure_key_vault_kms_profile.key_vault_network_access ==
+                CONST_AZURE_KEYVAULT_NETWORK_ACCESS_PRIVATE
+            ):
+                azure_key_vault_kms_profile.key_vault_resource_id = (
+                    self.context.get_azure_keyvault_kms_key_vault_resource_id()
                 )
-                key_vault_network_access = self.context.get_azure_keyvault_kms_key_vault_network_access()
-                mc.security_profile.azure_key_vault_kms.key_vault_network_access = key_vault_network_access
-                if key_vault_network_access == CONST_AZURE_KEYVAULT_NETWORK_ACCESS_PRIVATE:
-                    mc.security_profile.azure_key_vault_kms.key_vault_resource_id = self.context.get_azure_keyvault_kms_key_vault_resource_id()
 
         return mc
 
