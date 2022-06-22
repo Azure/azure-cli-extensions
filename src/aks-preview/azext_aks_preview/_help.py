@@ -202,9 +202,8 @@ helps['aks create'] = """
           type: string
           short-summary: The network plugin mode to use.
           long-summary: |
-              Specify "overlay" to use an overlay network built on Azure networking.
-              Differs from Kubenet overlay as it does not require route tables.
-              Must be used with --network-plugin=azure.
+              Used to control the mode the network plugin should operate in. For example, "overlay" used with
+              --network-plugin=azure will use an overlay network (non-VNET IPs) for pods in the cluster.
         - name: --network-policy
           type: string
           short-summary: (PREVIEW) The Kubernetes network policy to use.
