@@ -94,14 +94,14 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
         connected_cluster = get_connectedk8s(cmd, client, resource_group_name, cluster_name)
 
         # To check for internet connectivity
-        for counter in range(3):
-            if troubleshootutils.check_internet_connectivity():
-                break
-            elif(counter == 3 and troubleshootutils.check_internet_connectivity() is False):
-                print("Error: There is problem with the internet connection. Please check it and then try again.\n")
-                return
-            else:
-                time.sleep(2)
+        # for counter in range(3):
+        #     if troubleshootutils.check_internet_connectivity():
+        #         break
+        #     elif(counter == 3 and troubleshootutils.check_internet_connectivity() is False):
+        #         print("Error: There is problem with the internet connection. Please check it and then try again.\n")
+        #         return
+        #     else:
+        #         time.sleep(2)
 
         # Creating timestamp folder to store all the diagnoser logs
         current_time = time.ctime(time.time())
@@ -115,10 +115,12 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
                 continue
             time_stamp += elements
 
-        # Generate the diagnostic folder in a given location
-        troubleshootutils.create_folder_diagnosticlogs(time_stamp)
 
-        with open("C:\\Users\\t-svagadia\\diagnostic_logs\ " + time_stamp + "\\Connected_cluster_resource.txt", 'w+') as cc:
+        # Generate the diagnostic folder in a given location
+        filepath_with_timestamp = troubleshootutils.create_folder_diagnosticlogs(time_stamp)
+
+
+        with open(filepath_with_timestamp + "\\Connected_cluster_resource.txt", 'w+') as cc:
             cc.write(str(connected_cluster))
 
         corev1_api_instance = kube_client.CoreV1Api(kube_client.ApiClient(configuration))
@@ -130,15 +132,15 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
         if arc_agents_pod_list.items:
 
             # For storing all the agent logs using the CoreV1Api
-            troubleshootutils.arc_agents_logger(corev1_api_instance, time_stamp)
+            troubleshootutils.arc_agents_logger(corev1_api_instance, filepath_with_timestamp)
 
             # For storing all the deployments logs using the AppsV1Api
             appv1_api_instance = kube_client.AppsV1Api(kube_client.ApiClient(configuration))
             utils.validate_node_api_response(appv1_api_instance, None)
-            troubleshootutils.deployments_logger(appv1_api_instance, time_stamp)
+            troubleshootutils.deployments_logger(appv1_api_instance, filepath_with_timestamp)
 
             # Check for the azure arc agent states
-            arc_agent_state_check = troubleshootutils.check_agent_state(corev1_api_instance, time_stamp)
+            arc_agent_state_check = troubleshootutils.check_agent_state(corev1_api_instance, filepath_with_timestamp)
 
             # Check for msi certificate
             msi_cert_check = troubleshootutils.check_msi_certificate(corev1_api_instance)
@@ -220,7 +222,7 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
             logger.warning("Failed to validate if the active namespace exists on the kubernetes cluster. Exception: {}".format(str(e)))
 
         # Executing the Diagnoser job check in the given namespace
-        diagnoser_check = troubleshootutils.diagnoser_container_check(corev1_api_instance, batchv1_api_instance, time_stamp, current_k8s_namespace)
+        diagnoser_check = troubleshootutils.diagnoser_container_check(corev1_api_instance, batchv1_api_instance, filepath_with_timestamp, current_k8s_namespace)
 
         # Depending on whether all tests passes we will give the output
         if (diagnoser_check and msi_cert_check and agent_version_check and arc_agent_state_check and msi_cert_expiry_check and kap_cert_check and kap_security_policy_check):
