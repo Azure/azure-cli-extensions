@@ -1849,7 +1849,7 @@ class AKSPreviewContext(AKSContext):
 
         if self.decorator_mode == DecoratorMode.UPDATE:
             if enable_blob_driver:
-                msg = "Please make sure there are no open-source Blob CSI driver installed before enabling."
+                msg = "Please make sure there is no open-source Blob CSI driver installed before enabling."
                 if not self.get_yes() and not prompt_y_n(msg, default="n"):
                     raise DecoratorEarlyExitException()
                 profile.enabled = True
