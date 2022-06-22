@@ -841,6 +841,7 @@ class AKSPreviewContextTestCase(unittest.TestCase):
                 disk_csi_driver = None,
                 file_csi_driver = None,
                 snapshot_controller = None,
+                blob_csi_driver = None,
             )
         )
         mc = self.models.ManagedCluster(
@@ -901,6 +902,8 @@ class AKSPreviewContextTestCase(unittest.TestCase):
                 "enable_disk_driver": True,
                 "enable_file_driver": True,
                 "enable_snapshot_controller": True,
+                "enable_blob_driver": True,
+                "yes": True,
             },
             self.models,
             decorator_mode=DecoratorMode.UPDATE,
@@ -914,6 +917,9 @@ class AKSPreviewContextTestCase(unittest.TestCase):
                     enabled = True,
                 ),
                 snapshot_controller = self.models.ManagedClusterStorageProfileSnapshotController(
+                    enabled = True,
+                ),
+                blob_csi_driver = self.models.ManagedClusterStorageProfileBlobCSIDriver(
                     enabled = True,
                 ),
             )
@@ -982,6 +988,7 @@ class AKSPreviewContextTestCase(unittest.TestCase):
                 "enable_disk_driver": True,
                 "disk_driver_version": "v2",
                 "disable_file_driver": True,
+                "disable_blob_driver": True,
                 "disable_snapshot_controller": True,
                 "yes": True,
             },
@@ -998,6 +1005,9 @@ class AKSPreviewContextTestCase(unittest.TestCase):
                     enabled = False,
                 ),
                 snapshot_controller = self.models.ManagedClusterStorageProfileSnapshotController(
+                    enabled = False,
+                ),
+                blob_csi_driver = self.models.ManagedClusterStorageProfileBlobCSIDriver(
                     enabled = False,
                 ),
             )
@@ -1069,6 +1079,35 @@ class AKSPreviewContextTestCase(unittest.TestCase):
         ), self.assertRaises(DecoratorEarlyExitException):
             ctx_13.get_snapshot_controller()
 
+        # custom blob value
+        ctx_14 = AKSPreviewContext(
+            self.cmd,
+            {
+                "enable_blob_driver": True,
+                "disable_blob_driver": True,
+            },
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        # fail on mutually exclusive enable_blob_driver and disable_blob_driver
+        with self.assertRaises(MutuallyExclusiveArgumentError):
+            ctx_14.get_blob_driver()
+
+        # fail on prompt_y_n not specified when disabling blob csi driver
+        ctx_15 = AKSPreviewContext(
+            self.cmd,
+            {
+                "disable_blob_driver": True,
+            },
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        with patch(
+            "azext_aks_preview.decorator.prompt_y_n",
+            return_value=False,
+        ), self.assertRaises(DecoratorEarlyExitException):
+            ctx_15.get_blob_driver()
+
 
     def test_get_storage_profile_create(self):
         # default
@@ -1083,6 +1122,7 @@ class AKSPreviewContextTestCase(unittest.TestCase):
                 disk_csi_driver = None,
                 file_csi_driver = None,
                 snapshot_controller = None,
+                blob_csi_driver = None,
             )
         )
         mc = self.models.ManagedCluster(
@@ -1142,6 +1182,7 @@ class AKSPreviewContextTestCase(unittest.TestCase):
                 "enable_disk_driver": True,
                 "enable_file_driver": True,
                 "enable_snapshot_controller": True,
+                "enable_blob_driver": True,
             },
             self.models,
             decorator_mode=DecoratorMode.CREATE,
@@ -1156,6 +1197,9 @@ class AKSPreviewContextTestCase(unittest.TestCase):
                     enabled = True,
                 ),
                 snapshot_controller = self.models.ManagedClusterStorageProfileSnapshotController(
+                    enabled = True,
+                ),
+                blob_csi_driver = self.models.ManagedClusterStorageProfileBlobCSIDriver(
                     enabled = True,
                 ),
             )
@@ -1217,6 +1261,7 @@ class AKSPreviewContextTestCase(unittest.TestCase):
                 "disk_driver_version": "v2",
                 "enable_file_driver": True,
                 "enable_snapshot_controller": True,
+                "enable_blob_driver": False,
             },
             self.models,
             decorator_mode=DecoratorMode.CREATE,
@@ -1232,6 +1277,9 @@ class AKSPreviewContextTestCase(unittest.TestCase):
                 ),
                 snapshot_controller = self.models.ManagedClusterStorageProfileSnapshotController(
                     enabled = True,
+                ),
+                blob_csi_driver = self.models.ManagedClusterStorageProfileBlobCSIDriver(
+                    enabled = False,
                 ),
             )
         )
@@ -1267,6 +1315,20 @@ class AKSPreviewContextTestCase(unittest.TestCase):
         self.assertEqual(
             ctx_10.get_storage_profile(), storage_profile
         )
+
+        # custom blob value
+        ctx_11 = AKSPreviewContext(
+            self.cmd,
+            {
+                "enable_blob_driver": True,
+                "disable_blob_driver": True,
+            },
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        # fail on mutually exclusive enable_blob_driver and disable_blob_driver
+        with self.assertRaises(MutuallyExclusiveArgumentError):
+            ctx_11.get_blob_driver()
 
 
     def test_get_enable_pod_security_policy(self):

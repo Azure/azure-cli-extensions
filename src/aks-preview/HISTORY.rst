@@ -16,6 +16,11 @@ Pending
 * Enable v2 decorator pattern.
 * Fix container name inconsistency for private clusters in kollect command.
 
+0.5.83
++++++++
+
+* Add support for Blob csi driver.
+
 0.5.82
 +++++++
 
