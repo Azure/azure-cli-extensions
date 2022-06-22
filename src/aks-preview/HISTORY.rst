@@ -12,9 +12,13 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+0.5.83
+++++++
+
 * Update the minimum required cli core version to `2.37.0`.
 * Enable v2 decorator pattern.
 * Fix container name inconsistency for private clusters in kollect command.
+* Temp fix for properties missing in KMS profile in update scenario.
 
 0.5.82
 +++++++
