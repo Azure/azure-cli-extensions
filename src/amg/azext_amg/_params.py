@@ -43,6 +43,10 @@ def load_arguments(self, _):
         c.argument("data_source", help="name, id, uid which can identify a data source. CLI will search in the order of name, id, and uid, till finds a match")
         c.argument("definition", help="json string with data source definition, or a path to a file with such content")
 
+    with self.argument_context("grafana notification-channel") as c:
+        c.argument("notification_channel", help="id, uid which can identify a data source. CLI will search in the order of id, and uid, till finds a match")
+        c.argument("definition", help="json string with notification channel definition, or a path to a file with such content")
+
     with self.argument_context("grafana data-source query") as c:
         c.argument("conditions", nargs="+", help="space-separated condition in a format of `<name>=<value>`")
         c.argument("time_from", options_list=["--from"], help="start time in iso 8601, e.g. '2022-01-02T16:15:00'. Default: 1 hour early")

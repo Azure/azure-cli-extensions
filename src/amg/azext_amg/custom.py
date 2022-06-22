@@ -283,6 +283,48 @@ def update_data_source(cmd, grafana_name, data_source, definition, resource_grou
     return json.loads(response.content)
 
 
+def list_notification_channels(cmd, grafana_name, resource_group_name=None):
+    response = _send_request(cmd, resource_group_name, grafana_name, "get", "/api/alert-notifications")
+    return json.loads(response.content)
+
+
+def list_notification_channels_short(cmd, grafana_name, resource_group_name=None):
+    response = _send_request(cmd, resource_group_name, grafana_name, "get", "/api/alert-notifications/lookup")
+    return json.loads(response.content)
+
+
+def show_notification_channel(cmd, grafana_name, notification_channel, resource_group_name=None):
+    return _find_notification_channel(cmd, resource_group_name, grafana_name, notification_channel)
+
+
+def create_notification_channel(cmd, grafana_name, definition, resource_group_name=None):
+    definition = _try_load_file_content(definition)
+    payload = json.loads(definition)
+    response = _send_request(cmd, resource_group_name, grafana_name, "post", "/api/alert-notifications", payload)
+    return json.loads(response.content)
+
+
+def update_notification_channel(cmd, grafana_name, notification_channel, definition, resource_group_name=None):
+    definition = json.loads(_try_load_file_content(definition))
+    data = _find_notification_channel(cmd, resource_group_name, grafana_name, notification_channel)
+    definition['id'] = data['id']
+    response = _send_request(cmd, resource_group_name, grafana_name, "put", "/api/alert-notifications/" + str(data['id']),
+                             definition)
+    return json.loads(response.content)
+
+
+def delete_notification_channel(cmd, grafana_name, notification_channel, resource_group_name=None):
+    data = _find_notification_channel(cmd, resource_group_name, grafana_name, notification_channel)
+    _send_request(cmd, resource_group_name, grafana_name, "delete", "/api/alert-notifications/" + str(data["id"]))
+
+
+def test_notification_channels(cmd, grafana_name, notification_channel, resource_group_name=None):
+    data = _find_notification_channel(cmd, resource_group_name, grafana_name, notification_channel)
+    response = _send_request(cmd, resource_group_name, grafana_name, "post", "/api/alert-notifications/test",
+                             data)
+    return json.loads(response.content)
+
+
 def create_folder(cmd, grafana_name, title, resource_group_name=None):
     payload = {
         "title": title
@@ -414,6 +456,16 @@ def _find_data_source(cmd, resource_group_name, grafana_name, data_source):
         raise ArgumentUsageError(f"Couldn't found data source {data_source}. Ex: {response.status_code}")
     return json.loads(response.content)
 
+def _find_notification_channel(cmd, resource_group_name, grafana_name, notification_channel):
+    response = _send_request(cmd, resource_group_name, grafana_name, "get", "/api/alert-notifications/" + notification_channel,
+                                raise_for_error_status=False)
+    if response.status_code >= 400:
+        response = _send_request(cmd, resource_group_name, grafana_name,
+                                    "get", "/api/alert-notifications/uid/" + notification_channel,
+                                    raise_for_error_status=False)
+    if response.status_code >= 400:
+        raise ArgumentUsageError(f"Couldn't found notification channel {notification_channel}. Ex: {response.status_code}")
+    return json.loads(response.content)
 
 # For UX: we accept a file path for complex payload such as dashboard/data-source definition
 def _try_load_file_content(file_content):
