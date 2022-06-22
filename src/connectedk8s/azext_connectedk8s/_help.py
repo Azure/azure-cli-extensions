@@ -127,5 +127,5 @@ helps['connectedk8s troubleshoot'] = """
   short-summary: Perform diagnostic check on the arc-enabled kubernetes cluster.
   examples:
   - name: Executes diagnostic checks on a connected kubernetes cluster
-    text: az connectedk8s troubleshoot -n clusterName -g resourceGroupName 
+    text: az connectedk8s troubleshoot -n clusterName -g resourceGroupName
 """
