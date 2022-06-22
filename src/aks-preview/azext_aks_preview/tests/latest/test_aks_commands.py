@@ -13,7 +13,7 @@ from azext_aks_preview.tests.latest.custom_preparers import (
 )
 from azext_aks_preview.tests.latest.recording_processors import KeyReplacer
 from azure.cli.command_modules.acs._format import version_to_tuple
-from azure.cli.core.azclierror import BadRequestError
+from azure.cli.core.azclierror import AzureInternalError, BadRequestError
 from azure.cli.testsdk import CliTestError, ScenarioTest, live_only
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 from azure.core.exceptions import HttpResponseError
@@ -4496,8 +4496,11 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         try:
             self.cmd(create_cmd, checks=[])
             raise Exception("didn't get expected failure")
-        except (HttpResponseError, BadRequestError):
+        except (HttpResponseError, BadRequestError, AzureInternalError):
             # expected failure
+            # HttpResponseError for without error mapping
+            # BadRequestError for not a valid dns zone resource
+            # AzureInternalError for requesting from a different tenant
             pass
 
     @AllowLargeResponse()
