@@ -11,6 +11,7 @@
 import uuid
 import copy
 import re
+import time
 from knack.util import CLIError
 from knack.log import get_logger
 from azure.cli.core.util import sdk_no_wait
@@ -406,6 +407,8 @@ def dataprotection_backup_instance_update_msi_permissions(cmd, client, resource_
 
             role_assignments_arr.append(postgres_firewall_client.begin_create_or_update(server_rg, server_name, firewall_rule_name, parameters))
 
+    # Wait for 60 seconds to let the role assignments propagate
+    time.sleep(60)
     return role_assignments_arr
 
 
