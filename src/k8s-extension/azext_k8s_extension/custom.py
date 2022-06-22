@@ -367,7 +367,7 @@ def list_k8s_extension_type_versions(cmd, client, location, extension_type):
 def list_k8s_cluster_extension_types(client, resource_group_name, cluster_name, cluster_type):
     """ List available extension types
     """
-    cluster_rp = __get_cluster_rp(cluster_type)
+    cluster_rp, parent_api_version = get_cluster_rp_api_version(cluster_type)
     return client.list(resource_group_name, cluster_rp, cluster_name)
 
 
@@ -381,7 +381,7 @@ def show_k8s_cluster_extension_type(client, resource_group_name, cluster_type, c
     """Get an existing Extension Type.
     """
     # Determine ClusterRP
-    cluster_rp = __get_cluster_rp(cluster_type)
+    cluster_rp, parent_api_version = get_cluster_rp_api_version(cluster_type)
 
     try:
         extension_type = client.get(resource_group_name,
