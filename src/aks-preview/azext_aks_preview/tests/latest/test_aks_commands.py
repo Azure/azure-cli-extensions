@@ -4414,7 +4414,8 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         ])
         
         # check standard reconcile scenario
-        update_cmd = 'aks update --resource-group={resource_group} --name={name} -y -o json'
+        update_cmd = 'aks update --resource-group={resource_group} --name={name} -y -o json \
+                        --aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/EnableBlobCSIDriver'
         self.cmd(update_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
             self.check('storageProfile.blobCsiDriver.enabled', True),
@@ -4422,7 +4423,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
         # disable blob driver
         disable_cmd = 'aks update --resource-group={resource_group} --name={name} -o json \
-                        --disbale-blob-driver -y \
+                        --disable-blob-driver -y \
                         --aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/EnableBlobCSIDriver'
         self.cmd(disable_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
@@ -4430,7 +4431,8 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         ])
 
         # check standard reconcile scenario
-        update_cmd = 'aks update --resource-group={resource_group} --name={name} -y -o json'
+        update_cmd = 'aks update --resource-group={resource_group} --name={name} -y -o json \
+                        --aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/EnableBlobCSIDriver'
         self.cmd(update_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
             self.check('storageProfile.blobCsiDriver.enabled', False),
@@ -4446,7 +4448,8 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         ])
 
         # check standard reconcile scenario
-        update_cmd = 'aks update --resource-group={resource_group} --name={name} -y -o json'
+        update_cmd = 'aks update --resource-group={resource_group} --name={name} -y -o json \
+                        --aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/EnableBlobCSIDriver'
         self.cmd(update_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
             self.check('storageProfile.blobCsiDriver.enabled', True),
