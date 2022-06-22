@@ -35,7 +35,7 @@ def load_command_table(self, _):
     with self.command_group('grafana notification-channel') as g:
         g.custom_command('list', 'list_notification_channels')
         g.custom_command('list-short', 'list_notification_channels_short')
-        g.custom_command('show', 'show_notification_channel')
+        g.custom_show_command('show', 'show_notification_channel')
         g.custom_command('create', 'create_notification_channel')
         g.custom_command('update', 'update_notification_channel')
         g.custom_command('delete', 'delete_notification_channel')
