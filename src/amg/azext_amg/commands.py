@@ -39,7 +39,7 @@ def load_command_table(self, _):
         g.custom_command('create', 'create_notification_channel')
         g.custom_command('update', 'update_notification_channel')
         g.custom_command('delete', 'delete_notification_channel')
-        g.custom_command('test', 'test_notification_channels')
+        g.custom_command('test', 'test_notification_channel')
 
     with self.command_group('grafana folder') as g:
         g.custom_command('create', 'create_folder')

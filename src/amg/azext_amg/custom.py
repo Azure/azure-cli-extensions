@@ -319,7 +319,7 @@ def delete_notification_channel(cmd, grafana_name, notification_channel, resourc
     _send_request(cmd, resource_group_name, grafana_name, "delete", "/api/alert-notifications/" + str(data["id"]))
 
 
-def test_notification_channels(cmd, grafana_name, notification_channel, resource_group_name=None):
+def test_notification_channel(cmd, grafana_name, notification_channel, resource_group_name=None):
     data = _find_notification_channel(cmd, resource_group_name, grafana_name, notification_channel)
     response = _send_request(cmd, resource_group_name, grafana_name, "post", "/api/alert-notifications/test",
                              data)
