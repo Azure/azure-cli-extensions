@@ -308,7 +308,8 @@ def update_notification_channel(cmd, grafana_name, notification_channel, definit
     definition = json.loads(_try_load_file_content(definition))
     data = _find_notification_channel(cmd, resource_group_name, grafana_name, notification_channel)
     definition['id'] = data['id']
-    response = _send_request(cmd, resource_group_name, grafana_name, "put", "/api/alert-notifications/" + str(data['id']),
+    response = _send_request(cmd, resource_group_name, grafana_name, "put",
+                             "/api/alert-notifications/" + str(data['id']),
                              definition)
     return json.loads(response.content)
 
@@ -456,16 +457,20 @@ def _find_data_source(cmd, resource_group_name, grafana_name, data_source):
         raise ArgumentUsageError(f"Couldn't found data source {data_source}. Ex: {response.status_code}")
     return json.loads(response.content)
 
+
 def _find_notification_channel(cmd, resource_group_name, grafana_name, notification_channel):
-    response = _send_request(cmd, resource_group_name, grafana_name, "get", "/api/alert-notifications/" + notification_channel,
-                                raise_for_error_status=False)
+    response = _send_request(cmd, resource_group_name, grafana_name, "get",
+                             "/api/alert-notifications/" + notification_channel,
+                             raise_for_error_status=False)
     if response.status_code >= 400:
         response = _send_request(cmd, resource_group_name, grafana_name,
-                                    "get", "/api/alert-notifications/uid/" + notification_channel,
-                                    raise_for_error_status=False)
+                                 "get", "/api/alert-notifications/uid/" + notification_channel,
+                                 raise_for_error_status=False)
     if response.status_code >= 400:
-        raise ArgumentUsageError(f"Couldn't found notification channel {notification_channel}. Ex: {response.status_code}")
+        raise ArgumentUsageError(
+            f"Couldn't found notification channel {notification_channel}. Ex: {response.status_code}")
     return json.loads(response.content)
+
 
 # For UX: we accept a file path for complex payload such as dashboard/data-source definition
 def _try_load_file_content(file_content):
