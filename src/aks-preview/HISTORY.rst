@@ -12,6 +12,11 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+0.5.84
++++++++
+
+* Add support for Blob csi driver.
+
 0.5.83
 ++++++
 
@@ -19,11 +24,6 @@ Pending
 * Enable v2 decorator pattern.
 * Fix container name inconsistency for private clusters in kollect command.
 * Temp fix for properties missing in KMS profile in update scenario.
-
-0.5.83
-+++++++
-
-* Add support for Blob csi driver.
 
 0.5.82
 +++++++
