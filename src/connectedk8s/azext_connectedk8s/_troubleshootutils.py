@@ -196,7 +196,7 @@ def check_agent_version(connected_cluster, azure_arc_agent_version):
 
     # Comparing if the user version is comaptible or not
     if((int(current_user_version[0]) < int(latest_agent_version[0])) or (int(latest_agent_version[1]) - int(current_user_version[1]) > 2)):
-        logger.warning("Error: We found that you are on an older agent version thats not supported.\n Please visit this link to know the agent version support policy 'link'.\n")
+        print("Error: We found that you are on an older agent version thats not supported.\n Please visit this link to know the agent version support policy 'link'.\n")
         return False
 
     return True
