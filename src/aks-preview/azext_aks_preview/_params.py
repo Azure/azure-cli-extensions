@@ -21,12 +21,12 @@ from azure.cli.core.commands.parameters import (
 )
 from knack.arguments import CLIArgumentType
 
-from ._completers import (
+from azext_aks_preview._completers import (
     get_k8s_upgrades_completion_list,
     get_k8s_versions_completion_list,
     get_vm_size_completion_list,
 )
-from ._consts import (
+from azext_aks_preview._consts import (
     CONST_CREDENTIAL_FORMAT_AZURE,
     CONST_CREDENTIAL_FORMAT_EXEC,
     CONST_GPU_INSTANCE_PROFILE_MIG1_G,
@@ -69,7 +69,7 @@ from ._consts import (
     CONST_AZURE_KEYVAULT_NETWORK_ACCESS_PUBLIC,
     CONST_AZURE_KEYVAULT_NETWORK_ACCESS_PRIVATE,
 )
-from ._validators import (
+from azext_aks_preview._validators import (
     validate_acr,
     validate_addon,
     validate_addons,

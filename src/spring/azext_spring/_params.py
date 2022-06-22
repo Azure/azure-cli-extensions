@@ -133,24 +133,20 @@ def load_arguments(self, _):
         c.argument('enable_gateway',
                    arg_group="Spring Cloud Gateway",
                    action='store_true',
-                   is_preview=True,
                    help='(Enterprise Tier Only) Enable Spring Cloud Gateway.')
         c.argument('gateway_instance_count',
                    arg_group="Spring Cloud Gateway",
                    type=int,
                    validator=validate_gateway_instance_count,
-                   is_preview=True,
                    help='(Enterprise Tier Only) Number of Spring Cloud Gateway instances.')
         c.argument('enable_api_portal',
                    arg_group="API portal",
                    action='store_true',
-                   is_preview=True,
                    help='(Enterprise Tier Only) Enable API portal.')
         c.argument('api_portal_instance_count',
                    arg_group="API portal",
                    type=int,
                    validator=validate_api_portal_instance_count,
-                   is_preview=True,
                    options_list=['--api-portal-instance-count', '--ap-instance'],
                    help='(Enterprise Tier Only) Number of API portal instances.')
 

@@ -992,6 +992,8 @@ def _registry_exists(containerapp_def, registry_server):
 # get a value from nested dict without getting IndexError (returns None instead)
 # for example, model["key1"]["key2"]["key3"] would become safe_get(model, "key1", "key2", "key3")
 def safe_get(model, *keys, default=None):
+    if not model:
+        return default
     for k in keys[:-1]:
         model = model.get(k, {})
     return model.get(keys[-1], default)
