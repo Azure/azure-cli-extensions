@@ -1067,8 +1067,6 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         if self.decorator_mode == DecoratorMode.CREATE:
             if enable_blob_driver:
                 profile.enabled = True
-            else:
-                profile.enabled = False
 
         if self.decorator_mode == DecoratorMode.UPDATE:
             if enable_blob_driver:
