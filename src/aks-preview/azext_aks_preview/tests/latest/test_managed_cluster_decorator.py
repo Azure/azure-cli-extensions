@@ -1124,6 +1124,44 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         with self.assertRaises(RequiredArgumentMissingError):
             ctx_4.get_azure_keyvault_kms_key_vault_network_access()
 
+        # update scenario, backfill to default
+        ctx_5 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({
+                "enable_azure_keyvault_kms": True,
+            }),
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        security_profile_5 = self.models.ManagedClusterSecurityProfile()
+        mc_5 = self.models.ManagedCluster(
+            location="test_location",
+            security_profile=security_profile_5,
+        )
+        ctx_5.attach_mc(mc_5)
+        self.assertEqual(ctx_5.get_azure_keyvault_kms_key_vault_network_access(), key_vault_network_access_1)
+
+        # update scenario, backfill from existing mc
+        ctx_6 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({
+                "enable_azure_keyvault_kms": True,
+            }),
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        security_profile_6 = self.models.ManagedClusterSecurityProfile()
+        security_profile_6.azure_key_vault_kms = self.models.AzureKeyVaultKms(
+            enabled=True,
+            key_vault_network_access=key_vault_network_access_2,
+        )
+        mc_6 = self.models.ManagedCluster(
+            location="test_location",
+            security_profile=security_profile_6,
+        )
+        ctx_6.attach_mc(mc_6)
+        self.assertEqual(ctx_6.get_azure_keyvault_kms_key_vault_network_access(), key_vault_network_access_2)
+
     def test_get_azure_keyvault_kms_key_vault_resource_id(self):
         key_vault_resource_id_1 = "/subscriptions/8ecadfc9-d1a3-4ea4-b844-0d9f87e4d7c8/resourceGroups/foo/providers/Microsoft.KeyVault/vaults/foo"
         key_vault_resource_id_2 = "/subscriptions/8ecadfc9-d1a3-4ea4-b844-0d9f87e4d7c8/resourceGroups/bar/providers/Microsoft.KeyVault/vaults/bar"

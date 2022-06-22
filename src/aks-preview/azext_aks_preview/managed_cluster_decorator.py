@@ -728,9 +728,31 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         """
         # read the original value passed by the command
         azure_keyvault_kms_key_vault_network_access = self.raw_param.get(
-            "azure_keyvault_kms_key_vault_network_access")
-        # Do not read the property value corresponding to the parameter from the `mc` object in create mode,
-        # because keyVaultNetworkAccess has the default value "Public" in azure-rest-api-specs.
+            "azure_keyvault_kms_key_vault_network_access"
+        )
+        if self.decorator_mode == DecoratorMode.CREATE:
+            pass
+            # Do not read the property value corresponding to the parameter from the `mc` object in create mode,
+            # because keyVaultNetworkAccess has the default value "Public" in azure-rest-api-specs, to avoid
+            # accidentally overwriting user-specified values.
+        else:
+            # backfill from existing mc, temp fix before rp handles the backfill
+            if (
+                azure_keyvault_kms_key_vault_network_access is None
+                and self.mc
+                and self.mc.security_profile
+                and self.mc.security_profile.azure_key_vault_kms
+                and self.mc.security_profile.azure_key_vault_kms.key_vault_network_access
+                is not None
+            ):
+                azure_keyvault_kms_key_vault_network_access = (
+                    self.mc.security_profile.azure_key_vault_kms.key_vault_network_access
+                )
+            # backfill to default value, temp fix before rp handles the backfill
+            if azure_keyvault_kms_key_vault_network_access is None:
+                azure_keyvault_kms_key_vault_network_access = CONST_AZURE_KEYVAULT_NETWORK_ACCESS_PUBLIC
+
+        # validation
         if enable_validation:
             enable_azure_keyvault_kms = self._get_enable_azure_keyvault_kms(
                 enable_validation=False)
