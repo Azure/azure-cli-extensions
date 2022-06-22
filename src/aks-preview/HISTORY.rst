@@ -9,6 +9,9 @@ If there is no rush to release a new version, please just add a description of t
 
 To release a new version, please select a new version number (usually plus 1 to the minor of the current latest version number), and then add a new section named as the new version number in this file, the content should include the new modifications and everything from the *Pending* section. Finally, update the `VERSION` in `setup.py` with this new version number.
 
+Pending
++++++++
+
 0.5.84
 +++++++
 
