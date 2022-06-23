@@ -786,10 +786,10 @@ def update_azure_firewall_policy_rule_collection_group(instance, priority=None, 
 
 
 def add_azure_firewall_policy_nat_rule_collection(cmd, resource_group_name, firewall_policy_name,
-                                                  rule_collection_group_name,
+                                                  rule_collection_group_name, ip_protocols,
                                                   rule_collection_name, rule_priority, translated_address=None,
                                                   translated_fqdn=None, translated_port=None, nat_action=None,
-                                                  rule_name=None, description=None, ip_protocols=None,
+                                                  rule_name=None, description=None,
                                                   source_addresses=None, destination_addresses=None,
                                                   destination_ports=None, source_ip_groups=None):
     FirewallPolicyNatRuleCollection, FirewallPolicyNatRuleCollectionAction, \

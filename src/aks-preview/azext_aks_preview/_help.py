@@ -372,6 +372,9 @@ helps['aks create'] = """
         - name: --disable-snapshot-controller
           type: bool
           short-summary: Disable CSI Snapshot Controller.
+        - name: --enable-blob-driver
+          type: bool
+          short-summary: Enable AzureBlob CSI Driver.
         - name: --aci-subnet-name
           type: string
           short-summary: The name of a subnet in an existing VNet into which to deploy the virtual nodes.
@@ -703,6 +706,12 @@ helps['aks update'] = """
         - name: --disable-snapshot-controller
           type: bool
           short-summary: Disable CSI Snapshot Controller.
+        - name: --enable-blob-driver
+          type: bool
+          short-summary: Enable AzureBlob CSI Driver.
+        - name: --disable-blob-driver
+          type: bool
+          short-summary: Disable AzureBlob CSI Driver.
         - name: --tags
           type: string
           short-summary: The tags of the managed cluster. The managed cluster instance and all resources managed by the cloud provider will be tagged.

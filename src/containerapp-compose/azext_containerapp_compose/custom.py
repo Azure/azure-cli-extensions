@@ -327,9 +327,9 @@ def resolve_memory_configuration_from_service(service):
     if service_deploy_resources_exists(service):
         resources = service.deploy.resources
         if resources.reservations is not None and resources.reservations.memory is not None:
-            memory = str(resources.reservations.memory.gigabytes())
+            memory = str(resources.reservations.memory.as_gigabytes())
     elif service.mem_reservation is not None:
-        memory = str(service.mem_reservation.gigabytes())
+        memory = str(service.mem_reservation.as_gigabytes())
     return memory
 
 
