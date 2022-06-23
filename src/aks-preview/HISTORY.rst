@@ -12,6 +12,11 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+0.5.84
++++++++
+
+* Add support for Blob csi driver.
+
 0.5.83
 ++++++
 
