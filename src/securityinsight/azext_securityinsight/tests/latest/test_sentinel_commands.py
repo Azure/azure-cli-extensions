@@ -32,8 +32,7 @@ class SentinelClientTest(ScenarioTest):
 
         self.cmd(
             "sentinel alert-rule create -n {alert_rule_name} -w {workspace_name} -g {rg} "
-            "--ms-security-incident "
-            "\"{{product-filter:'Microsoft Cloud App Security',display-name:testing,enabled:true}}\"",
+            "--ms-security-incident \"{{product-filter:'Microsoft Cloud App Security',display-name:testing,enabled:true}}\"",
             checks=[
                 self.check("name", "{alert_rule_name}"),
                 self.check("type", "Microsoft.SecurityInsights/alertRules")
@@ -72,11 +71,17 @@ class SentinelClientTest(ScenarioTest):
     def test_sentinel_analytics_setting_crud(self):
         self.kwargs.update({
             "workspace_name": self.create_random_name("workspace-", 16),
-            "setting_name": "f209187f-1d17-4431-94af-c141bf5f23db",
+            "settings_name": self.create_random_name("settings-", 16)
         })
 
         self.cmd("monitor log-analytics workspace create -n {workspace_name} -g {rg}")
         self.cmd("monitor log-analytics solution create -t SecurityInsights -w {workspace_name} -g {rg}")
+
+        self.cmd(
+            "sentinel analytics-setting create -n {settings_name} -w {workspace_name} "
+            "--anomaly "
+            ""
+        )
 
         settings_props = {
             "etag": "'260090e2-0000-0d00-0000-5d6fb8670000'",
@@ -137,37 +142,73 @@ class SentinelClientTest(ScenarioTest):
         self.kwargs["settings"] = json.dumps(settings_props)
 
     @ResourceGroupPreparer(name_prefix="cli_test_sentinel_", location="eastus2")
-    def test_sentinel_bookmark_crud(self):
+    def test_sentinel_automation_rule_crud(self):
         self.kwargs.update({
             "workspace_name": self.create_random_name("workspace-", 16),
-            "bookmark_id": "73e01a99-5cd7-4139-a149-9f2736ff2ab5",
-            "query_content": "SecurityEvent | where TimeGenerated > ago(1d) and TimeGenerated < ago(2d)",
+            "rule_name": self.create_random_name("rule-", 12)
         })
 
         self.cmd("monitor log-analytics workspace create -n {workspace_name} -g {rg}")
         self.cmd("monitor log-analytics solution create -t SecurityInsights -w {workspace_name} -g {rg}")
 
-        entity_mappings_props = [{
-            "entity_type": "Account",
-            "fieldMappings": [{
-                "identifier": "Fullname",
-                "value": "johndoe@microsoft.com"
-            }]
-        }]
-        self.kwargs["entity_mappings"] = json.dumps(entity_mappings_props)
         self.cmd(
-            "sentinel bookmark create -g {rg} --bookmark-id {bookmark_id} --workspace-name {workspace_name} "
-            "--query-content '{query_content}' --query-result 'Security Event query result' "
-            "--etag '0300bf09-0000-0000-0000-5c37296e0000' --display-name 'My Bookmark' --entity-mappings '{entity_mappings}' "
-            "--labels Tag1 Tag2 --notes 'Found a suspicious activity' --tactics Execution --techniques T1609",
+            "sentinel automation-rule create -n {rule_name} -w {workspace_name} -g {rg} "
+            "--display-name 'High severity incidents escalation' --order 1 "
+            "--actions \"[{{order:1,modify-properties:{{action-configuration:{{severity:High}}}}}}]\" "
+            "--triggering-logic \"{{is-enabled:true,triggers-on:Incidents,triggers-when:Created}}\"",
+            checks=[
+                self.check("name", "{rule_name}"),
+                self.check("type", "Microsoft.SecurityInsights/AutomationRules")
+            ]
+        )
+
+        # self.cmd(
+        #     "sentinel automation-rule list -g {rg} --workspace-name {workspace_name}",
+        #     checks=[
+        #         self.check("length(@)", 1),
+        #         self.check("[0].name", "{rule_id}")
+        #     ]
+        # )
+        #
+        # self.cmd(
+        #     "sentinel automation-rule show -g {rg} --automation-rule-id {rule_id} --workspace-name {workspace_name}",
+        #     checks=[
+        #         self.check("name", "{rule_id}"),
+        #         self.check("type", "Microsoft.SecurityInsights/AutomationRules")
+        #     ]
+        # )
+        #
+        # self.cmd(
+        #     "sentinel automation-rule delete -g {rg} --automation-rule-id {rule_id} --workspace-name {workspace_name} --yes")
+
+    @ResourceGroupPreparer(name_prefix="cli_test_sentinel_", location="eastus2")
+    def test_sentinel_bookmark_crud(self):
+        self.kwargs.update({
+            "workspace_name": self.create_random_name("workspace-", 16),
+            "bookmark_id": "73e01a99-5cd7-4139-a149-9f2736ff2ab5",
+            "query": "SecurityEvent | where TimeGenerated > ago(1d) and TimeGenerated < ago(2d)",
+            "expand_id": "27f76e63-c41b-480f-bb18-12ad2e011d49",
+        })
+
+        self.cmd("monitor log-analytics workspace create -n {workspace_name} -g {rg}")
+        self.cmd("monitor log-analytics solution create -t SecurityInsights -w {workspace_name} -g {rg}")
+
+        self.cmd(
+            "sentinel bookmark create -n {bookmark_id} -w {workspace_name} -g {rg} "
+            "--query-content '{query}' --query-result 'Security Event query result' "
+            "--display-name 'My bookmark' --notes 'Found a suspicious activity' "
+            "--entity-mappings \"[{{entity-type:Account,field-mappings:[{{identifier:Fullname,value:johndoe@microsoft.com}}]}}]\" "
+            "--tactics \"[Execution]\" "
+            "--techniques \"[T1609]\" "
+            "--labels \"[Tag1,Tag2]\"",
             checks=[
                 self.check("name", "{bookmark_id}"),
-                self.check("query", "{query_content}")
+                self.check("query", "{query}")
             ]
         )
 
         self.cmd(
-            "sentinel bookmark list -g {rg} --workspace-name {workspace_name}",
+            "sentinel bookmark list -w {workspace_name} -g {rg}",
             checks=[
                 self.check("length(@)", 1),
                 self.check("[0].name", "{bookmark_id}")
@@ -175,14 +216,14 @@ class SentinelClientTest(ScenarioTest):
         )
 
         self.cmd(
-            "sentinel bookmark show -g {rg} --bookmark-id {bookmark_id} --workspace-name {workspace_name}",
+            "sentinel bookmark show -n {bookmark_id} -w {workspace_name} -g {rg}",
             checks=[
                 self.check("name", "{bookmark_id}"),
-                self.check("query", "{query_content}")
+                self.check("displayName", "My bookmark")
             ]
         )
 
-        self.cmd("sentinel bookmark delete -g {rg} --bookmark-id {bookmark_id} --workspace-name {workspace_name} --yes")
+        self.cmd("sentinel bookmark delete -n {bookmark_id} -w {workspace_name} -g {rg} --yes")
 
     @ResourceGroupPreparer(name_prefix="cli_test_sentinel_", location="eastus2")
     def test_sentinel_incident_crud(self):
@@ -247,44 +288,6 @@ class SentinelClientTest(ScenarioTest):
         )
 
         self.cmd("sentinel incident delete -g {rg} --incident-id {incident_id} --workspace-name {workspace_name} --yes")
-
-    @ResourceGroupPreparer(name_prefix="cli_test_sentinel_", location="eastus2")
-    def test_sentinel_automation_rule_crud(self):
-        self.kwargs.update({
-            "workspace_name": self.create_random_name("workspace-", 16),
-            "rule_id": "73e01a99-5cd7-4139-a149-9f2736ff2ab5"
-        })
-
-        self.cmd("monitor log-analytics workspace create -n {workspace_name} -g {rg}")
-        self.cmd("monitor log-analytics solution create -t SecurityInsights -w {workspace_name} -g {rg}")
-
-        self.cmd(
-            "sentinel automation-rule create -g {rg} --automation-rule-id {rule_id} --workspace-name {workspace_name} "
-            "--actions action-type=ModifyProperties order=1 severity=High --is-enabled true --triggers-when Created "
-            "--etag 0300bf09-0000-0000-0000-5c37296e0000 --order 1 --display-name 'High severity incidents escalation'",
-            checks=[
-                self.check("name", "{rule_id}"),
-                self.check("type", "Microsoft.SecurityInsights/AutomationRules")
-            ]
-        )
-
-        self.cmd(
-            "sentinel automation-rule list -g {rg} --workspace-name {workspace_name}",
-            checks=[
-                self.check("length(@)", 1),
-                self.check("[0].name", "{rule_id}")
-            ]
-        )
-
-        self.cmd(
-            "sentinel automation-rule show -g {rg} --automation-rule-id {rule_id} --workspace-name {workspace_name}",
-            checks=[
-                self.check("name", "{rule_id}"),
-                self.check("type", "Microsoft.SecurityInsights/AutomationRules")
-            ]
-        )
-
-        self.cmd("sentinel automation-rule delete -g {rg} --automation-rule-id {rule_id} --workspace-name {workspace_name} --yes")
 
     @ResourceGroupPreparer(name_prefix="cli_test_sentinel_", location="eastus2")
     def test_sentinel_data_connector_crud(self):
