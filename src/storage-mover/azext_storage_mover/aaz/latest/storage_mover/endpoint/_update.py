@@ -44,8 +44,8 @@ class Update(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.endpoint_name = AAZStrArg(
-            options=["--endpoint-name", "--name", "-n"],
+        _args_schema.name = AAZStrArg(
+            options=["--name", "-n"],
             help="The name of the endpoint resource.",
             required=True,
             id_part="child_name_1",
@@ -54,7 +54,7 @@ class Update(AAZCommand):
             required=True,
         )
         _args_schema.storage_mover_name = AAZStrArg(
-            options=["--storage-mover-name"],
+            options=["--storage-mover-name", "-s"],
             help="The name of the Storage Mover resource.",
             required=True,
             id_part="name",
@@ -63,9 +63,10 @@ class Update(AAZCommand):
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
-        _args_schema.azure_storage_blob_container = AAZObjectArg(
-            options=["--azure-storage-blob-container"],
+        _args_schema.container = AAZObjectArg(
+            options=["--container"],
             arg_group="Properties",
+            help="Container object",
         )
         _args_schema.nfs_mount = AAZObjectArg(
             options=["--nfs-mount"],
@@ -78,13 +79,13 @@ class Update(AAZCommand):
             nullable=True,
         )
 
-        azure_storage_blob_container = cls._args_schema.azure_storage_blob_container
-        azure_storage_blob_container.blob_container_name = AAZStrArg(
-            options=["blob-container-name"],
+        container = cls._args_schema.container
+        container.name = AAZStrArg(
+            options=["name"],
             help="The name of the Storage blob container that is the target destination.",
         )
-        azure_storage_blob_container.storage_account_resource_id = AAZStrArg(
-            options=["storage-account-resource-id"],
+        container.account_resource_id = AAZStrArg(
+            options=["account-resource-id"],
             help="The Azure Resource ID of the storage account that is the target destination.",
         )
 
@@ -145,7 +146,7 @@ class Update(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "endpointName", self.ctx.args.endpoint_name,
+                    "endpointName", self.ctx.args.name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -232,7 +233,7 @@ class Update(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "endpointName", self.ctx.args.endpoint_name,
+                    "endpointName", self.ctx.args.name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -322,8 +323,8 @@ class Update(AAZCommand):
 
             disc_azure_storage_blob_container = _builder.get(".properties{endpointType:AzureStorageBlobContainer}")
             if disc_azure_storage_blob_container is not None:
-                disc_azure_storage_blob_container.set_prop("blobContainerName", AAZStrType, ".azure_storage_blob_container.blob_container_name", typ_kwargs={"flags": {"required": True}})
-                disc_azure_storage_blob_container.set_prop("storageAccountResourceId", AAZStrType, ".azure_storage_blob_container.storage_account_resource_id", typ_kwargs={"flags": {"required": True}})
+                disc_azure_storage_blob_container.set_prop("blobContainerName", AAZStrType, ".container.name", typ_kwargs={"flags": {"required": True}})
+                disc_azure_storage_blob_container.set_prop("storageAccountResourceId", AAZStrType, ".container.account_resource_id", typ_kwargs={"flags": {"required": True}})
 
             disc_nfs_mount = _builder.get(".properties{endpointType:NfsMount}")
             if disc_nfs_mount is not None:

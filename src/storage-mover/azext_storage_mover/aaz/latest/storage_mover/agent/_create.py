@@ -42,8 +42,8 @@ class Create(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.agent_name = AAZStrArg(
-            options=["--agent-name", "--name", "-n"],
+        _args_schema.name = AAZStrArg(
+            options=["--name", "-n"],
             help="The name of the agent resource.",
             required=True,
             id_part="child_name_1",
@@ -52,7 +52,7 @@ class Create(AAZCommand):
             required=True,
         )
         _args_schema.storage_mover_name = AAZStrArg(
-            options=["--storage-mover-name"],
+            options=["--storage-mover-name", "-s"],
             help="The name of the Storage Mover resource.",
             required=True,
             id_part="name",
@@ -115,7 +115,7 @@ class Create(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "agentName", self.ctx.args.agent_name,
+                    "agentName", self.ctx.args.name,
                     required=True,
                 ),
                 **self.serialize_url_param(

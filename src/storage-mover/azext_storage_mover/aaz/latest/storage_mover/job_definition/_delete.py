@@ -44,14 +44,14 @@ class Delete(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.job_definition_name = AAZStrArg(
-            options=["--job-definition-name", "--name", "-n"],
+        _args_schema.name = AAZStrArg(
+            options=["--name", "-n"],
             help="The name of the job definition resource.",
             required=True,
             id_part="child_name_2",
         )
         _args_schema.project_name = AAZStrArg(
-            options=["--project-name"],
+            options=["--project-name", "-p"],
             help="The name of the project resource.",
             required=True,
             id_part="child_name_1",
@@ -60,7 +60,7 @@ class Delete(AAZCommand):
             required=True,
         )
         _args_schema.storage_mover_name = AAZStrArg(
-            options=["--storage-mover-name"],
+            options=["--storage-mover-name", "-s"],
             help="The name of the Storage Mover resource.",
             required=True,
             id_part="name",
@@ -111,7 +111,7 @@ class Delete(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "jobDefinitionName", self.ctx.args.job_definition_name,
+                    "jobDefinitionName", self.ctx.args.name,
                     required=True,
                 ),
                 **self.serialize_url_param(
