@@ -32,12 +32,17 @@ def load_arguments(self, _):
 
     with self.argument_context("grafana dashboard") as c:
         c.argument("uid", options_list=["--dashboard"], help="dashboard uid")
-        c.argument("definition", type=validate_file_or_dict, help="The complete dashboard model in json string, a path or url to a file with such content")
         c.argument("title", help="title of a dashboard")
         c.argument('overwrite', arg_type=get_three_state_flag(), help='Overwrite a dashboard with same uid')
 
+    with self.argument_context("grafana dashboard create") as c:
+        c.argument("definition", type=validate_file_or_dict, help="The complete dashboard model in json string, a path or url to a file with such content")
+
+    with self.argument_context("grafana dashboard update") as c:
+        c.argument("definition", type=validate_file_or_dict, help="The complete dashboard model in json string, a path or url to a file with such content")
+
     with self.argument_context("grafana dashboard import") as c:
-        c.argument("definition", type=validate_file_or_dict, help="The complete dashboard model in json string, Grafana gallery id, a path or url to a file with such content")
+        c.argument("definition", help="The complete dashboard model in json string, Grafana gallery id, a path or url to a file with such content")
 
     with self.argument_context("grafana data-source") as c:
         c.argument("data_source", help="name, id, uid which can identify a data source. CLI will search in the order of name, id, and uid, till finds a match")
