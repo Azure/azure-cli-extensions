@@ -22,6 +22,10 @@ helps['quantum execute'] = """
         text: |-
             az quantum execute -g MyResourceGroup -w MyWorkspace -l MyLocation -t MyTarget \\
                 --job-params key1=value1 key2=value2 -- --n-qubits=3
+      - name: Submit and wait for a Q# program from the current folder with a target-capability parameter.
+        text: |-
+            az quantum execute -g MyResourceGroup -w MyWorkspace -l MyLocation -t MyTarget \\
+                --target-capability MyTargetCapability
 """
 
 helps['quantum run'] = """
@@ -35,6 +39,10 @@ helps['quantum run'] = """
         text: |-
             az quantum run -g MyResourceGroup -w MyWorkspace -l MyLocation -t MyTarget \\
                 --job-params key1=value1 key2=value2 -- --n-qubits=3
+      - name: Submit and wait for a Q# program from the current folder with a target-capability parameter.
+        text: |-
+            az quantum run -g MyResourceGroup -w MyWorkspace -l MyLocation -t MyTarget \\
+                --target-capability MyTargetCapability
 """
 
 helps['quantum job'] = """
@@ -87,6 +95,10 @@ helps['quantum job submit'] = """
         text: |-
             az quantum job submit -g MyResourceGroup -w MyWorkspace -l MyLocation \\
                --job-name MyJob -- --n-qubits=2
+      - name: Submit a Q# program from the current folder with a target-capability parameter.
+        text: |-
+            az quantum job submit -g MyResourceGroup -w MyWorkspace -l MyLocation -t MyTarget \\
+                --target-capability MyTargetCapability
 """
 
 helps['quantum job wait'] = """
