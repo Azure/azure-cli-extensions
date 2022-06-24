@@ -43,9 +43,10 @@ class Expand(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.bookmark_id = AAZStrArg(
-            options=["--bookmark-id"],
-            help="Bookmark ID",
+            options=["-n", "--name", "--bookmark-id"],
+            help="ID of bookmark.",
             required=True,
+            is_experimental=True,
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
