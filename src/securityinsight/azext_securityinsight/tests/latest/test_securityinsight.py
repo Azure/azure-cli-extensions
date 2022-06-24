@@ -283,49 +283,32 @@ class SentinelClientTest(ScenarioTest):
             "--owner \"{{object-id:2046feea-040d-4a46-9e2b-91c2941bfa70}}\""
         )
 
-        # self.cmd(
-        #     "sentinel incident comment create -g {rg} --incident-comment-id {comment_id} --message 'Some message' --incident-id {incident_id} --workspace-name {workspace_name}",
-        #     checks=[
-        #         self.check("name", "{comment_id}"),
-        #         self.check("message", "Some message")
-        #     ]
-        # )
+        self.cmd(
+            "sentinel incident comment create -n {comment_id} -w {workspace_name} -g {rg} --incident-id {incident_id} --message 'Some message'",
+            checks=[
+                self.check("name", "{comment_id}"),
+                self.check("message", "Some message")
+            ]
+        )
 
+        self.cmd(
+            "sentinel incident comment list -w {workspace_name} -g {rg} --incident-id {incident_id}",
+            checks=[
+                self.check("length(@)", 1),
+                self.check("[0].name", "{comment_id}")
+            ]
+        )
 
+        self.cmd("sentinel incident comment update -n {comment_id} -w {workspace_name} -g {rg} --incident-id {incident_id} --message 'Some messages'")
+        self.cmd(
+            "sentinel incident comment show -n {comment_id} -w {workspace_name} -g {rg} --incident-id {incident_id}",
+            checks=[
+                self.check("name", "{comment_id}"),
+                self.check("message", "Some messages")
+            ]
+        )
 
-
-
-
-
-
-
-
-
-        # self.cmd(
-        #     "sentinel incident comment create -g {rg} --incident-comment-id {comment_id} --message 'Some message' --incident-id {incident_id} --workspace-name {workspace_name}",
-        #     checks=[
-        #         self.check("name", "{comment_id}"),
-        #         self.check("message", "Some message")
-        #     ]
-        # )
-        #
-        # self.cmd(
-        #     "sentinel incident comment list -g {rg} --incident-id {incident_id} --workspace-name {workspace_name}",
-        #     checks=[
-        #         self.check("length(@)", 1),
-        #         self.check("[0].name", "{comment_id}")
-        #     ]
-        # )
-        #
-        # self.cmd(
-        #     "sentinel incident comment show -g {rg} --incident-comment-id {comment_id} --incident-id {incident_id} --workspace-name {workspace_name}",
-        #     checks=[
-        #         self.check("name", "{comment_id}"),
-        #         self.check("message", "Some message")
-        #     ]
-        # )
-        #
-        # self.cmd("sentinel incident delete -g {rg} --incident-id {incident_id} --workspace-name {workspace_name} --yes")
+        self.cmd("sentinel incident comment delete -n {comment_id} -w {workspace_name} -g {rg} --incident-id {incident_id} --yes")
 
     @ResourceGroupPreparer(name_prefix="cli_test_sentinel_", location="eastus2")
     def test_sentinel_bookmark_relation_crud(self):
