@@ -96,11 +96,6 @@ helps['grafana notification-channel list'] = """
     short-summary: List all notification channels of an instance.
 """
 
-helps['grafana notification-channel list-short'] = """
-    type: command
-    short-summary: List all notification channels of an instance in short.
-"""
-
 helps['grafana notification-channel show'] = """
     type: command
     short-summary: get details of a notification channel

@@ -46,6 +46,7 @@ def load_arguments(self, _):
     with self.argument_context("grafana notification-channel") as c:
         c.argument("notification_channel", help="id, uid which can identify a data source. CLI will search in the order of id, and uid, till finds a match")
         c.argument("definition", help="json string with notification channel definition, or a path to a file with such content")
+        c.argument("short", action='store_true', help="list notification channels in short format.")
 
     with self.argument_context("grafana data-source query") as c:
         c.argument("conditions", nargs="+", help="space-separated condition in a format of `<name>=<value>`")

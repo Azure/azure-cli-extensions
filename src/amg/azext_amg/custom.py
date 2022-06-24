@@ -283,13 +283,11 @@ def update_data_source(cmd, grafana_name, data_source, definition, resource_grou
     return json.loads(response.content)
 
 
-def list_notification_channels(cmd, grafana_name, resource_group_name=None):
-    response = _send_request(cmd, resource_group_name, grafana_name, "get", "/api/alert-notifications")
-    return json.loads(response.content)
-
-
-def list_notification_channels_short(cmd, grafana_name, resource_group_name=None):
-    response = _send_request(cmd, resource_group_name, grafana_name, "get", "/api/alert-notifications/lookup")
+def list_notification_channels(cmd, grafana_name, resource_group_name=None, short=False):
+    if short is False:
+        response = _send_request(cmd, resource_group_name, grafana_name, "get", "/api/alert-notifications")
+    elif short is True:
+        response = _send_request(cmd, resource_group_name, grafana_name, "get", "/api/alert-notifications/lookup")
     return json.loads(response.content)
 
 
