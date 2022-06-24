@@ -16,7 +16,7 @@ from azure.cli.core.aaz import *
     is_experimental=True,
 )
 class Show(AAZCommand):
-    """Gets a bookmark relation.
+    """Get a bookmark relation.
     """
 
     _aaz_info = {
@@ -58,7 +58,7 @@ class Show(AAZCommand):
             required=True,
         )
         _args_schema.workspace_name = AAZStrArg(
-            options=["--workspace-name"],
+            options=["-w", "--workspace-name"],
             help="The name of the workspace.",
             required=True,
             id_part="name",
