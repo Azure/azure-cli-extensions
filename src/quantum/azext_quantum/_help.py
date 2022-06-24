@@ -121,6 +121,9 @@ helps['quantum offerings list'] = """
       - name: List offerings available in an Azure location.
         text: |-
             az quantum offerings list -l MyLocation -o table
+      - name: List only the offerings flagged "autoAdd" in an Azure location.
+        text: |-
+            az quantum offerings list -l MyLocation --autoadd-only -o table
 """
 
 helps['quantum offerings show-terms'] = """
@@ -200,6 +203,10 @@ helps['quantum workspace create'] = """
     type: command
     short-summary: Create a new Azure Quantum workspace.
     examples:
+      - name: Create a new Azure Quantum workspace with the providers that offer free credit.
+        text: |-
+            az quantum workspace create -g MyResourceGroup -w MyWorkspace -l MyLocation \\
+                -a MyStorageAccountName
       - name: Create a new Azure Quantum workspace with a specific list of providers.
         text: |-
             az quantum workspace create -g MyResourceGroup -w MyWorkspace -l MyLocation \\
