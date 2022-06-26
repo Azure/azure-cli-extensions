@@ -10,7 +10,7 @@ metadata:
   namespace: default
   name: secret-reader
 rules:
-- apiGroups: [""] 
+- apiGroups: [""] # "" indicates the core API group
   resources: ["secrets"]
   verbs: ["get", "list"]
 ---
@@ -20,12 +20,13 @@ metadata:
   name: read-pods
   namespace: default
 subjects:
+# You can specify more than one "subject"
 - kind: ServiceAccount
   name: azure-arc-troubleshoot
   namespace: default
 roleRef:
-  kind: Role 
-  name: secret-reader 
+  kind: Role #this must be Role or ClusterRole
+  name: secret-reader # this must match the name of the Role or ClusterRole you wish to bind to
   namespace: default
 ---
 apiVersion: batch/v1
@@ -48,4 +49,3 @@ spec:
         namespace: default
       restartPolicy: Never
   backoffLimit: 4
-

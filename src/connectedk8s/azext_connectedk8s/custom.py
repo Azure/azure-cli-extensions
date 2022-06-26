@@ -10,7 +10,6 @@ import json
 import tempfile
 import time
 import base64
-import subprocess
 from subprocess import Popen, PIPE, run, STDOUT, call, DEVNULL
 from base64 import b64encode, b64decode
 import stat
@@ -56,11 +55,7 @@ logger = get_logger(__name__)
 # pylint: disable=too-many-branches
 # pylint: disable=too-many-statements
 # pylint: disable=line-too-long
-# pylint:disable=unused-argument
-# pylint: disable=too-many-locals
-# pylint: disable=too-many-branches
-# pylint: disable=too-many-statements
-# pylint: disable=line-too-long
+
 
 
 def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_proxy="", http_proxy="", no_proxy="", proxy_cert="", location=None,
@@ -2138,6 +2133,9 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
             # For storing all the deployments logs using the AppsV1Api
             appv1_api_instance = kube_client.AppsV1Api(kube_client.ApiClient(configuration))
             utils.validate_node_api_response(appv1_api_instance, None)
+            storage_space_available = troubleshootutils.arc_agents_event_logger(filepath_with_timestamp, storage_space_available)
+
+            # For storing all arc agents events logs
             storage_space_available = troubleshootutils.deployments_logger(appv1_api_instance, filepath_with_timestamp, storage_space_available)
 
             # Check for the azure arc agent states

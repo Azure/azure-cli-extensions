@@ -153,10 +153,40 @@ def arc_agents_logger(corev1_api_instance, filepath_with_timestamp, storage_spac
     return storage_space_available
 
 
-def deployments_logger(appv1_api_instance, filepath_with_timestamp, storage_space_available):
+def arc_agents_event_logger(filepath_with_timestamp, storage_space_available):
 
     try:
 
+        if storage_space_available :
+
+            # CMD command to get helm values in azure arc and converting it to json format
+            command = ["kubectl", "get", "events", "-n", "azure-arc", "--output", "json"]
+
+            # Using subprocess to execute the helm get values command and fetching the output
+            p = subprocess.Popen(command, stdout=subprocess.PIPE)
+            text = p.stdout.read()
+            
+            # Converting output obtained in json format and fetching the clusterconnect-agent feature
+            my_json = json.loads(text)
+
+            with open(filepath_with_timestamp + "\\Arc_Agent_Events.txt", 'w+') as event_log:
+
+                for events in my_json["items"] :
+                        event_log.write(str(events) + "\n")
+
+    except OSError as e:
+        storage_space_available = False
+        shutil.rmtree(filepath_with_timestamp, ignore_errors=False, onerror=None)
+            
+    except Exception as e:
+        print(e)
+    
+    return storage_space_available
+
+
+def deployments_logger(appv1_api_instance, filepath_with_timestamp, storage_space_available):
+
+    try:
         if storage_space_available :
 
             # Creating new Deployment Logs folder in the given timestamp folder
@@ -188,27 +218,29 @@ def deployments_logger(appv1_api_instance, filepath_with_timestamp, storage_spac
     
     return storage_space_available
 
+
 def check_agent_state(corev1_api_instance, filepath_with_timestamp, storage_space_available):
 
     try:
 
-        # To retrieve all of the arc agent pods that are presesnt in the Cluster
-        arc_agents_pod_list = corev1_api_instance.list_namespaced_pod(namespace="azure-arc")
+        with open(filepath_with_timestamp + "\\Agent_State.txt", 'w+') as agent_state:
+            # To retrieve all of the arc agent pods that are presesnt in the Cluster
+            arc_agents_pod_list = corev1_api_instance.list_namespaced_pod(namespace="azure-arc")
 
-        # Check if any arc agent other than kube aadp proxy is not in Running state
-        counter = 0
-        for each_agent_pod in arc_agents_pod_list.items:
+            # Check if any arc agent other than kube aadp proxy is not in Running state
+            counter = 0
+            for each_agent_pod in arc_agents_pod_list.items:
 
-            if storage_space_available:
-                # Storing the state of the arc agent in the user machine
-                with open(filepath_with_timestamp + "\Agent_State.txt", 'w+') as agent_state:
-                    agent_state.write(each_agent_pod.metadata.name + " = " + each_agent_pod.status.phase + "\n")
+                if storage_space_available :
 
-            # If the agent is Kube add proxy we will continue with the next agent
-            if(each_agent_pod.metadata.name.startswith("kube-aad-proxy")):
-                continue
-            if each_agent_pod.status.phase != 'Running':
-                counter = 1
+                    # Storing the state of the arc agent in the user machine
+                    agent_state.write(each_agent_pod.metadata.name + " = " + each_agent_pod.status.phase +"\n")
+
+                # If the agent is Kube add proxy we will continue with the next agent
+                if(each_agent_pod.metadata.name.startswith("kube-aad-proxy")):
+                    continue
+                if each_agent_pod.status.phase != 'Running':
+                    counter = 1
 
         # Displaying error if the arc agents are in pending state.
         if counter:
@@ -225,6 +257,7 @@ def check_agent_state(corev1_api_instance, filepath_with_timestamp, storage_spac
         print(e)
 
     return True, storage_space_available
+
 
 def check_agent_version(connected_cluster, azure_arc_agent_version):
     try:
@@ -250,6 +283,7 @@ def check_agent_version(connected_cluster, azure_arc_agent_version):
 
     return True
 
+
 def executing_diagnoser_job(corev1_api_instance, batchv1_api_instance, namespace):
 
     # Setting the log output as Empty
@@ -258,6 +292,7 @@ def executing_diagnoser_job(corev1_api_instance, batchv1_api_instance, namespace
     # To handle the user keyboard Interrupt
     try:
 
+        command = ["kubectl", "delete", "-f", "TroubleshootTemplates\\diagnoser_job.yaml"]
         # Executing the diagnoser_job.yaml
         config.load_kube_config()
         k8s_client = client.ApiClient()
@@ -284,7 +319,7 @@ def executing_diagnoser_job(corev1_api_instance, batchv1_api_instance, namespace
         # If container not created then clearing all the reosurce with proper error message
         if(counter == 0):
 
-            subprocess.run(["kubectl", "delete", "-f", "TroubleshootTemplates\\diagnoser_job.yaml"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+            subprocess.run(command, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
         else:
 
@@ -306,14 +341,14 @@ def executing_diagnoser_job(corev1_api_instance, batchv1_api_instance, namespace
                         diagnoser_container_log = corev1_api_instance.read_namespaced_pod_log(name=pod_name, container="networktest1", namespace=namespace)
 
                 # Clearing all the resources after fetching the diagnoser container logs
-                subprocess.run(["kubectl", "delete", "-f", "TroubleshootTemplates\\diagnoser_job.yaml"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+                subprocess.run(command, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
             except Exception as e:
-                subprocess.run(["kubectl", "delete", "-f", "TroubleshootTemplates\\diagnoser_job.yaml"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+                subprocess.run(command, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
     except KeyboardInterrupt:
         # If process terminated by user then delete the resources if any added to the cluster.
-        subprocess.run(["kubectl", "delete", "-f", "TroubleshootTemplates\\diagnoser_job.yaml"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        subprocess.run(command, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
     except Exception as e:
         print(e)
