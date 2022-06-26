@@ -445,26 +445,21 @@ class SentinelClientTest(ScenarioTest):
         self.kwargs["data_connector"] = json.dumps(data_connector_props)
 
     @ResourceGroupPreparer(name_prefix="cli_test_sentinel_", location="eastus2")
-    def test_sentinel_domain_whois_crud(self):
+    def test_sentinel_enrichment_crud(self):
         self.kwargs.update({
             "domain": "microsoft.com",
+            "ip_address": "1.2.3.4"
         })
 
         self.cmd(
-            "sentinel domain-whois show -g {rg} --domain {domain}",
+            "sentinel enrichment domain-whois show -g {rg} --domain {domain}",
             checks=[
                 self.check("domain", "{domain}")
             ]
         )
 
-    @ResourceGroupPreparer(name_prefix="cli_test_sentinel_", location="eastus2")
-    def test_sentinel_ip_geodata_crud(self):
-        self.kwargs.update({
-            "ip_address": "1.2.3.4"
-        })
-
         self.cmd(
-            "sentinel ip-geodata show -g {rg} --ip-address {ip_address}",
+            "sentinel enrichment ip-geodata show -g {rg} --ip-address {ip_address}",
             checks=[
                 self.check("ipAddr", "{ip_address}")
             ]
