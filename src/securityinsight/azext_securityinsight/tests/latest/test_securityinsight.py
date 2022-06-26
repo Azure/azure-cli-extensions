@@ -476,21 +476,14 @@ class SentinelClientTest(ScenarioTest):
 
         self.cmd("monitor log-analytics workspace create -n {workspace_name} -g {rg}")
         self.cmd("monitor log-analytics solution create -t SecurityInsights -w {workspace_name} -g {rg}")
+        self.kwargs["parent_id"] = self.cmd(
+            "sentinel alert-rule create -n {alert_rule_name} -w {workspace_name} -g {rg} "
+            "--ms-security-incident \"{{product-filter:'Microsoft Cloud App Security',display-name:testing,enabled:true}}\""
+        ).get_output_in_json()["id"]
 
-        alert_rule_props = {
-            "etag": "260097e0-0000-0d00-0000-5d6fa88f0000",
-            "kind": "MicrosoftSecurityIncidentCreation",
-            "properties": {
-                "displayName": "testing displayname",
-                "enabled": True,
-                "productFilter": "Microsoft Cloud App Security"
-            }
-        }
-        self.kwargs["alert_rule"] = json.dumps(alert_rule_props)
-        self.kwargs["parent_id"] = self.cmd("sentinel alert-rule create -g {rg} --alert-rule '{alert_rule}' --rule-id {alert_rule_name} --workspace-name {workspace_name}").get_output_in_json()["id"]
         self.cmd(
-            "sentinel metadata create -n {metadata_name} -g {rg} --content-id {content_id} --workspace-name {workspace_name} "
-            "--kind AnalyticsRule --parent-id {parent_id}",
+            "sentinel metadata create -n {metadata_name} -w {workspace_name} -g {rg} "
+            "--content-id {content_id} --parent-id {parent_id} --kind AnalyticsRule",
             checks=[
                 self.check("name", "{metadata_name}"),
                 self.check("contentId", "{content_id}")
@@ -498,16 +491,16 @@ class SentinelClientTest(ScenarioTest):
         )
 
         self.cmd(
-            "sentinel metadata list -g {rg} --workspace-name {workspace_name}",
+            "sentinel metadata list -w {workspace_name} -g {rg}",
             checks=[
                 self.check("length(@)", 1),
                 self.check("[0].name", "{metadata_name}")
             ]
         )
 
-        self.cmd("sentinel metadata update -n {metadata_name} -g {rg} --workspace-name {workspace_name} --author name=cli email=cli@microsoft.com")
+        self.cmd("sentinel metadata update -n {metadata_name} -w {workspace_name} -g {rg} --author \"{{name:cli,email:cli@microsoft.com}}\"")
         self.cmd(
-            "sentinel metadata show -n {metadata_name} -g {rg} --workspace-name {workspace_name}",
+            "sentinel metadata show -n {metadata_name} -w {workspace_name} -g {rg}",
             checks=[
                 self.check("name", "{metadata_name}"),
                 self.check("author.name", "cli"),
@@ -515,7 +508,7 @@ class SentinelClientTest(ScenarioTest):
             ]
         )
 
-        self.cmd("sentinel metadata delete -n {metadata_name} -g {rg} --workspace-name {workspace_name} --yes")
+        self.cmd("sentinel metadata delete -n {metadata_name} -w {workspace_name} -g {rg} --yes")
 
     @ResourceGroupPreparer(name_prefix="cli_test_sentinel_", location="eastus2")
     def test_sentinel_onboarding_state_crud(self):
