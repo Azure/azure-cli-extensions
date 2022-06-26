@@ -520,7 +520,7 @@ class SentinelClientTest(ScenarioTest):
         self.cmd("monitor log-analytics solution create -t SecurityInsights -w {workspace_name} -g {rg}")
 
         self.cmd(
-            "sentinel onboarding-state create -n default -g {rg} --workspace-name {workspace_name} --customer-managed-key false",
+            "sentinel onboarding-state create -n default -w {workspace_name} -g {rg} --customer-managed-key false",
             checks=[
                 self.check("name", "default"),
                 self.check("type", "Microsoft.SecurityInsights/onboardingStates")
@@ -528,7 +528,7 @@ class SentinelClientTest(ScenarioTest):
         )
 
         self.cmd(
-            "sentinel onboarding-state list -g {rg} --workspace-name {workspace_name}",
+            "sentinel onboarding-state list -w {workspace_name} -g {rg}",
             checks=[
                 self.check("length(@)", 1),
                 self.check("value[0].name", "default")
@@ -536,14 +536,14 @@ class SentinelClientTest(ScenarioTest):
         )
 
         self.cmd(
-            "sentinel onboarding-state show -n default -g {rg} --workspace-name {workspace_name}",
+            "sentinel onboarding-state show -n default -w {workspace_name} -g {rg}",
             checks=[
                 self.check("name", "default"),
                 self.check("type", "Microsoft.SecurityInsights/onboardingStates")
             ]
         )
 
-        self.cmd("sentinel onboarding-state delete -n default -g {rg} --workspace-name {workspace_name} --yes")
+        self.cmd("sentinel onboarding-state delete -n default -w {workspace_name} -g {rg} --yes")
 
     @ResourceGroupPreparer(name_prefix="cli_test_sentinel_", location="eastus2")
     def test_sentinel_threat_indicator_crud(self):
