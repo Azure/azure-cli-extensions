@@ -317,8 +317,7 @@ class SentinelClientTest(ScenarioTest):
             "relation_name": self.create_random_name("relation-", 16),
             "bookmark_id": "2216d0e1-91e3-4902-89fd-d2df8c535096",
             "incident_id": "afbd324f-6c48-459c-8710-8d1e1cd03812",
-            "query": "SecurityEvent | where TimeGenerated > ago(1d) and TimeGenerated < ago(2d)",
-            "expand_id": "27f76e63-c41b-480f-bb18-12ad2e011d49",
+            "query": "SecurityEvent | where TimeGenerated > ago(1d) and TimeGenerated < ago(2d)"
         })
 
         self.cmd("monitor log-analytics workspace create -n {workspace_name} -g {rg}")
@@ -365,6 +364,61 @@ class SentinelClientTest(ScenarioTest):
         )
 
         self.cmd("sentinel bookmark relation delete -n {relation_name} -w {workspace_name} -g {rg} --bookmark-id {bookmark_id} --yes")
+
+    @ResourceGroupPreparer(name_prefix="cli_test_sentinel_", location="eastus2")
+    def test_sentinel_incident_relation_crud(self):
+        self.kwargs.update({
+            "workspace_name": self.create_random_name("workspace-", 16),
+            "relation_name": self.create_random_name("relation-", 16),
+            "bookmark_id": "2216d0e1-91e3-4902-89fd-d2df8c535096",
+            "incident_id": "afbd324f-6c48-459c-8710-8d1e1cd03812",
+            "query": "SecurityEvent | where TimeGenerated > ago(1d) and TimeGenerated < ago(2d)"
+        })
+
+        self.cmd("monitor log-analytics workspace create -n {workspace_name} -g {rg}")
+        self.cmd("monitor log-analytics solution create -t SecurityInsights -w {workspace_name} -g {rg}")
+        self.cmd(
+            "sentinel incident create -n {incident_id} -w {workspace_name} -g {rg} "
+            "--classification FalsePositive --classification-reason IncorrectAlertLogic --classification-comment 'Not a malicious activity' "
+            "--first-activity-time-utc 2019-01-01T13:00:30Z --last-activity-time-utc 2019-01-01T13:05:30Z "
+            "--severity High --status Closed --title 'My incident' --description 'This is a demo incident' "
+            "--owner \"{{object-id:2046feea-040d-4a46-9e2b-91c2941bfa70}}\""
+        )
+        self.kwargs["resource_id"] = self.cmd(
+            "sentinel bookmark create -n {bookmark_id} -w {workspace_name} -g {rg} "
+            "--query-content '{query}' --query-result 'Security Event query result' "
+            "--display-name 'My bookmark' --notes 'Found a suspicious activity' "
+            "--entity-mappings \"[{{entity-type:Account,field-mappings:[{{identifier:Fullname,value:johndoe@microsoft.com}}]}}]\" "
+            "--tactics \"[Execution]\" "
+            "--techniques \"[T1609]\" "
+            "--labels \"[Tag1,Tag2]\""
+        ).get_output_in_json()["id"]
+
+        self.cmd(
+            "sentinel incident relation create -n {relation_name} -w {workspace_name} -g {rg} --incident-id {incident_id} --related-resource-id {resource_id}",
+            checks=[
+                self.check("name", "{relation_name}"),
+                self.check("type", "Microsoft.SecurityInsights/Incidents/relations")
+            ]
+        )
+
+        self.cmd(
+            "sentinel incident relation list -w {workspace_name} -g {rg} --incident-id {incident_id}",
+            checks=[
+                self.check("length(@)", 1),
+                self.check("[0].name", "{relation_name}")
+            ]
+        )
+
+        self.cmd(
+            "sentinel incident relation show -n {relation_name} -w {workspace_name} -g {rg} --incident-id {incident_id}",
+            checks=[
+                self.check("name", "{relation_name}"),
+                self.check("type", "Microsoft.SecurityInsights/Incidents/relations")
+            ]
+        )
+
+        self.cmd("sentinel incident relation delete -n {relation_name} -w {workspace_name} -g {rg} --incident-id {incident_id} --yes")
 
     @ResourceGroupPreparer(name_prefix="cli_test_sentinel_", location="eastus2")
     def test_sentinel_data_connector_crud(self):
