@@ -40,11 +40,11 @@ class QuantumJobsScenarioTest(ScenarioTest):
         self.assertIn('TargetCapability:BasicQuantumFunctionality', self.testdata)
         self.testfile.close()
 
-        try:
-            build(self, target_id='ionq.simulator', project='src\\quantum\\azext_quantum\\tests\\latest\\source_for_build_test\\QuantumRNG.csproj', target_capability='BogusQuantumFunctionality')
-            assert False
-        except AzureInternalError as e:
-            assert str(e) == "Failed to compile program."
+        # try:
+        #     build(self, target_id='ionq.simulator', project='src\\quantum\\azext_quantum\\tests\\latest\\source_for_build_test\\QuantumRNG.csproj', target_capability='BogusQuantumFunctionality')
+        #     assert False
+        # except AzureInternalError as e:
+        #     assert str(e) == "Failed to compile program."
 
     @live_only()
     def test_submit_args(self):
