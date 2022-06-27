@@ -6,7 +6,6 @@
 # pylint: disable=line-too-long
 # pylint: disable=too-many-lines
 
-import json
 from azure.cli.testsdk import (
     ResourceGroupPreparer,
     ScenarioTest
