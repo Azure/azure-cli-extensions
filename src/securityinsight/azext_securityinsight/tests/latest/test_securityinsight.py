@@ -68,80 +68,6 @@ class SentinelClientTest(ScenarioTest):
         )
 
     @ResourceGroupPreparer(name_prefix="cli_test_sentinel_", location="eastus2")
-    def test_sentinel_analytics_setting_crud(self):
-        self.kwargs.update({
-            "workspace_name": self.create_random_name("workspace-", 16),
-            "settings_name": self.create_random_name("settings-", 16)
-        })
-
-        self.cmd("monitor log-analytics workspace create -n {workspace_name} -g {rg}")
-        self.cmd("monitor log-analytics solution create -t SecurityInsights -w {workspace_name} -g {rg}")
-
-        self.cmd(
-            "sentinel analytics-setting create -n {settings_name} -w {workspace_name} "
-            "--anomaly "
-            ""
-        )
-
-        settings_props = {
-            "etag": "'260090e2-0000-0d00-0000-5d6fb8670000'",
-            "kind": "Anomaly",
-            "properties": {
-                "description": "When account logs from a source region that has rarely been logged in from during the last 14 days, an anomaly is triggered.",
-                "anomalySettingsVersion": 0,
-                "anomalyVersion": "1.0.5",
-                "customizableObservations": {
-                    "multiSelectObservations": None,
-                    "prioritizeExcludeObservat": None,
-                    "singleSelectObservations": [{
-                        "name": "Device vendor",
-                        "description": "Choose device vendor of network connection logs from CommonSecurityLog",
-                        "rerun": "RerunAlways",
-                        "sequenceNumber": 1,
-                        "supportedValues": ["Palo Alto Networks", "Fortinet", "Check Point"],
-                        "supportedValuesKql": None,
-                        "value": ["Palo Alto Networks"],
-                        "valuesKql": None
-                    }],
-                    "singleValueObservations": None,
-                    "thresholdObservations": [
-                        {
-                            "name": "Daily data transfer threshold in MB",
-                            "description": "Suppress anomalies when daily data transfered (in MB) per hour is less than the chosen value",
-                            "maximum": "100",
-                            "minimum": "1",
-                            "rerun": "RerunAlways",
-                            "sequenceNumber": 1,
-                            "value": "25",
-                        },
-                        {
-                            "name": "Number of standard deviations",
-                            "description": "Triggers anomalies when number of standard deviations is greater than the chosen value",
-                            "maximum": "10",
-                            "minimum": "2",
-                            "rerun": "RerunAlways",
-                            "sequenceNumber": 2,
-                            "value": "3"
-                        }
-                    ]
-                },
-                "displayName": "Login from unusual region",
-                "enabled": True,
-                "frequency": "PT1H",
-                "isDefaultSettings": True,
-                "requiredDataConnectors": [{
-                    "connectorId": "AWS",
-                    "dataTypes": ["AWSCloudTrail"]
-                }],
-                "settingsDefinitionId": "f209187f-1d17-4431-94af-c141bf5f23db",
-                "settingsStatus": "Production",
-                "tactics": ["Exfiltration", "CommandAndControl"],
-                "techniques": ["T1037", "T1021"]
-            }
-        }
-        self.kwargs["settings"] = json.dumps(settings_props)
-
-    @ResourceGroupPreparer(name_prefix="cli_test_sentinel_", location="eastus2")
     def test_sentinel_automation_rule_crud(self):
         self.kwargs.update({
             "workspace_name": self.create_random_name("workspace-", 16),
@@ -420,30 +346,6 @@ class SentinelClientTest(ScenarioTest):
         )
 
         self.cmd("sentinel incident relation delete -n {relation_name} -w {workspace_name} -g {rg} --incident-id {incident_id} --yes")
-
-    @ResourceGroupPreparer(name_prefix="cli_test_sentinel_", location="eastus2")
-    def test_sentinel_data_connector_crud(self):
-        self.kwargs.update({
-            "workspace_name": self.create_random_name("workspace-", 16),
-            "connector_id": "73e01a99-5cd7-4139-a149-9f2736ff2ab5"
-        })
-
-        self.cmd("monitor log-analytics workspace create -n {workspace_name} -g {rg}")
-        self.cmd("monitor log-analytics solution create -t SecurityInsights -w {workspace_name} -g {rg}")
-
-        data_connector_props = {
-            "kind": "ThreatIntelligence",
-            "properties": {
-                "dataTypes": {
-                    "indicators": {
-                        "state": "Enabled"
-                    }
-                },
-                "tenantId": "54826b22-38d6-4fb2-bad9-b7b93a3e9c5a",
-                "tipLookbackPeriod": "2020-01-01T13:00:30.123Z"
-            }
-        }
-        self.kwargs["data_connector"] = json.dumps(data_connector_props)
 
     @ResourceGroupPreparer(name_prefix="cli_test_sentinel_", location="eastus2")
     def test_sentinel_enrichment_crud(self):
