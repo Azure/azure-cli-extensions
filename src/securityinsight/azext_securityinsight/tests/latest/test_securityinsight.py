@@ -16,6 +16,7 @@ from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 class SentinelClientTest(ScenarioTest):
     def __init__(self, method_name):
         super().__init__(method_name)
+        self.cmd("extension add -n log-analytics-solution")
 
     @AllowLargeResponse(size_kb=2048)
     @ResourceGroupPreparer(name_prefix="cli_test_sentinel_", location="eastus2")
