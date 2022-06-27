@@ -177,8 +177,8 @@ class Create(AAZCommand):
             arg_group="Properties",
             help="Source of a threat intelligence entity",
         )
-        _args_schema.intelligence_tags = AAZListArg(
-            options=["--intelligence-tags"],
+        _args_schema.threat_tags = AAZListArg(
+            options=["--threat-tags"],
             arg_group="Properties",
             help="List of tags",
         )
@@ -294,8 +294,8 @@ class Create(AAZCommand):
             help="Type of the value",
         )
 
-        intelligence_tags = cls._args_schema.intelligence_tags
-        intelligence_tags.Element = AAZStrArg()
+        threat_tags = cls._args_schema.threat_tags
+        threat_tags.Element = AAZStrArg()
 
         threat_types = cls._args_schema.threat_types
         threat_types.Element = AAZStrArg()
@@ -423,7 +423,7 @@ class Create(AAZCommand):
                 properties.set_prop("patternVersion", AAZStrType, ".pattern_version")
                 properties.set_prop("revoked", AAZBoolType, ".revoked")
                 properties.set_prop("source", AAZStrType, ".source")
-                properties.set_prop("threatIntelligenceTags", AAZListType, ".intelligence_tags")
+                properties.set_prop("threatIntelligenceTags", AAZListType, ".threat_tags")
                 properties.set_prop("threatTypes", AAZListType, ".threat_types")
                 properties.set_prop("validFrom", AAZStrType, ".valid_from")
                 properties.set_prop("validUntil", AAZStrType, ".valid_until")
