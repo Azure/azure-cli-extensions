@@ -4,7 +4,7 @@ Release History
 ===============
 0.5.1
 +++++
-* 'az network manager group': remove parameters '--member-type'
+* 'az network manager group': remove parameters '--member-type' and '--display-name'
 * 'az network manager security-user-config': hide this command
 * 'az network manager group list-effect-vnet': hide this command
 * 'az network manager delete': add parameter 'force'

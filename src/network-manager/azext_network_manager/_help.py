@@ -284,7 +284,7 @@ helps['network manager group create'] = """
       - name: Create/Update Azure Virtual Network Manager Network Group
         text: |-
                az network manager group create --name "TestNetworkGroup" --network-manager-name "testNetworkManager" \
---description "A sample group" --display-name "My Network Group" --resource-group "rg1"
+--description "A sample group" --resource-group "rg1"
 """
 
 helps['network manager group update'] = """

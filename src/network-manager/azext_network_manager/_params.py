@@ -235,7 +235,6 @@ def load_arguments(self, _):
         c.argument('if_match', type=str, help='The ETag of the transformation. Omit this value to always overwrite the '
                    'current resource. Specify the last-seen ETag value to prevent accidentally overwriting concurrent '
                    'changes.')
-        c.argument('display_name', type=str, help='A friendly name for the network group.')
         c.argument('description', type=str, help='A description of the network group.')
 
     with self.argument_context('network manager group update') as c:

@@ -11,7 +11,6 @@
 # pylint: disable=unused-argument
 from knack.util import CLIError
 
-from azure.cli.core.util import user_confirmation
 from ._client_factory import (
     cf_networkmanagercommit,
     cf_networkmanagerdeploymentstatus,
@@ -93,11 +92,10 @@ def network_manager_delete(client,
                            resource_group_name,
                            network_manager_name,
                            force=None):
-    from azure.cli.core.util import user_confirmation
     if force is None or force is False:
-        user_confirmation('The \'--force\' flag was not provided for the delete operation. '
-                          'If this resource or any of its child resources are part of a deployed configuration, '
-                          'this delete will fail. Would you like to proceed? \n')
+        print("The \'--force\' flag was not provided for the delete operation. "
+              "If this resource or any of its child resources are part of a deployed configuration, "
+              "this delete will fail.")
     return client.begin_delete(resource_group_name=resource_group_name,
                                network_manager_name=network_manager_name,
                                force=force)
@@ -332,9 +330,9 @@ def network_manager_connect_config_delete(client,
                                           configuration_name,
                                           force=None):
     if force is None or force is False:
-        user_confirmation('The \'--force\' flag was not provided for the delete operation. '
-                          'If this resource or any of its child resources are part of a deployed configuration, '
-                          'this delete will fail. Would you like to proceed? \n')
+        print("The \'--force\' flag was not provided for the delete operation. "
+              "If this resource or any of its child resources are part of a deployed configuration, "
+              "this delete will fail.")
     return client.begin_delete(resource_group_name=resource_group_name,
                                network_manager_name=network_manager_name,
                                configuration_name=configuration_name,
@@ -366,10 +364,8 @@ def network_manager_group_create(client,
                                  network_manager_name,
                                  network_group_name,
                                  if_match=None,
-                                 display_name=None,
                                  description=None):
     parameters = {}
-    parameters['display_name'] = display_name
     parameters['description'] = description
     return client.create_or_update(resource_group_name=resource_group_name,
                                    network_manager_name=network_manager_name,
@@ -398,9 +394,9 @@ def network_manager_group_delete(client,
                                  network_group_name,
                                  force=None):
     if force is None or force is False:
-        user_confirmation('The \'--force\' flag was not provided for the delete operation. '
-                          'If this resource or any of its child resources are part of a deployed configuration, '
-                          'this delete will fail. Would you like to proceed? \n')
+        print("The \'--force\' flag was not provided for the delete operation. "
+              "If this resource or any of its child resources are part of a deployed configuration, "
+              "this delete will fail.")
     return client.begin_delete(resource_group_name=resource_group_name,
                                network_manager_name=network_manager_name,
                                network_group_name=network_group_name,
@@ -537,9 +533,9 @@ def network_manager_security_admin_config_delete(client,
                                                  configuration_name,
                                                  force=None):
     if force is None or force is False:
-        user_confirmation('The \'--force\' flag was not provided for the delete operation. '
-                          'If this resource or any of its child resources are part of a deployed configuration, '
-                          'this delete will fail. Would you like to proceed? \n')
+        print("The \'--force\' flag was not provided for the delete operation. "
+              "If this resource or any of its child resources are part of a deployed configuration, "
+              "this delete will fail.")
     return client.begin_delete(resource_group_name=resource_group_name,
                                network_manager_name=network_manager_name,
                                configuration_name=configuration_name,
@@ -613,9 +609,9 @@ def network_manager_admin_rule_collection_delete(client,
                                                  rule_collection_name,
                                                  force=None):
     if force is None or force is False:
-        user_confirmation('The \'--force\' flag was not provided for the delete operation. '
-                          'If this resource or any of its child resources are part of a deployed configuration, '
-                          'this delete will fail. Would you like to proceed? \n')
+        print("The \'--force\' flag was not provided for the delete operation. "
+              "If this resource or any of its child resources are part of a deployed configuration, "
+              "this delete will fail.")
     return client.begin_delete(resource_group_name=resource_group_name,
                                network_manager_name=network_manager_name,
                                configuration_name=configuration_name,
@@ -743,9 +739,9 @@ def network_manager_admin_rule_delete(client,
                                       rule_name,
                                       force=None):
     if force is None or force is False:
-        user_confirmation('The \'--force\' flag was not provided for the delete operation. '
-                          'If this resource or any of its child resources are part of a deployed configuration, '
-                          'this delete will fail. Would you like to proceed? \n')
+        print("The \'--force\' flag was not provided for the delete operation. "
+              "If this resource or any of its child resources are part of a deployed configuration, "
+              "this delete will fail.")
     return client.begin_delete(resource_group_name=resource_group_name,
                                network_manager_name=network_manager_name,
                                configuration_name=configuration_name,
