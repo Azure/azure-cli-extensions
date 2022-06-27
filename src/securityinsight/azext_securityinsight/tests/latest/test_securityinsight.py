@@ -599,3 +599,43 @@ class SentinelClientTest(ScenarioTest):
         # )
         #
         # self.cmd("sentinel threat-indicator delete -g {rg} --name {indicator_id} --workspace-name {workspace_name} --yes")
+
+    @ResourceGroupPreparer(name_prefix="cli_test_sentinel_", location="eastus2")
+    def test_sentinel_watchlist_crud(self):
+        self.kwargs.update({
+            "workspace_name": self.create_random_name("workspace-", 16),
+            "watchlist_name": self.create_random_name("watchlist-", 16)
+        })
+
+        self.cmd("monitor log-analytics workspace create -n {workspace_name} -g {rg}")
+        self.cmd("monitor log-analytics solution create -t SecurityInsights -w {workspace_name} -g {rg}")
+
+        self.cmd(
+            "sentinel watchlist create -n {watchlist_name} -w {workspace_name} -g {rg} "
+            "--description 'Watchlist from CSV content' --display-name 'High Value Assets Watchlist' "
+            "--provider Microsoft --items-search-key header1",
+            checks=[
+                self.check("name", "{watchlist_name}"),
+                self.check("type", "Microsoft.SecurityInsights/Watchlists")
+            ]
+        )
+
+        self.cmd(
+            "sentinel watchlist list -w {workspace_name} -g {rg}",
+            checks=[
+                self.check("length(@)", 1),
+                self.check("[0].name", "{watchlist_name}")
+            ]
+        )
+
+        self.cmd("sentinel watchlist update -n {watchlist_name} -w {workspace_name} -g {rg} --display-name 'New name'")
+        self.cmd(
+            "sentinel watchlist show -n {watchlist_name} -w {workspace_name} -g {rg}",
+            checks=[
+                self.check("name", "{watchlist_name}"),
+                self.check("displayName", "New name"),
+                self.check("type", "Microsoft.SecurityInsights/Watchlists")
+            ]
+        )
+
+        self.cmd("sentinel watchlist delete -n {watchlist_name} -w {workspace_name} -g {rg} --yes")
