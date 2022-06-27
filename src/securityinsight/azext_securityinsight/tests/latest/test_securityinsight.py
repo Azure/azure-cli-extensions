@@ -452,55 +452,43 @@ class SentinelClientTest(ScenarioTest):
     def test_sentinel_threat_indicator_crud(self):
         self.kwargs.update({
             "workspace_name": self.create_random_name("workspace-", 16),
-            "indicator_name": self.create_random_name("indicator-", 16)
+            "reference": "contoso@contoso.com"
         })
 
         self.cmd("monitor log-analytics workspace create -n {workspace_name} -g {rg}")
         self.cmd("monitor log-analytics solution create -t SecurityInsights -w {workspace_name} -g {rg}")
 
-        self.cmd(
-            "sentinel threat-indicator create -n {indicator_name} -w {workspace_name} -g {rg} "
-            "--source 'Microsoft Sentinel' --display-name 'new schema' --confidence 78 --created-by-ref contoso@contoso.com "
+        self.kwargs["indicator_name"] = self.cmd(
+            "sentinel threat-indicator create -w {workspace_name} -g {rg} "
+            "--source 'Microsoft Sentinel' --display-name 'new schema' --confidence 78 --created-by-ref {reference} "
             "--modified '' --pattern '[url:value = 'https://www.contoso.com']' --pattern-type url --revoked false "
             "--valid-from 2022-06-15T17:44:00.114052Z --valid-until '' --description 'debugging indicators' "
             "--threat-tags \"['new schema']\" "
             "--threat-types \"[compromised]\" "
             "--external-references \"[]\"",
             checks=[
-                self.check("name", "{indicator_name}"),
+                self.check("createdByRef", "{reference}"),
                 self.check("type", "Microsoft.SecurityInsights/threatIntelligence")
+            ]
+        ).get_output_in_json()["name"]
+
+        self.cmd(
+            "sentinel threat-indicator list -w {workspace_name} -g {rg}",
+            checks=[
+                self.check("length(@)", 1),
+                self.check("[0].createdByRef", "{reference}")
             ]
         )
 
-        # self.kwargs["indicator_id"] = self.cmd(
-        #     "sentinel threat-indicator create -g {rg} --workspace-name {workspace_name} "
-        #     "--source 'Microsoft Sentinel' --threat-tags 'new schema' --threat-types 'compromised' "
-        #     "--display-name 'new schema' --confidence 78 --created-by-ref {reference} --external-references [] "
-        #     "--modified '' --pattern '[url:value = 'https://www.contoso.com']' --pattern-type url --revoked false "
-        #     "--valid-from 2021-09-15T17:44:00.114052Z --valid-until '' --description 'debugging indicators'",
-        #     checks=[
-        #         self.check("createdByRef", "{reference}"),
-        #         self.check("type", "Microsoft.SecurityInsights/threatIntelligence")
-        #     ]
-        # ).get_output_in_json()["name"]
-        #
-        # self.cmd(
-        #     "sentinel threat-indicator list -g {rg} --workspace-name {workspace_name}",
-        #     checks=[
-        #         self.check("length(@)", 1),
-        #         self.check("[0].createdByRef", "{reference}")
-        #     ]
-        # )
-        #
-        # self.cmd(
-        #     "sentinel threat-indicator show --name {indicator_id} -g {rg} --workspace-name {workspace_name}",
-        #     checks=[
-        #         self.check("name", "{indicator_id}"),
-        #         self.check("confidence", 78)
-        #     ]
-        # )
-        #
-        # self.cmd("sentinel threat-indicator delete -g {rg} --name {indicator_id} --workspace-name {workspace_name} --yes")
+        self.cmd(
+            "sentinel threat-indicator show -n {indicator_name} -w {workspace_name} -g {rg}",
+            checks=[
+                self.check("name", "{indicator_name}"),
+                self.check("confidence", "78")
+            ]
+        )
+
+        self.cmd("sentinel threat-indicator delete -n {indicator_name} -w {workspace_name} -g {rg} --yes")
 
     @ResourceGroupPreparer(name_prefix="cli_test_sentinel_", location="eastus2")
     def test_sentinel_watchlist_crud(self):

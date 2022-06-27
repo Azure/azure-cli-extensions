@@ -16,13 +16,13 @@ from azure.cli.core.aaz import *
     is_experimental=True,
 )
 class Create(AAZCommand):
-    """Create a threat Intelligence indicator.
+    """Create a new threat intelligence indicator.
     """
 
     _aaz_info = {
         "version": "2022-06-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.operationalinsights/workspaces/{}/providers/microsoft.securityinsights/threatintelligence/main/indicators/{}", "2022-06-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.operationalinsights/workspaces/{}/providers/microsoft.securityinsights/threatintelligence/main/createindicator", "2022-06-01-preview"],
         ]
     }
 
@@ -42,12 +42,6 @@ class Create(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.name = AAZStrArg(
-            options=["-n", "--name"],
-            help="Threat intelligence indicator name field.",
-            required=True,
-            id_part="child_name_2",
-        )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
@@ -55,8 +49,6 @@ class Create(AAZCommand):
             options=["-w", "--workspace-name"],
             help="The name of the workspace.",
             required=True,
-            is_experimental=True,
-            id_part="name",
         )
 
         # define Arg Group "Properties"
@@ -311,13 +303,13 @@ class Create(AAZCommand):
         return cls._args_schema
 
     def _execute_operations(self):
-        self.ThreatIntelligenceIndicatorCreate(ctx=self.ctx)()
+        self.ThreatIntelligenceIndicatorCreateIndicator(ctx=self.ctx)()
 
     def _output(self, *args, **kwargs):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class ThreatIntelligenceIndicatorCreate(AAZHttpOperation):
+    class ThreatIntelligenceIndicatorCreateIndicator(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -331,13 +323,13 @@ class Create(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.OperationalInsights/workspaces/{workspaceName}/providers/Microsoft.SecurityInsights/threatIntelligence/main/indicators/{name}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.OperationalInsights/workspaces/{workspaceName}/providers/Microsoft.SecurityInsights/threatIntelligence/main/createIndicator",
                 **self.url_parameters
             )
 
         @property
         def method(self):
-            return "PUT"
+            return "POST"
 
         @property
         def error_format(self):
@@ -346,10 +338,6 @@ class Create(AAZCommand):
         @property
         def url_parameters(self):
             parameters = {
-                **self.serialize_url_param(
-                    "name", self.ctx.args.name,
-                    required=True,
-                ),
                 **self.serialize_url_param(
                     "resourceGroupName", self.ctx.args.resource_group,
                     required=True,

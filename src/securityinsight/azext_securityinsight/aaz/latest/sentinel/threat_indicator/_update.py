@@ -26,8 +26,6 @@ class Update(AAZCommand):
         ]
     }
 
-    AZ_SUPPORT_GENERIC_UPDATE = True
-
     def _handler(self, command_args):
         super()._handler(command_args)
         self._execute_operations()
@@ -57,7 +55,6 @@ class Update(AAZCommand):
             options=["-w", "--workspace-name"],
             help="The name of the workspace.",
             required=True,
-            is_experimental=True,
             id_part="name",
         )
 
@@ -68,163 +65,136 @@ class Update(AAZCommand):
             options=["--confidence"],
             arg_group="Properties",
             help="Confidence of threat intelligence entity",
-            nullable=True,
         )
         _args_schema.created = AAZStrArg(
             options=["--created"],
             arg_group="Properties",
             help="Created by",
-            nullable=True,
         )
         _args_schema.created_by_ref = AAZStrArg(
             options=["--created-by-ref"],
             arg_group="Properties",
             help="Created by reference of threat intelligence entity",
-            nullable=True,
         )
         _args_schema.defanged = AAZBoolArg(
             options=["--defanged"],
             arg_group="Properties",
             help="Is threat intelligence entity defanged",
-            nullable=True,
         )
         _args_schema.description = AAZStrArg(
             options=["--description"],
             arg_group="Properties",
             help="Description of a threat intelligence entity",
-            nullable=True,
         )
         _args_schema.display_name = AAZStrArg(
             options=["--display-name"],
             arg_group="Properties",
             help="Display name of a threat intelligence entity",
-            nullable=True,
         )
         _args_schema.external_id = AAZStrArg(
             options=["--external-id"],
             arg_group="Properties",
             help="External ID of threat intelligence entity",
-            nullable=True,
         )
         _args_schema.external_updated_time = AAZStrArg(
             options=["--external-updated-time"],
             arg_group="Properties",
             help="External last updated time in UTC",
-            nullable=True,
         )
         _args_schema.external_references = AAZListArg(
             options=["--external-references"],
             arg_group="Properties",
             help="External References",
-            nullable=True,
         )
         _args_schema.granular_markings = AAZListArg(
             options=["--granular-markings"],
             arg_group="Properties",
             help="Granular Markings",
-            nullable=True,
         )
         _args_schema.indicator_types = AAZListArg(
             options=["--indicator-types"],
             arg_group="Properties",
             help="Indicator types of threat intelligence entities",
-            nullable=True,
         )
         _args_schema.kill_chain_phases = AAZListArg(
             options=["--kill-chain-phases"],
             arg_group="Properties",
             help="Kill chain phases",
-            nullable=True,
         )
         _args_schema.labels = AAZListArg(
             options=["--labels"],
             arg_group="Properties",
             help="Labels  of threat intelligence entity",
-            nullable=True,
         )
         _args_schema.language = AAZStrArg(
             options=["--language"],
             arg_group="Properties",
             help="Language of threat intelligence entity",
-            nullable=True,
         )
         _args_schema.last_updated_time = AAZStrArg(
             options=["--last-updated-time"],
             arg_group="Properties",
             help="Last updated time in UTC",
-            nullable=True,
         )
         _args_schema.modified = AAZStrArg(
             options=["--modified"],
             arg_group="Properties",
             help="Modified by",
-            nullable=True,
         )
         _args_schema.object_marking_refs = AAZListArg(
             options=["--object-marking-refs"],
             arg_group="Properties",
             help="Threat intelligence entity object marking references",
-            nullable=True,
         )
         _args_schema.parsed_pattern = AAZListArg(
             options=["--parsed-pattern"],
             arg_group="Properties",
             help="Parsed patterns",
-            nullable=True,
         )
         _args_schema.pattern = AAZStrArg(
             options=["--pattern"],
             arg_group="Properties",
             help="Pattern of a threat intelligence entity",
-            nullable=True,
         )
         _args_schema.pattern_type = AAZStrArg(
             options=["--pattern-type"],
             arg_group="Properties",
             help="Pattern type of a threat intelligence entity",
-            nullable=True,
         )
         _args_schema.pattern_version = AAZStrArg(
             options=["--pattern-version"],
             arg_group="Properties",
             help="Pattern version of a threat intelligence entity",
-            nullable=True,
         )
         _args_schema.revoked = AAZBoolArg(
             options=["--revoked"],
             arg_group="Properties",
             help="Is threat intelligence entity revoked",
-            nullable=True,
         )
         _args_schema.source = AAZStrArg(
             options=["--source"],
             arg_group="Properties",
             help="Source of a threat intelligence entity",
-            nullable=True,
         )
         _args_schema.threat_tags = AAZListArg(
             options=["--threat-tags"],
             arg_group="Properties",
             help="List of tags",
-            nullable=True,
         )
         _args_schema.threat_types = AAZListArg(
             options=["--threat-types"],
             arg_group="Properties",
             help="Threat types",
-            nullable=True,
         )
         _args_schema.valid_from = AAZStrArg(
             options=["--valid-from"],
             arg_group="Properties",
             help="Valid from",
-            nullable=True,
         )
         _args_schema.valid_until = AAZStrArg(
             options=["--valid-until"],
             arg_group="Properties",
             help="Valid until",
-            nullable=True,
         )
 
         external_references = cls._args_schema.external_references
@@ -234,27 +204,22 @@ class Update(AAZCommand):
         _element.description = AAZStrArg(
             options=["description"],
             help="External reference description",
-            nullable=True,
         )
         _element.external_id = AAZStrArg(
             options=["external-id"],
             help="External reference ID",
-            nullable=True,
         )
         _element.hashes = AAZDictArg(
             options=["hashes"],
             help="External reference hashes",
-            nullable=True,
         )
         _element.source_name = AAZStrArg(
             options=["source-name"],
             help="External reference source name",
-            nullable=True,
         )
         _element.url = AAZStrArg(
             options=["url"],
             help="External reference URL",
-            nullable=True,
         )
 
         hashes = cls._args_schema.external_references.Element.hashes
@@ -267,17 +232,14 @@ class Update(AAZCommand):
         _element.language = AAZStrArg(
             options=["language"],
             help="Language granular marking model",
-            nullable=True,
         )
         _element.marking_ref = AAZIntArg(
             options=["marking-ref"],
             help="marking reference granular marking model",
-            nullable=True,
         )
         _element.selectors = AAZListArg(
             options=["selectors"],
             help="granular marking model selectors",
-            nullable=True,
         )
 
         selectors = cls._args_schema.granular_markings.Element.selectors
@@ -293,12 +255,10 @@ class Update(AAZCommand):
         _element.kill_chain_name = AAZStrArg(
             options=["kill-chain-name"],
             help="Kill chainName name",
-            nullable=True,
         )
         _element.phase_name = AAZStrArg(
             options=["phase-name"],
             help="Phase name",
-            nullable=True,
         )
 
         labels = cls._args_schema.labels
@@ -314,12 +274,10 @@ class Update(AAZCommand):
         _element.pattern_type_key = AAZStrArg(
             options=["pattern-type-key"],
             help="Pattern type key",
-            nullable=True,
         )
         _element.pattern_type_values = AAZListArg(
             options=["pattern-type-values"],
             help="Pattern type keys",
-            nullable=True,
         )
 
         pattern_type_values = cls._args_schema.parsed_pattern.Element.pattern_type_values
@@ -329,12 +287,10 @@ class Update(AAZCommand):
         _element.value = AAZStrArg(
             options=["value"],
             help="Value of parsed pattern",
-            nullable=True,
         )
         _element.value_type = AAZStrArg(
             options=["value-type"],
             help="Type of the value",
-            nullable=True,
         )
 
         threat_tags = cls._args_schema.threat_tags
@@ -350,106 +306,15 @@ class Update(AAZCommand):
             options=["--etag"],
             arg_group="ThreatIntelligenceProperties",
             help="Etag of the azure resource",
-            nullable=True,
         )
         return cls._args_schema
 
     def _execute_operations(self):
-        self.ThreatIntelligenceIndicatorGet(ctx=self.ctx)()
-        self.InstanceUpdateByJson(ctx=self.ctx)()
-        self.InstanceUpdateByGeneric(ctx=self.ctx)()
         self.ThreatIntelligenceIndicatorCreate(ctx=self.ctx)()
 
     def _output(self, *args, **kwargs):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
-
-    class ThreatIntelligenceIndicatorGet(AAZHttpOperation):
-        CLIENT_TYPE = "MgmtClient"
-
-        def __call__(self, *args, **kwargs):
-            request = self.make_request()
-            session = self.client.send_request(request=request, stream=False, **kwargs)
-            if session.http_response.status_code in [200]:
-                return self.on_200(session)
-
-            return self.on_error(session.http_response)
-
-        @property
-        def url(self):
-            return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.OperationalInsights/workspaces/{workspaceName}/providers/Microsoft.SecurityInsights/threatIntelligence/main/indicators/{name}",
-                **self.url_parameters
-            )
-
-        @property
-        def method(self):
-            return "GET"
-
-        @property
-        def error_format(self):
-            return "ODataV4Format"
-
-        @property
-        def url_parameters(self):
-            parameters = {
-                **self.serialize_url_param(
-                    "name", self.ctx.args.name,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "resourceGroupName", self.ctx.args.resource_group,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "subscriptionId", self.ctx.subscription_id,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "workspaceName", self.ctx.args.workspace_name,
-                    required=True,
-                ),
-            }
-            return parameters
-
-        @property
-        def query_parameters(self):
-            parameters = {
-                **self.serialize_query_param(
-                    "api-version", "2022-06-01-preview",
-                    required=True,
-                ),
-            }
-            return parameters
-
-        @property
-        def header_parameters(self):
-            parameters = {
-                **self.serialize_header_param(
-                    "Accept", "application/json",
-                ),
-            }
-            return parameters
-
-        def on_200(self, session):
-            data = self.deserialize_http_content(session)
-            self.ctx.set_var(
-                "instance",
-                data,
-                schema_builder=self._build_schema_on_200
-            )
-
-        _schema_on_200 = None
-
-        @classmethod
-        def _build_schema_on_200(cls):
-            if cls._schema_on_200 is not None:
-                return cls._schema_on_200
-
-            cls._schema_on_200 = AAZObjectType()
-            _build_schema_threat_intelligence_information_read(cls._schema_on_200)
-
-            return cls._schema_on_200
 
     class ThreatIntelligenceIndicatorCreate(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
@@ -525,41 +390,8 @@ class Update(AAZCommand):
         def content(self):
             _content_value, _builder = self.new_content_builder(
                 self.ctx.args,
-                value=self.ctx.vars.instance,
-            )
-
-            return self.serialize_content(_content_value)
-
-        def on_200_201(self, session):
-            data = self.deserialize_http_content(session)
-            self.ctx.set_var(
-                "instance",
-                data,
-                schema_builder=self._build_schema_on_200_201
-            )
-
-        _schema_on_200_201 = None
-
-        @classmethod
-        def _build_schema_on_200_201(cls):
-            if cls._schema_on_200_201 is not None:
-                return cls._schema_on_200_201
-
-            cls._schema_on_200_201 = AAZObjectType()
-            _build_schema_threat_intelligence_information_read(cls._schema_on_200_201)
-
-            return cls._schema_on_200_201
-
-    class InstanceUpdateByJson(AAZJsonInstanceUpdateOperation):
-
-        def __call__(self, *args, **kwargs):
-            self._update_instance(self.ctx.vars.instance)
-
-        def _update_instance(self, instance):
-            _instance_value, _builder = self.new_content_builder(
-                self.ctx.args,
-                value=instance,
-                typ=AAZObjectType
+                typ=AAZObjectType,
+                typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
             _builder.set_prop("etag", AAZStrType, ".etag")
             _builder.set_const("kind", "indicator", AAZStrType, ".", typ_kwargs={"flags": {"required": True}})
@@ -672,252 +504,223 @@ class Update(AAZCommand):
             if threat_types is not None:
                 threat_types.set_elements(AAZStrType, ".")
 
-            return _instance_value
+            return self.serialize_content(_content_value)
 
-    class InstanceUpdateByGeneric(AAZGenericInstanceUpdateOperation):
-
-        def __call__(self, *args, **kwargs):
-            self._update_instance_by_generic(
-                self.ctx.vars.instance,
-                self.ctx.generic_update_args
+        def on_200_201(self, session):
+            data = self.deserialize_http_content(session)
+            self.ctx.set_var(
+                "instance",
+                data,
+                schema_builder=self._build_schema_on_200_201
             )
 
+        _schema_on_200_201 = None
 
-_schema_threat_intelligence_information_read = None
+        @classmethod
+        def _build_schema_on_200_201(cls):
+            if cls._schema_on_200_201 is not None:
+                return cls._schema_on_200_201
 
+            cls._schema_on_200_201 = AAZObjectType()
 
-def _build_schema_threat_intelligence_information_read(_schema):
-    global _schema_threat_intelligence_information_read
-    if _schema_threat_intelligence_information_read is not None:
-        _schema.etag = _schema_threat_intelligence_information_read.etag
-        _schema.id = _schema_threat_intelligence_information_read.id
-        _schema.kind = _schema_threat_intelligence_information_read.kind
-        _schema.name = _schema_threat_intelligence_information_read.name
-        _schema.system_data = _schema_threat_intelligence_information_read.system_data
-        _schema.type = _schema_threat_intelligence_information_read.type
-        _schema.discriminate_by(
-            "kind",
-            "indicator",
-            _schema_threat_intelligence_information_read.discriminate_by(
-                "kind",
-                "indicator",
+            _schema_on_200_201 = cls._schema_on_200_201
+            _schema_on_200_201.etag = AAZStrType()
+            _schema_on_200_201.id = AAZStrType(
+                flags={"read_only": True},
             )
-        )
-        return
-
-    _schema_threat_intelligence_information_read = AAZObjectType()
-
-    threat_intelligence_information_read = _schema_threat_intelligence_information_read
-    threat_intelligence_information_read.etag = AAZStrType()
-    threat_intelligence_information_read.id = AAZStrType(
-        flags={"read_only": True},
-    )
-    threat_intelligence_information_read.kind = AAZStrType(
-        flags={"required": True},
-    )
-    threat_intelligence_information_read.name = AAZStrType(
-        flags={"read_only": True},
-    )
-    threat_intelligence_information_read.system_data = AAZObjectType(
-        serialized_name="systemData",
-        flags={"read_only": True},
-    )
-    threat_intelligence_information_read.type = AAZStrType(
-        flags={"read_only": True},
-    )
-
-    system_data = _schema_threat_intelligence_information_read.system_data
-    system_data.created_at = AAZStrType(
-        serialized_name="createdAt",
-        flags={"read_only": True},
-    )
-    system_data.created_by = AAZStrType(
-        serialized_name="createdBy",
-        flags={"read_only": True},
-    )
-    system_data.created_by_type = AAZStrType(
-        serialized_name="createdByType",
-        flags={"read_only": True},
-    )
-    system_data.last_modified_at = AAZStrType(
-        serialized_name="lastModifiedAt",
-        flags={"read_only": True},
-    )
-    system_data.last_modified_by = AAZStrType(
-        serialized_name="lastModifiedBy",
-        flags={"read_only": True},
-    )
-    system_data.last_modified_by_type = AAZStrType(
-        serialized_name="lastModifiedByType",
-        flags={"read_only": True},
-    )
-
-    disc_indicator = _schema_threat_intelligence_information_read.discriminate_by("kind", "indicator")
-    disc_indicator.properties = AAZObjectType(
-        flags={"client_flatten": True},
-    )
-
-    properties = _schema_threat_intelligence_information_read.discriminate_by("kind", "indicator").properties
-    properties.additional_data = AAZDictType(
-        serialized_name="additionalData",
-        flags={"read_only": True},
-    )
-    properties.confidence = AAZIntType()
-    properties.created = AAZStrType()
-    properties.created_by_ref = AAZStrType(
-        serialized_name="createdByRef",
-    )
-    properties.defanged = AAZBoolType()
-    properties.description = AAZStrType()
-    properties.display_name = AAZStrType(
-        serialized_name="displayName",
-    )
-    properties.external_id = AAZStrType(
-        serialized_name="externalId",
-    )
-    properties.external_last_updated_time_utc = AAZStrType(
-        serialized_name="externalLastUpdatedTimeUtc",
-    )
-    properties.external_references = AAZListType(
-        serialized_name="externalReferences",
-    )
-    properties.friendly_name = AAZStrType(
-        serialized_name="friendlyName",
-        flags={"read_only": True},
-    )
-    properties.granular_markings = AAZListType(
-        serialized_name="granularMarkings",
-    )
-    properties.indicator_types = AAZListType(
-        serialized_name="indicatorTypes",
-    )
-    properties.kill_chain_phases = AAZListType(
-        serialized_name="killChainPhases",
-    )
-    properties.labels = AAZListType()
-    properties.language = AAZStrType()
-    properties.last_updated_time_utc = AAZStrType(
-        serialized_name="lastUpdatedTimeUtc",
-    )
-    properties.modified = AAZStrType()
-    properties.object_marking_refs = AAZListType(
-        serialized_name="objectMarkingRefs",
-    )
-    properties.parsed_pattern = AAZListType(
-        serialized_name="parsedPattern",
-    )
-    properties.pattern = AAZStrType()
-    properties.pattern_type = AAZStrType(
-        serialized_name="patternType",
-    )
-    properties.pattern_version = AAZStrType(
-        serialized_name="patternVersion",
-    )
-    properties.revoked = AAZBoolType()
-    properties.source = AAZStrType()
-    properties.threat_intelligence_tags = AAZListType(
-        serialized_name="threatIntelligenceTags",
-    )
-    properties.threat_types = AAZListType(
-        serialized_name="threatTypes",
-    )
-    properties.valid_from = AAZStrType(
-        serialized_name="validFrom",
-    )
-    properties.valid_until = AAZStrType(
-        serialized_name="validUntil",
-    )
-
-    external_references = _schema_threat_intelligence_information_read.discriminate_by("kind", "indicator").properties.external_references
-    external_references.Element = AAZObjectType()
-
-    _element = _schema_threat_intelligence_information_read.discriminate_by("kind", "indicator").properties.external_references.Element
-    _element.description = AAZStrType()
-    _element.external_id = AAZStrType(
-        serialized_name="externalId",
-    )
-    _element.hashes = AAZDictType()
-    _element.source_name = AAZStrType(
-        serialized_name="sourceName",
-    )
-    _element.url = AAZStrType()
-
-    hashes = _schema_threat_intelligence_information_read.discriminate_by("kind", "indicator").properties.external_references.Element.hashes
-    hashes.Element = AAZStrType()
-
-    granular_markings = _schema_threat_intelligence_information_read.discriminate_by("kind", "indicator").properties.granular_markings
-    granular_markings.Element = AAZObjectType()
-
-    _element = _schema_threat_intelligence_information_read.discriminate_by("kind", "indicator").properties.granular_markings.Element
-    _element.language = AAZStrType()
-    _element.marking_ref = AAZIntType(
-        serialized_name="markingRef",
-    )
-    _element.selectors = AAZListType()
-
-    selectors = _schema_threat_intelligence_information_read.discriminate_by("kind", "indicator").properties.granular_markings.Element.selectors
-    selectors.Element = AAZStrType()
-
-    indicator_types = _schema_threat_intelligence_information_read.discriminate_by("kind", "indicator").properties.indicator_types
-    indicator_types.Element = AAZStrType()
-
-    kill_chain_phases = _schema_threat_intelligence_information_read.discriminate_by("kind", "indicator").properties.kill_chain_phases
-    kill_chain_phases.Element = AAZObjectType()
-
-    _element = _schema_threat_intelligence_information_read.discriminate_by("kind", "indicator").properties.kill_chain_phases.Element
-    _element.kill_chain_name = AAZStrType(
-        serialized_name="killChainName",
-    )
-    _element.phase_name = AAZStrType(
-        serialized_name="phaseName",
-    )
-
-    labels = _schema_threat_intelligence_information_read.discriminate_by("kind", "indicator").properties.labels
-    labels.Element = AAZStrType()
-
-    object_marking_refs = _schema_threat_intelligence_information_read.discriminate_by("kind", "indicator").properties.object_marking_refs
-    object_marking_refs.Element = AAZStrType()
-
-    parsed_pattern = _schema_threat_intelligence_information_read.discriminate_by("kind", "indicator").properties.parsed_pattern
-    parsed_pattern.Element = AAZObjectType()
-
-    _element = _schema_threat_intelligence_information_read.discriminate_by("kind", "indicator").properties.parsed_pattern.Element
-    _element.pattern_type_key = AAZStrType(
-        serialized_name="patternTypeKey",
-    )
-    _element.pattern_type_values = AAZListType(
-        serialized_name="patternTypeValues",
-    )
-
-    pattern_type_values = _schema_threat_intelligence_information_read.discriminate_by("kind", "indicator").properties.parsed_pattern.Element.pattern_type_values
-    pattern_type_values.Element = AAZObjectType()
-
-    _element = _schema_threat_intelligence_information_read.discriminate_by("kind", "indicator").properties.parsed_pattern.Element.pattern_type_values.Element
-    _element.value = AAZStrType()
-    _element.value_type = AAZStrType(
-        serialized_name="valueType",
-    )
-
-    threat_intelligence_tags = _schema_threat_intelligence_information_read.discriminate_by("kind", "indicator").properties.threat_intelligence_tags
-    threat_intelligence_tags.Element = AAZStrType()
-
-    threat_types = _schema_threat_intelligence_information_read.discriminate_by("kind", "indicator").properties.threat_types
-    threat_types.Element = AAZStrType()
-
-    _schema.etag = _schema_threat_intelligence_information_read.etag
-    _schema.id = _schema_threat_intelligence_information_read.id
-    _schema.kind = _schema_threat_intelligence_information_read.kind
-    _schema.name = _schema_threat_intelligence_information_read.name
-    _schema.system_data = _schema_threat_intelligence_information_read.system_data
-    _schema.type = _schema_threat_intelligence_information_read.type
-    _schema.discriminate_by(
-            "kind",
-            "indicator",
-            _schema_threat_intelligence_information_read.discriminate_by(
-                "kind",
-                "indicator",
+            _schema_on_200_201.kind = AAZStrType(
+                flags={"required": True},
             )
-        )
+            _schema_on_200_201.name = AAZStrType(
+                flags={"read_only": True},
+            )
+            _schema_on_200_201.system_data = AAZObjectType(
+                serialized_name="systemData",
+                flags={"read_only": True},
+            )
+            _schema_on_200_201.type = AAZStrType(
+                flags={"read_only": True},
+            )
+
+            system_data = cls._schema_on_200_201.system_data
+            system_data.created_at = AAZStrType(
+                serialized_name="createdAt",
+                flags={"read_only": True},
+            )
+            system_data.created_by = AAZStrType(
+                serialized_name="createdBy",
+                flags={"read_only": True},
+            )
+            system_data.created_by_type = AAZStrType(
+                serialized_name="createdByType",
+                flags={"read_only": True},
+            )
+            system_data.last_modified_at = AAZStrType(
+                serialized_name="lastModifiedAt",
+                flags={"read_only": True},
+            )
+            system_data.last_modified_by = AAZStrType(
+                serialized_name="lastModifiedBy",
+                flags={"read_only": True},
+            )
+            system_data.last_modified_by_type = AAZStrType(
+                serialized_name="lastModifiedByType",
+                flags={"read_only": True},
+            )
+
+            disc_indicator = cls._schema_on_200_201.discriminate_by("kind", "indicator")
+            disc_indicator.properties = AAZObjectType(
+                flags={"client_flatten": True},
+            )
+
+            properties = cls._schema_on_200_201.discriminate_by("kind", "indicator").properties
+            properties.additional_data = AAZDictType(
+                serialized_name="additionalData",
+                flags={"read_only": True},
+            )
+            properties.confidence = AAZIntType()
+            properties.created = AAZStrType()
+            properties.created_by_ref = AAZStrType(
+                serialized_name="createdByRef",
+            )
+            properties.defanged = AAZBoolType()
+            properties.description = AAZStrType()
+            properties.display_name = AAZStrType(
+                serialized_name="displayName",
+            )
+            properties.external_id = AAZStrType(
+                serialized_name="externalId",
+            )
+            properties.external_last_updated_time_utc = AAZStrType(
+                serialized_name="externalLastUpdatedTimeUtc",
+            )
+            properties.external_references = AAZListType(
+                serialized_name="externalReferences",
+            )
+            properties.friendly_name = AAZStrType(
+                serialized_name="friendlyName",
+                flags={"read_only": True},
+            )
+            properties.granular_markings = AAZListType(
+                serialized_name="granularMarkings",
+            )
+            properties.indicator_types = AAZListType(
+                serialized_name="indicatorTypes",
+            )
+            properties.kill_chain_phases = AAZListType(
+                serialized_name="killChainPhases",
+            )
+            properties.labels = AAZListType()
+            properties.language = AAZStrType()
+            properties.last_updated_time_utc = AAZStrType(
+                serialized_name="lastUpdatedTimeUtc",
+            )
+            properties.modified = AAZStrType()
+            properties.object_marking_refs = AAZListType(
+                serialized_name="objectMarkingRefs",
+            )
+            properties.parsed_pattern = AAZListType(
+                serialized_name="parsedPattern",
+            )
+            properties.pattern = AAZStrType()
+            properties.pattern_type = AAZStrType(
+                serialized_name="patternType",
+            )
+            properties.pattern_version = AAZStrType(
+                serialized_name="patternVersion",
+            )
+            properties.revoked = AAZBoolType()
+            properties.source = AAZStrType()
+            properties.threat_intelligence_tags = AAZListType(
+                serialized_name="threatIntelligenceTags",
+            )
+            properties.threat_types = AAZListType(
+                serialized_name="threatTypes",
+            )
+            properties.valid_from = AAZStrType(
+                serialized_name="validFrom",
+            )
+            properties.valid_until = AAZStrType(
+                serialized_name="validUntil",
+            )
+
+            external_references = cls._schema_on_200_201.discriminate_by("kind", "indicator").properties.external_references
+            external_references.Element = AAZObjectType()
+
+            _element = cls._schema_on_200_201.discriminate_by("kind", "indicator").properties.external_references.Element
+            _element.description = AAZStrType()
+            _element.external_id = AAZStrType(
+                serialized_name="externalId",
+            )
+            _element.hashes = AAZDictType()
+            _element.source_name = AAZStrType(
+                serialized_name="sourceName",
+            )
+            _element.url = AAZStrType()
+
+            hashes = cls._schema_on_200_201.discriminate_by("kind", "indicator").properties.external_references.Element.hashes
+            hashes.Element = AAZStrType()
+
+            granular_markings = cls._schema_on_200_201.discriminate_by("kind", "indicator").properties.granular_markings
+            granular_markings.Element = AAZObjectType()
+
+            _element = cls._schema_on_200_201.discriminate_by("kind", "indicator").properties.granular_markings.Element
+            _element.language = AAZStrType()
+            _element.marking_ref = AAZIntType(
+                serialized_name="markingRef",
+            )
+            _element.selectors = AAZListType()
+
+            selectors = cls._schema_on_200_201.discriminate_by("kind", "indicator").properties.granular_markings.Element.selectors
+            selectors.Element = AAZStrType()
+
+            indicator_types = cls._schema_on_200_201.discriminate_by("kind", "indicator").properties.indicator_types
+            indicator_types.Element = AAZStrType()
+
+            kill_chain_phases = cls._schema_on_200_201.discriminate_by("kind", "indicator").properties.kill_chain_phases
+            kill_chain_phases.Element = AAZObjectType()
+
+            _element = cls._schema_on_200_201.discriminate_by("kind", "indicator").properties.kill_chain_phases.Element
+            _element.kill_chain_name = AAZStrType(
+                serialized_name="killChainName",
+            )
+            _element.phase_name = AAZStrType(
+                serialized_name="phaseName",
+            )
+
+            labels = cls._schema_on_200_201.discriminate_by("kind", "indicator").properties.labels
+            labels.Element = AAZStrType()
+
+            object_marking_refs = cls._schema_on_200_201.discriminate_by("kind", "indicator").properties.object_marking_refs
+            object_marking_refs.Element = AAZStrType()
+
+            parsed_pattern = cls._schema_on_200_201.discriminate_by("kind", "indicator").properties.parsed_pattern
+            parsed_pattern.Element = AAZObjectType()
+
+            _element = cls._schema_on_200_201.discriminate_by("kind", "indicator").properties.parsed_pattern.Element
+            _element.pattern_type_key = AAZStrType(
+                serialized_name="patternTypeKey",
+            )
+            _element.pattern_type_values = AAZListType(
+                serialized_name="patternTypeValues",
+            )
+
+            pattern_type_values = cls._schema_on_200_201.discriminate_by("kind", "indicator").properties.parsed_pattern.Element.pattern_type_values
+            pattern_type_values.Element = AAZObjectType()
+
+            _element = cls._schema_on_200_201.discriminate_by("kind", "indicator").properties.parsed_pattern.Element.pattern_type_values.Element
+            _element.value = AAZStrType()
+            _element.value_type = AAZStrType(
+                serialized_name="valueType",
+            )
+
+            threat_intelligence_tags = cls._schema_on_200_201.discriminate_by("kind", "indicator").properties.threat_intelligence_tags
+            threat_intelligence_tags.Element = AAZStrType()
+
+            threat_types = cls._schema_on_200_201.discriminate_by("kind", "indicator").properties.threat_types
+            threat_types.Element = AAZStrType()
+
+            return cls._schema_on_200_201
 
 
 __all__ = ["Update"]

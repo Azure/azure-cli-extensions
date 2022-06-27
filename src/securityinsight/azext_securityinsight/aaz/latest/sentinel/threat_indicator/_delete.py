@@ -56,7 +56,6 @@ class Delete(AAZCommand):
             options=["-w", "--workspace-name"],
             help="The name of the workspace.",
             required=True,
-            is_experimental=True,
             id_part="name",
         )
         return cls._args_schema
