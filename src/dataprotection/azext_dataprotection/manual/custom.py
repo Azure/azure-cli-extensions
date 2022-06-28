@@ -273,7 +273,7 @@ def dataprotection_backup_instance_update_msi_permissions(cmd, client, resource_
 
     if not is_valid_resource_id(keyvault_id):
         raise CLIError("Please provide a valid keyvault ID")
-    
+
     from azure.cli.core.commands.client_factory import get_mgmt_service_client
 
     from knack.prompting import prompt_y_n
