@@ -647,12 +647,12 @@ helps['cosmosdb mongodb collection merge'] = """
 
 helps['cosmosdb sql container retrieve-partition-throughput'] = """
     type: command
-    short-summary: "Retrieves the partition throughput of a sql container."
+    short-summary: "Retrieve  the partition throughput of a sql container."
     examples:
-      - name: Retrieves container container_name's throughput for specific physical partitions
+      - name: Retrieve container container_name's throughput for specific physical partitions
         text: |-
-               az cosmosdb sql container retrieve-partition-throughput --account-name account_name --database-name db_name --name container_name  --resource-group rg_name --physical-partition-ids "8,9"
-      - name: Retrieves container container_name's throughput for all physical partitions
+               az cosmosdb sql container retrieve-partition-throughput --account-name account_name --database-name db_name --name container_name  --resource-group rg_name --physical-partition-ids 8 9"
+      - name: Retrieve container container_name's throughput for all physical partitions
         text: |-
                az cosmosdb sql container retrieve-partition-throughput --account-name account_name --database-name db_name --name container_name  --resource-group rg_name --all-partitions
 """
@@ -666,17 +666,17 @@ helps['cosmosdb sql container redistribute-partition-throughput'] = """
                az cosmosdb sql container redistribute-partition-throughput --account-name account_name --database-name db_name --name container_name  --resource-group rg_name --evenly-distribute
       - name: Redistributes the partition throughput for a sql container from source partitions to target partitions
         text: |-
-               az cosmosdb sql container redistribute-partition-throughput --account-name account_name --database-name db_name --name container_name  --resource-group rg_name --target-partition-info '[{\"id\":8,\"throughput\":1200},{\"id\":6,\"throughput\":1200}]' --source-partition-info '[{\"id\":9}]'
+               az cosmosdb sql container redistribute-partition-throughput --account-name account_name --database-name db_name --name container_name  --resource-group rg_name --target-partition-info 8=1200 6=1200]' --source-partition-info 9]'
 """
 
 helps['cosmosdb mongodb collection retrieve-partition-throughput'] = """
     type: command
-    short-summary: "Retrieves the partition throughput of a mongodb collection."
+    short-summary: "Retrieve the partition throughput of a mongodb collection."
     examples:
-      - name: Retrieves container container_name's throughput for specific physical partitions
+      - name: Retrieve container container_name's throughput for specific physical partitions
         text: |-
-               az cosmosdb mongodb collection retrieve-partition-throughput --account-name account_name --database-name db_name --name container_name  --resource-group rg_name --physical-partition-ids "8,9"
-      - name: Retrieves container container_name's throughput for all physical partitions
+               az cosmosdb mongodb collection retrieve-partition-throughput --account-name account_name --database-name db_name --name container_name  --resource-group rg_name --physical-partition-ids 8 9
+      - name: Retrieve container container_name's throughput for all physical partitions
         text: |-
                az cosmosdb mongodb collection retrieve-partition-throughput --account-name account_name --database-name db_name --name container_name  --resource-group rg_name --all-partitions
 """
@@ -690,5 +690,5 @@ helps['cosmosdb mongodb collection redistribute-partition-throughput'] = """
                az cosmosdb mongodb collection redistribute-partition-throughput --account-name account_name --database-name db_name --name container_name  --resource-group rg_name --evenly-distribute
       - name: Redistributes the partition throughput for a mongodb collection from source partitions to target partitions
         text: |-
-               az cosmosdb mongodb collection redistribute-partition-throughput --account-name account_name --database-name db_name --name container_name  --resource-group rg_name --target-partition-info '[{\"id\":8,\"throughput\":1200},{\"id\":6,\"throughput\":1200}]' --source-partition-info '[{\"id\":9}]'
+               az cosmosdb mongodb collection redistribute-partition-throughput --account-name account_name --database-name db_name --name container_name  --resource-group rg_name --target-partition-info 8=1200 6=1200' --source-partition-info 9'
 """

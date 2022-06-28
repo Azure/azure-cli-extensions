@@ -5,7 +5,7 @@ Release History
 
 0.18.0
 ++++++
-* Retrieve and redistribute throughput at physical partition level.
+* Add support for retrieving and redistributing throughput at physical partition level.
 
 0.17.0
 ++++++

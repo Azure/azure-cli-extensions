@@ -1211,7 +1211,7 @@ def cli_begin_retrieve_sql_container_partition_throughput(client,
                                                           account_name,
                                                           database_name,
                                                           container_name,
-                                                          physical_partition_ids=None,
+                                                          physical_partition_ids=[],
                                                           all_partitions=False):
 
     try:
@@ -1221,22 +1221,16 @@ def cli_begin_retrieve_sql_container_partition_throughput(client,
         if ex.error.code == "NotFound":
             raise CLIError("(NotFound) Container with name '{}' in database '{} could not be found.".format(container_name, database_name))
 
-    if physical_partition_ids is None and all_partitions is False:
+    if len(physical_partition_ids) is 0 and all_partitions is False:
         raise CLIError(
             'Either of --physical-partition-ids/--all-partitions needs to be specified.')
 
-    if physical_partition_ids is not None and all_partitions:
+    if len(physical_partition_ids) > 0 and all_partitions:
         raise CLIError(
             'Both --physical-partition-ids and --all-partitions cannot be specified together.')
 
     if all_partitions is True:
         physical_partition_ids = [PhysicalPartitionId(id='-1')]
-    else:
-        physical_partition_ids_split = physical_partition_ids.split(',')
-        physical_partition_ids = []
-        for physical_partition_id in physical_partition_ids_split:
-            physical_partition_ids.append(
-                PhysicalPartitionId(id=physical_partition_id))
 
     retrieve_throughput_properties_resource = RetrieveThroughputPropertiesResource(
         physical_partition_ids=physical_partition_ids
@@ -1261,8 +1255,8 @@ def cli_begin_redistribute_sql_container_partition_throughput(client,
                                                               database_name,
                                                               container_name,
                                                               evenly_distribute=False,
-                                                              target_partition_info="",
-                                                              source_partition_info=""):
+                                                              target_partition_info=[],
+                                                              source_partition_info=[]):
 
     try:
         client.get_sql_container(
@@ -1276,40 +1270,11 @@ def cli_begin_redistribute_sql_container_partition_throughput(client,
             throughput_policy=ThroughputPolicyType.EQUAL,
             target_physical_partition_throughput_info=[],
             source_physical_partition_throughput_info=[])
-    else:
-        target_physical_partition_throughput_info = []
-        source_physical_partition_throughput_info = []
-
-        try:
-            target_partition_info = json.loads(
-                target_partition_info)
-            source_partition_info = json.loads(
-                source_partition_info)
-        except json.decoder.JSONDecodeError:
-            raise CLIError('Both source and target partition info needs to be valid json.')
-
-        for item in target_partition_info:
-            if 'id' not in item and 'throughput' not in item:
-                raise CLIError(
-                    'Both "id" and "throughput" needs to be specified for target partition throughput info.')
-            target_physical_partition_throughput_info.append(
-                PhysicalPartitionThroughputInfoResource(id=item['id'], throughput=item['throughput']))
-
-        for item in source_partition_info:
-            if 'id' not in item:
-                raise CLIError(
-                    '"id" needs to be specified for source partition throughput info.')
-            if 'throughput' in item:
-                throughput = item['throughput']
-            else:
-                throughput = 0
-            source_physical_partition_throughput_info.append(
-                PhysicalPartitionThroughputInfoResource(id=item['id'], throughput=throughput))
-
+    else:        
         redistribute_throughput_properties_resource = RedistributeThroughputPropertiesResource(
             throughput_policy=ThroughputPolicyType.CUSTOM,
-            target_physical_partition_throughput_info=target_physical_partition_throughput_info,
-            source_physical_partition_throughput_info=source_physical_partition_throughput_info
+            target_physical_partition_throughput_info=target_partition_info,
+            source_physical_partition_throughput_info=source_partition_info
         )
 
     redistribute_throughput_parameters = RedistributeThroughputParameters(
@@ -1330,7 +1295,7 @@ def cli_begin_retrieve_mongo_container_partition_throughput(client,
                                                             account_name,
                                                             database_name,
                                                             collection_name,
-                                                            physical_partition_ids=None,
+                                                            physical_partition_ids=[],
                                                             all_partitions=False):
 
     try:
@@ -1340,22 +1305,16 @@ def cli_begin_retrieve_mongo_container_partition_throughput(client,
         if ex.error.code == "NotFound":
             raise CLIError("(NotFound) Container with name '{}' in database '{} could not be found.".format(collection_name, database_name))
 
-    if physical_partition_ids is None and all_partitions is False:
+    if len(physical_partition_ids) is 0 and all_partitions is False:
         raise CLIError(
             'Either of --physical-partition-ids/--all-partitions needs to be specified.')
 
-    if physical_partition_ids is not None and all_partitions:
+    if len(physical_partition_ids) > 0 and all_partitions:
         raise CLIError(
             'Both --physical-partition-ids and --all-partitions cannot be specified together.')
 
     if all_partitions is True:
         physical_partition_ids = [PhysicalPartitionId(id='-1')]
-    else:
-        physical_partition_ids_split = physical_partition_ids.split(',')
-        physical_partition_ids = []
-        for physical_partition_id in physical_partition_ids_split:
-            physical_partition_ids.append(
-                PhysicalPartitionId(id=physical_partition_id))
 
     retrieve_throughput_properties_resource = RetrieveThroughputPropertiesResource(
         physical_partition_ids=physical_partition_ids
@@ -1380,8 +1339,8 @@ def cli_begin_redistribute_mongo_container_partition_throughput(client,
                                                                 database_name,
                                                                 collection_name,
                                                                 evenly_distribute=False,
-                                                                target_partition_info="",
-                                                                source_partition_info=""):
+                                                                target_partition_info=[],
+                                                                source_partition_info=[]):
 
     try:
         client.get_mongo_db_collection(
@@ -1396,39 +1355,10 @@ def cli_begin_redistribute_mongo_container_partition_throughput(client,
             target_physical_partition_throughput_info=[],
             source_physical_partition_throughput_info=[])
     else:
-        target_physical_partition_throughput_info = []
-        source_physical_partition_throughput_info = []
-
-        try:
-            target_partition_info = json.loads(
-                target_partition_info)
-            source_partition_info = json.loads(
-                source_partition_info)
-        except json.decoder.JSONDecodeError:
-            raise CLIError('Both source and target partition info needs to be valid json.')
-
-        for item in target_partition_info:
-            if 'id' not in item and 'throughput' not in item:
-                raise CLIError(
-                    'Both "id" and "throughput" needs to be specified for target partition throughput info.')
-            target_physical_partition_throughput_info.append(
-                PhysicalPartitionThroughputInfoResource(id=item['id'], throughput=item['throughput']))
-
-        for item in source_partition_info:
-            if 'id' not in item:
-                raise CLIError(
-                    '"id" needs to be specified for source partition throughput info.')
-            if 'throughput' in item:
-                throughput = item['throughput']
-            else:
-                throughput = 0
-            source_physical_partition_throughput_info.append(
-                PhysicalPartitionThroughputInfoResource(id=item['id'], throughput=throughput))
-
         redistribute_throughput_properties_resource = RedistributeThroughputPropertiesResource(
             throughput_policy=ThroughputPolicyType.CUSTOM,
-            target_physical_partition_throughput_info=target_physical_partition_throughput_info,
-            source_physical_partition_throughput_info=source_physical_partition_throughput_info
+            target_physical_partition_throughput_info=target_partition_info,
+            source_physical_partition_throughput_info=source_partition_info
         )
 
     redistribute_throughput_parameters = RedistributeThroughputParameters(

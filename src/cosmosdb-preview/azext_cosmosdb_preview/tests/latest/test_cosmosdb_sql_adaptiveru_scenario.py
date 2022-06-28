@@ -17,19 +17,19 @@ TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 class Cosmosdb_previewAdaptiveRUScenarioTest(ScenarioTest):
 
-    @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_sql_container_adaptiveru', location='eastus2')
+    @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_sql_container_adaptiveru', location='australiaeast')
     def test_cosmosdb_sql_container_adaptiveru(self, resource_group):
         col = self.create_random_name(prefix='cli', length=15)
         db_name = self.create_random_name(prefix='cli', length=15)
-        # Assumption: There exists a canary-sdk-test rg with the account mergetest. This test only creates the database and collection
+        # Assumption: There exists a cosmosTest rg with the account adrutest2. This test only creates the database and collection
         self.kwargs.update({
-            'rg' : 'canary-sdk-test',
-            'acc': 'mergetest',            
+            'rg' : 'cosmosTest',
+            'acc': 'adrutest2',            
             'db_name': db_name,
             'col': col,
-            'loc': 'eastus2',
-            'tar': '\'[{"id":0,"throughput":1200},{"id":1,"throughput":1200}]\'',
-            'src': '\'[{"id":2,"throughput":0}]\''
+            'loc': 'australiaeast',
+            'tar': '0=1200 1=1200',
+            'src': '2'
         })
 
         # Create database
@@ -46,7 +46,7 @@ class Cosmosdb_previewAdaptiveRUScenarioTest(ScenarioTest):
         print(retrieve_all_throughput)
 
         # retrieve throughput for some partitions
-        retrieve_some_throughput = self.cmd('az cosmosdb sql container retrieve-partition-throughput --resource-group {rg} --account-name {acc} --database-name {db_name} --name {col} --physical-partition-ids "0,1" ').get_output_in_json()
+        retrieve_some_throughput = self.cmd('az cosmosdb sql container retrieve-partition-throughput --resource-group {rg} --account-name {acc} --database-name {db_name} --name {col} --physical-partition-ids 0 1 ').get_output_in_json()
         print(retrieve_some_throughput)
 
         # redistribute throughput
@@ -58,21 +58,21 @@ class Cosmosdb_previewAdaptiveRUScenarioTest(ScenarioTest):
         print(all_equal_throughput)
         
 
-    @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_mongodb_adaptiveru', location='eastus2')
+    @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_mongodb_adaptiveru', location='australiaeast')
     def test_cosmosdb_mongodb_collection_adaptiveru(self, resource_group):
         col = self.create_random_name(prefix='cli', length=15)
         db_name = self.create_random_name(prefix='cli', length=15)
 
         self.kwargs.update({
-            'rg':'canary-sdk-test',
-            'acc': 'mongomergeaccount',            
+            'rg':'cosmosTest',
+            'acc': 'adrutest3',            
             'db_name': db_name,
             'col': col,
-            'loc': 'eastus2',
+            'loc': 'australiaeast',
             'shard_key': "theShardKey",
             'throughput': "18000",
-            'tar': '\'[{"id":0,"throughput":1200},{"id":1,"throughput":1200}]\'',
-            'src': '\'[{"id":2,"throughput":0}]\''
+            'tar': '0=1200 1=1200',
+            'src': '2'
         })
 
         # Create database
@@ -89,7 +89,7 @@ class Cosmosdb_previewAdaptiveRUScenarioTest(ScenarioTest):
         print(retrieve_all_throughput)
 
         # retrieve throughput for some partitions
-        retrieve_some_throughput = self.cmd('az cosmosdb mongodb collection retrieve-partition-throughput --resource-group {rg} --account-name {acc} --database-name {db_name} --name {col} --physical-partition-ids "0,1" ').get_output_in_json()
+        retrieve_some_throughput = self.cmd('az cosmosdb mongodb collection retrieve-partition-throughput --resource-group {rg} --account-name {acc} --database-name {db_name} --name {col} --physical-partition-ids 0 1 ').get_output_in_json()
         print(retrieve_some_throughput)
 
         # redistribute throughput
