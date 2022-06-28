@@ -6,25 +6,15 @@
 from argparse import Namespace
 from kubernetes import client, config, watch, utils
 from binascii import a2b_hex
-import csv
-import errno
 import subprocess
 from logging import exception
 import os
 import json
-import tempfile
-import time
 import datetime
-import base64
 from subprocess import Popen, PIPE, run, STDOUT, call, DEVNULL
 from base64 import b64encode, b64decode
-import stat
-import platform
 from unicodedata import name
 from azure.core.exceptions import ClientAuthenticationError
-import yaml
-import requests
-import urllib.request
 import shutil
 from _thread import interrupt_main
 from psutil import process_iter, NoSuchProcess, AccessDenied, ZombieProcess, net_connections
@@ -50,30 +40,13 @@ import azext_connectedk8s.custom as custom
 from glob import glob
 from .vendored_sdks.models import ConnectedCluster, ConnectedClusterIdentity, ListClusterUserCredentialProperties
 from threading import Timer, Thread
-import sys
-import hashlib
-import re
 from azure.cli.core import get_default_cli
-import urllib.request
 logger = get_logger(__name__)
 # pylint:disable=unused-argument
 # pylint: disable=too-many-locals
 # pylint: disable=too-many-branches
 # pylint: disable=too-many-statements
 # pylint: disable=line-too-long
-
-# def connect(host='http://portal.azure.com'):
-#     try:
-#         urllib.request.urlopen(host)
-#         return True
-#     except:
-#         return False
-
-# def check_internet_connectivity():
-#     if connect():
-#         return True
-#     else:
-#         return False
 
 def create_folder_diagnosticlogs(time_stamp, storage_space_available):
 
@@ -117,15 +90,15 @@ def arc_agents_logger(corev1_api_instance, filepath_with_timestamp, storage_spac
 
                 # Fethcing the current Pod name and creating a folder with that name inside the timestamp folder
                 agent_name = each_agent_pod.metadata.name
-                path = (filepath_with_timestamp + "\Arc_Agents_logs")
+                arc_agent_logs_path = os.path.join(filepath_with_timestamp, "Arc_Agents_logs")
                 try:
-                    os.mkdir(path)
+                    os.mkdir(arc_agent_logs_path)
                 except FileExistsError:
                     pass
 
-                path = (filepath_with_timestamp + "\Arc_Agents_logs\ " + agent_name)
+                agent_name_logs_path = os.path.join(arc_agent_logs_path, agent_name)
                 try:
-                    os.mkdir(path)
+                    os.mkdir(agent_name_logs_path)
                 except FileExistsError:
                     pass
 
@@ -141,8 +114,11 @@ def arc_agents_logger(corev1_api_instance, filepath_with_timestamp, storage_spac
 
                     # Creating a text file with the name of the container and adding that containers logs in it
                     container_log = corev1_api_instance.read_namespaced_pod_log(name=agent_name, container=container_name, namespace="azure-arc")
-                    with open(filepath_with_timestamp + "\Arc_Agents_logs\ " + agent_name + "\ " + container_name + ".txt", 'w+') as container_file:
+
+                    arc_agent_container_logs = os.path.join(agent_name_logs_path, container_name + ".txt")
+                    with open(arc_agent_container_logs, 'w+') as container_file:
                         container_file.write(str(container_log))
+
     except OSError as e:
         storage_space_available = False
         shutil.rmtree(filepath_with_timestamp, ignore_errors=False, onerror=None)
@@ -169,7 +145,8 @@ def arc_agents_event_logger(filepath_with_timestamp, storage_space_available):
             # Converting output obtained in json format and fetching the clusterconnect-agent feature
             my_json = json.loads(text)
 
-            with open(filepath_with_timestamp + "\\Arc_Agent_Events.txt", 'w+') as event_log:
+            event_logs_path=os.path.join(filepath_with_timestamp,"Arc_Agents_Events.txt")
+            with open(event_logs_path, 'w+') as event_log:
 
                 for events in my_json["items"] :
                         event_log.write(str(events) + "\n")
@@ -190,9 +167,9 @@ def deployments_logger(appv1_api_instance, filepath_with_timestamp, storage_spac
         if storage_space_available :
 
             # Creating new Deployment Logs folder in the given timestamp folder
-            path = filepath_with_timestamp + "\Deployment_logs"
+            deployments_path = os.path.join(filepath_with_timestamp, "Deployment_logs")
             try:
-                os.mkdir(path)
+                os.mkdir(deployments_path)
             except FileExistsError:
                 pass
 
@@ -205,8 +182,9 @@ def deployments_logger(appv1_api_instance, filepath_with_timestamp, storage_spac
                 # Fetching the deployment name
                 deployment_name = deployment.metadata.name
 
+                deployment_logs_path = os.path.join(deployments_path, deployment_name + ".txt")
                 # Creating a text file with the name of the deployment and adding deployment status in it
-                with open(filepath_with_timestamp + "\Deployment_logs\ " + deployment_name + ".txt", 'w+') as deployment_file:
+                with open(deployment_logs_path, 'w+') as deployment_file:
                     deployment_file.write(str(deployment.status))
 
     except OSError as e:
@@ -222,16 +200,18 @@ def deployments_logger(appv1_api_instance, filepath_with_timestamp, storage_spac
 def check_agent_state(corev1_api_instance, filepath_with_timestamp, storage_space_available):
 
     try:
-
-        with open(filepath_with_timestamp + "\\Agent_State.txt", 'w+') as agent_state:
+       
+        counter = 0
+        agent_state_path=os.path.join(filepath_with_timestamp, "Agent_State.txt")
+        with open(agent_state_path, 'w+') as agent_state:
             # To retrieve all of the arc agent pods that are presesnt in the Cluster
             arc_agents_pod_list = corev1_api_instance.list_namespaced_pod(namespace="azure-arc")
 
             # Check if any arc agent other than kube aadp proxy is not in Running state
-            counter = 0
             for each_agent_pod in arc_agents_pod_list.items:
 
                 if storage_space_available :
+
 
                     # Storing the state of the arc agent in the user machine
                     agent_state.write(each_agent_pod.metadata.name + " = " + each_agent_pod.status.phase +"\n")
@@ -284,22 +264,26 @@ def check_agent_version(connected_cluster, azure_arc_agent_version):
     return True
 
 
-def executing_diagnoser_job(corev1_api_instance, batchv1_api_instance, namespace):
+def executing_diagnoser_job(corev1_api_instance, batchv1_api_instance, namespace, absolute_path):
 
     # Setting the log output as Empty
     diagnoser_container_log = ""
+    yaml_file_path = os.path.join(absolute_path,"troubleshoot_diagnoser_job.yaml")
+    command = ["kubectl", "delete", "-f", ""]
+    command[3]=str(yaml_file_path)
 
     # To handle the user keyboard Interrupt
     try:
 
-        command = ["kubectl", "delete", "-f", "TroubleshootTemplates\\diagnoser_job.yaml"]
         # Executing the diagnoser_job.yaml
         config.load_kube_config()
         k8s_client = client.ApiClient()
-        yaml_file = "TroubleshootTemplates\\diagnoser_job.yaml"
+
         try:
-            utils.create_from_yaml(k8s_client, yaml_file)
+            utils.create_from_yaml(k8s_client, yaml_file_path)
         except Exception as e:
+            subprocess.run(command, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+            print(e)
             pass
 
         # Watching for diagnosercontianer to reach in completed stage
@@ -318,7 +302,7 @@ def executing_diagnoser_job(corev1_api_instance, batchv1_api_instance, namespace
 
         # If container not created then clearing all the reosurce with proper error message
         if(counter == 0):
-
+            print("Container not created")
             subprocess.run(command, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
         else:
@@ -352,11 +336,12 @@ def executing_diagnoser_job(corev1_api_instance, batchv1_api_instance, namespace
 
     except Exception as e:
         print(e)
+        subprocess.run(command, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
     return diagnoser_container_log
 
 
-def diagnoser_container_check(corev1_api_instance, batchv1_api_instance, filepath_with_timestamp , storage_space_available, namespace):
+def diagnoser_container_check(corev1_api_instance, batchv1_api_instance, filepath_with_timestamp , storage_space_available, namespace, absolute_path):
 
     try:
         # Setting DNS and Outbound Check as working
@@ -364,7 +349,7 @@ def diagnoser_container_check(corev1_api_instance, batchv1_api_instance, filepat
         outbound_connectivity_check = True
 
         # Executing the Diagnoser job and fetching the logs obtained
-        diagnoser_container_log = executing_diagnoser_job(corev1_api_instance, batchv1_api_instance, namespace)
+        diagnoser_container_log = executing_diagnoser_job(corev1_api_instance, batchv1_api_instance, namespace, absolute_path)
 
         if(diagnoser_container_log != ""):
             dns_check, storage_space_available = check_cluster_DNS(diagnoser_container_log, filepath_with_timestamp, storage_space_available)
@@ -390,13 +375,15 @@ def check_cluster_DNS(diagnoser_container_log, filepath_with_timestamp, storage_
         if("NXDOMAIN" in dns_check or "connection timed out" in dns_check):
             print("Error: We found an issue with the DNS resolution on your cluster. For details about debugging DNS issues visit 'https://kubernetes.io/docs/tasks/administer-cluster/dns-debugging-resolution/'.\n")
             if storage_space_available :
-                with open(filepath_with_timestamp + "\DNS_Check.txt", 'w+') as dns:
+                dns_check_path = os.path.join(filepath_with_timestamp, "DNS_Check.txt")
+                with open(dns_check_path, 'w+') as dns:
                     dns.write(dns_check + "\nWe found an issue with the DNS resolution on your cluster.")
             return False, storage_space_available
 
         else:
             if storage_space_available :
-                with open(filepath_with_timestamp + "\DNS_Check.txt", 'w+') as dns:
+                dns_check_path = os.path.join(filepath_with_timestamp, "DNS_Check.txt")
+                with open(dns_check_path, 'w+') as dns:
                     dns.write(dns_check + "\nCluster DNS check passed successfully.")
             return True, storage_space_available
 
@@ -420,14 +407,16 @@ def check_cluster_outbound_connectivity(diagnoser_container_log, filepath_with_t
         # Validating if outbound connectiivty is working or not and displaying proper result
         if(outbound_check != "000"):
             if storage_space_available :
-                with open(filepath_with_timestamp + "\Outbound_Network_Connectivity_Check.txt", 'w+') as dns:
-                    dns.write("Response code " + outbound_check + "\nOutbound network connectivity check passed successfully.")
+                outbound_connectivity_check_path = os.path.join(filepath_with_timestamp, "Outbound_Network_Connectivity_Check.txt")
+                with open(outbound_connectivity_check_path, 'w+') as outbound:
+                    outbound.write("Response code " + outbound_check + "\nOutbound network connectivity check passed successfully.")
             return True, storage_space_available
         else:
             print("Error: We found an issue with outbound network connectivity from the cluster.\nIf your cluster is behind an outbound proxy server, please ensure that you have passed proxy paramaters during the onboarding of your cluster.\nFor more details visit 'https://docs.microsoft.com/en-us/azure/azure-arc/kubernetes/quickstart-connect-cluster?tabs=azure-cli#connect-using-an-outbound-proxy-server'.\nPlease ensure to meet the following network requirements 'https://docs.microsoft.com/en-us/azure/azure-arc/kubernetes/quickstart-connect-cluster?tabs=azure-cli#meet-network-requirements' \n")
             if storage_space_available :
-                with open(filepath_with_timestamp + "\Outbound_Network_Connectivity_Check.txt", 'w+') as dns:
-                    dns.write("Response code " + outbound_check + "\nWe found an issue with Outbound network connectivity from the cluster.")
+                outbound_connectivity_check_path = os.path.join(filepath_with_timestamp, "Outbound_Network_Connectivity_Check.txt")
+                with open(outbound_connectivity_check_path, 'w+') as outbound:
+                    outbound.write("Response code " + outbound_check + "\nWe found an issue with Outbound network connectivity from the cluster.")
             return False, storage_space_available
 
     except OSError as e:

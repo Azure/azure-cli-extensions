@@ -58,5 +58,5 @@ setup(
     classifiers=CLASSIFIERS,
     packages=find_packages(),
     install_requires=DEPENDENCIES,
-    package_data={'azext_connectedk8s': ['azext_metadata.json']},
+    package_data={'azext_connectedk8s': ['azext_metadata.json'], 'azext_connectedk8s': ['troubleshoot_diagnoser_job.yaml']},
 )

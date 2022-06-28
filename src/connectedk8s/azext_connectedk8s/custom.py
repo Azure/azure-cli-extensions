@@ -9,14 +9,12 @@ import os
 import json
 import tempfile
 import time
-import base64
 from subprocess import Popen, PIPE, run, STDOUT, call, DEVNULL
 from base64 import b64encode, b64decode
 import stat
 import platform
 from azure.core.exceptions import ClientAuthenticationError
 import yaml
-import requests
 import urllib.request
 import shutil
 from _thread import interrupt_main
@@ -55,7 +53,6 @@ logger = get_logger(__name__)
 # pylint: disable=too-many-branches
 # pylint: disable=too-many-statements
 # pylint: disable=line-too-long
-
 
 
 def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_proxy="", http_proxy="", no_proxy="", proxy_cert="", location=None,
@@ -2052,7 +2049,10 @@ def get_custom_locations_oid(cmd, cl_oid):
 def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=None, kube_context=None, no_wait=False, tags=None):
 
     try:
-        logger.warning("\nDiagnoser running. This may take a while ...\n")
+
+        # C:\Diagnoser\azure-cli-extensions\src\connectedk8s\azext_connectedk8s\custom.py
+        logger.warning("Diagnoser running. This may take a while ...\n")
+        absolute_path=os.path.abspath(os.path.dirname(__file__))
 
         storage_space_available = True
         # Setting default values for all checks as True
@@ -2112,8 +2112,9 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
         
         try:
 
+            connected_cluster_resource_path=os.path.join(filepath_with_timestamp,"Connected_cluster_resource.txt")
             if storage_space_available :
-                with open(filepath_with_timestamp + "\\Connected_cluster_resource.txt", 'w+') as cc:
+                with open(connected_cluster_resource_path, 'w+') as cc:
                     cc.write(str(connected_cluster))
 
         except Exception as e:
@@ -2219,7 +2220,7 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
             logger.warning("Failed to validate if the active namespace exists on the kubernetes cluster. Exception: {}".format(str(e)))
 
         # Executing the Diagnoser job check in the given namespace
-        diagnostic_checks["diagnoser_check"], storage_space_available = troubleshootutils.diagnoser_container_check(corev1_api_instance, batchv1_api_instance, filepath_with_timestamp, storage_space_available, current_k8s_namespace)
+        diagnostic_checks["diagnoser_check"], storage_space_available = troubleshootutils.diagnoser_container_check(corev1_api_instance, batchv1_api_instance, filepath_with_timestamp, storage_space_available, current_k8s_namespace, absolute_path)
 
         all_checks_passed = True
         for checks in diagnostic_checks:
@@ -2230,14 +2231,13 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
         if storage_space_available :
         # Depending on whether all tests passes we will give the output
             if (all_checks_passed):
-                logger.warning("Diagnoser could not find any issues with the cluster. \nFor more results from the diagnoser refer to the logs collected at \"C:\\Users\\t-svagadia\\DiagnosticLogs\". These logs can be attached while filing a support ticket for further assistance.\n")
+                logger.warning("Diagnoser could not find any issues with the cluster. \nFor more results from the diagnoser refer to the logs collected at " + filepath_with_timestamp +" .\nThese logs can be attached while filing a support ticket for further assistance.\n")
             else:
-                logger.warning("For more results from the diagnoser refer to the logs collected at \"C:\\Users\\t-svagadia\\DiagnosticLogs\". \nThese logs can be attached while filing a support ticket for further assistance.\n")
+                logger.warning("For more results from the diagnoser refer to the logs collected at " + filepath_with_timestamp +" .\nThese logs can be attached while filing a support ticket for further assistance.\n")
         else:
             if (all_checks_passed):
                 logger.warning("Diagnoser could not find any issues with the cluster.\n")
-            logger.warning("Diagnoser was not able to store logs. Check if sufficient storage space is available.\nTo store diagnoser logs clean up some space and execute the troubleshoot command again.")
-            
+            logger.warning("Diagnoser was not able to store logs in your local machine. Please check if sufficient storage space is available.\nTo store diagnoser logs clean up some space and execute the troubleshoot command again.")         
 
     except KeyboardInterrupt:
         raise ManualInterrupt('Process terminated externally.')
