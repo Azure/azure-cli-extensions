@@ -74,7 +74,7 @@ def create_folder_diagnosticlogs(time_stamp, storage_space_available):
         shutil.rmtree(filepath_with_timestamp, ignore_errors=False, onerror=None)
 
     except Exception as e:
-        print(e)
+        logger.warning("An expection has occured while creating the diagnostic logs folder in your local machine. Exception: {}".format(str(e)) + "\n")
 
     return filepath_with_timestamp, storage_space_available
 
@@ -124,7 +124,7 @@ def arc_agents_logger(corev1_api_instance, filepath_with_timestamp, storage_spac
         shutil.rmtree(filepath_with_timestamp, ignore_errors=False, onerror=None)
 
     except Exception as e:
-        print(e)
+        logger.warning("An expection has occured while trying to fetch the azure arc agents logs from the cluster. Exception: {}".format(str(e)) + "\n")
     
     return storage_space_available
 
@@ -139,16 +139,22 @@ def arc_agents_event_logger(filepath_with_timestamp, storage_space_available):
             command = ["kubectl", "get", "events", "-n", "azure-arc", "--output", "json"]
 
             # Using subprocess to execute the helm get values command and fetching the output
-            p = subprocess.Popen(command, stdout=subprocess.PIPE)
-            text = p.stdout.read()
-            
+            resposne_kubectl_get_events = Popen(command, stdout=PIPE, stderr=PIPE)
+            output_kubectl_get_events, error_kubectl_get_events = resposne_kubectl_get_events.communicate()
+
+            if resposne_kubectl_get_events.returncode != 0:
+                if ('forbidden' in error_kubectl_get_events.decode("ascii") or 'timed out waiting for the condition' in error_kubectl_get_events.decode("ascii")):
+                    telemetry.set_user_fault()
+                telemetry.set_exception(exception=error_kubectl_get_events.decode("ascii"), fault_type=consts.Get_Helm_Values_Failed,
+                                summary='Error while doing kubectl get events -n azure-arc')
+
             # Converting output obtained in json format and fetching the clusterconnect-agent feature
-            my_json = json.loads(text)
+            events_json = json.loads(output_kubectl_get_events)
 
             event_logs_path=os.path.join(filepath_with_timestamp,"Arc_Agents_Events.txt")
             with open(event_logs_path, 'w+') as event_log:
 
-                for events in my_json["items"] :
+                for events in events_json["items"] :
                         event_log.write(str(events) + "\n")
 
     except OSError as e:
@@ -156,8 +162,7 @@ def arc_agents_event_logger(filepath_with_timestamp, storage_space_available):
         shutil.rmtree(filepath_with_timestamp, ignore_errors=False, onerror=None)
             
     except Exception as e:
-        print(e)
-    
+        logger.warning("An expection has occured while trying to fetch the events occured in azure-arc namespace from the cluster. Exception: {}".format(str(e)) + "\n")    
     return storage_space_available
 
 
@@ -192,7 +197,7 @@ def deployments_logger(appv1_api_instance, filepath_with_timestamp, storage_spac
         shutil.rmtree(filepath_with_timestamp, ignore_errors=False, onerror=None)
             
     except Exception as e:
-        print(e)
+        logger.warning("An expection has occured while trying to fetch the azure arc deployment logs from the cluster. Exception: {}".format(str(e)) + "\n")
     
     return storage_space_available
 
@@ -234,7 +239,7 @@ def check_agent_state(corev1_api_instance, filepath_with_timestamp, storage_spac
         shutil.rmtree(filepath_with_timestamp, ignore_errors=False, onerror=None)
 
     except Exception as e:
-        print(e)
+        logger.warning("An expection has occured while trying to check the azure arc agents state in the cluster. Exception: {}".format(str(e)) + "\n")
 
     return True, storage_space_available
 
@@ -253,13 +258,13 @@ def check_agent_version(connected_cluster, azure_arc_agent_version):
 
         # Comparing if the user version is comaptible or not
         if((int(current_user_version[0]) < int(latest_agent_version[0])) or (int(latest_agent_version[1]) - int(current_user_version[1]) > 2)):
-            logger.warning("We found that you are on an older agent version thats not supported.\n Please visit this link to know the agent version support policy 'link'.\n")
+            logger.warning("We found that you are on an older agent version thats not supported.\n Please visit this link to know the agent version support policy 'https://docs.microsoft.com/en-us/azure/azure-arc/kubernetes/agent-upgrade#version-support-policy'.\n")
             return False
 
         return True
 
     except Exception as e:
-        print(e)
+        logger.warning("An expection has occured while trying to check the azure arc agents version in the cluster. Exception: {}".format(str(e)) + "\n")
 
     return True
 
@@ -282,8 +287,6 @@ def executing_diagnoser_job(corev1_api_instance, batchv1_api_instance, namespace
         try:
             utils.create_from_yaml(k8s_client, yaml_file_path)
         except Exception as e:
-            subprocess.run(command, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-            print(e)
             pass
 
         # Watching for diagnosercontianer to reach in completed stage
@@ -292,8 +295,11 @@ def executing_diagnoser_job(corev1_api_instance, batchv1_api_instance, namespace
         for event in w.stream(batchv1_api_instance.list_namespaced_job, namespace=namespace, label_selector="", timeout_seconds=90):
             try:
                 if event["object"].metadata.name == "diagnosercontainer" and event["object"].status.conditions[0].type == "Complete":
-                    counter = 1
+                    counter = 2
                     w.stop()
+
+                elif event["object"].metadata.name == "diagnosercontainer" and event["object"].status.conditions[0].type == "Pending":
+                    counter = 1
 
             except Exception as e:
                 continue
@@ -301,8 +307,13 @@ def executing_diagnoser_job(corev1_api_instance, batchv1_api_instance, namespace
                 continue
 
         # If container not created then clearing all the reosurce with proper error message
-        if(counter == 0):
-            print("Container not created")
+        if (counter == 0):
+            logger.warning("Unable to create the diagnoser job in the cluster. It may be caused due to insufficient resource availability on the cluster. ")
+            subprocess.run(command, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        
+        # If container stuck in pending state then clearing all the resources with proper error message
+        elif (counter == 1):
+            logger.warning("The diagnoser job is stuck in the 'Pending' state in the cluster. It may be caused due to insufficient resource availability on the cluster. ")
             subprocess.run(command, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
         else:
@@ -335,7 +346,7 @@ def executing_diagnoser_job(corev1_api_instance, batchv1_api_instance, namespace
         subprocess.run(command, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
     except Exception as e:
-        print(e)
+        logger.warning("An expection has occured while trying to execute the diagnoser job in the cluster. Exception: {}".format(str(e)) + "\n")
         subprocess.run(command, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
     return diagnoser_container_log
@@ -360,7 +371,7 @@ def diagnoser_container_check(corev1_api_instance, batchv1_api_instance, filepat
         return False, storage_space_available
 
     except Exception as e:
-        print(e)
+        logger.warning("An expection has occured while trying to perform diagnoser continer check on the cluster. Exception: {}".format(str(e)) + "\n")
 
     return True, storage_space_available
 
@@ -392,7 +403,7 @@ def check_cluster_DNS(diagnoser_container_log, filepath_with_timestamp, storage_
         shutil.rmtree(filepath_with_timestamp, ignore_errors=False, onerror=None)
 
     except Exception as e:
-        print(e)
+        logger.warning("An expection has occured while performing the DNS check on the cluster. Exception: {}".format(str(e)) + "\n")
     
     return True, storage_space_available
 
@@ -424,7 +435,7 @@ def check_cluster_outbound_connectivity(diagnoser_container_log, filepath_with_t
         shutil.rmtree(filepath_with_timestamp, ignore_errors=False, onerror=None)
 
     except Exception as e:
-        print(e)
+        logger.warning("An expection has occured while performing the outbound connectivity check on the cluster. Exception: {}".format(str(e)) + "\n")
     
     return True, storage_space_available
 
@@ -451,7 +462,7 @@ def check_msi_certificate(corev1_api_instance):
         return True
 
     except Exception as e:
-        print(e)
+        logger.warning("An expection has occured while performing the msi certificate check on the cluster. Exception: {}".format(str(e)) + "\n")
 
 
 def check_cluster_security_policy(corev1_api_instance, helm_client_location):
@@ -465,12 +476,19 @@ def check_cluster_security_policy(corev1_api_instance, helm_client_location):
         command = [helm_client_location, "get", "values", "azure-arc", "-o", "json"]
 
         # Using subprocess to execute the helm get values command and fetching the output
-        p = subprocess.Popen(command, stdout=subprocess.PIPE)
-        text = p.stdout.read()
+        response_helm_values_get = Popen(command,  stdout=PIPE, stderr=PIPE)
+        output_helm_values_get , error_helm_get_values = response_helm_values_get.communicate()
+
+        if response_helm_values_get.returncode != 0:
+            if ('forbidden' in error_helm_get_values.decode("ascii") or 'timed out waiting for the condition' in error_helm_get_values.decode("ascii")):
+                telemetry.set_user_fault()
+                telemetry.set_exception(exception=error_helm_get_values.decode("ascii"), fault_type=consts.Get_Helm_Values_Failed,
+                                        summary='Error while doing helm get values azure-arc')
+                raise CLIInternalError(str.format(consts.Update_Agent_Failure, error_helm_get_values.decode("ascii")))
 
         # Converting output obtained in json format and fetching the clusterconnect-agent feature
-        my_json = json.loads(text)
-        cluster_connect_feature = my_json["systemDefaultValues"]["clusterconnect-agent"]["enabled"]
+        helm_values_json = json.loads(output_helm_values_get)
+        cluster_connect_feature = helm_values_json["systemDefaultValues"]["clusterconnect-agent"]["enabled"]
 
         # To retrieve all of the arc agent pods that are presesnt in the Cluster
         arc_agents_pod_list = corev1_api_instance.list_namespaced_pod(namespace="azure-arc")
@@ -489,7 +507,7 @@ def check_cluster_security_policy(corev1_api_instance, helm_client_location):
         return True
 
     except Exception as e:
-        print(e)
+        logger.warning("An expection has occured while trying to check for the presence of cluster security policy in the cluster. Exception: {}".format(str(e)) + "\n")
 
 
 def check_kap_cert(corev1_api_instance):
@@ -525,7 +543,7 @@ def check_kap_cert(corev1_api_instance):
         return True
 
     except Exception as e:
-        print(e)
+        logger.warning("An expection has occured while performing kube aad proxy certificate check on the cluster. Exception: {}".format(str(e)) + "\n")
 
 
 def check_msi_expiry(connected_cluster):
@@ -546,4 +564,4 @@ def check_msi_expiry(connected_cluster):
         return True
 
     except Exception as e:
-        print(e)
+        logger.warning("An expection has occured while performing msi expiry check on the cluster. Exception: {}".format(str(e)) + "\n")
