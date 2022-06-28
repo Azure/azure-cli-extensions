@@ -34,7 +34,7 @@ with open('HISTORY.rst', 'r', encoding='utf-8') as f:
     HISTORY = f.read()
 
 setup(
-    name='securityinsight',
+    name='sentinel',
     version=VERSION,
     description='Microsoft Azure Command-Line Tools Sentinel Extension.',
     long_description=README + '\n\n' + HISTORY,
@@ -44,6 +44,6 @@ setup(
     url='https://github.com/Azure/azure-cli-extensions/tree/main/src/securityinsight',
     classifiers=CLASSIFIERS,
     packages=find_packages(exclude=["tests"]),
-    package_data={'azext_securityinsight': ['azext_metadata.json']},
+    package_data={'azext_sentinel': ['azext_metadata.json']},
     install_requires=DEPENDENCIES
 )
