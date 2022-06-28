@@ -263,6 +263,19 @@ def dataprotection_backup_instance_list_from_resourcegraph(client, datasource_ty
 
 
 def dataprotection_backup_instance_update_msi_permissions(cmd, client, resource_group_name, datasource_type, vault_name, operation, permissions_scope, backup_instance=None, keyvault_id=None, yes=False):
+    from msrestazure.tools import is_valid_resource_id, parse_resource_id
+
+    if operation == 'Backup' and backup_instance is None:
+        raise CLIError("--backup-instance needs to be given when --operation is given as Backup")
+
+    if not keyvault_id and datasource_type == 'AzureDatabaseForPostgreSQL':
+        raise CLIError("--keyvault-id needs to be given when --datasource-type is AzureDatabaseForPostgreSQL")
+
+    if not is_valid_resource_id(keyvault_id):
+        raise CLIError("Please provide a valid keyvault ID")
+    
+    from azure.cli.core.commands.client_factory import get_mgmt_service_client
+
     from knack.prompting import prompt_y_n
     msg = helper.get_help_text_on_grant_permissions(datasource_type)
     if not yes and not prompt_y_n(msg):
@@ -278,17 +291,7 @@ def dataprotection_backup_instance_update_msi_permissions(cmd, client, resource_
         raise CLIError("Location of data source needs to be the same as backup vault.\nMake sure the datasource "
                        "and vault are chosen properly")
 
-    if operation == 'Backup' and backup_instance is None:
-        raise CLIError("--backup-instance needs to be given when --operation is given as Backup")
-
-    if not keyvault_id and datasource_type == 'AzureDatabaseForPostgreSQL':
-        raise CLIError("--keyvault-id needs to be given when --datasource-type is AzureDatabaseForPostgreSQL")
-
     from azure.cli.command_modules.role.custom import list_role_assignments, create_role_assignment
-    from msrestazure.tools import is_valid_resource_id, parse_resource_id
-
-    if not is_valid_resource_id(keyvault_id):
-        raise CLIError("Please provide a valid keyvault ID")
 
     manifest = helper.load_manifest(datasource_type)
 
@@ -302,7 +305,6 @@ def dataprotection_backup_instance_update_msi_permissions(cmd, client, resource_
 
         from azure.cli.core.profiles import ResourceType
         from azure.cli.command_modules.keyvault._client_factory import Clients, get_client
-        from azure.cli.core.commands.client_factory import get_mgmt_service_client
 
         keyvault_params = parse_resource_id(keyvault_id)
         keyvault_subscription = keyvault_params['subscription']
@@ -388,10 +390,12 @@ def dataprotection_backup_instance_update_msi_permissions(cmd, client, resource_
     # Network line of sight access on server, if that is the datasource type
     if datasource_type == 'AzureDatabaseForPostgreSQL':
         server_params = parse_resource_id(backup_instance['properties']['data_source_info']['resource_id'])
+        server_sub = server_params['subscription']
         server_name = server_params['name']
         server_rg = server_params['resource_group']
-        from azure.cli.command_modules.rdbms._client_factory import cf_postgres_firewall_rules
-        postgres_firewall_client = cf_postgres_firewall_rules(cmd.cli_ctx, None)
+
+        from azure.mgmt.rdbms.postgresql import PostgreSQLManagementClient
+        postgres_firewall_client = getattr(get_mgmt_service_client(cmd.cli_ctx, PostgreSQLManagementClient, subscription_id=server_sub), 'firewall_rules')
 
         firewall_rule_list = postgres_firewall_client.list_by_server(resource_group_name=server_rg, server_name=server_name)
 
