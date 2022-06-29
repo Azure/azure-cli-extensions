@@ -1,5 +1,9 @@
 Release History
 ===============
+1.1.2
+---
+* Fix the arguments parsing of the Command `az spring app create` with "--container-image".
+
 1.1.1
 ---
 * Support configure OpenAPI URI in Spring Cloud Gateway route configs.
