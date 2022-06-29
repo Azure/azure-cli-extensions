@@ -2,6 +2,7 @@ Release History
 ===============
 1.1.2
 ---
+* Support configure Germination Grace Period Seconds for deployments.
 * Fix the arguments parsing of the Command `az spring app create` with "--container-image".
 
 1.1.1

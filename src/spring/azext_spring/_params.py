@@ -213,6 +213,9 @@ def load_arguments(self, _):
                        help='A json file path indicates the readiness probe config', arg_group='App Customization')
             c.argument('startup_probe_config', type=str, is_preview=True,
                        help='A json file path indicates the startup probe config', arg_group='App Customization')
+            c.argument('termination_grace_period_seconds', type=str, is_preview=True,
+                       options_list=['--termination-grace-period-seconds', '--grace-period'],
+                       help='Optional duration in seconds the app instance needs to terminate gracefully', arg_group='App Customization')
 
     with self.argument_context('spring app create') as c:
         c.argument('assign_endpoint', arg_type=get_three_state_flag(),
