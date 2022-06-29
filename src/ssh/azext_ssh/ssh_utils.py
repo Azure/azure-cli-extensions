@@ -11,12 +11,10 @@ import datetime
 import re
 import colorama
 
-from colorama import Fore
-from colorama import Style
-
 from knack import log
 from azure.cli.core import azclierror
 from azure.cli.core import telemetry
+from azure.cli.core.style import Style, print_styled_text
 
 from . import file_utils
 from . import connectivity_utils
@@ -359,13 +357,11 @@ def _terminate_cleanup(delete_keys, delete_cert, delete_credentials, cleanup_pro
 
 def _issue_config_cleanup_warning(delete_cert, delete_keys, is_arc, cert_file, relay_info_path, ssh_client_folder):
     if delete_cert:
-        colorama.init()
         # pylint: disable=broad-except
         try:
             expiration = get_certificate_start_and_end_times(cert_file, ssh_client_folder)[1]
             expiration = expiration.strftime("%Y-%m-%d %I:%M:%S %p")
-            print(Fore.GREEN + f"Generated SSH certificate {cert_file} is valid until {expiration} in local time."
-                  + Style.RESET_ALL)
+            print_styled_text((Style.SUCESS, f"Generated SSH certificate {cert_file} is valid until {expiration} in local time."))
         except Exception as e:
             logger.warning("Couldn't determine certificate expiration. Error: %s", str(e))
 

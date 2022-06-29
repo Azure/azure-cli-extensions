@@ -12,13 +12,12 @@ import platform
 import oschmod
 
 import colorama
-from colorama import Fore
-from colorama import Style
 
 from knack import log
 from azure.cli.core import azclierror
 from azure.cli.core import telemetry
 from azure.core.exceptions import ResourceNotFoundError, HttpResponseError
+from azure.cli.core.style import Style, print_styled_text
 
 from . import ip_utils
 from . import rdp_utils
@@ -129,16 +128,13 @@ def ssh_cert(cmd, cert_path=None, public_key_file=None, ssh_client_folder=None):
     if keys_folder:
         logger.warning("%s contains sensitive information (id_rsa, id_rsa.pub). "
                        "Please delete once this certificate is no longer being used.", keys_folder)
-
-    colorama.init()
     # pylint: disable=broad-except
     try:
         cert_expiration = ssh_utils.get_certificate_start_and_end_times(cert_file, ssh_client_folder)[1]
-        print(Fore.GREEN + f"Generated SSH certificate {cert_file} is valid until {cert_expiration} in local time."
-              + Style.RESET_ALL)
+        print_styled_text((Style.SUCESS, f"Generated SSH certificate {cert_file} is valid until {cert_expiration} in local time."))
     except Exception as e:
         logger.warning("Couldn't determine certificate validity. Error: %s", str(e))
-        print(Fore.GREEN + f"Generated SSH certificate {cert_file}." + Style.RESET_ALL)
+        print_styled_text((Style.SUCESS, f"Generated SSH certificate {cert_file}."))
 
 
 def ssh_arc(cmd, resource_group_name=None, vm_name=None, public_key_file=None, private_key_file=None,
@@ -398,7 +394,7 @@ def _decide_resource_type(cmd, op_info):
             colorama.init()
             raise azclierror.BadRequestError(f"{op_info.resource_group_name} has Azure VM and Arc Server with the "
                                              f"same name: {op_info.vm_name}.",
-                                             Fore.YELLOW + "Please provide a --resource-type." + Style.RESET_ALL)
+                                             colorama.Fore.YELLOW + "Please provide a --resource-type." + colorama.Style.RESET_ALL)
         if not is_azure_vm and not is_arc_server:
             colorama.init()
             if isinstance(arc_error, ResourceNotFoundError) and isinstance(vm_error, ResourceNotFoundError):
@@ -425,7 +421,7 @@ def _decide_resource_type(cmd, op_info):
         colorama.init()
         raise azclierror.RequiredArgumentMissingError("SSH Login using AAD credentials is not currently supported "
                                                       "for Windows.",
-                                                      Fore.YELLOW + "Please provide --local-user." + Style.RESET_ALL)
+                                                      colorama.Fore.YELLOW + "Please provide --local-user." + colorama.Style.RESET_ALL)
 
     target_resource_type = "Microsoft.Compute"
     if is_arc_server:

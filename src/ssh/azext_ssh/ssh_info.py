@@ -6,9 +6,7 @@ import os
 import datetime
 import oschmod
 
-import colorama
-from colorama import Fore
-from colorama import Style
+from azure.cli.core.style import Style, print_styled_text
 
 from azure.cli.core import azclierror
 from knack import log
@@ -190,9 +188,8 @@ class ConfigSession():
         try:
             expiration = datetime.datetime.fromtimestamp(self.relay_info.expires_on)
             expiration = expiration.strftime("%Y-%m-%d %I:%M:%S %p")
-            colorama.init()
-            print(Fore.GREEN + f"Generated relay information {relay_info_path} is valid until {expiration} "
-                  "in local time." + Style.RESET_ALL)
+            print_styled_text((Style.SUCESS, f"Generated relay information {relay_info_path} is valid until {expiration} "
+                  "in local time."))
         except Exception as e:
             logger.warning("Couldn't determine relay information expiration. Error: %s", str(e))
 

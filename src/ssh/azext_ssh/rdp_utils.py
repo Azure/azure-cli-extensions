@@ -6,17 +6,15 @@
 import os
 import platform
 import subprocess
+from sys import stderr
 import time
 import psutil
-
-import colorama
-from colorama import Fore
-from colorama import Style
 
 from knack import log
 
 from azure.cli.core import azclierror
 from azure.cli.core import telemetry
+from azure.cli.core.style import Style, print_styled_text
 from . import ssh_utils
 from . import connectivity_utils
 from . import constants as const
@@ -70,9 +68,8 @@ def start_rdp_connection(ssh_info, delete_keys, delete_cert):
 def call_rdp(local_port):
     from . import _process_helper
     if platform.system() == 'Windows':
-        colorama.init()
-        print(Fore.GREEN + "Launching Remote Desktop Connection" + Style.RESET_ALL)
-        print(Fore.YELLOW + "To close this session, close the Remote Desktop Connection window." + Style.RESET_ALL)
+        print_styled_text((Style.SUCCESS, "Launching Remote Desktop Connection"))
+        print_styled_text((Style.IMPORTANT, "To close this session, close the Remote Desktop Connection window."))
         command = [_get_rdp_path(), f"/v:localhost:{local_port}"]
         _process_helper.launch_and_wait(command)
 
@@ -118,9 +115,6 @@ def start_ssh_tunnel(op_info):
     command = command + op_info.build_args() + op_info.ssh_args
 
     logger.debug("Running ssh command %s", ' '.join(command))
-
-    # without Shell=True the print gets messed up once the subprocess dies.
-    # Is there a way to fix it? There are advantages to not use shell=True.
     ssh_sub = subprocess.Popen(command, shell=True, stderr=subprocess.PIPE, env=env, encoding='utf-8')
     return ssh_sub, print_ssh_logs
 
@@ -167,11 +161,12 @@ def print_error_messages_from_log(log_list, print_ssh_logs, ssh_process, termina
             log_list.append(next_line)
         next_line = ssh_process.stderr.readline()
 
+    logger.warning("hello")
     # If ssh process was not forced to terminate, print potential error messages.
     if ssh_process.returncode != 0 and not print_ssh_logs and not terminated:
         for line in log_list:
             if "debug1:" not in line and line != '':
-                print(str(line))
+                print(str(line), end='')
 
 
 def _get_rdp_path(rdp_command="mstsc"):
