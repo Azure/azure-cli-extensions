@@ -344,7 +344,8 @@ def dataprotection_backup_instance_update_msi_permissions(cmd, client, resource_
 
             role_assignment = list_role_assignments(cmd, assignee=principal_id, role=role, scope=keyvault_id, include_inherited=True)
             if not role_assignment:
-                role_assignments_arr.append(create_role_assignment(cmd, assignee=principal_id, role=role, scope=keyvault_assignment_scope))
+                assignment = create_role_assignment(cmd, assignee=principal_id, role=role, scope=keyvault_assignment_scope)
+                role_assignments_arr.append(helper.get_permission_object_from_role_object(assignment))
 
         else:
             from azure.cli.command_modules.keyvault.custom import set_policy
@@ -385,8 +386,9 @@ def dataprotection_backup_instance_update_msi_permissions(cmd, client, resource_
         role_assignments = list_role_assignments(cmd, assignee=principal_id, role=role_object['roleDefinitionName'],
                                                  scope=resource_id, include_inherited=True)
         if not role_assignments:
-            role_assignments_arr.append(create_role_assignment(cmd, assignee=principal_id, role=role_object['roleDefinitionName'],
-                                                               scope=assignment_scope))
+            assignment = create_role_assignment(cmd, assignee=principal_id, role=role_object['roleDefinitionName'],
+                                                scope=assignment_scope)
+            role_assignments_arr.append(helper.get_permission_object_from_role_object(assignment))
 
     # Network line of sight access on server, if that is the datasource type
     if datasource_type == 'AzureDatabaseForPostgreSQL':
@@ -410,13 +412,30 @@ def dataprotection_backup_instance_update_msi_permissions(cmd, client, resource_
             firewall_rule_name = 'AllowAllWindowsAzureIps'
             parameters = {'name': firewall_rule_name, 'start_ip_address': '0.0.0.0', 'end_ip_address': '0.0.0.0'}
 
-            role_assignments_arr.append(postgres_firewall_client.begin_create_or_update(server_rg, server_name, firewall_rule_name, parameters))
+            rule = postgres_firewall_client.begin_create_or_update(server_rg, server_name, firewall_rule_name, parameters)
+            rule = rule.result()
+            permission_object = {}
+            permission_object['Properties'] = {}
+            properties = permission_object['Properties']
+            if hasattr(rule, 'type'):
+                permission_object['ResourceType'] = rule.type
+            if hasattr(rule, 'name'):
+                permission_object['Name'] = rule.name
+                properties['description'] = rule.name
 
-    # Wait for 60 seconds to let the role assignments propagate
-    from knack.log import get_logger
-    logger = get_logger(__name__)
-    logger.warning("Waiting for 60 seconds for permissions to propagate")
-    time.sleep(60)
+            if hasattr(rule, 'start_ip_address'):
+                properties['startIpAddress'] = rule.start_ip_address
+            if hasattr(rule, 'end_ip_address'):
+                properties['endIpAddress'] = rule.end_ip_address
+            role_assignments_arr.append(permission_object)
+
+    if not role_assignments_arr:
+        logger.warning("The required permissions are already assigned!")
+    else:
+        # Wait for 60 seconds to let the role assignments propagate
+        logger.warning("Waiting for 60 seconds for permissions to propagate")
+        time.sleep(60)
+
     return role_assignments_arr
 
 

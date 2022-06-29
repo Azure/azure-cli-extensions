@@ -57,9 +57,9 @@ helps['dataprotection backup-instance list-from-resourcegraph'] = """
 
 helps['dataprotection backup-instance update-msi-permissions'] = """
     type: command
-    short-summary: Assign missing roles to the vault based on the backup instance or restore request object.
+    short-summary: Assign the required permissions needed to successfully enable backup for the datasource.
     examples:
-      - name: Assign missing roles to the vault based on the backup instance or restore request object.
+      - name: Assign the required permissions needed to successfully enable backup for the datasource.
         text: az dataprotection backup-instance update-msi-permissions --backup-instance backup_inst.json --resource-group samarth_resource_group --vault-name samarthbackupvault --datasource-type AzureDisk --operation Backup --permissions-scope ResourceGroup
 """
 

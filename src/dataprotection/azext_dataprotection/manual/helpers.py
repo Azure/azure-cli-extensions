@@ -170,3 +170,24 @@ def get_help_text_on_grant_permissions(datasource_type):
 
     help_text += "\nAre you sure you want to continue?"
     return help_text
+
+
+def get_permission_object_from_role_object(role_object):
+    permission_object = {}
+    if hasattr(role_object, 'type'):
+        permission_object['ResourceType'] = role_object.type
+    if hasattr(role_object, 'name'):
+        permission_object['Name'] = role_object.name
+
+    permission_object['Properties'] = {}
+    properties = permission_object['Properties']
+    if hasattr(role_object, 'role_definition_id'):
+        properties['roleDefinitionId'] = role_object.role_definition_id
+    if hasattr(role_object, 'principal_id'):
+        properties['principalId'] = role_object.principal_id
+    if hasattr(role_object, 'scope'):
+        properties['scope'] = role_object.scope
+    if hasattr(role_object, 'principal_type'):
+        properties['principalType'] = role_object.principal_type
+
+    return permission_object
