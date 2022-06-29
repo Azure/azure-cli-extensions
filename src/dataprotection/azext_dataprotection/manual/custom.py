@@ -413,6 +413,9 @@ def dataprotection_backup_instance_update_msi_permissions(cmd, client, resource_
             role_assignments_arr.append(postgres_firewall_client.begin_create_or_update(server_rg, server_name, firewall_rule_name, parameters))
 
     # Wait for 60 seconds to let the role assignments propagate
+    from knack.log import get_logger
+    logger = get_logger(__name__)
+    logger.warning("Waiting for 60 seconds for permissions to propagate")
     time.sleep(60)
     return role_assignments_arr
 
