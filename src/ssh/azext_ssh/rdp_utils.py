@@ -6,15 +6,14 @@
 import os
 import platform
 import subprocess
-from sys import stderr
 import time
 import psutil
 
 from knack import log
-
 from azure.cli.core import azclierror
 from azure.cli.core import telemetry
 from azure.cli.core.style import Style, print_styled_text
+
 from . import ssh_utils
 from . import connectivity_utils
 from . import constants as const
@@ -161,7 +160,6 @@ def print_error_messages_from_log(log_list, print_ssh_logs, ssh_process, termina
             log_list.append(next_line)
         next_line = ssh_process.stderr.readline()
 
-    logger.warning("hello")
     # If ssh process was not forced to terminate, print potential error messages.
     if ssh_process.returncode != 0 and not print_ssh_logs and not terminated:
         for line in log_list:

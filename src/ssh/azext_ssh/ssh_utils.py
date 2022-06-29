@@ -256,9 +256,9 @@ def get_ssh_client_path(ssh_command="ssh", ssh_client_folder=None):
         if not os.path.isfile(ssh_path):
             raise azclierror.UnclassifiedUserFault(
                 "Could not find " + ssh_command + ".exe on path " + ssh_path + ". ",
-                Fore.YELLOW + "Make sure OpenSSH is installed correctly: "
+                colorama.Fore.YELLOW + "Make sure OpenSSH is installed correctly: "
                 "https://docs.microsoft.com/en-us/windows-server/administration/openssh/openssh_install_firstuse . "
-                "Or use --ssh-client-folder to provide folder path with ssh executables. " + Style.RESET_ALL)
+                "Or use --ssh-client-folder to provide folder path with ssh executables. " + colorama.Style.RESET_ALL)
 
     return ssh_path
 
@@ -361,7 +361,8 @@ def _issue_config_cleanup_warning(delete_cert, delete_keys, is_arc, cert_file, r
         try:
             expiration = get_certificate_start_and_end_times(cert_file, ssh_client_folder)[1]
             expiration = expiration.strftime("%Y-%m-%d %I:%M:%S %p")
-            print_styled_text((Style.SUCESS, f"Generated SSH certificate {cert_file} is valid until {expiration} in local time."))
+            print_styled_text((Style.SUCCESS,
+                               f"Generated SSH certificate {cert_file} is valid until {expiration} in local time."))
         except Exception as e:
             logger.warning("Couldn't determine certificate expiration. Error: %s", str(e))
 

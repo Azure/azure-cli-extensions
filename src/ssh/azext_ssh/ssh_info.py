@@ -188,8 +188,8 @@ class ConfigSession():
         try:
             expiration = datetime.datetime.fromtimestamp(self.relay_info.expires_on)
             expiration = expiration.strftime("%Y-%m-%d %I:%M:%S %p")
-            print_styled_text((Style.SUCESS, f"Generated relay information {relay_info_path} is valid until {expiration} "
-                  "in local time."))
+            print_styled_text((Style.SUCCESS, f"Generated relay information {relay_info_path} is valid until "
+                                              f"{expiration} in local time."))
         except Exception as e:
             logger.warning("Couldn't determine relay information expiration. Error: %s", str(e))
 
