@@ -3,6 +3,7 @@ Release History
 1.1.1
 ---
 * Support configure OpenAPI URI in Spring Cloud Gateway route configs.
+* Support configure Germination Grace Period Seconds for deployments.
 
 1.1.0
 ---
