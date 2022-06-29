@@ -268,11 +268,12 @@ def dataprotection_backup_instance_update_msi_permissions(cmd, client, resource_
     if operation == 'Backup' and backup_instance is None:
         raise CLIError("--backup-instance needs to be given when --operation is given as Backup")
 
-    if not keyvault_id and datasource_type == 'AzureDatabaseForPostgreSQL':
-        raise CLIError("--keyvault-id needs to be given when --datasource-type is AzureDatabaseForPostgreSQL")
+    if datasource_type == 'AzureDatabaseForPostgreSQL':
+        if not keyvault_id:
+            raise CLIError("--keyvault-id needs to be given when --datasource-type is AzureDatabaseForPostgreSQL")
 
-    if not is_valid_resource_id(keyvault_id):
-        raise CLIError("Please provide a valid keyvault ID")
+        if not is_valid_resource_id(keyvault_id):
+            raise CLIError("Please provide a valid keyvault ID")
 
     from azure.cli.core.commands.client_factory import get_mgmt_service_client
 
@@ -348,7 +349,7 @@ def dataprotection_backup_instance_update_msi_permissions(cmd, client, resource_
         else:
             from azure.cli.command_modules.keyvault.custom import set_policy
             vault_secret_permissions = (keyvault_permission_models['vaultAccessPolicyModel']
-                                        ['access_policies']
+                                        ['accessPolicies']
                                         ['permissions']
                                         ['secrets'])
 

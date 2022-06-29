@@ -24,7 +24,7 @@ manifest = '''
       "roleDefinitionName": "Key Vault Secrets User"
     },
     "vaultAccessPolicyModel": {
-      "access_policies": {
+      "accessPolicies": {
         "permissions": {
           "secrets": [ "Get", "List" ]
         }
