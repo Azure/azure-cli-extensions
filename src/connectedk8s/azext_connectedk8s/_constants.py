@@ -133,3 +133,24 @@ CSP_Storage_Url = "https://k8sconnectcsp.azureedge.net"
 CSP_Storage_Url_Mooncake = "https://k8sconnectcsp.blob.core.chinacloudapi.cn"
 HELM_STORAGE_URL = "https://k8connecthelm.azureedge.net"
 HELM_VERSION = 'v3.6.3'
+
+
+
+
+Kubectl_Get_Events_Failed = "Error while doing kubectl get events"
+Arc_Agents_Logger_Fault_Type= "Error occured in arc agents logger"
+Arc_Agents_Events_Logger_Fault_Type= "Error occured in arc agents events logger"
+Arc_Deployments_Logger_Fault_Type = "Error occured in deployments logger"
+Agent_State_Check_Fault_Type= "Error ocuured while performing the agent state check"
+Agent_Version_Check_Fault_Type = "Error occured while performing the agent version check"
+Executing_Diagnoser_Job_Fault_Type = "Error while executing Diagnoser Job"
+Diagnoser_Container_Check_Fault_Type = "Error occured while performing the diagnoser container checks"
+Cluster_DNS_Check_Fault_Type = "Error occured while performing cluster DNS check"
+Outbound_Connectivity_Check_Fault_Type = "Error occured while performing outbound connectivity check in the cluster"
+MSI_Cert_Check_Fault_Type = "Error occured while trying to pull MSI certificate"
+Cluster_Security_Policy_Check_Fault_Type = "Error occured while performing cluster security policy check"
+KAP_Cert_Check_Fault_Type= "Error occured while trying to pull kap cert certificate"
+MSI_Cert_Expiry_Check_Fault_Type = "Error occured while trying to perform the MSI cert expiry check"
+Connected_Cluster_Logger_Fault_Type = "Error occured in connected cluster resoruce logger"
+Arc_Diagnostic_Log_Fault_Type = "Error while creating the arc diagnostic logs folder"
+Storage_Space_Available_Fault_Type = "Error while trying to store diagnostic logs"

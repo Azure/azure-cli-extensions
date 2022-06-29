@@ -2050,20 +2050,19 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
 
     try:
 
-        # C:\Diagnoser\azure-cli-extensions\src\connectedk8s\azext_connectedk8s\custom.py
         logger.warning("Diagnoser running. This may take a while ...\n")
         absolute_path=os.path.abspath(os.path.dirname(__file__))
 
         storage_space_available = True
         # Setting default values for all checks as True
         diagnostic_checks = {
-        "msi_cert_expiry_check" :True,
-        "kap_security_policy_check" : True,
-        "kap_cert_check" : True,
-        "diagnoser_check" : True,
-        "msi_cert_check" : True,
-        "agent_version_check" : True,
-        "arc_agent_state_check" : True
+        "msi_cert_expiry_check" :"Incomplete",
+        "kap_security_policy_check" : "Incomplete",
+        "kap_cert_check" : "Incomplete",
+        "diagnoser_check" : "Incomplete",
+        "msi_cert_check" : "Incomplete",
+        "agent_version_check" : "Incomplete",
+        "arc_agent_state_check" : "Incomplete"
         }
 
         # Setting kube_config
@@ -2085,16 +2084,6 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
         # Fetch Connected Cluster for agent version
         connected_cluster = get_connectedk8s(cmd, client, resource_group_name, cluster_name)
 
-        # To check for internet connectivity
-        # for counter in range(3):
-        #     if troubleshootutils.check_internet_connectivity():
-        #         break
-        #     elif(counter == 3 and troubleshootutils.check_internet_connectivity() is False):
-        #         print("Error: There is problem with the internet connection. Please check it and then try again.\n")
-        #         return
-        #     else:
-        #         time.sleep(2)
-
         # Creating timestamp folder to store all the diagnoser logs
         current_time = time.ctime(time.time())
         time_stamp = ""
@@ -2106,6 +2095,7 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
                 time_stamp += '.'
                 continue
             time_stamp += elements
+        time_stamp+='-'+cluster_name
 
         # Generate the diagnostic folder in a given location
         filepath_with_timestamp, storage_space_available = troubleshootutils.create_folder_diagnosticlogs(time_stamp, storage_space_available)
@@ -2146,15 +2136,15 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
             diagnostic_checks["msi_cert_check"] = troubleshootutils.check_msi_certificate(corev1_api_instance)
 
             # If msi certificate present then only we will perform msi certificate expiry check
-            if diagnostic_checks["msi_cert_check"]:
+            if diagnostic_checks["msi_cert_check"] == "Passed":
                 diagnostic_checks["msi_cert_expiry_check"] = troubleshootutils.check_msi_expiry(connected_cluster)
 
             # If msi certificate present then only we will do Kube aad proxy checks
-            if diagnostic_checks["msi_cert_check"]:
+            if diagnostic_checks["msi_cert_check"] == "Passed":
                 diagnostic_checks["kap_security_policy_check"] = troubleshootutils.check_cluster_security_policy(corev1_api_instance, helm_client_location)
 
                 # If no security policy is present in cluster then we can check for the Kube aad proxy certificate
-                if(diagnostic_checks["kap_security_policy_check"]):
+                if diagnostic_checks["kap_security_policy_check"] == "Passed":
                     diagnostic_checks["kap_cert_check"] = troubleshootutils.check_kap_cert(corev1_api_instance)
 
             # Checking whether optional extra values file has been provided.
@@ -2220,13 +2210,13 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
             logger.warning("Failed to validate if the active namespace exists on the kubernetes cluster. Exception: {}".format(str(e)))
 
         # Executing the Diagnoser job check in the given namespace
-        diagnostic_checks["diagnoser_check"], storage_space_available = troubleshootutils.diagnoser_container_check(corev1_api_instance, batchv1_api_instance, filepath_with_timestamp, storage_space_available, current_k8s_namespace, absolute_path)
+        diagnostic_checks["diagnoser_check"], storage_space_available = troubleshootutils.check_diagnoser_container(corev1_api_instance, batchv1_api_instance, filepath_with_timestamp, storage_space_available, current_k8s_namespace, absolute_path)
 
         all_checks_passed = True
         for checks in diagnostic_checks:
-            if diagnostic_checks[checks] is False:
-                all_checks_passed = False
-                break
+
+            if diagnostic_checks[checks] != "Passed":
+                all_checks_passed = False   
 
         if storage_space_available :
         # Depending on whether all tests passes we will give the output
@@ -2235,6 +2225,7 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
             else:
                 logger.warning("For more results from the diagnoser refer to the logs collected at " + filepath_with_timestamp +" .\nThese logs can be attached while filing a support ticket for further assistance.\n")
         else:
+            telemetry.set_exception(exception="OSError: [Errno 28] No space left on device", fault_type=consts.Storage_Space_Available_Fault_Type, summary="Error while trying to store diagnostic logs")
             if (all_checks_passed):
                 logger.warning("Diagnoser could not find any issues with the cluster.\n")
             logger.warning("Diagnoser was not able to store logs in your local machine. Please check if sufficient storage space is available.\nTo store diagnoser logs clean up some space and execute the troubleshoot command again.")         
