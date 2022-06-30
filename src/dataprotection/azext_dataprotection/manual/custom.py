@@ -391,15 +391,7 @@ def dataprotection_backup_instance_update_msi_permissions(cmd, client, resource_
                 update_vault_setter(cmd, keyvault_client, keyvault, resource_group_name=keyvault_rg, vault_name=keyvault_name)
 
         if keyvault_update:
-            permission_object = {}
-            if hasattr(keyvault, 'type'):
-                permission_object['ResourceType'] = keyvault.type
-            if hasattr(keyvault, 'name'):
-                permission_object['Name'] = keyvault.name
-            if hasattr(keyvault, 'properties'):
-                permission_object['Properties'] = keyvault.properties
-
-            role_assignments_arr.append(permission_object)
+            role_assignments_arr.append(helper.get_permission_object_from_keyvault(keyvault))
 
     for role_object in manifest['backupVaultPermissions']:
         resource_id = helper.get_resource_id_from_backup_instance(backup_instance, role_object['type'])
@@ -437,21 +429,7 @@ def dataprotection_backup_instance_update_msi_permissions(cmd, client, resource_
             parameters = {'name': firewall_rule_name, 'start_ip_address': '0.0.0.0', 'end_ip_address': '0.0.0.0'}
 
             rule = postgres_firewall_client.begin_create_or_update(server_rg, server_name, firewall_rule_name, parameters)
-            rule = rule.result()
-            permission_object = {}
-            permission_object['Properties'] = {}
-            properties = permission_object['Properties']
-            if hasattr(rule, 'type'):
-                permission_object['ResourceType'] = rule.type
-            if hasattr(rule, 'name'):
-                permission_object['Name'] = rule.name
-                properties['description'] = rule.name
-
-            if hasattr(rule, 'start_ip_address'):
-                properties['startIpAddress'] = rule.start_ip_address
-            if hasattr(rule, 'end_ip_address'):
-                properties['endIpAddress'] = rule.end_ip_address
-            role_assignments_arr.append(permission_object)
+            role_assignments_arr.append(helper.get_permission_object_from_server_firewall_rule(rule.result()))
 
     if not role_assignments_arr:
         logger.warning("The required permissions are already assigned!")

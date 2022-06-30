@@ -191,3 +191,33 @@ def get_permission_object_from_role_object(role_object):
         properties['principalType'] = role_object.principal_type
 
     return permission_object
+
+
+def get_permission_object_from_server_firewall_rule(rule):
+    permission_object = {}
+    permission_object['Properties'] = {}
+    properties = permission_object['Properties']
+    if hasattr(rule, 'type'):
+        permission_object['ResourceType'] = rule.type
+    if hasattr(rule, 'name'):
+        permission_object['Name'] = rule.name
+        properties['description'] = rule.name
+
+    if hasattr(rule, 'start_ip_address'):
+        properties['startIpAddress'] = rule.start_ip_address
+    if hasattr(rule, 'end_ip_address'):
+        properties['endIpAddress'] = rule.end_ip_address
+
+    return permission_object
+
+
+def get_permission_object_from_keyvault(keyvault):
+    permission_object = {}
+    if hasattr(keyvault, 'type'):
+        permission_object['ResourceType'] = keyvault.type
+    if hasattr(keyvault, 'name'):
+        permission_object['Name'] = keyvault.name
+    if hasattr(keyvault, 'properties'):
+        permission_object['Properties'] = keyvault.properties
+
+    return permission_object
