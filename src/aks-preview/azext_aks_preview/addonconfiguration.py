@@ -6,10 +6,11 @@
 import json
 from knack.log import get_logger
 from knack.util import CLIError
-from azure.cli.core.azclierror import ArgumentUsageError, ClientRequestError
+from azure.cli.core.azclierror import AzCLIError, ArgumentUsageError, ClientRequestError
 from azure.cli.core.commands import LongRunningOperation
 from azure.cli.core.commands.client_factory import get_subscription_id
 from azure.cli.core.util import sdk_no_wait, send_raw_request
+from azure.core.exceptions import HttpResponseError
 from azext_aks_preview._client_factory import CUSTOM_MGMT_AKS_PREVIEW
 from azext_aks_preview._client_factory import cf_resources, cf_resource_groups
 from azext_aks_preview._resourcegroup import get_rg_location
