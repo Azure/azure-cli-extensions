@@ -303,6 +303,7 @@ def dataprotection_backup_instance_update_msi_permissions(cmd, client, resource_
     keyvault_rg = None
     if manifest['supportSecretStoreAuthentication']:
         cmd.command_kwargs['operation_group'] = 'vaults'
+        keyvault_update = False
 
         from azure.cli.core.profiles import ResourceType
         from azure.cli.command_modules.keyvault._client_factory import Clients, get_client
@@ -367,6 +368,7 @@ def dataprotection_backup_instance_update_msi_permissions(cmd, client, resource_
                     secrets_array.append(permission)
 
             if not permissions_set:
+                keyvault_update = True
                 keyvault = set_policy(cmd, keyvault_client, keyvault_rg, keyvault_name, object_id=principal_id, secret_permissions=secrets_array)
                 keyvault = keyvault.result()
 
@@ -374,8 +376,20 @@ def dataprotection_backup_instance_update_msi_permissions(cmd, client, resource_
 
         if keyvault.properties.network_acls:
             if keyvault.properties.network_acls.bypass == 'None':
+                keyvault_update = True
                 keyvault.properties.network_acls.bypass = 'AzureServices'
                 update_vault_setter(cmd, keyvault_client, keyvault, resource_group_name=keyvault_rg, vault_name=keyvault_name)
+
+        if keyvault_update:
+            permission_object = {}
+            if hasattr(keyvault, 'type'):
+                permission_object['ResourceType'] = keyvault.type
+            if hasattr(keyvault, 'name'):
+                permission_object['Name'] = keyvault.name
+            if hasattr(keyvault, 'properties'):
+                permission_object['Properties'] = keyvault.properties
+
+            role_assignments_arr.append(permission_object)
 
     for role_object in manifest['backupVaultPermissions']:
         resource_id = helper.get_resource_id_from_backup_instance(backup_instance, role_object['type'])
