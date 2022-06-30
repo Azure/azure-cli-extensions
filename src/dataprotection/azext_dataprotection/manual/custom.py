@@ -275,6 +275,15 @@ def dataprotection_backup_instance_update_msi_permissions(cmd, client, resource_
         if not is_valid_resource_id(keyvault_id):
             raise CLIError("Please provide a valid keyvault ID")
 
+    datasource_map = {
+        "AzureDisk": "Microsoft.Compute/disks",
+        "AzureBlob": "Microsoft.Storage/storageAccounts/blobServices",
+        "AzureDatabaseForPostgreSQL": "Microsoft.DBforPostgreSQL/servers/databases"
+    }
+
+    if datasource_map[datasource_type] != backup_instance["properties"]["data_source_info"]["datasource_type"]:
+        raise CLIError("Backup instance doesn't match --datasource-type")
+
     from azure.cli.core.commands.client_factory import get_mgmt_service_client
 
     from knack.prompting import prompt_y_n
@@ -317,6 +326,10 @@ def dataprotection_backup_instance_update_msi_permissions(cmd, client, resource_
 
         keyvault = keyvault_client.get(resource_group_name=keyvault_rg, vault_name=keyvault_name)
 
+        # Check if keyvault is not publicly accessible
+        if keyvault.properties.public_network_access == 'Disabled':
+            raise CLIError("Keyvault has public access disabled. Please enable public access, or grant access to your client IP")
+
         # Check if the secret URI provided in backup instance is a valid secret
         data_entity = get_client(cmd.cli_ctx, ResourceType.DATA_KEYVAULT)
         data_client = data_entity.client_factory(cmd.cli_ctx, None)
@@ -333,9 +346,6 @@ def dataprotection_backup_instance_update_msi_permissions(cmd, client, resource_
             raise CLIError("The secret URI provided in the --backup-instance is not associated with the "
                            "--keyvault-id provided. Please input a valid combination of secret URI and "
                            "--keyvault-id.")
-
-        if keyvault.properties.public_network_access == 'Disabled':
-            raise CLIError("Keyvault needs to have public network access enabled")
 
         keyvault_permission_models = manifest['secretStorePermissions']
         if keyvault.properties.enable_rbac_authorization:
