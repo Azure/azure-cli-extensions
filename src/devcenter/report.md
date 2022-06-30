@@ -1092,7 +1092,7 @@ az devcenter project-environment-type show --environment-type-name "{environment
 ```
 az devcenter project-environment-type create --type "UserAssigned" --user-assigned-identities \
 "{\\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/identityGroup/providers/Microsoft.ManagedIdenti\
-ty/userAssignedIdentities/testidentity1\\":{}}" --creator-role-assignment "/some/role/definition/id" \
+ty/userAssignedIdentities/testidentity1\\":{}}" --roles "{\\"4cbf0b6c-e750-441c-98a7-10da8387e4d6\\":{}}" \
 --deployment-target-id "/subscriptions/00000000-0000-0000-0000-000000000000" --status "Enabled" \
 --user-role-assignments "{\\"e45e3m7c-176e-416a-b466-0c5ec8298f8a\\":{\\"roles\\":{\\"4cbf0b6c-e750-441c-98a7-10da8387e\
 4d6\\":{}}}}" --tags CostCenter="RnD" --environment-type-name "{environmentTypeName}" --project-name "ContosoProj" \
@@ -1108,8 +1108,8 @@ ty/userAssignedIdentities/testidentity1\\":{}}" --creator-role-assignment "/some
 |**--location**|string|The geo-location for the environment type|location|location|
 |**--deployment-target-id**|string|Id of a subscription that the environment type will be mapped to. The environment's resources will be deployed into this subscription.|deployment_target_id|deploymentTargetId|
 |**--status**|choice|Defines whether this Environment Type can be used in this Project.|status|status|
-|**--creator-role-assignment**|string|The role definition assigned to the environment creator on backing resources.|creator_role_assignment|creatorRoleAssignment|
 |**--user-role-assignments**|dictionary|Role Assignments created on environment backing resources. This is a mapping from a user object ID to an object of role definition IDs.|user_role_assignments|userRoleAssignments|
+|**--roles**|dictionary|A map of roles to assign to the environment creator.|roles|roles|
 |**--type**|choice|Type of managed service identity (where both SystemAssigned and UserAssigned types are allowed).|type|type|
 |**--user-assigned-identities**|dictionary|The set of user assigned identities associated with the resource. The userAssignedIdentities dictionary keys will be ARM resource ids in the form: '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identityName}. The dictionary values can be empty objects ({}) in requests.|user_assigned_identities|userAssignedIdentities|
 
@@ -1133,8 +1133,8 @@ ty/userAssignedIdentities/testidentity1\\":{}}" --deployment-target-id "/subscri
 |**--tags**|dictionary|Resource tags.|tags|tags|
 |**--deployment-target-id**|string|Id of a subscription that the environment type will be mapped to. The environment's resources will be deployed into this subscription.|deployment_target_id|deploymentTargetId|
 |**--status**|choice|Defines whether this Environment Type can be used in this Project.|status|status|
-|**--creator-role-assignment**|string|The role definition assigned to the environment creator on backing resources.|creator_role_assignment|creatorRoleAssignment|
 |**--user-role-assignments**|dictionary|Role Assignments created on environment backing resources. This is a mapping from a user object ID to an object of role definition IDs.|user_role_assignments|userRoleAssignments|
+|**--roles**|dictionary|A map of roles to assign to the environment creator.|roles|roles|
 |**--type**|choice|Type of managed service identity (where both SystemAssigned and UserAssigned types are allowed).|type|type|
 |**--user-assigned-identities**|dictionary|The set of user assigned identities associated with the resource. The userAssignedIdentities dictionary keys will be ARM resource ids in the form: '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identityName}. The dictionary values can be empty objects ({}) in requests.|user_assigned_identities|userAssignedIdentities|
 

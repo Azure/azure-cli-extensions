@@ -335,11 +335,11 @@ def load_arguments(self, _):
                    'mapped to. The environment\'s resources will be deployed into this subscription.')
         c.argument('status', arg_type=get_enum_type(['Enabled', 'Disabled']), help='Defines whether this Environment '
                    'Type can be used in this Project.')
-        c.argument('creator_role_assignment', type=str, help='The role definition assigned to the environment creator '
-                   'on backing resources.')
         c.argument('user_role_assignments', type=validate_file_or_dict, help='Role Assignments created on environment '
                    'backing resources. This is a mapping from a user object ID to an object of role definition IDs. '
                    'Expected value: json-string/json-file/@json-file.')
+        c.argument('roles', type=validate_file_or_dict, help='A map of roles to assign to the environment creator. '
+                   'Expected value: json-string/json-file/@json-file.', arg_group='Creator Role Assignment')
         c.argument('type_', options_list=['--type'], arg_type=get_enum_type(['None', 'SystemAssigned', 'UserAssigned',
                                                                              'SystemAssigned, UserAssigned']),
                    help='Type of managed service identity (where both SystemAssigned and UserAssigned types are '
@@ -361,11 +361,11 @@ def load_arguments(self, _):
                    'mapped to. The environment\'s resources will be deployed into this subscription.')
         c.argument('status', arg_type=get_enum_type(['Enabled', 'Disabled']), help='Defines whether this Environment '
                    'Type can be used in this Project.')
-        c.argument('creator_role_assignment', type=str, help='The role definition assigned to the environment creator '
-                   'on backing resources.')
         c.argument('user_role_assignments', type=validate_file_or_dict, help='Role Assignments created on environment '
                    'backing resources. This is a mapping from a user object ID to an object of role definition IDs. '
                    'Expected value: json-string/json-file/@json-file.')
+        c.argument('roles', type=validate_file_or_dict, help='A map of roles to assign to the environment creator. '
+                   'Expected value: json-string/json-file/@json-file.', arg_group='Creator Role Assignment')
         c.argument('type_', options_list=['--type'], arg_type=get_enum_type(['None', 'SystemAssigned', 'UserAssigned',
                                                                              'SystemAssigned, UserAssigned']),
                    help='Type of managed service identity (where both SystemAssigned and UserAssigned types are '

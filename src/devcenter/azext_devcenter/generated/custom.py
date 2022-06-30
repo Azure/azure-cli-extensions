@@ -513,8 +513,8 @@ def devcenter_project_environment_type_create(client,
                                               location=None,
                                               deployment_target_id=None,
                                               status=None,
-                                              creator_role_assignment=None,
                                               user_role_assignments=None,
+                                              roles=None,
                                               type_=None,
                                               user_assigned_identities=None):
     body = {}
@@ -526,10 +526,13 @@ def devcenter_project_environment_type_create(client,
         body['deployment_target_id'] = deployment_target_id
     if status is not None:
         body['status'] = status
-    if creator_role_assignment is not None:
-        body['creator_role_assignment'] = creator_role_assignment
     if user_role_assignments is not None:
         body['user_role_assignments'] = user_role_assignments
+    body['creator_role_assignment'] = {}
+    if roles is not None:
+        body['creator_role_assignment']['roles'] = roles
+    if len(body['creator_role_assignment']) == 0:
+        del body['creator_role_assignment']
     body['identity'] = {}
     if type_ is not None:
         body['identity']['type'] = type_
@@ -550,8 +553,8 @@ def devcenter_project_environment_type_update(client,
                                               tags=None,
                                               deployment_target_id=None,
                                               status=None,
-                                              creator_role_assignment=None,
                                               user_role_assignments=None,
+                                              roles=None,
                                               type_=None,
                                               user_assigned_identities=None):
     body = {}
@@ -561,10 +564,13 @@ def devcenter_project_environment_type_update(client,
         body['deployment_target_id'] = deployment_target_id
     if status is not None:
         body['status'] = status
-    if creator_role_assignment is not None:
-        body['creator_role_assignment'] = creator_role_assignment
     if user_role_assignments is not None:
         body['user_role_assignments'] = user_role_assignments
+    body['creator_role_assignment'] = {}
+    if roles is not None:
+        body['creator_role_assignment']['roles'] = roles
+    if len(body['creator_role_assignment']) == 0:
+        del body['creator_role_assignment']
     body['identity'] = {}
     if type_ is not None:
         body['identity']['type'] = type_

@@ -64,6 +64,7 @@ try:
     from ._models_py3 import ProjectEnvironmentTypeProperties
     from ._models_py3 import ProjectEnvironmentTypeUpdate
     from ._models_py3 import ProjectEnvironmentTypeUpdateProperties
+    from ._models_py3 import ProjectEnvironmentTypeUpdatePropertiesCreatorRoleAssignment
     from ._models_py3 import ProjectListResult
     from ._models_py3 import ProjectProperties
     from ._models_py3 import ProjectUpdate
@@ -144,6 +145,7 @@ except (SyntaxError, ImportError):
     from ._models import ProjectEnvironmentTypeProperties  # type: ignore
     from ._models import ProjectEnvironmentTypeUpdate  # type: ignore
     from ._models import ProjectEnvironmentTypeUpdateProperties  # type: ignore
+    from ._models import ProjectEnvironmentTypeUpdatePropertiesCreatorRoleAssignment  # type: ignore
     from ._models import ProjectListResult  # type: ignore
     from ._models import ProjectProperties  # type: ignore
     from ._models import ProjectUpdate  # type: ignore
@@ -242,6 +244,7 @@ __all__ = [
     'ProjectEnvironmentTypeProperties',
     'ProjectEnvironmentTypeUpdate',
     'ProjectEnvironmentTypeUpdateProperties',
+    'ProjectEnvironmentTypeUpdatePropertiesCreatorRoleAssignment',
     'ProjectListResult',
     'ProjectProperties',
     'ProjectUpdate',

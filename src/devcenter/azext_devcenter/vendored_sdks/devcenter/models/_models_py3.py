@@ -83,6 +83,9 @@ class AttachedNetworkConnection(Resource):
     :ivar health_check_status: Health check status values. Possible values include: "Pending",
      "Running", "Passed", "Failed", "Warning", "Unknown".
     :vartype health_check_status: str or ~dev_center.models.HealthCheckStatus
+    :ivar domain_join_type: AAD Join type of the network. This is populated based on the referenced
+     Network Connection. Possible values include: "HybridAzureADJoin", "AzureADJoin".
+    :vartype domain_join_type: str or ~dev_center.models.DomainJoinType
     """
 
     _validation = {
@@ -93,6 +96,7 @@ class AttachedNetworkConnection(Resource):
         'provisioning_state': {'readonly': True},
         'network_connection_location': {'readonly': True},
         'health_check_status': {'readonly': True},
+        'domain_join_type': {'readonly': True},
     }
 
     _attribute_map = {
@@ -104,6 +108,7 @@ class AttachedNetworkConnection(Resource):
         'network_connection_id': {'key': 'properties.networkConnectionId', 'type': 'str'},
         'network_connection_location': {'key': 'properties.networkConnectionLocation', 'type': 'str'},
         'health_check_status': {'key': 'properties.healthCheckStatus', 'type': 'str'},
+        'domain_join_type': {'key': 'properties.domainJoinType', 'type': 'str'},
     }
 
     def __init__(
@@ -117,6 +122,7 @@ class AttachedNetworkConnection(Resource):
         self.network_connection_id = network_connection_id
         self.network_connection_location = None
         self.health_check_status = None
+        self.domain_join_type = None
 
 
 class AttachedNetworkListResult(msrest.serialization.Model):
@@ -2556,7 +2562,8 @@ class ProjectEnvironmentType(Resource):
     :type status: str or ~dev_center.models.EnableStatus
     :param creator_role_assignment: The role definition assigned to the environment creator on
      backing resources.
-    :type creator_role_assignment: str
+    :type creator_role_assignment:
+     ~dev_center.models.ProjectEnvironmentTypeUpdatePropertiesCreatorRoleAssignment
     :param user_role_assignments: Role Assignments created on environment backing resources. This
      is a mapping from a user object ID to an object of role definition IDs.
     :type user_role_assignments: dict[str, ~dev_center.models.UserRoleAssignmentValue]
@@ -2582,7 +2589,7 @@ class ProjectEnvironmentType(Resource):
         'location': {'key': 'location', 'type': 'str'},
         'deployment_target_id': {'key': 'properties.deploymentTargetId', 'type': 'str'},
         'status': {'key': 'properties.status', 'type': 'str'},
-        'creator_role_assignment': {'key': 'properties.creatorRoleAssignment', 'type': 'str'},
+        'creator_role_assignment': {'key': 'properties.creatorRoleAssignment', 'type': 'ProjectEnvironmentTypeUpdatePropertiesCreatorRoleAssignment'},
         'user_role_assignments': {'key': 'properties.userRoleAssignments', 'type': '{UserRoleAssignmentValue}'},
         'provisioning_state': {'key': 'properties.provisioningState', 'type': 'str'},
     }
@@ -2595,7 +2602,7 @@ class ProjectEnvironmentType(Resource):
         location: Optional[str] = None,
         deployment_target_id: Optional[str] = None,
         status: Optional[Union[str, "EnableStatus"]] = None,
-        creator_role_assignment: Optional[str] = None,
+        creator_role_assignment: Optional["ProjectEnvironmentTypeUpdatePropertiesCreatorRoleAssignment"] = None,
         user_role_assignments: Optional[Dict[str, "UserRoleAssignmentValue"]] = None,
         **kwargs
     ):
@@ -2651,7 +2658,8 @@ class ProjectEnvironmentTypeUpdateProperties(msrest.serialization.Model):
     :type status: str or ~dev_center.models.EnableStatus
     :param creator_role_assignment: The role definition assigned to the environment creator on
      backing resources.
-    :type creator_role_assignment: str
+    :type creator_role_assignment:
+     ~dev_center.models.ProjectEnvironmentTypeUpdatePropertiesCreatorRoleAssignment
     :param user_role_assignments: Role Assignments created on environment backing resources. This
      is a mapping from a user object ID to an object of role definition IDs.
     :type user_role_assignments: dict[str, ~dev_center.models.UserRoleAssignmentValue]
@@ -2660,7 +2668,7 @@ class ProjectEnvironmentTypeUpdateProperties(msrest.serialization.Model):
     _attribute_map = {
         'deployment_target_id': {'key': 'deploymentTargetId', 'type': 'str'},
         'status': {'key': 'status', 'type': 'str'},
-        'creator_role_assignment': {'key': 'creatorRoleAssignment', 'type': 'str'},
+        'creator_role_assignment': {'key': 'creatorRoleAssignment', 'type': 'ProjectEnvironmentTypeUpdatePropertiesCreatorRoleAssignment'},
         'user_role_assignments': {'key': 'userRoleAssignments', 'type': '{UserRoleAssignmentValue}'},
     }
 
@@ -2669,7 +2677,7 @@ class ProjectEnvironmentTypeUpdateProperties(msrest.serialization.Model):
         *,
         deployment_target_id: Optional[str] = None,
         status: Optional[Union[str, "EnableStatus"]] = None,
-        creator_role_assignment: Optional[str] = None,
+        creator_role_assignment: Optional["ProjectEnvironmentTypeUpdatePropertiesCreatorRoleAssignment"] = None,
         user_role_assignments: Optional[Dict[str, "UserRoleAssignmentValue"]] = None,
         **kwargs
     ):
@@ -2693,7 +2701,8 @@ class ProjectEnvironmentTypeProperties(ProjectEnvironmentTypeUpdateProperties):
     :type status: str or ~dev_center.models.EnableStatus
     :param creator_role_assignment: The role definition assigned to the environment creator on
      backing resources.
-    :type creator_role_assignment: str
+    :type creator_role_assignment:
+     ~dev_center.models.ProjectEnvironmentTypeUpdatePropertiesCreatorRoleAssignment
     :param user_role_assignments: Role Assignments created on environment backing resources. This
      is a mapping from a user object ID to an object of role definition IDs.
     :type user_role_assignments: dict[str, ~dev_center.models.UserRoleAssignmentValue]
@@ -2708,7 +2717,7 @@ class ProjectEnvironmentTypeProperties(ProjectEnvironmentTypeUpdateProperties):
     _attribute_map = {
         'deployment_target_id': {'key': 'deploymentTargetId', 'type': 'str'},
         'status': {'key': 'status', 'type': 'str'},
-        'creator_role_assignment': {'key': 'creatorRoleAssignment', 'type': 'str'},
+        'creator_role_assignment': {'key': 'creatorRoleAssignment', 'type': 'ProjectEnvironmentTypeUpdatePropertiesCreatorRoleAssignment'},
         'user_role_assignments': {'key': 'userRoleAssignments', 'type': '{UserRoleAssignmentValue}'},
         'provisioning_state': {'key': 'provisioningState', 'type': 'str'},
     }
@@ -2718,7 +2727,7 @@ class ProjectEnvironmentTypeProperties(ProjectEnvironmentTypeUpdateProperties):
         *,
         deployment_target_id: Optional[str] = None,
         status: Optional[Union[str, "EnableStatus"]] = None,
-        creator_role_assignment: Optional[str] = None,
+        creator_role_assignment: Optional["ProjectEnvironmentTypeUpdatePropertiesCreatorRoleAssignment"] = None,
         user_role_assignments: Optional[Dict[str, "UserRoleAssignmentValue"]] = None,
         **kwargs
     ):
@@ -2741,7 +2750,8 @@ class ProjectEnvironmentTypeUpdate(msrest.serialization.Model):
     :type status: str or ~dev_center.models.EnableStatus
     :param creator_role_assignment: The role definition assigned to the environment creator on
      backing resources.
-    :type creator_role_assignment: str
+    :type creator_role_assignment:
+     ~dev_center.models.ProjectEnvironmentTypeUpdatePropertiesCreatorRoleAssignment
     :param user_role_assignments: Role Assignments created on environment backing resources. This
      is a mapping from a user object ID to an object of role definition IDs.
     :type user_role_assignments: dict[str, ~dev_center.models.UserRoleAssignmentValue]
@@ -2752,7 +2762,7 @@ class ProjectEnvironmentTypeUpdate(msrest.serialization.Model):
         'identity': {'key': 'identity', 'type': 'ManagedServiceIdentity'},
         'deployment_target_id': {'key': 'properties.deploymentTargetId', 'type': 'str'},
         'status': {'key': 'properties.status', 'type': 'str'},
-        'creator_role_assignment': {'key': 'properties.creatorRoleAssignment', 'type': 'str'},
+        'creator_role_assignment': {'key': 'properties.creatorRoleAssignment', 'type': 'ProjectEnvironmentTypeUpdatePropertiesCreatorRoleAssignment'},
         'user_role_assignments': {'key': 'properties.userRoleAssignments', 'type': '{UserRoleAssignmentValue}'},
     }
 
@@ -2763,7 +2773,7 @@ class ProjectEnvironmentTypeUpdate(msrest.serialization.Model):
         identity: Optional["ManagedServiceIdentity"] = None,
         deployment_target_id: Optional[str] = None,
         status: Optional[Union[str, "EnableStatus"]] = None,
-        creator_role_assignment: Optional[str] = None,
+        creator_role_assignment: Optional["ProjectEnvironmentTypeUpdatePropertiesCreatorRoleAssignment"] = None,
         user_role_assignments: Optional[Dict[str, "UserRoleAssignmentValue"]] = None,
         **kwargs
     ):
@@ -2774,6 +2784,27 @@ class ProjectEnvironmentTypeUpdate(msrest.serialization.Model):
         self.status = status
         self.creator_role_assignment = creator_role_assignment
         self.user_role_assignments = user_role_assignments
+
+
+class ProjectEnvironmentTypeUpdatePropertiesCreatorRoleAssignment(msrest.serialization.Model):
+    """The role definition assigned to the environment creator on backing resources.
+
+    :param roles: A map of roles to assign to the environment creator.
+    :type roles: dict[str, ~dev_center.models.EnvironmentRole]
+    """
+
+    _attribute_map = {
+        'roles': {'key': 'roles', 'type': '{EnvironmentRole}'},
+    }
+
+    def __init__(
+        self,
+        *,
+        roles: Optional[Dict[str, "EnvironmentRole"]] = None,
+        **kwargs
+    ):
+        super(ProjectEnvironmentTypeUpdatePropertiesCreatorRoleAssignment, self).__init__(**kwargs)
+        self.roles = roles
 
 
 class ProjectListResult(msrest.serialization.Model):
