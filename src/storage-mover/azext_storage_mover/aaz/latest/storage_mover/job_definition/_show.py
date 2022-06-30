@@ -42,8 +42,8 @@ class Show(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.name = AAZStrArg(
-            options=["--name", "-n"],
+        _args_schema.job_definition_name = AAZStrArg(
+            options=["--job-definition-name", "--name", "-n"],
             help="The name of the job definition resource.",
             required=True,
             id_part="child_name_2",
@@ -102,7 +102,7 @@ class Show(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "jobDefinitionName", self.ctx.args.name,
+                    "jobDefinitionName", self.ctx.args.job_definition_name,
                     required=True,
                 ),
                 **self.serialize_url_param(

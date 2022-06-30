@@ -42,8 +42,8 @@ class Show(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.name = AAZStrArg(
-            options=["--name", "-n"],
+        _args_schema.project_name = AAZStrArg(
+            options=["--project-name", "--name", "-n"],
             help="The name of the project resource.",
             required=True,
             id_part="child_name_1",
@@ -96,7 +96,7 @@ class Show(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "projectName", self.ctx.args.name,
+                    "projectName", self.ctx.args.project_name,
                     required=True,
                 ),
                 **self.serialize_url_param(

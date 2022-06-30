@@ -16,7 +16,7 @@ from azure.cli.core.aaz import *
     is_preview=True,
 )
 class Create(AAZCommand):
-    """Creates an endpoint resource, which represents a data transfer source or destination.
+    """Creates an endpoint resource.
     """
 
     _aaz_info = {
@@ -42,8 +42,8 @@ class Create(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.name = AAZStrArg(
-            options=["--name", "-n"],
+        _args_schema.endpoint_name = AAZStrArg(
+            options=["--endpoint-name", "--name", "-n"],
             help="The name of the endpoint resource.",
             required=True,
             id_part="child_name_1",
@@ -61,10 +61,10 @@ class Create(AAZCommand):
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
-        _args_schema.container = AAZObjectArg(
-            options=["--container"],
+        _args_schema.blob_container = AAZObjectArg(
+            options=["--blob-container"],
             arg_group="Properties",
-            help="Container object",
+            help="Storage Blob Container",
         )
         _args_schema.nfs_mount = AAZObjectArg(
             options=["--nfs-mount"],
@@ -76,14 +76,14 @@ class Create(AAZCommand):
             help="A description for the endpoint.",
         )
 
-        container = cls._args_schema.container
-        container.name = AAZStrArg(
+        blob_container = cls._args_schema.blob_container
+        blob_container.name = AAZStrArg(
             options=["name"],
             help="The name of the Storage blob container that is the target destination.",
             required=True,
         )
-        container.account_resource_id = AAZStrArg(
-            options=["account-resource-id"],
+        blob_container.storage_account_resource_id = AAZStrArg(
+            options=["storage-account-resource-id"],
             help="The Azure Resource ID of the storage account that is the target destination.",
             required=True,
         )
@@ -143,7 +143,7 @@ class Create(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "endpointName", self.ctx.args.name,
+                    "endpointName", self.ctx.args.endpoint_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -194,15 +194,15 @@ class Create(AAZCommand):
             properties = _builder.get(".properties")
             if properties is not None:
                 properties.set_prop("description", AAZStrType, ".description")
-                properties.set_const("endpointType", "AzureStorageBlobContainer", AAZStrType, ".container", typ_kwargs={"flags": {"required": True}})
+                properties.set_const("endpointType", "AzureStorageBlobContainer", AAZStrType, ".blob_container", typ_kwargs={"flags": {"required": True}})
                 properties.set_const("endpointType", "NfsMount", AAZStrType, ".nfs_mount", typ_kwargs={"flags": {"required": True}})
                 properties.discriminate_by("endpointType", "AzureStorageBlobContainer")
                 properties.discriminate_by("endpointType", "NfsMount")
 
             disc_azure_storage_blob_container = _builder.get(".properties{endpointType:AzureStorageBlobContainer}")
             if disc_azure_storage_blob_container is not None:
-                disc_azure_storage_blob_container.set_prop("blobContainerName", AAZStrType, ".container.name", typ_kwargs={"flags": {"required": True}})
-                disc_azure_storage_blob_container.set_prop("storageAccountResourceId", AAZStrType, ".container.account_resource_id", typ_kwargs={"flags": {"required": True}})
+                disc_azure_storage_blob_container.set_prop("blobContainerName", AAZStrType, ".blob_container.name", typ_kwargs={"flags": {"required": True}})
+                disc_azure_storage_blob_container.set_prop("storageAccountResourceId", AAZStrType, ".blob_container.storage_account_resource_id", typ_kwargs={"flags": {"required": True}})
 
             disc_nfs_mount = _builder.get(".properties{endpointType:NfsMount}")
             if disc_nfs_mount is not None:

@@ -47,8 +47,8 @@ class Update(AAZCommand):
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
-        _args_schema.name = AAZStrArg(
-            options=["--name", "-n"],
+        _args_schema.storage_mover_name = AAZStrArg(
+            options=["--storage-mover-name", "--name", "-n"],
             help="The name of the Storage Mover resource.",
             required=True,
             id_part="name",
@@ -122,7 +122,7 @@ class Update(AAZCommand):
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "storageMoverName", self.ctx.args.name,
+                    "storageMoverName", self.ctx.args.storage_mover_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -205,7 +205,7 @@ class Update(AAZCommand):
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "storageMoverName", self.ctx.args.name,
+                    "storageMoverName", self.ctx.args.storage_mover_name,
                     required=True,
                 ),
                 **self.serialize_url_param(

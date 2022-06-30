@@ -31,7 +31,7 @@ class Delete(AAZCommand):
 
     def _handler(self, command_args):
         super()._handler(command_args)
-        return self.build_lro_poller(self._execute_operations, self._output)
+        return self.build_lro_poller(self._execute_operations, None)
 
     _args_schema = None
 
@@ -47,8 +47,8 @@ class Delete(AAZCommand):
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
-        _args_schema.name = AAZStrArg(
-            options=["--name", "-n"],
+        _args_schema.storage_mover_name = AAZStrArg(
+            options=["--storage-mover-name", "--name", "-n"],
             help="The name of the Storage Mover resource.",
             required=True,
             id_part="name",
@@ -57,10 +57,6 @@ class Delete(AAZCommand):
 
     def _execute_operations(self):
         yield self.StorageMoversDelete(ctx=self.ctx)()
-
-    def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
-        return result
 
     class StorageMoversDelete(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
@@ -74,7 +70,16 @@ class Delete(AAZCommand):
                     session,
                     None,
                     self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
+                    lro_options={"final-state-via": "location"},
+                    path_format_arguments=self.url_parameters,
+                )
+            if session.http_response.status_code in [204]:
+                return self.client.build_lro_polling(
+                    self.ctx.args.no_wait,
+                    session,
+                    self.on_204,
+                    self.on_error,
+                    lro_options={"final-state-via": "location"},
                     path_format_arguments=self.url_parameters,
                 )
 
@@ -103,7 +108,7 @@ class Delete(AAZCommand):
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "storageMoverName", self.ctx.args.name,
+                    "storageMoverName", self.ctx.args.storage_mover_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -122,6 +127,9 @@ class Delete(AAZCommand):
                 ),
             }
             return parameters
+
+        def on_204(self, session):
+            pass
 
 
 __all__ = ["Delete"]

@@ -16,7 +16,7 @@ from azure.cli.core.aaz import *
     is_preview=True,
 )
 class Create(AAZCommand):
-    """Creates a job definition resource, which contains configuration for a single unit of managed data transfer.
+    """Creates a job definition resource.
     """
 
     _aaz_info = {
@@ -42,8 +42,8 @@ class Create(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.name = AAZStrArg(
-            options=["--name", "-n"],
+        _args_schema.job_definition_name = AAZStrArg(
+            options=["--job-definition-name", "--name", "-n"],
             help="The name of the job definition resource.",
             required=True,
             id_part="child_name_2",
@@ -76,7 +76,7 @@ class Create(AAZCommand):
             options=["--copy-mode"],
             arg_group="Properties",
             help="Strategy to use for copy.",
-            enum={"Additive": "Additive", "Default": "Default", "Mirror": "Mirror"},
+            enum={"Additive": "Additive", "Mirror": "Mirror"},
         )
         _args_schema.description = AAZStrArg(
             options=["--description"],
@@ -142,7 +142,7 @@ class Create(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "jobDefinitionName", self.ctx.args.name,
+                    "jobDefinitionName", self.ctx.args.job_definition_name,
                     required=True,
                 ),
                 **self.serialize_url_param(

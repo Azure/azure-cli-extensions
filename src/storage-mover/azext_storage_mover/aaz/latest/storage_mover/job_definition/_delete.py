@@ -31,7 +31,7 @@ class Delete(AAZCommand):
 
     def _handler(self, command_args):
         super()._handler(command_args)
-        return self.build_lro_poller(self._execute_operations, self._output)
+        return self.build_lro_poller(self._execute_operations, None)
 
     _args_schema = None
 
@@ -44,8 +44,8 @@ class Delete(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.name = AAZStrArg(
-            options=["--name", "-n"],
+        _args_schema.job_definition_name = AAZStrArg(
+            options=["--job-definition-name", "--name", "-n"],
             help="The name of the job definition resource.",
             required=True,
             id_part="child_name_2",
@@ -70,10 +70,6 @@ class Delete(AAZCommand):
     def _execute_operations(self):
         yield self.JobDefinitionsDelete(ctx=self.ctx)()
 
-    def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
-        return result
-
     class JobDefinitionsDelete(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
@@ -86,7 +82,16 @@ class Delete(AAZCommand):
                     session,
                     None,
                     self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
+                    lro_options={"final-state-via": "location"},
+                    path_format_arguments=self.url_parameters,
+                )
+            if session.http_response.status_code in [204]:
+                return self.client.build_lro_polling(
+                    self.ctx.args.no_wait,
+                    session,
+                    self.on_204,
+                    self.on_error,
+                    lro_options={"final-state-via": "location"},
                     path_format_arguments=self.url_parameters,
                 )
 
@@ -111,7 +116,7 @@ class Delete(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "jobDefinitionName", self.ctx.args.name,
+                    "jobDefinitionName", self.ctx.args.job_definition_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -142,6 +147,9 @@ class Delete(AAZCommand):
                 ),
             }
             return parameters
+
+        def on_204(self, session):
+            pass
 
 
 __all__ = ["Delete"]

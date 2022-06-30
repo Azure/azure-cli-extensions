@@ -16,7 +16,7 @@ from azure.cli.core.aaz import *
     is_preview=True,
 )
 class Update(AAZCommand):
-    """Updates an agent resource, which references a hybrid compute machine that can run jobs.
+    """Updates an agent resource.
     """
 
     _aaz_info = {
@@ -44,8 +44,8 @@ class Update(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.name = AAZStrArg(
-            options=["--name", "-n"],
+        _args_schema.agent_name = AAZStrArg(
+            options=["--agent-name", "--name", "-n"],
             help="The name of the agent resource.",
             required=True,
             id_part="child_name_1",
@@ -111,7 +111,7 @@ class Update(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "agentName", self.ctx.args.name,
+                    "agentName", self.ctx.args.agent_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -198,7 +198,7 @@ class Update(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "agentName", self.ctx.args.name,
+                    "agentName", self.ctx.args.agent_name,
                     required=True,
                 ),
                 **self.serialize_url_param(

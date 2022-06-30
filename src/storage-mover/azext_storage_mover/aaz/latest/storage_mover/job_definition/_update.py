@@ -16,7 +16,7 @@ from azure.cli.core.aaz import *
     is_preview=True,
 )
 class Update(AAZCommand):
-    """Updates a job definition resource, which contains configuration for a single unit of managed data transfer.
+    """Updates a job definition resource.
     """
 
     _aaz_info = {
@@ -44,8 +44,8 @@ class Update(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.name = AAZStrArg(
-            options=["--name", "-n"],
+        _args_schema.job_definition_name = AAZStrArg(
+            options=["--job-definition-name", "--name", "-n"],
             help="The name of the job definition resource.",
             required=True,
             id_part="child_name_2",
@@ -80,34 +80,12 @@ class Update(AAZCommand):
             arg_group="Properties",
             help="Strategy to use for copy.",
             nullable=True,
-            enum={"Additive": "Additive", "Default": "Default", "Mirror": "Mirror"},
+            enum={"Additive": "Additive", "Mirror": "Mirror"},
         )
         _args_schema.description = AAZStrArg(
             options=["--description"],
             arg_group="Properties",
             help="A description for the job definition.",
-            nullable=True,
-        )
-        _args_schema.source_name = AAZStrArg(
-            options=["--source-name"],
-            arg_group="Properties",
-            help="The name of the source endpoint.",
-        )
-        _args_schema.source_subpath = AAZStrArg(
-            options=["--source-subpath"],
-            arg_group="Properties",
-            help="The subpath to use when reading from the source Endpoint.",
-            nullable=True,
-        )
-        _args_schema.target_name = AAZStrArg(
-            options=["--target-name"],
-            arg_group="Properties",
-            help="The name of the target endpoint.",
-        )
-        _args_schema.target_subpath = AAZStrArg(
-            options=["--target-subpath"],
-            arg_group="Properties",
-            help="The subpath to use when writing to the target Endpoint.",
             nullable=True,
         )
         return cls._args_schema
@@ -152,7 +130,7 @@ class Update(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "jobDefinitionName", self.ctx.args.name,
+                    "jobDefinitionName", self.ctx.args.job_definition_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -243,7 +221,7 @@ class Update(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "jobDefinitionName", self.ctx.args.name,
+                    "jobDefinitionName", self.ctx.args.job_definition_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -334,10 +312,6 @@ class Update(AAZCommand):
                 properties.set_prop("agentName", AAZStrType, ".agent_name")
                 properties.set_prop("copyMode", AAZStrType, ".copy_mode")
                 properties.set_prop("description", AAZStrType, ".description")
-                properties.set_prop("sourceName", AAZStrType, ".source_name", typ_kwargs={"flags": {"required": True}})
-                properties.set_prop("sourceSubpath", AAZStrType, ".source_subpath")
-                properties.set_prop("targetName", AAZStrType, ".target_name", typ_kwargs={"flags": {"required": True}})
-                properties.set_prop("targetSubpath", AAZStrType, ".target_subpath")
 
             return _instance_value
 
