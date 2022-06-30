@@ -384,10 +384,12 @@ class TestValidateAzureKeyVaultKmsKeyId(unittest.TestCase):
             validators.validate_azure_keyvault_kms_key_id(namespace)
         self.assertEqual(str(cm.exception), err)
 
+
 class AzureKeyVaultKmsKeyVaultResourceIdNamespace:
 
     def __init__(self, azure_keyvault_kms_key_vault_resource_id):
         self.azure_keyvault_kms_key_vault_resource_id = azure_keyvault_kms_key_vault_resource_id
+
 
 class TestValidateAzureKeyVaultKmsKeyVaultResourceId(unittest.TestCase):
     def test_invalid_azure_keyvault_kms_key_vault_resource_id(self):
@@ -404,6 +406,7 @@ class TestValidateAzureKeyVaultKmsKeyVaultResourceId(unittest.TestCase):
         namespace = AzureKeyVaultKmsKeyVaultResourceIdNamespace(azure_keyvault_kms_key_vault_resource_id=valid_azure_keyvault_kms_key_vault_resource_id)
 
         validators.validate_azure_keyvault_kms_key_vault_resource_id(namespace)
+
 
 if __name__ == "__main__":
     unittest.main()

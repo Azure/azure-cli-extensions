@@ -4,26 +4,25 @@
 # --------------------------------------------------------------------------------------------
 
 from __future__ import unicode_literals
+
 import os
 import os.path
 import re
-from math import isnan, isclose
 from ipaddress import ip_network
+from math import isclose, isnan
 
-from knack.log import get_logger
-
-from azure.cli.core.azclierror import InvalidArgumentValueError, ArgumentUsageError, RequiredArgumentMissingError
+import azure.cli.core.keys as keys
+from azure.cli.core.azclierror import (
+    ArgumentUsageError,
+    InvalidArgumentValueError,
+    RequiredArgumentMissingError,
+)
 from azure.cli.core.commands.validators import validate_tag
 from azure.cli.core.util import CLIError
-import azure.cli.core.keys as keys
+from knack.log import get_logger
 
-from ._helpers import (_fuzzy_match)
-
-from ._consts import (
-    ADDONS,
-    CONST_AZURE_KEYVAULT_NETWORK_ACCESS_PUBLIC,
-    CONST_AZURE_KEYVAULT_NETWORK_ACCESS_PRIVATE,
-)
+from azext_aks_preview._consts import ADDONS
+from azext_aks_preview._helpers import _fuzzy_match
 
 logger = get_logger(__name__)
 

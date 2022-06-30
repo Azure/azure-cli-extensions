@@ -133,24 +133,20 @@ def load_arguments(self, _):
         c.argument('enable_gateway',
                    arg_group="Spring Cloud Gateway",
                    action='store_true',
-                   is_preview=True,
                    help='(Enterprise Tier Only) Enable Spring Cloud Gateway.')
         c.argument('gateway_instance_count',
                    arg_group="Spring Cloud Gateway",
                    type=int,
                    validator=validate_gateway_instance_count,
-                   is_preview=True,
                    help='(Enterprise Tier Only) Number of Spring Cloud Gateway instances.')
         c.argument('enable_api_portal',
                    arg_group="API portal",
                    action='store_true',
-                   is_preview=True,
                    help='(Enterprise Tier Only) Enable API portal.')
         c.argument('api_portal_instance_count',
                    arg_group="API portal",
                    type=int,
                    validator=validate_api_portal_instance_count,
-                   is_preview=True,
                    options_list=['--api-portal-instance-count', '--ap-instance'],
                    help='(Enterprise Tier Only) Number of API portal instances.')
 
@@ -217,6 +213,9 @@ def load_arguments(self, _):
                        help='A json file path indicates the readiness probe config', arg_group='App Customization')
             c.argument('startup_probe_config', type=str, is_preview=True,
                        help='A json file path indicates the startup probe config', arg_group='App Customization')
+            c.argument('termination_grace_period_seconds', type=str, is_preview=True,
+                       options_list=['--termination-grace-period-seconds', '--grace-period'],
+                       help='Optional duration in seconds the app instance needs to terminate gracefully', arg_group='App Customization')
 
     with self.argument_context('spring app create') as c:
         c.argument('assign_endpoint', arg_type=get_three_state_flag(),
@@ -400,9 +399,9 @@ def load_arguments(self, _):
             c.argument(
                 'registry_password', help='The password of the container registry.', arg_group='Custom Container')
             c.argument(
-                'container_command', help='The command of the container image.', nargs='*', arg_group='Custom Container')
+                'container_command', help='The command of the container image.', arg_group='Custom Container')
             c.argument(
-                'container_args', help='The arguments of the container image.', nargs='*', arg_group='Custom Container')
+                'container_args', help='The arguments of the container image.', arg_group='Custom Container')
             c.argument(
                 'build_env', build_env_type)
             c.argument(

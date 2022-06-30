@@ -35,6 +35,7 @@ def load_arguments(self, _):
     job_name_type = CLIArgumentType(help='A friendly name to give to this run of the program.')
     job_id_type = CLIArgumentType(options_list=['--job-id', '-j'], help='Job unique identifier in GUID format.')
     job_params_type = CLIArgumentType(options_list=['--job-params'], help='Job parameters passed to the target as a list of key=value pairs.', action=JobParamsAction, nargs='+')
+    target_capability_type = CLIArgumentType(options_list=['--target-capability'], help='Target-capability parameter passed to the compiler.')
     shots_type = CLIArgumentType(help='The number of times to run the Q# program on the given target.')
     no_build_type = CLIArgumentType(help='If specified, the Q# program is not built before submitting.')
     storage_type = CLIArgumentType(help='If specified, the ConnectionString of an Azure Storage is used to store job data and results.')
@@ -44,6 +45,8 @@ def load_arguments(self, _):
     provider_id_type = CLIArgumentType(options_list=['--provider-id', '-p'], help='Identifier of an Azure Quantum provider.')
     sku_type = CLIArgumentType(options_list=['--sku', '-k'], help='Identify a plan or SKU offered by an Azure Quantum provider.')
     provider_sku_list_type = CLIArgumentType(options_list=['--provider-sku-list', '-r'], help='Comma separated list of Provider/SKU pairs. Separate the Provider and SKU with a slash. Enclose the entire list in quotes. Values from `az quantum offerings list -l <location> -o table`')
+    auto_accept_type = CLIArgumentType(help='If specified, provider terms are accepted without an interactive Y/N prompt.')
+    autoadd_only_type = CLIArgumentType(help='If specified, only the plans flagged "autoAdd" are displayed.')
 
     with self.argument_context('quantum workspace') as c:
         c.argument('workspace_name', workspace_name_type)
@@ -51,6 +54,7 @@ def load_arguments(self, _):
         c.argument('tag', tag_type)
         c.argument('skip_role_assignment', skip_role_assignment_type)
         c.argument('provider_sku_list', provider_sku_list_type)
+        c.argument('auto_accept', auto_accept_type)
 
     with self.argument_context('quantum target') as c:
         c.argument('workspace_name', workspace_name_type)
@@ -69,6 +73,7 @@ def load_arguments(self, _):
 
     with self.argument_context('quantum job submit') as c:
         c.argument('job_params', job_params_type)
+        c.argument('target_capability', target_capability_type)
         c.positional('program_args', program_args_type)
 
     with self.argument_context('quantum execute') as c:
@@ -80,6 +85,7 @@ def load_arguments(self, _):
         c.argument('storage', storage_type)
         c.argument('no_build', no_build_type)
         c.argument('job_params', job_params_type)
+        c.argument('target_capability', target_capability_type)
         c.positional('program_args', program_args_type)
 
     with self.argument_context('quantum run') as c:
@@ -91,8 +97,12 @@ def load_arguments(self, _):
         c.argument('storage', storage_type)
         c.argument('no_build', no_build_type)
         c.argument('job_params', job_params_type)
+        c.argument('target_capability', target_capability_type)
         c.positional('program_args', program_args_type)
 
     with self.argument_context('quantum offerings') as c:
         c.argument('provider_id', provider_id_type)
         c.argument('sku', sku_type)
+
+    with self.argument_context('quantum offerings list') as c:
+        c.argument('autoadd_only', autoadd_only_type)

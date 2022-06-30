@@ -13,7 +13,7 @@ from azext_aks_preview.tests.latest.custom_preparers import (
 )
 from azext_aks_preview.tests.latest.recording_processors import KeyReplacer
 from azure.cli.command_modules.acs._format import version_to_tuple
-from azure.cli.core.azclierror import BadRequestError
+from azure.cli.core.azclierror import AzureInternalError, BadRequestError
 from azure.cli.testsdk import CliTestError, ScenarioTest, live_only
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 from azure.core.exceptions import HttpResponseError
@@ -4365,6 +4365,103 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         ])
 
     @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='centraluseuap', preserve_default_location=True)
+    def test_aks_create_with_standard_blob_csi_driver(self, resource_group, resource_group_location):
+        aks_name = self.create_random_name('cliakstest', 16)
+        self.kwargs.update({
+            'resource_group': resource_group,
+            'name': aks_name,
+            'ssh_key_value': self.generate_ssh_keys()
+        })
+
+        # check standard creation scenario
+        create_cmd = 'aks create --resource-group={resource_group} --name={name} --ssh-key-value={ssh_key_value} -o json'
+        self.cmd(create_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.check('storageProfile.blobCsiDriver.enabled', None),
+        ])
+
+        # check standard reconcile scenario
+        update_cmd = 'aks update --resource-group={resource_group} --name={name} -y -o json'
+        self.cmd(update_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.check('storageProfile.blobCsiDriver.enabled', None),
+        ])
+
+        # delete
+        cmd = 'aks delete --resource-group={resource_group} --name={name} --yes --no-wait'
+        self.cmd(cmd, checks=[
+            self.is_empty(),
+        ])
+
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='centraluseuap', preserve_default_location=True)
+    def test_aks_create_and_update_with_blob_csi_driver(self, resource_group, resource_group_location):
+        aks_name = self.create_random_name('cliakstest', 16)
+        self.kwargs.update({
+            'resource_group': resource_group,
+            'name': aks_name,
+            'ssh_key_value': self.generate_ssh_keys()
+        })
+        
+        # create aks with blob driver
+        create_cmd = 'aks create --resource-group={resource_group} --name={name} --ssh-key-value={ssh_key_value} -o json \
+                        --enable-blob-driver \
+                        --aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/EnableBlobCSIDriver'
+        self.cmd(create_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.check('storageProfile.blobCsiDriver.enabled', True),
+        ])
+        
+        # check standard reconcile scenario
+        update_cmd = 'aks update --resource-group={resource_group} --name={name} -y -o json \
+                        --aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/EnableBlobCSIDriver'
+        self.cmd(update_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.check('storageProfile.blobCsiDriver.enabled', True),
+        ])
+
+        # disable blob driver
+        disable_cmd = 'aks update --resource-group={resource_group} --name={name} -o json \
+                        --disable-blob-driver -y \
+                        --aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/EnableBlobCSIDriver'
+        self.cmd(disable_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.check('storageProfile.blobCsiDriver.enabled', False),
+        ])
+
+        # check standard reconcile scenario
+        update_cmd = 'aks update --resource-group={resource_group} --name={name} -y -o json \
+                        --aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/EnableBlobCSIDriver'
+        self.cmd(update_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.check('storageProfile.blobCsiDriver.enabled', False),
+        ])
+
+        # enable blob driver
+        enable_cmd = 'aks update --resource-group={resource_group} --name={name} -o json \
+                        --enable-blob-driver -y \
+                        --aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/EnableBlobCSIDriver'
+        self.cmd(enable_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.check('storageProfile.blobCsiDriver.enabled', True),
+        ])
+
+        # check standard reconcile scenario
+        update_cmd = 'aks update --resource-group={resource_group} --name={name} -y -o json \
+                        --aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/EnableBlobCSIDriver'
+        self.cmd(update_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.check('storageProfile.blobCsiDriver.enabled', True),
+        ])
+
+        # delete
+        cmd = 'aks delete --resource-group={resource_group} --name={name} --yes --no-wait'
+        self.cmd(cmd, checks=[
+            self.is_empty(),
+        ])
+
+    @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='eastus2euap', preserve_default_location=True)
     def test_aks_create_with_csi_driver_v2(self, resource_group, resource_group_location):
         aks_name = self.create_random_name('cliakstest', 16)
@@ -4496,8 +4593,11 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         try:
             self.cmd(create_cmd, checks=[])
             raise Exception("didn't get expected failure")
-        except (HttpResponseError, BadRequestError):
+        except (HttpResponseError, BadRequestError, AzureInternalError):
             # expected failure
+            # HttpResponseError for without error mapping
+            # BadRequestError for not a valid dns zone resource
+            # AzureInternalError for requesting from a different tenant
             pass
 
     @AllowLargeResponse()

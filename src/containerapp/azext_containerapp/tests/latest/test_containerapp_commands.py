@@ -162,7 +162,6 @@ class ContainerappIdentityTests(ScenarioTest):
         ])
 
 
-
 class ContainerappIngressTests(ScenarioTest):
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="eastus2")
@@ -392,6 +391,7 @@ class ContainerappIngressTests(ScenarioTest):
             JMESPathCheck('length(@)', 0),
         ]).get_output_in_json()
 
+
 class ContainerappDaprTests(ScenarioTest):
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="eastus2")
@@ -440,6 +440,7 @@ class ContainerappDaprTests(ScenarioTest):
             JMESPathCheck('properties.configuration.dapr.appProtocol', "http"),
             JMESPathCheck('properties.configuration.dapr.enabled', False),
         ])
+
 
 class ContainerappEnvStorageTests(ScenarioTest):
     @AllowLargeResponse(8192)

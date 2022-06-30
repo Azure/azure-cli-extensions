@@ -58,6 +58,7 @@ def app_create(cmd, client, resource_group, service, name,
                liveness_probe_config=None,
                readiness_probe_config=None,
                startup_probe_config=None,
+               termination_grace_period_seconds=None,
                assign_public_endpoint=None,
                loaded_public_certificate_file=None):
     '''app_create
@@ -104,6 +105,7 @@ def app_create(cmd, client, resource_group, service, name,
         'liveness_probe_config_file_path': liveness_probe_config,
         'readiness_probe_config_file_path': readiness_probe_config,
         'startup_probe_config_file_path': startup_probe_config,
+        'termination_grace_period_seconds': termination_grace_period_seconds,
     }
     update_app_kwargs = {
         'enable_persistent_storage': enable_persistent_storage,
@@ -163,6 +165,7 @@ def app_update(cmd, client, resource_group, service, name,
                liveness_probe_config=None,
                readiness_probe_config=None,
                startup_probe_config=None,
+               termination_grace_period_seconds=None,
                # general
                no_wait=False):
     '''app_update
@@ -196,6 +199,7 @@ def app_update(cmd, client, resource_group, service, name,
         'liveness_probe_config_file_path': liveness_probe_config,
         'readiness_probe_config_file_path': readiness_probe_config,
         'startup_probe_config_file_path': startup_probe_config,
+        'termination_grace_period_seconds': termination_grace_period_seconds,
     }
 
     app_kwargs = {
@@ -268,6 +272,7 @@ def app_deploy(cmd, client, resource_group, service, name,
                liveness_probe_config=None,
                readiness_probe_config=None,
                startup_probe_config=None,
+               termination_grace_period_seconds=None,
                # general
                no_wait=False):
     '''app_deploy
@@ -316,6 +321,7 @@ def app_deploy(cmd, client, resource_group, service, name,
         'liveness_probe_config_file_path': liveness_probe_config,
         'readiness_probe_config_file_path': readiness_probe_config,
         'startup_probe_config_file_path': startup_probe_config,
+        'termination_grace_period_seconds': termination_grace_period_seconds,
         'no_wait': no_wait
     }
 
@@ -373,6 +379,7 @@ def deployment_create(cmd, client, resource_group, service, app, name,
                       liveness_probe_config=None,
                       readiness_probe_config=None,
                       startup_probe_config=None,
+                      termination_grace_period_seconds=None,
                       # general
                       no_wait=False):
     '''deployment_create
@@ -420,6 +427,7 @@ def deployment_create(cmd, client, resource_group, service, app, name,
         'liveness_probe_config_file_path': liveness_probe_config,
         'readiness_probe_config_file_path': readiness_probe_config,
         'startup_probe_config_file_path': startup_probe_config,
+        'termination_grace_period_seconds': termination_grace_period_seconds,
         'no_wait': no_wait
     }
 

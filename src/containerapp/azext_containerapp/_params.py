@@ -125,7 +125,7 @@ def load_arguments(self, _):
         c.argument('tags', arg_type=tags_type)
 
     with self.argument_context('containerapp env', arg_group='Log Analytics') as c:
-        c.argument('logs_customer_id', options_list=['--logs-workspace-id'], help='Name or resource ID of the Log Analytics workspace to send diagnostics logs to. You can use \"az monitor log-analytics workspace create\" to create one. Extra billing may apply.')
+        c.argument('logs_customer_id', options_list=['--logs-workspace-id'], help='Workspace ID of the Log Analytics workspace to send diagnostics logs to. You can use \"az monitor log-analytics workspace create\" to create one. Extra billing may apply.')
         c.argument('logs_key', options_list=['--logs-workspace-key'], help='Log Analytics workspace key to configure your Log Analytics workspace. You can use \"az monitor log-analytics workspace get-shared-keys\" to retrieve the key.')
 
     with self.argument_context('containerapp env', arg_group='Dapr') as c:
@@ -270,7 +270,7 @@ def load_arguments(self, _):
         c.argument('browse', help='Open the app in a web browser after creation and deployment, if possible.')
 
     with self.argument_context('containerapp up', arg_group='Log Analytics (Environment)') as c:
-        c.argument('logs_customer_id', options_list=['--logs-workspace-id'], help='Name or resource ID of the Log Analytics workspace to send diagnostics logs to. You can use \"az monitor log-analytics workspace create\" to create one. Extra billing may apply.')
+        c.argument('logs_customer_id', options_list=['--logs-workspace-id'], help='Workspace ID of the Log Analytics workspace to send diagnostics logs to. You can use \"az monitor log-analytics workspace create\" to create one. Extra billing may apply.')
         c.argument('logs_key', options_list=['--logs-workspace-key'], help='Log Analytics workspace key to configure your Log Analytics workspace. You can use \"az monitor log-analytics workspace get-shared-keys\" to retrieve the key.')
         c.ignore('no_wait')
 
