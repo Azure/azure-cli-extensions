@@ -42,7 +42,7 @@ logger = get_logger(__name__)
 cli_outputs = []
 
 
-def create_folder_diagnosticlogs(time_stamp, storage_space_available):
+def create_folder_diagnosticlogs(time_stamp):
 
     home_dir = os.path.expanduser( '~' )
     filepath = os.path.join( home_dir, '.azure', 'arc_diagnostic_logs')
@@ -61,22 +61,24 @@ def create_folder_diagnosticlogs(time_stamp, storage_space_available):
         except FileExistsError:
             pass
         
-        return filepath_with_timestamp, storage_space_available
+        return filepath_with_timestamp, "folder_created"
 
     except OSError as e:
-        print(type(e))
         if "[Errno 28]" in str(e):
-            storage_space_available = False
             shutil.rmtree(filepath_with_timestamp, ignore_errors=False, onerror=None)
+            telemetry.set_exception(exception=e, fault_type=consts.No_Storage_Space_Available_Fault_Type, summary="No space left on device")
+            return filepath_with_timestamp, "no_storage_space"
         else:
             logger.warning("An expection has occured while creating the diagnostic logs folder in your local machine. Exception: {}".format(str(e)) + "\n")
+            telemetry.set_exception(exception=e, fault_type=consts.Storage_Available_Fault_Type, summary="Error while trying to create diagnostic logs folder")
             cli_outputs.append("An expection has occured while creating the diagnostic logs folder in your local machine. Exception: {}".format(str(e)) + "\n")
+            return filepath_with_timestamp, "folder_not_created"
 
     except Exception as e:
         logger.warning("An expection has occured while creating the diagnostic logs folder in your local machine. Exception: {}".format(str(e)) + "\n")
+        telemetry.set_exception(exception=e, fault_type=consts.Storage_Available_Fault_Type, summary="Error while trying to create diagnostic logs folder")
         cli_outputs.append("An expection has occured while creating the diagnostic logs folder in your local machine. Exception: {}".format(str(e)) + "\n")
-
-    return filepath_with_timestamp, storage_space_available
+        return filepath_with_timestamp, "folder_not_created"
 
 
 def arc_agents_logger(corev1_api_instance, filepath_with_timestamp, storage_space_available):
@@ -125,6 +127,7 @@ def arc_agents_logger(corev1_api_instance, filepath_with_timestamp, storage_spac
     except OSError as e:
         if "[Errno 28]" in str(e):
             storage_space_available = False
+            telemetry.set_exception(exception=e, fault_type=consts.No_Storage_Space_Available_Fault_Type, summary="No space left on device")
             shutil.rmtree(filepath_with_timestamp, ignore_errors=False, onerror=None)
         else:
             logger.warning("An expection has occured while trying to fetch the azure arc agents logs from the cluster. Exception: {}".format(str(e)) + "\n")
@@ -172,6 +175,7 @@ def arc_agents_event_logger(filepath_with_timestamp, storage_space_available):
     except OSError as e:
         if "[Errno 28]" in str(e):
             storage_space_available = False
+            telemetry.set_exception(exception=e, fault_type=consts.No_Storage_Space_Available_Fault_Type, summary="No space left on device")
             shutil.rmtree(filepath_with_timestamp, ignore_errors=False, onerror=None)
         else:
             logger.warning("An expection has occured while trying to fetch the events occured in azure-arc namespace from the cluster. Exception: {}".format(str(e)) + "\n")    
@@ -218,6 +222,7 @@ def deployments_logger(appv1_api_instance, filepath_with_timestamp, storage_spac
     except OSError as e:
         if "[Errno 28]" in str(e):
             storage_space_available = False
+            telemetry.set_exception(exception=e, fault_type=consts.No_Storage_Space_Available_Fault_Type, summary="No space left on device")
             shutil.rmtree(filepath_with_timestamp, ignore_errors=False, onerror=None)
         else:
             logger.warning("An expection has occured while trying to fetch the azure arc deployment logs from the cluster. Exception: {}".format(str(e)) + "\n")
@@ -269,6 +274,7 @@ def check_agent_state(corev1_api_instance, filepath_with_timestamp, storage_spac
     except OSError as e:
         if "[Errno 28]" in str(e):
             storage_space_available = False
+            telemetry.set_exception(exception=e, fault_type=consts.No_Storage_Space_Available_Fault_Type, summary="No space left on device")
             shutil.rmtree(filepath_with_timestamp, ignore_errors=False, onerror=None)
         else:
             logger.warning("An expection has occured while trying to check the azure arc agents state in the cluster. Exception: {}".format(str(e)) + "\n")
@@ -367,20 +373,35 @@ def executing_diagnoser_job(corev1_api_instance, batchv1_api_instance, namespace
         try:
             utils.create_from_yaml(k8s_client, yaml_file_path)
         except Exception as e:
-            print(e)
-            pass
+            all_exceptions_list = str(e).split('\n')
+            counter=0
+            for exception in all_exceptions_list:
+                if("Error from server (Conflict)" in exception or exception==""):
+                    continue
+                else:
+                    if(counter==0):
+                        cli_outputs.append("An Error occured while trying to execute diagnoser_job.yaml.")
+                        print("An Error occured while trying to execute diagnoser_job.yaml.")
+                        counter=1
+                        print(exception)
+                    else:
+                        print(exception)
+            if(counter==1):
+                subprocess.run(cmd_delete_job, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+                return ""
+
 
         # Watching for diagnoser contianer to reach in completed stage
         w = watch.Watch()
         counter = 0
-        for event in w.stream(batchv1_api_instance.list_namespaced_job, namespace=namespace, label_selector="", timeout_seconds=90):
-            try:
-                if event["object"].metadata.name == "azure-arc-diagnoser-job" and event["object"].status.conditions[0].type == "Complete":
-                    counter = 2
-                    w.stop()
 
-                elif event["object"].metadata.name == "azure-arc-diagnoser-job" and event["object"].status.conditions[0].type == "Pending":
+        for event in w.stream(batchv1_api_instance.list_namespaced_job, namespace=namespace, label_selector="", timeout_seconds=90):
+            
+            try:
+
+                if event["object"].metadata.name == "azure-arc-diagnoser-job" and event["object"].status.conditions[0].type == "Complete":
                     counter = 1
+                    w.stop()
 
             except Exception as e:
                 continue
@@ -389,16 +410,9 @@ def executing_diagnoser_job(corev1_api_instance, batchv1_api_instance, namespace
 
         # If container not created then clearing all the resource with proper error message
         if (counter == 0):
-            logger.warning("Unable to create the diagnoser job in the cluster. It may be caused due to insufficient resource availability on the cluster.\n")
+            logger.warning("Unable to execute the diagnoser job in the cluster. It may be caused due to insufficient resource availability on the cluster.\n")
             subprocess.run(cmd_delete_job, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-            cli_outputs.append("Unable to create the diagnoser job in the cluster. It may be caused due to insufficient resource availability on the cluster.\n")
-            return ""
-        
-        # If container stuck in pending state then clearing all the resources with proper error message
-        elif (counter == 1):
-            logger.warning("The diagnoser job is stuck in the 'Pending' state in the cluster. It may be caused due to insufficient resource availability on the cluster.\n")
-            subprocess.run(cmd_delete_job, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-            cli_outputs.append("The diagnoser job is stuck in the 'Pending' state in the cluster. It may be caused due to insufficient resource availability on the cluster.\n")
+            cli_outputs.append("Unable to execute the diagnoser job in the cluster. It may be caused due to insufficient resource availability on the cluster.\n")
             return ""
 
         else:
@@ -430,6 +444,7 @@ def executing_diagnoser_job(corev1_api_instance, batchv1_api_instance, namespace
     except KeyboardInterrupt:
         # If process terminated by user then delete the resources if any added to the cluster.
         subprocess.run(cmd_delete_job, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        print()
 
     except Exception as e:
         logger.warning("An expection has occured while trying to execute the diagnoser job in the cluster. Exception: {}".format(str(e)) + "\n")
@@ -468,6 +483,7 @@ def check_cluster_DNS(diagnoser_container_log, filepath_with_timestamp, storage_
     except OSError as e:
         if "[Errno 28]" in str(e):
             storage_space_available = False
+            telemetry.set_exception(exception=e, fault_type=consts.No_Storage_Space_Available_Fault_Type, summary="No space left on device")
             shutil.rmtree(filepath_with_timestamp, ignore_errors=False, onerror=None)
         else:
             logger.warning("An expection has occured while performing the DNS check on the cluster. Exception: {}".format(str(e)) + "\n")
@@ -510,6 +526,7 @@ def check_cluster_outbound_connectivity(diagnoser_container_log, filepath_with_t
     except OSError as e:
         if "[Errno 28]" in str(e):
             storage_space_available = False
+            telemetry.set_exception(exception=e, fault_type=consts.No_Storage_Space_Available_Fault_Type, summary="No space left on device")
             shutil.rmtree(filepath_with_timestamp, ignore_errors=False, onerror=None)
         else:
             logger.warning("An expection has occured while performing the outbound connectivity check on the cluster. Exception: {}".format(str(e)) + "\n")
@@ -699,6 +716,7 @@ def cli_output_logger(filepath_with_timestamp, storage_space_available):
     except OSError as e:
         if "[Errno 28]" in str(e):
             storage_space_available = False
+            telemetry.set_exception(exception=e, fault_type=consts.No_Storage_Space_Available_Fault_Type, summary="No space left on device")
             shutil.rmtree(filepath_with_timestamp, ignore_errors=False, onerror=None)
 
     except Exception as e:

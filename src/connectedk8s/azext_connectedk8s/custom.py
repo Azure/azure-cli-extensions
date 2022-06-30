@@ -2050,7 +2050,6 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
 
     try:
 
-
         logger.warning("Diagnoser running. This may take a while ...\n")
         absolute_path=os.path.abspath(os.path.dirname(__file__))
 
@@ -2101,8 +2100,12 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
         time_stamp = cluster_name + '-' + time_stamp
 
         # Generate the diagnostic folder in a given location
-        filepath_with_timestamp, storage_space_available = troubleshootutils.create_folder_diagnosticlogs(time_stamp, storage_space_available)
-        
+        filepath_with_timestamp, diagnostic_folder_status = troubleshootutils.create_folder_diagnosticlogs(time_stamp)
+
+        if(diagnostic_folder_status != "folder_created"):
+            storage_space_available = False
+
+
         try:
 
             connected_cluster_resource_path=os.path.join(filepath_with_timestamp,"Connected_cluster_resource.txt")
@@ -2231,7 +2234,6 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
             else:
                 logger.warning("For more results from the diagnoser refer to the logs collected at " + filepath_with_timestamp +" .\nThese logs can be attached while filing a support ticket for further assistance.\n")
         else:
-            telemetry.set_exception(exception="OSError: [Errno 28] No space left on device", fault_type=consts.Storage_Space_Available_Fault_Type, summary="Error while trying to store diagnostic logs")
             if (all_checks_passed):
                 logger.warning("Diagnoser could not find any issues with the cluster.\n")
             logger.warning("Diagnoser was not able to store logs in your local machine. Please check if sufficient storage space is available.\nTo store diagnoser logs clean up some space and execute the troubleshoot command again.")         

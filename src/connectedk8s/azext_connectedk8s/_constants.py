@@ -153,4 +153,5 @@ KAP_Cert_Check_Fault_Type= "Error occured while trying to pull kap cert certific
 MSI_Cert_Expiry_Check_Fault_Type = "Error occured while trying to perform the MSI cert expiry check"
 Connected_Cluster_Logger_Fault_Type = "Error occured in connected cluster resoruce logger"
 Arc_Diagnostic_Log_Fault_Type = "Error while creating the arc diagnostic logs folder"
-Storage_Space_Available_Fault_Type = "Error while trying to store diagnostic logs"
+Storage_Available_Fault_Type = "Error while trying to create diagnostic logs folder"
+No_Storage_Space_Available_Fault_Type = "No space left on device"
