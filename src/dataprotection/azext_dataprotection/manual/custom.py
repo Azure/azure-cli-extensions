@@ -282,7 +282,7 @@ def dataprotection_backup_instance_update_msi_permissions(cmd, client, resource_
     }
 
     if datasource_map[datasource_type] != backup_instance["properties"]["data_source_info"]["datasource_type"]:
-        raise CLIError("Backup instance doesn't match --datasource-type")
+        raise CLIError("--backup-instance provided is not compatible with the --datasource-type.")
 
     from azure.cli.core.commands.client_factory import get_mgmt_service_client
 
