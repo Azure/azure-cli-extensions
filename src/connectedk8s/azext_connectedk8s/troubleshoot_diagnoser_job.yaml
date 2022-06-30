@@ -31,7 +31,7 @@ roleRef:
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: arcdiagnosercontainer
+  name: azure-arc-diagnoser-job
   namespace: default
   labels:
     app: networktest
@@ -43,7 +43,7 @@ spec:
     spec:
       serviceAccountName: azure-arc-troubleshoot-sa
       containers: 
-      - name: networktest1
+      - name: azure-arc-diagnoser-container
         image: svacr1.azurecr.io/networktest:7.0
       restartPolicy: Never
   backoffLimit: 4

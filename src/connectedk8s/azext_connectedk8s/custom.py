@@ -2050,6 +2050,7 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
 
     try:
 
+
         logger.warning("Diagnoser running. This may take a while ...\n")
         absolute_path=os.path.abspath(os.path.dirname(__file__))
 
@@ -2075,6 +2076,8 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
         # Install helm client
         helm_client_location = install_helm_client()
 
+        validate_release_namespace(client, cluster_name, resource_group_name, configuration, kube_config, kube_context, helm_client_location)
+
         # Checking the connection to kubernetes cluster.
         # This check was added to avoid large timeouts when connecting to AAD Enabled AKS clusters
         # if the user had not logged in.
@@ -2095,7 +2098,7 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
                 time_stamp += '.'
                 continue
             time_stamp += elements
-        time_stamp+='-'+cluster_name
+        time_stamp = cluster_name + '-' + time_stamp
 
         # Generate the diagnostic folder in a given location
         filepath_with_timestamp, storage_space_available = troubleshootutils.create_folder_diagnosticlogs(time_stamp, storage_space_available)
@@ -2111,6 +2114,7 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
             print(e)
 
         corev1_api_instance = kube_client.CoreV1Api(kube_client.ApiClient(configuration))
+        utils.validate_node_api_response(corev1_api_instance, None)
 
         # Check if agents have been added to the cluster
         arc_agents_pod_list = corev1_api_instance.list_namespaced_pod(namespace="azure-arc")
@@ -2211,6 +2215,8 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
 
         # Executing the Diagnoser job check in the given namespace
         diagnostic_checks["diagnoser_check"], storage_space_available = troubleshootutils.check_diagnoser_container(corev1_api_instance, batchv1_api_instance, filepath_with_timestamp, storage_space_available, current_k8s_namespace, absolute_path)
+
+        troubleshootutils.cli_output_logger(filepath_with_timestamp, storage_space_available)
 
         all_checks_passed = True
         for checks in diagnostic_checks:
