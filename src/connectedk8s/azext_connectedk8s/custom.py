@@ -2055,7 +2055,7 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
 
         storage_space_available = True
         # Setting default values for all checks as True
-        diagnostic_checks = {"msi_cert_expiry_check":"Incomplete", "kap_security_policy_check": "Incomplete", "kap_cert_check": "Incomplete", "diagnoser_check": "Incomplete", "msi_cert_check": "Incomplete", "agent_version_check": "Incomplete", "arc_agent_state_check": "Incomplete"}
+        diagnostic_checks = {"msi_cert_expiry_check": "Incomplete", "kap_security_policy_check": "Incomplete", "kap_cert_check": "Incomplete", "diagnoser_check": "Incomplete", "msi_cert_check": "Incomplete", "agent_version_check": "Incomplete", "arc_agent_state_check": "Incomplete"}
 
         # Setting kube_config
         kube_config = set_kube_config(kube_config)
@@ -2099,8 +2099,8 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
 
         try:
 
-            connected_cluster_resource_path=os.path.join(filepath_with_timestamp,"Connected_cluster_resource.txt")
-            if storage_space_available :
+            connected_cluster_resource_path = os.path.join(filepath_with_timestamp, "Connected_cluster_resource.txt")
+            if storage_space_available:
                 with open(connected_cluster_resource_path, 'w+') as cc:
                     cc.write(str(connected_cluster))
 

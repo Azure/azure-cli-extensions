@@ -240,7 +240,7 @@ def check_agent_state(corev1_api_instance, filepath_with_timestamp, storage_spac
     global cli_outputs
 
     try:
-       
+
         counter = 0
         agent_state_path = os.path.join(filepath_with_timestamp, "Agent_State.txt")
         with open(agent_state_path, 'w+') as agent_state:
