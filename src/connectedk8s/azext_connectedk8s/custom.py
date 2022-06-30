@@ -2051,19 +2051,11 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
     try:
 
         logger.warning("Diagnoser running. This may take a while ...\n")
-        absolute_path=os.path.abspath(os.path.dirname(__file__))
+        absolute_path = os.path.abspath(os.path.dirname(__file__))
 
         storage_space_available = True
         # Setting default values for all checks as True
-        diagnostic_checks = {
-        "msi_cert_expiry_check" :"Incomplete",
-        "kap_security_policy_check" : "Incomplete",
-        "kap_cert_check" : "Incomplete",
-        "diagnoser_check" : "Incomplete",
-        "msi_cert_check" : "Incomplete",
-        "agent_version_check" : "Incomplete",
-        "arc_agent_state_check" : "Incomplete"
-        }
+        diagnostic_checks = {"msi_cert_expiry_check":"Incomplete", "kap_security_policy_check": "Incomplete", "kap_cert_check": "Incomplete", "diagnoser_check": "Incomplete", "msi_cert_check": "Incomplete", "agent_version_check": "Incomplete", "arc_agent_state_check": "Incomplete"}
 
         # Setting kube_config
         kube_config = set_kube_config(kube_config)
@@ -2104,7 +2096,6 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
 
         if(diagnostic_folder_status != "folder_created"):
             storage_space_available = False
-
 
         try:
 
@@ -2225,18 +2216,18 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
         for checks in diagnostic_checks:
 
             if diagnostic_checks[checks] != "Passed":
-                all_checks_passed = False   
+                all_checks_passed = False
 
-        if storage_space_available :
-        # Depending on whether all tests passes we will give the output
+        if storage_space_available:
+            # Depending on whether all tests passes we will give the output
             if (all_checks_passed):
-                logger.warning("Diagnoser could not find any issues with the cluster. \nFor more results from the diagnoser refer to the logs collected at " + filepath_with_timestamp +" .\nThese logs can be attached while filing a support ticket for further assistance.\n")
+                logger.warning("Diagnoser could not find any issues with the cluster. \nFor more results from the diagnoser refer to the logs collected at " + filepath_with_timestamp + " .\nThese logs can be attached while filing a support ticket for further assistance.\n")
             else:
-                logger.warning("For more results from the diagnoser refer to the logs collected at " + filepath_with_timestamp +" .\nThese logs can be attached while filing a support ticket for further assistance.\n")
+                logger.warning("For more results from the diagnoser refer to the logs collected at " + filepath_with_timestamp + " .\nThese logs can be attached while filing a support ticket for further assistance.\n")
         else:
             if (all_checks_passed):
                 logger.warning("Diagnoser could not find any issues with the cluster.\n")
-            logger.warning("Diagnoser was not able to store logs in your local machine. Please check if sufficient storage space is available.\nTo store diagnoser logs clean up some space and execute the troubleshoot command again.")         
+            logger.warning("Diagnoser was not able to store logs in your local machine. Please check if sufficient storage space is available.\nTo store diagnoser logs clean up some space and execute the troubleshoot command again.")
 
     except KeyboardInterrupt:
         raise ManualInterrupt('Process terminated externally.')
