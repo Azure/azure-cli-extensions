@@ -11,7 +11,7 @@ from azure.cli.core.commands import LongRunningOperation
 from azure.cli.core.commands.client_factory import get_subscription_id
 from azure.cli.core.util import sdk_no_wait
 from azext_aks_preview._client_factory import CUSTOM_MGMT_AKS_PREVIEW
-from azext_aks_preview._client_factory import cf_resources, cf_resource_groups
+from azext_aks_preview._client_factory import get_resources_client, get_resource_groups_client
 from azext_aks_preview._resourcegroup import get_rg_location
 from azext_aks_preview._roleassignments import add_role_assignment
 from azext_aks_preview._consts import (
@@ -449,8 +449,8 @@ def ensure_default_log_analytics_workspace_for_monitoring(cmd, subscription_id, 
     default_workspace_resource_id = '/subscriptions/{0}/resourceGroups/{1}/providers/Microsoft.OperationalInsights' \
                                     '/workspaces/{2}'.format(subscription_id,
                                                              default_workspace_resource_group, default_workspace_name)
-    resource_groups = cf_resource_groups(cmd.cli_ctx, subscription_id)
-    resources = cf_resources(cmd.cli_ctx, subscription_id)
+    resource_groups = get_resource_groups_client(cmd.cli_ctx, subscription_id)
+    resources = get_resources_client(cmd.cli_ctx, subscription_id)
 
     from azure.cli.core.profiles import ResourceType
     # check if default RG exists
@@ -546,7 +546,7 @@ def ensure_container_insights_for_monitoring(cmd,
 
     # region of workspace can be different from region of RG so find the location of the workspace_resource_id
     if not remove_monitoring:
-        resources = cf_resources(cmd.cli_ctx, subscription_id)
+        resources = get_resources_client(cmd.cli_ctx, subscription_id)
         from azure.core.exceptions import HttpResponseError
         try:
             resource = resources.get_by_id(

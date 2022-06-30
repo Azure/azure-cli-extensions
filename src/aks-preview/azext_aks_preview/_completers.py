@@ -57,9 +57,9 @@ def get_vm_size_completion_list(cmd, prefix, namespace, **kwargs):  # pylint: di
 
 
 def get_vm_sizes(cli_ctx, location):
-    from ._client_factory import cf_compute_service
+    from ._client_factory import get_compute_client
 
-    return cf_compute_service(cli_ctx).virtual_machine_sizes.list(location)
+    return get_compute_client(cli_ctx).virtual_machine_sizes.list(location)
 
 
 def _get_location(cli_ctx, namespace):
@@ -78,11 +78,11 @@ def _get_location(cli_ctx, namespace):
 
 
 def _get_location_from_resource_group(cli_ctx, resource_group_name):
-    from ._client_factory import cf_resource_groups
+    from ._client_factory import get_resource_groups_client
     from msrestazure.azure_exceptions import CloudError
 
     try:
-        rg = cf_resource_groups(cli_ctx).get(resource_group_name)
+        rg = get_resource_groups_client(cli_ctx).get(resource_group_name)
         return rg.location
     except CloudError as err:
         # Print a warning if the user hit [TAB] but the `--resource-group` argument was incorrect.
