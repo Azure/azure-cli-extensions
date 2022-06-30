@@ -9,57 +9,94 @@
 # --------------------------------------------------------------------------
 # pylint: disable=too-many-lines
 
-import json
+from azure.cli.core.util import sdk_no_wait
 
 
-def hardwaresecuritymodules_dedicated_hsm_list(cmd, client,
-                                               resource_group_name=None,
-                                               top=None):
+def hardware_security_modules_dedicated_hsm_list(client,
+                                                 resource_group_name=None,
+                                                 top=None):
     if resource_group_name:
         return client.list_by_resource_group(resource_group_name=resource_group_name,
                                              top=top)
     return client.list_by_subscription(top=top)
 
 
-def hardwaresecuritymodules_dedicated_hsm_show(cmd, client,
-                                               resource_group_name,
-                                               name):
+def hardware_security_modules_dedicated_hsm_show(client,
+                                                 resource_group_name,
+                                                 name):
     return client.get(resource_group_name=resource_group_name,
                       name=name)
 
 
-def hardwaresecuritymodules_dedicated_hsm_create(cmd, client,
-                                                 resource_group_name,
-                                                 name,
-                                                 location,
-                                                 sku=None,
-                                                 zones=None,
-                                                 tags=None,
-                                                 stamp_id=None,
-                                                 network_profile_subnet=None,
-                                                 network_profile_network_interfaces=None):
+def hardware_security_modules_dedicated_hsm_create(client,
+                                                   resource_group_name,
+                                                   name,
+                                                   location,
+                                                   zones=None,
+                                                   tags=None,
+                                                   sku_name=None,
+                                                   stamp_id=None,
+                                                   subnet=None,
+                                                   network_interfaces=None,
+                                                   management_network_profile_subnet=None,
+                                                   management_network_profile_interfaces=None,
+                                                   no_wait=False):
+    parameters = {}
+    parameters['location'] = location
+    if zones is not None:
+        parameters['zones'] = zones
+    if tags is not None:
+        parameters['tags'] = tags
+    parameters['sku'] = {}
+    if sku_name is not None:
+        parameters['sku']['name'] = sku_name
+    if len(parameters['sku']) == 0:
+        del parameters['sku']
+    if stamp_id is not None:
+        parameters['stamp_id'] = stamp_id
+    parameters['management_network_profile'] = {}
+    parameters['network_profile'] = {}
+    if subnet is not None:
+        parameters['network_profile']['subnet'] = subnet[0]
+    if network_interfaces is not None:
+        parameters['network_profile']['network_interfaces'] = network_interfaces
+    if management_network_profile_subnet is not None:
+        parameters['management_network_profile']['subnet'] = management_network_profile_subnet[0]
+    if management_network_profile_interfaces is not None:
+        parameters['management_network_profile']['network_interfaces'] = management_network_profile_interfaces
+    if len(parameters['management_network_profile']) == 0:
+        del parameters['management_network_profile']
+    if len(parameters['network_profile']) == 0:
+        del parameters['network_profile']
     return client.begin_create_or_update(resource_group_name=resource_group_name,
                                          name=name,
-                                         location=location,
-                                         sku=sku if not sku else {'name': sku},
-                                         zones=zones,
-                                         tags=tags,
-                                         stamp_id=stamp_id,
-                                         subnet=network_profile_subnet,
-                                         network_interfaces=network_profile_network_interfaces)
+                                         parameters=parameters)
 
 
-def hardwaresecuritymodules_dedicated_hsm_update(cmd, client,
-                                                 resource_group_name,
-                                                 name,
-                                                 tags=None):
-    return client.begin_update(resource_group_name=resource_group_name,
-                               name=name,
-                               tags=tags)
+def hardware_security_modules_dedicated_hsm_update(client,
+                                                   resource_group_name,
+                                                   name,
+                                                   tags=None,
+                                                   no_wait=False):
+    return sdk_no_wait(no_wait,
+                       client.begin_update,
+                       resource_group_name=resource_group_name,
+                       name=name,
+                       tags=tags)
 
 
-def hardwaresecuritymodules_dedicated_hsm_delete(cmd, client,
-                                                 resource_group_name,
-                                                 name):
-    return client.begin_delete(resource_group_name=resource_group_name,
-                               name=name)
+def hardware_security_modules_dedicated_hsm_delete(client,
+                                                   resource_group_name,
+                                                   name,
+                                                   no_wait=False):
+    return sdk_no_wait(no_wait,
+                       client.begin_delete,
+                       resource_group_name=resource_group_name,
+                       name=name)
+
+
+def hardware_security_modules_dedicated_hsm_list_outbound_network_dependency_endpoint(client,
+                                                                                      resource_group_name,
+                                                                                      name):
+    return client.list_outbound_network_dependencies_endpoints(resource_group_name=resource_group_name,
+                                                               name=name)

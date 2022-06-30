@@ -12,6 +12,7 @@
 # pylint: disable=line-too-long
 
 import os
+import signal
 import subprocess
 from azure.cli.core.azclierror import MutuallyExclusiveArgumentError
 from azure.cli.core.azclierror import RequiredArgumentMissingError
@@ -29,20 +30,31 @@ def datamigration_assessment(connection_string=None,
 
     try:
 
+        # Setup the console app
         defaultOutputFolder, exePath = helper.console_app_setup()
 
+        # Specifying both parameters is an error
         if connection_string is not None and config_file_path is not None:
             raise MutuallyExclusiveArgumentError("Both connection_string and config_file_path are mutually exclusive arguments. Please provide only one of these arguments.")
 
+        # When Connection string.
         if connection_string is not None:
+
+            # Formating for multiple connection string
             connection_string = " ".join(f"\"{i}\"" for i in connection_string)
+
+            # Joining parameters in a string
             cmd = f'{exePath} Assess --sqlConnectionStrings {connection_string} ' if output_folder is None else f'{exePath} Assess --sqlConnectionStrings {connection_string} --outputFolder "{output_folder}" '
             cmd += '--overwrite False' if overwrite is False else ''
             subprocess.call(cmd, shell=False)
+
+        # When config file.
         elif config_file_path is not None:
             helper.validate_config_file_path(config_file_path, "assess")
             cmd = f'{exePath} --configFile "{config_file_path}"'
             subprocess.call(cmd, shell=False)
+
+        # if no parameter is provided.
         else:
             raise RequiredArgumentMissingError('No valid parameter set used. Please provide any one of the these prameters: connection_string, config_file_path')
 
@@ -62,32 +74,64 @@ def datamigration_performance_data_collection(connection_string=None,
                                               perf_query_interval=30,
                                               static_query_interval=3600,
                                               number_of_iteration=20,
-                                              config_file_path=None):
+                                              config_file_path=None,
+                                              time=None):
 
     try:
 
+        # Setup the console app
         defaultOutputFolder, exePath = helper.console_app_setup()
 
         if connection_string is not None and config_file_path is not None:
             raise MutuallyExclusiveArgumentError("Both sql_connection_string and config_file_path are mutually exclusive arguments. Please provide only one of these arguments.")
 
+        # When Connection string.
         if connection_string is not None:
+
+            # Formating for multiple connection string
             connection_string = " ".join(f"\"{i}\"" for i in connection_string)
+
+            # parameter set for Perfornace data collection
             parameterList = {
                 "--outputFolder": output_folder,
                 "--perfQueryIntervalInSec": perf_query_interval,
                 "--staticQueryIntervalInSec": static_query_interval,
                 "--numberOfIterations": number_of_iteration
             }
+
+            # joining paramaters together in a string
             cmd = f'{exePath} PerfDataCollection --sqlConnectionStrings {connection_string}'
             for param in parameterList:
                 if parameterList[param] is not None:
                     cmd += f' {param} "{parameterList[param]}"'
-            subprocess.call(cmd, shell=False)
+
+            # If time parameter is specified, catch TimeoutExpired exception and terminate the process
+            if time is None:
+                subprocess.call(cmd, shell=False)
+            else:
+                sp = subprocess.Popen(cmd, shell=False)
+                try:
+                    outs, errs = sp.communicate(timeout=time)
+                except subprocess.TimeoutExpired:
+                    sp.send_signal(signal.SIGTERM)
+                    outs, errs = sp.communicate()
+
+        # When Config file.
         elif config_file_path is not None:
             helper.validate_config_file_path(config_file_path, "perfdatacollection")
             cmd = f'{exePath} --configFile "{config_file_path}"'
-            subprocess.call(cmd, shell=False)
+
+            # If time parameter is specified, catch TimeoutExpired exception and terminate the process
+            if time is None:
+                subprocess.call(cmd, shell=False)
+            else:
+                sp = subprocess.Popen(cmd, shell=False)
+                try:
+                    outs, errs = sp.communicate(timeout=time)
+                except subprocess.TimeoutExpired:
+                    sp.send_signal(signal.SIGTERM)
+                    outs, errs = sp.communicate()
+
         else:
             raise RequiredArgumentMissingError('No valid parameter set used. Please provide any one of the these prameters: sql_connection_string, config_file_path')
 
@@ -117,16 +161,23 @@ def datamigration_get_sku_recommendation(output_folder=None,
                                          config_file_path=None):
 
     try:
+
+        # Setup Console app
         defaultOutputFolder, exePath = helper.console_app_setup()
 
         if output_folder is not None and config_file_path is not None:
             raise MutuallyExclusiveArgumentError("Both output_folder and config_file_path are mutually exclusive arguments. Please provide only one of these arguments.")
 
+        # When Config file - Handling this case first to allow no parameter to be specified (runs non config file scenario)
         if config_file_path is not None:
             helper.validate_config_file_path(config_file_path, "getskurecommendation")
             cmd = f'{exePath} --configFile "{config_file_path}"'
             subprocess.call(cmd, shell=False)
+
+        # When non-config file
         else:
+
+            # parameter set for Sku recommendation
             parameterList = {
                 "--outputFolder": output_folder,
                 "--targetPlatform": target_platform,
@@ -142,9 +193,13 @@ def datamigration_get_sku_recommendation(output_folder=None,
                 "--databaseDenyList": database_deny_list
             }
             cmd = f'{exePath} GetSkuRecommendation'
+
+            # formating the parameter list into a string
             for param in parameterList:
                 if parameterList[param] is not None and not param.__contains__("List"):
                     cmd += f' {param} "{parameterList[param]}"'
+
+                # in case the parameter input is list format it accordingly
                 elif param.__contains__("List") and parameterList[param] is not None:
                     parameterList[param] = " ".join(f"\"{i}\"" for i in parameterList[param])
                     cmd += f' {param} {parameterList[param]}'
@@ -162,14 +217,19 @@ def datamigration_get_sku_recommendation(output_folder=None,
 # Register Sql Migration Service on IR command Implementation.
 # -----------------------------------------------------------------------------------------------------------------
 def datamigration_register_ir(auth_key,
-                              ir_path=None):
+                              ir_path=None,
+                              installed_ir_path=None):
 
     helper.validate_os_env()
 
+    # This command can only be run as admin and in windows
     if not helper.is_user_admin():
         raise UnclassifiedUserFault("Failed: You do not have Administrator rights to run this command. Please re-run this command as an Administrator!")
     helper.validate_input(auth_key)
+
+    # Run installation if ir_path is provided
     if ir_path is not None:
         helper.install_gateway(ir_path)
 
-    helper.register_ir(auth_key)
+    # register or re-register Dms on ir
+    helper.register_ir(auth_key, installed_ir_path)

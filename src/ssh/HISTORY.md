@@ -1,5 +1,14 @@
 Release History
 ===============
+1.1.2
+-----
+* Remove dependency to cryptography (Az CLI core alredy has cryptography)
+* New RDP over SSH feature
+
+1.1.1
+-----
+* Undo changes to rely on PATH variable to find SSH executables on Windows. Look for executables under "C:\Windows\System32\OpenSSH"
+
 1.1.0
 -----
 * SSHArc Public Preview

@@ -66,6 +66,16 @@ class EvictionPolicy(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     VOLATILE_RANDOM = "VolatileRandom"
     NO_EVICTION = "NoEviction"
 
+class LinkState(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+    """State of the link between the database resources.
+    """
+
+    LINKED = "Linked"
+    LINKING = "Linking"
+    UNLINKING = "Unlinking"
+    LINK_FAILED = "LinkFailed"
+    UNLINK_FAILED = "UnlinkFailed"
+
 class Origin(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """The intended executor of the operation; as in Resource Based Access Control (RBAC) and audit
     logs UX. Default value is "user,system"

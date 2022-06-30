@@ -11,16 +11,34 @@ from azure.cli.core.commands import LongRunningOperation
 from azure.cli.core.commands.client_factory import get_subscription_id
 from azure.cli.core.util import sdk_no_wait
 from azext_aks_preview._client_factory import CUSTOM_MGMT_AKS_PREVIEW
-from ._client_factory import cf_resources, cf_resource_groups
-from ._resourcegroup import get_rg_location
-from ._roleassignments import add_role_assignment
-from ._consts import ADDONS, CONST_VIRTUAL_NODE_ADDON_NAME, CONST_MONITORING_ADDON_NAME, \
-    CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID, CONST_MONITORING_USING_AAD_MSI_AUTH, \
-    CONST_VIRTUAL_NODE_SUBNET_NAME, CONST_INGRESS_APPGW_ADDON_NAME, CONST_INGRESS_APPGW_APPLICATION_GATEWAY_NAME, \
-    CONST_INGRESS_APPGW_SUBNET_CIDR, CONST_INGRESS_APPGW_APPLICATION_GATEWAY_ID, CONST_INGRESS_APPGW_SUBNET_ID, \
-    CONST_INGRESS_APPGW_WATCH_NAMESPACE, CONST_OPEN_SERVICE_MESH_ADDON_NAME, CONST_CONFCOM_ADDON_NAME, \
-    CONST_ACC_SGX_QUOTE_HELPER_ENABLED, CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME, CONST_SECRET_ROTATION_ENABLED, CONST_ROTATION_POLL_INTERVAL, \
-    CONST_KUBE_DASHBOARD_ADDON_NAME
+from azext_aks_preview._client_factory import cf_resources, cf_resource_groups
+from azext_aks_preview._resourcegroup import get_rg_location
+from azext_aks_preview._roleassignments import add_role_assignment
+from azext_aks_preview._consts import (
+    ADDONS,
+    CONST_VIRTUAL_NODE_ADDON_NAME,
+    CONST_MONITORING_ADDON_NAME,
+    CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID,
+    CONST_MONITORING_USING_AAD_MSI_AUTH,
+    CONST_VIRTUAL_NODE_SUBNET_NAME,
+    CONST_INGRESS_APPGW_ADDON_NAME,
+    CONST_INGRESS_APPGW_APPLICATION_GATEWAY_NAME,
+    CONST_INGRESS_APPGW_SUBNET_CIDR,
+    CONST_INGRESS_APPGW_APPLICATION_GATEWAY_ID,
+    CONST_INGRESS_APPGW_SUBNET_ID,
+    CONST_INGRESS_APPGW_WATCH_NAMESPACE,
+    CONST_OPEN_SERVICE_MESH_ADDON_NAME,
+    CONST_CONFCOM_ADDON_NAME,
+    CONST_ACC_SGX_QUOTE_HELPER_ENABLED,
+    CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME,
+    CONST_SECRET_ROTATION_ENABLED,
+    CONST_ROTATION_POLL_INTERVAL,
+    CONST_KUBE_DASHBOARD_ADDON_NAME,
+)
+from .vendored_sdks.azure_mgmt_preview_aks.v2022_05_02_preview.models import (
+    ManagedClusterIngressProfile,
+    ManagedClusterIngressProfileWebAppRouting,
+)
 
 logger = get_logger(__name__)
 
@@ -43,6 +61,7 @@ def enable_addons(cmd,
                   enable_secret_rotation=False,
                   rotation_poll_interval=None,
                   no_wait=False,
+                  dns_zone_resource_id=None,
                   enable_msi_auth_for_monitoring=False):
     instance = client.get(resource_group_name, name)
     # this is overwritten by _update_addons(), so the value needs to be recorded here
@@ -57,7 +76,8 @@ def enable_addons(cmd,
                              appgw_subnet_cidr=appgw_subnet_cidr, appgw_id=appgw_id, appgw_subnet_id=appgw_subnet_id,
                              appgw_watch_namespace=appgw_watch_namespace,
                              enable_sgxquotehelper=enable_sgxquotehelper,
-                             enable_secret_rotation=enable_secret_rotation, rotation_poll_interval=rotation_poll_interval, no_wait=no_wait)
+                             enable_secret_rotation=enable_secret_rotation, rotation_poll_interval=rotation_poll_interval, no_wait=no_wait,
+                             dns_zone_resource_id=dns_zone_resource_id)
 
     if CONST_MONITORING_ADDON_NAME in instance.addon_profiles and instance.addon_profiles[
        CONST_MONITORING_ADDON_NAME].enabled:
@@ -142,6 +162,7 @@ def update_addons(cmd,  # pylint: disable=too-many-branches,too-many-statements
                   enable_sgxquotehelper=False,
                   enable_secret_rotation=False,
                   rotation_poll_interval=None,
+                  dns_zone_resource_id=None,
                   no_wait=False):  # pylint: disable=unused-argument
     # parse the comma-separated addons argument
     addon_args = addons.split(',')
@@ -159,6 +180,19 @@ def update_addons(cmd,  # pylint: disable=too-many-branches,too-many-statements
 
     # for each addons argument
     for addon_arg in addon_args:
+        if addon_arg == "web_application_routing":
+            # web app routing settings are in ingress profile, not addon profile, so deal
+            # with it separately
+            if instance.ingress_profile is None:
+                instance.ingress_profile = ManagedClusterIngressProfile()
+            if instance.ingress_profile.web_app_routing is None:
+                instance.ingress_profile.web_app_routing = ManagedClusterIngressProfileWebAppRouting()
+            instance.ingress_profile.web_app_routing.enabled = enable
+
+            if dns_zone_resource_id is not None:
+                instance.ingress_profile.web_app_routing.dns_zone_resource_id = dns_zone_resource_id
+            continue
+
         if addon_arg not in ADDONS:
             raise CLIError("Invalid addon name: {}.".format(addon_arg))
         addon = ADDONS[addon_arg]

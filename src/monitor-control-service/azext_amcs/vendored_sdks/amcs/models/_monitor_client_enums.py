@@ -35,6 +35,18 @@ class CreatedByType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     MANAGED_IDENTITY = "ManagedIdentity"
     KEY = "Key"
 
+class KnownColumnDefinitionType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+    """The type of the column data.
+    """
+
+    STRING = "string"
+    INT = "int"
+    LONG = "long"
+    REAL = "real"
+    BOOLEAN = "boolean"
+    DATETIME = "datetime"
+    DYNAMIC = "dynamic"
+
 class KnownDataCollectionEndpointProvisioningState(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """The resource provisioning state. This property is READ-ONLY.
     """
@@ -94,6 +106,26 @@ class KnownExtensionDataSourceStreams(with_metaclass(_CaseInsensitiveEnumMeta, s
     MICROSOFT_PERF = "Microsoft-Perf"
     MICROSOFT_SYSLOG = "Microsoft-Syslog"
     MICROSOFT_WINDOWS_EVENT = "Microsoft-WindowsEvent"
+
+class KnownLogFilesDataSourceFormat(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+    """The data format of the log files
+    """
+
+    TEXT = "text"
+
+class KnownLogFileTextSettingsRecordStartTimestampFormat(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+    """One of the supported timestamp formats
+    """
+
+    ISO8601 = "ISO 8601"
+    YYYY_MM_DD_HH_MM_SS = "YYYY-MM-DD HH:MM:SS"
+    M_D_YYYY_HH_MM_SS_AM_PM = "M/D/YYYY HH:MM:SS AM/PM"
+    MON_DD_YYYY_HH_MM_SS = "Mon DD, YYYY HH:MM:SS"
+    YY_M_MDD_HH_MM_SS = "yyMMdd HH:mm:ss"
+    DD_M_MYY_HH_MM_SS = "ddMMyy HH:mm:ss"
+    MMM_D_HH_MM_SS = "MMM d hh:mm:ss"
+    DD_MMM_YYYY_HH_MM_SS_ZZZ = "dd/MMM/yyyy:HH:mm:ss zzz"
+    YYYY_MM_DD_THH_MM_SS_K = "yyyy-MM-ddTHH:mm:ssK"
 
 class KnownPerfCounterDataSourceStreams(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
 

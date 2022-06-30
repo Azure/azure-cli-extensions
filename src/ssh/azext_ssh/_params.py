@@ -26,12 +26,14 @@ def load_arguments(self, _):
                    help='Folder path that contains ssh executables (ssh.exe, ssh-keygen.exe, etc). '
                    'Default to ssh pre-installed if not provided.')
         c.argument('delete_credentials', options_list=['--force-delete-credentials', '--delete-private-key'],
-                   help=('This is an internal argument. This argument is used by Azure Portal to provide a one click '
-                         'SSH login experience in Cloud shell.'),
+                   help=('This is an internal argument. This argument is used by Azure Portal to '
+                         'provide a one click SSH login experience in Cloud shell.'),
                    deprecate_info=c.deprecate(hide=True), action='store_true')
         c.argument('ssh_proxy_folder', options_list=['--ssh-proxy-folder'],
                    help=('Path to the folder where the ssh proxy should be saved. '
                          'Default to .clientsshproxy folder in user\'s home directory if not provided.'))
+        c.argument('winrdp', options_list=['--winrdp', '--rdp'], help=('Start RDP connection over SSH.'),
+                   action='store_true')
         c.positional('ssh_args', nargs='*', help='Additional arguments passed to OpenSSH')
 
     with self.argument_context('ssh config') as c:
@@ -81,10 +83,12 @@ def load_arguments(self, _):
                    help='Folder path that contains ssh executables (ssh.exe, ssh-keygen.exe, etc). '
                    'Default to ssh pre-installed if not provided.')
         c.argument('delete_credentials', options_list=['--force-delete-credentials', '--delete-private-key'],
-                   help=('This is an internal argument. This argument is used by Azure Portal to provide a one click '
-                         'SSH login experience in Cloud shell.'),
+                   help=('This is an internal argument. This argument is used by Azure Portal to '
+                         'provide a one click SSH login experience in Cloud shell.'),
                    deprecate_info=c.deprecate(hide=True), action='store_true')
         c.argument('ssh_proxy_folder', options_list=['--ssh-proxy-folder'],
                    help=('Path to the folder where the ssh proxy should be saved. '
                          'Default to .clientsshproxy folder in user\'s home directory if not provided.'))
+        c.argument('winrdp', options_list=['--winrdp', '--rdp'], help=('Start RDP connection over SSH.'),
+                   action='store_true')
         c.positional('ssh_args', nargs='*', help='Additional arguments passed to OpenSSH')

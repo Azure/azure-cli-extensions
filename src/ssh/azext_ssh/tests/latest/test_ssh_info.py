@@ -21,7 +21,7 @@ class SSHInfoTest(unittest.TestCase):
             mock.call("proxy/path"),
             mock.call("cred/path")
         ]
-        session = ssh_info.SSHSession("rg", "vm", "ip", "pub", "priv", False, "user", "cert", "port", "client/folder", ['-v', '-E', 'path'], False, 'arc', 'proxy/path', 'cred/path')
+        session = ssh_info.SSHSession("rg", "vm", "ip", "pub", "priv", False, "user", "cert", "port", "client/folder", ['-v', '-E', 'path'], False, 'arc', 'proxy/path', 'cred/path', True)
         mock_abspath.assert_has_calls(expected_abspath_calls)
         self.assertEqual(session.resource_group_name, "rg")
         self.assertEqual(session.vm_name, "vm")
@@ -40,24 +40,25 @@ class SSHInfoTest(unittest.TestCase):
         self.assertEqual(session.resource_type, "arc")
         self.assertEqual(session.proxy_path, None)
         self.assertEqual(session.delete_credentials, False)
+        self.assertEqual(session.winrdp, True)
 
 
     def test_ssh_session_get_host(self):
-        session = ssh_info.SSHSession(None, None, "ip", None, None, False, "user", None, None, None, [], False, "Microsoft.Compute", None, None)
+        session = ssh_info.SSHSession(None, None, "ip", None, None, False, "user", None, None, None, [], False, "Microsoft.Compute", None, None, False)
         self.assertEqual("user@ip", session.get_host())
-        session = ssh_info.SSHSession("rg", "vm", None, None, None, False, "user", None, None, None, [], False, "Microsoft.HybridCompute", None, None)
+        session = ssh_info.SSHSession("rg", "vm", None, None, None, False, "user", None, None, None, [], False, "Microsoft.HybridCompute", None, None, True)
         self.assertEqual("user@vm", session.get_host())
 
     @mock.patch('os.path.abspath')
     def test_ssh_session_build_args_compute(self, mock_abspath):
         mock_abspath.side_effect = ["pub_path", "priv_path", "cert_path", "client_path"]
-        session = ssh_info.SSHSession("rg", "vm", "ip", "pub", "priv", False, "user", "cert", "port", "client/folder", [], None, "Microsoft.Compute", None, None)
+        session = ssh_info.SSHSession("rg", "vm", "ip", "pub", "priv", False, "user", "cert", "port", "client/folder", [], None, "Microsoft.Compute", None, None, False)
         self.assertEqual(["-i", "priv_path", "-o", "CertificateFile=\"cert_path\"", "-p", "port"], session.build_args())
 
     @mock.patch('os.path.abspath')
     def test_ssh_session_build_args_hyvridcompute(self, mock_abspath):
         mock_abspath.side_effect = ["pub_path", "priv_path", "cert_path", "client_path"]
-        session = ssh_info.SSHSession("rg", "vm", "ip", "pub", "priv", False, "user", "cert", "port", "client/folder", [], None, "Microsoft.HybridCompute", None, None)
+        session = ssh_info.SSHSession("rg", "vm", "ip", "pub", "priv", False, "user", "cert", "port", "client/folder", [], None, "Microsoft.HybridCompute", None, None, True)
         session.proxy_path = "proxy_path"
         self.assertEqual(["-o", "ProxyCommand=\"proxy_path\" -p port", "-i", "priv_path", "-o", "CertificateFile=\"cert_path\""], session.build_args())
  

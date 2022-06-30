@@ -22,6 +22,9 @@ helps['datamigration get-assessment'] = """
       - name: Run SQL Assessment on given SQL Server using assessment config file.
         text: |-
                az datamigration get-assessment --config-file-path "C:\\Users\\user\\document\\config.json"
+      - name: Run SQL Assessment on multiple SQL Servers in one call using connection string.
+        text: |-
+               az datamigration get-assessment --connection-string "Data Source=LabServer1.database.net;Initial Catalog=master;Integrated Security=False;User Id=User;Password=password" "Data Source=LabServer2.database.net;Initial Catalog=master;Integrated Security=False;User Id=User;Password=password" --output-folder "C:\\AssessmentOutput" --overwrite
 """
 
 helps['datamigration performance-data-collection'] = """
@@ -31,9 +34,15 @@ helps['datamigration performance-data-collection'] = """
       - name: Collect performance data of a given SQL Server using connection string.
         text: |-
                az datamigration performance-data-collection --connection-string "Data Source=LabServer.database.net;Initial Catalog=master;Integrated Security=False;User Id=User;Password=password" --output-folder "C:\\PerfCollectionOutput" --number-of-iteration 5 --perf-query-interval 10 --static-query-interval 60
+      - name: Collect performance data of multiple SQL Servers in one call using connection string.
+        text: |-
+               az datamigration performance-data-collection --connection-string "Data Source=LabServer1.database.net;Initial Catalog=master;Integrated Security=False;User Id=User;Password=password" "Data Source=LabServer2.database.net;Initial Catalog=master;Integrated Security=False;User Id=User;Password=password" --output-folder "C:\\PerfCollectionOutput" --number-of-iteration 5 --perf-query-interval 10 --static-query-interval 60
       - name: Collect performance data of a given SQL Server using assessment config file.
         text: |-
                az datamigration performance-data-collection --config-file-path "C:\\Users\\user\\document\\config.json"
+      - name: Collect performance data of a given SQL Server by specifying a time limit. If the time limit specified is before the complition of a iteration cycle, the process will end without saving the last cycle performance data.
+        text: |-
+               az datamigration performance-data-collection --connection-string "Data Source=LabServer.database.net;Initial Catalog=master;Integrated Security=False;User Id=User;Password=password" --output-folder "C:\\PerfCollectionOutput" --number-of-iteration 5 --perf-query-interval 10 --static-query-interval 60 --time 60
 """
 
 helps['datamigration get-sku-recommendation'] = """
@@ -42,7 +51,7 @@ helps['datamigration get-sku-recommendation'] = """
     examples:
       - name: Get SKU recommendation for given SQL Server using command line.
         text: |-
-               az datamigration get-sku-recommendation --output-folder "C:\\PerfCollectionOutput" --database-allow-list AdventureWorks, AdventureWorks2 --display-result --overwrite
+               az datamigration get-sku-recommendation --output-folder "C:\\PerfCollectionOutput" --database-allow-list AdventureWorks1 AdventureWorks2 --display-result --overwrite
       - name: Get SKU recommendation for given SQL Server using assessment config file.
         text: |-
                az datamigration get-sku-recommendation --config-file-path "C:\\Users\\user\\document\\config.json"
@@ -58,6 +67,9 @@ helps['datamigration register-integration-runtime'] = """
       - name: Install Integration Runtime and register a Sql Migration Service on it.
         text: |-
                az datamigration register-integration-runtime --auth-key "IR@00000-0000000-000000-aaaaa-bbbb-cccc" --ir-path "C:\\Users\\user\\Downloads\\IntegrationRuntime.msi"
+      - name: Read the Integration Runtime from given installation location.
+        text: |-
+               az datamigration register-integration-runtime --auth-key "IR@00000-0000000-000000-aaaaa-bbbb-cccc" --installed-ir-path "D:\\My Softwares\\Microsoft Integration Runtime\\5.0"
 """
 
 helps['datamigration sql-managed-instance create'] = """

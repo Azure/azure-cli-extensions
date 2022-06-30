@@ -4,7 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 from knack.util import CLIError
-from ._client_factory import cf_resource_groups
+from azext_aks_preview._client_factory import cf_resource_groups
 
 
 def get_rg_location(ctx, resource_group_name, subscription_id=None):

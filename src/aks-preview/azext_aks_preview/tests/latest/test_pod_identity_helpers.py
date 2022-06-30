@@ -10,7 +10,9 @@ from azext_aks_preview._podidentity import (
     _fill_defaults_for_pod_identity_exceptions,
     _fill_defaults_for_pod_identity_profile,
 )
-from azext_aks_preview.decorator import AKSPreviewModels
+from azext_aks_preview.managed_cluster_decorator import (
+    AKSPreviewManagedClusterModels,
+)
 from azext_aks_preview.tests.latest.mocks import MockCLI, MockCmd
 
 
@@ -21,7 +23,7 @@ class TestPodIdentityHelpers(unittest.TestCase):
         self.cli_ctx = MockCLI()
         self.cmd = MockCmd(self.cli_ctx)
         # store all the models used by nat gateway
-        self.pod_identity_models = AKSPreviewModels(self.cmd, CUSTOM_MGMT_AKS_PREVIEW).pod_identity_models
+        self.pod_identity_models = AKSPreviewManagedClusterModels(self.cmd, CUSTOM_MGMT_AKS_PREVIEW).pod_identity_models
 
     def test_fill_defaults_for_pod_identity_exceptions(self):
         # get models
@@ -107,3 +109,7 @@ class TestPodIdentityHelpers(unittest.TestCase):
         self.assertEqual(excs[0].name, "test-exc-1")
         self.assertEqual(excs[1].pod_labels, {})
         self.assertEqual(excs[1].name, "test-exc-2")
+
+
+if __name__ == '__main__':
+    unittest.main()

@@ -12,54 +12,196 @@
 from knack.help_files import helps
 
 
+helps['stack-hci'] = '''
+    type: group
+    short-summary: Manage Azure Stack HCI
+'''
+
+helps['stack-hci arc-setting'] = """
+    type: group
+    short-summary: Manage arc setting with stack hci
+"""
+
+helps['stack-hci arc-setting list'] = """
+    type: command
+    short-summary: "Get ArcSetting resources of HCI Cluster."
+    examples:
+      - name: List ArcSetting resources by HCI Cluster
+        text: |-
+               az stack-hci arc-setting list --cluster-name "myCluster" --resource-group "test-rg"
+"""
+
+helps['stack-hci arc-setting show'] = """
+    type: command
+    short-summary: "Get ArcSetting resource details of HCI Cluster."
+    examples:
+      - name: Get ArcSetting
+        text: |-
+               az stack-hci arc-setting show --name "default" --cluster-name "myCluster" --resource-group "test-rg"
+"""
+
+helps['stack-hci arc-setting create'] = """
+    type: command
+    short-summary: "Create ArcSetting for HCI cluster."
+    examples:
+      - name: Create ArcSetting
+        text: |-
+               az stack-hci arc-setting create --name "default" --cluster-name "myCluster" --resource-group "test-rg"
+"""
+
+helps['stack-hci arc-setting delete'] = """
+    type: command
+    short-summary: "Delete ArcSetting resource details of HCI Cluster."
+    examples:
+      - name: Delete ArcSetting
+        text: |-
+               az stack-hci arc-setting delete --name "default" --cluster-name "myCluster" --resource-group "test-rg"
+"""
+
+helps['stack-hci arc-setting wait'] = """
+    type: command
+    short-summary: Place the CLI in a waiting state until a condition of the stack-hci arc-setting is met.
+    examples:
+      - name: Pause executing next line of CLI script until the stack-hci arc-setting is successfully deleted.
+        text: |-
+               az stack-hci arc-setting wait --name "default" --cluster-name "myCluster" --resource-group "test-rg" \
+--deleted
+"""
+
 helps['stack-hci cluster'] = """
     type: group
-    short-summary: Commands to manage stack-hci cluster
+    short-summary: Manage cluster with stack hci
 """
 
 helps['stack-hci cluster list'] = """
     type: command
-    short-summary: List all HCI clusters in a subscription.
+    short-summary: "List all HCI clusters in a resource group. And List all HCI clusters in a subscription."
     examples:
-      - name: List all HCI clusters in a resource group
+      - name: List clusters in a given resource group
         text: |-
                az stack-hci cluster list --resource-group "test-rg"
+      - name: List clusters in a given subscription
+        text: |-
+               az stack-hci cluster list
 """
 
 helps['stack-hci cluster show'] = """
     type: command
-    short-summary: Get HCI cluster.
+    short-summary: "Get HCI cluster."
     examples:
-      - name: Get a HCI cluster
+      - name: Get cluster
         text: |-
                az stack-hci cluster show --name "myCluster" --resource-group "test-rg"
 """
 
 helps['stack-hci cluster create'] = """
     type: command
-    short-summary: Create an HCI cluster.
+    short-summary: "Create an HCI cluster."
+    parameters:
+      - name: --desired-properties
+        short-summary: "Desired properties of the cluster."
+        long-summary: |
+            Usage: --desired-properties windows-server-subscription=XX diagnostic-level=XX
+
+            windows-server-subscription: Desired state of Windows Server Subscription.
+            diagnostic-level: Desired level of diagnostic data emitted by the cluster.
     examples:
-      - name: Create an HCI cluster
+      - name: Create cluster
         text: |-
-               az stack-hci cluster create --location "East US" --aad-client-id "24a6e53d-04e5-44d2-b7cc-1b732a84\
-7dfc" --aad-tenant-id "7e589cc1-a8b6-4dff-91bd-5ec0fa18db94" --name "myCluster" --resource-group "test-rg"
+               az stack-hci cluster create --location "East US" --aad-client-id "24a6e53d-04e5-44d2-b7cc-1b732a847dfc" \
+--aad-tenant-id "7e589cc1-a8b6-4dff-91bd-5ec0fa18db94" --endpoint "https://98294836-31be-4668-aeae-698667faf99b.waconaz\
+ure.com" --name "myCluster" --resource-group "test-rg"
 """
 
 helps['stack-hci cluster update'] = """
     type: command
-    short-summary: Update an HCI cluster.
+    short-summary: "Update an HCI cluster."
+    parameters:
+      - name: --desired-properties
+        short-summary: "Desired properties of the cluster."
+        long-summary: |
+            Usage: --desired-properties windows-server-subscription=XX diagnostic-level=XX
+
+            windows-server-subscription: Desired state of Windows Server Subscription.
+            diagnostic-level: Desired level of diagnostic data emitted by the cluster.
     examples:
-      - name: Update an HCI cluster
+      - name: Update cluster
         text: |-
-               az stack-hci cluster update --tags tag1="value1" tag2="value2" --name "myCluster" --resource-group\
- "test-rg"
+               az stack-hci cluster update --endpoint "https://98294836-31be-4668-aeae-698667faf99b.waconazure.com" \
+--desired-properties diagnostic-level="Basic" windows-server-subscription="Enabled" --tags tag1="value1" tag2="value2" \
+--name "myCluster" --resource-group "test-rg"
 """
 
 helps['stack-hci cluster delete'] = """
     type: command
-    short-summary: Delete an HCI cluster.
+    short-summary: "Delete an HCI cluster."
     examples:
-      - name: Delete an HCI cluster
+      - name: Delete cluster
         text: |-
                az stack-hci cluster delete --name "myCluster" --resource-group "test-rg"
+"""
+
+helps['stack-hci extension'] = """
+    type: group
+    short-summary: Manage extension with stack hci
+"""
+
+helps['stack-hci extension list'] = """
+    type: command
+    short-summary: "List all Extensions under ArcSetting resource."
+    examples:
+      - name: List Extensions under ArcSetting resource
+        text: |-
+               az stack-hci extension list --arc-setting-name "default" --cluster-name "myCluster" --resource-group \
+"test-rg"
+"""
+
+helps['stack-hci extension show'] = """
+    type: command
+    short-summary: "Get particular Arc Extension of HCI Cluster."
+    examples:
+      - name: Get ArcSettings Extension
+        text: |-
+               az stack-hci extension show --arc-setting-name "default" --cluster-name "myCluster" --name \
+"MicrosoftMonitoringAgent" --resource-group "test-rg"
+"""
+
+helps['stack-hci extension create'] = """
+    type: command
+    short-summary: "Create Extension for HCI cluster."
+    examples:
+      - name: Create Arc Extension
+        text: |-
+               az stack-hci extension create --arc-setting-name "default" --cluster-name "myCluster" --type \
+"MicrosoftMonitoringAgent" --protected-settings "{\\"workspaceKey\\":\\"xx\\"}" --publisher "Microsoft.Compute" \
+--settings "{\\"workspaceId\\":\\"xx\\"}" --type-handler-version "1.10" --name "MicrosoftMonitoringAgent" \
+--resource-group "test-rg"
+"""
+
+helps['stack-hci extension delete'] = """
+    type: command
+    short-summary: "Delete particular Arc Extension of HCI Cluster."
+    examples:
+      - name: Delete Arc Extension
+        text: |-
+               az stack-hci extension delete --arc-setting-name "default" --cluster-name "myCluster" --name \
+"MicrosoftMonitoringAgent" --resource-group "test-rg"
+"""
+
+helps['stack-hci extension wait'] = """
+    type: command
+    short-summary: Place the CLI in a waiting state until a condition of the stack-hci extension is met.
+    examples:
+      - name: Pause executing next line of CLI script until the stack-hci extension is successfully created.
+        text: |-
+               az stack-hci extension wait --arc-setting-name "default" --cluster-name "myCluster" --name \
+"MicrosoftMonitoringAgent" --resource-group "test-rg" --created
+      - name: Pause executing next line of CLI script until the stack-hci extension is successfully updated.
+        text: |-
+               az stack-hci extension wait --arc-setting-name "default" --cluster-name "myCluster" --name \
+"MicrosoftMonitoringAgent" --resource-group "test-rg" --updated
+      - name: Pause executing next line of CLI script until the stack-hci extension is successfully deleted.
+        text: |-
+               az stack-hci extension wait --arc-setting-name "default" --cluster-name "myCluster" --name \
+"MicrosoftMonitoringAgent" --resource-group "test-rg" --deleted
 """

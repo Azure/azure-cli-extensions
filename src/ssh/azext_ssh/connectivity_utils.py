@@ -12,9 +12,8 @@ import base64
 from glob import glob
 
 import colorama
-from colorama import Fore
-from colorama import Style
 
+from azure.cli.core.style import Style, print_styled_text
 from azure.core.exceptions import ResourceNotFoundError
 from azure.cli.core import telemetry
 from azure.cli.core import azclierror
@@ -69,7 +68,8 @@ def _create_default_endpoint(cmd, resource_group, vm_name, client):
         colorama.init()
         raise azclierror.UnauthorizedError(f"Unable to create Default Endpoint for {vm_name} in {resource_group}."
                                            f"\nError: {str(e)}",
-                                           Fore.YELLOW + "Contact Owner/Contributor of the resource." + Style.RESET_ALL)
+                                           colorama.Fore.YELLOW + "Contact Owner/Contributor of the resource."
+                                           + colorama.Style.RESET_ALL)
 
 
 # Downloads client side proxy to connect to Arc Connectivity Platform
@@ -109,8 +109,7 @@ def get_client_side_proxy(arc_proxy_folder):
         # write executable in the install location
         file_utils.write_to_file(install_location, 'wb', response_content, "Failed to create client proxy file. ")
         os.chmod(install_location, os.stat(install_location).st_mode | stat.S_IXUSR)
-        colorama.init()
-        print(Fore.GREEN + f"SSH Client Proxy saved to {install_location}" + Style.RESET_ALL)
+        print_styled_text((Style.SUCCESS, f"SSH Client Proxy saved to {install_location}"))
 
     return install_location
 

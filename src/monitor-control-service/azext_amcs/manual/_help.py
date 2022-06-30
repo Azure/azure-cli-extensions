@@ -165,103 +165,13 @@ helps['monitor data-collection rule create'] = """
     type: command
     short-summary: "Create a data collection rule."
     parameters:
-      - name: --data-flows
-        short-summary: "The specification of data flows."
-        long-summary: |
-            Usage: --data-flows streams=XX1 streams=XX2 destinations=XX1 destinations=XX2
-
-            streams: Required. List of streams for this data flow.
-            destinations: Required. List of destinations for this data flow.
-
-            Multiple actions can be specified by using more than one --data-flows argument.
-      - name: --log-analytics
-        short-summary: "List of Log Analytics destinations."
-        long-summary: |
-            Usage: --log-analytics resource-id=XX name=XX
-
-            resource-id: Required. The resource ID of the Log Analytics workspace.
-            name: Required. A friendly name for the destination.  This name should be unique across all destinations \
-(regardless of type) within the data collection rule.
-
-            Multiple actions can be specified by using more than one --log-analytics argument.
-      - name: --monitor-metrics
-        short-summary: "Azure Monitor Metrics destination."
-        long-summary: |
-            Usage: --monitor-metrics name=XX
-
-            name: Required. A friendly name for the destination.  This name should be unique across all destinations \
-(regardless of type) within the data collection rule.
-      - name: --performance-counters
-        short-summary: "The list of performance counter data source configurations."
-        long-summary: |
-            Usage: --performance-counters streams=XX1 streams=XX2 \
-sampling-frequency=XX counter-specifiers=XX1 counter-specifiers=XX2 name=XX
-
-            streams: Required. List of streams that this data source will be sent to. A stream indicates what schema \
-will be used for this data and usually what table in Log Analytics the data will be sent to.
-            sampling-frequency: Required. The number of seconds between consecutive counter measurements \
-(samples).
-            counter-specifiers: Required. A list of specifier names of the performance counters you want to collect. \
-Use a wildcard (*) to collect a counter for all instances. To get a list of performance counters on Windows, run the \
-command 'typeperf'.
-            name: Required. A friendly name for the data source.  This name should be unique across all data sources \
-(regardless of type) within the data collection rule.
-
-            Multiple actions can be specified by using more than one --performance-counters argument.
-      - name: --windows-event-logs
-        short-summary: "The list of Windows Event Log data source configurations."
-        long-summary: |
-            Usage: --windows-event-logs streams=XX1 streams=XX2 x-path-queries=XX1 \
-x-path-queries=XX2 name=XX
-
-            streams: Required. List of streams that this data source will be sent to. A stream indicates what schema \
-will be used for this data and usually what table in Log Analytics the data will be sent to.
-            x-path-queries: Required. A list of Windows Event Log queries in XPATH format.
-            name: Required. A friendly name for the data source.  This name should be unique across all data sources \
-(regardless of type) within the data collection rule.
-
-            Multiple actions can be specified by using more than one --windows-event-logs argument.
-      - name: --syslog
-        short-summary: "The list of Syslog data source configurations."
-        long-summary: |
-            Usage: --syslog streams=XX1 streams=XX2 facility-names=XX1 facility-names=XX2 log-levels=XX1 log-levels=XX2 \
-name=XX
-
-            streams: Required. List of streams that this data source will be sent to. A stream indicates what schema \
-will be used for this data and usually what table in Log Analytics the data will be sent to.
-            facility-names: Required. The list of facility names.
-            log-levels: The log levels to collect.
-            name: Required. A friendly name for the data source.  This name should be unique across all data sources \
-(regardless of type) within the data collection rule.
-
-            Multiple actions can be specified by using more than one --syslog argument.
+      - name: --rule-file
+        short-summary: "The json file for rule parameters."
     examples:
       - name: Create data collection rule
         text: |-
                az monitor data-collection rule create --resource-group "myResourceGroup" --location "eastus" \
---name "myCollectionRule" \
---data-flows destinations="centralWorkspace" streams="Microsoft-Perf" streams="Microsoft-Syslog" \
-streams="Microsoft-WindowsEvent" \
---log-analytics name="centralWorkspace" \
-resource-id="/subscriptions/703362b3-f278-4e4b-9179-c76eaf41ffc2/resourceGroups/myResourceGroup/providers/Mic\
-rosoft.OperationalInsights/workspaces/centralTeamWorkspace" \
---performance-counters name="cloudTeamCoreCounters" counter-specifiers="\\\\Processor(_Total)\\\\% Processor Time" \
-counter-specifiers="\\\\Memory\\\\Committed Bytes" counter-specifiers="\\\\LogicalDisk(_Total)\\\\Free Megabytes" \
-counter-specifiers="\\\\PhysicalDisk(_Total)\\\\Avg. Disk Queue Length" sampling-frequency=15 \
-streams="Microsoft-Perf" \
---performance-counters name="appTeamExtraCounters" \
-counter-specifiers="\\\\Process(_Total)\\\\Thread Count" sampling-frequency=30 \
-streams="Microsoft-Perf" \
---syslog name="cronSyslog" facility-names="cron" log-levels="Debug" log-levels="Critical" log-levels="Emergency" \
-streams="Microsoft-Syslog" \
---syslog name="syslogBase" facility-names="syslog" log-levels="Alert" log-levels="Critical" log-levels="Emergency" \
-streams="Microsoft-Syslog" \
---windows-event-logs name="cloudSecurityTeamEvents" streams="Microsoft-WindowsEvent" \
-x-path-queries="Security!" \
---windows-event-logs name="appTeam1AppEvents" streams="Microsoft-WindowsEvent" \
-x-path-queries="System![System[(Level = 1 or Level = 2 or Level = 3)]]" \
-x-path-queries="Application!*[System[(Level = 1 or Level = 2 or Level = 3)]]"
-
+--name "myCollectionRule" --rule-file "C:\samples\dcrEx1.json"
 """
 
 helps['monitor data-collection rule update'] = """

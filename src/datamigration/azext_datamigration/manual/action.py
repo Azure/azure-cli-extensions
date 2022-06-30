@@ -22,6 +22,8 @@ from collections import defaultdict
 from knack.util import CLIError
 
 
+# Adding new input type for target connection details
+# As having type as AddSourceSqlConnection overwrites one of the parameters
 class AddTargetSqlConnection(argparse.Action):
     def __call__(self, parser, namespace, values, option_string=None):
         action = self.get_action(values, option_string)
