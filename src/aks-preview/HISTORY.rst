@@ -12,6 +12,8 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+* Fix snapshot not resolved according to the subscriptions field in the `--snapshot-id`` option
+
 0.5.86
 +++++++
 
