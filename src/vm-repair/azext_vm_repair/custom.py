@@ -529,3 +529,7 @@ def list_scripts(cmd, preview=None):
         return_dict['map'] = run_map
 
     return return_dict
+
+
+def reset_nic(cmd, vm_name, resource_group_name):
+    print(f'{vm_name}, {resource_group_name}')
