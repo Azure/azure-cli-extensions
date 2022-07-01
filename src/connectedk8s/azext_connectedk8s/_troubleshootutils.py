@@ -44,11 +44,13 @@ cli_outputs = []
 
 def create_folder_diagnosticlogs(time_stamp):
 
-    home_dir = os.path.expanduser('~')
-    filepath = os.path.join(home_dir, '.azure', 'arc_diagnostic_logs')
     global cli_outputs
 
     try:
+
+        home_dir = os.path.expanduser('~')
+        filepath = os.path.join(home_dir, '.azure', 'arc_diagnostic_logs')
+
         # Creating Diagnostic folder and its subfolder with the given timestamp and cluster name to store all the logs
         try:
             os.mkdir(filepath)
@@ -67,18 +69,47 @@ def create_folder_diagnosticlogs(time_stamp):
         if "[Errno 28]" in str(e):
             shutil.rmtree(filepath_with_timestamp, ignore_errors=False, onerror=None)
             telemetry.set_exception(exception=e, fault_type=consts.No_Storage_Space_Available_Fault_Type, summary="No space left on device")
-            return filepath_with_timestamp, "no_storage_space"
+            return "", "no_storage_space"
         else:
             logger.warning("An expection has occured while creating the diagnostic logs folder in your local machine. Exception: {}".format(str(e)) + "\n")
             telemetry.set_exception(exception=e, fault_type=consts.Storage_Available_Fault_Type, summary="Error while trying to create diagnostic logs folder")
             cli_outputs.append("An expection has occured while creating the diagnostic logs folder in your local machine. Exception: {}".format(str(e)) + "\n")
-            return filepath_with_timestamp, "folder_not_created"
+            return "", "folder_not_created"
 
     except Exception as e:
         logger.warning("An expection has occured while creating the diagnostic logs folder in your local machine. Exception: {}".format(str(e)) + "\n")
         telemetry.set_exception(exception=e, fault_type=consts.Storage_Available_Fault_Type, summary="Error while trying to create diagnostic logs folder")
         cli_outputs.append("An expection has occured while creating the diagnostic logs folder in your local machine. Exception: {}".format(str(e)) + "\n")
-        return filepath_with_timestamp, "folder_not_created"
+        return "", "folder_not_created"
+
+
+def connected_cluster_logger(filepath_with_timestamp, connected_cluster, storage_space_available):
+
+    global cli_outputs
+
+    try:
+        connected_cluster_resource_path = os.path.join(filepath_with_timestamp, "Connected_cluster_resource.txt")
+        if storage_space_available:
+            with open(connected_cluster_resource_path, 'w+') as cc:
+                cc.write(str(connected_cluster))
+        return "Passed", storage_space_available
+
+    except OSError as e:
+        if "[Errno 28]" in str(e):
+            storage_space_available = False
+            telemetry.set_exception(exception=e, fault_type=consts.No_Storage_Space_Available_Fault_Type, summary="No space left on device")
+            shutil.rmtree(filepath_with_timestamp, ignore_errors=False, onerror=None)
+        else:
+            logger.warning("An expection has occured while trying to store the connected cluster resource logs from the cluster. Exception: {}".format(str(e)) + "\n")
+            telemetry.set_exception(exception=e, fault_type=consts.Connected_Cluster_Resource_Fault_Type, summary="Eror occure while storing the connected cluster resource logs")
+            cli_outputs.append("An expection has occured while trying to store the connected cluster resource logs from the cluster. Exception: {}".format(str(e)) + "\n")
+
+    except Exception as e:
+        logger.warning("An expection has occured while trying to store the connected cluster resource logs from the cluster. Exception: {}".format(str(e)) + "\n")
+        telemetry.set_exception(exception=e, fault_type=consts.Connected_Cluster_Resource_Fault_Type, summary="Eror occure while storing the connected cluster resource logs")
+        cli_outputs.append("An expection has occured while trying to store the connected cluster resource logs from the cluster. Exception: {}".format(str(e)) + "\n")
+
+    return "Failed", storage_space_available
 
 
 def arc_agents_logger(corev1_api_instance, filepath_with_timestamp, storage_space_available):
@@ -86,6 +117,7 @@ def arc_agents_logger(corev1_api_instance, filepath_with_timestamp, storage_spac
     global cli_outputs
 
     try:
+
         if storage_space_available:
             # To retrieve all of the arc agents pods that are presesnt in the Cluster
             arc_agents_pod_list = corev1_api_instance.list_namespaced_pod(namespace="azure-arc")
@@ -122,8 +154,9 @@ def arc_agents_logger(corev1_api_instance, filepath_with_timestamp, storage_spac
 
                     arc_agent_container_logs = os.path.join(agent_name_logs_path, container_name + ".txt")
                     with open(arc_agent_container_logs, 'w+') as container_file:
-                        print()
-                        #container_file.write(str(container_log))
+                        container_file.write(str(container_log))
+
+        return "Passed", storage_space_available
 
     except OSError as e:
         if "[Errno 28]" in str(e):
@@ -140,7 +173,7 @@ def arc_agents_logger(corev1_api_instance, filepath_with_timestamp, storage_spac
         telemetry.set_exception(exception=e, fault_type=consts.Arc_Agents_Logger_Fault_Type, summary="Error occured in arc agents logger")
         cli_outputs.append("An expection has occured while trying to fetch the azure arc agents logs from the cluster. Exception: {}".format(str(e)) + "\n")
 
-    return storage_space_available
+    return "Failed", storage_space_available
 
 
 def arc_agents_event_logger(filepath_with_timestamp, storage_space_available):
@@ -170,6 +203,8 @@ def arc_agents_event_logger(filepath_with_timestamp, storage_space_available):
 
                 for events in events_json["items"]:
                         event_log.write(str(events) + "\n")
+        
+            return "Passed", storage_space_available
 
     except OSError as e:
         if "[Errno 28]" in str(e):
@@ -186,7 +221,7 @@ def arc_agents_event_logger(filepath_with_timestamp, storage_space_available):
         telemetry.set_exception(exception=e, fault_type=consts.Arc_Agents_Events_Logger_Fault_Type, summary="Error occured in arc agents events logger")
         cli_outputs.append("An expection has occured while trying to fetch the events occured in azure-arc namespace from the cluster. Exception: {}".format(str(e)) + "\n")
 
-    return storage_space_available
+    return "Failed", storage_space_available
 
 
 def deployments_logger(appv1_api_instance, filepath_with_timestamp, storage_space_available):
@@ -218,6 +253,8 @@ def deployments_logger(appv1_api_instance, filepath_with_timestamp, storage_spac
                 with open(deployment_logs_path, 'w+') as deployment_file:
                     deployment_file.write(str(deployment.status))
 
+        return "Passed", storage_space_available
+
     except OSError as e:
         if "[Errno 28]" in str(e):
             storage_space_available = False
@@ -233,7 +270,7 @@ def deployments_logger(appv1_api_instance, filepath_with_timestamp, storage_spac
         telemetry.set_exception(exception=e, fault_type=consts.Arc_Deployments_Logger_Fault_Type, summary="Error occured in deployments logger")
         cli_outputs.append("An expection has occured while trying to fetch the azure arc deployment logs from the cluster. Exception: {}".format(str(e)) + "\n")
 
-    return storage_space_available
+    return "Failed", storage_space_available
 
 
 def check_agent_state(corev1_api_instance, filepath_with_timestamp, storage_space_available):
@@ -326,6 +363,7 @@ def check_diagnoser_container(corev1_api_instance, batchv1_api_instance, filepat
     global cli_outputs
 
     try:
+
         # Setting DNS and Outbound Check as working
         dns_check = "Starting"
         outbound_connectivity_check = "Starting"
@@ -548,6 +586,7 @@ def check_msi_certificate(corev1_api_instance):
     global cli_outputs
 
     try:
+
         # Initializing msi certificate as not present
         msi_cert_present = False
 
@@ -697,34 +736,6 @@ def check_msi_expiry(connected_cluster):
     return "Incomplete"
 
 
-def cli_output_logger(filepath_with_timestamp, storage_space_available):
-
-    global cli_outputs
-
-    try:
-
-        if storage_space_available:
-
-            cli_output_logger_path = os.path.join(filepath_with_timestamp, "Diagnoser_Results.txt")
-
-            if len(cli_outputs) > 0:
-                with open(cli_output_logger_path, 'w+') as cli_output_writer:
-                    for output in cli_outputs:
-                        cli_output_writer.write(output + "\n")
-            else:
-                with open(cli_output_logger_path, 'w+') as cli_output_writer:
-                        cli_output_writer.write("Diagnoser could not find any issues with the cluster.\n")
-
-    except OSError as e:
-        if "[Errno 28]" in str(e):
-            storage_space_available = False
-            telemetry.set_exception(exception=e, fault_type=consts.No_Storage_Space_Available_Fault_Type, summary="No space left on device")
-            shutil.rmtree(filepath_with_timestamp, ignore_errors=False, onerror=None)
-
-    except Exception as e:
-        print(e)
-
-
 def describe_stuck_agent_log(filepath_with_timestamp, corev1_api_instance, agent_pod_name, storage_space_available):
     
     try:
@@ -756,3 +767,37 @@ def describe_stuck_agent_log(filepath_with_timestamp, corev1_api_instance, agent
             cli_outputs.append("An expection has occured while storing stuck agent logs in the user local machine. Exception: {}".format(str(e)) + "\n")
 
     return storage_space_available
+
+
+def cli_output_logger(filepath_with_timestamp, storage_space_available):
+
+    global cli_outputs
+
+    try:
+
+        if storage_space_available:
+
+            cli_output_logger_path = os.path.join(filepath_with_timestamp, "Diagnoser_Results.txt")
+
+            if len(cli_outputs) > 0:
+                with open(cli_output_logger_path, 'w+') as cli_output_writer:
+                    for output in cli_outputs:
+                        cli_output_writer.write(output + "\n")
+            else:
+                with open(cli_output_logger_path, 'w+') as cli_output_writer:
+                        cli_output_writer.write("Diagnoser could not find any issues with the cluster.\n")
+
+        return "Passed"
+
+    except OSError as e:
+        if "[Errno 28]" in str(e):
+            storage_space_available = False
+            telemetry.set_exception(exception=e, fault_type=consts.No_Storage_Space_Available_Fault_Type, summary="No space left on device")
+            shutil.rmtree(filepath_with_timestamp, ignore_errors=False, onerror=None)
+
+    except Exception as e:
+        logger.warning("An expection has occured while trying to store the diagnoser results. Exception: {}".format(str(e)) + "\n")
+        telemetry.set_exception(exception=e, fault_type=consts.Diagnoser_Result_Fault_Type, summary="Error while storing the diagnoser results")
+
+    return "Failed"
+
