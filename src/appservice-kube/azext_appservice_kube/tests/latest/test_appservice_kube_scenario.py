@@ -19,6 +19,7 @@ class AppserviceKubernetesScenarioTest(ScenarioTest):
 # not lima-specific
 class WebappBasicE2EKubeTest(ScenarioTest):
     @ResourceGroupPreparer(location='canadacentral')
+    @live_only()
     def test_linux_webapp_quick_create_kube(self, resource_group):
         webapp_name = self.create_random_name(
             prefix='webapp-quick-linux', length=24)
