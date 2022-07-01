@@ -35,10 +35,6 @@ from azext_aks_preview._consts import (
     CONST_ROTATION_POLL_INTERVAL,
     CONST_KUBE_DASHBOARD_ADDON_NAME,
 )
-from .vendored_sdks.azure_mgmt_preview_aks.v2022_05_02_preview.models import (
-    ManagedClusterIngressProfile,
-    ManagedClusterIngressProfileWebAppRouting,
-)
 
 logger = get_logger(__name__)
 
@@ -174,6 +170,16 @@ def update_addons(cmd,  # pylint: disable=too-many-branches,too-many-statements
     # load model
     ManagedClusterAddonProfile = cmd.get_models(
         "ManagedClusterAddonProfile",
+        resource_type=CUSTOM_MGMT_AKS_PREVIEW,
+        operation_group="managed_clusters",
+    )
+    ManagedClusterIngressProfile = cmd.get_models(
+        "ManagedClusterIngressProfile",
+        resource_type=CUSTOM_MGMT_AKS_PREVIEW,
+        operation_group="managed_clusters",
+    )
+    ManagedClusterIngressProfileWebAppRouting = cmd.get_models(
+        "ManagedClusterIngressProfileWebAppRouting",
         resource_type=CUSTOM_MGMT_AKS_PREVIEW,
         operation_group="managed_clusters",
     )
