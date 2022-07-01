@@ -1,5 +1,9 @@
 Release History
 ===============
+1.1.3
+---
+* Enhance Application Insights settings when create service instance.
+
 1.1.2
 ---
 * Support configure Germination Grace Period Seconds for deployments.
