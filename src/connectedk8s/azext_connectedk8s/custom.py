@@ -4,6 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 import errno
+import logging
 from logging import exception
 import os
 import json
@@ -2060,6 +2061,8 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
         # Setting kube_config
         kube_config = set_kube_config(kube_config)
 
+        kube_client.rest.logger.setLevel(logging.WARNING)
+
         # Loading the kubeconfig file in kubernetes client configuration
         load_kube_config(kube_config, kube_context)
         configuration = kube_client.Configuration()
@@ -2108,7 +2111,6 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
             print(e)
 
         corev1_api_instance = kube_client.CoreV1Api(kube_client.ApiClient(configuration))
-        utils.validate_node_api_response(corev1_api_instance, None)
 
         # Check if agents have been added to the cluster
         arc_agents_pod_list = corev1_api_instance.list_namespaced_pod(namespace="azure-arc")
@@ -2121,17 +2123,17 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
 
             # For storing all the deployments logs using the AppsV1Api
             appv1_api_instance = kube_client.AppsV1Api(kube_client.ApiClient(configuration))
-            utils.validate_node_api_response(appv1_api_instance, None)
             storage_space_available = troubleshootutils.arc_agents_event_logger(filepath_with_timestamp, storage_space_available)
 
             # For storing all arc agents events logs
             storage_space_available = troubleshootutils.deployments_logger(appv1_api_instance, filepath_with_timestamp, storage_space_available)
 
             # Check for the azure arc agent states
-            diagnostic_checks["arc_agent_state_check"], storage_space_available = troubleshootutils.check_agent_state(corev1_api_instance, filepath_with_timestamp, storage_space_available)
+            diagnostic_checks["arc_agent_state_check"], storage_space_available, all_agents_stuck = troubleshootutils.check_agent_state(corev1_api_instance, filepath_with_timestamp, storage_space_available)
 
             # Check for msi certificate
-            diagnostic_checks["msi_cert_check"] = troubleshootutils.check_msi_certificate(corev1_api_instance)
+            if all_agents_stuck == "False":
+                diagnostic_checks["msi_cert_check"] = troubleshootutils.check_msi_certificate(corev1_api_instance)
 
             # If msi certificate present then only we will perform msi certificate expiry check
             if diagnostic_checks["msi_cert_check"] == "Passed":
@@ -2174,7 +2176,6 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
             print("Error : Arc Agents have not been added to cluster. Please delete and reconnect the Kubernetes Cluster\n")
 
         batchv1_api_instance = kube_client.BatchV1Api(kube_client.ApiClient(configuration))
-        utils.validate_node_api_response(batchv1_api_instance, None)
 
         # Fetching the current kubernetes namespace to deploy the job
         try:
@@ -2231,3 +2232,6 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
 
     except KeyboardInterrupt:
         raise ManualInterrupt('Process terminated externally.')
+
+    except Exception as e:
+        print(e)

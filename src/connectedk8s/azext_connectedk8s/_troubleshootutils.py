@@ -122,7 +122,8 @@ def arc_agents_logger(corev1_api_instance, filepath_with_timestamp, storage_spac
 
                     arc_agent_container_logs = os.path.join(agent_name_logs_path, container_name + ".txt")
                     with open(arc_agent_container_logs, 'w+') as container_file:
-                        container_file.write(str(container_log))
+                        print()
+                        #container_file.write(str(container_log))
 
     except OSError as e:
         if "[Errno 28]" in str(e):
@@ -238,10 +239,12 @@ def deployments_logger(appv1_api_instance, filepath_with_timestamp, storage_spac
 def check_agent_state(corev1_api_instance, filepath_with_timestamp, storage_space_available):
 
     global cli_outputs
-
+    all_agents_stuck = "Incomplete"
     try:
 
         counter = 0
+        all_agents_stuck = "True"
+
         agent_state_path = os.path.join(filepath_with_timestamp, "Agent_State.txt")
         with open(agent_state_path, 'w+') as agent_state:
             # To retrieve all of the arc agent pods that are presesnt in the Cluster
@@ -255,19 +258,19 @@ def check_agent_state(corev1_api_instance, filepath_with_timestamp, storage_spac
                     # Storing the state of the arc agent in the user machine
                     agent_state.write(each_agent_pod.metadata.name + " = " + each_agent_pod.status.phase + "\n")
 
-                # If the agent is Kube add proxy we will continue with the next agent
-                if(each_agent_pod.metadata.name.startswith("kube-aad-proxy")):
-                    continue
                 if each_agent_pod.status.phase != 'Running':
                     counter = 1
+                    storage_space_available = describe_stuck_agent_log(filepath_with_timestamp, corev1_api_instance, each_agent_pod.metadata.name, storage_space_available)
+                else:
+                    all_agents_stuck = "False"
 
         # Displaying error if the arc agents are in pending state.
         if counter:
             print("Error: One or more Azure Arc agents are in pending state. It may be caused due to insufficient resource availability on the cluster.\n ")
             cli_outputs.append("Error: One or more Azure Arc agents are in pending state. It may be caused due to insufficient resource availability on the cluster.\n ")
-            return "Failed", storage_space_available
+            return "Failed", storage_space_available, all_agents_stuck
 
-        return "Passed", storage_space_available
+        return "Passed", storage_space_available, all_agents_stuck
 
     except OSError as e:
         if "[Errno 28]" in str(e):
@@ -284,7 +287,7 @@ def check_agent_state(corev1_api_instance, filepath_with_timestamp, storage_spac
         telemetry.set_exception(exception=e, fault_type=consts.Agent_State_Check_Fault_Type, summary="Error ocuured while performing the agent state check")
         cli_outputs.append("An expection has occured while trying to check the azure arc agents state in the cluster. Exception: {}".format(str(e)) + "\n")
 
-    return "Incomplete", storage_space_available
+    return "Incomplete", storage_space_available, all_agents_stuck
 
 
 def check_agent_version(connected_cluster, azure_arc_agent_version):
@@ -443,6 +446,7 @@ def executing_diagnoser_job(corev1_api_instance, batchv1_api_instance, namespace
         # If process terminated by user then delete the resources if any added to the cluster.
         subprocess.run(cmd_delete_job, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         print()
+        raise ManualInterrupt('Process terminated externally.')
 
     except Exception as e:
         logger.warning("An expection has occured while trying to execute the diagnoser job in the cluster. Exception: {}".format(str(e)) + "\n")
@@ -719,3 +723,36 @@ def cli_output_logger(filepath_with_timestamp, storage_space_available):
 
     except Exception as e:
         print(e)
+
+
+def describe_stuck_agent_log(filepath_with_timestamp, corev1_api_instance, agent_pod_name, storage_space_available):
+    
+    try:
+        if storage_space_available:
+            describe_stuck_agent_path = os.path.join(filepath_with_timestamp, 'Describe_Stuck_Agents')
+            try:
+                os.mkdir(describe_stuck_agent_path)
+            except FileExistsError:
+                pass
+            api_response = corev1_api_instance.read_namespaced_pod(name=agent_pod_name, namespace='azure-arc')
+            stuck_agent_pod_path = os.path.join(describe_stuck_agent_path, agent_pod_name+'.txt')
+
+            with open(stuck_agent_pod_path, 'w+') as stuck_agent_log:
+                stuck_agent_log.write(str(api_response))
+
+    except OSError as e:
+        if "[Errno 28]" in str(e):
+            storage_space_available = False
+            telemetry.set_exception(exception=e, fault_type=consts.No_Storage_Space_Available_Fault_Type, summary="No space left on device")
+            shutil.rmtree(filepath_with_timestamp, ignore_errors=False, onerror=None)
+        else:
+            logger.warning("An expection has occured while storing stuck agent logs in the user local machine. Exception: {}".format(str(e)) + "\n")
+            telemetry.set_exception(exception=e, fault_type=consts.Describe_Stuck_Agents_Fault_Type, summary="Error occured while storing the stuck agents description")
+            cli_outputs.append("An expection has occured while storing stuck agent logs in the user local machine. Exception: {}".format(str(e)) + "\n")
+    
+    except Exception as e:
+            logger.warning("An expection has occured while storing stuck agent logs in the user local machine. Exception: {}".format(str(e)) + "\n")
+            telemetry.set_exception(exception=e, fault_type=consts.Describe_Stuck_Agents_Fault_Type, summary="Error occured while storing the stuck agents description")
+            cli_outputs.append("An expection has occured while storing stuck agent logs in the user local machine. Exception: {}".format(str(e)) + "\n")
+
+    return storage_space_available

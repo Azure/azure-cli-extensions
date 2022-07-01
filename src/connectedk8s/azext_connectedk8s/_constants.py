@@ -135,6 +135,7 @@ MSI_Cert_Expiry_Check_Fault_Type = "Error occured while trying to perform the MS
 Connected_Cluster_Logger_Fault_Type = "Error occured in connected cluster resoruce logger"
 Arc_Diagnostic_Log_Fault_Type = "Error while creating the arc diagnostic logs folder"
 Storage_Available_Fault_Type = "Error while trying to create diagnostic logs folder"
+Describe_Stuck_Agents_Fault_Type = "Error occured while storing the stuck agents description"
 No_Storage_Space_Available_Fault_Type = "No space left on device"
 AZ_CLI_ADAL_TO_MSAL_MIGRATE_VERSION = '2.30.0'
 CLIENT_PROXY_VERSION = '1.3.019103'
