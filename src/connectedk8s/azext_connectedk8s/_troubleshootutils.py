@@ -203,7 +203,7 @@ def arc_agents_event_logger(filepath_with_timestamp, storage_space_available):
 
                 for events in events_json["items"]:
                         event_log.write(str(events) + "\n")
-        
+
             return "Passed", storage_space_available
 
     except OSError as e:
@@ -737,7 +737,7 @@ def check_msi_expiry(connected_cluster):
 
 
 def describe_stuck_agent_log(filepath_with_timestamp, corev1_api_instance, agent_pod_name, storage_space_available):
-    
+
     try:
         if storage_space_available:
             describe_stuck_agent_path = os.path.join(filepath_with_timestamp, 'Describe_Stuck_Agents')
@@ -746,7 +746,7 @@ def describe_stuck_agent_log(filepath_with_timestamp, corev1_api_instance, agent
             except FileExistsError:
                 pass
             api_response = corev1_api_instance.read_namespaced_pod(name=agent_pod_name, namespace='azure-arc')
-            stuck_agent_pod_path = os.path.join(describe_stuck_agent_path, agent_pod_name+'.txt')
+            stuck_agent_pod_path = os.path.join(describe_stuck_agent_path, agent_pod_name + '.txt')
 
             with open(stuck_agent_pod_path, 'w+') as stuck_agent_log:
                 stuck_agent_log.write(str(api_response))
@@ -760,7 +760,7 @@ def describe_stuck_agent_log(filepath_with_timestamp, corev1_api_instance, agent
             logger.warning("An expection has occured while storing stuck agent logs in the user local machine. Exception: {}".format(str(e)) + "\n")
             telemetry.set_exception(exception=e, fault_type=consts.Describe_Stuck_Agents_Fault_Type, summary="Error occured while storing the stuck agents description")
             cli_outputs.append("An expection has occured while storing stuck agent logs in the user local machine. Exception: {}".format(str(e)) + "\n")
-    
+
     except Exception as e:
             logger.warning("An expection has occured while storing stuck agent logs in the user local machine. Exception: {}".format(str(e)) + "\n")
             telemetry.set_exception(exception=e, fault_type=consts.Describe_Stuck_Agents_Fault_Type, summary="Error occured while storing the stuck agents description")
@@ -800,4 +800,3 @@ def cli_output_logger(filepath_with_timestamp, storage_space_available):
         telemetry.set_exception(exception=e, fault_type=consts.Diagnoser_Result_Fault_Type, summary="Error while storing the diagnoser results")
 
     return "Failed"
-

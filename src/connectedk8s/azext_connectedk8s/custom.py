@@ -2225,5 +2225,5 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
         raise ManualInterrupt('Process terminated externally.')
 
     except Exception as e:
-        print("An error occured while trying to perform Troubleshoot Command. Exception: "+str(e))
+        print("An error occured while trying to perform Troubleshoot Command. Exception: " + str(e))
         telemetry.set_exception(exception=e, fault_type=consts.Troubleshoot_Execution_Fault_Type, summary="Error occured while performing Troubleshoot command")
