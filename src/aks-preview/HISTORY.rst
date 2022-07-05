@@ -12,6 +12,8 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+* Support disabling Azure KeyVault KMS.
+
 0.5.91
 ++++++
 
