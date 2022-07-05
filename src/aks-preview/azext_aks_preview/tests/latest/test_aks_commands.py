@@ -3287,10 +3287,11 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         # create
         create_cmd = 'aks create --resource-group={resource_group} --name={name} --location={location} ' \
                      '--network-plugin azure --network-plugin-mode overlay --ssh-key-value={ssh_key_value} ' \
-                     '--pod-cidr 10.244.0.0/16 ' \
+                     '--pod-cidr 10.244.0.0/16 --node-count 1 ' \
                      '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AzureOverlayPreview'
         self.cmd(create_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
+            self.check('networkProfile.podCidr', '10.244.0.0/16'),
             self.check('networkProfile.networkPluginMode', 'overlay'),
         ])
 
