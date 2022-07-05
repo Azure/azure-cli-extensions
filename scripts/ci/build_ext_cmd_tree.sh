@@ -20,7 +20,7 @@ export AZURE_EXTENSION_INDEX_URL=https://raw.githubusercontent.com/Azure/azure-c
 output=$(az extension list-available --query [].name -otsv)
 # azure-cli-ml is replaced by ml
 # TODO: azure-batch-cli-extensions is not compatible with latest batch SDK.
-blocklist=("azure-cli-ml" "azure-batch-cli-extensions")
+blocklist=("azure-cli-ml" "azure-batch-cli-extensions", "alias", "arcdata")
 
 rm -f ~/.azure/extCmdTreeToUpload.json
 
