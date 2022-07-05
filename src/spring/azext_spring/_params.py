@@ -76,6 +76,10 @@ def load_arguments(self, _):
         c.argument('service_runtime_subnet', arg_group='VNet Injection', options_list=['--service-runtime-subnet', '--svc-subnet'], help='The name or ID of an existing subnet in "vnet" into which to deploy the Spring Apps service runtime. Required when deploying into a Virtual Network.', validator=validate_vnet)
         c.argument('service_runtime_network_resource_group', arg_group='VNet Injection', options_list=['--service-runtime-network-resource-group', '--svc-nrg'], help='The resource group where all network resources for Azure Spring Apps service runtime will be created in.', validator=validate_node_resource_group)
         c.argument('app_network_resource_group', arg_group='VNet Injection', options_list=['--app-network-resource-group', '--app-nrg'], help='The resource group where all network resources for apps will be created in.', validator=validate_node_resource_group)
+        c.argument('enable_log_stream_public_endpoint',
+                   arg_type=get_three_state_flag(),
+                   options_list=['--enable-log-stream-public-endpoint', '--enable-lspa'],
+                   help='If true, assign public endpoint for log streaming in vnet injection instance which could be accessed out of virtual network.')
         c.argument('enable_java_agent',
                    arg_group='Application Insights',
                    arg_type=get_three_state_flag(),
@@ -129,24 +133,20 @@ def load_arguments(self, _):
         c.argument('enable_gateway',
                    arg_group="Spring Cloud Gateway",
                    action='store_true',
-                   is_preview=True,
                    help='(Enterprise Tier Only) Enable Spring Cloud Gateway.')
         c.argument('gateway_instance_count',
                    arg_group="Spring Cloud Gateway",
                    type=int,
                    validator=validate_gateway_instance_count,
-                   is_preview=True,
                    help='(Enterprise Tier Only) Number of Spring Cloud Gateway instances.')
         c.argument('enable_api_portal',
                    arg_group="API portal",
                    action='store_true',
-                   is_preview=True,
                    help='(Enterprise Tier Only) Enable API portal.')
         c.argument('api_portal_instance_count',
                    arg_group="API portal",
                    type=int,
                    validator=validate_api_portal_instance_count,
-                   is_preview=True,
                    options_list=['--api-portal-instance-count', '--ap-instance'],
                    help='(Enterprise Tier Only) Number of API portal instances.')
 
@@ -182,6 +182,10 @@ def load_arguments(self, _):
         c.argument('build_pool_size',
                    arg_type=get_enum_type(['S1', 'S2', 'S3', 'S4', 'S5']),
                    help='(Enterprise Tier Only) Size of build agent pool. See https://aka.ms/azure-spring-cloud-build-service-docs for size info.')
+        c.argument('enable_log_stream_public_endpoint',
+                   arg_type=get_three_state_flag(),
+                   options_list=['--enable-log-stream-public-endpoint', '--enable-lspa'],
+                   help='If true, assign public endpoint for log streaming in vnet injection instance which could be accessed out of virtual network.')
 
     for scope in ['spring create', 'spring update']:
         with self.argument_context(scope) as c:
@@ -195,10 +199,31 @@ def load_arguments(self, _):
         c.argument('service', service_name_type)
         c.argument('name', name_type, help='Name of app.')
 
+    for scope in ['spring app create', 'spring app update', 'spring app deploy', 'spring app deployment create', 'spring app deployment update']:
+        with self.argument_context(scope) as c:
+            c.argument('enable_liveness_probe', arg_type=get_three_state_flag(), is_preview=True,
+                       help='If false, will disable the liveness probe of the app instance', arg_group='App Customization')
+            c.argument('enable_readiness_probe', arg_type=get_three_state_flag(), is_preview=True,
+                       help='If false, will disable the readiness probe of the app instance', arg_group='App Customization')
+            c.argument('enable_startup_probe', arg_type=get_three_state_flag(), is_preview=True,
+                       help='If false, will disable the startup probe of the app instance', arg_group='App Customization')
+            c.argument('liveness_probe_config', type=str, is_preview=True,
+                       help='A json file path indicates the liveness probe config', arg_group='App Customization')
+            c.argument('readiness_probe_config', type=str, is_preview=True,
+                       help='A json file path indicates the readiness probe config', arg_group='App Customization')
+            c.argument('startup_probe_config', type=str, is_preview=True,
+                       help='A json file path indicates the startup probe config', arg_group='App Customization')
+            c.argument('termination_grace_period_seconds', type=str, is_preview=True,
+                       options_list=['--termination-grace-period-seconds', '--grace-period'],
+                       help='Optional duration in seconds the app instance needs to terminate gracefully', arg_group='App Customization')
+
     with self.argument_context('spring app create') as c:
         c.argument('assign_endpoint', arg_type=get_three_state_flag(),
                    help='If true, assign endpoint URL for direct access.', default=False,
                    options_list=['--assign-endpoint', c.deprecate(target='--is-public', redirect='--assign-endpoint', hide=True)])
+        c.argument('assign_public_endpoint',
+                   arg_type=get_three_state_flag(),
+                   help='If true, assign endpoint URL which could be accessed out of virtual network for vnet injection instance app.')
         c.argument('assign_identity',
                    arg_type=get_three_state_flag(),
                    validator=validate_create_app_with_system_identity_or_warning,
@@ -227,6 +252,9 @@ def load_arguments(self, _):
         c.argument('assign_endpoint', arg_type=get_three_state_flag(),
                    help='If true, assign endpoint URL for direct access.',
                    options_list=['--assign-endpoint', c.deprecate(target='--is-public', redirect='--assign-endpoint', hide=True)])
+        c.argument('assign_public_endpoint',
+                   arg_type=get_three_state_flag(),
+                   help='If true, assign endpoint URL which could be accessed out of virtual network for vnet injection instance app.')
         c.argument('https_only', arg_type=get_three_state_flag(), help='If true, access app via https', default=False)
         c.argument('enable_ingress_to_app_tls', arg_type=get_three_state_flag(),
                    help='If true, enable ingress to app tls',
@@ -371,9 +399,9 @@ def load_arguments(self, _):
             c.argument(
                 'registry_password', help='The password of the container registry.', arg_group='Custom Container')
             c.argument(
-                'container_command', help='The command of the container image.', nargs='*', arg_group='Custom Container')
+                'container_command', help='The command of the container image.', arg_group='Custom Container')
             c.argument(
-                'container_args', help='The arguments of the container image.', nargs='*', arg_group='Custom Container')
+                'container_args', help='The arguments of the container image.', arg_group='Custom Container')
             c.argument(
                 'build_env', build_env_type)
             c.argument(

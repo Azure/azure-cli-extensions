@@ -15,7 +15,6 @@ from .example_steps import step_backup_policy_create
 from .example_steps import step_backup_policy_show
 from .example_steps import step_backup_policy_list
 from .example_steps import step_backup_instance_create
-from .example_steps import step_backup_instance_stop_protection
 from .example_steps import step_backup_instance_suspend_backup
 from .example_steps import step_backup_instance_adhoc_backup
 from .example_steps import step_backup_instance_restore_trigger
@@ -32,12 +31,16 @@ from .example_steps import step_backup_vault_update
 from .example_steps import step_backup_instance_show
 from .example_steps import step_backup_instance_list
 from .example_steps import step_backup_instance_resume_protection
+from .example_steps import step_backup_instance_stop_protection
 from .example_steps import step_backup_instance_delete
 from .example_steps import step_backup_vault_delete
 from .example_steps import step_job_show
 from .example_steps import step_job_list
 from .example_steps import step_recovery_point_show
 from .example_steps import step_recovery_point_list
+from .example_steps import step_resource_guard_create
+from .example_steps import step_resource_guard_show
+from .example_steps import step_resource_guard_delete
 from .example_steps import step_restorable_time_range_find
 from .. import (
     try_manual,
@@ -87,7 +90,6 @@ def call_scenario(test):
                    "ataProtection/Backupvaults/{myBackupVault}/backupPolicies/{myBackupPolicy2}",
                    case_sensitive=False),
     ])
-    step_backup_instance_stop_protection(test, checks=[])
     step_backup_instance_suspend_backup(test, checks=[])
     step_backup_instance_adhoc_backup(test, checks=[])
     step_backup_instance_restore_trigger(test, checks=[])
@@ -106,12 +108,16 @@ def call_scenario(test):
         test.check('length(@)', 1),
     ])
     step_backup_instance_resume_protection(test, checks=[])
+    step_backup_instance_stop_protection(test, checks=[])
     step_backup_instance_delete(test, checks=[])
     step_backup_vault_delete(test, checks=[])
     step_job_show(test, checks=[])
     step_job_list(test, checks=[])
     step_recovery_point_show(test, checks=[])
     step_recovery_point_list(test, checks=[])
+    step_resource_guard_create(test, checks=[])
+    step_resource_guard_show(test, checks=[])
+    step_resource_guard_delete(test, checks=[])
     step_restorable_time_range_find(test, checks=[])
     cleanup_scenario(test)
 

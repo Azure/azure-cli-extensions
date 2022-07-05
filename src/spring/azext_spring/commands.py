@@ -35,7 +35,7 @@ def load_command_table(self, _):
 
     app_command = CliCommandType(
         operations_tmpl='azext_spring.app#{}',
-        client_factory=cf_spring_20220301preview
+        client_factory=cf_spring_20220501preview
     )
 
     app_managed_identity_command = CliCommandType(
@@ -75,7 +75,7 @@ def load_command_table(self, _):
 
     gateway_route_config_cmd_group = CliCommandType(
         operations_tmpl='azext_spring.gateway#{}',
-        client_factory=cf_spring_20220101preview
+        client_factory=cf_spring_20220501preview
     )
 
     api_portal_cmd_group = CliCommandType(
@@ -127,7 +127,7 @@ def load_command_table(self, _):
         g.custom_command('create', 'app_create')
         g.custom_command('update', 'app_update', supports_no_wait=True)
 
-    with self.command_group('spring app', client_factory=cf_spring_20220101preview,
+    with self.command_group('spring app', client_factory=cf_spring_20220501preview,
                             exception_handler=handle_asc_exception) as g:
         g.custom_command('set-deployment', 'app_set_deployment',
                          supports_no_wait=True)
@@ -139,8 +139,7 @@ def load_command_table(self, _):
         g.custom_command('list', 'app_list',
                          table_transformer=transform_app_table_output)
         g.custom_show_command(
-            'show', 'app_get', table_transformer=transform_app_table_output,
-            client_factory=cf_spring_20220301preview)
+            'show', 'app_get', table_transformer=transform_app_table_output)
         g.custom_command('start', 'app_start', supports_no_wait=True)
         g.custom_command('stop', 'app_stop', supports_no_wait=True)
         g.custom_command('restart', 'app_restart', supports_no_wait=True)
@@ -168,7 +167,7 @@ def load_command_table(self, _):
                             exception_handler=handle_asc_exception) as g:
         g.custom_command('create', 'deployment_create', supports_no_wait=True)
 
-    with self.command_group('spring app deployment', client_factory=cf_spring_20220101preview,
+    with self.command_group('spring app deployment', client_factory=cf_spring_20220501preview,
                             exception_handler=handle_asc_exception) as g:
         g.custom_command('list', 'deployment_list',
                          table_transformer=transform_spring_deployment_output)
@@ -249,8 +248,7 @@ def load_command_table(self, _):
 
     with self.command_group('spring gateway',
                             custom_command_type=gateway_cmd_group,
-                            exception_handler=handle_asc_exception,
-                            is_preview=True) as g:
+                            exception_handler=handle_asc_exception) as g:
         g.custom_show_command('show', 'gateway_show', table_transformer=transform_spring_cloud_gateway_output)
         g.custom_command('update', 'gateway_update', validator=validate_gateway_update, supports_no_wait=True)
         g.custom_command('clear', 'gateway_clear', supports_no_wait=True)
@@ -277,8 +275,7 @@ def load_command_table(self, _):
 
     with self.command_group('spring api-portal',
                             custom_command_type=api_portal_cmd_group,
-                            exception_handler=handle_asc_exception,
-                            is_preview=True) as g:
+                            exception_handler=handle_asc_exception) as g:
         g.custom_show_command('show', 'api_portal_show', table_transformer=transform_api_portal_output)
         g.custom_command('update', 'api_portal_update', validator=validate_api_portal_update)
         g.custom_command('clear', 'api_portal_clear')

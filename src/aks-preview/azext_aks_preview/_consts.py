@@ -83,6 +83,13 @@ CONST_NETWORK_PLUGIN_KUBENET = "kubenet"
 CONST_NETWORK_PLUGIN_AZURE = "azure"
 CONST_NETWORK_PLUGIN_NONE = "none"
 
+# network plugin mode
+CONST_NETWORK_PLUGIN_MODE_OVERLAY = "overlay"
+
+# disk driver versions
+CONST_DISK_DRIVER_V1 = "v1"
+CONST_DISK_DRIVER_V2 = "v2"
+
 # consts for addons
 # http application routing
 CONST_HTTP_APPLICATION_ROUTING_ADDON_NAME = "httpApplicationRouting"
@@ -125,6 +132,11 @@ CONST_ROTATION_POLL_INTERVAL = "rotationPollInterval"
 # gitops
 CONST_GITOPS_ADDON_NAME = "gitops"
 
+# web application routing
+# only used as the key of the corresponding description, not to map to the key name in addonProfiles,
+# since its configuration is actually stored in a separate ingress profile
+CONST_WEB_APPLICATION_ROUTING_KEY_NAME = "ingress/webApplicationRouting"
+
 # all supported addons
 ADDONS = {
     'http_application_routing': CONST_HTTP_APPLICATION_ROUTING_ADDON_NAME,
@@ -137,9 +149,7 @@ ADDONS = {
     'open-service-mesh': CONST_OPEN_SERVICE_MESH_ADDON_NAME,
     'azure-keyvault-secrets-provider': CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME,
     'gitops': CONST_GITOPS_ADDON_NAME,
-    # web_application_routing key has no mapping to a name since ingress profile, not addon profile, is
-    # used to contain settings for web_application_routing
-    'web_application_routing': ""
+    'web_application_routing': CONST_WEB_APPLICATION_ROUTING_KEY_NAME
 }
 
 ADDONS_DESCRIPTIONS = {
@@ -152,7 +162,8 @@ ADDONS_DESCRIPTIONS = {
     CONST_CONFCOM_ADDON_NAME: '- enable confcom addon, this will enable SGX device plugin by default (PREVIEW).',
     CONST_OPEN_SERVICE_MESH_ADDON_NAME: '- enable Open Service Mesh addon (PREVIEW).',
     CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME: '- enable Azure Keyvault Secrets Provider addon (PREVIEW).',
-    CONST_GITOPS_ADDON_NAME: '- enable GitOps (PREVIEW).'
+    CONST_GITOPS_ADDON_NAME: '- enable GitOps (PREVIEW).',
+    CONST_WEB_APPLICATION_ROUTING_KEY_NAME: '- enable web application routing (PREVIEW).'
 }
 
 # consts for credential
@@ -163,3 +174,12 @@ CONST_CREDENTIAL_FORMAT_EXEC = "exec"
 # refer https://docs.microsoft.com/en-us/rest/api/storageservices/
 # naming-and-referencing-containers--blobs--and-metadata#container-names
 CONST_CONTAINER_NAME_MAX_LENGTH = 63
+
+CONST_PERISCOPE_REPO_ORG = "azure"
+CONST_PERISCOPE_CONTAINER_REGISTRY = "mcr.microsoft.com"
+CONST_PERISCOPE_RELEASE_TAG = "v0.9"
+CONST_PERISCOPE_IMAGE_VERSION = "0.0.9"
+CONST_PERISCOPE_NAMESPACE = "aks-periscope"
+
+CONST_AZURE_KEYVAULT_NETWORK_ACCESS_PUBLIC = "Public"
+CONST_AZURE_KEYVAULT_NETWORK_ACCESS_PRIVATE = "Private"

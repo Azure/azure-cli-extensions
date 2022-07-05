@@ -7,18 +7,17 @@
 # --------------------------------------------------------------------------
 
 from enum import Enum
-from six import with_metaclass
 from azure.core import CaseInsensitiveEnumMeta
 
 
-class DimensionScope(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
+class DimensionScope(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     """The scope at which the quota is applied.
     """
 
     WORKSPACE = "Workspace"
     SUBSCRIPTION = "Subscription"
 
-class JobStatus(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
+class JobStatus(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     """The job status.
     """
 
@@ -28,7 +27,7 @@ class JobStatus(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
     FAILED = "Failed"
     CANCELLED = "Cancelled"
 
-class JsonPatchOperation(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
+class JsonPatchOperation(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     """The operation to be performed.
     """
 
@@ -39,7 +38,7 @@ class JsonPatchOperation(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
     COPY = "copy"
     TEST = "test"
 
-class MeterPeriod(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
+class MeterPeriod(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     """The time period in which the quota's underlying meter is accumulated. Based on calendar year.
     'None' is used for concurrent quotas.
     """
@@ -47,7 +46,7 @@ class MeterPeriod(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
     NONE = "None"
     MONTHLY = "Monthly"
 
-class ProviderAvailability(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
+class ProviderAvailability(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     """Provider availability.
     """
 
@@ -55,7 +54,7 @@ class ProviderAvailability(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
     DEGRADED = "Degraded"
     UNAVAILABLE = "Unavailable"
 
-class TargetAvailability(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
+class TargetAvailability(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     """Target availability.
     """
 

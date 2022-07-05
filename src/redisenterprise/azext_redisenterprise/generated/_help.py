@@ -12,6 +12,11 @@
 from knack.help_files import helps
 
 
+helps['redisenterprise'] = '''
+    type: group
+    short-summary: Manage Redis Enterprise
+'''
+
 helps['redisenterprise operation-status'] = """
     type: group
     short-summary: Manage operation status with redisenterprise
@@ -24,11 +29,6 @@ helps['redisenterprise operation-status show'] = """
       - name: OperationsStatusGet
         text: |-
                az redisenterprise operation-status show --operation-id "testoperationid" --location "West US"
-"""
-
-helps['redisenterprise'] = """
-    type: group
-    short-summary: Manage redis enterprise with redisenterprise
 """
 
 helps['redisenterprise list'] = """
@@ -140,9 +140,17 @@ creation time."
             Usage: --modules name=XX args=XX
 
             name: Required. The name of the module, e.g. 'RedisBloom', 'RediSearch', 'RedisTimeSeries'
-            args: Configuration options for the module, e.g. 'ERROR_RATE 0.00 INITIAL_SIZE 400'.
+            args: Configuration options for the module, e.g. 'ERROR_RATE 0.01 INITIAL_SIZE 400'.
 
             Multiple actions can be specified by using more than one --modules argument.
+      - name: --linked-databases
+        short-summary: "List of database resources to link with this database"
+        long-summary: |
+            Usage: --linked-databases id=XX
+
+            id: Resource ID of a database resource to link with this database.
+
+            Multiple actions can be specified by using more than one --linked-databases argument.
     examples:
       - name: RedisEnterpriseDatabasesCreate
         text: |-
@@ -150,6 +158,13 @@ creation time."
 --clustering-policy "EnterpriseCluster" --eviction-policy "AllKeysLRU" --modules name="RedisBloom" args="ERROR_RATE \
 0.00 INITIAL_SIZE 400" --modules name="RedisTimeSeries" args="RETENTION_POLICY 20" --modules name="RediSearch" \
 --persistence aof-enabled=true aof-frequency="1s" --port 10000 --resource-group "rg1"
+      - name: RedisEnterpriseDatabasesCreate With Active Geo Replication
+        text: |-
+               az redisenterprise database create --cluster-name "cache1" --client-protocol "Encrypted" \
+--clustering-policy "EnterpriseCluster" --eviction-policy "NoEviction" --group-nickname "groupName" --linked-databases \
+id="/subscriptions/subid1/resourceGroups/rg1/providers/Microsoft.Cache/redisEnterprise/cache1/databases/default" \
+--linked-databases id="/subscriptions/subid2/resourceGroups/rg2/providers/Microsoft.Cache/redisEnterprise/cache2/databa\
+ses/default" --port 10000 --resource-group "rg1"
 """
 
 helps['redisenterprise database update'] = """
@@ -165,6 +180,14 @@ helps['redisenterprise database update'] = """
             rdb-enabled: Sets whether RDB is enabled.
             aof-frequency: Sets the frequency at which data is written to disk.
             rdb-frequency: Sets the frequency at which a snapshot of the database is created.
+      - name: --linked-databases
+        short-summary: "List of database resources to link with this database"
+        long-summary: |
+            Usage: --linked-databases id=XX
+
+            id: Resource ID of a database resource to link with this database.
+
+            Multiple actions can be specified by using more than one --linked-databases argument.
     examples:
       - name: RedisEnterpriseDatabasesUpdate
         text: |-
@@ -191,14 +214,25 @@ helps['redisenterprise database export'] = """
 indow.net/urlToBlobContainer?sasKeyParameters" --resource-group "rg1"
 """
 
+helps['redisenterprise database force-unlink'] = """
+    type: command
+    short-summary: "Forcibly removes the link to the specified database resource."
+    examples:
+      - name: How to unlink a database during a regional outage
+        text: |-
+               az redisenterprise database force-unlink --cluster-name "cache1" --unlink-ids "/subscriptions/subid2/resourceGr\
+oups/rg2/providers/Microsoft.Cache/redisEnterprise/cache2/databases/default" --resource-group "rg1"
+"""
+
 helps['redisenterprise database import'] = """
     type: command
-    short-summary: "Imports a database file to target database."
+    short-summary: "Imports database files to target database."
     examples:
       - name: RedisEnterpriseDatabasesImport
         text: |-
-               az redisenterprise database import --cluster-name "cache1" --sas-uri "https://contosostorage.blob.core.w\
-indow.net/urltoBlobFile?sasKeyParameters" --resource-group "rg1"
+               az redisenterprise database import --cluster-name "cache1" --sas-uris "https://contosostorage.blob.core.\
+window.net/urltoBlobFile1?sasKeyParameters" "https://contosostorage.blob.core.window.net/urltoBlobFile2?sasKeyParameter\
+s" --resource-group "rg1"
 """
 
 helps['redisenterprise database list-keys'] = """
