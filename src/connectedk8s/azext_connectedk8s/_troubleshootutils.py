@@ -819,7 +819,7 @@ def describe_stuck_agent_log(filepath_with_timestamp, corev1_api_instance, agent
             except FileExistsError:
                 pass
 
-            # To retrieve the pod logs which is stuck 
+            # To retrieve the pod logs which is stuck
             api_response = corev1_api_instance.read_namespaced_pod(name=agent_pod_name, namespace='azure-arc')
             stuck_agent_pod_path = os.path.join(describe_stuck_agent_path, agent_pod_name + '.txt')
 
@@ -870,7 +870,7 @@ def cli_output_logger(filepath_with_timestamp, storage_space_available, flag):
                     if flag == 0:
                         cli_output_writer.write("Process terminated externally.\n")
 
-            # If no issues was found during the whole troubleshoot execution 
+            # If no issues was found during the whole troubleshoot execution
             elif flag:
                 with open(cli_output_logger_path, 'w+') as cli_output_writer:
                     cli_output_writer.write("Diagnoser did not find any issues with the cluster.\n")
