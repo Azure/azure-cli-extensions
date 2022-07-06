@@ -1,5 +1,9 @@
 Release History
 ===============
+1.1.4
+---
+* Add warning that `az spring app-insights` don't support Enterprise tier.
+
 1.1.3
 ---
 * Enhance Application Insights settings when create service instance.
