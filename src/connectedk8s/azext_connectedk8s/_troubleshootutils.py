@@ -592,7 +592,7 @@ def check_cluster_outbound_connectivity(diagnoser_container_log, filepath_with_t
     return "Incomplete", storage_space_available
 
 
-def check_msi_certificate(corev1_api_instance):
+def check_msi_certificate_presence(corev1_api_instance):
 
     global diagnoser_output
 
