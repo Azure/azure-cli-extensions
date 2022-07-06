@@ -7,7 +7,6 @@ from argparse import Namespace
 from pydoc import cli
 from kubernetes import client, config, watch, utils
 from binascii import a2b_hex
-import subprocess
 from logging import exception
 import os
 import json
@@ -445,7 +444,7 @@ def executing_diagnoser_job(corev1_api_instance, batchv1_api_instance, namespace
                         logger.warning(ind_exception)
             logger.warning("\n")
             if(counter == 1):
-                subprocess.run(cmd_delete_job, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+                Popen(cmd_delete_job, stdout=PIPE, stderr=PIPE)
                 return ""
 
         # Watching for diagnoser contianer to reach in completed stage
@@ -468,7 +467,7 @@ def executing_diagnoser_job(corev1_api_instance, batchv1_api_instance, namespace
         # If container not created then clearing all the resource with proper error message
         if (counter == 0):
             logger.warning("Unable to execute the diagnoser job in the cluster. It may be caused due to insufficient resource availability on the cluster.\n")
-            subprocess.run(cmd_delete_job, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+            Popen(cmd_delete_job, stdout=PIPE, stderr=PIPE)
             diagnoser_output.append("Unable to execute the diagnoser job in the cluster. It may be caused due to insufficient resource availability on the cluster.\n")
             return ""
 
@@ -492,15 +491,15 @@ def executing_diagnoser_job(corev1_api_instance, batchv1_api_instance, namespace
                         diagnoser_container_log = corev1_api_instance.read_namespaced_pod_log(name=pod_name, container="azure-arc-diagnoser-container", namespace=namespace)
 
                 # Clearing all the resources after fetching the diagnoser container logs
-                subprocess.run(cmd_delete_job, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+                Popen(cmd_delete_job, stdout=PIPE, stderr=PIPE)
 
             except Exception as e:
-                subprocess.run(cmd_delete_job, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+                Popen(cmd_delete_job, stdout=PIPE, stderr=PIPE)
                 return ""
 
     except Exception as e:
         logger.warning("An exception has occured while trying to execute the diagnoser job in the cluster. Exception: {}".format(str(e)) + "\n")
-        subprocess.run(cmd_delete_job, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        Popen(cmd_delete_job, stdout=PIPE, stderr=PIPE)
         telemetry.set_exception(exception=e, fault_type=consts.Executing_Diagnoser_Job_Fault_Type, summary="Error while executing Diagnoser Job")
         diagnoser_output.append("An exception has occured while trying to execute the diagnoser job in the cluster. Exception: {}".format(str(e)) + "\n")
 
@@ -608,7 +607,7 @@ def check_msi_certificate(corev1_api_instance):
         for secrets in all_secrets_azurearc.items:
 
             # If name of secret is azure-identity-certificate then we stop there
-            if(secrets.metadata.name == "azure-identity-certificate"):
+            if(secrets.metadata.name == consts.MSI_Certificate_Secret_Name):
                 msi_cert_present = True
 
         # Checking if msi cerificate is present or not
@@ -639,7 +638,7 @@ def check_cluster_security_policy(corev1_api_instance, helm_client_location):
         # CMD command to get helm values in azure arc and converting it to json format
         command = [helm_client_location, "get", "values", "azure-arc", "-o", "json"]
 
-        # Using subprocess to execute the helm get values command and fetching the output
+        # Using Popen to execute the helm get values command and fetching the output
         response_helm_values_get = Popen(command, stdout=PIPE, stderr=PIPE)
         output_helm_values_get, error_helm_get_values = response_helm_values_get.communicate()
 
@@ -702,7 +701,7 @@ def check_kap_cert(corev1_api_instance):
         for secrets in all_secrets_azurearc.items:
 
             # If name of secret is kube-aad-proxy-certificate then we stop there
-            if(secrets.metadata.name == "kube-aad-proxy-certificate"):
+            if(secrets.metadata.name == consts.KAP_Certificate_Secret_Name):
                 kap_cert_present = True
 
         if not kap_cert_present and kap_pod_status == "ContainerCreating":
