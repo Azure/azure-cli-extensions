@@ -2227,4 +2227,3 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
         except Exception as e:
             pass
         raise ManualInterrupt('Process terminated externally.')
-

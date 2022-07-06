@@ -311,7 +311,7 @@ def check_agent_state(corev1_api_instance, filepath_with_timestamp, storage_spac
                         if each_container_status.ready is False:
                             agent_conatiners_counter = 1
 
-                        agent_state.write("\t" + each_container_status.name + " :" + " Status = " + str(each_container_status.ready) + ", Restart_Counts = " + str(each_container_status.restart_count) + "\n")   
+                        agent_state.write("\t" + each_container_status.name + " :" + " Status = " + str(each_container_status.ready) + ", Restart_Counts = " + str(each_container_status.restart_count) + "\n")
                 agent_state.write("\n")
 
         # Displaying error if the arc agents are in pending state.
@@ -319,7 +319,7 @@ def check_agent_state(corev1_api_instance, filepath_with_timestamp, storage_spac
             print("Error: One or more Azure Arc agents are in pending state. It may be caused due to insufficient resource availability on the cluster.\n ")
             diagnoser_output.append("Error: One or more Azure Arc agents are in pending state. It may be caused due to insufficient resource availability on the cluster.\n ")
             return "Failed", storage_space_available, all_agents_stuck
-        
+
         elif agent_conatiners_counter:
             print("Error: One or more containers in the Azure Arc agents are not in ready state. It may be caused due to insufficient resources or connectivity issues on the cluster.\n")
             diagnoser_output.append("Error: One or more containers in the Azure Arc agents are not in ready state. It may be caused due to insufficient resource availability on the cluster.\n ")
