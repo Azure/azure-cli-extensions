@@ -2056,7 +2056,7 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
         storage_space_available = True
 
         # Setting default values for all checks as True
-        diagnostic_checks = {"arc_agents_events_logger": "Incomplete", "arc_agents_logger": "Incomplete", "arc_deployments_logger": "Incomplete", "connected_cluster_logger": "Incomplete", "diagnoser_results_logger": "Incomplete", "msi_cert_expiry_check": "Incomplete", "kap_security_policy_check": "Incomplete", "kap_cert_check": "Incomplete", "diagnoser_check": "Incomplete", "msi_cert_check": "Incomplete", "agent_version_check": "Incomplete", "arc_agent_state_check": "Incomplete"}
+        diagnostic_checks = {"retrieve_arc_agents_event_logs": "Incomplete", "retrieve_arc_agents_logs": "Incomplete", "retrieve_deployments_logs": "Incomplete", "connected_cluster_logger": "Incomplete", "diagnoser_results_logger": "Incomplete", "msi_cert_expiry_check": "Incomplete", "kap_security_policy_check": "Incomplete", "kap_cert_check": "Incomplete", "diagnoser_check": "Incomplete", "msi_cert_check": "Incomplete", "agent_version_check": "Incomplete", "arc_agent_state_check": "Incomplete"}
 
         # Setting kube_config
         kube_config = set_kube_config(kube_config)
@@ -2111,14 +2111,14 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
         if arc_agents_pod_list.items:
 
             # For storing all the agent logs using the CoreV1Api
-            diagnostic_checks["arc_agents_logger"], storage_space_available = troubleshootutils.arc_agents_logger(corev1_api_instance, filepath_with_timestamp, storage_space_available)
+            diagnostic_checks["retrieve_arc_agents_logs"], storage_space_available = troubleshootutils.retrieve_arc_agents_logs(corev1_api_instance, filepath_with_timestamp, storage_space_available)
+
+            # For storing all arc agents events logs
+            diagnostic_checks["retrieve_arc_agents_event_logs"], storage_space_available = troubleshootutils.retrieve_arc_agents_event_logs(filepath_with_timestamp, storage_space_available)
 
             # For storing all the deployments logs using the AppsV1Api
             appv1_api_instance = kube_client.AppsV1Api(kube_client.ApiClient(configuration))
-            diagnostic_checks["arc_agents_events_logger"], storage_space_available = troubleshootutils.arc_agents_event_logger(filepath_with_timestamp, storage_space_available)
-
-            # For storing all arc agents events logs
-            diagnostic_checks["arc_deployments_logger"], storage_space_available = troubleshootutils.deployments_logger(appv1_api_instance, filepath_with_timestamp, storage_space_available)
+            diagnostic_checks["retrieve_deployments_logs"], storage_space_available = troubleshootutils.retrieve_deployments_logs(appv1_api_instance, filepath_with_timestamp, storage_space_available)
 
             # Check for the azure arc agent states
             diagnostic_checks["arc_agent_state_check"], storage_space_available, all_agents_stuck = troubleshootutils.check_agent_state(corev1_api_instance, filepath_with_timestamp, storage_space_available)
@@ -2203,7 +2203,7 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
         # Executing the Diagnoser job check in the given namespace
         diagnostic_checks["diagnoser_check"], storage_space_available = troubleshootutils.check_diagnoser_container(corev1_api_instance, batchv1_api_instance, filepath_with_timestamp, storage_space_available, current_k8s_namespace, absolute_path)
 
-        diagnostic_checks["diagnoser_results_logger"] = troubleshootutils.cli_output_logger(filepath_with_timestamp, storage_space_available)
+        diagnostic_checks["diagnoser_results_logger"] = troubleshootutils.cli_output_logger(filepath_with_timestamp, storage_space_available, 1)
 
         all_checks_passed = True
         for checks in diagnostic_checks:
@@ -2213,17 +2213,18 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
         if storage_space_available:
             # Depending on whether all tests passes we will give the output
             if (all_checks_passed):
-                logger.warning("Diagnoser could not find any issues with the cluster. \nFor more results from the diagnoser refer to the logs collected at " + filepath_with_timestamp + " .\nThese logs can be attached while filing a support ticket for further assistance.\n")
+                logger.warning("Diagnoser did not find any issues with the cluster. \nFor more results from the diagnoser refer to the logs collected at " + filepath_with_timestamp + " .\nThese logs can be attached while filing a support ticket for further assistance.\n")
             else:
                 logger.warning("For more results from the diagnoser refer to the logs collected at " + filepath_with_timestamp + " .\nThese logs can be attached while filing a support ticket for further assistance.\n")
         else:
             if (all_checks_passed):
-                logger.warning("Diagnoser could not find any issues with the cluster.\n")
+                logger.warning("Diagnoser did not find any issues with the cluster.\n")
             logger.warning("Diagnoser was not able to store logs in your local machine. Please check if sufficient storage space is available.\nTo store diagnoser logs clean up some space and execute the troubleshoot command again.")
 
     except KeyboardInterrupt:
+        try:
+            troubleshootutils.cli_output_logger(filepath_with_timestamp, storage_space_available, 0)
+        except Exception as e:
+            pass
         raise ManualInterrupt('Process terminated externally.')
 
-    except Exception as e:
-        print("An error occured while trying to perform Troubleshoot Command. Exception: " + str(e))
-        telemetry.set_exception(exception=e, fault_type=consts.Troubleshoot_Execution_Fault_Type, summary="Error occured while performing Troubleshoot command")

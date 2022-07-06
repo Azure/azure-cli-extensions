@@ -39,12 +39,12 @@ logger = get_logger(__name__)
 # pylint: disable=line-too-long
 
 
-cli_outputs = []
+diagnoser_output = []
 
 
 def create_folder_diagnosticlogs(time_stamp):
 
-    global cli_outputs
+    global diagnoser_output
 
     try:
 
@@ -71,21 +71,21 @@ def create_folder_diagnosticlogs(time_stamp):
             telemetry.set_exception(exception=e, fault_type=consts.No_Storage_Space_Available_Fault_Type, summary="No space left on device")
             return "", "no_storage_space"
         else:
-            logger.warning("An expection has occured while creating the diagnostic logs folder in your local machine. Exception: {}".format(str(e)) + "\n")
+            logger.warning("An exception has occured while creating the diagnostic logs folder in your local machine. Exception: {}".format(str(e)) + "\n")
             telemetry.set_exception(exception=e, fault_type=consts.Storage_Available_Fault_Type, summary="Error while trying to create diagnostic logs folder")
-            cli_outputs.append("An expection has occured while creating the diagnostic logs folder in your local machine. Exception: {}".format(str(e)) + "\n")
+            diagnoser_output.append("An exception has occured while creating the diagnostic logs folder in your local machine. Exception: {}".format(str(e)) + "\n")
             return "", "folder_not_created"
 
     except Exception as e:
-        logger.warning("An expection has occured while creating the diagnostic logs folder in your local machine. Exception: {}".format(str(e)) + "\n")
+        logger.warning("An exception has occured while creating the diagnostic logs folder in your local machine. Exception: {}".format(str(e)) + "\n")
         telemetry.set_exception(exception=e, fault_type=consts.Storage_Available_Fault_Type, summary="Error while trying to create diagnostic logs folder")
-        cli_outputs.append("An expection has occured while creating the diagnostic logs folder in your local machine. Exception: {}".format(str(e)) + "\n")
+        diagnoser_output.append("An exception has occured while creating the diagnostic logs folder in your local machine. Exception: {}".format(str(e)) + "\n")
         return "", "folder_not_created"
 
 
 def connected_cluster_logger(filepath_with_timestamp, connected_cluster, storage_space_available):
 
-    global cli_outputs
+    global diagnoser_output
 
     try:
         connected_cluster_resource_path = os.path.join(filepath_with_timestamp, "Connected_cluster_resource.txt")
@@ -100,21 +100,21 @@ def connected_cluster_logger(filepath_with_timestamp, connected_cluster, storage
             telemetry.set_exception(exception=e, fault_type=consts.No_Storage_Space_Available_Fault_Type, summary="No space left on device")
             shutil.rmtree(filepath_with_timestamp, ignore_errors=False, onerror=None)
         else:
-            logger.warning("An expection has occured while trying to store the connected cluster resource logs from the cluster. Exception: {}".format(str(e)) + "\n")
+            logger.warning("An exception has occured while trying to store the connected cluster resource logs from the cluster. Exception: {}".format(str(e)) + "\n")
             telemetry.set_exception(exception=e, fault_type=consts.Connected_Cluster_Resource_Fault_Type, summary="Eror occure while storing the connected cluster resource logs")
-            cli_outputs.append("An expection has occured while trying to store the connected cluster resource logs from the cluster. Exception: {}".format(str(e)) + "\n")
+            diagnoser_output.append("An exception has occured while trying to store the connected cluster resource logs from the cluster. Exception: {}".format(str(e)) + "\n")
 
     except Exception as e:
-        logger.warning("An expection has occured while trying to store the connected cluster resource logs from the cluster. Exception: {}".format(str(e)) + "\n")
+        logger.warning("An exception has occured while trying to store the connected cluster resource logs from the cluster. Exception: {}".format(str(e)) + "\n")
         telemetry.set_exception(exception=e, fault_type=consts.Connected_Cluster_Resource_Fault_Type, summary="Eror occure while storing the connected cluster resource logs")
-        cli_outputs.append("An expection has occured while trying to store the connected cluster resource logs from the cluster. Exception: {}".format(str(e)) + "\n")
+        diagnoser_output.append("An exception has occured while trying to store the connected cluster resource logs from the cluster. Exception: {}".format(str(e)) + "\n")
 
     return "Failed", storage_space_available
 
 
-def arc_agents_logger(corev1_api_instance, filepath_with_timestamp, storage_space_available):
+def retrieve_arc_agents_logs(corev1_api_instance, filepath_with_timestamp, storage_space_available):
 
-    global cli_outputs
+    global diagnoser_output
 
     try:
 
@@ -164,21 +164,21 @@ def arc_agents_logger(corev1_api_instance, filepath_with_timestamp, storage_spac
             telemetry.set_exception(exception=e, fault_type=consts.No_Storage_Space_Available_Fault_Type, summary="No space left on device")
             shutil.rmtree(filepath_with_timestamp, ignore_errors=False, onerror=None)
         else:
-            logger.warning("An expection has occured while trying to fetch the azure arc agents logs from the cluster. Exception: {}".format(str(e)) + "\n")
+            logger.warning("An exception has occured while trying to fetch the azure arc agents logs from the cluster. Exception: {}".format(str(e)) + "\n")
             telemetry.set_exception(exception=e, fault_type=consts.Arc_Agents_Logger_Fault_Type, summary="Error occured in arc agents logger")
-            cli_outputs.append("An expection has occured while trying to fetch the azure arc agents logs from the cluster. Exception: {}".format(str(e)) + "\n")
+            diagnoser_output.append("An exception has occured while trying to fetch the azure arc agents logs from the cluster. Exception: {}".format(str(e)) + "\n")
 
     except Exception as e:
-        logger.warning("An expection has occured while trying to fetch the azure arc agents logs from the cluster. Exception: {}".format(str(e)) + "\n")
+        logger.warning("An exception has occured while trying to fetch the azure arc agents logs from the cluster. Exception: {}".format(str(e)) + "\n")
         telemetry.set_exception(exception=e, fault_type=consts.Arc_Agents_Logger_Fault_Type, summary="Error occured in arc agents logger")
-        cli_outputs.append("An expection has occured while trying to fetch the azure arc agents logs from the cluster. Exception: {}".format(str(e)) + "\n")
+        diagnoser_output.append("An exception has occured while trying to fetch the azure arc agents logs from the cluster. Exception: {}".format(str(e)) + "\n")
 
     return "Failed", storage_space_available
 
 
-def arc_agents_event_logger(filepath_with_timestamp, storage_space_available):
+def retrieve_arc_agents_event_logs(filepath_with_timestamp, storage_space_available):
 
-    global cli_outputs
+    global diagnoser_output
 
     try:
 
@@ -187,7 +187,7 @@ def arc_agents_event_logger(filepath_with_timestamp, storage_space_available):
             # CMD command to get helm values in azure arc and converting it to json format
             command = ["kubectl", "get", "events", "-n", "azure-arc", "--output", "json"]
 
-            # Using subprocess to execute the helm get values command and fetching the output
+            # Using Popen to execute the helm get values command and fetching the output
             response_kubectl_get_events = Popen(command, stdout=PIPE, stderr=PIPE)
             output_kubectl_get_events, error_kubectl_get_events = response_kubectl_get_events.communicate()
 
@@ -212,21 +212,21 @@ def arc_agents_event_logger(filepath_with_timestamp, storage_space_available):
             telemetry.set_exception(exception=e, fault_type=consts.No_Storage_Space_Available_Fault_Type, summary="No space left on device")
             shutil.rmtree(filepath_with_timestamp, ignore_errors=False, onerror=None)
         else:
-            logger.warning("An expection has occured while trying to fetch the events occured in azure-arc namespace from the cluster. Exception: {}".format(str(e)) + "\n")
+            logger.warning("An exception has occured while trying to fetch the events occured in azure-arc namespace from the cluster. Exception: {}".format(str(e)) + "\n")
             telemetry.set_exception(exception=e, fault_type=consts.Arc_Agents_Events_Logger_Fault_Type, summary="Error occured in arc agents events logger")
-            cli_outputs.append("An expection has occured while trying to fetch the events occured in azure-arc namespace from the cluster. Exception: {}".format(str(e)) + "\n")
+            diagnoser_output.append("An exception has occured while trying to fetch the events occured in azure-arc namespace from the cluster. Exception: {}".format(str(e)) + "\n")
 
     except Exception as e:
-        logger.warning("An expection has occured while trying to fetch the events occured in azure-arc namespace from the cluster. Exception: {}".format(str(e)) + "\n")
+        logger.warning("An exception has occured while trying to fetch the events occured in azure-arc namespace from the cluster. Exception: {}".format(str(e)) + "\n")
         telemetry.set_exception(exception=e, fault_type=consts.Arc_Agents_Events_Logger_Fault_Type, summary="Error occured in arc agents events logger")
-        cli_outputs.append("An expection has occured while trying to fetch the events occured in azure-arc namespace from the cluster. Exception: {}".format(str(e)) + "\n")
+        diagnoser_output.append("An exception has occured while trying to fetch the events occured in azure-arc namespace from the cluster. Exception: {}".format(str(e)) + "\n")
 
     return "Failed", storage_space_available
 
 
-def deployments_logger(appv1_api_instance, filepath_with_timestamp, storage_space_available):
+def retrieve_deployments_logs(appv1_api_instance, filepath_with_timestamp, storage_space_available):
 
-    global cli_outputs
+    global diagnoser_output
 
     try:
 
@@ -261,25 +261,31 @@ def deployments_logger(appv1_api_instance, filepath_with_timestamp, storage_spac
             telemetry.set_exception(exception=e, fault_type=consts.No_Storage_Space_Available_Fault_Type, summary="No space left on device")
             shutil.rmtree(filepath_with_timestamp, ignore_errors=False, onerror=None)
         else:
-            logger.warning("An expection has occured while trying to fetch the azure arc deployment logs from the cluster. Exception: {}".format(str(e)) + "\n")
+            logger.warning("An exception has occured while trying to fetch the azure arc deployment logs from the cluster. Exception: {}".format(str(e)) + "\n")
             telemetry.set_exception(exception=e, fault_type=consts.Arc_Deployments_Logger_Fault_Type, summary="Error occured in deployments logger")
-            cli_outputs.append("An expection has occured while trying to fetch the azure arc deployment logs from the cluster. Exception: {}".format(str(e)) + "\n")
+            diagnoser_output.append("An exception has occured while trying to fetch the azure arc deployment logs from the cluster. Exception: {}".format(str(e)) + "\n")
 
     except Exception as e:
-        logger.warning("An expection has occured while trying to fetch the azure arc deployment logs from the cluster. Exception: {}".format(str(e)) + "\n")
+        logger.warning("An exception has occured while trying to fetch the azure arc deployment logs from the cluster. Exception: {}".format(str(e)) + "\n")
         telemetry.set_exception(exception=e, fault_type=consts.Arc_Deployments_Logger_Fault_Type, summary="Error occured in deployments logger")
-        cli_outputs.append("An expection has occured while trying to fetch the azure arc deployment logs from the cluster. Exception: {}".format(str(e)) + "\n")
+        diagnoser_output.append("An exception has occured while trying to fetch the azure arc deployment logs from the cluster. Exception: {}".format(str(e)) + "\n")
 
     return "Failed", storage_space_available
 
 
 def check_agent_state(corev1_api_instance, filepath_with_timestamp, storage_space_available):
 
-    global cli_outputs
+    global diagnoser_output
     all_agents_stuck = "Incomplete"
     try:
 
-        counter = 0
+        # To check if agents are not in Running state
+        agent_state_counter = 0
+
+        # To check if all the containers are working for the Running agents
+        agent_conatiners_counter = 0
+
+        # If all agents are stuck we will skip the certificates check
         all_agents_stuck = "True"
 
         agent_state_path = os.path.join(filepath_with_timestamp, "Agent_State.txt")
@@ -293,18 +299,31 @@ def check_agent_state(corev1_api_instance, filepath_with_timestamp, storage_spac
                 if storage_space_available:
 
                     # Storing the state of the arc agent in the user machine
-                    agent_state.write(each_agent_pod.metadata.name + " = " + each_agent_pod.status.phase + "\n")
+                    agent_state.write(each_agent_pod.metadata.name + " : Status = " + each_agent_pod.status.phase + "\n")
 
                 if each_agent_pod.status.phase != 'Running':
-                    counter = 1
+                    agent_state_counter = 1
                     storage_space_available = describe_stuck_agent_log(filepath_with_timestamp, corev1_api_instance, each_agent_pod.metadata.name, storage_space_available)
                 else:
                     all_agents_stuck = "False"
 
+                    for each_container_status in each_agent_pod.status.container_statuses:
+
+                        if each_container_status.ready is False:
+                            agent_conatiners_counter = 1
+
+                        agent_state.write("\t" + each_container_status.name + " :" + " Status = " + str(each_container_status.ready) + ", Restart_Counts = " + str(each_container_status.restart_count) + "\n")   
+                agent_state.write("\n")
+
         # Displaying error if the arc agents are in pending state.
-        if counter:
+        if agent_state_counter:
             print("Error: One or more Azure Arc agents are in pending state. It may be caused due to insufficient resource availability on the cluster.\n ")
-            cli_outputs.append("Error: One or more Azure Arc agents are in pending state. It may be caused due to insufficient resource availability on the cluster.\n ")
+            diagnoser_output.append("Error: One or more Azure Arc agents are in pending state. It may be caused due to insufficient resource availability on the cluster.\n ")
+            return "Failed", storage_space_available, all_agents_stuck
+        
+        elif agent_conatiners_counter:
+            print("Error: One or more containers in the Azure Arc agents are not in ready state. It may be caused due to insufficient resources or connectivity issues on the cluster.\n")
+            diagnoser_output.append("Error: One or more containers in the Azure Arc agents are not in ready state. It may be caused due to insufficient resource availability on the cluster.\n ")
             return "Failed", storage_space_available, all_agents_stuck
 
         return "Passed", storage_space_available, all_agents_stuck
@@ -315,21 +334,21 @@ def check_agent_state(corev1_api_instance, filepath_with_timestamp, storage_spac
             telemetry.set_exception(exception=e, fault_type=consts.No_Storage_Space_Available_Fault_Type, summary="No space left on device")
             shutil.rmtree(filepath_with_timestamp, ignore_errors=False, onerror=None)
         else:
-            logger.warning("An expection has occured while trying to check the azure arc agents state in the cluster. Exception: {}".format(str(e)) + "\n")
+            logger.warning("An exception has occured while trying to check the azure arc agents state in the cluster. Exception: {}".format(str(e)) + "\n")
             telemetry.set_exception(exception=e, fault_type=consts.Agent_State_Check_Fault_Type, summary="Error ocuured while performing the agent state check")
-            cli_outputs.append("An expection has occured while trying to check the azure arc agents state in the cluster. Exception: {}".format(str(e)) + "\n")
+            diagnoser_output.append("An exception has occured while trying to check the azure arc agents state in the cluster. Exception: {}".format(str(e)) + "\n")
 
     except Exception as e:
-        logger.warning("An expection has occured while trying to check the azure arc agents state in the cluster. Exception: {}".format(str(e)) + "\n")
+        logger.warning("An exception has occured while trying to check the azure arc agents state in the cluster. Exception: {}".format(str(e)) + "\n")
         telemetry.set_exception(exception=e, fault_type=consts.Agent_State_Check_Fault_Type, summary="Error ocuured while performing the agent state check")
-        cli_outputs.append("An expection has occured while trying to check the azure arc agents state in the cluster. Exception: {}".format(str(e)) + "\n")
+        diagnoser_output.append("An exception has occured while trying to check the azure arc agents state in the cluster. Exception: {}".format(str(e)) + "\n")
 
     return "Incomplete", storage_space_available, all_agents_stuck
 
 
 def check_agent_version(connected_cluster, azure_arc_agent_version):
 
-    global cli_outputs
+    global diagnoser_output
 
     try:
 
@@ -344,23 +363,22 @@ def check_agent_version(connected_cluster, azure_arc_agent_version):
 
         # Comparing if the user version is comaptible or not
         if((int(current_user_version[0]) < int(latest_agent_version[0])) or (int(latest_agent_version[1]) - int(current_user_version[1]) > 2)):
-            logger.warning("We found that you are on an older agent version thats not supported.\n Please visit this link to know the agent version support policy 'https://docs.microsoft.com/en-us/azure/azure-arc/kubernetes/agent-upgrade#version-support-policy'.\n")
-            cli_outputs.append("We found that you are on an older agent version thats not supported.\n Please visit this link to know the agent version support policy 'https://docs.microsoft.com/en-us/azure/azure-arc/kubernetes/agent-upgrade#version-support-policy'.\n")
+            logger.warning("We found that you are on an older agent version that is not supported.\n Please visit this link to know the agent version support policy 'https://docs.microsoft.com/en-us/azure/azure-arc/kubernetes/agent-upgrade#version-support-policy'.\n")
+            diagnoser_output.append("We found that you are on an older agent version that is not supported.\n Please visit this link to know the agent version support policy 'https://docs.microsoft.com/en-us/azure/azure-arc/kubernetes/agent-upgrade#version-support-policy'.\n")
             return "Failed"
 
         return "Passed"
 
     except Exception as e:
-        logger.warning("An expection has occured while trying to check the azure arc agents version in the cluster. Exception: {}".format(str(e)) + "\n")
+        logger.warning("An exception has occured while trying to check the azure arc agents version in the cluster. Exception: {}".format(str(e)) + "\n")
         telemetry.set_exception(exception=e, fault_type=consts.Agent_Version_Check_Fault_Type, summary="Error occured while performing the agent version check")
-        cli_outputs.append("An expection has occured while trying to check the azure arc agents version in the cluster. Exception: {}".format(str(e)) + "\n")
+        diagnoser_output.append("An exception has occured while trying to check the azure arc agents version in the cluster. Exception: {}".format(str(e)) + "\n")
 
     return "Incomplete"
 
 
 def check_diagnoser_container(corev1_api_instance, batchv1_api_instance, filepath_with_timestamp, storage_space_available, namespace, absolute_path):
-
-    global cli_outputs
+    global diagnoser_output
 
     try:
 
@@ -385,16 +403,16 @@ def check_diagnoser_container(corev1_api_instance, batchv1_api_instance, filepat
             return "Failed", storage_space_available
 
     except Exception as e:
-        logger.warning("An expection has occured while trying to perform diagnoser continer check on the cluster. Exception: {}".format(str(e)) + "\n")
+        logger.warning("An exception has occured while trying to perform diagnoser container check on the cluster. Exception: {}".format(str(e)) + "\n")
         telemetry.set_exception(exception=e, fault_type=consts.Diagnoser_Container_Check_Fault_Type, summary="Error occured while performing the diagnoser container checks")
-        cli_outputs.append("An expection has occured while trying to perform diagnoser continer check on the cluster. Exception: {}".format(str(e)) + "\n")
+        diagnoser_output.append("An exception has occured while trying to perform diagnoser container check on the cluster. Exception: {}".format(str(e)) + "\n")
 
     return "Incomplete", storage_space_available
 
 
 def executing_diagnoser_job(corev1_api_instance, batchv1_api_instance, namespace, absolute_path):
 
-    global cli_outputs
+    global diagnoser_output
 
     # Setting the log output as Empty
     diagnoser_container_log = ""
@@ -419,13 +437,13 @@ def executing_diagnoser_job(corev1_api_instance, batchv1_api_instance, namespace
                     continue
                 else:
                     if(counter == 0):
-                        cli_outputs.append("An Error occured while trying to execute diagnoser_job.yaml.")
+                        diagnoser_output.append("An Error occured while trying to execute diagnoser_job.yaml.")
                         logger.warning("An Error occured while trying to execute diagnoser_job.yaml.")
                         counter = 1
                         logger.warning(ind_exception)
                     else:
                         logger.warning(ind_exception)
-            print()
+            logger.warning("\n")
             if(counter == 1):
                 subprocess.run(cmd_delete_job, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
                 return ""
@@ -445,13 +463,13 @@ def executing_diagnoser_job(corev1_api_instance, batchv1_api_instance, namespace
             except Exception as e:
                 continue
             else:
-                continue
+                    continue
 
         # If container not created then clearing all the resource with proper error message
         if (counter == 0):
             logger.warning("Unable to execute the diagnoser job in the cluster. It may be caused due to insufficient resource availability on the cluster.\n")
             subprocess.run(cmd_delete_job, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-            cli_outputs.append("Unable to execute the diagnoser job in the cluster. It may be caused due to insufficient resource availability on the cluster.\n")
+            diagnoser_output.append("Unable to execute the diagnoser job in the cluster. It may be caused due to insufficient resource availability on the cluster.\n")
             return ""
 
         else:
@@ -480,24 +498,18 @@ def executing_diagnoser_job(corev1_api_instance, batchv1_api_instance, namespace
                 subprocess.run(cmd_delete_job, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
                 return ""
 
-    except KeyboardInterrupt:
-        # If process terminated by user then delete the resources if any added to the cluster.
-        subprocess.run(cmd_delete_job, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-        print()
-        raise ManualInterrupt('Process terminated externally.')
-
     except Exception as e:
-        logger.warning("An expection has occured while trying to execute the diagnoser job in the cluster. Exception: {}".format(str(e)) + "\n")
+        logger.warning("An exception has occured while trying to execute the diagnoser job in the cluster. Exception: {}".format(str(e)) + "\n")
         subprocess.run(cmd_delete_job, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         telemetry.set_exception(exception=e, fault_type=consts.Executing_Diagnoser_Job_Fault_Type, summary="Error while executing Diagnoser Job")
-        cli_outputs.append("An expection has occured while trying to execute the diagnoser job in the cluster. Exception: {}".format(str(e)) + "\n")
+        diagnoser_output.append("An exception has occured while trying to execute the diagnoser job in the cluster. Exception: {}".format(str(e)) + "\n")
 
     return diagnoser_container_log
 
 
 def check_cluster_DNS(diagnoser_container_log, filepath_with_timestamp, storage_space_available):
 
-    global cli_outputs
+    global diagnoser_output
 
     try:
         # To retreive only the DNS lookup result from the diagnoser container logs
@@ -506,7 +518,7 @@ def check_cluster_DNS(diagnoser_container_log, filepath_with_timestamp, storage_
         # Validating if DNS is working or not and displaying proper result
         if("NXDOMAIN" in dns_check or "connection timed out" in dns_check):
             print("Error: We found an issue with the DNS resolution on your cluster. For details about debugging DNS issues visit 'https://kubernetes.io/docs/tasks/administer-cluster/dns-debugging-resolution/'.\n")
-            cli_outputs.append("Error: We found an issue with the DNS resolution on your cluster. For details about debugging DNS issues visit 'https://kubernetes.io/docs/tasks/administer-cluster/dns-debugging-resolution/'.\n")
+            diagnoser_output.append("Error: We found an issue with the DNS resolution on your cluster. For details about debugging DNS issues visit 'https://kubernetes.io/docs/tasks/administer-cluster/dns-debugging-resolution/'.\n")
             if storage_space_available:
                 dns_check_path = os.path.join(filepath_with_timestamp, "DNS_Check.txt")
                 with open(dns_check_path, 'w+') as dns:
@@ -526,21 +538,21 @@ def check_cluster_DNS(diagnoser_container_log, filepath_with_timestamp, storage_
             telemetry.set_exception(exception=e, fault_type=consts.No_Storage_Space_Available_Fault_Type, summary="No space left on device")
             shutil.rmtree(filepath_with_timestamp, ignore_errors=False, onerror=None)
         else:
-            logger.warning("An expection has occured while performing the DNS check on the cluster. Exception: {}".format(str(e)) + "\n")
+            logger.warning("An exception has occured while performing the DNS check on the cluster. Exception: {}".format(str(e)) + "\n")
             telemetry.set_exception(exception=e, fault_type=consts.Cluster_DNS_Check_Fault_Type, summary="Error occured while performing cluster DNS check")
-            cli_outputs.append("An expection has occured while performing the DNS check on the cluster. Exception: {}".format(str(e)) + "\n")
+            diagnoser_output.append("An exception has occured while performing the DNS check on the cluster. Exception: {}".format(str(e)) + "\n")
 
     except Exception as e:
-        logger.warning("An expection has occured while performing the DNS check on the cluster. Exception: {}".format(str(e)) + "\n")
+        logger.warning("An exception has occured while performing the DNS check on the cluster. Exception: {}".format(str(e)) + "\n")
         telemetry.set_exception(exception=e, fault_type=consts.Cluster_DNS_Check_Fault_Type, summary="Error occured while performing cluster DNS check")
-        cli_outputs.append("An expection has occured while performing the DNS check on the cluster. Exception: {}".format(str(e)) + "\n")
+        diagnoser_output.append("An exception has occured while performing the DNS check on the cluster. Exception: {}".format(str(e)) + "\n")
 
     return "Incomplete", storage_space_available
 
 
 def check_cluster_outbound_connectivity(diagnoser_container_log, filepath_with_timestamp, storage_space_available):
 
-    global cli_outputs
+    global diagnoser_output
 
     try:
 
@@ -556,7 +568,7 @@ def check_cluster_outbound_connectivity(diagnoser_container_log, filepath_with_t
             return "Passed", storage_space_available
         else:
             print("Error: We found an issue with outbound network connectivity from the cluster.\nIf your cluster is behind an outbound proxy server, please ensure that you have passed proxy paramaters during the onboarding of your cluster.\nFor more details visit 'https://docs.microsoft.com/en-us/azure/azure-arc/kubernetes/quickstart-connect-cluster?tabs=azure-cli#connect-using-an-outbound-proxy-server'.\nPlease ensure to meet the following network requirements 'https://docs.microsoft.com/en-us/azure/azure-arc/kubernetes/quickstart-connect-cluster?tabs=azure-cli#meet-network-requirements' \n")
-            cli_outputs.append("Error: We found an issue with outbound network connectivity from the cluster.\nIf your cluster is behind an outbound proxy server, please ensure that you have passed proxy paramaters during the onboarding of your cluster.\nFor more details visit 'https://docs.microsoft.com/en-us/azure/azure-arc/kubernetes/quickstart-connect-cluster?tabs=azure-cli#connect-using-an-outbound-proxy-server'.\nPlease ensure to meet the following network requirements 'https://docs.microsoft.com/en-us/azure/azure-arc/kubernetes/quickstart-connect-cluster?tabs=azure-cli#meet-network-requirements' \n")
+            diagnoser_output.append("Error: We found an issue with outbound network connectivity from the cluster.\nIf your cluster is behind an outbound proxy server, please ensure that you have passed proxy paramaters during the onboarding of your cluster.\nFor more details visit 'https://docs.microsoft.com/en-us/azure/azure-arc/kubernetes/quickstart-connect-cluster?tabs=azure-cli#connect-using-an-outbound-proxy-server'.\nPlease ensure to meet the following network requirements 'https://docs.microsoft.com/en-us/azure/azure-arc/kubernetes/quickstart-connect-cluster?tabs=azure-cli#meet-network-requirements' \n")
             if storage_space_available:
                 outbound_connectivity_check_path = os.path.join(filepath_with_timestamp, "Outbound_Network_Connectivity_Check.txt")
                 with open(outbound_connectivity_check_path, 'w+') as outbound:
@@ -569,21 +581,21 @@ def check_cluster_outbound_connectivity(diagnoser_container_log, filepath_with_t
             telemetry.set_exception(exception=e, fault_type=consts.No_Storage_Space_Available_Fault_Type, summary="No space left on device")
             shutil.rmtree(filepath_with_timestamp, ignore_errors=False, onerror=None)
         else:
-            logger.warning("An expection has occured while performing the outbound connectivity check on the cluster. Exception: {}".format(str(e)) + "\n")
+            logger.warning("An exception has occured while performing the outbound connectivity check on the cluster. Exception: {}".format(str(e)) + "\n")
             telemetry.set_exception(exception=e, fault_type=consts.Outbound_Connectivity_Check_Fault_Type, summary="Error occured while performing outbound connectivity check in the cluster")
-            cli_outputs.append("An expection has occured while performing the outbound connectivity check on the cluster. Exception: {}".format(str(e)) + "\n")
+            diagnoser_output.append("An exception has occured while performing the outbound connectivity check on the cluster. Exception: {}".format(str(e)) + "\n")
 
     except Exception as e:
-        logger.warning("An expection has occured while performing the outbound connectivity check on the cluster. Exception: {}".format(str(e)) + "\n")
+        logger.warning("An exception has occured while performing the outbound connectivity check on the cluster. Exception: {}".format(str(e)) + "\n")
         telemetry.set_exception(exception=e, fault_type=consts.Outbound_Connectivity_Check_Fault_Type, summary="Error occured while performing outbound connectivity check in the cluster")
-        cli_outputs.append("An expection has occured while performing the outbound connectivity check on the cluster. Exception: {}".format(str(e)) + "\n")
+        diagnoser_output.append("An exception has occured while performing the outbound connectivity check on the cluster. Exception: {}".format(str(e)) + "\n")
 
     return "Incomplete", storage_space_available
 
 
 def check_msi_certificate(corev1_api_instance):
 
-    global cli_outputs
+    global diagnoser_output
 
     try:
 
@@ -602,22 +614,22 @@ def check_msi_certificate(corev1_api_instance):
         # Checking if msi cerificate is present or not
         if not msi_cert_present:
             print("Error: Unable to pull MSI certificate. Please ensure to meet the following network requirements 'https://docs.microsoft.com/en-us/azure/azure-arc/kubernetes/quickstart-connect-cluster?tabs=azure-cli#meet-network-requirements'. \n")
-            cli_outputs.append("Error: Unable to pull MSI certificate. Please ensure to meet the following network requirements 'https://docs.microsoft.com/en-us/azure/azure-arc/kubernetes/quickstart-connect-cluster?tabs=azure-cli#meet-network-requirements'. \n")
+            diagnoser_output.append("Error: Unable to pull MSI certificate. Please ensure to meet the following network requirements 'https://docs.microsoft.com/en-us/azure/azure-arc/kubernetes/quickstart-connect-cluster?tabs=azure-cli#meet-network-requirements'. \n")
             return "Failed"
 
         return "Passed"
 
     except Exception as e:
-        logger.warning("An expection has occured while performing the msi certificate check on the cluster. Exception: {}".format(str(e)) + "\n")
+        logger.warning("An exception has occured while performing the msi certificate check on the cluster. Exception: {}".format(str(e)) + "\n")
         telemetry.set_exception(exception=e, fault_type=consts.MSI_Cert_Check_Fault_Type, summary="Error occured while trying to pull MSI certificate")
-        cli_outputs.append("An expection has occured while performing the msi certificate check on the cluster. Exception: {}".format(str(e)) + "\n")
+        diagnoser_output.append("An exception has occured while performing the msi certificate check on the cluster. Exception: {}".format(str(e)) + "\n")
 
     return "Incomplete"
 
 
 def check_cluster_security_policy(corev1_api_instance, helm_client_location):
 
-    global cli_outputs
+    global diagnoser_output
 
     try:
         # Intializing the kap_pod_present and cluster_connect_feature variable as False
@@ -652,22 +664,22 @@ def check_cluster_security_policy(corev1_api_instance, helm_client_location):
 
         # Checking if any pod security policy is set
         if(cluster_connect_feature is True and kap_pod_present is False):
-            print("Error: Unable to create Kube-aad-proxy deployment there might be a security policy present which is preventing the deployment of kube-aad-proxy as it doesn't have admin privileges.\n ")
-            cli_outputs.append("Error: Unable to create Kube-aad-proxy deployment there might be a security policy present which is preventing the deployment of kube-aad-proxy as it doesn't have admin privileges.\n ")
+            print("Error: Unable to create Kube-aad-proxy deployment there might be a security policy or security context constraint (SCC) present which is preventing the deployment of kube-aad-proxy as it doesn't have admin privileges.\n ")
+            diagnoser_output.append("Error: Unable to create Kube-aad-proxy deployment there might be a security policy present which is preventing the deployment of kube-aad-proxy as it doesn't have admin privileges.\n ")
             return "Failed"
         return "Passed"
 
     except Exception as e:
-        logger.warning("An expection has occured while trying to performing KAP cluster security policy check in the cluster. Exception: {}".format(str(e)) + "\n")
+        logger.warning("An exception has occured while trying to performing KAP cluster security policy check in the cluster. Exception: {}".format(str(e)) + "\n")
         telemetry.set_exception(exception=e, fault_type=consts.Cluster_Security_Policy_Check_Fault_Type, summary="Error occured while performing cluster security policy check")
-        cli_outputs.append("An expection has occured while trying to performing KAP cluster security policy check in the cluster. Exception: {}".format(str(e)) + "\n")
+        diagnoser_output.append("An exception has occured while trying to performing KAP cluster security policy check in the cluster. Exception: {}".format(str(e)) + "\n")
 
     return "Incomplete"
 
 
 def check_kap_cert(corev1_api_instance):
 
-    global cli_outputs
+    global diagnoser_output
 
     try:
         # Initialize the kap_cert_present as False
@@ -695,22 +707,22 @@ def check_kap_cert(corev1_api_instance):
 
         if not kap_cert_present and kap_pod_status == "ContainerCreating":
             print("Error: Unable to pull Kube aad proxy certificate.\n")
-            cli_outputs.append("Error: Unable to pull Kube aad proxy certificate.\n")
+            diagnoser_output.append("Error: Unable to pull Kube aad proxy certificate.\n")
             return "Failed"
 
         return "Passed"
 
     except Exception as e:
-        logger.warning("An expection has occured while performing kube aad proxy certificate check on the cluster. Exception: {}".format(str(e)) + "\n")
+        logger.warning("An exception has occured while performing kube aad proxy certificate check on the cluster. Exception: {}".format(str(e)) + "\n")
         telemetry.set_exception(exception=e, fault_type=consts.KAP_Cert_Check_Fault_Type, summary="Error occured while trying to pull kap cert certificate")
-        cli_outputs.append("An expection has occured while performing kube aad proxy certificate check on the cluster. Exception: {}".format(str(e)) + "\n")
+        diagnoser_output.append("An exception has occured while performing kube aad proxy certificate check on the cluster. Exception: {}".format(str(e)) + "\n")
 
     return "Incomplete"
 
 
 def check_msi_expiry(connected_cluster):
 
-    global cli_outputs
+    global diagnoser_output
 
     try:
         # Fetch the expiry time of the msi certificate
@@ -723,15 +735,15 @@ def check_msi_expiry(connected_cluster):
         # Check if expiry date is lesser than current time
         if (Expiry_date < Current_date):
             print("Error: Your MSI certificate has expired. To resolve this issue you can delete the cluster and reconnect it to azure arc.\n")
-            cli_outputs.append("Error: Your MSI certificate has expired. To resolve this issue you can delete the cluster and reconnect it to azure arc.\n")
+            diagnoser_output.append("Error: Your MSI certificate has expired. To resolve this issue you can delete the cluster and reconnect it to azure arc.\n")
             return "Failed"
 
         return "Passed"
 
     except Exception as e:
-        logger.warning("An expection has occured while performing msi expiry check on the cluster. Exception: {}".format(str(e)) + "\n")
+        logger.warning("An exception has occured while performing msi expiry check on the cluster. Exception: {}".format(str(e)) + "\n")
         telemetry.set_exception(exception=e, fault_type=consts.MSI_Cert_Expiry_Check_Fault_Type, summary="Error occured while trying to perform the MSI cert expiry check")
-        cli_outputs.append("An expection has occured while performing msi expiry check on the cluster. Exception: {}".format(str(e)) + "\n")
+        diagnoser_output.append("An exception has occured while performing msi expiry check on the cluster. Exception: {}".format(str(e)) + "\n")
 
     return "Incomplete"
 
@@ -757,21 +769,21 @@ def describe_stuck_agent_log(filepath_with_timestamp, corev1_api_instance, agent
             telemetry.set_exception(exception=e, fault_type=consts.No_Storage_Space_Available_Fault_Type, summary="No space left on device")
             shutil.rmtree(filepath_with_timestamp, ignore_errors=False, onerror=None)
         else:
-            logger.warning("An expection has occured while storing stuck agent logs in the user local machine. Exception: {}".format(str(e)) + "\n")
+            logger.warning("An exception has occured while storing stuck agent logs in the user local machine. Exception: {}".format(str(e)) + "\n")
             telemetry.set_exception(exception=e, fault_type=consts.Describe_Stuck_Agents_Fault_Type, summary="Error occured while storing the stuck agents description")
-            cli_outputs.append("An expection has occured while storing stuck agent logs in the user local machine. Exception: {}".format(str(e)) + "\n")
+            diagnoser_output.append("An exception has occured while storing stuck agent logs in the user local machine. Exception: {}".format(str(e)) + "\n")
 
     except Exception as e:
-            logger.warning("An expection has occured while storing stuck agent logs in the user local machine. Exception: {}".format(str(e)) + "\n")
+            logger.warning("An exception has occured while storing stuck agent logs in the user local machine. Exception: {}".format(str(e)) + "\n")
             telemetry.set_exception(exception=e, fault_type=consts.Describe_Stuck_Agents_Fault_Type, summary="Error occured while storing the stuck agents description")
-            cli_outputs.append("An expection has occured while storing stuck agent logs in the user local machine. Exception: {}".format(str(e)) + "\n")
+            diagnoser_output.append("An exception has occured while storing stuck agent logs in the user local machine. Exception: {}".format(str(e)) + "\n")
 
     return storage_space_available
 
 
-def cli_output_logger(filepath_with_timestamp, storage_space_available):
+def cli_output_logger(filepath_with_timestamp, storage_space_available, flag):
 
-    global cli_outputs
+    global diagnoser_output
 
     try:
 
@@ -779,13 +791,18 @@ def cli_output_logger(filepath_with_timestamp, storage_space_available):
 
             cli_output_logger_path = os.path.join(filepath_with_timestamp, "Diagnoser_Results.txt")
 
-            if len(cli_outputs) > 0:
+            if len(diagnoser_output) > 0:
                 with open(cli_output_logger_path, 'w+') as cli_output_writer:
-                    for output in cli_outputs:
+                    for output in diagnoser_output:
                         cli_output_writer.write(output + "\n")
+                    if flag == 0:
+                        cli_output_writer.write("Process terminated externally.\n")
+            elif flag:
+                with open(cli_output_logger_path, 'w+') as cli_output_writer:
+                    cli_output_writer.write("Diagnoser did not find any issues with the cluster.\n")
             else:
                 with open(cli_output_logger_path, 'w+') as cli_output_writer:
-                        cli_output_writer.write("Diagnoser could not find any issues with the cluster.\n")
+                    cli_output_writer.write("Process terminated externally.\n")
 
         return "Passed"
 
@@ -796,7 +813,7 @@ def cli_output_logger(filepath_with_timestamp, storage_space_available):
             shutil.rmtree(filepath_with_timestamp, ignore_errors=False, onerror=None)
 
     except Exception as e:
-        logger.warning("An expection has occured while trying to store the diagnoser results. Exception: {}".format(str(e)) + "\n")
+        logger.warning("An exception has occured while trying to store the diagnoser results. Exception: {}".format(str(e)) + "\n")
         telemetry.set_exception(exception=e, fault_type=consts.Diagnoser_Result_Fault_Type, summary="Error while storing the diagnoser results")
 
     return "Failed"
