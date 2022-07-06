@@ -12,8 +12,13 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+0.5.87
+++++++
+
+* Fix snapshot not resolved according to the subscriptions field in the `--snapshot-id`` option.
+
 0.5.86
-+++++++
+++++++
 
 * Support network plugin mode for enabling Azure CNI Overlay preview feature.
 
