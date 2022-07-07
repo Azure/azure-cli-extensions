@@ -17,7 +17,6 @@ from ._actions import (
 from ._validator import validate_network_rule
 
 WEBPUBSUB_KEY_TYPE = ['primary', 'secondary', 'salt']
-SKU_TYPE = ['Standard_S1', 'Free_F1']
 PERMISSION_TYPE = ['joinLeaveGroup', 'sendToGroup']
 
 
@@ -33,12 +32,12 @@ def load_arguments(self, _):
         c.argument('webpubsub_name', webpubsub_name_type, options_list=['--name', '-n'])
 
     with self.argument_context('webpubsub create') as c:
-        c.argument('sku', arg_type=get_enum_type(SKU_TYPE), help='The sku name of the signalr service.')
-        c.argument('unit_count', help='The number of signalr service unit count', type=int)
+        c.argument('sku', help='The sku name of the webpubsub service. Allowed values: Free_F1, Standard_S1')
+        c.argument('unit_count', help='The number of webpubsub service unit count', type=int)
 
     with self.argument_context('webpubsub update') as c:
-        c.argument('sku', arg_type=get_enum_type(SKU_TYPE), help='The sku name of the signalr service.')
-        c.argument('unit_count', help='The number of signalr service unit count', type=int)
+        c.argument('sku', help='The sku name of the webpubsub service. Allowed values: Free_F1, Standard_S1')
+        c.argument('unit_count', help='The number of webpubsub service unit count', type=int)
 
     with self.argument_context('webpubsub key regenerate') as c:
         c.argument('key_type', arg_type=get_enum_type(WEBPUBSUB_KEY_TYPE), help='The name of access key to regenerate')

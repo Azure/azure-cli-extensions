@@ -31,11 +31,6 @@ def load_arguments(self, _):
         help='Name or ID of the vCenter that is managing this resource.',
     )
 
-    mo_ref_id = CLIArgumentType(
-        options_list=['--mo-ref-id', '-m'],
-        help='VCenter MoRef (Managed Object Reference) ID for the existing resource.',
-    )
-
     inventory_item = CLIArgumentType(
         options_list=['--inventory-item', '-i'],
         help='Name or ID of the inventory item.',
@@ -52,9 +47,6 @@ def load_arguments(self, _):
         )
         c.argument(
             'vcenter', vcenter, options_list=['--vcenter', '-v']
-        )
-        c.argument(
-            'mo_ref_id', mo_ref_id, options_list=['--mo-ref-id', '-m']
         )
         c.argument(
             'inventory_item', inventory_item, options_list=['--inventory-item', '-i']
@@ -350,6 +342,9 @@ def load_arguments(self, _):
         c.argument(
             'password', options_list=['--password'],
             help="Username password credentials to use for connecting to the VM.",
+        )
+        c.argument(
+            'https_proxy', help="HTTPS proxy server url for the VM.",
         )
 
     with self.argument_context('connectedvmware vm guest-agent show') as c:

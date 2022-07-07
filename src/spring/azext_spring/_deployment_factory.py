@@ -46,10 +46,10 @@ class DefaultDeployment:
             readiness_probe=self._format_readiness_probe(**kwargs)
         )
 
-    def _get_termination_grace_period_seconds(self, termination_seconds=None, **_):
-        if termination_seconds is None:
+    def _get_termination_grace_period_seconds(self, termination_grace_period_seconds=None, **_):
+        if termination_grace_period_seconds is None:
             return None
-        return termination_seconds
+        return termination_grace_period_seconds
 
     def _format_startup_probe(self, enable_startup_probe=None, startup_probe_config_file_path=None, **_):
         if enable_startup_probe is None:

@@ -10,7 +10,7 @@ from azure.cli.core.util import sdk_no_wait
 from knack.log import get_logger
 
 from .custom import LOG_RUNNING_PROMPT
-from .vendored_sdks.appplatform.v2022_01_01_preview import models
+from .vendored_sdks.appplatform.v2022_05_01_preview import models
 
 logger = get_logger(__name__)
 DEFAULT_NAME = "default"
@@ -140,24 +140,19 @@ def gateway_route_config_create(cmd, client, resource_group, service, name,
                                 routes_json=None,
                                 routes_file=None):
     _validate_route_config_exist(client, resource_group, service, name)
-
-    app_resource_id = _update_app_resource_id(client, resource_group, service, app_name, None)
-    routes = _update_routes(routes_file, routes_json, [])
-
-    return _create_or_update_gateway_route_configs(client, resource_group, service, name, app_resource_id, routes)
+    route_properties = models.GatewayRouteConfigProperties()
+    return _create_or_update_gateway_route_configs(client, resource_group, service, name, route_properties,
+                                                   app_name, routes_file, routes_json)
 
 
 def gateway_route_config_update(cmd, client, resource_group, service, name,
                                 app_name=None,
                                 routes_json=None,
                                 routes_file=None):
-    gateway_route_config = client.gateway_route_configs.get(
+    route_properties = client.gateway_route_configs.get(
         resource_group, service, DEFAULT_NAME, name)
-
-    app_resource_id = _update_app_resource_id(client, resource_group, service, app_name, gateway_route_config.properties.app_resource_id)
-    routes = _update_routes(routes_file, routes_json, gateway_route_config.properties.routes)
-
-    return _create_or_update_gateway_route_configs(client, resource_group, service, name, app_resource_id, routes)
+    return _create_or_update_gateway_route_configs(client, resource_group, service, name, route_properties,
+                                                   app_name, routes_file, routes_json)
 
 
 def gateway_route_config_remove(cmd, client, resource_group, service, name):
@@ -207,26 +202,38 @@ def _validate_route_config_exist(client, resource_group, service, name):
         raise InvalidArgumentValueError("Route config " + name + " already exists")
 
 
-def _update_app_resource_id(client, resource_group, service, app_name, app_resource_id):
+def _create_or_update_gateway_route_configs(client, resource_group, service, name, route_properties,
+                                            app_name, routes_file, routes_json):
+    app_resource_id = _get_app_resource_id_by_name(client, resource_group, service, app_name)
+    route_properties = _create_or_update_routes_properties(routes_file, routes_json, route_properties)
+
+    if app_resource_id is not None:
+        route_properties.app_resource_id = app_resource_id
+    route_config_resource = models.GatewayRouteConfigResource(
+        properties=route_properties)
+    return client.gateway_route_configs.begin_create_or_update(resource_group, service, DEFAULT_NAME, name, route_config_resource)
+
+
+def _get_app_resource_id_by_name(client, resource_group, service, app_name):
     if app_name is not None:
         app_resource = client.apps.get(resource_group, service, app_name)
-        app_resource_id = app_resource.id
-    return app_resource_id
+        return app_resource.id
+    return None
 
 
-def _update_routes(routes_file, routes_json, routes):
+def _create_or_update_routes_properties(routes_file, routes_json, route_properties):
+    if routes_file is None and routes_json is None:
+        return route_properties
+
     if routes_file is not None:
         with open(routes_file, 'r') as json_file:
-            routes = json.load(json_file)
+            raw_json = json.load(json_file)
 
     if routes_json is not None:
-        routes = json.loads(routes_json)
-    return routes
+        raw_json = json.loads(routes_json)
 
-
-def _create_or_update_gateway_route_configs(client, resource_group, service, name, app_resource_id, routes):
-    properties = models.GatewayRouteConfigProperties(
-        app_resource_id=app_resource_id, routes=routes)
-    route_config_resource = models.GatewayRouteConfigResource(
-        properties=properties)
-    return client.gateway_route_configs.begin_create_or_update(resource_group, service, DEFAULT_NAME, name, route_config_resource)
+    if isinstance(raw_json, list):
+        route_properties.routes = raw_json
+    else:
+        route_properties = models.GatewayRouteConfigProperties(**raw_json)
+    return route_properties

@@ -7,6 +7,7 @@
 
 import json
 import os
+import stat
 from knack.util import CLIError
 from azure.cli.core.util import user_confirmation
 from azure.core.exceptions import HttpResponseError
@@ -48,12 +49,15 @@ def import_blueprint_with_artifacts(cmd,
         for filename in os.listdir(os.path.join(input_path, 'artifacts')):
             artifact_name = filename.split('.')[0]
             filepath = os.path.join(input_path, 'artifacts', filename)
-            with open(filepath) as artifact_file:
-                try:
-                    artifact = json.load(artifact_file)
-                    art_dict[artifact_name] = artifact
-                except json.decoder.JSONDecodeError as ex:
-                    raise CLIError('JSON decode error for {}: {}'.format(filepath, str(ex))) from ex
+            # skip hidden files
+            if ((os.name != 'nt' and not filename.startswith('.')) or
+                    (os.name == 'nt' and not bool(os.stat(filepath).st_file_attributes & stat.FILE_ATTRIBUTE_HIDDEN))):
+                with open(filepath) as artifact_file:
+                    try:
+                        artifact = json.load(artifact_file)
+                        art_dict[artifact_name] = artifact
+                    except json.decoder.JSONDecodeError as ex:
+                        raise CLIError('JSON decode error for {}: {}'.format(filepath, str(ex))) from ex
     except FileNotFoundError as ex:
         raise CLIError('File not Found: {}'.format(str(ex))) from ex
 

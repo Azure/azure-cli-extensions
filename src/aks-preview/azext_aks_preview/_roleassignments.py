@@ -9,7 +9,7 @@ from azure.graphrbac.models import GetObjectsParameters
 from knack.log import get_logger
 from knack.util import CLIError
 from msrestazure.azure_exceptions import CloudError
-from ._client_factory import get_auth_management_client, get_graph_rbac_management_client
+from azext_aks_preview._client_factory import get_auth_management_client, get_graph_rbac_management_client
 
 logger = get_logger(__name__)
 

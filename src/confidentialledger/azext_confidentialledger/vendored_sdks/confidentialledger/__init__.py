@@ -7,10 +7,14 @@
 # --------------------------------------------------------------------------
 
 from ._confidential_ledger import ConfidentialLedger
-__all__ = ['ConfidentialLedger']
+from ._version import VERSION
+
+__version__ = VERSION
+__all__ = ["ConfidentialLedger"]
 
 try:
     from ._patch import patch_sdk  # type: ignore
+
     patch_sdk()
 except ImportError:
     pass

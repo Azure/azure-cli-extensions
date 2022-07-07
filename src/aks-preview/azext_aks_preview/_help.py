@@ -198,6 +198,12 @@ helps['aks create'] = """
           type: string
           short-summary: The Kubernetes network plugin to use.
           long-summary: Specify "azure" for routable pod IPs from VNET, "kubenet" for non-routable pod IPs with an overlay network, or "none" for no networking configured.
+        - name: --network-plugin-mode
+          type: string
+          short-summary: The network plugin mode to use.
+          long-summary: |
+              Used to control the mode the network plugin should operate in. For example, "overlay" used with
+              --network-plugin=azure will use an overlay network (non-VNET IPs) for pods in the cluster.
         - name: --network-policy
           type: string
           short-summary: (PREVIEW) The Kubernetes network policy to use.
@@ -366,6 +372,9 @@ helps['aks create'] = """
         - name: --disable-snapshot-controller
           type: bool
           short-summary: Disable CSI Snapshot Controller.
+        - name: --enable-blob-driver
+          type: bool
+          short-summary: Enable AzureBlob CSI Driver.
         - name: --aci-subnet-name
           type: string
           short-summary: The name of a subnet in an existing VNet into which to deploy the virtual nodes.
@@ -432,6 +441,13 @@ helps['aks create'] = """
         - name: --azure-keyvault-kms-key-id
           type: string
           short-summary: Identifier of Azure Key Vault key.
+        - name: --azure-keyvault-kms-key-vault-network-access
+          type: string
+          short-summary: Network Access of Azure Key Vault.
+          long-summary: Allowed values are "Public", "Private". If not set, defaults to type "Public". Requires --azure-keyvault-kms-key-id to be used.
+        - name: --azure-keyvault-kms-key-vault-resource-id
+          type: string
+          short-summary: Resource ID of Azure Key Vault.
         - name: --dns-zone-resource-id
           type: string
           short-summary: The resource ID of the DNS zone resource to use with the web_application_routing addon.
@@ -690,6 +706,12 @@ helps['aks update'] = """
         - name: --disable-snapshot-controller
           type: bool
           short-summary: Disable CSI Snapshot Controller.
+        - name: --enable-blob-driver
+          type: bool
+          short-summary: Enable AzureBlob CSI Driver.
+        - name: --disable-blob-driver
+          type: bool
+          short-summary: Disable AzureBlob CSI Driver.
         - name: --tags
           type: string
           short-summary: The tags of the managed cluster. The managed cluster instance and all resources managed by the cloud provider will be tagged.
@@ -752,6 +774,13 @@ helps['aks update'] = """
         - name: --azure-keyvault-kms-key-id
           type: string
           short-summary: Identifier of Azure Key Vault key.
+        - name: --azure-keyvault-kms-key-vault-network-access
+          type: string
+          short-summary: Network Access of Azure Key Vault.
+          long-summary: Allowed values are "Public", "Private". If not set, defaults to type "Public". Requires --azure-keyvault-kms-key-id to be used.
+        - name: --azure-keyvault-kms-key-vault-resource-id
+          type: string
+          short-summary: Resource ID of Azure Key Vault.
         - name: --enable-apiserver-vnet-integration
           type: bool
           short-summary: Enable integration of user vnet with control plane apiserver pods.
