@@ -308,7 +308,7 @@ def load_arguments(self, _):
         c.argument('message_of_the_day')
         c.argument('gpu_instance_profile', arg_type=get_enum_type(gpu_instance_profiles))
         c.argument('workload_runtime', arg_type=get_enum_type(workload_runtimes), default=CONST_WORKLOAD_RUNTIME_OCI_CONTAINER)
-        c.argument('enable_namespace_resources', help='Enables sync of namespaces as Azure Resource Manager resources')
+        c.argument('enable_namespace_resources', action="store_true", help='Enable sync of namespaces as Azure Resource Manager resources')
         # no validation for aks create because it already only supports Linux.
         c.argument('enable_custom_ca_trust', action='store_true')
 
@@ -384,8 +384,8 @@ def load_arguments(self, _):
         c.argument('disk_driver_version', arg_type=get_enum_type(disk_driver_versions))
         c.argument('disable_disk_driver', action='store_true')
         c.argument('enable_file_driver', action='store_true')
-        c.argument('enable_namespace_resources', help='Enables sync of namespaces as Azure Resource Manager resources')
-        c.argument('disable_namespace_resources', help='Disables sync of namespaces as Azure Resource Manager resources')
+        c.argument('enable_namespace_resources', action='store_true', help='Enable sync of namespaces as Azure Resource Manager resources')
+        c.argument('disable_namespace_resources', action='store_true', help='Disable sync of namespaces as Azure Resource Manager resources')
         c.argument('disable_file_driver', action='store_true')
         c.argument('enable_snapshot_controller', action='store_true')
         c.argument('disable_snapshot_controller', action='store_true')
