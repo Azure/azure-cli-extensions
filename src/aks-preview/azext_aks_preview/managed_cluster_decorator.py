@@ -1621,6 +1621,14 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
 
         return mc
 
+    def set_up_enable_namespace_resource(self, mc: ManagedCluster) -> ManagedCluster:
+        """Sets the property to enable namespace as an ARM resource
+        :return: the ManagedCluster object
+        """
+        if self.context.raw_param.get("enable_namespace_resources"):
+            mc.enable_namespace_resources = True
+        return mc
+
     def construct_mc_profile_preview(self, bypass_restore_defaults: bool = False) -> ManagedCluster:
         """The overall controller used to construct the default ManagedCluster profile.
 
@@ -1657,6 +1665,8 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         mc = self.set_up_ingress_web_app_routing(mc)
         # set up workload auto scaler profile
         mc = self.set_up_workload_auto_scaler_profile(mc)
+        # set up the enableNamespaceResources properties
+        mc = self.set_up_enable_namespace_resource(mc)
 
         # DO NOT MOVE: keep this at the bottom, restore defaults
         mc = self._restore_defaults_in_mc(mc)
@@ -1930,6 +1940,16 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
 
         return mc
 
+    def update_enable_namespace_resources(self, mc: ManagedCluster) -> ManagedCluster:
+        """Sets the property to enable namespace as an ARM resource
+        :return: the ManagedCluster object
+        """
+        if self.context.raw_param.get("enable_namespace_resources"):
+            mc.enable_namespace_resources = True
+        elif self.context.raw_param.get("disable_namespace_resources"):
+            mc.enable_namespace_resources = False
+        return mc
+
     def update_mc_profile_preview(self) -> ManagedCluster:
         """The overall controller used to update the preview ManagedCluster profile.
 
@@ -1962,5 +1982,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         mc = self.update_storage_profile(mc)
         # update workload auto scaler profile
         mc = self.update_workload_auto_scaler_profile(mc)
+        # update the enbaleNamespaceResources property
+        mc = self.update_enable_namespace_resources(mc)
 
         return mc
