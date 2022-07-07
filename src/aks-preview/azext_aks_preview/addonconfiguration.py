@@ -6,19 +6,16 @@
 import json
 from knack.log import get_logger
 from knack.util import CLIError
-from azure.cli.core.azclierror import AzCLIError, ArgumentUsageError, ClientRequestError
+from azure.cli.core.azclierror import ArgumentUsageError
 from azure.cli.core.commands import LongRunningOperation
 from azure.cli.core.commands.client_factory import get_subscription_id
-from azure.cli.core.util import sdk_no_wait, send_raw_request
-from azure.core.exceptions import HttpResponseError
+from azure.cli.core.util import sdk_no_wait
 from azure.cli.command_modules.acs.addonconfiguration import (
     ensure_container_insights_for_monitoring,
     sanitize_loganalytics_ws_resource_id,
     ensure_default_log_analytics_workspace_for_monitoring
 )
 from azext_aks_preview._client_factory import CUSTOM_MGMT_AKS_PREVIEW
-from azext_aks_preview._client_factory import get_resources_client, get_resource_groups_client
-from azext_aks_preview._resourcegroup import get_rg_location
 from azext_aks_preview._roleassignments import add_role_assignment
 from azext_aks_preview._consts import (
     ADDONS,
