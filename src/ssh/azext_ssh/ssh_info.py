@@ -6,9 +6,7 @@ import os
 import datetime
 import oschmod
 
-import colorama
-from colorama import Fore
-from colorama import Style
+from azure.cli.core.style import Style, print_styled_text
 
 from azure.cli.core import azclierror
 from knack import log
@@ -22,7 +20,7 @@ class SSHSession():
     # pylint: disable=too-many-instance-attributes
     def __init__(self, resource_group_name, vm_name, ssh_ip, public_key_file, private_key_file,
                  use_private_ip, local_user, cert_file, port, ssh_client_folder, ssh_args,
-                 delete_credentials, resource_type, ssh_proxy_folder, credentials_folder):
+                 delete_credentials, resource_type, ssh_proxy_folder, credentials_folder, winrdp):
         self.resource_group_name = resource_group_name
         self.vm_name = vm_name
         self.ip = ssh_ip
@@ -32,6 +30,7 @@ class SSHSession():
         self.ssh_args = ssh_args
         self.delete_credentials = delete_credentials
         self.resource_type = resource_type
+        self.winrdp = winrdp
         self.proxy_path = None
         self.relay_info = None
         self.public_key_file = os.path.abspath(public_key_file) if public_key_file else None
@@ -189,9 +188,8 @@ class ConfigSession():
         try:
             expiration = datetime.datetime.fromtimestamp(self.relay_info.expires_on)
             expiration = expiration.strftime("%Y-%m-%d %I:%M:%S %p")
-            colorama.init()
-            print(Fore.GREEN + f"Generated relay information {relay_info_path} is valid until {expiration} "
-                  "in local time." + Style.RESET_ALL)
+            print_styled_text((Style.SUCCESS, f"Generated relay information {relay_info_path} is valid until "
+                                              f"{expiration} in local time."))
         except Exception as e:
             logger.warning("Couldn't determine relay information expiration. Error: %s", str(e))
 

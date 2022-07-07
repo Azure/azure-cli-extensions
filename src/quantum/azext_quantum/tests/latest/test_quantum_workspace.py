@@ -13,9 +13,44 @@ from .utils import get_test_resource_group, get_test_workspace, get_test_workspa
 from ..._version_check_helper import check_version
 from datetime import datetime
 from ...__init__ import CLI_REPORTED_VERSION
-from ...operations.workspace import _validate_storage_account, SUPPORTED_STORAGE_SKU_TIERS, SUPPORTED_STORAGE_KINDS, DEPLOYMENT_NAME_PREFIX
+from ...operations.workspace import _validate_storage_account, _autoadd_providers, SUPPORTED_STORAGE_SKU_TIERS, SUPPORTED_STORAGE_KINDS, DEPLOYMENT_NAME_PREFIX
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
+
+
+# Classes patterned after classes in azext_quantum.vendored_sdks.azure_mgmt_quantum.models._models_py3.py
+# Used in test_autoadd_providers()
+class TestSkuDescription(object):
+    def __init__(self, id, auto_add):
+        self.id = id
+        self.auto_add = auto_add
+
+    __test__ = False
+
+class TestManagedApplicationDescription(object):
+    def __init__(self, offer_id, publisher_id):
+        self.offer_id = offer_id
+        self.publisher_id = publisher_id
+
+    __test__ = False
+
+class TestPropertyDescription(object):
+    def __init__(self, managed_application, skus):
+        self.managed_application = TestManagedApplicationDescription(None, None)
+        self.skus = [TestSkuDescription(None, False)]
+
+    __test__ = False
+    
+class TestProviderDescription:
+    def __init__(self, id, properties):
+        id = str()
+        properties = TestPropertyDescription(TestManagedApplicationDescription(None, None), [TestSkuDescription(None, None)])
+
+    __test__ = False
+    id = None
+    properties = TestPropertyDescription(TestManagedApplicationDescription(None, None), [TestSkuDescription(None, None)])
+# End of test_autoadd_providers() class definitions
+
 
 class QuantumWorkspacesScenarioTest(ScenarioTest):
 
@@ -124,11 +159,12 @@ class QuantumWorkspacesScenarioTest(ScenarioTest):
         test_workspace_temp = get_test_workspace_random_name()
         test_storage_account = get_test_workspace_storage()
 
-        # Attempt to create workspace, but omit the provider/SKU parameter
-        try:
-            self.cmd(f'az quantum workspace create -g {test_resource_group} -w {test_workspace_temp} -l {test_location} -a {test_storage_account} --skip-role-assignment')
-        except RequiredArgumentMissingError:
-            pass    
+        # NOTE: The following command will not fail when Credits For All providers are in the region:
+        # # Attempt to create workspace, but omit the provider/SKU parameter
+        # try:
+        #     self.cmd(f'az quantum workspace create -g {test_resource_group} -w {test_workspace_temp} -l {test_location} -a {test_storage_account} --skip-role-assignment')
+        # except RequiredArgumentMissingError:
+        #     pass    
 
         # Attempt to create workspace, but omit the resource group parameter
         try:
@@ -177,3 +213,32 @@ class QuantumWorkspacesScenarioTest(ScenarioTest):
              assert False
         except InvalidArgumentValueError as e:
             assert str(e) == "Storage account kind 'BlobStorage' is not supported.\nStorage account kinds currently supported: Storage, StorageV2"
+
+    def test_autoadd_providers(self):
+        test_managed_application = TestManagedApplicationDescription(None, None)
+        test_skus = [TestSkuDescription(None, False)]
+        test_provider_properties = TestPropertyDescription(test_managed_application, test_skus) 
+        test_provider = TestProviderDescription("", test_provider_properties)
+
+        # Populate providers_in_region with an auto_add provider:
+        test_provider.id = "foo"
+        test_provider.properties.managed_application.offer_id = "foo_offer"
+        test_provider.properties.managed_application.publisher_id = "foo0123456789"
+        test_provider.properties.skus[0].id = "foo_credits_for_all_plan"
+        test_provider.properties.skus[0].auto_add = True
+        providers_in_region = []
+        providers_in_region.append(test_provider)
+        providers_selected = []
+        cmd = None
+        workspace_location = None
+        _autoadd_providers(cmd, providers_in_region, providers_selected, workspace_location, True)
+        assert providers_selected[0] == {"provider_id": "foo", "sku": "foo_credits_for_all_plan", "offer_id": "foo_offer", "publisher_id": "foo0123456789"}
+
+        # Make sure we get an error message if there are no auto_add providers and providers_selected is empty, like when there's no -r in the command:
+        try:
+            test_provider.properties.skus[0].auto_add = False
+            providers_selected = []
+            _autoadd_providers(cmd, providers_in_region, providers_selected, workspace_location, True)
+            assert False
+        except RequiredArgumentMissingError as e:
+            assert str(e) == "A list of Azure Quantum providers and SKUs is required."

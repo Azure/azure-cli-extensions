@@ -13,13 +13,14 @@ from knack.util import CLIError
 CUSTOM_MGMT_AKS_PREVIEW = CustomResourceType('azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks',
                                              'ContainerServiceClient')
 
+# Note: cf_xxx, as the client_factory option value of a command group at command declaration, it should ignore
+# parameters other than cli_ctx; get_xxx_client is used as the client of other services in the command implementation,
+# and usually accepts subscription_id as a parameter to reconfigure the subscription when sending the request
 
-def get_container_service_client(cli_ctx, **_):
-    return get_mgmt_service_client(cli_ctx, CUSTOM_MGMT_AKS_PREVIEW)
 
-
-def cf_trustedaccess_role(cli_ctx, *_):
-    return get_container_service_client(cli_ctx).trusted_access_roles
+# container service clients
+def get_container_service_client(cli_ctx, subscription_id=None):
+    return get_mgmt_service_client(cli_ctx, CUSTOM_MGMT_AKS_PREVIEW, subscription_id=subscription_id)
 
 
 def cf_container_services(cli_ctx, *_):
@@ -42,40 +43,46 @@ def cf_nodepool_snapshots(cli_ctx, *_):
     return get_container_service_client(cli_ctx).snapshots
 
 
-# TODO: remove this
-def cf_nodepool_snapshots_client(cli_ctx, subscription_id=None):
-    return get_mgmt_service_client(cli_ctx, CUSTOM_MGMT_AKS_PREVIEW, subscription_id=subscription_id).snapshots
+def get_nodepool_snapshots_client(cli_ctx, subscription_id=None):
+    return get_container_service_client(cli_ctx, subscription_id=subscription_id).snapshots
 
 
 def cf_mc_snapshots(cli_ctx, *_):
     return get_container_service_client(cli_ctx).managed_cluster_snapshots
 
 
-# TODO: remove this
-def cf_mc_snapshots_client(cli_ctx, subscription_id=None):
-    return get_mgmt_service_client(cli_ctx, CUSTOM_MGMT_AKS_PREVIEW, subscription_id=subscription_id).managed_cluster_snapshots
+def get_mc_snapshots_client(cli_ctx, subscription_id=None):
+    return get_container_service_client(cli_ctx, subscription_id=subscription_id).managed_cluster_snapshots
 
 
-def cf_compute_service(cli_ctx, *_):
+def cf_trustedaccess_role(cli_ctx, *_):
+    return get_container_service_client(cli_ctx).trusted_access_roles
+
+
+def cf_trustedaccess_role_binding(cli_ctx, *_):
+    return get_container_service_client(cli_ctx).trusted_access_role_bindings
+
+
+def get_compute_client(cli_ctx, *_):
     return get_mgmt_service_client(cli_ctx, ResourceType.MGMT_COMPUTE)
 
 
-def cf_resource_groups(cli_ctx, subscription_id=None):
+def get_resource_groups_client(cli_ctx, subscription_id=None):
     return get_mgmt_service_client(cli_ctx, ResourceType.MGMT_RESOURCE_RESOURCES,
                                    subscription_id=subscription_id).resource_groups
 
 
-def cf_resources(cli_ctx, subscription_id=None):
+def get_resources_client(cli_ctx, subscription_id=None):
     return get_mgmt_service_client(cli_ctx, ResourceType.MGMT_RESOURCE_RESOURCES,
                                    subscription_id=subscription_id).resources
 
 
-def cf_container_registry_service(cli_ctx, subscription_id=None):
+def get_container_registry_client(cli_ctx, subscription_id=None):
     return get_mgmt_service_client(cli_ctx, ResourceType.MGMT_CONTAINERREGISTRY,
                                    subscription_id=subscription_id)
 
 
-def cf_storage(cli_ctx, subscription_id=None):
+def get_storage_client(cli_ctx, subscription_id=None):
     return get_mgmt_service_client(cli_ctx, ResourceType.MGMT_STORAGE, subscription_id=subscription_id)
 
 
@@ -107,7 +114,6 @@ def get_graph_rbac_management_client(cli_ctx, **_):
     return client
 
 
-# pylint: disable=inconsistent-return-statements
 def get_resource_by_name(cli_ctx, resource_name, resource_type):
     """Returns the ARM resource in the current subscription with resource_name.
     :param str resource_name: The name of resource

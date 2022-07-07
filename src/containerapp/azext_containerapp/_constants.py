@@ -9,6 +9,8 @@ MAXIMUM_CONTAINER_APP_NAME_LENGTH = 40
 SHORT_POLLING_INTERVAL_SECS = 3
 LONG_POLLING_INTERVAL_SECS = 10
 
+ACR_IMAGE_SUFFIX = ".azurecr.io"
+
 LOG_ANALYTICS_RP = "Microsoft.OperationalInsights"
 CONTAINER_APPS_RP = "Microsoft.App"
 
@@ -21,6 +23,9 @@ GOOGLE_SECRET_SETTING_NAME = "google-provider-authentication-secret"
 MSA_SECRET_SETTING_NAME = "msa-provider-authentication-secret"
 TWITTER_SECRET_SETTING_NAME = "twitter-provider-authentication-secret"
 APPLE_SECRET_SETTING_NAME = "apple-provider-authentication-secret"
-UNAUTHENTICATED_CLIENT_ACTION = ['RedirectToLoginPage', 'AllowAnonymous', 'RejectWith401', 'RejectWith404']
+UNAUTHENTICATED_CLIENT_ACTION = ['RedirectToLoginPage', 'AllowAnonymous', 'Return401', 'Return403']
 FORWARD_PROXY_CONVENTION = ['NoProxy', 'Standard', 'Custom']
 CHECK_CERTIFICATE_NAME_AVAILABILITY_TYPE = "Microsoft.App/managedEnvironments/certificates"
+
+NAME_INVALID = "Invalid"
+NAME_ALREADY_EXISTS = "AlreadyExists"
