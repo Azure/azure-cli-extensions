@@ -43,6 +43,12 @@ from msrestazure.azure_exceptions import CloudError
 from six.moves.urllib.error import URLError
 from six.moves.urllib.request import urlopen
 
+from azure.cli.command_modules.acs.addonconfiguration import (
+    ensure_container_insights_for_monitoring,
+    sanitize_loganalytics_ws_resource_id,
+    ensure_default_log_analytics_workspace_for_monitoring
+)
+
 from azext_aks_preview._client_factory import (
     CUSTOM_MGMT_AKS_PREVIEW,
     cf_agent_pools,
@@ -97,10 +103,7 @@ from azext_aks_preview.addonconfiguration import (
     add_ingress_appgw_addon_role_assignment,
     add_monitoring_role_assignment,
     add_virtual_node_role_assignment,
-    enable_addons,
-    ensure_container_insights_for_monitoring,
-    ensure_default_log_analytics_workspace_for_monitoring,
-    sanitize_loganalytics_ws_resource_id,
+    enable_addons
 )
 from azext_aks_preview.aks_draft.commands import (
     aks_draft_cmd_create,
