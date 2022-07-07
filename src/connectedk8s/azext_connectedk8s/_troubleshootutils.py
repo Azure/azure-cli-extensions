@@ -12,24 +12,10 @@ import os
 import json
 import datetime
 from subprocess import Popen, PIPE, run, STDOUT, call, DEVNULL
-from base64 import b64encode, b64decode
-from unicodedata import name
-from azure.core.exceptions import ClientAuthenticationError
 import shutil
-from knack.util import CLIError
 from knack.log import get_logger
 from azure.cli.core import telemetry
-from azure.cli.core.azclierror import ManualInterrupt, InvalidArgumentValueError, UnclassifiedUserFault, CLIInternalError, FileOperationError, ClientRequestError, DeploymentError, ValidationError, ArgumentUsageError, MutuallyExclusiveArgumentError, RequiredArgumentMissingError, ResourceNotFoundError
-from azext_connectedk8s._client_factory import _graph_client_factory
-from azext_connectedk8s._client_factory import cf_resource_groups
-from azext_connectedk8s._client_factory import _resource_client_factory
-from azext_connectedk8s._client_factory import _resource_providers_client
-from azext_connectedk8s._client_factory import get_graph_client_service_principals
 import azext_connectedk8s._constants as consts
-import azext_connectedk8s.custom as custom
-from .vendored_sdks.models import ConnectedCluster, ConnectedClusterIdentity, ListClusterUserCredentialProperties
-from threading import Timer, Thread
-from azure.cli.core import get_default_cli
 logger = get_logger(__name__)
 # pylint:disable=unused-argument
 # pylint: disable=too-many-locals
@@ -195,10 +181,10 @@ def retrieve_arc_agents_event_logs(filepath_with_timestamp, storage_space_availa
         # If storage space available then only store the azure-arc events
         if storage_space_available:
 
-            # CMD command to get helm values in azure arc and converting it to json format
+            # CMD command to get events using kubectl and converting it to json format
             command = ["kubectl", "get", "events", "-n", "azure-arc", "--output", "json"]
 
-            # Using Popen to execute the helm get values command and fetching the output
+            # Using Popen to execute the command and fetching the output
             response_kubectl_get_events = Popen(command, stdout=PIPE, stderr=PIPE)
             output_kubectl_get_events, error_kubectl_get_events = response_kubectl_get_events.communicate()
 
@@ -294,17 +280,19 @@ def check_agent_state(corev1_api_instance, filepath_with_timestamp, storage_spac
 
     global diagnoser_output
 
-    all_agents_stuck = "Incomplete"
+    all_agents_stuck = True
+    sufficient_resource_for_agents = True
+
     try:
 
-        # To check if agents are not in Running state
-        agent_state_counter = 0
+        # To check if agents are stuck because of insufficient resource
+        sufficient_resource_for_agents = True
 
         # To check if all the containers are working for the Running agents
-        agent_conatiners_counter = 0
+        all_agent_containers_ready = True
 
         # If all agents are stuck we will skip the certificates check
-        all_agents_stuck = "True"
+        all_agents_stuck = True
 
         agent_state_path = os.path.join(filepath_with_timestamp, "Agent_State.txt")
         with open(agent_state_path, 'w+') as agent_state:
@@ -317,37 +305,48 @@ def check_agent_state(corev1_api_instance, filepath_with_timestamp, storage_spac
                 if storage_space_available:
 
                     # Storing the state of the arc agent in the user machine
-                    agent_state.write(each_agent_pod.metadata.name + " : Status = " + each_agent_pod.status.phase + "\n")
+                    agent_state.write(each_agent_pod.metadata.name + " : Phase = " + each_agent_pod.status.phase + "\n")
 
-                if each_agent_pod.status.phase != 'Running':
-                    agent_state_counter = 1
-                    storage_space_available = describe_stuck_agent_log(filepath_with_timestamp, corev1_api_instance, each_agent_pod.metadata.name, storage_space_available)
-                else:
-                    all_agents_stuck = "False"
+                    if each_agent_pod.status.phase == 'Running':
+                        all_agents_stuck = False
 
-                    # If the agent is in running state we will check if all containers are running or not
-                    for each_container_status in each_agent_pod.status.container_statuses:
+                    if each_agent_pod.status.container_statuses is None:
+                        sufficient_resource_for_agents = False
+                        storage_space_available = describe_stuck_agent_log(filepath_with_timestamp, corev1_api_instance, each_agent_pod.metadata.name, storage_space_available)
+                    else:
 
-                        if each_container_status.ready is False:
-                            agent_conatiners_counter = 1
+                        all_containers_ready_for_each_agent = True
+                        # If the agent is in running state we will check if all containers are running or not
+                        for each_container_status in each_agent_pod.status.container_statuses:
 
-                        agent_state.write("\t" + each_container_status.name + " :" + " Status = " + str(each_container_status.ready) + ", Restart_Counts = " + str(each_container_status.restart_count) + "\n")
+                            if each_container_status.ready is False:
+                                all_containers_ready_for_each_agent = False
+                                all_agent_containers_ready = False
+                                if each_container_status.state.running is None:
+                                    agent_state.write("\t" + each_container_status.name + " :" + " Ready = False {Reason : " + str(each_container_status.state.waiting.reason) + "} , Restart_Counts = " + str(each_container_status.restart_count) + "\n")
+                                else:
+                                    agent_state.write("\t" + each_container_status.name + " :" + " Ready = " + str(each_container_status.ready) + ", Restart_Counts = " + str(each_container_status.restart_count) + "\n")
 
-                # Adding empty line after each agents for formatting
-                agent_state.write("\n")
+                            else:
+                                agent_state.write("\t" + each_container_status.name + " :" + " Ready = " + str(each_container_status.ready) + ", Restart_Counts = " + str(each_container_status.restart_count) + "\n")
+
+                        if all_containers_ready_for_each_agent is False:
+                            storage_space_available = describe_stuck_agent_log(filepath_with_timestamp, corev1_api_instance, each_agent_pod.metadata.name, storage_space_available)
+                    # Adding empty line after each agents for formatting
+                    agent_state.write("\n")
 
         # Displaying error if the arc agents are in pending state.
-        if agent_state_counter:
-            print("Error: One or more Azure Arc agents are in pending state. It may be caused due to insufficient resource availability on the cluster.\n ")
-            diagnoser_output.append("Error: One or more Azure Arc agents are in pending state. It may be caused due to insufficient resource availability on the cluster.\n ")
-            return "Failed", storage_space_available, all_agents_stuck
+        if sufficient_resource_for_agents is False:
+            print("Error: One or more Azure Arc agents are not in running state. It may be caused due to insufficient resource availability on the cluster.\n ")
+            diagnoser_output.append("Error: One or more Azure Arc agents are not in running state. It may be caused due to insufficient resource availability on the cluster.\n ")
+            return "Failed", storage_space_available, all_agents_stuck, sufficient_resource_for_agents
 
-        elif agent_conatiners_counter:
-            print("Error: One or more containers in the Azure Arc agents are not in ready state. It may be caused due to insufficient resources or connectivity issues on the cluster.\n")
-            diagnoser_output.append("Error: One or more containers in the Azure Arc agents are not in ready state. It may be caused due to insufficient resource availability on the cluster.\n ")
-            return "Failed", storage_space_available, all_agents_stuck
+        elif all_agent_containers_ready is False:
+            print("Error: One or more agents in the Azure Arc are not fully running.\n")
+            diagnoser_output.append("Error: One or more agents in the Azure Arc are not fully runnning.\n")
+            return "Failed", storage_space_available, all_agents_stuck, sufficient_resource_for_agents
 
-        return "Passed", storage_space_available, all_agents_stuck
+        return "Passed", storage_space_available, all_agents_stuck, sufficient_resource_for_agents
 
     # For handling storage or OS exception that may occur during the execution
     except OSError as e:
@@ -366,7 +365,7 @@ def check_agent_state(corev1_api_instance, filepath_with_timestamp, storage_spac
         telemetry.set_exception(exception=e, fault_type=consts.Agent_State_Check_Fault_Type, summary="Error ocuured while performing the agent state check")
         diagnoser_output.append("An exception has occured while trying to check the azure arc agents state in the cluster. Exception: {}".format(str(e)) + "\n")
 
-    return "Incomplete", storage_space_available, all_agents_stuck
+    return "Incomplete", storage_space_available, all_agents_stuck, sufficient_resource_for_agents
 
 
 def check_agent_version(connected_cluster, azure_arc_agent_version):
@@ -401,17 +400,22 @@ def check_agent_version(connected_cluster, azure_arc_agent_version):
     return "Incomplete"
 
 
-def check_diagnoser_container(corev1_api_instance, batchv1_api_instance, filepath_with_timestamp, storage_space_available, namespace, absolute_path):
+def check_diagnoser_container(corev1_api_instance, batchv1_api_instance, filepath_with_timestamp, storage_space_available, namespace, absolute_path, sufficient_resource_for_agents, helm_client_location):
     global diagnoser_output
 
     try:
+
+        if sufficient_resource_for_agents is False:
+            logger.warning("Unable to execute the diagnoser job in the cluster. It may be caused due to insufficient resource availability on the cluster.\n")
+            diagnoser_output.append("Unable to execute the diagnoser job in the cluster. It may be caused due to insufficient resource availability on the cluster.\n")
+            return "Incomplete", storage_space_available
 
         # Setting DNS and Outbound Check as working
         dns_check = "Starting"
         outbound_connectivity_check = "Starting"
 
         # Executing the Diagnoser job and fetching the logs obtained
-        diagnoser_container_log = executing_diagnoser_job(corev1_api_instance, batchv1_api_instance, namespace, absolute_path)
+        diagnoser_container_log = executing_diagnoser_job(corev1_api_instance, batchv1_api_instance, namespace, absolute_path, helm_client_location)
 
         # If diagnoser_container_log is not empty then only we will check for the results
         if(diagnoser_container_log != ""):
@@ -439,13 +443,44 @@ def check_diagnoser_container(corev1_api_instance, batchv1_api_instance, filepat
     return "Incomplete", storage_space_available
 
 
-def executing_diagnoser_job(corev1_api_instance, batchv1_api_instance, namespace, absolute_path):
+def executing_diagnoser_job(corev1_api_instance, batchv1_api_instance, namespace, absolute_path, helm_client_location):
 
     global diagnoser_output
 
+    # CMD command to get helm values in azure arc and converting it to json format
+    command = [helm_client_location, "get", "values", "azure-arc", "-o", "json"]
+
+    # Using Popen to execute the helm get values command and fetching the output
+    response_helm_values_get = Popen(command, stdout=PIPE, stderr=PIPE)
+    output_helm_values_get, error_helm_get_values = response_helm_values_get.communicate()
+    if response_helm_values_get.returncode != 0:
+        if ('forbidden' in error_helm_get_values.decode("ascii") or 'timed out waiting for the condition' in error_helm_get_values.decode("ascii")):
+            telemetry.set_exception(exception=error_helm_get_values.decode("ascii"), fault_type=consts.Get_Helm_Values_Failed,
+                                    summary='Error while doing helm get values azure-arc')
+    
+    helm_values_json = json.loads(output_helm_values_get)
+    try:
+        is_proxy_enabled = helm_values_json["global"]["isProxyEnabled"]
+    except Exception as e:
+        is_proxy_enabled = False
+    try:
+        is_custom_cert = helm_values_json["global"]["isCustomCert"]
+    except Exception as e:
+        is_custom_cert = False
+
+    try:
+        proxy_cert = helm_values_json["global"]["proxyCert"]
+    except Exception as e:
+        proxy_cert = False
+
+    if proxy_cert and (is_custom_cert or is_proxy_enabled):
+        yaml_file_path = os.path.join(absolute_path, "troubleshoot_diagnoser_job_with_proxycert.yaml")
+
+    else:
+        yaml_file_path = os.path.join(absolute_path, "troubleshoot_diagnoser_job_without_proxycert.yaml")
+
     # Setting the log output as Empty
     diagnoser_container_log = ""
-    yaml_file_path = os.path.join(absolute_path, "troubleshoot_diagnoser_job.yaml")
     cmd_delete_job = ["kubectl", "delete", "-f", ""]
     cmd_delete_job[3] = str(yaml_file_path)
 
@@ -500,7 +535,7 @@ def executing_diagnoser_job(corev1_api_instance, batchv1_api_instance, namespace
         counter = 0
 
         # To watch for changes in the pods states till it reach completed state or exit if it takes more than 90 seconds
-        for event in w.stream(batchv1_api_instance.list_namespaced_job, namespace=namespace, label_selector="", timeout_seconds=90):
+        for event in w.stream(batchv1_api_instance.list_namespaced_job, namespace=namespace, label_selector="", timeout_seconds=60):
 
             try:
 
@@ -515,9 +550,9 @@ def executing_diagnoser_job(corev1_api_instance, batchv1_api_instance, namespace
 
         # If container not created then clearing all the resource with proper error message
         if (counter == 0):
-            logger.warning("Unable to execute the diagnoser job in the cluster. It may be caused due to insufficient resource availability on the cluster.\n")
+            logger.warning("Unable to execute the diagnoser job in the cluster. \n")
             Popen(cmd_delete_job, stdout=PIPE, stderr=PIPE)
-            diagnoser_output.append("Unable to execute the diagnoser job in the cluster. It may be caused due to insufficient resource availability on the cluster.\n")
+            diagnoser_output.append("Unable to execute the diagnoser job in the cluster. \n")
             return ""
 
         else:
@@ -813,7 +848,7 @@ def describe_stuck_agent_log(filepath_with_timestamp, corev1_api_instance, agent
         if storage_space_available:
 
             # Creating folder with name 'Describe_Stuck_Agents' in the given path
-            describe_stuck_agent_path = os.path.join(filepath_with_timestamp, 'Describe_Stuck_Agents')
+            describe_stuck_agent_path = os.path.join(filepath_with_timestamp, 'Describe_Non-Ready_Agents')
             try:
                 os.mkdir(describe_stuck_agent_path)
             except FileExistsError:

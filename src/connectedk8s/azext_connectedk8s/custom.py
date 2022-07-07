@@ -2054,6 +2054,7 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
         logger.warning("Diagnoser running. This may take a while ...\n")
         absolute_path = os.path.abspath(os.path.dirname(__file__))
         storage_space_available = True
+        sufficient_resource_for_agents = True
 
         # Setting default values for all checks as True
         diagnostic_checks = {"retrieved_arc_agents_event_logs": "Incomplete", "retrieved_arc_agents_logs": "Incomplete", "retrieved_deployments_logs": "Incomplete", "connected_cluster_logger": "Incomplete", "diagnoser_results_logger": "Incomplete", "msi_cert_expiry_check": "Incomplete", "kap_security_policy_check": "Incomplete", "kap_cert_check": "Incomplete", "diagnoser_check": "Incomplete", "msi_cert_check": "Incomplete", "agent_version_check": "Incomplete", "arc_agent_state_check": "Incomplete"}
@@ -2121,10 +2122,10 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
             diagnostic_checks["retrieved_deployments_logs"], storage_space_available = troubleshootutils.retrieve_deployments_logs(appv1_api_instance, filepath_with_timestamp, storage_space_available)
 
             # Check for the azure arc agent states
-            diagnostic_checks["arc_agent_state_check"], storage_space_available, all_agents_stuck = troubleshootutils.check_agent_state(corev1_api_instance, filepath_with_timestamp, storage_space_available)
+            diagnostic_checks["arc_agent_state_check"], storage_space_available, all_agents_stuck, sufficient_resource_for_agents = troubleshootutils.check_agent_state(corev1_api_instance, filepath_with_timestamp, storage_space_available)
 
             # Check for msi certificate
-            if all_agents_stuck == "False":
+            if all_agents_stuck is False:
                 diagnostic_checks["msi_cert_check"] = troubleshootutils.check_msi_certificate_presence(corev1_api_instance)
 
             # If msi certificate present then only we will perform msi certificate expiry check
@@ -2201,7 +2202,7 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
             logger.warning("Failed to validate if the active namespace exists on the kubernetes cluster. Exception: {}".format(str(e)))
 
         # Executing the Diagnoser job check in the given namespace
-        diagnostic_checks["diagnoser_check"], storage_space_available = troubleshootutils.check_diagnoser_container(corev1_api_instance, batchv1_api_instance, filepath_with_timestamp, storage_space_available, current_k8s_namespace, absolute_path)
+        diagnostic_checks["diagnoser_check"], storage_space_available = troubleshootutils.check_diagnoser_container(corev1_api_instance, batchv1_api_instance, filepath_with_timestamp, storage_space_available, current_k8s_namespace, absolute_path, sufficient_resource_for_agents, helm_client_location)
 
         diagnostic_checks["diagnoser_results_logger"] = troubleshootutils.cli_output_logger(filepath_with_timestamp, storage_space_available, 1)
 
