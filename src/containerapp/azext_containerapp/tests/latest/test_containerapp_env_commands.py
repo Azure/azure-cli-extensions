@@ -39,10 +39,8 @@ class ContainerappEnvScenarioTest(ScenarioTest):
             JMESPathCheck('name', env_name),
         ])
 
-        # Sleep in case containerapp create takes a while
         self.cmd('containerapp env delete -g {} -n {} --yes'.format(resource_group, env_name))
 
-        # Sleep in case env delete takes a while
         self.cmd('containerapp env list -g {}'.format(resource_group), checks=[
             JMESPathCheck('length(@)', 0),
         ])
@@ -168,7 +166,7 @@ class ContainerappEnvScenarioTest(ScenarioTest):
         cert_name_2 = cert_2["name"]
         cert_id_2 = cert_2["id"]
         cert_thumbprint_2 = cert_2["properties"]["thumbprint"]
-        
+
         # list certs with a wrong location
         self.cmd('containerapp env certificate upload -g {} -n {} --certificate-file "{}" -l "{}"'.format(resource_group, env_name, pem_file, "eastus2"), expect_failure=True)
 
@@ -210,4 +208,32 @@ class ContainerappEnvScenarioTest(ScenarioTest):
 
         self.cmd('containerapp env certificate list -g {} -n {}'.format(resource_group, env_name), checks=[
             JMESPathCheck('length(@)', 0),
+        ])
+
+
+    @AllowLargeResponse(8192)
+    @ResourceGroupPreparer(location="northeurope")
+    @live_only()  # passes live but hits CannotOverwriteExistingCassetteException when run from recording
+    def test_containerapp_env_internal_only_e2e(self, resource_group):
+        env = self.create_random_name(prefix='env', length=24)
+        logs = self.create_random_name(prefix='logs', length=24)
+        vnet = self.create_random_name(prefix='name', length=24)
+
+        self.cmd(f"az network vnet create --address-prefixes '14.0.0.0/23' -g {resource_group} -n {vnet}")
+        sub_id = self.cmd(f"az network vnet subnet create --address-prefixes '14.0.0.0/23' -n sub -g {resource_group} --vnet-name {vnet}").get_output_in_json()["id"]
+
+        logs_id = self.cmd(f"monitor log-analytics workspace create -g {resource_group} -n {logs}").get_output_in_json()["customerId"]
+        logs_key = self.cmd(f'monitor log-analytics workspace get-shared-keys -g {resource_group} -n {logs}').get_output_in_json()["primarySharedKey"]
+
+        self.cmd(f'containerapp env create -g {resource_group} -n {env} --logs-workspace-id {logs_id} --logs-workspace-key {logs_key} --internal-only -s {sub_id}')
+
+        containerapp_env = self.cmd(f'containerapp env show -g {resource_group} -n {env}').get_output_in_json()
+
+        while containerapp_env["properties"]["provisioningState"].lower() == "waiting":
+            time.sleep(5)
+            containerapp_env = self.cmd(f'containerapp env show -g {resource_group} -n {env}').get_output_in_json()
+
+        self.cmd(f'containerapp env show -n {env} -g {resource_group}', checks=[
+            JMESPathCheck('name', env),
+            JMESPathCheck('properties.vnetConfiguration.internal', True),
         ])

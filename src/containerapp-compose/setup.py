@@ -16,7 +16,7 @@ except ImportError:
 
 # TODO: Confirm this is the right version number you want and it matches your
 # HISTORY.rst entry.
-VERSION = '0.1.0'
+VERSION = '0.2.0'
 
 # The full list of classifiers is available at
 # https://pypi.python.org/pypi?%3Aaction=list_classifiers
@@ -32,7 +32,7 @@ CLASSIFIERS = [
     'License :: OSI Approved :: MIT License',
 ]
 
-DEPENDENCIES = ['pycomposefile>=0.0.26']
+DEPENDENCIES = ['pycomposefile>=0.0.29']
 
 with open('README.rst', 'r', encoding='utf-8') as f:
     README = f.read()

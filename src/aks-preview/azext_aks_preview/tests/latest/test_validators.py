@@ -4,6 +4,7 @@
 # --------------------------------------------------------------------------------------------
 import unittest
 from azure.cli.core.util import CLIError
+from azure.cli.core.azclierror import InvalidArgumentValueError
 import azext_aks_preview._validators as validators
 from azext_aks_preview._consts import ADDONS
 
@@ -382,6 +383,30 @@ class TestValidateAzureKeyVaultKmsKeyId(unittest.TestCase):
         with self.assertRaises(CLIError) as cm:
             validators.validate_azure_keyvault_kms_key_id(namespace)
         self.assertEqual(str(cm.exception), err)
+
+
+class AzureKeyVaultKmsKeyVaultResourceIdNamespace:
+
+    def __init__(self, azure_keyvault_kms_key_vault_resource_id):
+        self.azure_keyvault_kms_key_vault_resource_id = azure_keyvault_kms_key_vault_resource_id
+
+
+class TestValidateAzureKeyVaultKmsKeyVaultResourceId(unittest.TestCase):
+    def test_invalid_azure_keyvault_kms_key_vault_resource_id(self):
+        invalid_azure_keyvault_kms_key_vault_resource_id = "invalid"
+        namespace = AzureKeyVaultKmsKeyVaultResourceIdNamespace(azure_keyvault_kms_key_vault_resource_id=invalid_azure_keyvault_kms_key_vault_resource_id)
+        err = '--azure-keyvault-kms-key-vault-resource-id is not a valid Azure resource ID.'
+
+        with self.assertRaises(InvalidArgumentValueError) as cm:
+            validators.validate_azure_keyvault_kms_key_vault_resource_id(namespace)
+        self.assertEqual(str(cm.exception), err)
+
+    def test_valid_azure_keyvault_kms_key_vault_resource_id(self):
+        valid_azure_keyvault_kms_key_vault_resource_id = "/subscriptions/8ecadfc9-d1a3-4ea4-b844-0d9f87e4d7c8/resourceGroups/foo/providers/Microsoft.KeyVault/vaults/foo"
+        namespace = AzureKeyVaultKmsKeyVaultResourceIdNamespace(azure_keyvault_kms_key_vault_resource_id=valid_azure_keyvault_kms_key_vault_resource_id)
+
+        validators.validate_azure_keyvault_kms_key_vault_resource_id(namespace)
+
 
 if __name__ == "__main__":
     unittest.main()

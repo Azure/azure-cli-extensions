@@ -7,10 +7,13 @@
 
 
 # EXAMPLE: /RedisEnterprise/put/RedisEnterpriseCreate
-def step_create(test, rg, checks=None):
+
+# NOTE: Functions will always first be looked up in manual/custom.py followed by generated/custom.py
+
+def step_create(test, checks=None, cache_num=1):
     if checks is None:
         checks = []
-    if test.kwargs.get('no_database') is True:
+    if test.kwargs.get('no_database'):
         test.cmd('az redisenterprise create '
                  '--cluster-name "{cluster}" '
                  '--sku "EnterpriseFlash_F300" '
@@ -18,6 +21,29 @@ def step_create(test, rg, checks=None):
                  '--no-database '
                  '--resource-group "{rg}"',
                  checks=checks)
+    elif test.kwargs.get('geo-replication'):
+        if cache_num == 1:
+            test.cmd('az redisenterprise create '
+                        '--cluster-name "{cluster31}" '
+                        '--sku "EnterpriseFlash_F300" '
+                        '--tags tag1="value1" '
+                        '--no-database '
+                        '--resource-group "{rg31}"',
+                        checks=checks)
+        elif cache_num == 2:
+                test.cmd('az redisenterprise create '
+                     '--location "West US" '
+                     '--cluster-name "{cluster32}" '
+                     '--sku "EnterpriseFlash_F300" '
+                     '--client-protocol "Encrypted" '
+                     '--clustering-policy "EnterpriseCluster" '
+                     '--eviction-policy "NoEviction" '
+                     '--group-nickname "groupName" '
+                     '--linked-databases id="/subscriptions/{subscription}/resourceGroups/{rg31}/providers/Microsoft.Cache/redisEnterprise/{cluster31}/databases/{database}" '
+                     '--linked-databases id="/subscriptions/{subscription}/resourceGroups/{rg32}/providers/Microsoft.Cache/redisEnterprise/{cluster32}/databases/{database}" '
+                     '--port 10000 '
+                     '--resource-group "{rg32}"',
+                checks=checks)
     else:
         test.cmd('az redisenterprise create '
                  '--cluster-name "{cluster}" '
@@ -37,52 +63,101 @@ def step_create(test, rg, checks=None):
                  checks=checks)
 
 
-# EXAMPLE: /RedisEnterprise/get/RedisEnterpriseGet
-def step_show(test, rg, checks=None):
+# EXAMPLE: /Databases/post/RedisEnterpriseDatabasesForceUnlink - unlinking a database during a regional outage
+def step_database_force_unlink(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az redisenterprise show '
-             '--cluster-name "{cluster}" '
-             '--resource-group "{rg}"',
+    test.cmd('az redisenterprise database force-unlink '
+             '--cluster-name "{cluster32}" '
+             '--unlink-ids "/subscriptions/{subscription}/resourceGroups/{rg31}/providers/Microsoft.Cache/redisEnterprise/{'
+             'myRedisEnterprise2}/databases/{database}" '
+             '--resource-group "{rg32}"',
              checks=checks)
+
+
+# EXAMPLE: /RedisEnterprise/get/RedisEnterpriseGet
+def step_show(test, checks=None):
+    if checks is None:
+        checks = []
+    if test.kwargs.get('geo-replication'):
+        test.cmd('az redisenterprise show '
+                 '--cluster-name "{cluster32}" '
+                 '--resource-group "{rg32}"',
+                checks=checks)
+    else:
+        test.cmd('az redisenterprise show '
+                 '--cluster-name "{cluster}" '
+                 '--resource-group "{rg}"',
+                 checks=checks)
 
 
 # EXAMPLE: /RedisEnterprise/delete/RedisEnterpriseDelete
-def step_delete(test, rg, checks=None):
+def step_delete(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az redisenterprise delete -y '
-             '--cluster-name "{cluster}" '
-             '--resource-group "{rg}"',
-             checks=checks)
+    if test.kwargs.get('geo-replication'):
+        test.cmd('az redisenterprise delete -y '
+                 '--cluster-name "{cluster31}" '
+                 '--resource-group "{rg31}"',
+                 checks=checks)
+        test.cmd('az redisenterprise delete -y '
+                 '--cluster-name "{cluster32}" '
+                 '--resource-group "{rg32}"',
+                 checks=checks)
+    else:
+        test.cmd('az redisenterprise delete -y '
+                 '--cluster-name "{cluster}" '
+                 '--resource-group "{rg}"',
+                 checks=checks)
 
 
 # EXAMPLE: /Databases/put/RedisEnterpriseDatabasesCreate
-def step_database_create(test, rg, checks=None):
+def step_database_create(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az redisenterprise database create '
-             '--cluster-name "{cluster}" '
-             '--client-protocol "Plaintext" '
-             '--clustering-policy "OSSCluster" '
-             '--eviction-policy "AllKeysLRU" '
-             '--port 10000 '
-             '--resource-group "{rg}"',
+    if test.kwargs.get('geo-replication'):
+        test.cmd('az redisenterprise database create '
+                '--cluster-name "{cluster31}" '
+                '--client-protocol "Encrypted" '
+                '--clustering-policy "EnterpriseCluster" '
+                '--eviction-policy "NoEviction" '
+                '--group-nickname "groupName" '
+                '--linked-databases id="/subscriptions/{subscription}/resourceGroups/{rg31}/providers/Microsoft.Cache/redisEnterprise/{cluster31}/databases/{database}" '
+                '--port 10000 '
+                '--resource-group "{rg31}"',
+        checks=checks)
+    else:
+        test.cmd('az redisenterprise database create '
+                 '--cluster-name "{cluster}" '
+                 '--client-protocol "Plaintext" '
+                 '--clustering-policy "OSSCluster" '
+                 '--eviction-policy "AllKeysLRU" '
+                 '--port 10000 '
+                 '--resource-group "{rg}"',
+                 checks=checks)
+
+def step_database_force_unlink(test, checks=None):
+    if checks is None:
+        checks = []
+    test.cmd('az redisenterprise database force-unlink '
+             '--cluster-name "{cluster32}" '
+             '--unlink-ids "/subscriptions/{subscription}/resourceGroups/{rg31}/providers/Microsoft.Cache/redisEnterprise/{'
+             'cluster31}/databases/{database}" '
+             '--resource-group "{rg32}"',
              checks=checks)
 
-
 # EXAMPLE: /Databases/get/RedisEnterpriseDatabasesGet
-def step_database_show(test, rg, checks=None):
+def step_database_show(test, checks=None):
     if checks is None:
         checks = []
     test.cmd('az redisenterprise database show '
-             '--cluster-name "{cluster}" '
-             '--resource-group "{rg}"',
-             checks=checks)
+            '--cluster-name "{cluster}" '
+            '--resource-group "{rg}"',
+            checks=checks)
 
 
 # EXAMPLE: /Databases/get/RedisEnterpriseDatabasesListByCluster
-def step_database_list(test, rg, checks=None):
+def step_database_list(test, checks=None):
     if checks is None:
         checks = []
     test.cmd('az redisenterprise database list '
@@ -92,7 +167,7 @@ def step_database_list(test, rg, checks=None):
 
 
 # EXAMPLE: /Databases/post/RedisEnterpriseDatabasesListKeys
-def step_database_list_keys(test, rg, checks=None):
+def step_database_list_keys(test, checks=None):
     if checks is None:
         checks = []
     test.cmd('az redisenterprise database list-keys '
@@ -102,7 +177,7 @@ def step_database_list_keys(test, rg, checks=None):
 
 
 # EXAMPLE: /Databases/post/RedisEnterpriseDatabasesRegenerateKey
-def step_database_regenerate_key(test, rg, checks=None):
+def step_database_regenerate_key(test, checks=None):
     if checks is None:
         checks = []
     test.cmd('az redisenterprise database regenerate-key '
@@ -113,10 +188,20 @@ def step_database_regenerate_key(test, rg, checks=None):
 
 
 # EXAMPLE: /Databases/delete/RedisEnterpriseDatabasesDelete
-def step_database_delete(test, rg, checks=None):
+def step_database_delete(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az redisenterprise database delete -y '
-             '--cluster-name "{cluster}" '
-             '--resource-group "{rg}"',
-             checks=checks)
+    if test.kwargs.get('geo-replication'):
+        test.cmd('az redisenterprise database delete -y '
+                 '--cluster-name "{cluster31}" '
+                 '--resource-group "{rg31}"',
+                 checks=checks)
+        test.cmd('az redisenterprise database delete -y '
+                 '--cluster-name "{cluster32}" '
+                 '--resource-group "{rg32}"',
+                 checks=checks)
+    else:
+        test.cmd('az redisenterprise database delete -y '
+                 '--cluster-name "{cluster}" '
+                 '--resource-group "{rg}"',
+                 checks=checks)

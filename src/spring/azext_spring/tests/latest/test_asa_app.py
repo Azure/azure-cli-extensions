@@ -273,7 +273,7 @@ class TestAppDeploy_Enterprise_Patch(BasicTest):
         if build_args and build_args[0]:
             self.assertEqual(1, len(build_args))
             self.assertEqual(5, len(build_args[0][0]))
-            self.assertEqual(args[0:2]+('default',)+(args[2],), build_args[0][0][0:4])
+            self.assertEqual(args[0:2]+('default',)+(args[2]+'-default',), build_args[0][0][0:4])
             self.put_build_resource = build_args[0][0][4]
 
     def _execute(self, *args, **kwargs):
@@ -464,6 +464,11 @@ class TestAppUpdate(BasicTest):
         self.assertEqual('123', resource.properties.source.version)
         self.assertEqual('Java_11', resource.properties.source.runtime_version)
         self.assertEqual('test-option', resource.properties.source.jvm_options)
+
+    def test_app_set_termination_grace_period_seconds(self):
+        self._execute('rg', 'asc', 'app', deployment=self._get_deployment(), termination_grace_period_seconds=88)
+        resource = self.patch_deployment_resource
+        self.assertEqual(88, resource.properties.deployment_settings.termination_grace_period_seconds)
 
     def test_app_disable_probes(self):
         self._execute('rg', 'asc', 'app', deployment=self._get_deployment(), enable_liveness_probe=False,

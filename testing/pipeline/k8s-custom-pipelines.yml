@@ -145,11 +145,25 @@ stages:
           versionSpec: '$(python.version)'
       - bash: pip install wheel==0.30.0
         displayName: 'Install wheel==0.30.0'
-      - bash: ./scripts/ci/test_source.sh
+      - bash: |
+          set -ev
+
+          # prepare and activate virtualenv
+          pip install virtualenv
+          python -m virtualenv venv/
+          source ./venv/bin/activate
+
+          # clone azure-cli
+          git clone --single-branch -b dev https://github.com/Azure/azure-cli.git ../azure-cli
+
+          pip install --upgrade pip
+          pip install azdev
+
+          azdev --version
+
+          azdev setup -c ../azure-cli -r ./ -e k8s-extension
+          azdev test k8s-extension
         displayName: 'Run integration test and build test'
-        env:
-          ADO_PULL_REQUEST_LATEST_COMMIT: $(System.PullRequest.SourceCommitId)
-          ADO_PULL_REQUEST_TARGET_BRANCH: $(System.PullRequest.TargetBranch)
 
   - job: LintModifiedExtensions
     displayName: "CLI Linter on Modified Extensions"

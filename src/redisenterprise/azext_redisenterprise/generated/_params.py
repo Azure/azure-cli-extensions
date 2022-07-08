@@ -19,7 +19,8 @@ from azure.cli.core.commands.parameters import (
 from azure.cli.core.commands.validators import get_default_location_from_resource_group
 from azext_redisenterprise.action import (
     AddPersistence,
-    AddModules
+    AddModules,
+    AddLinkedDatabases
 )
 
 
@@ -107,6 +108,10 @@ def load_arguments(self, _):
         c.argument('persistence', action=AddPersistence, nargs='+', help='Persistence settings', is_preview=True)
         c.argument('modules', action=AddModules, nargs='+', help='Optional set of redis modules to enable in this '
                    'database - modules can only be added at creation time.')
+        c.argument('group_nickname', type=str, help='Name for the group of linked database resources', arg_group='Geo '
+                   'Replication')
+        c.argument('linked_databases', action=AddLinkedDatabases, nargs='+', help='List of database resources to link '
+                   'with this database', arg_group='Geo Replication')
 
     with self.argument_context('redisenterprise database update') as c:
         c.argument('resource_group_name', resource_group_name_type)
@@ -120,6 +125,10 @@ def load_arguments(self, _):
                                                               'VolatileRandom', 'NoEviction']), help='Redis eviction '
                    'policy - default is VolatileLRU')
         c.argument('persistence', action=AddPersistence, nargs='+', help='Persistence settings', is_preview=True)
+        c.argument('group_nickname', type=str, help='Name for the group of linked database resources', arg_group='Geo '
+                   'Replication')
+        c.argument('linked_databases', action=AddLinkedDatabases, nargs='+', help='List of database resources to link '
+                   'with this database', arg_group='Geo Replication')
 
     with self.argument_context('redisenterprise database delete') as c:
         c.argument('resource_group_name', resource_group_name_type)
@@ -132,11 +141,17 @@ def load_arguments(self, _):
                    'RedisEnterprise cluster.', id_part='name')
         c.argument('sas_uri', type=str, help='SAS URI for the target directory to export to')
 
+    with self.argument_context('redisenterprise database force-unlink') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('cluster_name', options_list=['--cluster-name', '--name', '-n'], type=str, help='The name of the '
+                   'RedisEnterprise cluster.', id_part='name')
+        c.argument('unlink_ids', nargs='+', help='The resource IDs of the database resources to be unlinked.')
+
     with self.argument_context('redisenterprise database import') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('cluster_name', options_list=['--cluster-name', '--name', '-n'], type=str, help='The name of the '
                    'RedisEnterprise cluster.', id_part='name')
-        c.argument('sas_uri', type=str, help='SAS URI for the target blob to import from')
+        c.argument('sas_uris', nargs='+', help='SAS URIs for the target blobs to import from')
 
     with self.argument_context('redisenterprise database list-keys') as c:
         c.argument('resource_group_name', resource_group_name_type)

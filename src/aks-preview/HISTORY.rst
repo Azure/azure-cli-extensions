@@ -12,6 +12,55 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+0.5.87
+++++++
+
+* Fix snapshot not resolved according to the subscriptions field in the `--snapshot-id`` option.
+
+0.5.86
+++++++
+
+* Support network plugin mode for enabling Azure CNI Overlay preview feature.
+
+0.5.85
+++++++
+
+* Add support for Blob csi driver.
+
+0.5.84 (NOT RELEASED)
++++++++++++++++++++++
+
+* Skip this version due to conflict.
+
+0.5.83
+++++++
+
+* Update the minimum required cli core version to `2.37.0`.
+* Enable v2 decorator pattern.
+* Fix container name inconsistency for private clusters in kollect command.
+* Temp fix for properties missing in KMS profile in update scenario.
+
+0.5.82
+++++++
+
+* Support Key Vault with private link when enabling Azure KeyVault KMS.
+
+0.5.81
+++++++
+
+* Add Trusted Access Role Binding commands
+    * az aks trustedaccess rolebinding create
+    * az aks trustedaccess rolebinding update
+    * az aks trustedaccess rolebinding list
+    * az aks trustedaccess rolebinding show
+    * az aks trustedaccess rolebinding delete
+* Fix: Remove permission prompt when saving config file to symlink with `az aks get-credentials`.
+
+0.5.80
+++++++
+
+* Fix the value of option --zones not being transmitted correctly for `az aks nodepool add`, see issue `\#4953 <https://github.com/Azure/azure-cli-extensions/issues/4953>`_.
+
 0.5.79
 ++++++
 
@@ -50,8 +99,8 @@ Pending
 
 * Fix import issues with command group `az aks draft`
 
-0.5.72
-++++++
+0.5.72 (NOT RELEASED)
++++++++++++++++++++++
 
 * First public release for `az aks draft`
 
