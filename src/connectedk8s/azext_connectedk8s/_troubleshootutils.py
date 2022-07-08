@@ -9,6 +9,8 @@ from kubernetes import client, config, watch, utils
 from binascii import a2b_hex
 from logging import exception
 import os
+import base64
+import yaml
 import json
 import datetime
 from subprocess import Popen, PIPE, run, STDOUT, call, DEVNULL
@@ -172,7 +174,7 @@ def retrieve_arc_agents_logs(corev1_api_instance, filepath_with_timestamp, stora
     return "Failed", storage_space_available
 
 
-def retrieve_arc_agents_event_logs(filepath_with_timestamp, storage_space_available):
+def retrieve_arc_agents_event_logs(filepath_with_timestamp, storage_space_available, kubectl_client_location):
 
     global diagnoser_output
 
@@ -182,7 +184,7 @@ def retrieve_arc_agents_event_logs(filepath_with_timestamp, storage_space_availa
         if storage_space_available:
 
             # CMD command to get events using kubectl and converting it to json format
-            command = ["kubectl", "get", "events", "-n", "azure-arc", "--output", "json"]
+            command = [kubectl_client_location, "get", "events", "-n", "azure-arc", "--output", "json"]
 
             # Using Popen to execute the command and fetching the output
             response_kubectl_get_events = Popen(command, stdout=PIPE, stderr=PIPE)
@@ -322,8 +324,13 @@ def check_agent_state(corev1_api_instance, filepath_with_timestamp, storage_spac
                             if each_container_status.ready is False:
                                 all_containers_ready_for_each_agent = False
                                 all_agent_containers_ready = False
-                                if each_container_status.state.running is None:
-                                    agent_state.write("\t" + each_container_status.name + " :" + " Ready = False {Reason : " + str(each_container_status.state.waiting.reason) + "} , Restart_Counts = " + str(each_container_status.restart_count) + "\n")
+                                try:
+                                    container_not_ready_reason = each_container_status.state.waiting.reason
+                                except Exception as e:
+                                    container_not_ready_reason = None
+
+                                if container_not_ready_reason is not None:
+                                    agent_state.write("\t" + each_container_status.name + " :" + " Ready = False {Reason : " + str(container_not_ready_reason) + "} , Restart_Counts = " + str(each_container_status.restart_count) + "\n")
                                 else:
                                     agent_state.write("\t" + each_container_status.name + " :" + " Ready = " + str(each_container_status.ready) + ", Restart_Counts = " + str(each_container_status.restart_count) + "\n")
 
@@ -400,7 +407,7 @@ def check_agent_version(connected_cluster, azure_arc_agent_version):
     return "Incomplete"
 
 
-def check_diagnoser_container(corev1_api_instance, batchv1_api_instance, filepath_with_timestamp, storage_space_available, namespace, absolute_path, sufficient_resource_for_agents, helm_client_location):
+def check_diagnoser_container(corev1_api_instance, batchv1_api_instance, filepath_with_timestamp, storage_space_available, absolute_path, sufficient_resource_for_agents, helm_client_location, kubectl_client_location, release_namespace, security_policy_present):
     global diagnoser_output
 
     try:
@@ -415,12 +422,14 @@ def check_diagnoser_container(corev1_api_instance, batchv1_api_instance, filepat
         outbound_connectivity_check = "Starting"
 
         # Executing the Diagnoser job and fetching the logs obtained
-        diagnoser_container_log = executing_diagnoser_job(corev1_api_instance, batchv1_api_instance, namespace, absolute_path, helm_client_location)
+        diagnoser_container_log = executing_diagnoser_job(corev1_api_instance, batchv1_api_instance, absolute_path, helm_client_location, kubectl_client_location, release_namespace, security_policy_present)
 
         # If diagnoser_container_log is not empty then only we will check for the results
         if(diagnoser_container_log != ""):
-            dns_check, storage_space_available = check_cluster_DNS(diagnoser_container_log, filepath_with_timestamp, storage_space_available)
-            outbound_connectivity_check, storage_space_available = check_cluster_outbound_connectivity(diagnoser_container_log, filepath_with_timestamp, storage_space_available)
+            diagnoser_container_log_list = diagnoser_container_log.split("\n")
+            diagnoser_container_log_list.pop(-1)
+            dns_check, storage_space_available = check_cluster_DNS(diagnoser_container_log_list[-2], filepath_with_timestamp, storage_space_available)
+            outbound_connectivity_check, storage_space_available = check_cluster_outbound_connectivity(diagnoser_container_log_list[-1], filepath_with_timestamp, storage_space_available)
         else:
             return "Incomplete", storage_space_available
 
@@ -443,12 +452,12 @@ def check_diagnoser_container(corev1_api_instance, batchv1_api_instance, filepat
     return "Incomplete", storage_space_available
 
 
-def executing_diagnoser_job(corev1_api_instance, batchv1_api_instance, namespace, absolute_path, helm_client_location):
+def executing_diagnoser_job(corev1_api_instance, batchv1_api_instance, absolute_path, helm_client_location, kubectl_client_location, release_namespace, security_policy_present):
 
     global diagnoser_output
 
     # CMD command to get helm values in azure arc and converting it to json format
-    command = [helm_client_location, "get", "values", "azure-arc", "-o", "json"]
+    command = [helm_client_location, "get", "values", "azure-arc", "--namespace", release_namespace, "-o", "json"]
 
     # Using Popen to execute the helm get values command and fetching the output
     response_helm_values_get = Popen(command, stdout=PIPE, stderr=PIPE)
@@ -481,8 +490,26 @@ def executing_diagnoser_job(corev1_api_instance, batchv1_api_instance, namespace
 
     # Setting the log output as Empty
     diagnoser_container_log = ""
-    cmd_delete_job = ["kubectl", "delete", "-f", ""]
+    cmd_delete_job = [kubectl_client_location, "delete", "-f", ""]
     cmd_delete_job[3] = str(yaml_file_path)
+
+    new_yaml=[]
+    with open(yaml_file_path) as f:
+        list_doc = yaml.safe_load_all(f)
+        counter = 0
+        for each_yaml in list_doc:
+            if( counter == 1 or counter ==2):
+                each_yaml['metadata']['namespace'] = release_namespace
+            elif(counter == 3):
+                each_yaml['spec']['template']['spec']['containers'][0]['args'][0] = release_namespace
+
+            counter+=1
+            new_yaml.append(each_yaml)
+
+    with open(yaml_file_path, 'w+') as f:
+        for i in new_yaml:
+            f.write("---\n")
+            yaml.dump(i, f)
 
     # To handle the user keyboard Interrupt
     try:
@@ -535,7 +562,7 @@ def executing_diagnoser_job(corev1_api_instance, batchv1_api_instance, namespace
         counter = 0
 
         # To watch for changes in the pods states till it reach completed state or exit if it takes more than 90 seconds
-        for event in w.stream(batchv1_api_instance.list_namespaced_job, namespace=namespace, label_selector="", timeout_seconds=60):
+        for event in w.stream(batchv1_api_instance.list_namespaced_job, namespace='azure-arc', label_selector="", timeout_seconds=60):
 
             try:
 
@@ -547,12 +574,17 @@ def executing_diagnoser_job(corev1_api_instance, batchv1_api_instance, namespace
                 continue
             else:
                 continue
-
+        
         # If container not created then clearing all the resource with proper error message
-        if (counter == 0):
-            logger.warning("Unable to execute the diagnoser job in the cluster. \n")
+        if (counter == 0 and security_policy_present == "Failed"):
+            logger.warning("Unable to execute the diagnoser job in the kubernetes cluster. There might be a security policy or security context constraint (SCC) present which is preventing the deployment of azure-arc-diagnoser-job as it uses serviceaccount:azure-arc-troubleshoot-sa which doesnt have admin permissions.\nYou can whitelist it and then run the troubleshoot command again.\n")
             Popen(cmd_delete_job, stdout=PIPE, stderr=PIPE)
-            diagnoser_output.append("Unable to execute the diagnoser job in the cluster. \n")
+            diagnoser_output.append("Unable to execute the diagnoser job in the kubernetes cluster. There might be a security policy or security context constraint (SCC) present which is preventing the deployment of azure-arc-diagnoser-job as it uses serviceaccount:azure-arc-troubleshoot-sa which doesnt have admin permissions.\nYou can whitelist it and then run the troubleshoot command again.\n")
+            return ""
+        elif (counter == 0):
+            logger.warning("Unable to execute the diagnoser job in the kubernetes cluster.\n")
+            Popen(cmd_delete_job, stdout=PIPE, stderr=PIPE)
+            diagnoser_output.append("Unable to execute the diagnoser job in the kubernetes cluster.\n")
             return ""
 
         else:
@@ -562,7 +594,7 @@ def executing_diagnoser_job(corev1_api_instance, batchv1_api_instance, namespace
 
                 job_name = "azure-arc-diagnoser-job"
 
-                all_pods = corev1_api_instance.list_namespaced_pod(namespace)
+                all_pods = corev1_api_instance.list_namespaced_pod('azure-arc')
                 # Traversing thorugh all agents
                 for each_pod in all_pods.items:
 
@@ -572,7 +604,7 @@ def executing_diagnoser_job(corev1_api_instance, batchv1_api_instance, namespace
                     if(pod_name.startswith(job_name)):
 
                         # Creating a text file with the name of the container and adding that containers logs in it
-                        diagnoser_container_log = corev1_api_instance.read_namespaced_pod_log(name=pod_name, container="azure-arc-diagnoser-container", namespace=namespace)
+                        diagnoser_container_log = corev1_api_instance.read_namespaced_pod_log(name=pod_name, container="azure-arc-diagnoser-container", namespace='azure-arc')
 
                 # Clearing all the resources after fetching the diagnoser container logs
                 Popen(cmd_delete_job, stdout=PIPE, stderr=PIPE)
@@ -591,29 +623,27 @@ def executing_diagnoser_job(corev1_api_instance, batchv1_api_instance, namespace
     return diagnoser_container_log
 
 
-def check_cluster_DNS(diagnoser_container_log, filepath_with_timestamp, storage_space_available):
+def check_cluster_DNS(dns_check_log, filepath_with_timestamp, storage_space_available):
 
     global diagnoser_output
 
     try:
-        # To retreive only the DNS lookup result from the diagnoser container logs
-        dns_check = diagnoser_container_log[0:len(diagnoser_container_log) - 5:]
 
         # Validating if DNS is working or not and displaying proper result
-        if("NXDOMAIN" in dns_check or "connection timed out" in dns_check):
+        if("NXDOMAIN" in dns_check_log or "connection timed out" in dns_check_log):
             print("Error: We found an issue with the DNS resolution on your cluster. For details about debugging DNS issues visit 'https://kubernetes.io/docs/tasks/administer-cluster/dns-debugging-resolution/'.\n")
             diagnoser_output.append("Error: We found an issue with the DNS resolution on your cluster. For details about debugging DNS issues visit 'https://kubernetes.io/docs/tasks/administer-cluster/dns-debugging-resolution/'.\n")
             if storage_space_available:
                 dns_check_path = os.path.join(filepath_with_timestamp, "DNS_Check.txt")
                 with open(dns_check_path, 'w+') as dns:
-                    dns.write(dns_check + "\nWe found an issue with the DNS resolution on your cluster.")
+                    dns.write(dns_check_log + "\nWe found an issue with the DNS resolution on your cluster.")
             return "Failed", storage_space_available
 
         else:
             if storage_space_available:
                 dns_check_path = os.path.join(filepath_with_timestamp, "DNS_Check.txt")
                 with open(dns_check_path, 'w+') as dns:
-                    dns.write(dns_check + "\nCluster DNS check passed successfully.")
+                    dns.write(dns_check_log + "\nCluster DNS check passed successfully.")
             return "Passed", storage_space_available
 
     # For handling storage or OS exception that may occur during the execution
@@ -636,21 +666,18 @@ def check_cluster_DNS(diagnoser_container_log, filepath_with_timestamp, storage_
     return "Incomplete", storage_space_available
 
 
-def check_cluster_outbound_connectivity(diagnoser_container_log, filepath_with_timestamp, storage_space_available):
+def check_cluster_outbound_connectivity(outbound_connectivity_check_log, filepath_with_timestamp, storage_space_available):
 
     global diagnoser_output
 
     try:
 
-        # To retreive only the outbound connectivity result from the diagnoser container logs
-        outbound_check = diagnoser_container_log[-4:-1:]
-
         # Validating if outbound connectiivty is working or not and displaying proper result
-        if(outbound_check != "000"):
+        if(outbound_connectivity_check_log != "000"):
             if storage_space_available:
                 outbound_connectivity_check_path = os.path.join(filepath_with_timestamp, "Outbound_Network_Connectivity_Check.txt")
                 with open(outbound_connectivity_check_path, 'w+') as outbound:
-                    outbound.write("Response code " + outbound_check + "\nOutbound network connectivity check passed successfully.")
+                    outbound.write("Response code " + outbound_connectivity_check_log + "\nOutbound network connectivity check passed successfully.")
             return "Passed", storage_space_available
         else:
             print("Error: We found an issue with outbound network connectivity from the cluster.\nIf your cluster is behind an outbound proxy server, please ensure that you have passed proxy paramaters during the onboarding of your cluster.\nFor more details visit 'https://docs.microsoft.com/en-us/azure/azure-arc/kubernetes/quickstart-connect-cluster?tabs=azure-cli#connect-using-an-outbound-proxy-server'.\nPlease ensure to meet the following network requirements 'https://docs.microsoft.com/en-us/azure/azure-arc/kubernetes/quickstart-connect-cluster?tabs=azure-cli#meet-network-requirements' \n")
@@ -658,7 +685,7 @@ def check_cluster_outbound_connectivity(diagnoser_container_log, filepath_with_t
             if storage_space_available:
                 outbound_connectivity_check_path = os.path.join(filepath_with_timestamp, "Outbound_Network_Connectivity_Check.txt")
                 with open(outbound_connectivity_check_path, 'w+') as outbound:
-                    outbound.write("Response code " + outbound_check + "\nWe found an issue with Outbound network connectivity from the cluster.")
+                    outbound.write("Response code " + outbound_connectivity_check_log + "\nWe found an issue with Outbound network connectivity from the cluster.")
             return "Failed", storage_space_available
 
     # For handling storage or OS exception that may occur during the execution
@@ -716,7 +743,7 @@ def check_msi_certificate_presence(corev1_api_instance):
     return "Incomplete"
 
 
-def check_cluster_security_policy(corev1_api_instance, helm_client_location):
+def check_cluster_security_policy(corev1_api_instance, helm_client_location, release_namespace):
 
     global diagnoser_output
 
@@ -726,7 +753,7 @@ def check_cluster_security_policy(corev1_api_instance, helm_client_location):
         cluster_connect_feature = False
 
         # CMD command to get helm values in azure arc and converting it to json format
-        command = [helm_client_location, "get", "values", "azure-arc", "-o", "json"]
+        command = [helm_client_location, "get", "values", "azure-arc", "--namespace", release_namespace, "-o", "json"]
 
         # Using Popen to execute the helm get values command and fetching the output
         response_helm_values_get = Popen(command, stdout=PIPE, stderr=PIPE)
@@ -753,8 +780,8 @@ def check_cluster_security_policy(corev1_api_instance, helm_client_location):
 
         # Checking if any pod security policy is set
         if(cluster_connect_feature is True and kap_pod_present is False):
-            print("Error: Unable to create Kube-aad-proxy deployment there might be a security policy or security context constraint (SCC) present which is preventing the deployment of kube-aad-proxy as it doesn't have admin privileges.\n ")
-            diagnoser_output.append("Error: Unable to create Kube-aad-proxy deployment there might be a security policy present which is preventing the deployment of kube-aad-proxy as it doesn't have admin privileges.\n ")
+            print("Error: Unable to create Kube-aad-proxy deployment there might be a security policy or security context constraint (SCC) present which is preventing the deployment of kube-aad-proxy as it doesn't have admin privileges.\nKube aad proxy pod uses the azure-arc-kube-aad-proxy-sa service account, which doesn't have admin permissions but requires the permission to mount host path.\n ")
+            diagnoser_output.append("Error: Unable to create Kube-aad-proxy deployment there might be a security policy or security context constraint (SCC) present which is preventing the deployment of kube-aad-proxy as it doesn't have admin privileges.\nKube aad proxy pod uses the azure-arc-kube-aad-proxy-sa service account, which doesn't have admin permissions but requires the permission to mount host path.\n")
             return "Failed"
         return "Passed"
 

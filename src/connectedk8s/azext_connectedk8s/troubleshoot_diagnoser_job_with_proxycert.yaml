@@ -1,62 +1,73 @@
+---
 apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: azure-arc-troubleshoot-sa
-  namespace: default
+  namespace: azure-arc
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
-  namespace: default
   name: secret-reader
+  namespace: default
 rules:
-- apiGroups: [""] 
-  resources: ["secrets"]
-  verbs: ["get", "list"]
+- apiGroups:
+  - ''
+  resources:
+  - secrets
+  verbs:
+  - get
+  - list
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
   name: read-pods
   namespace: default
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: secret-reader
 subjects:
 - kind: ServiceAccount
   name: azure-arc-troubleshoot-sa
-  namespace: default
-roleRef:
-  kind: Role 
-  name: secret-reader 
-  apiGroup: rbac.authorization.k8s.io
+  namespace: azure-arc
 ---
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: azure-arc-diagnoser-job
-  namespace: default
   labels:
     app: networktest
+  name: azure-arc-diagnoser-job
+  namespace: azure-arc
 spec:
+  backoffLimit: 4
   template:
     metadata:
       labels:
         app: networktest
     spec:
-      serviceAccountName: azure-arc-troubleshoot-sa
-      containers: 
-      - name: azure-arc-diagnoser-container
-        image: svacr1.azurecr.io/test:35.0
+      containers:
+      - args:
+        - default
+        command:
+        - /bin/bash
+        - /diagnoser_job_script.sh
+        image: svacr1.azurecr.io/test:41.0
+        name: azure-arc-diagnoser-container
         volumeMounts:
-              - name: ssl-certs
-                mountPath: /etc/ssl/certs/
-                readOnly: false
-              - mountPath: /usr/local/share/ca-certificates/proxy-cert.crt
-                subPath: proxy-cert.crt
-                name: proxy-certstore
-      volumes:
-        - name: proxy-certstore
-          secret:
-            secretName: proxy-cert
-        - name: ssl-certs
-          emptyDir: {}
+        - mountPath: /etc/ssl/certs/
+          name: ssl-certs
+          readOnly: false
+        - mountPath: /usr/local/share/ca-certificates/proxy-cert.crt
+          name: proxy-certstore
+          subPath: proxy-cert.crt
       restartPolicy: Never
-  backoffLimit: 4
+      serviceAccountName: azure-arc-troubleshoot-sa
+      volumes:
+      - name: proxy-certstore
+        secret:
+          namespace: azure-arc
+          secretName: proxy-cert
+      - emptyDir: {}
+        name: ssl-certs

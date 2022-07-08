@@ -14,12 +14,14 @@ from subprocess import Popen, PIPE, run, STDOUT, call, DEVNULL
 from base64 import b64encode, b64decode
 import stat
 import platform
+from xml.dom.pulldom import default_bufsize
 from azure.core.exceptions import ClientAuthenticationError
 import yaml
 import urllib.request
 import shutil
 from _thread import interrupt_main
 from psutil import process_iter, NoSuchProcess, AccessDenied, ZombieProcess, net_connections
+from azure.cli.core import get_default_cli
 from knack.util import CLIError
 from knack.log import get_logger
 from knack.prompting import prompt_y_n
@@ -2071,7 +2073,11 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
         # Install helm client
         helm_client_location = install_helm_client()
 
-        validate_release_namespace(client, cluster_name, resource_group_name, configuration, kube_config, kube_context, helm_client_location)
+        # Install kubectl client
+        kubectl_client_location = install_kubectl_client()
+        # kubectl_client_location = "C:\\kube\\kubectl.exe"
+
+        release_namespace = validate_release_namespace(client, cluster_name, resource_group_name, configuration, kube_config, kube_context, helm_client_location)
 
         # Checking the connection to kubernetes cluster.
         # This check was added to avoid large timeouts when connecting to AAD Enabled AKS clusters
@@ -2115,7 +2121,7 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
             diagnostic_checks["retrieved_arc_agents_logs"], storage_space_available = troubleshootutils.retrieve_arc_agents_logs(corev1_api_instance, filepath_with_timestamp, storage_space_available)
 
             # For storing all arc agents events logs
-            diagnostic_checks["retrieved_arc_agents_event_logs"], storage_space_available = troubleshootutils.retrieve_arc_agents_event_logs(filepath_with_timestamp, storage_space_available)
+            diagnostic_checks["retrieved_arc_agents_event_logs"], storage_space_available = troubleshootutils.retrieve_arc_agents_event_logs(filepath_with_timestamp, storage_space_available, kubectl_client_location)
 
             # For storing all the deployments logs using the AppsV1Api
             appv1_api_instance = kube_client.AppsV1Api(kube_client.ApiClient(configuration))
@@ -2134,7 +2140,7 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
 
             # If msi certificate present then only we will do Kube aad proxy checks
             if diagnostic_checks["msi_cert_check"] == "Passed":
-                diagnostic_checks["kap_security_policy_check"] = troubleshootutils.check_cluster_security_policy(corev1_api_instance, helm_client_location)
+                diagnostic_checks["kap_security_policy_check"] = troubleshootutils.check_cluster_security_policy(corev1_api_instance, helm_client_location, release_namespace)
 
                 # If no security policy is present in cluster then we can check for the Kube aad proxy certificate
                 if diagnostic_checks["kap_security_policy_check"] == "Passed":
@@ -2170,39 +2176,8 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
 
         batchv1_api_instance = kube_client.BatchV1Api(kube_client.ApiClient(configuration))
 
-        # Fetching the current kubernetes namespace to deploy the job
-        try:
-            k8s_contexts = config.list_kube_config_contexts()  # returns tuple of (all_contexts, current_context)
-            if kube_context:  # if custom kube-context is specified
-                if k8s_contexts[1].get('name') == kube_context:
-                    current_k8s_context = k8s_contexts[1]
-                else:
-                    for context in k8s_contexts[0]:
-                        if context.get('name') == kube_context:
-                            current_k8s_context = context
-                            break
-            else:
-                current_k8s_context = k8s_contexts[1]
-
-            current_k8s_namespace = current_k8s_context.get('context').get('namespace', "default")  # Take "default" namespace, if not specified in the kube-config
-            namespace_exists = False
-            k8s_v1 = kube_client.CoreV1Api()
-            k8s_ns = k8s_v1.list_namespace()
-            for ns in k8s_ns.items:
-                if ns.metadata.name == current_k8s_namespace:
-                    namespace_exists = True
-                    break
-            if namespace_exists is False:
-                telemetry.set_exception(exception="Namespace doesn't exist", fault_type=consts.Default_Namespace_Does_Not_Exist_Fault_Type,
-                                        summary="The default namespace defined in the kubeconfig doesn't exist on the kubernetes cluster.")
-                raise ValidationError("The default namespace '{}' defined in the kubeconfig doesn't exist on the kubernetes cluster.".format(current_k8s_namespace))
-        except ValidationError as e:
-            raise e
-        except Exception as e:
-            logger.warning("Failed to validate if the active namespace exists on the kubernetes cluster. Exception: {}".format(str(e)))
-
-        # Executing the Diagnoser job check in the given namespace
-        diagnostic_checks["diagnoser_check"], storage_space_available = troubleshootutils.check_diagnoser_container(corev1_api_instance, batchv1_api_instance, filepath_with_timestamp, storage_space_available, current_k8s_namespace, absolute_path, sufficient_resource_for_agents, helm_client_location)
+        
+        diagnostic_checks["diagnoser_check"], storage_space_available = troubleshootutils.check_diagnoser_container(corev1_api_instance, batchv1_api_instance, filepath_with_timestamp, storage_space_available, absolute_path, sufficient_resource_for_agents, helm_client_location, kubectl_client_location, release_namespace, diagnostic_checks["kap_security_policy_check"])
 
         diagnostic_checks["diagnoser_results_logger"] = troubleshootutils.cli_output_logger(filepath_with_timestamp, storage_space_available, 1)
 
@@ -2228,3 +2203,18 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
         except Exception as e:
             pass
         raise ManualInterrupt('Process terminated externally.')
+
+
+def install_kubectl_client():
+    # Return kubectl client path set by user
+    home_dir = os.path.expanduser('~')
+    kubectl_path = os.path.join(home_dir + '\\.azure-kubectl\\kubectl.exe')
+    if os.path.isfile(kubectl_path):
+        return kubectl_path
+    
+    logger.warning("Downloading kubectl client for first time. This can take few minutes...")
+    logging.disable(logging.CRITICAL)
+    get_default_cli().invoke(['aks', 'install-cli'])
+    logging.disable(logging.NOTSET)
+    print()
+    return kubectl_path
