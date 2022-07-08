@@ -7,6 +7,7 @@
 import timeit
 import traceback
 import requests
+import json
 from knack.log import get_logger
 
 from azure.cli.command_modules.vm.custom import get_vm, _is_linux_os
@@ -532,4 +533,68 @@ def list_scripts(cmd, preview=None):
 
 
 def reset_nic(cmd, vm_name, resource_group_name):
-    print(f'{vm_name}, {resource_group_name}')
+
+    # Init command helper object
+    command = command_helper(logger, cmd, 'vm repair reset-nic')
+    
+    DYNAMIC_CONFIG = 'Dynamic'
+    # 0) Check if VM is deallocated?
+
+    # 1) Fetch vm network info
+    logger.info('Fetching necessary VM network information to reset the NIC...\n')
+    # Fetch primary nic id. The primary field is null or true for primary nics.
+    get_primary_nic_id_command = 'az vm nic list -g {g} --vm-name {n} --query "[[?primary].id || [?primary==null].id][0][0]" -o tsv' \
+                                 .format(g=resource_group_name, n=vm_name)
+    primary_nic_id = _call_az_command(get_primary_nic_id_command)
+    if not primary_nic_id:
+        # Raise no primary nic excpetion
+        pass 
+    primary_nic_name = primary_nic_id.split('/')[-1]
+
+    # Get ip config info to get: vnet name, current private ip, ipconfig name, subnet id
+    get_primary_ip_config = 'az network nic ip-config list -g {g} --nic-name {nic_name} --query [[?primary]][0][0]' \
+                            .format(g=resource_group_name, nic_name=primary_nic_name)
+    ip_config_string = _call_az_command(get_primary_ip_config)
+    if not ip_config_string:
+        # Raise primary ip_config not found
+        pass
+    ip_config_object = json.loads(ip_config_string)
+    
+    subnet_id = ip_config_object['subnet']['id']
+    vnet_name = subnet_id.split('/')[-3]
+    ipconfig_name = ip_config_object['name']
+    orig_ip_address = ip_config_object['privateIpAddress']
+    # Dynamic | Static
+    orig_ip_allocation_method = ip_config_object['privateIpAllocationMethod']
+    
+    # Get aviailable ip address within subnet
+    # Change to az network vnet subnet list-available-ips when it is available
+    get_available_ip_command = 'az network vnet list-available-ips -g {g} -n {vnet} --query [0] -o tsv' \
+                               .format(g=resource_group_name, vnet=vnet_name)
+    swap_ip_address = _call_az_command(get_available_ip_command)
+    if not swap_ip_address:
+        # Raise subnet not found
+        pass
+    
+    # 3) Update private IP address to another in subnet. This will invoke and wait for a VM restart.
+    logger.info('Updating VM IP configuration. This might take a few minutes...\n')
+    # Update IP address
+    update_ip_command = 'az network nic ip-config update -g {g} --nic-name {nic} -n {config} --private-ip-address {ip} ' \
+                               .format(g=resource_group_name, nic=primary_nic_name, config=ipconfig_name, ip=swap_ip_address)
+    _call_az_command(update_ip_command)
+
+    # 4) Change things back. This will also invoke and wait for a VM restart.
+    logger.info('VM IP configuration updated. Now reverting back to your original configuration...\n')
+    # If user had dynamic config, change back to dynamic
+    revert_ip_command = None
+    if orig_ip_allocation_method == DYNAMIC_CONFIG:
+        # Revert Static to Dynamic
+        revert_ip_command = 'az network nic ip-config update -g {g} --nic-name {nic} -n {config} --set privateIpAllocationMethod={method}' \
+                            .format(g=resource_group_name, nic=primary_nic_name, config=ipconfig_name, method=DYNAMIC_CONFIG)
+    else:
+        # Revert to original static ip
+        revert_ip_command = 'az network nic ip-config update -g {g} --nic-name {nic} -n {config} --private-ip-address {ip} ' \
+                            .format(g=resource_group_name, nic=primary_nic_name, config=ipconfig_name, ip=orig_ip_address)
+    
+    _call_az_command(revert_ip_command)
+    logger.info('VM guest NIC reset complete.')
