@@ -49,23 +49,23 @@ def load_arguments(self, _):
                    help='Specify the release train for the extension type.')
         c.argument('configuration_settings',
                    arg_group="Configuration",
-                   options_list=['--configuration-settings', '--config'],
+                   options_list=['--configuration-settings', '--config-settings', '--config'],
                    action=AddConfigurationSettings,
                    nargs='+',
                    help='Configuration Settings as key=value pair.  Repeat parameter for each setting')
         c.argument('configuration_protected_settings',
                    arg_group="Configuration",
-                   options_list=['--configuration-protected-settings', '--config-protected'],
+                   options_list=['--configuration-protected-settings', '--config-protected-settings', '--config-protected'],
                    action=AddConfigurationProtectedSettings,
                    nargs='+',
                    help='Configuration Protected Settings as key=value pair.  Repeat parameter for each setting')
         c.argument('configuration_settings_file',
                    arg_group="Configuration",
-                   options_list=['--configuration-settings-file', '--config-file'],
+                   options_list=['--configuration-settings-file', '--config-settings-file', '--config-file'],
                    help='JSON file path for configuration-settings')
         c.argument('configuration_protected_settings_file',
                    arg_group="Configuration",
-                   options_list=['--configuration-protected-settings-file', '--config-protected-file'],
+                   options_list=['--configuration-protected-settings-file', '--config-protected-settings-file', '--config-protected-file'],
                    help='JSON file path for configuration-protected-settings')
         c.argument('release_namespace',
                    help='Specify the namespace to install the extension release.')

@@ -1007,7 +1007,7 @@ def _is_function_kube(custom_location, plan_info, SkuDescription):
             isinstance(plan_info.sku, SkuDescription) and plan_info.sku.name.upper() == KUBE_DEFAULT_SKU))
 
 
-def create_functionapp(cmd, resource_group_name, name, storage_account, plan=None,
+def create_functionapp(cmd, resource_group_name, name, storage_account=None, plan=None,
                        os_type=None, functions_version=None, runtime=None, runtime_version=None,
                        consumption_plan_location=None, app_insights=None, app_insights_key=None,
                        disable_app_insights=None, deployment_source_url=None,
@@ -1101,6 +1101,8 @@ def create_functionapp(cmd, resource_group_name, name, storage_account, plan=Non
         raise ArgumentUsageError('Must specify --runtime to use --runtime-version')
 
     is_kube = _is_function_kube(custom_location, plan_info, SkuDescription)
+    if not storage_account and not is_kube:
+        raise ValidationError("--storage-account required for non-kubernetes function apps")
 
     runtime_helper = _FunctionAppStackRuntimeHelper(cmd, linux=is_linux, windows=(not is_linux))
     matched_runtime = runtime_helper.resolve("dotnet" if not runtime else runtime,
@@ -1116,7 +1118,9 @@ def create_functionapp(cmd, resource_group_name, name, storage_account, plan=Non
     site_config_dict = matched_runtime.site_config_dict
     app_settings_dict = matched_runtime.app_settings_dict
 
-    con_string = _validate_and_get_connection_string(cmd.cli_ctx, resource_group_name, storage_account)
+    con_string = None
+    if storage_account:
+        con_string = _validate_and_get_connection_string(cmd.cli_ctx, resource_group_name, storage_account)
 
     if is_kube:
         functionapp_def.enable_additional_properties_sending()
@@ -1194,7 +1198,8 @@ def create_functionapp(cmd, resource_group_name, name, storage_account, plan=Non
 
     site_config.app_settings.append(NameValuePair(name='FUNCTIONS_EXTENSION_VERSION',
                                                   value=_get_extension_version_functionapp(functions_version)))
-    site_config.app_settings.append(NameValuePair(name='AzureWebJobsStorage', value=con_string))
+    if con_string:
+        site_config.app_settings.append(NameValuePair(name='AzureWebJobsStorage', value=con_string))
 
     # If plan is not consumption or elastic premium, we need to set always on
     if consumption_plan_location is None and not is_plan_elastic_premium(cmd, plan_info):
@@ -1202,8 +1207,9 @@ def create_functionapp(cmd, resource_group_name, name, storage_account, plan=Non
 
     # If plan is elastic premium or consumption, we need these app settings
     if is_plan_elastic_premium(cmd, plan_info) or consumption_plan_location is not None:
-        site_config.app_settings.append(NameValuePair(name='WEBSITE_CONTENTAZUREFILECONNECTIONSTRING',
-                                                      value=con_string))
+        if con_string:
+            site_config.app_settings.append(NameValuePair(name='WEBSITE_CONTENTAZUREFILECONNECTIONSTRING',
+                                                          value=con_string))
         site_config.app_settings.append(NameValuePair(name='WEBSITE_CONTENTSHARE', value=_get_content_share_name(name)))
 
     create_app_insights = False
@@ -1217,7 +1223,8 @@ def create_functionapp(cmd, resource_group_name, name, storage_account, plan=Non
                                                       value=instrumentation_key))
     elif disable_app_insights or not matched_runtime.app_insights:
         # set up dashboard if no app insights
-        site_config.app_settings.append(NameValuePair(name='AzureWebJobsDashboard', value=con_string))
+        if con_string:
+            site_config.app_settings.append(NameValuePair(name='AzureWebJobsDashboard', value=con_string))
     elif not disable_app_insights and matched_runtime.app_insights:
         create_app_insights = True
 
@@ -1238,8 +1245,9 @@ def create_functionapp(cmd, resource_group_name, name, storage_account, plan=Non
         except Exception:  # pylint: disable=broad-except
             logger.warning('Error while trying to create and configure an Application Insights for the Function App. '
                            'Please use the Azure Portal to create and configure the Application Insights, if needed.')
-            update_app_settings(cmd, functionapp.resource_group, functionapp.name,
-                                ['AzureWebJobsDashboard={}'.format(con_string)])
+            if con_string:
+                update_app_settings(cmd, functionapp.resource_group, functionapp.name,
+                                    ['AzureWebJobsDashboard={}'.format(con_string)])
 
     if deployment_container_image_name:
         update_container_settings_functionapp(cmd, resource_group_name, name, docker_registry_server_url,

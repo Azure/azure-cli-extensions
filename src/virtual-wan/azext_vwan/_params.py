@@ -18,9 +18,9 @@ from .action import RadiusServerAddAction
 def load_arguments(self, _):
 
     (IpsecEncryption, IpsecIntegrity, IkeEncryption, IkeIntegrity, DhGroup, PfsGroup,
-     VirtualNetworkGatewayConnectionProtocol, AuthenticationMethod) = self.get_models(
+     VirtualNetworkGatewayConnectionProtocol, AuthenticationMethod, HubRoutingPreference) = self.get_models(
          'IpsecEncryption', 'IpsecIntegrity', 'IkeEncryption', 'IkeIntegrity', 'DhGroup', 'PfsGroup',
-         'VirtualNetworkGatewayConnectionProtocol', 'AuthenticationMethod')
+         'VirtualNetworkGatewayConnectionProtocol', 'AuthenticationMethod', 'HubRoutingPreference')
 
     (VpnGatewayTunnelingProtocol, VpnAuthenticationType) = self.get_models('VpnGatewayTunnelingProtocol', 'VpnAuthenticationType')
 
@@ -54,6 +54,7 @@ def load_arguments(self, _):
         c.argument('virtual_wan', options_list='--vwan', help='Name or ID of the virtual WAN.', validator=get_network_resource_name_or_id('virtual_wan', 'virtualWans'))
         c.argument('address_prefix', help='CIDR address prefix for the virtual hub.')
         c.argument('sku', arg_type=get_enum_type(['Basic', 'Standard']), help='The sku of the VirtualHub.')
+        c.argument('hub_routing_preference', arg_type=get_enum_type(HubRoutingPreference), help='The hub routing preference gateway types')
 
     with self.argument_context('network vhub', arg_group='Gateway') as c:
         c.argument('express_route_gateway', help='Name or ID of an ExpressRoute gateway.', validator=get_network_resource_name_or_id('express_route_gateway', 'expressRouteGateways'))

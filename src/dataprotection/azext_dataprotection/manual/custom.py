@@ -11,6 +11,7 @@
 import uuid
 import copy
 import re
+import time
 from knack.util import CLIError
 from knack.log import get_logger
 from azure.cli.core.util import sdk_no_wait
@@ -25,6 +26,122 @@ def dataprotection_backup_vault_list(client, resource_group_name=None):
     if resource_group_name is not None:
         return client.get_in_resource_group(resource_group_name=resource_group_name)
     return client.get_in_subscription()
+
+
+def dataprotection_backup_vault_create(client,
+                                       resource_group_name,
+                                       vault_name,
+                                       storage_settings,
+                                       e_tag=None,
+                                       location=None,
+                                       tags=None,
+                                       type_=None,
+                                       alerts_for_all_job_failures=None,
+                                       no_wait=False):
+    parameters = {}
+    parameters['e_tag'] = e_tag
+    parameters['location'] = location
+    parameters['tags'] = tags
+    if type_ is not None:
+        parameters['identity'] = {}
+        parameters['identity']['type'] = type_
+    parameters['properties'] = {}
+    parameters['properties']['storage_settings'] = storage_settings
+    if alerts_for_all_job_failures is not None:
+        parameters['properties']['monitoring_settings'] = {}
+        parameters['properties']['monitoring_settings']['azure_monitor_alert_settings'] = {}
+        parameters['properties']['monitoring_settings']['azure_monitor_alert_settings']['alerts_for_all_job_failures'] = alerts_for_all_job_failures
+    return sdk_no_wait(no_wait,
+                       client.begin_create_or_update,
+                       resource_group_name=resource_group_name,
+                       vault_name=vault_name,
+                       parameters=parameters)
+
+
+def dataprotection_backup_vault_update(client,
+                                       resource_group_name,
+                                       vault_name,
+                                       tags=None,
+                                       alerts_for_all_job_failures=None,
+                                       type_=None,
+                                       no_wait=False):
+    parameters = {}
+    parameters['tags'] = tags
+    if alerts_for_all_job_failures is not None:
+        parameters['properties'] = {}
+        parameters['properties']['monitoring_settings'] = {}
+        parameters['properties']['monitoring_settings']['azure_monitor_alert_settings'] = {}
+        parameters['properties']['monitoring_settings']['azure_monitor_alert_settings']['alerts_for_all_job_failures'] = alerts_for_all_job_failures
+    if type_ is not None:
+        parameters['identity'] = {}
+        parameters['identity']['type'] = type_
+    return sdk_no_wait(no_wait,
+                       client.begin_update,
+                       resource_group_name=resource_group_name,
+                       vault_name=vault_name,
+                       parameters=parameters)
+
+
+def dataprotection_resource_guard_list(client, resource_group_name=None):
+    if resource_group_name is not None:
+        return client.get_resources_in_resource_group(resource_group_name=resource_group_name)
+    return client.get_resources_in_subscription()
+
+
+def resource_guard_list_protected_operations(client, resource_group_name, resource_guards_name, resource_type):
+    resource_guard_object = client.get(resource_group_name, resource_guards_name)
+    protected_operations = resource_guard_object.properties.resource_guard_operations
+    resource_type_protected_operation = []
+    for protected_operation in protected_operations:
+        if resource_type in protected_operation.vault_critical_operation:
+            resource_type_protected_operation.append(protected_operation)
+    return resource_type_protected_operation
+
+
+def dataprotection_resource_guard_create(client,
+                                         resource_group_name,
+                                         resource_guards_name,
+                                         e_tag=None,
+                                         location=None,
+                                         tags=None,
+                                         type_=None):
+    parameters = {}
+    parameters['e_tag'] = e_tag
+    parameters['location'] = location
+    parameters['tags'] = tags
+    if type_ is not None:
+        parameters['identity'] = {}
+        parameters['identity']['type'] = type_
+    parameters['properties'] = {}
+    return client.put(resource_group_name=resource_group_name,
+                      resource_guards_name=resource_guards_name,
+                      parameters=parameters)
+
+
+def dataprotection_resource_guard_update(client,
+                                         resource_group_name,
+                                         resource_guards_name,
+                                         tags=None,
+                                         type_=None,
+                                         resource_type=None,
+                                         critical_operation_exclusion_list=None):
+    resource_guard_object = client.get(resource_group_name, resource_guards_name)
+    parameters = {}
+    parameters['e_tag'] = resource_guard_object.e_tag
+    parameters['location'] = resource_guard_object.location
+    parameters['tags'] = tags
+    if type_ is not None:
+        parameters['identity'] = {}
+        parameters['identity']['type'] = type_
+    if resource_type is not None and critical_operation_exclusion_list is not None:
+        critical_operation_list = []
+        for critical_operation in critical_operation_exclusion_list:
+            critical_operation_list.append(resource_type + helper.critical_operation_map[critical_operation])
+        parameters['properties'] = {}
+        parameters['properties']['vault_critical_operation_exclusion_list'] = critical_operation_list
+    return client.put(resource_group_name=resource_group_name,
+                      resource_guards_name=resource_guards_name,
+                      parameters=parameters)
 
 
 def dataprotection_backup_instance_create(client, vault_name, resource_group_name, backup_instance, no_wait=False):
@@ -54,7 +171,8 @@ def dataprotection_backup_instance_validate_for_backup(client, vault_name, resou
 
 
 def dataprotection_backup_instance_initialize(datasource_type, datasource_id, datasource_location, policy_id,
-                                              secret_store_type=None, secret_store_uri=None):
+                                              secret_store_type=None, secret_store_uri=None,
+                                              snapshot_resource_group_name=None):
     datasource_info = helper.get_datasource_info(datasource_type, datasource_id, datasource_location)
     datasourceset_info = None
     manifest = helper.load_manifest(datasource_type)
@@ -69,10 +187,15 @@ def dataprotection_backup_instance_initialize(datasource_type, datasource_id, da
                 {
                     "object_type": "AzureOperationalStoreParameters",
                     "data_store_type": "OperationalStore",
-                    "resource_group_id": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}"
+                    "resource_group_id": helper.get_rg_id_from_arm_id(datasource_id)
                 }
             ]
         }
+
+        if snapshot_resource_group_name:
+            disk_sub_id = helper.get_sub_id_from_arm_id(datasource_id)
+            policy_parameters["data_store_parameters_list"][0]["resource_group_id"] = (disk_sub_id + "/resourceGroups/"
+                                                                                       + snapshot_resource_group_name)
 
     datasource_auth_credentials_info = None
     if manifest["supportSecretStoreAuthentication"]:
@@ -137,6 +260,185 @@ def dataprotection_backup_instance_list_from_resourcegraph(client, datasource_ty
     request = QueryRequest(query=query, subscriptions=subscriptions, options=request_options)
     response = client.resources(request)
     return response.data
+
+
+def dataprotection_backup_instance_update_msi_permissions(cmd, client, resource_group_name, datasource_type, vault_name, operation, permissions_scope, backup_instance=None, keyvault_id=None, yes=False):
+    from msrestazure.tools import is_valid_resource_id, parse_resource_id
+
+    if operation == 'Backup' and backup_instance is None:
+        raise CLIError("--backup-instance needs to be given when --operation is given as Backup")
+
+    if datasource_type == 'AzureDatabaseForPostgreSQL':
+        if not keyvault_id:
+            raise CLIError("--keyvault-id needs to be given when --datasource-type is AzureDatabaseForPostgreSQL")
+
+        if not is_valid_resource_id(keyvault_id):
+            raise CLIError("Please provide a valid keyvault ID")
+
+    datasource_map = {
+        "AzureDisk": "Microsoft.Compute/disks",
+        "AzureBlob": "Microsoft.Storage/storageAccounts/blobServices",
+        "AzureDatabaseForPostgreSQL": "Microsoft.DBforPostgreSQL/servers/databases"
+    }
+
+    if datasource_map[datasource_type] != backup_instance["properties"]["data_source_info"]["datasource_type"]:
+        raise CLIError("--backup-instance provided is not compatible with the --datasource-type.")
+
+    from azure.cli.core.commands.client_factory import get_mgmt_service_client
+
+    from knack.prompting import prompt_y_n
+    msg = helper.get_help_text_on_grant_permissions(datasource_type)
+    if not yes and not prompt_y_n(msg):
+        return None
+
+    backup_vault = client.get(resource_group_name=resource_group_name,
+                              vault_name=vault_name)
+    principal_id = backup_vault.identity.principal_id
+
+    role_assignments_arr = []
+
+    if backup_instance['properties']['data_source_info']['resource_location'] != backup_vault.location:
+        raise CLIError("Location of data source needs to be the same as backup vault.\nMake sure the datasource "
+                       "and vault are chosen properly")
+
+    from azure.cli.command_modules.role.custom import list_role_assignments, create_role_assignment
+
+    manifest = helper.load_manifest(datasource_type)
+
+    keyvault_client = None
+    keyvault = None
+    keyvault_subscription = None
+    keyvault_name = None
+    keyvault_rg = None
+    if manifest['supportSecretStoreAuthentication']:
+        cmd.command_kwargs['operation_group'] = 'vaults'
+        keyvault_update = False
+
+        from azure.cli.core.profiles import ResourceType
+        from azure.cli.command_modules.keyvault._client_factory import Clients, get_client
+
+        keyvault_params = parse_resource_id(keyvault_id)
+        keyvault_subscription = keyvault_params['subscription']
+        keyvault_name = keyvault_params['name']
+        keyvault_rg = keyvault_params['resource_group']
+
+        keyvault_client = getattr(get_mgmt_service_client(cmd.cli_ctx, ResourceType.MGMT_KEYVAULT, subscription_id=keyvault_subscription), Clients.vaults)
+
+        keyvault = keyvault_client.get(resource_group_name=keyvault_rg, vault_name=keyvault_name)
+
+        # Check if keyvault is not publicly accessible
+        if keyvault.properties.public_network_access == 'Disabled':
+            raise CLIError("Keyvault has public access disabled. Please enable public access, or grant access to your client IP")
+
+        # Check if the secret URI provided in backup instance is a valid secret
+        data_entity = get_client(cmd.cli_ctx, ResourceType.DATA_KEYVAULT)
+        data_client = data_entity.client_factory(cmd.cli_ctx, None)
+        secrets_list = data_client.get_secrets(vault_base_url=keyvault.properties.vault_uri)
+        given_secret_uri = backup_instance['properties']['datasource_auth_credentials']['secret_store_resource']['uri']
+        given_secret_id = helper.get_secret_params_from_uri(given_secret_uri)['secret_id']
+        valid_secret = False
+        for secret in secrets_list:
+            if given_secret_id == secret.id:
+                valid_secret = True
+                break
+
+        if not valid_secret:
+            raise CLIError("The secret URI provided in the --backup-instance is not associated with the "
+                           "--keyvault-id provided. Please input a valid combination of secret URI and "
+                           "--keyvault-id.")
+
+        keyvault_permission_models = manifest['secretStorePermissions']
+        if keyvault.properties.enable_rbac_authorization:
+            role = keyvault_permission_models['rbacModel']['roleDefinitionName']
+
+            keyvault_assignment_scope = helper.truncate_id_using_scope(keyvault_id, permissions_scope)
+
+            role_assignment = list_role_assignments(cmd, assignee=principal_id, role=role, scope=keyvault_id, include_inherited=True)
+            if not role_assignment:
+                assignment = create_role_assignment(cmd, assignee=principal_id, role=role, scope=keyvault_assignment_scope)
+                role_assignments_arr.append(helper.get_permission_object_from_role_object(assignment))
+
+        else:
+            from azure.cli.command_modules.keyvault.custom import set_policy
+            vault_secret_permissions = (keyvault_permission_models['vaultAccessPolicyModel']
+                                        ['accessPolicies']
+                                        ['permissions']
+                                        ['secrets'])
+
+            secrets_array = []
+            for policy in keyvault.properties.access_policies:
+                if policy.object_id == principal_id:
+                    secrets_array = policy.permissions.secrets
+                    break
+
+            permissions_set = True
+            for permission in vault_secret_permissions:
+                if permission not in secrets_array:
+                    permissions_set = False
+                    secrets_array.append(permission)
+
+            if not permissions_set:
+                keyvault_update = True
+                keyvault = set_policy(cmd, keyvault_client, keyvault_rg, keyvault_name, object_id=principal_id, secret_permissions=secrets_array)
+                keyvault = keyvault.result()
+
+        from azure.cli.command_modules.keyvault.custom import update_vault_setter
+
+        if keyvault.properties.network_acls:
+            if keyvault.properties.network_acls.bypass == 'None':
+                keyvault_update = True
+                keyvault.properties.network_acls.bypass = 'AzureServices'
+                update_vault_setter(cmd, keyvault_client, keyvault, resource_group_name=keyvault_rg, vault_name=keyvault_name)
+
+        if keyvault_update:
+            role_assignments_arr.append(helper.get_permission_object_from_keyvault(keyvault))
+
+    for role_object in manifest['backupVaultPermissions']:
+        resource_id = helper.get_resource_id_from_backup_instance(backup_instance, role_object['type'])
+        resource_id = helper.truncate_id_using_scope(resource_id, "Resource")
+
+        assignment_scope = helper.truncate_id_using_scope(resource_id, permissions_scope)
+
+        role_assignments = list_role_assignments(cmd, assignee=principal_id, role=role_object['roleDefinitionName'],
+                                                 scope=resource_id, include_inherited=True)
+        if not role_assignments:
+            assignment = create_role_assignment(cmd, assignee=principal_id, role=role_object['roleDefinitionName'],
+                                                scope=assignment_scope)
+            role_assignments_arr.append(helper.get_permission_object_from_role_object(assignment))
+
+    # Network line of sight access on server, if that is the datasource type
+    if datasource_type == 'AzureDatabaseForPostgreSQL':
+        server_params = parse_resource_id(backup_instance['properties']['data_source_info']['resource_id'])
+        server_sub = server_params['subscription']
+        server_name = server_params['name']
+        server_rg = server_params['resource_group']
+
+        from azure.mgmt.rdbms.postgresql import PostgreSQLManagementClient
+        postgres_firewall_client = getattr(get_mgmt_service_client(cmd.cli_ctx, PostgreSQLManagementClient, subscription_id=server_sub), 'firewall_rules')
+
+        firewall_rule_list = postgres_firewall_client.list_by_server(resource_group_name=server_rg, server_name=server_name)
+
+        allow_access_to_azure_ips = False
+        for rule in firewall_rule_list:
+            if rule.start_ip_address == rule.end_ip_address and rule.start_ip_address == '0.0.0.0':
+                allow_access_to_azure_ips = True
+                break
+
+        if not allow_access_to_azure_ips:
+            firewall_rule_name = 'AllowAllWindowsAzureIps'
+            parameters = {'name': firewall_rule_name, 'start_ip_address': '0.0.0.0', 'end_ip_address': '0.0.0.0'}
+
+            rule = postgres_firewall_client.begin_create_or_update(server_rg, server_name, firewall_rule_name, parameters)
+            role_assignments_arr.append(helper.get_permission_object_from_server_firewall_rule(rule.result()))
+
+    if not role_assignments_arr:
+        logger.warning("The required permissions are already assigned!")
+    else:
+        # Wait for 60 seconds to let the role assignments propagate
+        logger.warning("Waiting for 60 seconds for permissions to propagate")
+        time.sleep(60)
+
+    return role_assignments_arr
 
 
 def dataprotection_job_list_from_resourcegraph(client, datasource_type, resource_groups=None, vaults=None,

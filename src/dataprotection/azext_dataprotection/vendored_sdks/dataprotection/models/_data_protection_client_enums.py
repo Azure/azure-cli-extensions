@@ -34,6 +34,11 @@ class AbsoluteMarker(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     FIRST_OF_WEEK = "FirstOfWeek"
     FIRST_OF_YEAR = "FirstOfYear"
 
+class AlertsState(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+
+    ENABLED = "Enabled"
+    DISABLED = "Disabled"
+
 class CreatedByType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """The type of identity that created the resource.
     """

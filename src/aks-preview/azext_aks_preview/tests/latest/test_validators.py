@@ -4,6 +4,7 @@
 # --------------------------------------------------------------------------------------------
 import unittest
 from azure.cli.core.util import CLIError
+from azure.cli.core.azclierror import InvalidArgumentValueError
 import azext_aks_preview._validators as validators
 from azext_aks_preview._consts import ADDONS
 
@@ -99,10 +100,18 @@ class SpotMaxPriceNamespace:
         self.priority = "Spot"
         self.spot_max_price = spot_max_price
 
+
 class MessageOfTheDayNamespace:
     def __init__(self, message_of_the_day, os_type):
         self.os_type = os_type
         self.message_of_the_day = message_of_the_day
+
+
+class EnableCustomCATrustNamespace:
+    def __init__(self, os_type, enable_custom_ca_trust):
+        self.os_type = os_type
+        self.enable_custom_ca_trust = enable_custom_ca_trust
+
 
 class TestMaxSurge(unittest.TestCase):
     def test_valid_cases(self):
@@ -163,6 +172,22 @@ class TestMessageOfTheday(unittest.TestCase):
         with self.assertRaises(CLIError) as cm:
             validators.validate_message_of_the_day(MessageOfTheDayNamespace("foo", "invalid"))
         self.assertTrue('--message-of-the-day can only be set for linux nodepools' in str(cm.exception), msg=str(cm.exception))
+
+
+class TestEnableCustomCATrust(unittest.TestCase):
+    def test_pass_if_os_type_linux(self):
+        validators.validate_enable_custom_ca_trust(EnableCustomCATrustNamespace("Linux", True))
+
+    def test_fail_if_os_type_windows(self):
+        with self.assertRaises(CLIError) as cm:
+            validators.validate_enable_custom_ca_trust(EnableCustomCATrustNamespace("Windows", True))
+        self.assertTrue('--enable_custom_ca_trust can only be set for Linux nodepools' in str(cm.exception), msg=str(cm.exception))
+
+    def test_fail_if_os_type_invalid(self):
+        with self.assertRaises(CLIError) as cm:
+            validators.validate_enable_custom_ca_trust(EnableCustomCATrustNamespace("invalid", True))
+        self.assertTrue('--enable_custom_ca_trust can only be set for Linux nodepools' in str(cm.exception), msg=str(cm.exception))
+
 
 class ValidateAddonsNamespace:
     def __init__(self, addons):
@@ -358,6 +383,30 @@ class TestValidateAzureKeyVaultKmsKeyId(unittest.TestCase):
         with self.assertRaises(CLIError) as cm:
             validators.validate_azure_keyvault_kms_key_id(namespace)
         self.assertEqual(str(cm.exception), err)
+
+
+class AzureKeyVaultKmsKeyVaultResourceIdNamespace:
+
+    def __init__(self, azure_keyvault_kms_key_vault_resource_id):
+        self.azure_keyvault_kms_key_vault_resource_id = azure_keyvault_kms_key_vault_resource_id
+
+
+class TestValidateAzureKeyVaultKmsKeyVaultResourceId(unittest.TestCase):
+    def test_invalid_azure_keyvault_kms_key_vault_resource_id(self):
+        invalid_azure_keyvault_kms_key_vault_resource_id = "invalid"
+        namespace = AzureKeyVaultKmsKeyVaultResourceIdNamespace(azure_keyvault_kms_key_vault_resource_id=invalid_azure_keyvault_kms_key_vault_resource_id)
+        err = '--azure-keyvault-kms-key-vault-resource-id is not a valid Azure resource ID.'
+
+        with self.assertRaises(InvalidArgumentValueError) as cm:
+            validators.validate_azure_keyvault_kms_key_vault_resource_id(namespace)
+        self.assertEqual(str(cm.exception), err)
+
+    def test_valid_azure_keyvault_kms_key_vault_resource_id(self):
+        valid_azure_keyvault_kms_key_vault_resource_id = "/subscriptions/8ecadfc9-d1a3-4ea4-b844-0d9f87e4d7c8/resourceGroups/foo/providers/Microsoft.KeyVault/vaults/foo"
+        namespace = AzureKeyVaultKmsKeyVaultResourceIdNamespace(azure_keyvault_kms_key_vault_resource_id=valid_azure_keyvault_kms_key_vault_resource_id)
+
+        validators.validate_azure_keyvault_kms_key_vault_resource_id(namespace)
+
 
 if __name__ == "__main__":
     unittest.main()
