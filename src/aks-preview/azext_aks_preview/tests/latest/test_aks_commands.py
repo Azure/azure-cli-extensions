@@ -7,7 +7,7 @@ import os
 import pty
 import subprocess
 import tempfile
-from time import sleep
+import time
 
 from azext_aks_preview.tests.latest.custom_preparers import (
     AKSCustomResourceGroupPreparer,
@@ -332,7 +332,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         create_cmd = 'aks create --resource-group={resource_group} --name={name} --enable-namespace-resources --ssh-key-value={ssh_key_value}'
         self.cmd(create_cmd)
         print("Cluster created, sleeping for 300 seconds")
-        sleep(300) # Sleep for 300 seconds to allow hydration of namespaces
+        time.sleep(300) # Sleep for 300 seconds to allow hydration of namespaces
         get_credentials_command = 'aks get-credentials --resource-group={resource_group} --name={name} --namespace default'
         with self.assertRaisesRegexp(HttpResponseError, ".* ListUserCredentials for Namespaces is not supported for non AAD clusters.*"): # ListUserCredential will fail for non-aad clusters. By verifying this error, we can verify that the call has reached the RP.
             self.cmd(get_credentials_command) 
