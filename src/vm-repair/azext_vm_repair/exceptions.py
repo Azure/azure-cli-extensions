@@ -34,3 +34,7 @@ class ScriptReturnsError(Exception):
 
 class SuseNotAvailableError(Exception):
     """Raised when SUSE image not available"""
+
+
+class SupportingResourceNotFoundError(Exception):
+    """Raised when a supporting resource needed for the command is not found"""
