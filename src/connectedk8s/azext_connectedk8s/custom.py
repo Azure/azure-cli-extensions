@@ -2054,7 +2054,10 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
     try:
 
         logger.warning("Diagnoser running. This may take a while ...\n")
+
         absolute_path = os.path.abspath(os.path.dirname(__file__))
+
+        # Setting the intial values as True
         storage_space_available = True
         sufficient_resource_for_agents = True
 
@@ -2075,7 +2078,6 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
 
         # Install kubectl client
         kubectl_client_location = install_kubectl_client()
-        # kubectl_client_location = "C:\\kube\\kubectl.exe"
 
         release_namespace = validate_release_namespace(client, cluster_name, resource_group_name, configuration, kube_config, kube_context, helm_client_location)
 
@@ -2176,11 +2178,13 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
 
         batchv1_api_instance = kube_client.BatchV1Api(kube_client.ApiClient(configuration))
 
-        
+        # Performing diagnoser container check 
         diagnostic_checks["diagnoser_check"], storage_space_available = troubleshootutils.check_diagnoser_container(corev1_api_instance, batchv1_api_instance, filepath_with_timestamp, storage_space_available, absolute_path, sufficient_resource_for_agents, helm_client_location, kubectl_client_location, release_namespace, diagnostic_checks["kap_security_policy_check"])
 
+        # Adding cli output to the logs
         diagnostic_checks["diagnoser_results_logger"] = troubleshootutils.cli_output_logger(filepath_with_timestamp, storage_space_available, 1)
 
+        # If all the checks passed then display no error found
         all_checks_passed = True
         for checks in diagnostic_checks:
             if diagnostic_checks[checks] != "Passed":
@@ -2197,6 +2201,7 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
                 logger.warning("Diagnoser did not find any issues with the cluster.\n")
             logger.warning("Diagnoser was not able to store logs in your local machine. Please check if sufficient storage space is available.\nTo store diagnoser logs clean up some space and execute the troubleshoot command again.")
 
+    # Handling the user manual interrupt
     except KeyboardInterrupt:
         try:
             troubleshootutils.cli_output_logger(filepath_with_timestamp, storage_space_available, 0)
@@ -2207,14 +2212,34 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
 
 def install_kubectl_client():
     # Return kubectl client path set by user
-    home_dir = os.path.expanduser('~')
-    kubectl_path = os.path.join(home_dir + '\\.azure-kubectl\\kubectl.exe')
-    if os.path.isfile(kubectl_path):
+    try:
+
+        # Fetching the current directory where the cli installs the kubectl executable
+        home_dir = os.path.expanduser('~')
+        operating_system = platform.system().lower()
+
+        # Setting path depending on the OS being used
+        if operating_system == 'windows':
+            kubectl_path = os.path.join(home_dir, '.azure-kubectl', 'kubectl.exe')
+        elif operating_system == 'linux' or operating_system == 'darwin':
+            kubectl_path = os.path.join('usr', 'local', 'bin', 'kubectl')
+
+        # If the kubectl executable already present return the path
+        if os.path.isfile(kubectl_path):
+            return kubectl_path
+
+        # Downloading kubectl executable if its not present in the machine
+        logger.warning("Downloading kubectl client for first time. This can take few minutes...")
+        logging.disable(logging.CRITICAL)
+        get_default_cli().invoke(['aks', 'install-cli'])
+        logging.disable(logging.NOTSET)
+        if (operating_system == 'linux'):
+            kubectl_path = os.path.join('usr', 'local', 'bin', 'kubectl')
+        print()
+
+        # Return tha path of the kubectl executable
         return kubectl_path
-    
-    logger.warning("Downloading kubectl client for first time. This can take few minutes...")
-    logging.disable(logging.CRITICAL)
-    get_default_cli().invoke(['aks', 'install-cli'])
-    logging.disable(logging.NOTSET)
-    print()
-    return kubectl_path
+
+    except Exception as e:
+        telemetry.set_exception(exception=e, fault_type=consts.Download_And_Install_Kubectl_Fault_Type, summary="Failed to download and install kubectl")
+        raise CLIInternalError("Unable to install kubectl. Error: ", str(e))

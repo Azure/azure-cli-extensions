@@ -9,7 +9,6 @@ from kubernetes import client, config, watch, utils
 from binascii import a2b_hex
 from logging import exception
 import os
-import base64
 import yaml
 import json
 import datetime
@@ -35,6 +34,7 @@ def create_folder_diagnosticlogs(time_stamp):
 
     try:
 
+        # Fetching path to current directory to create the arc diagnostic folder
         home_dir = os.path.expanduser('~')
         filepath = os.path.join(home_dir, '.azure', 'arc_diagnostic_logs')
 
@@ -301,7 +301,7 @@ def check_agent_state(corev1_api_instance, filepath_with_timestamp, storage_spac
             # To retrieve all of the arc agent pods that are presesnt in the Cluster
             arc_agents_pod_list = corev1_api_instance.list_namespaced_pod(namespace="azure-arc")
 
-            # Check if any arc agent other than kube aadp proxy is not in Running state
+            # Check if any arc agent is not in Running state
             for each_agent_pod in arc_agents_pod_list.items:
 
                 if storage_space_available:
@@ -321,14 +321,18 @@ def check_agent_state(corev1_api_instance, filepath_with_timestamp, storage_spac
                         # If the agent is in running state we will check if all containers are running or not
                         for each_container_status in each_agent_pod.status.container_statuses:
 
+                            # Checking if all containers are running or not
                             if each_container_status.ready is False:
                                 all_containers_ready_for_each_agent = False
                                 all_agent_containers_ready = False
                                 try:
+
+                                    # Adding the reason for container to be not in ready state
                                     container_not_ready_reason = each_container_status.state.waiting.reason
                                 except Exception as e:
                                     container_not_ready_reason = None
 
+                                # Adding the reason if continer is not in ready state
                                 if container_not_ready_reason is not None:
                                     agent_state.write("\t" + each_container_status.name + " :" + " Ready = False {Reason : " + str(container_not_ready_reason) + "} , Restart_Counts = " + str(each_container_status.restart_count) + "\n")
                                 else:
@@ -344,8 +348,8 @@ def check_agent_state(corev1_api_instance, filepath_with_timestamp, storage_spac
 
         # Displaying error if the arc agents are in pending state.
         if sufficient_resource_for_agents is False:
-            print("Error: One or more Azure Arc agents are not in running state. It may be caused due to insufficient resource availability on the cluster.\n ")
-            diagnoser_output.append("Error: One or more Azure Arc agents are not in running state. It may be caused due to insufficient resource availability on the cluster.\n ")
+            print("Error: One or more Azure Arc agents are not in running state. It may be caused due to insufficient resource availability on the cluster.\n")
+            diagnoser_output.append("Error: One or more Azure Arc agents are not in running state. It may be caused due to insufficient resource availability on the cluster.\n")
             return "Failed", storage_space_available, all_agents_stuck, sufficient_resource_for_agents
 
         elif all_agent_containers_ready is False:
@@ -422,7 +426,7 @@ def check_diagnoser_container(corev1_api_instance, batchv1_api_instance, filepat
         outbound_connectivity_check = "Starting"
 
         # Executing the Diagnoser job and fetching the logs obtained
-        diagnoser_container_log = executing_diagnoser_job(corev1_api_instance, batchv1_api_instance, absolute_path, helm_client_location, kubectl_client_location, release_namespace, security_policy_present)
+        diagnoser_container_log = executing_diagnoser_job(corev1_api_instance, batchv1_api_instance, filepath_with_timestamp, storage_space_available, absolute_path, helm_client_location, kubectl_client_location, release_namespace, security_policy_present)
 
         # If diagnoser_container_log is not empty then only we will check for the results
         if(diagnoser_container_log != ""):
@@ -452,10 +456,11 @@ def check_diagnoser_container(corev1_api_instance, batchv1_api_instance, filepat
     return "Incomplete", storage_space_available
 
 
-def executing_diagnoser_job(corev1_api_instance, batchv1_api_instance, absolute_path, helm_client_location, kubectl_client_location, release_namespace, security_policy_present):
+def executing_diagnoser_job(corev1_api_instance, batchv1_api_instance, filepath_with_timestamp, storage_space_available, absolute_path, helm_client_location, kubectl_client_location, release_namespace, security_policy_present):
 
     global diagnoser_output
 
+    job_name = "azure-arc-diagnoser-job"
     # CMD command to get helm values in azure arc and converting it to json format
     command = [helm_client_location, "get", "values", "azure-arc", "--namespace", release_namespace, "-o", "json"]
 
@@ -468,6 +473,8 @@ def executing_diagnoser_job(corev1_api_instance, batchv1_api_instance, absolute_
                                     summary='Error while doing helm get values azure-arc')
     
     helm_values_json = json.loads(output_helm_values_get)
+
+    # Retrieving the proxy values if they are present 
     try:
         is_proxy_enabled = helm_values_json["global"]["isProxyEnabled"]
     except Exception as e:
@@ -476,12 +483,12 @@ def executing_diagnoser_job(corev1_api_instance, batchv1_api_instance, absolute_
         is_custom_cert = helm_values_json["global"]["isCustomCert"]
     except Exception as e:
         is_custom_cert = False
-
     try:
         proxy_cert = helm_values_json["global"]["proxyCert"]
     except Exception as e:
         proxy_cert = False
 
+    # Depending on the presence of proxy cert using the yaml
     if proxy_cert and (is_custom_cert or is_proxy_enabled):
         yaml_file_path = os.path.join(absolute_path, "troubleshoot_diagnoser_job_with_proxycert.yaml")
 
@@ -493,10 +500,13 @@ def executing_diagnoser_job(corev1_api_instance, batchv1_api_instance, absolute_
     cmd_delete_job = [kubectl_client_location, "delete", "-f", ""]
     cmd_delete_job[3] = str(yaml_file_path)
 
+    # Editing the yaml file based on 
     new_yaml=[]
     with open(yaml_file_path) as f:
         list_doc = yaml.safe_load_all(f)
         counter = 0
+
+        # USing release_namespace wherever required
         for each_yaml in list_doc:
             if( counter == 1 or counter ==2):
                 each_yaml['metadata']['namespace'] = release_namespace
@@ -506,6 +516,7 @@ def executing_diagnoser_job(corev1_api_instance, batchv1_api_instance, absolute_
             counter+=1
             new_yaml.append(each_yaml)
 
+    # Updating the yaml file 
     with open(yaml_file_path, 'w+') as f:
         for i in new_yaml:
             f.write("---\n")
@@ -559,15 +570,19 @@ def executing_diagnoser_job(corev1_api_instance, batchv1_api_instance, absolute_
 
         # Watching for diagnoser contianer to reach in completed stage
         w = watch.Watch()
-        counter = 0
-
+        did_job_complete = False
+        did_job_got_scheduled = False
         # To watch for changes in the pods states till it reach completed state or exit if it takes more than 90 seconds
         for event in w.stream(batchv1_api_instance.list_namespaced_job, namespace='azure-arc', label_selector="", timeout_seconds=60):
 
             try:
 
+                # Checking if job get scheduled or not
+                if event["object"].metadata.name == "azure-arc-diagnoser-job":
+                    did_job_got_scheduled = True
+                # Checking if job reached completed stage or not
                 if event["object"].metadata.name == "azure-arc-diagnoser-job" and event["object"].status.conditions[0].type == "Complete":
-                    counter = 1
+                    did_job_complete = True
                     w.stop()
 
             except Exception as e:
@@ -575,24 +590,60 @@ def executing_diagnoser_job(corev1_api_instance, batchv1_api_instance, absolute_
             else:
                 continue
         
-        # If container not created then clearing all the resource with proper error message
-        if (counter == 0 and security_policy_present == "Failed"):
-            logger.warning("Unable to execute the diagnoser job in the kubernetes cluster. There might be a security policy or security context constraint (SCC) present which is preventing the deployment of azure-arc-diagnoser-job as it uses serviceaccount:azure-arc-troubleshoot-sa which doesnt have admin permissions.\nYou can whitelist it and then run the troubleshoot command again.\n")
+        # Choosing the error message depending on the job getting scheduled, completed and the presence of  security policy
+        if (did_job_got_scheduled is False and security_policy_present == "Failed"):
+            logger.warning("Unable to schedule the diagnoser job in the kubernetes cluster. There might be a security policy or security context constraint (SCC) present which is preventing the deployment of azure-arc-diagnoser-job as it uses serviceaccount:azure-arc-troubleshoot-sa which doesnt have admin permissions.\nYou can whitelist it and then run the troubleshoot command again.\n")
             Popen(cmd_delete_job, stdout=PIPE, stderr=PIPE)
-            diagnoser_output.append("Unable to execute the diagnoser job in the kubernetes cluster. There might be a security policy or security context constraint (SCC) present which is preventing the deployment of azure-arc-diagnoser-job as it uses serviceaccount:azure-arc-troubleshoot-sa which doesnt have admin permissions.\nYou can whitelist it and then run the troubleshoot command again.\n")
+            diagnoser_output.append("Unable to schedule the diagnoser job in the kubernetes cluster. There might be a security policy or security context constraint (SCC) present which is preventing the deployment of azure-arc-diagnoser-job as it uses serviceaccount:azure-arc-troubleshoot-sa which doesnt have admin permissions.\nYou can whitelist it and then run the troubleshoot command again.\n")
             return ""
-        elif (counter == 0):
-            logger.warning("Unable to execute the diagnoser job in the kubernetes cluster.\n")
+        elif (did_job_got_scheduled is False):
+            logger.warning("Unable to schedule the diagnoser job in the kubernetes cluster. The possible reasons can be presence of a security policy or security context constraint (SCC) or it may happen becuase of lack of ResourceQuota.\n")
             Popen(cmd_delete_job, stdout=PIPE, stderr=PIPE)
-            diagnoser_output.append("Unable to execute the diagnoser job in the kubernetes cluster.\n")
+            diagnoser_output.append("Unable to schedule the diagnoser job in the kubernetes cluster. The possible reasons can be presence of a security policy or security context constraint (SCC) or it may happen becuase of lack of ResourceQuota.\n")
+            return ""
+        elif (did_job_got_scheduled is True and did_job_complete == False):
+            logger.warning("The diagnoser job failed to reach the completed state in the kubernetes cluster.\n")
+            if storage_space_available:
+
+                # Creating folder with name 'Describe_Stuck_Agents' in the given path
+                unfinished_diagnoser_job_path = os.path.join(filepath_with_timestamp, 'Events_Unfinished_Diagnoser_Job.txt')
+
+                cmd_get_diagnoser_job_events = [kubectl_client_location, "get", "events", "--field-selector", "", "-n", "azure-arc", "--output", "json"]
+                # To describe the diagnoser pod which did not reach completed stage
+                arc_agents_pod_list = corev1_api_instance.list_namespaced_pod(namespace="azure-arc")
+
+                for each_pod in arc_agents_pod_list.items:
+                    pod_name = each_pod.metadata.name
+
+                    if(pod_name.startswith(job_name)):
+                        # To retrieve the pod logs which is stuck
+
+                        cmd_get_diagnoser_job_events[4] = "involvedObject.name="+pod_name
+                        # Using Popen to execute the command and fetching the output
+                        response_kubectl_get_events = Popen(cmd_get_diagnoser_job_events, stdout=PIPE, stderr=PIPE)
+                        output_kubectl_get_events, error_kubectl_get_events = response_kubectl_get_events.communicate()
+
+                        if response_kubectl_get_events.returncode != 0:
+                            telemetry.set_exception(exception=error_kubectl_get_events.decode("ascii"), fault_type=consts.Kubectl_Get_Events_Failed, summary='Error while doing kubectl get events')
+                            logger.warning("Error while doing kubectl get events")
+
+                        # Converting output obtained in json format and fetching the clusterconnect-agent feature
+                        events_json = json.loads(output_kubectl_get_events)
+
+
+                with open(unfinished_diagnoser_job_path, 'w+') as unfinished_diagnoser_job:
+                    # Adding all the individual events
+                    for events in events_json["items"]:
+                            unfinished_diagnoser_job.write(str(events) + "\n")
+
+            Popen(cmd_delete_job, stdout=PIPE, stderr=PIPE)
+            diagnoser_output.append("The diagnoser job failed to reach the completed state in the kubernetes cluster.\n")
             return ""
 
         else:
 
             # Fetching the Diagnoser Container logs
             try:
-
-                job_name = "azure-arc-diagnoser-job"
 
                 all_pods = corev1_api_instance.list_namespaced_pod('azure-arc')
                 # Traversing thorugh all agents
