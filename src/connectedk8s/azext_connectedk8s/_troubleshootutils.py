@@ -46,6 +46,9 @@ def create_folder_diagnosticlogs(time_stamp):
         try:
             os.mkdir(filepath_with_timestamp)
         except FileExistsError:
+            # Deleting the folder if present with the same timestamp to prevent overrriding in the same folder and then creating it again
+            shutil.rmtree(filepath_with_timestamp, ignore_errors=True)
+            os.mkdir(filepath_with_timestamp)
             pass
 
         return filepath_with_timestamp, consts.Folder_Created
@@ -406,7 +409,7 @@ def check_diagnoser_container(corev1_api_instance, batchv1_api_instance, filepat
         diagnoser_container_log = executing_diagnoser_job(corev1_api_instance, batchv1_api_instance, filepath_with_timestamp, storage_space_available, absolute_path, helm_client_location, kubectl_client_location, release_namespace, security_policy_present)
 
         # If diagnoser_container_log is not empty then only we will check for the results
-        if(diagnoser_container_log != ""):
+        if(diagnoser_container_log is not None):
             diagnoser_container_log_list = diagnoser_container_log.split("\n")
             diagnoser_container_log_list.pop(-1)
             dns_check, storage_space_available = check_cluster_DNS(diagnoser_container_log_list[-2], filepath_with_timestamp, storage_space_available)
@@ -465,7 +468,7 @@ def executing_diagnoser_job(corev1_api_instance, batchv1_api_instance, filepath_
 
     # Depending on the presence of proxy cert using the yaml
     if proxy_cert and (is_custom_cert or is_proxy_enabled):
-        yaml_file_path = os.path.join(absolute_path, "troubleshoot_diagnoser_job_with_proxycert.yaml")
+        yaml_file_path = os.path.join(absolute_path, "troubleshoot_diagnoser_job_with_proxycert_mount.yaml")
     else:
         yaml_file_path = os.path.join(absolute_path, "troubleshoot_diagnoser_job_without_proxycert.yaml")
 
@@ -479,10 +482,13 @@ def executing_diagnoser_job(corev1_api_instance, batchv1_api_instance, filepath_
     with open(yaml_file_path) as f:
         list_doc = yaml.safe_load_all(f)
         counter = 0
-        # USing release_namespace wherever required
+        # Using release_namespace wherever required
         for each_yaml in list_doc:
+            # Changing the role, rolebinding and the job args namespae field to the release-namespace
+            # Secret-reader role is used to fetch the secrets present in the release-namespace
+            # Also we pass release-namespace in args to read secrets for helm command that we are using in the script.
             if(counter == 1 or counter == 2):
-                each_yaml['metadata']['namespace'] = release_namespace
+                each_yaml['metadata']['namespace'] = release_namespace 
             elif(counter == 3):
                 each_yaml['spec']['template']['spec']['containers'][0]['args'][0] = release_namespace
             counter += 1
@@ -537,21 +543,21 @@ def executing_diagnoser_job(corev1_api_instance, batchv1_api_instance, filepath_
             # If the counter is 1 that means error occured during execution of yaml so we skip the further process
             if(counter == 1):
                 Popen(cmd_delete_job, stdout=PIPE, stderr=PIPE)
-                return ""
+                return
 
         # Watching for diagnoser contianer to reach in completed stage
         w = watch.Watch()
-        did_job_complete = False
-        did_job_got_scheduled = False
+        is_job_complete = False
+        is_job_scheduled = False
         # To watch for changes in the pods states till it reach completed state or exit if it takes more than 60 seconds
         for event in w.stream(batchv1_api_instance.list_namespaced_job, namespace='azure-arc', label_selector="", timeout_seconds=60):
             try:
                 # Checking if job get scheduled or not
                 if event["object"].metadata.name == "azure-arc-diagnoser-job":
-                    did_job_got_scheduled = True
+                    is_job_scheduled = True
                 # Checking if job reached completed stage or not
                 if event["object"].metadata.name == "azure-arc-diagnoser-job" and event["object"].status.conditions[0].type == "Complete":
-                    did_job_complete = True
+                    is_job_complete = True
                     w.stop()
 
             except Exception as e:
@@ -560,22 +566,21 @@ def executing_diagnoser_job(corev1_api_instance, batchv1_api_instance, filepath_
                 continue
 
         # Selecting the error message depending on the job getting scheduled, completed and the presence of  security policy
-        if (did_job_got_scheduled is False and security_policy_present == consts.Diagnostic_Check_Failed):
+        if (is_job_scheduled is False and security_policy_present == consts.Diagnostic_Check_Failed):
             logger.warning("Unable to schedule the diagnoser job in the kubernetes cluster. There might be a security policy or security context constraint (SCC) present which is preventing the deployment of azure-arc-diagnoser-job as it uses serviceaccount:azure-arc-troubleshoot-sa which doesnt have admin permissions.\nYou can whitelist it and then run the troubleshoot command again.\n")
             Popen(cmd_delete_job, stdout=PIPE, stderr=PIPE)
             diagnoser_output.append("Unable to schedule the diagnoser job in the kubernetes cluster. There might be a security policy or security context constraint (SCC) present which is preventing the deployment of azure-arc-diagnoser-job as it uses serviceaccount:azure-arc-troubleshoot-sa which doesnt have admin permissions.\nYou can whitelist it and then run the troubleshoot command again.\n")
-            return ""
-        elif (did_job_got_scheduled is False):
+            return
+        elif (is_job_scheduled is False):
             logger.warning("Unable to schedule the diagnoser job in the kubernetes cluster. The possible reasons can be presence of a security policy or security context constraint (SCC) or it may happen becuase of lack of ResourceQuota.\n")
             Popen(cmd_delete_job, stdout=PIPE, stderr=PIPE)
             diagnoser_output.append("Unable to schedule the diagnoser job in the kubernetes cluster. The possible reasons can be presence of a security policy or security context constraint (SCC) or it may happen because of lack of ResourceQuota.\n")
-            return ""
-        elif (did_job_got_scheduled is True and did_job_complete is False):
+            return
+        elif (is_job_scheduled is True and is_job_complete is False):
             logger.warning("The diagnoser job failed to reach the completed state in the kubernetes cluster.\n")
             if storage_space_available:
-
                 # Creating folder with name 'describe_non_ready_agent' in the given path
-                unfinished_diagnoser_job_path = os.path.join(filepath_with_timestamp, 'Events_of_I_Diagnoser_Job.txt')
+                unfinished_diagnoser_job_path = os.path.join(filepath_with_timestamp, 'Events_of_Incomplete_Diagnoser_Job.txt')
                 cmd_get_diagnoser_job_events = [kubectl_client_location, "get", "events", "--field-selector", "", "-n", "azure-arc", "--output", "json"]
                 # To describe the diagnoser pod which did not reach completed stage
                 arc_agents_pod_list = corev1_api_instance.list_namespaced_pod(namespace="azure-arc")
@@ -598,7 +603,7 @@ def executing_diagnoser_job(corev1_api_instance, batchv1_api_instance, filepath_
                             unfinished_diagnoser_job.write(str(events) + "\n")
             Popen(cmd_delete_job, stdout=PIPE, stderr=PIPE)
             diagnoser_output.append("The diagnoser job failed to reach the completed state in the kubernetes cluster.\n")
-            return ""
+            return
 
         else:
 
@@ -616,13 +621,13 @@ def executing_diagnoser_job(corev1_api_instance, batchv1_api_instance, filepath_
                 Popen(cmd_delete_job, stdout=PIPE, stderr=PIPE)
             except Exception as e:
                 Popen(cmd_delete_job, stdout=PIPE, stderr=PIPE)
-                return ""
+                return
 
     # To handle any exception that may occur during the execution
     except Exception as e:
         logger.warning("An exception has occured while trying to execute the diagnoser job in the cluster. Exception: {}".format(str(e)) + "\n")
         Popen(cmd_delete_job, stdout=PIPE, stderr=PIPE)
-        telemetry.set_exception(exception=e, fault_type=consts.Executing_Diagnoser_Job_Fault_Type, summary="Error while executing Diagnoser Job")
+        telemetry.set_exception(exception=e, fault_type=consts.Diagnoser_Job_Failed_Fault_Type, summary="Error while executing Diagnoser Job")
         diagnoser_output.append("An exception has occured while trying to execute the diagnoser job in the cluster. Exception: {}".format(str(e)) + "\n")
 
     return diagnoser_container_log
@@ -743,7 +748,7 @@ def check_msi_certificate_presence(corev1_api_instance):
     return consts.Diagnostic_Check_Incomplete
 
 
-def check_cluster_security_policy(corev1_api_instance, helm_client_location, release_namespace):
+def check_probable_cluster_security_policy(corev1_api_instance, helm_client_location, release_namespace):
 
     global diagnoser_output
     try:
@@ -775,7 +780,7 @@ def check_cluster_security_policy(corev1_api_instance, helm_client_location, rel
                 kap_pod_present = True
                 break
 
-        # Checking if any pod security policy is set
+        # Checking if there is any chance of pod security policy presence
         if(cluster_connect_feature is True and kap_pod_present is False):
             print("Error: Unable to create Kube-aad-proxy deployment there might be a security policy or security context constraint (SCC) present which is preventing the deployment of kube-aad-proxy as it doesn't have admin privileges.\nKube aad proxy pod uses the azure-arc-kube-aad-proxy-sa service account, which doesn't have admin permissions but requires the permission to mount host path.\n ")
             diagnoser_output.append("Error: Unable to create Kube-aad-proxy deployment there might be a security policy or security context constraint (SCC) present which is preventing the deployment of kube-aad-proxy as it doesn't have admin privileges.\nKube aad proxy pod uses the azure-arc-kube-aad-proxy-sa service account, which doesn't have admin permissions but requires the permission to mount host path.\n")
@@ -824,9 +829,9 @@ def check_kap_cert(corev1_api_instance):
 
     # To handle any exception that may occur during the execution
     except Exception as e:
-        logger.warning("An exception has occured while performing kube aad proxy certificate check on the cluster. Exception: {}".format(str(e)) + "\n")
-        telemetry.set_exception(exception=e, fault_type=consts.KAP_Cert_Check_Fault_Type, summary="Error occured while trying to pull kap cert certificate")
-        diagnoser_output.append("An exception has occured while performing kube aad proxy certificate check on the cluster. Exception: {}".format(str(e)) + "\n")
+        logger.warning("An exception occured while trying to check the presence of kube aad proxy certificater. Exception: {}".format(str(e)) + "\n")
+        telemetry.set_exception(exception=e, fault_type=consts.KAP_Cert_Check_Fault_Type, summary="Error occurred while trying to perform KAP ceritificate presence check")
+        diagnoser_output.append("An exception occured while trying to check the presence of kube aad proxy certificate. Exception: {}".format(str(e)) + "\n")
 
     return consts.Diagnostic_Check_Incomplete
 
@@ -898,7 +903,7 @@ def describe_non_ready_agent_log(filepath_with_timestamp, corev1_api_instance, a
     return storage_space_available
 
 
-def cli_output_logger(filepath_with_timestamp, storage_space_available, flag):
+def fetching_cli_output_logs(filepath_with_timestamp, storage_space_available, flag):
 
     # This function is used to store the output that is obtained throughout the Diagnoser process
     global diagnoser_output

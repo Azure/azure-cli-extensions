@@ -2061,7 +2061,7 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
         probable_sufficient_resource_for_agents = True
 
         # Setting default values for all checks as True
-        diagnostic_checks = {"retrieved_arc_agents_event_logs": consts.Diagnostic_Check_Incomplete, "retrieved_arc_agents_logs": consts.Diagnostic_Check_Incomplete, "retrieved_deployments_logs": consts.Diagnostic_Check_Incomplete, "fetch_connected_cluster_resource": consts.Diagnostic_Check_Incomplete, "diagnoser_results_logger": consts.Diagnostic_Check_Incomplete, "msi_cert_expiry_check": consts.Diagnostic_Check_Incomplete, "kap_security_policy_check": consts.Diagnostic_Check_Incomplete, "kap_cert_check": consts.Diagnostic_Check_Incomplete, "diagnoser_check": consts.Diagnostic_Check_Incomplete, "msi_cert_check": consts.Diagnostic_Check_Incomplete, "agent_version_check": consts.Diagnostic_Check_Incomplete, "arc_agent_state_check": consts.Diagnostic_Check_Incomplete}
+        diagnostic_checks = {consts.Retrieved_Arc_Agents_Event_Logs: consts.Diagnostic_Check_Incomplete, consts.Retrieved_Arc_Agents_Logs: consts.Diagnostic_Check_Incomplete, consts.Retrieved_Deployments_Logs: consts.Diagnostic_Check_Incomplete, consts.Fetch_Connected_Cluster_Resource: consts.Diagnostic_Check_Incomplete, consts.Storing_Diagnoser_Results_Logs: consts.Diagnostic_Check_Incomplete, consts.MSI_Cert_Expiry_Check: consts.Diagnostic_Check_Incomplete, consts.KAP_Security_Policy_Check: consts.Diagnostic_Check_Incomplete, consts.KAP_Cert_Check: consts.Diagnostic_Check_Incomplete, consts.Diagnoser_Check: consts.Diagnostic_Check_Incomplete, consts.MSI_Cert_Check: consts.Diagnostic_Check_Incomplete, consts.Agent_Version_Check: consts.Diagnostic_Check_Incomplete, consts.Arc_Agent_State_Check: consts.Diagnostic_Check_Incomplete}
 
         # Setting kube_config
         kube_config = set_kube_config(kube_config)
@@ -2105,7 +2105,7 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
             storage_space_available = False
 
         # To store the connected cluster resource logs in the diagnostic foler
-        diagnostic_checks["fetch_connected_cluster_resource"], storage_space_available = troubleshootutils.fetch_connected_cluster_resource(filepath_with_timestamp, connected_cluster, storage_space_available)
+        diagnostic_checks[consts.Fetch_Connected_Cluster_Resource], storage_space_available = troubleshootutils.fetch_connected_cluster_resource(filepath_with_timestamp, connected_cluster, storage_space_available)
         corev1_api_instance = kube_client.CoreV1Api(kube_client.ApiClient(configuration))
 
         # Check if agents have been added to the cluster
@@ -2115,33 +2115,33 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
         if arc_agents_pod_list.items:
 
             # For storing all the agent logs using the CoreV1Api
-            diagnostic_checks["retrieved_arc_agents_logs"], storage_space_available = troubleshootutils.retrieve_arc_agents_logs(corev1_api_instance, filepath_with_timestamp, storage_space_available)
+            diagnostic_checks[consts.Retrieved_Arc_Agents_Logs], storage_space_available = troubleshootutils.retrieve_arc_agents_logs(corev1_api_instance, filepath_with_timestamp, storage_space_available)
 
             # For storing all arc agents events logs
-            diagnostic_checks["retrieved_arc_agents_event_logs"], storage_space_available = troubleshootutils.retrieve_arc_agents_event_logs(filepath_with_timestamp, storage_space_available, kubectl_client_location)
+            diagnostic_checks[consts.Retrieved_Arc_Agents_Event_Logs], storage_space_available = troubleshootutils.retrieve_arc_agents_event_logs(filepath_with_timestamp, storage_space_available, kubectl_client_location)
 
             # For storing all the deployments logs using the AppsV1Api
             appv1_api_instance = kube_client.AppsV1Api(kube_client.ApiClient(configuration))
-            diagnostic_checks["retrieved_deployments_logs"], storage_space_available = troubleshootutils.retrieve_deployments_logs(appv1_api_instance, filepath_with_timestamp, storage_space_available)
+            diagnostic_checks[consts.Retrieved_Deployments_Logs], storage_space_available = troubleshootutils.retrieve_deployments_logs(appv1_api_instance, filepath_with_timestamp, storage_space_available)
 
             # Check for the azure arc agent states
-            diagnostic_checks["arc_agent_state_check"], storage_space_available, all_agents_stuck, probable_sufficient_resource_for_agents = troubleshootutils.check_agent_state(corev1_api_instance, filepath_with_timestamp, storage_space_available)
+            diagnostic_checks[consts.Arc_Agent_State_Check], storage_space_available, all_agents_stuck, probable_sufficient_resource_for_agents = troubleshootutils.check_agent_state(corev1_api_instance, filepath_with_timestamp, storage_space_available)
 
             # Check for msi certificate
             if all_agents_stuck is False:
-                diagnostic_checks["msi_cert_check"] = troubleshootutils.check_msi_certificate_presence(corev1_api_instance)
+                diagnostic_checks[consts.MSI_Cert_Check] = troubleshootutils.check_msi_certificate_presence(corev1_api_instance)
 
             # If msi certificate present then only we will perform msi certificate expiry check
-            if diagnostic_checks["msi_cert_check"] == consts.Diagnostic_Check_Passed:
-                diagnostic_checks["msi_cert_expiry_check"] = troubleshootutils.check_msi_expiry(connected_cluster)
+            if diagnostic_checks[consts.MSI_Cert_Check] == consts.Diagnostic_Check_Passed:
+                diagnostic_checks[consts.MSI_Cert_Expiry_Check] = troubleshootutils.check_msi_expiry(connected_cluster)
 
             # If msi certificate present then only we will do Kube aad proxy checks
-            if diagnostic_checks["msi_cert_check"] == consts.Diagnostic_Check_Passed:
-                diagnostic_checks["kap_security_policy_check"] = troubleshootutils.check_cluster_security_policy(corev1_api_instance, helm_client_location, release_namespace)
+            if diagnostic_checks[consts.MSI_Cert_Check] == consts.Diagnostic_Check_Passed:
+                diagnostic_checks[consts.KAP_Security_Policy_Check] = troubleshootutils.check_probable_cluster_security_policy(corev1_api_instance, helm_client_location, release_namespace)
 
                 # If no security policy is present in cluster then we can check for the Kube aad proxy certificate
-                if diagnostic_checks["kap_security_policy_check"] == consts.Diagnostic_Check_Passed:
-                    diagnostic_checks["kap_cert_check"] = troubleshootutils.check_kap_cert(corev1_api_instance)
+                if diagnostic_checks[consts.KAP_Security_Policy_Check] == consts.Diagnostic_Check_Passed:
+                    diagnostic_checks[consts.KAP_Cert_Check] = troubleshootutils.check_kap_cert(corev1_api_instance)
 
             # Checking whether optional extra values file has been provided.
             values_file_provided, values_file = utils.get_values_file()
@@ -2167,16 +2167,16 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
             azure_arc_agent_version = registry_path.split(':')[1]
 
             # Check for agent verison comaptibility
-            diagnostic_checks["agent_version_check"] = troubleshootutils.check_agent_version(connected_cluster, azure_arc_agent_version)
+            diagnostic_checks[consts.Agent_Version_Check] = troubleshootutils.check_agent_version(connected_cluster, azure_arc_agent_version)
         else:
-            print("Error : Arc Agents have not been added to cluster. Please delete and reconnect the Kubernetes Cluster\n")
+            print("Error : Arc agents are not present on the cluster. Please verify if Arc onboarding of the kubernetes cluster has been attempted.\n")
 
         batchv1_api_instance = kube_client.BatchV1Api(kube_client.ApiClient(configuration))
         # Performing diagnoser container check
-        diagnostic_checks["diagnoser_check"], storage_space_available = troubleshootutils.check_diagnoser_container(corev1_api_instance, batchv1_api_instance, filepath_with_timestamp, storage_space_available, absolute_path, probable_sufficient_resource_for_agents, helm_client_location, kubectl_client_location, release_namespace, diagnostic_checks["kap_security_policy_check"])
+        diagnostic_checks[consts.Diagnoser_Check], storage_space_available = troubleshootutils.check_diagnoser_container(corev1_api_instance, batchv1_api_instance, filepath_with_timestamp, storage_space_available, absolute_path, probable_sufficient_resource_for_agents, helm_client_location, kubectl_client_location, release_namespace, diagnostic_checks[consts.KAP_Security_Policy_Check])
 
         # Adding cli output to the logs
-        diagnostic_checks["diagnoser_results_logger"] = troubleshootutils.cli_output_logger(filepath_with_timestamp, storage_space_available, 1)
+        diagnostic_checks[consts.Storing_Diagnoser_Results_Logs] = troubleshootutils.fetching_cli_output_logs(filepath_with_timestamp, storage_space_available, 1)
 
         # If all the checks passed then display no error found
         all_checks_passed = True
@@ -2198,7 +2198,7 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
     # Handling the user manual interrupt
     except KeyboardInterrupt:
         try:
-            troubleshootutils.cli_output_logger(filepath_with_timestamp, storage_space_available, 0)
+            troubleshootutils.fetching_cli_output_logs(filepath_with_timestamp, storage_space_available, 0)
         except Exception as e:
             pass
         raise ManualInterrupt('Process terminated externally.')
@@ -2229,7 +2229,7 @@ def install_kubectl_client():
         logging.disable(logging.NOTSET)
         if (operating_system == 'linux'):
             kubectl_path = os.path.join('usr', 'local', 'bin', 'kubectl')
-        print()
+        logger.warning("\n")
 
         # Return tha path of the kubectl executable
         return kubectl_path

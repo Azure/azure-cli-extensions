@@ -9,7 +9,7 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
   name: secret-reader
-  namespace: default
+  namespace: default 
 rules:
 - apiGroups:
   - ''
@@ -45,7 +45,7 @@ spec:
   template:
     metadata:
       labels:
-        app: networktest
+        app: Arc-Diagnoser
     spec:
       containers:
       - args:
