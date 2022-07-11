@@ -471,10 +471,10 @@ def executing_diagnoser_job(corev1_api_instance, batchv1_api_instance, filepath_
         if ('forbidden' in error_helm_get_values.decode("ascii") or 'timed out waiting for the condition' in error_helm_get_values.decode("ascii")):
             telemetry.set_exception(exception=error_helm_get_values.decode("ascii"), fault_type=consts.Get_Helm_Values_Failed,
                                     summary='Error while doing helm get values azure-arc')
-    
+
     helm_values_json = json.loads(output_helm_values_get)
 
-    # Retrieving the proxy values if they are present 
+    # Retrieving the proxy values if they are present
     try:
         is_proxy_enabled = helm_values_json["global"]["isProxyEnabled"]
     except Exception as e:
@@ -500,23 +500,23 @@ def executing_diagnoser_job(corev1_api_instance, batchv1_api_instance, filepath_
     cmd_delete_job = [kubectl_client_location, "delete", "-f", ""]
     cmd_delete_job[3] = str(yaml_file_path)
 
-    # Editing the yaml file based on 
-    new_yaml=[]
+    # Editing the yaml file based on the release nameespace
+    new_yaml = []
     with open(yaml_file_path) as f:
         list_doc = yaml.safe_load_all(f)
         counter = 0
 
         # USing release_namespace wherever required
         for each_yaml in list_doc:
-            if( counter == 1 or counter ==2):
+            if(counter == 1 or counter == 2):
                 each_yaml['metadata']['namespace'] = release_namespace
             elif(counter == 3):
                 each_yaml['spec']['template']['spec']['containers'][0]['args'][0] = release_namespace
 
-            counter+=1
+            counter += 1
             new_yaml.append(each_yaml)
 
-    # Updating the yaml file 
+    # Updating the yaml file
     with open(yaml_file_path, 'w+') as f:
         for i in new_yaml:
             f.write("---\n")
@@ -589,7 +589,7 @@ def executing_diagnoser_job(corev1_api_instance, batchv1_api_instance, filepath_
                 continue
             else:
                 continue
-        
+
         # Choosing the error message depending on the job getting scheduled, completed and the presence of  security policy
         if (did_job_got_scheduled is False and security_policy_present == "Failed"):
             logger.warning("Unable to schedule the diagnoser job in the kubernetes cluster. There might be a security policy or security context constraint (SCC) present which is preventing the deployment of azure-arc-diagnoser-job as it uses serviceaccount:azure-arc-troubleshoot-sa which doesnt have admin permissions.\nYou can whitelist it and then run the troubleshoot command again.\n")
@@ -601,7 +601,7 @@ def executing_diagnoser_job(corev1_api_instance, batchv1_api_instance, filepath_
             Popen(cmd_delete_job, stdout=PIPE, stderr=PIPE)
             diagnoser_output.append("Unable to schedule the diagnoser job in the kubernetes cluster. The possible reasons can be presence of a security policy or security context constraint (SCC) or it may happen becuase of lack of ResourceQuota.\n")
             return ""
-        elif (did_job_got_scheduled is True and did_job_complete == False):
+        elif (did_job_got_scheduled is True and did_job_complete is False):
             logger.warning("The diagnoser job failed to reach the completed state in the kubernetes cluster.\n")
             if storage_space_available:
 
@@ -618,7 +618,7 @@ def executing_diagnoser_job(corev1_api_instance, batchv1_api_instance, filepath_
                     if(pod_name.startswith(job_name)):
                         # To retrieve the pod logs which is stuck
 
-                        cmd_get_diagnoser_job_events[4] = "involvedObject.name="+pod_name
+                        cmd_get_diagnoser_job_events[4] = "involvedObject.name=" + pod_name
                         # Using Popen to execute the command and fetching the output
                         response_kubectl_get_events = Popen(cmd_get_diagnoser_job_events, stdout=PIPE, stderr=PIPE)
                         output_kubectl_get_events, error_kubectl_get_events = response_kubectl_get_events.communicate()
@@ -629,7 +629,6 @@ def executing_diagnoser_job(corev1_api_instance, batchv1_api_instance, filepath_
 
                         # Converting output obtained in json format and fetching the clusterconnect-agent feature
                         events_json = json.loads(output_kubectl_get_events)
-
 
                 with open(unfinished_diagnoser_job_path, 'w+') as unfinished_diagnoser_job:
                     # Adding all the individual events

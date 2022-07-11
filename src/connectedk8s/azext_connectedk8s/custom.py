@@ -2178,7 +2178,7 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
 
         batchv1_api_instance = kube_client.BatchV1Api(kube_client.ApiClient(configuration))
 
-        # Performing diagnoser container check 
+        # Performing diagnoser container check
         diagnostic_checks["diagnoser_check"], storage_space_available = troubleshootutils.check_diagnoser_container(corev1_api_instance, batchv1_api_instance, filepath_with_timestamp, storage_space_available, absolute_path, sufficient_resource_for_agents, helm_client_location, kubectl_client_location, release_namespace, diagnostic_checks["kap_security_policy_check"])
 
         # Adding cli output to the logs

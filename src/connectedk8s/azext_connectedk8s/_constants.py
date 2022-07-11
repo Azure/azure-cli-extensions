@@ -156,4 +156,4 @@ CSP_Storage_Url = "https://k8sconnectcsp.azureedge.net"
 CSP_Storage_Url_Mooncake = "https://k8sconnectcsp.blob.core.chinacloudapi.cn"
 HELM_STORAGE_URL = "https://k8connecthelm.azureedge.net"
 HELM_VERSION = 'v3.6.3'
-Download_Kubectl_Fault_Type = "kubectl-client-download-error"
+Download_And_Install_Kubectl_Fault_Type = "Failed to download and install kubectl"
