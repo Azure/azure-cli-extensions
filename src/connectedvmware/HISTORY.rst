@@ -3,11 +3,17 @@
 Release History
 ===============
 
+0.1.7
+++++++
+* Proxy support in vm guest agent.
+* Deprecate support to create resource from moref id.
+* [BREAKING CHANGE] Fixed guest-agent enable issue. 
+
 0.1.6
 ++++++
-* Fix vm update
-* Fix inventory item show
-* Add support for tagging
+* Fix vm update issue.
+* Fix inventory item show.
+* Add support for tagging.
 
 0.1.5
 ++++++

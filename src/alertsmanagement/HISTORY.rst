@@ -3,6 +3,10 @@
 Release History
 ===============
 
+0.2.2
+++++++
+Added support for contains and doesNotContain operators for filter-resource-type in create method
+
 0.2.1
 ++++++
 Fixed help file text and an error loading the help files of all methods

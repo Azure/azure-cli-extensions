@@ -20,7 +20,7 @@ from ..validators import (
 )
 from .. import consts
 
-from ..vendored_sdks.v2021_03_01.models import (
+from ..vendored_sdks.v2022_03_01.models import (
     HelmOperatorProperties,
     SourceControlConfiguration,
 )

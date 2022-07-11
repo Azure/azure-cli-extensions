@@ -714,3 +714,160 @@ helps['stream-analytics subscription inspect'] = """
         text: |-
                az stream-analytics subscription inspect --location "West US"
 """
+
+helps['stream-analytics private-endpoint'] = """
+    type: group
+    short-summary: Manage private endpoint with stream analytics
+"""
+
+helps['stream-analytics private-endpoint list'] = """
+    type: command
+    short-summary: "List the private endpoints in the cluster."
+    examples:
+      - name: Get the private endpoints in a cluster
+        text: |-
+               az stream-analytics private-endpoint list --cluster-name "testcluster" --resource-group "sjrg"
+"""
+
+helps['stream-analytics private-endpoint show'] = """
+    type: command
+    short-summary: "Get information about the specified Private Endpoint."
+    examples:
+      - name: Get a private endpoint
+        text: |-
+               az stream-analytics private-endpoint show --cluster-name "testcluster" --name "testpe" --resource-group \
+"sjrg"
+"""
+
+helps['stream-analytics private-endpoint create'] = """
+    type: command
+    short-summary: "Create a Stream Analytics Private Endpoint or replaces an already existing Private Endpoint."
+    examples:
+      - name: Create a private endpoint
+        text: |-
+               az stream-analytics private-endpoint create --cluster-name "testcluster" --connections \
+"[{\\"privateLinkServiceId\\":\\"/subscriptions/subId/resourceGroups/rg1/providers/Microsoft.Network/private\
+LinkServices/testPls\\",\\"groupIds\\":[\\"groupIdFromResource\\"]}]" --name "testpe" --resource-group "sjrg"
+"""
+
+helps['stream-analytics private-endpoint delete'] = """
+    type: command
+    short-summary: "Delete the specified private endpoint."
+    examples:
+      - name: Delete a private endpoint
+        text: |-
+               az stream-analytics private-endpoint delete --cluster-name "testcluster" --name "testpe" \
+--resource-group "sjrg"
+"""
+
+helps['stream-analytics private-endpoint wait'] = """
+    type: command
+    short-summary: Place the CLI in a waiting state until a condition of the stream-analytics private-endpoint is met.
+    examples:
+      - name: Pause executing next line of CLI script until the stream-analytics private-endpoint is successfully \
+deleted.
+        text: |-
+               az stream-analytics private-endpoint wait --cluster-name "testcluster" --name "testpe" --resource-group \
+"sjrg" --deleted
+"""
+
+helps['stream-analytics cluster'] = """
+    type: group
+    short-summary: Manage cluster with stream analytics
+"""
+
+helps['stream-analytics cluster list'] = """
+    type: command
+    short-summary: "List all of the clusters in the given resource group. And Lists all of the clusters in the given \
+subscription."
+    examples:
+      - name: List clusters in resource group
+        text: |-
+               az stream-analytics cluster list --resource-group "sjrg"
+      - name: List the clusters in a subscription
+        text: |-
+               az stream-analytics cluster list
+"""
+
+helps['stream-analytics cluster show'] = """
+    type: command
+    short-summary: "Get information about the specified cluster."
+    examples:
+      - name: Get a cluster
+        text: |-
+               az stream-analytics cluster show --name "testcluster" --resource-group "sjrg"
+"""
+
+helps['stream-analytics cluster create'] = """
+    type: command
+    short-summary: "Create a Stream Analytics Cluster or replaces an already existing cluster."
+    parameters:
+      - name: --sku
+        short-summary: "The SKU of the cluster. This determines the size/capacity of the cluster. Required on PUT \
+(CreateOrUpdate) requests."
+        long-summary: |
+            Usage: --sku name=XX capacity=XX
+
+            name: Specifies the SKU name of the cluster. Required on PUT (CreateOrUpdate) requests.
+            capacity: Denotes the number of streaming units the cluster can support. Valid values for this property \
+are multiples of 36 with a minimum value of 36 and maximum value of 216. Required on PUT (CreateOrUpdate) requests.
+    examples:
+      - name: Create a new cluster
+        text: |-
+               az stream-analytics cluster create --location "North US" --sku name="Default" capacity=36 --tags \
+key="value" --name "An Example Cluster" --resource-group "sjrg"
+"""
+
+helps['stream-analytics cluster update'] = """
+    type: command
+    short-summary: "Update an existing cluster. This can be used to partially update (ie. update one or two \
+properties) a cluster without affecting the rest of the cluster definition."
+    parameters:
+      - name: --sku
+        short-summary: "The SKU of the cluster. This determines the size/capacity of the cluster. Required on PUT \
+(CreateOrUpdate) requests."
+        long-summary: |
+            Usage: --sku name=XX capacity=XX
+
+            name: Specifies the SKU name of the cluster. Required on PUT (CreateOrUpdate) requests.
+            capacity: Denotes the number of streaming units the cluster can support. Valid values for this property \
+are multiples of 36 with a minimum value of 36 and maximum value of 216. Required on PUT (CreateOrUpdate) requests.
+    examples:
+      - name: Update a cluster
+        text: |-
+               az stream-analytics cluster update --location "Central US" --sku capacity=72 --name "testcluster" \
+--resource-group "sjrg"
+"""
+
+helps['stream-analytics cluster delete'] = """
+    type: command
+    short-summary: "Delete the specified cluster."
+    examples:
+      - name: Delete a cluster
+        text: |-
+               az stream-analytics cluster delete --name "testcluster" --resource-group "sjrg"
+"""
+
+helps['stream-analytics cluster list-streaming-job'] = """
+    type: command
+    short-summary: "List all of the streaming jobs in the given cluster."
+    examples:
+      - name: List all streaming jobs in cluster
+        text: |-
+               az stream-analytics cluster list-streaming-job --name "testcluster" --resource-group "sjrg"
+"""
+
+helps['stream-analytics cluster wait'] = """
+    type: command
+    short-summary: Place the CLI in a waiting state until a condition of the stream-analytics cluster is met.
+    examples:
+      - name: Pause executing next line of CLI script until the stream-analytics cluster is successfully created.
+        text: |-
+               az stream-analytics cluster wait --name "testcluster" --resource-group "sjrg" --created
+      - name: Pause executing next line of CLI script until the stream-analytics cluster is successfully updated.
+        text: |-
+               az stream-analytics cluster wait --name "testcluster" --resource-group "sjrg" --updated
+      - name: Pause executing next line of CLI script until the stream-analytics cluster is successfully deleted.
+        text: |-
+               az stream-analytics cluster wait --name "testcluster" --resource-group "sjrg" --deleted
+"""

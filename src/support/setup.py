@@ -44,7 +44,7 @@ setup(
     description='Microsoft Azure Command-Line Tools Support Extension',
     author='Microsoft Corporation',
     author_email='azpycli@microsoft.com',
-    url='https://github.com/azure/azure-cli-extensions/tree/master/src/support',
+    url='https://github.com/azure/azure-cli-extensions/tree/main/src/support',
     long_description=README + '\n\n' + HISTORY,
     license='MIT',
     classifiers=CLASSIFIERS,

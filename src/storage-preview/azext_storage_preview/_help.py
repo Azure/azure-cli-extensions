@@ -269,6 +269,8 @@ helps['storage azcopy blob delete'] = """
 helps['storage azcopy blob sync'] = """
     type: command
     short-summary: Sync blobs recursively to a storage blob container using AzCopy.
+    long-summary: |
+        To learn more about azcopy sync,see https://docs.microsoft.com/azure/storage/common/storage-ref-azcopy-sync.
     examples:
         - name: Sync a single blob to a container.
           text: az storage azcopy blob sync -c MyContainer --account-name MyStorageAccount -s "path/to/file" -d NewBlob

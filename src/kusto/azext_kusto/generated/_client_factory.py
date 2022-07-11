@@ -58,3 +58,7 @@ def cf_data_connection(cli_ctx, *_):
 
 def cf_operation_result(cli_ctx, *_):
     return cf_kusto_cl(cli_ctx).operations_results
+
+
+def cf_operation_result_location(cli_ctx, *_):
+    return cf_kusto_cl(cli_ctx).operations_results_location

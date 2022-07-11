@@ -6,9 +6,10 @@
 # --------------------------------------------------------------------------------------------
 
 from codecs import open as open1
+
 from setuptools import setup, find_packages
 
-VERSION = "0.5.52"
+VERSION = "0.5.88"
 CLASSIFIERS = [
     "Development Status :: 4 - Beta",
     "Intended Audience :: Developers",
@@ -23,24 +24,24 @@ CLASSIFIERS = [
 
 DEPENDENCIES = []
 
-with open1("README.md", "r", encoding="utf-8") as f:
+with open1("README.rst", "r", encoding="utf-8") as f:
     README = f.read()
-with open1("HISTORY.md", "r", encoding="utf-8") as f:
+with open1("HISTORY.rst", "r", encoding="utf-8") as f:
     HISTORY = f.read()
 
 setup(
     name="aks-preview",
     version=VERSION,
-    description="Provides a preview for upcoming AKS features",
-    long_description=README + "\n\n" + HISTORY,
-    license="MIT",
-    author="Microsoft Corporation",
-    author_email="azpycli@microsoft.com",
-    url="https://github.com/Azure/azure-cli-extensions/tree/master/src/aks-preview",
+    description='Provides a preview for upcoming AKS features',
+    long_description=README + '\n\n' + HISTORY,
+    license='MIT',
+    author='Microsoft Corporation',
+    author_email='azpycli@microsoft.com',
+    url='https://github.com/Azure/azure-cli-extensions/tree/main/src/aks-preview',
     classifiers=CLASSIFIERS,
     packages=find_packages(exclude=["tests"]),
     package_data={
-        "azext_aks_preview": ["azext_metadata.json", "deploymentyaml/*.yaml"]
+        "azext_aks_preview": ["azext_metadata.json"]
     },
     install_requires=DEPENDENCIES,
 )

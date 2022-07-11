@@ -8,6 +8,7 @@
 # regenerated.
 # --------------------------------------------------------------------------
 # pylint: disable=too-many-lines
+# pylint: disable=unused-argument
 
 from azure.cli.core.util import sdk_no_wait
 
@@ -557,3 +558,128 @@ def stream_analytics_function_test(client,
 def stream_analytics_subscription_inspect(client,
                                           location):
     return client.list_quotas(location=location)
+
+
+def stream_analytics_cluster_list(client,
+                                  resource_group_name=None):
+    if resource_group_name:
+        return client.list_by_resource_group(resource_group_name=resource_group_name)
+    return client.list_by_subscription()
+
+
+def stream_analytics_cluster_show(client,
+                                  resource_group_name,
+                                  cluster_name):
+    return client.get(resource_group_name=resource_group_name,
+                      cluster_name=cluster_name)
+
+
+def stream_analytics_cluster_create(client,
+                                    resource_group_name,
+                                    cluster_name,
+                                    if_match=None,
+                                    if_none_match=None,
+                                    tags=None,
+                                    location=None,
+                                    sku=None,
+                                    no_wait=False):
+    cluster = {}
+    if tags is not None:
+        cluster['tags'] = tags
+    if location is not None:
+        cluster['location'] = location
+    if sku is not None:
+        cluster['sku'] = sku
+    return sdk_no_wait(no_wait,
+                       client.begin_create_or_update,
+                       resource_group_name=resource_group_name,
+                       cluster_name=cluster_name,
+                       if_match=if_match,
+                       if_none_match=if_none_match,
+                       cluster=cluster)
+
+
+def stream_analytics_cluster_update(client,
+                                    resource_group_name,
+                                    cluster_name,
+                                    if_match=None,
+                                    tags=None,
+                                    location=None,
+                                    sku=None,
+                                    no_wait=False):
+    cluster = {}
+    if tags is not None:
+        cluster['tags'] = tags
+    if location is not None:
+        cluster['location'] = location
+    if sku is not None:
+        cluster['sku'] = sku
+    return sdk_no_wait(no_wait,
+                       client.begin_update,
+                       resource_group_name=resource_group_name,
+                       cluster_name=cluster_name,
+                       if_match=if_match,
+                       cluster=cluster)
+
+
+def stream_analytics_cluster_delete(client,
+                                    resource_group_name,
+                                    cluster_name,
+                                    no_wait=False):
+    return sdk_no_wait(no_wait,
+                       client.begin_delete,
+                       resource_group_name=resource_group_name,
+                       cluster_name=cluster_name)
+
+
+def stream_analytics_cluster_list_streaming_job(client,
+                                                resource_group_name,
+                                                cluster_name):
+    return client.list_streaming_jobs(resource_group_name=resource_group_name,
+                                      cluster_name=cluster_name)
+
+
+def stream_analytics_private_endpoint_list(client,
+                                           resource_group_name,
+                                           cluster_name):
+    return client.list_by_cluster(resource_group_name=resource_group_name,
+                                  cluster_name=cluster_name)
+
+
+def stream_analytics_private_endpoint_show(client,
+                                           resource_group_name,
+                                           cluster_name,
+                                           private_endpoint_name):
+    return client.get(resource_group_name=resource_group_name,
+                      cluster_name=cluster_name,
+                      private_endpoint_name=private_endpoint_name)
+
+
+def stream_analytics_private_endpoint_create(client,
+                                             resource_group_name,
+                                             cluster_name,
+                                             private_endpoint_name,
+                                             if_match=None,
+                                             if_none_match=None,
+                                             manual_private_link_service_connections=None):
+    private_endpoint = {}
+    if manual_private_link_service_connections is not None:
+        private_endpoint['manual_private_link_service_connections'] = manual_private_link_service_connections
+    return client.create_or_update(resource_group_name=resource_group_name,
+                                   cluster_name=cluster_name,
+                                   private_endpoint_name=private_endpoint_name,
+                                   if_match=if_match,
+                                   if_none_match=if_none_match,
+                                   private_endpoint=private_endpoint)
+
+
+def stream_analytics_private_endpoint_delete(client,
+                                             resource_group_name,
+                                             cluster_name,
+                                             private_endpoint_name,
+                                             no_wait=False):
+    return sdk_no_wait(no_wait,
+                       client.begin_delete,
+                       resource_group_name=resource_group_name,
+                       cluster_name=cluster_name,
+                       private_endpoint_name=private_endpoint_name)

@@ -62,6 +62,31 @@ def update_protection(test):
     # run the below line only in record mode
     time.sleep(30)
 
+def stop_resume_protection(test):
+    test.cmd('az dataprotection backup-instance stop-protection -n "{backup_instance_name}" -g "{rgname}" --vault-name "{vaultname}"')
+
+    test.cmd('az dataprotection backup-instance show -n "{backup_instance_name}" -g "{rgname}" --vault-name "{vaultname}"',checks=[
+        test.check('properties.currentProtectionState','ProtectionStopped')
+    ])
+
+    test.cmd('az dataprotection backup-instance resume-protection -n "{backup_instance_name}" -g "{rgname}" --vault-name "{vaultname}"')
+
+    test.cmd('az dataprotection backup-instance show -n "{backup_instance_name}" -g "{rgname}" --vault-name "{vaultname}"',checks=[
+        test.check('properties.currentProtectionState','ProtectionConfigured')
+    ])
+
+    test.cmd('az dataprotection backup-instance suspend-backup -n "{backup_instance_name}" -g "{rgname}" --vault-name "{vaultname}"')
+
+    test.cmd('az dataprotection backup-instance show -n "{backup_instance_name}" -g "{rgname}" --vault-name "{vaultname}"',checks=[
+        test.check('properties.currentProtectionState','BackupsSuspended')
+    ])
+
+    test.cmd('az dataprotection backup-instance resume-protection -n "{backup_instance_name}" -g "{rgname}" --vault-name "{vaultname}"')
+
+    test.cmd('az dataprotection backup-instance show -n "{backup_instance_name}" -g "{rgname}" --vault-name "{vaultname}"',checks=[
+        test.check('properties.currentProtectionState','ProtectionConfigured')
+    ])
+
 def trigger_backup(test):
     response_json = test.cmd('az dataprotection backup-instance adhoc-backup -n "{backup_instance_name}" -g "{rgname}" --vault-name "{vaultname}" --rule-name BackupWeekly --retention-tag-override Weekly').get_output_in_json()
     job_status = None
@@ -132,6 +157,7 @@ def call_scenario(test):
     try:
         configure_backup(test)
         update_protection(test)
+        stop_resume_protection(test)
         trigger_backup(test)
         trigger_restore(test)
         trigger_restore_as_files(test)

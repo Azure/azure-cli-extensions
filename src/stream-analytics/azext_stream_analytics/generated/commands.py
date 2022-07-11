@@ -20,6 +20,16 @@ from azext_stream_analytics.generated._client_factory import (
     cf_transformation,
     cf_function,
     cf_subscription,
+    cf_cluster,
+    cf_private_endpoint,
+)
+
+
+stream_analytics_cluster = CliCommandType(
+    operations_tmpl=(
+        'azext_stream_analytics.vendored_sdks.streamanalytics.operations._clusters_operations#ClustersOperations.{}'
+    ),
+    client_factory=cf_cluster,
 )
 
 
@@ -53,6 +63,12 @@ stream_analytics_output = CliCommandType(
 )
 
 
+stream_analytics_private_endpoint = CliCommandType(
+    operations_tmpl='azext_stream_analytics.vendored_sdks.streamanalytics.operations._private_endpoints_operations#PrivateEndpointsOperations.{}',
+    client_factory=cf_private_endpoint,
+)
+
+
 stream_analytics_subscription = CliCommandType(
     operations_tmpl='azext_stream_analytics.vendored_sdks.streamanalytics.operations._subscriptions_operations#SubscriptionsOperations.{}',
     client_factory=cf_subscription,
@@ -66,6 +82,15 @@ stream_analytics_transformation = CliCommandType(
 
 
 def load_command_table(self, _):
+
+    with self.command_group('stream-analytics cluster', stream_analytics_cluster, client_factory=cf_cluster) as g:
+        g.custom_command('list', 'stream_analytics_cluster_list')
+        g.custom_show_command('show', 'stream_analytics_cluster_show')
+        g.custom_command('create', 'stream_analytics_cluster_create', supports_no_wait=True)
+        g.custom_command('update', 'stream_analytics_cluster_update', supports_no_wait=True)
+        g.custom_command('delete', 'stream_analytics_cluster_delete', supports_no_wait=True, confirmation=True)
+        g.custom_command('list-streaming-job', 'stream_analytics_cluster_list_streaming_job')
+        g.custom_wait_command('wait', 'stream_analytics_cluster_show')
 
     with self.command_group('stream-analytics function', stream_analytics_function, client_factory=cf_function) as g:
         g.custom_command('list', 'stream_analytics_function_list')
@@ -106,6 +131,15 @@ def load_command_table(self, _):
         g.custom_command('delete', 'stream_analytics_output_delete', confirmation=True)
         g.custom_command('test', 'stream_analytics_output_test', supports_no_wait=True)
         g.custom_wait_command('wait', 'stream_analytics_output_show')
+
+    with self.command_group(
+        'stream-analytics private-endpoint', stream_analytics_private_endpoint, client_factory=cf_private_endpoint
+    ) as g:
+        g.custom_command('list', 'stream_analytics_private_endpoint_list')
+        g.custom_show_command('show', 'stream_analytics_private_endpoint_show')
+        g.custom_command('create', 'stream_analytics_private_endpoint_create')
+        g.custom_command('delete', 'stream_analytics_private_endpoint_delete', supports_no_wait=True, confirmation=True)
+        g.custom_wait_command('wait', 'stream_analytics_private_endpoint_show')
 
     with self.command_group(
         'stream-analytics subscription', stream_analytics_subscription, client_factory=cf_subscription

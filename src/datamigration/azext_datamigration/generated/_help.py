@@ -17,6 +17,110 @@ helps['datamigration'] = '''
     short-summary: Manage Data Migration
 '''
 
+helps['datamigration sql-db'] = """
+    type: group
+    short-summary: Manage database migrations to SQL DB.
+"""
+
+helps['datamigration sql-db show'] = """
+    type: command
+    short-summary: "Retrieve the specified database migration for a given SQL DB."
+    examples:
+      - name: Get Sql DB database Migration with the expand parameter.
+        text: |-
+               az datamigration sql-db show --expand "MigrationStatusDetails" --resource-group "testrg" \
+--sqldb-instance-name "sqldbinstance" --target-db-name "db1"
+      - name: Get Sql DB database Migration without the expand parameter.
+        text: |-
+               az datamigration sql-db show --resource-group "testrg" --sqldb-instance-name "sqldbinstance" \
+--target-db-name "db1"
+"""
+
+helps['datamigration sql-db create'] = """
+    type: command
+    short-summary: "Create a new database migration to a given SQL DB."
+    parameters:
+      - name: --source-sql-connection
+        short-summary: "Source SQL Server connection details."
+        long-summary: |
+            Usage: --source-sql-connection data-source=XX authentication=XX user-name=XX password=XX \
+encrypt-connection=XX trust-server-certificate=XX
+
+            data-source: Data source.
+            authentication: Authentication type.
+            user-name: User name to connect to source SQL.
+            password: Password to connect to source SQL.
+            encrypt-connection: Whether to encrypt connection or not.
+            trust-server-certificate: Whether to trust server certificate or not.
+      - name: --target-sql-connection
+        short-summary: "Target SQL DB connection details."
+        long-summary: |
+            Usage: --target-sql-connection data-source=XX authentication=XX user-name=XX password=XX \
+encrypt-connection=XX trust-server-certificate=XX
+
+            data-source: Data source.
+            authentication: Authentication type.
+            user-name: User name to connect to source SQL.
+            password: Password to connect to source SQL.
+            encrypt-connection: Whether to encrypt connection or not.
+            trust-server-certificate: Whether to trust server certificate or not.
+    examples:
+      - name: Create or Update Database Migration resource with Maximum parameters.
+        text: |-
+               az datamigration sql-db create --migration-service "/subscriptions/00000000-1111-2222-3333-444444444444/\
+resourceGroups/testrg/providers/Microsoft.DataMigration/sqlMigrationServices/testagent" --scope \
+"/subscriptions/00000000-1111-2222-3333-444444444444/resourceGroups/testrg/providers/Microsoft.Sql/servers/sqldbinstanc\
+e" --source-database-name "aaa" --source-sql-connection authentication="WindowsAuthentication" data-source="aaa" \
+encrypt-connection=true password="placeholder" trust-server-certificate=true user-name="bbb" --table-list \
+"[Schema1].[TableName1]" "[Schema2].[TableName2]" --target-sql-connection authentication="SqlAuthentication" \
+data-source="sqldbinstance" encrypt-connection=true password="placeholder" trust-server-certificate=true \
+user-name="bbb" --resource-group "testrg" --sqldb-instance-name "sqldbinstance" --target-db-name "db1"
+      - name: Create or Update Database Migration resource with Minimum parameters.
+        text: |-
+               az datamigration sql-db create --migration-service "/subscriptions/00000000-1111-2222-3333-444444444444/\
+resourceGroups/testrg/providers/Microsoft.DataMigration/sqlMigrationServices/testagent" --scope \
+"/subscriptions/00000000-1111-2222-3333-444444444444/resourceGroups/testrg/providers/Microsoft.Sql/servers/sqldbinstanc\
+e" --source-database-name "aaa" --source-sql-connection authentication="WindowsAuthentication" data-source="aaa" \
+encrypt-connection=true password="placeholder" trust-server-certificate=true user-name="bbb" --target-sql-connection \
+authentication="SqlAuthentication" data-source="sqldbinstance" encrypt-connection=true password="placeholder" \
+trust-server-certificate=true user-name="bbb" --resource-group "testrg" --sqldb-instance-name "sqldbinstance" \
+--target-db-name "db1"
+"""
+
+helps['datamigration sql-db delete'] = """
+    type: command
+    short-summary: "Delete an in-progress or completed database migration to SQL DB."
+    examples:
+      - name: Delete Database Migration resource.
+        text: |-
+               az datamigration sql-db delete --resource-group "testrg" --sqldb-instance-name "sqldbinstance" \
+--target-db-name "db1"
+"""
+
+helps['datamigration sql-db cancel'] = """
+    type: command
+    short-summary: "Stop in-progress database migration to SQL DB."
+    examples:
+      - name: Stop ongoing migration for the database.
+        text: |-
+               az datamigration sql-db cancel --migration-operation-id "9a90bb84-e70f-46f7-b0ae-1aef5b3b9f07" \
+--resource-group "testrg" --sqldb-instance-name "sqldbinstance" --target-db-name "db1"
+"""
+
+helps['datamigration sql-db wait'] = """
+    type: command
+    short-summary: Place the CLI in a waiting state until a condition of the datamigration sql-db is met.
+    examples:
+      - name: Pause executing next line of CLI script until the datamigration sql-db is successfully created.
+        text: |-
+               az datamigration sql-db wait --resource-group "testrg" --sqldb-instance-name "sqldbinstance" \
+--target-db-name "db1" --created
+      - name: Pause executing next line of CLI script until the datamigration sql-db is successfully deleted.
+        text: |-
+               az datamigration sql-db wait --resource-group "testrg" --sqldb-instance-name "sqldbinstance" \
+--target-db-name "db1" --deleted
+"""
+
 helps['datamigration sql-managed-instance'] = """
     type: group
     short-summary: Manage database migrations to SQL Managed Instance.
@@ -26,7 +130,11 @@ helps['datamigration sql-managed-instance show'] = """
     type: command
     short-summary: "Retrieve the specified database migration for a given SQL Managed Instance."
     examples:
-      - name: Get Database Migration resource.
+      - name: Get Sql MI database Migration with the expand parameter.
+        text: |-
+               az datamigration sql-managed-instance show --expand "MigrationStatusDetails" --managed-instance-name \
+"managedInstance1" --resource-group "testrg" --target-db-name "db1"
+      - name: Get Sql MI database Migration without the expand parameter.
         text: |-
                az datamigration sql-managed-instance show --managed-instance-name "managedInstance1" --resource-group \
 "testrg" --target-db-name "db1"
@@ -82,11 +190,10 @@ offline=true --scope "/subscriptions/00000000-1111-2222-3333-444444444444/resour
 --source-location "{\\"fileShare\\":{\\"path\\":\\"C:\\\\\\\\aaa\\\\\\\\bbb\\\\\\\\ccc\\",\\"password\\":\\"placeholder\
 \\",\\"username\\":\\"name\\"}}" --target-location account-key="abcd" storage-account-resource-id="account.database.win\
 dows.net" --migration-service "/subscriptions/00000000-1111-2222-3333-444444444444/resourceGroups/testrg/providers/Micr\
-osoft.DataMigration/sqlMigrationServices/testagent" --offline-configuration last-backup-name="last_backup_file_name" \
-offline=true --scope "/subscriptions/00000000-1111-2222-3333-444444444444/resourceGroups/testrg/providers/Microsoft.Sql\
-/managedInstances/instance" --source-database-name "aaa" --source-sql-connection authentication="WindowsAuthentication"\
- data-source="aaa" encrypt-connection=true password="placeholder" trust-server-certificate=true user-name="bbb" \
---resource-group "testrg" --target-db-name "db1"
+osoft.DataMigration/sqlMigrationServices/testagent" --scope "/subscriptions/00000000-1111-2222-3333-444444444444/resour\
+ceGroups/testrg/providers/Microsoft.Sql/managedInstances/instance" --source-database-name "aaa" \
+--source-sql-connection authentication="WindowsAuthentication" data-source="aaa" encrypt-connection=true \
+password="placeholder" trust-server-certificate=true user-name="bbb" --resource-group "testrg" --target-db-name "db1"
 """
 
 helps['datamigration sql-managed-instance cancel'] = """
@@ -130,7 +237,11 @@ helps['datamigration sql-vm show'] = """
     type: command
     short-summary: "Retrieve the specified database migration for a given SQL VM."
     examples:
-      - name: Get Database Migration resource.
+      - name: Get Sql VM database Migration with the expand parameter.
+        text: |-
+               az datamigration sql-vm show --expand "MigrationStatusDetails" --resource-group "testrg" --sql-vm-name \
+"testvm" --target-db-name "db1"
+      - name: Get Sql VM database Migration without the expand parameter.
         text: |-
                az datamigration sql-vm show --resource-group "testrg" --sql-vm-name "testvm" --target-db-name "db1"
 """
@@ -184,12 +295,11 @@ encrypt-connection=true password="placeholder" trust-server-certificate=true use
                az datamigration sql-vm create --source-location "{\\"fileShare\\":{\\"path\\":\\"C:\\\\\\\\aaa\\\\\\\\b\
 bb\\\\\\\\ccc\\",\\"password\\":\\"placeholder\\",\\"username\\":\\"name\\"}}" --target-location account-key="abcd" \
 storage-account-resource-id="account.database.windows.net" --migration-service "/subscriptions/00000000-1111-2222-3333-\
-444444444444/resourceGroups/testrg/providers/Microsoft.DataMigration/sqlMigrationServices/testagent" \
---offline-configuration last-backup-name="last_backup_file_name" offline=true --scope "/subscriptions/00000000-1111-222\
-2-3333-444444444444/resourceGroups/testrg/providers/Microsoft.SqlVirtualMachine/sqlVirtualMachines/testvm" \
---source-database-name "aaa" --source-sql-connection authentication="WindowsAuthentication" data-source="aaa" \
-encrypt-connection=true password="placeholder" trust-server-certificate=true user-name="bbb" --resource-group "testrg" \
---sql-vm-name "testvm" --target-db-name "db1"
+444444444444/resourceGroups/testrg/providers/Microsoft.DataMigration/sqlMigrationServices/testagent" --scope \
+"/subscriptions/00000000-1111-2222-3333-444444444444/resourceGroups/testrg/providers/Microsoft.SqlVirtualMachine/sqlVir\
+tualMachines/testvm" --source-database-name "aaa" --source-sql-connection authentication="WindowsAuthentication" \
+data-source="aaa" encrypt-connection=true password="placeholder" trust-server-certificate=true user-name="bbb" \
+--resource-group "testrg" --sql-vm-name "testvm" --target-db-name "db1"
 """
 
 helps['datamigration sql-vm cancel'] = """

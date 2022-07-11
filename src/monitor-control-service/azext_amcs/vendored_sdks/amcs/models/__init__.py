@@ -8,6 +8,7 @@
 
 try:
     from ._models_py3 import AzureMonitorMetricsDestination
+    from ._models_py3 import ColumnDefinition
     from ._models_py3 import ConfigurationAccessEndpointSpec
     from ._models_py3 import DataCollectionEndpoint
     from ._models_py3 import DataCollectionEndpointConfigurationAccess
@@ -19,12 +20,14 @@ try:
     from ._models_py3 import DataCollectionEndpointResourceSystemData
     from ._models_py3 import DataCollectionRule
     from ._models_py3 import DataCollectionRuleAssociation
+    from ._models_py3 import DataCollectionRuleAssociationMetadata
     from ._models_py3 import DataCollectionRuleAssociationProxyOnlyResource
     from ._models_py3 import DataCollectionRuleAssociationProxyOnlyResourceListResult
     from ._models_py3 import DataCollectionRuleAssociationProxyOnlyResourceProperties
     from ._models_py3 import DataCollectionRuleAssociationProxyOnlyResourceSystemData
     from ._models_py3 import DataCollectionRuleDataSources
     from ._models_py3 import DataCollectionRuleDestinations
+    from ._models_py3 import DataCollectionRuleMetadata
     from ._models_py3 import DataCollectionRuleResource
     from ._models_py3 import DataCollectionRuleResourceListResult
     from ._models_py3 import DataCollectionRuleResourceProperties
@@ -35,18 +38,27 @@ try:
     from ._models_py3 import DestinationsSpecAzureMonitorMetrics
     from ._models_py3 import ErrorAdditionalInfo
     from ._models_py3 import ErrorDetail
-    from ._models_py3 import ErrorResponse
+    from ._models_py3 import ErrorResponseCommonV2
     from ._models_py3 import ExtensionDataSource
+    from ._models_py3 import IisLogsDataSource
     from ._models_py3 import LogAnalyticsDestination
+    from ._models_py3 import LogFileSettings
+    from ._models_py3 import LogFileSettingsText
+    from ._models_py3 import LogFileTextSettings
+    from ._models_py3 import LogFilesDataSource
+    from ._models_py3 import LogFilesDataSourceSettings
     from ._models_py3 import LogsIngestionEndpointSpec
+    from ._models_py3 import Metadata
     from ._models_py3 import NetworkRuleSet
     from ._models_py3 import PerfCounterDataSource
     from ._models_py3 import ResourceForUpdate
+    from ._models_py3 import StreamDeclaration
     from ._models_py3 import SyslogDataSource
     from ._models_py3 import SystemData
     from ._models_py3 import WindowsEventLogDataSource
 except (SyntaxError, ImportError):
     from ._models import AzureMonitorMetricsDestination  # type: ignore
+    from ._models import ColumnDefinition  # type: ignore
     from ._models import ConfigurationAccessEndpointSpec  # type: ignore
     from ._models import DataCollectionEndpoint  # type: ignore
     from ._models import DataCollectionEndpointConfigurationAccess  # type: ignore
@@ -58,12 +70,14 @@ except (SyntaxError, ImportError):
     from ._models import DataCollectionEndpointResourceSystemData  # type: ignore
     from ._models import DataCollectionRule  # type: ignore
     from ._models import DataCollectionRuleAssociation  # type: ignore
+    from ._models import DataCollectionRuleAssociationMetadata  # type: ignore
     from ._models import DataCollectionRuleAssociationProxyOnlyResource  # type: ignore
     from ._models import DataCollectionRuleAssociationProxyOnlyResourceListResult  # type: ignore
     from ._models import DataCollectionRuleAssociationProxyOnlyResourceProperties  # type: ignore
     from ._models import DataCollectionRuleAssociationProxyOnlyResourceSystemData  # type: ignore
     from ._models import DataCollectionRuleDataSources  # type: ignore
     from ._models import DataCollectionRuleDestinations  # type: ignore
+    from ._models import DataCollectionRuleMetadata  # type: ignore
     from ._models import DataCollectionRuleResource  # type: ignore
     from ._models import DataCollectionRuleResourceListResult  # type: ignore
     from ._models import DataCollectionRuleResourceProperties  # type: ignore
@@ -74,19 +88,28 @@ except (SyntaxError, ImportError):
     from ._models import DestinationsSpecAzureMonitorMetrics  # type: ignore
     from ._models import ErrorAdditionalInfo  # type: ignore
     from ._models import ErrorDetail  # type: ignore
-    from ._models import ErrorResponse  # type: ignore
+    from ._models import ErrorResponseCommonV2  # type: ignore
     from ._models import ExtensionDataSource  # type: ignore
+    from ._models import IisLogsDataSource  # type: ignore
     from ._models import LogAnalyticsDestination  # type: ignore
+    from ._models import LogFileSettings  # type: ignore
+    from ._models import LogFileSettingsText  # type: ignore
+    from ._models import LogFileTextSettings  # type: ignore
+    from ._models import LogFilesDataSource  # type: ignore
+    from ._models import LogFilesDataSourceSettings  # type: ignore
     from ._models import LogsIngestionEndpointSpec  # type: ignore
+    from ._models import Metadata  # type: ignore
     from ._models import NetworkRuleSet  # type: ignore
     from ._models import PerfCounterDataSource  # type: ignore
     from ._models import ResourceForUpdate  # type: ignore
+    from ._models import StreamDeclaration  # type: ignore
     from ._models import SyslogDataSource  # type: ignore
     from ._models import SystemData  # type: ignore
     from ._models import WindowsEventLogDataSource  # type: ignore
 
 from ._monitor_client_enums import (
     CreatedByType,
+    KnownColumnDefinitionType,
     KnownDataCollectionEndpointProvisioningState,
     KnownDataCollectionEndpointResourceKind,
     KnownDataCollectionRuleAssociationProvisioningState,
@@ -94,6 +117,8 @@ from ._monitor_client_enums import (
     KnownDataCollectionRuleResourceKind,
     KnownDataFlowStreams,
     KnownExtensionDataSourceStreams,
+    KnownLogFileTextSettingsRecordStartTimestampFormat,
+    KnownLogFilesDataSourceFormat,
     KnownPerfCounterDataSourceStreams,
     KnownPublicNetworkAccessOptions,
     KnownSyslogDataSourceFacilityNames,
@@ -104,6 +129,7 @@ from ._monitor_client_enums import (
 
 __all__ = [
     'AzureMonitorMetricsDestination',
+    'ColumnDefinition',
     'ConfigurationAccessEndpointSpec',
     'DataCollectionEndpoint',
     'DataCollectionEndpointConfigurationAccess',
@@ -115,12 +141,14 @@ __all__ = [
     'DataCollectionEndpointResourceSystemData',
     'DataCollectionRule',
     'DataCollectionRuleAssociation',
+    'DataCollectionRuleAssociationMetadata',
     'DataCollectionRuleAssociationProxyOnlyResource',
     'DataCollectionRuleAssociationProxyOnlyResourceListResult',
     'DataCollectionRuleAssociationProxyOnlyResourceProperties',
     'DataCollectionRuleAssociationProxyOnlyResourceSystemData',
     'DataCollectionRuleDataSources',
     'DataCollectionRuleDestinations',
+    'DataCollectionRuleMetadata',
     'DataCollectionRuleResource',
     'DataCollectionRuleResourceListResult',
     'DataCollectionRuleResourceProperties',
@@ -131,17 +159,26 @@ __all__ = [
     'DestinationsSpecAzureMonitorMetrics',
     'ErrorAdditionalInfo',
     'ErrorDetail',
-    'ErrorResponse',
+    'ErrorResponseCommonV2',
     'ExtensionDataSource',
+    'IisLogsDataSource',
     'LogAnalyticsDestination',
+    'LogFileSettings',
+    'LogFileSettingsText',
+    'LogFileTextSettings',
+    'LogFilesDataSource',
+    'LogFilesDataSourceSettings',
     'LogsIngestionEndpointSpec',
+    'Metadata',
     'NetworkRuleSet',
     'PerfCounterDataSource',
     'ResourceForUpdate',
+    'StreamDeclaration',
     'SyslogDataSource',
     'SystemData',
     'WindowsEventLogDataSource',
     'CreatedByType',
+    'KnownColumnDefinitionType',
     'KnownDataCollectionEndpointProvisioningState',
     'KnownDataCollectionEndpointResourceKind',
     'KnownDataCollectionRuleAssociationProvisioningState',
@@ -149,6 +186,8 @@ __all__ = [
     'KnownDataCollectionRuleResourceKind',
     'KnownDataFlowStreams',
     'KnownExtensionDataSourceStreams',
+    'KnownLogFileTextSettingsRecordStartTimestampFormat',
+    'KnownLogFilesDataSourceFormat',
     'KnownPerfCounterDataSourceStreams',
     'KnownPublicNetworkAccessOptions',
     'KnownSyslogDataSourceFacilityNames',

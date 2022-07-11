@@ -1521,6 +1521,174 @@ class BlobStreamInputDataSourceProperties(BlobDataSourceProperties):
         self.source_partition_count = source_partition_count
 
 
+class Resource(msrest.serialization.Model):
+    """The base resource definition.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar id: Fully qualified resource Id for the resource. Ex -
+     /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}.
+    :vartype id: str
+    :ivar name: The name of the resource.
+    :vartype name: str
+    :ivar type: The type of the resource. Ex- Microsoft.Compute/virtualMachines or
+     Microsoft.Storage/storageAccounts.
+    :vartype type: str
+    """
+
+    _validation = {
+        'id': {'readonly': True},
+        'name': {'readonly': True},
+        'type': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'id': {'key': 'id', 'type': 'str'},
+        'name': {'key': 'name', 'type': 'str'},
+        'type': {'key': 'type', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(Resource, self).__init__(**kwargs)
+        self.id = None
+        self.name = None
+        self.type = None
+
+
+class TrackedResource(Resource):
+    """The resource model definition for a ARM tracked top level resource.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar id: Fully qualified resource Id for the resource. Ex -
+     /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}.
+    :vartype id: str
+    :ivar name: The name of the resource.
+    :vartype name: str
+    :ivar type: The type of the resource. Ex- Microsoft.Compute/virtualMachines or
+     Microsoft.Storage/storageAccounts.
+    :vartype type: str
+    :param tags: A set of tags. Resource tags.
+    :type tags: dict[str, str]
+    :param location: The geo-location where the resource lives.
+    :type location: str
+    """
+
+    _validation = {
+        'id': {'readonly': True},
+        'name': {'readonly': True},
+        'type': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'id': {'key': 'id', 'type': 'str'},
+        'name': {'key': 'name', 'type': 'str'},
+        'type': {'key': 'type', 'type': 'str'},
+        'tags': {'key': 'tags', 'type': '{str}'},
+        'location': {'key': 'location', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        *,
+        tags: Optional[Dict[str, str]] = None,
+        location: Optional[str] = None,
+        **kwargs
+    ):
+        super(TrackedResource, self).__init__(**kwargs)
+        self.tags = tags
+        self.location = location
+
+
+class Cluster(TrackedResource):
+    """A Stream Analytics Cluster object.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar id: Fully qualified resource Id for the resource. Ex -
+     /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}.
+    :vartype id: str
+    :ivar name: The name of the resource.
+    :vartype name: str
+    :ivar type: The type of the resource. Ex- Microsoft.Compute/virtualMachines or
+     Microsoft.Storage/storageAccounts.
+    :vartype type: str
+    :param tags: A set of tags. Resource tags.
+    :type tags: dict[str, str]
+    :param location: The geo-location where the resource lives.
+    :type location: str
+    :param sku: The SKU of the cluster. This determines the size/capacity of the cluster. Required
+     on PUT (CreateOrUpdate) requests.
+    :type sku: ~stream_analytics_management_client.models.ClusterSku
+    :ivar etag: The current entity tag for the cluster. This is an opaque string. You can use it to
+     detect whether the resource has changed between requests. You can also use it in the If-Match
+     or If-None-Match headers for write operations for optimistic concurrency.
+    :vartype etag: str
+    :ivar created_date: The date this cluster was created.
+    :vartype created_date: ~datetime.datetime
+    :ivar cluster_id: Unique identifier for the cluster.
+    :vartype cluster_id: str
+    :ivar provisioning_state: The status of the cluster provisioning. The three terminal states
+     are: Succeeded, Failed and Canceled. Possible values include: "Succeeded", "Failed",
+     "Canceled", "InProgress".
+    :vartype provisioning_state: str or
+     ~stream_analytics_management_client.models.ClusterProvisioningState
+    :ivar capacity_allocated: Represents the number of streaming units currently being used on the
+     cluster.
+    :vartype capacity_allocated: int
+    :ivar capacity_assigned: Represents the sum of the SUs of all streaming jobs associated with
+     the cluster. If all of the jobs were running, this would be the capacity allocated.
+    :vartype capacity_assigned: int
+    """
+
+    _validation = {
+        'id': {'readonly': True},
+        'name': {'readonly': True},
+        'type': {'readonly': True},
+        'etag': {'readonly': True},
+        'created_date': {'readonly': True},
+        'cluster_id': {'readonly': True},
+        'provisioning_state': {'readonly': True},
+        'capacity_allocated': {'readonly': True},
+        'capacity_assigned': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'id': {'key': 'id', 'type': 'str'},
+        'name': {'key': 'name', 'type': 'str'},
+        'type': {'key': 'type', 'type': 'str'},
+        'tags': {'key': 'tags', 'type': '{str}'},
+        'location': {'key': 'location', 'type': 'str'},
+        'sku': {'key': 'sku', 'type': 'ClusterSku'},
+        'etag': {'key': 'etag', 'type': 'str'},
+        'created_date': {'key': 'properties.createdDate', 'type': 'iso-8601'},
+        'cluster_id': {'key': 'properties.clusterId', 'type': 'str'},
+        'provisioning_state': {'key': 'properties.provisioningState', 'type': 'str'},
+        'capacity_allocated': {'key': 'properties.capacityAllocated', 'type': 'int'},
+        'capacity_assigned': {'key': 'properties.capacityAssigned', 'type': 'int'},
+    }
+
+    def __init__(
+        self,
+        *,
+        tags: Optional[Dict[str, str]] = None,
+        location: Optional[str] = None,
+        sku: Optional["ClusterSku"] = None,
+        **kwargs
+    ):
+        super(Cluster, self).__init__(tags=tags, location=location, **kwargs)
+        self.sku = sku
+        self.etag = None
+        self.created_date = None
+        self.cluster_id = None
+        self.provisioning_state = None
+        self.capacity_allocated = None
+        self.capacity_assigned = None
+
+
 class ClusterInfo(msrest.serialization.Model):
     """The properties associated with a Stream Analytics cluster.
 
@@ -1540,6 +1708,136 @@ class ClusterInfo(msrest.serialization.Model):
     ):
         super(ClusterInfo, self).__init__(**kwargs)
         self.id = id
+
+
+class ClusterJob(msrest.serialization.Model):
+    """A streaming job.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar id: Resource ID of the streaming job.
+    :vartype id: str
+    :ivar streaming_units: The number of streaming units that are used by the streaming job.
+    :vartype streaming_units: int
+    :ivar job_state: The current execution state of the streaming job. Possible values include:
+     "Created", "Starting", "Running", "Stopping", "Stopped", "Deleting", "Failed", "Degraded",
+     "Restarting", "Scaling".
+    :vartype job_state: str or ~stream_analytics_management_client.models.JobState
+    """
+
+    _validation = {
+        'id': {'readonly': True},
+        'streaming_units': {'readonly': True},
+        'job_state': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'id': {'key': 'id', 'type': 'str'},
+        'streaming_units': {'key': 'streamingUnits', 'type': 'int'},
+        'job_state': {'key': 'jobState', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(ClusterJob, self).__init__(**kwargs)
+        self.id = None
+        self.streaming_units = None
+        self.job_state = None
+
+
+class ClusterJobListResult(msrest.serialization.Model):
+    """A list of streaming jobs. Populated by a List operation.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar value: A list of streaming jobs.
+    :vartype value: list[~stream_analytics_management_client.models.ClusterJob]
+    :ivar next_link: The URL to fetch the next set of streaming jobs.
+    :vartype next_link: str
+    """
+
+    _validation = {
+        'value': {'readonly': True},
+        'next_link': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'value': {'key': 'value', 'type': '[ClusterJob]'},
+        'next_link': {'key': 'nextLink', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(ClusterJobListResult, self).__init__(**kwargs)
+        self.value = None
+        self.next_link = None
+
+
+class ClusterListResult(msrest.serialization.Model):
+    """A list of clusters populated by a 'list' operation.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar value: A list of clusters.
+    :vartype value: list[~stream_analytics_management_client.models.Cluster]
+    :ivar next_link: The URL to fetch the next set of clusters.
+    :vartype next_link: str
+    """
+
+    _validation = {
+        'value': {'readonly': True},
+        'next_link': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'value': {'key': 'value', 'type': '[Cluster]'},
+        'next_link': {'key': 'nextLink', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(ClusterListResult, self).__init__(**kwargs)
+        self.value = None
+        self.next_link = None
+
+
+class ClusterSku(msrest.serialization.Model):
+    """The SKU of the cluster. This determines the size/capacity of the cluster. Required on PUT (CreateOrUpdate) requests.
+
+    :param name: Specifies the SKU name of the cluster. Required on PUT (CreateOrUpdate) requests.
+     Possible values include: "Default".
+    :type name: str or ~stream_analytics_management_client.models.ClusterSkuName
+    :param capacity: Denotes the number of streaming units the cluster can support. Valid values
+     for this property are multiples of 36 with a minimum value of 36 and maximum value of 216.
+     Required on PUT (CreateOrUpdate) requests.
+    :type capacity: int
+    """
+
+    _validation = {
+        'capacity': {'maximum': 216, 'minimum': 36},
+    }
+
+    _attribute_map = {
+        'name': {'key': 'name', 'type': 'str'},
+        'capacity': {'key': 'capacity', 'type': 'int'},
+    }
+
+    def __init__(
+        self,
+        *,
+        name: Optional[Union[str, "ClusterSkuName"]] = None,
+        capacity: Optional[int] = None,
+        **kwargs
+    ):
+        super(ClusterSku, self).__init__(**kwargs)
+        self.name = name
+        self.capacity = capacity
 
 
 class Compression(msrest.serialization.Model):
@@ -3286,6 +3584,207 @@ class PowerBiOutputDataSourceProperties(OAuthBasedDataSourceProperties):
         self.authentication_mode = authentication_mode
 
 
+class PrivateEndpoint(Resource):
+    """Complete information about the private endpoint.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar id: Fully qualified resource Id for the resource. Ex -
+     /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}.
+    :vartype id: str
+    :ivar name: The name of the resource.
+    :vartype name: str
+    :ivar type: The type of the resource. Ex- Microsoft.Compute/virtualMachines or
+     Microsoft.Storage/storageAccounts.
+    :vartype type: str
+    :ivar etag: Unique opaque string (generally a GUID) that represents the metadata state of the
+     resource (private endpoint) and changes whenever the resource is updated. Required on PUT
+     (CreateOrUpdate) requests.
+    :vartype etag: str
+    :ivar created_date: The date when this private endpoint was created.
+    :vartype created_date: str
+    :param manual_private_link_service_connections: A list of connections to the remote resource.
+     Immutable after it is set.
+    :type manual_private_link_service_connections:
+     list[~stream_analytics_management_client.models.PrivateLinkServiceConnection]
+    """
+
+    _validation = {
+        'id': {'readonly': True},
+        'name': {'readonly': True},
+        'type': {'readonly': True},
+        'etag': {'readonly': True},
+        'created_date': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'id': {'key': 'id', 'type': 'str'},
+        'name': {'key': 'name', 'type': 'str'},
+        'type': {'key': 'type', 'type': 'str'},
+        'etag': {'key': 'etag', 'type': 'str'},
+        'created_date': {'key': 'properties.createdDate', 'type': 'str'},
+        'manual_private_link_service_connections': {'key': 'properties.manualPrivateLinkServiceConnections', 'type': '[PrivateLinkServiceConnection]'},
+    }
+
+    def __init__(
+        self,
+        *,
+        manual_private_link_service_connections: Optional[List["PrivateLinkServiceConnection"]] = None,
+        **kwargs
+    ):
+        super(PrivateEndpoint, self).__init__(**kwargs)
+        self.etag = None
+        self.created_date = None
+        self.manual_private_link_service_connections = manual_private_link_service_connections
+
+
+class PrivateEndpointListResult(msrest.serialization.Model):
+    """A list of private endpoints.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar value: A list of private endpoints.
+    :vartype value: list[~stream_analytics_management_client.models.PrivateEndpoint]
+    :ivar next_link: The URL to fetch the next set of private endpoints.
+    :vartype next_link: str
+    """
+
+    _validation = {
+        'value': {'readonly': True},
+        'next_link': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'value': {'key': 'value', 'type': '[PrivateEndpoint]'},
+        'next_link': {'key': 'nextLink', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(PrivateEndpointListResult, self).__init__(**kwargs)
+        self.value = None
+        self.next_link = None
+
+
+class PrivateLinkConnectionState(msrest.serialization.Model):
+    """A collection of read-only information about the state of the connection to the private remote resource.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar status: Indicates whether the connection has been Approved/Rejected/Removed by the owner
+     of the remote resource/service.
+    :vartype status: str
+    :ivar description: The reason for approval/rejection of the connection.
+    :vartype description: str
+    :ivar actions_required: A message indicating if changes on the service provider require any
+     updates on the consumer.
+    :vartype actions_required: str
+    """
+
+    _validation = {
+        'status': {'readonly': True},
+        'description': {'readonly': True},
+        'actions_required': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'status': {'key': 'status', 'type': 'str'},
+        'description': {'key': 'description', 'type': 'str'},
+        'actions_required': {'key': 'actionsRequired', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(PrivateLinkConnectionState, self).__init__(**kwargs)
+        self.status = None
+        self.description = None
+        self.actions_required = None
+
+
+class PrivateLinkServiceConnection(msrest.serialization.Model):
+    """A grouping of information about the connection to the remote resource.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :param private_link_service_id: The resource id of the private link service. Required on PUT
+     (CreateOrUpdate) requests.
+    :type private_link_service_id: str
+    :param group_ids: The ID(s) of the group(s) obtained from the remote resource that this private
+     endpoint should connect to. Required on PUT (CreateOrUpdate) requests.
+    :type group_ids: list[str]
+    :ivar request_message: A message passed to the owner of the remote resource with this
+     connection request. Restricted to 140 chars.
+    :vartype request_message: str
+    :param private_link_service_connection_state: A collection of read-only information about the
+     state of the connection to the private remote resource.
+    :type private_link_service_connection_state:
+     ~stream_analytics_management_client.models.PrivateLinkConnectionState
+    """
+
+    _validation = {
+        'request_message': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'private_link_service_id': {'key': 'properties.privateLinkServiceId', 'type': 'str'},
+        'group_ids': {'key': 'properties.groupIds', 'type': '[str]'},
+        'request_message': {'key': 'properties.requestMessage', 'type': 'str'},
+        'private_link_service_connection_state': {'key': 'properties.privateLinkServiceConnectionState', 'type': 'PrivateLinkConnectionState'},
+    }
+
+    def __init__(
+        self,
+        *,
+        private_link_service_id: Optional[str] = None,
+        group_ids: Optional[List[str]] = None,
+        private_link_service_connection_state: Optional["PrivateLinkConnectionState"] = None,
+        **kwargs
+    ):
+        super(PrivateLinkServiceConnection, self).__init__(**kwargs)
+        self.private_link_service_id = private_link_service_id
+        self.group_ids = group_ids
+        self.request_message = None
+        self.private_link_service_connection_state = private_link_service_connection_state
+
+
+class ProxyResource(Resource):
+    """The resource model definition for a ARM proxy resource. It will have everything other than required location and tags.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar id: Fully qualified resource Id for the resource. Ex -
+     /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}.
+    :vartype id: str
+    :ivar name: The name of the resource.
+    :vartype name: str
+    :ivar type: The type of the resource. Ex- Microsoft.Compute/virtualMachines or
+     Microsoft.Storage/storageAccounts.
+    :vartype type: str
+    """
+
+    _validation = {
+        'id': {'readonly': True},
+        'name': {'readonly': True},
+        'type': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'id': {'key': 'id', 'type': 'str'},
+        'name': {'key': 'name', 'type': 'str'},
+        'type': {'key': 'type', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(ProxyResource, self).__init__(**kwargs)
+
+
 class ReferenceInputProperties(InputProperties):
     """The properties that are associated with an input containing reference data.
 
@@ -3344,43 +3843,6 @@ class ReferenceInputProperties(InputProperties):
         super(ReferenceInputProperties, self).__init__(serialization=serialization, compression=compression, partition_key=partition_key, **kwargs)
         self.type = 'Reference'  # type: str
         self.datasource = datasource
-
-
-class Resource(msrest.serialization.Model):
-    """The base resource definition.
-
-    Variables are only populated by the server, and will be ignored when sending a request.
-
-    :ivar id: Fully qualified resource Id for the resource. Ex -
-     /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}.
-    :vartype id: str
-    :ivar name: The name of the resource.
-    :vartype name: str
-    :ivar type: The type of the resource. Ex- Microsoft.Compute/virtualMachines or
-     Microsoft.Storage/storageAccounts.
-    :vartype type: str
-    """
-
-    _validation = {
-        'id': {'readonly': True},
-        'name': {'readonly': True},
-        'type': {'readonly': True},
-    }
-
-    _attribute_map = {
-        'id': {'key': 'id', 'type': 'str'},
-        'name': {'key': 'name', 'type': 'str'},
-        'type': {'key': 'type', 'type': 'str'},
-    }
-
-    def __init__(
-        self,
-        **kwargs
-    ):
-        super(Resource, self).__init__(**kwargs)
-        self.id = None
-        self.name = None
-        self.type = None
 
 
 class ResourceTestStatus(msrest.serialization.Model):
@@ -3792,51 +4254,6 @@ class StartStreamingJobParameters(msrest.serialization.Model):
         super(StartStreamingJobParameters, self).__init__(**kwargs)
         self.output_start_mode = output_start_mode
         self.output_start_time = output_start_time
-
-
-class TrackedResource(Resource):
-    """The resource model definition for a ARM tracked top level resource.
-
-    Variables are only populated by the server, and will be ignored when sending a request.
-
-    :ivar id: Fully qualified resource Id for the resource. Ex -
-     /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}.
-    :vartype id: str
-    :ivar name: The name of the resource.
-    :vartype name: str
-    :ivar type: The type of the resource. Ex- Microsoft.Compute/virtualMachines or
-     Microsoft.Storage/storageAccounts.
-    :vartype type: str
-    :param tags: A set of tags. Resource tags.
-    :type tags: dict[str, str]
-    :param location: The geo-location where the resource lives.
-    :type location: str
-    """
-
-    _validation = {
-        'id': {'readonly': True},
-        'name': {'readonly': True},
-        'type': {'readonly': True},
-    }
-
-    _attribute_map = {
-        'id': {'key': 'id', 'type': 'str'},
-        'name': {'key': 'name', 'type': 'str'},
-        'type': {'key': 'type', 'type': 'str'},
-        'tags': {'key': 'tags', 'type': '{str}'},
-        'location': {'key': 'location', 'type': 'str'},
-    }
-
-    def __init__(
-        self,
-        *,
-        tags: Optional[Dict[str, str]] = None,
-        location: Optional[str] = None,
-        **kwargs
-    ):
-        super(TrackedResource, self).__init__(**kwargs)
-        self.tags = tags
-        self.location = location
 
 
 class StreamingJob(TrackedResource):

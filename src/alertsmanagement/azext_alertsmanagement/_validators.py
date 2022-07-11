@@ -88,7 +88,7 @@ def validate_resource_group(namespace):
 
 def validate_resource_type(namespace):
     if namespace.filter_resource_type:
-        validate_only_equals_operator(namespace.filter_resource_type)
+        validate_full_operator(namespace.filter_resource_type)
 
 
 def validate_full_operator(args):

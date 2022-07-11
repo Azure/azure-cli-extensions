@@ -18,6 +18,14 @@ try:
     from ._models_py3 import ComponentsResource
     from ._models_py3 import PrivateLinkScopedResource
     from ._models_py3 import TagsResource
+    from ._models_py3 import WebTest
+    from ._models_py3 import WebTestGeolocation
+    from ._models_py3 import WebTestListResult
+    from ._models_py3 import WebTestPropertiesConfiguration
+    from ._models_py3 import WebTestPropertiesRequest
+    from ._models_py3 import WebTestPropertiesValidationRules
+    from ._models_py3 import WebTestPropertiesValidationRulesContentValidation
+    from ._models_py3 import WebTestsResource
 except (SyntaxError, ImportError):
     from ._models import ApplicationInsightsComponent  # type: ignore
     from ._models import ApplicationInsightsComponentListResult  # type: ignore
@@ -38,6 +46,8 @@ from ._application_insights_management_client_enums import (
     PublicNetworkAccessType,
     PurgeState,
     RequestSource,
+    WebTestKind,
+    WebTestKindEnum,
 )
 
 __all__ = [
@@ -52,10 +62,20 @@ __all__ = [
     'ComponentsResource',
     'PrivateLinkScopedResource',
     'TagsResource',
+    'WebTest',
+    'WebTestGeolocation',
+    'WebTestListResult',
+    'WebTestPropertiesConfiguration',
+    'WebTestPropertiesRequest',
+    'WebTestPropertiesValidationRules',
+    'WebTestPropertiesValidationRulesContentValidation',
+    'WebTestsResource',
     'ApplicationType',
     'FlowType',
     'IngestionMode',
     'PublicNetworkAccessType',
     'PurgeState',
     'RequestSource',
+    'WebTestKind',
+    'WebTestKindEnum',
 ]

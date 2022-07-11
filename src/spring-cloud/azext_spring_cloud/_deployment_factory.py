@@ -80,6 +80,14 @@ class DefaultDeployment:
         options.update({k: v for k, v in kwargs.items() if v})
         return options
 
+    def get_update_backfill_options(self, **kwargs):
+        source_options = self.source_factory.fulfilled_options_from_original_source_info(**kwargs)
+        settings_options = self._backfill_settings(**kwargs)
+        return {**source_options, **settings_options}
+
+    def _backfill_settings(self, **_):
+        return {}
+
     def get_deploy_method(self, client, **kwargs):
         if self.require_put_method(**kwargs):
             return client.deployments.begin_create_or_update
@@ -96,11 +104,19 @@ class DefaultDeployment:
 
 class EnterpriseDeployment(DefaultDeployment):
     def _get_env(self, env, jvm_options, **_):
-        if not jvm_options:
+        if jvm_options is None:
             return env
         env = env or {}
-        env['JAVA_OPTS'] = jvm_options
+        if jvm_options:
+            env['JAVA_OPTS'] = jvm_options
+        else:
+            env.pop('JAVA_OPTS', None)
         return env
+
+    def _backfill_settings(self, deployment_resource=None, env=None, jvm_options=None, **_):
+        if jvm_options is None or env is not None:
+            return {}
+        return {'env': deployment_resource.properties.deployment_settings.environment_variables}
 
 
 class BasicTierDeployment(DefaultDeployment):

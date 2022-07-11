@@ -5,9 +5,13 @@
 
 # pylint: disable=line-too-long
 
+import logging
+
 from collections import OrderedDict
 from azure.cli.core.commands import CliCommandType
 from ._validators import validate_workspace_info, validate_target_info, validate_workspace_and_target_info, validate_workspace_info_no_location, validate_provider_and_sku_info
+
+logger = logging.getLogger(__name__)
 
 
 def transform_targets(providers):
@@ -58,8 +62,8 @@ def transform_jobs(results):
 def transform_offerings(offerings):
     def one(offering):
         return OrderedDict([
-            ('Provider Id', offering['id']),
-            ('SKUs', ', '.join([s['id'] for s in offering['properties']['skus']])),
+            ('Provider ID', offering['id']),
+            ('SKU', ', '.join([s['id'] for s in offering['properties']['skus']])),
             ('Publisher ID', offering['properties']['managedApplication']['publisherId']),
             ('Offer ID', offering['properties']['managedApplication']['offerId'])
         ])
@@ -93,6 +97,19 @@ def transform_output(results):
     elif 'histogram' in results:
         histogram = results['histogram']
         return [one(key, histogram[key]) for key in histogram]
+
+    elif 'errorData' in results:
+        notFound = 'Not found'
+        errorData = results['errorData']
+        status = results.get('status', notFound)
+        errorCode = errorData.get('code', notFound)
+        errorMessage = errorData.get('message', notFound)
+        target = results.get('target', notFound)
+        jobId = results.get('id', notFound)
+        submissionTime = results.get('creationTime', notFound)
+
+        logger.error("Job was not successful. Job ID: %s, Status: %s, Error Code: %s, Error Message: %s, Target: %s", jobId, status, errorCode, errorMessage, target)
+        return {'Status': status, 'Error Code': errorCode, 'Error Message': errorMessage, 'Target': target, 'Job ID': jobId, 'Submission Time': submissionTime}
 
     return results
 

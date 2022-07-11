@@ -65,6 +65,8 @@ def load_arguments(self, _):
                    help='The name of the header containing the host of the request.')
         c.argument('proxy_custom_proto_header', options_list=['--proxy-custom-proto-header', '--custom-proto-header'],
                    help='The name of the header containing the scheme of the request.')
+        c.argument('excluded_paths', options_list=['--excluded-paths'],
+                   help='The list of paths that should be excluded from authentication rules.')
 
     with self.argument_context('webapp auth microsoft update') as c:
         c.argument('client_id', options_list=['--client-id'],
@@ -77,6 +79,12 @@ def load_arguments(self, _):
                    help='The OpenID Connect Issuer URI that represents the entity which issues access tokens for this application.')
         c.argument('allowed_token_audiences', options_list=['--allowed-token-audiences', '--allowed-audiences'],
                    help='The configuration settings of the allowed list of audiences from which to validate the JWT token.')
+        c.argument('client_secret_certificate_thumbprint', options_list=['--thumbprint', '--client-secret-certificate-thumbprint'],
+                   help='Alternative to AAD Client Secret, thumbprint of a certificate used for signing purposes')
+        c.argument('client_secret_certificate_san', options_list=['--san', '--client-secret-certificate-san'],
+                   help='Alternative to AAD Client Secret and thumbprint, subject alternative name of a certificate used for signing purposes')
+        c.argument('client_secret_certificate_issuer', options_list=['--certificate-issuer', '--client-secret-certificate-issuer'],
+                   help='Alternative to AAD Client Secret and thumbprint, issuer of a certificate used for signing purposes')
         c.argument('yes', options_list=['--yes', '-y'], help='Do not prompt for confirmation.', action='store_true')
         c.argument('tenant_id', options_list=['--tenant-id'],
                    help='The tenant id of the application.')

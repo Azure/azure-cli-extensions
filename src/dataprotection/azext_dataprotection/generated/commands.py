@@ -20,6 +20,7 @@ from azext_dataprotection.generated._client_factory import (
     cf_recovery_point,
     cf_job,
     cf_restorable_time_range,
+    cf_resource_guard,
 )
 
 
@@ -59,6 +60,12 @@ dataprotection_restorable_time_range = CliCommandType(
 )
 
 
+dataprotection_resource_guard = CliCommandType(
+    operations_tmpl='azext_dataprotection.vendored_sdks.dataprotection.operations._resource_guards_operations#ResourceGuardsOperations.{}',
+    client_factory=cf_resource_guard,
+)
+
+
 def load_command_table(self, _):
 
     with self.command_group(
@@ -87,6 +94,9 @@ def load_command_table(self, _):
         g.custom_command('delete', 'dataprotection_backup_instance_delete', supports_no_wait=True, confirmation=True)
         g.custom_command('adhoc-backup', 'dataprotection_backup_instance_adhoc_backup', supports_no_wait=True)
         g.custom_command('restore trigger', 'dataprotection_backup_instance_restore_trigger', supports_no_wait=True)
+        g.custom_command('resume-protection', 'dataprotection_backup_instance_resume_protection', supports_no_wait=True)
+        g.custom_command('stop-protection', 'dataprotection_backup_instance_stop_protection', supports_no_wait=True)
+        g.custom_command('suspend-backup', 'dataprotection_backup_instance_suspend_backup', supports_no_wait=True)
         g.custom_command(
             'validate-for-backup', 'dataprotection_backup_instance_validate_for_backup', supports_no_wait=True
         )
@@ -111,6 +121,13 @@ def load_command_table(self, _):
         client_factory=cf_restorable_time_range,
     ) as g:
         g.custom_command('find', 'dataprotection_restorable_time_range_find')
+
+    with self.command_group(
+        'dataprotection resource-guard', dataprotection_resource_guard, client_factory=cf_resource_guard
+    ) as g:
+        g.custom_show_command('show', 'dataprotection_resource_guard_show')
+        g.custom_command('create', 'dataprotection_resource_guard_create')
+        g.custom_command('delete', 'dataprotection_resource_guard_delete', confirmation=True)
 
     with self.command_group('dataprotection', is_experimental=True):
         pass

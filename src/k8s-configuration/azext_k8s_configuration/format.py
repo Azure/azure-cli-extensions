@@ -44,7 +44,8 @@ def __get_fluxconfig_table_row(result):
             ("scope", result["scope"]),
             ("provisioningState", result["provisioningState"]),
             ("complianceState", result["complianceState"]),
-            ("lastSourceUpdatedAt", result["lastSourceUpdatedAt"]),
+            ("statusUpdatedAt", result["statusUpdatedAt"]),
+            ("sourceUpdatedAt", result["sourceUpdatedAt"]),
         ]
     )
 
@@ -58,16 +59,11 @@ def fluxconfig_kustomization_show_table_format(results):
 
 
 def __get_fluxconfig_kustomization_table_row(key, value):
-    deps = []
-    for dep in value.get("dependsOn") or []:
-        if dep.get("kustomizationName"):
-            deps.append(dep["kustomizationName"])
-
     return OrderedDict(
         [
             ("name", key),
             ("path", value["path"]),
-            ("dependsOn", ",".join(deps)),
+            ("dependsOn", ",".join(value.get("dependsOn") or [])),
             ("syncInterval", format_duration(value["syncIntervalInSeconds"])),
             ("timeout", format_duration(value["timeoutInSeconds"])),
             ("prune", value["prune"]),

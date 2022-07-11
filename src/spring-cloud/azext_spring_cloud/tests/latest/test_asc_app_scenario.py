@@ -161,7 +161,7 @@ class AppCRUD(ScenarioTest):
             self.check('properties.activeDeployment.name', 'default'),
             self.check('properties.activeDeployment.properties.deploymentSettings.resourceRequests.cpu', '1'),
             self.check('properties.activeDeployment.properties.deploymentSettings.resourceRequests.memory', '2Gi'),
-            self.check('properties.url', 'https://cli-unittest-{app}.asc-test.net')
+            self.check('properties.url', 'https://{serviceName}-{app}.asc-test.net')
         ])
 
         # green deployment not copy settings from active

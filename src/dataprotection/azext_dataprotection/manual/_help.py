@@ -55,6 +55,14 @@ helps['dataprotection backup-instance list-from-resourcegraph'] = """
         text: az dataprotection backup-instance list-from-resourcegraph --resource-groups resourceGroup --vaults vault --protection-status ProtectionError --datasource-type AzureDisk
 """
 
+helps['dataprotection backup-instance update-msi-permissions'] = """
+    type: command
+    short-summary: Assign the required permissions needed to successfully enable backup for the datasource.
+    examples:
+      - name: Assign the required permissions needed to successfully enable backup for the datasource.
+        text: az dataprotection backup-instance update-msi-permissions --backup-instance backup_inst.json --resource-group samarth_resource_group --vault-name samarthbackupvault --datasource-type AzureDisk --operation Backup --permissions-scope ResourceGroup
+"""
+
 helps['dataprotection backup-policy get-default-policy-template'] = """
     type: command
     short-summary: Get default policy template for a given datasource type.
@@ -205,6 +213,32 @@ helps['dataprotection backup-vault list'] = """
         text: az dataprotection backup-vault list
       - name: List backup vault in a resource group
         text: az dataprotection backup-vault list -g sarath-rg
+"""
+
+helps['dataprotection resource-guard list'] = """
+    type: command
+    short-summary:  Gets list of ResourceGuards in a subscription or in a resource group.
+    examples:
+      - name: List ResourceGuards in a subscription
+        text: az dataprotection resource-guard list
+      - name: List ResourceGuards in a resource group
+        text: az dataprotection resource-guard list -g sarath-rg
+"""
+
+helps['dataprotection resource-guard list-protected-operations'] = """
+    type: command
+    short-summary:  Lists protected operations associated with a ResourceGuard .
+    examples:
+      - name: List ResourceGuard protected operations
+        text: az dataprotection resource-guard list-protected-operations --resource-group "SampleResourceGroup" --resource-guard-name "swaggerExample" --resource-type "Microsoft.RecoveryServices/vaults"
+"""
+
+helps['dataprotection resource-guard update'] = """
+    type: command
+    short-summary:  Updates protected operations associated with a ResourceGuard .
+    examples:
+      - name: Update ResourceGuard
+        text: az dataprotection resource-guard update --resource-group "SampleResourceGroup" --resource-guard-name "swaggerExample" --resource-type "Microsoft.RecoveryServices/vaults" --critical-operation-exclusion-list deleteProtection getSecurityPIN updatePolicy
 """
 
 helps['dataprotection backup-instance restore trigger'] = """

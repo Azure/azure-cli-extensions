@@ -10,7 +10,7 @@ from codecs import open
 from setuptools import setup, find_packages
 
 # HISTORY.rst entry.
-VERSION = '1.1.0'
+VERSION = '1.1.2'
 try:
     from azext_communication.manual.version import VERSION
 except ImportError:
@@ -49,7 +49,7 @@ setup(
     description='Microsoft Azure Command-Line Tools CommunicationServiceManagementClient Extension',
     author='Microsoft Corporation',
     author_email='azpycli@microsoft.com',
-    url='https://github.com/Azure/azure-cli-extensions/tree/master/src/communication',
+    url='https://github.com/Azure/azure-cli-extensions/tree/main/src/communication',
     long_description=README + '\n\n' + HISTORY,
     license='MIT',
     classifiers=CLASSIFIERS,

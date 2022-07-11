@@ -25,6 +25,8 @@ from .operations import OutputsOperations
 from .operations import TransformationsOperations
 from .operations import FunctionsOperations
 from .operations import SubscriptionsOperations
+from .operations import ClustersOperations
+from .operations import PrivateEndpointsOperations
 from . import models
 
 
@@ -45,6 +47,10 @@ class StreamAnalyticsManagementClient(object):
     :vartype functions: stream_analytics_management_client.operations.FunctionsOperations
     :ivar subscriptions: SubscriptionsOperations operations
     :vartype subscriptions: stream_analytics_management_client.operations.SubscriptionsOperations
+    :ivar clusters: ClustersOperations operations
+    :vartype clusters: stream_analytics_management_client.operations.ClustersOperations
+    :ivar private_endpoints: PrivateEndpointsOperations operations
+    :vartype private_endpoints: stream_analytics_management_client.operations.PrivateEndpointsOperations
     :param credential: Credential needed for the client to connect to Azure.
     :type credential: ~azure.core.credentials.TokenCredential
     :param subscription_id: The ID of the target subscription.
@@ -84,6 +90,10 @@ class StreamAnalyticsManagementClient(object):
         self.functions = FunctionsOperations(
             self._client, self._config, self._serialize, self._deserialize)
         self.subscriptions = SubscriptionsOperations(
+            self._client, self._config, self._serialize, self._deserialize)
+        self.clusters = ClustersOperations(
+            self._client, self._config, self._serialize, self._deserialize)
+        self.private_endpoints = PrivateEndpointsOperations(
             self._client, self._config, self._serialize, self._deserialize)
 
     def close(self):
