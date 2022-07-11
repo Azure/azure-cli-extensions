@@ -14,7 +14,7 @@ from azext_aks_preview.tests.latest.custom_preparers import (
 )
 from azext_aks_preview.tests.latest.recording_processors import KeyReplacer
 from azure.cli.command_modules.acs._format import version_to_tuple
-from azure.cli.core.azclierror import AzureInternalError, BadRequestError
+from azure.cli.core.azclierror import AzureInternalError, BadRequestError, MutuallyExclusiveArgumentError
 from azure.cli.testsdk import CliTestError, ScenarioTest, live_only
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 from azure.core.exceptions import HttpResponseError
@@ -320,6 +320,25 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         self.cmd(update_cmd, checks=[
             self.check('enableNamespaceResources', False)
         ])
+    
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='eastus')
+    def test_aks_update_enable_disable_namespaces(self, resource_group, resource_group_location="eastus"):
+        aks_name = self.create_random_name('cliakstest', 16)
+        self.kwargs.update({
+            'resource_group': resource_group,
+            'name': aks_name,
+            'ssh_key_value': self.generate_ssh_keys()
+        })
+        
+        create_cmd = 'aks create --resource-group={resource_group} --name={name} --ssh-key-value={ssh_key_value}'
+        self.cmd(create_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+        ])
+
+        update_cmd = 'aks update --resource-group={resource_group} --name={name} --enable-namespace-resources --disable-namespace-resources'
+        with self.assertRaises(MutuallyExclusiveArgumentError):
+            self.cmd(update_cmd)
 
     @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
     def test_aks_get_credentials_at_namespace_scope(self, resource_group):
