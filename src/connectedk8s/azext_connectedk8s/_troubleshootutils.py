@@ -76,13 +76,13 @@ def fetch_connected_cluster_resource(filepath_with_timestamp, connected_cluster,
     try:
 
         # Path to add the connected_cluster resource
-        connected_cluster_resource_path = os.path.join(filepath_with_timestamp, "Connected_cluster_resource.txt")
+        connected_cluster_resource_file_path = os.path.join(filepath_with_timestamp, "Connected_cluster_resource.txt")
         if storage_space_available:
 
             # If storage space is available then obly store the connected cluster resource
-            with open(connected_cluster_resource_path, 'w+') as cc:
+            with open(connected_cluster_resource_file_path, 'w+') as cc:
                 cc.write(str(connected_cluster))
-        return consts.Passed, storage_space_available
+        return consts.Diagnostic_Check_Passed, storage_space_available
 
     # For handling storage or OS exception that may occur during the execution
     except OSError as e:
@@ -101,7 +101,7 @@ def fetch_connected_cluster_resource(filepath_with_timestamp, connected_cluster,
         telemetry.set_exception(exception=e, fault_type=consts.Connected_Cluster_Resource_Fault_Type, summary="Eror occure while storing the connected cluster resource logs")
         diagnoser_output.append("An exception has occured while trying to store the connected cluster resource logs from the cluster. Exception: {}".format(str(e)) + "\n")
 
-    return consts.Failed, storage_space_available
+    return consts.Diagnostic_Check_Failed, storage_space_available
 
 
 def retrieve_arc_agents_logs(corev1_api_instance, filepath_with_timestamp, storage_space_available):
@@ -110,10 +110,10 @@ def retrieve_arc_agents_logs(corev1_api_instance, filepath_with_timestamp, stora
     try:
 
         if storage_space_available:
-            # To retrieve all of the arc agents pods that are presesnt in the Cluster
+            # To retrieve all of the arc agents pods that are present in the Cluster
             arc_agents_pod_list = corev1_api_instance.list_namespaced_pod(namespace="azure-arc")
 
-            # Traversing thorugh all agents
+            # Traversing through all agents
             for each_agent_pod in arc_agents_pod_list.items:
 
                 # Fethcing the current Pod name and creating a folder with that name inside the timestamp folder
@@ -148,7 +148,7 @@ def retrieve_arc_agents_logs(corev1_api_instance, filepath_with_timestamp, stora
                     with open(arc_agent_container_logs_path, 'w+') as container_file:
                         container_file.write(str(container_log))
 
-        return consts.Passed, storage_space_available
+        return consts.Diagnostic_Check_Passed, storage_space_available
 
     # For handling storage or OS exception that may occur during the execution
     except OSError as e:
@@ -167,7 +167,7 @@ def retrieve_arc_agents_logs(corev1_api_instance, filepath_with_timestamp, stora
         telemetry.set_exception(exception=e, fault_type=consts.Arc_Agents_Logger_Fault_Type, summary="Error occured in arc agents logger")
         diagnoser_output.append("An exception has occured while trying to fetch the azure arc agents logs from the cluster. Exception: {}".format(str(e)) + "\n")
 
-    return consts.Failed, storage_space_available
+    return consts.Diagnostic_Check_Failed, storage_space_available
 
 
 def retrieve_arc_agents_event_logs(filepath_with_timestamp, storage_space_available, kubectl_client_location):
@@ -200,7 +200,7 @@ def retrieve_arc_agents_event_logs(filepath_with_timestamp, storage_space_availa
                 for events in events_json["items"]:
                         event_log.write(str(events) + "\n")
 
-            return consts.Passed, storage_space_available
+            return consts.Diagnostic_Check_Passed, storage_space_available
 
     # For handling storage or OS exception that may occur during the execution
     except OSError as e:
@@ -219,7 +219,7 @@ def retrieve_arc_agents_event_logs(filepath_with_timestamp, storage_space_availa
         telemetry.set_exception(exception=e, fault_type=consts.Arc_Agents_Events_Logger_Fault_Type, summary="Error occured in arc agents events logger")
         diagnoser_output.append("An exception has occured while trying to fetch the events occured in azure-arc namespace from the cluster. Exception: {}".format(str(e)) + "\n")
 
-    return consts.Failed, storage_space_available
+    return consts.Diagnostic_Check_Failed, storage_space_available
 
 
 def retrieve_deployments_logs(appv1_api_instance, filepath_with_timestamp, storage_space_available):
@@ -250,7 +250,7 @@ def retrieve_deployments_logs(appv1_api_instance, filepath_with_timestamp, stora
                 with open(deployment_logs_path, 'w+') as deployment_file:
                     deployment_file.write(str(deployment.status))
 
-        return consts.Passed, storage_space_available
+        return consts.Diagnostic_Check_Passed, storage_space_available
 
     # For handling storage or OS exception that may occur during the execution
     except OSError as e:
@@ -269,7 +269,7 @@ def retrieve_deployments_logs(appv1_api_instance, filepath_with_timestamp, stora
         telemetry.set_exception(exception=e, fault_type=consts.Arc_Deployments_Logger_Fault_Type, summary="Error occured in deployments logger")
         diagnoser_output.append("An exception has occured while trying to fetch the azure arc deployment logs from the cluster. Exception: {}".format(str(e)) + "\n")
 
-    return consts.Failed, storage_space_available
+    return consts.Diagnostic_Check_Failed, storage_space_available
 
 
 def check_agent_state(corev1_api_instance, filepath_with_timestamp, storage_space_available):
@@ -343,14 +343,14 @@ def check_agent_state(corev1_api_instance, filepath_with_timestamp, storage_spac
         if sufficient_resource_for_agents is False:
             print("Error: One or more Azure Arc agents are not in running state. It may be caused due to insufficient resource availability on the cluster.\n")
             diagnoser_output.append("Error: One or more Azure Arc agents are not in running state. It may be caused due to insufficient resource availability on the cluster.\n")
-            return consts.Failed, storage_space_available, all_agents_stuck, sufficient_resource_for_agents
+            return consts.Diagnostic_Check_Failed, storage_space_available, all_agents_stuck, sufficient_resource_for_agents
 
         elif all_agent_containers_ready is False:
             print("Error: One or more agents in the Azure Arc are not fully running.\n")
             diagnoser_output.append("Error: One or more agents in the Azure Arc are not fully runnning.\n")
-            return consts.Failed, storage_space_available, all_agents_stuck, sufficient_resource_for_agents
+            return consts.Diagnostic_Check_Failed, storage_space_available, all_agents_stuck, sufficient_resource_for_agents
 
-        return consts.Passed, storage_space_available, all_agents_stuck, sufficient_resource_for_agents
+        return consts.Diagnostic_Check_Passed, storage_space_available, all_agents_stuck, sufficient_resource_for_agents
 
     # For handling storage or OS exception that may occur during the execution
     except OSError as e:
@@ -369,7 +369,7 @@ def check_agent_state(corev1_api_instance, filepath_with_timestamp, storage_spac
         telemetry.set_exception(exception=e, fault_type=consts.Agent_State_Check_Fault_Type, summary="Error ocuured while performing the agent state check")
         diagnoser_output.append("An exception has occured while trying to check the azure arc agents state in the cluster. Exception: {}".format(str(e)) + "\n")
 
-    return consts.Incomplete, storage_space_available, all_agents_stuck, sufficient_resource_for_agents
+    return consts.Diagnostic_Check_Incomplete, storage_space_available, all_agents_stuck, sufficient_resource_for_agents
 
 
 def check_agent_version(connected_cluster, azure_arc_agent_version):
@@ -379,7 +379,7 @@ def check_agent_version(connected_cluster, azure_arc_agent_version):
 
         # If the agent version in the connected cluster resource is none skip the check
         if(connected_cluster.agent_version is None):
-            return consts.Incomplete
+            return consts.Diagnostic_Check_Incomplete
 
         # To get user agent verison and the latest agent version
         user_agent_version = connected_cluster.agent_version
@@ -390,9 +390,9 @@ def check_agent_version(connected_cluster, azure_arc_agent_version):
         if((int(current_user_version[0]) < int(latest_agent_version[0])) or (int(latest_agent_version[1]) - int(current_user_version[1]) > 2)):
             logger.warning("We found that you are on an older agent version that is not supported.\n Please visit this link to know the agent version support policy 'https://docs.microsoft.com/en-us/azure/azure-arc/kubernetes/agent-upgrade#version-support-policy'.\n")
             diagnoser_output.append("We found that you are on an older agent version that is not supported.\n Please visit this link to know the agent version support policy 'https://docs.microsoft.com/en-us/azure/azure-arc/kubernetes/agent-upgrade#version-support-policy'.\n")
-            return consts.Failed
+            return consts.Diagnostic_Check_Failed
 
-        return consts.Passed
+        return consts.Diagnostic_Check_Passed
 
     # To handle any exception that may occur during the execution
     except Exception as e:
@@ -400,7 +400,7 @@ def check_agent_version(connected_cluster, azure_arc_agent_version):
         telemetry.set_exception(exception=e, fault_type=consts.Agent_Version_Check_Fault_Type, summary="Error occured while performing the agent version check")
         diagnoser_output.append("An exception has occured while trying to check the azure arc agents version in the cluster. Exception: {}".format(str(e)) + "\n")
 
-    return consts.Incomplete
+    return consts.Diagnostic_Check_Incomplete
 
 
 def check_diagnoser_container(corev1_api_instance, batchv1_api_instance, filepath_with_timestamp, storage_space_available, absolute_path, sufficient_resource_for_agents, helm_client_location, kubectl_client_location, release_namespace, security_policy_present):
@@ -411,7 +411,7 @@ def check_diagnoser_container(corev1_api_instance, batchv1_api_instance, filepat
         if sufficient_resource_for_agents is False:
             logger.warning("Unable to execute the diagnoser job in the cluster. It may be caused due to insufficient resource availability on the cluster.\n")
             diagnoser_output.append("Unable to execute the diagnoser job in the cluster. It may be caused due to insufficient resource availability on the cluster.\n")
-            return consts.Incomplete, storage_space_available
+            return consts.Diagnostic_Check_Incomplete, storage_space_available
 
         # Setting DNS and Outbound Check as working
         dns_check = "Starting"
@@ -427,17 +427,17 @@ def check_diagnoser_container(corev1_api_instance, batchv1_api_instance, filepat
             dns_check, storage_space_available = check_cluster_DNS(diagnoser_container_log_list[-2], filepath_with_timestamp, storage_space_available)
             outbound_connectivity_check, storage_space_available = check_cluster_outbound_connectivity(diagnoser_container_log_list[-1], filepath_with_timestamp, storage_space_available)
         else:
-            return consts.Incomplete, storage_space_available
+            return consts.Diagnostic_Check_Incomplete, storage_space_available
 
         # If both the check passed then we will return Diagnoser checks Passed
-        if(dns_check == consts.Passed and outbound_connectivity_check == consts.Passed):
-            return consts.Passed, storage_space_available
+        if(dns_check == consts.Diagnostic_Check_Passed and outbound_connectivity_check == consts.Diagnostic_Check_Passed):
+            return consts.Diagnostic_Check_Passed, storage_space_available
 
         # If any of the check remain Incomplete than we will return Incomplete
-        elif(dns_check == consts.Incomplete or outbound_connectivity_check == consts.Incomplete):
-            return consts.Incomplete, storage_space_available
+        elif(dns_check == consts.Diagnostic_Check_Incomplete or outbound_connectivity_check == consts.Diagnostic_Check_Incomplete):
+            return consts.Diagnostic_Check_Incomplete, storage_space_available
         else:
-            return consts.Failed, storage_space_available
+            return consts.Diagnostic_Check_Failed, storage_space_available
 
     # To handle any exception that may occur during the execution
     except Exception as e:
@@ -445,7 +445,7 @@ def check_diagnoser_container(corev1_api_instance, batchv1_api_instance, filepat
         telemetry.set_exception(exception=e, fault_type=consts.Diagnoser_Container_Check_Fault_Type, summary="Error occured while performing the diagnoser container checks")
         diagnoser_output.append("An exception has occured while trying to perform diagnoser container check on the cluster. Exception: {}".format(str(e)) + "\n")
 
-    return consts.Incomplete, storage_space_available
+    return consts.Diagnostic_Check_Incomplete, storage_space_available
 
 
 def executing_diagnoser_job(corev1_api_instance, batchv1_api_instance, filepath_with_timestamp, storage_space_available, absolute_path, helm_client_location, kubectl_client_location, release_namespace, security_policy_present):
@@ -582,7 +582,7 @@ def executing_diagnoser_job(corev1_api_instance, batchv1_api_instance, filepath_
                 continue
 
         # Selecting the error message depending on the job getting scheduled, completed and the presence of  security policy
-        if (did_job_got_scheduled is False and security_policy_present == consts.Failed):
+        if (did_job_got_scheduled is False and security_policy_present == consts.Diagnostic_Check_Failed):
             logger.warning("Unable to schedule the diagnoser job in the kubernetes cluster. There might be a security policy or security context constraint (SCC) present which is preventing the deployment of azure-arc-diagnoser-job as it uses serviceaccount:azure-arc-troubleshoot-sa which doesnt have admin permissions.\nYou can whitelist it and then run the troubleshoot command again.\n")
             Popen(cmd_delete_job, stdout=PIPE, stderr=PIPE)
             diagnoser_output.append("Unable to schedule the diagnoser job in the kubernetes cluster. There might be a security policy or security context constraint (SCC) present which is preventing the deployment of azure-arc-diagnoser-job as it uses serviceaccount:azure-arc-troubleshoot-sa which doesnt have admin permissions.\nYou can whitelist it and then run the troubleshoot command again.\n")
@@ -677,14 +677,14 @@ def check_cluster_DNS(dns_check_log, filepath_with_timestamp, storage_space_avai
                 dns_check_path = os.path.join(filepath_with_timestamp, "DNS_Check.txt")
                 with open(dns_check_path, 'w+') as dns:
                     dns.write(dns_check_log + "\nWe found an issue with the DNS resolution on your cluster.")
-            return consts.Failed, storage_space_available
+            return consts.Diagnostic_Check_Failed, storage_space_available
 
         else:
             if storage_space_available:
                 dns_check_path = os.path.join(filepath_with_timestamp, "DNS_Check.txt")
                 with open(dns_check_path, 'w+') as dns:
                     dns.write(dns_check_log + "\nCluster DNS check passed successfully.")
-            return consts.Passed, storage_space_available
+            return consts.Diagnostic_Check_Passed, storage_space_available
 
     # For handling storage or OS exception that may occur during the execution
     except OSError as e:
@@ -703,7 +703,7 @@ def check_cluster_DNS(dns_check_log, filepath_with_timestamp, storage_space_avai
         telemetry.set_exception(exception=e, fault_type=consts.Cluster_DNS_Check_Fault_Type, summary="Error occured while performing cluster DNS check")
         diagnoser_output.append("An exception has occured while performing the DNS check on the cluster. Exception: {}".format(str(e)) + "\n")
 
-    return consts.Incomplete, storage_space_available
+    return consts.Diagnostic_Check_Incomplete, storage_space_available
 
 
 def check_cluster_outbound_connectivity(outbound_connectivity_check_log, filepath_with_timestamp, storage_space_available):
@@ -717,7 +717,7 @@ def check_cluster_outbound_connectivity(outbound_connectivity_check_log, filepat
                 outbound_connectivity_check_path = os.path.join(filepath_with_timestamp, "Outbound_Network_Connectivity_Check.txt")
                 with open(outbound_connectivity_check_path, 'w+') as outbound:
                     outbound.write("Response code " + outbound_connectivity_check_log + "\nOutbound network connectivity check passed successfully.")
-            return consts.Passed, storage_space_available
+            return consts.Diagnostic_Check_Passed, storage_space_available
         else:
             print("Error: We found an issue with outbound network connectivity from the cluster.\nIf your cluster is behind an outbound proxy server, please ensure that you have passed proxy paramaters during the onboarding of your cluster.\nFor more details visit 'https://docs.microsoft.com/en-us/azure/azure-arc/kubernetes/quickstart-connect-cluster?tabs=azure-cli#connect-using-an-outbound-proxy-server'.\nPlease ensure to meet the following network requirements 'https://docs.microsoft.com/en-us/azure/azure-arc/kubernetes/quickstart-connect-cluster?tabs=azure-cli#meet-network-requirements' \n")
             diagnoser_output.append("Error: We found an issue with outbound network connectivity from the cluster.\nIf your cluster is behind an outbound proxy server, please ensure that you have passed proxy paramaters during the onboarding of your cluster.\nFor more details visit 'https://docs.microsoft.com/en-us/azure/azure-arc/kubernetes/quickstart-connect-cluster?tabs=azure-cli#connect-using-an-outbound-proxy-server'.\nPlease ensure to meet the following network requirements 'https://docs.microsoft.com/en-us/azure/azure-arc/kubernetes/quickstart-connect-cluster?tabs=azure-cli#meet-network-requirements' \n")
@@ -725,7 +725,7 @@ def check_cluster_outbound_connectivity(outbound_connectivity_check_log, filepat
                 outbound_connectivity_check_path = os.path.join(filepath_with_timestamp, "Outbound_Network_Connectivity_Check.txt")
                 with open(outbound_connectivity_check_path, 'w+') as outbound:
                     outbound.write("Response code " + outbound_connectivity_check_log + "\nWe found an issue with Outbound network connectivity from the cluster.")
-            return consts.Failed, storage_space_available
+            return consts.Diagnostic_Check_Failed, storage_space_available
 
     # For handling storage or OS exception that may occur during the execution
     except OSError as e:
@@ -744,7 +744,7 @@ def check_cluster_outbound_connectivity(outbound_connectivity_check_log, filepat
         telemetry.set_exception(exception=e, fault_type=consts.Outbound_Connectivity_Check_Fault_Type, summary="Error occured while performing outbound connectivity check in the cluster")
         diagnoser_output.append("An exception has occured while performing the outbound connectivity check on the cluster. Exception: {}".format(str(e)) + "\n")
 
-    return consts.Incomplete, storage_space_available
+    return consts.Diagnostic_Check_Incomplete, storage_space_available
 
 
 def check_msi_certificate_presence(corev1_api_instance):
@@ -768,9 +768,9 @@ def check_msi_certificate_presence(corev1_api_instance):
         if not msi_cert_present:
             print("Error: Unable to pull MSI certificate. Please ensure to meet the following network requirements 'https://docs.microsoft.com/en-us/azure/azure-arc/kubernetes/quickstart-connect-cluster?tabs=azure-cli#meet-network-requirements'. \n")
             diagnoser_output.append("Error: Unable to pull MSI certificate. Please ensure to meet the following network requirements 'https://docs.microsoft.com/en-us/azure/azure-arc/kubernetes/quickstart-connect-cluster?tabs=azure-cli#meet-network-requirements'. \n")
-            return consts.Failed
+            return consts.Diagnostic_Check_Failed
 
-        return consts.Passed
+        return consts.Diagnostic_Check_Passed
 
     # To handle any exception that may occur during the execution
     except Exception as e:
@@ -778,7 +778,7 @@ def check_msi_certificate_presence(corev1_api_instance):
         telemetry.set_exception(exception=e, fault_type=consts.MSI_Cert_Check_Fault_Type, summary="Error occurred while trying to perform MSI ceritificate presence check right")
         diagnoser_output.append("An exception has occured while performing the msi certificate check on the cluster. Exception: {}".format(str(e)) + "\n")
 
-    return consts.Incomplete
+    return consts.Diagnostic_Check_Incomplete
 
 
 def check_cluster_security_policy(corev1_api_instance, helm_client_location, release_namespace):
@@ -819,8 +819,8 @@ def check_cluster_security_policy(corev1_api_instance, helm_client_location, rel
         if(cluster_connect_feature is True and kap_pod_present is False):
             print("Error: Unable to create Kube-aad-proxy deployment there might be a security policy or security context constraint (SCC) present which is preventing the deployment of kube-aad-proxy as it doesn't have admin privileges.\nKube aad proxy pod uses the azure-arc-kube-aad-proxy-sa service account, which doesn't have admin permissions but requires the permission to mount host path.\n ")
             diagnoser_output.append("Error: Unable to create Kube-aad-proxy deployment there might be a security policy or security context constraint (SCC) present which is preventing the deployment of kube-aad-proxy as it doesn't have admin privileges.\nKube aad proxy pod uses the azure-arc-kube-aad-proxy-sa service account, which doesn't have admin permissions but requires the permission to mount host path.\n")
-            return consts.Failed
-        return consts.Passed
+            return consts.Diagnostic_Check_Failed
+        return consts.Diagnostic_Check_Passed
 
     # To handle any exception that may occur during the execution
     except Exception as e:
@@ -828,7 +828,7 @@ def check_cluster_security_policy(corev1_api_instance, helm_client_location, rel
         telemetry.set_exception(exception=e, fault_type=consts.Cluster_Security_Policy_Check_Fault_Type, summary="Error occurred while trying to perform KAP ceritificate presence check right")
         diagnoser_output.append("An exception has occured while trying to performing KAP cluster security policy check in the cluster. Exception: {}".format(str(e)) + "\n")
 
-    return consts.Incomplete
+    return consts.Diagnostic_Check_Incomplete
 
 
 def check_kap_cert(corev1_api_instance):
@@ -861,9 +861,9 @@ def check_kap_cert(corev1_api_instance):
         if not kap_cert_present and kap_pod_status == "ContainerCreating":
             print("Error: Unable to pull Kube aad proxy certificate.\n")
             diagnoser_output.append("Error: Unable to pull Kube aad proxy certificate.\n")
-            return consts.Failed
+            return consts.Diagnostic_Check_Failed
 
-        return consts.Passed
+        return consts.Diagnostic_Check_Passed
 
     # To handle any exception that may occur during the execution
     except Exception as e:
@@ -871,7 +871,7 @@ def check_kap_cert(corev1_api_instance):
         telemetry.set_exception(exception=e, fault_type=consts.KAP_Cert_Check_Fault_Type, summary="Error occured while trying to pull kap cert certificate")
         diagnoser_output.append("An exception has occured while performing kube aad proxy certificate check on the cluster. Exception: {}".format(str(e)) + "\n")
 
-    return consts.Incomplete
+    return consts.Diagnostic_Check_Incomplete
 
 
 def check_msi_expiry(connected_cluster):
@@ -889,9 +889,9 @@ def check_msi_expiry(connected_cluster):
         if (Expiry_date < Current_date):
             print("Error: Your MSI certificate has expired. To resolve this issue you can delete the cluster and reconnect it to azure arc.\n")
             diagnoser_output.append("Error: Your MSI certificate has expired. To resolve this issue you can delete the cluster and reconnect it to azure arc.\n")
-            return consts.Failed
+            return consts.Diagnostic_Check_Failed
 
-        return consts.Passed
+        return consts.Diagnostic_Check_Passed
 
     # To handle any exception that may occur during the execution
     except Exception as e:
@@ -899,7 +899,7 @@ def check_msi_expiry(connected_cluster):
         telemetry.set_exception(exception=e, fault_type=consts.MSI_Cert_Expiry_Check_Fault_Type, summary="Error occured while trying to perform the MSI cert expiry check")
         diagnoser_output.append("An exception has occured while performing msi expiry check on the cluster. Exception: {}".format(str(e)) + "\n")
 
-    return consts.Incomplete
+    return consts.Diagnostic_Check_Incomplete
 
 
 def describe_stuck_agent_log(filepath_with_timestamp, corev1_api_instance, agent_pod_name, storage_space_available):
@@ -975,7 +975,7 @@ def cli_output_logger(filepath_with_timestamp, storage_space_available, flag):
                 with open(cli_output_logger_path, 'w+') as cli_output_writer:
                     cli_output_writer.write("Process terminated externally.\n")
 
-        return consts.Passed
+        return consts.Diagnostic_Check_Passed
 
     # For handling storage or OS exception that may occur during the execution
     except OSError as e:
@@ -989,4 +989,4 @@ def cli_output_logger(filepath_with_timestamp, storage_space_available, flag):
         logger.warning("An exception has occured while trying to store the diagnoser results. Exception: {}".format(str(e)) + "\n")
         telemetry.set_exception(exception=e, fault_type=consts.Diagnoser_Result_Fault_Type, summary="Error while storing the diagnoser results")
 
-    return consts.Failed
+    return consts.Diagnostic_Check_Failed

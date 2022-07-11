@@ -2062,7 +2062,7 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
         sufficient_resource_for_agents = True
 
         # Setting default values for all checks as True
-        diagnostic_checks = {"retrieved_arc_agents_event_logs": consts.Incomplete, "retrieved_arc_agents_logs": consts.Incomplete, "retrieved_deployments_logs": consts.Incomplete, "fetch_connected_cluster_resource": consts.Incomplete, "diagnoser_results_logger": consts.Incomplete, "msi_cert_expiry_check": consts.Incomplete, "kap_security_policy_check": consts.Incomplete, "kap_cert_check": consts.Incomplete, "diagnoser_check": consts.Incomplete, "msi_cert_check": consts.Incomplete, "agent_version_check": consts.Incomplete, "arc_agent_state_check": consts.Incomplete}
+        diagnostic_checks = {"retrieved_arc_agents_event_logs": consts.Diagnostic_Check_Incomplete, "retrieved_arc_agents_logs": consts.Diagnostic_Check_Incomplete, "retrieved_deployments_logs": consts.Diagnostic_Check_Incomplete, "fetch_connected_cluster_resource": consts.Diagnostic_Check_Incomplete, "diagnoser_results_logger": consts.Diagnostic_Check_Incomplete, "msi_cert_expiry_check": consts.Diagnostic_Check_Incomplete, "kap_security_policy_check": consts.Diagnostic_Check_Incomplete, "kap_cert_check": consts.Diagnostic_Check_Incomplete, "diagnoser_check": consts.Diagnostic_Check_Incomplete, "msi_cert_check": consts.Diagnostic_Check_Incomplete, "agent_version_check": consts.Diagnostic_Check_Incomplete, "arc_agent_state_check": consts.Diagnostic_Check_Incomplete}
 
         # Setting kube_config
         kube_config = set_kube_config(kube_config)
@@ -2105,7 +2105,7 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
         # Generate the diagnostic folder in a given location
         filepath_with_timestamp, diagnostic_folder_status = troubleshootutils.create_folder_diagnosticlogs(time_stamp)
 
-        if(diagnostic_folder_status != consts.Folder_Created):  
+        if(diagnostic_folder_status != consts.Folder_Created):
             storage_space_available = False
 
         # To store the connected cluster resource logs in the diagnostic foler
@@ -2137,15 +2137,15 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
                 diagnostic_checks["msi_cert_check"] = troubleshootutils.check_msi_certificate_presence(corev1_api_instance)
 
             # If msi certificate present then only we will perform msi certificate expiry check
-            if diagnostic_checks["msi_cert_check"] == consts.Passed:
+            if diagnostic_checks["msi_cert_check"] == consts.Diagnostic_Check_Passed:
                 diagnostic_checks["msi_cert_expiry_check"] = troubleshootutils.check_msi_expiry(connected_cluster)
 
             # If msi certificate present then only we will do Kube aad proxy checks
-            if diagnostic_checks["msi_cert_check"] == consts.Passed:
+            if diagnostic_checks["msi_cert_check"] == consts.Diagnostic_Check_Passed:
                 diagnostic_checks["kap_security_policy_check"] = troubleshootutils.check_cluster_security_policy(corev1_api_instance, helm_client_location, release_namespace)
 
                 # If no security policy is present in cluster then we can check for the Kube aad proxy certificate
-                if diagnostic_checks["kap_security_policy_check"] == consts.Passed:
+                if diagnostic_checks["kap_security_policy_check"] == consts.Diagnostic_Check_Passed:
                     diagnostic_checks["kap_cert_check"] = troubleshootutils.check_kap_cert(corev1_api_instance)
 
             # Checking whether optional extra values file has been provided.
@@ -2187,7 +2187,7 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
         # If all the checks passed then display no error found
         all_checks_passed = True
         for checks in diagnostic_checks:
-            if diagnostic_checks[checks] != consts.Passed:
+            if diagnostic_checks[checks] != consts.Diagnostic_Check_Passed:
                 all_checks_passed = False
 
         if storage_space_available:
