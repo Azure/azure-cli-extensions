@@ -45,7 +45,7 @@ class Update(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.endpoint_name = AAZStrArg(
-            options=["--endpoint-name", "--name", "-n"],
+            options=["-n", "--name", "--endpoint-name"],
             help="The name of the endpoint resource.",
             required=True,
             id_part="child_name_1",
@@ -54,30 +54,48 @@ class Update(AAZCommand):
             required=True,
         )
         _args_schema.storage_mover_name = AAZStrArg(
-            options=["--storage-mover-name", "-s"],
+            options=["-s", "--storage-mover-name"],
             help="The name of the Storage Mover resource.",
             required=True,
             id_part="name",
-        )
-        _args_schema.blob_container = AAZObjectArg(
-            options=["--blob-container"],
-            help="Storage blob container",
-        )
-
-        blob_container = cls._args_schema.blob_container
-        blob_container.storage_account_resource_id = AAZStrArg(
-            options=["storage-account-resource-id"],
-            help="The Azure Resource ID of the storage account that is the target destination.",
         )
 
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
+        _args_schema.azure_storage_blob_container = AAZObjectArg(
+            options=["--azure-storage-blob-container"],
+            arg_group="Properties",
+        )
+        _args_schema.nfs_mount = AAZObjectArg(
+            options=["--nfs-mount"],
+            arg_group="Properties",
+        )
         _args_schema.description = AAZStrArg(
             options=["--description"],
             arg_group="Properties",
             help="A description for the endpoint.",
             nullable=True,
+        )
+
+        azure_storage_blob_container = cls._args_schema.azure_storage_blob_container
+        azure_storage_blob_container.blob_container_name = AAZStrArg(
+            options=["blob-container-name"],
+            help="The name of the Storage blob container that is the target destination.",
+        )
+        azure_storage_blob_container.storage_account_resource_id = AAZStrArg(
+            options=["storage-account-resource-id"],
+            help="The Azure Resource ID of the storage account that is the target destination.",
+        )
+
+        nfs_mount = cls._args_schema.nfs_mount
+        nfs_mount.host = AAZStrArg(
+            options=["host"],
+            help="The host name or IP address of the server exporting the file system.",
+        )
+        nfs_mount.remote_export = AAZStrArg(
+            options=["remote-export"],
+            help="The directory being exported from the server.",
         )
         return cls._args_schema
 
@@ -293,11 +311,20 @@ class Update(AAZCommand):
             properties = _builder.get(".properties")
             if properties is not None:
                 properties.set_prop("description", AAZStrType, ".description")
+                properties.set_const("endpointType", "AzureStorageBlobContainer", AAZStrType, ".azure_storage_blob_container", typ_kwargs={"flags": {"required": True}})
+                properties.set_const("endpointType", "NfsMount", AAZStrType, ".nfs_mount", typ_kwargs={"flags": {"required": True}})
                 properties.discriminate_by("endpointType", "AzureStorageBlobContainer")
+                properties.discriminate_by("endpointType", "NfsMount")
 
             disc_azure_storage_blob_container = _builder.get(".properties{endpointType:AzureStorageBlobContainer}")
             if disc_azure_storage_blob_container is not None:
-                disc_azure_storage_blob_container.set_prop("storageAccountResourceId", AAZStrType, ".blob_container.storage_account_resource_id", typ_kwargs={"flags": {"required": True}})
+                disc_azure_storage_blob_container.set_prop("blobContainerName", AAZStrType, ".azure_storage_blob_container.blob_container_name", typ_kwargs={"flags": {"required": True}})
+                disc_azure_storage_blob_container.set_prop("storageAccountResourceId", AAZStrType, ".azure_storage_blob_container.storage_account_resource_id", typ_kwargs={"flags": {"required": True}})
+
+            disc_nfs_mount = _builder.get(".properties{endpointType:NfsMount}")
+            if disc_nfs_mount is not None:
+                disc_nfs_mount.set_prop("host", AAZStrType, ".nfs_mount.host", typ_kwargs={"flags": {"required": True}})
+                disc_nfs_mount.set_prop("remoteExport", AAZStrType, ".nfs_mount.remote_export", typ_kwargs={"flags": {"required": True}})
 
             return _instance_value
 

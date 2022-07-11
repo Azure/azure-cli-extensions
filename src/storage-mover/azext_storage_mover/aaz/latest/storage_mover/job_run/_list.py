@@ -42,12 +42,12 @@ class List(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.job_definition_name = AAZStrArg(
-            options=["--job-definition-name", "-d"],
+            options=["-d", "--job-definition-name"],
             help="The name of the job definition resource.",
             required=True,
         )
         _args_schema.project_name = AAZStrArg(
-            options=["--project-name", "-p"],
+            options=["-p", "--project-name"],
             help="The name of the project resource.",
             required=True,
         )
@@ -55,7 +55,7 @@ class List(AAZCommand):
             required=True,
         )
         _args_schema.storage_mover_name = AAZStrArg(
-            options=["--storage-mover-name", "-s"],
+            options=["-s", "--storage-mover-name"],
             help="The name of the Storage Mover resource.",
             required=True,
         )

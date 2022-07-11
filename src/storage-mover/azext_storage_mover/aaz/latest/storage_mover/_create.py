@@ -46,7 +46,7 @@ class Create(AAZCommand):
             required=True,
         )
         _args_schema.storage_mover_name = AAZStrArg(
-            options=["--storage-mover-name", "--name", "-n"],
+            options=["-n", "--name", "--storage-mover-name"],
             help="The name of the Storage Mover resource.",
             required=True,
             id_part="name",
@@ -67,6 +67,10 @@ class Create(AAZCommand):
         _args_schema.location = AAZResourceLocationArg(
             arg_group="StorageMover",
             help="The geo-location where the resource lives",
+            required=True,
+            fmt=AAZResourceLocationArgFormat(
+                resource_group_arg="resource_group",
+            ),
         )
         _args_schema.tags = AAZDictArg(
             options=["--tags"],
@@ -156,6 +160,7 @@ class Create(AAZCommand):
             _content_value, _builder = self.new_content_builder(
                 self.ctx.args,
                 typ=AAZObjectType,
+                typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
             _builder.set_prop("location", AAZStrType, ".location", typ_kwargs={"flags": {"required": True}})
             _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})

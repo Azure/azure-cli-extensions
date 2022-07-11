@@ -48,7 +48,7 @@ class Update(AAZCommand):
             required=True,
         )
         _args_schema.storage_mover_name = AAZStrArg(
-            options=["--storage-mover-name", "--name", "-n"],
+            options=["-n", "--name", "--storage-mover-name"],
             help="The name of the Storage Mover resource.",
             required=True,
             id_part="name",
@@ -67,6 +67,13 @@ class Update(AAZCommand):
         # define Arg Group "StorageMover"
 
         _args_schema = cls._args_schema
+        _args_schema.location = AAZResourceLocationArg(
+            arg_group="StorageMover",
+            help="The geo-location where the resource lives",
+            fmt=AAZResourceLocationArgFormat(
+                resource_group_arg="resource_group",
+            ),
+        )
         _args_schema.tags = AAZDictArg(
             options=["--tags"],
             arg_group="StorageMover",
@@ -75,7 +82,9 @@ class Update(AAZCommand):
         )
 
         tags = cls._args_schema.tags
-        tags.Element = AAZStrArg()
+        tags.Element = AAZStrArg(
+            nullable=True,
+        )
         return cls._args_schema
 
     def _execute_operations(self):
@@ -277,6 +286,7 @@ class Update(AAZCommand):
                 value=instance,
                 typ=AAZObjectType
             )
+            _builder.set_prop("location", AAZStrType, ".location", typ_kwargs={"flags": {"required": True}})
             _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
             _builder.set_prop("tags", AAZDictType, ".tags")
 

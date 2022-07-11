@@ -43,13 +43,13 @@ class Create(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.job_definition_name = AAZStrArg(
-            options=["--job-definition-name", "--name", "-n"],
+            options=["-n", "--name", "--job-definition-name"],
             help="The name of the job definition resource.",
             required=True,
             id_part="child_name_2",
         )
         _args_schema.project_name = AAZStrArg(
-            options=["--project-name", "-p"],
+            options=["-p", "--project-name"],
             help="The name of the project resource.",
             required=True,
             id_part="child_name_1",
@@ -58,7 +58,7 @@ class Create(AAZCommand):
             required=True,
         )
         _args_schema.storage_mover_name = AAZStrArg(
-            options=["--storage-mover-name", "-s"],
+            options=["-s", "--storage-mover-name"],
             help="The name of the Storage Mover resource.",
             required=True,
             id_part="name",
@@ -191,6 +191,7 @@ class Create(AAZCommand):
             _content_value, _builder = self.new_content_builder(
                 self.ctx.args,
                 typ=AAZObjectType,
+                typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
             _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
 

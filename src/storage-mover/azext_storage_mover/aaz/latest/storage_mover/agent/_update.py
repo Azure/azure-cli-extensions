@@ -45,7 +45,7 @@ class Update(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.agent_name = AAZStrArg(
-            options=["--agent-name", "--name", "-n"],
+            options=["-n", "--name", "--agent-name"],
             help="The name of the agent resource.",
             required=True,
             id_part="child_name_1",
@@ -54,7 +54,7 @@ class Update(AAZCommand):
             required=True,
         )
         _args_schema.storage_mover_name = AAZStrArg(
-            options=["--storage-mover-name", "-s"],
+            options=["-s", "--storage-mover-name"],
             help="The name of the Storage Mover resource.",
             required=True,
             id_part="name",
@@ -63,6 +63,16 @@ class Update(AAZCommand):
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
+        _args_schema.arc_resource_id = AAZStrArg(
+            options=["--arc-resource-id"],
+            arg_group="Properties",
+            help="The fully qualified resource ID of the hybrid compute resource for the agent.",
+        )
+        _args_schema.arc_vm_uuid = AAZStrArg(
+            options=["--arc-vm-uuid"],
+            arg_group="Properties",
+            help="A GUID for this agent.",
+        )
         _args_schema.description = AAZStrArg(
             options=["--description"],
             arg_group="Properties",
@@ -282,6 +292,8 @@ class Update(AAZCommand):
 
             properties = _builder.get(".properties")
             if properties is not None:
+                properties.set_prop("arcResourceId", AAZStrType, ".arc_resource_id", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("arcVmUuid", AAZStrType, ".arc_vm_uuid", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("description", AAZStrType, ".description")
 
             return _instance_value

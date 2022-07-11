@@ -45,13 +45,13 @@ class Update(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.job_definition_name = AAZStrArg(
-            options=["--job-definition-name", "--name", "-n"],
+            options=["-n", "--name", "--job-definition-name"],
             help="The name of the job definition resource.",
             required=True,
             id_part="child_name_2",
         )
         _args_schema.project_name = AAZStrArg(
-            options=["--project-name", "-p"],
+            options=["-p", "--project-name"],
             help="The name of the project resource.",
             required=True,
             id_part="child_name_1",
@@ -60,7 +60,7 @@ class Update(AAZCommand):
             required=True,
         )
         _args_schema.storage_mover_name = AAZStrArg(
-            options=["--storage-mover-name", "-s"],
+            options=["-s", "--storage-mover-name"],
             help="The name of the Storage Mover resource.",
             required=True,
             id_part="name",
@@ -87,6 +87,16 @@ class Update(AAZCommand):
             arg_group="Properties",
             help="A description for the job definition.",
             nullable=True,
+        )
+        _args_schema.source_name = AAZStrArg(
+            options=["--source-name"],
+            arg_group="Properties",
+            help="The name of the source endpoint.",
+        )
+        _args_schema.target_name = AAZStrArg(
+            options=["--target-name"],
+            arg_group="Properties",
+            help="The name of the target endpoint.",
         )
         return cls._args_schema
 
@@ -312,6 +322,8 @@ class Update(AAZCommand):
                 properties.set_prop("agentName", AAZStrType, ".agent_name")
                 properties.set_prop("copyMode", AAZStrType, ".copy_mode")
                 properties.set_prop("description", AAZStrType, ".description")
+                properties.set_prop("sourceName", AAZStrType, ".source_name", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("targetName", AAZStrType, ".target_name", typ_kwargs={"flags": {"required": True}})
 
             return _instance_value
 
