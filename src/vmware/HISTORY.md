@@ -1,5 +1,12 @@
 # Release History
 
+## 4.0.3 (2022-07)
+
+- Add `az vmware private-cloud enable-cmk-encryption`
+- Add `az vmware private-cloud disable-cmk-encryption`
+- Deprecate `az vmware private-cloud add-cmk-encryption`
+- Deprecate `az vmware private-cloud delete-cmk-encryption`
+
 ## 4.0.2 (2022-02)
 
 - Update `az vmware datastore disk-pool-volume create` to only accept one argument for --mount-option
