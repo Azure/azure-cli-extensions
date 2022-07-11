@@ -91,15 +91,15 @@ def fetch_connected_cluster_resource(filepath_with_timestamp, connected_cluster,
             telemetry.set_exception(exception=e, fault_type=consts.No_Storage_Space_Available_Fault_Type, summary="No space left on device")
             shutil.rmtree(filepath_with_timestamp, ignore_errors=False, onerror=None)
         else:
-            logger.warning("An exception has occured while trying to store the connected cluster resource from the cluster. Exception: {}".format(str(e)) + "\n")
-            telemetry.set_exception(exception=e, fault_type=consts.Connected_Cluster_Resource_Fault_Type, summary="Error occured while fetching the Get output of connected cluster")
-            diagnoser_output.append("An exception has occured while trying to store the connected cluster resource from the cluster. Exception: {}".format(str(e)) + "\n")
+            logger.warning("An exception has occured while trying to store the get output of connected cluster resource in diagnostic logs folder. Exception: {}".format(str(e)) + "\n")
+            telemetry.set_exception(exception=e, fault_type=consts.Connected_Cluster_Resource_Fetch_Fault_Type, summary="Error occured while fetching the Get output of connected cluster")
+            diagnoser_output.append("An exception has occured while trying to store the get output of connected cluster resource in diagnostic logs folder. Exception: {}".format(str(e)) + "\n")
 
     # To handle any exception that may occur during the execution
     except Exception as e:
-        logger.warning("An exception has occured while trying to store the connected cluster resource logs from the cluster. Exception: {}".format(str(e)) + "\n")
-        telemetry.set_exception(exception=e, fault_type=consts.Connected_Cluster_Resource_Fault_Type, summary="Eror occure while storing the connected cluster resource logs")
-        diagnoser_output.append("An exception has occured while trying to store the connected cluster resource logs from the cluster. Exception: {}".format(str(e)) + "\n")
+        logger.warning("An exception has occured while trying to store the get output of connected cluster resource in diagnostic logs folder. Exception: {}".format(str(e)) + "\n")
+        telemetry.set_exception(exception=e, fault_type=consts.Connected_Cluster_Resource_Fetch_Fault_Type, summary="Error occured while fetching the Get output of connected cluster")
+        diagnoser_output.append("An exception has occured while trying to store the get output of connected cluster resource in diagnostic logs folder. Exception: {}".format(str(e)) + "\n")
 
     return consts.Diagnostic_Check_Failed, storage_space_available
 
@@ -136,13 +136,10 @@ def retrieve_arc_agents_logs(corev1_api_instance, filepath_with_timestamp, stora
 
                 # Traversing through all of the containers present inside each pods
                 for each_container in each_agent_pod.spec.containers:
-
                     # Fetching the Container name
                     container_name = each_container.name
-
                     # Creating a text file with the name of the container and adding that containers logs in it
                     container_log = corev1_api_instance.read_namespaced_pod_log(name=agent_name, container=container_name, namespace="azure-arc")
-
                     # Path to add the arc agents container logs.
                     arc_agent_container_logs_path = os.path.join(agent_name_logs_path, container_name + ".txt")
                     with open(arc_agent_container_logs_path, 'w+') as container_file:
@@ -158,13 +155,13 @@ def retrieve_arc_agents_logs(corev1_api_instance, filepath_with_timestamp, stora
             shutil.rmtree(filepath_with_timestamp, ignore_errors=False, onerror=None)
         else:
             logger.warning("An exception has occured while trying to fetch the azure arc agents logs from the cluster. Exception: {}".format(str(e)) + "\n")
-            telemetry.set_exception(exception=e, fault_type=consts.Arc_Agents_Logger_Fault_Type, summary="Error occured in arc agents logger")
+            telemetry.set_exception(exception=e, fault_type=consts.Fetch_Arc_Agent_Logs_Failed_Fault_Type, summary="Error occured in arc agents logger")
             diagnoser_output.append("An exception has occured while trying to fetch the azure arc agents logs from the cluster. Exception: {}".format(str(e)) + "\n")
 
     # To handle any exception that may occur during the execution
     except Exception as e:
         logger.warning("An exception has occured while trying to fetch the azure arc agents logs from the cluster. Exception: {}".format(str(e)) + "\n")
-        telemetry.set_exception(exception=e, fault_type=consts.Arc_Agents_Logger_Fault_Type, summary="Error occured in arc agents logger")
+        telemetry.set_exception(exception=e, fault_type=consts.Fetch_Arc_Agent_Logs_Failed_Fault_Type, summary="Error occured in arc agents logger")
         diagnoser_output.append("An exception has occured while trying to fetch the azure arc agents logs from the cluster. Exception: {}".format(str(e)) + "\n")
 
     return consts.Diagnostic_Check_Failed, storage_space_available
@@ -184,7 +181,6 @@ def retrieve_arc_agents_event_logs(filepath_with_timestamp, storage_space_availa
             # Using Popen to execute the command and fetching the output
             response_kubectl_get_events = Popen(command, stdout=PIPE, stderr=PIPE)
             output_kubectl_get_events, error_kubectl_get_events = response_kubectl_get_events.communicate()
-
             if response_kubectl_get_events.returncode != 0:
                 telemetry.set_exception(exception=error_kubectl_get_events.decode("ascii"), fault_type=consts.Kubectl_Get_Events_Failed, summary='Error while doing kubectl get events')
                 logger.warning("Error while doing kubectl get events")
@@ -195,7 +191,6 @@ def retrieve_arc_agents_event_logs(filepath_with_timestamp, storage_space_availa
             # Path to add the azure-arc events
             event_logs_path = os.path.join(filepath_with_timestamp, "Arc_Agents_Events.txt")
             with open(event_logs_path, 'w+') as event_log:
-
                 # Adding all the individual events
                 for events in events_json["items"]:
                         event_log.write(str(events) + "\n")
@@ -210,13 +205,13 @@ def retrieve_arc_agents_event_logs(filepath_with_timestamp, storage_space_availa
             shutil.rmtree(filepath_with_timestamp, ignore_errors=False, onerror=None)
         else:
             logger.warning("An exception has occured while trying to fetch the events occured in azure-arc namespace from the cluster. Exception: {}".format(str(e)) + "\n")
-            telemetry.set_exception(exception=e, fault_type=consts.Arc_Agents_Events_Logger_Fault_Type, summary="Error occured in arc agents events logger")
+            telemetry.set_exception(exception=e, fault_type=consts.Fetch_Arc_Agents_Events_Logs_Failed_Fault_Type, summary="Error occured in arc agents events logger")
             diagnoser_output.append("An exception has occured while trying to fetch the events occured in azure-arc namespace from the cluster. Exception: {}".format(str(e)) + "\n")
 
     # To handle any exception that may occur during the execution
     except Exception as e:
         logger.warning("An exception has occured while trying to fetch the events occured in azure-arc namespace from the cluster. Exception: {}".format(str(e)) + "\n")
-        telemetry.set_exception(exception=e, fault_type=consts.Arc_Agents_Events_Logger_Fault_Type, summary="Error occured in arc agents events logger")
+        telemetry.set_exception(exception=e, fault_type=consts.Fetch_Arc_Agents_Events_Logs_Failed_Fault_Type, summary="Error occured in arc agents events logger")
         diagnoser_output.append("An exception has occured while trying to fetch the events occured in azure-arc namespace from the cluster. Exception: {}".format(str(e)) + "\n")
 
     return consts.Diagnostic_Check_Failed, storage_space_available
@@ -228,7 +223,6 @@ def retrieve_deployments_logs(appv1_api_instance, filepath_with_timestamp, stora
     try:
 
         if storage_space_available:
-
             # Creating new Deployment Logs folder in the given timestamp folder
             deployments_path = os.path.join(filepath_with_timestamp, "Arc_Deployment_Logs")
             try:
@@ -244,7 +238,6 @@ def retrieve_deployments_logs(appv1_api_instance, filepath_with_timestamp, stora
 
                 # Fetching the deployment name
                 deployment_name = deployment.metadata.name
-
                 arc_deployment_logs_path = os.path.join(deployments_path, deployment_name + ".txt")
                 # Creating a text file with the name of the deployment and adding deployment status in it
                 with open(arc_deployment_logs_path, 'w+') as deployment_file:
@@ -260,13 +253,13 @@ def retrieve_deployments_logs(appv1_api_instance, filepath_with_timestamp, stora
             shutil.rmtree(filepath_with_timestamp, ignore_errors=False, onerror=None)
         else:
             logger.warning("An exception has occured while trying to fetch the azure arc deployment logs from the cluster. Exception: {}".format(str(e)) + "\n")
-            telemetry.set_exception(exception=e, fault_type=consts.Arc_Deployments_Logger_Fault_Type, summary="Error occured in deployments logger")
+            telemetry.set_exception(exception=e, fault_type=consts.Fetch_Arc_Deployment_Logs_Failed_Fault_Type, summary="Error occured in deployments logger")
             diagnoser_output.append("An exception has occured while trying to fetch the azure arc deployment logs from the cluster. Exception: {}".format(str(e)) + "\n")
 
     # To handle any exception that may occur during the execution
     except Exception as e:
         logger.warning("An exception has occured while trying to fetch the azure arc deployment logs from the cluster. Exception: {}".format(str(e)) + "\n")
-        telemetry.set_exception(exception=e, fault_type=consts.Arc_Deployments_Logger_Fault_Type, summary="Error occured in deployments logger")
+        telemetry.set_exception(exception=e, fault_type=consts.Fetch_Arc_Deployment_Logs_Failed_Fault_Type, summary="Error occured in deployments logger")
         diagnoser_output.append("An exception has occured while trying to fetch the azure arc deployment logs from the cluster. Exception: {}".format(str(e)) + "\n")
 
     return consts.Diagnostic_Check_Failed, storage_space_available
@@ -276,19 +269,18 @@ def check_agent_state(corev1_api_instance, filepath_with_timestamp, storage_spac
 
     global diagnoser_output
     all_agents_stuck = True
-    sufficient_resource_for_agents = True
+    probable_sufficient_resource_for_agents = True
 
     try:
 
         # To check if agents are stuck because of insufficient resource
-        sufficient_resource_for_agents = True
+        probable_sufficient_resource_for_agents = True
 
         # To check if all the containers are working for the Running agents
         all_agent_containers_ready = True
 
         # If all agents are stuck we will skip the certificates check
         all_agents_stuck = True
-
         agent_state_path = os.path.join(filepath_with_timestamp, "Agent_State.txt")
         with open(agent_state_path, 'w+') as agent_state:
             # To retrieve all of the arc agent pods that are presesnt in the Cluster
@@ -298,16 +290,13 @@ def check_agent_state(corev1_api_instance, filepath_with_timestamp, storage_spac
             for each_agent_pod in arc_agents_pod_list.items:
 
                 if storage_space_available:
-
                     # Storing the state of the arc agent in the user machine
                     agent_state.write(each_agent_pod.metadata.name + " : Phase = " + each_agent_pod.status.phase + "\n")
-
                     if each_agent_pod.status.phase == 'Running':
                         all_agents_stuck = False
-
                     if each_agent_pod.status.container_statuses is None:
-                        sufficient_resource_for_agents = False
-                        storage_space_available = describe_stuck_agent_log(filepath_with_timestamp, corev1_api_instance, each_agent_pod.metadata.name, storage_space_available)
+                        probable_sufficient_resource_for_agents = False
+                        storage_space_available = describe_non_ready_agent_log(filepath_with_timestamp, corev1_api_instance, each_agent_pod.metadata.name, storage_space_available)
                     else:
                         all_containers_ready_for_each_agent = True
                         # If the agent is in running state we will check if all containers are running or not
@@ -328,27 +317,25 @@ def check_agent_state(corev1_api_instance, filepath_with_timestamp, storage_spac
                                     agent_state.write("\t" + each_container_status.name + " :" + " Ready = False {Reason : " + str(container_not_ready_reason) + "} , Restart_Counts = " + str(each_container_status.restart_count) + "\n")
                                 else:
                                     agent_state.write("\t" + each_container_status.name + " :" + " Ready = " + str(each_container_status.ready) + ", Restart_Counts = " + str(each_container_status.restart_count) + "\n")
-
                             else:
                                 agent_state.write("\t" + each_container_status.name + " :" + " Ready = " + str(each_container_status.ready) + ", Restart_Counts = " + str(each_container_status.restart_count) + "\n")
-
                         if all_containers_ready_for_each_agent is False:
-                            storage_space_available = describe_stuck_agent_log(filepath_with_timestamp, corev1_api_instance, each_agent_pod.metadata.name, storage_space_available)
+                            storage_space_available = describe_non_ready_agent_log(filepath_with_timestamp, corev1_api_instance, each_agent_pod.metadata.name, storage_space_available)
                     # Adding empty line after each agents for formatting
                     agent_state.write("\n")
 
         # Displaying error if the arc agents are in pending state.
-        if sufficient_resource_for_agents is False:
+        if probable_sufficient_resource_for_agents is False:
             print("Error: One or more Azure Arc agents are not in running state. It may be caused due to insufficient resource availability on the cluster.\n")
             diagnoser_output.append("Error: One or more Azure Arc agents are not in running state. It may be caused due to insufficient resource availability on the cluster.\n")
-            return consts.Diagnostic_Check_Failed, storage_space_available, all_agents_stuck, sufficient_resource_for_agents
+            return consts.Diagnostic_Check_Failed, storage_space_available, all_agents_stuck, probable_sufficient_resource_for_agents
 
         elif all_agent_containers_ready is False:
             print("Error: One or more agents in the Azure Arc are not fully running.\n")
             diagnoser_output.append("Error: One or more agents in the Azure Arc are not fully runnning.\n")
-            return consts.Diagnostic_Check_Failed, storage_space_available, all_agents_stuck, sufficient_resource_for_agents
+            return consts.Diagnostic_Check_Failed, storage_space_available, all_agents_stuck, probable_sufficient_resource_for_agents
 
-        return consts.Diagnostic_Check_Passed, storage_space_available, all_agents_stuck, sufficient_resource_for_agents
+        return consts.Diagnostic_Check_Passed, storage_space_available, all_agents_stuck, probable_sufficient_resource_for_agents
 
     # For handling storage or OS exception that may occur during the execution
     except OSError as e:
@@ -367,7 +354,7 @@ def check_agent_state(corev1_api_instance, filepath_with_timestamp, storage_spac
         telemetry.set_exception(exception=e, fault_type=consts.Agent_State_Check_Fault_Type, summary="Error ocuured while performing the agent state check")
         diagnoser_output.append("An exception has occured while trying to check the azure arc agents state in the cluster. Exception: {}".format(str(e)) + "\n")
 
-    return consts.Diagnostic_Check_Incomplete, storage_space_available, all_agents_stuck, sufficient_resource_for_agents
+    return consts.Diagnostic_Check_Incomplete, storage_space_available, all_agents_stuck, probable_sufficient_resource_for_agents
 
 
 def check_agent_version(connected_cluster, azure_arc_agent_version):
@@ -401,12 +388,12 @@ def check_agent_version(connected_cluster, azure_arc_agent_version):
     return consts.Diagnostic_Check_Incomplete
 
 
-def check_diagnoser_container(corev1_api_instance, batchv1_api_instance, filepath_with_timestamp, storage_space_available, absolute_path, sufficient_resource_for_agents, helm_client_location, kubectl_client_location, release_namespace, security_policy_present):
+def check_diagnoser_container(corev1_api_instance, batchv1_api_instance, filepath_with_timestamp, storage_space_available, absolute_path, probable_sufficient_resource_for_agents, helm_client_location, kubectl_client_location, release_namespace, security_policy_present):
 
     global diagnoser_output
     try:
 
-        if sufficient_resource_for_agents is False:
+        if probable_sufficient_resource_for_agents is False:
             logger.warning("Unable to execute the diagnoser job in the cluster. It may be caused due to insufficient resource availability on the cluster.\n")
             diagnoser_output.append("Unable to execute the diagnoser job in the cluster. It may be caused due to insufficient resource availability on the cluster.\n")
             return consts.Diagnostic_Check_Incomplete, storage_space_available
@@ -430,7 +417,6 @@ def check_diagnoser_container(corev1_api_instance, batchv1_api_instance, filepat
         # If both the check passed then we will return Diagnoser checks Passed
         if(dns_check == consts.Diagnostic_Check_Passed and outbound_connectivity_check == consts.Diagnostic_Check_Passed):
             return consts.Diagnostic_Check_Passed, storage_space_available
-
         # If any of the check remain Incomplete than we will return Incomplete
         elif(dns_check == consts.Diagnostic_Check_Incomplete or outbound_connectivity_check == consts.Diagnostic_Check_Incomplete):
             return consts.Diagnostic_Check_Incomplete, storage_space_available
@@ -480,7 +466,6 @@ def executing_diagnoser_job(corev1_api_instance, batchv1_api_instance, filepath_
     # Depending on the presence of proxy cert using the yaml
     if proxy_cert and (is_custom_cert or is_proxy_enabled):
         yaml_file_path = os.path.join(absolute_path, "troubleshoot_diagnoser_job_with_proxycert.yaml")
-
     else:
         yaml_file_path = os.path.join(absolute_path, "troubleshoot_diagnoser_job_without_proxycert.yaml")
 
@@ -494,14 +479,12 @@ def executing_diagnoser_job(corev1_api_instance, batchv1_api_instance, filepath_
     with open(yaml_file_path) as f:
         list_doc = yaml.safe_load_all(f)
         counter = 0
-
         # USing release_namespace wherever required
         for each_yaml in list_doc:
             if(counter == 1 or counter == 2):
                 each_yaml['metadata']['namespace'] = release_namespace
             elif(counter == 3):
                 each_yaml['spec']['template']['spec']['containers'][0]['args'][0] = release_namespace
-
             counter += 1
             new_yaml.append(each_yaml)
 
@@ -541,7 +524,6 @@ def executing_diagnoser_job(corev1_api_instance, batchv1_api_instance, filepath_
                 if("Error from server (Conflict)" in ind_exception):
                     continue
                 else:
-
                     # If counter is 0 we will print the Error statement once and then set the counter as 1
                     if(counter == 0):
                         diagnoser_output.append("An Error occured while trying to execute diagnoser_job.yaml.")
@@ -563,9 +545,7 @@ def executing_diagnoser_job(corev1_api_instance, batchv1_api_instance, filepath_
         did_job_got_scheduled = False
         # To watch for changes in the pods states till it reach completed state or exit if it takes more than 60 seconds
         for event in w.stream(batchv1_api_instance.list_namespaced_job, namespace='azure-arc', label_selector="", timeout_seconds=60):
-
             try:
-
                 # Checking if job get scheduled or not
                 if event["object"].metadata.name == "azure-arc-diagnoser-job":
                     did_job_got_scheduled = True
@@ -594,36 +574,28 @@ def executing_diagnoser_job(corev1_api_instance, batchv1_api_instance, filepath_
             logger.warning("The diagnoser job failed to reach the completed state in the kubernetes cluster.\n")
             if storage_space_available:
 
-                # Creating folder with name 'Describe_Stuck_Agents' in the given path
+                # Creating folder with name 'describe_non_ready_agent' in the given path
                 unfinished_diagnoser_job_path = os.path.join(filepath_with_timestamp, 'Events_of_I_Diagnoser_Job.txt')
-
                 cmd_get_diagnoser_job_events = [kubectl_client_location, "get", "events", "--field-selector", "", "-n", "azure-arc", "--output", "json"]
                 # To describe the diagnoser pod which did not reach completed stage
                 arc_agents_pod_list = corev1_api_instance.list_namespaced_pod(namespace="azure-arc")
-
                 for each_pod in arc_agents_pod_list.items:
                     pod_name = each_pod.metadata.name
-
                     if(pod_name.startswith(job_name)):
                         # To retrieve the pod logs which is stuck
-
                         cmd_get_diagnoser_job_events[4] = "involvedObject.name=" + pod_name
                         # Using Popen to execute the command and fetching the output
                         response_kubectl_get_events = Popen(cmd_get_diagnoser_job_events, stdout=PIPE, stderr=PIPE)
                         output_kubectl_get_events, error_kubectl_get_events = response_kubectl_get_events.communicate()
-
                         if response_kubectl_get_events.returncode != 0:
                             telemetry.set_exception(exception=error_kubectl_get_events.decode("ascii"), fault_type=consts.Kubectl_Get_Events_Failed, summary='Error while doing kubectl get events')
                             logger.warning("Error while doing kubectl get events")
-
                         # Converting output obtained in json format and fetching the clusterconnect-agent feature
                         events_json = json.loads(output_kubectl_get_events)
-
                 with open(unfinished_diagnoser_job_path, 'w+') as unfinished_diagnoser_job:
                     # Adding all the individual events
                     for events in events_json["items"]:
                             unfinished_diagnoser_job.write(str(events) + "\n")
-
             Popen(cmd_delete_job, stdout=PIPE, stderr=PIPE)
             diagnoser_output.append("The diagnoser job failed to reach the completed state in the kubernetes cluster.\n")
             return ""
@@ -632,22 +604,16 @@ def executing_diagnoser_job(corev1_api_instance, batchv1_api_instance, filepath_
 
             # Fetching the Diagnoser Container logs
             try:
-
                 all_pods = corev1_api_instance.list_namespaced_pod('azure-arc')
                 # Traversing thorugh all agents
                 for each_pod in all_pods.items:
-
                     # Fethcing the current Pod name and creating a folder with that name inside the timestamp folder
                     pod_name = each_pod.metadata.name
-
                     if(pod_name.startswith(job_name)):
-
                         # Creating a text file with the name of the container and adding that containers logs in it
                         diagnoser_container_log = corev1_api_instance.read_namespaced_pod_log(name=pod_name, container="azure-arc-diagnoser-container", namespace='azure-arc')
-
                 # Clearing all the resources after fetching the diagnoser container logs
                 Popen(cmd_delete_job, stdout=PIPE, stderr=PIPE)
-
             except Exception as e:
                 Popen(cmd_delete_job, stdout=PIPE, stderr=PIPE)
                 return ""
@@ -755,9 +721,7 @@ def check_msi_certificate_presence(corev1_api_instance):
 
         # Going thorugh all the secrets in azure-arc
         all_secrets_azurearc = corev1_api_instance.list_namespaced_secret(namespace="azure-arc")
-
         for secrets in all_secrets_azurearc.items:
-
             # If name of secret is azure-identity-certificate then we stop there
             if(secrets.metadata.name == consts.MSI_Certificate_Secret_Name):
                 msi_cert_present = True
@@ -773,7 +737,7 @@ def check_msi_certificate_presence(corev1_api_instance):
     # To handle any exception that may occur during the execution
     except Exception as e:
         logger.warning("An exception has occured while performing the msi certificate check on the cluster. Exception: {}".format(str(e)) + "\n")
-        telemetry.set_exception(exception=e, fault_type=consts.MSI_Cert_Check_Fault_Type, summary="Error occurred while trying to perform MSI ceritificate presence check right")
+        telemetry.set_exception(exception=e, fault_type=consts.MSI_Cert_Check_Fault_Type, summary="Error occurred while trying to perform MSI ceritificate presence check")
         diagnoser_output.append("An exception has occured while performing the msi certificate check on the cluster. Exception: {}".format(str(e)) + "\n")
 
     return consts.Diagnostic_Check_Incomplete
@@ -793,7 +757,6 @@ def check_cluster_security_policy(corev1_api_instance, helm_client_location, rel
         # Using Popen to execute the helm get values command and fetching the output
         response_helm_values_get = Popen(command, stdout=PIPE, stderr=PIPE)
         output_helm_values_get, error_helm_get_values = response_helm_values_get.communicate()
-
         if response_helm_values_get.returncode != 0:
             if ('forbidden' in error_helm_get_values.decode("ascii") or 'timed out waiting for the condition' in error_helm_get_values.decode("ascii")):
                 telemetry.set_exception(exception=error_helm_get_values.decode("ascii"), fault_type=consts.Get_Helm_Values_Failed,
@@ -808,7 +771,6 @@ def check_cluster_security_policy(corev1_api_instance, helm_client_location, rel
 
         # Traversing thorugh all agents and checking if the Kube aad proxy pod is present or not
         for each_agent_pod in arc_agents_pod_list.items:
-
             if(each_agent_pod.metadata.name.startswith("kube-aad-proxy")):
                 kap_pod_present = True
                 break
@@ -823,7 +785,7 @@ def check_cluster_security_policy(corev1_api_instance, helm_client_location, rel
     # To handle any exception that may occur during the execution
     except Exception as e:
         logger.warning("An exception has occured while trying to performing KAP cluster security policy check in the cluster. Exception: {}".format(str(e)) + "\n")
-        telemetry.set_exception(exception=e, fault_type=consts.Cluster_Security_Policy_Check_Fault_Type, summary="Error occurred while trying to perform KAP ceritificate presence check right")
+        telemetry.set_exception(exception=e, fault_type=consts.Cluster_Security_Policy_Check_Fault_Type, summary="Error occurred while trying to perform KAP ceritificate presence check")
         diagnoser_output.append("An exception has occured while trying to performing KAP cluster security policy check in the cluster. Exception: {}".format(str(e)) + "\n")
 
     return consts.Diagnostic_Check_Incomplete
@@ -842,16 +804,13 @@ def check_kap_cert(corev1_api_instance):
 
         # Traversing thorugh all agents and checking if the Kube aad proxy pod is in containercreating state
         for each_agent_pod in arc_agents_pod_list.items:
-
             if each_agent_pod.metadata.name.startswith("kube-aad-proxy") and each_agent_pod.status.phase == "ContainerCreating":
                 kap_pod_status = "ContainerCreating"
                 break
 
         # Going thorugh all the secrets in azure-arc
         all_secrets_azurearc = corev1_api_instance.list_namespaced_secret(namespace="azure-arc")
-
         for secrets in all_secrets_azurearc.items:
-
             # If name of secret is kube-aad-proxy-certificate then we stop there
             if(secrets.metadata.name == consts.KAP_Certificate_Secret_Name):
                 kap_cert_present = True
@@ -900,14 +859,13 @@ def check_msi_expiry(connected_cluster):
     return consts.Diagnostic_Check_Incomplete
 
 
-def describe_stuck_agent_log(filepath_with_timestamp, corev1_api_instance, agent_pod_name, storage_space_available):
+def describe_non_ready_agent_log(filepath_with_timestamp, corev1_api_instance, agent_pod_name, storage_space_available):
 
     try:
 
         # To describe pod if its not in running state and storing it if storage is available
         if storage_space_available:
-
-            # Creating folder with name 'Describe_Stuck_Agents' in the given path
+            # Creating folder with name 'describe_non_ready_agent' in the given path
             describe_stuck_agent_path = os.path.join(filepath_with_timestamp, 'Describe_Non-Ready_Agents')
             try:
                 os.mkdir(describe_stuck_agent_path)
@@ -917,7 +875,6 @@ def describe_stuck_agent_log(filepath_with_timestamp, corev1_api_instance, agent
             # To retrieve the pod logs which is stuck
             api_response = corev1_api_instance.read_namespaced_pod(name=agent_pod_name, namespace='azure-arc')
             stuck_agent_pod_path = os.path.join(describe_stuck_agent_path, agent_pod_name + '.txt')
-
             with open(stuck_agent_pod_path, 'w+') as stuck_agent_log:
                 stuck_agent_log.write(str(api_response))
 

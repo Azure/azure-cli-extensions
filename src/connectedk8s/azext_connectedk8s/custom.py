@@ -2054,19 +2054,17 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
     try:
 
         logger.warning("Diagnoser running. This may take a while ...\n")
-
         absolute_path = os.path.abspath(os.path.dirname(__file__))
 
         # Setting the intial values as True
         storage_space_available = True
-        sufficient_resource_for_agents = True
+        probable_sufficient_resource_for_agents = True
 
         # Setting default values for all checks as True
         diagnostic_checks = {"retrieved_arc_agents_event_logs": consts.Diagnostic_Check_Incomplete, "retrieved_arc_agents_logs": consts.Diagnostic_Check_Incomplete, "retrieved_deployments_logs": consts.Diagnostic_Check_Incomplete, "fetch_connected_cluster_resource": consts.Diagnostic_Check_Incomplete, "diagnoser_results_logger": consts.Diagnostic_Check_Incomplete, "msi_cert_expiry_check": consts.Diagnostic_Check_Incomplete, "kap_security_policy_check": consts.Diagnostic_Check_Incomplete, "kap_cert_check": consts.Diagnostic_Check_Incomplete, "diagnoser_check": consts.Diagnostic_Check_Incomplete, "msi_cert_check": consts.Diagnostic_Check_Incomplete, "agent_version_check": consts.Diagnostic_Check_Incomplete, "arc_agent_state_check": consts.Diagnostic_Check_Incomplete}
 
         # Setting kube_config
         kube_config = set_kube_config(kube_config)
-
         kube_client.rest.logger.setLevel(logging.WARNING)
 
         # Loading the kubeconfig file in kubernetes client configuration
@@ -2078,7 +2076,6 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
 
         # Install kubectl client
         kubectl_client_location = install_kubectl_client()
-
         release_namespace = validate_release_namespace(client, cluster_name, resource_group_name, configuration, kube_config, kube_context, helm_client_location)
 
         # Checking the connection to kubernetes cluster.
@@ -2104,13 +2101,11 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
         time_stamp = cluster_name + '-' + time_stamp
         # Generate the diagnostic folder in a given location
         filepath_with_timestamp, diagnostic_folder_status = troubleshootutils.create_folder_diagnosticlogs(time_stamp)
-
         if(diagnostic_folder_status != consts.Folder_Created):
             storage_space_available = False
 
         # To store the connected cluster resource logs in the diagnostic foler
         diagnostic_checks["fetch_connected_cluster_resource"], storage_space_available = troubleshootutils.fetch_connected_cluster_resource(filepath_with_timestamp, connected_cluster, storage_space_available)
-
         corev1_api_instance = kube_client.CoreV1Api(kube_client.ApiClient(configuration))
 
         # Check if agents have been added to the cluster
@@ -2130,7 +2125,7 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
             diagnostic_checks["retrieved_deployments_logs"], storage_space_available = troubleshootutils.retrieve_deployments_logs(appv1_api_instance, filepath_with_timestamp, storage_space_available)
 
             # Check for the azure arc agent states
-            diagnostic_checks["arc_agent_state_check"], storage_space_available, all_agents_stuck, sufficient_resource_for_agents = troubleshootutils.check_agent_state(corev1_api_instance, filepath_with_timestamp, storage_space_available)
+            diagnostic_checks["arc_agent_state_check"], storage_space_available, all_agents_stuck, probable_sufficient_resource_for_agents = troubleshootutils.check_agent_state(corev1_api_instance, filepath_with_timestamp, storage_space_available)
 
             # Check for msi certificate
             if all_agents_stuck is False:
@@ -2177,9 +2172,8 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
             print("Error : Arc Agents have not been added to cluster. Please delete and reconnect the Kubernetes Cluster\n")
 
         batchv1_api_instance = kube_client.BatchV1Api(kube_client.ApiClient(configuration))
-
         # Performing diagnoser container check
-        diagnostic_checks["diagnoser_check"], storage_space_available = troubleshootutils.check_diagnoser_container(corev1_api_instance, batchv1_api_instance, filepath_with_timestamp, storage_space_available, absolute_path, sufficient_resource_for_agents, helm_client_location, kubectl_client_location, release_namespace, diagnostic_checks["kap_security_policy_check"])
+        diagnostic_checks["diagnoser_check"], storage_space_available = troubleshootutils.check_diagnoser_container(corev1_api_instance, batchv1_api_instance, filepath_with_timestamp, storage_space_available, absolute_path, probable_sufficient_resource_for_agents, helm_client_location, kubectl_client_location, release_namespace, diagnostic_checks["kap_security_policy_check"])
 
         # Adding cli output to the logs
         diagnostic_checks["diagnoser_results_logger"] = troubleshootutils.cli_output_logger(filepath_with_timestamp, storage_space_available, 1)
