@@ -4933,7 +4933,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                      '--ssh-key-value={ssh_key_value} --enable-defender'
         self.cmd(create_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
-            self.check('securityProfile.azureDefender.enabled', True)
+            self.check('securityProfile.defender.securityMonitoring.enabled', True)
         ])
 
         # delete
@@ -4958,13 +4958,13 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         # update to enable defender
         self.cmd('aks update --resource-group={resource_group} --name={name} --enable-defender', checks=[
             self.check('provisioningState', 'Succeeded'),
-            self.check('securityProfile.azureDefender.enabled', True)
+            self.check('securityProfile.defender.securityMonitoring.enabled', True)
         ])
 
          # update to disable defender
         self.cmd('aks update --resource-group={resource_group} --name={name} --disable-defender', checks=[
             self.check('provisioningState', 'Succeeded'),
-            self.check('securityProfile.azureDefender.enabled', False)
+            self.check('securityProfile.defender.securityMonitoring.enabled', False)
         ])
 
         # delete
