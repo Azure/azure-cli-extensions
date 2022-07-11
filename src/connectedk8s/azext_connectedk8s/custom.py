@@ -2062,7 +2062,7 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
         sufficient_resource_for_agents = True
 
         # Setting default values for all checks as True
-        diagnostic_checks = {"retrieved_arc_agents_event_logs": "Incomplete", "retrieved_arc_agents_logs": "Incomplete", "retrieved_deployments_logs": "Incomplete", "connected_cluster_logger": "Incomplete", "diagnoser_results_logger": "Incomplete", "msi_cert_expiry_check": "Incomplete", "kap_security_policy_check": "Incomplete", "kap_cert_check": "Incomplete", "diagnoser_check": "Incomplete", "msi_cert_check": "Incomplete", "agent_version_check": "Incomplete", "arc_agent_state_check": "Incomplete"}
+        diagnostic_checks = {"retrieved_arc_agents_event_logs": "Incomplete", "retrieved_arc_agents_logs": "Incomplete", "retrieved_deployments_logs": "Incomplete", "fetch_connected_cluster_resource": "Incomplete", "diagnoser_results_logger": "Incomplete", "msi_cert_expiry_check": "Incomplete", "kap_security_policy_check": "Incomplete", "kap_cert_check": "Incomplete", "diagnoser_check": "Incomplete", "msi_cert_check": "Incomplete", "agent_version_check": "Incomplete", "arc_agent_state_check": "Incomplete"}
 
         # Setting kube_config
         kube_config = set_kube_config(kube_config)
@@ -2105,11 +2105,13 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
         # Generate the diagnostic folder in a given location
         filepath_with_timestamp, diagnostic_folder_status = troubleshootutils.create_folder_diagnosticlogs(time_stamp)
 
-        if(diagnostic_folder_status != "folder_created"):
+        if(diagnostic_folder_status != consts.Folder_Created):  
+            storage_space_available = False
+        elif(diagnostic_folder_status != consts.No_Storage_Space):
             storage_space_available = False
 
         # To store the connected cluster resource logs in the diagnostic foler
-        diagnostic_checks["connected_cluster_logger"], storage_space_available = troubleshootutils.connected_cluster_logger(filepath_with_timestamp, connected_cluster, storage_space_available)
+        diagnostic_checks["fetch_connected_cluster_resource"], storage_space_available = troubleshootutils.fetch_connected_cluster_resource(filepath_with_timestamp, connected_cluster, storage_space_available)
 
         corev1_api_instance = kube_client.CoreV1Api(kube_client.ApiClient(configuration))
 

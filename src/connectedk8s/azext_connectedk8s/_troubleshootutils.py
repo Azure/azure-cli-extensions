@@ -24,17 +24,15 @@ logger = get_logger(__name__)
 # pylint: disable=too-many-statements
 # pylint: disable=line-too-long
 
-
 diagnoser_output = []
 
 
 def create_folder_diagnosticlogs(time_stamp):
 
     global diagnoser_output
-
     try:
 
-        # Fetching path to current directory to create the arc diagnostic folder
+        # Fetching path to user directory to create the arc diagnostic folder
         home_dir = os.path.expanduser('~')
         filepath = os.path.join(home_dir, '.azure', 'arc_diagnostic_logs')
 
@@ -50,39 +48,38 @@ def create_folder_diagnosticlogs(time_stamp):
         except FileExistsError:
             pass
 
-        return filepath_with_timestamp, "folder_created"
+        return filepath_with_timestamp, consts.Folder_Created
 
     # For handling storage or OS exception that may occur during the execution
     except OSError as e:
         if "[Errno 28]" in str(e):
             shutil.rmtree(filepath_with_timestamp, ignore_errors=False, onerror=None)
             telemetry.set_exception(exception=e, fault_type=consts.No_Storage_Space_Available_Fault_Type, summary="No space left on device")
-            return "", "no_storage_space"
+            return "", consts.No_Storage_Space
         else:
             logger.warning("An exception has occured while creating the diagnostic logs folder in your local machine. Exception: {}".format(str(e)) + "\n")
-            telemetry.set_exception(exception=e, fault_type=consts.Storage_Available_Fault_Type, summary="Error while trying to create diagnostic logs folder")
+            telemetry.set_exception(exception=e, fault_type=consts.Diagnostics_Folder_Creation_Failed_Fault_Type, summary="Error while trying to create diagnostic logs folder")
             diagnoser_output.append("An exception has occured while creating the diagnostic logs folder in your local machine. Exception: {}".format(str(e)) + "\n")
             return "", "folder_not_created"
 
     # To handle any exception that may occur during the execution
     except Exception as e:
         logger.warning("An exception has occured while creating the diagnostic logs folder in your local machine. Exception: {}".format(str(e)) + "\n")
-        telemetry.set_exception(exception=e, fault_type=consts.Storage_Available_Fault_Type, summary="Error while trying to create diagnostic logs folder")
+        telemetry.set_exception(exception=e, fault_type=consts.Diagnostics_Folder_Creation_Failed_Fault_Type, summary="Error while trying to create diagnostic logs folder")
         diagnoser_output.append("An exception has occured while creating the diagnostic logs folder in your local machine. Exception: {}".format(str(e)) + "\n")
         return "", "folder_not_created"
 
 
-def connected_cluster_logger(filepath_with_timestamp, connected_cluster, storage_space_available):
+def fetch_connected_cluster_resource(filepath_with_timestamp, connected_cluster, storage_space_available):
 
     global diagnoser_output
-
     try:
 
         # Path to add the connected_cluster resource
         connected_cluster_resource_path = os.path.join(filepath_with_timestamp, "Connected_cluster_resource.txt")
         if storage_space_available:
 
-            # If storage space is available then only store the resource
+            # If storage space is available then obly store the connected cluster resource
             with open(connected_cluster_resource_path, 'w+') as cc:
                 cc.write(str(connected_cluster))
         return "Passed", storage_space_available
@@ -94,9 +91,9 @@ def connected_cluster_logger(filepath_with_timestamp, connected_cluster, storage
             telemetry.set_exception(exception=e, fault_type=consts.No_Storage_Space_Available_Fault_Type, summary="No space left on device")
             shutil.rmtree(filepath_with_timestamp, ignore_errors=False, onerror=None)
         else:
-            logger.warning("An exception has occured while trying to store the connected cluster resource logs from the cluster. Exception: {}".format(str(e)) + "\n")
-            telemetry.set_exception(exception=e, fault_type=consts.Connected_Cluster_Resource_Fault_Type, summary="Eror occure while storing the connected cluster resource logs")
-            diagnoser_output.append("An exception has occured while trying to store the connected cluster resource logs from the cluster. Exception: {}".format(str(e)) + "\n")
+            logger.warning("An exception has occured while trying to store the connected cluster resource from the cluster. Exception: {}".format(str(e)) + "\n")
+            telemetry.set_exception(exception=e, fault_type=consts.Connected_Cluster_Resource_Fault_Type, summary="Error occured while fetching the Get output of connected cluster")
+            diagnoser_output.append("An exception has occured while trying to store the connected cluster resource from the cluster. Exception: {}".format(str(e)) + "\n")
 
     # To handle any exception that may occur during the execution
     except Exception as e:
@@ -110,7 +107,6 @@ def connected_cluster_logger(filepath_with_timestamp, connected_cluster, storage
 def retrieve_arc_agents_logs(corev1_api_instance, filepath_with_timestamp, storage_space_available):
 
     global diagnoser_output
-
     try:
 
         if storage_space_available:
@@ -177,7 +173,6 @@ def retrieve_arc_agents_logs(corev1_api_instance, filepath_with_timestamp, stora
 def retrieve_arc_agents_event_logs(filepath_with_timestamp, storage_space_available, kubectl_client_location):
 
     global diagnoser_output
-
     try:
 
         # If storage space available then only store the azure-arc events
@@ -230,7 +225,6 @@ def retrieve_arc_agents_event_logs(filepath_with_timestamp, storage_space_availa
 def retrieve_deployments_logs(appv1_api_instance, filepath_with_timestamp, storage_space_available):
 
     global diagnoser_output
-
     try:
 
         if storage_space_available:
@@ -281,7 +275,6 @@ def retrieve_deployments_logs(appv1_api_instance, filepath_with_timestamp, stora
 def check_agent_state(corev1_api_instance, filepath_with_timestamp, storage_space_available):
 
     global diagnoser_output
-
     all_agents_stuck = True
     sufficient_resource_for_agents = True
 
@@ -382,7 +375,6 @@ def check_agent_state(corev1_api_instance, filepath_with_timestamp, storage_spac
 def check_agent_version(connected_cluster, azure_arc_agent_version):
 
     global diagnoser_output
-
     try:
 
         # If the agent version in the connected cluster resource is none skip the check
@@ -412,8 +404,8 @@ def check_agent_version(connected_cluster, azure_arc_agent_version):
 
 
 def check_diagnoser_container(corev1_api_instance, batchv1_api_instance, filepath_with_timestamp, storage_space_available, absolute_path, sufficient_resource_for_agents, helm_client_location, kubectl_client_location, release_namespace, security_policy_present):
-    global diagnoser_output
 
+    global diagnoser_output
     try:
 
         if sufficient_resource_for_agents is False:
@@ -459,7 +451,6 @@ def check_diagnoser_container(corev1_api_instance, batchv1_api_instance, filepat
 def executing_diagnoser_job(corev1_api_instance, batchv1_api_instance, filepath_with_timestamp, storage_space_available, absolute_path, helm_client_location, kubectl_client_location, release_namespace, security_policy_present):
 
     global diagnoser_output
-
     job_name = "azure-arc-diagnoser-job"
     # CMD command to get helm values in azure arc and converting it to json format
     command = [helm_client_location, "get", "values", "azure-arc", "--namespace", release_namespace, "-o", "json"]
@@ -590,7 +581,7 @@ def executing_diagnoser_job(corev1_api_instance, batchv1_api_instance, filepath_
             else:
                 continue
 
-        # Choosing the error message depending on the job getting scheduled, completed and the presence of  security policy
+        # Selecting the error message depending on the job getting scheduled, completed and the presence of  security policy
         if (did_job_got_scheduled is False and security_policy_present == "Failed"):
             logger.warning("Unable to schedule the diagnoser job in the kubernetes cluster. There might be a security policy or security context constraint (SCC) present which is preventing the deployment of azure-arc-diagnoser-job as it uses serviceaccount:azure-arc-troubleshoot-sa which doesnt have admin permissions.\nYou can whitelist it and then run the troubleshoot command again.\n")
             Popen(cmd_delete_job, stdout=PIPE, stderr=PIPE)
@@ -606,7 +597,7 @@ def executing_diagnoser_job(corev1_api_instance, batchv1_api_instance, filepath_
             if storage_space_available:
 
                 # Creating folder with name 'Describe_Stuck_Agents' in the given path
-                unfinished_diagnoser_job_path = os.path.join(filepath_with_timestamp, 'Events_of_Incomplete_Diagnoser_Job.txt')
+                unfinished_diagnoser_job_path = os.path.join(filepath_with_timestamp, 'Events_of_I_Diagnoser_Job.txt')
 
                 cmd_get_diagnoser_job_events = [kubectl_client_location, "get", "events", "--field-selector", "", "-n", "azure-arc", "--output", "json"]
                 # To describe the diagnoser pod which did not reach completed stage
@@ -676,7 +667,6 @@ def executing_diagnoser_job(corev1_api_instance, batchv1_api_instance, filepath_
 def check_cluster_DNS(dns_check_log, filepath_with_timestamp, storage_space_available):
 
     global diagnoser_output
-
     try:
 
         # Validating if DNS is working or not and displaying proper result
@@ -719,7 +709,6 @@ def check_cluster_DNS(dns_check_log, filepath_with_timestamp, storage_space_avai
 def check_cluster_outbound_connectivity(outbound_connectivity_check_log, filepath_with_timestamp, storage_space_available):
 
     global diagnoser_output
-
     try:
 
         # Validating if outbound connectiivty is working or not and displaying proper result
@@ -761,7 +750,6 @@ def check_cluster_outbound_connectivity(outbound_connectivity_check_log, filepat
 def check_msi_certificate_presence(corev1_api_instance):
 
     global diagnoser_output
-
     try:
 
         # Initializing msi certificate as not present
@@ -787,7 +775,7 @@ def check_msi_certificate_presence(corev1_api_instance):
     # To handle any exception that may occur during the execution
     except Exception as e:
         logger.warning("An exception has occured while performing the msi certificate check on the cluster. Exception: {}".format(str(e)) + "\n")
-        telemetry.set_exception(exception=e, fault_type=consts.MSI_Cert_Check_Fault_Type, summary="Error occured while trying to pull MSI certificate")
+        telemetry.set_exception(exception=e, fault_type=consts.MSI_Cert_Check_Fault_Type, summary="Error occurred while trying to perform MSI ceritificate presence check right")
         diagnoser_output.append("An exception has occured while performing the msi certificate check on the cluster. Exception: {}".format(str(e)) + "\n")
 
     return "Incomplete"
@@ -796,7 +784,6 @@ def check_msi_certificate_presence(corev1_api_instance):
 def check_cluster_security_policy(corev1_api_instance, helm_client_location, release_namespace):
 
     global diagnoser_output
-
     try:
         # Intializing the kap_pod_present and cluster_connect_feature variable as False
         kap_pod_present = False
@@ -838,7 +825,7 @@ def check_cluster_security_policy(corev1_api_instance, helm_client_location, rel
     # To handle any exception that may occur during the execution
     except Exception as e:
         logger.warning("An exception has occured while trying to performing KAP cluster security policy check in the cluster. Exception: {}".format(str(e)) + "\n")
-        telemetry.set_exception(exception=e, fault_type=consts.Cluster_Security_Policy_Check_Fault_Type, summary="Error occured while performing cluster security policy check")
+        telemetry.set_exception(exception=e, fault_type=consts.Cluster_Security_Policy_Check_Fault_Type, summary="Error occurred while trying to perform KAP ceritificate presence check right")
         diagnoser_output.append("An exception has occured while trying to performing KAP cluster security policy check in the cluster. Exception: {}".format(str(e)) + "\n")
 
     return "Incomplete"
@@ -847,7 +834,6 @@ def check_cluster_security_policy(corev1_api_instance, helm_client_location, rel
 def check_kap_cert(corev1_api_instance):
 
     global diagnoser_output
-
     try:
         # Initialize the kap_cert_present as False
         kap_cert_present = False
@@ -891,7 +877,6 @@ def check_kap_cert(corev1_api_instance):
 def check_msi_expiry(connected_cluster):
 
     global diagnoser_output
-
     try:
         # Fetch the expiry time of the msi certificate
         Expiry_date = str(connected_cluster.managed_identity_certificate_expiration_time)
@@ -961,9 +946,7 @@ def describe_stuck_agent_log(filepath_with_timestamp, corev1_api_instance, agent
 def cli_output_logger(filepath_with_timestamp, storage_space_available, flag):
 
     # This function is used to store the output that is obtained throughout the Diagnoser process
-
     global diagnoser_output
-
     try:
 
         # If storage space is available then only we store the output
