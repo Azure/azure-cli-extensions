@@ -189,7 +189,7 @@ def retrieve_arc_agents_event_logs(filepath_with_timestamp, storage_space_availa
                 telemetry.set_exception(exception=error_kubectl_get_events.decode("ascii"), fault_type=consts.Kubectl_Get_Events_Failed, summary='Error while doing kubectl get events')
                 logger.warning("Error while doing kubectl get events")
 
-            # Converting output obtained in json format and fetching the clusterconnect-agent feature
+            # Converting output obtained in json format and fetching the azure-arc events
             events_json = json.loads(output_kubectl_get_events)
 
             # Path to add the azure-arc events
@@ -230,13 +230,13 @@ def retrieve_deployments_logs(appv1_api_instance, filepath_with_timestamp, stora
         if storage_space_available:
 
             # Creating new Deployment Logs folder in the given timestamp folder
-            deployments_path = os.path.join(filepath_with_timestamp, "Deployment_logs")
+            deployments_path = os.path.join(filepath_with_timestamp, "Arc_Deployment_Logs")
             try:
                 os.mkdir(deployments_path)
             except FileExistsError:
                 pass
 
-            # To retrieve all the the deployements that are present in the Cluster
+            # To retrieve all the the deployment that are present in the Cluster
             deployments_list = appv1_api_instance.list_namespaced_deployment("azure-arc")
 
             # Traversing through all the deployments present
@@ -245,9 +245,9 @@ def retrieve_deployments_logs(appv1_api_instance, filepath_with_timestamp, stora
                 # Fetching the deployment name
                 deployment_name = deployment.metadata.name
 
-                deployment_logs_path = os.path.join(deployments_path, deployment_name + ".txt")
+                arc_deployment_logs_path = os.path.join(deployments_path, deployment_name + ".txt")
                 # Creating a text file with the name of the deployment and adding deployment status in it
-                with open(deployment_logs_path, 'w+') as deployment_file:
+                with open(arc_deployment_logs_path, 'w+') as deployment_file:
                     deployment_file.write(str(deployment.status))
 
         return consts.Diagnostic_Check_Passed, storage_space_available
@@ -309,7 +309,6 @@ def check_agent_state(corev1_api_instance, filepath_with_timestamp, storage_spac
                         sufficient_resource_for_agents = False
                         storage_space_available = describe_stuck_agent_log(filepath_with_timestamp, corev1_api_instance, each_agent_pod.metadata.name, storage_space_available)
                     else:
-
                         all_containers_ready_for_each_agent = True
                         # If the agent is in running state we will check if all containers are running or not
                         for each_container_status in each_agent_pod.status.container_statuses:
@@ -319,7 +318,6 @@ def check_agent_state(corev1_api_instance, filepath_with_timestamp, storage_spac
                                 all_containers_ready_for_each_agent = False
                                 all_agent_containers_ready = False
                                 try:
-
                                     # Adding the reason for container to be not in ready state
                                     container_not_ready_reason = each_container_status.state.waiting.reason
                                 except Exception as e:
