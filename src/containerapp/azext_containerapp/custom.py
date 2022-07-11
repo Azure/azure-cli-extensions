@@ -507,7 +507,7 @@ def update_containerapp_logic(cmd,
     # Validate that max_replicas is set to 0-30
     if max_replicas is not None:
         if max_replicas < 1 or max_replicas > 30:
-            raise CLIError('--max_replicas must be in the range [1,30]')
+            raise ArgumentUsageError('--max_replicas must be in the range [1,30]')
             
     if yaml:
         if image or min_replicas or max_replicas or\
