@@ -572,7 +572,7 @@ def executing_diagnoser_job(corev1_api_instance, batchv1_api_instance, filepath_
         w = watch.Watch()
         did_job_complete = False
         did_job_got_scheduled = False
-        # To watch for changes in the pods states till it reach completed state or exit if it takes more than 90 seconds
+        # To watch for changes in the pods states till it reach completed state or exit if it takes more than 60 seconds
         for event in w.stream(batchv1_api_instance.list_namespaced_job, namespace='azure-arc', label_selector="", timeout_seconds=60):
 
             try:
@@ -599,14 +599,14 @@ def executing_diagnoser_job(corev1_api_instance, batchv1_api_instance, filepath_
         elif (did_job_got_scheduled is False):
             logger.warning("Unable to schedule the diagnoser job in the kubernetes cluster. The possible reasons can be presence of a security policy or security context constraint (SCC) or it may happen becuase of lack of ResourceQuota.\n")
             Popen(cmd_delete_job, stdout=PIPE, stderr=PIPE)
-            diagnoser_output.append("Unable to schedule the diagnoser job in the kubernetes cluster. The possible reasons can be presence of a security policy or security context constraint (SCC) or it may happen becuase of lack of ResourceQuota.\n")
+            diagnoser_output.append("Unable to schedule the diagnoser job in the kubernetes cluster. The possible reasons can be presence of a security policy or security context constraint (SCC) or it may happen because of lack of ResourceQuota.\n")
             return ""
         elif (did_job_got_scheduled is True and did_job_complete is False):
             logger.warning("The diagnoser job failed to reach the completed state in the kubernetes cluster.\n")
             if storage_space_available:
 
                 # Creating folder with name 'Describe_Stuck_Agents' in the given path
-                unfinished_diagnoser_job_path = os.path.join(filepath_with_timestamp, 'Events_Unfinished_Diagnoser_Job.txt')
+                unfinished_diagnoser_job_path = os.path.join(filepath_with_timestamp, 'Events_of_Incomplete_Diagnoser_Job.txt')
 
                 cmd_get_diagnoser_job_events = [kubectl_client_location, "get", "events", "--field-selector", "", "-n", "azure-arc", "--output", "json"]
                 # To describe the diagnoser pod which did not reach completed stage
