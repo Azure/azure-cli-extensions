@@ -4,9 +4,6 @@
 # --------------------------------------------------------------------------------------------
 
 import os
-import platform
-import shutil
-import tempfile
 
 
 def get_test_data_file_path(filename):

@@ -3,6 +3,10 @@
 Release History
 ===============
 
+0.5.1
++++++	
+* Add enable-auto-upgrade param back into the extension upgrade command
+
 0.5.0
 +++++	
 * Upgrade the API version to stable/2022-03-10 

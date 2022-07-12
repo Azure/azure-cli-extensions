@@ -119,6 +119,7 @@ def connectedmachine_extension_update(client,
                                       publisher=None,
                                       type_=None,
                                       type_handler_version=None,
+                                      enable_auto_upgrade=None,
                                       auto_upgrade_minor=None,
                                       settings=None,
                                       protected_settings=None,
@@ -135,6 +136,8 @@ def connectedmachine_extension_update(client,
         extension_parameters['properties']['type'] = type_
     if type_handler_version is not None:
         extension_parameters['properties']['type_handler_version'] = type_handler_version
+    if enable_auto_upgrade is not None:
+        extension_parameters['properties']['enable_automatic_upgrade'] = enable_auto_upgrade
     if auto_upgrade_minor is not None:
         extension_parameters['properties']['auto_upgrade_minor_version'] = auto_upgrade_minor
     if settings is not None:

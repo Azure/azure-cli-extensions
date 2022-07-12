@@ -415,6 +415,22 @@ class ContainerAppClient():
         r = send_raw_request(cmd.cli_ctx, "POST", request_url)
         return r.json()
 
+    @classmethod
+    def validate_domain(cls, cmd, resource_group_name, name, hostname):
+        management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
+        sub_id = get_subscription_id(cmd.cli_ctx)
+        url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/containerApps/{}/listCustomHostNameAnalysis?api-version={}&customHostname={}"
+        request_url = url_fmt.format(
+            management_hostname.strip('/'),
+            sub_id,
+            resource_group_name,
+            name,
+            STABLE_API_VERSION,
+            hostname)
+
+        r = send_raw_request(cmd.cli_ctx, "POST", request_url)
+        return r.json()
+
 
 class ManagedEnvironmentClient():
     @classmethod
@@ -583,6 +599,94 @@ class ManagedEnvironmentClient():
                 env_list.append(formatted)
 
         return env_list
+
+    @classmethod
+    def show_certificate(cls, cmd, resource_group_name, name, certificate_name):
+        management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
+        api_version = STABLE_API_VERSION
+        sub_id = get_subscription_id(cmd.cli_ctx)
+        url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/managedEnvironments/{}/certificates/{}?api-version={}"
+        request_url = url_fmt.format(
+            management_hostname.strip('/'),
+            sub_id,
+            resource_group_name,
+            name,
+            certificate_name,
+            api_version)
+
+        r = send_raw_request(cmd.cli_ctx, "GET", request_url, body=None)
+        return r.json()
+
+    @classmethod
+    def list_certificates(cls, cmd, resource_group_name, name, formatter=lambda x: x):
+        certs_list = []
+
+        management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
+        api_version = STABLE_API_VERSION
+        sub_id = get_subscription_id(cmd.cli_ctx)
+        url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/managedEnvironments/{}/certificates?api-version={}"
+        request_url = url_fmt.format(
+            management_hostname.strip('/'),
+            sub_id,
+            resource_group_name,
+            name,
+            api_version)
+
+        r = send_raw_request(cmd.cli_ctx, "GET", request_url, body=None)
+        j = r.json()
+        for cert in j["value"]:
+            formatted = formatter(cert)
+            certs_list.append(formatted)
+        return certs_list
+
+    @classmethod
+    def create_or_update_certificate(cls, cmd, resource_group_name, name, certificate_name, certificate):
+        management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
+        api_version = STABLE_API_VERSION
+        sub_id = get_subscription_id(cmd.cli_ctx)
+        url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/managedEnvironments/{}/certificates/{}?api-version={}"
+        request_url = url_fmt.format(
+            management_hostname.strip('/'),
+            sub_id,
+            resource_group_name,
+            name,
+            certificate_name,
+            api_version)
+
+        r = send_raw_request(cmd.cli_ctx, "PUT", request_url, body=json.dumps(certificate))
+        return r.json()
+
+    @classmethod
+    def delete_certificate(cls, cmd, resource_group_name, name, certificate_name):
+        management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
+        api_version = STABLE_API_VERSION
+        sub_id = get_subscription_id(cmd.cli_ctx)
+        url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/managedEnvironments/{}/certificates/{}?api-version={}"
+        request_url = url_fmt.format(
+            management_hostname.strip('/'),
+            sub_id,
+            resource_group_name,
+            name,
+            certificate_name,
+            api_version)
+
+        return send_raw_request(cmd.cli_ctx, "DELETE", request_url, body=None)
+
+    @classmethod
+    def check_name_availability(cls, cmd, resource_group_name, name, name_availability_request):
+        management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
+        api_version = STABLE_API_VERSION
+        sub_id = get_subscription_id(cmd.cli_ctx)
+        url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/managedEnvironments/{}/checkNameAvailability?api-version={}"
+        request_url = url_fmt.format(
+            management_hostname.strip('/'),
+            sub_id,
+            resource_group_name,
+            name,
+            api_version)
+
+        r = send_raw_request(cmd.cli_ctx, "POST", request_url, body=json.dumps(name_availability_request))
+        return r.json()
 
 
 class GitHubActionClient():
@@ -900,3 +1004,59 @@ class StorageClient():
                 env_list.append(formatted)
 
         return env_list
+
+
+class AuthClient():
+    @classmethod
+    def create_or_update(cls, cmd, resource_group_name, container_app_name, auth_config_name, auth_config_envelope, no_wait=False):
+        management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
+        api_version = STABLE_API_VERSION
+        sub_id = get_subscription_id(cmd.cli_ctx)
+        request_url = f"{management_hostname}subscriptions/{sub_id}/resourceGroups/{resource_group_name}/providers/Microsoft.App/containerApps/{container_app_name}/authConfigs/{auth_config_name}?api-version={api_version}"
+
+        if "properties" not in auth_config_envelope:  # sdk does this for us
+            temp_env = auth_config_envelope
+            auth_config_envelope = {}
+            auth_config_envelope["properties"] = temp_env
+
+        r = send_raw_request(cmd.cli_ctx, "PUT", request_url, body=json.dumps(auth_config_envelope))
+
+        if no_wait:
+            return r.json()
+        elif r.status_code == 201:
+            request_url = f"{management_hostname}subscriptions/{sub_id}/resourceGroups/{resource_group_name}/providers/Microsoft.App/containerApps/{container_app_name}/authConfigs/{auth_config_name}?api-version={api_version}"
+            return poll(cmd, request_url, "waiting")
+
+        return r.json()
+
+    @classmethod
+    def delete(cls, cmd, resource_group_name, container_app_name, auth_config_name, no_wait=False):
+        management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
+        api_version = STABLE_API_VERSION
+        sub_id = get_subscription_id(cmd.cli_ctx)
+        request_url = f"{management_hostname}subscriptions/{sub_id}/resourceGroups/{resource_group_name}/providers/Microsoft.App/containerApps/{container_app_name}/authConfigs/{auth_config_name}?api-version={api_version}"
+
+        r = send_raw_request(cmd.cli_ctx, "DELETE", request_url)
+
+        if no_wait:
+            return  # API doesn't return JSON (it returns no content)
+        elif r.status_code in [200, 201, 202, 204]:
+            request_url = f"{management_hostname}subscriptions/{sub_id}/resourceGroups/{resource_group_name}/providers/Microsoft.App/containerApps/{container_app_name}/authConfigs/{auth_config_name}?api-version={api_version}"
+            if r.status_code == 200:  # 200 successful delete, 204 means storage not found
+                from azure.cli.core.azclierror import ResourceNotFoundError
+                try:
+                    poll(cmd, request_url, "scheduledfordelete")
+                except ResourceNotFoundError:
+                    pass
+                logger.warning('Containerapp AuthConfig successfully deleted')
+        return
+
+    @classmethod
+    def get(cls, cmd, resource_group_name, container_app_name, auth_config_name):
+        management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
+        api_version = STABLE_API_VERSION
+        sub_id = get_subscription_id(cmd.cli_ctx)
+        request_url = f"{management_hostname}subscriptions/{sub_id}/resourceGroups/{resource_group_name}/providers/Microsoft.App/containerApps/{container_app_name}/authConfigs/{auth_config_name}?api-version={api_version}"
+
+        r = send_raw_request(cmd.cli_ctx, "GET", request_url)
+        return r.json()

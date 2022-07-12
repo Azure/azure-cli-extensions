@@ -932,3 +932,15 @@ class AzureFirewallScenario(ScenarioTest):
         self.cmd('network firewall policy create -g {rg} -n {policy} --sku Standard --threat-intel-mode Alert')
 
         self.cmd('network firewall policy update -g {rg} -n {policy} --threat-intel-mode Deny')
+
+    @ResourceGroupPreparer(name_prefix='test_azure_firewall_policy_with_sql', location='eastus2euap')
+    def test_azure_firewall_policy_with_sql(self, resource_group):
+        self.kwargs.update({
+            'policy': 'testpolicy'
+        })
+
+        self.cmd('network firewall policy create -g {rg} -n {policy} --sql true',
+                 checks=self.check('sql.allowSqlRedirect', True))
+
+        self.cmd('network firewall policy update -g {rg} -n {policy} --sql False',
+                 checks=self.check('sql.allowSqlRedirect', False))

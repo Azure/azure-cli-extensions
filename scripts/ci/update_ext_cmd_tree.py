@@ -44,8 +44,7 @@ def update_cmd_tree(ext_name):
     az_cli.invocation = invoker
 
     sys.path.append(ext_dir)
-    extension_command_table, _ = _load_extension_command_loader(invoker.commands_loader,
-                                                                "", ext_mod)
+    extension_command_table, _ = _load_extension_command_loader(invoker.commands_loader, None, ext_mod)
 
     EXT_CMD_TREE_TO_UPLOAD = Session()
     EXT_CMD_TREE_TO_UPLOAD.load(os.path.expanduser(os.path.join('~', '.azure', file_name)))

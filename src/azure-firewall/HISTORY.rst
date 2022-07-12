@@ -2,6 +2,10 @@
 
 Release History
 ===============
+0.14.1
+++++++
+* `az network firewall policy`: add parameter `sql`
+
 0.14.0
 ++++++
 * `az network firewall policy intrusion-detection add`: add new parameter --private-ranges

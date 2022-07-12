@@ -88,26 +88,43 @@ def connect_vmmserver(
     fqdn=None,
     username=None,
     password=None,
-    port=DEFAULT_VMMSERVER_PORT,
+    port=None,
     tags=None,
     no_wait=False,
 ):
 
-    creds_ok = all(inp is not None for inp in [fqdn, username, password])
+    creds_ok = all(inp is not None for inp in [fqdn, port, username, password])
     while not creds_ok:
         creds = {
             'fqdn': fqdn,
+            'port': port,
             'username': username,
             'password': password,
         }
-        if fqdn is None:
+        while not creds['fqdn']:
             print('Please provide vmmserver FQDN or IP address: ', end='')
             creds['fqdn'] = input()
-        if username is None:
+            if not creds['fqdn']:
+                print('Parameter is required, please try again')
+        while not creds['port']:
+            print('Please provide vmmserver port (Default: 8100): ', end='')
+            try:
+                creds['port'] = input()
+                if not creds['port']:
+                    creds['port'] = DEFAULT_VMMSERVER_PORT
+                creds['port'] = int(creds['port'])
+            except ValueError:
+                print('Port must be a number, please try again')
+                creds['port'] = None
+        while not creds['username']:
             print('Please provide vmmserver username: ', end='')
             creds['username'] = input()
-        if password is None:
+            if not creds['username']:
+                print('Parameter is required, please try again')
+        while not creds['password']:
             creds['password'] = getpass('Please provide vmmserver password: ')
+            if not creds['password']:
+                print('Parameter is required, please try again')
         print('Confirm vmmserver details? [Y/n]: ', end='')
         res = input().lower()
         if res in ['y', '']:
@@ -118,8 +135,9 @@ def connect_vmmserver(
                         file=sys.stderr,
                     )
                     continue
-            fqdn, username, password = (
+            fqdn, port, username, password = (
                 creds['fqdn'],
+                creds['port'],
                 creds['username'],
                 creds['password'],
             )

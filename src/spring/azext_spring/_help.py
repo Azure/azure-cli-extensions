@@ -221,17 +221,17 @@ helps['spring app deploy'] = """
     short-summary: Deploy source code or pre-built binary to an app and update related configurations.
     examples:
     - name: Deploy source code to an app. This will pack current directory, build binary with Pivotal Build Service and then deploy to the app.
-      text: az spring app deploy -n MyApp -s MyCluster -g MyResourceGroup
+      text: az spring app deploy -n MyApp -s MyCluster -g MyResourceGroup --source-path
     - name: Deploy a pre-built jar to an app with jvm options and environment variables.
-      text: az spring app deploy -n MyApp -s MyCluster -g MyResourceGroup --jar-path app.jar --jvm-options="-XX:+UseG1GC -XX:+UseStringDeduplication" --env foo=bar
+      text: az spring app deploy -n MyApp -s MyCluster -g MyResourceGroup --artifact-path app.jar --jvm-options="-XX:+UseG1GC -XX:+UseStringDeduplication" --env foo=bar
     - name: Deploy source code to a specific deployment of an app.
-      text: az spring app deploy -n MyApp -s MyCluster -g MyResourceGroup -d green-deployment
+      text: az spring app deploy -n MyApp -s MyCluster -g MyResourceGroup -d green-deployment --source-path
     - name: Deploy a container image on Docker Hub to an app.
       text: az spring app deploy -n MyApp -s MyCluster -g MyResourceGroup --container-image contoso/your-app:v1
     - name: Deploy a container image on a private registry to an app.
       text: az spring app deploy -n MyApp -s MyCluster -g MyResourceGroup --container-image contoso/your-app:v1 --container-registry myacr.azurecr.io --registry-username <username> --registry-password <password>
     - name: Deploy with Application Configuration Service config file patterns to an app.
-      text: az spring app deploy -n MyApp -s MyCluster -g MyResourceGroup --config-file-patterns MyPatterns --jar-path app.jar
+      text: az spring app deploy -n MyApp -s MyCluster -g MyResourceGroup --config-file-patterns MyPatterns --artifact-path app.jar
 """
 
 helps['spring app scale'] = """
@@ -354,9 +354,9 @@ helps['spring app deployment create'] = """
     short-summary: Create a staging deployment for the app. To deploy code or update setting to an existing deployment, use `az spring app deploy/update --deployment <staging deployment>`.
     examples:
     - name: Deploy source code to a new deployment of an app. This will pack current directory, build binary with Pivotal Build Service and then deploy.
-      text: az spring app deployment create -n green-deployment --app MyApp -s MyCluster -g MyResourceGroup
+      text: az spring app deployment create -n green-deployment --app MyApp -s MyCluster -g MyResourceGroup --source-path
     - name: Deploy a pre-built jar to an app with jvm options and environment variables.
-      text: az spring app deployment create -n green-deployment --app MyApp -s MyCluster -g MyResourceGroup --jar-path app.jar --jvm-options="-XX:+UseG1GC -XX:+UseStringDeduplication" --env foo=bar
+      text: az spring app deployment create -n green-deployment --app MyApp -s MyCluster -g MyResourceGroup --artifact-path app.jar --jvm-options="-XX:+UseG1GC -XX:+UseStringDeduplication" --env foo=bar
     - name: Deploy a container image on Docker Hub to an app.
       text: az spring app deployment create -n green-deployment --app MyApp -s MyCluster -g MyResourceGroup --container-image contoso/your-app:v1
     - name: Deploy a container image on a private registry to an app.
@@ -646,7 +646,7 @@ helps['spring build-service builder create'] = """
     short-summary: Create a builder.
     examples:
         - name: Create a builder using JSON file.
-          text: az spring build-service builder create --name my-builder --builder-json MyJson.json --service clitest --resource-group cli
+          text: az spring build-service builder create --name my-builder --builder-file MyJson.json --service clitest --resource-group cli
 """
 
 helps['spring build-service builder update'] = """
@@ -654,7 +654,7 @@ helps['spring build-service builder update'] = """
     short-summary: Update a builder.
     examples:
         - name: Update a builder using JSON file.
-          text: az spring build-service builder update --name my-builder --builder-json MyJson.json --service clitest --resource-group cli
+          text: az spring build-service builder update --name my-builder --builder-file MyJson.json --service clitest --resource-group cli
 """
 
 helps['spring build-service builder show'] = """

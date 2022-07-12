@@ -8,6 +8,7 @@
 # pylint: disable=too-many-statements
 
 from azure.cli.core.commands.parameters import (
+    tags_type,
     get_enum_type,
     resource_group_name_type,
     get_location_type
@@ -33,7 +34,11 @@ from azext_dataprotection.manual.enums import (
     get_job_operation_values,
     get_datasource_types,
     get_rehydration_priority_values,
-    get_secret_store_type_values
+    get_secret_store_type_values,
+    get_backup_operation_values,
+    get_permission_scope_values,
+    get_resource_type_values,
+    get_critical_operation_values
 )
 
 
@@ -53,6 +58,7 @@ def load_arguments(self, _):
         c.argument('policy_id', type=str, help="Id of the backup policy the datasource will be associated")
         c.argument('secret_store_type', arg_type=get_enum_type(get_secret_store_type_values()), help="Specify the secret store type to use for authentication")
         c.argument('secret_store_uri', type=str, help="specify the secret store uri to use for authentication")
+        c.argument('snapshot_resource_group_name', options_list=['--snapshot-resource-group-name', '--snapshot-rg'], type=str, help="Name of the resource group in which the backup snapshots should be stored")
 
     with self.argument_context('dataprotection backup-instance update-policy') as c:
         c.argument('backup_instance_name', type=str, help="Backup instance name.")
@@ -79,6 +85,16 @@ def load_arguments(self, _):
         c.argument('subscriptions', type=str, nargs='+', help="List of subscription Ids.")
         c.argument('protection_status', arg_type=get_enum_type(get_protection_status_values()), nargs='+', help="specify protection status.")
         c.argument('datasource_id', type=str, nargs='+', help="specify datasource id filter to apply.")
+
+    with self.argument_context('dataprotection backup-instance update-msi-permissions') as c:
+        c.argument('operation', arg_type=get_enum_type(get_backup_operation_values()), help="List of possible operations")
+        c.argument('datasource_type', arg_type=get_enum_type(get_datasource_types()), help="Specify the datasource type of the resource to be backed up")
+        c.argument('vault_name', type=str, help="Name of the vault.")
+        c.argument('permissions_scope', arg_type=get_enum_type(get_permission_scope_values()), help="Scope for assigning permissions to the backup vault")
+        c.argument('keyvault_id', type=str, help='ARM id of the key vault. Required when --datasource-type is AzureDatabaseForPostgreSQL')
+        c.argument('yes', options_list=['--yes', '-y'], help='Do not prompt for confirmation.', action='store_true')
+        c.argument('backup_instance', type=validate_file_or_dict, help='Request body for operation Expected value: '
+                   'json-string/@json-file. Required when --operation is Backup')
 
     with self.argument_context('dataprotection job list-from-resourcegraph') as c:
         c.argument('subscriptions', type=str, nargs='+', help="List of subscription Ids.")
@@ -171,3 +187,23 @@ def load_arguments(self, _):
 
     with self.argument_context('dataprotection backup-vault list') as c:
         c.argument('resource_group_name', resource_group_name_type)
+
+    with self.argument_context('dataprotection resource-guard list') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+
+    with self.argument_context('dataprotection resource-guard list-protected-operations') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('resource_guards_name', options_list=['--resource-guard-name', '--name', '-n'], type=str, help='The name of '
+                   'ResourceGuard', id_part='name')
+        c.argument('resource_type', arg_type=get_enum_type(get_resource_type_values()), help='Type of the resource associated with the protected operations')
+
+    with self.argument_context('dataprotection resource-guard update') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('resource_guards_name', options_list=['--resource-guard-name', '--name', '-n'], type=str, help='The name of '
+                   'ResourceGuard', id_part='name')
+        c.argument('tags', tags_type)
+        c.argument('type_', options_list=['--type'], type=str, help='The identityType which can be either '
+                   'SystemAssigned or None', arg_group='Identity')
+        c.argument('resource_type', arg_type=get_enum_type(get_resource_type_values()), help='Type of the resource associated with the protected operations')
+        c.argument('critical_operation_exclusion_list', arg_type=get_enum_type(get_critical_operation_values()), nargs='+', help='List of critical operations which are '
+                   'not protected by this resourceGuard')
