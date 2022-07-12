@@ -2210,28 +2210,30 @@ def install_kubectl_client():
 
         # Fetching the current directory where the cli installs the kubectl executable
         home_dir = os.path.expanduser('~')
-        operating_system = platform.system().lower()
+        kubectl_filepath = os.path.join(home_dir, '.azure', 'kubectl-client')
 
+        try:
+            os.mkdir(kubectl_filepath)
+        except FileExistsError:
+            pass
+
+        operating_system = platform.system().lower()
         # Setting path depending on the OS being used
         if operating_system == 'windows':
-            kubectl_path = os.path.join(home_dir, '.azure-kubectl', 'kubectl.exe')
+            kubectl_path = os.path.join(kubectl_filepath, 'kubectl.exe')
         elif operating_system == 'linux' or operating_system == 'darwin':
-            kubectl_path = os.path.join('usr', 'local', 'bin', 'kubectl')
+            kubectl_path = os.path.join(kubectl_filepath, 'kubectl')
 
-        # If the kubectl executable already present return the path
         if os.path.isfile(kubectl_path):
             return kubectl_path
 
         # Downloading kubectl executable if its not present in the machine
         logger.warning("Downloading kubectl client for first time. This can take few minutes...")
         logging.disable(logging.CRITICAL)
-        get_default_cli().invoke(['aks', 'install-cli'])
+        get_default_cli().invoke(['aks', 'install-cli', '--install-location', kubectl_path])
         logging.disable(logging.NOTSET)
-        if (operating_system == 'linux'):
-            kubectl_path = os.path.join('usr', 'local', 'bin', 'kubectl')
         logger.warning("\n")
-
-        # Return tha path of the kubectl executable
+        # Return the path of the kubectl executable
         return kubectl_path
 
     except Exception as e:

@@ -632,7 +632,7 @@ def executing_diagnoser_job(corev1_api_instance, batchv1_api_instance, filepath_
             except Exception as e:
                 Popen(cmd_delete_job, stdout=PIPE, stderr=PIPE)
                 return
-
+        Popen(cmd_delete_job, stdout=PIPE, stderr=PIPE)
     # To handle any exception that may occur during the execution
     except Exception as e:
         logger.warning("An exception has occured while trying to execute the diagnoser job in the cluster. Exception: {}".format(str(e)) + "\n")
