@@ -11,6 +11,12 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
+0.5.89
+++++++
+
+* Fix for the az aks addon list command to return enable:true, if virtual-node addon is enabled for the AKS cluster.
+
++++++++
 0.5.88
 ++++++
 
