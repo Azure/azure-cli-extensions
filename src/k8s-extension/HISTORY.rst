@@ -5,7 +5,8 @@ Release History
 
 1.2.4
 ++++++++++++++++++
-* Support Extensions Types list, list by location, show, and list versions in preview
+* microsoft.azureml.kubernetes: Do not invoke `create_or_update` for already existed resources.
+* microsoft.azuremonitor.containers: ContainerInsights Extension Managed Identity Auth Onboarding updates.
 
 1.2.3
 ++++++++++++++++++
