@@ -118,6 +118,7 @@ from azext_aks_preview._validators import (
     validate_enable_custom_ca_trust,
     validate_defender_config_parameter,
     validate_defender_disable_and_enable_parameters,
+    validate_enable_disable_namespace_resources,
 )
 
 # candidates for enumeration
@@ -397,7 +398,7 @@ def load_arguments(self, _):
         c.argument('disk_driver_version', arg_type=get_enum_type(disk_driver_versions))
         c.argument('disable_disk_driver', action='store_true')
         c.argument('enable_file_driver', action='store_true')
-        c.argument('enable_namespace_resources', action='store_true', help='Enable sync of namespaces as Azure Resource Manager resources')
+        c.argument('enable_namespace_resources', action='store_true', help='Enable sync of namespaces as Azure Resource Manager resources', validator=validate_enable_disable_namespace_resources)
         c.argument('disable_namespace_resources', action='store_true', help='Disable sync of namespaces as Azure Resource Manager resources')
         c.argument('disable_file_driver', action='store_true')
         c.argument('enable_blob_driver', action='store_true')

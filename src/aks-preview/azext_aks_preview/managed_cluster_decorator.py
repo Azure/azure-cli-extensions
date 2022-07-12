@@ -1333,66 +1333,6 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         """
         return self._get_disable_keda(enable_validation=True)
 
-    def _get_enable_namespace_resources(self, enable_validation: bool = False) -> bool:
-        """Internal function to obtain the value of enable_namespace_resources.
-
-        This function supports the option of enable_validation. When enabled, if both enable_namespace_resources and disable_namespace_resources are
-        specified, raise a MutuallyExclusiveArgumentError.
-
-        :return: bool
-        """
-        # Read the original value passed by the command.
-        enable_namespace_resources = self.raw_param.get("enable_namespace_resources")
-
-        # This parameter does not need dynamic completion.
-        if enable_validation:
-            if enable_namespace_resources and self._get_disable_namespace_resources(enable_validation=False):
-                raise MutuallyExclusiveArgumentError(
-                    "Cannot specify --enable-namespace-resources and --disable-namespace-resources at the same time."
-                )
-
-        return enable_namespace_resources
-
-    def get_enable_namespace_resources(self) -> bool:
-        """Obtain the value of enable_namespace_resources.
-
-        This function will verify the parameter by default. If both enable_namespace_resources and disable_namespace_resources are specified, raise a
-        MutuallyExclusiveArgumentError.
-
-        :return: bool
-        """
-        return self._get_enable_namespace_resources(enable_validation=True)
-
-    def _get_disable_namespace_resources(self, enable_validation: bool = False) -> bool:
-        """Internal function to obtain the value of disable_namespace_resources.
-
-        This function supports the option of enable_validation. When enabled, if both enable_namespace_resources and disable_namespace_resources are
-        specified, raise a MutuallyExclusiveArgumentError.
-
-        :return: bool
-        """
-        # Read the original value passed by the command.
-        disable_namespace_resources = self.raw_param.get("disable_namespace_resources")
-
-        # This option is not supported in create mode, hence we do not read the property value from the `mc` object.
-        # This parameter does not need dynamic completion.
-        if enable_validation:
-            if disable_namespace_resources and self._get_enable_namespace_resources(enable_validation=False):
-                raise MutuallyExclusiveArgumentError(
-                    "Cannot specify --enable-namespace-resources and --disable-namespace-resources at the same time."
-                )
-
-        return disable_namespace_resources
-
-    def get_disable_namespace_resources(self) -> bool:
-        """Obtain the value of disable_namespace_resources.
-
-        This function will verify the parameter by default. If both enable_namespace_resources and disable_namespace_resources are specified, raise a
-        MutuallyExclusiveArgumentError.
-
-        :return: bool
-        """
-        return self._get_disable_namespace_resources(enable_validation=True)
 
 
 class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
@@ -2007,11 +1947,12 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         """
         self._ensure_mc(mc)
 
-        if self.context.get_enable_namespace_resources():
+        if self.context.raw_param.get("enable_namespace_resources"):
             mc.enable_namespace_resources = True
 
-        if self.context.get_disable_namespace_resources():
+        elif self.context.raw_param.get("disable_namespace_resources"):
             mc.enable_namespace_resources = False
+
         return mc
 
     def update_mc_profile_preview(self) -> ManagedCluster:

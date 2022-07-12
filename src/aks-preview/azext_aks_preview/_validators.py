@@ -615,3 +615,7 @@ def validate_defender_config_parameter(namespace):
 def validate_defender_disable_and_enable_parameters(namespace):
     if namespace.disable_defender and namespace.enable_defender:
         raise ArgumentUsageError('Providing both --disable-defender and --enable-defender flags is invalid')
+
+def validate_enable_disable_namespace_resources(namespace):
+    if namespace.enable_namespace_resources and namespace.disable_namespace_resources:
+        raise ArgumentUsageError("Providing both --enable-namespace-resources and --disable-namespace-resources is invalid")
