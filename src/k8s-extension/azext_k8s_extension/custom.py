@@ -368,7 +368,7 @@ def list_k8s_cluster_extension_types(client, resource_group_name, cluster_name, 
     """ List available extension types
     """
     cluster_rp, parent_api_version = get_cluster_rp_api_version(cluster_type)
-    return client.list(resource_group_name, cluster_rp, cluster_name)
+    return client.list(resource_group_name, cluster_rp, cluster_type, cluster_name)
 
 
 def list_k8s_location_extension_types(client, location):

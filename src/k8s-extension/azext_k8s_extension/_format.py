@@ -35,11 +35,11 @@ def k8s_extension_type_show_table_format(result):
 def __get_extension_type_table_row(result, showReleaseTrains):
     # Populate the values to be returned if they are not undefined
     clusterTypes = ', '.join(result['clusterTypes'])
-    defaultScope, name, allowMultipleInstances, defaultReleaseNamespace = '','','',''
+    name = result['name']
+    defaultScope, allowMultipleInstances, defaultReleaseNamespace = '','',''
     if result['supportedScopes']:
         defaultScope = result['supportedScopes']['defaultScope']
         if result['supportedScopes']['clusterScopeSettings']:
-            name = result['supportedScopes']['clusterScopeSettings']['name']
             allowMultipleInstances = result['supportedScopes']['clusterScopeSettings']['allowMultipleInstances']
             defaultReleaseNamespace = result['supportedScopes']['clusterScopeSettings']['defaultReleaseNamespace']
     
