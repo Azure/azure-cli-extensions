@@ -412,7 +412,16 @@ def check_diagnoser_container(corev1_api_instance, batchv1_api_instance, filepat
         if(diagnoser_container_log is not None):
             diagnoser_container_log_list = diagnoser_container_log.split("\n")
             diagnoser_container_log_list.pop(-1)
-            dns_check, storage_space_available = check_cluster_DNS(diagnoser_container_log_list[-2], filepath_with_timestamp, storage_space_available)
+            dns_check_log = ""
+            temp = 1
+            # For fetching the DNS Logs
+            for outputs in diagnoser_container_log_list:
+                if consts.Outbound_Connectivity_Check_Result_String in outputs:
+                    temp = 1
+                elif temp == 0 or consts.DNS_Check_Result_String in outputs:
+                    dns_check_log += " " + outputs
+                    temp = 0
+            dns_check, storage_space_available = check_cluster_DNS(dns_check_log, filepath_with_timestamp, storage_space_available)
             outbound_connectivity_check, storage_space_available = check_cluster_outbound_connectivity(diagnoser_container_log_list[-1], filepath_with_timestamp, storage_space_available)
         else:
             return consts.Diagnostic_Check_Incomplete, storage_space_available
@@ -617,6 +626,7 @@ def executing_diagnoser_job(corev1_api_instance, batchv1_api_instance, filepath_
                     if(pod_name.startswith(job_name)):
                         # Creating a text file with the name of the container and adding that containers logs in it
                         diagnoser_container_log = corev1_api_instance.read_namespaced_pod_log(name=pod_name, container="azure-arc-diagnoser-container", namespace='azure-arc')
+
                 # Clearing all the resources after fetching the diagnoser container logs
                 Popen(cmd_delete_job, stdout=PIPE, stderr=PIPE)
             except Exception as e:
@@ -638,6 +648,9 @@ def check_cluster_DNS(dns_check_log, filepath_with_timestamp, storage_space_avai
     global diagnoser_output
     try:
 
+        if consts.DNS_Check_Result_String not in dns_check_log:
+            return consts.Diagnostic_Check_Incomplete, storage_space_available
+ 
         # Validating if DNS is working or not and displaying proper result
         if("NXDOMAIN" in dns_check_log or "connection timed out" in dns_check_log):
             print("Error: We found an issue with the DNS resolution on your cluster. For details about debugging DNS issues visit 'https://kubernetes.io/docs/tasks/administer-cluster/dns-debugging-resolution/'.\n")
@@ -679,13 +692,17 @@ def check_cluster_outbound_connectivity(outbound_connectivity_check_log, filepat
 
     global diagnoser_output
     try:
+        outbound_connectivity_response = outbound_connectivity_check_log[-1:-4:-1]
+        outbound_connectivity_response = outbound_connectivity_response[::-1]
+        if consts.Outbound_Connectivity_Check_Result_String not in outbound_connectivity_check_log:
+            return consts.Diagnostic_Check_Incomplete, storage_space_available
 
         # Validating if outbound connectiivty is working or not and displaying proper result
-        if(outbound_connectivity_check_log != "000"):
+        if(outbound_connectivity_response != "000"):
             if storage_space_available:
                 outbound_connectivity_check_path = os.path.join(filepath_with_timestamp, "Outbound_Network_Connectivity_Check.txt")
                 with open(outbound_connectivity_check_path, 'w+') as outbound:
-                    outbound.write("Response code " + outbound_connectivity_check_log + "\nOutbound network connectivity check passed successfully.")
+                    outbound.write("Response code " + outbound_connectivity_response + "\nOutbound network connectivity check passed successfully.")
             return consts.Diagnostic_Check_Passed, storage_space_available
         else:
             print("Error: We found an issue with outbound network connectivity from the cluster.\nIf your cluster is behind an outbound proxy server, please ensure that you have passed proxy paramaters during the onboarding of your cluster.\nFor more details visit 'https://docs.microsoft.com/en-us/azure/azure-arc/kubernetes/quickstart-connect-cluster?tabs=azure-cli#connect-using-an-outbound-proxy-server'.\nPlease ensure to meet the following network requirements 'https://docs.microsoft.com/en-us/azure/azure-arc/kubernetes/quickstart-connect-cluster?tabs=azure-cli#meet-network-requirements' \n")
@@ -693,7 +710,7 @@ def check_cluster_outbound_connectivity(outbound_connectivity_check_log, filepat
             if storage_space_available:
                 outbound_connectivity_check_path = os.path.join(filepath_with_timestamp, "Outbound_Network_Connectivity_Check.txt")
                 with open(outbound_connectivity_check_path, 'w+') as outbound:
-                    outbound.write("Response code " + outbound_connectivity_check_log + "\nWe found an issue with Outbound network connectivity from the cluster.")
+                    outbound.write("Response code " + outbound_connectivity_response + "\nWe found an issue with Outbound network connectivity from the cluster.")
             return consts.Diagnostic_Check_Failed, storage_space_available
 
     # For handling storage or OS exception that may occur during the execution
