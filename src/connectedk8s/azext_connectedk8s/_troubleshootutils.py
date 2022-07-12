@@ -567,9 +567,9 @@ def executing_diagnoser_job(corev1_api_instance, batchv1_api_instance, filepath_
 
         # Selecting the error message depending on the job getting scheduled, completed and the presence of  security policy
         if (is_job_scheduled is False and security_policy_present == consts.Diagnostic_Check_Failed):
-            logger.warning("Unable to schedule the diagnoser job in the kubernetes cluster. There might be a security policy or security context constraint (SCC) present which is preventing the deployment of azure-arc-diagnoser-job as it uses serviceaccount:azure-arc-troubleshoot-sa which doesnt have admin permissions.\nYou can whitelist it and then run the troubleshoot command again.\n")
+            logger.warning("Unable to schedule the diagnoser job in the kubernetes cluster. There might be a pod security policy or security context constraint (SCC) present which is preventing the deployment of azure-arc-diagnoser-job as it uses serviceaccount:azure-arc-troubleshoot-sa which does not have admin permissions.\nYou can whitelist it and then run the troubleshoot command again.\n")
             Popen(cmd_delete_job, stdout=PIPE, stderr=PIPE)
-            diagnoser_output.append("Unable to schedule the diagnoser job in the kubernetes cluster. There might be a security policy or security context constraint (SCC) present which is preventing the deployment of azure-arc-diagnoser-job as it uses serviceaccount:azure-arc-troubleshoot-sa which doesnt have admin permissions.\nYou can whitelist it and then run the troubleshoot command again.\n")
+            diagnoser_output.append("Unable to schedule the diagnoser job in the kubernetes cluster. There might be a pod security policy or security context constraint (SCC) present which is preventing the deployment of azure-arc-diagnoser-job as it uses serviceaccount:azure-arc-troubleshoot-sa which does not have admin permissions.\nYou can whitelist it and then run the troubleshoot command again.\n")
             return
         elif (is_job_scheduled is False):
             logger.warning("Unable to schedule the diagnoser job in the kubernetes cluster. The possible reasons can be presence of a security policy or security context constraint (SCC) or it may happen becuase of lack of ResourceQuota.\n")
@@ -782,8 +782,8 @@ def check_probable_cluster_security_policy(corev1_api_instance, helm_client_loca
 
         # Checking if there is any chance of pod security policy presence
         if(cluster_connect_feature is True and kap_pod_present is False):
-            print("Error: Unable to create Kube-aad-proxy deployment there might be a security policy or security context constraint (SCC) present which is preventing the deployment of kube-aad-proxy as it doesn't have admin privileges.\nKube aad proxy pod uses the azure-arc-kube-aad-proxy-sa service account, which doesn't have admin permissions but requires the permission to mount host path.\n ")
-            diagnoser_output.append("Error: Unable to create Kube-aad-proxy deployment there might be a security policy or security context constraint (SCC) present which is preventing the deployment of kube-aad-proxy as it doesn't have admin privileges.\nKube aad proxy pod uses the azure-arc-kube-aad-proxy-sa service account, which doesn't have admin permissions but requires the permission to mount host path.\n")
+            print("Error: Unable to create Kube-aad-proxy deployment. There might be a pod security policy or security context constraint (SCC) present which is preventing the deployment of kube-aad-proxy as it doesn't have admin privileges.\nKube aad proxy pod uses the azure-arc-kube-aad-proxy-sa service account, which doesn't have admin permissions but requires the permission to mount host path.\n")
+            diagnoser_output.append("Error: Unable to create Kube-aad-proxy deployment. There might be a pod security policy or security context constraint (SCC) present which is preventing the deployment of kube-aad-proxy as it doesn't have admin privileges.\nKube aad proxy pod uses the azure-arc-kube-aad-proxy-sa service account, which doesn't have admin permissions but requires the permission to mount host path.\n")
             return consts.Diagnostic_Check_Failed
         return consts.Diagnostic_Check_Passed
 
