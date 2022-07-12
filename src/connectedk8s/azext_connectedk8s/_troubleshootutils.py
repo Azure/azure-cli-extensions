@@ -497,7 +497,7 @@ def executing_diagnoser_job(corev1_api_instance, batchv1_api_instance, filepath_
             # Secret-reader role is used to fetch the secrets present in the release-namespace
             # Also we pass release-namespace in args to read secrets for helm command that we are using in the script.
             if(counter == 1 or counter == 2):
-                each_yaml['metadata']['namespace'] = release_namespace 
+                each_yaml['metadata']['namespace'] = release_namespace
             elif(counter == 3):
                 each_yaml['spec']['template']['spec']['containers'][0]['args'][0] = release_namespace
             counter += 1
@@ -650,7 +650,7 @@ def check_cluster_DNS(dns_check_log, filepath_with_timestamp, storage_space_avai
 
         if consts.DNS_Check_Result_String not in dns_check_log:
             return consts.Diagnostic_Check_Incomplete, storage_space_available
- 
+
         # Validating if DNS is working or not and displaying proper result
         if("NXDOMAIN" in dns_check_log or "connection timed out" in dns_check_log):
             print("Error: We found an issue with the DNS resolution on your cluster. For details about debugging DNS issues visit 'https://kubernetes.io/docs/tasks/administer-cluster/dns-debugging-resolution/'.\n")
