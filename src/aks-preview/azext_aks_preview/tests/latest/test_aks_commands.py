@@ -1168,7 +1168,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         ])
 
         # list addons
-        list_cmd = 'aks addon list --resource-group={resource_group} --name={name} -o json'
+        list_cmd = 'aks addon list --resource-group={resource_group} --name={aks_name} -o json'
         addon_list = self.cmd(list_cmd).get_output_in_json()
 
         # check virtual node addon
