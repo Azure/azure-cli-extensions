@@ -957,7 +957,7 @@ def fetching_cli_output_logs(filepath_with_timestamp, storage_space_available, f
             # If no issues was found during the whole troubleshoot execution
             elif flag:
                 with open(cli_output_logger_path, 'w+') as cli_output_writer:
-                    cli_output_writer.write("Diagnoser did not find any issues with the cluster.\n")
+                    cli_output_writer.write("The diagnoser didn't find any issues on the cluster.\n")
             # If process was terminated by user
             else:
                 with open(cli_output_logger_path, 'w+') as cli_output_writer:

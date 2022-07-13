@@ -2190,12 +2190,12 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
         if storage_space_available:
             # Depending on whether all tests passes we will give the output
             if (all_checks_passed):
-                logger.warning("Diagnoser did not find any issues with the cluster. \nFor more results from the diagnoser refer to the logs collected at " + filepath_with_timestamp + " .\nThese logs can be attached while filing a support ticket for further assistance.\n")
+                logger.warning("The diagnoser didn't find any issues on the cluster.\nFor more results from the diagnoser refer to the logs collected at " + filepath_with_timestamp + " .\nThese logs can be attached while filing a support ticket for further assistance.\n")
             else:
                 logger.warning("For more results from the diagnoser refer to the logs collected at " + filepath_with_timestamp + " .\nThese logs can be attached while filing a support ticket for further assistance.\n")
         else:
             if (all_checks_passed):
-                logger.warning("Diagnoser did not find any issues with the cluster.\n")
+                logger.warning("The diagnoser didn't find any issues on the cluster.\n")
             logger.warning("Diagnoser was not able to store logs in your local machine. Please check if sufficient storage space is available.\nTo store diagnoser logs clean up some space and execute the troubleshoot command again.")
 
     # Handling the user manual interrupt
