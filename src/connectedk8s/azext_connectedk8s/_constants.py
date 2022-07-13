@@ -169,7 +169,7 @@ K8s_Cluster_Info = "K8s_Cluster_Info.txt"
 Outbound_Network_Connectivity_Check = "Outbound_Network_Connectivity_Check.txt"
 Events_of_Incomplete_Diagnoser_Job = "Events_of_Incomplete_Diagnoser_Job.txt"
 
-# Other names
+# Diagnostic Results Name
 Outbound_Connectivity_Check_Result_String = "Outbound Network Connectivity Result:"
 DNS_Check_Result_String = "DNS Result:"
 AZ_CLI_ADAL_TO_MSAL_MIGRATE_VERSION = '2.30.0'
