@@ -329,6 +329,9 @@ def check_agent_state(corev1_api_instance, filepath_with_timestamp, storage_spac
                     all_agents_stuck = False
                 if each_agent_pod.status.container_statuses is None:
                     probable_sufficient_resource_for_agents = False
+                    if storage_space_available:
+                        # Adding empty line after each agents for formatting
+                        agent_state.write("\n")
                     storage_space_available = describe_non_ready_agent_log(filepath_with_timestamp, corev1_api_instance, each_agent_pod.metadata.name, storage_space_available)
                 else:
                     all_containers_ready_for_each_agent = True
@@ -353,12 +356,12 @@ def check_agent_state(corev1_api_instance, filepath_with_timestamp, storage_spac
                         else:
                             if storage_space_available:
                                 agent_state.write("\t" + each_container_status.name + " :" + " Ready = " + str(each_container_status.ready) + ", Restart_Counts = " + str(each_container_status.restart_count) + "\n")
+                        if all_containers_ready_for_each_agent is False:
+                            storage_space_available = describe_non_ready_agent_log(filepath_with_timestamp, corev1_api_instance, each_agent_pod.metadata.name, storage_space_available)
+
                     if storage_space_available:
                         # Adding empty line after each agents for formatting
                         agent_state.write("\n")
-                    if all_containers_ready_for_each_agent is False:
-                        storage_space_available = describe_non_ready_agent_log(filepath_with_timestamp, corev1_api_instance, each_agent_pod.metadata.name, storage_space_available)
-
         # Displaying error if the arc agents are in pending state.
         if probable_sufficient_resource_for_agents is False:
             logger.warning("Error: One or more Azure Arc agents are not in running state. It may be caused due to insufficient resource availability on the cluster.\n")
@@ -563,7 +566,6 @@ def executing_diagnoser_job(corev1_api_instance, batchv1_api_instance, filepath_
         # To check if there are any issues while trying to deploy the Jobs yaml file
         try:
             utils.create_from_yaml(k8s_client, yaml_file_path)
-
         # To handle the Exception that occured
         except Exception as e:
             # As there we are adding multiple objects from yaml we will split the error
