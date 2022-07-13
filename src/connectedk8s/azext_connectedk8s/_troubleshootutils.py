@@ -76,7 +76,6 @@ def fetch_connected_cluster_resource(filepath_with_timestamp, connected_cluster,
     try:
         # Path to add the connected_cluster resource
         connected_cluster_resource_file_path = os.path.join(filepath_with_timestamp, "Connected_cluster_resource.txt")
-        print(connected_cluster.managed_identity_certificate_expiration_time)
         if storage_space_available:
             # If storage space is available then obly store the connected cluster resource
             with open(connected_cluster_resource_file_path, 'w+') as cc:
@@ -803,8 +802,8 @@ def check_kap_cert(corev1_api_instance):
             if(secrets.metadata.name == consts.KAP_Certificate_Secret_Name):
                 kap_cert_present = True
         if not kap_cert_present and kap_pod_status == "ContainerCreating":
-            logger.warning("Error: Unable to pull Kube aad proxy certificate.\n")
-            diagnoser_output.append("Error: Unable to pull Kube aad proxy certificate.\n")
+            logger.warning("Error: Unable to pull Kube aad proxy certificate. Please attempt to onboard the cluster again.\n")
+            diagnoser_output.append("Error: Unable to pull Kube aad proxy certificate. Please attempt to onboard the cluster again.\n")
             return consts.Diagnostic_Check_Failed
 
         return consts.Diagnostic_Check_Passed
@@ -829,8 +828,8 @@ def check_msi_expiry(connected_cluster):
         Current_date = Current_date_temp.replace('T', ' ')
         # Check if expiry date is lesser than current time
         if (Expiry_date < Current_date):
-            logger.warning("Error: Your MSI certificate has expired. To resolve this issue you can delete the cluster and reconnect it to azure arc.\n")
-            diagnoser_output.append("Error: Your MSI certificate has expired. To resolve this issue you can delete the cluster and reconnect it to azure arc.\n")
+            logger.warning("Error: Your MSI certificate has expired. To resolve this issue you can delete the connected cluster and reconnect it to azure arc.\n")
+            diagnoser_output.append("Error: Your MSI certificate has expired. To resolve this issue you can delete the connected cluster and reconnect it to azure arc.\n")
             return consts.Diagnostic_Check_Failed
 
         return consts.Diagnostic_Check_Passed
