@@ -2101,7 +2101,8 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
         time_stamp = cluster_name + '-' + time_stamp
         # Generate the diagnostic folder in a given location
         filepath_with_timestamp, diagnostic_folder_status = troubleshootutils.create_folder_diagnosticlogs(time_stamp)
-        if(diagnostic_folder_status != consts.Folder_Created):
+
+        if(diagnostic_folder_status is not True):
             storage_space_available = False
 
         # To store the cluster-info of the cluster in current-context
@@ -2186,7 +2187,6 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
         for checks in diagnostic_checks:
             if diagnostic_checks[checks] != consts.Diagnostic_Check_Passed:
                 all_checks_passed = False
-
         if storage_space_available:
             # Depending on whether all tests passes we will give the output
             if (all_checks_passed):

@@ -49,26 +49,26 @@ def create_folder_diagnosticlogs(time_stamp):
             os.mkdir(filepath_with_timestamp)
             pass
 
-        return filepath_with_timestamp, consts.Folder_Created
+        return filepath_with_timestamp, True
 
     # For handling storage or OS exception that may occur during the execution
     except OSError as e:
         if "[Errno 28]" in str(e):
             shutil.rmtree(filepath_with_timestamp, ignore_errors=False, onerror=None)
             telemetry.set_exception(exception=e, fault_type=consts.No_Storage_Space_Available_Fault_Type, summary="No space left on device")
-            return "", consts.No_Storage_Space
+            return "", False
         else:
             logger.warning("An exception has occured while creating the diagnostic logs folder in your local machine. Exception: {}".format(str(e)) + "\n")
             telemetry.set_exception(exception=e, fault_type=consts.Diagnostics_Folder_Creation_Failed_Fault_Type, summary="Error while trying to create diagnostic logs folder")
             diagnoser_output.append("An exception has occured while creating the diagnostic logs folder in your local machine. Exception: {}".format(str(e)) + "\n")
-            return "", consts.Folder_Not_Created
+            return "", False
 
     # To handle any exception that may occur during the execution
     except Exception as e:
         logger.warning("An exception has occured while creating the diagnostic logs folder in your local machine. Exception: {}".format(str(e)) + "\n")
         telemetry.set_exception(exception=e, fault_type=consts.Diagnostics_Folder_Creation_Failed_Fault_Type, summary="Error while trying to create diagnostic logs folder")
         diagnoser_output.append("An exception has occured while creating the diagnostic logs folder in your local machine. Exception: {}".format(str(e)) + "\n")
-        return "", consts.Folder_Not_Created
+        return "", False
 
 
 def fetch_kubectl_cluster_info(filepath_with_timestamp, storage_space_available, kubectl_client_location):
@@ -92,7 +92,8 @@ def fetch_kubectl_cluster_info(filepath_with_timestamp, storage_space_available,
             cluster_info_path = os.path.join(filepath_with_timestamp, consts.K8s_Cluster_Info)
             with open(cluster_info_path, 'w+') as cluster_info:
                 cluster_info.write(str(output_cluster_info_decoded) + "\n")
-
+            return consts.Diagnostic_Check_Passed, storage_space_available
+        else:
             return consts.Diagnostic_Check_Passed, storage_space_available
 
     # For handling storage or OS exception that may occur during the execution
@@ -234,7 +235,8 @@ def retrieve_arc_agents_event_logs(filepath_with_timestamp, storage_space_availa
                     # Adding all the individual events
                     for events in events_json["items"]:
                             event_log.write(str(events) + "\n")
-
+            return consts.Diagnostic_Check_Passed, storage_space_available
+        else:
             return consts.Diagnostic_Check_Passed, storage_space_available
 
     # For handling storage or OS exception that may occur during the execution
@@ -323,36 +325,39 @@ def check_agent_state(corev1_api_instance, filepath_with_timestamp, storage_spac
                 if storage_space_available:
                     # Storing the state of the arc agent in the user machine
                     agent_state.write(each_agent_pod.metadata.name + " : Phase = " + each_agent_pod.status.phase + "\n")
-                    if each_agent_pod.status.phase == 'Running':
-                        all_agents_stuck = False
-                    if each_agent_pod.status.container_statuses is None:
-                        probable_sufficient_resource_for_agents = False
-                        storage_space_available = describe_non_ready_agent_log(filepath_with_timestamp, corev1_api_instance, each_agent_pod.metadata.name, storage_space_available)
-                    else:
-                        all_containers_ready_for_each_agent = True
-                        # If the agent is in running state we will check if all containers are running or not
-                        for each_container_status in each_agent_pod.status.container_statuses:
-                            # Checking if all containers are running or not
-                            if each_container_status.ready is False:
-                                all_containers_ready_for_each_agent = False
-                                all_agent_containers_ready = False
-                                try:
-                                    # Adding the reason for container to be not in ready state
-                                    container_not_ready_reason = each_container_status.state.waiting.reason
-                                except Exception as e:
-                                    container_not_ready_reason = None
-
-                                # Adding the reason if continer is not in ready state
-                                if container_not_ready_reason is not None:
+                if each_agent_pod.status.phase == 'Running':
+                    all_agents_stuck = False
+                if each_agent_pod.status.container_statuses is None:
+                    probable_sufficient_resource_for_agents = False
+                    storage_space_available = describe_non_ready_agent_log(filepath_with_timestamp, corev1_api_instance, each_agent_pod.metadata.name, storage_space_available)
+                else:
+                    all_containers_ready_for_each_agent = True
+                    # If the agent is in running state we will check if all containers are running or not
+                    for each_container_status in each_agent_pod.status.container_statuses:
+                        # Checking if all containers are running or not
+                        if each_container_status.ready is False:
+                            all_containers_ready_for_each_agent = False
+                            all_agent_containers_ready = False
+                            try:
+                                # Adding the reason for container to be not in ready state
+                                container_not_ready_reason = each_container_status.state.waiting.reason
+                            except Exception as e:
+                                container_not_ready_reason = None
+                            # Adding the reason if continer is not in ready state
+                            if container_not_ready_reason is not None:
+                                if storage_space_available:
                                     agent_state.write("\t" + each_container_status.name + " :" + " Ready = False {Reason : " + str(container_not_ready_reason) + "} , Restart_Counts = " + str(each_container_status.restart_count) + "\n")
-                                else:
-                                    agent_state.write("\t" + each_container_status.name + " :" + " Ready = " + str(each_container_status.ready) + ", Restart_Counts = " + str(each_container_status.restart_count) + "\n")
                             else:
+                                if storage_space_available:
+                                    agent_state.write("\t" + each_container_status.name + " :" + " Ready = " + str(each_container_status.ready) + ", Restart_Counts = " + str(each_container_status.restart_count) + "\n")
+                        else:
+                            if storage_space_available:
                                 agent_state.write("\t" + each_container_status.name + " :" + " Ready = " + str(each_container_status.ready) + ", Restart_Counts = " + str(each_container_status.restart_count) + "\n")
-                        if all_containers_ready_for_each_agent is False:
-                            storage_space_available = describe_non_ready_agent_log(filepath_with_timestamp, corev1_api_instance, each_agent_pod.metadata.name, storage_space_available)
-                    # Adding empty line after each agents for formatting
-                    agent_state.write("\n")
+                    if storage_space_available:
+                        # Adding empty line after each agents for formatting
+                        agent_state.write("\n")
+                    if all_containers_ready_for_each_agent is False:
+                        storage_space_available = describe_non_ready_agent_log(filepath_with_timestamp, corev1_api_instance, each_agent_pod.metadata.name, storage_space_available)
 
         # Displaying error if the arc agents are in pending state.
         if probable_sufficient_resource_for_agents is False:
