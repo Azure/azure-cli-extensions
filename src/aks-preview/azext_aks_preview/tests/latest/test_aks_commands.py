@@ -537,6 +537,34 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
+    def test_aks_addon_list_virtualnode_enabled(self, resource_group, resource_group_location):
+        aks_name = self.create_random_name('cliakstest', 16)
+        self.kwargs.update({
+            'resource_group': resource_group,
+            'name': aks_name,
+            'ssh_key_value': self.generate_ssh_keys()
+        })
+
+        create_cmd = 'aks create --resource-group={resource_group} --name={name} --enable-managed-identity --ssh-key-value={ssh_key_value} ' \
+                     '-a virtual_node -o json'
+        self.cmd(create_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.check('addonProfiles.aciConnectorLinux.enabled', True),
+        ])
+
+        list_cmd = 'aks addon list --resource-group={resource_group} --name={name} -o json'
+        addon_list = self.cmd(list_cmd).get_output_in_json()
+
+        assert len(addon_list) > 0
+
+        for addon in addon_list:
+            if addon["name"] == "virtual_node":
+                assert addon["enabled"]
+            else:
+                assert not addon["enabled"]
+
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
     def test_aks_addon_show_all_disabled(self, resource_group, resource_group_location):
         aks_name = self.create_random_name('cliakstest', 16)
         self.kwargs.update({
