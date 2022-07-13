@@ -166,7 +166,7 @@ def retrieve_arc_agents_event_logs(filepath_with_timestamp, storage_space_availa
         # If storage space available then only store the azure-arc events
         if storage_space_available:
             # CMD command to get events using kubectl and converting it to json format
-            command = [kubectl_client_location, "get", "events", "-n", "azur7687e-arc", "--output", "json"]
+            command = [kubectl_client_location, "get", "events", "-n", "azure-arc", "--output", "json"]
             # Using Popen to execute the command and fetching the output
             response_kubectl_get_events = Popen(command, stdout=PIPE, stderr=PIPE)
             output_kubectl_get_events, error_kubectl_get_events = response_kubectl_get_events.communicate()

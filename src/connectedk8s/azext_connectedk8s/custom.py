@@ -2052,6 +2052,7 @@ def get_custom_locations_oid(cmd, cl_oid):
 def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=None, kube_context=None, no_wait=False, tags=None):
 
     try:
+
         logger.warning("Diagnoser running. This may take a while ...\n")
         absolute_path = os.path.abspath(os.path.dirname(__file__))
 
@@ -2112,6 +2113,7 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
 
         # To verify if arc agents have been added to the cluster
         if arc_agents_pod_list.items:
+
             # For storing all the agent logs using the CoreV1Api
             diagnostic_checks[consts.Retrieved_Arc_Agents_Logs], storage_space_available = troubleshootutils.retrieve_arc_agents_logs(corev1_api_instance, filepath_with_timestamp, storage_space_available)
 
@@ -2205,9 +2207,11 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
 def install_kubectl_client():
     # Return kubectl client path set by user
     try:
+
         # Fetching the current directory where the cli installs the kubectl executable
         home_dir = os.path.expanduser('~')
         kubectl_filepath = os.path.join(home_dir, '.azure', 'kubectl-client')
+
         try:
             os.mkdir(kubectl_filepath)
         except FileExistsError:
