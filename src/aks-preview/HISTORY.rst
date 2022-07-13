@@ -11,6 +11,7 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
+<<<<<<< HEAD
 
 18.0.0b4
 +++++++
@@ -899,11 +900,17 @@ Pending
 
 * Skip this version due to conflict.
 
+=======
+>>>>>>> b585fdbd6 ({AKS} Fix enabled virtual node addon showing wrong status in `aks addon list` (#5099))
 0.5.89
 ++++++
 
 * Fix for the az aks addon list command to return enable:true, if virtual-node addon is enabled for the AKS cluster.
 
+<<<<<<< HEAD
+=======
++++++++
+>>>>>>> b585fdbd6 ({AKS} Fix enabled virtual node addon showing wrong status in `aks addon list` (#5099))
 0.5.88
 ++++++
 

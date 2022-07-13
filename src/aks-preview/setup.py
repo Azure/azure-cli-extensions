@@ -9,8 +9,12 @@ from codecs import open as open1
 
 from setuptools import setup, find_packages
 
+<<<<<<< HEAD
 VERSION = "18.0.0b4"
 
+=======
+VERSION = "0.5.89"
+>>>>>>> b585fdbd6 ({AKS} Fix enabled virtual node addon showing wrong status in `aks addon list` (#5099))
 CLASSIFIERS = [
     "Development Status :: 4 - Beta",
     "Intended Audience :: Developers",
