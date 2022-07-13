@@ -1396,18 +1396,13 @@ def aks_addon_list(cmd, client, resource_group_name, name):
                 else False
             )
         else:
+            if name == "virtual-node":
+                addon_key += os_type
             enabled = (
                 True
                 if mc.addon_profiles and
                 addon_key in mc.addon_profiles and
                 mc.addon_profiles[addon_key].enabled
-                else False
-            )
-        if name == "virtual_node":
-            addon_key += os_type
-            enabled = (
-                True
-                if addon_key in mc.addon_profiles and mc.addon_profiles[addon_key].enabled
                 else False
             )
         current_addons.append({

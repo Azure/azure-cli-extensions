@@ -546,7 +546,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         })
 
         create_cmd = 'aks create --resource-group={resource_group} --name={name} --enable-managed-identity --ssh-key-value={ssh_key_value} ' \
-                     '-a virtual_node -o json'
+                     '-a virtual-node -o json'
         self.cmd(create_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
             self.check('addonProfiles.aciConnectorLinux.enabled', True),
@@ -558,7 +558,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         assert len(addon_list) > 0
 
         for addon in addon_list:
-            if addon["name"] == "virtual_node":
+            if addon["name"] == "virtual-node":
                 assert addon["enabled"]
             else:
                 assert not addon["enabled"]
