@@ -12,11 +12,12 @@ from json import loads
 import pkgutil
 import requests
 
+from azure.cli.command_modules.vm.custom import get_vm
+
 from knack.log import get_logger
 from knack.prompting import prompt_y_n, NoTTYException
 
 from .encryption_types import Encryption
-
 from .exceptions import (AzCommandError, WindowsOsNotAvailableError, RunScriptNotFoundForIdError, SkuDoesNotSupportHyperV, SuseNotAvailableError)
 # pylint: disable=line-too-long, deprecated-method
 
@@ -200,6 +201,53 @@ def _clean_up_resources(resource_group_name, confirm):
             return
         logger.error(azCommandError)
         logger.error("Clean up failed.")
+
+
+def _check_n_start_vm(vm_name, resource_group_name, confirm, vm_off_message, vm_instance_view):
+    """
+    Checks if the VM is running and prompts to auto-start it.
+    Returns: True if VM is already running or succeeded in running it. 
+             False if user selected not to run the VM or running in non-interactive mode.
+    Raises: AzCommandError if vm start command fails
+            Exception if something went wrong while fetching VM power state
+    """
+    VM_RUNNING = 'PowerState/running'
+    try:
+        logger.info('Checking VM power state...\n')
+        VM_TURNED_ON = False
+        vm_statuses = vm_instance_view.instance_view.statuses
+        for vm_status in vm_statuses:
+            if vm_status.code == VM_RUNNING:
+                VM_TURNED_ON = True
+        # VM already on
+        if VM_TURNED_ON:
+            logger.info('VM is running\n')
+            return True
+
+        logger.warning(vm_off_message)
+        # VM Stopped or Deallocated. Ask to run it
+        if confirm:
+            if not prompt_y_n('Continue to auto-start VM?'):
+                logger.warning('Skipping VM start')
+                return False
+
+        start_vm_command = 'az vm start --resource-group {rg} --name {n}'.format(rg=resource_group_name, n=vm_name)
+        logger.info('Starting the VM. This might take a few minutes...\n')
+        _call_az_command(start_vm_command)
+        logger.info('VM started\n')
+    # NoTTYException exception only thrown from confirm block
+    except NoTTYException:
+        logger.warning('Cannot confirm VM auto-start in non-interactive mode.')
+        logger.warning('Skipping auto-start')
+        return False
+    except AzCommandError as azCommandError:
+        logger.error("Failed to start VM.")
+        raise azCommandError
+    except Exception as exception:
+        logger.error("Failed to check VM power status.")
+        raise exception
+    else:
+        return True
 
 
 def _fetch_compatible_sku(source_vm, hyperv):

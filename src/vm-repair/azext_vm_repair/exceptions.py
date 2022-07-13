@@ -38,3 +38,7 @@ class SuseNotAvailableError(Exception):
 
 class SupportingResourceNotFoundError(Exception):
     """Raised when a supporting resource needed for the command is not found"""
+
+
+class CommandCanceledByUserError(Exception):
+    """Raised when the command is canceled an user input"""

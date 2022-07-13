@@ -39,9 +39,10 @@ from .repair_utils import (
     _check_linux_hyperV_gen,
     _select_distro_linux_gen2,
     _set_repair_map_url,
-    _is_gen2
+    _is_gen2,
+    _check_n_start_vm
 )
-from .exceptions import AzCommandError, SkuNotAvailableError, UnmanagedDiskCopyError, WindowsOsNotAvailableError, RunScriptNotFoundForIdError, SkuDoesNotSupportHyperV, ScriptReturnsError, SupportingResourceNotFoundError
+from .exceptions import AzCommandError, SkuNotAvailableError, UnmanagedDiskCopyError, WindowsOsNotAvailableError, RunScriptNotFoundForIdError, SkuDoesNotSupportHyperV, ScriptReturnsError, SupportingResourceNotFoundError, CommandCanceledByUserError
 logger = get_logger(__name__)
 
 
@@ -532,13 +533,20 @@ def list_scripts(cmd, preview=None):
     return return_dict
 
 
-def reset_nic(cmd, vm_name, resource_group_name):
+def reset_nic(cmd, vm_name, resource_group_name, yes=False):
 
     # Init command helper object
     command = command_helper(logger, cmd, 'vm repair reset-nic')
     DYNAMIC_CONFIG = 'Dynamic'
-    # 0) Check if VM is deallocated?
+    
     try:
+        # 0) Check if VM is deallocated or off. If it is, ask to run start the VM.
+        VM_OFF_MESSAGE = 'VM is not running. The VM must be in running state to reset its NIC.\n'
+        vm_instance_view = get_vm(cmd, resource_group_name, vm_name, 'instanceView')
+        VM_started = _check_n_start_vm(vm_name, resource_group_name, not yes, VM_OFF_MESSAGE, vm_instance_view)
+        if not VM_started:
+            raise CommandCanceledByUserError("Could not get consent to run VM before resetting the NIC.")
+        
         # 1) Fetch vm network info
         logger.info('Fetching necessary VM network information to reset the NIC...\n')
         # Fetch primary nic id. The primary field is null or true for primary nics.
@@ -613,6 +621,11 @@ def reset_nic(cmd, vm_name, resource_group_name):
         command.error_stack_trace = traceback.format_exc()
         command.error_message = str(resourceError)
         command.message = "Reset NIC could not be initiated."
+    except CommandCanceledByUserError as canceledError:
+        command.set_status_error()
+        command.error_stack_trace = traceback.format_exc()
+        command.error_message = str(canceledError)
+        command.message = VM_OFF_MESSAGE
     except Exception as exception:
         command.set_status_error()
         command.error_stack_trace = traceback.format_exc()
@@ -620,7 +633,7 @@ def reset_nic(cmd, vm_name, resource_group_name):
         command.message = 'An unexpected error occurred. Try running again with the --debug flag to debug.'
     else:
         command.set_status_success()
-        command.message = 'VM guest NIC reset complete.'
+        command.message = 'VM guest NIC reset complete. The VM is in running state.'
     finally:
         if command.error_stack_trace:
             logger.debug(command.error_stack_trace)
