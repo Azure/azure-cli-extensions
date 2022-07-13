@@ -2,7 +2,7 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
-
+# pylint: disable=line-too-long, deprecated-method, global-statement
 # from logging import Logger  # , log
 import subprocess
 import shlex
@@ -12,14 +12,11 @@ from json import loads
 import pkgutil
 import requests
 
-from azure.cli.command_modules.vm.custom import get_vm
-
 from knack.log import get_logger
 from knack.prompting import prompt_y_n, NoTTYException
 
 from .encryption_types import Encryption
 from .exceptions import (AzCommandError, WindowsOsNotAvailableError, RunScriptNotFoundForIdError, SkuDoesNotSupportHyperV, SuseNotAvailableError)
-# pylint: disable=line-too-long, deprecated-method
 
 REPAIR_MAP_URL = 'https://raw.githubusercontent.com/Azure/repair-script-library/master/map.json'
 
@@ -206,7 +203,7 @@ def _clean_up_resources(resource_group_name, confirm):
 def _check_n_start_vm(vm_name, resource_group_name, confirm, vm_off_message, vm_instance_view):
     """
     Checks if the VM is running and prompts to auto-start it.
-    Returns: True if VM is already running or succeeded in running it. 
+    Returns: True if VM is already running or succeeded in running it.
              False if user selected not to run the VM or running in non-interactive mode.
     Raises: AzCommandError if vm start command fails
             Exception if something went wrong while fetching VM power state
@@ -366,13 +363,10 @@ def _check_linux_hyperV_gen(source_vm):
         fetch_hypervgen_command = 'az vm get-instance-view --ids {id} --query "[instanceView.hyperVGeneration]" -o json'.format(id=source_vm.id)
         hyperVGen_list = loads(_call_az_command(fetch_hypervgen_command))
         hyperVGen = hyperVGen_list[0]
-        if hyperVGen == 'V2':
-            return hyperVGen
-        else:
+        if hyperVGen != 'V2':
             hyperVGen = 'V1'
-            return hyperVGen
-    else:
-        return hyperVGen
+
+    return hyperVGen
 
 
 def _secret_tag_check(resource_group_name, copy_disk_name, secreturl):

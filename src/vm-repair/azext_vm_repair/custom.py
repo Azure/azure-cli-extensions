@@ -4,16 +4,16 @@
 # --------------------------------------------------------------------------------------------
 
 # pylint: disable=line-too-long, too-many-locals, too-many-statements, broad-except, too-many-branches
+import json
 import timeit
 import traceback
 import requests
-import json
+
 from knack.log import get_logger
 
 from azure.cli.command_modules.vm.custom import get_vm, _is_linux_os
 from azure.cli.command_modules.storage.storage_url_helpers import StorageResourceIdentifier
 from msrestazure.tools import parse_resource_id
-from .exceptions import SkuDoesNotSupportHyperV
 
 from .command_helper_class import command_helper
 from .repair_utils import (
@@ -33,7 +33,6 @@ from .repair_utils import (
     _fetch_disk_info,
     _unlock_singlepass_encrypted_disk,
     _invoke_run_command,
-    _check_hyperV_gen,
     _get_cloud_init_script,
     _select_distro_linux,
     _check_linux_hyperV_gen,
@@ -538,7 +537,7 @@ def reset_nic(cmd, vm_name, resource_group_name, yes=False):
     # Init command helper object
     command = command_helper(logger, cmd, 'vm repair reset-nic')
     DYNAMIC_CONFIG = 'Dynamic'
-    
+
     try:
         # 0) Check if VM is deallocated or off. If it is, ask to run start the VM.
         VM_OFF_MESSAGE = 'VM is not running. The VM must be in running state to reset its NIC.\n'
@@ -546,7 +545,7 @@ def reset_nic(cmd, vm_name, resource_group_name, yes=False):
         VM_started = _check_n_start_vm(vm_name, resource_group_name, not yes, VM_OFF_MESSAGE, vm_instance_view)
         if not VM_started:
             raise CommandCanceledByUserError("Could not get consent to run VM before resetting the NIC.")
-        
+
         # 1) Fetch vm network info
         logger.info('Fetching necessary VM network information to reset the NIC...\n')
         # Fetch primary nic id. The primary field is null or true for primary nics.
@@ -566,14 +565,14 @@ def reset_nic(cmd, vm_name, resource_group_name, yes=False):
             # Raise primary ip_config not found
             raise SupportingResourceNotFoundError('The primary IP configuration for the VM NIC was not found on Azure.')
         ip_config_object = json.loads(ip_config_string)
-    
+
         subnet_id = ip_config_object['subnet']['id']
         vnet_name = subnet_id.split('/')[-3]
         ipconfig_name = ip_config_object['name']
         orig_ip_address = ip_config_object['privateIpAddress']
         # Dynamic | Static
         orig_ip_allocation_method = ip_config_object['privateIpAllocationMethod']
-    
+
         # Get aviailable ip address within subnet
         # Change to az network vnet subnet list-available-ips when it is available
         get_available_ip_command = 'az network vnet list-available-ips -g {g} -n {vnet} --query [0] -o tsv' \
@@ -582,12 +581,12 @@ def reset_nic(cmd, vm_name, resource_group_name, yes=False):
         if not swap_ip_address:
             # Raise available IP not found
             raise SupportingResourceNotFoundError('Available IP address was not found within the VM subnet.')
-    
+
         # 3) Update private IP address to another in subnet. This will invoke and wait for a VM restart.
         logger.info('Updating VM IP configuration. This might take a few minutes...\n')
         # Update IP address
         update_ip_command = 'az network nic ip-config update -g {g} --nic-name {nic} -n {config} --private-ip-address {ip} ' \
-                                   .format(g=resource_group_name, nic=primary_nic_name, config=ipconfig_name, ip=swap_ip_address)
+                            .format(g=resource_group_name, nic=primary_nic_name, config=ipconfig_name, ip=swap_ip_address)
         _call_az_command(update_ip_command)
 
         # 4) Change things back. This will also invoke and wait for a VM restart.
@@ -602,7 +601,7 @@ def reset_nic(cmd, vm_name, resource_group_name, yes=False):
             # Revert to original static ip
             revert_ip_command = 'az network nic ip-config update -g {g} --nic-name {nic} -n {config} --private-ip-address {ip} ' \
                                 .format(g=resource_group_name, nic=primary_nic_name, config=ipconfig_name, ip=orig_ip_address)
-    
+
         _call_az_command(revert_ip_command)
         logger.info('VM guest NIC reset is complete and all configurations are reverted.')
     # Some error happened. Stop command and revert back as needed.
