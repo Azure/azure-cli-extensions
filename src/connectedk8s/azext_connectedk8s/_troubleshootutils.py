@@ -12,6 +12,7 @@ import os
 import yaml
 import json
 import datetime
+import subprocess
 from subprocess import Popen, PIPE, run, STDOUT, call, DEVNULL
 import shutil
 from knack.log import get_logger
@@ -33,7 +34,7 @@ def create_folder_diagnosticlogs(time_stamp):
     try:
         # Fetching path to user directory to create the arc diagnostic folder
         home_dir = os.path.expanduser('~')
-        filepath = os.path.join(home_dir, '.azure', 'arc_diagnostic_logs')
+        filepath = os.path.join(home_dir, '.azure', consts.Arc_Diagnostic_Logs)
         # Creating Diagnostic folder and its subfolder with the given timestamp and cluster name to store all the logs
         try:
             os.mkdir(filepath)
@@ -70,12 +71,60 @@ def create_folder_diagnosticlogs(time_stamp):
         return "", consts.Folder_Not_Created
 
 
+def fetch_kubectl_cluster_info(filepath_with_timestamp, storage_space_available, kubectl_client_location):
+
+    global diagnoser_output
+    try:
+        # If storage space available then only store the azure-arc events
+        if storage_space_available:
+            # CMD command to get events using kubectl and converting it to json format
+            kubect_cluster_info_command = [kubectl_client_location, "cluster-info"]
+            # Using Popen to execute the command and fetching the output
+            response_cluster_info = Popen(kubect_cluster_info_command, stdout=PIPE, stderr=PIPE)
+            output_cluster_info, error_cluster_info = response_cluster_info.communicate()
+            if response_cluster_info.returncode != 0:
+                telemetry.set_exception(exception=error_cluster_info.decode("ascii"), fault_type=consts.Kubectl_Cluster_Info_Failed_Fault_Type, summary="Error while doing kubectl cluster-info")
+                logger.warning("Error while doing 'kubectl cluster-info'. We were not able to capture cluster-info logs in arc_diganostic_logs folder. Exception: ", error_cluster_info.decode("ascii"))
+                diagnoser_output.append("Error while doing 'kubectl cluster-info'. We were not able to capture cluster-info logs in arc_diganostic_logs folder. Exception: ", error_cluster_info.decode("ascii"))
+                return consts.Diagnostic_Check_Failed, storage_space_available
+            output_cluster_info_decoded = output_cluster_info.decode()
+            # Path to add the K8s cluster-info
+            cluster_info_path = os.path.join(filepath_with_timestamp, consts.K8s_Cluster_Info)
+            with open(cluster_info_path, 'w+') as cluster_info:
+                cluster_info.write(str(output_cluster_info_decoded) + "\n")
+
+            return consts.Diagnostic_Check_Passed, storage_space_available
+
+    # For handling storage or OS exception that may occur during the execution
+    except OSError as e:
+        if "[Errno 28]" in str(e):
+            storage_space_available = False
+            telemetry.set_exception(exception=e, fault_type=consts.No_Storage_Space_Available_Fault_Type, summary="No space left on device")
+            shutil.rmtree(filepath_with_timestamp, ignore_errors=False, onerror=None)
+        else:
+            logger.warning("An exception has occured while trying to store the cluster info in the arc_diagnostic_logs folder. Exception: {}".format(str(e)) + "\n")
+            telemetry.set_exception(exception=e, fault_type=consts.Fetch_Kubectl_Cluster_Info_Fault_Type, summary="Error occured while fetching cluster-info")
+            diagnoser_output.append("An exception has occured while trying to store the cluster info in the arc_diagnostic_logs folder. Exception: {}".format(str(e)) + "\n")
+
+    # To handle any exception that may occur during the execution
+    except Exception as e:
+        logger.warning("An exception has occured while trying to store the cluster info in the arc_diagnostic_logs folder. Exception: {}".format(str(e)) + "\n")
+        telemetry.set_exception(exception=e, fault_type=consts.Fetch_Kubectl_Cluster_Info_Fault_Type, summary="Error occured while fetching cluster-info")
+        diagnoser_output.append("An exception has occured while trying to store the cluster info in the arc_diagnostic_logs folder. Exception: {}".format(str(e)) + "\n")
+
+    return consts.Diagnostic_Check_Failed, storage_space_available
+
+
 def fetch_connected_cluster_resource(filepath_with_timestamp, connected_cluster, storage_space_available):
 
     global diagnoser_output
     try:
         # Path to add the connected_cluster resource
-        connected_cluster_resource_file_path = os.path.join(filepath_with_timestamp, "Connected_cluster_resource.txt")
+        connected_cluster_resource_file_path = os.path.join(filepath_with_timestamp, consts.Connected_Cluster_Resource)
+        last_connectivity_time_str = str(connected_cluster.last_connectivity_time)
+        connected_cluster.last_connectivity_time = last_connectivity_time_str
+        managed_identity_certificate_expiration_time_str = str(connected_cluster.managed_identity_certificate_expiration_time)
+        connected_cluster.managed_identity_certificate_expiration_time = managed_identity_certificate_expiration_time_str
         if storage_space_available:
             # If storage space is available then obly store the connected cluster resource
             with open(connected_cluster_resource_file_path, 'w+') as cc:
@@ -179,7 +228,7 @@ def retrieve_arc_agents_event_logs(filepath_with_timestamp, storage_space_availa
             # Converting output obtained in json format and fetching the azure-arc events
             events_json = json.loads(output_kubectl_get_events)
             # Path to add the azure-arc events
-            event_logs_path = os.path.join(filepath_with_timestamp, "Arc_Agents_Events.txt")
+            event_logs_path = os.path.join(filepath_with_timestamp, consts.Arc_Agents_Events)
             if len(events_json["items"]) != 0:
                 with open(event_logs_path, 'w+') as event_log:
                     # Adding all the individual events
@@ -265,7 +314,7 @@ def check_agent_state(corev1_api_instance, filepath_with_timestamp, storage_spac
         all_agent_containers_ready = True
         # If all agents are stuck we will skip the certificates check
         all_agents_stuck = True
-        agent_state_path = os.path.join(filepath_with_timestamp, "Agent_State.txt")
+        agent_state_path = os.path.join(filepath_with_timestamp, consts.Agent_State)
         with open(agent_state_path, 'w+') as agent_state:
             # To retrieve all of the arc agent pods that are presesnt in the Cluster
             arc_agents_pod_list = corev1_api_instance.list_namespaced_pod(namespace="azure-arc")
@@ -572,7 +621,7 @@ def executing_diagnoser_job(corev1_api_instance, batchv1_api_instance, filepath_
             logger.warning("The diagnoser job failed to reach the completed state in the kubernetes cluster.\n")
             if storage_space_available:
                 # Creating folder with name 'describe_non_ready_agent' in the given path
-                unfinished_diagnoser_job_path = os.path.join(filepath_with_timestamp, 'Events_of_Incomplete_Diagnoser_Job.txt')
+                unfinished_diagnoser_job_path = os.path.join(filepath_with_timestamp, consts.Events_of_Incomplete_Diagnoser_Job)
                 cmd_get_diagnoser_job_events = [kubectl_client_location, "get", "events", "--field-selector", "", "-n", "azure-arc", "--output", "json"]
                 # To describe the diagnoser pod which did not reach completed stage
                 arc_agents_pod_list = corev1_api_instance.list_namespaced_pod(namespace="azure-arc")
@@ -634,13 +683,13 @@ def check_cluster_DNS(dns_check_log, filepath_with_timestamp, storage_space_avai
             logger.warning("Error: We found an issue with the DNS resolution on your cluster. For details about debugging DNS issues visit 'https://kubernetes.io/docs/tasks/administer-cluster/dns-debugging-resolution/'.\n")
             diagnoser_output.append("Error: We found an issue with the DNS resolution on your cluster. For details about debugging DNS issues visit 'https://kubernetes.io/docs/tasks/administer-cluster/dns-debugging-resolution/'.\n")
             if storage_space_available:
-                dns_check_path = os.path.join(filepath_with_timestamp, "DNS_Check.txt")
+                dns_check_path = os.path.join(filepath_with_timestamp, consts.DNS_Check)
                 with open(dns_check_path, 'w+') as dns:
                     dns.write(formatted_dns_log + "\nWe found an issue with the DNS resolution on your cluster.")
             return consts.Diagnostic_Check_Failed, storage_space_available
         else:
             if storage_space_available:
-                dns_check_path = os.path.join(filepath_with_timestamp, "DNS_Check.txt")
+                dns_check_path = os.path.join(filepath_with_timestamp, consts.DNS_Check)
                 with open(dns_check_path, 'w+') as dns:
                     dns.write(formatted_dns_log + "\nCluster DNS check passed successfully.")
             return consts.Diagnostic_Check_Passed, storage_space_available
@@ -676,7 +725,7 @@ def check_cluster_outbound_connectivity(outbound_connectivity_check_log, filepat
         # Validating if outbound connectiivty is working or not and displaying proper result
         if(outbound_connectivity_response != "000"):
             if storage_space_available:
-                outbound_connectivity_check_path = os.path.join(filepath_with_timestamp, "Outbound_Network_Connectivity_Check.txt")
+                outbound_connectivity_check_path = os.path.join(filepath_with_timestamp, consts.Outbound_Network_Connectivity_Check)
                 with open(outbound_connectivity_check_path, 'w+') as outbound:
                     outbound.write("Response code " + outbound_connectivity_response + "\nOutbound network connectivity check passed successfully.")
             return consts.Diagnostic_Check_Passed, storage_space_available
@@ -684,7 +733,7 @@ def check_cluster_outbound_connectivity(outbound_connectivity_check_log, filepat
             logger.warning("Error: We found an issue with outbound network connectivity from the cluster.\nIf your cluster is behind an outbound proxy server, please ensure that you have passed proxy paramaters during the onboarding of your cluster.\nFor more details visit 'https://docs.microsoft.com/en-us/azure/azure-arc/kubernetes/quickstart-connect-cluster?tabs=azure-cli#connect-using-an-outbound-proxy-server'.\nPlease ensure to meet the following network requirements 'https://docs.microsoft.com/en-us/azure/azure-arc/kubernetes/quickstart-connect-cluster?tabs=azure-cli#meet-network-requirements' \n")
             diagnoser_output.append("Error: We found an issue with outbound network connectivity from the cluster.\nIf your cluster is behind an outbound proxy server, please ensure that you have passed proxy paramaters during the onboarding of your cluster.\nFor more details visit 'https://docs.microsoft.com/en-us/azure/azure-arc/kubernetes/quickstart-connect-cluster?tabs=azure-cli#connect-using-an-outbound-proxy-server'.\nPlease ensure to meet the following network requirements 'https://docs.microsoft.com/en-us/azure/azure-arc/kubernetes/quickstart-connect-cluster?tabs=azure-cli#meet-network-requirements' \n")
             if storage_space_available:
-                outbound_connectivity_check_path = os.path.join(filepath_with_timestamp, "Outbound_Network_Connectivity_Check.txt")
+                outbound_connectivity_check_path = os.path.join(filepath_with_timestamp, consts.Outbound_Network_Connectivity_Check)
                 with open(outbound_connectivity_check_path, 'w+') as outbound:
                     outbound.write("Response code " + outbound_connectivity_response + "\nWe found an issue with Outbound network connectivity from the cluster.")
             return consts.Diagnostic_Check_Failed, storage_space_available
@@ -888,7 +937,7 @@ def fetching_cli_output_logs(filepath_with_timestamp, storage_space_available, f
         # If storage space is available then only we store the output
         if storage_space_available:
             # Path to store the diagnoser results
-            cli_output_logger_path = os.path.join(filepath_with_timestamp, "Diagnoser_Results.txt")
+            cli_output_logger_path = os.path.join(filepath_with_timestamp, consts.Diagnoser_Results)
             # If any results are obtained during the process than we will add it to the text file.
             if len(diagnoser_output) > 0:
                 with open(cli_output_logger_path, 'w+') as cli_output_writer:

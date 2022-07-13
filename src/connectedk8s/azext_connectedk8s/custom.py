@@ -2061,7 +2061,7 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
         probable_sufficient_resource_for_agents = True
 
         # Setting default values for all checks as True
-        diagnostic_checks = {consts.Retrieved_Arc_Agents_Event_Logs: consts.Diagnostic_Check_Incomplete, consts.Retrieved_Arc_Agents_Logs: consts.Diagnostic_Check_Incomplete, consts.Retrieved_Deployments_Logs: consts.Diagnostic_Check_Incomplete, consts.Fetch_Connected_Cluster_Resource: consts.Diagnostic_Check_Incomplete, consts.Storing_Diagnoser_Results_Logs: consts.Diagnostic_Check_Incomplete, consts.MSI_Cert_Expiry_Check: consts.Diagnostic_Check_Incomplete, consts.KAP_Security_Policy_Check: consts.Diagnostic_Check_Incomplete, consts.KAP_Cert_Check: consts.Diagnostic_Check_Incomplete, consts.Diagnoser_Check: consts.Diagnostic_Check_Incomplete, consts.MSI_Cert_Check: consts.Diagnostic_Check_Incomplete, consts.Agent_Version_Check: consts.Diagnostic_Check_Incomplete, consts.Arc_Agent_State_Check: consts.Diagnostic_Check_Incomplete}
+        diagnostic_checks = {consts.Fetch_Kubectl_Cluster_Info: consts.Diagnostic_Check_Incomplete, consts.Retrieve_Arc_Agents_Event_Logs: consts.Diagnostic_Check_Incomplete, consts.Retrieve_Arc_Agents_Logs: consts.Diagnostic_Check_Incomplete, consts.Retrieve_Deployments_Logs: consts.Diagnostic_Check_Incomplete, consts.Fetch_Connected_Cluster_Resource: consts.Diagnostic_Check_Incomplete, consts.Storing_Diagnoser_Results_Logs: consts.Diagnostic_Check_Incomplete, consts.MSI_Cert_Expiry_Check: consts.Diagnostic_Check_Incomplete, consts.KAP_Security_Policy_Check: consts.Diagnostic_Check_Incomplete, consts.KAP_Cert_Check: consts.Diagnostic_Check_Incomplete, consts.Diagnoser_Check: consts.Diagnostic_Check_Incomplete, consts.MSI_Cert_Check: consts.Diagnostic_Check_Incomplete, consts.Agent_Version_Check: consts.Diagnostic_Check_Incomplete, consts.Arc_Agent_State_Check: consts.Diagnostic_Check_Incomplete}
 
         # Setting kube_config
         kube_config = set_kube_config(kube_config)
@@ -2104,6 +2104,9 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
         if(diagnostic_folder_status != consts.Folder_Created):
             storage_space_available = False
 
+        # To store the cluster-info of the cluster in current-context
+        diagnostic_checks[consts.Fetch_Kubectl_Cluster_Info], storage_space_available = troubleshootutils.fetch_kubectl_cluster_info(filepath_with_timestamp, storage_space_available, kubectl_client_location)
+
         # To store the connected cluster resource logs in the diagnostic foler
         diagnostic_checks[consts.Fetch_Connected_Cluster_Resource], storage_space_available = troubleshootutils.fetch_connected_cluster_resource(filepath_with_timestamp, connected_cluster, storage_space_available)
         corev1_api_instance = kube_client.CoreV1Api(kube_client.ApiClient(configuration))
@@ -2115,14 +2118,14 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
         if arc_agents_pod_list.items:
 
             # For storing all the agent logs using the CoreV1Api
-            diagnostic_checks[consts.Retrieved_Arc_Agents_Logs], storage_space_available = troubleshootutils.retrieve_arc_agents_logs(corev1_api_instance, filepath_with_timestamp, storage_space_available)
+            diagnostic_checks[consts.Retrieve_Arc_Agents_Logs], storage_space_available = troubleshootutils.retrieve_arc_agents_logs(corev1_api_instance, filepath_with_timestamp, storage_space_available)
 
             # For storing all arc agents events logs
-            diagnostic_checks[consts.Retrieved_Arc_Agents_Event_Logs], storage_space_available = troubleshootutils.retrieve_arc_agents_event_logs(filepath_with_timestamp, storage_space_available, kubectl_client_location)
+            diagnostic_checks[consts.Retrieve_Arc_Agents_Event_Logs], storage_space_available = troubleshootutils.retrieve_arc_agents_event_logs(filepath_with_timestamp, storage_space_available, kubectl_client_location)
 
             # For storing all the deployments logs using the AppsV1Api
             appv1_api_instance = kube_client.AppsV1Api(kube_client.ApiClient(configuration))
-            diagnostic_checks[consts.Retrieved_Deployments_Logs], storage_space_available = troubleshootutils.retrieve_deployments_logs(appv1_api_instance, filepath_with_timestamp, storage_space_available)
+            diagnostic_checks[consts.Retrieve_Deployments_Logs], storage_space_available = troubleshootutils.retrieve_deployments_logs(appv1_api_instance, filepath_with_timestamp, storage_space_available)
 
             # Check for the azure arc agent states
             diagnostic_checks[consts.Arc_Agent_State_Check], storage_space_available, all_agents_stuck, probable_sufficient_resource_for_agents = troubleshootutils.check_agent_state(corev1_api_instance, filepath_with_timestamp, storage_space_available)
