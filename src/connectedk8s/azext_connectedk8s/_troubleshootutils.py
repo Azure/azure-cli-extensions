@@ -537,17 +537,17 @@ def executing_diagnoser_job(corev1_api_instance, batchv1_api_instance, filepath_
     new_yaml = []
     with open(yaml_file_path) as f:
         list_doc = yaml.safe_load_all(f)
-        counter = 0
+        troubleshoot_yaml_part = 0
         # Using release_namespace wherever required
         for each_yaml in list_doc:
             # Changing the role, rolebinding and the job args namespae field to the release-namespace
             # Secret-reader role is used to fetch the secrets present in the release-namespace
             # Also we pass release-namespace in args to read secrets for helm command that we are using in the script.
-            if(counter == 1 or counter == 2):
+            if(troubleshoot_yaml_part == 1 or troubleshoot_yaml_part == 2):
                 each_yaml['metadata']['namespace'] = release_namespace
-            elif(counter == 3):
+            elif(troubleshoot_yaml_part == 3):
                 each_yaml['spec']['template']['spec']['containers'][0]['args'][0] = release_namespace
-            counter += 1
+            troubleshoot_yaml_part += 1
             new_yaml.append(each_yaml)
     # Updating the yaml file
     with open(yaml_file_path, 'w+') as f:
