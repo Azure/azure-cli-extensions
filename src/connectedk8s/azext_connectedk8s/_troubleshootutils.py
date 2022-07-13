@@ -317,21 +317,63 @@ def check_agent_state(corev1_api_instance, filepath_with_timestamp, storage_spac
         # If all agents are stuck we will skip the certificates check
         all_agents_stuck = True
         agent_state_path = os.path.join(filepath_with_timestamp, consts.Agent_State)
-        with open(agent_state_path, 'w+') as agent_state:
+        # If storage space available then only we will be writing into the file
+        if storage_space_available:
+            with open(agent_state_path, 'w+') as agent_state:
+                # To retrieve all of the arc agent pods that are presesnt in the Cluster
+                arc_agents_pod_list = corev1_api_instance.list_namespaced_pod(namespace="azure-arc")
+                # Check if any arc agent is not in Running state
+                for each_agent_pod in arc_agents_pod_list.items:
+                    if storage_space_available:
+                        # Storing the state of the arc agent in the user machine
+                        agent_state.write(each_agent_pod.metadata.name + " : Phase = " + each_agent_pod.status.phase + "\n")
+                    if each_agent_pod.status.phase == 'Running':
+                        all_agents_stuck = False
+                    if each_agent_pod.status.container_statuses is None:
+                        probable_sufficient_resource_for_agents = False
+                        if storage_space_available:
+                            # Adding empty line after each agents for formatting
+                            agent_state.write("\n")
+                        storage_space_available = describe_non_ready_agent_log(filepath_with_timestamp, corev1_api_instance, each_agent_pod.metadata.name, storage_space_available)
+                    else:
+                        all_containers_ready_for_each_agent = True
+                        # If the agent is in running state we will check if all containers are running or not
+                        for each_container_status in each_agent_pod.status.container_statuses:
+                            # Checking if all containers are running or not
+                            if each_container_status.ready is False:
+                                all_containers_ready_for_each_agent = False
+                                all_agent_containers_ready = False
+                                try:
+                                    # Adding the reason for container to be not in ready state
+                                    container_not_ready_reason = each_container_status.state.waiting.reason
+                                except Exception as e:
+                                    container_not_ready_reason = None
+                                # Adding the reason if continer is not in ready state
+                                if container_not_ready_reason is not None:
+                                    if storage_space_available:
+                                        agent_state.write("\t" + each_container_status.name + " :" + " Ready = False {Reason : " + str(container_not_ready_reason) + "} , Restart_Counts = " + str(each_container_status.restart_count) + "\n")
+                                else:
+                                    if storage_space_available:
+                                        agent_state.write("\t" + each_container_status.name + " :" + " Ready = " + str(each_container_status.ready) + ", Restart_Counts = " + str(each_container_status.restart_count) + "\n")
+                            else:
+                                if storage_space_available:
+                                    agent_state.write("\t" + each_container_status.name + " :" + " Ready = " + str(each_container_status.ready) + ", Restart_Counts = " + str(each_container_status.restart_count) + "\n")
+                            if all_containers_ready_for_each_agent is False:
+                                storage_space_available = describe_non_ready_agent_log(filepath_with_timestamp, corev1_api_instance, each_agent_pod.metadata.name, storage_space_available)
+
+                        if storage_space_available:
+                            # Adding empty line after each agents for formatting
+                            agent_state.write("\n")
+        # If storage space not available then we will be just checking if all agents are running properly or not
+        else:
             # To retrieve all of the arc agent pods that are presesnt in the Cluster
             arc_agents_pod_list = corev1_api_instance.list_namespaced_pod(namespace="azure-arc")
             # Check if any arc agent is not in Running state
             for each_agent_pod in arc_agents_pod_list.items:
-                if storage_space_available:
-                    # Storing the state of the arc agent in the user machine
-                    agent_state.write(each_agent_pod.metadata.name + " : Phase = " + each_agent_pod.status.phase + "\n")
                 if each_agent_pod.status.phase == 'Running':
                     all_agents_stuck = False
                 if each_agent_pod.status.container_statuses is None:
                     probable_sufficient_resource_for_agents = False
-                    if storage_space_available:
-                        # Adding empty line after each agents for formatting
-                        agent_state.write("\n")
                     storage_space_available = describe_non_ready_agent_log(filepath_with_timestamp, corev1_api_instance, each_agent_pod.metadata.name, storage_space_available)
                 else:
                     all_containers_ready_for_each_agent = True
@@ -347,21 +389,9 @@ def check_agent_state(corev1_api_instance, filepath_with_timestamp, storage_spac
                             except Exception as e:
                                 container_not_ready_reason = None
                             # Adding the reason if continer is not in ready state
-                            if container_not_ready_reason is not None:
-                                if storage_space_available:
-                                    agent_state.write("\t" + each_container_status.name + " :" + " Ready = False {Reason : " + str(container_not_ready_reason) + "} , Restart_Counts = " + str(each_container_status.restart_count) + "\n")
-                            else:
-                                if storage_space_available:
-                                    agent_state.write("\t" + each_container_status.name + " :" + " Ready = " + str(each_container_status.ready) + ", Restart_Counts = " + str(each_container_status.restart_count) + "\n")
-                        else:
-                            if storage_space_available:
-                                agent_state.write("\t" + each_container_status.name + " :" + " Ready = " + str(each_container_status.ready) + ", Restart_Counts = " + str(each_container_status.restart_count) + "\n")
                         if all_containers_ready_for_each_agent is False:
                             storage_space_available = describe_non_ready_agent_log(filepath_with_timestamp, corev1_api_instance, each_agent_pod.metadata.name, storage_space_available)
 
-                    if storage_space_available:
-                        # Adding empty line after each agents for formatting
-                        agent_state.write("\n")
         # Displaying error if the arc agents are in pending state.
         if probable_sufficient_resource_for_agents is False:
             logger.warning("Error: One or more Azure Arc agents are not in running state. It may be caused due to insufficient resource availability on the cluster.\n")
@@ -507,7 +537,7 @@ def executing_diagnoser_job(corev1_api_instance, batchv1_api_instance, filepath_
     try:
         is_custom_cert = helm_values_json["global"]["isCustomCert"]
     except Exception as e:
-        #vThis exception will come when isCustomCert parameter is not present so we are setting it as false
+        # This exception will come when isCustomCert parameter is not present so we are setting it as false
         if 'isCustomCert' in str(e):
             is_custom_cert = False
         else:
