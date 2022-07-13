@@ -1160,18 +1160,24 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                      '--vnet-subnet-id {vnet_id}/subnets/aks-subnet --network-plugin azure ' \
                      '-a virtual-node --aci-subnet-name aci-subnet --yes ' \
                      '--ssh-key-value={ssh_key_value} -o json'
-        aks_cluster = self.cmd(create_cmd, checks=[
+        self.cmd(create_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
             self.check('addonProfiles.aciConnectorLinux.enabled', True),
             self.check(
                 'addonProfiles.aciConnectorLinux.config.SubnetName', "aci-subnet")
-        ]).get_output_in_json()
+        ])
 
-        addon_client_id = aks_cluster["addonProfiles"]["aciConnectorLinux"]["identity"]["clientId"]
+        # list addons
+        list_cmd = 'aks addon list --resource-group={resource_group} --name={aks_name} -o json'
+        addon_list = self.cmd(list_cmd).get_output_in_json()
 
-        self.kwargs.update({
-            'addon_client_id': addon_client_id,
-        })
+        # check virtual node addon
+        assert len(addon_list) > 0
+        for addon in addon_list:
+            if addon["name"] == "virtual-node":
+                assert addon["enabled"]
+            else:
+                assert not addon["enabled"]
 
         # delete
         cmd = 'aks delete --resource-group={resource_group} --name={aks_name} --yes --no-wait'
