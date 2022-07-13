@@ -307,12 +307,12 @@ def check_agent_state(corev1_api_instance, filepath_with_timestamp, storage_spac
 
         # Displaying error if the arc agents are in pending state.
         if probable_sufficient_resource_for_agents is False:
-            print("Error: One or more Azure Arc agents are not in running state. It may be caused due to insufficient resource availability on the cluster.\n")
+            logger.warning("Error: One or more Azure Arc agents are not in running state. It may be caused due to insufficient resource availability on the cluster.\n")
             diagnoser_output.append("Error: One or more Azure Arc agents are not in running state. It may be caused due to insufficient resource availability on the cluster.\n")
             return consts.Diagnostic_Check_Failed, storage_space_available, all_agents_stuck, probable_sufficient_resource_for_agents
 
         elif all_agent_containers_ready is False:
-            print("Error: One or more agents in the Azure Arc are not fully running.\n")
+            logger.warning("Error: One or more agents in the Azure Arc are not fully running.\n")
             diagnoser_output.append("Error: One or more agents in the Azure Arc are not fully runnning.\n")
             return consts.Diagnostic_Check_Failed, storage_space_available, all_agents_stuck, probable_sufficient_resource_for_agents
 
@@ -439,33 +439,35 @@ def executing_diagnoser_job(corev1_api_instance, batchv1_api_instance, filepath_
     try:
         is_proxy_enabled = helm_values_json["global"]["isProxyEnabled"]
     except Exception as e:
+        # This exception will come when isProxyEnabled parameter is not present so we are setting it as false
         if 'isProxyEnabled' in str(e):
             is_proxy_enabled = False
         else:
-            logger.warning("An exception has occured while trying to fetch 'isProxyEnabled' from get helm values. Exception: {}".format(str(e)) + "\n")
+            logger.warning("An exception has occured while trying to fetch Field:'isProxyEnabled' from get helm values. Exception: {}".format(str(e)) + "\n")
             telemetry.set_exception(exception=e, fault_type=consts.Helm_Values_Fetch_isProxyEnabled_Failed_Fault_Type, summary="Error while parsing the 'isProxyEnabled' while using helm get values")
-            diagnoser_output.append("An exception has occured while trying to fetch 'isProxyEnabled' from get helm values. Exception: {}".format(str(e)) + "\n")
+            diagnoser_output.append("An exception has occured while trying to fetch Field:'isProxyEnabled' from get helm values. Exception: {}".format(str(e)) + "\n")
             return
-
     try:
         is_custom_cert = helm_values_json["global"]["isCustomCert"]
     except Exception as e:
+        #vThis exception will come when isCustomCert parameter is not present so we are setting it as false
         if 'isCustomCert' in str(e):
             is_custom_cert = False
         else:
-            logger.warning("An exception has occured while trying to fetch 'isCustomCert' from get helm values. Exception: {}".format(str(e)) + "\n")
+            logger.warning("An exception has occured while trying to fetch Field:'isCustomCert' from get helm values. Exception: {}".format(str(e)) + "\n")
             telemetry.set_exception(exception=e, fault_type=consts.Helm_Values_Fetch_isCustomCert_Failed_Fault_Type, summary="Error while parsing the 'isCustomCert' while using helm get values")
-            diagnoser_output.append("An exception has occured while trying to fetch 'isCustomCert' from get helm values. Exception: {}".format(str(e)) + "\n")
+            diagnoser_output.append("An exception has occured while trying to fetch Field:'isCustomCert' from get helm values. Exception: {}".format(str(e)) + "\n")
             return
     try:
         proxy_cert = helm_values_json["global"]["proxyCert"]
     except Exception as e:
+        # This exception will come when proxyCert parameter is not present so we are setting it as false
         if 'proxyCert' in str(e):
             proxy_cert = False
         else:
-            logger.warning("An exception has occured while trying to fetch 'proxyCert' from get helm values. Exception: {}".format(str(e)) + "\n")
+            logger.warning("An exception has occured while trying to fetch Field:'proxyCert' from get helm values. Exception: {}".format(str(e)) + "\n")
             telemetry.set_exception(exception=e, fault_type=consts.Helm_Values_Fetch_proxyCert_Failed_Fault_Type, summary="Error while parsing the 'proxyCert' while using helm get values")
-            diagnoser_output.append("An exception has occured while trying to fetch 'proxyCert' from get helm values. Exception: {}".format(str(e)) + "\n")
+            diagnoser_output.append("An exception has occured while trying to fetch Field:'proxyCert' from get helm values. Exception: {}".format(str(e)) + "\n")
             return
 
     # Depending on the presence of proxy cert using the yaml
@@ -629,7 +631,7 @@ def check_cluster_DNS(dns_check_log, filepath_with_timestamp, storage_space_avai
         formatted_dns_log = dns_check_log.replace('\t', '')
         # Validating if DNS is working or not and displaying proper result
         if("NXDOMAIN" in formatted_dns_log or "connection timed out" in formatted_dns_log):
-            print("Error: We found an issue with the DNS resolution on your cluster. For details about debugging DNS issues visit 'https://kubernetes.io/docs/tasks/administer-cluster/dns-debugging-resolution/'.\n")
+            logger.warning("Error: We found an issue with the DNS resolution on your cluster. For details about debugging DNS issues visit 'https://kubernetes.io/docs/tasks/administer-cluster/dns-debugging-resolution/'.\n")
             diagnoser_output.append("Error: We found an issue with the DNS resolution on your cluster. For details about debugging DNS issues visit 'https://kubernetes.io/docs/tasks/administer-cluster/dns-debugging-resolution/'.\n")
             if storage_space_available:
                 dns_check_path = os.path.join(filepath_with_timestamp, "DNS_Check.txt")
@@ -679,7 +681,7 @@ def check_cluster_outbound_connectivity(outbound_connectivity_check_log, filepat
                     outbound.write("Response code " + outbound_connectivity_response + "\nOutbound network connectivity check passed successfully.")
             return consts.Diagnostic_Check_Passed, storage_space_available
         else:
-            print("Error: We found an issue with outbound network connectivity from the cluster.\nIf your cluster is behind an outbound proxy server, please ensure that you have passed proxy paramaters during the onboarding of your cluster.\nFor more details visit 'https://docs.microsoft.com/en-us/azure/azure-arc/kubernetes/quickstart-connect-cluster?tabs=azure-cli#connect-using-an-outbound-proxy-server'.\nPlease ensure to meet the following network requirements 'https://docs.microsoft.com/en-us/azure/azure-arc/kubernetes/quickstart-connect-cluster?tabs=azure-cli#meet-network-requirements' \n")
+            logger.warning("Error: We found an issue with outbound network connectivity from the cluster.\nIf your cluster is behind an outbound proxy server, please ensure that you have passed proxy paramaters during the onboarding of your cluster.\nFor more details visit 'https://docs.microsoft.com/en-us/azure/azure-arc/kubernetes/quickstart-connect-cluster?tabs=azure-cli#connect-using-an-outbound-proxy-server'.\nPlease ensure to meet the following network requirements 'https://docs.microsoft.com/en-us/azure/azure-arc/kubernetes/quickstart-connect-cluster?tabs=azure-cli#meet-network-requirements' \n")
             diagnoser_output.append("Error: We found an issue with outbound network connectivity from the cluster.\nIf your cluster is behind an outbound proxy server, please ensure that you have passed proxy paramaters during the onboarding of your cluster.\nFor more details visit 'https://docs.microsoft.com/en-us/azure/azure-arc/kubernetes/quickstart-connect-cluster?tabs=azure-cli#connect-using-an-outbound-proxy-server'.\nPlease ensure to meet the following network requirements 'https://docs.microsoft.com/en-us/azure/azure-arc/kubernetes/quickstart-connect-cluster?tabs=azure-cli#meet-network-requirements' \n")
             if storage_space_available:
                 outbound_connectivity_check_path = os.path.join(filepath_with_timestamp, "Outbound_Network_Connectivity_Check.txt")
@@ -722,7 +724,7 @@ def check_msi_certificate_presence(corev1_api_instance):
 
         # Checking if msi cerificate is present or not
         if not msi_cert_present:
-            print("Error: Unable to pull MSI certificate. Please ensure to meet the following network requirements 'https://docs.microsoft.com/en-us/azure/azure-arc/kubernetes/quickstart-connect-cluster?tabs=azure-cli#meet-network-requirements'. \n")
+            logger.warning("Error: Unable to pull MSI certificate. Please ensure to meet the following network requirements 'https://docs.microsoft.com/en-us/azure/azure-arc/kubernetes/quickstart-connect-cluster?tabs=azure-cli#meet-network-requirements'. \n")
             diagnoser_output.append("Error: Unable to pull MSI certificate. Please ensure to meet the following network requirements 'https://docs.microsoft.com/en-us/azure/azure-arc/kubernetes/quickstart-connect-cluster?tabs=azure-cli#meet-network-requirements'. \n")
             return consts.Diagnostic_Check_Failed
 
@@ -765,7 +767,7 @@ def check_probable_cluster_security_policy(corev1_api_instance, helm_client_loca
                 break
         # Checking if there is any chance of pod security policy presence
         if(cluster_connect_feature is True and kap_pod_present is False):
-            print("Error: Unable to create Kube-aad-proxy deployment. There might be a pod security policy or security context constraint (SCC) present which is preventing the deployment of kube-aad-proxy as it doesn't have admin privileges.\nKube aad proxy pod uses the azure-arc-kube-aad-proxy-sa service account, which doesn't have admin permissions but requires the permission to mount host path.\n")
+            logger.warning("Error: Unable to create Kube-aad-proxy deployment. There might be a pod security policy or security context constraint (SCC) present which is preventing the deployment of kube-aad-proxy as it doesn't have admin privileges.\nKube aad proxy pod uses the azure-arc-kube-aad-proxy-sa service account, which doesn't have admin permissions but requires the permission to mount host path.\n")
             diagnoser_output.append("Error: Unable to create Kube-aad-proxy deployment. There might be a pod security policy or security context constraint (SCC) present which is preventing the deployment of kube-aad-proxy as it doesn't have admin privileges.\nKube aad proxy pod uses the azure-arc-kube-aad-proxy-sa service account, which doesn't have admin permissions but requires the permission to mount host path.\n")
             return consts.Diagnostic_Check_Failed
         return consts.Diagnostic_Check_Passed
@@ -800,7 +802,7 @@ def check_kap_cert(corev1_api_instance):
             if(secrets.metadata.name == consts.KAP_Certificate_Secret_Name):
                 kap_cert_present = True
         if not kap_cert_present and kap_pod_status == "ContainerCreating":
-            print("Error: Unable to pull Kube aad proxy certificate.\n")
+            logger.warning("Error: Unable to pull Kube aad proxy certificate.\n")
             diagnoser_output.append("Error: Unable to pull Kube aad proxy certificate.\n")
             return consts.Diagnostic_Check_Failed
 
@@ -826,7 +828,7 @@ def check_msi_expiry(connected_cluster):
         Current_date = Current_date_temp.replace('T', ' ')
         # Check if expiry date is lesser than current time
         if (Expiry_date < Current_date):
-            print("Error: Your MSI certificate has expired. To resolve this issue you can delete the cluster and reconnect it to azure arc.\n")
+            logger.warning("Error: Your MSI certificate has expired. To resolve this issue you can delete the cluster and reconnect it to azure arc.\n")
             diagnoser_output.append("Error: Your MSI certificate has expired. To resolve this issue you can delete the cluster and reconnect it to azure arc.\n")
             return consts.Diagnostic_Check_Failed
 

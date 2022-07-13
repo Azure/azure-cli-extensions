@@ -2169,7 +2169,7 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
             # Check for agent verison comaptibility
             diagnostic_checks[consts.Agent_Version_Check] = troubleshootutils.check_agent_version(connected_cluster, azure_arc_agent_version)
         else:
-            print("Error : Arc agents are not present on the cluster. Please verify if Arc onboarding of the kubernetes cluster has been attempted.\n")
+            logger.warning("Error : Arc agents are not present on the cluster. Please verify if Arc onboarding of the kubernetes cluster has been attempted.\n")
 
         batchv1_api_instance = kube_client.BatchV1Api(kube_client.ApiClient(configuration))
         # Performing diagnoser container check
