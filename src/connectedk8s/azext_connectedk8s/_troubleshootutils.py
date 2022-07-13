@@ -171,7 +171,7 @@ def retrieve_arc_agents_event_logs(filepath_with_timestamp, storage_space_availa
             response_kubectl_get_events = Popen(command, stdout=PIPE, stderr=PIPE)
             output_kubectl_get_events, error_kubectl_get_events = response_kubectl_get_events.communicate()
             if response_kubectl_get_events.returncode != 0:
-                telemetry.set_exception(exception=error_kubectl_get_events.decode("ascii"), fault_type=consts.Kubectl_Get_Events_Failed, summary='Error while doing kubectl get events')
+                telemetry.set_exception(exception=error_kubectl_get_events.decode("ascii"), fault_type=consts.Kubectl_Get_Events_Failed_Fault_Type, summary='Error while doing kubectl get events')
                 logger.warning("Error while doing kubectl get events. We were not able to capture events log in arc_diganostic_logs folder. Exception: ", error_kubectl_get_events.decode("ascii"))
                 diagnoser_output.append("Error while doing kubectl get events. We were not able to capture events log in arc_diganostic_logs folder. Exception: ", error_kubectl_get_events.decode("ascii"))
                 return consts.Diagnostic_Check_Failed, storage_space_available
@@ -443,7 +443,6 @@ def executing_diagnoser_job(corev1_api_instance, batchv1_api_instance, filepath_
             is_proxy_enabled = False
         else:
             logger.warning("An exception has occured while trying to fetch 'isProxyEnabled' from get helm values. Exception: {}".format(str(e)) + "\n")
-            Popen(cmd_delete_job, stdout=PIPE, stderr=PIPE)
             telemetry.set_exception(exception=e, fault_type=consts.Helm_Values_Fetch_isProxyEnabled_Failed_Fault_Type, summary="Error while parsing the 'isProxyEnabled' while using helm get values")
             diagnoser_output.append("An exception has occured while trying to fetch 'isProxyEnabled' from get helm values. Exception: {}".format(str(e)) + "\n")
             return
@@ -455,7 +454,6 @@ def executing_diagnoser_job(corev1_api_instance, batchv1_api_instance, filepath_
             is_custom_cert = False
         else:
             logger.warning("An exception has occured while trying to fetch 'isCustomCert' from get helm values. Exception: {}".format(str(e)) + "\n")
-            Popen(cmd_delete_job, stdout=PIPE, stderr=PIPE)
             telemetry.set_exception(exception=e, fault_type=consts.Helm_Values_Fetch_isCustomCert_Failed_Fault_Type, summary="Error while parsing the 'isCustomCert' while using helm get values")
             diagnoser_output.append("An exception has occured while trying to fetch 'isCustomCert' from get helm values. Exception: {}".format(str(e)) + "\n")
             return
@@ -466,7 +464,6 @@ def executing_diagnoser_job(corev1_api_instance, batchv1_api_instance, filepath_
             proxy_cert = False
         else:
             logger.warning("An exception has occured while trying to fetch 'proxyCert' from get helm values. Exception: {}".format(str(e)) + "\n")
-            Popen(cmd_delete_job, stdout=PIPE, stderr=PIPE)
             telemetry.set_exception(exception=e, fault_type=consts.Helm_Values_Fetch_proxyCert_Failed_Fault_Type, summary="Error while parsing the 'proxyCert' while using helm get values")
             diagnoser_output.append("An exception has occured while trying to fetch 'proxyCert' from get helm values. Exception: {}".format(str(e)) + "\n")
             return
@@ -586,7 +583,7 @@ def executing_diagnoser_job(corev1_api_instance, batchv1_api_instance, filepath_
                         response_kubectl_get_events = Popen(cmd_get_diagnoser_job_events, stdout=PIPE, stderr=PIPE)
                         output_kubectl_get_events, error_kubectl_get_events = response_kubectl_get_events.communicate()
                         if response_kubectl_get_events.returncode != 0:
-                            telemetry.set_exception(exception=error_kubectl_get_events.decode("ascii"), fault_type=consts.Kubectl_Get_Events_Failed, summary='Error while doing kubectl get events')
+                            telemetry.set_exception(exception=error_kubectl_get_events.decode("ascii"), fault_type=consts.Kubectl_Get_Events_Failed_Fault_Type, summary='Error while doing kubectl get events')
                             logger.warning("Error while doing kubectl get events. We were not able to capture events log in arc_diganostic_logs folder. Exception: ", error_kubectl_get_events.decode("ascii"))
                             diagnoser_output.append("Error while doing kubectl get events. We were not able to capture events log in arc_diganostic_logs folder. Exception: ", error_kubectl_get_events.decode("ascii"))
                             return consts.Diagnostic_Check_Failed, storage_space_available
@@ -629,7 +626,7 @@ def check_cluster_DNS(dns_check_log, filepath_with_timestamp, storage_space_avai
     try:
         if consts.DNS_Check_Result_String not in dns_check_log:
             return consts.Diagnostic_Check_Incomplete, storage_space_available
-        formatted_dns_log = dns_check_log.replace('\t','')
+        formatted_dns_log = dns_check_log.replace('\t', '')
         # Validating if DNS is working or not and displaying proper result
         if("NXDOMAIN" in formatted_dns_log or "connection timed out" in formatted_dns_log):
             print("Error: We found an issue with the DNS resolution on your cluster. For details about debugging DNS issues visit 'https://kubernetes.io/docs/tasks/administer-cluster/dns-debugging-resolution/'.\n")
