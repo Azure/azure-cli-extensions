@@ -76,6 +76,7 @@ def fetch_connected_cluster_resource(filepath_with_timestamp, connected_cluster,
     try:
         # Path to add the connected_cluster resource
         connected_cluster_resource_file_path = os.path.join(filepath_with_timestamp, "Connected_cluster_resource.txt")
+        print(connected_cluster.managed_identity_certificate_expiration_time)
         if storage_space_available:
             # If storage space is available then obly store the connected cluster resource
             with open(connected_cluster_resource_file_path, 'w+') as cc:
@@ -774,9 +775,9 @@ def check_probable_cluster_security_policy(corev1_api_instance, helm_client_loca
 
     # To handle any exception that may occur during the execution
     except Exception as e:
-        logger.warning("An exception has occured while trying to performing KAP cluster security policy check in the cluster. Exception: {}".format(str(e)) + "\n")
+        logger.warning("An exception has occured while trying to performing kube aad proxy presence and pod security policy presence check in the cluster. Exception: {}".format(str(e)) + "\n")
         telemetry.set_exception(exception=e, fault_type=consts.Cluster_Security_Policy_Check_Fault_Type, summary="Error occurred while trying to perform KAP ceritificate presence check")
-        diagnoser_output.append("An exception has occured while trying to performing KAP cluster security policy check in the cluster. Exception: {}".format(str(e)) + "\n")
+        diagnoser_output.append("An exception has occured while trying to performing kube aad proxy presence and pod security policy presence check in the cluster. Exception: {}".format(str(e)) + "\n")
 
     return consts.Diagnostic_Check_Incomplete
 
