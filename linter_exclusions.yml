@@ -234,6 +234,12 @@ sql mi-arc create:
     sync_secondary_to_commit:
       rule_exclusions:
       - option_length_too_long
+    storage_class_orchestrator_logs:
+      rule_exclusions:
+      - option_length_too_long
+    volume_size_orchestrator_logs:
+      rule_exclusions:
+      - option_length_too_long
 attestation policy set:
   parameters:
     new_attestation_policy:

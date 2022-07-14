@@ -35,7 +35,7 @@ def create_grafana(cmd, resource_group_name, grafana_name,
     client = cf_amg(cmd.cli_ctx)
     resource = {
         "sku": {
-            "name": "standard"
+            "name": "Standard"
         },
         "location": location,
         "identity": None if skip_system_assigned_identity else {"type": "SystemAssigned"},

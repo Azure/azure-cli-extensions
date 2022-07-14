@@ -1160,18 +1160,24 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                      '--vnet-subnet-id {vnet_id}/subnets/aks-subnet --network-plugin azure ' \
                      '-a virtual-node --aci-subnet-name aci-subnet --yes ' \
                      '--ssh-key-value={ssh_key_value} -o json'
-        aks_cluster = self.cmd(create_cmd, checks=[
+        self.cmd(create_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
             self.check('addonProfiles.aciConnectorLinux.enabled', True),
             self.check(
                 'addonProfiles.aciConnectorLinux.config.SubnetName', "aci-subnet")
-        ]).get_output_in_json()
+        ])
 
-        addon_client_id = aks_cluster["addonProfiles"]["aciConnectorLinux"]["identity"]["clientId"]
+        # list addons
+        list_cmd = 'aks addon list --resource-group={resource_group} --name={aks_name} -o json'
+        addon_list = self.cmd(list_cmd).get_output_in_json()
 
-        self.kwargs.update({
-            'addon_client_id': addon_client_id,
-        })
+        # check virtual node addon
+        assert len(addon_list) > 0
+        for addon in addon_list:
+            if addon["name"] == "virtual-node":
+                assert addon["enabled"]
+            else:
+                assert not addon["enabled"]
 
         # delete
         cmd = 'aks delete --resource-group={resource_group} --name={aks_name} --yes --no-wait'
@@ -4912,6 +4918,63 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             self.check('availabilityZones[0]', '1'),
             self.check('availabilityZones[1]', '2'),
             self.check('availabilityZones[2]', '3'),
+        ])
+
+        # delete
+        self.cmd(
+            'aks delete -g {resource_group} -n {name} --yes --no-wait', checks=[self.is_empty()])
+
+    # live only due to workspace is not mocked correctly
+    @live_only()
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
+    def test_aks_create_with_defender(self, resource_group, resource_group_location):
+        aks_name = self.create_random_name('cliakstest', 16)
+        self.kwargs.update({
+            'name': aks_name,
+            'resource_group': resource_group,
+            'ssh_key_value': self.generate_ssh_keys()
+        })
+
+        # create
+        create_cmd = 'aks create --resource-group={resource_group} --name={name} ' \
+                     '--ssh-key-value={ssh_key_value} --enable-defender'
+        self.cmd(create_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.check('securityProfile.defender.securityMonitoring.enabled', True)
+        ])
+
+        # delete
+        self.cmd(
+            'aks delete -g {resource_group} -n {name} --yes --no-wait', checks=[self.is_empty()])
+
+    # live only due to workspace is not mocked correctly
+    @live_only()
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
+    def test_aks_update_with_defender(self, resource_group, resource_group_location):
+        aks_name = self.create_random_name('cliakstest', 16)
+        self.kwargs.update({
+            'resource_group': resource_group,
+            'name': aks_name,
+            'ssh_key_value': self.generate_ssh_keys()
+        })
+
+        create_cmd = 'aks create --resource-group={resource_group} --name={name} --ssh-key-value={ssh_key_value}'
+        self.cmd(create_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+        ])
+
+        # update to enable defender
+        self.cmd('aks update --resource-group={resource_group} --name={name} --enable-defender', checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.check('securityProfile.defender.securityMonitoring.enabled', True)
+        ])
+
+         # update to disable defender
+        self.cmd('aks update --resource-group={resource_group} --name={name} --disable-defender', checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.check('securityProfile.defender.securityMonitoring.enabled', False)
         ])
 
         # delete

@@ -1383,6 +1383,7 @@ def aks_addon_list_available():
 def aks_addon_list(cmd, client, resource_group_name, name):
     mc = client.get(resource_group_name, name)
     current_addons = []
+    os_type = 'Linux'
 
     for name, addon_key in ADDONS.items():
         # web_application_routing is a special case, the configuration is stored in a separate profile
@@ -1395,6 +1396,8 @@ def aks_addon_list(cmd, client, resource_group_name, name):
                 else False
             )
         else:
+            if name == "virtual-node":
+                addon_key += os_type
             enabled = (
                 True
                 if mc.addon_profiles and
