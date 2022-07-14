@@ -471,7 +471,7 @@ def check_diagnoser_container(corev1_api_instance, batchv1_api_instance, filepat
         # Executing the Diagnoser job and fetching diagnoser logs obtained
         diagnoser_container_log = executing_diagnoser_job(corev1_api_instance, batchv1_api_instance, filepath_with_timestamp, storage_space_available, absolute_path, helm_client_location, kubectl_client_location, release_namespace, probable_pod_security_policy_presence)
         # If diagnoser_container_log is not empty then only we will check for the results
-        if(diagnoser_container_log is not None):
+        if(diagnoser_container_log is not None and diagnoser_container_log != "" ):
             diagnoser_container_log_list = diagnoser_container_log.split("\n")
             diagnoser_container_log_list.pop(-1)
             dns_check_log = ""
@@ -594,36 +594,44 @@ def executing_diagnoser_job(corev1_api_instance, batchv1_api_instance, filepath_
         config.load_kube_config()
         k8s_client = client.ApiClient()
         # To check if there are any issues while trying to deploy the Jobs yaml file
+        response_kubectl_delete_job = Popen(cmd_delete_job, stdout=PIPE, stderr=PIPE)
+        output_kubectl_delete_job, error_kubectl_delete_job = response_kubectl_delete_job.communicate()
+        # If any error occured while execution of delete command
+        if (response_kubectl_delete_job != 0):
+            # Converting the string of multiple errors to list
+            error_msg_list = error_kubectl_delete_job.decode("ascii").split("\n")
+            error_msg_list.pop(-1)
+            valid_exception_list=[]
+            # Seeing if any excpetion occured or not
+            excpetion_occured_counter = 0
+            for ind_errors in error_msg_list:
+                if('Error from server (NotFound)' in ind_errors or 'deleted' in ind_errors):
+                    pass
+                else:
+                    valid_exception_list.append(ind_errors)
+                    excpetion_occured_counter = 1
+            # If any exception occured we will print the exception and return
+            if excpetion_occured_counter == 1:
+                logger.warning("An error occured while deploying the diagnoser job in the cluster. Exception:")
+                telemetry.set_exception(exception=error_helm_get_values.decode("ascii"), fault_type=consts.Diagnoser_Job_Failed_Fault_Type, summary="Error while executing Diagnoser Job")
+                diagnoser_output.append("An error occured while deploying the diagnoser job in the cluster. Exception:")
+                for ind_error in valid_exception_list:
+                    logger.warning(ind_error)
+                    diagnoser_output.append(ind_error)
+                return
+        # Creating the job from yaml file
         try:
             utils.create_from_yaml(k8s_client, yaml_file_path)
         # To handle the Exception that occured
         except Exception as e:
-            # As there we are adding multiple objects from yaml we will split the error
-            all_exceptions_list = str(e).split('\n')
-            # Last element would be an empty element so removing it
-            all_exceptions_list.pop(-1)
-            # Setting the counter to print the that error occured while executing the yaml only once.
-            counter = 0
-            # Traversing all the exceptions in the list
-            for ind_exception in all_exceptions_list:
-                # If the error occured due to resource already present than we skip it
-                if("Error from server (Conflict)" in ind_exception):
-                    continue
-                else:
-                    # If counter is 0 we will print the Error statement once and then set the counter as 1
-                    if(counter == 0):
-                        diagnoser_output.append("An Error occured while trying to execute diagnoser_job.yaml.")
-                        logger.warning("An Error occured while trying to execute diagnoser_job.yaml.")
-                        counter = 1
-                        logger.warning(ind_exception)
-                    else:
-                        logger.warning(ind_exception)
-            logger.warning("\n")
-
-            # If the counter is 1 that means error occured during execution of yaml so we skip the further process
-            if(counter == 1):
-                Popen(cmd_delete_job, stdout=PIPE, stderr=PIPE)
-                return
+            logger.warning("An error occured while deploying the diagnoser job in the cluster. Exception:")
+            logger.warning(str(e))
+            diagnoser_output.append("An error occured while deploying the diagnoser job in the cluster. Exception:")
+            diagnoser_output.append(str(e))
+            telemetry.set_exception(exception=error_helm_get_values.decode("ascii"), fault_type=consts.Diagnoser_Job_Failed_Fault_Type, summary="Error while executing Diagnoser Job")
+            # Deleting all the stale resources that got created 
+            Popen(cmd_delete_job, stdout=PIPE, stderr=PIPE)
+            return 
         # Watching for diagnoser contianer to reach in completed stage
         w = watch.Watch()
         is_job_complete = False
