@@ -473,7 +473,7 @@ def check_diagnoser_container(corev1_api_instance, batchv1_api_instance, filepat
         diagnoser_container_log = executing_diagnoser_job(corev1_api_instance, batchv1_api_instance, filepath_with_timestamp, storage_space_available, absolute_path, helm_client_location, kubectl_client_location, release_namespace, probable_pod_security_policy_presence)
         # If diagnoser_container_log is not empty then only we will check for the results
         if(diagnoser_container_log is not None and diagnoser_container_log != ""):
-            diagnoser_container_log_list = diagnoser_container_log.split("\n")
+            diagnoser_container_log_list = diagnoser_container_log.split("\n") 
             diagnoser_container_log_list.pop(-1)
             dns_check_log = ""
             counter_container_logs = 1
@@ -595,7 +595,7 @@ def executing_diagnoser_job(corev1_api_instance, batchv1_api_instance, filepath_
         # Executing the diagnoser_job.yaml
         config.load_kube_config()
         k8s_client = client.ApiClient()
-        # To check if there are any issues while trying to deploy the Jobs yaml file
+        # Attempting deletion of diagnoser resources to handle the scenario if any stale resources are present
         response_kubectl_delete_job = Popen(cmd_delete_job, stdout=PIPE, stderr=PIPE)
         output_kubectl_delete_job, error_kubectl_delete_job = response_kubectl_delete_job.communicate()
         # If any error occured while execution of delete command
@@ -604,16 +604,16 @@ def executing_diagnoser_job(corev1_api_instance, batchv1_api_instance, filepath_
             error_msg_list = error_kubectl_delete_job.decode("ascii").split("\n")
             error_msg_list.pop(-1)
             valid_exception_list = []
-            # Seeing if any excpetion occured or not
-            excpetion_occured_counter = 0
+            # Checking if any exception occured or not
+            exception_occured_counter = 0
             for ind_errors in error_msg_list:
                 if('Error from server (NotFound)' in ind_errors or 'deleted' in ind_errors):
                     pass
                 else:
                     valid_exception_list.append(ind_errors)
-                    excpetion_occured_counter = 1
+                    exception_occured_counter = 1
             # If any exception occured we will print the exception and return
-            if excpetion_occured_counter == 1:
+            if exception_occured_counter == 1:
                 logger.warning("An error occured while deploying the diagnoser job in the cluster. Exception:")
                 telemetry.set_exception(exception=error_helm_get_values.decode("ascii"), fault_type=consts.Diagnoser_Job_Failed_Fault_Type, summary="Error while executing Diagnoser Job")
                 diagnoser_output.append("An error occured while deploying the diagnoser job in the cluster. Exception:")
