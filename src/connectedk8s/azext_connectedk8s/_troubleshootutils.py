@@ -472,7 +472,7 @@ def check_diagnoser_container(corev1_api_instance, batchv1_api_instance, filepat
         # Executing the Diagnoser job and fetching diagnoser logs obtained
         diagnoser_container_log = executing_diagnoser_job(corev1_api_instance, batchv1_api_instance, filepath_with_timestamp, storage_space_available, absolute_path, helm_client_location, kubectl_client_location, release_namespace, probable_pod_security_policy_presence)
         # If diagnoser_container_log is not empty then only we will check for the results
-        if(diagnoser_container_log is not None and diagnoser_container_log != "" ):
+        if(diagnoser_container_log is not None and diagnoser_container_log != ""):
             diagnoser_container_log_list = diagnoser_container_log.split("\n")
             diagnoser_container_log_list.pop(-1)
             dns_check_log = ""
@@ -603,7 +603,7 @@ def executing_diagnoser_job(corev1_api_instance, batchv1_api_instance, filepath_
             # Converting the string of multiple errors to list
             error_msg_list = error_kubectl_delete_job.decode("ascii").split("\n")
             error_msg_list.pop(-1)
-            valid_exception_list=[]
+            valid_exception_list = []
             # Seeing if any excpetion occured or not
             excpetion_occured_counter = 0
             for ind_errors in error_msg_list:
@@ -631,9 +631,9 @@ def executing_diagnoser_job(corev1_api_instance, batchv1_api_instance, filepath_
             diagnoser_output.append("An error occured while deploying the diagnoser job in the cluster. Exception:")
             diagnoser_output.append(str(e))
             telemetry.set_exception(exception=error_helm_get_values.decode("ascii"), fault_type=consts.Diagnoser_Job_Failed_Fault_Type, summary="Error while executing Diagnoser Job")
-            # Deleting all the stale resources that got created 
+            # Deleting all the stale resources that got created
             Popen(cmd_delete_job, stdout=PIPE, stderr=PIPE)
-            return 
+            return
         # Watching for diagnoser contianer to reach in completed stage
         w = watch.Watch()
         is_job_complete = False
