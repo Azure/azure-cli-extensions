@@ -12,12 +12,17 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
-0.5.90
+0.5.91
 ++++++
 
 * Fix compatibility issue when enabling Microsoft Defender via aks-preview.
     * az aks create
     * az aks update
+
+0.5.90 (NOT RELEASED)
++++++++++++++++++++++
+
+* Skip this version due to conflict.
 
 0.5.89
 ++++++
