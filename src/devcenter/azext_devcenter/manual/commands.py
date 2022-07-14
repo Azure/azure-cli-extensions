@@ -279,7 +279,7 @@ def load_command_table(self, _):
         g.custom_command('delete', 'devcenter_dev_box_definition_delete', supports_no_wait=True, confirmation=True)
         g.custom_wait_command('wait', 'devcenter_dev_box_definition_show')
 
-    with self.command_group('devcenter admin dev-center', devcenter_dev_center, client_factory=cf_dev_center) as g:
+    with self.command_group('devcenter admin devcenter', devcenter_dev_center, client_factory=cf_dev_center) as g:
         g.custom_command('list', 'devcenter_dev_center_list')
         g.custom_show_command('show', 'devcenter_dev_center_show')
         g.custom_command('create', 'devcenter_dev_center_create', supports_no_wait=True)

@@ -419,97 +419,79 @@ helps['devcenter'] = '''
     short-summary: Manage DevCenter
 '''
 
-helps['devcenter admin dev-center'] = """
+helps['devcenter admin devcenter'] = """
     type: group
     short-summary: Manage dev center with devcenter
 """
 
-helps['devcenter admin dev-center list'] = """
+helps['devcenter admin devcenter list'] = """
     type: command
     short-summary: "Lists all devcenters in a resource group. And Lists all devcenters in a subscription."
     examples:
       - name: DevCenters_ListByResourceGroup
         text: |-
-               az devcenter admin dev-center list --resource-group "rg1"
+               az devcenter admin devcenter list --resource-group "rg1"
       - name: DevCenters_ListBySubscription
         text: |-
-               az devcenter admin dev-center list
+               az devcenter admin devcenter list
 """
 
-helps['devcenter admin dev-center show'] = """
+helps['devcenter admin devcenter show'] = """
     type: command
     short-summary: "Gets a devcenter."
     examples:
       - name: DevCenters_Get
         text: |-
-               az devcenter admin dev-center show --name "Contoso" --resource-group "rg1"
+               az devcenter admin devcenter show --name "Contoso" --resource-group "rg1"
 """
 
-helps['devcenter admin dev-center create'] = """
+helps['devcenter admin devcenter create'] = """
     type: command
     short-summary: "Create a devcenter resource."
     examples:
       - name: DevCenters_Create
         text: |-
-               az devcenter admin dev-center create --location "centralus" --tags CostCode="12345" --name "Contoso" \
+               az devcenter admin devcenter create --location "centralus" --tags CostCode="12345" --name "Contoso" \
 --resource-group "rg1"
       - name: DevCenters_CreateWithUserIdentity
         text: |-
-               az devcenter admin dev-center create --identity-type "UserAssigned" --user-assigned-identity \
+               az devcenter admin devcenter create --identity-type "UserAssigned" --user-assigned-identity \
 "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/identityGroup/providers/Microsoft.ManagedIdenti\
 ty/userAssignedIdentities/testidentity1" --location "centralus" --tags CostCode="12345" --name "Contoso" \
 --resource-group "rg1"
 """
 
-helps['devcenter admin dev-center update'] = """
+helps['devcenter admin devcenter update'] = """
     type: command
     short-summary: "Partially updates a devcenter."
     examples:
       - name: DevCenters_Update
         text: |-
-               az devcenter admin dev-center update --tags CostCode="12345" --name "Contoso" --resource-group "rg1"
+               az devcenter admin devcenter update --tags CostCode="12345" --name "Contoso" --resource-group "rg1"
 """
 
-helps['devcenter admin dev-center delete'] = """
+helps['devcenter admin devcenter delete'] = """
     type: command
     short-summary: "Deletes a devcenter."
     examples:
       - name: DevCenters_Delete
         text: |-
-               az devcenter admin dev-center delete --name "Contoso" --resource-group "rg1"
+               az devcenter admin devcenter delete --name "Contoso" --resource-group "rg1"
 """
 
-helps['devcenter admin dev-center attach-network'] = """
-    type: command
-    short-summary: "Attaches a network connection to a DevCenter."
-    examples:
-      - name: DevCenters_AttachNetwork
-        text: |-
-               az devcenter admin dev-center attach-network --dev-center-name "Contoso" --resource-group "rg1" --network-connection-id
-"""
-
-helps['devcenter admin dev-center detach-network'] = """
-    type: command
-    short-summary: "Detaches a network connection from a DevCenter."
-    examples:
-      - name: DevCenters_AttachNetwork
-        text: |-
-               az devcenter admin dev-center attach-network --dev-center-name "Contoso" --resource-group "rg1" --network-connection-id
-"""
-
-helps['devcenter admin dev-center wait'] = """
+helps['devcenter admin devcenter wait'] = """
     type: command
     short-summary: Place the CLI in a waiting state until a condition of the devcenter dev-center is met.
     examples:
       - name: Pause executing next line of CLI script until the devcenter dev-center is successfully created.
         text: |-
-               az devcenter admin dev-center wait --name "Contoso" --resource-group "rg1" --created
+               az devcenter admin devcenter wait --name "Contoso" --resource-group "rg1" --created
       - name: Pause executing next line of CLI script until the devcenter dev-center is successfully updated.
         text: |-
-               az devcenter admin dev-center wait --name "Contoso" --resource-group "rg1" --updated
+               az devcenter admin devcenter wait --name "Contoso" --resource-group "rg1" --updated
       - name: Pause executing next line of CLI script until the devcenter dev-center is successfully deleted.
         text: |-
-               az devcenter admin dev-center wait --name "Contoso" --resource-group "rg1" --deleted
+               az devcenter admin devcenter wait --name "Contoso" --resource-group "rg1" --deleted
 """
 
 helps['devcenter admin project'] = """
