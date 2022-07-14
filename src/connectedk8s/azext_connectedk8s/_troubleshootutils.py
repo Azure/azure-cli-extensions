@@ -372,6 +372,7 @@ def check_agent_state(corev1_api_instance, filepath_with_timestamp, storage_spac
             for each_agent_pod in arc_agents_pod_list.items:
                 if each_agent_pod.status.phase == 'Running':
                     all_agents_stuck = False
+                # If container statuses is not present then thats very high chance of less resource availability
                 if each_agent_pod.status.container_statuses is None:
                     probable_sufficient_resource_for_agents = False
                     storage_space_available = describe_non_ready_agent_log(filepath_with_timestamp, corev1_api_instance, each_agent_pod.metadata.name, storage_space_available)
@@ -570,6 +571,7 @@ def executing_diagnoser_job(corev1_api_instance, batchv1_api_instance, filepath_
     new_yaml = []
     with open(yaml_file_path) as f:
         list_doc = yaml.safe_load_all(f)
+        # We are creating 4 resources from a single yaml and troubleshoot_yaml_part points to the part of yaml we are referring to in 0 based index.
         troubleshoot_yaml_part = 0
         # Using release_namespace wherever required
         for each_yaml in list_doc:
