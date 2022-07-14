@@ -18,7 +18,9 @@ from azure.mgmt.core.tools import is_valid_resource_id
 from azure.mgmt.core.tools import parse_resource_id
 from azure.mgmt.core.tools import resource_id
 from knack.log import get_logger
+from ._clierror import NotSupportedPricingTierError
 from ._utils import (ApiType, _get_rg_location, _get_file_type, _get_sku_name)
+from ._util_enterprise import is_enterprise_tier
 from .vendored_sdks.appplatform.v2020_07_01 import models
 from ._constant import (MARKETPLACE_OFFER_ID, MARKETPLACE_PLAN_ID, MARKETPLACE_PUBLISHER_ID)
 
@@ -48,7 +50,6 @@ def validate_sku(cmd, namespace):
         _validate_saas_provider(cmd, namespace)
         _validate_terms(cmd, namespace)
     else:
-        _check_saas_not_set(cmd, namespace)
         _check_tanzu_components_not_enable(cmd, namespace)
     normalize_sku(cmd, namespace)
 
@@ -56,11 +57,6 @@ def validate_sku(cmd, namespace):
 def normalize_sku(cmd, namespace):
     if namespace.sku:
         namespace.sku = models.Sku(name=_get_sku_name(namespace.sku), tier=namespace.sku)
-
-
-def _check_saas_not_set(cmd, namespace):
-    if namespace.marketplace_plan_id:
-        raise InvalidArgumentValueError('--marketplace-plan-id is supported only when --sku=Enterprise')
 
 
 def _validate_saas_provider(cmd, namespace):
@@ -76,18 +72,17 @@ def _validate_terms(cmd, namespace):
     from azure.mgmt.marketplaceordering import MarketplaceOrderingAgreements
     from azure.cli.core.commands.client_factory import get_mgmt_service_client
     client = get_mgmt_service_client(cmd.cli_ctx, MarketplaceOrderingAgreements).marketplace_agreements
-    plan_id = namespace.marketplace_plan_id or MARKETPLACE_PLAN_ID
     term = client.get(offer_type="virtualmachine",
                       publisher_id=MARKETPLACE_PUBLISHER_ID,
                       offer_id=MARKETPLACE_OFFER_ID,
-                      plan_id=plan_id)
+                      plan_id=MARKETPLACE_PLAN_ID)
     if not term.accepted:
         raise InvalidArgumentValueError('Terms for Azure Spring Apps Enterprise is not accepted.\n'
                                         'Run "az term accept --publisher {} '
                                         '--product {} '
                                         '--plan {}" to accept the term.'.format(MARKETPLACE_PUBLISHER_ID,
                                                                                 MARKETPLACE_OFFER_ID,
-                                                                                plan_id))
+                                                                                MARKETPLACE_PLAN_ID))
 
 
 def _check_tanzu_components_not_enable(cmd, namespace):
@@ -246,7 +241,7 @@ def validate_java_agent_parameters(namespace):
             "can not be set at the same time.")
 
 
-def validate_app_insights_parameters(namespace):
+def validate_app_insights_parameters(cmd, namespace):
     if (namespace.app_insights or namespace.app_insights_key or namespace.sampling_rate is not None) \
             and namespace.disable:
         raise InvalidArgumentValueError(
@@ -258,6 +253,7 @@ def validate_app_insights_parameters(namespace):
             and not namespace.disable:
         raise InvalidArgumentValueError("Invalid value: nothing is updated for application insights.")
     _validate_app_insights_parameters(namespace)
+    validate_app_insights_command_not_supported_tier(cmd, namespace)
 
 
 def _validate_app_insights_parameters(namespace):
@@ -270,6 +266,12 @@ def _validate_app_insights_parameters(namespace):
         raise InvalidArgumentValueError("Invalid value: '--app-insights-key' can not be empty.")
     if namespace.sampling_rate is not None and (namespace.sampling_rate < 0 or namespace.sampling_rate > 100):
         raise InvalidArgumentValueError("Invalid value: Sampling Rate must be in the range [0,100].")
+
+
+def validate_app_insights_command_not_supported_tier(cmd, namespace):
+    if is_enterprise_tier(cmd, namespace.resource_group, namespace.name):
+        raise NotSupportedPricingTierError("Enterprise tier service instance {} in group {} is not supported in this command, ".format(namespace.name, namespace.resource_group) +
+                                           "please refer to 'az spring build-service builder buildpack-binding' command group.")
 
 
 def validate_vnet(cmd, namespace):

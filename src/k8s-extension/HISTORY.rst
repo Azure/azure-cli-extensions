@@ -3,6 +3,17 @@
 Release History
 ===============
 
+1.2.4
+++++++++++++++++++
+* microsoft.azureml.kubernetes: Do not invoke `create_or_update` for already existed resources.
+* microsoft.azuremonitor.containers: ContainerInsights Extension Managed Identity Auth Onboarding updates.
+
+1.2.3
+++++++++++++++++++
+* Fix warning message returned on PATCH
+* microsoft.azureml.kubernetes: remove deprecated warning message.
+* microsoft.azureml.kubernetes: Use cluster scale to control clusterPurpose and inferenceRouterHA
+
 1.2.2
 ++++++++++++++++++
 * microsoft.azureml.kubernetes: Disable service bus by default, do not create relay for managed clusters.

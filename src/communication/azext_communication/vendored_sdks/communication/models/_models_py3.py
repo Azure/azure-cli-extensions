@@ -12,7 +12,8 @@ from typing import Dict, List, Optional, Union
 from azure.core.exceptions import HttpResponseError
 import msrest.serialization
 
-from ._communication_service_management_client_enums import *
+from ._communication_service_management_client_enums import KeyType
+from ._communication_service_management_client_enums import CreatedByType
 
 
 class CommunicationServiceKeys(msrest.serialization.Model):

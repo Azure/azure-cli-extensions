@@ -162,7 +162,6 @@ class ContainerappIdentityTests(ScenarioTest):
         ])
 
 
-
 class ContainerappIngressTests(ScenarioTest):
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="eastus2")
@@ -229,7 +228,7 @@ class ContainerappIngressTests(ScenarioTest):
             time.sleep(5)
             containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
 
-        self.cmd('containerapp create -g {} -n {} --environment {} --ingress external --target-port 80'.format(resource_group, ca_name, env_name))
+        self.cmd('containerapp create -g {} -n {} --environment {} --ingress external --target-port 80 --revisions-mode multiple'.format(resource_group, ca_name, env_name))
 
         self.cmd('containerapp ingress show -g {} -n {}'.format(resource_group, ca_name), checks=[
             JMESPathCheck('external', True),
@@ -392,6 +391,7 @@ class ContainerappIngressTests(ScenarioTest):
             JMESPathCheck('length(@)', 0),
         ]).get_output_in_json()
 
+
 class ContainerappDaprTests(ScenarioTest):
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="eastus2")
@@ -441,6 +441,7 @@ class ContainerappDaprTests(ScenarioTest):
             JMESPathCheck('properties.configuration.dapr.enabled', False),
         ])
 
+
 class ContainerappEnvStorageTests(ScenarioTest):
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="eastus")
@@ -483,3 +484,78 @@ class ContainerappEnvStorageTests(ScenarioTest):
         self.cmd('containerapp env storage list -g {} -n {}'.format(resource_group, env_name), checks=[
             JMESPathCheck('length(@)', 0),
         ])
+
+
+class ContainerappRevisionTests(ScenarioTest):
+    @AllowLargeResponse(8192)
+    @ResourceGroupPreparer(location="northeurope")
+    def test_containerapp_revision_label_e2e(self, resource_group):
+        env_name = self.create_random_name(prefix='containerapp-env', length=24)
+        ca_name = self.create_random_name(prefix='containerapp', length=24)
+        logs_workspace_name = self.create_random_name(prefix='containerapp-env', length=24)
+
+        logs_workspace_id = self.cmd('monitor log-analytics workspace create -g {} -n {}'.format(resource_group, logs_workspace_name)).get_output_in_json()["customerId"]
+        logs_workspace_key = self.cmd('monitor log-analytics workspace get-shared-keys -g {} -n {}'.format(resource_group, logs_workspace_name)).get_output_in_json()["primarySharedKey"]
+
+        self.cmd('containerapp env create -g {} -n {} --logs-workspace-id {} --logs-workspace-key {}'.format(resource_group, env_name, logs_workspace_id, logs_workspace_key))
+
+        containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
+
+        while containerapp_env["properties"]["provisioningState"].lower() == "waiting":
+            time.sleep(5)
+            containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
+
+        self.cmd('containerapp create -g {} -n {} --environment {} --ingress external --target-port 80'.format(resource_group, ca_name, env_name))
+
+        self.cmd('containerapp ingress show -g {} -n {}'.format(resource_group, ca_name, env_name), checks=[
+            JMESPathCheck('external', True),
+            JMESPathCheck('targetPort', 80),
+        ])
+
+        self.cmd('containerapp create -g {} -n {} --environment {} --ingress external --target-port 80 --image nginx'.format(resource_group, ca_name, env_name))
+
+        self.cmd('containerapp revision set-mode -g {} -n {} --mode multiple'.format(resource_group, ca_name, env_name))
+
+        revision_names = self.cmd(f"containerapp revision list -g {resource_group} -n {ca_name} --all --query '[].name'").get_output_in_json()
+
+        self.assertEqual(len(revision_names), 2)
+
+        labels = []
+        for revision in revision_names:
+            label = self.create_random_name(prefix='label', length=12)
+            labels.append(label)
+            self.cmd(f"containerapp revision label add -g {resource_group} -n {ca_name} --revision {revision} --label {label}")
+
+        traffic_weight = self.cmd(f"containerapp ingress traffic show -g {resource_group} -n {ca_name} --query '[].name'").get_output_in_json()
+
+        for traffic in traffic_weight:
+            if "label" in traffic:
+                self.assertEqual(traffic["label"] in labels, True)
+
+        self.cmd(f"containerapp ingress traffic set -g {resource_group} -n {ca_name} --revision-weight latest=50 --label-weight {labels[0]}=25 {labels[1]}=25")
+
+        traffic_weight = self.cmd(f"containerapp ingress traffic show -g {resource_group} -n {ca_name} --query '[].name'").get_output_in_json()
+
+        for traffic in traffic_weight:
+            if "label" in traffic:
+                self.assertEqual(traffic["weight"], 25)
+            else:
+                self.assertEqual(traffic["weight"], 50)
+
+        traffic_weight = self.cmd(f"containerapp revision label swap -g {resource_group} -n {ca_name} --source {labels[0]} --target {labels[1]}").get_output_in_json()
+
+        for revision in revision_names:
+            traffic = [w for w in traffic_weight if "revisionName" in w and w["revisionName"] == revision][0]
+            self.assertEqual(traffic["label"], labels[(revision_names.index(revision) + 1) % 2])
+
+        self.cmd(f"containerapp revision label remove -g {resource_group} -n {ca_name} --label {labels[0]}", checks=[
+            JMESPathCheck('length(@)', 3),
+        ])
+
+        self.cmd(f"containerapp revision label remove -g {resource_group} -n {ca_name} --label {labels[1]}", checks=[
+            JMESPathCheck('length(@)', 3),
+        ])
+
+        traffic_weight = self.cmd(f"containerapp ingress traffic show -g {resource_group} -n {ca_name}").get_output_in_json()
+
+        self.assertEqual(len([w for w in traffic_weight if "label" in w]), 0)

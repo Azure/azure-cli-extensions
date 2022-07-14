@@ -26,13 +26,16 @@ grafana_endpoints = {}
 
 def create_grafana(cmd, resource_group_name, grafana_name,
                    location=None, skip_system_assigned_identity=False, skip_role_assignments=False,
-                   tags=None, zone_redundancy=None):
+                   tags=None, zone_redundancy=None, principal_ids=None):
     from azure.cli.core.commands.arm import resolve_role_id
+
+    if skip_role_assignments and principal_ids:
+        raise ArgumentUsageError("--skip-role-assignments | --assignee-object-ids")
 
     client = cf_amg(cmd.cli_ctx)
     resource = {
         "sku": {
-            "name": "standard"
+            "name": "Standard"
         },
         "location": location,
         "identity": None if skip_system_assigned_identity else {"type": "SystemAssigned"},
@@ -54,9 +57,13 @@ def create_grafana(cmd, resource_group_name, grafana_name,
 
     subscription_scope = '/subscriptions/' + client._config.subscription_id  # pylint: disable=protected-access
 
-    user_principal_id = _get_login_account_principal_id(cmd.cli_ctx)
+    if not principal_ids:
+        user_principal_id = _get_login_account_principal_id(cmd.cli_ctx)
+        principal_ids = [user_principal_id]
     grafana_admin_role_id = resolve_role_id(cmd.cli_ctx, "Grafana Admin", subscription_scope)
-    _create_role_assignment(cmd.cli_ctx, user_principal_id, grafana_admin_role_id, resource.id)
+
+    for p in principal_ids:
+        _create_role_assignment(cmd.cli_ctx, p, grafana_admin_role_id, resource.id)
 
     if resource.identity:
         monitoring_reader_role_id = resolve_role_id(cmd.cli_ctx, "Monitoring Reader", subscription_scope)
@@ -75,13 +82,13 @@ def _get_login_account_principal_id(cli_ctx):
     client = GraphRbacManagementClient(cred, tenant_id,
                                        base_url=cli_ctx.cloud.endpoints.active_directory_graph_resource_id)
     assignee = profile.get_current_account_user()
-    result = list(client.users.list(filter=f"userPrincipalName eq '{assignee}'"))
+    result = list(client.users.list(filter=f"userPrincipalName eq '{assignee}' or mail eq '{assignee}'"))
     if not result:
         result = list(client.service_principals.list(
             filter=f"servicePrincipalNames/any(c:c eq '{assignee}')"))
     if not result:
         raise CLIInternalError((f"Failed to retrieve principal id for '{assignee}', which is needed to create a "
-                                f"role assignment"))
+                                f"role assignment. Consider using '--principal-ids' to bypass the lookup"))
     return result[0].object_id
 
 

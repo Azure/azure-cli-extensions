@@ -8,6 +8,9 @@ from .vendored_sdks.appplatform.v2020_07_01 import AppPlatformManagementClient
 from .vendored_sdks.appplatform.v2020_11_01_preview import (
     AppPlatformManagementClient as AppPlatformManagementClient_20201101preview
 )
+from .vendored_sdks.appplatform.v2022_05_01_preview import (
+    AppPlatformManagementClient as AppPlatformManagementClient_20220501preview
+)
 from .vendored_sdks.appplatform.v2022_01_01_preview import (
     AppPlatformManagementClient as AppPlatformManagementClient_20220101preview
 )

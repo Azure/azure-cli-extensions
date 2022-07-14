@@ -18,7 +18,8 @@ from azext_redisenterprise.vendored_sdks.redisenterprise.models._redis_enterpris
 )
 from ..action import (
     AddPersistence,
-    AddModules
+    AddModules,
+    AddLinkedDatabases
 )
 
 
@@ -44,6 +45,10 @@ def load_arguments(self, _):
         # Add new argument
         c.argument('no_database', action='store_true', help='Advanced. Do not automatically create a '
                    'default database. Warning: the cache will not be usable until you create a database.')
+        c.argument('group_nickname', type=str, help='Name for the group of linked database resources', arg_group='Geo '
+                   'Replication')
+        c.argument('linked_databases', action=AddLinkedDatabases, nargs='+', help='List of database resources to link '
+                   'with this database', arg_group='Geo Replication')
 
     with self.argument_context('redisenterprise update') as c:
         # Update help

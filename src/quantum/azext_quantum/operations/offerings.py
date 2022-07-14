@@ -49,14 +49,25 @@ def _valid_publisher_and_offer(provider, publisher, offer):
     return True
 
 
-def list_offerings(cmd, location=None):
+def list_offerings(cmd, location=None, autoadd_only=False):
     """
     Get the list of all provider offerings available on the given location.
     """
     if not location:
         raise RequiredArgumentMissingError("A location is required to list offerings available.")
     client = cf_offerings(cmd.cli_ctx)
-    return client.list(location_name=location)
+    offerings = client.list(location_name=location)
+    if autoadd_only:
+        autoadd_offerings = []
+        for offering in offerings:
+            for sku in offering.properties.skus:
+                if sku.auto_add:
+                    autoadd_offering = offering
+                    autoadd_offering.properties.skus = []
+                    autoadd_offering.properties.skus.append(sku)
+                    autoadd_offerings.append(autoadd_offering)
+        return autoadd_offerings
+    return offerings
 
 
 def show_terms(cmd, provider_id=None, sku=None, location=None):

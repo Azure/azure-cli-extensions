@@ -9,7 +9,7 @@ from codecs import open as open1
 
 from setuptools import setup, find_packages
 
-VERSION = "0.5.75"
+VERSION = "0.5.91"
 CLASSIFIERS = [
     "Development Status :: 4 - Beta",
     "Intended Audience :: Developers",
@@ -41,7 +41,7 @@ setup(
     classifiers=CLASSIFIERS,
     packages=find_packages(exclude=["tests"]),
     package_data={
-        "azext_aks_preview": ["azext_metadata.json", "deploymentyaml/*.yaml"]
+        "azext_aks_preview": ["azext_metadata.json"]
     },
     install_requires=DEPENDENCIES,
 )

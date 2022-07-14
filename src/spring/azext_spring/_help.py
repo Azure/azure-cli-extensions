@@ -39,14 +39,6 @@ helps['spring create'] = """
         az spring create -n MyService -g MyResourceGroup --sku Enterprise --enable-application-configuration-service --enable-service-registry --enable-gateway --enable-api-portal
 """
 
-helps['spring list-marketplace-plan'] = """
-    type: command
-    short-summary: (Enterprise Tier Only) List Marketplace plan to be purchased.
-    examples:
-    - name: List all plans.
-      text: az spring list-marketplace-plan -o table
-"""
-
 helps['spring update'] = """
     type: command
     short-summary: Update an Azure Spring Apps.
@@ -229,17 +221,17 @@ helps['spring app deploy'] = """
     short-summary: Deploy source code or pre-built binary to an app and update related configurations.
     examples:
     - name: Deploy source code to an app. This will pack current directory, build binary with Pivotal Build Service and then deploy to the app.
-      text: az spring app deploy -n MyApp -s MyCluster -g MyResourceGroup
+      text: az spring app deploy -n MyApp -s MyCluster -g MyResourceGroup --source-path
     - name: Deploy a pre-built jar to an app with jvm options and environment variables.
-      text: az spring app deploy -n MyApp -s MyCluster -g MyResourceGroup --jar-path app.jar --jvm-options="-XX:+UseG1GC -XX:+UseStringDeduplication" --env foo=bar
+      text: az spring app deploy -n MyApp -s MyCluster -g MyResourceGroup --artifact-path app.jar --jvm-options="-XX:+UseG1GC -XX:+UseStringDeduplication" --env foo=bar
     - name: Deploy source code to a specific deployment of an app.
-      text: az spring app deploy -n MyApp -s MyCluster -g MyResourceGroup -d green-deployment
+      text: az spring app deploy -n MyApp -s MyCluster -g MyResourceGroup -d green-deployment --source-path
     - name: Deploy a container image on Docker Hub to an app.
       text: az spring app deploy -n MyApp -s MyCluster -g MyResourceGroup --container-image contoso/your-app:v1
     - name: Deploy a container image on a private registry to an app.
       text: az spring app deploy -n MyApp -s MyCluster -g MyResourceGroup --container-image contoso/your-app:v1 --container-registry myacr.azurecr.io --registry-username <username> --registry-password <password>
     - name: Deploy with Application Configuration Service config file patterns to an app.
-      text: az spring app deploy -n MyApp -s MyCluster -g MyResourceGroup --config-file-patterns MyPatterns --jar-path app.jar
+      text: az spring app deploy -n MyApp -s MyCluster -g MyResourceGroup --config-file-patterns MyPatterns --artifact-path app.jar
 """
 
 helps['spring app scale'] = """
@@ -362,9 +354,9 @@ helps['spring app deployment create'] = """
     short-summary: Create a staging deployment for the app. To deploy code or update setting to an existing deployment, use `az spring app deploy/update --deployment <staging deployment>`.
     examples:
     - name: Deploy source code to a new deployment of an app. This will pack current directory, build binary with Pivotal Build Service and then deploy.
-      text: az spring app deployment create -n green-deployment --app MyApp -s MyCluster -g MyResourceGroup
+      text: az spring app deployment create -n green-deployment --app MyApp -s MyCluster -g MyResourceGroup --source-path
     - name: Deploy a pre-built jar to an app with jvm options and environment variables.
-      text: az spring app deployment create -n green-deployment --app MyApp -s MyCluster -g MyResourceGroup --jar-path app.jar --jvm-options="-XX:+UseG1GC -XX:+UseStringDeduplication" --env foo=bar
+      text: az spring app deployment create -n green-deployment --app MyApp -s MyCluster -g MyResourceGroup --artifact-path app.jar --jvm-options="-XX:+UseG1GC -XX:+UseStringDeduplication" --env foo=bar
     - name: Deploy a container image on Docker Hub to an app.
       text: az spring app deployment create -n green-deployment --app MyApp -s MyCluster -g MyResourceGroup --container-image contoso/your-app:v1
     - name: Deploy a container image on a private registry to an app.

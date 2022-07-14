@@ -226,6 +226,20 @@ sql mi-arc update:
     preferred_primary_replica:
       rule_exclusions:
       - option_length_too_long
+    sync_secondary_to_commit:
+      rule_exclusions:
+      - option_length_too_long
+sql mi-arc create:
+  parameters:
+    sync_secondary_to_commit:
+      rule_exclusions:
+      - option_length_too_long
+    storage_class_orchestrator_logs:
+      rule_exclusions:
+      - option_length_too_long
+    volume_size_orchestrator_logs:
+      rule_exclusions:
+      - option_length_too_long
 attestation policy set:
   parameters:
     new_attestation_policy:
@@ -480,6 +494,26 @@ datafactory integration-runtime-node update:
 datafactory pipeline create-run:
   parameters:
     reference_pipeline_run_id:
+      rule_exclusions:
+      - option_length_too_long
+dataprotection backup-instance restore initialize-for-data-recovery-as-files:
+  parameters:
+    target_blob_container_url:
+      rule_exclusions:
+      - option_length_too_long
+dataprotection backup-vault create:
+  parameters:
+    alerts_for_all_job_failures:
+      rule_exclusions:
+      - option_length_too_long
+dataprotection backup-vault update:
+  parameters:
+    alerts_for_all_job_failures:
+      rule_exclusions:
+      - option_length_too_long
+dataprotection resource-guard update:
+  parameters:
+    critical_operation_exclusion_list:
       rule_exclusions:
       - option_length_too_long
 datashare consumer dataset-mapping create:

@@ -63,7 +63,7 @@ class PrivateLinkResourcesOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-03-01"
+        api_version = "2022-01-01"
         accept = "application/json"
 
         def prepare_request(next_link=None):
@@ -75,7 +75,7 @@ class PrivateLinkResourcesOperations:
                 # Construct URL
                 url = self.list_by_cluster.metadata['url']  # type: ignore
                 path_format_arguments = {
-                    'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
+                    'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
                     'clusterName': self._serialize.url("cluster_name", cluster_name, 'str'),
                     'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
                 }

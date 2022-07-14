@@ -12,7 +12,7 @@ from urllib.parse import urlparse
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
 from azure.cli.core.azclierror import (ValidationError, RequiredArgumentMissingError, CLIInternalError,
-                                       ResourceNotFoundError, ArgumentUsageError, FileOperationError, CLIError)
+                                       ResourceNotFoundError, FileOperationError, CLIError)
 from azure.cli.core.commands.client_factory import get_subscription_id
 from azure.cli.command_modules.appservice.utils import _normalize_location
 from azure.cli.command_modules.network._client_factory import network_client_factory
@@ -23,7 +23,7 @@ from msrestazure.tools import parse_resource_id, is_valid_resource_id, resource_
 from ._clients import ContainerAppClient, ManagedEnvironmentClient
 from ._client_factory import handle_raw_exception, providers_client_factory, cf_resource_groups, log_analytics_client_factory, log_analytics_shared_key_client_factory
 from ._constants import (MAXIMUM_CONTAINER_APP_NAME_LENGTH, SHORT_POLLING_INTERVAL_SECS, LONG_POLLING_INTERVAL_SECS,
-                         LOG_ANALYTICS_RP, CONTAINER_APPS_RP, CHECK_CERTIFICATE_NAME_AVAILABILITY_TYPE)
+                         LOG_ANALYTICS_RP, CONTAINER_APPS_RP, CHECK_CERTIFICATE_NAME_AVAILABILITY_TYPE, ACR_IMAGE_SUFFIX)
 from ._models import (ContainerAppCustomDomainEnvelope as ContainerAppCustomDomainEnvelopeModel)
 
 logger = get_logger(__name__)
@@ -70,7 +70,7 @@ def _create_application(client, display_name):
         if 'insufficient privileges' in str(ex).lower():
             link = 'https://docs.microsoft.com/azure/azure-resource-manager/resource-group-create-service-principal-portal'  # pylint: disable=line-too-long
             raise ValidationError("Directory permission is needed for the current user to register the application. "
-                                  "For how to configure, please refer '{}'. Original error: {}".format(link, ex))
+                                  "For how to configure, please refer '{}'. Original error: {}".format(link, ex)) from ex
         raise
     return result
 
@@ -292,24 +292,25 @@ def _ensure_location_allowed(cmd, location, resource_provider, resource_type):
     providers_client = None
     try:
         providers_client = providers_client_factory(cmd.cli_ctx, get_subscription_id(cmd.cli_ctx))
+    except Exception as ex:
+        handle_raw_exception(ex)
 
-        if providers_client is not None:
+    if providers_client is not None:
+        try:
             resource_types = getattr(providers_client.get(resource_provider), 'resource_types', [])
-            res_locations = []
-            for res in resource_types:
-                if res and getattr(res, 'resource_type', "") == resource_type:
-                    res_locations = getattr(res, 'locations', [])
+        except Exception as ex:
+            handle_raw_exception(ex)
 
-            res_locations = [res_loc.lower().replace(" ", "").replace("(", "").replace(")", "") for res_loc in res_locations if res_loc.strip()]
+        res_locations = []
+        for res in resource_types:
+            if res and getattr(res, 'resource_type', "") == resource_type:
+                res_locations = getattr(res, 'locations', [])
 
-            location_formatted = location.lower().replace(" ", "")
-            if location_formatted not in res_locations:
-                raise ValidationError("Location '{}' is not currently supported. To get list of supported locations, run `az provider show -n {} --query \"resourceTypes[?resourceType=='{}'].locations\"`".format(
-                    location, resource_provider, resource_type))
-    except ValidationError as ex:
-        raise ex
-    except Exception:  # pylint: disable=broad-except
-        pass
+        res_locations = [res_loc.lower().replace(" ", "").replace("(", "").replace(")", "") for res_loc in res_locations if res_loc.strip()]
+
+        location_formatted = location.lower().replace(" ", "")
+        if location_formatted not in res_locations:
+            raise ValidationError(f"Location '{location}' is not currently supported. To get list of supported locations, run `az provider show -n {resource_provider} --query \"resourceTypes[?resourceType=='{resource_type}'].locations\"`")
 
 
 def parse_env_var_flags(env_list, is_update_containerapp=False):
@@ -531,33 +532,40 @@ def _generate_log_analytics_if_not_provided(cmd, logs_customer_id, logs_key, loc
     if logs_customer_id is None and logs_key is None:
         logger.warning("No Log Analytics workspace provided.")
         _validate_subscription_registered(cmd, LOG_ANALYTICS_RP)
+
         try:
             log_analytics_client = log_analytics_client_factory(cmd.cli_ctx)
             log_analytics_shared_key_client = log_analytics_shared_key_client_factory(cmd.cli_ctx)
+        except Exception as ex:
+            handle_raw_exception(ex)
 
-            log_analytics_location = location
-            try:
-                _ensure_location_allowed(cmd, log_analytics_location, LOG_ANALYTICS_RP, "workspaces")
-            except Exception:  # pylint: disable=broad-except
-                log_analytics_location = _get_default_log_analytics_location(cmd)
+        log_analytics_location = location
+        try:
+            _ensure_location_allowed(cmd, log_analytics_location, LOG_ANALYTICS_RP, "workspaces")
+        except ValidationError:  # pylint: disable=broad-except
+            log_analytics_location = _get_default_log_analytics_location(cmd)
 
-            from azure.cli.core.commands import LongRunningOperation
-            from azure.mgmt.loganalytics.models import Workspace
+        from azure.cli.core.commands import LongRunningOperation
+        from azure.mgmt.loganalytics.models import Workspace
 
-            workspace_name = _generate_log_analytics_workspace_name(resource_group_name)
-            workspace_instance = Workspace(location=log_analytics_location)
-            logger.warning("Generating a Log Analytics workspace with name \"{}\"".format(workspace_name))  # pylint: disable=logging-format-interpolation
+        workspace_name = _generate_log_analytics_workspace_name(resource_group_name)
+        workspace_instance = Workspace(location=log_analytics_location)
+        logger.warning("Generating a Log Analytics workspace with name \"{}\"".format(workspace_name))  # pylint: disable=logging-format-interpolation
 
+        try:
             poller = log_analytics_client.begin_create_or_update(resource_group_name, workspace_name, workspace_instance)
             log_analytics_workspace = LongRunningOperation(cmd.cli_ctx)(poller)
+        except Exception as ex:
+            handle_raw_exception(ex)
 
-            logs_customer_id = log_analytics_workspace.customer_id
+        logs_customer_id = log_analytics_workspace.customer_id
+        try:
             logs_key = log_analytics_shared_key_client.get_shared_keys(
                 workspace_name=workspace_name,
                 resource_group_name=resource_group_name).primary_shared_key
-
         except Exception as ex:
-            raise ValidationError("Unable to generate a Log Analytics workspace. You can use \"az monitor log-analytics workspace create\" to create one and supply --logs-customer-id and --logs-key") from ex
+            handle_raw_exception(ex)
+
     elif logs_customer_id is None:
         raise ValidationError("Usage error: Supply the --logs-customer-id associated with the --logs-key")
     elif logs_key is None:  # Try finding the logs-key
@@ -566,7 +574,11 @@ def _generate_log_analytics_if_not_provided(cmd, logs_customer_id, logs_key, loc
 
         log_analytics_name = None
         log_analytics_rg = None
-        log_analytics = log_analytics_client.list()
+
+        try:
+            log_analytics = log_analytics_client.list()
+        except Exception as ex:
+            handle_raw_exception(ex)
 
         for la in log_analytics:
             if la.customer_id and la.customer_id.lower() == logs_customer_id.lower():
@@ -577,7 +589,10 @@ def _generate_log_analytics_if_not_provided(cmd, logs_customer_id, logs_key, loc
         if log_analytics_name is None:
             raise ValidationError('Usage error: Supply the --logs-key associated with the --logs-customer-id')
 
-        shared_keys = log_analytics_shared_key_client.get_shared_keys(workspace_name=log_analytics_name, resource_group_name=log_analytics_rg)
+        try:
+            shared_keys = log_analytics_shared_key_client.get_shared_keys(workspace_name=log_analytics_name, resource_group_name=log_analytics_rg)
+        except Exception as ex:
+            handle_raw_exception(ex)
 
         if not shared_keys or not shared_keys.primary_shared_key:
             raise ValidationError('Usage error: Supply the --logs-key associated with the --logs-customer-id')
@@ -857,6 +872,19 @@ def _update_revision_weights(containerapp_def, list_weights):
     return old_weight_sum
 
 
+def _validate_revision_name(cmd, revision, resource_group_name, name):
+    if revision.lower() == "latest":
+        return
+    revision_def = None
+    try:
+        revision_def = ContainerAppClient.show_revision(cmd, resource_group_name, name, revision)
+    except:  # pylint: disable=bare-except
+        pass
+
+    if not revision_def:
+        raise ValidationError(f"Revision '{revision}' is not a valid revision name.")
+
+
 def _append_label_weights(containerapp_def, label_weights, revision_weights):
     if "traffic" not in containerapp_def["properties"]["configuration"]["ingress"]:
         containerapp_def["properties"]["configuration"]["ingress"]["traffic"] = []
@@ -864,6 +892,7 @@ def _append_label_weights(containerapp_def, label_weights, revision_weights):
     if not label_weights:
         return
 
+    bad_labels = []
     revision_weight_names = [w.split('=', 1)[0].lower() for w in revision_weights]  # this is to check if we already have that revision weight passed
     for new_weight in label_weights:
         key_val = new_weight.split('=', 1)
@@ -885,7 +914,10 @@ def _append_label_weights(containerapp_def, label_weights, revision_weights):
                 break
 
         if not is_existing:
-            raise ValidationError(f"No label {label} assigned to any traffic weight.")
+            bad_labels.append(label)
+
+    if len(bad_labels) > 0:
+        raise ValidationError(f"No labels '{', '.join(bad_labels)}' assigned to any traffic weight.")
 
 
 def _update_weights(containerapp_def, revision_weights, old_weight_sum):
@@ -893,7 +925,6 @@ def _update_weights(containerapp_def, revision_weights, old_weight_sum):
     new_weight_sum = sum([int(w.split('=', 1)[1]) for w in revision_weights])
     revision_weight_names = [w.split('=', 1)[0].lower() for w in revision_weights]
     divisor = sum([int(w["weight"]) for w in containerapp_def["properties"]["configuration"]["ingress"]["traffic"]]) - new_weight_sum
-    round_up = True
     # if there is no change to be made, don't even try (also can't divide by zero)
     if divisor == 0:
         return
@@ -903,18 +934,17 @@ def _update_weights(containerapp_def, revision_weights, old_weight_sum):
     for existing_weight in containerapp_def["properties"]["configuration"]["ingress"]["traffic"]:
         if "latestRevision" in existing_weight and existing_weight["latestRevision"]:
             if "latest" not in revision_weight_names:
-                existing_weight["weight"], round_up = _round(scale_factor * existing_weight["weight"], round_up)
+                existing_weight["weight"] = round(scale_factor * existing_weight["weight"])
         elif "revisionName" in existing_weight and existing_weight["revisionName"].lower() not in revision_weight_names:
-            existing_weight["weight"], round_up = _round(scale_factor * existing_weight["weight"], round_up)
+            existing_weight["weight"] = round(scale_factor * existing_weight["weight"])
 
-
-# required because what if .5, .5? We need sum to be 100, so can't round up or down both times
-def _round(number, round_up):
-    import math
-    number = round(number, 2)  # required because we are dealing with floats
-    if round_up:
-        return math.ceil(number), not round_up
-    return math.floor(number), not round_up
+    total_sum = sum([int(w["weight"]) for w in containerapp_def["properties"]["configuration"]["ingress"]["traffic"]])
+    index = 0
+    while total_sum < 100:
+        weight = containerapp_def["properties"]["configuration"]["ingress"]["traffic"][index % len(containerapp_def["properties"]["configuration"]["ingress"]["traffic"])]
+        index += 1
+        total_sum += 1
+        weight["weight"] += 1
 
 
 def _validate_traffic_sum(revision_weights):
@@ -936,7 +966,7 @@ def _get_app_from_revision(revision):
 
 def _infer_acr_credentials(cmd, registry_server, disable_warnings=False):
     # If registry is Azure Container Registry, we can try inferring credentials
-    if '.azurecr.io' not in registry_server:
+    if ACR_IMAGE_SUFFIX not in registry_server:
         raise RequiredArgumentMissingError('Registry username and password are required if not using Azure Container Registry.')
     not disable_warnings and logger.warning('No credential was provided to access Azure Container Registry. Trying to look up credentials...')
     parsed = urlparse(registry_server)
@@ -962,6 +992,8 @@ def _registry_exists(containerapp_def, registry_server):
 # get a value from nested dict without getting IndexError (returns None instead)
 # for example, model["key1"]["key2"]["key3"] would become safe_get(model, "key1", "key2", "key3")
 def safe_get(model, *keys, default=None):
+    if not model:
+        return default
     for k in keys[:-1]:
         model = model.get(k, {})
     return model.get(keys[-1], default)
@@ -1262,7 +1294,7 @@ def check_cert_name_availability(cmd, resource_group_name, name, cert_name):
         r = ManagedEnvironmentClient.check_name_availability(cmd, resource_group_name, name, name_availability_request)
     except CLIError as e:
         handle_raw_exception(e)
-    return r["nameAvailable"]
+    return r
 
 
 def validate_hostname(cmd, resource_group_name, name, hostname):
@@ -1309,3 +1341,63 @@ def get_custom_domains(cmd, resource_group_name, name, location=None, environmen
     except CLIError as e:
         handle_raw_exception(e)
     return custom_domains
+
+
+def set_managed_identity(cmd, resource_group_name, containerapp_def, system_assigned=False, user_assigned=None):
+    assign_system_identity = system_assigned
+    if not user_assigned:
+        user_assigned = []
+    assign_user_identities = [x.lower() for x in user_assigned]
+
+    # If identity not returned
+    try:
+        containerapp_def["identity"]
+        containerapp_def["identity"]["type"]
+    except:
+        containerapp_def["identity"] = {}
+        containerapp_def["identity"]["type"] = "None"
+
+    if assign_system_identity and containerapp_def["identity"]["type"].__contains__("SystemAssigned"):
+        logger.warning("System identity is already assigned to containerapp")
+
+    # Assign correct type
+    try:
+        if containerapp_def["identity"]["type"] != "None":
+            if containerapp_def["identity"]["type"] == "SystemAssigned" and assign_user_identities:
+                containerapp_def["identity"]["type"] = "SystemAssigned,UserAssigned"
+            if containerapp_def["identity"]["type"] == "UserAssigned" and assign_system_identity:
+                containerapp_def["identity"]["type"] = "SystemAssigned,UserAssigned"
+        else:
+            if assign_system_identity and assign_user_identities:
+                containerapp_def["identity"]["type"] = "SystemAssigned,UserAssigned"
+            elif assign_system_identity:
+                containerapp_def["identity"]["type"] = "SystemAssigned"
+            elif assign_user_identities:
+                containerapp_def["identity"]["type"] = "UserAssigned"
+    except:
+        # Always returns "type": "None" when CA has no previous identities
+        pass
+
+    if assign_user_identities:
+        try:
+            containerapp_def["identity"]["userAssignedIdentities"]
+        except:
+            containerapp_def["identity"]["userAssignedIdentities"] = {}
+
+        subscription_id = get_subscription_id(cmd.cli_ctx)
+
+        for r in assign_user_identities:
+            r = _ensure_identity_resource_id(subscription_id, resource_group_name, r).replace("resourceGroup", "resourcegroup")
+            isExisting = False
+
+            if not containerapp_def["identity"].get("userAssignedIdentities"):
+                containerapp_def["identity"]["userAssignedIdentities"] = {}
+
+            for old_user_identity in containerapp_def["identity"]["userAssignedIdentities"]:
+                if old_user_identity.lower() == r.lower():
+                    isExisting = True
+                    logger.warning("User identity %s is already assigned to containerapp", old_user_identity)
+                    break
+
+            if not isExisting:
+                containerapp_def["identity"]["userAssignedIdentities"][r] = {}

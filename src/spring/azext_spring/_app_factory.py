@@ -7,12 +7,13 @@
 from azure.cli.core.azclierror import FileOperationError, InvalidArgumentValueError
 from .vendored_sdks.appplatform.v2022_01_01_preview import models
 from .vendored_sdks.appplatform.v2022_03_01_preview import models as models_20220301preview
+from .vendored_sdks.appplatform.v2022_05_01_preview import models as models_20220501preview
 from azure.cli.core.util import get_file_json
 
 
 class DefaultApp:
     def format_resource(self, **kwargs):
-        return models.AppResource(
+        return models_20220501preview.AppResource(
             properties=self._format_properties(**kwargs),
             identity=self._format_identity(**kwargs)
         )
@@ -22,7 +23,8 @@ class DefaultApp:
         kwargs['loaded_certificates'] = self._load_public_certificate_file(**kwargs)
         kwargs['persistent_disk'] = self._load_persistent_disk(**kwargs)
         kwargs['temporary_disk'] = self._load_temp_disk(**kwargs)
-        return models.AppResourceProperties(**kwargs)
+        kwargs['vnet_addons'] = self._load_vnet_addons(**kwargs)
+        return models_20220501preview.AppResourceProperties(**kwargs)
 
     def _format_identity(self, system_assigned=None, user_assigned=None, **_):
         target_identity_type = self._get_identity_assign_type(system_assigned, user_assigned)
@@ -117,6 +119,14 @@ class DefaultApp:
                     storage_id=storage_resource.id,
                     custom_persistent_disk_properties=custom_persistent_disk_properties))
         return custom_persistent_disks
+
+    def _load_vnet_addons(self, public_for_vnet=None, **_):
+        if public_for_vnet is not None:
+            return models_20220501preview.AppVNetAddons(
+                public_endpoint=public_for_vnet
+            )
+        else:
+            return None
 
 
 class BasicTierApp(DefaultApp):

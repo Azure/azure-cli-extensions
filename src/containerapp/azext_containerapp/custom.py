@@ -17,7 +17,8 @@ from azure.cli.core.azclierror import (
     CLIError,
     CLIInternalError,
     InvalidArgumentValueError,
-    ArgumentUsageError)
+    ArgumentUsageError,
+    MutuallyExclusiveArgumentError)
 from azure.cli.core.commands.client_factory import get_subscription_id
 from azure.cli.core.util import open_page_in_browser
 from azure.cli.command_modules.appservice.utils import _normalize_location
@@ -62,12 +63,14 @@ from ._utils import (_validate_subscription_registered, _get_location_from_resou
                      _update_revision_env_secretrefs, _get_acr_cred, safe_get, await_github_action, repo_url_to_name,
                      validate_container_app_name, _update_weights, get_vnet_location, register_provider_if_needed,
                      generate_randomized_cert_name, _get_name, load_cert_file, check_cert_name_availability,
-                     validate_hostname, patch_new_custom_domain, get_custom_domains)
+                     validate_hostname, patch_new_custom_domain, get_custom_domains, _validate_revision_name, set_managed_identity)
+
 
 from ._ssh_utils import (SSH_DEFAULT_ENCODING, WebSocketConnection, read_ssh, get_stdin_writer, SSH_CTRL_C_MSG,
                          SSH_BACKUP_ENCODING)
 from ._constants import (MAXIMUM_SECRET_LENGTH, MICROSOFT_SECRET_SETTING_NAME, FACEBOOK_SECRET_SETTING_NAME, GITHUB_SECRET_SETTING_NAME,
-                         GOOGLE_SECRET_SETTING_NAME, TWITTER_SECRET_SETTING_NAME, APPLE_SECRET_SETTING_NAME, CONTAINER_APPS_RP)
+                         GOOGLE_SECRET_SETTING_NAME, TWITTER_SECRET_SETTING_NAME, APPLE_SECRET_SETTING_NAME, CONTAINER_APPS_RP,
+                         NAME_INVALID, NAME_ALREADY_EXISTS, ACR_IMAGE_SUFFIX)
 
 logger = get_logger(__name__)
 
@@ -501,6 +504,11 @@ def update_containerapp_logic(cmd,
                               from_revision=None):
     _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
+    # Validate that max_replicas is set to 0-30
+    if max_replicas is not None:
+        if max_replicas < 1 or max_replicas > 30:
+            raise ArgumentUsageError('--max-replicas must be in the range [1,30]')
+
     if yaml:
         if image or min_replicas or max_replicas or\
            set_env_vars or remove_env_vars or replace_env_vars or remove_all_env_vars or cpu or memory or\
@@ -724,7 +732,7 @@ def show_containerapp(cmd, name, resource_group_name):
         handle_raw_exception(e)
 
 
-def list_containerapp(cmd, resource_group_name=None):
+def list_containerapp(cmd, resource_group_name=None, managed_env=None):
     _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     try:
@@ -733,6 +741,14 @@ def list_containerapp(cmd, resource_group_name=None):
             containerapps = ContainerAppClient.list_by_subscription(cmd=cmd)
         else:
             containerapps = ContainerAppClient.list_by_resource_group(cmd=cmd, resource_group_name=resource_group_name)
+
+        if managed_env:
+            env_name = parse_resource_id(managed_env)["name"].lower()
+            if "resource_group" in parse_resource_id(managed_env):
+                ManagedEnvironmentClient.show(cmd, parse_resource_id(managed_env)["resource_group"], parse_resource_id(managed_env)["name"])
+                containerapps = [c for c in containerapps if c["properties"]["managedEnvironmentId"].lower() == managed_env.lower()]
+            else:
+                containerapps = [c for c in containerapps if parse_resource_id(c["properties"]["managedEnvironmentId"])["name"].lower() == env_name]
 
         return containerapps
     except CLIError as e:
@@ -796,7 +812,6 @@ def create_managed_environment(cmd,
 
     managed_env_def = ManagedEnvironmentModel
     managed_env_def["location"] = location
-    managed_env_def["properties"]["internalLoadBalancerEnabled"] = False
     managed_env_def["properties"]["appLogsConfiguration"] = app_logs_config_def
     managed_env_def["tags"] = tags
     managed_env_def["properties"]["zoneRedundant"] = zone_redundant
@@ -824,7 +839,7 @@ def create_managed_environment(cmd,
     if internal_only:
         if not infrastructure_subnet_resource_id:
             raise ValidationError('Infrastructure subnet resource ID needs to be supplied for internal only environments.')
-        managed_env_def["properties"]["internalLoadBalancerEnabled"] = True
+        managed_env_def["properties"]["vnetConfiguration"]["internal"] = True
 
     try:
         r = ManagedEnvironmentClient.create(
@@ -883,12 +898,6 @@ def delete_managed_environment(cmd, name, resource_group_name, no_wait=False):
 
 def assign_managed_identity(cmd, name, resource_group_name, system_assigned=False, user_assigned=None, no_wait=False):
     _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
-
-    assign_system_identity = system_assigned
-    if not user_assigned:
-        user_assigned = []
-    assign_user_identities = [x.lower() for x in user_assigned]
-
     containerapp_def = None
 
     # Get containerapp properties of CA we are updating
@@ -901,56 +910,7 @@ def assign_managed_identity(cmd, name, resource_group_name, system_assigned=Fals
         raise ResourceNotFoundError("The containerapp '{}' does not exist".format(name))
 
     _get_existing_secrets(cmd, resource_group_name, name, containerapp_def)
-
-    # If identity not returned
-    try:
-        containerapp_def["identity"]
-        containerapp_def["identity"]["type"]
-    except:
-        containerapp_def["identity"] = {}
-        containerapp_def["identity"]["type"] = "None"
-
-    if assign_system_identity and containerapp_def["identity"]["type"].__contains__("SystemAssigned"):
-        logger.warning("System identity is already assigned to containerapp")
-
-    # Assign correct type
-    try:
-        if containerapp_def["identity"]["type"] != "None":
-            if containerapp_def["identity"]["type"] == "SystemAssigned" and assign_user_identities:
-                containerapp_def["identity"]["type"] = "SystemAssigned,UserAssigned"
-            if containerapp_def["identity"]["type"] == "UserAssigned" and assign_system_identity:
-                containerapp_def["identity"]["type"] = "SystemAssigned,UserAssigned"
-        else:
-            if assign_system_identity and assign_user_identities:
-                containerapp_def["identity"]["type"] = "SystemAssigned,UserAssigned"
-            elif assign_system_identity:
-                containerapp_def["identity"]["type"] = "SystemAssigned"
-            elif assign_user_identities:
-                containerapp_def["identity"]["type"] = "UserAssigned"
-    except:
-        # Always returns "type": "None" when CA has no previous identities
-        pass
-
-    if assign_user_identities:
-        try:
-            containerapp_def["identity"]["userAssignedIdentities"]
-        except:
-            containerapp_def["identity"]["userAssignedIdentities"] = {}
-
-        subscription_id = get_subscription_id(cmd.cli_ctx)
-
-        for r in assign_user_identities:
-            r = _ensure_identity_resource_id(subscription_id, resource_group_name, r).replace("resourceGroup", "resourcegroup")
-            isExisting = False
-
-            for old_user_identity in containerapp_def["identity"]["userAssignedIdentities"]:
-                if old_user_identity.lower() == r.lower():
-                    isExisting = True
-                    logger.warning("User identity {} is already assigned to containerapp".format(old_user_identity))
-                    break
-
-            if not isExisting:
-                containerapp_def["identity"]["userAssignedIdentities"][r] = {}
+    set_managed_identity(cmd, resource_group_name, containerapp_def, system_assigned, user_assigned)
 
     try:
         r = ContainerAppClient.create_or_update(cmd=cmd, resource_group_name=resource_group_name, name=name, container_app_envelope=containerapp_def, no_wait=no_wait)
@@ -1145,7 +1105,7 @@ def create_or_update_github_action(cmd,
     # Registry
     if registry_username is None or registry_password is None:
         # If registry is Azure Container Registry, we can try inferring credentials
-        if not registry_url or '.azurecr.io' not in registry_url:
+        if not registry_url or ACR_IMAGE_SUFFIX not in registry_url:
             raise RequiredArgumentMissingError('Registry url is required if using Azure Container Registry, otherwise Registry username and password are required if using Dockerhub')
         logger.warning('No credential was provided to access Azure Container Registry. Trying to look up...')
         parsed = urlparse(registry_url)
@@ -1246,9 +1206,12 @@ def delete_github_action(cmd, name, resource_group_name, token=None, login_with_
         handle_raw_exception(e)
 
 
-def list_revisions(cmd, name, resource_group_name):
+def list_revisions(cmd, name, resource_group_name, all=False):
     try:
-        return ContainerAppClient.list_revisions(cmd=cmd, resource_group_name=resource_group_name, name=name)
+        revision_list = ContainerAppClient.list_revisions(cmd=cmd, resource_group_name=resource_group_name, name=name)
+        if all:
+            return revision_list
+        return [r for r in revision_list if r["properties"]["active"]]
     except CLIError as e:
         handle_raw_exception(e)
 
@@ -1368,7 +1331,7 @@ def set_revision_mode(cmd, resource_group_name, name, mode, no_wait=False):
         handle_raw_exception(e)
 
 
-def add_revision_label(cmd, resource_group_name, revision, label, name=None, no_wait=False):
+def add_revision_label(cmd, resource_group_name, revision, label, name=None, no_wait=False, yes=False):
     _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     if not name:
@@ -1383,26 +1346,93 @@ def add_revision_label(cmd, resource_group_name, revision, label, name=None, no_
     if not containerapp_def:
         raise ResourceNotFoundError(f"The containerapp '{name}' does not exist in group '{resource_group_name}'")
 
-    if "ingress" not in containerapp_def['properties']['configuration'] and "traffic" not in containerapp_def['properties']['configuration']['ingress']:
-        raise ValidationError("Ingress and traffic weights are required to set labels.")
+    if "ingress" not in containerapp_def['properties']['configuration'] or "traffic" not in containerapp_def['properties']['configuration']['ingress']:
+        raise ValidationError("Ingress and traffic weights are required to add labels.")
 
-    traffic_weight = containerapp_def['properties']['configuration']['ingress']['traffic']
+    traffic_weight = containerapp_def['properties']['configuration']['ingress']['traffic'] if 'traffic' in containerapp_def['properties']['configuration']['ingress'] else {}
+
+    _validate_revision_name(cmd, revision, resource_group_name, name)
 
     label_added = False
     for weight in traffic_weight:
+        if "label" in weight and weight["label"].lower() == label.lower():
+            r_name = "latest" if "latestRevision" in weight and weight["latestRevision"] else weight["revisionName"]
+            if not yes and r_name.lower() != revision.lower():
+                msg = f"A weight with the label '{label}' already exists. Remove existing label '{label}' from '{r_name}' and add to '{revision}'?"
+                if not prompt_y_n(msg, default="n"):
+                    raise ArgumentUsageError(f"Usage Error: cannot specify existing label without agreeing to remove existing label '{label}' from '{r_name}' and add to '{revision}'.")
+            weight["label"] = None
+
         if "latestRevision" in weight:
             if revision.lower() == "latest" and weight["latestRevision"]:
                 label_added = True
                 weight["label"] = label
-                break
         else:
             if revision.lower() == weight["revisionName"].lower():
                 label_added = True
                 weight["label"] = label
-                break
 
     if not label_added:
-        raise ValidationError("Please specify a revision name with an associated traffic weight.")
+        containerapp_def["properties"]["configuration"]["ingress"]["traffic"].append({
+            "revisionName": revision if revision.lower() != "latest" else None,
+            "weight": 0,
+            "latestRevision": revision.lower() == "latest",
+            "label": label
+        })
+
+    containerapp_patch_def = {}
+    containerapp_patch_def['properties'] = {}
+    containerapp_patch_def['properties']['configuration'] = {}
+    containerapp_patch_def['properties']['configuration']['ingress'] = {}
+
+    containerapp_patch_def['properties']['configuration']['ingress']['traffic'] = traffic_weight
+
+    try:
+        r = ContainerAppClient.update(
+            cmd=cmd, resource_group_name=resource_group_name, name=name, container_app_envelope=containerapp_patch_def, no_wait=no_wait)
+        return r['properties']['configuration']['ingress']['traffic']
+    except Exception as e:
+        handle_raw_exception(e)
+
+
+def swap_revision_label(cmd, name, resource_group_name, source_label, target_label, no_wait=False):
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
+
+    if source_label == target_label:
+        raise ArgumentUsageError("Label names to be swapped must be different.")
+
+    containerapp_def = None
+    try:
+        containerapp_def = ContainerAppClient.show(cmd=cmd, resource_group_name=resource_group_name, name=name)
+    except:
+        pass
+
+    if not containerapp_def:
+        raise ResourceNotFoundError(f"The containerapp '{name}' does not exist in group '{resource_group_name}'")
+
+    if "ingress" not in containerapp_def['properties']['configuration'] or "traffic" not in containerapp_def['properties']['configuration']['ingress']:
+        raise ValidationError("Ingress and traffic weights are required to swap labels.")
+
+    traffic_weight = containerapp_def['properties']['configuration']['ingress']['traffic'] if 'traffic' in containerapp_def['properties']['configuration']['ingress'] else {}
+
+    source_label_found = False
+    target_label_found = False
+    for weight in traffic_weight:
+        if "label" in weight:
+            if weight["label"].lower() == source_label.lower():
+                if not source_label_found:
+                    source_label_found = True
+                    weight["label"] = target_label
+            elif weight["label"].lower() == target_label.lower():
+                if not target_label_found:
+                    target_label_found = True
+                    weight["label"] = source_label
+    if not source_label_found and not target_label_found:
+        raise ArgumentUsageError(f"Could not find label '{source_label}' nor label '{target_label}' in traffic.")
+    if not source_label_found:
+        raise ArgumentUsageError(f"Could not find label '{source_label}' in traffic.")
+    if not target_label_found:
+        raise ArgumentUsageError(f"Could not find label '{target_label}' in traffic.")
 
     containerapp_patch_def = {}
     containerapp_patch_def['properties'] = {}
@@ -1431,8 +1461,8 @@ def remove_revision_label(cmd, resource_group_name, name, label, no_wait=False):
     if not containerapp_def:
         raise ResourceNotFoundError(f"The containerapp '{name}' does not exist in group '{resource_group_name}'")
 
-    if "ingress" not in containerapp_def['properties']['configuration'] and "traffic" not in containerapp_def['properties']['configuration']['ingress']:
-        raise ValidationError("Ingress and traffic weights are required to set labels.")
+    if "ingress" not in containerapp_def['properties']['configuration'] or "traffic" not in containerapp_def['properties']['configuration']['ingress']:
+        raise ValidationError("Ingress and traffic weights are required to remove labels.")
 
     traffic_weight = containerapp_def['properties']['configuration']['ingress']['traffic']
 
@@ -1557,6 +1587,9 @@ def set_ingress_traffic(cmd, name, resource_group_name, label_weights=None, revi
     if not containerapp_def:
         raise ResourceNotFoundError(f"The containerapp '{name}' does not exist in group '{resource_group_name}'")
 
+    if containerapp_def["properties"]["configuration"]["activeRevisionsMode"].lower() == "single":
+        raise ValidationError(f"Containerapp '{name}' is configured for single revision. Set revision mode to multiple in order to set ingress traffic. Try `az containerapp revision set-mode -h` for more details.")
+
     try:
         containerapp_def["properties"]["configuration"]["ingress"]
         containerapp_def["properties"]["configuration"]["ingress"]["traffic"]
@@ -1574,6 +1607,10 @@ def set_ingress_traffic(cmd, name, resource_group_name, label_weights=None, revi
 
     # update revision weights to containerapp, get the old weight sum
     old_weight_sum = _update_revision_weights(containerapp_def, revision_weights)
+
+    # validate revision names
+    for revision in revision_weights:
+        _validate_revision_name(cmd, revision.split('=')[0], resource_group_name, name)
 
     _update_weights(containerapp_def, revision_weights, old_weight_sum)
 
@@ -1652,8 +1689,10 @@ def list_registry(cmd, name, resource_group_name):
         raise ValidationError("The containerapp {} has no assigned registries.".format(name)) from e
 
 
-def set_registry(cmd, name, resource_group_name, server, username=None, password=None, disable_warnings=False, no_wait=False):
+def set_registry(cmd, name, resource_group_name, server, username=None, password=None, disable_warnings=False, identity=None, no_wait=False):
     _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
+    if (username or password) and identity:
+        raise MutuallyExclusiveArgumentError("Use either identity or username/password.")
 
     containerapp_def = None
     try:
@@ -1674,9 +1713,9 @@ def set_registry(cmd, name, resource_group_name, server, username=None, password
 
     registries_def = containerapp_def["properties"]["configuration"]["registries"]
 
-    if not username or not password:
+    if (not username or not password) and not identity:
         # If registry is Azure Container Registry, we can try inferring credentials
-        if '.azurecr.io' not in server:
+        if ACR_IMAGE_SUFFIX not in server:
             raise RequiredArgumentMissingError('Registry username and password are required if you are not using Azure Container Registry.')
         not disable_warnings and logger.warning('No credential was provided to access Azure Container Registry. Trying to look up...')
         parsed = urlparse(server)
@@ -1695,6 +1734,7 @@ def set_registry(cmd, name, resource_group_name, server, username=None, password
             updating_existing_registry = True
             if username:
                 r["username"] = username
+                r["identity"] = None
             if password:
                 r["passwordSecretRef"] = store_as_secret_and_return_secret_ref(
                     containerapp_def["properties"]["configuration"]["secrets"],
@@ -1702,20 +1742,33 @@ def set_registry(cmd, name, resource_group_name, server, username=None, password
                     r["server"],
                     password,
                     update_existing_secret=True)
+                r["identity"] = None
+            if identity:
+                r["identity"] = identity
+                r["username"] = None
+                r["passwordSecretRef"] = None
 
     # If not updating existing registry, add as new registry
     if not updating_existing_registry:
         registry = RegistryCredentialsModel
         registry["server"] = server
-        registry["username"] = username
-        registry["passwordSecretRef"] = store_as_secret_and_return_secret_ref(
-            containerapp_def["properties"]["configuration"]["secrets"],
-            username,
-            server,
-            password,
-            update_existing_secret=True)
+        if not identity:
+            registry["username"] = username
+            registry["passwordSecretRef"] = store_as_secret_and_return_secret_ref(
+                containerapp_def["properties"]["configuration"]["secrets"],
+                username,
+                server,
+                password,
+                update_existing_secret=True)
+        else:
+            registry["identity"] = identity
 
         registries_def.append(registry)
+
+    if identity:
+        system_assigned_identity = identity.lower() == "system"
+        user_assigned = None if system_assigned_identity else [identity]
+        set_managed_identity(cmd, resource_group_name, containerapp_def, system_assigned_identity, user_assigned)
 
     try:
         r = ContainerAppClient.create_or_update(
@@ -2189,7 +2242,8 @@ def containerapp_up(cmd,
     env.create_if_needed(name)
 
     if source or repo:
-        _get_registry_from_app(app)  # if the app exists, get the registry
+        if not registry_server:
+            _get_registry_from_app(app, source)  # if the app exists, get the registry
         _get_registry_details(cmd, app, source)  # fetch ACR creds from arguments registry arguments
 
     app.create_acr_if_needed()
@@ -2255,7 +2309,10 @@ def containerapp_up_logic(cmd, resource_group_name, name, managed_env, image, en
 
     ingress_def = None
     if target_port is not None and ingress is not None:
-        ingress_def = IngressModel
+        if ca_exists:
+            ingress_def = containerapp_def["properties"]["configuration"]["ingress"]
+        else:
+            ingress_def = IngressModel
         ingress_def["external"] = external_ingress
         ingress_def["targetPort"] = target_port
         containerapp_def["properties"]["configuration"]["ingress"] = ingress_def
@@ -2295,7 +2352,7 @@ def containerapp_up_logic(cmd, resource_group_name, name, managed_env, image, en
 
     if registry_server:
         if not registry_pass or not registry_user:
-            if '.azurecr.io' not in registry_server:
+            if ACR_IMAGE_SUFFIX not in registry_server:
                 raise RequiredArgumentMissingError('Registry url is required if using Azure Container Registry, otherwise Registry username and password are required if using Dockerhub')
             logger.warning('No credential was provided to access Azure Container Registry. Trying to look up...')
             parsed = urlparse(registry_server)
@@ -2370,25 +2427,36 @@ def list_certificates(cmd, name, resource_group_name, location=None, certificate
             handle_raw_exception(e)
 
 
-def upload_certificate(cmd, name, resource_group_name, certificate_file, certificate_name=None, certificate_password=None, location=None):
+def upload_certificate(cmd, name, resource_group_name, certificate_file, certificate_name=None, certificate_password=None, location=None, prompt=False):
     _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     blob, thumbprint = load_cert_file(certificate_file, certificate_password)
 
     cert_name = None
     if certificate_name:
-        if not check_cert_name_availability(cmd, resource_group_name, name, certificate_name):
-            msg = 'A certificate with the name {} already exists in {}. If continue with this name, it will be overwritten by the new certificate file.\nOverwrite?'
-            overwrite = prompt_y_n(msg.format(certificate_name, name))
-            if overwrite:
-                cert_name = certificate_name
+        name_availability = check_cert_name_availability(cmd, resource_group_name, name, certificate_name)
+        if not name_availability["nameAvailable"]:
+            if name_availability["reason"] == NAME_ALREADY_EXISTS:
+                msg = '{}. If continue with this name, it will be overwritten by the new certificate file.\nOverwrite?'
+                overwrite = True
+                if prompt:
+                    overwrite = prompt_y_n(msg.format(name_availability["message"]))
+                else:
+                    logger.warning('{}. It will be overwritten by the new certificate file.'.format(name_availability["message"]))
+                if overwrite:
+                    cert_name = certificate_name
+            else:
+                raise ValidationError(name_availability["message"])
         else:
             cert_name = certificate_name
 
     while not cert_name:
         random_name = generate_randomized_cert_name(thumbprint, name, resource_group_name)
-        if check_cert_name_availability(cmd, resource_group_name, name, random_name):
+        check_result = check_cert_name_availability(cmd, resource_group_name, name, random_name)
+        if check_result["nameAvailable"]:
             cert_name = random_name
+        elif not check_result["nameAvailable"] and (check_result["reason"] == NAME_INVALID):
+            raise ValidationError(check_result["message"])
 
     certificate = ContainerAppCertificateEnvelopeModel
     certificate["properties"]["password"] = certificate_password
