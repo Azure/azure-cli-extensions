@@ -90,8 +90,8 @@ def fetch_kubectl_cluster_info(filepath_with_timestamp, storage_space_available,
             list_output_cluster_info = output_cluster_info_decoded.split("\n")
             list_output_cluster_info.pop(-1)
             list_output_cluster_info.pop(-1)
-            # Merging the list into string 
-            formatted_cluster_info="\n".join(map(str,list_output_cluster_info))
+            # Merging the list into string
+            formatted_cluster_info = "\n".join(map(str, list_output_cluster_info))
             # Path to add the K8s cluster-info
             cluster_info_path = os.path.join(filepath_with_timestamp, consts.K8s_Cluster_Info)
             with open(cluster_info_path, 'w+') as cluster_info:
