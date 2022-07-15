@@ -6,13 +6,11 @@
 from argparse import Namespace
 from pydoc import cli
 from kubernetes import client, config, watch, utils
-from binascii import a2b_hex
 from logging import exception
 import os
 import yaml
 import json
 import datetime
-import subprocess
 from subprocess import Popen, PIPE, run, STDOUT, call, DEVNULL
 import shutil
 from knack.log import get_logger
