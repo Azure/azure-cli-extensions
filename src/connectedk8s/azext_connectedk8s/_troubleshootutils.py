@@ -168,7 +168,7 @@ def retrieve_arc_agents_logs(corev1_api_instance, filepath_with_timestamp, stora
             for each_agent_pod in arc_agents_pod_list.items:
                 # Fetching the current Pod name and creating a folder with that name inside the timestamp folder
                 agent_name = each_agent_pod.metadata.name
-                arc_agent_logs_path = os.path.join(filepath_with_timestamp, "Arc_Agents_logs")
+                arc_agent_logs_path = os.path.join(filepath_with_timestamp, consts.Arc_Agents_Logs)
                 try:
                     os.mkdir(arc_agent_logs_path)
                 except FileExistsError:
@@ -270,7 +270,7 @@ def retrieve_deployments_logs(appv1_api_instance, filepath_with_timestamp, stora
     try:
         if storage_space_available:
             # Creating new Deployment Logs folder in the given timestamp folder
-            deployments_path = os.path.join(filepath_with_timestamp, "Arc_Deployment_Logs")
+            deployments_path = os.path.join(filepath_with_timestamp, consts.Arc_Deployment_Logs)
             try:
                 os.mkdir(deployments_path)
             except FileExistsError:
@@ -476,7 +476,7 @@ def check_diagnoser_container(corev1_api_instance, batchv1_api_instance, filepat
         diagnoser_container_log = executing_diagnoser_job(corev1_api_instance, batchv1_api_instance, filepath_with_timestamp, storage_space_available, absolute_path, helm_client_location, kubectl_client_location, release_namespace, probable_pod_security_policy_presence)
         # If diagnoser_container_log is not empty then only we will check for the results
         if(diagnoser_container_log is not None and diagnoser_container_log != ""):
-            diagnoser_container_log_list = diagnoser_container_log.split("\n") 
+            diagnoser_container_log_list = diagnoser_container_log.split("\n")
             diagnoser_container_log_list.pop(-1)
             dns_check_log = ""
             counter_container_logs = 1
@@ -948,7 +948,7 @@ def describe_non_ready_agent_log(filepath_with_timestamp, corev1_api_instance, a
         # To describe pod if its not in running state and storing it if storage is available
         if storage_space_available:
             # Creating folder with name 'describe_non_ready_agent' in the given path
-            describe_stuck_agent_path = os.path.join(filepath_with_timestamp, 'Describe_Non-Ready_Agents')
+            describe_stuck_agent_path = os.path.join(filepath_with_timestamp, consts.Describe_Non_Ready_Arc_Agents)
             try:
                 os.mkdir(describe_stuck_agent_path)
             except FileExistsError:
