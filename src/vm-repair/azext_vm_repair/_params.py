@@ -50,4 +50,4 @@ def load_arguments(self, _):
         c.argument('preview', help="URL of forked repair script library's map.json https://github.com/{user}/repair-script-library/blob/master/map.json")
 
     with self.argument_context('vm repair reset-nic') as c:
-        c.argument('yes', help='Auto starts the VM skipping prompt if it is not running.')
+        c.argument('yes', help='Do not prompt for confirmation to start VM if it is not running.')
