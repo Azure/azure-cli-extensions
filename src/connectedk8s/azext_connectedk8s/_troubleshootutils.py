@@ -17,11 +17,7 @@ from knack.log import get_logger
 from azure.cli.core import telemetry
 import azext_connectedk8s._constants as consts
 logger = get_logger(__name__)
-# pylint:disable=unused-argument
-# pylint: disable=too-many-locals
-# pylint: disable=too-many-branches
-# pylint: disable=too-many-statements
-# pylint: disable=line-too-long
+# pylint: disable=unused-argument, too-many-locals, too-many-branches, too-many-statements, line-too-long
 
 diagnoser_output = []
 

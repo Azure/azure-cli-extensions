@@ -124,8 +124,8 @@ helps['connectedk8s disable-features'] = """
 
 helps['connectedk8s troubleshoot'] = """
   type: command
-  short-summary: Performs diagnostic checks on an Arc enabled Kubernetes cluster.
+  short-summary: Perform diagnostic checks on an Arc enabled Kubernetes cluster.
   examples:
-  - name: Performs diagnostic checks on an Arc enabled Kubernetes cluster.
+  - name: Perform diagnostic checks on an Arc enabled Kubernetes cluster.
     text: az connectedk8s troubleshoot -n clusterName -g resourceGroupName
 """
