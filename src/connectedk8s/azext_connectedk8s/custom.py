@@ -2108,7 +2108,7 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
         # To store the cluster-info of the cluster in current-context
         diagnostic_checks[consts.Fetch_Kubectl_Cluster_Info], storage_space_available = troubleshootutils.fetch_kubectl_cluster_info(filepath_with_timestamp, storage_space_available, kubectl_client_location)
 
-        # To store the connected cluster resource logs in the diagnostic foler
+        # To store the connected cluster resource logs in the diagnostic folder
         diagnostic_checks[consts.Fetch_Connected_Cluster_Resource], storage_space_available = troubleshootutils.fetch_connected_cluster_resource(filepath_with_timestamp, connected_cluster, storage_space_available)
         corev1_api_instance = kube_client.CoreV1Api(kube_client.ApiClient(configuration))
 
@@ -2170,7 +2170,7 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
             # Get azure-arc agent version for telemetry
             azure_arc_agent_version = registry_path.split(':')[1]
 
-            # Check for agent verison comaptibility
+            # Check for agent version compatibility
             diagnostic_checks[consts.Agent_Version_Check] = troubleshootutils.check_agent_version(connected_cluster, azure_arc_agent_version)
         else:
             logger.warning("Error: Azure Arc agents are not present on the cluster. Please verify whether Arc onboarding of the Kubernetes cluster has been attempted.\n")
