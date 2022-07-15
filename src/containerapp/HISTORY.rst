@@ -5,7 +5,7 @@ Release History
 
 0.3.8
 ++++++
-* TODO
+* Fixed bug with 'az containerapp update' where --yaml would error out due to secret values
 
 0.3.7
 ++++++
