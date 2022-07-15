@@ -2,6 +2,10 @@
 Release History
 ===============
 
+0.4.4
+++++++
+Add az vm repair reset-nic command
+
 0.4.3
 ++++++
 Adding a new distro option for creating the recovery VM, adding the detect for gen2 Linux machine and create a gen2 recovery VM
