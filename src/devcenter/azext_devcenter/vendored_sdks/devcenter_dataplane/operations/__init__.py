@@ -11,7 +11,6 @@ from ._pool_operations import PoolOperations
 from ._schedule_operations import ScheduleOperations
 from ._dev_box_operations import DevBoxOperations
 from ._environments_operations import EnvironmentsOperations
-from ._actions_operations import ActionsOperations
 from ._artifacts_operations import ArtifactsOperations
 from ._catalog_item_operations import CatalogItemOperations
 from ._catalog_items_operations import CatalogItemsOperations
@@ -24,7 +23,6 @@ __all__ = [
     'ScheduleOperations',
     'DevBoxOperations',
     'EnvironmentsOperations',
-    'ActionsOperations',
     'ArtifactsOperations',
     'CatalogItemOperations',
     'CatalogItemsOperations',

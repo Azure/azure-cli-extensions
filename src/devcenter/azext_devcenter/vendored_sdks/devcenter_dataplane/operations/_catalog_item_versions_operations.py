@@ -47,25 +47,19 @@ class CatalogItemVersionsOperations(object):
 
     def list_by_project(
         self,
-        dev_center,  # type: str
         project_name,  # type: str
         catalog_item_id,  # type: str
-        dev_center_dns_suffix="devcenter.azure.com",  # type: str
         top=None,  # type: Optional[int]
         **kwargs  # type: Any
     ):
         # type: (...) -> Iterable["models.CatalogItemVersionListResult"]
         """List all versions of a catalog item from a project.
 
-        :param dev_center: The DevCenter to operate on.
-        :type dev_center: str
         :param project_name: The DevCenter Project upon which to execute operations.
         :type project_name: str
         :param catalog_item_id: The unique id of the catalog item.
         :type catalog_item_id: str
-        :param dev_center_dns_suffix: The DNS suffix used as the base for all devcenter requests.
-        :type dev_center_dns_suffix: str
-        :param top: The maximum number of resources to return from the operation. Example: '$top=10'.
+        :param top: The maximum number of resources to return from the operation. Example: 'top=10'.
         :type top: int
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either CatalogItemVersionListResult or the result of cls(response)
@@ -89,9 +83,10 @@ class CatalogItemVersionsOperations(object):
                 # Construct URL
                 url = self.list_by_project.metadata['url']  # type: ignore
                 path_format_arguments = {
-                    'devCenter': self._serialize.url("dev_center", dev_center, 'str', skip_quote=True),
-                    'devCenterDnsSuffix': self._serialize.url("dev_center_dns_suffix", dev_center_dns_suffix, 'str', skip_quote=True),
-                    'projectName': self._serialize.url("project_name", project_name, 'str'),
+                    'tenantId': self._serialize.url("self._config.tenant_id", self._config.tenant_id, 'str', skip_quote=True),
+                    'devCenter': self._serialize.url("self._config.dev_center", self._config.dev_center, 'str', skip_quote=True),
+                    'devCenterDnsSuffix': self._serialize.url("self._config.dev_center_dns_suffix", self._config.dev_center_dns_suffix, 'str', skip_quote=True),
+                    'projectName': self._serialize.url("project_name", project_name, 'str', max_length=63, min_length=3, pattern=r'^[a-zA-Z0-9][a-zA-Z0-9-]{2,62}$'),
                     'catalogItemId': self._serialize.url("catalog_item_id", catalog_item_id, 'str'),
                 }
                 url = self._client.format_url(url, **path_format_arguments)
@@ -106,9 +101,10 @@ class CatalogItemVersionsOperations(object):
                 url = next_link
                 query_parameters = {}  # type: Dict[str, Any]
                 path_format_arguments = {
-                    'devCenter': self._serialize.url("dev_center", dev_center, 'str', skip_quote=True),
-                    'devCenterDnsSuffix': self._serialize.url("dev_center_dns_suffix", dev_center_dns_suffix, 'str', skip_quote=True),
-                    'projectName': self._serialize.url("project_name", project_name, 'str'),
+                    'tenantId': self._serialize.url("self._config.tenant_id", self._config.tenant_id, 'str', skip_quote=True),
+                    'devCenter': self._serialize.url("self._config.dev_center", self._config.dev_center, 'str', skip_quote=True),
+                    'devCenterDnsSuffix': self._serialize.url("self._config.dev_center_dns_suffix", self._config.dev_center_dns_suffix, 'str', skip_quote=True),
+                    'projectName': self._serialize.url("project_name", project_name, 'str', max_length=63, min_length=3, pattern=r'^[a-zA-Z0-9][a-zA-Z0-9-]{2,62}$'),
                     'catalogItemId': self._serialize.url("catalog_item_id", catalog_item_id, 'str'),
                 }
                 url = self._client.format_url(url, **path_format_arguments)
@@ -141,28 +137,22 @@ class CatalogItemVersionsOperations(object):
 
     def get(
         self,
-        dev_center,  # type: str
         project_name,  # type: str
         catalog_item_id,  # type: str
         version,  # type: str
-        dev_center_dns_suffix="devcenter.azure.com",  # type: str
         top=None,  # type: Optional[int]
         **kwargs  # type: Any
     ):
         # type: (...) -> "models.CatalogItemVersion"
         """Get a specific catalog item version from a project.
 
-        :param dev_center: The DevCenter to operate on.
-        :type dev_center: str
         :param project_name: The DevCenter Project upon which to execute operations.
         :type project_name: str
         :param catalog_item_id: The unique id of the catalog item.
         :type catalog_item_id: str
         :param version: The version of the catalog item.
         :type version: str
-        :param dev_center_dns_suffix: The DNS suffix used as the base for all devcenter requests.
-        :type dev_center_dns_suffix: str
-        :param top: The maximum number of resources to return from the operation. Example: '$top=10'.
+        :param top: The maximum number of resources to return from the operation. Example: 'top=10'.
         :type top: int
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: CatalogItemVersion, or the result of cls(response)
@@ -180,9 +170,10 @@ class CatalogItemVersionsOperations(object):
         # Construct URL
         url = self.get.metadata['url']  # type: ignore
         path_format_arguments = {
-            'devCenter': self._serialize.url("dev_center", dev_center, 'str', skip_quote=True),
-            'devCenterDnsSuffix': self._serialize.url("dev_center_dns_suffix", dev_center_dns_suffix, 'str', skip_quote=True),
-            'projectName': self._serialize.url("project_name", project_name, 'str'),
+            'tenantId': self._serialize.url("self._config.tenant_id", self._config.tenant_id, 'str', skip_quote=True),
+            'devCenter': self._serialize.url("self._config.dev_center", self._config.dev_center, 'str', skip_quote=True),
+            'devCenterDnsSuffix': self._serialize.url("self._config.dev_center_dns_suffix", self._config.dev_center_dns_suffix, 'str', skip_quote=True),
+            'projectName': self._serialize.url("project_name", project_name, 'str', max_length=63, min_length=3, pattern=r'^[a-zA-Z0-9][a-zA-Z0-9-]{2,62}$'),
             'catalogItemId': self._serialize.url("catalog_item_id", catalog_item_id, 'str'),
             'version': self._serialize.url("version", version, 'str'),
         }

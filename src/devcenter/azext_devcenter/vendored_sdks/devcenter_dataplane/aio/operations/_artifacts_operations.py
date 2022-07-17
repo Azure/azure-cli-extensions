@@ -43,24 +43,18 @@ class ArtifactsOperations:
 
     def list_by_environment(
         self,
-        dev_center: str,
         project_name: str,
         environment_name: str,
-        dev_center_dns_suffix: str = "devcenter.azure.com",
         user_id: str = "me",
         **kwargs
     ) -> AsyncIterable["models.ArtifactListResult"]:
         """Lists the artifacts for an environment.
 
-        :param dev_center: The DevCenter to operate on.
-        :type dev_center: str
         :param project_name: The DevCenter Project upon which to execute operations.
         :type project_name: str
         :param environment_name: The name of the environment.
         :type environment_name: str
-        :param dev_center_dns_suffix: The DNS suffix used as the base for all devcenter requests.
-        :type dev_center_dns_suffix: str
-        :param user_id: The id of the user. If value is 'me', the identity is taken from the
+        :param user_id: The AAD object id of the user. If value is 'me', the identity is taken from the
          authentication context.
         :type user_id: str
         :keyword callable cls: A custom type or function that will be passed the direct response
@@ -85,10 +79,11 @@ class ArtifactsOperations:
                 # Construct URL
                 url = self.list_by_environment.metadata['url']  # type: ignore
                 path_format_arguments = {
-                    'devCenter': self._serialize.url("dev_center", dev_center, 'str', skip_quote=True),
-                    'devCenterDnsSuffix': self._serialize.url("dev_center_dns_suffix", dev_center_dns_suffix, 'str', skip_quote=True),
-                    'projectName': self._serialize.url("project_name", project_name, 'str'),
-                    'userId': self._serialize.url("user_id", user_id, 'str'),
+                    'tenantId': self._serialize.url("self._config.tenant_id", self._config.tenant_id, 'str', skip_quote=True),
+                    'devCenter': self._serialize.url("self._config.dev_center", self._config.dev_center, 'str', skip_quote=True),
+                    'devCenterDnsSuffix': self._serialize.url("self._config.dev_center_dns_suffix", self._config.dev_center_dns_suffix, 'str', skip_quote=True),
+                    'projectName': self._serialize.url("project_name", project_name, 'str', max_length=63, min_length=3, pattern=r'^[a-zA-Z0-9][a-zA-Z0-9-]{2,62}$'),
+                    'userId': self._serialize.url("user_id", user_id, 'str', max_length=36, min_length=2, pattern=r'^[a-zA-Z0-9]{8}-([a-zA-Z0-9]{4}-){3}[a-zA-Z0-9]{12}$|^me$'),
                     'environmentName': self._serialize.url("environment_name", environment_name, 'str'),
                 }
                 url = self._client.format_url(url, **path_format_arguments)
@@ -101,10 +96,11 @@ class ArtifactsOperations:
                 url = next_link
                 query_parameters = {}  # type: Dict[str, Any]
                 path_format_arguments = {
-                    'devCenter': self._serialize.url("dev_center", dev_center, 'str', skip_quote=True),
-                    'devCenterDnsSuffix': self._serialize.url("dev_center_dns_suffix", dev_center_dns_suffix, 'str', skip_quote=True),
-                    'projectName': self._serialize.url("project_name", project_name, 'str'),
-                    'userId': self._serialize.url("user_id", user_id, 'str'),
+                    'tenantId': self._serialize.url("self._config.tenant_id", self._config.tenant_id, 'str', skip_quote=True),
+                    'devCenter': self._serialize.url("self._config.dev_center", self._config.dev_center, 'str', skip_quote=True),
+                    'devCenterDnsSuffix': self._serialize.url("self._config.dev_center_dns_suffix", self._config.dev_center_dns_suffix, 'str', skip_quote=True),
+                    'projectName': self._serialize.url("project_name", project_name, 'str', max_length=63, min_length=3, pattern=r'^[a-zA-Z0-9][a-zA-Z0-9-]{2,62}$'),
+                    'userId': self._serialize.url("user_id", user_id, 'str', max_length=36, min_length=2, pattern=r'^[a-zA-Z0-9]{8}-([a-zA-Z0-9]{4}-){3}[a-zA-Z0-9]{12}$|^me$'),
                     'environmentName': self._serialize.url("environment_name", environment_name, 'str'),
                 }
                 url = self._client.format_url(url, **path_format_arguments)
@@ -137,27 +133,21 @@ class ArtifactsOperations:
 
     def list_by_path(
         self,
-        dev_center: str,
         project_name: str,
         environment_name: str,
         artifact_path: str,
-        dev_center_dns_suffix: str = "devcenter.azure.com",
         user_id: str = "me",
         **kwargs
     ) -> AsyncIterable["models.ArtifactListResult"]:
         """Lists the artifacts for an environment at a specified path, or returns the file at the path.
 
-        :param dev_center: The DevCenter to operate on.
-        :type dev_center: str
         :param project_name: The DevCenter Project upon which to execute operations.
         :type project_name: str
         :param environment_name: The name of the environment.
         :type environment_name: str
         :param artifact_path: The path of the artifact.
         :type artifact_path: str
-        :param dev_center_dns_suffix: The DNS suffix used as the base for all devcenter requests.
-        :type dev_center_dns_suffix: str
-        :param user_id: The id of the user. If value is 'me', the identity is taken from the
+        :param user_id: The AAD object id of the user. If value is 'me', the identity is taken from the
          authentication context.
         :type user_id: str
         :keyword callable cls: A custom type or function that will be passed the direct response
@@ -182,10 +172,11 @@ class ArtifactsOperations:
                 # Construct URL
                 url = self.list_by_path.metadata['url']  # type: ignore
                 path_format_arguments = {
-                    'devCenter': self._serialize.url("dev_center", dev_center, 'str', skip_quote=True),
-                    'devCenterDnsSuffix': self._serialize.url("dev_center_dns_suffix", dev_center_dns_suffix, 'str', skip_quote=True),
-                    'projectName': self._serialize.url("project_name", project_name, 'str'),
-                    'userId': self._serialize.url("user_id", user_id, 'str'),
+                    'tenantId': self._serialize.url("self._config.tenant_id", self._config.tenant_id, 'str', skip_quote=True),
+                    'devCenter': self._serialize.url("self._config.dev_center", self._config.dev_center, 'str', skip_quote=True),
+                    'devCenterDnsSuffix': self._serialize.url("self._config.dev_center_dns_suffix", self._config.dev_center_dns_suffix, 'str', skip_quote=True),
+                    'projectName': self._serialize.url("project_name", project_name, 'str', max_length=63, min_length=3, pattern=r'^[a-zA-Z0-9][a-zA-Z0-9-]{2,62}$'),
+                    'userId': self._serialize.url("user_id", user_id, 'str', max_length=36, min_length=2, pattern=r'^[a-zA-Z0-9]{8}-([a-zA-Z0-9]{4}-){3}[a-zA-Z0-9]{12}$|^me$'),
                     'environmentName': self._serialize.url("environment_name", environment_name, 'str'),
                     'artifactPath': self._serialize.url("artifact_path", artifact_path, 'str'),
                 }
@@ -199,10 +190,11 @@ class ArtifactsOperations:
                 url = next_link
                 query_parameters = {}  # type: Dict[str, Any]
                 path_format_arguments = {
-                    'devCenter': self._serialize.url("dev_center", dev_center, 'str', skip_quote=True),
-                    'devCenterDnsSuffix': self._serialize.url("dev_center_dns_suffix", dev_center_dns_suffix, 'str', skip_quote=True),
-                    'projectName': self._serialize.url("project_name", project_name, 'str'),
-                    'userId': self._serialize.url("user_id", user_id, 'str'),
+                    'tenantId': self._serialize.url("self._config.tenant_id", self._config.tenant_id, 'str', skip_quote=True),
+                    'devCenter': self._serialize.url("self._config.dev_center", self._config.dev_center, 'str', skip_quote=True),
+                    'devCenterDnsSuffix': self._serialize.url("self._config.dev_center_dns_suffix", self._config.dev_center_dns_suffix, 'str', skip_quote=True),
+                    'projectName': self._serialize.url("project_name", project_name, 'str', max_length=63, min_length=3, pattern=r'^[a-zA-Z0-9][a-zA-Z0-9-]{2,62}$'),
+                    'userId': self._serialize.url("user_id", user_id, 'str', max_length=36, min_length=2, pattern=r'^[a-zA-Z0-9]{8}-([a-zA-Z0-9]{4}-){3}[a-zA-Z0-9]{12}$|^me$'),
                     'environmentName': self._serialize.url("environment_name", environment_name, 'str'),
                     'artifactPath': self._serialize.url("artifact_path", artifact_path, 'str'),
                 }
