@@ -123,58 +123,58 @@ def devcenter_schedule_create(client,
 
 # dataplane commands
 def devcenter_project_list_dp(client,
-                           dev_center,
-                           dev_center_dns_suffix,
+                           #dev_center,
+                           #dev_center_dns_suffix,
                            filter_=None,
                            top=None):
-    return client.list_by_dev_center(dev_center=dev_center,
-                                     dev_center_dns_suffix=get_dns_suffix(dev_center_dns_suffix),
+    return client.list_by_dev_center(#dev_center=dev_center,
+                                     #dev_center_dns_suffix=get_dns_suffix(dev_center_dns_suffix),
                                      filter=filter_,
                                      top=top)
 
 
 def devcenter_project_show_dp(client,
-                           dev_center,
-                           dev_center_dns_suffix,
+                           #dev_center,
+                           #dev_center_dns_suffix,
                            project_name):
-    return client.get(dev_center=dev_center,
-                      dev_center_dns_suffix=get_dns_suffix(dev_center_dns_suffix),
+    return client.get(#dev_center=dev_center,
+                      #dev_center_dns_suffix=get_dns_suffix(dev_center_dns_suffix),
                       project_name=project_name)
 
 
 def devcenter_pool_list_dp(client,
-                        dev_center,
-                        dev_center_dns_suffix,
+                        #dev_center,
+                        #dev_center_dns_suffix,
                         project_name,
                         top=None,
                         filter_=None):
-    return client.list(dev_center=dev_center,
-                       dev_center_dns_suffix=get_dns_suffix(dev_center_dns_suffix),
+    return client.list(#dev_center=dev_center,
+                       #dev_center_dns_suffix=get_dns_suffix(dev_center_dns_suffix),
                        top=top,
                        filter=filter_,
                        project_name=project_name)
 
 
 def devcenter_pool_show_dp(client,
-                        dev_center,
-                        dev_center_dns_suffix,
+                        #dev_center,
+                        #dev_center_dns_suffix,
                         project_name,
                         pool_name):
-    return client.get(dev_center=dev_center,
-                      dev_center_dns_suffix=get_dns_suffix(dev_center_dns_suffix),
+    return client.get(#dev_center=dev_center,
+                      #dev_center_dns_suffix=get_dns_suffix(dev_center_dns_suffix),
                       project_name=project_name,
                       pool_name=pool_name)
 
 
 def devcenter_schedule_list_dp(client,
-                            dev_center,
-                            dev_center_dns_suffix,
+                            #dev_center,
+                            #dev_center_dns_suffix,
                             project_name,
                             pool_name,
                             top=None,
                             filter_=None):
-    return client.list(dev_center=dev_center,
-                       dev_center_dns_suffix=get_dns_suffix(dev_center_dns_suffix),
+    return client.list(#dev_center=dev_center,
+                       #dev_center_dns_suffix=get_dns_suffix(dev_center_dns_suffix),
                        top=top,
                        filter=filter_,
                        project_name=project_name,
@@ -182,60 +182,60 @@ def devcenter_schedule_list_dp(client,
 
 
 def devcenter_schedule_show_dp(client,
-                            dev_center,
-                            dev_center_dns_suffix,
+                            #dev_center,
+                            #dev_center_dns_suffix,
                             project_name,
                             pool_name,
                             schedule_name):
-    return client.get(dev_center=dev_center,
-                      dev_center_dns_suffix=get_dns_suffix(dev_center_dns_suffix),
+    return client.get(#dev_center=dev_center,
+                      #dev_center_dns_suffix=get_dns_suffix(dev_center_dns_suffix),
                       project_name=project_name,
                       pool_name=pool_name,
                       schedule_name=schedule_name)
 
 
 def devcenter_dev_box_list(client,
-                           dev_center,
-                           dev_center_dns_suffix,
+                           #dev_center,
+                           #dev_center_dns_suffix,
                            filter_=None,
                            top=None,
                            project_name=None,
                            user_id=None):
     if dev_center is not None and dev_center_dns_suffix is not None and project_name is not None and user_id is not None:
-        return client.list_by_project(dev_center=dev_center,
-                                      dev_center_dns_suffix=get_dns_suffix(dev_center_dns_suffix),
+        return client.list_by_project(#dev_center=dev_center,
+                                      #dev_center_dns_suffix=get_dns_suffix(dev_center_dns_suffix),
                                       filter=filter_,
                                       top=top,
                                       project_name=project_name,
                                       user_id=user_id)
     elif dev_center is not None and dev_center_dns_suffix is not None and user_id is not None:
-        return client.list_by_user(dev_center=dev_center,
-                                   dev_center_dns_suffix=get_dns_suffix(dev_center_dns_suffix),
+        return client.list_by_user(#dev_center=dev_center,
+                                   #dev_center_dns_suffix=get_dns_suffix(dev_center_dns_suffix),
                                    filter=filter_,
                                    top=top,
                                    user_id=user_id)
-    return client.list(dev_center=dev_center,
-                       dev_center_dns_suffix=get_dns_suffix(dev_center_dns_suffix),
+    return client.list(#dev_center=dev_center,
+                       #dev_center_dns_suffix=get_dns_suffix(dev_center_dns_suffix),
                        filter=filter_,
                        top=top)
 
 
 def devcenter_dev_box_show(client,
-                           dev_center,
-                           dev_center_dns_suffix,
+                           #dev_center,
+                           #dev_center_dns_suffix,
                            project_name,
                            user_id,
                            dev_box_name):
-    return client.get(dev_center=dev_center,
-                      dev_center_dns_suffix=get_dns_suffix(dev_center_dns_suffix),
+    return client.get(#dev_center=dev_center,
+                      #dev_center_dns_suffix=get_dns_suffix(dev_center_dns_suffix),
                       project_name=project_name,
                       user_id=user_id,
                       dev_box_name=dev_box_name)
 
 
 def devcenter_dev_box_create(client,
-                             dev_center,
-                             dev_center_dns_suffix,
+                             #dev_center,
+                             #dev_center_dns_suffix,
                              project_name,
                              user_id,
                              dev_box_name,
@@ -245,8 +245,8 @@ def devcenter_dev_box_create(client,
     body['pool_name'] = pool_name
     return sdk_no_wait(no_wait,
                        client.begin_create,
-                       dev_center=dev_center,
-                       dev_center_dns_suffix=get_dns_suffix(dev_center_dns_suffix),
+                       #dev_center=dev_center,
+                       #dev_center_dns_suffix=get_dns_suffix(dev_center_dns_suffix),
                        project_name=project_name,
                        user_id=user_id,
                        dev_box_name=dev_box_name,
@@ -254,93 +254,93 @@ def devcenter_dev_box_create(client,
 
 
 def devcenter_dev_box_delete(client,
-                             dev_center,
-                             dev_center_dns_suffix,
+                             #dev_center,
+                             #dev_center_dns_suffix,
                              project_name,
                              user_id,
                              dev_box_name,
                              no_wait=False):
     return sdk_no_wait(no_wait,
                        client.begin_delete,
-                       dev_center=dev_center,
-                       dev_center_dns_suffix=get_dns_suffix(dev_center_dns_suffix),
+                       #dev_center=dev_center,
+                       #dev_center_dns_suffix=get_dns_suffix(dev_center_dns_suffix),
                        project_name=project_name,
                        user_id=user_id,
                        dev_box_name=dev_box_name)
 
 
 def devcenter_dev_box_get_remote_connection(client,
-                                            dev_center,
-                                            dev_center_dns_suffix,
+                                            #dev_center,
+                                            #dev_center_dns_suffix,
                                             project_name,
                                             user_id,
                                             dev_box_name):
-    return client.get_remote_connection(dev_center=dev_center,
-                                        dev_center_dns_suffix=get_dns_suffix(dev_center_dns_suffix),
+    return client.get_remote_connection(#dev_center=dev_center,
+                                        #dev_center_dns_suffix=get_dns_suffix(dev_center_dns_suffix),
                                         project_name=project_name,
                                         user_id=user_id,
                                         dev_box_name=dev_box_name)
 
 
 def devcenter_dev_box_start(client,
-                            dev_center,
-                            dev_center_dns_suffix,
+                            #dev_center,
+                            #dev_center_dns_suffix,
                             project_name,
                             user_id,
                             dev_box_name,
                             no_wait=False):
     return sdk_no_wait(no_wait,
                        client.begin_start,
-                       dev_center=dev_center,
-                       dev_center_dns_suffix=get_dns_suffix(dev_center_dns_suffix),
+                       #dev_center=dev_center,
+                       #dev_center_dns_suffix=get_dns_suffix(dev_center_dns_suffix),
                        project_name=project_name,
                        user_id=user_id,
                        dev_box_name=dev_box_name)
 
 
 def devcenter_dev_box_stop(client,
-                           dev_center,
-                           dev_center_dns_suffix,
+                           #dev_center,
+                           #dev_center_dns_suffix,
                            project_name,
                            user_id,
                            dev_box_name,
                            no_wait=False):
     return sdk_no_wait(no_wait,
                        client.begin_stop,
-                       dev_center=dev_center,
-                       dev_center_dns_suffix=get_dns_suffix(dev_center_dns_suffix),
+                       #dev_center=dev_center,
+                       #dev_center_dns_suffix=get_dns_suffix(dev_center_dns_suffix),
                        project_name=project_name,
                        user_id=user_id,
                        dev_box_name=dev_box_name)
 
 
 def devcenter_environment_list(client,
-                               dev_center,
-                               dev_center_dns_suffix,
+                               #dev_center,
+                               #dev_center_dns_suffix,
                                project_name,
                                top=None):
-    return client.list_by_project(dev_center=dev_center,
-                                  dev_center_dns_suffix=get_dns_suffix(dev_center_dns_suffix),
+    return client.list_by_project(#dev_center=dev_center,
+                                  #dev_center_dns_suffix=get_dns_suffix(dev_center_dns_suffix),
                                   top=top,
                                   project_name=project_name)
 
 
 def devcenter_environment_show(client,
-                               dev_center,
-                               dev_center_dns_suffix,
+                               #dev_center,
+                               #dev_center_dns_suffix,
                                project_name,
                                user_id,
                                environment_name):
-    return client.get(dev_center=dev_center,
-                      dev_center_dns_suffix=get_dns_suffix(dev_center_dns_suffix),
+    return client.get(#dev_center=dev_center,
+                      #dev_center_dns_suffix=get_dns_suffix(dev_center_dns_suffix),
                       project_name=project_name,
                       user_id=user_id,
                       environment_name=environment_name)
 
 
 def devcenter_environment_create(client,
-                                 dev_center,
-                                 dev_center_dns_suffix,
+                                 #dev_center,
+                                 #dev_center_dns_suffix,
                                  project_name,
                                  user_id,
                                  environment_name,
@@ -380,8 +380,8 @@ def devcenter_environment_create(client,
 
 
 def devcenter_environment_update(client,
-                                 dev_center,
-                                 dev_center_dns_suffix,
+                                 #dev_center,
+                                 #dev_center_dns_suffix,
                                  project_name,
                                  user_id,
                                  environment_name,
@@ -407,8 +407,8 @@ def devcenter_environment_update(client,
         body['tags'] = tags
     return sdk_no_wait(no_wait,
                        client.begin_update,
-                       dev_center=dev_center,
-                       dev_center_dns_suffix=get_dns_suffix(dev_center_dns_suffix),
+                       #dev_center=dev_center,
+                       #dev_center_dns_suffix=get_dns_suffix(dev_center_dns_suffix),
                        project_name=project_name,
                        user_id=user_id,
                        environment_name=environment_name,
@@ -416,43 +416,99 @@ def devcenter_environment_update(client,
 
 
 def devcenter_environment_delete(client,
-                                 dev_center,
-                                 dev_center_dns_suffix,
+                                 #dev_center,
+                                 #dev_center_dns_suffix,
                                  project_name,
                                  user_id,
                                  environment_name,
                                  no_wait=False):
     return sdk_no_wait(no_wait,
                        client.begin_delete,
-                       dev_center=dev_center,
-                       dev_center_dns_suffix=get_dns_suffix(dev_center_dns_suffix),
+                       #dev_center=dev_center,
+                       #dev_center_dns_suffix=get_dns_suffix(dev_center_dns_suffix),
                        project_name=project_name,
                        user_id=user_id,
                        environment_name=environment_name)
 
 
+def devcenter_environment_custom_action(client,
+                                        project_name,
+                                        user_id,
+                                        environment_name,
+                                        action_id,
+                                        parameters=None,
+                                        no_wait=False):
+    body = {}
+    body['action_id'] = action_id
+    if parameters is not None:
+        body['parameters'] = parameters
+    return sdk_no_wait(no_wait,
+                       client.begin_custom_action,
+                       project_name=project_name,
+                       user_id=user_id,
+                       environment_name=environment_name,
+                       body=body)
+
+
+def devcenter_environment_delete_action(client,
+                                        project_name,
+                                        user_id,
+                                        environment_name,
+                                        action_id,
+                                        parameters=None,
+                                        no_wait=False):
+    body = {}
+    body['action_id'] = action_id
+    if parameters is not None:
+        body['parameters'] = parameters
+    return sdk_no_wait(no_wait,
+                       client.begin_delete_action,
+                       project_name=project_name,
+                       user_id=user_id,
+                       environment_name=environment_name,
+                       body=body)
+
+
+def devcenter_environment_deploy_action(client,
+                                        project_name,
+                                        user_id,
+                                        environment_name,
+                                        action_id,
+                                        parameters=None,
+                                        no_wait=False):
+    body = {}
+    body['action_id'] = action_id
+    if parameters is not None:
+        body['parameters'] = parameters
+    return sdk_no_wait(no_wait,
+                       client.begin_deploy_action,
+                       project_name=project_name,
+                       user_id=user_id,
+                       environment_name=environment_name,
+                       body=body)
+
 def devcenter_environment_list_by_project(client,
-                                          dev_center,
-                                          dev_center_dns_suffix,
+                                          #dev_center,
+                                          #dev_center_dns_suffix,
                                           project_name,
                                           user_id,
                                           top=None):
-    return client.list_by_project_by_user(dev_center=dev_center,
-                                          dev_center_dns_suffix=get_dns_suffix(dev_center_dns_suffix),
+    return client.list_by_project_by_user(#dev_center=dev_center,
+                                          #dev_center_dns_suffix=get_dns_suffix(dev_center_dns_suffix),
                                           top=top,
                                           project_name=project_name,
                                           user_id=user_id)
 
 
 def devcenter_action_list(client,
-                          dev_center,
-                          dev_center_dns_suffix,
+                          #dev_center,
+                          #dev_center_dns_suffix,
                           project_name,
                           user_id,
                           environment_name,
                           top=None):
-    return client.list_by_environment(dev_center=dev_center,
-                                      dev_center_dns_suffix=get_dns_suffix(dev_center_dns_suffix),
+    return client.list_by_environment(#dev_center=dev_center,
+                                      #dev_center_dns_suffix=get_dns_suffix(dev_center_dns_suffix),
                                       project_name=project_name,
                                       user_id=user_id,
                                       environment_name=environment_name,
@@ -460,14 +516,14 @@ def devcenter_action_list(client,
 
 
 def devcenter_action_show(client,
-                          dev_center,
-                          dev_center_dns_suffix,
+                          #dev_center,
+                          #dev_center_dns_suffix,
                           project_name,
                           user_id,
                           environment_name,
                           action_id):
-    return client.get(dev_center=dev_center,
-                      dev_center_dns_suffix=get_dns_suffix(dev_center_dns_suffix),
+    return client.get(#dev_center=dev_center,
+                      #dev_center_dns_suffix=get_dns_suffix(dev_center_dns_suffix),
                       project_name=project_name,
                       user_id=user_id,
                       environment_name=environment_name,
@@ -475,8 +531,8 @@ def devcenter_action_show(client,
 
 
 def devcenter_action_create(client,
-                            dev_center,
-                            dev_center_dns_suffix,
+                            #dev_center,
+                            #dev_center_dns_suffix,
                             project_name,
                             user_id,
                             environment_name,
@@ -489,8 +545,8 @@ def devcenter_action_create(client,
         action['parameters'] = parameters
     return sdk_no_wait(no_wait,
                        client.begin_create,
-                       dev_center=dev_center,
-                       dev_center_dns_suffix=get_dns_suffix(dev_center_dns_suffix),
+                       #dev_center=dev_center,
+                       #dev_center_dns_suffix=get_dns_suffix(dev_center_dns_suffix),
                        project_name=project_name,
                        user_id=user_id,
                        environment_name=environment_name,
@@ -498,72 +554,72 @@ def devcenter_action_create(client,
 
 
 def devcenter_artifact_list(client,
-                            dev_center,
-                            dev_center_dns_suffix,
+                            #dev_center,
+                            #dev_center_dns_suffix,
                             project_name,
                             user_id,
                             environment_name,
                             artifact_path=None):
     if dev_center is not None and dev_center_dns_suffix is not None and project_name is not None and user_id is not None and environment_name is not None and artifact_path is not None:
-        return client.list_by_path(dev_center=dev_center,
-                                   dev_center_dns_suffix=get_dns_suffix(dev_center_dns_suffix),
+        return client.list_by_path(#dev_center=dev_center,
+                                   #dev_center_dns_suffix=get_dns_suffix(dev_center_dns_suffix),
                                    project_name=project_name,
                                    user_id=user_id,
                                    environment_name=environment_name,
                                    artifact_path=artifact_path)
-    return client.list_by_environment(dev_center=dev_center,
-                                      dev_center_dns_suffix=get_dns_suffix(dev_center_dns_suffix),
+    return client.list_by_environment(#dev_center=dev_center,
+                                      #dev_center_dns_suffix=get_dns_suffix(dev_center_dns_suffix),
                                       project_name=project_name,
                                       user_id=user_id,
                                       environment_name=environment_name)
 
 
 def devcenter_catalog_item_list(client,
-                                dev_center,
-                                dev_center_dns_suffix,
+                                #dev_center,
+                                #dev_center_dns_suffix,
                                 project_name,
                                 top=None):
-    return client.list_by_project(dev_center=dev_center,
-                                  dev_center_dns_suffix=get_dns_suffix(dev_center_dns_suffix),
+    return client.list_by_project(#dev_center=dev_center,
+                                  #dev_center_dns_suffix=get_dns_suffix(dev_center_dns_suffix),
                                   project_name=project_name,
                                   top=top)
 
 
 def devcenter_catalog_item_show(client,
-                                dev_center,
-                                dev_center_dns_suffix,
+                                #dev_center,
+                                #dev_center_dns_suffix,
                                 project_name,
                                 catalog_item_id,
                                 top=None):
-    return client.get(dev_center=dev_center,
-                      dev_center_dns_suffix=get_dns_suffix(dev_center_dns_suffix),
+    return client.get(#dev_center=dev_center,
+                      #dev_center_dns_suffix=get_dns_suffix(dev_center_dns_suffix),
                       project_name=project_name,
                       top=top,
                       catalog_item_id=catalog_item_id)
 
 
 def devcenter_catalog_item_version_list(client,
-                                        dev_center,
-                                        dev_center_dns_suffix,
+                                        #dev_center,
+                                       # dev_center_dns_suffix,
                                         project_name,
                                         catalog_item_id,
                                         top=None):
-    return client.list_by_project(dev_center=dev_center,
-                                  dev_center_dns_suffix=get_dns_suffix(dev_center_dns_suffix),
+    return client.list_by_project(#dev_center=dev_center,
+                                  #dev_center_dns_suffix=get_dns_suffix(dev_center_dns_suffix),
                                   project_name=project_name,
                                   top=top,
                                   catalog_item_id=catalog_item_id)
 
 
 def devcenter_catalog_item_version_show(client,
-                                        dev_center,
-                                        dev_center_dns_suffix,
+                                        #dev_center,
+                                        #dev_center_dns_suffix,
                                         project_name,
                                         catalog_item_id,
                                         version,
                                         top=None):
-    return client.get(dev_center=dev_center,
-                      dev_center_dns_suffix=get_dns_suffix(dev_center_dns_suffix),
+    return client.get(#dev_center=dev_center,
+                      #dev_center_dns_suffix=get_dns_suffix(dev_center_dns_suffix),
                       project_name=project_name,
                       top=top,
                       catalog_item_id=catalog_item_id,
@@ -571,12 +627,12 @@ def devcenter_catalog_item_version_show(client,
 
 
 def devcenter_environment_type_list_dp(client,
-                                    dev_center,
-                                    dev_center_dns_suffix,
+                                    #dev_center,
+                                    #dev_center_dns_suffix,
                                     project_name,
                                     top=None):
-    return client.list_by_project(dev_center=dev_center,
-                                  dev_center_dns_suffix=get_dns_suffix(dev_center_dns_suffix),
+    return client.list_by_project(#dev_center=dev_center,
+                                  #dev_center_dns_suffix=get_dns_suffix(dev_center_dns_suffix),
                                   project_name=project_name,
                                   top=top)
 

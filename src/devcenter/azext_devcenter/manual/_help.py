@@ -138,13 +138,13 @@ helps['devcenter dev dev-box delete'] = """
 "devcenter.azure.com" --project-name "{projectName}" --user-id "me"
 """
 
-helps['devcenter dev dev-box get-remote-connection'] = """
+helps['devcenter dev dev-box show-remote-connection'] = """
     type: command
-    short-summary: "Gets RDP Connection info."
+    short-summary: "Gets Connection info."
     examples:
       - name: DevBox_GetRemoteConnection
         text: |-
-               az devcenter dev-box get-remote-connection --name "MyDevBox" --dev-center "{devCenter}" \
+               az devcenter dev-box show-remote-connection --name "MyDevBox" --dev-center "{devCenter}" \
 --dev-center-dns-suffix "devcenter.azure.com" --project-name "{projectName}" --user-id "me"
 """
 
@@ -247,6 +247,39 @@ helps['devcenter dev environment delete'] = """
 "devcenter.azure.com" --name "{environmentName}" --project-name "{projectName}" --user-id "{userId}"
 """
 
+helps['devcenter dev environment custom-action'] = """
+    type: command
+    short-summary: "Executes a custom action."
+    examples:
+      - name: Environments_CustomAction
+        text: |-
+               az devcenter environment custom-action --action-id "someCustomActionId" --parameters \
+"{\\"functionAppRuntime\\":\\"node\\",\\"storageAccountType\\":\\"Standard_LRS\\"}" --name "{environmentName}" \
+--project-name "myProject" --user-id "me"
+"""
+
+helps['devcenter dev environment delete-action'] = """
+    type: command
+    short-summary: "Executes a delete action."
+    examples:
+      - name: Environments_DeleteAction
+        text: |-
+               az devcenter environment delete-action --action-id "delete" --parameters "{\\"functionAppRuntime\\":\\"n\
+ode\\",\\"storageAccountType\\":\\"Standard_LRS\\"}" --name "{environmentName}" --project-name "myProject" --user-id \
+"me"
+"""
+
+helps['devcenter dev environment deploy-action'] = """
+    type: command
+    short-summary: "Executes a deploy action."
+    examples:
+      - name: Environments_DeployAction
+        text: |-
+               az devcenter environment deploy-action --action-id "deploy" --parameters "{\\"functionAppRuntime\\":\\"n\
+ode\\",\\"storageAccountType\\":\\"Standard_LRS\\"}" --name "{environmentName}" --project-name "myProject" --user-id \
+"me"
+"""
+
 helps['devcenter dev environment list-by-project'] = """
     type: command
     short-summary: "Lists the environments for a project and user."
@@ -273,53 +306,6 @@ helps['devcenter dev environment wait'] = """
         text: |-
                az devcenter environment wait --dev-center "{devCenter}" --dev-center-dns-suffix "devcenter.azure.com" \
 --name "{environmentName}" --project-name "{projectName}" --user-id "{userId}" --deleted
-"""
-
-helps['devcenter dev action'] = """
-    type: group
-    short-summary: Manage action with devcenter
-"""
-
-helps['devcenter dev action list'] = """
-    type: command
-    short-summary: "Gets an environment's actions."
-    examples:
-      - name: Actions_ListByEnvironment
-        text: |-
-               az devcenter action list --dev-center "{devCenter}" --dev-center-dns-suffix "devcenter.azure.com" \
---environment-name "{environmentName}" --project-name "{projectName}" --user-id "{userId}"
-"""
-
-helps['devcenter dev action show'] = """
-    type: command
-    short-summary: "Gets an environment's deployment history."
-    examples:
-      - name: Actions_Get
-        text: |-
-               az devcenter action show --action-id "{actionId}" --dev-center "{devCenter}" --dev-center-dns-suffix \
-"devcenter.azure.com" --environment-name "{environmentName}" --project-name "{projectName}" --user-id "{userId}"
-"""
-
-helps['devcenter dev action create'] = """
-    type: command
-    short-summary: "Creates and executes an action."
-    examples:
-      - name: Actions_Create
-        text: |-
-               az devcenter action create --action-id "deploy" --parameters "{\\"functionAppRuntime\\":\\"node\\",\\"st\
-orageAccountType\\":\\"Standard_LRS\\"}" --dev-center "{devCenter}" --dev-center-dns-suffix "devcenter.azure.com" \
---environment-name "{environmentName}" --project-name "{projectName}" --user-id "{userId}"
-"""
-
-helps['devcenter dev action wait'] = """
-    type: command
-    short-summary: Place the CLI in a waiting state until a condition of the devcenter action is met.
-    examples:
-      - name: Pause executing next line of CLI script until the devcenter action is successfully created.
-        text: |-
-               az devcenter action wait --action-id "{actionId}" --dev-center "{devCenter}" --dev-center-dns-suffix \
-"devcenter.azure.com" --environment-name "{environmentName}" --project-name "{projectName}" --user-id "{userId}" \
---created
 """
 
 helps['devcenter dev artifact'] = """
