@@ -228,10 +228,14 @@ def import_dashboard(cmd, grafana_name, definition, folder=None, resource_group_
 def _try_load_dashboard_definition(cmd, resource_group_name, grafana_name, definition):
     import re
 
-    if isinstance(definition, int):
+    try:
+        int(definition)
         response = _send_request(cmd, resource_group_name, grafana_name, "get",
                                  "/api/gnet/dashboards/" + str(definition))
         definition = json.loads(response.content)["json"]
+        return definition
+    except ValueError:
+        pass
 
     if re.match(r"^[a-z]+://", definition.lower()):
         response = requests.get(definition, verify=(not should_disable_connection_verify()))
