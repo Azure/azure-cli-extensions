@@ -670,6 +670,18 @@ def _get_registry_details(cmd, app: "ContainerApp", source):
     )
 
 
+def _validate_containerapp_name(name):
+    is_valid = True
+    is_valid = is_valid and name.lower() == name
+    is_valid = is_valid and len(name) <= 32
+    is_valid = is_valid and '--' not in name
+    name = name.replace('-', '')
+    is_valid = is_valid and name.isalnum()
+    is_valid = is_valid and name[0].isalpha()
+    if not is_valid:
+        raise ValidationError(f"Invalid Container App name {name}. A name must consist of lower case alphanumeric characters or '-', start with an alphabetic character, and end with an alphanumeric character and cannot have '--'. The length must not be more than 32 characters.")
+
+
 # attempt to populate defaults for managed env, RG, ACR, etc
 def _set_up_defaults(
     cmd,
