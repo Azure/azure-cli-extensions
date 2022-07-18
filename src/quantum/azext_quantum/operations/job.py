@@ -55,7 +55,7 @@ def _check_dotnet_available():
         raise FileOperationError(f"Failed to run 'dotnet'. (Error {result.returncode})")
 
 
-def build(cmd, target_id=None, project=None):
+def build(cmd, target_id=None, project=None, target_capability=None):
     """
     Compile a Q# program to run on Azure Quantum.
     """
@@ -70,6 +70,9 @@ def build(cmd, target_id=None, project=None):
         args.append(project)
 
     args.append(f"-property:ExecutionTarget={target.target_id}")
+
+    if target_capability:
+        args.append(f"-property:TargetCapability={target_capability}")
 
     logger.debug("Building project with arguments:")
     logger.debug(args)
@@ -166,7 +169,8 @@ def _has_completed(job):
 
 
 def submit(cmd, program_args, resource_group_name=None, workspace_name=None, location=None, target_id=None,
-           project=None, job_name=None, shots=None, storage=None, no_build=False, job_params=None):
+           project=None, job_name=None, shots=None, storage=None, no_build=False, job_params=None,
+           target_capability=None):
     """
     Submit a Q# project to run on Azure Quantum.
     """
@@ -175,7 +179,7 @@ def submit(cmd, program_args, resource_group_name=None, workspace_name=None, loc
     # Can't call run directly because it fails to understand the
     # `ExecutionTarget` property when passed in the command line
     if not no_build:
-        build(cmd, target_id=target_id, project=project)
+        build(cmd, target_id=target_id, project=project, target_capability=target_capability)
         logger.info("Project built successfully.")
     else:
         _check_dotnet_available()
@@ -331,12 +335,12 @@ def wait(cmd, job_id, resource_group_name=None, workspace_name=None, location=No
 
 
 def run(cmd, program_args, resource_group_name=None, workspace_name=None, location=None, target_id=None,
-        project=None, job_name=None, shots=None, storage=None, no_build=False, job_params=None):
+        project=None, job_name=None, shots=None, storage=None, no_build=False, job_params=None, target_capability=None):
     """
     Submit a job to run on Azure Quantum, and waits for the result.
     """
     job = submit(cmd, program_args, resource_group_name, workspace_name, location, target_id,
-                 project, job_name, shots, storage, no_build, job_params)
+                 project, job_name, shots, storage, no_build, job_params, target_capability)
     logger.warning("Job id: %s", job.id)
     logger.debug(job)
 

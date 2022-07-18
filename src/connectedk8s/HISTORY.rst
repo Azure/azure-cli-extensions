@@ -2,6 +2,11 @@
 
 Release History
 ===============
+1.2.10
+++++++
+
+* Added troubleshoot command which can be used to diagnose Arc enabled K8s clusters
+
 1.2.9
 ++++++
 

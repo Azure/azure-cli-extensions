@@ -3,8 +3,6 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-import sys
-
 from knack.log import get_logger
 from azure.cli.core.azclierror import AzCLIError
 
@@ -14,44 +12,6 @@ class RequiredExtensionMissing(AzCLIError):
         recommendation = "Please install the containerapp extension: "
         recommendation += "`az extension add containerapp`"
         super().__init__(error_msg, recommendation)
-
-
-def uncache(exclude):
-    pkgs = []
-    for mod in exclude:
-        pkg = mod.split('.', 1)[0]
-        pkgs.append(pkg)
-    to_uncache = []
-    for mod in sys.modules:
-        if mod in exclude:
-            continue
-        if mod in pkgs:
-            to_uncache.append(mod)
-            continue
-        for pkg in pkgs:
-            if mod.startswith(pkg + '.'):
-                to_uncache.append(mod)
-                break
-    for mod in to_uncache:
-        del sys.modules[mod]
-
-
-# Monkey patch for the PollingAnimation
-# removes the spinner and message written to standard out
-# which breaks the ability to re-use output from the
-# the containerapp compose create command
-# example:
-# `URL=$(az containerapp compose create -e myenv -g myrg --query [0].properties.configuration.ingress.fqdn -o tsv)`
-# In that example, the URL variable would include a number of lines with the polling animation,
-# making it difficult to reusue the output from the CLI command.
-def tick(self):
-    self.currTicker += 1
-    self.currTicker = self.currTicker % len(self.tickers)
-
-
-# Monkey patch for the PollingAnimation (see above)
-def flush(self):  # noqa: W0613 pylint: disable=unused-argument
-    pass
 
 
 logger = get_logger(__name__)
@@ -65,12 +25,14 @@ def log_containerapp_extension_required():
 
 
 try:
-    from azext_containerapp import custom  # pylint: disable=unused-import
-    from azext_containerapp import _utils  # pylint: disable=unused-import
-    from azext_containerapp import _clients  # pylint: disable=unused-import
-    _clients.PollingAnimation.tick = tick
-    _clients.PollingAnimation.flush = flush
-    uncache("azext_containerapp._clients")
+    from azext_containerapp import custom
+    from azext_containerapp import _utils
+    from azext_containerapp._up_utils import (ContainerApp,
+                                              ContainerAppEnvironment,
+                                              ResourceGroup,
+                                              _get_registry_from_app,
+                                              _get_registry_details,
+                                              )   # pylint: disable=unused-import
     from azext_containerapp import _clients  # pylint: disable=unused-import
     from azext_containerapp._clients import ManagedEnvironmentClient   # pylint: disable=unused-import
 except ModuleNotFoundError:
@@ -99,6 +61,52 @@ def create_containerapps_compose_environment(cmd,
                                              name,
                                              resource_group_name,
                                              tags=tags)
+
+
+def build_containerapp_from_compose_service(cmd,
+                                            name,
+                                            source,
+                                            dockerfile,
+                                            resource_group_name,
+                                            managed_env,
+                                            location,
+                                            image,
+                                            target_port,
+                                            ingress,
+                                            registry_server,
+                                            registry_user,
+                                            registry_pass,
+                                            env_vars,
+                                            logs_key=None,
+                                            logs_customer_id=None):
+
+    resource_group = ResourceGroup(cmd, name=resource_group_name, location=location)
+    env = ContainerAppEnvironment(cmd,
+                                  managed_env,
+                                  resource_group,
+                                  location=location,
+                                  logs_key=logs_key,
+                                  logs_customer_id=logs_customer_id)
+    app = ContainerApp(cmd,
+                       name,
+                       resource_group,
+                       None,
+                       image,
+                       env,
+                       target_port,
+                       registry_server,
+                       registry_user,
+                       registry_pass,
+                       env_vars,
+                       ingress)
+
+    if not registry_server:
+        _get_registry_from_app(app, True)  # if the app exists, get the registry
+    _get_registry_details(cmd, app, True)  # fetch ACR creds from arguments registry arguments
+
+    app.create_acr_if_needed()
+    app.run_acr_build(dockerfile, source, False)
+    return app.image, app.registry_server, app.registry_user, app.registry_pass
 
 
 def create_containerapp_from_service(*args, **kwargs):
