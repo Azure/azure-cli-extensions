@@ -132,7 +132,6 @@ class AgsScenarioTest(ScenarioTest):
             'definition': test_dashboard,
             'definition_name': definition_name,
             'definition_slug': slug,
-            'import_id': 14986
         })
         
         response_create = self.cmd('grafana dashboard create -g {rg} -n {name} --definition "{definition}" --title "{definition_name}"', checks=[
@@ -155,20 +154,12 @@ class AgsScenarioTest(ScenarioTest):
             self.check("[slug]", "['{definition_slug}']")]).get_output_in_json()
         self.assertTrue(response_update["version"] == response_create["version"] + 1)
 
-        response_import = self.cmd('grafana dashboard import -g {rg} -n {name} --definition {import_id}', checks=[
-            self.check("[slug]", "['azure-resources-overview']")]).get_output_in_json()
-
-        self.kwargs.update({
-            'import_dashboard_uid': response_import["uid"],
-        })
-
         response_list = self.cmd('grafana dashboard list -g {rg} -n {name}').get_output_in_json()
         self.assertTrue(len(response_list) > 0)
 
         self.cmd('grafana dashboard delete -g {rg} -n {name} --dashboard "{dashboard_uid}"')
-        self.cmd('grafana dashboard delete -g {rg} -n {name} --dashboard "{import_dashboard_uid}"')
         response_delete = self.cmd('grafana dashboard list -g {rg} -n {name}').get_output_in_json()
-        self.assertTrue(len(response_delete) == len(response_list) - 2)
+        self.assertTrue(len(response_delete) == len(response_list) - 1)
 
         # Close-out Instance
         self.cmd('grafana delete -g {rg} -n {name} --yes')
