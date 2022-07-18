@@ -33,7 +33,7 @@ class ContainerServiceCommandsLoader(AzCommandsLoader):
 
     def load_command_table(self, args):
         super(ContainerServiceCommandsLoader, self).load_command_table(args)
-        from .commands import load_command_table
+        from azext_aks_preview.commands import load_command_table
         load_command_table(self, args)
         return self.command_table
 
@@ -44,7 +44,7 @@ class ContainerServiceCommandsLoader(AzCommandsLoader):
         else:
             super().load_arguments(command)
 
-        from ._params import load_arguments
+        from azext_aks_preview._params import load_arguments
         load_arguments(self, command)
 
 

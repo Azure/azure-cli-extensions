@@ -13,12 +13,12 @@ interactions:
       ParameterSetName:
       - -n -g --type
       User-Agent:
-      - AZURECLI/2.36.0 azsdk-python-azure-mgmt-resource/21.1.0b1 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.37.0 azsdk-python-azure-mgmt-resource/21.1.0b1 Python/3.8.9 (Windows-10-10.0.22000-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_azure_firewall_virtual_hub000001?api-version=2021-04-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_virtual_hub000001","name":"cli_test_azure_firewall_virtual_hub000001","type":"Microsoft.Resources/resourceGroups","location":"eastus2","tags":{"product":"azurecli","cause":"automation","date":"2022-05-18T13:02:08Z"},"properties":{"provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_virtual_hub000001","name":"cli_test_azure_firewall_virtual_hub000001","type":"Microsoft.Resources/resourceGroups","location":"eastus2","tags":{"product":"azurecli","cause":"automation","date":"2022-06-22T11:37:54Z"},"properties":{"provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
@@ -27,15 +27,13 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 18 May 2022 13:02:14 GMT
+      - Wed, 22 Jun 2022 11:37:55 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      vary:
-      - Accept-Encoding
       x-content-type-options:
       - nosniff
     status:
@@ -59,13 +57,13 @@ interactions:
       ParameterSetName:
       - -n -g --type
       User-Agent:
-      - AZURECLI/2.36.0 azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.37.0 azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.9 (Windows-10-10.0.22000-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_virtual_hub000001/providers/Microsoft.Network/virtualWans/clitestvwan1?api-version=2021-08-01
   response:
     body:
       string: "{\r\n  \"name\": \"clitestvwan1\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_virtual_hub000001/providers/Microsoft.Network/virtualWans/clitestvwan1\",\r\n
-        \ \"etag\": \"W/\\\"05f12d70-c48e-429d-b7ba-e97e351c6c82\\\"\",\r\n  \"type\":
+        \ \"etag\": \"W/\\\"b032ab7f-9b61-4903-a474-e7194b8b0df1\\\"\",\r\n  \"type\":
         \"Microsoft.Network/virtualWans\",\r\n  \"location\": \"eastus2\",\r\n  \"properties\":
         {\r\n    \"provisioningState\": \"Updating\",\r\n    \"disableVpnEncryption\":
         false,\r\n    \"allowBranchToBranchTraffic\": true,\r\n    \"office365LocalBreakoutCategory\":
@@ -74,7 +72,7 @@ interactions:
       azure-asyncnotification:
       - Enabled
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2/operations/0b74cbff-85df-497a-9f73-6aa54292c37e?api-version=2021-08-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2/operations/5ccc8308-0352-448c-93bf-10f61fab25cd?api-version=2021-08-01
       cache-control:
       - no-cache
       content-length:
@@ -82,7 +80,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 18 May 2022 13:02:19 GMT
+      - Wed, 22 Jun 2022 11:38:00 GMT
       expires:
       - '-1'
       pragma:
@@ -95,9 +93,9 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - bdf6b544-6afa-4d8b-8d6e-e07d87ad5886
+      - f7afa1c5-254b-4e6c-85dd-85b8c1230d6f
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '1190'
     status:
       code: 201
       message: Created
@@ -115,9 +113,9 @@ interactions:
       ParameterSetName:
       - -n -g --type
       User-Agent:
-      - AZURECLI/2.36.0 azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.37.0 azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.9 (Windows-10-10.0.22000-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2/operations/0b74cbff-85df-497a-9f73-6aa54292c37e?api-version=2021-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2/operations/5ccc8308-0352-448c-93bf-10f61fab25cd?api-version=2021-08-01
   response:
     body:
       string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
@@ -129,7 +127,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 18 May 2022 13:02:29 GMT
+      - Wed, 22 Jun 2022 11:38:10 GMT
       expires:
       - '-1'
       pragma:
@@ -146,7 +144,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 99492ce0-6b4e-4fc9-a712-6e3cdae85386
+      - 5bff5c5e-28f7-4f6d-8135-da2c266b2f56
     status:
       code: 200
       message: OK
@@ -164,13 +162,13 @@ interactions:
       ParameterSetName:
       - -n -g --type
       User-Agent:
-      - AZURECLI/2.36.0 azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.37.0 azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.9 (Windows-10-10.0.22000-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_virtual_hub000001/providers/Microsoft.Network/virtualWans/clitestvwan1?api-version=2021-08-01
   response:
     body:
       string: "{\r\n  \"name\": \"clitestvwan1\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_virtual_hub000001/providers/Microsoft.Network/virtualWans/clitestvwan1\",\r\n
-        \ \"etag\": \"W/\\\"52761157-de96-4bd1-82bf-0f24a732f8ba\\\"\",\r\n  \"type\":
+        \ \"etag\": \"W/\\\"b77f052c-ac79-419c-aabc-3e79d7385003\\\"\",\r\n  \"type\":
         \"Microsoft.Network/virtualWans\",\r\n  \"location\": \"eastus2\",\r\n  \"properties\":
         {\r\n    \"provisioningState\": \"Succeeded\",\r\n    \"disableVpnEncryption\":
         false,\r\n    \"allowBranchToBranchTraffic\": true,\r\n    \"office365LocalBreakoutCategory\":
@@ -183,9 +181,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 18 May 2022 13:02:29 GMT
+      - Wed, 22 Jun 2022 11:38:10 GMT
       etag:
-      - W/"52761157-de96-4bd1-82bf-0f24a732f8ba"
+      - W/"b77f052c-ac79-419c-aabc-3e79d7385003"
       expires:
       - '-1'
       pragma:
@@ -202,7 +200,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - f265936b-a606-4d94-991d-67fc60ce49ef
+      - 6380502c-176b-467a-88c8-f15814421227
     status:
       code: 200
       message: OK

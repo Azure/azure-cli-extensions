@@ -3,6 +3,11 @@
 Release History
 ===============
 
+1.2.4
+++++++++++++++++++
+* microsoft.azureml.kubernetes: Do not invoke `create_or_update` for already existed resources.
+* microsoft.azuremonitor.containers: ContainerInsights Extension Managed Identity Auth Onboarding updates.
+
 1.2.3
 ++++++++++++++++++
 * Fix warning message returned on PATCH

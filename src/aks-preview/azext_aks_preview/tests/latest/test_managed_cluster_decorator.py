@@ -502,6 +502,44 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         with self.assertRaises(MutuallyExclusiveArgumentError):
             ctx_2.get_disable_pod_security_policy()
 
+    def test_mc_get_network_plugin_mode(self):
+        # default
+        ctx_1 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict(
+                {
+                    "network_plugin_mode": "overlay",
+                }
+            ),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertEqual(ctx_1.get_network_plugin_mode(), "overlay")
+
+        ctx_2 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict(
+                {
+                    "network_plugin_mode": None,
+                }
+            ),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertEqual(ctx_2.get_network_plugin_mode(), None)
+
+        ctx_3 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict(
+                {
+                    "network_plugin_mode": "",
+                }
+            ),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertEqual(ctx_3.get_network_plugin_mode(), "")
+
     def test_get_enable_managed_identity(self):
         # custom value
         ctx_1 = AKSPreviewManagedClusterContext(
@@ -1124,6 +1162,44 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         with self.assertRaises(RequiredArgumentMissingError):
             ctx_4.get_azure_keyvault_kms_key_vault_network_access()
 
+        # update scenario, backfill to default
+        ctx_5 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({
+                "enable_azure_keyvault_kms": True,
+            }),
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        security_profile_5 = self.models.ManagedClusterSecurityProfile()
+        mc_5 = self.models.ManagedCluster(
+            location="test_location",
+            security_profile=security_profile_5,
+        )
+        ctx_5.attach_mc(mc_5)
+        self.assertEqual(ctx_5.get_azure_keyvault_kms_key_vault_network_access(), key_vault_network_access_1)
+
+        # update scenario, backfill from existing mc
+        ctx_6 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({
+                "enable_azure_keyvault_kms": True,
+            }),
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        security_profile_6 = self.models.ManagedClusterSecurityProfile()
+        security_profile_6.azure_key_vault_kms = self.models.AzureKeyVaultKms(
+            enabled=True,
+            key_vault_network_access=key_vault_network_access_2,
+        )
+        mc_6 = self.models.ManagedCluster(
+            location="test_location",
+            security_profile=security_profile_6,
+        )
+        ctx_6.attach_mc(mc_6)
+        self.assertEqual(ctx_6.get_azure_keyvault_kms_key_vault_network_access(), key_vault_network_access_2)
+
     def test_get_azure_keyvault_kms_key_vault_resource_id(self):
         key_vault_resource_id_1 = "/subscriptions/8ecadfc9-d1a3-4ea4-b844-0d9f87e4d7c8/resourceGroups/foo/providers/Microsoft.KeyVault/vaults/foo"
         key_vault_resource_id_2 = "/subscriptions/8ecadfc9-d1a3-4ea4-b844-0d9f87e4d7c8/resourceGroups/bar/providers/Microsoft.KeyVault/vaults/bar"
@@ -1265,6 +1341,28 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         )
         with self.assertRaises(ArgumentUsageError):
             ctx_9.get_azure_keyvault_kms_key_vault_resource_id()
+
+        # update scenario, backfill from existing mc
+        ctx_10 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({
+                "enable_azure_keyvault_kms": True,
+            }),
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        security_profile_10 = self.models.ManagedClusterSecurityProfile()
+        security_profile_10.azure_key_vault_kms = self.models.AzureKeyVaultKms(
+            enabled=True,
+            key_vault_network_access="Private",
+            key_vault_resource_id=key_vault_resource_id_1,
+        )
+        mc_10 = self.models.ManagedCluster(
+            location="test_location",
+            security_profile=security_profile_10,
+        )
+        ctx_10.attach_mc(mc_10)
+        self.assertEqual(ctx_10.get_azure_keyvault_kms_key_vault_resource_id(), key_vault_resource_id_1)
 
     def test_get_cluster_snapshot_id(self):
         # default
@@ -1603,6 +1701,130 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
             return_value=False,
         ), self.assertRaises(DecoratorEarlyExitException):
             ctx_2.get_snapshot_controller()
+
+    def test_get_blob_driver(self):
+        ctx_1 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict(
+                {
+                    "enable_blob_driver": True,
+                    "disable_blob_driver": True,
+                }
+            ),
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        # fail on mutually exclusive enable_blob_driver and disable_blob_driver
+        with self.assertRaises(MutuallyExclusiveArgumentError):
+            ctx_1.get_blob_driver()
+
+        # fail on prompt_y_n not specified when disabling blob driver
+        ctx_2 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({
+                "disable_blob_driver": True,
+            }),
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        with patch(
+            "azext_aks_preview.managed_cluster_decorator.prompt_y_n",
+            return_value=False,
+        ), self.assertRaises(DecoratorEarlyExitException):
+            ctx_2.get_blob_driver()
+
+        # fail on prompt_y_n not specified when enabling blob driver
+        ctx_3 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({
+                "enable_blob_driver": True,
+            }),
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        with patch(
+            "azext_aks_preview.managed_cluster_decorator.prompt_y_n",
+            return_value=False,
+        ), self.assertRaises(DecoratorEarlyExitException):
+            ctx_3.get_blob_driver()
+
+        # create with blob driver enabled
+        ctx_4 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({
+                "enable_blob_driver": True,
+            }),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        mc_1 = self.models.ManagedCluster(
+            location="test_location",
+        )
+        ctx_4.attach_mc(mc_1)
+        storage_profile_1 = self.models.ManagedClusterStorageProfile(
+            blob_csi_driver=self.models.ManagedClusterStorageProfileBlobCSIDriver(
+                enabled=True,
+            ),
+        )
+        self.assertEqual(ctx_4.get_storage_profile(), storage_profile_1)
+
+        # create without blob driver enabled
+        ctx_5 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({}),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        mc_1 = self.models.ManagedCluster(
+            location="test_location",
+        )
+        ctx_5.attach_mc(mc_1)
+        storage_profile_2 = self.models.ManagedClusterStorageProfile(
+            blob_csi_driver=None,
+        )
+        self.assertEqual(ctx_5.get_storage_profile(), storage_profile_2)
+
+        # update blob driver enabled
+        ctx_6 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({
+                "enable_blob_driver": True,
+                "yes": True,
+            }),
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        mc_1 = self.models.ManagedCluster(
+            location="test_location",
+        )
+        ctx_6.attach_mc(mc_1)
+        storage_profile_3 = self.models.ManagedClusterStorageProfile(
+            blob_csi_driver=self.models.ManagedClusterStorageProfileBlobCSIDriver(
+                enabled=True,
+            ),
+        )
+        self.assertEqual(ctx_6.get_storage_profile(), storage_profile_3)
+
+        # update blob driver disabled
+        ctx_7 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({
+                "disable_blob_driver": True,
+                "yes": True,
+            }),
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        mc_1 = self.models.ManagedCluster(
+            location="test_location",
+        )
+        ctx_7.attach_mc(mc_1)
+        storage_profile_4 = self.models.ManagedClusterStorageProfile(
+            blob_csi_driver=self.models.ManagedClusterStorageProfileBlobCSIDriver(
+                enabled=False,
+            ),
+        )
+        self.assertEqual(ctx_7.get_storage_profile(), storage_profile_4)
 
     def test_get_storage_profile(self):
         # create
@@ -2025,6 +2247,78 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         ctx_5.attach_mc(keda_true_mc)
         with self.assertRaises(MutuallyExclusiveArgumentError):
             ctx_5.get_disable_keda()
+
+    def test_get_defender_config(self):
+        ctx_1 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict(
+                {
+                    "enable_defender": True,
+                    "defender_config": get_test_data_file_path(
+                        "defenderconfig.json"
+                    ),
+                }
+            ),
+            self.models,
+            DecoratorMode.CREATE,
+        )
+        defender_config_1 = ctx_1.get_defender_config()
+        ground_truth_defender_config_1 = self.models.ManagedClusterSecurityProfileDefender(
+            log_analytics_workspace_resource_id="test_workspace_resource_id",
+            security_monitoring=self.models.ManagedClusterSecurityProfileDefenderSecurityMonitoring(
+                enabled=True
+            ),
+        )
+        self.assertEqual(defender_config_1, ground_truth_defender_config_1)
+
+        # custom value
+        ctx_2 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict(
+                {"enable_defender": True, "defender_config": "fake-path"}
+            ),
+            self.models,
+            DecoratorMode.CREATE,
+        )
+        # fail on invalid file path
+        with self.assertRaises(InvalidArgumentValueError):
+            ctx_2.get_defender_config()
+
+        # custom
+        ctx_3 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({"disable_defender": True}),
+            self.models,
+            DecoratorMode.UPDATE,
+        )
+        defender_config_3 = ctx_3.get_defender_config()
+        ground_truth_defender_config_3 = self.models.ManagedClusterSecurityProfileDefender(
+            security_monitoring=self.models.ManagedClusterSecurityProfileDefenderSecurityMonitoring(
+                enabled=False,
+            ),
+        )
+        self.assertEqual(defender_config_3, ground_truth_defender_config_3)
+
+        # custom
+        ctx_4 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({"enable_defender": True}),
+            self.models,
+            DecoratorMode.UPDATE,
+        )
+        ctx_4.set_intermediate("subscription_id", "test_subscription_id")
+        with patch(
+            "azure.cli.command_modules.acs.managed_cluster_decorator.ensure_default_log_analytics_workspace_for_monitoring",
+            return_value="test_workspace_resource_id",
+        ):
+            defender_config_4 = ctx_4.get_defender_config()
+        ground_truth_defender_config_4 = self.models.ManagedClusterSecurityProfileDefender(
+            log_analytics_workspace_resource_id="test_workspace_resource_id",
+            security_monitoring=self.models.ManagedClusterSecurityProfileDefenderSecurityMonitoring(
+                enabled=True,
+            ),
+        )
+        self.assertEqual(defender_config_4, ground_truth_defender_config_4)
 
 
 class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
@@ -2690,6 +2984,36 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
         self.assertIsNotNone(mc_out.workload_auto_scaler_profile)
         self.assertIsNotNone(mc_out.workload_auto_scaler_profile.keda)
         self.assertTrue(mc_out.workload_auto_scaler_profile.keda.enabled)
+
+    def test_set_up_defender(self):
+        dec_1 = AKSPreviewManagedClusterCreateDecorator(
+            self.cmd,
+            self.client,
+            {"enable_defender": True},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_1 = self.models.ManagedCluster(location="test_location")
+        dec_1.context.attach_mc(mc_1)
+        dec_1.context.set_intermediate("subscription_id", "test_subscription_id")
+
+        with patch(
+                "azure.cli.command_modules.acs.managed_cluster_decorator.ensure_default_log_analytics_workspace_for_monitoring",
+                return_value="test_workspace_resource_id",
+        ):
+            dec_mc_1 = dec_1.set_up_defender(mc_1)
+
+        ground_truth_mc_1 = self.models.ManagedCluster(
+            location="test_location",
+            security_profile=self.models.ManagedClusterSecurityProfile(
+                defender=self.models.ManagedClusterSecurityProfileDefender(
+                    log_analytics_workspace_resource_id="test_workspace_resource_id",
+                    security_monitoring=self.models.ManagedClusterSecurityProfileDefenderSecurityMonitoring(
+                        enabled=True
+                    ),
+                )
+            ),
+        )
+        self.assertEqual(dec_mc_1, ground_truth_mc_1)
 
     def test_construct_mc_profile_preview(self):
         import inspect
@@ -3562,8 +3886,79 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             location="test_location",
             security_profile=ground_truth_security_profile_2,
         )
-
         self.assertEqual(dec_mc_2, ground_truth_mc_2)
+
+        # partial update, backfill default network access
+        dec_3 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_azure_keyvault_kms": True,
+                "azure_keyvault_kms_key_id": key_id_1,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_3 = self.models.ManagedCluster(
+            location="test_location",
+        )
+        dec_3.context.attach_mc(mc_3)
+        dec_mc_3 = dec_3.update_azure_keyvault_kms(mc_3)
+
+        ground_truth_azure_keyvault_kms_profile_3 = self.models.AzureKeyVaultKms(
+            enabled=True,
+            key_id=key_id_1,
+            key_vault_network_access="Public",
+        )
+        ground_truth_security_profile_3 = self.models.ManagedClusterSecurityProfile(
+            azure_key_vault_kms=ground_truth_azure_keyvault_kms_profile_3,
+        )
+        ground_truth_mc_3 = self.models.ManagedCluster(
+            location="test_location",
+            security_profile=ground_truth_security_profile_3,
+        )
+        self.assertEqual(dec_mc_3, ground_truth_mc_3)
+
+        # partial update, backfill network access and key vault id from existing mc
+        dec_4 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_azure_keyvault_kms": True,
+                "azure_keyvault_kms_key_id": key_id_1,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        azure_keyvault_kms_profile_4 = self.models.AzureKeyVaultKms(
+            enabled=True,
+            key_id="test_key_id",
+            key_vault_network_access="Private",
+            key_vault_resource_id="/subscriptions/8ecadfc9-d1a3-4ea4-b844-0d9f87e4d7c8/resourceGroups/foo/providers/Microsoft.KeyVault/vaults/foo",
+        )
+        security_profile_4 = self.models.ManagedClusterSecurityProfile(
+            azure_key_vault_kms=azure_keyvault_kms_profile_4,
+        )
+        mc_4 = self.models.ManagedCluster(
+            location="test_location",
+            security_profile=security_profile_4,
+        )
+        dec_4.context.attach_mc(mc_4)
+        dec_mc_4 = dec_4.update_azure_keyvault_kms(mc_4)
+
+        ground_truth_azure_keyvault_kms_profile_4 = self.models.AzureKeyVaultKms(
+            enabled=True,
+            key_id=key_id_1,
+            key_vault_network_access="Private",
+            key_vault_resource_id="/subscriptions/8ecadfc9-d1a3-4ea4-b844-0d9f87e4d7c8/resourceGroups/foo/providers/Microsoft.KeyVault/vaults/foo",
+        )
+        ground_truth_security_profile_4 = self.models.ManagedClusterSecurityProfile(
+            azure_key_vault_kms=ground_truth_azure_keyvault_kms_profile_4,
+        )
+        ground_truth_mc_4 = self.models.ManagedCluster(
+            location="test_location",
+            security_profile=ground_truth_security_profile_4,
+        )
+        self.assertEqual(dec_mc_4, ground_truth_mc_4)
+
 
     def test_update_storage_profile(self):
         dec_1 = AKSPreviewManagedClusterUpdateDecorator(
@@ -3696,6 +4091,77 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         dec_9.context.attach_mc(mc_in)
         with self.assertRaises(MutuallyExclusiveArgumentError):
             mc_out = dec_9.update_workload_auto_scaler_profile(mc_in)
+
+    def test_update_defender(self):
+        # enable
+        dec_1 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_defender": True,
+                "defender_config": get_test_data_file_path(
+                    "defenderconfig.json"
+                ),
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_1 = self.models.ManagedCluster(location="test_location")
+        dec_1.context.attach_mc(mc_1)
+        dec_1.context.set_intermediate(
+            "subscription_id", "test_subscription_id"
+        )
+
+        dec_mc_1 = dec_1.update_defender(mc_1)
+
+        ground_truth_mc_1 = self.models.ManagedCluster(
+            location="test_location",
+            security_profile=self.models.ManagedClusterSecurityProfile(
+                defender=self.models.ManagedClusterSecurityProfileDefender(
+                    log_analytics_workspace_resource_id="test_workspace_resource_id",
+                    security_monitoring=self.models.ManagedClusterSecurityProfileDefenderSecurityMonitoring(
+                        enabled=True
+                    ),
+                )
+            ),
+        )
+        self.assertEqual(dec_mc_1, ground_truth_mc_1)
+
+        # disable
+        dec_2 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {"disable_defender": True},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_2 = self.models.ManagedCluster(
+            location="test_location",
+            security_profile=self.models.ManagedClusterSecurityProfile(
+                defender=self.models.ManagedClusterSecurityProfileDefender(
+                    log_analytics_workspace_resource_id="test_workspace_resource_id",
+                    security_monitoring=self.models.ManagedClusterSecurityProfileDefenderSecurityMonitoring(
+                        enabled=True
+                    ),
+                )
+            ),
+        )
+        dec_2.context.attach_mc(mc_2)
+        dec_2.context.set_intermediate(
+            "subscription_id", "test_subscription_id"
+        )
+
+        dec_mc_2 = dec_2.update_defender(mc_2)
+
+        ground_truth_mc_2 = self.models.ManagedCluster(
+            location="test_location",
+            security_profile=self.models.ManagedClusterSecurityProfile(
+                defender=self.models.ManagedClusterSecurityProfileDefender(
+                    security_monitoring=self.models.ManagedClusterSecurityProfileDefenderSecurityMonitoring(
+                        enabled=False
+                    ),
+                )
+            ),
+        )
+        self.assertEqual(dec_mc_2, ground_truth_mc_2)
 
     def test_update_mc_profile_preview(self):
         import inspect
