@@ -29,9 +29,12 @@ from msrestazure.tools import parse_resource_id, is_valid_resource_id
 from msrest.exceptions import DeserializationError
 
 from ._client_factory import handle_raw_exception
-from ._clients import ManagedEnvironmentClient, ContainerAppClient, GitHubActionClient, DaprComponentClient, StorageClient, AuthClient
+from ._clients import ManagedEnvironmentClient, ContainerAppClient, GitHubActionClient, DaprComponentClient, \
+    StorageClient, AuthClient, ConnectedEnvironmentClient
 from ._github_oauth import get_github_access_token
 from ._models import (
+    ExtendedLocation as ExtendedLocationModel,
+    ConnectedEnvironment as ConnectedEnvironmentModel,
     ManagedEnvironment as ManagedEnvironmentModel,
     VnetConfiguration as VnetConfigurationModel,
     AppLogsConfiguration as AppLogsConfigurationModel,
@@ -294,6 +297,7 @@ def create_containerapp(cmd,
                         image=None,
                         container_name=None,
                         managed_env=None,
+                        connected_env=None,
                         min_replicas=None,
                         max_replicas=None,
                         target_port=None,
@@ -318,7 +322,8 @@ def create_containerapp(cmd,
                         no_wait=False,
                         system_assigned=False,
                         disable_warnings=False,
-                        user_assigned=None):
+                        user_assigned=None,
+                        custom_location=None):
     register_provider_if_needed(cmd, CONTAINER_APPS_RP)
     validate_container_app_name(name)
 
@@ -333,24 +338,40 @@ def create_containerapp(cmd,
     if not image:
         image = "mcr.microsoft.com/azuredocs/containerapps-helloworld:latest"
 
-    if managed_env is None:
-        raise RequiredArgumentMissingError('Usage error: --environment is required if not using --yaml')
+    if custom_location is None:
+        if managed_env is None:
+            raise RequiredArgumentMissingError('Usage error: --environment is required if not using --yaml and --custom-location is none')
 
-    # Validate managed environment
-    parsed_managed_env = parse_resource_id(managed_env)
-    managed_env_name = parsed_managed_env['name']
-    managed_env_rg = parsed_managed_env['resource_group']
-    managed_env_info = None
+        # Validate managed environment
+        parsed_managed_env = parse_resource_id(managed_env)
+        managed_env_name = parsed_managed_env['name']
+        managed_env_rg = parsed_managed_env['resource_group']
+        env_info = None
 
-    try:
-        managed_env_info = ManagedEnvironmentClient.show(cmd=cmd, resource_group_name=managed_env_rg, name=managed_env_name)
-    except:
-        pass
+        try:
+            env_info = ManagedEnvironmentClient.show(cmd=cmd, resource_group_name=managed_env_rg, name=managed_env_name)
+        except:
+            pass
 
-    if not managed_env_info:
-        raise ValidationError("The environment '{}' does not exist. Specify a valid environment".format(managed_env))
+        if not env_info:
+            raise ValidationError("The environment '{}' does not exist. Specify a valid environment".format(managed_env))
+    else:
+        # Validate connected environment
+        parsed_connected_env = parse_resource_id(connected_env)
+        connected_env_name = parsed_connected_env['name']
+        connected_env_rg = parsed_connected_env['resource_group']
+        env_info = None
 
-    location = managed_env_info["location"]
+        try:
+            env_info = ConnectedEnvironmentClient.show(cmd=cmd, resource_group_name=connected_env_rg, name=connected_env_name)
+        except:
+            pass
+
+        if not env_info:
+            raise ValidationError(
+                "The environment '{}' does not exist. Specify a valid environment".format(connected_env))
+
+    location = env_info["location"]
     _ensure_location_allowed(cmd, location, CONTAINER_APPS_RP, "containerApps")
 
     external_ingress = None
@@ -401,31 +422,6 @@ def create_containerapp(cmd,
     config_def["registries"] = [registries_def] if registries_def is not None else None
     config_def["dapr"] = dapr_def
 
-    # Identity actions
-    identity_def = ManagedServiceIdentityModel
-    identity_def["type"] = "None"
-
-    assign_system_identity = system_assigned
-    if user_assigned:
-        assign_user_identities = [x.lower() for x in user_assigned]
-    else:
-        assign_user_identities = []
-
-    if assign_system_identity and assign_user_identities:
-        identity_def["type"] = "SystemAssigned, UserAssigned"
-    elif assign_system_identity:
-        identity_def["type"] = "SystemAssigned"
-    elif assign_user_identities:
-        identity_def["type"] = "UserAssigned"
-
-    if assign_user_identities:
-        identity_def["userAssignedIdentities"] = {}
-        subscription_id = get_subscription_id(cmd.cli_ctx)
-
-        for r in assign_user_identities:
-            r = _ensure_identity_resource_id(subscription_id, resource_group_name, r)
-            identity_def["userAssignedIdentities"][r] = {}  # pylint: disable=unsupported-assignment-operation
-
     scale_def = None
     if min_replicas is not None or max_replicas is not None:
         scale_def = ScaleModel
@@ -459,11 +455,43 @@ def create_containerapp(cmd,
 
     containerapp_def = ContainerAppModel
     containerapp_def["location"] = location
-    containerapp_def["identity"] = identity_def
-    containerapp_def["properties"]["managedEnvironmentId"] = managed_env
     containerapp_def["properties"]["configuration"] = config_def
     containerapp_def["properties"]["template"] = template_def
     containerapp_def["tags"] = tags
+    if custom_location is not None:
+        extended_location_def = ExtendedLocationModel
+        extended_location_def["name"] = custom_location
+        extended_location_def["type"] = "CustomLocation"
+        containerapp_def["extendedLocation"] = extended_location_def
+        containerapp_def["properties"]["environmentId"] = connected_env
+    else:
+        # Identity actions
+        identity_def = ManagedServiceIdentityModel
+        identity_def["type"] = "None"
+
+        assign_system_identity = system_assigned
+        if user_assigned:
+            assign_user_identities = [x.lower() for x in user_assigned]
+        else:
+            assign_user_identities = []
+
+        if assign_system_identity and assign_user_identities:
+            identity_def["type"] = "SystemAssigned, UserAssigned"
+        elif assign_system_identity:
+            identity_def["type"] = "SystemAssigned"
+        elif assign_user_identities:
+            identity_def["type"] = "UserAssigned"
+
+        if assign_user_identities:
+            identity_def["userAssignedIdentities"] = {}
+            subscription_id = get_subscription_id(cmd.cli_ctx)
+
+            for r in assign_user_identities:
+                r = _ensure_identity_resource_id(subscription_id, resource_group_name, r)
+                identity_def["userAssignedIdentities"][r] = {}  # pylint: disable=unsupported-assignment-operation
+
+        containerapp_def["identity"] = identity_def
+        containerapp_def["properties"]["environmentId"] = managed_env
 
     try:
         r = ContainerAppClient.create_or_update(
@@ -760,6 +788,91 @@ def delete_containerapp(cmd, name, resource_group_name, no_wait=False):
 
     try:
         return ContainerAppClient.delete(cmd=cmd, name=name, resource_group_name=resource_group_name, no_wait=no_wait)
+    except CLIError as e:
+        handle_raw_exception(e)
+
+
+def create_connected_environment(cmd,
+                                 name,
+                                 resource_group_name,
+                                 custom_location,
+                                 location=None,
+                                 static_ip=None,
+                                 instrumentation_key=None,
+                                 tags=None,
+                                 disable_warnings=False,
+                                 no_wait=False):
+
+    environment_type = "connectedEnvironments"
+    location = location or _get_location_from_resource_group(cmd.cli_ctx, resource_group_name)
+
+    register_provider_if_needed(cmd, CONTAINER_APPS_RP)
+    _ensure_location_allowed(cmd, location, CONTAINER_APPS_RP, environment_type)
+
+    extended_location_def = ExtendedLocationModel
+    extended_location_def["name"] = custom_location
+    extended_location_def["type"] = "CustomLocation"
+
+    env_def = ConnectedEnvironmentModel
+    env_def["extendedLocation"] = extended_location_def
+    env_def["location"] = location
+    env_def["tags"] = tags
+    env_def["properties"] = {}
+
+    if instrumentation_key is not None:
+        env_def["properties"]["daprAIInstrumentationKey"] = instrumentation_key
+
+    try:
+        r = ConnectedEnvironmentClient.create(
+            cmd=cmd, resource_group_name=resource_group_name, name=name, managed_environment_envelope=env_def, no_wait=no_wait)
+
+        if "properties" in r and "provisioningState" in r["properties"] and r["properties"]["provisioningState"].lower() == "waiting" and not no_wait:
+            not disable_warnings and logger.warning('Containerapp environment creation in progress. Please monitor the creation using `az containerapp conncted-env show -n {} -g {}`'.format(name, resource_group_name))
+
+        not disable_warnings and logger.warning("\nContainer Apps environment created. To deploy a container app, use: az containerapp create --help\n")
+
+        return r
+    except Exception as e:
+        handle_raw_exception(e)
+
+
+def update_connected_environment(cmd,
+                               name,
+                               resource_group_name,
+                               tags=None,
+                               no_wait=False):
+    raise CLIInternalError('Containerapp env update is not yet supported.')
+
+
+def show_connected_environment(cmd, name, resource_group_name):
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
+
+    try:
+        return ConnectedEnvironmentClient.show(cmd=cmd, resource_group_name=resource_group_name, name=name)
+    except CLIError as e:
+        handle_raw_exception(e)
+
+
+def list_connected_environments(cmd, resource_group_name=None):
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
+
+    try:
+        managed_envs = []
+        if resource_group_name is None:
+            managed_envs = ConnectedEnvironmentClient.list_by_subscription(cmd=cmd)
+        else:
+            managed_envs = ConnectedEnvironmentClient.list_by_resource_group(cmd=cmd, resource_group_name=resource_group_name)
+
+        return managed_envs
+    except CLIError as e:
+        handle_raw_exception(e)
+
+
+def delete_connected_environment(cmd, name, resource_group_name, no_wait=False):
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
+
+    try:
+        return ConnectedEnvironmentClient.delete(cmd=cmd, name=name, resource_group_name=resource_group_name, no_wait=no_wait)
     except CLIError as e:
         handle_raw_exception(e)
 
@@ -2025,19 +2138,19 @@ def disable_dapr(cmd, name, resource_group_name, no_wait=False):
         handle_raw_exception(e)
 
 
-def list_dapr_components(cmd, resource_group_name, environment_name):
+def list_dapr_components(cmd, resource_group_name, environment_name, environment_type="managedEnvironments"):
     _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
-    return DaprComponentClient.list(cmd, resource_group_name, environment_name)
+    return DaprComponentClient.list(cmd, resource_group_name, environment_name, environment_type=environment_type)
 
 
-def show_dapr_component(cmd, resource_group_name, dapr_component_name, environment_name):
+def show_dapr_component(cmd, resource_group_name, dapr_component_name, environment_name, environment_type="managedEnvironments"):
     _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
-    return DaprComponentClient.show(cmd, resource_group_name, environment_name, name=dapr_component_name)
+    return DaprComponentClient.show(cmd, resource_group_name, environment_name, name=dapr_component_name, environment_type=environment_type)
 
 
-def create_or_update_dapr_component(cmd, resource_group_name, environment_name, dapr_component_name, yaml):
+def create_or_update_dapr_component(cmd, resource_group_name, environment_name, dapr_component_name, yaml, environment_type="managedEnvironments"):
     _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     yaml_containerapp = load_yaml_file(yaml)
@@ -2067,22 +2180,22 @@ def create_or_update_dapr_component(cmd, resource_group_name, environment_name, 
     dapr_component_envelope["properties"] = daprcomponent_def
 
     try:
-        r = DaprComponentClient.create_or_update(cmd, resource_group_name=resource_group_name, environment_name=environment_name, dapr_component_envelope=dapr_component_envelope, name=dapr_component_name)
+        r = DaprComponentClient.create_or_update(cmd, resource_group_name=resource_group_name, environment_name=environment_name, dapr_component_envelope=dapr_component_envelope, name=dapr_component_name, environment_type=environment_type)
         return r
     except Exception as e:
         handle_raw_exception(e)
 
 
-def remove_dapr_component(cmd, resource_group_name, dapr_component_name, environment_name):
+def remove_dapr_component(cmd, resource_group_name, dapr_component_name, environment_name, environment_type="managedEnvironments"):
     _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     try:
-        DaprComponentClient.show(cmd, resource_group_name, environment_name, name=dapr_component_name)
+        DaprComponentClient.show(cmd, resource_group_name, environment_name, name=dapr_component_name, environment_type=environment_type)
     except Exception as e:
         raise ResourceNotFoundError("Dapr component not found.") from e
 
     try:
-        r = DaprComponentClient.delete(cmd, resource_group_name, environment_name, name=dapr_component_name)
+        r = DaprComponentClient.delete(cmd, resource_group_name, environment_name, name=dapr_component_name, environment_type=environment_type)
         logger.warning("Dapr componenet successfully deleted.")
         return r
     except Exception as e:
@@ -2397,8 +2510,14 @@ def containerapp_up_logic(cmd, resource_group_name, name, managed_env, image, en
         handle_raw_exception(e)
 
 
-def list_certificates(cmd, name, resource_group_name, location=None, certificate=None, thumbprint=None):
+def list_certificates(cmd, name, resource_group_name, location=None, certificate=None, thumbprint=None,
+                      environment_type="managedEnvironments"):
     _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
+
+    if environment_type == "connectedEnvironments":
+        client = ConnectedEnvironmentClient
+    else:
+        client = ManagedEnvironmentClient
 
     def location_match(c):
         return c["location"] == location or not location
@@ -2415,22 +2534,27 @@ def list_certificates(cmd, name, resource_group_name, location=None, certificate
         else:
             certificate_name = certificate
         try:
-            r = ManagedEnvironmentClient.show_certificate(cmd, resource_group_name, name, certificate_name)
+            r = client.show_certificate(cmd, resource_group_name, name, certificate_name)
             return [r] if both_match(r) else []
         except Exception as e:
             handle_raw_exception(e)
     else:
         try:
-            r = ManagedEnvironmentClient.list_certificates(cmd, resource_group_name, name)
+            r = client.list_certificates(cmd, resource_group_name, name)
             return list(filter(both_match, r))
         except Exception as e:
             handle_raw_exception(e)
 
 
-def upload_certificate(cmd, name, resource_group_name, certificate_file, certificate_name=None, certificate_password=None, location=None, prompt=False):
+def upload_certificate(cmd, name, resource_group_name, certificate_file, certificate_name=None, certificate_password=None, location=None, prompt=False, environment_type="managedEnvironments"):
     _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     blob, thumbprint = load_cert_file(certificate_file, certificate_password)
+
+    if environment_type == "connectedEnvironments":
+        client = ConnectedEnvironmentClient
+    else:
+        client = ManagedEnvironmentClient
 
     cert_name = None
     if certificate_name:
@@ -2464,27 +2588,32 @@ def upload_certificate(cmd, name, resource_group_name, certificate_file, certifi
     certificate["location"] = location
     if not certificate["location"]:
         try:
-            managed_env = ManagedEnvironmentClient.show(cmd, resource_group_name, name)
+            managed_env = client.show(cmd, resource_group_name, name)
             certificate["location"] = managed_env["location"]
         except Exception as e:
             handle_raw_exception(e)
 
     try:
-        r = ManagedEnvironmentClient.create_or_update_certificate(cmd, resource_group_name, name, cert_name, certificate)
+        r = client.create_or_update_certificate(cmd, resource_group_name, name, cert_name, certificate)
         return r
     except Exception as e:
         handle_raw_exception(e)
 
 
-def delete_certificate(cmd, resource_group_name, name, location=None, certificate=None, thumbprint=None):
+def delete_certificate(cmd, resource_group_name, name, location=None, certificate=None, thumbprint=None, environment_type="managedEnvironments"):
     _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
+
+    if environment_type == "connectedEnvironments":
+        client = ConnectedEnvironmentClient
+    else:
+        client = ManagedEnvironmentClient
 
     if not certificate and not thumbprint:
         raise RequiredArgumentMissingError('Please specify at least one of parameters: --certificate and --thumbprint')
-    certs = list_certificates(cmd, name, resource_group_name, location, certificate, thumbprint)
+    certs = list_certificates(cmd, name, resource_group_name, location, certificate, thumbprint, environment_type=environment_type)
     for cert in certs:
         try:
-            ManagedEnvironmentClient.delete_certificate(cmd, resource_group_name, name, cert["name"])
+            client.delete_certificate(cmd, resource_group_name, name, cert["name"])
             logger.warning('Successfully deleted certificate: {}'.format(cert["name"]))
         except Exception as e:
             handle_raw_exception(e)
@@ -2572,25 +2701,27 @@ def delete_hostname(cmd, resource_group_name, name, hostname, location=None):
     return r
 
 
-def show_storage(cmd, name, storage_name, resource_group_name):
+def show_storage(cmd, name, storage_name, resource_group_name, environment_type="managedEnvironments"):
     _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     try:
-        return StorageClient.show(cmd, resource_group_name, name, storage_name)
+        return StorageClient.show(cmd, resource_group_name, name, storage_name, environment_type=environment_type)
     except CLIError as e:
         handle_raw_exception(e)
 
 
-def list_storage(cmd, name, resource_group_name):
+def list_storage(cmd, name, resource_group_name, environment_type="managedEnvironments"):
     _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     try:
-        return StorageClient.list(cmd, resource_group_name, name)
+        return StorageClient.list(cmd, resource_group_name, name, environment_type=environment_type)
     except CLIError as e:
         handle_raw_exception(e)
 
 
-def create_or_update_storage(cmd, storage_name, resource_group_name, name, azure_file_account_name, azure_file_share_name, azure_file_account_key, access_mode, no_wait=False):  # pylint: disable=redefined-builtin
+def create_or_update_storage(cmd, storage_name, resource_group_name, name, azure_file_account_name,
+                             azure_file_share_name, azure_file_account_key, access_mode, no_wait=False,
+                             environment_type="managedEnvironments"):  # pylint: disable=redefined-builtin
     _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     if len(azure_file_share_name) < 3:
@@ -2602,7 +2733,7 @@ def create_or_update_storage(cmd, storage_name, resource_group_name, name, azure
     r = None
 
     try:
-        r = StorageClient.show(cmd, resource_group_name, name, storage_name)
+        r = StorageClient.show(cmd, resource_group_name, name, storage_name, environment_type=environment_type)
     except:
         pass
 
@@ -2624,11 +2755,11 @@ def create_or_update_storage(cmd, storage_name, resource_group_name, name, azure
         handle_raw_exception(e)
 
 
-def remove_storage(cmd, storage_name, name, resource_group_name, no_wait=False):
+def remove_storage(cmd, storage_name, name, resource_group_name, no_wait=False, environment_type="managedEnvironments"):
     _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     try:
-        return StorageClient.delete(cmd, resource_group_name, name, storage_name, no_wait)
+        return StorageClient.delete(cmd, resource_group_name, name, storage_name, no_wait, environment_type=environment_type)
     except CLIError as e:
         handle_raw_exception(e)
 

@@ -299,6 +299,195 @@ helps['containerapp revision label swap'] = """
 """
 
 # Environment Commands
+helps['containerapp connected-env'] = """
+    type: group
+    short-summary: Commands to manage Container Apps environments.
+"""
+
+helps['containerapp connected-env create'] = """
+    type: command
+    short-summary: Create a Container Apps environment.
+    examples:
+    - name: Create an environment with an auto-generated Log Analytics workspace.
+      text: |
+          az containerapp connected-env create -n MyContainerappEnvironment -g MyResourceGroup \\
+              --location eastus2
+    - name: Create a zone-redundant environment
+      text: |
+          az containerapp connected-env create -n MyContainerappEnvironment -g MyResourceGroup \\
+              --location eastus2 --zone-redundant
+    - name: Create an environment with an existing Log Analytics workspace.
+      text: |
+          az containerapp connected-env create -n MyContainerappEnvironment -g MyResourceGroup \\
+              --logs-workspace-id myLogsWorkspaceID \\
+              --logs-workspace-key myLogsWorkspaceKey \\
+              --location eastus2
+"""
+
+
+helps['containerapp connected-env delete'] = """
+    type: command
+    short-summary: Delete a Container Apps environment.
+    examples:
+    - name: Delete an environment.
+      text: az containerapp connected-env delete -n MyContainerappEnvironment -g MyResourceGroup
+"""
+
+helps['containerapp connected-env show'] = """
+    type: command
+    short-summary: Show details of a Container Apps environment.
+    examples:
+    - name: Show the details of an environment.
+      text: |
+          az containerapp connected-env show -n MyContainerappEnvironment -g MyResourceGroup
+"""
+
+helps['containerapp connected-env list'] = """
+    type: command
+    short-summary: List Container Apps environments by subscription or resource group.
+    examples:
+    - name: List environments in the current subscription.
+      text: |
+          az containerapp connected-env list
+    - name: List environments by resource group.
+      text: |
+          az containerapp connected-env list -g MyResourceGroup
+"""
+
+helps['containerapp connected-env dapr-component'] = """
+    type: group
+    short-summary: Commands to manage Dapr components for the Container Apps environment.
+"""
+
+helps['containerapp connected-env dapr-component list'] = """
+    type: command
+    short-summary: List Dapr components for an environment.
+    examples:
+    - name: List Dapr components for an environment.
+      text: |
+          az containerapp connected-env dapr-component list -g MyResourceGroup --name MyEnvironment
+"""
+
+helps['containerapp connected-env dapr-component show'] = """
+    type: command
+    short-summary: Show the details of a Dapr component.
+    examples:
+    - name: Show the details of a Dapr component.
+      text: |
+          az containerapp connected-env dapr-component show -g MyResourceGroup --dapr-component-name MyDaprComponentName --name MyEnvironment
+"""
+
+helps['containerapp connected-env dapr-component set'] = """
+    type: command
+    short-summary: Create or update a Dapr component.
+    examples:
+    - name: Create a Dapr component.
+      text: |
+          az containerapp connected-env dapr-component set -g MyResourceGroup --name MyEnv --yaml MyYAMLPath --dapr-component-name MyDaprComponentName
+"""
+
+helps['containerapp connected-env dapr-component remove'] = """
+    type: command
+    short-summary: Remove a Dapr component from an environment.
+    examples:
+    - name: Remove a Dapr component from a Container Apps environment.
+      text: |
+          az containerapp connected-env dapr-component remove -g MyResourceGroup --dapr-component-name MyDaprComponentName --name MyEnvironment
+"""
+
+helps['containerapp connected-env storage'] = """
+    type: group
+    short-summary: Commands to manage storage for the Container Apps environment.
+"""
+
+helps['containerapp connected-env storage list'] = """
+    type: command
+    short-summary: List the storages for an environment.
+    examples:
+    - name: List the storages for an environment.
+      text: |
+          az containerapp connected-env storage list -g MyResourceGroup -n MyEnvironment
+"""
+
+helps['containerapp connected-env storage show'] = """
+    type: command
+    short-summary: Show the details of a storage.
+    examples:
+    - name: Show the details of a storage.
+      text: |
+          az containerapp connected-env storage show -g MyResourceGroup --storage-name MyStorageName -n MyEnvironment
+"""
+
+helps['containerapp connected-env storage set'] = """
+    type: command
+    short-summary: Create or update a storage.
+    examples:
+    - name: Create a storage.
+      text: |
+          az containerapp connected-env storage set -g MyResourceGroup -n MyEnv --storage-name MyStorageName --access-mode ReadOnly --azure-file-account-key MyAccountKey --azure-file-account-name MyAccountName --azure-file-share-name MyShareName
+"""
+
+helps['containerapp connected-env storage remove'] = """
+    type: command
+    short-summary: Remove a storage from an environment.
+    examples:
+    - name: Remove a storage from a Container Apps environment.
+      text: |
+          az containerapp connected-env storage remove -g MyResourceGroup --storage-name MyStorageName -n MyEnvironment
+"""
+
+# Certificates Commands
+helps['containerapp connected-env certificate'] = """
+    type: group
+    short-summary: Commands to manage certificates for the Container Apps environment.
+"""
+
+helps['containerapp connected-env certificate list'] = """
+    type: command
+    short-summary: List certificates for an environment.
+    examples:
+    - name: List certificates for an environment.
+      text: |
+          az containerapp connected-env certificate list -g MyResourceGroup --name MyEnvironment
+    - name: List certificates by certificate id.
+      text: |
+          az containerapp connected-env certificate list -g MyResourceGroup --name MyEnvironment --certificate MyCertificateId
+    - name: List certificates by certificate name.
+      text: |
+          az containerapp connected-env certificate list -g MyResourceGroup --name MyEnvironment --certificate MyCertificateName
+    - name: List certificates by certificate thumbprint.
+      text: |
+          az containerapp connected-env certificate list -g MyResourceGroup --name MyEnvironment --thumbprint MyCertificateThumbprint
+"""
+
+helps['containerapp connected-env certificate upload'] = """
+    type: command
+    short-summary: Add or update a certificate.
+    examples:
+    - name: Add or update a certificate.
+      text: |
+          az containerapp connected-env certificate upload -g MyResourceGroup --name MyEnvironment --certificate-file MyFilepath
+    - name: Add or update a certificate with a user-provided certificate name.
+      text: |
+          az containerapp connected-env certificate upload -g MyResourceGroup --name MyEnvironment --certificate-file MyFilepath --certificate-name MyCertificateName
+"""
+
+helps['containerapp connected-env certificate delete'] = """
+    type: command
+    short-summary: Delete a certificate from the Container Apps environment.
+    examples:
+    - name: Delete a certificate from the Container Apps environment by certificate name
+      text: |
+          az containerapp connected-env certificate delete -g MyResourceGroup --name MyEnvironment --certificate MyCertificateName
+    - name: Delete a certificate from the Container Apps environment by certificate id
+      text: |
+          az containerapp connected-env certificate delete -g MyResourceGroup --name MyEnvironment --certificate MyCertificateId
+    - name: Delete a certificate from the Container Apps environment by certificate thumbprint
+      text: |
+          az containerapp connected-env certificate delete -g MyResourceGroup --name MyEnvironment --thumbprint MyCertificateThumbprint
+"""
+
+# Environment Commands
 helps['containerapp env'] = """
     type: group
     short-summary: Commands to manage Container Apps environments.

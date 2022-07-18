@@ -43,19 +43,38 @@ def validate_cpu(namespace):
             raise ValidationError("Usage error: --cpu must be a number eg. \"0.5\"") from e
 
 
+def get_default_environment_type(cmd, namespace):
+    if "connected-env" in cmd.cli_ctx.data["command"]:
+        namespace.environment_type = "connectedEnvironments"
+    else:
+        namespace.environment_type = "managedEnvironments"
+
+
 def validate_managed_env_name_or_id(cmd, namespace):
     from azure.cli.core.commands.client_factory import get_subscription_id
     from msrestazure.tools import is_valid_resource_id, resource_id
 
+    if 'custom_location' in namespace and namespace.custom_location is not None:
+        namespace.connected_env = namespace.managed_env
+
     if namespace.managed_env:
         if not is_valid_resource_id(namespace.managed_env):
-            namespace.managed_env = resource_id(
-                subscription=get_subscription_id(cmd.cli_ctx),
-                resource_group=namespace.resource_group_name,
-                namespace='Microsoft.App',
-                type='managedEnvironments',
-                name=namespace.managed_env
-            )
+            if namespace.custom_location is None:
+                namespace.managed_env = resource_id(
+                    subscription=get_subscription_id(cmd.cli_ctx),
+                    resource_group=namespace.resource_group_name,
+                    namespace='Microsoft.App',
+                    type='managedEnvironments',
+                    name=namespace.managed_env
+                )
+            else:
+                namespace.connected_env = resource_id(
+                    subscription=get_subscription_id(cmd.cli_ctx),
+                    resource_group=namespace.resource_group_name,
+                    namespace='Microsoft.App',
+                    type='connectedEnvironments',
+                    name=namespace.managed_env
+                )
 
 
 def validate_registry_server(namespace):

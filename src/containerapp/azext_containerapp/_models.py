@@ -13,6 +13,24 @@ VnetConfiguration = {
     "platformReservedDnsIP": None
 }
 
+ExtendedLocation = {
+    "name": None,
+    "type": None
+}
+
+
+ConnectedEnvironment = {
+    "extendedLocation": None,
+    "location": None,
+    "tags": None,
+    "properties": {
+        "daprAIInstrumentationKey": None,
+        "vnetConfiguration": None,  # VnetConfiguration
+        "internalLoadBalancerEnabled": None,
+        "appLogsConfiguration": None
+    }
+}
+
 ManagedEnvironment = {
     "location": None,
     "tags": None,
@@ -171,6 +189,7 @@ ManagedServiceIdentity = {
 }
 
 ContainerApp = {
+    "extendedLocation": None,
     "location": None,
     "identity": None,  # ManagedServiceIdentity
     "properties": {

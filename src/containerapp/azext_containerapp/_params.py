@@ -13,7 +13,8 @@ from azure.cli.core.commands.parameters import (resource_group_name_type, get_lo
 # from azure.cli.core.commands.validators import get_default_location_from_resource_group
 
 from ._validators import (validate_memory, validate_cpu, validate_managed_env_name_or_id, validate_registry_server,
-                          validate_registry_user, validate_registry_pass, validate_target_port, validate_ingress)
+                          validate_registry_user, validate_registry_pass, validate_target_port, validate_ingress,
+                          get_default_environment_type)
 from ._constants import UNAUTHENTICATED_CLIENT_ACTION, FORWARD_PROXY_CONVENTION
 
 
@@ -27,11 +28,13 @@ def load_arguments(self, _):
         c.argument('resource_group_name', arg_type=resource_group_name_type)
         c.argument('location', arg_type=get_location_type(self.cli_ctx))
         c.ignore('disable_warnings')
+        c.ignore('environment_type')
 
     with self.argument_context('containerapp') as c:
         c.argument('tags', arg_type=tags_type)
         c.argument('managed_env', validator=validate_managed_env_name_or_id, options_list=['--environment'], help="Name or resource ID of the container app's environment.")
         c.argument('yaml', type=file_type, help='Path to a .yaml file with the configuration of a container app. All other parameters will be ignored. For an example, see  https://docs.microsoft.com/azure/container-apps/azure-resource-manager-api-spec#examples')
+        c.ignore('connected_env')
 
     with self.argument_context('containerapp exec') as c:
         c.argument('container', help="The name of the container to ssh into")
@@ -103,6 +106,7 @@ def load_arguments(self, _):
 
     with self.argument_context('containerapp create') as c:
         c.argument('traffic_weights', nargs='*', options_list=['--traffic-weight'], help="A list of revision weight(s) for the container app. Space-separated values in 'revision_name=weight' format. For latest revision, use 'latest=weight'")
+        c.argument('custom_location', help="The resource id of custom location.")
 
     with self.argument_context('containerapp create', arg_group='Identity') as c:
         c.argument('user_assigned', nargs='+', help="Space-separated user identities to be assigned.")
@@ -117,6 +121,13 @@ def load_arguments(self, _):
     with self.argument_context('containerapp scale') as c:
         c.argument('min_replicas', type=int, help="The minimum number of replicas.")
         c.argument('max_replicas', type=int, help="The maximum number of replicas.")
+
+    with self.argument_context('containerapp connected-env') as c:
+        c.argument('name', name_type, help='Name of the Container Apps environment.')
+        c.argument('resource_group_name', arg_type=resource_group_name_type)
+        c.argument('location', arg_type=get_location_type(self.cli_ctx), help='Location of resource. Examples: eastus2, northeurope')
+        c.argument('tags', arg_type=tags_type)
+        c.argument('custom_location', help='Name of custom location.')
 
     with self.argument_context('containerapp env') as c:
         c.argument('name', name_type, help='Name of the Container Apps environment.')
@@ -138,6 +149,7 @@ def load_arguments(self, _):
         c.argument('platform_reserved_cidr', options_list=['--platform-reserved-cidr'], help='IP range in CIDR notation that can be reserved for environment infrastructure IP addresses. It must not overlap with any other Subnet IP ranges')
         c.argument('platform_reserved_dns_ip', options_list=['--platform-reserved-dns-ip'], help='An IP address from the IP range defined by Platform Reserved CIDR that will be reserved for the internal DNS server.')
         c.argument('internal_only', arg_type=get_three_state_flag(), options_list=['--internal-only'], help='Boolean indicating the environment only has an internal load balancer. These environments do not have a public static IP resource, therefore must provide infrastructureSubnetResourceId if enabling this property')
+
     with self.argument_context('containerapp env create') as c:
         c.argument('zone_redundant', options_list=["--zone-redundant", "-z"], help="Enable zone redundancy on the environment. Cannot be used without --infrastructure-subnet-resource-id. If used with --location, the subnet's location must match")
 
@@ -151,23 +163,34 @@ def load_arguments(self, _):
     with self.argument_context('containerapp env show') as c:
         c.argument('name', name_type, help='Name of the Container Apps Environment.')
 
-    with self.argument_context('containerapp env certificate upload') as c:
-        c.argument('certificate_file', options_list=['--certificate-file', '-f'], help='The filepath of the .pfx or .pem file')
-        c.argument('certificate_name', options_list=['--certificate-name', '-c'], help='Name of the certificate which should be unique within the Container Apps environment.')
-        c.argument('certificate_password', options_list=['--password', '-p'], help='The certificate file password')
-        c.argument('prompt', options_list=['--show-prompt'], action='store_true', help='Show prompt to upload an existing certificate.')
+    for command in ['containerapp env certificate upload', 'containerapp connected-env certificate upload']:
+        with self.argument_context(command) as c:
+            c.argument('certificate_file', options_list=['--certificate-file', '-f'], help='The filepath of the .pfx or .pem file', validator=get_default_environment_type)
+            c.argument('certificate_name', options_list=['--certificate-name', '-c'], help='Name of the certificate which should be unique within the Container Apps environment.')
+            c.argument('certificate_password', options_list=['--password', '-p'], help='The certificate file password')
+            c.argument('prompt', options_list=['--show-prompt'], action='store_true', help='Show prompt to upload an existing certificate.')
 
-    with self.argument_context('containerapp env certificate list') as c:
-        c.argument('name', id_part=None)
-        c.argument('certificate', options_list=['--certificate', '-c'], help='Name or resource id of the certificate.')
-        c.argument('thumbprint', options_list=['--thumbprint', '-t'], help='Thumbprint of the certificate.')
+    for command in ['containerapp env certificate list', 'containerapp connected-env certificate list']:
+        with self.argument_context(command) as c:
+            c.argument('name', id_part=None, validator=get_default_environment_type)
+            c.argument('certificate', options_list=['--certificate', '-c'], help='Name or resource id of the certificate.')
+            c.argument('thumbprint', options_list=['--thumbprint', '-t'], help='Thumbprint of the certificate.')
 
-    with self.argument_context('containerapp env certificate delete') as c:
-        c.argument('certificate', options_list=['--certificate', '-c'], help='Name or resource id of the certificate.')
-        c.argument('thumbprint', options_list=['--thumbprint', '-t'], help='Thumbprint of the certificate.')
+    for command in ['containerapp env certificate delete', 'containerapp connected-env certificate delete']:
+        with self.argument_context(command) as c:
+            c.argument('certificate', options_list=['--certificate', '-c'], help='Name or resource id of the certificate.', validator=get_default_environment_type)
+            c.argument('thumbprint', options_list=['--thumbprint', '-t'], help='Thumbprint of the certificate.')
 
     with self.argument_context('containerapp env storage') as c:
-        c.argument('name', id_part=None)
+        c.argument('name', id_part=None, validator=get_default_environment_type)
+        c.argument('storage_name', help="Name of the storage.")
+        c.argument('access_mode', id_part=None, arg_type=get_enum_type(["ReadWrite", "ReadOnly"]), help="Access mode for the AzureFile storage.")
+        c.argument('azure_file_account_key', options_list=["--azure-file-account-key", "--storage-account-key", "-k"], help="Key of the AzureFile storage account.")
+        c.argument('azure_file_share_name', options_list=["--azure-file-share-name", "--file-share", "-f"], help="Name of the share on the AzureFile storage.")
+        c.argument('azure_file_account_name', options_list=["--azure-file-account-name", "--account-name", "-a"], help="Name of the AzureFile storage account.")
+
+    with self.argument_context('containerapp connected-env storage') as c:
+        c.argument('name', id_part=None, validator=get_default_environment_type)
         c.argument('storage_name', help="Name of the storage.")
         c.argument('access_mode', id_part=None, arg_type=get_enum_type(["ReadWrite", "ReadOnly"]), help="Access mode for the AzureFile storage.")
         c.argument('azure_file_account_key', options_list=["--azure-file-account-key", "--storage-account-key", "-k"], help="Key of the AzureFile storage account.")
@@ -234,12 +257,20 @@ def load_arguments(self, _):
         c.argument('show_values', help='Show the secret values.')
         c.ignore('disable_max_length')
 
+    with self.argument_context('containerapp connected-env dapr-component') as c:
+        c.argument('dapr_app_id', help="The Dapr app ID.")
+        c.argument('dapr_app_port', help="The port of your app.")
+        c.argument('dapr_app_protocol', help="Tell Dapr which protocol your application is using.  Allowed values: grpc, http.")
+        c.argument('dapr_component_name', help="The Dapr component name.")
+        c.argument('environment_name', options_list=['--name', '-n'], help="The environment name.", validator=get_default_environment_type)
+        c.ignore('environment_type')
+
     with self.argument_context('containerapp env dapr-component') as c:
         c.argument('dapr_app_id', help="The Dapr app ID.")
         c.argument('dapr_app_port', help="The port of your app.")
         c.argument('dapr_app_protocol', help="Tell Dapr which protocol your application is using.  Allowed values: grpc, http.")
         c.argument('dapr_component_name', help="The Dapr component name.")
-        c.argument('environment_name', options_list=['--name', '-n'], help="The environment name.")
+        c.argument('environment_name', options_list=['--name', '-n'], help="The environment name.", validator=get_default_environment_type)
 
     with self.argument_context('containerapp revision set-mode') as c:
         c.argument('mode', arg_type=get_enum_type(['single', 'multiple']), help="The active revisions mode for the container app.")

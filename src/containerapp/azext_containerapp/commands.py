@@ -61,6 +61,29 @@ def load_command_table(self, _):
     with self.command_group('containerapp logs') as g:
         g.custom_show_command('show', 'stream_containerapp_logs', validator=validate_ssh)
 
+    with self.command_group('containerapp connected-env', is_preview=True) as g:
+        g.custom_show_command('show', 'show_connected_environment')
+        g.custom_command('list', 'list_connected_environments')
+        g.custom_command('create', 'create_connected_environment', supports_no_wait=True, exception_handler=ex_handler_factory())
+        g.custom_command('delete', 'delete_connected_environment', supports_no_wait=True, confirmation=True, exception_handler=ex_handler_factory())
+
+    with self.command_group('containerapp connected-env dapr-component') as g:
+        g.custom_command('list', 'list_dapr_components')
+        g.custom_show_command('show', 'show_dapr_component')
+        g.custom_command('set', 'create_or_update_dapr_component')
+        g.custom_command('remove', 'remove_dapr_component')
+
+    with self.command_group('containerapp connected-env certificate') as g:
+        g.custom_command('list', 'list_certificates')
+        g.custom_command('upload', 'upload_certificate')
+        g.custom_command('delete', 'delete_certificate', confirmation=True, exception_handler=ex_handler_factory())
+
+    with self.command_group('containerapp connected-env storage', is_preview=True) as g:
+        g.custom_show_command('show', 'show_storage')
+        g.custom_command('list', 'list_storage')
+        g.custom_command('set', 'create_or_update_storage', supports_no_wait=True, exception_handler=ex_handler_factory())
+        g.custom_command('remove', 'remove_storage', supports_no_wait=True, confirmation=True, exception_handler=ex_handler_factory())
+
     with self.command_group('containerapp env') as g:
         g.custom_show_command('show', 'show_managed_environment')
         g.custom_command('list', 'list_managed_environments')

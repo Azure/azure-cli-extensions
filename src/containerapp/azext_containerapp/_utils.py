@@ -20,7 +20,7 @@ from azure.cli.command_modules.network._client_factory import network_client_fac
 from knack.log import get_logger
 from msrestazure.tools import parse_resource_id, is_valid_resource_id, resource_id
 
-from ._clients import ContainerAppClient, ManagedEnvironmentClient
+from ._clients import ContainerAppClient, ManagedEnvironmentClient, ConnectedEnvironmentClient
 from ._client_factory import handle_raw_exception, providers_client_factory, cf_resource_groups, log_analytics_client_factory, log_analytics_shared_key_client_factory
 from ._constants import (MAXIMUM_CONTAINER_APP_NAME_LENGTH, SHORT_POLLING_INTERVAL_SECS, LONG_POLLING_INTERVAL_SECS,
                          LOG_ANALYTICS_RP, CONTAINER_APPS_RP, CHECK_CERTIFICATE_NAME_AVAILABILITY_TYPE, ACR_IMAGE_SUFFIX)
@@ -1291,7 +1291,7 @@ def check_cert_name_availability(cmd, resource_group_name, name, cert_name):
     name_availability_request["name"] = cert_name
     name_availability_request["type"] = CHECK_CERTIFICATE_NAME_AVAILABILITY_TYPE
     try:
-        r = ManagedEnvironmentClient.check_name_availability(cmd, resource_group_name, name, name_availability_request)
+        r = ConnectedEnvironmentClient.check_name_availability(cmd, resource_group_name, name, name_availability_request)
     except CLIError as e:
         handle_raw_exception(e)
     return r
