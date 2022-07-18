@@ -151,10 +151,6 @@ def update_containerapp_yaml(cmd, name, resource_group_name, file_name, from_rev
 
     containerapp_def = None
 
-    # Change which revision we update from
-    if from_revision:
-        logger.warning('Flag --from-revision was passed along with --yaml. This flag will be ignored, and the configuration defined in the yaml will be used instead')
-
     # Deserialize the yaml into a ContainerApp object. Need this since we're not using SDK
     try:
         deserializer = create_deserializer()
@@ -174,6 +170,12 @@ def update_containerapp_yaml(cmd, name, resource_group_name, file_name, from_rev
     # After deserializing, some properties may need to be moved under the "properties" attribute. Need this since we're not using SDK
     containerapp_def = process_loaded_yaml(containerapp_def)
 
+    # Change which revision we update from
+    if from_revision:
+        r = ContainerAppClient.show_revision(cmd=cmd, resource_group_name=resource_group_name, container_app_name=name, name=from_revision)
+        _update_revision_env_secretrefs(r["properties"]["template"]["containers"], name)
+        containerapp_def["properties"]["template"] = r["properties"]["template"]
+
     # Remove "additionalProperties" and read-only attributes that are introduced in the deserialization. Need this since we're not using SDK
     _remove_additional_attributes(containerapp_def)
     _remove_readonly_attributes(containerapp_def)
@@ -183,6 +185,14 @@ def update_containerapp_yaml(cmd, name, resource_group_name, file_name, from_rev
 
     # Clean null values since this is an update
     containerapp_def = clean_null_values(containerapp_def)
+
+    # Fix bug with revisionSuffix when containers are added
+    if not safe_get(containerapp_def, "properties", "template", "revisionSuffix"):
+        if "properties" not in containerapp_def:
+            containerapp_def["properties"] = {}
+        if "template" not in containerapp_def["properties"]:
+            containerapp_def["properties"]["template"] = {}
+        containerapp_def["properties"]["template"]["revisionSuffix"] = None
 
     try:
         r = ContainerAppClient.update(
