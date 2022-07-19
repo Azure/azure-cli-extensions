@@ -75,10 +75,16 @@ class WorkspaceInfo:
     def save(self, cmd):
         from azure.cli.core.util import ConfiguredDefaultSetter
 
+        # with ConfiguredDefaultSetter(cmd.cli_ctx.config, False):
+        #     cmd.cli_ctx.config.set_value('quantum', 'group', self.resource_group)
+        #     cmd.cli_ctx.config.set_value('quantum', 'workspace', self.name)
+        #     cmd.cli_ctx.config.set_value('quantum', 'location', self.location)
+        #
+        # >>>>> Save in the global [defaults] section of the .azure\config file >>>>> 
         with ConfiguredDefaultSetter(cmd.cli_ctx.config, False):
-            cmd.cli_ctx.config.set_value('quantum', 'group', self.resource_group)
-            cmd.cli_ctx.config.set_value('quantum', 'workspace', self.name)
-            cmd.cli_ctx.config.set_value('quantum', 'location', self.location)
+            cmd.cli_ctx.config.set_value(cmd.cli_ctx.config.defaults_section_name, 'group', self.resource_group)
+            cmd.cli_ctx.config.set_value(cmd.cli_ctx.config.defaults_section_name, 'workspace', self.name)
+            cmd.cli_ctx.config.set_value(cmd.cli_ctx.config.defaults_section_name, 'location', self.location)
 
 
 def _show_tip(msg):
