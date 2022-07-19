@@ -45,8 +45,8 @@ setup(
     version=VERSION,
     description='Microsoft Azure Command-Line Tools Search-scenario Extension',
     # TODO: Update author and email, if applicable
-    author='Qinkai Wu',
-    author_email='t-qinkaiwu@microsoft.com',
+    author='Microsoft Corporation',
+    author_email='azpycli@microsoft.com',
     url='https://github.com/Azure/azure-cli-extensions/tree/master/src/search-scenario',
     long_description=README + '\n\n' + HISTORY,
     license='MIT',
