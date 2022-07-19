@@ -6,6 +6,7 @@ Release History
 0.3.8
 ++++++
 * Fixed bug with 'az containerapp update' where --yaml would error out due to secret values
+* Fixed bug with 'az containerapp logs show' and 'az containerapp exec' where they would fail on apps with networking restrictions 
 
 0.3.7
 ++++++
