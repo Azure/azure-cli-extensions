@@ -638,7 +638,7 @@ def executing_diagnoser_job(corev1_api_instance, batchv1_api_instance, filepath_
         is_job_complete = False
         is_job_scheduled = False
         # To watch for changes in the pods states till it reach completed state or exit if it takes more than 60 seconds
-        for event in w.stream(batchv1_api_instance.list_namespaced_job, namespace='azure-arc', label_selector="", timeout_seconds=60):
+        for event in w.stream(batchv1_api_instance.list_namespaced_job, namespace='azure-arc', label_selector="", timeout_seconds=180):
             try:
                 # Checking if job get scheduled or not
                 if event["object"].metadata.name == "azure-arc-diagnoser-job":
