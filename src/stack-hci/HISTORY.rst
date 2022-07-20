@@ -3,6 +3,10 @@
 Release History
 ===============
 
+0.1.6
+++++++
+* Upgrade api-version to 2022-05-01
+
 0.1.5
 ++++++
 * Support arc setting management
