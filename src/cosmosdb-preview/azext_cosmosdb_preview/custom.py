@@ -4,7 +4,6 @@
 # --------------------------------------------------------------------------------------------
 # pylint: disable=line-too-long, too-many-statements, consider-using-f-string, broad-except, no-member, raise-missing-from
 
-import json
 from knack.util import CLIError
 from knack.log import get_logger
 from azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.models import (
@@ -32,8 +31,7 @@ from azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.models import (
     PhysicalPartitionId,
     RedistributeThroughputParameters,
     RedistributeThroughputPropertiesResource,
-    ThroughputPolicyType,
-    PhysicalPartitionThroughputInfoResource
+    ThroughputPolicyType
 )
 
 from azext_cosmosdb_preview._client_factory import (
@@ -1206,6 +1204,7 @@ def cli_begin_list_mongo_db_collection_partition_merge(client,
     return async_partition_merge_result.result()
 
 
+# pylint: disable=dangerous-default-value
 def cli_begin_retrieve_sql_container_partition_throughput(client,
                                                           resource_group_name,
                                                           account_name,
@@ -1221,7 +1220,7 @@ def cli_begin_retrieve_sql_container_partition_throughput(client,
         if ex.error.code == "NotFound":
             raise CLIError("(NotFound) Container with name '{}' in database '{} could not be found.".format(container_name, database_name))
 
-    if len(physical_partition_ids) is 0 and all_partitions is False:
+    if len(physical_partition_ids) == 0 and all_partitions is False:
         raise CLIError(
             'Either of --physical-partition-ids/--all-partitions needs to be specified.')
 
@@ -1249,6 +1248,7 @@ def cli_begin_retrieve_sql_container_partition_throughput(client,
     return async_partition_retrieve_throughput_result.result()
 
 
+# pylint: disable=dangerous-default-value
 def cli_begin_redistribute_sql_container_partition_throughput(client,
                                                               resource_group_name,
                                                               account_name,
@@ -1270,7 +1270,7 @@ def cli_begin_redistribute_sql_container_partition_throughput(client,
             throughput_policy=ThroughputPolicyType.EQUAL,
             target_physical_partition_throughput_info=[],
             source_physical_partition_throughput_info=[])
-    else:        
+    else:
         redistribute_throughput_properties_resource = RedistributeThroughputPropertiesResource(
             throughput_policy=ThroughputPolicyType.CUSTOM,
             target_physical_partition_throughput_info=target_partition_info,
@@ -1290,6 +1290,7 @@ def cli_begin_redistribute_sql_container_partition_throughput(client,
     return async_partition_redistribute_throughput_result.result()
 
 
+# pylint: disable=dangerous-default-value
 def cli_begin_retrieve_mongo_container_partition_throughput(client,
                                                             resource_group_name,
                                                             account_name,
@@ -1305,7 +1306,7 @@ def cli_begin_retrieve_mongo_container_partition_throughput(client,
         if ex.error.code == "NotFound":
             raise CLIError("(NotFound) Container with name '{}' in database '{} could not be found.".format(collection_name, database_name))
 
-    if len(physical_partition_ids) is 0 and all_partitions is False:
+    if len(physical_partition_ids) == 0 and all_partitions is False:
         raise CLIError(
             'Either of --physical-partition-ids/--all-partitions needs to be specified.')
 
@@ -1333,6 +1334,7 @@ def cli_begin_retrieve_mongo_container_partition_throughput(client,
     return async_partition_retrieve_throughput_result.result()
 
 
+# pylint: disable=dangerous-default-value
 def cli_begin_redistribute_mongo_container_partition_throughput(client,
                                                                 resource_group_name,
                                                                 account_name,

@@ -176,6 +176,7 @@ class AddSqlContainerAction(argparse._AppendAction):
         else:
             namespace.sql_container = sql_container
 
+
 # pylint: disable=protected-access, too-few-public-methods
 class CreateTargetPhysicalPartitionThroughputInfoAction(argparse._AppendAction):
     def __call__(self, parser, namespace, values, option_string=None):
@@ -191,6 +192,7 @@ class CreateTargetPhysicalPartitionThroughputInfoAction(argparse._AppendAction):
             namespace.target_partition_info.append(
                 PhysicalPartitionThroughputInfoResource(id=kvp[0], throughput=kvp[1]))
 
+
 # pylint: disable=protected-access, too-few-public-methods
 class CreateSourcePhysicalPartitionThroughputInfoAction(argparse._AppendAction):
     def __call__(self, parser, namespace, values, option_string=None):
@@ -202,6 +204,7 @@ class CreateSourcePhysicalPartitionThroughputInfoAction(argparse._AppendAction):
         for item in values:
             namespace.source_partition_info.append(
                 PhysicalPartitionThroughputInfoResource(id=item, throughput=0))
+
 
 # pylint: disable=protected-access, too-few-public-methods
 class CreatePhysicalPartitionIdListAction(argparse._AppendAction):

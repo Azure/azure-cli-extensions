@@ -651,7 +651,7 @@ helps['cosmosdb sql container retrieve-partition-throughput'] = """
     examples:
       - name: Retrieve container container_name's throughput for specific physical partitions
         text: |-
-               az cosmosdb sql container retrieve-partition-throughput --account-name account_name --database-name db_name --name container_name  --resource-group rg_name --physical-partition-ids 8 9"
+               az cosmosdb sql container retrieve-partition-throughput --account-name account_name --database-name db_name --name container_name  --resource-group rg_name --physical-partition-ids 8 9
       - name: Retrieve container container_name's throughput for all physical partitions
         text: |-
                az cosmosdb sql container retrieve-partition-throughput --account-name account_name --database-name db_name --name container_name  --resource-group rg_name --all-partitions
