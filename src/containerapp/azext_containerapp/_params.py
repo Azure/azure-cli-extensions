@@ -128,6 +128,8 @@ def load_arguments(self, _):
         c.argument('location', arg_type=get_location_type(self.cli_ctx), help='Location of resource. Examples: eastus2, northeurope')
         c.argument('tags', arg_type=tags_type)
         c.argument('custom_location', help='Name of custom location.')
+        c.argument('instrumentation_connection_str', options_list=['--dapr-instrumentation-connection-str'], help='Application Insights instrumentation connectetion string used by Dapr to export Service to Service communication telemetry')
+        c.argument('static_ip', help='Static ip address. Only ipv4 is supported.')
 
     with self.argument_context('containerapp env') as c:
         c.argument('name', name_type, help='Name of the Container Apps environment.')

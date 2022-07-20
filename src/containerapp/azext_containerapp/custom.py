@@ -798,7 +798,6 @@ def create_connected_environment(cmd,
                                  custom_location,
                                  location=None,
                                  static_ip=None,
-                                 instrumentation_key=None,
                                  tags=None,
                                  disable_warnings=False,
                                  no_wait=False):
@@ -819,8 +818,8 @@ def create_connected_environment(cmd,
     env_def["tags"] = tags
     env_def["properties"] = {}
 
-    if instrumentation_key is not None:
-        env_def["properties"]["daprAIInstrumentationKey"] = instrumentation_key
+    if static_ip:
+        env_def["properties"]["staticIp"] = static_ip
 
     try:
         r = ConnectedEnvironmentClient.create(
