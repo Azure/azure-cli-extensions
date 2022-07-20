@@ -255,3 +255,23 @@ helps['grafana user show'] = """
     type: command
     short-summary: show detail of a user.
 """
+
+helps['grafana api-key'] = """
+    type: group
+    short-summary: Commands to manage api keys.
+"""
+
+helps['grafana api-key create'] = """
+    type: command
+    short-summary: create a new api key.
+"""
+
+helps['grafana api-key list'] = """
+    type: command
+    short-summary: list existing api keys.
+"""
+
+helps['grafana api-key delete'] = """
+    type: command
+    short-summary: delete an api key.
+"""

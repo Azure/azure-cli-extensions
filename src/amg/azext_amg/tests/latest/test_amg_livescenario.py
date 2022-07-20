@@ -18,7 +18,7 @@ class AmgLiveScenarioTest(LiveScenarioTest):
 
     @AllowLargeResponse(size_kb=3072)
     @ResourceGroupPreparer(name_prefix='cli_test_amg', location='westeurope')
-    def test_amg_e2e(self, resource_group):
+    def xxx_test_amg_e2e(self, resource_group):
 
         # Test Instance
         self.kwargs.update({

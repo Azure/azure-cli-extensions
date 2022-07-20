@@ -15,6 +15,7 @@ def load_command_table(self, _):
         g.custom_command('delete', 'delete_grafana', confirmation=True)
         g.custom_command('list', 'list_grafana')
         g.custom_show_command('show', 'show_grafana')
+        g.custom_command('update', 'update_grafana')
 
     with self.command_group('grafana dashboard') as g:
         g.custom_command('create', 'create_dashboard')
@@ -50,4 +51,9 @@ def load_command_table(self, _):
     with self.command_group('grafana user') as g:
         g.custom_command('list', 'list_users')
         g.custom_show_command('show', 'show_user')
-        g.custom_command('actual-user', 'get_actual_user')
+        g.custom_command('actual-user', 'get_actual_user', deprecate_info=g.deprecate(redirect='az account show', hide=True))
+
+    with self.command_group('grafana api-key') as g:
+        g.custom_command('create', 'create_api_key')
+        g.custom_command('list', 'list_api_keys')
+        g.custom_command('delete', 'delete_api_key')
