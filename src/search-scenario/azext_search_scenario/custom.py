@@ -200,7 +200,7 @@ def _execute_cmd(ctx_cmd, command, params, catch_exception=False):
                     args.pop()
 
     output_format = ctx_cmd.cli_ctx.config.get(
-        'next', 'output', fallback='status')
+        'search_scenario', 'output', fallback='status')
 
     if '--output' not in args and '-o' not in args:
         args.append('--output')
