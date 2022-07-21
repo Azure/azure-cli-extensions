@@ -23,6 +23,8 @@ def search_scenario(cmd, search_keyword, type=None, top=None):
         search_type = SearchType.Command
     else:
         search_type = SearchType.All
+
+    search_keyword = " ".join(search_keyword)
     results = get_search_result_from_api(search_keyword, search_type, top)
 
     if not results:
