@@ -201,14 +201,14 @@ def devcenter_dev_box_list(client,
                            top=None,
                            project_name=None,
                            user_id=None):
-    if dev_center is not None and dev_center_dns_suffix is not None and project_name is not None and user_id is not None:
+    if project_name is not None and user_id is not None:
         return client.list_by_project(#dev_center=dev_center,
                                       #dev_center_dns_suffix=get_dns_suffix(dev_center_dns_suffix),
                                       filter=filter_,
                                       top=top,
                                       project_name=project_name,
                                       user_id=user_id)
-    elif dev_center is not None and dev_center_dns_suffix is not None and user_id is not None:
+    elif user_id is not None:
         return client.list_by_user(#dev_center=dev_center,
                                    #dev_center_dns_suffix=get_dns_suffix(dev_center_dns_suffix),
                                    filter=filter_,

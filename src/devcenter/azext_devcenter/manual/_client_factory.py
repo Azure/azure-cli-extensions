@@ -18,16 +18,18 @@ def cf_devcenter_dataplane(cli_ctx, *_):
 
     from azure.cli.core.commands.client_factory import get_mgmt_service_client
     from azext_devcenter.vendored_sdks.devcenter_dataplane import DevCenterDataplaneClient
-
-    # Override the client to use DevCenter resource rather than ARM's. The .default scope will be appended by the mgmt service client
-    #cli_ctx.cloud.endpoints.active_directory_resource_id = 'https://devcenter.azure.com'
+    from azure.cli.core._profile import Profile
+    import json
     cli_ctx.cloud.endpoints.active_directory_resource_id = 'https://devcenters.fidalgo.azure.com'       # Temporary set to Fidalgo until 1st party app is updated.
+    profile = Profile(cli_ctx=cli_ctx)
+    subscription = profile.get_subscription()
+    tenant_id = subscription['tenantId']
+     # Override the client to use DevCenter resource rather than ARM's. The .default scope will be appended by the mgmt service client
+    #cli_ctx.cloud.endpoints.active_directory_resource_id = 'https://devcenter.azure.com'
 
     # TODO: source tenant_id from identity
     # TODO: where to source dev_center from. In the spec, this has moved to being specified at the client rather than method (which makes sense for SDKs). But how do we get it here?
     # TODO: Same with the dev_center_dns_suffix. If we can determine the cloud, we could just hard-code it and no allow user to provide at all.
-    tenant_id = "testTenantId"
-    dev_center = "mydevcenter"
     dev_center_dns_suffix = get_dns_suffix(None)
     return get_mgmt_service_client(
         cli_ctx,
@@ -35,7 +37,7 @@ def cf_devcenter_dataplane(cli_ctx, *_):
         subscription_bound=False,
         base_url_bound=False,
         tenant_id=tenant_id,
-        dev_center=dev_center,
+        dev_center="amlim",
         dev_center_dns_suffix=dev_center_dns_suffix)
 
 # todo: how to pass optional arg so we don't have to redefine the dns suffix here?
