@@ -13,8 +13,7 @@ class SearchScenarioCommandsLoader(AzCommandsLoader):
         from azure.cli.core.commands import CliCommandType
         search_scenario_custom = CliCommandType(
             operations_tmpl='azext_search_scenario.custom#{}')
-        super(SearchScenarioCommandsLoader, self).__init__(cli_ctx=cli_ctx,
-                                                           custom_command_type=search_scenario_custom)
+        super().__init__(cli_ctx=cli_ctx, custom_command_type=search_scenario_custom)
 
     def load_command_table(self, args):
         from .commands import load_command_table

@@ -10,21 +10,21 @@ from ._clierror import ScenarioSearchError
 from .constants import SearchType, SEARCH_SERVICE_URL
 
 
-def get_search_result_from_api(keyword, type=SearchType.All, top_num=5):
+def get_search_result_from_api(keyword, typ=SearchType.All, top_num=5):
     '''Search related e2e scenarios'''
     import requests
 
     payload = {
         "keyword": keyword,
-        "type": type,
+        "type": typ,
         "top_num": top_num,
     }
 
     response = requests.post(SEARCH_SERVICE_URL, json.dumps(payload))
     if response.status_code != 200:
         raise ScenarioSearchError(
-            "Failed to connect to '{}' with status code '{}' and reason '{}'".format(
-                SEARCH_SERVICE_URL, response.status_code, response.reason))
+            f"Failed to connect to '{SEARCH_SERVICE_URL}' with status code "
+            f"'{response.status_code}' and reason '{response.reason}'")
 
     results = []
     if 'data' in response.json():
