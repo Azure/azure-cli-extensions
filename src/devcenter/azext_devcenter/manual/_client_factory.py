@@ -41,11 +41,7 @@ def cf_devcenter_dataplane(cli_ctx, dev_center, *_):
         dev_center_dns_suffix=dev_center_dns_suffix)
 
 def get_dns_suffix(cloud):
-    if cloud == 'AzureChinaCloud':
-        return 'devcenter.azure.cn'
-    elif cloud == 'AzureGermanCloud':
-        return 'devcenter.azure.de'
-    elif cloud == "Dogfood":
+    if cloud == "Dogfood":
         return 'devcenter.azure-test.net'
     else:
         return 'devcenter.azure.com'
