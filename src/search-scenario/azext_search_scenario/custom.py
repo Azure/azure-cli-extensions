@@ -14,30 +14,23 @@ from .requests import get_search_result_from_api
 from .utils import get_int_option
 
 
-# pylint: disable=redefined-builtin
-def search_scenario(cmd, search_keyword, type=None, top=None):
+def search_scenario(cmd, search_keyword, search_type=None, top=None):
     init(autoreset=True)  # turn on automatic color recovery for colorama
-    if type == "scenario":
-        search_type = SearchType.Scenario
-    elif type == "command":
-        search_type = SearchType.Command
-    else:
-        search_type = SearchType.All
 
+    search_type = SearchType.get_search_type_by_name(search_type)
     search_keyword = " ".join(search_keyword)
     results = get_search_result_from_api(search_keyword, search_type, top)
 
     if not results:
         send_feedback(search_type, -1, search_keyword)
-        print("\nSorry, there is no scenario result.")
+        print("\nSorry, no relevant E2E scenario examples found")
         return
 
-    _show_results(results)
-    print()
+    _show_search_item(results)
 
-    # TODO: Use style instead of colorma
-    option = get_int_option("Please select your option " + Fore.LIGHTBLACK_EX + "(if none, enter 0)" +
-                            Fore.RESET + ": ", 0, len(results), -1)
+    option_msg = [(Style.ACTION, " ? "), (Style.PRIMARY, "Please select your option "),
+                  (Style.SECONDARY, "(if none, enter 0)"), (Style.PRIMARY, ": ")]
+    option = get_int_option(option_msg, 0, len(results), -1)
     if option == 0:
         send_feedback(search_type, 0, search_keyword, results)
         print('\nThank you for your feedback. If you have more feedback, please submit it by using "az feedback" \n')
@@ -45,8 +38,7 @@ def search_scenario(cmd, search_keyword, type=None, top=None):
     print()
 
     chosen_scenario = results[option - 1]
-    send_feedback(search_type, option, search_keyword,
-                  results, chosen_scenario)
+    send_feedback(search_type, option, search_keyword, results, chosen_scenario)
     _show_detail(cmd, chosen_scenario)
 
     if cmd.cli_ctx.config.getboolean('search_scenario', 'execute_in_prompt', fallback=True):
@@ -59,52 +51,57 @@ def search_scenario(cmd, search_keyword, type=None, top=None):
     return
 
 
-def _show_results(results, highlight_style=Style.ACTION):
+def _show_search_item(results):
+
     for idx, result in enumerate(results):
+
         print()
         idx_str = f"[{idx+1:2}] " if len(results) >= 10 else f"[{idx+1:1}] "
-        num_notice = f"({len(result['commandSet'])} Commands)"
-        print_styled_text([(Style.ACTION, idx_str), (Style.PRIMARY,
-                          result['scenario']), (Style.SECONDARY, num_notice)])
-        highlight_desc = next(
-            iter(result.get('highlights', {}).get('description', [])), None)
+        num_notice = f" ({len(result['commandSet'])} Commands)"
+        print_styled_text([(Style.ACTION, idx_str), (Style.PRIMARY, result['scenario']), (Style.SECONDARY, num_notice)])
+
+        highlight_desc = next(iter(result.get('highlights', {}).get('description', [])), None)
         if highlight_desc:
-            print_styled_text(_style_highlight(
-                highlight_desc, highlight_style))
+            print_styled_text(_style_highlight(highlight_desc))
             continue
-        highlight_cmd = next(
-            iter(result.get('highlights', {}).get('commandSet/command', [])), None)
-        if highlight_cmd:
-            print_styled_text(_style_highlight(highlight_cmd, highlight_style))
+
+        highlight_command = next(iter(result.get('highlights', {}).get('commandSet/command', [])), None)
+        if highlight_command:
+            include_command_style = [(Style.SECONDARY, "Include command: ")]
+            include_command_style.extend(_style_highlight(highlight_command))
+            print_styled_text(include_command_style)
             continue
-        highlight_name = next(
-            iter(result.get('highlights', {}).get('scenario', [])), None)
+
+        highlight_name = next(iter(result.get('highlights', {}).get('scenario', [])), None)
         if highlight_name:
-            print_styled_text(_style_highlight(
-                highlight_name, highlight_style))
+            print_styled_text(_style_highlight(highlight_name))
             continue
+
         print_styled_text((Style.SECONDARY, result.get('description', "")))
+
     print()
 
 
 def _show_detail(cmd, scenario):
-    print_styled_text([(Style.PRIMARY, scenario['scenario']),
-                       (Style.ACTION, " contains the following commands:\n")])
+    print_styled_text([(Style.WARNING, scenario['scenario']), (Style.PRIMARY, " contains the following commands:\n")])
+
     for command in scenario["commandSet"]:
         command_item = command["command"]
         if 'arguments' in command and \
                 cmd.cli_ctx.config.getboolean('search_scenario', 'show_arguments', fallback=False):
             command_item = f"{command_item} {' '.join(command['arguments'])}"
-        print_styled_text(
-            [(Style.ACTION, " > "), (Style.PRIMARY, command_item)])
+
+        print_styled_text([(Style.ACTION, " > "), (Style.PRIMARY, command_item)])
 
         if command['reason']:
-            print_styled_text([(Style.SECONDARY, command['reason'].replace(
-                "\\n", " ").split(".")[0].strip().capitalize())])
+            command_desc = command['reason'].replace("\\n", " ").split(".")[0].strip().capitalize()
+            print_styled_text([(Style.SECONDARY, command_desc)])
+
         print()
+
     if scenario.get("source_url"):
-        print_styled_text([(Style.PRIMARY, "To learn more about this scenario, please visit "),
-                           (Style.HYPERLINK, scenario.get("source_url"))])
+        print_styled_text([(Style.PRIMARY, "To learn more about this scenario, please visit the link below:")])
+        print_styled_text([(Style.HYPERLINK, scenario.get("source_url"))])
         print()
 
 
@@ -117,10 +114,11 @@ def _execute_scenario(ctx_cmd, scenario):
         if ctx_cmd.cli_ctx.config.getboolean('search_scenario', 'print_help', fallback=False):
             _print_help_info(ctx_cmd, command["command"])
 
-        print("\nRunning: " + _get_command_item_sample(command))
-        step_msg = "How do you want to run this step? 1. Run it 2. Skip it 3. Quit process " + Fore.LIGHTBLACK_EX \
-                   + "(Enter is to Run)" + Fore.RESET + ": "
-        run_option = get_int_option(step_msg, 1, 3, 1)
+        print("Running: " + _get_command_item_sample(command))
+        option_msg = [(Style.ACTION, " ? "),
+                      (Style.PRIMARY, "How do you want to run this step? 1. Run it 2. Skip it 3. Quit process "),
+                      (Style.SECONDARY, "(Enter is to Run)"), (Style.PRIMARY, ": ")]
+        run_option = get_int_option(option_msg, 1, 3, 1)
         if run_option == 1:
             print_styled_text(
                 [(Style.SECONDARY, "Input Enter to skip unnecessary parameters")])
@@ -133,9 +131,10 @@ def _execute_scenario(ctx_cmd, scenario):
                     _print_help_info(ctx_cmd, command["command"])
                     is_help_printed = True
 
-                step_msg = "Do you want to retry this step? 1. Run it 2. Skip it 3. Quit process " \
-                    + Fore.LIGHTBLACK_EX + "(Enter is to Run)" + Fore.RESET + ": "
-                run_option = get_int_option(step_msg, 1, 3, 1)
+                option_msg = [(Style.ACTION, " ? "),
+                              (Style.PRIMARY, "Do you want to retry this step? 1. Run it 2. Skip it 3. Quit process "),
+                              (Style.SECONDARY, "(Enter is to Run)"), (Style.PRIMARY, ": ")]
+                run_option = get_int_option(option_msg, 1, 3, 1)
                 if run_option == 1:
                     execute_result = _execute_cmd(
                         ctx_cmd, command['command'], nx_param, catch_exception=True)
@@ -157,7 +156,7 @@ def _execute_scenario(ctx_cmd, scenario):
         'All commands in this scenario have been executed! \n')
 
 
-def _style_highlight(highlight_content: str, highlight_style=Style.ACTION) -> list:
+def _style_highlight(highlight_content: str) -> list:
     styled_text_object = []
     remain = highlight_content
     in_highlight = False
@@ -168,8 +167,7 @@ def _style_highlight(highlight_content: str, highlight_style=Style.ACTION) -> li
             remain = split_result[1]
         except IndexError:
             remain = None
-        styled_text_object.append(
-            (Style.SECONDARY if not in_highlight else highlight_style, content))
+        styled_text_object.append((Style.SECONDARY if not in_highlight else Style.WARNING, content))
         in_highlight = not in_highlight
     return styled_text_object
 
