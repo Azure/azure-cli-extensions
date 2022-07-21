@@ -9,5 +9,5 @@ from knack.help_files import helps  # pylint: disable=unused-import
 
 helps['search-scenario'] = """
     type: command
-    short-summary: Search for e2e scenarios samples. 
+    short-summary: It's a tool for searching E2E scenario samples. 
 """

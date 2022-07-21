@@ -4,13 +4,12 @@
 # --------------------------------------------------------------------------------------------
 
 import re
-from azext_search_scenario.utils import get_int_option
 from colorama import Fore, init
 from azure.cli.core.style import print_styled_text, Style
-from knack.util import CLIError
 
 from .requests import get_search_result_from_api
 from .constants import SearchType
+from .utils import get_int_option
 
 
 def search_scenario(cmd, search_keyword, type=None, top=None):
@@ -52,12 +51,12 @@ def search_scenario(cmd, search_keyword, type=None, top=None):
               'you can use "az config set search_scenario.execute_in_prompt=True" to set it up.\n')
     
     return
-    
+
 
 def _show_results(cmd, results, highlight_style=Style.ACTION):
     for idx, result in enumerate(results):
         print()
-        idx_str = f"[{idx+1:2}]" if len(results) >= 10 else f"[{idx+1:1}]"
+        idx_str = f"[{idx+1:2}] " if len(results) >= 10 else f"[{idx+1:1}] "
         num_notice = f"({len(result['commandSet'])} Commands)"
         print_styled_text([(Style.ACTION, idx_str), (Style.PRIMARY, result['scenario']), (Style.SECONDARY, num_notice)])
         highlight_desc = next(iter(result.get('highlights', {}).get('description', [])), None)

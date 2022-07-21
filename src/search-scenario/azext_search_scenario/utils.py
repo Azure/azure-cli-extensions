@@ -1,4 +1,10 @@
-from colorama import Fore
+# --------------------------------------------------------------------------------------------
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# Licensed under the MIT License. See License.txt in the project root for license information.
+# --------------------------------------------------------------------------------------------
+
+
+from azure.cli.core.style import print_styled_text, Style, is_modern_terminal
 
 
 def read_int(default_value=0):
@@ -13,18 +19,17 @@ def read_int(default_value=0):
 
 
 def get_int_option(option_description, min_option, max_option, default_option):
-    print(Fore.LIGHTBLUE_EX + ' ? ' + Fore.RESET + option_description, end='')
+    print_styled_text([(Style.ACTION, " ? "), (Style.PRIMARY, option_description)], end='')
     option = read_int(default_option)
     while option < min_option or option > max_option:
-        print("Please enter a valid option ({}-{}): ".format(min_option, max_option), end='')
+        print_styled_text([(Style.PRIMARY, "Please enter a valid option ({}-{}): ".format(min_option, max_option))],
+                          end='')
         option = read_int(default_option)
     return option
 
 
 def print_successful_styled_text(message):
-    from azure.cli.core.style import print_styled_text, Style, is_modern_terminal
-
     prefix_text = '\nDone: '
     if is_modern_terminal():
-        prefix_text = '\n(✓ )Done: '
+        prefix_text = '\n(✓)Done: '
     print_styled_text([(Style.SUCCESS, prefix_text), (Style.PRIMARY, message)])

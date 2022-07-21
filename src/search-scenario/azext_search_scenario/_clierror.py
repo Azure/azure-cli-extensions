@@ -3,8 +3,9 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-from azure.cli.core.azclierror import ClientError
+from azure.cli.core.azclierror import ClientRequestError
 
-class ScenarioSearchError(ClientError):
+
+class ScenarioSearchError(ClientRequestError):
     """ The client error raised by `az search-scenario`. """
     pass
