@@ -46,7 +46,7 @@ def get_dns_suffix(cloud):
     elif cloud == 'AzureGermanCloud':
         return 'devcenter.azure.de'
     elif cloud == "Dogfood":
-        return 'devcenter.azure-test.aznet'
+        return 'devcenter.azure-test.net'
     else:
         return 'devcenter.azure.com'
 
