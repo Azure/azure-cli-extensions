@@ -10,13 +10,13 @@ from ._clierror import ScenarioSearchError
 from .constants import SearchType, SEARCH_SERVICE_URL
 
 
-def get_search_result_from_api(keyword, typ=SearchType.All, top_num=5):
+def get_search_result_from_api(search_keyword, search_type=SearchType.All, top_num=5):
     '''Search related e2e scenarios'''
     import requests
 
     payload = {
-        "keyword": keyword,
-        "type": typ,
+        "keyword": search_keyword,
+        "type": search_type,
         "top_num": top_num,
     }
 
