@@ -3,9 +3,12 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+from ast import Str
 import re
 from colorama import Fore, init
 from azure.cli.core.style import print_styled_text, Style
+
+import azure.cli.core.telemetry as telemetry
 
 from .requests import get_search_result_from_api
 from .constants import SearchType
@@ -23,7 +26,7 @@ def search_scenario(cmd, search_keyword, type=None, top=None):
     results = get_search_result_from_api(search_keyword, search_type, top)
     
     if not results:
-        # TODO: send_telemetry_feedback
+        send_feedback(search_type, -1, search_keyword)
         print("\nSorry, there is no scenario result.")
         return
 
@@ -34,13 +37,13 @@ def search_scenario(cmd, search_keyword, type=None, top=None):
     option = get_int_option("Please select your option " + Fore.LIGHTBLACK_EX + "(if none, enter 0)" +
                             Fore.RESET + ": ", 0, len(results), -1)
     if option == 0:
-        # TODO: send_telemetry_feedback
+        send_feedback(search_type, 0, search_keyword, results)
         print('\nThank you for your feedback. If you have more feedback, please submit it by using "az feedback" \n')
         return
     print()
     
     chosen_scenario = results[option-1]
-    # TODO: send_telemetry_feedback
+    send_feedback(search_type, option, search_keyword, results, chosen_scenario)
     _show_detail(cmd, chosen_scenario)
 
     if cmd.cli_ctx.config.getboolean('search_scenario', 'execute_in_prompt', fallback=True):
@@ -258,6 +261,21 @@ def _get_command_item_sample(command):
                     return example
 
     return Fore.LIGHTBLUE_EX + "{}{} {}".format("az " if not command["command"].startswith("az ") else "", command["command"], ' '.join(nx_param) if nx_param else "")
+
+
+def send_feedback(search_type, option, keyword, search_results=None, adoption=None):
+    feedback = str(int(search_type)) + "#" + str(option) + "#" + keyword.replace("\\", "\\\\").replace("#", "\\sharp") + "#"
+    if search_results and isinstance(search_results, list):
+        feedback += " ".join(map(lambda r: str(r.get("source", 0)), search_results))
+    else:
+        feedback += " "
+    feedback += "#"
+    if adoption:
+        feedback += str(adoption.get("source", " ")) + "#" + adoption.get("scenario", " ") + "#" + adoption.get("description", " ").replace("\\", "\\\\").replace("#", "\\sharp")
+    else:
+        feedback += " # # "
+    
+    telemetry.set_feedback(feedback)
 
 
 def _print_help_info(cmd, command):
