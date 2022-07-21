@@ -88,8 +88,8 @@ def _update_application_insights_asc_create(cmd,
 def _check_spring_instance_existed(cmd, client, resource_group, name, location, **_):
     availability_parameters = models.NameAvailabilityParameters(type="Microsoft.AppPlatform/Spring", name=name)
     name_availability = client.services.check_name_availability(location, availability_parameters)
-    if not name_availability.name_available:
-        raise ClientRequestError("The resource {} under resource group {} is already existed in region {}, cannot create again.".format(name, resource_group, location))
+    if not name_availability.name_available and name_availability.reason == "AlreadyExists":
+        raise ClientRequestError("Service instance '{}' under resource group '{}' is already existed in region '{}', cannot create again.".format(name, resource_group, location))
 
 
 def spring_update(cmd, client, resource_group, name, app_insights_key=None, app_insights=None,
