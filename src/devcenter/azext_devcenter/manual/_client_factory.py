@@ -20,7 +20,7 @@ def cf_devcenter_dataplane(cli_ctx, dev_center, *_):
     from azext_devcenter.vendored_sdks.devcenter_dataplane import DevCenterDataplaneClient
     from azure.cli.core._profile import Profile
 
-    cli_ctx.cloud.endpoints.active_directory_resource_id = 'https://devcenters.fidalgo.azure.com'       # Temporary set to Fidalgo until 1st party app is updated.
+    cli_ctx.cloud.endpoints.active_directory_resource_id = 'https://devcenter.azure.com'       # Temporary set to Fidalgo until 1st party app is updated.
    
     profile = Profile(cli_ctx=cli_ctx)
     subscription = profile.get_subscription()
@@ -45,6 +45,8 @@ def get_dns_suffix(cloud):
         return 'devcenter.azure.cn'
     elif cloud == 'AzureGermanCloud':
         return 'devcenter.azure.de'
+    elif cloud == "Dogfood":
+        return 'devcenter.azure-test.aznet'
     else:
         return 'devcenter.azure.com'
 
