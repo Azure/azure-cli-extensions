@@ -14,64 +14,63 @@
 #     from azext_devcenter.vendored_sdks.devcenter_dataplane import DevCenter
 #     return get_mgmt_service_client(cli_ctx,
 #                                    DevCenter)
-def cf_devcenter_dataplane(cli_ctx, *_):
+def cf_devcenter_dataplane(cli_ctx, dev_center, *_):
 
     from azure.cli.core.commands.client_factory import get_mgmt_service_client
     from azext_devcenter.vendored_sdks.devcenter_dataplane import DevCenterDataplaneClient
     from azure.cli.core._profile import Profile
-    import json
+
     cli_ctx.cloud.endpoints.active_directory_resource_id = 'https://devcenters.fidalgo.azure.com'       # Temporary set to Fidalgo until 1st party app is updated.
+   
     profile = Profile(cli_ctx=cli_ctx)
     subscription = profile.get_subscription()
     tenant_id = subscription['tenantId']
+    cloud = subscription['environmentName']
+    dev_center_dns_suffix = get_dns_suffix(cloud)
+
      # Override the client to use DevCenter resource rather than ARM's. The .default scope will be appended by the mgmt service client
     #cli_ctx.cloud.endpoints.active_directory_resource_id = 'https://devcenter.azure.com'
 
-    # TODO: source tenant_id from identity
-    # TODO: where to source dev_center from. In the spec, this has moved to being specified at the client rather than method (which makes sense for SDKs). But how do we get it here?
-    # TODO: Same with the dev_center_dns_suffix. If we can determine the cloud, we could just hard-code it and no allow user to provide at all.
-    dev_center_dns_suffix = get_dns_suffix(None)
     return get_mgmt_service_client(
         cli_ctx,
         DevCenterDataplaneClient,
         subscription_bound=False,
         base_url_bound=False,
         tenant_id=tenant_id,
-        dev_center="amlim",
+        dev_center=dev_center,
         dev_center_dns_suffix=dev_center_dns_suffix)
 
-# todo: how to pass optional arg so we don't have to redefine the dns suffix here?
-def get_dns_suffix(user_provided_value):
-    if user_provided_value == None:
-        return 'devcenter.azure.com'
+def get_dns_suffix(cloud):
+    if cloud == 'AzureChinaCloud':
+        return 'devcenter.azure.cn'
+    elif cloud == 'AzureGermanCloud':
+        return 'devcenter.azure.de'
     else:
-        return user_provided_value
+        return 'devcenter.azure.com'
 
+def cf_project_dp(cli_ctx, dev_center, *_):
+    return cf_devcenter_dataplane(cli_ctx, dev_center).project
 
+def cf_pool_dp(cli_ctx, dev_center, *_):
+    return cf_devcenter_dataplane(cli_ctx, dev_center).pool
 
-def cf_project_dp(cli_ctx, *_):
-    return cf_devcenter_dataplane(cli_ctx).project
+def cf_schedule_dp(cli_ctx, dev_center, *_):
+    return cf_devcenter_dataplane(cli_ctx, dev_center).schedule
 
-def cf_pool_dp(cli_ctx, *_):
-    return cf_devcenter_dataplane(cli_ctx).pool
+def cf_dev_box_dp(cli_ctx, dev_center, *_):
+    return cf_devcenter_dataplane(cli_ctx, dev_center).dev_box
 
-def cf_schedule_dp(cli_ctx, *_):
-    return cf_devcenter_dataplane(cli_ctx).schedule
+def cf_environment_dp(cli_ctx, dev_center, *_):
+    return cf_devcenter_dataplane(cli_ctx, dev_center).environments
 
-def cf_dev_box_dp(cli_ctx, *_):
-    return cf_devcenter_dataplane(cli_ctx).dev_box
+def cf_artifact_dp(cli_ctx, dev_center, *_):
+    return cf_devcenter_dataplane(cli_ctx, dev_center).artifacts
 
-def cf_environment_dp(cli_ctx, *_):
-    return cf_devcenter_dataplane(cli_ctx).environments
+def cf_catalog_item_dp(cli_ctx, dev_center, *_):
+    return cf_devcenter_dataplane(cli_ctx, dev_center).catalog_item
 
-def cf_artifact_dp(cli_ctx, *_):
-    return cf_devcenter_dataplane(cli_ctx).artifacts
+def cf_catalog_item_version_dp(cli_ctx, dev_center, *_):
+    return cf_devcenter_dataplane(cli_ctx, dev_center).catalog_item_versions
 
-def cf_catalog_item_dp(cli_ctx, *_):
-    return cf_devcenter_dataplane(cli_ctx).catalog_item
-
-def cf_catalog_item_version_dp(cli_ctx, *_):
-    return cf_devcenter_dataplane(cli_ctx).catalog_item_versions
-
-def cf_environment_type_dp(cli_ctx, *_):
-    return cf_devcenter_dataplane(cli_ctx).environment_type
+def cf_environment_type_dp(cli_ctx, dev_center, *_):
+    return cf_devcenter_dataplane(cli_ctx, dev_center).environment_type
