@@ -236,11 +236,11 @@ def stack_hci_cluster_create_identity(client,
 def stack_hci_cluster_upload_certificate(client,
                                          resource_group_name,
                                          cluster_name,
-                                         properties=None,
+                                         certificates=None,
                                          no_wait=False):
     upload_certificate_request = {}
-    if properties is not None:
-        upload_certificate_request['properties'] = properties
+    if certificates is not None:
+        upload_certificate_request['properties'] = {'certificates': certificates}
     return sdk_no_wait(no_wait,
                        client.begin_upload_certificate,
                        resource_group_name=resource_group_name,

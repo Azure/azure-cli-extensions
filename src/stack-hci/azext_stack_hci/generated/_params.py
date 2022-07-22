@@ -156,7 +156,7 @@ def load_arguments(self, _):
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('cluster_name', options_list=['--name', '-n', '--cluster-name'], type=str, help='The name of the '
                    'cluster.', id_part='name')
-        c.argument('properties', action=AddProperties, nargs='+', help='')
+        c.argument('certificates', nargs='+', help='Certificates')
 
     with self.argument_context('stack-hci cluster wait') as c:
         c.argument('resource_group_name', resource_group_name_type)

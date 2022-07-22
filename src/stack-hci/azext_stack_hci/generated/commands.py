@@ -57,7 +57,8 @@ def load_command_table(self, _):
         g.custom_command('update', 'stack_hci_cluster_update')
         g.custom_command('delete', 'stack_hci_cluster_delete', supports_no_wait=True, confirmation=True)
         g.custom_command('create-identity', 'stack_hci_cluster_create_identity', supports_no_wait=True)
-        g.custom_command('upload-certificate', 'stack_hci_cluster_upload_certificate', supports_no_wait=True)
+        # service team found a bug on this api: Operation returned an invalid status 'OK'
+        # g.custom_command('upload-certificate', 'stack_hci_cluster_upload_certificate', supports_no_wait=True)
         g.custom_wait_command('wait', 'stack_hci_cluster_show')
 
     with self.command_group('stack-hci extension', stack_hci_extension, client_factory=cf_extension) as g:
