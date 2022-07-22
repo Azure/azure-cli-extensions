@@ -27,13 +27,6 @@ from azext_devcenter.generated._client_factory import (
 def load_command_table(self, _):
 
     #data plane
-    devcenter_action_dp = CliCommandType(
-        operations_tmpl=(
-            'azext_devcenter.vendored_sdks.devcenter_dataplane.operations._actions_operations#ActionsOperations.{}'
-        ),
-        client_factory=cf_action_dp,
-    )
-
     devcenter_artifact_dp = CliCommandType(
         operations_tmpl=(
             'azext_devcenter.vendored_sdks.devcenter_dataplane.operations._artifacts_operations#ArtifactsOperations.{}'
@@ -207,15 +200,9 @@ def load_command_table(self, _):
         g.custom_show_command('show', 'devcenter_dev_box_show')
         g.custom_command('create', 'devcenter_dev_box_create', supports_no_wait=True)
         g.custom_command('delete', 'devcenter_dev_box_delete', supports_no_wait=True, confirmation=True)
-        g.custom_command('get-remote-connection', 'devcenter_dev_box_get_remote_connection')
+        g.custom_command('show-remote-connection', 'devcenter_dev_box_get_remote_connection')
         g.custom_command('start', 'devcenter_dev_box_start', supports_no_wait=True)
         g.custom_command('stop', 'devcenter_dev_box_stop', supports_no_wait=True)
-
-    with self.command_group('devcenter dev action', devcenter_action_dp, client_factory=cf_action_dp) as g:
-        g.custom_command('list', 'devcenter_action_list')
-        g.custom_show_command('show', 'devcenter_action_show')
-        g.custom_command('create', 'devcenter_action_create', supports_no_wait=True)
-        g.custom_wait_command('wait', 'devcenter_action_show')
 
     with self.command_group('devcenter dev artifact', devcenter_artifact_dp, client_factory=cf_artifact_dp) as g:
         g.custom_command('list', 'devcenter_artifact_list')
@@ -236,6 +223,9 @@ def load_command_table(self, _):
         g.custom_command('create', 'devcenter_environment_create', supports_no_wait=True)
         g.custom_command('update', 'devcenter_environment_update', supports_no_wait=True)
         g.custom_command('delete', 'devcenter_environment_delete', supports_no_wait=True, confirmation=True)
+        g.custom_command('custom-action', 'devcenter_environment_custom_action', supports_no_wait=True)
+        g.custom_command('delete-action', 'devcenter_environment_delete_action', supports_no_wait=True)
+        g.custom_command('deploy-action', 'devcenter_environment_deploy_action', supports_no_wait=True)
         g.custom_command('list-by-project', 'devcenter_environment_list_by_project')
         g.custom_wait_command('wait', 'devcenter_environment_show')
 

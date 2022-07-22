@@ -43,21 +43,15 @@ class ProjectOperations:
 
     def list_by_dev_center(
         self,
-        dev_center: str,
-        dev_center_dns_suffix: str = "devcenter.azure.com",
         filter: Optional[str] = None,
         top: Optional[int] = None,
         **kwargs
     ) -> AsyncIterable["models.ProjectListResult"]:
         """Lists all projects.
 
-        :param dev_center: The DevCenter to operate on.
-        :type dev_center: str
-        :param dev_center_dns_suffix: The DNS suffix used as the base for all devcenter requests.
-        :type dev_center_dns_suffix: str
-        :param filter: An OData $filter clause to apply to the operation.
+        :param filter: An OData filter clause to apply to the operation.
         :type filter: str
-        :param top: The maximum number of resources to return from the operation. Example: '$top=10'.
+        :param top: The maximum number of resources to return from the operation. Example: 'top=10'.
         :type top: int
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either ProjectListResult or the result of cls(response)
@@ -81,8 +75,9 @@ class ProjectOperations:
                 # Construct URL
                 url = self.list_by_dev_center.metadata['url']  # type: ignore
                 path_format_arguments = {
-                    'devCenter': self._serialize.url("dev_center", dev_center, 'str', skip_quote=True),
-                    'devCenterDnsSuffix': self._serialize.url("dev_center_dns_suffix", dev_center_dns_suffix, 'str', skip_quote=True),
+                    'tenantId': self._serialize.url("self._config.tenant_id", self._config.tenant_id, 'str', skip_quote=True),
+                    'devCenter': self._serialize.url("self._config.dev_center", self._config.dev_center, 'str', skip_quote=True),
+                    'devCenterDnsSuffix': self._serialize.url("self._config.dev_center_dns_suffix", self._config.dev_center_dns_suffix, 'str', skip_quote=True),
                 }
                 url = self._client.format_url(url, **path_format_arguments)
                 # Construct parameters
@@ -98,8 +93,9 @@ class ProjectOperations:
                 url = next_link
                 query_parameters = {}  # type: Dict[str, Any]
                 path_format_arguments = {
-                    'devCenter': self._serialize.url("dev_center", dev_center, 'str', skip_quote=True),
-                    'devCenterDnsSuffix': self._serialize.url("dev_center_dns_suffix", dev_center_dns_suffix, 'str', skip_quote=True),
+                    'tenantId': self._serialize.url("self._config.tenant_id", self._config.tenant_id, 'str', skip_quote=True),
+                    'devCenter': self._serialize.url("self._config.dev_center", self._config.dev_center, 'str', skip_quote=True),
+                    'devCenterDnsSuffix': self._serialize.url("self._config.dev_center_dns_suffix", self._config.dev_center_dns_suffix, 'str', skip_quote=True),
                 }
                 url = self._client.format_url(url, **path_format_arguments)
                 request = self._client.get(url, query_parameters, header_parameters)
@@ -131,19 +127,13 @@ class ProjectOperations:
 
     async def get(
         self,
-        dev_center: str,
         project_name: str,
-        dev_center_dns_suffix: str = "devcenter.azure.com",
         **kwargs
     ) -> "models.Project":
         """Gets a project.
 
-        :param dev_center: The DevCenter to operate on.
-        :type dev_center: str
         :param project_name: The DevCenter Project upon which to execute operations.
         :type project_name: str
-        :param dev_center_dns_suffix: The DNS suffix used as the base for all devcenter requests.
-        :type dev_center_dns_suffix: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: Project, or the result of cls(response)
         :rtype: ~dev_center_dataplane_client.models.Project
@@ -160,9 +150,10 @@ class ProjectOperations:
         # Construct URL
         url = self.get.metadata['url']  # type: ignore
         path_format_arguments = {
-            'devCenter': self._serialize.url("dev_center", dev_center, 'str', skip_quote=True),
-            'devCenterDnsSuffix': self._serialize.url("dev_center_dns_suffix", dev_center_dns_suffix, 'str', skip_quote=True),
-            'projectName': self._serialize.url("project_name", project_name, 'str'),
+            'tenantId': self._serialize.url("self._config.tenant_id", self._config.tenant_id, 'str', skip_quote=True),
+            'devCenter': self._serialize.url("self._config.dev_center", self._config.dev_center, 'str', skip_quote=True),
+            'devCenterDnsSuffix': self._serialize.url("self._config.dev_center_dns_suffix", self._config.dev_center_dns_suffix, 'str', skip_quote=True),
+            'projectName': self._serialize.url("project_name", project_name, 'str', max_length=63, min_length=3, pattern=r'^[a-zA-Z0-9][a-zA-Z0-9-]{2,62}$'),
         }
         url = self._client.format_url(url, **path_format_arguments)
 

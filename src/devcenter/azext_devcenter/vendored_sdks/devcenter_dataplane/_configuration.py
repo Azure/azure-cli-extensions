@@ -28,19 +28,37 @@ class DevCenterDataplaneClientConfiguration(Configuration):
 
     :param credential: Credential needed for the client to connect to Azure.
     :type credential: ~azure.core.credentials.TokenCredential
+    :param tenant_id: The tenant to operate on.
+    :type tenant_id: str
+    :param dev_center: The DevCenter to operate on.
+    :type dev_center: str
+    :param dev_center_dns_suffix: The DNS suffix used as the base for all devcenter requests.
+    :type dev_center_dns_suffix: str
     """
 
     def __init__(
         self,
         credential,  # type: "TokenCredential"
+        tenant_id,  # type: str
+        dev_center,  # type: str
+        dev_center_dns_suffix="devcenter.azure.com",  # type: str
         **kwargs  # type: Any
     ):
         # type: (...) -> None
         if credential is None:
             raise ValueError("Parameter 'credential' must not be None.")
+        if tenant_id is None:
+            raise ValueError("Parameter 'tenant_id' must not be None.")
+        if dev_center is None:
+            raise ValueError("Parameter 'dev_center' must not be None.")
+        if dev_center_dns_suffix is None:
+            raise ValueError("Parameter 'dev_center_dns_suffix' must not be None.")
         super(DevCenterDataplaneClientConfiguration, self).__init__(**kwargs)
 
         self.credential = credential
+        self.tenant_id = tenant_id
+        self.dev_center = dev_center
+        self.dev_center_dns_suffix = dev_center_dns_suffix
         self.api_version = "2022-03-01-preview"
         self.credential_scopes = kwargs.pop('credential_scopes', ['https://management.azure.com/.default'])
         kwargs.setdefault('sdk_moniker', 'devcenterdataplaneclient/{}'.format(VERSION))

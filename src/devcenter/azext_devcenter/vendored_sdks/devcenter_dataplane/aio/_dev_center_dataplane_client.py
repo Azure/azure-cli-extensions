@@ -21,7 +21,6 @@ from .operations import PoolOperations
 from .operations import ScheduleOperations
 from .operations import DevBoxOperations
 from .operations import EnvironmentsOperations
-from .operations import ActionsOperations
 from .operations import ArtifactsOperations
 from .operations import CatalogItemOperations
 from .operations import CatalogItemsOperations
@@ -31,7 +30,7 @@ from .. import models
 
 
 class DevCenterDataplaneClient(object):
-    """The devcenter common definitions and endpoints.
+    """DevBox API.
 
     :ivar project: ProjectOperations operations
     :vartype project: dev_center_dataplane_client.aio.operations.ProjectOperations
@@ -43,8 +42,6 @@ class DevCenterDataplaneClient(object):
     :vartype dev_box: dev_center_dataplane_client.aio.operations.DevBoxOperations
     :ivar environments: EnvironmentsOperations operations
     :vartype environments: dev_center_dataplane_client.aio.operations.EnvironmentsOperations
-    :ivar actions: ActionsOperations operations
-    :vartype actions: dev_center_dataplane_client.aio.operations.ActionsOperations
     :ivar artifacts: ArtifactsOperations operations
     :vartype artifacts: dev_center_dataplane_client.aio.operations.ArtifactsOperations
     :ivar catalog_item: CatalogItemOperations operations
@@ -57,16 +54,25 @@ class DevCenterDataplaneClient(object):
     :vartype environment_type: dev_center_dataplane_client.aio.operations.EnvironmentTypeOperations
     :param credential: Credential needed for the client to connect to Azure.
     :type credential: ~azure.core.credentials_async.AsyncTokenCredential
+    :param tenant_id: The tenant to operate on.
+    :type tenant_id: str
+    :param dev_center: The DevCenter to operate on.
+    :type dev_center: str
+    :param dev_center_dns_suffix: The DNS suffix used as the base for all devcenter requests.
+    :type dev_center_dns_suffix: str
     :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
     """
 
     def __init__(
         self,
         credential: "AsyncTokenCredential",
+        tenant_id: str,
+        dev_center: str,
+        dev_center_dns_suffix: str = "devcenter.azure.com",
         **kwargs: Any
     ) -> None:
-        base_url = 'https://{devCenter}.{devCenterDnsSuffix}'
-        self._config = DevCenterDataplaneClientConfiguration(credential, **kwargs)
+        base_url = 'https://{tenantId}-{devCenter}.{devCenterDnsSuffix}'
+        self._config = DevCenterDataplaneClientConfiguration(credential, tenant_id, dev_center, dev_center_dns_suffix, **kwargs)
         self._client = AsyncARMPipelineClient(base_url=base_url, config=self._config, **kwargs)
 
         client_models = {k: v for k, v in models.__dict__.items() if isinstance(v, type)}
@@ -83,8 +89,6 @@ class DevCenterDataplaneClient(object):
         self.dev_box = DevBoxOperations(
             self._client, self._config, self._serialize, self._deserialize)
         self.environments = EnvironmentsOperations(
-            self._client, self._config, self._serialize, self._deserialize)
-        self.actions = ActionsOperations(
             self._client, self._config, self._serialize, self._deserialize)
         self.artifacts = ArtifactsOperations(
             self._client, self._config, self._serialize, self._deserialize)

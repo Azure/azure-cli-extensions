@@ -45,21 +45,15 @@ class EnvironmentsOperations:
 
     def list_by_project(
         self,
-        dev_center: str,
         project_name: str,
-        dev_center_dns_suffix: str = "devcenter.azure.com",
         top: Optional[int] = None,
         **kwargs
     ) -> AsyncIterable["models.EnvironmentListResult"]:
         """Lists the environments for a project.
 
-        :param dev_center: The DevCenter to operate on.
-        :type dev_center: str
         :param project_name: The DevCenter Project upon which to execute operations.
         :type project_name: str
-        :param dev_center_dns_suffix: The DNS suffix used as the base for all devcenter requests.
-        :type dev_center_dns_suffix: str
-        :param top: The maximum number of resources to return from the operation. Example: '$top=10'.
+        :param top: The maximum number of resources to return from the operation. Example: 'top=10'.
         :type top: int
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either EnvironmentListResult or the result of cls(response)
@@ -83,9 +77,10 @@ class EnvironmentsOperations:
                 # Construct URL
                 url = self.list_by_project.metadata['url']  # type: ignore
                 path_format_arguments = {
-                    'devCenter': self._serialize.url("dev_center", dev_center, 'str', skip_quote=True),
-                    'devCenterDnsSuffix': self._serialize.url("dev_center_dns_suffix", dev_center_dns_suffix, 'str', skip_quote=True),
-                    'projectName': self._serialize.url("project_name", project_name, 'str'),
+                    'tenantId': self._serialize.url("self._config.tenant_id", self._config.tenant_id, 'str', skip_quote=True),
+                    'devCenter': self._serialize.url("self._config.dev_center", self._config.dev_center, 'str', skip_quote=True),
+                    'devCenterDnsSuffix': self._serialize.url("self._config.dev_center_dns_suffix", self._config.dev_center_dns_suffix, 'str', skip_quote=True),
+                    'projectName': self._serialize.url("project_name", project_name, 'str', max_length=63, min_length=3, pattern=r'^[a-zA-Z0-9][a-zA-Z0-9-]{2,62}$'),
                 }
                 url = self._client.format_url(url, **path_format_arguments)
                 # Construct parameters
@@ -99,9 +94,10 @@ class EnvironmentsOperations:
                 url = next_link
                 query_parameters = {}  # type: Dict[str, Any]
                 path_format_arguments = {
-                    'devCenter': self._serialize.url("dev_center", dev_center, 'str', skip_quote=True),
-                    'devCenterDnsSuffix': self._serialize.url("dev_center_dns_suffix", dev_center_dns_suffix, 'str', skip_quote=True),
-                    'projectName': self._serialize.url("project_name", project_name, 'str'),
+                    'tenantId': self._serialize.url("self._config.tenant_id", self._config.tenant_id, 'str', skip_quote=True),
+                    'devCenter': self._serialize.url("self._config.dev_center", self._config.dev_center, 'str', skip_quote=True),
+                    'devCenterDnsSuffix': self._serialize.url("self._config.dev_center_dns_suffix", self._config.dev_center_dns_suffix, 'str', skip_quote=True),
+                    'projectName': self._serialize.url("project_name", project_name, 'str', max_length=63, min_length=3, pattern=r'^[a-zA-Z0-9][a-zA-Z0-9-]{2,62}$'),
                 }
                 url = self._client.format_url(url, **path_format_arguments)
                 request = self._client.get(url, query_parameters, header_parameters)
@@ -133,24 +129,18 @@ class EnvironmentsOperations:
 
     def list_by_project_by_user(
         self,
-        dev_center: str,
         project_name: str,
-        dev_center_dns_suffix: str = "devcenter.azure.com",
         top: Optional[int] = None,
         user_id: str = "me",
         **kwargs
     ) -> AsyncIterable["models.EnvironmentListResult"]:
         """Lists the environments for a project and user.
 
-        :param dev_center: The DevCenter to operate on.
-        :type dev_center: str
         :param project_name: The DevCenter Project upon which to execute operations.
         :type project_name: str
-        :param dev_center_dns_suffix: The DNS suffix used as the base for all devcenter requests.
-        :type dev_center_dns_suffix: str
-        :param top: The maximum number of resources to return from the operation. Example: '$top=10'.
+        :param top: The maximum number of resources to return from the operation. Example: 'top=10'.
         :type top: int
-        :param user_id: The id of the user. If value is 'me', the identity is taken from the
+        :param user_id: The AAD object id of the user. If value is 'me', the identity is taken from the
          authentication context.
         :type user_id: str
         :keyword callable cls: A custom type or function that will be passed the direct response
@@ -175,10 +165,11 @@ class EnvironmentsOperations:
                 # Construct URL
                 url = self.list_by_project_by_user.metadata['url']  # type: ignore
                 path_format_arguments = {
-                    'devCenter': self._serialize.url("dev_center", dev_center, 'str', skip_quote=True),
-                    'devCenterDnsSuffix': self._serialize.url("dev_center_dns_suffix", dev_center_dns_suffix, 'str', skip_quote=True),
-                    'projectName': self._serialize.url("project_name", project_name, 'str'),
-                    'userId': self._serialize.url("user_id", user_id, 'str'),
+                    'tenantId': self._serialize.url("self._config.tenant_id", self._config.tenant_id, 'str', skip_quote=True),
+                    'devCenter': self._serialize.url("self._config.dev_center", self._config.dev_center, 'str', skip_quote=True),
+                    'devCenterDnsSuffix': self._serialize.url("self._config.dev_center_dns_suffix", self._config.dev_center_dns_suffix, 'str', skip_quote=True),
+                    'projectName': self._serialize.url("project_name", project_name, 'str', max_length=63, min_length=3, pattern=r'^[a-zA-Z0-9][a-zA-Z0-9-]{2,62}$'),
+                    'userId': self._serialize.url("user_id", user_id, 'str', max_length=36, min_length=2, pattern=r'^[a-zA-Z0-9]{8}-([a-zA-Z0-9]{4}-){3}[a-zA-Z0-9]{12}$|^me$'),
                 }
                 url = self._client.format_url(url, **path_format_arguments)
                 # Construct parameters
@@ -192,10 +183,11 @@ class EnvironmentsOperations:
                 url = next_link
                 query_parameters = {}  # type: Dict[str, Any]
                 path_format_arguments = {
-                    'devCenter': self._serialize.url("dev_center", dev_center, 'str', skip_quote=True),
-                    'devCenterDnsSuffix': self._serialize.url("dev_center_dns_suffix", dev_center_dns_suffix, 'str', skip_quote=True),
-                    'projectName': self._serialize.url("project_name", project_name, 'str'),
-                    'userId': self._serialize.url("user_id", user_id, 'str'),
+                    'tenantId': self._serialize.url("self._config.tenant_id", self._config.tenant_id, 'str', skip_quote=True),
+                    'devCenter': self._serialize.url("self._config.dev_center", self._config.dev_center, 'str', skip_quote=True),
+                    'devCenterDnsSuffix': self._serialize.url("self._config.dev_center_dns_suffix", self._config.dev_center_dns_suffix, 'str', skip_quote=True),
+                    'projectName': self._serialize.url("project_name", project_name, 'str', max_length=63, min_length=3, pattern=r'^[a-zA-Z0-9][a-zA-Z0-9-]{2,62}$'),
+                    'userId': self._serialize.url("user_id", user_id, 'str', max_length=36, min_length=2, pattern=r'^[a-zA-Z0-9]{8}-([a-zA-Z0-9]{4}-){3}[a-zA-Z0-9]{12}$|^me$'),
                 }
                 url = self._client.format_url(url, **path_format_arguments)
                 request = self._client.get(url, query_parameters, header_parameters)
@@ -227,24 +219,18 @@ class EnvironmentsOperations:
 
     async def get(
         self,
-        dev_center: str,
         project_name: str,
         environment_name: str,
-        dev_center_dns_suffix: str = "devcenter.azure.com",
         user_id: str = "me",
         **kwargs
     ) -> "models.Environment":
         """Gets an environment.
 
-        :param dev_center: The DevCenter to operate on.
-        :type dev_center: str
         :param project_name: The DevCenter Project upon which to execute operations.
         :type project_name: str
         :param environment_name: The name of the environment.
         :type environment_name: str
-        :param dev_center_dns_suffix: The DNS suffix used as the base for all devcenter requests.
-        :type dev_center_dns_suffix: str
-        :param user_id: The id of the user. If value is 'me', the identity is taken from the
+        :param user_id: The AAD object id of the user. If value is 'me', the identity is taken from the
          authentication context.
         :type user_id: str
         :keyword callable cls: A custom type or function that will be passed the direct response
@@ -263,10 +249,11 @@ class EnvironmentsOperations:
         # Construct URL
         url = self.get.metadata['url']  # type: ignore
         path_format_arguments = {
-            'devCenter': self._serialize.url("dev_center", dev_center, 'str', skip_quote=True),
-            'devCenterDnsSuffix': self._serialize.url("dev_center_dns_suffix", dev_center_dns_suffix, 'str', skip_quote=True),
-            'projectName': self._serialize.url("project_name", project_name, 'str'),
-            'userId': self._serialize.url("user_id", user_id, 'str'),
+            'tenantId': self._serialize.url("self._config.tenant_id", self._config.tenant_id, 'str', skip_quote=True),
+            'devCenter': self._serialize.url("self._config.dev_center", self._config.dev_center, 'str', skip_quote=True),
+            'devCenterDnsSuffix': self._serialize.url("self._config.dev_center_dns_suffix", self._config.dev_center_dns_suffix, 'str', skip_quote=True),
+            'projectName': self._serialize.url("project_name", project_name, 'str', max_length=63, min_length=3, pattern=r'^[a-zA-Z0-9][a-zA-Z0-9-]{2,62}$'),
+            'userId': self._serialize.url("user_id", user_id, 'str', max_length=36, min_length=2, pattern=r'^[a-zA-Z0-9]{8}-([a-zA-Z0-9]{4}-){3}[a-zA-Z0-9]{12}$|^me$'),
             'environmentName': self._serialize.url("environment_name", environment_name, 'str'),
         }
         url = self._client.format_url(url, **path_format_arguments)
@@ -297,11 +284,9 @@ class EnvironmentsOperations:
 
     async def _create_or_update_initial(
         self,
-        dev_center: str,
         project_name: str,
         environment_name: str,
         body: "models.Environment",
-        dev_center_dns_suffix: str = "devcenter.azure.com",
         user_id: str = "me",
         **kwargs
     ) -> "models.Environment":
@@ -317,10 +302,11 @@ class EnvironmentsOperations:
         # Construct URL
         url = self._create_or_update_initial.metadata['url']  # type: ignore
         path_format_arguments = {
-            'devCenter': self._serialize.url("dev_center", dev_center, 'str', skip_quote=True),
-            'devCenterDnsSuffix': self._serialize.url("dev_center_dns_suffix", dev_center_dns_suffix, 'str', skip_quote=True),
-            'projectName': self._serialize.url("project_name", project_name, 'str'),
-            'userId': self._serialize.url("user_id", user_id, 'str'),
+            'tenantId': self._serialize.url("self._config.tenant_id", self._config.tenant_id, 'str', skip_quote=True),
+            'devCenter': self._serialize.url("self._config.dev_center", self._config.dev_center, 'str', skip_quote=True),
+            'devCenterDnsSuffix': self._serialize.url("self._config.dev_center_dns_suffix", self._config.dev_center_dns_suffix, 'str', skip_quote=True),
+            'projectName': self._serialize.url("project_name", project_name, 'str', max_length=63, min_length=3, pattern=r'^[a-zA-Z0-9][a-zA-Z0-9-]{2,62}$'),
+            'userId': self._serialize.url("user_id", user_id, 'str', max_length=36, min_length=2, pattern=r'^[a-zA-Z0-9]{8}-([a-zA-Z0-9]{4}-){3}[a-zA-Z0-9]{12}$|^me$'),
             'environmentName': self._serialize.url("environment_name", environment_name, 'str'),
         }
         url = self._client.format_url(url, **path_format_arguments)
@@ -345,41 +331,37 @@ class EnvironmentsOperations:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
+        response_headers = {}
         if response.status_code == 200:
             deserialized = self._deserialize('Environment', pipeline_response)
 
         if response.status_code == 201:
+            response_headers['Operation-Location']=self._deserialize('str', response.headers.get('Operation-Location'))
             deserialized = self._deserialize('Environment', pipeline_response)
 
         if cls:
-            return cls(pipeline_response, deserialized, {})
+            return cls(pipeline_response, deserialized, response_headers)
 
         return deserialized
     _create_or_update_initial.metadata = {'url': '/projects/{projectName}/users/{userId}/environments/{environmentName}'}  # type: ignore
 
     async def begin_create_or_update(
         self,
-        dev_center: str,
         project_name: str,
         environment_name: str,
         body: "models.Environment",
-        dev_center_dns_suffix: str = "devcenter.azure.com",
         user_id: str = "me",
         **kwargs
     ) -> AsyncLROPoller["models.Environment"]:
         """Creates or updates an environment.
 
-        :param dev_center: The DevCenter to operate on.
-        :type dev_center: str
         :param project_name: The DevCenter Project upon which to execute operations.
         :type project_name: str
         :param environment_name: The name of the environment.
         :type environment_name: str
         :param body: Represents a environment.
         :type body: ~dev_center_dataplane_client.models.Environment
-        :param dev_center_dns_suffix: The DNS suffix used as the base for all devcenter requests.
-        :type dev_center_dns_suffix: str
-        :param user_id: The id of the user. If value is 'me', the identity is taken from the
+        :param user_id: The AAD object id of the user. If value is 'me', the identity is taken from the
          authentication context.
         :type user_id: str
         :keyword callable cls: A custom type or function that will be passed the direct response
@@ -401,11 +383,9 @@ class EnvironmentsOperations:
         cont_token = kwargs.pop('continuation_token', None)  # type: Optional[str]
         if cont_token is None:
             raw_result = await self._create_or_update_initial(
-                dev_center=dev_center,
                 project_name=project_name,
                 environment_name=environment_name,
                 body=body,
-                dev_center_dns_suffix=dev_center_dns_suffix,
                 user_id=user_id,
                 cls=lambda x,y,z: x,
                 **kwargs
@@ -415,17 +395,21 @@ class EnvironmentsOperations:
         kwargs.pop('content_type', None)
 
         def get_long_running_output(pipeline_response):
+            response_headers = {}
+            response = pipeline_response.http_response
+            response_headers['Operation-Location']=self._deserialize('str', response.headers.get('Operation-Location'))
             deserialized = self._deserialize('Environment', pipeline_response)
 
             if cls:
-                return cls(pipeline_response, deserialized, {})
+                return cls(pipeline_response, deserialized, response_headers)
             return deserialized
 
         path_format_arguments = {
-            'devCenter': self._serialize.url("dev_center", dev_center, 'str', skip_quote=True),
-            'devCenterDnsSuffix': self._serialize.url("dev_center_dns_suffix", dev_center_dns_suffix, 'str', skip_quote=True),
-            'projectName': self._serialize.url("project_name", project_name, 'str'),
-            'userId': self._serialize.url("user_id", user_id, 'str'),
+            'tenantId': self._serialize.url("self._config.tenant_id", self._config.tenant_id, 'str', skip_quote=True),
+            'devCenter': self._serialize.url("self._config.dev_center", self._config.dev_center, 'str', skip_quote=True),
+            'devCenterDnsSuffix': self._serialize.url("self._config.dev_center_dns_suffix", self._config.dev_center_dns_suffix, 'str', skip_quote=True),
+            'projectName': self._serialize.url("project_name", project_name, 'str', max_length=63, min_length=3, pattern=r'^[a-zA-Z0-9][a-zA-Z0-9-]{2,62}$'),
+            'userId': self._serialize.url("user_id", user_id, 'str', max_length=36, min_length=2, pattern=r'^[a-zA-Z0-9]{8}-([a-zA-Z0-9]{4}-){3}[a-zA-Z0-9]{12}$|^me$'),
             'environmentName': self._serialize.url("environment_name", environment_name, 'str'),
         }
 
@@ -443,17 +427,31 @@ class EnvironmentsOperations:
             return AsyncLROPoller(self._client, raw_result, get_long_running_output, polling_method)
     begin_create_or_update.metadata = {'url': '/projects/{projectName}/users/{userId}/environments/{environmentName}'}  # type: ignore
 
-    async def _update_initial(
+    async def update(
         self,
-        dev_center: str,
         project_name: str,
         environment_name: str,
         body: "models.EnvironmentUpdateProperties",
-        dev_center_dns_suffix: str = "devcenter.azure.com",
         user_id: str = "me",
         **kwargs
-    ) -> Optional["models.Environment"]:
-        cls = kwargs.pop('cls', None)  # type: ClsType[Optional["models.Environment"]]
+    ) -> "models.Environment":
+        """Partially updates an environment.
+
+        :param project_name: The DevCenter Project upon which to execute operations.
+        :type project_name: str
+        :param environment_name: The name of the environment.
+        :type environment_name: str
+        :param body: Updatable environment properties.
+        :type body: ~dev_center_dataplane_client.models.EnvironmentUpdateProperties
+        :param user_id: The AAD object id of the user. If value is 'me', the identity is taken from the
+         authentication context.
+        :type user_id: str
+        :keyword callable cls: A custom type or function that will be passed the direct response
+        :return: Environment, or the result of cls(response)
+        :rtype: ~dev_center_dataplane_client.models.Environment
+        :raises: ~azure.core.exceptions.HttpResponseError
+        """
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.Environment"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
@@ -463,12 +461,13 @@ class EnvironmentsOperations:
         accept = "application/json"
 
         # Construct URL
-        url = self._update_initial.metadata['url']  # type: ignore
+        url = self.update.metadata['url']  # type: ignore
         path_format_arguments = {
-            'devCenter': self._serialize.url("dev_center", dev_center, 'str', skip_quote=True),
-            'devCenterDnsSuffix': self._serialize.url("dev_center_dns_suffix", dev_center_dns_suffix, 'str', skip_quote=True),
-            'projectName': self._serialize.url("project_name", project_name, 'str'),
-            'userId': self._serialize.url("user_id", user_id, 'str'),
+            'tenantId': self._serialize.url("self._config.tenant_id", self._config.tenant_id, 'str', skip_quote=True),
+            'devCenter': self._serialize.url("self._config.dev_center", self._config.dev_center, 'str', skip_quote=True),
+            'devCenterDnsSuffix': self._serialize.url("self._config.dev_center_dns_suffix", self._config.dev_center_dns_suffix, 'str', skip_quote=True),
+            'projectName': self._serialize.url("project_name", project_name, 'str', max_length=63, min_length=3, pattern=r'^[a-zA-Z0-9][a-zA-Z0-9-]{2,62}$'),
+            'userId': self._serialize.url("user_id", user_id, 'str', max_length=36, min_length=2, pattern=r'^[a-zA-Z0-9]{8}-([a-zA-Z0-9]{4}-){3}[a-zA-Z0-9]{12}$|^me$'),
             'environmentName': self._serialize.url("environment_name", environment_name, 'str'),
         }
         url = self._client.format_url(url, **path_format_arguments)
@@ -489,116 +488,22 @@ class EnvironmentsOperations:
         pipeline_response = await self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
-        if response.status_code not in [200, 202]:
+        if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
-        response_headers = {}
-        deserialized = None
-        if response.status_code == 200:
-            deserialized = self._deserialize('Environment', pipeline_response)
-
-        if response.status_code == 202:
-            response_headers['Operation-Location']=self._deserialize('str', response.headers.get('Operation-Location'))
+        deserialized = self._deserialize('Environment', pipeline_response)
 
         if cls:
-            return cls(pipeline_response, deserialized, response_headers)
+            return cls(pipeline_response, deserialized, {})
 
         return deserialized
-    _update_initial.metadata = {'url': '/projects/{projectName}/users/{userId}/environments/{environmentName}'}  # type: ignore
-
-    async def begin_update(
-        self,
-        dev_center: str,
-        project_name: str,
-        environment_name: str,
-        body: "models.EnvironmentUpdateProperties",
-        dev_center_dns_suffix: str = "devcenter.azure.com",
-        user_id: str = "me",
-        **kwargs
-    ) -> AsyncLROPoller["models.Environment"]:
-        """Partially updates an environment.
-
-        :param dev_center: The DevCenter to operate on.
-        :type dev_center: str
-        :param project_name: The DevCenter Project upon which to execute operations.
-        :type project_name: str
-        :param environment_name: The name of the environment.
-        :type environment_name: str
-        :param body: Updatable environment properties.
-        :type body: ~dev_center_dataplane_client.models.EnvironmentUpdateProperties
-        :param dev_center_dns_suffix: The DNS suffix used as the base for all devcenter requests.
-        :type dev_center_dns_suffix: str
-        :param user_id: The id of the user. If value is 'me', the identity is taken from the
-         authentication context.
-        :type user_id: str
-        :keyword callable cls: A custom type or function that will be passed the direct response
-        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: True for ARMPolling, False for no polling, or a
-         polling object for personal polling strategy
-        :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
-        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
-        :return: An instance of AsyncLROPoller that returns either Environment or the result of cls(response)
-        :rtype: ~azure.core.polling.AsyncLROPoller[~dev_center_dataplane_client.models.Environment]
-        :raises ~azure.core.exceptions.HttpResponseError:
-        """
-        polling = kwargs.pop('polling', True)  # type: Union[bool, AsyncPollingMethod]
-        cls = kwargs.pop('cls', None)  # type: ClsType["models.Environment"]
-        lro_delay = kwargs.pop(
-            'polling_interval',
-            self._config.polling_interval
-        )
-        cont_token = kwargs.pop('continuation_token', None)  # type: Optional[str]
-        if cont_token is None:
-            raw_result = await self._update_initial(
-                dev_center=dev_center,
-                project_name=project_name,
-                environment_name=environment_name,
-                body=body,
-                dev_center_dns_suffix=dev_center_dns_suffix,
-                user_id=user_id,
-                cls=lambda x,y,z: x,
-                **kwargs
-            )
-
-        kwargs.pop('error_map', None)
-        kwargs.pop('content_type', None)
-
-        def get_long_running_output(pipeline_response):
-            deserialized = self._deserialize('Environment', pipeline_response)
-
-            if cls:
-                return cls(pipeline_response, deserialized, {})
-            return deserialized
-
-        path_format_arguments = {
-            'devCenter': self._serialize.url("dev_center", dev_center, 'str', skip_quote=True),
-            'devCenterDnsSuffix': self._serialize.url("dev_center_dns_suffix", dev_center_dns_suffix, 'str', skip_quote=True),
-            'projectName': self._serialize.url("project_name", project_name, 'str'),
-            'userId': self._serialize.url("user_id", user_id, 'str'),
-            'environmentName': self._serialize.url("environment_name", environment_name, 'str'),
-        }
-
-        if polling is True: polling_method = AsyncARMPolling(lro_delay, lro_options={'final-state-via': 'original-uri'}, path_format_arguments=path_format_arguments,  **kwargs)
-        elif polling is False: polling_method = AsyncNoPolling()
-        else: polling_method = polling
-        if cont_token:
-            return AsyncLROPoller.from_continuation_token(
-                polling_method=polling_method,
-                continuation_token=cont_token,
-                client=self._client,
-                deserialization_callback=get_long_running_output
-            )
-        else:
-            return AsyncLROPoller(self._client, raw_result, get_long_running_output, polling_method)
-    begin_update.metadata = {'url': '/projects/{projectName}/users/{userId}/environments/{environmentName}'}  # type: ignore
+    update.metadata = {'url': '/projects/{projectName}/users/{userId}/environments/{environmentName}'}  # type: ignore
 
     async def _delete_initial(
         self,
-        dev_center: str,
         project_name: str,
         environment_name: str,
-        dev_center_dns_suffix: str = "devcenter.azure.com",
         user_id: str = "me",
         **kwargs
     ) -> None:
@@ -613,10 +518,11 @@ class EnvironmentsOperations:
         # Construct URL
         url = self._delete_initial.metadata['url']  # type: ignore
         path_format_arguments = {
-            'devCenter': self._serialize.url("dev_center", dev_center, 'str', skip_quote=True),
-            'devCenterDnsSuffix': self._serialize.url("dev_center_dns_suffix", dev_center_dns_suffix, 'str', skip_quote=True),
-            'projectName': self._serialize.url("project_name", project_name, 'str'),
-            'userId': self._serialize.url("user_id", user_id, 'str'),
+            'tenantId': self._serialize.url("self._config.tenant_id", self._config.tenant_id, 'str', skip_quote=True),
+            'devCenter': self._serialize.url("self._config.dev_center", self._config.dev_center, 'str', skip_quote=True),
+            'devCenterDnsSuffix': self._serialize.url("self._config.dev_center_dns_suffix", self._config.dev_center_dns_suffix, 'str', skip_quote=True),
+            'projectName': self._serialize.url("project_name", project_name, 'str', max_length=63, min_length=3, pattern=r'^[a-zA-Z0-9][a-zA-Z0-9-]{2,62}$'),
+            'userId': self._serialize.url("user_id", user_id, 'str', max_length=36, min_length=2, pattern=r'^[a-zA-Z0-9]{8}-([a-zA-Z0-9]{4}-){3}[a-zA-Z0-9]{12}$|^me$'),
             'environmentName': self._serialize.url("environment_name", environment_name, 'str'),
         }
         url = self._client.format_url(url, **path_format_arguments)
@@ -648,24 +554,18 @@ class EnvironmentsOperations:
 
     async def begin_delete(
         self,
-        dev_center: str,
         project_name: str,
         environment_name: str,
-        dev_center_dns_suffix: str = "devcenter.azure.com",
         user_id: str = "me",
         **kwargs
     ) -> AsyncLROPoller[None]:
         """Deletes an environment and all it's associated resources.
 
-        :param dev_center: The DevCenter to operate on.
-        :type dev_center: str
         :param project_name: The DevCenter Project upon which to execute operations.
         :type project_name: str
         :param environment_name: The name of the environment.
         :type environment_name: str
-        :param dev_center_dns_suffix: The DNS suffix used as the base for all devcenter requests.
-        :type dev_center_dns_suffix: str
-        :param user_id: The id of the user. If value is 'me', the identity is taken from the
+        :param user_id: The AAD object id of the user. If value is 'me', the identity is taken from the
          authentication context.
         :type user_id: str
         :keyword callable cls: A custom type or function that will be passed the direct response
@@ -687,10 +587,8 @@ class EnvironmentsOperations:
         cont_token = kwargs.pop('continuation_token', None)  # type: Optional[str]
         if cont_token is None:
             raw_result = await self._delete_initial(
-                dev_center=dev_center,
                 project_name=project_name,
                 environment_name=environment_name,
-                dev_center_dns_suffix=dev_center_dns_suffix,
                 user_id=user_id,
                 cls=lambda x,y,z: x,
                 **kwargs
@@ -704,10 +602,11 @@ class EnvironmentsOperations:
                 return cls(pipeline_response, None, {})
 
         path_format_arguments = {
-            'devCenter': self._serialize.url("dev_center", dev_center, 'str', skip_quote=True),
-            'devCenterDnsSuffix': self._serialize.url("dev_center_dns_suffix", dev_center_dns_suffix, 'str', skip_quote=True),
-            'projectName': self._serialize.url("project_name", project_name, 'str'),
-            'userId': self._serialize.url("user_id", user_id, 'str'),
+            'tenantId': self._serialize.url("self._config.tenant_id", self._config.tenant_id, 'str', skip_quote=True),
+            'devCenter': self._serialize.url("self._config.dev_center", self._config.dev_center, 'str', skip_quote=True),
+            'devCenterDnsSuffix': self._serialize.url("self._config.dev_center_dns_suffix", self._config.dev_center_dns_suffix, 'str', skip_quote=True),
+            'projectName': self._serialize.url("project_name", project_name, 'str', max_length=63, min_length=3, pattern=r'^[a-zA-Z0-9][a-zA-Z0-9-]{2,62}$'),
+            'userId': self._serialize.url("user_id", user_id, 'str', max_length=36, min_length=2, pattern=r'^[a-zA-Z0-9]{8}-([a-zA-Z0-9]{4}-){3}[a-zA-Z0-9]{12}$|^me$'),
             'environmentName': self._serialize.url("environment_name", environment_name, 'str'),
         }
 
@@ -724,3 +623,402 @@ class EnvironmentsOperations:
         else:
             return AsyncLROPoller(self._client, raw_result, get_long_running_output, polling_method)
     begin_delete.metadata = {'url': '/projects/{projectName}/users/{userId}/environments/{environmentName}'}  # type: ignore
+
+    async def _deploy_action_initial(
+        self,
+        project_name: str,
+        environment_name: str,
+        body: "models.ActionRequest",
+        user_id: str = "me",
+        **kwargs
+    ) -> None:
+        cls = kwargs.pop('cls', None)  # type: ClsType[None]
+        error_map = {
+            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
+        }
+        error_map.update(kwargs.pop('error_map', {}))
+        api_version = "2022-03-01-preview"
+        content_type = kwargs.pop("content_type", "application/json")
+        accept = "application/json"
+
+        # Construct URL
+        url = self._deploy_action_initial.metadata['url']  # type: ignore
+        path_format_arguments = {
+            'tenantId': self._serialize.url("self._config.tenant_id", self._config.tenant_id, 'str', skip_quote=True),
+            'devCenter': self._serialize.url("self._config.dev_center", self._config.dev_center, 'str', skip_quote=True),
+            'devCenterDnsSuffix': self._serialize.url("self._config.dev_center_dns_suffix", self._config.dev_center_dns_suffix, 'str', skip_quote=True),
+            'projectName': self._serialize.url("project_name", project_name, 'str', max_length=63, min_length=3, pattern=r'^[a-zA-Z0-9][a-zA-Z0-9-]{2,62}$'),
+            'userId': self._serialize.url("user_id", user_id, 'str', max_length=36, min_length=2, pattern=r'^[a-zA-Z0-9]{8}-([a-zA-Z0-9]{4}-){3}[a-zA-Z0-9]{12}$|^me$'),
+            'environmentName': self._serialize.url("environment_name", environment_name, 'str'),
+        }
+        url = self._client.format_url(url, **path_format_arguments)
+
+        # Construct parameters
+        query_parameters = {}  # type: Dict[str, Any]
+        query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
+
+        # Construct headers
+        header_parameters = {}  # type: Dict[str, Any]
+        header_parameters['Content-Type'] = self._serialize.header("content_type", content_type, 'str')
+        header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
+
+        body_content_kwargs = {}  # type: Dict[str, Any]
+        body_content = self._serialize.body(body, 'ActionRequest')
+        body_content_kwargs['content'] = body_content
+        request = self._client.post(url, query_parameters, header_parameters, **body_content_kwargs)
+        pipeline_response = await self._client._pipeline.run(request, stream=False, **kwargs)
+        response = pipeline_response.http_response
+
+        if response.status_code not in [202]:
+            map_error(status_code=response.status_code, response=response, error_map=error_map)
+            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+
+        response_headers = {}
+        response_headers['Operation-Location']=self._deserialize('str', response.headers.get('Operation-Location'))
+
+        if cls:
+            return cls(pipeline_response, None, response_headers)
+
+    _deploy_action_initial.metadata = {'url': '/projects/{projectName}/users/{userId}/environments/{environmentName}:deploy'}  # type: ignore
+
+    async def begin_deploy_action(
+        self,
+        project_name: str,
+        environment_name: str,
+        body: "models.ActionRequest",
+        user_id: str = "me",
+        **kwargs
+    ) -> AsyncLROPoller[None]:
+        """Executes a deploy action.
+
+        :param project_name: The DevCenter Project upon which to execute operations.
+        :type project_name: str
+        :param environment_name: The name of the environment.
+        :type environment_name: str
+        :param body: Action properties overriding the environment's default values.
+        :type body: ~dev_center_dataplane_client.models.ActionRequest
+        :param user_id: The AAD object id of the user. If value is 'me', the identity is taken from the
+         authentication context.
+        :type user_id: str
+        :keyword callable cls: A custom type or function that will be passed the direct response
+        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
+        :keyword polling: True for ARMPolling, False for no polling, or a
+         polling object for personal polling strategy
+        :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
+        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
+        :return: An instance of AsyncLROPoller that returns either None or the result of cls(response)
+        :rtype: ~azure.core.polling.AsyncLROPoller[None]
+        :raises ~azure.core.exceptions.HttpResponseError:
+        """
+        polling = kwargs.pop('polling', True)  # type: Union[bool, AsyncPollingMethod]
+        cls = kwargs.pop('cls', None)  # type: ClsType[None]
+        lro_delay = kwargs.pop(
+            'polling_interval',
+            self._config.polling_interval
+        )
+        cont_token = kwargs.pop('continuation_token', None)  # type: Optional[str]
+        if cont_token is None:
+            raw_result = await self._deploy_action_initial(
+                project_name=project_name,
+                environment_name=environment_name,
+                body=body,
+                user_id=user_id,
+                cls=lambda x,y,z: x,
+                **kwargs
+            )
+
+        kwargs.pop('error_map', None)
+        kwargs.pop('content_type', None)
+
+        def get_long_running_output(pipeline_response):
+            if cls:
+                return cls(pipeline_response, None, {})
+
+        path_format_arguments = {
+            'tenantId': self._serialize.url("self._config.tenant_id", self._config.tenant_id, 'str', skip_quote=True),
+            'devCenter': self._serialize.url("self._config.dev_center", self._config.dev_center, 'str', skip_quote=True),
+            'devCenterDnsSuffix': self._serialize.url("self._config.dev_center_dns_suffix", self._config.dev_center_dns_suffix, 'str', skip_quote=True),
+            'projectName': self._serialize.url("project_name", project_name, 'str', max_length=63, min_length=3, pattern=r'^[a-zA-Z0-9][a-zA-Z0-9-]{2,62}$'),
+            'userId': self._serialize.url("user_id", user_id, 'str', max_length=36, min_length=2, pattern=r'^[a-zA-Z0-9]{8}-([a-zA-Z0-9]{4}-){3}[a-zA-Z0-9]{12}$|^me$'),
+            'environmentName': self._serialize.url("environment_name", environment_name, 'str'),
+        }
+
+        if polling is True: polling_method = AsyncARMPolling(lro_delay, lro_options={'final-state-via': 'original-uri'}, path_format_arguments=path_format_arguments,  **kwargs)
+        elif polling is False: polling_method = AsyncNoPolling()
+        else: polling_method = polling
+        if cont_token:
+            return AsyncLROPoller.from_continuation_token(
+                polling_method=polling_method,
+                continuation_token=cont_token,
+                client=self._client,
+                deserialization_callback=get_long_running_output
+            )
+        else:
+            return AsyncLROPoller(self._client, raw_result, get_long_running_output, polling_method)
+    begin_deploy_action.metadata = {'url': '/projects/{projectName}/users/{userId}/environments/{environmentName}:deploy'}  # type: ignore
+
+    async def _delete_action_initial(
+        self,
+        project_name: str,
+        environment_name: str,
+        body: "models.ActionRequest",
+        user_id: str = "me",
+        **kwargs
+    ) -> None:
+        cls = kwargs.pop('cls', None)  # type: ClsType[None]
+        error_map = {
+            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
+        }
+        error_map.update(kwargs.pop('error_map', {}))
+        api_version = "2022-03-01-preview"
+        content_type = kwargs.pop("content_type", "application/json")
+        accept = "application/json"
+
+        # Construct URL
+        url = self._delete_action_initial.metadata['url']  # type: ignore
+        path_format_arguments = {
+            'tenantId': self._serialize.url("self._config.tenant_id", self._config.tenant_id, 'str', skip_quote=True),
+            'devCenter': self._serialize.url("self._config.dev_center", self._config.dev_center, 'str', skip_quote=True),
+            'devCenterDnsSuffix': self._serialize.url("self._config.dev_center_dns_suffix", self._config.dev_center_dns_suffix, 'str', skip_quote=True),
+            'projectName': self._serialize.url("project_name", project_name, 'str', max_length=63, min_length=3, pattern=r'^[a-zA-Z0-9][a-zA-Z0-9-]{2,62}$'),
+            'userId': self._serialize.url("user_id", user_id, 'str', max_length=36, min_length=2, pattern=r'^[a-zA-Z0-9]{8}-([a-zA-Z0-9]{4}-){3}[a-zA-Z0-9]{12}$|^me$'),
+            'environmentName': self._serialize.url("environment_name", environment_name, 'str'),
+        }
+        url = self._client.format_url(url, **path_format_arguments)
+
+        # Construct parameters
+        query_parameters = {}  # type: Dict[str, Any]
+        query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
+
+        # Construct headers
+        header_parameters = {}  # type: Dict[str, Any]
+        header_parameters['Content-Type'] = self._serialize.header("content_type", content_type, 'str')
+        header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
+
+        body_content_kwargs = {}  # type: Dict[str, Any]
+        body_content = self._serialize.body(body, 'ActionRequest')
+        body_content_kwargs['content'] = body_content
+        request = self._client.post(url, query_parameters, header_parameters, **body_content_kwargs)
+        pipeline_response = await self._client._pipeline.run(request, stream=False, **kwargs)
+        response = pipeline_response.http_response
+
+        if response.status_code not in [202]:
+            map_error(status_code=response.status_code, response=response, error_map=error_map)
+            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+
+        response_headers = {}
+        response_headers['Operation-Location']=self._deserialize('str', response.headers.get('Operation-Location'))
+
+        if cls:
+            return cls(pipeline_response, None, response_headers)
+
+    _delete_action_initial.metadata = {'url': '/projects/{projectName}/users/{userId}/environments/{environmentName}:delete'}  # type: ignore
+
+    async def begin_delete_action(
+        self,
+        project_name: str,
+        environment_name: str,
+        body: "models.ActionRequest",
+        user_id: str = "me",
+        **kwargs
+    ) -> AsyncLROPoller[None]:
+        """Executes a delete action.
+
+        :param project_name: The DevCenter Project upon which to execute operations.
+        :type project_name: str
+        :param environment_name: The name of the environment.
+        :type environment_name: str
+        :param body: Action properties overriding the environment's default values.
+        :type body: ~dev_center_dataplane_client.models.ActionRequest
+        :param user_id: The AAD object id of the user. If value is 'me', the identity is taken from the
+         authentication context.
+        :type user_id: str
+        :keyword callable cls: A custom type or function that will be passed the direct response
+        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
+        :keyword polling: True for ARMPolling, False for no polling, or a
+         polling object for personal polling strategy
+        :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
+        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
+        :return: An instance of AsyncLROPoller that returns either None or the result of cls(response)
+        :rtype: ~azure.core.polling.AsyncLROPoller[None]
+        :raises ~azure.core.exceptions.HttpResponseError:
+        """
+        polling = kwargs.pop('polling', True)  # type: Union[bool, AsyncPollingMethod]
+        cls = kwargs.pop('cls', None)  # type: ClsType[None]
+        lro_delay = kwargs.pop(
+            'polling_interval',
+            self._config.polling_interval
+        )
+        cont_token = kwargs.pop('continuation_token', None)  # type: Optional[str]
+        if cont_token is None:
+            raw_result = await self._delete_action_initial(
+                project_name=project_name,
+                environment_name=environment_name,
+                body=body,
+                user_id=user_id,
+                cls=lambda x,y,z: x,
+                **kwargs
+            )
+
+        kwargs.pop('error_map', None)
+        kwargs.pop('content_type', None)
+
+        def get_long_running_output(pipeline_response):
+            if cls:
+                return cls(pipeline_response, None, {})
+
+        path_format_arguments = {
+            'tenantId': self._serialize.url("self._config.tenant_id", self._config.tenant_id, 'str', skip_quote=True),
+            'devCenter': self._serialize.url("self._config.dev_center", self._config.dev_center, 'str', skip_quote=True),
+            'devCenterDnsSuffix': self._serialize.url("self._config.dev_center_dns_suffix", self._config.dev_center_dns_suffix, 'str', skip_quote=True),
+            'projectName': self._serialize.url("project_name", project_name, 'str', max_length=63, min_length=3, pattern=r'^[a-zA-Z0-9][a-zA-Z0-9-]{2,62}$'),
+            'userId': self._serialize.url("user_id", user_id, 'str', max_length=36, min_length=2, pattern=r'^[a-zA-Z0-9]{8}-([a-zA-Z0-9]{4}-){3}[a-zA-Z0-9]{12}$|^me$'),
+            'environmentName': self._serialize.url("environment_name", environment_name, 'str'),
+        }
+
+        if polling is True: polling_method = AsyncARMPolling(lro_delay, lro_options={'final-state-via': 'original-uri'}, path_format_arguments=path_format_arguments,  **kwargs)
+        elif polling is False: polling_method = AsyncNoPolling()
+        else: polling_method = polling
+        if cont_token:
+            return AsyncLROPoller.from_continuation_token(
+                polling_method=polling_method,
+                continuation_token=cont_token,
+                client=self._client,
+                deserialization_callback=get_long_running_output
+            )
+        else:
+            return AsyncLROPoller(self._client, raw_result, get_long_running_output, polling_method)
+    begin_delete_action.metadata = {'url': '/projects/{projectName}/users/{userId}/environments/{environmentName}:delete'}  # type: ignore
+
+    async def _custom_action_initial(
+        self,
+        project_name: str,
+        environment_name: str,
+        body: "models.ActionRequest",
+        user_id: str = "me",
+        **kwargs
+    ) -> None:
+        cls = kwargs.pop('cls', None)  # type: ClsType[None]
+        error_map = {
+            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
+        }
+        error_map.update(kwargs.pop('error_map', {}))
+        api_version = "2022-03-01-preview"
+        content_type = kwargs.pop("content_type", "application/json")
+        accept = "application/json"
+
+        # Construct URL
+        url = self._custom_action_initial.metadata['url']  # type: ignore
+        path_format_arguments = {
+            'tenantId': self._serialize.url("self._config.tenant_id", self._config.tenant_id, 'str', skip_quote=True),
+            'devCenter': self._serialize.url("self._config.dev_center", self._config.dev_center, 'str', skip_quote=True),
+            'devCenterDnsSuffix': self._serialize.url("self._config.dev_center_dns_suffix", self._config.dev_center_dns_suffix, 'str', skip_quote=True),
+            'projectName': self._serialize.url("project_name", project_name, 'str', max_length=63, min_length=3, pattern=r'^[a-zA-Z0-9][a-zA-Z0-9-]{2,62}$'),
+            'userId': self._serialize.url("user_id", user_id, 'str', max_length=36, min_length=2, pattern=r'^[a-zA-Z0-9]{8}-([a-zA-Z0-9]{4}-){3}[a-zA-Z0-9]{12}$|^me$'),
+            'environmentName': self._serialize.url("environment_name", environment_name, 'str'),
+        }
+        url = self._client.format_url(url, **path_format_arguments)
+
+        # Construct parameters
+        query_parameters = {}  # type: Dict[str, Any]
+        query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
+
+        # Construct headers
+        header_parameters = {}  # type: Dict[str, Any]
+        header_parameters['Content-Type'] = self._serialize.header("content_type", content_type, 'str')
+        header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
+
+        body_content_kwargs = {}  # type: Dict[str, Any]
+        body_content = self._serialize.body(body, 'ActionRequest')
+        body_content_kwargs['content'] = body_content
+        request = self._client.post(url, query_parameters, header_parameters, **body_content_kwargs)
+        pipeline_response = await self._client._pipeline.run(request, stream=False, **kwargs)
+        response = pipeline_response.http_response
+
+        if response.status_code not in [202]:
+            map_error(status_code=response.status_code, response=response, error_map=error_map)
+            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+
+        response_headers = {}
+        response_headers['Operation-Location']=self._deserialize('str', response.headers.get('Operation-Location'))
+
+        if cls:
+            return cls(pipeline_response, None, response_headers)
+
+    _custom_action_initial.metadata = {'url': '/projects/{projectName}/users/{userId}/environments/{environmentName}:custom'}  # type: ignore
+
+    async def begin_custom_action(
+        self,
+        project_name: str,
+        environment_name: str,
+        body: "models.ActionRequest",
+        user_id: str = "me",
+        **kwargs
+    ) -> AsyncLROPoller[None]:
+        """Executes a custom action.
+
+        :param project_name: The DevCenter Project upon which to execute operations.
+        :type project_name: str
+        :param environment_name: The name of the environment.
+        :type environment_name: str
+        :param body: Action properties overriding the environment's default values.
+        :type body: ~dev_center_dataplane_client.models.ActionRequest
+        :param user_id: The AAD object id of the user. If value is 'me', the identity is taken from the
+         authentication context.
+        :type user_id: str
+        :keyword callable cls: A custom type or function that will be passed the direct response
+        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
+        :keyword polling: True for ARMPolling, False for no polling, or a
+         polling object for personal polling strategy
+        :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
+        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
+        :return: An instance of AsyncLROPoller that returns either None or the result of cls(response)
+        :rtype: ~azure.core.polling.AsyncLROPoller[None]
+        :raises ~azure.core.exceptions.HttpResponseError:
+        """
+        polling = kwargs.pop('polling', True)  # type: Union[bool, AsyncPollingMethod]
+        cls = kwargs.pop('cls', None)  # type: ClsType[None]
+        lro_delay = kwargs.pop(
+            'polling_interval',
+            self._config.polling_interval
+        )
+        cont_token = kwargs.pop('continuation_token', None)  # type: Optional[str]
+        if cont_token is None:
+            raw_result = await self._custom_action_initial(
+                project_name=project_name,
+                environment_name=environment_name,
+                body=body,
+                user_id=user_id,
+                cls=lambda x,y,z: x,
+                **kwargs
+            )
+
+        kwargs.pop('error_map', None)
+        kwargs.pop('content_type', None)
+
+        def get_long_running_output(pipeline_response):
+            if cls:
+                return cls(pipeline_response, None, {})
+
+        path_format_arguments = {
+            'tenantId': self._serialize.url("self._config.tenant_id", self._config.tenant_id, 'str', skip_quote=True),
+            'devCenter': self._serialize.url("self._config.dev_center", self._config.dev_center, 'str', skip_quote=True),
+            'devCenterDnsSuffix': self._serialize.url("self._config.dev_center_dns_suffix", self._config.dev_center_dns_suffix, 'str', skip_quote=True),
+            'projectName': self._serialize.url("project_name", project_name, 'str', max_length=63, min_length=3, pattern=r'^[a-zA-Z0-9][a-zA-Z0-9-]{2,62}$'),
+            'userId': self._serialize.url("user_id", user_id, 'str', max_length=36, min_length=2, pattern=r'^[a-zA-Z0-9]{8}-([a-zA-Z0-9]{4}-){3}[a-zA-Z0-9]{12}$|^me$'),
+            'environmentName': self._serialize.url("environment_name", environment_name, 'str'),
+        }
+
+        if polling is True: polling_method = AsyncARMPolling(lro_delay, lro_options={'final-state-via': 'original-uri'}, path_format_arguments=path_format_arguments,  **kwargs)
+        elif polling is False: polling_method = AsyncNoPolling()
+        else: polling_method = polling
+        if cont_token:
+            return AsyncLROPoller.from_continuation_token(
+                polling_method=polling_method,
+                continuation_token=cont_token,
+                client=self._client,
+                deserialization_callback=get_long_running_output
+            )
+        else:
+            return AsyncLROPoller(self._client, raw_result, get_long_running_output, polling_method)
+    begin_custom_action.metadata = {'url': '/projects/{projectName}/users/{userId}/environments/{environmentName}:custom'}  # type: ignore

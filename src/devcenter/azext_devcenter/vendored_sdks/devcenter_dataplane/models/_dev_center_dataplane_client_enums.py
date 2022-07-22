@@ -26,29 +26,23 @@ class _CaseInsensitiveEnumMeta(EnumMeta):
             raise AttributeError(name)
 
 
-class ActionState(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
-    """The state of the action.
-    """
-
-    PENDING = "Pending"
-    INITIALIZING = "Initializing"
-    PROCESSING = "Processing"
-    SUCCEEDED = "Succeeded"
-    CANCELED = "Canceled"
-    FAILED = "Failed"
-
 class ActionType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """The type of action.
     """
 
-    CUSTOM = "Custom"
-    DEPLOY = "Deploy"
-    DELETE = "Delete"
+    CUSTOM_ACTION = "Custom"  #: A custom action defined in the catalog item.
+    DEPLOY_ACTION = "Deploy"  #: The action to deploy the environment resources.
+    DELETE_ACTION = "Delete"  #: The action to delete the environment resources.
 
 class EnableStatus(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """Enable or disable status. Indicates whether the property applied to is either enabled or
     disabled.
     """
+
+    ENABLED = "Enabled"
+    DISABLED = "Disabled"
+
+class LocalAdminStatus(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
 
     ENABLED = "Enabled"
     DISABLED = "Disabled"
@@ -91,7 +85,7 @@ class ScheduledTaskType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """The supported types for a scheduled task.
     """
 
-    AUTO_EXPIRE = "AutoExpire"
+    AUTO_EXPIRE_SCHEDULED_TASK = "AutoExpire"  #: The scheduled task to expire the environment after a set period.
 
 class ScheduledType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """The supported types for a scheduled task.

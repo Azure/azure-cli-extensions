@@ -45,21 +45,15 @@ class DevBoxOperations:
 
     def list(
         self,
-        dev_center: str,
-        dev_center_dns_suffix: str = "devcenter.azure.com",
         filter: Optional[str] = None,
         top: Optional[int] = None,
         **kwargs
     ) -> AsyncIterable["models.DevBoxListResult"]:
         """Lists Dev Boxes that the caller has access to in the DevCenter.
 
-        :param dev_center: The DevCenter to operate on.
-        :type dev_center: str
-        :param dev_center_dns_suffix: The DNS suffix used as the base for all devcenter requests.
-        :type dev_center_dns_suffix: str
-        :param filter: An OData $filter clause to apply to the operation.
+        :param filter: An OData filter clause to apply to the operation.
         :type filter: str
-        :param top: The maximum number of resources to return from the operation. Example: '$top=10'.
+        :param top: The maximum number of resources to return from the operation. Example: 'top=10'.
         :type top: int
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either DevBoxListResult or the result of cls(response)
@@ -83,8 +77,9 @@ class DevBoxOperations:
                 # Construct URL
                 url = self.list.metadata['url']  # type: ignore
                 path_format_arguments = {
-                    'devCenter': self._serialize.url("dev_center", dev_center, 'str', skip_quote=True),
-                    'devCenterDnsSuffix': self._serialize.url("dev_center_dns_suffix", dev_center_dns_suffix, 'str', skip_quote=True),
+                    'tenantId': self._serialize.url("self._config.tenant_id", self._config.tenant_id, 'str', skip_quote=True),
+                    'devCenter': self._serialize.url("self._config.dev_center", self._config.dev_center, 'str', skip_quote=True),
+                    'devCenterDnsSuffix': self._serialize.url("self._config.dev_center_dns_suffix", self._config.dev_center_dns_suffix, 'str', skip_quote=True),
                 }
                 url = self._client.format_url(url, **path_format_arguments)
                 # Construct parameters
@@ -100,8 +95,9 @@ class DevBoxOperations:
                 url = next_link
                 query_parameters = {}  # type: Dict[str, Any]
                 path_format_arguments = {
-                    'devCenter': self._serialize.url("dev_center", dev_center, 'str', skip_quote=True),
-                    'devCenterDnsSuffix': self._serialize.url("dev_center_dns_suffix", dev_center_dns_suffix, 'str', skip_quote=True),
+                    'tenantId': self._serialize.url("self._config.tenant_id", self._config.tenant_id, 'str', skip_quote=True),
+                    'devCenter': self._serialize.url("self._config.dev_center", self._config.dev_center, 'str', skip_quote=True),
+                    'devCenterDnsSuffix': self._serialize.url("self._config.dev_center_dns_suffix", self._config.dev_center_dns_suffix, 'str', skip_quote=True),
                 }
                 url = self._client.format_url(url, **path_format_arguments)
                 request = self._client.get(url, query_parameters, header_parameters)
@@ -133,8 +129,6 @@ class DevBoxOperations:
 
     def list_by_user(
         self,
-        dev_center: str,
-        dev_center_dns_suffix: str = "devcenter.azure.com",
         filter: Optional[str] = None,
         top: Optional[int] = None,
         user_id: str = "me",
@@ -142,15 +136,11 @@ class DevBoxOperations:
     ) -> AsyncIterable["models.DevBoxListResult"]:
         """Lists Dev Boxes in the Dev Center for a particular user.
 
-        :param dev_center: The DevCenter to operate on.
-        :type dev_center: str
-        :param dev_center_dns_suffix: The DNS suffix used as the base for all devcenter requests.
-        :type dev_center_dns_suffix: str
-        :param filter: An OData $filter clause to apply to the operation.
+        :param filter: An OData filter clause to apply to the operation.
         :type filter: str
-        :param top: The maximum number of resources to return from the operation. Example: '$top=10'.
+        :param top: The maximum number of resources to return from the operation. Example: 'top=10'.
         :type top: int
-        :param user_id: The id of the user. If value is 'me', the identity is taken from the
+        :param user_id: The AAD object id of the user. If value is 'me', the identity is taken from the
          authentication context.
         :type user_id: str
         :keyword callable cls: A custom type or function that will be passed the direct response
@@ -175,9 +165,10 @@ class DevBoxOperations:
                 # Construct URL
                 url = self.list_by_user.metadata['url']  # type: ignore
                 path_format_arguments = {
-                    'devCenter': self._serialize.url("dev_center", dev_center, 'str', skip_quote=True),
-                    'devCenterDnsSuffix': self._serialize.url("dev_center_dns_suffix", dev_center_dns_suffix, 'str', skip_quote=True),
-                    'userId': self._serialize.url("user_id", user_id, 'str'),
+                    'tenantId': self._serialize.url("self._config.tenant_id", self._config.tenant_id, 'str', skip_quote=True),
+                    'devCenter': self._serialize.url("self._config.dev_center", self._config.dev_center, 'str', skip_quote=True),
+                    'devCenterDnsSuffix': self._serialize.url("self._config.dev_center_dns_suffix", self._config.dev_center_dns_suffix, 'str', skip_quote=True),
+                    'userId': self._serialize.url("user_id", user_id, 'str', max_length=36, min_length=2, pattern=r'^[a-zA-Z0-9]{8}-([a-zA-Z0-9]{4}-){3}[a-zA-Z0-9]{12}$|^me$'),
                 }
                 url = self._client.format_url(url, **path_format_arguments)
                 # Construct parameters
@@ -193,9 +184,10 @@ class DevBoxOperations:
                 url = next_link
                 query_parameters = {}  # type: Dict[str, Any]
                 path_format_arguments = {
-                    'devCenter': self._serialize.url("dev_center", dev_center, 'str', skip_quote=True),
-                    'devCenterDnsSuffix': self._serialize.url("dev_center_dns_suffix", dev_center_dns_suffix, 'str', skip_quote=True),
-                    'userId': self._serialize.url("user_id", user_id, 'str'),
+                    'tenantId': self._serialize.url("self._config.tenant_id", self._config.tenant_id, 'str', skip_quote=True),
+                    'devCenter': self._serialize.url("self._config.dev_center", self._config.dev_center, 'str', skip_quote=True),
+                    'devCenterDnsSuffix': self._serialize.url("self._config.dev_center_dns_suffix", self._config.dev_center_dns_suffix, 'str', skip_quote=True),
+                    'userId': self._serialize.url("user_id", user_id, 'str', max_length=36, min_length=2, pattern=r'^[a-zA-Z0-9]{8}-([a-zA-Z0-9]{4}-){3}[a-zA-Z0-9]{12}$|^me$'),
                 }
                 url = self._client.format_url(url, **path_format_arguments)
                 request = self._client.get(url, query_parameters, header_parameters)
@@ -227,9 +219,7 @@ class DevBoxOperations:
 
     def list_by_project(
         self,
-        dev_center: str,
         project_name: str,
-        dev_center_dns_suffix: str = "devcenter.azure.com",
         filter: Optional[str] = None,
         top: Optional[int] = None,
         user_id: str = "me",
@@ -237,17 +227,13 @@ class DevBoxOperations:
     ) -> AsyncIterable["models.DevBoxListResult"]:
         """Lists Dev Boxes in the project for a particular user.
 
-        :param dev_center: The DevCenter to operate on.
-        :type dev_center: str
         :param project_name: The DevCenter Project upon which to execute operations.
         :type project_name: str
-        :param dev_center_dns_suffix: The DNS suffix used as the base for all devcenter requests.
-        :type dev_center_dns_suffix: str
-        :param filter: An OData $filter clause to apply to the operation.
+        :param filter: An OData filter clause to apply to the operation.
         :type filter: str
-        :param top: The maximum number of resources to return from the operation. Example: '$top=10'.
+        :param top: The maximum number of resources to return from the operation. Example: 'top=10'.
         :type top: int
-        :param user_id: The id of the user. If value is 'me', the identity is taken from the
+        :param user_id: The AAD object id of the user. If value is 'me', the identity is taken from the
          authentication context.
         :type user_id: str
         :keyword callable cls: A custom type or function that will be passed the direct response
@@ -272,10 +258,11 @@ class DevBoxOperations:
                 # Construct URL
                 url = self.list_by_project.metadata['url']  # type: ignore
                 path_format_arguments = {
-                    'devCenter': self._serialize.url("dev_center", dev_center, 'str', skip_quote=True),
-                    'devCenterDnsSuffix': self._serialize.url("dev_center_dns_suffix", dev_center_dns_suffix, 'str', skip_quote=True),
-                    'projectName': self._serialize.url("project_name", project_name, 'str'),
-                    'userId': self._serialize.url("user_id", user_id, 'str'),
+                    'tenantId': self._serialize.url("self._config.tenant_id", self._config.tenant_id, 'str', skip_quote=True),
+                    'devCenter': self._serialize.url("self._config.dev_center", self._config.dev_center, 'str', skip_quote=True),
+                    'devCenterDnsSuffix': self._serialize.url("self._config.dev_center_dns_suffix", self._config.dev_center_dns_suffix, 'str', skip_quote=True),
+                    'projectName': self._serialize.url("project_name", project_name, 'str', max_length=63, min_length=3, pattern=r'^[a-zA-Z0-9][a-zA-Z0-9-]{2,62}$'),
+                    'userId': self._serialize.url("user_id", user_id, 'str', max_length=36, min_length=2, pattern=r'^[a-zA-Z0-9]{8}-([a-zA-Z0-9]{4}-){3}[a-zA-Z0-9]{12}$|^me$'),
                 }
                 url = self._client.format_url(url, **path_format_arguments)
                 # Construct parameters
@@ -291,10 +278,11 @@ class DevBoxOperations:
                 url = next_link
                 query_parameters = {}  # type: Dict[str, Any]
                 path_format_arguments = {
-                    'devCenter': self._serialize.url("dev_center", dev_center, 'str', skip_quote=True),
-                    'devCenterDnsSuffix': self._serialize.url("dev_center_dns_suffix", dev_center_dns_suffix, 'str', skip_quote=True),
-                    'projectName': self._serialize.url("project_name", project_name, 'str'),
-                    'userId': self._serialize.url("user_id", user_id, 'str'),
+                    'tenantId': self._serialize.url("self._config.tenant_id", self._config.tenant_id, 'str', skip_quote=True),
+                    'devCenter': self._serialize.url("self._config.dev_center", self._config.dev_center, 'str', skip_quote=True),
+                    'devCenterDnsSuffix': self._serialize.url("self._config.dev_center_dns_suffix", self._config.dev_center_dns_suffix, 'str', skip_quote=True),
+                    'projectName': self._serialize.url("project_name", project_name, 'str', max_length=63, min_length=3, pattern=r'^[a-zA-Z0-9][a-zA-Z0-9-]{2,62}$'),
+                    'userId': self._serialize.url("user_id", user_id, 'str', max_length=36, min_length=2, pattern=r'^[a-zA-Z0-9]{8}-([a-zA-Z0-9]{4}-){3}[a-zA-Z0-9]{12}$|^me$'),
                 }
                 url = self._client.format_url(url, **path_format_arguments)
                 request = self._client.get(url, query_parameters, header_parameters)
@@ -326,24 +314,18 @@ class DevBoxOperations:
 
     async def get(
         self,
-        dev_center: str,
         project_name: str,
         dev_box_name: str,
-        dev_center_dns_suffix: str = "devcenter.azure.com",
         user_id: str = "me",
         **kwargs
     ) -> "models.DevBox":
         """Gets a Dev Box.
 
-        :param dev_center: The DevCenter to operate on.
-        :type dev_center: str
         :param project_name: The DevCenter Project upon which to execute operations.
         :type project_name: str
         :param dev_box_name: The name of a Dev Box.
         :type dev_box_name: str
-        :param dev_center_dns_suffix: The DNS suffix used as the base for all devcenter requests.
-        :type dev_center_dns_suffix: str
-        :param user_id: The id of the user. If value is 'me', the identity is taken from the
+        :param user_id: The AAD object id of the user. If value is 'me', the identity is taken from the
          authentication context.
         :type user_id: str
         :keyword callable cls: A custom type or function that will be passed the direct response
@@ -362,11 +344,12 @@ class DevBoxOperations:
         # Construct URL
         url = self.get.metadata['url']  # type: ignore
         path_format_arguments = {
-            'devCenter': self._serialize.url("dev_center", dev_center, 'str', skip_quote=True),
-            'devCenterDnsSuffix': self._serialize.url("dev_center_dns_suffix", dev_center_dns_suffix, 'str', skip_quote=True),
-            'projectName': self._serialize.url("project_name", project_name, 'str'),
-            'userId': self._serialize.url("user_id", user_id, 'str'),
-            'devBoxName': self._serialize.url("dev_box_name", dev_box_name, 'str'),
+            'tenantId': self._serialize.url("self._config.tenant_id", self._config.tenant_id, 'str', skip_quote=True),
+            'devCenter': self._serialize.url("self._config.dev_center", self._config.dev_center, 'str', skip_quote=True),
+            'devCenterDnsSuffix': self._serialize.url("self._config.dev_center_dns_suffix", self._config.dev_center_dns_suffix, 'str', skip_quote=True),
+            'projectName': self._serialize.url("project_name", project_name, 'str', max_length=63, min_length=3, pattern=r'^[a-zA-Z0-9][a-zA-Z0-9-]{2,62}$'),
+            'userId': self._serialize.url("user_id", user_id, 'str', max_length=36, min_length=2, pattern=r'^[a-zA-Z0-9]{8}-([a-zA-Z0-9]{4}-){3}[a-zA-Z0-9]{12}$|^me$'),
+            'devBoxName': self._serialize.url("dev_box_name", dev_box_name, 'str', max_length=63, min_length=3, pattern=r'^[a-zA-Z0-9][a-zA-Z0-9-_.]{2,62}$'),
         }
         url = self._client.format_url(url, **path_format_arguments)
 
@@ -396,11 +379,9 @@ class DevBoxOperations:
 
     async def _create_initial(
         self,
-        dev_center: str,
         project_name: str,
         dev_box_name: str,
         body: "models.DevBox",
-        dev_center_dns_suffix: str = "devcenter.azure.com",
         user_id: str = "me",
         **kwargs
     ) -> "models.DevBox":
@@ -416,11 +397,12 @@ class DevBoxOperations:
         # Construct URL
         url = self._create_initial.metadata['url']  # type: ignore
         path_format_arguments = {
-            'devCenter': self._serialize.url("dev_center", dev_center, 'str', skip_quote=True),
-            'devCenterDnsSuffix': self._serialize.url("dev_center_dns_suffix", dev_center_dns_suffix, 'str', skip_quote=True),
-            'projectName': self._serialize.url("project_name", project_name, 'str'),
-            'userId': self._serialize.url("user_id", user_id, 'str'),
-            'devBoxName': self._serialize.url("dev_box_name", dev_box_name, 'str'),
+            'tenantId': self._serialize.url("self._config.tenant_id", self._config.tenant_id, 'str', skip_quote=True),
+            'devCenter': self._serialize.url("self._config.dev_center", self._config.dev_center, 'str', skip_quote=True),
+            'devCenterDnsSuffix': self._serialize.url("self._config.dev_center_dns_suffix", self._config.dev_center_dns_suffix, 'str', skip_quote=True),
+            'projectName': self._serialize.url("project_name", project_name, 'str', max_length=63, min_length=3, pattern=r'^[a-zA-Z0-9][a-zA-Z0-9-]{2,62}$'),
+            'userId': self._serialize.url("user_id", user_id, 'str', max_length=36, min_length=2, pattern=r'^[a-zA-Z0-9]{8}-([a-zA-Z0-9]{4}-){3}[a-zA-Z0-9]{12}$|^me$'),
+            'devBoxName': self._serialize.url("dev_box_name", dev_box_name, 'str', max_length=63, min_length=3, pattern=r'^[a-zA-Z0-9][a-zA-Z0-9-_.]{2,62}$'),
         }
         url = self._client.format_url(url, **path_format_arguments)
 
@@ -454,27 +436,21 @@ class DevBoxOperations:
 
     async def begin_create(
         self,
-        dev_center: str,
         project_name: str,
         dev_box_name: str,
         body: "models.DevBox",
-        dev_center_dns_suffix: str = "devcenter.azure.com",
         user_id: str = "me",
         **kwargs
     ) -> AsyncLROPoller["models.DevBox"]:
         """Creates or updates a Dev Box.
 
-        :param dev_center: The DevCenter to operate on.
-        :type dev_center: str
         :param project_name: The DevCenter Project upon which to execute operations.
         :type project_name: str
         :param dev_box_name: The name of a Dev Box.
         :type dev_box_name: str
         :param body: Represents a environment.
         :type body: ~dev_center_dataplane_client.models.DevBox
-        :param dev_center_dns_suffix: The DNS suffix used as the base for all devcenter requests.
-        :type dev_center_dns_suffix: str
-        :param user_id: The id of the user. If value is 'me', the identity is taken from the
+        :param user_id: The AAD object id of the user. If value is 'me', the identity is taken from the
          authentication context.
         :type user_id: str
         :keyword callable cls: A custom type or function that will be passed the direct response
@@ -496,11 +472,9 @@ class DevBoxOperations:
         cont_token = kwargs.pop('continuation_token', None)  # type: Optional[str]
         if cont_token is None:
             raw_result = await self._create_initial(
-                dev_center=dev_center,
                 project_name=project_name,
                 dev_box_name=dev_box_name,
                 body=body,
-                dev_center_dns_suffix=dev_center_dns_suffix,
                 user_id=user_id,
                 cls=lambda x,y,z: x,
                 **kwargs
@@ -517,11 +491,12 @@ class DevBoxOperations:
             return deserialized
 
         path_format_arguments = {
-            'devCenter': self._serialize.url("dev_center", dev_center, 'str', skip_quote=True),
-            'devCenterDnsSuffix': self._serialize.url("dev_center_dns_suffix", dev_center_dns_suffix, 'str', skip_quote=True),
-            'projectName': self._serialize.url("project_name", project_name, 'str'),
-            'userId': self._serialize.url("user_id", user_id, 'str'),
-            'devBoxName': self._serialize.url("dev_box_name", dev_box_name, 'str'),
+            'tenantId': self._serialize.url("self._config.tenant_id", self._config.tenant_id, 'str', skip_quote=True),
+            'devCenter': self._serialize.url("self._config.dev_center", self._config.dev_center, 'str', skip_quote=True),
+            'devCenterDnsSuffix': self._serialize.url("self._config.dev_center_dns_suffix", self._config.dev_center_dns_suffix, 'str', skip_quote=True),
+            'projectName': self._serialize.url("project_name", project_name, 'str', max_length=63, min_length=3, pattern=r'^[a-zA-Z0-9][a-zA-Z0-9-]{2,62}$'),
+            'userId': self._serialize.url("user_id", user_id, 'str', max_length=36, min_length=2, pattern=r'^[a-zA-Z0-9]{8}-([a-zA-Z0-9]{4}-){3}[a-zA-Z0-9]{12}$|^me$'),
+            'devBoxName': self._serialize.url("dev_box_name", dev_box_name, 'str', max_length=63, min_length=3, pattern=r'^[a-zA-Z0-9][a-zA-Z0-9-_.]{2,62}$'),
         }
 
         if polling is True: polling_method = AsyncARMPolling(lro_delay, lro_options={'final-state-via': 'original-uri'}, path_format_arguments=path_format_arguments,  **kwargs)
@@ -540,10 +515,8 @@ class DevBoxOperations:
 
     async def _delete_initial(
         self,
-        dev_center: str,
         project_name: str,
         dev_box_name: str,
-        dev_center_dns_suffix: str = "devcenter.azure.com",
         user_id: str = "me",
         **kwargs
     ) -> None:
@@ -558,11 +531,12 @@ class DevBoxOperations:
         # Construct URL
         url = self._delete_initial.metadata['url']  # type: ignore
         path_format_arguments = {
-            'devCenter': self._serialize.url("dev_center", dev_center, 'str', skip_quote=True),
-            'devCenterDnsSuffix': self._serialize.url("dev_center_dns_suffix", dev_center_dns_suffix, 'str', skip_quote=True),
-            'projectName': self._serialize.url("project_name", project_name, 'str'),
-            'userId': self._serialize.url("user_id", user_id, 'str'),
-            'devBoxName': self._serialize.url("dev_box_name", dev_box_name, 'str'),
+            'tenantId': self._serialize.url("self._config.tenant_id", self._config.tenant_id, 'str', skip_quote=True),
+            'devCenter': self._serialize.url("self._config.dev_center", self._config.dev_center, 'str', skip_quote=True),
+            'devCenterDnsSuffix': self._serialize.url("self._config.dev_center_dns_suffix", self._config.dev_center_dns_suffix, 'str', skip_quote=True),
+            'projectName': self._serialize.url("project_name", project_name, 'str', max_length=63, min_length=3, pattern=r'^[a-zA-Z0-9][a-zA-Z0-9-]{2,62}$'),
+            'userId': self._serialize.url("user_id", user_id, 'str', max_length=36, min_length=2, pattern=r'^[a-zA-Z0-9]{8}-([a-zA-Z0-9]{4}-){3}[a-zA-Z0-9]{12}$|^me$'),
+            'devBoxName': self._serialize.url("dev_box_name", dev_box_name, 'str', max_length=63, min_length=3, pattern=r'^[a-zA-Z0-9][a-zA-Z0-9-_.]{2,62}$'),
         }
         url = self._client.format_url(url, **path_format_arguments)
 
@@ -593,24 +567,18 @@ class DevBoxOperations:
 
     async def begin_delete(
         self,
-        dev_center: str,
         project_name: str,
         dev_box_name: str,
-        dev_center_dns_suffix: str = "devcenter.azure.com",
         user_id: str = "me",
         **kwargs
     ) -> AsyncLROPoller[None]:
         """Deletes a Dev Box.
 
-        :param dev_center: The DevCenter to operate on.
-        :type dev_center: str
         :param project_name: The DevCenter Project upon which to execute operations.
         :type project_name: str
         :param dev_box_name: The name of a Dev Box.
         :type dev_box_name: str
-        :param dev_center_dns_suffix: The DNS suffix used as the base for all devcenter requests.
-        :type dev_center_dns_suffix: str
-        :param user_id: The id of the user. If value is 'me', the identity is taken from the
+        :param user_id: The AAD object id of the user. If value is 'me', the identity is taken from the
          authentication context.
         :type user_id: str
         :keyword callable cls: A custom type or function that will be passed the direct response
@@ -632,10 +600,8 @@ class DevBoxOperations:
         cont_token = kwargs.pop('continuation_token', None)  # type: Optional[str]
         if cont_token is None:
             raw_result = await self._delete_initial(
-                dev_center=dev_center,
                 project_name=project_name,
                 dev_box_name=dev_box_name,
-                dev_center_dns_suffix=dev_center_dns_suffix,
                 user_id=user_id,
                 cls=lambda x,y,z: x,
                 **kwargs
@@ -649,11 +615,12 @@ class DevBoxOperations:
                 return cls(pipeline_response, None, {})
 
         path_format_arguments = {
-            'devCenter': self._serialize.url("dev_center", dev_center, 'str', skip_quote=True),
-            'devCenterDnsSuffix': self._serialize.url("dev_center_dns_suffix", dev_center_dns_suffix, 'str', skip_quote=True),
-            'projectName': self._serialize.url("project_name", project_name, 'str'),
-            'userId': self._serialize.url("user_id", user_id, 'str'),
-            'devBoxName': self._serialize.url("dev_box_name", dev_box_name, 'str'),
+            'tenantId': self._serialize.url("self._config.tenant_id", self._config.tenant_id, 'str', skip_quote=True),
+            'devCenter': self._serialize.url("self._config.dev_center", self._config.dev_center, 'str', skip_quote=True),
+            'devCenterDnsSuffix': self._serialize.url("self._config.dev_center_dns_suffix", self._config.dev_center_dns_suffix, 'str', skip_quote=True),
+            'projectName': self._serialize.url("project_name", project_name, 'str', max_length=63, min_length=3, pattern=r'^[a-zA-Z0-9][a-zA-Z0-9-]{2,62}$'),
+            'userId': self._serialize.url("user_id", user_id, 'str', max_length=36, min_length=2, pattern=r'^[a-zA-Z0-9]{8}-([a-zA-Z0-9]{4}-){3}[a-zA-Z0-9]{12}$|^me$'),
+            'devBoxName': self._serialize.url("dev_box_name", dev_box_name, 'str', max_length=63, min_length=3, pattern=r'^[a-zA-Z0-9][a-zA-Z0-9-_.]{2,62}$'),
         }
 
         if polling is True: polling_method = AsyncARMPolling(lro_delay, path_format_arguments=path_format_arguments,  **kwargs)
@@ -672,10 +639,8 @@ class DevBoxOperations:
 
     async def _start_initial(
         self,
-        dev_center: str,
         project_name: str,
         dev_box_name: str,
-        dev_center_dns_suffix: str = "devcenter.azure.com",
         user_id: str = "me",
         **kwargs
     ) -> None:
@@ -690,11 +655,12 @@ class DevBoxOperations:
         # Construct URL
         url = self._start_initial.metadata['url']  # type: ignore
         path_format_arguments = {
-            'devCenter': self._serialize.url("dev_center", dev_center, 'str', skip_quote=True),
-            'devCenterDnsSuffix': self._serialize.url("dev_center_dns_suffix", dev_center_dns_suffix, 'str', skip_quote=True),
-            'projectName': self._serialize.url("project_name", project_name, 'str'),
-            'userId': self._serialize.url("user_id", user_id, 'str'),
-            'devBoxName': self._serialize.url("dev_box_name", dev_box_name, 'str'),
+            'tenantId': self._serialize.url("self._config.tenant_id", self._config.tenant_id, 'str', skip_quote=True),
+            'devCenter': self._serialize.url("self._config.dev_center", self._config.dev_center, 'str', skip_quote=True),
+            'devCenterDnsSuffix': self._serialize.url("self._config.dev_center_dns_suffix", self._config.dev_center_dns_suffix, 'str', skip_quote=True),
+            'projectName': self._serialize.url("project_name", project_name, 'str', max_length=63, min_length=3, pattern=r'^[a-zA-Z0-9][a-zA-Z0-9-]{2,62}$'),
+            'userId': self._serialize.url("user_id", user_id, 'str', max_length=36, min_length=2, pattern=r'^[a-zA-Z0-9]{8}-([a-zA-Z0-9]{4}-){3}[a-zA-Z0-9]{12}$|^me$'),
+            'devBoxName': self._serialize.url("dev_box_name", dev_box_name, 'str', max_length=63, min_length=3, pattern=r'^[a-zA-Z0-9][a-zA-Z0-9-_.]{2,62}$'),
         }
         url = self._client.format_url(url, **path_format_arguments)
 
@@ -724,24 +690,18 @@ class DevBoxOperations:
 
     async def begin_start(
         self,
-        dev_center: str,
         project_name: str,
         dev_box_name: str,
-        dev_center_dns_suffix: str = "devcenter.azure.com",
         user_id: str = "me",
         **kwargs
     ) -> AsyncLROPoller[None]:
         """Starts a Dev Box.
 
-        :param dev_center: The DevCenter to operate on.
-        :type dev_center: str
         :param project_name: The DevCenter Project upon which to execute operations.
         :type project_name: str
         :param dev_box_name: The name of a Dev Box.
         :type dev_box_name: str
-        :param dev_center_dns_suffix: The DNS suffix used as the base for all devcenter requests.
-        :type dev_center_dns_suffix: str
-        :param user_id: The id of the user. If value is 'me', the identity is taken from the
+        :param user_id: The AAD object id of the user. If value is 'me', the identity is taken from the
          authentication context.
         :type user_id: str
         :keyword callable cls: A custom type or function that will be passed the direct response
@@ -763,10 +723,8 @@ class DevBoxOperations:
         cont_token = kwargs.pop('continuation_token', None)  # type: Optional[str]
         if cont_token is None:
             raw_result = await self._start_initial(
-                dev_center=dev_center,
                 project_name=project_name,
                 dev_box_name=dev_box_name,
-                dev_center_dns_suffix=dev_center_dns_suffix,
                 user_id=user_id,
                 cls=lambda x,y,z: x,
                 **kwargs
@@ -780,14 +738,15 @@ class DevBoxOperations:
                 return cls(pipeline_response, None, {})
 
         path_format_arguments = {
-            'devCenter': self._serialize.url("dev_center", dev_center, 'str', skip_quote=True),
-            'devCenterDnsSuffix': self._serialize.url("dev_center_dns_suffix", dev_center_dns_suffix, 'str', skip_quote=True),
-            'projectName': self._serialize.url("project_name", project_name, 'str'),
-            'userId': self._serialize.url("user_id", user_id, 'str'),
-            'devBoxName': self._serialize.url("dev_box_name", dev_box_name, 'str'),
+            'tenantId': self._serialize.url("self._config.tenant_id", self._config.tenant_id, 'str', skip_quote=True),
+            'devCenter': self._serialize.url("self._config.dev_center", self._config.dev_center, 'str', skip_quote=True),
+            'devCenterDnsSuffix': self._serialize.url("self._config.dev_center_dns_suffix", self._config.dev_center_dns_suffix, 'str', skip_quote=True),
+            'projectName': self._serialize.url("project_name", project_name, 'str', max_length=63, min_length=3, pattern=r'^[a-zA-Z0-9][a-zA-Z0-9-]{2,62}$'),
+            'userId': self._serialize.url("user_id", user_id, 'str', max_length=36, min_length=2, pattern=r'^[a-zA-Z0-9]{8}-([a-zA-Z0-9]{4}-){3}[a-zA-Z0-9]{12}$|^me$'),
+            'devBoxName': self._serialize.url("dev_box_name", dev_box_name, 'str', max_length=63, min_length=3, pattern=r'^[a-zA-Z0-9][a-zA-Z0-9-_.]{2,62}$'),
         }
 
-        if polling is True: polling_method = AsyncARMPolling(lro_delay, path_format_arguments=path_format_arguments,  **kwargs)
+        if polling is True: polling_method = AsyncARMPolling(lro_delay, lro_options={'final-state-via': 'location'}, path_format_arguments=path_format_arguments,  **kwargs)
         elif polling is False: polling_method = AsyncNoPolling()
         else: polling_method = polling
         if cont_token:
@@ -803,10 +762,8 @@ class DevBoxOperations:
 
     async def _stop_initial(
         self,
-        dev_center: str,
         project_name: str,
         dev_box_name: str,
-        dev_center_dns_suffix: str = "devcenter.azure.com",
         user_id: str = "me",
         **kwargs
     ) -> None:
@@ -821,11 +778,12 @@ class DevBoxOperations:
         # Construct URL
         url = self._stop_initial.metadata['url']  # type: ignore
         path_format_arguments = {
-            'devCenter': self._serialize.url("dev_center", dev_center, 'str', skip_quote=True),
-            'devCenterDnsSuffix': self._serialize.url("dev_center_dns_suffix", dev_center_dns_suffix, 'str', skip_quote=True),
-            'projectName': self._serialize.url("project_name", project_name, 'str'),
-            'userId': self._serialize.url("user_id", user_id, 'str'),
-            'devBoxName': self._serialize.url("dev_box_name", dev_box_name, 'str'),
+            'tenantId': self._serialize.url("self._config.tenant_id", self._config.tenant_id, 'str', skip_quote=True),
+            'devCenter': self._serialize.url("self._config.dev_center", self._config.dev_center, 'str', skip_quote=True),
+            'devCenterDnsSuffix': self._serialize.url("self._config.dev_center_dns_suffix", self._config.dev_center_dns_suffix, 'str', skip_quote=True),
+            'projectName': self._serialize.url("project_name", project_name, 'str', max_length=63, min_length=3, pattern=r'^[a-zA-Z0-9][a-zA-Z0-9-]{2,62}$'),
+            'userId': self._serialize.url("user_id", user_id, 'str', max_length=36, min_length=2, pattern=r'^[a-zA-Z0-9]{8}-([a-zA-Z0-9]{4}-){3}[a-zA-Z0-9]{12}$|^me$'),
+            'devBoxName': self._serialize.url("dev_box_name", dev_box_name, 'str', max_length=63, min_length=3, pattern=r'^[a-zA-Z0-9][a-zA-Z0-9-_.]{2,62}$'),
         }
         url = self._client.format_url(url, **path_format_arguments)
 
@@ -855,24 +813,18 @@ class DevBoxOperations:
 
     async def begin_stop(
         self,
-        dev_center: str,
         project_name: str,
         dev_box_name: str,
-        dev_center_dns_suffix: str = "devcenter.azure.com",
         user_id: str = "me",
         **kwargs
     ) -> AsyncLROPoller[None]:
         """Stops a Dev Box.
 
-        :param dev_center: The DevCenter to operate on.
-        :type dev_center: str
         :param project_name: The DevCenter Project upon which to execute operations.
         :type project_name: str
         :param dev_box_name: The name of a Dev Box.
         :type dev_box_name: str
-        :param dev_center_dns_suffix: The DNS suffix used as the base for all devcenter requests.
-        :type dev_center_dns_suffix: str
-        :param user_id: The id of the user. If value is 'me', the identity is taken from the
+        :param user_id: The AAD object id of the user. If value is 'me', the identity is taken from the
          authentication context.
         :type user_id: str
         :keyword callable cls: A custom type or function that will be passed the direct response
@@ -894,10 +846,8 @@ class DevBoxOperations:
         cont_token = kwargs.pop('continuation_token', None)  # type: Optional[str]
         if cont_token is None:
             raw_result = await self._stop_initial(
-                dev_center=dev_center,
                 project_name=project_name,
                 dev_box_name=dev_box_name,
-                dev_center_dns_suffix=dev_center_dns_suffix,
                 user_id=user_id,
                 cls=lambda x,y,z: x,
                 **kwargs
@@ -911,14 +861,15 @@ class DevBoxOperations:
                 return cls(pipeline_response, None, {})
 
         path_format_arguments = {
-            'devCenter': self._serialize.url("dev_center", dev_center, 'str', skip_quote=True),
-            'devCenterDnsSuffix': self._serialize.url("dev_center_dns_suffix", dev_center_dns_suffix, 'str', skip_quote=True),
-            'projectName': self._serialize.url("project_name", project_name, 'str'),
-            'userId': self._serialize.url("user_id", user_id, 'str'),
-            'devBoxName': self._serialize.url("dev_box_name", dev_box_name, 'str'),
+            'tenantId': self._serialize.url("self._config.tenant_id", self._config.tenant_id, 'str', skip_quote=True),
+            'devCenter': self._serialize.url("self._config.dev_center", self._config.dev_center, 'str', skip_quote=True),
+            'devCenterDnsSuffix': self._serialize.url("self._config.dev_center_dns_suffix", self._config.dev_center_dns_suffix, 'str', skip_quote=True),
+            'projectName': self._serialize.url("project_name", project_name, 'str', max_length=63, min_length=3, pattern=r'^[a-zA-Z0-9][a-zA-Z0-9-]{2,62}$'),
+            'userId': self._serialize.url("user_id", user_id, 'str', max_length=36, min_length=2, pattern=r'^[a-zA-Z0-9]{8}-([a-zA-Z0-9]{4}-){3}[a-zA-Z0-9]{12}$|^me$'),
+            'devBoxName': self._serialize.url("dev_box_name", dev_box_name, 'str', max_length=63, min_length=3, pattern=r'^[a-zA-Z0-9][a-zA-Z0-9-_.]{2,62}$'),
         }
 
-        if polling is True: polling_method = AsyncARMPolling(lro_delay, path_format_arguments=path_format_arguments,  **kwargs)
+        if polling is True: polling_method = AsyncARMPolling(lro_delay, lro_options={'final-state-via': 'location'}, path_format_arguments=path_format_arguments,  **kwargs)
         elif polling is False: polling_method = AsyncNoPolling()
         else: polling_method = polling
         if cont_token:
@@ -934,24 +885,18 @@ class DevBoxOperations:
 
     async def get_remote_connection(
         self,
-        dev_center: str,
         project_name: str,
         dev_box_name: str,
-        dev_center_dns_suffix: str = "devcenter.azure.com",
         user_id: str = "me",
         **kwargs
     ) -> "models.RemoteConnection":
         """Gets RDP Connection info.
 
-        :param dev_center: The DevCenter to operate on.
-        :type dev_center: str
         :param project_name: The DevCenter Project upon which to execute operations.
         :type project_name: str
         :param dev_box_name: The name of a Dev Box.
         :type dev_box_name: str
-        :param dev_center_dns_suffix: The DNS suffix used as the base for all devcenter requests.
-        :type dev_center_dns_suffix: str
-        :param user_id: The id of the user. If value is 'me', the identity is taken from the
+        :param user_id: The AAD object id of the user. If value is 'me', the identity is taken from the
          authentication context.
         :type user_id: str
         :keyword callable cls: A custom type or function that will be passed the direct response
@@ -970,11 +915,12 @@ class DevBoxOperations:
         # Construct URL
         url = self.get_remote_connection.metadata['url']  # type: ignore
         path_format_arguments = {
-            'devCenter': self._serialize.url("dev_center", dev_center, 'str', skip_quote=True),
-            'devCenterDnsSuffix': self._serialize.url("dev_center_dns_suffix", dev_center_dns_suffix, 'str', skip_quote=True),
-            'projectName': self._serialize.url("project_name", project_name, 'str'),
-            'userId': self._serialize.url("user_id", user_id, 'str'),
-            'devBoxName': self._serialize.url("dev_box_name", dev_box_name, 'str'),
+            'tenantId': self._serialize.url("self._config.tenant_id", self._config.tenant_id, 'str', skip_quote=True),
+            'devCenter': self._serialize.url("self._config.dev_center", self._config.dev_center, 'str', skip_quote=True),
+            'devCenterDnsSuffix': self._serialize.url("self._config.dev_center_dns_suffix", self._config.dev_center_dns_suffix, 'str', skip_quote=True),
+            'projectName': self._serialize.url("project_name", project_name, 'str', max_length=63, min_length=3, pattern=r'^[a-zA-Z0-9][a-zA-Z0-9-]{2,62}$'),
+            'userId': self._serialize.url("user_id", user_id, 'str', max_length=36, min_length=2, pattern=r'^[a-zA-Z0-9]{8}-([a-zA-Z0-9]{4}-){3}[a-zA-Z0-9]{12}$|^me$'),
+            'devBoxName': self._serialize.url("dev_box_name", dev_box_name, 'str', max_length=63, min_length=3, pattern=r'^[a-zA-Z0-9][a-zA-Z0-9-_.]{2,62}$'),
         }
         url = self._client.format_url(url, **path_format_arguments)
 
@@ -986,7 +932,7 @@ class DevBoxOperations:
         header_parameters = {}  # type: Dict[str, Any]
         header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
 
-        request = self._client.post(url, query_parameters, header_parameters)
+        request = self._client.get(url, query_parameters, header_parameters)
         pipeline_response = await self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
@@ -1000,4 +946,4 @@ class DevBoxOperations:
             return cls(pipeline_response, deserialized, {})
 
         return deserialized
-    get_remote_connection.metadata = {'url': '/projects/{projectName}/users/{userId}/devboxes/{devBoxName}:getRemoteConnection'}  # type: ignore
+    get_remote_connection.metadata = {'url': '/projects/{projectName}/users/{userId}/devboxes/{devBoxName}/remoteConnection'}  # type: ignore

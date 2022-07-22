@@ -7,8 +7,6 @@
 # --------------------------------------------------------------------------
 
 try:
-    from ._models_py3 import Action
-    from ._models_py3 import ActionListResult
     from ._models_py3 import ActionRequest
     from ._models_py3 import Artifact
     from ._models_py3 import ArtifactListResult
@@ -40,8 +38,6 @@ try:
     from ._models_py3 import ScheduledTask
     from ._models_py3 import StorageProfile
 except (SyntaxError, ImportError):
-    from ._models import Action  # type: ignore
-    from ._models import ActionListResult  # type: ignore
     from ._models import ActionRequest  # type: ignore
     from ._models import Artifact  # type: ignore
     from ._models import ArtifactListResult  # type: ignore
@@ -74,9 +70,9 @@ except (SyntaxError, ImportError):
     from ._models import StorageProfile  # type: ignore
 
 from ._dev_center_dataplane_client_enums import (
-    ActionState,
     ActionType,
     EnableStatus,
+    LocalAdminStatus,
     OsType,
     ParameterType,
     PowerState,
@@ -86,8 +82,6 @@ from ._dev_center_dataplane_client_enums import (
 )
 
 __all__ = [
-    'Action',
-    'ActionListResult',
     'ActionRequest',
     'Artifact',
     'ArtifactListResult',
@@ -118,9 +112,9 @@ __all__ = [
     'ScheduleListResult',
     'ScheduledTask',
     'StorageProfile',
-    'ActionState',
     'ActionType',
     'EnableStatus',
+    'LocalAdminStatus',
     'OsType',
     'ParameterType',
     'PowerState',
