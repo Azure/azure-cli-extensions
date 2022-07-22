@@ -788,6 +788,7 @@ def _remove_readonly_attributes(containerapp_def):
             del containerapp_def['properties'][unneeded_property]
 
 
+# Remove null/None properties in a model since the PATCH API will delete those. Not needed once we move to the SDK
 def clean_null_values(d):
     if isinstance(d, dict):
         return {

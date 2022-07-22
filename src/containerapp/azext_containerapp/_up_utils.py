@@ -679,7 +679,7 @@ def _validate_containerapp_name(name):
     is_valid = is_valid and name.isalnum()
     is_valid = is_valid and name[0].isalpha()
     if not is_valid:
-        raise ValidationError(f"Invalid Container App name {name}. A name must consist of lower case alphanumeric characters or '-', start with an alphabetic character, and end with an alphanumeric character and cannot have '--'. The length must not be more than {MAXIMUM_CONTAINER_APP_NAME_LENGTH} characters.")
+        raise ValidationError(f"Invalid Container App name {name}. A name must consist of lower case alphanumeric characters or '-', start with a letter, end with an alphanumeric character, cannot have '--', and must be less than {MAXIMUM_CONTAINER_APP_NAME_LENGTH} characters.")
 
 
 # attempt to populate defaults for managed env, RG, ACR, etc
