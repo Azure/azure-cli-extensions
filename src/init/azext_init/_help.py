@@ -13,7 +13,7 @@ helps['init'] = """
     long-summary: |
         This tool can help you quickly know and set up global configurations that are suitable for your current usage environment:
         It supports setting bundles for interactive mode and automatic mode to help you quickly set the recommended configurations.
-        It also supports walk through style to help you get familiar with the common configurations and customize them one by one.
+        It also supports a walk-through experience to help you get familiar with the common configurations and customize them one by one.
 
         The purpose of "az init" is not to replace the "az config" command, but to simplify common configurations by supporting setting bundles.
        While "az init" and "az config" modify the same configuration file, "az init" is aimed at an interactive, standardized approach to managing your configuration and "az config" is better at more granular control and setting configurations in automation scenarios.
