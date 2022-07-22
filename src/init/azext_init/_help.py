@@ -16,5 +16,5 @@ helps['init'] = """
         It also supports walk through style to help you get familiar with the common configurations and customize them one by one.
 
         In addition, it's purpose is not to replace the "az config" command, but to reduce the common repeated configuration behaviors by supporting setting bindles.
-        The configuration set by "az init" can also be modified by "az config", because they modify the same configuration file.
+       While "az init" and "az config" modify the same configuration file, "az init" is aimed at an interactive, standardized approach to managing your configuration and "az config" is better at more granular control and setting configurations in automation scenarios.
 """
