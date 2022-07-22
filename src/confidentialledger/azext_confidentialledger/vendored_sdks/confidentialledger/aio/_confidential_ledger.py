@@ -26,9 +26,9 @@ class ConfidentialLedger(ConfidentialLedgerOperationsMixin):
     """Microsoft Azure Confidential Compute Ledger Control Plane REST API version 2020-12-01-preview.
 
     :ivar operations: Operations operations
-    :vartype operations: confidential_ledger.aio.operations.Operations
+    :vartype operations: azure.mgmt.confidentialledger.aio.operations.Operations
     :ivar ledger: LedgerOperations operations
-    :vartype ledger: confidential_ledger.aio.operations.LedgerOperations
+    :vartype ledger: azure.mgmt.confidentialledger.aio.operations.LedgerOperations
     :param credential: Credential needed for the client to connect to Azure.
     :type credential: ~azure.core.credentials_async.AsyncTokenCredential
     :param subscription_id: The Azure subscription ID. This is a GUID-formatted string (e.g. 00000000-0000-0000-0000-000000000000).
@@ -45,19 +45,27 @@ class ConfidentialLedger(ConfidentialLedgerOperationsMixin):
         **kwargs: Any
     ) -> None:
         if not base_url:
-            base_url = 'https://management.azure.com'
-        self._config = ConfidentialLedgerConfiguration(credential, subscription_id, **kwargs)
-        self._client = AsyncARMPipelineClient(base_url=base_url, config=self._config, **kwargs)
+            base_url = "https://management.azure.com"
+        self._config = ConfidentialLedgerConfiguration(
+            credential, subscription_id, **kwargs
+        )
+        self._client = AsyncARMPipelineClient(
+            base_url=base_url, config=self._config, **kwargs
+        )
 
-        client_models = {k: v for k, v in models.__dict__.items() if isinstance(v, type)}
+        client_models = {
+            k: v for k, v in models.__dict__.items() if isinstance(v, type)
+        }
         self._serialize = Serializer(client_models)
         self._serialize.client_side_validation = False
         self._deserialize = Deserializer(client_models)
 
         self.operations = Operations(
-            self._client, self._config, self._serialize, self._deserialize)
+            self._client, self._config, self._serialize, self._deserialize
+        )
         self.ledger = LedgerOperations(
-            self._client, self._config, self._serialize, self._deserialize)
+            self._client, self._config, self._serialize, self._deserialize
+        )
 
     async def close(self) -> None:
         await self._client.close()

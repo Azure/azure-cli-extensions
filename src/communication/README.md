@@ -7,6 +7,8 @@ Install this extension using the below CLI command
 az extension add --name communication
 ```
 
+Then set the `AZURE_COMMUNICATION_CONNECTION_STRING` environment variable with your ACS connection string.
+
 ### Included Features ###
 
 ##### Create #####
