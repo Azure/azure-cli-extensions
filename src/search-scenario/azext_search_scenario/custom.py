@@ -44,7 +44,7 @@ def search_scenario(cmd, search_keyword, search_type=None, top=None):
     if cmd.cli_ctx.config.getboolean('search_scenario', 'execute_in_prompt', fallback=True):
         _execute_scenario(cmd, chosen_scenario)
     else:
-        print('\nThank you for your feedback. AZ SCENARIO-SEARCH is completed. '
+        print('\nThank you for your feedback. AZ SEARCH-SCENARIO is completed. '
               'If you want to execute the commands in interactive mode, '
               'you can use "az config set search_scenario.execute_in_prompt=True" to set it up.\n')
 
@@ -106,24 +106,24 @@ def _show_detail(cmd, scenario):
 
 
 def _execute_scenario(ctx_cmd, scenario):
+
     for command in scenario["commandSet"]:
-        nx_param = []
+        parameters = []
         if "arguments" in command:
-            nx_param = command["arguments"]
+            parameters = command["arguments"]
 
         if ctx_cmd.cli_ctx.config.getboolean('search_scenario', 'print_help', fallback=False):
             _print_help_info(ctx_cmd, command["command"])
 
-        print("Running: " + _get_command_item_sample(command))
+        print_styled_text([(Style.ACTION, "Running: ")], end='')
+        print(_get_command_item_sample(command))
         option_msg = [(Style.ACTION, " ? "),
                       (Style.PRIMARY, "How do you want to run this step? 1. Run it 2. Skip it 3. Quit process "),
                       (Style.SECONDARY, "(Enter is to Run)"), (Style.PRIMARY, ": ")]
         run_option = get_int_option(option_msg, 1, 3, 1)
         if run_option == 1:
-            print_styled_text(
-                [(Style.SECONDARY, "Input Enter to skip unnecessary parameters")])
-            execute_result = _execute_cmd(
-                ctx_cmd, command['command'], nx_param, catch_exception=True)
+            print_styled_text([(Style.SECONDARY, "Input Enter to skip unnecessary parameters")])
+            execute_result = _execute_cmd(ctx_cmd, command['command'], parameters, catch_exception=True)
             is_help_printed = False
             while execute_result != 0:
                 if not ctx_cmd.cli_ctx.config.getboolean('search_scenario', 'print_help', fallback=False) \
@@ -136,14 +136,14 @@ def _execute_scenario(ctx_cmd, scenario):
                               (Style.SECONDARY, "(Enter is to Run)"), (Style.PRIMARY, ": ")]
                 run_option = get_int_option(option_msg, 1, 3, 1)
                 if run_option == 1:
-                    execute_result = _execute_cmd(
-                        ctx_cmd, command['command'], nx_param, catch_exception=True)
+                    execute_result = _execute_cmd(ctx_cmd, command['command'], parameters, catch_exception=True)
                 elif run_option == 2:
                     print()
                     break
                 else:
                     print()
                     return
+
         elif run_option == 2:
             print()
             continue
@@ -152,8 +152,7 @@ def _execute_scenario(ctx_cmd, scenario):
             break
 
     from .utils import print_successful_styled_text
-    print_successful_styled_text(
-        'All commands in this scenario have been executed! \n')
+    print_successful_styled_text('All commands in this scenario have been executed! \n')
 
 
 def _style_highlight(highlight_content: str) -> list:
@@ -179,13 +178,11 @@ def _execute_cmd(ctx_cmd, command, params, catch_exception=False):
         args.pop(0)
     params = [param for param in params if param and param != '']
     for param in params:
-        store_true_params = ['-h', '--yes', '-y',
-                             '--no-wait', '--dry-run', '--no-log']
+        store_true_params = ['-h', '--yes', '-y', '--no-wait', '--dry-run', '--no-log']
         if param in store_true_params:
             args.append(param)
         else:
-            print("Please input " + Fore.LIGHTBLUE_EX +
-                  param + Fore.RESET + ":", end='')
+            print_styled_text([(Style.ACTION, "Please input "), (Style.PRIMARY, param + ": ")], end='')
             value = input()
             if param == '<positional argument>':
                 if value:
@@ -197,8 +194,7 @@ def _execute_cmd(ctx_cmd, command, params, catch_exception=False):
                 else:
                     args.pop()
 
-    output_format = ctx_cmd.cli_ctx.config.get(
-        'search_scenario', 'output', fallback='status')
+    output_format = ctx_cmd.cli_ctx.config.get('search_scenario', 'output', fallback='status')
 
     if '--output' not in args and '-o' not in args:
         args.append('--output')
@@ -215,7 +211,6 @@ def _execute_cmd(ctx_cmd, command, params, catch_exception=False):
         else:
             args.append(output_format)
 
-    exit_code = 0
     if not catch_exception:
         exit_code = ctx_cmd.cli_ctx.invoke(args)
 
@@ -228,6 +223,7 @@ def _execute_cmd(ctx_cmd, command, params, catch_exception=False):
             return -1
 
     if output_format == 'status' and exit_code == 0:
+        print()
         from .utils import print_successful_styled_text
         print_successful_styled_text('command completed\n')
 
@@ -236,68 +232,69 @@ def _execute_cmd(ctx_cmd, command, params, catch_exception=False):
 
 def _get_command_item_sample(command):
     if "example" in command and command["example"]:
-        converted_example = command["example"].replace(" $", " ")
-        if "$" not in converted_example:
-            example = Fore.LIGHTBLUE_EX + converted_example
-            example = re.sub('<', Fore.RESET + '<', example)
-            example = re.sub('>', '>' + Fore.LIGHTBLUE_EX, example)
-            return example
+        command_sample, _ = _parse_argument_value_sample(command["example"].replace(" $", " "))
+        return command_sample
 
     from knack import help_files
-    nx_param = []
+    parameter = []
     if "arguments" in command and command["arguments"]:
-        nx_param = command["arguments"]
-        sorted_nx_param = sorted(nx_param)
+        parameter = command["arguments"]
+        sorted_param = sorted(parameter)
         cmd_help = help_files._load_help_file(command['command'])   # pylint: disable=protected-access
         if cmd_help and 'examples' in cmd_help and cmd_help['examples']:
             for cmd_example in cmd_help['examples']:
-                cmd_items = cmd_example['text'].split()
-
-                arguments_start = False
-                example_arguments = []
-                command_item = []
-                argument_values = {}
-                values = []
-                for item in cmd_items:
-                    if item.startswith('-'):
-                        arguments_start = True
-                        if values and example_arguments:
-                            argument_values[example_arguments[-1]] = values
-                            values = []
-                        example_arguments.append(item)
-                    elif not arguments_start:
-                        command_item.append(item)
-                    else:
-                        values.append(item)
-                if values and example_arguments:
-                    argument_values[example_arguments[-1]] = values
-
-                if sorted(example_arguments) == sorted_nx_param:
-                    example = Fore.LIGHTBLUE_EX + ' '.join(command_item)
-                    for argument in example_arguments:
-                        example = example + " " + Fore.LIGHTBLUE_EX + argument
-                        if argument in argument_values and argument_values[argument]:
-                            example = example + Fore.RESET + ' <' + \
-                                ' '.join(argument_values[argument]) + '>'
+                example, example_arguments = _parse_argument_value_sample(cmd_example['text'])
+                if sorted(example_arguments) == sorted_param:
                     return example
 
     command = command["command"] if command["command"].startswith("az ") else "az " + command["command"]
-    return Fore.LIGHTBLUE_EX + f"{command} {' '.join(nx_param) if nx_param else ''}"
+    return f"{command} {' '.join(parameter) if parameter else ''}"
+
+
+def _parse_argument_value_sample(command_sample):
+    if not command_sample:
+        return
+
+    cmd_items = command_sample.split()
+    arguments_start = False
+    example_arguments = []
+    command_item = []
+    argument_values = {}
+    values = []
+    for item in cmd_items:
+        if item.startswith('-'):
+            arguments_start = True
+            if values and example_arguments:
+                argument_values[example_arguments[-1]] = values
+                values = []
+            example_arguments.append(item)
+        elif not arguments_start:
+            command_item.append(item)
+        else:
+            values.append(item)
+    if values and example_arguments:
+        argument_values[example_arguments[-1]] = values
+
+    example = ' '.join(command_item)
+    for argument in example_arguments:
+        example = example + " " + argument
+        if argument in argument_values and argument_values[argument]:
+            example = example + Fore.LIGHTYELLOW_EX + ' <' + ' '.join(argument_values[argument]) + '>' + Fore.RESET
+
+    return example, example_arguments
 
 
 def send_feedback(search_type, option, keyword, search_results=None, adoption=None):
     feedback = str(int(search_type)) + "#" + str(option) + "#" + \
-        keyword.replace("\\", "\\\\").replace("#", "\\sharp") + "#"
+               keyword.replace("\\", "\\\\").replace("#", "\\sharp") + "#"
     if search_results and isinstance(search_results, list):
-        feedback += " ".join(map(lambda r: str(r.get("source", 0)),
-                             search_results))
+        feedback += " ".join(map(lambda r: str(r.get("source", 0)), search_results))
     else:
         feedback += " "
     feedback += "#"
     if adoption:
         feedback += str(adoption.get("source", " ")) + "#" + adoption.get("scenario", " ") + \
-            "#" + adoption.get("description", " ").replace("\\",
-                                                           "\\\\").replace("#", "\\sharp")
+            "#" + adoption.get("description", " ").replace("\\",  "\\\\").replace("#", "\\sharp")
     else:
         feedback += " # # "
 
