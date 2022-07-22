@@ -11,7 +11,7 @@ helps['init'] = """
     type: command
     short-summary: It's an effortless setting up tool for configs.
     long-summary: |
-        This tool can help you quickly know and set up global configurations that are suitable for your current usage environment:
+        az init can help you quickly understand and set up global configurations that are suitable for your current usage environment:
         It supports setting bundles for interactive and automation scenarios to help you quickly set the recommended configurations.
         It also supports a walk-through experience to help you get familiar with the common configurations and customize them one by one.
 
