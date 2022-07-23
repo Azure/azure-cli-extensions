@@ -725,7 +725,7 @@ def load_arguments(self, _):
         c.argument('network_connection_name', options_list=['--network-connection-name', '-nc'], type=str, help='Name of a Network Connection in parent Project of this Pool')
         c.argument('local_administrator', arg_type=get_enum_type(['Disabled', 'Enabled']), help='Indicates whether '
                    'owners of Dev Boxes in this pool are added as local administrators on the Dev Box.')
-        c.argument('license_type', arg_type=get_enum_type(['Windows_client']), help='Specifies the license type indicating the caller has already acquired licenses for the Dev Boxes that will be created.')
+        c.argument('license_type', arg_type=get_enum_type(['Windows_Client']), help='Specifies the license type indicating the caller has already acquired licenses for the Dev Boxes that will be created.')
 
     with self.argument_context('devcenter admin pool update') as c:
         c.argument('resource_group_name', resource_group_name_type)
@@ -739,7 +739,7 @@ def load_arguments(self, _):
         c.argument('network_connection_name', options_list=['--network-connection-name', '-nc'], type=str, help='Name of a Network Connection in parent Project of this Pool')
         c.argument('local_administrator', arg_type=get_enum_type(['Disabled', 'Enabled']), help='Indicates whether '
                    'owners of Dev Boxes in this pool are added as local administrators on the Dev Box.')
-        c.argument('license_type', arg_type=get_enum_type(['Windows_client']), help='Specifies the license type indicating the caller has already acquired licenses for the Dev Boxes that will be created.')
+        c.argument('license_type', arg_type=get_enum_type(['Windows_Client']), help='Specifies the license type indicating the caller has already acquired licenses for the Dev Boxes that will be created.')
 
     with self.argument_context('devcenter admin pool delete') as c:
         c.argument('resource_group_name', resource_group_name_type)
