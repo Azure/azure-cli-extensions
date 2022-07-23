@@ -315,6 +315,7 @@ def load_command_table(self, _):
         g.custom_command('create', 'devcenter_network_connection_create', supports_no_wait=True)
         g.custom_command('update', 'devcenter_network_connection_update', supports_no_wait=True)
         g.custom_command('delete', 'devcenter_network_connection_delete', supports_no_wait=True, confirmation=True)
+        g.custom_command('run-health-check', 'devcenter_network_connection_run_health_check')
         g.custom_command('show-health-detail', 'devcenter_network_connection_show_health_detail')
         g.custom_wait_command('wait', 'devcenter_network_connection_show')
 

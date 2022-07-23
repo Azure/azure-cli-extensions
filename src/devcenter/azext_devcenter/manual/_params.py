@@ -286,17 +286,17 @@ def load_arguments(self, _):
                    '\'$top=10\'.')
 
     #control plane
-    with self.argument_context('devcenter admin dev-center list') as c:
+    with self.argument_context('devcenter admin devcenter list') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('top', type=int, help='The maximum number of resources to return from the operation. Example: '
                    '\'$top=10\'.')
 
-    with self.argument_context('devcenter admin dev-center show') as c:
+    with self.argument_context('devcenter admin devcenter show') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('dev_center_name', options_list=['--name', '-n', '--dev-center-name'], type=str, help='The name of '
                    'the devcenter.', id_part='name')
 
-    with self.argument_context('devcenter admin dev-center create') as c:
+    with self.argument_context('devcenter admin devcenter create') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('dev_center_name', options_list=['--name', '-n', '--dev-center-name'], type=str, help='The name of '
                    'the devcenter.')
@@ -313,7 +313,7 @@ def load_arguments(self, _):
                    'in the form: \'/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microso'
                    'ft.ManagedIdentity/userAssignedIdentities/{identityName}\'. ', arg_group='Identity')
 
-    with self.argument_context('devcenter admin dev-center update') as c:
+    with self.argument_context('devcenter admin devcenter update') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('dev_center_name', options_list=['--name', '-n', '--dev-center-name'], type=str, help='The name of '
                    'the devcenter.', id_part='name')
@@ -331,12 +331,12 @@ def load_arguments(self, _):
                    'ft.ManagedIdentity/userAssignedIdentities/{identityName}\'. Expected value: '
                    'json-string/json-file/@json-file.', arg_group='Identity')
 
-    with self.argument_context('devcenter admin dev-center delete') as c:
+    with self.argument_context('devcenter admin devcenter delete') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('dev_center_name', options_list=['--name', '-n', '--dev-center-name'], type=str, help='The name of '
                    'the devcenter.', id_part='name')
 
-    with self.argument_context('devcenter admin dev-center wait') as c:
+    with self.argument_context('devcenter admin devcenter wait') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('dev_center_name', options_list=['--name', '-n', '--dev-center-name'], type=str, help='The name of '
                    'the devcenter.', id_part='name')
@@ -824,12 +824,12 @@ def load_arguments(self, _):
     with self.argument_context('devcenter admin network-connection show') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('network_setting_name', options_list=['--name', '-n', '--network-connection-name'], type=str,
-                   help='Name of the Network Settings that can be applied to a Pool.', id_part='name')
+                   help='Name of the Network Connection that can be applied to a Pool.', id_part='name')
 
     with self.argument_context('devcenter admin network-connection create') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('network_setting_name', options_list=['--name', '-n', '--network-connection-name'], type=str,
-                   help='Name of the Network Settings that can be applied to a Pool.')
+                   help='Name of the Network Connection that can be applied to a Pool.')
         c.argument('tags', tags_type)
         c.argument('location', arg_type=get_location_type(self.cli_ctx), required=False,
                    validator=get_default_location_from_resource_group)
@@ -848,7 +848,7 @@ def load_arguments(self, _):
     with self.argument_context('devcenter admin network-connection update') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('network_setting_name', options_list=['--name', '-n', '--network-connection-name'], type=str,
-                   help='Name of the Network Settings that can be applied to a Pool.', id_part='name')
+                   help='Name of the Network Connection that can be applied to a Pool.', id_part='name')
         c.argument('tags', tags_type)
         c.argument('location', arg_type=get_location_type(self.cli_ctx), required=False,
                    validator=get_default_location_from_resource_group)
@@ -863,12 +863,12 @@ def load_arguments(self, _):
     with self.argument_context('devcenter admin network-connection delete') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('network_setting_name', options_list=['--name', '-n', '--network-connection-name'], type=str,
-                   help='Name of the Network Settings that can be applied to a Pool.', id_part='name')
+                   help='Name of the Network Connection that can be applied to a Pool.', id_part='name')
 
     with self.argument_context('devcenter admin network-connection show-health-detail') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('network_setting_name', options_list=['--name', '-n', '--network-connection-name'], type=str,
-                   help='Name of the Network Settings that can be applied to a Pool.', id_part='name')
+                   help='Name of the Network Connection that can be applied to a Pool.', id_part='name')
 
     with self.argument_context('devcenter admin network-connection run-health-check') as c:
         c.argument('resource_group_name', resource_group_name_type)
@@ -878,4 +878,4 @@ def load_arguments(self, _):
     with self.argument_context('devcenter admin network-connection wait') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('network_setting_name', options_list=['--name', '-n', '--network-connection-name'], type=str,
-                   help='Name of the Network Settings that can be applied to a Pool.', id_part='name')
+                   help='Name of the Network Connection that can be applied to a Pool.', id_part='name')

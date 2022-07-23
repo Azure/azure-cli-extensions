@@ -1219,6 +1219,16 @@ helps['devcenter admin network-connection delete'] = """
                az devcenter admin network-connection delete --name "{networkSettingName}" --resource-group "rg1"
 """
 
+helps['devcenter admin network-connection run-health-check'] = """
+    type: command
+    short-summary: "Triggers a new health check run. The execution and health check result can be tracked via the \
+network Connection health check details."
+    examples:
+      - name: NetworkConnections_RunHealthChecks
+        text: |-
+               az devcenter admin network-connection run-health-check --name "uswest3network" --resource-group "rg1"
+"""
+
 helps['devcenter admin network-connection show-health-detail'] = """
     type: command
     short-summary: "Gets health check status details."
