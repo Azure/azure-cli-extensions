@@ -3,11 +3,8 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-import re
-
 from azure.cli.core import telemetry
 from azure.cli.core.style import Style, print_styled_text
-from colorama import Fore, init
 
 from .constants import SearchType
 from .requests import get_search_result_from_api
@@ -15,8 +12,6 @@ from .utils import get_int_option
 
 
 def search_scenario(cmd, search_keyword, search_type=None, top=None):
-    init(autoreset=True)  # turn on automatic color recovery for colorama
-
     search_type = SearchType.get_search_type_by_name(search_type)
     search_keyword = " ".join(search_keyword)
     results = get_search_result_from_api(search_keyword, search_type, top)
@@ -116,7 +111,7 @@ def _execute_scenario(ctx_cmd, scenario):
             _print_help_info(ctx_cmd, command["command"])
 
         print_styled_text([(Style.ACTION, "Running: ")], end='')
-        print(_get_command_item_sample(command))
+        print_styled_text(_get_command_item_sample(command))
         option_msg = [(Style.ACTION, " ? "),
                       (Style.PRIMARY, "How do you want to run this step? 1. Run it 2. Skip it 3. Quit process "),
                       (Style.SECONDARY, "(Enter is to Run)"), (Style.PRIMARY, ": ")]
@@ -248,7 +243,8 @@ def _get_command_item_sample(command):
                     return example
 
     command = command["command"] if command["command"].startswith("az ") else "az " + command["command"]
-    return f"{command} {' '.join(parameter) if parameter else ''}"
+    command_sample = f"{command} {' '.join(parameter) if parameter else ''}"
+    return [(Style.PRIMARY, command_sample)]
 
 
 def _parse_argument_value_sample(command_sample):
@@ -275,13 +271,13 @@ def _parse_argument_value_sample(command_sample):
     if values and example_arguments:
         argument_values[example_arguments[-1]] = values
 
-    example = ' '.join(command_item)
+    formatted_example = [(Style.PRIMARY, ' '.join(command_item))]
     for argument in example_arguments:
-        example = example + " " + argument
+        formatted_example.append((Style.PRIMARY, " " + argument))
         if argument in argument_values and argument_values[argument]:
-            example = example + Fore.LIGHTYELLOW_EX + ' <' + ' '.join(argument_values[argument]) + '>' + Fore.RESET
+            formatted_example.append((Style.WARNING, ' <' + ' '.join(argument_values[argument]) + '>'))
 
-    return example, example_arguments
+    return formatted_example, example_arguments
 
 
 def send_feedback(search_type, option, keyword, search_results=None, adoption=None):
