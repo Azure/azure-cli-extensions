@@ -12,6 +12,7 @@ from .utils import get_int_option
 
 
 def search_scenario(cmd, search_keyword, search_type=None, top=None):
+
     search_type = SearchType.get_search_type_by_name(search_type)
     search_keyword = " ".join(search_keyword)
     results = get_search_result_from_api(search_keyword, search_type, top)
@@ -26,15 +27,16 @@ def search_scenario(cmd, search_keyword, search_type=None, top=None):
     option_msg = [(Style.ACTION, " ? "), (Style.PRIMARY, "Please select your option "),
                   (Style.SECONDARY, "(if none, enter 0)"), (Style.PRIMARY, ": ")]
     option = get_int_option(option_msg, 0, len(results), -1)
-    if option == 0:
-        send_feedback(search_type, 0, search_keyword, results)
-        print('\nThank you for your feedback. If you have more feedback, please submit it by using "az feedback" \n')
-        return
     print()
 
+    if option == 0:
+        send_feedback(search_type, 0, search_keyword, results)
+        print('Thank you for your feedback. If you have more feedback, please submit it by using "az feedback" \n')
+        return
+
     chosen_scenario = results[option - 1]
-    send_feedback(search_type, option, search_keyword, results, chosen_scenario)
     _show_detail(cmd, chosen_scenario)
+    send_feedback(search_type, option, search_keyword, results, chosen_scenario)
 
     if cmd.cli_ctx.config.getboolean('search_scenario', 'execute_in_prompt', fallback=True):
         _execute_scenario(cmd, chosen_scenario)
@@ -89,7 +91,8 @@ def _show_detail(cmd, scenario):
         print_styled_text([(Style.ACTION, " > "), (Style.PRIMARY, command_item)])
 
         if command['reason']:
-            command_desc = command['reason'].replace("\\n", " ").split(".")[0].strip().capitalize()
+            command_desc = command['reason'].replace("\\n", " ").split(".")[0].strip()
+            command_desc = command_desc[:1].upper() + command_desc[1:]
             print_styled_text([(Style.SECONDARY, command_desc)])
 
         print()
@@ -151,7 +154,7 @@ def _execute_scenario(ctx_cmd, scenario):
 
 
 def _style_highlight(highlight_content: str) -> list:
-    styled_text_object = []
+    styled_description = []
     remain = highlight_content
     in_highlight = False
     while remain:
@@ -161,9 +164,9 @@ def _style_highlight(highlight_content: str) -> list:
             remain = split_result[1]
         except IndexError:
             remain = None
-        styled_text_object.append((Style.SECONDARY if not in_highlight else Style.WARNING, content))
+        styled_description.append((Style.SECONDARY if not in_highlight else Style.WARNING, content))
         in_highlight = not in_highlight
-    return styled_text_object
+    return styled_description
 
 
 def _execute_cmd(ctx_cmd, command, params, catch_exception=False):
@@ -238,9 +241,9 @@ def _get_command_item_sample(command):
         cmd_help = help_files._load_help_file(command['command'])   # pylint: disable=protected-access
         if cmd_help and 'examples' in cmd_help and cmd_help['examples']:
             for cmd_example in cmd_help['examples']:
-                example, example_arguments = _parse_argument_value_sample(cmd_example['text'])
+                command_sample, example_arguments = _parse_argument_value_sample(cmd_example['text'])
                 if sorted(example_arguments) == sorted_param:
-                    return example
+                    return command_sample
 
     command = command["command"] if command["command"].startswith("az ") else "az " + command["command"]
     command_sample = f"{command} {' '.join(parameter) if parameter else ''}"

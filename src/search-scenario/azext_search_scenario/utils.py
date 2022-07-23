@@ -31,5 +31,5 @@ def get_int_option(option_msg, min_option, max_option, default_option):
 def print_successful_styled_text(message):
     prefix_text = 'Done: '
     if is_modern_terminal():
-        prefix_text = '(✓)Done: '
+        prefix_text = '(✓) Done: '
     print_styled_text([(Style.SUCCESS, prefix_text), (Style.PRIMARY, message)])
