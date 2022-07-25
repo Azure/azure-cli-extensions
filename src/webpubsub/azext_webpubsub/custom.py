@@ -53,6 +53,7 @@ def webpubsub_set(client, webpubsub_name, resource_group_name, parameters):
 
 def update_webpubsub(instance, tags=None, sku=None, unit_count=None):
     sku = sku if sku else instance.sku.name
+    unit_count = unit_count if unit_count else instance.sku.capacity
     instance.sku = ResourceSku(name=sku, capacity=unit_count)
 
     if tags is not None:
