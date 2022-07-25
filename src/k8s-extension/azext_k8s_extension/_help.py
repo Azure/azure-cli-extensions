@@ -95,7 +95,7 @@ helps[f'{consts.EXTENSION_NAME} extension-types show'] = f"""
     type: command
     short-summary: Show properties for a Kubernetes Extension Type.
     examples:
-      - name: Show Kubernetes Extension Type 
+      - name: Show Kubernetes Extension Type
         text: |-
           az {consts.EXTENSION_NAME} extension-types show --resource-group my-resource-group \
 --cluster-name mycluster --cluster-type connectedClusters --extension_type cassandradatacenteroperator

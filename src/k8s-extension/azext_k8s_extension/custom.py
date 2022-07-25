@@ -340,7 +340,7 @@ def delete_k8s_extension(
         )
         return None
     extension_class = ExtensionFactory(extension.extension_type.lower())
-    
+
     # If there is any custom delete logic, this will call the logic
     extension_class.Delete(
         cmd, client, resource_group_name, cluster_name, name, cluster_type, yes
@@ -357,6 +357,7 @@ def delete_k8s_extension(
         force_delete=force,
     )
 
+
 def list_k8s_extension_type_versions(cmd, client, location, extension_type):
     """ List available extension type versions
     """
@@ -372,7 +373,7 @@ def list_k8s_cluster_extension_types(client, resource_group_name, cluster_name, 
 
 
 def list_k8s_location_extension_types(client, location):
-    """ List available extension types based on location 
+    """ List available extension types based on location
     """
     return client.list(location)
 
@@ -384,8 +385,8 @@ def show_k8s_cluster_extension_type(client, resource_group_name, cluster_type, c
     cluster_rp, parent_api_version = get_cluster_rp_api_version(cluster_type)
 
     try:
-        extension_type = client.get(resource_group_name,
-                               cluster_rp, cluster_type, cluster_name, extension_type)
+        extension_type = client.get(resource_group_name, 
+                                    cluster_rp, cluster_type, cluster_name, extension_type)
         return extension_type
     except HttpResponseError as ex:
         # Customize the error message for resources not found

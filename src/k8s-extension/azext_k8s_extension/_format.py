@@ -36,13 +36,13 @@ def __get_extension_type_table_row(result, showReleaseTrains):
     # Populate the values to be returned if they are not undefined
     clusterTypes = ', '.join(result['clusterTypes'])
     name = result['name']
-    defaultScope, allowMultipleInstances, defaultReleaseNamespace = '','',''
+    defaultScope, allowMultipleInstances, defaultReleaseNamespace = '', '', ''
     if result['supportedScopes']:
         defaultScope = result['supportedScopes']['defaultScope']
         if result['supportedScopes']['clusterScopeSettings']:
             allowMultipleInstances = result['supportedScopes']['clusterScopeSettings']['allowMultipleInstances']
             defaultReleaseNamespace = result['supportedScopes']['clusterScopeSettings']['defaultReleaseNamespace']
-    
+
     retVal = OrderedDict([
         ('name', name),
         ('defaultScope', defaultScope),
@@ -53,7 +53,7 @@ def __get_extension_type_table_row(result, showReleaseTrains):
     if showReleaseTrains:
         releaseTrains = ', '.join(result['releaseTrains'])
         retVal['releaseTrains'] = releaseTrains
-    
+
     return retVal
 
 
