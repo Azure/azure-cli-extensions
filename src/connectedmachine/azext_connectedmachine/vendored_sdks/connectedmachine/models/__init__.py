@@ -7,6 +7,9 @@
 # --------------------------------------------------------------------------
 
 try:
+    from ._models_py3 import AgentConfiguration
+    from ._models_py3 import CloudMetadata
+    from ._models_py3 import ConfigurationExtension
     from ._models_py3 import ConnectionDetail
     from ._models_py3 import ErrorAdditionalInfo
     from ._models_py3 import ErrorDetail
@@ -34,7 +37,10 @@ try:
     from ._models_py3 import OperationValue
     from ._models_py3 import OperationValueDisplay
     from ._models_py3 import OsProfile
+    from ._models_py3 import OsProfileLinuxConfiguration
+    from ._models_py3 import OsProfileWindowsConfiguration
     from ._models_py3 import PrivateEndpointConnection
+    from ._models_py3 import PrivateEndpointConnectionDataModel
     from ._models_py3 import PrivateEndpointConnectionListResult
     from ._models_py3 import PrivateEndpointConnectionProperties
     from ._models_py3 import PrivateEndpointProperty
@@ -47,10 +53,15 @@ try:
     from ._models_py3 import ProxyResource
     from ._models_py3 import Resource
     from ._models_py3 import ResourceUpdate
+    from ._models_py3 import ServiceStatus
+    from ._models_py3 import ServiceStatuses
     from ._models_py3 import SystemData
     from ._models_py3 import TagsResource
     from ._models_py3 import TrackedResource
 except (SyntaxError, ImportError):
+    from ._models import AgentConfiguration  # type: ignore
+    from ._models import CloudMetadata  # type: ignore
+    from ._models import ConfigurationExtension  # type: ignore
     from ._models import ConnectionDetail  # type: ignore
     from ._models import ErrorAdditionalInfo  # type: ignore
     from ._models import ErrorDetail  # type: ignore
@@ -78,7 +89,10 @@ except (SyntaxError, ImportError):
     from ._models import OperationValue  # type: ignore
     from ._models import OperationValueDisplay  # type: ignore
     from ._models import OsProfile  # type: ignore
+    from ._models import OsProfileLinuxConfiguration  # type: ignore
+    from ._models import OsProfileWindowsConfiguration  # type: ignore
     from ._models import PrivateEndpointConnection  # type: ignore
+    from ._models import PrivateEndpointConnectionDataModel  # type: ignore
     from ._models import PrivateEndpointConnectionListResult  # type: ignore
     from ._models import PrivateEndpointConnectionProperties  # type: ignore
     from ._models import PrivateEndpointProperty  # type: ignore
@@ -91,19 +105,26 @@ except (SyntaxError, ImportError):
     from ._models import ProxyResource  # type: ignore
     from ._models import Resource  # type: ignore
     from ._models import ResourceUpdate  # type: ignore
+    from ._models import ServiceStatus  # type: ignore
+    from ._models import ServiceStatuses  # type: ignore
     from ._models import SystemData  # type: ignore
     from ._models import TagsResource  # type: ignore
     from ._models import TrackedResource  # type: ignore
 
 from ._connected_machine_enums import (
+    AssessmentModeTypes,
     CreatedByType,
     InstanceViewTypes,
+    PatchModeTypes,
     PublicNetworkAccessType,
     StatusLevelTypes,
     StatusTypes,
 )
 
 __all__ = [
+    'AgentConfiguration',
+    'CloudMetadata',
+    'ConfigurationExtension',
     'ConnectionDetail',
     'ErrorAdditionalInfo',
     'ErrorDetail',
@@ -131,7 +152,10 @@ __all__ = [
     'OperationValue',
     'OperationValueDisplay',
     'OsProfile',
+    'OsProfileLinuxConfiguration',
+    'OsProfileWindowsConfiguration',
     'PrivateEndpointConnection',
+    'PrivateEndpointConnectionDataModel',
     'PrivateEndpointConnectionListResult',
     'PrivateEndpointConnectionProperties',
     'PrivateEndpointProperty',
@@ -144,11 +168,15 @@ __all__ = [
     'ProxyResource',
     'Resource',
     'ResourceUpdate',
+    'ServiceStatus',
+    'ServiceStatuses',
     'SystemData',
     'TagsResource',
     'TrackedResource',
+    'AssessmentModeTypes',
     'CreatedByType',
     'InstanceViewTypes',
+    'PatchModeTypes',
     'PublicNetworkAccessType',
     'StatusLevelTypes',
     'StatusTypes',

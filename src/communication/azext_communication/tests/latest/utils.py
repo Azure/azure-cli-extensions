@@ -53,8 +53,8 @@ def get_test_recipient_phonenumber(is_live, in_recording):
 
 def get_new_phonenumber(connection_string):
     try:
-        phone_numbers_client = PhoneNumbersClient.from_connection_string(
-            connection_string)
+        phone_numbers_client = PhoneNumbersClient.from_connection_string(connection_string)
+        
         capabilities = PhoneNumberCapabilities(
             calling=PhoneNumberCapabilityType.INBOUND,
             sms=PhoneNumberCapabilityType.INBOUND_OUTBOUND
@@ -64,7 +64,6 @@ def get_new_phonenumber(connection_string):
             PhoneNumberType.TOLL_FREE,
             PhoneNumberAssignmentType.APPLICATION,
             capabilities,
-            area_code="833",
             polling=True
         )
         search_result = search_poller.result()
@@ -72,7 +71,8 @@ def get_new_phonenumber(connection_string):
         purchase_poller = phone_numbers_client.begin_purchase_phone_numbers(
             search_result.search_id, polling=True)
         purchase_poller.result()
-        if(purchase_poller.status() == 'succeeded'):
+
+        if (purchase_poller.status() == 'succeeded'):
             phone_number_list = search_result.phone_numbers
             for phone_number in phone_number_list:
                 return phone_number

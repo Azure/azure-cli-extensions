@@ -1,0 +1,1292 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cosmosdb create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --backup-policy-type --continuous-tier --locations --kind
+      User-Agent:
+      - AZURECLI/2.36.0 azsdk-python-azure-mgmt-resource/20.0.0 Python/3.10.4 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_cosmosdb_sql_oldestRestorableTime000001?api-version=2021-04-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_sql_oldestRestorableTime000001","name":"cli_test_cosmosdb_sql_oldestRestorableTime000001","type":"Microsoft.Resources/resourceGroups","location":"eastus2","tags":{"product":"azurecli","cause":"automation","date":"2022-05-17T19:17:33Z"},"properties":{"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '375'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 17 May 2022 19:17:35 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "eastus2", "kind": "GlobalDocumentDB", "properties": {"locations":
+      [{"locationName": "eastus2", "failoverPriority": 0, "isZoneRedundant": false}],
+      "databaseAccountOfferType": "Standard", "apiProperties": {}, "createMode": "Default",
+      "backupPolicy": {"type": "Continuous", "continuousModeProperties": {"tier":
+      "Continuous7Days"}}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cosmosdb create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '343'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -n -g --backup-policy-type --continuous-tier --locations --kind
+      User-Agent:
+      - AZURECLI/2.36.0 azsdk-python-mgmt-cosmosdb/7.0.0b5 Python/3.10.4 (Windows-10-10.0.22621-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_sql_oldestRestorableTime000001/providers/Microsoft.DocumentDB/databaseAccounts/cli-continuous7-000004?api-version=2022-02-15-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_sql_oldestRestorableTime000001/providers/Microsoft.DocumentDB/databaseAccounts/cli-continuous7-000004","name":"cli-continuous7-000004","location":"East
+        US 2","type":"Microsoft.DocumentDB/databaseAccounts","kind":"GlobalDocumentDB","tags":{},"systemData":{"createdAt":"2022-05-17T19:17:39.7639625Z"},"properties":{"provisioningState":"Creating","publicNetworkAccess":"Enabled","enableAutomaticFailover":false,"enableMultipleWriteLocations":false,"enablePartitionKeyMonitor":false,"isVirtualNetworkFilterEnabled":false,"virtualNetworkRules":[],"EnabledApiTypes":"Sql","disableKeyBasedMetadataWriteAccess":false,"enableFreeTier":false,"enableAnalyticalStorage":false,"analyticalStorageConfiguration":{"schemaType":"WellDefined"},"instanceId":"5fd8418c-8679-4268-9d5c-225b5aa40183","createMode":"Default","databaseAccountOfferType":"Standard","defaultIdentity":"","networkAclBypass":"None","disableLocalAuth":false,"consistencyPolicy":{"defaultConsistencyLevel":"Session","maxIntervalInSeconds":5,"maxStalenessPrefix":100},"configurationOverrides":{},"writeLocations":[{"id":"cli-continuous7-000004-eastus2","locationName":"East
+        US 2","provisioningState":"Creating","failoverPriority":0,"isZoneRedundant":false}],"readLocations":[{"id":"cli-continuous7-000004-eastus2","locationName":"East
+        US 2","provisioningState":"Creating","failoverPriority":0,"isZoneRedundant":false}],"locations":[{"id":"cli-continuous7-000004-eastus2","locationName":"East
+        US 2","provisioningState":"Creating","failoverPriority":0,"isZoneRedundant":false}],"failoverPolicies":[{"id":"cli-continuous7-000004-eastus2","locationName":"East
+        US 2","failoverPriority":0}],"cors":[],"capabilities":[],"ipRules":[],"backupPolicy":{"type":"Continuous","continuousModeProperties":{"tier":"Continuous7Days"}},"networkAclBypassResourceIds":[],"diagnosticLogSettings":{"enableFullTextQuery":"None"}},"identity":{"type":"None"}}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/operationsStatus/dea0ac92-5c4b-4350-8fdb-701cda7c8bb7?api-version=2022-02-15-preview
+      cache-control:
+      - no-store, no-cache
+      content-length:
+      - '1976'
+      content-type:
+      - application/json
+      date:
+      - Tue, 17 May 2022 19:17:41 GMT
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_sql_oldestRestorableTime000001/providers/Microsoft.DocumentDB/databaseAccounts/cli-continuous7-000004/operationResults/dea0ac92-5c4b-4350-8fdb-701cda7c8bb7?api-version=2022-02-15-preview
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-gatewayversion:
+      - version=2.14.0
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 200
+      message: Ok
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cosmosdb create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --backup-policy-type --continuous-tier --locations --kind
+      User-Agent:
+      - AZURECLI/2.36.0 azsdk-python-mgmt-cosmosdb/7.0.0b5 Python/3.10.4 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/operationsStatus/dea0ac92-5c4b-4350-8fdb-701cda7c8bb7?api-version=2022-02-15-preview
+  response:
+    body:
+      string: '{"status":"Dequeued"}'
+    headers:
+      cache-control:
+      - no-store, no-cache
+      content-length:
+      - '21'
+      content-type:
+      - application/json
+      date:
+      - Tue, 17 May 2022 19:18:11 GMT
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-gatewayversion:
+      - version=2.14.0
+    status:
+      code: 200
+      message: Ok
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cosmosdb create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --backup-policy-type --continuous-tier --locations --kind
+      User-Agent:
+      - AZURECLI/2.36.0 azsdk-python-mgmt-cosmosdb/7.0.0b5 Python/3.10.4 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/operationsStatus/dea0ac92-5c4b-4350-8fdb-701cda7c8bb7?api-version=2022-02-15-preview
+  response:
+    body:
+      string: '{"status":"Dequeued"}'
+    headers:
+      cache-control:
+      - no-store, no-cache
+      content-length:
+      - '21'
+      content-type:
+      - application/json
+      date:
+      - Tue, 17 May 2022 19:18:41 GMT
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-gatewayversion:
+      - version=2.14.0
+    status:
+      code: 200
+      message: Ok
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cosmosdb create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --backup-policy-type --continuous-tier --locations --kind
+      User-Agent:
+      - AZURECLI/2.36.0 azsdk-python-mgmt-cosmosdb/7.0.0b5 Python/3.10.4 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/operationsStatus/dea0ac92-5c4b-4350-8fdb-701cda7c8bb7?api-version=2022-02-15-preview
+  response:
+    body:
+      string: '{"status":"Dequeued"}'
+    headers:
+      cache-control:
+      - no-store, no-cache
+      content-length:
+      - '21'
+      content-type:
+      - application/json
+      date:
+      - Tue, 17 May 2022 19:19:12 GMT
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-gatewayversion:
+      - version=2.14.0
+    status:
+      code: 200
+      message: Ok
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cosmosdb create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --backup-policy-type --continuous-tier --locations --kind
+      User-Agent:
+      - AZURECLI/2.36.0 azsdk-python-mgmt-cosmosdb/7.0.0b5 Python/3.10.4 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/operationsStatus/dea0ac92-5c4b-4350-8fdb-701cda7c8bb7?api-version=2022-02-15-preview
+  response:
+    body:
+      string: '{"status":"Dequeued"}'
+    headers:
+      cache-control:
+      - no-store, no-cache
+      content-length:
+      - '21'
+      content-type:
+      - application/json
+      date:
+      - Tue, 17 May 2022 19:19:41 GMT
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-gatewayversion:
+      - version=2.14.0
+    status:
+      code: 200
+      message: Ok
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cosmosdb create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --backup-policy-type --continuous-tier --locations --kind
+      User-Agent:
+      - AZURECLI/2.36.0 azsdk-python-mgmt-cosmosdb/7.0.0b5 Python/3.10.4 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/operationsStatus/dea0ac92-5c4b-4350-8fdb-701cda7c8bb7?api-version=2022-02-15-preview
+  response:
+    body:
+      string: '{"status":"Dequeued"}'
+    headers:
+      cache-control:
+      - no-store, no-cache
+      content-length:
+      - '21'
+      content-type:
+      - application/json
+      date:
+      - Tue, 17 May 2022 19:20:12 GMT
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-gatewayversion:
+      - version=2.14.0
+    status:
+      code: 200
+      message: Ok
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cosmosdb create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --backup-policy-type --continuous-tier --locations --kind
+      User-Agent:
+      - AZURECLI/2.36.0 azsdk-python-mgmt-cosmosdb/7.0.0b5 Python/3.10.4 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/operationsStatus/dea0ac92-5c4b-4350-8fdb-701cda7c8bb7?api-version=2022-02-15-preview
+  response:
+    body:
+      string: '{"status":"Succeeded"}'
+    headers:
+      cache-control:
+      - no-store, no-cache
+      content-length:
+      - '22'
+      content-type:
+      - application/json
+      date:
+      - Tue, 17 May 2022 19:20:42 GMT
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-gatewayversion:
+      - version=2.14.0
+    status:
+      code: 200
+      message: Ok
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cosmosdb create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --backup-policy-type --continuous-tier --locations --kind
+      User-Agent:
+      - AZURECLI/2.36.0 azsdk-python-mgmt-cosmosdb/7.0.0b5 Python/3.10.4 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_sql_oldestRestorableTime000001/providers/Microsoft.DocumentDB/databaseAccounts/cli-continuous7-000004?api-version=2022-02-15-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_sql_oldestRestorableTime000001/providers/Microsoft.DocumentDB/databaseAccounts/cli-continuous7-000004","name":"cli-continuous7-000004","location":"East
+        US 2","type":"Microsoft.DocumentDB/databaseAccounts","kind":"GlobalDocumentDB","tags":{},"systemData":{"createdAt":"2022-05-17T19:19:51.1439219Z"},"properties":{"provisioningState":"Succeeded","documentEndpoint":"https://cli-continuous7-000004.documents.azure.com:443/","publicNetworkAccess":"Enabled","enableAutomaticFailover":false,"enableMultipleWriteLocations":false,"enablePartitionKeyMonitor":false,"isVirtualNetworkFilterEnabled":false,"virtualNetworkRules":[],"EnabledApiTypes":"Sql","disableKeyBasedMetadataWriteAccess":false,"enableFreeTier":false,"enableAnalyticalStorage":false,"analyticalStorageConfiguration":{"schemaType":"WellDefined"},"instanceId":"5fd8418c-8679-4268-9d5c-225b5aa40183","createMode":"Default","databaseAccountOfferType":"Standard","defaultIdentity":"FirstPartyIdentity","networkAclBypass":"None","disableLocalAuth":false,"consistencyPolicy":{"defaultConsistencyLevel":"Session","maxIntervalInSeconds":5,"maxStalenessPrefix":100},"configurationOverrides":{},"writeLocations":[{"id":"cli-continuous7-000004-eastus2","locationName":"East
+        US 2","documentEndpoint":"https://cli-continuous7-000004-eastus2.documents.azure.com:443/","provisioningState":"Succeeded","failoverPriority":0,"isZoneRedundant":false}],"readLocations":[{"id":"cli-continuous7-000004-eastus2","locationName":"East
+        US 2","documentEndpoint":"https://cli-continuous7-000004-eastus2.documents.azure.com:443/","provisioningState":"Succeeded","failoverPriority":0,"isZoneRedundant":false}],"locations":[{"id":"cli-continuous7-000004-eastus2","locationName":"East
+        US 2","documentEndpoint":"https://cli-continuous7-000004-eastus2.documents.azure.com:443/","provisioningState":"Succeeded","failoverPriority":0,"isZoneRedundant":false}],"failoverPolicies":[{"id":"cli-continuous7-000004-eastus2","locationName":"East
+        US 2","failoverPriority":0}],"cors":[],"capabilities":[],"ipRules":[],"backupPolicy":{"type":"Continuous","continuousModeProperties":{"tier":"Continuous7Days"}},"networkAclBypassResourceIds":[],"diagnosticLogSettings":{"enableFullTextQuery":"None"}},"identity":{"type":"None"}}'
+    headers:
+      cache-control:
+      - no-store, no-cache
+      content-length:
+      - '2330'
+      content-type:
+      - application/json
+      date:
+      - Tue, 17 May 2022 19:20:42 GMT
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-gatewayversion:
+      - version=2.14.0
+    status:
+      code: 200
+      message: Ok
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cosmosdb create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --backup-policy-type --continuous-tier --locations --kind
+      User-Agent:
+      - AZURECLI/2.36.0 azsdk-python-mgmt-cosmosdb/7.0.0b5 Python/3.10.4 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_sql_oldestRestorableTime000001/providers/Microsoft.DocumentDB/databaseAccounts/cli-continuous7-000004?api-version=2022-02-15-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_sql_oldestRestorableTime000001/providers/Microsoft.DocumentDB/databaseAccounts/cli-continuous7-000004","name":"cli-continuous7-000004","location":"East
+        US 2","type":"Microsoft.DocumentDB/databaseAccounts","kind":"GlobalDocumentDB","tags":{},"systemData":{"createdAt":"2022-05-17T19:19:51.1439219Z"},"properties":{"provisioningState":"Succeeded","documentEndpoint":"https://cli-continuous7-000004.documents.azure.com:443/","publicNetworkAccess":"Enabled","enableAutomaticFailover":false,"enableMultipleWriteLocations":false,"enablePartitionKeyMonitor":false,"isVirtualNetworkFilterEnabled":false,"virtualNetworkRules":[],"EnabledApiTypes":"Sql","disableKeyBasedMetadataWriteAccess":false,"enableFreeTier":false,"enableAnalyticalStorage":false,"analyticalStorageConfiguration":{"schemaType":"WellDefined"},"instanceId":"5fd8418c-8679-4268-9d5c-225b5aa40183","createMode":"Default","databaseAccountOfferType":"Standard","defaultIdentity":"FirstPartyIdentity","networkAclBypass":"None","disableLocalAuth":false,"consistencyPolicy":{"defaultConsistencyLevel":"Session","maxIntervalInSeconds":5,"maxStalenessPrefix":100},"configurationOverrides":{},"writeLocations":[{"id":"cli-continuous7-000004-eastus2","locationName":"East
+        US 2","documentEndpoint":"https://cli-continuous7-000004-eastus2.documents.azure.com:443/","provisioningState":"Succeeded","failoverPriority":0,"isZoneRedundant":false}],"readLocations":[{"id":"cli-continuous7-000004-eastus2","locationName":"East
+        US 2","documentEndpoint":"https://cli-continuous7-000004-eastus2.documents.azure.com:443/","provisioningState":"Succeeded","failoverPriority":0,"isZoneRedundant":false}],"locations":[{"id":"cli-continuous7-000004-eastus2","locationName":"East
+        US 2","documentEndpoint":"https://cli-continuous7-000004-eastus2.documents.azure.com:443/","provisioningState":"Succeeded","failoverPriority":0,"isZoneRedundant":false}],"failoverPolicies":[{"id":"cli-continuous7-000004-eastus2","locationName":"East
+        US 2","failoverPriority":0}],"cors":[],"capabilities":[],"ipRules":[],"backupPolicy":{"type":"Continuous","continuousModeProperties":{"tier":"Continuous7Days"}},"networkAclBypassResourceIds":[],"diagnosticLogSettings":{"enableFullTextQuery":"None"}},"identity":{"type":"None"}}'
+    headers:
+      cache-control:
+      - no-store, no-cache
+      content-length:
+      - '2330'
+      content-type:
+      - application/json
+      date:
+      - Tue, 17 May 2022 19:20:42 GMT
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-gatewayversion:
+      - version=2.14.0
+    status:
+      code: 200
+      message: Ok
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cosmosdb show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g
+      User-Agent:
+      - AZURECLI/2.36.0 azsdk-python-mgmt-cosmosdb/7.0.0b5 Python/3.10.4 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_sql_oldestRestorableTime000001/providers/Microsoft.DocumentDB/databaseAccounts/cli-continuous7-000004?api-version=2022-02-15-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_sql_oldestRestorableTime000001/providers/Microsoft.DocumentDB/databaseAccounts/cli-continuous7-000004","name":"cli-continuous7-000004","location":"East
+        US 2","type":"Microsoft.DocumentDB/databaseAccounts","kind":"GlobalDocumentDB","tags":{},"systemData":{"createdAt":"2022-05-17T19:19:51.1439219Z"},"properties":{"provisioningState":"Succeeded","documentEndpoint":"https://cli-continuous7-000004.documents.azure.com:443/","publicNetworkAccess":"Enabled","enableAutomaticFailover":false,"enableMultipleWriteLocations":false,"enablePartitionKeyMonitor":false,"isVirtualNetworkFilterEnabled":false,"virtualNetworkRules":[],"EnabledApiTypes":"Sql","disableKeyBasedMetadataWriteAccess":false,"enableFreeTier":false,"enableAnalyticalStorage":false,"analyticalStorageConfiguration":{"schemaType":"WellDefined"},"instanceId":"5fd8418c-8679-4268-9d5c-225b5aa40183","createMode":"Default","databaseAccountOfferType":"Standard","defaultIdentity":"FirstPartyIdentity","networkAclBypass":"None","disableLocalAuth":false,"consistencyPolicy":{"defaultConsistencyLevel":"Session","maxIntervalInSeconds":5,"maxStalenessPrefix":100},"configurationOverrides":{},"writeLocations":[{"id":"cli-continuous7-000004-eastus2","locationName":"East
+        US 2","documentEndpoint":"https://cli-continuous7-000004-eastus2.documents.azure.com:443/","provisioningState":"Succeeded","failoverPriority":0,"isZoneRedundant":false}],"readLocations":[{"id":"cli-continuous7-000004-eastus2","locationName":"East
+        US 2","documentEndpoint":"https://cli-continuous7-000004-eastus2.documents.azure.com:443/","provisioningState":"Succeeded","failoverPriority":0,"isZoneRedundant":false}],"locations":[{"id":"cli-continuous7-000004-eastus2","locationName":"East
+        US 2","documentEndpoint":"https://cli-continuous7-000004-eastus2.documents.azure.com:443/","provisioningState":"Succeeded","failoverPriority":0,"isZoneRedundant":false}],"failoverPolicies":[{"id":"cli-continuous7-000004-eastus2","locationName":"East
+        US 2","failoverPriority":0}],"cors":[],"capabilities":[],"ipRules":[],"backupPolicy":{"type":"Continuous","continuousModeProperties":{"tier":"Continuous7Days"}},"networkAclBypassResourceIds":[],"diagnosticLogSettings":{"enableFullTextQuery":"None"}},"identity":{"type":"None"}}'
+    headers:
+      cache-control:
+      - no-store, no-cache
+      content-length:
+      - '2330'
+      content-type:
+      - application/json
+      date:
+      - Tue, 17 May 2022 19:20:43 GMT
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-gatewayversion:
+      - version=2.14.0
+    status:
+      code: 200
+      message: Ok
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cosmosdb create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --backup-policy-type --continuous-tier --locations --kind
+      User-Agent:
+      - AZURECLI/2.36.0 azsdk-python-azure-mgmt-resource/20.0.0 Python/3.10.4 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_cosmosdb_sql_oldestRestorableTime000001?api-version=2021-04-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_sql_oldestRestorableTime000001","name":"cli_test_cosmosdb_sql_oldestRestorableTime000001","type":"Microsoft.Resources/resourceGroups","location":"eastus2","tags":{"product":"azurecli","cause":"automation","date":"2022-05-17T19:17:33Z"},"properties":{"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '375'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 17 May 2022 19:20:44 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "eastus2", "kind": "GlobalDocumentDB", "properties": {"locations":
+      [{"locationName": "eastus2", "failoverPriority": 0, "isZoneRedundant": false}],
+      "databaseAccountOfferType": "Standard", "apiProperties": {}, "createMode": "Default",
+      "backupPolicy": {"type": "Continuous", "continuousModeProperties": {"tier":
+      "Continuous7Days"}}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cosmosdb create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '343'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -n -g --backup-policy-type --continuous-tier --locations --kind
+      User-Agent:
+      - AZURECLI/2.36.0 azsdk-python-mgmt-cosmosdb/7.0.0b5 Python/3.10.4 (Windows-10-10.0.22621-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_sql_oldestRestorableTime000001/providers/Microsoft.DocumentDB/databaseAccounts/cli-continuous7-000004?api-version=2022-02-15-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_sql_oldestRestorableTime000001/providers/Microsoft.DocumentDB/databaseAccounts/cli-continuous7-000004","name":"cli-continuous7-000004","location":"East
+        US 2","type":"Microsoft.DocumentDB/databaseAccounts","kind":"GlobalDocumentDB","tags":{},"systemData":{"createdAt":"2022-05-17T19:19:51.1439219Z"},"properties":{"provisioningState":"Succeeded","documentEndpoint":"https://cli-continuous7-000004.documents.azure.com:443/","publicNetworkAccess":"Enabled","enableAutomaticFailover":false,"enableMultipleWriteLocations":false,"enablePartitionKeyMonitor":false,"isVirtualNetworkFilterEnabled":false,"virtualNetworkRules":[],"EnabledApiTypes":"Sql","disableKeyBasedMetadataWriteAccess":false,"enableFreeTier":false,"enableAnalyticalStorage":false,"analyticalStorageConfiguration":{"schemaType":"WellDefined"},"instanceId":"5fd8418c-8679-4268-9d5c-225b5aa40183","createMode":"Default","databaseAccountOfferType":"Standard","defaultIdentity":"FirstPartyIdentity","networkAclBypass":"None","disableLocalAuth":false,"consistencyPolicy":{"defaultConsistencyLevel":"Session","maxIntervalInSeconds":5,"maxStalenessPrefix":100},"configurationOverrides":{},"writeLocations":[{"id":"cli-continuous7-000004-eastus2","locationName":"East
+        US 2","documentEndpoint":"https://cli-continuous7-000004-eastus2.documents.azure.com:443/","provisioningState":"Succeeded","failoverPriority":0,"isZoneRedundant":false}],"readLocations":[{"id":"cli-continuous7-000004-eastus2","locationName":"East
+        US 2","documentEndpoint":"https://cli-continuous7-000004-eastus2.documents.azure.com:443/","provisioningState":"Succeeded","failoverPriority":0,"isZoneRedundant":false}],"locations":[{"id":"cli-continuous7-000004-eastus2","locationName":"East
+        US 2","documentEndpoint":"https://cli-continuous7-000004-eastus2.documents.azure.com:443/","provisioningState":"Succeeded","failoverPriority":0,"isZoneRedundant":false}],"failoverPolicies":[{"id":"cli-continuous7-000004-eastus2","locationName":"East
+        US 2","failoverPriority":0}],"cors":[],"capabilities":[],"ipRules":[],"backupPolicy":{"type":"Continuous","continuousModeProperties":{"tier":"Continuous7Days"}},"networkAclBypassResourceIds":[],"diagnosticLogSettings":{"enableFullTextQuery":"None"}},"identity":{"type":"None"}}'
+    headers:
+      cache-control:
+      - no-store, no-cache
+      content-length:
+      - '2330'
+      content-type:
+      - application/json
+      date:
+      - Tue, 17 May 2022 19:20:47 GMT
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-gatewayversion:
+      - version=2.14.0
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 200
+      message: Ok
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cosmosdb create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --backup-policy-type --continuous-tier --locations --kind
+      User-Agent:
+      - AZURECLI/2.36.0 azsdk-python-mgmt-cosmosdb/7.0.0b5 Python/3.10.4 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_sql_oldestRestorableTime000001/providers/Microsoft.DocumentDB/databaseAccounts/cli-continuous7-000004?api-version=2022-02-15-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_sql_oldestRestorableTime000001/providers/Microsoft.DocumentDB/databaseAccounts/cli-continuous7-000004","name":"cli-continuous7-000004","location":"East
+        US 2","type":"Microsoft.DocumentDB/databaseAccounts","kind":"GlobalDocumentDB","tags":{},"systemData":{"createdAt":"2022-05-17T19:19:51.1439219Z"},"properties":{"provisioningState":"Succeeded","documentEndpoint":"https://cli-continuous7-000004.documents.azure.com:443/","publicNetworkAccess":"Enabled","enableAutomaticFailover":false,"enableMultipleWriteLocations":false,"enablePartitionKeyMonitor":false,"isVirtualNetworkFilterEnabled":false,"virtualNetworkRules":[],"EnabledApiTypes":"Sql","disableKeyBasedMetadataWriteAccess":false,"enableFreeTier":false,"enableAnalyticalStorage":false,"analyticalStorageConfiguration":{"schemaType":"WellDefined"},"instanceId":"5fd8418c-8679-4268-9d5c-225b5aa40183","createMode":"Default","databaseAccountOfferType":"Standard","defaultIdentity":"FirstPartyIdentity","networkAclBypass":"None","disableLocalAuth":false,"consistencyPolicy":{"defaultConsistencyLevel":"Session","maxIntervalInSeconds":5,"maxStalenessPrefix":100},"configurationOverrides":{},"writeLocations":[{"id":"cli-continuous7-000004-eastus2","locationName":"East
+        US 2","documentEndpoint":"https://cli-continuous7-000004-eastus2.documents.azure.com:443/","provisioningState":"Succeeded","failoverPriority":0,"isZoneRedundant":false}],"readLocations":[{"id":"cli-continuous7-000004-eastus2","locationName":"East
+        US 2","documentEndpoint":"https://cli-continuous7-000004-eastus2.documents.azure.com:443/","provisioningState":"Succeeded","failoverPriority":0,"isZoneRedundant":false}],"locations":[{"id":"cli-continuous7-000004-eastus2","locationName":"East
+        US 2","documentEndpoint":"https://cli-continuous7-000004-eastus2.documents.azure.com:443/","provisioningState":"Succeeded","failoverPriority":0,"isZoneRedundant":false}],"failoverPolicies":[{"id":"cli-continuous7-000004-eastus2","locationName":"East
+        US 2","failoverPriority":0}],"cors":[],"capabilities":[],"ipRules":[],"backupPolicy":{"type":"Continuous","continuousModeProperties":{"tier":"Continuous7Days"}},"networkAclBypassResourceIds":[],"diagnosticLogSettings":{"enableFullTextQuery":"None"}},"identity":{"type":"None"}}'
+    headers:
+      cache-control:
+      - no-store, no-cache
+      content-length:
+      - '2330'
+      content-type:
+      - application/json
+      date:
+      - Tue, 17 May 2022 19:20:47 GMT
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-gatewayversion:
+      - version=2.14.0
+    status:
+      code: 200
+      message: Ok
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cosmosdb show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g
+      User-Agent:
+      - AZURECLI/2.36.0 azsdk-python-mgmt-cosmosdb/7.0.0b5 Python/3.10.4 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_sql_oldestRestorableTime000001/providers/Microsoft.DocumentDB/databaseAccounts/cli-continuous7-000004?api-version=2022-02-15-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_sql_oldestRestorableTime000001/providers/Microsoft.DocumentDB/databaseAccounts/cli-continuous7-000004","name":"cli-continuous7-000004","location":"East
+        US 2","type":"Microsoft.DocumentDB/databaseAccounts","kind":"GlobalDocumentDB","tags":{},"systemData":{"createdAt":"2022-05-17T19:19:51.1439219Z"},"properties":{"provisioningState":"Succeeded","documentEndpoint":"https://cli-continuous7-000004.documents.azure.com:443/","publicNetworkAccess":"Enabled","enableAutomaticFailover":false,"enableMultipleWriteLocations":false,"enablePartitionKeyMonitor":false,"isVirtualNetworkFilterEnabled":false,"virtualNetworkRules":[],"EnabledApiTypes":"Sql","disableKeyBasedMetadataWriteAccess":false,"enableFreeTier":false,"enableAnalyticalStorage":false,"analyticalStorageConfiguration":{"schemaType":"WellDefined"},"instanceId":"5fd8418c-8679-4268-9d5c-225b5aa40183","createMode":"Default","databaseAccountOfferType":"Standard","defaultIdentity":"FirstPartyIdentity","networkAclBypass":"None","disableLocalAuth":false,"consistencyPolicy":{"defaultConsistencyLevel":"Session","maxIntervalInSeconds":5,"maxStalenessPrefix":100},"configurationOverrides":{},"writeLocations":[{"id":"cli-continuous7-000004-eastus2","locationName":"East
+        US 2","documentEndpoint":"https://cli-continuous7-000004-eastus2.documents.azure.com:443/","provisioningState":"Succeeded","failoverPriority":0,"isZoneRedundant":false}],"readLocations":[{"id":"cli-continuous7-000004-eastus2","locationName":"East
+        US 2","documentEndpoint":"https://cli-continuous7-000004-eastus2.documents.azure.com:443/","provisioningState":"Succeeded","failoverPriority":0,"isZoneRedundant":false}],"locations":[{"id":"cli-continuous7-000004-eastus2","locationName":"East
+        US 2","documentEndpoint":"https://cli-continuous7-000004-eastus2.documents.azure.com:443/","provisioningState":"Succeeded","failoverPriority":0,"isZoneRedundant":false}],"failoverPolicies":[{"id":"cli-continuous7-000004-eastus2","locationName":"East
+        US 2","failoverPriority":0}],"cors":[],"capabilities":[],"ipRules":[],"backupPolicy":{"type":"Continuous","continuousModeProperties":{"tier":"Continuous7Days"}},"networkAclBypassResourceIds":[],"diagnosticLogSettings":{"enableFullTextQuery":"None"}},"identity":{"type":"None"}}'
+    headers:
+      cache-control:
+      - no-store, no-cache
+      content-length:
+      - '2330'
+      content-type:
+      - application/json
+      date:
+      - Tue, 17 May 2022 19:20:48 GMT
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-gatewayversion:
+      - version=2.14.0
+    status:
+      code: 200
+      message: Ok
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cosmosdb restorable-database-account show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --location --instance-id
+      User-Agent:
+      - AZURECLI/2.36.0 azsdk-python-mgmt-cosmosdb/7.0.0b5 Python/3.10.4 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/restorableDatabaseAccounts/5fd8418c-8679-4268-9d5c-225b5aa40183?api-version=2022-02-15-preview
+  response:
+    body:
+      string: '{"name":"5fd8418c-8679-4268-9d5c-225b5aa40183","location":"East US
+        2","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/restorableDatabaseAccounts/5fd8418c-8679-4268-9d5c-225b5aa40183","properties":{"accountName":"cli-continuous7-000004","apiType":"Sql","creationTime":"2022-05-17T19:19:52Z","oldestRestorableTime":"2022-05-17T19:19:52Z","restorableLocations":[{"locationName":"East
+        US 2","regionalDatabaseAccountInstanceId":"c07515c6-fdd6-42af-bbb6-843ba1540da5","creationTime":"2022-05-17T19:19:53Z"}]}}'
+    headers:
+      cache-control:
+      - no-store, no-cache
+      content-length:
+      - '629'
+      content-type:
+      - application/json
+      date:
+      - Tue, 17 May 2022 19:20:49 GMT
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-gatewayversion:
+      - version=2.14.0
+    status:
+      code: 200
+      message: Ok
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cosmosdb restorable-database-account list
+      Connection:
+      - keep-alive
+      User-Agent:
+      - AZURECLI/2.36.0 azsdk-python-mgmt-cosmosdb/7.0.0b5 Python/3.10.4 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/restorableDatabaseAccounts?api-version=2022-02-15-preview
+  response:
+    body:
+      string: '{"value":[{"name":"715c1b13-f524-4117-9113-f4da5b211a7f","location":"Central
+        US","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/centralus/restorableDatabaseAccounts/715c1b13-f524-4117-9113-f4da5b211a7f","properties":{"accountName":"testacc1","apiType":"Sql","creationTime":"2021-12-17T00:00:29Z","oldestRestorableTime":"2022-04-17T19:20:50Z","restorableLocations":[{"locationName":"Central
+        US","regionalDatabaseAccountInstanceId":"c739995b-73d4-4968-afa6-d1a41b8d786d","creationTime":"2021-12-17T00:00:29Z"}]}},{"name":"12d9180f-4a2d-4fe1-8640-5570b2765fdb","location":"Central
+        US","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/centralus/restorableDatabaseAccounts/12d9180f-4a2d-4fe1-8640-5570b2765fdb","properties":{"accountName":"cosmosdb-1220","apiType":"Sql","creationTime":"2022-05-16T22:57:55Z","oldestRestorableTime":"2022-05-16T22:57:55Z","restorableLocations":[{"locationName":"Central
+        US","regionalDatabaseAccountInstanceId":"59007ecf-0c91-484b-a6eb-0f094dad6bf9","creationTime":"2022-05-16T22:57:55Z"}]}},{"name":"f2a421bf-265c-41fe-981f-fc03eb2fed59","location":"Central
+        US","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/centralus/restorableDatabaseAccounts/f2a421bf-265c-41fe-981f-fc03eb2fed59","properties":{"accountName":"amisitablepitracc2","apiType":"Table,
+        Sql","creationTime":"2022-02-18T03:03:41Z","deletionTime":"2022-05-16T17:27:44Z","oldestRestorableTime":"2022-04-17T19:20:50Z","restorableLocations":[{"locationName":"Central
+        US","regionalDatabaseAccountInstanceId":"0d6c9a54-cac4-4e4a-9e7e-13c1f38ac714","creationTime":"2022-02-18T03:03:42Z","deletionTime":"2022-05-16T17:27:44Z"}]}},{"name":"270958bb-8d05-4846-9b73-a088ba60a87c","location":"Central
+        US","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/centralus/restorableDatabaseAccounts/270958bb-8d05-4846-9b73-a088ba60a87c","properties":{"accountName":"cosmosdb-1250","apiType":"Sql","creationTime":"2022-05-16T21:08:36Z","deletionTime":"2022-05-16T21:09:27Z","oldestRestorableTime":"2022-05-16T21:08:36Z","restorableLocations":[{"locationName":"Central
+        US","regionalDatabaseAccountInstanceId":"af6b6397-7392-44f2-a4fd-d9d31196e1a4","creationTime":"2022-05-16T21:08:36Z","deletionTime":"2022-05-16T21:09:27Z"}]}},{"name":"ef4e5348-68b7-4f73-9dc8-2715f6eaff20","location":"Central
+        US","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/centralus/restorableDatabaseAccounts/ef4e5348-68b7-4f73-9dc8-2715f6eaff20","properties":{"accountName":"ps-cosmosdb-1250","apiType":"Sql","creationTime":"2022-05-16T21:35:15Z","deletionTime":"2022-05-16T21:35:34Z","oldestRestorableTime":"2022-05-16T21:35:15Z","restorableLocations":[{"locationName":"Central
+        US","regionalDatabaseAccountInstanceId":"af3cb94c-e79d-408f-8c43-2f74e164e402","creationTime":"2022-05-16T21:35:15Z","deletionTime":"2022-05-16T21:35:34Z"}]}},{"name":"ff0ab014-b88e-437c-ab68-7a69732b6040","location":"Central
+        US","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/centralus/restorableDatabaseAccounts/ff0ab014-b88e-437c-ab68-7a69732b6040","properties":{"accountName":"cosmosdb-1220","apiType":"Sql","creationTime":"2022-05-16T22:07:45Z","deletionTime":"2022-05-16T22:08:25Z","oldestRestorableTime":"2022-05-16T22:07:45Z","restorableLocations":[{"locationName":"Central
+        US","regionalDatabaseAccountInstanceId":"1997e765-c6b2-4a86-bdc8-2d71250ab8a3","creationTime":"2022-05-16T22:07:45Z","deletionTime":"2022-05-16T22:08:25Z"}]}},{"name":"e27d8970-f32e-4212-bd01-3f0750878759","location":"Central
+        US","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/centralus/restorableDatabaseAccounts/e27d8970-f32e-4212-bd01-3f0750878759","properties":{"accountName":"ps-cosmosdb-1220","apiType":"Sql","creationTime":"2022-05-17T00:49:30Z","deletionTime":"2022-05-17T00:51:37Z","oldestRestorableTime":"2022-05-17T00:49:30Z","restorableLocations":[{"locationName":"Central
+        US","regionalDatabaseAccountInstanceId":"c8987b8f-0c72-4010-9c7a-4970bfa9b98d","creationTime":"2022-05-17T00:49:30Z","deletionTime":"2022-05-17T00:51:37Z"}]}},{"name":"358748c8-813f-42a8-aec8-2fea56d00656","location":"Central
+        US","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/centralus/restorableDatabaseAccounts/358748c8-813f-42a8-aec8-2fea56d00656","properties":{"accountName":"ps-cosmosdb-1220","apiType":"Sql","creationTime":"2022-05-17T01:40:39Z","deletionTime":"2022-05-17T01:42:34Z","oldestRestorableTime":"2022-05-17T01:40:39Z","restorableLocations":[{"locationName":"Central
+        US","regionalDatabaseAccountInstanceId":"810d7f29-5388-4510-a29e-e20b3a081f3c","creationTime":"2022-05-17T01:40:39Z","deletionTime":"2022-05-17T01:42:34Z"}]}},{"name":"a9097095-d009-4941-9658-854fa92f2d6b","location":"Central
+        US","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/centralus/restorableDatabaseAccounts/a9097095-d009-4941-9658-854fa92f2d6b","properties":{"accountName":"ps-cosmosdb-1220","apiType":"Sql","creationTime":"2022-05-17T03:05:32Z","deletionTime":"2022-05-17T03:10:37Z","oldestRestorableTime":"2022-05-17T03:05:32Z","restorableLocations":[{"locationName":"Central
+        US","regionalDatabaseAccountInstanceId":"d9f33d16-c2d5-4370-bab9-38aa57a82b56","creationTime":"2022-05-17T03:05:32Z","deletionTime":"2022-05-17T03:10:37Z"}]}},{"name":"93817c9f-cba2-4b58-9eab-39565ab5402e","location":"Central
+        US","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/centralus/restorableDatabaseAccounts/93817c9f-cba2-4b58-9eab-39565ab5402e","properties":{"accountName":"ps-cosmosdb-1250","apiType":"Sql","creationTime":"2022-05-17T02:17:47Z","deletionTime":"2022-05-17T03:24:48Z","oldestRestorableTime":"2022-05-17T02:17:47Z","restorableLocations":[{"locationName":"Central
+        US","regionalDatabaseAccountInstanceId":"e6e44a80-fd52-44c0-8aa3-02e6c32f0d94","creationTime":"2022-05-17T02:17:47Z","deletionTime":"2022-05-17T03:24:48Z"}]}},{"name":"ac045dd8-e6c6-4874-8224-652e785fa3b2","location":"Central
+        US","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/centralus/restorableDatabaseAccounts/ac045dd8-e6c6-4874-8224-652e785fa3b2","properties":{"accountName":"ps-cosmosdb-1220","apiType":"Sql","creationTime":"2022-05-17T03:51:17Z","deletionTime":"2022-05-17T03:58:57Z","oldestRestorableTime":"2022-05-17T03:51:17Z","restorableLocations":[{"locationName":"Central
+        US","regionalDatabaseAccountInstanceId":"486eb7d0-9a71-41c3-ac02-ae51f40484cf","creationTime":"2022-05-17T03:51:17Z","deletionTime":"2022-05-17T03:58:57Z"}]}},{"name":"aa3321ec-36c3-43d9-92f6-36005494ee39","location":"Central
+        US","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/centralus/restorableDatabaseAccounts/aa3321ec-36c3-43d9-92f6-36005494ee39","properties":{"accountName":"ps-cosmosdb-1250","apiType":"Sql","creationTime":"2022-05-17T04:20:42Z","deletionTime":"2022-05-17T04:26:54Z","oldestRestorableTime":"2022-05-17T04:20:42Z","restorableLocations":[{"locationName":"Central
+        US","regionalDatabaseAccountInstanceId":"6b2c1ad7-acc5-428e-a07f-4e799f8d129f","creationTime":"2022-05-17T04:20:42Z","deletionTime":"2022-05-17T04:26:54Z"}]}},{"name":"0db656dc-7ef3-4501-8b8f-3a07776c2927","location":"Central
+        US","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/centralus/restorableDatabaseAccounts/0db656dc-7ef3-4501-8b8f-3a07776c2927","properties":{"accountName":"cosmosdb-1215","apiType":"MongoDB","creationTime":"2022-05-17T04:31:01Z","deletionTime":"2022-05-17T04:33:46Z","oldestRestorableTime":"2022-04-17T19:20:50Z","restorableLocations":[{"locationName":"Central
+        US","regionalDatabaseAccountInstanceId":"80af3e5c-08ee-4b5a-b784-8d3fe1e511de","creationTime":"2022-05-17T04:31:02Z","deletionTime":"2022-05-17T04:33:46Z"}]}},{"name":"cb1e7bf5-b296-4d9e-9086-cdd54f0410c9","location":"Central
+        US","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/centralus/restorableDatabaseAccounts/cb1e7bf5-b296-4d9e-9086-cdd54f0410c9","properties":{"accountName":"cosmosdb-1252","apiType":"Sql","creationTime":"2022-05-17T05:07:12Z","deletionTime":"2022-05-17T05:11:23Z","oldestRestorableTime":"2022-04-17T19:20:50Z","restorableLocations":[{"locationName":"Central
+        US","regionalDatabaseAccountInstanceId":"b6b6de6b-f519-46b5-8e80-c145173a796c","creationTime":"2022-05-17T05:07:13Z","deletionTime":"2022-05-17T05:11:23Z"}]}},{"name":"e4615996-2deb-492a-83e9-afe6747f42b2","location":"Brazil
+        South","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/brazilsouth/restorableDatabaseAccounts/e4615996-2deb-492a-83e9-afe6747f42b2","properties":{"accountName":"ruleipitraccountbs","apiType":"Sql","creationTime":"2021-07-06T23:23:03Z","oldestRestorableTime":"2022-04-17T19:20:50Z","restorableLocations":[{"locationName":"Brazil
+        South","regionalDatabaseAccountInstanceId":"210021c5-8efc-4dc8-83cb-4f89b3dab3e0","creationTime":"2021-07-06T23:23:05Z"}]}},{"name":"1ada1386-652f-4e6f-bf37-a76732c2bcdb","location":"West
+        US 2","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus2/restorableDatabaseAccounts/1ada1386-652f-4e6f-bf37-a76732c2bcdb","properties":{"accountName":"vinh-serverless","apiType":"Sql","creationTime":"2021-11-24T18:40:40Z","oldestRestorableTime":"2022-04-17T19:20:50Z","restorableLocations":[{"locationName":"West
+        US 2","regionalDatabaseAccountInstanceId":"de336bf5-36e3-4024-a103-ac6831e573c5","creationTime":"2021-11-24T18:40:40Z"}]}},{"name":"b9919640-9124-494a-aa1a-cdf16c4ac494","location":"West
+        US 2","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus2/restorableDatabaseAccounts/b9919640-9124-494a-aa1a-cdf16c4ac494","properties":{"accountName":"vinh-serverless-permission","apiType":"Sql","creationTime":"2022-01-22T05:41:05Z","oldestRestorableTime":"2022-04-17T19:20:50Z","restorableLocations":[{"locationName":"West
+        US 2","regionalDatabaseAccountInstanceId":"5ec7d99b-e3f6-4b3f-86c4-0468e10ee4db","creationTime":"2022-01-22T05:41:05Z"}]}},{"name":"0be166a4-3d75-478d-b427-7b0d05fa800b","location":"West
+        US 2","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus2/restorableDatabaseAccounts/0be166a4-3d75-478d-b427-7b0d05fa800b","properties":{"accountName":"databaseaccount2058","apiType":"MongoDB","creationTime":"2022-04-14T02:10:48Z","oldestRestorableTime":"2022-04-17T19:20:50Z","restorableLocations":[{"locationName":"West
+        US 2","regionalDatabaseAccountInstanceId":"9d4cc1c0-9c27-4c3e-bc20-7da1e6a7bfed","creationTime":"2022-04-14T02:10:49Z"}]}},{"name":"eb3901e7-8dbb-48a6-8ab7-1e8fa7b61e10","location":"West
+        US 2","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus2/restorableDatabaseAccounts/eb3901e7-8dbb-48a6-8ab7-1e8fa7b61e10","properties":{"accountName":"chucks-pitr-sql","apiType":"Sql","creationTime":"2022-03-25T19:54:14Z","deletionTime":"2022-04-29T00:37:49Z","oldestRestorableTime":"2022-04-17T19:20:50Z","restorableLocations":[{"locationName":"West
+        US 2","regionalDatabaseAccountInstanceId":"541e29a6-8716-4b06-a455-8d783de38b04","creationTime":"2022-03-25T19:54:15Z","deletionTime":"2022-04-29T00:37:49Z"}]}},{"name":"4ec42f6d-433a-4c76-9017-8b27337491c0","location":"West
+        US 2","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus2/restorableDatabaseAccounts/4ec42f6d-433a-4c76-9017-8b27337491c0","properties":{"accountName":"chucks-pitr-tables","apiType":"Table,
+        Sql","creationTime":"2022-03-25T19:33:57Z","deletionTime":"2022-04-29T00:37:49Z","oldestRestorableTime":"2022-04-17T19:20:50Z","restorableLocations":[{"locationName":"West
+        US 2","regionalDatabaseAccountInstanceId":"98761129-22d5-4d9a-8b06-2c9b4f3045ea","creationTime":"2022-03-25T19:33:58Z","deletionTime":"2022-04-29T00:37:49Z"}]}},{"name":"f3d7d3af-5733-4cfb-8004-f2d65072a94d","location":"West
+        US 2","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus2/restorableDatabaseAccounts/f3d7d3af-5733-4cfb-8004-f2d65072a94d","properties":{"accountName":"chucks-pitr-graph","apiType":"Gremlin,
+        Sql","creationTime":"2022-03-25T19:49:35Z","deletionTime":"2022-04-29T00:37:49Z","oldestRestorableTime":"2022-04-17T19:20:50Z","restorableLocations":[{"locationName":"West
+        US 2","regionalDatabaseAccountInstanceId":"7c2c9204-4f6b-48a9-92ef-17c6a9ae2b1d","creationTime":"2022-03-25T19:49:36Z","deletionTime":"2022-04-29T00:37:49Z"}]}},{"name":"8a4de11a-d89d-4f12-8c29-5d8ffef89dee","location":"West
+        US 2","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus2/restorableDatabaseAccounts/8a4de11a-d89d-4f12-8c29-5d8ffef89dee","properties":{"accountName":"cliwceoxu3dkq2h","apiType":"Gremlin,
+        Sql","creationTime":"2022-05-17T06:15:18Z","deletionTime":"2022-05-17T06:15:44Z","oldestRestorableTime":"2022-04-17T19:20:50Z","restorableLocations":[{"locationName":"West
+        US 2","regionalDatabaseAccountInstanceId":"cda0ff0d-dbc1-48b7-9796-90f97c42a3ff","creationTime":"2022-05-17T06:15:19Z","deletionTime":"2022-05-17T06:15:44Z"}]}},{"name":"5b22a272-03d7-4282-8ffa-2a888e3d67a1","location":"West
+        US 2","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus2/restorableDatabaseAccounts/5b22a272-03d7-4282-8ffa-2a888e3d67a1","properties":{"accountName":"cliygtkspdv3lfb","apiType":"Gremlin,
+        Sql","creationTime":"2022-05-17T06:38:12Z","deletionTime":"2022-05-17T06:59:16Z","oldestRestorableTime":"2022-04-17T19:20:50Z","restorableLocations":[{"locationName":"West
+        US 2","regionalDatabaseAccountInstanceId":"eea0d4fd-db8a-4d02-9585-221acf9b06ae","creationTime":"2022-05-17T06:38:13Z","deletionTime":"2022-05-17T06:59:16Z"}]}},{"name":"9a64f412-c7e7-42f6-ae3a-c9455e3340b7","location":"West
+        US 2","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus2/restorableDatabaseAccounts/9a64f412-c7e7-42f6-ae3a-c9455e3340b7","properties":{"accountName":"cli36ipt6e5bhbe","apiType":"Gremlin,
+        Sql","creationTime":"2022-05-17T06:58:36Z","deletionTime":"2022-05-17T06:59:16Z","oldestRestorableTime":"2022-04-17T19:20:50Z","restorableLocations":[{"locationName":"West
+        US 2","regionalDatabaseAccountInstanceId":"60045d94-cb5c-4848-95bc-cb8d09d01f63","creationTime":"2022-05-17T06:58:36Z","deletionTime":"2022-05-17T06:59:16Z"}]}},{"name":"403b19f9-3b85-4ae7-8626-0c3ca36ff627","location":"West
+        US 2","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus2/restorableDatabaseAccounts/403b19f9-3b85-4ae7-8626-0c3ca36ff627","properties":{"accountName":"cliw4yefoakkbbt","apiType":"Table,
+        Sql","creationTime":"2022-05-17T07:25:39Z","deletionTime":"2022-05-17T07:26:27Z","oldestRestorableTime":"2022-04-17T19:20:50Z","restorableLocations":[{"locationName":"West
+        US 2","regionalDatabaseAccountInstanceId":"8f5d6f3a-81c0-46fc-a622-bf0f5ced6c77","creationTime":"2022-05-17T07:25:39Z","deletionTime":"2022-05-17T07:26:27Z"}]}},{"name":"e0c27130-e1bf-4273-afd6-aa03641e5afd","location":"West
+        US 2","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus2/restorableDatabaseAccounts/e0c27130-e1bf-4273-afd6-aa03641e5afd","properties":{"accountName":"cli6y7op63prubg","apiType":"Table,
+        Sql","creationTime":"2022-05-17T07:05:22Z","deletionTime":"2022-05-17T07:26:27Z","oldestRestorableTime":"2022-04-17T19:20:50Z","restorableLocations":[{"locationName":"West
+        US 2","regionalDatabaseAccountInstanceId":"dcf418de-7f68-4a55-97cc-ea62bff084e1","creationTime":"2022-05-17T07:05:23Z","deletionTime":"2022-05-17T07:26:27Z"}]}},{"name":"bd5461e5-0b39-4d8f-8b8f-0594ecde9ddc","location":"West
+        US 2","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus2/restorableDatabaseAccounts/bd5461e5-0b39-4d8f-8b8f-0594ecde9ddc","properties":{"accountName":"cliivj4v37ebgqg","apiType":"Gremlin,
+        Sql","creationTime":"2022-05-17T18:46:48Z","deletionTime":"2022-05-17T19:10:52Z","oldestRestorableTime":"2022-04-17T19:20:50Z","restorableLocations":[]}},{"name":"d2a96ccd-1686-4a20-bfb8-40a02457a178","location":"West
+        US 2","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus2/restorableDatabaseAccounts/d2a96ccd-1686-4a20-bfb8-40a02457a178","properties":{"accountName":"clia7oloaufnqj3","apiType":"Gremlin,
+        Sql","creationTime":"2022-05-17T19:10:07Z","deletionTime":"2022-05-17T19:10:54Z","oldestRestorableTime":"2022-04-17T19:20:50Z","restorableLocations":[]}},{"name":"09271ecb-ce2a-476f-8d30-15f582e31c9d","location":"East
+        US 2","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/restorableDatabaseAccounts/09271ecb-ce2a-476f-8d30-15f582e31c9d","properties":{"accountName":"cliseqmx4qwqgz6","apiType":"Gremlin,
+        Sql","creationTime":"2022-05-03T22:53:08Z","oldestRestorableTime":"2022-05-03T22:53:08Z","restorableLocations":[{"locationName":"East
+        US 2","regionalDatabaseAccountInstanceId":"84b71b06-0aa1-4ced-853e-1c1437e69583","creationTime":"2022-05-03T22:53:09Z"}]}},{"name":"cf13ea81-3bff-4da1-bfea-5a4ef0cd989d","location":"East
+        US 2","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/restorableDatabaseAccounts/cf13ea81-3bff-4da1-bfea-5a4ef0cd989d","properties":{"accountName":"cligwsozpx4fztp","apiType":"Gremlin,
+        Sql","creationTime":"2022-05-03T22:53:07Z","oldestRestorableTime":"2022-05-03T22:53:07Z","restorableLocations":[{"locationName":"East
+        US 2","regionalDatabaseAccountInstanceId":"fe50db55-0b1f-46c9-98f7-b671c7f420be","creationTime":"2022-05-03T22:53:08Z"}]}},{"name":"a3a54e66-571a-47c3-99b5-ecccb9d250d0","location":"East
+        US 2","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/restorableDatabaseAccounts/a3a54e66-571a-47c3-99b5-ecccb9d250d0","properties":{"accountName":"cli7byqi7kruftb","apiType":"Gremlin,
+        Sql","creationTime":"2022-05-03T22:53:26Z","oldestRestorableTime":"2022-05-03T22:53:26Z","restorableLocations":[{"locationName":"East
+        US 2","regionalDatabaseAccountInstanceId":"74db88cc-62ab-4b73-9df4-fcb3f9723949","creationTime":"2022-05-03T22:53:26Z"}]}},{"name":"5773970a-8e87-4d97-af36-9e8819b2edc1","location":"East
+        US 2","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/restorableDatabaseAccounts/5773970a-8e87-4d97-af36-9e8819b2edc1","properties":{"accountName":"climfmg5nu4yiqu","apiType":"Gremlin,
+        Sql","creationTime":"2022-05-04T00:29:58Z","oldestRestorableTime":"2022-05-04T00:29:58Z","restorableLocations":[{"locationName":"East
+        US 2","regionalDatabaseAccountInstanceId":"6c63be1d-c39c-45f9-9268-0b7aefec313e","creationTime":"2022-05-04T00:29:59Z"}]}},{"name":"00dd2ecf-88dd-4580-9635-0591bf649b4e","location":"East
+        US 2","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/restorableDatabaseAccounts/00dd2ecf-88dd-4580-9635-0591bf649b4e","properties":{"accountName":"cliknjdofhusdwk","apiType":"Gremlin,
+        Sql","creationTime":"2022-05-04T00:29:57Z","oldestRestorableTime":"2022-05-04T00:29:57Z","restorableLocations":[{"locationName":"East
+        US 2","regionalDatabaseAccountInstanceId":"b6a5f3e2-52e5-43fc-a506-96eb81bd0f0a","creationTime":"2022-05-04T00:29:58Z"}]}},{"name":"0fd004bd-843d-4e7c-a7ea-027b73a174ee","location":"East
+        US 2","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/restorableDatabaseAccounts/0fd004bd-843d-4e7c-a7ea-027b73a174ee","properties":{"accountName":"clidawljzz35z4a","apiType":"Gremlin,
+        Sql","creationTime":"2022-05-04T00:30:09Z","oldestRestorableTime":"2022-05-04T00:30:09Z","restorableLocations":[{"locationName":"East
+        US 2","regionalDatabaseAccountInstanceId":"9bc6084d-a7bb-4bcd-82c0-20586810b44d","creationTime":"2022-05-04T00:30:10Z"}]}},{"name":"d90cd299-302b-4601-b43d-191e05d95379","location":"East
+        US 2","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/restorableDatabaseAccounts/d90cd299-302b-4601-b43d-191e05d95379","properties":{"accountName":"clix4bwfn2cmc2p","apiType":"Gremlin,
+        Sql","creationTime":"2022-05-04T00:36:50Z","oldestRestorableTime":"2022-05-04T00:36:50Z","restorableLocations":[{"locationName":"East
+        US 2","regionalDatabaseAccountInstanceId":"bfff1b0c-efa8-489d-96bc-84beaa3beba8","creationTime":"2022-05-04T00:36:51Z"}]}},{"name":"25d83fe9-1d12-40fd-b71d-1286c2f163f4","location":"East
+        US 2","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/restorableDatabaseAccounts/25d83fe9-1d12-40fd-b71d-1286c2f163f4","properties":{"accountName":"clizdh3madpx4fz","apiType":"Gremlin,
+        Sql","creationTime":"2022-05-04T00:35:58Z","oldestRestorableTime":"2022-05-04T00:35:58Z","restorableLocations":[{"locationName":"East
+        US 2","regionalDatabaseAccountInstanceId":"a786986a-aa71-44a9-a1bf-8d26196225c9","creationTime":"2022-05-04T00:35:59Z"}]}},{"name":"64f832dc-e297-416f-a99f-fbb973cb1b19","location":"East
+        US 2","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/restorableDatabaseAccounts/64f832dc-e297-416f-a99f-fbb973cb1b19","properties":{"accountName":"clir3r76qsku7p4","apiType":"Gremlin,
+        Sql","creationTime":"2022-05-04T00:42:05Z","oldestRestorableTime":"2022-05-04T00:42:05Z","restorableLocations":[{"locationName":"East
+        US 2","regionalDatabaseAccountInstanceId":"511ace38-c070-4058-82e0-206c1a2c2cd6","creationTime":"2022-05-04T00:42:06Z"}]}},{"name":"770893c0-75df-420a-92e4-efe9cd5bdb1f","location":"East
+        US 2","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/restorableDatabaseAccounts/770893c0-75df-420a-92e4-efe9cd5bdb1f","properties":{"accountName":"clilml2rt6i6j2n","apiType":"Gremlin,
+        Sql","creationTime":"2022-05-04T00:38:58Z","oldestRestorableTime":"2022-05-04T00:38:58Z","restorableLocations":[{"locationName":"East
+        US 2","regionalDatabaseAccountInstanceId":"c552a323-d13d-4c6a-ba5d-2959641d008f","creationTime":"2022-05-04T00:38:59Z"}]}},{"name":"98e5e8d7-d769-465a-a7ad-8ab8d7aafbec","location":"East
+        US 2","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/restorableDatabaseAccounts/98e5e8d7-d769-465a-a7ad-8ab8d7aafbec","properties":{"accountName":"climmubb2c6smaj","apiType":"Gremlin,
+        Sql","creationTime":"2022-05-17T06:16:17Z","oldestRestorableTime":"2022-05-17T06:16:17Z","restorableLocations":[{"locationName":"East
+        US 2","regionalDatabaseAccountInstanceId":"61ffdc8c-237f-4a96-8272-cdd0c48e9500","creationTime":"2022-05-17T06:16:19Z"}]}},{"name":"0d6fcf9a-5c13-437f-b85a-bfa6fe1675be","location":"East
+        US 2","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/restorableDatabaseAccounts/0d6fcf9a-5c13-437f-b85a-bfa6fe1675be","properties":{"accountName":"clijocmuqf3f3f5","apiType":"Gremlin,
+        Sql","creationTime":"2022-05-17T06:17:28Z","oldestRestorableTime":"2022-05-17T06:17:28Z","restorableLocations":[{"locationName":"East
+        US 2","regionalDatabaseAccountInstanceId":"ea2fd688-28a1-4ca4-91f5-e5ed61c2c14a","creationTime":"2022-05-17T06:17:29Z"}]}},{"name":"a7bcd684-9cff-44bc-9d16-f99ceae2c227","location":"East
+        US 2","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/restorableDatabaseAccounts/a7bcd684-9cff-44bc-9d16-f99ceae2c227","properties":{"accountName":"cliluyq2or6ph3u","apiType":"Gremlin,
+        Sql","creationTime":"2022-05-17T06:19:35Z","oldestRestorableTime":"2022-05-17T06:19:35Z","restorableLocations":[{"locationName":"East
+        US 2","regionalDatabaseAccountInstanceId":"3c56de8c-15d7-4356-b392-86fc2d5f6bbe","creationTime":"2022-05-17T06:19:36Z"}]}},{"name":"2054589d-df7b-44d5-a288-dec641442645","location":"East
+        US 2","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/restorableDatabaseAccounts/2054589d-df7b-44d5-a288-dec641442645","properties":{"accountName":"cli3rjdzuahfe7f","apiType":"Gremlin,
+        Sql","creationTime":"2022-05-17T17:28:04Z","oldestRestorableTime":"2022-05-17T17:28:04Z","restorableLocations":[{"locationName":"East
+        US 2","regionalDatabaseAccountInstanceId":"25705f32-0d8f-4779-8a06-e707099a5c8e","creationTime":"2022-05-17T17:28:05Z"}]}},{"name":"c8bfa28a-38ae-4260-ba27-52b2c0429eba","location":"East
+        US 2","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/restorableDatabaseAccounts/c8bfa28a-38ae-4260-ba27-52b2c0429eba","properties":{"accountName":"clii7cy4lxe4njd","apiType":"Gremlin,
+        Sql","creationTime":"2022-05-17T17:52:27Z","oldestRestorableTime":"2022-05-17T17:52:27Z","restorableLocations":[{"locationName":"East
+        US 2","regionalDatabaseAccountInstanceId":"d974d441-d147-47c1-93a1-622d01257fc1","creationTime":"2022-05-17T17:52:27Z"}]}},{"name":"c0c50529-2b86-47ba-b50a-5817e24a3e11","location":"East
+        US 2","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/restorableDatabaseAccounts/c0c50529-2b86-47ba-b50a-5817e24a3e11","properties":{"accountName":"cli-continuous30-hqdvwklz","apiType":"Sql","creationTime":"2022-05-17T17:43:41Z","oldestRestorableTime":"2022-05-17T17:43:41Z","restorableLocations":[{"locationName":"East
+        US 2","regionalDatabaseAccountInstanceId":"d7498e86-8f05-42bd-81bd-97e8af92b33c","creationTime":"2022-05-17T17:43:41Z"}]}},{"name":"d21829c0-225c-4822-a03a-5c6f6572a0cb","location":"East
+        US 2","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/restorableDatabaseAccounts/d21829c0-225c-4822-a03a-5c6f6572a0cb","properties":{"accountName":"clit3bwske2hxtu","apiType":"Table,
+        Sql","creationTime":"2022-05-17T19:20:12Z","oldestRestorableTime":"2022-05-17T19:20:12Z","restorableLocations":[{"locationName":"East
+        US 2","regionalDatabaseAccountInstanceId":"77eb1fdc-3362-4734-9a69-dfee592c2588","creationTime":"2022-05-17T19:20:13Z"}]}},{"name":"5fd8418c-8679-4268-9d5c-225b5aa40183","location":"East
+        US 2","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/restorableDatabaseAccounts/5fd8418c-8679-4268-9d5c-225b5aa40183","properties":{"accountName":"cli-continuous7-000004","apiType":"Sql","creationTime":"2022-05-17T19:19:52Z","oldestRestorableTime":"2022-05-17T19:19:52Z","restorableLocations":[{"locationName":"East
+        US 2","regionalDatabaseAccountInstanceId":"c07515c6-fdd6-42af-bbb6-843ba1540da5","creationTime":"2022-05-17T19:19:53Z"}]}},{"name":"c73592e1-1b4d-4c20-802f-0d776da31e47","location":"East
+        US 2","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/restorableDatabaseAccounts/c73592e1-1b4d-4c20-802f-0d776da31e47","properties":{"accountName":"cli-periodic-37tladv2qdzz","apiType":"Sql","creationTime":"2022-05-03T00:19:30Z","deletionTime":"2022-05-03T00:21:45Z","oldestRestorableTime":"2022-05-03T00:19:30Z","restorableLocations":[{"locationName":"East
+        US 2","regionalDatabaseAccountInstanceId":"9c861d57-b966-4b76-8f48-aa1fc26803d4","creationTime":"2022-05-03T00:19:30Z","deletionTime":"2022-05-03T00:21:45Z"}]}},{"name":"a5a379f9-c216-4ff8-bcf7-c0193b2ff517","location":"East
+        US 2","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/restorableDatabaseAccounts/a5a379f9-c216-4ff8-bcf7-c0193b2ff517","properties":{"accountName":"cli-continuous7-isv7nqnra","apiType":"Sql","creationTime":"2022-05-03T00:38:34Z","deletionTime":"2022-05-03T00:40:43Z","oldestRestorableTime":"2022-04-26T00:40:43Z","restorableLocations":[{"locationName":"East
+        US 2","regionalDatabaseAccountInstanceId":"5109cbd8-a751-4666-a8a0-376fe96a8334","creationTime":"2022-05-03T00:38:35Z","deletionTime":"2022-05-03T00:40:43Z"}]}},{"name":"cc4fa4b3-5c8f-4f3f-9fee-4b89a8f76c9c","location":"East
+        US 2","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/restorableDatabaseAccounts/cc4fa4b3-5c8f-4f3f-9fee-4b89a8f76c9c","properties":{"accountName":"cli-continuous7-nvsb26uns","apiType":"Sql","creationTime":"2022-05-03T00:43:47Z","deletionTime":"2022-05-03T00:46:28Z","oldestRestorableTime":"2022-04-26T00:44:41Z","restorableLocations":[{"locationName":"East
+        US 2","regionalDatabaseAccountInstanceId":"09dd5ff0-7dfc-4324-bd0a-61d978e85989","creationTime":"2022-05-03T00:43:48Z","deletionTime":"2022-05-03T00:46:28Z"}]}},{"name":"20bef669-42cc-4dc2-8ee6-69a862779c3c","location":"East
+        US 2","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/restorableDatabaseAccounts/20bef669-42cc-4dc2-8ee6-69a862779c3c","properties":{"accountName":"cli-continuous30-lhowrekq","apiType":"Sql","creationTime":"2022-05-03T00:48:57Z","deletionTime":"2022-05-03T00:51:44Z","oldestRestorableTime":"2022-04-26T00:51:44Z","restorableLocations":[{"locationName":"East
+        US 2","regionalDatabaseAccountInstanceId":"02f99132-8886-4a42-99cb-ad5884eaeb51","creationTime":"2022-05-03T00:48:59Z","deletionTime":"2022-05-03T00:51:44Z"}]}},{"name":"3c25b246-6c93-46a6-bb58-0354fcc1ea97","location":"East
+        US 2","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/restorableDatabaseAccounts/3c25b246-6c93-46a6-bb58-0354fcc1ea97","properties":{"accountName":"cli-continuous7-7yqbot5db","apiType":"Sql","creationTime":"2022-05-03T19:54:35Z","deletionTime":"2022-05-03T19:56:43Z","oldestRestorableTime":"2022-04-26T19:56:43Z","restorableLocations":[{"locationName":"East
+        US 2","regionalDatabaseAccountInstanceId":"6dc800dc-977c-4638-bf76-7c579250d88a","creationTime":"2022-05-03T19:54:36Z","deletionTime":"2022-05-03T19:56:43Z"}]}},{"name":"df232dcd-9552-4045-88bb-94f761905218","location":"East
+        US 2","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/restorableDatabaseAccounts/df232dcd-9552-4045-88bb-94f761905218","properties":{"accountName":"cli-continuous7-whurlofrd","apiType":"Sql","creationTime":"2022-05-03T21:08:58Z","deletionTime":"2022-05-03T21:11:04Z","oldestRestorableTime":"2022-04-26T21:11:04Z","restorableLocations":[{"locationName":"East
+        US 2","regionalDatabaseAccountInstanceId":"ca45d1d7-6a73-4678-a91a-e8f94ede9c34","creationTime":"2022-05-03T21:08:59Z","deletionTime":"2022-05-03T21:11:04Z"}]}},{"name":"7860a3a3-2e49-42d4-a46e-4f0dd98067b9","location":"East
+        US 2","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/restorableDatabaseAccounts/7860a3a3-2e49-42d4-a46e-4f0dd98067b9","properties":{"accountName":"cli-continuous7-mnu4tkdyj","apiType":"Sql","creationTime":"2022-05-03T21:35:39Z","deletionTime":"2022-05-03T21:38:09Z","oldestRestorableTime":"2022-04-26T21:38:09Z","restorableLocations":[{"locationName":"East
+        US 2","regionalDatabaseAccountInstanceId":"e2fefcc7-96e2-4bb8-981e-eba260bf3ecf","creationTime":"2022-05-03T21:35:39Z","deletionTime":"2022-05-03T21:38:09Z"}]}},{"name":"c7715f52-4bd3-4f7e-a333-40f73802e8bd","location":"East
+        US 2","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/restorableDatabaseAccounts/c7715f52-4bd3-4f7e-a333-40f73802e8bd","properties":{"accountName":"cli-continuous7-cdl5z65tl","apiType":"Sql","creationTime":"2022-05-04T00:22:55Z","deletionTime":"2022-05-04T00:25:21Z","oldestRestorableTime":"2022-04-27T00:25:21Z","restorableLocations":[{"locationName":"East
+        US 2","regionalDatabaseAccountInstanceId":"d79820bd-c2d7-4018-ac78-23c7ccca1fa4","creationTime":"2022-05-04T00:22:56Z","deletionTime":"2022-05-04T00:25:21Z"}]}},{"name":"c78e74c3-16e8-4963-85ba-7915da7ad164","location":"East
+        US 2","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/restorableDatabaseAccounts/c78e74c3-16e8-4963-85ba-7915da7ad164","properties":{"accountName":"clizrkeicbov6a3","apiType":"Gremlin,
+        Sql","creationTime":"2022-05-04T00:38:10Z","deletionTime":"2022-05-04T00:38:27Z","oldestRestorableTime":"2022-04-17T19:20:50Z","restorableLocations":[{"locationName":"East
+        US 2","regionalDatabaseAccountInstanceId":"c277e265-ef3d-4237-b849-1d69bcbb23a8","creationTime":"2022-05-04T00:38:11Z","deletionTime":"2022-05-04T00:38:27Z"}]}},{"name":"69a5e768-c825-4c96-a284-87dac7174580","location":"East
+        US 2","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/restorableDatabaseAccounts/69a5e768-c825-4c96-a284-87dac7174580","properties":{"accountName":"clie5vnshlrq6z2","apiType":"Gremlin,
+        Sql","creationTime":"2022-05-04T00:38:19Z","deletionTime":"2022-05-04T00:38:56Z","oldestRestorableTime":"2022-04-17T19:20:50Z","restorableLocations":[{"locationName":"East
+        US 2","regionalDatabaseAccountInstanceId":"a5f2b1ed-970f-48c3-821a-a623a5f7b576","creationTime":"2022-05-04T00:38:20Z","deletionTime":"2022-05-04T00:38:56Z"}]}},{"name":"995a1516-ec56-4d27-893b-c50d5d4608d3","location":"East
+        US 2","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/restorableDatabaseAccounts/995a1516-ec56-4d27-893b-c50d5d4608d3","properties":{"accountName":"cliki46ccslr6y7","apiType":"Gremlin,
+        Sql","creationTime":"2022-05-04T00:38:20Z","deletionTime":"2022-05-04T00:39:02Z","oldestRestorableTime":"2022-04-17T19:20:50Z","restorableLocations":[{"locationName":"East
+        US 2","regionalDatabaseAccountInstanceId":"5737aa71-1a28-4fd6-9e29-69b39e3df299","creationTime":"2022-05-04T00:38:21Z","deletionTime":"2022-05-04T00:39:02Z"}]}},{"name":"67e18901-a4ee-4d4d-8fee-d42b2fe34f6f","location":"East
+        US 2","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/restorableDatabaseAccounts/67e18901-a4ee-4d4d-8fee-d42b2fe34f6f","properties":{"accountName":"clio246ukfztfgv","apiType":"Gremlin,
+        Sql","creationTime":"2022-05-04T00:42:04Z","deletionTime":"2022-05-04T00:42:38Z","oldestRestorableTime":"2022-04-17T19:20:50Z","restorableLocations":[{"locationName":"East
+        US 2","regionalDatabaseAccountInstanceId":"c36fa7be-c11a-4ada-b2b6-3777fdfb445b","creationTime":"2022-05-04T00:42:05Z","deletionTime":"2022-05-04T00:42:38Z"}]}},{"name":"68a95a0e-847b-446c-bb06-76f37caf7ddd","location":"East
+        US 2","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/restorableDatabaseAccounts/68a95a0e-847b-446c-bb06-76f37caf7ddd","properties":{"accountName":"clix26ug6jecr3u","apiType":"Gremlin,
+        Sql","creationTime":"2022-05-04T00:40:37Z","deletionTime":"2022-05-04T00:45:21Z","oldestRestorableTime":"2022-04-17T19:20:50Z","restorableLocations":[{"locationName":"East
+        US 2","regionalDatabaseAccountInstanceId":"c6a97ff7-341f-4478-bd13-1b384e842b0b","creationTime":"2022-05-04T00:40:38Z","deletionTime":"2022-05-04T00:45:21Z"}]}},{"name":"e7fee42f-77d6-47ae-a955-d3eb3bb914a8","location":"East
+        US 2","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/restorableDatabaseAccounts/e7fee42f-77d6-47ae-a955-d3eb3bb914a8","properties":{"accountName":"clik53ytuali37e","apiType":"Gremlin,
+        Sql","creationTime":"2022-05-04T00:41:38Z","deletionTime":"2022-05-04T00:46:49Z","oldestRestorableTime":"2022-04-17T19:20:50Z","restorableLocations":[{"locationName":"East
+        US 2","regionalDatabaseAccountInstanceId":"f0903d97-bbec-4df1-807f-6e422e91175a","creationTime":"2022-05-04T00:41:39Z","deletionTime":"2022-05-04T00:46:49Z"}]}},{"name":"ed31f696-f3f4-45b8-8a44-0f5e5450c054","location":"East
+        US 2","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/restorableDatabaseAccounts/ed31f696-f3f4-45b8-8a44-0f5e5450c054","properties":{"accountName":"cli-continuous30-bvx424e3","apiType":"Sql","creationTime":"2022-05-04T00:46:09Z","deletionTime":"2022-05-04T00:48:07Z","oldestRestorableTime":"2022-04-27T00:48:07Z","restorableLocations":[{"locationName":"East
+        US 2","regionalDatabaseAccountInstanceId":"14e21a7c-6b71-44c1-9092-6f1f8aa27a71","creationTime":"2022-05-04T00:46:10Z","deletionTime":"2022-05-04T00:48:07Z"}]}},{"name":"c647fb71-2310-4544-a0d0-5e0fefd86cf2","location":"East
+        US 2","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/restorableDatabaseAccounts/c647fb71-2310-4544-a0d0-5e0fefd86cf2","properties":{"accountName":"cli-continuous7-orkgit52v","apiType":"Sql","creationTime":"2022-05-04T00:47:34Z","deletionTime":"2022-05-04T00:49:06Z","oldestRestorableTime":"2022-04-27T00:48:19Z","restorableLocations":[{"locationName":"East
+        US 2","regionalDatabaseAccountInstanceId":"81ef9376-052f-4d13-b624-fb6af7cb3509","creationTime":"2022-05-04T00:47:34Z","deletionTime":"2022-05-04T00:49:06Z"}]}},{"name":"86615d1e-6731-4ff6-aa9a-2bb68cf9492d","location":"East
+        US 2","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/restorableDatabaseAccounts/86615d1e-6731-4ff6-aa9a-2bb68cf9492d","properties":{"accountName":"cli-continuous7-sazqcy7z6","apiType":"Sql","creationTime":"2022-05-04T00:50:44Z","deletionTime":"2022-05-04T00:52:53Z","oldestRestorableTime":"2022-04-27T00:52:53Z","restorableLocations":[{"locationName":"East
+        US 2","regionalDatabaseAccountInstanceId":"c5ace12f-663b-4ef7-a0da-3d77605f0baf","creationTime":"2022-05-04T00:50:45Z","deletionTime":"2022-05-04T00:52:53Z"}]}},{"name":"e9296ed3-fc76-4fbc-942b-d273cefa44bd","location":"East
+        US 2","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/restorableDatabaseAccounts/e9296ed3-fc76-4fbc-942b-d273cefa44bd","properties":{"accountName":"clii2vtqnuwlv6b","apiType":"Gremlin,
+        Sql","creationTime":"2022-05-04T01:00:49Z","deletionTime":"2022-05-04T01:01:47Z","oldestRestorableTime":"2022-04-17T19:20:50Z","restorableLocations":[{"locationName":"East
+        US 2","regionalDatabaseAccountInstanceId":"2bc86352-d635-4b5a-bc8d-4f9a04ea3520","creationTime":"2022-05-04T01:00:49Z","deletionTime":"2022-05-04T01:01:47Z"}]}},{"name":"0e726d1b-5f07-42e2-9a22-3155ca66d4dd","location":"East
+        US 2","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/restorableDatabaseAccounts/0e726d1b-5f07-42e2-9a22-3155ca66d4dd","properties":{"accountName":"clizh535g3qotkk","apiType":"Gremlin,
+        Sql","creationTime":"2022-05-04T00:39:13Z","deletionTime":"2022-05-04T01:01:47Z","oldestRestorableTime":"2022-04-17T19:20:50Z","restorableLocations":[{"locationName":"East
+        US 2","regionalDatabaseAccountInstanceId":"d8ea7bdb-9179-409a-9d3a-0fbe7302ebf6","creationTime":"2022-05-04T00:39:14Z","deletionTime":"2022-05-04T01:01:47Z"}]}},{"name":"3b4289a0-b206-4d8c-9cb5-72bdaddbc94f","location":"East
+        US 2","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/restorableDatabaseAccounts/3b4289a0-b206-4d8c-9cb5-72bdaddbc94f","properties":{"accountName":"cli3nrydvvnmpkw","apiType":"Gremlin,
+        Sql","creationTime":"2022-05-04T00:39:52Z","deletionTime":"2022-05-04T01:02:44Z","oldestRestorableTime":"2022-04-17T19:20:50Z","restorableLocations":[{"locationName":"East
+        US 2","regionalDatabaseAccountInstanceId":"3ee42916-c62f-43e1-9325-5f7e93716836","creationTime":"2022-05-04T00:39:53Z","deletionTime":"2022-05-04T01:02:44Z"}]}},{"name":"a7b0daf6-c938-49a1-b41b-752b47bed2b4","location":"East
+        US 2","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/restorableDatabaseAccounts/a7b0daf6-c938-49a1-b41b-752b47bed2b4","properties":{"accountName":"cli5leuutc3qgx5","apiType":"Gremlin,
+        Sql","creationTime":"2022-05-04T01:00:45Z","deletionTime":"2022-05-04T01:02:44Z","oldestRestorableTime":"2022-04-17T19:20:50Z","restorableLocations":[{"locationName":"East
+        US 2","regionalDatabaseAccountInstanceId":"128be80f-88e6-42eb-9a3e-5c9e9b462b12","creationTime":"2022-05-04T01:00:45Z","deletionTime":"2022-05-04T01:02:44Z"}]}},{"name":"23da730f-b34c-4fc1-9585-f8aa8196d5aa","location":"East
+        US 2","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/restorableDatabaseAccounts/23da730f-b34c-4fc1-9585-f8aa8196d5aa","properties":{"accountName":"clivncvis6ewkpk","apiType":"Sql","creationTime":"2022-05-04T01:03:30Z","deletionTime":"2022-05-04T01:08:25Z","oldestRestorableTime":"2022-04-17T19:20:50Z","restorableLocations":[{"locationName":"East
+        US 2","regionalDatabaseAccountInstanceId":"09ff3393-2bed-4f57-a1be-41c87abb2ce6","creationTime":"2022-05-04T01:03:30Z","deletionTime":"2022-05-04T01:08:25Z"}]}},{"name":"986f73ac-12fb-4798-8e3e-d24db32ac594","location":"East
+        US 2","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/restorableDatabaseAccounts/986f73ac-12fb-4798-8e3e-d24db32ac594","properties":{"accountName":"clife7lfm7uttpt","apiType":"MongoDB","creationTime":"2022-05-04T01:05:56Z","deletionTime":"2022-05-04T01:11:04Z","oldestRestorableTime":"2022-04-17T19:20:50Z","restorableLocations":[{"locationName":"East
+        US 2","regionalDatabaseAccountInstanceId":"eebb87b5-8248-4b2b-ad03-19744b2c4e5b","creationTime":"2022-05-04T01:05:57Z","deletionTime":"2022-05-04T01:11:04Z"}]}},{"name":"05b01be0-676e-42e8-930e-8255a53d3d7e","location":"East
+        US 2","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/restorableDatabaseAccounts/05b01be0-676e-42e8-930e-8255a53d3d7e","properties":{"accountName":"clic3qa74cn5zyx","apiType":"Table,
+        Sql","creationTime":"2022-05-04T01:13:37Z","deletionTime":"2022-05-04T01:18:30Z","oldestRestorableTime":"2022-04-17T19:20:50Z","restorableLocations":[{"locationName":"East
+        US 2","regionalDatabaseAccountInstanceId":"b7097418-dbbf-4e43-a639-e7f45e3ce2c0","creationTime":"2022-05-04T01:13:38Z","deletionTime":"2022-05-04T01:18:30Z"}]}},{"name":"eb6773a0-3e6b-433e-bf1b-4b0adac0b44b","location":"East
+        US 2","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/restorableDatabaseAccounts/eb6773a0-3e6b-433e-bf1b-4b0adac0b44b","properties":{"accountName":"clitbpez7zurzpc","apiType":"Table,
+        Sql","creationTime":"2022-05-04T00:56:35Z","deletionTime":"2022-05-04T01:18:56Z","oldestRestorableTime":"2022-04-17T19:20:50Z","restorableLocations":[{"locationName":"East
+        US 2","regionalDatabaseAccountInstanceId":"f8934f7d-12df-47ae-a487-e669f142d8be","creationTime":"2022-05-04T00:56:36Z","deletionTime":"2022-05-04T01:18:56Z"}]}},{"name":"acffff0e-9e76-44d5-9964-fd09da47a504","location":"East
+        US 2","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/restorableDatabaseAccounts/acffff0e-9e76-44d5-9964-fd09da47a504","properties":{"accountName":"clibnp2ndbgedys","apiType":"Table,
+        Sql","creationTime":"2022-05-04T01:17:09Z","deletionTime":"2022-05-04T01:19:11Z","oldestRestorableTime":"2022-04-17T19:20:50Z","restorableLocations":[{"locationName":"East
+        US 2","regionalDatabaseAccountInstanceId":"9c7eebdc-021a-42ff-8069-0a7574f9c797","creationTime":"2022-05-04T01:17:09Z","deletionTime":"2022-05-04T01:19:11Z"}]}},{"name":"925cfb50-0044-4b39-b560-c5df70067fda","location":"East
+        US 2","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/restorableDatabaseAccounts/925cfb50-0044-4b39-b560-c5df70067fda","properties":{"accountName":"cli-periodic-zgycbvh5zdnh","apiType":"Sql","creationTime":"2022-05-04T01:18:18Z","deletionTime":"2022-05-04T01:19:37Z","oldestRestorableTime":"2022-05-04T01:18:18Z","restorableLocations":[{"locationName":"East
+        US 2","regionalDatabaseAccountInstanceId":"7a32b876-5456-4987-b18c-751c00192f9a","creationTime":"2022-05-04T01:18:18Z","deletionTime":"2022-05-04T01:19:37Z"}]}},{"name":"83faa370-fb3f-4d68-88b5-5cfb80aa1cef","location":"East
+        US 2","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/restorableDatabaseAccounts/83faa370-fb3f-4d68-88b5-5cfb80aa1cef","properties":{"accountName":"cliittss3elnfld","apiType":"Table,
+        Sql","creationTime":"2022-05-04T01:22:13Z","deletionTime":"2022-05-04T01:26:35Z","oldestRestorableTime":"2022-04-17T19:20:50Z","restorableLocations":[{"locationName":"East
+        US 2","regionalDatabaseAccountInstanceId":"2d209112-f977-4272-9aa0-6f31e2429aa7","creationTime":"2022-05-04T01:22:14Z","deletionTime":"2022-05-04T01:26:35Z"}]}},{"name":"7ba7f4cb-9895-44d0-acd4-d3ed023b10b2","location":"East
+        US 2","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/restorableDatabaseAccounts/7ba7f4cb-9895-44d0-acd4-d3ed023b10b2","properties":{"accountName":"cliqnxagr34niyg","apiType":"Table,
+        Sql","creationTime":"2022-05-04T01:43:41Z","deletionTime":"2022-05-04T01:45:38Z","oldestRestorableTime":"2022-04-17T19:20:50Z","restorableLocations":[{"locationName":"East
+        US 2","regionalDatabaseAccountInstanceId":"7a67c6f5-2bdf-45c7-8889-f4fda6eb9968","creationTime":"2022-05-04T01:43:41Z","deletionTime":"2022-05-04T01:45:38Z"}]}},{"name":"a6f2dbc6-9fd7-45e5-b97f-3db0a31e0788","location":"East
+        US 2","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/restorableDatabaseAccounts/a6f2dbc6-9fd7-45e5-b97f-3db0a31e0788","properties":{"accountName":"clinzvdaasuhvls","apiType":"Table,
+        Sql","creationTime":"2022-05-04T01:23:23Z","deletionTime":"2022-05-04T01:45:38Z","oldestRestorableTime":"2022-04-17T19:20:50Z","restorableLocations":[{"locationName":"East
+        US 2","regionalDatabaseAccountInstanceId":"e163b059-ae70-42cd-a116-dad416afe2f7","creationTime":"2022-05-04T01:23:24Z","deletionTime":"2022-05-04T01:45:38Z"}]}},{"name":"41a64361-8f18-4b5a-9a0d-55029c30bc71","location":"East
+        US 2","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/restorableDatabaseAccounts/41a64361-8f18-4b5a-9a0d-55029c30bc71","properties":{"accountName":"clinrxymdlxotbd","apiType":"Gremlin,
+        Sql","creationTime":"2022-05-17T06:17:53Z","deletionTime":"2022-05-17T06:18:32Z","oldestRestorableTime":"2022-04-17T19:20:50Z","restorableLocations":[{"locationName":"East
+        US 2","regionalDatabaseAccountInstanceId":"b5d29ff9-583e-49ec-b4b0-550ab5a5b875","creationTime":"2022-05-17T06:17:54Z","deletionTime":"2022-05-17T06:18:32Z"}]}},{"name":"44dc2b8e-78b6-43f5-beca-2ac51ab41bf2","location":"East
+        US 2","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/restorableDatabaseAccounts/44dc2b8e-78b6-43f5-beca-2ac51ab41bf2","properties":{"accountName":"clix6lt5y4yrvqt","apiType":"Gremlin,
+        Sql","creationTime":"2022-05-17T06:22:41Z","deletionTime":"2022-05-17T06:23:54Z","oldestRestorableTime":"2022-04-17T19:20:50Z","restorableLocations":[{"locationName":"East
+        US 2","regionalDatabaseAccountInstanceId":"3457003e-0c39-44fb-bab6-06ca9143ff4d","creationTime":"2022-05-17T06:22:42Z","deletionTime":"2022-05-17T06:23:54Z"}]}},{"name":"04b30a2e-988f-4eb9-a26a-bdaf11512a60","location":"East
+        US 2","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/restorableDatabaseAccounts/04b30a2e-988f-4eb9-a26a-bdaf11512a60","properties":{"accountName":"cliyskrcfgrhtx4","apiType":"Gremlin,
+        Sql","creationTime":"2022-05-17T06:32:45Z","deletionTime":"2022-05-17T06:38:07Z","oldestRestorableTime":"2022-04-17T19:20:50Z","restorableLocations":[{"locationName":"East
+        US 2","regionalDatabaseAccountInstanceId":"193217ea-66f8-4fd7-96bc-75f15021f3d3","creationTime":"2022-05-17T06:32:46Z","deletionTime":"2022-05-17T06:38:07Z"}]}},{"name":"b1dd392b-c54d-4390-a6a4-12a0e15a25e1","location":"East
+        US 2","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/restorableDatabaseAccounts/b1dd392b-c54d-4390-a6a4-12a0e15a25e1","properties":{"accountName":"clipoe6svshjqon","apiType":"Sql","creationTime":"2022-05-17T06:38:49Z","deletionTime":"2022-05-17T06:43:38Z","oldestRestorableTime":"2022-04-17T19:20:50Z","restorableLocations":[{"locationName":"East
+        US 2","regionalDatabaseAccountInstanceId":"08fce11d-5ff6-46ce-a4fc-9e470ea2005a","creationTime":"2022-05-17T06:38:50Z","deletionTime":"2022-05-17T06:43:38Z"}]}},{"name":"3c7b639b-1b4c-4332-a7c3-6311506d9a11","location":"East
+        US 2","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/restorableDatabaseAccounts/3c7b639b-1b4c-4332-a7c3-6311506d9a11","properties":{"accountName":"cli-continuous7-5yf2vlgix","apiType":"Sql","creationTime":"2022-05-17T06:44:20Z","deletionTime":"2022-05-17T06:46:00Z","oldestRestorableTime":"2022-05-10T06:45:12Z","restorableLocations":[{"locationName":"East
+        US 2","regionalDatabaseAccountInstanceId":"23d1119d-f252-4933-872c-f00dc1072ce7","creationTime":"2022-05-17T06:44:20Z","deletionTime":"2022-05-17T06:46:00Z"}]}},{"name":"004309c4-ad86-4245-937f-19b994c0f345","location":"East
+        US 2","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/restorableDatabaseAccounts/004309c4-ad86-4245-937f-19b994c0f345","properties":{"accountName":"clidduukmlnrpeo","apiType":"Gremlin,
+        Sql","creationTime":"2022-05-17T06:50:35Z","deletionTime":"2022-05-17T06:52:36Z","oldestRestorableTime":"2022-04-17T19:20:50Z","restorableLocations":[{"locationName":"East
+        US 2","regionalDatabaseAccountInstanceId":"84b9ee3f-7e73-4c72-bb68-bdf569028b9a","creationTime":"2022-05-17T06:50:35Z","deletionTime":"2022-05-17T06:52:36Z"}]}},{"name":"75e170b1-b1f4-4c0c-8c04-252d92be7fca","location":"East
+        US 2","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/restorableDatabaseAccounts/75e170b1-b1f4-4c0c-8c04-252d92be7fca","properties":{"accountName":"clicfuvmuik33fw","apiType":"Gremlin,
+        Sql","creationTime":"2022-05-17T06:28:53Z","deletionTime":"2022-05-17T06:52:36Z","oldestRestorableTime":"2022-04-17T19:20:50Z","restorableLocations":[{"locationName":"East
+        US 2","regionalDatabaseAccountInstanceId":"39263882-0fca-4b71-8ea8-fad6f9a042ac","creationTime":"2022-05-17T06:28:54Z","deletionTime":"2022-05-17T06:52:36Z"}]}},{"name":"0b495d56-06d0-46b5-8b85-7f37dbe4629a","location":"East
+        US 2","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/restorableDatabaseAccounts/0b495d56-06d0-46b5-8b85-7f37dbe4629a","properties":{"accountName":"clivvg37iswjlsn","apiType":"MongoDB","creationTime":"2022-05-17T06:55:48Z","deletionTime":"2022-05-17T07:00:40Z","oldestRestorableTime":"2022-04-17T19:20:50Z","restorableLocations":[{"locationName":"East
+        US 2","regionalDatabaseAccountInstanceId":"a1593849-3657-4610-9174-0fa01bd08625","creationTime":"2022-05-17T06:55:49Z","deletionTime":"2022-05-17T07:00:40Z"}]}},{"name":"07be5d06-a376-4a7d-b394-828db1ce587e","location":"East
+        US 2","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/restorableDatabaseAccounts/07be5d06-a376-4a7d-b394-828db1ce587e","properties":{"accountName":"cli-continuous30-4qu3wy3c","apiType":"Sql","creationTime":"2022-05-17T07:00:53Z","deletionTime":"2022-05-17T07:04:34Z","oldestRestorableTime":"2022-05-10T07:04:34Z","restorableLocations":[{"locationName":"East
+        US 2","regionalDatabaseAccountInstanceId":"1712c241-7ed5-46dd-a14c-407a80bcc64c","creationTime":"2022-05-17T07:00:53Z","deletionTime":"2022-05-17T07:04:34Z"}]}},{"name":"ab4fb9cd-0f6d-4057-a6a1-81413e9007ed","location":"East
+        US 2","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/restorableDatabaseAccounts/ab4fb9cd-0f6d-4057-a6a1-81413e9007ed","properties":{"accountName":"cliw2bukjz6repv","apiType":"Gremlin,
+        Sql","creationTime":"2022-05-17T07:09:09Z","deletionTime":"2022-05-17T07:14:18Z","oldestRestorableTime":"2022-04-17T19:20:50Z","restorableLocations":[{"locationName":"East
+        US 2","regionalDatabaseAccountInstanceId":"0bea82b3-5966-4114-a77b-89729164de61","creationTime":"2022-05-17T07:09:10Z","deletionTime":"2022-05-17T07:14:18Z"}]}},{"name":"87645b10-dbda-414e-8b5e-5040ded0bb9d","location":"East
+        US 2","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/restorableDatabaseAccounts/87645b10-dbda-414e-8b5e-5040ded0bb9d","properties":{"accountName":"cli-periodic-rsom2gmbfezz","apiType":"Sql","creationTime":"2022-05-17T07:18:43Z","deletionTime":"2022-05-17T07:21:38Z","oldestRestorableTime":"2022-05-17T07:18:43Z","restorableLocations":[{"locationName":"East
+        US 2","regionalDatabaseAccountInstanceId":"732ce1d0-d3d3-4b3e-a047-271500470869","creationTime":"2022-05-17T07:18:43Z","deletionTime":"2022-05-17T07:21:38Z"}]}},{"name":"470a27d5-8aa5-426d-9091-3b3442ada181","location":"East
+        US 2","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/restorableDatabaseAccounts/470a27d5-8aa5-426d-9091-3b3442ada181","properties":{"accountName":"cli-continuous7-vy75xutaz","apiType":"Sql","creationTime":"2022-05-17T07:22:21Z","deletionTime":"2022-05-17T07:24:31Z","oldestRestorableTime":"2022-05-10T07:24:31Z","restorableLocations":[{"locationName":"East
+        US 2","regionalDatabaseAccountInstanceId":"49a1a9af-636a-4c6d-9313-60ed06040683","creationTime":"2022-05-17T07:22:22Z","deletionTime":"2022-05-17T07:24:31Z"}]}},{"name":"d7b0aed5-f4b7-4771-a802-07721cf65d43","location":"East
+        US 2","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/restorableDatabaseAccounts/d7b0aed5-f4b7-4771-a802-07721cf65d43","properties":{"accountName":"cliaxp5333avryq","apiType":"Table,
+        Sql","creationTime":"2022-05-17T07:04:07Z","deletionTime":"2022-05-17T07:29:16Z","oldestRestorableTime":"2022-04-17T19:20:50Z","restorableLocations":[{"locationName":"East
+        US 2","regionalDatabaseAccountInstanceId":"8cd039b6-cd4b-4f1f-99d0-8e45355eaef0","creationTime":"2022-05-17T07:04:08Z","deletionTime":"2022-05-17T07:29:16Z"}]}},{"name":"09df2fb8-c894-49d0-aad2-6cdc5ca7aaf3","location":"East
+        US 2","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/restorableDatabaseAccounts/09df2fb8-c894-49d0-aad2-6cdc5ca7aaf3","properties":{"accountName":"clizz66rszvls6c","apiType":"Table,
+        Sql","creationTime":"2022-05-17T07:27:19Z","deletionTime":"2022-05-17T07:29:17Z","oldestRestorableTime":"2022-04-17T19:20:50Z","restorableLocations":[{"locationName":"East
+        US 2","regionalDatabaseAccountInstanceId":"971e77c2-1cba-44e0-9c2e-37ae9787e3e1","creationTime":"2022-05-17T07:27:19Z","deletionTime":"2022-05-17T07:29:17Z"}]}},{"name":"a777698e-ab2c-4342-b11c-13a5b5afcde3","location":"East
+        US 2","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/restorableDatabaseAccounts/a777698e-ab2c-4342-b11c-13a5b5afcde3","properties":{"accountName":"clideduzabgbta4","apiType":"Table,
+        Sql","creationTime":"2022-05-17T07:30:12Z","deletionTime":"2022-05-17T07:34:45Z","oldestRestorableTime":"2022-04-17T19:20:50Z","restorableLocations":[{"locationName":"East
+        US 2","regionalDatabaseAccountInstanceId":"a1bac804-5f3a-497a-a64a-c0008074f0b8","creationTime":"2022-05-17T07:30:13Z","deletionTime":"2022-05-17T07:34:45Z"}]}},{"name":"9ca3fce8-5f43-44de-8c86-a4d3f64370d6","location":"East
+        US 2","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/restorableDatabaseAccounts/9ca3fce8-5f43-44de-8c86-a4d3f64370d6","properties":{"accountName":"clid3bnpnd3b6ig","apiType":"Table,
+        Sql","creationTime":"2022-05-17T07:32:27Z","deletionTime":"2022-05-17T07:36:42Z","oldestRestorableTime":"2022-04-17T19:20:50Z","restorableLocations":[{"locationName":"East
+        US 2","regionalDatabaseAccountInstanceId":"265efb99-76c8-4768-9dd1-a209b1926f8f","creationTime":"2022-05-17T07:32:28Z","deletionTime":"2022-05-17T07:36:42Z"}]}},{"name":"af1b1905-ff05-4720-afb9-a6bba6794ea1","location":"East
+        US 2","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/restorableDatabaseAccounts/af1b1905-ff05-4720-afb9-a6bba6794ea1","properties":{"accountName":"clia7oqyp2ljfxd","apiType":"Gremlin,
+        Sql","creationTime":"2022-05-17T17:31:40Z","deletionTime":"2022-05-17T17:36:57Z","oldestRestorableTime":"2022-04-17T19:20:50Z","restorableLocations":[{"locationName":"East
+        US 2","regionalDatabaseAccountInstanceId":"f8ac86c2-c40f-46fa-87cb-109fc0c485b5","creationTime":"2022-05-17T17:31:41Z","deletionTime":"2022-05-17T17:36:57Z"}]}},{"name":"07b18138-3b39-42f6-a1c9-1c01c4874ad2","location":"East
+        US 2","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/restorableDatabaseAccounts/07b18138-3b39-42f6-a1c9-1c01c4874ad2","properties":{"accountName":"cliio27klsv2pqi","apiType":"Sql","creationTime":"2022-05-17T17:37:48Z","deletionTime":"2022-05-17T17:42:55Z","oldestRestorableTime":"2022-04-17T19:20:50Z","restorableLocations":[{"locationName":"East
+        US 2","regionalDatabaseAccountInstanceId":"cba203bc-bfc1-4f2d-a5d3-66751adb64bd","creationTime":"2022-05-17T17:37:49Z","deletionTime":"2022-05-17T17:42:55Z"}]}},{"name":"97a67bfe-551b-41d1-8452-672fb4d06c00","location":"East
+        US 2","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/restorableDatabaseAccounts/97a67bfe-551b-41d1-8452-672fb4d06c00","properties":{"accountName":"cli4wul77o6cjrv","apiType":"Gremlin,
+        Sql","creationTime":"2022-05-17T18:51:56Z","deletionTime":"2022-05-17T19:04:58Z","oldestRestorableTime":"2022-04-17T19:20:50Z","restorableLocations":[{"locationName":"East
+        US 2","regionalDatabaseAccountInstanceId":"07eadef9-b054-483b-88cb-eb2c6b1f48c4","creationTime":"2022-05-17T18:51:57Z","deletionTime":"2022-05-17T19:04:58Z"}]}},{"name":"d35d66d7-217f-4eb4-a928-d8a81eb7264c","location":"East
+        US 2","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/restorableDatabaseAccounts/d35d66d7-217f-4eb4-a928-d8a81eb7264c","properties":{"accountName":"cli-continuous30-lngjyph2","apiType":"Sql","creationTime":"2022-05-17T19:04:54Z","deletionTime":"2022-05-17T19:07:48Z","oldestRestorableTime":"2022-05-10T19:07:48Z","restorableLocations":[{"locationName":"East
+        US 2","regionalDatabaseAccountInstanceId":"fe50f59c-6c39-4ae4-afab-b07987c9a6bb","creationTime":"2022-05-17T19:04:55Z","deletionTime":"2022-05-17T19:07:48Z"}]}},{"name":"9b928f47-ce17-4313-bbfa-25e3a8bda171","location":"East
+        US 2","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/restorableDatabaseAccounts/9b928f47-ce17-4313-bbfa-25e3a8bda171","properties":{"accountName":"clizqftkxzpavnl","apiType":"Gremlin,
+        Sql","creationTime":"2022-05-17T19:08:46Z","deletionTime":"2022-05-17T19:10:31Z","oldestRestorableTime":"2022-04-17T19:20:50Z","restorableLocations":[]}},{"name":"782e0831-68c4-42ec-abfc-8b76d07af0f3","location":"East
+        US 2","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/restorableDatabaseAccounts/782e0831-68c4-42ec-abfc-8b76d07af0f3","properties":{"accountName":"cliwwra22pw56sq","apiType":"Gremlin,
+        Sql","creationTime":"2022-05-17T18:47:17Z","deletionTime":"2022-05-17T19:10:36Z","oldestRestorableTime":"2022-04-17T19:20:50Z","restorableLocations":[]}},{"name":"93e80e2c-5744-409b-9dca-e6e7ae5bcd6f","location":"East
+        US 2","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/restorableDatabaseAccounts/93e80e2c-5744-409b-9dca-e6e7ae5bcd6f","properties":{"accountName":"cli-continuous7-yh5ejlf2d","apiType":"Sql","creationTime":"2022-05-17T19:09:06Z","deletionTime":"2022-05-17T19:13:36Z","oldestRestorableTime":"2022-05-10T19:09:55Z","restorableLocations":[{"locationName":"East
+        US 2","regionalDatabaseAccountInstanceId":"346a2dbd-7f77-461e-9ffc-ad80f480b934","creationTime":"2022-05-17T19:09:07Z","deletionTime":"2022-05-17T19:13:36Z"}]}},{"name":"d5a05ad0-7db6-4500-bb7d-7c98c76ea003","location":"East
+        US 2","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/restorableDatabaseAccounts/d5a05ad0-7db6-4500-bb7d-7c98c76ea003","properties":{"accountName":"clizt5mo34nli2f","apiType":"Sql","creationTime":"2022-05-17T19:12:33Z","deletionTime":"2022-05-17T19:17:03Z","oldestRestorableTime":"2022-04-17T19:20:50Z","restorableLocations":[]}},{"name":"fe20db2e-913d-49c3-bf42-fef831c201bc","location":"East
+        US 2","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/restorableDatabaseAccounts/fe20db2e-913d-49c3-bf42-fef831c201bc","properties":{"accountName":"clicy2k4myqvczp","apiType":"MongoDB","creationTime":"2022-05-17T19:14:05Z","deletionTime":"2022-05-17T19:18:54Z","oldestRestorableTime":"2022-04-17T19:20:50Z","restorableLocations":[]}},{"name":"f4004a76-8173-4d36-9590-6090cce37a4d","location":"West
+        Europe","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westeurope/restorableDatabaseAccounts/f4004a76-8173-4d36-9590-6090cce37a4d","properties":{"accountName":"aholdtest","apiType":"MongoDB","creationTime":"2021-07-01T19:34:24Z","oldestRestorableTime":"2022-04-17T19:20:50Z","restorableLocations":[{"locationName":"West
+        Europe","regionalDatabaseAccountInstanceId":"f7a9416f-25a2-45fd-902d-f3679e08854e","creationTime":"2021-07-01T19:34:25Z"}]}},{"name":"3564d9f8-5f2d-4d00-a66f-5d370d970371","location":"West
+        US","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus/restorableDatabaseAccounts/3564d9f8-5f2d-4d00-a66f-5d370d970371","properties":{"accountName":"targetacct112","apiType":"Sql","creationTime":"2021-03-01T10:33:41Z","oldestRestorableTime":"2022-04-17T19:20:50Z","restorableLocations":[{"locationName":"West
+        US","regionalDatabaseAccountInstanceId":"2eb33e65-1263-4a25-a18a-e7a85875f2a8","creationTime":"2021-03-01T10:33:41Z"}]}},{"name":"74ebfb99-1914-4ea9-b802-736b5bda12a7","location":"West
+        US","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus/restorableDatabaseAccounts/74ebfb99-1914-4ea9-b802-736b5bda12a7","properties":{"accountName":"pitrmongotest","apiType":"MongoDB","creationTime":"2020-10-01T17:27:22Z","oldestRestorableTime":"2022-04-17T19:20:50Z","restorableLocations":[{"locationName":"West
+        US","regionalDatabaseAccountInstanceId":"73ef95f2-a338-4afc-8bb2-6fc3b0071d58","creationTime":"2020-10-01T17:27:23Z"}]}},{"name":"a081024d-5e38-45c1-b1cb-9c99552d42b3","location":"West
+        US","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus/restorableDatabaseAccounts/a081024d-5e38-45c1-b1cb-9c99552d42b3","properties":{"accountName":"pitrmongowithsnapshots","apiType":"MongoDB","creationTime":"2021-01-07T19:45:07Z","oldestRestorableTime":"2022-04-17T19:20:50Z","restorableLocations":[{"locationName":"West
+        US","regionalDatabaseAccountInstanceId":"cef7a5af-c690-49cd-b661-53f9241552bf","creationTime":"2021-01-07T19:45:07Z"}]}},{"name":"36d321ce-5c39-4d66-9347-47beebff1142","location":"West
+        US","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus/restorableDatabaseAccounts/36d321ce-5c39-4d66-9347-47beebff1142","properties":{"accountName":"test0319-r1","apiType":"Sql","creationTime":"2021-07-07T21:28:13Z","oldestRestorableTime":"2022-04-17T19:20:50Z","restorableLocations":[{"locationName":"West
+        US","regionalDatabaseAccountInstanceId":"bf97db02-ef6b-4af0-9a5e-3d4ef9f1d5de","creationTime":"2021-07-07T21:28:13Z"},{"locationName":"West
+        US 2","regionalDatabaseAccountInstanceId":"225506b6-641c-47a5-b7a4-2fa096d68535","creationTime":"2021-07-07T21:28:13Z"}]}},{"name":"1e2bec8e-adcc-4c5a-aa5b-82091d6c8a37","location":"West
+        US","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus/restorableDatabaseAccounts/1e2bec8e-adcc-4c5a-aa5b-82091d6c8a37","properties":{"accountName":"pitracctdemo2","apiType":"Sql","creationTime":"2020-08-11T02:34:23Z","oldestRestorableTime":"2022-04-17T19:20:50Z","restorableLocations":[{"locationName":"West
+        US","regionalDatabaseAccountInstanceId":"7419408f-e6af-4596-a76b-c31ca62a54ca","creationTime":"2020-08-11T02:34:24Z"}]}},{"name":"b4c688c1-2ea7-477e-b994-4affe5d3ea35","location":"West
+        US","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus/restorableDatabaseAccounts/b4c688c1-2ea7-477e-b994-4affe5d3ea35","properties":{"accountName":"ptr-target","apiType":"Sql","creationTime":"2021-01-05T22:25:24Z","oldestRestorableTime":"2022-04-17T19:20:50Z","restorableLocations":[{"locationName":"West
+        US","regionalDatabaseAccountInstanceId":"1f68340e-49a4-45df-9a2a-804cd8ab1795","creationTime":"2021-01-05T22:25:24Z"}]}},{"name":"9905e7ca-6f2d-4b24-a4c5-8e7529036a74","location":"West
+        US","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus/restorableDatabaseAccounts/9905e7ca-6f2d-4b24-a4c5-8e7529036a74","properties":{"accountName":"pitrmongotest-restore","apiType":"MongoDB","creationTime":"2020-10-01T21:24:45Z","oldestRestorableTime":"2022-04-17T19:20:50Z","restorableLocations":[{"locationName":"West
+        US","regionalDatabaseAccountInstanceId":"75c41286-d7f2-4594-b9f2-87f6c9843cf8","creationTime":"2020-10-01T21:24:45Z"}]}},{"name":"6fd844b3-71af-4e89-9b9d-f829945272bf","location":"West
+        US","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus/restorableDatabaseAccounts/6fd844b3-71af-4e89-9b9d-f829945272bf","properties":{"accountName":"pitrdemo1015","apiType":"Sql","creationTime":"2020-10-15T17:28:59Z","oldestRestorableTime":"2022-04-17T19:20:50Z","restorableLocations":[{"locationName":"West
+        US","regionalDatabaseAccountInstanceId":"af26f717-b6ff-4eac-864c-17e759891ae8","creationTime":"2020-10-15T17:29:00Z"}]}},{"name":"3f392004-9f83-4ae9-ac1c-fa5f6542f245","location":"West
+        US","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus/restorableDatabaseAccounts/3f392004-9f83-4ae9-ac1c-fa5f6542f245","properties":{"accountName":"pitrdemorestored1015","apiType":"Sql","creationTime":"2020-10-15T17:37:20Z","oldestRestorableTime":"2022-04-17T19:20:50Z","restorableLocations":[{"locationName":"West
+        US","regionalDatabaseAccountInstanceId":"2f4857ad-25c3-4e2f-883a-abe35c5f5e0c","creationTime":"2020-10-15T17:37:20Z"}]}},{"name":"23e99a35-cd36-4df4-9614-f767a03b9995","location":"West
+        US","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus/restorableDatabaseAccounts/23e99a35-cd36-4df4-9614-f767a03b9995","properties":{"accountName":"subbannageeta","apiType":"Sql","creationTime":"2020-08-08T01:04:53Z","oldestRestorableTime":"2022-04-17T19:20:50Z","restorableLocations":[{"locationName":"West
+        US","regionalDatabaseAccountInstanceId":"30701557-ecf8-43ce-8810-2c8be01dccf9","creationTime":"2020-08-08T01:04:53Z"},{"locationName":"East
+        US","regionalDatabaseAccountInstanceId":"8283b088-b67d-4975-bfbe-0705e3e7a599","creationTime":"2020-08-08T01:15:44Z"}]}},{"name":"afe6a47d-1fbd-41e1-992b-db16beeeae3c","location":"West
+        US","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus/restorableDatabaseAccounts/afe6a47d-1fbd-41e1-992b-db16beeeae3c","properties":{"accountName":"scottkirill","apiType":"Sql","creationTime":"2021-04-15T17:21:20Z","oldestRestorableTime":"2022-04-17T19:20:50Z","restorableLocations":[{"locationName":"West
+        US","regionalDatabaseAccountInstanceId":"e3dcb79a-b56a-4dff-9f8e-76a29285e724","creationTime":"2021-04-15T17:21:20Z"}]}},{"name":"01c9a078-6ca2-43fd-92c7-632167c86590","location":"West
+        US","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus/restorableDatabaseAccounts/01c9a078-6ca2-43fd-92c7-632167c86590","properties":{"accountName":"test0319-pitr-r1","apiType":"Sql","creationTime":"2021-07-07T21:54:07Z","oldestRestorableTime":"2022-04-17T19:20:50Z","restorableLocations":[{"locationName":"West
+        US","regionalDatabaseAccountInstanceId":"1074b897-ee89-466c-8a35-a1e695d7f3b9","creationTime":"2021-07-07T21:54:07Z"}]}},{"name":"a925da4f-b83a-434a-a3fc-b07d85f08211","location":"West
+        US","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus/restorableDatabaseAccounts/a925da4f-b83a-434a-a3fc-b07d85f08211","properties":{"accountName":"vinhperiodic","apiType":"Sql","creationTime":"2021-09-24T19:11:18Z","oldestRestorableTime":"2022-04-17T19:20:50Z","restorableLocations":[{"locationName":"West
+        US","regionalDatabaseAccountInstanceId":"75cf60fb-0d91-4e97-9219-f1d8c3464c5b","creationTime":"2021-09-24T19:11:18Z"}]}},{"name":"35b64b76-2e55-4fa5-a1de-724c60f5deca","location":"West
+        US","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus/restorableDatabaseAccounts/35b64b76-2e55-4fa5-a1de-724c60f5deca","properties":{"accountName":"onboardingtestaccount0124","apiType":"Sql","creationTime":"2022-01-24T20:24:43Z","oldestRestorableTime":"2022-04-17T19:20:50Z","restorableLocations":[{"locationName":"West
+        US","regionalDatabaseAccountInstanceId":"6621e19d-f0d1-48f0-a767-bd5ec0c0c1cf","creationTime":"2022-01-24T20:24:44Z"}]}},{"name":"3a8ddfcb-1b82-47f3-9577-971315b7427f","location":"West
+        US","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus/restorableDatabaseAccounts/3a8ddfcb-1b82-47f3-9577-971315b7427f","properties":{"accountName":"onboardingtestaccount0124-restored","apiType":"Sql","creationTime":"2022-01-24T20:48:23Z","oldestRestorableTime":"2022-04-17T19:20:50Z","restorableLocations":[{"locationName":"West
+        US","regionalDatabaseAccountInstanceId":"0cfd50fd-bb27-4b8f-9123-20b438a41cb1","creationTime":"2022-01-24T20:48:23Z"}]}},{"name":"5c3f061e-b04c-4a4b-a060-357c96425420","location":"West
+        US","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus/restorableDatabaseAccounts/5c3f061e-b04c-4a4b-a060-357c96425420","properties":{"accountName":"vinh-table-tennis","apiType":"Table,
+        Sql","creationTime":"2022-03-02T02:04:11Z","oldestRestorableTime":"2022-04-17T19:20:50Z","restorableLocations":[{"locationName":"West
+        US","regionalDatabaseAccountInstanceId":"c4988e21-1410-45ab-a44e-f0699a7f0e69","creationTime":"2022-03-02T02:04:11Z"}]}},{"name":"2adc36f9-ca7e-4f00-88ae-e40b07e85074","location":"West
+        US","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus/restorableDatabaseAccounts/2adc36f9-ca7e-4f00-88ae-e40b07e85074","properties":{"accountName":"vinh-table-tennis-portal-restore","apiType":"Table,
+        Sql","creationTime":"2022-04-05T00:32:14Z","oldestRestorableTime":"2022-04-17T19:20:50Z","restorableLocations":[{"locationName":"West
+        US","regionalDatabaseAccountInstanceId":"ea119762-bf83-4116-aa6c-3ee7e40a0fa2","creationTime":"2022-04-05T00:32:14Z"}]}},{"name":"19cb6883-6f3a-4b35-b5d4-e1454e3ede9b","location":"West
+        US","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus/restorableDatabaseAccounts/19cb6883-6f3a-4b35-b5d4-e1454e3ede9b","properties":{"accountName":"vinh-gremlin-portal-restore","apiType":"Gremlin,
+        Sql","creationTime":"2022-04-05T05:45:26Z","oldestRestorableTime":"2022-04-17T19:20:50Z","restorableLocations":[{"locationName":"West
+        US","regionalDatabaseAccountInstanceId":"f40849a5-f1fa-4c04-8af4-2d3c24ce3f04","creationTime":"2022-04-05T05:45:26Z"}]}},{"name":"b277fcf8-c623-4fb4-be91-d2c2118c51ec","location":"West
+        US","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus/restorableDatabaseAccounts/b277fcf8-c623-4fb4-be91-d2c2118c51ec","properties":{"accountName":"vinh-gremlin-pr-graphgraph-or-entireaccount","apiType":"Gremlin,
+        Sql","creationTime":"2022-04-05T06:07:03Z","oldestRestorableTime":"2022-04-17T19:20:50Z","restorableLocations":[{"locationName":"West
+        US","regionalDatabaseAccountInstanceId":"26d60385-d388-4168-9c9e-0fbcecfc5cd6","creationTime":"2022-04-05T06:07:03Z"}]}},{"name":"9bc5fb33-e84b-4185-9f3b-a37daa43fdcf","location":"West
+        US","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus/restorableDatabaseAccounts/9bc5fb33-e84b-4185-9f3b-a37daa43fdcf","properties":{"accountName":"vinh-table-2","apiType":"Table,
+        Sql","creationTime":"2022-04-06T18:16:33Z","oldestRestorableTime":"2022-04-17T19:20:50Z","restorableLocations":[{"locationName":"West
+        US","regionalDatabaseAccountInstanceId":"44016367-317a-4712-9f6c-6e38f71573a5","creationTime":"2022-04-06T18:16:33Z"}]}},{"name":"01652628-d4ef-449d-846e-38e8250f0b9a","location":"West
+        US","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus/restorableDatabaseAccounts/01652628-d4ef-449d-846e-38e8250f0b9a","properties":{"accountName":"vinh-table2-restore","apiType":"Table,
+        Sql","creationTime":"2022-04-07T00:48:08Z","oldestRestorableTime":"2022-04-17T19:20:50Z","restorableLocations":[{"locationName":"West
+        US","regionalDatabaseAccountInstanceId":"8ca19196-24d1-4153-b5ee-d879baa33be6","creationTime":"2022-04-07T00:48:08Z"}]}},{"name":"fd8f8419-d942-483e-90eb-2807e013a3cc","location":"West
+        US","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus/restorableDatabaseAccounts/fd8f8419-d942-483e-90eb-2807e013a3cc","properties":{"accountName":"vinh-table-portal-pitr-provision","apiType":"Table,
+        Sql","creationTime":"2022-04-12T22:26:18Z","oldestRestorableTime":"2022-04-17T19:20:50Z","restorableLocations":[{"locationName":"West
+        US","regionalDatabaseAccountInstanceId":"b9ed427a-7b5c-41be-a8fd-0ec3243c8caa","creationTime":"2022-04-12T22:26:19Z"}]}},{"name":"b952f8f2-46db-4ef6-964e-861b97746b0e","location":"West
+        US","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus/restorableDatabaseAccounts/b952f8f2-46db-4ef6-964e-861b97746b0e","properties":{"accountName":"vinh-gremlin-portal-pitr-provision","apiType":"Gremlin,
+        Sql","creationTime":"2022-04-12T22:35:43Z","oldestRestorableTime":"2022-04-17T19:20:50Z","restorableLocations":[{"locationName":"West
+        US","regionalDatabaseAccountInstanceId":"8ba013a8-93dd-4a59-9d1f-f1072b1c4490","creationTime":"2022-04-12T22:35:44Z"}]}},{"name":"316297a5-9b3c-4ea7-b080-23894598eb9f","location":"West
+        US","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus/restorableDatabaseAccounts/316297a5-9b3c-4ea7-b080-23894598eb9f","properties":{"accountName":"vinh-table-portal-pitr-provision-restored","apiType":"Table,
+        Sql","creationTime":"2022-04-13T00:40:04Z","oldestRestorableTime":"2022-04-17T19:20:50Z","restorableLocations":[{"locationName":"West
+        US","regionalDatabaseAccountInstanceId":"cd6df16d-4c5d-43d8-8d89-3be005eae0eb","creationTime":"2022-04-13T00:40:04Z"}]}},{"name":"310ffdfb-0f94-44c6-b752-f135c8b5ce36","location":"West
+        US","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus/restorableDatabaseAccounts/310ffdfb-0f94-44c6-b752-f135c8b5ce36","properties":{"accountName":"vinh-gremlin-portal-pitr-provision-res-again","apiType":"Gremlin,
+        Sql","creationTime":"2022-04-13T03:56:56Z","oldestRestorableTime":"2022-04-17T19:20:50Z","restorableLocations":[{"locationName":"West
+        US","regionalDatabaseAccountInstanceId":"4b152d65-7cff-4d2d-a163-57580e97a774","creationTime":"2022-04-13T03:56:56Z"}]}},{"name":"e92527fb-99a5-490c-a59d-5d9dfa097d45","location":"West
+        US","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus/restorableDatabaseAccounts/e92527fb-99a5-490c-a59d-5d9dfa097d45","properties":{"accountName":"vinhpitr7-cli","apiType":"Sql","creationTime":"2022-04-29T23:17:34Z","oldestRestorableTime":"2022-04-29T23:17:34Z","restorableLocations":[{"locationName":"West
+        US","regionalDatabaseAccountInstanceId":"85080ca6-a7ca-4e28-958c-8c629c04cb6c","creationTime":"2022-04-29T23:17:35Z"}]}},{"name":"7d675f3d-7ed6-4c3e-8f41-7d231d319675","location":"West
+        US","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus/restorableDatabaseAccounts/7d675f3d-7ed6-4c3e-8f41-7d231d319675","properties":{"accountName":"vinhpitr77-cli","apiType":"Sql","creationTime":"2022-04-29T23:25:52Z","oldestRestorableTime":"2022-04-29T23:25:52Z","restorableLocations":[{"locationName":"West
+        US","regionalDatabaseAccountInstanceId":"ecb63b30-09e0-4ca1-978a-77d5025788c5","creationTime":"2022-04-29T23:25:53Z"}]}},{"name":"60a84f7c-89b8-4c6f-a7cb-f51dc18000cf","location":"West
+        US","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus/restorableDatabaseAccounts/60a84f7c-89b8-4c6f-a7cb-f51dc18000cf","properties":{"accountName":"vinhpitr777-cli","apiType":"Sql","creationTime":"2022-04-29T23:34:04Z","oldestRestorableTime":"2022-04-29T23:34:04Z","restorableLocations":[{"locationName":"West
+        US","regionalDatabaseAccountInstanceId":"82d92ba5-4885-492d-8964-fdd5aeefc059","creationTime":"2022-04-29T23:34:05Z"}]}},{"name":"4b754475-3b23-4485-9205-87ac1661af13","location":"West
+        US","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus/restorableDatabaseAccounts/4b754475-3b23-4485-9205-87ac1661af13","properties":{"accountName":"vinhpitr30-cli","apiType":"Sql","creationTime":"2022-04-29T23:50:20Z","oldestRestorableTime":"2022-04-29T23:50:20Z","restorableLocations":[{"locationName":"West
+        US","regionalDatabaseAccountInstanceId":"94b37f83-7256-4645-8cbb-72b101f7a0a1","creationTime":"2022-04-29T23:50:21Z"}]}},{"name":"38b2f8a5-1e08-436d-8466-def040b62ccc","location":"West
+        US","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus/restorableDatabaseAccounts/38b2f8a5-1e08-436d-8466-def040b62ccc","properties":{"accountName":"vinhpitr8-cli","apiType":"Sql","creationTime":"2022-04-30T00:43:12Z","oldestRestorableTime":"2022-04-30T00:43:12Z","restorableLocations":[{"locationName":"West
+        US","regionalDatabaseAccountInstanceId":"dbe60178-c7f8-4fb8-8fce-2bbee2c49348","creationTime":"2022-04-30T00:43:13Z"}]}},{"name":"5f895fe3-3674-4a30-8d44-a090ba889d44","location":"West
+        US","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus/restorableDatabaseAccounts/5f895fe3-3674-4a30-8d44-a090ba889d44","properties":{"accountName":"vinhpitr9-cli","apiType":"Sql","creationTime":"2022-04-30T00:46:31Z","oldestRestorableTime":"2022-04-30T00:46:31Z","restorableLocations":[{"locationName":"West
+        US","regionalDatabaseAccountInstanceId":"43d31d60-2735-450e-a0f0-7b1bdaabd63e","creationTime":"2022-04-30T00:46:32Z"}]}},{"name":"02d56f33-a059-4578-8e56-d332d03e0b42","location":"West
+        US","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus/restorableDatabaseAccounts/02d56f33-a059-4578-8e56-d332d03e0b42","properties":{"accountName":"vinhperiodic2-cli","apiType":"Sql","creationTime":"2022-04-30T01:56:22Z","oldestRestorableTime":"2022-04-30T01:56:22Z","restorableLocations":[{"locationName":"West
+        US","regionalDatabaseAccountInstanceId":"24d01048-1acd-46bd-97ee-b7174465842b","creationTime":"2022-04-30T01:56:22Z"}]}},{"name":"2c5b618e-ea22-4bcb-8a44-f0aabf4f34e8","location":"West
+        US","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus/restorableDatabaseAccounts/2c5b618e-ea22-4bcb-8a44-f0aabf4f34e8","properties":{"accountName":"vinhpitr100-cli","apiType":"Sql","creationTime":"2022-04-30T01:37:21Z","oldestRestorableTime":"2022-04-30T01:37:21Z","restorableLocations":[{"locationName":"West
+        US","regionalDatabaseAccountInstanceId":"85b93c38-4c38-43f0-8e05-fefcb209bafc","creationTime":"2022-04-30T01:37:22Z"}]}},{"name":"2383a258-4992-480d-9532-9483bfdc0621","location":"West
+        US","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus/restorableDatabaseAccounts/2383a258-4992-480d-9532-9483bfdc0621","properties":{"accountName":"vinhpitr111-cli","apiType":"Sql","creationTime":"2022-04-30T01:47:10Z","oldestRestorableTime":"2022-05-10T19:20:50Z","restorableLocations":[{"locationName":"West
+        US","regionalDatabaseAccountInstanceId":"92adaa0b-d16d-4180-823a-918fa76033eb","creationTime":"2022-04-30T01:47:11Z"}]}},{"name":"056ddb8f-a9d2-457e-98c3-ff1ba16b5c22","location":"West
+        US","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus/restorableDatabaseAccounts/056ddb8f-a9d2-457e-98c3-ff1ba16b5c22","properties":{"accountName":"vinh-continuous7-cli","apiType":"Sql","creationTime":"2022-05-02T16:29:23Z","oldestRestorableTime":"2022-05-10T19:20:50Z","restorableLocations":[{"locationName":"West
+        US","regionalDatabaseAccountInstanceId":"6cb63d38-1ce1-4965-b3d2-8923b9e54d4b","creationTime":"2022-05-02T16:29:24Z"}]}},{"name":"63fac432-cab3-40e1-8b08-98261adf4496","location":"West
+        US","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus/restorableDatabaseAccounts/63fac432-cab3-40e1-8b08-98261adf4496","properties":{"accountName":"vinh-continuous30-cli","apiType":"Sql","creationTime":"2022-05-02T16:49:03Z","oldestRestorableTime":"2022-05-02T16:49:03Z","restorableLocations":[{"locationName":"West
+        US","regionalDatabaseAccountInstanceId":"23aeb168-a608-4ccb-85ad-cd90258181fd","creationTime":"2022-05-02T16:49:04Z"}]}},{"name":"fe280a09-e117-401b-ab11-5d0db710f4ad","location":"West
+        US","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus/restorableDatabaseAccounts/fe280a09-e117-401b-ab11-5d0db710f4ad","properties":{"accountName":"vinh-continuous7-cli-restored","apiType":"Sql","creationTime":"2022-05-02T17:48:32Z","oldestRestorableTime":"2022-05-02T17:48:32Z","restorableLocations":[{"locationName":"West
+        US","regionalDatabaseAccountInstanceId":"f60eaccc-e234-42f2-956f-df5da27332ee","creationTime":"2022-05-02T17:48:32Z"}]}},{"name":"30e420a8-f47b-4960-8b6f-5915820fee72","location":"West
+        US","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus/restorableDatabaseAccounts/30e420a8-f47b-4960-8b6f-5915820fee72","properties":{"accountName":"vinh-continuous7-cli-restored-again","apiType":"Sql","creationTime":"2022-05-02T22:10:39Z","oldestRestorableTime":"2022-05-10T19:20:50Z","restorableLocations":[{"locationName":"West
+        US","regionalDatabaseAccountInstanceId":"00e133c8-03a6-4fc9-8dcc-9184fa8b7068","creationTime":"2022-05-02T22:10:39Z"}]}},{"name":"6e3a4d0f-99f5-452e-a27b-e29388054e0b","location":"West
+        US","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus/restorableDatabaseAccounts/6e3a4d0f-99f5-452e-a27b-e29388054e0b","properties":{"accountName":"vinh-continuous7-again-cli","apiType":"Sql","creationTime":"2022-05-04T22:06:11Z","oldestRestorableTime":"2022-05-10T19:20:50Z","restorableLocations":[{"locationName":"West
+        US","regionalDatabaseAccountInstanceId":"e819171c-7e75-4c30-81f7-b26726ab1bba","creationTime":"2022-05-04T22:06:12Z"}]}},{"name":"c5d1d056-aa88-4f66-b54d-04d4b4f87a37","location":"West
+        US","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus/restorableDatabaseAccounts/c5d1d056-aa88-4f66-b54d-04d4b4f87a37","properties":{"accountName":"chucks-test-periodic05","apiType":"Sql","creationTime":"2022-05-11T23:16:39Z","oldestRestorableTime":"2022-05-11T23:16:39Z","restorableLocations":[{"locationName":"West
+        US","regionalDatabaseAccountInstanceId":"7aae65f8-5283-4b26-8217-1fb11ed1c4b8","creationTime":"2022-05-11T23:16:39Z"}]}},{"name":"3c4d69df-7683-4bcb-a66b-cf6a2573be2a","location":"West
+        US","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus/restorableDatabaseAccounts/3c4d69df-7683-4bcb-a66b-cf6a2573be2a","properties":{"accountName":"chucks-test-periodic06","apiType":"Sql","creationTime":"2022-05-12T00:46:58Z","oldestRestorableTime":"2022-05-12T00:46:58Z","restorableLocations":[{"locationName":"West
+        US","regionalDatabaseAccountInstanceId":"a682216c-dfc7-404b-bc6d-b6e57d6585a6","creationTime":"2022-05-12T00:46:58Z"}]}},{"name":"6d5cc8ba-f989-474b-b0fc-14555f0794c2","location":"West
+        US","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus/restorableDatabaseAccounts/6d5cc8ba-f989-474b-b0fc-14555f0794c2","properties":{"accountName":"vinh-ps-periodic","apiType":"Sql","creationTime":"2022-05-16T21:45:48Z","oldestRestorableTime":"2022-05-16T21:45:48Z","restorableLocations":[{"locationName":"West
+        US","regionalDatabaseAccountInstanceId":"1fb7780d-4a70-42a1-b1f8-c79c3af87c06","creationTime":"2022-05-16T21:45:48Z"}]}},{"name":"15caf1fd-5299-4609-8b2e-8b691df7dcfe","location":"West
+        US","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus/restorableDatabaseAccounts/15caf1fd-5299-4609-8b2e-8b691df7dcfe","properties":{"accountName":"vinh-ps-periodic-2","apiType":"Sql","creationTime":"2022-05-17T01:06:21Z","oldestRestorableTime":"2022-05-17T01:06:21Z","restorableLocations":[{"locationName":"West
+        US","regionalDatabaseAccountInstanceId":"757baa88-30e6-4b32-87c7-e01be1d27a2e","creationTime":"2022-05-17T01:06:21Z"}]}},{"name":"b3b237fb-5767-4bd4-a6de-0163dc139aba","location":"West
+        US","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus/restorableDatabaseAccounts/b3b237fb-5767-4bd4-a6de-0163dc139aba","properties":{"accountName":"vinh-ps-periodic-3","apiType":"Sql","creationTime":"2022-05-17T01:16:24Z","oldestRestorableTime":"2022-05-17T01:16:24Z","restorableLocations":[{"locationName":"West
+        US","regionalDatabaseAccountInstanceId":"39eb2b86-a3ff-4068-b558-c8208f611f18","creationTime":"2022-05-17T01:16:24Z"}]}},{"name":"88e5afa3-9fc3-40fa-b6c3-be768c3e6622","location":"West
+        US","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus/restorableDatabaseAccounts/88e5afa3-9fc3-40fa-b6c3-be768c3e6622","properties":{"accountName":"chucks-pitr-table-createcont","apiType":"Table,
+        Sql","creationTime":"2022-04-08T00:21:50Z","deletionTime":"2022-04-29T00:37:49Z","oldestRestorableTime":"2022-04-17T19:20:50Z","restorableLocations":[{"locationName":"West
+        US","regionalDatabaseAccountInstanceId":"867087fc-2d41-4349-8093-17d87bed8311","creationTime":"2022-04-08T00:21:51Z","deletionTime":"2022-04-29T00:37:49Z"}]}},{"name":"6901d6e8-2080-45e1-98f2-60d508e4a9e2","location":"West
+        US","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus/restorableDatabaseAccounts/6901d6e8-2080-45e1-98f2-60d508e4a9e2","properties":{"accountName":"chucks-pitr-sql-createcont","apiType":"Sql","creationTime":"2022-04-09T00:29:15Z","deletionTime":"2022-04-29T00:37:50Z","oldestRestorableTime":"2022-04-17T19:20:50Z","restorableLocations":[{"locationName":"West
+        US","regionalDatabaseAccountInstanceId":"a18dc064-58e7-411c-b9a0-bea686ae41af","creationTime":"2022-04-09T00:29:16Z","deletionTime":"2022-04-29T00:37:50Z"}]}},{"name":"5e5d57b0-e2a9-4e48-8dd9-47be92d1858d","location":"West
+        US","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus/restorableDatabaseAccounts/5e5d57b0-e2a9-4e48-8dd9-47be92d1858d","properties":{"accountName":"chucks-pitr-tables-createcont","apiType":"Table,
+        Sql","creationTime":"2022-04-09T00:28:31Z","deletionTime":"2022-04-29T00:37:50Z","oldestRestorableTime":"2022-04-17T19:20:50Z","restorableLocations":[{"locationName":"West
+        US","regionalDatabaseAccountInstanceId":"c987d5e2-176f-457c-85bb-87fdc9cd1787","creationTime":"2022-04-09T00:28:32Z","deletionTime":"2022-04-29T00:37:50Z"}]}},{"name":"6f81189e-b86d-4961-813b-4754a57e6476","location":"West
+        US","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus/restorableDatabaseAccounts/6f81189e-b86d-4961-813b-4754a57e6476","properties":{"accountName":"chucks-pitr-sql-periodic","apiType":"Sql","creationTime":"2022-04-28T23:45:14Z","deletionTime":"2022-04-29T00:37:50Z","oldestRestorableTime":"2022-04-28T23:45:14Z","restorableLocations":[{"locationName":"West
+        US","regionalDatabaseAccountInstanceId":"994d19e9-8434-4e82-9c99-dd148881da7a","creationTime":"2022-04-28T23:45:14Z","deletionTime":"2022-04-29T00:37:50Z"}]}},{"name":"03e1af6c-4892-41d5-8ca2-9dbf07a80e6f","location":"West
+        US","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus/restorableDatabaseAccounts/03e1af6c-4892-41d5-8ca2-9dbf07a80e6f","properties":{"accountName":"chucks-pitr-graph-createcont","apiType":"Gremlin,
+        Sql","creationTime":"2022-04-09T00:29:43Z","deletionTime":"2022-04-29T00:37:50Z","oldestRestorableTime":"2022-04-17T19:20:50Z","restorableLocations":[{"locationName":"West
+        US","regionalDatabaseAccountInstanceId":"1504ba5e-2100-4bd4-b9f8-cfce7856ad6b","creationTime":"2022-04-09T00:29:44Z","deletionTime":"2022-04-29T00:37:50Z"}]}},{"name":"63470ba9-a438-4222-8fa1-4d3b9ebf308d","location":"West
+        US","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus/restorableDatabaseAccounts/63470ba9-a438-4222-8fa1-4d3b9ebf308d","properties":{"accountName":"chucks-test-periodic01","apiType":"Sql","creationTime":"2022-04-29T19:49:28Z","deletionTime":"2022-04-29T19:53:10Z","oldestRestorableTime":"2022-04-29T19:49:28Z","restorableLocations":[{"locationName":"West
+        US","regionalDatabaseAccountInstanceId":"a1e6c39d-0a16-4587-bd76-e8e271cb1a87","creationTime":"2022-04-29T19:49:28Z","deletionTime":"2022-04-29T19:53:10Z"}]}},{"name":"e68ea41c-9473-4397-965e-6918a5ea98ec","location":"West
+        US","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus/restorableDatabaseAccounts/e68ea41c-9473-4397-965e-6918a5ea98ec","properties":{"accountName":"chucks-test-periodic02","apiType":"Sql","creationTime":"2022-04-29T23:16:11Z","deletionTime":"2022-04-29T23:21:41Z","oldestRestorableTime":"2022-04-29T23:16:11Z","restorableLocations":[{"locationName":"West
+        US","regionalDatabaseAccountInstanceId":"a383a2d5-a451-4c30-a885-a9e17385e62b","creationTime":"2022-04-29T23:16:11Z","deletionTime":"2022-04-29T23:21:41Z"}]}},{"name":"823927bc-b847-4ab4-9ea4-1587f3462abd","location":"West
+        US","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus/restorableDatabaseAccounts/823927bc-b847-4ab4-9ea4-1587f3462abd","properties":{"accountName":"chucks-test-periodic03","apiType":"Sql","creationTime":"2022-04-29T23:55:40Z","deletionTime":"2022-05-11T22:15:15Z","oldestRestorableTime":"2022-04-29T23:55:40Z","restorableLocations":[{"locationName":"West
+        US","regionalDatabaseAccountInstanceId":"eed7b30e-3789-47ee-899c-826734e2ffc9","creationTime":"2022-04-29T23:55:40Z","deletionTime":"2022-05-11T22:15:15Z"}]}},{"name":"d1078817-eabd-41d7-9cb2-b9dccfad971a","location":"West
+        US","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus/restorableDatabaseAccounts/d1078817-eabd-41d7-9cb2-b9dccfad971a","properties":{"accountName":"chucks-test-periodic04","apiType":"Sql","creationTime":"2022-04-29T23:41:39Z","deletionTime":"2022-05-11T22:15:16Z","oldestRestorableTime":"2022-04-29T23:41:39Z","restorableLocations":[{"locationName":"West
+        US","regionalDatabaseAccountInstanceId":"58c7c500-dbf0-46ec-bff6-3ae57dc8d904","creationTime":"2022-04-29T23:41:39Z","deletionTime":"2022-05-11T22:15:16Z"}]}},{"name":"8284819a-7d26-4eb3-ae0a-aac37277f00e","location":"West
+        US","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus/restorableDatabaseAccounts/8284819a-7d26-4eb3-ae0a-aac37277f00e","properties":{"accountName":"amisigremlinpitracc","apiType":"Gremlin,
+        Sql","creationTime":"2022-04-13T17:51:37Z","deletionTime":"2022-05-16T17:27:44Z","oldestRestorableTime":"2022-04-17T19:20:50Z","restorableLocations":[{"locationName":"West
+        US","regionalDatabaseAccountInstanceId":"65abeeb9-0f46-440b-984b-9d9bf04fdd66","creationTime":"2022-04-13T17:51:38Z","deletionTime":"2022-05-16T17:27:44Z"}]}},{"name":"e5cbff00-4446-4c96-bbbc-d76f65f61ccb","location":"West
+        US","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus/restorableDatabaseAccounts/e5cbff00-4446-4c96-bbbc-d76f65f61ccb","properties":{"accountName":"amisitablepitracc","apiType":"Table,
+        Sql","creationTime":"2022-04-13T17:50:57Z","deletionTime":"2022-05-16T17:27:44Z","oldestRestorableTime":"2022-04-17T19:20:50Z","restorableLocations":[{"locationName":"West
+        US","regionalDatabaseAccountInstanceId":"15e0499a-a168-48dd-9d05-677115995156","creationTime":"2022-04-13T17:50:58Z","deletionTime":"2022-05-16T17:27:44Z"}]}},{"name":"f2a78f8a-30cf-4545-a1d7-c9c570ed19af","location":"West
+        US","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus/restorableDatabaseAccounts/f2a78f8a-30cf-4545-a1d7-c9c570ed19af","properties":{"accountName":"amisigremlinnonpitracc","apiType":"Gremlin,
+        Sql","creationTime":"2022-04-13T20:01:07Z","deletionTime":"2022-05-16T17:27:44Z","oldestRestorableTime":"2022-04-17T19:20:50Z","restorableLocations":[{"locationName":"West
+        US","regionalDatabaseAccountInstanceId":"6138e076-2e39-43bd-a522-81c7efad0df8","creationTime":"2022-04-13T20:01:07Z","deletionTime":"2022-05-16T17:27:44Z"}]}},{"name":"1687dc22-f2c1-4cdb-957a-5a1794a26304","location":"West
+        US","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus/restorableDatabaseAccounts/1687dc22-f2c1-4cdb-957a-5a1794a26304","properties":{"accountName":"amisigremlinpitracc-restored3","apiType":"Gremlin,
+        Sql","creationTime":"2022-04-13T21:50:05Z","deletionTime":"2022-05-16T17:27:45Z","oldestRestorableTime":"2022-04-17T19:20:50Z","restorableLocations":[{"locationName":"West
+        US","regionalDatabaseAccountInstanceId":"7519ddbc-b093-472d-9096-1641d702e917","creationTime":"2022-04-13T21:50:05Z","deletionTime":"2022-05-16T17:27:45Z"}]}},{"name":"68569f37-b21a-4d6c-a7a8-f0d5f6d54ecc","location":"West
+        US","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus/restorableDatabaseAccounts/68569f37-b21a-4d6c-a7a8-f0d5f6d54ecc","properties":{"accountName":"amisigremlinpitracc-restored1","apiType":"Gremlin,
+        Sql","creationTime":"2022-04-13T18:28:50Z","deletionTime":"2022-05-16T17:27:46Z","oldestRestorableTime":"2022-04-17T19:20:50Z","restorableLocations":[{"locationName":"West
+        US","regionalDatabaseAccountInstanceId":"1e45d1e4-6e70-49b1-b9d8-50e743231f78","creationTime":"2022-04-13T18:28:50Z","deletionTime":"2022-05-16T17:27:46Z"}]}},{"name":"59913796-7161-4929-b836-4f241026e4e7","location":"West
+        US","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus/restorableDatabaseAccounts/59913796-7161-4929-b836-4f241026e4e7","properties":{"accountName":"amisitablenonpitracc","apiType":"Table,
+        Sql","creationTime":"2022-04-13T20:00:53Z","deletionTime":"2022-05-16T17:27:46Z","oldestRestorableTime":"2022-04-17T19:20:50Z","restorableLocations":[{"locationName":"West
+        US","regionalDatabaseAccountInstanceId":"c0f86efd-560e-4e85-9e91-e7a65d253d4a","creationTime":"2022-04-13T20:00:53Z","deletionTime":"2022-05-16T17:27:46Z"}]}},{"name":"0c0ff958-00ac-4d63-a366-0966874283c8","location":"West
+        US","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus/restorableDatabaseAccounts/0c0ff958-00ac-4d63-a366-0966874283c8","properties":{"accountName":"amisitablepitracc-restored1","apiType":"Table,
+        Sql","creationTime":"2022-04-13T18:39:35Z","deletionTime":"2022-05-16T17:27:46Z","oldestRestorableTime":"2022-04-17T19:20:50Z","restorableLocations":[{"locationName":"West
+        US","regionalDatabaseAccountInstanceId":"fa853c34-0ca9-4ff2-8311-b21f128d1f97","creationTime":"2022-04-13T18:39:35Z","deletionTime":"2022-05-16T17:27:46Z"}]}},{"name":"1d66c239-a4f1-44c5-a074-6397f5a24353","location":"West
+        US","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus/restorableDatabaseAccounts/1d66c239-a4f1-44c5-a074-6397f5a24353","properties":{"accountName":"amisitablepitracc-restored3","apiType":"Table,
+        Sql","creationTime":"2022-04-13T21:50:00Z","deletionTime":"2022-05-16T17:27:46Z","oldestRestorableTime":"2022-04-17T19:20:50Z","restorableLocations":[{"locationName":"West
+        US","regionalDatabaseAccountInstanceId":"55a4d4af-63c9-4d8c-90fe-f7086b5344c8","creationTime":"2022-04-13T21:50:00Z","deletionTime":"2022-05-16T17:27:46Z"}]}},{"name":"afd06089-6a1d-4ebd-b469-471a56149264","location":"West
+        US","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus/restorableDatabaseAccounts/afd06089-6a1d-4ebd-b469-471a56149264","properties":{"accountName":"ps-cosmosdb-1251","apiType":"Sql","creationTime":"2022-05-16T21:41:07Z","deletionTime":"2022-05-16T21:43:22Z","oldestRestorableTime":"2022-05-09T21:43:22Z","restorableLocations":[{"locationName":"West
+        US","regionalDatabaseAccountInstanceId":"b5570540-7545-4ca0-b675-bfe1062a7c58","creationTime":"2022-05-16T21:41:08Z","deletionTime":"2022-05-16T21:43:22Z"}]}},{"name":"136c9fb2-7009-43b0-b151-15b8f7e421f8","location":"West
+        US","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus/restorableDatabaseAccounts/136c9fb2-7009-43b0-b151-15b8f7e421f8","properties":{"accountName":"restored-cosmosdb-1214","apiType":"Sql","creationTime":"2022-05-17T04:50:47Z","deletionTime":"2022-05-17T04:51:39Z","oldestRestorableTime":"2022-04-17T19:20:50Z","restorableLocations":[{"locationName":"West
+        US","regionalDatabaseAccountInstanceId":"2e70bba2-f088-4d46-bd4c-43d379925ded","creationTime":"2022-05-17T04:50:47Z","deletionTime":"2022-05-17T04:51:39Z"}]}},{"name":"e3abbbcf-6830-403b-b442-9beb27a494f9","location":"West
+        US","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus/restorableDatabaseAccounts/e3abbbcf-6830-403b-b442-9beb27a494f9","properties":{"accountName":"cosmosdb-1214","apiType":"Sql","creationTime":"2022-05-17T04:35:26Z","deletionTime":"2022-05-17T04:51:41Z","oldestRestorableTime":"2022-04-17T19:20:50Z","restorableLocations":[{"locationName":"West
+        US","regionalDatabaseAccountInstanceId":"ebf2c414-f09e-4bcf-9243-90476777e38f","creationTime":"2022-05-17T04:35:27Z","deletionTime":"2022-05-17T04:51:41Z"}]}},{"name":"79e37da4-d1c9-4dac-bd30-7e8f191d70b4","location":"East
+        US","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus/restorableDatabaseAccounts/79e37da4-d1c9-4dac-bd30-7e8f191d70b4","properties":{"accountName":"climzykqkmgpwr2","apiType":"Gremlin,
+        Sql","creationTime":"2022-02-18T01:50:25Z","oldestRestorableTime":"2022-04-17T19:20:50Z","restorableLocations":[{"locationName":"East
+        US","regionalDatabaseAccountInstanceId":"be1e3ed2-e5c3-4d2d-921c-bc8d7525f435","creationTime":"2022-02-18T01:50:26Z"}]}},{"name":"bce09ea6-973d-4ccb-a932-477ac195d939","location":"East
+        US","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus/restorableDatabaseAccounts/bce09ea6-973d-4ccb-a932-477ac195d939","properties":{"accountName":"tmpacc123","apiType":"Gremlin,
+        Sql","creationTime":"2022-02-18T05:55:23Z","oldestRestorableTime":"2022-04-17T19:20:50Z","restorableLocations":[{"locationName":"East
+        US","regionalDatabaseAccountInstanceId":"e373c1b9-5463-4dc0-9ee4-e382860d2291","creationTime":"2022-02-18T05:55:24Z"}]}},{"name":"7d2a14b5-1f0f-4247-9f5a-bb936c77f722","location":"East
+        US","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus/restorableDatabaseAccounts/7d2a14b5-1f0f-4247-9f5a-bb936c77f722","properties":{"accountName":"tmp-restored","apiType":"Gremlin,
+        Sql","creationTime":"2022-02-18T06:25:15Z","oldestRestorableTime":"2022-04-17T19:20:50Z","restorableLocations":[{"locationName":"East
+        US","regionalDatabaseAccountInstanceId":"d44bb9ea-5500-4f20-a965-a784e7810c65","creationTime":"2022-02-18T06:25:15Z"}]}},{"name":"9addabb6-cc0f-401f-b6a0-98bcfc88ac68","location":"East
+        US","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus/restorableDatabaseAccounts/9addabb6-cc0f-401f-b6a0-98bcfc88ac68","properties":{"accountName":"amisisqlpitracc-restored1","apiType":"Sql","creationTime":"2022-04-14T00:52:12Z","deletionTime":"2022-05-16T17:27:43Z","oldestRestorableTime":"2022-04-17T19:20:50Z","restorableLocations":[{"locationName":"East
+        US","regionalDatabaseAccountInstanceId":"3522a742-a8ee-4f08-a08b-04d56cd2c09f","creationTime":"2022-04-14T00:52:12Z","deletionTime":"2022-05-16T17:27:43Z"}]}},{"name":"a34ec2c8-aabc-4041-a04e-6996e4723082","location":"East
+        US","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus/restorableDatabaseAccounts/a34ec2c8-aabc-4041-a04e-6996e4723082","properties":{"accountName":"amisisqlpitracc","apiType":"Sql","creationTime":"2022-01-05T19:48:26Z","deletionTime":"2022-05-16T17:27:44Z","oldestRestorableTime":"2022-04-17T19:20:50Z","restorableLocations":[{"locationName":"East
+        US","regionalDatabaseAccountInstanceId":"676a37b8-0424-4a57-8f08-992eaa7a8a58","creationTime":"2022-01-05T19:48:26Z","deletionTime":"2022-05-16T17:27:44Z"}]}},{"name":"c43bfcd9-e215-48d6-a632-3c864e1b03c8","location":"East
+        US","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus/restorableDatabaseAccounts/c43bfcd9-e215-48d6-a632-3c864e1b03c8","properties":{"accountName":"mongo-continuous-1274","apiType":"MongoDB","creationTime":"2022-05-17T04:54:12Z","deletionTime":"2022-05-17T04:57:30Z","oldestRestorableTime":"2022-04-17T19:20:50Z","restorableLocations":[{"locationName":"East
+        US","regionalDatabaseAccountInstanceId":"654e7e66-03cc-485a-b6ce-619eafd6dd87","creationTime":"2022-05-17T04:54:13Z","deletionTime":"2022-05-17T04:57:30Z"}]}},{"name":"f092ccc5-0c05-471f-98d8-f58799db4945","location":"West
+        US 3","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus3/restorableDatabaseAccounts/f092ccc5-0c05-471f-98d8-f58799db4945","properties":{"accountName":"ruleipitraccountw3","apiType":"Sql","creationTime":"2021-07-06T23:19:06Z","oldestRestorableTime":"2022-04-17T19:20:50Z","restorableLocations":[{"locationName":"West
+        US 3","regionalDatabaseAccountInstanceId":"846f59f7-3d33-4308-b124-e6c3ed5afd23","creationTime":"2021-07-06T23:19:07Z"}]}},{"name":"070855c3-4c0b-4111-a37f-951e43dd6833","location":"Jio
+        India West","type":"Microsoft.DocumentDB/locations/restorableDatabaseAccounts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/jioindiawest/restorableDatabaseAccounts/070855c3-4c0b-4111-a37f-951e43dd6833","properties":{"accountName":"ruleipitraccount","apiType":"Sql","creationTime":"2021-07-06T23:19:31Z","oldestRestorableTime":"2022-04-17T19:20:51Z","restorableLocations":[{"locationName":"Jio
+        India West","regionalDatabaseAccountInstanceId":"0d1f60ad-392b-4588-b141-4e169026dc1f","creationTime":"2021-07-06T23:19:32Z"}]}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '116290'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 17 May 2022 19:20:51 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-original-request-ids:
+      - ''
+      - ''
+      - ''
+      - ''
+      - ''
+      - ''
+      - ''
+      - ''
+      - ''
+      - ''
+      - ''
+      - ''
+      - ''
+      - ''
+      - ''
+      - ''
+      - ''
+      - ''
+      - ''
+      - ''
+      - ''
+      - ''
+      - ''
+      - ''
+      - ''
+      - ''
+      - ''
+      - ''
+      - ''
+      - ''
+      - ''
+      - ''
+      - ''
+      - ''
+      - ''
+      - ''
+    status:
+      code: 200
+      message: OK
+version: 1

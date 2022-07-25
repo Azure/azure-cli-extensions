@@ -41,7 +41,7 @@ def validate_config_file_path(path, action):
     if not os.path.exists(path):
         raise InvalidArgumentValueError(f'Invalid config file path: {path}. Please provide a valid config file path.')
 
-    # JSON file
+    # JSON file read and validation of value in action
     with open(path, "r", encoding=None) as f:
         configJson = json.loads(f.read())
     try:
@@ -159,6 +159,7 @@ def check_whether_gateway_installed(name):
     # Get the path of Installed softwares
     accessKey = winreg.OpenKey(accessRegistry, r"SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall")
 
+    # Check if any software has name as given name
     for i in range(0, winreg.QueryInfoKey(accessKey)[0]):
         installedSoftware = winreg.EnumKey(accessKey, i)
         installedSoftwareKey = winreg.OpenKey(accessKey, installedSoftware)
@@ -169,7 +170,7 @@ def check_whether_gateway_installed(name):
         except FileNotFoundError:
             pass
 
-    # Adding this try to look for Installed IR in Program files (Assumes the IR is always installed there)
+    # Adding this try to look for Installed IR in Program files (Assumes the IR is always installed there) to tackle x32 bit python
     try:
         diaCmdPath = get_cmd_file_path_static()
         if os.path.exists(diaCmdPath):
@@ -185,17 +186,21 @@ def check_whether_gateway_installed(name):
 # -----------------------------------------------------------------------------------------------------------------
 def install_gateway(path):
 
+    # check if gateway is installaed. If yes don't do the installation again
     if check_whether_gateway_installed("Microsoft Integration Runtime"):
         print("Microsoft Integration Runtime is already installed")
         return
 
+    # validate path of IR MSI
     validate_ir_extension(path)
 
+    # Check for IR path existance
     if not os.path.exists(path):
         raise InvalidArgumentValueError(f"Invalid Integration Runtime MSI path : {path}. Please provide a valid Integration Runtime MSI path")
 
     print("Start Integration Runtime installation")
 
+    # Installed MSI
     installCmd = f'msiexec.exe /i "{path}" /quiet /passive'
     subprocess.call(installCmd, shell=False)
     time.sleep(30)
@@ -206,18 +211,26 @@ def install_gateway(path):
 # -----------------------------------------------------------------------------------------------------------------
 # Helper function to register Sql Migration Service on IR
 # -----------------------------------------------------------------------------------------------------------------
-def register_ir(key):
+def register_ir(key, installed_ir_path=None):
     print(f"Start to register IR with key: {key}")
 
-    cmdFilePath = get_cmd_file_path()
+    # get SHIR installation location - using registry or user provided
+    if installed_ir_path is None:
+        cmdFilePath = get_cmd_file_path()
+    else:
+        cmdFilePath = get_cmd_file_path_from_input(installed_ir_path)
 
+    # extract the dmgcmd.exe and RegisterIntegrationRuntime.ps1 Script path.
     directoryPath = os.path.dirname(cmdFilePath)
     parentDirPath = os.path.dirname(directoryPath)
 
     dmgCmdPath = os.path.join(directoryPath, "dmgcmd.exe")
     regIRScriptPath = os.path.join(parentDirPath, "PowerShellScript", "RegisterIntegrationRuntime.ps1")
 
+    # Open Intranet Port (Necessary for Re-Register. Service has to be running for Re-Register to work.)
     portCmd = f'{dmgCmdPath} -EnableRemoteAccess 8060'
+
+    # Register/ Re-register IR
     irCmd = f'powershell -command "& \'{regIRScriptPath}\' -gatewayKey {key}"'
 
     subprocess.call(portCmd, shell=False)
@@ -225,7 +238,7 @@ def register_ir(key):
 
 
 # -----------------------------------------------------------------------------------------------------------------
-# Helper function to get SHIR script path
+# Helper function to get SHIR script path from windows registry
 # -----------------------------------------------------------------------------------------------------------------
 def get_cmd_file_path():
 
@@ -239,18 +252,20 @@ def get_cmd_file_path():
         accessValue = winreg.QueryValueEx(accessKey, r"DiacmdPath")[0]
 
         return accessValue
+
+    # Handling the case for x32 Python as x64 software like SHIR in registry are not found by x32 Python.
     except FileNotFoundError:
         try:
             diaCmdPath = get_cmd_file_path_static()
             return diaCmdPath
         except FileNotFoundError as e:
-            raise FileOperationError("Failed: No installed IR found or installed IR is not present in Program Files. Please install Integration Runtime in default location and re-run this command") from e
+            raise FileOperationError("Failed: No installed IR found or installed IR is not present in Program Files. Please install Integration Runtime in default location and re-run this command  or use --installed-ir-path parameter to provide the installed IR location") from e
         except IndexError as e:
             raise FileOperationError("IR is not properly installed. Please re-install it and re-run this command") from e
 
 
 # -----------------------------------------------------------------------------------------------------------------
-# Helper function to get DiaCmdPath with Static Paths. This function assumes that IR is always installed in program files
+# Helper function to get DiaCmdPath with Static Paths. This function assumes that IR is always installed in program files. This function is for handling the case with x32 Python
 # -----------------------------------------------------------------------------------------------------------------
 def get_cmd_file_path_static():
 
@@ -269,6 +284,23 @@ def get_cmd_file_path_static():
 
     # Create diaCmd default path and check if it is valid or not.
     diaCmdPath = os.path.join(versionFolder, "Shared", "diacmd.exe")
+
+    if not os.path.exists(diaCmdPath):
+        raise FileNotFoundError(f"The system cannot find the path specified: {diaCmdPath}")
+
+    return diaCmdPath
+
+
+# -----------------------------------------------------------------------------------------------------------------
+# Helper function to get DiaCmdPath using the installed IR path user has given
+# -----------------------------------------------------------------------------------------------------------------
+def get_cmd_file_path_from_input(installed_ir_path):
+
+    if not os.path.exists(installed_ir_path):
+        raise FileNotFoundError(f"The system cannot find the path specified: {installed_ir_path}")
+
+    # Create diaCmd default path and check if it is valid or not.
+    diaCmdPath = os.path.join(installed_ir_path, "Shared", "diacmd.exe")
 
     if not os.path.exists(diaCmdPath):
         raise FileNotFoundError(f"The system cannot find the path specified: {diaCmdPath}")

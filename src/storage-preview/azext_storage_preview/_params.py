@@ -391,7 +391,7 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
                        min_api='2021-01-01',
                        help='Resource identifier of the UserAssigned identity to be associated with server-side '
                             'encryption on the storage account.')
-            c.argument('federated_identity_client_id', options_list=['--key-vault-federated-identity-client-id', '-f'],
+            c.argument('federated_identity_client_id', options_list=['--key-vault-federated-client-id', '-f'],
                        min_api='2021-08-01',
                        help='ClientId of the multi-tenant application to be used '
                             'in conjunction with the user-assigned identity for '
@@ -448,8 +448,8 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
                        help='SSH authorized keys for SFTP. Includes an optional description and key. '
                             'The key is the base64 encoded SSH public key , with format: '
                             '<keyType> <keyData> e.g. ssh-rsa AAAABBBB.'
-                            'Example: --ssh_authorized_key description=description key="ssh-ras AAAABBBB"'
-                            'or --ssh_authorized_key key="ssh-ras AAAABBBB"')
+                            'Example: --ssh_authorized_key description=description key="ssh-rsa AAAABBBB"'
+                            'or --ssh_authorized_key key="ssh-rsa AAAABBBB"')
             c.argument('has_shared_key', arg_type=get_three_state_flag(),
                        help='Indicates whether shared key exists. Set it to false to remove existing shared key.')
             c.argument('has_ssh_key', arg_type=get_three_state_flag(),

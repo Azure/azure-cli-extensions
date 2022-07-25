@@ -6,5 +6,5 @@
 # Changes may cause incorrect behavior and will be lost if the code is regenerated.
 # --------------------------------------------------------------------------
 
-from ._azure_dedicated_hsm_resource_provider_async import AzureDedicatedHSMResourceProvider
+from ._azure_dedicated_hsm_resource_provider import AzureDedicatedHSMResourceProvider
 __all__ = ['AzureDedicatedHSMResourceProvider']

@@ -2,6 +2,7 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
+# pylint: disable=logging-fstring-interpolation
 
 import os
 import sys
@@ -50,15 +51,13 @@ SSH_CTRL_C_MSG = b"\x00\x00\x03"
 
 class WebSocketConnection:
     def __init__(self, cmd, resource_group_name, name, revision, replica, container, startup_command):
-        from websocket._exceptions import WebSocketBadStatusException
-
         token_response = ContainerAppClient.get_auth_token(cmd, resource_group_name, name)
         self._token = token_response["properties"]["token"]
         self._logstream_endpoint = token_response["properties"]["logStreamEndpoint"]
         self._url = self._get_url(cmd=cmd, resource_group_name=resource_group_name, name=name, revision=revision,
                                   replica=replica, container=container, startup_command=startup_command)
         self._socket = websocket.WebSocket(enable_multithread=True)
-        logger.warning("Attempting to connect to %s", self._url)
+        logger.info("Attempting to connect to %s", self._url)
         self._socket.connect(self._url, header=[f"Authorization: Bearer {self._token}"])
 
         self.is_connected = True
@@ -160,9 +159,12 @@ def _getch_windows():
 def ping_container_app(app):
     site = safe_get(app, "properties", "configuration", "ingress", "fqdn")
     if site:
-        resp = requests.get(f'https://{site}')
-        if not resp.ok:
-            logger.info(f"Got bad status pinging app: {resp.status_code}")
+        try:
+            resp = requests.get(f'https://{site}', timeout=30)
+            if not resp.ok:
+                logger.info(f"Got bad status pinging app: {resp.status_code}")
+        except requests.exceptions.ReadTimeout:
+            logger.info("Timed out while pinging app external URL")
     else:
         logger.info("Could not fetch site external URL")
 

@@ -309,7 +309,8 @@ def load_arguments(self, _):
 
     for scope in ['spring-cloud app create', 'spring-cloud app update']:
         with self.argument_context(scope) as c:
-            c.argument('enable_persistent_storage', arg_type=get_three_state_flag(),
+            c.argument('enable_persistent_storage',
+                       arg_type=get_three_state_flag(),
                        help='If true, mount a 50G (Standard Pricing tier) or 1G (Basic Pricing tier) disk with default path.')
 
     for scope in ['spring-cloud app update', 'spring-cloud app deployment create', 'spring-cloud app deploy', 'spring-cloud app create']:
@@ -363,9 +364,9 @@ def load_arguments(self, _):
             c.argument(
                 'registry_password', help='The password of the container registry.', arg_group='Custom Container')
             c.argument(
-                'container_command', help='The command of the container image.', nargs='*', arg_group='Custom Container')
+                'container_command', help='The command of the container image.', arg_group='Custom Container')
             c.argument(
-                'container_args', help='The arguments of the container image.', nargs='*', arg_group='Custom Container')
+                'container_args', help='The arguments of the container image.', arg_group='Custom Container')
             c.argument(
                 'build_env', build_env_type)
 

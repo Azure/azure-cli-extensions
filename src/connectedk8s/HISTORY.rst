@@ -2,10 +2,25 @@
 
 Release History
 ===============
-1.2.9
+1.3.0
 ++++++
 
 * Added private link support
+
+1.2.11
+++++++
+
+* Increased the timeout of diagnoser job completion to 180 seconds
+
+1.2.10
+++++++
+
+* Added troubleshoot command which can be used to diagnose Arc enabled K8s clusters
+
+1.2.9
+++++++
+
+* Add correlation-id parameter to internally track onboarding sources
 
 1.2.8
 ++++++

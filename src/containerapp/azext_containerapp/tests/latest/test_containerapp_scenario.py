@@ -7,6 +7,7 @@ import os
 import platform
 from unittest import mock
 import time
+import unittest
 from azext_containerapp.custom import containerapp_ssh
 
 from azure.cli.testsdk.reverse_dependency import get_dummy_cli
@@ -18,15 +19,17 @@ from knack.util import CLIError
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 
-@live_only()
 class ContainerappScenarioTest(ScenarioTest):
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="eastus2")
     def test_containerapp_e2e(self, resource_group):
-
         env_name = self.create_random_name(prefix='containerapp-e2e-env', length=24)
+        logs_workspace_name = self.create_random_name(prefix='containerapp-env', length=24)
 
-        self.cmd(f'containerapp env create -g {resource_group} -n {env_name}')
+        logs_workspace_id = self.cmd('monitor log-analytics workspace create -g {} -n {}'.format(resource_group, logs_workspace_name)).get_output_in_json()["customerId"]
+        logs_workspace_key = self.cmd('monitor log-analytics workspace get-shared-keys -g {} -n {}'.format(resource_group, logs_workspace_name)).get_output_in_json()["primarySharedKey"]
+
+        self.cmd('containerapp env create -g {} -n {} --logs-workspace-id {} --logs-workspace-key {}'.format(resource_group, env_name, logs_workspace_id, logs_workspace_key))
 
         # Ensure environment is completed
         containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
@@ -82,12 +85,17 @@ class ContainerappScenarioTest(ScenarioTest):
         ])
 
 
+    # TODO rename
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="eastus2")
     def test_container_acr(self, resource_group):
         env_name = self.create_random_name(prefix='containerapp-e2e-env', length=24)
+        logs_workspace_name = self.create_random_name(prefix='containerapp-env', length=24)
 
-        self.cmd('containerapp env create -g {} -n {}'.format(resource_group, env_name))
+        logs_workspace_id = self.cmd('monitor log-analytics workspace create -g {} -n {}'.format(resource_group, logs_workspace_name)).get_output_in_json()["customerId"]
+        logs_workspace_key = self.cmd('monitor log-analytics workspace get-shared-keys -g {} -n {}'.format(resource_group, logs_workspace_name)).get_output_in_json()["primarySharedKey"]
+
+        self.cmd('containerapp env create -g {} -n {} --logs-workspace-id {} --logs-workspace-key {}'.format(resource_group, env_name, logs_workspace_id, logs_workspace_key))
 
         # Ensure environment is completed
         containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
@@ -119,12 +127,17 @@ class ContainerappScenarioTest(ScenarioTest):
         ])
 
 
+    # TODO rename
     @AllowLargeResponse(8192)
-    @ResourceGroupPreparer(location="eastus")
+    @ResourceGroupPreparer(location="westeurope")
     def test_containerapp_update(self, resource_group):
         env_name = self.create_random_name(prefix='containerapp-e2e-env', length=24)
+        logs_workspace_name = self.create_random_name(prefix='containerapp-env', length=24)
 
-        self.cmd('containerapp env create -g {} -n {}'.format(resource_group, env_name))
+        logs_workspace_id = self.cmd('monitor log-analytics workspace create -g {} -n {}'.format(resource_group, logs_workspace_name)).get_output_in_json()["customerId"]
+        logs_workspace_key = self.cmd('monitor log-analytics workspace get-shared-keys -g {} -n {}'.format(resource_group, logs_workspace_name)).get_output_in_json()["primarySharedKey"]
+
+        self.cmd('containerapp env create -g {} -n {} --logs-workspace-id {} --logs-workspace-key {}'.format(resource_group, env_name, logs_workspace_id, logs_workspace_key))
 
         # Ensure environment is completed
         containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
@@ -182,12 +195,17 @@ class ContainerappScenarioTest(ScenarioTest):
         ])
 
 
+    # TODO rename
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="eastus2")
     def test_container_acr(self, resource_group):
         env_name = self.create_random_name(prefix='containerapp-e2e-env', length=24)
+        logs_workspace_name = self.create_random_name(prefix='containerapp-env', length=24)
 
-        self.cmd('containerapp env create -g {} -n {}'.format(resource_group, env_name))
+        logs_workspace_id = self.cmd('monitor log-analytics workspace create -g {} -n {}'.format(resource_group, logs_workspace_name)).get_output_in_json()["customerId"]
+        logs_workspace_key = self.cmd('monitor log-analytics workspace get-shared-keys -g {} -n {}'.format(resource_group, logs_workspace_name)).get_output_in_json()["primarySharedKey"]
+
+        self.cmd('containerapp env create -g {} -n {} --logs-workspace-id {} --logs-workspace-key {}'.format(resource_group, env_name, logs_workspace_id, logs_workspace_key))
 
         # Ensure environment is completed
         containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
@@ -218,13 +236,42 @@ class ContainerappScenarioTest(ScenarioTest):
             JMESPathCheck('length(properties.configuration.secrets)', 1),
         ])
 
+        # Update Container App with ACR
+        update_string = 'containerapp update -g {} -n {} --min-replicas 0 --max-replicas 1 --set-env-vars testenv=testing'.format(
+            resource_group, containerapp_name)
+        self.cmd(update_string, checks=[
+            JMESPathCheck('name', containerapp_name),
+            JMESPathCheck('properties.configuration.registries[0].server', registry_server),
+            JMESPathCheck('properties.configuration.registries[0].username', registry_username),
+            JMESPathCheck('length(properties.configuration.secrets)', 1),
+            JMESPathCheck('properties.template.scale.minReplicas', '0'),
+            JMESPathCheck('properties.template.scale.maxReplicas', '1'),
+            JMESPathCheck('length(properties.template.containers[0].env)', 1),
+        ])
 
+        # Add secrets to Container App with ACR
+        containerapp_secret = self.cmd('containerapp secret list -g {} -n {}'.format(resource_group, containerapp_name)).get_output_in_json()
+        secret_name = containerapp_secret[0]["name"]
+        secret_string = 'containerapp secret set -g {} -n {} --secrets newsecret=test'.format(resource_group, containerapp_name)
+        self.cmd(secret_string, checks=[
+            JMESPathCheck('length(@)', 2),
+        ])
+
+        with self.assertRaises(CLIError):
+            # Removing ACR password should fail since it is needed for ACR
+            self.cmd('containerapp secret remove -g {} -n {} --secret-names {}'.format(resource_group, containerapp_name, secret_name))
+
+    # TODO rename
     @AllowLargeResponse(8192)
-    @ResourceGroupPreparer(location="eastus")
+    @ResourceGroupPreparer(location="northeurope")
     def test_containerapp_update(self, resource_group):
         env_name = self.create_random_name(prefix='containerapp-e2e-env', length=24)
+        logs_workspace_name = self.create_random_name(prefix='containerapp-env', length=24)
 
-        self.cmd('containerapp env create -g {} -n {}'.format(resource_group, env_name))
+        logs_workspace_id = self.cmd('monitor log-analytics workspace create -g {} -n {}'.format(resource_group, logs_workspace_name)).get_output_in_json()["customerId"]
+        logs_workspace_key = self.cmd('monitor log-analytics workspace get-shared-keys -g {} -n {}'.format(resource_group, logs_workspace_name)).get_output_in_json()["primarySharedKey"]
+
+        self.cmd('containerapp env create -g {} -n {} --logs-workspace-id {} --logs-workspace-key {}'.format(resource_group, env_name, logs_workspace_id, logs_workspace_key))
 
         # Ensure environment is completed
         containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
@@ -286,6 +333,8 @@ class ContainerappScenarioTest(ScenarioTest):
             JMESPathCheck('properties.template.containers[1].resources.memory', '1.5Gi'),
         ])
 
+    # TODO fix and enable
+    @unittest.skip("API only on stage currently")
     @live_only()  # VCR.py can't seem to handle websockets (only --live works)
     # @ResourceGroupPreparer(location="centraluseuap")
     @mock.patch("azext_containerapp._ssh_utils._resize_terminal")
@@ -348,14 +397,57 @@ class ContainerappScenarioTest(ScenarioTest):
         for line in expected_output:
             self.assertIn(line, expected_output)
 
-
-    @live_only()
-    @ResourceGroupPreparer(location="centraluseuap")
+    @ResourceGroupPreparer(location="northeurope")
     def test_containerapp_logstream(self, resource_group):
         containerapp_name = self.create_random_name(prefix='capp', length=24)
         env_name = self.create_random_name(prefix='env', length=24)
+        logs_workspace_name = self.create_random_name(prefix='containerapp-env', length=24)
 
-        self.cmd(f'containerapp env create -g {resource_group} -n {env_name}')
+        logs_workspace_id = self.cmd('monitor log-analytics workspace create -g {} -n {}'.format(resource_group, logs_workspace_name)).get_output_in_json()["customerId"]
+        logs_workspace_key = self.cmd('monitor log-analytics workspace get-shared-keys -g {} -n {}'.format(resource_group, logs_workspace_name)).get_output_in_json()["primarySharedKey"]
+
+        self.cmd('containerapp env create -g {} -n {} --logs-workspace-id {} --logs-workspace-key {}'.format(resource_group, env_name, logs_workspace_id, logs_workspace_key))
+        containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
+
+        while containerapp_env["properties"]["provisioningState"].lower() == "waiting":
+            time.sleep(5)
+            containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
+
         self.cmd(f'containerapp create -g {resource_group} -n {containerapp_name} --environment {env_name} --min-replicas 1 --ingress external --target-port 80')
 
-        self.cmd(f'containerapp log tail -n {containerapp_name} -g {resource_group}')
+        self.cmd(f'containerapp logs show -n {containerapp_name} -g {resource_group}')
+
+    @ResourceGroupPreparer(location="northeurope")
+    def test_containerapp_registry_msi(self, resource_group):
+        env = self.create_random_name(prefix='env', length=24)
+        logs = self.create_random_name(prefix='logs', length=24)
+        app = self.create_random_name(prefix='app', length=24)
+        acr = self.create_random_name(prefix='acr', length=24)
+
+        logs_id = self.cmd(f"monitor log-analytics workspace create -g {resource_group} -n {logs}").get_output_in_json()["customerId"]
+        logs_key = self.cmd(f'monitor log-analytics workspace get-shared-keys -g {resource_group} -n {logs}').get_output_in_json()["primarySharedKey"]
+
+        self.cmd(f'containerapp env create -g {resource_group} -n {env} --logs-workspace-id {logs_id} --logs-workspace-key {logs_key}')
+
+        containerapp_env = self.cmd(f'containerapp env show -g {resource_group} -n {env}').get_output_in_json()
+
+        while containerapp_env["properties"]["provisioningState"].lower() == "waiting":
+            time.sleep(5)
+            containerapp_env = self.cmd(f'containerapp env show -g {resource_group} -n {env}').get_output_in_json()
+
+        self.cmd(f'containerapp create -g {resource_group} -n {app} --environment {env} --min-replicas 1 --ingress external --target-port 80')
+        self.cmd(f'acr create -g {resource_group} -n {acr} --sku basic --admin-enabled')
+        # self.cmd(f'acr credential renew -n {acr} ')
+        self.cmd(f'containerapp registry set --server {acr}.azurecr.io -g {resource_group} -n {app}')
+        app_data = self.cmd(f'containerapp show -g {resource_group} -n {app}').get_output_in_json()
+        self.assertEqual(app_data["properties"]["configuration"]["registries"][0].get("server"), f'{acr}.azurecr.io')
+        self.assertIsNotNone(app_data["properties"]["configuration"]["registries"][0].get("passwordSecretRef"))
+        self.assertIsNotNone(app_data["properties"]["configuration"]["registries"][0].get("username"))
+        self.assertIsNone(app_data["properties"]["configuration"]["registries"][0].get("identity"))
+
+        self.cmd(f'containerapp registry set --server {acr}.azurecr.io -g {resource_group} -n {app} --identity system')
+        app_data = self.cmd(f'containerapp show -g {resource_group} -n {app}').get_output_in_json()
+        self.assertEqual(app_data["properties"]["configuration"]["registries"][0].get("server"), f'{acr}.azurecr.io')
+        self.assertIsNone(app_data["properties"]["configuration"]["registries"][0].get("passwordSecretRef"))
+        self.assertIsNone(app_data["properties"]["configuration"]["registries"][0].get("username"))
+        self.assertEqual(app_data["properties"]["configuration"]["registries"][0].get("identity"), "system")

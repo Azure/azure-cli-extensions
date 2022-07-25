@@ -1,5 +1,11 @@
 Release History
 ===============
+3.1.6
+---
+* The spring-cloud command group has been deprecated and will be removed in Nov. 2022.
+  We recommend that you upgrade to the new 'spring' command group by installing the 'spring' extension: run `az extension add -n spring`.
+  For more information, please visit: https://aka.ms/azure-spring-cloud-rename.
+
 3.1.5
 ---
 * [BREAKING CHANGE] The argument '--build-env' accepts key[=value] instead of json.
