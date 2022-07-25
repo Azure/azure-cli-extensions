@@ -11,10 +11,30 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
+
+* Support disabling Azure KeyVault KMS.
+
+0.5.91
+++++++
+
+* Fix compatibility issue when enabling Microsoft Defender via aks-preview.
+    * az aks create
+    * az aks update
+
+0.5.90 (NOT RELEASED)
++++++++++++++++++++++
+
+* Skip this version due to conflict.
+
+0.5.89
+++++++
+
+* Fix for the az aks addon list command to return enable:true, if virtual-node addon is enabled for the AKS cluster.
+
 0.5.88
 ++++++
 
-* AKS Monitoring MSI Auth related code imported from Azure CLI to reuse the code between aks-preview and Azure CLI
+* AKS Monitoring MSI Auth related code imported from Azure CLI to reuse the code between aks-preview and Azure CLI.
 
 0.5.87
 ++++++
