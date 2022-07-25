@@ -72,6 +72,11 @@ properties is supported before updating these properties.
 --configuration-protected-settings-file=protected-settings-file
 """
 
+helps[f'{consts.EXTENSION_NAME} extension-types'] = """
+    type: group
+    short-summary: Commands to discover Kubernetes Extension Types.
+"""
+
 helps[f'{consts.EXTENSION_NAME} extension-types list'] = f"""
     type: command
     short-summary: List Kubernetes Extension Types.
@@ -98,15 +103,15 @@ helps[f'{consts.EXTENSION_NAME} extension-types show'] = f"""
       - name: Show Kubernetes Extension Type
         text: |-
           az {consts.EXTENSION_NAME} extension-types show --resource-group my-resource-group \
---cluster-name mycluster --cluster-type connectedClusters --extension_type cassandradatacenteroperator
+--cluster-name mycluster --cluster-type connectedClusters --extension-type cassandradatacenteroperator
 """
 
-helps[f'{consts.EXTENSION_NAME} extension-types versions list'] = f"""
+helps[f'{consts.EXTENSION_NAME} extension-types list-versions'] = f"""
     type: command
     short-summary: List available versions for a Kubernetes Extension Type.
     examples:
       - name: List versions for an Extension Type
         text: |-
-          az {consts.EXTENSION_NAME} extension-types versions list --location eastus2euap \
+          az {consts.EXTENSION_NAME} extension-types list-versions --location eastus2euap \
 --extension_type cassandradatacenteroperator
 """
