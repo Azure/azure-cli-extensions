@@ -21,10 +21,7 @@ from azure.cli.core.commands.validators import (
     get_default_location_from_resource_group,
     validate_file_or_dict
 )
-from azext_stack_hci.action import (
-    AddDesiredProperties,
-    AddProperties
-)
+from azext_stack_hci.action import AddDesiredProperties
 
 
 def load_arguments(self, _):
@@ -151,12 +148,6 @@ def load_arguments(self, _):
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('cluster_name', options_list=['--name', '-n', '--cluster-name'], type=str, help='The name of the '
                    'cluster.')
-
-    with self.argument_context('stack-hci cluster upload-certificate') as c:
-        c.argument('resource_group_name', resource_group_name_type)
-        c.argument('cluster_name', options_list=['--name', '-n', '--cluster-name'], type=str, help='The name of the '
-                   'cluster.', id_part='name')
-        c.argument('certificates', nargs='+', help='Certificates')
 
     with self.argument_context('stack-hci cluster wait') as c:
         c.argument('resource_group_name', resource_group_name_type)

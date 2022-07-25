@@ -184,21 +184,6 @@ helps['stack-hci cluster create-identity'] = """
                az stack-hci cluster create-identity --name "myCluster" --resource-group "test-rg"
 """
 
-helps['stack-hci cluster upload-certificate'] = """
-    type: command
-    short-summary: "Upload certificate."
-    parameters:
-      - name: --properties
-        long-summary: |
-            Usage: --properties certificates=XX
-
-    examples:
-      - name: Upload certificate
-        text: |-
-               az stack-hci cluster upload-certificate --name "myCluster" --resource-group "test-rg" --properties \
-certificates="base64cert" certificates="base64cert"
-"""
-
 helps['stack-hci cluster wait'] = """
     type: command
     short-summary: Place the CLI in a waiting state until a condition of the stack-hci cluster is met.

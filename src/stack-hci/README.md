@@ -64,11 +64,7 @@ az stack-hci cluster update --endpoint "https://98294836-31be-4668-aeae-698667fa
 ```
 az stack-hci cluster create-identity --name "myCluster" --resource-group "test-rg"
 ```
-##### Upload-certificate #####
-```
-az stack-hci cluster upload-certificate --name "myCluster" --resource-group "test-rg" \
-    --properties certificates="base64cert" certificates="base64cert" 
-```
+
 ##### Delete #####
 ```
 az stack-hci cluster delete --name "myCluster" --resource-group "test-rg"
