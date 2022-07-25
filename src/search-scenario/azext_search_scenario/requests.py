@@ -7,17 +7,17 @@
 import json
 
 from ._clierror import ScenarioSearchError
-from .constants import MatchType, SearchType, SEARCH_SERVICE_URL
+from .constants import MatchRule, SearchScope, SEARCH_SERVICE_URL
 
 
-def get_search_result_from_api(search_keyword, search_type=SearchType.All, match_type=MatchType.All, top_num=5):
+def get_search_result_from_api(search_keyword, scope=SearchScope.All, match_rule=MatchRule.All, top_num=5):
     '''Search related e2e scenarios'''
     import requests
 
     payload = {
         "keyword": search_keyword,
-        "type": search_type,
-        "match_type": match_type,
+        "scope": scope,
+        "match_rule": match_rule,
         "top_num": top_num,
     }
 
