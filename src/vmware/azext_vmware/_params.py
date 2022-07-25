@@ -39,7 +39,7 @@ def load_arguments(self, _):
         c.argument('nsxt_password', help='NSX-T Manager password.')
         c.argument('accept_eula', help='Accept the end-user license agreement without prompting.')
         c.argument('network_block', help='A subnet at least of size /22. Make sure the CIDR format is conformed to (A.B.C.D/X) where A,B,C,D are between 0 and 255, and X is between 0 and 22.')
-        c.argument('mi_system_assigned', help='Enable a system assigned identity.')
+        c.argument('identity', help='Enable a system assigned identity.')
 
     with self.argument_context('vmware private-cloud show') as c:
         c.argument('name', options_list=['--name', '-n'], help='Name of the private cloud.')
@@ -60,7 +60,11 @@ def load_arguments(self, _):
         c.argument('secondary_zone', help='The secondary availability zone for the private cloud.')
 
     with self.argument_context('vmware private-cloud add-cmk-encryption') as c:
-        c.argument('enc_status', help='Status of customer managed encryption key. Possible values include "Enabled" and "Disabled".')
+        c.argument('enc_kv_key_name', help='The name of the encryption key vault key.')
+        c.argument('enc_kv_url', help='The URL of the encryption key vault.')
+        c.argument('enc_kv_key_version', help='The version of the encryption key vault key.')
+
+    with self.argument_context('vmware private-cloud enable-cmk-encryption') as c:
         c.argument('enc_kv_key_name', help='The name of the encryption key vault key.')
         c.argument('enc_kv_url', help='The URL of the encryption key vault.')
         c.argument('enc_kv_key_version', help='The version of the encryption key vault key.')
@@ -98,9 +102,6 @@ def load_arguments(self, _):
         c.argument('alias', help='The domain\'s NetBIOS name.')
         c.argument('domain', help='The domain\'s dns name.')
         c.argument('name', options_list=['--name', '-n'], help='The name of the identity source.')
-
-    with self.argument_context('vmware private-cloud identity') as c:
-        c.argument('system_assigned', help='Enable a system assigned identity.')
 
     with self.argument_context('vmware private-cloud update') as c:
         c.argument('name', options_list=['--name', '-n'], help='Name of the private cloud.')
