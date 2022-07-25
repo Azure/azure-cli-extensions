@@ -14,5 +14,7 @@ def load_arguments(self, _):
         c.argument('search_type', options_list=['--type'],
                    arg_type=get_enum_type(["all", "scenario", "command"], default='all'),
                    help='The scope of search: "scenario" is to search whether the title and description in E2E scenario data contain keywords, "command" is to search whether the commands in E2E scenario data contain keywords, "all" is to search all contents.')
+        c.argument('match_type', arg_type=get_enum_type(["all", "and", "or"]), default="all",
+                   help='The method of multi-keyword matching: "and" is to search scenarios that match all keywords, "or" is to search scenarios that match any keyword, "all" is similar to "or" but displays results of "all" first. ')
         c.argument('top', type=int, default=5,
                    help='Specify the number of results to return. The maximum value is limited to 20. ')

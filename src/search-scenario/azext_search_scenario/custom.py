@@ -6,16 +6,17 @@
 from azure.cli.core import telemetry
 from azure.cli.core.style import Style, print_styled_text
 
-from .constants import SearchType
+from .constants import MatchType, SearchType
 from .requests import get_search_result_from_api
 from .utils import get_int_option
 
 
-def search_scenario(cmd, search_keyword, search_type=None, top=None):
+def search_scenario(cmd, search_keyword, search_type=None, match_type=None, top=None):
 
     search_type = SearchType.get_search_type_by_name(search_type)
+    match_type = MatchType.get_match_type_by_name(match_type)
     search_keyword = " ".join(search_keyword)
-    results = get_search_result_from_api(search_keyword, search_type, top)
+    results = get_search_result_from_api(search_keyword, search_type, match_type, top)
 
     if not results:
         send_feedback(search_type, -1, search_keyword)
