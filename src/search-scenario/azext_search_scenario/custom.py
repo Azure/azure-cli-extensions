@@ -15,7 +15,7 @@ def search_scenario(cmd, search_keyword, scope=None, match_rule=None, top=None):
 
     scope = SearchScope.get_search_scope_by_name(scope)
     match_rule = MatchRule.get_match_rule_by_name(match_rule)
-    search_keyword = " ".join(search_keyword)
+    search_keyword = " ".join(map(lambda w: w.replace("-", " "), search_keyword))
     results = get_search_result_from_api(search_keyword, scope, match_rule, top)
 
     if not results:
