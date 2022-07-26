@@ -49,7 +49,7 @@ class FluidRelayScenario(ScenarioTest):
                      '--identity \"{{type:"UserAssigned",user-assigned-identities:{{{id1}}}}}\"')
 
         self.cmd('fluid-relay server list -g {rg}', checks=self.check('length(@)', 2))
-        self.cmd('fluid-relay server list --subscription 0b1f6471-1bf0-4dda-aec3-cb9272f09590')
+        self.cmd('fluid-relay server list --subscription {subscription_id}')
         self.cmd('fluid-relay server list-key -g {rg} --server-name {server_name1}',
                  checks=self.check('length(@)', 2))
         self.cmd('fluid-relay server list-key -g {rg} --server-name {server_name2}',
@@ -73,4 +73,4 @@ class FluidRelayScenario(ScenarioTest):
         self.cmd('fluid-relay server delete -n {server_name2} -g {rg} -y')
 
         self.cmd('fluid-relay server list -g {rg}', checks=self.check('length(@)', 0))
-        self.cmd('fluid-relay server list --subscription 0b1f6471-1bf0-4dda-aec3-cb9272f09590')
+        self.cmd('fluid-relay server list --subscription {subscription_id}')
