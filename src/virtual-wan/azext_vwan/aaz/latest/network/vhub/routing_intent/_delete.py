@@ -18,6 +18,9 @@ from azure.cli.core.aaz import *
 )
 class Delete(AAZCommand):
     """Delete a routing intent in the virtual hub.
+
+    :example: Delete a routing intent in the virtual hub.
+        az network vhub routing-intent delete -n MyRoutingIntent -g MyResourceGroup --vhub MyVirtualHub --yes
     """
 
     _aaz_info = {

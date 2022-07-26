@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class Create(AAZCommand):
     """Create a routing intent in the virtual hub.
+
+    :example: Create a routing intent with two routing policies.
+        az network vhub routing-intent create -n MyRoutingIntent -g MyResourceGroup --vhub MyVirtualHub --routing-policies "[{name:InternetTraffic,destinations:[Internet],next-hop:MyFirewallId},{name:PrivateTrafficPolicy,destinations:[PrivateTraffic],next-hop:MyFirewallId}]"
     """
 
     _aaz_info = {

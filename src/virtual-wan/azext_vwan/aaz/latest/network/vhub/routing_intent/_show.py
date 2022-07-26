@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class Show(AAZCommand):
     """Retrieve the details of a routing intent.
+
+    :example: Retrieve the details of a routing intent.
+        az network vhub routing-intent show -n MyRoutingIntent -g MyResourceGroup --vhub MyVirtualHub
     """
 
     _aaz_info = {

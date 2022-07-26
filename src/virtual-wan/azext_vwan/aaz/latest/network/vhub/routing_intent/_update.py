@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class Update(AAZCommand):
     """Update a routing intent in the virtual hub.
+
+    :example: Update a routing intent in the virtual hub.
+        az network vhub routing-intent create -n MyRoutingIntent -g MyResourceGroup --vhub MyVirtualHub --routing-policies "[{name:InternetTraffic,destinations:[Internet],next-hop:MyFirewallId}]"
     """
 
     _aaz_info = {
