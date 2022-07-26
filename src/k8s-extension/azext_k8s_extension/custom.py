@@ -385,7 +385,7 @@ def show_k8s_cluster_extension_type(client, resource_group_name, cluster_type, c
     cluster_rp, parent_api_version = get_cluster_rp_api_version(cluster_type)
 
     try:
-        extension_type = client.get(resource_group_name, 
+        extension_type = client.get(resource_group_name,
                                     cluster_rp, cluster_type, cluster_name, extension_type)
         return extension_type
     except HttpResponseError as ex:

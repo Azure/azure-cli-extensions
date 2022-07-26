@@ -113,5 +113,5 @@ helps[f'{consts.EXTENSION_NAME} extension-types list-versions'] = f"""
       - name: List versions for an Extension Type
         text: |-
           az {consts.EXTENSION_NAME} extension-types list-versions --location eastus2euap \
---extension_type cassandradatacenteroperator
+--extension-type cassandradatacenteroperator
 """
