@@ -29,6 +29,9 @@ class StackHciClientTest(ScenarioTest):
             self.check('tags', {'key0': 'value0'}),
             self.check('type', 'microsoft.azurestackhci/clusters')
         ])
+        self.cmd('stack-hci cluster create-identity --cluster-name {cluster_name} -g {rg}', checks=[
+            self.check('status', 'Succeeded'),
+        ])
         self.cmd('stack-hci cluster list -g {rg}', checks=[
             self.check('length(@)', 1),
             self.check('@[0].name', '{cluster_name}')
@@ -55,6 +58,7 @@ class StackHciClientTest(ScenarioTest):
             self.check('name', 'default'),
             self.check('type', 'microsoft.azurestackhci/clusters/arcsettings')
         ])
+        self.cmd('stack-hci arc-setting create-identity -n default --cluster-name {cluster_name} -g {rg}')
         self.cmd('stack-hci arc-setting list -g {rg} --cluster-name {cluster_name}', checks=[
             self.check('length(@)', 1),
             self.check('@[0].name', 'default')
@@ -63,7 +67,7 @@ class StackHciClientTest(ScenarioTest):
             self.check('name', 'default'),
             self.check('type', 'microsoft.azurestackhci/clusters/arcsettings')
         ])
-        self.cmd('stack-hci arc-setting generate-password -n default --cluster-name cst1 -g hcitest', checks=[
+        self.cmd('stack-hci arc-setting generate-password -n default --cluster-name {cluster_name} -g {rg}', checks=[
             self.exists('secretText')
         ])
         self.cmd('stack-hci arc-setting delete -n default -g {rg} --cluster-name {cluster_name} --no-wait --yes')
