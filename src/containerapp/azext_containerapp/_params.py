@@ -14,7 +14,7 @@ from azure.cli.core.commands.parameters import (resource_group_name_type, get_lo
 
 from ._validators import (validate_memory, validate_cpu, validate_managed_env_name_or_id, validate_registry_server,
                           validate_registry_user, validate_registry_pass, validate_target_port, validate_ingress)
-from ._constants import UNAUTHENTICATED_CLIENT_ACTION, FORWARD_PROXY_CONVENTION
+from ._constants import UNAUTHENTICATED_CLIENT_ACTION, FORWARD_PROXY_CONVENTION, MAXIMUM_CONTAINER_APP_NAME_LENGTH
 
 
 def load_arguments(self, _):
@@ -23,7 +23,7 @@ def load_arguments(self, _):
 
     with self.argument_context('containerapp') as c:
         # Base arguments
-        c.argument('name', name_type, metavar='NAME', id_part='name', help="The name of the Containerapp.")
+        c.argument('name', name_type, metavar='NAME', id_part='name', help=f"The name of the Containerapp. A name must consist of lower case alphanumeric characters or '-', start with a letter, end with an alphanumeric character, cannot have '--', and must be less than {MAXIMUM_CONTAINER_APP_NAME_LENGTH} characters.")
         c.argument('resource_group_name', arg_type=resource_group_name_type)
         c.argument('location', arg_type=get_location_type(self.cli_ctx))
         c.ignore('disable_warnings')
