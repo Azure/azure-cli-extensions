@@ -52,14 +52,11 @@ class Create(AAZCommand):
             required=True,
             id_part="child_name_1",
         )
-        _args_schema.vhub = AAZResourceIdArg(
+        _args_schema.vhub = AAZStrArg(
             options=["--vhub"],
             help="Name of the virtual hub.",
             required=True,
             id_part="name",
-            fmt=AAZResourceIdArgFormat(
-                template="/subscriptions/{subscription}/resourceGroups/{resource_group}/providers/Microsoft.Network/virtualHubs/{}",
-            ),
         )
 
         # define Arg Group "Properties"
