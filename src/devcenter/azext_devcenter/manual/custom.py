@@ -218,9 +218,9 @@ def devcenter_dev_box_show(cmd, dev_center,
 
 def devcenter_dev_box_create(cmd, dev_center,
                              project_name,
-                             user_id,
                              dev_box_name,
                              pool_name,
+                             user_id="me",
                              no_wait=False):
     cf_fidalgo =  cf_devcenter_dataplane(cmd.cli_ctx, dev_center)
     body = {}
