@@ -14,17 +14,23 @@ from azext_k8s_extension.custom import is_dogfood_cluster
 class TestIsDogfoodCluster(unittest.TestCase):
     def test_dogfood_cluster(self):
         cmd = MockCommand()
-        cmd.cli_ctx.cloud.endpoints.resource_manager = "https://api-dogfood.resources.windows-int.net"
+        cmd.cli_ctx.cloud.endpoints.resource_manager = (
+            "https://api-dogfood.resources.windows-int.net"
+        )
         assert is_dogfood_cluster(cmd)
 
     def test_dogfood_cluster_with_slash(self):
         cmd = MockCommand()
-        cmd.cli_ctx.cloud.endpoints.resource_manager = "https://api-dogfood.resources.windows-int.net/"
+        cmd.cli_ctx.cloud.endpoints.resource_manager = (
+            "https://api-dogfood.resources.windows-int.net/"
+        )
         assert is_dogfood_cluster(cmd)
 
     def test_longer_hostname(self):
         cmd = MockCommand()
-        cmd.cli_ctx.cloud.endpoints.resource_manager = "https://api-dogfood.resources.windows-int.otherwebsite.net/"
+        cmd.cli_ctx.cloud.endpoints.resource_manager = (
+            "https://api-dogfood.resources.windows-int.otherwebsite.net/"
+        )
         assert not is_dogfood_cluster(cmd)
 
     def malformed_url(self):

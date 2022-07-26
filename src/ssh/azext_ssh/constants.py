@@ -17,3 +17,4 @@ RECOMMENDATION_SSH_CLIENT_NOT_FOUND = (Fore.YELLOW + "Ensure OpenSSH is installe
                                        "--ssh-client-folder to provide OpenSSH folder path." + Style.RESET_ALL)
 RECOMMENDATION_RESOURCE_NOT_FOUND = (Fore.YELLOW + "Please ensure the active subscription is set properly "
                                      "and resource exists." + Style.RESET_ALL)
+RDP_TERMINATE_SSH_WAIT_TIME_IN_SECONDS = 30

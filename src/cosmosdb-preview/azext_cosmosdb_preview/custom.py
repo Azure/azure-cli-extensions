@@ -25,7 +25,13 @@ from azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.models import (
     ContinuousModeBackupPolicy,
     ContinuousModeProperties,
     DatabaseAccountCreateUpdateParameters,
-    MergeParameters
+    MergeParameters,
+    RetrieveThroughputParameters,
+    RetrieveThroughputPropertiesResource,
+    PhysicalPartitionId,
+    RedistributeThroughputParameters,
+    RedistributeThroughputPropertiesResource,
+    ThroughputPolicyType
 )
 
 from azext_cosmosdb_preview._client_factory import (
@@ -1196,3 +1202,175 @@ def cli_begin_list_mongo_db_collection_partition_merge(client,
                                                                                          merge_parameters=mergeParameters)
 
     return async_partition_merge_result.result()
+
+
+# pylint: disable=dangerous-default-value
+def cli_begin_retrieve_sql_container_partition_throughput(client,
+                                                          resource_group_name,
+                                                          account_name,
+                                                          database_name,
+                                                          container_name,
+                                                          physical_partition_ids=[],
+                                                          all_partitions=False):
+
+    try:
+        client.get_sql_container(
+            resource_group_name, account_name, database_name, container_name)
+    except Exception as ex:
+        if ex.error.code == "NotFound":
+            raise CLIError("(NotFound) Container with name '{}' in database '{} could not be found.".format(container_name, database_name))
+
+    if len(physical_partition_ids) == 0 and all_partitions is False:
+        raise CLIError(
+            'Either of --physical-partition-ids/--all-partitions needs to be specified.')
+
+    if len(physical_partition_ids) > 0 and all_partitions:
+        raise CLIError(
+            'Both --physical-partition-ids and --all-partitions cannot be specified together.')
+
+    if all_partitions is True:
+        physical_partition_ids = [PhysicalPartitionId(id='-1')]
+
+    retrieve_throughput_properties_resource = RetrieveThroughputPropertiesResource(
+        physical_partition_ids=physical_partition_ids
+    )
+
+    retrieve_throughput_parameters = RetrieveThroughputParameters(
+        resource=retrieve_throughput_properties_resource
+    )
+
+    async_partition_retrieve_throughput_result = client.begin_sql_container_retrieve_throughput_distribution(resource_group_name=resource_group_name,
+                                                                                                             account_name=account_name,
+                                                                                                             database_name=database_name,
+                                                                                                             container_name=container_name,
+                                                                                                             retrieve_throughput_parameters=retrieve_throughput_parameters)
+
+    return async_partition_retrieve_throughput_result.result()
+
+
+# pylint: disable=dangerous-default-value
+def cli_begin_redistribute_sql_container_partition_throughput(client,
+                                                              resource_group_name,
+                                                              account_name,
+                                                              database_name,
+                                                              container_name,
+                                                              evenly_distribute=False,
+                                                              target_partition_info=[],
+                                                              source_partition_info=[]):
+
+    try:
+        client.get_sql_container(
+            resource_group_name, account_name, database_name, container_name)
+    except Exception as ex:
+        if ex.error.code == "NotFound":
+            raise CLIError("(NotFound) Container with name '{}' in database '{} could not be found.".format(container_name, database_name))
+
+    if evenly_distribute:
+        redistribute_throughput_properties_resource = RedistributeThroughputPropertiesResource(
+            throughput_policy=ThroughputPolicyType.EQUAL,
+            target_physical_partition_throughput_info=[],
+            source_physical_partition_throughput_info=[])
+    else:
+        redistribute_throughput_properties_resource = RedistributeThroughputPropertiesResource(
+            throughput_policy=ThroughputPolicyType.CUSTOM,
+            target_physical_partition_throughput_info=target_partition_info,
+            source_physical_partition_throughput_info=source_partition_info
+        )
+
+    redistribute_throughput_parameters = RedistributeThroughputParameters(
+        resource=redistribute_throughput_properties_resource
+    )
+
+    async_partition_redistribute_throughput_result = client.begin_sql_container_redistribute_throughput(resource_group_name=resource_group_name,
+                                                                                                        account_name=account_name,
+                                                                                                        database_name=database_name,
+                                                                                                        container_name=container_name,
+                                                                                                        redistribute_throughput_parameters=redistribute_throughput_parameters)
+
+    return async_partition_redistribute_throughput_result.result()
+
+
+# pylint: disable=dangerous-default-value
+def cli_begin_retrieve_mongo_container_partition_throughput(client,
+                                                            resource_group_name,
+                                                            account_name,
+                                                            database_name,
+                                                            collection_name,
+                                                            physical_partition_ids=[],
+                                                            all_partitions=False):
+
+    try:
+        client.get_mongo_db_collection(
+            resource_group_name, account_name, database_name, collection_name)
+    except Exception as ex:
+        if ex.error.code == "NotFound":
+            raise CLIError("(NotFound) Container with name '{}' in database '{} could not be found.".format(collection_name, database_name))
+
+    if len(physical_partition_ids) == 0 and all_partitions is False:
+        raise CLIError(
+            'Either of --physical-partition-ids/--all-partitions needs to be specified.')
+
+    if len(physical_partition_ids) > 0 and all_partitions:
+        raise CLIError(
+            'Both --physical-partition-ids and --all-partitions cannot be specified together.')
+
+    if all_partitions is True:
+        physical_partition_ids = [PhysicalPartitionId(id='-1')]
+
+    retrieve_throughput_properties_resource = RetrieveThroughputPropertiesResource(
+        physical_partition_ids=physical_partition_ids
+    )
+
+    retrieve_throughput_parameters = RetrieveThroughputParameters(
+        resource=retrieve_throughput_properties_resource
+    )
+
+    async_partition_retrieve_throughput_result = client.begin_mongo_db_container_retrieve_throughput_distribution(resource_group_name=resource_group_name,
+                                                                                                                  account_name=account_name,
+                                                                                                                  database_name=database_name,
+                                                                                                                  collection_name=collection_name,
+                                                                                                                  retrieve_throughput_parameters=retrieve_throughput_parameters)
+
+    return async_partition_retrieve_throughput_result.result()
+
+
+# pylint: disable=dangerous-default-value
+def cli_begin_redistribute_mongo_container_partition_throughput(client,
+                                                                resource_group_name,
+                                                                account_name,
+                                                                database_name,
+                                                                collection_name,
+                                                                evenly_distribute=False,
+                                                                target_partition_info=[],
+                                                                source_partition_info=[]):
+
+    try:
+        client.get_mongo_db_collection(
+            resource_group_name, account_name, database_name, collection_name)
+    except Exception as ex:
+        if ex.error.code == "NotFound":
+            raise CLIError("(NotFound) Container with name '{}' in database '{} could not be found.".format(collection_name, database_name))
+
+    if evenly_distribute:
+        redistribute_throughput_properties_resource = RedistributeThroughputPropertiesResource(
+            throughput_policy=ThroughputPolicyType.EQUAL,
+            target_physical_partition_throughput_info=[],
+            source_physical_partition_throughput_info=[])
+    else:
+        redistribute_throughput_properties_resource = RedistributeThroughputPropertiesResource(
+            throughput_policy=ThroughputPolicyType.CUSTOM,
+            target_physical_partition_throughput_info=target_partition_info,
+            source_physical_partition_throughput_info=source_partition_info
+        )
+
+    redistribute_throughput_parameters = RedistributeThroughputParameters(
+        resource=redistribute_throughput_properties_resource
+    )
+
+    async_partition_redistribute_throughput_result = client.begin_mongo_db_container_redistribute_throughput(resource_group_name=resource_group_name,
+                                                                                                             account_name=account_name,
+                                                                                                             database_name=database_name,
+                                                                                                             collection_name=collection_name,
+                                                                                                             redistribute_throughput_parameters=redistribute_throughput_parameters)
+
+    return async_partition_redistribute_throughput_result.result()

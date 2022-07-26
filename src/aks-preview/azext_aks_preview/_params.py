@@ -39,6 +39,7 @@ from azext_aks_preview._consts import (
     CONST_NETWORK_PLUGIN_AZURE,
     CONST_NETWORK_PLUGIN_KUBENET,
     CONST_NETWORK_PLUGIN_NONE,
+    CONST_NETWORK_PLUGIN_MODE_OVERLAY,
     CONST_NODE_IMAGE_UPGRADE_CHANNEL,
     CONST_NODEPOOL_MODE_SYSTEM,
     CONST_NODEPOOL_MODE_USER,
@@ -139,6 +140,7 @@ gpu_instance_profiles = [
 # consts for ManagedCluster
 load_balancer_skus = [CONST_LOAD_BALANCER_SKU_BASIC, CONST_LOAD_BALANCER_SKU_STANDARD]
 network_plugins = [CONST_NETWORK_PLUGIN_KUBENET, CONST_NETWORK_PLUGIN_AZURE, CONST_NETWORK_PLUGIN_NONE]
+network_plugin_modes = [CONST_NETWORK_PLUGIN_MODE_OVERLAY]
 disk_driver_versions = [CONST_DISK_DRIVER_V1, CONST_DISK_DRIVER_V2]
 outbound_types = [
     CONST_OUTBOUND_TYPE_LOAD_BALANCER,
@@ -204,6 +206,7 @@ def load_arguments(self, _):
         c.argument('nat_gateway_idle_timeout', type=int, validator=validate_nat_gateway_idle_timeout)
         c.argument('outbound_type', arg_type=get_enum_type(outbound_types))
         c.argument('network_plugin', arg_type=get_enum_type(network_plugins))
+        c.argument('network_plugin_mode', arg_type=get_enum_type(network_plugin_modes))
         c.argument('network_policy')
         c.argument('auto_upgrade_channel', arg_type=get_enum_type(auto_upgrade_channels))
         c.argument('cluster_autoscaler_profile', nargs='+', options_list=["--cluster-autoscaler-profile", "--ca-profile"],
@@ -303,6 +306,7 @@ def load_arguments(self, _):
         c.argument('disk_driver_version', arg_type=get_enum_type(disk_driver_versions))
         c.argument('disable_disk_driver', action='store_true')
         c.argument('disable_file_driver', action='store_true')
+        c.argument('enable_blob_driver', action='store_true')
         c.argument('disable_snapshot_controller', action='store_true')
         c.argument('enable_apiserver_vnet_integration', action='store_true', is_preview=True)
         c.argument('apiserver_subnet_id', validator=validate_apiserver_subnet_id, is_preview=True)
@@ -385,6 +389,7 @@ def load_arguments(self, _):
         c.argument('enable_workload_identity', arg_type=get_three_state_flag())
         c.argument('enable_oidc_issuer', action='store_true', is_preview=True)
         c.argument('enable_azure_keyvault_kms', action='store_true', is_preview=True)
+        c.argument('disable_azure_keyvault_kms', action='store_true', is_preview=True)
         c.argument('azure_keyvault_kms_key_id', validator=validate_azure_keyvault_kms_key_id, is_preview=True)
         c.argument('azure_keyvault_kms_key_vault_network_access', arg_type=get_enum_type(keyvault_network_access_types), is_preview=True)
         c.argument('azure_keyvault_kms_key_vault_resource_id', validator=validate_azure_keyvault_kms_key_vault_resource_id, is_preview=True)
@@ -393,6 +398,8 @@ def load_arguments(self, _):
         c.argument('disable_disk_driver', action='store_true')
         c.argument('enable_file_driver', action='store_true')
         c.argument('disable_file_driver', action='store_true')
+        c.argument('enable_blob_driver', action='store_true')
+        c.argument('disable_blob_driver', action='store_true')
         c.argument('enable_snapshot_controller', action='store_true')
         c.argument('disable_snapshot_controller', action='store_true')
         c.argument('enable_apiserver_vnet_integration', action='store_true', is_preview=True)
