@@ -17,6 +17,7 @@ Pending
 
 * Move Azure KeyVault KMS to GA.
 * Support disabling Azure KeyVault KMS.
+* Update to use 2022-06-02-preview api version.
 
 0.5.91
 ++++++
