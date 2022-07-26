@@ -766,6 +766,7 @@ def aks_update(
     enable_workload_identity=None,
     enable_oidc_issuer=False,
     enable_azure_keyvault_kms=False,
+    disable_azure_keyvault_kms=False,
     azure_keyvault_kms_key_id=None,
     azure_keyvault_kms_key_vault_network_access=None,
     azure_keyvault_kms_key_vault_resource_id=None,

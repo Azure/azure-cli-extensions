@@ -18,8 +18,8 @@ az extension add --name providerhub
 
 ```
 az providerhub custom-rollout create \
---provider-namespace "Microsoft.Contoso" --rollout-name "canaryTesting99" \
---canary regions="EastUS2EUAP" regions="centraluseuap"
+--provider-namespace "Microsoft.DevicePoC" --rollout-name "canaryTesting01" \
+--canary regions="centralus" regions="northeurope" regions="westeurope"
 ```
 
 ##### Show

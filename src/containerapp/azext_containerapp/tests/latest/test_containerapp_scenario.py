@@ -264,7 +264,7 @@ class ContainerappScenarioTest(ScenarioTest):
     # TODO rename
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="northeurope")
-    def test_containerapp_update(self, resource_group):
+    def test_containerapp_update_containers(self, resource_group):
         env_name = self.create_random_name(prefix='containerapp-e2e-env', length=24)
         logs_workspace_name = self.create_random_name(prefix='containerapp-env', length=24)
 
