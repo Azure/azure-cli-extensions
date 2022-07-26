@@ -16,6 +16,10 @@ from azure.cli.core.aaz import *
 )
 class List(AAZCommand):
     """List all Fluid Relay servers.
+
+    :example: FluidRelayServer_List
+        az fluid-relay server list  --subscription 00000000-0000-0000-0000-000000000000
+        az fluid-relay server list  -g MyResourceGroup
     """
 
     _aaz_info = {
@@ -45,11 +49,16 @@ class List(AAZCommand):
             options=["-g", "--resource-group"],
             help="The resource group containing the resource.",
         )
+        _args_schema.subscription = AAZSubscriptionIdArg(
+            options=["-s", "--subscription"],
+            help="Name or ID of subscription.",
+            required=True,
+        )
         return cls._args_schema
 
     def _execute_operations(self):
-        condition_0 = has_value(self.ctx.args.resource_group) and has_value(self.ctx.subscription_id)
-        condition_1 = has_value(self.ctx.subscription_id) and has_value(self.ctx.args.resource_group) is not True
+        condition_0 = has_value(self.ctx.args.resource_group) and has_value(self.ctx.args.subscription)
+        condition_1 = has_value(self.ctx.args.subscription) and has_value(self.ctx.args.resource_group) is not True
         if condition_0:
             self.FluidRelayServersListByResourceGroup(ctx=self.ctx)()
         if condition_1:
@@ -94,7 +103,7 @@ class List(AAZCommand):
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "subscriptionId", self.ctx.subscription_id,
+                    "subscriptionId", self.ctx.args.subscription,
                     required=True,
                 ),
             }
@@ -323,7 +332,7 @@ class List(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "subscriptionId", self.ctx.subscription_id,
+                    "subscriptionId", self.ctx.args.subscription,
                     required=True,
                 ),
             }

@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class ListKey(AAZCommand):
     """Get primary and secondary key for this server.
+
+    :example: FluidRelayServer_List-key
+        az fluid-relay server list-key -g MyResourceGroup --server-name MyServerName
     """
 
     _aaz_info = {
@@ -42,7 +45,7 @@ class ListKey(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.server_name = AAZStrArg(
-            options=["--server-name"],
+            options=["-n", "--server-name"],
             help="The Fluid Relay server resource name.",
             required=True,
         )

@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class List(AAZCommand):
     """List all Fluid Relay containers which are children of a given Fluid Relay server.
+
+    :example: FluidRelayContainer_List
+        az fluid-relay container list -g MyResourceGroup --server-name MyServerName
     """
 
     _aaz_info = {

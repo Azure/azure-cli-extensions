@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class RegenerateKey(AAZCommand):
     """Regenerate the primary or secondary key for this server.
+
+    :example: FluidRelayServer_Regenerate-key
+        az fluid-relay server regenerate-key -g MyResourceGroup --server-name MyServerName --key-name key1
     """
 
     _aaz_info = {
@@ -42,7 +45,7 @@ class RegenerateKey(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.server_name = AAZStrArg(
-            options=["--server-name"],
+            options=["-n", "--server-name"],
             help="The Fluid Relay server resource name.",
             required=True,
         )

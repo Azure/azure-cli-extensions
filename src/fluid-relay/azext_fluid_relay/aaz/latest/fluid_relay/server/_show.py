@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Show(AAZCommand):
     """Get a Fluid Relay server.
+
+    :example: FluidRelayServer_Show
+        az fluid-relay server show -g MyResourceGroup -n MyFluidRelay
     """
 
     _aaz_info = {

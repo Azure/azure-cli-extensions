@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class Delete(AAZCommand):
     """Delete a Fluid Relay server.
+
+    :example: FluidRelayServer_Delete
+        az fluid-relay server delete -n testFluidRelay -g MyResourceGroup -y
     """
 
     _aaz_info = {

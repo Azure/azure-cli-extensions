@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Update(AAZCommand):
     """Update a Fluid Relay server.
+
+    :example: FluidRelayServer_Update
+        az fluid-relay server update -n MyFluidRelay -l westus2 -g MyResourceGroup --tags category=sale
     """
 
     _aaz_info = {

@@ -16,6 +16,10 @@ from azure.cli.core.aaz import *
 )
 class Create(AAZCommand):
     """Create a Fluid Relay server.
+
+    :example: FluidRelayServer_Create
+        az fluid-relay server create -n TestFluidRelay -l westus2 -g MyResourceGroup --sku standard --tags category=sales --identity type="SystemAssigned"
+        az fluid-relay server create -n TestFluidRelay -l westus2 -g MyResourceGroup --sku standard --tags category=sales --identity type="SystemAssigned, UserAssigned" user-assigned-identities={"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MyResourceGroup/providers/Microsoft.ManagedIdentity/userAssignedIdentities/id1","/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MyResourceGroup/providers/Microsoft.ManagedIdentity/userAssignedIdentities/id2"}
     """
 
     _aaz_info = {
