@@ -35,7 +35,7 @@ def load_command_table(self, _):
         g.custom_command('rotate-vcenter-password', 'privatecloud_rotate_vcenter_password')
         g.custom_command('rotate-nsxt-password', 'privatecloud_rotate_nsxt_password')
 
-    with self.command_group('vmware private-cloud identity', vmware_sdk, client_factory=cf_vmware) as g:
+    with self.command_group('vmware private-cloud identity', vmware_sdk, client_factory=cf_vmware, deprecate_info=self.deprecate(redirect='az vmware private cloud update', hide=True)) as g:
         g.custom_command('assign', 'privatecloud_identity_assign')
         g.custom_command('remove', 'privatecloud_identity_remove')
         g.custom_show_command('show', 'privatecloud_identity_get')
