@@ -63,7 +63,7 @@ def _show_search_item(results):
             print_styled_text(_style_highlight(highlight_desc))
             continue
 
-        highlight_command = next(iter(result.get('highlights', {}).get('commandSet/command', [])), None)
+        highlight_command = max(result.get('highlights', {}).get('commandSet/command', []), key=lambda cmd: len(cmd.split("<em>")), default=None)
         if highlight_command:
             include_command_style = [(Style.SECONDARY, "Include command: ")]
             include_command_style.extend(_style_highlight(highlight_command))
