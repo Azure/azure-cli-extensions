@@ -8,14 +8,7 @@ def network_client_factory(cli_ctx, aux_subscriptions=None, **_):
     from azure.cli.core.commands.client_factory import get_mgmt_service_client
     from .profiles import CUSTOM_VWAN
     return get_mgmt_service_client(cli_ctx, CUSTOM_VWAN, aux_subscriptions=aux_subscriptions,
-                                   api_version='2020-05-01')
-
-
-def network_client_factory_2021_03_01(cli_ctx, aux_subscriptions=None, **_):
-    from azure.cli.core.commands.client_factory import get_mgmt_service_client
-    from .profiles import CUSTOM_VWAN_2021_03_01
-    return get_mgmt_service_client(cli_ctx, CUSTOM_VWAN_2021_03_01, aux_subscriptions=aux_subscriptions,
-                                   api_version='2021-03-01')
+                                   api_version='2021-08-01')
 
 
 def cf_virtual_wans(cli_ctx, _):
@@ -31,11 +24,11 @@ def cf_virtual_hub_connection(cli_ctx, _):
 
 
 def cf_virtual_hub_bgpconnection(cli_ctx, _):
-    return network_client_factory_2021_03_01(cli_ctx).virtual_hub_bgp_connection
+    return network_client_factory(cli_ctx).virtual_hub_bgp_connection
 
 
 def cf_virtual_hub_bgpconnections(cli_ctx, _):
-    return network_client_factory_2021_03_01(cli_ctx).virtual_hub_bgp_connections
+    return network_client_factory(cli_ctx).virtual_hub_bgp_connections
 
 
 def cf_virtual_hub_route_table_v2s(cli_ctx, _):

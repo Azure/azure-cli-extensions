@@ -92,7 +92,7 @@ class ContainerInsights(DefaultExtension):
                 if (isinstance(useAADAuthSetting, str) and str(useAADAuthSetting).lower() == "true") or (isinstance(useAADAuthSetting, bool) and useAADAuthSetting):
                     useAADAuth = True
         if useAADAuth:
-            association_url = cmd.cli_ctx.cloud.endpoints.resource_manager + f"{cluster_resource_id}/providers/Microsoft.Insights/dataCollectionRuleAssociations/ContainerInsightsExtension?api-version=2019-11-01-preview"
+            association_url = cmd.cli_ctx.cloud.endpoints.resource_manager + f"{cluster_resource_id}/providers/Microsoft.Insights/dataCollectionRuleAssociations/ContainerInsightsExtension?api-version=2021-04-01"
             for _ in range(3):
                 try:
                     send_raw_request(cmd.cli_ctx, "GET", association_url,)
@@ -106,7 +106,7 @@ class ContainerInsights(DefaultExtension):
                     pass  # its OK to ignore the exception since MSI auth in preview
 
         if isDCRAExists:
-            association_url = cmd.cli_ctx.cloud.endpoints.resource_manager + f"{cluster_resource_id}/providers/Microsoft.Insights/dataCollectionRuleAssociations/ContainerInsightsExtension?api-version=2019-11-01-preview"
+            association_url = cmd.cli_ctx.cloud.endpoints.resource_manager + f"{cluster_resource_id}/providers/Microsoft.Insights/dataCollectionRuleAssociations/ContainerInsightsExtension?api-version=2021-04-01"
             for _ in range(3):
                 try:
                     send_raw_request(cmd.cli_ctx, "DELETE", association_url,)
@@ -612,7 +612,7 @@ def _ensure_container_insights_dcr_for_monitoring(cmd, subscription_id, cluster_
             if (cluster_region not in region_ids):
                 raise ClientRequestError(f"Data Collection Rule Associations are not supported for cluster region {cluster_region}")
 
-    dcr_url = cmd.cli_ctx.cloud.endpoints.resource_manager + f"{dcr_resource_id}?api-version=2019-11-01-preview"
+    dcr_url = cmd.cli_ctx.cloud.endpoints.resource_manager + f"{dcr_resource_id}?api-version=2021-04-01"
     # get existing tags on the container insights extension DCR if the customer added any
     existing_tags = get_existing_container_insights_extension_dcr_tags(cmd, dcr_url)
 
@@ -627,18 +627,7 @@ def _ensure_container_insights_dcr_for_monitoring(cmd, subscription_id, cluster_
                         {
                             "name": "ContainerInsightsExtension",
                             "streams": [
-                                "Microsoft-Perf",
-                                "Microsoft-ContainerInventory",
-                                "Microsoft-ContainerLog",
-                                "Microsoft-ContainerLogV2",
-                                "Microsoft-ContainerNodeInventory",
-                                "Microsoft-KubeEvents",
-                                "Microsoft-KubeMonAgentEvents",
-                                "Microsoft-KubeNodeInventory",
-                                "Microsoft-KubePodInventory",
-                                "Microsoft-KubePVInventory",
-                                "Microsoft-KubeServices",
-                                "Microsoft-InsightsMetrics",
+                                "Microsoft-ContainerInsights-Group-Default"
                             ],
                             "extensionName": "ContainerInsights",
                         }
@@ -647,18 +636,8 @@ def _ensure_container_insights_dcr_for_monitoring(cmd, subscription_id, cluster_
                 "dataFlows": [
                     {
                         "streams": [
-                            "Microsoft-Perf",
-                            "Microsoft-ContainerInventory",
-                            "Microsoft-ContainerLog",
-                            "Microsoft-ContainerLogV2",
-                            "Microsoft-ContainerNodeInventory",
-                            "Microsoft-KubeEvents",
-                            "Microsoft-KubeMonAgentEvents",
-                            "Microsoft-KubeNodeInventory",
-                            "Microsoft-KubePodInventory",
-                            "Microsoft-KubePVInventory",
-                            "Microsoft-KubeServices",
-                            "Microsoft-InsightsMetrics",
+                            "Microsoft-ContainerInsights-Group-Default"
+
                         ],
                         "destinations": ["la-workspace"],
                     }
@@ -694,7 +673,7 @@ def _ensure_container_insights_dcr_for_monitoring(cmd, subscription_id, cluster_
             },
         }
     )
-    association_url = cmd.cli_ctx.cloud.endpoints.resource_manager + f"{cluster_resource_id}/providers/Microsoft.Insights/dataCollectionRuleAssociations/ContainerInsightsExtension?api-version=2019-11-01-preview"
+    association_url = cmd.cli_ctx.cloud.endpoints.resource_manager + f"{cluster_resource_id}/providers/Microsoft.Insights/dataCollectionRuleAssociations/ContainerInsightsExtension?api-version=2021-04-01"
     for _ in range(3):
         try:
             send_raw_request(cmd.cli_ctx, "PUT", association_url, body=association_body,)

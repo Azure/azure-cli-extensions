@@ -12,10 +12,10 @@ from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 
-class AgsScenarioTest(ScenarioTest):
+class AmgScenarioTest(ScenarioTest):
 
     @ResourceGroupPreparer(name_prefix='cli_test_amg')
-    def test_amg_e2e(self, resource_group):
+    def test_amg_base(self, resource_group):
 
         self.kwargs.update({
             'name': 'clitestamg',

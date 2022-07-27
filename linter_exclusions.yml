@@ -188,6 +188,9 @@ aks update:
     enable_pod_identity_with_kubenet:
       rule_exclusions:
       - option_length_too_long
+    assign_kubelet_identity:
+      rule_exclusions:
+      - option_length_too_long
 arcdata dc create:
   parameters:
     logs_ui_private_key_file:
@@ -202,9 +205,39 @@ arcdata dc create:
     metrics_ui_public_key_file:
       rule_exclusions:
       - option_length_too_long
+arcdata ad-connector create:
+  parameters:
+    domain_service_account_secret:
+      rule_exclusions:
+      - option_length_too_long
+    secondary_domain_controllers:
+      rule_exclusions:
+      - option_length_too_long
+arcdata ad-connector update:
+  parameters:
+    domain_service_account_secret:
+      rule_exclusions:
+      - option_length_too_long
+    secondary_domain_controllers:
+      rule_exclusions:
+      - option_length_too_long
 sql mi-arc update:
   parameters:
     preferred_primary_replica:
+      rule_exclusions:
+      - option_length_too_long
+    sync_secondary_to_commit:
+      rule_exclusions:
+      - option_length_too_long
+sql mi-arc create:
+  parameters:
+    sync_secondary_to_commit:
+      rule_exclusions:
+      - option_length_too_long
+    storage_class_orchestrator_logs:
+      rule_exclusions:
+      - option_length_too_long
+    volume_size_orchestrator_logs:
       rule_exclusions:
       - option_length_too_long
 attestation policy set:
@@ -463,6 +496,26 @@ datafactory pipeline create-run:
     reference_pipeline_run_id:
       rule_exclusions:
       - option_length_too_long
+dataprotection backup-instance restore initialize-for-data-recovery-as-files:
+  parameters:
+    target_blob_container_url:
+      rule_exclusions:
+      - option_length_too_long
+dataprotection backup-vault create:
+  parameters:
+    alerts_for_all_job_failures:
+      rule_exclusions:
+      - option_length_too_long
+dataprotection backup-vault update:
+  parameters:
+    alerts_for_all_job_failures:
+      rule_exclusions:
+      - option_length_too_long
+dataprotection resource-guard update:
+  parameters:
+    critical_operation_exclusion_list:
+      rule_exclusions:
+      - option_length_too_long
 datashare consumer dataset-mapping create:
   parameters:
     share_subscription_name:
@@ -641,6 +694,17 @@ dms project task create:
     target_connection_json:
       rule_exclusions:
       - option_length_too_long
+dt data-history connection create:
+  rule_exclusions:
+  - require_wait_command_if_no_wait
+dt data-history connection create adx:
+  parameters:
+    adx_resource_group:
+      rule_exclusions:
+      - parameter_should_not_end_in_resource_group
+    eh_resource_group:
+      rule_exclusions:
+      - parameter_should_not_end_in_resource_group
 dt endpoint create servicebus:
   parameters:
     servicebus_resource_group:
@@ -1038,7 +1102,31 @@ iot central export update:
     central_dns_suffix:
       rule_exclusions:
       - no_parameter_defaults_for_update_commands
+iot central device attestation update:
+  parameters:
+    api_version:
+      rule_exclusions:
+      - no_parameter_defaults_for_update_commands
+    central_dns_suffix:
+      rule_exclusions:
+      - no_parameter_defaults_for_update_commands
+iot central device twin update:
+  parameters:
+    api_version:
+      rule_exclusions:
+      - no_parameter_defaults_for_update_commands
+    central_dns_suffix:
+      rule_exclusions:
+      - no_parameter_defaults_for_update_commands
 iot central device update:
+  parameters:
+    api_version:
+      rule_exclusions:
+      - no_parameter_defaults_for_update_commands
+    central_dns_suffix:
+      rule_exclusions:
+      - no_parameter_defaults_for_update_commands
+iot central device-group update:
   parameters:
     api_version:
       rule_exclusions:

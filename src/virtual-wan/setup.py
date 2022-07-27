@@ -5,10 +5,9 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-from codecs import open
 from setuptools import setup, find_packages
 
-VERSION = "0.2.11"
+VERSION = "0.2.12"
 
 CLASSIFIERS = [
     'Development Status :: 4 - Beta',

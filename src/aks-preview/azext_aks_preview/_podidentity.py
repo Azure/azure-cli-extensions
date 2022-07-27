@@ -8,10 +8,12 @@ from types import SimpleNamespace
 from knack.log import get_logger
 from knack.util import CLIError
 
-from ._client_factory import get_auth_management_client
-from ._consts import (CONST_MANAGED_IDENTITY_OPERATOR_ROLE,
-                      CONST_MANAGED_IDENTITY_OPERATOR_ROLE_ID)
-from ._roleassignments import add_role_assignment
+from azext_aks_preview._client_factory import get_auth_management_client
+from azext_aks_preview._consts import (
+    CONST_MANAGED_IDENTITY_OPERATOR_ROLE,
+    CONST_MANAGED_IDENTITY_OPERATOR_ROLE_ID,
+)
+from azext_aks_preview._roleassignments import add_role_assignment
 
 logger = get_logger(__name__)
 

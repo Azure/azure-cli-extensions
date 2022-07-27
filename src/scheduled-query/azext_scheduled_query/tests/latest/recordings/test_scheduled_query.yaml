@@ -13,12 +13,12 @@ interactions:
       ParameterSetName:
       - -n -g --image --nsg-rule --workspace --generate-ssh-keys
       User-Agent:
-      - AZURECLI/2.32.0 azsdk-python-azure-mgmt-resource/20.0.0 Python/3.8.1 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.38.0 azsdk-python-azure-mgmt-resource/21.1.0b1 Python/3.10.4 (Windows-10-10.0.22622-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_scheduled_query000001?api-version=2021-04-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001","name":"cli_test_scheduled_query000001","type":"Microsoft.Resources/resourceGroups","location":"eastus","tags":{"product":"azurecli","cause":"automation","date":"2022-01-28T04:19:04Z"},"properties":{"provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001","name":"cli_test_scheduled_query000001","type":"Microsoft.Resources/resourceGroups","location":"eastus","tags":{"product":"azurecli","cause":"automation","date":"2022-07-18T08:40:13Z"},"properties":{"provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
@@ -27,7 +27,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 28 Jan 2022 04:21:09 GMT
+      - Mon, 18 Jul 2022 08:40:19 GMT
       expires:
       - '-1'
       pragma:
@@ -53,44 +53,61 @@ interactions:
       User-Agent:
       - python-requests/2.26.0
     method: GET
-    uri: https://raw.githubusercontent.com/Azure/azure-rest-api-specs/master/arm-compute/quickstart-templates/aliases.json
+    uri: https://raw.githubusercontent.com/Azure/azure-rest-api-specs/main/arm-compute/quickstart-templates/aliases.json
   response:
     body:
-      string: "{\n  \"$schema\": \"http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json\",\n
-        \ \"contentVersion\": \"1.0.0.0\",\n  \"parameters\": {},\n  \"variables\":
-        {},\n  \"resources\": [],\n  \"outputs\": {\n    \"aliases\": {\n      \"type\":
-        \"object\",\n      \"value\": {\n        \"Linux\": {\n          \"CentOS\":
-        {\n            \"publisher\": \"OpenLogic\",\n            \"offer\": \"CentOS\",\n
-        \           \"sku\": \"7.5\",\n            \"version\": \"latest\"\n          },\n
-        \         \"Debian\": {\n            \"publisher\": \"Debian\",\n            \"offer\":
-        \"debian-10\",\n            \"sku\": \"10\",\n            \"version\": \"latest\"\n
-        \         },\n          \"Flatcar\": {\n            \"publisher\": \"kinvolk\",\n
-        \           \"offer\": \"flatcar-container-linux-free\",\n            \"sku\":
-        \"stable\",\n            \"version\": \"latest\"\n          },\n          \"openSUSE-Leap\":
-        {\n            \"publisher\": \"SUSE\",\n            \"offer\": \"openSUSE-Leap\",\n
-        \           \"sku\": \"42.3\",\n            \"version\": \"latest\"\n          },\n
-        \         \"RHEL\": {\n            \"publisher\": \"RedHat\",\n            \"offer\":
-        \"RHEL\",\n            \"sku\": \"7-LVM\",\n            \"version\": \"latest\"\n
-        \         },\n          \"SLES\": {\n            \"publisher\": \"SUSE\",\n
-        \           \"offer\": \"SLES\",\n            \"sku\": \"15\",\n            \"version\":
-        \"latest\"\n          },\n          \"UbuntuLTS\": {\n            \"publisher\":
-        \"Canonical\",\n            \"offer\": \"UbuntuServer\",\n            \"sku\":
-        \"18.04-LTS\",\n            \"version\": \"latest\"\n          }\n        },\n
-        \       \"Windows\": {\n          \"Win2019Datacenter\": {\n            \"publisher\":
-        \"MicrosoftWindowsServer\",\n            \"offer\": \"WindowsServer\",\n            \"sku\":
-        \"2019-Datacenter\",\n            \"version\": \"latest\"\n          },\n
-        \         \"Win2016Datacenter\": {\n            \"publisher\": \"MicrosoftWindowsServer\",\n
-        \           \"offer\": \"WindowsServer\",\n            \"sku\": \"2016-Datacenter\",\n
-        \           \"version\": \"latest\"\n          },\n          \"Win2012R2Datacenter\":
-        {\n            \"publisher\": \"MicrosoftWindowsServer\",\n            \"offer\":
-        \"WindowsServer\",\n            \"sku\": \"2012-R2-Datacenter\",\n            \"version\":
-        \"latest\"\n          },\n          \"Win2012Datacenter\": {\n            \"publisher\":
-        \"MicrosoftWindowsServer\",\n            \"offer\": \"WindowsServer\",\n            \"sku\":
-        \"2012-Datacenter\",\n            \"version\": \"latest\"\n          },\n
-        \         \"Win2008R2SP1\": {\n            \"publisher\": \"MicrosoftWindowsServer\",\n
-        \           \"offer\": \"WindowsServer\",\n            \"sku\": \"2008-R2-SP1\",\n
-        \           \"version\": \"latest\"\n          }\n        }\n      }\n    }\n
-        \ }\n}\n"
+      string: "{\n  \"$schema\": \"http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json\"\
+        ,\n  \"contentVersion\": \"1.0.0.0\",\n  \"parameters\": {},\n  \"variables\"\
+        : {},\n  \"resources\": [],\n  \"outputs\": {\n    \"aliases\": {\n      \"\
+        type\": \"object\",\n      \"value\": {\n        \"Linux\": {\n          \"\
+        CentOS\": {\n            \"publisher\": \"OpenLogic\",\n            \"offer\"\
+        : \"CentOS\",\n            \"sku\": \"7.5\",\n            \"version\": \"\
+        latest\",\n            \"architecture\": \"x64\"\n          },\n         \
+        \ \"Debian\": {\n            \"publisher\": \"Debian\",\n            \"offer\"\
+        : \"debian-10\",\n            \"sku\": \"10\",\n            \"version\": \"\
+        latest\",\n            \"architecture\": \"x64\"\n          },\n         \
+        \ \"Flatcar\": {\n            \"publisher\": \"kinvolk\",\n            \"\
+        offer\": \"flatcar-container-linux-free\",\n            \"sku\": \"stable\"\
+        ,\n            \"version\": \"latest\",\n            \"architecture\": \"\
+        x64\"\n          },\n          \"openSUSE-Leap\": {\n            \"publisher\"\
+        : \"SUSE\",\n            \"offer\": \"opensuse-leap-15-3\",\n            \"\
+        sku\": \"gen2\",\n            \"version\": \"latest\",\n            \"architecture\"\
+        : \"x64\"\n          },\n          \"RHEL\": {\n            \"publisher\"\
+        : \"RedHat\",\n            \"offer\": \"RHEL\",\n            \"sku\": \"7-LVM\"\
+        ,\n            \"version\": \"latest\",\n            \"architecture\": \"\
+        x64\"\n          },\n          \"SLES\": {\n            \"publisher\": \"\
+        SUSE\",\n            \"offer\": \"sles-15-sp3\",\n            \"sku\": \"\
+        gen2\",\n            \"version\": \"latest\",\n            \"architecture\"\
+        : \"x64\"\n          },\n          \"UbuntuLTS\": {\n            \"publisher\"\
+        : \"Canonical\",\n            \"offer\": \"UbuntuServer\",\n            \"\
+        sku\": \"18.04-LTS\",\n            \"version\": \"latest\",\n            \"\
+        architecture\": \"x64\"\n          }\n        },\n        \"Windows\": {\n\
+        \          \"Win2022Datacenter\": {\n            \"publisher\": \"MicrosoftWindowsServer\"\
+        ,\n            \"offer\": \"WindowsServer\",\n            \"sku\": \"2022-Datacenter\"\
+        ,\n            \"version\": \"latest\",\n            \"architecture\": \"\
+        x64\"\n          },\n          \"Win2022AzureEditionCore\": {\n          \
+        \  \"publisher\": \"MicrosoftWindowsServer\",\n            \"offer\": \"WindowsServer\"\
+        ,\n            \"sku\": \"2022-datacenter-azure-edition-core\",\n        \
+        \    \"version\": \"latest\",\n            \"architecture\": \"x64\"\n   \
+        \       },\n          \"Win2019Datacenter\": {\n            \"publisher\"\
+        : \"MicrosoftWindowsServer\",\n            \"offer\": \"WindowsServer\",\n\
+        \            \"sku\": \"2019-Datacenter\",\n            \"version\": \"latest\"\
+        ,\n            \"architecture\": \"x64\"\n          },\n          \"Win2016Datacenter\"\
+        : {\n            \"publisher\": \"MicrosoftWindowsServer\",\n            \"\
+        offer\": \"WindowsServer\",\n            \"sku\": \"2016-Datacenter\",\n \
+        \           \"version\": \"latest\",\n            \"architecture\": \"x64\"\
+        \n          },\n          \"Win2012R2Datacenter\": {\n            \"publisher\"\
+        : \"MicrosoftWindowsServer\",\n            \"offer\": \"WindowsServer\",\n\
+        \            \"sku\": \"2012-R2-Datacenter\",\n            \"version\": \"\
+        latest\",\n            \"architecture\": \"x64\"\n          },\n         \
+        \ \"Win2012Datacenter\": {\n            \"publisher\": \"MicrosoftWindowsServer\"\
+        ,\n            \"offer\": \"WindowsServer\",\n            \"sku\": \"2012-Datacenter\"\
+        ,\n            \"version\": \"latest\",\n            \"architecture\": \"\
+        x64\"\n          },\n          \"Win2008R2SP1\": {\n            \"publisher\"\
+        : \"MicrosoftWindowsServer\",\n            \"offer\": \"WindowsServer\",\n\
+        \            \"sku\": \"2008-R2-SP1\",\n            \"version\": \"latest\"\
+        ,\n            \"architecture\": \"x64\"\n          }\n        }\n      }\n\
+        \    }\n  }\n}"
     headers:
       accept-ranges:
       - bytes
@@ -101,19 +118,19 @@ interactions:
       connection:
       - keep-alive
       content-length:
-      - '2525'
+      - '3463'
       content-security-policy:
       - default-src 'none'; style-src 'unsafe-inline'; sandbox
       content-type:
       - text/plain; charset=utf-8
       date:
-      - Fri, 28 Jan 2022 04:21:10 GMT
+      - Mon, 18 Jul 2022 08:40:20 GMT
       etag:
-      - W/"54bceef15b892f2aa7f4c2145a49f1b5e33608722acdbb47933d7b6cbebbd7f4"
+      - W/"41b202f4dc5098d126019dc00721a4c5e30df0c5196794514fadc3710ee2a5cb"
       expires:
-      - Fri, 28 Jan 2022 04:26:10 GMT
+      - Mon, 18 Jul 2022 08:45:20 GMT
       source-age:
-      - '0'
+      - '8'
       strict-transport-security:
       - max-age=31536000
       vary:
@@ -121,21 +138,21 @@ interactions:
       via:
       - 1.1 varnish
       x-cache:
-      - MISS
+      - HIT
       x-cache-hits:
-      - '0'
+      - '1'
       x-content-type-options:
       - nosniff
       x-fastly-request-id:
-      - 1cb4e5f7978d7bb477349376e6e26d3e7331121c
+      - 29094bab1c1aff3ae2bcec75ae726f902ac44b6f
       x-frame-options:
       - deny
       x-github-request-id:
-      - 945A:0F3C:48C1B1:6190CF:61F355DE
+      - 1B36:270C:817129:B02D7D:62D51409
       x-served-by:
-      - cache-hkg17929-HKG
+      - cache-qpg1253-QPG
       x-timer:
-      - S1643343670.345828,VS0,VE265
+      - S1658133621.738678,VS0,VE1
       x-xss-protection:
       - 1; mode=block
     status:
@@ -155,14 +172,14 @@ interactions:
       ParameterSetName:
       - -n -g --image --nsg-rule --workspace --generate-ssh-keys
       User-Agent:
-      - AZURECLI/2.32.0 azsdk-python-azure-mgmt-compute/23.1.0 Python/3.8.1 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.38.0 azsdk-python-azure-mgmt-compute/27.0.0 Python/3.10.4 (Windows-10-10.0.22622-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/eastus/publishers/Canonical/artifacttypes/vmimage/offers/UbuntuServer/skus/18.04-LTS/versions?$top=1&$orderby=name%20desc&api-version=2021-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/eastus/publishers/Canonical/artifacttypes/vmimage/offers/UbuntuServer/skus/18.04-LTS/versions?$top=1&$orderby=name%20desc&api-version=2022-03-01
   response:
     body:
-      string: "[\r\n  {\r\n    \"location\": \"eastus\",\r\n    \"name\": \"18.04.202201180\",\r\n
-        \   \"id\": \"/Subscriptions/00000000-0000-0000-0000-000000000000/Providers/Microsoft.Compute/Locations/eastus/Publishers/Canonical/ArtifactTypes/VMImage/Offers/UbuntuServer/Skus/18.04-LTS/Versions/18.04.202201180\"\r\n
-        \ }\r\n]"
+      string: "[\r\n  {\r\n    \"location\": \"eastus\",\r\n    \"name\": \"18.04.202207120\"\
+        ,\r\n    \"id\": \"/Subscriptions/00000000-0000-0000-0000-000000000000/Providers/Microsoft.Compute/Locations/eastus/Publishers/Canonical/ArtifactTypes/VMImage/Offers/UbuntuServer/Skus/18.04-LTS/Versions/18.04.202207120\"\
+        \r\n  }\r\n]"
     headers:
       cache-control:
       - no-cache
@@ -171,7 +188,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 28 Jan 2022 04:21:11 GMT
+      - Mon, 18 Jul 2022 08:40:21 GMT
       expires:
       - '-1'
       pragma:
@@ -206,28 +223,35 @@ interactions:
       ParameterSetName:
       - -n -g --image --nsg-rule --workspace --generate-ssh-keys
       User-Agent:
-      - AZURECLI/2.32.0 azsdk-python-azure-mgmt-compute/23.1.0 Python/3.8.1 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.38.0 azsdk-python-azure-mgmt-compute/27.0.0 Python/3.10.4 (Windows-10-10.0.22622-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/eastus/publishers/Canonical/artifacttypes/vmimage/offers/UbuntuServer/skus/18.04-LTS/versions/18.04.202201180?api-version=2021-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/eastus/publishers/Canonical/artifacttypes/vmimage/offers/UbuntuServer/skus/18.04-LTS/versions/18.04.202207120?api-version=2022-03-01
   response:
     body:
-      string: "{\r\n  \"properties\": {\r\n    \"hyperVGeneration\": \"V1\",\r\n    \"architecture\":
-        \"x64\",\r\n    \"replicaType\": \"Unmanaged\",\r\n    \"disallowed\": {\r\n
-        \     \"vmDiskType\": \"None\"\r\n    },\r\n    \"automaticOSUpgradeProperties\":
-        {\r\n      \"automaticOSUpgradeSupported\": true\r\n    },\r\n    \"imageDeprecationStatus\":
-        {\r\n      \"imageState\": \"Active\"\r\n    },\r\n    \"osDiskImage\": {\r\n
-        \     \"operatingSystem\": \"Linux\",\r\n      \"sizeInGb\": 31,\r\n      \"sizeInBytes\":
-        32213303808\r\n    },\r\n    \"dataDiskImages\": []\r\n  },\r\n  \"location\":
-        \"eastus\",\r\n  \"name\": \"18.04.202201180\",\r\n  \"id\": \"/Subscriptions/00000000-0000-0000-0000-000000000000/Providers/Microsoft.Compute/Locations/eastus/Publishers/Canonical/ArtifactTypes/VMImage/Offers/UbuntuServer/Skus/18.04-LTS/Versions/18.04.202201180\"\r\n}"
+      string: "{\r\n  \"properties\": {\r\n    \"hyperVGeneration\": \"V1\",\r\n \
+        \   \"architecture\": \"x64\",\r\n    \"replicaType\": \"Unmanaged\",\r\n\
+        \    \"disallowed\": {\r\n      \"vmDiskType\": \"None\"\r\n    },\r\n   \
+        \ \"automaticOSUpgradeProperties\": {\r\n      \"automaticOSUpgradeSupported\"\
+        : true\r\n    },\r\n    \"imageDeprecationStatus\": {\r\n      \"imageState\"\
+        : \"Active\"\r\n    },\r\n    \"features\": [\r\n      {\r\n        \"name\"\
+        : \"IsAcceleratedNetworkSupported\",\r\n        \"value\": \"True\"\r\n  \
+        \    },\r\n      {\r\n        \"name\": \"DiskControllerTypes\",\r\n     \
+        \   \"value\": \"SCSI\"\r\n      },\r\n      {\r\n        \"name\": \"IsHibernateSupported\"\
+        ,\r\n        \"value\": \"True\"\r\n      }\r\n    ],\r\n    \"osDiskImage\"\
+        : {\r\n      \"operatingSystem\": \"Linux\",\r\n      \"sizeInGb\": 31,\r\n\
+        \      \"sizeInBytes\": 32213303808\r\n    },\r\n    \"dataDiskImages\": []\r\
+        \n  },\r\n  \"location\": \"eastus\",\r\n  \"name\": \"18.04.202207120\",\r\
+        \n  \"id\": \"/Subscriptions/00000000-0000-0000-0000-000000000000/Providers/Microsoft.Compute/Locations/eastus/Publishers/Canonical/ArtifactTypes/VMImage/Offers/UbuntuServer/Skus/18.04-LTS/Versions/18.04.202207120\"\
+        \r\n}"
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '753'
+      - '1042'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 28 Jan 2022 04:21:13 GMT
+      - Mon, 18 Jul 2022 08:40:23 GMT
       expires:
       - '-1'
       pragma:
@@ -262,7 +286,7 @@ interactions:
       ParameterSetName:
       - -n -g --image --nsg-rule --workspace --generate-ssh-keys
       User-Agent:
-      - AZURECLI/2.32.0 azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.1 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.38.0 azsdk-python-azure-mgmt-network/20.0.0 Python/3.10.4 (Windows-10-10.0.22622-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001/providers/Microsoft.Network/virtualNetworks?api-version=2018-01-01
   response:
@@ -276,7 +300,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 28 Jan 2022 04:21:13 GMT
+      - Mon, 18 Jul 2022 08:40:24 GMT
       expires:
       - '-1'
       pragma:
@@ -304,9 +328,9 @@ interactions:
       ParameterSetName:
       - -n -g --image --nsg-rule --workspace --generate-ssh-keys
       User-Agent:
-      - AZURECLI/2.32.0 azsdk-python-mgmt-loganalytics/12.0.0 Python/3.8.1 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.38.0 azsdk-python-mgmt-loganalytics/13.0.0b4 Python/3.10.4 (Windows-10-10.0.22622-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_scheduled_query000001/providers/Microsoft.OperationalInsights/workspaces/clitest000002?api-version=2021-06-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_scheduled_query000001/providers/Microsoft.OperationalInsights/workspaces/clitest000002?api-version=2021-12-01-preview
   response:
     body:
       string: '{"error":{"code":"ResourceNotFound","message":"The Resource ''Microsoft.OperationalInsights/workspaces/clitest000002''
@@ -320,7 +344,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 28 Jan 2022 04:21:14 GMT
+      - Mon, 18 Jul 2022 08:40:24 GMT
       expires:
       - '-1'
       pragma:
@@ -348,12 +372,12 @@ interactions:
       ParameterSetName:
       - -n -g --image --nsg-rule --workspace --generate-ssh-keys
       User-Agent:
-      - AZURECLI/2.32.0 azsdk-python-azure-mgmt-resource/20.0.0 Python/3.8.1 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.38.0 azsdk-python-azure-mgmt-resource/21.1.0b1 Python/3.10.4 (Windows-10-10.0.22622-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_scheduled_query000001?api-version=2021-04-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001","name":"cli_test_scheduled_query000001","type":"Microsoft.Resources/resourceGroups","location":"eastus","tags":{"product":"azurecli","cause":"automation","date":"2022-01-28T04:19:04Z"},"properties":{"provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001","name":"cli_test_scheduled_query000001","type":"Microsoft.Resources/resourceGroups","location":"eastus","tags":{"product":"azurecli","cause":"automation","date":"2022-07-18T08:40:13Z"},"properties":{"provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
@@ -362,7 +386,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 28 Jan 2022 04:21:15 GMT
+      - Mon, 18 Jul 2022 08:40:25 GMT
       expires:
       - '-1'
       pragma:
@@ -396,25 +420,25 @@ interactions:
       ParameterSetName:
       - -n -g --image --nsg-rule --workspace --generate-ssh-keys
       User-Agent:
-      - AZURECLI/2.32.0 azsdk-python-mgmt-loganalytics/12.0.0 Python/3.8.1 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.38.0 azsdk-python-mgmt-loganalytics/13.0.0b4 Python/3.10.4 (Windows-10-10.0.22622-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_scheduled_query000001/providers/Microsoft.OperationalInsights/workspaces/clitest000002?api-version=2021-06-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_scheduled_query000001/providers/Microsoft.OperationalInsights/workspaces/clitest000002?api-version=2021-12-01-preview
   response:
     body:
-      string: "{\r\n  \"properties\": {\r\n    \"source\": \"Azure\",\r\n    \"customerId\":
-        \"59f4ec92-738e-4c60-b51c-cdf206d40f01\",\r\n    \"provisioningState\": \"Creating\",\r\n
-        \   \"sku\": {\r\n      \"name\": \"pergb2018\",\r\n      \"lastSkuUpdate\":
-        \"Fri, 28 Jan 2022 04:21:27 GMT\"\r\n    },\r\n    \"retentionInDays\": 30,\r\n
-        \   \"features\": {\r\n      \"legacy\": 0,\r\n      \"searchVersion\": 1,\r\n
-        \     \"enableLogAccessUsingOnlyResourcePermissions\": true\r\n    },\r\n
-        \   \"workspaceCapping\": {\r\n      \"dailyQuotaGb\": -1.0,\r\n      \"quotaNextResetTime\":
-        \"Fri, 28 Jan 2022 12:00:00 GMT\",\r\n      \"dataIngestionStatus\": \"RespectQuota\"\r\n
-        \   },\r\n    \"publicNetworkAccessForIngestion\": \"Enabled\",\r\n    \"publicNetworkAccessForQuery\":
-        \"Enabled\",\r\n    \"createdDate\": \"Fri, 28 Jan 2022 04:21:26 GMT\",\r\n
-        \   \"modifiedDate\": \"Fri, 28 Jan 2022 04:21:26 GMT\"\r\n  },\r\n  \"id\":
-        \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_scheduled_query000001/providers/microsoft.operationalinsights/workspaces/clitest000002\",\r\n
-        \ \"name\": \"clitest000002\",\r\n  \"type\": \"Microsoft.OperationalInsights/workspaces\",\r\n
-        \ \"location\": \"eastus\"\r\n}"
+      string: "{\r\n  \"properties\": {\r\n    \"source\": \"Azure\",\r\n    \"customerId\"\
+        : \"a2652e92-e786-4c1f-b5f3-fe6aef3e8654\",\r\n    \"provisioningState\":\
+        \ \"Creating\",\r\n    \"sku\": {\r\n      \"name\": \"pergb2018\",\r\n  \
+        \    \"lastSkuUpdate\": \"Mon, 18 Jul 2022 08:40:32 GMT\"\r\n    },\r\n  \
+        \  \"retentionInDays\": 30,\r\n    \"features\": {\r\n      \"legacy\": 0,\r\
+        \n      \"searchVersion\": 1,\r\n      \"enableLogAccessUsingOnlyResourcePermissions\"\
+        : true\r\n    },\r\n    \"workspaceCapping\": {\r\n      \"dailyQuotaGb\"\
+        : -1.0,\r\n      \"quotaNextResetTime\": \"Tue, 19 Jul 2022 05:00:00 GMT\"\
+        ,\r\n      \"dataIngestionStatus\": \"RespectQuota\"\r\n    },\r\n    \"publicNetworkAccessForIngestion\"\
+        : \"Enabled\",\r\n    \"publicNetworkAccessForQuery\": \"Enabled\",\r\n  \
+        \  \"createdDate\": \"Mon, 18 Jul 2022 08:40:32 GMT\",\r\n    \"modifiedDate\"\
+        : \"Mon, 18 Jul 2022 08:40:32 GMT\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_scheduled_query000001/providers/microsoft.operationalinsights/workspaces/clitest000002\"\
+        ,\r\n  \"name\": \"clitest000002\",\r\n  \"type\": \"Microsoft.OperationalInsights/workspaces\"\
+        ,\r\n  \"location\": \"eastus\"\r\n}"
     headers:
       cache-control:
       - no-cache
@@ -423,7 +447,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Fri, 28 Jan 2022 04:21:27 GMT
+      - Mon, 18 Jul 2022 08:40:33 GMT
       pragma:
       - no-cache
       server:
@@ -455,25 +479,25 @@ interactions:
       ParameterSetName:
       - -n -g --image --nsg-rule --workspace --generate-ssh-keys
       User-Agent:
-      - AZURECLI/2.32.0 azsdk-python-mgmt-loganalytics/12.0.0 Python/3.8.1 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.38.0 azsdk-python-mgmt-loganalytics/13.0.0b4 Python/3.10.4 (Windows-10-10.0.22622-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_scheduled_query000001/providers/Microsoft.OperationalInsights/workspaces/clitest000002?api-version=2021-06-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_scheduled_query000001/providers/Microsoft.OperationalInsights/workspaces/clitest000002?api-version=2021-12-01-preview
   response:
     body:
-      string: "{\r\n  \"properties\": {\r\n    \"source\": \"Azure\",\r\n    \"customerId\":
-        \"59f4ec92-738e-4c60-b51c-cdf206d40f01\",\r\n    \"provisioningState\": \"Succeeded\",\r\n
-        \   \"sku\": {\r\n      \"name\": \"pergb2018\",\r\n      \"lastSkuUpdate\":
-        \"Fri, 28 Jan 2022 04:21:27 GMT\"\r\n    },\r\n    \"retentionInDays\": 30,\r\n
-        \   \"features\": {\r\n      \"legacy\": 0,\r\n      \"searchVersion\": 1,\r\n
-        \     \"enableLogAccessUsingOnlyResourcePermissions\": true\r\n    },\r\n
-        \   \"workspaceCapping\": {\r\n      \"dailyQuotaGb\": -1.0,\r\n      \"quotaNextResetTime\":
-        \"Fri, 28 Jan 2022 12:00:00 GMT\",\r\n      \"dataIngestionStatus\": \"RespectQuota\"\r\n
-        \   },\r\n    \"publicNetworkAccessForIngestion\": \"Enabled\",\r\n    \"publicNetworkAccessForQuery\":
-        \"Enabled\",\r\n    \"createdDate\": \"Fri, 28 Jan 2022 04:21:27 GMT\",\r\n
-        \   \"modifiedDate\": \"Fri, 28 Jan 2022 04:21:28 GMT\"\r\n  },\r\n  \"id\":
-        \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_scheduled_query000001/providers/microsoft.operationalinsights/workspaces/clitest000002\",\r\n
-        \ \"name\": \"clitest000002\",\r\n  \"type\": \"Microsoft.OperationalInsights/workspaces\",\r\n
-        \ \"location\": \"eastus\"\r\n}"
+      string: "{\r\n  \"properties\": {\r\n    \"source\": \"Azure\",\r\n    \"customerId\"\
+        : \"a2652e92-e786-4c1f-b5f3-fe6aef3e8654\",\r\n    \"provisioningState\":\
+        \ \"Succeeded\",\r\n    \"sku\": {\r\n      \"name\": \"pergb2018\",\r\n \
+        \     \"lastSkuUpdate\": \"Mon, 18 Jul 2022 08:40:32 GMT\"\r\n    },\r\n \
+        \   \"retentionInDays\": 30,\r\n    \"features\": {\r\n      \"legacy\": 0,\r\
+        \n      \"searchVersion\": 1,\r\n      \"enableLogAccessUsingOnlyResourcePermissions\"\
+        : true\r\n    },\r\n    \"workspaceCapping\": {\r\n      \"dailyQuotaGb\"\
+        : -1.0,\r\n      \"quotaNextResetTime\": \"Tue, 19 Jul 2022 05:00:00 GMT\"\
+        ,\r\n      \"dataIngestionStatus\": \"RespectQuota\"\r\n    },\r\n    \"publicNetworkAccessForIngestion\"\
+        : \"Enabled\",\r\n    \"publicNetworkAccessForQuery\": \"Enabled\",\r\n  \
+        \  \"createdDate\": \"Mon, 18 Jul 2022 08:40:32 GMT\",\r\n    \"modifiedDate\"\
+        : \"Mon, 18 Jul 2022 08:40:33 GMT\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_scheduled_query000001/providers/microsoft.operationalinsights/workspaces/clitest000002\"\
+        ,\r\n  \"name\": \"clitest000002\",\r\n  \"type\": \"Microsoft.OperationalInsights/workspaces\"\
+        ,\r\n  \"location\": \"eastus\"\r\n}"
     headers:
       cache-control:
       - no-cache
@@ -482,7 +506,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Fri, 28 Jan 2022 04:22:00 GMT
+      - Mon, 18 Jul 2022 08:41:05 GMT
       pragma:
       - no-cache
       server:
@@ -529,7 +553,7 @@ interactions:
       "protectedSettings": {"workspaceKey": "[listKeys(parameters(''workspaceId''),
       ''2015-11-01-preview'').primarySharedKey]"}}, "name": "myvm1/OmsAgentForLinux",
       "location": "eastus", "dependsOn": ["Microsoft.Compute/virtualMachines/myvm1"]},
-      {"apiVersion": "2021-07-01", "type": "Microsoft.Compute/virtualMachines", "name":
+      {"apiVersion": "2022-03-01", "type": "Microsoft.Compute/virtualMachines", "name":
       "myvm1", "location": "eastus", "tags": {}, "dependsOn": ["Microsoft.Network/networkInterfaces/myvm1VMNic"],
       "properties": {"hardwareProfile": {"vmSize": "Standard_DS1_v2"}, "networkProfile":
       {"networkInterfaces": [{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001/providers/Microsoft.Network/networkInterfaces/myvm1VMNic",
@@ -537,11 +561,10 @@ interactions:
       "fromImage", "name": null, "caching": "ReadWrite", "managedDisk": {"storageAccountType":
       null}}, "imageReference": {"publisher": "Canonical", "offer": "UbuntuServer",
       "sku": "18.04-LTS", "version": "latest"}}, "osProfile": {"computerName": "myvm1",
-      "adminUsername": "zhoxing", "linuxConfiguration": {"disablePasswordAuthentication":
-      true, "ssh": {"publicKeys": [{"keyData": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDdfdN+YWbkBS84r36yJbgfTI+Gx1W/ErinzCGvXBeO0S8F8JBc45BGTSaNmgOiqVMef3L9Dne7xUv6CwK+NaPRF23B2Sfv1VT1RWjKzgsgLAGiMvMuXA8/BfnKyQU43P6ImgXW/89E8OE9tS2TYLWiSSOjSTiCDnH+bJOw0Gqb25CLhZiahL1lS8MPuZHQaLa71GGUJS93GeBBF6eM2aFKitdFif38RsHxwY/aLlKhjwuy0XPI/4HcIHJR9uyEiFsPQXZMbFPwfvTWyRQDqS0KfxgFXtoVQgaNq74zJv94JdqDykoXYrempJU33jCC06vi39u+xZHAdAagp6e8z/WQc7fIPEOoKqNBKO3UhjXfLfHsxM9QvEiE2kL1xBekS9XrzqSvYZBi4tiSiLAYajOdI5dlv9HgvRTdCtnfF6v8iVGpwql/B1OTOn/A9uCmRIu3o9aMjsQoegqGX6e+h7omfVaExdClXOrW1Qi5l9mUSDLJgsGm1sT9nLaVJlPotFM=
-      Zhou.Xing@microsoft.com\n", "path": "/home/zhoxing/.ssh/authorized_keys"}]}}},
-      "additionalCapabilities": {}}}], "outputs": {}}, "parameters": {"workspaceId":
-      {"value": "/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_scheduled_query000001/providers/microsoft.operationalinsights/workspaces/clitest000002"}},
+      "adminUsername": "kairu", "linuxConfiguration": {"disablePasswordAuthentication":
+      true, "ssh": {"publicKeys": [{"keyData": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQC/+4SveJW8Wn+vIMzgKgDIauOhF2XRwqR4RJSrjQX8qodZntJ49dQSuaPT0AweyDVPS9TPXCXeGZMN+H+Y54Xj0Mgriau+Y4jPi2mUMKW0R93T5/Y1285JdE1YuXtnv27Xgc1g1lIfHJ5luWOi3sfC47j3AZvhE1NE69alemjIcQCIWlU0SyoZM1K+5hO3mBmZhR4BwuMJO9ruWITXx1t1GAvJgu+xtJNcVXW1ryTt6PvYk1OU5pNyIyNEFxD1Hhw8qOJ/R/jNcZ9wcjnykSqOI/NzNczz3GG2tLdu8gWEBZrpXy4vu9FoSamu3k+ADE6ArH06RM40FaSCNSegivEI4Y6HAjy3svPEU6Y+WvuGUfr0Lphefi7tFHZaEW08U0e6ERmwpFLtfMRWfdhn30ZRtiFDF/Gi4psXuTNPQrGyqc+KgmwCxEIVue8a3TAAVTaoK1JZXA/08IcUGNdhl6INAfHxXbaS15ptTXkqhO3rVL2ambJt8GxU3UTTymq3P20=
+      kairu@microsoft.com\n", "path": "/home/kairu/.ssh/authorized_keys"}]}}}}}],
+      "outputs": {}}, "parameters": {"workspaceId": {"value": "/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_scheduled_query000001/providers/microsoft.operationalinsights/workspaces/clitest000002"}},
       "mode": "incremental"}}'
     headers:
       Accept:
@@ -553,29 +576,29 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '4399'
+      - '4361'
       Content-Type:
       - application/json
       ParameterSetName:
       - -n -g --image --nsg-rule --workspace --generate-ssh-keys
       User-Agent:
-      - AZURECLI/2.32.0 azsdk-python-azure-mgmt-resource/20.0.0 Python/3.8.1 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.38.0 azsdk-python-azure-mgmt-resource/21.1.0b1 Python/3.10.4 (Windows-10-10.0.22622-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_scheduled_query000001/providers/Microsoft.Resources/deployments/mock-deployment?api-version=2021-04-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001/providers/Microsoft.Resources/deployments/vm_deploy_rvpCSoj3JhCdSLB7L7LVXdaFXLlHiK6f","name":"vm_deploy_rvpCSoj3JhCdSLB7L7LVXdaFXLlHiK6f","type":"Microsoft.Resources/deployments","properties":{"templateHash":"6937889556856091540","parameters":{"workspaceId":{"type":"SecureString"}},"mode":"Incremental","provisioningState":"Accepted","timestamp":"2022-01-28T04:22:08.0171267Z","duration":"PT0.0002757S","correlationId":"cb79491e-2109-4878-860b-d8a1645c9df9","providers":[{"namespace":"Microsoft.Network","resourceTypes":[{"resourceType":"virtualNetworks","locations":["eastus"]},{"resourceType":"networkSecurityGroups","locations":["eastus"]},{"resourceType":"publicIPAddresses","locations":["eastus"]},{"resourceType":"networkInterfaces","locations":["eastus"]}]},{"namespace":"Microsoft.Compute","resourceTypes":[{"resourceType":"virtualMachines/extensions","locations":["eastus"]},{"resourceType":"virtualMachines","locations":["eastus"]}]}],"dependencies":[{"dependsOn":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001/providers/Microsoft.Network/virtualNetworks/myvm1VNET","resourceType":"Microsoft.Network/virtualNetworks","resourceName":"myvm1VNET"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001/providers/Microsoft.Network/networkSecurityGroups/myvm1NSG","resourceType":"Microsoft.Network/networkSecurityGroups","resourceName":"myvm1NSG"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001/providers/Microsoft.Network/publicIPAddresses/myvm1PublicIP","resourceType":"Microsoft.Network/publicIPAddresses","resourceName":"myvm1PublicIP"}],"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001/providers/Microsoft.Network/networkInterfaces/myvm1VMNic","resourceType":"Microsoft.Network/networkInterfaces","resourceName":"myvm1VMNic"},{"dependsOn":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001/providers/Microsoft.Compute/virtualMachines/myvm1","resourceType":"Microsoft.Compute/virtualMachines","resourceName":"myvm1"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001/providers/microsoft.operationalinsights/workspaces/clitest000002","resourceType":"microsoft.operationalinsights/workspaces","resourceName":"clitest000002","apiVersion":"2015-11-01-preview"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001/providers/microsoft.operationalinsights/workspaces/clitest000002","resourceType":"microsoft.operationalinsights/workspaces","resourceName":"clitest000002","actionName":"listKeys","apiVersion":"2015-11-01-preview"}],"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001/providers/Microsoft.Compute/virtualMachines/myvm1/extensions/OmsAgentForLinux","resourceType":"Microsoft.Compute/virtualMachines/extensions","resourceName":"myvm1/OmsAgentForLinux"},{"dependsOn":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001/providers/Microsoft.Network/networkInterfaces/myvm1VMNic","resourceType":"Microsoft.Network/networkInterfaces","resourceName":"myvm1VMNic"}],"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001/providers/Microsoft.Compute/virtualMachines/myvm1","resourceType":"Microsoft.Compute/virtualMachines","resourceName":"myvm1"}]}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001/providers/Microsoft.Resources/deployments/vm_deploy_qUkYVpYFM8PUhUqjoa1gnTDaaNRfZ8BO","name":"vm_deploy_qUkYVpYFM8PUhUqjoa1gnTDaaNRfZ8BO","type":"Microsoft.Resources/deployments","properties":{"templateHash":"16970527308813725444","parameters":{"workspaceId":{"type":"SecureString"}},"mode":"Incremental","provisioningState":"Accepted","timestamp":"2022-07-18T08:41:11.0531057Z","duration":"PT0.0001196S","correlationId":"989966b4-d148-47c8-a84e-c314bc84147e","providers":[{"namespace":"Microsoft.Network","resourceTypes":[{"resourceType":"virtualNetworks","locations":["eastus"]},{"resourceType":"networkSecurityGroups","locations":["eastus"]},{"resourceType":"publicIPAddresses","locations":["eastus"]},{"resourceType":"networkInterfaces","locations":["eastus"]}]},{"namespace":"Microsoft.Compute","resourceTypes":[{"resourceType":"virtualMachines/extensions","locations":["eastus"]},{"resourceType":"virtualMachines","locations":["eastus"]}]}],"dependencies":[{"dependsOn":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001/providers/Microsoft.Network/virtualNetworks/myvm1VNET","resourceType":"Microsoft.Network/virtualNetworks","resourceName":"myvm1VNET"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001/providers/Microsoft.Network/networkSecurityGroups/myvm1NSG","resourceType":"Microsoft.Network/networkSecurityGroups","resourceName":"myvm1NSG"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001/providers/Microsoft.Network/publicIPAddresses/myvm1PublicIP","resourceType":"Microsoft.Network/publicIPAddresses","resourceName":"myvm1PublicIP"}],"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001/providers/Microsoft.Network/networkInterfaces/myvm1VMNic","resourceType":"Microsoft.Network/networkInterfaces","resourceName":"myvm1VMNic"},{"dependsOn":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001/providers/Microsoft.Compute/virtualMachines/myvm1","resourceType":"Microsoft.Compute/virtualMachines","resourceName":"myvm1"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001/providers/microsoft.operationalinsights/workspaces/clitest000002","resourceType":"microsoft.operationalinsights/workspaces","resourceName":"clitest000002","apiVersion":"2015-11-01-preview"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001/providers/microsoft.operationalinsights/workspaces/clitest000002","resourceType":"microsoft.operationalinsights/workspaces","resourceName":"clitest000002","actionName":"listKeys","apiVersion":"2015-11-01-preview"}],"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001/providers/Microsoft.Compute/virtualMachines/myvm1/extensions/OmsAgentForLinux","resourceType":"Microsoft.Compute/virtualMachines/extensions","resourceName":"myvm1/OmsAgentForLinux"},{"dependsOn":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001/providers/Microsoft.Network/networkInterfaces/myvm1VMNic","resourceType":"Microsoft.Network/networkInterfaces","resourceName":"myvm1VMNic"}],"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001/providers/Microsoft.Compute/virtualMachines/myvm1","resourceType":"Microsoft.Compute/virtualMachines","resourceName":"myvm1"}]}}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_scheduled_query000001/providers/Microsoft.Resources/deployments/vm_deploy_rvpCSoj3JhCdSLB7L7LVXdaFXLlHiK6f/operationStatuses/08585582631602680286?api-version=2021-04-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_scheduled_query000001/providers/Microsoft.Resources/deployments/vm_deploy_qUkYVpYFM8PUhUqjoa1gnTDaaNRfZ8BO/operationStatuses/08585434732176516454?api-version=2021-04-01
       cache-control:
       - no-cache
       content-length:
-      - '3703'
+      - '3704'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 28 Jan 2022 04:22:09 GMT
+      - Mon, 18 Jul 2022 08:41:12 GMT
       expires:
       - '-1'
       pragma:
@@ -603,9 +626,9 @@ interactions:
       ParameterSetName:
       - -n -g --image --nsg-rule --workspace --generate-ssh-keys
       User-Agent:
-      - AZURECLI/2.32.0 azsdk-python-azure-mgmt-resource/20.0.0 Python/3.8.1 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.38.0 azsdk-python-azure-mgmt-resource/21.1.0b1 Python/3.10.4 (Windows-10-10.0.22622-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_scheduled_query000001/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08585582631602680286?api-version=2021-04-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_scheduled_query000001/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08585434732176516454?api-version=2021-04-01
   response:
     body:
       string: '{"status":"Running"}'
@@ -617,7 +640,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 28 Jan 2022 04:22:40 GMT
+      - Mon, 18 Jul 2022 08:41:43 GMT
       expires:
       - '-1'
       pragma:
@@ -645,9 +668,9 @@ interactions:
       ParameterSetName:
       - -n -g --image --nsg-rule --workspace --generate-ssh-keys
       User-Agent:
-      - AZURECLI/2.32.0 azsdk-python-azure-mgmt-resource/20.0.0 Python/3.8.1 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.38.0 azsdk-python-azure-mgmt-resource/21.1.0b1 Python/3.10.4 (Windows-10-10.0.22622-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_scheduled_query000001/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08585582631602680286?api-version=2021-04-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_scheduled_query000001/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08585434732176516454?api-version=2021-04-01
   response:
     body:
       string: '{"status":"Running"}'
@@ -659,7 +682,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 28 Jan 2022 04:23:10 GMT
+      - Mon, 18 Jul 2022 08:42:13 GMT
       expires:
       - '-1'
       pragma:
@@ -687,9 +710,9 @@ interactions:
       ParameterSetName:
       - -n -g --image --nsg-rule --workspace --generate-ssh-keys
       User-Agent:
-      - AZURECLI/2.32.0 azsdk-python-azure-mgmt-resource/20.0.0 Python/3.8.1 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.38.0 azsdk-python-azure-mgmt-resource/21.1.0b1 Python/3.10.4 (Windows-10-10.0.22622-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_scheduled_query000001/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08585582631602680286?api-version=2021-04-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_scheduled_query000001/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08585434732176516454?api-version=2021-04-01
   response:
     body:
       string: '{"status":"Running"}'
@@ -701,7 +724,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 28 Jan 2022 04:23:40 GMT
+      - Mon, 18 Jul 2022 08:42:43 GMT
       expires:
       - '-1'
       pragma:
@@ -729,9 +752,9 @@ interactions:
       ParameterSetName:
       - -n -g --image --nsg-rule --workspace --generate-ssh-keys
       User-Agent:
-      - AZURECLI/2.32.0 azsdk-python-azure-mgmt-resource/20.0.0 Python/3.8.1 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.38.0 azsdk-python-azure-mgmt-resource/21.1.0b1 Python/3.10.4 (Windows-10-10.0.22622-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_scheduled_query000001/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08585582631602680286?api-version=2021-04-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_scheduled_query000001/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08585434732176516454?api-version=2021-04-01
   response:
     body:
       string: '{"status":"Succeeded"}'
@@ -743,7 +766,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 28 Jan 2022 04:24:11 GMT
+      - Mon, 18 Jul 2022 08:43:14 GMT
       expires:
       - '-1'
       pragma:
@@ -771,21 +794,21 @@ interactions:
       ParameterSetName:
       - -n -g --image --nsg-rule --workspace --generate-ssh-keys
       User-Agent:
-      - AZURECLI/2.32.0 azsdk-python-azure-mgmt-resource/20.0.0 Python/3.8.1 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.38.0 azsdk-python-azure-mgmt-resource/21.1.0b1 Python/3.10.4 (Windows-10-10.0.22622-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_scheduled_query000001/providers/Microsoft.Resources/deployments/mock-deployment?api-version=2021-04-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001/providers/Microsoft.Resources/deployments/vm_deploy_rvpCSoj3JhCdSLB7L7LVXdaFXLlHiK6f","name":"vm_deploy_rvpCSoj3JhCdSLB7L7LVXdaFXLlHiK6f","type":"Microsoft.Resources/deployments","properties":{"templateHash":"6937889556856091540","parameters":{"workspaceId":{"type":"SecureString"}},"mode":"Incremental","provisioningState":"Succeeded","timestamp":"2022-01-28T04:23:55.8465975Z","duration":"PT1M47.8297465S","correlationId":"cb79491e-2109-4878-860b-d8a1645c9df9","providers":[{"namespace":"Microsoft.Network","resourceTypes":[{"resourceType":"virtualNetworks","locations":["eastus"]},{"resourceType":"networkSecurityGroups","locations":["eastus"]},{"resourceType":"publicIPAddresses","locations":["eastus"]},{"resourceType":"networkInterfaces","locations":["eastus"]}]},{"namespace":"Microsoft.Compute","resourceTypes":[{"resourceType":"virtualMachines/extensions","locations":["eastus"]},{"resourceType":"virtualMachines","locations":["eastus"]}]}],"dependencies":[{"dependsOn":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001/providers/Microsoft.Network/virtualNetworks/myvm1VNET","resourceType":"Microsoft.Network/virtualNetworks","resourceName":"myvm1VNET"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001/providers/Microsoft.Network/networkSecurityGroups/myvm1NSG","resourceType":"Microsoft.Network/networkSecurityGroups","resourceName":"myvm1NSG"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001/providers/Microsoft.Network/publicIPAddresses/myvm1PublicIP","resourceType":"Microsoft.Network/publicIPAddresses","resourceName":"myvm1PublicIP"}],"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001/providers/Microsoft.Network/networkInterfaces/myvm1VMNic","resourceType":"Microsoft.Network/networkInterfaces","resourceName":"myvm1VMNic"},{"dependsOn":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001/providers/Microsoft.Compute/virtualMachines/myvm1","resourceType":"Microsoft.Compute/virtualMachines","resourceName":"myvm1"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001/providers/microsoft.operationalinsights/workspaces/clitest000002","resourceType":"microsoft.operationalinsights/workspaces","resourceName":"clitest000002","apiVersion":"2015-11-01-preview"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001/providers/microsoft.operationalinsights/workspaces/clitest000002","resourceType":"microsoft.operationalinsights/workspaces","resourceName":"clitest000002","actionName":"listKeys","apiVersion":"2015-11-01-preview"}],"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001/providers/Microsoft.Compute/virtualMachines/myvm1/extensions/OmsAgentForLinux","resourceType":"Microsoft.Compute/virtualMachines/extensions","resourceName":"myvm1/OmsAgentForLinux"},{"dependsOn":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001/providers/Microsoft.Network/networkInterfaces/myvm1VMNic","resourceType":"Microsoft.Network/networkInterfaces","resourceName":"myvm1VMNic"}],"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001/providers/Microsoft.Compute/virtualMachines/myvm1","resourceType":"Microsoft.Compute/virtualMachines","resourceName":"myvm1"}],"outputs":{},"outputResources":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001/providers/Microsoft.Compute/virtualMachines/myvm1"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001/providers/Microsoft.Compute/virtualMachines/myvm1/extensions/OmsAgentForLinux"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001/providers/Microsoft.Network/networkInterfaces/myvm1VMNic"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001/providers/Microsoft.Network/networkSecurityGroups/myvm1NSG"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001/providers/Microsoft.Network/publicIPAddresses/myvm1PublicIP"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001/providers/Microsoft.Network/virtualNetworks/myvm1VNET"}]}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001/providers/Microsoft.Resources/deployments/vm_deploy_qUkYVpYFM8PUhUqjoa1gnTDaaNRfZ8BO","name":"vm_deploy_qUkYVpYFM8PUhUqjoa1gnTDaaNRfZ8BO","type":"Microsoft.Resources/deployments","properties":{"templateHash":"16970527308813725444","parameters":{"workspaceId":{"type":"SecureString"}},"mode":"Incremental","provisioningState":"Succeeded","timestamp":"2022-07-18T08:43:03.0190583Z","duration":"PT1M51.9660722S","correlationId":"989966b4-d148-47c8-a84e-c314bc84147e","providers":[{"namespace":"Microsoft.Network","resourceTypes":[{"resourceType":"virtualNetworks","locations":["eastus"]},{"resourceType":"networkSecurityGroups","locations":["eastus"]},{"resourceType":"publicIPAddresses","locations":["eastus"]},{"resourceType":"networkInterfaces","locations":["eastus"]}]},{"namespace":"Microsoft.Compute","resourceTypes":[{"resourceType":"virtualMachines/extensions","locations":["eastus"]},{"resourceType":"virtualMachines","locations":["eastus"]}]}],"dependencies":[{"dependsOn":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001/providers/Microsoft.Network/virtualNetworks/myvm1VNET","resourceType":"Microsoft.Network/virtualNetworks","resourceName":"myvm1VNET"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001/providers/Microsoft.Network/networkSecurityGroups/myvm1NSG","resourceType":"Microsoft.Network/networkSecurityGroups","resourceName":"myvm1NSG"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001/providers/Microsoft.Network/publicIPAddresses/myvm1PublicIP","resourceType":"Microsoft.Network/publicIPAddresses","resourceName":"myvm1PublicIP"}],"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001/providers/Microsoft.Network/networkInterfaces/myvm1VMNic","resourceType":"Microsoft.Network/networkInterfaces","resourceName":"myvm1VMNic"},{"dependsOn":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001/providers/Microsoft.Compute/virtualMachines/myvm1","resourceType":"Microsoft.Compute/virtualMachines","resourceName":"myvm1"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001/providers/microsoft.operationalinsights/workspaces/clitest000002","resourceType":"microsoft.operationalinsights/workspaces","resourceName":"clitest000002","apiVersion":"2015-11-01-preview"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001/providers/microsoft.operationalinsights/workspaces/clitest000002","resourceType":"microsoft.operationalinsights/workspaces","resourceName":"clitest000002","actionName":"listKeys","apiVersion":"2015-11-01-preview"}],"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001/providers/Microsoft.Compute/virtualMachines/myvm1/extensions/OmsAgentForLinux","resourceType":"Microsoft.Compute/virtualMachines/extensions","resourceName":"myvm1/OmsAgentForLinux"},{"dependsOn":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001/providers/Microsoft.Network/networkInterfaces/myvm1VMNic","resourceType":"Microsoft.Network/networkInterfaces","resourceName":"myvm1VMNic"}],"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001/providers/Microsoft.Compute/virtualMachines/myvm1","resourceType":"Microsoft.Compute/virtualMachines","resourceName":"myvm1"}],"outputs":{},"outputResources":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001/providers/Microsoft.Compute/virtualMachines/myvm1"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001/providers/Microsoft.Compute/virtualMachines/myvm1/extensions/OmsAgentForLinux"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001/providers/Microsoft.Network/networkInterfaces/myvm1VMNic"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001/providers/Microsoft.Network/networkSecurityGroups/myvm1NSG"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001/providers/Microsoft.Network/publicIPAddresses/myvm1PublicIP"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001/providers/Microsoft.Network/virtualNetworks/myvm1VNET"}]}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '4740'
+      - '4741'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 28 Jan 2022 04:24:11 GMT
+      - Mon, 18 Jul 2022 08:43:15 GMT
       expires:
       - '-1'
       pragma:
@@ -813,82 +836,90 @@ interactions:
       ParameterSetName:
       - -n -g --image --nsg-rule --workspace --generate-ssh-keys
       User-Agent:
-      - AZURECLI/2.32.0 azsdk-python-azure-mgmt-compute/23.1.0 Python/3.8.1 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.38.0 azsdk-python-azure-mgmt-compute/27.0.0 Python/3.10.4 (Windows-10-10.0.22622-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001/providers/Microsoft.Compute/virtualMachines/myvm1?$expand=instanceView&api-version=2021-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001/providers/Microsoft.Compute/virtualMachines/myvm1?$expand=instanceView&api-version=2022-03-01
   response:
     body:
-      string: "{\r\n  \"name\": \"myvm1\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001/providers/Microsoft.Compute/virtualMachines/myvm1\",\r\n
-        \ \"type\": \"Microsoft.Compute/virtualMachines\",\r\n  \"location\": \"eastus\",\r\n
-        \ \"tags\": {},\r\n  \"properties\": {\r\n    \"vmId\": \"cb776bfc-5c7f-44c5-a34b-05fa6ebcc3f7\",\r\n
-        \   \"hardwareProfile\": {\r\n      \"vmSize\": \"Standard_DS1_v2\"\r\n    },\r\n
-        \   \"storageProfile\": {\r\n      \"imageReference\": {\r\n        \"publisher\":
-        \"Canonical\",\r\n        \"offer\": \"UbuntuServer\",\r\n        \"sku\":
-        \"18.04-LTS\",\r\n        \"version\": \"latest\",\r\n        \"exactVersion\":
-        \"18.04.202201180\"\r\n      },\r\n      \"osDisk\": {\r\n        \"osType\":
-        \"Linux\",\r\n        \"name\": \"myvm1_disk1_4b99cc7931bd4ac8899766c4804e0b96\",\r\n
-        \       \"createOption\": \"FromImage\",\r\n        \"caching\": \"ReadWrite\",\r\n
-        \       \"managedDisk\": {\r\n          \"storageAccountType\": \"Premium_LRS\",\r\n
-        \         \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001/providers/Microsoft.Compute/disks/myvm1_disk1_4b99cc7931bd4ac8899766c4804e0b96\"\r\n
-        \       },\r\n        \"deleteOption\": \"Detach\",\r\n        \"diskSizeGB\":
-        30\r\n      },\r\n      \"dataDisks\": []\r\n    },\r\n    \"osProfile\":
-        {\r\n      \"computerName\": \"myvm1\",\r\n      \"adminUsername\": \"zhoxing\",\r\n
-        \     \"linuxConfiguration\": {\r\n        \"disablePasswordAuthentication\":
-        true,\r\n        \"ssh\": {\r\n          \"publicKeys\": [\r\n            {\r\n
-        \             \"path\": \"/home/zhoxing/.ssh/authorized_keys\",\r\n              \"keyData\":
-        \"ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDdfdN+YWbkBS84r36yJbgfTI+Gx1W/ErinzCGvXBeO0S8F8JBc45BGTSaNmgOiqVMef3L9Dne7xUv6CwK+NaPRF23B2Sfv1VT1RWjKzgsgLAGiMvMuXA8/BfnKyQU43P6ImgXW/89E8OE9tS2TYLWiSSOjSTiCDnH+bJOw0Gqb25CLhZiahL1lS8MPuZHQaLa71GGUJS93GeBBF6eM2aFKitdFif38RsHxwY/aLlKhjwuy0XPI/4HcIHJR9uyEiFsPQXZMbFPwfvTWyRQDqS0KfxgFXtoVQgaNq74zJv94JdqDykoXYrempJU33jCC06vi39u+xZHAdAagp6e8z/WQc7fIPEOoKqNBKO3UhjXfLfHsxM9QvEiE2kL1xBekS9XrzqSvYZBi4tiSiLAYajOdI5dlv9HgvRTdCtnfF6v8iVGpwql/B1OTOn/A9uCmRIu3o9aMjsQoegqGX6e+h7omfVaExdClXOrW1Qi5l9mUSDLJgsGm1sT9nLaVJlPotFM=
-        Zhou.Xing@microsoft.com\\n\"\r\n            }\r\n          ]\r\n        },\r\n
-        \       \"provisionVMAgent\": true,\r\n        \"patchSettings\": {\r\n          \"patchMode\":
-        \"ImageDefault\",\r\n          \"assessmentMode\": \"ImageDefault\"\r\n        }\r\n
-        \     },\r\n      \"secrets\": [],\r\n      \"allowExtensionOperations\":
-        true,\r\n      \"requireGuestProvisionSignal\": true\r\n    },\r\n    \"networkProfile\":
-        {\"networkInterfaces\":[{\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001/providers/Microsoft.Network/networkInterfaces/myvm1VMNic\"}]},\r\n
-        \   \"provisioningState\": \"Succeeded\",\r\n    \"instanceView\": {\r\n      \"computerName\":
-        \"myvm1\",\r\n      \"osName\": \"ubuntu\",\r\n      \"osVersion\": \"18.04\",\r\n
-        \     \"vmAgent\": {\r\n        \"vmAgentVersion\": \"2.6.0.2\",\r\n        \"statuses\":
-        [\r\n          {\r\n            \"code\": \"ProvisioningState/succeeded\",\r\n
-        \           \"level\": \"Info\",\r\n            \"displayStatus\": \"Ready\",\r\n
-        \           \"message\": \"Guest Agent is running\",\r\n            \"time\":
-        \"2022-01-28T04:23:45+00:00\"\r\n          }\r\n        ],\r\n        \"extensionHandlers\":
-        [\r\n          {\r\n            \"type\": \"Microsoft.EnterpriseCloud.Monitoring.OmsAgentForLinux\",\r\n
-        \           \"typeHandlerVersion\": \"1.14.9\",\r\n            \"status\":
-        {\r\n              \"code\": \"ProvisioningState/succeeded\",\r\n              \"level\":
-        \"Info\",\r\n              \"displayStatus\": \"Ready\",\r\n              \"message\":
-        \"Plugin enabled\"\r\n            }\r\n          }\r\n        ]\r\n      },\r\n
-        \     \"disks\": [\r\n        {\r\n          \"name\": \"myvm1_disk1_4b99cc7931bd4ac8899766c4804e0b96\",\r\n
-        \         \"statuses\": [\r\n            {\r\n              \"code\": \"ProvisioningState/succeeded\",\r\n
-        \             \"level\": \"Info\",\r\n              \"displayStatus\": \"Provisioning
-        succeeded\",\r\n              \"time\": \"2022-01-28T04:22:32.7647937+00:00\"\r\n
-        \           }\r\n          ]\r\n        }\r\n      ],\r\n      \"extensions\":
-        [\r\n        {\r\n          \"name\": \"OmsAgentForLinux\",\r\n          \"type\":
-        \"Microsoft.EnterpriseCloud.Monitoring.OmsAgentForLinux\",\r\n          \"typeHandlerVersion\":
-        \"1.14.9\",\r\n          \"statuses\": [\r\n            {\r\n              \"code\":
-        \"ProvisioningState/succeeded\",\r\n              \"level\": \"Info\",\r\n
-        \             \"displayStatus\": \"Provisioning succeeded\",\r\n              \"message\":
-        \"Enable succeeded\"\r\n            }\r\n          ]\r\n        }\r\n      ],\r\n
-        \     \"hyperVGeneration\": \"V1\",\r\n      \"statuses\": [\r\n        {\r\n
-        \         \"code\": \"ProvisioningState/succeeded\",\r\n          \"level\":
-        \"Info\",\r\n          \"displayStatus\": \"Provisioning succeeded\",\r\n
-        \         \"time\": \"2022-01-28T04:23:51.5308573+00:00\"\r\n        },\r\n
-        \       {\r\n          \"code\": \"PowerState/running\",\r\n          \"level\":
-        \"Info\",\r\n          \"displayStatus\": \"VM running\"\r\n        }\r\n
-        \     ]\r\n    }\r\n  },\r\n  \"resources\": [\r\n    {\r\n      \"name\":
-        \"OmsAgentForLinux\",\r\n      \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001/providers/Microsoft.Compute/virtualMachines/myvm1/extensions/OmsAgentForLinux\",\r\n
-        \     \"type\": \"Microsoft.Compute/virtualMachines/extensions\",\r\n      \"location\":
-        \"eastus\",\r\n      \"properties\": {\r\n        \"autoUpgradeMinorVersion\":
-        true,\r\n        \"provisioningState\": \"Succeeded\",\r\n        \"publisher\":
-        \"Microsoft.EnterpriseCloud.Monitoring\",\r\n        \"type\": \"OmsAgentForLinux\",\r\n
-        \       \"typeHandlerVersion\": \"1.0\",\r\n        \"settings\": {\"workspaceId\":\"59f4ec92-738e-4c60-b51c-cdf206d40f01\",\"stopOnMultipleConnections\":\"true\"}\r\n
-        \     }\r\n    }\r\n  ]\r\n}"
+      string: "{\r\n  \"name\": \"myvm1\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001/providers/Microsoft.Compute/virtualMachines/myvm1\"\
+        ,\r\n  \"type\": \"Microsoft.Compute/virtualMachines\",\r\n  \"location\"\
+        : \"eastus\",\r\n  \"tags\": {},\r\n  \"properties\": {\r\n    \"vmId\": \"\
+        fbb7b971-da99-4c0d-b9c1-fa2af4f02308\",\r\n    \"hardwareProfile\": {\r\n\
+        \      \"vmSize\": \"Standard_DS1_v2\"\r\n    },\r\n    \"storageProfile\"\
+        : {\r\n      \"imageReference\": {\r\n        \"publisher\": \"Canonical\"\
+        ,\r\n        \"offer\": \"UbuntuServer\",\r\n        \"sku\": \"18.04-LTS\"\
+        ,\r\n        \"version\": \"latest\",\r\n        \"exactVersion\": \"18.04.202207120\"\
+        \r\n      },\r\n      \"osDisk\": {\r\n        \"osType\": \"Linux\",\r\n\
+        \        \"name\": \"myvm1_disk1_3cba0acf944a443aac92a1f8ec68bc7f\",\r\n \
+        \       \"createOption\": \"FromImage\",\r\n        \"caching\": \"ReadWrite\"\
+        ,\r\n        \"managedDisk\": {\r\n          \"storageAccountType\": \"Premium_LRS\"\
+        ,\r\n          \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001/providers/Microsoft.Compute/disks/myvm1_disk1_3cba0acf944a443aac92a1f8ec68bc7f\"\
+        \r\n        },\r\n        \"deleteOption\": \"Detach\",\r\n        \"diskSizeGB\"\
+        : 30\r\n      },\r\n      \"dataDisks\": []\r\n    },\r\n    \"osProfile\"\
+        : {\r\n      \"computerName\": \"myvm1\",\r\n      \"adminUsername\": \"kairu\"\
+        ,\r\n      \"linuxConfiguration\": {\r\n        \"disablePasswordAuthentication\"\
+        : true,\r\n        \"ssh\": {\r\n          \"publicKeys\": [\r\n         \
+        \   {\r\n              \"path\": \"/home/kairu/.ssh/authorized_keys\",\r\n\
+        \              \"keyData\": \"ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQC/+4SveJW8Wn+vIMzgKgDIauOhF2XRwqR4RJSrjQX8qodZntJ49dQSuaPT0AweyDVPS9TPXCXeGZMN+H+Y54Xj0Mgriau+Y4jPi2mUMKW0R93T5/Y1285JdE1YuXtnv27Xgc1g1lIfHJ5luWOi3sfC47j3AZvhE1NE69alemjIcQCIWlU0SyoZM1K+5hO3mBmZhR4BwuMJO9ruWITXx1t1GAvJgu+xtJNcVXW1ryTt6PvYk1OU5pNyIyNEFxD1Hhw8qOJ/R/jNcZ9wcjnykSqOI/NzNczz3GG2tLdu8gWEBZrpXy4vu9FoSamu3k+ADE6ArH06RM40FaSCNSegivEI4Y6HAjy3svPEU6Y+WvuGUfr0Lphefi7tFHZaEW08U0e6ERmwpFLtfMRWfdhn30ZRtiFDF/Gi4psXuTNPQrGyqc+KgmwCxEIVue8a3TAAVTaoK1JZXA/08IcUGNdhl6INAfHxXbaS15ptTXkqhO3rVL2ambJt8GxU3UTTymq3P20=\
+        \ kairu@microsoft.com\\n\"\r\n            }\r\n          ]\r\n        },\r\
+        \n        \"provisionVMAgent\": true,\r\n        \"patchSettings\": {\r\n\
+        \          \"patchMode\": \"ImageDefault\",\r\n          \"assessmentMode\"\
+        : \"ImageDefault\"\r\n        },\r\n        \"enableVMAgentPlatformUpdates\"\
+        : false\r\n      },\r\n      \"secrets\": [],\r\n      \"allowExtensionOperations\"\
+        : true,\r\n      \"requireGuestProvisionSignal\": true\r\n    },\r\n    \"\
+        networkProfile\": {\"networkInterfaces\":[{\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001/providers/Microsoft.Network/networkInterfaces/myvm1VMNic\"\
+        }]},\r\n    \"provisioningState\": \"Succeeded\",\r\n    \"instanceView\"\
+        : {\r\n      \"computerName\": \"myvm1\",\r\n      \"osName\": \"ubuntu\"\
+        ,\r\n      \"osVersion\": \"18.04\",\r\n      \"vmAgent\": {\r\n        \"\
+        vmAgentVersion\": \"2.7.1.0\",\r\n        \"statuses\": [\r\n          {\r\
+        \n            \"code\": \"ProvisioningState/succeeded\",\r\n            \"\
+        level\": \"Info\",\r\n            \"displayStatus\": \"Ready\",\r\n      \
+        \      \"message\": \"Guest Agent is running\",\r\n            \"time\": \"\
+        2022-07-18T08:42:56+00:00\"\r\n          }\r\n        ],\r\n        \"extensionHandlers\"\
+        : [\r\n          {\r\n            \"type\": \"Microsoft.EnterpriseCloud.Monitoring.OmsAgentForLinux\"\
+        ,\r\n            \"typeHandlerVersion\": \"1.14.16\",\r\n            \"status\"\
+        : {\r\n              \"code\": \"ProvisioningState/succeeded\",\r\n      \
+        \        \"level\": \"Info\",\r\n              \"displayStatus\": \"Ready\"\
+        ,\r\n              \"message\": \"Plugin enabled\"\r\n            }\r\n  \
+        \        }\r\n        ]\r\n      },\r\n      \"disks\": [\r\n        {\r\n\
+        \          \"name\": \"myvm1_disk1_3cba0acf944a443aac92a1f8ec68bc7f\",\r\n\
+        \          \"statuses\": [\r\n            {\r\n              \"code\": \"\
+        ProvisioningState/succeeded\",\r\n              \"level\": \"Info\",\r\n \
+        \             \"displayStatus\": \"Provisioning succeeded\",\r\n         \
+        \     \"time\": \"2022-07-18T08:41:39.6599796+00:00\"\r\n            }\r\n\
+        \          ]\r\n        }\r\n      ],\r\n      \"extensions\": [\r\n     \
+        \   {\r\n          \"name\": \"OmsAgentForLinux\",\r\n          \"type\":\
+        \ \"Microsoft.EnterpriseCloud.Monitoring.OmsAgentForLinux\",\r\n         \
+        \ \"typeHandlerVersion\": \"1.14.16\",\r\n          \"statuses\": [\r\n  \
+        \          {\r\n              \"code\": \"ProvisioningState/succeeded\",\r\
+        \n              \"level\": \"Info\",\r\n              \"displayStatus\": \"\
+        Provisioning succeeded\",\r\n              \"message\": \"Enable succeeded\"\
+        \r\n            }\r\n          ]\r\n        }\r\n      ],\r\n      \"hyperVGeneration\"\
+        : \"V1\",\r\n      \"statuses\": [\r\n        {\r\n          \"code\": \"\
+        ProvisioningState/succeeded\",\r\n          \"level\": \"Info\",\r\n     \
+        \     \"displayStatus\": \"Provisioning succeeded\",\r\n          \"time\"\
+        : \"2022-07-18T08:42:57.2703196+00:00\"\r\n        },\r\n        {\r\n   \
+        \       \"code\": \"PowerState/running\",\r\n          \"level\": \"Info\"\
+        ,\r\n          \"displayStatus\": \"VM running\"\r\n        }\r\n      ]\r\
+        \n    },\r\n    \"timeCreated\": \"2022-07-18T08:41:38.097444+00:00\"\r\n\
+        \  },\r\n  \"resources\": [\r\n    {\r\n      \"name\": \"OmsAgentForLinux\"\
+        ,\r\n      \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001/providers/Microsoft.Compute/virtualMachines/myvm1/extensions/OmsAgentForLinux\"\
+        ,\r\n      \"type\": \"Microsoft.Compute/virtualMachines/extensions\",\r\n\
+        \      \"location\": \"eastus\",\r\n      \"properties\": {\r\n        \"\
+        autoUpgradeMinorVersion\": true,\r\n        \"provisioningState\": \"Succeeded\"\
+        ,\r\n        \"publisher\": \"Microsoft.EnterpriseCloud.Monitoring\",\r\n\
+        \        \"type\": \"OmsAgentForLinux\",\r\n        \"typeHandlerVersion\"\
+        : \"1.0\",\r\n        \"settings\": {\"workspaceId\":\"a2652e92-e786-4c1f-b5f3-fe6aef3e8654\"\
+        ,\"stopOnMultipleConnections\":\"true\"}\r\n      }\r\n    }\r\n  ]\r\n}"
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '5539'
+      - '5637'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 28 Jan 2022 04:24:13 GMT
+      - Mon, 18 Jul 2022 08:43:16 GMT
       expires:
       - '-1'
       pragma:
@@ -905,7 +936,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-resource:
-      - Microsoft.Compute/LowCostGet3Min;3994,Microsoft.Compute/LowCostGet30Min;31990
+      - Microsoft.Compute/LowCostGet3Min;3994,Microsoft.Compute/LowCostGet30Min;31995
     status:
       code: 200
       message: OK
@@ -923,33 +954,35 @@ interactions:
       ParameterSetName:
       - -n -g --image --nsg-rule --workspace --generate-ssh-keys
       User-Agent:
-      - AZURECLI/2.32.0 azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.1 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.38.0 azsdk-python-azure-mgmt-network/20.0.0 Python/3.10.4 (Windows-10-10.0.22622-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001/providers/Microsoft.Network/networkInterfaces/myvm1VMNic?api-version=2018-01-01
   response:
     body:
-      string: "{\r\n  \"name\": \"myvm1VMNic\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001/providers/Microsoft.Network/networkInterfaces/myvm1VMNic\",\r\n
-        \ \"etag\": \"W/\\\"abe1cd82-5301-4218-895b-070760be9bb0\\\"\",\r\n  \"location\":
-        \"eastus\",\r\n  \"tags\": {},\r\n  \"properties\": {\r\n    \"provisioningState\":
-        \"Succeeded\",\r\n    \"resourceGuid\": \"29b0ba8f-6d88-4cb6-8410-8ece19551288\",\r\n
-        \   \"ipConfigurations\": [\r\n      {\r\n        \"name\": \"ipconfigmyvm1\",\r\n
-        \       \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001/providers/Microsoft.Network/networkInterfaces/myvm1VMNic/ipConfigurations/ipconfigmyvm1\",\r\n
-        \       \"etag\": \"W/\\\"abe1cd82-5301-4218-895b-070760be9bb0\\\"\",\r\n
-        \       \"type\": \"Microsoft.Network/networkInterfaces/ipConfigurations\",\r\n
-        \       \"properties\": {\r\n          \"provisioningState\": \"Succeeded\",\r\n
-        \         \"privateIPAddress\": \"10.0.0.4\",\r\n          \"privateIPAllocationMethod\":
-        \"Dynamic\",\r\n          \"publicIPAddress\": {\r\n            \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001/providers/Microsoft.Network/publicIPAddresses/myvm1PublicIP\"\r\n
-        \         },\r\n          \"subnet\": {\r\n            \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001/providers/Microsoft.Network/virtualNetworks/myvm1VNET/subnets/myvm1Subnet\"\r\n
-        \         },\r\n          \"primary\": true,\r\n          \"privateIPAddressVersion\":
-        \"IPv4\"\r\n        }\r\n      }\r\n    ],\r\n    \"dnsSettings\": {\r\n      \"dnsServers\":
-        [],\r\n      \"appliedDnsServers\": [],\r\n      \"internalDomainNameSuffix\":
-        \"k0s3f0iakcvu1p53frmptnxhrc.bx.internal.cloudapp.net\"\r\n    },\r\n    \"macAddress\":
-        \"00-22-48-2B-4D-00\",\r\n    \"enableAcceleratedNetworking\": false,\r\n
-        \   \"enableIPForwarding\": false,\r\n    \"networkSecurityGroup\": {\r\n
-        \     \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001/providers/Microsoft.Network/networkSecurityGroups/myvm1NSG\"\r\n
-        \   },\r\n    \"primary\": true,\r\n    \"virtualMachine\": {\r\n      \"id\":
-        \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001/providers/Microsoft.Compute/virtualMachines/myvm1\"\r\n
-        \   }\r\n  },\r\n  \"type\": \"Microsoft.Network/networkInterfaces\"\r\n}"
+      string: "{\r\n  \"name\": \"myvm1VMNic\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001/providers/Microsoft.Network/networkInterfaces/myvm1VMNic\"\
+        ,\r\n  \"etag\": \"W/\\\"9978ec7e-c9fa-4ee1-be95-5c5333bcd461\\\"\",\r\n \
+        \ \"tags\": {},\r\n  \"properties\": {\r\n    \"provisioningState\": \"Succeeded\"\
+        ,\r\n    \"resourceGuid\": \"92d8c8d7-2966-484d-accd-a6b386d71deb\",\r\n \
+        \   \"ipConfigurations\": [\r\n      {\r\n        \"name\": \"ipconfigmyvm1\"\
+        ,\r\n        \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001/providers/Microsoft.Network/networkInterfaces/myvm1VMNic/ipConfigurations/ipconfigmyvm1\"\
+        ,\r\n        \"etag\": \"W/\\\"9978ec7e-c9fa-4ee1-be95-5c5333bcd461\\\"\"\
+        ,\r\n        \"type\": \"Microsoft.Network/networkInterfaces/ipConfigurations\"\
+        ,\r\n        \"properties\": {\r\n          \"provisioningState\": \"Succeeded\"\
+        ,\r\n          \"privateIPAddress\": \"10.0.0.4\",\r\n          \"privateIPAllocationMethod\"\
+        : \"Dynamic\",\r\n          \"publicIPAddress\": {\r\n            \"id\":\
+        \ \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001/providers/Microsoft.Network/publicIPAddresses/myvm1PublicIP\"\
+        \r\n          },\r\n          \"subnet\": {\r\n            \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001/providers/Microsoft.Network/virtualNetworks/myvm1VNET/subnets/myvm1Subnet\"\
+        \r\n          },\r\n          \"primary\": true,\r\n          \"privateIPAddressVersion\"\
+        : \"IPv4\"\r\n        }\r\n      }\r\n    ],\r\n    \"dnsSettings\": {\r\n\
+        \      \"dnsServers\": [],\r\n      \"appliedDnsServers\": [],\r\n      \"\
+        internalDomainNameSuffix\": \"qmpgdiomtuqe3esltnrpfdwsbh.bx.internal.cloudapp.net\"\
+        \r\n    },\r\n    \"macAddress\": \"00-0D-3A-54-ED-B6\",\r\n    \"enableAcceleratedNetworking\"\
+        : false,\r\n    \"enableIPForwarding\": false,\r\n    \"networkSecurityGroup\"\
+        : {\r\n      \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001/providers/Microsoft.Network/networkSecurityGroups/myvm1NSG\"\
+        \r\n    },\r\n    \"primary\": true,\r\n    \"virtualMachine\": {\r\n    \
+        \  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001/providers/Microsoft.Compute/virtualMachines/myvm1\"\
+        \r\n    }\r\n  },\r\n  \"type\": \"Microsoft.Network/networkInterfaces\",\r\
+        \n  \"location\": \"eastus\"\r\n}"
     headers:
       cache-control:
       - no-cache
@@ -958,9 +991,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 28 Jan 2022 04:24:13 GMT
+      - Mon, 18 Jul 2022 08:43:17 GMT
       etag:
-      - W/"abe1cd82-5301-4218-895b-070760be9bb0"
+      - W/"9978ec7e-c9fa-4ee1-be95-5c5333bcd461"
       expires:
       - '-1'
       pragma:
@@ -977,7 +1010,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 99f63d96-92af-4ccf-b7ff-3255d5b30027
+      - 0f607568-77f9-4690-9693-6ac75ee28f3a
     status:
       code: 200
       message: OK
@@ -995,31 +1028,32 @@ interactions:
       ParameterSetName:
       - -n -g --image --nsg-rule --workspace --generate-ssh-keys
       User-Agent:
-      - AZURECLI/2.32.0 azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.1 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.38.0 azsdk-python-azure-mgmt-network/20.0.0 Python/3.10.4 (Windows-10-10.0.22622-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001/providers/Microsoft.Network/publicIPAddresses/myvm1PublicIP?api-version=2018-01-01
   response:
     body:
-      string: "{\r\n  \"name\": \"myvm1PublicIP\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001/providers/Microsoft.Network/publicIPAddresses/myvm1PublicIP\",\r\n
-        \ \"etag\": \"W/\\\"a0aa499b-c434-4157-845b-5dbf4350a037\\\"\",\r\n  \"location\":
-        \"eastus\",\r\n  \"tags\": {},\r\n  \"properties\": {\r\n    \"provisioningState\":
-        \"Succeeded\",\r\n    \"resourceGuid\": \"a0be1600-1b0a-4e38-b524-e2a6bb6ce2fd\",\r\n
-        \   \"ipAddress\": \"20.124.198.85\",\r\n    \"publicIPAddressVersion\": \"IPv4\",\r\n
-        \   \"publicIPAllocationMethod\": \"Dynamic\",\r\n    \"idleTimeoutInMinutes\":
-        4,\r\n    \"ipTags\": [],\r\n    \"ipConfiguration\": {\r\n      \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001/providers/Microsoft.Network/networkInterfaces/myvm1VMNic/ipConfigurations/ipconfigmyvm1\"\r\n
-        \   }\r\n  },\r\n  \"type\": \"Microsoft.Network/publicIPAddresses\",\r\n
-        \ \"sku\": {\r\n    \"name\": \"Basic\"\r\n  }\r\n}"
+      string: "{\r\n  \"name\": \"myvm1PublicIP\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001/providers/Microsoft.Network/publicIPAddresses/myvm1PublicIP\"\
+        ,\r\n  \"etag\": \"W/\\\"ecaaf06f-f604-4e9a-8faa-05d2ed24b7fe\\\"\",\r\n \
+        \ \"location\": \"eastus\",\r\n  \"tags\": {},\r\n  \"properties\": {\r\n\
+        \    \"provisioningState\": \"Succeeded\",\r\n    \"resourceGuid\": \"2d0f4f78-a9e9-4075-82ff-246f8ea6ea94\"\
+        ,\r\n    \"ipAddress\": \"20.25.44.189\",\r\n    \"publicIPAddressVersion\"\
+        : \"IPv4\",\r\n    \"publicIPAllocationMethod\": \"Dynamic\",\r\n    \"idleTimeoutInMinutes\"\
+        : 4,\r\n    \"ipTags\": [],\r\n    \"ipConfiguration\": {\r\n      \"id\"\
+        : \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001/providers/Microsoft.Network/networkInterfaces/myvm1VMNic/ipConfigurations/ipconfigmyvm1\"\
+        \r\n    }\r\n  },\r\n  \"type\": \"Microsoft.Network/publicIPAddresses\",\r\
+        \n  \"sku\": {\r\n    \"name\": \"Basic\"\r\n  }\r\n}"
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '915'
+      - '914'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 28 Jan 2022 04:24:14 GMT
+      - Mon, 18 Jul 2022 08:43:18 GMT
       etag:
-      - W/"a0aa499b-c434-4157-845b-5dbf4350a037"
+      - W/"ecaaf06f-f604-4e9a-8faa-05d2ed24b7fe"
       expires:
       - '-1'
       pragma:
@@ -1036,7 +1070,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 1ea4e5bb-29d2-410f-bf0b-ed3a1df46664
+      - ca9d412a-39d5-49fd-8eb0-6ae33930132b
     status:
       code: 200
       message: OK
@@ -1058,12 +1092,12 @@ interactions:
       ParameterSetName:
       - -n -g --image --nsg-rule --workspace --generate-ssh-keys
       User-Agent:
-      - AZURECLI/2.32.0 azsdk-python-mgmt-loganalytics/12.0.0 Python/3.8.1 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.38.0 azsdk-python-mgmt-loganalytics/13.0.0b4 Python/3.10.4 (Windows-10-10.0.22622-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_scheduled_query000001/providers/Microsoft.OperationalInsights/workspaces/clitest000002/dataSources/DataSource_LinuxPerformanceCollection_88888888-0000-0000-0000-000000000001?api-version=2020-08-01
   response:
     body:
-      string: '{"kind":"LinuxPerformanceCollection","properties":{"state":"Enabled"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001/providers/Microsoft.OperationalInsights/workspaces/clitest000002/datasources/DataSource_LinuxPerformanceCollection_88888888-0000-0000-0000-000000000001","etag":"W/\"datetime''2022-01-28T04%3A24%3A15.8278911Z''\"","name":"DataSource_LinuxPerformanceCollection_88888888-0000-0000-0000-000000000001","type":"Microsoft.OperationalInsights/workspaces/datasources"}'
+      string: '{"kind":"LinuxPerformanceCollection","properties":{"state":"Enabled"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001/providers/Microsoft.OperationalInsights/workspaces/clitest000002/datasources/DataSource_LinuxPerformanceCollection_88888888-0000-0000-0000-000000000001","etag":"W/\"datetime''2022-07-18T08%3A43%3A19.3172237Z''\"","name":"DataSource_LinuxPerformanceCollection_88888888-0000-0000-0000-000000000001","type":"Microsoft.OperationalInsights/workspaces/datasources"}'
     headers:
       cache-control:
       - no-cache
@@ -1072,7 +1106,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 28 Jan 2022 04:24:15 GMT
+      - Mon, 18 Jul 2022 08:43:19 GMT
       expires:
       - '-1'
       pragma:
@@ -1115,14 +1149,14 @@ interactions:
       ParameterSetName:
       - -n -g --image --nsg-rule --workspace --generate-ssh-keys
       User-Agent:
-      - AZURECLI/2.32.0 azsdk-python-mgmt-loganalytics/12.0.0 Python/3.8.1 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.38.0 azsdk-python-mgmt-loganalytics/13.0.0b4 Python/3.10.4 (Windows-10-10.0.22622-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_scheduled_query000001/providers/Microsoft.OperationalInsights/workspaces/clitest000002/dataSources/DataSource_LinuxPerformanceObject_88888888-0000-0000-0000-000000000002?api-version=2020-08-01
   response:
     body:
       string: '{"kind":"LinuxPerformanceObject","properties":{"instanceName":"*","intervalSeconds":10,"objectName":"Memory","performanceCounters":[{"counterName":"Available
         MBytes Memory"},{"counterName":"% Used Memory"},{"counterName":"% Used Swap
-        Space"}]},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001/providers/Microsoft.OperationalInsights/workspaces/clitest000002/datasources/DataSource_LinuxPerformanceObject_88888888-0000-0000-0000-000000000002","etag":"W/\"datetime''2022-01-28T04%3A24%3A16.4696492Z''\"","name":"DataSource_LinuxPerformanceObject_88888888-0000-0000-0000-000000000002","type":"Microsoft.OperationalInsights/workspaces/datasources"}'
+        Space"}]},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001/providers/Microsoft.OperationalInsights/workspaces/clitest000002/datasources/DataSource_LinuxPerformanceObject_88888888-0000-0000-0000-000000000002","etag":"W/\"datetime''2022-07-18T08%3A43%3A20.2234843Z''\"","name":"DataSource_LinuxPerformanceObject_88888888-0000-0000-0000-000000000002","type":"Microsoft.OperationalInsights/workspaces/datasources"}'
     headers:
       cache-control:
       - no-cache
@@ -1131,7 +1165,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 28 Jan 2022 04:24:15 GMT
+      - Mon, 18 Jul 2022 08:43:20 GMT
       expires:
       - '-1'
       pragma:
@@ -1173,13 +1207,13 @@ interactions:
       ParameterSetName:
       - -n -g --image --nsg-rule --workspace --generate-ssh-keys
       User-Agent:
-      - AZURECLI/2.32.0 azsdk-python-mgmt-loganalytics/12.0.0 Python/3.8.1 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.38.0 azsdk-python-mgmt-loganalytics/13.0.0b4 Python/3.10.4 (Windows-10-10.0.22622-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_scheduled_query000001/providers/Microsoft.OperationalInsights/workspaces/clitest000002/dataSources/DataSource_LinuxPerformanceObject_88888888-0000-0000-0000-000000000003?api-version=2020-08-01
   response:
     body:
       string: '{"kind":"LinuxPerformanceObject","properties":{"instanceName":"*","intervalSeconds":10,"objectName":"Processor","performanceCounters":[{"counterName":"%
-        Processor Time"},{"counterName":"% Privileged Time"}]},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001/providers/Microsoft.OperationalInsights/workspaces/clitest000002/datasources/DataSource_LinuxPerformanceObject_88888888-0000-0000-0000-000000000003","etag":"W/\"datetime''2022-01-28T04%3A24%3A17.2572372Z''\"","name":"DataSource_LinuxPerformanceObject_88888888-0000-0000-0000-000000000003","type":"Microsoft.OperationalInsights/workspaces/datasources"}'
+        Processor Time"},{"counterName":"% Privileged Time"}]},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001/providers/Microsoft.OperationalInsights/workspaces/clitest000002/datasources/DataSource_LinuxPerformanceObject_88888888-0000-0000-0000-000000000003","etag":"W/\"datetime''2022-07-18T08%3A43%3A20.9110965Z''\"","name":"DataSource_LinuxPerformanceObject_88888888-0000-0000-0000-000000000003","type":"Microsoft.OperationalInsights/workspaces/datasources"}'
     headers:
       cache-control:
       - no-cache
@@ -1188,7 +1222,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 28 Jan 2022 04:24:16 GMT
+      - Mon, 18 Jul 2022 08:43:20 GMT
       expires:
       - '-1'
       pragma:
@@ -1232,7 +1266,7 @@ interactions:
       ParameterSetName:
       - -n -g --image --nsg-rule --workspace --generate-ssh-keys
       User-Agent:
-      - AZURECLI/2.32.0 azsdk-python-mgmt-loganalytics/12.0.0 Python/3.8.1 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.38.0 azsdk-python-mgmt-loganalytics/13.0.0b4 Python/3.10.4 (Windows-10-10.0.22622-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_scheduled_query000001/providers/Microsoft.OperationalInsights/workspaces/clitest000002/dataSources/DataSource_LinuxPerformanceObject_88888888-0000-0000-0000-000000000004?api-version=2020-08-01
   response:
@@ -1240,7 +1274,7 @@ interactions:
       string: '{"kind":"LinuxPerformanceObject","properties":{"instanceName":"*","intervalSeconds":10,"objectName":"Logical
         Disk","performanceCounters":[{"counterName":"% Used Inodes"},{"counterName":"Free
         Megabytes"},{"counterName":"% Used Space"},{"counterName":"Disk Transfers/sec"},{"counterName":"Disk
-        Reads/sec"},{"counterName":"Disk Writes/sec"}]},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001/providers/Microsoft.OperationalInsights/workspaces/clitest000002/datasources/DataSource_LinuxPerformanceObject_88888888-0000-0000-0000-000000000004","etag":"W/\"datetime''2022-01-28T04%3A24%3A17.9743247Z''\"","name":"DataSource_LinuxPerformanceObject_88888888-0000-0000-0000-000000000004","type":"Microsoft.OperationalInsights/workspaces/datasources"}'
+        Reads/sec"},{"counterName":"Disk Writes/sec"}]},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001/providers/Microsoft.OperationalInsights/workspaces/clitest000002/datasources/DataSource_LinuxPerformanceObject_88888888-0000-0000-0000-000000000004","etag":"W/\"datetime''2022-07-18T08%3A43%3A21.7392318Z''\"","name":"DataSource_LinuxPerformanceObject_88888888-0000-0000-0000-000000000004","type":"Microsoft.OperationalInsights/workspaces/datasources"}'
     headers:
       cache-control:
       - no-cache
@@ -1249,7 +1283,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 28 Jan 2022 04:24:17 GMT
+      - Mon, 18 Jul 2022 08:43:21 GMT
       expires:
       - '-1'
       pragma:
@@ -1291,13 +1325,13 @@ interactions:
       ParameterSetName:
       - -n -g --image --nsg-rule --workspace --generate-ssh-keys
       User-Agent:
-      - AZURECLI/2.32.0 azsdk-python-mgmt-loganalytics/12.0.0 Python/3.8.1 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.38.0 azsdk-python-mgmt-loganalytics/13.0.0b4 Python/3.10.4 (Windows-10-10.0.22622-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_scheduled_query000001/providers/Microsoft.OperationalInsights/workspaces/clitest000002/dataSources/DataSource_LinuxPerformanceObject_88888888-0000-0000-0000-000000000005?api-version=2020-08-01
   response:
     body:
       string: '{"kind":"LinuxPerformanceObject","properties":{"instanceName":"*","intervalSeconds":10,"objectName":"Network","performanceCounters":[{"counterName":"Total
-        Bytes Transmitted"},{"counterName":"Total Bytes Received"}]},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001/providers/Microsoft.OperationalInsights/workspaces/clitest000002/datasources/DataSource_LinuxPerformanceObject_88888888-0000-0000-0000-000000000005","etag":"W/\"datetime''2022-01-28T04%3A24%3A18.7667825Z''\"","name":"DataSource_LinuxPerformanceObject_88888888-0000-0000-0000-000000000005","type":"Microsoft.OperationalInsights/workspaces/datasources"}'
+        Bytes Transmitted"},{"counterName":"Total Bytes Received"}]},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001/providers/Microsoft.OperationalInsights/workspaces/clitest000002/datasources/DataSource_LinuxPerformanceObject_88888888-0000-0000-0000-000000000005","etag":"W/\"datetime''2022-07-18T08%3A43%3A22.6142900Z''\"","name":"DataSource_LinuxPerformanceObject_88888888-0000-0000-0000-000000000005","type":"Microsoft.OperationalInsights/workspaces/datasources"}'
     headers:
       cache-control:
       - no-cache
@@ -1306,7 +1340,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 28 Jan 2022 04:24:19 GMT
+      - Mon, 18 Jul 2022 08:43:22 GMT
       expires:
       - '-1'
       pragma:
@@ -1346,12 +1380,12 @@ interactions:
       ParameterSetName:
       - -n -g --image --nsg-rule --workspace --generate-ssh-keys
       User-Agent:
-      - AZURECLI/2.32.0 azsdk-python-mgmt-loganalytics/12.0.0 Python/3.8.1 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.38.0 azsdk-python-mgmt-loganalytics/13.0.0b4 Python/3.10.4 (Windows-10-10.0.22622-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_scheduled_query000001/providers/Microsoft.OperationalInsights/workspaces/clitest000002/dataSources/DataSource_LinuxSyslogCollection_88888888-0000-0000-0000-000000000006?api-version=2020-08-01
   response:
     body:
-      string: '{"kind":"LinuxSyslogCollection","properties":{"state":"Enabled"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001/providers/Microsoft.OperationalInsights/workspaces/clitest000002/datasources/DataSource_LinuxSyslogCollection_88888888-0000-0000-0000-000000000006","etag":"W/\"datetime''2022-01-28T04%3A24%3A19.5222547Z''\"","name":"DataSource_LinuxSyslogCollection_88888888-0000-0000-0000-000000000006","type":"Microsoft.OperationalInsights/workspaces/datasources"}'
+      string: '{"kind":"LinuxSyslogCollection","properties":{"state":"Enabled"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001/providers/Microsoft.OperationalInsights/workspaces/clitest000002/datasources/DataSource_LinuxSyslogCollection_88888888-0000-0000-0000-000000000006","etag":"W/\"datetime''2022-07-18T08%3A43%3A23.4581062Z''\"","name":"DataSource_LinuxSyslogCollection_88888888-0000-0000-0000-000000000006","type":"Microsoft.OperationalInsights/workspaces/datasources"}'
     headers:
       cache-control:
       - no-cache
@@ -1360,7 +1394,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 28 Jan 2022 04:24:20 GMT
+      - Mon, 18 Jul 2022 08:43:23 GMT
       expires:
       - '-1'
       pragma:
@@ -1401,12 +1435,12 @@ interactions:
       ParameterSetName:
       - -n -g --image --nsg-rule --workspace --generate-ssh-keys
       User-Agent:
-      - AZURECLI/2.32.0 azsdk-python-mgmt-loganalytics/12.0.0 Python/3.8.1 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.38.0 azsdk-python-mgmt-loganalytics/13.0.0b4 Python/3.10.4 (Windows-10-10.0.22622-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_scheduled_query000001/providers/Microsoft.OperationalInsights/workspaces/clitest000002/dataSources/DataSource_LinuxSyslog_88888888-0000-0000-0000-000000000007?api-version=2020-08-01
   response:
     body:
-      string: '{"kind":"LinuxSyslog","properties":{"syslogName":"syslog","syslogSeverities":[{"severity":"notice"},{"severity":"info"},{"severity":"debug"}]},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001/providers/Microsoft.OperationalInsights/workspaces/clitest000002/datasources/DataSource_LinuxSyslog_88888888-0000-0000-0000-000000000007","etag":"W/\"datetime''2022-01-28T04%3A24%3A20.4991842Z''\"","name":"DataSource_LinuxSyslog_88888888-0000-0000-0000-000000000007","type":"Microsoft.OperationalInsights/workspaces/datasources"}'
+      string: '{"kind":"LinuxSyslog","properties":{"syslogName":"syslog","syslogSeverities":[{"severity":"notice"},{"severity":"info"},{"severity":"debug"}]},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001/providers/Microsoft.OperationalInsights/workspaces/clitest000002/datasources/DataSource_LinuxSyslog_88888888-0000-0000-0000-000000000007","etag":"W/\"datetime''2022-07-18T08%3A43%3A24.5052145Z''\"","name":"DataSource_LinuxSyslog_88888888-0000-0000-0000-000000000007","type":"Microsoft.OperationalInsights/workspaces/datasources"}'
     headers:
       cache-control:
       - no-cache
@@ -1415,7 +1449,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 28 Jan 2022 04:24:20 GMT
+      - Mon, 18 Jul 2022 08:43:24 GMT
       expires:
       - '-1'
       pragma:
@@ -1451,12 +1485,12 @@ interactions:
       ParameterSetName:
       - -g -n --scopes --condition --condition-query --description
       User-Agent:
-      - AZURECLI/2.32.0 azsdk-python-azure-mgmt-resource/20.0.0 Python/3.8.1 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.38.0 azsdk-python-azure-mgmt-resource/21.1.0b1 Python/3.10.4 (Windows-10-10.0.22622-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_scheduled_query000001?api-version=2021-04-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001","name":"cli_test_scheduled_query000001","type":"Microsoft.Resources/resourceGroups","location":"eastus","tags":{"product":"azurecli","cause":"automation","date":"2022-01-28T04:19:04Z"},"properties":{"provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001","name":"cli_test_scheduled_query000001","type":"Microsoft.Resources/resourceGroups","location":"eastus","tags":{"product":"azurecli","cause":"automation","date":"2022-07-18T08:40:13Z"},"properties":{"provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
@@ -1465,7 +1499,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 28 Jan 2022 04:27:22 GMT
+      - Mon, 18 Jul 2022 08:46:28 GMT
       expires:
       - '-1'
       pragma:
@@ -1504,23 +1538,23 @@ interactions:
       ParameterSetName:
       - -g -n --scopes --condition --condition-query --description
       User-Agent:
-      - AZURECLI/2.32.0 azsdk-python-mgmt-monitor/1.0.0b1 Python/3.8.1 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.38.0 azsdk-python-mgmt-monitor/1.0.0b1 Python/3.10.4 (Windows-10-10.0.22622-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001/providers/Microsoft.Insights/scheduledQueryRules/sq01?api-version=2021-08-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001/providers/microsoft.insights/scheduledqueryrules/sq01","name":"sq01","type":"microsoft.insights/scheduledqueryrules","location":"eastus","systemData":{"createdBy":"zhoxing@microsoft.com","createdByType":"User","createdAt":"2022-01-28T04:27:29.2470432Z","lastModifiedBy":"zhoxing@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-01-28T04:27:29.2470432Z"},"properties":{"description":"Test
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001/providers/microsoft.insights/scheduledqueryrules/sq01","name":"sq01","type":"microsoft.insights/scheduledqueryrules","location":"eastus","systemData":{"createdBy":"kairu@microsoft.com","createdByType":"User","createdAt":"2022-07-18T08:46:33.0689308Z","lastModifiedBy":"kairu@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-07-18T08:46:33.0689308Z"},"properties":{"description":"Test
         rule","severity":2,"enabled":true,"evaluationFrequency":"PT5M","scopes":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001/providers/Microsoft.Compute/virtualMachines/myvm1"],"windowSize":"PT5M","criteria":{"allOf":[{"query":"union
         Event, Syslog | where TimeGenerated > ago(1h)","timeAggregation":"Count","dimensions":[],"operator":"GreaterThan","threshold":360.0,"failingPeriods":{"numberOfEvaluationPeriods":1,"minFailingPeriodsToAlert":1}}]},"autoMitigate":true,"checkWorkspaceAlertsStorageConfigured":false,"skipQueryValidation":false}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1099'
+      - '1095'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 28 Jan 2022 04:27:36 GMT
+      - Mon, 18 Jul 2022 08:46:37 GMT
       expires:
       - '-1'
       pragma:
@@ -1538,7 +1572,7 @@ interactions:
       x-rate-limit-remaining:
       - '14'
       x-rate-limit-reset:
-      - '2022-01-28T04:28:29.2507144Z'
+      - '2022-07-18T08:47:33.8040944Z'
     status:
       code: 201
       message: Created
@@ -1556,12 +1590,12 @@ interactions:
       ParameterSetName:
       - -g -n --scopes --condition --description
       User-Agent:
-      - AZURECLI/2.32.0 azsdk-python-azure-mgmt-resource/20.0.0 Python/3.8.1 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.38.0 azsdk-python-azure-mgmt-resource/21.1.0b1 Python/3.10.4 (Windows-10-10.0.22622-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_scheduled_query000001?api-version=2021-04-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001","name":"cli_test_scheduled_query000001","type":"Microsoft.Resources/resourceGroups","location":"eastus","tags":{"product":"azurecli","cause":"automation","date":"2022-01-28T04:19:04Z"},"properties":{"provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001","name":"cli_test_scheduled_query000001","type":"Microsoft.Resources/resourceGroups","location":"eastus","tags":{"product":"azurecli","cause":"automation","date":"2022-07-18T08:40:13Z"},"properties":{"provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
@@ -1570,7 +1604,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 28 Jan 2022 04:27:37 GMT
+      - Mon, 18 Jul 2022 08:46:38 GMT
       expires:
       - '-1'
       pragma:
@@ -1609,23 +1643,23 @@ interactions:
       ParameterSetName:
       - -g -n --scopes --condition --description
       User-Agent:
-      - AZURECLI/2.32.0 azsdk-python-mgmt-monitor/1.0.0b1 Python/3.8.1 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.38.0 azsdk-python-mgmt-monitor/1.0.0b1 Python/3.10.4 (Windows-10-10.0.22622-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001/providers/Microsoft.Insights/scheduledQueryRules/sq02?api-version=2021-08-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001/providers/microsoft.insights/scheduledqueryrules/sq02","name":"sq02","type":"microsoft.insights/scheduledqueryrules","location":"eastus","systemData":{"createdBy":"zhoxing@microsoft.com","createdByType":"User","createdAt":"2022-01-28T04:27:42.9354861Z","lastModifiedBy":"zhoxing@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-01-28T04:27:42.9354861Z"},"properties":{"description":"Test
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001/providers/microsoft.insights/scheduledqueryrules/sq02","name":"sq02","type":"microsoft.insights/scheduledqueryrules","location":"eastus","systemData":{"createdBy":"kairu@microsoft.com","createdByType":"User","createdAt":"2022-07-18T08:46:43.6034029Z","lastModifiedBy":"kairu@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-07-18T08:46:43.6034029Z"},"properties":{"description":"Test
         rule","severity":2,"enabled":true,"evaluationFrequency":"PT5M","scopes":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001"],"windowSize":"PT5M","criteria":{"allOf":[{"query":"union
         Event, Syslog | where TimeGenerated > ago(1h)","timeAggregation":"Count","dimensions":[],"resourceIdColumn":"_ResourceId","operator":"GreaterThan","threshold":360.0,"failingPeriods":{"numberOfEvaluationPeriods":1,"minFailingPeriodsToAlert":1}}]},"autoMitigate":true,"checkWorkspaceAlertsStorageConfigured":false,"skipQueryValidation":false}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1082'
+      - '1078'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 28 Jan 2022 04:27:47 GMT
+      - Mon, 18 Jul 2022 08:46:46 GMT
       expires:
       - '-1'
       pragma:
@@ -1643,7 +1677,7 @@ interactions:
       x-rate-limit-remaining:
       - '14'
       x-rate-limit-reset:
-      - '2022-01-28T04:28:43.7670603Z'
+      - '2022-07-18T08:47:43.7146264Z'
     status:
       code: 201
       message: Created
@@ -1662,23 +1696,23 @@ interactions:
       - -g -n --condition --condition-query --description --severity --disabled --evaluation-frequency
         --window-size
       User-Agent:
-      - AZURECLI/2.32.0 azsdk-python-mgmt-monitor/1.0.0b1 Python/3.8.1 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.38.0 azsdk-python-mgmt-monitor/1.0.0b1 Python/3.10.4 (Windows-10-10.0.22622-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001/providers/Microsoft.Insights/scheduledQueryRules/sq01?api-version=2021-08-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001/providers/microsoft.insights/scheduledqueryrules/sq01","name":"sq01","type":"microsoft.insights/scheduledqueryrules","location":"eastus","systemData":{"createdBy":"zhoxing@microsoft.com","createdByType":"User","createdAt":"2022-01-28T04:27:29.2470432Z","lastModifiedBy":"zhoxing@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-01-28T04:27:29.2470432Z"},"properties":{"description":"Test
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001/providers/microsoft.insights/scheduledqueryrules/sq01","name":"sq01","type":"microsoft.insights/scheduledqueryrules","location":"eastus","systemData":{"createdBy":"kairu@microsoft.com","createdByType":"User","createdAt":"2022-07-18T08:46:33.0689308Z","lastModifiedBy":"kairu@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-07-18T08:46:33.0689308Z"},"properties":{"description":"Test
         rule","severity":2,"enabled":true,"evaluationFrequency":"PT5M","scopes":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001/providers/Microsoft.Compute/virtualMachines/myvm1"],"windowSize":"PT5M","criteria":{"allOf":[{"query":"union
         Event, Syslog | where TimeGenerated > ago(1h)","timeAggregation":"Count","dimensions":[],"operator":"GreaterThan","threshold":360.0,"failingPeriods":{"numberOfEvaluationPeriods":1,"minFailingPeriodsToAlert":1}}]},"autoMitigate":true,"checkWorkspaceAlertsStorageConfigured":false,"skipQueryValidation":false}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1099'
+      - '1095'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 28 Jan 2022 04:27:48 GMT
+      - Mon, 18 Jul 2022 08:46:48 GMT
       expires:
       - '-1'
       pragma:
@@ -1698,7 +1732,7 @@ interactions:
       x-rate-limit-remaining:
       - '49'
       x-rate-limit-reset:
-      - '2022-01-28T04:28:48.8160279Z'
+      - '2022-07-18T08:47:47.6820768Z'
     status:
       code: 200
       message: OK
@@ -1728,23 +1762,23 @@ interactions:
       - -g -n --condition --condition-query --description --severity --disabled --evaluation-frequency
         --window-size
       User-Agent:
-      - AZURECLI/2.32.0 azsdk-python-mgmt-monitor/1.0.0b1 Python/3.8.1 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.38.0 azsdk-python-mgmt-monitor/1.0.0b1 Python/3.10.4 (Windows-10-10.0.22622-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001/providers/Microsoft.Insights/scheduledQueryRules/sq01?api-version=2021-08-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001/providers/microsoft.insights/scheduledqueryrules/sq01","name":"sq01","type":"microsoft.insights/scheduledqueryrules","location":"eastus","systemData":{"createdBy":"zhoxing@microsoft.com","createdByType":"User","createdAt":"2022-01-28T04:27:29.2470432Z","lastModifiedBy":"zhoxing@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-01-28T04:27:49.4972395Z"},"properties":{"description":"Test
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001/providers/microsoft.insights/scheduledqueryrules/sq01","name":"sq01","type":"microsoft.insights/scheduledqueryrules","location":"eastus","systemData":{"createdBy":"kairu@microsoft.com","createdByType":"User","createdAt":"2022-07-18T08:46:33.0689308Z","lastModifiedBy":"kairu@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-07-18T08:46:48.7660929Z"},"properties":{"description":"Test
         rule 2","severity":4,"enabled":false,"evaluationFrequency":"PT10M","scopes":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001/providers/Microsoft.Compute/virtualMachines/myvm1"],"windowSize":"PT10M","criteria":{"allOf":[{"query":"union
         Event | where TimeGenerated > ago(2h)","timeAggregation":"Count","dimensions":[],"resourceIdColumn":"_ResourceId","operator":"LessThan","threshold":260.0,"failingPeriods":{"numberOfEvaluationPeriods":3,"minFailingPeriodsToAlert":2}}]},"autoMitigate":true,"checkWorkspaceAlertsStorageConfigured":false,"skipQueryValidation":false}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1126'
+      - '1122'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 28 Jan 2022 04:27:50 GMT
+      - Mon, 18 Jul 2022 08:47:01 GMT
       expires:
       - '-1'
       pragma:
@@ -1760,13 +1794,13 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1198'
+      - '1199'
       x-rate-limit-limit:
       - 1m
       x-rate-limit-remaining:
-      - '13'
+      - '14'
       x-rate-limit-reset:
-      - '2022-01-28T04:28:29.2507144Z'
+      - '2022-07-18T08:47:48.7918052Z'
     status:
       code: 200
       message: OK
@@ -1784,23 +1818,23 @@ interactions:
       ParameterSetName:
       - -g -n --mad --auto-mitigate --skip-query-validation
       User-Agent:
-      - AZURECLI/2.32.0 azsdk-python-mgmt-monitor/1.0.0b1 Python/3.8.1 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.38.0 azsdk-python-mgmt-monitor/1.0.0b1 Python/3.10.4 (Windows-10-10.0.22622-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001/providers/Microsoft.Insights/scheduledQueryRules/sq01?api-version=2021-08-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001/providers/microsoft.insights/scheduledqueryrules/sq01","name":"sq01","type":"microsoft.insights/scheduledqueryrules","location":"eastus","systemData":{"createdBy":"zhoxing@microsoft.com","createdByType":"User","createdAt":"2022-01-28T04:27:29.2470432Z","lastModifiedBy":"zhoxing@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-01-28T04:27:49.4972395Z"},"properties":{"description":"Test
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001/providers/microsoft.insights/scheduledqueryrules/sq01","name":"sq01","type":"microsoft.insights/scheduledqueryrules","location":"eastus","systemData":{"createdBy":"kairu@microsoft.com","createdByType":"User","createdAt":"2022-07-18T08:46:33.0689308Z","lastModifiedBy":"kairu@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-07-18T08:46:48.7660929Z"},"properties":{"description":"Test
         rule 2","severity":4,"enabled":false,"evaluationFrequency":"PT10M","scopes":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001/providers/Microsoft.Compute/virtualMachines/myvm1"],"windowSize":"PT10M","criteria":{"allOf":[{"query":"union
         Event | where TimeGenerated > ago(2h)","timeAggregation":"Count","dimensions":[],"resourceIdColumn":"_ResourceId","operator":"LessThan","threshold":260.0,"failingPeriods":{"numberOfEvaluationPeriods":3,"minFailingPeriodsToAlert":2}}]},"autoMitigate":true,"checkWorkspaceAlertsStorageConfigured":false,"skipQueryValidation":false}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1126'
+      - '1122'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 28 Jan 2022 04:27:51 GMT
+      - Mon, 18 Jul 2022 08:47:02 GMT
       expires:
       - '-1'
       pragma:
@@ -1820,7 +1854,7 @@ interactions:
       x-rate-limit-remaining:
       - '49'
       x-rate-limit-reset:
-      - '2022-01-28T04:28:51.9201616Z'
+      - '2022-07-18T08:48:03.4279374Z'
     status:
       code: 200
       message: OK
@@ -1849,23 +1883,23 @@ interactions:
       ParameterSetName:
       - -g -n --mad --auto-mitigate --skip-query-validation
       User-Agent:
-      - AZURECLI/2.32.0 azsdk-python-mgmt-monitor/1.0.0b1 Python/3.8.1 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.38.0 azsdk-python-mgmt-monitor/1.0.0b1 Python/3.10.4 (Windows-10-10.0.22622-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001/providers/Microsoft.Insights/scheduledQueryRules/sq01?api-version=2021-08-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001/providers/microsoft.insights/scheduledqueryrules/sq01","name":"sq01","type":"microsoft.insights/scheduledqueryrules","location":"eastus","systemData":{"createdBy":"zhoxing@microsoft.com","createdByType":"User","createdAt":"2022-01-28T04:27:29.2470432Z","lastModifiedBy":"zhoxing@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-01-28T04:27:52.6372721Z"},"properties":{"description":"Test
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001/providers/microsoft.insights/scheduledqueryrules/sq01","name":"sq01","type":"microsoft.insights/scheduledqueryrules","location":"eastus","systemData":{"createdBy":"kairu@microsoft.com","createdByType":"User","createdAt":"2022-07-18T08:46:33.0689308Z","lastModifiedBy":"kairu@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-07-18T08:47:04.2815259Z"},"properties":{"description":"Test
         rule 2","severity":4,"enabled":true,"evaluationFrequency":"PT10M","scopes":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001/providers/Microsoft.Compute/virtualMachines/myvm1"],"windowSize":"PT10M","criteria":{"allOf":[{"query":"union
         Event | where TimeGenerated > ago(2h)","timeAggregation":"Count","dimensions":[],"resourceIdColumn":"_ResourceId","operator":"LessThan","threshold":260.0,"failingPeriods":{"numberOfEvaluationPeriods":3,"minFailingPeriodsToAlert":2}}]},"autoMitigate":false,"muteActionsDuration":"PT30M","checkWorkspaceAlertsStorageConfigured":false,"skipQueryValidation":true}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1155'
+      - '1151'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 28 Jan 2022 04:27:55 GMT
+      - Mon, 18 Jul 2022 08:47:08 GMT
       expires:
       - '-1'
       pragma:
@@ -1881,18 +1915,18 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '1198'
       x-rate-limit-limit:
       - 1m
       x-rate-limit-remaining:
       - '14'
       x-rate-limit-reset:
-      - '2022-01-28T04:28:52.6126925Z'
+      - '2022-07-18T08:48:04.3983552Z'
     status:
       code: 200
       message: OK
 - request:
-    body: '{"location": "global", "properties": {"groupShortName": "clitest4mavl",
+    body: '{"location": "global", "properties": {"groupShortName": "clitestxlnd7",
       "enabled": true, "emailReceivers": [], "smsReceivers": [], "webhookReceivers":
       [], "itsmReceivers": [], "azureAppPushReceivers": [], "automationRunbookReceivers":
       [], "voiceReceivers": [], "logicAppReceivers": [], "azureFunctionReceivers":
@@ -1913,12 +1947,12 @@ interactions:
       ParameterSetName:
       - -n -g
       User-Agent:
-      - AZURECLI/2.32.0 azsdk-python-azure-mgmt-monitor/3.0.0 Python/3.8.1 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.38.0 azsdk-python-azure-mgmt-monitor/3.0.0 Python/3.10.4 (Windows-10-10.0.22622-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001/providers/Microsoft.Insights/actionGroups/clitest000003?api-version=2021-09-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001/providers/microsoft.insights/actionGroups/clitest000003","type":"Microsoft.Insights/ActionGroups","name":"clitest000003","location":"Global","kind":null,"tags":null,"properties":{"groupShortName":"clitest4mavl","enabled":true,"emailReceivers":[],"smsReceivers":[],"webhookReceivers":[],"eventHubReceivers":[],"itsmReceivers":[],"azureAppPushReceivers":[],"automationRunbookReceivers":[],"voiceReceivers":[],"logicAppReceivers":[],"azureFunctionReceivers":[],"armRoleReceivers":[]},"identity":null}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001/providers/microsoft.insights/actionGroups/clitest000003","type":"Microsoft.Insights/ActionGroups","name":"clitest000003","location":"Global","kind":null,"tags":null,"properties":{"groupShortName":"clitestxlnd7","enabled":true,"emailReceivers":[],"smsReceivers":[],"webhookReceivers":[],"eventHubReceivers":[],"itsmReceivers":[],"azureAppPushReceivers":[],"automationRunbookReceivers":[],"voiceReceivers":[],"logicAppReceivers":[],"azureFunctionReceivers":[],"armRoleReceivers":[]},"identity":null}'
     headers:
       cache-control:
       - no-cache
@@ -1927,7 +1961,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 28 Jan 2022 04:28:04 GMT
+      - Mon, 18 Jul 2022 08:47:14 GMT
       expires:
       - '-1'
       pragma:
@@ -1944,7 +1978,7 @@ interactions:
       code: 201
       message: Created
 - request:
-    body: '{"location": "global", "properties": {"groupShortName": "clitest4dg5w",
+    body: '{"location": "global", "properties": {"groupShortName": "clitestbyk5h",
       "enabled": true, "emailReceivers": [], "smsReceivers": [], "webhookReceivers":
       [], "itsmReceivers": [], "azureAppPushReceivers": [], "automationRunbookReceivers":
       [], "voiceReceivers": [], "logicAppReceivers": [], "azureFunctionReceivers":
@@ -1965,12 +1999,12 @@ interactions:
       ParameterSetName:
       - -n -g
       User-Agent:
-      - AZURECLI/2.32.0 azsdk-python-azure-mgmt-monitor/3.0.0 Python/3.8.1 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.38.0 azsdk-python-azure-mgmt-monitor/3.0.0 Python/3.10.4 (Windows-10-10.0.22622-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001/providers/Microsoft.Insights/actionGroups/clitest000004?api-version=2021-09-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001/providers/microsoft.insights/actionGroups/clitest000004","type":"Microsoft.Insights/ActionGroups","name":"clitest000004","location":"Global","kind":null,"tags":null,"properties":{"groupShortName":"clitest4dg5w","enabled":true,"emailReceivers":[],"smsReceivers":[],"webhookReceivers":[],"eventHubReceivers":[],"itsmReceivers":[],"azureAppPushReceivers":[],"automationRunbookReceivers":[],"voiceReceivers":[],"logicAppReceivers":[],"azureFunctionReceivers":[],"armRoleReceivers":[]},"identity":null}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001/providers/microsoft.insights/actionGroups/clitest000004","type":"Microsoft.Insights/ActionGroups","name":"clitest000004","location":"Global","kind":null,"tags":null,"properties":{"groupShortName":"clitestbyk5h","enabled":true,"emailReceivers":[],"smsReceivers":[],"webhookReceivers":[],"eventHubReceivers":[],"itsmReceivers":[],"azureAppPushReceivers":[],"automationRunbookReceivers":[],"voiceReceivers":[],"logicAppReceivers":[],"azureFunctionReceivers":[],"armRoleReceivers":[]},"identity":null}'
     headers:
       cache-control:
       - no-cache
@@ -1979,7 +2013,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 28 Jan 2022 04:28:10 GMT
+      - Mon, 18 Jul 2022 08:47:20 GMT
       expires:
       - '-1'
       pragma:
@@ -1991,7 +2025,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-resource-requests:
-      - '23'
+      - '24'
     status:
       code: 201
       message: Created
@@ -2009,12 +2043,12 @@ interactions:
       ParameterSetName:
       - -g -n --scopes --condition --description --action-groups --custom-properties
       User-Agent:
-      - AZURECLI/2.32.0 azsdk-python-azure-mgmt-resource/20.0.0 Python/3.8.1 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.38.0 azsdk-python-azure-mgmt-resource/21.1.0b1 Python/3.10.4 (Windows-10-10.0.22622-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_scheduled_query000001?api-version=2021-04-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001","name":"cli_test_scheduled_query000001","type":"Microsoft.Resources/resourceGroups","location":"eastus","tags":{"product":"azurecli","cause":"automation","date":"2022-01-28T04:19:04Z"},"properties":{"provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001","name":"cli_test_scheduled_query000001","type":"Microsoft.Resources/resourceGroups","location":"eastus","tags":{"product":"azurecli","cause":"automation","date":"2022-07-18T08:40:13Z"},"properties":{"provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
@@ -2023,7 +2057,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 28 Jan 2022 04:28:10 GMT
+      - Mon, 18 Jul 2022 08:47:20 GMT
       expires:
       - '-1'
       pragma:
@@ -2063,23 +2097,23 @@ interactions:
       ParameterSetName:
       - -g -n --scopes --condition --description --action-groups --custom-properties
       User-Agent:
-      - AZURECLI/2.32.0 azsdk-python-mgmt-monitor/1.0.0b1 Python/3.8.1 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.38.0 azsdk-python-mgmt-monitor/1.0.0b1 Python/3.10.4 (Windows-10-10.0.22622-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001/providers/Microsoft.Insights/scheduledQueryRules/sq03?api-version=2021-08-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001/providers/microsoft.insights/scheduledqueryrules/sq03","name":"sq03","type":"microsoft.insights/scheduledqueryrules","location":"eastus","systemData":{"createdBy":"zhoxing@microsoft.com","createdByType":"User","createdAt":"2022-01-28T04:28:17.6869819Z","lastModifiedBy":"zhoxing@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-01-28T04:28:17.6869819Z"},"properties":{"description":"Test
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001/providers/microsoft.insights/scheduledqueryrules/sq03","name":"sq03","type":"microsoft.insights/scheduledqueryrules","location":"eastus","systemData":{"createdBy":"kairu@microsoft.com","createdByType":"User","createdAt":"2022-07-18T08:47:26.8569753Z","lastModifiedBy":"kairu@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-07-18T08:47:26.8569753Z"},"properties":{"description":"Test
         rule","severity":2,"enabled":true,"evaluationFrequency":"PT5M","scopes":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001"],"windowSize":"PT5M","criteria":{"allOf":[{"query":"union
         Event, Syslog | where TimeGenerated > ago(1h)","timeAggregation":"Count","dimensions":[],"resourceIdColumn":"_ResourceId","operator":"GreaterThan","threshold":360.0,"failingPeriods":{"numberOfEvaluationPeriods":1,"minFailingPeriodsToAlert":1}}]},"autoMitigate":true,"actions":{"actionGroups":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001/providers/microsoft.insights/actionGroups/clitest000003"],"customProperties":{"k1":"v1"}},"checkWorkspaceAlertsStorageConfigured":false,"skipQueryValidation":false}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1298'
+      - '1294'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 28 Jan 2022 04:28:21 GMT
+      - Mon, 18 Jul 2022 08:47:34 GMT
       expires:
       - '-1'
       pragma:
@@ -2091,13 +2125,13 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1192'
+      - '1199'
       x-rate-limit-limit:
       - 1m
       x-rate-limit-remaining:
       - '14'
       x-rate-limit-reset:
-      - '2022-01-28T04:29:17.7848835Z'
+      - '2022-07-18T08:48:26.8645774Z'
     status:
       code: 201
       message: Created
@@ -2115,23 +2149,23 @@ interactions:
       ParameterSetName:
       - -g -n --action-groups --custom-properties
       User-Agent:
-      - AZURECLI/2.32.0 azsdk-python-mgmt-monitor/1.0.0b1 Python/3.8.1 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.38.0 azsdk-python-mgmt-monitor/1.0.0b1 Python/3.10.4 (Windows-10-10.0.22622-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001/providers/Microsoft.Insights/scheduledQueryRules/sq03?api-version=2021-08-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001/providers/microsoft.insights/scheduledqueryrules/sq03","name":"sq03","type":"microsoft.insights/scheduledqueryrules","location":"eastus","systemData":{"createdBy":"zhoxing@microsoft.com","createdByType":"User","createdAt":"2022-01-28T04:28:17.6869819Z","lastModifiedBy":"zhoxing@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-01-28T04:28:17.6869819Z"},"properties":{"description":"Test
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001/providers/microsoft.insights/scheduledqueryrules/sq03","name":"sq03","type":"microsoft.insights/scheduledqueryrules","location":"eastus","systemData":{"createdBy":"kairu@microsoft.com","createdByType":"User","createdAt":"2022-07-18T08:47:26.8569753Z","lastModifiedBy":"kairu@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-07-18T08:47:26.8569753Z"},"properties":{"description":"Test
         rule","severity":2,"enabled":true,"evaluationFrequency":"PT5M","scopes":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001"],"windowSize":"PT5M","criteria":{"allOf":[{"query":"union
         Event, Syslog | where TimeGenerated > ago(1h)","timeAggregation":"Count","dimensions":[],"resourceIdColumn":"_ResourceId","operator":"GreaterThan","threshold":360.0,"failingPeriods":{"numberOfEvaluationPeriods":1,"minFailingPeriodsToAlert":1}}]},"autoMitigate":true,"actions":{"actionGroups":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001/providers/microsoft.insights/actionGroups/clitest000003"],"customProperties":{"k1":"v1"}},"checkWorkspaceAlertsStorageConfigured":false,"skipQueryValidation":false}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1298'
+      - '1294'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 28 Jan 2022 04:28:22 GMT
+      - Mon, 18 Jul 2022 08:47:35 GMT
       expires:
       - '-1'
       pragma:
@@ -2151,7 +2185,7 @@ interactions:
       x-rate-limit-remaining:
       - '49'
       x-rate-limit-reset:
-      - '2022-01-28T04:29:23.0457673Z'
+      - '2022-07-18T08:48:35.7212819Z'
     status:
       code: 200
       message: OK
@@ -2181,23 +2215,23 @@ interactions:
       ParameterSetName:
       - -g -n --action-groups --custom-properties
       User-Agent:
-      - AZURECLI/2.32.0 azsdk-python-mgmt-monitor/1.0.0b1 Python/3.8.1 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.38.0 azsdk-python-mgmt-monitor/1.0.0b1 Python/3.10.4 (Windows-10-10.0.22622-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001/providers/Microsoft.Insights/scheduledQueryRules/sq03?api-version=2021-08-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001/providers/microsoft.insights/scheduledqueryrules/sq03","name":"sq03","type":"microsoft.insights/scheduledqueryrules","location":"eastus","systemData":{"createdBy":"zhoxing@microsoft.com","createdByType":"User","createdAt":"2022-01-28T04:28:17.6869819Z","lastModifiedBy":"zhoxing@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-01-28T04:28:23.8511676Z"},"properties":{"description":"Test
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001/providers/microsoft.insights/scheduledqueryrules/sq03","name":"sq03","type":"microsoft.insights/scheduledqueryrules","location":"eastus","systemData":{"createdBy":"kairu@microsoft.com","createdByType":"User","createdAt":"2022-07-18T08:47:26.8569753Z","lastModifiedBy":"kairu@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-07-18T08:47:36.7499147Z"},"properties":{"description":"Test
         rule","severity":2,"enabled":true,"evaluationFrequency":"PT5M","scopes":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001"],"windowSize":"PT5M","criteria":{"allOf":[{"query":"union
         Event, Syslog | where TimeGenerated > ago(1h)","timeAggregation":"Count","dimensions":[],"resourceIdColumn":"_ResourceId","operator":"GreaterThan","threshold":360.0,"failingPeriods":{"numberOfEvaluationPeriods":1,"minFailingPeriodsToAlert":1}}]},"autoMitigate":true,"actions":{"actionGroups":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001/providers/microsoft.insights/actionGroups/clitest000004"],"customProperties":{"k2":"v2"}},"checkWorkspaceAlertsStorageConfigured":false,"skipQueryValidation":false}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1298'
+      - '1294'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 28 Jan 2022 04:28:27 GMT
+      - Mon, 18 Jul 2022 08:47:44 GMT
       expires:
       - '-1'
       pragma:
@@ -2219,7 +2253,7 @@ interactions:
       x-rate-limit-remaining:
       - '14'
       x-rate-limit-reset:
-      - '2022-01-28T04:29:23.8626320Z'
+      - '2022-07-18T08:48:36.7987291Z'
     status:
       code: 200
       message: OK
@@ -2237,23 +2271,23 @@ interactions:
       ParameterSetName:
       - -g -n
       User-Agent:
-      - AZURECLI/2.32.0 azsdk-python-mgmt-monitor/1.0.0b1 Python/3.8.1 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.38.0 azsdk-python-mgmt-monitor/1.0.0b1 Python/3.10.4 (Windows-10-10.0.22622-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001/providers/Microsoft.Insights/scheduledQueryRules/sq01?api-version=2021-08-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001/providers/microsoft.insights/scheduledqueryrules/sq01","name":"sq01","type":"microsoft.insights/scheduledqueryrules","location":"eastus","systemData":{"createdBy":"zhoxing@microsoft.com","createdByType":"User","createdAt":"2022-01-28T04:27:29.2470432Z","lastModifiedBy":"zhoxing@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-01-28T04:27:52.6372721Z"},"properties":{"description":"Test
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001/providers/microsoft.insights/scheduledqueryrules/sq01","name":"sq01","type":"microsoft.insights/scheduledqueryrules","location":"eastus","systemData":{"createdBy":"kairu@microsoft.com","createdByType":"User","createdAt":"2022-07-18T08:46:33.0689308Z","lastModifiedBy":"kairu@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-07-18T08:47:04.2815259Z"},"properties":{"description":"Test
         rule 2","severity":4,"enabled":true,"evaluationFrequency":"PT10M","scopes":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001/providers/Microsoft.Compute/virtualMachines/myvm1"],"windowSize":"PT10M","criteria":{"allOf":[{"query":"union
         Event | where TimeGenerated > ago(2h)","timeAggregation":"Count","dimensions":[],"resourceIdColumn":"_ResourceId","operator":"LessThan","threshold":260.0,"failingPeriods":{"numberOfEvaluationPeriods":3,"minFailingPeriodsToAlert":2}}]},"autoMitigate":false,"muteActionsDuration":"PT30M","checkWorkspaceAlertsStorageConfigured":false,"skipQueryValidation":true}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1155'
+      - '1151'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 28 Jan 2022 04:28:28 GMT
+      - Mon, 18 Jul 2022 08:47:46 GMT
       expires:
       - '-1'
       pragma:
@@ -2273,7 +2307,7 @@ interactions:
       x-rate-limit-remaining:
       - '49'
       x-rate-limit-reset:
-      - '2022-01-28T04:29:29.1078538Z'
+      - '2022-07-18T08:48:46.5162179Z'
     status:
       code: 200
       message: OK
@@ -2291,27 +2325,27 @@ interactions:
       ParameterSetName:
       - -g
       User-Agent:
-      - AZURECLI/2.32.0 azsdk-python-mgmt-monitor/1.0.0b1 Python/3.8.1 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.38.0 azsdk-python-mgmt-monitor/1.0.0b1 Python/3.10.4 (Windows-10-10.0.22622-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001/providers/Microsoft.Insights/scheduledQueryRules?api-version=2021-08-01
   response:
     body:
-      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001/providers/microsoft.insights/scheduledqueryrules/sq01","name":"sq01","type":"microsoft.insights/scheduledqueryrules","location":"eastus","systemData":{"createdBy":"zhoxing@microsoft.com","createdByType":"User","createdAt":"2022-01-28T04:27:29.2470432Z","lastModifiedBy":"zhoxing@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-01-28T04:27:52.6372721Z"},"properties":{"description":"Test
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001/providers/microsoft.insights/scheduledqueryrules/sq01","name":"sq01","type":"microsoft.insights/scheduledqueryrules","location":"eastus","systemData":{"createdBy":"kairu@microsoft.com","createdByType":"User","createdAt":"2022-07-18T08:46:33.0689308Z","lastModifiedBy":"kairu@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-07-18T08:47:04.2815259Z"},"properties":{"description":"Test
         rule 2","severity":4,"enabled":true,"evaluationFrequency":"PT10M","scopes":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001/providers/Microsoft.Compute/virtualMachines/myvm1"],"windowSize":"PT10M","criteria":{"allOf":[{"query":"union
-        Event | where TimeGenerated > ago(2h)","timeAggregation":"Count","dimensions":[],"resourceIdColumn":"_ResourceId","operator":"LessThan","threshold":260.0,"failingPeriods":{"numberOfEvaluationPeriods":3,"minFailingPeriodsToAlert":2}}]},"autoMitigate":false,"muteActionsDuration":"PT30M","checkWorkspaceAlertsStorageConfigured":false,"skipQueryValidation":true}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001/providers/microsoft.insights/scheduledqueryrules/sq02","name":"sq02","type":"microsoft.insights/scheduledqueryrules","location":"eastus","systemData":{"createdBy":"zhoxing@microsoft.com","createdByType":"User","createdAt":"2022-01-28T04:27:42.9354861Z","lastModifiedBy":"zhoxing@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-01-28T04:27:42.9354861Z"},"properties":{"description":"Test
+        Event | where TimeGenerated > ago(2h)","timeAggregation":"Count","dimensions":[],"resourceIdColumn":"_ResourceId","operator":"LessThan","threshold":260.0,"failingPeriods":{"numberOfEvaluationPeriods":3,"minFailingPeriodsToAlert":2}}]},"autoMitigate":false,"muteActionsDuration":"PT30M","checkWorkspaceAlertsStorageConfigured":false,"skipQueryValidation":true}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001/providers/microsoft.insights/scheduledqueryrules/sq02","name":"sq02","type":"microsoft.insights/scheduledqueryrules","location":"eastus","systemData":{"createdBy":"kairu@microsoft.com","createdByType":"User","createdAt":"2022-07-18T08:46:43.6034029Z","lastModifiedBy":"kairu@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-07-18T08:46:43.6034029Z"},"properties":{"description":"Test
         rule","severity":2,"enabled":true,"evaluationFrequency":"PT5M","scopes":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001"],"windowSize":"PT5M","criteria":{"allOf":[{"query":"union
-        Event, Syslog | where TimeGenerated > ago(1h)","timeAggregation":"Count","dimensions":[],"resourceIdColumn":"_ResourceId","operator":"GreaterThan","threshold":360.0,"failingPeriods":{"numberOfEvaluationPeriods":1,"minFailingPeriodsToAlert":1}}]},"autoMitigate":true,"checkWorkspaceAlertsStorageConfigured":false,"skipQueryValidation":false}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001/providers/microsoft.insights/scheduledqueryrules/sq03","name":"sq03","type":"microsoft.insights/scheduledqueryrules","location":"eastus","systemData":{"createdBy":"zhoxing@microsoft.com","createdByType":"User","createdAt":"2022-01-28T04:28:17.6869819Z","lastModifiedBy":"zhoxing@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-01-28T04:28:23.8511676Z"},"properties":{"description":"Test
+        Event, Syslog | where TimeGenerated > ago(1h)","timeAggregation":"Count","dimensions":[],"resourceIdColumn":"_ResourceId","operator":"GreaterThan","threshold":360.0,"failingPeriods":{"numberOfEvaluationPeriods":1,"minFailingPeriodsToAlert":1}}]},"autoMitigate":true,"checkWorkspaceAlertsStorageConfigured":false,"skipQueryValidation":false}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001/providers/microsoft.insights/scheduledqueryrules/sq03","name":"sq03","type":"microsoft.insights/scheduledqueryrules","location":"eastus","systemData":{"createdBy":"kairu@microsoft.com","createdByType":"User","createdAt":"2022-07-18T08:47:26.8569753Z","lastModifiedBy":"kairu@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-07-18T08:47:36.7499147Z"},"properties":{"description":"Test
         rule","severity":2,"enabled":true,"evaluationFrequency":"PT5M","scopes":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001"],"windowSize":"PT5M","criteria":{"allOf":[{"query":"union
         Event, Syslog | where TimeGenerated > ago(1h)","timeAggregation":"Count","dimensions":[],"resourceIdColumn":"_ResourceId","operator":"GreaterThan","threshold":360.0,"failingPeriods":{"numberOfEvaluationPeriods":1,"minFailingPeriodsToAlert":1}}]},"autoMitigate":true,"actions":{"actionGroups":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001/providers/microsoft.insights/actionGroups/clitest000004"],"customProperties":{"k2":"v2"}},"checkWorkspaceAlertsStorageConfigured":false,"skipQueryValidation":false}}]}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '3549'
+      - '3537'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 28 Jan 2022 04:28:29 GMT
+      - Mon, 18 Jul 2022 08:47:47 GMT
       expires:
       - '-1'
       pragma:
@@ -2320,18 +2354,14 @@ interactions:
       - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
       x-content-type-options:
       - nosniff
       x-rate-limit-limit:
       - 1m
       x-rate-limit-remaining:
-      - '49'
+      - '48'
       x-rate-limit-reset:
-      - '2022-01-28T04:29:29.9341053Z'
+      - '2022-07-18T08:47:47.6820768Z'
     status:
       code: 200
       message: OK
@@ -2347,27 +2377,27 @@ interactions:
       Connection:
       - keep-alive
       User-Agent:
-      - AZURECLI/2.32.0 azsdk-python-mgmt-monitor/1.0.0b1 Python/3.8.1 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.38.0 azsdk-python-mgmt-monitor/1.0.0b1 Python/3.10.4 (Windows-10-10.0.22622-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Insights/scheduledQueryRules?api-version=2021-08-01
   response:
     body:
-      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001/providers/microsoft.insights/scheduledqueryrules/sq01","name":"sq01","type":"microsoft.insights/scheduledqueryrules","location":"eastus","systemData":{"createdBy":"zhoxing@microsoft.com","createdByType":"User","createdAt":"2022-01-28T04:27:29.2470432Z","lastModifiedBy":"zhoxing@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-01-28T04:27:52.6372721Z"},"properties":{"description":"Test
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001/providers/microsoft.insights/scheduledqueryrules/sq01","name":"sq01","type":"microsoft.insights/scheduledqueryrules","location":"eastus","systemData":{"createdBy":"kairu@microsoft.com","createdByType":"User","createdAt":"2022-07-18T08:46:33.0689308Z","lastModifiedBy":"kairu@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-07-18T08:47:04.2815259Z"},"properties":{"description":"Test
         rule 2","severity":4,"enabled":true,"evaluationFrequency":"PT10M","scopes":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001/providers/Microsoft.Compute/virtualMachines/myvm1"],"windowSize":"PT10M","criteria":{"allOf":[{"query":"union
-        Event | where TimeGenerated > ago(2h)","timeAggregation":"Count","dimensions":[],"resourceIdColumn":"_ResourceId","operator":"LessThan","threshold":260.0,"failingPeriods":{"numberOfEvaluationPeriods":3,"minFailingPeriodsToAlert":2}}]},"autoMitigate":false,"muteActionsDuration":"PT30M","checkWorkspaceAlertsStorageConfigured":false,"skipQueryValidation":true}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001/providers/microsoft.insights/scheduledqueryrules/sq02","name":"sq02","type":"microsoft.insights/scheduledqueryrules","location":"eastus","systemData":{"createdBy":"zhoxing@microsoft.com","createdByType":"User","createdAt":"2022-01-28T04:27:42.9354861Z","lastModifiedBy":"zhoxing@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-01-28T04:27:42.9354861Z"},"properties":{"description":"Test
+        Event | where TimeGenerated > ago(2h)","timeAggregation":"Count","dimensions":[],"resourceIdColumn":"_ResourceId","operator":"LessThan","threshold":260.0,"failingPeriods":{"numberOfEvaluationPeriods":3,"minFailingPeriodsToAlert":2}}]},"autoMitigate":false,"muteActionsDuration":"PT30M","checkWorkspaceAlertsStorageConfigured":false,"skipQueryValidation":true}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001/providers/microsoft.insights/scheduledqueryrules/sq02","name":"sq02","type":"microsoft.insights/scheduledqueryrules","location":"eastus","systemData":{"createdBy":"kairu@microsoft.com","createdByType":"User","createdAt":"2022-07-18T08:46:43.6034029Z","lastModifiedBy":"kairu@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-07-18T08:46:43.6034029Z"},"properties":{"description":"Test
         rule","severity":2,"enabled":true,"evaluationFrequency":"PT5M","scopes":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001"],"windowSize":"PT5M","criteria":{"allOf":[{"query":"union
-        Event, Syslog | where TimeGenerated > ago(1h)","timeAggregation":"Count","dimensions":[],"resourceIdColumn":"_ResourceId","operator":"GreaterThan","threshold":360.0,"failingPeriods":{"numberOfEvaluationPeriods":1,"minFailingPeriodsToAlert":1}}]},"autoMitigate":true,"checkWorkspaceAlertsStorageConfigured":false,"skipQueryValidation":false}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001/providers/microsoft.insights/scheduledqueryrules/sq03","name":"sq03","type":"microsoft.insights/scheduledqueryrules","location":"eastus","systemData":{"createdBy":"zhoxing@microsoft.com","createdByType":"User","createdAt":"2022-01-28T04:28:17.6869819Z","lastModifiedBy":"zhoxing@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-01-28T04:28:23.8511676Z"},"properties":{"description":"Test
+        Event, Syslog | where TimeGenerated > ago(1h)","timeAggregation":"Count","dimensions":[],"resourceIdColumn":"_ResourceId","operator":"GreaterThan","threshold":360.0,"failingPeriods":{"numberOfEvaluationPeriods":1,"minFailingPeriodsToAlert":1}}]},"autoMitigate":true,"checkWorkspaceAlertsStorageConfigured":false,"skipQueryValidation":false}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001/providers/microsoft.insights/scheduledqueryrules/sq03","name":"sq03","type":"microsoft.insights/scheduledqueryrules","location":"eastus","systemData":{"createdBy":"kairu@microsoft.com","createdByType":"User","createdAt":"2022-07-18T08:47:26.8569753Z","lastModifiedBy":"kairu@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-07-18T08:47:36.7499147Z"},"properties":{"description":"Test
         rule","severity":2,"enabled":true,"evaluationFrequency":"PT5M","scopes":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001"],"windowSize":"PT5M","criteria":{"allOf":[{"query":"union
         Event, Syslog | where TimeGenerated > ago(1h)","timeAggregation":"Count","dimensions":[],"resourceIdColumn":"_ResourceId","operator":"GreaterThan","threshold":360.0,"failingPeriods":{"numberOfEvaluationPeriods":1,"minFailingPeriodsToAlert":1}}]},"autoMitigate":true,"actions":{"actionGroups":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001/providers/microsoft.insights/actionGroups/clitest000004"],"customProperties":{"k2":"v2"}},"checkWorkspaceAlertsStorageConfigured":false,"skipQueryValidation":false}}]}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '3549'
+      - '3537'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 28 Jan 2022 04:28:29 GMT
+      - Mon, 18 Jul 2022 08:47:48 GMT
       expires:
       - '-1'
       pragma:
@@ -2401,7 +2431,7 @@ interactions:
       ParameterSetName:
       - -g -n -y
       User-Agent:
-      - AZURECLI/2.32.0 azsdk-python-mgmt-monitor/1.0.0b1 Python/3.8.1 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.38.0 azsdk-python-mgmt-monitor/1.0.0b1 Python/3.10.4 (Windows-10-10.0.22622-SP0)
     method: DELETE
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001/providers/Microsoft.Insights/scheduledQueryRules/sq01?api-version=2021-08-01
   response:
@@ -2413,7 +2443,7 @@ interactions:
       content-length:
       - '0'
       date:
-      - Fri, 28 Jan 2022 04:28:41 GMT
+      - Mon, 18 Jul 2022 08:47:57 GMT
       expires:
       - '-1'
       pragma:
@@ -2425,7 +2455,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-deletes:
-      - '14998'
+      - '14999'
     status:
       code: 200
       message: OK
@@ -2443,7 +2473,7 @@ interactions:
       ParameterSetName:
       - -g -n
       User-Agent:
-      - AZURECLI/2.32.0 azsdk-python-mgmt-monitor/1.0.0b1 Python/3.8.1 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.38.0 azsdk-python-mgmt-monitor/1.0.0b1 Python/3.10.4 (Windows-10-10.0.22622-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_scheduled_query000001/providers/Microsoft.Insights/scheduledQueryRules/sq01?api-version=2021-08-01
   response:
@@ -2459,7 +2489,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 28 Jan 2022 04:28:42 GMT
+      - Mon, 18 Jul 2022 08:47:58 GMT
       expires:
       - '-1'
       pragma:

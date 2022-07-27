@@ -22,6 +22,9 @@ helps['vm repair create'] = """
         - name: Create a repair VM and set the VM authentication
           text: >
             az vm repair create -g MyResourceGroup -n myVM --repair-username username --repair-password password!234 --verbose
+        - name: Create a repair VM of a specific distro or a specific URN could also be provided
+          text: >
+            az vm repair create -g MyResourceGroup -n myVM --distro 'rhel7|sles12|ubuntu20|centos6|oracle8|sles15'
 """
 
 helps['vm repair restore'] = """

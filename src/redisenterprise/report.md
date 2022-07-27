@@ -9,9 +9,9 @@
 ### <a name="CommandGroups">Command groups in `az redisenterprise` extension </a>
 |CLI Command Group|Group Swagger name|Commands|
 |---------|------------|--------|
-|az redisenterprise operation-status|OperationsStatus|[commands](#CommandsInOperationsStatus)|
 |az redisenterprise|RedisEnterprise|[commands](#CommandsInRedisEnterprise)|
 |az redisenterprise database|Databases|[commands](#CommandsInDatabases)|
+|az redisenterprise operation-status|OperationsStatus|[commands](#CommandsInOperationsStatus)|
 
 ## COMMANDS
 ### <a name="CommandsInRedisEnterprise">Commands in `az redisenterprise` group</a>
@@ -33,6 +33,7 @@
 |[az redisenterprise database update](#DatabasesUpdate)|Update|[Parameters](#ParametersDatabasesUpdate)|[Example](#ExamplesDatabasesUpdate)|
 |[az redisenterprise database delete](#DatabasesDelete)|Delete|[Parameters](#ParametersDatabasesDelete)|[Example](#ExamplesDatabasesDelete)|
 |[az redisenterprise database export](#DatabasesExport)|Export|[Parameters](#ParametersDatabasesExport)|[Example](#ExamplesDatabasesExport)|
+|[az redisenterprise database force-unlink](#DatabasesForceUnlink)|ForceUnlink|[Parameters](#ParametersDatabasesForceUnlink)|[Example](#ExamplesDatabasesForceUnlink)|
 |[az redisenterprise database import](#DatabasesImport)|Import|[Parameters](#ParametersDatabasesImport)|[Example](#ExamplesDatabasesImport)|
 |[az redisenterprise database list-keys](#DatabasesListKeys)|ListKeys|[Parameters](#ParametersDatabasesListKeys)|[Example](#ExamplesDatabasesListKeys)|
 |[az redisenterprise database regenerate-key](#DatabasesRegenerateKey)|RegenerateKey|[Parameters](#ParametersDatabasesRegenerateKey)|[Example](#ExamplesDatabasesRegenerateKey)|
@@ -44,7 +45,6 @@
 
 
 ## COMMAND DETAILS
-
 ### group `az redisenterprise`
 #### <a name="RedisEnterpriseListByResourceGroup">Command `az redisenterprise list`</a>
 
@@ -66,6 +66,7 @@ az redisenterprise list
 ##### <a name="ParametersRedisEnterpriseList">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
 |------|----|-----------|----------|------------|
+
 #### <a name="RedisEnterpriseGet">Command `az redisenterprise show`</a>
 
 ##### <a name="ExamplesRedisEnterpriseGet">Example</a>
@@ -159,6 +160,11 @@ az redisenterprise database create --cluster-name "cache1" --client-protocol "En
 "EnterpriseCluster" --eviction-policy "AllKeysLRU" --modules name="RedisBloom" args="ERROR_RATE 0.00 INITIAL_SIZE 400" \
 --modules name="RedisTimeSeries" args="RETENTION_POLICY 20" --modules name="RediSearch" --persistence aof-enabled=true \
 aof-frequency="1s" --port 10000 --resource-group "rg1"
+az redisenterprise database create --cluster-name "cache1" --client-protocol "Encrypted" --clustering-policy \
+"EnterpriseCluster" --eviction-policy "NoEviction" --group-nickname "groupName" --linked-databases \
+id="/subscriptions/subid1/resourceGroups/rg1/providers/Microsoft.Cache/redisEnterprise/cache1/databases/default" \
+--linked-databases id="/subscriptions/subid2/resourceGroups/rg2/providers/Microsoft.Cache/redisEnterprise/cache2/databa\
+ses/default" --port 10000 --resource-group "rg1"
 ```
 ##### <a name="ParametersDatabasesCreate">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
@@ -171,6 +177,8 @@ aof-frequency="1s" --port 10000 --resource-group "rg1"
 |**--eviction-policy**|choice|Redis eviction policy - default is VolatileLRU|eviction_policy|evictionPolicy|
 |**--persistence**|object|Persistence settings|persistence|persistence|
 |**--modules**|array|Optional set of redis modules to enable in this database - modules can only be added at creation time.|modules|modules|
+|**--group-nickname**|string|Name for the group of linked database resources|group_nickname|groupNickname|
+|**--linked-databases**|array|List of database resources to link with this database|linked_databases|linkedDatabases|
 
 #### <a name="DatabasesUpdate">Command `az redisenterprise database update`</a>
 
@@ -187,6 +195,8 @@ az redisenterprise database update --cluster-name "cache1" --client-protocol "En
 |**--client-protocol**|choice|Specifies whether redis clients can connect using TLS-encrypted or plaintext redis protocols. Default is TLS-encrypted.|client_protocol|clientProtocol|
 |**--eviction-policy**|choice|Redis eviction policy - default is VolatileLRU|eviction_policy|evictionPolicy|
 |**--persistence**|object|Persistence settings|persistence|persistence|
+|**--group-nickname**|string|Name for the group of linked database resources|group_nickname|groupNickname|
+|**--linked-databases**|array|List of database resources to link with this database|linked_databases|linkedDatabases|
 
 #### <a name="DatabasesDelete">Command `az redisenterprise database delete`</a>
 
@@ -214,19 +224,34 @@ BlobContainer?sasKeyParameters" --resource-group "rg1"
 |**--cluster-name**|string|The name of the RedisEnterprise cluster.|cluster_name|clusterName|
 |**--sas-uri**|string|SAS URI for the target directory to export to|sas_uri|sasUri|
 
+#### <a name="DatabasesForceUnlink">Command `az redisenterprise database force-unlink`</a>
+
+##### <a name="ExamplesDatabasesForceUnlink">Example</a>
+```
+az redisenterprise database force-unlink --cluster-name "cache1" --unlink-ids "/subscriptions/subid2/resourceGroups/rg2/provid\
+ers/Microsoft.Cache/redisEnterprise/cache2/databases/default" --resource-group "rg1"
+```
+##### <a name="ParametersDatabasesForceUnlink">Parameters</a> 
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+|**--resource-group-name**|string|The name of the resource group. The name is case insensitive.|resource_group_name|resourceGroupName|
+|**--cluster-name**|string|The name of the RedisEnterprise cluster.|cluster_name|clusterName|
+|**--unlink-ids**|array|The resource IDs of the database resources to be unlinked.|unlink-ids|unlink-ids|
+
 #### <a name="DatabasesImport">Command `az redisenterprise database import`</a>
 
 ##### <a name="ExamplesDatabasesImport">Example</a>
 ```
-az redisenterprise database import --cluster-name "cache1" --sas-uri "https://contosostorage.blob.core.window.net/urlto\
-BlobFile?sasKeyParameters" --resource-group "rg1"
+az redisenterprise database import --cluster-name "cache1" --sas-uris "https://contosostorage.blob.core.window.net/urlt\
+oBlobFile1?sasKeyParameters" "https://contosostorage.blob.core.window.net/urltoBlobFile2?sasKeyParameters" \
+--resource-group "rg1"
 ```
 ##### <a name="ParametersDatabasesImport">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
 |------|----|-----------|----------|------------|
 |**--resource-group-name**|string|The name of the resource group. The name is case insensitive.|resource_group_name|resourceGroupName|
 |**--cluster-name**|string|The name of the RedisEnterprise cluster.|cluster_name|clusterName|
-|**--sas-uri**|string|SAS URI for the target blob to import from|sas_uri|sasUri|
+|**--sas-uris**|array|SAS URIs for the target blobs to import from|sas_uris|sasUris|
 
 #### <a name="DatabasesListKeys">Command `az redisenterprise database list-keys`</a>
 

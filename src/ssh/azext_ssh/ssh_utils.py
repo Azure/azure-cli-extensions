@@ -11,12 +11,10 @@ import datetime
 import re
 import colorama
 
-from colorama import Fore
-from colorama import Style
-
 from knack import log
 from azure.cli.core import azclierror
 from azure.cli.core import telemetry
+from azure.cli.core.style import Style, print_styled_text
 
 from . import file_utils
 from . import connectivity_utils
@@ -42,7 +40,7 @@ def start_ssh_connection(op_info, delete_keys, delete_cert):
             env['SSHPROXY_RELAY_INFO'] = connectivity_utils.format_relay_info_string(op_info.relay_info)
 
         # Get ssh client before starting the clean up process in case there is an error in getting client.
-        command = [_get_ssh_client_path('ssh', op_info.ssh_client_folder), op_info.get_host()]
+        command = [get_ssh_client_path('ssh', op_info.ssh_client_folder), op_info.get_host()]
 
         if not op_info.cert_file and not op_info.private_key_file:
             # In this case, even if delete_credentials is true, there is nothing to clean-up.
@@ -59,11 +57,12 @@ def start_ssh_connection(op_info, delete_keys, delete_cert):
         # pylint: disable=subprocess-run-check
         try:
             if set(['-v', '-vv', '-vvv']).isdisjoint(ssh_arg_list) or log_file:
-                connection_status = subprocess.run(command, env=env, stderr=subprocess.PIPE, text=True)
+                connection_status = subprocess.run(command, shell=platform.system() == 'Windows', env=env,
+                                                   stderr=subprocess.PIPE, encoding='utf-8')
             else:
                 # Logs are sent to stderr. In that case, we shouldn't capture stderr.
-                connection_status = subprocess.run(command, env=env, text=True)
-        except Exception as e:
+                connection_status = subprocess.run(command, shell=platform.system() == 'Windows', env=env)
+        except OSError as e:
             colorama.init()
             raise azclierror.BadRequestError(f"Failed to run ssh command with error: {str(e)}.",
                                              const.RECOMMENDATION_SSH_CLIENT_NOT_FOUND)
@@ -96,24 +95,24 @@ def write_ssh_config(config_info, delete_keys, delete_cert):
 
 
 def create_ssh_keyfile(private_key_file, ssh_client_folder=None):
-    sshkeygen_path = _get_ssh_client_path("ssh-keygen", ssh_client_folder)
+    sshkeygen_path = get_ssh_client_path("ssh-keygen", ssh_client_folder)
     command = [sshkeygen_path, "-f", private_key_file, "-t", "rsa", "-q", "-N", ""]
     logger.debug("Running ssh-keygen command %s", ' '.join(command))
     try:
         subprocess.call(command)
-    except Exception as e:
+    except OSError as e:
         colorama.init()
         raise azclierror.BadRequestError(f"Failed to create ssh key file with error: {str(e)}.",
                                          const.RECOMMENDATION_SSH_CLIENT_NOT_FOUND)
 
 
 def get_ssh_cert_info(cert_file, ssh_client_folder=None):
-    sshkeygen_path = _get_ssh_client_path("ssh-keygen", ssh_client_folder)
+    sshkeygen_path = get_ssh_client_path("ssh-keygen", ssh_client_folder)
     command = [sshkeygen_path, "-L", "-f", cert_file]
     logger.debug("Running ssh-keygen command %s", ' '.join(command))
     try:
         return subprocess.check_output(command).decode().splitlines()
-    except Exception as e:
+    except OSError as e:
         colorama.init()
         raise azclierror.BadRequestError(f"Failed to get certificate info with error: {str(e)}.",
                                          const.RECOMMENDATION_SSH_CLIENT_NOT_FOUND)
@@ -210,7 +209,7 @@ def _print_error_messages_from_ssh_log(log_file, connection_status, delete_cert)
         ssh_log.close()
 
 
-def _get_ssh_client_path(ssh_command="ssh", ssh_client_folder=None):
+def get_ssh_client_path(ssh_command="ssh", ssh_client_folder=None):
     if ssh_client_folder:
         ssh_path = os.path.join(ssh_client_folder, ssh_command)
         if platform.system() == 'Windows':
@@ -219,9 +218,48 @@ def _get_ssh_client_path(ssh_command="ssh", ssh_client_folder=None):
             logger.debug("Attempting to run %s from path %s", ssh_command, ssh_path)
             return ssh_path
         logger.warning("Could not find %s in provided --ssh-client-folder %s. "
-                       "Attempting to use pre-installed OpenSSH.", ssh_path, ssh_client_folder)
+                       "Attempting to get pre-installed OpenSSH bits.", ssh_command, ssh_client_folder)
 
     ssh_path = ssh_command
+
+    if platform.system() == 'Windows':
+        # If OS architecture is 64bit and python architecture is 32bit,
+        # look for System32 under SysNative folder.
+        machine = platform.machine()
+        os_architecture = None
+        # python interpreter architecture
+        platform_architecture = platform.architecture()[0]
+        sys_path = None
+
+        if machine.endswith('64'):
+            os_architecture = '64bit'
+        elif machine.endswith('86'):
+            os_architecture = '32bit'
+        elif machine == '':
+            raise azclierror.BadRequestError("Couldn't identify the OS architecture.")
+        else:
+            raise azclierror.BadRequestError(f"Unsuported OS architecture: {machine} is not currently supported")
+
+        if os_architecture == "64bit":
+            sys_path = 'SysNative' if platform_architecture == '32bit' else 'System32'
+        else:
+            sys_path = 'System32'
+
+        system_root = os.environ['SystemRoot']
+        system32_path = os.path.join(system_root, sys_path)
+        ssh_path = os.path.join(system32_path, "openSSH", (ssh_command + ".exe"))
+        logger.debug("Platform architecture: %s", platform_architecture)
+        logger.debug("OS architecture: %s", os_architecture)
+        logger.debug("System Root: %s", system_root)
+        logger.debug("Attempting to run %s from path %s", ssh_command, ssh_path)
+
+        if not os.path.isfile(ssh_path):
+            raise azclierror.UnclassifiedUserFault(
+                "Could not find " + ssh_command + ".exe on path " + ssh_path + ". ",
+                colorama.Fore.YELLOW + "Make sure OpenSSH is installed correctly: "
+                "https://docs.microsoft.com/en-us/windows-server/administration/openssh/openssh_install_firstuse . "
+                "Or use --ssh-client-folder to provide folder path with ssh executables. " + colorama.Style.RESET_ALL)
+
     return ssh_path
 
 
@@ -319,13 +357,12 @@ def _terminate_cleanup(delete_keys, delete_cert, delete_credentials, cleanup_pro
 
 def _issue_config_cleanup_warning(delete_cert, delete_keys, is_arc, cert_file, relay_info_path, ssh_client_folder):
     if delete_cert:
-        colorama.init()
         # pylint: disable=broad-except
         try:
             expiration = get_certificate_start_and_end_times(cert_file, ssh_client_folder)[1]
             expiration = expiration.strftime("%Y-%m-%d %I:%M:%S %p")
-            print(Fore.GREEN + f"Generated SSH certificate {cert_file} is valid until {expiration} in local time."
-                  + Style.RESET_ALL)
+            print_styled_text((Style.SUCCESS,
+                               f"Generated SSH certificate {cert_file} is valid until {expiration} in local time."))
         except Exception as e:
             logger.warning("Couldn't determine certificate expiration. Error: %s", str(e))
 
