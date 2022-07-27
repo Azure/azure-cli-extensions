@@ -12,7 +12,7 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "elastic-san volumegroup update",
+    "elastic-san volume-group update",
     is_preview=True,
 )
 class Update(AAZCommand):
@@ -46,7 +46,7 @@ class Update(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.elastic_san_name = AAZStrArg(
-            options=["-e", "--elastic-san-name"],
+            options=["--elastic-san-name"],
             help="The name of the ElasticSan.",
             required=True,
             id_part="name",

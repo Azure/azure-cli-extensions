@@ -12,7 +12,7 @@ from azure.cli.core.aaz import *
 
 
 @register_command_group(
-    "elastic-san volumegroup",
+    "elastic-san volume-group",
 )
 class __CMDGroup(AAZCommandGroup):
     """Manage Elastic San Volume Group.

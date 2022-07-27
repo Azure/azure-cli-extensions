@@ -12,7 +12,7 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "elastic-san volumegroup create",
+    "elastic-san volume-group create",
     is_preview=True,
 )
 class Create(AAZCommand):
@@ -44,7 +44,7 @@ class Create(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.elastic_san_name = AAZStrArg(
-            options=["-e", "--elastic-san-name"],
+            options=["--elastic-san-name"],
             help="The name of the ElasticSan.",
             required=True,
             id_part="name",
@@ -240,7 +240,7 @@ class Create(AAZCommand):
 
             virtual_network_rules = _builder.get(".properties.networkAcls.virtualNetworkRules")
             if virtual_network_rules is not None:
-                virtual_network_rules.set_elements(AAZObjectType)
+                virtual_network_rules.set_elements(AAZObjectType, ".")
 
             _elements = _builder.get(".properties.networkAcls.virtualNetworkRules[]")
             if _elements is not None:

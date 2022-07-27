@@ -12,17 +12,15 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "elastic-san volumegroup show",
-    is_preview=True,
+    "elastic-san wait",
 )
-class Show(AAZCommand):
-    """Get a Volume Group.
+class Wait(AAZWaitCommand):
+    """Place the CLI in a waiting state until a condition is met.
     """
 
     _aaz_info = {
-        "version": "2021-11-20-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.elasticsan/elasticsans/{}/volumegroups/{}", "2021-11-20-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.elasticsan/elasticsans/{}", "2021-11-20-preview"],
         ]
     }
 
@@ -43,7 +41,7 @@ class Show(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.elastic_san_name = AAZStrArg(
-            options=["-e", "--elastic-san-name"],
+            options=["-n", "--name", "--elastic-san-name"],
             help="The name of the ElasticSan.",
             required=True,
             id_part="name",
@@ -56,27 +54,16 @@ class Show(AAZCommand):
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
-        _args_schema.volume_group_name = AAZStrArg(
-            options=["-n", "--name", "--volume-group-name"],
-            help="The name of the VolumeGroup.",
-            required=True,
-            id_part="child_name_1",
-            fmt=AAZStrArgFormat(
-                pattern="^[A-Za-z0-9]+((-|_)[a-z0-9A-Z]+)*$",
-                max_length=63,
-                min_length=3,
-            ),
-        )
         return cls._args_schema
 
     def _execute_operations(self):
-        self.VolumeGroupsGet(ctx=self.ctx)()
+        self.ElasticSansGet(ctx=self.ctx)()
 
     def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
+        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=False)
         return result
 
-    class VolumeGroupsGet(AAZHttpOperation):
+    class ElasticSansGet(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -90,7 +77,7 @@ class Show(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ElasticSan/elasticSans/{elasticSanName}/volumegroups/{volumeGroupName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ElasticSan/elasticSans/{elasticSanName}",
                 **self.url_parameters
             )
 
@@ -115,10 +102,6 @@ class Show(AAZCommand):
                 ),
                 **self.serialize_url_param(
                     "subscriptionId", self.ctx.subscription_id,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "volumeGroupName", self.ctx.args.volume_group_name,
                     required=True,
                 ),
             }
@@ -164,6 +147,7 @@ class Show(AAZCommand):
             _schema_on_200.id = AAZStrType(
                 flags={"read_only": True},
             )
+            _schema_on_200.location = AAZStrType()
             _schema_on_200.name = AAZStrType(
                 flags={"read_only": True},
             )
@@ -180,37 +164,50 @@ class Show(AAZCommand):
             )
 
             properties = cls._schema_on_200.properties
-            properties.encryption = AAZStrType(
+            properties.availability_zones = AAZListType(
+                serialized_name="availabilityZones",
                 flags={"required": True},
             )
-            properties.network_acls = AAZObjectType(
-                serialized_name="networkAcls",
+            properties.base_size_ti_b = AAZIntType(
+                serialized_name="baseSizeTiB",
+                flags={"required": True},
             )
-            properties.protocol_type = AAZStrType(
-                serialized_name="protocolType",
+            properties.extended_capacity_size_ti_b = AAZIntType(
+                serialized_name="extendedCapacitySizeTiB",
                 flags={"required": True},
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
-
-            network_acls = cls._schema_on_200.properties.network_acls
-            network_acls.virtual_network_rules = AAZListType(
-                serialized_name="virtualNetworkRules",
-            )
-
-            virtual_network_rules = cls._schema_on_200.properties.network_acls.virtual_network_rules
-            virtual_network_rules.Element = AAZObjectType()
-
-            _element = cls._schema_on_200.properties.network_acls.virtual_network_rules.Element
-            _element.action = AAZStrType()
-            _element.id = AAZStrType(
-                flags={"required": True},
-            )
-            _element.state = AAZStrType(
+            properties.sku = AAZObjectType()
+            properties.total_iops = AAZIntType(
+                serialized_name="totalIops",
                 flags={"read_only": True},
             )
+            properties.total_m_bps = AAZIntType(
+                serialized_name="totalMBps",
+                flags={"read_only": True},
+            )
+            properties.total_size_ti_b = AAZIntType(
+                serialized_name="totalSizeTiB",
+                flags={"read_only": True},
+            )
+            properties.total_volume_size_gi_b = AAZIntType(
+                serialized_name="totalVolumeSizeGiB",
+                flags={"read_only": True},
+            )
+            properties.volume_group_count = AAZIntType(
+                serialized_name="volumeGroupCount",
+                flags={"read_only": True},
+            )
+
+            availability_zones = cls._schema_on_200.properties.availability_zones
+            availability_zones.Element = AAZStrType()
+
+            sku = cls._schema_on_200.properties.sku
+            sku.name = AAZStrType()
+            sku.tier = AAZStrType()
 
             system_data = cls._schema_on_200.system_data
             system_data.created_at = AAZStrType(
@@ -244,4 +241,4 @@ class Show(AAZCommand):
             return cls._schema_on_200
 
 
-__all__ = ["Show"]
+__all__ = ["Wait"]

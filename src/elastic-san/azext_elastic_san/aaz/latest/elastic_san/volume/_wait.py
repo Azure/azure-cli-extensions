@@ -12,23 +12,22 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "elastic-san volume list",
-    is_experimental=True,
+    "elastic-san volume wait",
 )
-class List(AAZCommand):
-    """List Volumes in a Volume Group.
+class Wait(AAZWaitCommand):
+    """Place the CLI in a waiting state until a condition is met.
     """
 
     _aaz_info = {
-        "version": "2021-11-20-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.elasticsan/elasticsans/{}/volumegroups/{}/volumes", "2021-11-20-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.elasticsan/elasticsans/{}/volumegroups/{}/volumes/{}", "2021-11-20-preview"],
         ]
     }
 
     def _handler(self, command_args):
         super()._handler(command_args)
-        return self.build_paging(self._execute_operations, self._output)
+        self._execute_operations()
+        return self._output()
 
     _args_schema = None
 
@@ -45,6 +44,7 @@ class List(AAZCommand):
             options=["--elastic-san-name"],
             help="The name of the ElasticSan.",
             required=True,
+            id_part="name",
             fmt=AAZStrArgFormat(
                 pattern="^[A-Za-z0-9]+((-|_)[a-z0-9A-Z]+)*$",
                 max_length=24,
@@ -58,8 +58,20 @@ class List(AAZCommand):
             options=["--volume-group-name"],
             help="The name of the VolumeGroup.",
             required=True,
+            id_part="child_name_1",
             fmt=AAZStrArgFormat(
                 pattern="^[A-Za-z0-9]+((-|_)[a-z0-9A-Z]+)*$",
+                max_length=63,
+                min_length=3,
+            ),
+        )
+        _args_schema.volume_name = AAZStrArg(
+            options=["-n", "--name", "--volume-name"],
+            help="The name of the Volume.",
+            required=True,
+            id_part="child_name_2",
+            fmt=AAZStrArgFormat(
+                pattern="^[a-z0-9]+(-[a-z0-9A-Z]+)*$",
                 max_length=63,
                 min_length=3,
             ),
@@ -67,14 +79,13 @@ class List(AAZCommand):
         return cls._args_schema
 
     def _execute_operations(self):
-        self.VolumesListByVolumeGroup(ctx=self.ctx)()
+        self.VolumesGet(ctx=self.ctx)()
 
     def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.vars.instance.value, client_flatten=True)
-        next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
-        return result, next_link
+        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=False)
+        return result
 
-    class VolumesListByVolumeGroup(AAZHttpOperation):
+    class VolumesGet(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -88,7 +99,7 @@ class List(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ElasticSan/elasticSans/{elasticSanName}/volumegroups/{volumeGroupName}/volumes",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ElasticSan/elasticSans/{elasticSanName}/volumegroups/{volumeGroupName}/volumes/{volumeName}",
                 **self.url_parameters
             )
 
@@ -117,6 +128,10 @@ class List(AAZCommand):
                 ),
                 **self.serialize_url_param(
                     "volumeGroupName", self.ctx.args.volume_group_name,
+                    required=True,
+                ),
+                **self.serialize_url_param(
+                    "volumeName", self.ctx.args.volume_name,
                     required=True,
                 ),
             }
@@ -159,37 +174,25 @@ class List(AAZCommand):
             cls._schema_on_200 = AAZObjectType()
 
             _schema_on_200 = cls._schema_on_200
-            _schema_on_200.next_link = AAZStrType(
-                serialized_name="nextLink",
+            _schema_on_200.id = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200.value = AAZListType(
-                flags={"required": True},
-            )
-
-            value = cls._schema_on_200.value
-            value.Element = AAZObjectType()
-
-            _element = cls._schema_on_200.value.Element
-            _element.id = AAZStrType(
+            _schema_on_200.name = AAZStrType(
                 flags={"read_only": True},
             )
-            _element.name = AAZStrType(
-                flags={"read_only": True},
-            )
-            _element.properties = AAZObjectType(
+            _schema_on_200.properties = AAZObjectType(
                 flags={"client_flatten": True},
             )
-            _element.system_data = AAZObjectType(
+            _schema_on_200.system_data = AAZObjectType(
                 serialized_name="systemData",
                 flags={"read_only": True},
             )
-            _element.tags = AAZDictType()
-            _element.type = AAZStrType(
+            _schema_on_200.tags = AAZDictType()
+            _schema_on_200.type = AAZStrType(
                 flags={"read_only": True},
             )
 
-            properties = cls._schema_on_200.value.Element.properties
+            properties = cls._schema_on_200.properties
             properties.creation_data = AAZObjectType(
                 serialized_name="creationData",
             )
@@ -205,7 +208,7 @@ class List(AAZCommand):
                 flags={"read_only": True},
             )
 
-            creation_data = cls._schema_on_200.value.Element.properties.creation_data
+            creation_data = cls._schema_on_200.properties.creation_data
             creation_data.create_source = AAZStrType(
                 serialized_name="createSource",
                 flags={"required": True},
@@ -214,7 +217,7 @@ class List(AAZCommand):
                 serialized_name="sourceUri",
             )
 
-            storage_target = cls._schema_on_200.value.Element.properties.storage_target
+            storage_target = cls._schema_on_200.properties.storage_target
             storage_target.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
@@ -235,7 +238,7 @@ class List(AAZCommand):
                 flags={"read_only": True},
             )
 
-            system_data = cls._schema_on_200.value.Element.system_data
+            system_data = cls._schema_on_200.system_data
             system_data.created_at = AAZStrType(
                 serialized_name="createdAt",
                 flags={"read_only": True},
@@ -261,10 +264,10 @@ class List(AAZCommand):
                 flags={"read_only": True},
             )
 
-            tags = cls._schema_on_200.value.Element.tags
+            tags = cls._schema_on_200.tags
             tags.Element = AAZStrType()
 
             return cls._schema_on_200
 
 
-__all__ = ["List"]
+__all__ = ["Wait"]

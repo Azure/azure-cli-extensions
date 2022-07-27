@@ -85,13 +85,13 @@ class Create(AAZCommand):
             arg_group="Properties",
             help="Logical zone for Elastic San resource; example: [\"1\"].",
         )
-        _args_schema.base_size_ti_b = AAZIntArg(
-            options=["--base-size-ti-b"],
+        _args_schema.base_size_tib = AAZIntArg(
+            options=["--base-size-tib"],
             arg_group="Properties",
             help="Base size of the Elastic San appliance in TiB.",
         )
-        _args_schema.extended_capacity_size_ti_b = AAZIntArg(
-            options=["--extended-capacity-size-ti-b"],
+        _args_schema.extended_capacity_size_tib = AAZIntArg(
+            options=["--extended-capacity-size-tib"],
             arg_group="Properties",
             help="Extended size of the Elastic San appliance in TiB.",
         )
@@ -220,8 +220,8 @@ class Create(AAZCommand):
             properties = _builder.get(".properties")
             if properties is not None:
                 properties.set_prop("availabilityZones", AAZListType, ".availability_zones", typ_kwargs={"flags": {"required": True}})
-                properties.set_prop("baseSizeTiB", AAZIntType, ".base_size_ti_b", typ_kwargs={"flags": {"required": True}})
-                properties.set_prop("extendedCapacitySizeTiB", AAZIntType, ".extended_capacity_size_ti_b", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("baseSizeTiB", AAZIntType, ".base_size_tib", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("extendedCapacitySizeTiB", AAZIntType, ".extended_capacity_size_tib", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("sku", AAZObjectType, ".sku")
 
             availability_zones = _builder.get(".properties.availabilityZones")

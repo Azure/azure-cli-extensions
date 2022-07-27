@@ -12,17 +12,17 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "elastic-san volume list",
-    is_experimental=True,
+    "elastic-san volume-group list",
+    is_preview=True,
 )
 class List(AAZCommand):
-    """List Volumes in a Volume Group.
+    """List Volume Groups under a SAN.
     """
 
     _aaz_info = {
         "version": "2021-11-20-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.elasticsan/elasticsans/{}/volumegroups/{}/volumes", "2021-11-20-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.elasticsan/elasticsans/{}/volumegroups", "2021-11-20-preview"],
         ]
     }
 
@@ -54,27 +54,17 @@ class List(AAZCommand):
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
-        _args_schema.volume_group_name = AAZStrArg(
-            options=["--volume-group-name"],
-            help="The name of the VolumeGroup.",
-            required=True,
-            fmt=AAZStrArgFormat(
-                pattern="^[A-Za-z0-9]+((-|_)[a-z0-9A-Z]+)*$",
-                max_length=63,
-                min_length=3,
-            ),
-        )
         return cls._args_schema
 
     def _execute_operations(self):
-        self.VolumesListByVolumeGroup(ctx=self.ctx)()
+        self.VolumeGroupsListByElasticSan(ctx=self.ctx)()
 
     def _output(self, *args, **kwargs):
         result = self.deserialize_output(self.ctx.vars.instance.value, client_flatten=True)
         next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
         return result, next_link
 
-    class VolumesListByVolumeGroup(AAZHttpOperation):
+    class VolumeGroupsListByElasticSan(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -88,7 +78,7 @@ class List(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ElasticSan/elasticSans/{elasticSanName}/volumegroups/{volumeGroupName}/volumes",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ElasticSan/elasticSans/{elasticSanName}/volumeGroups",
                 **self.url_parameters
             )
 
@@ -113,10 +103,6 @@ class List(AAZCommand):
                 ),
                 **self.serialize_url_param(
                     "subscriptionId", self.ctx.subscription_id,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "volumeGroupName", self.ctx.args.volume_group_name,
                     required=True,
                 ),
             }
@@ -190,48 +176,35 @@ class List(AAZCommand):
             )
 
             properties = cls._schema_on_200.value.Element.properties
-            properties.creation_data = AAZObjectType(
-                serialized_name="creationData",
-            )
-            properties.size_gi_b = AAZIntType(
-                serialized_name="sizeGiB",
-            )
-            properties.storage_target = AAZObjectType(
-                serialized_name="storageTarget",
-                flags={"read_only": True},
-            )
-            properties.volume_id = AAZStrType(
-                serialized_name="volumeId",
-                flags={"read_only": True},
-            )
-
-            creation_data = cls._schema_on_200.value.Element.properties.creation_data
-            creation_data.create_source = AAZStrType(
-                serialized_name="createSource",
+            properties.encryption = AAZStrType(
                 flags={"required": True},
             )
-            creation_data.source_uri = AAZStrType(
-                serialized_name="sourceUri",
+            properties.network_acls = AAZObjectType(
+                serialized_name="networkAcls",
             )
-
-            storage_target = cls._schema_on_200.value.Element.properties.storage_target
-            storage_target.provisioning_state = AAZStrType(
+            properties.protocol_type = AAZStrType(
+                serialized_name="protocolType",
+                flags={"required": True},
+            )
+            properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
-            storage_target.status = AAZStrType(
-                flags={"read_only": True},
+
+            network_acls = cls._schema_on_200.value.Element.properties.network_acls
+            network_acls.virtual_network_rules = AAZListType(
+                serialized_name="virtualNetworkRules",
             )
-            storage_target.target_iqn = AAZStrType(
-                serialized_name="targetIqn",
-                flags={"read_only": True},
+
+            virtual_network_rules = cls._schema_on_200.value.Element.properties.network_acls.virtual_network_rules
+            virtual_network_rules.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element.properties.network_acls.virtual_network_rules.Element
+            _element.action = AAZStrType()
+            _element.id = AAZStrType(
+                flags={"required": True},
             )
-            storage_target.target_portal_hostname = AAZStrType(
-                serialized_name="targetPortalHostname",
-                flags={"read_only": True},
-            )
-            storage_target.target_portal_port = AAZIntType(
-                serialized_name="targetPortalPort",
+            _element.state = AAZStrType(
                 flags={"read_only": True},
             )
 
