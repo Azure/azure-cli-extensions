@@ -9,11 +9,15 @@ from azext_vmware.action import ScriptExecutionNamedOutputAction, ScriptExecutio
 from azure.cli.core.commands.parameters import get_enum_type
 from ._validators import server_addresses_length
 
+def clean_help(helpText):
+    return ' '.join(helpText.split())
+
 
 def load_arguments(self, _):
 
     from azure.cli.core.commands.parameters import tags_type
     from azure.cli.core.commands.validators import get_default_location_from_resource_group
+    from azext_vmware.vendored_sdks.avs_client.models import ResourceIdentityType
 
     with self.argument_context('vmware') as c:
         c.argument('tags', tags_type)
@@ -24,7 +28,7 @@ def load_arguments(self, _):
         c.argument('cluster_size', help='Number of hosts for the default management cluster. Minimum of 3 and maximum of 16.')
         c.argument('internet', help='Connectivity to internet. Specify "Enabled" or "Disabled".')
         c.argument('yes', help='Delete without confirmation.')
-        c.argument('identity', help='Enable a system assigned identity.', arg_type=get_enum_type(['SystemAssigned', 'None']))
+        c.argument('identity', help=clean_help(ResourceIdentityType.__doc__), arg_type=get_enum_type([identityType.value for identityType in ResourceIdentityType]))
 
     with self.argument_context('vmware cluster') as c:
         c.argument('name', options_list=['--name', '-n'], help='Name of the cluster.')
@@ -40,7 +44,7 @@ def load_arguments(self, _):
         c.argument('nsxt_password', help='NSX-T Manager password.')
         c.argument('accept_eula', help='Accept the end-user license agreement without prompting.')
         c.argument('network_block', help='A subnet at least of size /22. Make sure the CIDR format is conformed to (A.B.C.D/X) where A,B,C,D are between 0 and 255, and X is between 0 and 22.')
-        c.argument('mi_system_assigned', help='Enable a system assigned identity.', arg_type=get_enum_type(['SystemAssigned', 'None']), deprecate_info=c.deprecate(redirect='--identity', hide=True))
+        c.argument('mi_system_assigned', help=clean_help(ResourceIdentityType.__doc__), arg_type=get_enum_type([identityType.value for identityType in ResourceIdentityType]), deprecate_info=c.deprecate(redirect='--identity', hide=True))
 
     with self.argument_context('vmware private-cloud show') as c:
         c.argument('name', options_list=['--name', '-n'], help='Name of the private cloud.')
