@@ -4977,13 +4977,11 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             self.is_empty(),
         ])
 
-    @live_only()  # live only is required for test environment setup like `az login`
     @AllowLargeResponse()
     def test_list_trustedaccess_roles(self):
         cmd = 'aks trustedaccess role list -l eastus2euap'
         self.cmd(cmd, checks=[
-            self.check(
-                'type', 'Microsoft.ContainerService/locations/trustedaccessroles')
+            self.exists('[0].sourceResourceType')
         ])
 
     @live_only() # this test requires live_only because a binary is downloaded
