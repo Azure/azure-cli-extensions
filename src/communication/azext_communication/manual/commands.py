@@ -12,7 +12,8 @@ from azext_communication.manual._client_factory import cf_communication_phonenum
 def load_command_table(self, _):
 
     with self.command_group('communication identity', client_factory=cf_communication_identity) as g:
-        g.communication_custom_command('issue-access-token', "issue_access_token", client_factory=cf_communication_identity)
+        g.communication_custom_command('issue-access-token', "communication_issue_access_token")
+        g.communication_custom_command('revoke-access-tokens', "communication_revoke_access_tokens")
 
     with self.command_group('communication sms', client_factory=cf_communication_sms) as g:
         g.communication_custom_command('send-sms', 'communication_send_sms')

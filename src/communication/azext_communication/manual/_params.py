@@ -12,6 +12,9 @@ def load_arguments(self, _):
         c.argument('userid', options_list=['--userid', '-u'], type=str, help='ACS identifier')
         c.argument('scopes', options_list=[
                    '--scope', '-s'], nargs='+', help='list of scopes for an access token ex: chat/voip')
+    
+    with self.argument_context('communication identity revoke-access-tokens') as c:
+        c.argument('userid', options_list=['--userid', '-u'], type=str, help='ACS identifier')
 
     with self.argument_context('communication sms send-sms') as c:
         c.argument('sender', options_list=['--sender', '-s'], type=str, help='The sender of the SMS')

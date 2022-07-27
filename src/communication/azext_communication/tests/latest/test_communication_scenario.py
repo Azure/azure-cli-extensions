@@ -73,7 +73,7 @@ def call_scenario(test, rg_2, rg):
     cleanup_scenario(test, rg_2, rg)
 
 
-# Test class for Scenario
+# # Test class for Scenario
 @try_manual
 class CommunicationScenarioTest(ScenarioTest):
 
