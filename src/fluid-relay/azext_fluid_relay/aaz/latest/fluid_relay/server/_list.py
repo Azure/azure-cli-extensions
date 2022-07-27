@@ -18,8 +18,8 @@ class List(AAZCommand):
     """List all Fluid Relay servers.
 
     :example: FluidRelayServer_List
-        az fluid-relay server list  --subscription 00000000-0000-0000-0000-000000000000
-        az fluid-relay server list  -g MyResourceGroup
+        az fluid-relay server list --subscription 00000000-0000-0000-0000-000000000000
+        az fluid-relay server list -g MyResourceGroup
     """
 
     _aaz_info = {
