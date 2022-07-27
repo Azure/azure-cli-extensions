@@ -41,6 +41,7 @@ from azext_connectedk8s._client_factory import _resource_client_factory
 from azext_connectedk8s._client_factory import _resource_providers_client
 from azext_connectedk8s._client_factory import get_graph_client_service_principals
 from azext_connectedk8s._client_factory import cf_connected_cluster_prev_2022_05_01
+from azext_connectedk8s._client_factory import cf_connectedmachine
 import azext_connectedk8s._constants as consts
 import azext_connectedk8s._utils as utils
 import azext_connectedk8s._clientproxyutils as clientproxyutils
@@ -175,6 +176,22 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
     # Validate location
     utils.validate_location(cmd, location)
     resourceClient = _resource_client_factory(cmd.cli_ctx, subscription_id=subscription_id)
+
+    # Validate location of private link scope resource. Throws error only if there is a location mismatch
+    if enable_private_link is True:
+        try:
+            pls_arm_id_arr = private_link_scope_resource_id.split('/')
+            hc_client = cf_connectedmachine(cmd.cli_ctx, pls_arm_id_arr[2])
+            pls_get_result = hc_client.get(pls_arm_id_arr[4], pls_arm_id_arr[8])
+            pls_location = pls_get_result.location.lower()
+            if pls_location != location.lower():
+                telemetry.set_exception(exception='Connected cluster resource and Private link scope resource are present in different locations',
+                                        fault_type=consts.Pls_Location_Mismatch_Fault_Type, summary='Pls resource location mismatch')
+                raise ArgumentUsageError("The location of the private link scope resource does not match the location of connected cluster resource. Please ensure that both the resources are in the same azure location.")
+        except ArgumentUsageError as argex:
+            raise(argex)
+        except Exception as ex:
+            logger.warning("Error occured while checking the private link scope resource location: %s\n", ex)
 
     # Check Release Existance
     release_namespace = get_release_namespace(kube_config, kube_context, helm_client_location)

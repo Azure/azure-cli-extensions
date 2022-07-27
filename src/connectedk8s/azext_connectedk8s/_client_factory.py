@@ -28,6 +28,11 @@ def cf_connected_cluster_prev_2022_05_01(cli_ctx, _):
     return cf_connectedk8s_prev_2022_05_01(cli_ctx).connected_cluster
 
 
+def cf_connectedmachine(cli_ctx, subscription_id):
+    from azure.mgmt.hybridcompute import HybridComputeManagementClient
+    return get_mgmt_service_client(cli_ctx, HybridComputeManagementClient, subscription_id=subscription_id).private_link_scopes
+
+
 def cf_resource_groups(cli_ctx, subscription_id=None):
     return get_mgmt_service_client(cli_ctx, ResourceType.MGMT_RESOURCE_RESOURCES,
                                    subscription_id=subscription_id).resource_groups

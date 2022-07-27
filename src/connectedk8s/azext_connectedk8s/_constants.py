@@ -27,6 +27,7 @@ Client_Request_Id_Header = 'x-ms-client-request-id'
 Default_Onboarding_Source_Tracking_Guid = "77ade16b-0f55-403b-b7d2-739554a897f2"
 Helm_Environment_File_Fault_Type = 'helm-environment-file-error'
 Invalid_Location_Fault_Type = 'location-validation-error'
+Pls_Location_Mismatch_Fault_Type = 'pls-location-mismatch-error'
 Invalid_Argument_Fault_Type = 'argument-validation-error'
 Load_Kubeconfig_Fault_Type = 'kubeconfig-load-error'
 Read_ConfigMap_Fault_Type = 'configmap-read-error'
