@@ -10,10 +10,6 @@ from azure.cli.core.commands.parameters import get_enum_type
 from ._validators import server_addresses_length
 
 
-def clean_help(helpText):
-    return ' '.join(helpText.split())
-
-
 def load_arguments(self, _):
 
     from azure.cli.core.commands.parameters import tags_type
