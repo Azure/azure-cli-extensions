@@ -2,6 +2,11 @@
 
 Release History
 ===============
+
+0.5.1
+++++++
+* Supress warning message from antlr 4.9.3
+
 0.5.0
 ++++++
 * Update API version to 2021-08-01

@@ -61,7 +61,6 @@ helps['grafana data-source create'] = """
             }'
 """
 
-
 helps['grafana data-source update'] = """
     type: command
     short-summary: Update a data source.
@@ -85,6 +84,52 @@ helps['grafana data-source list'] = """
 helps['grafana data-source query'] = """
     type: command
     short-summary: query a data source having backend implementation
+"""
+
+helps['grafana notification-channel'] = """
+    type: group
+    short-summary: Commands to manage notification channels of an instance.
+"""
+
+helps['grafana notification-channel list'] = """
+    type: command
+    short-summary: List all notification channels of an instance.
+"""
+
+helps['grafana notification-channel show'] = """
+    type: command
+    short-summary: get details of a notification channel
+"""
+
+helps['grafana notification-channel create'] = """
+    type: command
+    short-summary: Create a notification channel.
+    examples:
+        - name: create a notification channel for Teams
+          text: |
+            az grafana notification-channel create -n MyGrafana --definition '{
+              "name": "Teams",
+              "settings": {
+                "uploadImage": true,
+                "url": "https://webhook.office.com/IncomingWebhook/"
+               },
+              "type": "teams"
+            }'
+"""
+
+helps['grafana notification-channel update'] = """
+    type: command
+    short-summary: Update a notification channel.
+"""
+
+helps['grafana notification-channel delete'] = """
+    type: command
+    short-summary: delete a notification channel.
+"""
+
+helps['grafana notification-channel test'] = """
+    type: command
+    short-summary: tests a notification channels.
 """
 
 helps['grafana dashboard'] = """
