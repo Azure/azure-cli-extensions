@@ -2,14 +2,11 @@
 
 ## 4.1.0 (2022-07)
 
-- Add new parameter `--identity` to `az vmware private-cloud create`
-- Add new parameter `--identity` to `az vmware private-cloud update`
 - Add `az vmware private-cloud enable-cmk-encryption`
 - Add `az vmware private-cloud disable-cmk-encryption`
 - Deprecate `az vmware private-cloud add-cmk-encryption`
 - Deprecate `az vmware private-cloud delete-cmk-encryption`
-- Deprecate `--mi-system-assigned` parameter from `az vmware private-cloud create`
-- Deprecate `az vmware private-cloud identity` command group
+- Add `--system-assigned` parameter to `az vmware private-cloud identity remove`
 
 ## 4.0.2 (2022-02)
 

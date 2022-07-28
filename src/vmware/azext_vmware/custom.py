@@ -48,7 +48,7 @@ def privatecloud_show(client: AVSClient, resource_group_name, name):
     return client.private_clouds.get(resource_group_name, name)
 
 
-def privatecloud_create(client: AVSClient, resource_group_name, name, sku, cluster_size, network_block, location=None, internet=None, vcenter_password=None, nsxt_password=None, tags=None, identity=None, mi_system_assigned=None, accept_eula=False, yes=False):
+def privatecloud_create(client: AVSClient, resource_group_name, name, sku, cluster_size, network_block, location=None, internet=None, vcenter_password=None, nsxt_password=None, tags=None, accept_eula=False, mi_system_assigned=False, yes=False):
     from knack.prompting import prompt_y_n
     if not accept_eula:
         print(LEGAL_TERMS)
@@ -56,16 +56,16 @@ def privatecloud_create(client: AVSClient, resource_group_name, name, sku, clust
         if not yes and not prompt_y_n(msg, default="n"):
             return None
 
-    from azext_vmware.vendored_sdks.avs_client.models import PrivateCloud, Circuit, ManagementCluster, Sku, PrivateCloudIdentity
+    from azext_vmware.vendored_sdks.avs_client.models import PrivateCloud, Circuit, ManagementCluster, Sku, PrivateCloudIdentity, ResourceIdentityType
     cloud = PrivateCloud(sku=Sku(name=sku), ciruit=Circuit(), management_cluster=ManagementCluster(cluster_size=cluster_size), network_block=network_block)
     if location is not None:
         cloud.location = location
     if tags is not None:
         cloud.tags = tags
-    if identity is not None:
-        cloud.identity = PrivateCloudIdentity(type=identity)
-    elif mi_system_assigned is not None:
-        cloud.identity = PrivateCloudIdentity(type=mi_system_assigned)
+    if mi_system_assigned:
+        cloud.identity = PrivateCloudIdentity(type=ResourceIdentityType.SYSTEM_ASSIGNED)
+    else:
+        cloud.identity = PrivateCloudIdentity(type=ResourceIdentityType.NONE)
     if internet is not None:
         cloud.internet = internet
     if vcenter_password is not None:
@@ -75,8 +75,8 @@ def privatecloud_create(client: AVSClient, resource_group_name, name, sku, clust
     return client.private_clouds.begin_create_or_update(resource_group_name, name, cloud)
 
 
-def privatecloud_update(client: AVSClient, resource_group_name, name, cluster_size=None, internet=None, tags=None, identity=None):
-    from azext_vmware.vendored_sdks.avs_client.models import ManagementCluster, PrivateCloudIdentity
+def privatecloud_update(client: AVSClient, resource_group_name, name, cluster_size=None, internet=None, tags=None):
+    from azext_vmware.vendored_sdks.avs_client.models import ManagementCluster
     private_cloud_update = client.private_clouds.get(resource_group_name, name)
     if tags is not None:
         private_cloud_update.tags = tags
@@ -84,8 +84,6 @@ def privatecloud_update(client: AVSClient, resource_group_name, name, cluster_si
         private_cloud_update.management_cluster = ManagementCluster(cluster_size=cluster_size)
     if internet is not None:
         private_cloud_update.internet = internet
-    if identity is not None:
-        private_cloud_update.identity = PrivateCloudIdentity(type=identity)
     return client.private_clouds.begin_update(resource_group_name, name, private_cloud_update)
 
 
@@ -160,17 +158,19 @@ def privatecloud_deletecmkenryption(client: AVSClient, resource_group_name, priv
     return client.private_clouds.begin_update(resource_group_name=resource_group_name, private_cloud_name=private_cloud, private_cloud_update=pc)
 
 
-def privatecloud_identity_assign(client: AVSClient, resource_group_name, private_cloud):
+def privatecloud_identity_assign(client: AVSClient, resource_group_name, private_cloud, system_assigned=False):
     from azext_vmware.vendored_sdks.avs_client.models import PrivateCloudIdentity, ResourceIdentityType
     pc = client.private_clouds.get(resource_group_name, private_cloud)
-    pc.identity = PrivateCloudIdentity(type=ResourceIdentityType.SYSTEM_ASSIGNED)
+    if system_assigned:
+        pc.identity = PrivateCloudIdentity(type=ResourceIdentityType.SYSTEM_ASSIGNED)
     return client.private_clouds.begin_update(resource_group_name=resource_group_name, private_cloud_name=private_cloud, private_cloud_update=pc)
 
 
-def privatecloud_identity_remove(client: AVSClient, resource_group_name, private_cloud):
+def privatecloud_identity_remove(client: AVSClient, resource_group_name, private_cloud, system_assigned=False):
     from azext_vmware.vendored_sdks.avs_client.models import PrivateCloudIdentity, ResourceIdentityType
     pc = client.private_clouds.get(resource_group_name, private_cloud)
-    pc.identity = PrivateCloudIdentity(type=ResourceIdentityType.NONE)
+    if system_assigned:
+        pc.identity = PrivateCloudIdentity(type=ResourceIdentityType.NONE)
     return client.private_clouds.begin_update(resource_group_name=resource_group_name, private_cloud_name=private_cloud, private_cloud_update=pc)
 
 

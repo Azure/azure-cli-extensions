@@ -101,11 +101,14 @@ class VmwareScenarioTest(ScenarioTest):
         # disable cmk encyrption
         self.cmd('az vmware private-cloud disable-cmk-encryption -c {privatecloud} -g {rg} --yes')
 
-        # enable system assigned identity
-        self.cmd('az vmware private-cloud update -n {privatecloud} -g {rg} --identity SystemAssigned')
+        # set managed identity
+        self.cmd('vmware private-cloud identity assign -g {rg} -c {privatecloud} --system-assigned')
 
-        # disable system assigned identity
-        self.cmd('az vmware private-cloud update -n {privatecloud} -g {rg} --identity None')
+        # remove managed identity
+        self.cmd('vmware private-cloud identity remove -g {rg} -c {privatecloud}')
+
+        # show managed identity
+        self.cmd('vmware private-cloud identity show -g {rg} -c {privatecloud}')
 
         count = len(self.cmd('vmware private-cloud list -g {rg}').get_output_in_json())
         self.assertEqual(count, 1, 'private cloud count expected to be 1')
