@@ -74,7 +74,7 @@ class ExtensionsOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2022-01-01"
+        api_version = "2022-05-01"
         accept = "application/json"
 
         def prepare_request(next_link=None):
@@ -158,7 +158,7 @@ class ExtensionsOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2022-01-01"
+        api_version = "2022-05-01"
         accept = "application/json"
 
         # Construct URL
@@ -212,7 +212,7 @@ class ExtensionsOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2022-01-01"
+        api_version = "2022-05-01"
         content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
 
@@ -352,13 +352,13 @@ class ExtensionsOperations(object):
         extension,  # type: "models.Extension"
         **kwargs  # type: Any
     ):
-        # type: (...) -> "models.Extension"
-        cls = kwargs.pop('cls', None)  # type: ClsType["models.Extension"]
+        # type: (...) -> Optional["models.Extension"]
+        cls = kwargs.pop('cls', None)  # type: ClsType[Optional["models.Extension"]]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2022-01-01"
+        api_version = "2022-05-01"
         content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
 
@@ -389,12 +389,14 @@ class ExtensionsOperations(object):
         pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
-        if response.status_code not in [201]:
+        if response.status_code not in [200, 202]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             error = self._deserialize(models.ErrorResponse, response)
             raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
-        deserialized = self._deserialize('Extension', pipeline_response)
+        deserialized = None
+        if response.status_code == 200:
+            deserialized = self._deserialize('Extension', pipeline_response)
 
         if cls:
             return cls(pipeline_response, deserialized, {})
@@ -499,7 +501,7 @@ class ExtensionsOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2022-01-01"
+        api_version = "2022-05-01"
         accept = "application/json"
 
         # Construct URL

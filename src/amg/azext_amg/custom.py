@@ -35,7 +35,7 @@ def create_grafana(cmd, resource_group_name, grafana_name,
     client = cf_amg(cmd.cli_ctx)
     resource = {
         "sku": {
-            "name": "standard"
+            "name": "Standard"
         },
         "location": location,
         "identity": None if skip_system_assigned_identity else {"type": "SystemAssigned"},
@@ -166,26 +166,25 @@ def list_dashboards(cmd, grafana_name, resource_group_name=None):
 
 
 def create_dashboard(cmd, grafana_name, definition, title=None, folder=None, resource_group_name=None, overwrite=None):
-    data = _try_load_dashboard_definition(cmd, resource_group_name, grafana_name, definition, for_import=False)
-    if "dashboard" in data:
-        payload = data
+    if "dashboard" in definition:
+        payload = definition
     else:
         logger.info("Adjust input by adding 'dashboard' field")
         payload = {}
-        payload["dashboard"] = data
+        payload['dashboard'] = definition
 
     if title:
         payload['dashboard']['title'] = title
 
     if folder:
         folder = _find_folder(cmd, resource_group_name, grafana_name, folder)
-        payload['folderId'] = folder["id"]
+        payload['folderId'] = folder['id']
 
-    payload["overwrite"] = overwrite or False
+    payload['overwrite'] = overwrite or False
 
-    if "id" in payload["dashboard"]:
+    if "id" in payload['dashboard']:
         logger.warning("Removing 'id' from dashboard to prevent the error of 'Not Found'")
-        del payload["dashboard"]["id"]
+        del payload['dashboard']['id']
 
     response = _send_request(cmd, resource_group_name, grafana_name, "post", "/api/dashboards/db",
                              payload)
@@ -200,31 +199,31 @@ def update_dashboard(cmd, grafana_name, definition, folder=None, resource_group_
 
 def import_dashboard(cmd, grafana_name, definition, folder=None, resource_group_name=None, overwrite=None):
     import copy
-    data = _try_load_dashboard_definition(cmd, resource_group_name, grafana_name, definition, for_import=True)
+    data = _try_load_dashboard_definition(cmd, resource_group_name, grafana_name, definition)
     if "dashboard" in data:
         payload = data
     else:
         logger.info("Adjust input by adding 'dashboard' field")
         payload = {}
-        payload["dashboard"] = data
+        payload['dashboard'] = data
 
     if folder:
         folder = _find_folder(cmd, resource_group_name, grafana_name, folder)
-        payload['folderId'] = folder["id"]
+        payload['folderId'] = folder['id']
 
-    payload["overwrite"] = overwrite or False
+    payload['overwrite'] = overwrite or False
 
-    payload["inputs"] = []
+    payload['inputs'] = []
 
     # provide parameter values for datasource
     data_sources = list_data_sources(cmd, grafana_name, resource_group_name)
-    for parameter in payload["dashboard"].get('__inputs', []):
+    for parameter in payload['dashboard'].get('__inputs', []):
         if parameter.get("type") == "datasource":
-            match = next((d for d in data_sources if d["type"] == parameter["pluginId"]), None)
+            match = next((d for d in data_sources if d['type'] == parameter['pluginId']), None)
             if match:
                 clone = copy.deepcopy(parameter)
-                clone["value"] = match["uid"]
-                payload["inputs"].append(clone)
+                clone['value'] = match['uid']
+                payload['inputs'].append(clone)
             else:
                 logger.warning("No data source was found matching the required parameter of %s", parameter['pluginId'])
 
@@ -233,17 +232,17 @@ def import_dashboard(cmd, grafana_name, definition, folder=None, resource_group_
     return json.loads(response.content)
 
 
-def _try_load_dashboard_definition(cmd, resource_group_name, grafana_name, definition, for_import):
+def _try_load_dashboard_definition(cmd, resource_group_name, grafana_name, definition):
     import re
 
-    if for_import:
-        try:  # see whether it is a gallery id
-            int(definition)
-            response = _send_request(cmd, resource_group_name, grafana_name, "get",
-                                     "/api/gnet/dashboards/" + definition)
-            return json.loads(response.content)["json"]
-        except ValueError:
-            pass
+    try:
+        int(definition)
+        response = _send_request(cmd, resource_group_name, grafana_name, "get",
+                                 "/api/gnet/dashboards/" + str(definition))
+        definition = json.loads(response.content)["json"]
+        return definition
+    except ValueError:
+        pass
 
     if re.match(r"^[a-z]+://", definition.lower()):
         response = requests.get(definition, verify=(not should_disable_connection_verify()))
@@ -251,6 +250,7 @@ def _try_load_dashboard_definition(cmd, resource_group_name, grafana_name, defin
             definition = json.loads(response.content.decode())
         else:
             raise ArgumentUsageError(f"Failed to dashboard definition from '{definition}'. Error: '{response}'.")
+
     else:
         definition = json.loads(_try_load_file_content(definition))
 
@@ -262,9 +262,7 @@ def delete_dashboard(cmd, grafana_name, uid, resource_group_name=None):
 
 
 def create_data_source(cmd, grafana_name, definition, resource_group_name=None):
-    definition = _try_load_file_content(definition)
-    payload = json.loads(definition)
-    response = _send_request(cmd, resource_group_name, grafana_name, "post", "/api/datasources", payload)
+    response = _send_request(cmd, resource_group_name, grafana_name, "post", "/api/datasources", definition)
     return json.loads(response.content)
 
 
@@ -283,10 +281,47 @@ def list_data_sources(cmd, grafana_name, resource_group_name=None):
 
 
 def update_data_source(cmd, grafana_name, data_source, definition, resource_group_name=None):
-    definition = _try_load_file_content(definition)
     data = _find_data_source(cmd, resource_group_name, grafana_name, data_source)
     response = _send_request(cmd, resource_group_name, grafana_name, "put", "/api/datasources/" + str(data['id']),
-                             json.loads(definition))
+                             definition)
+    return json.loads(response.content)
+
+
+def list_notification_channels(cmd, grafana_name, resource_group_name=None, short=False):
+    if short is False:
+        response = _send_request(cmd, resource_group_name, grafana_name, "get", "/api/alert-notifications")
+    elif short is True:
+        response = _send_request(cmd, resource_group_name, grafana_name, "get", "/api/alert-notifications/lookup")
+    return json.loads(response.content)
+
+
+def show_notification_channel(cmd, grafana_name, notification_channel, resource_group_name=None):
+    return _find_notification_channel(cmd, resource_group_name, grafana_name, notification_channel)
+
+
+def create_notification_channel(cmd, grafana_name, definition, resource_group_name=None):
+    response = _send_request(cmd, resource_group_name, grafana_name, "post", "/api/alert-notifications", definition)
+    return json.loads(response.content)
+
+
+def update_notification_channel(cmd, grafana_name, notification_channel, definition, resource_group_name=None):
+    data = _find_notification_channel(cmd, resource_group_name, grafana_name, notification_channel)
+    definition['id'] = data['id']
+    response = _send_request(cmd, resource_group_name, grafana_name, "put",
+                             "/api/alert-notifications/" + str(data['id']),
+                             definition)
+    return json.loads(response.content)
+
+
+def delete_notification_channel(cmd, grafana_name, notification_channel, resource_group_name=None):
+    data = _find_notification_channel(cmd, resource_group_name, grafana_name, notification_channel)
+    _send_request(cmd, resource_group_name, grafana_name, "delete", "/api/alert-notifications/" + str(data["id"]))
+
+
+def test_notification_channel(cmd, grafana_name, notification_channel, resource_group_name=None):
+    data = _find_notification_channel(cmd, resource_group_name, grafana_name, notification_channel)
+    response = _send_request(cmd, resource_group_name, grafana_name, "post", "/api/alert-notifications/test",
+                             data)
     return json.loads(response.content)
 
 
@@ -419,6 +454,20 @@ def _find_data_source(cmd, resource_group_name, grafana_name, data_source):
                                      raise_for_error_status=False)
     if response.status_code >= 400:
         raise ArgumentUsageError(f"Couldn't found data source {data_source}. Ex: {response.status_code}")
+    return json.loads(response.content)
+
+
+def _find_notification_channel(cmd, resource_group_name, grafana_name, notification_channel):
+    response = _send_request(cmd, resource_group_name, grafana_name, "get",
+                             "/api/alert-notifications/" + notification_channel,
+                             raise_for_error_status=False)
+    if response.status_code >= 400:
+        response = _send_request(cmd, resource_group_name, grafana_name,
+                                 "get", "/api/alert-notifications/uid/" + notification_channel,
+                                 raise_for_error_status=False)
+    if response.status_code >= 400:
+        raise ArgumentUsageError(
+            f"Couldn't found notification channel {notification_channel}. Ex: {response.status_code}")
     return json.loads(response.content)
 
 
