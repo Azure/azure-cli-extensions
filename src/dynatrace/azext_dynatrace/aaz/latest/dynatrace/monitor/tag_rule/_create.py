@@ -75,8 +75,7 @@ class Create(AAZCommand):
         log_rules = cls._args_schema.log_rules
         log_rules.filtering_tags = AAZListArg(
             options=["filtering-tags"],
-            help="List of filtering tags to be used for capturing logs. This only takes effect if SendActivityLogs flag is enabled. If empty, all resources will be captured.
-If only Exclude action is specified, the rules will apply to the list of all available resources. If Include actions are specified, the rules will only include resources with the associated tags.",
+            help="List of filtering tags to be used for capturing logs. This only takes effect if SendActivityLogs flag is enabled. If empty, all resources will be captured. If only Exclude action is specified, the rules will apply to the list of all available resources. If Include actions are specified, the rules will only include resources with the associated tags.",
         )
         log_rules.send_aad_logs = AAZStrArg(
             options=["send-aad-logs"],
