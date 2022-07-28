@@ -2,6 +2,11 @@
 
 Release History
 ===============
+1.2.11
+++++++
+
+* Increased the timeout of diagnoser job completion to 180 seconds
+
 1.2.10
 ++++++
 
