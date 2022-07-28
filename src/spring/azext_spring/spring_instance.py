@@ -7,7 +7,7 @@
 # pylint: disable=unused-argument, logging-format-interpolation, protected-access, wrong-import-order, too-many-lines
 from ._utils import (wait_till_end, _get_rg_location)
 from .vendored_sdks.appplatform.v2022_05_01_preview import models
-from .custom import (_warn_enable_java_agent, _update_application_insights_asc_create, _check_spring_instance_existed)
+from .custom import (_warn_enable_java_agent, _update_application_insights_asc_create)
 from ._build_service import _update_default_build_agent_pool
 from .buildpack_binding import create_default_buildpack_binding_for_application_insights
 from ._tanzu_component import (create_application_configuration_service,
@@ -16,7 +16,7 @@ from ._tanzu_component import (create_application_configuration_service,
                                create_api_portal)
 
 
-from ._validators import (_parse_sku_name)
+from ._validators import (_parse_sku_name, validate_instance_not_existed)
 from knack.log import get_logger
 
 logger = get_logger(__name__)
@@ -38,12 +38,10 @@ class DefaultSpringCloud:
 
     def before_create(self, **kwargs):
         _warn_enable_java_agent(**kwargs)
-        _check_spring_instance_existed(self.cmd,
-                                       self.client,
-                                       self.resource_group,
-                                       self.name,
-                                       self.location,
-                                       **kwargs)
+        validate_instance_not_existed(self.client,
+                                      self.resource_group,
+                                      self.name,
+                                      self.location)
 
     def after_create(self, **kwargs):
         _update_application_insights_asc_create(self.cmd,
@@ -101,12 +99,10 @@ class DefaultSpringCloud:
 
 class EnterpriseSpringCloud(DefaultSpringCloud):
     def before_create(self, **_):
-        _check_spring_instance_existed(self.cmd,
-                                       self.client,
-                                       self.resource_group,
-                                       self.name,
-                                       self.location,
-                                       **_)
+        validate_instance_not_existed(self.client,
+                                      self.resource_group,
+                                      self.name,
+                                      self.location)
 
     def after_create(self, no_wait=None, **kwargs):
         pollers = [
