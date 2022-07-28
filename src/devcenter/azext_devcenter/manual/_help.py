@@ -927,13 +927,20 @@ helps['devcenter admin devbox-definition create'] = """
             Usage: --image-reference id=XX
 
             id: Image resource ID.
+
+      - name: --sku
+        short-summary: "Dev Box Compute SKU to be used for Dev Boxes created with this definition."
+        long-summary: |
+            Usage: --sku name=XX
+
+            name: Name of the sku. The list of available SKU names can be retrieved using `az devcenter sku list`.
     examples:
       - name: DevBoxDefinitions_Create
         text: |-
                az devcenter admin devbox-definition create --location "centralus" --image-reference \
 id="/subscriptions/0ac520ee-14c0-480f-b6c9-0a90c58ffff/resourceGroups/Example/providers/Microsoft.DevCenter/galleries/con\
 tosogallery/images/exampleImage/version/1.0.0" --dev-box-definition-name "WebDevBox" --dev-center-name "Contoso" \
---resource-group "rg1"
+--resource-group "rg1" --os-storage-type "ssd_1024gb" --sku name=general_a_8c32gb_v1
 """
 
 helps['devcenter admin devbox-definition update'] = """
@@ -946,6 +953,13 @@ helps['devcenter admin devbox-definition update'] = """
             Usage: --image-reference
 
             id: Image resource ID.
+
+      - name: --sku
+        short-summary: "Dev Box Compute SKU to be used for Dev Boxes created with this definition."
+        long-summary: |
+            Usage: --sku name=XX
+
+            name: Name of the sku. The list of available SKU names can be retrieved using `az devcenter sku list`.
     examples:
       - name: DevBoxDefinitions_Patch
         text: |-

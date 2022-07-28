@@ -358,7 +358,7 @@ def load_arguments(self, _):
         c.argument('tags', tags_type)
         c.argument('location', arg_type=get_location_type(self.cli_ctx), required=False,
                    validator=get_default_location_from_resource_group)
-        c.argument('dev_center_id', type=str, help='Resource Id of an associated DevCenter')
+        c.argument('dev_center_id', type=str, required=True, help='Resource Id of an associated DevCenter')
         c.argument('description', type=str, help='Description of the project.')
 
     with self.argument_context('devcenter admin project update') as c:
@@ -399,7 +399,7 @@ def load_arguments(self, _):
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('dev_center_name', options_list=['--dev-center-name', '--dev-center', '-dc'], type=str, help='The name of the devcenter.')
         c.argument('attached_network_connection_name', options_list=['--name', '-n', '--attached-network-connection-name'], type=str, help='The name of the attached NetworkConnection.')
-        c.argument('network_connection_id', type=str, help='The resource ID of the NetworkConnection you want '
+        c.argument('network_connection_id', type=str, required=True, help='The resource ID of the NetworkConnection you want '
                    'to attach to the Dev Center.')
 
     with self.argument_context('devcenter admin attached-network update') as c:
@@ -668,9 +668,9 @@ def load_arguments(self, _):
         c.argument('tags', tags_type)
         c.argument('location', arg_type=get_location_type(self.cli_ctx), required=False,
                    validator=get_default_location_from_resource_group)
-        c.argument('image_reference', action=AddImageReference, nargs='+', help='Image reference information.')
-        c.argument('sku', action=AddSku, nargs='+', help='The SKU for Dev Boxes created using this definition.')
-        c.argument('os_storage_type', type=str, help='The storage type used for the Operating System disk of Dev Boxes '
+        c.argument('image_reference', action=AddImageReference, required=True, nargs='+', help='Image reference information.')
+        c.argument('sku', action=AddSku, required=True, nargs='+', help='The SKU for Dev Boxes created using this definition.')
+        c.argument('os_storage_type', type=str, required=True, help='The storage type used for the Operating System disk of Dev Boxes '
                    'created using this definition.')
 
     with self.argument_context('devcenter admin devbox-definition update') as c:
@@ -828,7 +828,7 @@ def load_arguments(self, _):
 
     with self.argument_context('devcenter admin network-connection create') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('network_setting_name', options_list=['--name', '-n', '--network-connection-name'], type=str,
+        c.argument('network_connection_name', options_list=['--name', '-n', '--network-connection-name'], type=str,
                    help='Name of the Network Connection that can be applied to a Pool.')
         c.argument('tags', tags_type)
         c.argument('location', arg_type=get_location_type(self.cli_ctx), required=False,
