@@ -12,10 +12,10 @@ from azure.cli.core.aaz import *
 
 
 @register_command_group(
-    "dynatrace monitor single",
+    "dynatrace monitor single-sign-on-configurations",
 )
 class __CMDGroup(AAZCommandGroup):
-    """Manage dynatrace monitor single
+    """Manage monitor single-sign-on-configurations
     """
     pass
 

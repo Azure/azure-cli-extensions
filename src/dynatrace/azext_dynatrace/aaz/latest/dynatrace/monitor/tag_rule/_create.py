@@ -19,9 +19,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2021-09-01",
+        "version": "2021-09-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/dynatrace.observability/monitors/{}/tagrules/{}", "2021-09-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/dynatrace.observability/monitors/{}/tagrules/{}", "2021-09-01-preview"],
         ]
     }
 
@@ -75,7 +75,8 @@ class Create(AAZCommand):
         log_rules = cls._args_schema.log_rules
         log_rules.filtering_tags = AAZListArg(
             options=["filtering-tags"],
-            help="List of filtering tags to be used for capturing logs. This only takes effect if SendActivityLogs flag is enabled. If empty, all resources will be captured. If only Exclude action is specified, the rules will apply to the list of all available resources. If Include actions are specified, the rules will only include resources with the associated tags.",
+            help="List of filtering tags to be used for capturing logs. This only takes effect if SendActivityLogs flag is enabled. If empty, all resources will be captured.
+If only Exclude action is specified, the rules will apply to the list of all available resources. If Include actions are specified, the rules will only include resources with the associated tags.",
         )
         log_rules.send_aad_logs = AAZStrArg(
             options=["send-aad-logs"],
@@ -214,7 +215,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2021-09-01",
+                    "api-version", "2021-09-01-preview",
                     required=True,
                 ),
             }

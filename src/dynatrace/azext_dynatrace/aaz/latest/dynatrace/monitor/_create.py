@@ -19,9 +19,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2021-09-01",
+        "version": "2021-09-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/dynatrace.observability/monitors/{}", "2021-09-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/dynatrace.observability/monitors/{}", "2021-09-01-preview"],
         ]
     }
 
@@ -155,6 +155,9 @@ class Create(AAZCommand):
         plan_data.billing_cycle = AAZStrArg(
             options=["billing-cycle"],
             help="different billing cycles like MONTHLY/WEEKLY. this could be enum",
+            fmt=AAZStrArgFormat(
+                max_length=50,
+            ),
         )
         plan_data.effective_date = AAZDateTimeArg(
             options=["effective-date"],
@@ -163,10 +166,16 @@ class Create(AAZCommand):
         plan_data.plan_details = AAZStrArg(
             options=["plan-details"],
             help="plan id as published by Dynatrace",
+            fmt=AAZStrArgFormat(
+                max_length=50,
+            ),
         )
         plan_data.usage_type = AAZStrArg(
             options=["usage-type"],
             help="different usage type like PAYG/COMMITTED. this could be enum",
+            fmt=AAZStrArgFormat(
+                max_length=50,
+            ),
         )
 
         user_info = cls._args_schema.user_info
@@ -184,10 +193,16 @@ class Create(AAZCommand):
         user_info.first_name = AAZStrArg(
             options=["first-name"],
             help="First Name of the user",
+            fmt=AAZStrArgFormat(
+                max_length=50,
+            ),
         )
         user_info.last_name = AAZStrArg(
             options=["last-name"],
             help="Last Name of the user",
+            fmt=AAZStrArgFormat(
+                max_length=50,
+            ),
         )
         user_info.phone_number = AAZStrArg(
             options=["phone-number"],
@@ -321,7 +336,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2021-09-01",
+                    "api-version", "2021-09-01-preview",
                     required=True,
                 ),
             }

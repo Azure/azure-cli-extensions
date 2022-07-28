@@ -12,16 +12,16 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "dynatrace monitor single sign-on-configurations create",
+    "dynatrace monitor single-sign-on-configurations create",
 )
 class Create(AAZCommand):
     """Create a DynatraceSingleSignOnResource
     """
 
     _aaz_info = {
-        "version": "2021-09-01",
+        "version": "2021-09-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/dynatrace.observability/monitors/{}/singlesignonconfigurations/{}", "2021-09-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/dynatrace.observability/monitors/{}/singlesignonconfigurations/{}", "2021-09-01-preview"],
         ]
     }
 
@@ -162,7 +162,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2021-09-01",
+                    "api-version", "2021-09-01-preview",
                     required=True,
                 ),
             }

@@ -19,10 +19,10 @@ class List(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2021-09-01",
+        "version": "2021-09-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/dynatrace.observability/monitors", "2021-09-01"],
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/dynatrace.observability/monitors", "2021-09-01"],
+            ["mgmt-plane", "/subscriptions/{}/providers/dynatrace.observability/monitors", "2021-09-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/dynatrace.observability/monitors", "2021-09-01-preview"],
         ]
     }
 
@@ -101,7 +101,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2021-09-01",
+                    "api-version", "2021-09-01-preview",
                     required=True,
                 ),
             }
@@ -136,6 +136,7 @@ class List(AAZCommand):
             _schema_on_200 = cls._schema_on_200
             _schema_on_200.next_link = AAZStrType(
                 serialized_name="nextLink",
+                flags={"required": True},
             )
             _schema_on_200.value = AAZListType(
                 flags={"required": True},
@@ -382,7 +383,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2021-09-01",
+                    "api-version", "2021-09-01-preview",
                     required=True,
                 ),
             }
@@ -417,6 +418,7 @@ class List(AAZCommand):
             _schema_on_200 = cls._schema_on_200
             _schema_on_200.next_link = AAZStrType(
                 serialized_name="nextLink",
+                flags={"required": True},
             )
             _schema_on_200.value = AAZListType(
                 flags={"required": True},
