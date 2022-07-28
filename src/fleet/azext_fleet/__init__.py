@@ -4,19 +4,30 @@
 # --------------------------------------------------------------------------------------------
 
 from azure.cli.core import AzCommandsLoader
+from azure.cli.core.profiles import register_resource_type, SDKProfile
 
-from azext_fleet._help import helps  # pylint: disable=unused-import
+# pylint: disable=unused-import
+from azext_fleet._help import helps
+from azext_fleet._client_factory import CUSTOM_MGMT_FLEET
+
+
+def register_fleet_resource_type():
+    register_resource_type(
+        "latest",
+        CUSTOM_MGMT_FLEET,
+        SDKProfile("2022-06-02-preview", {"container_services": "2017-07-01"}),
+    )
 
 
 class FleetCommandsLoader(AzCommandsLoader):
 
     def __init__(self, cli_ctx=None):
         from azure.cli.core.commands import CliCommandType
-        from azext_fleet._client_factory import cf_fleet
-        fleet_custom = CliCommandType(
-            operations_tmpl='azext_fleet.custom#{}',
-            client_factory=cf_fleet)
+        register_fleet_resource_type()
+
+        fleet_custom = CliCommandType(operations_tmpl='azext_fleet.custom#{}')
         super(FleetCommandsLoader, self).__init__(cli_ctx=cli_ctx,
+                                                  resource_type=CUSTOM_MGMT_FLEET,
                                                   custom_command_type=fleet_custom)
 
     def load_command_table(self, args):

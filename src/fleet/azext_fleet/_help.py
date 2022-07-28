@@ -9,30 +9,48 @@ from knack.help_files import helps  # pylint: disable=unused-import
 
 helps['fleet'] = """
     type: group
-    short-summary: Commands to manage Fleets.
+    short-summary: Commands to manage fleet.
 """
 
 helps['fleet create'] = """
     type: command
-    short-summary: Create a Fleet.
+    short-summary: Create a new fleet.
+    parameters:
+        - name: --tags
+          type: string
+          short-summary: (TODO)The tags of the managed cluster. The managed cluster instance and all resources managed by the cloud provider will be tagged.
+        - name: --dns-name-prefix -p
+          type: string
+          short-summary: (TODO)Prefix for hostnames that are created. If not specified, generate a hostname using the
+                         managed cluster and resource group names.
+
 """
 
-helps['fleet list'] = """
+helps['fleet delete'] = """
     type: command
-    short-summary: List Fleets.
+    short-summary: Delete an existing fleet.
 """
 
-# helps['fleet delete'] = """
-#     type: command
-#     short-summary: Delete a Fleet.
-# """
+helps['fleet member'] = """
+    type: group
+    short-summary: Commands to manage a fleet member.
+"""
 
-# helps['fleet show'] = """
-#     type: command
-#     short-summary: Show details of a Fleet.
-# """
+helps['fleet member join'] = """
+    type: command
+    short-summary: Join member cluster to a fleet.
+    parameters:
+        - name: --member-cluster-id
+          type: string
+          short-summary: Name or ID of the managed cluster.
+"""
 
-# helps['fleet update'] = """
-#     type: command
-#     short-summary: Update a Fleet.
-# """
+helps['fleet member list'] = """
+    type: command
+    short-summary: List member cluster(s) of a fleet.
+"""
+
+helps['fleet member remove'] = """
+    type: command
+    short-summary: Remove member cluster from a fleet
+"""

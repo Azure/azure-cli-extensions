@@ -4,20 +4,24 @@
 # --------------------------------------------------------------------------------------------
 # pylint: disable=line-too-long
 
-from knack.arguments import CLIArgumentType
+from azure.cli.core.commands.parameters import (
+    get_resource_name_completion_list,
+    tags_type
+)
+from azext_fleet._validators import validate_member_cluster_id
 
 
 def load_arguments(self, _):
 
-    from azure.cli.core.commands.parameters import tags_type
-    from azure.cli.core.commands.validators import get_default_location_from_resource_group
-
-    fleet_name_type = CLIArgumentType(options_list='--fleet-name-name', help='Name of the Fleet.', id_part='name')
-
     with self.argument_context('fleet') as c:
-        c.argument('tags', tags_type)
-        c.argument('location', validator=get_default_location_from_resource_group)
-        c.argument('fleet_name', fleet_name_type, options_list=['--name', '-n'])
+        c.argument('name', options_list=['--name', '-n'], help='Specify the fleet name.', completer=get_resource_name_completion_list('Microsoft.ContainerService/ManagedClusters'))
 
-    with self.argument_context('fleet list') as c:
-        c.argument('fleet_name', fleet_name_type, id_part=None)
+    with self.argument_context('fleet create') as c:
+        c.argument('tags', tags_type)
+        c.argument('dns_name_prefix', options_list=['--dns-name-prefix', '-p'])
+
+    with self.argument_context('fleet member') as c:
+        c.argument('member_name', help='Specify a member name. Default value is name of the managed cluster.')
+
+    with self.argument_context('fleet member join') as c:
+        c.argument('member_cluster_id', validator=validate_member_cluster_id)

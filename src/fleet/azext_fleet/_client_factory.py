@@ -3,10 +3,28 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-def cf_fleet(cli_ctx, *_):
+from azure.cli.core.commands.client_factory import get_mgmt_service_client
+from azure.cli.core.profiles import (
+    CustomResourceType,
+    ResourceType
+)
 
-    from azure.cli.core.commands.client_factory import get_mgmt_service_client
-    # TODO: Replace CONTOSO with the appropriate label and uncomment
-    # from azure.mgmt.CONTOSO import CONTOSOManagementClient
-    # return get_mgmt_service_client(cli_ctx, CONTOSOManagementClient)
-    return None
+CUSTOM_MGMT_FLEET = CustomResourceType('azext_fleet.vendored_sdks', 'ContainerServiceClient')
+
+
+# container service clients
+def get_container_service_client(cli_ctx, subscription_id=None):
+    return get_mgmt_service_client(cli_ctx, CUSTOM_MGMT_FLEET, subscription_id=subscription_id)
+
+
+def cf_fleets(cli_ctx, *_):
+    return get_container_service_client(cli_ctx).fleets
+
+
+def cf_fleet_members(cli_ctx, *_):
+    return get_container_service_client(cli_ctx).fleet_members
+
+
+def get_resource_groups_client(cli_ctx, subscription_id=None):
+    return get_mgmt_service_client(
+        cli_ctx, ResourceType.MGMT_RESOURCE_RESOURCES, subscription_id=subscription_id).resource_groups

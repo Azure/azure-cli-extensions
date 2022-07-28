@@ -5,25 +5,30 @@
 
 # pylint: disable=line-too-long
 from azure.cli.core.commands import CliCommandType
-from azext_fleet._client_factory import cf_fleet
+from azext_fleet._client_factory import cf_fleets, cf_fleet_members
 
 
 def load_command_table(self, _):
 
-    # TODO: Add command type here
-    # fleet_sdk = CliCommandType(
-    #    operations_tmpl='<PATH>.operations#None.{}',
-    #    client_factory=cf_fleet)
+    fleets_sdk = CliCommandType(
+        operations_tmpl="azext_fleet.vendored_sdks.operations._fleets_operations#FleetsOperations.{}",
+        operation_group="fleets",
+        client_factory=cf_fleets
+    )
 
+    fleet_members_sdk = CliCommandType(
+        operations_tmpl="azext_fleet.vendored_sdks.operations._fleet_members_operations#FleetMembersOperations.{}",
+        operation_group="fleets",
+        client_factory=cf_fleets
+    )
 
-    with self.command_group('fleet') as g:
-        g.custom_command('create', 'create_fleet')
-        # g.command('delete', 'delete')
-        g.custom_command('list', 'list_fleet')
-        # g.show_command('show', 'get')
-        # g.generic_update_command('update', setter_name='update', custom_func_name='update_fleet')
+    # fleets command group
+    with self.command_group("fleet", fleets_sdk, client_factory=cf_fleets) as g:
+        g.custom_command("create", "create_fleet", supports_no_wait=True)
+        g.custom_command("delete", "delete_fleet", supports_no_wait=True)
 
-
-    with self.command_group('fleet', is_preview=True):
-        pass
-
+    # fleet members command group
+    with self.command_group("fleet member", fleet_members_sdk, client_factory=cf_fleet_members) as g:
+        g.custom_command("join", "join_fleet_member", supports_no_wait=True)
+        g.custom_command("remove", "remove_fleet_member", supports_no_wait=True)
+        g.custom_command("list", "list_fleet_member")
