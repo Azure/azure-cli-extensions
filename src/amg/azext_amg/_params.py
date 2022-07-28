@@ -35,7 +35,8 @@ def load_arguments(self, _):
     # api_key=None, deterministic_outbound_ip=None, public_network_access=None
     with self.argument_context("grafana update") as c:
         c.argument("api_key", get_enum_type(["Enabled", "Disabled"]), help="If enabled, you will be able to configur Grafana api keys")
-        c.argument("deterministic_outbound_ip", get_enum_type(["Enabled", "Disabled"]), help="if enabled, the Grafana workspace will have fixed egress IPs you can use them in the firewall of datasources")
+        c.argument("deterministic_outbound_ip", get_enum_type(["Enabled", "Disabled"]), options_list=["-i", "--deterministic-outbound-ip"],
+                   help="if enabled, the Grafana workspace will have fixed egress IPs you can use them in the firewall of datasources")
 
     with self.argument_context("grafana dashboard") as c:
         c.argument("uid", options_list=["--dashboard"], help="dashboard uid")

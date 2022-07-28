@@ -33,6 +33,11 @@ helps['grafana show'] = """
     short-summary: Show details of a Azure Managed Grafana instance.
 """
 
+helps['grafana update'] = """
+    type: command
+    short-summary: Update a Azure Managed Grafana instance.
+"""
+
 helps['grafana data-source'] = """
     type: group
     short-summary: Commands to manage data sources of an instance.
