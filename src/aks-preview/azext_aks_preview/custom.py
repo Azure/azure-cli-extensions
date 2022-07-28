@@ -766,6 +766,7 @@ def aks_update(
     enable_workload_identity=None,
     enable_oidc_issuer=False,
     enable_azure_keyvault_kms=False,
+    disable_azure_keyvault_kms=False,
     azure_keyvault_kms_key_id=None,
     azure_keyvault_kms_key_vault_network_access=None,
     azure_keyvault_kms_key_vault_resource_id=None,
@@ -1383,6 +1384,7 @@ def aks_addon_list_available():
 def aks_addon_list(cmd, client, resource_group_name, name):
     mc = client.get(resource_group_name, name)
     current_addons = []
+    os_type = 'Linux'
 
     for name, addon_key in ADDONS.items():
         # web_application_routing is a special case, the configuration is stored in a separate profile
@@ -1395,6 +1397,8 @@ def aks_addon_list(cmd, client, resource_group_name, name):
                 else False
             )
         else:
+            if name == "virtual-node":
+                addon_key += os_type
             enabled = (
                 True
                 if mc.addon_profiles and

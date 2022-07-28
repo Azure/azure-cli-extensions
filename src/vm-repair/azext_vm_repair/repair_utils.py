@@ -2,7 +2,7 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
-
+# pylint: disable=line-too-long, deprecated-method, global-statement
 # from logging import Logger  # , log
 import subprocess
 import shlex
@@ -16,9 +16,7 @@ from knack.log import get_logger
 from knack.prompting import prompt_y_n, NoTTYException
 
 from .encryption_types import Encryption
-
 from .exceptions import (AzCommandError, WindowsOsNotAvailableError, RunScriptNotFoundForIdError, SkuDoesNotSupportHyperV, SuseNotAvailableError)
-# pylint: disable=line-too-long, deprecated-method
 
 REPAIR_MAP_URL = 'https://raw.githubusercontent.com/Azure/repair-script-library/master/map.json'
 
@@ -202,6 +200,53 @@ def _clean_up_resources(resource_group_name, confirm):
         logger.error("Clean up failed.")
 
 
+def _check_n_start_vm(vm_name, resource_group_name, confirm, vm_off_message, vm_instance_view):
+    """
+    Checks if the VM is running and prompts to auto-start it.
+    Returns: True if VM is already running or succeeded in running it.
+             False if user selected not to run the VM or running in non-interactive mode.
+    Raises: AzCommandError if vm start command fails
+            Exception if something went wrong while fetching VM power state
+    """
+    VM_RUNNING = 'PowerState/running'
+    try:
+        logger.info('Checking VM power state...\n')
+        VM_TURNED_ON = False
+        vm_statuses = vm_instance_view.instance_view.statuses
+        for vm_status in vm_statuses:
+            if vm_status.code == VM_RUNNING:
+                VM_TURNED_ON = True
+        # VM already on
+        if VM_TURNED_ON:
+            logger.info('VM is running\n')
+            return True
+
+        logger.warning(vm_off_message)
+        # VM Stopped or Deallocated. Ask to run it
+        if confirm:
+            if not prompt_y_n('Continue to auto-start VM?'):
+                logger.warning('Skipping VM start')
+                return False
+
+        start_vm_command = 'az vm start --resource-group {rg} --name {n}'.format(rg=resource_group_name, n=vm_name)
+        logger.info('Starting the VM. This might take a few minutes...\n')
+        _call_az_command(start_vm_command)
+        logger.info('VM started\n')
+    # NoTTYException exception only thrown from confirm block
+    except NoTTYException:
+        logger.warning('Cannot confirm VM auto-start in non-interactive mode.')
+        logger.warning('Skipping auto-start')
+        return False
+    except AzCommandError as azCommandError:
+        logger.error("Failed to start VM.")
+        raise azCommandError
+    except Exception as exception:
+        logger.error("Failed to check VM power status.")
+        raise exception
+    else:
+        return True
+
+
 def _fetch_compatible_sku(source_vm, hyperv):
 
     location = source_vm.location
@@ -318,13 +363,10 @@ def _check_linux_hyperV_gen(source_vm):
         fetch_hypervgen_command = 'az vm get-instance-view --ids {id} --query "[instanceView.hyperVGeneration]" -o json'.format(id=source_vm.id)
         hyperVGen_list = loads(_call_az_command(fetch_hypervgen_command))
         hyperVGen = hyperVGen_list[0]
-        if hyperVGen == 'V2':
-            return hyperVGen
-        else:
+        if hyperVGen != 'V2':
             hyperVGen = 'V1'
-            return hyperVGen
-    else:
-        return hyperVGen
+
+    return hyperVGen
 
 
 def _secret_tag_check(resource_group_name, copy_disk_name, secreturl):
