@@ -18,7 +18,6 @@ def load_arguments(self, _):
 
     from azure.cli.core.commands.parameters import tags_type
     from azure.cli.core.commands.validators import get_default_location_from_resource_group
-    from azext_vmware.vendored_sdks.avs_client.models import ResourceIdentityType
 
     with self.argument_context('vmware') as c:
         c.argument('tags', tags_type)
