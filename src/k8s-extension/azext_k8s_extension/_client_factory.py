@@ -13,7 +13,7 @@ def cf_k8s_extension(cli_ctx, **kwargs):
 
 
 def cf_k8s_extension_operation(cli_ctx, _):
-    return cf_k8s_extension(cli_ctx).extensions
+    return cf_k8s_extension(cli_ctx, api_version='2022-01-15-preview').extensions
 
 
 def cf_k8s_cluster_extension_types_operation(cli_ctx, _):
