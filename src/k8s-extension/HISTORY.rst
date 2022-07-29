@@ -3,6 +3,12 @@
 Release History
 ===============
 
+1.2.5
+++++++++++++++++++
+* microsoft.azuremonitor.containers: ContainerInsights Extension Managed Identity Auth Onboarding related bug fixes.
+* microsoft.openservicemesh: Fix osm-arc installations for non-connectedClusters
+* k8s-extension azuredefender namespace to mdc
+
 1.2.4
 ++++++++++++++++++
 * microsoft.azureml.kubernetes: Do not invoke `create_or_update` for already existed resources.
