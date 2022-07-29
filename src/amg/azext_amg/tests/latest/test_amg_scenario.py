@@ -19,8 +19,8 @@ class AmgScenarioTest(ScenarioTest):
     def test_amg_base(self, resource_group):
 
         self.kwargs.update({
-            'name': 'clitestamg1',
-            'location': 'westeurope'
+            'name': 'clitestamg2',
+            'location': 'westcentralus'
         })
 
         self.cmd('grafana create -g {rg} -n {name} -l {location} --tags foo=doo --skip-role-assignments', checks=[
@@ -60,7 +60,7 @@ class AmgScenarioTest(ScenarioTest):
 
 
     @ResourceGroupPreparer(name_prefix='cli_test_amg')
-    def test_api_key_e2e(self, resource_group):
+    def xxx_test_api_key_e2e(self, resource_group):
 
         self.kwargs.update({
             'name': 'clitestamgapikey',
@@ -91,7 +91,7 @@ class AmgScenarioTest(ScenarioTest):
 
     @AllowLargeResponse(size_kb=3072)
     @ResourceGroupPreparer(name_prefix='cli_test_amg', location='westeurope')
-    def test_amg_e2e(self, resource_group):
+    def xxx_test_amg_e2e(self, resource_group):
 
         # Test Instance
         self.kwargs.update({

@@ -80,21 +80,28 @@ def _gen_guid():
 
 
 def _get_login_account_principal_id(cli_ctx):
-    from azure.cli.core._profile import Profile
+    from azure.graphrbac.models import GraphErrorException
+    from azure.cli.core._profile import Profile, _USER_ENTITY, _USER_TYPE, _SERVICE_PRINCIPAL, _USER_NAME
     from azure.graphrbac import GraphRbacManagementClient
     profile = Profile(cli_ctx=cli_ctx)
     cred, _, tenant_id = profile.get_login_credentials(
         resource=cli_ctx.cloud.endpoints.active_directory_graph_resource_id)
     client = GraphRbacManagementClient(cred, tenant_id,
                                        base_url=cli_ctx.cloud.endpoints.active_directory_graph_resource_id)
-    assignee = profile.get_current_account_user()
-    result = list(client.users.list(filter=f"userPrincipalName eq '{assignee}' or mail eq '{assignee}'"))
-    if not result:
-        result = list(client.service_principals.list(
-            filter=f"servicePrincipalNames/any(c:c eq '{assignee}')"))
+    active_account = profile.get_subscription()
+    assignee = active_account[_USER_ENTITY][_USER_NAME]
+    try:
+        if active_account[_USER_ENTITY][_USER_TYPE] == _SERVICE_PRINCIPAL:
+            result = list(client.service_principals.list(
+                filter=f"servicePrincipalNames/any(c:c eq '{assignee}')"))
+        else:
+            result = [client.signed_in_user.get()]
+    except GraphErrorException as ex:
+        logger.warning("Graph query error %s", ex)
     if not result:
         raise CLIInternalError((f"Failed to retrieve principal id for '{assignee}', which is needed to create a "
                                 f"role assignment. Consider using '--principal-ids' to bypass the lookup"))
+
     return result[0].object_id
 
 
