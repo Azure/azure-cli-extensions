@@ -51,7 +51,7 @@ def load_command_table(self, _):
     with self.command_group('grafana user') as g:
         g.custom_command('list', 'list_users')
         g.custom_show_command('show', 'show_user')
-        g.custom_command('actual-user', 'get_actual_user', deprecate_info=g.deprecate(redirect='az account show', hide=True))
+        g.custom_command('actual-user', 'get_actual_user')
 
     with self.command_group('grafana api-key') as g:
         g.custom_command('create', 'create_api_key')

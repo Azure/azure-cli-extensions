@@ -481,7 +481,9 @@ def create_api_key(cmd, grafana_name, key, role=None, time_to_live=None, resourc
 
 def get_actual_user(cmd, grafana_name, resource_group_name=None, api_key=None):
     response = _send_request(cmd, resource_group_name, grafana_name, "get", "/api/user", api_key=api_key)
-    return json.loads(response.content)
+    result = json.loads(response.content)
+    result.pop('isGrafanaAdmin', None)
+    return result
 
 
 def list_users(cmd, grafana_name, resource_group_name=None, api_key=None):
