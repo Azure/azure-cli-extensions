@@ -13,6 +13,7 @@ from azure.cli.core.commands.parameters import (
     get_location_type
 )
 
+
 class JobParamsAction(argparse._AppendAction):
     def __call__(self, parser, namespace, values, option_string=None):
         action = self.get_action(values, option_string)

@@ -3,7 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-# pylint: disable=line-too-long,redefined-builtin,unnecessary-comprehension, too-many-locals, too-many-statements
+# pylint: disable=line-too-long,redefined-builtin,unnecessary-comprehension, too-many-locals, too-many-statements, too-many-nested-blocks
 
 import os.path
 import json
@@ -80,7 +80,7 @@ class WorkspaceInfo:
         #     cmd.cli_ctx.config.set_value('quantum', 'workspace', self.name)
         #     cmd.cli_ctx.config.set_value('quantum', 'location', self.location)
         #
-        # >>>>> Save in the global [defaults] section of the .azure\config file >>>>> 
+        # >>>>> Save in the global [defaults] section of the .azure\config file >>>>>
         with ConfiguredDefaultSetter(cmd.cli_ctx.config, False):
             cmd.cli_ctx.config.set_value(cmd.cli_ctx.config.defaults_section_name, 'group', self.resource_group)
             cmd.cli_ctx.config.set_value(cmd.cli_ctx.config.defaults_section_name, 'workspace', self.name)
