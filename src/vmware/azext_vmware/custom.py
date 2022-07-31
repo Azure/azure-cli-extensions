@@ -142,6 +142,8 @@ def privatecloud_deleteavailabilityzone(client: AVSClient, resource_group_name, 
 def privatecloud_addcmkencryption(client: AVSClient, resource_group_name, private_cloud, enc_status=None, enc_kv_key_name=None, enc_kv_key_version=None, enc_kv_url=None):
     from azext_vmware.vendored_sdks.avs_client.models import Encryption, EncryptionKeyVaultProperties, PrivateCloudUpdate
     pc = PrivateCloudUpdate()
+    if enc_kv_key_version is None:
+        enc_kv_key_version = ""
     pc.encryption = Encryption(status=enc_status, key_vault_properties=EncryptionKeyVaultProperties(key_name=enc_kv_key_name, key_version=enc_kv_key_version, key_vault_url=enc_kv_url))
     return client.private_clouds.begin_update(resource_group_name=resource_group_name, private_cloud_name=private_cloud, private_cloud_update=pc)
 
