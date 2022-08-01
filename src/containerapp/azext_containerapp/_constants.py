@@ -29,3 +29,13 @@ CHECK_CERTIFICATE_NAME_AVAILABILITY_TYPE = "Microsoft.App/managedEnvironments/ce
 
 NAME_INVALID = "Invalid"
 NAME_ALREADY_EXISTS = "AlreadyExists"
+
+ACR_TASK_TEMPLATE = """version: v1.1.0
+steps:
+  - cmd: cormtestacr.azurecr.io/oryx/cli:latest oryx dockerfile --output ./Dockerfile .
+    timeout: 28800
+  - build: -t $Registry/{{image_name}} -f Dockerfile .
+    timeout: 28800
+  - push: ["$Registry/{{image_name}}"]
+    timeout: 1800
+"""

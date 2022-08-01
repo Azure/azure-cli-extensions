@@ -2293,7 +2293,7 @@ def containerapp_up(cmd,
     from ._up_utils import (_validate_up_args, _reformat_image, _get_dockerfile_content, _get_ingress_and_target_port,
                             ResourceGroup, ContainerAppEnvironment, ContainerApp, _get_registry_from_app,
                             _get_registry_details, _create_github_action, _set_up_defaults, up_output,
-                            check_env_name_on_rg, get_token, _validate_containerapp_name)
+                            check_env_name_on_rg, get_token, _validate_containerapp_name, _has_dockerfile)
     from ._github_oauth import cache_github_token
     HELLOWORLD = "mcr.microsoft.com/azuredocs/containerapps-helloworld"
     dockerfile = "Dockerfile"  # for now the dockerfile name must be "Dockerfile" (until GH actions API is updated)
@@ -2317,8 +2317,11 @@ def containerapp_up(cmd,
             target_port = 80
             logger.warning("No ingress provided, defaulting to port 80. Try `az containerapp up --ingress %s --target-port <port>` to set a custom port.", ingress)
 
-    dockerfile_content = _get_dockerfile_content(repo, branch, token, source, context_path, dockerfile)
-    ingress, target_port = _get_ingress_and_target_port(ingress, target_port, dockerfile_content)
+    if source and not _has_dockerfile(source, dockerfile):
+        pass
+    else:
+        dockerfile_content = _get_dockerfile_content(repo, branch, token, source, context_path, dockerfile)
+        ingress, target_port = _get_ingress_and_target_port(ingress, target_port, dockerfile_content)
 
     resource_group = ResourceGroup(cmd, name=resource_group_name, location=location)
     env = ContainerAppEnvironment(cmd, managed_env, resource_group, location=location, logs_key=logs_key, logs_customer_id=logs_customer_id)
@@ -2341,7 +2344,7 @@ def containerapp_up(cmd,
     app.create_acr_if_needed()
 
     if source:
-        app.run_acr_build(dockerfile, source, False)
+        app.run_acr_build(dockerfile, source, quiet=False, build_from_source=not _has_dockerfile(source, dockerfile))
 
     app.create(no_registry=bool(repo))
     if repo:
