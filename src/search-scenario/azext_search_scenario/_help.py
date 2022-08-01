@@ -9,9 +9,9 @@ from knack.help_files import helps  # pylint: disable=unused-import
 
 helps['search-scenario'] = """
 type: command
-short-summary: It's a tool for searching E2E scenario samples.
+short-summary: Fuzzy search the E2E scenario examples you need
 long-summary: >
-    
+
     This is an intelligent search tool that can help you find and explore the E2E scenarios you need.
     It supports fuzzy search, and will sort the searched results according to the matching degree from high to low.
     It supports flexible custom settings and can search content according to the scope and matching rules you want.
