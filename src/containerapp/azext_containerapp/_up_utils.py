@@ -46,7 +46,7 @@ from ._utils import (
     register_provider_if_needed
 )
 
-from ._constants import MAXIMUM_SECRET_LENGTH, LOG_ANALYTICS_RP, CONTAINER_APPS_RP, ACR_IMAGE_SUFFIX
+from ._constants import MAXIMUM_SECRET_LENGTH, LOG_ANALYTICS_RP, CONTAINER_APPS_RP, ACR_IMAGE_SUFFIX, MAXIMUM_CONTAINER_APP_NAME_LENGTH
 
 from .custom import (
     create_managed_environment,
@@ -592,24 +592,19 @@ def _get_acr_from_image(cmd, app):
             )
 
 
-def _get_registry_from_app(app):
+def _get_registry_from_app(app, source):
     containerapp_def = app.get()
+    existing_registries = safe_get(containerapp_def, "properties", "configuration", "registries", default=[])
+    if source:
+        existing_registries = [r for r in existing_registries if ACR_IMAGE_SUFFIX in r["server"]]
     if containerapp_def:
-        if (
-            len(
-                safe_get(
-                    containerapp_def,
-                    "properties",
-                    "configuration",
-                    "registries",
-                    default=[],
-                )
-            )
-            == 1
-        ):
-            app.registry_server = containerapp_def["properties"]["configuration"][
-                "registries"
-            ][0]["server"]
+        if len(existing_registries) == 1:
+            app.registry_server = existing_registries[0]["server"]
+        elif len(existing_registries) > 1:  # default to registry in image if possible, otherwise don't infer
+            containers = safe_get(containerapp_def, "properties", "template", "containers", default=[])
+            image_server = next(c["image"] for c in containers if c["name"].lower() == app.name.lower()).split('/')[0]
+            if image_server in [r["server"] for r in existing_registries]:
+                app.registry_server = image_server
 
 
 def _get_acr_rg(app):
@@ -673,6 +668,18 @@ def _get_registry_details(cmd, app: "ContainerApp", source):
     app.acr = AzureContainerRegistry(
         registry_name, ResourceGroup(cmd, registry_rg, None, None)
     )
+
+
+def _validate_containerapp_name(name):
+    is_valid = True
+    is_valid = is_valid and name.lower() == name
+    is_valid = is_valid and len(name) <= MAXIMUM_CONTAINER_APP_NAME_LENGTH
+    is_valid = is_valid and '--' not in name
+    name = name.replace('-', '')
+    is_valid = is_valid and name.isalnum()
+    is_valid = is_valid and name[0].isalpha()
+    if not is_valid:
+        raise ValidationError(f"Invalid Container App name {name}. A name must consist of lower case alphanumeric characters or '-', start with a letter, end with an alphanumeric character, cannot have '--', and must be less than {MAXIMUM_CONTAINER_APP_NAME_LENGTH} characters.")
 
 
 # attempt to populate defaults for managed env, RG, ACR, etc
