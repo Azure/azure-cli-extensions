@@ -3,6 +3,9 @@
 Release History
 ===============
 
+0.3.9
+++++++
+
 0.3.8
 ++++++
 * 'az containerapp update': Fix bug where --yaml would error out due to secret values
