@@ -6,6 +6,7 @@
 # pylint: disable=redefined-builtin,bare-except,inconsistent-return-statements
 
 import logging
+import knack.log
 
 from azure.cli.core.azclierror import (FileOperationError, AzureInternalError,
                                        InvalidArgumentValueError, AzureResponseError)
@@ -14,7 +15,10 @@ from .._client_factory import cf_jobs, _get_data_credentials
 from .workspace import WorkspaceInfo
 from .target import TargetInfo
 
+MINIMUM_MAX_POLL_WAIT_SECS = 1
+
 logger = logging.getLogger(__name__)
+knack_logger = knack.log.get_logger(__name__)
 
 
 def list(cmd, resource_group_name=None, workspace_name=None, location=None):
@@ -51,7 +55,7 @@ def _check_dotnet_available():
         raise FileOperationError(f"Failed to run 'dotnet'. (Error {result.returncode})")
 
 
-def build(cmd, target_id=None, project=None):
+def build(cmd, target_id=None, project=None, target_capability=None):
     """
     Compile a Q# program to run on Azure Quantum.
     """
@@ -67,10 +71,13 @@ def build(cmd, target_id=None, project=None):
 
     args.append(f"-property:ExecutionTarget={target.target_id}")
 
+    if target_capability:
+        args.append(f"-property:TargetCapability={target_capability}")
+
     logger.debug("Building project with arguments:")
     logger.debug(args)
 
-    print("Building project...")
+    knack_logger.warning('Building project...')
 
     import subprocess
     result = subprocess.run(args, stdout=subprocess.PIPE, check=False)
@@ -162,7 +169,8 @@ def _has_completed(job):
 
 
 def submit(cmd, program_args, resource_group_name=None, workspace_name=None, location=None, target_id=None,
-           project=None, job_name=None, shots=None, storage=None, no_build=False, job_params=None):
+           project=None, job_name=None, shots=None, storage=None, no_build=False, job_params=None,
+           target_capability=None):
     """
     Submit a Q# project to run on Azure Quantum.
     """
@@ -171,7 +179,7 @@ def submit(cmd, program_args, resource_group_name=None, workspace_name=None, loc
     # Can't call run directly because it fails to understand the
     # `ExecutionTarget` property when passed in the command line
     if not no_build:
-        build(cmd, target_id=target_id, project=project)
+        build(cmd, target_id=target_id, project=project, target_capability=target_capability)
         logger.info("Project built successfully.")
     else:
         _check_dotnet_available()
@@ -183,7 +191,7 @@ def submit(cmd, program_args, resource_group_name=None, workspace_name=None, loc
     args = _generate_submit_args(program_args, ws, target, token, project, job_name, shots, storage, job_params)
     _set_cli_version()
 
-    print("Submitting job...")
+    knack_logger.warning('Submitting job...')
 
     import subprocess
     result = subprocess.run(args, stdout=subprocess.PIPE, check=False)
@@ -281,6 +289,22 @@ def output(cmd, job_id, resource_group_name=None, workspace_name=None, location=
         return data
 
 
+def _validate_max_poll_wait_secs(max_poll_wait_secs):
+    valid_max_poll_wait_secs = 0.0
+    error_message = f"--max-poll-wait-secs parameter is not valid: {max_poll_wait_secs}"
+    error_recommendation = f"Must be a number greater than or equal to {MINIMUM_MAX_POLL_WAIT_SECS}"
+
+    try:
+        valid_max_poll_wait_secs = float(max_poll_wait_secs)
+    except ValueError as e:
+        raise InvalidArgumentValueError(error_message, error_recommendation) from e
+
+    if valid_max_poll_wait_secs < MINIMUM_MAX_POLL_WAIT_SECS:
+        raise InvalidArgumentValueError(error_message, error_recommendation)
+
+    return valid_max_poll_wait_secs
+
+
 def wait(cmd, job_id, resource_group_name=None, workspace_name=None, location=None, max_poll_wait_secs=5):
     """
     Place the CLI in a waiting state until the job finishes running.
@@ -293,6 +317,7 @@ def wait(cmd, job_id, resource_group_name=None, workspace_name=None, location=No
     # TODO: LROPoller...
     wait_indicators_used = False
     poll_wait = 0.2
+    max_poll_wait_secs = _validate_max_poll_wait_secs(max_poll_wait_secs)
     job = client.get(job_id)
 
     while not _has_completed(job):
@@ -310,12 +335,12 @@ def wait(cmd, job_id, resource_group_name=None, workspace_name=None, location=No
 
 
 def run(cmd, program_args, resource_group_name=None, workspace_name=None, location=None, target_id=None,
-        project=None, job_name=None, shots=None, storage=None, no_build=False, job_params=None):
+        project=None, job_name=None, shots=None, storage=None, no_build=False, job_params=None, target_capability=None):
     """
     Submit a job to run on Azure Quantum, and waits for the result.
     """
     job = submit(cmd, program_args, resource_group_name, workspace_name, location, target_id,
-                 project, job_name, shots, storage, no_build, job_params)
+                 project, job_name, shots, storage, no_build, job_params, target_capability)
     logger.warning("Job id: %s", job.id)
     logger.debug(job)
 

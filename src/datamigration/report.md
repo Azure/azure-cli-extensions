@@ -9,11 +9,20 @@
 ### <a name="CommandGroups">Command groups in `az datamigration` extension </a>
 |CLI Command Group|Group Swagger name|Commands|
 |---------|------------|--------|
+|az datamigration sql-db|DatabaseMigrationsSqlDb|[commands](#CommandsInDatabaseMigrationsSqlDb)|
 |az datamigration sql-managed-instance|DatabaseMigrationsSqlMi|[commands](#CommandsInDatabaseMigrationsSqlMi)|
 |az datamigration sql-service|SqlMigrationServices|[commands](#CommandsInSqlMigrationServices)|
 |az datamigration sql-vm|DatabaseMigrationsSqlVm|[commands](#CommandsInDatabaseMigrationsSqlVm)|
 
 ## COMMANDS
+### <a name="CommandsInDatabaseMigrationsSqlDb">Commands in `az datamigration sql-db` group</a>
+|CLI Command|Operation Swagger name|Parameters|Examples|
+|---------|------------|--------|-----------|
+|[az datamigration sql-db show](#DatabaseMigrationsSqlDbGet)|Get|[Parameters](#ParametersDatabaseMigrationsSqlDbGet)|[Example](#ExamplesDatabaseMigrationsSqlDbGet)|
+|[az datamigration sql-db create](#DatabaseMigrationsSqlDbCreateOrUpdate#Create)|CreateOrUpdate#Create|[Parameters](#ParametersDatabaseMigrationsSqlDbCreateOrUpdate#Create)|[Example](#ExamplesDatabaseMigrationsSqlDbCreateOrUpdate#Create)|
+|[az datamigration sql-db delete](#DatabaseMigrationsSqlDbDelete)|Delete|[Parameters](#ParametersDatabaseMigrationsSqlDbDelete)|[Example](#ExamplesDatabaseMigrationsSqlDbDelete)|
+|[az datamigration sql-db cancel](#DatabaseMigrationsSqlDbcancel)|cancel|[Parameters](#ParametersDatabaseMigrationsSqlDbcancel)|[Example](#ExamplesDatabaseMigrationsSqlDbcancel)|
+
 ### <a name="CommandsInDatabaseMigrationsSqlMi">Commands in `az datamigration sql-managed-instance` group</a>
 |CLI Command|Operation Swagger name|Parameters|Examples|
 |---------|------------|--------|-----------|
@@ -47,11 +56,95 @@
 
 
 ## COMMAND DETAILS
+### group `az datamigration sql-db`
+#### <a name="DatabaseMigrationsSqlDbGet">Command `az datamigration sql-db show`</a>
+
+##### <a name="ExamplesDatabaseMigrationsSqlDbGet">Example</a>
+```
+az datamigration sql-db show --expand "MigrationStatusDetails" --resource-group "testrg" --sqldb-instance-name \
+"sqldbinstance" --target-db-name "db1"
+az datamigration sql-db show --resource-group "testrg" --sqldb-instance-name "sqldbinstance" --target-db-name "db1"
+```
+##### <a name="ParametersDatabaseMigrationsSqlDbGet">Parameters</a> 
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+|**--resource-group-name**|string|Name of the resource group that contains the resource. You can obtain this value from the Azure Resource Manager API or the portal.|resource_group_name|resourceGroupName|
+|**--sqldb-instance-name**|string|Name of the target SQL Database Server.|sqldb_instance_name|sqlDbInstanceName|
+|**--target-db-name**|string|The name of the target database.|target_db_name|targetDbName|
+|**--migration-operation-id**|uuid|Optional migration operation ID. If this is provided, then details of migration operation for that ID are retrieved. If not provided (default), then details related to most recent or current operation are retrieved.|migration_operation_id|migrationOperationId|
+|**--expand**|string|Complete migration details be included in the response.|expand|$expand|
+
+#### <a name="DatabaseMigrationsSqlDbCreateOrUpdate#Create">Command `az datamigration sql-db create`</a>
+
+##### <a name="ExamplesDatabaseMigrationsSqlDbCreateOrUpdate#Create">Example</a>
+```
+az datamigration sql-db create --migration-service "/subscriptions/00000000-1111-2222-3333-444444444444/resourceGroups/\
+testrg/providers/Microsoft.DataMigration/sqlMigrationServices/testagent" --scope "/subscriptions/00000000-1111-2222-333\
+3-444444444444/resourceGroups/testrg/providers/Microsoft.Sql/servers/sqldbinstance" --source-database-name "aaa" \
+--source-sql-connection authentication="WindowsAuthentication" data-source="aaa" encrypt-connection=true \
+password="placeholder" trust-server-certificate=true user-name="bbb" --table-list "[Schema1].[TableName1]" \
+"[Schema2].[TableName2]" --target-sql-connection authentication="SqlAuthentication" data-source="sqldbinstance" \
+encrypt-connection=true password="placeholder" trust-server-certificate=true user-name="bbb" --resource-group "testrg" \
+--sqldb-instance-name "sqldbinstance" --target-db-name "db1"
+az datamigration sql-db create --migration-service "/subscriptions/00000000-1111-2222-3333-444444444444/resourceGroups/\
+testrg/providers/Microsoft.DataMigration/sqlMigrationServices/testagent" --scope "/subscriptions/00000000-1111-2222-333\
+3-444444444444/resourceGroups/testrg/providers/Microsoft.Sql/servers/sqldbinstance" --source-database-name "aaa" \
+--source-sql-connection authentication="WindowsAuthentication" data-source="aaa" encrypt-connection=true \
+password="placeholder" trust-server-certificate=true user-name="bbb" --target-sql-connection \
+authentication="SqlAuthentication" data-source="sqldbinstance" encrypt-connection=true password="placeholder" \
+trust-server-certificate=true user-name="bbb" --resource-group "testrg" --sqldb-instance-name "sqldbinstance" \
+--target-db-name "db1"
+```
+##### <a name="ParametersDatabaseMigrationsSqlDbCreateOrUpdate#Create">Parameters</a> 
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+|**--resource-group-name**|string|Name of the resource group that contains the resource. You can obtain this value from the Azure Resource Manager API or the portal.|resource_group_name|resourceGroupName|
+|**--sqldb-instance-name**|string|Name of the target SQL Database Server.|sqldb_instance_name|sqlDbInstanceName|
+|**--target-db-name**|string|The name of the target database.|target_db_name|targetDbName|
+|**--scope**|string|Resource Id of the target resource (SQL VM, SQL Managed Instance or SQL DB)|scope|scope|
+|**--source-sql-connection**|object|Source SQL Server connection details.|source_sql_connection|sourceSqlConnection|
+|**--source-database-name**|string|Name of the source database.|source_database_name|sourceDatabaseName|
+|**--migration-service**|string|Resource Id of the Migration Service.|migration_service|migrationService|
+|**--target-db-collation**|string|Database collation to be used for the target database.|target_db_collation|targetDatabaseCollation|
+|**--target-sql-connection**|object|Target SQL DB connection details.|target_sql_connection|targetSqlConnection|
+|**--table-list**|array|List of tables to copy.|table_list|tableList|
+
+#### <a name="DatabaseMigrationsSqlDbDelete">Command `az datamigration sql-db delete`</a>
+
+##### <a name="ExamplesDatabaseMigrationsSqlDbDelete">Example</a>
+```
+az datamigration sql-db delete --resource-group "testrg" --sqldb-instance-name "sqldbinstance" --target-db-name "db1"
+```
+##### <a name="ParametersDatabaseMigrationsSqlDbDelete">Parameters</a> 
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+|**--resource-group-name**|string|Name of the resource group that contains the resource. You can obtain this value from the Azure Resource Manager API or the portal.|resource_group_name|resourceGroupName|
+|**--sqldb-instance-name**|string|Name of the target SQL Database Server.|sqldb_instance_name|sqlDbInstanceName|
+|**--target-db-name**|string|The name of the target database.|target_db_name|targetDbName|
+|**--force**|boolean|Optional force delete boolean. If this is provided as true, migration will be deleted even if active.|force|force|
+
+#### <a name="DatabaseMigrationsSqlDbcancel">Command `az datamigration sql-db cancel`</a>
+
+##### <a name="ExamplesDatabaseMigrationsSqlDbcancel">Example</a>
+```
+az datamigration sql-db cancel --migration-operation-id "9a90bb84-e70f-46f7-b0ae-1aef5b3b9f07" --resource-group \
+"testrg" --sqldb-instance-name "sqldbinstance" --target-db-name "db1"
+```
+##### <a name="ParametersDatabaseMigrationsSqlDbcancel">Parameters</a> 
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+|**--resource-group-name**|string|Name of the resource group that contains the resource. You can obtain this value from the Azure Resource Manager API or the portal.|resource_group_name|resourceGroupName|
+|**--sqldb-instance-name**|string|Name of the target SQL Database Server.|sqldb_instance_name|sqlDbInstanceName|
+|**--target-db-name**|string|The name of the target database.|target_db_name|targetDbName|
+|**--migration-operation-id**|uuid|ID tracking migration operation.|migration_operation_id|migrationOperationId|
+
 ### group `az datamigration sql-managed-instance`
 #### <a name="DatabaseMigrationsSqlMiGet">Command `az datamigration sql-managed-instance show`</a>
 
 ##### <a name="ExamplesDatabaseMigrationsSqlMiGet">Example</a>
 ```
+az datamigration sql-managed-instance show --expand "MigrationStatusDetails" --managed-instance-name \
+"managedInstance1" --resource-group "testrg" --target-db-name "db1"
 az datamigration sql-managed-instance show --managed-instance-name "managedInstance1" --resource-group "testrg" \
 --target-db-name "db1"
 ```
@@ -62,7 +155,7 @@ az datamigration sql-managed-instance show --managed-instance-name "managedInsta
 |**--managed-instance-name**|string|Name of the target SQL Managed Instance.|managed_instance_name|managedInstanceName|
 |**--target-db-name**|string|The name of the target database.|target_db_name|targetDbName|
 |**--migration-operation-id**|uuid|Optional migration operation ID. If this is provided, then details of migration operation for that ID are retrieved. If not provided (default), then details related to most recent or current operation are retrieved.|migration_operation_id|migrationOperationId|
-|**--expand**|string|The child resources to include in the response.|expand|$expand|
+|**--expand**|string|Complete migration details be included in the response.|expand|$expand|
 
 #### <a name="DatabaseMigrationsSqlMiCreateOrUpdate#Create">Command `az datamigration sql-managed-instance create`</a>
 
@@ -81,11 +174,10 @@ az datamigration sql-managed-instance create --managed-instance-name "managedIns
 "{\\"fileShare\\":{\\"path\\":\\"C:\\\\\\\\aaa\\\\\\\\bbb\\\\\\\\ccc\\",\\"password\\":\\"placeholder\\",\\"username\\"\
 :\\"name\\"}}" --target-location account-key="abcd" storage-account-resource-id="account.database.windows.net" \
 --migration-service "/subscriptions/00000000-1111-2222-3333-444444444444/resourceGroups/testrg/providers/Microsoft.Data\
-Migration/sqlMigrationServices/testagent" --offline-configuration last-backup-name="last_backup_file_name" \
-offline=true --scope "/subscriptions/00000000-1111-2222-3333-444444444444/resourceGroups/testrg/providers/Microsoft.Sql\
-/managedInstances/instance" --source-database-name "aaa" --source-sql-connection authentication="WindowsAuthentication"\
- data-source="aaa" encrypt-connection=true password="placeholder" trust-server-certificate=true user-name="bbb" \
---resource-group "testrg" --target-db-name "db1"
+Migration/sqlMigrationServices/testagent" --scope "/subscriptions/00000000-1111-2222-3333-444444444444/resourceGroups/t\
+estrg/providers/Microsoft.Sql/managedInstances/instance" --source-database-name "aaa" --source-sql-connection \
+authentication="WindowsAuthentication" data-source="aaa" encrypt-connection=true password="placeholder" \
+trust-server-certificate=true user-name="bbb" --resource-group "testrg" --target-db-name "db1"
 ```
 ##### <a name="ParametersDatabaseMigrationsSqlMiCreateOrUpdate#Create">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
@@ -93,13 +185,11 @@ offline=true --scope "/subscriptions/00000000-1111-2222-3333-444444444444/resour
 |**--resource-group-name**|string|Name of the resource group that contains the resource. You can obtain this value from the Azure Resource Manager API or the portal.|resource_group_name|resourceGroupName|
 |**--managed-instance-name**|string|Name of the target SQL Managed Instance.|managed_instance_name|managedInstanceName|
 |**--target-db-name**|string|The name of the target database.|target_db_name|targetDbName|
-|**--scope**|string|Resource Id of the target resource (SQL VM or SQL Managed Instance)|scope|scope|
+|**--scope**|string|Resource Id of the target resource (SQL VM, SQL Managed Instance or SQL DB)|scope|scope|
 |**--source-sql-connection**|object|Source SQL Server connection details.|source_sql_connection|sourceSqlConnection|
 |**--source-database-name**|string|Name of the source database.|source_database_name|sourceDatabaseName|
 |**--migration-service**|string|Resource Id of the Migration Service.|migration_service|migrationService|
-|**--migration-operation-id**|string|ID tracking current migration operation.|migration_operation_id|migrationOperationId|
 |**--target-db-collation**|string|Database collation to be used for the target database.|target_db_collation|targetDatabaseCollation|
-|**--provisioning-error**|string|Error message for migration provisioning failure, if any.|provisioning_error|provisioningError|
 |**--offline-configuration**|object|Offline configuration.|offline_configuration|offlineConfiguration|
 |**--source-location**|object|Source location of backups.|source_location|sourceLocation|
 |**--target-location**|object|Target location for copying backups.|target_location|targetLocation|
@@ -279,6 +369,8 @@ az datamigration sql-service regenerate-auth-key --key-name "authKey1" --resourc
 
 ##### <a name="ExamplesDatabaseMigrationsSqlVmGet">Example</a>
 ```
+az datamigration sql-vm show --expand "MigrationStatusDetails" --resource-group "testrg" --sql-vm-name "testvm" \
+--target-db-name "db1"
 az datamigration sql-vm show --resource-group "testrg" --sql-vm-name "testvm" --target-db-name "db1"
 ```
 ##### <a name="ParametersDatabaseMigrationsSqlVmGet">Parameters</a> 
@@ -288,7 +380,7 @@ az datamigration sql-vm show --resource-group "testrg" --sql-vm-name "testvm" --
 |**--sql-vm-name**|string|Name of the target SQL Virtual Machine.|sql_vm_name|sqlVirtualMachineName|
 |**--target-db-name**|string|The name of the target database.|target_db_name|targetDbName|
 |**--migration-operation-id**|uuid|Optional migration operation ID. If this is provided, then details of migration operation for that ID are retrieved. If not provided (default), then details related to most recent or current operation are retrieved.|migration_operation_id|migrationOperationId|
-|**--expand**|string|The child resources to include in the response.|expand|$expand|
+|**--expand**|string|Complete migration details be included in the response.|expand|$expand|
 
 #### <a name="DatabaseMigrationsSqlVmCreateOrUpdate#Create">Command `az datamigration sql-vm create`</a>
 
@@ -306,12 +398,11 @@ encrypt-connection=true password="placeholder" trust-server-certificate=true use
 az datamigration sql-vm create --source-location "{\\"fileShare\\":{\\"path\\":\\"C:\\\\\\\\aaa\\\\\\\\bbb\\\\\\\\ccc\\\
 ",\\"password\\":\\"placeholder\\",\\"username\\":\\"name\\"}}" --target-location account-key="abcd" \
 storage-account-resource-id="account.database.windows.net" --migration-service "/subscriptions/00000000-1111-2222-3333-\
-444444444444/resourceGroups/testrg/providers/Microsoft.DataMigration/sqlMigrationServices/testagent" \
---offline-configuration last-backup-name="last_backup_file_name" offline=true --scope "/subscriptions/00000000-1111-222\
-2-3333-444444444444/resourceGroups/testrg/providers/Microsoft.SqlVirtualMachine/sqlVirtualMachines/testvm" \
---source-database-name "aaa" --source-sql-connection authentication="WindowsAuthentication" data-source="aaa" \
-encrypt-connection=true password="placeholder" trust-server-certificate=true user-name="bbb" --resource-group "testrg" \
---sql-vm-name "testvm" --target-db-name "db1"
+444444444444/resourceGroups/testrg/providers/Microsoft.DataMigration/sqlMigrationServices/testagent" --scope \
+"/subscriptions/00000000-1111-2222-3333-444444444444/resourceGroups/testrg/providers/Microsoft.SqlVirtualMachine/sqlVir\
+tualMachines/testvm" --source-database-name "aaa" --source-sql-connection authentication="WindowsAuthentication" \
+data-source="aaa" encrypt-connection=true password="placeholder" trust-server-certificate=true user-name="bbb" \
+--resource-group "testrg" --sql-vm-name "testvm" --target-db-name "db1"
 ```
 ##### <a name="ParametersDatabaseMigrationsSqlVmCreateOrUpdate#Create">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
@@ -319,13 +410,11 @@ encrypt-connection=true password="placeholder" trust-server-certificate=true use
 |**--resource-group-name**|string|Name of the resource group that contains the resource. You can obtain this value from the Azure Resource Manager API or the portal.|resource_group_name|resourceGroupName|
 |**--sql-vm-name**|string|Name of the target SQL Virtual Machine.|sql_vm_name|sqlVirtualMachineName|
 |**--target-db-name**|string|The name of the target database.|target_db_name|targetDbName|
-|**--scope**|string|Resource Id of the target resource (SQL VM or SQL Managed Instance)|scope|scope|
+|**--scope**|string|Resource Id of the target resource (SQL VM, SQL Managed Instance or SQL DB)|scope|scope|
 |**--source-sql-connection**|object|Source SQL Server connection details.|source_sql_connection|sourceSqlConnection|
 |**--source-database-name**|string|Name of the source database.|source_database_name|sourceDatabaseName|
 |**--migration-service**|string|Resource Id of the Migration Service.|migration_service|migrationService|
-|**--migration-operation-id**|string|ID tracking current migration operation.|migration_operation_id|migrationOperationId|
 |**--target-db-collation**|string|Database collation to be used for the target database.|target_db_collation|targetDatabaseCollation|
-|**--provisioning-error**|string|Error message for migration provisioning failure, if any.|provisioning_error|provisioningError|
 |**--offline-configuration**|object|Offline configuration.|offline_configuration|offlineConfiguration|
 |**--source-location**|object|Source location of backups.|source_location|sourceLocation|
 |**--target-location**|object|Target location for copying backups.|target_location|targetLocation|

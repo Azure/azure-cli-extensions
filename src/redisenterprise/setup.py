@@ -10,7 +10,7 @@ from codecs import open
 from setuptools import setup, find_packages
 
 # HISTORY.rst entry.
-VERSION = '0.1.1'
+VERSION = '0.1.2'
 try:
     from azext_redisenterprise.manual.version import VERSION
 except ImportError:
@@ -48,7 +48,7 @@ setup(
     description='Microsoft Azure Command-Line Tools RedisEnterpriseManagementClient Extension',
     author='Microsoft Corporation',
     author_email='azpycli@microsoft.com',
-    url='https://github.com/Azure/azure-cli-extensions/tree/main/src/redisenterprise',
+    url='https://github.com/Azure/azure-cli-extensions/tree/master/src/redisenterprise',
     long_description=README + '\n\n' + HISTORY,
     license='MIT',
     classifiers=CLASSIFIERS,

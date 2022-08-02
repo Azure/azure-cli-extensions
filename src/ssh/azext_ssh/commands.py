@@ -10,3 +10,4 @@ def load_command_table(self, _):
         g.custom_command('vm', 'ssh_vm')
         g.custom_command('config', 'ssh_config')
         g.custom_command('cert', 'ssh_cert')
+        g.custom_command('arc', 'ssh_arc')

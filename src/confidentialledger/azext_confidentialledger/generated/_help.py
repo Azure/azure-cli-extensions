@@ -12,12 +12,16 @@
 from knack.help_files import helps
 
 
-helps['confidentialledger'] = '''
+helps[
+    "confidentialledger"
+] = """
     type: group
     short-summary: Manage Confidential Ledger
-'''
+"""
 
-helps['confidentialledger list'] = """
+helps[
+    "confidentialledger list"
+] = """
     type: command
     short-summary: "Retrieves the properties of all Confidential Ledgers. And Retrieves the properties of all \
 Confidential Ledgers."
@@ -30,7 +34,9 @@ Confidential Ledgers."
                az confidentialledger list
 """
 
-helps['confidentialledger show'] = """
+helps[
+    "confidentialledger show"
+] = """
     type: command
     short-summary: "Retrieves the properties of a Confidential Ledger."
     examples:
@@ -39,7 +45,9 @@ helps['confidentialledger show'] = """
                az confidentialledger show --name "DummyLedgerName" --resource-group "DummyResourceGroupName"
 """
 
-helps['confidentialledger create'] = """
+helps[
+    "confidentialledger create"
+] = """
     type: command
     short-summary: "Creates a  Confidential Ledger with the specified ledger parameters."
     parameters:
@@ -77,7 +85,9 @@ ledger-role-name="Reader" --ledger-type "Public" --tags additionalProps1="additi
 "DummyLedgerName" --resource-group "DummyResourceGroupName"
 """
 
-helps['confidentialledger update'] = """
+helps[
+    "confidentialledger update"
+] = """
     type: command
     short-summary: "Updates properties of Confidential Ledger."
     parameters:
@@ -120,7 +130,9 @@ mB+aNjLelvWpeVb0m2aOSVXynrLwNCAVA=\\n-----END CERTIFICATE-----" ledger-role-name
 --resource-group "DummyResourceGroupName"
 """
 
-helps['confidentialledger delete'] = """
+helps[
+    "confidentialledger delete"
+] = """
     type: command
     short-summary: "Deletes an existing Confidential Ledger."
     examples:
@@ -129,7 +141,9 @@ helps['confidentialledger delete'] = """
                az confidentialledger delete --name "DummyLedgerName" --resource-group "DummyResourceGroupName"
 """
 
-helps['confidentialledger wait'] = """
+helps[
+    "confidentialledger wait"
+] = """
     type: command
     short-summary: Place the CLI in a waiting state until a condition of the confidentialledger is met.
     examples:

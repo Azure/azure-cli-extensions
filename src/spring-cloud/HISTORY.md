@@ -1,5 +1,20 @@
 Release History
 ===============
+3.1.6
+---
+* The spring-cloud command group has been deprecated and will be removed in Nov. 2022.
+  We recommend that you upgrade to the new 'spring' command group by installing the 'spring' extension: run `az extension add -n spring`.
+  For more information, please visit: https://aka.ms/azure-spring-cloud-rename.
+
+3.1.5
+---
+* [BREAKING CHANGE] The argument '--build-env' accepts key[=value] instead of json.
+
+3.1.4
+---
+* Fix API portal clear SSO
+* Enhance Application Configuration Service settings update
+
 3.1.3
 ---
 * Revert new RBAC requirement for Standard and Basic sku Spring resource for `az spring-cloud app set-deployment` and `az spring-cloud app unset-deployment` commands.

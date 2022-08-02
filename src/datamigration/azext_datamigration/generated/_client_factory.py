@@ -16,6 +16,10 @@ def cf_datamigration_cl(cli_ctx, *_):
                                    DataMigrationManagementClient)
 
 
+def cf_database_migration_sqldb(cli_ctx, *_):
+    return cf_datamigration_cl(cli_ctx).database_migrations_sql_db
+
+
 def cf_database_migration_sqlmi(cli_ctx, *_):
     return cf_datamigration_cl(cli_ctx).database_migrations_sql_mi
 

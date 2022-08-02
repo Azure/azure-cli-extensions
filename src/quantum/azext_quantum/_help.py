@@ -22,6 +22,10 @@ helps['quantum execute'] = """
         text: |-
             az quantum execute -g MyResourceGroup -w MyWorkspace -l MyLocation -t MyTarget \\
                 --job-params key1=value1 key2=value2 -- --n-qubits=3
+      - name: Submit and wait for a Q# program from the current folder with a target-capability parameter.
+        text: |-
+            az quantum execute -g MyResourceGroup -w MyWorkspace -l MyLocation -t MyTarget \\
+                --target-capability MyTargetCapability
 """
 
 helps['quantum run'] = """
@@ -35,6 +39,10 @@ helps['quantum run'] = """
         text: |-
             az quantum run -g MyResourceGroup -w MyWorkspace -l MyLocation -t MyTarget \\
                 --job-params key1=value1 key2=value2 -- --n-qubits=3
+      - name: Submit and wait for a Q# program from the current folder with a target-capability parameter.
+        text: |-
+            az quantum run -g MyResourceGroup -w MyWorkspace -l MyLocation -t MyTarget \\
+                --target-capability MyTargetCapability
 """
 
 helps['quantum job'] = """
@@ -87,13 +95,17 @@ helps['quantum job submit'] = """
         text: |-
             az quantum job submit -g MyResourceGroup -w MyWorkspace -l MyLocation \\
                --job-name MyJob -- --n-qubits=2
+      - name: Submit a Q# program from the current folder with a target-capability parameter.
+        text: |-
+            az quantum job submit -g MyResourceGroup -w MyWorkspace -l MyLocation -t MyTarget \\
+                --target-capability MyTargetCapability
 """
 
 helps['quantum job wait'] = """
     type: command
     short-summary: Place the CLI in a waiting state until the job finishes running.
     examples:
-      - name: Wait for completion of a job for 60 seconds.
+      - name: Wait for completion of a job, check at 60 second intervals.
         text: |-
             az quantum job wait -g MyResourceGroup -w MyWorkspace -l MyLocation \\
                 -j yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy --max-poll-wait-secs 60 -o table
@@ -120,7 +132,10 @@ helps['quantum offerings list'] = """
     examples:
       - name: List offerings available in an Azure location.
         text: |-
-            az quantum offerings list -l MyLocation
+            az quantum offerings list -l MyLocation -o table
+      - name: List only the offerings flagged "autoAdd" in an Azure location.
+        text: |-
+            az quantum offerings list -l MyLocation --autoadd-only -o table
 """
 
 helps['quantum offerings show-terms'] = """
@@ -200,10 +215,16 @@ helps['quantum workspace create'] = """
     type: command
     short-summary: Create a new Azure Quantum workspace.
     examples:
+      - name: Create a new Azure Quantum workspace with the providers that offer free credit.
+        text: |-
+            az quantum workspace create -g MyResourceGroup -w MyWorkspace -l MyLocation \\
+                -a MyStorageAccountName
       - name: Create a new Azure Quantum workspace with a specific list of providers.
         text: |-
             az quantum workspace create -g MyResourceGroup -w MyWorkspace -l MyLocation \\
-                -r "MyProvider1 / MySKU1, MyProvider2 / MySKU2" -a MyStorageAccountName
+                -r "MyProvider1 / MySKU1, MyProvider2 / MySKU2" -a MyStorageAccountName\n
+            To display a list of available providers and their SKUs, use the following command:
+                az quantum offerings list -l MyLocation -o table
 """
 
 helps['quantum workspace delete'] = """

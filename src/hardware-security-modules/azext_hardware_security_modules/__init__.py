@@ -7,26 +7,22 @@
 # Changes may cause incorrect behavior and will be lost if the code is
 # regenerated.
 # --------------------------------------------------------------------------
+# pylint: disable=unused-import
 
+import azext_hardware_security_modules._help
 from azure.cli.core import AzCommandsLoader
-from azext_hardware_security_modules.generated._help import helps  # pylint: disable=unused-import
-try:
-    from azext_hardware_security_modules.manual._help import helps  # pylint: disable=reimported
-except ImportError:
-    pass
 
 
 class AzureDedicatedHSMResourceProviderCommandsLoader(AzCommandsLoader):
 
     def __init__(self, cli_ctx=None):
         from azure.cli.core.commands import CliCommandType
-        from azext_hardware_security_modules.generated._client_factory import cf_hardwaresecuritymodules
-        hardwaresecuritymodules_custom = CliCommandType(
+        from azext_hardware_security_modules.generated._client_factory import cf_hardware_security_modules_cl
+        hardware_security_modules_custom = CliCommandType(
             operations_tmpl='azext_hardware_security_modules.custom#{}',
-            client_factory=cf_hardwaresecuritymodules)
-        super(AzureDedicatedHSMResourceProviderCommandsLoader,
-              self).__init__(
-                  cli_ctx=cli_ctx, custom_command_type=hardwaresecuritymodules_custom)
+            client_factory=cf_hardware_security_modules_cl)
+        parent = super(AzureDedicatedHSMResourceProviderCommandsLoader, self)
+        parent.__init__(cli_ctx=cli_ctx, custom_command_type=hardware_security_modules_custom)
 
     def load_command_table(self, args):
         from azext_hardware_security_modules.generated.commands import load_command_table
@@ -34,8 +30,11 @@ class AzureDedicatedHSMResourceProviderCommandsLoader(AzCommandsLoader):
         try:
             from azext_hardware_security_modules.manual.commands import load_command_table as load_command_table_manual
             load_command_table_manual(self, args)
-        except ImportError:
-            pass
+        except ImportError as e:
+            if e.name.endswith('manual.commands'):
+                pass
+            else:
+                raise e
         return self.command_table
 
     def load_arguments(self, command):
@@ -44,8 +43,11 @@ class AzureDedicatedHSMResourceProviderCommandsLoader(AzCommandsLoader):
         try:
             from azext_hardware_security_modules.manual._params import load_arguments as load_arguments_manual
             load_arguments_manual(self, command)
-        except ImportError:
-            pass
+        except ImportError as e:
+            if e.name.endswith('manual._params'):
+                pass
+            else:
+                raise e
 
 
 COMMAND_LOADER_CLS = AzureDedicatedHSMResourceProviderCommandsLoader

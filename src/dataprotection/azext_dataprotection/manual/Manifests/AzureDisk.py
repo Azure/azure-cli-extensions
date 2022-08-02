@@ -13,6 +13,16 @@ manifest = '''
     "allowedRestoreTargetTypes": [ "AlternateLocation" ],
     "itemLevelRecoveyEnabled": false,
     "supportSecretStoreAuthentication": false,
+    "backupVaultPermissions": [
+        {
+            "roleDefinitionName": "Disk Backup Reader",
+            "type": "DataSource"
+        },
+        {
+            "roleDefinitionName": "Disk Snapshot Contributor",
+            "type": "SnapshotRG"
+        }
+    ],
     "policySettings": {
         "supportedRetentionTags": [ "Daily", "Weekly" ],
         "supportedDatastoreTypes": [ "OperationalStore" ],

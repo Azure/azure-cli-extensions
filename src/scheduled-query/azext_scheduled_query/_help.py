@@ -37,9 +37,9 @@ parameters:
         Dimensions can be queried by adding the 'where' keyword and multiple dimensions can be queried by combining them with the 'and' keyword.
 examples:
   - name: Create a scheduled query for a VM.
-    text: az monitor scheduled-query create -g {rg} -n {name1} --scopes {vm_id} --condition "count 'Placeholder_1' > 360 resource id _ResourceID at least 1 violations out of 5 aggregated points" --condition-query Placeholder_1="union Event, Syslog | where TimeGenerated > ago(1h) | where EventLevelName=='Error' or SeverityLevel=='err'" --description "Test rule"
+    text: az monitor scheduled-query create -g {rg} -n {name1} --scopes {vm_id} --condition "count 'Placeholder_1' > 360 resource id _ResourceId at least 1 violations out of 5 aggregated points" --condition-query Placeholder_1="union Event, Syslog | where TimeGenerated > ago(1h) | where EventLevelName=='Error' or SeverityLevel=='err'" --description "Test rule"
   - name: Create a scheduled query for VMs in a resource group.
-    text: az monitor scheduled-query create -g {rg} -n {name1} --scopes {rg_id} --condition "count 'Placeholder_1' > 360 resource id _ResourceID at least 1 violations out of 5 aggregated points" --condition-query Placeholder_1="union Event, Syslog | where TimeGenerated > ago(1h) | where EventLevelName=='Error' or SeverityLevel=='err'" --description "Test rule"
+    text: az monitor scheduled-query create -g {rg} -n {name1} --scopes {rg_id} --condition "count 'Placeholder_1' > 360 resource id _ResourceId at least 1 violations out of 5 aggregated points" --condition-query Placeholder_1="union Event, Syslog | where TimeGenerated > ago(1h) | where EventLevelName=='Error' or SeverityLevel=='err'" --description "Test rule"
 """
 
 helps['monitor scheduled-query update'] = """

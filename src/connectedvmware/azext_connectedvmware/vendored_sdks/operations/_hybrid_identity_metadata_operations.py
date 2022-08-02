@@ -1,3 +1,4 @@
+# pylint: disable=too-many-lines
 # coding=utf-8
 # --------------------------------------------------------------------------
 # Copyright (c) Microsoft Corporation. All rights reserved.
@@ -6,23 +7,187 @@
 # Changes may cause incorrect behavior and will be lost if the code is regenerated.
 # --------------------------------------------------------------------------
 from typing import TYPE_CHECKING
-import warnings
+
+from msrest import Serializer
 
 from azure.core.exceptions import ClientAuthenticationError, HttpResponseError, ResourceExistsError, ResourceNotFoundError, map_error
 from azure.core.paging import ItemPaged
 from azure.core.pipeline import PipelineResponse
-from azure.core.pipeline.transport import HttpRequest, HttpResponse
+from azure.core.pipeline.transport import HttpResponse
+from azure.core.rest import HttpRequest
+from azure.core.tracing.decorator import distributed_trace
 from azure.mgmt.core.exceptions import ARMErrorFormat
 
 from .. import models as _models
+from .._vendor import _convert_request, _format_url_section
 
 if TYPE_CHECKING:
     # pylint: disable=unused-import,ungrouped-imports
-    from typing import Any, Callable, Dict, Generic, Iterable, Optional, TypeVar
-
+    from typing import Any, Callable, Dict, Iterable, Optional, TypeVar
     T = TypeVar('T')
     ClsType = Optional[Callable[[PipelineResponse[HttpRequest, HttpResponse], T, Dict[str, Any]], Any]]
 
+_SERIALIZER = Serializer()
+_SERIALIZER.client_side_validation = False
+# fmt: off
+
+def build_create_request(
+    subscription_id,  # type: str
+    resource_group_name,  # type: str
+    virtual_machine_name,  # type: str
+    metadata_name,  # type: str
+    **kwargs  # type: Any
+):
+    # type: (...) -> HttpRequest
+    api_version = kwargs.pop('api_version', "2020-10-01-preview")  # type: str
+    content_type = kwargs.pop('content_type', None)  # type: Optional[str]
+
+    accept = "application/json"
+    # Construct URL
+    _url = kwargs.pop("template_url", "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ConnectedVMwarevSphere/virtualMachines/{virtualMachineName}/hybridIdentityMetadata/{metadataName}")  # pylint: disable=line-too-long
+    path_format_arguments = {
+        "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, 'str'),
+        "resourceGroupName": _SERIALIZER.url("resource_group_name", resource_group_name, 'str'),
+        "virtualMachineName": _SERIALIZER.url("virtual_machine_name", virtual_machine_name, 'str'),
+        "metadataName": _SERIALIZER.url("metadata_name", metadata_name, 'str'),
+    }
+
+    _url = _format_url_section(_url, **path_format_arguments)
+
+    # Construct parameters
+    _query_parameters = kwargs.pop("params", {})  # type: Dict[str, Any]
+    _query_parameters['api-version'] = _SERIALIZER.query("api_version", api_version, 'str')
+
+    # Construct headers
+    _header_parameters = kwargs.pop("headers", {})  # type: Dict[str, Any]
+    if content_type is not None:
+        _header_parameters['Content-Type'] = _SERIALIZER.header("content_type", content_type, 'str')
+    _header_parameters['Accept'] = _SERIALIZER.header("accept", accept, 'str')
+
+    return HttpRequest(
+        method="PUT",
+        url=_url,
+        params=_query_parameters,
+        headers=_header_parameters,
+        **kwargs
+    )
+
+
+def build_get_request(
+    subscription_id,  # type: str
+    resource_group_name,  # type: str
+    virtual_machine_name,  # type: str
+    metadata_name,  # type: str
+    **kwargs  # type: Any
+):
+    # type: (...) -> HttpRequest
+    api_version = kwargs.pop('api_version', "2020-10-01-preview")  # type: str
+
+    accept = "application/json"
+    # Construct URL
+    _url = kwargs.pop("template_url", "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ConnectedVMwarevSphere/virtualMachines/{virtualMachineName}/hybridIdentityMetadata/{metadataName}")  # pylint: disable=line-too-long
+    path_format_arguments = {
+        "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, 'str'),
+        "resourceGroupName": _SERIALIZER.url("resource_group_name", resource_group_name, 'str'),
+        "virtualMachineName": _SERIALIZER.url("virtual_machine_name", virtual_machine_name, 'str'),
+        "metadataName": _SERIALIZER.url("metadata_name", metadata_name, 'str'),
+    }
+
+    _url = _format_url_section(_url, **path_format_arguments)
+
+    # Construct parameters
+    _query_parameters = kwargs.pop("params", {})  # type: Dict[str, Any]
+    _query_parameters['api-version'] = _SERIALIZER.query("api_version", api_version, 'str')
+
+    # Construct headers
+    _header_parameters = kwargs.pop("headers", {})  # type: Dict[str, Any]
+    _header_parameters['Accept'] = _SERIALIZER.header("accept", accept, 'str')
+
+    return HttpRequest(
+        method="GET",
+        url=_url,
+        params=_query_parameters,
+        headers=_header_parameters,
+        **kwargs
+    )
+
+
+def build_delete_request(
+    subscription_id,  # type: str
+    resource_group_name,  # type: str
+    virtual_machine_name,  # type: str
+    metadata_name,  # type: str
+    **kwargs  # type: Any
+):
+    # type: (...) -> HttpRequest
+    api_version = kwargs.pop('api_version', "2020-10-01-preview")  # type: str
+
+    accept = "application/json"
+    # Construct URL
+    _url = kwargs.pop("template_url", "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ConnectedVMwarevSphere/virtualMachines/{virtualMachineName}/hybridIdentityMetadata/{metadataName}")  # pylint: disable=line-too-long
+    path_format_arguments = {
+        "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, 'str'),
+        "resourceGroupName": _SERIALIZER.url("resource_group_name", resource_group_name, 'str'),
+        "virtualMachineName": _SERIALIZER.url("virtual_machine_name", virtual_machine_name, 'str'),
+        "metadataName": _SERIALIZER.url("metadata_name", metadata_name, 'str'),
+    }
+
+    _url = _format_url_section(_url, **path_format_arguments)
+
+    # Construct parameters
+    _query_parameters = kwargs.pop("params", {})  # type: Dict[str, Any]
+    _query_parameters['api-version'] = _SERIALIZER.query("api_version", api_version, 'str')
+
+    # Construct headers
+    _header_parameters = kwargs.pop("headers", {})  # type: Dict[str, Any]
+    _header_parameters['Accept'] = _SERIALIZER.header("accept", accept, 'str')
+
+    return HttpRequest(
+        method="DELETE",
+        url=_url,
+        params=_query_parameters,
+        headers=_header_parameters,
+        **kwargs
+    )
+
+
+def build_list_by_vm_request(
+    subscription_id,  # type: str
+    resource_group_name,  # type: str
+    virtual_machine_name,  # type: str
+    **kwargs  # type: Any
+):
+    # type: (...) -> HttpRequest
+    api_version = kwargs.pop('api_version', "2020-10-01-preview")  # type: str
+
+    accept = "application/json"
+    # Construct URL
+    _url = kwargs.pop("template_url", "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ConnectedVMwarevSphere/virtualMachines/{virtualMachineName}/hybridIdentityMetadata")  # pylint: disable=line-too-long
+    path_format_arguments = {
+        "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, 'str'),
+        "resourceGroupName": _SERIALIZER.url("resource_group_name", resource_group_name, 'str'),
+        "virtualMachineName": _SERIALIZER.url("virtual_machine_name", virtual_machine_name, 'str'),
+    }
+
+    _url = _format_url_section(_url, **path_format_arguments)
+
+    # Construct parameters
+    _query_parameters = kwargs.pop("params", {})  # type: Dict[str, Any]
+    _query_parameters['api-version'] = _SERIALIZER.query("api_version", api_version, 'str')
+
+    # Construct headers
+    _header_parameters = kwargs.pop("headers", {})  # type: Dict[str, Any]
+    _header_parameters['Accept'] = _SERIALIZER.header("accept", accept, 'str')
+
+    return HttpRequest(
+        method="GET",
+        url=_url,
+        params=_query_parameters,
+        headers=_header_parameters,
+        **kwargs
+    )
+
+# fmt: on
 class HybridIdentityMetadataOperations(object):
     """HybridIdentityMetadataOperations operations.
 
@@ -45,6 +210,7 @@ class HybridIdentityMetadataOperations(object):
         self._deserialize = deserializer
         self._config = config
 
+    @distributed_trace
     def create(
         self,
         resource_group_name,  # type: str
@@ -76,42 +242,38 @@ class HybridIdentityMetadataOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2020-10-01-preview"
-        content_type = kwargs.pop("content_type", "application/json")
-        accept = "application/json"
 
-        # Construct URL
-        url = self.create.metadata['url']  # type: ignore
-        path_format_arguments = {
-            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
-            'virtualMachineName': self._serialize.url("virtual_machine_name", virtual_machine_name, 'str'),
-            'metadataName': self._serialize.url("metadata_name", metadata_name, 'str'),
-        }
-        url = self._client.format_url(url, **path_format_arguments)
+        api_version = kwargs.pop('api_version', "2020-10-01-preview")  # type: str
+        content_type = kwargs.pop('content_type', "application/json")  # type: Optional[str]
 
-        # Construct parameters
-        query_parameters = {}  # type: Dict[str, Any]
-        query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
-
-        # Construct headers
-        header_parameters = {}  # type: Dict[str, Any]
-        header_parameters['Content-Type'] = self._serialize.header("content_type", content_type, 'str')
-        header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
-
-        body_content_kwargs = {}  # type: Dict[str, Any]
         if body is not None:
-            body_content = self._serialize.body(body, 'HybridIdentityMetadata')
+            _json = self._serialize.body(body, 'HybridIdentityMetadata')
         else:
-            body_content = None
-        body_content_kwargs['content'] = body_content
-        request = self._client.put(url, query_parameters, header_parameters, **body_content_kwargs)
-        pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
+            _json = None
+
+        request = build_create_request(
+            subscription_id=self._config.subscription_id,
+            resource_group_name=resource_group_name,
+            virtual_machine_name=virtual_machine_name,
+            metadata_name=metadata_name,
+            api_version=api_version,
+            content_type=content_type,
+            json=_json,
+            template_url=self.create.metadata['url'],
+        )
+        request = _convert_request(request)
+        request.url = self._client.format_url(request.url)
+
+        pipeline_response = self._client._pipeline.run(  # pylint: disable=protected-access
+            request,
+            stream=False,
+            **kwargs
+        )
         response = pipeline_response.http_response
 
         if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, response)
+            error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
             raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         deserialized = self._deserialize('HybridIdentityMetadata', pipeline_response)
@@ -120,8 +282,11 @@ class HybridIdentityMetadataOperations(object):
             return cls(pipeline_response, deserialized, {})
 
         return deserialized
-    create.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ConnectedVMwarevSphere/virtualMachines/{virtualMachineName}/hybridIdentityMetadata/{metadataName}'}  # type: ignore
 
+    create.metadata = {'url': "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ConnectedVMwarevSphere/virtualMachines/{virtualMachineName}/hybridIdentityMetadata/{metadataName}"}  # type: ignore
+
+
+    @distributed_trace
     def get(
         self,
         resource_group_name,  # type: str
@@ -150,34 +315,31 @@ class HybridIdentityMetadataOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2020-10-01-preview"
-        accept = "application/json"
 
-        # Construct URL
-        url = self.get.metadata['url']  # type: ignore
-        path_format_arguments = {
-            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
-            'virtualMachineName': self._serialize.url("virtual_machine_name", virtual_machine_name, 'str'),
-            'metadataName': self._serialize.url("metadata_name", metadata_name, 'str'),
-        }
-        url = self._client.format_url(url, **path_format_arguments)
+        api_version = kwargs.pop('api_version', "2020-10-01-preview")  # type: str
 
-        # Construct parameters
-        query_parameters = {}  # type: Dict[str, Any]
-        query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
+        
+        request = build_get_request(
+            subscription_id=self._config.subscription_id,
+            resource_group_name=resource_group_name,
+            virtual_machine_name=virtual_machine_name,
+            metadata_name=metadata_name,
+            api_version=api_version,
+            template_url=self.get.metadata['url'],
+        )
+        request = _convert_request(request)
+        request.url = self._client.format_url(request.url)
 
-        # Construct headers
-        header_parameters = {}  # type: Dict[str, Any]
-        header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
-
-        request = self._client.get(url, query_parameters, header_parameters)
-        pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
+        pipeline_response = self._client._pipeline.run(  # pylint: disable=protected-access
+            request,
+            stream=False,
+            **kwargs
+        )
         response = pipeline_response.http_response
 
         if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, response)
+            error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
             raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         deserialized = self._deserialize('HybridIdentityMetadata', pipeline_response)
@@ -186,9 +348,12 @@ class HybridIdentityMetadataOperations(object):
             return cls(pipeline_response, deserialized, {})
 
         return deserialized
-    get.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ConnectedVMwarevSphere/virtualMachines/{virtualMachineName}/hybridIdentityMetadata/{metadataName}'}  # type: ignore
 
-    def delete(
+    get.metadata = {'url': "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ConnectedVMwarevSphere/virtualMachines/{virtualMachineName}/hybridIdentityMetadata/{metadataName}"}  # type: ignore
+
+
+    @distributed_trace
+    def delete(  # pylint: disable=inconsistent-return-statements
         self,
         resource_group_name,  # type: str
         virtual_machine_name,  # type: str
@@ -216,41 +381,40 @@ class HybridIdentityMetadataOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2020-10-01-preview"
-        accept = "application/json"
 
-        # Construct URL
-        url = self.delete.metadata['url']  # type: ignore
-        path_format_arguments = {
-            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
-            'virtualMachineName': self._serialize.url("virtual_machine_name", virtual_machine_name, 'str'),
-            'metadataName': self._serialize.url("metadata_name", metadata_name, 'str'),
-        }
-        url = self._client.format_url(url, **path_format_arguments)
+        api_version = kwargs.pop('api_version', "2020-10-01-preview")  # type: str
 
-        # Construct parameters
-        query_parameters = {}  # type: Dict[str, Any]
-        query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
+        
+        request = build_delete_request(
+            subscription_id=self._config.subscription_id,
+            resource_group_name=resource_group_name,
+            virtual_machine_name=virtual_machine_name,
+            metadata_name=metadata_name,
+            api_version=api_version,
+            template_url=self.delete.metadata['url'],
+        )
+        request = _convert_request(request)
+        request.url = self._client.format_url(request.url)
 
-        # Construct headers
-        header_parameters = {}  # type: Dict[str, Any]
-        header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
-
-        request = self._client.delete(url, query_parameters, header_parameters)
-        pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
+        pipeline_response = self._client._pipeline.run(  # pylint: disable=protected-access
+            request,
+            stream=False,
+            **kwargs
+        )
         response = pipeline_response.http_response
 
         if response.status_code not in [200, 204]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, response)
+            error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
             raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         if cls:
             return cls(pipeline_response, None, {})
 
-    delete.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ConnectedVMwarevSphere/virtualMachines/{virtualMachineName}/hybridIdentityMetadata/{metadataName}'}  # type: ignore
+    delete.metadata = {'url': "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ConnectedVMwarevSphere/virtualMachines/{virtualMachineName}/hybridIdentityMetadata/{metadataName}"}  # type: ignore
 
+
+    @distributed_trace
     def list_by_vm(
         self,
         resource_group_name,  # type: str
@@ -267,45 +431,48 @@ class HybridIdentityMetadataOperations(object):
         :param virtual_machine_name: Name of the vm.
         :type virtual_machine_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: An iterator like instance of either HybridIdentityMetadataList or the result of cls(response)
-        :rtype: ~azure.core.paging.ItemPaged[~azure.mgmt.connectedvmware.models.HybridIdentityMetadataList]
+        :return: An iterator like instance of either HybridIdentityMetadataList or the result of
+         cls(response)
+        :rtype:
+         ~azure.core.paging.ItemPaged[~azure.mgmt.connectedvmware.models.HybridIdentityMetadataList]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
+        api_version = kwargs.pop('api_version', "2020-10-01-preview")  # type: str
+
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.HybridIdentityMetadataList"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2020-10-01-preview"
-        accept = "application/json"
-
         def prepare_request(next_link=None):
-            # Construct headers
-            header_parameters = {}  # type: Dict[str, Any]
-            header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
-
             if not next_link:
-                # Construct URL
-                url = self.list_by_vm.metadata['url']  # type: ignore
-                path_format_arguments = {
-                    'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
-                    'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
-                    'virtualMachineName': self._serialize.url("virtual_machine_name", virtual_machine_name, 'str'),
-                }
-                url = self._client.format_url(url, **path_format_arguments)
-                # Construct parameters
-                query_parameters = {}  # type: Dict[str, Any]
-                query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
+                
+                request = build_list_by_vm_request(
+                    subscription_id=self._config.subscription_id,
+                    resource_group_name=resource_group_name,
+                    virtual_machine_name=virtual_machine_name,
+                    api_version=api_version,
+                    template_url=self.list_by_vm.metadata['url'],
+                )
+                request = _convert_request(request)
+                request.url = self._client.format_url(request.url)
 
-                request = self._client.get(url, query_parameters, header_parameters)
             else:
-                url = next_link
-                query_parameters = {}  # type: Dict[str, Any]
-                request = self._client.get(url, query_parameters, header_parameters)
+                
+                request = build_list_by_vm_request(
+                    subscription_id=self._config.subscription_id,
+                    resource_group_name=resource_group_name,
+                    virtual_machine_name=virtual_machine_name,
+                    api_version=api_version,
+                    template_url=next_link,
+                )
+                request = _convert_request(request)
+                request.url = self._client.format_url(request.url)
+                request.method = "GET"
             return request
 
         def extract_data(pipeline_response):
-            deserialized = self._deserialize('HybridIdentityMetadataList', pipeline_response)
+            deserialized = self._deserialize("HybridIdentityMetadataList", pipeline_response)
             list_of_elem = deserialized.value
             if cls:
                 list_of_elem = cls(list_of_elem)
@@ -314,17 +481,22 @@ class HybridIdentityMetadataOperations(object):
         def get_next(next_link=None):
             request = prepare_request(next_link)
 
-            pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
+            pipeline_response = self._client._pipeline.run(  # pylint: disable=protected-access
+                request,
+                stream=False,
+                **kwargs
+            )
             response = pipeline_response.http_response
 
             if response.status_code not in [200]:
-                error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, response)
                 map_error(status_code=response.status_code, response=response, error_map=error_map)
+                error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
                 raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
             return pipeline_response
 
+
         return ItemPaged(
             get_next, extract_data
         )
-    list_by_vm.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ConnectedVMwarevSphere/virtualMachines/{virtualMachineName}/hybridIdentityMetadata'}  # type: ignore
+    list_by_vm.metadata = {'url': "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ConnectedVMwarevSphere/virtualMachines/{virtualMachineName}/hybridIdentityMetadata"}  # type: ignore

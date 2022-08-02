@@ -28,11 +28,11 @@ class MonitorClient(object):
     """Monitor Management Client.
 
     :ivar data_collection_endpoints: DataCollectionEndpointsOperations operations
-    :vartype data_collection_endpoints: azure.mgmt.amcs.operations.DataCollectionEndpointsOperations
+    :vartype data_collection_endpoints: $(python-base-namespace).v2021_09_01_preview.operations.DataCollectionEndpointsOperations
     :ivar data_collection_rule_associations: DataCollectionRuleAssociationsOperations operations
-    :vartype data_collection_rule_associations: azure.mgmt.amcs.operations.DataCollectionRuleAssociationsOperations
+    :vartype data_collection_rule_associations: $(python-base-namespace).v2021_09_01_preview.operations.DataCollectionRuleAssociationsOperations
     :ivar data_collection_rules: DataCollectionRulesOperations operations
-    :vartype data_collection_rules: azure.mgmt.amcs.operations.DataCollectionRulesOperations
+    :vartype data_collection_rules: $(python-base-namespace).v2021_09_01_preview.operations.DataCollectionRulesOperations
     :param credential: Credential needed for the client to connect to Azure.
     :type credential: ~azure.core.credentials.TokenCredential
     :param subscription_id: The ID of the target subscription.

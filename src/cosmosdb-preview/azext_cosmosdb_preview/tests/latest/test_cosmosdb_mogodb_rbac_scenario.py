@@ -8,7 +8,7 @@ from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
 
 class Cosmosdb_previewMongodbRbacScenarioTest(ScenarioTest):
 
-    @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_mongodb_role', location='eastus2')
+    @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_mongodb_role', location='westus2')
     def test_cosmosdb_mongo_role(self, resource_group):
         acc_name = self.create_random_name(prefix='cli', length=15)
         db_name = self.create_random_name(prefix='cli', length=15)

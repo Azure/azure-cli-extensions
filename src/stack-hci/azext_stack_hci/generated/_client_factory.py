@@ -9,11 +9,20 @@
 # --------------------------------------------------------------------------
 
 
-def cf_stack_hci(cli_ctx, *_):
+def cf_stack_hci_cl(cli_ctx, *_):
     from azure.cli.core.commands.client_factory import get_mgmt_service_client
-    from ..vendored_sdks.azurestackhci import AzureStackHCIClient
-    return get_mgmt_service_client(cli_ctx, AzureStackHCIClient)
+    from azext_stack_hci.vendored_sdks.azurestackhci import AzureStackHCIClient
+    return get_mgmt_service_client(cli_ctx,
+                                   AzureStackHCIClient)
+
+
+def cf_arc_setting(cli_ctx, *_):
+    return cf_stack_hci_cl(cli_ctx).arc_settings
 
 
 def cf_cluster(cli_ctx, *_):
-    return cf_stack_hci(cli_ctx).clusters
+    return cf_stack_hci_cl(cli_ctx).clusters
+
+
+def cf_extension(cli_ctx, *_):
+    return cf_stack_hci_cl(cli_ctx).extensions

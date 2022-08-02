@@ -18,14 +18,26 @@ from azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.models import (
     MongoUserDefinitionCreateUpdateParameters,
     DatabaseAccountKind,
     ContinuousBackupRestoreLocation,
-    DatabaseAccountCreateUpdateParameters,
     DatabaseAccountUpdateParameters,
-    RestoreParameters
+    RestoreParameters,
+    PeriodicModeBackupPolicy,
+    PeriodicModeProperties,
+    ContinuousModeBackupPolicy,
+    ContinuousModeProperties,
+    DatabaseAccountCreateUpdateParameters,
+    MergeParameters,
+    RetrieveThroughputParameters,
+    RetrieveThroughputPropertiesResource,
+    PhysicalPartitionId,
+    RedistributeThroughputParameters,
+    RedistributeThroughputPropertiesResource,
+    ThroughputPolicyType
 )
 
 from azext_cosmosdb_preview._client_factory import (
     cf_restorable_gremlin_resources,
-    cf_restorable_table_resources
+    cf_restorable_table_resources,
+    cf_restorable_database_accounts
 )
 
 from azure.cli.core.azclierror import InvalidArgumentValueError
@@ -37,10 +49,7 @@ from azure.mgmt.cosmosdb.models import (
     ConsistencyPolicy,
     ResourceIdentityType,
     ManagedServiceIdentity,
-    PeriodicModeBackupPolicy,
-    PeriodicModeProperties,
     AnalyticalStorageConfiguration,
-    ContinuousModeBackupPolicy,
     Components1Jq1T4ISchemasManagedserviceidentityPropertiesUserassignedidentitiesAdditionalproperties
 )
 
@@ -523,6 +532,7 @@ def cli_cosmosdb_create(cmd,
                         default_identity=None,
                         analytical_storage_schema_type=None,
                         backup_policy_type=None,
+                        continuous_tier=None,
                         databases_to_restore=None,
                         gremlin_databases_to_restore=None,
                         tables_to_restore=None,
@@ -572,6 +582,7 @@ def cli_cosmosdb_create(cmd,
                                     restore_timestamp=restore_timestamp_utc,
                                     analytical_storage_schema_type=analytical_storage_schema_type,
                                     backup_policy_type=backup_policy_type,
+                                    continuous_tier=continuous_tier,
                                     backup_interval=backup_interval,
                                     backup_redundancy=backup_redundancy,
                                     assign_identity=assign_identity,
@@ -611,6 +622,7 @@ def cli_cosmosdb_update(client,
                         default_identity=None,
                         analytical_storage_schema_type=None,
                         backup_policy_type=None,
+                        continuous_tier=None,
                         enable_materialized_views=None):
     """Update an existing Azure Cosmos DB database account. """
     existing = client.get(resource_group_name, account_name)
@@ -660,6 +672,22 @@ def cli_cosmosdb_update(client,
     elif backup_policy_type is not None and backup_policy_type.lower() == 'continuous':
         if isinstance(existing.backup_policy, PeriodicModeBackupPolicy):
             backup_policy = ContinuousModeBackupPolicy()
+            if continuous_tier is not None:
+                continuous_mode_properties = ContinuousModeProperties(
+                    tier=continuous_tier
+                )
+            else:
+                continuous_mode_properties = ContinuousModeProperties(
+                    tier='Continuous30Days'
+                )
+            backup_policy.continuous_mode_properties = continuous_mode_properties
+        else:
+            backup_policy = existing.backup_policy
+            if continuous_tier is not None:
+                continuous_mode_properties = ContinuousModeProperties(
+                    tier=continuous_tier
+                )
+                backup_policy.continuous_mode_properties = continuous_mode_properties
 
     analytical_storage_configuration = None
     if analytical_storage_schema_type is not None:
@@ -693,6 +721,34 @@ def cli_cosmosdb_update(client,
     return docdb_account
 
 
+# pylint: disable=too-many-branches
+def cli_cosmosdb_restorable_database_account_list(client,
+                                                  location=None,
+                                                  account_name=None):
+    restorable_database_accounts = None
+    if location is not None:
+        restorable_database_accounts = client.list_by_location(location)
+    else:
+        restorable_database_accounts = client.list()
+
+    if account_name is None:
+        return restorable_database_accounts
+
+    matching_restorable_accounts = []
+    restorable_database_accounts_list = list(restorable_database_accounts)
+    for account in restorable_database_accounts_list:
+        if account.account_name == account_name:
+            matching_restorable_accounts.append(account)
+    return matching_restorable_accounts
+
+
+# pylint: disable=too-many-branches
+def cli_cosmosdb_restorable_database_account_get_by_location(client,
+                                                             location=None,
+                                                             instance_id=None):
+    return client.get_by_location(location, instance_id)
+
+
 # restore cosmosdb account with gremlin databases and tables to restore
 # pylint: disable=too-many-statements
 def cli_cosmosdb_restore(cmd,
@@ -705,7 +761,6 @@ def cli_cosmosdb_restore(cmd,
                          databases_to_restore=None,
                          gremlin_databases_to_restore=None,
                          tables_to_restore=None):
-    from azure.cli.command_modules.cosmosdb._client_factory import cf_restorable_database_accounts
     restorable_database_accounts_client = cf_restorable_database_accounts(cmd.cli_ctx, [])
     restorable_database_accounts = restorable_database_accounts_client.list()
     restorable_database_accounts_list = list(restorable_database_accounts)
@@ -836,6 +891,7 @@ def _create_database_account(client,
                              assign_identity=None,
                              default_identity=None,
                              backup_policy_type=None,
+                             continuous_tier=None,
                              analytical_storage_schema_type=None,
                              databases_to_restore=None,
                              gremlin_databases_to_restore=None,
@@ -901,11 +957,21 @@ def _create_database_account(client,
                     backup_retention_interval_in_hours=backup_retention,
                     backup_storage_redundancy=backup_redundancy
                 )
-            backup_policy.periodic_mode_properties = periodic_mode_properties
+                backup_policy.periodic_mode_properties = periodic_mode_properties
         elif backup_policy_type.lower() == 'continuous':
             backup_policy = ContinuousModeBackupPolicy()
+            if continuous_tier is not None:
+                continuous_mode_properties = ContinuousModeProperties(
+                    tier=continuous_tier
+                )
+            else:
+                continuous_mode_properties = ContinuousModeProperties(
+                    tier='Continuous30Days'
+                )
+            backup_policy.continuous_mode_properties = continuous_mode_properties
         else:
             raise CLIError('backup-policy-type argument is invalid.')
+
     elif backup_interval is not None or backup_retention is not None:
         backup_policy = PeriodicModeBackupPolicy()
         periodic_mode_properties = PeriodicModeProperties(
@@ -1038,3 +1104,273 @@ def cli_table_retrieve_latest_backup_time(client,
                                                                           table_name,
                                                                           restoreLocation)
     return asyc_backupInfo.result()
+
+
+def cosmosdb_data_transfer_copy_job(client,
+                                    resource_group_name,
+                                    account_name,
+                                    source_cassandra_table=None,
+                                    dest_cassandra_table=None,
+                                    source_sql_container=None,
+                                    dest_sql_container=None,
+                                    worker_count=0,
+                                    job_name=None):
+    if source_cassandra_table is None and source_sql_container is None:
+        raise CLIError('source component ismissing')
+
+    if source_cassandra_table is not None and source_sql_container is not None:
+        raise CLIError('Invalid input: multiple source components')
+
+    if dest_cassandra_table is None and dest_sql_container is None:
+        raise CLIError('destination component is missing')
+
+    if dest_cassandra_table is not None and dest_sql_container is not None:
+        raise CLIError('Invalid input: multiple destination components')
+
+    job_create_properties = {}
+
+    if source_cassandra_table is not None:
+        job_create_properties['source'] = source_cassandra_table
+
+    if source_sql_container is not None:
+        job_create_properties['source'] = source_sql_container
+
+    if dest_cassandra_table is not None:
+        job_create_properties['destination'] = dest_cassandra_table
+
+    if dest_sql_container is not None:
+        job_create_properties['destination'] = dest_sql_container
+
+    if worker_count > 0:
+        job_create_properties['worker_count'] = worker_count
+
+    job_create_parameters = {}
+    job_create_parameters['properties'] = job_create_properties
+
+    if job_name is None:
+        job_name = _gen_guid()
+
+    return client.create(resource_group_name=resource_group_name,
+                         account_name=account_name,
+                         job_name=job_name,
+                         job_create_parameters=job_create_parameters)
+
+
+def cli_begin_list_sql_container_partition_merge(client,
+                                                 resource_group_name,
+                                                 account_name,
+                                                 database_name,
+                                                 container_name):
+
+    try:
+        client.get_sql_container(resource_group_name, account_name, database_name, container_name)
+    except Exception as ex:
+        if ex.error.code == "NotFound":
+            raise CLIError("(NotFound) Container with name '{}' in database '{}' could not be found.".format(container_name, database_name))
+        raise CLIError("{}".format(str(ex)))
+
+    mergeParameters = MergeParameters(is_dry_run=False)
+
+    async_partition_merge_result = client.begin_list_sql_container_partition_merge(resource_group_name=resource_group_name,
+                                                                                   account_name=account_name,
+                                                                                   database_name=database_name,
+                                                                                   container_name=container_name,
+                                                                                   merge_parameters=mergeParameters)
+
+    return async_partition_merge_result.result()
+
+
+def cli_begin_list_mongo_db_collection_partition_merge(client,
+                                                       resource_group_name,
+                                                       account_name,
+                                                       database_name,
+                                                       container_name):
+
+    try:
+        client.get_mongo_db_collection(resource_group_name, account_name, database_name, container_name)
+    except Exception as ex:
+        if ex.error.code == "NotFound":
+            raise CLIError("(NotFound) collection with name '{}' in mongodb '{}' could not be found.".format(container_name, database_name))
+        raise CLIError("{}".format(str(ex)))
+
+    mergeParameters = MergeParameters(is_dry_run=False)
+
+    async_partition_merge_result = client.begin_list_mongo_db_collection_partition_merge(resource_group_name=resource_group_name,
+                                                                                         account_name=account_name,
+                                                                                         database_name=database_name,
+                                                                                         collection_name=container_name,
+                                                                                         merge_parameters=mergeParameters)
+
+    return async_partition_merge_result.result()
+
+
+# pylint: disable=dangerous-default-value
+def cli_begin_retrieve_sql_container_partition_throughput(client,
+                                                          resource_group_name,
+                                                          account_name,
+                                                          database_name,
+                                                          container_name,
+                                                          physical_partition_ids=[],
+                                                          all_partitions=False):
+
+    try:
+        client.get_sql_container(
+            resource_group_name, account_name, database_name, container_name)
+    except Exception as ex:
+        if ex.error.code == "NotFound":
+            raise CLIError("(NotFound) Container with name '{}' in database '{} could not be found.".format(container_name, database_name))
+
+    if len(physical_partition_ids) == 0 and all_partitions is False:
+        raise CLIError(
+            'Either of --physical-partition-ids/--all-partitions needs to be specified.')
+
+    if len(physical_partition_ids) > 0 and all_partitions:
+        raise CLIError(
+            'Both --physical-partition-ids and --all-partitions cannot be specified together.')
+
+    if all_partitions is True:
+        physical_partition_ids = [PhysicalPartitionId(id='-1')]
+
+    retrieve_throughput_properties_resource = RetrieveThroughputPropertiesResource(
+        physical_partition_ids=physical_partition_ids
+    )
+
+    retrieve_throughput_parameters = RetrieveThroughputParameters(
+        resource=retrieve_throughput_properties_resource
+    )
+
+    async_partition_retrieve_throughput_result = client.begin_sql_container_retrieve_throughput_distribution(resource_group_name=resource_group_name,
+                                                                                                             account_name=account_name,
+                                                                                                             database_name=database_name,
+                                                                                                             container_name=container_name,
+                                                                                                             retrieve_throughput_parameters=retrieve_throughput_parameters)
+
+    return async_partition_retrieve_throughput_result.result()
+
+
+# pylint: disable=dangerous-default-value
+def cli_begin_redistribute_sql_container_partition_throughput(client,
+                                                              resource_group_name,
+                                                              account_name,
+                                                              database_name,
+                                                              container_name,
+                                                              evenly_distribute=False,
+                                                              target_partition_info=[],
+                                                              source_partition_info=[]):
+
+    try:
+        client.get_sql_container(
+            resource_group_name, account_name, database_name, container_name)
+    except Exception as ex:
+        if ex.error.code == "NotFound":
+            raise CLIError("(NotFound) Container with name '{}' in database '{} could not be found.".format(container_name, database_name))
+
+    if evenly_distribute:
+        redistribute_throughput_properties_resource = RedistributeThroughputPropertiesResource(
+            throughput_policy=ThroughputPolicyType.EQUAL,
+            target_physical_partition_throughput_info=[],
+            source_physical_partition_throughput_info=[])
+    else:
+        redistribute_throughput_properties_resource = RedistributeThroughputPropertiesResource(
+            throughput_policy=ThroughputPolicyType.CUSTOM,
+            target_physical_partition_throughput_info=target_partition_info,
+            source_physical_partition_throughput_info=source_partition_info
+        )
+
+    redistribute_throughput_parameters = RedistributeThroughputParameters(
+        resource=redistribute_throughput_properties_resource
+    )
+
+    async_partition_redistribute_throughput_result = client.begin_sql_container_redistribute_throughput(resource_group_name=resource_group_name,
+                                                                                                        account_name=account_name,
+                                                                                                        database_name=database_name,
+                                                                                                        container_name=container_name,
+                                                                                                        redistribute_throughput_parameters=redistribute_throughput_parameters)
+
+    return async_partition_redistribute_throughput_result.result()
+
+
+# pylint: disable=dangerous-default-value
+def cli_begin_retrieve_mongo_container_partition_throughput(client,
+                                                            resource_group_name,
+                                                            account_name,
+                                                            database_name,
+                                                            collection_name,
+                                                            physical_partition_ids=[],
+                                                            all_partitions=False):
+
+    try:
+        client.get_mongo_db_collection(
+            resource_group_name, account_name, database_name, collection_name)
+    except Exception as ex:
+        if ex.error.code == "NotFound":
+            raise CLIError("(NotFound) Container with name '{}' in database '{} could not be found.".format(collection_name, database_name))
+
+    if len(physical_partition_ids) == 0 and all_partitions is False:
+        raise CLIError(
+            'Either of --physical-partition-ids/--all-partitions needs to be specified.')
+
+    if len(physical_partition_ids) > 0 and all_partitions:
+        raise CLIError(
+            'Both --physical-partition-ids and --all-partitions cannot be specified together.')
+
+    if all_partitions is True:
+        physical_partition_ids = [PhysicalPartitionId(id='-1')]
+
+    retrieve_throughput_properties_resource = RetrieveThroughputPropertiesResource(
+        physical_partition_ids=physical_partition_ids
+    )
+
+    retrieve_throughput_parameters = RetrieveThroughputParameters(
+        resource=retrieve_throughput_properties_resource
+    )
+
+    async_partition_retrieve_throughput_result = client.begin_mongo_db_container_retrieve_throughput_distribution(resource_group_name=resource_group_name,
+                                                                                                                  account_name=account_name,
+                                                                                                                  database_name=database_name,
+                                                                                                                  collection_name=collection_name,
+                                                                                                                  retrieve_throughput_parameters=retrieve_throughput_parameters)
+
+    return async_partition_retrieve_throughput_result.result()
+
+
+# pylint: disable=dangerous-default-value
+def cli_begin_redistribute_mongo_container_partition_throughput(client,
+                                                                resource_group_name,
+                                                                account_name,
+                                                                database_name,
+                                                                collection_name,
+                                                                evenly_distribute=False,
+                                                                target_partition_info=[],
+                                                                source_partition_info=[]):
+
+    try:
+        client.get_mongo_db_collection(
+            resource_group_name, account_name, database_name, collection_name)
+    except Exception as ex:
+        if ex.error.code == "NotFound":
+            raise CLIError("(NotFound) Container with name '{}' in database '{} could not be found.".format(collection_name, database_name))
+
+    if evenly_distribute:
+        redistribute_throughput_properties_resource = RedistributeThroughputPropertiesResource(
+            throughput_policy=ThroughputPolicyType.EQUAL,
+            target_physical_partition_throughput_info=[],
+            source_physical_partition_throughput_info=[])
+    else:
+        redistribute_throughput_properties_resource = RedistributeThroughputPropertiesResource(
+            throughput_policy=ThroughputPolicyType.CUSTOM,
+            target_physical_partition_throughput_info=target_partition_info,
+            source_physical_partition_throughput_info=source_partition_info
+        )
+
+    redistribute_throughput_parameters = RedistributeThroughputParameters(
+        resource=redistribute_throughput_properties_resource
+    )
+
+    async_partition_redistribute_throughput_result = client.begin_mongo_db_container_redistribute_throughput(resource_group_name=resource_group_name,
+                                                                                                             account_name=account_name,
+                                                                                                             database_name=database_name,
+                                                                                                             collection_name=collection_name,
+                                                                                                             redistribute_throughput_parameters=redistribute_throughput_parameters)
+
+    return async_partition_redistribute_throughput_result.result()
