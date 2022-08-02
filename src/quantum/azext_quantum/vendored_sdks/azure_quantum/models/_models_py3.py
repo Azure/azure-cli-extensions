@@ -6,12 +6,14 @@
 # Changes may cause incorrect behavior and will be lost if the code is regenerated.
 # --------------------------------------------------------------------------
 
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Dict, List, Optional, TYPE_CHECKING, Union
 
 from azure.core.exceptions import HttpResponseError
 import msrest.serialization
 
-from ._quantum_client_enums import *
+if TYPE_CHECKING:
+    # pylint: disable=unused-import,ungrouped-imports
+    import __init__ as _models
 
 
 class BlobDetails(msrest.serialization.Model):
@@ -73,7 +75,7 @@ class CostEstimate(msrest.serialization.Model):
         self,
         *,
         currency_code: Optional[str] = None,
-        events: Optional[List["UsageEvent"]] = None,
+        events: Optional[List["_models.UsageEvent"]] = None,
         estimated_total: Optional[float] = None,
         **kwargs
     ):
@@ -163,8 +165,8 @@ class JobDetails(msrest.serialization.Model):
     :vartype output_data_uri: str
     :ivar output_data_format: The format of the output data.
     :vartype output_data_format: str
-    :ivar status: The job status. Possible values include: "Waiting", "Executing", "Succeeded",
-     "Failed", "Cancelled".
+    :ivar status: The job status. Known values are: "Waiting", "Executing", "Succeeded", "Failed",
+     "Cancelled".
     :vartype status: str or ~azure.quantum._client.models.JobStatus
     :ivar creation_time: The creation time of the job.
     :vartype creation_time: ~datetime.datetime
@@ -336,7 +338,7 @@ class JsonPatchDocument(msrest.serialization.Model):
 
     All required parameters must be populated in order to send to Azure.
 
-    :ivar op: Required. The operation to be performed. Possible values include: "add", "remove",
+    :ivar op: Required. The operation to be performed. Known values are: "add", "remove",
      "replace", "move", "copy", "test".
     :vartype op: str or ~azure.quantum._client.models.JsonPatchOperation
     :ivar path: Required. A JSON-Pointer.
@@ -362,14 +364,14 @@ class JsonPatchDocument(msrest.serialization.Model):
     def __init__(
         self,
         *,
-        op: Union[str, "JsonPatchOperation"],
+        op: Union[str, "_models.JsonPatchOperation"],
         path: str,
         value: Optional[Any] = None,
         from_property: Optional[str] = None,
         **kwargs
     ):
         """
-        :keyword op: Required. The operation to be performed. Possible values include: "add", "remove",
+        :keyword op: Required. The operation to be performed. Known values are: "add", "remove",
          "replace", "move", "copy", "test".
         :paramtype op: str or ~azure.quantum._client.models.JsonPatchOperation
         :keyword path: Required. A JSON-Pointer.
@@ -393,8 +395,8 @@ class ProviderStatus(msrest.serialization.Model):
 
     :ivar id: Provider id.
     :vartype id: str
-    :ivar current_availability: Provider availability. Possible values include: "Available",
-     "Degraded", "Unavailable".
+    :ivar current_availability: Provider availability. Known values are: "Available", "Degraded",
+     "Unavailable".
     :vartype current_availability: str or ~azure.quantum._client.models.ProviderAvailability
     :ivar targets:
     :vartype targets: list[~azure.quantum._client.models.TargetStatus]
@@ -461,7 +463,7 @@ class Quota(msrest.serialization.Model):
 
     :ivar dimension: The name of the dimension associated with the quota.
     :vartype dimension: str
-    :ivar scope: The scope at which the quota is applied. Possible values include: "Workspace",
+    :ivar scope: The scope at which the quota is applied. Known values are: "Workspace",
      "Subscription".
     :vartype scope: str or ~azure.quantum._client.models.DimensionScope
     :ivar provider_id: The unique identifier for the provider.
@@ -474,8 +476,7 @@ class Quota(msrest.serialization.Model):
     :ivar limit: The maximum amount of usage allowed for the current period.
     :vartype limit: float
     :ivar period: The time period in which the quota's underlying meter is accumulated. Based on
-     calendar year. 'None' is used for concurrent quotas. Possible values include: "None",
-     "Monthly".
+     calendar year. 'None' is used for concurrent quotas. Known values are: "None", "Monthly".
     :vartype period: str or ~azure.quantum._client.models.MeterPeriod
     """
 
@@ -493,18 +494,18 @@ class Quota(msrest.serialization.Model):
         self,
         *,
         dimension: Optional[str] = None,
-        scope: Optional[Union[str, "DimensionScope"]] = None,
+        scope: Optional[Union[str, "_models.DimensionScope"]] = None,
         provider_id: Optional[str] = None,
         utilization: Optional[float] = None,
         holds: Optional[float] = None,
         limit: Optional[float] = None,
-        period: Optional[Union[str, "MeterPeriod"]] = None,
+        period: Optional[Union[str, "_models.MeterPeriod"]] = None,
         **kwargs
     ):
         """
         :keyword dimension: The name of the dimension associated with the quota.
         :paramtype dimension: str
-        :keyword scope: The scope at which the quota is applied. Possible values include: "Workspace",
+        :keyword scope: The scope at which the quota is applied. Known values are: "Workspace",
          "Subscription".
         :paramtype scope: str or ~azure.quantum._client.models.DimensionScope
         :keyword provider_id: The unique identifier for the provider.
@@ -517,8 +518,7 @@ class Quota(msrest.serialization.Model):
         :keyword limit: The maximum amount of usage allowed for the current period.
         :paramtype limit: float
         :keyword period: The time period in which the quota's underlying meter is accumulated. Based on
-         calendar year. 'None' is used for concurrent quotas. Possible values include: "None",
-         "Monthly".
+         calendar year. 'None' is used for concurrent quotas. Known values are: "None", "Monthly".
         :paramtype period: str or ~azure.quantum._client.models.MeterPeriod
         """
         super(Quota, self).__init__(**kwargs)
@@ -577,7 +577,7 @@ class RestError(msrest.serialization.Model):
     def __init__(
         self,
         *,
-        error: Optional["ErrorData"] = None,
+        error: Optional["_models.ErrorData"] = None,
         **kwargs
     ):
         """
@@ -620,8 +620,8 @@ class TargetStatus(msrest.serialization.Model):
 
     :ivar id: Target id.
     :vartype id: str
-    :ivar current_availability: Target availability. Possible values include: "Available",
-     "Degraded", "Unavailable".
+    :ivar current_availability: Target availability. Known values are: "Available", "Degraded",
+     "Unavailable".
     :vartype current_availability: str or ~azure.quantum._client.models.TargetAvailability
     :ivar average_queue_time: Average queue time in seconds.
     :vartype average_queue_time: long

@@ -4,7 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 MAXIMUM_SECRET_LENGTH = 20
-MAXIMUM_CONTAINER_APP_NAME_LENGTH = 40
+MAXIMUM_CONTAINER_APP_NAME_LENGTH = 32
 
 SHORT_POLLING_INTERVAL_SECS = 3
 LONG_POLLING_INTERVAL_SECS = 10

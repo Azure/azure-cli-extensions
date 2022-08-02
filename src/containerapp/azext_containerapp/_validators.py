@@ -7,12 +7,15 @@
 from azure.cli.core.azclierror import (ValidationError, ResourceNotFoundError, InvalidArgumentValueError,
                                        MutuallyExclusiveArgumentError)
 from msrestazure.tools import is_valid_resource_id
+from knack.log import get_logger
 
 from ._clients import ContainerAppClient
 from ._ssh_utils import ping_container_app
 from ._utils import safe_get, is_registry_msi_system
 from ._constants import ACR_IMAGE_SUFFIX
 
+
+logger = get_logger(__name__)
 
 # called directly from custom method bc otherwise it disrupts the --environment auto RID functionality
 def validate_create(registry_identity, registry_pass, registry_user, registry_server, no_wait):
@@ -119,7 +122,10 @@ def _set_ssh_defaults(cmd, namespace):
             raise ResourceNotFoundError("Could not find a revision")
     if not namespace.replica:
         # VVV this may not be necessary according to Anthony Chu
-        ping_container_app(app)  # needed to get an alive replica
+        try:
+            ping_container_app(app)  # needed to get an alive replica
+        except Exception as e:
+            logger.warning("Failed to ping container app with error '%s' \nPlease ensure there is an alive replica. ", str(e))
         replicas = ContainerAppClient.list_replicas(cmd=cmd,
                                                     resource_group_name=namespace.resource_group_name,
                                                     container_app_name=namespace.name,

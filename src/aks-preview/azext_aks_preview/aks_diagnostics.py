@@ -18,7 +18,7 @@ from knack.util import CLIError
 from msrestazure.azure_exceptions import CloudError
 from tabulate import tabulate
 
-from azext_aks_preview._client_factory import cf_storage
+from azext_aks_preview._client_factory import get_storage_client
 
 from azext_aks_preview._consts import (
     CONST_CONTAINER_NAME_MAX_LENGTH,
@@ -86,7 +86,7 @@ def aks_kollect_cmd(cmd,    # pylint: disable=too-many-statements,too-many-local
 
     readonly_sas_token = None
     if sas_token is None:
-        storage_client = cf_storage(
+        storage_client = get_storage_client(
             cmd.cli_ctx, parsed_storage_account['subscription'])
         storage_account_keys = storage_client.storage_accounts.list_keys(parsed_storage_account['resource_group'],
                                                                          storage_account_name)

@@ -1,5 +1,22 @@
 Release History
 ===============
+1.1.5
+---
+* Add service instance existance check before service creation
+
+1.1.4
+---
+* Add warning that `az spring app-insights` don't support Enterprise tier.
+
+1.1.3
+---
+* Enhance Application Insights settings when create service instance.
+
+1.1.2
+---
+* Support configure Germination Grace Period Seconds for deployments.
+* Fix the arguments parsing of the Command `az spring app create` with "--container-image".
+
 1.1.1
 ---
 * Support configure OpenAPI URI in Spring Cloud Gateway route configs.

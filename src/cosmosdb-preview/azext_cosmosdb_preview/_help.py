@@ -644,3 +644,51 @@ helps['cosmosdb mongodb collection merge'] = """
         text: |-
                az cosmosdb mongodb collection merge -g my-resource-group -a my-account -d my-db --name my-mongodb-collection
 """
+
+helps['cosmosdb sql container retrieve-partition-throughput'] = """
+    type: command
+    short-summary: "Retrieve  the partition throughput of a sql container."
+    examples:
+      - name: Retrieve container container_name's throughput for specific physical partitions
+        text: |-
+               az cosmosdb sql container retrieve-partition-throughput --account-name account_name --database-name db_name --name container_name  --resource-group rg_name --physical-partition-ids 8 9
+      - name: Retrieve container container_name's throughput for all physical partitions
+        text: |-
+               az cosmosdb sql container retrieve-partition-throughput --account-name account_name --database-name db_name --name container_name  --resource-group rg_name --all-partitions
+"""
+
+helps['cosmosdb sql container redistribute-partition-throughput'] = """
+    type: command
+    short-summary: "Redistributes the partition throughput of a sql container."
+    examples:
+      - name: Evenly distributes the partition throughput for a sql container among all physical partitions
+        text: |-
+               az cosmosdb sql container redistribute-partition-throughput --account-name account_name --database-name db_name --name container_name  --resource-group rg_name --evenly-distribute
+      - name: Redistributes the partition throughput for a sql container from source partitions to target partitions
+        text: |-
+               az cosmosdb sql container redistribute-partition-throughput --account-name account_name --database-name db_name --name container_name  --resource-group rg_name --target-partition-info 8=1200 6=1200]' --source-partition-info 9]'
+"""
+
+helps['cosmosdb mongodb collection retrieve-partition-throughput'] = """
+    type: command
+    short-summary: "Retrieve the partition throughput of a mongodb collection."
+    examples:
+      - name: Retrieve container container_name's throughput for specific physical partitions
+        text: |-
+               az cosmosdb mongodb collection retrieve-partition-throughput --account-name account_name --database-name db_name --name container_name  --resource-group rg_name --physical-partition-ids 8 9
+      - name: Retrieve container container_name's throughput for all physical partitions
+        text: |-
+               az cosmosdb mongodb collection retrieve-partition-throughput --account-name account_name --database-name db_name --name container_name  --resource-group rg_name --all-partitions
+"""
+
+helps['cosmosdb mongodb collection redistribute-partition-throughput'] = """
+    type: command
+    short-summary: "Redistributes the partition throughput of a mongodb collection."
+    examples:
+      - name: Evenly distributes the partition throughput for a mongodb collection among all physical partitions
+        text: |-
+               az cosmosdb mongodb collection redistribute-partition-throughput --account-name account_name --database-name db_name --name container_name  --resource-group rg_name --evenly-distribute
+      - name: Redistributes the partition throughput for a mongodb collection from source partitions to target partitions
+        text: |-
+               az cosmosdb mongodb collection redistribute-partition-throughput --account-name account_name --database-name db_name --name container_name  --resource-group rg_name --target-partition-info 8=1200 6=1200' --source-partition-info 9'
+"""

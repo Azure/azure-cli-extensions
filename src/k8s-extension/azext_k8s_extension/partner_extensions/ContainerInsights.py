@@ -92,7 +92,7 @@ class ContainerInsights(DefaultExtension):
                 if (isinstance(useAADAuthSetting, str) and str(useAADAuthSetting).lower() == "true") or (isinstance(useAADAuthSetting, bool) and useAADAuthSetting):
                     useAADAuth = True
         if useAADAuth:
-            association_url = cmd.cli_ctx.cloud.endpoints.resource_manager + f"{cluster_resource_id}/providers/Microsoft.Insights/dataCollectionRuleAssociations/ContainerInsightsExtension?api-version=2019-11-01-preview"
+            association_url = cmd.cli_ctx.cloud.endpoints.resource_manager + f"{cluster_resource_id}/providers/Microsoft.Insights/dataCollectionRuleAssociations/ContainerInsightsExtension?api-version=2021-04-01"
             for _ in range(3):
                 try:
                     send_raw_request(cmd.cli_ctx, "GET", association_url,)
@@ -106,7 +106,7 @@ class ContainerInsights(DefaultExtension):
                     pass  # its OK to ignore the exception since MSI auth in preview
 
         if isDCRAExists:
-            association_url = cmd.cli_ctx.cloud.endpoints.resource_manager + f"{cluster_resource_id}/providers/Microsoft.Insights/dataCollectionRuleAssociations/ContainerInsightsExtension?api-version=2019-11-01-preview"
+            association_url = cmd.cli_ctx.cloud.endpoints.resource_manager + f"{cluster_resource_id}/providers/Microsoft.Insights/dataCollectionRuleAssociations/ContainerInsightsExtension?api-version=2021-04-01"
             for _ in range(3):
                 try:
                     send_raw_request(cmd.cli_ctx, "DELETE", association_url,)
@@ -483,12 +483,12 @@ def _get_container_insights_settings(cmd, cluster_resource_group_name, cluster_n
             raise InvalidArgumentValueError('{} is not a valid Azure resource ID.'.format(workspace_resource_id))
 
     if is_ci_extension_type:
-        if not _is_container_insights_solution_exists(cmd, workspace_resource_id):
-            logger.info("creating containerinsights solution resource since it doesnt exist")
-            _ensure_container_insights_for_monitoring(cmd, workspace_resource_id).result()
         if useAADAuth:
             logger.info("creating data collection rule and association")
             _ensure_container_insights_dcr_for_monitoring(cmd, subscription_id, cluster_resource_group_name, cluster_name, workspace_resource_id)
+        elif not _is_container_insights_solution_exists(cmd, workspace_resource_id):
+            logger.info("Creating ContainerInsights solution resource, since it doesn't exist and it is using legacy authentication")
+            _ensure_container_insights_for_monitoring(cmd, workspace_resource_id).result()
 
     # extract subscription ID and resource group from workspace_resource_id URL
     parsed = parse_resource_id(workspace_resource_id)
@@ -499,16 +499,20 @@ def _get_container_insights_settings(cmd, cluster_resource_group_name, cluster_n
     log_analytics_workspace = log_analytics_client.workspaces.get(workspace_rg_name, workspace_name)
     if not log_analytics_workspace:
         raise InvalidArgumentValueError(
-            'Fails to retrieve workspace by {}'.format(workspace_name))
+            'Failed to retrieve workspace by {}'.format(workspace_name))
 
-    shared_keys = log_analytics_client.shared_keys.get_shared_keys(
-        workspace_rg_name, workspace_name)
-    if not shared_keys:
-        raise InvalidArgumentValueError('Fails to retrieve shared key for workspace {}'.format(
-            log_analytics_workspace))
+    # workspace key not used in case of AAD MSI auth
+    configuration_protected_settings['omsagent.secret.key'] = "<not_used>"
+    if not useAADAuth:
+        shared_keys = log_analytics_client.shared_keys.get_shared_keys(
+            workspace_rg_name, workspace_name)
+        if not shared_keys:
+            raise InvalidArgumentValueError('Failed to retrieve shared key for workspace {}'.format(
+                log_analytics_workspace))
+        configuration_protected_settings['omsagent.secret.key'] = shared_keys.primary_shared_key
     configuration_protected_settings['omsagent.secret.wsid'] = log_analytics_workspace.customer_id
     configuration_settings['logAnalyticsWorkspaceResourceID'] = workspace_resource_id
-    configuration_protected_settings['omsagent.secret.key'] = shared_keys.primary_shared_key
+
     # set the domain for the ci agent for non azure public clouds
     cloud_name = cmd.cli_ctx.cloud.name
     if cloud_name.lower() == 'azurechinacloud':
@@ -562,6 +566,9 @@ def _ensure_container_insights_dcr_for_monitoring(cmd, subscription_id, cluster_
     try:
         resource = resources.get_by_id(workspace_resource_id, '2015-11-01-preview')
         workspace_region = resource.location
+        # location can have spaces for example 'East US'
+        # and some workspaces it will be "eastus" hence remove the spaces and converting lowercase
+        workspace_region = workspace_region.replace(" ", "").lower()
     except HttpResponseError as ex:
         raise ex
 
@@ -612,7 +619,7 @@ def _ensure_container_insights_dcr_for_monitoring(cmd, subscription_id, cluster_
             if (cluster_region not in region_ids):
                 raise ClientRequestError(f"Data Collection Rule Associations are not supported for cluster region {cluster_region}")
 
-    dcr_url = cmd.cli_ctx.cloud.endpoints.resource_manager + f"{dcr_resource_id}?api-version=2019-11-01-preview"
+    dcr_url = cmd.cli_ctx.cloud.endpoints.resource_manager + f"{dcr_resource_id}?api-version=2021-04-01"
     # get existing tags on the container insights extension DCR if the customer added any
     existing_tags = get_existing_container_insights_extension_dcr_tags(cmd, dcr_url)
 
@@ -627,18 +634,7 @@ def _ensure_container_insights_dcr_for_monitoring(cmd, subscription_id, cluster_
                         {
                             "name": "ContainerInsightsExtension",
                             "streams": [
-                                "Microsoft-Perf",
-                                "Microsoft-ContainerInventory",
-                                "Microsoft-ContainerLog",
-                                "Microsoft-ContainerLogV2",
-                                "Microsoft-ContainerNodeInventory",
-                                "Microsoft-KubeEvents",
-                                "Microsoft-KubeMonAgentEvents",
-                                "Microsoft-KubeNodeInventory",
-                                "Microsoft-KubePodInventory",
-                                "Microsoft-KubePVInventory",
-                                "Microsoft-KubeServices",
-                                "Microsoft-InsightsMetrics",
+                                "Microsoft-ContainerInsights-Group-Default"
                             ],
                             "extensionName": "ContainerInsights",
                         }
@@ -647,18 +643,8 @@ def _ensure_container_insights_dcr_for_monitoring(cmd, subscription_id, cluster_
                 "dataFlows": [
                     {
                         "streams": [
-                            "Microsoft-Perf",
-                            "Microsoft-ContainerInventory",
-                            "Microsoft-ContainerLog",
-                            "Microsoft-ContainerLogV2",
-                            "Microsoft-ContainerNodeInventory",
-                            "Microsoft-KubeEvents",
-                            "Microsoft-KubeMonAgentEvents",
-                            "Microsoft-KubeNodeInventory",
-                            "Microsoft-KubePodInventory",
-                            "Microsoft-KubePVInventory",
-                            "Microsoft-KubeServices",
-                            "Microsoft-InsightsMetrics",
+                            "Microsoft-ContainerInsights-Group-Default"
+
                         ],
                         "destinations": ["la-workspace"],
                     }
@@ -694,7 +680,7 @@ def _ensure_container_insights_dcr_for_monitoring(cmd, subscription_id, cluster_
             },
         }
     )
-    association_url = cmd.cli_ctx.cloud.endpoints.resource_manager + f"{cluster_resource_id}/providers/Microsoft.Insights/dataCollectionRuleAssociations/ContainerInsightsExtension?api-version=2019-11-01-preview"
+    association_url = cmd.cli_ctx.cloud.endpoints.resource_manager + f"{cluster_resource_id}/providers/Microsoft.Insights/dataCollectionRuleAssociations/ContainerInsightsExtension?api-version=2021-04-01"
     for _ in range(3):
         try:
             send_raw_request(cmd.cli_ctx, "PUT", association_url, body=association_body,)
