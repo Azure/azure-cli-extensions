@@ -6,27 +6,12 @@
 # Changes may cause incorrect behavior and will be lost if the code is regenerated.
 # --------------------------------------------------------------------------
 
-from enum import Enum, EnumMeta
+from enum import Enum
 from six import with_metaclass
-
-class _CaseInsensitiveEnumMeta(EnumMeta):
-    def __getitem__(self, name):
-        return super().__getitem__(name.upper())
-
-    def __getattr__(cls, name):
-        """Return the enum member matching `name`
-        We use __getattr__ instead of descriptors or inserting into the enum
-        class' __dict__ in order to support `name` and `value` being both
-        properties for enum members (which live in the class' __dict__) and
-        enum members themselves.
-        """
-        try:
-            return cls._member_map_[name.upper()]
-        except KeyError:
-            raise AttributeError(name)
+from azure.core import CaseInsensitiveEnumMeta
 
 
-class CreatedByType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+class CreatedByType(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
     """The type of identity that created the resource.
     """
 
@@ -35,7 +20,7 @@ class CreatedByType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     MANAGED_IDENTITY = "ManagedIdentity"
     KEY = "Key"
 
-class DiskMode(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+class DiskMode(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
     """Defines the different types of disk modes.
     """
 
@@ -43,7 +28,7 @@ class DiskMode(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     INDEPENDENT_PERSISTENT = "independent_persistent"
     INDEPENDENT_NONPERSISTENT = "independent_nonpersistent"
 
-class DiskType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+class DiskType(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
     """Defines the different types of disks.
     """
 
@@ -55,21 +40,21 @@ class DiskType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     SESPARSE = "sesparse"
     UNKNOWN = "unknown"
 
-class FirmwareType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+class FirmwareType(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
     """Firmware type
     """
 
     BIOS = "bios"
     EFI = "efi"
 
-class IdentityType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+class IdentityType(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
     """The type of managed service identity.
     """
 
     NONE = "None"
     SYSTEM_ASSIGNED = "SystemAssigned"
 
-class InventoryType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+class InventoryType(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
     """The inventory type.
     """
 
@@ -81,7 +66,7 @@ class InventoryType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     DATASTORE = "Datastore"
     HOST = "Host"
 
-class IPAddressAllocationMethod(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+class IPAddressAllocationMethod(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
     """IP address allocation method.
     """
 
@@ -92,7 +77,7 @@ class IPAddressAllocationMethod(with_metaclass(_CaseInsensitiveEnumMeta, str, En
     RANDOM = "random"
     OTHER = "other"
 
-class NICType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+class NICType(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
     """NIC type
     """
 
@@ -103,7 +88,7 @@ class NICType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     E1000_E = "e1000e"
     PCNET32 = "pcnet32"
 
-class OsType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+class OsType(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
     """Defines the different types of VM guest operating systems.
     """
 
@@ -111,14 +96,14 @@ class OsType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     LINUX = "Linux"
     OTHER = "Other"
 
-class PowerOnBootOption(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+class PowerOnBootOption(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
     """Defines the options for power on boot.
     """
 
     ENABLED = "enabled"
     DISABLED = "disabled"
 
-class ProvisioningAction(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+class ProvisioningAction(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
     """Defines the different types of operations for guest agent.
     """
 
@@ -126,7 +111,7 @@ class ProvisioningAction(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     UNINSTALL = "uninstall"
     REPAIR = "repair"
 
-class ProvisioningState(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+class ProvisioningState(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
     """The current deployment state of resource.
     """
 
@@ -139,7 +124,7 @@ class ProvisioningState(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     ACCEPTED = "Accepted"
     CREATED = "Created"
 
-class SCSIControllerType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+class SCSIControllerType(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
     """Defines the different types of SCSI controllers.
     """
 
@@ -148,7 +133,7 @@ class SCSIControllerType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     PVSCSI = "pvscsi"
     LSILOGICSAS = "lsilogicsas"
 
-class StatusLevelTypes(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+class StatusLevelTypes(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
     """The level code.
     """
 
@@ -156,7 +141,7 @@ class StatusLevelTypes(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     WARNING = "Warning"
     ERROR = "Error"
 
-class StatusTypes(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+class StatusTypes(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
     """The status of the hybrid machine agent.
     """
 
@@ -164,7 +149,7 @@ class StatusTypes(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     DISCONNECTED = "Disconnected"
     ERROR = "Error"
 
-class VirtualSCSISharing(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+class VirtualSCSISharing(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
     """Defines the sharing mode for sharing the SCSI bus.
     """
 

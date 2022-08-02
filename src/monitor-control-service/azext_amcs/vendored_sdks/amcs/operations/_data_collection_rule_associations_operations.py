@@ -30,7 +30,7 @@ class DataCollectionRuleAssociationsOperations(object):
     instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~azure.mgmt.amcs.models
+    :type models: ~$(python-base-namespace).v2021_09_01_preview.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -59,7 +59,7 @@ class DataCollectionRuleAssociationsOperations(object):
         :type resource_uri: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either DataCollectionRuleAssociationProxyOnlyResourceListResult or the result of cls(response)
-        :rtype: ~azure.core.paging.ItemPaged[~azure.mgmt.amcs.models.DataCollectionRuleAssociationProxyOnlyResourceListResult]
+        :rtype: ~azure.core.paging.ItemPaged[~$(python-base-namespace).v2021_09_01_preview.models.DataCollectionRuleAssociationProxyOnlyResourceListResult]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.DataCollectionRuleAssociationProxyOnlyResourceListResult"]
@@ -67,7 +67,7 @@ class DataCollectionRuleAssociationsOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-04-01"
+        api_version = "2021-09-01-preview"
         accept = "application/json"
 
         def prepare_request(next_link=None):
@@ -107,7 +107,7 @@ class DataCollectionRuleAssociationsOperations(object):
             response = pipeline_response.http_response
 
             if response.status_code not in [200]:
-                error = self._deserialize(models.ErrorResponse, response)
+                error = self._deserialize(models.ErrorResponseCommonV2, response)
                 map_error(status_code=response.status_code, response=response, error_map=error_map)
                 raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
@@ -136,7 +136,7 @@ class DataCollectionRuleAssociationsOperations(object):
         :type data_collection_rule_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either DataCollectionRuleAssociationProxyOnlyResourceListResult or the result of cls(response)
-        :rtype: ~azure.core.paging.ItemPaged[~azure.mgmt.amcs.models.DataCollectionRuleAssociationProxyOnlyResourceListResult]
+        :rtype: ~azure.core.paging.ItemPaged[~$(python-base-namespace).v2021_09_01_preview.models.DataCollectionRuleAssociationProxyOnlyResourceListResult]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.DataCollectionRuleAssociationProxyOnlyResourceListResult"]
@@ -144,7 +144,7 @@ class DataCollectionRuleAssociationsOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-04-01"
+        api_version = "2021-09-01-preview"
         accept = "application/json"
 
         def prepare_request(next_link=None):
@@ -157,7 +157,7 @@ class DataCollectionRuleAssociationsOperations(object):
                 url = self.list_by_rule.metadata['url']  # type: ignore
                 path_format_arguments = {
                     'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
-                    'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
+                    'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
                     'dataCollectionRuleName': self._serialize.url("data_collection_rule_name", data_collection_rule_name, 'str'),
                 }
                 url = self._client.format_url(url, **path_format_arguments)
@@ -186,7 +186,7 @@ class DataCollectionRuleAssociationsOperations(object):
             response = pipeline_response.http_response
 
             if response.status_code not in [200]:
-                error = self._deserialize(models.ErrorResponse, response)
+                error = self._deserialize(models.ErrorResponseCommonV2, response)
                 map_error(status_code=response.status_code, response=response, error_map=error_map)
                 raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
@@ -196,6 +196,85 @@ class DataCollectionRuleAssociationsOperations(object):
             get_next, extract_data
         )
     list_by_rule.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Insights/dataCollectionRules/{dataCollectionRuleName}/associations'}  # type: ignore
+
+    def list_by_data_collection_endpoint(
+        self,
+        resource_group_name,  # type: str
+        data_collection_endpoint_name,  # type: str
+        **kwargs  # type: Any
+    ):
+        # type: (...) -> Iterable["models.DataCollectionRuleAssociationProxyOnlyResourceListResult"]
+        """Lists associations for the specified data collection endpoint.
+
+        Lists associations for the specified data collection endpoint.
+
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
+        :type resource_group_name: str
+        :param data_collection_endpoint_name: The name of the data collection endpoint. The name is
+         case insensitive.
+        :type data_collection_endpoint_name: str
+        :keyword callable cls: A custom type or function that will be passed the direct response
+        :return: An iterator like instance of either DataCollectionRuleAssociationProxyOnlyResourceListResult or the result of cls(response)
+        :rtype: ~azure.core.paging.ItemPaged[~$(python-base-namespace).v2021_09_01_preview.models.DataCollectionRuleAssociationProxyOnlyResourceListResult]
+        :raises: ~azure.core.exceptions.HttpResponseError
+        """
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.DataCollectionRuleAssociationProxyOnlyResourceListResult"]
+        error_map = {
+            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
+        }
+        error_map.update(kwargs.pop('error_map', {}))
+        api_version = "2021-09-01-preview"
+        accept = "application/json"
+
+        def prepare_request(next_link=None):
+            # Construct headers
+            header_parameters = {}  # type: Dict[str, Any]
+            header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
+
+            if not next_link:
+                # Construct URL
+                url = self.list_by_data_collection_endpoint.metadata['url']  # type: ignore
+                path_format_arguments = {
+                    'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
+                    'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
+                    'dataCollectionEndpointName': self._serialize.url("data_collection_endpoint_name", data_collection_endpoint_name, 'str'),
+                }
+                url = self._client.format_url(url, **path_format_arguments)
+                # Construct parameters
+                query_parameters = {}  # type: Dict[str, Any]
+                query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
+
+                request = self._client.get(url, query_parameters, header_parameters)
+            else:
+                url = next_link
+                query_parameters = {}  # type: Dict[str, Any]
+                request = self._client.get(url, query_parameters, header_parameters)
+            return request
+
+        def extract_data(pipeline_response):
+            deserialized = self._deserialize('DataCollectionRuleAssociationProxyOnlyResourceListResult', pipeline_response)
+            list_of_elem = deserialized.value
+            if cls:
+                list_of_elem = cls(list_of_elem)
+            return deserialized.next_link or None, iter(list_of_elem)
+
+        def get_next(next_link=None):
+            request = prepare_request(next_link)
+
+            pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
+            response = pipeline_response.http_response
+
+            if response.status_code not in [200]:
+                error = self._deserialize(models.ErrorResponseCommonV2, response)
+                map_error(status_code=response.status_code, response=response, error_map=error_map)
+                raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
+
+            return pipeline_response
+
+        return ItemPaged(
+            get_next, extract_data
+        )
+    list_by_data_collection_endpoint.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Insights/dataCollectionEndpoints/{dataCollectionEndpointName}/associations'}  # type: ignore
 
     def get(
         self,
@@ -214,7 +293,7 @@ class DataCollectionRuleAssociationsOperations(object):
         :type association_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: DataCollectionRuleAssociationProxyOnlyResource, or the result of cls(response)
-        :rtype: ~azure.mgmt.amcs.models.DataCollectionRuleAssociationProxyOnlyResource
+        :rtype: ~$(python-base-namespace).v2021_09_01_preview.models.DataCollectionRuleAssociationProxyOnlyResource
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.DataCollectionRuleAssociationProxyOnlyResource"]
@@ -222,7 +301,7 @@ class DataCollectionRuleAssociationsOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-04-01"
+        api_version = "2021-09-01-preview"
         accept = "application/json"
 
         # Construct URL
@@ -247,7 +326,7 @@ class DataCollectionRuleAssociationsOperations(object):
 
         if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            error = self._deserialize(models.ErrorResponse, response)
+            error = self._deserialize(models.ErrorResponseCommonV2, response)
             raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         deserialized = self._deserialize('DataCollectionRuleAssociationProxyOnlyResource', pipeline_response)
@@ -275,10 +354,10 @@ class DataCollectionRuleAssociationsOperations(object):
         :param association_name: The name of the association. The name is case insensitive.
         :type association_name: str
         :param body: The payload.
-        :type body: ~azure.mgmt.amcs.models.DataCollectionRuleAssociationProxyOnlyResource
+        :type body: ~$(python-base-namespace).v2021_09_01_preview.models.DataCollectionRuleAssociationProxyOnlyResource
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: DataCollectionRuleAssociationProxyOnlyResource, or the result of cls(response)
-        :rtype: ~azure.mgmt.amcs.models.DataCollectionRuleAssociationProxyOnlyResource
+        :rtype: ~$(python-base-namespace).v2021_09_01_preview.models.DataCollectionRuleAssociationProxyOnlyResource
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.DataCollectionRuleAssociationProxyOnlyResource"]
@@ -286,7 +365,7 @@ class DataCollectionRuleAssociationsOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-04-01"
+        api_version = "2021-09-01-preview"
         content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
 
@@ -319,7 +398,7 @@ class DataCollectionRuleAssociationsOperations(object):
 
         if response.status_code not in [200, 201]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            error = self._deserialize(models.ErrorResponse, response)
+            error = self._deserialize(models.ErrorResponseCommonV2, response)
             raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         if response.status_code == 200:
@@ -359,7 +438,7 @@ class DataCollectionRuleAssociationsOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-04-01"
+        api_version = "2021-09-01-preview"
         accept = "application/json"
 
         # Construct URL
@@ -384,7 +463,7 @@ class DataCollectionRuleAssociationsOperations(object):
 
         if response.status_code not in [200, 204]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            error = self._deserialize(models.ErrorResponse, response)
+            error = self._deserialize(models.ErrorResponseCommonV2, response)
             raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         if cls:

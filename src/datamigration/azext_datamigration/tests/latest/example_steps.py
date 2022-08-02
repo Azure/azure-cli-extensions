@@ -139,6 +139,99 @@ def step_sql_service_list_integration_runtime_metric(test, checks=None):
              checks=checks)
 
 
+# EXAMPLE: /DatabaseMigrationsSqlDb/put/Create or Update Database Migration resource with Maximum parameters.
+@try_manual
+def step_sql_db_create(test, checks=None):
+    if checks is None:
+        checks = []
+    test.cmd('az datamigration sql-db create '
+             '--migration-service "/subscriptions/{subscription_id}/resourceGroups/{rg}/providers/Microsoft.DataMigrati'
+             'on/sqlMigrationServices/{mySqlMigrationService}" '
+             '--scope "/subscriptions/{subscription_id}/resourceGroups/{rg}/providers/Microsoft.Sql/servers/sqldbinstan'
+             'ce" '
+             '--source-database-name "aaa" '
+             '--source-sql-connection authentication="WindowsAuthentication" data-source="aaa" encrypt-connection=true '
+             'password="placeholder" trust-server-certificate=true user-name="bbb" '
+             '--table-list "[Schema1].[TableName1]" "[Schema2].[TableName2]" '
+             '--target-sql-connection authentication="SqlAuthentication" data-source="sqldbinstance" '
+             'encrypt-connection=true password="placeholder" trust-server-certificate=true user-name="bbb" '
+             '--resource-group "{rg}" '
+             '--sqldb-instance-name "sqldbinstance" '
+             '--target-db-name "db1"',
+             checks=checks)
+
+
+# EXAMPLE: /DatabaseMigrationsSqlDb/put/Create or Update Database Migration resource with Minimum parameters.
+@try_manual
+def step_sql_db_create2(test, checks=None):
+    if checks is None:
+        checks = []
+    test.cmd('az datamigration sql-db create '
+             '--migration-service "/subscriptions/{subscription_id}/resourceGroups/{rg}/providers/Microsoft.DataMigrati'
+             'on/sqlMigrationServices/{mySqlMigrationService}" '
+             '--scope "/subscriptions/{subscription_id}/resourceGroups/{rg}/providers/Microsoft.Sql/servers/sqldbinstan'
+             'ce" '
+             '--source-database-name "aaa" '
+             '--source-sql-connection authentication="WindowsAuthentication" data-source="aaa" encrypt-connection=true '
+             'password="placeholder" trust-server-certificate=true user-name="bbb" '
+             '--target-sql-connection authentication="SqlAuthentication" data-source="sqldbinstance" '
+             'encrypt-connection=true password="placeholder" trust-server-certificate=true user-name="bbb" '
+             '--resource-group "{rg}" '
+             '--sqldb-instance-name "sqldbinstance" '
+             '--target-db-name "db1"',
+             checks=checks)
+
+
+# EXAMPLE: /DatabaseMigrationsSqlDb/get/Get Sql DB database Migration with the expand parameter.
+@try_manual
+def step_sql_db_show(test, checks=None):
+    if checks is None:
+        checks = []
+    test.cmd('az datamigration sql-db show '
+             '--expand "MigrationStatusDetails" '
+             '--resource-group "{rg}" '
+             '--sqldb-instance-name "sqldbinstance" '
+             '--target-db-name "db1"',
+             checks=checks)
+
+
+# EXAMPLE: /DatabaseMigrationsSqlDb/get/Get Sql DB database Migration without the expand parameter.
+@try_manual
+def step_sql_db_show2(test, checks=None):
+    if checks is None:
+        checks = []
+    test.cmd('az datamigration sql-db show '
+             '--resource-group "{rg}" '
+             '--sqldb-instance-name "sqldbinstance" '
+             '--target-db-name "db1"',
+             checks=checks)
+
+
+# EXAMPLE: /DatabaseMigrationsSqlDb/post/Stop ongoing migration for the database.
+@try_manual
+def step_sql_db_cancel(test, checks=None):
+    if checks is None:
+        checks = []
+    test.cmd('az datamigration sql-db cancel '
+             '--migration-operation-id "9a90bb84-e70f-46f7-b0ae-1aef5b3b9f07" '
+             '--resource-group "{rg}" '
+             '--sqldb-instance-name "sqldbinstance" '
+             '--target-db-name "db1"',
+             checks=checks)
+
+
+# EXAMPLE: /DatabaseMigrationsSqlDb/delete/Delete Database Migration resource.
+@try_manual
+def step_sql_db_delete(test, checks=None):
+    if checks is None:
+        checks = []
+    test.cmd('az datamigration sql-db delete -y '
+             '--resource-group "{rg}" '
+             '--sqldb-instance-name "sqldbinstance" '
+             '--target-db-name "db1"',
+             checks=checks)
+
+
 # EXAMPLE: /DatabaseMigrationsSqlMi/put/Create or Update Database Migration resource with Maximum parameters.
 @try_manual
 def step_sql_managed_instance_create(test, checks=None):
@@ -165,12 +258,41 @@ def step_sql_managed_instance_create(test, checks=None):
 # EXAMPLE: /DatabaseMigrationsSqlMi/put/Create or Update Database Migration resource with Minimum parameters.
 @try_manual
 def step_sql_managed_instance_create2(test, checks=None):
-    return step_sql_managed_instance_create(test, checks)
+    if checks is None:
+        checks = []
+    test.cmd('az datamigration sql-managed-instance create '
+             '--managed-instance-name "managedInstance1" '
+             '--source-location "{{\\"fileShare\\":{{\\"path\\":\\"C:\\\\\\\\aaa\\\\\\\\bbb\\\\\\\\ccc\\",\\"password\\'
+             '":\\"placeholder\\",\\"username\\":\\"name\\"}}}}" '
+             '--target-location account-key="abcd" storage-account-resource-id="account.database.windows.net" '
+             '--migration-service "/subscriptions/{subscription_id}/resourceGroups/{rg}/providers/Microsoft.DataMigrati'
+             'on/sqlMigrationServices/{mySqlMigrationService}" '
+             '--scope "/subscriptions/{subscription_id}/resourceGroups/{rg}/providers/Microsoft.Sql/managedInstances/in'
+             'stance" '
+             '--source-database-name "aaa" '
+             '--source-sql-connection authentication="WindowsAuthentication" data-source="aaa" encrypt-connection=true '
+             'password="placeholder" trust-server-certificate=true user-name="bbb" '
+             '--resource-group "{rg}" '
+             '--target-db-name "db1"',
+             checks=checks)
 
 
-# EXAMPLE: /DatabaseMigrationsSqlMi/get/Get Database Migration resource.
+# EXAMPLE: /DatabaseMigrationsSqlMi/get/Get Sql MI database Migration with the expand parameter.
 @try_manual
 def step_sql_managed_instance_show(test, checks=None):
+    if checks is None:
+        checks = []
+    test.cmd('az datamigration sql-managed-instance show '
+             '--expand "MigrationStatusDetails" '
+             '--managed-instance-name "managedInstance1" '
+             '--resource-group "{rg}" '
+             '--target-db-name "db1"',
+             checks=checks)
+
+
+# EXAMPLE: /DatabaseMigrationsSqlMi/get/Get Sql MI database Migration without the expand parameter.
+@try_manual
+def step_sql_managed_instance_show2(test, checks=None):
     if checks is None:
         checks = []
     test.cmd('az datamigration sql-managed-instance show '
@@ -232,12 +354,41 @@ def step_sql_vm_create(test, checks=None):
 # EXAMPLE: /DatabaseMigrationsSqlVm/put/Create or Update Database Migration resource with Minimum parameters.
 @try_manual
 def step_sql_vm_create2(test, checks=None):
-    return step_sql_vm_create(test, checks)
+    if checks is None:
+        checks = []
+    test.cmd('az datamigration sql-vm create '
+             '--source-location "{{\\"fileShare\\":{{\\"path\\":\\"C:\\\\\\\\aaa\\\\\\\\bbb\\\\\\\\ccc\\",\\"password\\'
+             '":\\"placeholder\\",\\"username\\":\\"name\\"}}}}" '
+             '--target-location account-key="abcd" storage-account-resource-id="account.database.windows.net" '
+             '--migration-service "/subscriptions/{subscription_id}/resourceGroups/{rg}/providers/Microsoft.DataMigrati'
+             'on/sqlMigrationServices/{mySqlMigrationService}" '
+             '--scope "/subscriptions/{subscription_id}/resourceGroups/{rg}/providers/Microsoft.SqlVirtualMachine/sqlVi'
+             'rtualMachines/testvm" '
+             '--source-database-name "aaa" '
+             '--source-sql-connection authentication="WindowsAuthentication" data-source="aaa" encrypt-connection=true '
+             'password="placeholder" trust-server-certificate=true user-name="bbb" '
+             '--resource-group "{rg}" '
+             '--sql-vm-name "testvm" '
+             '--target-db-name "db1"',
+             checks=checks)
 
 
-# EXAMPLE: /DatabaseMigrationsSqlVm/get/Get Database Migration resource.
+# EXAMPLE: /DatabaseMigrationsSqlVm/get/Get Sql VM database Migration with the expand parameter.
 @try_manual
 def step_sql_vm_show(test, checks=None):
+    if checks is None:
+        checks = []
+    test.cmd('az datamigration sql-vm show '
+             '--expand "MigrationStatusDetails" '
+             '--resource-group "{rg}" '
+             '--sql-vm-name "testvm" '
+             '--target-db-name "db1"',
+             checks=checks)
+
+
+# EXAMPLE: /DatabaseMigrationsSqlVm/get/Get Sql VM database Migration without the expand parameter.
+@try_manual
+def step_sql_vm_show2(test, checks=None):
     if checks is None:
         checks = []
     test.cmd('az datamigration sql-vm show '

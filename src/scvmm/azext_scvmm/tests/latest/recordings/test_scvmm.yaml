@@ -1,0 +1,2312 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - scvmm vmmserver show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --name
+      User-Agent:
+      - AZURECLI/2.31.0 azsdk-python-mgmt-scvmm/1.0.0b1 Python/3.10.0 (Linux-5.13.0-28-generic-x86_64-with-glibc2.31)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aadk8test/providers/Microsoft.ScVmm/vmmServers/arcvmm-azcli-test-vmmserver?api-version=2020-06-05-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aadk8test/providers/Microsoft.ScVmm/vmmServers/arcvmm-azcli-test-vmmserver","name":"arcvmm-azcli-test-vmmserver","type":"microsoft.scvmm/vmmservers","location":"eastus2euap","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/aadk8test/providers/microsoft.extendedlocation/customlocations/arcvmm-azcli-test-cl","type":"customLocation"},"systemData":{"createdBy":"snaskar@microsoft.com","createdByType":"User","createdAt":"2022-04-03T06:00:50.6377329Z","lastModifiedBy":"319f651f-7ddb-4fc6-9857-7aef9250bd05","lastModifiedByType":"Application","lastModifiedAt":"2022-04-05T14:12:00.8107436Z"},"properties":{"provisioningState":"Succeeded","credentials":{"username":"cdmlab\\cdmlabuser"},"fqdn":"10.225.91.184","port":8100,"connectionStatus":"Connected","uuid":"5049e45d-ad6d-4616-9938-c2ba0bc52e77","version":"10.22.1089.0"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '941'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 05 Apr 2022 14:22:37 GMT
+      etag:
+      - '"52004be9-0000-3400-0000-624c4e300000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - scvmm vmmserver list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g
+      User-Agent:
+      - AZURECLI/2.31.0 azsdk-python-mgmt-scvmm/1.0.0b1 Python/3.10.0 (Linux-5.13.0-28-generic-x86_64-with-glibc2.31)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aadk8test/providers/Microsoft.ScVmm/vmmServers?api-version=2020-06-05-preview
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aadk8test/providers/Microsoft.ScVmm/vmmServers/arcvmm-scale3-vmmserver","name":"arcvmm-scale3-vmmserver","type":"microsoft.scvmm/vmmservers","location":"eastus2euap","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/aadk8test/providers/microsoft.extendedlocation/customlocations/arcvmm-scale3-cl","type":"customLocation"},"systemData":{"createdBy":"snaskar@microsoft.com","createdByType":"User","createdAt":"2022-02-28T06:09:02.5774126Z","lastModifiedBy":"319f651f-7ddb-4fc6-9857-7aef9250bd05","lastModifiedByType":"Application","lastModifiedAt":"2022-03-30T15:15:09.1263314Z"},"properties":{"provisioningState":"Succeeded","connectionStatus":"Connected","credentials":{"username":"cdmlab\\cdmlabuser"},"fqdn":"10.225.95.100","port":8100,"uuid":"4ca12c05-1317-41b0-89b0-703dba704188","version":"10.19.2591.0"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aadk8test/providers/Microsoft.ScVmm/vmmServers/arcvmm-partners-vmmserver","name":"arcvmm-partners-vmmserver","type":"microsoft.scvmm/vmmservers","location":"eastus2euap","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aadk8test/providers/Microsoft.ExtendedLocation/customLocations/arcvmm-partners-cl","type":"customLocation"},"systemData":{"createdBy":"snaskar@microsoft.com","createdByType":"User","createdAt":"2022-03-01T17:23:06.8783877Z","lastModifiedBy":"319f651f-7ddb-4fc6-9857-7aef9250bd05","lastModifiedByType":"Application","lastModifiedAt":"2022-04-05T14:08:00.8550309Z"},"properties":{"provisioningState":"Succeeded","connectionStatus":"Connected","uuid":"5049e45d-ad6d-4616-9938-c2ba0bc52e77","version":"10.22.1089.0","credentials":{"username":"cdmlab\\cdmlabuser"},"fqdn":"10.225.91.184","port":8100}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aadk8test/providers/Microsoft.ScVmm/vmmServers/arcvmm-azcli-test-vmmserver","name":"arcvmm-azcli-test-vmmserver","type":"microsoft.scvmm/vmmservers","location":"eastus2euap","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/aadk8test/providers/microsoft.extendedlocation/customlocations/arcvmm-azcli-test-cl","type":"customLocation"},"systemData":{"createdBy":"snaskar@microsoft.com","createdByType":"User","createdAt":"2022-04-03T06:00:50.6377329Z","lastModifiedBy":"319f651f-7ddb-4fc6-9857-7aef9250bd05","lastModifiedByType":"Application","lastModifiedAt":"2022-04-05T14:12:00.8107436Z"},"properties":{"provisioningState":"Succeeded","credentials":{"username":"cdmlab\\cdmlabuser"},"fqdn":"10.225.91.184","port":8100,"connectionStatus":"Connected","uuid":"5049e45d-ad6d-4616-9938-c2ba0bc52e77","version":"10.22.1089.0"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aadk8test/providers/Microsoft.ScVmm/vmmServers/sofiya-testCC01-vmm01","name":"sofiya-testCC01-vmm01","type":"Microsoft.ScVmm/vmmServers","location":"eastus2euap","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aadk8test/providers/microsoft.extendedlocation/customlocations/sofiya-cl01","type":"CustomLocation"},"systemData":{"createdBy":"sojilani@microsoft.com","createdByType":"User","createdAt":"2021-01-22T23:08:06.3424817Z","lastModifiedBy":"319f651f-7ddb-4fc6-9857-7aef9250bd05","lastModifiedByType":"Application","lastModifiedAt":"2021-01-22T23:08:44.3010611Z"},"properties":{"provisioningState":"Failed","credentials":{"username":"cdmlab\\cdmlabuser"},"fqdn":"10.248.164.85","port":443,"connectionStatus":"Connected","uuid":"62843e17-0695-423e-ac5f-1bca0014e658","version":"10.19.1013.0"}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '3737'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 05 Apr 2022 14:22:40 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-original-request-ids:
+      - 61998e48-7bf7-43cf-a931-7536d11159bf
+      - 67ebac8c-d0ab-4229-b098-fc558f7249fe
+      - bb45a7dd-28a0-4be7-83bf-83311d6bc1b0
+      - a3034b9d-f1e1-470c-a623-7c16bc5211f6
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - scvmm vmmserver inventory-item show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -v -i
+      User-Agent:
+      - AZURECLI/2.31.0 azsdk-python-mgmt-scvmm/1.0.0b1 Python/3.10.0 (Linux-5.13.0-28-generic-x86_64-with-glibc2.31)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aadk8test/providers/Microsoft.ScVmm/vmmServers/arcvmm-azcli-test-vmmserver/inventoryItems/3e1798f2-32a5-4121-8ed7-2527bf4e23d9?api-version=2020-06-05-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aadk8test/providers/Microsoft.ScVmm/vmmServers/arcvmm-azcli-test-vmmserver/InventoryItems/3e1798f2-32a5-4121-8ed7-2527bf4e23d9","name":"3e1798f2-32a5-4121-8ed7-2527bf4e23d9","type":"microsoft.scvmm/vmmservers/inventoryitems","kind":"Cloud","systemData":{"createdBy":"319f651f-7ddb-4fc6-9857-7aef9250bd05","createdByType":"Application","createdAt":"2022-04-03T06:02:17.9993989Z","lastModifiedBy":"319f651f-7ddb-4fc6-9857-7aef9250bd05","lastModifiedByType":"Application","lastModifiedAt":"2022-04-05T11:14:29.603183Z"},"properties":{"inventoryItemName":"cloud-qos","uuid":"3e1798f2-32a5-4121-8ed7-2527bf4e23d9","inventoryType":"Cloud","provisioningState":"Succeeded","managedResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aadk8test/providers/Microsoft.ScVmm/clouds/arcvmm-azcli-test-cloud-qos"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '900'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 05 Apr 2022 14:22:41 GMT
+      etag:
+      - '"520065c3-0000-3400-0000-624c24950000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - scvmm vmmserver inventory-item show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -v -i
+      User-Agent:
+      - AZURECLI/2.31.0 azsdk-python-mgmt-scvmm/1.0.0b1 Python/3.10.0 (Linux-5.13.0-28-generic-x86_64-with-glibc2.31)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aadk8test/providers/Microsoft.ScVmm/vmmServers/arcvmm-azcli-test-vmmserver/inventoryItems/da3bed37-98f9-444f-badd-268a90924937?api-version=2020-06-05-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aadk8test/providers/Microsoft.ScVmm/vmmServers/arcvmm-azcli-test-vmmserver/InventoryItems/da3bed37-98f9-444f-badd-268a90924937","name":"da3bed37-98f9-444f-badd-268a90924937","type":"microsoft.scvmm/vmmservers/inventoryitems","kind":"VirtualMachineTemplate","systemData":{"createdBy":"319f651f-7ddb-4fc6-9857-7aef9250bd05","createdByType":"Application","createdAt":"2022-04-03T06:02:22.682563Z","lastModifiedBy":"319f651f-7ddb-4fc6-9857-7aef9250bd05","lastModifiedByType":"Application","lastModifiedAt":"2022-04-05T13:36:11.3687413Z"},"properties":{"inventoryItemName":"vmt-minion","uuid":"da3bed37-98f9-444f-badd-268a90924937","cpuCount":1,"memoryMB":32,"osType":"Other","osName":"Unknown","inventoryType":"VirtualMachineTemplate","provisioningState":"Succeeded","managedResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aadk8test/providers/Microsoft.ScVmm/virtualMachineTemplates/arcvmm-azcli-test-vmt-minion"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1016'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 05 Apr 2022 14:22:42 GMT
+      etag:
+      - '"53007306-0000-3400-0000-624c45cb0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - scvmm vmmserver inventory-item show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -v -i
+      User-Agent:
+      - AZURECLI/2.31.0 azsdk-python-mgmt-scvmm/1.0.0b1 Python/3.10.0 (Linux-5.13.0-28-generic-x86_64-with-glibc2.31)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aadk8test/providers/Microsoft.ScVmm/vmmServers/arcvmm-azcli-test-vmmserver/inventoryItems/19cab3a9-e51d-48ef-9944-2ef6dc5d98a4?api-version=2020-06-05-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aadk8test/providers/Microsoft.ScVmm/vmmServers/arcvmm-azcli-test-vmmserver/InventoryItems/19cab3a9-e51d-48ef-9944-2ef6dc5d98a4","name":"19cab3a9-e51d-48ef-9944-2ef6dc5d98a4","type":"microsoft.scvmm/vmmservers/inventoryitems","kind":"VirtualNetwork","systemData":{"createdBy":"319f651f-7ddb-4fc6-9857-7aef9250bd05","createdByType":"Application","createdAt":"2022-04-03T06:02:21.6790403Z","lastModifiedBy":"319f651f-7ddb-4fc6-9857-7aef9250bd05","lastModifiedByType":"Application","lastModifiedAt":"2022-04-05T13:36:57.4602759Z"},"properties":{"inventoryItemName":"vnet-561","uuid":"19cab3a9-e51d-48ef-9944-2ef6dc5d98a4","inventoryType":"VirtualNetwork","provisioningState":"Succeeded","managedResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aadk8test/providers/Microsoft.ScVmm/virtualNetworks/arcvmm-azcli-test-vnet-561"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '926'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 05 Apr 2022 14:22:43 GMT
+      etag:
+      - '"5300cc06-0000-3400-0000-624c45f90000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "eastus2euap", "extendedLocation": {"type": "customLocation",
+      "name": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aadk8test/providers/Microsoft.ExtendedLocation/customLocations/arcvmm-azcli-test-cl"},
+      "properties": {"inventoryItemId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aadk8test/providers/Microsoft.ScVmm/vmmservers/arcvmm-azcli-test-vmmserver/InventoryItems/3e1798f2-32a5-4121-8ed7-2527bf4e23d9",
+      "vmmServerId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aadk8test/providers/Microsoft.ScVmm/vmmservers/arcvmm-azcli-test-vmmserver"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - scvmm cloud create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '629'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -l --custom-location -v -i --name
+      User-Agent:
+      - AZURECLI/2.31.0 azsdk-python-mgmt-scvmm/1.0.0b1 Python/3.10.0 (Linux-5.13.0-28-generic-x86_64-with-glibc2.31)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aadk8test/providers/Microsoft.ScVmm/clouds/arcvmm-azcli-test-cloud-qos?api-version=2020-06-05-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aadk8test/providers/Microsoft.ScVmm/clouds/arcvmm-azcli-test-cloud-qos","name":"arcvmm-azcli-test-cloud-qos","type":"microsoft.scvmm/clouds","location":"eastus2euap","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aadk8test/providers/Microsoft.ExtendedLocation/customLocations/arcvmm-azcli-test-cl","type":"customLocation"},"systemData":{"createdBy":"snaskar@microsoft.com","createdByType":"User","createdAt":"2022-04-05T11:14:09.5654479Z","lastModifiedBy":"snaskar@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-04-05T14:22:45.2041749Z"},"properties":{"provisioningState":"Accepted","cloudName":"cloud-qos","cloudCapacity":{"cpuCount":10,"memoryMB":10240,"vmCount":10},"storageQoSPolicies":[{"name":"qos-1","id":"5c2c2051-d744-4e7a-b1f8-36e81e5a9acb","iopsMaximum":50,"bandwidthLimit":52428800,"policyId":"b921948b-1eff-4bcd-ade7-207e531b0d6d"},{"name":"qos-2","id":"54d0024e-9d11-4e0b-be92-fdd689021b84","iopsMaximum":60,"iopsMinimum":10,"bandwidthLimit":62914560,"policyId":"2d43029a-632e-4363-bd05-02d8b7238b22"}],"inventoryItemId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aadk8test/providers/Microsoft.ScVmm/vmmservers/arcvmm-azcli-test-vmmserver/InventoryItems/3e1798f2-32a5-4121-8ed7-2527bf4e23d9","vmmServerId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aadk8test/providers/Microsoft.ScVmm/vmmservers/arcvmm-azcli-test-vmmserver"}}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/providers/Microsoft.ScVmm/locations/EASTUS2EUAP/operationStatuses/4b7dc543-5424-4a89-b527-6c3575c5beb7*00D351E59CE5C7BAE560A23B7CE642CA874C04DCED48ADC36D03FDA88ED2B68E?api-version=2020-06-05-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '1531'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 05 Apr 2022 14:22:46 GMT
+      etag:
+      - '"0f0026d3-0000-3400-0000-624c50b60000"'
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 89a50bda-698c-434d-9c50-8a7841eaa74c
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1198'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - scvmm cloud create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -l --custom-location -v -i --name
+      User-Agent:
+      - AZURECLI/2.31.0 azsdk-python-mgmt-scvmm/1.0.0b1 Python/3.10.0 (Linux-5.13.0-28-generic-x86_64-with-glibc2.31)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.ScVmm/locations/EASTUS2EUAP/operationStatuses/4b7dc543-5424-4a89-b527-6c3575c5beb7*00D351E59CE5C7BAE560A23B7CE642CA874C04DCED48ADC36D03FDA88ED2B68E?api-version=2020-06-05-preview
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.ScVmm/locations/EASTUS2EUAP/operationStatuses/4b7dc543-5424-4a89-b527-6c3575c5beb7*00D351E59CE5C7BAE560A23B7CE642CA874C04DCED48ADC36D03FDA88ED2B68E","name":"4b7dc543-5424-4a89-b527-6c3575c5beb7*00D351E59CE5C7BAE560A23B7CE642CA874C04DCED48ADC36D03FDA88ED2B68E","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aadk8test/providers/Microsoft.ScVmm/clouds/arcvmm-azcli-test-cloud-qos","status":"Succeeded","startTime":"2022-04-05T14:22:46.1335391Z","endTime":"2022-04-05T14:23:01.6237305Z","error":{},"properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '575'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 05 Apr 2022 14:23:16 GMT
+      etag:
+      - '"070075b0-0000-3400-0000-624c50c50000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - scvmm cloud create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -l --custom-location -v -i --name
+      User-Agent:
+      - AZURECLI/2.31.0 azsdk-python-mgmt-scvmm/1.0.0b1 Python/3.10.0 (Linux-5.13.0-28-generic-x86_64-with-glibc2.31)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aadk8test/providers/Microsoft.ScVmm/clouds/arcvmm-azcli-test-cloud-qos?api-version=2020-06-05-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aadk8test/providers/Microsoft.ScVmm/clouds/arcvmm-azcli-test-cloud-qos","name":"arcvmm-azcli-test-cloud-qos","type":"microsoft.scvmm/clouds","location":"eastus2euap","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aadk8test/providers/Microsoft.ExtendedLocation/customLocations/arcvmm-azcli-test-cl","type":"customLocation"},"systemData":{"createdBy":"snaskar@microsoft.com","createdByType":"User","createdAt":"2022-04-05T11:14:09.5654479Z","lastModifiedBy":"319f651f-7ddb-4fc6-9857-7aef9250bd05","lastModifiedByType":"Application","lastModifiedAt":"2022-04-05T14:23:02.5609213Z"},"properties":{"provisioningState":"Succeeded","cloudName":"cloud-qos","cloudCapacity":{"cpuCount":10,"memoryMB":10240,"vmCount":10},"storageQoSPolicies":[{"name":"qos-1","id":"5c2c2051-d744-4e7a-b1f8-36e81e5a9acb","iopsMaximum":50,"bandwidthLimit":52428800,"policyId":"b921948b-1eff-4bcd-ade7-207e531b0d6d"},{"name":"qos-2","id":"54d0024e-9d11-4e0b-be92-fdd689021b84","iopsMaximum":60,"iopsMinimum":10,"bandwidthLimit":62914560,"policyId":"2d43029a-632e-4363-bd05-02d8b7238b22"}],"inventoryItemId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aadk8test/providers/Microsoft.ScVmm/vmmservers/arcvmm-azcli-test-vmmserver/InventoryItems/3e1798f2-32a5-4121-8ed7-2527bf4e23d9","vmmServerId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aadk8test/providers/Microsoft.ScVmm/vmmServers/arcvmm-azcli-test-vmmserver","uuid":"3e1798f2-32a5-4121-8ed7-2527bf4e23d9"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1600'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 05 Apr 2022 14:23:16 GMT
+      etag:
+      - '"0f002dd3-0000-3400-0000-624c50c60000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "eastus2euap", "extendedLocation": {"type": "customLocation",
+      "name": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aadk8test/providers/Microsoft.ExtendedLocation/customLocations/arcvmm-azcli-test-cl"},
+      "properties": {"inventoryItemId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aadk8test/providers/Microsoft.ScVmm/vmmservers/arcvmm-azcli-test-vmmserver/InventoryItems/da3bed37-98f9-444f-badd-268a90924937",
+      "vmmServerId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aadk8test/providers/Microsoft.ScVmm/vmmservers/arcvmm-azcli-test-vmmserver"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - scvmm vm-template create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '629'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -l --custom-location -v -i --name
+      User-Agent:
+      - AZURECLI/2.31.0 azsdk-python-mgmt-scvmm/1.0.0b1 Python/3.10.0 (Linux-5.13.0-28-generic-x86_64-with-glibc2.31)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aadk8test/providers/Microsoft.ScVmm/virtualMachineTemplates/arcvmm-azcli-test-vmt-minion?api-version=2020-06-05-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aadk8test/providers/Microsoft.ScVmm/virtualMachineTemplates/arcvmm-azcli-test-vmt-minion","name":"arcvmm-azcli-test-vmt-minion","type":"microsoft.scvmm/virtualmachinetemplates","location":"eastus2euap","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aadk8test/providers/Microsoft.ExtendedLocation/customLocations/arcvmm-azcli-test-cl","type":"customLocation"},"systemData":{"createdBy":"snaskar@microsoft.com","createdByType":"User","createdAt":"2022-04-05T13:35:54.8142941Z","lastModifiedBy":"snaskar@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-04-05T14:23:19.0964343Z"},"properties":{"provisioningState":"Accepted","cpuCount":1,"limitCpuForMigration":"false","dynamicMemoryEnabled":"true","dynamicMemoryMaxMB":32,"dynamicMemoryMinMB":32,"isHighlyAvailable":"false","isCustomizable":"false","osType":"Other","osName":"Unknown","memoryMB":32,"networkInterfaces":[],"disks":[{"name":"disk_1","displayName":"Blank
+        Disk - 10GB.vhd","diskId":"c9f7e2f7-e887-4454-9d9f-611b89c02c4c","diskSizeGB":0,"maxDiskSizeGB":10,"bus":0,"lun":0,"busType":"IDE","vhdType":"Dynamic","volumeType":"BootAndSystem","vhdFormatType":"VHD","createDiffDisk":"false"}],"generation":1,"inventoryItemId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aadk8test/providers/Microsoft.ScVmm/vmmservers/arcvmm-azcli-test-vmmserver/InventoryItems/da3bed37-98f9-444f-badd-268a90924937","vmmServerId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aadk8test/providers/Microsoft.ScVmm/vmmservers/arcvmm-azcli-test-vmmserver"}}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/providers/Microsoft.ScVmm/locations/EASTUS2EUAP/operationStatuses/173bc93e-266d-46ff-8ec2-aa775bed2e14*07D501074EA68410A305106B55ECB6B53617534DD52A1D88F39AA1113A711D69?api-version=2020-06-05-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '1672'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 05 Apr 2022 14:23:20 GMT
+      etag:
+      - '"03006cd0-0000-3400-0000-624c50d80000"'
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 6de1cd48-4dde-4498-9c1b-de22d18acb88
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - scvmm vm-template create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -l --custom-location -v -i --name
+      User-Agent:
+      - AZURECLI/2.31.0 azsdk-python-mgmt-scvmm/1.0.0b1 Python/3.10.0 (Linux-5.13.0-28-generic-x86_64-with-glibc2.31)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.ScVmm/locations/EASTUS2EUAP/operationStatuses/173bc93e-266d-46ff-8ec2-aa775bed2e14*07D501074EA68410A305106B55ECB6B53617534DD52A1D88F39AA1113A711D69?api-version=2020-06-05-preview
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.ScVmm/locations/EASTUS2EUAP/operationStatuses/173bc93e-266d-46ff-8ec2-aa775bed2e14*07D501074EA68410A305106B55ECB6B53617534DD52A1D88F39AA1113A711D69","name":"173bc93e-266d-46ff-8ec2-aa775bed2e14*07D501074EA68410A305106B55ECB6B53617534DD52A1D88F39AA1113A711D69","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aadk8test/providers/Microsoft.ScVmm/virtualMachineTemplates/arcvmm-azcli-test-vmt-minion","status":"Succeeded","startTime":"2022-04-05T14:23:20.1384381Z","endTime":"2022-04-05T14:23:35.2909066Z","error":{},"properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '593'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 05 Apr 2022 14:23:50 GMT
+      etag:
+      - '"070080b0-0000-3400-0000-624c50e70000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - scvmm vm-template create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -l --custom-location -v -i --name
+      User-Agent:
+      - AZURECLI/2.31.0 azsdk-python-mgmt-scvmm/1.0.0b1 Python/3.10.0 (Linux-5.13.0-28-generic-x86_64-with-glibc2.31)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aadk8test/providers/Microsoft.ScVmm/virtualMachineTemplates/arcvmm-azcli-test-vmt-minion?api-version=2020-06-05-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aadk8test/providers/Microsoft.ScVmm/virtualMachineTemplates/arcvmm-azcli-test-vmt-minion","name":"arcvmm-azcli-test-vmt-minion","type":"microsoft.scvmm/virtualmachinetemplates","location":"eastus2euap","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aadk8test/providers/Microsoft.ExtendedLocation/customLocations/arcvmm-azcli-test-cl","type":"customLocation"},"systemData":{"createdBy":"snaskar@microsoft.com","createdByType":"User","createdAt":"2022-04-05T13:35:54.8142941Z","lastModifiedBy":"319f651f-7ddb-4fc6-9857-7aef9250bd05","lastModifiedByType":"Application","lastModifiedAt":"2022-04-05T14:23:36.2345052Z"},"properties":{"provisioningState":"Succeeded","cpuCount":1,"limitCpuForMigration":"false","dynamicMemoryEnabled":"true","dynamicMemoryMaxMB":32,"dynamicMemoryMinMB":32,"isHighlyAvailable":"false","isCustomizable":"false","osType":"Other","osName":"Unknown","memoryMB":32,"networkInterfaces":[],"disks":[{"name":"disk_1","displayName":"Blank
+        Disk - 10GB.vhd","diskId":"c9f7e2f7-e887-4454-9d9f-611b89c02c4c","diskSizeGB":0,"maxDiskSizeGB":10,"bus":0,"lun":0,"busType":"IDE","vhdType":"Dynamic","volumeType":"BootAndSystem","vhdFormatType":"VHD","createDiffDisk":"false"}],"generation":1,"inventoryItemId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aadk8test/providers/Microsoft.ScVmm/vmmservers/arcvmm-azcli-test-vmmserver/InventoryItems/da3bed37-98f9-444f-badd-268a90924937","vmmServerId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aadk8test/providers/Microsoft.ScVmm/vmmServers/arcvmm-azcli-test-vmmserver","uuid":"da3bed37-98f9-444f-badd-268a90924937"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1741'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 05 Apr 2022 14:23:50 GMT
+      etag:
+      - '"030070d0-0000-3400-0000-624c50e80000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "eastus2euap", "extendedLocation": {"type": "customLocation",
+      "name": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aadk8test/providers/Microsoft.ExtendedLocation/customLocations/arcvmm-azcli-test-cl"},
+      "properties": {"inventoryItemId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aadk8test/providers/Microsoft.ScVmm/vmmservers/arcvmm-azcli-test-vmmserver/InventoryItems/19cab3a9-e51d-48ef-9944-2ef6dc5d98a4",
+      "vmmServerId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aadk8test/providers/Microsoft.ScVmm/vmmservers/arcvmm-azcli-test-vmmserver"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - scvmm virtual-network create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '629'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -l --custom-location -v -i --name
+      User-Agent:
+      - AZURECLI/2.31.0 azsdk-python-mgmt-scvmm/1.0.0b1 Python/3.10.0 (Linux-5.13.0-28-generic-x86_64-with-glibc2.31)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aadk8test/providers/Microsoft.ScVmm/virtualNetworks/arcvmm-azcli-test-vnet-561?api-version=2020-06-05-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aadk8test/providers/Microsoft.ScVmm/virtualNetworks/arcvmm-azcli-test-vnet-561","name":"arcvmm-azcli-test-vnet-561","type":"microsoft.scvmm/virtualnetworks","location":"eastus2euap","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aadk8test/providers/Microsoft.ExtendedLocation/customLocations/arcvmm-azcli-test-cl","type":"customLocation"},"systemData":{"createdBy":"snaskar@microsoft.com","createdByType":"User","createdAt":"2022-04-05T13:36:37.472999Z","lastModifiedBy":"snaskar@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-04-05T14:23:52.6880854Z"},"properties":{"provisioningState":"Accepted","networkName":"vnet-561","inventoryItemId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aadk8test/providers/Microsoft.ScVmm/vmmservers/arcvmm-azcli-test-vmmserver/InventoryItems/19cab3a9-e51d-48ef-9944-2ef6dc5d98a4","vmmServerId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aadk8test/providers/Microsoft.ScVmm/vmmservers/arcvmm-azcli-test-vmmserver"}}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/providers/Microsoft.ScVmm/locations/EASTUS2EUAP/operationStatuses/f2a15d06-a146-4d72-9ada-6eb0c0c9135e*5185FDB71673A180F0D01735B380CC0EC9FFF83AD49A4CB5B88F8B4CB2B58AEB?api-version=2020-06-05-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '1137'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 05 Apr 2022 14:23:54 GMT
+      etag:
+      - '"02008419-0000-3400-0000-624c50fa0000"'
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 9a8eafb1-c30f-4b04-9428-a986242c4c01
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - scvmm virtual-network create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -l --custom-location -v -i --name
+      User-Agent:
+      - AZURECLI/2.31.0 azsdk-python-mgmt-scvmm/1.0.0b1 Python/3.10.0 (Linux-5.13.0-28-generic-x86_64-with-glibc2.31)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.ScVmm/locations/EASTUS2EUAP/operationStatuses/f2a15d06-a146-4d72-9ada-6eb0c0c9135e*5185FDB71673A180F0D01735B380CC0EC9FFF83AD49A4CB5B88F8B4CB2B58AEB?api-version=2020-06-05-preview
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.ScVmm/locations/EASTUS2EUAP/operationStatuses/f2a15d06-a146-4d72-9ada-6eb0c0c9135e*5185FDB71673A180F0D01735B380CC0EC9FFF83AD49A4CB5B88F8B4CB2B58AEB","name":"f2a15d06-a146-4d72-9ada-6eb0c0c9135e*5185FDB71673A180F0D01735B380CC0EC9FFF83AD49A4CB5B88F8B4CB2B58AEB","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aadk8test/providers/Microsoft.ScVmm/virtualNetworks/arcvmm-azcli-test-vnet-561","status":"Succeeded","startTime":"2022-04-05T14:23:53.6139665Z","endTime":"2022-04-05T14:24:07.6596082Z","error":{},"properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '583'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 05 Apr 2022 14:24:24 GMT
+      etag:
+      - '"07008bb0-0000-3400-0000-624c51070000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - scvmm virtual-network create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -l --custom-location -v -i --name
+      User-Agent:
+      - AZURECLI/2.31.0 azsdk-python-mgmt-scvmm/1.0.0b1 Python/3.10.0 (Linux-5.13.0-28-generic-x86_64-with-glibc2.31)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aadk8test/providers/Microsoft.ScVmm/virtualNetworks/arcvmm-azcli-test-vnet-561?api-version=2020-06-05-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aadk8test/providers/Microsoft.ScVmm/virtualNetworks/arcvmm-azcli-test-vnet-561","name":"arcvmm-azcli-test-vnet-561","type":"microsoft.scvmm/virtualnetworks","location":"eastus2euap","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aadk8test/providers/Microsoft.ExtendedLocation/customLocations/arcvmm-azcli-test-cl","type":"customLocation"},"systemData":{"createdBy":"snaskar@microsoft.com","createdByType":"User","createdAt":"2022-04-05T13:36:37.472999Z","lastModifiedBy":"319f651f-7ddb-4fc6-9857-7aef9250bd05","lastModifiedByType":"Application","lastModifiedAt":"2022-04-05T14:24:08.5348357Z"},"properties":{"provisioningState":"Succeeded","networkName":"vnet-561","inventoryItemId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aadk8test/providers/Microsoft.ScVmm/vmmservers/arcvmm-azcli-test-vmmserver/InventoryItems/19cab3a9-e51d-48ef-9944-2ef6dc5d98a4","vmmServerId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aadk8test/providers/Microsoft.ScVmm/vmmServers/arcvmm-azcli-test-vmmserver","uuid":"19cab3a9-e51d-48ef-9944-2ef6dc5d98a4"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1206'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 05 Apr 2022 14:24:24 GMT
+      etag:
+      - '"02008619-0000-3400-0000-624c51080000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "eastus2euap", "extendedLocation": {"type": "customLocation",
+      "name": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aadk8test/providers/Microsoft.ExtendedLocation/customLocations/arcvmm-azcli-test-cl"},
+      "properties": {"availabilitySetName": "avset1", "vmmServerId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aadk8test/providers/Microsoft.ScVmm/vmmservers/arcvmm-azcli-test-vmmserver"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - scvmm avset create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '446'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -l --custom-location -v -a --name
+      User-Agent:
+      - AZURECLI/2.31.0 azsdk-python-mgmt-scvmm/1.0.0b1 Python/3.10.0 (Linux-5.13.0-28-generic-x86_64-with-glibc2.31)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aadk8test/providers/Microsoft.ScVmm/availabilitySets/arcvmm-azcli-test-avset1?api-version=2020-06-05-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aadk8test/providers/Microsoft.ScVmm/availabilitySets/arcvmm-azcli-test-avset1","name":"arcvmm-azcli-test-avset1","type":"microsoft.scvmm/availabilitysets","location":"eastus2euap","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aadk8test/providers/Microsoft.ExtendedLocation/customLocations/arcvmm-azcli-test-cl","type":"customLocation"},"systemData":{"createdBy":"snaskar@microsoft.com","createdByType":"User","createdAt":"2022-04-05T13:37:21.1502109Z","lastModifiedBy":"snaskar@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-04-05T14:24:26.0580714Z"},"properties":{"provisioningState":"Accepted","availabilitySetName":"avset1","vmmServerId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aadk8test/providers/Microsoft.ScVmm/vmmservers/arcvmm-azcli-test-vmmserver"}}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/providers/Microsoft.ScVmm/locations/EASTUS2EUAP/operationStatuses/c5d323fb-663a-426f-8034-27c9b254b837*CA70B4D15B8EC5C2594E080EC48999CDCC1852601A471074E2D7D73F401F0766?api-version=2020-06-05-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '928'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 05 Apr 2022 14:24:26 GMT
+      etag:
+      - '"1200479e-0000-3400-0000-624c511a0000"'
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 2c78fab4-e588-45ff-9457-f84ea97b86a5
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1198'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - scvmm avset create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -l --custom-location -v -a --name
+      User-Agent:
+      - AZURECLI/2.31.0 azsdk-python-mgmt-scvmm/1.0.0b1 Python/3.10.0 (Linux-5.13.0-28-generic-x86_64-with-glibc2.31)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.ScVmm/locations/EASTUS2EUAP/operationStatuses/c5d323fb-663a-426f-8034-27c9b254b837*CA70B4D15B8EC5C2594E080EC48999CDCC1852601A471074E2D7D73F401F0766?api-version=2020-06-05-preview
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.ScVmm/locations/EASTUS2EUAP/operationStatuses/c5d323fb-663a-426f-8034-27c9b254b837*CA70B4D15B8EC5C2594E080EC48999CDCC1852601A471074E2D7D73F401F0766","name":"c5d323fb-663a-426f-8034-27c9b254b837*CA70B4D15B8EC5C2594E080EC48999CDCC1852601A471074E2D7D73F401F0766","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aadk8test/providers/Microsoft.ScVmm/availabilitySets/arcvmm-azcli-test-avset1","status":"Succeeded","startTime":"2022-04-05T14:24:26.3339768Z","endTime":"2022-04-05T14:24:33.585381Z","properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '570'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 05 Apr 2022 14:24:57 GMT
+      etag:
+      - '"070095b0-0000-3400-0000-624c51210000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - scvmm avset create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -l --custom-location -v -a --name
+      User-Agent:
+      - AZURECLI/2.31.0 azsdk-python-mgmt-scvmm/1.0.0b1 Python/3.10.0 (Linux-5.13.0-28-generic-x86_64-with-glibc2.31)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aadk8test/providers/Microsoft.ScVmm/availabilitySets/arcvmm-azcli-test-avset1?api-version=2020-06-05-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aadk8test/providers/Microsoft.ScVmm/availabilitySets/arcvmm-azcli-test-avset1","name":"arcvmm-azcli-test-avset1","type":"microsoft.scvmm/availabilitysets","location":"eastus2euap","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aadk8test/providers/Microsoft.ExtendedLocation/customLocations/arcvmm-azcli-test-cl","type":"customLocation"},"systemData":{"createdBy":"snaskar@microsoft.com","createdByType":"User","createdAt":"2022-04-05T13:37:21.1502109Z","lastModifiedBy":"snaskar@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-04-05T14:24:26.0580714Z"},"properties":{"provisioningState":"Succeeded","availabilitySetName":"avset1","vmmServerId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aadk8test/providers/Microsoft.ScVmm/vmmservers/arcvmm-azcli-test-vmmserver"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '929'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 05 Apr 2022 14:24:57 GMT
+      etag:
+      - '"12004f9e-0000-3400-0000-624c51210000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "eastus2euap", "extendedLocation": {"type": "customLocation",
+      "name": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aadk8test/providers/Microsoft.ExtendedLocation/customLocations/arcvmm-azcli-test-cl"},
+      "properties": {"cloudId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aadk8test/providers/Microsoft.ScVmm/clouds/arcvmm-azcli-test-cloud-qos",
+      "templateId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aadk8test/providers/Microsoft.ScVmm/virtualmachinetemplates/arcvmm-azcli-test-vmt-minion",
+      "availabilitySets": [{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aadk8test/providers/Microsoft.ScVmm/availabilitysets/arcvmm-azcli-test-avset1"}],
+      "networkProfile": {"networkInterfaces": [{"name": "nic_1", "virtualNetworkId":
+      "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aadk8test/providers/Microsoft.ScVmm/virtualnetworks/arcvmm-azcli-test-vnet-561",
+      "ipv4AddressType": "Dynamic", "ipv6AddressType": "Dynamic", "macAddressType":
+      "Dynamic"}]}, "storageProfile": {"disks": [{"name": "disk_1", "diskSizeGB":
+      2, "bus": 0}]}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - scvmm vm create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '1154'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -l --custom-location -c -t -a -n --disk --nic
+      User-Agent:
+      - AZURECLI/2.31.0 azsdk-python-mgmt-scvmm/1.0.0b1 Python/3.10.0 (Linux-5.13.0-28-generic-x86_64-with-glibc2.31)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aadk8test/providers/Microsoft.ScVmm/virtualMachines/arcvmm-azcli-test-vm-1?api-version=2020-06-05-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aadk8test/providers/Microsoft.ScVmm/virtualMachines/arcvmm-azcli-test-vm-1","name":"arcvmm-azcli-test-vm-1","type":"microsoft.scvmm/virtualmachines","location":"eastus2euap","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aadk8test/providers/Microsoft.ExtendedLocation/customLocations/arcvmm-azcli-test-cl","type":"customLocation"},"systemData":{"createdBy":"snaskar@microsoft.com","createdByType":"User","createdAt":"2022-04-05T14:25:07.6128963Z","lastModifiedBy":"snaskar@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-04-05T14:25:07.6128963Z"},"properties":{"provisioningState":"Accepted","cloudId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aadk8test/providers/Microsoft.ScVmm/clouds/arcvmm-azcli-test-cloud-qos","templateId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aadk8test/providers/Microsoft.ScVmm/virtualmachinetemplates/arcvmm-azcli-test-vmt-minion","availabilitySets":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aadk8test/providers/Microsoft.ScVmm/availabilitysets/arcvmm-azcli-test-avset1"}],"networkProfile":{"networkInterfaces":[{"name":"nic_1","virtualNetworkId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aadk8test/providers/Microsoft.ScVmm/virtualnetworks/arcvmm-azcli-test-vnet-561","ipv4AddressType":"Dynamic","ipv6AddressType":"Dynamic","macAddressType":"Dynamic"}]},"storageProfile":{"disks":[{"name":"disk_1","diskSizeGB":2,"bus":0}]}}}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/providers/Microsoft.ScVmm/locations/EASTUS2EUAP/operationStatuses/0d2cb7d4-6941-49ed-9654-c42eb713746b*2A1B91730DFF216246896099A6CC078F1AE10B5EE4CF4D09873D40CAF26B8F12?api-version=2020-06-05-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '1607'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 05 Apr 2022 14:25:09 GMT
+      etag:
+      - '"0a00aaf9-0000-3400-0000-624c51440000"'
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - afe85d9e-c1f6-499f-a6bc-095c00f64d0f
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - scvmm vm create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -l --custom-location -c -t -a -n --disk --nic
+      User-Agent:
+      - AZURECLI/2.31.0 azsdk-python-mgmt-scvmm/1.0.0b1 Python/3.10.0 (Linux-5.13.0-28-generic-x86_64-with-glibc2.31)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.ScVmm/locations/EASTUS2EUAP/operationStatuses/0d2cb7d4-6941-49ed-9654-c42eb713746b*2A1B91730DFF216246896099A6CC078F1AE10B5EE4CF4D09873D40CAF26B8F12?api-version=2020-06-05-preview
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.ScVmm/locations/EASTUS2EUAP/operationStatuses/0d2cb7d4-6941-49ed-9654-c42eb713746b*2A1B91730DFF216246896099A6CC078F1AE10B5EE4CF4D09873D40CAF26B8F12","name":"0d2cb7d4-6941-49ed-9654-c42eb713746b*2A1B91730DFF216246896099A6CC078F1AE10B5EE4CF4D09873D40CAF26B8F12","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aadk8test/providers/Microsoft.ScVmm/virtualMachines/arcvmm-azcli-test-vm-1","status":"Accepted","startTime":"2022-04-05T14:25:08.4735642Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '508'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 05 Apr 2022 14:25:39 GMT
+      etag:
+      - '"0700a2b0-0000-3400-0000-624c514c0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - scvmm vm create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -l --custom-location -c -t -a -n --disk --nic
+      User-Agent:
+      - AZURECLI/2.31.0 azsdk-python-mgmt-scvmm/1.0.0b1 Python/3.10.0 (Linux-5.13.0-28-generic-x86_64-with-glibc2.31)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.ScVmm/locations/EASTUS2EUAP/operationStatuses/0d2cb7d4-6941-49ed-9654-c42eb713746b*2A1B91730DFF216246896099A6CC078F1AE10B5EE4CF4D09873D40CAF26B8F12?api-version=2020-06-05-preview
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.ScVmm/locations/EASTUS2EUAP/operationStatuses/0d2cb7d4-6941-49ed-9654-c42eb713746b*2A1B91730DFF216246896099A6CC078F1AE10B5EE4CF4D09873D40CAF26B8F12","name":"0d2cb7d4-6941-49ed-9654-c42eb713746b*2A1B91730DFF216246896099A6CC078F1AE10B5EE4CF4D09873D40CAF26B8F12","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aadk8test/providers/Microsoft.ScVmm/virtualMachines/arcvmm-azcli-test-vm-1","status":"Accepted","startTime":"2022-04-05T14:25:08.4735642Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '508'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 05 Apr 2022 14:26:10 GMT
+      etag:
+      - '"0700a2b0-0000-3400-0000-624c514c0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - scvmm vm create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -l --custom-location -c -t -a -n --disk --nic
+      User-Agent:
+      - AZURECLI/2.31.0 azsdk-python-mgmt-scvmm/1.0.0b1 Python/3.10.0 (Linux-5.13.0-28-generic-x86_64-with-glibc2.31)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.ScVmm/locations/EASTUS2EUAP/operationStatuses/0d2cb7d4-6941-49ed-9654-c42eb713746b*2A1B91730DFF216246896099A6CC078F1AE10B5EE4CF4D09873D40CAF26B8F12?api-version=2020-06-05-preview
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.ScVmm/locations/EASTUS2EUAP/operationStatuses/0d2cb7d4-6941-49ed-9654-c42eb713746b*2A1B91730DFF216246896099A6CC078F1AE10B5EE4CF4D09873D40CAF26B8F12","name":"0d2cb7d4-6941-49ed-9654-c42eb713746b*2A1B91730DFF216246896099A6CC078F1AE10B5EE4CF4D09873D40CAF26B8F12","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aadk8test/providers/Microsoft.ScVmm/virtualMachines/arcvmm-azcli-test-vm-1","status":"Succeeded","startTime":"2022-04-05T14:25:08.4735642Z","endTime":"2022-04-05T14:26:15.662406Z","error":{},"properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '578'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 05 Apr 2022 14:26:41 GMT
+      etag:
+      - '"0700b3b0-0000-3400-0000-624c51870000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - scvmm vm create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -l --custom-location -c -t -a -n --disk --nic
+      User-Agent:
+      - AZURECLI/2.31.0 azsdk-python-mgmt-scvmm/1.0.0b1 Python/3.10.0 (Linux-5.13.0-28-generic-x86_64-with-glibc2.31)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aadk8test/providers/Microsoft.ScVmm/virtualMachines/arcvmm-azcli-test-vm-1?api-version=2020-06-05-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aadk8test/providers/Microsoft.ScVmm/virtualMachines/arcvmm-azcli-test-vm-1","name":"arcvmm-azcli-test-vm-1","type":"microsoft.scvmm/virtualmachines","location":"eastus2euap","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aadk8test/providers/Microsoft.ExtendedLocation/customLocations/arcvmm-azcli-test-cl","type":"customLocation"},"tags":{},"systemData":{"createdBy":"snaskar@microsoft.com","createdByType":"User","createdAt":"2022-04-05T14:25:07.6128963Z","lastModifiedBy":"319f651f-7ddb-4fc6-9857-7aef9250bd05","lastModifiedByType":"Application","lastModifiedAt":"2022-04-05T14:26:17.1089417Z"},"properties":{"provisioningState":"Succeeded","cloudId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aadk8test/providers/Microsoft.ScVmm/clouds/arcvmm-azcli-test-cloud-qos","templateId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aadk8test/providers/Microsoft.ScVmm/virtualMachineTemplates/arcvmm-azcli-test-vmt-minion","availabilitySets":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aadk8test/providers/Microsoft.ScVmm/availabilitySets/arcvmm-azcli-test-avset1","name":"avset1"}],"networkProfile":{"networkInterfaces":[{"name":"nic_1","displayName":"Network
+        Adapter 1","virtualNetworkId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aadk8test/providers/Microsoft.ScVmm/virtualNetworks/arcvmm-azcli-test-vnet-561","nicId":"11204484-85ff-45ba-871b-40ca5f86ac33","networkName":"19cab3a9-e51d-48ef-9944-2ef6dc5d98a4","ipv4AddressType":"Dynamic","ipv6AddressType":"Dynamic","macAddressType":"Dynamic"}]},"storageProfile":{"disks":[{"displayName":"Blank
+        Disk - 10GB.vhd","diskId":"c4db07c9-8ff7-42af-9965-c091be8ac933","diskSizeGB":0,"maxDiskSizeGB":10,"bus":0,"lun":0,"busType":"IDE","vhdType":"Dynamic","volumeType":"BootAndSystem","vhdFormatType":"VHD","createDiffDisk":"false"},{"name":"disk_1","displayName":"arcvmm-azcli-test-vm-1_disk_1","diskId":"644ef4bd-d33d-4bec-adb6-f1498d27b4c3","diskSizeGB":0,"maxDiskSizeGB":2,"bus":0,"lun":0,"busType":"SCSI","vhdType":"Dynamic","volumeType":"None","vhdFormatType":"VHDX","createDiffDisk":"false"}]},"osProfile":{"osType":"Other","osName":"Unknown"},"hardwareProfile":{"limitCpuForMigration":"false","dynamicMemoryEnabled":"true","isHighlyAvailable":"false","memoryMB":32,"cpuCount":1,"dynamicMemoryMaxMB":32,"dynamicMemoryMinMB":32},"checkpoints":[],"vmmServerId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aadk8test/providers/Microsoft.ScVmm/vmmServers/arcvmm-azcli-test-vmmserver","uuid":"377c0252-f0e6-45ca-8239-d39acc86eee5","powerState":"Stopped","generation":1,"checkpointType":"Production"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2788'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 05 Apr 2022 14:26:42 GMT
+      etag:
+      - '"0a00bff9-0000-3400-0000-624c51890000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"hardwareProfile": {"cpuCount": 2, "dynamicMemoryEnabled":
+      "true"}}, "tags": {"client": "azcli"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - scvmm vm update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '113'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -n --cpu-count --dynamic-memory-enabled --tags
+      User-Agent:
+      - AZURECLI/2.31.0 azsdk-python-mgmt-scvmm/1.0.0b1 Python/3.10.0 (Linux-5.13.0-28-generic-x86_64-with-glibc2.31)
+    method: PATCH
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aadk8test/providers/Microsoft.ScVmm/virtualMachines/arcvmm-azcli-test-vm-1?api-version=2020-06-05-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aadk8test/providers/Microsoft.ScVmm/virtualMachines/arcvmm-azcli-test-vm-1","name":"arcvmm-azcli-test-vm-1","type":"microsoft.scvmm/virtualmachines","location":"eastus2euap","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aadk8test/providers/Microsoft.ExtendedLocation/customLocations/arcvmm-azcli-test-cl","type":"customLocation"},"tags":{"client":"azcli"},"systemData":{"createdBy":"snaskar@microsoft.com","createdByType":"User","createdAt":"2022-04-05T14:25:07.6128963Z","lastModifiedBy":"snaskar@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-04-05T14:26:46.138008Z"},"properties":{"cloudId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aadk8test/providers/Microsoft.ScVmm/clouds/arcvmm-azcli-test-cloud-qos","templateId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aadk8test/providers/Microsoft.ScVmm/virtualMachineTemplates/arcvmm-azcli-test-vmt-minion","availabilitySets":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aadk8test/providers/Microsoft.ScVmm/availabilitySets/arcvmm-azcli-test-avset1","name":"avset1"}],"networkProfile":{"networkInterfaces":[{"name":"nic_1","displayName":"Network
+        Adapter 1","virtualNetworkId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aadk8test/providers/Microsoft.ScVmm/virtualNetworks/arcvmm-azcli-test-vnet-561","nicId":"11204484-85ff-45ba-871b-40ca5f86ac33","networkName":"19cab3a9-e51d-48ef-9944-2ef6dc5d98a4","ipv4AddressType":"Dynamic","ipv6AddressType":"Dynamic","macAddressType":"Dynamic"}]},"storageProfile":{"disks":[{"displayName":"Blank
+        Disk - 10GB.vhd","diskId":"c4db07c9-8ff7-42af-9965-c091be8ac933","diskSizeGB":0,"maxDiskSizeGB":10,"bus":0,"lun":0,"busType":"IDE","vhdType":"Dynamic","volumeType":"BootAndSystem","vhdFormatType":"VHD","createDiffDisk":"false"},{"name":"disk_1","displayName":"arcvmm-azcli-test-vm-1_disk_1","diskId":"644ef4bd-d33d-4bec-adb6-f1498d27b4c3","diskSizeGB":0,"maxDiskSizeGB":2,"bus":0,"lun":0,"busType":"SCSI","vhdType":"Dynamic","volumeType":"None","vhdFormatType":"VHDX","createDiffDisk":"false"}]},"osProfile":{"osType":"Other","osName":"Unknown"},"hardwareProfile":{"limitCpuForMigration":"false","dynamicMemoryEnabled":"true","isHighlyAvailable":"false","memoryMB":32,"cpuCount":2,"dynamicMemoryMaxMB":32,"dynamicMemoryMinMB":32},"checkpoints":[],"vmmServerId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aadk8test/providers/Microsoft.ScVmm/vmmServers/arcvmm-azcli-test-vmmserver","uuid":"377c0252-f0e6-45ca-8239-d39acc86eee5","powerState":"Stopped","generation":1,"checkpointType":"Production","provisioningState":"Accepted"}}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/providers/Microsoft.ScVmm/locations/EASTUS2EUAP/operationStatuses/7de487b3-e950-403d-ae0f-7380fac2f70f*2A1B91730DFF216246896099A6CC078F1AE10B5EE4CF4D09873D40CAF26B8F12?api-version=2020-06-05-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '2780'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 05 Apr 2022 14:26:50 GMT
+      etag:
+      - '"0a00c4f9-0000-3400-0000-624c51a70000"'
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 0d40fea1-9af3-4d7a-8fc0-f80bffbbc55b
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1198'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - scvmm vm update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --cpu-count --dynamic-memory-enabled --tags
+      User-Agent:
+      - AZURECLI/2.31.0 azsdk-python-mgmt-scvmm/1.0.0b1 Python/3.10.0 (Linux-5.13.0-28-generic-x86_64-with-glibc2.31)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.ScVmm/locations/EASTUS2EUAP/operationStatuses/7de487b3-e950-403d-ae0f-7380fac2f70f*2A1B91730DFF216246896099A6CC078F1AE10B5EE4CF4D09873D40CAF26B8F12?api-version=2020-06-05-preview
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.ScVmm/locations/EASTUS2EUAP/operationStatuses/7de487b3-e950-403d-ae0f-7380fac2f70f*2A1B91730DFF216246896099A6CC078F1AE10B5EE4CF4D09873D40CAF26B8F12","name":"7de487b3-e950-403d-ae0f-7380fac2f70f*2A1B91730DFF216246896099A6CC078F1AE10B5EE4CF4D09873D40CAF26B8F12","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aadk8test/providers/Microsoft.ScVmm/virtualMachines/arcvmm-azcli-test-vm-1","status":"Accepted","startTime":"2022-04-05T14:26:46.9782407Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '508'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 05 Apr 2022 14:27:20 GMT
+      etag:
+      - '"0700bfb0-0000-3400-0000-624c51ae0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - scvmm vm update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --cpu-count --dynamic-memory-enabled --tags
+      User-Agent:
+      - AZURECLI/2.31.0 azsdk-python-mgmt-scvmm/1.0.0b1 Python/3.10.0 (Linux-5.13.0-28-generic-x86_64-with-glibc2.31)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.ScVmm/locations/EASTUS2EUAP/operationStatuses/7de487b3-e950-403d-ae0f-7380fac2f70f*2A1B91730DFF216246896099A6CC078F1AE10B5EE4CF4D09873D40CAF26B8F12?api-version=2020-06-05-preview
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.ScVmm/locations/EASTUS2EUAP/operationStatuses/7de487b3-e950-403d-ae0f-7380fac2f70f*2A1B91730DFF216246896099A6CC078F1AE10B5EE4CF4D09873D40CAF26B8F12","name":"7de487b3-e950-403d-ae0f-7380fac2f70f*2A1B91730DFF216246896099A6CC078F1AE10B5EE4CF4D09873D40CAF26B8F12","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aadk8test/providers/Microsoft.ScVmm/virtualMachines/arcvmm-azcli-test-vm-1","status":"Succeeded","startTime":"2022-04-05T14:26:46.9782407Z","endTime":"2022-04-05T14:27:32.0469289Z","error":{},"properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '579'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 05 Apr 2022 14:27:50 GMT
+      etag:
+      - '"0700cab0-0000-3400-0000-624c51d40000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - scvmm vm update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --cpu-count --dynamic-memory-enabled --tags
+      User-Agent:
+      - AZURECLI/2.31.0 azsdk-python-mgmt-scvmm/1.0.0b1 Python/3.10.0 (Linux-5.13.0-28-generic-x86_64-with-glibc2.31)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aadk8test/providers/Microsoft.ScVmm/virtualMachines/arcvmm-azcli-test-vm-1?api-version=2020-06-05-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aadk8test/providers/Microsoft.ScVmm/virtualMachines/arcvmm-azcli-test-vm-1","name":"arcvmm-azcli-test-vm-1","type":"microsoft.scvmm/virtualmachines","location":"eastus2euap","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aadk8test/providers/Microsoft.ExtendedLocation/customLocations/arcvmm-azcli-test-cl","type":"customLocation"},"tags":{"client":"azcli"},"systemData":{"createdBy":"snaskar@microsoft.com","createdByType":"User","createdAt":"2022-04-05T14:25:07.6128963Z","lastModifiedBy":"319f651f-7ddb-4fc6-9857-7aef9250bd05","lastModifiedByType":"Application","lastModifiedAt":"2022-04-05T14:27:33.5251828Z"},"properties":{"cloudId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aadk8test/providers/Microsoft.ScVmm/clouds/arcvmm-azcli-test-cloud-qos","templateId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aadk8test/providers/Microsoft.ScVmm/virtualMachineTemplates/arcvmm-azcli-test-vmt-minion","availabilitySets":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aadk8test/providers/Microsoft.ScVmm/availabilitySets/arcvmm-azcli-test-avset1","name":"avset1"}],"networkProfile":{"networkInterfaces":[{"name":"nic_1","displayName":"Network
+        Adapter 1","virtualNetworkId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aadk8test/providers/Microsoft.ScVmm/virtualNetworks/arcvmm-azcli-test-vnet-561","nicId":"11204484-85ff-45ba-871b-40ca5f86ac33","networkName":"19cab3a9-e51d-48ef-9944-2ef6dc5d98a4","ipv4AddressType":"Dynamic","ipv6AddressType":"Dynamic","macAddressType":"Dynamic"}]},"storageProfile":{"disks":[{"displayName":"Blank
+        Disk - 10GB.vhd","diskId":"c4db07c9-8ff7-42af-9965-c091be8ac933","diskSizeGB":0,"maxDiskSizeGB":10,"bus":0,"lun":0,"busType":"IDE","vhdType":"Dynamic","volumeType":"BootAndSystem","vhdFormatType":"VHD","createDiffDisk":"false"},{"name":"disk_1","displayName":"arcvmm-azcli-test-vm-1_disk_1","diskId":"644ef4bd-d33d-4bec-adb6-f1498d27b4c3","diskSizeGB":0,"maxDiskSizeGB":2,"bus":0,"lun":0,"busType":"SCSI","vhdType":"Dynamic","volumeType":"None","vhdFormatType":"VHDX","createDiffDisk":"false"}]},"osProfile":{"osType":"Other","osName":"Unknown"},"hardwareProfile":{"limitCpuForMigration":"false","dynamicMemoryEnabled":"true","isHighlyAvailable":"false","memoryMB":32,"cpuCount":2,"dynamicMemoryMaxMB":32,"dynamicMemoryMinMB":32},"checkpoints":[],"vmmServerId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aadk8test/providers/Microsoft.ScVmm/vmmServers/arcvmm-azcli-test-vmmserver","uuid":"377c0252-f0e6-45ca-8239-d39acc86eee5","powerState":"Stopped","generation":1,"checkpointType":"Production","provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2804'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 05 Apr 2022 14:27:50 GMT
+      etag:
+      - '"0a00d0f9-0000-3400-0000-624c51d50000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - scvmm vm disk show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --vm-name -n
+      User-Agent:
+      - AZURECLI/2.31.0 azsdk-python-mgmt-scvmm/1.0.0b1 Python/3.10.0 (Linux-5.13.0-28-generic-x86_64-with-glibc2.31)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aadk8test/providers/Microsoft.ScVmm/virtualMachines/arcvmm-azcli-test-vm-1?api-version=2020-06-05-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aadk8test/providers/Microsoft.ScVmm/virtualMachines/arcvmm-azcli-test-vm-1","name":"arcvmm-azcli-test-vm-1","type":"microsoft.scvmm/virtualmachines","location":"eastus2euap","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aadk8test/providers/Microsoft.ExtendedLocation/customLocations/arcvmm-azcli-test-cl","type":"customLocation"},"tags":{"client":"azcli"},"systemData":{"createdBy":"snaskar@microsoft.com","createdByType":"User","createdAt":"2022-04-05T14:25:07.6128963Z","lastModifiedBy":"319f651f-7ddb-4fc6-9857-7aef9250bd05","lastModifiedByType":"Application","lastModifiedAt":"2022-04-05T14:27:33.5251828Z"},"properties":{"cloudId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aadk8test/providers/Microsoft.ScVmm/clouds/arcvmm-azcli-test-cloud-qos","templateId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aadk8test/providers/Microsoft.ScVmm/virtualMachineTemplates/arcvmm-azcli-test-vmt-minion","availabilitySets":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aadk8test/providers/Microsoft.ScVmm/availabilitySets/arcvmm-azcli-test-avset1","name":"avset1"}],"networkProfile":{"networkInterfaces":[{"name":"nic_1","displayName":"Network
+        Adapter 1","virtualNetworkId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aadk8test/providers/Microsoft.ScVmm/virtualNetworks/arcvmm-azcli-test-vnet-561","nicId":"11204484-85ff-45ba-871b-40ca5f86ac33","networkName":"19cab3a9-e51d-48ef-9944-2ef6dc5d98a4","ipv4AddressType":"Dynamic","ipv6AddressType":"Dynamic","macAddressType":"Dynamic"}]},"storageProfile":{"disks":[{"displayName":"Blank
+        Disk - 10GB.vhd","diskId":"c4db07c9-8ff7-42af-9965-c091be8ac933","diskSizeGB":0,"maxDiskSizeGB":10,"bus":0,"lun":0,"busType":"IDE","vhdType":"Dynamic","volumeType":"BootAndSystem","vhdFormatType":"VHD","createDiffDisk":"false"},{"name":"disk_1","displayName":"arcvmm-azcli-test-vm-1_disk_1","diskId":"644ef4bd-d33d-4bec-adb6-f1498d27b4c3","diskSizeGB":0,"maxDiskSizeGB":2,"bus":0,"lun":0,"busType":"SCSI","vhdType":"Dynamic","volumeType":"None","vhdFormatType":"VHDX","createDiffDisk":"false"}]},"osProfile":{"osType":"Other","osName":"Unknown"},"hardwareProfile":{"limitCpuForMigration":"false","dynamicMemoryEnabled":"true","isHighlyAvailable":"false","memoryMB":32,"cpuCount":2,"dynamicMemoryMaxMB":32,"dynamicMemoryMinMB":32},"checkpoints":[],"vmmServerId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aadk8test/providers/Microsoft.ScVmm/vmmServers/arcvmm-azcli-test-vmmserver","uuid":"377c0252-f0e6-45ca-8239-d39acc86eee5","powerState":"Stopped","generation":1,"checkpointType":"Production","provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2804'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 05 Apr 2022 14:27:51 GMT
+      etag:
+      - '"0a00d0f9-0000-3400-0000-624c51d50000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - scvmm vm nic show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --vm-name -n
+      User-Agent:
+      - AZURECLI/2.31.0 azsdk-python-mgmt-scvmm/1.0.0b1 Python/3.10.0 (Linux-5.13.0-28-generic-x86_64-with-glibc2.31)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aadk8test/providers/Microsoft.ScVmm/virtualMachines/arcvmm-azcli-test-vm-1?api-version=2020-06-05-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aadk8test/providers/Microsoft.ScVmm/virtualMachines/arcvmm-azcli-test-vm-1","name":"arcvmm-azcli-test-vm-1","type":"microsoft.scvmm/virtualmachines","location":"eastus2euap","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aadk8test/providers/Microsoft.ExtendedLocation/customLocations/arcvmm-azcli-test-cl","type":"customLocation"},"tags":{"client":"azcli"},"systemData":{"createdBy":"snaskar@microsoft.com","createdByType":"User","createdAt":"2022-04-05T14:25:07.6128963Z","lastModifiedBy":"319f651f-7ddb-4fc6-9857-7aef9250bd05","lastModifiedByType":"Application","lastModifiedAt":"2022-04-05T14:27:33.5251828Z"},"properties":{"cloudId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aadk8test/providers/Microsoft.ScVmm/clouds/arcvmm-azcli-test-cloud-qos","templateId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aadk8test/providers/Microsoft.ScVmm/virtualMachineTemplates/arcvmm-azcli-test-vmt-minion","availabilitySets":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aadk8test/providers/Microsoft.ScVmm/availabilitySets/arcvmm-azcli-test-avset1","name":"avset1"}],"networkProfile":{"networkInterfaces":[{"name":"nic_1","displayName":"Network
+        Adapter 1","virtualNetworkId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aadk8test/providers/Microsoft.ScVmm/virtualNetworks/arcvmm-azcli-test-vnet-561","nicId":"11204484-85ff-45ba-871b-40ca5f86ac33","networkName":"19cab3a9-e51d-48ef-9944-2ef6dc5d98a4","ipv4AddressType":"Dynamic","ipv6AddressType":"Dynamic","macAddressType":"Dynamic"}]},"storageProfile":{"disks":[{"displayName":"Blank
+        Disk - 10GB.vhd","diskId":"c4db07c9-8ff7-42af-9965-c091be8ac933","diskSizeGB":0,"maxDiskSizeGB":10,"bus":0,"lun":0,"busType":"IDE","vhdType":"Dynamic","volumeType":"BootAndSystem","vhdFormatType":"VHD","createDiffDisk":"false"},{"name":"disk_1","displayName":"arcvmm-azcli-test-vm-1_disk_1","diskId":"644ef4bd-d33d-4bec-adb6-f1498d27b4c3","diskSizeGB":0,"maxDiskSizeGB":2,"bus":0,"lun":0,"busType":"SCSI","vhdType":"Dynamic","volumeType":"None","vhdFormatType":"VHDX","createDiffDisk":"false"}]},"osProfile":{"osType":"Other","osName":"Unknown"},"hardwareProfile":{"limitCpuForMigration":"false","dynamicMemoryEnabled":"true","isHighlyAvailable":"false","memoryMB":32,"cpuCount":2,"dynamicMemoryMaxMB":32,"dynamicMemoryMinMB":32},"checkpoints":[],"vmmServerId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aadk8test/providers/Microsoft.ScVmm/vmmServers/arcvmm-azcli-test-vmmserver","uuid":"377c0252-f0e6-45ca-8239-d39acc86eee5","powerState":"Stopped","generation":1,"checkpointType":"Production","provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2804'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 05 Apr 2022 14:27:53 GMT
+      etag:
+      - '"0a00d0f9-0000-3400-0000-624c51d50000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - scvmm vm start
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -g --name
+      User-Agent:
+      - AZURECLI/2.31.0 azsdk-python-mgmt-scvmm/1.0.0b1 Python/3.10.0 (Linux-5.13.0-28-generic-x86_64-with-glibc2.31)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aadk8test/providers/Microsoft.ScVmm/virtualMachines/arcvmm-azcli-test-vm-1/start?api-version=2020-06-05-preview
+  response:
+    body:
+      string: 'null'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/providers/Microsoft.ScVmm/locations/EASTUS2EUAP/operationStatuses/d88ef92a-2aa4-4520-91d1-b2eb556bb5e4*2A1B91730DFF216246896099A6CC078F1AE10B5EE4CF4D09873D40CAF26B8F12?api-version=2020-06-05-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '4'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 05 Apr 2022 14:27:54 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/providers/Microsoft.ScVmm/locations/EASTUS2EUAP/operationStatuses/d88ef92a-2aa4-4520-91d1-b2eb556bb5e4*2A1B91730DFF216246896099A6CC078F1AE10B5EE4CF4D09873D40CAF26B8F12?api-version=2020-06-05-preview
+      mise-correlation-id:
+      - d8beb3fa-62d1-4601-a413-8fa201510fe8
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - scvmm vm start
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --name
+      User-Agent:
+      - AZURECLI/2.31.0 azsdk-python-mgmt-scvmm/1.0.0b1 Python/3.10.0 (Linux-5.13.0-28-generic-x86_64-with-glibc2.31)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.ScVmm/locations/EASTUS2EUAP/operationStatuses/d88ef92a-2aa4-4520-91d1-b2eb556bb5e4*2A1B91730DFF216246896099A6CC078F1AE10B5EE4CF4D09873D40CAF26B8F12?api-version=2020-06-05-preview
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.ScVmm/locations/EASTUS2EUAP/operationStatuses/d88ef92a-2aa4-4520-91d1-b2eb556bb5e4*2A1B91730DFF216246896099A6CC078F1AE10B5EE4CF4D09873D40CAF26B8F12","name":"d88ef92a-2aa4-4520-91d1-b2eb556bb5e4*2A1B91730DFF216246896099A6CC078F1AE10B5EE4CF4D09873D40CAF26B8F12","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aadk8test/providers/Microsoft.ScVmm/virtualMachines/arcvmm-azcli-test-vm-1","status":"InProgress","startTime":"2022-04-05T14:27:55.0218353Z","error":{}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '521'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 05 Apr 2022 14:28:25 GMT
+      etag:
+      - '"0700d3b0-0000-3400-0000-624c51f30000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - scvmm vm start
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --name
+      User-Agent:
+      - AZURECLI/2.31.0 azsdk-python-mgmt-scvmm/1.0.0b1 Python/3.10.0 (Linux-5.13.0-28-generic-x86_64-with-glibc2.31)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.ScVmm/locations/EASTUS2EUAP/operationStatuses/d88ef92a-2aa4-4520-91d1-b2eb556bb5e4*2A1B91730DFF216246896099A6CC078F1AE10B5EE4CF4D09873D40CAF26B8F12?api-version=2020-06-05-preview
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.ScVmm/locations/EASTUS2EUAP/operationStatuses/d88ef92a-2aa4-4520-91d1-b2eb556bb5e4*2A1B91730DFF216246896099A6CC078F1AE10B5EE4CF4D09873D40CAF26B8F12","name":"d88ef92a-2aa4-4520-91d1-b2eb556bb5e4*2A1B91730DFF216246896099A6CC078F1AE10B5EE4CF4D09873D40CAF26B8F12","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aadk8test/providers/Microsoft.ScVmm/virtualMachines/arcvmm-azcli-test-vm-1","status":"Succeeded","startTime":"2022-04-05T14:27:55.0218353Z","endTime":"2022-04-05T14:28:31.2367437Z","error":{},"properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '579'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 05 Apr 2022 14:28:55 GMT
+      etag:
+      - '"0700dbb0-0000-3400-0000-624c520f0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - scvmm vm start
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --name
+      User-Agent:
+      - AZURECLI/2.31.0 azsdk-python-mgmt-scvmm/1.0.0b1 Python/3.10.0 (Linux-5.13.0-28-generic-x86_64-with-glibc2.31)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.ScVmm/locations/EASTUS2EUAP/operationStatuses/d88ef92a-2aa4-4520-91d1-b2eb556bb5e4*2A1B91730DFF216246896099A6CC078F1AE10B5EE4CF4D09873D40CAF26B8F12?api-version=2020-06-05-preview
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.ScVmm/locations/EASTUS2EUAP/operationStatuses/d88ef92a-2aa4-4520-91d1-b2eb556bb5e4*2A1B91730DFF216246896099A6CC078F1AE10B5EE4CF4D09873D40CAF26B8F12","name":"d88ef92a-2aa4-4520-91d1-b2eb556bb5e4*2A1B91730DFF216246896099A6CC078F1AE10B5EE4CF4D09873D40CAF26B8F12","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aadk8test/providers/Microsoft.ScVmm/virtualMachines/arcvmm-azcli-test-vm-1","status":"Succeeded","startTime":"2022-04-05T14:27:55.0218353Z","endTime":"2022-04-05T14:28:31.2367437Z","error":{},"properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '579'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 05 Apr 2022 14:28:55 GMT
+      etag:
+      - '"0700dbb0-0000-3400-0000-624c520f0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"skipShutdown": true}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - scvmm vm stop
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '22'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g --name --skip-shutdown
+      User-Agent:
+      - AZURECLI/2.31.0 azsdk-python-mgmt-scvmm/1.0.0b1 Python/3.10.0 (Linux-5.13.0-28-generic-x86_64-with-glibc2.31)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aadk8test/providers/Microsoft.ScVmm/virtualMachines/arcvmm-azcli-test-vm-1/stop?api-version=2020-06-05-preview
+  response:
+    body:
+      string: 'null'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/providers/Microsoft.ScVmm/locations/EASTUS2EUAP/operationStatuses/66a9706f-376f-4f3d-a332-352e48435adf*2A1B91730DFF216246896099A6CC078F1AE10B5EE4CF4D09873D40CAF26B8F12?api-version=2020-06-05-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '4'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 05 Apr 2022 14:28:57 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/providers/Microsoft.ScVmm/locations/EASTUS2EUAP/operationStatuses/66a9706f-376f-4f3d-a332-352e48435adf*2A1B91730DFF216246896099A6CC078F1AE10B5EE4CF4D09873D40CAF26B8F12?api-version=2020-06-05-preview
+      mise-correlation-id:
+      - b89409d0-51fa-49dd-85ea-361f6fd561b6
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - scvmm vm stop
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --name --skip-shutdown
+      User-Agent:
+      - AZURECLI/2.31.0 azsdk-python-mgmt-scvmm/1.0.0b1 Python/3.10.0 (Linux-5.13.0-28-generic-x86_64-with-glibc2.31)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.ScVmm/locations/EASTUS2EUAP/operationStatuses/66a9706f-376f-4f3d-a332-352e48435adf*2A1B91730DFF216246896099A6CC078F1AE10B5EE4CF4D09873D40CAF26B8F12?api-version=2020-06-05-preview
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.ScVmm/locations/EASTUS2EUAP/operationStatuses/66a9706f-376f-4f3d-a332-352e48435adf*2A1B91730DFF216246896099A6CC078F1AE10B5EE4CF4D09873D40CAF26B8F12","name":"66a9706f-376f-4f3d-a332-352e48435adf*2A1B91730DFF216246896099A6CC078F1AE10B5EE4CF4D09873D40CAF26B8F12","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aadk8test/providers/Microsoft.ScVmm/virtualMachines/arcvmm-azcli-test-vm-1","status":"InProgress","startTime":"2022-04-05T14:28:57.7849806Z","error":{}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '521'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 05 Apr 2022 14:29:27 GMT
+      etag:
+      - '"0700e7b0-0000-3400-0000-624c522f0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - scvmm vm stop
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --name --skip-shutdown
+      User-Agent:
+      - AZURECLI/2.31.0 azsdk-python-mgmt-scvmm/1.0.0b1 Python/3.10.0 (Linux-5.13.0-28-generic-x86_64-with-glibc2.31)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.ScVmm/locations/EASTUS2EUAP/operationStatuses/66a9706f-376f-4f3d-a332-352e48435adf*2A1B91730DFF216246896099A6CC078F1AE10B5EE4CF4D09873D40CAF26B8F12?api-version=2020-06-05-preview
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.ScVmm/locations/EASTUS2EUAP/operationStatuses/66a9706f-376f-4f3d-a332-352e48435adf*2A1B91730DFF216246896099A6CC078F1AE10B5EE4CF4D09873D40CAF26B8F12","name":"66a9706f-376f-4f3d-a332-352e48435adf*2A1B91730DFF216246896099A6CC078F1AE10B5EE4CF4D09873D40CAF26B8F12","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aadk8test/providers/Microsoft.ScVmm/virtualMachines/arcvmm-azcli-test-vm-1","status":"Succeeded","startTime":"2022-04-05T14:28:57.7849806Z","endTime":"2022-04-05T14:29:30.1273503Z","error":{},"properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '579'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 05 Apr 2022 14:29:58 GMT
+      etag:
+      - '"0700edb0-0000-3400-0000-624c524a0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - scvmm vm stop
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --name --skip-shutdown
+      User-Agent:
+      - AZURECLI/2.31.0 azsdk-python-mgmt-scvmm/1.0.0b1 Python/3.10.0 (Linux-5.13.0-28-generic-x86_64-with-glibc2.31)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.ScVmm/locations/EASTUS2EUAP/operationStatuses/66a9706f-376f-4f3d-a332-352e48435adf*2A1B91730DFF216246896099A6CC078F1AE10B5EE4CF4D09873D40CAF26B8F12?api-version=2020-06-05-preview
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.ScVmm/locations/EASTUS2EUAP/operationStatuses/66a9706f-376f-4f3d-a332-352e48435adf*2A1B91730DFF216246896099A6CC078F1AE10B5EE4CF4D09873D40CAF26B8F12","name":"66a9706f-376f-4f3d-a332-352e48435adf*2A1B91730DFF216246896099A6CC078F1AE10B5EE4CF4D09873D40CAF26B8F12","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aadk8test/providers/Microsoft.ScVmm/virtualMachines/arcvmm-azcli-test-vm-1","status":"Succeeded","startTime":"2022-04-05T14:28:57.7849806Z","endTime":"2022-04-05T14:29:30.1273503Z","error":{},"properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '579'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 05 Apr 2022 14:29:58 GMT
+      etag:
+      - '"0700edb0-0000-3400-0000-624c524a0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - scvmm vm delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -g --name -y
+      User-Agent:
+      - AZURECLI/2.31.0 azsdk-python-mgmt-scvmm/1.0.0b1 Python/3.10.0 (Linux-5.13.0-28-generic-x86_64-with-glibc2.31)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aadk8test/providers/Microsoft.ScVmm/virtualMachines/arcvmm-azcli-test-vm-1?api-version=2020-06-05-preview
+  response:
+    body:
+      string: 'null'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/providers/Microsoft.ScVmm/locations/EASTUS2EUAP/operationStatuses/63e736dc-319d-459f-a7c6-abcd221cd07f*2A1B91730DFF216246896099A6CC078F1AE10B5EE4CF4D09873D40CAF26B8F12?api-version=2020-06-05-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '4'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 05 Apr 2022 14:30:00 GMT
+      etag:
+      - '"0a00fcf9-0000-3400-0000-624c52690000"'
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/providers/Microsoft.ScVmm/locations/EASTUS2EUAP/operationStatuses/63e736dc-319d-459f-a7c6-abcd221cd07f*2A1B91730DFF216246896099A6CC078F1AE10B5EE4CF4D09873D40CAF26B8F12?api-version=2020-06-05-preview
+      mise-correlation-id:
+      - 28dc778a-1b98-4342-a445-58a5986a5752
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14999'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - scvmm vm delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --name -y
+      User-Agent:
+      - AZURECLI/2.31.0 azsdk-python-mgmt-scvmm/1.0.0b1 Python/3.10.0 (Linux-5.13.0-28-generic-x86_64-with-glibc2.31)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.ScVmm/locations/EASTUS2EUAP/operationStatuses/63e736dc-319d-459f-a7c6-abcd221cd07f*2A1B91730DFF216246896099A6CC078F1AE10B5EE4CF4D09873D40CAF26B8F12?api-version=2020-06-05-preview
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.ScVmm/locations/EASTUS2EUAP/operationStatuses/63e736dc-319d-459f-a7c6-abcd221cd07f*2A1B91730DFF216246896099A6CC078F1AE10B5EE4CF4D09873D40CAF26B8F12","name":"63e736dc-319d-459f-a7c6-abcd221cd07f*2A1B91730DFF216246896099A6CC078F1AE10B5EE4CF4D09873D40CAF26B8F12","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aadk8test/providers/Microsoft.ScVmm/virtualMachines/arcvmm-azcli-test-vm-1","status":"Deleting","startTime":"2022-04-05T14:30:00.8627835Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '508'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 05 Apr 2022 14:30:31 GMT
+      etag:
+      - '"0700fab0-0000-3400-0000-624c52700000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - scvmm vm delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --name -y
+      User-Agent:
+      - AZURECLI/2.31.0 azsdk-python-mgmt-scvmm/1.0.0b1 Python/3.10.0 (Linux-5.13.0-28-generic-x86_64-with-glibc2.31)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.ScVmm/locations/EASTUS2EUAP/operationStatuses/63e736dc-319d-459f-a7c6-abcd221cd07f*2A1B91730DFF216246896099A6CC078F1AE10B5EE4CF4D09873D40CAF26B8F12?api-version=2020-06-05-preview
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.ScVmm/locations/EASTUS2EUAP/operationStatuses/63e736dc-319d-459f-a7c6-abcd221cd07f*2A1B91730DFF216246896099A6CC078F1AE10B5EE4CF4D09873D40CAF26B8F12","name":"63e736dc-319d-459f-a7c6-abcd221cd07f*2A1B91730DFF216246896099A6CC078F1AE10B5EE4CF4D09873D40CAF26B8F12","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aadk8test/providers/Microsoft.ScVmm/virtualMachines/arcvmm-azcli-test-vm-1","status":"Succeeded","startTime":"2022-04-05T14:30:00.8627835Z","endTime":"2022-04-05T14:30:47.5648538Z","properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '568'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 05 Apr 2022 14:31:00 GMT
+      etag:
+      - '"07000bb1-0000-3400-0000-624c52970000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - scvmm avset delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -g --name -y
+      User-Agent:
+      - AZURECLI/2.31.0 azsdk-python-mgmt-scvmm/1.0.0b1 Python/3.10.0 (Linux-5.13.0-28-generic-x86_64-with-glibc2.31)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aadk8test/providers/Microsoft.ScVmm/availabilitySets/arcvmm-azcli-test-avset1?api-version=2020-06-05-preview
+  response:
+    body:
+      string: 'null'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/providers/Microsoft.ScVmm/locations/EASTUS2EUAP/operationStatuses/808b8954-7971-4845-a3d3-7cb14bbd2203*CA70B4D15B8EC5C2594E080EC48999CDCC1852601A471074E2D7D73F401F0766?api-version=2020-06-05-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '4'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 05 Apr 2022 14:31:06 GMT
+      etag:
+      - '"1200649f-0000-3400-0000-624c52aa0000"'
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/providers/Microsoft.ScVmm/locations/EASTUS2EUAP/operationStatuses/808b8954-7971-4845-a3d3-7cb14bbd2203*CA70B4D15B8EC5C2594E080EC48999CDCC1852601A471074E2D7D73F401F0766?api-version=2020-06-05-preview
+      mise-correlation-id:
+      - c70197a1-a39e-4f2d-aa17-4be1ba6f62fc
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14999'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - scvmm avset delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --name -y
+      User-Agent:
+      - AZURECLI/2.31.0 azsdk-python-mgmt-scvmm/1.0.0b1 Python/3.10.0 (Linux-5.13.0-28-generic-x86_64-with-glibc2.31)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.ScVmm/locations/EASTUS2EUAP/operationStatuses/808b8954-7971-4845-a3d3-7cb14bbd2203*CA70B4D15B8EC5C2594E080EC48999CDCC1852601A471074E2D7D73F401F0766?api-version=2020-06-05-preview
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.ScVmm/locations/EASTUS2EUAP/operationStatuses/808b8954-7971-4845-a3d3-7cb14bbd2203*CA70B4D15B8EC5C2594E080EC48999CDCC1852601A471074E2D7D73F401F0766","name":"808b8954-7971-4845-a3d3-7cb14bbd2203*CA70B4D15B8EC5C2594E080EC48999CDCC1852601A471074E2D7D73F401F0766","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aadk8test/providers/Microsoft.ScVmm/availabilitySets/arcvmm-azcli-test-avset1","status":"Succeeded","startTime":"2022-04-05T14:31:06.1714166Z","endTime":"2022-04-05T14:31:11.8350103Z","properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '571'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 05 Apr 2022 14:31:36 GMT
+      etag:
+      - '"070012b1-0000-3400-0000-624c52af0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - scvmm virtual-network delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -g --name -y
+      User-Agent:
+      - AZURECLI/2.31.0 azsdk-python-mgmt-scvmm/1.0.0b1 Python/3.10.0 (Linux-5.13.0-28-generic-x86_64-with-glibc2.31)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aadk8test/providers/Microsoft.ScVmm/virtualNetworks/arcvmm-azcli-test-vnet-561?api-version=2020-06-05-preview
+  response:
+    body:
+      string: 'null'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/providers/Microsoft.ScVmm/locations/EASTUS2EUAP/operationStatuses/c67bb15e-a275-4a64-a7af-cf5bde18e2f4*5185FDB71673A180F0D01735B380CC0EC9FFF83AD49A4CB5B88F8B4CB2B58AEB?api-version=2020-06-05-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '4'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 05 Apr 2022 14:31:39 GMT
+      etag:
+      - '"0200c419-0000-3400-0000-624c52cc0000"'
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/providers/Microsoft.ScVmm/locations/EASTUS2EUAP/operationStatuses/c67bb15e-a275-4a64-a7af-cf5bde18e2f4*5185FDB71673A180F0D01735B380CC0EC9FFF83AD49A4CB5B88F8B4CB2B58AEB?api-version=2020-06-05-preview
+      mise-correlation-id:
+      - 28f55fc1-0053-4317-9c1c-6e5978ad504b
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14999'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - scvmm virtual-network delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --name -y
+      User-Agent:
+      - AZURECLI/2.31.0 azsdk-python-mgmt-scvmm/1.0.0b1 Python/3.10.0 (Linux-5.13.0-28-generic-x86_64-with-glibc2.31)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.ScVmm/locations/EASTUS2EUAP/operationStatuses/c67bb15e-a275-4a64-a7af-cf5bde18e2f4*5185FDB71673A180F0D01735B380CC0EC9FFF83AD49A4CB5B88F8B4CB2B58AEB?api-version=2020-06-05-preview
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.ScVmm/locations/EASTUS2EUAP/operationStatuses/c67bb15e-a275-4a64-a7af-cf5bde18e2f4*5185FDB71673A180F0D01735B380CC0EC9FFF83AD49A4CB5B88F8B4CB2B58AEB","name":"c67bb15e-a275-4a64-a7af-cf5bde18e2f4*5185FDB71673A180F0D01735B380CC0EC9FFF83AD49A4CB5B88F8B4CB2B58AEB","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aadk8test/providers/Microsoft.ScVmm/virtualNetworks/arcvmm-azcli-test-vnet-561","status":"Succeeded","startTime":"2022-04-05T14:31:39.8448862Z","endTime":"2022-04-05T14:31:49.0503937Z","properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '572'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 05 Apr 2022 14:32:10 GMT
+      etag:
+      - '"070020b1-0000-3400-0000-624c52d50000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - scvmm vm-template delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -g --name -y
+      User-Agent:
+      - AZURECLI/2.31.0 azsdk-python-mgmt-scvmm/1.0.0b1 Python/3.10.0 (Linux-5.13.0-28-generic-x86_64-with-glibc2.31)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aadk8test/providers/Microsoft.ScVmm/virtualMachineTemplates/arcvmm-azcli-test-vmt-minion?api-version=2020-06-05-preview
+  response:
+    body:
+      string: 'null'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/providers/Microsoft.ScVmm/locations/EASTUS2EUAP/operationStatuses/1b99b1d1-0499-4711-93bb-26720463a456*07D501074EA68410A305106B55ECB6B53617534DD52A1D88F39AA1113A711D69?api-version=2020-06-05-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '4'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 05 Apr 2022 14:32:15 GMT
+      etag:
+      - '"030092d0-0000-3400-0000-624c52ef0000"'
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/providers/Microsoft.ScVmm/locations/EASTUS2EUAP/operationStatuses/1b99b1d1-0499-4711-93bb-26720463a456*07D501074EA68410A305106B55ECB6B53617534DD52A1D88F39AA1113A711D69?api-version=2020-06-05-preview
+      mise-correlation-id:
+      - f0204faa-7aa5-4b8e-a410-ce1166a7c3a2
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14999'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - scvmm vm-template delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --name -y
+      User-Agent:
+      - AZURECLI/2.31.0 azsdk-python-mgmt-scvmm/1.0.0b1 Python/3.10.0 (Linux-5.13.0-28-generic-x86_64-with-glibc2.31)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.ScVmm/locations/EASTUS2EUAP/operationStatuses/1b99b1d1-0499-4711-93bb-26720463a456*07D501074EA68410A305106B55ECB6B53617534DD52A1D88F39AA1113A711D69?api-version=2020-06-05-preview
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.ScVmm/locations/EASTUS2EUAP/operationStatuses/1b99b1d1-0499-4711-93bb-26720463a456*07D501074EA68410A305106B55ECB6B53617534DD52A1D88F39AA1113A711D69","name":"1b99b1d1-0499-4711-93bb-26720463a456*07D501074EA68410A305106B55ECB6B53617534DD52A1D88F39AA1113A711D69","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aadk8test/providers/Microsoft.ScVmm/virtualMachineTemplates/arcvmm-azcli-test-vmt-minion","status":"Succeeded","startTime":"2022-04-05T14:32:15.7178176Z","endTime":"2022-04-05T14:32:24.5176699Z","properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '582'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 05 Apr 2022 14:32:46 GMT
+      etag:
+      - '"07002bb1-0000-3400-0000-624c52f80000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - scvmm cloud delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -g --name -y
+      User-Agent:
+      - AZURECLI/2.31.0 azsdk-python-mgmt-scvmm/1.0.0b1 Python/3.10.0 (Linux-5.13.0-28-generic-x86_64-with-glibc2.31)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aadk8test/providers/Microsoft.ScVmm/clouds/arcvmm-azcli-test-cloud-qos?api-version=2020-06-05-preview
+  response:
+    body:
+      string: 'null'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/providers/Microsoft.ScVmm/locations/EASTUS2EUAP/operationStatuses/645683d5-de9a-446a-8668-f4a696344f93*00D351E59CE5C7BAE560A23B7CE642CA874C04DCED48ADC36D03FDA88ED2B68E?api-version=2020-06-05-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '4'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 05 Apr 2022 14:32:47 GMT
+      etag:
+      - '"0f004ad5-0000-3400-0000-624c53100000"'
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/providers/Microsoft.ScVmm/locations/EASTUS2EUAP/operationStatuses/645683d5-de9a-446a-8668-f4a696344f93*00D351E59CE5C7BAE560A23B7CE642CA874C04DCED48ADC36D03FDA88ED2B68E?api-version=2020-06-05-preview
+      mise-correlation-id:
+      - 591e0b49-a49b-4ed7-8be7-03a37168b625
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14998'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - scvmm cloud delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --name -y
+      User-Agent:
+      - AZURECLI/2.31.0 azsdk-python-mgmt-scvmm/1.0.0b1 Python/3.10.0 (Linux-5.13.0-28-generic-x86_64-with-glibc2.31)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.ScVmm/locations/EASTUS2EUAP/operationStatuses/645683d5-de9a-446a-8668-f4a696344f93*00D351E59CE5C7BAE560A23B7CE642CA874C04DCED48ADC36D03FDA88ED2B68E?api-version=2020-06-05-preview
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.ScVmm/locations/EASTUS2EUAP/operationStatuses/645683d5-de9a-446a-8668-f4a696344f93*00D351E59CE5C7BAE560A23B7CE642CA874C04DCED48ADC36D03FDA88ED2B68E","name":"645683d5-de9a-446a-8668-f4a696344f93*00D351E59CE5C7BAE560A23B7CE642CA874C04DCED48ADC36D03FDA88ED2B68E","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aadk8test/providers/Microsoft.ScVmm/clouds/arcvmm-azcli-test-cloud-qos","status":"Succeeded","startTime":"2022-04-05T14:32:48.4104554Z","endTime":"2022-04-05T14:32:58.2290062Z","properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '564'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 05 Apr 2022 14:33:18 GMT
+      etag:
+      - '"070036b1-0000-3400-0000-624c531a0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+version: 1

@@ -27,7 +27,7 @@ class DataProtectionClientCommandsLoader(AzCommandsLoader):
         dataprotection_custom = CliCommandType(
             operations_tmpl='azext_dataprotection.custom#{}',
             client_factory=cf_dataprotection_cl)
-        parent = super(DataProtectionClientCommandsLoader, self)
+        parent = super()
         parent.__init__(cli_ctx=cli_ctx, custom_command_type=dataprotection_custom)
 
     def load_command_table(self, args):
@@ -36,11 +36,11 @@ class DataProtectionClientCommandsLoader(AzCommandsLoader):
         try:
             from azext_dataprotection.manual.commands import load_command_table as load_command_table_manual
             load_command_table_manual(self, args)
-        except ImportError as e:
-            if e.name.endswith('manual.commands'):
+        except ImportError as err:
+            if err.name.endswith('manual.commands'):
                 pass
             else:
-                raise e
+                raise err
         return self.command_table
 
     def load_arguments(self, command):
@@ -49,11 +49,11 @@ class DataProtectionClientCommandsLoader(AzCommandsLoader):
         try:
             from azext_dataprotection.manual._params import load_arguments as load_arguments_manual
             load_arguments_manual(self, command)
-        except ImportError as e:
-            if e.name.endswith('manual._params'):
+        except ImportError as err:
+            if err.name.endswith('manual._params'):
                 pass
             else:
-                raise e
+                raise err
 
 
 COMMAND_LOADER_CLS = DataProtectionClientCommandsLoader

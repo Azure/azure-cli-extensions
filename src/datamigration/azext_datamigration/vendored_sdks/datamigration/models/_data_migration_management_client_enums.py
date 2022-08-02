@@ -375,6 +375,7 @@ class ResourceType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
 
     SQL_MI = "SqlMi"
     SQL_VM = "SqlVm"
+    SQL_DB = "SqlDb"
 
 class ScenarioSource(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """An enumeration of source type
@@ -436,6 +437,7 @@ class ServerLevelPermissionsGroup(with_metaclass(_CaseInsensitiveEnumMeta, str, 
     MIGRATION_FROM_SQL_SERVER_TO_AZURE_DB = "MigrationFromSqlServerToAzureDB"
     MIGRATION_FROM_SQL_SERVER_TO_AZURE_MI = "MigrationFromSqlServerToAzureMI"
     MIGRATION_FROM_MY_SQL_TO_AZURE_DB_FOR_MY_SQL = "MigrationFromMySQLToAzureDBForMySQL"
+    MIGRATION_FROM_SQL_SERVER_TO_AZURE_VM = "MigrationFromSqlServerToAzureVM"
 
 class ServiceProvisioningState(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """The resource's provisioning state

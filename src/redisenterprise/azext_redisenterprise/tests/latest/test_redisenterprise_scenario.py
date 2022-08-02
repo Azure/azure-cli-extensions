@@ -34,85 +34,112 @@ TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 # Env setup_scenario1
 @try_manual
-def setup_scenario1(test, rg):
+def setup_scenario1(test):
     pass
 
 
 # Env cleanup_scenario1
 @try_manual
-def cleanup_scenario1(test, rg):
+def cleanup_scenario1(test):
     pass
 
 
 # Testcase: scenario1
 @try_manual
-def call_scenario1(test, rg):
-    setup_scenario1(test, rg)
-    step_create(test, rg, checks=[])
-    step_show(test, rg, checks=[])
-    step_list(test, rg, checks=[])
-    step_list2(test, rg, checks=[])
-    step_database_show(test, rg, checks=[])
-    step_database_list(test, rg, checks=[])
-    step_database_list_keys(test, rg, checks=[])
-    step_database_regenerate_key(test, rg, checks=[])
-    step_delete(test, rg, checks=[])
-    cleanup_scenario1(test, rg)
+def call_scenario1(test):
+    setup_scenario1(test)
+    step_create(test, checks=[])
+    step_show(test, checks=[])
+    step_list(test, checks=[])
+    step_list2(test, checks=[])
+    step_database_show(test, checks=[])
+    step_database_list(test, checks=[])
+    step_database_list_keys(test, checks=[])
+    step_database_regenerate_key(test, checks=[])
+    step_delete(test, checks=[])
+    cleanup_scenario1(test)
 
 
 # Test class for scenario1
 @try_manual
 class Redisenterprisescenario1Test(ScenarioTest):
-
     def __init__(self, *args, **kwargs):
         super(Redisenterprisescenario1Test, self).__init__(*args, **kwargs)
+        self.kwargs.update({
+            'subscription_id': self.get_subscription_id()
+        })
+
+        self.kwargs.update({
+            'myRedisEnterprise': 'cache1',
+            'myRedisEnterprise2': 'cache2',
+            'myDatabas': 'default',
+        })
 
     @ResourceGroupPreparer(name_prefix='clitestredisenterprise_rg1'[:7], key='rg', parameter_name='rg')
-    def test_redisenterprise_scenario1(self, rg):
-        call_scenario1(self, rg)
+    @ResourceGroupPreparer(name_prefix='clitestredisenterprise_rg2'[:7], key='rg_2', parameter_name='rg_2')
+    def test_redisenterprise_scenario1(self, rg, rg_2):
+        call_scenario1(self)
         calc_coverage(__file__)
         raise_if()
 
-
 # Env setup_scenario2
 @try_manual
-def setup_scenario2(test, rg):
+def setup_scenario2(test):
     pass
 
 
 # Env cleanup_scenario2
 @try_manual
-def cleanup_scenario2(test, rg):
+def cleanup_scenario2(test):
     pass
 
 
 # Testcase: scenario2
 @try_manual
-def call_scenario2(test, rg):
-    setup_scenario2(test, rg)
-    step_create(test, rg, checks=[])
-    step_show(test, rg, checks=[])
-    step_list(test, rg, checks=[])
-    step_list2(test, rg, checks=[])
-    step_database_create(test, rg, checks=[])
-    step_database_show(test, rg, checks=[])
-    step_database_list(test, rg, checks=[])
-    step_database_list_keys(test, rg, checks=[])
-    step_database_regenerate_key(test, rg, checks=[])
-    step_database_delete(test, rg, checks=[])
-    step_delete(test, rg, checks=[])
-    cleanup_scenario2(test, rg)
+def call_scenario2(test):
+    setup_scenario2(test)
+    step_create(test, checks=[])
+    step_show(test, checks=[])
+    step_list(test, checks=[])
+    step_list2(test, checks=[])
+    step_database_create(test, checks=[])
+    step_database_show(test, checks=[])
+    step_database_list(test, checks=[])
+    step_database_list_keys(test, checks=[])
+    step_database_regenerate_key(test, checks=[])
+    step_database_delete(test, checks=[])
+    step_delete(test, checks=[])
+    cleanup_scenario2(test)
 
 
 # Test class for scenario2
 @try_manual
 class Redisenterprisescenario2Test(ScenarioTest):
-
     def __init__(self, *args, **kwargs):
         super(Redisenterprisescenario2Test, self).__init__(*args, **kwargs)
+        self.kwargs.update({
+            'subscription_id': self.get_subscription_id()
+        })
+
+        self.kwargs.update({
+            'myRedisEnterprise': 'cache1',
+            'myRedisEnterprise2': 'cache2',
+            'myDatabas': 'default',
+        })
 
     @ResourceGroupPreparer(name_prefix='clitestredisenterprise_rg1'[:7], key='rg', parameter_name='rg')
-    def test_redisenterprise_scenario2(self, rg):
-        call_scenario2(self, rg)
+    @ResourceGroupPreparer(name_prefix='clitestredisenterprise_rg2'[:7], key='rg_2', parameter_name='rg_2')
+    def test_redisenterprise_scenario2(self, rg, rg_2):
+        call_scenario2(self)
         calc_coverage(__file__)
         raise_if()
+
+# Testcase: scenario3
+@try_manual
+def call_scenario3(test):
+    pass
+
+@try_manual
+class Redisenterprisescenario3Test(ScenarioTest):
+    pass
+

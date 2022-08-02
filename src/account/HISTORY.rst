@@ -3,6 +3,10 @@
 Release History
 ===============
 
+0.2.3
++++++
+* GA of `az account alias`: Manage subscription alias.
+
 0.2.2
 +++++
 * Update SDK `azure-mgmt-subscription` version to 3.0.0 and api-version to 2021-10-01.

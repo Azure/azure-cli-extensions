@@ -69,6 +69,8 @@ class SMSResponseReplacerProcessor(RecordingProcessor):
     def process_request(self, request):
         import json
         try:
+            if request.body is None:
+                return request
             body = json.loads(request.body.decode())
             if 'smsRecipients' in body:
                 for item in body["smsRecipients"]:

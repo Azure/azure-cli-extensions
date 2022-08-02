@@ -9,19 +9,105 @@
 # --------------------------------------------------------------------------
 # pylint: disable=too-many-statements
 # pylint: disable=too-many-locals
+# pylint: disable=bad-continuation
+# pylint: disable=line-too-long
 
 from azure.cli.core.commands import CliCommandType
+from azext_healthcareapis.generated._client_factory import (
+    cf_service,
+    cf_private_endpoint_connection,
+    cf_private_link_resource,
+    cf_workspace,
+    cf_dicom_service,
+    cf_iot_connector,
+    cf_fhir_destination,
+    cf_iot_connector_fhir_destination,
+    cf_fhir_service,
+    cf_workspace_private_endpoint_connection,
+    cf_workspace_private_link_resource,
+    cf_operation_result,
+)
+
+
+healthcareapis_operation_result = CliCommandType(
+    operations_tmpl='azext_healthcareapis.vendored_sdks.healthcareapis.operations._operation_results_operations#OperationResultsOperations.{}',
+    client_factory=cf_operation_result,
+)
+
+
+healthcareapis_private_endpoint_connection = CliCommandType(
+    operations_tmpl='azext_healthcareapis.vendored_sdks.healthcareapis.operations._private_endpoint_connections_operations#PrivateEndpointConnectionsOperations.{}',
+    client_factory=cf_private_endpoint_connection,
+)
+
+
+healthcareapis_private_link_resource = CliCommandType(
+    operations_tmpl='azext_healthcareapis.vendored_sdks.healthcareapis.operations._private_link_resources_operations#PrivateLinkResourcesOperations.{}',
+    client_factory=cf_private_link_resource,
+)
+
+
+healthcareapis_service = CliCommandType(
+    operations_tmpl=(
+        'azext_healthcareapis.vendored_sdks.healthcareapis.operations._services_operations#ServicesOperations.{}'
+    ),
+    client_factory=cf_service,
+)
+
+
+healthcareapis_workspace = CliCommandType(
+    operations_tmpl=(
+        'azext_healthcareapis.vendored_sdks.healthcareapis.operations._workspaces_operations#WorkspacesOperations.{}'
+    ),
+    client_factory=cf_workspace,
+)
+
+
+healthcareapis_dicom_service = CliCommandType(
+    operations_tmpl='azext_healthcareapis.vendored_sdks.healthcareapis.operations._dicom_services_operations#DicomServicesOperations.{}',
+    client_factory=cf_dicom_service,
+)
+
+
+healthcareapis_fhir_service = CliCommandType(
+    operations_tmpl='azext_healthcareapis.vendored_sdks.healthcareapis.operations._fhir_services_operations#FhirServicesOperations.{}',
+    client_factory=cf_fhir_service,
+)
+
+
+healthcareapis_iot_connector = CliCommandType(
+    operations_tmpl='azext_healthcareapis.vendored_sdks.healthcareapis.operations._iot_connectors_operations#IotConnectorsOperations.{}',
+    client_factory=cf_iot_connector,
+)
+
+
+healthcareapis_fhir_destination = CliCommandType(
+    operations_tmpl='azext_healthcareapis.vendored_sdks.healthcareapis.operations._fhir_destinations_operations#FhirDestinationsOperations.{}',
+    client_factory=cf_fhir_destination,
+)
+
+
+healthcareapis_iot_connector_fhir_destination = CliCommandType(
+    operations_tmpl='azext_healthcareapis.vendored_sdks.healthcareapis.operations._iot_connector_fhir_destination_operations#IotConnectorFhirDestinationOperations.{}',
+    client_factory=cf_iot_connector_fhir_destination,
+)
+
+
+healthcareapis_workspace_private_endpoint_connection = CliCommandType(
+    operations_tmpl='azext_healthcareapis.vendored_sdks.healthcareapis.operations._workspace_private_endpoint_connections_operations#WorkspacePrivateEndpointConnectionsOperations.{}',
+    client_factory=cf_workspace_private_endpoint_connection,
+)
+
+
+healthcareapis_workspace_private_link_resource = CliCommandType(
+    operations_tmpl='azext_healthcareapis.vendored_sdks.healthcareapis.operations._workspace_private_link_resources_operations#WorkspacePrivateLinkResourcesOperations.{}',
+    client_factory=cf_workspace_private_link_resource,
+)
 
 
 def load_command_table(self, _):
 
-    from azext_healthcareapis.generated._client_factory import cf_service
-    healthcareapis_service = CliCommandType(
-        operations_tmpl='azext_healthcareapis.vendored_sdks.healthcareapis.operations._service_operations#ServiceOperat'
-        'ions.{}',
-        client_factory=cf_service)
-    with self.command_group('healthcareapis service', healthcareapis_service, client_factory=cf_service,
-                            is_experimental=True) as g:
+    with self.command_group('healthcareapis service', healthcareapis_service, client_factory=cf_service) as g:
         g.custom_command('list', 'healthcareapis_service_list')
         g.custom_show_command('show', 'healthcareapis_service_show')
         g.custom_command('create', 'healthcareapis_service_create', supports_no_wait=True)
@@ -29,29 +115,19 @@ def load_command_table(self, _):
         g.custom_command('delete', 'healthcareapis_service_delete', supports_no_wait=True, confirmation=True)
         g.custom_wait_command('wait', 'healthcareapis_service_show')
 
-    with self.command_group('healthcareapis acr', healthcareapis_service, client_factory=cf_service,
-                            is_experimental=True) as g:
+    # save these commands for no breaking change
+    with self.command_group('healthcareapis acr', healthcareapis_service, client_factory=cf_service) as g:
         g.custom_command('list', 'healthcareapis_acr_list')
         g.custom_command('add', 'healthcareapis_acr_add', supports_no_wait=False)
         g.custom_command('reset', 'healthcareapis_acr_reset', supports_no_wait=False)
         g.custom_command('remove', 'healthcareapis_acr_remove', supports_no_wait=False)
 
-    from azext_healthcareapis.generated._client_factory import cf_operation_result
-    healthcareapis_operation_result = CliCommandType(
-        operations_tmpl='azext_healthcareapis.vendored_sdks.healthcareapis.operations._operation_result_operations#Oper'
-        'ationResultOperations.{}',
-        client_factory=cf_operation_result)
     with self.command_group('healthcareapis operation-result', healthcareapis_operation_result,
-                            client_factory=cf_operation_result, is_experimental=True) as g:
+                            client_factory=cf_operation_result) as g:
         g.custom_show_command('show', 'healthcareapis_operation_result_show')
 
-    from azext_healthcareapis.generated._client_factory import cf_private_endpoint_connection
-    healthcareapis_private_endpoint_connection = CliCommandType(
-        operations_tmpl='azext_healthcareapis.vendored_sdks.healthcareapis.operations._private_endpoint_connection_oper'
-        'ations#PrivateEndpointConnectionOperations.{}',
-        client_factory=cf_private_endpoint_connection)
     with self.command_group('healthcareapis private-endpoint-connection', healthcareapis_private_endpoint_connection,
-                            client_factory=cf_private_endpoint_connection, is_experimental=True) as g:
+                            client_factory=cf_private_endpoint_connection) as g:
         g.custom_command('list', 'healthcareapis_private_endpoint_connection_list')
         g.custom_show_command('show', 'healthcareapis_private_endpoint_connection_show')
         g.custom_command('create', 'healthcareapis_private_endpoint_connection_create', supports_no_wait=True)
@@ -60,12 +136,81 @@ def load_command_table(self, _):
                          confirmation=True)
         g.custom_wait_command('wait', 'healthcareapis_private_endpoint_connection_show')
 
-    from azext_healthcareapis.generated._client_factory import cf_private_link_resource
-    healthcareapis_private_link_resource = CliCommandType(
-        operations_tmpl='azext_healthcareapis.vendored_sdks.healthcareapis.operations._private_link_resource_operations'
-        '#PrivateLinkResourceOperations.{}',
-        client_factory=cf_private_link_resource)
     with self.command_group('healthcareapis private-link-resource', healthcareapis_private_link_resource,
-                            client_factory=cf_private_link_resource, is_experimental=True) as g:
+                            client_factory=cf_private_link_resource) as g:
         g.custom_command('list', 'healthcareapis_private_link_resource_list')
         g.custom_show_command('show', 'healthcareapis_private_link_resource_show')
+
+    with self.command_group('healthcareapis workspace', healthcareapis_workspace, client_factory=cf_workspace) as g:
+        g.custom_command('list', 'healthcareapis_workspace_list')
+        g.custom_show_command('show', 'healthcareapis_workspace_show')
+        g.custom_command('create', 'healthcareapis_workspace_create', supports_no_wait=True)
+        g.custom_command('update', 'healthcareapis_workspace_update', supports_no_wait=True)
+        g.custom_command('delete', 'healthcareapis_workspace_delete', supports_no_wait=True, confirmation=True)
+        g.custom_wait_command('wait', 'healthcareapis_workspace_show')
+
+    with self.command_group('healthcareapis workspace dicom-service', healthcareapis_dicom_service,
+                            client_factory=cf_dicom_service) as g:
+        g.custom_command('list', 'healthcareapis_workspace_dicom_service_list')
+        g.custom_show_command('show', 'healthcareapis_workspace_dicom_service_show')
+        g.custom_command('create', 'healthcareapis_workspace_dicom_service_create', supports_no_wait=True)
+        g.custom_command('update', 'healthcareapis_workspace_dicom_service_update', supports_no_wait=True)
+        g.custom_command('delete', 'healthcareapis_workspace_dicom_service_delete',
+                         supports_no_wait=True, confirmation=True)
+        g.custom_wait_command('wait', 'healthcareapis_workspace_dicom_service_show')
+
+    with self.command_group('healthcareapis workspace fhir-service', healthcareapis_fhir_service,
+                            client_factory=cf_fhir_service) as g:
+        g.custom_command('list', 'healthcareapis_workspace_fhir_service_list')
+        g.custom_show_command('show', 'healthcareapis_workspace_fhir_service_show')
+        g.custom_command('create', 'healthcareapis_workspace_fhir_service_create', supports_no_wait=True)
+        g.custom_command('update', 'healthcareapis_workspace_fhir_service_update', supports_no_wait=True)
+        g.custom_command('delete', 'healthcareapis_workspace_fhir_service_delete', supports_no_wait=True,
+                         confirmation=True)
+        g.custom_wait_command('wait', 'healthcareapis_workspace_fhir_service_show')
+
+    with self.command_group('healthcareapis workspace iot-connector', healthcareapis_iot_connector,
+                            client_factory=cf_iot_connector) as g:
+        g.custom_command('list', 'healthcareapis_workspace_iot_connector_list')
+        g.custom_show_command('show', 'healthcareapis_workspace_iot_connector_show')
+        g.custom_command('create', 'healthcareapis_workspace_iot_connector_create', supports_no_wait=True)
+        g.custom_command('update', 'healthcareapis_workspace_iot_connector_update', supports_no_wait=True)
+        g.custom_command('delete', 'healthcareapis_workspace_iot_connector_delete', supports_no_wait=True,
+                         confirmation=True)
+        g.custom_wait_command('wait', 'healthcareapis_workspace_iot_connector_show')
+
+    with self.command_group('healthcareapis workspace iot-connector fhir-destination', healthcareapis_fhir_destination,
+                            client_factory=cf_fhir_destination,) as g:
+        g.custom_command('list', 'healthcareapis_workspace_iot_connector_fhir_destination_list')
+
+    with self.command_group('healthcareapis workspace iot-connector fhir-destination',
+                            healthcareapis_iot_connector_fhir_destination,
+                            client_factory=cf_iot_connector_fhir_destination,) as g:
+        g.custom_show_command('show', 'healthcareapis_workspace_iot_connector_fhir_destination_show')
+        g.custom_command('create', 'healthcareapis_workspace_iot_connector_fhir_destination_create',
+                         supports_no_wait=True)
+        g.generic_update_command('update', supports_no_wait=True,
+                                 custom_func_name='healthcareapis_workspace_iot_connector_fhir_destination_update',
+                                 setter_arg_name='iot_fhir_destination', setter_name='begin_create_or_update')
+        g.custom_command('delete', 'healthcareapis_workspace_iot_connector_fhir_destination_delete',
+                         supports_no_wait=True, confirmation=True)
+        g.custom_wait_command('wait', 'healthcareapis_workspace_iot_connector_fhir_destination_show')
+
+    with self.command_group('healthcareapis workspace private-endpoint-connection',
+                            healthcareapis_workspace_private_endpoint_connection,
+                            client_factory=cf_workspace_private_endpoint_connection) as g:
+        g.custom_command('list', 'healthcareapis_workspace_private_endpoint_connection_list')
+        g.custom_show_command('show', 'healthcareapis_workspace_private_endpoint_connection_show')
+        g.custom_command('create', 'healthcareapis_workspace_private_endpoint_connection_create', supports_no_wait=True)
+        g.generic_update_command('update', supports_no_wait=True,
+                                 custom_func_name='healthcareapis_workspace_private_endpoint_connection_update',
+                                 setter_arg_name='properties', setter_name='begin_create_or_update')
+        g.custom_command('delete', 'healthcareapis_workspace_private_endpoint_connection_delete', supports_no_wait=True,
+                         confirmation=True)
+        g.custom_wait_command('wait', 'healthcareapis_workspace_private_endpoint_connection_show')
+
+    with self.command_group('healthcareapis workspace private-link-resource',
+                            healthcareapis_workspace_private_link_resource,
+                            client_factory=cf_workspace_private_link_resource) as g:
+        g.custom_command('list', 'healthcareapis_workspace_private_link_resource_list')
+        g.custom_show_command('show', 'healthcareapis_workspace_private_link_resource_show')

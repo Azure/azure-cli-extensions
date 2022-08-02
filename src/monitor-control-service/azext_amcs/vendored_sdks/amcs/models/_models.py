@@ -31,6 +31,31 @@ class AzureMonitorMetricsDestination(msrest.serialization.Model):
         self.name = kwargs.get('name', None)
 
 
+class ColumnDefinition(msrest.serialization.Model):
+    """Definition of custom data column.
+
+    :param name: The name of the column.
+    :type name: str
+    :param type: The type of the column data. Possible values include: "string", "int", "long",
+     "real", "boolean", "datetime", "dynamic".
+    :type type: str or ~$(python-base-
+     namespace).v2021_09_01_preview.models.KnownColumnDefinitionType
+    """
+
+    _attribute_map = {
+        'name': {'key': 'name', 'type': 'str'},
+        'type': {'key': 'type', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(ColumnDefinition, self).__init__(**kwargs)
+        self.name = kwargs.get('name', None)
+        self.type = kwargs.get('type', None)
+
+
 class ConfigurationAccessEndpointSpec(msrest.serialization.Model):
     """Definition of the endpoint used for accessing configuration.
 
@@ -66,16 +91,18 @@ class DataCollectionEndpoint(msrest.serialization.Model):
     :param immutable_id: The immutable ID of this data collection endpoint resource. This property
      is READ-ONLY.
     :type immutable_id: str
-    :param configuration_access: The endpoint used by agents to access their configuration.
-    :type configuration_access: ~azure.mgmt.amcs.models.ConfigurationAccessEndpointSpec
+    :param configuration_access: The endpoint used by clients to access their configuration.
+    :type configuration_access: ~$(python-base-
+     namespace).v2021_09_01_preview.models.ConfigurationAccessEndpointSpec
     :param logs_ingestion: The endpoint used by clients to ingest logs.
-    :type logs_ingestion: ~azure.mgmt.amcs.models.LogsIngestionEndpointSpec
+    :type logs_ingestion: ~$(python-base-
+     namespace).v2021_09_01_preview.models.LogsIngestionEndpointSpec
     :param network_acls: Network access control rules for the endpoints.
-    :type network_acls: ~azure.mgmt.amcs.models.NetworkRuleSet
+    :type network_acls: ~$(python-base-namespace).v2021_09_01_preview.models.NetworkRuleSet
     :ivar provisioning_state: The resource provisioning state. This property is READ-ONLY. Possible
      values include: "Creating", "Updating", "Deleting", "Succeeded", "Failed".
-    :vartype provisioning_state: str or
-     ~azure.mgmt.amcs.models.KnownDataCollectionEndpointProvisioningState
+    :vartype provisioning_state: str or ~$(python-base-
+     namespace).v2021_09_01_preview.models.KnownDataCollectionEndpointProvisioningState
     """
 
     _validation = {
@@ -105,7 +132,7 @@ class DataCollectionEndpoint(msrest.serialization.Model):
 
 
 class DataCollectionEndpointConfigurationAccess(ConfigurationAccessEndpointSpec):
-    """The endpoint used by agents to access their configuration.
+    """The endpoint used by clients to access their configuration.
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
@@ -182,7 +209,8 @@ class NetworkRuleSet(msrest.serialization.Model):
 
     :param public_network_access: The configuration to set whether network access from public
      internet to the endpoints are allowed. Possible values include: "Enabled", "Disabled".
-    :type public_network_access: str or ~azure.mgmt.amcs.models.KnownPublicNetworkAccessOptions
+    :type public_network_access: str or ~$(python-base-
+     namespace).v2021_09_01_preview.models.KnownPublicNetworkAccessOptions
     """
 
     _attribute_map = {
@@ -202,7 +230,8 @@ class DataCollectionEndpointNetworkAcls(NetworkRuleSet):
 
     :param public_network_access: The configuration to set whether network access from public
      internet to the endpoints are allowed. Possible values include: "Enabled", "Disabled".
-    :type public_network_access: str or ~azure.mgmt.amcs.models.KnownPublicNetworkAccessOptions
+    :type public_network_access: str or ~$(python-base-
+     namespace).v2021_09_01_preview.models.KnownPublicNetworkAccessOptions
     """
 
     _attribute_map = {
@@ -228,7 +257,8 @@ class DataCollectionEndpointResource(msrest.serialization.Model):
     :param tags: A set of tags. Resource tags.
     :type tags: dict[str, str]
     :param kind: The kind of the resource. Possible values include: "Linux", "Windows".
-    :type kind: str or ~azure.mgmt.amcs.models.KnownDataCollectionEndpointResourceKind
+    :type kind: str or ~$(python-base-
+     namespace).v2021_09_01_preview.models.KnownDataCollectionEndpointResourceKind
     :ivar id: Fully qualified ID of the resource.
     :vartype id: str
     :ivar name: The name of the resource.
@@ -238,22 +268,24 @@ class DataCollectionEndpointResource(msrest.serialization.Model):
     :ivar etag: Resource entity tag (ETag).
     :vartype etag: str
     :ivar system_data: Metadata pertaining to creation and last modification of the resource.
-    :vartype system_data: ~azure.mgmt.amcs.models.SystemData
+    :vartype system_data: ~$(python-base-namespace).v2021_09_01_preview.models.SystemData
     :param description: Description of the data collection endpoint.
     :type description: str
     :param immutable_id: The immutable ID of this data collection endpoint resource. This property
      is READ-ONLY.
     :type immutable_id: str
-    :param configuration_access: The endpoint used by agents to access their configuration.
-    :type configuration_access: ~azure.mgmt.amcs.models.ConfigurationAccessEndpointSpec
+    :param configuration_access: The endpoint used by clients to access their configuration.
+    :type configuration_access: ~$(python-base-
+     namespace).v2021_09_01_preview.models.ConfigurationAccessEndpointSpec
     :param logs_ingestion: The endpoint used by clients to ingest logs.
-    :type logs_ingestion: ~azure.mgmt.amcs.models.LogsIngestionEndpointSpec
+    :type logs_ingestion: ~$(python-base-
+     namespace).v2021_09_01_preview.models.LogsIngestionEndpointSpec
     :param network_acls: Network access control rules for the endpoints.
-    :type network_acls: ~azure.mgmt.amcs.models.NetworkRuleSet
+    :type network_acls: ~$(python-base-namespace).v2021_09_01_preview.models.NetworkRuleSet
     :ivar provisioning_state: The resource provisioning state. This property is READ-ONLY. Possible
      values include: "Creating", "Updating", "Deleting", "Succeeded", "Failed".
-    :vartype provisioning_state: str or
-     ~azure.mgmt.amcs.models.KnownDataCollectionEndpointProvisioningState
+    :vartype provisioning_state: str or ~$(python-base-
+     namespace).v2021_09_01_preview.models.KnownDataCollectionEndpointProvisioningState
     """
 
     _validation = {
@@ -310,7 +342,8 @@ class DataCollectionEndpointResourceListResult(msrest.serialization.Model):
     All required parameters must be populated in order to send to Azure.
 
     :param value: Required. A list of resources.
-    :type value: list[~azure.mgmt.amcs.models.DataCollectionEndpointResource]
+    :type value: list[~$(python-base-
+     namespace).v2021_09_01_preview.models.DataCollectionEndpointResource]
     :param next_link: The URL to use for getting the next set of results.
     :type next_link: str
     """
@@ -343,16 +376,18 @@ class DataCollectionEndpointResourceProperties(DataCollectionEndpoint):
     :param immutable_id: The immutable ID of this data collection endpoint resource. This property
      is READ-ONLY.
     :type immutable_id: str
-    :param configuration_access: The endpoint used by agents to access their configuration.
-    :type configuration_access: ~azure.mgmt.amcs.models.ConfigurationAccessEndpointSpec
+    :param configuration_access: The endpoint used by clients to access their configuration.
+    :type configuration_access: ~$(python-base-
+     namespace).v2021_09_01_preview.models.ConfigurationAccessEndpointSpec
     :param logs_ingestion: The endpoint used by clients to ingest logs.
-    :type logs_ingestion: ~azure.mgmt.amcs.models.LogsIngestionEndpointSpec
+    :type logs_ingestion: ~$(python-base-
+     namespace).v2021_09_01_preview.models.LogsIngestionEndpointSpec
     :param network_acls: Network access control rules for the endpoints.
-    :type network_acls: ~azure.mgmt.amcs.models.NetworkRuleSet
+    :type network_acls: ~$(python-base-namespace).v2021_09_01_preview.models.NetworkRuleSet
     :ivar provisioning_state: The resource provisioning state. This property is READ-ONLY. Possible
      values include: "Creating", "Updating", "Deleting", "Succeeded", "Failed".
-    :vartype provisioning_state: str or
-     ~azure.mgmt.amcs.models.KnownDataCollectionEndpointProvisioningState
+    :vartype provisioning_state: str or ~$(python-base-
+     namespace).v2021_09_01_preview.models.KnownDataCollectionEndpointProvisioningState
     """
 
     _validation = {
@@ -382,14 +417,16 @@ class SystemData(msrest.serialization.Model):
     :type created_by: str
     :param created_by_type: The type of identity that created the resource. Possible values
      include: "User", "Application", "ManagedIdentity", "Key".
-    :type created_by_type: str or ~azure.mgmt.amcs.models.CreatedByType
+    :type created_by_type: str or ~$(python-base-
+     namespace).v2021_09_01_preview.models.CreatedByType
     :param created_at: The timestamp of resource creation (UTC).
     :type created_at: ~datetime.datetime
     :param last_modified_by: The identity that last modified the resource.
     :type last_modified_by: str
     :param last_modified_by_type: The type of identity that last modified the resource. Possible
      values include: "User", "Application", "ManagedIdentity", "Key".
-    :type last_modified_by_type: str or ~azure.mgmt.amcs.models.CreatedByType
+    :type last_modified_by_type: str or ~$(python-base-
+     namespace).v2021_09_01_preview.models.CreatedByType
     :param last_modified_at: The timestamp of resource last modification (UTC).
     :type last_modified_at: ~datetime.datetime
     """
@@ -423,14 +460,16 @@ class DataCollectionEndpointResourceSystemData(SystemData):
     :type created_by: str
     :param created_by_type: The type of identity that created the resource. Possible values
      include: "User", "Application", "ManagedIdentity", "Key".
-    :type created_by_type: str or ~azure.mgmt.amcs.models.CreatedByType
+    :type created_by_type: str or ~$(python-base-
+     namespace).v2021_09_01_preview.models.CreatedByType
     :param created_at: The timestamp of resource creation (UTC).
     :type created_at: ~datetime.datetime
     :param last_modified_by: The identity that last modified the resource.
     :type last_modified_by: str
     :param last_modified_by_type: The type of identity that last modified the resource. Possible
      values include: "User", "Application", "ManagedIdentity", "Key".
-    :type last_modified_by_type: str or ~azure.mgmt.amcs.models.CreatedByType
+    :type last_modified_by_type: str or ~$(python-base-
+     namespace).v2021_09_01_preview.models.CreatedByType
     :param last_modified_at: The timestamp of resource last modification (UTC).
     :type last_modified_at: ~datetime.datetime
     """
@@ -460,28 +499,40 @@ class DataCollectionRule(msrest.serialization.Model):
     :type description: str
     :ivar immutable_id: The immutable ID of this data collection rule. This property is READ-ONLY.
     :vartype immutable_id: str
+    :param data_collection_endpoint_id: The resource ID of the data collection endpoint that this
+     rule can be used with.
+    :type data_collection_endpoint_id: str
+    :ivar metadata: Metadata about the resource.
+    :vartype metadata: ~$(python-base-namespace).v2021_09_01_preview.models.Metadata
+    :param stream_declarations: Declaration of custom streams used in this rule.
+    :type stream_declarations: dict[str, ~$(python-base-
+     namespace).v2021_09_01_preview.models.StreamDeclaration]
     :param data_sources: The specification of data sources.
      This property is optional and can be omitted if the rule is meant to be used via direct calls
      to the provisioned endpoint.
-    :type data_sources: ~azure.mgmt.amcs.models.DataSourcesSpec
+    :type data_sources: ~$(python-base-namespace).v2021_09_01_preview.models.DataSourcesSpec
     :param destinations: The specification of destinations.
-    :type destinations: ~azure.mgmt.amcs.models.DestinationsSpec
+    :type destinations: ~$(python-base-namespace).v2021_09_01_preview.models.DestinationsSpec
     :param data_flows: The specification of data flows.
-    :type data_flows: list[~azure.mgmt.amcs.models.DataFlow]
+    :type data_flows: list[~$(python-base-namespace).v2021_09_01_preview.models.DataFlow]
     :ivar provisioning_state: The resource provisioning state. Possible values include: "Creating",
      "Updating", "Deleting", "Succeeded", "Failed".
-    :vartype provisioning_state: str or
-     ~azure.mgmt.amcs.models.KnownDataCollectionRuleProvisioningState
+    :vartype provisioning_state: str or ~$(python-base-
+     namespace).v2021_09_01_preview.models.KnownDataCollectionRuleProvisioningState
     """
 
     _validation = {
         'immutable_id': {'readonly': True},
+        'metadata': {'readonly': True},
         'provisioning_state': {'readonly': True},
     }
 
     _attribute_map = {
         'description': {'key': 'description', 'type': 'str'},
         'immutable_id': {'key': 'immutableId', 'type': 'str'},
+        'data_collection_endpoint_id': {'key': 'dataCollectionEndpointId', 'type': 'str'},
+        'metadata': {'key': 'metadata', 'type': 'Metadata'},
+        'stream_declarations': {'key': 'streamDeclarations', 'type': '{StreamDeclaration}'},
         'data_sources': {'key': 'dataSources', 'type': 'DataSourcesSpec'},
         'destinations': {'key': 'destinations', 'type': 'DestinationsSpec'},
         'data_flows': {'key': 'dataFlows', 'type': '[DataFlow]'},
@@ -495,6 +546,9 @@ class DataCollectionRule(msrest.serialization.Model):
         super(DataCollectionRule, self).__init__(**kwargs)
         self.description = kwargs.get('description', None)
         self.immutable_id = None
+        self.data_collection_endpoint_id = kwargs.get('data_collection_endpoint_id', None)
+        self.metadata = None
+        self.stream_declarations = kwargs.get('stream_declarations', None)
         self.data_sources = kwargs.get('data_sources', None)
         self.destinations = kwargs.get('destinations', None)
         self.data_flows = kwargs.get('data_flows', None)
@@ -516,12 +570,15 @@ class DataCollectionRuleAssociation(msrest.serialization.Model):
     :type data_collection_endpoint_id: str
     :ivar provisioning_state: The resource provisioning state. Possible values include: "Creating",
      "Updating", "Deleting", "Succeeded", "Failed".
-    :vartype provisioning_state: str or
-     ~azure.mgmt.amcs.models.KnownDataCollectionRuleAssociationProvisioningState
+    :vartype provisioning_state: str or ~$(python-base-
+     namespace).v2021_09_01_preview.models.KnownDataCollectionRuleAssociationProvisioningState
+    :ivar metadata: Metadata about the resource.
+    :vartype metadata: ~$(python-base-namespace).v2021_09_01_preview.models.Metadata
     """
 
     _validation = {
         'provisioning_state': {'readonly': True},
+        'metadata': {'readonly': True},
     }
 
     _attribute_map = {
@@ -529,6 +586,7 @@ class DataCollectionRuleAssociation(msrest.serialization.Model):
         'data_collection_rule_id': {'key': 'dataCollectionRuleId', 'type': 'str'},
         'data_collection_endpoint_id': {'key': 'dataCollectionEndpointId', 'type': 'str'},
         'provisioning_state': {'key': 'provisioningState', 'type': 'str'},
+        'metadata': {'key': 'metadata', 'type': 'Metadata'},
     }
 
     def __init__(
@@ -540,6 +598,56 @@ class DataCollectionRuleAssociation(msrest.serialization.Model):
         self.data_collection_rule_id = kwargs.get('data_collection_rule_id', None)
         self.data_collection_endpoint_id = kwargs.get('data_collection_endpoint_id', None)
         self.provisioning_state = None
+        self.metadata = None
+
+
+class Metadata(msrest.serialization.Model):
+    """Metadata about the resource.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar provisioned_by: Azure offering managing this resource on-behalf-of customer.
+    :vartype provisioned_by: str
+    """
+
+    _validation = {
+        'provisioned_by': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'provisioned_by': {'key': 'provisionedBy', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(Metadata, self).__init__(**kwargs)
+        self.provisioned_by = None
+
+
+class DataCollectionRuleAssociationMetadata(Metadata):
+    """Metadata about the resource.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar provisioned_by: Azure offering managing this resource on-behalf-of customer.
+    :vartype provisioned_by: str
+    """
+
+    _validation = {
+        'provisioned_by': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'provisioned_by': {'key': 'provisionedBy', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(DataCollectionRuleAssociationMetadata, self).__init__(**kwargs)
 
 
 class DataCollectionRuleAssociationProxyOnlyResource(msrest.serialization.Model):
@@ -556,7 +664,7 @@ class DataCollectionRuleAssociationProxyOnlyResource(msrest.serialization.Model)
     :ivar etag: Resource entity tag (ETag).
     :vartype etag: str
     :ivar system_data: Metadata pertaining to creation and last modification of the resource.
-    :vartype system_data: ~azure.mgmt.amcs.models.SystemData
+    :vartype system_data: ~$(python-base-namespace).v2021_09_01_preview.models.SystemData
     :param description: Description of the association.
     :type description: str
     :param data_collection_rule_id: The resource ID of the data collection rule that is to be
@@ -567,8 +675,10 @@ class DataCollectionRuleAssociationProxyOnlyResource(msrest.serialization.Model)
     :type data_collection_endpoint_id: str
     :ivar provisioning_state: The resource provisioning state. Possible values include: "Creating",
      "Updating", "Deleting", "Succeeded", "Failed".
-    :vartype provisioning_state: str or
-     ~azure.mgmt.amcs.models.KnownDataCollectionRuleAssociationProvisioningState
+    :vartype provisioning_state: str or ~$(python-base-
+     namespace).v2021_09_01_preview.models.KnownDataCollectionRuleAssociationProvisioningState
+    :ivar metadata: Metadata about the resource.
+    :vartype metadata: ~$(python-base-namespace).v2021_09_01_preview.models.Metadata
     """
 
     _validation = {
@@ -578,6 +688,7 @@ class DataCollectionRuleAssociationProxyOnlyResource(msrest.serialization.Model)
         'etag': {'readonly': True},
         'system_data': {'readonly': True},
         'provisioning_state': {'readonly': True},
+        'metadata': {'readonly': True},
     }
 
     _attribute_map = {
@@ -590,6 +701,7 @@ class DataCollectionRuleAssociationProxyOnlyResource(msrest.serialization.Model)
         'data_collection_rule_id': {'key': 'properties.dataCollectionRuleId', 'type': 'str'},
         'data_collection_endpoint_id': {'key': 'properties.dataCollectionEndpointId', 'type': 'str'},
         'provisioning_state': {'key': 'properties.provisioningState', 'type': 'str'},
+        'metadata': {'key': 'properties.metadata', 'type': 'Metadata'},
     }
 
     def __init__(
@@ -606,6 +718,7 @@ class DataCollectionRuleAssociationProxyOnlyResource(msrest.serialization.Model)
         self.data_collection_rule_id = kwargs.get('data_collection_rule_id', None)
         self.data_collection_endpoint_id = kwargs.get('data_collection_endpoint_id', None)
         self.provisioning_state = None
+        self.metadata = None
 
 
 class DataCollectionRuleAssociationProxyOnlyResourceListResult(msrest.serialization.Model):
@@ -614,7 +727,8 @@ class DataCollectionRuleAssociationProxyOnlyResourceListResult(msrest.serializat
     All required parameters must be populated in order to send to Azure.
 
     :param value: Required. A list of resources.
-    :type value: list[~azure.mgmt.amcs.models.DataCollectionRuleAssociationProxyOnlyResource]
+    :type value: list[~$(python-base-
+     namespace).v2021_09_01_preview.models.DataCollectionRuleAssociationProxyOnlyResource]
     :param next_link: The URL to use for getting the next set of results.
     :type next_link: str
     """
@@ -652,12 +766,15 @@ class DataCollectionRuleAssociationProxyOnlyResourceProperties(DataCollectionRul
     :type data_collection_endpoint_id: str
     :ivar provisioning_state: The resource provisioning state. Possible values include: "Creating",
      "Updating", "Deleting", "Succeeded", "Failed".
-    :vartype provisioning_state: str or
-     ~azure.mgmt.amcs.models.KnownDataCollectionRuleAssociationProvisioningState
+    :vartype provisioning_state: str or ~$(python-base-
+     namespace).v2021_09_01_preview.models.KnownDataCollectionRuleAssociationProvisioningState
+    :ivar metadata: Metadata about the resource.
+    :vartype metadata: ~$(python-base-namespace).v2021_09_01_preview.models.Metadata
     """
 
     _validation = {
         'provisioning_state': {'readonly': True},
+        'metadata': {'readonly': True},
     }
 
     _attribute_map = {
@@ -665,6 +782,7 @@ class DataCollectionRuleAssociationProxyOnlyResourceProperties(DataCollectionRul
         'data_collection_rule_id': {'key': 'dataCollectionRuleId', 'type': 'str'},
         'data_collection_endpoint_id': {'key': 'dataCollectionEndpointId', 'type': 'str'},
         'provisioning_state': {'key': 'provisioningState', 'type': 'str'},
+        'metadata': {'key': 'metadata', 'type': 'Metadata'},
     }
 
     def __init__(
@@ -681,14 +799,16 @@ class DataCollectionRuleAssociationProxyOnlyResourceSystemData(SystemData):
     :type created_by: str
     :param created_by_type: The type of identity that created the resource. Possible values
      include: "User", "Application", "ManagedIdentity", "Key".
-    :type created_by_type: str or ~azure.mgmt.amcs.models.CreatedByType
+    :type created_by_type: str or ~$(python-base-
+     namespace).v2021_09_01_preview.models.CreatedByType
     :param created_at: The timestamp of resource creation (UTC).
     :type created_at: ~datetime.datetime
     :param last_modified_by: The identity that last modified the resource.
     :type last_modified_by: str
     :param last_modified_by_type: The type of identity that last modified the resource. Possible
      values include: "User", "Application", "ManagedIdentity", "Key".
-    :type last_modified_by_type: str or ~azure.mgmt.amcs.models.CreatedByType
+    :type last_modified_by_type: str or ~$(python-base-
+     namespace).v2021_09_01_preview.models.CreatedByType
     :param last_modified_at: The timestamp of resource last modification (UTC).
     :type last_modified_at: ~datetime.datetime
     """
@@ -713,13 +833,20 @@ class DataSourcesSpec(msrest.serialization.Model):
     """Specification of data sources that will be collected.
 
     :param performance_counters: The list of performance counter data source configurations.
-    :type performance_counters: list[~azure.mgmt.amcs.models.PerfCounterDataSource]
+    :type performance_counters: list[~$(python-base-
+     namespace).v2021_09_01_preview.models.PerfCounterDataSource]
     :param windows_event_logs: The list of Windows Event Log data source configurations.
-    :type windows_event_logs: list[~azure.mgmt.amcs.models.WindowsEventLogDataSource]
+    :type windows_event_logs: list[~$(python-base-
+     namespace).v2021_09_01_preview.models.WindowsEventLogDataSource]
     :param syslog: The list of Syslog data source configurations.
-    :type syslog: list[~azure.mgmt.amcs.models.SyslogDataSource]
+    :type syslog: list[~$(python-base-namespace).v2021_09_01_preview.models.SyslogDataSource]
     :param extensions: The list of Azure VM extension data source configurations.
-    :type extensions: list[~azure.mgmt.amcs.models.ExtensionDataSource]
+    :type extensions: list[~$(python-base-
+     namespace).v2021_09_01_preview.models.ExtensionDataSource]
+    :param log_files: The list of Log files source configurations.
+    :type log_files: list[~$(python-base-namespace).v2021_09_01_preview.models.LogFilesDataSource]
+    :param iis_logs: The list of IIS logs source configurations.
+    :type iis_logs: list[~$(python-base-namespace).v2021_09_01_preview.models.IisLogsDataSource]
     """
 
     _attribute_map = {
@@ -727,6 +854,8 @@ class DataSourcesSpec(msrest.serialization.Model):
         'windows_event_logs': {'key': 'windowsEventLogs', 'type': '[WindowsEventLogDataSource]'},
         'syslog': {'key': 'syslog', 'type': '[SyslogDataSource]'},
         'extensions': {'key': 'extensions', 'type': '[ExtensionDataSource]'},
+        'log_files': {'key': 'logFiles', 'type': '[LogFilesDataSource]'},
+        'iis_logs': {'key': 'iisLogs', 'type': '[IisLogsDataSource]'},
     }
 
     def __init__(
@@ -738,6 +867,8 @@ class DataSourcesSpec(msrest.serialization.Model):
         self.windows_event_logs = kwargs.get('windows_event_logs', None)
         self.syslog = kwargs.get('syslog', None)
         self.extensions = kwargs.get('extensions', None)
+        self.log_files = kwargs.get('log_files', None)
+        self.iis_logs = kwargs.get('iis_logs', None)
 
 
 class DataCollectionRuleDataSources(DataSourcesSpec):
@@ -745,13 +876,20 @@ class DataCollectionRuleDataSources(DataSourcesSpec):
 This property is optional and can be omitted if the rule is meant to be used via direct calls to the provisioned endpoint.
 
     :param performance_counters: The list of performance counter data source configurations.
-    :type performance_counters: list[~azure.mgmt.amcs.models.PerfCounterDataSource]
+    :type performance_counters: list[~$(python-base-
+     namespace).v2021_09_01_preview.models.PerfCounterDataSource]
     :param windows_event_logs: The list of Windows Event Log data source configurations.
-    :type windows_event_logs: list[~azure.mgmt.amcs.models.WindowsEventLogDataSource]
+    :type windows_event_logs: list[~$(python-base-
+     namespace).v2021_09_01_preview.models.WindowsEventLogDataSource]
     :param syslog: The list of Syslog data source configurations.
-    :type syslog: list[~azure.mgmt.amcs.models.SyslogDataSource]
+    :type syslog: list[~$(python-base-namespace).v2021_09_01_preview.models.SyslogDataSource]
     :param extensions: The list of Azure VM extension data source configurations.
-    :type extensions: list[~azure.mgmt.amcs.models.ExtensionDataSource]
+    :type extensions: list[~$(python-base-
+     namespace).v2021_09_01_preview.models.ExtensionDataSource]
+    :param log_files: The list of Log files source configurations.
+    :type log_files: list[~$(python-base-namespace).v2021_09_01_preview.models.LogFilesDataSource]
+    :param iis_logs: The list of IIS logs source configurations.
+    :type iis_logs: list[~$(python-base-namespace).v2021_09_01_preview.models.IisLogsDataSource]
     """
 
     _attribute_map = {
@@ -759,6 +897,8 @@ This property is optional and can be omitted if the rule is meant to be used via
         'windows_event_logs': {'key': 'windowsEventLogs', 'type': '[WindowsEventLogDataSource]'},
         'syslog': {'key': 'syslog', 'type': '[SyslogDataSource]'},
         'extensions': {'key': 'extensions', 'type': '[ExtensionDataSource]'},
+        'log_files': {'key': 'logFiles', 'type': '[LogFilesDataSource]'},
+        'iis_logs': {'key': 'iisLogs', 'type': '[IisLogsDataSource]'},
     }
 
     def __init__(
@@ -772,9 +912,11 @@ class DestinationsSpec(msrest.serialization.Model):
     """Specification of destinations that can be used in data flows.
 
     :param log_analytics: List of Log Analytics destinations.
-    :type log_analytics: list[~azure.mgmt.amcs.models.LogAnalyticsDestination]
+    :type log_analytics: list[~$(python-base-
+     namespace).v2021_09_01_preview.models.LogAnalyticsDestination]
     :param azure_monitor_metrics: Azure Monitor Metrics destination.
-    :type azure_monitor_metrics: ~azure.mgmt.amcs.models.AzureMonitorMetricsDestination
+    :type azure_monitor_metrics: ~$(python-base-
+     namespace).v2021_09_01_preview.models.AzureMonitorMetricsDestination
     """
 
     _attribute_map = {
@@ -795,9 +937,11 @@ class DataCollectionRuleDestinations(DestinationsSpec):
     """The specification of destinations.
 
     :param log_analytics: List of Log Analytics destinations.
-    :type log_analytics: list[~azure.mgmt.amcs.models.LogAnalyticsDestination]
+    :type log_analytics: list[~$(python-base-
+     namespace).v2021_09_01_preview.models.LogAnalyticsDestination]
     :param azure_monitor_metrics: Azure Monitor Metrics destination.
-    :type azure_monitor_metrics: ~azure.mgmt.amcs.models.AzureMonitorMetricsDestination
+    :type azure_monitor_metrics: ~$(python-base-
+     namespace).v2021_09_01_preview.models.AzureMonitorMetricsDestination
     """
 
     _attribute_map = {
@@ -812,6 +956,30 @@ class DataCollectionRuleDestinations(DestinationsSpec):
         super(DataCollectionRuleDestinations, self).__init__(**kwargs)
 
 
+class DataCollectionRuleMetadata(Metadata):
+    """Metadata about the resource.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar provisioned_by: Azure offering managing this resource on-behalf-of customer.
+    :vartype provisioned_by: str
+    """
+
+    _validation = {
+        'provisioned_by': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'provisioned_by': {'key': 'provisionedBy', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(DataCollectionRuleMetadata, self).__init__(**kwargs)
+
+
 class DataCollectionRuleResource(msrest.serialization.Model):
     """Definition of ARM tracked top level resource.
 
@@ -824,7 +992,8 @@ class DataCollectionRuleResource(msrest.serialization.Model):
     :param tags: A set of tags. Resource tags.
     :type tags: dict[str, str]
     :param kind: The kind of the resource. Possible values include: "Linux", "Windows".
-    :type kind: str or ~azure.mgmt.amcs.models.KnownDataCollectionRuleResourceKind
+    :type kind: str or ~$(python-base-
+     namespace).v2021_09_01_preview.models.KnownDataCollectionRuleResourceKind
     :ivar id: Fully qualified ID of the resource.
     :vartype id: str
     :ivar name: The name of the resource.
@@ -834,23 +1003,31 @@ class DataCollectionRuleResource(msrest.serialization.Model):
     :ivar etag: Resource entity tag (ETag).
     :vartype etag: str
     :ivar system_data: Metadata pertaining to creation and last modification of the resource.
-    :vartype system_data: ~azure.mgmt.amcs.models.SystemData
+    :vartype system_data: ~$(python-base-namespace).v2021_09_01_preview.models.SystemData
     :param description: Description of the data collection rule.
     :type description: str
     :ivar immutable_id: The immutable ID of this data collection rule. This property is READ-ONLY.
     :vartype immutable_id: str
+    :param data_collection_endpoint_id: The resource ID of the data collection endpoint that this
+     rule can be used with.
+    :type data_collection_endpoint_id: str
+    :ivar metadata: Metadata about the resource.
+    :vartype metadata: ~$(python-base-namespace).v2021_09_01_preview.models.Metadata
+    :param stream_declarations: Declaration of custom streams used in this rule.
+    :type stream_declarations: dict[str, ~$(python-base-
+     namespace).v2021_09_01_preview.models.StreamDeclaration]
     :param data_sources: The specification of data sources.
      This property is optional and can be omitted if the rule is meant to be used via direct calls
      to the provisioned endpoint.
-    :type data_sources: ~azure.mgmt.amcs.models.DataSourcesSpec
+    :type data_sources: ~$(python-base-namespace).v2021_09_01_preview.models.DataSourcesSpec
     :param destinations: The specification of destinations.
-    :type destinations: ~azure.mgmt.amcs.models.DestinationsSpec
+    :type destinations: ~$(python-base-namespace).v2021_09_01_preview.models.DestinationsSpec
     :param data_flows: The specification of data flows.
-    :type data_flows: list[~azure.mgmt.amcs.models.DataFlow]
+    :type data_flows: list[~$(python-base-namespace).v2021_09_01_preview.models.DataFlow]
     :ivar provisioning_state: The resource provisioning state. Possible values include: "Creating",
      "Updating", "Deleting", "Succeeded", "Failed".
-    :vartype provisioning_state: str or
-     ~azure.mgmt.amcs.models.KnownDataCollectionRuleProvisioningState
+    :vartype provisioning_state: str or ~$(python-base-
+     namespace).v2021_09_01_preview.models.KnownDataCollectionRuleProvisioningState
     """
 
     _validation = {
@@ -861,6 +1038,7 @@ class DataCollectionRuleResource(msrest.serialization.Model):
         'etag': {'readonly': True},
         'system_data': {'readonly': True},
         'immutable_id': {'readonly': True},
+        'metadata': {'readonly': True},
         'provisioning_state': {'readonly': True},
     }
 
@@ -875,6 +1053,9 @@ class DataCollectionRuleResource(msrest.serialization.Model):
         'system_data': {'key': 'systemData', 'type': 'SystemData'},
         'description': {'key': 'properties.description', 'type': 'str'},
         'immutable_id': {'key': 'properties.immutableId', 'type': 'str'},
+        'data_collection_endpoint_id': {'key': 'properties.dataCollectionEndpointId', 'type': 'str'},
+        'metadata': {'key': 'properties.metadata', 'type': 'Metadata'},
+        'stream_declarations': {'key': 'properties.streamDeclarations', 'type': '{StreamDeclaration}'},
         'data_sources': {'key': 'properties.dataSources', 'type': 'DataSourcesSpec'},
         'destinations': {'key': 'properties.destinations', 'type': 'DestinationsSpec'},
         'data_flows': {'key': 'properties.dataFlows', 'type': '[DataFlow]'},
@@ -896,6 +1077,9 @@ class DataCollectionRuleResource(msrest.serialization.Model):
         self.system_data = None
         self.description = kwargs.get('description', None)
         self.immutable_id = None
+        self.data_collection_endpoint_id = kwargs.get('data_collection_endpoint_id', None)
+        self.metadata = None
+        self.stream_declarations = kwargs.get('stream_declarations', None)
         self.data_sources = kwargs.get('data_sources', None)
         self.destinations = kwargs.get('destinations', None)
         self.data_flows = kwargs.get('data_flows', None)
@@ -908,7 +1092,8 @@ class DataCollectionRuleResourceListResult(msrest.serialization.Model):
     All required parameters must be populated in order to send to Azure.
 
     :param value: Required. A list of resources.
-    :type value: list[~azure.mgmt.amcs.models.DataCollectionRuleResource]
+    :type value: list[~$(python-base-
+     namespace).v2021_09_01_preview.models.DataCollectionRuleResource]
     :param next_link: The URL to use for getting the next set of results.
     :type next_link: str
     """
@@ -940,28 +1125,40 @@ class DataCollectionRuleResourceProperties(DataCollectionRule):
     :type description: str
     :ivar immutable_id: The immutable ID of this data collection rule. This property is READ-ONLY.
     :vartype immutable_id: str
+    :param data_collection_endpoint_id: The resource ID of the data collection endpoint that this
+     rule can be used with.
+    :type data_collection_endpoint_id: str
+    :ivar metadata: Metadata about the resource.
+    :vartype metadata: ~$(python-base-namespace).v2021_09_01_preview.models.Metadata
+    :param stream_declarations: Declaration of custom streams used in this rule.
+    :type stream_declarations: dict[str, ~$(python-base-
+     namespace).v2021_09_01_preview.models.StreamDeclaration]
     :param data_sources: The specification of data sources.
      This property is optional and can be omitted if the rule is meant to be used via direct calls
      to the provisioned endpoint.
-    :type data_sources: ~azure.mgmt.amcs.models.DataSourcesSpec
+    :type data_sources: ~$(python-base-namespace).v2021_09_01_preview.models.DataSourcesSpec
     :param destinations: The specification of destinations.
-    :type destinations: ~azure.mgmt.amcs.models.DestinationsSpec
+    :type destinations: ~$(python-base-namespace).v2021_09_01_preview.models.DestinationsSpec
     :param data_flows: The specification of data flows.
-    :type data_flows: list[~azure.mgmt.amcs.models.DataFlow]
+    :type data_flows: list[~$(python-base-namespace).v2021_09_01_preview.models.DataFlow]
     :ivar provisioning_state: The resource provisioning state. Possible values include: "Creating",
      "Updating", "Deleting", "Succeeded", "Failed".
-    :vartype provisioning_state: str or
-     ~azure.mgmt.amcs.models.KnownDataCollectionRuleProvisioningState
+    :vartype provisioning_state: str or ~$(python-base-
+     namespace).v2021_09_01_preview.models.KnownDataCollectionRuleProvisioningState
     """
 
     _validation = {
         'immutable_id': {'readonly': True},
+        'metadata': {'readonly': True},
         'provisioning_state': {'readonly': True},
     }
 
     _attribute_map = {
         'description': {'key': 'description', 'type': 'str'},
         'immutable_id': {'key': 'immutableId', 'type': 'str'},
+        'data_collection_endpoint_id': {'key': 'dataCollectionEndpointId', 'type': 'str'},
+        'metadata': {'key': 'metadata', 'type': 'Metadata'},
+        'stream_declarations': {'key': 'streamDeclarations', 'type': '{StreamDeclaration}'},
         'data_sources': {'key': 'dataSources', 'type': 'DataSourcesSpec'},
         'destinations': {'key': 'destinations', 'type': 'DestinationsSpec'},
         'data_flows': {'key': 'dataFlows', 'type': '[DataFlow]'},
@@ -982,14 +1179,16 @@ class DataCollectionRuleResourceSystemData(SystemData):
     :type created_by: str
     :param created_by_type: The type of identity that created the resource. Possible values
      include: "User", "Application", "ManagedIdentity", "Key".
-    :type created_by_type: str or ~azure.mgmt.amcs.models.CreatedByType
+    :type created_by_type: str or ~$(python-base-
+     namespace).v2021_09_01_preview.models.CreatedByType
     :param created_at: The timestamp of resource creation (UTC).
     :type created_at: ~datetime.datetime
     :param last_modified_by: The identity that last modified the resource.
     :type last_modified_by: str
     :param last_modified_by_type: The type of identity that last modified the resource. Possible
      values include: "User", "Application", "ManagedIdentity", "Key".
-    :type last_modified_by_type: str or ~azure.mgmt.amcs.models.CreatedByType
+    :type last_modified_by_type: str or ~$(python-base-
+     namespace).v2021_09_01_preview.models.CreatedByType
     :param last_modified_at: The timestamp of resource last modification (UTC).
     :type last_modified_at: ~datetime.datetime
     """
@@ -1014,14 +1213,22 @@ class DataFlow(msrest.serialization.Model):
     """Definition of which streams are sent to which destinations.
 
     :param streams: List of streams for this data flow.
-    :type streams: list[str or ~azure.mgmt.amcs.models.KnownDataFlowStreams]
+    :type streams: list[str or ~$(python-base-
+     namespace).v2021_09_01_preview.models.KnownDataFlowStreams]
     :param destinations: List of destinations for this data flow.
     :type destinations: list[str]
+    :param transform_kql: The KQL query to transform stream data.
+    :type transform_kql: str
+    :param output_stream: The output stream of the transform. Only required if the transform
+     changes data to a different stream.
+    :type output_stream: str
     """
 
     _attribute_map = {
         'streams': {'key': 'streams', 'type': '[str]'},
         'destinations': {'key': 'destinations', 'type': '[str]'},
+        'transform_kql': {'key': 'transformKql', 'type': 'str'},
+        'output_stream': {'key': 'outputStream', 'type': 'str'},
     }
 
     def __init__(
@@ -1031,6 +1238,8 @@ class DataFlow(msrest.serialization.Model):
         super(DataFlow, self).__init__(**kwargs)
         self.streams = kwargs.get('streams', None)
         self.destinations = kwargs.get('destinations', None)
+        self.transform_kql = kwargs.get('transform_kql', None)
+        self.output_stream = kwargs.get('output_stream', None)
 
 
 class DestinationsSpecAzureMonitorMetrics(AzureMonitorMetricsDestination):
@@ -1095,9 +1304,10 @@ class ErrorDetail(msrest.serialization.Model):
     :ivar target: The error target.
     :vartype target: str
     :ivar details: The error details.
-    :vartype details: list[~azure.mgmt.amcs.models.ErrorDetail]
+    :vartype details: list[~$(python-base-namespace).v2021_09_01_preview.models.ErrorDetail]
     :ivar additional_info: The error additional info.
-    :vartype additional_info: list[~azure.mgmt.amcs.models.ErrorAdditionalInfo]
+    :vartype additional_info: list[~$(python-base-
+     namespace).v2021_09_01_preview.models.ErrorAdditionalInfo]
     """
 
     _validation = {
@@ -1128,11 +1338,11 @@ class ErrorDetail(msrest.serialization.Model):
         self.additional_info = None
 
 
-class ErrorResponse(msrest.serialization.Model):
+class ErrorResponseCommonV2(msrest.serialization.Model):
     """Common error response for all Azure Resource Manager APIs to return error details for failed operations. (This also follows the OData error response format.).
 
     :param error: The error object.
-    :type error: ~azure.mgmt.amcs.models.ErrorDetail
+    :type error: ~$(python-base-namespace).v2021_09_01_preview.models.ErrorDetail
     """
 
     _attribute_map = {
@@ -1143,7 +1353,7 @@ class ErrorResponse(msrest.serialization.Model):
         self,
         **kwargs
     ):
-        super(ErrorResponse, self).__init__(**kwargs)
+        super(ErrorResponseCommonV2, self).__init__(**kwargs)
         self.error = kwargs.get('error', None)
 
 
@@ -1156,7 +1366,8 @@ Collected from either Windows and Linux machines, depending on which extension i
     :param streams: List of streams that this data source will be sent to.
      A stream indicates what schema will be used for this data and usually what table in Log
      Analytics the data will be sent to.
-    :type streams: list[str or ~azure.mgmt.amcs.models.KnownExtensionDataSourceStreams]
+    :type streams: list[str or ~$(python-base-
+     namespace).v2021_09_01_preview.models.KnownExtensionDataSourceStreams]
     :param extension_name: Required. The name of the VM extension.
     :type extension_name: str
     :param extension_settings: The extension settings. The format is specific for particular
@@ -1191,6 +1402,41 @@ Collected from either Windows and Linux machines, depending on which extension i
         self.extension_name = kwargs['extension_name']
         self.extension_settings = kwargs.get('extension_settings', None)
         self.input_data_sources = kwargs.get('input_data_sources', None)
+        self.name = kwargs.get('name', None)
+
+
+class IisLogsDataSource(msrest.serialization.Model):
+    """Enables IIS logs to be collected by this data collection rule.
+
+    All required parameters must be populated in order to send to Azure.
+
+    :param streams: Required. IIS streams.
+    :type streams: list[str]
+    :param log_directories: Absolute paths file location.
+    :type log_directories: list[str]
+    :param name: A friendly name for the data source.
+     This name should be unique across all data sources (regardless of type) within the data
+     collection rule.
+    :type name: str
+    """
+
+    _validation = {
+        'streams': {'required': True},
+    }
+
+    _attribute_map = {
+        'streams': {'key': 'streams', 'type': '[str]'},
+        'log_directories': {'key': 'logDirectories', 'type': '[str]'},
+        'name': {'key': 'name', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(IisLogsDataSource, self).__init__(**kwargs)
+        self.streams = kwargs['streams']
+        self.log_directories = kwargs.get('log_directories', None)
         self.name = kwargs.get('name', None)
 
 
@@ -1229,6 +1475,147 @@ class LogAnalyticsDestination(msrest.serialization.Model):
         self.name = kwargs.get('name', None)
 
 
+class LogFilesDataSource(msrest.serialization.Model):
+    """Definition of which custom log files will be collected by this data collection rule.
+
+    All required parameters must be populated in order to send to Azure.
+
+    :param streams: Required. List of streams that this data source will be sent to.
+     A stream indicates what schema will be used for this data source.
+    :type streams: list[str]
+    :param file_patterns: Required. File Patterns where the log files are located.
+    :type file_patterns: list[str]
+    :param format: Required. The data format of the log files. Possible values include: "text".
+    :type format: str or ~$(python-base-
+     namespace).v2021_09_01_preview.models.KnownLogFilesDataSourceFormat
+    :param settings: The log files specific settings.
+    :type settings: ~$(python-base-namespace).v2021_09_01_preview.models.LogFileSettings
+    :param name: A friendly name for the data source.
+     This name should be unique across all data sources (regardless of type) within the data
+     collection rule.
+    :type name: str
+    """
+
+    _validation = {
+        'streams': {'required': True},
+        'file_patterns': {'required': True},
+        'format': {'required': True},
+    }
+
+    _attribute_map = {
+        'streams': {'key': 'streams', 'type': '[str]'},
+        'file_patterns': {'key': 'filePatterns', 'type': '[str]'},
+        'format': {'key': 'format', 'type': 'str'},
+        'settings': {'key': 'settings', 'type': 'LogFileSettings'},
+        'name': {'key': 'name', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(LogFilesDataSource, self).__init__(**kwargs)
+        self.streams = kwargs['streams']
+        self.file_patterns = kwargs['file_patterns']
+        self.format = kwargs['format']
+        self.settings = kwargs.get('settings', None)
+        self.name = kwargs.get('name', None)
+
+
+class LogFileSettings(msrest.serialization.Model):
+    """Settings for different log file formats.
+
+    :param text: Text settings.
+    :type text: ~$(python-base-namespace).v2021_09_01_preview.models.LogFileTextSettings
+    """
+
+    _attribute_map = {
+        'text': {'key': 'text', 'type': 'LogFileTextSettings'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(LogFileSettings, self).__init__(**kwargs)
+        self.text = kwargs.get('text', None)
+
+
+class LogFilesDataSourceSettings(LogFileSettings):
+    """The log files specific settings.
+
+    :param text: Text settings.
+    :type text: ~$(python-base-namespace).v2021_09_01_preview.models.LogFileTextSettings
+    """
+
+    _attribute_map = {
+        'text': {'key': 'text', 'type': 'LogFileTextSettings'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(LogFilesDataSourceSettings, self).__init__(**kwargs)
+
+
+class LogFileTextSettings(msrest.serialization.Model):
+    """Settings for text log files.
+
+    All required parameters must be populated in order to send to Azure.
+
+    :param record_start_timestamp_format: Required. One of the supported timestamp formats.
+     Possible values include: "ISO 8601", "YYYY-MM-DD HH:MM:SS", "M/D/YYYY HH:MM:SS AM/PM", "Mon DD,
+     YYYY HH:MM:SS", "yyMMdd HH:mm:ss", "ddMMyy HH:mm:ss", "MMM d hh:mm:ss", "dd/MMM/yyyy:HH:mm:ss
+     zzz", "yyyy-MM-ddTHH:mm:ssK".
+    :type record_start_timestamp_format: str or ~$(python-base-
+     namespace).v2021_09_01_preview.models.KnownLogFileTextSettingsRecordStartTimestampFormat
+    """
+
+    _validation = {
+        'record_start_timestamp_format': {'required': True},
+    }
+
+    _attribute_map = {
+        'record_start_timestamp_format': {'key': 'recordStartTimestampFormat', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(LogFileTextSettings, self).__init__(**kwargs)
+        self.record_start_timestamp_format = kwargs['record_start_timestamp_format']
+
+
+class LogFileSettingsText(LogFileTextSettings):
+    """Text settings.
+
+    All required parameters must be populated in order to send to Azure.
+
+    :param record_start_timestamp_format: Required. One of the supported timestamp formats.
+     Possible values include: "ISO 8601", "YYYY-MM-DD HH:MM:SS", "M/D/YYYY HH:MM:SS AM/PM", "Mon DD,
+     YYYY HH:MM:SS", "yyMMdd HH:mm:ss", "ddMMyy HH:mm:ss", "MMM d hh:mm:ss", "dd/MMM/yyyy:HH:mm:ss
+     zzz", "yyyy-MM-ddTHH:mm:ssK".
+    :type record_start_timestamp_format: str or ~$(python-base-
+     namespace).v2021_09_01_preview.models.KnownLogFileTextSettingsRecordStartTimestampFormat
+    """
+
+    _validation = {
+        'record_start_timestamp_format': {'required': True},
+    }
+
+    _attribute_map = {
+        'record_start_timestamp_format': {'key': 'recordStartTimestampFormat', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(LogFileSettingsText, self).__init__(**kwargs)
+
+
 class PerfCounterDataSource(msrest.serialization.Model):
     """Definition of which performance counters will be collected and how they will be collected by this data collection rule.
 Collected from both Windows and Linux machines where the counter is present.
@@ -1236,7 +1623,8 @@ Collected from both Windows and Linux machines where the counter is present.
     :param streams: List of streams that this data source will be sent to.
      A stream indicates what schema will be used for this data and usually what table in Log
      Analytics the data will be sent to.
-    :type streams: list[str or ~azure.mgmt.amcs.models.KnownPerfCounterDataSourceStreams]
+    :type streams: list[str or ~$(python-base-
+     namespace).v2021_09_01_preview.models.KnownPerfCounterDataSourceStreams]
     :param sampling_frequency_in_seconds: The number of seconds between consecutive counter
      measurements (samples).
     :type sampling_frequency_in_seconds: int
@@ -1288,6 +1676,25 @@ class ResourceForUpdate(msrest.serialization.Model):
         self.tags = kwargs.get('tags', None)
 
 
+class StreamDeclaration(msrest.serialization.Model):
+    """Declaration of a custom stream.
+
+    :param columns: List of columns used by data in this stream.
+    :type columns: list[~$(python-base-namespace).v2021_09_01_preview.models.ColumnDefinition]
+    """
+
+    _attribute_map = {
+        'columns': {'key': 'columns', 'type': '[ColumnDefinition]'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(StreamDeclaration, self).__init__(**kwargs)
+        self.columns = kwargs.get('columns', None)
+
+
 class SyslogDataSource(msrest.serialization.Model):
     """Definition of which syslog data will be collected and how it will be collected.
 Only collected from Linux machines.
@@ -1295,11 +1702,14 @@ Only collected from Linux machines.
     :param streams: List of streams that this data source will be sent to.
      A stream indicates what schema will be used for this data and usually what table in Log
      Analytics the data will be sent to.
-    :type streams: list[str or ~azure.mgmt.amcs.models.KnownSyslogDataSourceStreams]
+    :type streams: list[str or ~$(python-base-
+     namespace).v2021_09_01_preview.models.KnownSyslogDataSourceStreams]
     :param facility_names: The list of facility names.
-    :type facility_names: list[str or ~azure.mgmt.amcs.models.KnownSyslogDataSourceFacilityNames]
+    :type facility_names: list[str or ~$(python-base-
+     namespace).v2021_09_01_preview.models.KnownSyslogDataSourceFacilityNames]
     :param log_levels: The log levels to collect.
-    :type log_levels: list[str or ~azure.mgmt.amcs.models.KnownSyslogDataSourceLogLevels]
+    :type log_levels: list[str or ~$(python-base-
+     namespace).v2021_09_01_preview.models.KnownSyslogDataSourceLogLevels]
     :param name: A friendly name for the data source.
      This name should be unique across all data sources (regardless of type) within the data
      collection rule.
@@ -1331,7 +1741,8 @@ Only collected from Windows machines.
     :param streams: List of streams that this data source will be sent to.
      A stream indicates what schema will be used for this data and usually what table in Log
      Analytics the data will be sent to.
-    :type streams: list[str or ~azure.mgmt.amcs.models.KnownWindowsEventLogDataSourceStreams]
+    :type streams: list[str or ~$(python-base-
+     namespace).v2021_09_01_preview.models.KnownWindowsEventLogDataSourceStreams]
     :param x_path_queries: A list of Windows Event Log queries in XPATH format.
     :type x_path_queries: list[str]
     :param name: A friendly name for the data source.
