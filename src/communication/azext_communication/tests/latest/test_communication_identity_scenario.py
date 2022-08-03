@@ -26,7 +26,6 @@ class CommunicationIdentityScenarios(ScenarioTest):
     @ResourceGroupPreparer(name_prefix='clitestcommunication_MyResourceGroup'[:7], key='rg', parameter_name='rg')
     @CommunicationResourcePreparer(resource_group_parameter_name='rg')
     def test_issue_access_token(self, communication_resource_info):
-
         os.environ['AZURE_COMMUNICATION_CONNECTION_STRING'] = communication_resource_info[1]
 
         val = self.cmd(
@@ -60,13 +59,6 @@ class CommunicationIdentityScenarios(ScenarioTest):
     @CommunicationResourcePreparer(resource_group_parameter_name='rg')
     def test_revoke_access_tokens(self, communication_resource_info):
         os.environ['AZURE_COMMUNICATION_CONNECTION_STRING'] = communication_resource_info[1]
-
         id = get_test_identity_id(self.is_live, self.in_recording, communication_resource_info[1])
         self.kwargs.update({'id': id})
-
-        val = self.cmd(
-            'az communication identity issue-access-token --scope chat').get_output_in_json()
-        self.assertIsNotNone(val['token'])
-
-        self.cmd(
-            'az communication identity revoke-access-tokens --userid {id}')
+        self.cmd('az communication identity revoke-access-tokens --userid {id}')
