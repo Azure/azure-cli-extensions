@@ -13,10 +13,5 @@ from ._operations import Operations
 __all__ = [
     'ExtensionsOperations',
     'OperationStatusOperations',
-    'ClusterExtensionTypeOperations',
-    'ClusterExtensionTypesOperations',
-    'ExtensionTypeVersionsOperations',
-    'LocationExtensionTypesOperations',
-    'SourceControlConfigurationsOperations',
     'Operations',
 ]
