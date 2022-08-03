@@ -23,7 +23,7 @@ from azure.core.exceptions import ResourceNotFoundError, HttpResponseError
 from msrest.exceptions import AuthenticationError, HttpOperationError, TokenExpiredError
 from msrest.exceptions import ValidationError as MSRestValidationError
 from kubernetes.client.rest import ApiException
-from azext_connectedk8s._client_factory import _resource_client_factory, _resource_providers_client
+from azext_connectedk8s._client_factory import resource_providers_client
 import azext_connectedk8s._constants as consts
 from kubernetes import client as kube_client
 from azure.cli.core import get_default_cli
@@ -51,11 +51,11 @@ class TimeoutHTTPAdapter(HTTPAdapter):
 
 
 def validate_location(cmd, location):
-    subscription_id = get_subscription_id(cmd.cli_ctx)
+    subscription_id = os.getenv('AZURE_SUBSCRIPTION_ID') if os.getenv('AZURE_ACCESS_TOKEN') else get_subscription_id(cmd.cli_ctx)
     rp_locations = []
-    resourceClient = _resource_client_factory(cmd.cli_ctx, subscription_id=subscription_id)
+    resourceClient = resource_providers_client(cmd.cli_ctx, subscription_id=subscription_id)
     try:
-        providerDetails = resourceClient.providers.get('Microsoft.Kubernetes')
+        providerDetails = resourceClient.get('Microsoft.Kubernetes')
     except Exception as e:  # pylint: disable=broad-except
         arm_exception_handler(e, consts.Get_ResourceProvider_Fault_Type, 'Failed to fetch resource provider details')
     for resourceTypes in providerDetails.resource_types:
@@ -67,6 +67,28 @@ def validate_location(cmd, location):
                 raise ArgumentUsageError("Connected cluster resource creation is supported only in the following locations: " +
                                          ', '.join(map(str, rp_locations)), recommendation="Use the --location flag to specify one of these locations.")
             break
+
+
+def validate_custom_token(location, cl_oid):
+    if os.getenv('AZURE_ACCESS_TOKEN'):
+        if os.getenv('AZURE_SUBSCRIPTION_ID') is None:
+            telemetry.set_exception(exception='Required environment variables and parameters are not set', fault_type=consts.Custom_Token_Environments_Fault_Type,
+                                    summary='Required environment variables and parameters are not set')
+            raise ValidationError("Environment variable 'AZURE_SUBSCRIPTION_ID' should be set when custom access token is enabled.")
+        if os.getenv('AZURE_TENANT_ID') is None:
+            telemetry.set_exception(exception='Required environment variables and parameters are not set', fault_type=consts.Custom_Token_Environments_Fault_Type,
+                                    summary='Required environment variables and parameters are not set')
+            raise ValidationError("Environment variable 'AZURE_TENANT_ID' should be set when custom access token is enabled.")
+        if location is None:
+            telemetry.set_exception(exception='Required environment variables and parameters are not set', fault_type=consts.Custom_Token_Environments_Fault_Type,
+                                    summary='Required environment variables and parameters are not set')
+            raise ValidationError("Parameter '--location' should be set when custom access token is enabled.")
+        if cl_oid is None:
+            telemetry.set_exception(exception='Required environment variables and parameters are not set', fault_type=consts.Custom_Token_Environments_Fault_Type,
+                                    summary='Required environment variables and parameters are not set')
+            raise ValidationError("Parameter '--custom-locations-oid' should be set when custom access token is enabled.")
+        return True
+    return False
 
 
 def get_chart_path(registry_path, kube_config, kube_context, helm_client_location):
@@ -143,9 +165,12 @@ def get_helm_registry(cmd, config_dp_endpoint, dp_endpoint_dogfood=None, release
             release_train = release_train_dogfood
     uri_parameters = ["releaseTrain={}".format(release_train)]
     resource = cmd.cli_ctx.cloud.endpoints.active_directory_resource_id
+    headers = None
+    if os.getenv('AZURE_ACCESS_TOKEN'):
+        headers = ["Authorization=Bearer {}".format(os.getenv('AZURE_ACCESS_TOKEN'))]
     # Sending request
     try:
-        r = send_raw_request(cmd.cli_ctx, 'post', get_chart_location_url, uri_parameters=uri_parameters, resource=resource)
+        r = send_raw_request(cmd.cli_ctx, 'post', get_chart_location_url, headers=headers, uri_parameters=uri_parameters, resource=resource)
     except Exception as e:
         telemetry.set_exception(exception=e, fault_type=consts.Get_HelmRegistery_Path_Fault_Type,
                                 summary='Error while fetching helm chart registry path')
@@ -402,9 +427,9 @@ def try_list_node_fix():
         logger.debug("Error while trying to monkey patch the fix for list_node(): {}".format(str(ex)))
 
 
-def check_provider_registrations(cli_ctx):
+def check_provider_registrations(cli_ctx, subscription_id):
     try:
-        rp_client = _resource_providers_client(cli_ctx)
+        rp_client = resource_providers_client(cli_ctx, subscription_id)
         cc_registration_state = rp_client.get(consts.Connected_Cluster_Provider_Namespace).registration_state
         if cc_registration_state != "Registered":
             telemetry.set_exception(exception="{} provider is not registered".format(consts.Connected_Cluster_Provider_Namespace), fault_type=consts.CC_Provider_Namespace_Not_Registered_Fault_Type,

@@ -25,6 +25,7 @@ USGovCloud_OriginalName = 'AZUREUSGOVERNMENT'
 Dogfood_RMEndpoint = 'https://api-dogfood.resources.windows-int.net/'
 Client_Request_Id_Header = 'x-ms-client-request-id'
 Default_Onboarding_Source_Tracking_Guid = "77ade16b-0f55-403b-b7d2-739554a897f2"
+Custom_Token_Environments_Fault_Type = 'custom-token-environment-error'
 Helm_Environment_File_Fault_Type = 'helm-environment-file-error'
 Invalid_Location_Fault_Type = 'location-validation-error'
 Pls_Location_Mismatch_Fault_Type = 'pls-location-mismatch-error'
