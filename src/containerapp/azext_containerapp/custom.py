@@ -335,7 +335,7 @@ def create_containerapp(cmd,
 
     if registry_identity and not is_registry_msi_system(registry_identity):
         logger.info("Creating an acrpull role assignment for the registry identity")
-        create_acrpull_role_assignment(cmd, registry_server, registry_identity)
+        create_acrpull_role_assignment(cmd, registry_server, registry_identity, skip_error=True)
 
     if yaml:
         if image or managed_env or min_replicas or max_replicas or target_port or ingress or\
