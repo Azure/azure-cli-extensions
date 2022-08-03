@@ -3,6 +3,26 @@
 Release History
 ===============
 
+1.5.1
+++++++++++++++++++
+* Bump pycryptodome to 3.14.1 to support Python 3.10
+
+1.5.0
+++++++++++++++++++
+* Update models to 2022-03-01 for GA
+* Remove unneeded warning for HTTPS urls
+
+1.4.1
+++++++++++++++++++
+* [BREAKING CHANGE] `--access-key` changed to `--bucket-access-key`
+* [BREAKING CHANGE] `--secret-key` changed to `--bucket-secret-key`
+* [BREAKING CHANGE] `--insecure` changed to `--bucket-insecure`
+* Fix help text for bucket parameters
+
+1.4.0
+++++++++++++++++++
+* Add `--kind bucket` for creation of S3 bucket as source for fluxConfigurations
+
 1.3.0
 ++++++++++++++++++
 * Add `deployed-object` command group for showing deployed Flux objects from configuration

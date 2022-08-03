@@ -248,6 +248,18 @@ def get_portal_uri(cli_ctx):
         return 'https://portal.azure.com'
 
 
+def get_spring_cloud_sku(client, resource_group, name):
+    return client.services.get(resource_group, name).sku
+
+
+def convert_argument_to_parameter_list(args):
+    return ', '.join([convert_argument_to_parameter(x) for x in args])
+
+
+def convert_argument_to_parameter(arg):
+    return '--{}'.format(arg.replace('_', '-'))
+
+
 def wait_till_end(cmd, *pollers):
     if not pollers:
         return

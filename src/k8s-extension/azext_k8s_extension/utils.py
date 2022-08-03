@@ -6,7 +6,7 @@
 import json
 from typing import Tuple
 from urllib.parse import urlparse
-from azext_k8s_extension import consts
+from . import consts
 from azure.cli.core.azclierror import InvalidArgumentValueError
 
 

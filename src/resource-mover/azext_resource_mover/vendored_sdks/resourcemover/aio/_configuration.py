@@ -45,7 +45,7 @@ class ResourceMoverServiceAPIConfiguration(Configuration):
 
         self.credential = credential
         self.subscription_id = subscription_id
-        self.api_version = "2021-01-01"
+        self.api_version = "2021-08-01"
         self.credential_scopes = kwargs.pop('credential_scopes', ['https://management.azure.com/.default'])
         kwargs.setdefault('sdk_moniker', 'mgmt-resourcemover/{}'.format(VERSION))
         self._configure(**kwargs)

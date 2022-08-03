@@ -2,6 +2,10 @@
 
 Release History
 ===============
+0.2.7 (2022-04-02)
+++++++++++++++++++
+* Upgrade `pymssql` to support Python 3.10
+
 0.2.6 (2021-09-08)
 ++++++++++++++++++
 * `az sql up`: Fix pymssql installation failure with Python 3.8/3.9

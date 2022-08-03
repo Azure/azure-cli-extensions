@@ -5,7 +5,6 @@
 
 # pylint: disable=protected-access
 
-import os
 import unittest
 
 from azure.cli.core.azclierror import InvalidArgumentValueError

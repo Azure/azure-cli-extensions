@@ -25,12 +25,16 @@ def create_databricks_workspace(cmd, client,
                                 prepare_encryption=None,
                                 require_infrastructure_encryption=None,
                                 enable_no_public_ip=None,
+                                public_network_access=None,
+                                required_nsg_rules=None,
                                 no_wait=False):
     body = {}
     body['tags'] = tags  # dictionary
     body['location'] = location  # str
     body['managed_resource_group_id'] = managed_resource_group  # str
     body.setdefault('sku', {})['name'] = sku_name  # str
+    body['public_network_access'] = public_network_access
+    body['required_nsg_rules'] = required_nsg_rules
 
     parameters = {}
     _set_parameter_value(parameters, 'custom_virtual_network_id', custom_virtual_network_id)  # str

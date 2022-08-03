@@ -4,15 +4,16 @@
 # --------------------------------------------------------------------------------------------
 
 # pylint: disable=line-too-long, too-many-locals, too-many-statements, broad-except, too-many-branches
+import json
 import timeit
 import traceback
 import requests
+
 from knack.log import get_logger
 
 from azure.cli.command_modules.vm.custom import get_vm, _is_linux_os
 from azure.cli.command_modules.storage.storage_url_helpers import StorageResourceIdentifier
 from msrestazure.tools import parse_resource_id
-from .exceptions import SkuDoesNotSupportHyperV
 
 from .command_helper_class import command_helper
 from .repair_utils import (
@@ -32,17 +33,19 @@ from .repair_utils import (
     _fetch_disk_info,
     _unlock_singlepass_encrypted_disk,
     _invoke_run_command,
-    _check_hyperV_gen,
     _get_cloud_init_script,
+    _select_distro_linux,
+    _check_linux_hyperV_gen,
+    _select_distro_linux_gen2,
     _set_repair_map_url,
-    _is_gen2
+    _is_gen2,
+    _check_n_start_vm
 )
-from .exceptions import AzCommandError, SkuNotAvailableError, UnmanagedDiskCopyError, WindowsOsNotAvailableError, RunScriptNotFoundForIdError, SkuDoesNotSupportHyperV, ScriptReturnsError
+from .exceptions import AzCommandError, SkuNotAvailableError, UnmanagedDiskCopyError, WindowsOsNotAvailableError, RunScriptNotFoundForIdError, SkuDoesNotSupportHyperV, ScriptReturnsError, SupportingResourceNotFoundError, CommandCanceledByUserError
 logger = get_logger(__name__)
 
 
-def create(cmd, vm_name, resource_group_name, repair_password=None, repair_username=None, repair_vm_name=None, copy_disk_name=None, repair_group_name=None, unlock_encrypted_vm=False, enable_nested=False, associate_public_ip=False):
-
+def create(cmd, vm_name, resource_group_name, repair_password=None, repair_username=None, repair_vm_name=None, copy_disk_name=None, repair_group_name=None, unlock_encrypted_vm=False, enable_nested=False, associate_public_ip=False, distro='ubuntu'):
     # Init command helper object
     command = command_helper(logger, cmd, 'vm repair create')
     # Main command calling block
@@ -62,8 +65,15 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
 
         # Fetch OS image urn and set OS type for disk create
         if is_linux:
-            os_image_urn = "UbuntuLTS"
+            # os_image_urn = "UbuntuLTS"
             os_type = 'Linux'
+            hyperV_generation_linux = _check_linux_hyperV_gen(source_vm)
+            if hyperV_generation_linux == 'V2':
+                logger.info('Generation 2 VM detected, RHEL/Centos/Oracle 6 distros not available to be used for rescue VM ')
+                logger.debug('gen2 machine detected')
+                os_image_urn = _select_distro_linux_gen2(distro)
+            else:
+                os_image_urn = _select_distro_linux(distro)
         else:
             os_image_urn = _fetch_compatible_windows_os_urn(source_vm)
             os_type = 'Windows'
@@ -105,6 +115,9 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
             # Only add hyperV variable when available
             if hyperV_generation:
                 copy_disk_command += ' --hyper-v-generation {hyperV}'.format(hyperV=hyperV_generation)
+            elif is_linux and hyperV_generation_linux == 'V2':
+                logger.info('The disk did not contian the info of gen2 , but the machine is created from gen2 image')
+                copy_disk_command += ' --hyper-v-generation {hyperV}'.format(hyperV=hyperV_generation_linux)
             # Set availability zone for vm when available
             if source_vm.zones:
                 zone = source_vm.zones[0]
@@ -112,8 +125,10 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
             # Copy OS Disk
             logger.info('Copying OS disk of source VM...')
             copy_disk_id = _call_az_command(copy_disk_command).strip('\n')
-            # Add copied OS Disk to VM creat command so that the VM is created with the disk attached
-            create_repair_vm_command += ' --attach-data-disks {id}'.format(id=copy_disk_id)
+            # For Linux the disk gets not attached at VM creation time. To prevent an incorrect boot state it is required to attach the disk after the VM got created.
+            if not is_linux:
+                # Add copied OS Disk to VM creat command so that the VM is created with the disk attached
+                create_repair_vm_command += ' --attach-data-disks {id}'.format(id=copy_disk_id)
             # Validate create vm create command to validate parameters before runnning copy disk command
             validate_create_vm_command = create_repair_vm_command + ' --validate'
             logger.info('Validating VM template before continuing...')
@@ -121,6 +136,12 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
             # Create repair VM
             logger.info('Creating repair VM...')
             _call_az_command(create_repair_vm_command, secure_params=[repair_password, repair_username])
+
+            if is_linux:
+                # Attach copied managed disk to new vm
+                logger.info('Attaching copied disk to repair VM as data disk...')
+                attach_disk_command = "az vm disk attach -g {g} --name {disk_id} --vm-name {vm_name} ".format(g=repair_group_name, disk_id=copy_disk_id, vm_name=repair_vm_name)
+                _call_az_command(attach_disk_command)
 
             # Handle encrypted VM cases
             if unlock_encrypted_vm:
@@ -382,8 +403,6 @@ def run(cmd, vm_name, resource_group_name, run_id=None, repair_vm_id=None, custo
             repair_script_path = _fetch_run_script_path(run_id)
             run_command_params.append('script_path="./{}"'.format(repair_script_path))
 
-            if preview:
-                run_command_params.append('preview_path="{}"'.format(preview))
         # Custom script scenario for script testers
         else:
             run_command_params.append('script_path=no-op')
@@ -509,5 +528,115 @@ def list_scripts(cmd, preview=None):
         command.message = 'Available script list succesfully fetched from https://github.com/Azure/repair-script-library'
         return_dict = command.init_return_dict()
         return_dict['map'] = run_map
+
+    return return_dict
+
+
+def reset_nic(cmd, vm_name, resource_group_name, yes=False):
+
+    # Init command helper object
+    command = command_helper(logger, cmd, 'vm repair reset-nic')
+    DYNAMIC_CONFIG = 'Dynamic'
+
+    try:
+        # 0) Check if VM is deallocated or off. If it is, ask to run start the VM.
+        VM_OFF_MESSAGE = 'VM is not running. The VM must be in running to reset its NIC.\n'
+        vm_instance_view = get_vm(cmd, resource_group_name, vm_name, 'instanceView')
+        VM_started = _check_n_start_vm(vm_name, resource_group_name, not yes, VM_OFF_MESSAGE, vm_instance_view)
+        if not VM_started:
+            raise CommandCanceledByUserError("Could not get consent to run VM before resetting the NIC.")
+
+        # 1) Fetch vm network info
+        logger.info('Fetching necessary VM network information to reset the NIC...\n')
+        # Fetch primary nic id. The primary field is null or true for primary nics.
+        get_primary_nic_id_command = 'az vm nic list -g {g} --vm-name {n} --query "[[?primary].id || [?primary==null].id][0][0]" -o tsv' \
+                                     .format(g=resource_group_name, n=vm_name)
+        primary_nic_id = _call_az_command(get_primary_nic_id_command)
+        if not primary_nic_id:
+            # Raise no primary nic excpetion
+            raise SupportingResourceNotFoundError('The primary NIC for the VM was not found on Azure.')
+        primary_nic_name = primary_nic_id.split('/')[-1]
+
+        # Get ip config info to get: vnet name, current private ip, ipconfig name, subnet id
+        get_primary_ip_config = 'az network nic ip-config list -g {g} --nic-name {nic_name} --query [[?primary]][0][0]' \
+                                .format(g=resource_group_name, nic_name=primary_nic_name)
+        ip_config_string = _call_az_command(get_primary_ip_config)
+        if not ip_config_string:
+            # Raise primary ip_config not found
+            raise SupportingResourceNotFoundError('The primary IP configuration for the VM NIC was not found on Azure.')
+        ip_config_object = json.loads(ip_config_string)
+
+        subnet_id = ip_config_object['subnet']['id']
+        vnet_name = subnet_id.split('/')[-3]
+        ipconfig_name = ip_config_object['name']
+        orig_ip_address = ip_config_object['privateIpAddress']
+        # Dynamic | Static
+        orig_ip_allocation_method = ip_config_object['privateIpAllocationMethod']
+
+        # Get aviailable ip address within subnet
+        # Change to az network vnet subnet list-available-ips when it is available
+        get_available_ip_command = 'az network vnet list-available-ips -g {g} -n {vnet} --query [0] -o tsv' \
+                                   .format(g=resource_group_name, vnet=vnet_name)
+        swap_ip_address = _call_az_command(get_available_ip_command)
+        if not swap_ip_address:
+            # Raise available IP not found
+            raise SupportingResourceNotFoundError('Available IP address was not found within the VM subnet.')
+
+        # 3) Update private IP address to another in subnet. This will invoke and wait for a VM restart.
+        logger.info('Updating VM IP configuration. This might take a few minutes...\n')
+        # Update IP address
+        update_ip_command = 'az network nic ip-config update -g {g} --nic-name {nic} -n {config} --private-ip-address {ip} ' \
+                            .format(g=resource_group_name, nic=primary_nic_name, config=ipconfig_name, ip=swap_ip_address)
+        _call_az_command(update_ip_command)
+
+        # 4) Change things back. This will also invoke and wait for a VM restart.
+        logger.info('NIC reset is complete. Now reverting back to your original configuration...\n')
+        # If user had dynamic config, change back to dynamic
+        revert_ip_command = None
+        if orig_ip_allocation_method == DYNAMIC_CONFIG:
+            # Revert Static to Dynamic
+            revert_ip_command = 'az network nic ip-config update -g {g} --nic-name {nic} -n {config} --set privateIpAllocationMethod={method}' \
+                                .format(g=resource_group_name, nic=primary_nic_name, config=ipconfig_name, method=DYNAMIC_CONFIG)
+        else:
+            # Revert to original static ip
+            revert_ip_command = 'az network nic ip-config update -g {g} --nic-name {nic} -n {config} --private-ip-address {ip} ' \
+                                .format(g=resource_group_name, nic=primary_nic_name, config=ipconfig_name, ip=orig_ip_address)
+
+        _call_az_command(revert_ip_command)
+        logger.info('VM guest NIC reset is complete and all configurations are reverted.')
+    # Some error happened. Stop command and revert back as needed.
+    except KeyboardInterrupt:
+        command.set_status_error()
+        command.error_stack_trace = traceback.format_exc()
+        command.error_message = "Command interrupted by user input."
+        command.message = "Command interrupted by user input."
+    except AzCommandError as azCommandError:
+        command.set_status_error()
+        command.error_stack_trace = traceback.format_exc()
+        command.error_message = str(azCommandError)
+        command.message = "Reset NIC failed."
+    except SupportingResourceNotFoundError as resourceError:
+        command.set_status_error()
+        command.error_stack_trace = traceback.format_exc()
+        command.error_message = str(resourceError)
+        command.message = "Reset NIC could not be initiated."
+    except CommandCanceledByUserError as canceledError:
+        command.set_status_error()
+        command.error_stack_trace = traceback.format_exc()
+        command.error_message = str(canceledError)
+        command.message = VM_OFF_MESSAGE
+    except Exception as exception:
+        command.set_status_error()
+        command.error_stack_trace = traceback.format_exc()
+        command.error_message = str(exception)
+        command.message = 'An unexpected error occurred. Try running again with the --debug flag to debug.'
+    else:
+        command.set_status_success()
+        command.message = 'VM guest NIC reset complete. The VM is in running state.'
+    finally:
+        if command.error_stack_trace:
+            logger.debug(command.error_stack_trace)
+        # Generate return object and log errors if needed
+        return_dict = command.init_return_dict()
 
     return return_dict

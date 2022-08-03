@@ -5,7 +5,6 @@
 
 import tempfile
 import json
-import time
 
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
 from azure.cli.testsdk.scenario_tests import RecordingProcessor
@@ -32,10 +31,10 @@ class ResourceMoverMoveCollectionScenarioTest(ScenarioTest):
 
     # We don't use the ResourceGroupPrepare here for the reason that
     # move-collection is difficult to delete
+    @ResourceGroupPreparer(name_prefix="clitest_resourcemover_collection_", location="eastus2")
     def test_resourcemover_movecollection_basic(self):
         self.kwargs.update({
-            'collection_rg': 'clitest_resourcemover_collection_rg',
-            'collection_name': 'clitest-movecollection-27',
+            'collection_name': 'clitest-movecollection-10',
             'location': 'eastus2',
             'source_region': 'eastus',
             'target_region': 'westus'
@@ -47,21 +46,22 @@ class ResourceMoverMoveCollectionScenarioTest(ScenarioTest):
             self.check('location', '{location}'),
             self.check('type', 'Microsoft.Migrate/moveCollections'),
             self.check('properties.sourceRegion', '{source_region}'),
-            self.check('properties.targetRegion', '{target_region}')
+            self.check('properties.targetRegion', '{target_region}'),
+            self.check('systemData.createdByType', 'User')
         ]
 
         # check creating a move-collection
-        self.cmd('az group create -n {collection_rg} -l {location}')
         self.cmd('az resource-mover move-collection create --location {location} --source-region {source_region} '
-                 '--target-region {target_region} --name {collection_name} --resource-group {collection_rg}', checks=basic_checks)
+                 '--target-region {target_region} --name {collection_name} --resource-group {rg}', checks=basic_checks)
 
         # check updating a move-collection
         self.cmd('az resource-mover move-collection update --name {collection_name} '
-                 '--resource-group {collection_rg} --identity type=SystemAssigned', checks=basic_checks + [
-                     self.check('identity.type', 'SystemAssigned')])
+                 '--resource-group {rg} --identity type=SystemAssigned --tags key=collection', checks=basic_checks + [
+                     self.check('identity.type', 'SystemAssigned'),
+                     self.check('tags.key', 'collection')])
 
         # check showing a move-collection
-        self.cmd('az resource-mover move-collection show --resource-group {collection_rg} --name {collection_name}',
+        self.cmd('az resource-mover move-collection show --resource-group {rg} --name {collection_name}',
                  checks=basic_checks)
 
         # check listing a move-collection by subscription
@@ -71,20 +71,17 @@ class ResourceMoverMoveCollectionScenarioTest(ScenarioTest):
         # ])
 
         # check deleting a move-collection
-        self.cmd('az resource-mover move-collection delete --resource-group {collection_rg} --name {collection_name} --yes')
+        self.cmd('az resource-mover move-collection delete --resource-group {rg} --name {collection_name} --yes')
 
         # check listing a move-collection by resource group
-        self.cmd('az resource-mover move-collection list --resource-group {collection_rg}', checks=[
+        self.cmd('az resource-mover move-collection list --resource-group {rg}', checks=[
                  self.check('length(@)', 0)])
 
-        # delete the resource group
-        self.cmd('az group delete -n {collection_rg} --yes')
-
+    @ResourceGroupPreparer(name_prefix="clitest_resourcemover_collection_", location="eastus2")
     def test_resourcemover_movecollection_e2e(self):
 
         self.kwargs.update({
-            'collection_rg': 'clitest_resourcemover_collection_rg',
-            'collection_name': 'clitest-movecollection-25',
+            'collection_name': 'clitest-movecollection-29',
             'location': 'eastus2',
             'source_region': 'eastus',
             'target_region': 'westus',
@@ -96,10 +93,9 @@ class ResourceMoverMoveCollectionScenarioTest(ScenarioTest):
             'move_resource_rg': 'rg-as-move-resource'
         })
 
-        # create a resource group and a move-collection
-        self.cmd('az group create -n {collection_rg} -l {location}')
+        # create a move-collection
         move_collection = self.cmd('az resource-mover move-collection create --location {location} --source-region {source_region} '
-                                   '--target-region {target_region} --name {collection_name} --resource-group {collection_rg} '
+                                   '--target-region {target_region} --name {collection_name} --resource-group {rg} '
                                    '--identity type=SystemAssigned').get_output_in_json()
         # keep the collection principal id for role assignment
         # keep the subscription ARM id as role assignment scope
@@ -151,29 +147,29 @@ class ResourceMoverMoveCollectionScenarioTest(ScenarioTest):
                  '--scope {role_assignment_scope}')
 
         # add the vNet as a move-resource to the move-collection
-        self.cmd('az resource-mover move-resource add --resource-group {collection_rg} --move-collection-name {collection_name} '
+        self.cmd('az resource-mover move-resource add --resource-group {rg} --move-collection-name {collection_name} '
                  '--name {move_resource_vnet} --source-id {source_vnet_id} --resource-settings {vnet_resource_settings}')
-        self.cmd('az resource-mover move-resource add --resource-group {collection_rg} --move-collection-name {collection_name} '
+        self.cmd('az resource-mover move-resource add --resource-group {rg} --move-collection-name {collection_name} '
                  '--name {move_resource_rg} --source-id {source_rg_id} --resource-settings {rg_resource_settings}')
 
         # list-required-for
-        self.cmd('az resource-mover move-collection list-required-for --resource-group {collection_rg} --move-collection-name '
+        self.cmd('az resource-mover move-collection list-required-for --resource-group {rg} --move-collection-name '
                  '{collection_name} --source-id {source_vnet_id}', checks=[
                      self.check('length(sourceIds)', 0)])
 
         # list-unresolved-dependency
-        self.cmd('az resource-mover move-collection list-unresolved-dependency --resource-group {collection_rg} '
+        self.cmd('az resource-mover move-collection list-unresolved-dependency --resource-group {rg} '
                  '--move-collection-name {collection_name}', checks=[
                      self.check('length(@)', 0)])
 
         # resolve-dependency
-        self.cmd('az resource-mover move-collection resolve-dependency --resource-group {collection_rg} '
+        self.cmd('az resource-mover move-collection resolve-dependency --resource-group {rg} '
                  '--move-collection-name {collection_name}', checks=[
-                     self.check('resourceGroup', '{collection_rg}'),
+                     self.check('resourceGroup', '{rg}'),
                      self.check('status', 'Succeeded')])
 
         # list all the move-resources in move-collection
-        move_resources = self.cmd('az resource-mover move-resource list --resource-group {collection_rg} '
+        move_resources = self.cmd('az resource-mover move-resource list --resource-group {rg} '
                                   '--move-collection-name {collection_name}', checks=[
                                       self.check('length(@)', 2)]).get_output_in_json()
 
@@ -190,13 +186,13 @@ class ResourceMoverMoveCollectionScenarioTest(ScenarioTest):
                 })
 
         def check_move_state(target_state):
-            # showing the move-resource in move-collection, chen the move-resource's moveState
-            self.cmd('az resource-mover move-resource show --resource-group {collection_rg} '
+            # showing the move-resource in move-collection, check the move-resource's moveState
+            self.cmd('az resource-mover move-resource show --resource-group {rg} '
                      '--move-collection-name {collection_name} --name {move_resource_vnet}', checks=[
                          self.check('name', '{move_resource_vnet}'),
                          self.check('properties.sourceId', '{source_vnet_id}'),
                          self.check('properties.moveStatus.moveState', target_state)])
-            self.cmd('az resource-mover move-resource show --resource-group {collection_rg} '
+            self.cmd('az resource-mover move-resource show --resource-group {rg} '
                      '--move-collection-name {collection_name} --name {move_resource_rg}', checks=[
                          self.check('name', '{move_resource_rg}'),
                          self.check('properties.sourceId', '{source_rg_id}'),
@@ -206,30 +202,28 @@ class ResourceMoverMoveCollectionScenarioTest(ScenarioTest):
 
         # prepare
         self.cmd('az resource-mover move-collection prepare --move-resources {move_resource_vnet_id} '
-                 '{move_resource_rg_id} --name {collection_name} --resource-group {collection_rg}', checks=[
-                     self.check('resourceGroup', '{collection_rg}'),
+                 '{move_resource_rg_id} --name {collection_name} --resource-group {rg}', checks=[
+                     self.check('resourceGroup', '{rg}'),
                      self.check('status', 'Succeeded')])
         check_move_state('MovePending')
 
         # initiate-move
         self.cmd('az resource-mover move-collection initiate-move --move-resources {move_resource_vnet_id} '
-                 '{move_resource_rg_id} --name {collection_name} --resource-group {collection_rg}', checks=[
-                     self.check('resourceGroup', '{collection_rg}'),
+                 '{move_resource_rg_id} --name {collection_name} --resource-group {rg}', checks=[
+                     self.check('resourceGroup', '{rg}'),
                      self.check('status', 'Succeeded')])
         check_move_state('CommitPending')
 
         # commit
         self.cmd('az resource-mover move-collection commit --move-resources {move_resource_vnet_id} '
-                 '{move_resource_rg_id} --name {collection_name} --resource-group {collection_rg}', checks=[
-                     self.check('resourceGroup', '{collection_rg}'),
+                 '{move_resource_rg_id} --name {collection_name} --resource-group {rg}', checks=[
+                     self.check('resourceGroup', '{rg}'),
                      self.check('status', 'Succeeded')])
         check_move_state('DeleteSourcePending')
 
         # delete the source resources
         self.cmd('az network vnet delete -g {source_rg} -n {source_vnet}')
         self.cmd('az group delete -g {source_rg} --yes')
-        time.sleep(60)  # sleep to wait moveState change
-        check_move_state('ResourceMoveCompleted')
 
         # check the move-resources are deployed in target region
         self.cmd('az group show -n {target_rg}', checks=[
@@ -237,14 +231,13 @@ class ResourceMoverMoveCollectionScenarioTest(ScenarioTest):
         self.cmd('az network vnet show -g {target_rg} -n {target_vnet}', checks=[
             self.check('location', '{target_region}')])
 
-        # delete the move-resources, the move collection and the resource group
+        # delete the move-resources and the move collection
         self.cmd('az resource-mover move-collection bulk-remove --move-resources {move_resource_vnet_id} '
-                 '{move_resource_rg_id} --name {collection_name} --resource-group {collection_rg}', checks=[
-                     self.check('resourceGroup', '{collection_rg}'),
+                 '{move_resource_rg_id} --name {collection_name} --resource-group {rg}', checks=[
+                     self.check('resourceGroup', '{rg}'),
                      self.check('status', 'Succeeded')])
         self.cmd('az resource-mover move-collection delete --name {collection_name} --resource-group '
-                 '{collection_rg} --yes')
-        self.cmd('az group delete -n {collection_rg} --yes')
+                 '{rg} --yes')
 
 
 class ResourceMoverMoveResourceScenarioTest(ScenarioTest):
@@ -256,10 +249,10 @@ class ResourceMoverMoveResourceScenarioTest(ScenarioTest):
             replay_processors=[RoleAssignmentReplacer()]
         )
 
+    @ResourceGroupPreparer(name_prefix="clitest_resourcemover_collection_", location="eastus2")
     def test_resourcemover_moveresource_basic(self):
         self.kwargs.update({
-            'collection_rg': 'clitest_resourcemover_collection_rg',
-            'collection_name': 'clitest-movecollection-16',
+            'collection_name': 'clitest-movecollection-91',
             'location': 'eastus2',
             'source_region': 'eastus',
             'target_region': 'westus',
@@ -270,10 +263,9 @@ class ResourceMoverMoveResourceScenarioTest(ScenarioTest):
             'target_rg': 'clitest_resourcemover_target_rg'
         })
 
-        # create a resource group and a move-collection
-        self.cmd('az group create -n {collection_rg} -l {location}')
+        # create a move-collection
         move_collection = self.cmd('az resource-mover move-collection create --location {location} --source-region {source_region} '
-                                   '--target-region {target_region} --name {collection_name} --resource-group {collection_rg} '
+                                   '--target-region {target_region} --name {collection_name} --resource-group {rg} '
                                    '--identity type=SystemAssigned').get_output_in_json()
         # keep the collection principal id for role assignment
         # keep the subscription ARM id as role assignment scope
@@ -312,28 +304,27 @@ class ResourceMoverMoveResourceScenarioTest(ScenarioTest):
                  '--scope {role_assignment_scope}')
 
         # add the vNet as a move-resource to the move-collection
-        self.cmd('az resource-mover move-resource add --resource-group {collection_rg} --move-collection-name '
+        self.cmd('az resource-mover move-resource add --resource-group {rg} --move-collection-name '
                  '{collection_name} --name {move_resource_vnet} --source-id {source_vnet_id} --resource-settings {resource_settings}')
 
         # list all the move-resources in move-collection
-        self.cmd('az resource-mover move-resource list --resource-group {collection_rg} '
+        self.cmd('az resource-mover move-resource list --resource-group {rg} '
                  '--move-collection-name {collection_name}', checks=[
                      self.check('length(@)', 1)])
 
         # test showing the move-resource in move-collection
-        self.cmd('az resource-mover move-resource show --resource-group {collection_rg} --move-collection-name {collection_name} '
+        self.cmd('az resource-mover move-resource show --resource-group {rg} --move-collection-name {collection_name} '
                  '--name {move_resource_vnet}', checks=[
                      self.check('name', '{move_resource_vnet}'),
                      self.check('properties.sourceId', '{source_vnet_id}'),
                      self.check('properties.moveStatus.moveState', 'PreparePending')])
 
         # test deleting the move-resource in the move-collection
-        self.cmd('az resource-mover move-resource delete --resource-group {collection_rg} --move-collection-name {collection_name} '
+        self.cmd('az resource-mover move-resource delete --resource-group {rg} --move-collection-name {collection_name} '
                  '--name {move_resource_vnet} --yes')
 
-        # delete the move-collection and resource group
-        self.cmd('az resource-mover move-collection delete --name {collection_name} --resource-group {collection_rg} --yes')
-        self.cmd('az group delete -n {collection_rg} --yes')
+        # delete the move-collection
+        self.cmd('az resource-mover move-collection delete --name {collection_name} --resource-group {rg} --yes')
 
         # delete the vNet and resource group
         self.cmd('az network vnet delete -g {source_rg} -n {source_vnet}')

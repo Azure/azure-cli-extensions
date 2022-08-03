@@ -5,7 +5,7 @@
 
 # pylint: disable=unused-argument,too-many-locals
 
-from azext_k8s_extension.utils import (
+from .utils import (
     get_cluster_rp_api_version,
     is_dogfood_cluster,
     read_config_settings_file,
@@ -226,9 +226,9 @@ def update_k8s_extension(
     cluster_name,
     name,
     cluster_type,
-    auto_upgrade_minor_version="",
-    release_train="",
-    version="",
+    auto_upgrade_minor_version=None,
+    release_train=None,
+    version=None,
     configuration_settings=None,
     configuration_protected_settings=None,
     configuration_settings_file=None,
@@ -245,7 +245,7 @@ def update_k8s_extension(
         or configuration_protected_settings_file
     ):
         msg = (
-            "Updating properties in --config-settings or --config-protected-settings may lead to undesirable state"
+            "Updating properties in --configuration-settings or --configuration-protected-settings may lead to undesirable state"
             " if the cluster extension type does not support it. Please refer to the documentation of the"
             " cluster extension service to check if updates to these properties is supported."
             " Do you wish to proceed?"
@@ -261,13 +261,14 @@ def update_k8s_extension(
     )
     extension_type_lower = extension.extension_type.lower()
 
-    config_settings = {}
-    config_protected_settings = {}
+    config_settings = None
+    config_protected_settings = None
     # Get Configuration Settings from file
     if configuration_settings_file is not None:
         config_settings = read_config_settings_file(configuration_settings_file)
 
     if configuration_settings is not None:
+        config_settings = {}
         for dicts in configuration_settings:
             for key, value in dicts.items():
                 config_settings[key] = value
@@ -279,6 +280,7 @@ def update_k8s_extension(
         )
 
     if configuration_protected_settings is not None:
+        config_protected_settings = {}
         for dicts in configuration_protected_settings:
             for key, value in dicts.items():
                 config_protected_settings[key] = value
@@ -295,6 +297,7 @@ def update_k8s_extension(
         version,
         config_settings,
         config_protected_settings,
+        extension,
         yes,
     )
 

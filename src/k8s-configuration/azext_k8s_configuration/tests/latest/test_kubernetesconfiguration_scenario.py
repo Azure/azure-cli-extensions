@@ -21,8 +21,8 @@ class K8sConfigurationScenarioTest(ScenarioTest):
         # --------------------------------------------------------------------
         self.kwargs.update({
             'name': 'test-config',
-            'cluster_name': 'test-cluster',
-            'rg': 'cli_recordings_testing',
+            'cluster_name': 'arc-cluster',
+            'rg': 'azurecli-tests',
             'repo_url': 'git://github.com/anubhav929/flux-get-started',
             'operator_instance_name': 'test-config-name',
             'operator_namespace': 'test-config-namespace',
@@ -83,8 +83,8 @@ class K8sConfigurationScenarioTest(ScenarioTest):
         # --------------------------------------------------------------------
         self.kwargs.update({
             'name': 'test-config2',
-            'cluster_name': 'test-cluster',
-            'rg': 'cli_recordings_testing',
+            'cluster_name': 'arc-cluster',
+            'rg': 'azurecli-tests',
             'repo_url': 'https://github.com/jonathan-innis/helm-operator-get-started-private.git',
             'operator_instance_name': 'test-config2-name',
             'operator_namespace': 'test-config2-namespace',

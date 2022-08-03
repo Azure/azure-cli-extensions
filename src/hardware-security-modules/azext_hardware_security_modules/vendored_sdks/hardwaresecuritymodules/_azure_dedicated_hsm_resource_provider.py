@@ -15,7 +15,10 @@ if TYPE_CHECKING:
     # pylint: disable=unused-import,ungrouped-imports
     from typing import Any, Optional
 
+    from azure.core.credentials import TokenCredential
+
 from ._configuration import AzureDedicatedHSMResourceProviderConfiguration
+from .operations import Operations
 from .operations import DedicatedHsmOperations
 from . import models
 
@@ -23,13 +26,16 @@ from . import models
 class AzureDedicatedHSMResourceProvider(object):
     """The Azure management API provides a RESTful set of web services that interact with Azure Dedicated HSM RP.
 
+    :ivar operations: Operations operations
+    :vartype operations: azure_dedicated_hsm_resource_provider.operations.Operations
     :ivar dedicated_hsm: DedicatedHsmOperations operations
-    :vartype dedicated_hsm: azure.mgmt.hardwaresecuritymodules.operations.DedicatedHsmOperations
+    :vartype dedicated_hsm: azure_dedicated_hsm_resource_provider.operations.DedicatedHsmOperations
     :param credential: Credential needed for the client to connect to Azure.
     :type credential: ~azure.core.credentials.TokenCredential
     :param subscription_id: Subscription credentials which uniquely identify Microsoft Azure subscription. The subscription ID forms part of the URI for every service call.
     :type subscription_id: str
     :param str base_url: Service URL
+    :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
     """
 
     def __init__(
@@ -47,8 +53,11 @@ class AzureDedicatedHSMResourceProvider(object):
 
         client_models = {k: v for k, v in models.__dict__.items() if isinstance(v, type)}
         self._serialize = Serializer(client_models)
+        self._serialize.client_side_validation = False
         self._deserialize = Deserializer(client_models)
 
+        self.operations = Operations(
+            self._client, self._config, self._serialize, self._deserialize)
         self.dedicated_hsm = DedicatedHsmOperations(
             self._client, self._config, self._serialize, self._deserialize)
 

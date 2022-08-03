@@ -48,7 +48,7 @@ setup(
     description='Microsoft Azure Command-Line Tools MicrosoftDatadogClient Extension',
     author='Microsoft Corporation',
     author_email='azpycli@microsoft.com',
-    url='https://github.com/Azure/azure-cli-extensions/tree/master/src/datadog',
+    url='https://github.com/Azure/azure-cli-extensions/tree/main/src/datadog',
     long_description=README + '\n\n' + HISTORY,
     license='MIT',
     classifiers=CLASSIFIERS,

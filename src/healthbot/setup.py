@@ -48,7 +48,7 @@ setup(
     description='Microsoft Azure Command-Line Tools HealthbotClient Extension',
     author='Microsoft Corporation',
     author_email='azpycli@microsoft.com',
-    url='https://github.com/Azure/azure-cli-extensions/tree/master/src/healthbot',
+    url='https://github.com/Azure/azure-cli-extensions/tree/main/src/healthbot',
     long_description=README + '\n\n' + HISTORY,
     license='MIT',
     classifiers=CLASSIFIERS,

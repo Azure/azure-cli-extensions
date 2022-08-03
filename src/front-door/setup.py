@@ -36,7 +36,7 @@ setup(
     license='MIT',
     author='Microsoft Corporation',
     author_email='azpycli@microsoft.com',
-    url='https://github.com/Azure/azure-cli-extensions/tree/master/src/front-door',
+    url='https://github.com/Azure/azure-cli-extensions/tree/main/src/front-door',
     long_description=README + '\n\n' + HISTORY,
     classifiers=CLASSIFIERS,
     package_data={'azext_front_door': ['azext_metadata.json']},

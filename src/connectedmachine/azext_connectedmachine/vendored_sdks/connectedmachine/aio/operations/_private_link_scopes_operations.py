@@ -59,7 +59,7 @@ class PrivateLinkScopesOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-05-20"
+        api_version = "2022-03-10"
         accept = "application/json"
 
         def prepare_request(next_link=None):
@@ -129,7 +129,7 @@ class PrivateLinkScopesOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-05-20"
+        api_version = "2022-03-10"
         accept = "application/json"
 
         def prepare_request(next_link=None):
@@ -192,7 +192,7 @@ class PrivateLinkScopesOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-05-20"
+        api_version = "2022-03-10"
         accept = "application/json"
 
         # Construct URL
@@ -312,7 +312,7 @@ class PrivateLinkScopesOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-05-20"
+        api_version = "2022-03-10"
         accept = "application/json"
 
         # Construct URL
@@ -376,7 +376,7 @@ class PrivateLinkScopesOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-05-20"
+        api_version = "2022-03-10"
         content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
 
@@ -449,7 +449,7 @@ class PrivateLinkScopesOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-05-20"
+        api_version = "2022-03-10"
         content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
 
@@ -513,7 +513,7 @@ class PrivateLinkScopesOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-05-20"
+        api_version = "2022-03-10"
         accept = "application/json"
 
         # Construct URL
@@ -573,7 +573,7 @@ class PrivateLinkScopesOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-05-20"
+        api_version = "2022-03-10"
         accept = "application/json"
 
         # Construct URL

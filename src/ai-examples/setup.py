@@ -47,7 +47,7 @@ setup(
     description='Add AI powered examples to help content.',
     author='Matthew Booe',
     author_email='mabooe@microsoft.com',
-    url='https://github.com/Azure/azure-cli-extensions/tree/master/src/ai-examples',
+    url='https://github.com/Azure/azure-cli-extensions/tree/main/src/ai-examples',
     long_description='Improve user experience by adding AI powered examples to command help content.',
     license='MIT',
     classifiers=CLASSIFIERS,

@@ -68,6 +68,8 @@ try:
     from ._models_py3 import ExpressionRoot
     from ._models_py3 import ExpressionTraces
     from ._models_py3 import ExtendedErrorInfo
+    from ._models_py3 import FlowAccessControlConfiguration
+    from ._models_py3 import FlowAccessControlConfigurationPolicy
     from ._models_py3 import FlowEndpoints
     from ._models_py3 import FlowEndpointsConfiguration
     from ._models_py3 import GenerateUpgradedDefinitionParameters
@@ -107,6 +109,7 @@ try:
     from ._models_py3 import IntegrationServiceEnvironmentSkuList
     from ._models_py3 import IntegrationServiceEnvironmentSubnetNetworkHealth
     from ._models_py3 import IpAddress
+    from ._models_py3 import IpAddressRange
     from ._models_py3 import JsonSchema
     from ._models_py3 import KeyVaultKey
     from ._models_py3 import KeyVaultKeyAttributes

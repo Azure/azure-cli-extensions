@@ -3,6 +3,39 @@
 Release History
 ===============
 
+0.16.0
+++++++
+* [2022-06-30] Version intended to work with QDK version 0.25.218240
+* Providers participating in the "Credits for All" program will automatically be added when you create a workspace with the CLI. See https://docs.microsoft.com/en-us/azure/quantum/credits-faq
+* You can pass a TargetCapability value to the Q# compiler by adding the --target-capability parameter to an az quantum run, execute, or job submit command.
+
+0.15.0
+++++++
+* [2022-04-25] Version intended to work with QDK version v0.24.208024
+* Extended error message and added help examples for provider/SKU '-r' parameter.
+* Fixed issue azure-cli-extensions/4697, which allows setting a polling interval when waiting for an Azure Quantum job to complete.
+* Outputting job submission progress messages to stderr so stdout will only contain valid JSON by default.
+* Added 'Microsoft.AzureQuantum-' prefix to workspace creation deployment name.
+* Increased workspace creation timeout to 15 minutes.
+
+0.14.0
+++++++
+* [2022-03-30] Version intended to work with QDK version v0.24.201332
+* Extended error message in failed jobs to include details originated from the provider.
+* Completed support in workspace creation for all storage account types allowed in the Azure Quantum service.
+* Improved visual feedback in 'az quantum execute' command indicating to the user that the process has started.
+
+0.13.0
+++++++
+* [2022-03-03] Version intended to work with QDK version v0.23.195983
+* Fixed workspace race condition using an Azure Resource Manager template to synchronize deployment.
+
+0.12.0
+++++++
+* [2022-01-26] Version intended to work with QDK version v0.22.187631
+* Updated data plane generated client to API version 2021-11-01-preview.
+* Added support for displaying cost estimate for a job when available.
+
 0.11.0
 ++++++
 * [2021-12-14] Version intended to work with QDK version v0.21.2112.180703
@@ -37,7 +70,7 @@ Release History
 
 0.6.1
 ++++++
-* [2021-07-22] Reduced the lenghth of the user agent reported by the tool.
+* [2021-07-22] Reduced the length of the user agent reported by the tool.
 
 0.6.0
 ++++++

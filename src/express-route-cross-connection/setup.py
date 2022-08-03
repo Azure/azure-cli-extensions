@@ -35,7 +35,7 @@ setup(
     license='MIT',
     author='Microsoft Corporation',
     author_email='azpycli@microsoft.com',
-    url='https://github.com/Azure/azure-cli-extensions/tree/master/src/express-route-cross-connection',
+    url='https://github.com/Azure/azure-cli-extensions/tree/main/src/express-route-cross-connection',
     classifiers=CLASSIFIERS,
     package_data={'azext_expressroutecrossconnection': ['azext_metadata.json']},
     packages=find_packages(),

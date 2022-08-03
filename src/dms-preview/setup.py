@@ -33,7 +33,7 @@ setup(
     license='MIT',
     author='Artyom Pavlichenko',
     author_email='arpavlic@microsoft.com',
-    url='https://github.com/Azure/azure-cli-extensions/tree/master/src/dms-preview',
+    url='https://github.com/Azure/azure-cli-extensions/tree/main/src/dms-preview',
     classifiers=CLASSIFIERS,
     packages=find_packages(exclude=["test"]),
     package_data={'azext_dms': ['azext_metadata.json']},

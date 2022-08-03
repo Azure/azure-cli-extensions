@@ -3,6 +3,50 @@
 Release History
 ===============
 
+1.2.5
+++++++++++++++++++
+* microsoft.azuremonitor.containers: ContainerInsights Extension Managed Identity Auth Onboarding related bug fixes.
+* microsoft.openservicemesh: Fix osm-arc installations for non-connectedClusters
+* k8s-extension azuredefender namespace to mdc
+
+1.2.4
+++++++++++++++++++
+* microsoft.azureml.kubernetes: Do not invoke `create_or_update` for already existed resources.
+* microsoft.azuremonitor.containers: ContainerInsights Extension Managed Identity Auth Onboarding updates.
+
+1.2.3
+++++++++++++++++++
+* Fix warning message returned on PATCH
+* microsoft.azureml.kubernetes: remove deprecated warning message.
+* microsoft.azureml.kubernetes: Use cluster scale to control clusterPurpose and inferenceRouterHA
+
+1.2.2
+++++++++++++++++++
+* microsoft.azureml.kubernetes: Disable service bus by default, do not create relay for managed clusters.
+* microsoft.azureml.kubernetes: Rename inferenceLoadBalancerHA to inferenceRouterHA and unify related logic.
+
+1.2.1
+++++++++++++++++++
+* Provide no default values for Patch of Extension
+* microsoft.azureml.kubernetes: clusterip
+
+1.2.0
+++++++++++++++++++
+* microsoft.azureml.kubernetes: Update AzureMLKubernetes install parameters on inferenceRouterServiceType and internalLoadBalancerProvider
+* microsoft.openservicemesh: Change extension validation logic osm-arc 
+* microsoft.azuremonitor.containers: Add Managed Identity Auth support for ContainerInsights Extension 
+* microsoft.azuremonitor.containers: Bring back containerInsights solution addition in MSI mode 
+
+1.1.0
+++++++++++++++++++
+* Migrate Extensions api-version to 2022-03-01
+* microsoft.azureml.kubernetes: Remove inference private review warning message
+* microsoft.openservicemesh: Enable System-assigned identity
+
+1.0.4
+++++++++++++++++++
+* microsoft.azureml.kubernetes: Support SSL secret
+
 1.0.3
 ++++++++++++++++++
 * Remove identity creation for calls to Microsoft.ResourceConnector

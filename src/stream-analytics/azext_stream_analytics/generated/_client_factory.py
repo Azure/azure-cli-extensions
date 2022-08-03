@@ -38,3 +38,11 @@ def cf_function(cli_ctx, *_):
 
 def cf_subscription(cli_ctx, *_):
     return cf_stream_analytics_cl(cli_ctx).subscriptions
+
+
+def cf_cluster(cli_ctx, *_):
+    return cf_stream_analytics_cl(cli_ctx).clusters
+
+
+def cf_private_endpoint(cli_ctx, *_):
+    return cf_stream_analytics_cl(cli_ctx).private_endpoints
