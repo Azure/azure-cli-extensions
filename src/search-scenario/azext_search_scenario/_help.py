@@ -12,10 +12,10 @@ type: command
 short-summary: Fuzzy search the E2E scenario examples you need
 long-summary: >
 
-    This is an intelligent search tool that can help you find and explore the E2E scenarios you need.
-    It supports fuzzy search, and will sort the searched results according to the matching degree from high to low.
-    It supports flexible custom settings and can search content according to the scope and matching rules you want.
-    At the same time, it helps you use these E2E scenarios more efficiently with a friendly interactive process.\n
+    This a search tool that can help you find and explore E2E scenario samples!
+    It supports fuzzy search and sort the searched results according to the matching degree from high to low.
+    It supports flexible search scenarios, you can specify the search scope and customize the matching rules.
+    Moreover, it helps you execute these E2E scenarios more efficiently with a friendly walk-through process.\n
 
     There are some custom configurations:\n
 
