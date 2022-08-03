@@ -233,14 +233,17 @@ GIT_REPOSITORY = "GitRepository"
 CONNECTED_CLUSTER_TYPE = "connectedclusters"
 MANAGED_CLUSTER_TYPE = "managedclusters"
 APPLIANCE_TYPE = "appliances"
+PROVISIONED_CLUSTER_TYPE = "provisionedclusters"
 
 MANAGED_CLUSTER_RP = "Microsoft.ContainerService"
 CONNECTED_CLUSTER_RP = "Microsoft.Kubernetes"
 APPLIANCE_RP = "Microsoft.ResourceConnector"
+HYBRIDCONTAINERSERVICE_RP = "microsoft.hybridcontainerservice"
 
 CONNECTED_CLUSTER_API_VERSION = "2021-10-01"
 MANAGED_CLUSTER_API_VERSION = "2021-10-01"
 APPLIANCE_API_VERSION = "2021-10-31-preview"
+HYBRIDCONTAINERSERVICE_API_VERSION = "2022-05-01-preview"
 
 KUBERNETES_MAX_NAME_SIZE = 63
 

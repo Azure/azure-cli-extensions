@@ -43,6 +43,12 @@ def load_arguments(self, _):
                    'of the proxy resource holding details of HCI ArcSetting information.')
         c.argument('arc_instance_resource_group', options_list=['--instance-rg'], type=str, help='The resource group '
                    'that hosts the Arc agents, ie. Hybrid Compute Machine resources.')
+        c.argument('arc_application_client_id', type=str, help='App id of arc AAD identity.')
+        c.argument('arc_application_tenant_id', type=str, help='Tenant id of arc AAD identity.')
+        c.argument('arc_service_principal_object_id', type=str, help='Object id of arc AAD service principal.')
+        c.argument('arc_application_object_id', type=str, help='Object id of arc AAD identity.')
+        c.argument('connectivity_properties', type=validate_file_or_dict, help='contains connectivity related '
+                   'configuration for ARC resources Expected value: json-string/json-file/@json-file.')
         c.argument('created_by', type=str, help='The identity that created the resource.', arg_group='System Data')
         c.argument('created_by_type', arg_type=get_enum_type(['User', 'Application', 'ManagedIdentity', 'Key']),
                    help='The type of identity that created the resource.', arg_group='System Data')
@@ -54,7 +60,28 @@ def load_arguments(self, _):
         c.argument('last_modified_at', help='The timestamp of resource last modification (UTC)', arg_group='System '
                    'Data')
 
+    with self.argument_context('stack-hci arc-setting update') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('cluster_name', type=str, help='The name of the cluster.', id_part='name')
+        c.argument('arc_setting_name', options_list=['--name', '-n', '--arc-setting-name'], type=str, help='The name '
+                   'of the proxy resource holding details of HCI ArcSetting information.', id_part='child_name_1')
+        c.argument('tags', tags_type)
+        c.argument('connectivity_properties', type=validate_file_or_dict, help='contains connectivity related '
+                   'configuration for ARC resources Expected value: json-string/json-file/@json-file.')
+
     with self.argument_context('stack-hci arc-setting delete') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('cluster_name', type=str, help='The name of the cluster.', id_part='name')
+        c.argument('arc_setting_name', options_list=['--name', '-n', '--arc-setting-name'], type=str, help='The name '
+                   'of the proxy resource holding details of HCI ArcSetting information.', id_part='child_name_1')
+
+    with self.argument_context('stack-hci arc-setting create-identity') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('cluster_name', type=str, help='The name of the cluster.')
+        c.argument('arc_setting_name', options_list=['--name', '-n', '--arc-setting-name'], type=str, help='The name '
+                   'of the proxy resource holding details of HCI ArcSetting information.')
+
+    with self.argument_context('stack-hci arc-setting generate-password') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('cluster_name', type=str, help='The name of the cluster.', id_part='name')
         c.argument('arc_setting_name', options_list=['--name', '-n', '--arc-setting-name'], type=str, help='The name '
@@ -85,6 +112,8 @@ def load_arguments(self, _):
                    'management from the Azure portal.')
         c.argument('aad_client_id', type=str, help='App id of cluster AAD identity.')
         c.argument('aad_tenant_id', type=str, help='Tenant id of cluster AAD identity.')
+        c.argument('aad_application_object_id', type=str, help='Object id of cluster AAD identity.')
+        c.argument('aad_service_principal_object_id', type=str, help='Id of cluster identity service principal.')
         c.argument('desired_properties', action=AddDesiredProperties, nargs='+', help='Desired properties of the '
                    'cluster.')
         c.argument('created_by', type=str, help='The identity that created the resource.', arg_group='System Data')
@@ -111,6 +140,16 @@ def load_arguments(self, _):
                    'cluster.')
 
     with self.argument_context('stack-hci cluster delete') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('cluster_name', options_list=['--name', '-n', '--cluster-name'], type=str, help='The name of the '
+                   'cluster.', id_part='name')
+
+    with self.argument_context('stack-hci cluster create-identity') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('cluster_name', options_list=['--name', '-n', '--cluster-name'], type=str, help='The name of the '
+                   'cluster.')
+
+    with self.argument_context('stack-hci cluster wait') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('cluster_name', options_list=['--name', '-n', '--cluster-name'], type=str, help='The name of the '
                    'cluster.', id_part='name')

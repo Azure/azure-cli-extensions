@@ -1,5 +1,9 @@
 Release History
 ===============
+1.1.5
+---
+* Add service instance existance check before service creation
+
 1.1.4
 ---
 * Add warning that `az spring app-insights` don't support Enterprise tier.
