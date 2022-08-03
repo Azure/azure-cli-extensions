@@ -5,6 +5,7 @@
 
 
 # pylint: disable=unused-argument
+
 def cf_communication_identity(cli_ctx, kwargs):
     from azure.communication.identity import CommunicationIdentityClient
     connection_string = kwargs.pop('connection_string', None)
@@ -23,4 +24,12 @@ def cf_communication_phonenumbers(cli_ctx, kwargs):
     from azure.communication.phonenumbers import PhoneNumbersClient
     connection_string = kwargs.pop('connection_string', None)
     client = PhoneNumbersClient.from_connection_string(connection_string)
+    return client
+
+
+def cf_communication_chat(cli_ctx, kwargs):
+    from azure.communication.chat import ChatClient, CommunicationTokenCredential
+    endpoint = kwargs.pop('endpoint', None)
+    token = kwargs.pop('access_token', None)
+    client = ChatClient(endpoint, CommunicationTokenCredential(token))
     return client

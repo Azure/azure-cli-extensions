@@ -3,6 +3,11 @@
 Release History
 ===============
 
+1.2.0
+++++++
+* Add communication chat command group in preview mode.
+
+
 1.1.2
 ++++++
 * Add support for multiple SMS recipients.

@@ -9,6 +9,10 @@ az extension add --name communication
 
 Then set the `AZURE_COMMUNICATION_CONNECTION_STRING` environment variable with your ACS connection string.
 
+For chat module, set both `AZURE_COMMUNICAITON_ENDPOINT` and `AZURE_COMMUNICATION_ACCESS_TOKEN` environment variables.
+You can find your endpoint from your in Azure Portal under your communication resource, and an access token can be created with 
+```az communication identity issue-access-token --scope chat```.
+
 ### Included Features ###
 
 ##### Create #####
@@ -69,4 +73,60 @@ az communication phonenumbers list-phonenumbers
 ##### Show-Phonenumber #####
 ```
 az communication phonenumbers show-phonenumber --phonenumber "+1833xxxxxxx"
+```
+##### List-Threads #####
+```
+az communication chat list-threads --start-time "2022-07-14T10:20:30"
+```
+##### Create-Thread #####
+```
+az communication chat create-thread --topic "New Topic for Chat!" --idempotency-token "abc187xxxxxx"
+```
+##### Delete-Thread #####
+```
+az communication chat delete-thread --thread-id "19:xxxxxx"
+```
+##### List-Participants #####
+```
+az communication chat list-participants --thread-id "19:xxxxxx" --skip "5"
+```
+##### Add-Participant #####
+```
+az communication chat add-participant --thread-id "19:xxxxxx" --user-id "8:acs:xxxxxx" --display-name "John Doe" --start-time "2022-06-30T00:00:00"
+```
+##### Remove-Participant #####
+```
+az communication chat remove-participant --thread-id "19:xxxxxx" --user-id "8:acs:xxxxxx" 
+```
+##### Send-Message #####
+```
+az communication chat send-message --thread-id "19:xxxxxx" --display-name "John Doe" --content "Hello there!" --message-type "text"
+```
+##### List-Messages #####
+```
+az communication chat list-messages --thread-id "19:xxxxxx" --start-time "2022-07-14T10:20:30"
+```
+##### Get-Message #####
+```
+az communication chat get-message --thread-id "19:xxxxxx" --message-id "1xxxxxxxxxxxx"
+```
+##### Update-Message #####
+```
+az communication chat update-message --thread-id "19:xxxxxx" --message-id "1xxxxxxxxxxxx" --message_content "Hello there, again!"
+```
+##### Delete-Message #####
+```
+az communication chat delete-message --thread-id "19:xxxxxx" --message-id "1xxxxxxxxxxxx"
+```
+##### Update Topic #####
+```
+az communication chat update-topic --thread-id "19:xxxxxx" --topic "New topic!"
+```
+##### List-Read-Receipts #####
+```
+az communication chat list-read-receipts --thread-id "19:xxxxxx" --skip "5"
+```
+##### Send-Read-Receipt #####
+```
+az communication chat send-read-receipt --thread-id "19:xxxxxx" --message-id "1xxxxxxxxxxxx"
 ```
