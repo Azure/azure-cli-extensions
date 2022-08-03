@@ -29,9 +29,12 @@ def load_arguments(self, _):
                    options_list=['--cluster-name', '-c'],
                    help='Name of the Kubernetes cluster')
         c.argument('cluster_type',
-                   arg_type=get_enum_type(['connectedClusters', 'managedClusters', 'appliances']),
+                   arg_type=get_enum_type(['connectedClusters', 'managedClusters', 'appliances', 'provisionedClusters']),
                    options_list=['--cluster-type', '-t'],
-                   help='Specify Arc clusters or AKS managed clusters or Arc appliances.')
+                   help='Specify Arc clusters or AKS managed clusters or Arc appliances or provisionedClusters.')
+        c.argument('cluster_resource_provider',
+                   options_list=['--cluster-resource-provider', '--cluster-rp'],
+                   help='Cluster Resource Provider name for this clusterType (Required for provisionedClusters)')
         c.argument('scope',
                    arg_type=get_enum_type(['cluster', 'namespace']),
                    help='Specify the extension scope.')
