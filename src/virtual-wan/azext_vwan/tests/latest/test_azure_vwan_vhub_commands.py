@@ -7,6 +7,7 @@ import os
 import time
 
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, VirtualNetworkPreparer, record_only)
+from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 from azure.core.exceptions import HttpResponseError
 from .credential_replacer import VpnClientGeneratedURLReplacer
 
@@ -785,3 +786,54 @@ class P2SVpnGatewayVpnClientTestScenario(ScenarioTest):
         out = self.cmd('network p2s-vpn-gateway vpn-client generate -g {rg} -n {p2s_gateway}').get_output_in_json()
         self.assertIsNotNone(out['profileUrl'])
         self.assertTrue(out['profileUrl'].endswith('.zip'))
+
+
+class RoutingIntentClientTest(ScenarioTest):
+    @AllowLargeResponse(size_kb=10240)
+    @ResourceGroupPreparer(name_prefix="cli_test_routing_intent_", location="westus")
+    def test_routing_intent_crud(self):
+        self.kwargs.update({
+            "routing_intent_name": self.create_random_name("routing-intent-", 20),
+            "vwan_name": self.create_random_name("vwan-", 12),
+            "vhub_name": self.create_random_name("vhub-", 12),
+            "firewall_name": self.create_random_name("firewall-", 16)
+        })
+
+        self.cmd("network vwan create -n {vwan_name} -g {rg}")
+        self.cmd("network vhub create -n {vhub_name} -g {rg} --vwan {vwan_name} --address-prefix 10.0.1.0/24")
+
+        self.cmd("extension add -n azure-firewall")
+        self.kwargs["firewall_id"] = self.cmd(
+            "network firewall create -n {firewall_name} -g {rg} --vhub {vhub_name} --sku AZFW_Hub --count 1"
+        ).get_output_in_json()["id"]
+
+        self.cmd(
+            "network vhub routing-intent create -n {routing_intent_name} -g {rg} --vhub {vhub_name} "
+            "--routing-policies \"[{{name:InternetTraffic,destinations:[Internet],next-hop:{firewall_id}}},"
+            "{{name:PrivateTrafficPolicy,destinations:[PrivateTraffic],next-hop:{firewall_id}}}]\"",
+            checks=[
+                self.check("name", "{routing_intent_name}"),
+                self.check("length(routingPolicies)", 2)
+            ]
+        )
+        self.cmd(
+            "network vhub routing-intent list -g {rg} --vhub {vhub_name}",
+            checks=[
+                self.check("length(@)", 1),
+                self.check("[0].type", "Microsoft.Network/virtualHubs/routingIntent")
+            ]
+        )
+        self.cmd(
+            "network vhub routing-intent update -n {routing_intent_name} -g {rg} --vhub {vhub_name} "
+            "--routing-policies \"[{{name:InternetTraffic,destinations:[Internet],next-hop:{firewall_id}}}]\""
+        )
+        self.cmd(
+            "network vhub routing-intent show -n {routing_intent_name} -g {rg} --vhub {vhub_name}",
+            checks=[
+                self.check("name", "{routing_intent_name}"),
+                self.check("length(routingPolicies)", 1)
+            ]
+        )
+        self.cmd("network vhub routing-intent delete -n {routing_intent_name} -g {rg} --vhub {vhub_name} --yes")
+
+        self.cmd("extension remove -n azure-firewall")
