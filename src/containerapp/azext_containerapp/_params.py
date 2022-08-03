@@ -265,7 +265,8 @@ def load_arguments(self, _):
         c.argument('name', configured_default='name', id_part=None)
         c.argument('managed_env', configured_default='managed_env')
         c.argument('registry_server', configured_default='registry_server')
-        c.argument('source', help='Local directory path to upload to Azure container registry.')
+        # TODO fill in the link here once Cormac sends it
+        c.argument('source', help='Local directory path to upload to Azure container registry. If no dockerfile is present (called "Dockerfile" and in the project root), Oryx will be used to create a docker container based on the directory contents.') # See the supported Oryx runtimes here: <link>')
         c.argument('image', options_list=['--image', '-i'], help="Container image, e.g. publisher/image-name:tag.")
         c.argument('browse', help='Open the app in a web browser after creation and deployment, if possible.')
 

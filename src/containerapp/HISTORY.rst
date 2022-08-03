@@ -5,6 +5,7 @@ Release History
 
 0.3.9
 ++++++
+* 'az containerapp up': autogenerate a docker container with --source when no dockerfile present
 
 0.3.8
 ++++++
