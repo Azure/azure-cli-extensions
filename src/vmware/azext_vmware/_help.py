@@ -117,6 +117,16 @@ helps['vmware private-cloud delete-cmk-encryption'] = """
     short-summary: Delete a Customer Managed Keys Encryption from a private cloud.
 """
 
+helps['vmware private-cloud enable-cmk-encryption'] = """
+    type: command
+    short-summary: Enable a Customer Managed Keys Encryption to a private cloud.
+"""
+
+helps['vmware private-cloud disable-cmk-encryption'] = """
+    type: command
+    short-summary: Disable a Customer Managed Keys Encryption from a private cloud.
+"""
+
 helps['vmware private-cloud identity'] = """
     type: group
     short-summary: Commands for Managed Identity in a private cloud.
