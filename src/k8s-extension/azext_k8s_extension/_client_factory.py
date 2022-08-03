@@ -7,6 +7,7 @@ from azure.cli.core.commands.client_factory import get_mgmt_service_client
 from azure.cli.core.profiles import ResourceType
 from . import consts
 
+
 def cf_k8s_extension(cli_ctx, **kwargs):
     from .vendored_sdks import SourceControlConfigurationClient
     return get_mgmt_service_client(cli_ctx, SourceControlConfigurationClient, **kwargs)
