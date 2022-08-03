@@ -30,7 +30,7 @@ CLASSIFIERS = [
 ]
 
 DEPENDENCIES = [
-    'jinja2~=2.10'
+    'jinja2~=3.0.3'
 ]
 
 setup(
