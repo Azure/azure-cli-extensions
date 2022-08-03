@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "storage-mover job-run",
 )
 class __CMDGroup(AAZCommandGroup):
-    """Manage job run resource.
+    """Manage Job Run resource.
     """
     pass
 

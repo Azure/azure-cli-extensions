@@ -16,7 +16,7 @@ from azure.cli.core.aaz import *
     is_preview=True,
 )
 class List(AAZCommand):
-    """Lists all job definitions in a project.
+    """Lists all Job Definitions in a Project.
     """
 
     _aaz_info = {
@@ -42,15 +42,15 @@ class List(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.project_name = AAZStrArg(
-            options=["-p", "--project-name"],
-            help="The name of the project resource.",
+            options=["--project-name"],
+            help="The name of the Project resource.",
             required=True,
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
         _args_schema.storage_mover_name = AAZStrArg(
-            options=["-s", "--storage-mover-name"],
+            options=["--storage-mover-name"],
             help="The name of the Storage Mover resource.",
             required=True,
         )
@@ -170,7 +170,7 @@ class List(AAZCommand):
                 flags={"read_only": True},
             )
             _element.properties = AAZObjectType(
-                flags={"client_flatten": True, "read_only": True},
+                flags={"required": True, "client_flatten": True, "read_only": True},
             )
             _element.system_data = AAZObjectType(
                 serialized_name="systemData",
@@ -191,7 +191,7 @@ class List(AAZCommand):
             )
             properties.copy_mode = AAZStrType(
                 serialized_name="copyMode",
-                flags={"read_only": True},
+                flags={"required": True, "read_only": True},
             )
             properties.description = AAZStrType(
                 flags={"read_only": True},

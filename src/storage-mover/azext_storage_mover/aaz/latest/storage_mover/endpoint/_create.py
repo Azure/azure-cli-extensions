@@ -16,7 +16,7 @@ from azure.cli.core.aaz import *
     is_preview=True,
 )
 class Create(AAZCommand):
-    """Creates an endpoint resource.
+    """Creates an Endpoint resource, which represents a data transfer source or destination.
     """
 
     _aaz_info = {
@@ -44,7 +44,7 @@ class Create(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.endpoint_name = AAZStrArg(
             options=["-n", "--name", "--endpoint-name"],
-            help="The name of the endpoint resource.",
+            help="The name of the Endpoint resource.",
             required=True,
             id_part="child_name_1",
         )
@@ -52,7 +52,7 @@ class Create(AAZCommand):
             required=True,
         )
         _args_schema.storage_mover_name = AAZStrArg(
-            options=["-s", "--storage-mover-name"],
+            options=["--storage-mover-name"],
             help="The name of the Storage Mover resource.",
             required=True,
             id_part="name",
@@ -72,7 +72,7 @@ class Create(AAZCommand):
         _args_schema.description = AAZStrArg(
             options=["--description"],
             arg_group="Properties",
-            help="A description for the endpoint.",
+            help="A description for the Endpoint.",
         )
 
         azure_storage_blob_container = cls._args_schema.azure_storage_blob_container
@@ -88,6 +88,11 @@ class Create(AAZCommand):
         )
 
         nfs_mount = cls._args_schema.nfs_mount
+        nfs_mount.export = AAZStrArg(
+            options=["export"],
+            help="The directory being exported from the server.",
+            required=True,
+        )
         nfs_mount.host = AAZStrArg(
             options=["host"],
             help="The host name or IP address of the server exporting the file system.",
@@ -97,11 +102,6 @@ class Create(AAZCommand):
             options=["nfs-version"],
             help="The NFS protocol version.",
             enum={"NFSauto": "NFSauto", "NFSv3": "NFSv3", "NFSv4": "NFSv4"},
-        )
-        nfs_mount.remote_export = AAZStrArg(
-            options=["remote-export"],
-            help="The directory being exported from the server.",
-            required=True,
         )
         return cls._args_schema
 
@@ -189,7 +189,7 @@ class Create(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
-            _builder.set_prop("properties", AAZObjectType)
+            _builder.set_prop("properties", AAZObjectType, ".", typ_kwargs={"flags": {"required": True}})
 
             properties = _builder.get(".properties")
             if properties is not None:
@@ -206,9 +206,9 @@ class Create(AAZCommand):
 
             disc_nfs_mount = _builder.get(".properties{endpointType:NfsMount}")
             if disc_nfs_mount is not None:
+                disc_nfs_mount.set_prop("export", AAZStrType, ".nfs_mount.export", typ_kwargs={"flags": {"required": True}})
                 disc_nfs_mount.set_prop("host", AAZStrType, ".nfs_mount.host", typ_kwargs={"flags": {"required": True}})
                 disc_nfs_mount.set_prop("nfsVersion", AAZStrType, ".nfs_mount.nfs_version")
-                disc_nfs_mount.set_prop("remoteExport", AAZStrType, ".nfs_mount.remote_export", typ_kwargs={"flags": {"required": True}})
 
             return self.serialize_content(_content_value)
 
@@ -236,7 +236,9 @@ class Create(AAZCommand):
             _schema_on_200.name = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200.properties = AAZObjectType()
+            _schema_on_200.properties = AAZObjectType(
+                flags={"required": True},
+            )
             _schema_on_200.system_data = AAZObjectType(
                 serialized_name="systemData",
                 flags={"read_only": True},
@@ -267,15 +269,14 @@ class Create(AAZCommand):
             )
 
             disc_nfs_mount = cls._schema_on_200.properties.discriminate_by("endpoint_type", "NfsMount")
+            disc_nfs_mount.export = AAZStrType(
+                flags={"required": True},
+            )
             disc_nfs_mount.host = AAZStrType(
                 flags={"required": True},
             )
             disc_nfs_mount.nfs_version = AAZStrType(
                 serialized_name="nfsVersion",
-            )
-            disc_nfs_mount.remote_export = AAZStrType(
-                serialized_name="remoteExport",
-                flags={"required": True},
             )
 
             system_data = cls._schema_on_200.system_data

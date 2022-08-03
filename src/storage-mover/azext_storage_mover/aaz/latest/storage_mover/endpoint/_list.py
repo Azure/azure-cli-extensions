@@ -16,7 +16,7 @@ from azure.cli.core.aaz import *
     is_preview=True,
 )
 class List(AAZCommand):
-    """Lists all endpoints in a Storage Mover.
+    """Lists all Endpoints in a Storage Mover.
     """
 
     _aaz_info = {
@@ -45,7 +45,7 @@ class List(AAZCommand):
             required=True,
         )
         _args_schema.storage_mover_name = AAZStrArg(
-            options=["-s", "--storage-mover-name"],
+            options=["--storage-mover-name"],
             help="The name of the Storage Mover resource.",
             required=True,
         )
@@ -161,7 +161,7 @@ class List(AAZCommand):
                 flags={"read_only": True},
             )
             _element.properties = AAZObjectType(
-                flags={"read_only": True},
+                flags={"required": True, "read_only": True},
             )
             _element.system_data = AAZObjectType(
                 serialized_name="systemData",
@@ -195,16 +195,15 @@ class List(AAZCommand):
             )
 
             disc_nfs_mount = cls._schema_on_200.value.Element.properties.discriminate_by("endpoint_type", "NfsMount")
+            disc_nfs_mount.export = AAZStrType(
+                flags={"required": True, "read_only": True},
+            )
             disc_nfs_mount.host = AAZStrType(
                 flags={"required": True, "read_only": True},
             )
             disc_nfs_mount.nfs_version = AAZStrType(
                 serialized_name="nfsVersion",
                 flags={"read_only": True},
-            )
-            disc_nfs_mount.remote_export = AAZStrType(
-                serialized_name="remoteExport",
-                flags={"required": True, "read_only": True},
             )
 
             system_data = cls._schema_on_200.value.Element.system_data

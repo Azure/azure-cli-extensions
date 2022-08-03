@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "storage-mover project",
 )
 class __CMDGroup(AAZCommandGroup):
-    """Manage project resource, which is a logical grouping of related jobs.
+    """Manage Project resource, which is a logical grouping of related jobs.
     """
     pass
 

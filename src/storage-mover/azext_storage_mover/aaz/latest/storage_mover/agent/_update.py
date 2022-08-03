@@ -16,7 +16,7 @@ from azure.cli.core.aaz import *
     is_preview=True,
 )
 class Update(AAZCommand):
-    """Updates an agent resource.
+    """Updates an Agent resource, which references a hybrid compute machine that can run jobs.
     """
 
     _aaz_info = {
@@ -46,7 +46,7 @@ class Update(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.agent_name = AAZStrArg(
             options=["-n", "--name", "--agent-name"],
-            help="The name of the agent resource.",
+            help="The name of the Agent resource.",
             required=True,
             id_part="child_name_1",
         )
@@ -54,7 +54,7 @@ class Update(AAZCommand):
             required=True,
         )
         _args_schema.storage_mover_name = AAZStrArg(
-            options=["-s", "--storage-mover-name"],
+            options=["--storage-mover-name"],
             help="The name of the Storage Mover resource.",
             required=True,
             id_part="name",
@@ -66,17 +66,17 @@ class Update(AAZCommand):
         _args_schema.arc_resource_id = AAZStrArg(
             options=["--arc-resource-id"],
             arg_group="Properties",
-            help="The fully qualified resource ID of the hybrid compute resource for the agent.",
+            help="The fully qualified resource ID of the Hybrid Compute resource for the Agent.",
         )
         _args_schema.arc_vm_uuid = AAZStrArg(
             options=["--arc-vm-uuid"],
             arg_group="Properties",
-            help="A GUID for this agent.",
+            help="The VM UUID of the Hybrid Compute resource for the Agent.",
         )
         _args_schema.description = AAZStrArg(
             options=["--description"],
             arg_group="Properties",
-            help="A description for the agent.",
+            help="A description for the Agent.",
             nullable=True,
         )
         return cls._args_schema
@@ -288,7 +288,7 @@ class Update(AAZCommand):
                 value=instance,
                 typ=AAZObjectType
             )
-            _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
+            _builder.set_prop("properties", AAZObjectType, ".", typ_kwargs={"flags": {"required": True, "client_flatten": True}})
 
             properties = _builder.get(".properties")
             if properties is not None:
@@ -330,7 +330,7 @@ def _build_schema_agent_read(_schema):
         flags={"read_only": True},
     )
     agent_read.properties = AAZObjectType(
-        flags={"client_flatten": True},
+        flags={"required": True, "client_flatten": True},
     )
     agent_read.system_data = AAZObjectType(
         serialized_name="systemData",
@@ -380,6 +380,10 @@ def _build_schema_agent_read(_schema):
     )
     properties.provisioning_state = AAZStrType(
         serialized_name="provisioningState",
+        flags={"read_only": True},
+    )
+    properties.uptime_in_seconds = AAZIntType(
+        serialized_name="uptimeInSeconds",
         flags={"read_only": True},
     )
 

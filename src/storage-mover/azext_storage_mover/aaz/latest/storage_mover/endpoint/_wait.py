@@ -12,17 +12,15 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "storage-mover project create",
-    is_preview=True,
+    "storage-mover endpoint wait",
 )
-class Create(AAZCommand):
-    """Creates a Project resource, which is a logical grouping of related jobs.
+class Wait(AAZWaitCommand):
+    """Place the CLI in a waiting state until a condition is met.
     """
 
     _aaz_info = {
-        "version": "2022-07-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.storagemover/storagemovers/{}/projects/{}", "2022-07-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.storagemover/storagemovers/{}/endpoints/{}", "2022-07-01-preview"],
         ]
     }
 
@@ -42,9 +40,9 @@ class Create(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.project_name = AAZStrArg(
-            options=["-n", "--name", "--project-name"],
-            help="The name of the Project resource.",
+        _args_schema.endpoint_name = AAZStrArg(
+            options=["-n", "--name", "--endpoint-name"],
+            help="The name of the Endpoint resource.",
             required=True,
             id_part="child_name_1",
         )
@@ -57,25 +55,16 @@ class Create(AAZCommand):
             required=True,
             id_part="name",
         )
-
-        # define Arg Group "Properties"
-
-        _args_schema = cls._args_schema
-        _args_schema.description = AAZStrArg(
-            options=["--description"],
-            arg_group="Properties",
-            help="A description for the Project.",
-        )
         return cls._args_schema
 
     def _execute_operations(self):
-        self.ProjectsCreateOrUpdate(ctx=self.ctx)()
+        self.EndpointsGet(ctx=self.ctx)()
 
     def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
+        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=False)
         return result
 
-    class ProjectsCreateOrUpdate(AAZHttpOperation):
+    class EndpointsGet(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -89,13 +78,13 @@ class Create(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.StorageMover/storageMovers/{storageMoverName}/projects/{projectName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.StorageMover/storageMovers/{storageMoverName}/endpoints/{endpointName}",
                 **self.url_parameters
             )
 
         @property
         def method(self):
-            return "PUT"
+            return "GET"
 
         @property
         def error_format(self):
@@ -105,7 +94,7 @@ class Create(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "projectName", self.ctx.args.project_name,
+                    "endpointName", self.ctx.args.endpoint_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -137,28 +126,10 @@ class Create(AAZCommand):
         def header_parameters(self):
             parameters = {
                 **self.serialize_header_param(
-                    "Content-Type", "application/json",
-                ),
-                **self.serialize_header_param(
                     "Accept", "application/json",
                 ),
             }
             return parameters
-
-        @property
-        def content(self):
-            _content_value, _builder = self.new_content_builder(
-                self.ctx.args,
-                typ=AAZObjectType,
-                typ_kwargs={"flags": {"required": True, "client_flatten": True}}
-            )
-            _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
-
-            properties = _builder.get(".properties")
-            if properties is not None:
-                properties.set_prop("description", AAZStrType, ".description")
-
-            return self.serialize_content(_content_value)
 
         def on_200(self, session):
             data = self.deserialize_http_content(session)
@@ -185,7 +156,7 @@ class Create(AAZCommand):
                 flags={"read_only": True},
             )
             _schema_on_200.properties = AAZObjectType(
-                flags={"client_flatten": True},
+                flags={"required": True},
             )
             _schema_on_200.system_data = AAZObjectType(
                 serialized_name="systemData",
@@ -197,9 +168,34 @@ class Create(AAZCommand):
 
             properties = cls._schema_on_200.properties
             properties.description = AAZStrType()
+            properties.endpoint_type = AAZStrType(
+                serialized_name="endpointType",
+                flags={"required": True},
+            )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
+            )
+
+            disc_azure_storage_blob_container = cls._schema_on_200.properties.discriminate_by("endpoint_type", "AzureStorageBlobContainer")
+            disc_azure_storage_blob_container.blob_container_name = AAZStrType(
+                serialized_name="blobContainerName",
+                flags={"required": True},
+            )
+            disc_azure_storage_blob_container.storage_account_resource_id = AAZStrType(
+                serialized_name="storageAccountResourceId",
+                flags={"required": True},
+            )
+
+            disc_nfs_mount = cls._schema_on_200.properties.discriminate_by("endpoint_type", "NfsMount")
+            disc_nfs_mount.export = AAZStrType(
+                flags={"required": True},
+            )
+            disc_nfs_mount.host = AAZStrType(
+                flags={"required": True},
+            )
+            disc_nfs_mount.nfs_version = AAZStrType(
+                serialized_name="nfsVersion",
             )
 
             system_data = cls._schema_on_200.system_data
@@ -231,4 +227,4 @@ class Create(AAZCommand):
             return cls._schema_on_200
 
 
-__all__ = ["Create"]
+__all__ = ["Wait"]

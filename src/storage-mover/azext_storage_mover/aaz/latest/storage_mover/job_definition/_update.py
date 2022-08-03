@@ -16,7 +16,7 @@ from azure.cli.core.aaz import *
     is_preview=True,
 )
 class Update(AAZCommand):
-    """Updates a job definition resource.
+    """Updates a Job Definition resource, which contains configuration for a single unit of managed data transfer.
     """
 
     _aaz_info = {
@@ -46,13 +46,13 @@ class Update(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.job_definition_name = AAZStrArg(
             options=["-n", "--name", "--job-definition-name"],
-            help="The name of the job definition resource.",
+            help="The name of the Job Definition resource.",
             required=True,
             id_part="child_name_2",
         )
         _args_schema.project_name = AAZStrArg(
-            options=["-p", "--project-name"],
-            help="The name of the project resource.",
+            options=["--project-name"],
+            help="The name of the Project resource.",
             required=True,
             id_part="child_name_1",
         )
@@ -60,7 +60,7 @@ class Update(AAZCommand):
             required=True,
         )
         _args_schema.storage_mover_name = AAZStrArg(
-            options=["-s", "--storage-mover-name"],
+            options=["--storage-mover-name"],
             help="The name of the Storage Mover resource.",
             required=True,
             id_part="name",
@@ -72,31 +72,30 @@ class Update(AAZCommand):
         _args_schema.agent_name = AAZStrArg(
             options=["--agent-name"],
             arg_group="Properties",
-            help="Name of the agent to assign for new job runs of this definition.",
+            help="Name of the Agent to assign for new Job Runs of this Job Definition.",
             nullable=True,
         )
         _args_schema.copy_mode = AAZStrArg(
             options=["--copy-mode"],
             arg_group="Properties",
             help="Strategy to use for copy.",
-            nullable=True,
             enum={"Additive": "Additive", "Mirror": "Mirror"},
         )
         _args_schema.description = AAZStrArg(
             options=["--description"],
             arg_group="Properties",
-            help="A description for the job definition.",
+            help="A description for the Job Definition.",
             nullable=True,
         )
         _args_schema.source_name = AAZStrArg(
             options=["--source-name"],
             arg_group="Properties",
-            help="The name of the source endpoint.",
+            help="The name of the source Endpoint.",
         )
         _args_schema.target_name = AAZStrArg(
             options=["--target-name"],
             arg_group="Properties",
-            help="The name of the target endpoint.",
+            help="The name of the target Endpoint.",
         )
         return cls._args_schema
 
@@ -315,12 +314,12 @@ class Update(AAZCommand):
                 value=instance,
                 typ=AAZObjectType
             )
-            _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
+            _builder.set_prop("properties", AAZObjectType, ".", typ_kwargs={"flags": {"required": True, "client_flatten": True}})
 
             properties = _builder.get(".properties")
             if properties is not None:
                 properties.set_prop("agentName", AAZStrType, ".agent_name")
-                properties.set_prop("copyMode", AAZStrType, ".copy_mode")
+                properties.set_prop("copyMode", AAZStrType, ".copy_mode", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("description", AAZStrType, ".description")
                 properties.set_prop("sourceName", AAZStrType, ".source_name", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("targetName", AAZStrType, ".target_name", typ_kwargs={"flags": {"required": True}})
@@ -359,7 +358,7 @@ def _build_schema_job_definition_read(_schema):
         flags={"read_only": True},
     )
     job_definition_read.properties = AAZObjectType(
-        flags={"client_flatten": True},
+        flags={"required": True, "client_flatten": True},
     )
     job_definition_read.system_data = AAZObjectType(
         serialized_name="systemData",
@@ -379,6 +378,7 @@ def _build_schema_job_definition_read(_schema):
     )
     properties.copy_mode = AAZStrType(
         serialized_name="copyMode",
+        flags={"required": True},
     )
     properties.description = AAZStrType()
     properties.latest_job_run_name = AAZStrType(

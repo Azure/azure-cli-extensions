@@ -16,7 +16,7 @@ from azure.cli.core.aaz import *
     is_preview=True,
 )
 class Update(AAZCommand):
-    """Updates a project resource.
+    """Updates a Project resource, which is a logical grouping of related jobs.
     """
 
     _aaz_info = {
@@ -46,7 +46,7 @@ class Update(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.project_name = AAZStrArg(
             options=["-n", "--name", "--project-name"],
-            help="The name of the project resource.",
+            help="The name of the Project resource.",
             required=True,
             id_part="child_name_1",
         )
@@ -54,7 +54,7 @@ class Update(AAZCommand):
             required=True,
         )
         _args_schema.storage_mover_name = AAZStrArg(
-            options=["-s", "--storage-mover-name"],
+            options=["--storage-mover-name"],
             help="The name of the Storage Mover resource.",
             required=True,
             id_part="name",
@@ -66,7 +66,7 @@ class Update(AAZCommand):
         _args_schema.description = AAZStrArg(
             options=["--description"],
             arg_group="Properties",
-            help="A description for the project.",
+            help="A description for the Project.",
             nullable=True,
         )
         return cls._args_schema

@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "storage-mover agent",
 )
 class __CMDGroup(AAZCommandGroup):
-    """Manage agent resource, which references a hybrid compute machine that can run jobs.
+    """Manage Agent resource, which references a hybrid compute machine that can run jobs.
     """
     pass
 

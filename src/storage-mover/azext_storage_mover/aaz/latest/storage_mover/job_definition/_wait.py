@@ -12,17 +12,15 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "storage-mover project create",
-    is_preview=True,
+    "storage-mover job-definition wait",
 )
-class Create(AAZCommand):
-    """Creates a Project resource, which is a logical grouping of related jobs.
+class Wait(AAZWaitCommand):
+    """Place the CLI in a waiting state until a condition is met.
     """
 
     _aaz_info = {
-        "version": "2022-07-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.storagemover/storagemovers/{}/projects/{}", "2022-07-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.storagemover/storagemovers/{}/projects/{}/jobdefinitions/{}", "2022-07-01-preview"],
         ]
     }
 
@@ -42,8 +40,14 @@ class Create(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
+        _args_schema.job_definition_name = AAZStrArg(
+            options=["-n", "--name", "--job-definition-name"],
+            help="The name of the Job Definition resource.",
+            required=True,
+            id_part="child_name_2",
+        )
         _args_schema.project_name = AAZStrArg(
-            options=["-n", "--name", "--project-name"],
+            options=["--project-name"],
             help="The name of the Project resource.",
             required=True,
             id_part="child_name_1",
@@ -57,25 +61,16 @@ class Create(AAZCommand):
             required=True,
             id_part="name",
         )
-
-        # define Arg Group "Properties"
-
-        _args_schema = cls._args_schema
-        _args_schema.description = AAZStrArg(
-            options=["--description"],
-            arg_group="Properties",
-            help="A description for the Project.",
-        )
         return cls._args_schema
 
     def _execute_operations(self):
-        self.ProjectsCreateOrUpdate(ctx=self.ctx)()
+        self.JobDefinitionsGet(ctx=self.ctx)()
 
     def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
+        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=False)
         return result
 
-    class ProjectsCreateOrUpdate(AAZHttpOperation):
+    class JobDefinitionsGet(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -89,13 +84,13 @@ class Create(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.StorageMover/storageMovers/{storageMoverName}/projects/{projectName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.StorageMover/storageMovers/{storageMoverName}/projects/{projectName}/jobDefinitions/{jobDefinitionName}",
                 **self.url_parameters
             )
 
         @property
         def method(self):
-            return "PUT"
+            return "GET"
 
         @property
         def error_format(self):
@@ -104,6 +99,10 @@ class Create(AAZCommand):
         @property
         def url_parameters(self):
             parameters = {
+                **self.serialize_url_param(
+                    "jobDefinitionName", self.ctx.args.job_definition_name,
+                    required=True,
+                ),
                 **self.serialize_url_param(
                     "projectName", self.ctx.args.project_name,
                     required=True,
@@ -137,28 +136,10 @@ class Create(AAZCommand):
         def header_parameters(self):
             parameters = {
                 **self.serialize_header_param(
-                    "Content-Type", "application/json",
-                ),
-                **self.serialize_header_param(
                     "Accept", "application/json",
                 ),
             }
             return parameters
-
-        @property
-        def content(self):
-            _content_value, _builder = self.new_content_builder(
-                self.ctx.args,
-                typ=AAZObjectType,
-                typ_kwargs={"flags": {"required": True, "client_flatten": True}}
-            )
-            _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
-
-            properties = _builder.get(".properties")
-            if properties is not None:
-                properties.set_prop("description", AAZStrType, ".description")
-
-            return self.serialize_content(_content_value)
 
         def on_200(self, session):
             data = self.deserialize_http_content(session)
@@ -185,7 +166,7 @@ class Create(AAZCommand):
                 flags={"read_only": True},
             )
             _schema_on_200.properties = AAZObjectType(
-                flags={"client_flatten": True},
+                flags={"required": True, "client_flatten": True},
             )
             _schema_on_200.system_data = AAZObjectType(
                 serialized_name="systemData",
@@ -196,10 +177,55 @@ class Create(AAZCommand):
             )
 
             properties = cls._schema_on_200.properties
+            properties.agent_name = AAZStrType(
+                serialized_name="agentName",
+            )
+            properties.agent_resource_id = AAZStrType(
+                serialized_name="agentResourceId",
+                flags={"read_only": True},
+            )
+            properties.copy_mode = AAZStrType(
+                serialized_name="copyMode",
+                flags={"required": True},
+            )
             properties.description = AAZStrType()
+            properties.latest_job_run_name = AAZStrType(
+                serialized_name="latestJobRunName",
+                flags={"read_only": True},
+            )
+            properties.latest_job_run_resource_id = AAZStrType(
+                serialized_name="latestJobRunResourceId",
+                flags={"read_only": True},
+            )
+            properties.latest_job_run_status = AAZStrType(
+                serialized_name="latestJobRunStatus",
+                flags={"read_only": True},
+            )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
+            )
+            properties.source_name = AAZStrType(
+                serialized_name="sourceName",
+                flags={"required": True},
+            )
+            properties.source_resource_id = AAZStrType(
+                serialized_name="sourceResourceId",
+                flags={"read_only": True},
+            )
+            properties.source_subpath = AAZStrType(
+                serialized_name="sourceSubpath",
+            )
+            properties.target_name = AAZStrType(
+                serialized_name="targetName",
+                flags={"required": True},
+            )
+            properties.target_resource_id = AAZStrType(
+                serialized_name="targetResourceId",
+                flags={"read_only": True},
+            )
+            properties.target_subpath = AAZStrType(
+                serialized_name="targetSubpath",
             )
 
             system_data = cls._schema_on_200.system_data
@@ -231,4 +257,4 @@ class Create(AAZCommand):
             return cls._schema_on_200
 
 
-__all__ = ["Create"]
+__all__ = ["Wait"]

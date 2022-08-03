@@ -16,7 +16,7 @@ from azure.cli.core.aaz import *
     is_preview=True,
 )
 class Show(AAZCommand):
-    """Gets an agent resource.
+    """Gets an Agent resource.
     """
 
     _aaz_info = {
@@ -44,7 +44,7 @@ class Show(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.agent_name = AAZStrArg(
             options=["-n", "--name", "--agent-name"],
-            help="The name of the agent resource.",
+            help="The name of the Agent resource.",
             required=True,
             id_part="child_name_1",
         )
@@ -52,7 +52,7 @@ class Show(AAZCommand):
             required=True,
         )
         _args_schema.storage_mover_name = AAZStrArg(
-            options=["-s", "--storage-mover-name"],
+            options=["--storage-mover-name"],
             help="The name of the Storage Mover resource.",
             required=True,
             id_part="name",
@@ -158,7 +158,7 @@ class Show(AAZCommand):
                 flags={"read_only": True},
             )
             _schema_on_200.properties = AAZObjectType(
-                flags={"client_flatten": True},
+                flags={"required": True, "client_flatten": True},
             )
             _schema_on_200.system_data = AAZObjectType(
                 serialized_name="systemData",
@@ -208,6 +208,10 @@ class Show(AAZCommand):
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
+                flags={"read_only": True},
+            )
+            properties.uptime_in_seconds = AAZIntType(
+                serialized_name="uptimeInSeconds",
                 flags={"read_only": True},
             )
 

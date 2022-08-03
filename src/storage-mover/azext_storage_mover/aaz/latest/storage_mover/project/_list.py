@@ -16,7 +16,7 @@ from azure.cli.core.aaz import *
     is_preview=True,
 )
 class List(AAZCommand):
-    """Lists all projects in a Storage Mover.
+    """Lists all Projects in a Storage Mover.
     """
 
     _aaz_info = {
@@ -45,7 +45,7 @@ class List(AAZCommand):
             required=True,
         )
         _args_schema.storage_mover_name = AAZStrArg(
-            options=["-s", "--storage-mover-name"],
+            options=["--storage-mover-name"],
             help="The name of the Storage Mover resource.",
             required=True,
         )

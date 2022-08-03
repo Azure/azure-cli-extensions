@@ -12,17 +12,15 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "storage-mover project create",
-    is_preview=True,
+    "storage-mover agent wait",
 )
-class Create(AAZCommand):
-    """Creates a Project resource, which is a logical grouping of related jobs.
+class Wait(AAZWaitCommand):
+    """Place the CLI in a waiting state until a condition is met.
     """
 
     _aaz_info = {
-        "version": "2022-07-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.storagemover/storagemovers/{}/projects/{}", "2022-07-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.storagemover/storagemovers/{}/agents/{}", "2022-07-01-preview"],
         ]
     }
 
@@ -42,9 +40,9 @@ class Create(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.project_name = AAZStrArg(
-            options=["-n", "--name", "--project-name"],
-            help="The name of the Project resource.",
+        _args_schema.agent_name = AAZStrArg(
+            options=["-n", "--name", "--agent-name"],
+            help="The name of the Agent resource.",
             required=True,
             id_part="child_name_1",
         )
@@ -57,25 +55,16 @@ class Create(AAZCommand):
             required=True,
             id_part="name",
         )
-
-        # define Arg Group "Properties"
-
-        _args_schema = cls._args_schema
-        _args_schema.description = AAZStrArg(
-            options=["--description"],
-            arg_group="Properties",
-            help="A description for the Project.",
-        )
         return cls._args_schema
 
     def _execute_operations(self):
-        self.ProjectsCreateOrUpdate(ctx=self.ctx)()
+        self.AgentsGet(ctx=self.ctx)()
 
     def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
+        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=False)
         return result
 
-    class ProjectsCreateOrUpdate(AAZHttpOperation):
+    class AgentsGet(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -89,13 +78,13 @@ class Create(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.StorageMover/storageMovers/{storageMoverName}/projects/{projectName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.StorageMover/storageMovers/{storageMoverName}/agents/{agentName}",
                 **self.url_parameters
             )
 
         @property
         def method(self):
-            return "PUT"
+            return "GET"
 
         @property
         def error_format(self):
@@ -105,7 +94,7 @@ class Create(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "projectName", self.ctx.args.project_name,
+                    "agentName", self.ctx.args.agent_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -137,28 +126,10 @@ class Create(AAZCommand):
         def header_parameters(self):
             parameters = {
                 **self.serialize_header_param(
-                    "Content-Type", "application/json",
-                ),
-                **self.serialize_header_param(
                     "Accept", "application/json",
                 ),
             }
             return parameters
-
-        @property
-        def content(self):
-            _content_value, _builder = self.new_content_builder(
-                self.ctx.args,
-                typ=AAZObjectType,
-                typ_kwargs={"flags": {"required": True, "client_flatten": True}}
-            )
-            _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
-
-            properties = _builder.get(".properties")
-            if properties is not None:
-                properties.set_prop("description", AAZStrType, ".description")
-
-            return self.serialize_content(_content_value)
 
         def on_200(self, session):
             data = self.deserialize_http_content(session)
@@ -185,7 +156,7 @@ class Create(AAZCommand):
                 flags={"read_only": True},
             )
             _schema_on_200.properties = AAZObjectType(
-                flags={"client_flatten": True},
+                flags={"required": True, "client_flatten": True},
             )
             _schema_on_200.system_data = AAZObjectType(
                 serialized_name="systemData",
@@ -196,9 +167,57 @@ class Create(AAZCommand):
             )
 
             properties = cls._schema_on_200.properties
+            properties.agent_status = AAZStrType(
+                serialized_name="agentStatus",
+                flags={"read_only": True},
+            )
+            properties.agent_version = AAZStrType(
+                serialized_name="agentVersion",
+                flags={"read_only": True},
+            )
+            properties.arc_resource_id = AAZStrType(
+                serialized_name="arcResourceId",
+                flags={"required": True},
+            )
+            properties.arc_vm_uuid = AAZStrType(
+                serialized_name="arcVmUuid",
+                flags={"required": True},
+            )
             properties.description = AAZStrType()
+            properties.error_details = AAZObjectType(
+                serialized_name="errorDetails",
+                flags={"read_only": True},
+            )
+            properties.last_status_update = AAZStrType(
+                serialized_name="lastStatusUpdate",
+                flags={"read_only": True},
+            )
+            properties.local_ip_address = AAZStrType(
+                serialized_name="localIPAddress",
+                flags={"read_only": True},
+            )
+            properties.memory_in_mb = AAZIntType(
+                serialized_name="memoryInMB",
+                flags={"read_only": True},
+            )
+            properties.number_of_cores = AAZIntType(
+                serialized_name="numberOfCores",
+                flags={"read_only": True},
+            )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
+                flags={"read_only": True},
+            )
+            properties.uptime_in_seconds = AAZIntType(
+                serialized_name="uptimeInSeconds",
+                flags={"read_only": True},
+            )
+
+            error_details = cls._schema_on_200.properties.error_details
+            error_details.code = AAZStrType(
+                flags={"read_only": True},
+            )
+            error_details.message = AAZStrType(
                 flags={"read_only": True},
             )
 
@@ -231,4 +250,4 @@ class Create(AAZCommand):
             return cls._schema_on_200
 
 
-__all__ = ["Create"]
+__all__ = ["Wait"]

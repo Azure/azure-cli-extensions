@@ -16,7 +16,7 @@ from azure.cli.core.aaz import *
     is_preview=True,
 )
 class StopJob(AAZCommand):
-    """Requests the agent of any active instance of this job definition to stop.
+    """Requests the Agent of any active instance of this Job Definition to stop.
     """
 
     _aaz_info = {
@@ -43,20 +43,20 @@ class StopJob(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.job_definition_name = AAZStrArg(
-            options=["-n", "--name", "--job-definition-name"],
-            help="The name of the job definition resource.",
+            options=["--job-definition-name"],
+            help="The name of the Job Definition resource.",
             required=True,
         )
         _args_schema.project_name = AAZStrArg(
-            options=["-p", "--project-name"],
-            help="The name of the project resource.",
+            options=["--project-name"],
+            help="The name of the Project resource.",
             required=True,
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
         _args_schema.storage_mover_name = AAZStrArg(
-            options=["-s", "--storage-mover-name"],
+            options=["--storage-mover-name"],
             help="The name of the Storage Mover resource.",
             required=True,
         )

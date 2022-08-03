@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "storage-mover endpoint",
 )
 class __CMDGroup(AAZCommandGroup):
-    """Manage endpoint resource, which represents a data transfer source or destination.
+    """Manage Endpoint resource, which represents a data transfer source or destination.
     """
     pass
 

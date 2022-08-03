@@ -16,7 +16,7 @@ from azure.cli.core.aaz import *
     is_preview=True,
 )
 class Show(AAZCommand):
-    """Gets a job run resource.
+    """Gets a Job Run resource.
     """
 
     _aaz_info = {
@@ -43,20 +43,20 @@ class Show(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.job_definition_name = AAZStrArg(
-            options=["-d", "--job-definition-name"],
-            help="The name of the job definition resource.",
+            options=["--job-definition-name"],
+            help="The name of the Job Definition resource.",
             required=True,
             id_part="child_name_2",
         )
         _args_schema.job_run_name = AAZStrArg(
             options=["-n", "--name", "--job-run-name"],
-            help="The name of the job run.",
+            help="The name of the Job Run resource.",
             required=True,
             id_part="child_name_3",
         )
         _args_schema.project_name = AAZStrArg(
-            options=["-p", "--project-name"],
-            help="The name of the project resource.",
+            options=["--project-name"],
+            help="The name of the Project resource.",
             required=True,
             id_part="child_name_1",
         )
@@ -64,7 +64,7 @@ class Show(AAZCommand):
             required=True,
         )
         _args_schema.storage_mover_name = AAZStrArg(
-            options=["-s", "--storage-mover-name"],
+            options=["--storage-mover-name"],
             help="The name of the Storage Mover resource.",
             required=True,
             id_part="name",
@@ -197,10 +197,6 @@ class Show(AAZCommand):
                 serialized_name="agentResourceId",
                 flags={"read_only": True},
             )
-            properties.bytes_designated_for_transfer = AAZIntType(
-                serialized_name="bytesDesignatedForTransfer",
-                flags={"read_only": True},
-            )
             properties.bytes_excluded = AAZIntType(
                 serialized_name="bytesExcluded",
                 flags={"read_only": True},
@@ -236,10 +232,6 @@ class Show(AAZCommand):
                 serialized_name="executionStartTime",
                 flags={"read_only": True},
             )
-            properties.items_designated_for_transfer = AAZIntType(
-                serialized_name="itemsDesignatedForTransfer",
-                flags={"read_only": True},
-            )
             properties.items_excluded = AAZIntType(
                 serialized_name="itemsExcluded",
                 flags={"read_only": True},
@@ -264,8 +256,8 @@ class Show(AAZCommand):
                 serialized_name="itemsUnsupported",
                 flags={"read_only": True},
             )
-            properties.last_updated_time = AAZStrType(
-                serialized_name="lastUpdatedTime",
+            properties.last_status_update = AAZStrType(
+                serialized_name="lastStatusUpdate",
                 flags={"read_only": True},
             )
             properties.provisioning_state = AAZStrType(

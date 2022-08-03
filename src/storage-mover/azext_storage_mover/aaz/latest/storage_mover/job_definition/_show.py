@@ -16,7 +16,7 @@ from azure.cli.core.aaz import *
     is_preview=True,
 )
 class Show(AAZCommand):
-    """Gets a job definition resource.
+    """Gets a Job Definition resource.
     """
 
     _aaz_info = {
@@ -44,13 +44,13 @@ class Show(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.job_definition_name = AAZStrArg(
             options=["-n", "--name", "--job-definition-name"],
-            help="The name of the job definition resource.",
+            help="The name of the Job Definition resource.",
             required=True,
             id_part="child_name_2",
         )
         _args_schema.project_name = AAZStrArg(
-            options=["-p", "--project-name"],
-            help="The name of the project resource.",
+            options=["--project-name"],
+            help="The name of the Project resource.",
             required=True,
             id_part="child_name_1",
         )
@@ -58,7 +58,7 @@ class Show(AAZCommand):
             required=True,
         )
         _args_schema.storage_mover_name = AAZStrArg(
-            options=["-s", "--storage-mover-name"],
+            options=["--storage-mover-name"],
             help="The name of the Storage Mover resource.",
             required=True,
             id_part="name",
@@ -168,7 +168,7 @@ class Show(AAZCommand):
                 flags={"read_only": True},
             )
             _schema_on_200.properties = AAZObjectType(
-                flags={"client_flatten": True},
+                flags={"required": True, "client_flatten": True},
             )
             _schema_on_200.system_data = AAZObjectType(
                 serialized_name="systemData",
@@ -188,6 +188,7 @@ class Show(AAZCommand):
             )
             properties.copy_mode = AAZStrType(
                 serialized_name="copyMode",
+                flags={"required": True},
             )
             properties.description = AAZStrType()
             properties.latest_job_run_name = AAZStrType(

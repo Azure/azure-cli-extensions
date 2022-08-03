@@ -16,7 +16,7 @@ from azure.cli.core.aaz import *
     is_preview=True,
 )
 class List(AAZCommand):
-    """Lists all agents in a Storage Mover.
+    """Lists all Agents in a Storage Mover.
     """
 
     _aaz_info = {
@@ -45,7 +45,7 @@ class List(AAZCommand):
             required=True,
         )
         _args_schema.storage_mover_name = AAZStrArg(
-            options=["-s", "--storage-mover-name"],
+            options=["--storage-mover-name"],
             help="The name of the Storage Mover resource.",
             required=True,
         )
@@ -161,7 +161,7 @@ class List(AAZCommand):
                 flags={"read_only": True},
             )
             _element.properties = AAZObjectType(
-                flags={"client_flatten": True, "read_only": True},
+                flags={"required": True, "client_flatten": True, "read_only": True},
             )
             _element.system_data = AAZObjectType(
                 serialized_name="systemData",
@@ -213,6 +213,10 @@ class List(AAZCommand):
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
+                flags={"read_only": True},
+            )
+            properties.uptime_in_seconds = AAZIntType(
+                serialized_name="uptimeInSeconds",
                 flags={"read_only": True},
             )
 

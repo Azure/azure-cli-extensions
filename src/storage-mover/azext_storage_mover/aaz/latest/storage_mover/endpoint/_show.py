@@ -16,7 +16,7 @@ from azure.cli.core.aaz import *
     is_preview=True,
 )
 class Show(AAZCommand):
-    """Gets an endpoint resource.
+    """Gets an Endpoint resource.
     """
 
     _aaz_info = {
@@ -44,7 +44,7 @@ class Show(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.endpoint_name = AAZStrArg(
             options=["-n", "--name", "--endpoint-name"],
-            help="The name of the endpoint resource.",
+            help="The name of the Endpoint resource.",
             required=True,
             id_part="child_name_1",
         )
@@ -52,7 +52,7 @@ class Show(AAZCommand):
             required=True,
         )
         _args_schema.storage_mover_name = AAZStrArg(
-            options=["-s", "--storage-mover-name"],
+            options=["--storage-mover-name"],
             help="The name of the Storage Mover resource.",
             required=True,
             id_part="name",
@@ -157,7 +157,9 @@ class Show(AAZCommand):
             _schema_on_200.name = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200.properties = AAZObjectType()
+            _schema_on_200.properties = AAZObjectType(
+                flags={"required": True},
+            )
             _schema_on_200.system_data = AAZObjectType(
                 serialized_name="systemData",
                 flags={"read_only": True},
@@ -188,15 +190,14 @@ class Show(AAZCommand):
             )
 
             disc_nfs_mount = cls._schema_on_200.properties.discriminate_by("endpoint_type", "NfsMount")
+            disc_nfs_mount.export = AAZStrType(
+                flags={"required": True},
+            )
             disc_nfs_mount.host = AAZStrType(
                 flags={"required": True},
             )
             disc_nfs_mount.nfs_version = AAZStrType(
                 serialized_name="nfsVersion",
-            )
-            disc_nfs_mount.remote_export = AAZStrType(
-                serialized_name="remoteExport",
-                flags={"required": True},
             )
 
             system_data = cls._schema_on_200.system_data
