@@ -3,6 +3,10 @@
 Release History
 ===============
 
+0.2.13
+++++++
+* add new command group: `az network vhub routing-intent`.
+
 0.2.12
 ++++++
 * `az network vhub create`: Add new parameter `--hub-routing-preference`.
