@@ -15,37 +15,83 @@ interactions:
       User-Agent:
       - azsdk-python-communication-chat/1.1.0 Python/3.6.7 (Windows-10-10.0.19041-SP0)
       repeatability-request-id:
-      - 39674429-e5ab-4826-927b-01c574f23f17
+      - f1ee76c8-cf1f-4683-9925-a1f1799bfbf8
+    method: POST
+    uri: https://sanitized.communication.azure.com/chat/threads?api-version=2021-09-07
+  response:
+    body:
+      string: '<!DOCTYPE html PUBLIC ''-//W3C//DTD XHTML 1.0 Transitional//EN'' ''http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd''><html
+        xmlns=''http://www.w3.org/1999/xhtml''><head><meta content=''text/html; charset=utf-8''
+        http-equiv=''content-type''/><style type=''text/css''>body {font-family:Arial;
+        margin-left:40px; }img  { border:0 none; }#content { margin-left: auto; margin-right:
+        auto }#message h2 { font-size: 20px; font-weight: normal; color: #000000;
+        margin: 34px 0px 0px 0px }#message p  { font-size: 13px; color: #000000; margin:
+        7px 0px 0px0px}#errorref { font-size: 11px; color: #737373; margin-top: 41px
+        }</style><title>Service unavailable</title></head><body><div id=''content''><div
+        id=''message''><h2>Our services aren''t available right now</h2><p>We''re
+        working to restore all services as soon as possible. Please check back soon.</p></div><div
+        id=''errorref''><span>0x4brYgAAAAAJcbKum1TKRb+15EATEK3sWVZSMzExMDAwMTE2MDQ5ADlmYzdiNTE5LWE4Y2MtNGY4OS05MzVlLWM5MTQ4YWUwOWU4MQ==</span></div></div></body></html>'
+    headers:
+      cache-control:
+      - no-store
+      content-length:
+      - '1002'
+      content-type:
+      - text/html
+      date:
+      - Thu, 04 Aug 2022 08:43:50 GMT
+      x-azure-externalerror:
+      - 0x80072ee7,DNSNameNotResolved
+      x-azure-ref:
+      - 0x4brYgAAAAAJcbKum1TKRb+15EATEK3sWVZSMzExMDAwMTE2MDQ5ADlmYzdiNTE5LWE4Y2MtNGY4OS05MzVlLWM5MTQ4YWUwOWU4MQ==
+    status:
+      code: 503
+      message: Service Unavailable
+- request:
+    body: '{"topic": "some-topic", "participants": []}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '43'
+      Content-Type:
+      - application/json
+      User-Agent:
+      - azsdk-python-communication-chat/1.1.0 Python/3.6.7 (Windows-10-10.0.19041-SP0)
+      repeatability-request-id:
+      - f1ee76c8-cf1f-4683-9925-a1f1799bfbf8
     method: POST
     uri: https://sanitized.communication.azure.com/chat/threads?api-version=2021-09-07
   response:
     body:
       string: '{"chatThread": {"id": "sanitized", "topic": "some-topic", "createdOn":
-        "2022-08-04T03:41:12Z", "createdByCommunicationIdentifier": {"rawId": "sanitized",
+        "2022-08-04T08:43:52Z", "createdByCommunicationIdentifier": {"rawId": "sanitized",
         "communicationUser": {"id": "sanitized"}}}}'
     headers:
       api-supported-versions:
       - 2021-03-07, 2021-04-05-preview6, 2021-09-07, 2022-11-15-preview8
-      connection:
-      - keep-alive
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 04 Aug 2022 03:41:12 GMT
+      - Thu, 04 Aug 2022 08:43:51 GMT
       location:
-      - https://clitest000002.communication.azure.com/chat/threads/19%3APKBfWL4BkxLYVa1wNvlniDpHMcOef7ZFj_wDzMbD7vk1@thread.v2
+      - https://clitest000002.communication.azure.com/chat/threads/19%3AIWcw4rEAfulhmUBnj5FmcFtp6BvZE534aoollbHQD4s1@thread.v2
       ms-cv:
-      - qYhC6cIbWk+hdiUTN9E2fQ.0
+      - FBapVFI5+Em1fmT90+/tvg.0
       strict-transport-security:
       - max-age=2592000
       transfer-encoding:
       - chunked
       x-azure-ref:
-      - 20220804T034112Z-hk9fc1hqnx3xh6y9eh1b1ua6zw00000001mg00000000g4a2
+      - 0x4brYgAAAABglCy30zDcSoKdBeeDqNDRWVZSMzExMDAwMTE2MDQ5ADlmYzdiNTE5LWE4Y2MtNGY4OS05MzVlLWM5MTQ4YWUwOWU4MQ==
       x-cache:
       - CONFIG_NOCACHE
       x-processing-time:
-      - 549ms
+      - 636ms
     status:
       code: 201
       message: Created

@@ -39,10 +39,34 @@ class CommunicationChatScenarios(ScenarioTest):
 
     @ResourceGroupPreparer(name_prefix='clitestcommunication_MyResourceGroup'[:7], key='rg', parameter_name='rg')
     @CommunicationResourcePreparer(resource_group_parameter_name='rg')
-    def test_chat_list_threads_with_no_auth(self):
-        with self.assertRaises(KeyError) as raises:
-            self.cmd('az communication chat list-threads --endpoint \"{endpoint}\" --access-token \"{access_token}\"').get_output_in_json()
-        assert 'Key \'endpoint\' not found in kwargs.' in str(raises.exception)
+    def test_chat_list_threads_no_endpoint(self, communication_resource_chat_info):
+        from azure.cli.core.azclierror import RequiredArgumentMissingError
+        
+        os.environ['AZURE_COMMUNICATION_ACCESS_TOKEN'] = communication_resource_chat_info[3]
+        self.kwargs.pop('endpoint', None)
+        os.environ.pop('AZURE_COMMUNICATION_ENDPOINT', None)
+
+        with self.assertRaises(RequiredArgumentMissingError) as raises:
+            self.cmd('az communication chat list-threads').get_output_in_json()
+
+        assert '--endpoint' in str(raises.exception)
+        assert 'AZURE_COMMUNICATION_ENDPOINT' in str(raises.exception)
+
+
+    @ResourceGroupPreparer(name_prefix='clitestcommunication_MyResourceGroup'[:7], key='rg', parameter_name='rg')
+    @CommunicationResourcePreparer(resource_group_parameter_name='rg')
+    def test_chat_list_threads_no_token(self, communication_resource_chat_info):
+        from azure.cli.core.azclierror import RequiredArgumentMissingError
+        
+        self.kwargs.update({'endpoint': communication_resource_chat_info[1]})
+        self.kwargs.pop('access-token', None)
+        os.environ.pop('AZURE_COMMUNICATION_ACCESS_TOKEN', None)
+
+        with self.assertRaises(RequiredArgumentMissingError) as raises:
+            self.cmd('az communication chat list-threads --endpoint {endpoint}').get_output_in_json()
+
+        assert '--access-token' in str(raises.exception)
+        assert 'AZURE_COMMUNICATION_ACCESS_TOKEN' in str(raises.exception)
 
 
     @ResourceGroupPreparer(name_prefix='clitestcommunication_MyResourceGroup'[:7], key='rg', parameter_name='rg')
