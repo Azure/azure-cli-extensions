@@ -592,7 +592,7 @@ def load_arguments(self, _):
         c.argument('management_group_id', type=str, help='The management group id which uniquely identify '
                    'the microsoft azure management group', id_part='name')
         c.argument('network_manager_id', options_list=['--network-manager', '--network-manager-id'], type=str,
-                   help='the name or id of the network manager.', validator=validate_network_manager)
+                   help='the name or id of the network manager.')
         c.argument('description', type=str, help='A description of the scope connection.')
         c.ignore('parameters')
 

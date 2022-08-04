@@ -506,7 +506,8 @@ class NetworkScenarioTest(ScenarioTest):
         })
 
         network_manager = self.cmd(
-            'network manager create --name {manager_name} --description "My Test Network Manager" --display-name "TestNetworkManager" '
+            'network manager create --name {manager_name} --description "My Test Network Manager" '
+            '--display-name "TestNetworkManager" '
             '--scope-accesses "SecurityAdmin" "Connectivity" '
             '--network-manager-scopes '
             ' subscriptions={sub} '
@@ -514,19 +515,16 @@ class NetworkScenarioTest(ScenarioTest):
             '--resource-group {rg}').get_output_in_json()
         self.kwargs['manager_id'] = network_manager['id']
         self.cmd('group create -n {rg2} -l eastus2euap')
-        self.cmd(
-            'network manager connection management-group create --connection-name {connection_name} --management-group-id {rg2} --network-manager-id {manager_id}')
+        self.cmd('network manager connection management-group create --connection-name {connection_name} '
+                 '--management-group-id {rg2} --network-manager-id {manager_id}')
+        self.cmd('network manager connection management-group show --connection-name {connection_name} ')
+        self.cmd('network manager connection management-group update --connection-name {connection_name} '
+                 '--description "My Test Network Manager Connection"')
 
-        # self.cmd('network manager connection management-group show --connection-name {connection_name} ')
-
-
-        # self.cmd(
-        #     'network manager connection management-group update --connection-name {connection_name} ')
-
-        # self.cmd('network manager connection management-group list')
-
-        # self.cmd('network manager connection management-group delete --connection-name {connection_name} --yes')
-        # self.cmd('network manager delete --resource-group {rg} --name {manager_name} --force --yes')
+        self.cmd('network manager connection management-group list')
+        self.cmd('network manager connection management-group delete --connection-name {connection_name} '
+                 '--management-group-id {rg2} --yes')
+        self.cmd('network manager delete --resource-group {rg} --name {manager_name} --force --yes')
 
     @ResourceGroupPreparer(name_prefix='test_network_manager_security_admin_config_v2', location='eastus2euap')
     def test_network_manager_security_admin_config_v2(self, resource_group):

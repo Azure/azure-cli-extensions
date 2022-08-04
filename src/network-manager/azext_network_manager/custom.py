@@ -1068,7 +1068,7 @@ def network_manager_connection_management_group_delete(client,
                                                        resource_group_name,
                                                        network_manager_connection_name,
                                                        management_group_id):
-    return client.begin_delete(resource_group_name=resource_group_name,
+    return client.delete(resource_group_name=resource_group_name,
                          network_manager_connection_name=network_manager_connection_name,
                          management_group_id=management_group_id)
 
