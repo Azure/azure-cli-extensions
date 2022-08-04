@@ -13,21 +13,21 @@ from azext_communication.manual._client_factory import cf_communication_chat
 def load_command_table(self, _):
 
     identity_arguments = ['connection_string']
-    with self.command_group('communication identity', client_factory=cf_communication_identity) as g:
+    with self.command_group('communication identity', client_factory=cf_communication_identity, is_preview=True) as g:
         g.communication_custom_command('issue-access-token', "communication_issue_access_token", identity_arguments, client_factory=cf_communication_identity)
         g.communication_custom_command('revoke-access-tokens', "communication_revoke_access_tokens", identity_arguments, client_factory=cf_communication_identity)
 
     sms_arguments = ['connection_string']
-    with self.command_group('communication sms', client_factory=cf_communication_sms) as g:
+    with self.command_group('communication sms', client_factory=cf_communication_sms, is_preview=True) as g:
         g.communication_custom_command('send-sms', 'communication_send_sms', sms_arguments)
 
     phonenumber_arguments = ['connection_string']
-    with self.command_group('communication phonenumbers', client_factory=cf_communication_phonenumbers) as g:
+    with self.command_group('communication phonenumbers', client_factory=cf_communication_phonenumbers, is_preview=True) as g:
         g.communication_custom_command('list-phonenumbers', 'communication_list_phonenumbers', phonenumber_arguments)
         g.communication_custom_command('show-phonenumber', 'communication_show_phonenumber', phonenumber_arguments)
 
     chat_arguments = ['endpoint', 'access_token']
-    with self.command_group('communication chat', client_factory=cf_communication_chat) as g:
+    with self.command_group('communication chat', client_factory=cf_communication_chat, is_preview=True) as g:
         # thread management
         g.communication_custom_command('list-threads', 'communication_chat_list_threads', chat_arguments)
         g.communication_custom_command('create-thread', 'communication_chat_create_thread', chat_arguments)

@@ -61,6 +61,12 @@ az communication identity issue-access-token --scope chat
 
 az communication identity issue-access-token --scope chat voip --userid "8:acs:xxxxxx"
 ```
+##### Revoke-Access-Tokens #####
+```
+az communication identity revoke-access-tokens --userid "8:acs:xxxxxx"
+
+az communication identity revoke-access-tokens --userid "8:acs:xxxxxx" "8:acs:xxxxxy" "8:acs:xxxxxz"
+```
 ##### Send-SMS #####
 ```
 az communication sms send-sms --sender "+1833xxxxxxx" \
