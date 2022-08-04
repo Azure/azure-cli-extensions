@@ -14,7 +14,7 @@ from azure.cli.core.aaz import *
 @register_command(
     "storage-mover delete",
     is_preview=True,
-    confirmation="Are you sure you want to perform this operation?",
+    confirmation="WARNING: Deleting a storage mover will cascade delete all contained resources. \nThis will stop all ongoing migrations and break all trust relationships with registered agents.\nAre you sure you want to delete this storage mover and all its contained resources?",
 )
 class Delete(AAZCommand):
     """Deletes a Storage Mover resource.
