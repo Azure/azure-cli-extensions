@@ -24,6 +24,7 @@ def auto_merge(headers, number):
     merge_url = f'https://api.github.com/repos/Azure/azure-cli-extensions/pulls/{number}/merge'
     logger.debug(merge_url)
     # merge_method: merge, squash or rebase
+    # we use `sqush and merge` button
     body = {
         'merge_method': 'squash'
     }
@@ -37,14 +38,33 @@ def auto_merge(headers, number):
         sys.exit(1)
 
 
+def get_pr_url():
+    commit_id='491f225e317c6d7c4d752849994576e3e3ba73b3'
+    # curl https://api.github.com/repos/OWNER/REPO/commits/COMMIT_SHA/pulls
+    get_url = f'https://api.github.com/repos/Azure/azure-cli-extensions/commits/{commit_id}/pulls'
+    try:
+        r = requests.get(get_url, headers=headers)
+    except requests.RequestException as e:
+        raise e
+    logger.info(r.json()[0]["html_url"])
+
+
 def main():
-    with open('/tmp/token.txt') as f:
-        token = f.readline().replace("\n", "")
+    try:
+        # get azclibot token
+        with open('/tmp/token.txt') as f:
+            token = f.readline().replace("\n", "")
+        # get create_pr response
+        with open('/tmp/create_pr.json') as f:
+            ref = f.read()
+    except FileNotFoundError:
+        logger.debug('no PR create, no need to merge PR')
+        sys.exit(0)
     headers = {'Authorization': 'token %s' % token}
-    with open('/tmp/create_pr.json') as f:
-        ref = f.read()
+    # get pr id
     number = json.loads(ref)['number']
-    auto_merge(headers, number)
+    # auto_merge(headers, number)
+    get_pr_url()
 
 
 if __name__ == '__main__':
