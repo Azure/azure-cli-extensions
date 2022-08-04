@@ -3,6 +3,14 @@
 Release History
 ===============
 
+1.3.0
+++++++++++++++++++
+* Add support for provisionedClusters
+
+1.2.6
+++++++++++++++++++
+* k8s-extension new sub command group for extension types
+
 1.2.5
 ++++++++++++++++++
 * microsoft.azuremonitor.containers: ContainerInsights Extension Managed Identity Auth Onboarding related bug fixes.
