@@ -14,7 +14,7 @@ from azure.cli.core.aaz import *
 @register_command(
     "storage-mover agent delete",
     is_preview=True,
-    confirmation="Are you sure you want to perform this operation?",
+    confirmation="WARNING: Deleting this agent will stop ongoing migrations on this agent. Job definitions that reference this agent can’t be started until their agent reference is updated to a working agent. Registering this agent again will result in a new identity and not fix existing job definitions. Note that the Azure ARC trust is not broken. The Hybrid Compute resource must be manually removed to invalidate the agent identity that may still be allowed access to target storage containers. \nAre you sure you want to delete this storage mover agent?",
 )
 class Delete(AAZCommand):
     """Deletes an Agent resource.
