@@ -771,6 +771,9 @@ helps['aks update'] = """
         - name: --enable-azure-keyvault-kms
           type: bool
           short-summary: Enable Azure KeyVault Key Management Service.
+        - name: --disable-azure-keyvault-kms
+          type: bool
+          short-summary: Disable Azure KeyVault Key Management Service.
         - name: --azure-keyvault-kms-key-id
           type: string
           short-summary: Identifier of Azure Key Vault key.

@@ -32,7 +32,7 @@ class AzureDefender(DefaultExtension):
         # Hardcoding  name, release_namespace and scope since ci only supports one instance and cluster scope
         # and platform doesn't have support yet extension specific constraints like this
         name = extension_type.lower()
-        release_namespace = "azuredefender"
+        release_namespace = "mdc"
         # Scope is always cluster
         scope_cluster = ScopeCluster(release_namespace=release_namespace)
         ext_scope = Scope(cluster=scope_cluster, namespace=None)

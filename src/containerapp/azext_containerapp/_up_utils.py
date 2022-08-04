@@ -46,7 +46,7 @@ from ._utils import (
     register_provider_if_needed
 )
 
-from ._constants import MAXIMUM_SECRET_LENGTH, LOG_ANALYTICS_RP, CONTAINER_APPS_RP, ACR_IMAGE_SUFFIX
+from ._constants import MAXIMUM_SECRET_LENGTH, LOG_ANALYTICS_RP, CONTAINER_APPS_RP, ACR_IMAGE_SUFFIX, MAXIMUM_CONTAINER_APP_NAME_LENGTH
 
 from .custom import (
     create_managed_environment,
@@ -668,6 +668,18 @@ def _get_registry_details(cmd, app: "ContainerApp", source):
     app.acr = AzureContainerRegistry(
         registry_name, ResourceGroup(cmd, registry_rg, None, None)
     )
+
+
+def _validate_containerapp_name(name):
+    is_valid = True
+    is_valid = is_valid and name.lower() == name
+    is_valid = is_valid and len(name) <= MAXIMUM_CONTAINER_APP_NAME_LENGTH
+    is_valid = is_valid and '--' not in name
+    name = name.replace('-', '')
+    is_valid = is_valid and name.isalnum()
+    is_valid = is_valid and name[0].isalpha()
+    if not is_valid:
+        raise ValidationError(f"Invalid Container App name {name}. A name must consist of lower case alphanumeric characters or '-', start with a letter, end with an alphanumeric character, cannot have '--', and must be less than {MAXIMUM_CONTAINER_APP_NAME_LENGTH} characters.")
 
 
 # attempt to populate defaults for managed env, RG, ACR, etc

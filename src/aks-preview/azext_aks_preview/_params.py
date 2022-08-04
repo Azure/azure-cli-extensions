@@ -47,6 +47,7 @@ from azext_aks_preview._consts import (
     CONST_OS_DISK_TYPE_EPHEMERAL,
     CONST_OS_DISK_TYPE_MANAGED,
     CONST_OS_SKU_CBLMARINER,
+    CONST_OS_SKU_CBLMARINERV2,
     CONST_OS_SKU_UBUNTU,
     CONST_OS_SKU_WINDOWS2019,
     CONST_OS_SKU_WINDOWS2022,
@@ -126,7 +127,13 @@ node_priorities = [CONST_SCALE_SET_PRIORITY_REGULAR, CONST_SCALE_SET_PRIORITY_SP
 node_eviction_policies = [CONST_SPOT_EVICTION_POLICY_DELETE, CONST_SPOT_EVICTION_POLICY_DEALLOCATE]
 node_os_disk_types = [CONST_OS_DISK_TYPE_MANAGED, CONST_OS_DISK_TYPE_EPHEMERAL]
 node_mode_types = [CONST_NODEPOOL_MODE_SYSTEM, CONST_NODEPOOL_MODE_USER]
-node_os_skus = [CONST_OS_SKU_UBUNTU, CONST_OS_SKU_CBLMARINER, CONST_OS_SKU_WINDOWS2019, CONST_OS_SKU_WINDOWS2022]
+node_os_skus = [
+    CONST_OS_SKU_UBUNTU,
+    CONST_OS_SKU_CBLMARINER,
+    CONST_OS_SKU_CBLMARINERV2,
+    CONST_OS_SKU_WINDOWS2019,
+    CONST_OS_SKU_WINDOWS2022,
+]
 scale_down_modes = [CONST_SCALE_DOWN_MODE_DELETE, CONST_SCALE_DOWN_MODE_DEALLOCATE]
 workload_runtimes = [CONST_WORKLOAD_RUNTIME_OCI_CONTAINER, CONST_WORKLOAD_RUNTIME_WASM_WASI]
 gpu_instance_profiles = [
@@ -298,10 +305,10 @@ def load_arguments(self, _):
         c.argument('enable_pod_identity_with_kubenet', action='store_true')
         c.argument('enable_workload_identity', arg_type=get_three_state_flag())
         c.argument('enable_oidc_issuer', action='store_true', is_preview=True)
-        c.argument('enable_azure_keyvault_kms', action='store_true', is_preview=True)
-        c.argument('azure_keyvault_kms_key_id', validator=validate_azure_keyvault_kms_key_id, is_preview=True)
-        c.argument('azure_keyvault_kms_key_vault_network_access', arg_type=get_enum_type(keyvault_network_access_types), default=CONST_AZURE_KEYVAULT_NETWORK_ACCESS_PUBLIC, is_preview=True)
-        c.argument('azure_keyvault_kms_key_vault_resource_id', validator=validate_azure_keyvault_kms_key_vault_resource_id, is_preview=True)
+        c.argument('enable_azure_keyvault_kms', action='store_true')
+        c.argument('azure_keyvault_kms_key_id', validator=validate_azure_keyvault_kms_key_id)
+        c.argument('azure_keyvault_kms_key_vault_network_access', arg_type=get_enum_type(keyvault_network_access_types), default=CONST_AZURE_KEYVAULT_NETWORK_ACCESS_PUBLIC)
+        c.argument('azure_keyvault_kms_key_vault_resource_id', validator=validate_azure_keyvault_kms_key_vault_resource_id)
         c.argument('cluster_snapshot_id', validator=validate_cluster_snapshot_id, is_preview=True)
         c.argument('disk_driver_version', arg_type=get_enum_type(disk_driver_versions))
         c.argument('disable_disk_driver', action='store_true')
@@ -388,10 +395,11 @@ def load_arguments(self, _):
         c.argument('disable_pod_identity', action='store_true')
         c.argument('enable_workload_identity', arg_type=get_three_state_flag())
         c.argument('enable_oidc_issuer', action='store_true', is_preview=True)
-        c.argument('enable_azure_keyvault_kms', action='store_true', is_preview=True)
-        c.argument('azure_keyvault_kms_key_id', validator=validate_azure_keyvault_kms_key_id, is_preview=True)
-        c.argument('azure_keyvault_kms_key_vault_network_access', arg_type=get_enum_type(keyvault_network_access_types), is_preview=True)
-        c.argument('azure_keyvault_kms_key_vault_resource_id', validator=validate_azure_keyvault_kms_key_vault_resource_id, is_preview=True)
+        c.argument('enable_azure_keyvault_kms', action='store_true')
+        c.argument('disable_azure_keyvault_kms', action='store_true')
+        c.argument('azure_keyvault_kms_key_id', validator=validate_azure_keyvault_kms_key_id)
+        c.argument('azure_keyvault_kms_key_vault_network_access', arg_type=get_enum_type(keyvault_network_access_types))
+        c.argument('azure_keyvault_kms_key_vault_resource_id', validator=validate_azure_keyvault_kms_key_vault_resource_id)
         c.argument('enable_disk_driver', action='store_true')
         c.argument('disk_driver_version', arg_type=get_enum_type(disk_driver_versions))
         c.argument('disable_disk_driver', action='store_true')
