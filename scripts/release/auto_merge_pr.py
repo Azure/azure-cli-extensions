@@ -39,7 +39,7 @@ def auto_merge(headers, number):
 
 
 def get_pr_url(headers):
-    commit_id='491f225e317c6d7c4d752849994576e3e3ba73b3'
+    commit_id='5ecf22fcf8315d144039bfcc982f25998fd606a8'
     # curl https://api.github.com/repos/OWNER/REPO/commits/COMMIT_SHA/pulls
     get_url = f'https://api.github.com/repos/Azure/azure-cli-extensions/commits/{commit_id}/pulls'
     try:
