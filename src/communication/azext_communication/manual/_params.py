@@ -16,12 +16,12 @@ def load_arguments(self, _):
 
 def _load_identity_arguments(self):
     with self.argument_context('communication identity issue-access-token') as c:
-        c.argument('userid', options_list=['--userid', '-u'],
+        c.argument('user_id', options_list=['--user-id', '-u'],
                    type=str, help='ACS identifier')
         c.argument('scopes', options_list=['--scope', '-s'],
                    nargs='+', help='list of scopes for an access token ex: chat/voip')
     with self.argument_context('communication identity revoke-access-tokens') as c:
-        c.argument('userid', options_list=['--userid', '-u'], type=str, help='ACS identifier')
+        c.argument('user_id', options_list=['--user-id', '-u'], type=str, help='ACS identifier')
 
 
 def _load_sms_arguments(self):

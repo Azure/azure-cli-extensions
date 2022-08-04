@@ -42,7 +42,7 @@ class CommunicationIdentityScenarios(ScenarioTest):
         self.kwargs.update({'id': id})
 
         val = self.cmd(
-            'az communication identity issue-access-token --scope chat --userid {id}').get_output_in_json()
+            'az communication identity issue-access-token --scope chat --user-id {id}').get_output_in_json()
         self.assertIsNotNone(val['token'])
     
     @ResourceGroupPreparer(name_prefix='clitestcommunication_MyResourceGroup'[:7], key='rg', parameter_name='rg')
@@ -61,4 +61,4 @@ class CommunicationIdentityScenarios(ScenarioTest):
         os.environ['AZURE_COMMUNICATION_CONNECTION_STRING'] = communication_resource_info[1]
         id = get_test_identity_id(self.is_live, self.in_recording, communication_resource_info[1])
         self.kwargs.update({'id': id})
-        self.cmd('az communication identity revoke-access-tokens --userid {id}')
+        self.cmd('az communication identity revoke-access-tokens --user-id {id}')

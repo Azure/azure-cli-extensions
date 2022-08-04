@@ -4,11 +4,11 @@
 # --------------------------------------------------------------------------------------------
 
 
-def communication_issue_access_token(client, scopes, userid=None):
+def communication_issue_access_token(client, scopes, user_id=None):
     from azure.communication.identity import CommunicationUserIdentifier
-    user_token_data = {"user_id": userid, "token": "", "expires_on": ""}
-    if userid is not None:
-        user = CommunicationUserIdentifier(userid)
+    user_token_data = {"user_id": user_id, "token": "", "expires_on": ""}
+    if user_id is not None:
+        user = CommunicationUserIdentifier(user_id)
         token_data = client.get_token(user, scopes)
         user_token_data["token"] = token_data.token
         user_token_data["expires_on"] = str(token_data.expires_on)
@@ -22,9 +22,9 @@ def communication_issue_access_token(client, scopes, userid=None):
     return user_token_data
 
 
-def communication_revoke_access_tokens(client, userid):
+def communication_revoke_access_tokens(client, user_id):
     from azure.communication.identity import CommunicationUserIdentifier
-    return client.revoke_tokens(CommunicationUserIdentifier(userid))
+    return client.revoke_tokens(CommunicationUserIdentifier(user_id))
 
 
 def communication_send_sms(client, sender, recipients, message):
