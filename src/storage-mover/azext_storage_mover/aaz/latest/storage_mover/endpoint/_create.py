@@ -61,9 +61,10 @@ class Create(AAZCommand):
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
-        _args_schema.azure_storage_blob_container = AAZObjectArg(
-            options=["--azure-storage-blob-container"],
+        _args_schema.storage_blob_container = AAZObjectArg(
+            options=["--storage-blob-container"],
             arg_group="Properties",
+            help="Storage Blob Container Object",
         )
         _args_schema.nfs_mount = AAZObjectArg(
             options=["--nfs-mount"],
@@ -75,13 +76,13 @@ class Create(AAZCommand):
             help="A description for the Endpoint.",
         )
 
-        azure_storage_blob_container = cls._args_schema.azure_storage_blob_container
-        azure_storage_blob_container.blob_container_name = AAZStrArg(
+        storage_blob_container = cls._args_schema.storage_blob_container
+        storage_blob_container.blob_container_name = AAZStrArg(
             options=["blob-container-name"],
             help="The name of the Storage blob container that is the target destination.",
             required=True,
         )
-        azure_storage_blob_container.storage_account_resource_id = AAZStrArg(
+        storage_blob_container.storage_account_resource_id = AAZStrArg(
             options=["storage-account-resource-id"],
             help="The Azure Resource ID of the storage account that is the target destination.",
             required=True,
@@ -194,15 +195,15 @@ class Create(AAZCommand):
             properties = _builder.get(".properties")
             if properties is not None:
                 properties.set_prop("description", AAZStrType, ".description")
-                properties.set_const("endpointType", "AzureStorageBlobContainer", AAZStrType, ".azure_storage_blob_container", typ_kwargs={"flags": {"required": True}})
+                properties.set_const("endpointType", "AzureStorageBlobContainer", AAZStrType, ".storage_blob_container", typ_kwargs={"flags": {"required": True}})
                 properties.set_const("endpointType", "NfsMount", AAZStrType, ".nfs_mount", typ_kwargs={"flags": {"required": True}})
                 properties.discriminate_by("endpointType", "AzureStorageBlobContainer")
                 properties.discriminate_by("endpointType", "NfsMount")
 
             disc_azure_storage_blob_container = _builder.get(".properties{endpointType:AzureStorageBlobContainer}")
             if disc_azure_storage_blob_container is not None:
-                disc_azure_storage_blob_container.set_prop("blobContainerName", AAZStrType, ".azure_storage_blob_container.blob_container_name", typ_kwargs={"flags": {"required": True}})
-                disc_azure_storage_blob_container.set_prop("storageAccountResourceId", AAZStrType, ".azure_storage_blob_container.storage_account_resource_id", typ_kwargs={"flags": {"required": True}})
+                disc_azure_storage_blob_container.set_prop("blobContainerName", AAZStrType, ".storage_blob_container.blob_container_name", typ_kwargs={"flags": {"required": True}})
+                disc_azure_storage_blob_container.set_prop("storageAccountResourceId", AAZStrType, ".storage_blob_container.storage_account_resource_id", typ_kwargs={"flags": {"required": True}})
 
             disc_nfs_mount = _builder.get(".properties{endpointType:NfsMount}")
             if disc_nfs_mount is not None:
