@@ -1850,9 +1850,6 @@ helps['aks trustedaccess rolebinding update'] = """
         - name: --roles
           type: string
           short-summary: Specify the space-separated roles.
-        - name: --source-resource-id -s
-          type: string
-          short-summary: Specify the source resource id of the binding.
 """
 
 helps['aks trustedaccess rolebinding delete'] = """
