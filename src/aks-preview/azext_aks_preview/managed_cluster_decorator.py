@@ -770,31 +770,15 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         azure_keyvault_kms_key_vault_network_access = self.raw_param.get(
             "azure_keyvault_kms_key_vault_network_access"
         )
-        if self.decorator_mode == DecoratorMode.CREATE:
-            pass
-            # Do not read the property value corresponding to the parameter from the `mc` object in create mode,
-            # because keyVaultNetworkAccess has the default value "Public" in azure-rest-api-specs, to avoid
-            # accidentally overwriting user-specified values.
-        else:
-            # backfill from existing mc, temp fix before rp handles the backfill
-            if (
-                azure_keyvault_kms_key_vault_network_access is None and
-                self.mc and
-                self.mc.security_profile and
-                self.mc.security_profile.azure_key_vault_kms and
-                self.mc.security_profile.azure_key_vault_kms.key_vault_network_access is not None
-            ):
-                azure_keyvault_kms_key_vault_network_access = (
-                    self.mc.security_profile.azure_key_vault_kms.key_vault_network_access
-                )
-            # backfill to default value, temp fix before rp handles the backfill
-            if azure_keyvault_kms_key_vault_network_access is None:
-                azure_keyvault_kms_key_vault_network_access = CONST_AZURE_KEYVAULT_NETWORK_ACCESS_PUBLIC
 
         # validation
         if enable_validation:
             enable_azure_keyvault_kms = self._get_enable_azure_keyvault_kms(
                 enable_validation=False)
+            if azure_keyvault_kms_key_vault_network_access is None:
+                raise RequiredArgumentMissingError(
+                    '"--azure-keyvault-kms-key-vault-network-access" is required.')
+
             if (
                 azure_keyvault_kms_key_vault_network_access and
                 (
@@ -804,6 +788,16 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
             ):
                 raise RequiredArgumentMissingError(
                     '"--azure-keyvault-kms-key-vault-network-access" requires "--enable-azure-keyvault-kms".')
+
+            if azure_keyvault_kms_key_vault_network_access == CONST_AZURE_KEYVAULT_NETWORK_ACCESS_PRIVATE:
+                key_vault_resource_id = self._get_azure_keyvault_kms_key_vault_resource_id(
+                    enable_validation=False)
+                if (
+                    key_vault_resource_id is None or
+                    key_vault_resource_id == ""
+                ):
+                    raise RequiredArgumentMissingError(
+                        '"--azure-keyvault-kms-key-vault-resource-id" is required when "--azure-keyvault-kms-key-vault-network-access" is Private.')
 
         return azure_keyvault_kms_key_vault_network_access
 
@@ -832,17 +826,6 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         if self.decorator_mode == DecoratorMode.CREATE:
             if (
                 self.mc and
-                self.mc.security_profile and
-                self.mc.security_profile.azure_key_vault_kms and
-                self.mc.security_profile.azure_key_vault_kms.key_vault_resource_id is not None
-            ):
-                azure_keyvault_kms_key_vault_resource_id = (
-                    self.mc.security_profile.azure_key_vault_kms.key_vault_resource_id
-                )
-        else:
-            # backfill from existing mc, temp fix before rp handles the backfill
-            if (
-                azure_keyvault_kms_key_vault_resource_id is None and
                 self.mc.security_profile and
                 self.mc.security_profile.azure_key_vault_kms and
                 self.mc.security_profile.azure_key_vault_kms.key_vault_resource_id is not None
@@ -1983,17 +1966,12 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
             azure_key_vault_kms_profile.key_id = self.context.get_azure_keyvault_kms_key_id()
             # set network access, should never be None for now, can be safely assigned, temp fix for rp
             # the value is obtained from user input or backfilled from existing mc or to default value
-            azure_key_vault_kms_profile.key_vault_network_access = (
-                self.context.get_azure_keyvault_kms_key_vault_network_access()
-            )
-            # set key vault id
-            if (
-                azure_key_vault_kms_profile.key_vault_network_access ==
-                CONST_AZURE_KEYVAULT_NETWORK_ACCESS_PRIVATE
-            ):
-                azure_key_vault_kms_profile.key_vault_resource_id = (
-                    self.context.get_azure_keyvault_kms_key_vault_resource_id()
-                )
+            azure_key_vault_kms_profile.key_vault_network_access = self.context.get_azure_keyvault_kms_key_vault_network_access()
+            # set key vault resource id
+            if azure_key_vault_kms_profile.key_vault_network_access == CONST_AZURE_KEYVAULT_NETWORK_ACCESS_PRIVATE:
+                azure_key_vault_kms_profile.key_vault_resource_id = self.context.get_azure_keyvault_kms_key_vault_resource_id()
+            else:
+                azure_key_vault_kms_profile.key_vault_resource_id = ""
 
         if self.context.get_disable_azure_keyvault_kms():
             # get kms profile

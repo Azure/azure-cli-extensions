@@ -4024,12 +4024,13 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
         create_cmd = 'aks create --resource-group={resource_group} --name={name} ' \
                      '--assign-identity {identity_id} ' \
-                     '--enable-azure-keyvault-kms --azure-keyvault-kms-key-id={key_id} --aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AzureKeyVaultKmsPreview ' \
+                     '--enable-azure-keyvault-kms --azure-keyvault-kms-key-id={key_id} --azure-keyvault-kms-key-vault-network-access=Public ' \
                      '--ssh-key-value={ssh_key_value} -o json'
         self.cmd(create_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
             self.check('securityProfile.azureKeyVaultKms.enabled', True),
-            self.check('securityProfile.azureKeyVaultKms.keyId', key_id_0)
+            self.check('securityProfile.azureKeyVaultKms.keyId', key_id_0),
+            self.check('securityProfile.azureKeyVaultKms.keyVaultNetworkAccess', 'Public')
         ])
 
         key = self.cmd(create_key, checks=[
@@ -4043,13 +4044,13 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
         # Rotate key
         update_cmd = 'aks update --resource-group={resource_group} --name={name} ' \
-                     '--enable-azure-keyvault-kms --azure-keyvault-kms-key-id={key_id} ' \
-                     '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AzureKeyVaultKmsPreview ' \
+                     '--enable-azure-keyvault-kms --azure-keyvault-kms-key-id={key_id} --azure-keyvault-kms-key-vault-network-access=Public ' \
                      '-o json'
         self.cmd(update_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
             self.check('securityProfile.azureKeyVaultKms.enabled', True),
-            self.check('securityProfile.azureKeyVaultKms.keyId', key_id_1)
+            self.check('securityProfile.azureKeyVaultKms.keyId', key_id_1),
+            self.check('securityProfile.azureKeyVaultKms.keyVaultNetworkAccess', 'Public')
         ])
 
         # delete
@@ -4117,11 +4118,13 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         ])
 
         update_cmd = 'aks update --resource-group={resource_group} --name={name} ' \
-                     '--enable-azure-keyvault-kms --azure-keyvault-kms-key-id={key_id} --aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AzureKeyVaultKmsPreview -o json'
+                     '--enable-azure-keyvault-kms --azure-keyvault-kms-key-id={key_id} --azure-keyvault-kms-key-vault-network-access=Public ' \
+                     '-o json'
         self.cmd(update_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
             self.check('securityProfile.azureKeyVaultKms.enabled', True),
-            self.check('securityProfile.azureKeyVaultKms.keyId', key_id)
+            self.check('securityProfile.azureKeyVaultKms.keyId', key_id),
+            self.check('securityProfile.azureKeyVaultKms.keyVaultNetworkAccess', 'Public')
         ])
 
         # delete
@@ -4201,7 +4204,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                      '--assign-identity {identity_id} ' \
                      '--enable-azure-keyvault-kms --azure-keyvault-kms-key-id={key_id} ' \
                      '--azure-keyvault-kms-key-vault-network-access=Private --azure-keyvault-kms-key-vault-resource-id {kv_resource_id} ' \
-                     '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AzureKeyVaultKmsPreview ' \
                      '--ssh-key-value={ssh_key_value} -o json'
         self.cmd(create_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
@@ -4236,7 +4238,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         update_cmd = 'aks update --resource-group={resource_group} --name={name} ' \
                      '--enable-azure-keyvault-kms --azure-keyvault-kms-key-id={key_id} ' \
                      '--azure-keyvault-kms-key-vault-network-access=Private --azure-keyvault-kms-key-vault-resource-id {kv_resource_id} ' \
-                     '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AzureKeyVaultKmsPreview ' \
                      '-o json'
         self.cmd(update_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
@@ -4330,7 +4331,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         update_cmd = 'aks update --resource-group={resource_group} --name={name} ' \
                      '--enable-azure-keyvault-kms --azure-keyvault-kms-key-id={key_id} ' \
                      '--azure-keyvault-kms-key-vault-network-access=Private --azure-keyvault-kms-key-vault-resource-id {kv_resource_id} ' \
-                     '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AzureKeyVaultKmsPreview ' \
                      '-o json'
         self.cmd(update_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
@@ -4417,7 +4417,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                      '--assign-identity {identity_id} --enable-private-cluster ' \
                      '--enable-azure-keyvault-kms --azure-keyvault-kms-key-id={key_id} ' \
                      '--azure-keyvault-kms-key-vault-network-access=Private --azure-keyvault-kms-key-vault-resource-id {kv_resource_id} ' \
-                     '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AzureKeyVaultKmsPreview ' \
                      '--ssh-key-value={ssh_key_value} -o json'
         self.cmd(create_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
@@ -4453,7 +4452,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         update_cmd = 'aks update --resource-group={resource_group} --name={name} ' \
                      '--enable-azure-keyvault-kms --azure-keyvault-kms-key-id={key_id} ' \
                      '--azure-keyvault-kms-key-vault-network-access=Private --azure-keyvault-kms-key-vault-resource-id {kv_resource_id} ' \
-                     '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AzureKeyVaultKmsPreview ' \
                      '-o json'
         self.cmd(update_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
@@ -4521,16 +4519,17 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
         create_cmd = 'aks create --resource-group={resource_group} --name={name} ' \
                      '--assign-identity {identity_id} ' \
-                     '--enable-azure-keyvault-kms --azure-keyvault-kms-key-id={key_id} --aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AzureKeyVaultKmsPreview ' \
+                     '--enable-azure-keyvault-kms --azure-keyvault-kms-key-id={key_id} --azure-keyvault-kms-key-vault-network-access=Public ' \
                      '--ssh-key-value={ssh_key_value} -o json'
         self.cmd(create_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
             self.check('securityProfile.azureKeyVaultKms.enabled', True),
-            self.check('securityProfile.azureKeyVaultKms.keyId', key_id)
+            self.check('securityProfile.azureKeyVaultKms.keyId', key_id),
+            self.check('securityProfile.azureKeyVaultKms.keyVaultNetworkAccess', "Public")
         ])
 
         update_cmd = 'aks update --resource-group={resource_group} --name={name} ' \
-                     '--disable-azure-keyvault-kms --aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AzureKeyVaultKmsPreview ' \
+                     '--disable-azure-keyvault-kms ' \
                      '-o json'
         self.cmd(update_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
@@ -4978,13 +4977,11 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             self.is_empty(),
         ])
 
-    @live_only()  # live only is required for test environment setup like `az login`
     @AllowLargeResponse()
     def test_list_trustedaccess_roles(self):
         cmd = 'aks trustedaccess role list -l eastus2euap'
         self.cmd(cmd, checks=[
-            self.check(
-                'type', 'Microsoft.ContainerService/locations/trustedaccessroles')
+            self.exists('[0].sourceResourceType')
         ])
 
     @live_only() # this test requires live_only because a binary is downloaded

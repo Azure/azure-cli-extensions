@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.6.0
+++++++++++++++++++
+* Add support for provisionedClusters
+
 1.5.1
 ++++++++++++++++++
 * Bump pycryptodome to 3.14.1 to support Python 3.10

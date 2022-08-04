@@ -2,7 +2,7 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
-
+# pylint: disable=line-too-long, unused-argument
 import time
 from azure.cli.testsdk import LiveScenarioTest, ResourceGroupPreparer
 
@@ -148,7 +148,7 @@ class LinuxUnmanagedDiskCreateRestoreTest(LiveScenarioTest):
 class WindowsManagedDiskCreateRestoreTestwithpublicip(LiveScenarioTest):
 
     @ResourceGroupPreparer(location='westus2')
-    def test_vmrepair_WinManagedCreateRestore(self, resource_group):
+    def test_vmrepair_WinManagedCreateRestorePublicIp(self, resource_group):
         self.kwargs.update({
             'vm': 'vm1'
         })
@@ -182,7 +182,7 @@ class WindowsManagedDiskCreateRestoreTestwithpublicip(LiveScenarioTest):
 class WindowsUnmanagedDiskCreateRestoreTestwithpublicip(LiveScenarioTest):
 
     @ResourceGroupPreparer(location='westus2')
-    def test_vmrepair_WinUnmanagedCreateRestore(self, resource_group):
+    def test_vmrepair_WinUnmanagedCreateRestorePublicIp(self, resource_group):
         self.kwargs.update({
             'vm': 'vm1'
         })
@@ -216,7 +216,7 @@ class WindowsUnmanagedDiskCreateRestoreTestwithpublicip(LiveScenarioTest):
 class LinuxManagedDiskCreateRestoreTestwithpublicip(LiveScenarioTest):
 
     @ResourceGroupPreparer(location='westus2')
-    def test_vmrepair_LinuxManagedCreateRestore(self, resource_group):
+    def test_vmrepair_LinuxManagedCreateRestorePublicIp(self, resource_group):
         self.kwargs.update({
             'vm': 'vm1'
         })
@@ -250,7 +250,7 @@ class LinuxManagedDiskCreateRestoreTestwithpublicip(LiveScenarioTest):
 class LinuxUnmanagedDiskCreateRestoreTestwithpublicip(LiveScenarioTest):
 
     @ResourceGroupPreparer(location='westus2')
-    def test_vmrepair_LinuxUnmanagedCreateRestore(self, resource_group):
+    def test_vmrepair_LinuxUnmanagedCreateRestorePublicIp(self, resource_group):
         self.kwargs.update({
             'vm': 'vm1'
         })
@@ -526,7 +526,7 @@ class LinuxRunHelloWorldTest(LiveScenarioTest):
 class WindowsManagedDiskCreateRestoreGen2Test(LiveScenarioTest):
 
     @ResourceGroupPreparer(location='westus2')
-    def test_vmrepair_WinManagedCreateRestore(self, resource_group):
+    def test_vmrepair_WinManagedCreateRestoreGen2(self, resource_group):
         self.kwargs.update({
             'vm': 'vm1'
         })
@@ -559,7 +559,7 @@ class WindowsManagedDiskCreateRestoreGen2Test(LiveScenarioTest):
 class LinuxSinglepassKekEncryptedManagedDiskWithRHEL8DistroCreateRestoreTest(LiveScenarioTest):
 
     @ResourceGroupPreparer(location='westus2')
-    def test_vmrepair_LinuxSinglepassKekEncryptedManagedDiskCreateRestore(self, resource_group):
+    def test_vmrepair_LinuxSinglepassKekEncryptedManagedDiskCreateRestoreRHEL8(self, resource_group):
         self.kwargs.update({
             'vm': 'vm1',
             'kv': self.create_random_name(prefix='cli', length=8),
@@ -613,7 +613,7 @@ class LinuxSinglepassKekEncryptedManagedDiskWithRHEL8DistroCreateRestoreTest(Liv
 class LinuxSinglepassNoKekEncryptedManagedDiskWithSLES15CreateRestoreTest(LiveScenarioTest):
 
     @ResourceGroupPreparer(location='westus2')
-    def test_vmrepair_LinuxSinglepassNoKekEncryptedManagedDiskCreateRestoreTest(self, resource_group):
+    def test_vmrepair_LinuxSinglepassNoKekEncryptedManagedDiskCreateRestoreTestSLES15(self, resource_group):
         self.kwargs.update({
             'vm': 'vm1',
             'kv': self.create_random_name(prefix='cli', length=8),
@@ -659,7 +659,7 @@ class LinuxSinglepassNoKekEncryptedManagedDiskWithSLES15CreateRestoreTest(LiveSc
 class LinuxManagedDiskCreateRestoreTestwithOracle8andpublicip(LiveScenarioTest):
 
     @ResourceGroupPreparer(location='westus2')
-    def test_vmrepair_LinuxManagedCreateRestore(self, resource_group):
+    def test_vmrepair_LinuxManagedCreateRestoreOracle8PublicIp(self, resource_group):
         self.kwargs.update({
             'vm': 'vm1'
         })
@@ -688,3 +688,26 @@ class LinuxManagedDiskCreateRestoreTestwithOracle8andpublicip(LiveScenarioTest):
         vms = self.cmd('vm list -g {rg} -o json').get_output_in_json()
         source_vm = vms[0]
         assert source_vm['storageProfile']['osDisk']['name'] == result['copied_disk_name']
+
+class ResetNICWindowsVM(LiveScenarioTest):
+
+    @ResourceGroupPreparer(location='westus2')
+    def test_vmrepair_ResetNicWindowsVM(self, resource_group):
+        self.kwargs.update({
+            'vm': 'vm1'
+        })
+
+        # Create test VM
+        self.cmd('vm create -g {rg} -n {vm} --admin-username azureadmin --image Win2016Datacenter --admin-password !Passw0rd2018')
+        vms = self.cmd('vm list -g {rg} -o json').get_output_in_json()
+        # Something wrong with vm create command if it fails here
+        assert len(vms) == 1
+
+        # Test Reset NIC
+        self.cmd('vm repair reset-nic -g {rg} -n {vm} --yes')
+
+        # Mac address should be changed in the Guest OS but no way to assert from here.
+        # Assert that the VM is still running afterwards
+        vm_instance_view = self.cmd('vm get-instance-view -g {rg} -n {vm} -o json').get_output_in_json()
+        vm_power_state = vm_instance_view['instanceView']['statuses'][1]['code']
+        assert vm_power_state == 'PowerState/running'

@@ -2,7 +2,7 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
-# pylint: disable=line-too-long, consider-using-f-string, no-else-return, duplicate-string-formatting-argument, expression-not-assigned, too-many-locals, logging-fstring-interpolation
+# pylint: disable=line-too-long, consider-using-f-string, no-else-return, duplicate-string-formatting-argument, expression-not-assigned, too-many-locals, logging-fstring-interpolation, broad-except
 
 import time
 import json
@@ -786,6 +786,36 @@ def _remove_readonly_attributes(containerapp_def):
             del containerapp_def[unneeded_property]
         elif unneeded_property in containerapp_def['properties']:
             del containerapp_def['properties'][unneeded_property]
+
+
+# Remove null/None properties in a model since the PATCH API will delete those. Not needed once we move to the SDK
+def clean_null_values(d):
+    if isinstance(d, dict):
+        return {
+            k: v
+            for k, v in ((k, clean_null_values(v)) for k, v in d.items())
+            if v
+        }
+    if isinstance(d, list):
+        return [v for v in map(clean_null_values, d) if v]
+    return d
+
+
+def _populate_secret_values(containerapp_def, secret_values):
+    secrets = safe_get(containerapp_def, "properties", "configuration", "secrets", default=None)
+    if not secrets:
+        secrets = []
+    if not secret_values:
+        secret_values = []
+    index = 0
+    while index < len(secrets):
+        value = secrets[index]
+        if "value" not in value or not value["value"]:
+            try:
+                value["value"] = next(s["value"] for s in secret_values if s["name"] == value["name"])
+            except StopIteration:
+                pass
+        index += 1
 
 
 def _remove_dapr_readonly_attributes(daprcomponent_def):

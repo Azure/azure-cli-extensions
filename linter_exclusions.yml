@@ -2380,6 +2380,36 @@ ssh arc:
     ssh_args:
       rule_exclusions:
         - no_positional_parameters
+stack-hci arc-setting create:
+  parameters:
+    arc_application_client_id:
+      rule_exclusions:
+        - option_length_too_long
+    arc_application_object_id:
+      rule_exclusions:
+        - option_length_too_long
+    arc_application_tenant_id:
+      rule_exclusions:
+        - option_length_too_long
+    arc_service_principal_object_id:
+      rule_exclusions:
+        - option_length_too_long
+    connectivity_properties:
+      rule_exclusions:
+        - option_length_too_long
+stack-hci arc-setting update:
+  parameters:
+    connectivity_properties:
+      rule_exclusions:
+        - option_length_too_long
+stack-hci cluster create:
+  parameters:
+    aad_application_object_id:
+      rule_exclusions:
+        - option_length_too_long
+    aad_service_principal_object_id:
+      rule_exclusions:
+        - option_length_too_long
 storage account create:
   parameters:
     hierarchical_namespace:

@@ -12,7 +12,12 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+0.5.92
+++++++
+
+* Move Azure KeyVault KMS to GA.
 * Support disabling Azure KeyVault KMS.
+* Update to use 2022-06-02-preview api version.
 
 0.5.91
 ++++++
