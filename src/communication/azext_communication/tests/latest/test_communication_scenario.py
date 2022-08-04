@@ -92,7 +92,7 @@ class CommunicationScenarioTest(ScenarioTest):
     @ResourceGroupPreparer(name_prefix='clitestcommunication_MyOtherResourceGroup'[:7], key='rg_2',
                            parameter_name='rg_2')
     @ResourceGroupPreparer(name_prefix='clitestcommunication_MyResourceGroup'[:7], key='rg', parameter_name='rg')
-    def test_communication_Scenario(self, rg_2, rg):
+    def test_communication_scenario(self, rg_2, rg):
         call_scenario(self, rg_2, rg)
         calc_coverage(__file__)
         raise_if()
