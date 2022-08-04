@@ -1,0 +1,94 @@
+interactions:
+- request:
+    body: '{"topic": "some-topic", "participants": []}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '43'
+      Content-Type:
+      - application/json
+      User-Agent:
+      - azsdk-python-communication-chat/1.1.0 Python/3.6.7 (Windows-10-10.0.19041-SP0)
+      repeatability-request-id:
+      - 44af2bfb-2f61-4219-b0d5-597e4c759458
+    method: POST
+    uri: https://sanitized.communication.azure.com/chat/threads?api-version=2021-09-07
+  response:
+    body:
+      string: '{"chatThread": {"id": "sanitized", "topic": "some-topic", "createdOn":
+        "2022-08-04T03:42:48Z", "createdByCommunicationIdentifier": {"rawId": "sanitized",
+        "communicationUser": {"id": "sanitized"}}}}'
+    headers:
+      api-supported-versions:
+      - 2021-03-07, 2021-04-05-preview6, 2021-09-07, 2022-11-15-preview8
+      connection:
+      - keep-alive
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 04 Aug 2022 03:42:49 GMT
+      location:
+      - https://clitest000002.communication.azure.com/chat/threads/19%3AlxBvVxD1YkjBGWIIQl6XgmHyG-DLHMsxHBFf73L5hFk1@thread.v2
+      ms-cv:
+      - Bj5+ChcjDUGVHmU9Nx9eOg.0
+      strict-transport-security:
+      - max-age=2592000
+      transfer-encoding:
+      - chunked
+      x-azure-ref:
+      - 20220804T034248Z-hk9fc1hqnx3xh6y9eh1b1ua6zw00000001k0000000012t7t
+      x-cache:
+      - CONFIG_NOCACHE
+      x-processing-time:
+      - 531ms
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azsdk-python-communication-chat/1.1.0 Python/3.6.7 (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://sanitized.communication.azure.com/chat/threads/sanitized/participants?api-version=2021-09-07
+  response:
+    body:
+      string: '{"value": [{"communicationIdentifier": {"rawId": "8:acs:0f59b30a-421f-4769-bca0-70396a952e80_00000013-06d4-7e9b-eef0-8b3a0d00da54",
+        "communicationUser": {"id": "8:acs:0f59b30a-421f-4769-bca0-70396a952e80_00000013-06d4-7e9b-eef0-8b3a0d00da54"}},
+        "shareHistoryTime": "1970-01-01T00:00:00Z"}]}'
+    headers:
+      api-supported-versions:
+      - 2021-03-07, 2021-04-05-preview6, 2021-09-07, 2022-11-15-preview8
+      connection:
+      - keep-alive
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 04 Aug 2022 03:42:49 GMT
+      ms-cv:
+      - 1xQ0Gno14Uq62JqZJfj4SQ.0
+      strict-transport-security:
+      - max-age=2592000
+      transfer-encoding:
+      - chunked
+      x-azure-ref:
+      - 20220804T034249Z-qtfd0d2efh3zh2gzxzkdhtv16800000001m000000001090y
+      x-cache:
+      - CONFIG_NOCACHE
+      x-processing-time:
+      - 126ms
+    status:
+      code: 200
+      message: OK
+version: 1

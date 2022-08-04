@@ -1,0 +1,42 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azsdk-python-communication-chat/1.1.0 Python/3.6.7 (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://sanitized.communication.azure.com/chat/threads/sanitized/participants?api-version=2021-09-07
+  response:
+    body:
+      string: '{"CommunicationError": {"Code": "BadRequest", "Details": []}}'
+    headers:
+      api-supported-versions:
+      - 2021-03-07, 2021-04-05-preview6, 2021-09-07, 2022-11-15-preview8
+      connection:
+      - keep-alive
+      content-type:
+      - application/json
+      date:
+      - Thu, 04 Aug 2022 03:42:50 GMT
+      ms-cv:
+      - vTqDxyEiGUSGJJSQTtmiDQ.0
+      strict-transport-security:
+      - max-age=2592000
+      transfer-encoding:
+      - chunked
+      x-azure-ref:
+      - 20220804T034250Z-kpegq6a2qh4nr419q7tfax5sn400000001kg000000010z1h
+      x-cache:
+      - CONFIG_NOCACHE
+      x-processing-time:
+      - 369ms
+    status:
+      code: 400
+      message: Bad Request
+version: 1

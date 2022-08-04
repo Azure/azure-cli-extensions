@@ -1,0 +1,144 @@
+interactions:
+- request:
+    body: '{"topic": "chat-topic", "participants": []}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '43'
+      Content-Type:
+      - application/json
+      User-Agent:
+      - azsdk-python-communication-chat/1.1.0 Python/3.6.7 (Windows-10-10.0.19041-SP0)
+      repeatability-request-id:
+      - 597b6758-8cb1-43ce-baf4-c6b2e72a26e8
+    method: POST
+    uri: https://sanitized.communication.azure.com/chat/threads?api-version=2021-09-07
+  response:
+    body:
+      string: '{"chatThread": {"id": "sanitized", "topic": "chat-topic", "createdOn":
+        "2022-08-04T03:39:34Z", "createdByCommunicationIdentifier": {"rawId": "sanitized",
+        "communicationUser": {"id": "sanitized"}}}}'
+    headers:
+      api-supported-versions:
+      - 2021-03-07, 2021-04-05-preview6, 2021-09-07, 2022-11-15-preview8
+      connection:
+      - keep-alive
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 04 Aug 2022 03:39:34 GMT
+      location:
+      - https://clitest000002.communication.azure.com/chat/threads/19%3AA4vKcuig2UksBOy7yIYC6WBzouKPIG8IYEayPuoLTMI1@thread.v2
+      ms-cv:
+      - Awu1kQJXEEGmvyoF02zqEg.0
+      strict-transport-security:
+      - max-age=2592000
+      transfer-encoding:
+      - chunked
+      x-azure-ref:
+      - 20220804T033934Z-uc7yrm58kd5cb2tk4u9cfe74aw00000001k0000000034qu3
+      x-cache:
+      - CONFIG_NOCACHE
+      x-processing-time:
+      - 686ms
+    status:
+      code: 201
+      message: Created
+- request:
+    body: '{"participants": [{"communicationIdentifier": {"communicationUser": {"id":
+      "8:acs:00000000-1111-2222-3333-444444444444_55555555-6666-7777-8888-999999999999"}}}]}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '161'
+      Content-Type:
+      - application/json
+      User-Agent:
+      - azsdk-python-communication-chat/1.1.0 Python/3.6.7 (Windows-10-10.0.19041-SP0)
+    method: POST
+    uri: https://sanitized.communication.azure.com/chat/threads/sanitized/participants/:add?api-version=2021-09-07
+  response:
+    body:
+      string: '{"invalidParticipants": [{"code": "403", "message": "Permissions check
+        failed", "target": "8:acs:00000000-1111-2222-3333-444444444444_55555555-6666-7777-8888-999999999999"}]}'
+    headers:
+      api-supported-versions:
+      - 2021-03-07, 2021-04-05-preview6, 2021-09-07, 2022-11-15-preview8
+      connection:
+      - keep-alive
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 04 Aug 2022 03:39:35 GMT
+      ms-cv:
+      - tIsW5/pa7UOZvXOzGhh69w.0
+      strict-transport-security:
+      - max-age=2592000
+      transfer-encoding:
+      - chunked
+      x-azure-ref:
+      - 20220804T033934Z-k97maztpax51x2ee2r7vqbw7wg00000001m000000000rc1d
+      x-cache:
+      - CONFIG_NOCACHE
+      x-processing-time:
+      - 193ms
+    status:
+      code: 201
+      message: Created
+- request:
+    body: '{"participants": [{"communicationIdentifier": {"communicationUser": {"id":
+      "8:acs:fakeid==="}}}]}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '97'
+      Content-Type:
+      - application/json
+      User-Agent:
+      - azsdk-python-communication-chat/1.1.0 Python/3.6.7 (Windows-10-10.0.19041-SP0)
+    method: POST
+    uri: https://sanitized.communication.azure.com/chat/threads/sanitized/participants/:add?api-version=2021-09-07
+  response:
+    body:
+      string: '{"CommunicationError": {"Code": "BadRequest", "Message": "Identifier
+        format is invalid (8:acs:fakeid===).", "Details": []}}'
+    headers:
+      api-supported-versions:
+      - 2021-03-07, 2021-04-05-preview6, 2021-09-07, 2022-11-15-preview8
+      connection:
+      - keep-alive
+      content-type:
+      - application/json
+      date:
+      - Thu, 04 Aug 2022 03:39:35 GMT
+      ms-cv:
+      - N+GfRb0kf0uNdLVeSx3oCg.0
+      strict-transport-security:
+      - max-age=2592000
+      transfer-encoding:
+      - chunked
+      x-azure-ref:
+      - 20220804T033935Z-q1z3stmybd47948vv0qhv9299w00000001ng0000000020mn
+      x-cache:
+      - CONFIG_NOCACHE
+      x-processing-time:
+      - 22ms
+    status:
+      code: 400
+      message: Bad Request
+version: 1

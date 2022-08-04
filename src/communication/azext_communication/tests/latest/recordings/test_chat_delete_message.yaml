@@ -1,0 +1,138 @@
+interactions:
+- request:
+    body: '{"topic": "some-other-topic", "participants": []}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '49'
+      Content-Type:
+      - application/json
+      User-Agent:
+      - azsdk-python-communication-chat/1.1.0 Python/3.6.7 (Windows-10-10.0.19041-SP0)
+      repeatability-request-id:
+      - 44285506-82a8-4a68-a2d8-75e286e0f7dd
+    method: POST
+    uri: https://sanitized.communication.azure.com/chat/threads?api-version=2021-09-07
+  response:
+    body:
+      string: '{"chatThread": {"id": "sanitized", "topic": "some-other-topic", "createdOn":
+        "2022-08-04T03:41:12Z", "createdByCommunicationIdentifier": {"rawId": "sanitized",
+        "communicationUser": {"id": "sanitized"}}}}'
+    headers:
+      api-supported-versions:
+      - 2021-03-07, 2021-04-05-preview6, 2021-09-07, 2022-11-15-preview8
+      connection:
+      - keep-alive
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 04 Aug 2022 03:41:12 GMT
+      location:
+      - https://clitest000002.communication.azure.com/chat/threads/19%3AzD2Ih_I95XLbfhEqpE3JSlK7OB4EWMiLYmTNd1S70D01@thread.v2
+      ms-cv:
+      - SOUykXOVAkq/Nj+iDJ9YRg.0
+      strict-transport-security:
+      - max-age=2592000
+      transfer-encoding:
+      - chunked
+      x-azure-ref:
+      - 20220804T034112Z-nntkv2q0nd3zt4kemgcvznhu2400000001m0000000033k73
+      x-cache:
+      - CONFIG_NOCACHE
+      x-processing-time:
+      - 820ms
+    status:
+      code: 201
+      message: Created
+- request:
+    body: '{"content": "Hello!", "type": "text"}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '37'
+      Content-Type:
+      - application/json
+      User-Agent:
+      - azsdk-python-communication-chat/1.1.0 Python/3.6.7 (Windows-10-10.0.19041-SP0)
+    method: POST
+    uri: https://sanitized.communication.azure.com/chat/threads/sanitized/messages?api-version=2021-09-07
+  response:
+    body:
+      string: '{"id": "sanitized"}'
+    headers:
+      api-supported-versions:
+      - 2021-03-07, 2021-04-05-preview6, 2021-09-07, 2022-11-15-preview8
+      connection:
+      - keep-alive
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 04 Aug 2022 03:41:13 GMT
+      location:
+      - https://clitest000002.communication.azure.com/chat/threads/19%3AzD2Ih_I95XLbfhEqpE3JSlK7OB4EWMiLYmTNd1S70D01@thread.v2/messages/1659584473244
+      ms-cv:
+      - uQmrrD0hfkK8ItN4nkhcYw.0
+      strict-transport-security:
+      - max-age=2592000
+      transfer-encoding:
+      - chunked
+      x-azure-ref:
+      - 20220804T034113Z-tur6dybg817yr054hm9efewep800000000ug00000003hr6b
+      x-cache:
+      - CONFIG_NOCACHE
+      x-processing-time:
+      - 239ms
+    status:
+      code: 201
+      message: Created
+- request:
+    body: '{}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '2'
+      Content-Type:
+      - application/merge-patch+json
+      User-Agent:
+      - azsdk-python-communication-chat/1.1.0 Python/3.6.7 (Windows-10-10.0.19041-SP0)
+    method: PATCH
+    uri: https://sanitized.communication.azure.com/chat/threads/sanitized/messages/sanitized?api-version=2021-09-07
+  response:
+    body:
+      string: ''
+    headers:
+      api-supported-versions:
+      - 2021-03-07, 2021-04-05-preview6, 2021-09-07, 2022-11-15-preview8
+      connection:
+      - keep-alive
+      date:
+      - Thu, 04 Aug 2022 03:41:14 GMT
+      ms-cv:
+      - HSr+6o/pNkCFIDpNVb6eVQ.0
+      strict-transport-security:
+      - max-age=2592000
+      x-azure-ref:
+      - 20220804T034113Z-nntkv2q0nd3zt4kemgcvznhu2400000001m0000000033kh6
+      x-cache:
+      - CONFIG_NOCACHE
+      x-processing-time:
+      - 362ms
+    status:
+      code: 204
+      message: No Content
+version: 1

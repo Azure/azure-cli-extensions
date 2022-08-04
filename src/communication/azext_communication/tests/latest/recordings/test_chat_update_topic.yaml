@@ -1,0 +1,92 @@
+interactions:
+- request:
+    body: '{"topic": "thread-topic", "participants": []}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '45'
+      Content-Type:
+      - application/json
+      User-Agent:
+      - azsdk-python-communication-chat/1.1.0 Python/3.6.7 (Windows-10-10.0.19041-SP0)
+      repeatability-request-id:
+      - 586244a9-6090-44b5-9463-f87386842961
+    method: POST
+    uri: https://sanitized.communication.azure.com/chat/threads?api-version=2021-09-07
+  response:
+    body:
+      string: '{"chatThread": {"id": "sanitized", "topic": "thread-topic", "createdOn":
+        "2022-08-04T03:47:38Z", "createdByCommunicationIdentifier": {"rawId": "sanitized",
+        "communicationUser": {"id": "sanitized"}}}}'
+    headers:
+      api-supported-versions:
+      - 2021-03-07, 2021-04-05-preview6, 2021-09-07, 2022-11-15-preview8
+      connection:
+      - keep-alive
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 04 Aug 2022 03:47:39 GMT
+      location:
+      - https://clitest000002.communication.azure.com/chat/threads/19%3AW-dPjDBTmf-1GXBQBP-v1nOn6TanObGvVUPTKJcPBYw1@thread.v2
+      ms-cv:
+      - HG5GK8jJIUexkHojtSt4xw.0
+      strict-transport-security:
+      - max-age=2592000
+      transfer-encoding:
+      - chunked
+      x-azure-ref:
+      - 20220804T034738Z-t3qxnf3gyp2hp65bg8hnzpg1t000000001kg00000003a01p
+      x-cache:
+      - CONFIG_NOCACHE
+      x-processing-time:
+      - 886ms
+    status:
+      code: 201
+      message: Created
+- request:
+    body: '{"topic": "new-topic!"}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '23'
+      Content-Type:
+      - application/merge-patch+json
+      User-Agent:
+      - azsdk-python-communication-chat/1.1.0 Python/3.6.7 (Windows-10-10.0.19041-SP0)
+    method: PATCH
+    uri: https://sanitized.communication.azure.com/chat/threads/sanitized?api-version=2021-09-07
+  response:
+    body:
+      string: ''
+    headers:
+      api-supported-versions:
+      - 2021-03-07, 2021-04-05-preview6, 2021-09-07, 2022-11-15-preview8
+      connection:
+      - keep-alive
+      date:
+      - Thu, 04 Aug 2022 03:47:40 GMT
+      ms-cv:
+      - 6IaAs3iLC02rPOEP2jjnNQ.0
+      strict-transport-security:
+      - max-age=2592000
+      x-azure-ref:
+      - 20220804T034740Z-kpegq6a2qh4nr419q7tfax5sn400000001kg000000013e8b
+      x-cache:
+      - CONFIG_NOCACHE
+      x-processing-time:
+      - 278ms
+    status:
+      code: 204
+      message: No Content
+version: 1

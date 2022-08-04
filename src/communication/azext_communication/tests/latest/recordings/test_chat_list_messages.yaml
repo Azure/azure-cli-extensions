@@ -1,0 +1,103 @@
+interactions:
+- request:
+    body: '{"topic": "another-topic", "participants": []}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '46'
+      Content-Type:
+      - application/json
+      User-Agent:
+      - azsdk-python-communication-chat/1.1.0 Python/3.6.7 (Windows-10-10.0.19041-SP0)
+      repeatability-request-id:
+      - 37e3ceb2-4421-494d-a8a1-7f07c226cefd
+    method: POST
+    uri: https://sanitized.communication.azure.com/chat/threads?api-version=2021-09-07
+  response:
+    body:
+      string: '{"chatThread": {"id": "sanitized", "topic": "another-topic", "createdOn":
+        "2022-08-04T03:42:50Z", "createdByCommunicationIdentifier": {"rawId": "sanitized",
+        "communicationUser": {"id": "sanitized"}}}}'
+    headers:
+      api-supported-versions:
+      - 2021-03-07, 2021-04-05-preview6, 2021-09-07, 2022-11-15-preview8
+      connection:
+      - keep-alive
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 04 Aug 2022 03:42:51 GMT
+      location:
+      - https://clitest000002.communication.azure.com/chat/threads/19%3AWuhQKCMkg2Eo5eD776lvzz5lolz0HdHVAe9M_NfnFvQ1@thread.v2
+      ms-cv:
+      - cXOp/Gx7R02Y8cdsN9J8ig.0
+      strict-transport-security:
+      - max-age=2592000
+      transfer-encoding:
+      - chunked
+      x-azure-ref:
+      - 20220804T034250Z-91tba13kdd5mrb8h3w91379wbg00000001k000000000ymkf
+      x-cache:
+      - CONFIG_NOCACHE
+      x-processing-time:
+      - 634ms
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azsdk-python-communication-chat/1.1.0 Python/3.6.7 (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://sanitized.communication.azure.com/chat/threads/sanitized/messages?startTime=2022-01-01T00%3A00%3A00.000Z&api-version=2021-09-07
+  response:
+    body:
+      string: '{"value": [{"id": "1659584570901", "type": "topicUpdated", "sequenceId":
+        "2", "version": "1659584570901", "content": {"topic": "another-topic", "initiatorCommunicationIdentifier":
+        {"rawId": "8:acs:0f59b30a-421f-4769-bca0-70396a952e80_00000013-06d4-8665-fa5d-573a0d002b85",
+        "communicationUser": {"id": "8:acs:0f59b30a-421f-4769-bca0-70396a952e80_00000013-06d4-8665-fa5d-573a0d002b85"}}},
+        "createdOn": "2022-08-04T03:42:50Z"}, {"id": "1659584570875", "type": "participantAdded",
+        "sequenceId": "1", "version": "1659584570875", "content": {"participants":
+        [{"communicationIdentifier": {"rawId": "8:acs:0f59b30a-421f-4769-bca0-70396a952e80_00000013-06d4-8665-fa5d-573a0d002b85",
+        "communicationUser": {"id": "8:acs:0f59b30a-421f-4769-bca0-70396a952e80_00000013-06d4-8665-fa5d-573a0d002b85"}},
+        "shareHistoryTime": "1970-01-01T00:00:00Z"}], "initiatorCommunicationIdentifier":
+        {"rawId": "8:acs:0f59b30a-421f-4769-bca0-70396a952e80_00000013-06d4-8665-fa5d-573a0d002b85",
+        "communicationUser": {"id": "8:acs:0f59b30a-421f-4769-bca0-70396a952e80_00000013-06d4-8665-fa5d-573a0d002b85"}}},
+        "createdOn": "2022-08-04T03:42:50Z"}]}'
+    headers:
+      api-supported-versions:
+      - 2021-03-07, 2021-04-05-preview6, 2021-09-07, 2022-11-15-preview8
+      connection:
+      - keep-alive
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 04 Aug 2022 03:42:51 GMT
+      ms-cv:
+      - RccMmjCZf0mz29CBummeqg.0
+      strict-transport-security:
+      - max-age=2592000
+      transfer-encoding:
+      - chunked
+      x-azure-ref:
+      - 20220804T034251Z-q1z3stmybd47948vv0qhv9299w00000001kg00000000xba8
+      x-cache:
+      - CONFIG_NOCACHE
+      x-processing-time:
+      - 159ms
+    status:
+      code: 200
+      message: OK
+version: 1

@@ -1,0 +1,141 @@
+interactions:
+- request:
+    body: '{"topic": "new-topic", "participants": []}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '42'
+      Content-Type:
+      - application/json
+      User-Agent:
+      - azsdk-python-communication-chat/1.1.0 Python/3.6.7 (Windows-10-10.0.19041-SP0)
+      repeatability-request-id:
+      - d279fb36-514a-42fd-b1bd-e5ec23b92904
+    method: POST
+    uri: https://sanitized.communication.azure.com/chat/threads?api-version=2021-09-07
+  response:
+    body:
+      string: '{"chatThread": {"id": "sanitized", "topic": "new-topic", "createdOn":
+        "2022-08-04T03:41:12Z", "createdByCommunicationIdentifier": {"rawId": "sanitized",
+        "communicationUser": {"id": "sanitized"}}}}'
+    headers:
+      api-supported-versions:
+      - 2021-03-07, 2021-04-05-preview6, 2021-09-07, 2022-11-15-preview8
+      connection:
+      - keep-alive
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 04 Aug 2022 03:41:13 GMT
+      location:
+      - https://clitest000002.communication.azure.com/chat/threads/19%3AKba5UW5r8zwRP1ri4piJLRKDkFW2ZgRxGRNLyjrCDI41@thread.v2
+      ms-cv:
+      - 6j08xkFGrU25fsqiTI0SwA.0
+      strict-transport-security:
+      - max-age=2592000
+      transfer-encoding:
+      - chunked
+      x-azure-ref:
+      - 20220804T034112Z-t3qxnf3gyp2hp65bg8hnzpg1t000000001mg00000002792v
+      x-cache:
+      - CONFIG_NOCACHE
+      x-processing-time:
+      - 1175ms
+    status:
+      code: 201
+      message: Created
+- request:
+    body: '{"content": "hello!", "type": "html"}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '37'
+      Content-Type:
+      - application/json
+      User-Agent:
+      - azsdk-python-communication-chat/1.1.0 Python/3.6.7 (Windows-10-10.0.19041-SP0)
+    method: POST
+    uri: https://sanitized.communication.azure.com/chat/threads/sanitized/messages?api-version=2021-09-07
+  response:
+    body:
+      string: '{"id": "sanitized"}'
+    headers:
+      api-supported-versions:
+      - 2021-03-07, 2021-04-05-preview6, 2021-09-07, 2022-11-15-preview8
+      connection:
+      - keep-alive
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 04 Aug 2022 03:41:13 GMT
+      location:
+      - https://clitest000002.communication.azure.com/chat/threads/19%3AKba5UW5r8zwRP1ri4piJLRKDkFW2ZgRxGRNLyjrCDI41@thread.v2/messages/1659584473684
+      ms-cv:
+      - stYTpYbpLUWs1z2xlpFnMQ.0
+      strict-transport-security:
+      - max-age=2592000
+      transfer-encoding:
+      - chunked
+      x-azure-ref:
+      - 20220804T034113Z-qtfd0d2efh3zh2gzxzkdhtv16800000001k0000000018yng
+      x-cache:
+      - CONFIG_NOCACHE
+      x-processing-time:
+      - 130ms
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azsdk-python-communication-chat/1.1.0 Python/3.6.7 (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://sanitized.communication.azure.com/chat/threads/sanitized/messages/sanitized?api-version=2021-09-07
+  response:
+    body:
+      string: '{"id": "sanitized", "type": "html", "sequenceId": "3", "version": "1659584473684",
+        "content": {"message": "hello!"}, "senderDisplayName": "", "createdOn": "2022-08-04T03:41:13Z",
+        "senderCommunicationIdentifier": {"rawId": "sanitized", "communicationUser":
+        {"id": "sanitized"}}}'
+    headers:
+      api-supported-versions:
+      - 2021-03-07, 2021-04-05-preview6, 2021-09-07, 2022-11-15-preview8
+      connection:
+      - keep-alive
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 04 Aug 2022 03:41:14 GMT
+      ms-cv:
+      - A+8SPSASrkOr/icgBT5avQ.0
+      strict-transport-security:
+      - max-age=2592000
+      transfer-encoding:
+      - chunked
+      x-azure-ref:
+      - 20220804T034113Z-qtfd0d2efh3zh2gzxzkdhtv16800000001m000000000mc02
+      x-cache:
+      - CONFIG_NOCACHE
+      x-processing-time:
+      - 195ms
+    status:
+      code: 200
+      message: OK
+version: 1
