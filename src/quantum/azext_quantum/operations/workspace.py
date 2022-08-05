@@ -46,7 +46,6 @@ C4A_TERMS_ACCEPTANCE_MESSAGE = "\nBy continuing you accept the Azure Quantum ter
 
 class WorkspaceInfo:
     def __init__(self, cmd, resource_group_name=None, workspace_name=None, location=None):
-    # def __init__(self, cmd, resource_group_name, workspace_name, location):
         from azure.cli.core.commands.client_factory import get_subscription_id
 
         # Hierarchically selects the value for the given key.
