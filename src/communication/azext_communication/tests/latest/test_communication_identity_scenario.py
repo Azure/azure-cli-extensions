@@ -23,6 +23,7 @@ class CommunicationIdentityScenarios(ScenarioTest):
             BodyReplacerProcessor(keys=["id", "token"])
         ])
 
+
     @ResourceGroupPreparer(name_prefix='clitestcommunication_MyResourceGroup'[:7], key='rg', parameter_name='rg')
     @CommunicationResourcePreparer(resource_group_parameter_name='rg')
     def test_issue_access_token(self, communication_resource_info):
@@ -45,16 +46,17 @@ class CommunicationIdentityScenarios(ScenarioTest):
             'az communication identity issue-access-token --scope chat --user-id {id}').get_output_in_json()
         self.assertIsNotNone(val['token'])
     
+
     @ResourceGroupPreparer(name_prefix='clitestcommunication_MyResourceGroup'[:7], key='rg', parameter_name='rg')
     @CommunicationResourcePreparer(resource_group_parameter_name='rg')
     def test_issue_access_token_with_multiple_scopes(self, communication_resource_info):
-
         os.environ['AZURE_COMMUNICATION_CONNECTION_STRING'] = communication_resource_info[1]
 
         val = self.cmd(
             'az communication identity issue-access-token --scope voip chat').get_output_in_json()
         self.assertIsNotNone(val['token'])
         
+
     @ResourceGroupPreparer(name_prefix='clitestcommunication_MyResourceGroup'[:7], key='rg', parameter_name='rg')
     @CommunicationResourcePreparer(resource_group_parameter_name='rg')
     def test_revoke_access_tokens(self, communication_resource_info):

@@ -4,6 +4,16 @@
 # --------------------------------------------------------------------------------------------
 
 
+def communication_identity_create_user(client):
+    return client.create_user()
+
+
+def communication_identity_delete_user(client, user_id):
+    from azure.communication.identity import CommunicationUserIdentifier
+
+    return client.delete_user(CommunicationUserIdentifier(user_id))
+
+
 def communication_identity_issue_access_token(client, scopes, user_id=None):
     from azure.communication.identity import CommunicationUserIdentifier
     user_token_data = {"user_id": user_id, "token": "", "expires_on": ""}
@@ -25,6 +35,10 @@ def communication_identity_issue_access_token(client, scopes, user_id=None):
 def communication_identity_revoke_access_tokens(client, user_id):
     from azure.communication.identity import CommunicationUserIdentifier
     return client.revoke_tokens(CommunicationUserIdentifier(user_id))
+
+
+def communication_identity_get_token_for_teams_user(client, aad_token, client_id, user_object_id):
+    return client.get_token_for_teams_user(aad_token, client_id, user_object_id)
 
 
 def communication_send_sms(client, sender, recipients, message):

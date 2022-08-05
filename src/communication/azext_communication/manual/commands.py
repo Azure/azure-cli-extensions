@@ -14,8 +14,11 @@ def load_command_table(self, _):
 
     identity_arguments = ['connection_string']
     with self.command_group('communication identity', client_factory=cf_communication_identity, is_preview=True) as g:
+        g.communication_custom_command('create-user', "communication_identity_create_user", identity_arguments, client_factory=cf_communication_identity)
+        g.communication_custom_command('delete-user', "communication_identity_delete_user", identity_arguments, client_factory=cf_communication_identity)
         g.communication_custom_command('issue-access-token', "communication_identity_issue_access_token", identity_arguments, client_factory=cf_communication_identity)
         g.communication_custom_command('revoke-access-tokens', "communication_identity_revoke_access_tokens", identity_arguments, client_factory=cf_communication_identity)
+        g.communication_custom_command('get-token-for-teams-user', "communication_identity_get_token_for_teams_user", identity_arguments, client_factory=cf_communication_identity)
 
     sms_arguments = ['connection_string']
     with self.command_group('communication sms', client_factory=cf_communication_sms, is_preview=True) as g:
