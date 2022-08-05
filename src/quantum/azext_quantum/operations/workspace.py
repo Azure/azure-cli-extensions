@@ -46,16 +46,13 @@ C4A_TERMS_ACCEPTANCE_MESSAGE = "\nBy continuing you accept the Azure Quantum ter
 
 class WorkspaceInfo:
     def __init__(self, cmd, resource_group_name=None, workspace_name=None, location=None):
+    # def __init__(self, cmd, resource_group_name, workspace_name, location):
         from azure.cli.core.commands.client_factory import get_subscription_id
 
         # Hierarchically selects the value for the given key.
         # First tries the value provided as argument, as that represents the value from the command line
-        # then it checks if the key exists in the 'quantum' section in config, and uses that if available.
-        # finally, it checks in the 'global' section in the config.
+        # then it checks if the key exists in the [defaults] section in config, and uses that if available.
         def select_value(key, value):
-            if value is not None:
-                return value
-            value = cmd.cli_ctx.config.get('quantum', key, None)
             if value is not None:
                 return value
             value = cmd.cli_ctx.config.get(cmd.cli_ctx.config.defaults_section_name, key, None)
@@ -75,12 +72,7 @@ class WorkspaceInfo:
     def save(self, cmd):
         from azure.cli.core.util import ConfiguredDefaultSetter
 
-        # with ConfiguredDefaultSetter(cmd.cli_ctx.config, False):
-        #     cmd.cli_ctx.config.set_value('quantum', 'group', self.resource_group)
-        #     cmd.cli_ctx.config.set_value('quantum', 'workspace', self.name)
-        #     cmd.cli_ctx.config.set_value('quantum', 'location', self.location)
-        #
-        # >>>>> Save in the global [defaults] section of the .azure\config file >>>>>
+        # Save in the global [defaults] section of the .azure\config file
         with ConfiguredDefaultSetter(cmd.cli_ctx.config, False):
             cmd.cli_ctx.config.set_value(cmd.cli_ctx.config.defaults_section_name, 'group', self.resource_group)
             cmd.cli_ctx.config.set_value(cmd.cli_ctx.config.defaults_section_name, 'workspace', self.name)
@@ -217,7 +209,7 @@ def _validate_storage_account(tier_or_kind_msg_text, tier_or_kind, supported_tie
                                         f"Storage account {tier_or_kind_msg_text}{plural} currently supported: {tier_or_kind_list[:-2]}")
 
 
-def create(cmd, resource_group_name=None, workspace_name=None, location=None, storage_account=None, skip_role_assignment=False, provider_sku_list=None, auto_accept=False):
+def create(cmd, resource_group_name, workspace_name, location, storage_account, skip_role_assignment=False, provider_sku_list=None, auto_accept=False):
     """
     Create a new Azure Quantum workspace.
     """
@@ -369,7 +361,8 @@ def quotas(cmd, resource_group_name=None, workspace_name=None, location=None):
     return client.list()
 
 
-def set(cmd, workspace_name, resource_group_name=None, location=None):
+# def set(cmd, workspace_name, resource_group_name=None, location=None):
+def set(cmd, workspace_name, resource_group_name, location):
     """
     Set the default Azure Quantum workspace.
     """

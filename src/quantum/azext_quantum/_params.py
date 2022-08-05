@@ -27,7 +27,7 @@ class JobParamsAction(argparse._AppendAction):
 
 
 def load_arguments(self, _):
-    workspace_name_type = CLIArgumentType(options_list=['--workspace-name', '-w'], help='Name of the Quantum Workspace. You can configure the default workspace using `az quantum workspace set`.', id_part=None, required=False)
+    workspace_name_type = CLIArgumentType(options_list=['--workspace-name', '-w'], help='Name of the Quantum Workspace. You can configure the default workspace using `az quantum workspace set`.', configured_default='workspace', id_part=None, required=False)
     storage_account_name_type = CLIArgumentType(options_list=['--storage-account', '-a'], help='Name of the storage account to be used by a quantum workspace.')
     program_args_type = CLIArgumentType(nargs='*', help='List of arguments expected by the Q# operation specified as --name=value after `--`.')
     target_id_type = CLIArgumentType(options_list=['--target-id', '-t'], help='Execution engine for quantum computing jobs. When a workspace is configured with a set of provider, they each enable one or more targets. You can configure the default target using `az quantum target set`.')
@@ -49,7 +49,8 @@ def load_arguments(self, _):
     autoadd_only_type = CLIArgumentType(help='If specified, only the plans flagged "autoAdd" are displayed.')
 
     with self.argument_context('quantum workspace') as c:
-        c.argument('workspace_name', workspace_name_type)
+        # c.argument('workspace_name', workspace_name_type)
+        c.argument('workspace_name', workspace_name_type, required=True)
         c.argument('storage_account', storage_account_name_type)
         c.argument('tag', tag_type)
         c.argument('skip_role_assignment', skip_role_assignment_type)
