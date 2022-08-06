@@ -312,7 +312,7 @@ def create(cmd, resource_group_name, workspace_name, location, storage_account, 
     return quantum_workspace
 
 
-def delete(cmd, resource_group_name=None, workspace_name=None):
+def delete(cmd, resource_group_name, workspace_name):
     """
     Delete the given (or current) Azure Quantum workspace.
     """
@@ -351,7 +351,7 @@ def get(cmd, resource_group_name=None, workspace_name=None):
     return ws
 
 
-def quotas(cmd, resource_group_name=None, workspace_name=None, location=None):
+def quotas(cmd, resource_group_name, workspace_name, location):
     """
     List the quotas for the given (or current) Azure Quantum workspace.
     """
