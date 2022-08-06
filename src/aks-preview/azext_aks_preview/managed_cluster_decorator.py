@@ -1395,6 +1395,82 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         )
         return azure_defender
 
+    def _get_enable_azure_monitor_metrics(self, enable_validation: bool = False) -> bool:
+        """Internal function to obtain the value of enable_azure_monitor_metrics.
+
+        This function supports the option of enable_validation. When enabled, if both enable_azure_monitor_metrics and disable_azure_monitor_metrics are
+        specified, raise a MutuallyExclusiveArgumentError.
+
+        :return: bool
+        """
+        print("_get_enable_azure_monitor_metrics being called...")
+
+        # Read the original value passed by the command.
+
+        print("REACHES HERE 1")
+        enable_azure_monitor_metrics = self.raw_param.get("enable_azuremonitormetrics")
+
+        # In create mode, try to read the property value corresponding to the parameter from the `mc` object.
+        if self.decorator_mode == DecoratorMode.CREATE:
+            print ("REACHES HERE OUT OF TURN")
+            if (
+                self.mc and
+                self.mc.azure_monitor_profile and
+                self.mc.azure_monitor_profile.metrics
+            ):
+                print("REACHES HERE 3")
+                print(self.mc.azure_monitor_profile.metrics)
+                enable_azure_monitor_metrics = self.mc.azure_monitor_profile.metrics.enabled
+
+        # This parameter does not need dynamic completion.
+        if enable_validation:
+            print("REACHES HERE 4")
+            print(dir(self.mc))
+            if enable_azure_monitor_metrics and self._get_disable_azure_monitor_metrics(False):
+                print("REACHES HERE 5")
+                raise MutuallyExclusiveArgumentError(
+                    "Cannot specify --enable-azuremonitormetrics and --enable-azuremonitormetrics at the same time."
+                )
+
+        return enable_azure_monitor_metrics
+
+    def get_enable_azure_monitor_metrics(self) -> bool:
+        """Obtain the value of enable_azure_monitor_metrics.
+        This function will verify the parameter by default. If both enable_azure_monitor_metrics and disable_azure_monitor_metrics are specified, raise a
+        MutuallyExclusiveArgumentError.
+        :return: bool
+        """
+        return self._get_enable_azure_monitor_metrics(enable_validation=True)
+
+    def _get_disable_azure_monitor_metrics(self, enable_validation: bool = False) -> bool:
+        """Internal function to obtain the value of disable_azure_monitor_metrics.
+        This function supports the option of enable_validation. When enabled, if both enable_azure_monitor_metrics and disable_azure_monitor_metrics are
+        specified, raise a MutuallyExclusiveArgumentError.
+        :return: bool
+        """
+        # Read the original value passed by the command.
+        disable_azure_monitor_metrics = self.raw_param.get("disable_azuremonitormetrics")
+        print("REACHES HERE 10")
+
+        # This option is not supported in create mode, hence we do not read the property value from the `mc` object.
+        # This parameter does not need dynamic completion.
+        if enable_validation:
+            print("REACHES HERE 11")
+            if disable_azure_monitor_metrics and self._get_enable_azure_monitor_metrics(False):
+                print("REACHES HERE 12")
+                raise MutuallyExclusiveArgumentError(
+                    "Cannot specify --enable-azuremonitormetrics and --disable-azuremonitormetrics at the same time."
+                )
+
+        return disable_azure_monitor_metrics
+
+    def get_disable_azure_monitor_metrics(self) -> bool:
+        """Obtain the value of disable_azure_monitor_metrics.
+        This function will verify the parameter by default. If both enable_azure_monitor_metrics and disable_azure_monitor_metrics are specified, raise a
+        MutuallyExclusiveArgumentError.
+        :return: bool
+        """
+        return self._get_disable_azure_monitor_metrics(enable_validation=True)
 
 class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
     def __init__(
@@ -1700,6 +1776,20 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
             mc.security_profile.defender = defender
 
         return mc
+    
+    def set_up_azure_monitor_profile(self, mc: ManagedCluster) -> ManagedCluster:
+        """Set up azure monitor profile for the ManagedCluster object.
+        :return: the ManagedCluster object
+        """
+        self._ensure_mc(mc)
+
+        if self.context.get_enable_azure_monitor_metrics():
+            if mc.azure_monitor_profile is None:
+                mc.azure_monitor_profile = self.models.ManagedClusterAzureMonitorMetricsProfile()
+            mc.azure_monitor_profile.metrics = self.models.ManagedClusterAzureMonitorMetricsProfileMetrics(enabled=True)
+
+        return mc
+
 
     def construct_mc_profile_preview(self, bypass_restore_defaults: bool = False) -> ManagedCluster:
         """The overall controller used to construct the default ManagedCluster profile.
@@ -1737,6 +1827,8 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         mc = self.set_up_ingress_web_app_routing(mc)
         # set up workload auto scaler profile
         mc = self.set_up_workload_auto_scaler_profile(mc)
+        # set up azure monitor metrics profile
+        mc = self.set_up_azure_monitor_profile(mc)
 
         # DO NOT MOVE: keep this at the bottom, restore defaults
         mc = self._restore_defaults_in_mc(mc)
@@ -2035,6 +2127,29 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
 
         return mc
 
+    def update_azure_monitor_profile(self, mc: ManagedCluster) -> ManagedCluster:
+        """Update azure monitor profile for the ManagedCluster object.
+        :return: the ManagedCluster object
+        """
+        self._ensure_mc(mc)
+        print("REACHES HERE 6")
+
+        if self.context.get_enable_azure_monitor_metrics():
+            print("REACHES HERE 7")
+            if mc.azure_monitor_profile is None:
+                print("REACHES HERE 8")
+                mc.azure_monitor_profile = self.models.ManagedClusterAzureMonitorProfile()
+            print("REACHES HERE 9")
+            mc.azure_monitor_profile.metrics = self.models.ManagedClusterAzureMonitorProfileMetrics(enabled=True)
+            print(mc.azure_monitor_profile.metrics.enabled)
+
+        if self.context.get_disable_azure_monitor_metrics():
+            if mc.azure_monitor_profile is None:
+                mc.azure_monitor_profile = self.models.ManagedClusterAzureMonitorProfile()
+            mc.azure_monitor_profile.metrics = self.models.ManagedClusterAzureMonitorProfileMetrics(enabled=False)
+        
+        return mc
+
     def update_mc_profile_preview(self) -> ManagedCluster:
         """The overall controller used to update the preview ManagedCluster profile.
 
@@ -2067,5 +2182,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         mc = self.update_storage_profile(mc)
         # update workload auto scaler profile
         mc = self.update_workload_auto_scaler_profile(mc)
+        # update azure monitor metrics profile
+        mc = self.update_azure_monitor_profile(mc)
 
         return mc

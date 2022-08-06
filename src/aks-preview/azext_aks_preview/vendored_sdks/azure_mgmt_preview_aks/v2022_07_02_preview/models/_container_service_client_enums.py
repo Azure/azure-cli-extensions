@@ -525,8 +525,12 @@ class PublicNetworkAccess(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     """Allow or deny public network access for AKS
     """
 
+    #: Inbound/Outbound to the managedCluster is allowed.
     ENABLED = "Enabled"
+    #: Inbound traffic to managedCluster is disabled, traffic from managedCluster is allowed.
     DISABLED = "Disabled"
+    #: Inbound/Outbound traffic is managed by Microsoft.Network/NetworkSecurityPerimeters.
+    SECURED_BY_PERIMETER = "SecuredByPerimeter"
 
 class ResourceIdentityType(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     """For more information see `use managed identities in AKS

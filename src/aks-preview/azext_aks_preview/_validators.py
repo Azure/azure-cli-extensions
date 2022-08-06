@@ -615,3 +615,13 @@ def validate_defender_config_parameter(namespace):
 def validate_defender_disable_and_enable_parameters(namespace):
     if namespace.disable_defender and namespace.enable_defender:
         raise ArgumentUsageError('Providing both --disable-defender and --enable-defender flags is invalid')
+
+def validate_metriclabelsallowlist(namespace):
+    # Do regex matching here and return error if !matched
+    # raise ArgumentUsageError('validate_metriclabelsallowlist -> Not yet implemented')
+    return
+
+def validate_metricannotationsallowlist(namespace):
+    # Do regex matching here and return error if !matched
+    # raise ArgumentUsageError('validate_metricannotationsallowlist -> Not yet implemented')
+    return

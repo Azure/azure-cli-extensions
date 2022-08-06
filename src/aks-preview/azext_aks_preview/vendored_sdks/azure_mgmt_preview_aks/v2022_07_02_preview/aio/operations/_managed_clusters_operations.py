@@ -22,7 +22,7 @@ from azure.mgmt.core.polling.async_arm_polling import AsyncARMPolling
 
 from ... import models as _models
 from ..._vendor import _convert_request
-from ...operations._managed_clusters_operations import build_create_or_update_request_initial, build_delete_request_initial, build_get_access_profile_request, build_get_command_result_request, build_get_os_options_request, build_get_request, build_get_upgrade_profile_request, build_list_by_resource_group_request, build_list_cluster_admin_credentials_request, build_list_cluster_monitoring_user_credentials_request, build_list_cluster_user_credentials_request, build_list_outbound_network_dependencies_endpoints_request, build_list_request, build_reset_aad_profile_request_initial, build_reset_service_principal_profile_request_initial, build_rotate_cluster_certificates_request_initial, build_rotate_service_account_signing_keys_request_initial, build_run_command_request_initial, build_start_request_initial, build_stop_request_initial, build_update_tags_request_initial
+from ...operations._managed_clusters_operations import build_abort_latest_operation_request, build_create_or_update_request_initial, build_delete_request_initial, build_get_access_profile_request, build_get_command_result_request, build_get_os_options_request, build_get_request, build_get_upgrade_profile_request, build_list_by_resource_group_request, build_list_cluster_admin_credentials_request, build_list_cluster_monitoring_user_credentials_request, build_list_cluster_user_credentials_request, build_list_outbound_network_dependencies_endpoints_request, build_list_request, build_reset_aad_profile_request_initial, build_reset_service_principal_profile_request_initial, build_rotate_cluster_certificates_request_initial, build_rotate_service_account_signing_keys_request_initial, build_run_command_request_initial, build_start_request_initial, build_stop_request_initial, build_update_tags_request_initial
 T = TypeVar('T')
 ClsType = Optional[Callable[[PipelineResponse[HttpRequest, AsyncHttpResponse], T, Dict[str, Any]], Any]]
 
@@ -1378,6 +1378,71 @@ class ManagedClustersOperations:  # pylint: disable=too-many-public-methods
         return AsyncLROPoller(self._client, raw_result, get_long_running_output, polling_method)
 
     begin_reset_aad_profile.metadata = {'url': "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ContainerService/managedClusters/{resourceName}/resetAADProfile"}  # type: ignore
+
+    @distributed_trace_async
+    async def abort_latest_operation(  # pylint: disable=inconsistent-return-statements
+        self,
+        resource_group_name: str,
+        resource_name: str,
+        **kwargs: Any
+    ) -> None:
+        """Aborts last operation running on managed cluster.
+
+        Aborting last running operation on managed cluster.  We return a 204 no content code here to
+        indicate that the operation has been accepted and an abort will be attempted but is not
+        guaranteed to complete successfully. Please look up the provisioning state of the managed
+        cluster to keep track of whether it changes to Canceled. A canceled provisioning state
+        indicates that the abort was successful.
+
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
+        :type resource_group_name: str
+        :param resource_name: The name of the managed cluster resource.
+        :type resource_name: str
+        :keyword callable cls: A custom type or function that will be passed the direct response
+        :return: None, or the result of cls(response)
+        :rtype: None
+        :raises: ~azure.core.exceptions.HttpResponseError
+        """
+        error_map = {
+            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
+        }
+        error_map.update(kwargs.pop('error_map', {}) or {})
+
+        _headers = kwargs.pop("headers", {}) or {}
+        _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
+
+        api_version = kwargs.pop('api_version', _params.pop('api-version', "2022-07-02-preview"))  # type: str
+        cls = kwargs.pop('cls', None)  # type: ClsType[None]
+
+        
+        request = build_abort_latest_operation_request(
+            subscription_id=self._config.subscription_id,
+            resource_group_name=resource_group_name,
+            resource_name=resource_name,
+            api_version=api_version,
+            template_url=self.abort_latest_operation.metadata['url'],
+            headers=_headers,
+            params=_params,
+        )
+        request = _convert_request(request)
+        request.url = self._client.format_url(request.url)  # type: ignore
+
+        pipeline_response = await self._client._pipeline.run(  # type: ignore # pylint: disable=protected-access
+            request,
+            stream=False,
+            **kwargs
+        )
+        response = pipeline_response.http_response
+
+        if response.status_code not in [204]:
+            map_error(status_code=response.status_code, response=response, error_map=error_map)
+            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+
+        if cls:
+            return cls(pipeline_response, None, {})
+
+    abort_latest_operation.metadata = {'url': "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ContainerService/managedclusters/{resourceName}/abort"}  # type: ignore
+
 
     async def _rotate_cluster_certificates_initial(  # pylint: disable=inconsistent-return-statements
         self,

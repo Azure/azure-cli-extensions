@@ -2667,17 +2667,16 @@ class ManagedCluster(TrackedResource):
     :vartype ingress_profile:
      ~azure.mgmt.containerservice.v2022_07_02_preview.models.ManagedClusterIngressProfile
     :ivar public_network_access: Allow or deny public network access for AKS. Known values are:
-     "Enabled", "Disabled".
+     "Enabled", "Disabled", "SecuredByPerimeter".
     :vartype public_network_access: str or
      ~azure.mgmt.containerservice.v2022_07_02_preview.models.PublicNetworkAccess
     :ivar workload_auto_scaler_profile: Workload Auto-scaler profile for the container service
      cluster.
     :vartype workload_auto_scaler_profile:
      ~azure.mgmt.containerservice.v2022_07_02_preview.models.ManagedClusterWorkloadAutoScalerProfile
-    :ivar azure_monitor_metrics_profile: Prometheus addon profile for the container service
-     cluster.
-    :vartype azure_monitor_metrics_profile:
-     ~azure.mgmt.containerservice.v2022_07_02_preview.models.ManagedClusterAzureMonitorMetricsProfile
+    :ivar azure_monitor_profile: Prometheus addon profile for the container service cluster.
+    :vartype azure_monitor_profile:
+     ~azure.mgmt.containerservice.v2022_07_02_preview.models.ManagedClusterAzureMonitorProfile
     """
 
     _validation = {
@@ -2742,7 +2741,7 @@ class ManagedCluster(TrackedResource):
         'ingress_profile': {'key': 'properties.ingressProfile', 'type': 'ManagedClusterIngressProfile'},
         'public_network_access': {'key': 'properties.publicNetworkAccess', 'type': 'str'},
         'workload_auto_scaler_profile': {'key': 'properties.workloadAutoScalerProfile', 'type': 'ManagedClusterWorkloadAutoScalerProfile'},
-        'azure_monitor_metrics_profile': {'key': 'properties.azureMonitorMetricsProfile', 'type': 'ManagedClusterAzureMonitorMetricsProfile'},
+        'azure_monitor_profile': {'key': 'properties.azureMonitorProfile', 'type': 'ManagedClusterAzureMonitorProfile'},
     }
 
     def __init__(
@@ -2783,7 +2782,7 @@ class ManagedCluster(TrackedResource):
         ingress_profile: Optional["_models.ManagedClusterIngressProfile"] = None,
         public_network_access: Optional[Union[str, "_models.PublicNetworkAccess"]] = None,
         workload_auto_scaler_profile: Optional["_models.ManagedClusterWorkloadAutoScalerProfile"] = None,
-        azure_monitor_metrics_profile: Optional["_models.ManagedClusterAzureMonitorMetricsProfile"] = None,
+        azure_monitor_profile: Optional["_models.ManagedClusterAzureMonitorProfile"] = None,
         **kwargs
     ):
         """
@@ -2891,17 +2890,16 @@ class ManagedCluster(TrackedResource):
         :paramtype ingress_profile:
          ~azure.mgmt.containerservice.v2022_07_02_preview.models.ManagedClusterIngressProfile
         :keyword public_network_access: Allow or deny public network access for AKS. Known values are:
-         "Enabled", "Disabled".
+         "Enabled", "Disabled", "SecuredByPerimeter".
         :paramtype public_network_access: str or
          ~azure.mgmt.containerservice.v2022_07_02_preview.models.PublicNetworkAccess
         :keyword workload_auto_scaler_profile: Workload Auto-scaler profile for the container service
          cluster.
         :paramtype workload_auto_scaler_profile:
          ~azure.mgmt.containerservice.v2022_07_02_preview.models.ManagedClusterWorkloadAutoScalerProfile
-        :keyword azure_monitor_metrics_profile: Prometheus addon profile for the container service
-         cluster.
-        :paramtype azure_monitor_metrics_profile:
-         ~azure.mgmt.containerservice.v2022_07_02_preview.models.ManagedClusterAzureMonitorMetricsProfile
+        :keyword azure_monitor_profile: Prometheus addon profile for the container service cluster.
+        :paramtype azure_monitor_profile:
+         ~azure.mgmt.containerservice.v2022_07_02_preview.models.ManagedClusterAzureMonitorProfile
         """
         super(ManagedCluster, self).__init__(tags=tags, location=location, **kwargs)
         self.sku = sku
@@ -2944,7 +2942,7 @@ class ManagedCluster(TrackedResource):
         self.ingress_profile = ingress_profile
         self.public_network_access = public_network_access
         self.workload_auto_scaler_profile = workload_auto_scaler_profile
-        self.azure_monitor_metrics_profile = azure_monitor_metrics_profile
+        self.azure_monitor_profile = azure_monitor_profile
 
 
 class ManagedClusterAADProfile(msrest.serialization.Model):
@@ -4239,40 +4237,36 @@ class ManagedClusterAutoUpgradeProfile(msrest.serialization.Model):
         self.upgrade_channel = upgrade_channel
 
 
-class ManagedClusterAzureMonitorMetricsProfile(msrest.serialization.Model):
+class ManagedClusterAzureMonitorProfile(msrest.serialization.Model):
     """Prometheus addon profile for the container service cluster.
 
-    :ivar metrics: Metrics profile for the Prometheus service addon.
+    :ivar metrics: Metrics profile for the prometheus service addon.
     :vartype metrics:
-     ~azure.mgmt.containerservice.v2022_07_02_preview.models.ManagedClusterAzureMonitorMetricsProfileMetrics
+     ~azure.mgmt.containerservice.v2022_07_02_preview.models.ManagedClusterAzureMonitorProfileMetrics
     """
 
     _attribute_map = {
-        'metrics': {'key': 'Metrics', 'type': 'ManagedClusterAzureMonitorMetricsProfileMetrics'},
+        'metrics': {'key': 'metrics', 'type': 'ManagedClusterAzureMonitorProfileMetrics'},
     }
 
     def __init__(
         self,
         *,
-        metrics: Optional["_models.ManagedClusterAzureMonitorMetricsProfileMetrics"] = None,
+        metrics: Optional["_models.ManagedClusterAzureMonitorProfileMetrics"] = None,
         **kwargs
     ):
         """
-        :keyword metrics: Metrics profile for the Prometheus service addon.
+        :keyword metrics: Metrics profile for the prometheus service addon.
         :paramtype metrics:
-         ~azure.mgmt.containerservice.v2022_07_02_preview.models.ManagedClusterAzureMonitorMetricsProfileMetrics
+         ~azure.mgmt.containerservice.v2022_07_02_preview.models.ManagedClusterAzureMonitorProfileMetrics
         """
-        super(ManagedClusterAzureMonitorMetricsProfile, self).__init__(**kwargs)
+        super(ManagedClusterAzureMonitorProfile, self).__init__(**kwargs)
         self.metrics = metrics
 
 
-class ManagedClusterAzureMonitorMetricsProfileMetrics(msrest.serialization.Model):
-    """Metrics profile for the Prometheus service addon.
+class ManagedClusterAzureMonitorProfileKubeStateMetrics(msrest.serialization.Model):
+    """Kube State Metrics for prometheus addon profile for the container service cluster.
 
-    All required parameters must be populated in order to send to Azure.
-
-    :ivar enabled: Required. Whether to enable the Prometheus collector.
-    :vartype enabled: bool
     :ivar metric_labels_allowlist: Comma-separated list of Kubernetes annotations keys that will be
      used in the resource's labels metric.
     :vartype metric_labels_allowlist: str
@@ -4281,12 +4275,7 @@ class ManagedClusterAzureMonitorMetricsProfileMetrics(msrest.serialization.Model
     :vartype metric_annotations_allow_list: str
     """
 
-    _validation = {
-        'enabled': {'required': True},
-    }
-
     _attribute_map = {
-        'enabled': {'key': 'enabled', 'type': 'bool'},
         'metric_labels_allowlist': {'key': 'metricLabelsAllowlist', 'type': 'str'},
         'metric_annotations_allow_list': {'key': 'metricAnnotationsAllowList', 'type': 'str'},
     }
@@ -4294,14 +4283,11 @@ class ManagedClusterAzureMonitorMetricsProfileMetrics(msrest.serialization.Model
     def __init__(
         self,
         *,
-        enabled: bool,
         metric_labels_allowlist: Optional[str] = None,
         metric_annotations_allow_list: Optional[str] = None,
         **kwargs
     ):
         """
-        :keyword enabled: Required. Whether to enable the Prometheus collector.
-        :paramtype enabled: bool
         :keyword metric_labels_allowlist: Comma-separated list of Kubernetes annotations keys that will
          be used in the resource's labels metric.
         :paramtype metric_labels_allowlist: str
@@ -4309,10 +4295,51 @@ class ManagedClusterAzureMonitorMetricsProfileMetrics(msrest.serialization.Model
          keys that will be used in the resource's labels metric.
         :paramtype metric_annotations_allow_list: str
         """
-        super(ManagedClusterAzureMonitorMetricsProfileMetrics, self).__init__(**kwargs)
-        self.enabled = enabled
+        super(ManagedClusterAzureMonitorProfileKubeStateMetrics, self).__init__(**kwargs)
         self.metric_labels_allowlist = metric_labels_allowlist
         self.metric_annotations_allow_list = metric_annotations_allow_list
+
+
+class ManagedClusterAzureMonitorProfileMetrics(msrest.serialization.Model):
+    """Metrics profile for the prometheus service addon.
+
+    All required parameters must be populated in order to send to Azure.
+
+    :ivar enabled: Required. Whether to enable the Prometheus collector.
+    :vartype enabled: bool
+    :ivar kube_state_metrics: Kube State Metrics for prometheus addon profile for the container
+     service cluster.
+    :vartype kube_state_metrics:
+     ~azure.mgmt.containerservice.v2022_07_02_preview.models.ManagedClusterAzureMonitorProfileKubeStateMetrics
+    """
+
+    _validation = {
+        'enabled': {'required': True},
+    }
+
+    _attribute_map = {
+        'enabled': {'key': 'enabled', 'type': 'bool'},
+        'kube_state_metrics': {'key': 'kubeStateMetrics', 'type': 'ManagedClusterAzureMonitorProfileKubeStateMetrics'},
+    }
+
+    def __init__(
+        self,
+        *,
+        enabled: bool,
+        kube_state_metrics: Optional["_models.ManagedClusterAzureMonitorProfileKubeStateMetrics"] = None,
+        **kwargs
+    ):
+        """
+        :keyword enabled: Required. Whether to enable the Prometheus collector.
+        :paramtype enabled: bool
+        :keyword kube_state_metrics: Kube State Metrics for prometheus addon profile for the container
+         service cluster.
+        :paramtype kube_state_metrics:
+         ~azure.mgmt.containerservice.v2022_07_02_preview.models.ManagedClusterAzureMonitorProfileKubeStateMetrics
+        """
+        super(ManagedClusterAzureMonitorProfileMetrics, self).__init__(**kwargs)
+        self.enabled = enabled
+        self.kube_state_metrics = kube_state_metrics
 
 
 class ManagedClusterHTTPProxyConfig(msrest.serialization.Model):
@@ -5433,6 +5460,9 @@ class ManagedClusterSecurityProfile(msrest.serialization.Model):
      <https://azure.github.io/azure-workload-identity/docs/>`_ settings for the security profile.
     :vartype workload_identity:
      ~azure.mgmt.containerservice.v2022_07_02_preview.models.ManagedClusterSecurityProfileWorkloadIdentity
+    :ivar image_cleaner: ImageCleaner settings for the security profile.
+    :vartype image_cleaner:
+     ~azure.mgmt.containerservice.v2022_07_02_preview.models.ManagedClusterSecurityProfileImageCleaner
     :ivar node_restriction: `Node Restriction
      <https://kubernetes.io/docs/reference/access-authn-authz/admission-controllers/#noderestriction>`_
      settings for the security profile.
@@ -5444,6 +5474,7 @@ class ManagedClusterSecurityProfile(msrest.serialization.Model):
         'defender': {'key': 'defender', 'type': 'ManagedClusterSecurityProfileDefender'},
         'azure_key_vault_kms': {'key': 'azureKeyVaultKms', 'type': 'AzureKeyVaultKms'},
         'workload_identity': {'key': 'workloadIdentity', 'type': 'ManagedClusterSecurityProfileWorkloadIdentity'},
+        'image_cleaner': {'key': 'imageCleaner', 'type': 'ManagedClusterSecurityProfileImageCleaner'},
         'node_restriction': {'key': 'nodeRestriction', 'type': 'ManagedClusterSecurityProfileNodeRestriction'},
     }
 
@@ -5453,6 +5484,7 @@ class ManagedClusterSecurityProfile(msrest.serialization.Model):
         defender: Optional["_models.ManagedClusterSecurityProfileDefender"] = None,
         azure_key_vault_kms: Optional["_models.AzureKeyVaultKms"] = None,
         workload_identity: Optional["_models.ManagedClusterSecurityProfileWorkloadIdentity"] = None,
+        image_cleaner: Optional["_models.ManagedClusterSecurityProfileImageCleaner"] = None,
         node_restriction: Optional["_models.ManagedClusterSecurityProfileNodeRestriction"] = None,
         **kwargs
     ):
@@ -5469,6 +5501,9 @@ class ManagedClusterSecurityProfile(msrest.serialization.Model):
          <https://azure.github.io/azure-workload-identity/docs/>`_ settings for the security profile.
         :paramtype workload_identity:
          ~azure.mgmt.containerservice.v2022_07_02_preview.models.ManagedClusterSecurityProfileWorkloadIdentity
+        :keyword image_cleaner: ImageCleaner settings for the security profile.
+        :paramtype image_cleaner:
+         ~azure.mgmt.containerservice.v2022_07_02_preview.models.ManagedClusterSecurityProfileImageCleaner
         :keyword node_restriction: `Node Restriction
          <https://kubernetes.io/docs/reference/access-authn-authz/admission-controllers/#noderestriction>`_
          settings for the security profile.
@@ -5479,6 +5514,7 @@ class ManagedClusterSecurityProfile(msrest.serialization.Model):
         self.defender = defender
         self.azure_key_vault_kms = azure_key_vault_kms
         self.workload_identity = workload_identity
+        self.image_cleaner = image_cleaner
         self.node_restriction = node_restriction
 
 
@@ -5547,6 +5583,38 @@ class ManagedClusterSecurityProfileDefenderSecurityMonitoring(msrest.serializati
         """
         super(ManagedClusterSecurityProfileDefenderSecurityMonitoring, self).__init__(**kwargs)
         self.enabled = enabled
+
+
+class ManagedClusterSecurityProfileImageCleaner(msrest.serialization.Model):
+    """ImageCleaner removes unused images from nodes, freeing up disk space and helping to reduce attack surface area. Here are settings for the security profile.
+
+    :ivar enabled: Whether to enable ImageCleaner on AKS cluster.
+    :vartype enabled: bool
+    :ivar interval_hours: ImageCleaner scanning interval.
+    :vartype interval_hours: int
+    """
+
+    _attribute_map = {
+        'enabled': {'key': 'enabled', 'type': 'bool'},
+        'interval_hours': {'key': 'intervalHours', 'type': 'int'},
+    }
+
+    def __init__(
+        self,
+        *,
+        enabled: Optional[bool] = None,
+        interval_hours: Optional[int] = None,
+        **kwargs
+    ):
+        """
+        :keyword enabled: Whether to enable ImageCleaner on AKS cluster.
+        :paramtype enabled: bool
+        :keyword interval_hours: ImageCleaner scanning interval.
+        :paramtype interval_hours: int
+        """
+        super(ManagedClusterSecurityProfileImageCleaner, self).__init__(**kwargs)
+        self.enabled = enabled
+        self.interval_hours = interval_hours
 
 
 class ManagedClusterSecurityProfileNodeRestriction(msrest.serialization.Model):

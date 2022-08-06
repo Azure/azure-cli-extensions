@@ -53,8 +53,9 @@ from ._models_py3 import ManagedClusterAddonProfileIdentity
 from ._models_py3 import ManagedClusterAgentPoolProfile
 from ._models_py3 import ManagedClusterAgentPoolProfileProperties
 from ._models_py3 import ManagedClusterAutoUpgradeProfile
-from ._models_py3 import ManagedClusterAzureMonitorMetricsProfile
-from ._models_py3 import ManagedClusterAzureMonitorMetricsProfileMetrics
+from ._models_py3 import ManagedClusterAzureMonitorProfile
+from ._models_py3 import ManagedClusterAzureMonitorProfileKubeStateMetrics
+from ._models_py3 import ManagedClusterAzureMonitorProfileMetrics
 from ._models_py3 import ManagedClusterHTTPProxyConfig
 from ._models_py3 import ManagedClusterIdentity
 from ._models_py3 import ManagedClusterIngressProfile
@@ -81,6 +82,7 @@ from ._models_py3 import ManagedClusterSKU
 from ._models_py3 import ManagedClusterSecurityProfile
 from ._models_py3 import ManagedClusterSecurityProfileDefender
 from ._models_py3 import ManagedClusterSecurityProfileDefenderSecurityMonitoring
+from ._models_py3 import ManagedClusterSecurityProfileImageCleaner
 from ._models_py3 import ManagedClusterSecurityProfileNodeRestriction
 from ._models_py3 import ManagedClusterSecurityProfileWorkloadIdentity
 from ._models_py3 import ManagedClusterServicePrincipalProfile
@@ -229,8 +231,9 @@ __all__ = [
     'ManagedClusterAgentPoolProfile',
     'ManagedClusterAgentPoolProfileProperties',
     'ManagedClusterAutoUpgradeProfile',
-    'ManagedClusterAzureMonitorMetricsProfile',
-    'ManagedClusterAzureMonitorMetricsProfileMetrics',
+    'ManagedClusterAzureMonitorProfile',
+    'ManagedClusterAzureMonitorProfileKubeStateMetrics',
+    'ManagedClusterAzureMonitorProfileMetrics',
     'ManagedClusterHTTPProxyConfig',
     'ManagedClusterIdentity',
     'ManagedClusterIngressProfile',
@@ -257,6 +260,7 @@ __all__ = [
     'ManagedClusterSecurityProfile',
     'ManagedClusterSecurityProfileDefender',
     'ManagedClusterSecurityProfileDefenderSecurityMonitoring',
+    'ManagedClusterSecurityProfileImageCleaner',
     'ManagedClusterSecurityProfileNodeRestriction',
     'ManagedClusterSecurityProfileWorkloadIdentity',
     'ManagedClusterServicePrincipalProfile',

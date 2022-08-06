@@ -463,6 +463,9 @@ helps['aks create'] = """
         - name: --defender-config
           type: string
           short-summary: Path to JSON file containing Microsoft Defender profile configurations.
+        - name: --enable-azuremonitormetrics
+          type: bool
+          short-summary: Enable Azure Monitor Metrics Profile
     examples:
         - name: Create a Kubernetes cluster with an existing SSH public key.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --ssh-key-value /path/to/publickey
@@ -805,6 +808,9 @@ helps['aks update'] = """
         - name: --defender-config
           type: string
           short-summary: Path to JSON file containing Microsoft Defender profile configurations.
+        - name: --enable-azuremonitormetrics
+          type: bool
+          short-summary: Enable Azure Monitor Metrics Profile
     examples:
       - name: Reconcile the cluster back to its current state.
         text: az aks update -g MyResourceGroup -n MyManagedCluster
