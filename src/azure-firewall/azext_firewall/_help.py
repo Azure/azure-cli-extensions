@@ -407,7 +407,7 @@ helps['network firewall policy rule-collection-group collection add-filter-colle
         Common Rule Arguments are used for both Network rule and Application rule. If you want to add more rules into filter collection, please use "az network policy rule-collection-group collection rule add/remove"
     parameters:
       - name: --destination-ports
-        short-summary: "Space-separated list of destination ports. This argument is supported for Nat and Network Rule."
+        short-summary: Space-separated list of destination ports. This argument is supported for Nat and Network Rule.
         long-summary: |
             Notice: When the parameter --rule-name is 'network_rule', --destination-ports is required.
     examples:
