@@ -441,13 +441,13 @@ helps['devcenter admin devcenter create'] = """
     examples:
       - name: DevCenters_Create
         text: |-
-               az devcenter admin devcenter create --location "centralus" --tags CostCode="12345" --name "Contoso" \
+               az devcenter admin devcenter create --location "eastus" --tags CostCode="12345" --name "Contoso" \
 --resource-group "rg1"
       - name: DevCenters_CreateWithUserIdentity
         text: |-
                az devcenter admin devcenter create --identity-type "UserAssigned" --user-assigned-identity \
 "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/identityGroup/providers/Microsoft.ManagedIdenti\
-ty/userAssignedIdentities/testidentity1" --location "centralus" --tags CostCode="12345" --name "Contoso" \
+ty/userAssignedIdentities/testidentity1" --location "eastus" --tags CostCode="12345" --name "Contoso" \
 --resource-group "rg1"
 """
 
@@ -1278,7 +1278,7 @@ helps['devcenter admin gallery list'] = """
     examples:
       - name: Galleries_ListByDevCenter
         text: |-
-               az devcenter gallery list --dev-center-name "Contoso" --resource-group "rg1"
+               az devcenter admin gallery list --dev-center-name "Contoso" --resource-group "rg1"
 """
 
 helps['devcenter admin gallery show'] = """
@@ -1287,7 +1287,7 @@ helps['devcenter admin gallery show'] = """
     examples:
       - name: Galleries_Get
         text: |-
-               az devcenter gallery show --dev-center-name "Contoso" --name "{galleryName}" --resource-group "rg1"
+               az devcenter admin gallery show --dev-center-name "Contoso" --name "{galleryName}" --resource-group "rg1"
 """
 
 helps['devcenter admin gallery create'] = """

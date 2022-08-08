@@ -552,7 +552,7 @@ def load_arguments(self, _):
         c.argument('dev_center_name', options_list=['--dev-center-name', '--dev-center', '-dc'], type=str, help='The name of the devcenter.')
         c.argument('gallery_name', options_list=['--name', '-n', '--gallery-name'], type=str, help='The name of the '
                    'gallery.')
-        c.argument('gallery_resource_id', type=str, help='The resource ID of the backing Azure Compute Gallery.')
+        c.argument('gallery_resource_id', required=True, type=str, help='The resource ID of the backing Azure Compute Gallery.')
 
     with self.argument_context('devcenter admin gallery update') as c:
         c.argument('resource_group_name', resource_group_name_type)
@@ -823,7 +823,7 @@ def load_arguments(self, _):
 
     with self.argument_context('devcenter admin network-connection show') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('network_setting_name', options_list=['--name', '-n', '--network-connection-name'], type=str,
+        c.argument('network_connection_name', options_list=['--name', '-n', '--network-connection-name'], type=str,
                    help='Name of the Network Connection that can be applied to a Pool.', id_part='name')
 
     with self.argument_context('devcenter admin network-connection create') as c:
@@ -847,7 +847,7 @@ def load_arguments(self, _):
 
     with self.argument_context('devcenter admin network-connection update') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('network_setting_name', options_list=['--name', '-n', '--network-connection-name'], type=str,
+        c.argument('network_connection_name', options_list=['--name', '-n', '--network-connection-name'], type=str,
                    help='Name of the Network Connection that can be applied to a Pool.', id_part='name')
         c.argument('tags', tags_type)
         c.argument('location', arg_type=get_location_type(self.cli_ctx), required=False,
@@ -862,12 +862,12 @@ def load_arguments(self, _):
 
     with self.argument_context('devcenter admin network-connection delete') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('network_setting_name', options_list=['--name', '-n', '--network-connection-name'], type=str,
+        c.argument('network_connection_name', options_list=['--name', '-n', '--network-connection-name'], type=str,
                    help='Name of the Network Connection that can be applied to a Pool.', id_part='name')
 
     with self.argument_context('devcenter admin network-connection show-health-detail') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('network_setting_name', options_list=['--name', '-n', '--network-connection-name'], type=str,
+        c.argument('network_connection_name', options_list=['--name', '-n', '--network-connection-name'], type=str,
                    help='Name of the Network Connection that can be applied to a Pool.', id_part='name')
 
     with self.argument_context('devcenter admin network-connection run-health-check') as c:
@@ -877,5 +877,5 @@ def load_arguments(self, _):
 
     with self.argument_context('devcenter admin network-connection wait') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('network_setting_name', options_list=['--name', '-n', '--network-connection-name'], type=str,
+        c.argument('network_connection_name', options_list=['--name', '-n', '--network-connection-name'], type=str,
                    help='Name of the Network Connection that can be applied to a Pool.', id_part='name')

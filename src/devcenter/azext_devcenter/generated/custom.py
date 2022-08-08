@@ -11,7 +11,7 @@
 # pylint: disable=unused-argument
 
 from azure.cli.core.util import sdk_no_wait
-
+from ..manual.utils import provide_project_or_dc_warning
 
 def devcenter_dev_center_list(client,
                               resource_group_name=None,
@@ -170,6 +170,9 @@ def devcenter_attached_network_list(client,
                                     project_name=None,
                                     top=None,
                                     dev_center_name=None):
+    if project_name is None and dev_center_name is None:
+        provide_project_or_dc_warning()
+        return
     if resource_group_name and project_name is not None:
         return client.list_by_project(resource_group_name=resource_group_name,
                                       project_name=project_name,
@@ -184,6 +187,9 @@ def devcenter_attached_network_show(client,
                                     attached_network_connection_name,
                                     project_name=None,
                                     dev_center_name=None):
+    if project_name is None and dev_center_name is None:
+        provide_project_or_dc_warning()
+        return
     if resource_group_name and project_name is not None and attached_network_connection_name is not None:
         return client.get_by_project(resource_group_name=resource_group_name,
                                      project_name=project_name,
@@ -598,6 +604,9 @@ def devcenter_dev_box_definition_list(client,
                                       dev_center_name=None,
                                       top=None,
                                       project_name=None):
+    if project_name is None and dev_center_name is None:
+        provide_project_or_dc_warning()
+        return                           
     if resource_group_name and dev_center_name is not None:
         return client.list_by_dev_center(resource_group_name=resource_group_name,
                                          dev_center_name=dev_center_name,
@@ -612,6 +621,9 @@ def devcenter_dev_box_definition_show(client,
                                       dev_box_definition_name,
                                       dev_center_name=None,
                                       project_name=None):
+    if project_name is None and dev_center_name is None:
+        provide_project_or_dc_warning()
+        return
     if resource_group_name and dev_center_name is not None and dev_box_definition_name is not None:
         return client.get(resource_group_name=resource_group_name,
                           dev_center_name=dev_center_name,
