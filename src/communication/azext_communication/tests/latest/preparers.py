@@ -50,32 +50,14 @@ class CommunicationResourcePreparer(NoTrafficRecordingPreparer, SingleValueRepla
             account_key = None
             endpoint = None
 
-        try:
-            access_token_response  = self.live_only_execute(self.cli_ctx, 'az communication identity issue-access-token --scope chat --query [user_id,token]')
-            res = access_token_response.get_output_in_json()
-            userid = res[0]
-            access_token = res[1]
-        except AttributeError:  # live only execute returns None if playing from record
-            userid = None
-            access_token = None
-
         self.test_class_instance.kwargs[self.key] = name
 
-        # header is encoded form of {"alg":"sanitized","kid":"1","x5t":"sanitized","typ":"sanitized"}
-        header = 'eyJhbGciOiJzYW5pdGl6ZWQiLCJraWQiOiIxIiwieDV0Ijoic2FuaXRpemVkIiwidHlwIjoic2FuaXRpemVkIn0='
-        # payload is encoded form of {"skypeid":"acs:sanitized","scp":1792,"csi":"1657788332","exp":1657874732,"acsScope":"chat","resourceId":"sanitized","iat":1657788332}
-        payload = 'eyJza3lwZWlkIjoiYWNzOnNhbml0aXplZCIsInNjcCI6MTc5MiwiY3NpIjoiMTY1Nzc4ODMzMiIsImV4cCI6MTY1Nzg3NDczMiwiYWNzU2NvcGUiOiJjaGF0IiwicmVzb3VyY2VJZCI6InNhbml0aXplZCIsImlhdCI6MTY1Nzc4ODMzMn0='
-        signature = '1234'
-        sanitized_token = '{header}.{payload}.{signature}'.format(header=header, payload=payload, signature=signature)
 
         return {self.parameter_name: name,
-                self.parameter_name + '_info': (name, account_key or 'endpoint=https://sanitized.communication.azure.com/;accesskey=fake==='),
-                self.parameter_name + '_chat_info': 
+                self.parameter_name + '_info': 
                     (name, 
-                     endpoint or 'https://sanitized.communication.azure.com/', 
-                     userid or '8:fake===', 
-                     access_token or sanitized_token,
-                     account_key or 'endpoint=https://sanitized.communication.azure.com/;accesskey=fake===')}
+                     account_key or 'endpoint=https://sanitized.communication.azure.com/;accesskey=fake===',
+                     endpoint or 'https://sanitized.communication.azure.com/', )}
 
     def remove_resource(self, name, **kwargs):
         if not self.skip_delete and not self.dev_setting_name:

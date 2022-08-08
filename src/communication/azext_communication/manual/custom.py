@@ -34,6 +34,7 @@ def communication_identity_issue_access_token(client, scopes, user_id=None):
 
 def communication_identity_revoke_access_tokens(client, user_id):
     from azure.communication.identity import CommunicationUserIdentifier
+
     return client.revoke_tokens(CommunicationUserIdentifier(user_id))
 
 

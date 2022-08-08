@@ -16,33 +16,83 @@ class CommunicationChatScenarios(ScenarioTest):
             URIIdentityReplacer(),
             BodyReplacerProcessor(keys=["id", "token", "rawId"]),
         ])
+        
+    
+    def __create_thread(self, topic):
+        self.kwargs.update({
+            'topic': topic })
+        return self.cmd('az communication chat create-thread --topic \"{topic}\"').get_output_in_json()
 
+
+    def __create_user(self, communication_resource_info):
+        connection_str = communication_resource_info[1]
+        if self.is_live or self.in_recording:
+            self.kwargs.update({ 'connection_string':  connection_str})
+        else:
+            os.environ['AZURE_COMMUNICATION_CONNECTION_STRING'] = connection_str
+        res = self.cmd('az communication identity issue-access-token --scope chat').get_output_in_json()
+        return res['user_id']
+
+
+    def __get_endpoint_from_resource_info(self, communication_resource_info):
+        return communication_resource_info[2]
+
+    def __get_or_create_token(self, communication_resource_info):
+        if self.is_live or self.in_recording:
+            os.environ['AZURE_COMMUNICATION_CONNECTION_STRING'] = communication_resource_info[1]
+            self.kwargs.update({ 'connection_string':  communication_resource_info[1] })
+            res = self.cmd('az communication identity issue-access-token --scope chat').get_output_in_json()
+            return res['token']
+        else:
+            # header is encoded form of 
+            # {"alg":"sanitized","kid":"1","x5t":"sanitized","typ":"sanitized"}
+            header = 'eyJhbGciOiJzYW5pdGl6ZWQiLCJraWQiOiIxIiwieDV0Ijoic2FuaXRpemVkIiwidHlwIjoic2FuaXRpemVkIn0='
+
+            # payload is encoded form of 
+            # {"skypeid":"acs:sanitized","scp":1792,"csi":"1657788332","exp":1657874732,"acsScope":"chat","resourceId":"sanitized","iat":1657788332}
+            payload = 'eyJza3lwZWlkIjoiYWNzOnNhbml0aXplZCIsInNjcCI6MTc5MiwiY3NpIjoiMTY1Nzc4ODMzMiIsImV4cCI6MTY1Nzg3NDczMiwiYWNzU2NvcGUiOiJjaGF0IiwicmVzb3VyY2VJZCI6InNhbml0aXplZCIsImlhdCI6MTY1Nzc4ODMzMn0='
+
+            signature = '1234'
+
+            return '{header}.{payload}.{signature}'.format(header=header, payload=payload, signature=signature)
+
+
+    def __update_environ(self, communication_resource_info):
+        endpoint = self.__get_endpoint_from_resource_info(communication_resource_info)
+        os.environ['AZURE_COMMUNICATION_ENDPOINT'] = endpoint
+
+        token = self.__get_or_create_token(communication_resource_info)
+        os.environ['AZURE_COMMUNICATION_ACCESS_TOKEN'] = token
+
+        return endpoint, token
 
     @ResourceGroupPreparer(name_prefix='clitestcommunication_MyResourceGroup'[:7], key='rg', parameter_name='rg')
     @CommunicationResourcePreparer(resource_group_parameter_name='rg')
-    def test_chat_list_threads_with_env_auth(self, communication_resource_chat_info):
-        os.environ['AZURE_COMMUNICATION_ENDPOINT'] = communication_resource_chat_info[1]
-        os.environ['AZURE_COMMUNICATION_ACCESS_TOKEN'] = communication_resource_chat_info[3]
+    def test_chat_list_threads_with_env_auth(self, communication_resource_info):
+        self.__update_environ(communication_resource_info)
         threads = self.cmd('az communication chat list-threads').get_output_in_json()
         assert len(threads) == 0
         
 
     @ResourceGroupPreparer(name_prefix='clitestcommunication_MyResourceGroup'[:7], key='rg', parameter_name='rg')
     @CommunicationResourcePreparer(resource_group_parameter_name='rg')
-    def test_chat_list_threads_with_cmdline_auth(self, communication_resource_chat_info):
+    def test_chat_list_threads_with_cmdline_auth(self, communication_resource_info):
+        endpoint, token = self.__update_environ(communication_resource_info)
         self.kwargs.update({
-            'access_token': communication_resource_chat_info[3],
-            'endpoint': communication_resource_chat_info[1] })
+            'access_token': token,
+            'endpoint': endpoint })
         threads = self.cmd('az communication chat list-threads --endpoint \"{endpoint}\" --access-token \"{access_token}\"').get_output_in_json()
         assert len(threads) == 0
         
 
     @ResourceGroupPreparer(name_prefix='clitestcommunication_MyResourceGroup'[:7], key='rg', parameter_name='rg')
     @CommunicationResourcePreparer(resource_group_parameter_name='rg')
-    def test_chat_list_threads_no_endpoint(self, communication_resource_chat_info):
+    def test_chat_list_threads_no_endpoint(self, communication_resource_info):
         from azure.cli.core.azclierror import RequiredArgumentMissingError
         
-        os.environ['AZURE_COMMUNICATION_ACCESS_TOKEN'] = communication_resource_chat_info[3]
+        token = self.__get_or_create_token(communication_resource_info)
+        os.environ['AZURE_COMMUNICATION_ACCESS_TOKEN'] = token
+
         self.kwargs.pop('endpoint', None)
         os.environ.pop('AZURE_COMMUNICATION_ENDPOINT', None)
 
@@ -55,10 +105,10 @@ class CommunicationChatScenarios(ScenarioTest):
 
     @ResourceGroupPreparer(name_prefix='clitestcommunication_MyResourceGroup'[:7], key='rg', parameter_name='rg')
     @CommunicationResourcePreparer(resource_group_parameter_name='rg')
-    def test_chat_list_threads_no_token(self, communication_resource_chat_info):
+    def test_chat_list_threads_no_token(self, communication_resource_info):
         from azure.cli.core.azclierror import RequiredArgumentMissingError
         
-        self.kwargs.update({'endpoint': communication_resource_chat_info[1]})
+        self.kwargs.update({ 'endpoint': self.__get_endpoint_from_resource_info(communication_resource_info) })
         self.kwargs.pop('access-token', None)
         os.environ.pop('AZURE_COMMUNICATION_ACCESS_TOKEN', None)
 
@@ -71,9 +121,8 @@ class CommunicationChatScenarios(ScenarioTest):
 
     @ResourceGroupPreparer(name_prefix='clitestcommunication_MyResourceGroup'[:7], key='rg', parameter_name='rg')
     @CommunicationResourcePreparer(resource_group_parameter_name='rg')
-    def test_chat_create_thread(self, communication_resource_chat_info):
-        os.environ['AZURE_COMMUNICATION_ENDPOINT'] = communication_resource_chat_info[1]
-        os.environ['AZURE_COMMUNICATION_ACCESS_TOKEN'] = communication_resource_chat_info[3]
+    def test_chat_create_thread(self, communication_resource_info):
+        self.__update_environ(communication_resource_info)
 
         chat_topic = 'some-topic'
         self.kwargs.update({
@@ -86,9 +135,8 @@ class CommunicationChatScenarios(ScenarioTest):
 
     @ResourceGroupPreparer(name_prefix='clitestcommunication_MyResourceGroup'[:7], key='rg', parameter_name='rg')
     @CommunicationResourcePreparer(resource_group_parameter_name='rg')
-    def test_chat_create_thread_without_topic(self, communication_resource_chat_info):
-        os.environ['AZURE_COMMUNICATION_ENDPOINT'] = communication_resource_chat_info[1]
-        os.environ['AZURE_COMMUNICATION_ACCESS_TOKEN'] = communication_resource_chat_info[3]
+    def test_chat_create_thread_without_topic(self, communication_resource_info):
+        self.__update_environ(communication_resource_info)
 
         with self.assertRaises(SystemExit) as raises:
             self.cmd('az communication chat create-thread').get_output_in_json()
@@ -97,9 +145,8 @@ class CommunicationChatScenarios(ScenarioTest):
 
     @ResourceGroupPreparer(name_prefix='clitestcommunication_MyResourceGroup'[:7], key='rg', parameter_name='rg')
     @CommunicationResourcePreparer(resource_group_parameter_name='rg')
-    def test_chat_list_participants(self, communication_resource_chat_info):
-        os.environ['AZURE_COMMUNICATION_ENDPOINT'] = communication_resource_chat_info[1]
-        os.environ['AZURE_COMMUNICATION_ACCESS_TOKEN'] = communication_resource_chat_info[3]
+    def test_chat_list_participants(self, communication_resource_info):
+        self.__update_environ(communication_resource_info)
 
         chat_topic = 'some-topic'
         self.kwargs.update({
@@ -115,11 +162,10 @@ class CommunicationChatScenarios(ScenarioTest):
 
     @ResourceGroupPreparer(name_prefix='clitestcommunication_MyResourceGroup'[:7], key='rg', parameter_name='rg')
     @CommunicationResourcePreparer(resource_group_parameter_name='rg')
-    def test_chat_list_participants_bad_thread_id(self, communication_resource_chat_info):
+    def test_chat_list_participants_bad_thread_id(self, communication_resource_info):
         from azure.core.exceptions import HttpResponseError
 
-        os.environ['AZURE_COMMUNICATION_ENDPOINT'] = communication_resource_chat_info[1]
-        os.environ['AZURE_COMMUNICATION_ACCESS_TOKEN'] = communication_resource_chat_info[3]
+        self.__update_environ(communication_resource_info)
 
         thread_id = 'sanitized'
         self.kwargs.update({
@@ -129,28 +175,12 @@ class CommunicationChatScenarios(ScenarioTest):
                 self.check('httpStatusCode', '400')])
 
 
-    def __create_thread(self, topic):
-        self.kwargs.update({
-            'topic': topic })
-        return self.cmd('az communication chat create-thread --topic \"{topic}\"').get_output_in_json()
-
-
-    def __create_user(self, connection_str):
-        if self.is_live or self.in_recording:
-            self.kwargs.update({ 'connection_string':  connection_str})
-        else:
-            os.environ['AZURE_COMMUNICATION_CONNECTION_STRING'] = connection_str
-        res = self.cmd('az communication identity issue-access-token --scope chat').get_output_in_json()
-        return res['user_id']
-
-
     @ResourceGroupPreparer(name_prefix='clitestcommunication_MyResourceGroup'[:7], key='rg', parameter_name='rg')
     @CommunicationResourcePreparer(resource_group_parameter_name='rg')
-    def test_chat_add_participant(self, communication_resource_chat_info):
-        os.environ['AZURE_COMMUNICATION_ENDPOINT'] = communication_resource_chat_info[1]
-        os.environ['AZURE_COMMUNICATION_ACCESS_TOKEN'] = communication_resource_chat_info[3]
+    def test_chat_add_participant(self, communication_resource_info):
+        endpoint, token = self.__update_environ(communication_resource_info)
 
-        user_id = self.__create_user(communication_resource_chat_info[4])
+        user_id = self.__create_user(communication_resource_info)
 
         # create a new thread
         self.kwargs.update({
@@ -163,7 +193,7 @@ class CommunicationChatScenarios(ScenarioTest):
         self.kwargs.update({
             'thread_id': thread_id,
             'user_id': user_id,
-            'access_token': communication_resource_chat_info[3] })
+            'access_token': token })
 
         add_res = self.cmd('az communication chat add-participant --thread-id {thread_id} --user-id {user_id}').get_output_in_json()
 
@@ -172,9 +202,8 @@ class CommunicationChatScenarios(ScenarioTest):
 
     @ResourceGroupPreparer(name_prefix='clitestcommunication_MyResourceGroup'[:7], key='rg', parameter_name='rg')
     @CommunicationResourcePreparer(resource_group_parameter_name='rg')
-    def test_chat_add_participant_bad_user(self, communication_resource_chat_info):
-        os.environ['AZURE_COMMUNICATION_ENDPOINT'] = communication_resource_chat_info[1]
-        os.environ['AZURE_COMMUNICATION_ACCESS_TOKEN'] = communication_resource_chat_info[3]
+    def test_chat_add_participant_bad_user(self, communication_resource_info):
+        endpoint, token = self.__update_environ(communication_resource_info)
 
         # create a new thread
         self.kwargs.update({
@@ -187,7 +216,7 @@ class CommunicationChatScenarios(ScenarioTest):
         self.kwargs.update({
             'thread_id': thread_id,
             'user_id': user_id,
-            'access_token': communication_resource_chat_info[3] })
+            'access_token': token })
 
         add_res = self.cmd('az communication chat add-participant --thread-id {thread_id} --user-id {user_id}', checks = [
             self.check('[0].code', '403'),
@@ -208,13 +237,12 @@ class CommunicationChatScenarios(ScenarioTest):
 
     @ResourceGroupPreparer(name_prefix='clitestcommunication_MyResourceGroup'[:7], key='rg', parameter_name='rg')
     @CommunicationResourcePreparer(resource_group_parameter_name='rg')
-    def test_chat_remove_participants(self, communication_resource_chat_info):
+    def test_chat_remove_participants(self, communication_resource_info):
         from azure.core.exceptions import HttpResponseError
 
-        os.environ['AZURE_COMMUNICATION_ENDPOINT'] = communication_resource_chat_info[1]
-        os.environ['AZURE_COMMUNICATION_ACCESS_TOKEN'] = communication_resource_chat_info[3]
+        self.__update_environ(communication_resource_info)
 
-        user_id = self.__create_user(communication_resource_chat_info[4])
+        user_id = self.__create_user(communication_resource_info)
 
         # create a new thread
         thread = self.__create_thread('chat-topic')
@@ -250,20 +278,20 @@ class CommunicationChatScenarios(ScenarioTest):
         # try to remove the original user again, should raise an error
         with self.assertRaises(HttpResponseError) as raises:
             self.cmd('az communication chat remove-participant --thread-id {thread_id} --user-id {user_id}')
+
         assert 'The initiator doesn\'t have the permission to perform the requested operation.' in str(raises.exception)
 
 
     @ResourceGroupPreparer(name_prefix='clitestcommunication_MyResourceGroup'[:7], key='rg', parameter_name='rg')
     @CommunicationResourcePreparer(resource_group_parameter_name='rg')
-    def test_chat_add_participant_with_display_name(self, communication_resource_chat_info):
-        os.environ['AZURE_COMMUNICATION_ENDPOINT'] = communication_resource_chat_info[1]
-        os.environ['AZURE_COMMUNICATION_ACCESS_TOKEN'] = communication_resource_chat_info[3]
+    def test_chat_add_participant_with_display_name(self, communication_resource_info):
+        self.__update_environ(communication_resource_info)
 
         # create a new thread
         thread = self.__create_thread('chat-topic')
         thread_id = thread['chatThread']['id']
 
-        user_id = self.__create_user(communication_resource_chat_info[4])
+        user_id = self.__create_user(communication_resource_info)
 
         # add the new user to the chat thread
         display_name = '\"John Doe\"'
@@ -277,15 +305,14 @@ class CommunicationChatScenarios(ScenarioTest):
 
     @ResourceGroupPreparer(name_prefix='clitestcommunication_MyResourceGroup'[:7], key='rg', parameter_name='rg')
     @CommunicationResourcePreparer(resource_group_parameter_name='rg')
-    def test_chat_add_participant_with_history_time(self, communication_resource_chat_info):
-        os.environ['AZURE_COMMUNICATION_ENDPOINT'] = communication_resource_chat_info[1]
-        os.environ['AZURE_COMMUNICATION_ACCESS_TOKEN'] = communication_resource_chat_info[3]
+    def test_chat_add_participant_with_history_time(self, communication_resource_info):
+        self.__update_environ(communication_resource_info)
 
         # create a new thread
         thread = self.__create_thread('chat-topic')
         thread_id = thread['chatThread']['id']
 
-        user_id = self.__create_user(communication_resource_chat_info[4])
+        user_id = self.__create_user(communication_resource_info)
 
         # add the new user to the chat thread
         start_time = '2022-01-01T00:00:00'
@@ -299,9 +326,8 @@ class CommunicationChatScenarios(ScenarioTest):
 
     @ResourceGroupPreparer(name_prefix='clitestcommunication_MyResourceGroup'[:7], key='rg', parameter_name='rg')
     @CommunicationResourcePreparer(resource_group_parameter_name='rg')
-    def test_chat_list_messages(self, communication_resource_chat_info):
-        os.environ['AZURE_COMMUNICATION_ENDPOINT'] = communication_resource_chat_info[1]
-        os.environ['AZURE_COMMUNICATION_ACCESS_TOKEN'] = communication_resource_chat_info[3]
+    def test_chat_list_messages(self, communication_resource_info):
+        self.__update_environ(communication_resource_info)
 
         # create a new thread first
         thread = self.__create_thread('another-topic')
@@ -315,9 +341,8 @@ class CommunicationChatScenarios(ScenarioTest):
 
     @ResourceGroupPreparer(name_prefix='clitestcommunication_MyResourceGroup'[:7], key='rg', parameter_name='rg')
     @CommunicationResourcePreparer(resource_group_parameter_name='rg')
-    def test_chat_list_messages(self, communication_resource_chat_info):
-        os.environ['AZURE_COMMUNICATION_ENDPOINT'] = communication_resource_chat_info[1]
-        os.environ['AZURE_COMMUNICATION_ACCESS_TOKEN'] = communication_resource_chat_info[3]
+    def test_chat_list_messages(self, communication_resource_info):
+        self.__update_environ(communication_resource_info)
 
         # create a new thread first
         thread = self.__create_thread('another-topic')
@@ -333,9 +358,8 @@ class CommunicationChatScenarios(ScenarioTest):
 
     @ResourceGroupPreparer(name_prefix='clitestcommunication_MyResourceGroup'[:7], key='rg', parameter_name='rg')
     @CommunicationResourcePreparer(resource_group_parameter_name='rg')
-    def test_chat_send_message(self, communication_resource_chat_info):
-        os.environ['AZURE_COMMUNICATION_ENDPOINT'] = communication_resource_chat_info[1]
-        os.environ['AZURE_COMMUNICATION_ACCESS_TOKEN'] = communication_resource_chat_info[3]
+    def test_chat_send_message(self, communication_resource_info):
+        self.__update_environ(communication_resource_info)
 
         # create a new thread first
         thread = self.__create_thread('some-other-topic')
@@ -351,9 +375,8 @@ class CommunicationChatScenarios(ScenarioTest):
 
     @ResourceGroupPreparer(name_prefix='clitestcommunication_MyResourceGroup'[:7], key='rg', parameter_name='rg')
     @CommunicationResourcePreparer(resource_group_parameter_name='rg')
-    def test_chat_send_message_without_content(self, communication_resource_chat_info):
-        os.environ['AZURE_COMMUNICATION_ENDPOINT'] = communication_resource_chat_info[1]
-        os.environ['AZURE_COMMUNICATION_ACCESS_TOKEN'] = communication_resource_chat_info[3]
+    def test_chat_send_message_without_content(self, communication_resource_info):
+        self.__update_environ(communication_resource_info)
 
         # create a new thread first
         thread = self.__create_thread('yet-another-topic')
@@ -367,9 +390,8 @@ class CommunicationChatScenarios(ScenarioTest):
 
     @ResourceGroupPreparer(name_prefix='clitestcommunication_MyResourceGroup'[:7], key='rg', parameter_name='rg')
     @CommunicationResourcePreparer(resource_group_parameter_name='rg')
-    def test_chat_send_text_message(self, communication_resource_chat_info):
-        os.environ['AZURE_COMMUNICATION_ENDPOINT'] = communication_resource_chat_info[1]
-        os.environ['AZURE_COMMUNICATION_ACCESS_TOKEN'] = communication_resource_chat_info[3]
+    def test_chat_send_text_message(self, communication_resource_info):
+        self.__update_environ(communication_resource_info)
 
         # create a new thread first
         thread = self.__create_thread('yet-another-topic')
@@ -385,9 +407,8 @@ class CommunicationChatScenarios(ScenarioTest):
 
     @ResourceGroupPreparer(name_prefix='clitestcommunication_MyResourceGroup'[:7], key='rg', parameter_name='rg')
     @CommunicationResourcePreparer(resource_group_parameter_name='rg')
-    def test_chat_send_html_message(self, communication_resource_chat_info):
-        os.environ['AZURE_COMMUNICATION_ENDPOINT'] = communication_resource_chat_info[1]
-        os.environ['AZURE_COMMUNICATION_ACCESS_TOKEN'] = communication_resource_chat_info[3]
+    def test_chat_send_html_message(self, communication_resource_info):
+        self.__update_environ(communication_resource_info)
 
         # create a new thread first
         thread = self.__create_thread('yet-another-topic')
@@ -403,9 +424,8 @@ class CommunicationChatScenarios(ScenarioTest):
 
     @ResourceGroupPreparer(name_prefix='clitestcommunication_MyResourceGroup'[:7], key='rg', parameter_name='rg')
     @CommunicationResourcePreparer(resource_group_parameter_name='rg')
-    def test_chat_get_message(self, communication_resource_chat_info):
-        os.environ['AZURE_COMMUNICATION_ENDPOINT'] = communication_resource_chat_info[1]
-        os.environ['AZURE_COMMUNICATION_ACCESS_TOKEN'] = communication_resource_chat_info[3]
+    def test_chat_get_message(self, communication_resource_info):
+        self.__update_environ(communication_resource_info)
 
         # create a new thread first
         thread = self.__create_thread('new-topic')
@@ -425,9 +445,8 @@ class CommunicationChatScenarios(ScenarioTest):
 
     @ResourceGroupPreparer(name_prefix='clitestcommunication_MyResourceGroup'[:7], key='rg', parameter_name='rg')
     @CommunicationResourcePreparer(resource_group_parameter_name='rg')
-    def test_chat_update_message(self, communication_resource_chat_info):
-        os.environ['AZURE_COMMUNICATION_ENDPOINT'] = communication_resource_chat_info[1]
-        os.environ['AZURE_COMMUNICATION_ACCESS_TOKEN'] = communication_resource_chat_info[3]
+    def test_chat_update_message(self, communication_resource_info):
+        self.__update_environ(communication_resource_info)
 
         # create a new thread first
         thread = self.__create_thread('some-other-topic')
@@ -450,9 +469,8 @@ class CommunicationChatScenarios(ScenarioTest):
 
     @ResourceGroupPreparer(name_prefix='clitestcommunication_MyResourceGroup'[:7], key='rg', parameter_name='rg')
     @CommunicationResourcePreparer(resource_group_parameter_name='rg')
-    def test_chat_delete_message(self, communication_resource_chat_info):
-        os.environ['AZURE_COMMUNICATION_ENDPOINT'] = communication_resource_chat_info[1]
-        os.environ['AZURE_COMMUNICATION_ACCESS_TOKEN'] = communication_resource_chat_info[3]
+    def test_chat_delete_message(self, communication_resource_info):
+        self.__update_environ(communication_resource_info)
 
         # create a new thread first
         thread = self.__create_thread('some-other-topic')
@@ -473,9 +491,8 @@ class CommunicationChatScenarios(ScenarioTest):
 
     @ResourceGroupPreparer(name_prefix='clitestcommunication_MyResourceGroup'[:7], key='rg', parameter_name='rg')
     @CommunicationResourcePreparer(resource_group_parameter_name='rg')
-    def test_chat_update_message(self, communication_resource_chat_info):
-        os.environ['AZURE_COMMUNICATION_ENDPOINT'] = communication_resource_chat_info[1]
-        os.environ['AZURE_COMMUNICATION_ACCESS_TOKEN'] = communication_resource_chat_info[3]
+    def test_chat_update_message(self, communication_resource_info):
+        self.__update_environ(communication_resource_info)
 
         # create a new thread first
         thread = self.__create_thread('thread-topic')
@@ -497,9 +514,8 @@ class CommunicationChatScenarios(ScenarioTest):
 
     @ResourceGroupPreparer(name_prefix='clitestcommunication_MyResourceGroup'[:7], key='rg', parameter_name='rg')
     @CommunicationResourcePreparer(resource_group_parameter_name='rg')
-    def test_chat_update_topic(self, communication_resource_chat_info):
-        os.environ['AZURE_COMMUNICATION_ENDPOINT'] = communication_resource_chat_info[1]
-        os.environ['AZURE_COMMUNICATION_ACCESS_TOKEN'] = communication_resource_chat_info[3]
+    def test_chat_update_topic(self, communication_resource_info):
+        self.__update_environ(communication_resource_info)
 
         # create a new thread first
         thread = self.__create_thread('thread-topic')
@@ -515,9 +531,8 @@ class CommunicationChatScenarios(ScenarioTest):
 
     @ResourceGroupPreparer(name_prefix='clitestcommunication_MyResourceGroup'[:7], key='rg', parameter_name='rg')
     @CommunicationResourcePreparer(resource_group_parameter_name='rg')
-    def test_chat_read_receipts(self, communication_resource_chat_info):
-        os.environ['AZURE_COMMUNICATION_ENDPOINT'] = communication_resource_chat_info[1]
-        os.environ['AZURE_COMMUNICATION_ACCESS_TOKEN'] = communication_resource_chat_info[3]
+    def test_chat_read_receipts(self, communication_resource_info):
+        self.__update_environ(communication_resource_info)
 
         # create a new thread first
         thread = self.__create_thread('thread-topic')
