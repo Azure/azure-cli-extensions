@@ -6,8 +6,51 @@
 # --------------------------------------------------------------------------------------------
 
 from azure.cli.testsdk import *
+import time
 
 
 class StorageMoverScenario(ScenarioTest):
-    # TODO: add tests here
-    pass
+    @ResourceGroupPreparer(location='eastus2euap')
+    def test_storage_mover_scenarios(self, resource_group):
+        self.kwargs.update({
+            "mover_name": self.create_random_name('storage-mover', 24)
+        })
+        self.cmd('az storage-mover create -g {rg} -n {mover_name} -l eastus2euap '
+                 '--tags {{key1:value1}} --description ExampleDesc')
+        self.cmd('az storage-mover show -g {rg} -n {mover_name}',
+                 checks=[JMESPathCheck('name', self.kwargs.get('mover_name', '')),
+                         JMESPathCheck('location', "eastus2euap"),
+                         JMESPathCheck('tags', {"key1":"value1"}),
+                         JMESPathCheck('description', "ExampleDesc")])
+        self.cmd('az storage-mover list -g {rg}', checks=[JMESPathCheck('length(@)', 1)])
+        self.cmd('az storage-mover update -g {rg} -n {mover_name} -l eastus2euap '
+                 '--tags {{key2:value2}} --description ExampleDesc2',
+                 checks=[JMESPathCheck('tags', {"key2":"value2"}),
+                         JMESPathCheck('description', "ExampleDesc2")])
+        self.cmd('az storage-mover delete -g {rg} -n {mover_name} -y')
+        self.cmd('az storage-mover list -g {rg}', checks=[JMESPathCheck('length(@)', 0)])
+
+
+
+    @ResourceGroupPreparer(location='eastus2euap')
+    def test_storage_mover_project_scenarios(self, resource_group):
+        self.kwargs.update({
+            "mover_name": self.create_random_name('storage-mover', 24),
+            "project_name": self.create_random_name('project', 24)
+        })
+        self.cmd('az storage-mover create -g {rg} -n {mover_name} -l eastus2euap '
+                 '--tags {{key1:value1}} --description MoverDesc')
+        self.cmd('az storage-mover project create -g {rg} --storage-mover-name {mover_name} -n {project_name} '
+                 '--description ProjectDesc')
+        self.cmd('az storage-mover project show -g {rg} --storage-mover-name {mover_name} -n {project_name}',
+                 checks=[JMESPathCheck('name', self.kwargs.get('project_name', '')),
+                        JMESPathCheck('description', "ProjectDesc")]
+                 )
+        self.cmd('az storage-mover project list -g {rg} --storage-mover-name {mover_name}',
+                 checks=[JMESPathCheck('length(@)', 1)])
+        self.cmd('az storage-mover project update -g {rg} --storage-mover-name {mover_name} -n {project_name} '
+                 '--description ProjectDesc2',
+                 checks=[JMESPathCheck('description', "ProjectDesc2")])
+        self.cmd('az storage-mover project delete -g {rg} --storage-mover-name {mover_name} -n {project_name} -y')
+        self.cmd('az storage-mover project list -g {rg} --storage-mover-name {mover_name}',
+                 checks=[JMESPathCheck('length(@)', 0)])
