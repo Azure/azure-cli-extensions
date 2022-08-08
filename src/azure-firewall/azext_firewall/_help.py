@@ -405,6 +405,11 @@ helps['network firewall policy rule-collection-group collection add-filter-colle
     short-summary: Add a filter collection into an Azure firewall policy rule collection group.
     long-summary: |
         Common Rule Arguments are used for both Network rule and Application rule. If you want to add more rules into filter collection, please use "az network policy rule-collection-group collection rule add/remove"
+    parameters:
+      - name: --destination-ports
+        short-summary: Space-separated list of destination ports. This argument is supported for Nat and Network Rule.
+        long-summary: |
+            Notice: When the parameter --rule-name is 'network_rule', --destination-ports is required.
     examples:
         - name: Add a filter collection with Network rule into the rule collection group
           text: az network firewall policy rule-collection-group collection add-filter-collection -g {rg} --policy-name {policy} --rule-collection-group-name {collectiongroup}
