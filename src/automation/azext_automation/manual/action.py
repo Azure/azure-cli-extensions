@@ -22,7 +22,7 @@ class AddPropertiesParameters(argparse.Action):
                 properties[k].append(v)
             properties = dict(properties)
         except ValueError:
-            raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string))
+            raise CLIError(f'usage error: {option_string} [KEY=VALUE ...]') from ValueError
         d = {}
         for k in properties:
             v = properties[k]
