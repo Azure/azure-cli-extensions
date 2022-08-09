@@ -123,7 +123,7 @@ helps['communication identity create-user'] = """
     examples:
       - name: create-user
         text: |-
-               az communication identity create-user 
+               az communication identity create-user
 """
 
 helps['communication identity delete-user'] = """
@@ -333,4 +333,3 @@ helps['communication chat send-read-receipt'] = """
         text: |-
                az communication chat send-read-receipt --thread-id "19:a-bcd=xyz" --message-id "12345678"
 """
-
