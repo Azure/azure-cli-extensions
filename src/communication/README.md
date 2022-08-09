@@ -55,17 +55,29 @@ az communication regenerate-key --name "MyCommunicationResource" --key-type "Pri
 ```
 az communication delete --name "MyCommunicationResource" --resource-group "MyResourceGroup"
 ```
+##### Create-User #####
+```
+az communication identity create-user
+```
+##### Delete-User #####
+```
+az communication identity delete-user --user-id "8:acs:xxxxxx"
+```
 ##### Issue-Access-Token #####
 ```
 az communication identity issue-access-token --scope chat
 
-az communication identity issue-access-token --scope chat voip --userid "8:acs:xxxxxx"
+az communication identity issue-access-token --scope chat voip --user-id "8:acs:xxxxxx"
 ```
 ##### Revoke-Access-Tokens #####
 ```
-az communication identity revoke-access-tokens --userid "8:acs:xxxxxx"
+az communication identity revoke-access-tokens --user-id "8:acs:xxxxxx"
 
-az communication identity revoke-access-tokens --userid "8:acs:xxxxxx" "8:acs:xxxxxy" "8:acs:xxxxxz"
+az communication identity revoke-access-tokens --user-id "8:acs:xxxxxx" "8:acs:xxxxxy" "8:acs:xxxxxz"
+```
+##### Get-Token-For-Teams-User #####
+```
+az communication identity get-token-for-teams-user --aad-token "MyAzureADToken" --client-id "MyAzureADAppId" --user-object-id "MyTeamsUserId"
 ```
 ##### Send-SMS #####
 ```

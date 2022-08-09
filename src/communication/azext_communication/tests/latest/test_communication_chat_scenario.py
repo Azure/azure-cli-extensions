@@ -109,6 +109,7 @@ class CommunicationChatScenarios(ScenarioTest):
         from azure.cli.core.azclierror import RequiredArgumentMissingError
         
         self.kwargs.update({ 'endpoint': self.__get_endpoint_from_resource_info(communication_resource_info) })
+        
         self.kwargs.pop('access-token', None)
         os.environ.pop('AZURE_COMMUNICATION_ACCESS_TOKEN', None)
 
@@ -141,6 +142,21 @@ class CommunicationChatScenarios(ScenarioTest):
         with self.assertRaises(SystemExit) as raises:
             self.cmd('az communication chat create-thread').get_output_in_json()
         assert raises.exception.code == 2
+
+
+    @ResourceGroupPreparer(name_prefix='clitestcommunication_MyResourceGroup'[:7], key='rg', parameter_name='rg')
+    @CommunicationResourcePreparer(resource_group_parameter_name='rg')
+    def test_chat_delete_thread(self, communication_resource_info):
+        self.__update_environ(communication_resource_info)
+
+        chat_topic = 'some-topic'
+        self.kwargs.update({
+            'topic': chat_topic })
+        res = self.__create_thread(chat_topic)
+        thread_id = res['chatThread']['id']
+        
+        self.kwargs.update({ 'thread_id': thread_id })
+        self.cmd('az communication chat delete-thread --thread-id {thread_id}')
 
 
     @ResourceGroupPreparer(name_prefix='clitestcommunication_MyResourceGroup'[:7], key='rg', parameter_name='rg')
