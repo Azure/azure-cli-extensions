@@ -29,7 +29,7 @@ CLASSIFIERS = [
     'License :: OSI Approved :: MIT License',
 ]
 
-DEPENDENCIES = ['azure-core', 'azure-communication-identity',
+DEPENDENCIES = ['azure-core', 'azure-communication-identity>=1.1.0',
                 'azure-communication-phonenumbers', 'azure-communication-sms',
                 'azure-communication-chat']
 
