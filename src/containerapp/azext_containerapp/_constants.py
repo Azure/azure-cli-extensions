@@ -14,7 +14,7 @@ ACR_IMAGE_SUFFIX = ".azurecr.io"
 LOG_ANALYTICS_RP = "Microsoft.OperationalInsights"
 CONTAINER_APPS_RP = "Microsoft.App"
 
-MAX_ENV_PER_LOCATION = 2
+MAX_ENV_PER_LOCATION = 5
 
 MICROSOFT_SECRET_SETTING_NAME = "microsoft-provider-authentication-secret"
 FACEBOOK_SECRET_SETTING_NAME = "facebook-provider-authentication-secret"
