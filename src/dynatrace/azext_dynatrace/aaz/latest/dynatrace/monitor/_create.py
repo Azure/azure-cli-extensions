@@ -167,7 +167,7 @@ class Create(AAZCommand):
             options=["plan-details"],
             help="plan id as published by Dynatrace",
             fmt=AAZStrArgFormat(
-                max_length=50,
+                max_length=100,
             ),
         )
         plan_data.usage_type = AAZStrArg(
