@@ -813,11 +813,14 @@ def update_containerapp(cmd,
                                      no_wait)
 
 
-def show_containerapp(cmd, name, resource_group_name):
+def show_containerapp(cmd, name, resource_group_name, show_secrets=False):
     _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     try:
-        return ContainerAppClient.show(cmd=cmd, resource_group_name=resource_group_name, name=name)
+        r = ContainerAppClient.show(cmd=cmd, resource_group_name=resource_group_name, name=name)
+        if show_secrets:
+            _get_existing_secrets(cmd, resource_group_name, name, r)
+        return r
     except CLIError as e:
         handle_raw_exception(e)
 

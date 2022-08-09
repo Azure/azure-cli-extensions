@@ -111,6 +111,9 @@ def load_arguments(self, _):
     with self.argument_context('containerapp create', arg_group='Container') as c:
         c.argument('image', options_list=['--image', '-i'], help="Container image, e.g. publisher/image-name:tag.")
 
+    with self.argument_context('containerapp show') as c:
+        c.argument('show_secrets', help="Show Containerapp secrets.")
+
     with self.argument_context('containerapp update', arg_group='Container') as c:
         c.argument('image', options_list=['--image', '-i'], help="Container image, e.g. publisher/image-name:tag.")
 
