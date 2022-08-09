@@ -54,6 +54,7 @@ setup(
     license='MIT',
     classifiers=CLASSIFIERS,
     packages=find_packages(),
+    python_requires='>=3.7',
     install_requires=DEPENDENCIES,
     package_data={'azext_communication': ['azext_metadata.json']},
 )
