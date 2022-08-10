@@ -3,6 +3,10 @@
 Release History
 ===============
 
+0.19.0
+++++++
+* Update resource model for Restorable Table resources API.
+
 0.18.0
 ++++++
 * Add support for retrieving and redistributing throughput at physical partition level.
