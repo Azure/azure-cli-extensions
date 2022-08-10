@@ -19,3 +19,13 @@ helps['storage-mover endpoint create-for-nfs'] = """
 type: command
 short-summary: Creates an Endpoint resource for nfs.
 """
+
+helps['storage-mover endpoint update-for-storage-container'] = """
+type: command
+short-summary: Updates an Endpoint resource for storage blob container.
+"""
+
+helps['storage-mover endpoint update-for-nfs'] = """
+type: command
+short-summary: Updates an Endpoint resource for nfs.
+"""
