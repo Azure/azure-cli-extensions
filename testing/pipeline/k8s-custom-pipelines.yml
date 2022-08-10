@@ -72,9 +72,9 @@ stages:
       vmImage: 'ubuntu-latest'
     steps:
     - task: UsePythonVersion@0
-      displayName: 'Use Python 3.6'
+      displayName: 'Use Python 3.10'
       inputs:
-        versionSpec: 3.6
+        versionSpec: 3.10
     - bash: |
         set -ev
 
@@ -117,9 +117,9 @@ stages:
       vmImage: 'ubuntu-latest'
     steps:
     - task: UsePythonVersion@0
-      displayName: 'Use Python 3.7'
+      displayName: 'Use Python 3.10'
       inputs:
-        versionSpec: 3.7
+        versionSpec: 3.10
     - bash: |
         #!/usr/bin/env bash
         set -ev
@@ -138,6 +138,10 @@ stages:
           python.version: '3.6'
         Python38:
           python.version: '3.8'
+        Python39:
+          python.version: '3.9'
+        Python310:
+          python.version: '3.10'
     steps:
       - task: UsePythonVersion@0
         displayName: 'Use Python $(python.version)'
@@ -171,9 +175,9 @@ stages:
       vmImage: 'ubuntu-latest'
     steps:
       - task: UsePythonVersion@0
-        displayName: 'Use Python 3.6'
+        displayName: 'Use Python 3.10'
         inputs:
-          versionSpec: 3.6
+          versionSpec: 3.10
       - bash: |
           set -ev
 
