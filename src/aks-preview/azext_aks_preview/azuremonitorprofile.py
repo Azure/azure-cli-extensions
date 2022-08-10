@@ -71,10 +71,8 @@ GRAFANA_API = "2022-08-01"
 GRAFANA_ROLE_ASSIGNMENT_API = "2018-01-01-preview"
 
 def get_default_mac_name(cluster_region, cluster_name):
-    ###################
-    ################### TEMPORARY -> -MAC in name because of bug with the account creation, deletion
-    ###################
     default_mac_name = "MSProm-" + MapToClosestMACRegion[cluster_region] + "-" + cluster_name
+    ### CHANGE THIS TO 25??
     default_mac_name = default_mac_name[0:43]
 
     return default_mac_name
