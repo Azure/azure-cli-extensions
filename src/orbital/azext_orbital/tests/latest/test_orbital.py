@@ -65,5 +65,18 @@ class OrbitalScenario(ScenarioTest):
         self.cmd("az orbital contact-profile list -g {resource-group}")
         self.cmd("az orbital contact-profile delete --name {contact-profile-name} --resource-group {resource-group} --yes")
 
-    def test_contacts(self, resource_group):
-        pass
+    def test_contacts(self):
+        self.kwargs.update({
+            "resource-group": "Rgp",
+            "location": "westus2",
+            "spacecraft-name": "AQUA",
+            "contact-profile": "{id:/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/contactProfiles/aqua}",
+            "ground-station-name": "westus2_0",
+            "contact-name" : "az-cli-contact"
+        })
+
+        self.cmd('az orbital spacecraft list-available-contact -g {resource-group} --spacecraft-name {spacecraft-name} --contact-profile {contact-profile} --ground-station-name {ground-station-name} --start-time "2022-11-14T00:55:31.820Z" --end-time "2022-11-15T00:55:31.820Z"')
+        self.cmd('az orbital spacecraft contact create -g {resource-group} --name {contact-name} --spacecraft-name {spacecraft-name} --contact-profile {contact-profile} --ground-station-name {ground-station-name} --reservation-end-time "2022-08-14T09:27:55.809Z" --reservation-start-time "2022-08-14T09:17:09.523Z"')
+        self.cmd('az orbital spacecraft contact show -g {resource-group} --spacecraft-name {spacecraft-name} --name {contact-name}')
+        self.cmd('az orbital spacecraft contact list -g {resource-group} --spacecraft-name {spacecraft-name}')
+        self.cmd('az orbital spacecraft contact delete -g {resource-group} --spacecraft-name {spacecraft-name} --name {contact-name} --yes')
