@@ -26,6 +26,25 @@ class CommunicationIdentityScenarios(ScenarioTest):
 
     @ResourceGroupPreparer(name_prefix='clitestcommunication_MyResourceGroup'[:7], key='rg', parameter_name='rg')
     @CommunicationResourcePreparer(resource_group_parameter_name='rg')
+    def test_create_user(self, communication_resource_info):
+        os.environ['AZURE_COMMUNICATION_CONNECTION_STRING'] = communication_resource_info[1]
+        res = self.cmd('az communication identity create-user').get_output_in_json()
+        assert res is not None
+        assert res['properties']['id'] == res['rawId']
+
+
+    @ResourceGroupPreparer(name_prefix='clitestcommunication_MyResourceGroup'[:7], key='rg', parameter_name='rg')
+    @CommunicationResourcePreparer(resource_group_parameter_name='rg')
+    def test_delete_user(self, communication_resource_info):
+        os.environ['AZURE_COMMUNICATION_CONNECTION_STRING'] = communication_resource_info[1]
+        res = self.cmd('az communication identity create-user').get_output_in_json()
+        user_id = res['properties']['id']
+
+        self.kwargs.update({ 'user_id': user_id })
+        self.cmd('az communication identity delete-user --user-id {user_id}')
+
+    @ResourceGroupPreparer(name_prefix='clitestcommunication_MyResourceGroup'[:7], key='rg', parameter_name='rg')
+    @CommunicationResourcePreparer(resource_group_parameter_name='rg')
     def test_issue_access_token(self, communication_resource_info):
         os.environ['AZURE_COMMUNICATION_CONNECTION_STRING'] = communication_resource_info[1]
 

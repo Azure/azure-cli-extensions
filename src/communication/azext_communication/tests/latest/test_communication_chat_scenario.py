@@ -105,23 +105,6 @@ class CommunicationChatScenarios(ScenarioTest):
 
     @ResourceGroupPreparer(name_prefix='clitestcommunication_MyResourceGroup'[:7], key='rg', parameter_name='rg')
     @CommunicationResourcePreparer(resource_group_parameter_name='rg')
-    def test_chat_list_threads_no_token(self, communication_resource_info):
-        from azure.cli.core.azclierror import RequiredArgumentMissingError
-        
-        self.kwargs.update({ 'endpoint': self.__get_endpoint_from_resource_info(communication_resource_info) })
-        
-        self.kwargs.pop('access-token', None)
-        os.environ.pop('AZURE_COMMUNICATION_ACCESS_TOKEN', None)
-
-        with self.assertRaises(RequiredArgumentMissingError) as raises:
-            self.cmd('az communication chat list-threads --endpoint {endpoint}').get_output_in_json()
-
-        assert '--access-token' in str(raises.exception)
-        assert 'AZURE_COMMUNICATION_ACCESS_TOKEN' in str(raises.exception)
-
-
-    @ResourceGroupPreparer(name_prefix='clitestcommunication_MyResourceGroup'[:7], key='rg', parameter_name='rg')
-    @CommunicationResourcePreparer(resource_group_parameter_name='rg')
     def test_chat_create_thread(self, communication_resource_info):
         self.__update_environ(communication_resource_info)
 
