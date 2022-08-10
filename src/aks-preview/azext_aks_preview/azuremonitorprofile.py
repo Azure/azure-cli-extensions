@@ -349,6 +349,7 @@ def link_grafana_instance(cmd, raw_parameters, mac_resource_id):
         print(grafanaURI)
         grafanaArmResponse = send_raw_request(cmd.cli_ctx, "GET", grafanaURI, body={})
         servicePrincipalId = grafanaArmResponse.json()["identity"]["principalId"]
+        print(grafanaArmResponse.json())
     except CLIError as e:
         error = e
         raise CLIError(e)
@@ -384,16 +385,17 @@ def link_grafana_instance(cmd, raw_parameters, mac_resource_id):
     targetGrafanaArmPayload = grafanaArmResponse.json()
     if targetGrafanaArmPayload["properties"] is None:
         raise CLIError("Invalid grafana payload to add AMW integration")
-    if "grafanaIntegrations" not in targetGrafanaArmPayload:
+    if "grafanaIntegrations" not in json.dumps(targetGrafanaArmPayload):
         targetGrafanaArmPayload["properties"]["grafanaIntegrations"] = {}
-    if "azureMonitorWorkspaceIntegrations" not in targetGrafanaArmPayload:
+    if "azureMonitorWorkspaceIntegrations" not in json.dumps(targetGrafanaArmPayload):
         targetGrafanaArmPayload["properties"]["grafanaIntegrations"]["azureMonitorWorkspaceIntegrations"] = []
 
     amwIntegrations = targetGrafanaArmPayload["properties"]["grafanaIntegrations"]["azureMonitorWorkspaceIntegrations"]
+
     if amwIntegrations != []:
         print("Grafana already has AMW integration")
         return GrafanaLink.ALREADYPRESENT
-    
+
     try:
         grafanaURI = "https://management.azure.com{0}?api-version={1}".format(
             grafana_resource_id,
@@ -420,31 +422,31 @@ def link_azure_monitor_profile_artifacts(cmd,
         ):
     print("Calling link_azure_monitor_profile_artifacts...")
     
-    # MAC creation if required
-    # mac_resource_id = "/subscriptions/ce4d1293-71c0-4c72-bc55-133553ee9e50/resourceGroups/kaveeshMACRG/providers/microsoft.monitor/accounts/kaveesheastusmac"
-    mac_resource_id = get_mac_resource_id(cmd, cluster_subscription, cluster_resource_group_name, cluster_name, cluster_region, raw_parameters)
-    print(mac_resource_id)
+    # # MAC creation if required
+    mac_resource_id = "/subscriptions/ce4d1293-71c0-4c72-bc55-133553ee9e50/resourceGroups/kaveeshMACRG/providers/microsoft.monitor/accounts/kaveesheastusmac"
+    # mac_resource_id = get_mac_resource_id(cmd, cluster_subscription, cluster_resource_group_name, cluster_name, cluster_region, raw_parameters)
+    # print(mac_resource_id)
 
-    # Get MAC region (required for DCE, DCR creation)
-    mac_region = get_mac_region(cmd, mac_resource_id, cluster_region)
-    print(mac_region)
+    # # Get MAC region (required for DCE, DCR creation)
+    # mac_region = get_mac_region(cmd, mac_resource_id, cluster_region)
+    # print(mac_region)
 
-    # DCE creation
-    dce_resource_id = create_dce(cmd, cluster_subscription, cluster_resource_group_name, cluster_name, mac_region)
-    print(dce_resource_id)
+    # # DCE creation
+    # dce_resource_id = create_dce(cmd, cluster_subscription, cluster_resource_group_name, cluster_name, mac_region)
+    # print(dce_resource_id)
 
-    # DCR creation
-    dcr_resource_id = create_dcr(cmd, mac_region, mac_resource_id, cluster_name, dce_resource_id)
-    print(dcr_resource_id)
+    # # DCR creation
+    # dcr_resource_id = create_dcr(cmd, mac_region, mac_resource_id, cluster_name, dce_resource_id)
+    # print(dcr_resource_id)
 
-    # DCRA creation
-    dcra_resource_id = create_dcra(cmd, cluster_region, cluster_subscription, cluster_resource_group_name, cluster_name, dcr_resource_id)
-    print(dcra_resource_id)
+    # # DCRA creation
+    # dcra_resource_id = create_dcra(cmd, cluster_region, cluster_subscription, cluster_resource_group_name, cluster_name, dcr_resource_id)
+    # print(dcra_resource_id)
 
     # Link grafana
     isGrafanaLinkSuccessful = link_grafana_instance(cmd, raw_parameters, mac_resource_id)
-    print("isGrafanaLinkSuccessful -> {isGrafanaLinkSuccessful}")
-    raise CLIError("STOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOP")
+    print(isGrafanaLinkSuccessful)
+    raise CLIError("STOOOOOOOOOOOOOOOOOOOOOOOP")
 
 def unlink_azure_monitor_profile_artifacts(cmd,
             cluster_subscription,
