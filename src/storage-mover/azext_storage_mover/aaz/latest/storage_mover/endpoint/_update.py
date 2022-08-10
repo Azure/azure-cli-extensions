@@ -11,10 +11,10 @@
 from azure.cli.core.aaz import *
 
 
-@register_command(
-    "storage-mover endpoint update",
-    is_preview=True,
-)
+# @register_command(
+#     "storage-mover endpoint update",
+#     is_preview=True,
+# )
 class Update(AAZCommand):
     """Updates an Endpoint resource, which represents a data transfer source or destination.
     """

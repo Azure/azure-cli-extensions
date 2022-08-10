@@ -11,10 +11,10 @@
 from azure.cli.core.aaz import *
 
 
-@register_command(
-    "storage-mover endpoint create",
-    is_preview=True,
-)
+# @register_command(
+#     "storage-mover endpoint create",
+#     is_preview=True,
+# )
 class Create(AAZCommand):
     """Creates an Endpoint resource, which represents a data transfer source or destination.
     """

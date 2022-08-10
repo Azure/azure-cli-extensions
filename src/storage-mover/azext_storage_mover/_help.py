@@ -9,3 +9,13 @@
 # pylint: disable=too-many-lines
 
 from knack.help_files import helps  # pylint: disable=unused-import
+
+helps['storage-mover endpoint create-for-storage-container'] = """
+type: command
+short-summary: Creates an Endpoint resource for storage blob container.
+"""
+
+helps['storage-mover endpoint create-for-nfs'] = """
+type: command
+short-summary: Creates an Endpoint resource for nfs.
+"""
