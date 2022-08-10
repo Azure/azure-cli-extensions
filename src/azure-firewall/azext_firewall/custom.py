@@ -68,7 +68,8 @@ def create_azure_firewall(cmd, resource_group_name, azure_firewall_name, locatio
                           tags=None, zones=None, private_ranges=None, firewall_policy=None,
                           virtual_hub=None, sku=None,
                           dns_servers=None, enable_dns_proxy=None,
-                          threat_intel_mode=None, hub_public_ip_count=None, allow_active_ftp=None, tier=None):
+                          threat_intel_mode=None, hub_public_ip_count=None, allow_active_ftp=None, tier=None,
+                          enable_fat_flow_logging=False):
     if firewall_policy and any([enable_dns_proxy, dns_servers]):
         raise CLIError('usage error: firewall policy and dns settings cannot co-exist.')
     if sku and sku.lower() == 'azfw_hub' and not all([virtual_hub, hub_public_ip_count]):
@@ -118,6 +119,11 @@ def create_azure_firewall(cmd, resource_group_name, azure_firewall_name, locatio
             firewall.additional_properties = {}
         firewall.additional_properties['Network.FTP.AllowActiveFTP'] = "true"
 
+    if enable_fat_flow_logging:
+        if firewall.additional_properties is None:
+            firewall.additional_properties = {}
+        firewall.additional_properties['Network.AdditionalLogs.EnableFatFlowLogging'] = "true"
+
     return client.begin_create_or_update(resource_group_name, azure_firewall_name, firewall)
 
 
@@ -126,7 +132,7 @@ def update_azure_firewall(cmd, instance, tags=None, zones=None, private_ranges=N
                           firewall_policy=None, virtual_hub=None,
                           dns_servers=None, enable_dns_proxy=None,
                           threat_intel_mode=None, hub_public_ip_addresses=None,
-                          hub_public_ip_count=None, allow_active_ftp=None):
+                          hub_public_ip_count=None, allow_active_ftp=None, enable_fat_flow_logging=None):
     if firewall_policy and any([enable_dns_proxy, dns_servers]):
         raise CLIError('usage error: firewall policy and dns settings cannot co-exist.')
     if all([hub_public_ip_addresses, hub_public_ip_count]):
@@ -193,6 +199,14 @@ def update_azure_firewall(cmd, instance, tags=None, zones=None, private_ranges=N
             instance.additional_properties['Network.FTP.AllowActiveFTP'] = "true"
         elif 'Network.FTP.AllowActiveFTP' in instance.additional_properties:
             del instance.additional_properties['Network.FTP.AllowActiveFTP']
+
+    if enable_fat_flow_logging is not None:
+        if instance.additional_properties is None:
+            instance.additional_properties = {}
+        if enable_fat_flow_logging:
+            instance.additional_properties['Network.AdditionalLogs.EnableFatFlowLogging'] = "true"
+        elif 'Network.AdditionalLogs.EnableFatFlowLogging' in instance.additional_properties:
+            del instance.additional_properties['Network.AdditionalLogs.EnableFatFlowLogging']
 
     return instance
 
