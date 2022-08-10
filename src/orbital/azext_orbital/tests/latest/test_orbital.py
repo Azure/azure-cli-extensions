@@ -6,8 +6,64 @@
 # --------------------------------------------------------------------------------------------
 
 from azure.cli.testsdk import *
-
+from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 
 class OrbitalScenario(ScenarioTest):
-    # TODO: add tests here
-    pass
+
+    def test_available_ground_stations(self):
+        available_ground_stations = self.cmd("az orbital available-ground-station list --capability EarthObservation").get_output_in_json()
+        assert len(available_ground_stations) > 0
+        available_ground_station = available_ground_stations[0]
+        assert available_ground_station['name'] is not None
+        assert available_ground_station['location'] is not None
+        assert available_ground_station['type'] == "Microsoft.Orbital/availableGroundStations"
+        assert available_ground_station['city'] is not None
+        assert available_ground_station['providerName'] is not None
+        assert available_ground_station['longitudeDegrees'] is not None
+        assert available_ground_station['latitudeDegrees'] is not None
+        assert available_ground_station['altitudeMeters'] is not None
+
+    @ResourceGroupPreparer(name_prefix="orbital_cli", parameter_name_for_location="location")
+    def test_spacecrafts(self, resource_group):
+        self.kwargs.update({
+            "resource-group": resource_group,
+            "spacecraft-name": "AQUA",
+            "location": "westus2",
+            "norad-id": 27424,
+            "title-line": "AQUA",
+            "tle-line1": "'1 27424U 02022A   21354.42153147  .00000392  00000-0  97092-4 0  9992'",
+            "tle-line2": "'2 27424  98.2297 293.2348 0001819  76.6594  32.9430 14.57096586 44117'",
+            "links": "[{name:downlink,bandwidth-m-hz:15,center-frequency-m-hz:8160,polarization:RHCP,direction:Downlink}]",
+            "tags": "{tag1:value1,tag2:value2}"
+        })
+
+        self.cmd('az orbital spacecraft create -g {resource-group} --name {spacecraft-name} -l {location} --norad-id {norad-id} --title-line {title-line} --tle-line1 {tle-line1} --tle-line2 {tle-line2} --links {links}')
+        self.cmd("az orbital spacecraft update -l {location} --name {spacecraft-name} --resource-group {resource-group} --tags {tags}")
+        self.cmd("az orbital spacecraft show --name {spacecraft-name} --resource-group {resource-group}")
+        self.cmd("az orbital spacecraft list")
+        self.cmd("az orbital spacecraft list -g {resource-group}")
+        self.cmd("az orbital spacecraft delete --name {spacecraft-name} --resource-group {resource-group} --yes")
+
+    @AllowLargeResponse(size_kb=9999)
+    @ResourceGroupPreparer(name_prefix="test_contact_profiles", parameter_name_for_location="location")
+    def test_contact_profiles(self, resource_group):
+        self.kwargs.update({
+            "resource-group": resource_group,
+            "contact-profile-name": "contact-profile-name",
+            "location": "westus2",
+            "auto-tracking-configuration": "disabled",
+            "event-hub-uri": "event-hub-uri",
+            "network-configuration": "{subnet-id:/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Network/virtualNetworks/Rgp-vnet/subnets/OrbitalSubnetProd}",
+            "links": "[{name:Link1,polarization:RHCP,direction:Downlink,channels:[{name:channel1,center-frequency-m-hz:8160,bandwidth-m-hz:15,end-point:{end-point-name:AQUA_directplayback,ip-address:10.0.0.4,port:50000,protocol:TCP}}]}]",
+            "tags": "{tag1:value1,tag2:value2}"
+        })
+
+        self.cmd("az orbital contact-profile create --resource-group {resource-group} --name {contact-profile-name} --location {location} --auto-tracking-configuration {auto-tracking-configuration} --event-hub-uri {event-hub-uri} --network-configuration {network-configuration} --links {links}")
+        self.cmd("az orbital contact-profile update --location {location} --name {contact-profile-name} --resource-group {resource-group} --tags {tags}")
+        self.cmd("az orbital contact-profile show --name {contact-profile-name} --resource-group {resource-group}")
+        self.cmd("az orbital contact-profile list")
+        self.cmd("az orbital contact-profile list -g {resource-group}")
+        self.cmd("az orbital contact-profile delete --name {contact-profile-name} --resource-group {resource-group} --yes")
+
+    def test_contacts(self, resource_group):
+        pass
