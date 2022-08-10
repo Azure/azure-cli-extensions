@@ -1786,9 +1786,9 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
             if mc.azure_monitor_profile is None:
                 mc.azure_monitor_profile = self.models.ManagedClusterAzureMonitorMetricsProfile()
             mc.azure_monitor_profile.metrics = self.models.ManagedClusterAzureMonitorMetricsProfileMetrics(enabled=True)
-            mc.azure_monitor_profile.metrics.kubeStateMetrics = self.models.ManagedClusterAzureMonitorProfileKubeStateMetrics(
-                metriclabelsallowlist=metriclabelsallowlist, 
-                metricannotationsallowlist=metricannotationsallowlist
+            mc.azure_monitor_profile.metrics.kube_state_metrics = self.models.ManagedClusterAzureMonitorProfileKubeStateMetrics(
+                metric_labels_allowlist=str(metriclabelsallowlist), 
+                metric_annotations_allow_list=str(metricannotationsallowlist)
                 )
 
         return mc
@@ -2149,7 +2149,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
             if mc.azure_monitor_profile is None:
                 mc.azure_monitor_profile = self.models.ManagedClusterAzureMonitorProfile()
             mc.azure_monitor_profile.metrics = self.models.ManagedClusterAzureMonitorProfileMetrics(enabled=True)
-            mc.azure_monitor_profile.metrics.kubeStateMetrics = self.models.ManagedClusterAzureMonitorProfileKubeStateMetrics(
+            mc.azure_monitor_profile.metrics.kube_state_metrics = self.models.ManagedClusterAzureMonitorProfileKubeStateMetrics(
                 metric_labels_allowlist=str(metriclabelsallowlist), 
                 metric_annotations_allow_list=str(metricannotationsallowlist)
                 )

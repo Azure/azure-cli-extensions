@@ -816,8 +816,6 @@ def aks_update(
         # update mc profile
         mc = aks_update_decorator.update_mc_profile_preview()
 
-        print(raw_parameters.get("enable_azuremonitormetrics"))
-
         if ( raw_parameters.get("enable_azuremonitormetrics") or raw_parameters.get("disable_azuremonitormetrics")):
             subscription_id = get_subscription_id(cmd.cli_ctx)
             instance = client.get(resource_group_name, name)
