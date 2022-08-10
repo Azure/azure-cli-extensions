@@ -32,8 +32,8 @@ logger = get_logger(__name__)
 
 
 class ContainerInsights(DefaultExtension):
-    def Create(self, cmd, client, resource_group_name, cluster_name, name, cluster_type, extension_type,
-               scope, auto_upgrade_minor_version, release_train, version, target_namespace,
+    def Create(self, cmd, client, resource_group_name, cluster_name, name, cluster_type, cluster_rp,
+               extension_type, scope, auto_upgrade_minor_version, release_train, version, target_namespace,
                release_namespace, configuration_settings, configuration_protected_settings,
                configuration_settings_file, configuration_protected_settings_file):
         """ExtensionType 'microsoft.azuremonitor.containers' specific validations & defaults for Create
@@ -56,7 +56,7 @@ class ContainerInsights(DefaultExtension):
                        'only supports cluster scope and single instance of this extension.', extension_type)
         logger.warning("Defaulting to extension name '%s' and release-namespace '%s'", name, release_namespace)
 
-        _get_container_insights_settings(cmd, resource_group_name, cluster_name, configuration_settings,
+        _get_container_insights_settings(cmd, resource_group_name, cluster_rp, cluster_type, cluster_name, configuration_settings,
                                          configuration_protected_settings, is_ci_extension_type)
 
         # NOTE-2: Return a valid Extension object, Instance name and flag for Identity
@@ -72,11 +72,11 @@ class ContainerInsights(DefaultExtension):
         )
         return extension, name, create_identity
 
-    def Delete(self, cmd, client, resource_group_name, cluster_name, name, cluster_type, yes):
+    def Delete(self, cmd, client, resource_group_name, cluster_name, name, cluster_type, cluster_rp, yes):
         # Delete DCR-A if it exists incase of MSI Auth
         useAADAuth = False
         isDCRAExists = False
-        cluster_rp, _ = get_cluster_rp_api_version(cluster_type)
+        cluster_rp, _ = get_cluster_rp_api_version(cluster_type=cluster_type, cluster_rp=cluster_rp)
         try:
             extension = client.get(resource_group_name, cluster_rp, cluster_type, cluster_name, name)
         except Exception:
@@ -140,8 +140,8 @@ def _invoke_deployment(cmd, resource_group_name, deployment_name, template, para
     return sdk_no_wait(no_wait, smc.begin_create_or_update, resource_group_name, deployment_name, deployment)
 
 
-def _ensure_default_log_analytics_workspace_for_monitoring(cmd, subscription_id,
-                                                           cluster_resource_group_name, cluster_name):
+def _ensure_default_log_analytics_workspace_for_monitoring(cmd, subscription_id, cluster_resource_group_name,
+                                                           cluster_rp, cluster_type, cluster_name):
     # mapping for azure public cloud
     # log analytics workspaces cannot be created in WCUS region due to capacity limits
     # so mapped to EUS per discussion with log analytics team
@@ -236,8 +236,8 @@ def _ensure_default_log_analytics_workspace_for_monitoring(cmd, subscription_id,
     cluster_location = ''
     resources = cf_resources(cmd.cli_ctx, subscription_id)
 
-    cluster_resource_id = '/subscriptions/{0}/resourceGroups/{1}/providers/Microsoft.Kubernetes' \
-        '/connectedClusters/{2}'.format(subscription_id, cluster_resource_group_name, cluster_name)
+    cluster_resource_id = '/subscriptions/{0}/resourceGroups/{1}/providers//{2}/{3}/{4}'.format(
+        subscription_id, cluster_resource_group_name, cluster_rp, cluster_type, cluster_name)
     try:
         resource = resources.get_by_id(cluster_resource_id, '2020-01-01-preview')
         cluster_location = resource.location.lower()
@@ -438,8 +438,8 @@ def _ensure_container_insights_for_monitoring(cmd, workspace_resource_id):
                               validate=False, no_wait=False, subscription_id=subscription_id)
 
 
-def _get_container_insights_settings(cmd, cluster_resource_group_name, cluster_name, configuration_settings,
-                                     configuration_protected_settings, is_ci_extension_type):
+def _get_container_insights_settings(cmd, cluster_resource_group_name, cluster_rp, cluster_type, cluster_name,
+                                     configuration_settings, configuration_protected_settings, is_ci_extension_type):
 
     subscription_id = get_subscription_id(cmd.cli_ctx)
     workspace_resource_id = ''
@@ -477,7 +477,7 @@ def _get_container_insights_settings(cmd, cluster_resource_group_name, cluster_n
 
     if not workspace_resource_id:
         workspace_resource_id = _ensure_default_log_analytics_workspace_for_monitoring(
-            cmd, subscription_id, cluster_resource_group_name, cluster_name)
+            cmd, subscription_id, cluster_resource_group_name, cluster_rp, cluster_type, cluster_name)
     else:
         if not is_valid_resource_id(workspace_resource_id):
             raise InvalidArgumentValueError('{} is not a valid Azure resource ID.'.format(workspace_resource_id))
@@ -485,7 +485,7 @@ def _get_container_insights_settings(cmd, cluster_resource_group_name, cluster_n
     if is_ci_extension_type:
         if useAADAuth:
             logger.info("creating data collection rule and association")
-            _ensure_container_insights_dcr_for_monitoring(cmd, subscription_id, cluster_resource_group_name, cluster_name, workspace_resource_id)
+            _ensure_container_insights_dcr_for_monitoring(cmd, subscription_id, cluster_resource_group_name, cluster_rp, cluster_type, cluster_name, workspace_resource_id)
         elif not _is_container_insights_solution_exists(cmd, workspace_resource_id):
             logger.info("Creating ContainerInsights solution resource, since it doesn't exist and it is using legacy authentication")
             _ensure_container_insights_for_monitoring(cmd, workspace_resource_id).result()
@@ -545,13 +545,13 @@ def get_existing_container_insights_extension_dcr_tags(cmd, dcr_url):
     return tags
 
 
-def _ensure_container_insights_dcr_for_monitoring(cmd, subscription_id, cluster_resource_group_name, cluster_name, workspace_resource_id):
+def _ensure_container_insights_dcr_for_monitoring(cmd, subscription_id, cluster_resource_group_name, cluster_rp, cluster_type, cluster_name, workspace_resource_id):
     from azure.core.exceptions import HttpResponseError
 
     cluster_region = ''
     resources = cf_resources(cmd.cli_ctx, subscription_id)
-    cluster_resource_id = '/subscriptions/{0}/resourceGroups/{1}/providers/Microsoft.Kubernetes' \
-        '/connectedClusters/{2}'.format(subscription_id, cluster_resource_group_name, cluster_name)
+    cluster_resource_id = '/subscriptions/{0}/resourceGroups/{1}/providers/{2}/{3}/{4}'.format(
+        subscription_id, cluster_resource_group_name, cluster_rp, cluster_type, cluster_name)
     try:
         resource = resources.get_by_id(cluster_resource_id, '2020-01-01-preview')
         cluster_region = resource.location.lower()
