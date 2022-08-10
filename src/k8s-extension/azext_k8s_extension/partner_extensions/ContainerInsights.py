@@ -236,10 +236,10 @@ def _ensure_default_log_analytics_workspace_for_monitoring(cmd, subscription_id,
     cluster_location = ''
     resources = cf_resources(cmd.cli_ctx, subscription_id)
 
-    cluster_resource_id = '/subscriptions/{0}/resourceGroups/{1}/providers//{2}/{3}/{4}'.format(
+    cluster_resource_id = '/subscriptions/{0}/resourceGroups/{1}/providers/{2}/{3}/{4}'.format(
         subscription_id, cluster_resource_group_name, cluster_rp, cluster_type, cluster_name)
     try:
-        resource = resources.get_by_id(cluster_resource_id, '2020-01-01-preview')
+        resource = resources.get_by_id(cluster_resource_id, '2022-05-01-preview')
         cluster_location = resource.location.lower()
     except HttpResponseError as ex:
         raise ex
@@ -553,7 +553,7 @@ def _ensure_container_insights_dcr_for_monitoring(cmd, subscription_id, cluster_
     cluster_resource_id = '/subscriptions/{0}/resourceGroups/{1}/providers/{2}/{3}/{4}'.format(
         subscription_id, cluster_resource_group_name, cluster_rp, cluster_type, cluster_name)
     try:
-        resource = resources.get_by_id(cluster_resource_id, '2020-01-01-preview')
+        resource = resources.get_by_id(cluster_resource_id, '2022-05-01-preview')
         cluster_region = resource.location.lower()
     except HttpResponseError as ex:
         raise ex
