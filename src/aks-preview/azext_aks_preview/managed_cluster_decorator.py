@@ -1407,25 +1407,20 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
 
         # Read the original value passed by the command.
 
-        print("REACHES HERE 1")
         enable_azure_monitor_metrics = self.raw_param.get("enable_azuremonitormetrics")
 
         # In create mode, try to read the property value corresponding to the parameter from the `mc` object.
         if self.decorator_mode == DecoratorMode.CREATE:
-            print ("REACHES HERE OUT OF TURN")
             if (
                 self.mc and
                 self.mc.azure_monitor_profile and
                 self.mc.azure_monitor_profile.metrics
             ):
-                print("REACHES HERE 3")
                 enable_azure_monitor_metrics = self.mc.azure_monitor_profile.metrics.enabled
 
         # This parameter does not need dynamic completion.
         if enable_validation:
-            print("REACHES HERE 4")
             if enable_azure_monitor_metrics and self._get_disable_azure_monitor_metrics(False):
-                print("REACHES HERE 5")
                 raise MutuallyExclusiveArgumentError(
                     "Cannot specify --enable-azuremonitormetrics and --enable-azuremonitormetrics at the same time."
                 )
@@ -1448,14 +1443,11 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         """
         # Read the original value passed by the command.
         disable_azure_monitor_metrics = self.raw_param.get("disable_azuremonitormetrics")
-        print("REACHES HERE 10")
 
         # This option is not supported in create mode, hence we do not read the property value from the `mc` object.
         # This parameter does not need dynamic completion.
         if enable_validation:
-            print("REACHES HERE 11")
             if disable_azure_monitor_metrics and self._get_enable_azure_monitor_metrics(False):
-                print("REACHES HERE 12")
                 raise MutuallyExclusiveArgumentError(
                     "Cannot specify --enable-azuremonitormetrics and --disable-azuremonitormetrics at the same time."
                 )
@@ -1782,8 +1774,8 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         self._ensure_mc(mc)
 
         # read the original value passed by the command
-        metriclabelsallowlist = self.raw_param.get("metriclabelsallowlist")
-        metricannotationsallowlist = self.raw_param.get("metricannotationsallowlist")
+        metriclabelsallowlist = self._AKSPreviewManagedClusterCreateDecorator__raw_parameters.get("metriclabelsallowlist")
+        metricannotationsallowlist = self._AKSPreviewManagedClusterCreateDecorator__raw_parameters.get("metricannotationsallowlist")
 
         # normalize
         ## DO VALIDATION HERE
@@ -2143,21 +2135,30 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         :return: the ManagedCluster object
         """
         self._ensure_mc(mc)
-        print("REACHES HERE 6")
+
+        # read the original value passed by the command
+        metriclabelsallowlist = self._AKSPreviewManagedClusterUpdateDecorator__raw_parameters.get("metriclabelsallowlist")
+        metricannotationsallowlist = self._AKSPreviewManagedClusterUpdateDecorator__raw_parameters.get("metricannotationsallowlist")
+
+        # normalize
+        ## DO VALIDATION HERE
+        # metriclabelsallowlist = extract_comma_separated_string(metriclabelsallowlist, keep_none=True, default_value=[])
+        # metricannotationsallowlist = extract_comma_separated_string(metricannotationsallowlist, keep_none=True, default_value=[])
 
         if self.context.get_enable_azure_monitor_metrics():
-            print("REACHES HERE 7")
             if mc.azure_monitor_profile is None:
-                print("REACHES HERE 8")
                 mc.azure_monitor_profile = self.models.ManagedClusterAzureMonitorProfile()
-            print("REACHES HERE 9")
             mc.azure_monitor_profile.metrics = self.models.ManagedClusterAzureMonitorProfileMetrics(enabled=True)
+            mc.azure_monitor_profile.metrics.kubeStateMetrics = self.models.ManagedClusterAzureMonitorProfileKubeStateMetrics(
+                metriclabelsallowlist=metriclabelsallowlist, 
+                metricannotationsallowlist=metricannotationsallowlist
+                )
 
         if self.context.get_disable_azure_monitor_metrics():
             if mc.azure_monitor_profile is None:
                 mc.azure_monitor_profile = self.models.ManagedClusterAzureMonitorProfile()
             mc.azure_monitor_profile.metrics = self.models.ManagedClusterAzureMonitorProfileMetrics(enabled=False)
-        
+
         return mc
 
     def update_mc_profile_preview(self) -> ManagedCluster:

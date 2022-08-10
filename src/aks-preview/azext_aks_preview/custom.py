@@ -816,7 +816,6 @@ def aks_update(
         # update mc profile
         mc = aks_update_decorator.update_mc_profile_preview()
 
-        print("REACHES HERE 13")
         print(raw_parameters.get("enable_azuremonitormetrics"))
 
         if ( raw_parameters.get("enable_azuremonitormetrics") or raw_parameters.get("disable_azuremonitormetrics")):
