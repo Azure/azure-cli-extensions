@@ -958,7 +958,7 @@ helps['aks maintenanceconfiguration add'] = """
           text: |
             az aks maintenanceconfiguration add -g MyResourceGroup --cluster-name test1 -n default --weekday Monday  --start-hour 1
               The maintenance is allowed on Monday 1:00am to 2:00am
-        - name: Add a maintenance configuration with --weekday.The maintenance is allowd on any time of that day.
+        - name: Add a maintenance configuration with --weekday. The maintenance is allowd on any time of that day.
           text: |
             az aks maintenanceconfiguration add -g MyResourceGroup --cluster-name test1 -n default --weekday Monday
               The maintenance is allowed on Monday.
