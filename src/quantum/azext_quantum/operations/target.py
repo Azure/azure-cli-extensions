@@ -15,9 +15,6 @@ class TargetInfo:
         def select_value(key, value):
             if value is not None:
                 return value
-            # value = cmd.cli_ctx.config.get('quantum', key, None)
-            # if value is not None:
-            #     return value
             value = cmd.cli_ctx.config.get(cmd.cli_ctx.config.defaults_section_name, key, None)
             return value
 
@@ -70,3 +67,13 @@ def clear(cmd):
     info = TargetInfo(cmd)
     info.clear()
     info.save(cmd)
+
+
+# Added to fix output problem
+def show(cmd, target_id):
+    """
+    Show the currently selected default target.
+    """
+    info = TargetInfo(cmd, target_id)
+    info.target_id += ""    # Kludge excuse: Without this the only output we ever get is "targetId": {"isDefault": true}
+    return info

@@ -360,7 +360,6 @@ def quotas(cmd, resource_group_name, workspace_name, location):
     return client.list()
 
 
-# def set(cmd, workspace_name, resource_group_name=None, location=None):
 def set(cmd, workspace_name, resource_group_name, location):
     """
     Set the default Azure Quantum workspace.

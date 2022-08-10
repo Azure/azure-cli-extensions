@@ -49,7 +49,6 @@ def _valid_publisher_and_offer(provider, publisher, offer):
     return True
 
 
-# def list_offerings(cmd, location=None, autoadd_only=False):
 def list_offerings(cmd, location, autoadd_only=False):
     """
     Get the list of all provider offerings available on the given location.
@@ -71,7 +70,6 @@ def list_offerings(cmd, location, autoadd_only=False):
     return offerings
 
 
-# def show_terms(cmd, provider_id=None, sku=None, location=None):
 def show_terms(cmd, provider_id, sku, location):
     """
     Show the terms of a provider and SKU combination including license URL and acceptance status.
@@ -84,7 +82,6 @@ def show_terms(cmd, provider_id, sku, location):
     return _get_terms_from_marketplace(cmd, publisher_id, offer_id, sku)
 
 
-# def accept_terms(cmd, provider_id=None, sku=None, location=None):
 def accept_terms(cmd, provider_id, sku, location):
     """
     Accept the terms of a provider and SKU combination to enable it for workspace creation.
