@@ -18,7 +18,7 @@ class GrafanaLink(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
     SUCCESS = "SUCCESS"
     FAILURE = "FAILURE"
     ALREADYPRESENT = "ALREADYPRESENT"
-    NA = "NA"
+    NOPARAMPROVIDED = "NOPARAMPROVIDED"
 
 MapToClosestMACRegion = {
         "australiacentral": "eastus",
@@ -239,15 +239,15 @@ def create_dce(cmd, cluster_subscription, cluster_resource_group_name, cluster_n
     else:
         raise error
 
-def create_dcr(cmd, mac_region, mac_resource_id, cluster_name, dce_resource_id):
+def create_dcr(cmd, mac_region, mac_resource_id, cluster_subscription, cluster_resource_group_name, cluster_name, dce_resource_id):
     from azure.cli.core.util import send_raw_request
 
     print("Calling function create_dcr")
 
     dcr_name = get_default_dcr_name(mac_region, cluster_name)
     dcr_resource_id = "/subscriptions/{0}/resourceGroups/{1}/providers/Microsoft.Insights/dataCollectionRules/{2}".format(
-        mac_resource_id.split("/")[2],
-        mac_resource_id.split("/")[4],
+        cluster_subscription,
+        cluster_resource_group_name,
         dcr_name
     )
 
@@ -340,7 +340,7 @@ def link_grafana_instance(cmd, raw_parameters, mac_resource_id):
     try:
         grafana_resource_id = raw_parameters.get("grafana_resource_id")
         if grafana_resource_id is None or grafana_resource_id == "":
-            return GrafanaLink.NA
+            return GrafanaLink.NOPARAMPROVIDED
         grafana_resource_id = sanitize_resource_id(grafana_resource_id)
         grafanaURI = "https://management.azure.com{0}?api-version={1}".format(
             grafana_resource_id,
@@ -436,7 +436,7 @@ def link_azure_monitor_profile_artifacts(cmd,
     print(dce_resource_id)
 
     # DCR creation
-    dcr_resource_id = create_dcr(cmd, mac_region, mac_resource_id, cluster_name, dce_resource_id)
+    dcr_resource_id = create_dcr(cmd, mac_region, mac_resource_id, cluster_subscription, cluster_resource_group_name, cluster_name, dce_resource_id)
     print(dcr_resource_id)
 
     # DCRA creation
