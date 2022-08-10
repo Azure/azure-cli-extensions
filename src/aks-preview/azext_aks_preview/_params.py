@@ -325,7 +325,7 @@ def load_arguments(self, _):
         c.argument('mac_resource_id', is_preview=True)
         c.argument('metriclabelsallowlist', validator=validate_metriclabelsallowlist, is_preview=True)
         c.argument('metricannotationsallowlist', validator=validate_metricannotationsallowlist, is_preview=True)
-        c.argument('grafana_resource_id', action='store_true', is_preview=True)
+        c.argument('grafana_resource_id', is_preview=True)
         # nodepool
         c.argument('host_group_id', validator=validate_host_group_id, is_preview=True)
         c.argument('crg_id', validator=validate_crg_id, is_preview=True)
@@ -424,7 +424,7 @@ def load_arguments(self, _):
         c.argument('mac_resource_id', is_preview=True)
         c.argument('metriclabelsallowlist', validator=validate_metriclabelsallowlist, is_preview=True)
         c.argument('metricannotationsallowlist', validator=validate_metricannotationsallowlist, is_preview=True)
-        c.argument('grafana_resource_id', action='store_true', is_preview=True)
+        c.argument('grafana_resource_id', is_preview=True)
         c.argument('disable_azuremonitormetrics', action='store_true', is_preview=True)
 
     with self.argument_context('aks upgrade') as c:
