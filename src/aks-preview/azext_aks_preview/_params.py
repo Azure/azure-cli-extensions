@@ -75,6 +75,7 @@ from azext_aks_preview._validators import (
     validate_acr,
     validate_addon,
     validate_addons,
+    validate_agent_pool_name,
     validate_apiserver_subnet_id,
     validate_assign_identity,
     validate_assign_kubelet_identity,
@@ -424,7 +425,7 @@ def load_arguments(self, _):
     with self.argument_context('aks nodepool') as c:
         c.argument('cluster_name', help='The cluster name.')
         # the following argument is declared for the wait command
-        c.argument('agent_pool_name', options_list=['--nodepool-name', '--agent-pool-name'], validator=validate_nodepool_name, help='The node pool name.')
+        c.argument('agent_pool_name', options_list=['--nodepool-name', '--agent-pool-name'], validator=validate_agent_pool_name, help='The node pool name.')
 
     for sub_command in ['add', 'update', 'upgrade', 'scale', 'show', 'list', 'delete']:
         with self.argument_context('aks nodepool ' + sub_command) as c:
