@@ -1781,10 +1781,23 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         """
         self._ensure_mc(mc)
 
+        # read the original value passed by the command
+        metriclabelsallowlist = self.raw_param.get("metriclabelsallowlist")
+        metricannotationsallowlist = self.raw_param.get("metricannotationsallowlist")
+
+        # normalize
+        ## DO VALIDATION HERE
+        # metriclabelsallowlist = extract_comma_separated_string(metriclabelsallowlist, keep_none=True, default_value=[])
+        # metricannotationsallowlist = extract_comma_separated_string(metricannotationsallowlist, keep_none=True, default_value=[])
+
         if self.context.get_enable_azure_monitor_metrics():
             if mc.azure_monitor_profile is None:
                 mc.azure_monitor_profile = self.models.ManagedClusterAzureMonitorMetricsProfile()
             mc.azure_monitor_profile.metrics = self.models.ManagedClusterAzureMonitorMetricsProfileMetrics(enabled=True)
+            mc.azure_monitor_profile.metrics.kubeStateMetrics = self.models.ManagedClusterAzureMonitorProfileKubeStateMetrics(
+                metriclabelsallowlist=metriclabelsallowlist, 
+                metricannotationsallowlist=metricannotationsallowlist
+                )
 
         return mc
 
