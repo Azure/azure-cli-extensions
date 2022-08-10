@@ -420,26 +420,26 @@ def link_azure_monitor_profile_artifacts(cmd,
         ):
     print("Calling link_azure_monitor_profile_artifacts...")
     
-    # # MAC creation if required
-    mac_resource_id = "/subscriptions/ce4d1293-71c0-4c72-bc55-133553ee9e50/resourceGroups/kaveeshMACRG/providers/microsoft.monitor/accounts/kaveesheastusmac"
-    # mac_resource_id = get_mac_resource_id(cmd, cluster_subscription, cluster_resource_group_name, cluster_name, cluster_region, raw_parameters)
-    # print(mac_resource_id)
+    # MAC creation if required
+    # mac_resource_id = "/subscriptions/ce4d1293-71c0-4c72-bc55-133553ee9e50/resourceGroups/kaveeshMACRG/providers/microsoft.monitor/accounts/kaveesheastusmac"
+    mac_resource_id = get_mac_resource_id(cmd, cluster_subscription, cluster_resource_group_name, cluster_name, cluster_region, raw_parameters)
+    print(mac_resource_id)
 
-    # # Get MAC region (required for DCE, DCR creation)
-    # mac_region = get_mac_region(cmd, mac_resource_id, cluster_region)
-    # print(mac_region)
+    # Get MAC region (required for DCE, DCR creation)
+    mac_region = get_mac_region(cmd, mac_resource_id, cluster_region)
+    print(mac_region)
 
-    # # DCE creation
-    # dce_resource_id = create_dce(cmd, cluster_subscription, cluster_resource_group_name, cluster_name, mac_region)
-    # print(dce_resource_id)
+    # DCE creation
+    dce_resource_id = create_dce(cmd, cluster_subscription, cluster_resource_group_name, cluster_name, mac_region)
+    print(dce_resource_id)
 
-    # # DCR creation
-    # dcr_resource_id = create_dcr(cmd, mac_region, mac_resource_id, cluster_name, dce_resource_id)
-    # print(dcr_resource_id)
+    # DCR creation
+    dcr_resource_id = create_dcr(cmd, mac_region, mac_resource_id, cluster_name, dce_resource_id)
+    print(dcr_resource_id)
 
-    # # DCRA creation
-    # dcra_resource_id = create_dcra(cmd, cluster_region, cluster_subscription, cluster_resource_group_name, cluster_name, dcr_resource_id)
-    # print(dcra_resource_id)
+    # DCRA creation
+    dcra_resource_id = create_dcra(cmd, cluster_region, cluster_subscription, cluster_resource_group_name, cluster_name, dcr_resource_id)
+    print(dcra_resource_id)
 
     # Link grafana
     isGrafanaLinkSuccessful = link_grafana_instance(cmd, raw_parameters, mac_resource_id)
