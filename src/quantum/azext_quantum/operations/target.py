@@ -27,7 +27,6 @@ class TargetInfo:
         from azure.cli.core.util import ConfiguredDefaultSetter
 
         with ConfiguredDefaultSetter(cmd.cli_ctx.config, False):
-            # cmd.cli_ctx.config.set_value('quantum', 'target_id', self.target_id)
             cmd.cli_ctx.config.set_value(cmd.cli_ctx.config.defaults_section_name, 'target_id', self.target_id)
 
 
@@ -39,7 +38,6 @@ def get(cmd, target_id=None):
     return info
 
 
-# def set(cmd, target_id=None):
 def set(cmd, target_id):
     """
     Select the default target to use when submitting jobs to Azure Quantum.
@@ -50,7 +48,6 @@ def set(cmd, target_id):
     return info
 
 
-# def list(cmd, resource_group_name=None, workspace_name=None, location=None):
 def list(cmd, resource_group_name, workspace_name, location):
     """
     Get the list of providers and their targets in an Azure Quantum workspace.
