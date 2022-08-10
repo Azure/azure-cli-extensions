@@ -2150,8 +2150,8 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                 mc.azure_monitor_profile = self.models.ManagedClusterAzureMonitorProfile()
             mc.azure_monitor_profile.metrics = self.models.ManagedClusterAzureMonitorProfileMetrics(enabled=True)
             mc.azure_monitor_profile.metrics.kubeStateMetrics = self.models.ManagedClusterAzureMonitorProfileKubeStateMetrics(
-                metriclabelsallowlist=metriclabelsallowlist, 
-                metricannotationsallowlist=metricannotationsallowlist
+                metric_labels_allowlist=str(metriclabelsallowlist), 
+                metric_annotations_allow_list=str(metricannotationsallowlist)
                 )
 
         if self.context.get_disable_azure_monitor_metrics():
