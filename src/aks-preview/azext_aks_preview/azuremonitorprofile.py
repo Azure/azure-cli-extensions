@@ -66,12 +66,48 @@ MapToClosestMACRegion = {
         "brazilsoutheast": "eastus"
     }
 
+AzureCloudLocationToOmsRegionCodeMap = {
+        "australiasoutheast": "ASE",
+        "australiaeast": "EAU",
+        "australiacentral": "CAU",
+        "canadacentral": "CCA",
+        "centralindia": "CIN",
+        "centralus": "CUS",
+        "eastasia": "EA",
+        "eastus": "EUS",
+        "eastus2": "EUS2",
+        "eastus2euap": "EAP",
+        "francecentral": "PAR",
+        "japaneast": "EJP",
+        "koreacentral": "SE",
+        "northeurope": "NEU",
+        "southcentralus": "SCUS",
+        "southeastasia": "SEA",
+        "uksouth": "SUK",
+        "usgovvirginia": "USGV",
+        "westcentralus": "EUS",
+        "westeurope": "WEU",
+        "westus": "WUS",
+        "westus2": "WUS2",
+        "brazilsouth": "CQ",
+        "brazilsoutheast": "BRSE",
+        "norwayeast": "NOE",
+        "southafricanorth": "JNB",
+        "northcentralus": "NCUS",
+        "uaenorth": "DXB",
+        "germanywestcentral": "DEWC",
+        "ukwest": "WUK",
+        "switzerlandnorth": "CHN",
+        "switzerlandwest": "CHW",
+        "uaecentral": "AUH",
+    }
+
 MAC_API = "2021-06-03-preview"
 GRAFANA_API = "2022-08-01"
 GRAFANA_ROLE_ASSIGNMENT_API = "2018-01-01-preview"
 
 def get_default_mac_name(cluster_region, cluster_name):
-    default_mac_name = "MSProm-" + MapToClosestMACRegion[cluster_region] + "-" + cluster_name
+    default_mac_name = "MSProm-" + AzureCloudLocationToOmsRegionCodeMap[MapToClosestMACRegion[cluster_region]] + "-" + cluster_name
     ### CHANGE THIS TO 25??
     default_mac_name = default_mac_name[0:43]
 
@@ -128,17 +164,18 @@ def get_mac_resource_id(cmd, cluster_subscription, cluster_resource_group_name, 
     return mac_resource_id
 
 def get_default_dce_name(mac_region, cluster_name):
-    default_dce_name = "MSProm-" + mac_region + cluster_name
+    ######## USE SHORT CODE
+    default_dce_name = "MSProm-" + AzureCloudLocationToOmsRegionCodeMap[mac_region] + "-" + cluster_name
     default_dce_name = default_dce_name[0:43]
     return default_dce_name
 
 def get_default_dcr_name(mac_region, cluster_name):
-    default_dcr_name = "MSProm-" + mac_region + cluster_name
+    default_dcr_name = "MSProm-" + AzureCloudLocationToOmsRegionCodeMap[mac_region] + "-" + cluster_name
     default_dcr_name = default_dcr_name[0:43]
     return default_dcr_name
 
 def get_default_dcra_name(cluster_region, cluster_name):
-    default_dcra_name = "MSProm-" + cluster_region + cluster_name
+    default_dcra_name = "MSProm-" + AzureCloudLocationToOmsRegionCodeMap[cluster_region] + "-" + cluster_name
     default_dcra_name = default_dcra_name[0:43]
     return default_dcra_name
 
