@@ -399,7 +399,7 @@ def link_grafana_instance(cmd, raw_parameters, mac_resource_id):
             grafana_resource_id,
             GRAFANA_API
         )
-        targetGrafanaArmPayload["properties"]["grafanaIntegrations"]["azureMonitorWorkspaceIntegrations"] = [{ "azureMonitorWorkspaceResourceId" : mac_resource_id }]
+        targetGrafanaArmPayload["properties"]["grafanaIntegrations"]["azureMonitorWorkspaceIntegrations"].append({ "azureMonitorWorkspaceResourceId" : mac_resource_id })
         targetGrafanaArmPayload=json.dumps(targetGrafanaArmPayload)
 
         final_response = send_raw_request(cmd.cli_ctx, "PUT", grafanaURI, body=targetGrafanaArmPayload, headers={'Content-Type=application/json'})

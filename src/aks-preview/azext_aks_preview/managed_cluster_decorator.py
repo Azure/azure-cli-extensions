@@ -1777,6 +1777,12 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         metriclabelsallowlist = self._AKSPreviewManagedClusterCreateDecorator__raw_parameters.get("metriclabelsallowlist")
         metricannotationsallowlist = self._AKSPreviewManagedClusterCreateDecorator__raw_parameters.get("metricannotationsallowlist")
 
+        if metriclabelsallowlist is None:
+            metriclabelsallowlist = ""
+        
+        if metricannotationsallowlist is None:
+            metricannotationsallowlist = ""
+
         # normalize
         ## DO VALIDATION HERE
         # metriclabelsallowlist = extract_comma_separated_string(metriclabelsallowlist, keep_none=True, default_value=[])
@@ -2139,6 +2145,12 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         # read the original value passed by the command
         metriclabelsallowlist = self._AKSPreviewManagedClusterUpdateDecorator__raw_parameters.get("metriclabelsallowlist")
         metricannotationsallowlist = self._AKSPreviewManagedClusterUpdateDecorator__raw_parameters.get("metricannotationsallowlist")
+
+        if metriclabelsallowlist is None:
+            metriclabelsallowlist = ""
+        
+        if metricannotationsallowlist is None:
+            metricannotationsallowlist = ""
 
         # normalize
         ## DO VALIDATION HERE
