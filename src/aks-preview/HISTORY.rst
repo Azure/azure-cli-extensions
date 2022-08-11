@@ -12,6 +12,40 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+0.5.93
+++++++
+
+* Fix for "'Namespace' object has no attribute 'nodepool_name' error" in command `az aks nodepool wait`, see issue `\#23468 <https://github.com/Azure/azure-cli/issues/23468>`_.
+
+0.5.92
+++++++
+
+* Move Azure KeyVault KMS to GA.
+* Support disabling Azure KeyVault KMS.
+* Update to use 2022-06-02-preview api version.
+
+0.5.91
+++++++
+
+* Fix compatibility issue when enabling Microsoft Defender via aks-preview.
+    * az aks create
+    * az aks update
+
+0.5.90 (NOT RELEASED)
++++++++++++++++++++++
+
+* Skip this version due to conflict.
+
+0.5.89
+++++++
+
+* Fix for the az aks addon list command to return enable:true, if virtual-node addon is enabled for the AKS cluster.
+
+0.5.88
+++++++
+
+* AKS Monitoring MSI Auth related code imported from Azure CLI to reuse the code between aks-preview and Azure CLI.
+
 0.5.87
 ++++++
 

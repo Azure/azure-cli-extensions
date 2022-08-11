@@ -17,7 +17,7 @@ except ImportError:
 # TODO: Confirm this is the right version number you want and it matches your
 # HISTORY.rst entry.
 
-VERSION = '1.2.9'
+VERSION = '1.2.11'
 
 # The full list of classifiers is available at
 # https://pypi.python.org/pypi?%3Aaction=list_classifiers
@@ -58,5 +58,5 @@ setup(
     classifiers=CLASSIFIERS,
     packages=find_packages(),
     install_requires=DEPENDENCIES,
-    package_data={'azext_connectedk8s': ['azext_metadata.json']},
+    package_data={'azext_connectedk8s': ['azext_metadata.json', 'troubleshoot_diagnoser_job_with_proxycert_mount.yaml', 'troubleshoot_diagnoser_job_without_proxycert.yaml']},
 )

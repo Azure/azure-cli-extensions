@@ -234,6 +234,12 @@ sql mi-arc create:
     sync_secondary_to_commit:
       rule_exclusions:
       - option_length_too_long
+    storage_class_orchestrator_logs:
+      rule_exclusions:
+      - option_length_too_long
+    volume_size_orchestrator_logs:
+      rule_exclusions:
+      - option_length_too_long
 attestation policy set:
   parameters:
     new_attestation_policy:
@@ -688,6 +694,17 @@ dms project task create:
     target_connection_json:
       rule_exclusions:
       - option_length_too_long
+dt data-history connection create:
+  rule_exclusions:
+  - require_wait_command_if_no_wait
+dt data-history connection create adx:
+  parameters:
+    adx_resource_group:
+      rule_exclusions:
+      - parameter_should_not_end_in_resource_group
+    eh_resource_group:
+      rule_exclusions:
+      - parameter_should_not_end_in_resource_group
 dt endpoint create servicebus:
   parameters:
     servicebus_resource_group:
@@ -1085,7 +1102,31 @@ iot central export update:
     central_dns_suffix:
       rule_exclusions:
       - no_parameter_defaults_for_update_commands
+iot central device attestation update:
+  parameters:
+    api_version:
+      rule_exclusions:
+      - no_parameter_defaults_for_update_commands
+    central_dns_suffix:
+      rule_exclusions:
+      - no_parameter_defaults_for_update_commands
+iot central device twin update:
+  parameters:
+    api_version:
+      rule_exclusions:
+      - no_parameter_defaults_for_update_commands
+    central_dns_suffix:
+      rule_exclusions:
+      - no_parameter_defaults_for_update_commands
 iot central device update:
+  parameters:
+    api_version:
+      rule_exclusions:
+      - no_parameter_defaults_for_update_commands
+    central_dns_suffix:
+      rule_exclusions:
+      - no_parameter_defaults_for_update_commands
+iot central device-group update:
   parameters:
     api_version:
       rule_exclusions:
@@ -2339,6 +2380,36 @@ ssh arc:
     ssh_args:
       rule_exclusions:
         - no_positional_parameters
+stack-hci arc-setting create:
+  parameters:
+    arc_application_client_id:
+      rule_exclusions:
+        - option_length_too_long
+    arc_application_object_id:
+      rule_exclusions:
+        - option_length_too_long
+    arc_application_tenant_id:
+      rule_exclusions:
+        - option_length_too_long
+    arc_service_principal_object_id:
+      rule_exclusions:
+        - option_length_too_long
+    connectivity_properties:
+      rule_exclusions:
+        - option_length_too_long
+stack-hci arc-setting update:
+  parameters:
+    connectivity_properties:
+      rule_exclusions:
+        - option_length_too_long
+stack-hci cluster create:
+  parameters:
+    aad_application_object_id:
+      rule_exclusions:
+        - option_length_too_long
+    aad_service_principal_object_id:
+      rule_exclusions:
+        - option_length_too_long
 storage account create:
   parameters:
     hierarchical_namespace:

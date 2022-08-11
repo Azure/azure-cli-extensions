@@ -26,6 +26,8 @@ from azure.cli.core.commands.client_factory import get_mgmt_service_client, get_
 from azure.mgmt.resource.locks.models import ManagementLockObject
 from knack.log import get_logger
 from msrestazure.azure_exceptions import CloudError
+from msrest.exceptions import HttpOperationError
+import azure.core.exceptions
 
 from .._client_factory import cf_resources
 from .DefaultExtension import DefaultExtension, user_confirmation_factory
@@ -106,8 +108,8 @@ class AzureMLKubernetes(DefaultExtension):
 
         self.OPEN_SHIFT = 'openshift'
 
-    def Create(self, cmd, client, resource_group_name, cluster_name, name, cluster_type, extension_type,
-               scope, auto_upgrade_minor_version, release_train, version, target_namespace,
+    def Create(self, cmd, client, resource_group_name, cluster_name, name, cluster_type, cluster_rp,
+               extension_type, scope, auto_upgrade_minor_version, release_train, version, target_namespace,
                release_namespace, configuration_settings, configuration_protected_settings,
                configuration_settings_file, configuration_protected_settings_file):
         if scope == 'namespace':
@@ -124,7 +126,7 @@ class AzureMLKubernetes(DefaultExtension):
 
         # get the arc's location
         subscription_id = get_subscription_id(cmd.cli_ctx)
-        cluster_rp, parent_api_version = get_cluster_rp_api_version(cluster_type)
+        cluster_rp, parent_api_version = get_cluster_rp_api_version(cluster_type=cluster_type, cluster_rp=cluster_rp)
         cluster_resource_id = '/subscriptions/{0}/resourceGroups/{1}/providers/{2}' \
             '/{3}/{4}'.format(subscription_id, resource_group_name, cluster_rp, cluster_type, cluster_name)
         cluster_location = ''
@@ -214,7 +216,7 @@ class AzureMLKubernetes(DefaultExtension):
         )
         return extension, name, create_identity
 
-    def Delete(self, cmd, client, resource_group_name, cluster_name, name, cluster_type, yes):
+    def Delete(self, cmd, client, resource_group_name, cluster_name, name, cluster_type, cluster_rp, yes):
         user_confirmation_factory(cmd, yes)
 
     def Update(self, cmd, resource_group_name, cluster_name, auto_upgrade_minor_version, release_train, version, configuration_settings,
@@ -553,11 +555,11 @@ class AzureMLKubernetes(DefaultExtension):
                 self.SERVICE_BUS_COMPUTE_STATE_TOPIC: self.SERVICE_BUS_COMPUTE_STATE_SUB,
                 self.SERVICE_BUS_JOB_STATE_TOPIC: self.SERVICE_BUS_JOB_STATE_SUB
             }
-            service_bus_connection_string, service_buse_resource_id = _get_service_bus_connection_string(
+            service_bus_connection_string, service_bus_resource_id = _get_service_bus_connection_string(
                 cmd, subscription_id, resource_group_name, cluster_name, cluster_location, topic_sub_mapping)
             logger.info('==== END SERVICE BUS CREATION ====')
             configuration_protected_settings[self.SERVICE_BUS_CONNECTION_STRING] = service_bus_connection_string
-            configuration_settings[self.SERVICE_BUS_RESOURCE_ID_KEY] = service_buse_resource_id
+            configuration_settings[self.SERVICE_BUS_RESOURCE_ID_KEY] = service_bus_resource_id
             configuration_settings[f'{self.SERVICE_BUS_TOPIC_SUB_MAPPING_KEY}.{self.SERVICE_BUS_COMPUTE_STATE_TOPIC}'] = self.SERVICE_BUS_COMPUTE_STATE_SUB
             configuration_settings[f'{self.SERVICE_BUS_TOPIC_SUB_MAPPING_KEY}.{self.SERVICE_BUS_JOB_STATE_TOPIC}'] = self.SERVICE_BUS_JOB_STATE_SUB
 
@@ -603,7 +605,18 @@ def _get_relay_connection_str(
         cluster_id, suffix_len=6, max_len=50)
     hybrid_connection_name = cluster_name
     hc_resource_id = ''
-    if not get_key_only:
+
+    # only create relay if not found
+    try:
+        # get connection string
+        hybrid_connection_object = relay_client.hybrid_connections.get(
+            resource_group_name, relay_namespace_name, hybrid_connection_name)
+        hc_resource_id = hybrid_connection_object.id
+        key: azure.mgmt.relay.models.AccessKeys = relay_client.hybrid_connections.list_keys(
+            resource_group_name, relay_namespace_name, hybrid_connection_name, auth_rule_name)
+    except HttpOperationError as e:
+        if e.response.status_code != 404 or get_key_only:
+            raise e
         # create namespace
         relay_namespace_params = azure.mgmt.relay.models.RelayNamespace(
             location=cluster_location, tags=resource_tag)
@@ -626,9 +639,9 @@ def _get_relay_connection_str(
         relay_client.hybrid_connections.create_or_update_authorization_rule(
             resource_group_name, relay_namespace_name, hybrid_connection_name, auth_rule_name, rights=auth_rule_rights)
 
-    # get connection string
-    key: azure.mgmt.relay.models.AccessKeys = relay_client.hybrid_connections.list_keys(
-        resource_group_name, relay_namespace_name, hybrid_connection_name, auth_rule_name)
+        # get connection string
+        key: azure.mgmt.relay.models.AccessKeys = relay_client.hybrid_connections.list_keys(
+            resource_group_name, relay_namespace_name, hybrid_connection_name, auth_rule_name)
     return f'{key.primary_connection_string}', hc_resource_id, hybrid_connection_name
 
 
@@ -640,8 +653,20 @@ def _get_service_bus_connection_string(cmd, subscription_id, resource_group_name
                                                subscription_id, resource_group_name)
     service_bus_namespace_name = _get_valid_name(
         cluster_id, suffix_len=6, max_len=50)
+    try:
+        service_bus_object = service_bus_client.namespaces.get(resource_group_name, service_bus_namespace_name)
+        service_bus_resource_id = service_bus_object.id
 
-    if not get_key_only:
+        # get connection string
+        auth_rules = service_bus_client.namespaces.list_authorization_rules(
+            resource_group_name, service_bus_namespace_name)
+        for rule in auth_rules:
+            key: azure.mgmt.servicebus.models.AccessKeys = service_bus_client.namespaces.list_keys(
+                resource_group_name, service_bus_namespace_name, rule.name)
+            return key.primary_connection_string, service_bus_resource_id
+    except azure.core.exceptions.HttpResponseError as e:
+        if e.response.status_code != 404 or get_key_only:
+            raise e
         # create namespace
         service_bus_sku = azure.mgmt.servicebus.models.SBSku(
             name=azure.mgmt.servicebus.models.SkuName.standard.name)
@@ -652,8 +677,9 @@ def _get_service_bus_connection_string(cmd, subscription_id, resource_group_name
         async_poller = service_bus_client.namespaces.begin_create_or_update(
             resource_group_name, service_bus_namespace_name, service_bus_namespace)
         while True:
-            async_poller.result(15)
+            service_bus_object = async_poller.result(15)
             if async_poller.done():
+                service_bus_resource_id = service_bus_object.id
                 break
 
         for topic_name, service_bus_subscription_name in topic_sub_mapping.items():
@@ -668,16 +694,13 @@ def _get_service_bus_connection_string(cmd, subscription_id, resource_group_name
             service_bus_client.subscriptions.create_or_update(
                 resource_group_name, service_bus_namespace_name, topic_name, service_bus_subscription_name, sub)
 
-    service_bus_object = service_bus_client.namespaces.get(resource_group_name, service_bus_namespace_name)
-    service_bus_resource_id = service_bus_object.id
-
-    # get connection string
-    auth_rules = service_bus_client.namespaces.list_authorization_rules(
-        resource_group_name, service_bus_namespace_name)
-    for rule in auth_rules:
-        key: azure.mgmt.servicebus.models.AccessKeys = service_bus_client.namespaces.list_keys(
-            resource_group_name, service_bus_namespace_name, rule.name)
-        return key.primary_connection_string, service_bus_resource_id
+        # get connection string
+        auth_rules = service_bus_client.namespaces.list_authorization_rules(
+            resource_group_name, service_bus_namespace_name)
+        for rule in auth_rules:
+            key: azure.mgmt.servicebus.models.AccessKeys = service_bus_client.namespaces.list_keys(
+                resource_group_name, service_bus_namespace_name, rule.name)
+            return key.primary_connection_string, service_bus_resource_id
 
 
 def _get_log_analytics_ws_connection_string(
@@ -689,7 +712,15 @@ def _get_log_analytics_ws_connection_string(
     cluster_id = '{}-{}-{}'.format(cluster_name, subscription_id, resource_group_name)
     log_analytics_ws_name = _get_valid_name(cluster_id, suffix_len=6, max_len=63)
     customer_id = ''
-    if not get_key_only:
+    try:
+        # get workspace shared keys
+        log_analytics_ws_object = log_analytics_ws_client.workspaces.get(resource_group_name, log_analytics_ws_name)
+        customer_id = log_analytics_ws_object.customer_id
+        shared_key = log_analytics_ws_client.shared_keys.get_shared_keys(
+            resource_group_name, log_analytics_ws_name).primary_shared_key
+    except azure.core.exceptions.HttpResponseError as e:
+        if e.response.status_code != 404 or get_key_only:
+            raise e
         log_analytics_ws = azure.mgmt.loganalytics.models.Workspace(location=cluster_location, tags=resource_tag)
         async_poller = log_analytics_ws_client.workspaces.begin_create_or_update(
             resource_group_name, log_analytics_ws_name, log_analytics_ws)
@@ -698,10 +729,8 @@ def _get_log_analytics_ws_connection_string(
             if async_poller.done():
                 customer_id = log_analytics_ws_object.customer_id
                 break
-
-    # get workspace shared keys
-    shared_key = log_analytics_ws_client.shared_keys.get_shared_keys(
-        resource_group_name, log_analytics_ws_name).primary_shared_key
+        shared_key = log_analytics_ws_client.shared_keys.get_shared_keys(
+            resource_group_name, log_analytics_ws_name).primary_shared_key
     return customer_id, shared_key
 
 

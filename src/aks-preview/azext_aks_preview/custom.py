@@ -43,6 +43,12 @@ from msrestazure.azure_exceptions import CloudError
 from six.moves.urllib.error import URLError
 from six.moves.urllib.request import urlopen
 
+from azure.cli.command_modules.acs.addonconfiguration import (
+    ensure_container_insights_for_monitoring,
+    sanitize_loganalytics_ws_resource_id,
+    ensure_default_log_analytics_workspace_for_monitoring
+)
+
 from azext_aks_preview._client_factory import (
     CUSTOM_MGMT_AKS_PREVIEW,
     cf_agent_pools,
@@ -97,10 +103,7 @@ from azext_aks_preview.addonconfiguration import (
     add_ingress_appgw_addon_role_assignment,
     add_monitoring_role_assignment,
     add_virtual_node_role_assignment,
-    enable_addons,
-    ensure_container_insights_for_monitoring,
-    ensure_default_log_analytics_workspace_for_monitoring,
-    sanitize_loganalytics_ws_resource_id,
+    enable_addons
 )
 from azext_aks_preview.aks_draft.commands import (
     aks_draft_cmd_create,
@@ -763,6 +766,7 @@ def aks_update(
     enable_workload_identity=None,
     enable_oidc_issuer=False,
     enable_azure_keyvault_kms=False,
+    disable_azure_keyvault_kms=False,
     azure_keyvault_kms_key_id=None,
     azure_keyvault_kms_key_vault_network_access=None,
     azure_keyvault_kms_key_vault_resource_id=None,
@@ -1380,6 +1384,7 @@ def aks_addon_list_available():
 def aks_addon_list(cmd, client, resource_group_name, name):
     mc = client.get(resource_group_name, name)
     current_addons = []
+    os_type = 'Linux'
 
     for name, addon_key in ADDONS.items():
         # web_application_routing is a special case, the configuration is stored in a separate profile
@@ -1392,6 +1397,8 @@ def aks_addon_list(cmd, client, resource_group_name, name):
                 else False
             )
         else:
+            if name == "virtual-node":
+                addon_key += os_type
             enabled = (
                 True
                 if mc.addon_profiles and

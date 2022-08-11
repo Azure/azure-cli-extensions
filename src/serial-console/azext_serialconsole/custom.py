@@ -597,14 +597,14 @@ def check_resource(cli_ctx, resource_group_name, vm_vmss_name, vmss_instanceid):
             raise AzureConnectionError(
                 error_message, recommendation=recommendation)
 
-        if result.boot_diagnostics is None or result.boot_diagnostics.serial_console_log_blob_uri is None:
-            error_message = ("Azure Serial Console requires boot diagnostics to be enabled. Additionally, "
-                             "Serial Console requires a custom boot diagnostics storage account to be "
-                             "used, and is not yet fully compatible with managed boot diagnostics storage accounts.")
+        if result.boot_diagnostics is None:
+            error_message = ("Azure Serial Console requires boot diagnostics to be enabled.")
             recommendation = ('Use "az vmss update --name MyScaleSet --resource-group MyResourceGroup --set '
                               'virtualMachineProfile.diagnosticsProfile="{\\"bootDiagnostics\\": {\\"Enabled\\" : '
-                              '\\"True\\",\\"StorageUri\\":\\"https://mystorageacct.blob.core.windows.net/\\"}}""'
-                              'to enable boot diagnostics.')
+                              '\\"True\\",\\"StorageUri\\" : null}}"" to enable boot diagnostics. '
+                              'You can replace "null" with a custom storage account '
+                              '\\"https://mystor.blob.windows.net/"\\. Then run "az vmss update-instances -n '
+                              'MyScaleSet -g MyResourceGroup --instance-ids *".')
             raise AzureConnectionError(
                 error_message, recommendation=recommendation)
     else:
@@ -640,21 +640,13 @@ def check_resource(cli_ctx, resource_group_name, vm_vmss_name, vmss_instanceid):
             raise AzureConnectionError(
                 error_message, recommendation=recommendation)
 
-        recommendation = ('Use "az vm boot-diagnostics enable --name MyVM --resource-group MyResourceGroup '
-                          '--storage https://mystor.blob.core.windows.net/" to enable boot diagnostics and '
-                          'make sure to specify a storage account with the --storage parameter.')
-
         if (result.diagnostics_profile is None or
                 result.diagnostics_profile.boot_diagnostics is None or
                 not result.diagnostics_profile.boot_diagnostics.enabled):
-            error_message = ("Azure Serial Console requires boot diagnostics to be enabled. Additionally, "
-                             "Serial Console requires a custom boot diagnostics storage account to be "
-                             "used, and is not yet fully compatible with managed boot diagnostics storage accounts.")
-            raise AzureConnectionError(
-                error_message, recommendation=recommendation)
-        if result.diagnostics_profile.boot_diagnostics.storage_uri is None:
-            error_message = ("Serial Console requires a custom boot diagnostics storage account to be used, "
-                             "and is not yet fully compatible with managed boot diagnostics storage accounts.")
+            error_message = ("Azure Serial Console requires boot diagnostics to be enabled.")
+            recommendation = ('Use "az vm boot-diagnostics enable --name MyVM --resource-group MyResourceGroup" '
+                              'to enable boot diagnostics. You can specify a custom storage account with the '
+                              'parameter "--storage https://mystor.blob.windows.net/".')
             raise AzureConnectionError(
                 error_message, recommendation=recommendation)
 

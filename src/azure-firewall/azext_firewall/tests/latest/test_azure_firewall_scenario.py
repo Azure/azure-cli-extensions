@@ -40,6 +40,21 @@ class AzureFirewallScenario(ScenarioTest):
         self.cmd('network firewall list -g {rg}')
         self.cmd('network firewall delete -g {rg} -n {af}')
 
+    @ResourceGroupPreparer(name_prefix='cli_test_azure_firewall_with_v2')
+    def test_azure_firewall_with_v2(self, resource_group):
+        self.kwargs.update({
+            'af': 'af1'
+        })
+        self.cmd('network firewall create -g {rg} -n {af} --fat-flow-logging', checks=[
+            self.check('"Network.AdditionalLogs.EnableFatFlowLogging"', 'true')
+        ])
+        self.cmd('network firewall update -g {rg} -n {af} --fat-flow-logging false', checks=[
+            self.not_exists('"Network.AdditionalLogs.EnableFatFlowLogging"')
+        ])
+        self.cmd('network firewall show -g {rg} -n {af}')
+        self.cmd('network firewall list -g {rg}')
+        self.cmd('network firewall delete -g {rg} -n {af}')
+
     @ResourceGroupPreparer(name_prefix='cli_test_azure_firewall_ip_config')
     def test_azure_firewall_ip_config(self, resource_group):
 
