@@ -60,6 +60,10 @@ def load_arguments(self, _):
         c.argument('workspace_name', workspace_name_type)
         c.argument('target_id', target_id_type)
 
+    with self.argument_context('quantum target show') as c:
+        c.argument('workspace_name', workspace_name_type)
+        c.argument('target_id', target_id_type, required=False)
+
     with self.argument_context('quantum job') as c:
         c.argument('workspace_name', workspace_name_type)
         c.argument('job_id', job_id_type)

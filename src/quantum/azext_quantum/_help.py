@@ -86,15 +86,15 @@ helps['quantum job submit'] = """
       - name: Submit the Q# program from the current folder.
         text: |-
             az quantum job submit -g MyResourceGroup -w MyWorkspace -l MyLocation \\
-               --job-name MyJob
+               -t MyTarget --job-name MyJob 
       - name: Submit the Q# program from the current folder with job parameters for a target.
         text: |-
             az quantum job submit -g MyResourceGroup -w MyWorkspace -l MyLocation \\
-               --job-name MyJob --job-params param1=value1 param2=value2
+               -t MyTarget --job-name MyJob --job-params param1=value1 param2=value2
       - name: Submit the Q# program with program parameters (e.g. n-qubits = 2).
         text: |-
             az quantum job submit -g MyResourceGroup -w MyWorkspace -l MyLocation \\
-               --job-name MyJob -- --n-qubits=2
+               -t MyTarget --job-name MyJob -- --n-qubits=2
       - name: Submit a Q# program from the current folder with a target-capability parameter.
         text: |-
             az quantum job submit -g MyResourceGroup -w MyWorkspace -l MyLocation -t MyTarget \\
@@ -236,7 +236,7 @@ helps['quantum workspace delete'] = """
             az quantum workspace delete -g MyResourceGroup -w MyWorkspace
       - name: Delete and clear the default Azure Quantum workspace (if one has been set).
         text: |-
-            az quantum workspace delete
+            az quantum workspace delete -g MyResourceGroup -w MyWorkspace
 """
 
 helps['quantum workspace list'] = """
