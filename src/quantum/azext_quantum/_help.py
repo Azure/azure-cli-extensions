@@ -86,7 +86,7 @@ helps['quantum job submit'] = """
       - name: Submit the Q# program from the current folder.
         text: |-
             az quantum job submit -g MyResourceGroup -w MyWorkspace -l MyLocation \\
-               -t MyTarget --job-name MyJob 
+               -t MyTarget --job-name MyJob
       - name: Submit the Q# program from the current folder with job parameters for a target.
         text: |-
             az quantum job submit -g MyResourceGroup -w MyWorkspace -l MyLocation \\
@@ -256,9 +256,6 @@ helps['quantum workspace quotas'] = """
     type: command
     short-summary: List the quotas for the given (or current) Azure Quantum workspace.
     examples:
-      - name: List the quota information of the default workspace if set.
-        text: |-
-            az quantum workspace quotas
       - name: List the quota information of a specified Azure Quantum workspace.
         text: |-
             az quantum workspace quotas -g MyResourceGroup -w MyWorkspace -l MyLocation
