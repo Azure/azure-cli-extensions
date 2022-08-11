@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "orbital spacecraft update",
 )
 class Update(AAZCommand):
-    """Update spacecraft tags.
+    """Update spacecraft.
 
     :example: Update Spacecraft Tags
         az orbital spacecraft update --name <spacecraft-name> --resource-group <resource-group> --tags "{tag1:value1,tag2:value2}"

@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "orbital contact-profile update",
 )
 class Update(AAZCommand):
-    """Update contact profile tags.
+    """Update contact profile.
 
     :example: Update Contact Profile tags
         az orbital contact-profile update --name <contact-profile-name> --resource-group <resource-group> --tags "{tag1:value1,tag2:value2}"
