@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "orbital operation-result show",
 )
 class Show(AAZCommand):
-    """Returns operation results.
+    """Return operation results.
     """
 
     _aaz_info = {

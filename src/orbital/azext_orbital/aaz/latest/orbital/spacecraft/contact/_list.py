@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "orbital spacecraft contact list",
 )
 class List(AAZCommand):
-    """Returns list of contacts by spacecraftName.
+    """List contacts by spacecraft.
 
     :example: List Contacts
         az orbital spacecraft contact list -g <resource-group> --spacecraft-name <spacecraft-name>

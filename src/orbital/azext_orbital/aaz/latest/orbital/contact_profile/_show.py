@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "orbital contact-profile show",
 )
 class Show(AAZCommand):
-    """Gets the specified contact Profile in a specified resource group.
+    """Get the specified contact Profile in a specified resource group.
 
     :example: Get Contact Profile
         az orbital contact-profile show -g <resource-group> --name <contact-profile-name>

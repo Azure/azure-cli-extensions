@@ -16,7 +16,7 @@ from azure.cli.core.aaz import *
     confirmation="Are you sure you want to perform this operation?",
 )
 class Delete(AAZCommand):
-    """Deletes a specified spacecraft resource.
+    """Delete a specified spacecraft resource.
 
     :example: Delete Spacecraft
         az orbital spacecraft delete --name <spacecraft-name> --resource-group <resource-group>

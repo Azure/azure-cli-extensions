@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "orbital available-ground-station list",
 )
 class List(AAZCommand):
-    """Returns list of available ground stations.
+    """List available ground stations.
 
     :example: List Available Ground Station by Capability
         az orbital available-ground-station list --capability "EarthObservation"

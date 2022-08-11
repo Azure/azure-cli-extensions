@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "orbital spacecraft list",
 )
 class List(AAZCommand):
-    """Returns list of spacecrafts by subscription.
+    """List spacecrafts.
 
     :example: List Spacecrafts by Subscription
         az orbital spacecraft list

@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "orbital available-ground-station show",
 )
 class Show(AAZCommand):
-    """Gets the specified available ground station.
+    """Get the specified available ground station.
     """
 
     _aaz_info = {

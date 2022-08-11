@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "orbital spacecraft show",
 )
 class Show(AAZCommand):
-    """Gets the specified spacecraft in a specified resource group.
+    """Get the specified spacecraft in a specified resource group.
 
     :example: Get Spacecraft
         az orbital spacecraft show --name <spacecraft-name> --resource-group <resource-group>

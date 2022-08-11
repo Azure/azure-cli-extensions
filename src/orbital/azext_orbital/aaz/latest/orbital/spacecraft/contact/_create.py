@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "orbital spacecraft contact create",
 )
 class Create(AAZCommand):
-    """Creates a contact.
+    """Create a contact.
 
     :example: Create Contact
         az orbital spacecraft contact create -g <resource-group> --name <contact-name> --spacecraft-name <spacecraft-name> --contact-profile "{id:<contact-profile-id>}" --ground-station-name <ground-station-name> --reservation-start-time "2022-07-27T00:55:31.820Z" --reservation-end-time "2022-07-27T00:56:31.820Z"

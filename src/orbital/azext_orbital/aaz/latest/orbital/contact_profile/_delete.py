@@ -16,7 +16,7 @@ from azure.cli.core.aaz import *
     confirmation="Are you sure you want to perform this operation?",
 )
 class Delete(AAZCommand):
-    """Deletes a specified contact profile resource.
+    """Delete a specified contact profile resource.
 
     :example: Delete Contact Profile
         az orbital contact-profile delete -g <resource-group> -n <contact-profile-name>

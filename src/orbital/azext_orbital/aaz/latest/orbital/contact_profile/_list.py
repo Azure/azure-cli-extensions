@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "orbital contact-profile list",
 )
 class List(AAZCommand):
-    """Returns list of contact profiles by Subscription.
+    """List contact profiles.
 
     :example: List Contact Profiles by subscription
         az orbital contact-profile list

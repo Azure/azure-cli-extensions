@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "orbital spacecraft contact show",
 )
 class Show(AAZCommand):
-    """Gets the specified contact in a specified resource group.
+    """Get the specified contact in a specified resource group.
 
     :example: Get Contact
         az orbital spacecraft contact show -g <resource-group> --spacecraft-name <spacecraft-name> --name <contact-name>

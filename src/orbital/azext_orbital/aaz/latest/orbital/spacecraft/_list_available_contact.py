@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "orbital spacecraft list-available-contact",
 )
 class ListAvailableContact(AAZCommand):
-    """Returns list of available contacts. A contact is available if the spacecraft is visible from the ground station for more than the minimum viable contact duration provided in the contact profile.
+    """List available contacts. A contact is available if the spacecraft is visible from the ground station for more than the minimum viable contact duration provided in the contact profile.
 
     :example: List Available Contacts
         az orbital spacecraft list-available-contact -g <resource-group> --spacecraft-name <spacecraft-name> --contact-profile "{id:<contact-profile-id>}" --ground-station-name <ground-station-name> --start-time "2022-11-14T00:55:31.820Z" --end-time "2022-11-15T00:55:31.820Z"

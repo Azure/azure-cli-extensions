@@ -15,9 +15,9 @@ from azure.cli.core.aaz import *
     "orbital contact-profile create",
 )
 class Create(AAZCommand):
-    """Creates or updates a contact profile.
+    """Create a contact profile.
 
-    :example: Create or Update Contact Profile
+    :example: Create a Contact Profile
         az orbital contact-profile create --resource-group <resource-group> --name <contact-profile-name> --location "westus2" --auto-tracking-configuration "disabled" --event-hub-uri <event-hub-resource-identifier> --network-configuration "{subnet-id:<subnet-id>}" --links "[{name:Link1,polarization:RHCP,direction:Downlink,channels:[{name:channel1,center-frequency-m-hz:8160,bandwidth-m-hz:15,end-point:{end-point-name:AQUA_directplayback,ip-address:10.0.0.4,port:50000,protocol:TCP}}]}]"
     """
 

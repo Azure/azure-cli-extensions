@@ -16,7 +16,7 @@ from azure.cli.core.aaz import *
     confirmation="Are you sure you want to perform this operation?",
 )
 class Delete(AAZCommand):
-    """Deletes a specified contact.
+    """Delete a specified contact.
 
     :example: Delete Contact
         az orbital spacecraft contact delete -g <resource-group> --spacecraft-name <spacecraft-name> --name <contact-name>

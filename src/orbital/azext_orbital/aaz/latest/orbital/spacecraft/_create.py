@@ -15,9 +15,9 @@ from azure.cli.core.aaz import *
     "orbital spacecraft create",
 )
 class Create(AAZCommand):
-    """Creates or updates a spacecraft resource.
+    """Create a spacecraft resource.
 
-    :example: Create or Update Spacecraft
+    :example: Create a Spacecraft
         az orbital spacecraft create --name <spacecraft-name> --resource-group <resource-group> -l eastus --norad-id 27424 --title-line "AQUA" --tle-line1 "1 27424U 02022A   22192.74014189  .00000435  00000+0  10624-3 0  9992" --tle-line2 "2 27424  98.2482 134.4016 0001650 100.5984  12.3416 14.57323336 73769" --links "[{name:downlink,bandwidth-m-hz:15,center-frequency-m-hz:8160,polarization:RHCP,direction:Downlink}]"
     """
 
