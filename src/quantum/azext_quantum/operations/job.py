@@ -334,7 +334,7 @@ def wait(cmd, job_id, resource_group_name, workspace_name, location, max_poll_wa
     return job
 
 
-def show(cmd, job_id, resource_group_name, workspace_name, location):
+def job_show(cmd, job_id, resource_group_name, workspace_name, location):
     """
     Get the job's status and details.
     """

@@ -67,7 +67,8 @@ def clear(cmd):
 
 
 # Added to fix output problem
-def show(cmd, target_id):
+# def show(cmd, target_id):
+def target_show(cmd, target_id):
     """
     Show the currently selected default target.
     """
