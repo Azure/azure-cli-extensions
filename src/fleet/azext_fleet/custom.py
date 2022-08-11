@@ -22,7 +22,7 @@ def create_fleet(cmd,
                  location=None,
                  tags=None,
                  no_wait=False):
-
+    logger.info('in create fleets1')
     FleetHubProfile = cmd.get_models(
         "FleetHubProfile",
         resource_type=CUSTOM_MGMT_FLEET,
@@ -37,12 +37,14 @@ def create_fleet(cmd,
     rg_location = get_rg_location(cmd.cli_ctx, resource_group_name)
     if location is None:
         location = rg_location
-
+    logger.info('in create fleets5')
+    logger.error(location)
     fleet = Fleet(
         location=location,
         tags=tags,
         hub_profile=fleetHubProfile
     )
+    logger.info('in create fleets6')
 
     return sdk_no_wait(no_wait, client.begin_create_or_update, resource_group_name, name, fleet)
 
