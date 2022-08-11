@@ -1051,7 +1051,7 @@ def generate_randomized_cert_name(thumbprint, prefix, initial="rg"):
     cert_name = "{}-{}-{}-{:04}".format(prefix[:14], initial[:14], thumbprint[:4].lower(), randint(0, 9999))
     for c in cert_name:
         if not (c.isalnum() or c == '-' or c == '.'):
-            cert_name.replace(c, '-')
+            cert_name = cert_name.replace(c, '-')
     return cert_name.lower()
 
 
@@ -1312,8 +1312,7 @@ def load_cert_file(file_path, cert_password=None):
                 x509 = p12.get_certificate()
                 digest_algorithm = 'sha256'
                 thumbprint = x509.digest(digest_algorithm).decode("utf-8").replace(':', '')
-                pem_data = crypto.dump_certificate(crypto.FILETYPE_PEM, x509)
-                blob = b64encode(pem_data).decode("utf-8")
+                blob = b64encode(cert_data).decode("utf-8")
             else:
                 raise FileOperationError('Not a valid file type. Only .PFX and .PEM files are supported.')
     except Exception as e:
