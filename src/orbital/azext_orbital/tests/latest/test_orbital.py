@@ -25,23 +25,37 @@ class OrbitalScenario(ScenarioTest):
 
     @ResourceGroupPreparer(name_prefix="orbital_cli", parameter_name_for_location="location")
     def test_spacecrafts(self, resource_group):
+        tleLine1 = "1 27424U 02022A   21354.42153147  .00000392  00000-0  97092-4 0  9992"
+        tleLine2 = "2 27424  98.2297 293.2348 0001819  76.6594  32.9430 14.57096586 44117"
         self.kwargs.update({
             "resource-group": resource_group,
             "spacecraft-name": "AQUA",
-            "location": "westus2",
+            "location": "westus",
             "norad-id": 27424,
             "title-line": "AQUA",
-            "tle-line1": "'1 27424U 02022A   21354.42153147  .00000392  00000-0  97092-4 0  9992'",
-            "tle-line2": "'2 27424  98.2297 293.2348 0001819  76.6594  32.9430 14.57096586 44117'",
+            "tle-line1": f"'{tleLine1}'",
+            "tle-line2": f"'{tleLine2}'",
             "links": "[{name:downlink,bandwidth-m-hz:15,center-frequency-m-hz:8160,polarization:RHCP,direction:Downlink}]",
             "tags": "{tag1:value1,tag2:value2}"
         })
 
         self.cmd('az orbital spacecraft create -g {resource-group} --name {spacecraft-name} -l {location} --norad-id {norad-id} --title-line {title-line} --tle-line1 {tle-line1} --tle-line2 {tle-line2} --links {links}')
         self.cmd("az orbital spacecraft update -l {location} --name {spacecraft-name} --resource-group {resource-group} --tags {tags}")
-        self.cmd("az orbital spacecraft show --name {spacecraft-name} --resource-group {resource-group}")
-        self.cmd("az orbital spacecraft list")
-        self.cmd("az orbital spacecraft list -g {resource-group}")
+        spacecraft_list = self.cmd("az orbital spacecraft list").get_output_in_json()
+        assert len(spacecraft_list) > 0
+        spacecraft_list_by_rg = self.cmd("az orbital spacecraft list -g {resource-group}").get_output_in_json()
+        assert len(spacecraft_list_by_rg) > 0
+        spacecraft = self.cmd("az orbital spacecraft show --name {spacecraft-name} --resource-group {resource-group}", checks=[
+            self.check('name', '{spacecraft-name}'),
+            self.check('location', '{location}'),
+            self.check('noradId', '{norad-id}'),
+            self.check('type', 'Microsoft.Orbital/spacecrafts'),
+            self.check('titleLine', '{title-line}'),
+            self.check('tleLine1', tleLine1),
+            self.check('tleLine2', tleLine2)
+        ]).get_output_in_json()
+        assert spacecraft['tags'] is not None
+        assert spacecraft['links'] is not None
         self.cmd("az orbital spacecraft delete --name {spacecraft-name} --resource-group {resource-group} --yes")
 
     @AllowLargeResponse(size_kb=9999)
@@ -60,9 +74,21 @@ class OrbitalScenario(ScenarioTest):
 
         self.cmd("az orbital contact-profile create --resource-group {resource-group} --name {contact-profile-name} --location {location} --auto-tracking-configuration {auto-tracking-configuration} --event-hub-uri {event-hub-uri} --network-configuration {network-configuration} --links {links}")
         self.cmd("az orbital contact-profile update --location {location} --name {contact-profile-name} --resource-group {resource-group} --tags {tags}")
-        self.cmd("az orbital contact-profile show --name {contact-profile-name} --resource-group {resource-group}")
-        self.cmd("az orbital contact-profile list")
-        self.cmd("az orbital contact-profile list -g {resource-group}")
+        contact_profile_list = self.cmd("az orbital contact-profile list").get_output_in_json()
+        assert len(contact_profile_list) > 0
+        contact_profile_list_by_rg = self.cmd("az orbital contact-profile list -g {resource-group}").get_output_in_json()
+        assert len(contact_profile_list_by_rg) > 0
+        contact_profile = self.cmd("az orbital contact-profile show --name {contact-profile-name} --resource-group {resource-group}", checks=[
+            self.check('name', '{contact-profile-name}'),
+            self.check('location', '{location}'),
+            self.check('type', 'Microsoft.Orbital/contactProfiles'),
+            self.check('eventHubUri', '{event-hub-uri}'),
+            self.check('autoTrackingConfiguration', '{auto-tracking-configuration}'),
+        ]).get_output_in_json()
+        assert contact_profile['networkConfiguration'] is not None
+        assert contact_profile['networkConfiguration']['subnetId'] is not None
+        assert contact_profile['tags'] is not None
+        assert contact_profile['links'] is not None
         self.cmd("az orbital contact-profile delete --name {contact-profile-name} --resource-group {resource-group} --yes")
 
     def test_contacts(self):
@@ -71,12 +97,22 @@ class OrbitalScenario(ScenarioTest):
             "location": "westus2",
             "spacecraft-name": "AQUA",
             "contact-profile": "{id:/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/contactProfiles/aqua}",
-            "ground-station-name": "westus2_0",
-            "contact-name" : "az-cli-contact"
+            "ground-station-name": "WESTUS2_0",
+            "contact-name": "az-cli-contact"
         })
 
-        self.cmd('az orbital spacecraft list-available-contact -g {resource-group} --spacecraft-name {spacecraft-name} --contact-profile {contact-profile} --ground-station-name {ground-station-name} --start-time "2022-11-14T00:55:31.820Z" --end-time "2022-11-15T00:55:31.820Z"')
+        available_contacts = self.cmd('az orbital spacecraft list-available-contact -g {resource-group} --spacecraft-name {spacecraft-name} --contact-profile {contact-profile} --ground-station-name {ground-station-name} --start-time "2022-11-14T00:55:31.820Z" --end-time "2022-11-15T00:55:31.820Z"').get_output_in_json()
+        assert available_contacts is not None
+        assert len(available_contacts) >= 0
         self.cmd('az orbital spacecraft contact create -g {resource-group} --name {contact-name} --spacecraft-name {spacecraft-name} --contact-profile {contact-profile} --ground-station-name {ground-station-name} --reservation-end-time "2022-08-14T09:27:55.809Z" --reservation-start-time "2022-08-14T09:17:09.523Z"')
-        self.cmd('az orbital spacecraft contact show -g {resource-group} --spacecraft-name {spacecraft-name} --name {contact-name}')
-        self.cmd('az orbital spacecraft contact list -g {resource-group} --spacecraft-name {spacecraft-name}')
+        contact_list_by_spacecraft = self.cmd('az orbital spacecraft contact list -g {resource-group} --spacecraft-name {spacecraft-name}').get_output_in_json()
+        assert len(contact_list_by_spacecraft) > 0
+        contact = self.cmd('az orbital spacecraft contact show -g {resource-group} --spacecraft-name {spacecraft-name} --name {contact-name}', checks=[
+            self.check('name', '{contact-name}'),
+            self.check('type', 'Microsoft.Orbital/spacecrafts/contacts'),
+            self.check('groundStationName', '{ground-station-name}'),
+        ]).get_output_in_json()
+        assert contact['reservationStartTime'] is not None
+        assert contact['reservationEndTime'] is not None
+        assert contact['contactProfile'] is not None
         self.cmd('az orbital spacecraft contact delete -g {resource-group} --spacecraft-name {spacecraft-name} --name {contact-name} --yes')
