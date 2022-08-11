@@ -845,11 +845,14 @@ def update_containerapp(cmd,
                                      no_wait)
 
 
-def show_containerapp(cmd, name, resource_group_name):
+def show_containerapp(cmd, name, resource_group_name, show_secrets=False):
     _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     try:
-        return ContainerAppClient.show(cmd=cmd, resource_group_name=resource_group_name, name=name)
+        r = ContainerAppClient.show(cmd=cmd, resource_group_name=resource_group_name, name=name)
+        if show_secrets:
+            _get_existing_secrets(cmd, resource_group_name, name, r)
+        return r
     except CLIError as e:
         handle_raw_exception(e)
 
@@ -970,7 +973,8 @@ def create_managed_environment(cmd,
         if "properties" in r and "provisioningState" in r["properties"] and r["properties"]["provisioningState"].lower() == "waiting" and not no_wait:
             not disable_warnings and logger.warning('Containerapp environment creation in progress. Please monitor the creation using `az containerapp env show -n {} -g {}`'.format(name, resource_group_name))
 
-        not disable_warnings and logger.warning("\nContainer Apps environment created. To deploy a container app, use: az containerapp create --help\n")
+        if "properties" in r and "provisioningState" in r["properties"] and r["properties"]["provisioningState"].lower() == "succeeded":
+            not disable_warnings and logger.warning("\nContainer Apps environment created. To deploy a container app, use: az containerapp create --help\n")
 
         return r
     except Exception as e:
