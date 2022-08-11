@@ -42,7 +42,7 @@ helps['fleet member join'] = """
     parameters:
         - name: --member-cluster-id
           type: string
-          short-summary: Name or ID of the managed cluster.
+          short-summary: ID of the managed cluster.
 """
 
 helps['fleet member list'] = """
