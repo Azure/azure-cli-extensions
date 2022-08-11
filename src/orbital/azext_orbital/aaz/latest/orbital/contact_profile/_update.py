@@ -83,7 +83,7 @@ class Update(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.auto_tracking_configuration = AAZStrArg(
-            options=["--auto-tracking-configuration"],
+            options=["--auto-tracking", "--auto-tracking-configuration"],
             arg_group="Properties",
             help="Auto-tracking configuration.",
             nullable=True,
@@ -101,13 +101,13 @@ class Update(AAZCommand):
             help="Links of the Contact Profile. Describes RF links, modem processing, and IP endpoints.",
         )
         _args_schema.minimum_elevation_degrees = AAZFloatArg(
-            options=["--minimum-elevation-degrees"],
+            options=["--min-elevation", "--minimum-elevation-degrees"],
             arg_group="Properties",
             help="Minimum viable elevation for the contact in decimal degrees. Used for listing the available contacts with a spacecraft at a given ground station.",
             nullable=True,
         )
         _args_schema.minimum_viable_contact_duration = AAZStrArg(
-            options=["--minimum-viable-contact-duration"],
+            options=["--min-viable-duration", "--minimum-viable-contact-duration"],
             arg_group="Properties",
             help="Minimum viable contact duration in ISO 8601 format. Used for listing the available contacts with a spacecraft at a given ground station.",
             nullable=True,
