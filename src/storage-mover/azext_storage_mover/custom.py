@@ -13,17 +13,19 @@ from .aaz.latest.storage_mover.endpoint import Create, Update
 
 logger = get_logger(__name__)
 
+
 def _get_args_for_endpoint_for_storage_container(endpoint_name, resource_group, storage_mover_name, description,
                                                  blob_container_name, storage_account_resource_id):
     args = {
         "endpoint_name": endpoint_name, "resource_group": resource_group, "storage_mover_name": storage_mover_name,
         "description": description,
-        "storage_blob_container":{
+        "storage_blob_container": {
             "blob_container_name": blob_container_name,
             "storage_account_resource_id": storage_account_resource_id,
         }
     }
     return args
+
 
 def endpoint_create_for_storage_container(cmd, endpoint_name, resource_group, storage_mover_name, description,
                                           blob_container_name, storage_account_resource_id):
@@ -31,6 +33,7 @@ def endpoint_create_for_storage_container(cmd, endpoint_name, resource_group, st
     args = _get_args_for_endpoint_for_storage_container(endpoint_name, resource_group, storage_mover_name, description,
                                                         blob_container_name, storage_account_resource_id)
     return Create_Endpoint(args)
+
 
 def _get_args_for_endpoint_for_nfs(endpoint_name, resource_group, storage_mover_name, description,
                                    export, host, nfs_version):
@@ -45,6 +48,7 @@ def _get_args_for_endpoint_for_nfs(endpoint_name, resource_group, storage_mover_
     }
     return args
 
+
 def endpoint_create_for_nfs(cmd, endpoint_name, resource_group, storage_mover_name, description,
                             export, host, nfs_version=None):
     Create_Endpoint = Create(cmd.loader)
@@ -52,12 +56,14 @@ def endpoint_create_for_nfs(cmd, endpoint_name, resource_group, storage_mover_na
                                           export, host, nfs_version)
     return Create_Endpoint(args)
 
+
 def endpoint_update_for_storage_container(cmd, endpoint_name, resource_group, storage_mover_name, description,
                                           blob_container_name, storage_account_resource_id):
     Update_Endpoint = Update(cmd.loader)
     args = _get_args_for_endpoint_for_storage_container(endpoint_name, resource_group, storage_mover_name, description,
                                                         blob_container_name, storage_account_resource_id)
     return Update_Endpoint(args)
+
 
 def endpoint_update_for_nfs(cmd, endpoint_name, resource_group, storage_mover_name, description,
                             export, host, nfs_version=None):
