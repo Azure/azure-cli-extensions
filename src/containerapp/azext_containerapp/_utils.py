@@ -1452,7 +1452,7 @@ def create_acrpull_role_assignment(cmd, registry_server, registry_identity=None,
     except Exception as e:
         message = (f"Role assignment failed with error message: \"{' '.join(e.args)}\". \n"
                    f"To add the role assignment manually, please run 'az role assignment create --assignee {sp_id} --scope {acr_id} --role acrpull'. \n"
-                    "You may have to restart the containerapp with 'az containerapp revision restart'.")
+                   "You may have to restart the containerapp with 'az containerapp revision restart'.")
         if skip_error:
             logger.error(message)
         else:

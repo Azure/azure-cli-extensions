@@ -17,6 +17,7 @@ from ._constants import ACR_IMAGE_SUFFIX
 
 logger = get_logger(__name__)
 
+
 # called directly from custom method bc otherwise it disrupts the --environment auto RID functionality
 def validate_create(registry_identity, registry_pass, registry_user, registry_server, no_wait):
     if registry_identity and (registry_pass or registry_user):
