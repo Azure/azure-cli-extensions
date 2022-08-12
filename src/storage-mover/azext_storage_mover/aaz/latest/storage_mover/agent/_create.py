@@ -11,10 +11,10 @@
 from azure.cli.core.aaz import *
 
 
-@register_command(
-    "storage-mover agent create",
-    is_preview=True,
-)
+# @register_command(
+#     "storage-mover agent create",
+#     is_preview=True,
+# )
 class Create(AAZCommand):
     """Creates an Agent resource, which references a hybrid compute machine that can run jobs.
     """
