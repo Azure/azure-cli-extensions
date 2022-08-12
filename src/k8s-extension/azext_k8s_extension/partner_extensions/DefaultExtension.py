@@ -25,6 +25,7 @@ class DefaultExtension(PartnerExtensionModel):
         cluster_name,
         name,
         cluster_type,
+        cluster_rp,
         extension_type,
         scope,
         auto_upgrade_minor_version,
@@ -87,7 +88,7 @@ class DefaultExtension(PartnerExtensionModel):
         )
 
     def Delete(
-        self, cmd, client, resource_group_name, cluster_name, name, cluster_type, yes
+        self, cmd, client, resource_group_name, cluster_name, name, cluster_type, cluster_rp, yes
     ):
         user_confirmation_factory(cmd, yes)
 
