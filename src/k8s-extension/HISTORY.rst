@@ -3,6 +3,12 @@
 Release History
 ===============
 
+1.3.1
+++++++++++++++++++
+* microsoft.azureml.kubernetes: Always show TSG link for AzureMLKubernetes extension at the head.
+* microsoft.azuremonitor.containers: add omsagent rename changes
+* microsoft.azuremonitor.containers: fix script to support provisionedClusters
+
 1.3.0
 ++++++++++++++++++
 * Add support for provisionedClusters
