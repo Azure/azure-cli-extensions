@@ -5,11 +5,14 @@
 
 import json
 import os
+import pytest
+import sys
+import traceback
 import unittest
 
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse, live_only
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
-from azure.cli.core.azclierror import InvalidArgumentValueError, AzureInternalError
+from azure.cli.core.azclierror import RequiredArgumentMissingError, InvalidArgumentValueError, AzureInternalError
 
 from .utils import get_test_subscription_id, get_test_resource_group, get_test_workspace, get_test_workspace_location
 from ..._client_factory import _get_data_credentials
@@ -30,6 +33,33 @@ class QuantumJobsScenarioTest(ScenarioTest):
         # list
         targets = self.cmd('az quantum target list -o json').get_output_in_json()
         assert len(targets) > 0
+
+    @pytest.fixture(autouse=True)
+    def _pass_fixtures(self, capsys):
+        self.capsys = capsys
+
+    def test_job_errors(self):
+        error_msg_preamble = "the following arguments are required: "
+
+        # Attempt to cancel a job, but omit the required parameters
+        help_example = "az quantum job cancel -g MyResourceGroup -w MyWorkspace -l MyLocation -j yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy\nCancel an Azure Quantum job by id."
+        try:
+            self.cmd('az quantum job cancel')
+        except:
+            exc_type, exc_value, exc_traceback = sys.exc_info()
+            formatted_lines = traceback.format_exc().splitlines()
+            for line in formatted_lines:
+                print(line)
+
+            out, err = self.capsys.readouterr()
+            # The help example should be found in err
+            assert help_example in err 
+
+            # The traceback.format_exc() contains the beginning of the error message
+            assert error_msg_preamble in out
+
+
+
 
     def test_build(self):
         result = build(self, target_id='ionq.simulator', project='src\\quantum\\azext_quantum\\tests\\latest\\source_for_build_test\\QuantumRNG.csproj', target_capability='BasicQuantumFunctionality')

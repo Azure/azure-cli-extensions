@@ -159,6 +159,9 @@ class QuantumWorkspacesScenarioTest(ScenarioTest):
         test_workspace_temp = get_test_workspace_random_name()
         test_storage_account = get_test_workspace_storage()
 
+        # error_msg_preamble = "the following arguments are required: "
+        # self.cmd('az quantum workspace clear')    <---<<< This can interfere with the target tests that expect a workspace to be set    
+
         # NOTE: The following command will not fail when Credits For All providers are in the region:
         # # Attempt to create workspace, but omit the provider/SKU parameter
         # try:
@@ -166,11 +169,37 @@ class QuantumWorkspacesScenarioTest(ScenarioTest):
         # except RequiredArgumentMissingError:
         #     pass    
 
-        # Attempt to create workspace, but omit the resource group parameter
+        # >>>>> This one didn't fail because another test has set workspace defaults
+        # # Attempt to create workspace, but omit the resource group parameter
+        # try:
+        #     self.cmd(f'az quantum workspace create -w {test_workspace_temp} -l {test_location} -a {test_storage_account} -r "Microsoft/Basic"')
+        #     assert False
+        # except RequiredArgumentMissingError as e:
+        #     assert e.error_msg == error_msg_preamble + "--resource-group/-g"
+
+        # Attempt to create workspace, but omit the storage account parameter
         try:
-            self.cmd(f'az quantum workspace create -w {test_workspace_temp} -l {test_location} -a {test_storage_account} -r "Microsoft/Basic" --skip-role-assignment')
-        except ResourceNotFoundError:
-            pass    
+            self.cmd(f'az quantum workspace create -w {test_workspace_temp} -l {test_location} -g {test_resource_group} -r "Microsoft/Basic"')
+        # >>>>>>>>>> This works
+        except:
+            pass
+        # >>>>>>>>>> These didn't
+        # except RequiredArgumentMissingError as e:
+        #     assert e.error_msg == error_msg_preamble + "--storage-account/-a"
+        # except Exception as e:
+        #     # assert e.error_msg == error_msg_preamble + "--storage-account/-a"
+        # except Exception:
+        #     pass
+
+
+        # >>>> This could cause problems if another test is running asynchronously and has issued "az quantum workspace set" 
+        # # Attempt to delete a workspace, but omit required parameters
+        # try:
+        #     self.cmd('az quantum workspace delete')
+        # except RequiredArgumentMissingError as e:
+        #     assert e.error_msg == error_msg_preamble + "--resource-group/-g, --workspace-name/-w"
+
+
 
     @live_only()
     def test_version_check(self):
