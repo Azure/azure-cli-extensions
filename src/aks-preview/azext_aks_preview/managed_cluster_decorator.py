@@ -19,6 +19,9 @@ from azure.cli.command_modules.acs._helpers import (
 from azure.cli.command_modules.acs._validators import (
     extract_comma_separated_string,
 )
+from azext_aks_preview.azuremonitorprofile import (
+    validate_ksm_parameter
+)
 from azure.cli.command_modules.acs.managed_cluster_decorator import (
     AKSManagedClusterContext,
     AKSManagedClusterCreateDecorator,
@@ -1777,16 +1780,11 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         metriclabelsallowlist = self._AKSPreviewManagedClusterCreateDecorator__raw_parameters.get("metriclabelsallowlist")
         metricannotationsallowlist = self._AKSPreviewManagedClusterCreateDecorator__raw_parameters.get("metricannotationsallowlist")
 
-        if metriclabelsallowlist is None:
-            metriclabelsallowlist = ""
-        
-        if metricannotationsallowlist is None:
-            metricannotationsallowlist = ""
+        print("REACHES HERE 2")
 
-        # normalize
-        ## DO VALIDATION HERE
-        # metriclabelsallowlist = extract_comma_separated_string(metriclabelsallowlist, keep_none=True, default_value=[])
-        # metricannotationsallowlist = extract_comma_separated_string(metricannotationsallowlist, keep_none=True, default_value=[])
+        # Validate Param
+        metriclabelsallowlist = validate_ksm_parameter(metriclabelsallowlist)
+        metricannotationsallowlist = validate_ksm_parameter(metricannotationsallowlist)
 
         if self.context.get_enable_azure_monitor_metrics():
             if mc.azure_monitor_profile is None:
@@ -2146,16 +2144,9 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         metriclabelsallowlist = self._AKSPreviewManagedClusterUpdateDecorator__raw_parameters.get("metriclabelsallowlist")
         metricannotationsallowlist = self._AKSPreviewManagedClusterUpdateDecorator__raw_parameters.get("metricannotationsallowlist")
 
-        if metriclabelsallowlist is None:
-            metriclabelsallowlist = ""
-        
-        if metricannotationsallowlist is None:
-            metricannotationsallowlist = ""
-
-        # normalize
-        ## DO VALIDATION HERE
-        # metriclabelsallowlist = extract_comma_separated_string(metriclabelsallowlist, keep_none=True, default_value=[])
-        # metricannotationsallowlist = extract_comma_separated_string(metricannotationsallowlist, keep_none=True, default_value=[])
+        # Validate Param
+        metriclabelsallowlist = validate_ksm_parameter(metriclabelsallowlist)
+        metricannotationsallowlist = validate_ksm_parameter(metricannotationsallowlist)
 
         if self.context.get_enable_azure_monitor_metrics():
             if mc.azure_monitor_profile is None:

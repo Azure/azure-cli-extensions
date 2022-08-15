@@ -3,15 +3,26 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 import json
+import urllib.request
+import uuid
+import re
 from sre_constants import FAILURE, SUCCESS
 
 from knack.util import CLIError
-from azure.cli.core.azclierror import ClientRequestError
+from azure.cli.core.azclierror import (
+    ClientRequestError,
+    InvalidArgumentValueError
+)
 from ._client_factory import get_resources_client
 from enum import Enum
 from six import with_metaclass
 from azure.core import CaseInsensitiveEnumMeta
-import uuid
+
+MAC_API = "2021-06-03-preview"
+GRAFANA_API = "2022-08-01"
+GRAFANA_ROLE_ASSIGNMENT_API = "2018-01-01-preview"
+RULES_API = "2021-07-22-preview"
+
 class GrafanaLink(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
     """Status of Grafana link to the Prometheus Addon
     """
@@ -102,24 +113,102 @@ AzureCloudLocationToOmsRegionCodeMap = {
         "uaecentral": "AUH",
     }
 
-MAC_API = "2021-06-03-preview"
-GRAFANA_API = "2022-08-01"
-GRAFANA_ROLE_ASSIGNMENT_API = "2018-01-01-preview"
+def validate_ksm_parameter(ksmparam):
+    print("Calling validate_ksm_parameter")
+    if ksmparam is None:
+        return ""
+        
+    labelValueMap = {}
+    ksmStrLength = len(ksmparam)
+    EOF = -1
+    next = ""
+    name = ""
+    firstWordPos = 0
 
-def get_default_mac_name(cluster_region, cluster_name):
-    default_mac_name = "MSProm-" + AzureCloudLocationToOmsRegionCodeMap[MapToClosestMACRegion[cluster_region]] + "-" + cluster_name
-    ### CHANGE THIS TO 25??
+    # Iterate over the string
+    for i, v in enumerate(ksmparam):
+        if i+1 == ksmStrLength:
+            next = EOF
+        else:
+            next = ord(ksmparam[i+1])
+        
+        if i-1 >= 0:
+            previous = ord(ksmparam[i-1])
+        else:
+            previous = v
+        
+        if v == "=":
+            if previous == ord(",") or next != ord("["):
+                raise InvalidArgumentValueError(
+                    "Please format --metric properly. For eg. : --metriclabelsallowlist \"=namespaces=[k8s-label-1,k8s-label-n,...],pods=[app],...)\" and --metricannotationsallowlist \"=namespaces=[kubernetes.io/team,...],pods=[kubernetes.io/team],...\""
+                    )
+            name = ksmparam[firstWordPos:i]
+            labelValueMap[name] = []
+            firstWordPos = i + 1
+        elif v == "[":
+            if previous != ord("="):
+                raise InvalidArgumentValueError(
+                    "Please format --metric properly. For eg. : --metriclabelsallowlist \"=namespaces=[k8s-label-1,k8s-label-n,...],pods=[app],...)\" and --metricannotationsallowlist \"=namespaces=[kubernetes.io/team,...],pods=[kubernetes.io/team],...\""
+                    )
+            firstWordPos = i + 1
+        elif v == "]":
+            # if after metric group, has char not comma or end.
+            if next != EOF and next != ord(","):
+                raise InvalidArgumentValueError(
+                    "Please format --metric properly. For eg. : --metriclabelsallowlist \"=namespaces=[k8s-label-1,k8s-label-n,...],pods=[app],...)\" and --metricannotationsallowlist \"=namespaces=[kubernetes.io/team,...],pods=[kubernetes.io/team],...\""
+                    )
+            if previous != ord("["):
+                labelValueMap[name].append(ksmparam[firstWordPos:i])
+            firstWordPos = i + 1
+        elif v == ",":
+            # if starts or ends with comma
+            if previous == v or next == EOF or next == ord("]"):
+                raise InvalidArgumentValueError(
+                    "Please format --metric properly. For eg. : --metriclabelsallowlist \"=namespaces=[k8s-label-1,k8s-label-n,...],pods=[app],...)\" and --metricannotationsallowlist \"=namespaces=[kubernetes.io/team,...],pods=[kubernetes.io/team],...\""
+                    )
+            if previous != ord("]"):
+                labelValueMap[name].append(ksmparam[firstWordPos:i])
+            firstWordPos = i + 1
+
+    labelPattern = re.compile("[a-zA-Z_][a-zA-Z0-9_]*")
+    # Values are just a list of unicode characters so anything goes
+    # labelValuePattern = re.compile()
+
+    for label in labelValueMap:
+        if (bool(re.match(r'^[a-zA-Z_][A-Za-z0-9_]+$', label)))== False:
+            raise InvalidArgumentValueError(
+                    "Please format --metric properly. For eg. : --metriclabelsallowlist \"=namespaces=[k8s-label-1,k8s-label-n,...],pods=[app],...)\" and --metricannotationsallowlist \"=namespaces=[kubernetes.io/team,...],pods=[kubernetes.io/team],...\""
+                    )
+        # else:
+        #     for value in labelValueMap[label]:
+        #         if (bool(labelValuePattern.match(value))) == False:
+        #             raise InvalidArgumentValueError(
+        #                 "Please format --metric properly. For eg. : --metriclabelsallowlist \"=namespaces=[k8s-label-1,k8s-label-n,...],pods=[app],...)\" and --metricannotationsallowlist \"=namespaces=[kubernetes.io/team,...],pods=[kubernetes.io/team],...\""
+        #             )
+    return ksmparam
+
+def sanitize_resource_id(resource_id):
+    resource_id = resource_id.strip()
+    if not resource_id.startswith("/"):
+        resource_id = "/" + resource_id
+    if resource_id.endswith("/"):
+        resource_id = resource_id.rstrip("/")
+    return resource_id
+
+def get_default_mac_name(cluster_region):
+    default_mac_name = "DefaultAzureMonitorWorkspace-" + AzureCloudLocationToOmsRegionCodeMap[MapToClosestMACRegion[cluster_region]]
     default_mac_name = default_mac_name[0:43]
 
     return default_mac_name
 
-def create_default_mac(cmd, cluster_subscription, cluster_resource_group_name, cluster_name, cluster_region):
+def create_default_mac(cmd, cluster_subscription, cluster_region):
     from azure.cli.core.util import send_raw_request
 
-    default_mac_name = get_default_mac_name(cluster_region, cluster_name)
+    default_mac_name = get_default_mac_name(cluster_region)
+    default_resource_group_name = "DefaultResourceGroup-{0}".format( AzureCloudLocationToOmsRegionCodeMap[MapToClosestMACRegion[cluster_region]] )
     mac_resource_id = "/subscriptions/{0}/resourceGroups/{1}/providers/microsoft.monitor/accounts/{2}".format(
             cluster_subscription,
-            cluster_resource_group_name,
+            default_resource_group_name,
             default_mac_name,
         )
 
@@ -146,19 +235,11 @@ def create_default_mac(cmd, cluster_subscription, cluster_resource_group_name, c
     else:
         raise error
 
-def sanitize_resource_id(resource_id):
-    resource_id = resource_id.strip()
-    if not resource_id.startswith("/"):
-        resource_id = "/" + resource_id
-    if resource_id.endswith("/"):
-        resource_id = resource_id.rstrip("/")
-    return resource_id
-
 def get_mac_resource_id(cmd, cluster_subscription, cluster_resource_group_name, cluster_name, cluster_region, raw_parameters):
     mac_resource_id = raw_parameters.get("mac_resource_id")
     if mac_resource_id is None or mac_resource_id == "":
         print("Creating default MAC account")
-        mac_resource_id = create_default_mac(cmd, cluster_subscription, cluster_resource_group_name, cluster_name, cluster_region)
+        mac_resource_id = create_default_mac(cmd, cluster_subscription, cluster_region)
     else:
         mac_resource_id = sanitize_resource_id(mac_resource_id)
     return mac_resource_id
@@ -448,6 +529,88 @@ def link_grafana_instance(cmd, raw_parameters, mac_resource_id):
 
     return GrafanaLink.SUCCESS
 
+def create_rules(cmd, cluster_region, cluster_subscription, cluster_resource_group_name, cluster_name, mac_resource_id, mac_region):
+    from azure.cli.core.util import send_raw_request
+    
+    with urllib.request.urlopen("https://aka.ms/ama-default-rules") as url:
+        default_rules_template = json.loads(url.read().decode())
+
+    default_rule_group_name = "NodeRecordingRulesRuleGroup-{0}".format(cluster_name)
+    default_rule_group_id = "/subscriptions/{0}/resourceGroups/{1}/providers/Microsoft.AlertsManagement/prometheusRuleGroups/{2}".format(
+        cluster_subscription,
+        cluster_resource_group_name,
+        default_rule_group_name
+    )
+    url = "https://management.azure.com{0}?api-version={1}".format(
+        default_rule_group_id,
+        RULES_API
+    )
+
+    body = json.dumps({
+        "id": default_rule_group_id,
+        "name": default_rule_group_name,
+        "type": "Microsoft.AlertsManagement/prometheusRuleGroups",
+        "location": mac_region,
+        "properties": {
+            "scopes": [
+                mac_resource_id
+            ],
+            "clusterName": cluster_name,
+            "rules": default_rules_template["resources"][0]["properties"]["rules"]
+        }
+    })
+
+    for _ in range(3):
+        try:
+            send_raw_request(cmd.cli_ctx, "PUT", url,
+                             body=body)
+            error = None
+            print("Successully deployed Node Recording rules")
+            break
+        except CLIError as e:
+            print(e)
+            error = e
+    else:
+        raise error
+
+    default_rule_group_name = "KubernetesRecordingRulesRuleGroup-{0}".format(cluster_name)
+    default_rule_group_id = "/subscriptions/{0}/resourceGroups/{1}/providers/Microsoft.AlertsManagement/prometheusRuleGroups/{2}".format(
+        cluster_subscription,
+        cluster_resource_group_name,
+        default_rule_group_name
+    )
+    url = "https://management.azure.com{0}?api-version={1}".format(
+        default_rule_group_id,
+        RULES_API
+    )
+
+    body = json.dumps({
+        "id": default_rule_group_id,
+        "name": default_rule_group_name,
+        "type": "Microsoft.AlertsManagement/prometheusRuleGroups",
+        "location": mac_region,
+        "properties": {
+            "scopes": [
+                mac_resource_id
+            ],
+            "clusterName": cluster_name,
+            "rules": default_rules_template["resources"][1]["properties"]["rules"]
+        }
+    })
+
+    for _ in range(3):
+        try:
+            send_raw_request(cmd.cli_ctx, "PUT", url,
+                             body=body)
+            error = None
+            print("Successully deployed Kuberenetes Recording rules")
+            break
+        except CLIError as e:
+            print(e)
+            error = e
+    else:
+        raise error
+
 def link_azure_monitor_profile_artifacts(cmd,
             cluster_subscription,
             cluster_resource_group_name,
@@ -455,6 +618,7 @@ def link_azure_monitor_profile_artifacts(cmd,
             cluster_region,
             raw_parameters,
         ):
+
     print("Calling link_azure_monitor_profile_artifacts...")
     
     # MAC creation if required
@@ -481,7 +645,9 @@ def link_azure_monitor_profile_artifacts(cmd,
     # Link grafana
     isGrafanaLinkSuccessful = link_grafana_instance(cmd, raw_parameters, mac_resource_id)
     print(isGrafanaLinkSuccessful)
-    # raise CLIError("STOOOOOOOOOOOOOOOOOOOOOOOP")
+
+    # create recording rules and alerts
+    create_rules(cmd, cluster_region, cluster_subscription, cluster_resource_group_name, cluster_name, mac_resource_id, mac_region)
 
 def unlink_azure_monitor_profile_artifacts(cmd,
             cluster_subscription,
