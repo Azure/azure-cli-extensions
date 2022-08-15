@@ -5,7 +5,7 @@ Release History
 
 0.3.9
 ++++++
-* 'az containerapp create': allow authenticating with managed identity (MSI) instead of ACR username & password
+* 'az containerapp create': Allow authenticating with managed identity (MSI) instead of ACR username & password
 * 'az containerapp show': Add parameter --show-secrets to show secret values
 * 'az containerapp env create': Add better message when polling times out
 * 'az containerapp env certificate upload': Fix bug where certificate uploading failed with error "Certificate must contain one private key."
