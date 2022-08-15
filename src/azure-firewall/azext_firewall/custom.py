@@ -9,7 +9,7 @@ from knack.log import get_logger
 from azure.cli.core.util import sdk_no_wait
 from azure.cli.core.azclierror import UserFault, ServiceError, ValidationError
 from azure.cli.core.commands.client_factory import get_subscription_id
-from msrestazure.tools import parse_resource_id, is_valid_resource_id, resource_id
+from msrestazure.tools import is_valid_resource_id, resource_id
 from ._client_factory import network_client_factory
 
 logger = get_logger(__name__)
