@@ -67,6 +67,8 @@ def load_arguments(self, _):
                    help="Allow Active FTP. By default it is false. It's only allowed for azure firewall on virtual network.")
         c.argument('enable_fat_flow_logging', options_list=['--fat-flow-logging'], arg_type=get_three_state_flag(),
                    help="Identify fat flows. By default it is false.")
+        c.argument('virtual_network_name', virtual_network_name_type,
+                   help='The virtual network (VNet) name. It should contain one subnet called "AzureFirewallSubnet".')
 
     with self.argument_context('network firewall', arg_group='Virtual Hub Public Ip') as c:
         c.argument('hub_public_ip_count', options_list=['--public-ip-count', '--count'], type=int,
@@ -79,6 +81,18 @@ def load_arguments(self, _):
     with self.argument_context('network firewall', arg_group='DNS') as c:
         c.argument('dns_servers', nargs='+', help='Space-separated list of DNS server IP addresses')
         c.argument('enable_dns_proxy', arg_type=get_three_state_flag(), help='Enable DNS Proxy')
+
+    # with self.argument_context('network firewall', arg_group="Data Traffic IP Configuration") as c:
+    #     c.argument('conf_name', help='Name of the IP configuration.')
+    #     c.argument('vnet_name', help='The virtual network (VNet) name. It should contain one subnet called "AzureFirewallSubnet".')
+    #     c.argument('public_ip', help='Name or ID of the public IP to use.')
+
+    with self.argument_context('network firewall', arg_group="Management IP Configuration") as c:
+        c.argument('management_conf_name', options_list=['--m-conf-name'],
+                   help='Name of the management IP configuration.')
+        c.argument('management_public_ip', options_list=['--m-public-ip'],
+                   validator=get_management_public_ip_validator(),
+                   help='Name or ID of the public IP to use for management IP configuration.')
 
     with self.argument_context('network firewall threat-intel-allowlist') as c:
         c.argument('ip_addresses', nargs='+', validator=process_threat_intel_allowlist_ip_addresses, help='Space-separated list of IPv4 addresses.')

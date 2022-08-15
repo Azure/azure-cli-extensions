@@ -6,6 +6,7 @@
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, StorageAccountPreparer, JMESPathCheck, NoneCheck,
                                api_version_constraint)
 from azure.cli.testsdk.scenario_tests.decorators import AllowLargeResponse
+from azure.cli.core.azclierror import ValidationError
 
 
 class AzureFirewallScenario(ScenarioTest):
@@ -959,3 +960,30 @@ class AzureFirewallScenario(ScenarioTest):
 
         self.cmd('network firewall policy update -g {rg} -n {policy} --sql False',
                  checks=self.check('sql.allowSqlRedirect', False))
+
+    @ResourceGroupPreparer(name_prefix="cli_test_firewall_basic_sku_", location="westus")
+    def test_firewall_basic_sku(self):
+        self.kwargs.update({
+            "firewall_name": self.create_random_name("firewall-", 16),
+            # "conf_name": self.create_random_name("ipconfig-", 16),
+            "vnet_name": self.create_random_name("vnet-", 12),
+            # "public_ip_name": self.create_random_name("public-ip-", 16),
+            "conf_name": self.create_random_name("ipconfig-", 16),
+            # "m_vnet_name": self.create_random_name("vnet-", 12),
+            "public_ip_name": self.create_random_name("public-ip-", 16),
+        })
+
+        with self.assertRaisesRegex(ValidationError, "When creating Basic SKU firewall, both --m-conf-name, --m-vnet-name and --m-public-ip-address should be provided."):
+            self.cmd("network firewall create -n {firewall_name} -g {rg} --sku AZFW_VNet --tier Basic")
+
+        self.cmd("network vnet create -n {vnet_name} -g {rg} --subnet-name AzureFirewallSubnet --address-prefixes 10.0.0.0/16 --subnet-prefixes 10.0.0.0/24")
+        self.cmd("network vnet subnet create -n AzureFirewallManagementSubnet -g {rg} --vnet-name vnet_name --address-prefixes 10.0.0.0/24")
+        self.cmd("network public-ip create -n {public_ip_name} -g {rg} --sku Standard")
+
+        self.cmd(
+            "network firewall create -n {firewall_name} -g {rg} --sku AZFW_VNet --tier Basic "
+            "--vnet-name {vnet_name} --conf-name {conf_name} --public-ip {public_ip_name}",
+            checks=[
+                self.check("name", ""),
+            ]
+        )
