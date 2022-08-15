@@ -56,7 +56,6 @@ def delete_fleet(cmd,  # pylint: disable=unused-argument
                  resource_group_name,
                  name,
                  no_wait=False):
-    logger.info('in delete fleets')
     return sdk_no_wait(no_wait, client.begin_delete, resource_group_name, name)
 
 
