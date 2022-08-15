@@ -330,7 +330,7 @@ def create_containerapp(cmd,
                         user_assigned=None,
                         registry_identity=None):
     if image and "/" in image and not registry_server:
-        registry_server = image[:image.rindex("/")]
+        registry_server = image[:image.index("/")]
     register_provider_if_needed(cmd, CONTAINER_APPS_RP)
     validate_container_app_name(name)
     validate_create(registry_identity, registry_pass, registry_user, registry_server, no_wait)
