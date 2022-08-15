@@ -26,6 +26,7 @@ def load_command_table(self, _):
     with self.command_group("fleet", fleets_sdk, client_factory=cf_fleets) as g:
         g.custom_command("create", "create_fleet", supports_no_wait=True)
         g.custom_command("delete", "delete_fleet", supports_no_wait=True)
+        g.custom_command("credentials list", "list_credentials")
 
     # fleet members command group
     with self.command_group("fleet member", fleet_members_sdk, client_factory=cf_fleet_members) as g:
