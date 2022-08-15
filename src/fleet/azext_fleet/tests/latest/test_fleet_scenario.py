@@ -35,14 +35,9 @@ class FleetScenarioTest(ScenarioTest):
             self.check('clusterResourceId', '{mc_id}')
         ])
 
-        fleet_list1 = self.cmd('fleet member list -g {rg} -n {name}').get_output_in_json()
+        fleet_members = self.cmd('fleet member list -g {rg} -n {name}').get_output_in_json()
+        self.assertEqual(len(fleet_members), 1)
         
-        self.cmd('fleet member remove -g {rg} -n {name} --member-name {member_name}', checks=[
-            self.check('name', '{name}'),
-            self.check('clusterResourceId', '{mc_id}')
-        ])
-        
-        fleet_list2 = self.cmd('fleet member list -g {rg} -n {name}').get_output_in_json()
-        self.assertTrue(len(fleet_list2), len(fleet_list1) - 1)
+        self.cmd('fleet member remove -g {rg} -n {name} --member-name {member_name}')
 
         self.cmd('fleet delete -g {rg} -n {name}')
