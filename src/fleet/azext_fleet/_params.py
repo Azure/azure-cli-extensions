@@ -4,9 +4,12 @@
 # --------------------------------------------------------------------------------------------
 # pylint: disable=line-too-long
 
+import os
+from argcomplete.completers import FilesCompleter
 from azure.cli.core.commands.parameters import (
     get_resource_name_completion_list,
-    tags_type
+    tags_type,
+    file_type
 )
 from azext_fleet._validators import validate_member_cluster_id
 
@@ -14,14 +17,18 @@ from azext_fleet._validators import validate_member_cluster_id
 def load_arguments(self, _):
 
     with self.argument_context('fleet') as c:
-        c.argument('name', options_list=['--name', '-n'], help='Specify the fleet name.', completer=get_resource_name_completion_list('Microsoft.ContainerService/ManagedClusters'))
+        c.argument('name', options_list=['--name', '-n'], help='Specify the fleet name.')
 
     with self.argument_context('fleet create') as c:
         c.argument('tags', tags_type)
         c.argument('dns_name_prefix', options_list=['--dns-name-prefix', '-p'])
+    
+    with self.argument_context('fleet credentials list') as c:
+        c.argument('context_name', options_list=['--context'], help='If specified, overwrite the default context name.')
+        c.argument('path', options_list=['--file', '-f'], type=file_type, completer=FilesCompleter(), default=os.path.join(os.path.expanduser('~'), '.kube', 'config'))
 
     with self.argument_context('fleet member') as c:
-        c.argument('member_name', help='Specify a member name. Default value is name of the managed cluster.')
+        c.argument('member_name', help='Specify a member name. Default value is name of the managed cluster.', completer=get_resource_name_completion_list('Microsoft.ContainerService/ManagedClusters'))
 
     with self.argument_context('fleet member join') as c:
         c.argument('member_cluster_id', validator=validate_member_cluster_id)

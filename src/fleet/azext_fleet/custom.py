@@ -3,12 +3,16 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+import os
+
 from knack.log import get_logger
+from knack.util import CLIError
 
 from azure.cli.core.util import sdk_no_wait
 
 from azext_fleet._client_factory import CUSTOM_MGMT_FLEET
 from azext_fleet._resourcegroup import get_rg_location
+from azext_fleet._helpers import print_or_merge_credentials
 
 
 logger = get_logger(__name__)
@@ -56,6 +60,27 @@ def delete_fleet(cmd,  # pylint: disable=unused-argument
     return sdk_no_wait(no_wait, client.begin_delete, resource_group_name, name)
 
 
+def list_credentials(cmd,    # pylint: disable=unused-argument
+                     client,
+                     resource_group_name,
+                     name,
+                     path=os.path.join(os.path.expanduser(
+                         '~'), '.kube', 'config'),
+                     overwrite_existing=False,
+                     context_name=None):
+    credentialResults = client.list_credentials(resource_group_name, name)
+    if not credentialResults:
+        raise CLIError("No Kubernetes credentials found.")
+
+    try:
+        kubeconfig = credentialResults.kubeconfigs[0].value.decode(
+            encoding='UTF-8')
+        print_or_merge_credentials(
+            path, kubeconfig, overwrite_existing, context_name)
+    except (IndexError, ValueError):
+        raise CLIError("Fail to find kubeconfig file.")
+
+
 def join_fleet_member(cmd,
                       client,
                       resource_group_name,
@@ -63,7 +88,6 @@ def join_fleet_member(cmd,
                       member_cluster_id,
                       member_name=None,
                       no_wait=False):
-    logger.info('in create fleetmember')
     FleetMember = cmd.get_models(
         "FleetMember",
         resource_type=CUSTOM_MGMT_FLEET,

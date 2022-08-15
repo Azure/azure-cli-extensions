@@ -20,6 +20,8 @@ class FleetScenarioTest(ScenarioTest):
             self.check('name', '{name}')
         ])
 
+        self.cmd('fleet credentials list -g {rg} -n {name} --overwrite-existing')
+
         mc_id = self.cmd('aks create -g {rg} -n {member_name}', checks=[
             self.check('name', '{member_name}')
         ]).get_output_in_json()['id']

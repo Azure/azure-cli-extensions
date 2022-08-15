@@ -31,6 +31,15 @@ helps['fleet delete'] = """
     short-summary: Delete an existing fleet.
 """
 
+helps['fleet credentials list'] = """
+    type: command
+    short-summary: List fleet kubeconfig credentials
+    parameters:
+    - name: --overwrite-existing
+      type: bool
+      short-summary: Overwrite any existing cluster entry with the same name.
+"""
+
 helps['fleet member'] = """
     type: group
     short-summary: Commands to manage a fleet member.
