@@ -556,6 +556,7 @@ def create_rules(cmd, cluster_region, cluster_subscription, cluster_resource_gro
                 mac_resource_id
             ],
             "clusterName": cluster_name,
+            "interval": "PT1M",
             "rules": default_rules_template["resources"][0]["properties"]["rules"]
         }
     })
