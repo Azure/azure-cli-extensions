@@ -11,7 +11,9 @@ from azure.cli.core.commands import CliCommandType
 
 def load_command_table(self, _):
 
-    from azext_automation.manual._client_factory import cf_runbook_draft, cf_job, cf_automation_account
+    from azext_automation.manual._client_factory import cf_runbook_draft, cf_job, cf_automation_account,\
+        cf_schedule, cf_software_update_configuration, cf_software_update_configuration_runs, \
+        cf_software_update_configuration_machine_runs
     from azext_automation.generated._client_factory import cf_runbook
 
     automation_runbook_draft = CliCommandType(
@@ -26,6 +28,28 @@ def load_command_table(self, _):
     automation_job = CliCommandType(
         operations_tmpl='azext_automation.vendored_sdks.automation.operations._job_operations#JobOperations.{}',
         client_factory=cf_job)
+
+    automation_schedule = CliCommandType(
+        operations_tmpl='azext_automation.vendored_sdks.automation.operations.'
+                        '_schedule_operations#ScheduleOperations.{}',
+        client_factory=cf_schedule)
+
+    automation_software_update_configuration = CliCommandType(
+        operations_tmpl='azext_automation.vendored_sdks.automation.operations.'
+                        '_software_update_configuration_operations#SoftwareUpdateConfigurationMachineRunsOperations.{}',
+        client_factory=cf_software_update_configuration)
+
+    automation_software_update_configuration_runs = CliCommandType(
+        operations_tmpl='azext_automation.vendored_sdks.automation.operations.'
+                        '_software_update_configuration_runs_operations#'
+                        'SoftwareUpdateConfigurationMachineRunsOperations.{}',
+        client_factory=cf_software_update_configuration_runs)
+
+    automation_software_update_configuration_machine_runs = CliCommandType(
+        operations_tmpl='azext_automation.vendored_sdks.automation.operations.'
+                        '_software_update_configuration_machine_runs_operations#'
+                        'SoftwareUpdateConfigurationMachineRunsOperations.{}',
+        client_factory=cf_software_update_configuration_machine_runs)
 
     with self.command_group('automation runbook', automation_runbook_draft, client_factory=cf_runbook_draft,
                             is_experimental=True) as g:
@@ -53,6 +77,38 @@ def load_command_table(self, _):
         client_factory=cf_automation_account)
     with self.command_group('automation account', automation_automation_account,
                             client_factory=cf_automation_account, is_experimental=True) as g:
+        g.custom_command('list', 'automation_account_list')
+        g.custom_show_command('show', 'automation_account_show')
+        g.custom_command('create', 'automation_account_create')
+        g.custom_command('update', 'automation_account_update')
+        g.custom_command('delete', 'automation_account_delete', confirmation=True)
+
+    with self.command_group('automation schedule', automation_schedule,
+                            client_factory=cf_automation_account) as g:
+        g.custom_command('list', 'automation_account_list')
+        g.custom_show_command('show', 'automation_account_show')
+        g.custom_command('create', 'automation_account_create')
+        g.custom_command('update', 'automation_account_update')
+        g.custom_command('delete', 'automation_account_delete', confirmation=True)
+
+    with self.command_group('automation schedule', automation_software_update_configuration,
+                            client_factory=cf_software_update_configuration) as g:
+        g.custom_command('list', 'automation_account_list')
+        g.custom_show_command('show', 'automation_account_show')
+        g.custom_command('create', 'automation_account_create')
+        g.custom_command('update', 'automation_account_update')
+        g.custom_command('delete', 'automation_account_delete', confirmation=True)
+
+    with self.command_group('automation schedule', automation_software_update_configuration_runs,
+                            client_factory=cf_software_update_configuration_runs) as g:
+        g.custom_command('list', 'automation_account_list')
+        g.custom_show_command('show', 'automation_account_show')
+        g.custom_command('create', 'automation_account_create')
+        g.custom_command('update', 'automation_account_update')
+        g.custom_command('delete', 'automation_account_delete', confirmation=True)
+
+    with self.command_group('automation schedule', automation_software_update_configuration_machine_runs,
+                            client_factory=cf_software_update_configuration_machine_runs) as g:
         g.custom_command('list', 'automation_account_list')
         g.custom_show_command('show', 'automation_account_show')
         g.custom_command('create', 'automation_account_create')
