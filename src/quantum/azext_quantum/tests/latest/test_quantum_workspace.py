@@ -162,14 +162,6 @@ class QuantumWorkspacesScenarioTest(ScenarioTest):
         test_location = get_test_workspace_location()
         test_resource_group = get_test_resource_group()
         test_workspace_temp = get_test_workspace_random_name()
-        # test_storage_account = get_test_workspace_storage()
-
-        # NOTE: The following command will not fail when Credits For All providers are in the region:
-        # # Attempt to create workspace, but omit the provider/SKU parameter
-        # try:
-        #     self.cmd(f'az quantum workspace create -g {test_resource_group} -w {test_workspace_temp} -l {test_location} -a {test_storage_account} --skip-role-assignment')
-        # except RequiredArgumentMissingError:
-        #     pass    
 
         # Attempt to create workspace, but omit the storage account parameter
         issue_cmd_with_param_missing(self, f'az quantum workspace create -w {test_workspace_temp} -l {test_location} -g {test_resource_group} -r "Microsoft/Basic"',
