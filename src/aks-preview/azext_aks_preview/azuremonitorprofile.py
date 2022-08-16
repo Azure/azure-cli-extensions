@@ -611,6 +611,38 @@ def create_rules(cmd, cluster_region, cluster_subscription, cluster_resource_gro
     else:
         raise error
 
+def delete_dcra(cmd, cluster_region, cluster_subscription, cluster_resource_group_name, cluster_name):
+    from azure.cli.core.util import send_raw_request
+    print("Calling function delete_dcra")
+
+    cluster_resource_id = "/subscriptions/{0}/resourceGroups/{1}/providers/Microsoft.ContainerService/managedClusters/{2}".format(
+        cluster_subscription,
+        cluster_resource_group_name,
+        cluster_name
+    )
+
+    dcra_name = get_default_dcra_name(cluster_region, cluster_name)
+    dcra_resource_id = "/subscriptions/{0}/resourceGroups/{1}/providers/Microsoft.Insights/dataCollectionRuleAssociations/{2}".format(
+        cluster_subscription,
+        cluster_resource_group_name,
+        dcra_name
+    )
+
+    # only create or delete the association between the DCR and cluster
+    association_body = json.dumps({"location": cluster_region, "properties": {}})
+    association_url = f"https://management.azure.com{cluster_resource_id}/providers/Microsoft.Insights/dataCollectionRuleAssociations/{dcra_name}?api-version=2021-09-01-preview"
+    for _ in range(3):
+        try:
+            send_raw_request(cmd.cli_ctx, "DELETE", association_url,
+                             body=association_body)
+            error = None
+            return True
+        except CLIError as e:
+            error = e
+            return False
+    else:
+        raise error
+
 def link_azure_monitor_profile_artifacts(cmd,
             cluster_subscription,
             cluster_resource_group_name,
@@ -657,6 +689,9 @@ def unlink_azure_monitor_profile_artifacts(cmd,
             raw_parameters,
         ):
     print("Calling unlink_azure_monitor_profile_artifacts...")
+    # Remove DCRA link
+    isSuccessfulDeletion = delete_dcra(cmd, cluster_region, cluster_subscription, cluster_resource_group_name, cluster_name)
+    print("DCRA removal successful -> ", isSuccessfulDeletion)
 
 # pylint: disable=too-many-locals,too-many-branches,too-many-statements,line-too-long
 def ensure_azure_monitor_profile_prerequisites(
