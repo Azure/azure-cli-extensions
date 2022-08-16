@@ -88,7 +88,15 @@ def read_ssh_logs(ssh_sub, print_ssh_logs, op_info, delete_cert, delete_keys):
         if "debug1:" not in next_line and \
            "debug2:" not in next_line and \
            "debug3:" not in next_line:
-            print(next_line, end='', file=sys.stderr)
+
+            # Filter out known logs that don't start with "debug", 
+            # but that are not useful error messages or banners.
+            if not next_line.startswith('Authenticated to') and \
+               not next_line.startswith('Transferred: sent') and \
+               not next_line.startswith('Bytes per second: sent') and \
+               not next_line.startswith('OpenSSH_'):
+                print(next_line, end='', file=sys.stderr)
+            
             _check_for_known_errors(next_line, delete_cert, log_list)
         elif print_ssh_logs:         
             print(next_line, end='', file=sys.stderr)      
