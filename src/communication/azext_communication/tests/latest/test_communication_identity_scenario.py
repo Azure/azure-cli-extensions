@@ -28,7 +28,7 @@ class CommunicationIdentityScenarios(ScenarioTest):
     @CommunicationResourcePreparer(resource_group_parameter_name='rg')
     def test_create_user(self, communication_resource_info):
         os.environ['AZURE_COMMUNICATION_CONNECTION_STRING'] = communication_resource_info[1]
-        res = self.cmd('az communication identity create-user').get_output_in_json()
+        res = self.cmd('az communication identity user create').get_output_in_json()
         assert res is not None
         assert res['properties']['id'] == res['rawId']
 
@@ -37,11 +37,11 @@ class CommunicationIdentityScenarios(ScenarioTest):
     @CommunicationResourcePreparer(resource_group_parameter_name='rg')
     def test_delete_user(self, communication_resource_info):
         os.environ['AZURE_COMMUNICATION_CONNECTION_STRING'] = communication_resource_info[1]
-        res = self.cmd('az communication identity create-user').get_output_in_json()
+        res = self.cmd('az communication identity user create').get_output_in_json()
         user_id = res['properties']['id']
 
         self.kwargs.update({ 'user_id': user_id })
-        self.cmd('az communication identity delete-user --user-id {user_id}')
+        self.cmd('az communication identity user delete --user {user_id}')
 
     @ResourceGroupPreparer(name_prefix='clitestcommunication_MyResourceGroup'[:7], key='rg', parameter_name='rg')
     @CommunicationResourcePreparer(resource_group_parameter_name='rg')
@@ -62,7 +62,7 @@ class CommunicationIdentityScenarios(ScenarioTest):
         self.kwargs.update({'id': id})
 
         val = self.cmd(
-            'az communication identity issue-access-token --scope chat --user-id {id}').get_output_in_json()
+            'az communication identity issue-access-token --scope chat --userid {id}').get_output_in_json()
         self.assertIsNotNone(val['token'])
     
 
@@ -78,8 +78,41 @@ class CommunicationIdentityScenarios(ScenarioTest):
 
     @ResourceGroupPreparer(name_prefix='clitestcommunication_MyResourceGroup'[:7], key='rg', parameter_name='rg')
     @CommunicationResourcePreparer(resource_group_parameter_name='rg')
+    def test_token_issue(self, communication_resource_info):
+        os.environ['AZURE_COMMUNICATION_CONNECTION_STRING'] = communication_resource_info[1]
+
+        val = self.cmd(
+            'az communication identity token issue --scope chat').get_output_in_json()
+        self.assertIsNotNone(val['token'])
+
+    @ResourceGroupPreparer(name_prefix='clitestcommunication_MyResourceGroup'[:7], key='rg', parameter_name='rg')
+    @CommunicationResourcePreparer(resource_group_parameter_name='rg')
+    def test_token_issue_with_id(self, communication_resource_info):
+        
+        os.environ['AZURE_COMMUNICATION_CONNECTION_STRING'] = communication_resource_info[1]
+
+        id = get_test_identity_id(self.is_live, self.in_recording, communication_resource_info[1])
+        self.kwargs.update({'id': id})
+
+        val = self.cmd(
+            'az communication identity token issue --scope chat --user {id}').get_output_in_json()
+        self.assertIsNotNone(val['token'])
+    
+
+    @ResourceGroupPreparer(name_prefix='clitestcommunication_MyResourceGroup'[:7], key='rg', parameter_name='rg')
+    @CommunicationResourcePreparer(resource_group_parameter_name='rg')
+    def test_token_issue_with_multiple_scopes(self, communication_resource_info):
+        os.environ['AZURE_COMMUNICATION_CONNECTION_STRING'] = communication_resource_info[1]
+
+        val = self.cmd(
+            'az communication identity token issue --scope voip chat').get_output_in_json()
+        self.assertIsNotNone(val['token'])
+        
+
+    @ResourceGroupPreparer(name_prefix='clitestcommunication_MyResourceGroup'[:7], key='rg', parameter_name='rg')
+    @CommunicationResourcePreparer(resource_group_parameter_name='rg')
     def test_revoke_access_tokens(self, communication_resource_info):
         os.environ['AZURE_COMMUNICATION_CONNECTION_STRING'] = communication_resource_info[1]
         id = get_test_identity_id(self.is_live, self.in_recording, communication_resource_info[1])
         self.kwargs.update({'id': id})
-        self.cmd('az communication identity revoke-access-tokens --user-id {id}')
+        self.cmd('az communication identity token revoke --user {id}')

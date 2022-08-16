@@ -21,7 +21,7 @@ class CommunicationChatScenarios(ScenarioTest):
     def __create_thread(self, topic):
         self.kwargs.update({
             'topic': topic })
-        return self.cmd('az communication chat create-thread --topic \"{topic}\"').get_output_in_json()
+        return self.cmd('az communication chat thread create --topic \"{topic}\"').get_output_in_json()
 
 
     def __create_user(self, communication_resource_info):
@@ -30,7 +30,7 @@ class CommunicationChatScenarios(ScenarioTest):
             self.kwargs.update({ 'connection_string':  connection_str})
         else:
             os.environ['AZURE_COMMUNICATION_CONNECTION_STRING'] = connection_str
-        res = self.cmd('az communication identity issue-access-token --scope chat').get_output_in_json()
+        res = self.cmd('az communication identity token issue --scope chat').get_output_in_json()
         return res['user_id']
 
 
@@ -41,7 +41,7 @@ class CommunicationChatScenarios(ScenarioTest):
         if self.is_live or self.in_recording:
             os.environ['AZURE_COMMUNICATION_CONNECTION_STRING'] = communication_resource_info[1]
             self.kwargs.update({ 'connection_string':  communication_resource_info[1] })
-            res = self.cmd('az communication identity issue-access-token --scope chat').get_output_in_json()
+            res = self.cmd('az communication identity token issue --scope chat').get_output_in_json()
             return res['token']
         else:
             # header is encoded form of 
@@ -70,7 +70,7 @@ class CommunicationChatScenarios(ScenarioTest):
     @CommunicationResourcePreparer(resource_group_parameter_name='rg')
     def test_chat_list_threads_with_env_auth(self, communication_resource_info):
         self.__update_environ(communication_resource_info)
-        threads = self.cmd('az communication chat list-threads').get_output_in_json()
+        threads = self.cmd('az communication chat thread list').get_output_in_json()
         assert len(threads) == 0
         
 
@@ -81,7 +81,7 @@ class CommunicationChatScenarios(ScenarioTest):
         self.kwargs.update({
             'access_token': token,
             'endpoint': endpoint })
-        threads = self.cmd('az communication chat list-threads --endpoint \"{endpoint}\" --access-token \"{access_token}\"').get_output_in_json()
+        threads = self.cmd('az communication chat thread list --endpoint \"{endpoint}\" --access-token \"{access_token}\"').get_output_in_json()
         assert len(threads) == 0
         
 
@@ -97,7 +97,7 @@ class CommunicationChatScenarios(ScenarioTest):
         os.environ.pop('AZURE_COMMUNICATION_ENDPOINT', None)
 
         with self.assertRaises(RequiredArgumentMissingError) as raises:
-            self.cmd('az communication chat list-threads').get_output_in_json()
+            self.cmd('az communication chat thread list').get_output_in_json()
 
         assert '--endpoint' in str(raises.exception)
         assert 'AZURE_COMMUNICATION_ENDPOINT' in str(raises.exception)
@@ -111,7 +111,7 @@ class CommunicationChatScenarios(ScenarioTest):
         chat_topic = 'some-topic'
         self.kwargs.update({
             'topic': chat_topic })
-        self.cmd('az communication chat create-thread --topic \"{topic}\"', checks = [
+        self.cmd('az communication chat thread create --topic \"{topic}\"', checks = [
             self.check("errors", None),
             self.check("chatThread.topic", chat_topic),
         ])
@@ -123,7 +123,7 @@ class CommunicationChatScenarios(ScenarioTest):
         self.__update_environ(communication_resource_info)
 
         with self.assertRaises(SystemExit) as raises:
-            self.cmd('az communication chat create-thread').get_output_in_json()
+            self.cmd('az communication chat thread create').get_output_in_json()
         assert raises.exception.code == 2
 
 
@@ -139,7 +139,7 @@ class CommunicationChatScenarios(ScenarioTest):
         thread_id = res['chatThread']['id']
         
         self.kwargs.update({ 'thread_id': thread_id })
-        self.cmd('az communication chat delete-thread --thread-id {thread_id}')
+        self.cmd('az communication chat thread delete --thread {thread_id}')
 
 
     @ResourceGroupPreparer(name_prefix='clitestcommunication_MyResourceGroup'[:7], key='rg', parameter_name='rg')
@@ -150,11 +150,11 @@ class CommunicationChatScenarios(ScenarioTest):
         chat_topic = 'some-topic'
         self.kwargs.update({
             'topic': chat_topic })
-        thread = self.cmd('az communication chat create-thread --topic \"{topic}\"').get_output_in_json()
+        thread = self.cmd('az communication chat thread create --topic \"{topic}\"').get_output_in_json()
         thread_id = thread['chatThread']['id']
         self.kwargs.update({
             'thread_id': thread_id })
-        participants = self.cmd('az communication chat list-participants --thread-id {thread_id}').get_output_in_json()
+        participants = self.cmd('az communication chat participant list --thread {thread_id}').get_output_in_json()
         assert len(participants) == 1
         assert participants[0]['shareHistoryTime'] == '1970-01-01T00:00:00+00:00'
 
@@ -170,7 +170,7 @@ class CommunicationChatScenarios(ScenarioTest):
         self.kwargs.update({
             'thread_id': thread_id })
         with self.assertRaises(HttpResponseError) as raises:
-            self.cmd('az communication chat list-participants --thread-id {thread_id}', checks = [
+            self.cmd('az communication chat participant list --thread {thread_id}', checks = [
                 self.check('httpStatusCode', '400')])
 
 
@@ -185,7 +185,7 @@ class CommunicationChatScenarios(ScenarioTest):
         self.kwargs.update({
             'topic': "chat-topic" })
 
-        thread = self.cmd('az communication chat create-thread --topic \"{topic}\"').get_output_in_json()
+        thread = self.cmd('az communication chat thread create --topic \"{topic}\"').get_output_in_json()
         thread_id = thread['chatThread']['id']
 
         # add the new user to the chat thread
@@ -194,7 +194,7 @@ class CommunicationChatScenarios(ScenarioTest):
             'user_id': user_id,
             'access_token': token })
 
-        add_res = self.cmd('az communication chat add-participant --thread-id {thread_id} --user-id {user_id}').get_output_in_json()
+        add_res = self.cmd('az communication chat participant add --thread {thread_id} --user {user_id}').get_output_in_json()
 
         assert len(add_res) == 0
 
@@ -207,7 +207,7 @@ class CommunicationChatScenarios(ScenarioTest):
         # create a new thread
         self.kwargs.update({
             'topic': "chat-topic" })
-        thread = self.cmd('az communication chat create-thread --topic \"{topic}\"').get_output_in_json()
+        thread = self.cmd('az communication chat thread create --topic \"{topic}\"').get_output_in_json()
         thread_id = thread['chatThread']['id']
 
         # add a fake user to the chat thread
@@ -217,7 +217,7 @@ class CommunicationChatScenarios(ScenarioTest):
             'user_id': user_id,
             'access_token': token })
 
-        add_res = self.cmd('az communication chat add-participant --thread-id {thread_id} --user-id {user_id}', checks = [
+        add_res = self.cmd('az communication chat participant add --thread {thread_id} --user {user_id}', checks = [
             self.check('[0].code', '403'),
             self.check('[0].message', 'Permissions check failed'),
             self.check('[0].target', user_id) ]).get_output_in_json()
@@ -229,7 +229,7 @@ class CommunicationChatScenarios(ScenarioTest):
             'user_id': '8:acs:fakeid===' })
 
         with self.assertRaises(Exception) as raises:
-            self.cmd('az communication chat add-participant --thread-id {thread_id} --user-id {user_id}', checks = [
+            self.cmd('az communication chat participant add --thread {thread_id} --user {user_id}', checks = [
                 self.check('CommunicationError.code', 'Bad Request')])
 
         assert 'Identifier format is invalid' in str(raises.exception)
@@ -253,18 +253,18 @@ class CommunicationChatScenarios(ScenarioTest):
             'thread_id': thread_id,
             'user_id': user_id })
 
-        add_res = self.cmd('az communication chat add-participant --thread-id {thread_id} --user-id {user_id}').get_output_in_json()
+        add_res = self.cmd('az communication chat participant add --thread {thread_id} --user {user_id}').get_output_in_json()
         assert len(add_res) == 0
 
         # remove the new user from the chat thread
-        self.cmd('az communication chat remove-participant --thread-id {thread_id} --user-id {user_id}')        
+        self.cmd('az communication chat participant remove --thread {thread_id} --user {user_id}')        
 
         # try to remove a user with invalid id
         self.kwargs.update({
             'user_id': '8:acs:fakeid' })
 
         with self.assertRaises(HttpResponseError) as raises:
-            self.cmd('az communication chat remove-participant --thread-id {thread_id} --user-id {user_id}', checks = [
+            self.cmd('az communication chat participant remove --thread {thread_id} --user {user_id}', checks = [
                 self.check('CommunicationError.code', 'Bad Request')])        
 
         assert 'Identifier format is invalid' in str(raises.exception)
@@ -272,11 +272,11 @@ class CommunicationChatScenarios(ScenarioTest):
         # remove the original user from the chat thread
         self.kwargs.update({
             'user_id': owner_id })
-        self.cmd('az communication chat remove-participant --thread-id {thread_id} --user-id {user_id}')
+        self.cmd('az communication chat participant remove --thread {thread_id} --user {user_id}')
 
         # try to remove the original user again, should raise an error
         with self.assertRaises(HttpResponseError) as raises:
-            self.cmd('az communication chat remove-participant --thread-id {thread_id} --user-id {user_id}')
+            self.cmd('az communication chat participant remove --thread {thread_id} --user {user_id}')
 
         assert 'The initiator doesn\'t have the permission to perform the requested operation.' in str(raises.exception)
 
@@ -298,7 +298,7 @@ class CommunicationChatScenarios(ScenarioTest):
             'thread_id': thread_id,
             'user_id': user_id,
             'display_name': display_name })
-        add_res = self.cmd('az communication chat add-participant --thread-id {thread_id} --user-id {user_id} --display-name {display_name}').get_output_in_json()
+        add_res = self.cmd('az communication chat participant add --thread {thread_id} --user {user_id} --display-name {display_name}').get_output_in_json()
         assert len(add_res) == 0
 
 
@@ -319,7 +319,7 @@ class CommunicationChatScenarios(ScenarioTest):
             'thread_id': thread_id,
             'user_id': user_id,
             'start_time': start_time})
-        add_res = self.cmd('az communication chat add-participant --thread-id {thread_id} --user-id {user_id} --start-time {start_time}').get_output_in_json()
+        add_res = self.cmd('az communication chat participant add --thread {thread_id} --user {user_id} --start-time {start_time}').get_output_in_json()
         assert len(add_res) == 0
 
 
@@ -334,7 +334,7 @@ class CommunicationChatScenarios(ScenarioTest):
 
         self.kwargs.update({
             'thread_id': thread_id })
-        messages = self.cmd('az communication chat list-messages --thread-id {thread_id}').get_output_in_json()
+        messages = self.cmd('az communication chat message list --thread {thread_id}').get_output_in_json()
         assert len(messages) > 0
 
 
@@ -351,7 +351,7 @@ class CommunicationChatScenarios(ScenarioTest):
         self.kwargs.update({
             'thread_id': thread_id,
             'start_time': start_time })
-        messages = self.cmd('az communication chat list-messages --thread-id {thread_id} --start-time {start_time}').get_output_in_json()
+        messages = self.cmd('az communication chat message list --thread {thread_id} --start-time {start_time}').get_output_in_json()
         assert len(messages) > 0
 
 
@@ -368,7 +368,7 @@ class CommunicationChatScenarios(ScenarioTest):
         self.kwargs.update({
             'thread_id': thread_id,
             'content': content })
-        message = self.cmd('az communication chat send-message --thread-id {thread_id} --content {content}').get_output_in_json()
+        message = self.cmd('az communication chat message send --thread {thread_id} --content {content}').get_output_in_json()
         assert message['id'] is not None
         
 
@@ -384,7 +384,7 @@ class CommunicationChatScenarios(ScenarioTest):
         self.kwargs.update({
             'thread_id': thread_id })
         with self.assertRaises(SystemExit) as raises:
-            self.cmd('az communication chat send-message --thread-id {thread_id}').get_output_in_json()
+            self.cmd('az communication chat message send --thread {thread_id}').get_output_in_json()
         assert raises.exception.code == 2
 
     @ResourceGroupPreparer(name_prefix='clitestcommunication_MyResourceGroup'[:7], key='rg', parameter_name='rg')
@@ -400,7 +400,7 @@ class CommunicationChatScenarios(ScenarioTest):
         self.kwargs.update({
             'thread_id': thread_id,
             'content': content })
-        message = self.cmd('az communication chat send-message --thread-id {thread_id} --content {content} --message-type text').get_output_in_json()
+        message = self.cmd('az communication chat message send --thread {thread_id} --content {content} --message-type text').get_output_in_json()
         assert message['id'] is not None
 
 
@@ -417,7 +417,7 @@ class CommunicationChatScenarios(ScenarioTest):
         self.kwargs.update({
             'thread_id': thread_id,
             'content': content })
-        message = self.cmd('az communication chat send-message --thread-id {thread_id} --content {content} --message-type html').get_output_in_json()
+        message = self.cmd('az communication chat message send --thread {thread_id} --content {content} --message-type html').get_output_in_json()
         assert message['id'] is not None
 
 
@@ -434,11 +434,11 @@ class CommunicationChatScenarios(ScenarioTest):
         self.kwargs.update({
             'thread_id': thread_id,
             'content': content })
-        sent_message = self.cmd('az communication chat send-message --thread-id {thread_id} --content {content} --message-type html').get_output_in_json()
+        sent_message = self.cmd('az communication chat message send --thread {thread_id} --content {content} --message-type html').get_output_in_json()
 
         self.kwargs.update({
             'message_id': sent_message['id'] })
-        message = self.cmd('az communication chat get-message --thread-id {thread_id} --message-id {message_id}').get_output_in_json()
+        message = self.cmd('az communication chat message get --thread {thread_id} --message-id {message_id}').get_output_in_json()
         assert message['content']['message'] == content
 
 
@@ -456,14 +456,14 @@ class CommunicationChatScenarios(ScenarioTest):
         self.kwargs.update({
             'thread_id': thread_id,
             'content': content })
-        message = self.cmd('az communication chat send-message --thread-id {thread_id} --content {content}').get_output_in_json()
+        message = self.cmd('az communication chat message send --thread {thread_id} --content {content}').get_output_in_json()
 
         # and update it
         new_content = '\"Hello there!\"'
         self.kwargs.update({
             'content': new_content,
             'message_id': message['id'] })
-        self.cmd('az communication chat update-message --thread-id {thread_id} --message-id {message_id} --content {content}')
+        self.cmd('az communication chat message update --thread {thread_id} --message-id {message_id} --content {content}')
         
 
     @ResourceGroupPreparer(name_prefix='clitestcommunication_MyResourceGroup'[:7], key='rg', parameter_name='rg')
@@ -480,12 +480,12 @@ class CommunicationChatScenarios(ScenarioTest):
         self.kwargs.update({
             'thread_id': thread_id,
             'content': content })
-        message = self.cmd('az communication chat send-message --thread-id {thread_id} --content {content}').get_output_in_json()
+        message = self.cmd('az communication chat message send --thread {thread_id} --content {content}').get_output_in_json()
 
         # and delete it
         self.kwargs.update({
             'message_id': message['id'] })
-        self.cmd('az communication chat delete-message --thread-id {thread_id} --message-id {message_id}')
+        self.cmd('az communication chat message delete --thread {thread_id} --message-id {message_id}')
         
 
     @ResourceGroupPreparer(name_prefix='clitestcommunication_MyResourceGroup'[:7], key='rg', parameter_name='rg')
@@ -502,13 +502,13 @@ class CommunicationChatScenarios(ScenarioTest):
         self.kwargs.update({
             'thread_id': thread_id,
             'content': content })
-        message = self.cmd('az communication chat send-message --thread-id {thread_id} --content {content}').get_output_in_json()
+        message = self.cmd('az communication chat message send --thread {thread_id} --content {content}').get_output_in_json()
 
         new_content = '\"Hello there!\"'
         self.kwargs.update({
             'content': new_content,
             'message_id': message['id'] })
-        self.cmd('az communication chat update-message --thread-id {thread_id} --message-id {message_id} --content {content}')
+        self.cmd('az communication chat message update --thread {thread_id} --message-id {message_id} --content {content}')
         
 
     @ResourceGroupPreparer(name_prefix='clitestcommunication_MyResourceGroup'[:7], key='rg', parameter_name='rg')
@@ -525,7 +525,7 @@ class CommunicationChatScenarios(ScenarioTest):
         self.kwargs.update({
             'thread_id': thread_id,
             'topic': new_topic })
-        self.cmd('az communication chat update-topic --thread-id {thread_id} --topic {topic}')
+        self.cmd('az communication chat thread update-topic --thread {thread_id} --topic {topic}')
         
 
     @ResourceGroupPreparer(name_prefix='clitestcommunication_MyResourceGroup'[:7], key='rg', parameter_name='rg')
@@ -539,17 +539,17 @@ class CommunicationChatScenarios(ScenarioTest):
 
         self.kwargs.update({
             'thread_id': thread_id })
-        receipts = self.cmd('az communication chat list-read-receipts --thread-id {thread_id}').get_output_in_json()
+        receipts = self.cmd('az communication chat message receipt list --thread {thread_id}').get_output_in_json()
         assert len(receipts) == 0
         
-        messages = self.cmd('az communication chat list-messages --thread-id {thread_id}').get_output_in_json()
+        messages = self.cmd('az communication chat message list --thread {thread_id}').get_output_in_json()
         message_id = messages[0]['id']
 
         self.kwargs.update({
             'message_id': message_id })
-        self.cmd('az communication chat send-read-receipt --thread-id {thread_id} --message-id {message_id}')
+        self.cmd('az communication chat message receipt send --thread {thread_id} --message-id {message_id}')
 
-        receipts = self.cmd('az communication chat list-read-receipts --thread-id {thread_id}').get_output_in_json()
+        receipts = self.cmd('az communication chat message receipt list --thread {thread_id}').get_output_in_json()
         assert len(receipts) == 1
 
         
