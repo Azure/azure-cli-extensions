@@ -14,6 +14,7 @@ from azure.cli.core.azclierror import (
     ValidationError,
     InvalidArgumentValueError,
     MutuallyExclusiveArgumentError,
+    CLIError,
 )
 from azure.cli.core.commands.client_factory import get_subscription_id
 from azure.cli.command_modules.appservice._create_util import (
@@ -52,7 +53,8 @@ from ._constants import (MAXIMUM_SECRET_LENGTH,
                          CONTAINER_APPS_RP,
                          ACR_IMAGE_SUFFIX,
                          MAXIMUM_CONTAINER_APP_NAME_LENGTH,
-                         ACR_TASK_TEMPLATE)
+                         ACR_TASK_TEMPLATE,
+                         DEFAULT_PORT)
 
 from .custom import (
     create_managed_environment,
@@ -326,7 +328,9 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
 
         task_name = "cli_build_containerapp"
         registry_name = (self.registry_server[: self.registry_server.rindex(ACR_IMAGE_SUFFIX)]).lower()
-        task_content = ACR_TASK_TEMPLATE.replace("{{image_name}}", image_name)
+        if not self.target_port:
+            self.target_port = DEFAULT_PORT
+        task_content = ACR_TASK_TEMPLATE.replace("{{image_name}}", image_name).replace("{{target_port}}", str(self.target_port))
         task_client = cf_acr_tasks(self.cmd.cli_ctx)
         run_client = cf_acr_runs(self.cmd.cli_ctx)
         task_command_kwargs = {"resource_type": ResourceType.MGMT_CONTAINERREGISTRY, 'operation_group': 'webhooks'}
@@ -345,7 +349,13 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
             sleep(10)
 
             logger.warning("Running ACR build...")
-            acr_task_run(self.cmd, run_client, task_name, registry_name, file=task_file.name, context_path=source)
+            try:
+                acr_task_run(self.cmd, run_client, task_name, registry_name, file=task_file.name, context_path=source)
+            except CLIError as e:
+                logger.error("Failed to automatically generate a docker container from your source. \n"
+                             "See the ACR logs above for more error information. \nPlease check the supported langauges for autogenerating docker containers (https://github.com/microsoft/Oryx/blob/main/doc/supportedRuntimeVersions.md), "
+                             "or consider using a Dockerfile for your app.")
+                raise e
 
         for k, v in old_command_kwargs.items():
             self.cmd.command_kwargs[k] = v
