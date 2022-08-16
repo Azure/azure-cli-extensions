@@ -1258,14 +1258,6 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         # this parameter does not need dynamic completion
         # validation
         if enable_validation:
-            if self.decorator_mode == DecoratorMode.CREATE:
-                if enable_apiserver_vnet_integration:
-                    # remove this validation after we support public cluster
-                    if not self._get_enable_private_cluster(enable_validation=False):
-                        raise RequiredArgumentMissingError(
-                            "--apiserver-vnet-integration is only supported for private cluster right now. "
-                            "Please use it together with --enable-private-cluster"
-                        )
             if self.decorator_mode == DecoratorMode.UPDATE:
                 if enable_apiserver_vnet_integration:
                     if self._get_apiserver_subnet_id(enable_validation=False) is None:
@@ -1338,6 +1330,74 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         :return: bool
         """
         return self._get_apiserver_subnet_id(enable_validation=True)
+
+    def _get_enable_private_cluster(self, enable_validation: bool = False) -> bool:
+        """Internal function to obtain the value of enable_private_cluster.
+
+        This function supports the option of enable_validation.
+        For UPDATE: if existing cluster is not using apiserver vnet integration, raise an ArgumentUsageError;
+
+        :return: bool
+        """
+        # read the original value passed by the command
+        enable_apiserver_vnet_integration = self.raw_param.get("enable_apiserver_vnet_integration")
+        enable_private_cluster = self.raw_param.get("enable_private_cluster")
+
+        # this parameter does not need dynamic completion
+        # validation
+        if enable_validation:
+            if self.decorator_mode == DecoratorMode.UPDATE:
+                if enable_private_cluster and not enable_apiserver_vnet_integration:
+                    if self.mc.api_server_access_profile is None or self.mc.api_server_access_profile.enable_vnet_integration is not True:
+                        raise ArgumentUsageError(
+                            "Enabling private cluster requires enabling apiserver vnet integration(--enable-apiserver-vnet-integration)."
+                        )
+
+        return enable_private_cluster
+
+    def get_enable_private_cluster(self) -> bool:
+        """Obtain the value of enable_private_cluster.
+
+        This function will verify the parameter by default. When enable_private_cluster is specified,
+        For UPDATE: if enable-apiserver-vnet-integration is not used and existing cluster is not using apiserver vnet integration, raise an ArgumentUsageError
+
+        :return: bool
+        """
+        return self._get_enable_private_cluster(enable_validation=True)
+
+    def _get_disable_private_cluster(self, enable_validation: bool = False) -> bool:
+        """Internal function to obtain the value of disable_private_cluster.
+
+        This function supports the option of enable_validation.
+        For UPDATE: if existing cluster is not using apiserver vnet integration, raise an ArgumentUsageError;
+
+        :return: bool
+        """
+        # read the original value passed by the command
+        enable_apiserver_vnet_integration = self.raw_param.get("enable_apiserver_vnet_integration")
+        disable_private_cluster = self.raw_param.get("disable_private_cluster")
+
+        # this parameter does not need dynamic completion
+        # validation
+        if enable_validation:
+            if self.decorator_mode == DecoratorMode.UPDATE:
+                if disable_private_cluster and not enable_apiserver_vnet_integration:
+                    if self.mc.api_server_access_profile is None or self.mc.api_server_access_profile.enable_vnet_integration is not True:
+                        raise ArgumentUsageError(
+                            "Disabling private cluster requires enabling apiserver vnet integration(--enable-apiserver-vnet-integration)."
+                        )
+
+        return disable_private_cluster
+
+    def get_disable_private_cluster(self) -> bool:
+        """Obtain the value of disable_private_cluster.
+
+        This function will verify the parameter by default. When disable_private_cluster is specified,
+        For UPDATE: if enable-apiserver-vnet-integration is not used and existing cluster is not using apiserver vnet integration, raise an ArgumentUsageError
+
+        :return: bool
+        """
+        return self._get_disable_private_cluster(enable_validation=True)
 
     def get_dns_zone_resource_id(self) -> Union[str, None]:
         """Obtain the value of ip_families.
@@ -1635,6 +1695,8 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         """
         mc = super().set_up_api_server_access_profile(mc)
         if self.context.get_enable_apiserver_vnet_integration():
+            if mc.api_server_access_profile is None:
+                mc.api_server_access_profile = self.models.ManagedClusterAPIServerAccessProfile()
             mc.api_server_access_profile.enable_vnet_integration = True
         if self.context.get_apiserver_subnet_id():
             mc.api_server_access_profile.subnet_id = self.context.get_apiserver_subnet_id()
@@ -2048,6 +2110,14 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
             mc.api_server_access_profile.enable_vnet_integration = True
         if self.context.get_apiserver_subnet_id():
             mc.api_server_access_profile.subnet_id = self.context.get_apiserver_subnet_id()
+
+        if self.context.get_enable_private_cluster():
+            mc.api_server_access_profile.enable_private_cluster = True
+        if self.context.get_disable_private_cluster():
+            mc.api_server_access_profile.enable_private_cluster = False
+        private_dns_zone = self.context.get_private_dns_zone()
+        if private_dns_zone is not None:
+            mc.api_server_access_profile.private_dns_zone = private_dns_zone
 
         return mc
 

@@ -791,6 +791,9 @@ def aks_update(
     disable_keda=False,
     enable_node_restriction=False,
     disable_node_restriction=False,
+    enable_private_cluster=False,
+    disable_private_cluster=False,
+    private_dns_zone=None,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()

@@ -2135,17 +2135,6 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         )
         self.assertEqual(ctx_3.get_enable_apiserver_vnet_integration(), True)
 
-        ctx_4 = AKSPreviewManagedClusterContext(
-            self.cmd,
-            AKSManagedClusterParamDict({
-                "enable_apiserver_vnet_integration": True,
-            }),
-            self.models,
-            decorator_mode=DecoratorMode.CREATE,
-        )
-        with self.assertRaises(RequiredArgumentMissingError):
-            ctx_4.get_enable_apiserver_vnet_integration()
-
         ctx_5 = AKSPreviewManagedClusterContext(
             self.cmd,
             AKSManagedClusterParamDict({
@@ -2819,6 +2808,27 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
             api_server_access_profile=ground_truth_api_server_access_profile_2,
         )
         self.assertEqual(dec_mc_2, ground_truth_mc_2)
+
+        dec_3 = AKSPreviewManagedClusterCreateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_apiserver_vnet_integration": True,
+                "enable_private_cluster": False,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_3 = self.models.ManagedCluster(location="test_location")
+        dec_3.context.attach_mc(mc_3)
+        dec_mc_3 = dec_3.set_up_api_server_access_profile(mc_3)
+        ground_truth_api_server_access_profile_3 = self.models.ManagedClusterAPIServerAccessProfile(
+            enable_vnet_integration=True,
+        )
+        ground_truth_mc_3 = self.models.ManagedCluster(
+            location="test_location",
+            api_server_access_profile=ground_truth_api_server_access_profile_3,
+        )
+        self.assertEqual(dec_mc_3, ground_truth_mc_3)
 
     def test_build_gitops_addon_profile(self):
         # default
