@@ -149,7 +149,7 @@ helps['communication identity issue-access-token'] = """
                az communication identity issue-access-token --scope chat
       - name: issue access-token with multiple scopes and user
         text: |-
-               az communication identity issue-access-token --scope chat voip --user "8:acs:xxxxxx"
+               az communication identity issue-access-token --scope chat voip --userid "8:acs:xxxxxx"
 """
 
 helps['communication identity token'] = """
