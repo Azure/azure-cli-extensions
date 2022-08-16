@@ -118,7 +118,7 @@ helps['communication identity'] = """
 """
 
 helps['communication identity user'] = """
-    type: subgroup
+    type: group
     short-summary: Commands to manage user Identities for a CommunicationService resource.
 """
 
@@ -140,8 +140,20 @@ helps['communication identity user delete'] = """
                az communication identity user delete --user "8:acs:xxxxxx"
 """
 
+helps['communication identity issue-access-token'] = """
+    type: command
+    short-summary: "Issues a new access token with the specified scopes for a given User Identity. If no User Identity is specified, creates a new User Identity as well."
+    examples:
+      - name: issue-access-token
+        text: |-
+               az communication identity issue-access-token --scope chat
+      - name: issue access-token with multiple scopes and user
+        text: |-
+               az communication identity issue-access-token --scope chat voip --user "8:acs:xxxxxx"
+"""
+
 helps['communication identity token'] = """
-    type: subgroup
+    type: group
     short-summary: Commands to manage user tokens for a CommunicationService resource.
 """
 
@@ -154,7 +166,7 @@ helps['communication identity token issue'] = """
                az communication identity token issue --scope chat
       - name: issue access-token with multiple scopes and user
         text: |-
-               az communication identity tolen issue --scope chat voip --user "8:acs:xxxxxx"
+               az communication identity token issue --scope chat voip --user "8:acs:xxxxxx"
 """
 
 helps['communication identity token revoke'] = """
@@ -172,7 +184,7 @@ helps['communication identity token get-for-teams-user'] = """
     examples:
       - name: token get-for-teams-user
         text: |-
-               az communication identity token get-for-teams-user --aad-token "aad-123-xyz" --client "app-id-123-xyz" --user-object "uid"
+               az communication identity token get-for-teams-user --aad-token "aad-123-xyz" --client "app-id-123-xyz" --aad-user "uid"
 """
 
 helps['communication sms'] = """
@@ -180,7 +192,7 @@ helps['communication sms'] = """
     short-summary: Commands to manage SMS for a CommunicationService resource.
 """
 
-helps['communication sms send-sms'] = """
+helps['communication sms send'] = """
     type: command
     short-summary: "Sends an SMS from the sender phone number to the recipient(s) phone number."
     examples:
@@ -188,6 +200,39 @@ helps['communication sms send-sms'] = """
         text: |-
                az communication sms send --sender "+1833xxxxxxx" \
 --recipient "+1425xxxxxxx" "+1426xxxxxxx" "+1427xxxxxxx" --message "Hello there!!"
+"""
+
+helps['communication sms send-sms'] = """
+    type: command
+    short-summary: "Sends an SMS from the sender phone number to the recipient(s) phone number."
+    examples:
+      - name: send-sms
+        text: |-
+               az communication sms send-sms --sender "+1833xxxxxxx" \
+--recipient "+1425xxxxxxx" "+1426xxxxxxx" "+1427xxxxxxx" --message "Hello there!!"
+"""
+
+helps['communication phonenumbers'] = """
+    type: group
+    short-summary: Commands to manage phone numbers for a CommunicationService resource.
+"""
+
+helps['communication phonenumbers list-phonenumbers'] = """
+    type: command
+    short-summary: "Lists all phone numbers associated with the CommunicationService resource."
+    examples:
+      - name: list-phonenumbers
+        text: |-
+               az communication phonenumbers list-phonenumbers
+"""
+
+helps['communication phonenumbers show-phonenumber'] = """
+    type: command
+    short-summary: "Shows the details for a phone number associated with the CommunicationService resource."
+    examples:
+      - name: show-phonenumber
+        text: |-
+               az communication phonenumbers show-phonenumber --phonenumber "+1833xxxxxxx"
 """
 
 helps['communication phonenumber'] = """
@@ -219,7 +264,7 @@ helps['communication chat'] = """
 """
 
 helps['communication chat thread'] = """
-    type: subgroup
+    type: group
     short-summary: Commands to manage chat thread of a CommunicationService resource.
 """
 
@@ -260,7 +305,7 @@ helps['communication chat thread update-topic'] = """
 """
 
 helps['communication chat participant'] = """
-    type: subgroup
+    type: group
     short-summary: Commands to manage participants in a chat thread of a CommunicationService resource.
 """
 
@@ -292,7 +337,7 @@ helps['communication chat participant remove'] = """
 """
 
 helps['communication chat message'] = """
-    type: subgroup
+    type: group
     short-summary: Commands to manage messages in a chat thread of a CommunicationService resource.
 """
 
@@ -339,6 +384,11 @@ helps['communication chat message delete'] = """
       - name: chat delete message
         text: |-
                az communication chat message delete --thread "19:a-bcd=xyz" --message-id "12345678"
+"""
+
+helps['communication chat message receipt'] = """
+    type: group
+    short-summary: Commands to manage message read-receipts in a chat thread of a CommunicationService resource.
 """
 
 helps['communication chat message receipt list'] = """

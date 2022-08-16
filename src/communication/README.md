@@ -75,7 +75,7 @@ az communication identity token revoke --user "8:acs:xxxxxx"
 ```
 ##### Get-Token-For-Teams-User #####
 ```
-az communication identity token get-for-teams-user --aad-token "MyAzureADToken" --client "MyAzureADAppId" --user-object "MyTeamsUserId"
+az communication identity token get-for-teams-user --aad-token "MyAzureADToken" --client "MyAzureADAppId" --aad-user "MyTeamsUserId"
 ```
 ##### Send-SMS #####
 ```
