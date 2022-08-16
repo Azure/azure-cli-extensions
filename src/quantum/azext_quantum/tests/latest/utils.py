@@ -53,3 +53,19 @@ def all_providers_are_in_capabilities(provider_sku_string, capabilities_string):
         if provider not in capabilities_string:
             return False
     return True
+
+import pytest
+import sys
+import traceback
+
+TEST_ERROR_MESSAGE_PREAMBLE = "the following arguments are required: "
+
+# def _test_missing_param(calling_object, command, help_example):
+def issue_cmd_with_param_missing(calling_object, command, help_example):
+    try:
+        calling_object.cmd(command)
+    except:
+        print(traceback.format_exc())
+        out, err = calling_object.capsys.readouterr()
+        assert TEST_ERROR_MESSAGE_PREAMBLE in out
+        assert help_example in err 

@@ -4,12 +4,13 @@
 # --------------------------------------------------------------------------------------------
 
 import os
+import pytest
 import unittest
 
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse, live_only
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
 from azure.cli.core.azclierror import RequiredArgumentMissingError, ResourceNotFoundError, InvalidArgumentValueError
-from .utils import get_test_resource_group, get_test_workspace, get_test_workspace_location, get_test_workspace_storage, get_test_workspace_storage_grs, get_test_workspace_random_name, get_test_workspace_random_long_name, get_test_capabilities, get_test_workspace_provider_sku_list, all_providers_are_in_capabilities
+from .utils import get_test_resource_group, get_test_workspace, get_test_workspace_location, get_test_workspace_storage, get_test_workspace_storage_grs, get_test_workspace_random_name, get_test_workspace_random_long_name, get_test_capabilities, get_test_workspace_provider_sku_list, all_providers_are_in_capabilities, issue_cmd_with_param_missing
 from ..._version_check_helper import check_version
 from datetime import datetime
 from ...__init__ import CLI_REPORTED_VERSION
@@ -151,16 +152,17 @@ class QuantumWorkspacesScenarioTest(ScenarioTest):
         else:
             self.skipTest(f"Skipping test_workspace_create_destroy: One or more providers in '{test_provider_sku_list}' not found in AZURE_QUANTUM_CAPABILITIES")
 
+    @pytest.fixture(autouse=True)
+    def _pass_fixtures(self, capsys):
+        self.capsys = capsys
+
     @live_only()
     def test_workspace_errors(self):
         # initialize values
         test_location = get_test_workspace_location()
         test_resource_group = get_test_resource_group()
         test_workspace_temp = get_test_workspace_random_name()
-        test_storage_account = get_test_workspace_storage()
-
-        # error_msg_preamble = "the following arguments are required: "
-        # self.cmd('az quantum workspace clear')    <---<<< This can interfere with the target tests that expect a workspace to be set    
+        # test_storage_account = get_test_workspace_storage()
 
         # NOTE: The following command will not fail when Credits For All providers are in the region:
         # # Attempt to create workspace, but omit the provider/SKU parameter
@@ -169,36 +171,9 @@ class QuantumWorkspacesScenarioTest(ScenarioTest):
         # except RequiredArgumentMissingError:
         #     pass    
 
-        # >>>>> This one didn't fail because another test has set workspace defaults
-        # # Attempt to create workspace, but omit the resource group parameter
-        # try:
-        #     self.cmd(f'az quantum workspace create -w {test_workspace_temp} -l {test_location} -a {test_storage_account} -r "Microsoft/Basic"')
-        #     assert False
-        # except RequiredArgumentMissingError as e:
-        #     assert e.error_msg == error_msg_preamble + "--resource-group/-g"
-
         # Attempt to create workspace, but omit the storage account parameter
-        try:
-            self.cmd(f'az quantum workspace create -w {test_workspace_temp} -l {test_location} -g {test_resource_group} -r "Microsoft/Basic"')
-        # >>>>>>>>>> This works
-        except:
-            pass
-        # >>>>>>>>>> These didn't
-        # except RequiredArgumentMissingError as e:
-        #     assert e.error_msg == error_msg_preamble + "--storage-account/-a"
-        # except Exception as e:
-        #     # assert e.error_msg == error_msg_preamble + "--storage-account/-a"
-        # except Exception:
-        #     pass
-
-
-        # >>>> This could cause problems if another test is running asynchronously and has issued "az quantum workspace set" 
-        # # Attempt to delete a workspace, but omit required parameters
-        # try:
-        #     self.cmd('az quantum workspace delete')
-        # except RequiredArgumentMissingError as e:
-        #     assert e.error_msg == error_msg_preamble + "--resource-group/-g, --workspace-name/-w"
-
+        issue_cmd_with_param_missing(self, f'az quantum workspace create -w {test_workspace_temp} -l {test_location} -g {test_resource_group} -r "Microsoft/Basic"',
+                            'az quantum workspace create -g MyResourceGroup -w MyWorkspace -l MyLocation -r "MyProvider1 / MySKU1, MyProvider2 / MySKU2" -a MyStorageAccountName To display a list of available providers and their SKUs, use the following command: az quantum offerings list -l MyLocation -o table\nCreate a new Azure Quantum workspace with a specific list of providers.')
 
 
     @live_only()
