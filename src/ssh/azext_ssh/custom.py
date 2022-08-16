@@ -43,6 +43,9 @@ def ssh_vm(cmd, resource_group_name=None, vm_name=None, ssh_ip=None, public_key_
     # include openssh client logs to --debug output to make it easier to users to debug connection issued.
     if '--debug' in cmd.cli_ctx.data['safe_params'] and set(['-v', '-vv', '-vvv']).isdisjoint(ssh_args):
         ssh_args = ['-vvv'] if not ssh_args else ['-vvv'] + ssh_args
+    
+    if '-E' in ssh_args:
+        raise azclierror.ArgumentUsageError("The -E SSH agrgument is not supported.")
 
     _assert_args(resource_group_name, vm_name, ssh_ip, resource_type, cert_file, local_user)
 

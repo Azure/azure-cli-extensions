@@ -107,9 +107,6 @@ def start_ssh_tunnel(op_info):
     else:
         op_info.ssh_args = ['-v'] + op_info.ssh_args
 
-    if '-E' in op_info.ssh_args:
-        raise azclierror.BadRequestError("Can't use -E ssh parameter when using --rdp")
-
     command = [ssh_utils.get_ssh_client_path('ssh', op_info.ssh_client_folder), op_info.get_host()]
     command = command + op_info.build_args() + op_info.ssh_args
 

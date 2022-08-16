@@ -1,5 +1,9 @@
 Release History
 ===============
+1.1.3
+-----
+* Fix bug where extension prints ssh banners after the connection is closed.
+
 1.1.2
 -----
 * Remove dependency to cryptography (Az CLI core alredy has cryptography)
