@@ -9,7 +9,6 @@ import pytest
 import unittest
 
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse, live_only
-# from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
 from azure.cli.testsdk import ScenarioTest
 from azure.cli.core.azclierror import InvalidArgumentValueError, AzureInternalError
 
