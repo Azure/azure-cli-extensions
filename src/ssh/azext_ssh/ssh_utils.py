@@ -5,12 +5,11 @@
 import os
 import platform
 import subprocess
-import multiprocessing as mp
 import time
 import datetime
 import re
-import colorama
 import sys
+import colorama
 
 from knack import log
 from azure.cli.core import azclierror
@@ -28,13 +27,13 @@ def start_ssh_connection(op_info, delete_keys, delete_cert):
     try:
         # Initialize these so that if something fails in the try block before these
         # are initialized, then the finally block won't fail.
-        
+
         connection_status = None
 
         ssh_arg_list = []
         if op_info.ssh_args:
             ssh_arg_list = op_info.ssh_args
-        
+
         print_ssh_logs = False
         if not set(['-v', '-vv', '-vvv']).isdisjoint(ssh_arg_list):
             print_ssh_logs = True
@@ -57,15 +56,15 @@ def start_ssh_connection(op_info, delete_keys, delete_cert):
         connection_duration = time.time()
         logger.debug("Running ssh command %s", ' '.join(command))
 
-        # pylint: disable=subprocess-run-check
         try:
+            # pylint: disable=consider-using-with
             ssh_process = subprocess.Popen(command, stderr=subprocess.PIPE, env=env, encoding='utf-8')
         except OSError as e:
             colorama.init()
             raise azclierror.BadRequestError(f"Failed to run ssh command with error: {str(e)}.",
                                              const.RECOMMENDATION_SSH_CLIENT_NOT_FOUND)
-        
-        read_ssh_logs(ssh_process, print_ssh_logs, op_info, delete_cert, delete_keys)
+
+        _read_ssh_logs(ssh_process, print_ssh_logs, op_info, delete_cert, delete_keys)
 
         connection_duration = (time.time() - connection_duration) / 60
         ssh_connection_data = {'Context.Default.AzureCLI.SSHConnectionDurationInMinutes': connection_duration}
@@ -79,34 +78,34 @@ def start_ssh_connection(op_info, delete_keys, delete_cert):
         do_cleanup(delete_keys, delete_cert, op_info.cert_file, op_info.private_key_file, op_info.public_key_file)
 
 
-def read_ssh_logs(ssh_sub, print_ssh_logs, op_info, delete_cert, delete_keys):
+def _read_ssh_logs(ssh_sub, print_ssh_logs, op_info, delete_cert, delete_keys):
     log_list = []
     ssh_sucess = False
-    
+
     next_line = ssh_sub.stderr.readline()
-    while next_line:  
+    while next_line:
         if "debug1:" not in next_line and \
            "debug2:" not in next_line and \
            "debug3:" not in next_line:
 
-            # Filter out known logs that don't start with "debug", 
+            # Filter out known logs that don't start with "debug",
             # but that are not useful error messages or banners.
             if not next_line.startswith('Authenticated to') and \
                not next_line.startswith('Transferred: sent') and \
                not next_line.startswith('Bytes per second: sent') and \
                not next_line.startswith('OpenSSH_'):
                 print(next_line, end='', file=sys.stderr)
-            
+
             _check_for_known_errors(next_line, delete_cert, log_list)
-        elif print_ssh_logs:         
-            print(next_line, end='', file=sys.stderr)      
+        elif print_ssh_logs:
+            print(next_line, end='', file=sys.stderr)
 
         log_list.append(next_line)
-        
+
         if "debug1: Entering interactive session." in next_line:
             logger.debug("SSH Connection estalished succesfully.")
-            do_cleanup(delete_keys, delete_cert, op_info.cert_file, op_info.private_key_file, op_info.public_key_file)    
-               
+            do_cleanup(delete_keys, delete_cert, op_info.cert_file, op_info.private_key_file, op_info.public_key_file)
+
         next_line = ssh_sub.stderr.readline()
 
     ssh_sub.wait()
@@ -205,9 +204,8 @@ def _check_for_known_errors(error_message, delete_cert, log_lines):
         try:
             regex = 'OpenSSH.*_([0-9]+)\\.([0-9]+)'
             local_major, local_minor = re.findall(regex, log_lines[0])[0]
-            remote_major, remote_minor = re.findall(regex,
-                                                    file_utils.get_line_that_contains("remote software version",
-                                                                                       log_lines))[0]
+            remote_version_line = file_utils.get_line_that_contains("remote software version", log_lines)
+            remote_major, remote_minor = re.findall(regex, remote_version_line)[0]
             local_major = int(local_major)
             local_minor = int(local_minor)
             remote_major = int(remote_major)
@@ -217,23 +215,23 @@ def _check_for_known_errors(error_message, delete_cert, log_lines):
 
         if (remote_major < 7 or (remote_major == 7 and remote_minor < 8)) and \
            (local_major > 8 or (local_major == 8 and local_minor >= 8)):
-                logger.warning("The OpenSSH server version in the target VM %d.%d is too old. "
-                               "Version incompatible with OpenSSH client version %d.%d. "
-                               "Refer to https://bugzilla.mindrot.org/show_bug.cgi?id=3351 for more information.",
-                               remote_major, remote_minor, local_major, local_minor)
+            logger.warning("The OpenSSH server version in the target VM %d.%d is too old. "
+                           "Version incompatible with OpenSSH client version %d.%d. "
+                           "Refer to https://bugzilla.mindrot.org/show_bug.cgi?id=3351 for more information.",
+                           remote_major, remote_minor, local_major, local_minor)
 
         elif (local_major < 7 or (local_major == 7 and local_minor < 8)) and \
              (remote_major > 8 or (remote_major == 8 and remote_minor >= 8)):
-                logger.warning("The OpenSSH client version %d.%d is too old. "
-                               "Version incompatible with OpenSSH server version %d.%d in the target VM. "
-                               "Refer to https://bugzilla.mindrot.org/show_bug.cgi?id=3351 for more information.",
-                               local_major, local_minor, remote_major, remote_minor)
+            logger.warning("The OpenSSH client version %d.%d is too old. "
+                           "Version incompatible with OpenSSH server version %d.%d in the target VM. "
+                           "Refer to https://bugzilla.mindrot.org/show_bug.cgi?id=3351 for more information.",
+                           local_major, local_minor, remote_major, remote_minor)
 
     regex = ("{\"level\":\"fatal\",\"msg\":\"sshproxy: error copying information from the connection: "
              ".*\",\"time\":\".*\"}.*")
     if re.search(regex, error_message):
-                 logger.error("Please make sure SSH port is allowed using \"azcmagent config list\" in the target "
-                              "Arc Server. Ensure SSHD is running on the target machine.\n")
+        logger.error("Please make sure SSH port is allowed using \"azcmagent config list\" in the target "
+                     "Arc Server. Ensure SSHD is running on the target machine.\n")
 
 
 def get_ssh_client_path(ssh_command="ssh", ssh_client_folder=None):
