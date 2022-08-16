@@ -62,7 +62,7 @@ def _load_phonenumber_arguments(self):
     with self.argument_context('communication phonenumbers show-phonenumber') as c:
         c.argument('phonenumber', options_list=['--phonenumber', '-p'],
                    type=str, help='Phone number to get information about')
-    with self.argument_context('communication phonenumbers show') as c:
+    with self.argument_context('communication phonenumber show') as c:
         c.argument('phonenumber', options_list=['--phonenumber'],
                    type=str, help='Phone number to get information about')
 
