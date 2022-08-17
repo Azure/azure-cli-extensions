@@ -66,7 +66,9 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
         'contain at most 10 tags.  Tag keys must be between 1 and 128 characters, and tag values must be '
         'between 0 and 256 characters. Valid tag key and value characters include: lowercase and uppercase '
         'letters, digits (0-9), space (` `), plus (+), minus (-), period (.), solidus (/), colon (:), equals '
-        '(=), underscore (_).'
+        '(=), underscore (_). Operations on Blob tags can be performed by Storage Blob Data Owner or a '
+        'security principal that has been given permission to the '
+        'Microsoft.Storage/storageAccounts/blobServices/containers/blobs/tags/write.'
     )
 
     marker_type = CLIArgumentType(
