@@ -2114,7 +2114,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
             mc.security_profile.defender = defender
 
         return mc
-    
+
     def update_node_restriction(self, mc: ManagedCluster) -> ManagedCluster:
         """Update security profile nodeRestriction for the ManagedCluster object.
 
