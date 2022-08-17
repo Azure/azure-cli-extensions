@@ -76,6 +76,7 @@ ManagedClusterStorageProfileBlobCSIDriver = TypeVar('ManagedClusterStorageProfil
 ManagedClusterStorageProfileSnapshotController = TypeVar('ManagedClusterStorageProfileSnapshotController')
 ManagedClusterIngressProfileWebAppRouting = TypeVar("ManagedClusterIngressProfileWebAppRouting")
 ManagedClusterSecurityProfileDefender = TypeVar("ManagedClusterSecurityProfileDefender")
+ManagedClusterSecurityProfileNodeRestriction = TypeVar("ManagedClusterSecurityProfileNodeRestriction")
 
 
 # pylint: disable=too-few-public-methods
@@ -1395,6 +1396,66 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         )
         return azure_defender
 
+    def _get_enable_node_restriction(self, enable_validation: bool = False) -> bool:
+        """Internal function to obtain the value of enable_node_restriction.
+
+        This function supports the option of enable_node_restriction. When enabled, if both enable_node_restriction and disable_node_restriction are
+        specified, raise a MutuallyExclusiveArgumentError.
+
+        :return: bool
+        """
+        # Read the original value passed by the command.
+        enable_node_restriction = self.raw_param.get("enable_node_restriction")
+
+        # This parameter does not need dynamic completion.
+        if enable_validation:
+            if enable_node_restriction and self._get_disable_node_restriction(enable_validation=False):
+                raise MutuallyExclusiveArgumentError(
+                    "Cannot specify --enable-node-restriction and --disable-node-restriction at the same time."
+                )
+
+        return enable_node_restriction
+
+    def get_enable_node_restriction(self) -> bool:
+        """Obtain the value of enable_node_restriction.
+
+        This function will verify the parameter by default. If both enable_node_restriction and disable_node_restriction are specified, raise a
+        MutuallyExclusiveArgumentError.
+
+        :return: bool
+        """
+        return self._get_enable_node_restriction(enable_validation=True)
+
+    def _get_disable_node_restriction(self, enable_validation: bool = False) -> bool:
+        """Internal function to obtain the value of disable_node_restriction.
+
+        This function supports the option of enable_validation. When enabled, if both enable_node_restriction and disable_node_restriction are
+        specified, raise a MutuallyExclusiveArgumentError.
+
+        :return: bool
+        """
+        # Read the original value passed by the command.
+        disable_node_restriction= self.raw_param.get("disable_node_restriction")
+
+        # This option is not supported in create mode, hence we do not read the property value from the `mc` object.
+        # This parameter does not need dynamic completion.
+        if enable_validation:
+            if disable_node_restriction and self._get_enable_node_restriction(enable_validation=False):
+                raise MutuallyExclusiveArgumentError(
+                    "Cannot specify --enable-node-restriction and --disable-node-restriction at the same time."
+                )
+
+        return disable_node_restriction
+
+    def get_disable_node_restriction(self) -> bool:
+        """Obtain the value of disable_node_restriction.
+
+        This function will verify the parameter by default. If both enable_node_restriction and disable_node_restriction are specified, raise a
+        MutuallyExclusiveArgumentError.
+
+        :return: bool
+        """
+        return self._get_disable_node_restriction(enable_validation=True)
 
 class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
     def __init__(
@@ -1701,6 +1762,22 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
 
         return mc
 
+    def set_up_node_restriction(self, mc: ManagedCluster) -> ManagedCluster:
+        """Set up security profile nodeRestriction for the ManagedCluster object.
+
+        :return: the ManagedCluster object
+        """
+        self._ensure_mc(mc)
+
+        if self.context.get_enable_node_restriction():
+            if mc.security_profile is None:
+                    mc.security_profile = self.models.ManagedClusterSecurityProfile()
+            mc.security_profile.node_restriction = self.models.ManagedClusterSecurityProfileNodeRestriction(
+                enabled=True,
+            )
+
+        return mc
+
     def construct_mc_profile_preview(self, bypass_restore_defaults: bool = False) -> ManagedCluster:
         """The overall controller used to construct the default ManagedCluster profile.
 
@@ -1729,6 +1806,8 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
 
         # set up azure keyvalut kms
         mc = self.set_up_azure_keyvault_kms(mc)
+        # set up node restriction
+        mc = self.set_up_node_restriction(mc)
         # set up cluster snapshot
         mc = self.set_up_creationdata_of_cluster_snapshot(mc)
         # set up storage profile
@@ -2034,6 +2113,34 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
             mc.security_profile.defender = defender
 
         return mc
+    
+    def update_node_restriction(self, mc: ManagedCluster) -> ManagedCluster:
+        """Update security profile nodeRestriction for the ManagedCluster object.
+
+        :return: the ManagedCluster object
+        """
+        self._ensure_mc(mc)
+
+        if self.context.get_enable_node_restriction():
+            if mc.security_profile is None:
+                mc.security_profile = self.models.ManagedClusterSecurityProfile()
+            if mc.security_profile.node_restriction is None:
+                mc.security_profile.node_restriction = self.models.ManagedClusterSecurityProfileNodeRestriction()
+
+            # set enabled
+            mc.security_profile.node_restriction.enabled = True
+
+        if self.context.get_disable_node_restriction():
+            if mc.security_profile is None:
+                mc.security_profile = self.models.ManagedClusterSecurityProfile()
+            if mc.security_profile.node_restriction is None:
+                mc.security_profile.node_restriction = self.models.ManagedClusterSecurityProfileNodeRestriction()
+
+            # set disabled
+            mc.security_profile.node_restriction.enabled = False
+
+        return mc
+
 
     def update_mc_profile_preview(self) -> ManagedCluster:
         """The overall controller used to update the preview ManagedCluster profile.
@@ -2063,6 +2170,8 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
 
         # update azure keyvalut kms
         mc = self.update_azure_keyvault_kms(mc)
+        # update node restriction
+        mc = self.update_node_restriction(mc)
         # update stroage profile
         mc = self.update_storage_profile(mc)
         # update workload auto scaler profile

@@ -805,6 +805,12 @@ helps['aks update'] = """
         - name: --defender-config
           type: string
           short-summary: Path to JSON file containing Microsoft Defender profile configurations.
+        - name: --enable-node-restriction
+          type: bool
+          short-summary: Enable node restriction option on cluster.
+        - name: --disable-node-restriction
+          type: bool
+          short-summary: Disable node restriction option on cluster.
     examples:
       - name: Reconcile the cluster back to its current state.
         text: az aks update -g MyResourceGroup -n MyManagedCluster

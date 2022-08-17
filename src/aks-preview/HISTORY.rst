@@ -13,6 +13,13 @@ Pending
 +++++++
 *  [BREAKING CHANGE] Since the service no longer supports updating source resource id for role binding, so remove --source-resource-id of `aks trustedaccess rolebinding update` command
 
+0.5.94
+++++++
+
+* Add --enable-node-restriction
+* Update to use 2022-06-02-preview api version.
+
+
 0.5.93
 ++++++
 

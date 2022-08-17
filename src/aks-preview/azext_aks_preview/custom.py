@@ -667,6 +667,7 @@ def aks_create(
     apiserver_subnet_id=None,
     dns_zone_resource_id=None,
     enable_keda=False,
+    enable_node_restriction=False,
     # nodepool
     host_group_id=None,
     crg_id=None,
@@ -783,6 +784,8 @@ def aks_update(
     apiserver_subnet_id=None,
     enable_keda=False,
     disable_keda=False,
+    enable_node_restriction=False,
+    disable_node_restriction=False,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
