@@ -567,16 +567,17 @@ def reset_nic(cmd, vm_name, resource_group_name, yes=False):
         ip_config_object = json.loads(ip_config_string)
 
         subnet_id = ip_config_object['subnet']['id']
-        vnet_name = subnet_id.split('/')[-3]
+        subnet_id_tokens = subnet_id.split('/')
+        subnet_name = subnet_id_tokens[-1]
+        vnet_name = subnet_id_tokens[-3]
         ipconfig_name = ip_config_object['name']
         orig_ip_address = ip_config_object['privateIpAddress']
         # Dynamic | Static
         orig_ip_allocation_method = ip_config_object['privateIpAllocationMethod']
 
         # Get aviailable ip address within subnet
-        # Change to az network vnet subnet list-available-ips when it is available
-        get_available_ip_command = 'az network vnet list-available-ips -g {g} -n {vnet} --query [0] -o tsv' \
-                                   .format(g=resource_group_name, vnet=vnet_name)
+        get_available_ip_command = 'az network vnet subnet list-available-ips -g {g} --vnet-name {vnet} --name {subnet} --query [0] -o tsv' \
+                                   .format(g=resource_group_name, vnet=vnet_name, subnet=subnet_name)
         swap_ip_address = _call_az_command(get_available_ip_command)
         if not swap_ip_address:
             # Raise available IP not found
