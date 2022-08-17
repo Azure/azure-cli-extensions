@@ -10,13 +10,38 @@
 # pylint: disable=too-many-lines
 
 
+def monitor_data_collection_endpoint_list(client,
+                                          resource_group_name=None):
+    if resource_group_name:
+        return client.list_by_resource_group(resource_group_name=resource_group_name)
+    return client.list_by_subscription()
+
+
+def monitor_data_collection_endpoint_show(client,
+                                          resource_group_name,
+                                          data_collection_endpoint_name):
+    return client.get(resource_group_name=resource_group_name,
+                      data_collection_endpoint_name=data_collection_endpoint_name)
+
+
+def monitor_data_collection_endpoint_delete(client,
+                                            resource_group_name,
+                                            data_collection_endpoint_name):
+    return client.delete(resource_group_name=resource_group_name,
+                         data_collection_endpoint_name=data_collection_endpoint_name)
+
+
 def monitor_data_collection_rule_association_list(client,
                                                   resource_group_name=None,
                                                   data_collection_rule_name=None,
+                                                  data_collection_endpoint_name=None,
                                                   resource_uri=None):
     if resource_group_name and data_collection_rule_name is not None:
         return client.list_by_rule(resource_group_name=resource_group_name,
                                    data_collection_rule_name=data_collection_rule_name)
+    elif resource_group_name and data_collection_endpoint_name is not None:
+        return client.list_by_data_collection_endpoint(resource_group_name=resource_group_name,
+                                                       data_collection_endpoint_name=data_collection_endpoint_name)
     return client.list_by_resource(resource_uri=resource_uri)
 
 

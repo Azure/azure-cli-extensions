@@ -10,7 +10,7 @@ from codecs import open
 from setuptools import setup, find_packages
 
 # HISTORY.rst entry.
-VERSION = '0.1.0'
+VERSION = '0.1.1'
 try:
     from azext_datadog.manual.version import VERSION
 except ImportError:
@@ -31,8 +31,9 @@ CLASSIFIERS = [
 ]
 
 DEPENDENCIES = []
+
 try:
-    from .manual.dependency import DEPENDENCIES
+    from azext_datadog.manual.dependency import DEPENDENCIES
 except ImportError:
     pass
 
@@ -47,7 +48,7 @@ setup(
     description='Microsoft Azure Command-Line Tools MicrosoftDatadogClient Extension',
     author='Microsoft Corporation',
     author_email='azpycli@microsoft.com',
-    url='https://github.com/Azure/azure-cli-extensions/tree/master/src/datadog',
+    url='https://github.com/Azure/azure-cli-extensions/tree/main/src/datadog',
     long_description=README + '\n\n' + HISTORY,
     license='MIT',
     classifiers=CLASSIFIERS,

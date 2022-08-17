@@ -18,6 +18,12 @@ helps['network firewall create'] = """
     - name: Create a Azure firewall with private ranges
       text: |
         az network firewall create -g MyResourceGroup -n MyFirewall --private-ranges 10.0.0.0 10.0.0.0/16 IANAPrivateRanges
+    - name: Create a Virtual WAN Secure Hub Firewall
+      text: |
+        az network firewall create -g MyResourceGroup -n MyFirewall --sku AZFW_Hub --tier Standard --virtual-hub MyVirtualHub1 --public-ip-count 1
+    - name: Create a Basic SKU Firewall with Management IP Configuration
+      text: |
+        az network firewall create -g MyResourceGroup -n MyFirewall --sku AZFW_VNet --tier Basic --vnet-name MyVNet --conf-name MyIpConfig --m-conf-name MyManagementIpConfig --m-public-ip MyPublicIp
 """
 
 helps['network firewall delete'] = """
@@ -346,7 +352,7 @@ helps['network firewall policy intrusion-detection'] = """
 
 helps['network firewall policy intrusion-detection add'] = """
     type: command
-    short-summary: Add overrided intrusion signature or a bypass rule for intrusion detection
+    short-summary: Add overrided intrusion signature or a bypass rule or private ranges list for intrusion detection
 """
 
 helps['network firewall policy intrusion-detection list'] = """
@@ -402,6 +408,11 @@ helps['network firewall policy rule-collection-group collection add-filter-colle
     short-summary: Add a filter collection into an Azure firewall policy rule collection group.
     long-summary: |
         Common Rule Arguments are used for both Network rule and Application rule. If you want to add more rules into filter collection, please use "az network policy rule-collection-group collection rule add/remove"
+    parameters:
+      - name: --destination-ports
+        short-summary: Space-separated list of destination ports. This argument is supported for Nat and Network Rule.
+        long-summary: |
+            Notice: When the parameter --rule-name is 'network_rule', --destination-ports is required.
     examples:
         - name: Add a filter collection with Network rule into the rule collection group
           text: az network firewall policy rule-collection-group collection add-filter-collection -g {rg} --policy-name {policy} --rule-collection-group-name {collectiongroup}
@@ -459,5 +470,17 @@ helps['network firewall policy rule-collection-group collection rule remove'] = 
     long-summary: |
         Filter collection supports having a list of network rules or application rules.
         NatRule collection supports including a list of nat rules.
+"""
+
+helps['network firewall policy rule-collection-group collection rule update'] = """
+    type: command
+    short-summary: Update a rule of an Azure firewall policy rule collection.
+    long-summary: |
+        Filter collection supports having a list of network rules or application rules.
+        NatRule collection supports including a list of nat rules.
+    examples:
+        - name: Update a rule of an Azure firewall policy rule collection.
+          text: az network firewall policy rule-collection-group collection rule update -g {rg} --policy-name {policy}
+                --rule-collection-group-name {rcg} --collection-name {cn} -n {rule_name} --target-fqdns XXX
 """
 # endregion

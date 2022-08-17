@@ -9,25 +9,37 @@ from azure.cli.core.commands import CliCommandType
 
 def load_command_table(self, _):
 
-    with self.command_group('monitor data-collection', is_experimental=True):
-        pass
-
-    from azext_amcs.generated._client_factory import cf_data_collection_rule_association
+    from azext_amcs.generated._client_factory import cf_data_collection_rule_association, cf_data_collection_rule,\
+        cf_data_collection_endpoint
     monitor_control_service_data_collection_rule_association = CliCommandType(
         operations_tmpl='azext_amcs.vendored_sdks.amcs.operations._data_collection_rule_associations_operations#DataCol'
                         'lectionRuleAssociationsOperations.{}',
         client_factory=cf_data_collection_rule_association)
+    monitor_control_service_data_collection_rule = CliCommandType(
+        operations_tmpl='azext_amcs.vendored_sdks.amcs.operations._data_collection_rules_operations#DataCollectionRules'
+                        'Operations.{}',
+        client_factory=cf_data_collection_rule)
+    monitor_control_service_data_collection_endpoint = CliCommandType(
+        operations_tmpl='azext_amcs.vendored_sdks.amcs.operations._data_collection_endpoints_operations#DataCollectionE'
+                        'ndpointsOperations.{}',
+        client_factory=cf_data_collection_endpoint,
+    )
+
+    with self.command_group('monitor data-collection'):
+        pass
+
+    with self.command_group('monitor data-collection endpoint',
+                            monitor_control_service_data_collection_endpoint,
+                            client_factory=cf_data_collection_endpoint) as g:
+        g.custom_command('create', 'data_collection_endpoint_create')
+        g.custom_command('update', 'data_collection_endpoint_update')
+
     with self.command_group('monitor data-collection rule association',
                             monitor_control_service_data_collection_rule_association,
                             client_factory=cf_data_collection_rule_association) as g:
         g.custom_command('create', 'data_collection_rule_associations_create')
         g.custom_command('update', 'data_collection_rule_associations_update')
 
-    from azext_amcs.generated._client_factory import cf_data_collection_rule
-    monitor_control_service_data_collection_rule = CliCommandType(
-        operations_tmpl='azext_amcs.vendored_sdks.amcs.operations._data_collection_rules_operations#DataCollectionRules'
-                        'Operations.{}',
-        client_factory=cf_data_collection_rule)
     with self.command_group('monitor data-collection rule', monitor_control_service_data_collection_rule,
                             client_factory=cf_data_collection_rule) as g:
         g.custom_command(

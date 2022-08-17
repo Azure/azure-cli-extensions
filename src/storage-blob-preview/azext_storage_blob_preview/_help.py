@@ -6,9 +6,10 @@
 
 from knack.help_files import helps  # pylint: disable=unused-import
 
+
 helps['storage blob copy start'] = """
 type: command
-short-summary: List blobs in a given container.
+short-summary: Start a copy blob job.
 parameters:
   - name: --source-uri -u
     type: string
@@ -147,16 +148,14 @@ examples:
 helps['storage blob upload'] = """
 type: command
 short-summary: Upload a file to a storage blob.
-long-summary: Creates a new blob from a file path, or updates the content of an existing blob with automatic chunking and progress notifications.
+long-summary: Create a new blob from a file path, or updates the content of an existing blob with automatic chunking and progress notifications.
 parameters:
   - name: --type -t
-    short-summary: Defaults to 'page' for *.vhd files, or 'block' otherwise.
+    short-summary: Default to 'page' for *.vhd files, or 'block' otherwise.
   - name: --maxsize-condition
     short-summary: The max length in bytes permitted for an append blob.
   - name: --validate-content
-    short-summary: Specifies that an MD5 hash shall be calculated for each chunk of the blob and verified by the service when the chunk has arrived.
-  - name: --tier
-    short-summary: A page blob tier value to set the blob to. The tier correlates to the size of the blob and number of allowed IOPS. This is only applicable to page blobs on premium storage accounts.
+    short-summary: Specify that an MD5 hash shall be calculated for each chunk of the blob and verified by the service when the chunk has arrived.
 examples:
   - name: Upload to a blob.
     text: az storage blob upload -f /path/to/file -c mycontainer -n MyBlob
@@ -171,4 +170,49 @@ examples:
   - name: Upload to a through pipe.
     text: |
         echo $data | az storage blob upload --data @- -c mycontainer -n myblob --account-name mystorageaccount --account-key 0000-0000
+"""
+
+helps['storage blob query'] = """
+type: command
+short-summary: Enable users to select/project on blob or blob snapshot data by providing simple query expressions.
+examples:
+  - name: Enable users to select/project on blob by providing simple query expressions.
+    text: az storage blob query -c mycontainer -n myblob --query-expression "SELECT _2 from BlobStorage"
+  - name: Enable users to select/project on blob by providing simple query expressions and save in target file.
+    text: az storage blob query -c mycontainer -n myblob --query-expression "SELECT _2 from BlobStorage" --result-file result.csv
+  - name: Enable users to select/project on blob by providing simple query expressions and an input format
+    text: az storage blob query -c mycontainer -n myblob --query-expression "SELECT _2 from BlobStorage" --input-format parquet
+"""
+
+helps['storage blob immutability-policy'] = """
+type: group
+short-summary: Manage blob immutability policy.
+"""
+
+helps['storage blob immutability-policy set'] = """
+type: command
+short-summary: Set blob's immutability policy.
+examples:
+  - name: Set an unlocked immutability policy.
+    text: az storage blob immutability-policy set --expiry-time 2021-09-07T08:00:00Z --policy-mode Unlocked -c mycontainer -n myblob --account-name mystorageaccount
+  - name: Lock a immutability policy.
+    text: az storage blob immutability-policy set --policy-mode Locked -c mycontainer -n myblob --account-name mystorageaccount
+"""
+
+helps['storage blob immutability-policy delete'] = """
+type: command
+short-summary: Delete blob's immutability policy.
+examples:
+  - name: Delete an unlocked immutability policy.
+    text: az storage blob immutability-policy delete -c mycontainer -n myblob --account-name mystorageaccount --account-key 0000-0000
+"""
+
+helps['storage blob set-legal-hold'] = """
+type: command
+short-summary: Set blob legal hold.
+examples:
+  - name: Configure blob legal hold.
+    text: az storage blob set-legal-hold --legal-hold -c mycontainer -n myblob --account-name mystorageaccount --account-key 0000-0000
+  - name: Clear blob legal hold.
+    text: az storage blob set-legal-hold --legal-hold false -c mycontainer -n myblob --account-name mystorageaccount --account-key 0000-0000
 """

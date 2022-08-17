@@ -10,7 +10,7 @@ from codecs import open
 from setuptools import setup, find_packages
 
 # HISTORY.rst entry.
-VERSION = '0.2.0'
+VERSION = '0.1.0'
 try:
     from azext_datafactory.manual.version import VERSION
 except ImportError:
@@ -33,7 +33,7 @@ CLASSIFIERS = [
 DEPENDENCIES = []
 
 try:
-    from .manual.dependency import DEPENDENCIES
+    from azext_datafactory.manual.dependency import DEPENDENCIES
 except ImportError:
     pass
 
@@ -48,7 +48,7 @@ setup(
     description='Microsoft Azure Command-Line Tools DataFactoryManagementClient Extension',
     author='Microsoft Corporation',
     author_email='azpycli@microsoft.com',
-    url='https://github.com/Azure/azure-cli-extensions/tree/master/src/datafactory',
+    url='https://github.com/Azure/azure-cli-extensions/tree/main/src/datafactory',
     long_description=README + '\n\n' + HISTORY,
     license='MIT',
     classifiers=CLASSIFIERS,

@@ -7,7 +7,12 @@
 # Changes may cause incorrect behavior and will be lost if the code is
 # regenerated.
 # --------------------------------------------------------------------------
+
+
 # pylint: disable=protected-access
+
+# pylint: disable=no-self-use
+
 
 import argparse
 from collections import defaultdict
@@ -19,7 +24,7 @@ class AddExtensionProperties(argparse.Action):
         action = self.get_action(values, option_string)
         namespace.extension_properties = action
 
-    def get_action(self, values, option_string):  # pylint: disable=no-self-use
+    def get_action(self, values, option_string):
         try:
             properties = defaultdict(list)
             for (k, v) in (x.split('=', 1) for x in values):
@@ -30,5 +35,85 @@ class AddExtensionProperties(argparse.Action):
         d = {}
         for k in properties:
             v = properties[k]
+
             d[k] = v[0]
+
+        return d
+
+
+class AddWindowsParameters(argparse.Action):
+    def __call__(self, parser, namespace, values, option_string=None):
+        action = self.get_action(values, option_string)
+        namespace.windows_parameters = action
+
+    def get_action(self, values, option_string):
+        try:
+            properties = defaultdict(list)
+            for (k, v) in (x.split('=', 1) for x in values):
+                properties[k].append(v)
+            properties = dict(properties)
+        except ValueError:
+            raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string))
+        d = {}
+        for k in properties:
+            kl = k.lower()
+            v = properties[k]
+
+            if kl == 'kb-numbers-to-exclude':
+                d['kb_numbers_to_exclude'] = v
+
+            elif kl == 'kb-numbers-to-include':
+                d['kb_numbers_to_include'] = v
+
+            elif kl == 'classifications-to-include':
+                d['classifications_to_include'] = v
+
+            elif kl == 'exclude-kbs-requiring-reboot':
+                d['exclude_kbs_requiring_reboot'] = v[0]
+
+            else:
+                raise CLIError(
+                    'Unsupported Key {} is provided for parameter windows-parameters. All possible keys are:'
+                    ' kb-numbers-to-exclude, kb-numbers-to-include, classifications-to-include,'
+                    ' exclude-kbs-requiring-reboot'.format(k)
+                )
+
+        return d
+
+
+class AddLinuxParameters(argparse.Action):
+    def __call__(self, parser, namespace, values, option_string=None):
+        action = self.get_action(values, option_string)
+        namespace.linux_parameters = action
+
+    def get_action(self, values, option_string):
+        try:
+            properties = defaultdict(list)
+            for (k, v) in (x.split('=', 1) for x in values):
+                properties[k].append(v)
+            properties = dict(properties)
+        except ValueError:
+            raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string))
+        d = {}
+        for k in properties:
+            kl = k.lower()
+            v = properties[k]
+
+            if kl == 'package-name-masks-to-exclude':
+                d['package_name_masks_to_exclude'] = v
+
+            elif kl == 'package-name-masks-to-include':
+                d['package_name_masks_to_include'] = v
+
+            elif kl == 'classifications-to-include':
+                d['classifications_to_include'] = v
+
+            else:
+                raise CLIError(
+                    'Unsupported Key {} is provided for parameter linux-parameters. All possible keys are:'
+                    ' package-name-masks-to-exclude, package-name-masks-to-include, classifications-to-include'.format(
+                        k
+                    )
+                )
+
         return d

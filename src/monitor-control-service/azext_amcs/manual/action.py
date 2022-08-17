@@ -99,8 +99,6 @@ class AddDataSourcesPerformanceCounters(argparse._AppendAction):
             v = properties[k]
             if kl == 'streams':
                 d['streams'] = v
-            elif kl == 'transfer-period':
-                d['scheduled_transfer_period'] = v[0]
             elif kl == 'sampling-frequency':
                 try:
                     d['sampling_frequency_in_seconds'] = int(v[0])
@@ -132,8 +130,6 @@ class AddDataSourcesWindowsEventLogs(argparse._AppendAction):
             v = properties[k]
             if kl == 'streams':
                 d['streams'] = v
-            elif kl == 'transfer-period':
-                d['scheduled_transfer_period'] = v[0]
             elif kl == 'x-path-queries':
                 d['x_path_queries'] = v
             elif kl == 'name':

@@ -5,6 +5,7 @@
 
 import os
 from datetime import datetime, timedelta
+
 from azure.cli.testsdk import (LiveScenarioTest, ResourceGroupPreparer, StorageAccountPreparer,
                                JMESPathCheck, JMESPathCheckExists, NoneCheck, api_version_constraint)
 from azure.cli.core.profiles import ResourceType
@@ -47,12 +48,18 @@ class StorageBlobUploadLiveTests(LiveScenarioTest):
 
     @ResourceGroupPreparer()
     @StorageAccountPreparer()
+    def test_storage_blob_upload_5G_file_with_fixed_block_size(self, resource_group, storage_account):
+        self.verify_blob_upload_and_download(resource_group, storage_account, 5 * 1024 * 1024,
+                                             'block', skip_download=True, fix_block_size=True)
+
+    @ResourceGroupPreparer()
+    @StorageAccountPreparer()
     def test_storage_page_blob_upload_10G_file(self, resource_group, storage_account):
         self.verify_blob_upload_and_download(resource_group, storage_account, 10 * 1024 * 1024,
                                              'page', skip_download=True)
 
     def verify_blob_upload_and_download(self, group, account, file_size_kb, blob_type,
-                                        skip_download=False):
+                                        skip_download=False, fix_block_size=False):
         container = self.create_random_name(prefix='cont', length=24)
         local_dir = self.create_temp_dir()
         local_file = self.create_temp_file(file_size_kb, full_random=True)
@@ -68,8 +75,19 @@ class StorageBlobUploadLiveTests(LiveScenarioTest):
         self.cmd('storage blob exists -n {} -c {}'.format(blob_name, container),
                  checks=JMESPathCheck('exists', False))
 
-        self.cmd('storage blob upload -c {} -f "{}" -n {} --type {}'
-                 .format(container, local_file, blob_name, blob_type))
+        def fix_block_blob_size(client, blob_type, length):
+            client._config.max_block_size = 4000 * 1024 * 1024
+            client._config.max_single_put_size = 5000 * 1024 * 1024
+
+        if fix_block_size:
+            from unittest import mock
+            with mock.patch('azext_storage_blob_preview.operations.blob._adjust_block_blob_size',
+                            side_effect=fix_block_blob_size):
+                self.cmd('storage blob upload -c {} -f "{}" -n {} --type {} --timeout 1200'
+                         .format(container, local_file, blob_name, blob_type))
+        else:
+            self.cmd('storage blob upload -c {} -f "{}" -n {} --type {}'
+                     .format(container, local_file, blob_name, blob_type))
 
         self.cmd('storage blob exists -n {} -c {}'.format(blob_name, container),
                  checks=JMESPathCheck('exists', True))
@@ -183,3 +201,49 @@ class StorageBlobURLScenarioTest(StorageScenarioMixin, LiveScenarioTest):
         self.cmd('storage blob undelete --blob-url {} '.format(blob_uri))
         self.storage_cmd('storage blob list -c {}', account_info, container).assert_with_checks(
             JMESPathCheck('length(@)', 1))
+
+
+class StorageBlobQueryExtensionTests(StorageScenarioMixin, LiveScenarioTest):
+    @ResourceGroupPreparer()
+    @StorageAccountPreparer(kind='StorageV2', location='canadacentral')
+    def test_storage_blob_query_scenario(self, resource_group, storage_account):
+        account_info = self.get_account_info(group=resource_group, name=storage_account)
+        container = self.create_container(account_info)
+        csv_blob = self.create_random_name(prefix='csvblob', length=12)
+        curr_dir = os.path.dirname(os.path.realpath(__file__))
+        csv_file = os.path.join(curr_dir, 'quick_query.csv').replace('\\', '\\\\')
+
+        # test csv input
+        self.storage_cmd('storage blob upload -f "{}" -c {} -n {}', account_info, csv_file, container, csv_blob)
+        query_string = "SELECT _2 from BlobStorage"
+        result = self.storage_cmd('storage blob query -c {} -n {} --query-expression "{}"',
+                                  account_info, container, csv_blob, query_string).output
+        self.assertIsNotNone(result)
+
+        # test csv output
+        temp_dir = self.create_temp_dir()
+        result_file = os.path.join(temp_dir, 'result.csv')
+        self.assertFalse(os.path.exists(result_file))
+        self.storage_cmd('storage blob query -c {} -n {} --query-expression "{}" --result-file "{}"',
+                         account_info, container, csv_blob, query_string, result_file)
+        self.assertTrue(os.path.exists(result_file))
+
+        json_blob = self.create_random_name(prefix='jsonblob', length=12)
+        json_file = os.path.join(curr_dir, 'quick_query.json').replace('\\', '\\\\')
+
+        # test json input
+        self.storage_cmd('storage blob upload -f "{}" -c {} -n {}', account_info, json_file, container, json_blob)
+        query_string = "SELECT latitude FROM BlobStorage[*].warehouses[*]"
+        result = self.storage_cmd('storage blob query -c {} -n {} --query-expression "{}" --input-format json',
+                                  account_info, container, json_blob, query_string).output
+        self.assertIsNotNone(result)
+
+        # test parquet
+        parquet_blob = self.create_random_name(prefix='parquet', length=12)
+        parquet_file = os.path.join(curr_dir, 'quick_query.parquet').replace('\\', '\\\\')
+
+        self.storage_cmd('storage blob upload -f "{}" -c {} -n {}', account_info, parquet_file, container, parquet_blob)
+        query_string = "SELECT * FROM BlobStorage where id=0"
+        result = self.storage_cmd('storage blob query -c {} -n {} --query-expression "{}" --input-format parquet',
+                                  account_info, container, parquet_blob, query_string).output
+        self.assertIsNotNone(result)

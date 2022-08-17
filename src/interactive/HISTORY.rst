@@ -3,6 +3,10 @@
 Release History
 ===============
 
+0.4.5
++++++
+* Fix #17740: `az interactive` fails with `progress_patch() got an unexpected keyword argument 'det'`
+
 0.4.4
 +++++
 * Remove dependency of azure-cli-core's ENV_ADDITIONAL_USER_AGENT

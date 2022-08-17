@@ -2,6 +2,18 @@
 
 Release History
 ===============
+0.8.0
++++++
+* az databricks workspace create: Add --public-network-access to allow creating workspace with network access from public internet
+* az databricks workspace create: Add --required-nsg-rules to allow creating workspace with nsg rule for internal
+
+0.7.3
++++++
+* Migrate databricks to track2 SDK
+
+0.7.2
++++++
+* az databricks workspace create: Add --enable-no-public-ip to allow creating workspace with no public ip
 
 0.7.1
 +++++

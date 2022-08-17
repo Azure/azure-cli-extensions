@@ -5,18 +5,26 @@
 
 
 from azure.cli.core import AzCommandsLoader
-from azure.cli.core.profiles import register_resource_type
+from azure.cli.core.profiles import register_resource_type, SDKProfile
 
 # pylint: disable=unused-import
 import azext_aks_preview._help
 from azext_aks_preview._client_factory import CUSTOM_MGMT_AKS_PREVIEW
 
 
+def register_aks_preview_resource_type():
+    register_resource_type(
+        "latest",
+        CUSTOM_MGMT_AKS_PREVIEW,
+        SDKProfile("2022-06-02-preview", {"container_services": "2017-07-01"}),
+    )
+
+
 class ContainerServiceCommandsLoader(AzCommandsLoader):
 
     def __init__(self, cli_ctx=None):
         from azure.cli.core.commands import CliCommandType
-        register_resource_type('latest', CUSTOM_MGMT_AKS_PREVIEW, '2020-11-01')
+        register_aks_preview_resource_type()
 
         acs_custom = CliCommandType(operations_tmpl='azext_aks_preview.custom#{}')
         super(ContainerServiceCommandsLoader, self).__init__(cli_ctx=cli_ctx,
@@ -25,7 +33,7 @@ class ContainerServiceCommandsLoader(AzCommandsLoader):
 
     def load_command_table(self, args):
         super(ContainerServiceCommandsLoader, self).load_command_table(args)
-        from .commands import load_command_table
+        from azext_aks_preview.commands import load_command_table
         load_command_table(self, args)
         return self.command_table
 
@@ -36,7 +44,7 @@ class ContainerServiceCommandsLoader(AzCommandsLoader):
         else:
             super().load_arguments(command)
 
-        from ._params import load_arguments
+        from azext_aks_preview._params import load_arguments
         load_arguments(self, command)
 
 

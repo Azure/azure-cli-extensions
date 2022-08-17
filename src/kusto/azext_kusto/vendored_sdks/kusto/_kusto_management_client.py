@@ -18,33 +18,51 @@ if TYPE_CHECKING:
     from azure.core.credentials import TokenCredential
 
 from ._configuration import KustoManagementClientConfiguration
-from .operations import ClusterOperations
-from .operations import ClusterPrincipalAssignmentOperations
-from .operations import DatabaseOperations
-from .operations import DatabasePrincipalAssignmentOperations
-from .operations import AttachedDatabaseConfigurationOperations
-from .operations import DataConnectionOperations
-from .operations import OperationOperations
+from .operations import ClustersOperations
+from .operations import ClusterPrincipalAssignmentsOperations
+from .operations import DatabasesOperations
+from .operations import AttachedDatabaseConfigurationsOperations
+from .operations import ManagedPrivateEndpointsOperations
+from .operations import DatabasePrincipalAssignmentsOperations
+from .operations import ScriptsOperations
+from .operations import PrivateEndpointConnectionsOperations
+from .operations import PrivateLinkResourcesOperations
+from .operations import DataConnectionsOperations
+from .operations import Operations
+from .operations import OperationsResultsOperations
+from .operations import OperationsResultsLocationOperations
 from . import models
 
 
 class KustoManagementClient(object):
     """The Azure Kusto management API provides a RESTful set of web services that interact with Azure Kusto services to manage your clusters and databases. The API enables you to create, update, and delete clusters and databases.
 
-    :ivar cluster: ClusterOperations operations
-    :vartype cluster: kusto_management_client.operations.ClusterOperations
-    :ivar cluster_principal_assignment: ClusterPrincipalAssignmentOperations operations
-    :vartype cluster_principal_assignment: kusto_management_client.operations.ClusterPrincipalAssignmentOperations
-    :ivar database: DatabaseOperations operations
-    :vartype database: kusto_management_client.operations.DatabaseOperations
-    :ivar database_principal_assignment: DatabasePrincipalAssignmentOperations operations
-    :vartype database_principal_assignment: kusto_management_client.operations.DatabasePrincipalAssignmentOperations
-    :ivar attached_database_configuration: AttachedDatabaseConfigurationOperations operations
-    :vartype attached_database_configuration: kusto_management_client.operations.AttachedDatabaseConfigurationOperations
-    :ivar data_connection: DataConnectionOperations operations
-    :vartype data_connection: kusto_management_client.operations.DataConnectionOperations
-    :ivar operation: OperationOperations operations
-    :vartype operation: kusto_management_client.operations.OperationOperations
+    :ivar clusters: ClustersOperations operations
+    :vartype clusters: azure.mgmt.kusto.operations.ClustersOperations
+    :ivar cluster_principal_assignments: ClusterPrincipalAssignmentsOperations operations
+    :vartype cluster_principal_assignments: azure.mgmt.kusto.operations.ClusterPrincipalAssignmentsOperations
+    :ivar databases: DatabasesOperations operations
+    :vartype databases: azure.mgmt.kusto.operations.DatabasesOperations
+    :ivar attached_database_configurations: AttachedDatabaseConfigurationsOperations operations
+    :vartype attached_database_configurations: azure.mgmt.kusto.operations.AttachedDatabaseConfigurationsOperations
+    :ivar managed_private_endpoints: ManagedPrivateEndpointsOperations operations
+    :vartype managed_private_endpoints: azure.mgmt.kusto.operations.ManagedPrivateEndpointsOperations
+    :ivar database_principal_assignments: DatabasePrincipalAssignmentsOperations operations
+    :vartype database_principal_assignments: azure.mgmt.kusto.operations.DatabasePrincipalAssignmentsOperations
+    :ivar scripts: ScriptsOperations operations
+    :vartype scripts: azure.mgmt.kusto.operations.ScriptsOperations
+    :ivar private_endpoint_connections: PrivateEndpointConnectionsOperations operations
+    :vartype private_endpoint_connections: azure.mgmt.kusto.operations.PrivateEndpointConnectionsOperations
+    :ivar private_link_resources: PrivateLinkResourcesOperations operations
+    :vartype private_link_resources: azure.mgmt.kusto.operations.PrivateLinkResourcesOperations
+    :ivar data_connections: DataConnectionsOperations operations
+    :vartype data_connections: azure.mgmt.kusto.operations.DataConnectionsOperations
+    :ivar operations: Operations operations
+    :vartype operations: azure.mgmt.kusto.operations.Operations
+    :ivar operations_results: OperationsResultsOperations operations
+    :vartype operations_results: azure.mgmt.kusto.operations.OperationsResultsOperations
+    :ivar operations_results_location: OperationsResultsLocationOperations operations
+    :vartype operations_results_location: azure.mgmt.kusto.operations.OperationsResultsLocationOperations
     :param credential: Credential needed for the client to connect to Azure.
     :type credential: ~azure.core.credentials.TokenCredential
     :param subscription_id: Gets subscription credentials which uniquely identify Microsoft Azure subscription. The subscription ID forms part of the URI for every service call.
@@ -63,26 +81,42 @@ class KustoManagementClient(object):
         # type: (...) -> None
         if not base_url:
             base_url = 'https://management.azure.com'
-        self._config = KustoManagementClientConfiguration(credential, subscription_id, **kwargs)
-        self._client = ARMPipelineClient(base_url=base_url, config=self._config, **kwargs)
+        self._config = KustoManagementClientConfiguration(
+            credential, subscription_id, **kwargs)
+        self._client = ARMPipelineClient(
+            base_url=base_url, config=self._config, **kwargs)
 
-        client_models = {k: v for k, v in models.__dict__.items() if isinstance(v, type)}
+        client_models = {k: v for k,
+                         v in models.__dict__.items() if isinstance(v, type)}
         self._serialize = Serializer(client_models)
+        self._serialize.client_side_validation = False
         self._deserialize = Deserializer(client_models)
 
-        self.cluster = ClusterOperations(
+        self.clusters = ClustersOperations(
             self._client, self._config, self._serialize, self._deserialize)
-        self.cluster_principal_assignment = ClusterPrincipalAssignmentOperations(
+        self.cluster_principal_assignments = ClusterPrincipalAssignmentsOperations(
             self._client, self._config, self._serialize, self._deserialize)
-        self.database = DatabaseOperations(
+        self.databases = DatabasesOperations(
             self._client, self._config, self._serialize, self._deserialize)
-        self.database_principal_assignment = DatabasePrincipalAssignmentOperations(
+        self.attached_database_configurations = AttachedDatabaseConfigurationsOperations(
             self._client, self._config, self._serialize, self._deserialize)
-        self.attached_database_configuration = AttachedDatabaseConfigurationOperations(
+        self.managed_private_endpoints = ManagedPrivateEndpointsOperations(
             self._client, self._config, self._serialize, self._deserialize)
-        self.data_connection = DataConnectionOperations(
+        self.database_principal_assignments = DatabasePrincipalAssignmentsOperations(
             self._client, self._config, self._serialize, self._deserialize)
-        self.operation = OperationOperations(
+        self.scripts = ScriptsOperations(
+            self._client, self._config, self._serialize, self._deserialize)
+        self.private_endpoint_connections = PrivateEndpointConnectionsOperations(
+            self._client, self._config, self._serialize, self._deserialize)
+        self.private_link_resources = PrivateLinkResourcesOperations(
+            self._client, self._config, self._serialize, self._deserialize)
+        self.data_connections = DataConnectionsOperations(
+            self._client, self._config, self._serialize, self._deserialize)
+        self.operations = Operations(
+            self._client, self._config, self._serialize, self._deserialize)
+        self.operations_results = OperationsResultsOperations(
+            self._client, self._config, self._serialize, self._deserialize)
+        self.operations_results_location = OperationsResultsLocationOperations(
             self._client, self._config, self._serialize, self._deserialize)
 
     def close(self):

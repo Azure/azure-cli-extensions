@@ -16,8 +16,8 @@ class BlueprintCommandsLoader(AzCommandsLoader):
         blueprint_custom = CliCommandType(
             operations_tmpl='azext_blueprint.custom#{}',
             client_factory=cf_blueprint)
-        super(BlueprintCommandsLoader, self).__init__(cli_ctx=cli_ctx,
-                                                      custom_command_type=blueprint_custom)
+        super().__init__(cli_ctx=cli_ctx,
+                         custom_command_type=blueprint_custom)
 
     def load_command_table(self, args):
         from azext_blueprint.commands import load_command_table

@@ -9,7 +9,7 @@ import os
 import sys
 import shlex
 import unittest
-from mock import Mock, patch
+from unittest.mock import Mock, patch
 from six.moves import configparser
 
 from knack.util import CLIError

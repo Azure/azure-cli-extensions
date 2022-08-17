@@ -8,7 +8,7 @@
 from codecs import open
 from setuptools import setup, find_packages
 
-VERSION = "0.7.0"
+VERSION = "0.8.3"
 
 CLASSIFIERS = [
     'Development Status :: 4 - Beta',
@@ -24,7 +24,7 @@ CLASSIFIERS = [
     'License :: OSI Approved :: MIT License',
 ]
 
-DEPENDENCIES = []
+DEPENDENCIES = ['azure-core']
 
 setup(
     name='storage-preview',
@@ -34,7 +34,7 @@ setup(
     license='MIT',
     author='Microsoft Corporation',
     author_email='azpycli@microsoft.com',
-    url='https://github.com/Azure/azure-cli-extensions/tree/master/src/storage-preview',
+    url='https://github.com/Azure/azure-cli-extensions/tree/main/src/storage-preview',
     classifiers=CLASSIFIERS,
     package_data={
         'azext_storage_preview': ['azext_metadata.json', 'azcopy/*/*']

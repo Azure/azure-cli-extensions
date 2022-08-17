@@ -2,6 +2,7 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
+import os
 import time
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, record_only)
 
@@ -12,7 +13,8 @@ class PowerBIDedicatedScenarioTest(ScenarioTest):
     def test_powerbidedicated_embedded_capacity(self, resource_group):
         self.kwargs.update({
             'name': self.create_random_name(prefix='clipowerbi', length=24),
-            'administrator': "4759ce24-1955-4c57-bc53-357a69cc065f",
+            # 'administrator': "4759ce24-1955-4c57-bc53-357a69cc065f",
+            'administrator': os.environ.get('USER_PRINCIPAL_NAME') if self.is_live else '00000000-0000-0000-0000-000000000000',
             'location': "eastus"
         })
 

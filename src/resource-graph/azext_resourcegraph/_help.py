@@ -25,13 +25,22 @@ helps['graph query'] = """
           short-summary: "Resource Graph query to execute."
         - name: --first
           type: int
-          short-summary: "The maximum number of objects to return. Accepted range: 1-5000."
+          short-summary: "The maximum number of objects to return. Accepted range: 1-1000."
         - name: --skip
           type: int
           short-summary: Ignores the first N objects and then gets the remaining objects.
         - name: --subscriptions -s
           type: string
           short-summary: List of subscriptions to run query against. By default all accessible subscriptions are queried.
+        - name: --management-groups -m
+          type: string
+          short-summary: List of management groups to run query against.
+        - name: --skip-token
+          type: string
+          short-summary: Skip token to get the next page of the query if applicable.
+        - name: --allow-partial-scopes -a
+          type: bool
+          short-summary: Indicates if query should succeed when only partial number of subscription underneath can be processed by server.
     examples:
         - name: Query resources requesting a subset of resource fields.
           text: >
@@ -44,8 +53,15 @@ helps['graph query'] = """
             az graph query -q "where type =~ "Microsoft.Compute" | project name, tags" --first 10 --skip 20
         - name: Choose subscriptions to query.
           text: >
-            az graph query -q "where type =~ "Microsoft.Compute" | project name, tags" --subscriptions 11111111-1111-1111-1111-111111111111, 22222222-2222-2222-2222-222222222222
+            az graph query -q "where type =~ "Microsoft.Compute" | project name, tags" --subscriptions 11111111-1111-1111-1111-111111111111 22222222-2222-2222-2222-222222222222
+        - name: Choose management groups to query.
+          text: >
+            az graph query -q "where type =~ "Microsoft.Compute" | project name, tags" --management-groups aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb --allow-partial-scopes
+        - name: Query with the skip token.
+          text: >
+            az graph query -q "where type =~ "Microsoft.Compute" | project name, tags" --skip-token skip_token_value_from_previous_query_response
 """
+
 
 helps['graph shared-query'] = """
     type: group

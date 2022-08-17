@@ -6,5 +6,5 @@
 # Changes may cause incorrect behavior and will be lost if the code is regenerated.
 # --------------------------------------------------------------------------
 
-from ._azure_stack_hci_client_async import AzureStackHCIClient
+from ._azure_stack_hci_client import AzureStackHCIClient
 __all__ = ['AzureStackHCIClient']

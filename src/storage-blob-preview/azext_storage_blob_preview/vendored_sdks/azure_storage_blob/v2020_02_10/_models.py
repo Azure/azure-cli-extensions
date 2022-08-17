@@ -123,7 +123,7 @@ class BlobAnalyticsLogging(GeneratedLogging):
         Indicates whether all read requests should be logged. The default value is `False`.
     :keyword bool write:
         Indicates whether all write requests should be logged. The default value is `False`.
-    :keyword ~.RetentionPolicy retention_policy:
+    :keyword ~azure.storage.blob.RetentionPolicy retention_policy:
         Determines how long the associated data should persist. If not specified the retention
         policy will be disabled by default.
     """
@@ -159,7 +159,7 @@ class Metrics(GeneratedMetrics):
         The default value is `False`.
     :keyword bool include_apis:
         Indicates whether metrics should generate summary statistics for called API operations.
-    :keyword ~.RetentionPolicy retention_policy:
+    :keyword ~azure.storage.blob.RetentionPolicy retention_policy:
         Determines how long the associated data should persist. If not specified the retention
         policy will be disabled by default.
     """
@@ -306,7 +306,7 @@ class ContainerProperties(DictMixin):
     :ivar str etag:
         The ETag contains a value that you can use to perform operations
         conditionally.
-    :ivar ~.LeaseProperties lease:
+    :ivar ~azure.storage.blob.LeaseProperties lease:
         Stores all the lease information for the container.
     :ivar str public_access: Specifies whether data in the container may be accessed
         publicly and the level of access.
@@ -316,7 +316,7 @@ class ContainerProperties(DictMixin):
         Represents whether the container has a legal hold.
     :ivar dict metadata: A dict with name-value pairs to associate with the
         container as metadata.
-    :ivar ~.ContainerEncryptionScope encryption_scope:
+    :ivar ~azure.storage.blob.ContainerEncryptionScope encryption_scope:
         The default encryption scope configuration for the container.
     """
 
@@ -367,7 +367,7 @@ class ContainerPropertiesPaged(PageIterator):
     :ivar str location_mode: The location mode being used to list results. The available
         options include "primary" and "secondary".
     :ivar current_page: The current page of listed results.
-    :vartype current_page: list(~.ContainerProperties)
+    :vartype current_page: list(~azure.storage.blob.ContainerProperties)
 
     :param callable command: Function to retrieve the next page of items.
     :param str prefix: Filters the results to return only containers whose names
@@ -453,13 +453,13 @@ class BlobProperties(DictMixin):
         concurrent writes.
     :ivar bool server_encrypted:
         Set to true if the blob is encrypted on the server.
-    :ivar ~.CopyProperties copy:
+    :ivar ~azure.storage.blob.CopyProperties copy:
         Stores all the copy properties for the blob.
-    :ivar ~.ContentSettings content_settings:
+    :ivar ~azure.storage.blob.ContentSettings content_settings:
         Stores all the content settings for the blob.
-    :ivar ~.LeaseProperties lease:
+    :ivar ~azure.storage.blob.LeaseProperties lease:
         Stores all the lease information for the blob.
-    :ivar ~.StandardBlobTier blob_tier:
+    :ivar ~azure.storage.blob.StandardBlobTier blob_tier:
         Indicates the access tier of the blob. The hot tier is optimized
         for storing data that is accessed frequently. The cool storage tier
         is optimized for storing data that is infrequently accessed and stored
@@ -492,7 +492,7 @@ class BlobProperties(DictMixin):
         container-level scope is configured to allow overrides. Otherwise an error will be raised.
     :ivar bool request_server_encrypted:
         Whether this blob is encrypted.
-    :ivar list(~.ObjectReplicationPolicy) object_replication_source_properties:
+    :ivar list(~azure.storage.blob.ObjectReplicationPolicy) object_replication_source_properties:
         Only present for blobs that have policy ids and rule ids applied to them.
 
         .. versionadded:: 12.4.0
@@ -582,7 +582,7 @@ class FilteredBlobPaged(PageIterator):
     :ivar str location_mode: The location mode being used to list results. The available
         options include "primary" and "secondary".
     :ivar current_page: The current page of listed results.
-    :vartype current_page: list(~.FilteredBlob)
+    :vartype current_page: list(~azure.storage.blob.FilteredBlob)
     :ivar str container: The container that the blobs are listed from.
 
     :param callable command: Function to retrieve the next page of items.
@@ -846,7 +846,7 @@ class AccessPolicy(GenAccessPolicy):
         Required unless an id is given referencing a stored access policy
         which contains this field. This field must be omitted if it has been
         specified in an associated stored access policy.
-    :type permission: str or ~.ContainerSasPermissions
+    :type permission: str or ~azure.storage.blob.ContainerSasPermissions
     :param expiry:
         The time at which the shared access signature becomes invalid.
         Required unless an id is given referencing a stored access policy
@@ -871,9 +871,9 @@ class AccessPolicy(GenAccessPolicy):
 
 class ContainerSasPermissions(object):
     """ContainerSasPermissions class to be used with the
-    :func:`~.generate_container_sas` function and
+    :func:`~azure.storage.blob.generate_container_sas` function and
     for the AccessPolicies used with
-    :func:`~.ContainerClient.set_container_access_policy`.
+    :func:`~azure.storage.blob.ContainerClient.set_container_access_policy`.
 
     :param bool read:
         Read the content, properties, metadata or block list of any blob in the
@@ -923,7 +923,7 @@ class ContainerSasPermissions(object):
         :param str permission: The string which dictates the read, write, delete,
             and list permissions.
         :return: A ContainerSasPermissions object
-        :rtype: ~.ContainerSasPermissions
+        :rtype: ~azure.storage.blob.ContainerSasPermissions
         """
         p_read = 'r' in permission
         p_write = 'w' in permission
@@ -939,7 +939,7 @@ class ContainerSasPermissions(object):
 
 class BlobSasPermissions(object):
     """BlobSasPermissions class to be used with the
-    :func:`~.generate_blob_sas` function.
+    :func:`~azure.storage.blob.generate_blob_sas` function.
 
     :param bool read:
         Read the content, properties, metadata and block list. Use the blob as
@@ -990,7 +990,7 @@ class BlobSasPermissions(object):
         :param str permission: The string which dictates the read, add, create,
             write, or delete permissions.
         :return: A BlobSasPermissions object
-        :rtype: ~.BlobSasPermissions
+        :rtype: ~azure.storage.blob.BlobSasPermissions
         """
         p_read = 'r' in permission
         p_add = 'a' in permission
@@ -1104,7 +1104,7 @@ class ArrowDialect(ArrowField):
 
     All required parameters must be populated in order to send to Azure.
 
-    :param ~.ArrowType type: Arrow field type.
+    :param ~azure.storage.blob.ArrowType type: Arrow field type.
     :keyword str name: The name of the field.
     :keyword int precision: The precision of the field.
     :keyword int scale: The scale of the field.
@@ -1128,7 +1128,7 @@ class ObjectReplicationPolicy(DictMixin):
 
     :ivar str policy_id:
         Policy id for the blob. A replication policy gets created (policy id) when creating a source/destination pair.
-    :ivar list(~.ObjectReplicationRule) rules:
+    :ivar list(~azure.storage.blob.ObjectReplicationRule) rules:
         Within each policy there may be multiple replication rules.
         e.g. rule 1= src/container/.pdf to dst/container2/; rule2 = src/container1/.jpg to dst/container3
     """

@@ -31,6 +31,11 @@ cache_name_type = CLIArgumentType(help='Name of Cache.')
 
 storage_target_type = CLIArgumentType(help='Name of the Storage Target.')
 
+nfs3_usage_model_type = CLIArgumentType(
+    help='Identify the primary usage model to be used for this Storage Target. '
+         'You can use command `az hpc-cache usage-model list` to see the names of usage models. '
+         'For more details about usage models, please refer to https://docs.microsoft.com/azure/hpc-cache/hpc-cache-add-storage?tabs=azure-cli#choose-a-usage-model')
+
 
 def load_arguments(self, _):
 
@@ -94,12 +99,11 @@ def load_arguments(self, _):
 
         c.argument('junctions', junction_type, required=True)
         c.argument('nfs3_target', help='IP address or host name of an NFSv3 host (e.g., 10.0.44.44).', required=True)
-        c.argument('nfs3_usage_model', help='Identifies the primary usage model to be used for this Storage Target.',
-                   required=True)
+        c.argument('nfs3_usage_model', nfs3_usage_model_type, required=True)
 
     with self.argument_context('hpc-cache nfs-storage-target update') as c:
         c.argument('cache_name', cache_name_type)
         c.argument('name', storage_target_type)
         c.argument('junctions', junction_type)
         c.argument('nfs3_target', help='IP address or host name of an NFSv3 host (e.g., 10.0.44.44).')
-        c.argument('nfs3_usage_model', help='Identifies the primary usage model to be used for this Storage Target.')
+        c.argument('nfs3_usage_model', nfs3_usage_model_type)

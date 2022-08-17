@@ -8,7 +8,7 @@ from azure.cli.core.commands import CliCommandType
 
 def load_command_table(self, _):
 
-    with self.command_group('logic', is_experimental=True):
+    with self.command_group('logic', is_preview=True):
         pass
 
     from azext_logic.generated._client_factory import cf_workflow

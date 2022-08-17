@@ -33,22 +33,30 @@ def communication_create(client,
                          tags=None,
                          data_location=None,
                          no_wait=False):
+    parameters = {}
+    parameters['location'] = location
+    parameters['tags'] = tags
+    parameters['data_location'] = data_location
     return sdk_no_wait(no_wait,
                        client.begin_create_or_update,
                        resource_group_name=resource_group_name,
                        communication_service_name=name,
-                       location=location,
-                       tags=tags,
-                       data_location=data_location)
+                       parameters=parameters)
 
 
 def communication_update(client,
                          resource_group_name,
                          name,
-                         tags=None):
+                         location=None,
+                         tags=None,
+                         data_location=None):
+    parameters = {}
+    parameters['location'] = location
+    parameters['tags'] = tags
+    parameters['data_location'] = data_location
     return client.update(resource_group_name=resource_group_name,
                          communication_service_name=name,
-                         tags=tags)
+                         parameters=parameters)
 
 
 def communication_delete(client,
@@ -66,30 +74,27 @@ def communication_link_notification_hub(client,
                                         name,
                                         resource_id=None,
                                         connection_string=None):
+    link_notification_hub_parameters = {}
+    link_notification_hub_parameters['resource_id'] = resource_id
+    link_notification_hub_parameters['connection_string'] = connection_string
     return client.link_notification_hub(resource_group_name=resource_group_name,
                                         communication_service_name=name,
-                                        resource_id=resource_id,
-                                        connection_string=connection_string)
+                                        link_notification_hub_parameters=link_notification_hub_parameters)
 
 
 def communication_list_key(client,
                            resource_group_name,
                            name):
-    return client.list_key(resource_group_name=resource_group_name,
-                           communication_service_name=name)
+    return client.list_keys(resource_group_name=resource_group_name,
+                            communication_service_name=name)
 
 
 def communication_regenerate_key(client,
                                  resource_group_name,
                                  name,
                                  key_type=None):
+    parameters = {}
+    parameters['key_type'] = key_type
     return client.regenerate_key(resource_group_name=resource_group_name,
                                  communication_service_name=name,
-                                 key_type=key_type)
-
-
-def communication_show_status(client,
-                              location,
-                              operation_id):
-    return client.get(location=location,
-                      operation_id=operation_id)
+                                 parameters=parameters)

@@ -26,6 +26,44 @@ class _CaseInsensitiveEnumMeta(EnumMeta):
             raise AttributeError(name)
 
 
+class CreatedByType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+    """The type of identity that created the resource.
+    """
+
+    USER = "User"
+    APPLICATION = "Application"
+    MANAGED_IDENTITY = "ManagedIdentity"
+    KEY = "Key"
+
+class KnownColumnDefinitionType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+    """The type of the column data.
+    """
+
+    STRING = "string"
+    INT = "int"
+    LONG = "long"
+    REAL = "real"
+    BOOLEAN = "boolean"
+    DATETIME = "datetime"
+    DYNAMIC = "dynamic"
+
+class KnownDataCollectionEndpointProvisioningState(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+    """The resource provisioning state. This property is READ-ONLY.
+    """
+
+    CREATING = "Creating"
+    UPDATING = "Updating"
+    DELETING = "Deleting"
+    SUCCEEDED = "Succeeded"
+    FAILED = "Failed"
+
+class KnownDataCollectionEndpointResourceKind(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+    """The kind of the resource.
+    """
+
+    LINUX = "Linux"
+    WINDOWS = "Windows"
+
 class KnownDataCollectionRuleAssociationProvisioningState(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """The resource provisioning state.
     """
@@ -46,66 +84,61 @@ class KnownDataCollectionRuleProvisioningState(with_metaclass(_CaseInsensitiveEn
     SUCCEEDED = "Succeeded"
     FAILED = "Failed"
 
+class KnownDataCollectionRuleResourceKind(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+    """The kind of the resource.
+    """
+
+    LINUX = "Linux"
+    WINDOWS = "Windows"
+
 class KnownDataFlowStreams(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
 
-    MICROSOFT_ANTI_MALWARE_STATUS = "Microsoft-AntiMalwareStatus"
-    MICROSOFT_AUDITD = "Microsoft-Auditd"
-    MICROSOFT_CISCOASA = "Microsoft-CISCOASA"
-    MICROSOFT_COMMON_SECURITY_LOG = "Microsoft-CommonSecurityLog"
-    MICROSOFT_COMPUTER_GROUP = "Microsoft-ComputerGroup"
     MICROSOFT_EVENT = "Microsoft-Event"
-    MICROSOFT_FIREWALL_LOG = "Microsoft-FirewallLog"
-    MICROSOFT_HEALTH_STATE_CHANGE = "Microsoft-HealthStateChange"
-    MICROSOFT_HEARTBEAT = "Microsoft-Heartbeat"
     MICROSOFT_INSIGHTS_METRICS = "Microsoft-InsightsMetrics"
-    MICROSOFT_OPERATION_LOG = "Microsoft-OperationLog"
     MICROSOFT_PERF = "Microsoft-Perf"
-    MICROSOFT_PROCESS_INVESTIGATOR = "Microsoft-ProcessInvestigator"
-    MICROSOFT_PROTECTION_STATUS = "Microsoft-ProtectionStatus"
-    MICROSOFT_ROME_DETECTION_EVENT = "Microsoft-RomeDetectionEvent"
-    MICROSOFT_SECURITY_BASELINE = "Microsoft-SecurityBaseline"
-    MICROSOFT_SECURITY_BASELINE_SUMMARY = "Microsoft-SecurityBaselineSummary"
-    MICROSOFT_SECURITY_EVENT = "Microsoft-SecurityEvent"
     MICROSOFT_SYSLOG = "Microsoft-Syslog"
     MICROSOFT_WINDOWS_EVENT = "Microsoft-WindowsEvent"
 
 class KnownExtensionDataSourceStreams(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
 
-    MICROSOFT_ANTI_MALWARE_STATUS = "Microsoft-AntiMalwareStatus"
-    MICROSOFT_AUDITD = "Microsoft-Auditd"
-    MICROSOFT_CISCOASA = "Microsoft-CISCOASA"
-    MICROSOFT_COMMON_SECURITY_LOG = "Microsoft-CommonSecurityLog"
-    MICROSOFT_COMPUTER_GROUP = "Microsoft-ComputerGroup"
     MICROSOFT_EVENT = "Microsoft-Event"
-    MICROSOFT_FIREWALL_LOG = "Microsoft-FirewallLog"
-    MICROSOFT_HEALTH_STATE_CHANGE = "Microsoft-HealthStateChange"
-    MICROSOFT_HEARTBEAT = "Microsoft-Heartbeat"
     MICROSOFT_INSIGHTS_METRICS = "Microsoft-InsightsMetrics"
-    MICROSOFT_OPERATION_LOG = "Microsoft-OperationLog"
     MICROSOFT_PERF = "Microsoft-Perf"
-    MICROSOFT_PROCESS_INVESTIGATOR = "Microsoft-ProcessInvestigator"
-    MICROSOFT_PROTECTION_STATUS = "Microsoft-ProtectionStatus"
-    MICROSOFT_ROME_DETECTION_EVENT = "Microsoft-RomeDetectionEvent"
-    MICROSOFT_SECURITY_BASELINE = "Microsoft-SecurityBaseline"
-    MICROSOFT_SECURITY_BASELINE_SUMMARY = "Microsoft-SecurityBaselineSummary"
-    MICROSOFT_SECURITY_EVENT = "Microsoft-SecurityEvent"
     MICROSOFT_SYSLOG = "Microsoft-Syslog"
     MICROSOFT_WINDOWS_EVENT = "Microsoft-WindowsEvent"
 
-class KnownPerfCounterDataSourceScheduledTransferPeriod(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
-    """The interval between data uploads (scheduled transfers), rounded up to the nearest minute.
+class KnownLogFilesDataSourceFormat(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+    """The data format of the log files
     """
 
-    PT1_M = "PT1M"
-    PT5_M = "PT5M"
-    PT15_M = "PT15M"
-    PT30_M = "PT30M"
-    PT60_M = "PT60M"
+    TEXT = "text"
+
+class KnownLogFileTextSettingsRecordStartTimestampFormat(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+    """One of the supported timestamp formats
+    """
+
+    ISO8601 = "ISO 8601"
+    YYYY_MM_DD_HH_MM_SS = "YYYY-MM-DD HH:MM:SS"
+    M_D_YYYY_HH_MM_SS_AM_PM = "M/D/YYYY HH:MM:SS AM/PM"
+    MON_DD_YYYY_HH_MM_SS = "Mon DD, YYYY HH:MM:SS"
+    YY_M_MDD_HH_MM_SS = "yyMMdd HH:mm:ss"
+    DD_M_MYY_HH_MM_SS = "ddMMyy HH:mm:ss"
+    MMM_D_HH_MM_SS = "MMM d hh:mm:ss"
+    DD_MMM_YYYY_HH_MM_SS_ZZZ = "dd/MMM/yyyy:HH:mm:ss zzz"
+    YYYY_MM_DD_THH_MM_SS_K = "yyyy-MM-ddTHH:mm:ssK"
 
 class KnownPerfCounterDataSourceStreams(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
 
     MICROSOFT_PERF = "Microsoft-Perf"
     MICROSOFT_INSIGHTS_METRICS = "Microsoft-InsightsMetrics"
+
+class KnownPublicNetworkAccessOptions(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+    """The configuration to set whether network access from public internet to the endpoints are
+    allowed.
+    """
+
+    ENABLED = "Enabled"
+    DISABLED = "Disabled"
 
 class KnownSyslogDataSourceFacilityNames(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
 
@@ -120,7 +153,7 @@ class KnownSyslogDataSourceFacilityNames(with_metaclass(_CaseInsensitiveEnumMeta
     NEWS = "news"
     SYSLOG = "syslog"
     USER = "user"
-    UUCP = "UUCP"
+    UUCP = "uucp"
     LOCAL0 = "local0"
     LOCAL1 = "local1"
     LOCAL2 = "local2"
@@ -129,6 +162,7 @@ class KnownSyslogDataSourceFacilityNames(with_metaclass(_CaseInsensitiveEnumMeta
     LOCAL5 = "local5"
     LOCAL6 = "local6"
     LOCAL7 = "local7"
+    ASTERISK = "*"
 
 class KnownSyslogDataSourceLogLevels(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
 
@@ -140,20 +174,11 @@ class KnownSyslogDataSourceLogLevels(with_metaclass(_CaseInsensitiveEnumMeta, st
     CRITICAL = "Critical"
     ALERT = "Alert"
     EMERGENCY = "Emergency"
+    ASTERISK = "*"
 
 class KnownSyslogDataSourceStreams(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
 
     MICROSOFT_SYSLOG = "Microsoft-Syslog"
-
-class KnownWindowsEventLogDataSourceScheduledTransferPeriod(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
-    """The interval between data uploads (scheduled transfers), rounded up to the nearest minute.
-    """
-
-    PT1_M = "PT1M"
-    PT5_M = "PT5M"
-    PT15_M = "PT15M"
-    PT30_M = "PT30M"
-    PT60_M = "PT60M"
 
 class KnownWindowsEventLogDataSourceStreams(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
 

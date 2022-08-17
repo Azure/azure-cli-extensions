@@ -17,8 +17,10 @@ class DataBoxScenarioTest(ScenarioTest):
     @StorageAccountPreparer(parameter_name='storage_account_2')
     def test_databox(self, storage_account_1, storage_account_2):
         job_name = self.create_random_name('job', 24)
+        job_name_2 = self.create_random_name('job', 24)
         self.kwargs.update({
             'job_name': job_name,
+            'job_name_2': job_name_2,
             'storage_account_1': storage_account_1,
             'storage_account_2': storage_account_2
         })
@@ -93,7 +95,7 @@ class DataBoxScenarioTest(ScenarioTest):
         # Create another databox job with sku 'DataBoxDisk'.
         self.cmd('databox job create '
                  '--resource-group {rg} '
-                 '--name {job_name} '
+                 '--name {job_name_2} '
                  '--location westus '
                  '--sku DataBoxDisk '
                  '--expected-data-size 1 '
@@ -111,20 +113,20 @@ class DataBoxScenarioTest(ScenarioTest):
 
         self.cmd('databox job cancel '
                  '--resource-group {rg} '
-                 '--name {job_name} '
+                 '--name {job_name_2} '
                  '--reason "CancelTest" '
                  '-y',
                  checks=[])
 
         self.cmd('databox job delete '
                  '--resource-group {rg} '
-                 '--name {job_name} '
+                 '--name {job_name_2} '
                  '-y',
                  checks=[])
 
         self.cmd('databox job show '
                  '--resource-group {rg} '
-                 '--name {job_name}',
+                 '--name {job_name_2}',
                  expect_failure=True)
 
         # DataBox service will create a lock 'DATABOX_SERVICE' on the storage account under the resource group when creating a job. In order to clean up the resource group, we need delete the lock first.

@@ -6,5 +6,5 @@
 # Changes may cause incorrect behavior and will be lost if the code is regenerated.
 # --------------------------------------------------------------------------
 
-from ._microsoft_datadog_client_async import MicrosoftDatadogClient
+from ._microsoft_datadog_client import MicrosoftDatadogClient
 __all__ = ['MicrosoftDatadogClient']

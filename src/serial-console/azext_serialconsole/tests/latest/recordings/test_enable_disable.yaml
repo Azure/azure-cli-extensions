@@ -1,0 +1,108 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - serial-console disable
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      Content-Type:
+      - application/json
+      User-Agent:
+      - AZURECLI/2.39.0 azsdk-python-microsoftserialconsoleclient/unknown Python/3.8.13
+        (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.SerialConsole/consoleServices/default/disableConsole?api-version=2018-05-01
+  response:
+    body:
+      string: "{\n \"properties\": {\n  \"disabled\": true\n }\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '42'
+      content-type:
+      - application/json; charset=UTF-8
+      date:
+      - Thu, 04 Aug 2022 17:10:07 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - nginx
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-frame-options:
+      - deny
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1198'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - serial-console enable
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      Content-Type:
+      - application/json
+      User-Agent:
+      - AZURECLI/2.39.0 azsdk-python-microsoftserialconsoleclient/unknown Python/3.8.13
+        (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.SerialConsole/consoleServices/default/enableConsole?api-version=2018-05-01
+  response:
+    body:
+      string: "{\n \"properties\": {\n  \"disabled\": false\n }\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '43'
+      content-type:
+      - application/json; charset=UTF-8
+      date:
+      - Thu, 04 Aug 2022 17:10:07 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - nginx
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-frame-options:
+      - deny
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1198'
+    status:
+      code: 200
+      message: OK
+version: 1

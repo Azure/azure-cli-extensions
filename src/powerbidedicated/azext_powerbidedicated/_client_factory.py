@@ -6,7 +6,7 @@
 
 def cf_powerbidedicated(cli_ctx, *_):
     from azure.cli.core.commands.client_factory import get_mgmt_service_client
-    from .vendored_sdks.powerbidedicated import PowerBIDedicatedManagementClient
+    from .vendored_sdks.powerbidedicated import PowerBIDedicated as PowerBIDedicatedManagementClient
     return get_mgmt_service_client(cli_ctx, PowerBIDedicatedManagementClient)
 
 

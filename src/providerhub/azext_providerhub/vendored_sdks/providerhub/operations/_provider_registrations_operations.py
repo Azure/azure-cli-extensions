@@ -6,7 +6,6 @@
 # Changes may cause incorrect behavior and will be lost if the code is regenerated.
 # --------------------------------------------------------------------------
 from typing import TYPE_CHECKING
-import datetime
 import warnings
 
 from azure.core.exceptions import ClientAuthenticationError, HttpResponseError, ResourceExistsError, ResourceNotFoundError, map_error
@@ -16,12 +15,12 @@ from azure.core.pipeline.transport import HttpRequest, HttpResponse
 from azure.core.polling import LROPoller, NoPolling, PollingMethod
 from azure.mgmt.core.exceptions import ARMErrorFormat
 from azure.mgmt.core.polling.arm_polling import ARMPolling
-from typing import Any, Callable, Dict, Generic, Iterable, List, Optional, TypeVar, Union
-from .. import models
 
+from .. import models
 
 if TYPE_CHECKING:
     # pylint: disable=unused-import,ungrouped-imports
+    from typing import Any, Callable, Dict, Generic, Iterable, List, Optional, TypeVar, Union
 
     T = TypeVar('T')
     ClsType = Optional[Callable[[
@@ -35,7 +34,7 @@ class ProviderRegistrationsOperations(object):
     instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~providerhub.models
+    :type models: ~provider_hub.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -62,7 +61,7 @@ class ProviderRegistrationsOperations(object):
         :type provider_namespace: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: ProviderRegistration, or the result of cls(response)
-        :rtype: ~providerhub.models.ProviderRegistration
+        :rtype: ~provider_hub.models.ProviderRegistration
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop(
@@ -134,15 +133,18 @@ class ProviderRegistrationsOperations(object):
         service_tree_infos,  # type: list["models.ServiceTreeInfo"]
         resource_access_policy,  # type: "models.ResourceProviderManagementResourceAccessPolicy"
         required_features_policy,  # type: "models.FeaturesPolicy"
+        required_features,  # type: list[str]
         opt_in_headers,  # type: "models.OptInHeaderType"
-        # type: list["models.SubscriptionStateOverrideAction"]
         managed_by_tenant_id,  # type: str
         # type: "models.ResourceProviderAuthorization"
-        providerhub_metadata_provider_authorizations,
+        providerhub_metadata_authorizations,
         # type: "models.ResourceProviderAuthentication"
-        providerhub_metadata_rp_authentication,
-        # type: "models.LightHouseAuthorization"
-        lighthouse_authorizations,
+        providerhub_metadata_authentication,
+        lighthouse_authorizations,  # type: "models.LightHouseAuthorization"
+        # type: list["models.SubscriptionStateOverrideAction"]
+        subscription_state_override_actions,
+        resource_access_roles,  # type: list[object]
+        soft_delete_ttl,  # type: duration
         **kwargs  # type: Any
     ):
         # type: (...) -> Optional["models.ProviderRegistration"]
@@ -178,20 +180,26 @@ class ProviderRegistrationsOperations(object):
 
         features_rule = models.FeaturesRule(
             required_features_policy=required_features_policy) if required_features_policy else None
+        subscriptionLifecycleNotificationSpecifications = models.SubscriptionLifecycleNotificationSpecifications(
+            subscription_state_override_actions=subscription_state_override_actions,
+            soft_delete_ttl=soft_delete_ttl
+        )
         management = models.ResourceProviderManagement(schema_owners=schema_owners, manifest_owners=manifest_owners, incident_routing_service=incident_routing_service, incident_routing_team=incident_routing_team,
-                                                       incident_contact_email=incident_contact_email, service_tree_infos=service_tree_infos, resource_access_policy=resource_access_policy, resource_access_roles=None)
+                                                       incident_contact_email=incident_contact_email, service_tree_infos=service_tree_infos, resource_access_policy=resource_access_policy, resource_access_roles=resource_access_roles)
         third_party_provider_authorization = models.ThirdPartyProviderAuthorization(
             authorizations=lighthouse_authorizations, managed_by_tenant_id=managed_by_tenant_id) if lighthouse_authorizations or managed_by_tenant_id else None
-        providerhub_metadata = models.ProviderHubMetadata(provider_authorizations=providerhub_metadata_provider_authorizations,
-                                                          provider_authentication=providerhub_metadata_rp_authentication,
+        providerhub_metadata = models.ProviderHubMetadata(provider_authorizations=providerhub_metadata_authorizations,
+                                                          provider_authentication=providerhub_metadata_authentication,
                                                           third_party_provider_authorization=third_party_provider_authorization)
 
-        properties = models.ProviderRegistrationProperties(provider_authentication=provider_authentication, provider_authorizations=provider_authorizations, provider_version=provider_version, provider_type=provider_type, provider_hub_metadata=providerhub_metadata, namespace=namespace,
-                                                           features_rule=features_rule, management=management, capabilities=capabilities, metadata=metadata, template_deployment_options=template_deployment_options)
-        parameters = models.ProviderRegistration(properties=properties)
+        properties = models.ProviderRegistration(
+            properties=models.ProviderRegistrationProperties(provider_authentication=provider_authentication, provider_authorizations=provider_authorizations, provider_version=provider_version, provider_type=provider_type, provider_hub_metadata=providerhub_metadata, namespace=namespace,
+                                                             features_rule=features_rule, management=management, capabilities=capabilities, metadata=metadata, template_deployment_options=template_deployment_options,
+                                                             required_features=required_features)
+        )
 
         body_content_kwargs = {}  # type: Dict[str, Any]
-        body_content = self._serialize.body(parameters, 'ProviderRegistration')
+        body_content = self._serialize.body(properties, 'ProviderRegistration')
         body_content_kwargs['content'] = body_content
         request = self._client.put(
             url, query_parameters, header_parameters, **body_content_kwargs)
@@ -237,15 +245,18 @@ class ProviderRegistrationsOperations(object):
         service_tree_infos,  # type: list["models.ServiceTreeInfo"]
         resource_access_policy,  # type: "models.ResourceProviderManagementResourceAccessPolicy"
         required_features_policy,  # type: "models.FeaturesPolicy"
+        required_features,  # type: list[str]
         opt_in_headers,  # type: "models.OptInHeaderType"
-        # type: list["models.SubscriptionStateOverrideAction"]
         managed_by_tenant_id,  # type: str
         # type: "models.ResourceProviderAuthorization"
-        providerhub_metadata_provider_authorizations,
+        providerhub_metadata_authorizations,
         # type: "models.ResourceProviderAuthentication"
-        providerhub_metadata_rp_authentication,
-        # type: "models.LightHouseAuthorization"
-        lighthouse_authorizations,
+        providerhub_metadata_authentication,
+        lighthouse_authorizations,  # type: "models.LightHouseAuthorization"
+        # type: list["models.SubscriptionStateOverrideAction"]
+        subscription_state_override_actions,
+        resource_access_roles,  # type: list[object]
+        soft_delete_ttl,  # type: duration
         **kwargs  # type: Any
     ):
         # type: (...) -> LROPoller["models.ProviderRegistration"]
@@ -255,7 +266,7 @@ class ProviderRegistrationsOperations(object):
         :type provider_namespace: str
         :param properties: The provider registration properties supplied to the CreateOrUpdate
          operation.
-        :type properties: ~providerhub.models.ProviderRegistration
+        :type properties: ~provider_hub.models.ProviderRegistration
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: True for ARMPolling, False for no polling, or a
@@ -263,7 +274,7 @@ class ProviderRegistrationsOperations(object):
         :paramtype polling: bool or ~azure.core.polling.PollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
         :return: An instance of LROPoller that returns either ProviderRegistration or the result of cls(response)
-        :rtype: ~azure.core.polling.LROPoller[~providerhub.models.ProviderRegistration]
+        :rtype: ~azure.core.polling.LROPoller[~provider_hub.models.ProviderRegistration]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         polling = kwargs.pop(
@@ -295,11 +306,15 @@ class ProviderRegistrationsOperations(object):
                 service_tree_infos=service_tree_infos,
                 resource_access_policy=resource_access_policy,
                 required_features_policy=required_features_policy,
+                required_features=required_features,
                 opt_in_headers=opt_in_headers,
                 managed_by_tenant_id=managed_by_tenant_id,
-                providerhub_metadata_provider_authorizations=providerhub_metadata_provider_authorizations,
-                providerhub_metadata_rp_authentication=providerhub_metadata_rp_authentication,
+                providerhub_metadata_authorizations=providerhub_metadata_authorizations,
+                providerhub_metadata_authentication=providerhub_metadata_authentication,
                 lighthouse_authorizations=lighthouse_authorizations,
+                resource_access_roles=resource_access_roles,
+                subscription_state_override_actions=subscription_state_override_actions,
+                soft_delete_ttl=soft_delete_ttl,
                 cls=lambda x, y, z: x,
                 **kwargs
             )
@@ -322,7 +337,7 @@ class ProviderRegistrationsOperations(object):
 
         if polling is True:
             polling_method = ARMPolling(lro_delay, lro_options={
-                                        'final-state-via': 'azure-async-operation'}, path_format_arguments=path_format_arguments, **kwargs)
+                                        'final-state-via': 'azure-async-operation'}, path_format_arguments=path_format_arguments,  **kwargs)
         elif polling is False:
             polling_method = NoPolling()
         else:
@@ -407,7 +422,7 @@ class ProviderRegistrationsOperations(object):
 
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either ProviderRegistrationArrayResponseWithContinuation or the result of cls(response)
-        :rtype: ~azure.core.paging.ItemPaged[~providerhub.models.ProviderRegistrationArrayResponseWithContinuation]
+        :rtype: ~azure.core.paging.ItemPaged[~provider_hub.models.ProviderRegistrationArrayResponseWithContinuation]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop(
@@ -476,70 +491,6 @@ class ProviderRegistrationsOperations(object):
     list.metadata = {
         'url': '/subscriptions/{subscriptionId}/providers/Microsoft.ProviderHub/providerRegistrations'}  # type: ignore
 
-    def list_by_resource_group(
-        self,
-        resource_group_name,  # type: str
-        **kwargs  # type: Any
-    ):
-        # type: (...) -> "models.ProviderRegistrationArrayResponseWithContinuation"
-        """Pending route: Gets the list of the provider registrations by the resource group.
-
-        :param resource_group_name: The name of the resource group. The name is case insensitive.
-        :type resource_group_name: str
-        :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: ProviderRegistrationArrayResponseWithContinuation, or the result of cls(response)
-        :rtype: ~providerhub.models.ProviderRegistrationArrayResponseWithContinuation
-        :raises: ~azure.core.exceptions.HttpResponseError
-        """
-        cls = kwargs.pop(
-            'cls', None)  # type: ClsType["models.ProviderRegistrationArrayResponseWithContinuation"]
-        error_map = {
-            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
-        }
-        error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2020-11-20"
-        accept = "application/json"
-
-        # Construct URL
-        url = self.list_by_resource_group.metadata['url']  # type: ignore
-        path_format_arguments = {
-            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
-        }
-        url = self._client.format_url(url, **path_format_arguments)
-
-        # Construct parameters
-        query_parameters = {}  # type: Dict[str, Any]
-        query_parameters['api-version'] = self._serialize.query(
-            "api_version", api_version, 'str')
-
-        # Construct headers
-        header_parameters = {}  # type: Dict[str, Any]
-        header_parameters['Accept'] = self._serialize.header(
-            "accept", accept, 'str')
-
-        request = self._client.get(url, query_parameters, header_parameters)
-        pipeline_response = self._client._pipeline.run(
-            request, stream=False, **kwargs)
-        response = pipeline_response.http_response
-
-        if response.status_code not in [200]:
-            map_error(status_code=response.status_code,
-                      response=response, error_map=error_map)
-            error = self._deserialize(models.ErrorResponse, response)
-            raise HttpResponseError(
-                response=response, model=error, error_format=ARMErrorFormat)
-
-        deserialized = self._deserialize(
-            'ProviderRegistrationArrayResponseWithContinuation', pipeline_response)
-
-        if cls:
-            return cls(pipeline_response, deserialized, {})
-
-        return deserialized
-    list_by_resource_group.metadata = {
-        'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ProviderHub/providerRegistrations'}  # type: ignore
-
     def generate_operations(
         self,
         provider_namespace,  # type: str
@@ -552,7 +503,7 @@ class ProviderRegistrationsOperations(object):
         :type provider_namespace: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: list of OperationsDefinition, or the result of cls(response)
-        :rtype: list[~providerhub.models.OperationsDefinition]
+        :rtype: list[~provider_hub.models.OperationsDefinition]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop(

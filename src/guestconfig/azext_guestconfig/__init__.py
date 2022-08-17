@@ -10,6 +10,10 @@
 
 from azure.cli.core import AzCommandsLoader
 from azext_guestconfig.generated._help import helps  # pylint: disable=unused-import
+try:
+    from azext_guestconfig.manual._help import helps  # pylint: disable=reimported
+except ImportError:
+    pass
 
 
 class GuestConfigurationClientCommandsLoader(AzCommandsLoader):

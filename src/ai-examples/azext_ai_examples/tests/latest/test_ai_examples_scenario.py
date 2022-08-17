@@ -6,10 +6,10 @@
 
 import json
 import unittest
-import mock
+from unittest import mock
 import requests
 
-from azure_devtools.scenario_tests import AllowLargeResponse
+from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
 from azext_ai_examples.custom import (call_aladdin_service, ping_aladdin_service,
                                       clean_from_http_answer, get_generated_examples)

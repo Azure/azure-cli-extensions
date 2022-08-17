@@ -4,7 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 import unittest
-import mock
+from unittest import mock
 
 from azext_ssh import rsa_parser
 

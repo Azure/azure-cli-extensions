@@ -18,7 +18,7 @@ import datetime
 from pkg_resources import parse_version
 
 from jinja2 import Template  # pylint: disable=import-error
-
+import requests
 
 SCRIPTS_LOCATION = os.path.abspath(os.path.join('.', 'scripts'))
 
@@ -36,12 +36,26 @@ def get_extensions():
     for _, exts in index_extensions.items():
         # Get latest version
         exts = sorted(exts, key=lambda c: parse_version(c['metadata']['version']), reverse=True)
+
+        # some extension modules may not include 'HISTORY.rst'
+        project_url = exts[0]['metadata']['extensions']['python.details']['project_urls']['Home']
+        history_tmp = project_url + '/HISTORY.rst'
+        history = project_url if str(requests.get(history_tmp).status_code) == '404' else history_tmp
+        if exts[0]['metadata'].get('azext.isPreview'):
+            status = 'Preview'
+        elif exts[0]['metadata'].get('azext.isExperimental'):
+            status = 'Experimental'
+        else:
+            status = 'GA'
+
         extensions.append({
             'name': exts[0]['metadata']['name'],
             'desc': exts[0]['metadata']['summary'],
+            'min_cli_core_version': exts[0]['metadata']['azext.minCliCoreVersion'],
             'version': exts[0]['metadata']['version'],
-            'project_url': exts[0]['metadata']['extensions']['python.details']['project_urls']['Home'],
-            'preview': 'Yes' if exts[0]['metadata'].get('azext.isPreview') else ''
+            'project_url': project_url,
+            'history': history,
+            'status': status
         })
     return extensions
 

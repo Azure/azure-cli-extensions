@@ -19,15 +19,10 @@ if TYPE_CHECKING:
 
 from ._configuration import MicrosoftDatadogClientConfiguration
 from .operations import MarketplaceAgreementsOperations
-from .operations import ApiKeyOperations
-from .operations import HostOperations
-from .operations import LinkedResourceOperations
-from .operations import MonitoredResourceOperations
-from .operations import OperationOperations
-from .operations import MonitorOperations
-from .operations import RefreshSetPasswordOperations
-from .operations import TagRuleOperations
-from .operations import SingleSignOnConfigurationOperations
+from .operations import MonitorsOperations
+from .operations import Operations
+from .operations import TagRulesOperations
+from .operations import SingleSignOnConfigurationsOperations
 from . import models
 
 
@@ -36,27 +31,17 @@ class MicrosoftDatadogClient(object):
 
     :ivar marketplace_agreements: MarketplaceAgreementsOperations operations
     :vartype marketplace_agreements: microsoft_datadog_client.operations.MarketplaceAgreementsOperations
-    :ivar api_key: ApiKeyOperations operations
-    :vartype api_key: microsoft_datadog_client.operations.ApiKeyOperations
-    :ivar host: HostOperations operations
-    :vartype host: microsoft_datadog_client.operations.HostOperations
-    :ivar linked_resource: LinkedResourceOperations operations
-    :vartype linked_resource: microsoft_datadog_client.operations.LinkedResourceOperations
-    :ivar monitored_resource: MonitoredResourceOperations operations
-    :vartype monitored_resource: microsoft_datadog_client.operations.MonitoredResourceOperations
-    :ivar operation: OperationOperations operations
-    :vartype operation: microsoft_datadog_client.operations.OperationOperations
-    :ivar monitor: MonitorOperations operations
-    :vartype monitor: microsoft_datadog_client.operations.MonitorOperations
-    :ivar refresh_set_password: RefreshSetPasswordOperations operations
-    :vartype refresh_set_password: microsoft_datadog_client.operations.RefreshSetPasswordOperations
-    :ivar tag_rule: TagRuleOperations operations
-    :vartype tag_rule: microsoft_datadog_client.operations.TagRuleOperations
-    :ivar single_sign_on_configuration: SingleSignOnConfigurationOperations operations
-    :vartype single_sign_on_configuration: microsoft_datadog_client.operations.SingleSignOnConfigurationOperations
+    :ivar monitors: MonitorsOperations operations
+    :vartype monitors: microsoft_datadog_client.operations.MonitorsOperations
+    :ivar operations: Operations operations
+    :vartype operations: microsoft_datadog_client.operations.Operations
+    :ivar tag_rules: TagRulesOperations operations
+    :vartype tag_rules: microsoft_datadog_client.operations.TagRulesOperations
+    :ivar single_sign_on_configurations: SingleSignOnConfigurationsOperations operations
+    :vartype single_sign_on_configurations: microsoft_datadog_client.operations.SingleSignOnConfigurationsOperations
     :param credential: Credential needed for the client to connect to Azure.
     :type credential: ~azure.core.credentials.TokenCredential
-    :param subscription_id: The Microsoft Azure subscription ID.
+    :param subscription_id: The ID of the target subscription.
     :type subscription_id: str
     :param str base_url: Service URL
     :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
@@ -81,23 +66,13 @@ class MicrosoftDatadogClient(object):
 
         self.marketplace_agreements = MarketplaceAgreementsOperations(
             self._client, self._config, self._serialize, self._deserialize)
-        self.api_key = ApiKeyOperations(
+        self.monitors = MonitorsOperations(
             self._client, self._config, self._serialize, self._deserialize)
-        self.host = HostOperations(
+        self.operations = Operations(
             self._client, self._config, self._serialize, self._deserialize)
-        self.linked_resource = LinkedResourceOperations(
+        self.tag_rules = TagRulesOperations(
             self._client, self._config, self._serialize, self._deserialize)
-        self.monitored_resource = MonitoredResourceOperations(
-            self._client, self._config, self._serialize, self._deserialize)
-        self.operation = OperationOperations(
-            self._client, self._config, self._serialize, self._deserialize)
-        self.monitor = MonitorOperations(
-            self._client, self._config, self._serialize, self._deserialize)
-        self.refresh_set_password = RefreshSetPasswordOperations(
-            self._client, self._config, self._serialize, self._deserialize)
-        self.tag_rule = TagRuleOperations(
-            self._client, self._config, self._serialize, self._deserialize)
-        self.single_sign_on_configuration = SingleSignOnConfigurationOperations(
+        self.single_sign_on_configurations = SingleSignOnConfigurationsOperations(
             self._client, self._config, self._serialize, self._deserialize)
 
     def close(self):

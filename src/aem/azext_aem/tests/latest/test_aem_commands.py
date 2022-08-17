@@ -6,7 +6,7 @@
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
 from azure.cli.core.util import CLIError
 from azext_aem.custom import EnhancedMonitoring  # pylint: disable=unused-import
-from azure_devtools.scenario_tests import AllowLargeResponse
+from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 import os
 import sys
 # pylint: disable=unused-argument,too-few-public-methods
@@ -86,6 +86,7 @@ class VMAEM(ScenarioTest):
         self.assertTrue(old_publisher, msg=f'Extension Publisher is not {old_publisher_win} nor {old_publisher_lnx}')
         self.assertEqual(len(vm['resources']), 1, msg="VM Extensions count does not equal 1")
 
+    @AllowLargeResponse(size_kb=9999)
     @ResourceGroupPreparer()
     def test_WithUserAssignedIdentity(self, resource_group):
         os.environ["AZURE_CLI_AEM_TEST"] = "test_WithUserAssignedIdentity"
@@ -118,6 +119,7 @@ class VMAEM(ScenarioTest):
 
         self._assert_new_extension(self.IDENT_USER_SYSTEM_ASSIGNED)
 
+    @AllowLargeResponse(size_kb=9999)
     @ResourceGroupPreparer()
     def test_WithoutIdentity(self, resource_group):
         os.environ["AZURE_CLI_AEM_TEST"] = "test_WithoutIdentity"
@@ -147,6 +149,7 @@ class VMAEM(ScenarioTest):
 
         self._assert_new_extension(self.IDENT_SYSTEM_ASSIGNED)
 
+    @AllowLargeResponse(size_kb=9999)
     @ResourceGroupPreparer()
     def test_WithSystemAssignedIdentity(self, resource_group):
         os.environ["AZURE_CLI_AEM_TEST"] = "test_WithSystemAssignedIdentity"
@@ -179,6 +182,7 @@ class VMAEM(ScenarioTest):
 
         self._assert_new_extension(self.IDENT_SYSTEM_ASSIGNED)
 
+    @AllowLargeResponse(size_kb=9999)
     @ResourceGroupPreparer()
     def test_ExtensionReinstall(self, resource_group):
         os.environ["AZURE_CLI_AEM_TEST"] = "test_ExtensionReinstall"
@@ -241,6 +245,7 @@ class VMAEM(ScenarioTest):
         vm = self.cmd('vm show -g {rg} -n {vm}').get_output_in_json()
         self._assert_old_extension()
 
+    @AllowLargeResponse(size_kb=9999)
     @ResourceGroupPreparer()
     def test_ExtensionDowngrade(self, resource_group):
         os.environ["AZURE_CLI_AEM_TEST"] = "test_ExtensionDowngrade"
@@ -303,6 +308,7 @@ class VMAEM(ScenarioTest):
 
         self._assert_old_extension()
 
+    @AllowLargeResponse(size_kb=9999)
     @ResourceGroupPreparer()
     def test_NewExtensionDiskAdd(self, resource_group):
         os.environ["AZURE_CLI_AEM_TEST"] = "test_NewExtensionDiskAdd"
@@ -338,6 +344,7 @@ class VMAEM(ScenarioTest):
         self.cmd('vm aem set --verbose -g {rg} -n {vm} --install-new-extension --set-access-to-individual-resources')
         self._assert_new_extension(self.IDENT_SYSTEM_ASSIGNED)
 
+    @AllowLargeResponse(size_kb=9999)
     @ResourceGroupPreparer()
     def test_NewExtensionMultiNic(self, resource_group):
         os.environ["AZURE_CLI_AEM_TEST"] = "test_NewExtensionMultiNic"
@@ -698,6 +705,7 @@ class VMAEM(ScenarioTest):
             self.cmd('vm aem verify --verbose -g {rg} -n {vm}')
         self.assertEqual(str(cm.exception), err)
 
+    @AllowLargeResponse(size_kb=9999)
     @ResourceGroupPreparer()
     def test_vm_aem_configure_v2(self, resource_group):
         os.environ["AZURE_CLI_AEM_TEST"] = "test_vm_aem_configure_v2"
@@ -715,6 +723,7 @@ class VMAEM(ScenarioTest):
             self.cmd('vm aem verify -g {rg} -n {vm} --verbose')
         self.assertEqual(str(cm.exception), err)
 
+    @AllowLargeResponse(size_kb=9999)
     @ResourceGroupPreparer()
     def test_vm_aem_configure_v2_individual(self, resource_group):
         os.environ["AZURE_CLI_AEM_TEST"] = "test_vm_aem_configure_v2_individual"
@@ -724,6 +733,23 @@ class VMAEM(ScenarioTest):
         })
         self.cmd('vm create -g {rg} -n {vm} --os-disk-name os-disk --image centos --generate-ssh-keys')
         self.cmd('vm aem set -g {rg} -n {vm} --install-new-extension --set-access-to-individual-resources --verbose')
+        self.cmd('vm aem verify -g {rg} -n {vm} --verbose')
+        self.cmd('vm aem delete -g {rg} -n {vm} --verbose')
+
+        with self.assertRaises(CLIError) as cm:
+            self.cmd('vm aem verify -g {rg} -n {vm} --verbose')
+        self.assertEqual(str(cm.exception), self.ERR_EXT_NOT_INSTALLED_VERIFY)
+
+    @AllowLargeResponse(size_kb=9999)
+    @ResourceGroupPreparer()
+    def test_vm_aem_configure_v2_proxy(self, resource_group):
+        os.environ["AZURE_CLI_AEM_TEST"] = "test_vm_aem_configure_v2_proxy"
+
+        self.kwargs.update({
+            'vm': 'vm1',
+        })
+        self.cmd('vm create -g {rg} -n {vm} --os-disk-name os-disk --image centos --generate-ssh-keys')
+        self.cmd('vm aem set -g {rg} -n {vm} --install-new-extension --proxy-uri http://proxyhost:8080 --verbose')
         self.cmd('vm aem verify -g {rg} -n {vm} --verbose')
         self.cmd('vm aem delete -g {rg} -n {vm} --verbose')
 

@@ -2,7 +2,8 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
-
+# pylint: disable=line-too-long, deprecated-method, global-statement
+# from logging import Logger  # , log
 import subprocess
 import shlex
 import os
@@ -15,19 +16,46 @@ from knack.log import get_logger
 from knack.prompting import prompt_y_n, NoTTYException
 
 from .encryption_types import Encryption
-
-from .exceptions import AzCommandError, WindowsOsNotAvailableError, RunScriptNotFoundForIdError
-# pylint: disable=line-too-long, deprecated-method
+from .exceptions import (AzCommandError, WindowsOsNotAvailableError, RunScriptNotFoundForIdError, SkuDoesNotSupportHyperV, SuseNotAvailableError)
 
 REPAIR_MAP_URL = 'https://raw.githubusercontent.com/Azure/repair-script-library/master/map.json'
 
 logger = get_logger(__name__)
 
 
+def _get_cloud_init_script():
+    REPAIR_DIR_NAME = 'azext_vm_repair'
+    SCRIPTS_DIR_NAME = 'scripts'
+    CLOUD_INIT = 'linux-build_setup-cloud-init.txt'
+    # Build absoulte path of driver script
+    loader = pkgutil.get_loader(REPAIR_DIR_NAME)
+    mod = loader.load_module(REPAIR_DIR_NAME)
+    rootpath = os.path.dirname(mod.__file__)
+    return os.path.join(rootpath, SCRIPTS_DIR_NAME, CLOUD_INIT)
+
+
+def _set_repair_map_url(url):
+    raw_url = str(url)
+    if "github.com" in raw_url:
+        raw_url = raw_url.replace("github.com", "raw.githubusercontent.com")
+        raw_url = raw_url.replace("/blob/", "/")
+        global REPAIR_MAP_URL
+        REPAIR_MAP_URL = raw_url
+        print(REPAIR_MAP_URL)
+
+
 def _uses_managed_disk(vm):
     if vm.storage_profile.os_disk.managed_disk is None:
         return False
     return True
+
+
+def _is_gen2(vm):
+    gen = 1
+    gen = vm.instance_view.hyper_v_generation
+    if gen.lower() == 'v2':
+        return 2
+    return 1
 
 
 def _call_az_command(command_string, run_async=False, secure_params=None):
@@ -172,33 +200,94 @@ def _clean_up_resources(resource_group_name, confirm):
         logger.error("Clean up failed.")
 
 
-def _fetch_compatible_sku(source_vm):
+def _check_n_start_vm(vm_name, resource_group_name, confirm, vm_off_message, vm_instance_view):
+    """
+    Checks if the VM is running and prompts to auto-start it.
+    Returns: True if VM is already running or succeeded in running it.
+             False if user selected not to run the VM or running in non-interactive mode.
+    Raises: AzCommandError if vm start command fails
+            Exception if something went wrong while fetching VM power state
+    """
+    VM_RUNNING = 'PowerState/running'
+    try:
+        logger.info('Checking VM power state...\n')
+        VM_TURNED_ON = False
+        vm_statuses = vm_instance_view.instance_view.statuses
+        for vm_status in vm_statuses:
+            if vm_status.code == VM_RUNNING:
+                VM_TURNED_ON = True
+        # VM already on
+        if VM_TURNED_ON:
+            logger.info('VM is running\n')
+            return True
+
+        logger.warning(vm_off_message)
+        # VM Stopped or Deallocated. Ask to run it
+        if confirm:
+            if not prompt_y_n('Continue to auto-start VM?'):
+                logger.warning('Skipping VM start')
+                return False
+
+        start_vm_command = 'az vm start --resource-group {rg} --name {n}'.format(rg=resource_group_name, n=vm_name)
+        logger.info('Starting the VM. This might take a few minutes...\n')
+        _call_az_command(start_vm_command)
+        logger.info('VM started\n')
+    # NoTTYException exception only thrown from confirm block
+    except NoTTYException:
+        logger.warning('Cannot confirm VM auto-start in non-interactive mode.')
+        logger.warning('Skipping auto-start')
+        return False
+    except AzCommandError as azCommandError:
+        logger.error("Failed to start VM.")
+        raise azCommandError
+    except Exception as exception:
+        logger.error("Failed to check VM power status.")
+        raise exception
+    else:
+        return True
+
+
+def _fetch_compatible_sku(source_vm, hyperv):
 
     location = source_vm.location
     source_vm_sku = source_vm.hardware_profile.vm_size
 
     # First get the source_vm sku, if its available go with it
-    check_sku_command = 'az vm list-skus -s {sku} -l {loc} --query [].name -o tsv'.format(sku=source_vm_sku, loc=location)
+    if not (not source_vm_sku.endswith('v3') and hyperv):
+        check_sku_command = 'az vm list-skus -s {sku} -l {loc} --query [].name -o tsv'.format(sku=source_vm_sku, loc=location)
 
-    logger.info('Checking if source VM size is available...')
-    sku_check = _call_az_command(check_sku_command).strip('\n')
+        logger.info('Checking if source VM size is available...')
+        sku_check = _call_az_command(check_sku_command).strip('\n')
 
-    if sku_check:
-        logger.info('Source VM size \'%s\' is available. Using it to create repair VM.\n', source_vm_sku)
-        return source_vm_sku
+        if sku_check:
+            logger.info('Source VM size \'%s\' is available. Using it to create repair VM.\n', source_vm_sku)
+            return source_vm_sku
 
-    logger.info('Source VM size: \'%s\' is NOT available.\n', source_vm_sku)
+        logger.info('Source VM size: \'%s\' is NOT available.\n', source_vm_sku)
 
     # List available standard SKUs
     # TODO, premium IO only when needed
-    list_sku_command = 'az vm list-skus -s standard_d -l {loc} --query ' \
-                       '"[?capabilities[?name==\'vCPUs\' && to_number(value)>= to_number(\'2\')] && ' \
-                       'capabilities[?name==\'vCPUs\' && to_number(value)<= to_number(\'8\')] && ' \
-                       'capabilities[?name==\'MemoryGB\' && to_number(value)>=to_number(\'8\')] && ' \
-                       'capabilities[?name==\'MemoryGB\' && to_number(value)<=to_number(\'32\')] && ' \
-                       'capabilities[?name==\'MaxDataDiskCount\' && to_number(value)>to_number(\'0\')] && ' \
-                       'capabilities[?name==\'PremiumIO\' && value==\'True\']].name" -o json'\
-                       .format(loc=location)
+    if not hyperv:
+        list_sku_command = 'az vm list-skus -s standard_d -l {loc} --query ' \
+            '"[?capabilities[?name==\'vCPUs\' && to_number(value)>= to_number(\'2\')] && ' \
+            'capabilities[?name==\'vCPUs\' && to_number(value)<= to_number(\'16\')] && ' \
+            'capabilities[?name==\'MemoryGB\' && to_number(value)>=to_number(\'8\')] && ' \
+            'capabilities[?name==\'MemoryGB\' && to_number(value)<=to_number(\'32\')] && ' \
+            'capabilities[?name==\'MaxDataDiskCount\' && to_number(value)>to_number(\'0\')] && ' \
+            'capabilities[?name==\'PremiumIO\' && value==\'True\'] && ' \
+            'capabilities[?name==\'HyperVGenerations\']].name" -o json ' \
+            .format(loc=location)
+
+    else:
+        list_sku_command = 'az vm list-skus -s _v3 -l {loc} --query ' \
+            '"[?capabilities[?name==\'vCPUs\' && to_number(value)>= to_number(\'2\')] && ' \
+            'capabilities[?name==\'vCPUs\' && to_number(value)<= to_number(\'16\')] && ' \
+            'capabilities[?name==\'MemoryGB\' && to_number(value)>=to_number(\'8\')] && ' \
+            'capabilities[?name==\'MemoryGB\' && to_number(value)<=to_number(\'32\')] && ' \
+            'capabilities[?name==\'MaxDataDiskCount\' && to_number(value)>to_number(\'0\')] && ' \
+            'capabilities[?name==\'PremiumIO\' && value==\'True\'] && ' \
+            'capabilities[?name==\'HyperVGenerations\']].name" -o json ' \
+            .format(loc=location)
 
     logger.info('Fetching available VM sizes for repair VM...')
     sku_list = loads(_call_az_command(list_sku_command).strip('\n'))
@@ -212,7 +301,7 @@ def _fetch_compatible_sku(source_vm):
 
 def _fetch_disk_info(resource_group_name, disk_name):
     """ Returns sku, location, os_type, hyperVgeneration as tuples """
-    show_disk_command = 'az disk show -g {g} -n {name} --query [sku.name,location,osType,hyperVgeneration] -o json'.format(g=resource_group_name, name=disk_name)
+    show_disk_command = 'az disk show -g {g} -n {name} --query [sku.name,location,osType,hyperVGeneration] -o json'.format(g=resource_group_name, name=disk_name)
     disk_info = loads(_call_az_command(show_disk_command))
     # Note that disk_info will always have 4 elements if the command succeeded, if it fails it will cause an exception
     sku, location, os_type, hyper_v_version = disk_info[0], disk_info[1], disk_info[2], disk_info[3]
@@ -252,6 +341,32 @@ def _fetch_encryption_settings(source_vm):
         return Encryption.SINGLE_WITHOUT_KEK, key_vault, kekurl, secreturl
     key_vault, kekurl, secreturl = key_vault[0], kekurl[0], secreturl[0]
     return Encryption.SINGLE_WITH_KEK, key_vault, kekurl, secreturl
+
+
+def _check_hyperV_gen(source_vm):
+    disk_id = source_vm.storage_profile.os_disk.managed_disk.id
+    show_disk_command = 'az disk show --id {i} --query [hyperVgeneration] -o json' \
+                        .format(i=disk_id)
+    hyperVGen = loads(_call_az_command(show_disk_command))
+    if hyperVGen == 'V2':
+        raise SkuDoesNotSupportHyperV('Cannot support V2 HyperV generation. Please run command without --enabled-nested')
+
+
+def _check_linux_hyperV_gen(source_vm):
+    disk_id = source_vm.storage_profile.os_disk.managed_disk.id
+    show_disk_command = 'az disk show --id {i} --query [hyperVgeneration] -o json' \
+                        .format(i=disk_id)
+    hyperVGen = loads(_call_az_command(show_disk_command))
+    if hyperVGen != 'V2':
+        logger.info('Trying to check on the source VM if it has the parameter of gen2')
+        # if image is created from Marketplace gen2 image , the disk will not have the mark for gen2
+        fetch_hypervgen_command = 'az vm get-instance-view --ids {id} --query "[instanceView.hyperVGeneration]" -o json'.format(id=source_vm.id)
+        hyperVGen_list = loads(_call_az_command(fetch_hypervgen_command))
+        hyperVGen = hyperVGen_list[0]
+        if hyperVGen != 'V2':
+            hyperVGen = 'V1'
+
+    return hyperVGen
 
 
 def _secret_tag_check(resource_group_name, copy_disk_name, secreturl):
@@ -353,6 +468,98 @@ def _fetch_compatible_windows_os_urn(source_vm):
         return urns[1]
     logger.debug('Returning Urn 0: %s', urns[0])
     return urns[0]
+
+
+def _suse_image_selector(distro):
+    fetch_urn_command = 'az vm image list --publisher SUSE --offer {offer} --sku gen1 --verbose --all --query "[].urn | reverse(sort(@))" -o json'.format(offer=distro)
+    logger.info('Fetching compatible SUSE OS images from gallery...')
+    urns = loads(_call_az_command(fetch_urn_command))
+
+    # Raise exception when not finding SUSE image
+    if not urns:
+        raise SuseNotAvailableError()
+
+    logger.debug('Fetched urns: \n%s', urns)
+    # Returning the first URN as it is the latest image with no special use like HPC or SAP
+    logger.debug('Return the first URN : %s', urns[0])
+    return urns[0]
+
+
+def _suse_image_selector_gen2(distro):
+    fetch_urn_command = 'az vm image list --publisher SUSE --offer {offer} --sku gen2 --verbose --all --query "[].urn | reverse(sort(@))" -o json'.format(offer=distro)
+    logger.info('Fetching compatible SUSE OS images from gallery...')
+    urns = loads(_call_az_command(fetch_urn_command))
+
+    # Raise exception when not finding SUSE image
+    if not urns:
+        raise SuseNotAvailableError()
+
+    logger.debug('Fetched urns: \n%s', urns)
+    # Returning the first URN as it is the latest image with no special use like HPC or SAP
+    logger.debug('Return the first URN : %s', urns[0])
+    return urns[0]
+
+
+def _select_distro_linux(distro):
+    image_lookup = {
+        'rhel6': 'RedHat:RHEL:6.10:latest',
+        'rhel7': 'RedHat:rhel-raw:7-raw:latest',
+        'rhel8': 'RedHat:rhel-raw:8-raw:latest',
+        'ubuntu18': 'Canonical:UbuntuServer:18.04-LTS:latest',
+        'ubuntu20': 'Canonical:0001-com-ubuntu-server-focal:20_04-lts:latest',
+        'centos6': 'OpenLogic:CentOS:6.10:latest',
+        'centos7': 'OpenLogic:CentOS:7_9:latest',
+        'centos8': 'OpenLogic:CentOS:8_4:latest',
+        'oracle6': 'Oracle:Oracle-Linux:6.10:latest',
+        'oracle7': 'Oracle:Oracle-Linux:ol79:latest',
+        'oracle8': 'Oracle:Oracle-Linux:ol82:latest',
+        'sles12': _suse_image_selector('sles-12'),
+        'sles15': _suse_image_selector('sles-15')
+    }
+    if distro in image_lookup:
+        os_image_urn = image_lookup[distro]
+    else:
+        if distro.count(":") == 3:
+            logger.info('A custom URN was provided , will be used as distro for the recovery VM')
+            os_image_urn = distro
+        else:
+            logger.info('No specific distro was provided , using the default Ubuntu distro')
+            os_image_urn = "UbuntuLTS"
+    return os_image_urn
+
+
+def _select_distro_linux_gen2(distro):
+    # base on the document : https://docs.microsoft.com/en-us/azure/virtual-machines/generation-2#generation-2-vm-images-in-azure-marketplace
+    # RHEL/Centos/Oracle 6 are not supported for Gen 2
+    image_lookup = {
+        'rhel6': 'RedHat:rhel-raw:7-raw-gen2:latest',
+        'rhel7': 'RedHat:rhel-raw:7-raw-gen2:latest',
+        'rhel8': 'RedHat:rhel-raw:8-raw-gen2:latest',
+        'ubuntu18': 'Canonical:UbuntuServer:18_04-lts-gen2:latest',
+        'ubuntu20': 'Canonical:0001-com-ubuntu-server-focal:20_04-lts-gen2:latest',
+        'centos6': 'OpenLogic:CentOS:7_9-gen2:latest',
+        'centos7': 'OpenLogic:CentOS:7_9-gen2:latest',
+        'centos8': 'OpenLogic:CentOS:8_4-gen2:latest',
+        'oracle6': 'Oracle:Oracle-Linux:ol79-gen2:latest',
+        'oracle7': 'Oracle:Oracle-Linux:ol79-gen2:latest',
+        'oracle8': 'Oracle:Oracle-Linux:ol82-gen2:latest',
+        'sles12': _suse_image_selector_gen2('sles-12'),
+        'sles15': _suse_image_selector_gen2('sles-15')
+    }
+    if distro in image_lookup:
+        os_image_urn = image_lookup[distro]
+    else:
+        if distro.count(":") == 3:
+            logger.info('A custom URN was provided , will be used as distro for the recovery VM')
+            if distro.find('gen2'):
+                os_image_urn = distro
+            else:
+                logger.info('The provided URN does not contain Gen2 in it and this VM is a gen2 , dropping to default image')
+                os_image_urn = "Canonical:UbuntuServer:18_04-lts-gen2:latest"
+        else:
+            logger.info('No specific distro was provided , using the default Ubuntu distro')
+            os_image_urn = "Canonical:UbuntuServer:18_04-lts-gen2:latest"
+    return os_image_urn
 
 
 def _resolve_api_version(rcf, resource_provider_namespace, parent_resource_path, resource_type):

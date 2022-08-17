@@ -5,15 +5,11 @@
 import os
 from azure.cli.testsdk import (ScenarioTest, JMESPathCheck, JMESPathCheckExists, ResourceGroupPreparer,
                                StorageAccountPreparer, api_version_constraint, live_only)
-from azure.cli.core.profiles import ResourceType
-from ..storage_test_util import StorageScenarioMixin
+from ..storage_test_util import StorageScenarioMixin, StorageTestFilesPreparer
 from knack.util import CLIError
 
 
 class StorageOauthTests(StorageScenarioMixin, ScenarioTest):
-    def oauth_cmd(self, cmd, *args, **kwargs):
-        return self.cmd(cmd + ' --auth-mode login', *args, **kwargs)
-
     @live_only()
     @ResourceGroupPreparer()
     @StorageAccountPreparer()
@@ -64,10 +60,10 @@ class StorageOauthTests(StorageScenarioMixin, ScenarioTest):
 
     @ResourceGroupPreparer()
     @StorageAccountPreparer()
-    def test_storage_append_blob_upload_oauth(self, resource_group, storage_account):
-        account_info = self.get_account_info(resource_group, storage_account)
+    def test_storage_append_blob_upload_oauth(self, resource_group, storage_account_info):
+        account_info = storage_account_info
         self.kwargs = {
-            'account': storage_account,
+            'account': storage_account_info[0],
             'container': self.create_container(account_info),
             'local_file': self.create_temp_file(1, full_random=False),
             'blob': self.create_random_name('blob', 16)
@@ -109,12 +105,12 @@ class StorageOauthTests(StorageScenarioMixin, ScenarioTest):
 
     @ResourceGroupPreparer()
     @StorageAccountPreparer()
-    def test_storage_blob_show_oauth(self, resource_group, storage_account):
-        account_info = self.get_account_info(resource_group, storage_account)
+    def test_storage_blob_show_oauth(self, resource_group, storage_account_info):
+        account_info = storage_account_info
 
         self.kwargs.update({
             'rg': resource_group,
-            'account': storage_account,
+            'account': storage_account_info[0],
             'container': self.create_container(account_info=account_info),
             'local_file': self.create_temp_file(128),
             'block': self.create_random_name(prefix='block', length=12),
@@ -252,3 +248,39 @@ class StorageOauthTests(StorageScenarioMixin, ScenarioTest):
             .assert_with_checks(JMESPathCheck('length(@)', 1))
         self.oauth_cmd('storage container list --include-deleted --account-name {} '.format(storage_account)) \
             .assert_with_checks(JMESPathCheck('length(@)', 1))
+
+    @live_only()
+    @ResourceGroupPreparer()
+    @StorageAccountPreparer()
+    @StorageTestFilesPreparer()
+    def test_storage_blob_batch_oauth_scenarios(self, test_dir, resource_group, storage_account):
+        storage_account_info = self.get_account_info(resource_group, storage_account)
+        src_container = self.create_container(storage_account_info)
+
+        # upload test files to storage account when precondition failed
+        self.oauth_cmd('storage blob list -c {} --account-name {} '.format(src_container, storage_account))\
+            .assert_with_checks(JMESPathCheck('length(@)', 0))
+        self.oauth_cmd('storage blob upload-batch -s "{}" -d {} --max-connections 3 --if-match * '
+                       '--if-unmodified-since "2020-06-29T06:32Z" --account-name {} '.format(test_dir, src_container,
+                                                                                             storage_account))
+        self.oauth_cmd('storage blob list -c {} --account-name {} '.format(src_container, storage_account))\
+            .assert_with_checks(JMESPathCheck('length(@)', 0))
+
+        # upload test files to storage account
+        self.oauth_cmd('storage blob upload-batch -s "{}" -d {} --max-connections 3 --account-name {} '.format(
+                       test_dir, src_container, storage_account))
+        self.oauth_cmd(
+            'storage blob list -c {} --account-name {} '.format(src_container, storage_account)).assert_with_checks(
+                JMESPathCheck('length(@)', 41))
+
+        # download recursively without pattern
+        local_folder = self.create_temp_dir()
+        self.oauth_cmd('storage blob download-batch -s {} -d "{}" --account-name {} '.format(
+            src_container, local_folder, storage_account))
+        self.assertEqual(41, sum(len(f) for r, d, f in os.walk(local_folder)))
+
+        # delete recursively without pattern
+        self.oauth_cmd('storage blob delete-batch -s {} --account-name {} '.format(src_container, storage_account))
+        self.oauth_cmd(
+            'storage blob list -c {} --account-name {} '.format(src_container, storage_account)).assert_with_checks(
+                JMESPathCheck('length(@)', 0))

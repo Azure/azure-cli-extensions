@@ -6,7 +6,6 @@
 # Changes may cause incorrect behavior and will be lost if the code is regenerated.
 # --------------------------------------------------------------------------
 from typing import TYPE_CHECKING
-import datetime
 import warnings
 
 from azure.core.exceptions import ClientAuthenticationError, HttpResponseError, ResourceExistsError, ResourceNotFoundError, map_error
@@ -16,12 +15,12 @@ from azure.core.pipeline.transport import HttpRequest, HttpResponse
 from azure.core.polling import LROPoller, NoPolling, PollingMethod
 from azure.mgmt.core.exceptions import ARMErrorFormat
 from azure.mgmt.core.polling.arm_polling import ARMPolling
-from typing import Any, Callable, Dict, Generic, Iterable, Optional, TypeVar, Union
-from .. import models
 
+from .. import models
 
 if TYPE_CHECKING:
     # pylint: disable=unused-import,ungrouped-imports
+    from typing import Any, Callable, Dict, Generic, Iterable, Optional, TypeVar, Union
 
     T = TypeVar('T')
     ClsType = Optional[Callable[[
@@ -35,7 +34,7 @@ class ResourceTypeRegistrationsOperations(object):
     instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~providerhub.models
+    :type models: ~provider_hub.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -65,7 +64,7 @@ class ResourceTypeRegistrationsOperations(object):
         :type resource_type: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: ResourceTypeRegistration, or the result of cls(response)
-        :rtype: ~providerhub.models.ResourceTypeRegistration
+        :rtype: ~provider_hub.models.ResourceTypeRegistration
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop(
@@ -85,6 +84,7 @@ class ResourceTypeRegistrationsOperations(object):
             'resourceType': self._serialize.url("resource_type", resource_type, 'str'),
         }
         url = self._client.format_url(url, **path_format_arguments)
+        url = self.constructResourceTypeUrl(url, resource_type)
 
         # Construct parameters
         query_parameters = {}  # type: Dict[str, Any]
@@ -115,7 +115,7 @@ class ResourceTypeRegistrationsOperations(object):
             return cls(pipeline_response, deserialized, {})
 
         return deserialized
-    get.metadata = {'url': '/subscriptions/{subscriptionId}/providers/Microsoft.ProviderHub/providerRegistrations/{providerNamespace}/resourcetypeRegistrations/{resourceType}'}  # type: ignore
+    get.metadata = {'url': '/subscriptions/{subscriptionId}/providers/Microsoft.ProviderHub/providerRegistrations/{providerNamespace}/resourcetypeRegistrations/'}  # type: ignore
 
     def _create_or_update_initial(
         self,
@@ -151,6 +151,9 @@ class ResourceTypeRegistrationsOperations(object):
         resource_deletion_policy,  # type: "models.ResourceDeletionPolicy"
         opt_in_headers,  # type: "models.OptInHeaderType"
         required_features_policy,  # type: "models.FeaturesPolicy"
+        # type: "list[~provider_hub.models.SubscriptionStateOverrideAction]"
+        subscription_state_override_actions,
+        soft_delete_ttl,  # type: "~datetime.timedelta"
         **kwargs  # type: Any
     ):
         # type: (...) -> "models.ResourceTypeRegistration"
@@ -172,6 +175,7 @@ class ResourceTypeRegistrationsOperations(object):
             'resourceType': self._serialize.url("resource_type", resource_type, 'str'),
         }
         url = self._client.format_url(url, **path_format_arguments)
+        url = self.constructResourceTypeUrl(url, resource_type)
 
         # Construct parameters
         query_parameters = {}  # type: Dict[str, Any]
@@ -191,13 +195,17 @@ class ResourceTypeRegistrationsOperations(object):
             required_features_policy=required_features_policy) if required_features_policy else None
         extension_options = models.ResourceTypeExtensionOptions(resource_creation_begin=resource_creation_begin,
                                                                 resource_patch_begin=resource_patch_begin) if resource_creation_begin or resource_patch_begin else None
+        subscription_lifecycle_notification_specifications = models.SubscriptionLifecycleNotificationSpecifications(
+            subscription_state_override_actions=subscription_state_override_actions, soft_delete_ttl=soft_delete_ttl) if subscription_state_override_actions or soft_delete_ttl else None
+
         properties = models.ResourceTypeRegistrationProperties(routing_type=routing_type, regionality=regionality, endpoints=endpoints, extension_options=extension_options, marketplace_type=marketplace_type, swagger_specifications=swagger_specifications, allowed_unauthorized_actions=allowed_unauthorized_actions, authorization_action_mappings=authorization_action_mappings, linked_access_checks=linked_access_checks, default_api_version=default_api_version, logging_rules=logging_rules, throttling_rules=throttling_rules, required_features=required_features, features_rule=features_rule, enable_async_operation=enable_async_operation,
-                                                               enable_third_party_s2s=enable_third_party_s2s,  is_pure_proxy=is_pure_proxy, identity_management=identity_management, check_name_availability_specifications=check_name_availability_specifications, disallowed_action_verbs=disallowed_action_verbs, service_tree_infos=service_tree_infos, request_header_options=request_header_options, subscription_state_rules=subscription_state_rules, template_deployment_options=template_deployment_options, extended_locations=extended_locations, resource_move_policy=resource_move_policy, resource_deletion_policy=resource_deletion_policy)
-        params = models.ResourceTypeRegistration(properties=properties)
+                                                               enable_third_party_s2s=enable_third_party_s2s,  is_pure_proxy=is_pure_proxy, identity_management=identity_management, check_name_availability_specifications=check_name_availability_specifications, disallowed_action_verbs=disallowed_action_verbs, service_tree_infos=service_tree_infos, request_header_options=request_header_options, subscription_state_rules=subscription_state_rules, template_deployment_options=template_deployment_options, extended_locations=extended_locations, resource_move_policy=resource_move_policy, resource_deletion_policy=resource_deletion_policy,
+                                                               subscription_lifecycle_notification_specifications=subscription_lifecycle_notification_specifications)
+        resourceTypeRegistration = models.ResourceTypeRegistration(properties=properties)
 
         body_content_kwargs = {}  # type: Dict[str, Any]
-        body_content = self._serialize.body(params, 'ResourceTypeRegistration')
-
+        body_content = self._serialize.body(
+            resourceTypeRegistration, 'ResourceTypeRegistration')
         body_content_kwargs['content'] = body_content
         request = self._client.put(
             url, query_parameters, header_parameters, **body_content_kwargs)
@@ -225,7 +233,7 @@ class ResourceTypeRegistrationsOperations(object):
 
         return deserialized
     _create_or_update_initial.metadata = {
-        'url': '/subscriptions/{subscriptionId}/providers/Microsoft.ProviderHub/providerRegistrations/{providerNamespace}/resourcetypeRegistrations/{resourceType}'}  # type: ignore
+        'url': '/subscriptions/{subscriptionId}/providers/Microsoft.ProviderHub/providerRegistrations/{providerNamespace}/resourcetypeRegistrations/'}  # type: ignore
 
     def begin_create_or_update(
         self,
@@ -261,6 +269,9 @@ class ResourceTypeRegistrationsOperations(object):
         resource_deletion_policy,  # type: "models.ResourceDeletionPolicy"
         opt_in_headers,  # type: "models.OptInHeaderType"
         required_features_policy,  # type: "models.FeaturesPolicy"
+        # type: "list[~provider_hub.models.SubscriptionStateOverrideAction]"
+        subscription_state_override_actions,
+        soft_delete_ttl,  # type: "~datetime.timedelta"
         **kwargs  # type: Any
     ):
         # type: (...) -> LROPoller["models.ResourceTypeRegistration"]
@@ -270,8 +281,9 @@ class ResourceTypeRegistrationsOperations(object):
         :type provider_namespace: str
         :param resource_type: The resource type.
         :type resource_type: str
-        :param properties: The resource type registration parameters supplied to the CreateOrUpdate operation.
-        :type properties: ~providerhub.models.ResourceTypeRegistration
+        :param properties: The required request body parameters supplied to the resource type
+         registration CreateOrUpdate operation.
+        :type properties: ~provider_hub.models.ResourceTypeRegistration
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: True for ARMPolling, False for no polling, or a
@@ -279,7 +291,7 @@ class ResourceTypeRegistrationsOperations(object):
         :paramtype polling: bool or ~azure.core.polling.PollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
         :return: An instance of LROPoller that returns either ResourceTypeRegistration or the result of cls(response)
-        :rtype: ~azure.core.polling.LROPoller[~providerhub.models.ResourceTypeRegistration]
+        :rtype: ~azure.core.polling.LROPoller[~provider_hub.models.ResourceTypeRegistration]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         polling = kwargs.pop(
@@ -324,6 +336,8 @@ class ResourceTypeRegistrationsOperations(object):
                 resource_deletion_policy=resource_deletion_policy,
                 opt_in_headers=opt_in_headers,
                 required_features_policy=required_features_policy,
+                subscription_state_override_actions=subscription_state_override_actions,
+                soft_delete_ttl=soft_delete_ttl,
                 cls=lambda x, y, z: x,
                 **kwargs
             )
@@ -347,7 +361,7 @@ class ResourceTypeRegistrationsOperations(object):
 
         if polling is True:
             polling_method = ARMPolling(lro_delay, lro_options={
-                                        'final-state-via': 'azure-async-operation'}, path_format_arguments=path_format_arguments, **kwargs)
+                                        'final-state-via': 'azure-async-operation'}, path_format_arguments=path_format_arguments,  **kwargs)
         elif polling is False:
             polling_method = NoPolling()
         else:
@@ -362,7 +376,7 @@ class ResourceTypeRegistrationsOperations(object):
         else:
             return LROPoller(self._client, raw_result, get_long_running_output, polling_method)
     begin_create_or_update.metadata = {
-        'url': '/subscriptions/{subscriptionId}/providers/Microsoft.ProviderHub/providerRegistrations/{providerNamespace}/resourcetypeRegistrations/{resourceType}'}  # type: ignore
+        'url': '/subscriptions/{subscriptionId}/providers/Microsoft.ProviderHub/providerRegistrations/{providerNamespace}/resourcetypeRegistrations/'}  # type: ignore
 
     def delete(
         self,
@@ -398,6 +412,7 @@ class ResourceTypeRegistrationsOperations(object):
             'resourceType': self._serialize.url("resource_type", resource_type, 'str'),
         }
         url = self._client.format_url(url, **path_format_arguments)
+        url = self.constructResourceTypeUrl(url, resource_type)
 
         # Construct parameters
         query_parameters = {}  # type: Dict[str, Any]
@@ -423,8 +438,9 @@ class ResourceTypeRegistrationsOperations(object):
 
         if cls:
             return cls(pipeline_response, None, {})
+
     delete.metadata = {
-        'url': '/subscriptions/{subscriptionId}/providers/Microsoft.ProviderHub/providerRegistrations/{providerNamespace}/resourcetypeRegistrations/{resourceType}'}  # type: ignore
+        'url': '/subscriptions/{subscriptionId}/providers/Microsoft.ProviderHub/providerRegistrations/{providerNamespace}/resourcetypeRegistrations/'}  # type: ignore
 
     def list_by_provider_registration(
         self,
@@ -438,7 +454,7 @@ class ResourceTypeRegistrationsOperations(object):
         :type provider_namespace: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either ResourceTypeRegistrationArrayResponseWithContinuation or the result of cls(response)
-        :rtype: ~azure.core.paging.ItemPaged[~providerhub.models.ResourceTypeRegistrationArrayResponseWithContinuation]
+        :rtype: ~azure.core.paging.ItemPaged[~provider_hub.models.ResourceTypeRegistrationArrayResponseWithContinuation]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop(
@@ -508,3 +524,13 @@ class ResourceTypeRegistrationsOperations(object):
         )
     list_by_provider_registration.metadata = {
         'url': '/subscriptions/{subscriptionId}/providers/Microsoft.ProviderHub/providerRegistrations/{providerNamespace}/resourcetypeRegistrations'}  # type: ignore
+
+    def constructResourceTypeUrl(
+        self,
+        url,
+        resourceName
+    ):
+        # type: str
+        resourceName = resourceName.split("/")
+        resourceTypeUrlSuffix = "/resourcetypeRegistrations/".join(resourceName)
+        return url + resourceTypeUrlSuffix

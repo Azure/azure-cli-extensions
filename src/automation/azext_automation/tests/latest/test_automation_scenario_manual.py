@@ -5,7 +5,7 @@
 # --------------------------------------------------------------------------
 
 import os
-import mock
+from unittest import mock
 import tempfile
 from azure.cli.testsdk import ScenarioTest, ResourceGroupPreparer
 

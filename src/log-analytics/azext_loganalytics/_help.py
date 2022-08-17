@@ -18,7 +18,7 @@ helps['monitor log-analytics query'] = """
     examples:
       - name: Execute a simple query over past 3.5 days.
         text: |
-          az monitor log-analytics query -w workspace-customId --analytics-query "AzureActivity | summarize count() by bin(timestamp, 1h)" -t P3DT12H
+          az monitor log-analytics query -w workspace-customId --analytics-query "AzureActivity | summarize count() by bin(TimeGenerated, 1h)" -t P3DT12H
       - name: Execute a saved query in workspace
         text: |
           QUERY=$(az monitor log-analytics workspace saved-search show -g resource-group --workspace-name workspace-name -n query-name --query query --output tsv)

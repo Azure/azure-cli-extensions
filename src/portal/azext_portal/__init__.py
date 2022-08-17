@@ -4,7 +4,11 @@
 # --------------------------------------------------------------------------------------------
 
 from azure.cli.core import AzCommandsLoader
-from .generated._help import helps  # pylint: disable=unused-import
+from azext_portal.generated._help import helps  # pylint: disable=unused-import
+try:
+    from azext_portal.manual._help import helps  # pylint: disable=reimported
+except ImportError:
+    pass
 
 
 class PortalCommandsLoader(AzCommandsLoader):

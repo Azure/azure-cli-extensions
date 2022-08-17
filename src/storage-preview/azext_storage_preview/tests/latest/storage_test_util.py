@@ -10,7 +10,7 @@ import shutil
 from azure.cli.testsdk.preparers import AbstractPreparer
 
 
-class StorageScenarioMixin(object):
+class StorageScenarioMixin:
     profile = None
 
     def get_current_profile(self):
@@ -29,6 +29,9 @@ class StorageScenarioMixin(object):
     def get_account_info(self, group, name):
         """Returns the storage account name and key in a tuple"""
         return name, self.get_account_key(group, name)
+
+    def oauth_cmd(self, cmd, *args, **kwargs):
+        return self.cmd(cmd + ' --auth-mode login', *args, **kwargs)
 
     def storage_cmd(self, cmd, account_info, *args):
         cmd = cmd.format(*args)
@@ -50,13 +53,18 @@ class StorageScenarioMixin(object):
         self.storage_cmd('storage share create -n {}', account_info, share_name)
         return share_name
 
+    def create_file_system(self, account_info, prefix='filesystem', length=24):
+        filesystem_name = self.create_random_name(prefix=prefix, length=length)
+        self.storage_cmd('storage fs create -n {}', account_info, filesystem_name)
+        return filesystem_name
+
 
 class StorageTestFilesPreparer(AbstractPreparer):
     def __init__(self, parameter_name='test_dir'):
         super(StorageTestFilesPreparer, self).__init__(name_prefix='test', name_len=24)
         self.parameter_name = parameter_name
 
-    def create_resource(self, name, **_kwargs):  # pylint: disable=unused-argument
+    def create_resource(self, name, **kwargs):
         temp_dir = os.path.join(tempfile.gettempdir(), self.random_name)
         if not os.path.exists(temp_dir):
             os.mkdir(temp_dir)
@@ -78,7 +86,7 @@ class StorageTestFilesPreparer(AbstractPreparer):
         setattr(self, '_temp_dir', temp_dir)
         return {self.parameter_name: temp_dir}
 
-    def remove_resource(self, name, **_kwargs):  # pylint: disable=unused-argument
+    def remove_resource(self, name, **kwargs):
         temp_dir = self.get_temp_dir()
         if temp_dir:
             shutil.rmtree(temp_dir, ignore_errors=True)

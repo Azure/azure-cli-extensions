@@ -18,7 +18,7 @@ interactions:
       ParameterSetName:
       - --location --sku --name --resource-group
       User-Agent:
-      - AZURECLI/2.15.1 azsdk-python-logicmanagementclient/unknown Python/3.7.4 (Linux-4.15.0-123-generic-x86_64-with-debian-buster-sid)
+      - AZURECLI/2.26.1 azsdk-python-logicmanagementclient/unknown Python/3.7.8 (Windows-10-10.0.19041-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_000002/providers/Microsoft.Logic/integrationAccounts/cli_test_000004?api-version=2019-05-01
   response:
@@ -32,7 +32,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 04 Dec 2020 06:49:59 GMT
+      - Mon, 24 Jan 2022 07:27:13 GMT
       expires:
       - '-1'
       pragma:
@@ -42,7 +42,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1197'
+      - '1199'
     status:
       code: 201
       message: Created
@@ -65,7 +65,7 @@ interactions:
       ParameterSetName:
       - --location --input-path --name --resource-group
       User-Agent:
-      - AZURECLI/2.15.1 azsdk-python-logicmanagementclient/unknown Python/3.7.4 (Linux-4.15.0-123-generic-x86_64-with-debian-buster-sid)
+      - AZURECLI/2.26.1 azsdk-python-logicmanagementclient/unknown Python/3.7.8 (Windows-10-10.0.19041-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_000002/providers/Microsoft.Logic/integrationAccounts/cli_test_000004?api-version=2019-05-01
   response:
@@ -79,7 +79,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 04 Dec 2020 06:50:01 GMT
+      - Mon, 24 Jan 2022 07:27:15 GMT
       expires:
       - '-1'
       pragma:
@@ -93,7 +93,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1194'
+      - '1199'
     status:
       code: 200
       message: OK
@@ -121,21 +121,21 @@ interactions:
       ParameterSetName:
       - --resource-group --location --definition --name
       User-Agent:
-      - AZURECLI/2.15.1 azsdk-python-logicmanagementclient/unknown Python/3.7.4 (Linux-4.15.0-123-generic-x86_64-with-debian-buster-sid)
+      - AZURECLI/2.26.1 azsdk-python-logicmanagementclient/unknown Python/3.7.8 (Windows-10-10.0.19041-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_000001/providers/Microsoft.Logic/workflows/cli_test_000005?api-version=2019-05-01
   response:
     body:
-      string: '{"properties":{"provisioningState":"Succeeded","createdTime":"2020-12-04T06:50:05.6920561Z","changedTime":"2020-12-04T06:50:05.6785038Z","state":"Enabled","version":"08585945422798239259","accessEndpoint":"https://prod-20.centralus.logic.azure.com:443/workflows/88979037c9cd49a183bb70f0ccfceada","definition":{"$schema":"https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#","contentVersion":"1.0.0.0","parameters":{"$connections":{"defaultValue":{},"type":"Object"}},"triggers":{"When_a_feed_item_is_published":{"recurrence":{"frequency":"Minute","interval":1},"splitOn":"@triggerBody()?[''value'']","type":"ApiConnection","inputs":{"host":{"connection":{"name":"@parameters(''$connections'')[''rss''][''connectionId'']"}},"method":"get","path":"/OnNewFeed","queries":{"feedUrl":"http://feeds.reuters.com/reuters/topNews"}}}},"actions":{},"outputs":{}},"parameters":{},"endpointsConfiguration":{"workflow":{"outgoingIpAddresses":[{"address":"13.67.236.125"},{"address":"104.208.25.27"},{"address":"40.122.170.198"},{"address":"40.113.218.230"},{"address":"23.100.86.139"},{"address":"23.100.87.24"},{"address":"23.100.87.56"},{"address":"23.100.82.16"}],"accessEndpointIpAddresses":[{"address":"13.67.236.76"},{"address":"40.77.111.254"},{"address":"40.77.31.87"},{"address":"104.43.243.39"}]},"connector":{"outgoingIpAddresses":[{"address":"13.89.171.80/28"},{"address":"40.122.49.51"},{"address":"52.173.245.164"},{"address":"52.173.241.27"}]}}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_000001/providers/Microsoft.Logic/workflows/cli_test_000005","name":"cli_test_000005","type":"Microsoft.Logic/workflows","location":"centralus"}'
+      string: '{"properties":{"provisioningState":"Succeeded","createdTime":"2022-01-24T07:27:23.5191967Z","changedTime":"2022-01-24T07:27:23.5082967Z","state":"Enabled","version":"08585585976419894334","accessEndpoint":"https://prod-25.centralus.logic.azure.com:443/workflows/f86fd089c6a744278a554786d174203c","definition":{"$schema":"https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#","contentVersion":"1.0.0.0","parameters":{"$connections":{"defaultValue":{},"type":"Object"}},"triggers":{"When_a_feed_item_is_published":{"recurrence":{"frequency":"Minute","interval":1},"evaluatedRecurrence":{"frequency":"Minute","interval":1},"splitOn":"@triggerBody()?[''value'']","type":"ApiConnection","inputs":{"host":{"connection":{"name":"@parameters(''$connections'')[''rss''][''connectionId'']"}},"method":"get","path":"/OnNewFeed","queries":{"feedUrl":"http://feeds.reuters.com/reuters/topNews"}}}},"actions":{},"outputs":{}},"parameters":{},"endpointsConfiguration":{"workflow":{"outgoingIpAddresses":[{"address":"13.67.236.125"},{"address":"104.208.25.27"},{"address":"40.122.170.198"},{"address":"40.113.218.230"},{"address":"23.100.86.139"},{"address":"23.100.87.24"},{"address":"23.100.87.56"},{"address":"23.100.82.16"}],"accessEndpointIpAddresses":[{"address":"13.67.236.76"},{"address":"40.77.111.254"},{"address":"40.77.31.87"},{"address":"104.43.243.39"}]},"connector":{"outgoingIpAddresses":[{"address":"52.173.241.27"},{"address":"52.173.245.164"},{"address":"13.89.171.80/28"},{"address":"13.89.178.64/27"},{"address":"40.77.68.110"},{"address":"20.98.144.224/27"},{"address":"20.98.145.0/28"}]}}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_000001/providers/Microsoft.Logic/workflows/cli_test_000005","name":"cli_test_000005","type":"Microsoft.Logic/workflows","location":"centralus"}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1797'
+      - '1945'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 04 Dec 2020 06:50:05 GMT
+      - Mon, 24 Jan 2022 07:27:25 GMT
       expires:
       - '-1'
       pragma:
@@ -145,7 +145,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1195'
+      - '1199'
     status:
       code: 201
       message: Created
@@ -163,7 +163,7 @@ interactions:
       ParameterSetName:
       - --name --resource-group
       User-Agent:
-      - AZURECLI/2.15.1 azsdk-python-logicmanagementclient/unknown Python/3.7.4 (Linux-4.15.0-123-generic-x86_64-with-debian-buster-sid)
+      - AZURECLI/2.26.1 azsdk-python-logicmanagementclient/unknown Python/3.7.8 (Windows-10-10.0.19041-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_000002/providers/Microsoft.Logic/integrationAccounts/cli_test_000004?api-version=2019-05-01
   response:
@@ -177,7 +177,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 04 Dec 2020 06:50:08 GMT
+      - Mon, 24 Jan 2022 07:27:27 GMT
       expires:
       - '-1'
       pragma:
@@ -207,21 +207,21 @@ interactions:
       ParameterSetName:
       - --resource-group --name
       User-Agent:
-      - AZURECLI/2.15.1 azsdk-python-logicmanagementclient/unknown Python/3.7.4 (Linux-4.15.0-123-generic-x86_64-with-debian-buster-sid)
+      - AZURECLI/2.26.1 azsdk-python-logicmanagementclient/unknown Python/3.7.8 (Windows-10-10.0.19041-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_000001/providers/Microsoft.Logic/workflows/cli_test_000005?api-version=2019-05-01
   response:
     body:
-      string: '{"properties":{"provisioningState":"Succeeded","createdTime":"2020-12-04T06:50:05.6920561Z","changedTime":"2020-12-04T06:50:05.6785038Z","state":"Enabled","version":"08585945422798239259","accessEndpoint":"https://prod-20.centralus.logic.azure.com:443/workflows/88979037c9cd49a183bb70f0ccfceada","definition":{"$schema":"https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#","contentVersion":"1.0.0.0","parameters":{"$connections":{"defaultValue":{},"type":"Object"}},"triggers":{"When_a_feed_item_is_published":{"recurrence":{"frequency":"Minute","interval":1},"splitOn":"@triggerBody()?[''value'']","type":"ApiConnection","inputs":{"host":{"connection":{"name":"@parameters(''$connections'')[''rss''][''connectionId'']"}},"method":"get","path":"/OnNewFeed","queries":{"feedUrl":"http://feeds.reuters.com/reuters/topNews"}}}},"actions":{},"outputs":{}},"parameters":{},"endpointsConfiguration":{"workflow":{"outgoingIpAddresses":[{"address":"13.67.236.125"},{"address":"104.208.25.27"},{"address":"40.122.170.198"},{"address":"40.113.218.230"},{"address":"23.100.86.139"},{"address":"23.100.87.24"},{"address":"23.100.87.56"},{"address":"23.100.82.16"}],"accessEndpointIpAddresses":[{"address":"13.67.236.76"},{"address":"40.77.111.254"},{"address":"40.77.31.87"},{"address":"104.43.243.39"}]},"connector":{"outgoingIpAddresses":[{"address":"13.89.171.80/28"},{"address":"40.122.49.51"},{"address":"52.173.245.164"},{"address":"52.173.241.27"}]}}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_000001/providers/Microsoft.Logic/workflows/cli_test_000005","name":"cli_test_000005","type":"Microsoft.Logic/workflows","location":"centralus"}'
+      string: '{"properties":{"provisioningState":"Succeeded","createdTime":"2022-01-24T07:27:23.5191967Z","changedTime":"2022-01-24T07:27:23.5082967Z","state":"Enabled","version":"08585585976419894334","accessEndpoint":"https://prod-25.centralus.logic.azure.com:443/workflows/f86fd089c6a744278a554786d174203c","definition":{"$schema":"https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#","contentVersion":"1.0.0.0","parameters":{"$connections":{"defaultValue":{},"type":"Object"}},"triggers":{"When_a_feed_item_is_published":{"recurrence":{"frequency":"Minute","interval":1},"evaluatedRecurrence":{"frequency":"Minute","interval":1},"splitOn":"@triggerBody()?[''value'']","type":"ApiConnection","inputs":{"host":{"connection":{"name":"@parameters(''$connections'')[''rss''][''connectionId'']"}},"method":"get","path":"/OnNewFeed","queries":{"feedUrl":"http://feeds.reuters.com/reuters/topNews"}}}},"actions":{},"outputs":{}},"parameters":{},"endpointsConfiguration":{"workflow":{"outgoingIpAddresses":[{"address":"13.67.236.125"},{"address":"104.208.25.27"},{"address":"40.122.170.198"},{"address":"40.113.218.230"},{"address":"23.100.86.139"},{"address":"23.100.87.24"},{"address":"23.100.87.56"},{"address":"23.100.82.16"}],"accessEndpointIpAddresses":[{"address":"13.67.236.76"},{"address":"40.77.111.254"},{"address":"40.77.31.87"},{"address":"104.43.243.39"}]},"connector":{"outgoingIpAddresses":[{"address":"52.173.241.27"},{"address":"52.173.245.164"},{"address":"13.89.171.80/28"},{"address":"13.89.178.64/27"},{"address":"40.77.68.110"},{"address":"20.98.144.224/27"},{"address":"20.98.145.0/28"}]}}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_000001/providers/Microsoft.Logic/workflows/cli_test_000005","name":"cli_test_000005","type":"Microsoft.Logic/workflows","location":"centralus"}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1797'
+      - '1945'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 04 Dec 2020 06:50:09 GMT
+      - Mon, 24 Jan 2022 07:27:28 GMT
       expires:
       - '-1'
       pragma:
@@ -235,7 +235,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-resource-requests:
-      - '19996'
+      - '19998'
     status:
       code: 200
       message: OK
@@ -253,7 +253,7 @@ interactions:
       ParameterSetName:
       - --resource-group
       User-Agent:
-      - AZURECLI/2.15.1 azsdk-python-logicmanagementclient/unknown Python/3.7.4 (Linux-4.15.0-123-generic-x86_64-with-debian-buster-sid)
+      - AZURECLI/2.26.1 azsdk-python-logicmanagementclient/unknown Python/3.7.8 (Windows-10-10.0.19041-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_000002/providers/Microsoft.Logic/integrationAccounts?api-version=2019-05-01
   response:
@@ -267,7 +267,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 04 Dec 2020 06:50:11 GMT
+      - Mon, 24 Jan 2022 07:27:30 GMT
       expires:
       - '-1'
       pragma:
@@ -297,21 +297,21 @@ interactions:
       ParameterSetName:
       - --resource-group
       User-Agent:
-      - AZURECLI/2.15.1 azsdk-python-logicmanagementclient/unknown Python/3.7.4 (Linux-4.15.0-123-generic-x86_64-with-debian-buster-sid)
+      - AZURECLI/2.26.1 azsdk-python-logicmanagementclient/unknown Python/3.7.8 (Windows-10-10.0.19041-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_000001/providers/Microsoft.Logic/workflows?api-version=2019-05-01
   response:
     body:
-      string: '{"value":[{"properties":{"provisioningState":"Succeeded","createdTime":"2020-12-04T06:50:05.6920561Z","changedTime":"2020-12-04T06:50:05.6785038Z","state":"Enabled","version":"08585945422798239259","accessEndpoint":"https://prod-20.centralus.logic.azure.com:443/workflows/88979037c9cd49a183bb70f0ccfceada","definition":{"$schema":"https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#","contentVersion":"1.0.0.0","parameters":{"$connections":{"defaultValue":{},"type":"Object"}},"triggers":{"When_a_feed_item_is_published":{"recurrence":{"frequency":"Minute","interval":1},"splitOn":"@triggerBody()?[''value'']","type":"ApiConnection","inputs":{"host":{"connection":{"name":"@parameters(''$connections'')[''rss''][''connectionId'']"}},"method":"get","path":"/OnNewFeed","queries":{"feedUrl":"http://feeds.reuters.com/reuters/topNews"}}}},"actions":{},"outputs":{}},"parameters":{},"endpointsConfiguration":{"workflow":{"outgoingIpAddresses":[{"address":"13.67.236.125"},{"address":"104.208.25.27"},{"address":"40.122.170.198"},{"address":"40.113.218.230"},{"address":"23.100.86.139"},{"address":"23.100.87.24"},{"address":"23.100.87.56"},{"address":"23.100.82.16"}],"accessEndpointIpAddresses":[{"address":"13.67.236.76"},{"address":"40.77.111.254"},{"address":"40.77.31.87"},{"address":"104.43.243.39"}]},"connector":{"outgoingIpAddresses":[{"address":"13.89.171.80/28"},{"address":"40.122.49.51"},{"address":"52.173.245.164"},{"address":"52.173.241.27"}]}}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_000001/providers/Microsoft.Logic/workflows/cli_test_000005","name":"cli_test_000005","type":"Microsoft.Logic/workflows","location":"centralus"}]}'
+      string: '{"value":[{"properties":{"provisioningState":"Succeeded","createdTime":"2022-01-24T07:27:23.5191967Z","changedTime":"2022-01-24T07:27:23.5082967Z","state":"Enabled","version":"08585585976419894334","accessEndpoint":"https://prod-25.centralus.logic.azure.com:443/workflows/f86fd089c6a744278a554786d174203c","definition":{"$schema":"https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#","contentVersion":"1.0.0.0","parameters":{"$connections":{"defaultValue":{},"type":"Object"}},"triggers":{"When_a_feed_item_is_published":{"recurrence":{"frequency":"Minute","interval":1},"evaluatedRecurrence":{"frequency":"Minute","interval":1},"splitOn":"@triggerBody()?[''value'']","type":"ApiConnection","inputs":{"host":{"connection":{"name":"@parameters(''$connections'')[''rss''][''connectionId'']"}},"method":"get","path":"/OnNewFeed","queries":{"feedUrl":"http://feeds.reuters.com/reuters/topNews"}}}},"actions":{},"outputs":{}},"parameters":{},"endpointsConfiguration":{"workflow":{"outgoingIpAddresses":[{"address":"13.67.236.125"},{"address":"104.208.25.27"},{"address":"40.122.170.198"},{"address":"40.113.218.230"},{"address":"23.100.86.139"},{"address":"23.100.87.24"},{"address":"23.100.87.56"},{"address":"23.100.82.16"}],"accessEndpointIpAddresses":[{"address":"13.67.236.76"},{"address":"40.77.111.254"},{"address":"40.77.31.87"},{"address":"104.43.243.39"}]},"connector":{"outgoingIpAddresses":[{"address":"52.173.241.27"},{"address":"52.173.245.164"},{"address":"13.89.171.80/28"},{"address":"13.89.178.64/27"},{"address":"40.77.68.110"},{"address":"20.98.144.224/27"},{"address":"20.98.145.0/28"}]}}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_000001/providers/Microsoft.Logic/workflows/cli_test_000005","name":"cli_test_000005","type":"Microsoft.Logic/workflows","location":"centralus"}]}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1809'
+      - '1957'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 04 Dec 2020 06:50:13 GMT
+      - Mon, 24 Jan 2022 07:27:33 GMT
       expires:
       - '-1'
       pragma:
@@ -325,7 +325,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-resource-requests:
-      - '19996'
+      - '19999'
     status:
       code: 200
       message: OK
@@ -341,7 +341,7 @@ interactions:
       Connection:
       - keep-alive
       User-Agent:
-      - AZURECLI/2.15.1 azsdk-python-logicmanagementclient/unknown Python/3.7.4 (Linux-4.15.0-123-generic-x86_64-with-debian-buster-sid)
+      - AZURECLI/2.26.1 azsdk-python-logicmanagementclient/unknown Python/3.7.8 (Windows-10-10.0.19041-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Logic/integrationAccounts?api-version=2019-05-01
   response:
@@ -355,7 +355,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 04 Dec 2020 06:50:14 GMT
+      - Mon, 24 Jan 2022 07:27:35 GMT
       expires:
       - '-1'
       pragma:
@@ -383,154 +383,23 @@ interactions:
       Connection:
       - keep-alive
       User-Agent:
-      - AZURECLI/2.15.1 azsdk-python-logicmanagementclient/unknown Python/3.7.4 (Linux-4.15.0-123-generic-x86_64-with-debian-buster-sid)
+      - AZURECLI/2.26.1 azsdk-python-logicmanagementclient/unknown Python/3.7.8 (Windows-10-10.0.19041-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Logic/workflows?api-version=2019-05-01
   response:
     body:
-      string: "{\"value\":[{\"properties\":{\"provisioningState\":\"Succeeded\",\"\
-        createdTime\":\"2020-12-04T06:50:05.6920561Z\",\"changedTime\":\"2020-12-04T06:50:05.6785038Z\"\
-        ,\"state\":\"Enabled\",\"version\":\"08585945422798239259\",\"accessEndpoint\"\
-        :\"https://prod-20.centralus.logic.azure.com:443/workflows/88979037c9cd49a183bb70f0ccfceada\"\
-        ,\"definition\":{\"$schema\":\"https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#\"\
-        ,\"contentVersion\":\"1.0.0.0\",\"parameters\":{\"$connections\":{\"defaultValue\"\
-        :{},\"type\":\"Object\"}},\"triggers\":{\"When_a_feed_item_is_published\"\
-        :{\"recurrence\":{\"frequency\":\"Minute\",\"interval\":1},\"splitOn\":\"\
-        @triggerBody()?['value']\",\"type\":\"ApiConnection\",\"inputs\":{\"host\"\
-        :{\"connection\":{\"name\":\"@parameters('$connections')['rss']['connectionId']\"\
-        }},\"method\":\"get\",\"path\":\"/OnNewFeed\",\"queries\":{\"feedUrl\":\"\
-        http://feeds.reuters.com/reuters/topNews\"}}}},\"actions\":{},\"outputs\"\
-        :{}},\"parameters\":{},\"endpointsConfiguration\":{\"workflow\":{\"outgoingIpAddresses\"\
-        :[{\"address\":\"13.67.236.125\"},{\"address\":\"104.208.25.27\"},{\"address\"\
-        :\"40.122.170.198\"},{\"address\":\"40.113.218.230\"},{\"address\":\"23.100.86.139\"\
-        },{\"address\":\"23.100.87.24\"},{\"address\":\"23.100.87.56\"},{\"address\"\
-        :\"23.100.82.16\"}],\"accessEndpointIpAddresses\":[{\"address\":\"13.67.236.76\"\
-        },{\"address\":\"40.77.111.254\"},{\"address\":\"40.77.31.87\"},{\"address\"\
-        :\"104.43.243.39\"}]},\"connector\":{\"outgoingIpAddresses\":[{\"address\"\
-        :\"13.89.171.80/28\"},{\"address\":\"40.122.49.51\"},{\"address\":\"52.173.245.164\"\
-        },{\"address\":\"52.173.241.27\"}]}}},\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_000001/providers/Microsoft.Logic/workflows/cli_test_000005\"\
-        ,\"name\":\"cli_test_000005\",\"type\":\"Microsoft.Logic/workflows\",\"location\"\
-        :\"centralus\"},{\"properties\":{\"provisioningState\":\"Succeeded\",\"createdTime\"\
-        :\"2020-12-04T06:28:29.5823979Z\",\"changedTime\":\"2020-12-04T06:44:04.7470903Z\"\
-        ,\"state\":\"Enabled\",\"version\":\"08585945426407312678\",\"accessEndpoint\"\
-        :\"https://prod-12.centralus.logic.azure.com:443/workflows/8807f7d1d2ae4c14a4f3369b9b33378c\"\
-        ,\"definition\":{\"$schema\":\"https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#\"\
-        ,\"contentVersion\":\"1.0.0.0\",\"parameters\":{\"$connections\":{\"defaultValue\"\
-        :{},\"type\":\"Object\"}},\"triggers\":{\"When_a_feed_item_is_published\"\
-        :{\"recurrence\":{\"frequency\":\"Minute\",\"interval\":1},\"splitOn\":\"\
-        @triggerBody()?['value']\",\"type\":\"ApiConnection\",\"inputs\":{\"host\"\
-        :{\"connection\":{\"name\":\"@parameters('$connections')['rss']['connectionId']\"\
-        }},\"method\":\"get\",\"path\":\"/OnNewFeed\",\"queries\":{\"feedUrl\":\"\
-        http://feeds.reuters.com/reuters/topNews\"}}}},\"actions\":{},\"outputs\"\
-        :{}},\"parameters\":{},\"endpointsConfiguration\":{\"workflow\":{\"outgoingIpAddresses\"\
-        :[{\"address\":\"13.67.236.125\"},{\"address\":\"104.208.25.27\"},{\"address\"\
-        :\"40.122.170.198\"},{\"address\":\"40.113.218.230\"},{\"address\":\"23.100.86.139\"\
-        },{\"address\":\"23.100.87.24\"},{\"address\":\"23.100.87.56\"},{\"address\"\
-        :\"23.100.82.16\"}],\"accessEndpointIpAddresses\":[{\"address\":\"13.67.236.76\"\
-        },{\"address\":\"40.77.111.254\"},{\"address\":\"40.77.31.87\"},{\"address\"\
-        :\"104.43.243.39\"}]},\"connector\":{\"outgoingIpAddresses\":[{\"address\"\
-        :\"13.89.171.80/28\"},{\"address\":\"40.122.49.51\"},{\"address\":\"52.173.245.164\"\
-        },{\"address\":\"52.173.241.27\"}]}}},\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/harold/providers/Microsoft.Logic/workflows/wf-1\"\
-        ,\"name\":\"wf-1\",\"type\":\"Microsoft.Logic/workflows\",\"location\":\"\
-        centralus\",\"tags\":{\"foo\":\"123\"}},{\"properties\":{\"provisioningState\"\
-        :\"Succeeded\",\"createdTime\":\"2019-11-18T06:41:01.5064237Z\",\"changedTime\"\
-        :\"2020-04-13T09:52:33.2302252Z\",\"state\":\"Enabled\",\"version\":\"08586148353322519216\"\
-        ,\"accessEndpoint\":\"https://prod-29.westus.logic.azure.com:443/workflows/cf5bb036a7fa41d4ad8b964d5eea3343\"\
-        ,\"definition\":{\"$schema\":\"https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#\"\
-        ,\"contentVersion\":\"1.0.0.0\",\"parameters\":{\"$connections\":{\"defaultValue\"\
-        :{},\"type\":\"Object\"}},\"triggers\":{\"every_day_starts_at_18:00_and_06:00\"\
-        :{\"recurrence\":{\"frequency\":\"Day\",\"interval\":1,\"schedule\":{\"hours\"\
-        :[\"18\"]},\"timeZone\":\"China Standard Time\"},\"type\":\"Recurrence\"}},\"\
-        actions\":{\"List_resource_groups\":{\"runAfter\":{},\"type\":\"ApiConnection\"\
-        ,\"inputs\":{\"host\":{\"connection\":{\"name\":\"@parameters('$connections')['arm']['connectionId']\"\
-        }},\"method\":\"get\",\"path\":\"/subscriptions/@{encodeURIComponent('0b1f6471-1bf0-4dda-aec3-cb9272f09590')}/resourcegroups\"\
-        ,\"queries\":{\"x-ms-api-version\":\"2016-06-01\"}}},\"filter_elements_except_resource_group_name_is_equal_to_\\\
-        \"AzureSDKTest_reserved\\\"\":{\"runAfter\":{\"List_resource_groups\":[\"\
-        Succeeded\"]},\"type\":\"Query\",\"inputs\":{\"from\":\"@body('List_resource_groups')?['value']\"\
-        ,\"where\":\"@not(equals(item()?['name'], 'AzureSDKTest_reserved'))\"}},\"\
-        \u4E3A\u6BCF\u4E2A\":{\"foreach\":\"@body('filter_elements_except_resource_group_name_is_equal_to_\\\
-        \"AzureSDKTest_reserved\\\"')\",\"actions\":{\"Delete_a_resource_group\":{\"\
-        runAfter\":{},\"type\":\"ApiConnection\",\"inputs\":{\"host\":{\"connection\"\
-        :{\"name\":\"@parameters('$connections')['arm']['connectionId']\"}},\"method\"\
-        :\"delete\",\"path\":\"/subscriptions/@{encodeURIComponent('0b1f6471-1bf0-4dda-aec3-cb9272f09590')}/resourcegroups/@{encodeURIComponent(items('\u4E3A\
-        \u6BCF\u4E2A')?['name'])}\",\"queries\":{\"x-ms-api-version\":\"2016-06-01\"\
-        }}}},\"runAfter\":{\"filter_elements_except_resource_group_name_is_equal_to_\\\
-        \"AzureSDKTest_reserved\\\"\":[\"Succeeded\"]},\"type\":\"Foreach\"}},\"outputs\"\
-        :{}},\"parameters\":{\"$connections\":{\"value\":{\"arm\":{\"connectionId\"\
-        :\"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AzureSDKTest_reserved/providers/Microsoft.Web/connections/arm\"\
-        ,\"connectionName\":\"arm\",\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Web/locations/westus/managedApis/arm\"\
-        }}}},\"endpointsConfiguration\":{\"workflow\":{\"outgoingIpAddresses\":[{\"\
-        address\":\"52.160.92.112\"},{\"address\":\"40.118.244.241\"},{\"address\"\
-        :\"40.118.241.243\"},{\"address\":\"157.56.162.53\"},{\"address\":\"157.56.167.147\"\
-        },{\"address\":\"104.42.49.145\"},{\"address\":\"40.83.164.80\"},{\"address\"\
-        :\"104.42.38.32\"}],\"accessEndpointIpAddresses\":[{\"address\":\"52.160.90.237\"\
-        },{\"address\":\"138.91.188.137\"},{\"address\":\"13.91.252.184\"},{\"address\"\
-        :\"157.56.160.212 \"}]},\"connector\":{\"outgoingIpAddresses\":[{\"address\"\
-        :\"40.112.243.160/28\"},{\"address\":\"104.40.51.248\"},{\"address\":\"104.42.122.49\"\
-        },{\"address\":\"40.112.195.87\"},{\"address\":\"13.93.148.62\"}]}}},\"id\"\
-        :\"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AzureSDKTest_reserved/providers/Microsoft.Logic/workflows/AzureSDKTest_ScheduledCleaner\"\
-        ,\"name\":\"AzureSDKTest_ScheduledCleaner\",\"type\":\"Microsoft.Logic/workflows\"\
-        ,\"location\":\"westus\",\"tags\":{}},{\"properties\":{\"provisioningState\"\
-        :\"Succeeded\",\"createdTime\":\"2020-04-24T06:33:36.5052747Z\",\"changedTime\"\
-        :\"2020-04-24T06:33:36.4986025Z\",\"state\":\"Enabled\",\"version\":\"08586138968690384726\"\
-        ,\"accessEndpoint\":\"https://prod-123.westus.logic.azure.com:443/workflows/72b1a436cf5a4f65950d224869dd7484\"\
-        ,\"definition\":{\"$schema\":\"https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#\"\
-        ,\"contentVersion\":\"1.0.0.0\",\"parameters\":{},\"triggers\":{},\"actions\"\
-        :{},\"outputs\":{}},\"parameters\":{},\"endpointsConfiguration\":{\"workflow\"\
-        :{\"outgoingIpAddresses\":[{\"address\":\"52.160.92.112\"},{\"address\":\"\
-        40.118.244.241\"},{\"address\":\"40.118.241.243\"},{\"address\":\"157.56.162.53\"\
-        },{\"address\":\"157.56.167.147\"},{\"address\":\"104.42.49.145\"},{\"address\"\
-        :\"40.83.164.80\"},{\"address\":\"104.42.38.32\"}],\"accessEndpointIpAddresses\"\
-        :[{\"address\":\"52.160.90.237\"},{\"address\":\"138.91.188.137\"},{\"address\"\
-        :\"13.91.252.184\"},{\"address\":\"157.56.160.212 \"}]},\"connector\":{\"\
-        outgoingIpAddresses\":[{\"address\":\"40.112.243.160/28\"},{\"address\":\"\
-        104.40.51.248\"},{\"address\":\"104.42.122.49\"},{\"address\":\"40.112.195.87\"\
-        },{\"address\":\"13.93.148.62\"}]}}},\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AzureSDKTest_reserved/providers/Microsoft.Logic/workflows/FetchModules\"\
-        ,\"name\":\"FetchModules\",\"type\":\"Microsoft.Logic/workflows\",\"location\"\
-        :\"westus\",\"tags\":{}},{\"properties\":{\"provisioningState\":\"Succeeded\"\
-        ,\"createdTime\":\"2019-11-25T03:03:51.6406922Z\",\"changedTime\":\"2020-03-02T03:30:46.8880289Z\"\
-        ,\"state\":\"Disabled\",\"version\":\"08586184870386928444\",\"accessEndpoint\"\
-        :\"https://prod-52.westus.logic.azure.com:443/workflows/ad25d96f848444caaf7c4ec48853fbcf\"\
-        ,\"definition\":{\"$schema\":\"https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#\"\
-        ,\"contentVersion\":\"1.0.0.0\",\"parameters\":{\"$connections\":{\"defaultValue\"\
-        :{},\"type\":\"Object\"}},\"triggers\":{\"Recurrence\":{\"recurrence\":{\"\
-        frequency\":\"Day\",\"interval\":3},\"type\":\"Recurrence\"}},\"actions\"\
-        :{\"List_resource_groups\":{\"runAfter\":{},\"type\":\"ApiConnection\",\"\
-        inputs\":{\"host\":{\"connection\":{\"name\":\"@parameters('$connections')['arm']['connectionId']\"\
-        }},\"method\":\"get\",\"path\":\"/subscriptions/@{encodeURIComponent('0b1f6471-1bf0-4dda-aec3-cb9272f09590')}/resourcegroups\"\
-        ,\"queries\":{\"x-ms-api-version\":\"2016-06-01\"}}},\"Run_query_and_list_results\"\
-        :{\"runAfter\":{\"List_resource_groups\":[\"Succeeded\"]},\"type\":\"ApiConnection\"\
-        ,\"inputs\":{\"body\":\"[].eventTimestamp\",\"host\":{\"connection\":{\"name\"\
-        :\"@parameters('$connections')['azuremonitorlogs']['connectionId']\"}},\"\
-        method\":\"post\",\"path\":\"/queryData\",\"queries\":{\"resourcegroups\"\
-        :\"new-experiences\",\"resourcename\":\"Microsoft.ClassicCompute\",\"resourcetype\"\
-        :\"virtualMachines\",\"subscriptions\":\"0b1f6471-1bf0-4dda-aec3-cb9272f09590\"\
-        ,\"timerange\":\"60\"}}}},\"outputs\":{}},\"parameters\":{\"$connections\"\
-        :{\"value\":{\"arm\":{\"connectionId\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AzureSDKTest_reserved/providers/Microsoft.Web/connections/arm\"\
-        ,\"connectionName\":\"arm\",\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Web/locations/westus/managedApis/arm\"\
-        },\"azuremonitorlogs\":{\"connectionId\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AzureSDKTest_reserved/providers/Microsoft.Web/connections/azuremonitorlogs\"\
-        ,\"connectionName\":\"azuremonitorlogs\",\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Web/locations/westus/managedApis/azuremonitorlogs\"\
-        }}}},\"endpointsConfiguration\":{\"workflow\":{\"outgoingIpAddresses\":[{\"\
-        address\":\"52.160.92.112\"},{\"address\":\"40.118.244.241\"},{\"address\"\
-        :\"40.118.241.243\"},{\"address\":\"157.56.162.53\"},{\"address\":\"157.56.167.147\"\
-        },{\"address\":\"104.42.49.145\"},{\"address\":\"40.83.164.80\"},{\"address\"\
-        :\"104.42.38.32\"}],\"accessEndpointIpAddresses\":[{\"address\":\"52.160.90.237\"\
-        },{\"address\":\"138.91.188.137\"},{\"address\":\"13.91.252.184\"},{\"address\"\
-        :\"157.56.160.212 \"}]},\"connector\":{\"outgoingIpAddresses\":[{\"address\"\
-        :\"40.112.243.160/28\"},{\"address\":\"104.40.51.248\"},{\"address\":\"104.42.122.49\"\
-        },{\"address\":\"40.112.195.87\"},{\"address\":\"13.93.148.62\"}]}}},\"id\"\
-        :\"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AzureSDKTest_reserved/providers/Microsoft.Logic/workflows/TestLogicApp\"\
-        ,\"name\":\"TestLogicApp\",\"type\":\"Microsoft.Logic/workflows\",\"location\"\
-        :\"westus\",\"tags\":{}}]}"
+      string: '{"value":[{"properties":{"provisioningState":"Succeeded","createdTime":"2022-01-24T07:27:23.5191967Z","changedTime":"2022-01-24T07:27:23.5082967Z","state":"Enabled","version":"08585585976419894334","accessEndpoint":"https://prod-25.centralus.logic.azure.com:443/workflows/f86fd089c6a744278a554786d174203c","definition":{"$schema":"https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#","contentVersion":"1.0.0.0","parameters":{"$connections":{"defaultValue":{},"type":"Object"}},"triggers":{"When_a_feed_item_is_published":{"recurrence":{"frequency":"Minute","interval":1},"evaluatedRecurrence":{"frequency":"Minute","interval":1},"splitOn":"@triggerBody()?[''value'']","type":"ApiConnection","inputs":{"host":{"connection":{"name":"@parameters(''$connections'')[''rss''][''connectionId'']"}},"method":"get","path":"/OnNewFeed","queries":{"feedUrl":"http://feeds.reuters.com/reuters/topNews"}}}},"actions":{},"outputs":{}},"parameters":{},"endpointsConfiguration":{"workflow":{"outgoingIpAddresses":[{"address":"13.67.236.125"},{"address":"104.208.25.27"},{"address":"40.122.170.198"},{"address":"40.113.218.230"},{"address":"23.100.86.139"},{"address":"23.100.87.24"},{"address":"23.100.87.56"},{"address":"23.100.82.16"}],"accessEndpointIpAddresses":[{"address":"13.67.236.76"},{"address":"40.77.111.254"},{"address":"40.77.31.87"},{"address":"104.43.243.39"}]},"connector":{"outgoingIpAddresses":[{"address":"52.173.241.27"},{"address":"52.173.245.164"},{"address":"13.89.171.80/28"},{"address":"13.89.178.64/27"},{"address":"40.77.68.110"},{"address":"20.98.144.224/27"},{"address":"20.98.145.0/28"}]}}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_000001/providers/Microsoft.Logic/workflows/cli_test_000005","name":"cli_test_000005","type":"Microsoft.Logic/workflows","location":"centralus"},{"properties":{"provisioningState":"Succeeded","createdTime":"2022-01-24T04:01:33.1510349Z","changedTime":"2022-01-24T05:32:34.5054983Z","state":"Enabled","version":"08585586045309732017","accessEndpoint":"https://prod-185.westus.logic.azure.com:443/workflows/2fc344d1d95b4c45961142b761e30de8","definition":{"$schema":"https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#","contentVersion":"1.0.0.0","parameters":{"$connections":{"defaultValue":{},"type":"Object"}},"triggers":{"When_a_feed_item_is_published":{"recurrence":{"frequency":"Minute","interval":1},"evaluatedRecurrence":{"frequency":"Minute","interval":1},"splitOn":"@triggerBody()?[''value'']","type":"ApiConnection","inputs":{"host":{"connection":{"name":"@parameters(''$connections'')[''rss''][''connectionId'']"}},"method":"get","path":"/OnNewFeed","queries":{"feedUrl":"http://feeds.reuters.com/reuters/topNews"}}}},"actions":{},"outputs":{}},"parameters":{},"accessControl":{"contents":{"allowedCallerIpAddresses":[{"addressRange":"10.0.0.0/24"}]}},"endpointsConfiguration":{"workflow":{"outgoingIpAddresses":[{"address":"52.160.92.112"},{"address":"40.118.244.241"},{"address":"40.118.241.243"},{"address":"157.56.162.53"},{"address":"157.56.167.147"},{"address":"104.42.49.145"},{"address":"40.83.164.80"},{"address":"104.42.38.32"},{"address":"13.86.223.0"},{"address":"13.86.223.1"},{"address":"13.86.223.2"},{"address":"13.86.223.3"},{"address":"13.86.223.4"},{"address":"13.86.223.5"}],"accessEndpointIpAddresses":[{"address":"52.160.90.237"},{"address":"138.91.188.137"},{"address":"13.91.252.184"},{"address":"157.56.160.212"}]},"connector":{"outgoingIpAddresses":[{"address":"13.93.148.62"},{"address":"104.42.122.49"},{"address":"40.112.195.87"},{"address":"13.86.223.32/27"},{"address":"40.112.243.160/28"},{"address":"20.59.77.0/27"},{"address":"20.66.6.112/28"}]}}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azure-cli-test-rg/providers/Microsoft.Logic/workflows/yu-test-wf","name":"yu-test-wf","type":"Microsoft.Logic/workflows","location":"westus"},{"properties":{"provisioningState":"Succeeded","createdTime":"2019-11-18T06:41:01.5064237Z","changedTime":"2021-04-21T05:57:33.1094235Z","state":"Enabled","version":"08585826222323923767","accessEndpoint":"https://prod-29.westus.logic.azure.com:443/workflows/cf5bb036a7fa41d4ad8b964d5eea3343","definition":{"$schema":"https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#","contentVersion":"1.0.0.0","parameters":{"$connections":{"defaultValue":{},"type":"Object"}},"triggers":{"Trigger_at_18:00_every_day":{"recurrence":{"frequency":"Day","interval":1,"schedule":{"hours":["18"]},"timeZone":"China
+        Standard Time"},"type":"Recurrence"}},"actions":{"Delete_resource_groups":{"foreach":"@body(''Filter_elements_except_resource_group_name_is_equal_to_\"AzureSDKTest_reserved\"'')","actions":{"Delete_a_resource_group":{"runAfter":{},"type":"ApiConnection","inputs":{"host":{"connection":{"name":"@parameters(''$connections'')[''arm_1''][''connectionId'']"}},"method":"delete","path":"/subscriptions/@{encodeURIComponent(''0b1f6471-1bf0-4dda-aec3-cb9272f09590'')}/resourcegroups/@{encodeURIComponent(items(''Delete_resource_groups'')?[''name''])}","queries":{"x-ms-api-version":"2016-06-01"}}}},"runAfter":{"Filter_elements_except_resource_group_name_is_equal_to_\"AzureSDKTest_reserved\"":["Succeeded"]},"type":"Foreach"},"Filter_elements_except_resource_group_name_is_equal_to_\"AzureSDKTest_reserved\"":{"runAfter":{"List_resource_groups":["Succeeded"]},"type":"Query","inputs":{"from":"@body(''List_resource_groups'')?[''value'']","where":"@not(equals(item()?[''name''],
+        ''AzureSDKTest_reserved''))"}},"List_resource_groups":{"runAfter":{},"type":"ApiConnection","inputs":{"host":{"connection":{"name":"@parameters(''$connections'')[''arm_1''][''connectionId'']"}},"method":"get","path":"/subscriptions/@{encodeURIComponent(''0b1f6471-1bf0-4dda-aec3-cb9272f09590'')}/resourcegroups","queries":{"x-ms-api-version":"2016-06-01"}}}},"outputs":{}},"parameters":{"$connections":{"value":{"arm_1":{"connectionId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AzureSDKTest_reserved/providers/Microsoft.Web/connections/arm-1","connectionName":"arm-1","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Web/locations/westus/managedApis/arm"}}}},"endpointsConfiguration":{"workflow":{"outgoingIpAddresses":[{"address":"52.160.92.112"},{"address":"40.118.244.241"},{"address":"40.118.241.243"},{"address":"157.56.162.53"},{"address":"157.56.167.147"},{"address":"104.42.49.145"},{"address":"40.83.164.80"},{"address":"104.42.38.32"},{"address":"13.86.223.0"},{"address":"13.86.223.1"},{"address":"13.86.223.2"},{"address":"13.86.223.3"},{"address":"13.86.223.4"},{"address":"13.86.223.5"}],"accessEndpointIpAddresses":[{"address":"52.160.90.237"},{"address":"138.91.188.137"},{"address":"13.91.252.184"},{"address":"157.56.160.212"}]},"connector":{"outgoingIpAddresses":[{"address":"13.93.148.62"},{"address":"104.42.122.49"},{"address":"40.112.195.87"},{"address":"13.86.223.32/27"},{"address":"40.112.243.160/28"},{"address":"20.59.77.0/27"},{"address":"20.66.6.112/28"}]}}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AzureSDKTest_reserved/providers/Microsoft.Logic/workflows/AzureSDKTest_ScheduledCleaner","name":"AzureSDKTest_ScheduledCleaner","type":"Microsoft.Logic/workflows","location":"westus","tags":{}},{"properties":{"provisioningState":"Succeeded","createdTime":"2020-04-24T06:33:36.5052747Z","changedTime":"2020-04-24T06:33:36.4986025Z","state":"Enabled","version":"08586138968690384726","accessEndpoint":"https://prod-123.westus.logic.azure.com:443/workflows/72b1a436cf5a4f65950d224869dd7484","definition":{"$schema":"https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#","contentVersion":"1.0.0.0","parameters":{},"triggers":{},"actions":{},"outputs":{}},"parameters":{},"endpointsConfiguration":{"workflow":{"outgoingIpAddresses":[{"address":"52.160.92.112"},{"address":"40.118.244.241"},{"address":"40.118.241.243"},{"address":"157.56.162.53"},{"address":"157.56.167.147"},{"address":"104.42.49.145"},{"address":"40.83.164.80"},{"address":"104.42.38.32"},{"address":"13.86.223.0"},{"address":"13.86.223.1"},{"address":"13.86.223.2"},{"address":"13.86.223.3"},{"address":"13.86.223.4"},{"address":"13.86.223.5"}],"accessEndpointIpAddresses":[{"address":"52.160.90.237"},{"address":"138.91.188.137"},{"address":"13.91.252.184"},{"address":"157.56.160.212"}]},"connector":{"outgoingIpAddresses":[{"address":"13.93.148.62"},{"address":"104.42.122.49"},{"address":"40.112.195.87"},{"address":"13.86.223.32/27"},{"address":"40.112.243.160/28"},{"address":"20.59.77.0/27"},{"address":"20.66.6.112/28"}]}}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AzureSDKTest_reserved/providers/Microsoft.Logic/workflows/FetchModules","name":"FetchModules","type":"Microsoft.Logic/workflows","location":"westus","tags":{}},{"properties":{"provisioningState":"Succeeded","createdTime":"2019-11-25T03:03:51.6406922Z","changedTime":"2020-03-02T03:30:46.8880289Z","state":"Disabled","version":"08586184870386928444","accessEndpoint":"https://prod-52.westus.logic.azure.com:443/workflows/ad25d96f848444caaf7c4ec48853fbcf","definition":{"$schema":"https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#","contentVersion":"1.0.0.0","parameters":{"$connections":{"defaultValue":{},"type":"Object"}},"triggers":{"Recurrence":{"recurrence":{"frequency":"Day","interval":3},"type":"Recurrence"}},"actions":{"List_resource_groups":{"runAfter":{},"type":"ApiConnection","inputs":{"host":{"connection":{"name":"@parameters(''$connections'')[''arm''][''connectionId'']"}},"method":"get","path":"/subscriptions/@{encodeURIComponent(''0b1f6471-1bf0-4dda-aec3-cb9272f09590'')}/resourcegroups","queries":{"x-ms-api-version":"2016-06-01"}}},"Run_query_and_list_results":{"runAfter":{"List_resource_groups":["Succeeded"]},"type":"ApiConnection","inputs":{"body":"[].eventTimestamp","host":{"connection":{"name":"@parameters(''$connections'')[''azuremonitorlogs''][''connectionId'']"}},"method":"post","path":"/queryData","queries":{"resourcegroups":"new-experiences","resourcename":"Microsoft.ClassicCompute","resourcetype":"virtualMachines","subscriptions":"0b1f6471-1bf0-4dda-aec3-cb9272f09590","timerange":"60"}}}},"outputs":{}},"parameters":{"$connections":{"value":{"arm":{"connectionId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AzureSDKTest_reserved/providers/Microsoft.Web/connections/arm","connectionName":"arm","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Web/locations/westus/managedApis/arm"},"azuremonitorlogs":{"connectionId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AzureSDKTest_reserved/providers/Microsoft.Web/connections/azuremonitorlogs","connectionName":"azuremonitorlogs","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Web/locations/westus/managedApis/azuremonitorlogs"}}}},"endpointsConfiguration":{"workflow":{"outgoingIpAddresses":[{"address":"52.160.92.112"},{"address":"40.118.244.241"},{"address":"40.118.241.243"},{"address":"157.56.162.53"},{"address":"157.56.167.147"},{"address":"104.42.49.145"},{"address":"40.83.164.80"},{"address":"104.42.38.32"},{"address":"13.86.223.0"},{"address":"13.86.223.1"},{"address":"13.86.223.2"},{"address":"13.86.223.3"},{"address":"13.86.223.4"},{"address":"13.86.223.5"}],"accessEndpointIpAddresses":[{"address":"52.160.90.237"},{"address":"138.91.188.137"},{"address":"13.91.252.184"},{"address":"157.56.160.212"}]},"connector":{"outgoingIpAddresses":[{"address":"13.93.148.62"},{"address":"104.42.122.49"},{"address":"40.112.195.87"},{"address":"13.86.223.32/27"},{"address":"40.112.243.160/28"},{"address":"20.59.77.0/27"},{"address":"20.66.6.112/28"}]}}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AzureSDKTest_reserved/providers/Microsoft.Logic/workflows/TestLogicApp","name":"TestLogicApp","type":"Microsoft.Logic/workflows","location":"westus","tags":{}}]}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '11011'
+      - '12225'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 04 Dec 2020 06:50:14 GMT
+      - Mon, 24 Jan 2022 07:27:37 GMT
       expires:
       - '-1'
       pragma:
@@ -542,10 +411,10 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-original-request-ids:
-      - centralus:0d755bc2-b58a-49a3-bf40-ad6a3be69fd6
-      - westus:d2a88313-9037-4080-a63d-34fe6b643f2d
+      - centralus:7d160240-ef36-4fea-ab30-c8d04fa22cda
+      - westus:d8e2b45b-5f21-4444-b76b-fcdd85817426
       x-ms-ratelimit-remaining-subscription-resource-requests:
-      - '19997'
+      - '19999'
     status:
       code: 200
       message: OK
@@ -567,7 +436,7 @@ interactions:
       ParameterSetName:
       - --sku --name --resource-group
       User-Agent:
-      - AZURECLI/2.15.1 azsdk-python-logicmanagementclient/unknown Python/3.7.4 (Linux-4.15.0-123-generic-x86_64-with-debian-buster-sid)
+      - AZURECLI/2.26.1 azsdk-python-logicmanagementclient/unknown Python/3.7.8 (Windows-10-10.0.19041-SP0)
     method: PATCH
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_000002/providers/Microsoft.Logic/integrationAccounts/cli_test_000004?api-version=2019-05-01
   response:
@@ -581,7 +450,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 04 Dec 2020 06:50:19 GMT
+      - Mon, 24 Jan 2022 07:27:45 GMT
       expires:
       - '-1'
       pragma:
@@ -595,7 +464,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1193'
+      - '1199'
     status:
       code: 200
       message: OK
@@ -613,21 +482,21 @@ interactions:
       ParameterSetName:
       - --resource-group --tag --definition --name
       User-Agent:
-      - AZURECLI/2.15.1 azsdk-python-logicmanagementclient/unknown Python/3.7.4 (Linux-4.15.0-123-generic-x86_64-with-debian-buster-sid)
+      - AZURECLI/2.26.1 azsdk-python-logicmanagementclient/unknown Python/3.7.8 (Windows-10-10.0.19041-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_000001/providers/Microsoft.Logic/workflows/cli_test_000005?api-version=2019-05-01
   response:
     body:
-      string: '{"properties":{"provisioningState":"Succeeded","createdTime":"2020-12-04T06:50:05.6920561Z","changedTime":"2020-12-04T06:50:05.6785038Z","state":"Enabled","version":"08585945422798239259","accessEndpoint":"https://prod-20.centralus.logic.azure.com:443/workflows/88979037c9cd49a183bb70f0ccfceada","definition":{"$schema":"https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#","contentVersion":"1.0.0.0","parameters":{"$connections":{"defaultValue":{},"type":"Object"}},"triggers":{"When_a_feed_item_is_published":{"recurrence":{"frequency":"Minute","interval":1},"splitOn":"@triggerBody()?[''value'']","type":"ApiConnection","inputs":{"host":{"connection":{"name":"@parameters(''$connections'')[''rss''][''connectionId'']"}},"method":"get","path":"/OnNewFeed","queries":{"feedUrl":"http://feeds.reuters.com/reuters/topNews"}}}},"actions":{},"outputs":{}},"parameters":{},"endpointsConfiguration":{"workflow":{"outgoingIpAddresses":[{"address":"13.67.236.125"},{"address":"104.208.25.27"},{"address":"40.122.170.198"},{"address":"40.113.218.230"},{"address":"23.100.86.139"},{"address":"23.100.87.24"},{"address":"23.100.87.56"},{"address":"23.100.82.16"}],"accessEndpointIpAddresses":[{"address":"13.67.236.76"},{"address":"40.77.111.254"},{"address":"40.77.31.87"},{"address":"104.43.243.39"}]},"connector":{"outgoingIpAddresses":[{"address":"13.89.171.80/28"},{"address":"40.122.49.51"},{"address":"52.173.245.164"},{"address":"52.173.241.27"}]}}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_000001/providers/Microsoft.Logic/workflows/cli_test_000005","name":"cli_test_000005","type":"Microsoft.Logic/workflows","location":"centralus"}'
+      string: '{"properties":{"provisioningState":"Succeeded","createdTime":"2022-01-24T07:27:23.5191967Z","changedTime":"2022-01-24T07:27:23.5082967Z","state":"Enabled","version":"08585585976419894334","accessEndpoint":"https://prod-25.centralus.logic.azure.com:443/workflows/f86fd089c6a744278a554786d174203c","definition":{"$schema":"https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#","contentVersion":"1.0.0.0","parameters":{"$connections":{"defaultValue":{},"type":"Object"}},"triggers":{"When_a_feed_item_is_published":{"recurrence":{"frequency":"Minute","interval":1},"evaluatedRecurrence":{"frequency":"Minute","interval":1},"splitOn":"@triggerBody()?[''value'']","type":"ApiConnection","inputs":{"host":{"connection":{"name":"@parameters(''$connections'')[''rss''][''connectionId'']"}},"method":"get","path":"/OnNewFeed","queries":{"feedUrl":"http://feeds.reuters.com/reuters/topNews"}}}},"actions":{},"outputs":{}},"parameters":{},"endpointsConfiguration":{"workflow":{"outgoingIpAddresses":[{"address":"13.67.236.125"},{"address":"104.208.25.27"},{"address":"40.122.170.198"},{"address":"40.113.218.230"},{"address":"23.100.86.139"},{"address":"23.100.87.24"},{"address":"23.100.87.56"},{"address":"23.100.82.16"}],"accessEndpointIpAddresses":[{"address":"13.67.236.76"},{"address":"40.77.111.254"},{"address":"40.77.31.87"},{"address":"104.43.243.39"}]},"connector":{"outgoingIpAddresses":[{"address":"52.173.241.27"},{"address":"52.173.245.164"},{"address":"13.89.171.80/28"},{"address":"13.89.178.64/27"},{"address":"40.77.68.110"},{"address":"20.98.144.224/27"},{"address":"20.98.145.0/28"}]}}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_000001/providers/Microsoft.Logic/workflows/cli_test_000005","name":"cli_test_000005","type":"Microsoft.Logic/workflows","location":"centralus"}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1797'
+      - '1945'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 04 Dec 2020 06:50:22 GMT
+      - Mon, 24 Jan 2022 07:27:47 GMT
       expires:
       - '-1'
       pragma:
@@ -641,7 +510,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-resource-requests:
-      - '19994'
+      - '19999'
     status:
       code: 200
       message: OK
@@ -653,8 +522,9 @@ interactions:
       {"address": "23.100.87.56"}, {"address": "23.100.82.16"}], "accessEndpointIpAddresses":
       [{"address": "13.67.236.76"}, {"address": "40.77.111.254"}, {"address": "40.77.31.87"},
       {"address": "104.43.243.39"}]}, "connector": {"outgoingIpAddresses": [{"address":
-      "13.89.171.80/28"}, {"address": "40.122.49.51"}, {"address": "52.173.245.164"},
-      {"address": "52.173.241.27"}]}}, "definition": {"$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "52.173.241.27"}, {"address": "52.173.245.164"}, {"address": "13.89.171.80/28"},
+      {"address": "13.89.178.64/27"}, {"address": "40.77.68.110"}, {"address": "20.98.144.224/27"},
+      {"address": "20.98.145.0/28"}]}}, "definition": {"$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
       "actions": {}, "contentVersion": "1.0.0.0", "outputs": {}, "parameters": {"$connections":
       {"defaultValue": {}, "type": "Object"}}, "triggers": {"When_a_feed_item_is_published":
       {"inputs": {"host": {"connection": {"name": "@parameters(''$connections'')[''rss''][''connectionId'']"}},
@@ -671,27 +541,27 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '1343'
+      - '1439'
       Content-Type:
       - application/json
       ParameterSetName:
       - --resource-group --tag --definition --name
       User-Agent:
-      - AZURECLI/2.15.1 azsdk-python-logicmanagementclient/unknown Python/3.7.4 (Linux-4.15.0-123-generic-x86_64-with-debian-buster-sid)
+      - AZURECLI/2.26.1 azsdk-python-logicmanagementclient/unknown Python/3.7.8 (Windows-10-10.0.19041-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_000001/providers/Microsoft.Logic/workflows/cli_test_000005?api-version=2019-05-01
   response:
     body:
-      string: '{"properties":{"provisioningState":"Succeeded","createdTime":"2020-12-04T06:50:23.8850335Z","changedTime":"2020-12-04T06:50:23.8797192Z","state":"Enabled","version":"08585945422616070918","accessEndpoint":"https://prod-20.centralus.logic.azure.com:443/workflows/88979037c9cd49a183bb70f0ccfceada","definition":{"$schema":"https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#","contentVersion":"1.0.0.0","parameters":{"$connections":{"defaultValue":{},"type":"Object"}},"triggers":{"When_a_feed_item_is_published":{"recurrence":{"frequency":"Minute","interval":2},"splitOn":"@triggerBody()?[''value'']","type":"ApiConnection","inputs":{"host":{"connection":{"name":"@parameters(''$connections'')[''rss''][''connectionId'']"}},"method":"get","path":"/OnNewFeed","queries":{"feedUrl":"http://feeds.reuters.com/reuters/topNews"}}}},"actions":{},"outputs":{}},"parameters":{},"endpointsConfiguration":{"workflow":{"outgoingIpAddresses":[{"address":"13.67.236.125"},{"address":"104.208.25.27"},{"address":"40.122.170.198"},{"address":"40.113.218.230"},{"address":"23.100.86.139"},{"address":"23.100.87.24"},{"address":"23.100.87.56"},{"address":"23.100.82.16"}],"accessEndpointIpAddresses":[{"address":"13.67.236.76"},{"address":"40.77.111.254"},{"address":"40.77.31.87"},{"address":"104.43.243.39"}]},"connector":{"outgoingIpAddresses":[{"address":"13.89.171.80/28"},{"address":"40.122.49.51"},{"address":"52.173.245.164"},{"address":"52.173.241.27"}]}}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_000001/providers/Microsoft.Logic/workflows/cli_test_000005","name":"cli_test_000005","type":"Microsoft.Logic/workflows","location":"centralus","tags":{"atag":"123"}}'
+      string: '{"properties":{"provisioningState":"Succeeded","createdTime":"2022-01-24T07:27:49.5519561Z","changedTime":"2022-01-24T07:27:49.5326592Z","state":"Enabled","version":"08585585976159478845","accessEndpoint":"https://prod-25.centralus.logic.azure.com:443/workflows/f86fd089c6a744278a554786d174203c","definition":{"$schema":"https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#","contentVersion":"1.0.0.0","parameters":{"$connections":{"defaultValue":{},"type":"Object"}},"triggers":{"When_a_feed_item_is_published":{"recurrence":{"frequency":"Minute","interval":2},"evaluatedRecurrence":{"frequency":"Minute","interval":2},"splitOn":"@triggerBody()?[''value'']","type":"ApiConnection","inputs":{"host":{"connection":{"name":"@parameters(''$connections'')[''rss''][''connectionId'']"}},"method":"get","path":"/OnNewFeed","queries":{"feedUrl":"http://feeds.reuters.com/reuters/topNews"}}}},"actions":{},"outputs":{}},"parameters":{},"endpointsConfiguration":{"workflow":{"outgoingIpAddresses":[{"address":"13.67.236.125"},{"address":"104.208.25.27"},{"address":"40.122.170.198"},{"address":"40.113.218.230"},{"address":"23.100.86.139"},{"address":"23.100.87.24"},{"address":"23.100.87.56"},{"address":"23.100.82.16"}],"accessEndpointIpAddresses":[{"address":"13.67.236.76"},{"address":"40.77.111.254"},{"address":"40.77.31.87"},{"address":"104.43.243.39"}]},"connector":{"outgoingIpAddresses":[{"address":"52.173.241.27"},{"address":"52.173.245.164"},{"address":"13.89.171.80/28"},{"address":"13.89.178.64/27"},{"address":"40.77.68.110"},{"address":"20.98.144.224/27"},{"address":"20.98.145.0/28"}]}}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_000001/providers/Microsoft.Logic/workflows/cli_test_000005","name":"cli_test_000005","type":"Microsoft.Logic/workflows","location":"centralus","tags":{"atag":"123"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1819'
+      - '1967'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 04 Dec 2020 06:50:26 GMT
+      - Mon, 24 Jan 2022 07:27:51 GMT
       expires:
       - '-1'
       pragma:
@@ -705,7 +575,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1193'
+      - '1199'
     status:
       code: 200
       message: OK
@@ -723,21 +593,21 @@ interactions:
       ParameterSetName:
       - --resource-group --tag --name
       User-Agent:
-      - AZURECLI/2.15.1 azsdk-python-logicmanagementclient/unknown Python/3.7.4 (Linux-4.15.0-123-generic-x86_64-with-debian-buster-sid)
+      - AZURECLI/2.26.1 azsdk-python-logicmanagementclient/unknown Python/3.7.8 (Windows-10-10.0.19041-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_000001/providers/Microsoft.Logic/workflows/cli_test_000005?api-version=2019-05-01
   response:
     body:
-      string: '{"properties":{"provisioningState":"Succeeded","createdTime":"2020-12-04T06:50:05.6920561Z","changedTime":"2020-12-04T06:50:23.8797192Z","state":"Enabled","version":"08585945422616070918","accessEndpoint":"https://prod-20.centralus.logic.azure.com:443/workflows/88979037c9cd49a183bb70f0ccfceada","definition":{"$schema":"https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#","contentVersion":"1.0.0.0","parameters":{"$connections":{"defaultValue":{},"type":"Object"}},"triggers":{"When_a_feed_item_is_published":{"recurrence":{"frequency":"Minute","interval":2},"splitOn":"@triggerBody()?[''value'']","type":"ApiConnection","inputs":{"host":{"connection":{"name":"@parameters(''$connections'')[''rss''][''connectionId'']"}},"method":"get","path":"/OnNewFeed","queries":{"feedUrl":"http://feeds.reuters.com/reuters/topNews"}}}},"actions":{},"outputs":{}},"parameters":{},"endpointsConfiguration":{"workflow":{"outgoingIpAddresses":[{"address":"13.67.236.125"},{"address":"104.208.25.27"},{"address":"40.122.170.198"},{"address":"40.113.218.230"},{"address":"23.100.86.139"},{"address":"23.100.87.24"},{"address":"23.100.87.56"},{"address":"23.100.82.16"}],"accessEndpointIpAddresses":[{"address":"13.67.236.76"},{"address":"40.77.111.254"},{"address":"40.77.31.87"},{"address":"104.43.243.39"}]},"connector":{"outgoingIpAddresses":[{"address":"13.89.171.80/28"},{"address":"40.122.49.51"},{"address":"52.173.245.164"},{"address":"52.173.241.27"}]}}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_000001/providers/Microsoft.Logic/workflows/cli_test_000005","name":"cli_test_000005","type":"Microsoft.Logic/workflows","location":"centralus","tags":{"atag":"123"}}'
+      string: '{"properties":{"provisioningState":"Succeeded","createdTime":"2022-01-24T07:27:23.5191967Z","changedTime":"2022-01-24T07:27:49.5326592Z","state":"Enabled","version":"08585585976159478845","accessEndpoint":"https://prod-25.centralus.logic.azure.com:443/workflows/f86fd089c6a744278a554786d174203c","definition":{"$schema":"https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#","contentVersion":"1.0.0.0","parameters":{"$connections":{"defaultValue":{},"type":"Object"}},"triggers":{"When_a_feed_item_is_published":{"recurrence":{"frequency":"Minute","interval":2},"evaluatedRecurrence":{"frequency":"Minute","interval":2},"splitOn":"@triggerBody()?[''value'']","type":"ApiConnection","inputs":{"host":{"connection":{"name":"@parameters(''$connections'')[''rss''][''connectionId'']"}},"method":"get","path":"/OnNewFeed","queries":{"feedUrl":"http://feeds.reuters.com/reuters/topNews"}}}},"actions":{},"outputs":{}},"parameters":{},"endpointsConfiguration":{"workflow":{"outgoingIpAddresses":[{"address":"13.67.236.125"},{"address":"104.208.25.27"},{"address":"40.122.170.198"},{"address":"40.113.218.230"},{"address":"23.100.86.139"},{"address":"23.100.87.24"},{"address":"23.100.87.56"},{"address":"23.100.82.16"}],"accessEndpointIpAddresses":[{"address":"13.67.236.76"},{"address":"40.77.111.254"},{"address":"40.77.31.87"},{"address":"104.43.243.39"}]},"connector":{"outgoingIpAddresses":[{"address":"52.173.241.27"},{"address":"52.173.245.164"},{"address":"13.89.171.80/28"},{"address":"13.89.178.64/27"},{"address":"40.77.68.110"},{"address":"20.98.144.224/27"},{"address":"20.98.145.0/28"}]}}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_000001/providers/Microsoft.Logic/workflows/cli_test_000005","name":"cli_test_000005","type":"Microsoft.Logic/workflows","location":"centralus","tags":{"atag":"123"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1819'
+      - '1967'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 04 Dec 2020 06:50:28 GMT
+      - Mon, 24 Jan 2022 07:27:53 GMT
       expires:
       - '-1'
       pragma:
@@ -751,7 +621,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-resource-requests:
-      - '19997'
+      - '19998'
     status:
       code: 200
       message: OK
@@ -763,12 +633,14 @@ interactions:
       {"address": "23.100.87.56"}, {"address": "23.100.82.16"}], "accessEndpointIpAddresses":
       [{"address": "13.67.236.76"}, {"address": "40.77.111.254"}, {"address": "40.77.31.87"},
       {"address": "104.43.243.39"}]}, "connector": {"outgoingIpAddresses": [{"address":
-      "13.89.171.80/28"}, {"address": "40.122.49.51"}, {"address": "52.173.245.164"},
-      {"address": "52.173.241.27"}]}}, "definition": {"$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "52.173.241.27"}, {"address": "52.173.245.164"}, {"address": "13.89.171.80/28"},
+      {"address": "13.89.178.64/27"}, {"address": "40.77.68.110"}, {"address": "20.98.144.224/27"},
+      {"address": "20.98.145.0/28"}]}}, "definition": {"$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
       "contentVersion": "1.0.0.0", "parameters": {"$connections": {"defaultValue":
       {}, "type": "Object"}}, "triggers": {"When_a_feed_item_is_published": {"recurrence":
-      {"frequency": "Minute", "interval": 2}, "splitOn": "@triggerBody()?[''value'']",
-      "type": "ApiConnection", "inputs": {"host": {"connection": {"name": "@parameters(''$connections'')[''rss''][''connectionId'']"}},
+      {"frequency": "Minute", "interval": 2}, "evaluatedRecurrence": {"frequency":
+      "Minute", "interval": 2}, "splitOn": "@triggerBody()?[''value'']", "type": "ApiConnection",
+      "inputs": {"host": {"connection": {"name": "@parameters(''$connections'')[''rss''][''connectionId'']"}},
       "method": "get", "path": "/OnNewFeed", "queries": {"feedUrl": "http://feeds.reuters.com/reuters/topNews"}}}},
       "actions": {}, "outputs": {}}}}'
     headers:
@@ -781,27 +653,27 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '1343'
+      - '1502'
       Content-Type:
       - application/json
       ParameterSetName:
       - --resource-group --tag --name
       User-Agent:
-      - AZURECLI/2.15.1 azsdk-python-logicmanagementclient/unknown Python/3.7.4 (Linux-4.15.0-123-generic-x86_64-with-debian-buster-sid)
+      - AZURECLI/2.26.1 azsdk-python-logicmanagementclient/unknown Python/3.7.8 (Windows-10-10.0.19041-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_000001/providers/Microsoft.Logic/workflows/cli_test_000005?api-version=2019-05-01
   response:
     body:
-      string: '{"properties":{"provisioningState":"Succeeded","createdTime":"2020-12-04T06:50:29.5762822Z","changedTime":"2020-12-04T06:50:29.5618867Z","state":"Enabled","version":"08585945422559172135","accessEndpoint":"https://prod-20.centralus.logic.azure.com:443/workflows/88979037c9cd49a183bb70f0ccfceada","definition":{"$schema":"https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#","contentVersion":"1.0.0.0","parameters":{"$connections":{"defaultValue":{},"type":"Object"}},"triggers":{"When_a_feed_item_is_published":{"recurrence":{"frequency":"Minute","interval":2},"splitOn":"@triggerBody()?[''value'']","type":"ApiConnection","inputs":{"host":{"connection":{"name":"@parameters(''$connections'')[''rss''][''connectionId'']"}},"method":"get","path":"/OnNewFeed","queries":{"feedUrl":"http://feeds.reuters.com/reuters/topNews"}}}},"actions":{},"outputs":{}},"parameters":{},"endpointsConfiguration":{"workflow":{"outgoingIpAddresses":[{"address":"13.67.236.125"},{"address":"104.208.25.27"},{"address":"40.122.170.198"},{"address":"40.113.218.230"},{"address":"23.100.86.139"},{"address":"23.100.87.24"},{"address":"23.100.87.56"},{"address":"23.100.82.16"}],"accessEndpointIpAddresses":[{"address":"13.67.236.76"},{"address":"40.77.111.254"},{"address":"40.77.31.87"},{"address":"104.43.243.39"}]},"connector":{"outgoingIpAddresses":[{"address":"13.89.171.80/28"},{"address":"40.122.49.51"},{"address":"52.173.245.164"},{"address":"52.173.241.27"}]}}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_000001/providers/Microsoft.Logic/workflows/cli_test_000005","name":"cli_test_000005","type":"Microsoft.Logic/workflows","location":"centralus","tags":{"atag":"foo"}}'
+      string: '{"properties":{"provisioningState":"Succeeded","createdTime":"2022-01-24T07:27:55.0457762Z","changedTime":"2022-01-24T07:27:55.0405252Z","state":"Enabled","version":"08585585976104510389","accessEndpoint":"https://prod-25.centralus.logic.azure.com:443/workflows/f86fd089c6a744278a554786d174203c","definition":{"$schema":"https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#","contentVersion":"1.0.0.0","parameters":{"$connections":{"defaultValue":{},"type":"Object"}},"triggers":{"When_a_feed_item_is_published":{"recurrence":{"frequency":"Minute","interval":2},"evaluatedRecurrence":{"frequency":"Minute","interval":2},"splitOn":"@triggerBody()?[''value'']","type":"ApiConnection","inputs":{"host":{"connection":{"name":"@parameters(''$connections'')[''rss''][''connectionId'']"}},"method":"get","path":"/OnNewFeed","queries":{"feedUrl":"http://feeds.reuters.com/reuters/topNews"}}}},"actions":{},"outputs":{}},"parameters":{},"endpointsConfiguration":{"workflow":{"outgoingIpAddresses":[{"address":"13.67.236.125"},{"address":"104.208.25.27"},{"address":"40.122.170.198"},{"address":"40.113.218.230"},{"address":"23.100.86.139"},{"address":"23.100.87.24"},{"address":"23.100.87.56"},{"address":"23.100.82.16"}],"accessEndpointIpAddresses":[{"address":"13.67.236.76"},{"address":"40.77.111.254"},{"address":"40.77.31.87"},{"address":"104.43.243.39"}]},"connector":{"outgoingIpAddresses":[{"address":"52.173.241.27"},{"address":"52.173.245.164"},{"address":"13.89.171.80/28"},{"address":"13.89.178.64/27"},{"address":"40.77.68.110"},{"address":"20.98.144.224/27"},{"address":"20.98.145.0/28"}]}}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_000001/providers/Microsoft.Logic/workflows/cli_test_000005","name":"cli_test_000005","type":"Microsoft.Logic/workflows","location":"centralus","tags":{"atag":"foo"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1819'
+      - '1967'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 04 Dec 2020 06:50:32 GMT
+      - Mon, 24 Jan 2022 07:27:57 GMT
       expires:
       - '-1'
       pragma:
@@ -815,7 +687,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1198'
+      - '1199'
     status:
       code: 200
       message: OK
@@ -835,7 +707,7 @@ interactions:
       ParameterSetName:
       - --resource-group --name -y
       User-Agent:
-      - AZURECLI/2.15.1 azsdk-python-logicmanagementclient/unknown Python/3.7.4 (Linux-4.15.0-123-generic-x86_64-with-debian-buster-sid)
+      - AZURECLI/2.26.1 azsdk-python-logicmanagementclient/unknown Python/3.7.8 (Windows-10-10.0.19041-SP0)
     method: DELETE
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_000001/providers/Microsoft.Logic/workflows/cli_test_000005?api-version=2019-05-01
   response:
@@ -847,7 +719,7 @@ interactions:
       content-length:
       - '0'
       date:
-      - Fri, 04 Dec 2020 06:50:41 GMT
+      - Mon, 24 Jan 2022 07:28:06 GMT
       expires:
       - '-1'
       pragma:
@@ -857,7 +729,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-deletes:
-      - '14998'
+      - '14999'
     status:
       code: 200
       message: OK
@@ -877,7 +749,7 @@ interactions:
       ParameterSetName:
       - --name --resource-group -y
       User-Agent:
-      - AZURECLI/2.15.1 azsdk-python-logicmanagementclient/unknown Python/3.7.4 (Linux-4.15.0-123-generic-x86_64-with-debian-buster-sid)
+      - AZURECLI/2.26.1 azsdk-python-logicmanagementclient/unknown Python/3.7.8 (Windows-10-10.0.19041-SP0)
     method: DELETE
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_000002/providers/Microsoft.Logic/integrationAccounts/cli_test_000004?api-version=2019-05-01
   response:
@@ -889,7 +761,7 @@ interactions:
       content-length:
       - '0'
       date:
-      - Fri, 04 Dec 2020 06:50:45 GMT
+      - Mon, 24 Jan 2022 07:28:12 GMT
       expires:
       - '-1'
       pragma:
@@ -899,7 +771,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-deletes:
-      - '14998'
+      - '14999'
     status:
       code: 200
       message: OK

@@ -37,6 +37,9 @@ aks create:
     enable_node_public_ip:
       rule_exclusions:
       - option_length_too_long
+    node_public_ip_prefix_id:
+      rule_exclusions:
+        - option_length_too_long
     enable_pod_security_policy:
       rule_exclusions:
       - option_length_too_long
@@ -49,6 +52,9 @@ aks create:
     load_balancer_managed_outbound_ip_count:
       rule_exclusions:
       - option_length_too_long
+    load_balancer_managed_outbound_ipv6_count:
+      rule_exclusions:
+      - option_length_too_long
     load_balancer_outbound_ip_prefixes:
       rule_exclusions:
       - option_length_too_long
@@ -56,6 +62,12 @@ aks create:
       rule_exclusions:
       - option_length_too_long
     load_balancer_outbound_ports:
+      rule_exclusions:
+      - option_length_too_long
+    nat_gateway_idle_timeout:
+      rule_exclusions:
+      - option_length_too_long
+    nat_gateway_managed_outbound_ip_count:
       rule_exclusions:
       - option_length_too_long
     node_osdisk_diskencryptionset_id:
@@ -73,6 +85,40 @@ aks create:
     workspace_resource_id:
       rule_exclusions:
       - option_length_too_long
+    enable_msi_auth_for_monitoring:
+      rule_exclusions:
+      - option_length_too_long
+    enable_encryption_at_host:
+      rule_exclusions:
+      - option_length_too_long
+    enable_pod_identity_with_kubenet:
+      rule_exclusions:
+      - option_length_too_long
+    assign_kubelet_identity:
+      rule_exclusions:
+      - option_length_too_long
+aks addon enable:
+  parameters:
+    appgw_watch_namespace:
+      rule_exclusions:
+      - option_length_too_long
+    workspace_resource_id:
+      rule_exclusions:
+      - option_length_too_long
+    enable_msi_auth_for_monitoring:
+      rule_exclusions:
+      - option_length_too_long
+aks addon update:
+  parameters:
+    appgw_watch_namespace:
+      rule_exclusions:
+      - option_length_too_long
+    workspace_resource_id:
+      rule_exclusions:
+      - option_length_too_long
+    enable_msi_auth_for_monitoring:
+      rule_exclusions:
+      - option_length_too_long
 aks enable-addons:
   parameters:
     appgw_watch_namespace:
@@ -81,9 +127,18 @@ aks enable-addons:
     workspace_resource_id:
       rule_exclusions:
       - option_length_too_long
+    enable_msi_auth_for_monitoring:
+      rule_exclusions:
+      - option_length_too_long
 aks nodepool add:
   parameters:
     enable_node_public_ip:
+      rule_exclusions:
+      - option_length_too_long
+    node_public_ip_prefix_id:
+      rule_exclusions:
+        - option_length_too_long
+    enable_encryption_at_host:
       rule_exclusions:
       - option_length_too_long
 aks update:
@@ -109,6 +164,9 @@ aks update:
     load_balancer_managed_outbound_ip_count:
       rule_exclusions:
       - option_length_too_long
+    load_balancer_managed_outbound_ipv6_count:
+      rule_exclusions:
+      - option_length_too_long
     load_balancer_outbound_ip_prefixes:
       rule_exclusions:
       - option_length_too_long
@@ -118,7 +176,68 @@ aks update:
     load_balancer_outbound_ports:
       rule_exclusions:
       - option_length_too_long
+    nat_gateway_idle_timeout:
+      rule_exclusions:
+      - option_length_too_long
+    nat_gateway_managed_outbound_ip_count:
+      rule_exclusions:
+      - option_length_too_long
     enable_managed_identity:
+      rule_exclusions:
+      - option_length_too_long
+    enable_pod_identity_with_kubenet:
+      rule_exclusions:
+      - option_length_too_long
+    assign_kubelet_identity:
+      rule_exclusions:
+      - option_length_too_long
+arcdata dc create:
+  parameters:
+    logs_ui_private_key_file:
+      rule_exclusions:
+      - option_length_too_long
+    logs_ui_public_key_file:
+      rule_exclusions:
+      - option_length_too_long
+    metrics_ui_private_key_file:
+      rule_exclusions:
+      - option_length_too_long
+    metrics_ui_public_key_file:
+      rule_exclusions:
+      - option_length_too_long
+arcdata ad-connector create:
+  parameters:
+    domain_service_account_secret:
+      rule_exclusions:
+      - option_length_too_long
+    secondary_domain_controllers:
+      rule_exclusions:
+      - option_length_too_long
+arcdata ad-connector update:
+  parameters:
+    domain_service_account_secret:
+      rule_exclusions:
+      - option_length_too_long
+    secondary_domain_controllers:
+      rule_exclusions:
+      - option_length_too_long
+sql mi-arc update:
+  parameters:
+    preferred_primary_replica:
+      rule_exclusions:
+      - option_length_too_long
+    sync_secondary_to_commit:
+      rule_exclusions:
+      - option_length_too_long
+sql mi-arc create:
+  parameters:
+    sync_secondary_to_commit:
+      rule_exclusions:
+      - option_length_too_long
+    storage_class_orchestrator_logs:
+      rule_exclusions:
+      - option_length_too_long
+    volume_size_orchestrator_logs:
       rule_exclusions:
       - option_length_too_long
 attestation policy set:
@@ -214,6 +333,28 @@ codespace plan create:
     default_sku_name:
       rule_exclusions:
       - option_length_too_long
+containerapp env create:
+  parameters:
+    infrastructure_subnet_resource_id:
+      rule_exclusions:
+      - option_length_too_long
+    instrumentation_key:
+      rule_exclusions:
+      - option_length_too_long
+    platform_reserved_dns_ip:
+      rule_exclusions:
+      - option_length_too_long
+containerapp github-action add:
+  parameters:
+    service_principal_client_id:
+      rule_exclusions:
+      - option_length_too_long
+    service_principal_client_secret:
+      rule_exclusions:
+      - option_length_too_long
+    service_principal_tenant_id:
+      rule_exclusions:
+      - option_length_too_long
 costmanagement export create:
   parameters:
     definition_dataset_configuration:
@@ -272,24 +413,12 @@ datadog monitor create:
     datadog_organization_properties:
       rule_exclusions:
       - option_length_too_long
-    marketplace_subscription_status:
-      rule_exclusions:
-      - option_length_too_long
 datadog tag-rule create:
   parameters:
     log_rules_filtering_tags:
       rule_exclusions:
       - option_length_too_long
-    log_rules_send_aad_logs:
-      rule_exclusions:
-      - option_length_too_long
-    log_rules_send_resource_logs:
-      rule_exclusions:
-      - option_length_too_long
-    log_rules_send_subscription_logs:
-      rule_exclusions:
-      - option_length_too_long
-    metric_rules_filtering_tags:
+    send_subscription_logs:
       rule_exclusions:
       - option_length_too_long
 datadog tag-rule update:
@@ -297,16 +426,7 @@ datadog tag-rule update:
     log_rules_filtering_tags:
       rule_exclusions:
       - option_length_too_long
-    log_rules_send_aad_logs:
-      rule_exclusions:
-      - option_length_too_long
-    log_rules_send_resource_logs:
-      rule_exclusions:
-      - option_length_too_long
-    log_rules_send_subscription_logs:
-      rule_exclusions:
-      - option_length_too_long
-    metric_rules_filtering_tags:
+    send_subscription_logs:
       rule_exclusions:
       - option_length_too_long
 datafactory factory configure-factory-repo:
@@ -374,6 +494,26 @@ datafactory integration-runtime-node update:
 datafactory pipeline create-run:
   parameters:
     reference_pipeline_run_id:
+      rule_exclusions:
+      - option_length_too_long
+dataprotection backup-instance restore initialize-for-data-recovery-as-files:
+  parameters:
+    target_blob_container_url:
+      rule_exclusions:
+      - option_length_too_long
+dataprotection backup-vault create:
+  parameters:
+    alerts_for_all_job_failures:
+      rule_exclusions:
+      - option_length_too_long
+dataprotection backup-vault update:
+  parameters:
+    alerts_for_all_job_failures:
+      rule_exclusions:
+      - option_length_too_long
+dataprotection resource-guard update:
+  parameters:
+    critical_operation_exclusion_list:
       rule_exclusions:
       - option_length_too_long
 datashare consumer dataset-mapping create:
@@ -554,6 +694,32 @@ dms project task create:
     target_connection_json:
       rule_exclusions:
       - option_length_too_long
+dt data-history connection create:
+  rule_exclusions:
+  - require_wait_command_if_no_wait
+dt data-history connection create adx:
+  parameters:
+    adx_resource_group:
+      rule_exclusions:
+      - parameter_should_not_end_in_resource_group
+    eh_resource_group:
+      rule_exclusions:
+      - parameter_should_not_end_in_resource_group
+dt endpoint create servicebus:
+  parameters:
+    servicebus_resource_group:
+      rule_exclusions:
+      - parameter_should_not_end_in_resource_group
+dt endpoint create eventgrid:
+  parameters:
+    eventgrid_resource_group:
+      rule_exclusions:
+      - parameter_should_not_end_in_resource_group
+dt endpoint create eventhub:
+  parameters:
+    eventhub_resource_group:
+      rule_exclusions:
+      - parameter_should_not_end_in_resource_group
 eventgrid domain create:
   parameters:
     input_mapping_default_values:
@@ -920,14 +1086,129 @@ import-export update:
     backup_drive_manifest:
       rule_exclusions:
       - option_length_too_long
-iot pnp capability-model update:
+iot central export destination update:
   parameters:
-    repo_endpoint:
+    api_version:
       rule_exclusions:
       - no_parameter_defaults_for_update_commands
-iot pnp interface update:
+    central_dns_suffix:
+      rule_exclusions:
+      - no_parameter_defaults_for_update_commands
+iot central export update:
   parameters:
-    repo_endpoint:
+    api_version:
+      rule_exclusions:
+      - no_parameter_defaults_for_update_commands
+    central_dns_suffix:
+      rule_exclusions:
+      - no_parameter_defaults_for_update_commands
+iot central device attestation update:
+  parameters:
+    api_version:
+      rule_exclusions:
+      - no_parameter_defaults_for_update_commands
+    central_dns_suffix:
+      rule_exclusions:
+      - no_parameter_defaults_for_update_commands
+iot central device twin update:
+  parameters:
+    api_version:
+      rule_exclusions:
+      - no_parameter_defaults_for_update_commands
+    central_dns_suffix:
+      rule_exclusions:
+      - no_parameter_defaults_for_update_commands
+iot central device update:
+  parameters:
+    api_version:
+      rule_exclusions:
+      - no_parameter_defaults_for_update_commands
+    central_dns_suffix:
+      rule_exclusions:
+      - no_parameter_defaults_for_update_commands
+iot central device-group update:
+  parameters:
+    api_version:
+      rule_exclusions:
+      - no_parameter_defaults_for_update_commands
+    central_dns_suffix:
+      rule_exclusions:
+      - no_parameter_defaults_for_update_commands
+iot central device-template update:
+  parameters:
+    api_version:
+      rule_exclusions:
+      - no_parameter_defaults_for_update_commands
+    central_dns_suffix:
+      rule_exclusions:
+      - no_parameter_defaults_for_update_commands
+iot central file-upload-config update:
+  parameters:
+    api_version:
+      rule_exclusions:
+      - no_parameter_defaults_for_update_commands
+    central_dns_suffix:
+      rule_exclusions:
+      - no_parameter_defaults_for_update_commands
+iot central organization update:
+  parameters:
+    api_version:
+      rule_exclusions:
+      - no_parameter_defaults_for_update_commands
+    central_dns_suffix:
+      rule_exclusions:
+      - no_parameter_defaults_for_update_commands
+iot central user update:
+  parameters:
+    api_version:
+      rule_exclusions:
+      - no_parameter_defaults_for_update_commands
+    central_dns_suffix:
+      rule_exclusions:
+      - no_parameter_defaults_for_update_commands
+iot dps enrollment update:
+  parameters:
+    auth_type_dataplane:
+      rule_exclusions:
+      - no_parameter_defaults_for_update_commands
+iot dps enrollment-group update:
+  parameters:
+    auth_type_dataplane:
+      rule_exclusions:
+      - no_parameter_defaults_for_update_commands
+iot hub configuration update:
+  parameters:
+    auth_type_dataplane:
+      rule_exclusions:
+      - no_parameter_defaults_for_update_commands
+iot hub device-identity update:
+  parameters:
+    auth_type_dataplane:
+      rule_exclusions:
+      - no_parameter_defaults_for_update_commands
+iot hub device-twin update:
+  parameters:
+    auth_type_dataplane:
+      rule_exclusions:
+      - no_parameter_defaults_for_update_commands
+iot hub distributed-tracing update:
+  parameters:
+    auth_type_dataplane:
+      rule_exclusions:
+      - no_parameter_defaults_for_update_commands
+iot hub module-identity update:
+  parameters:
+    auth_type_dataplane:
+      rule_exclusions:
+      - no_parameter_defaults_for_update_commands
+iot hub module-twin update:
+  parameters:
+    auth_type_dataplane:
+      rule_exclusions:
+      - no_parameter_defaults_for_update_commands
+iot edge deployment update:
+  parameters:
+    auth_type_dataplane:
       rule_exclusions:
       - no_parameter_defaults_for_update_commands
 k8sconfiguration create:
@@ -1179,6 +1460,14 @@ logic workflow create:
       rule_exclusions:
       - option_length_too_long
 maintenance assignment create:
+  parameters:
+    configuration_assignment_name:
+      rule_exclusions:
+      - option_length_too_long
+    maintenance_configuration_id:
+      rule_exclusions:
+      - option_length_too_long
+maintenance assignment create-or-update-parent:
   parameters:
     configuration_assignment_name:
       rule_exclusions:
@@ -1504,6 +1793,16 @@ network front-door waf-policy update:
     custom_block_response_status_code:
       rule_exclusions:
       - option_length_too_long
+network manager connect-config create:
+  parameters:
+    delete_existing_peering:
+      rule_exclusions:
+      - option_length_too_long
+network manager connect-config update:
+  parameters:
+    delete_existing_peering:
+      rule_exclusions:
+      - option_length_too_long
 network private-dns record-set a remove-record:
   parameters:
     keep_empty_record_set:
@@ -1542,6 +1841,35 @@ network private-dns record-set txt remove-record:
 network vhub connection create:
   parameters:
     allow_remote_vnet_to_use_hub_vnet_gateways:
+      rule_exclusions:
+      - option_length_too_long
+network vpn-gateway connection vpn-site-link-conn add:
+  parameters:
+    use_local_azure_ip_address:
+      rule_exclusions:
+      - option_length_too_long
+    use_policy_based_traffic_selectors:
+      rule_exclusions:
+      - option_length_too_long
+    vpn_connection_protocol_type:
+      rule_exclusions:
+      - option_length_too_long
+    vpn_link_connection_mode:
+      rule_exclusions:
+      - option_length_too_long
+network vpn-gateway connection vpn-site-link-conn ipsec-policy add:
+  parameters:
+    vpn_site_link_conn_name:
+      rule_exclusions:
+      - option_length_too_long
+network vpn-gateway connection vpn-site-link-conn ipsec-policy list:
+  parameters:
+    vpn_site_link_conn_name:
+      rule_exclusions:
+      - option_length_too_long
+network vpn-gateway connection vpn-site-link-conn ipsec-policy remove:
+  parameters:
+    vpn_site_link_conn_name:
       rule_exclusions:
       - option_length_too_long
 network vpn-server-config create:
@@ -1822,6 +2150,21 @@ providerhub resource-type-registration create:
     template_deployment_options:
       rule_exclusions:
       - option_length_too_long
+quantum execute:
+  parameters:
+    program_args:
+      rule_exclusions:
+        - no_positional_parameters
+quantum run:
+  parameters:
+    program_args:
+      rule_exclusions:
+        - no_positional_parameters
+quantum job submit:
+  parameters:
+    program_args:
+      rule_exclusions:
+        - no_positional_parameters
 repos import create:
   parameters:
     git_service_endpoint_id:
@@ -2027,6 +2370,46 @@ spring-cloud update:
     disable_distributed_tracing:
       rule_exclusions:
       - option_length_too_long
+ssh vm:
+  parameters:
+    ssh_args:
+      rule_exclusions:
+        - no_positional_parameters
+ssh arc:
+  parameters:
+    ssh_args:
+      rule_exclusions:
+        - no_positional_parameters
+stack-hci arc-setting create:
+  parameters:
+    arc_application_client_id:
+      rule_exclusions:
+        - option_length_too_long
+    arc_application_object_id:
+      rule_exclusions:
+        - option_length_too_long
+    arc_application_tenant_id:
+      rule_exclusions:
+        - option_length_too_long
+    arc_service_principal_object_id:
+      rule_exclusions:
+        - option_length_too_long
+    connectivity_properties:
+      rule_exclusions:
+        - option_length_too_long
+stack-hci arc-setting update:
+  parameters:
+    connectivity_properties:
+      rule_exclusions:
+        - option_length_too_long
+stack-hci cluster create:
+  parameters:
+    aad_application_object_id:
+      rule_exclusions:
+        - option_length_too_long
+    aad_service_principal_object_id:
+      rule_exclusions:
+        - option_length_too_long
 storage account create:
   parameters:
     hierarchical_namespace:

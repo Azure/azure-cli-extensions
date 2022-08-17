@@ -17,7 +17,7 @@ class ResourceGraphCommandsLoader(AzCommandsLoader):
             client_factory=cf_resource_graph
         )
 
-        super(ResourceGraphCommandsLoader, self).__init__(
+        super().__init__(
             cli_ctx=cli_ctx,
             custom_command_type=resource_graph_custom
         )

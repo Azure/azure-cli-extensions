@@ -8,6 +8,10 @@
 # pylint: disable=line-too-long
 from knack.help_files import helps  # pylint: disable=unused-import
 
+helps['custom-providers'] = """
+type: group
+short-summary: Commands to manage custom providers.
+"""
 
 helps['custom-providers resource-provider'] = """
 type: group

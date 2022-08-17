@@ -7,6 +7,7 @@
 
 from __future__ import print_function
 
+import logging
 import os
 import sys
 import tempfile
@@ -15,12 +16,13 @@ import shutil
 import shlex
 from subprocess import check_output, check_call, CalledProcessError
 
-import mock
+from unittest import mock
 from wheel.install import WHEEL_INFO_RE
 from six import with_metaclass
 
-from util import get_ext_metadata, verify_dependency, SRC_PATH
+from util import SRC_PATH
 
+logger = logging.getLogger(__name__)
 
 ALL_TESTS = []
 
@@ -54,6 +56,10 @@ for src_d in os.listdir(SRC_PATH):
     # Find the package and check it has tests
     if pkg_name and os.path.isdir(os.path.join(src_d_full, pkg_name, 'tests')):
         ALL_TESTS.append((pkg_name, src_d_full))
+
+logger.warning(f'ado_branch_last_commit: {ado_branch_last_commit}, '
+               f'ado_target_branch: {ado_target_branch}, '
+               f'ALL_TESTS: {ALL_TESTS}.')
 
 
 class TestExtensionSourceMeta(type):
@@ -104,17 +110,6 @@ class TestSourceWheels(unittest.TestCase):
                 check_output(['python', 'setup.py', 'bdist_wheel', '-q', '-d', built_whl_dir], cwd=s)
             except CalledProcessError as err:
                 self.fail("Unable to build extension {} : {}".format(s, err))
-        for filename in os.listdir(built_whl_dir):
-            ext_file = os.path.join(built_whl_dir, filename)
-            ext_dir = tempfile.mkdtemp(dir=built_whl_dir)
-            ext_name = WHEEL_INFO_RE(filename).groupdict().get('name')
-            metadata = get_ext_metadata(ext_dir, ext_file, ext_name)
-            run_requires = metadata.get('run_requires')
-            if run_requires:
-                deps = run_requires[0]['requires']
-                self.assertTrue(all(verify_dependency(dep) for dep in deps),
-                                "Dependencies of {} use disallowed extension dependencies. "
-                                "Remove these dependencies: {}".format(filename, deps))
         shutil.rmtree(built_whl_dir)
 
 

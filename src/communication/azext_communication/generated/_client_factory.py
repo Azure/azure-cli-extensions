@@ -18,7 +18,3 @@ def cf_communication_cl(cli_ctx, *_):
 
 def cf_communication_service(cli_ctx, *_):
     return cf_communication_cl(cli_ctx).communication_service
-
-
-def cf_operation_statuses(cli_ctx, *_):
-    return cf_communication_cl(cli_ctx).operation_statuses

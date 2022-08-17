@@ -103,12 +103,11 @@ class RulesEngineScenarioTests(ScenarioTest):
                  '--cache-duration P5DT1H30M30S',
                  checks=[
                      self.check('length(rules[0].action.routeConfigurationOverride)', 5),
-                     self.check('contains(rules[0].action.routeConfigurationOverride.odatatype, `FrontdoorForwardingConfiguration`)', True),
                      self.check('contains(rules[0].action.routeConfigurationOverride.backendPool.id, `DefaultBackendPool`)', True),
                      self.check('length(rules[0].action.routeConfigurationOverride.cacheConfiguration)', 4),
                      self.check('rules[0].action.routeConfigurationOverride.cacheConfiguration.queryParameterStripDirective', 'StripOnly'),
                      self.check('rules[0].action.routeConfigurationOverride.cacheConfiguration.queryParameters', 'a=b,x=y&p=q'),
-                     self.check('rules[0].action.routeConfigurationOverride.cacheConfiguration.cacheDuration', '5 days, 1:30:30')
+                     self.check('rules[0].action.routeConfigurationOverride.cacheConfiguration.cacheDuration', 'P5DT1H30M30S')
                  ])
 
         """Step 10: Add a Redirect Route Override action to the rule"""
@@ -117,7 +116,6 @@ class RulesEngineScenarioTests(ScenarioTest):
                  'RedirectRouteOverride --custom-path /redirect',
                  checks=[
                      self.check('length(rules[1].action.routeConfigurationOverride)', 7),
-                     self.check('contains(rules[1].action.routeConfigurationOverride.odatatype, `FrontdoorRedirectConfiguration`)', True),
                      self.check('rules[1].action.routeConfigurationOverride.redirectProtocol', 'MatchRequest'),
                      self.check('rules[1].action.routeConfigurationOverride.customPath', '/redirect')
                  ])

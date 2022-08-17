@@ -7,7 +7,7 @@
 
 from setuptools import setup, find_packages
 
-VERSION = "0.1.3"
+VERSION = "1.1.2"
 
 CLASSIFIERS = [
     'Development Status :: 4 - Beta',
@@ -22,19 +22,18 @@ CLASSIFIERS = [
 ]
 
 DEPENDENCIES = [
-    'paramiko==2.6.0',
-    'cryptography==2.8.0'
+    'oschmod==0.3.12'
 ]
 
 setup(
     name='ssh',
     version=VERSION,
-    description='SSH into VMs',
-    long_description='SSH into VMs using RBAC',
+    description='SSH into Azure VMs using RBAC and AAD OpenSSH Certificates',
+    long_description='SSH into Azure VMs using RBAC and AAD OpenSSH Certificates.  The client generates (or uses existing) OpenSSH keys that are then signed by AAD into OpenSSH certificates for access to Azure VMs with the AAD Extension installed.',
     license='MIT',
-    author='Ryan Rossiter',
-    author_email='ryrossit@microsoft.com',
-    url='https://github.com/Azure/azure-cli-extensions/tree/master/src/ssh',
+    author='Microsoft Corporation',
+    author_email='azpycli@microsoft.com',
+    url='https://github.com/Azure/azure-cli-extensions/tree/main/src/ssh',
     classifiers=CLASSIFIERS,
     packages=find_packages(),
     install_requires=DEPENDENCIES,

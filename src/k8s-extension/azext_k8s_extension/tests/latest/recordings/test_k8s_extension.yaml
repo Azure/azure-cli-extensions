@@ -1,0 +1,351 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - k8s-extension create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -c --cluster-type --extension-type --release-train --version --no-wait
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-azure-mgmt-resource/20.0.0 Python/3.9.6 (Windows-10-10.0.22000-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.KubernetesConfiguration?api-version=2021-04-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.KubernetesConfiguration","namespace":"Microsoft.KubernetesConfiguration","authorizations":[{"applicationId":"c699bf69-fb1d-4eaf-999b-99e6b2ae4d85","roleDefinitionId":"90155430-a360-410f-af5d-89dc284d85c6"},{"applicationId":"03db181c-e9d3-4868-9097-f0b728327182","roleDefinitionId":"DE2ADB97-42D8-49C8-8FCF-DBB53EF936AC"},{"applicationId":"a0f92522-89de-4c5e-9a75-0044ccf66efd","roleDefinitionId":"b3429810-7d5c-420e-8605-cf280f3099f2"},{"applicationId":"bd9b7cd5-dac1-495f-b013-ac871e98fa5f","roleDefinitionId":"0d44c8f0-08b9-44d4-9f59-e51c83f95200"}],"resourceTypes":[{"resourceType":"sourceControlConfigurations","locations":["East
+        US","West Europe","West Central US","West US 2","West US 3","South Central
+        US","East US 2","North Europe","UK South","Southeast Asia","Australia East","France
+        Central","Central US","North Central US","West US","Korea Central","East Asia","Japan
+        East","East US 2 EUAP"],"apiVersions":["2022-03-01","2021-03-01","2020-10-01-preview","2020-07-01-preview","2019-11-01-preview"],"defaultApiVersion":"2022-03-01","capabilities":"SupportsExtension"},{"resourceType":"extensions","locations":["East
+        US","West Europe","West Central US","West US 2","West US 3","South Central
+        US","East US 2","North Europe","UK South","Southeast Asia","Australia East","France
+        Central","Central US","North Central US","West US","Korea Central","East Asia","Japan
+        East","East US 2 EUAP"],"apiVersions":["2022-03-01","2021-09-01","2021-05-01-preview","2020-07-01-preview"],"defaultApiVersion":"2022-03-01","capabilities":"SystemAssignedResourceIdentity,
+        SupportsExtension"},{"resourceType":"operations","locations":[],"apiVersions":["2022-03-01","2022-01-01-preview","2021-12-01-preview","2021-11-01-preview","2021-09-01","2021-06-01-preview","2021-05-01-preview","2021-03-01","2020-10-01-preview","2020-07-01-preview","2019-11-01-preview"],"capabilities":"None"},{"resourceType":"fluxConfigurations","locations":["East
+        US 2 EUAP","East US","West Europe","West Central US","West US 2","West US
+        3","South Central US","East US 2","North Europe","UK South","Southeast Asia","Australia
+        East","France Central","Central US","North Central US","West US","Korea Central","East
+        Asia","Japan East"],"apiVersions":["2022-03-01","2022-01-01-preview","2021-11-01-preview","2021-06-01-preview"],"defaultApiVersion":"2022-03-01","capabilities":"SupportsExtension"}],"registrationState":"Registered","registrationPolicy":"RegistrationRequired"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2512'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 18 Mar 2022 22:49:16 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"extensionType": "microsoft.dapr", "releaseTrain": "stable",
+      "version": "1.6.0", "configurationSettings": {}, "configurationProtectedSettings":
+      {}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - k8s-extension create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '164'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -n -c --cluster-type --extension-type --release-train --version --no-wait
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-azure-mgmt-kubernetesconfiguration/1.0.0 Python/3.9.6
+        (Windows-10-10.0.22000-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azurecli-tests/providers/Microsoft.Kubernetes/connectedClusters/arc-cluster/providers/Microsoft.KubernetesConfiguration/extensions/dapr?api-version=2022-03-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azurecli-tests/providers/Microsoft.Kubernetes/connectedClusters/arc-cluster/providers/Microsoft.KubernetesConfiguration/extensions/dapr","name":"dapr","type":"Microsoft.KubernetesConfiguration/extensions","properties":{"extensionType":"microsoft.dapr","autoUpgradeMinorVersion":false,"releaseTrain":"stable","version":"1.6.0","scope":{"cluster":{"releaseNamespace":"dapr-system"}},"provisioningState":"Creating","installState":"Unknown","configurationSettings":{},"configurationProtectedSettings":{},"statuses":[],"aksAssignedIdentity":null},"systemData":{"createdBy":null,"createdByType":null,"createdAt":"2022-03-18T22:49:20.2443978+00:00","lastModifiedBy":null,"lastModifiedByType":null,"lastModifiedAt":"2022-03-18T22:49:20.2443978+00:00"}}'
+    headers:
+      api-supported-versions:
+      - 2020-07-01-Preview, 2021-05-01-preview, 2021-09-01, 2022-03-01, 2022-04-02-preview
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azurecli-tests/providers/Microsoft.Kubernetes/ConnectedClusters/arc-cluster/providers/Microsoft.KubernetesConfiguration/extensions/dapr/operations/5870c95a-4193-48a7-83da-10619fb90bd5?api-Version=2022-03-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '818'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 18 Mar 2022 22:49:19 GMT
+      expires:
+      - '-1'
+      location:
+      - https://eastus2euap.rp.kubernetesconfiguration.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azurecli-tests/providers/Microsoft.Kubernetes/ConnectedClusters/arc-cluster/providers/Microsoft.KubernetesConfiguration/extensions/dapr
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - k8s-extension list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -c -g --cluster-type
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-azure-mgmt-kubernetesconfiguration/1.0.0 Python/3.9.6
+        (Windows-10-10.0.22000-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azurecli-tests/providers/Microsoft.Kubernetes/connectedClusters/arc-cluster/providers/Microsoft.KubernetesConfiguration/extensions?api-version=2022-03-01
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azurecli-tests/providers/Microsoft.Kubernetes/connectedClusters/arc-cluster/providers/Microsoft.KubernetesConfiguration/extensions/dapr","name":"dapr","type":"Microsoft.KubernetesConfiguration/extensions","properties":{"extensionType":"microsoft.dapr","autoUpgradeMinorVersion":false,"releaseTrain":"stable","version":"1.6.0","scope":{"cluster":{"releaseNamespace":"dapr-system"}},"provisioningState":"Creating","installState":"Unknown","configurationSettings":{},"configurationProtectedSettings":{},"statuses":[],"aksAssignedIdentity":null},"systemData":{"createdBy":null,"createdByType":null,"createdAt":"2022-03-18T22:49:20.2443978+00:00","lastModifiedBy":null,"lastModifiedByType":null,"lastModifiedAt":"2022-03-18T22:49:20.2443978+00:00"}}],"nextLink":null}'
+    headers:
+      api-supported-versions:
+      - 2020-07-01-Preview, 2021-05-01-preview, 2021-09-01, 2022-03-01, 2022-04-02-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '846'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 18 Mar 2022 22:49:20 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - k8s-extension show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -c -g -n --cluster-type
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-azure-mgmt-kubernetesconfiguration/1.0.0 Python/3.9.6
+        (Windows-10-10.0.22000-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azurecli-tests/providers/Microsoft.Kubernetes/connectedClusters/arc-cluster/providers/Microsoft.KubernetesConfiguration/extensions/dapr?api-version=2022-03-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azurecli-tests/providers/Microsoft.Kubernetes/connectedClusters/arc-cluster/providers/Microsoft.KubernetesConfiguration/extensions/dapr","name":"dapr","type":"Microsoft.KubernetesConfiguration/extensions","properties":{"extensionType":"microsoft.dapr","autoUpgradeMinorVersion":false,"releaseTrain":"stable","version":"1.6.0","scope":{"cluster":{"releaseNamespace":"dapr-system"}},"provisioningState":"Creating","installState":"Unknown","configurationSettings":{},"configurationProtectedSettings":{},"statuses":[],"aksAssignedIdentity":null},"systemData":{"createdBy":null,"createdByType":null,"createdAt":"2022-03-18T22:49:20.2443978+00:00","lastModifiedBy":null,"lastModifiedByType":null,"lastModifiedAt":"2022-03-18T22:49:20.2443978+00:00"}}'
+    headers:
+      api-supported-versions:
+      - 2020-07-01-Preview, 2021-05-01-preview, 2021-09-01, 2022-03-01, 2022-04-02-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '818'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 18 Mar 2022 22:49:22 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - k8s-extension delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -c -n --cluster-type --force -y
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-azure-mgmt-kubernetesconfiguration/1.0.0 Python/3.9.6
+        (Windows-10-10.0.22000-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azurecli-tests/providers/Microsoft.Kubernetes/connectedClusters/arc-cluster/providers/Microsoft.KubernetesConfiguration/extensions/dapr?api-version=2022-03-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azurecli-tests/providers/Microsoft.Kubernetes/connectedClusters/arc-cluster/providers/Microsoft.KubernetesConfiguration/extensions/dapr","name":"dapr","type":"Microsoft.KubernetesConfiguration/extensions","properties":{"extensionType":"microsoft.dapr","autoUpgradeMinorVersion":false,"releaseTrain":"stable","version":"1.6.0","scope":{"cluster":{"releaseNamespace":"dapr-system"}},"provisioningState":"Creating","installState":"Unknown","configurationSettings":{},"configurationProtectedSettings":{},"statuses":[],"aksAssignedIdentity":null},"systemData":{"createdBy":null,"createdByType":null,"createdAt":"2022-03-18T22:49:20.2443978+00:00","lastModifiedBy":null,"lastModifiedByType":null,"lastModifiedAt":"2022-03-18T22:49:20.2443978+00:00"}}'
+    headers:
+      api-supported-versions:
+      - 2020-07-01-Preview, 2021-05-01-preview, 2021-09-01, 2022-03-01, 2022-04-02-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '818'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 18 Mar 2022 22:49:22 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - k8s-extension delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -g -c -n --cluster-type --force -y
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-azure-mgmt-kubernetesconfiguration/1.0.0 Python/3.9.6
+        (Windows-10-10.0.22000-SP0)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azurecli-tests/providers/Microsoft.Kubernetes/connectedClusters/arc-cluster/providers/Microsoft.KubernetesConfiguration/extensions/dapr?api-version=2022-03-01&forceDelete=true
+  response:
+    body:
+      string: '{"content":null,"statusCode":200,"headers":[],"version":"1.1","reasonPhrase":"OK","trailingHeaders":[],"requestMessage":null,"isSuccessStatusCode":true}'
+    headers:
+      api-supported-versions:
+      - 2020-07-01-Preview, 2021-05-01-preview, 2021-09-01, 2022-03-01, 2022-04-02-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '152'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 18 Mar 2022 22:49:24 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14999'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - k8s-extension list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -c -g --cluster-type
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-azure-mgmt-kubernetesconfiguration/1.0.0 Python/3.9.6
+        (Windows-10-10.0.22000-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azurecli-tests/providers/Microsoft.Kubernetes/connectedClusters/arc-cluster/providers/Microsoft.KubernetesConfiguration/extensions?api-version=2022-03-01
+  response:
+    body:
+      string: '{"value":[],"nextLink":null}'
+    headers:
+      api-supported-versions:
+      - 2020-07-01-Preview, 2021-05-01-preview, 2021-09-01, 2022-03-01, 2022-04-02-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '28'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 18 Mar 2022 22:49:25 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+version: 1

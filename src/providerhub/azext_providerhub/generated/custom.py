@@ -10,398 +10,682 @@
 # pylint: disable=line-too-long
 # pylint: disable=too-many-lines
 # pylint: disable=unused-argument
-# pylint: disable=too-many-locals
 
 from azure.cli.core.util import sdk_no_wait
 
 
-def providerhub_custom_rollout_list(client, provider_namespace):
+def providerhub_custom_rollout_list(client,
+                                    provider_namespace):
     return client.list_by_provider_registration(provider_namespace=provider_namespace)
 
 
-def providerhub_custom_rollout_show(client, provider_namespace, rollout_name):
-    return client.get(provider_namespace=provider_namespace, rollout_name=rollout_name)
+def providerhub_custom_rollout_show(client,
+                                    provider_namespace,
+                                    rollout_name):
+    return client.get(provider_namespace=provider_namespace,
+                      rollout_name=rollout_name)
 
 
-def providerhub_custom_rollout_create(client, provider_namespace, rollout_name, canary):
-    properties = {"specification": {"Canary": canary}}
-    return client.create_or_update(
-        provider_namespace=provider_namespace,
-        rollout_name=rollout_name,
-        properties=properties,
-    )
+def providerhub_custom_rollout_create(client,
+                                      provider_namespace,
+                                      rollout_name,
+                                      canary):
+
+    return client.create_or_update(provider_namespace=provider_namespace,
+                                   rollout_name=rollout_name,
+                                   canary=canary)
 
 
-def providerhub_custom_rollout_update(client, provider_namespace, rollout_name, canary):
-    properties = {"specification": {"Canary": canary}}
-    return client.create_or_update(
-        provider_namespace=provider_namespace,
-        rollout_name=rollout_name,
-        properties=properties,
-    )
+def providerhub_custom_rollout_update(instance,
+                                      provider_namespace,
+                                      rollout_name,
+                                      canary):
+    if canary is not None:
+        instance.properties.specification.canary = canary
+    return instance
 
 
-def providerhub_default_rollout_list(client, provider_namespace):
+def providerhub_default_rollout_list(client,
+                                     provider_namespace):
     return client.list_by_provider_registration(provider_namespace=provider_namespace)
 
 
-def providerhub_default_rollout_show(client, provider_namespace, rollout_name):
-    return client.get(provider_namespace=provider_namespace, rollout_name=rollout_name)
+def providerhub_default_rollout_show(client,
+                                     provider_namespace,
+                                     rollout_name):
+    return client.get(provider_namespace=provider_namespace,
+                      rollout_name=rollout_name)
 
 
-def providerhub_default_rollout_create(
-    client,
-    provider_namespace,
-    rollout_name,
-    row2_wait_duration,
-    skip_regions=None,
-    no_wait=False,
-):
-    return sdk_no_wait(
-        no_wait,
-        client.begin_create_or_update,
-        provider_namespace=provider_namespace,
-        rollout_name=rollout_name,
-        row2_wait_duration=row2_wait_duration,
-        skip_regions=skip_regions,
-    )
+def providerhub_default_rollout_create(client,
+                                       provider_namespace,
+                                       rollout_name,
+                                       rest_of_the_world_group_two=None,
+                                       canary=None,
+                                       no_wait=False):
+    properties = {
+        'properties': {
+            'specification': {
+                'canary': canary,
+                'rest_of_the_world_group_two': rest_of_the_world_group_two
+            }
+        }
+    }
+    return sdk_no_wait(no_wait,
+                       client.begin_create_or_update,
+                       provider_namespace=provider_namespace,
+                       rollout_name=rollout_name,
+                       properties=properties)
 
 
-def providerhub_default_rollout_update(
-    client,
-    provider_namespace,
-    rollout_name,
-    row2_wait_duration,
-    skip_regions=None,
-    no_wait=False,
-):
-    return sdk_no_wait(
-        no_wait,
-        client.begin_create_or_update,
-        provider_namespace=provider_namespace,
-        rollout_name=rollout_name,
-        row2_wait_duration=row2_wait_duration,
-        skip_regions=skip_regions,
-    )
+def providerhub_default_rollout_update(instance,
+                                       provider_namespace,
+                                       rollout_name,
+                                       rest_of_the_world_group_two=None,
+                                       canary=None,
+                                       no_wait=False):
+    if rest_of_the_world_group_two is not None:
+        instance.properties.specification.rest_of_the_world_group_two = rest_of_the_world_group_two
+    if canary is not None:
+        instance.properties.specification.canary = canary
+    return instance
 
 
-def providerhub_default_rollout_delete(client, provider_namespace, rollout_name):
-    return client.delete(
-        provider_namespace=provider_namespace, rollout_name=rollout_name
-    )
+def providerhub_default_rollout_delete(client,
+                                       provider_namespace,
+                                       rollout_name):
+    return client.delete(provider_namespace=provider_namespace,
+                         rollout_name=rollout_name)
 
 
-def providerhub_default_rollout_stop(client, provider_namespace, rollout_name):
-    return client.stop(provider_namespace=provider_namespace, rollout_name=rollout_name)
+def providerhub_default_rollout_stop(client,
+                                     provider_namespace,
+                                     rollout_name):
+    return client.stop(provider_namespace=provider_namespace,
+                       rollout_name=rollout_name)
 
 
-def providerhub_manifest_checkin(
-    client, provider_namespace, environment, arm_manifest_location
-):
+def providerhub_checkin_manifest(client,
+                                 provider_namespace,
+                                 environment,
+                                 baseline_arm_manifest_location):
     checkin_manifest_params = {}
-    checkin_manifest_params["environment"] = environment
-    checkin_manifest_params[
-        "baseline_arm_manifest_location"
-    ] = arm_manifest_location
-    return client.checkin_manifest(
-        provider_namespace=provider_namespace,
-        checkin_manifest_params=checkin_manifest_params,
-    )
+    checkin_manifest_params['environment'] = environment
+    checkin_manifest_params['baseline_arm_manifest_location'] = baseline_arm_manifest_location
+    return client.checkin_manifest(provider_namespace=provider_namespace,
+                                   checkin_manifest_params=checkin_manifest_params)
 
 
-def providerhub_manifest_generate(client, provider_namespace):
+def providerhub_generate_manifest(client,
+                                  provider_namespace):
     return client.generate_manifest(provider_namespace=provider_namespace)
 
 
-def providerhub_operation_list(client, provider_namespace):
+def providerhub_notification_registration_list(client,
+                                               provider_namespace):
     return client.list_by_provider_registration(provider_namespace=provider_namespace)
 
 
-def providerhub_operation_create(client, provider_namespace):
-    return client.create_or_update(provider_namespace=provider_namespace)
+def providerhub_notification_registration_show(client,
+                                               provider_namespace,
+                                               notification_registration_name):
+    return client.get(provider_namespace=provider_namespace,
+                      notification_registration_name=notification_registration_name)
 
 
-def providerhub_operation_update(client, provider_namespace):
-    return client.create_or_update(provider_namespace=provider_namespace)
+def providerhub_notification_registration_create(client,
+                                                 provider_namespace,
+                                                 notification_registration_name,
+                                                 notification_mode=None,
+                                                 message_scope=None,
+                                                 included_events=None,
+                                                 notification_endpoints=None):
+    properties = {}
+    properties['properties'] = {}
+    properties['properties']['notification_mode'] = notification_mode
+    properties['properties']['message_scope'] = message_scope
+    properties['properties']['included_events'] = included_events
+    properties['properties']['notification_endpoints'] = notification_endpoints
+    return client.create_or_update(provider_namespace=provider_namespace,
+                                   notification_registration_name=notification_registration_name,
+                                   properties=properties)
 
 
-def providerhub_operation_delete(client, provider_namespace):
+def providerhub_notification_registration_update(instance,
+                                                 provider_namespace,
+                                                 notification_registration_name,
+                                                 notification_mode=None,
+                                                 message_scope=None,
+                                                 included_events=None,
+                                                 notification_endpoints=None):
+    if notification_mode is not None:
+        instance.properties.notification_mode = notification_mode
+    if message_scope is not None:
+        instance.properties.message_scope = message_scope
+    if included_events is not None:
+        instance.properties.included_events = included_events
+    if notification_endpoints is not None:
+        instance.properties.notification_endpoints = notification_endpoints
+    return instance
+
+
+def providerhub_notification_registration_delete(client,
+                                                 provider_namespace,
+                                                 notification_registration_name):
+    return client.delete(provider_namespace=provider_namespace,
+                         notification_registration_name=notification_registration_name)
+
+
+def providerhub_operation_list(client,
+                               provider_namespace):
+    return client.list_by_provider_registration(provider_namespace=provider_namespace)
+
+
+def providerhub_operation_create(client,
+                                 provider_namespace,
+                                 contents):
+    operations_put_content = {}
+    operations_put_content['contents'] = contents
+    return client.create_or_update(provider_namespace=provider_namespace,
+                                   operations_put_content=operations_put_content)
+
+
+def providerhub_operation_update(client,
+                                 provider_namespace,
+                                 contents):
+    operations_put_content = {}
+    operations_put_content['contents'] = contents
+    return client.create_or_update(provider_namespace=provider_namespace,
+                                   operations_put_content=operations_put_content)
+
+
+def providerhub_operation_delete(client,
+                                 provider_namespace):
     return client.delete(provider_namespace=provider_namespace)
 
 
-def providerhub_provider_registration_list(client, resource_group_name=None):
-    if resource_group_name:
-        return client.list_by_resource_group(resource_group_name=resource_group_name)
+def providerhub_provider_registration_list(client):
     return client.list()
 
 
-def providerhub_provider_registration_show(client, provider_namespace):
+def providerhub_provider_registration_show(client,
+                                           provider_namespace):
     return client.get(provider_namespace=provider_namespace)
 
 
-def providerhub_provider_registration_create(
-    client,
-    provider_namespace,
-    provider_version="2.0",
-    namespace=None,
-    provider_type=None,
-    provider_authentication=None,
-    provider_authorizations=None,
-    capabilities=None,
-    metadata=None,
-    template_deployment_options=None,
-    schema_owners=None,
-    manifest_owners=None,
-    incident_routing_service=None,
-    incident_routing_team=None,
-    incident_contact_email=None,
-    service_tree_infos=None,
-    resource_access_policy=None,
-    opt_in_headers=None,
-    required_features_policy=None,
-    managed_by_tenant_id=None,
-    providerhub_metadata_provider_authorizations=None,
-    providerhub_metadata_rp_authentication=None,
-    lighthouse_authorizations=None,
-    no_wait=False,
-):
-    return sdk_no_wait(
-        no_wait,
-        client.begin_create_or_update,
-        provider_namespace=provider_namespace,
-        provider_authentication=provider_authentication,
-        provider_authorizations=provider_authorizations,
-        namespace=namespace,
-        provider_version=provider_version,
-        provider_type=provider_type,
-        capabilities=capabilities,
-        metadata=metadata,
-        template_deployment_options=template_deployment_options,
-        schema_owners=schema_owners,
-        manifest_owners=manifest_owners,
-        incident_routing_service=incident_routing_service,
-        incident_routing_team=incident_routing_team,
-        incident_contact_email=incident_contact_email,
-        service_tree_infos=service_tree_infos,
-        resource_access_policy=resource_access_policy,
-        opt_in_headers=opt_in_headers,
-        required_features_policy=required_features_policy,
-        managed_by_tenant_id=managed_by_tenant_id,
-        providerhub_metadata_provider_authorizations=providerhub_metadata_provider_authorizations,
-        providerhub_metadata_rp_authentication=providerhub_metadata_rp_authentication,
-        lighthouse_authorizations=lighthouse_authorizations
-    )
+def providerhub_provider_registration_create(client,
+                                             provider_namespace,
+                                             provider_authentication=None,
+                                             provider_authorizations=None,
+                                             namespace=None,
+                                             provider_version=None,
+                                             provider_type=None,
+                                             required_features=None,
+                                             capabilities=None,
+                                             metadata=None,
+                                             template_deployment_options=None,
+                                             schema_owners=None,
+                                             manifest_owners=None,
+                                             incident_routing_service=None,
+                                             incident_routing_team=None,
+                                             incident_contact_email=None,
+                                             service_tree_infos=None,
+                                             resource_access_policy=None,
+                                             resource_access_roles=None,
+                                             opt_in_headers=None,
+                                             required_features_policy=None,
+                                             subscription_state_override_actions=None,
+                                             soft_delete_ttl=None,
+                                             managed_by_tenant_id=None,
+                                             providerhub_metadata_authorizations=None,
+                                             providerhub_metadata_authentication=None,
+                                             lighthouse_authorizations=None,
+                                             no_wait=False):
+    return sdk_no_wait(no_wait,
+                       client.begin_create_or_update,
+                       provider_namespace=provider_namespace,
+                       provider_authentication=provider_authentication,
+                       provider_authorizations=provider_authorizations,
+                       namespace=namespace,
+                       provider_version=provider_version,
+                       provider_type=provider_type,
+                       required_features=required_features,
+                       capabilities=capabilities,
+                       metadata=metadata,
+                       template_deployment_options=template_deployment_options,
+                       schema_owners=schema_owners,
+                       manifest_owners=manifest_owners,
+                       incident_routing_service=incident_routing_service,
+                       incident_routing_team=incident_routing_team,
+                       incident_contact_email=incident_contact_email,
+                       service_tree_infos=service_tree_infos,
+                       resource_access_policy=resource_access_policy,
+                       opt_in_headers=opt_in_headers,
+                       resource_access_roles=resource_access_roles,
+                       subscription_state_override_actions=subscription_state_override_actions,
+                       soft_delete_ttl=soft_delete_ttl,
+                       required_features_policy=required_features_policy,
+                       managed_by_tenant_id=managed_by_tenant_id,
+                       providerhub_metadata_authorizations=providerhub_metadata_authorizations,
+                       providerhub_metadata_authentication=providerhub_metadata_authentication,
+                       lighthouse_authorizations=lighthouse_authorizations)
 
 
-def providerhub_provider_registration_update(
-    client,
-    provider_namespace,
-    provider_version="2.0",
-    provider_type=None,
-    provider_authentication=None,
-    provider_authorizations=None,
-    capabilities=None,
-    metadata=None,
-    template_deployment_options=None,
-    schema_owners=None,
-    manifest_owners=None,
-    incident_routing_service=None,
-    incident_routing_team=None,
-    incident_contact_email=None,
-    service_tree_infos=None,
-    resource_access_policy=None,
-    opt_in_headers=None,
-    required_features_policy=None,
-    managed_by_tenant_id=None,
-    providerhub_metadata_provider_authorizations=None,
-    providerhub_metadata_rp_authentication=None,
-    lighthouse_authorizations=None,
-    no_wait=False,
-):
-    return sdk_no_wait(
-        no_wait,
-        client.begin_create_or_update,
-        provider_namespace=provider_namespace,
-        provider_authentication=provider_authentication,
-        provider_authorizations=provider_authorizations,
-        provider_version=provider_version,
-        provider_type=provider_type,
-        capabilities=capabilities,
-        metadata=metadata,
-        template_deployment_options=template_deployment_options,
-        schema_owners=schema_owners,
-        manifest_owners=manifest_owners,
-        incident_routing_service=incident_routing_service,
-        incident_routing_team=incident_routing_team,
-        incident_contact_email=incident_contact_email,
-        service_tree_infos=service_tree_infos,
-        resource_access_policy=resource_access_policy,
-        opt_in_headers=opt_in_headers,
-        required_features_policy=required_features_policy,
-        managed_by_tenant_id=managed_by_tenant_id,
-        providerhub_metadata_provider_authorizations=providerhub_metadata_provider_authorizations,
-        providerhub_metadata_rp_authentication=providerhub_metadata_rp_authentication,
-        lighthouse_authorizations=lighthouse_authorizations
-    )
+def providerhub_provider_registration_update(instance,
+                                             provider_namespace,
+                                             provider_authentication=None,
+                                             provider_authorizations=None,
+                                             namespace=None,
+                                             provider_version=None,
+                                             provider_type=None,
+                                             required_features=None,
+                                             capabilities=None,
+                                             metadata=None,
+                                             template_deployment_options=None,
+                                             schema_owners=None,
+                                             manifest_owners=None,
+                                             incident_routing_service=None,
+                                             incident_routing_team=None,
+                                             incident_contact_email=None,
+                                             service_tree_infos=None,
+                                             resource_access_policy=None,
+                                             resource_access_roles=None,
+                                             opt_in_headers=None,
+                                             required_features_policy=None,
+                                             subscription_state_override_actions=None,
+                                             soft_delete_ttl=None,
+                                             managed_by_tenant_id=None,
+                                             providerhub_metadata_authorizations=None,
+                                             providerhub_metadata_authentication=None,
+                                             lighthouse_authorizations=None,
+                                             no_wait=False):
+    if provider_authentication is not None:
+        instance.undefined = provider_authentication
+    if provider_authorizations is not None:
+        instance.undefined = provider_authorizations
+    if namespace is not None:
+        instance.undefined = namespace
+    if provider_version is not None:
+        instance.undefined = provider_version
+    if provider_type is not None:
+        instance.undefined = provider_type
+    if required_features is not None:
+        instance.undefined = required_features
+    if capabilities is not None:
+        instance.undefined = capabilities
+    if metadata is not None:
+        instance.undefined = metadata
+    if template_deployment_options is not None:
+        instance.undefined = template_deployment_options
+    if schema_owners is not None:
+        instance.undefined = schema_owners
+    if manifest_owners is not None:
+        instance.undefined = manifest_owners
+    if incident_routing_service is not None:
+        instance.undefined = incident_routing_service
+    if incident_routing_team is not None:
+        instance.undefined = incident_routing_team
+    if incident_contact_email is not None:
+        instance.undefined = incident_contact_email
+    if service_tree_infos is not None:
+        instance.undefined = service_tree_infos
+    if resource_access_policy is not None:
+        instance.undefined = resource_access_policy
+    if resource_access_roles is not None:
+        instance.undefined = resource_access_roles
+    if opt_in_headers is not None:
+        instance.undefined = opt_in_headers
+    if required_features_policy is not None:
+        instance.undefined = required_features_policy
+    if subscription_state_override_actions is not None:
+        instance.properties.subscription_lifecycle_notification_specifications.subscription_state_override_actions = subscription_state_override_actions
+    if soft_delete_ttl is not None:
+        instance.properties.subscription_lifecycle_notification_specifications.soft_delete_ttl = soft_delete_ttl
+    return instance
 
 
-def providerhub_provider_registration_delete(client, provider_namespace):
+def providerhub_provider_registration_delete(client,
+                                             provider_namespace):
     return client.delete(provider_namespace=provider_namespace)
 
 
-def providerhub_provider_registration_generate_operation(client, provider_namespace):
+def providerhub_provider_registration_generate_operation(client,
+                                                         provider_namespace):
     return client.generate_operations(provider_namespace=provider_namespace)
 
 
-def providerhub_resource_type_registration_list(client, provider_namespace):
+def providerhub_resource_type_registration_list(client,
+                                                provider_namespace):
     return client.list_by_provider_registration(provider_namespace=provider_namespace)
 
 
-def providerhub_resource_type_registration_show(
-    client, provider_namespace, resource_type
-):
-    return client.get(
-        provider_namespace=provider_namespace, resource_type=resource_type
-    )
+def providerhub_resource_type_registration_show(client,
+                                                provider_namespace,
+                                                resource_type):
+    return client.get(provider_namespace=provider_namespace,
+                      resource_type=resource_type)
 
 
-def providerhub_resource_type_registration_create(  # pylint: disable=too-many-locals
-    client,
-    provider_namespace,
-    resource_type,
-    routing_type=None,
-    regionality=None,
-    endpoints=None,
-    marketplace_type=None,
-    resource_creation_begin=None,
-    resource_patch_begin=None,
-    swagger_specifications=None,
-    allowed_unauthorized_actions=None,
-    authorization_action_mappings=None,
-    linked_access_checks=None,
-    default_api_version=None,
-    logging_rules=None,
-    throttling_rules=None,
-    required_features=None,
-    enable_async_operation=None,
-    enable_third_party_s2s=None,
-    is_pure_proxy=None,
-    identity_management=None,
-    check_name_availability_specifications=None,
-    disallowed_action_verbs=None,
-    service_tree_infos=None,
-    subscription_state_rules=None,
-    template_deployment_options=None,
-    extended_locations=None,
-    resource_move_policy=None,
-    resource_deletion_policy=None,
-    opt_in_headers=None,
-    required_features_policy=None,
-):
-    return client.begin_create_or_update(
-        provider_namespace=provider_namespace,
-        resource_type=resource_type,
-        routing_type=routing_type,
-        regionality=regionality,
-        endpoints=endpoints,
-        resource_creation_begin=resource_creation_begin,
-        resource_patch_begin=resource_patch_begin,
-        marketplace_type=marketplace_type,
-        swagger_specifications=swagger_specifications,
-        allowed_unauthorized_actions=allowed_unauthorized_actions,
-        authorization_action_mappings=authorization_action_mappings,
-        linked_access_checks=linked_access_checks,
-        default_api_version=default_api_version,
-        logging_rules=logging_rules,
-        throttling_rules=throttling_rules,
-        required_features=required_features,
-        enable_async_operation=enable_async_operation,
-        enable_third_party_s2s=enable_third_party_s2s,
-        is_pure_proxy=is_pure_proxy,
-        identity_management=identity_management,
-        check_name_availability_specifications=check_name_availability_specifications,
-        disallowed_action_verbs=disallowed_action_verbs,
-        service_tree_infos=service_tree_infos,
-        subscription_state_rules=subscription_state_rules,
-        template_deployment_options=template_deployment_options,
-        extended_locations=extended_locations,
-        resource_move_policy=resource_move_policy,
-        resource_deletion_policy=resource_deletion_policy,
-        opt_in_headers=opt_in_headers,
-        required_features_policy=required_features_policy,
-    )
+def providerhub_resource_type_registration_create(client,
+                                                  provider_namespace,
+                                                  resource_type,
+                                                  routing_type=None,
+                                                  regionality=None,
+                                                  endpoints=None,
+                                                  marketplace_type=None,
+                                                  swagger_specifications=None,
+                                                  allowed_unauthorized_actions=None,
+                                                  authorization_action_mappings=None,
+                                                  linked_access_checks=None,
+                                                  default_api_version=None,
+                                                  logging_rules=None,
+                                                  throttling_rules=None,
+                                                  required_features=None,
+                                                  enable_async_operation=None,
+                                                  enable_third_party_s2s=None,
+                                                  is_pure_proxy=None,
+                                                  identity_management=None,
+                                                  check_name_availability_specifications=None,
+                                                  disallowed_action_verbs=None,
+                                                  service_tree_infos=None,
+                                                  subscription_state_rules=None,
+                                                  template_deployment_options=None,
+                                                  extended_locations=None,
+                                                  resource_move_policy=None,
+                                                  resource_deletion_policy=None,
+                                                  opt_in_headers=None,
+                                                  subscription_state_override_actions=None,
+                                                  soft_delete_ttl=None,
+                                                  required_features_policy=None,
+                                                  resource_creation_begin=None,
+                                                  resource_patch_begin=None,
+                                                  no_wait=False):
+    return sdk_no_wait(no_wait,
+                       client.begin_create_or_update,
+                       provider_namespace=provider_namespace,
+                       resource_type=resource_type,
+                       routing_type=routing_type,
+                       regionality=regionality,
+                       endpoints=endpoints,
+                       marketplace_type=marketplace_type,
+                       swagger_specifications=swagger_specifications,
+                       allowed_unauthorized_actions=allowed_unauthorized_actions,
+                       authorization_action_mappings=authorization_action_mappings,
+                       linked_access_checks=linked_access_checks,
+                       default_api_version=default_api_version,
+                       logging_rules=logging_rules,
+                       throttling_rules=throttling_rules,
+                       required_features=required_features,
+                       enable_async_operation=enable_async_operation,
+                       enable_third_party_s2s=enable_third_party_s2s,
+                       is_pure_proxy=is_pure_proxy,
+                       identity_management=identity_management,
+                       check_name_availability_specifications=check_name_availability_specifications,
+                       disallowed_action_verbs=disallowed_action_verbs,
+                       service_tree_infos=service_tree_infos,
+                       subscription_state_rules=subscription_state_rules,
+                       template_deployment_options=template_deployment_options,
+                       extended_locations=extended_locations,
+                       resource_move_policy=resource_move_policy,
+                       resource_deletion_policy=resource_deletion_policy,
+                       opt_in_headers=opt_in_headers,
+                       subscription_state_override_actions=subscription_state_override_actions,
+                       soft_delete_ttl=soft_delete_ttl,
+                       required_features_policy=required_features_policy,
+                       resource_creation_begin=resource_creation_begin,
+                       resource_patch_begin=resource_patch_begin)
 
 
-def providerhub_resource_type_registration_update(  # pylint: disable=too-many-locals
-    client,
-    provider_namespace,
-    resource_type,
-    routing_type=None,
-    regionality=None,
-    endpoints=None,
-    marketplace_type=None,
-    resource_creation_begin=None,
-    resource_patch_begin=None,
-    swagger_specifications=None,
-    allowed_unauthorized_actions=None,
-    authorization_action_mappings=None,
-    linked_access_checks=None,
-    default_api_version=None,
-    logging_rules=None,
-    throttling_rules=None,
-    required_features=None,
-    enable_async_operation=None,
-    enable_third_party_s2s=None,
-    is_pure_proxy=None,
-    identity_management=None,
-    check_name_availability_specifications=None,
-    disallowed_action_verbs=None,
-    service_tree_infos=None,
-    subscription_state_rules=None,
-    template_deployment_options=None,
-    extended_locations=None,
-    resource_move_policy=None,
-    resource_deletion_policy=None,
-    opt_in_headers=None,
-    required_features_policy=None,
-):
-    return client.begin_create_or_update(
-        provider_namespace=provider_namespace,
-        resource_type=resource_type,
-        routing_type=routing_type,
-        regionality=regionality,
-        endpoints=endpoints,
-        resource_creation_begin=resource_creation_begin,
-        resource_patch_begin=resource_patch_begin,
-        marketplace_type=marketplace_type,
-        swagger_specifications=swagger_specifications,
-        allowed_unauthorized_actions=allowed_unauthorized_actions,
-        authorization_action_mappings=authorization_action_mappings,
-        linked_access_checks=linked_access_checks,
-        default_api_version=default_api_version,
-        logging_rules=logging_rules,
-        throttling_rules=throttling_rules,
-        required_features=required_features,
-        enable_async_operation=enable_async_operation,
-        enable_third_party_s2s=enable_third_party_s2s,
-        is_pure_proxy=is_pure_proxy,
-        identity_management=identity_management,
-        check_name_availability_specifications=check_name_availability_specifications,
-        disallowed_action_verbs=disallowed_action_verbs,
-        service_tree_infos=service_tree_infos,
-        subscription_state_rules=subscription_state_rules,
-        template_deployment_options=template_deployment_options,
-        extended_locations=extended_locations,
-        resource_move_policy=resource_move_policy,
-        resource_deletion_policy=resource_deletion_policy,
-        opt_in_headers=opt_in_headers,
-        required_features_policy=required_features_policy,
-    )
+def providerhub_resource_type_registration_update(instance,
+                                                  provider_namespace,
+                                                  resource_type,
+                                                  routing_type=None,
+                                                  regionality=None,
+                                                  endpoints=None,
+                                                  marketplace_type=None,
+                                                  swagger_specifications=None,
+                                                  allowed_unauthorized_actions=None,
+                                                  authorization_action_mappings=None,
+                                                  linked_access_checks=None,
+                                                  default_api_version=None,
+                                                  logging_rules=None,
+                                                  throttling_rules=None,
+                                                  required_features=None,
+                                                  enable_async_operation=None,
+                                                  enable_third_party_s2s=None,
+                                                  is_pure_proxy=None,
+                                                  identity_management=None,
+                                                  check_name_availability_specifications=None,
+                                                  disallowed_action_verbs=None,
+                                                  service_tree_infos=None,
+                                                  subscription_state_rules=None,
+                                                  template_deployment_options=None,
+                                                  extended_locations=None,
+                                                  resource_move_policy=None,
+                                                  resource_deletion_policy=None,
+                                                  opt_in_headers=None,
+                                                  subscription_state_override_actions=None,
+                                                  soft_delete_ttl=None,
+                                                  required_features_policy=None,
+                                                  resource_creation_begin=None,
+                                                  resource_patch_begin=None,
+                                                  no_wait=False):
+    if routing_type is not None:
+        instance.properties.routing_type = routing_type
+    if regionality is not None:
+        instance.properties.regionality = regionality
+    if endpoints is not None:
+        instance.properties.endpoints = endpoints
+    if marketplace_type is not None:
+        instance.properties.marketplace_type = marketplace_type
+    if swagger_specifications is not None:
+        instance.properties.swagger_specifications = swagger_specifications
+    if allowed_unauthorized_actions is not None:
+        instance.properties.allowed_unauthorized_actions = allowed_unauthorized_actions
+    if authorization_action_mappings is not None:
+        instance.properties.authorization_action_mappings = authorization_action_mappings
+    if linked_access_checks is not None:
+        instance.properties.linked_access_checks = linked_access_checks
+    if default_api_version is not None:
+        instance.properties.default_api_version = default_api_version
+    if logging_rules is not None:
+        instance.properties.logging_rules = logging_rules
+    if throttling_rules is not None:
+        instance.properties.throttling_rules = throttling_rules
+    if required_features is not None:
+        instance.properties.required_features = required_features
+    if enable_async_operation is not None:
+        instance.properties.enable_async_operation = enable_async_operation
+    if enable_third_party_s2s is not None:
+        instance.properties.enable_third_party_s2s = enable_third_party_s2s
+    if is_pure_proxy is not None:
+        instance.properties.is_pure_proxy = is_pure_proxy
+    if identity_management is not None:
+        instance.properties.identity_management = identity_management
+    if check_name_availability_specifications is not None:
+        instance.properties.check_name_availability_specifications = check_name_availability_specifications
+    if disallowed_action_verbs is not None:
+        instance.properties.disallowed_action_verbs = disallowed_action_verbs
+    if service_tree_infos is not None:
+        instance.properties.service_tree_infos = service_tree_infos
+    if subscription_state_rules is not None:
+        instance.properties.subscription_state_rules = subscription_state_rules
+    if template_deployment_options is not None:
+        instance.properties.template_deployment_options = template_deployment_options
+    if extended_locations is not None:
+        instance.properties.extended_locations = extended_locations
+    if resource_move_policy is not None:
+        instance.properties.resource_move_policy = resource_move_policy
+    if resource_deletion_policy is not None:
+        instance.properties.resource_deletion_policy = resource_deletion_policy
+    if opt_in_headers is not None:
+        instance.properties.request_header_options.opt_in_headers = opt_in_headers
+    if subscription_state_override_actions is not None:
+        instance.properties.subscription_lifecycle_notification_specifications.subscription_state_override_actions = subscription_state_override_actions
+    if soft_delete_ttl is not None:
+        instance.properties.subscription_lifecycle_notification_specifications.soft_delete_ttl = soft_delete_ttl
+    if required_features_policy is not None:
+        instance.properties.features_rule.required_features_policy = required_features_policy
+    if resource_creation_begin is not None:
+        instance.properties.extension_options.resource_creation_begin = resource_creation_begin
+    return instance
 
 
-def providerhub_resource_type_registration_delete(
-    client, provider_namespace, resource_type
-):
-    return client.delete(
-        provider_namespace=provider_namespace, resource_type=resource_type
-    )
+def providerhub_resource_type_registration_delete(client,
+                                                  provider_namespace,
+                                                  resource_type):
+    return client.delete(provider_namespace=provider_namespace,
+                         resource_type=resource_type)
+
+
+def providerhub_sku_list(client,
+                         provider_namespace,
+                         resource_type,
+                         nested_resource_type_first=None,
+                         nested_resource_type_second=None,
+                         nested_resource_type_third=None):
+    if provider_namespace is not None and resource_type is not None and nested_resource_type_first is not None and nested_resource_type_second is not None and nested_resource_type_third is not None:
+        return client.list_by_resource_type_registrations_nested_resource_type_third(provider_namespace=provider_namespace,
+                                                                                     resource_type=resource_type,
+                                                                                     nested_resource_type_first=nested_resource_type_first,
+                                                                                     nested_resource_type_second=nested_resource_type_second,
+                                                                                     nested_resource_type_third=nested_resource_type_third)
+    elif provider_namespace is not None and resource_type is not None and nested_resource_type_first is not None and nested_resource_type_second is not None:
+        return client.list_by_resource_type_registrations_nested_resource_type_second(provider_namespace=provider_namespace,
+                                                                                      resource_type=resource_type,
+                                                                                      nested_resource_type_first=nested_resource_type_first,
+                                                                                      nested_resource_type_second=nested_resource_type_second)
+    elif provider_namespace is not None and resource_type is not None and nested_resource_type_first is not None:
+        return client.list_by_resource_type_registrations_nested_resource_type_first(provider_namespace=provider_namespace,
+                                                                                     resource_type=resource_type,
+                                                                                     nested_resource_type_first=nested_resource_type_first)
+    return client.list_by_resource_type_registrations(provider_namespace=provider_namespace,
+                                                      resource_type=resource_type)
+
+
+def providerhub_sku_show(client,
+                         provider_namespace,
+                         resource_type,
+                         sku):
+    return client.get(provider_namespace=provider_namespace,
+                      resource_type=resource_type,
+                      sku=sku)
+
+
+def providerhub_sku_create(client,
+                           provider_namespace,
+                           resource_type,
+                           sku,
+                           sku_settings,
+                           nested_resource_type_first=None,
+                           nested_resource_type_second=None,
+                           nested_resource_type_third=None):
+    properties = {}
+    properties['sku_settings'] = sku_settings
+    if nested_resource_type_first is not None and nested_resource_type_second is not None and nested_resource_type_third is not None:
+        return client.create_or_update_nested_resource_type_third(provider_namespace=provider_namespace,
+                                                                  resource_type=resource_type,
+                                                                  nested_resource_type_first=nested_resource_type_first,
+                                                                  nested_resource_type_second=nested_resource_type_second,
+                                                                  nested_resource_type_third=nested_resource_type_third,
+                                                                  sku=sku,
+                                                                  properties=properties)
+    elif nested_resource_type_first is not None and nested_resource_type_second is not None:
+        return client.create_or_update_nested_resource_type_second(provider_namespace=provider_namespace,
+                                                                   resource_type=resource_type,
+                                                                   nested_resource_type_first=nested_resource_type_first,
+                                                                   nested_resource_type_second=nested_resource_type_second,
+                                                                   sku=sku,
+                                                                   properties=properties)
+    elif nested_resource_type_first is not None:
+        return client.create_or_update_nested_resource_type_first(provider_namespace=provider_namespace,
+                                                                  resource_type=resource_type,
+                                                                  nested_resource_type_first=nested_resource_type_first,
+                                                                  sku=sku,
+                                                                  properties=properties)
+    return client.create_or_update(provider_namespace=provider_namespace,
+                                   resource_type=resource_type,
+                                   sku=sku,
+                                   properties=properties)
+
+
+def providerhub_sku_update(client,
+                           provider_namespace,
+                           resource_type,
+                           sku,
+                           sku_settings):
+    properties = {}
+    properties['skuSettings'] = sku_settings
+    return client.create_or_update(provider_namespace=provider_namespace,
+                                   resource_type=resource_type,
+                                   sku=sku,
+                                   properties=properties)
+
+
+def providerhub_sku_delete(client,
+                           provider_namespace,
+                           resource_type,
+                           sku,
+                           nested_resource_type_first=None,
+                           nested_resource_type_second=None,
+                           nested_resource_type_third=None):
+    if provider_namespace is not None and resource_type is not None and nested_resource_type_first is not None and nested_resource_type_second is not None and nested_resource_type_third is not None and sku is not None:
+        return client.delete_nested_resource_type_third(provider_namespace=provider_namespace,
+                                                        resource_type=resource_type,
+                                                        nested_resource_type_first=nested_resource_type_first,
+                                                        nested_resource_type_second=nested_resource_type_second,
+                                                        nested_resource_type_third=nested_resource_type_third,
+                                                        sku=sku)
+    elif provider_namespace is not None and resource_type is not None and nested_resource_type_first is not None and nested_resource_type_second is not None and sku is not None:
+        return client.delete_nested_resource_type_second(provider_namespace=provider_namespace,
+                                                         resource_type=resource_type,
+                                                         nested_resource_type_first=nested_resource_type_first,
+                                                         nested_resource_type_second=nested_resource_type_second,
+                                                         sku=sku)
+    elif provider_namespace is not None and resource_type is not None and nested_resource_type_first is not None and sku is not None:
+        return client.delete_nested_resource_type_first(provider_namespace=provider_namespace,
+                                                        resource_type=resource_type,
+                                                        nested_resource_type_first=nested_resource_type_first,
+                                                        sku=sku)
+    return client.delete(provider_namespace=provider_namespace,
+                         resource_type=resource_type,
+                         sku=sku)
+
+
+def providerhub_sku_show_nested_resource_type_first(client,
+                                                    provider_namespace,
+                                                    resource_type,
+                                                    nested_resource_type_first,
+                                                    sku):
+    return client.get_nested_resource_type_first(provider_namespace=provider_namespace,
+                                                 resource_type=resource_type,
+                                                 nested_resource_type_first=nested_resource_type_first,
+                                                 sku=sku)
+
+
+def providerhub_sku_show_nested_resource_type_second(client,
+                                                     provider_namespace,
+                                                     resource_type,
+                                                     nested_resource_type_first,
+                                                     nested_resource_type_second,
+                                                     sku):
+    return client.get_nested_resource_type_second(provider_namespace=provider_namespace,
+                                                  resource_type=resource_type,
+                                                  nested_resource_type_first=nested_resource_type_first,
+                                                  nested_resource_type_second=nested_resource_type_second,
+                                                  sku=sku)
+
+
+def providerhub_sku_show_nested_resource_type_third(client,
+                                                    provider_namespace,
+                                                    resource_type,
+                                                    nested_resource_type_first,
+                                                    nested_resource_type_second,
+                                                    nested_resource_type_third,
+                                                    sku):
+    return client.get_nested_resource_type_third(provider_namespace=provider_namespace,
+                                                 resource_type=resource_type,
+                                                 nested_resource_type_first=nested_resource_type_first,
+                                                 nested_resource_type_second=nested_resource_type_second,
+                                                 nested_resource_type_third=nested_resource_type_third,
+                                                 sku=sku)

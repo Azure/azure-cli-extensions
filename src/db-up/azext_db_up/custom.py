@@ -209,7 +209,7 @@ def _ensure_pymssql():
         python_path = os.environ.get('PYTHONPATH', '')
         os.environ['PYTHONPATH'] = python_path + ':' + db_up_ext_path if python_path else db_up_ext_path
         cmd = [sys.executable, '-m', 'pip', 'install', '--target', db_up_ext_path,
-               'pymssql==2.1.4', '-vv', '--disable-pip-version-check', '--no-cache-dir']
+               'pymssql~=2.2.4', '-vv', '--disable-pip-version-check', '--no-cache-dir']
         logger.warning('  Installing "pymssql" pip packages')
         with HomebrewPipPatch():
             subprocess.check_output(cmd, stderr=subprocess.STDOUT)
@@ -224,38 +224,35 @@ def server_down(cmd, client, resource_group_name=None, server_name=None, delete_
 
         # delete resource group
         logger.warning('Deleting Resource Group \'%s\'...', resource_group_name)
-        return resource_client.resource_groups.delete(resource_group_name)
+        return resource_client.resource_groups.begin_delete(resource_group_name)
     logger.warning('Deleting server \'%s\'...', server_name)
     return client.delete(resource_group_name, server_name)
 
 
-def create_mysql_connection_string(
-        server_name='{server}', database_name='{database}', administrator_login='{login}',
-        administrator_login_password='{password}'):
+def create_mysql_connection_string(cmd, server_name='{server}', database_name='{database}',
+                                   administrator_login='{login}', administrator_login_password='{password}'):
     user = '{}@{}'.format(administrator_login, server_name)
-    host = '{}.mysql.database.azure.com'.format(server_name)
+    host = server_name + cmd.cli_ctx.cloud.suffixes.mysql_server_endpoint
     return _form_response(
         _create_mysql_connection_string(host, user, administrator_login_password, database_name),
         host, user, administrator_login_password
     )
 
 
-def create_postgresql_connection_string(
-        server_name='{server}', database_name='{database}', administrator_login='{login}',
-        administrator_login_password='{password}'):
+def create_postgresql_connection_string(cmd, server_name='{server}', database_name='{database}',
+                                        administrator_login='{login}', administrator_login_password='{password}'):
     user = '{}@{}'.format(administrator_login, server_name)
-    host = '{}.postgres.database.azure.com'.format(server_name)
+    host = server_name + cmd.cli_ctx.cloud.suffixes.postgresql_server_endpoint
     return _form_response(
         _create_postgresql_connection_string(host, user, administrator_login_password, database_name),
         host, user, administrator_login_password
     )
 
 
-def create_sql_connection_string(
-        server_name='{server}', database_name='{database}', administrator_login='{login}',
-        administrator_login_password='{password}'):
+def create_sql_connection_string(cmd, server_name='{server}', database_name='{database}', administrator_login='{login}',
+                                 administrator_login_password='{password}'):
     user = '{}@{}'.format(administrator_login, server_name)
-    host = '{}.database.windows.net'.format(server_name)
+    host = server_name + cmd.cli_ctx.cloud.suffixes.sql_server_endpoint
     return _form_response(
         _create_sql_connection_string(host, user, administrator_login_password, database_name),
         host, user, administrator_login_password
@@ -390,7 +387,7 @@ def _run_postgresql_commands(host, user, password, database):
         logger.warning("Ran Database Query: `CREATE USER root WITH ENCRYPTED PASSWORD '%s'`", db_password)
     except psycopg2.ProgrammingError:
         pass
-    cursor.execute("GRANT ALL PRIVILEGES ON DATABASE {} TO root".format(database))
+    cursor.execute('GRANT ALL PRIVILEGES ON DATABASE "{}" TO root'.format(database))
     logger.warning("Ran Database Query: `GRANT ALL PRIVILEGES ON DATABASE %s TO root`", database)
 
 
@@ -399,7 +396,7 @@ def _run_sql_commands(host, user, password, database):
     _ensure_pymssql()
     import pymssql
     with pymssql.connect(host, user, password, database, tds_version='7.0') as connection:
-        logger.warning('Successfully Connected to PostgreSQL.')
+        logger.warning('Successfully Connected to Azure SQL.')
         with connection.cursor() as cursor:
             try:
                 db_password = _create_db_password(database)

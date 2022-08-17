@@ -24,12 +24,17 @@ def create_databricks_workspace(cmd, client,
                                 tags=None,
                                 prepare_encryption=None,
                                 require_infrastructure_encryption=None,
+                                enable_no_public_ip=None,
+                                public_network_access=None,
+                                required_nsg_rules=None,
                                 no_wait=False):
     body = {}
     body['tags'] = tags  # dictionary
     body['location'] = location  # str
     body['managed_resource_group_id'] = managed_resource_group  # str
     body.setdefault('sku', {})['name'] = sku_name  # str
+    body['public_network_access'] = public_network_access
+    body['required_nsg_rules'] = required_nsg_rules
 
     parameters = {}
     _set_parameter_value(parameters, 'custom_virtual_network_id', custom_virtual_network_id)  # str
@@ -37,9 +42,10 @@ def create_databricks_workspace(cmd, client,
     _set_parameter_value(parameters, 'custom_private_subnet_name', custom_private_subnet_name)  # str
     _set_parameter_value(parameters, 'prepare_encryption', prepare_encryption)
     _set_parameter_value(parameters, 'require_infrastructure_encryption', require_infrastructure_encryption)
+    _set_parameter_value(parameters, 'enable_no_public_ip', enable_no_public_ip)
     body['parameters'] = parameters
 
-    return sdk_no_wait(no_wait, client.create_or_update,
+    return sdk_no_wait(no_wait, client.begin_create_or_update,
                        resource_group_name=resource_group_name,
                        workspace_name=workspace_name,
                        parameters=body)
@@ -78,7 +84,7 @@ def update_databricks_workspace(cmd, client,  # pylint: disable=too-many-branche
             encryption['key_vault_uri'] = encryption_key_vault
         _set_parameter_value(parameters, 'encryption', encryption)
 
-    return sdk_no_wait(no_wait, client.create_or_update,
+    return sdk_no_wait(no_wait, client.begin_create_or_update,
                        resource_group_name=resource_group_name,
                        workspace_name=workspace_name,
                        parameters=body)
@@ -87,7 +93,7 @@ def update_databricks_workspace(cmd, client,  # pylint: disable=too-many-branche
 def delete_databricks_workspace(cmd, client, resource_group_name,
                                 workspace_name,
                                 no_wait=False):
-    return sdk_no_wait(no_wait, client.delete,
+    return sdk_no_wait(no_wait, client.begin_delete,
                        resource_group_name=resource_group_name,
                        workspace_name=workspace_name)
 
@@ -128,7 +134,7 @@ def create_databricks_vnet_peering(client, resource_group_name, workspace_name, 
     if use_remote_gateways is not None:
         peering.use_remote_gateways = use_remote_gateways
 
-    return sdk_no_wait(no_wait, client.create_or_update,
+    return sdk_no_wait(no_wait, client.begin_create_or_update,
                        virtual_network_peering_parameters=peering,
                        resource_group_name=resource_group_name,
                        workspace_name=workspace_name,
@@ -156,7 +162,7 @@ def update_databricks_vnet_peering(client, resource_group_name, workspace_name, 
     if use_remote_gateways is not None:
         peering.use_remote_gateways = use_remote_gateways
 
-    return sdk_no_wait(no_wait, client.create_or_update,
+    return sdk_no_wait(no_wait, client.begin_create_or_update,
                        virtual_network_peering_parameters=peering,
                        resource_group_name=resource_group_name,
                        workspace_name=workspace_name,
@@ -164,7 +170,7 @@ def update_databricks_vnet_peering(client, resource_group_name, workspace_name, 
 
 
 def delete_databricks_vnet_peering(client, resource_group_name, workspace_name, peering_name, no_wait=False):
-    return sdk_no_wait(no_wait, client.delete,
+    return sdk_no_wait(no_wait, client.begin_delete,
                        resource_group_name=resource_group_name,
                        workspace_name=workspace_name,
                        peering_name=peering_name)

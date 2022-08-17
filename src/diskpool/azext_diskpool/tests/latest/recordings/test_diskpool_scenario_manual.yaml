@@ -1,0 +1,3139 @@
+interactions:
+- request:
+    body: '{"location": "westeurope", "tags": {}, "sku": {"name": "Premium_LRS"},
+      "zones": ["1"], "properties": {"hyperVGeneration": "V1", "creationData": {"createOption":
+      "Empty"}, "diskSizeGB": 1024, "maxShares": 2}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - disk create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '207'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --name --resource-group --zone --location --sku --max-shares --size-gb
+      User-Agent:
+      - AZURECLI/2.29.1 azsdk-python-azure-mgmt-compute/23.1.0 Python/3.9.6 (Windows-10-10.0.19043-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Compute/disks/disk000002?api-version=2020-12-01
+  response:
+    body:
+      string: "{\r\n  \"name\": \"disk000002\",\r\n  \"location\": \"westeurope\",\r\n
+        \ \"tags\": {},\r\n  \"zones\": [\r\n    \"1\"\r\n  ],\r\n  \"sku\": {\r\n
+        \   \"name\": \"Premium_LRS\"\r\n  },\r\n  \"properties\": {\r\n    \"hyperVGeneration\":
+        \"V1\",\r\n    \"creationData\": {\r\n      \"createOption\": \"Empty\"\r\n
+        \   },\r\n    \"diskSizeGB\": 1024,\r\n    \"maxShares\": 2,\r\n    \"provisioningState\":
+        \"Updating\",\r\n    \"isArmResource\": true\r\n  }\r\n}"
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/westeurope/DiskOperations/6a959ba4-f0d0-4265-a4d5-c0391c0acc64?p=afd4d8b7-47c6-4551-8514-168b30f1d390&api-version=2020-12-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '375'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 22 Oct 2021 10:09:59 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/westeurope/DiskOperations/6a959ba4-f0d0-4265-a4d5-c0391c0acc64?p=afd4d8b7-47c6-4551-8514-168b30f1d390&monitor=true&api-version=2020-12-01
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-resource:
+      - Microsoft.Compute/CreateUpdateDisks3Min;999,Microsoft.Compute/CreateUpdateDisks30Min;7999
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - disk create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group --zone --location --sku --max-shares --size-gb
+      User-Agent:
+      - AZURECLI/2.29.1 azsdk-python-azure-mgmt-compute/23.1.0 Python/3.9.6 (Windows-10-10.0.19043-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/westeurope/DiskOperations/6a959ba4-f0d0-4265-a4d5-c0391c0acc64?p=afd4d8b7-47c6-4551-8514-168b30f1d390&api-version=2020-12-01
+  response:
+    body:
+      string: "{\r\n  \"startTime\": \"2021-10-22T10:10:00.1522193+00:00\",\r\n  \"endTime\":
+        \"2021-10-22T10:10:00.2928556+00:00\",\r\n  \"status\": \"Succeeded\",\r\n
+        \ \"properties\": {\r\n    \"output\": {\r\n  \"name\": \"disk000002\",\r\n
+        \ \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Compute/disks/disk000002\",\r\n
+        \ \"type\": \"Microsoft.Compute/disks\",\r\n  \"location\": \"westeurope\",\r\n
+        \ \"tags\": {},\r\n  \"zones\": [\r\n    \"1\"\r\n  ],\r\n  \"sku\": {\r\n
+        \   \"name\": \"Premium_LRS\",\r\n    \"tier\": \"Premium\"\r\n  },\r\n  \"properties\":
+        {\r\n    \"hyperVGeneration\": \"V1\",\r\n    \"creationData\": {\r\n      \"createOption\":
+        \"Empty\"\r\n    },\r\n    \"diskSizeGB\": 1024,\r\n    \"diskIOPSReadWrite\":
+        5000,\r\n    \"diskMBpsReadWrite\": 200,\r\n    \"encryption\": {\r\n      \"type\":
+        \"EncryptionAtRestWithPlatformKey\"\r\n    },\r\n    \"maxShares\": 2,\r\n
+        \   \"networkAccessPolicy\": \"AllowAll\",\r\n    \"timeCreated\": \"2021-10-22T10:10:00.1522193+00:00\",\r\n
+        \   \"provisioningState\": \"Succeeded\",\r\n    \"diskState\": \"Unattached\",\r\n
+        \   \"diskSizeBytes\": 1099511627776,\r\n    \"uniqueId\": \"49dfac4e-2726-4ace-b76f-18a3bb6a0ecb\",\r\n
+        \   \"tier\": \"P30\"\r\n  }\r\n}\r\n  },\r\n  \"name\": \"6a959ba4-f0d0-4265-a4d5-c0391c0acc64\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1160'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 22 Oct 2021 10:10:01 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-resource:
+      - Microsoft.Compute/GetOperation3Min;49999,Microsoft.Compute/GetOperation30Min;399999
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - disk create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group --zone --location --sku --max-shares --size-gb
+      User-Agent:
+      - AZURECLI/2.29.1 azsdk-python-azure-mgmt-compute/23.1.0 Python/3.9.6 (Windows-10-10.0.19043-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Compute/disks/disk000002?api-version=2020-12-01
+  response:
+    body:
+      string: "{\r\n  \"name\": \"disk000002\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Compute/disks/disk000002\",\r\n
+        \ \"type\": \"Microsoft.Compute/disks\",\r\n  \"location\": \"westeurope\",\r\n
+        \ \"tags\": {},\r\n  \"zones\": [\r\n    \"1\"\r\n  ],\r\n  \"sku\": {\r\n
+        \   \"name\": \"Premium_LRS\",\r\n    \"tier\": \"Premium\"\r\n  },\r\n  \"properties\":
+        {\r\n    \"hyperVGeneration\": \"V1\",\r\n    \"creationData\": {\r\n      \"createOption\":
+        \"Empty\"\r\n    },\r\n    \"diskSizeGB\": 1024,\r\n    \"diskIOPSReadWrite\":
+        5000,\r\n    \"diskMBpsReadWrite\": 200,\r\n    \"encryption\": {\r\n      \"type\":
+        \"EncryptionAtRestWithPlatformKey\"\r\n    },\r\n    \"maxShares\": 2,\r\n
+        \   \"networkAccessPolicy\": \"AllowAll\",\r\n    \"timeCreated\": \"2021-10-22T10:10:00.1522193+00:00\",\r\n
+        \   \"provisioningState\": \"Succeeded\",\r\n    \"diskState\": \"Unattached\",\r\n
+        \   \"diskSizeBytes\": 1099511627776,\r\n    \"uniqueId\": \"49dfac4e-2726-4ace-b76f-18a3bb6a0ecb\",\r\n
+        \   \"tier\": \"P30\"\r\n  }\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '935'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 22 Oct 2021 10:10:02 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-resource:
+      - Microsoft.Compute/LowCostGet3Min;4999,Microsoft.Compute/LowCostGet30Min;39998
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "westeurope", "tags": {}, "sku": {"name": "Premium_LRS"},
+      "zones": ["1"], "properties": {"hyperVGeneration": "V1", "creationData": {"createOption":
+      "Empty"}, "diskSizeGB": 1024, "maxShares": 2}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - disk create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '207'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --name --resource-group --zone --location --sku --max-shares --size-gb
+      User-Agent:
+      - AZURECLI/2.29.1 azsdk-python-azure-mgmt-compute/23.1.0 Python/3.9.6 (Windows-10-10.0.19043-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Compute/disks/disk000003?api-version=2020-12-01
+  response:
+    body:
+      string: "{\r\n  \"name\": \"disk000003\",\r\n  \"location\": \"westeurope\",\r\n
+        \ \"tags\": {},\r\n  \"zones\": [\r\n    \"1\"\r\n  ],\r\n  \"sku\": {\r\n
+        \   \"name\": \"Premium_LRS\"\r\n  },\r\n  \"properties\": {\r\n    \"hyperVGeneration\":
+        \"V1\",\r\n    \"creationData\": {\r\n      \"createOption\": \"Empty\"\r\n
+        \   },\r\n    \"diskSizeGB\": 1024,\r\n    \"maxShares\": 2,\r\n    \"provisioningState\":
+        \"Updating\",\r\n    \"isArmResource\": true\r\n  }\r\n}"
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/westeurope/DiskOperations/04543d87-6561-4b53-bcee-613c4594f9c3?p=afd4d8b7-47c6-4551-8514-168b30f1d390&api-version=2020-12-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '375'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 22 Oct 2021 10:10:06 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/westeurope/DiskOperations/04543d87-6561-4b53-bcee-613c4594f9c3?p=afd4d8b7-47c6-4551-8514-168b30f1d390&monitor=true&api-version=2020-12-01
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-resource:
+      - Microsoft.Compute/CreateUpdateDisks3Min;998,Microsoft.Compute/CreateUpdateDisks30Min;7998
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1198'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - disk create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group --zone --location --sku --max-shares --size-gb
+      User-Agent:
+      - AZURECLI/2.29.1 azsdk-python-azure-mgmt-compute/23.1.0 Python/3.9.6 (Windows-10-10.0.19043-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/westeurope/DiskOperations/04543d87-6561-4b53-bcee-613c4594f9c3?p=afd4d8b7-47c6-4551-8514-168b30f1d390&api-version=2020-12-01
+  response:
+    body:
+      string: "{\r\n  \"startTime\": \"2021-10-22T10:10:07.5272896+00:00\",\r\n  \"endTime\":
+        \"2021-10-22T10:10:07.667915+00:00\",\r\n  \"status\": \"Succeeded\",\r\n
+        \ \"properties\": {\r\n    \"output\": {\r\n  \"name\": \"disk000003\",\r\n
+        \ \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Compute/disks/disk000003\",\r\n
+        \ \"type\": \"Microsoft.Compute/disks\",\r\n  \"location\": \"westeurope\",\r\n
+        \ \"tags\": {},\r\n  \"zones\": [\r\n    \"1\"\r\n  ],\r\n  \"sku\": {\r\n
+        \   \"name\": \"Premium_LRS\",\r\n    \"tier\": \"Premium\"\r\n  },\r\n  \"properties\":
+        {\r\n    \"hyperVGeneration\": \"V1\",\r\n    \"creationData\": {\r\n      \"createOption\":
+        \"Empty\"\r\n    },\r\n    \"diskSizeGB\": 1024,\r\n    \"diskIOPSReadWrite\":
+        5000,\r\n    \"diskMBpsReadWrite\": 200,\r\n    \"encryption\": {\r\n      \"type\":
+        \"EncryptionAtRestWithPlatformKey\"\r\n    },\r\n    \"maxShares\": 2,\r\n
+        \   \"networkAccessPolicy\": \"AllowAll\",\r\n    \"timeCreated\": \"2021-10-22T10:10:07.5429408+00:00\",\r\n
+        \   \"provisioningState\": \"Succeeded\",\r\n    \"diskState\": \"Unattached\",\r\n
+        \   \"diskSizeBytes\": 1099511627776,\r\n    \"uniqueId\": \"94906a53-e546-4e93-8085-9d7ed2e544e4\",\r\n
+        \   \"tier\": \"P30\"\r\n  }\r\n}\r\n  },\r\n  \"name\": \"04543d87-6561-4b53-bcee-613c4594f9c3\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1159'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 22 Oct 2021 10:10:09 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-resource:
+      - Microsoft.Compute/GetOperation3Min;49997,Microsoft.Compute/GetOperation30Min;399997
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - disk create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group --zone --location --sku --max-shares --size-gb
+      User-Agent:
+      - AZURECLI/2.29.1 azsdk-python-azure-mgmt-compute/23.1.0 Python/3.9.6 (Windows-10-10.0.19043-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Compute/disks/disk000003?api-version=2020-12-01
+  response:
+    body:
+      string: "{\r\n  \"name\": \"disk000003\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Compute/disks/disk000003\",\r\n
+        \ \"type\": \"Microsoft.Compute/disks\",\r\n  \"location\": \"westeurope\",\r\n
+        \ \"tags\": {},\r\n  \"zones\": [\r\n    \"1\"\r\n  ],\r\n  \"sku\": {\r\n
+        \   \"name\": \"Premium_LRS\",\r\n    \"tier\": \"Premium\"\r\n  },\r\n  \"properties\":
+        {\r\n    \"hyperVGeneration\": \"V1\",\r\n    \"creationData\": {\r\n      \"createOption\":
+        \"Empty\"\r\n    },\r\n    \"diskSizeGB\": 1024,\r\n    \"diskIOPSReadWrite\":
+        5000,\r\n    \"diskMBpsReadWrite\": 200,\r\n    \"encryption\": {\r\n      \"type\":
+        \"EncryptionAtRestWithPlatformKey\"\r\n    },\r\n    \"maxShares\": 2,\r\n
+        \   \"networkAccessPolicy\": \"AllowAll\",\r\n    \"timeCreated\": \"2021-10-22T10:10:07.5429408+00:00\",\r\n
+        \   \"provisioningState\": \"Succeeded\",\r\n    \"diskState\": \"Unattached\",\r\n
+        \   \"diskSizeBytes\": 1099511627776,\r\n    \"uniqueId\": \"94906a53-e546-4e93-8085-9d7ed2e544e4\",\r\n
+        \   \"tier\": \"P30\"\r\n  }\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '935'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 22 Oct 2021 10:10:09 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-resource:
+      - Microsoft.Compute/LowCostGet3Min;4997,Microsoft.Compute/LowCostGet30Min;39996
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"objectIds": ["09f10f07-08cf-4ab7-be0f-e9ae3d72b9ad"], "includeDirectoryObjectReferences":
+      true}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - role assignment create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '97'
+      Content-Type:
+      - application/json; charset=utf-8
+      ParameterSetName:
+      - --assignee-object-id --role --scope
+      User-Agent:
+      - python/3.9.6 (Windows-10-10.0.19043-SP0) msrest/0.6.21 msrest_azure/0.6.3
+        azure-graphrbac/0.60.0 Azure-SDK-For-Python AZURECLI/2.29.1
+      accept-language:
+      - en-US
+    method: POST
+    uri: https://graph.windows.net/00000000-0000-0000-0000-000000000000/getObjectsByObjectIds?api-version=1.6
+  response:
+    body:
+      string: '{"odata.metadata":"https://graph.windows.net/00000000-0000-0000-0000-000000000000/$metadata#directoryObjects","value":[{"odata.type":"Microsoft.DirectoryServices.ServicePrincipal","objectType":"ServicePrincipal","objectId":"09f10f07-08cf-4ab7-be0f-e9ae3d72b9ad","deletionTimestamp":null,"accountEnabled":true,"addIns":[],"alternativeNames":[],"appDisplayName":"StoragePool
+        Resource Provider","appId":"5741a1ff-751d-4ad7-bcd1-dfe3c998fd11","applicationTemplateId":null,"appOwnerTenantId":"f8cdef31-a31e-4b4a-93e4-5f571e91255a","appRoleAssignmentRequired":false,"appRoles":[],"displayName":"StoragePool
+        Resource Provider","errorUrl":null,"homepage":null,"informationalUrls":{"termsOfService":null,"support":null,"privacy":null,"marketing":null},"keyCredentials":[],"logoutUrl":null,"notificationEmailAddresses":[],"oauth2Permissions":[],"passwordCredentials":[],"preferredSingleSignOnMode":null,"preferredTokenSigningKeyEndDateTime":null,"preferredTokenSigningKeyThumbprint":null,"publisherName":"Microsoft
+        Services","replyUrls":[],"samlMetadataUrl":null,"samlSingleSignOnSettings":null,"servicePrincipalNames":["5741a1ff-751d-4ad7-bcd1-dfe3c998fd11"],"servicePrincipalType":"Application","signInAudience":"AzureADMultipleOrgs","tags":[],"tokenEncryptionKeyId":null}]}'
+    headers:
+      access-control-allow-origin:
+      - '*'
+      cache-control:
+      - no-cache
+      content-length:
+      - '1266'
+      content-type:
+      - application/json; odata=minimalmetadata; streaming=true; charset=utf-8
+      dataserviceversion:
+      - 3.0;
+      date:
+      - Fri, 22 Oct 2021 10:10:13 GMT
+      duration:
+      - '2771771'
+      expires:
+      - '-1'
+      ocp-aad-diagnostics-server-name:
+      - Ku7q1maI/oqDAOtoM1mvopDfgP3gvlKNUV1dYIMcrdA=
+      ocp-aad-session-key:
+      - n2F7NhL0fJTfaSdWE_Y1ToiYz3_fBBWIV0BooaOJGfV2H3MFMJsSQTtxV3oTSsuM53F-O-Kt8hb786ZrGgb4KBhw99Y1SXKkaXAYDPsBLQzQrN4owJHn0fIaMlvAagV8.mYF2hWnCF_MqN8lRowPVGoChuBuFYBs3IIpHotGGT7U
+      pragma:
+      - no-cache
+      request-id:
+      - b10858a6-bac6-4282-bb9a-527089d346e1
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-aspnet-version:
+      - 4.0.30319
+      x-ms-dirapi-data-contract-version:
+      - '1.6'
+      x-ms-resource-unit:
+      - '3'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - role assignment create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --assignee-object-id --role --scope
+      User-Agent:
+      - python/3.9.6 (Windows-10-10.0.19043-SP0) msrest/0.6.21 msrest_azure/0.6.3
+        azure-mgmt-authorization/0.61.0 Azure-SDK-For-Python AZURECLI/2.29.1
+      accept-language:
+      - en-US
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Compute/disks/disk000002/providers/Microsoft.Authorization/roleDefinitions?$filter=roleName%20eq%20%27Virtual%20Machine%20Contributor%27&api-version=2018-01-01-preview
+  response:
+    body:
+      string: '{"value":[{"properties":{"roleName":"Virtual Machine Contributor","type":"BuiltInRole","description":"Lets
+        you manage virtual machines, but not access to them, and not the virtual network
+        or storage account they''re connected to.","assignableScopes":["/"],"permissions":[{"actions":["Microsoft.Authorization/*/read","Microsoft.Compute/availabilitySets/*","Microsoft.Compute/locations/*","Microsoft.Compute/virtualMachines/*","Microsoft.Compute/virtualMachineScaleSets/*","Microsoft.Compute/cloudServices/*","Microsoft.Compute/disks/write","Microsoft.Compute/disks/read","Microsoft.Compute/disks/delete","Microsoft.DevTestLab/schedules/*","Microsoft.Insights/alertRules/*","Microsoft.Network/applicationGateways/backendAddressPools/join/action","Microsoft.Network/loadBalancers/backendAddressPools/join/action","Microsoft.Network/loadBalancers/inboundNatPools/join/action","Microsoft.Network/loadBalancers/inboundNatRules/join/action","Microsoft.Network/loadBalancers/probes/join/action","Microsoft.Network/loadBalancers/read","Microsoft.Network/locations/*","Microsoft.Network/networkInterfaces/*","Microsoft.Network/networkSecurityGroups/join/action","Microsoft.Network/networkSecurityGroups/read","Microsoft.Network/publicIPAddresses/join/action","Microsoft.Network/publicIPAddresses/read","Microsoft.Network/virtualNetworks/read","Microsoft.Network/virtualNetworks/subnets/join/action","Microsoft.RecoveryServices/locations/*","Microsoft.RecoveryServices/Vaults/backupFabrics/backupProtectionIntent/write","Microsoft.RecoveryServices/Vaults/backupFabrics/protectionContainers/protectedItems/*/read","Microsoft.RecoveryServices/Vaults/backupFabrics/protectionContainers/protectedItems/read","Microsoft.RecoveryServices/Vaults/backupFabrics/protectionContainers/protectedItems/write","Microsoft.RecoveryServices/Vaults/backupPolicies/read","Microsoft.RecoveryServices/Vaults/backupPolicies/write","Microsoft.RecoveryServices/Vaults/read","Microsoft.RecoveryServices/Vaults/usages/read","Microsoft.RecoveryServices/Vaults/write","Microsoft.ResourceHealth/availabilityStatuses/read","Microsoft.Resources/deployments/*","Microsoft.Resources/subscriptions/resourceGroups/read","Microsoft.SerialConsole/serialPorts/connect/action","Microsoft.SqlVirtualMachine/*","Microsoft.Storage/storageAccounts/listKeys/action","Microsoft.Storage/storageAccounts/read","Microsoft.Support/*"],"notActions":[],"dataActions":[],"notDataActions":[]}],"createdOn":"2015-06-02T00:18:27.3542698Z","updatedOn":"2021-10-01T06:29:39.7447802Z","createdBy":null,"updatedBy":null},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleDefinitions/9980e02c-c2be-4d73-94e8-173b1dc7cf3c","type":"Microsoft.Authorization/roleDefinitions","name":"9980e02c-c2be-4d73-94e8-173b1dc7cf3c"}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2793'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 22 Oct 2021 10:10:13 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      set-cookie:
+      - x-ms-gateway-slice=Production; path=/; secure; samesite=none; httponly
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"roleDefinitionId": "/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleDefinitions/9980e02c-c2be-4d73-94e8-173b1dc7cf3c",
+      "principalId": "09f10f07-08cf-4ab7-be0f-e9ae3d72b9ad", "principalType": "ServicePrincipal"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - role assignment create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '270'
+      Content-Type:
+      - application/json; charset=utf-8
+      Cookie:
+      - x-ms-gateway-slice=Production
+      ParameterSetName:
+      - --assignee-object-id --role --scope
+      User-Agent:
+      - python/3.9.6 (Windows-10-10.0.19043-SP0) msrest/0.6.21 msrest_azure/0.6.3
+        azure-mgmt-authorization/0.61.0 Azure-SDK-For-Python AZURECLI/2.29.1
+      accept-language:
+      - en-US
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Compute/disks/disk000002/providers/Microsoft.Authorization/roleAssignments/88888888-0000-0000-0000-000000000001?api-version=2020-04-01-preview
+  response:
+    body:
+      string: '{"properties":{"roleDefinitionId":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleDefinitions/9980e02c-c2be-4d73-94e8-173b1dc7cf3c","principalId":"09f10f07-08cf-4ab7-be0f-e9ae3d72b9ad","principalType":"ServicePrincipal","scope":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Compute/disks/disk000002","condition":null,"conditionVersion":null,"createdOn":"2021-10-22T10:10:14.4720173Z","updatedOn":"2021-10-22T10:10:14.8626451Z","createdBy":null,"updatedBy":"a7250e3a-0e5e-48e2-9a34-45f1f5e1a91e","delegatedManagedIdentityResourceId":null,"description":null},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Compute/disks/disk000002/providers/Microsoft.Authorization/roleAssignments/88888888-0000-0000-0000-000000000001","type":"Microsoft.Authorization/roleAssignments","name":"88888888-0000-0000-0000-000000000001"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '977'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 22 Oct 2021 10:10:20 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      set-cookie:
+      - x-ms-gateway-slice=Production; path=/; secure; samesite=none; httponly
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: '{"objectIds": ["09f10f07-08cf-4ab7-be0f-e9ae3d72b9ad"], "includeDirectoryObjectReferences":
+      true}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - role assignment create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '97'
+      Content-Type:
+      - application/json; charset=utf-8
+      ParameterSetName:
+      - --assignee-object-id --role --scope
+      User-Agent:
+      - python/3.9.6 (Windows-10-10.0.19043-SP0) msrest/0.6.21 msrest_azure/0.6.3
+        azure-graphrbac/0.60.0 Azure-SDK-For-Python AZURECLI/2.29.1
+      accept-language:
+      - en-US
+    method: POST
+    uri: https://graph.windows.net/00000000-0000-0000-0000-000000000000/getObjectsByObjectIds?api-version=1.6
+  response:
+    body:
+      string: '{"odata.metadata":"https://graph.windows.net/00000000-0000-0000-0000-000000000000/$metadata#directoryObjects","value":[{"odata.type":"Microsoft.DirectoryServices.ServicePrincipal","objectType":"ServicePrincipal","objectId":"09f10f07-08cf-4ab7-be0f-e9ae3d72b9ad","deletionTimestamp":null,"accountEnabled":true,"addIns":[],"alternativeNames":[],"appDisplayName":"StoragePool
+        Resource Provider","appId":"5741a1ff-751d-4ad7-bcd1-dfe3c998fd11","applicationTemplateId":null,"appOwnerTenantId":"f8cdef31-a31e-4b4a-93e4-5f571e91255a","appRoleAssignmentRequired":false,"appRoles":[],"displayName":"StoragePool
+        Resource Provider","errorUrl":null,"homepage":null,"informationalUrls":{"termsOfService":null,"support":null,"privacy":null,"marketing":null},"keyCredentials":[],"logoutUrl":null,"notificationEmailAddresses":[],"oauth2Permissions":[],"passwordCredentials":[],"preferredSingleSignOnMode":null,"preferredTokenSigningKeyEndDateTime":null,"preferredTokenSigningKeyThumbprint":null,"publisherName":"Microsoft
+        Services","replyUrls":[],"samlMetadataUrl":null,"samlSingleSignOnSettings":null,"servicePrincipalNames":["5741a1ff-751d-4ad7-bcd1-dfe3c998fd11"],"servicePrincipalType":"Application","signInAudience":"AzureADMultipleOrgs","tags":[],"tokenEncryptionKeyId":null}]}'
+    headers:
+      access-control-allow-origin:
+      - '*'
+      cache-control:
+      - no-cache
+      content-length:
+      - '1266'
+      content-type:
+      - application/json; odata=minimalmetadata; streaming=true; charset=utf-8
+      dataserviceversion:
+      - 3.0;
+      date:
+      - Fri, 22 Oct 2021 10:10:22 GMT
+      duration:
+      - '2678790'
+      expires:
+      - '-1'
+      ocp-aad-diagnostics-server-name:
+      - jZ4o8jImajC9GtdnIBcKjxErTB5TTeYs/ZhZd2yXZT0=
+      ocp-aad-session-key:
+      - p351fAInjXdSpSqA7vvQx2qOKdmJMhDjbKDquv4dgCWtyKMYcJQJ7ZHSkbOV_oETGHijAfStVmc1mJ6zjkTSezDG8MWwcPsFGjnGhjnMmc-k-r8V_2ItoynhEW43mIKg.quuSjnwPdBvxLo-Iquk1YrzX9g3BmGI2pGM9ck0PUGM
+      pragma:
+      - no-cache
+      request-id:
+      - 50ef3451-a7f8-4da2-8c81-cacc9d50a375
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-aspnet-version:
+      - 4.0.30319
+      x-ms-dirapi-data-contract-version:
+      - '1.6'
+      x-ms-resource-unit:
+      - '3'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - role assignment create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --assignee-object-id --role --scope
+      User-Agent:
+      - python/3.9.6 (Windows-10-10.0.19043-SP0) msrest/0.6.21 msrest_azure/0.6.3
+        azure-mgmt-authorization/0.61.0 Azure-SDK-For-Python AZURECLI/2.29.1
+      accept-language:
+      - en-US
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Compute/disks/disk000003/providers/Microsoft.Authorization/roleDefinitions?$filter=roleName%20eq%20%27Virtual%20Machine%20Contributor%27&api-version=2018-01-01-preview
+  response:
+    body:
+      string: '{"value":[{"properties":{"roleName":"Virtual Machine Contributor","type":"BuiltInRole","description":"Lets
+        you manage virtual machines, but not access to them, and not the virtual network
+        or storage account they''re connected to.","assignableScopes":["/"],"permissions":[{"actions":["Microsoft.Authorization/*/read","Microsoft.Compute/availabilitySets/*","Microsoft.Compute/locations/*","Microsoft.Compute/virtualMachines/*","Microsoft.Compute/virtualMachineScaleSets/*","Microsoft.Compute/cloudServices/*","Microsoft.Compute/disks/write","Microsoft.Compute/disks/read","Microsoft.Compute/disks/delete","Microsoft.DevTestLab/schedules/*","Microsoft.Insights/alertRules/*","Microsoft.Network/applicationGateways/backendAddressPools/join/action","Microsoft.Network/loadBalancers/backendAddressPools/join/action","Microsoft.Network/loadBalancers/inboundNatPools/join/action","Microsoft.Network/loadBalancers/inboundNatRules/join/action","Microsoft.Network/loadBalancers/probes/join/action","Microsoft.Network/loadBalancers/read","Microsoft.Network/locations/*","Microsoft.Network/networkInterfaces/*","Microsoft.Network/networkSecurityGroups/join/action","Microsoft.Network/networkSecurityGroups/read","Microsoft.Network/publicIPAddresses/join/action","Microsoft.Network/publicIPAddresses/read","Microsoft.Network/virtualNetworks/read","Microsoft.Network/virtualNetworks/subnets/join/action","Microsoft.RecoveryServices/locations/*","Microsoft.RecoveryServices/Vaults/backupFabrics/backupProtectionIntent/write","Microsoft.RecoveryServices/Vaults/backupFabrics/protectionContainers/protectedItems/*/read","Microsoft.RecoveryServices/Vaults/backupFabrics/protectionContainers/protectedItems/read","Microsoft.RecoveryServices/Vaults/backupFabrics/protectionContainers/protectedItems/write","Microsoft.RecoveryServices/Vaults/backupPolicies/read","Microsoft.RecoveryServices/Vaults/backupPolicies/write","Microsoft.RecoveryServices/Vaults/read","Microsoft.RecoveryServices/Vaults/usages/read","Microsoft.RecoveryServices/Vaults/write","Microsoft.ResourceHealth/availabilityStatuses/read","Microsoft.Resources/deployments/*","Microsoft.Resources/subscriptions/resourceGroups/read","Microsoft.SerialConsole/serialPorts/connect/action","Microsoft.SqlVirtualMachine/*","Microsoft.Storage/storageAccounts/listKeys/action","Microsoft.Storage/storageAccounts/read","Microsoft.Support/*"],"notActions":[],"dataActions":[],"notDataActions":[]}],"createdOn":"2015-06-02T00:18:27.3542698Z","updatedOn":"2021-10-01T06:29:39.7447802Z","createdBy":null,"updatedBy":null},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleDefinitions/9980e02c-c2be-4d73-94e8-173b1dc7cf3c","type":"Microsoft.Authorization/roleDefinitions","name":"9980e02c-c2be-4d73-94e8-173b1dc7cf3c"}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2793'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 22 Oct 2021 10:10:22 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      set-cookie:
+      - x-ms-gateway-slice=Production; path=/; secure; samesite=none; httponly
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"roleDefinitionId": "/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleDefinitions/9980e02c-c2be-4d73-94e8-173b1dc7cf3c",
+      "principalId": "09f10f07-08cf-4ab7-be0f-e9ae3d72b9ad", "principalType": "ServicePrincipal"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - role assignment create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '270'
+      Content-Type:
+      - application/json; charset=utf-8
+      Cookie:
+      - x-ms-gateway-slice=Production
+      ParameterSetName:
+      - --assignee-object-id --role --scope
+      User-Agent:
+      - python/3.9.6 (Windows-10-10.0.19043-SP0) msrest/0.6.21 msrest_azure/0.6.3
+        azure-mgmt-authorization/0.61.0 Azure-SDK-For-Python AZURECLI/2.29.1
+      accept-language:
+      - en-US
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Compute/disks/disk000003/providers/Microsoft.Authorization/roleAssignments/88888888-0000-0000-0000-000000000002?api-version=2020-04-01-preview
+  response:
+    body:
+      string: '{"properties":{"roleDefinitionId":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleDefinitions/9980e02c-c2be-4d73-94e8-173b1dc7cf3c","principalId":"09f10f07-08cf-4ab7-be0f-e9ae3d72b9ad","principalType":"ServicePrincipal","scope":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Compute/disks/disk000003","condition":null,"conditionVersion":null,"createdOn":"2021-10-22T10:10:23.7735745Z","updatedOn":"2021-10-22T10:10:24.1798276Z","createdBy":null,"updatedBy":"a7250e3a-0e5e-48e2-9a34-45f1f5e1a91e","delegatedManagedIdentityResourceId":null,"description":null},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Compute/disks/disk000003/providers/Microsoft.Authorization/roleAssignments/88888888-0000-0000-0000-000000000002","type":"Microsoft.Authorization/roleAssignments","name":"88888888-0000-0000-0000-000000000002"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '977'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 22 Oct 2021 10:10:30 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      set-cookie:
+      - x-ms-gateway-slice=Production; path=/; secure; samesite=none; httponly
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: '{"location": "westeurope", "tags": {}, "properties": {"addressSpace": {"addressPrefixes":
+      ["10.0.0.0/16"]}, "dhcpOptions": {}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network vnet create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '127'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --name --resource-group --location
+      User-Agent:
+      - AZURECLI/2.29.1 azsdk-python-azure-mgmt-network/19.1.0 Python/3.9.6 (Windows-10-10.0.19043-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/virtualNetworks/vnet000004?api-version=2021-03-01
+  response:
+    body:
+      string: "{\r\n  \"name\": \"vnet000004\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/virtualNetworks/vnet000004\",\r\n
+        \ \"etag\": \"W/\\\"5accc31e-d367-4f97-a716-a869c374f21b\\\"\",\r\n  \"type\":
+        \"Microsoft.Network/virtualNetworks\",\r\n  \"location\": \"westeurope\",\r\n
+        \ \"tags\": {},\r\n  \"properties\": {\r\n    \"provisioningState\": \"Updating\",\r\n
+        \   \"resourceGuid\": \"5a6dd5ec-48af-4a44-a48f-b0cb1283c1a3\",\r\n    \"addressSpace\":
+        {\r\n      \"addressPrefixes\": [\r\n        \"10.0.0.0/16\"\r\n      ]\r\n
+        \   },\r\n    \"dhcpOptions\": {\r\n      \"dnsServers\": []\r\n    },\r\n
+        \   \"subnets\": [],\r\n    \"virtualNetworkPeerings\": [],\r\n    \"enableDdosProtection\":
+        false\r\n  }\r\n}"
+    headers:
+      azure-asyncnotification:
+      - Enabled
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westeurope/operations/1389e7b5-5e24-43d0-a68e-5edb97930e3f?api-version=2021-03-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '687'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 22 Oct 2021 10:10:38 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-arm-service-request-id:
+      - 6be73a39-5f0a-49f2-a8b9-3ec0e1954fa7
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1198'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network vnet create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group --location
+      User-Agent:
+      - AZURECLI/2.29.1 azsdk-python-azure-mgmt-network/19.1.0 Python/3.9.6 (Windows-10-10.0.19043-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westeurope/operations/1389e7b5-5e24-43d0-a68e-5edb97930e3f?api-version=2021-03-01
+  response:
+    body:
+      string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '29'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 22 Oct 2021 10:10:41 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-arm-service-request-id:
+      - 7b1c5d5a-8635-4821-9dbb-6fe690663dd4
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network vnet create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group --location
+      User-Agent:
+      - AZURECLI/2.29.1 azsdk-python-azure-mgmt-network/19.1.0 Python/3.9.6 (Windows-10-10.0.19043-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/virtualNetworks/vnet000004?api-version=2021-03-01
+  response:
+    body:
+      string: "{\r\n  \"name\": \"vnet000004\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/virtualNetworks/vnet000004\",\r\n
+        \ \"etag\": \"W/\\\"46dae171-e1d7-46d9-a3c8-50f1b18f9d5b\\\"\",\r\n  \"type\":
+        \"Microsoft.Network/virtualNetworks\",\r\n  \"location\": \"westeurope\",\r\n
+        \ \"tags\": {},\r\n  \"properties\": {\r\n    \"provisioningState\": \"Succeeded\",\r\n
+        \   \"resourceGuid\": \"5a6dd5ec-48af-4a44-a48f-b0cb1283c1a3\",\r\n    \"addressSpace\":
+        {\r\n      \"addressPrefixes\": [\r\n        \"10.0.0.0/16\"\r\n      ]\r\n
+        \   },\r\n    \"dhcpOptions\": {\r\n      \"dnsServers\": []\r\n    },\r\n
+        \   \"subnets\": [],\r\n    \"virtualNetworkPeerings\": [],\r\n    \"enableDdosProtection\":
+        false\r\n  }\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '688'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 22 Oct 2021 10:10:42 GMT
+      etag:
+      - W/"46dae171-e1d7-46d9-a3c8-50f1b18f9d5b"
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-arm-service-request-id:
+      - 1a712597-8fa1-4c6f-811b-b536f74af8c6
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network vnet subnet create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --vnet-name --resource-group --address-prefixes --delegations
+      User-Agent:
+      - AZURECLI/2.29.1 azsdk-python-azure-mgmt-network/19.1.0 Python/3.9.6 (Windows-10-10.0.19043-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/virtualNetworks/vnet000004?api-version=2021-03-01
+  response:
+    body:
+      string: "{\r\n  \"name\": \"vnet000004\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/virtualNetworks/vnet000004\",\r\n
+        \ \"etag\": \"W/\\\"46dae171-e1d7-46d9-a3c8-50f1b18f9d5b\\\"\",\r\n  \"type\":
+        \"Microsoft.Network/virtualNetworks\",\r\n  \"location\": \"westeurope\",\r\n
+        \ \"tags\": {},\r\n  \"properties\": {\r\n    \"provisioningState\": \"Succeeded\",\r\n
+        \   \"resourceGuid\": \"5a6dd5ec-48af-4a44-a48f-b0cb1283c1a3\",\r\n    \"addressSpace\":
+        {\r\n      \"addressPrefixes\": [\r\n        \"10.0.0.0/16\"\r\n      ]\r\n
+        \   },\r\n    \"dhcpOptions\": {\r\n      \"dnsServers\": []\r\n    },\r\n
+        \   \"subnets\": [],\r\n    \"virtualNetworkPeerings\": [],\r\n    \"enableDdosProtection\":
+        false\r\n  }\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '688'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 22 Oct 2021 10:10:43 GMT
+      etag:
+      - W/"46dae171-e1d7-46d9-a3c8-50f1b18f9d5b"
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-arm-service-request-id:
+      - a4a16b5a-a630-4e8d-936d-3028e8a7a6bf
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/virtualNetworks/vnet000004",
+      "location": "westeurope", "tags": {}, "properties": {"addressSpace": {"addressPrefixes":
+      ["10.0.0.0/16"]}, "dhcpOptions": {"dnsServers": []}, "subnets": [{"name": "subnet000005",
+      "properties": {"addressPrefix": "10.0.0.0/24", "delegations": [{"name": "0",
+      "properties": {"serviceName": "Microsoft.StoragePool/diskPools"}}], "privateEndpointNetworkPolicies":
+      "Enabled", "privateLinkServiceNetworkPolicies": "Enabled"}}], "virtualNetworkPeerings":
+      [], "enableDdosProtection": false}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network vnet subnet create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '628'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --name --vnet-name --resource-group --address-prefixes --delegations
+      User-Agent:
+      - AZURECLI/2.29.1 azsdk-python-azure-mgmt-network/19.1.0 Python/3.9.6 (Windows-10-10.0.19043-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/virtualNetworks/vnet000004?api-version=2021-03-01
+  response:
+    body:
+      string: "{\r\n  \"name\": \"vnet000004\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/virtualNetworks/vnet000004\",\r\n
+        \ \"etag\": \"W/\\\"8cbd34de-964f-4091-8d9a-87774954d44b\\\"\",\r\n  \"type\":
+        \"Microsoft.Network/virtualNetworks\",\r\n  \"location\": \"westeurope\",\r\n
+        \ \"tags\": {},\r\n  \"properties\": {\r\n    \"provisioningState\": \"Updating\",\r\n
+        \   \"resourceGuid\": \"5a6dd5ec-48af-4a44-a48f-b0cb1283c1a3\",\r\n    \"addressSpace\":
+        {\r\n      \"addressPrefixes\": [\r\n        \"10.0.0.0/16\"\r\n      ]\r\n
+        \   },\r\n    \"dhcpOptions\": {\r\n      \"dnsServers\": []\r\n    },\r\n
+        \   \"subnets\": [\r\n      {\r\n        \"name\": \"subnet000005\",\r\n        \"id\":
+        \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/virtualNetworks/vnet000004/subnets/subnet000005\",\r\n
+        \       \"etag\": \"W/\\\"8cbd34de-964f-4091-8d9a-87774954d44b\\\"\",\r\n
+        \       \"properties\": {\r\n          \"provisioningState\": \"Updating\",\r\n
+        \         \"addressPrefix\": \"10.0.0.0/24\",\r\n          \"delegations\":
+        [\r\n            {\r\n              \"name\": \"0\",\r\n              \"id\":
+        \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/virtualNetworks/vnet000004/subnets/subnet000005/delegations/0\",\r\n
+        \             \"etag\": \"W/\\\"8cbd34de-964f-4091-8d9a-87774954d44b\\\"\",\r\n
+        \             \"properties\": {\r\n                \"provisioningState\":
+        \"Succeeded\",\r\n                \"serviceName\": \"Microsoft.StoragePool/diskPools\",\r\n
+        \               \"actions\": [\r\n                  \"Microsoft.Network/virtualNetworks/read\"\r\n
+        \               ]\r\n              },\r\n              \"type\": \"Microsoft.Network/virtualNetworks/subnets/delegations\"\r\n
+        \           }\r\n          ],\r\n          \"privateEndpointNetworkPolicies\":
+        \"Enabled\",\r\n          \"privateLinkServiceNetworkPolicies\": \"Enabled\"\r\n
+        \       },\r\n        \"type\": \"Microsoft.Network/virtualNetworks/subnets\"\r\n
+        \     }\r\n    ],\r\n    \"virtualNetworkPeerings\": [],\r\n    \"enableDdosProtection\":
+        false\r\n  }\r\n}"
+    headers:
+      azure-asyncnotification:
+      - Enabled
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westeurope/operations/aab6a114-100b-4181-828d-e2bad8fe7883?api-version=2021-03-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '2000'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 22 Oct 2021 10:10:44 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-arm-service-request-id:
+      - 1a51222e-df5f-49b4-b944-d6706641e299
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network vnet subnet create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --vnet-name --resource-group --address-prefixes --delegations
+      User-Agent:
+      - AZURECLI/2.29.1 azsdk-python-azure-mgmt-network/19.1.0 Python/3.9.6 (Windows-10-10.0.19043-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westeurope/operations/aab6a114-100b-4181-828d-e2bad8fe7883?api-version=2021-03-01
+  response:
+    body:
+      string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '29'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 22 Oct 2021 10:10:49 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-arm-service-request-id:
+      - 06470ccc-8af5-4039-a557-c608db621b1c
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network vnet subnet create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --vnet-name --resource-group --address-prefixes --delegations
+      User-Agent:
+      - AZURECLI/2.29.1 azsdk-python-azure-mgmt-network/19.1.0 Python/3.9.6 (Windows-10-10.0.19043-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/virtualNetworks/vnet000004?api-version=2021-03-01
+  response:
+    body:
+      string: "{\r\n  \"name\": \"vnet000004\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/virtualNetworks/vnet000004\",\r\n
+        \ \"etag\": \"W/\\\"45d331b0-cd3d-47ed-8b28-06dae45bb49d\\\"\",\r\n  \"type\":
+        \"Microsoft.Network/virtualNetworks\",\r\n  \"location\": \"westeurope\",\r\n
+        \ \"tags\": {},\r\n  \"properties\": {\r\n    \"provisioningState\": \"Succeeded\",\r\n
+        \   \"resourceGuid\": \"5a6dd5ec-48af-4a44-a48f-b0cb1283c1a3\",\r\n    \"addressSpace\":
+        {\r\n      \"addressPrefixes\": [\r\n        \"10.0.0.0/16\"\r\n      ]\r\n
+        \   },\r\n    \"dhcpOptions\": {\r\n      \"dnsServers\": []\r\n    },\r\n
+        \   \"subnets\": [\r\n      {\r\n        \"name\": \"subnet000005\",\r\n        \"id\":
+        \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/virtualNetworks/vnet000004/subnets/subnet000005\",\r\n
+        \       \"etag\": \"W/\\\"45d331b0-cd3d-47ed-8b28-06dae45bb49d\\\"\",\r\n
+        \       \"properties\": {\r\n          \"provisioningState\": \"Succeeded\",\r\n
+        \         \"addressPrefix\": \"10.0.0.0/24\",\r\n          \"delegations\":
+        [\r\n            {\r\n              \"name\": \"0\",\r\n              \"id\":
+        \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/virtualNetworks/vnet000004/subnets/subnet000005/delegations/0\",\r\n
+        \             \"etag\": \"W/\\\"45d331b0-cd3d-47ed-8b28-06dae45bb49d\\\"\",\r\n
+        \             \"properties\": {\r\n                \"provisioningState\":
+        \"Succeeded\",\r\n                \"serviceName\": \"Microsoft.StoragePool/diskPools\",\r\n
+        \               \"actions\": [\r\n                  \"Microsoft.Network/virtualNetworks/read\"\r\n
+        \               ]\r\n              },\r\n              \"type\": \"Microsoft.Network/virtualNetworks/subnets/delegations\"\r\n
+        \           }\r\n          ],\r\n          \"privateEndpointNetworkPolicies\":
+        \"Enabled\",\r\n          \"privateLinkServiceNetworkPolicies\": \"Enabled\"\r\n
+        \       },\r\n        \"type\": \"Microsoft.Network/virtualNetworks/subnets\"\r\n
+        \     }\r\n    ],\r\n    \"virtualNetworkPeerings\": [],\r\n    \"enableDdosProtection\":
+        false\r\n  }\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2002'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 22 Oct 2021 10:10:49 GMT
+      etag:
+      - W/"45d331b0-cd3d-47ed-8b28-06dae45bb49d"
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-arm-service-request-id:
+      - 0905f85b-96f5-4c28-b3e0-26f7c9a293c4
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"sku": {"name": "Standard_S1", "tier": "Standard"}, "location": "westeurope",
+      "properties": {"availabilityZones": ["1"], "disks": [{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Compute/disks/disk000002"}],
+      "subnetId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/virtualNetworks/vnet000004/subnets/subnet000005",
+      "additionalCapabilities": ["DiskPool.SkipInfrastructureDeployment"]}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - disk-pool create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '515'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --name --resource-group --location --availability-zones --subnet-id --sku
+        --disks --additional-capabilities
+      User-Agent:
+      - AZURECLI/2.29.1 azsdk-python-mgmt-storagepool/1.0.0b1 Python/3.9.6 (Windows-10-10.0.19043-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.StoragePool/diskPools/diskpool000006?api-version=2021-08-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.StoragePool/diskPools/diskpool000006","name":"diskpool000006","type":"Microsoft.StoragePool/diskPools","location":"westeurope","tags":{},"systemData":{"createdBy":"zhiyihuang@microsoft.com","createdByType":"User","createdAt":"2021-10-22T10:10:54.9582489Z","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2021-10-22T10:10:54.9582489Z"},"properties":{"disks":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Compute/disks/disk000002"}],"availabilityZones":["1"],"subnetId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/virtualNetworks/vnet000004/subnets/subnet000005","provisioningState":"Pending","status":"Unknown","additionalCapabilities":["DiskPool.SkipInfrastructureDeployment"]},"sku":{"name":"Standard_S1","tier":"Standard"}}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.StoragePool/locations/westeurope/operationsStatus/d017ea98-c979-44c1-bdc6-d5d6d1c269d0?api-version=2021-08-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '1015'
+      content-security-policy:
+      - default-src 'self'; frame-ancestors 'none'
+      content-type:
+      - application/json; charset=UTF-8
+      date:
+      - Fri, 22 Oct 2021 10:10:58 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.StoragePool/locations/westeurope/operationresults/d017ea98-c979-44c1-bdc6-d5d6d1c269d0?api-version=2021-08-01
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-async-operation-timeout:
+      - PT1H
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-ms-return-client-request-id:
+      - 'true'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - disk-pool create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group --location --availability-zones --subnet-id --sku
+        --disks --additional-capabilities
+      User-Agent:
+      - AZURECLI/2.29.1 azsdk-python-mgmt-storagepool/1.0.0b1 Python/3.9.6 (Windows-10-10.0.19043-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.StoragePool/locations/westeurope/operationsStatus/d017ea98-c979-44c1-bdc6-d5d6d1c269d0?api-version=2021-08-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/locations/westeurope/operationStatus/d017ea98-c979-44c1-bdc6-d5d6d1c269d0","name":"d017ea98-c979-44c1-bdc6-d5d6d1c269d0","status":"Running","startTime":"2021-10-22T10:10:56Z","endTime":""}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '247'
+      content-security-policy:
+      - default-src 'self'; frame-ancestors 'none'
+      content-type:
+      - application/json; charset=UTF-8
+      date:
+      - Fri, 22 Oct 2021 10:11:08 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-return-client-request-id:
+      - 'true'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - disk-pool create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group --location --availability-zones --subnet-id --sku
+        --disks --additional-capabilities
+      User-Agent:
+      - AZURECLI/2.29.1 azsdk-python-mgmt-storagepool/1.0.0b1 Python/3.9.6 (Windows-10-10.0.19043-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.StoragePool/locations/westeurope/operationsStatus/d017ea98-c979-44c1-bdc6-d5d6d1c269d0?api-version=2021-08-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/locations/westeurope/operationStatus/d017ea98-c979-44c1-bdc6-d5d6d1c269d0","name":"d017ea98-c979-44c1-bdc6-d5d6d1c269d0","status":"Succeeded","startTime":"2021-10-22T10:10:56Z","endTime":"2021-10-22T10:11:13Z","properties":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.StoragePool/diskPools/diskpool000006","name":"diskpool000006","type":"Microsoft.StoragePool/diskPools","location":"westeurope","tags":{},"systemData":{"createdBy":"zhiyihuang@microsoft.com","createdByType":"User","createdAt":"2021-10-22T10:10:54.9582489Z","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2021-10-22T10:10:54.9582489Z"},"properties":{"disks":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Compute/disks/disk000002"}],"availabilityZones":["1"],"subnetId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/virtualNetworks/vnet000004/subnets/subnet000005","provisioningState":"Succeeded","status":"Running","additionalCapabilities":["DiskPool.SkipInfrastructureDeployment"]},"sku":{"name":"Standard_S1","tier":"Standard"}}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1300'
+      content-security-policy:
+      - default-src 'self'; frame-ancestors 'none'
+      content-type:
+      - application/json; charset=UTF-8
+      date:
+      - Fri, 22 Oct 2021 10:11:39 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-return-client-request-id:
+      - 'true'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - disk-pool create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group --location --availability-zones --subnet-id --sku
+        --disks --additional-capabilities
+      User-Agent:
+      - AZURECLI/2.29.1 azsdk-python-mgmt-storagepool/1.0.0b1 Python/3.9.6 (Windows-10-10.0.19043-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.StoragePool/diskPools/diskpool000006?api-version=2021-08-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.StoragePool/diskPools/diskpool000006","name":"diskpool000006","type":"Microsoft.StoragePool/diskPools","location":"westeurope","tags":{},"systemData":{"createdBy":"zhiyihuang@microsoft.com","createdByType":"User","createdAt":"2021-10-22T10:10:54.9582489Z","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2021-10-22T10:10:54.9582489Z"},"properties":{"disks":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Compute/disks/disk000002"}],"availabilityZones":["1"],"subnetId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/virtualNetworks/vnet000004/subnets/subnet000005","provisioningState":"Succeeded","status":"Running","additionalCapabilities":["DiskPool.SkipInfrastructureDeployment"]},"sku":{"name":"Standard_S1","tier":"Standard"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1017'
+      content-security-policy:
+      - default-src 'self'; frame-ancestors 'none'
+      content-type:
+      - application/json; charset=UTF-8
+      date:
+      - Fri, 22 Oct 2021 10:11:39 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-return-client-request-id:
+      - 'true'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - disk-pool show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group
+      User-Agent:
+      - AZURECLI/2.29.1 azsdk-python-mgmt-storagepool/1.0.0b1 Python/3.9.6 (Windows-10-10.0.19043-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.StoragePool/diskPools/diskpool000006?api-version=2021-08-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.StoragePool/diskPools/diskpool000006","name":"diskpool000006","type":"Microsoft.StoragePool/diskPools","location":"westeurope","tags":{},"systemData":{"createdBy":"zhiyihuang@microsoft.com","createdByType":"User","createdAt":"2021-10-22T10:10:54.9582489Z","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2021-10-22T10:10:54.9582489Z"},"properties":{"disks":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Compute/disks/disk000002"}],"availabilityZones":["1"],"subnetId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/virtualNetworks/vnet000004/subnets/subnet000005","provisioningState":"Succeeded","status":"Running","additionalCapabilities":["DiskPool.SkipInfrastructureDeployment"]},"sku":{"name":"Standard_S1","tier":"Standard"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1017'
+      content-security-policy:
+      - default-src 'self'; frame-ancestors 'none'
+      content-type:
+      - application/json; charset=UTF-8
+      date:
+      - Fri, 22 Oct 2021 10:11:41 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-return-client-request-id:
+      - 'true'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - disk-pool redeploy
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - --name --resource-group
+      User-Agent:
+      - AZURECLI/2.29.1 azsdk-python-mgmt-storagepool/1.0.0b1 Python/3.9.6 (Windows-10-10.0.19043-SP0)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.StoragePool/diskPools/diskpool000006/upgrade?api-version=2021-08-01
+  response:
+    body:
+      string: ''
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.StoragePool/locations/westeurope/operationsStatus/4c1ddbc4-ef81-424d-be97-0bad8dfba476?api-version=2021-08-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      content-security-policy:
+      - default-src 'self'; frame-ancestors 'none'
+      content-type:
+      - application/json; charset=UTF-8
+      date:
+      - Fri, 22 Oct 2021 10:11:43 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.StoragePool/locations/westeurope/operationresults/4c1ddbc4-ef81-424d-be97-0bad8dfba476?api-version=2021-08-01
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-async-operation-timeout:
+      - PT1H
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-ms-return-client-request-id:
+      - 'true'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - disk-pool redeploy
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group
+      User-Agent:
+      - AZURECLI/2.29.1 azsdk-python-mgmt-storagepool/1.0.0b1 Python/3.9.6 (Windows-10-10.0.19043-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.StoragePool/locations/westeurope/operationsStatus/4c1ddbc4-ef81-424d-be97-0bad8dfba476?api-version=2021-08-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/locations/westeurope/operationStatus/4c1ddbc4-ef81-424d-be97-0bad8dfba476","name":"4c1ddbc4-ef81-424d-be97-0bad8dfba476","status":"Running","startTime":"2021-10-22T10:11:43Z","endTime":""}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '247'
+      content-security-policy:
+      - default-src 'self'; frame-ancestors 'none'
+      content-type:
+      - application/json; charset=UTF-8
+      date:
+      - Fri, 22 Oct 2021 10:11:53 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-return-client-request-id:
+      - 'true'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - disk-pool redeploy
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group
+      User-Agent:
+      - AZURECLI/2.29.1 azsdk-python-mgmt-storagepool/1.0.0b1 Python/3.9.6 (Windows-10-10.0.19043-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.StoragePool/locations/westeurope/operationsStatus/4c1ddbc4-ef81-424d-be97-0bad8dfba476?api-version=2021-08-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/locations/westeurope/operationStatus/4c1ddbc4-ef81-424d-be97-0bad8dfba476","name":"4c1ddbc4-ef81-424d-be97-0bad8dfba476","status":"Succeeded","startTime":"2021-10-22T10:11:43Z","endTime":"2021-10-22T10:11:59Z","properties":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.StoragePool/diskPools/diskpool000006","name":"diskpool000006","type":"Microsoft.StoragePool/diskPools","location":"westeurope","tags":{},"systemData":{"createdBy":"zhiyihuang@microsoft.com","createdByType":"User","createdAt":"2021-10-22T10:10:54.9582489Z","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2021-10-22T10:10:54.9582489Z"},"properties":{"disks":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Compute/disks/disk000002"}],"availabilityZones":["1"],"subnetId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/virtualNetworks/vnet000004/subnets/subnet000005","provisioningState":"Succeeded","status":"Running","additionalCapabilities":["DiskPool.SkipInfrastructureDeployment"]},"sku":{"name":"Standard_S1","tier":"Standard"}}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1300'
+      content-security-policy:
+      - default-src 'self'; frame-ancestors 'none'
+      content-type:
+      - application/json; charset=UTF-8
+      date:
+      - Fri, 22 Oct 2021 10:12:24 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-return-client-request-id:
+      - 'true'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - disk-pool list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group
+      User-Agent:
+      - AZURECLI/2.29.1 azsdk-python-mgmt-storagepool/1.0.0b1 Python/3.9.6 (Windows-10-10.0.19043-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.StoragePool/diskPools?api-version=2021-08-01
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.StoragePool/diskPools/diskpool000006","name":"diskpool000006","type":"Microsoft.StoragePool/diskPools","location":"westeurope","tags":{},"systemData":{"createdBy":"zhiyihuang@microsoft.com","createdByType":"User","createdAt":"2021-10-22T10:10:54.9582489Z","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2021-10-22T10:10:54.9582489Z"},"properties":{"disks":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Compute/disks/disk000002"}],"availabilityZones":["1"],"subnetId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/virtualNetworks/vnet000004/subnets/subnet000005","provisioningState":"Succeeded","status":"Running","additionalCapabilities":["DiskPool.SkipInfrastructureDeployment"]},"sku":{"name":"Standard_S1","tier":"Standard"}}],"nextLink":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1045'
+      content-security-policy:
+      - default-src 'self'; frame-ancestors 'none'
+      content-type:
+      - application/json; charset=UTF-8
+      date:
+      - Fri, 22 Oct 2021 10:12:26 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-return-client-request-id:
+      - 'true'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - disk-pool list-outbound-network-dependency-endpoint
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group
+      User-Agent:
+      - AZURECLI/2.29.1 azsdk-python-mgmt-storagepool/1.0.0b1 Python/3.9.6 (Windows-10-10.0.19043-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.StoragePool/diskPools/diskpool000006/outboundNetworkDependenciesEndpoints?api-version=2021-08-01
+  response:
+    body:
+      string: '{"value":[{"category":"Microsoft Event Hub","endpoints":[{"domainName":"evhns-rp-prod-weu.servicebus.windows.net","endpointDetails":[{"port":443}]}]},{"category":"Microsoft
+        Service Bus","endpoints":[{"domainName":"sb-rp-prod-weu.servicebus.windows.net","endpointDetails":[{"port":443}]}]},{"category":"Microsoft
+        Service Bus (data plane)","endpoints":[{"domainName":"sb-rp-prod-weu.servicebus.windows.net","endpointDetails":[{"port":5671}]}]},{"category":"Microsoft
+        Storage","endpoints":[{"domainName":"strpprodweu.blob.core.windows.net","endpointDetails":[{"port":443}]},{"domainName":"stbsprodweu.blob.core.windows.net","endpointDetails":[{"port":443}]}]},{"category":"Microsoft
+        Apt Mirror","endpoints":[{"domainName":"azure.archive.ubuntu.com","endpointDetails":[{"port":443}]}]}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '783'
+      content-security-policy:
+      - default-src 'self'; frame-ancestors 'none'
+      content-type:
+      - application/json; charset=UTF-8
+      date:
+      - Fri, 22 Oct 2021 10:12:27 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-return-client-request-id:
+      - 'true'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"aclMode": "Dynamic", "luns": [{"name": "lun0", "managedDiskAzureResourceId":
+      "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Compute/disks/disk000002"}]}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - disk-pool iscsi-target create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '228'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --name --disk-pool-name --resource-group --acl-mode --luns
+      User-Agent:
+      - AZURECLI/2.29.1 azsdk-python-mgmt-storagepool/1.0.0b1 Python/3.9.6 (Windows-10-10.0.19043-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.StoragePool/diskPools/diskpool000006/iscsiTargets/iscsi000007?api-version=2021-08-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.StoragePool/diskPools/diskpool000006/iscsiTargets/iscsi000007","name":"iscsi000007","type":"Microsoft.StoragePool/diskPools/iscsiTargets","systemData":{"createdBy":"zhiyihuang@microsoft.com","createdByType":"User","createdAt":"2021-10-22T10:12:29.5313242Z","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2021-10-22T10:12:29.5313242Z"},"properties":{"targetIqn":"iqn.2021-10.com.microsoft:iscsi000007","aclMode":"Dynamic","luns":[{"managedDiskAzureResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Compute/disks/disk000002","name":"lun0","lun":null}],"endpoints":[],"provisioningState":"Pending","status":"Unknown"}}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.StoragePool/locations/westeurope/operationsStatus/7875cd1e-1758-43de-b319-c19ed8340acf?api-version=2021-08-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '835'
+      content-security-policy:
+      - default-src 'self'; frame-ancestors 'none'
+      content-type:
+      - application/json; charset=UTF-8
+      date:
+      - Fri, 22 Oct 2021 10:12:30 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.StoragePool/locations/westeurope/operationresults/7875cd1e-1758-43de-b319-c19ed8340acf?api-version=2021-08-01
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-async-operation-timeout:
+      - PT1H
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-ms-return-client-request-id:
+      - 'true'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - disk-pool iscsi-target create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --disk-pool-name --resource-group --acl-mode --luns
+      User-Agent:
+      - AZURECLI/2.29.1 azsdk-python-mgmt-storagepool/1.0.0b1 Python/3.9.6 (Windows-10-10.0.19043-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.StoragePool/locations/westeurope/operationsStatus/7875cd1e-1758-43de-b319-c19ed8340acf?api-version=2021-08-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/locations/westeurope/operationStatus/7875cd1e-1758-43de-b319-c19ed8340acf","name":"7875cd1e-1758-43de-b319-c19ed8340acf","status":"Running","startTime":"2021-10-22T10:12:30Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '234'
+      content-security-policy:
+      - default-src 'self'; frame-ancestors 'none'
+      content-type:
+      - application/json; charset=UTF-8
+      date:
+      - Fri, 22 Oct 2021 10:12:40 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-return-client-request-id:
+      - 'true'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - disk-pool iscsi-target create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --disk-pool-name --resource-group --acl-mode --luns
+      User-Agent:
+      - AZURECLI/2.29.1 azsdk-python-mgmt-storagepool/1.0.0b1 Python/3.9.6 (Windows-10-10.0.19043-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.StoragePool/locations/westeurope/operationsStatus/7875cd1e-1758-43de-b319-c19ed8340acf?api-version=2021-08-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/locations/westeurope/operationStatus/7875cd1e-1758-43de-b319-c19ed8340acf","name":"7875cd1e-1758-43de-b319-c19ed8340acf","status":"Succeeded","startTime":"2021-10-22T10:12:30Z","endTime":"2021-10-22T10:12:46Z","properties":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.StoragePool/diskPools/diskpool000006/iscsiTargets/iscsi000007","name":"iscsi000007","type":"Microsoft.StoragePool/diskPools/iscsiTargets","systemData":{"createdBy":"zhiyihuang@microsoft.com","createdByType":"User","createdAt":"2021-10-22T10:12:29.5313242Z","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2021-10-22T10:12:29.5313242Z"},"properties":{"targetIqn":"iqn.2021-10.com.microsoft:iscsi000007","aclMode":"Dynamic","luns":[{"managedDiskAzureResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Compute/disks/disk000002","name":"lun0","lun":null}],"endpoints":[],"provisioningState":"Succeeded","status":"Healthy"}}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1120'
+      content-security-policy:
+      - default-src 'self'; frame-ancestors 'none'
+      content-type:
+      - application/json; charset=UTF-8
+      date:
+      - Fri, 22 Oct 2021 10:13:11 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-return-client-request-id:
+      - 'true'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - disk-pool iscsi-target create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --disk-pool-name --resource-group --acl-mode --luns
+      User-Agent:
+      - AZURECLI/2.29.1 azsdk-python-mgmt-storagepool/1.0.0b1 Python/3.9.6 (Windows-10-10.0.19043-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.StoragePool/diskPools/diskpool000006/iscsiTargets/iscsi000007?api-version=2021-08-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.StoragePool/diskPools/diskpool000006/iscsiTargets/iscsi000007","name":"iscsi000007","type":"Microsoft.StoragePool/diskPools/iscsiTargets","systemData":{"createdBy":"zhiyihuang@microsoft.com","createdByType":"User","createdAt":"2021-10-22T10:12:29.5313242Z","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2021-10-22T10:12:29.5313242Z"},"properties":{"targetIqn":"iqn.2021-10.com.microsoft:iscsi000007","aclMode":"Dynamic","luns":[{"managedDiskAzureResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Compute/disks/disk000002","name":"lun0","lun":null}],"endpoints":[],"provisioningState":"Succeeded","status":"Healthy"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '837'
+      content-security-policy:
+      - default-src 'self'; frame-ancestors 'none'
+      content-type:
+      - application/json; charset=UTF-8
+      date:
+      - Fri, 22 Oct 2021 10:13:11 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-return-client-request-id:
+      - 'true'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - disk-pool iscsi-target show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --disk-pool-name --resource-group
+      User-Agent:
+      - AZURECLI/2.29.1 azsdk-python-mgmt-storagepool/1.0.0b1 Python/3.9.6 (Windows-10-10.0.19043-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.StoragePool/diskPools/diskpool000006/iscsiTargets/iscsi000007?api-version=2021-08-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.StoragePool/diskPools/diskpool000006/iscsiTargets/iscsi000007","name":"iscsi000007","type":"Microsoft.StoragePool/diskPools/iscsiTargets","systemData":{"createdBy":"zhiyihuang@microsoft.com","createdByType":"User","createdAt":"2021-10-22T10:12:29.5313242Z","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2021-10-22T10:12:29.5313242Z"},"properties":{"targetIqn":"iqn.2021-10.com.microsoft:iscsi000007","aclMode":"Dynamic","luns":[{"managedDiskAzureResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Compute/disks/disk000002","name":"lun0","lun":null}],"endpoints":[],"provisioningState":"Succeeded","status":"Healthy"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '837'
+      content-security-policy:
+      - default-src 'self'; frame-ancestors 'none'
+      content-type:
+      - application/json; charset=UTF-8
+      date:
+      - Fri, 22 Oct 2021 10:13:13 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-return-client-request-id:
+      - 'true'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - disk-pool iscsi-target list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --disk-pool-name --resource-group
+      User-Agent:
+      - AZURECLI/2.29.1 azsdk-python-mgmt-storagepool/1.0.0b1 Python/3.9.6 (Windows-10-10.0.19043-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.StoragePool/diskPools/diskpool000006/iscsiTargets?api-version=2021-08-01
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.StoragePool/diskPools/diskpool000006/iscsiTargets/iscsi000007","name":"iscsi000007","type":"Microsoft.StoragePool/diskPools/iscsiTargets","systemData":{"createdBy":"zhiyihuang@microsoft.com","createdByType":"User","createdAt":"2021-10-22T10:12:29.5313242Z","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2021-10-22T10:12:29.5313242Z"},"properties":{"targetIqn":"iqn.2021-10.com.microsoft:iscsi000007","aclMode":"Dynamic","luns":[{"managedDiskAzureResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Compute/disks/disk000002","name":"lun0","lun":null}],"endpoints":[],"provisioningState":"Succeeded","status":"Healthy"}}],"nextLink":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '865'
+      content-security-policy:
+      - default-src 'self'; frame-ancestors 'none'
+      content-type:
+      - application/json; charset=UTF-8
+      date:
+      - Fri, 22 Oct 2021 10:13:15 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-return-client-request-id:
+      - 'true'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"disks": [{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Compute/disks/disk000002"},
+      {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Compute/disks/disk000003"}]}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - disk-pool update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '307'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --name --resource-group --disks
+      User-Agent:
+      - AZURECLI/2.29.1 azsdk-python-mgmt-storagepool/1.0.0b1 Python/3.9.6 (Windows-10-10.0.19043-SP0)
+    method: PATCH
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.StoragePool/diskPools/diskpool000006?api-version=2021-08-01
+  response:
+    body:
+      string: '{}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.StoragePool/locations/westeurope/operationsStatus/9707c988-40e8-4304-8df7-68a85a109fe1?api-version=2021-08-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '2'
+      content-security-policy:
+      - default-src 'self'; frame-ancestors 'none'
+      content-type:
+      - application/json; charset=UTF-8
+      date:
+      - Fri, 22 Oct 2021 10:13:18 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.StoragePool/locations/westeurope/operationresults/9707c988-40e8-4304-8df7-68a85a109fe1?api-version=2021-08-01
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-async-operation-timeout:
+      - PT1H
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-ms-return-client-request-id:
+      - 'true'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - disk-pool update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group --disks
+      User-Agent:
+      - AZURECLI/2.29.1 azsdk-python-mgmt-storagepool/1.0.0b1 Python/3.9.6 (Windows-10-10.0.19043-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.StoragePool/locations/westeurope/operationsStatus/9707c988-40e8-4304-8df7-68a85a109fe1?api-version=2021-08-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/locations/westeurope/operationStatus/9707c988-40e8-4304-8df7-68a85a109fe1","name":"9707c988-40e8-4304-8df7-68a85a109fe1","status":"Running","startTime":"2021-10-22T10:13:18Z","endTime":""}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '247'
+      content-security-policy:
+      - default-src 'self'; frame-ancestors 'none'
+      content-type:
+      - application/json; charset=UTF-8
+      date:
+      - Fri, 22 Oct 2021 10:13:28 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-return-client-request-id:
+      - 'true'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - disk-pool update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group --disks
+      User-Agent:
+      - AZURECLI/2.29.1 azsdk-python-mgmt-storagepool/1.0.0b1 Python/3.9.6 (Windows-10-10.0.19043-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.StoragePool/locations/westeurope/operationsStatus/9707c988-40e8-4304-8df7-68a85a109fe1?api-version=2021-08-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/locations/westeurope/operationStatus/9707c988-40e8-4304-8df7-68a85a109fe1","name":"9707c988-40e8-4304-8df7-68a85a109fe1","status":"Succeeded","startTime":"2021-10-22T10:13:18Z","endTime":"2021-10-22T10:13:34Z","properties":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.StoragePool/diskPools/diskpool000006","name":"diskpool000006","type":"Microsoft.StoragePool/diskPools","location":"westeurope","tags":{},"systemData":{"createdBy":"zhiyihuang@microsoft.com","createdByType":"User","createdAt":"2021-10-22T10:10:54.9582489Z","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2021-10-22T10:13:17.3076561Z"},"properties":{"disks":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Compute/disks/disk000002"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Compute/disks/disk000003"}],"availabilityZones":["1"],"subnetId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/virtualNetworks/vnet000004/subnets/subnet000005","provisioningState":"Succeeded","status":"Running","additionalCapabilities":["DiskPool.SkipInfrastructureDeployment"]},"sku":{"name":"Standard_S1","tier":"Standard"}}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1438'
+      content-security-policy:
+      - default-src 'self'; frame-ancestors 'none'
+      content-type:
+      - application/json; charset=UTF-8
+      date:
+      - Fri, 22 Oct 2021 10:13:59 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-return-client-request-id:
+      - 'true'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - disk-pool update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group --disks
+      User-Agent:
+      - AZURECLI/2.29.1 azsdk-python-mgmt-storagepool/1.0.0b1 Python/3.9.6 (Windows-10-10.0.19043-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.StoragePool/diskPools/diskpool000006?api-version=2021-08-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.StoragePool/diskPools/diskpool000006","name":"diskpool000006","type":"Microsoft.StoragePool/diskPools","location":"westeurope","tags":{},"systemData":{"createdBy":"zhiyihuang@microsoft.com","createdByType":"User","createdAt":"2021-10-22T10:10:54.9582489Z","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2021-10-22T10:13:17.3076561Z"},"properties":{"disks":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Compute/disks/disk000002"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Compute/disks/disk000003"}],"availabilityZones":["1"],"subnetId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/virtualNetworks/vnet000004/subnets/subnet000005","provisioningState":"Succeeded","status":"Running","additionalCapabilities":["DiskPool.SkipInfrastructureDeployment"]},"sku":{"name":"Standard_S1","tier":"Standard"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1155'
+      content-security-policy:
+      - default-src 'self'; frame-ancestors 'none'
+      content-type:
+      - application/json; charset=UTF-8
+      date:
+      - Fri, 22 Oct 2021 10:13:59 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-return-client-request-id:
+      - 'true'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"luns": [{"name": "lun0", "managedDiskAzureResourceId":
+      "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Compute/disks/disk000002"},
+      {"name": "lun1", "managedDiskAzureResourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Compute/disks/disk000003"}]}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - disk-pool iscsi-target update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '386'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --name --disk-pool-name --resource-group --luns --luns
+      User-Agent:
+      - AZURECLI/2.29.1 azsdk-python-mgmt-storagepool/1.0.0b1 Python/3.9.6 (Windows-10-10.0.19043-SP0)
+    method: PATCH
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.StoragePool/diskPools/diskpool000006/iscsiTargets/iscsi000007?api-version=2021-08-01
+  response:
+    body:
+      string: '{}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.StoragePool/locations/westeurope/operationsStatus/6da98c15-6862-4bd2-939a-27afe31daaf6?api-version=2021-08-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '2'
+      content-security-policy:
+      - default-src 'self'; frame-ancestors 'none'
+      content-type:
+      - application/json; charset=UTF-8
+      date:
+      - Fri, 22 Oct 2021 10:14:01 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.StoragePool/locations/westeurope/operationresults/6da98c15-6862-4bd2-939a-27afe31daaf6?api-version=2021-08-01
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-async-operation-timeout:
+      - PT1H
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-ms-return-client-request-id:
+      - 'true'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - disk-pool iscsi-target update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --disk-pool-name --resource-group --luns --luns
+      User-Agent:
+      - AZURECLI/2.29.1 azsdk-python-mgmt-storagepool/1.0.0b1 Python/3.9.6 (Windows-10-10.0.19043-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.StoragePool/locations/westeurope/operationsStatus/6da98c15-6862-4bd2-939a-27afe31daaf6?api-version=2021-08-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/locations/westeurope/operationStatus/6da98c15-6862-4bd2-939a-27afe31daaf6","name":"6da98c15-6862-4bd2-939a-27afe31daaf6","status":"Running","startTime":"2021-10-22T10:14:02Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '234'
+      content-security-policy:
+      - default-src 'self'; frame-ancestors 'none'
+      content-type:
+      - application/json; charset=UTF-8
+      date:
+      - Fri, 22 Oct 2021 10:14:13 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-return-client-request-id:
+      - 'true'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - disk-pool iscsi-target update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --disk-pool-name --resource-group --luns --luns
+      User-Agent:
+      - AZURECLI/2.29.1 azsdk-python-mgmt-storagepool/1.0.0b1 Python/3.9.6 (Windows-10-10.0.19043-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.StoragePool/locations/westeurope/operationsStatus/6da98c15-6862-4bd2-939a-27afe31daaf6?api-version=2021-08-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/locations/westeurope/operationStatus/6da98c15-6862-4bd2-939a-27afe31daaf6","name":"6da98c15-6862-4bd2-939a-27afe31daaf6","status":"Succeeded","startTime":"2021-10-22T10:14:02Z","endTime":"2021-10-22T10:14:19Z","properties":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.StoragePool/diskPools/diskpool000006/iscsiTargets/iscsi000007","name":"iscsi000007","type":"Microsoft.StoragePool/diskPools/iscsiTargets","systemData":{"createdBy":"zhiyihuang@microsoft.com","createdByType":"User","createdAt":"2021-10-22T10:12:29.5313242Z","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2021-10-22T10:14:01.3972981Z"},"properties":{"targetIqn":"iqn.2021-10.com.microsoft:iscsi000007","aclMode":"Dynamic","luns":[{"managedDiskAzureResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Compute/disks/disk000002","name":"lun0","lun":null},{"managedDiskAzureResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Compute/disks/disk000003","name":"lun1","lun":null}],"endpoints":[],"provisioningState":"Succeeded","status":"Healthy"}}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1307'
+      content-security-policy:
+      - default-src 'self'; frame-ancestors 'none'
+      content-type:
+      - application/json; charset=UTF-8
+      date:
+      - Fri, 22 Oct 2021 10:14:43 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-return-client-request-id:
+      - 'true'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - disk-pool iscsi-target update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --disk-pool-name --resource-group --luns --luns
+      User-Agent:
+      - AZURECLI/2.29.1 azsdk-python-mgmt-storagepool/1.0.0b1 Python/3.9.6 (Windows-10-10.0.19043-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.StoragePool/diskPools/diskpool000006/iscsiTargets/iscsi000007?api-version=2021-08-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.StoragePool/diskPools/diskpool000006/iscsiTargets/iscsi000007","name":"iscsi000007","type":"Microsoft.StoragePool/diskPools/iscsiTargets","systemData":{"createdBy":"zhiyihuang@microsoft.com","createdByType":"User","createdAt":"2021-10-22T10:12:29.5313242Z","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2021-10-22T10:14:01.3972981Z"},"properties":{"targetIqn":"iqn.2021-10.com.microsoft:iscsi000007","aclMode":"Dynamic","luns":[{"managedDiskAzureResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Compute/disks/disk000002","name":"lun0","lun":null},{"managedDiskAzureResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Compute/disks/disk000003","name":"lun1","lun":null}],"endpoints":[],"provisioningState":"Succeeded","status":"Healthy"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1024'
+      content-security-policy:
+      - default-src 'self'; frame-ancestors 'none'
+      content-type:
+      - application/json; charset=UTF-8
+      date:
+      - Fri, 22 Oct 2021 10:14:43 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-return-client-request-id:
+      - 'true'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - disk-pool stop
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - --name --resource-group
+      User-Agent:
+      - AZURECLI/2.29.1 azsdk-python-mgmt-storagepool/1.0.0b1 Python/3.9.6 (Windows-10-10.0.19043-SP0)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.StoragePool/diskPools/diskpool000006/deallocate?api-version=2021-08-01
+  response:
+    body:
+      string: ''
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.StoragePool/locations/westeurope/operationsStatus/dbfd289e-8872-429e-9a83-a652d2ecd77b?api-version=2021-08-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      content-security-policy:
+      - default-src 'self'; frame-ancestors 'none'
+      content-type:
+      - application/json; charset=UTF-8
+      date:
+      - Fri, 22 Oct 2021 10:14:45 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.StoragePool/locations/westeurope/operationresults/dbfd289e-8872-429e-9a83-a652d2ecd77b?api-version=2021-08-01
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-async-operation-timeout:
+      - PT1H
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-ms-return-client-request-id:
+      - 'true'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - disk-pool stop
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group
+      User-Agent:
+      - AZURECLI/2.29.1 azsdk-python-mgmt-storagepool/1.0.0b1 Python/3.9.6 (Windows-10-10.0.19043-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.StoragePool/locations/westeurope/operationsStatus/dbfd289e-8872-429e-9a83-a652d2ecd77b?api-version=2021-08-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/locations/westeurope/operationStatus/dbfd289e-8872-429e-9a83-a652d2ecd77b","name":"dbfd289e-8872-429e-9a83-a652d2ecd77b","status":"Running","startTime":"2021-10-22T10:14:45Z","endTime":""}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '247'
+      content-security-policy:
+      - default-src 'self'; frame-ancestors 'none'
+      content-type:
+      - application/json; charset=UTF-8
+      date:
+      - Fri, 22 Oct 2021 10:14:55 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-return-client-request-id:
+      - 'true'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - disk-pool stop
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group
+      User-Agent:
+      - AZURECLI/2.29.1 azsdk-python-mgmt-storagepool/1.0.0b1 Python/3.9.6 (Windows-10-10.0.19043-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.StoragePool/locations/westeurope/operationsStatus/dbfd289e-8872-429e-9a83-a652d2ecd77b?api-version=2021-08-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/locations/westeurope/operationStatus/dbfd289e-8872-429e-9a83-a652d2ecd77b","name":"dbfd289e-8872-429e-9a83-a652d2ecd77b","status":"Succeeded","startTime":"2021-10-22T10:14:45Z","endTime":"2021-10-22T10:15:01Z","properties":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.StoragePool/diskPools/diskpool000006","name":"diskpool000006","type":"Microsoft.StoragePool/diskPools","location":"westeurope","tags":{},"systemData":{"createdBy":"zhiyihuang@microsoft.com","createdByType":"User","createdAt":"2021-10-22T10:10:54.9582489Z","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2021-10-22T10:13:17.3076561Z"},"properties":{"disks":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Compute/disks/disk000002"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Compute/disks/disk000003"}],"availabilityZones":["1"],"subnetId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/virtualNetworks/vnet000004/subnets/subnet000005","provisioningState":"Succeeded","status":"Stopped
+        (deallocated)","additionalCapabilities":["DiskPool.SkipInfrastructureDeployment"]},"sku":{"name":"Standard_S1","tier":"Standard"}}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1452'
+      content-security-policy:
+      - default-src 'self'; frame-ancestors 'none'
+      content-type:
+      - application/json; charset=UTF-8
+      date:
+      - Fri, 22 Oct 2021 10:15:26 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-return-client-request-id:
+      - 'true'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - disk-pool show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group
+      User-Agent:
+      - AZURECLI/2.29.1 azsdk-python-mgmt-storagepool/1.0.0b1 Python/3.9.6 (Windows-10-10.0.19043-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.StoragePool/diskPools/diskpool000006?api-version=2021-08-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.StoragePool/diskPools/diskpool000006","name":"diskpool000006","type":"Microsoft.StoragePool/diskPools","location":"westeurope","tags":{},"systemData":{"createdBy":"zhiyihuang@microsoft.com","createdByType":"User","createdAt":"2021-10-22T10:10:54.9582489Z","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2021-10-22T10:13:17.3076561Z"},"properties":{"disks":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Compute/disks/disk000002"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Compute/disks/disk000003"}],"availabilityZones":["1"],"subnetId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/virtualNetworks/vnet000004/subnets/subnet000005","provisioningState":"Succeeded","status":"Stopped
+        (deallocated)","additionalCapabilities":["DiskPool.SkipInfrastructureDeployment"]},"sku":{"name":"Standard_S1","tier":"Standard"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1169'
+      content-security-policy:
+      - default-src 'self'; frame-ancestors 'none'
+      content-type:
+      - application/json; charset=UTF-8
+      date:
+      - Fri, 22 Oct 2021 10:15:28 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-return-client-request-id:
+      - 'true'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - disk-pool start
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - --name --resource-group
+      User-Agent:
+      - AZURECLI/2.29.1 azsdk-python-mgmt-storagepool/1.0.0b1 Python/3.9.6 (Windows-10-10.0.19043-SP0)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.StoragePool/diskPools/diskpool000006/start?api-version=2021-08-01
+  response:
+    body:
+      string: ''
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.StoragePool/locations/westeurope/operationsStatus/c679f47f-5927-42b9-bc88-aef5e64a5517?api-version=2021-08-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      content-security-policy:
+      - default-src 'self'; frame-ancestors 'none'
+      content-type:
+      - application/json; charset=UTF-8
+      date:
+      - Fri, 22 Oct 2021 10:15:30 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.StoragePool/locations/westeurope/operationresults/c679f47f-5927-42b9-bc88-aef5e64a5517?api-version=2021-08-01
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-async-operation-timeout:
+      - PT1H
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-ms-return-client-request-id:
+      - 'true'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - disk-pool start
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group
+      User-Agent:
+      - AZURECLI/2.29.1 azsdk-python-mgmt-storagepool/1.0.0b1 Python/3.9.6 (Windows-10-10.0.19043-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.StoragePool/locations/westeurope/operationsStatus/c679f47f-5927-42b9-bc88-aef5e64a5517?api-version=2021-08-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/locations/westeurope/operationStatus/c679f47f-5927-42b9-bc88-aef5e64a5517","name":"c679f47f-5927-42b9-bc88-aef5e64a5517","status":"Running","startTime":"2021-10-22T10:15:31Z","endTime":""}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '247'
+      content-security-policy:
+      - default-src 'self'; frame-ancestors 'none'
+      content-type:
+      - application/json; charset=UTF-8
+      date:
+      - Fri, 22 Oct 2021 10:15:41 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-return-client-request-id:
+      - 'true'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - disk-pool start
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group
+      User-Agent:
+      - AZURECLI/2.29.1 azsdk-python-mgmt-storagepool/1.0.0b1 Python/3.9.6 (Windows-10-10.0.19043-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.StoragePool/locations/westeurope/operationsStatus/c679f47f-5927-42b9-bc88-aef5e64a5517?api-version=2021-08-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/locations/westeurope/operationStatus/c679f47f-5927-42b9-bc88-aef5e64a5517","name":"c679f47f-5927-42b9-bc88-aef5e64a5517","status":"Succeeded","startTime":"2021-10-22T10:15:31Z","endTime":"2021-10-22T10:15:47Z","properties":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.StoragePool/diskPools/diskpool000006","name":"diskpool000006","type":"Microsoft.StoragePool/diskPools","location":"westeurope","tags":{},"systemData":{"createdBy":"zhiyihuang@microsoft.com","createdByType":"User","createdAt":"2021-10-22T10:10:54.9582489Z","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2021-10-22T10:13:17.3076561Z"},"properties":{"disks":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Compute/disks/disk000002"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Compute/disks/disk000003"}],"availabilityZones":["1"],"subnetId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/virtualNetworks/vnet000004/subnets/subnet000005","provisioningState":"Succeeded","status":"Running","additionalCapabilities":["DiskPool.SkipInfrastructureDeployment"]},"sku":{"name":"Standard_S1","tier":"Standard"}}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1438'
+      content-security-policy:
+      - default-src 'self'; frame-ancestors 'none'
+      content-type:
+      - application/json; charset=UTF-8
+      date:
+      - Fri, 22 Oct 2021 10:16:11 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-return-client-request-id:
+      - 'true'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - disk-pool show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group
+      User-Agent:
+      - AZURECLI/2.29.1 azsdk-python-mgmt-storagepool/1.0.0b1 Python/3.9.6 (Windows-10-10.0.19043-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.StoragePool/diskPools/diskpool000006?api-version=2021-08-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.StoragePool/diskPools/diskpool000006","name":"diskpool000006","type":"Microsoft.StoragePool/diskPools","location":"westeurope","tags":{},"systemData":{"createdBy":"zhiyihuang@microsoft.com","createdByType":"User","createdAt":"2021-10-22T10:10:54.9582489Z","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2021-10-22T10:13:17.3076561Z"},"properties":{"disks":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Compute/disks/disk000002"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Compute/disks/disk000003"}],"availabilityZones":["1"],"subnetId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/virtualNetworks/vnet000004/subnets/subnet000005","provisioningState":"Succeeded","status":"Running","additionalCapabilities":["DiskPool.SkipInfrastructureDeployment"]},"sku":{"name":"Standard_S1","tier":"Standard"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1155'
+      content-security-policy:
+      - default-src 'self'; frame-ancestors 'none'
+      content-type:
+      - application/json; charset=UTF-8
+      date:
+      - Fri, 22 Oct 2021 10:16:13 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-return-client-request-id:
+      - 'true'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - disk-pool iscsi-target delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - --name --disk-pool-name --resource-group -y
+      User-Agent:
+      - AZURECLI/2.29.1 azsdk-python-mgmt-storagepool/1.0.0b1 Python/3.9.6 (Windows-10-10.0.19043-SP0)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.StoragePool/diskPools/diskpool000006/iscsiTargets/iscsi000007?api-version=2021-08-01
+  response:
+    body:
+      string: ''
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.StoragePool/locations/westeurope/operationsStatus/ed79faf0-d9c0-421f-9072-2a82a7f827c4?api-version=2021-08-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      content-security-policy:
+      - default-src 'self'; frame-ancestors 'none'
+      content-type:
+      - application/json; charset=UTF-8
+      date:
+      - Fri, 22 Oct 2021 10:16:15 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.StoragePool/locations/westeurope/operationresults/ed79faf0-d9c0-421f-9072-2a82a7f827c4?api-version=2021-08-01
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-async-operation-timeout:
+      - PT1H
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14999'
+      x-ms-return-client-request-id:
+      - 'true'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - disk-pool iscsi-target delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --disk-pool-name --resource-group -y
+      User-Agent:
+      - AZURECLI/2.29.1 azsdk-python-mgmt-storagepool/1.0.0b1 Python/3.9.6 (Windows-10-10.0.19043-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.StoragePool/locations/westeurope/operationsStatus/ed79faf0-d9c0-421f-9072-2a82a7f827c4?api-version=2021-08-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/locations/westeurope/operationStatus/ed79faf0-d9c0-421f-9072-2a82a7f827c4","name":"ed79faf0-d9c0-421f-9072-2a82a7f827c4","status":"Running","startTime":"2021-10-22T10:16:16Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '234'
+      content-security-policy:
+      - default-src 'self'; frame-ancestors 'none'
+      content-type:
+      - application/json; charset=UTF-8
+      date:
+      - Fri, 22 Oct 2021 10:16:26 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-return-client-request-id:
+      - 'true'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - disk-pool iscsi-target delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --disk-pool-name --resource-group -y
+      User-Agent:
+      - AZURECLI/2.29.1 azsdk-python-mgmt-storagepool/1.0.0b1 Python/3.9.6 (Windows-10-10.0.19043-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.StoragePool/locations/westeurope/operationsStatus/ed79faf0-d9c0-421f-9072-2a82a7f827c4?api-version=2021-08-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/locations/westeurope/operationStatus/ed79faf0-d9c0-421f-9072-2a82a7f827c4","name":"ed79faf0-d9c0-421f-9072-2a82a7f827c4","status":"Succeeded","startTime":"2021-10-22T10:16:16Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '236'
+      content-security-policy:
+      - default-src 'self'; frame-ancestors 'none'
+      content-type:
+      - application/json; charset=UTF-8
+      date:
+      - Fri, 22 Oct 2021 10:16:57 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-return-client-request-id:
+      - 'true'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - disk-pool iscsi-target list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --disk-pool-name --resource-group
+      User-Agent:
+      - AZURECLI/2.29.1 azsdk-python-mgmt-storagepool/1.0.0b1 Python/3.9.6 (Windows-10-10.0.19043-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.StoragePool/diskPools/diskpool000006/iscsiTargets?api-version=2021-08-01
+  response:
+    body:
+      string: '{"value":[],"nextLink":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '28'
+      content-security-policy:
+      - default-src 'self'; frame-ancestors 'none'
+      content-type:
+      - application/json; charset=UTF-8
+      date:
+      - Fri, 22 Oct 2021 10:16:59 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-return-client-request-id:
+      - 'true'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - disk-pool delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - --name --resource-group -y
+      User-Agent:
+      - AZURECLI/2.29.1 azsdk-python-mgmt-storagepool/1.0.0b1 Python/3.9.6 (Windows-10-10.0.19043-SP0)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.StoragePool/diskPools/diskpool000006?api-version=2021-08-01
+  response:
+    body:
+      string: ''
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.StoragePool/locations/westeurope/operationsStatus/4717ac3a-c7b1-48e3-8c2e-8cd9f9347f1b?api-version=2021-08-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      content-security-policy:
+      - default-src 'self'; frame-ancestors 'none'
+      content-type:
+      - application/json; charset=UTF-8
+      date:
+      - Fri, 22 Oct 2021 10:17:02 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.StoragePool/locations/westeurope/operationresults/4717ac3a-c7b1-48e3-8c2e-8cd9f9347f1b?api-version=2021-08-01
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-async-operation-timeout:
+      - PT1H
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14999'
+      x-ms-return-client-request-id:
+      - 'true'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - disk-pool delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group -y
+      User-Agent:
+      - AZURECLI/2.29.1 azsdk-python-mgmt-storagepool/1.0.0b1 Python/3.9.6 (Windows-10-10.0.19043-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.StoragePool/locations/westeurope/operationsStatus/4717ac3a-c7b1-48e3-8c2e-8cd9f9347f1b?api-version=2021-08-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/locations/westeurope/operationStatus/4717ac3a-c7b1-48e3-8c2e-8cd9f9347f1b","name":"4717ac3a-c7b1-48e3-8c2e-8cd9f9347f1b","status":"Running","startTime":"2021-10-22T10:17:02Z","endTime":""}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '247'
+      content-security-policy:
+      - default-src 'self'; frame-ancestors 'none'
+      content-type:
+      - application/json; charset=UTF-8
+      date:
+      - Fri, 22 Oct 2021 10:17:13 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-return-client-request-id:
+      - 'true'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - disk-pool delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group -y
+      User-Agent:
+      - AZURECLI/2.29.1 azsdk-python-mgmt-storagepool/1.0.0b1 Python/3.9.6 (Windows-10-10.0.19043-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.StoragePool/locations/westeurope/operationsStatus/4717ac3a-c7b1-48e3-8c2e-8cd9f9347f1b?api-version=2021-08-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/locations/westeurope/operationStatus/4717ac3a-c7b1-48e3-8c2e-8cd9f9347f1b","name":"4717ac3a-c7b1-48e3-8c2e-8cd9f9347f1b","status":"Succeeded","startTime":"2021-10-22T10:17:02Z","endTime":"2021-10-22T10:17:19Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '269'
+      content-security-policy:
+      - default-src 'self'; frame-ancestors 'none'
+      content-type:
+      - application/json; charset=UTF-8
+      date:
+      - Fri, 22 Oct 2021 10:17:43 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-return-client-request-id:
+      - 'true'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - disk-pool list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group
+      User-Agent:
+      - AZURECLI/2.29.1 azsdk-python-mgmt-storagepool/1.0.0b1 Python/3.9.6 (Windows-10-10.0.19043-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.StoragePool/diskPools?api-version=2021-08-01
+  response:
+    body:
+      string: '{"value":[]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '12'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 22 Oct 2021 10:17:45 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+version: 1

@@ -8,7 +8,7 @@
 from codecs import open
 from setuptools import setup, find_packages
 
-VERSION = "1.1.0"
+VERSION = "2.1.0"
 
 CLASSIFIERS = [
     'Development Status :: 4 - Beta',
@@ -19,6 +19,7 @@ CLASSIFIERS = [
     'Programming Language :: Python :: 3.4',
     'Programming Language :: Python :: 3.5',
     'Programming Language :: Python :: 3.6',
+    'Programming Language :: Python :: 3.7',
     'License :: OSI Approved :: MIT License',
 ]
 
@@ -40,7 +41,7 @@ setup(
     author_email='ilidemi@microsoft.com',
     maintainer='Azure Resource Graph',
     maintainer_email='earc@microsoft.com',
-    url='https://github.com/Azure/azure-cli-extensions/tree/master/src/resource-graph',
+    url='https://github.com/Azure/azure-cli-extensions/tree/main/src/resource-graph',
     classifiers=CLASSIFIERS,
     packages=find_packages(exclude=["tests"]),
     package_data={'azext_resourcegraph': ['azext_metadata.json']},

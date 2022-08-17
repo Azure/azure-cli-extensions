@@ -15,30 +15,27 @@ interactions:
       Content-Length:
       - '177'
       Content-Type:
-      - application/json; charset=utf-8
+      - application/json
       ParameterSetName:
       - -g -n --location --quota --level --sku
       User-Agent:
-      - python/3.8.5 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
-        azure-mgmt-loganalytics/0.7.0 Azure-SDK-For-Python AZURECLI/2.17.0
-      accept-language:
-      - en-US
+      - AZURECLI/2.19.1 azsdk-python-mgmt-loganalytics/8.0.0 Python/3.8.5 (Windows-10-10.0.19041-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_log_analytics000001/providers/Microsoft.OperationalInsights/workspaces/clitest000002?api-version=2020-03-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_log_analytics000001/providers/Microsoft.OperationalInsights/workspaces/clitest000002?api-version=2020-08-01
   response:
     body:
       string: "{\r\n  \"properties\": {\r\n    \"source\": \"Azure\",\r\n    \"customerId\":
-        \"fad18499-958d-48d0-ae36-0bece90e1f50\",\r\n    \"provisioningState\": \"Creating\",\r\n
+        \"514eb233-d846-49be-8715-84e2a9244560\",\r\n    \"provisioningState\": \"Creating\",\r\n
         \   \"sku\": {\r\n      \"name\": \"capacityreservation\",\r\n      \"capacityReservationLevel\":
         100,\r\n      \"maxCapacityReservationLevel\": 3000,\r\n      \"lastSkuUpdate\":
-        \"Wed, 30 Dec 2020 10:22:17 GMT\"\r\n    },\r\n    \"retentionInDays\": 30,\r\n
+        \"Tue, 23 Feb 2021 07:07:52 GMT\"\r\n    },\r\n    \"retentionInDays\": 30,\r\n
         \   \"features\": {\r\n      \"legacy\": 0,\r\n      \"searchVersion\": 1,\r\n
         \     \"enableLogAccessUsingOnlyResourcePermissions\": true\r\n    },\r\n
         \   \"workspaceCapping\": {\r\n      \"dailyQuotaGb\": -1.0,\r\n      \"quotaNextResetTime\":
-        \"Thu, 31 Dec 2020 09:00:00 GMT\",\r\n      \"dataIngestionStatus\": \"RespectQuota\"\r\n
+        \"Wed, 24 Feb 2021 06:00:00 GMT\",\r\n      \"dataIngestionStatus\": \"RespectQuota\"\r\n
         \   },\r\n    \"publicNetworkAccessForIngestion\": \"Enabled\",\r\n    \"publicNetworkAccessForQuery\":
-        \"Enabled\",\r\n    \"createdDate\": \"Wed, 30 Dec 2020 10:22:17 GMT\",\r\n
-        \   \"modifiedDate\": \"Wed, 30 Dec 2020 10:22:17 GMT\"\r\n  },\r\n  \"id\":
+        \"Enabled\",\r\n    \"createdDate\": \"Tue, 23 Feb 2021 07:07:52 GMT\",\r\n
+        \   \"modifiedDate\": \"Tue, 23 Feb 2021 07:07:52 GMT\"\r\n  },\r\n  \"id\":
         \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_log_analytics000001/providers/microsoft.operationalinsights/workspaces/clitest000002\",\r\n
         \ \"name\": \"clitest000002\",\r\n  \"type\": \"Microsoft.OperationalInsights/workspaces\",\r\n
         \ \"location\": \"eastus\"\r\n}"
@@ -50,7 +47,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Wed, 30 Dec 2020 10:22:19 GMT
+      - Tue, 23 Feb 2021 07:07:53 GMT
       pragma:
       - no-cache
       server:
@@ -72,7 +69,7 @@ interactions:
     body: null
     headers:
       Accept:
-      - application/json
+      - '*/*'
       Accept-Encoding:
       - gzip, deflate
       CommandName:
@@ -82,24 +79,23 @@ interactions:
       ParameterSetName:
       - -g -n --location --quota --level --sku
       User-Agent:
-      - python/3.8.5 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
-        azure-mgmt-loganalytics/0.7.0 Azure-SDK-For-Python AZURECLI/2.17.0
+      - AZURECLI/2.19.1 azsdk-python-mgmt-loganalytics/8.0.0 Python/3.8.5 (Windows-10-10.0.19041-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_log_analytics000001/providers/Microsoft.OperationalInsights/workspaces/clitest000002?api-version=2020-03-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_log_analytics000001/providers/Microsoft.OperationalInsights/workspaces/clitest000002?api-version=2020-08-01
   response:
     body:
       string: "{\r\n  \"properties\": {\r\n    \"source\": \"Azure\",\r\n    \"customerId\":
-        \"fad18499-958d-48d0-ae36-0bece90e1f50\",\r\n    \"provisioningState\": \"Succeeded\",\r\n
+        \"514eb233-d846-49be-8715-84e2a9244560\",\r\n    \"provisioningState\": \"Succeeded\",\r\n
         \   \"sku\": {\r\n      \"name\": \"capacityreservation\",\r\n      \"capacityReservationLevel\":
         100,\r\n      \"maxCapacityReservationLevel\": 3000,\r\n      \"lastSkuUpdate\":
-        \"Wed, 30 Dec 2020 10:22:17 GMT\"\r\n    },\r\n    \"retentionInDays\": 30,\r\n
+        \"Tue, 23 Feb 2021 07:07:52 GMT\"\r\n    },\r\n    \"retentionInDays\": 30,\r\n
         \   \"features\": {\r\n      \"legacy\": 0,\r\n      \"searchVersion\": 1,\r\n
         \     \"enableLogAccessUsingOnlyResourcePermissions\": true\r\n    },\r\n
         \   \"workspaceCapping\": {\r\n      \"dailyQuotaGb\": 1.0,\r\n      \"quotaNextResetTime\":
-        \"Thu, 31 Dec 2020 09:00:00 GMT\",\r\n      \"dataIngestionStatus\": \"RespectQuota\"\r\n
+        \"Wed, 24 Feb 2021 06:00:00 GMT\",\r\n      \"dataIngestionStatus\": \"RespectQuota\"\r\n
         \   },\r\n    \"publicNetworkAccessForIngestion\": \"Enabled\",\r\n    \"publicNetworkAccessForQuery\":
-        \"Enabled\",\r\n    \"createdDate\": \"Wed, 30 Dec 2020 10:22:17 GMT\",\r\n
-        \   \"modifiedDate\": \"Wed, 30 Dec 2020 10:22:18 GMT\"\r\n  },\r\n  \"id\":
+        \"Enabled\",\r\n    \"createdDate\": \"Tue, 23 Feb 2021 07:07:52 GMT\",\r\n
+        \   \"modifiedDate\": \"Tue, 23 Feb 2021 07:07:53 GMT\"\r\n  },\r\n  \"id\":
         \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_log_analytics000001/providers/microsoft.operationalinsights/workspaces/clitest000002\",\r\n
         \ \"name\": \"clitest000002\",\r\n  \"type\": \"Microsoft.OperationalInsights/workspaces\",\r\n
         \ \"location\": \"eastus\"\r\n}"
@@ -111,7 +107,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Wed, 30 Dec 2020 10:22:50 GMT
+      - Tue, 23 Feb 2021 07:08:24 GMT
       pragma:
       - no-cache
       server:
@@ -147,7 +143,7 @@ interactions:
       User-Agent:
       - python/3.8.5 (Windows-10-10.0.19041-SP0) msrest/0.6.18 azure-loganalytics/0.1.0
     method: POST
-    uri: https://api.loganalytics.io/v1/workspaces/fad18499-958d-48d0-ae36-0bece90e1f50/query
+    uri: https://api.loganalytics.io/v1/workspaces/514eb233-d846-49be-8715-84e2a9244560/query
   response:
     body:
       string: '{"tables":[{"name":"getschema","columns":[{"name":"ColumnName","type":"string"},{"name":"ColumnOrdinal","type":"int"},{"name":"DataType","type":"string"},{"name":"ColumnType","type":"string"}],"rows":[["TenantId",0,"System.String","string"],["SourceSystem",1,"System.String","string"],["TimeGenerated",2,"System.DateTime","datetime"],["MG",3,"System.String","string"],["ManagementGroupName",4,"System.String","string"],["SourceComputerId",5,"System.String","string"],["ComputerIP",6,"System.String","string"],["Computer",7,"System.String","string"],["Category",8,"System.String","string"],["OSType",9,"System.String","string"],["OSName",10,"System.String","string"],["OSMajorVersion",11,"System.String","string"],["OSMinorVersion",12,"System.String","string"],["Version",13,"System.String","string"],["SCAgentChannel",14,"System.String","string"],["IsGatewayInstalled",15,"System.SByte","bool"],["RemoteIPLongitude",16,"System.Double","real"],["RemoteIPLatitude",17,"System.Double","real"],["RemoteIPCountry",18,"System.String","string"],["SubscriptionId",19,"System.String","string"],["ResourceGroup",20,"System.String","string"],["ResourceProvider",21,"System.String","string"],["Resource",22,"System.String","string"],["ResourceId",23,"System.String","string"],["ResourceType",24,"System.String","string"],["ComputerEnvironment",25,"System.String","string"],["Solutions",26,"System.String","string"],["VMUUID",27,"System.String","string"],["Type",28,"System.String","string"],["_ResourceId",29,"System.String","string"]]}]}'
@@ -163,7 +159,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 30 Dec 2020 10:22:53 GMT
+      - Tue, 23 Feb 2021 07:08:29 GMT
       strict-transport-security:
       - max-age=15724800; includeSubDomains
       transfer-encoding:
@@ -171,7 +167,7 @@ interactions:
       vary:
       - Accept-Encoding
       via:
-      - 1.1 draft-oms-7d684489b6-hfrdr
+      - 1.1 draft-oms-c6dfd9d4c-h6h7p
       x-content-type-options:
       - nosniff
     status:

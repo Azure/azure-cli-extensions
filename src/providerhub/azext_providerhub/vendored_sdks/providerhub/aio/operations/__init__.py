@@ -8,7 +8,7 @@
 
 from ._custom_rollouts_operations import CustomRolloutsOperations
 from ._default_rollouts_operations import DefaultRolloutsOperations
-from ._providerhub_operations import ProviderhubOperationsMixin
+from ._provider_hub_operations import ProviderHubOperationsMixin
 from ._notification_registrations_operations import NotificationRegistrationsOperations
 from ._operations import Operations
 from ._provider_registrations_operations import ProviderRegistrationsOperations
@@ -19,7 +19,7 @@ from ._skus_operations import SkusOperations
 __all__ = [
     'CustomRolloutsOperations',
     'DefaultRolloutsOperations',
-    'ProviderhubOperationsMixin',
+    'ProviderHubOperationsMixin',
     'NotificationRegistrationsOperations',
     'Operations',
     'ProviderRegistrationsOperations',

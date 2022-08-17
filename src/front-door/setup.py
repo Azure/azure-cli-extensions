@@ -8,7 +8,7 @@
 from codecs import open
 from setuptools import setup, find_packages
 
-VERSION = "1.0.10"
+VERSION = "1.0.16"
 
 CLASSIFIERS = [
     'Development Status :: 4 - Beta',
@@ -24,6 +24,11 @@ CLASSIFIERS = [
 
 DEPENDENCIES = []
 
+with open('readme.md', 'r', encoding='utf-8') as f:
+    README = f.read()
+with open('HISTORY.rst', 'r', encoding='utf-8') as f:
+    HISTORY = f.read()
+
 setup(
     name='front-door',
     version=VERSION,
@@ -31,7 +36,8 @@ setup(
     license='MIT',
     author='Microsoft Corporation',
     author_email='azpycli@microsoft.com',
-    url='https://github.com/Azure/azure-cli-extensions/tree/master/src/front-door',
+    url='https://github.com/Azure/azure-cli-extensions/tree/main/src/front-door',
+    long_description=README + '\n\n' + HISTORY,
     classifiers=CLASSIFIERS,
     package_data={'azext_front_door': ['azext_metadata.json']},
     packages=find_packages(),
