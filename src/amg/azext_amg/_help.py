@@ -33,6 +33,11 @@ helps['grafana show'] = """
     short-summary: Show details of a Azure Managed Grafana instance.
 """
 
+helps['grafana update'] = """
+    type: command
+    short-summary: Update a Azure Managed Grafana instance.
+"""
+
 helps['grafana data-source'] = """
     type: group
     short-summary: Commands to manage data sources of an instance.
@@ -254,4 +259,24 @@ helps['grafana user list'] = """
 helps['grafana user show'] = """
     type: command
     short-summary: show detail of a user.
+"""
+
+helps['grafana api-key'] = """
+    type: group
+    short-summary: Commands to manage api keys.
+"""
+
+helps['grafana api-key create'] = """
+    type: command
+    short-summary: create a new api key.
+"""
+
+helps['grafana api-key list'] = """
+    type: command
+    short-summary: list existing api keys.
+"""
+
+helps['grafana api-key delete'] = """
+    type: command
+    short-summary: delete an api key.
 """

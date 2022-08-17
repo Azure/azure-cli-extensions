@@ -3,6 +3,16 @@
 Release History
 ===============
 
+1.2.0
+++++++
+* Add communication chat command group in preview mode.
+* Add communication identity command group in preview mode.
+* Deprecate 'identity issue-access-token' for 'identity token issue'
+* Deprecate 'sms sens-sms' for 'sms send'
+* Deprecate 'phonenumbers show-phonenumber' for 'phonenumber show'
+* Deprecate 'phonenumbers list-phonenumbers' for 'phonenumber list'
+
+
 1.1.2
 ++++++
 * Add support for multiple SMS recipients.

@@ -75,6 +75,7 @@ from azext_aks_preview._validators import (
     validate_acr,
     validate_addon,
     validate_addons,
+    validate_agent_pool_name,
     validate_apiserver_subnet_id,
     validate_assign_identity,
     validate_assign_kubelet_identity,
@@ -436,6 +437,8 @@ def load_arguments(self, _):
 
     with self.argument_context('aks nodepool') as c:
         c.argument('cluster_name', help='The cluster name.')
+        # the following argument is declared for the wait command
+        c.argument('agent_pool_name', options_list=['--nodepool-name', '--agent-pool-name'], validator=validate_agent_pool_name, help='The node pool name.')
 
     for sub_command in ['add', 'update', 'upgrade', 'scale', 'show', 'list', 'delete']:
         with self.argument_context('aks nodepool ' + sub_command) as c:
@@ -712,12 +715,12 @@ def load_arguments(self, _):
             c.argument('role_binding_name', options_list=[
                        '--name', '-n'], required=True, help='The role binding name.')
 
-    for scope in ['aks trustedaccess rolebinding create', 'aks trustedaccess rolebinding update']:
-        with self.argument_context(scope) as c:
-            c.argument('roles', nargs='*',
-                       help='space-separated roles: Microsoft.Demo/samples/reader Microsoft.Demo/samples/writer ...')
-            c.argument('source_resource_id', options_list=['--source-resource-id', '-s'],
-                       help='The source resource id of the binding')
+    with self.argument_context('aks trustedaccess rolebinding create') as c:
+        c.argument('roles', nargs='*', help='space-separated roles: Microsoft.Demo/samples/reader Microsoft.Demo/samples/writer ...')
+        c.argument('source_resource_id', options_list=['--source-resource-id', '-s'], help='The source resource id of the binding')
+
+    with self.argument_context('aks trustedaccess rolebinding update') as c:
+        c.argument('roles', nargs='*', help='space-separated roles: Microsoft.Demo/samples/reader Microsoft.Demo/samples/writer ...')
 
 
 def _get_default_install_location(exe_name):
