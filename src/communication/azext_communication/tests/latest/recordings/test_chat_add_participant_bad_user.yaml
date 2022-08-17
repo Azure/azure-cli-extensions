@@ -1,0 +1,194 @@
+interactions:
+- request:
+    body: '{"createTokenWithScopes": ["chat"]}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '35'
+      Content-Type:
+      - application/json
+      User-Agent:
+      - azsdk-python-communication-identity/1.1.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+      x-ms-content-sha256:
+      - kWpGozyV35fifbpKdY8mbdG64VG0Pdq5upzo7YKAFM0=
+      x-ms-date:
+      - Tue, 16 Aug 2022 09:49:59 GMT
+      x-ms-return-client-request-id:
+      - 'true'
+    method: POST
+    uri: https://sanitized.communication.azure.com/identities?api-version=2022-06-01
+  response:
+    body:
+      string: '{"identity": {"id": "sanitized"}, "accessToken": {"token": "sanitized",
+        "expiresOn": "2022-08-17T09:50:01.7960868+00:00"}}'
+    headers:
+      api-supported-versions:
+      - 2020-07-20-preview2, 2021-02-22-preview1, 2021-03-07, 2021-10-31-preview,
+        2021-11-01, 2022-06-01
+      connection:
+      - keep-alive
+      content-length:
+      - '122'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 16 Aug 2022 09:50:01 GMT
+      ms-cv:
+      - NFWG7AE5QU6Ft4Dpgrp08A.0
+      request-context:
+      - appId=
+      strict-transport-security:
+      - max-age=2592000
+      x-azure-ref:
+      - 20220816T095001Z-ue5bcnvs3t2n5ee38b8kwchyq400000000dg000000009xg7
+      x-cache:
+      - CONFIG_NOCACHE
+      x-processing-time:
+      - 120ms
+    status:
+      code: 201
+      message: Created
+- request:
+    body: '{"topic": "chat-topic", "participants": []}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '43'
+      Content-Type:
+      - application/json
+      User-Agent:
+      - azsdk-python-communication-chat/1.1.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+      repeatability-request-id:
+      - 3e8e8614-9b47-4033-8c52-8585877e2504
+    method: POST
+    uri: https://sanitized.communication.azure.com/chat/threads?api-version=2021-09-07
+  response:
+    body:
+      string: '{"chatThread": {"id": "sanitized", "topic": "chat-topic", "createdOn":
+        "2022-08-16T09:50:02Z", "createdByCommunicationIdentifier": {"rawId": "sanitized",
+        "communicationUser": {"id": "sanitized"}}}}'
+    headers:
+      api-supported-versions:
+      - 2021-03-07, 2021-04-05-preview6, 2021-09-07, 2022-11-15-preview8
+      connection:
+      - keep-alive
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 16 Aug 2022 09:50:02 GMT
+      location:
+      - https://clitest000002.communication.azure.com/chat/threads/19%3AljMjuiP-Rqo10MByM7aOuQQ5nu2K3KuQuSfZegxgfkQ1@thread.v2
+      ms-cv:
+      - 6YlBDJLdpUCYvjwlPGctLg.0
+      strict-transport-security:
+      - max-age=2592000
+      transfer-encoding:
+      - chunked
+      x-azure-ref:
+      - 20220816T095002Z-p18hf8s3dx4xf8cgexx53pe93400000000dg000000004v6e
+      x-cache:
+      - CONFIG_NOCACHE
+      x-processing-time:
+      - 649ms
+    status:
+      code: 201
+      message: Created
+- request:
+    body: '{"participants": [{"communicationIdentifier": {"communicationUser": {"id":
+      "8:acs:00000000-1111-2222-3333-444444444444_55555555-6666-7777-8888-999999999999"}}}]}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '161'
+      Content-Type:
+      - application/json
+      User-Agent:
+      - azsdk-python-communication-chat/1.1.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+    method: POST
+    uri: https://sanitized.communication.azure.com/chat/threads/sanitized/participants/:add?api-version=2021-09-07
+  response:
+    body:
+      string: '{"invalidParticipants": [{"code": "403", "message": "Permissions check
+        failed", "target": "8:acs:00000000-1111-2222-3333-444444444444_55555555-6666-7777-8888-999999999999"}]}'
+    headers:
+      api-supported-versions:
+      - 2021-03-07, 2021-04-05-preview6, 2021-09-07, 2022-11-15-preview8
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 16 Aug 2022 09:50:02 GMT
+      ms-cv:
+      - bE+G+thWwEewZJ/G2XBK+w.0
+      strict-transport-security:
+      - max-age=2592000
+      transfer-encoding:
+      - chunked
+      x-azure-ref:
+      - 0S2j7YgAAAAA860Xr7NzwSaWgnSaX78ZCWVZSMzExMDAwMTE1MDM3ADlmYzdiNTE5LWE4Y2MtNGY4OS05MzVlLWM5MTQ4YWUwOWU4MQ==
+      x-cache:
+      - CONFIG_NOCACHE
+      x-processing-time:
+      - 187ms
+    status:
+      code: 201
+      message: Created
+- request:
+    body: '{"participants": [{"communicationIdentifier": {"communicationUser": {"id":
+      "8:acs:fakeid==="}}}]}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '97'
+      Content-Type:
+      - application/json
+      User-Agent:
+      - azsdk-python-communication-chat/1.1.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+    method: POST
+    uri: https://sanitized.communication.azure.com/chat/threads/sanitized/participants/:add?api-version=2021-09-07
+  response:
+    body:
+      string: '{"CommunicationError": {"Code": "BadRequest", "Message": "Identifier
+        format is invalid (8:acs:fakeid===).", "Details": []}}'
+    headers:
+      api-supported-versions:
+      - 2021-03-07, 2021-04-05-preview6, 2021-09-07, 2022-11-15-preview8
+      content-type:
+      - application/json
+      date:
+      - Tue, 16 Aug 2022 09:50:04 GMT
+      ms-cv:
+      - zCWTru5f1EukHH1ZGiCyOg.0
+      strict-transport-security:
+      - max-age=2592000
+      transfer-encoding:
+      - chunked
+      x-azure-ref:
+      - 0TGj7YgAAAADeYbo/B6rxRK2DKtYIx0ktWVZSMzExMDAwMTE2MDMxADlmYzdiNTE5LWE4Y2MtNGY4OS05MzVlLWM5MTQ4YWUwOWU4MQ==
+      x-cache:
+      - CONFIG_NOCACHE
+      x-processing-time:
+      - 22ms
+    status:
+      code: 400
+      message: Bad Request
+version: 1
