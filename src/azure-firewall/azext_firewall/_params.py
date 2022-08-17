@@ -80,6 +80,18 @@ def load_arguments(self, _):
         c.argument('dns_servers', nargs='+', help='Space-separated list of DNS server IP addresses')
         c.argument('enable_dns_proxy', arg_type=get_three_state_flag(), help='Enable DNS Proxy')
 
+    with self.argument_context('network firewall', arg_group="Data Traffic IP Configuration") as c:
+        c.argument('virtual_network_name', virtual_network_name_type,
+                   help='The virtual network (VNet) name. It should contain one subnet called "AzureFirewallSubnet".')
+        c.argument('conf_name', help='Name of the IP configuration.')
+        c.argument('public_ip', help='Name or ID of the public IP to use.')
+
+    with self.argument_context('network firewall', arg_group="Management IP Configuration") as c:
+        c.argument('management_conf_name', options_list=['--m-conf-name'],
+                   help='Name of the management IP configuration.')
+        c.argument('management_public_ip', options_list=['--m-public-ip'],
+                   help='Name or ID of the public IP to use for management IP configuration.')
+
     with self.argument_context('network firewall threat-intel-allowlist') as c:
         c.argument('ip_addresses', nargs='+', validator=process_threat_intel_allowlist_ip_addresses, help='Space-separated list of IPv4 addresses.')
         c.argument('fqdns', nargs='+', validator=process_threat_intel_allowlist_fqdns, help='Space-separated list of FQDNs.')

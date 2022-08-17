@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.3.2
+++++++++++++++++++
+* Create identity for Appliances clusters
+
 1.3.1
 ++++++++++++++++++
 * microsoft.azureml.kubernetes: Always show TSG link for AzureMLKubernetes extension at the head.

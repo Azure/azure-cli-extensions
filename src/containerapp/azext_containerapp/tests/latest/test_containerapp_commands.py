@@ -559,3 +559,58 @@ class ContainerappRevisionTests(ScenarioTest):
         traffic_weight = self.cmd(f"containerapp ingress traffic show -g {resource_group} -n {ca_name}").get_output_in_json()
 
         self.assertEqual(len([w for w in traffic_weight if "label" in w]), 0)
+
+
+class ContainerappRegistryIdentityTests(ScenarioTest):
+    @AllowLargeResponse(8192)
+    @ResourceGroupPreparer(location="westeurope")
+    @live_only()  # encounters 'CannotOverwriteExistingCassetteException' only when run from recording (passes when run live)
+    def test_containerapp_registry_identity_user(self, resource_group):
+        import requests
+
+        env = self.create_random_name(prefix='env', length=24)
+        app = self.create_random_name(prefix='aca', length=24)
+        identity = self.create_random_name(prefix='id', length=24)
+        acr = self.create_random_name(prefix='acr', length=24)
+        image_source = "mcr.microsoft.com/azuredocs/containerapps-helloworld:latest"
+        image_name = f"{acr}.azurecr.io/azuredocs/containerapps-helloworld:latest"
+
+        self.cmd(f'containerapp env create -g {resource_group} -n {env}')
+
+        identity_rid = self.cmd(f'identity create -g {resource_group} -n {identity}').get_output_in_json()["id"]
+
+        self.cmd(f'acr create --sku basic -n {acr} -g {resource_group} --admin-enabled')
+        self.cmd(f'acr import -n {acr} --source {image_source}')
+
+        self.cmd(f'containerapp create -g {resource_group} -n {app} --registry-identity {identity_rid} --image {image_name} --ingress external --target-port 80 --environment {env}')
+
+        url = self.cmd(f'containerapp show -g {resource_group} -n {app}').get_output_in_json()["properties"]["configuration"]["ingress"]["fqdn"]
+        url = f"https://{url}"
+        resp = requests.get(url)
+        self.assertTrue(resp.ok)
+        self.assertEqual(resp.status_code, 200)
+
+    @AllowLargeResponse(8192)
+    @ResourceGroupPreparer(location="westeurope")
+    @live_only()  # encounters 'CannotOverwriteExistingCassetteException' only when run from recording (passes when run live)
+    def test_containerapp_registry_identity_system(self, resource_group):
+        import requests
+
+        env = self.create_random_name(prefix='env', length=24)
+        app = self.create_random_name(prefix='aca', length=24)
+        acr = self.create_random_name(prefix='acr', length=24)
+        image_source = "mcr.microsoft.com/azuredocs/containerapps-helloworld:latest"
+        image_name = f"{acr}.azurecr.io/azuredocs/containerapps-helloworld:latest"
+
+        self.cmd(f'containerapp env create -g {resource_group} -n {env}')
+
+        self.cmd(f'acr create --sku basic -n {acr} -g {resource_group} --admin-enabled')
+        self.cmd(f'acr import -n {acr} --source {image_source}')
+
+        self.cmd(f'containerapp create -g {resource_group} -n {app} --registry-identity "system" --image {image_name} --ingress external --target-port 80 --environment {env}')
+
+        url = self.cmd(f'containerapp show -g {resource_group} -n {app}').get_output_in_json()["properties"]["configuration"]["ingress"]["fqdn"]
+        url = f"https://{url}"
+        resp = requests.get(url)
+        self.assertTrue(resp.ok)
+        self.assertEqual(resp.status_code, 200)
