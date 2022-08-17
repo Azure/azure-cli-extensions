@@ -1435,7 +1435,7 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         :return: bool
         """
         # Read the original value passed by the command.
-        disable_node_restriction= self.raw_param.get("disable_node_restriction")
+        disable_node_restriction = self.raw_param.get("disable_node_restriction")
 
         # This option is not supported in create mode, hence we do not read the property value from the `mc` object.
         # This parameter does not need dynamic completion.
@@ -1456,6 +1456,7 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         :return: bool
         """
         return self._get_disable_node_restriction(enable_validation=True)
+
 
 class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
     def __init__(
@@ -2140,7 +2141,6 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
             mc.security_profile.node_restriction.enabled = False
 
         return mc
-
 
     def update_mc_profile_preview(self) -> ManagedCluster:
         """The overall controller used to update the preview ManagedCluster profile.
