@@ -412,11 +412,8 @@ def __create_identity(cmd, resource_group_name, cluster_name, cluster_type, clus
     subscription_id = get_subscription_id(cmd.cli_ctx)
     resources = cf_resources(cmd.cli_ctx, subscription_id)
 
-    # We do not create any identities for managedClusters or appliances
-    if (
-        cluster_type.lower() == consts.MANAGED_CLUSTER_TYPE
-        or cluster_type.lower() == consts.APPLIANCE_TYPE
-    ):
+    # We do not create any identities for managedClusters
+    if cluster_type.lower() == consts.MANAGED_CLUSTER_TYPE:
         return None, None
 
     cluster_rp, parent_api_version = get_cluster_rp_api_version(cluster_type=cluster_type, cluster_rp=cluster_rp)
