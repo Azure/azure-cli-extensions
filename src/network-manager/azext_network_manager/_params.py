@@ -9,7 +9,6 @@
 # --------------------------------------------------------------------------
 # pylint: disable=too-many-lines
 # pylint: disable=too-many-statements
-from azext_network_manager._validators import validate_network_manager
 from azure.cli.core.commands.parameters import (
     tags_type,
     get_three_state_flag,
