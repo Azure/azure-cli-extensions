@@ -11,6 +11,10 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
+
+0.5.94
+++++++
+
 * [BREAKING CHANGE] Since the service no longer supports updating source resource id for role binding, so remove --source-resource-id of `aks trustedaccess rolebinding update` command.
 * Change the acceptable values of the `--roles` option to comma-seperated.
     * az aks trustedaccess rolebinding create
