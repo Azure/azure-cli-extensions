@@ -2238,7 +2238,8 @@ def aks_trustedaccess_role_binding_update(cmd, client, resource_group_name, clus
     )
     existedBinding = client.get(resource_group_name, cluster_name, role_binding_name)
 
-    roleBinding = TrustedAccessRoleBinding(source_resource_id=existedBinding.source_resource_id, roles=roles)
+    roleList = roles.split(',')
+    roleBinding = TrustedAccessRoleBinding(source_resource_id=existedBinding.source_resource_id, roles=roleList)
     return client.create_or_update(resource_group_name, cluster_name, role_binding_name, roleBinding)
 
 
