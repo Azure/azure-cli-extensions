@@ -61,6 +61,9 @@ helps['fleet get-credentials'] = """
     - name: --overwrite-existing
       type: bool
       short-summary: Overwrite any existing cluster entry with the same name.
+    - name: --file -f
+      type: string
+      short-summary: Kubernetes configuration file to update. Use "-" to print YAML to stdout instead.
 """
 
 helps['fleet member'] = """

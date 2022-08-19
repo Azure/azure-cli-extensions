@@ -7,7 +7,7 @@ from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
 
 class FleetScenarioTest(ScenarioTest):
 
-    @ResourceGroupPreparer(name_prefix='fleet-cli-', location='centraluseuap', random_name_length=15)
+    @ResourceGroupPreparer(name_prefix='fleet-cli-', random_name_length=15)
     def test_fleet(self):
 
         self.kwargs.update({
