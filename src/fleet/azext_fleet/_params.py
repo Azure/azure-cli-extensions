@@ -23,12 +23,16 @@ def load_arguments(self, _):
         c.argument('tags', tags_type)
         c.argument('dns_name_prefix', options_list=['--dns-name-prefix', '-p'])
     
-    with self.argument_context('fleet credentials list') as c:
+    with self.argument_context('fleet patch') as c:
+        c.argument('tags', tags_type)
+    
+    with self.argument_context('fleet get-credentials') as c:
         c.argument('context_name', options_list=['--context'], help='If specified, overwrite the default context name.')
         c.argument('path', options_list=['--file', '-f'], type=file_type, completer=FilesCompleter(), default=os.path.join(os.path.expanduser('~'), '.kube', 'config'))
 
     with self.argument_context('fleet member') as c:
-        c.argument('member_name', help='Specify a member name. Default value is name of the managed cluster.', completer=get_resource_name_completion_list('Microsoft.ContainerService/ManagedClusters'))
+        c.argument('name', options_list=['--name', '-n'], help='Specify the fleet member name.')
+        c.argument('fleet_name', help='Specify the fleet name.')
 
     with self.argument_context('fleet member join') as c:
         c.argument('member_cluster_id', validator=validate_member_cluster_id)
