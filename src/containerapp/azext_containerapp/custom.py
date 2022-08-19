@@ -53,6 +53,7 @@ from ._models import (
     ContainerAppCertificateEnvelope as ContainerAppCertificateEnvelopeModel,
     ContainerAppCustomDomain as ContainerAppCustomDomainModel,
     AzureFileProperties as AzureFilePropertiesModel)
+from ._up_utils import validate_environment_location
 from ._utils import (_validate_subscription_registered, _get_location_from_resource_group, _ensure_location_allowed,
                      parse_secret_flags, store_as_secret_and_return_secret_ref, parse_env_var_flags,
                      _generate_log_analytics_if_not_provided, _get_existing_secrets, _convert_object_from_snake_to_camel_case,
@@ -917,7 +918,7 @@ def create_managed_environment(cmd,
         else:
             location = vnet_location
 
-    location = location or _get_location_from_resource_group(cmd.cli_ctx, resource_group_name)
+    location = validate_environment_location(cmd, location)
 
     register_provider_if_needed(cmd, CONTAINER_APPS_RP)
     _ensure_location_allowed(cmd, location, CONTAINER_APPS_RP, "managedEnvironments")

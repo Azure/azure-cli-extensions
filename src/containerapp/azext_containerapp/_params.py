@@ -6,11 +6,9 @@
 
 from knack.arguments import CLIArgumentType
 
-from azure.cli.core.commands.validators import get_default_location_from_resource_group
 from azure.cli.core.commands.parameters import (resource_group_name_type, get_location_type,
                                                 file_type,
                                                 get_three_state_flag, get_enum_type, tags_type)
-# from azure.cli.core.commands.validators import get_default_location_from_resource_group
 
 from ._validators import (validate_memory, validate_cpu, validate_managed_env_name_or_id, validate_registry_server,
                           validate_registry_user, validate_registry_pass, validate_target_port, validate_ingress)
