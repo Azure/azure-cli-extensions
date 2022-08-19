@@ -570,7 +570,6 @@ def create_rules(cmd, cluster_region, cluster_subscription, cluster_resource_gro
             print("Successully deployed Node Recording rules")
             break
         except CLIError as e:
-            print(e)
             error = e
     else:
         raise error
@@ -645,6 +644,55 @@ def delete_dcra(cmd, cluster_region, cluster_subscription, cluster_resource_grou
     else:
         raise error
 
+def delete_rules(cmd, cluster_region, cluster_subscription, cluster_resource_group_name, cluster_name):
+    from azure.cli.core.util import send_raw_request
+
+    default_rule_group_name = "NodeRecordingRulesRuleGroup-{0}".format(cluster_name)
+    default_rule_group_id = "/subscriptions/{0}/resourceGroups/{1}/providers/Microsoft.AlertsManagement/prometheusRuleGroups/{2}".format(
+        cluster_subscription,
+        cluster_resource_group_name,
+        default_rule_group_name
+    )
+    url = "https://management.azure.com{0}?api-version={1}".format(
+        default_rule_group_id,
+        RULES_API
+    )
+
+    for _ in range(3):
+        try:
+            send_raw_request(cmd.cli_ctx, "DELETE", url)
+            error = None
+            print("Successully DELETED Node Recording rules")
+            break
+        except CLIError as e:
+            error = e
+    else:
+        raise error
+
+
+    default_rule_group_name = "KubernetesRecordingRulesRuleGroup-{0}".format(cluster_name)
+    default_rule_group_id = "/subscriptions/{0}/resourceGroups/{1}/providers/Microsoft.AlertsManagement/prometheusRuleGroups/{2}".format(
+        cluster_subscription,
+        cluster_resource_group_name,
+        default_rule_group_name
+    )
+    url = "https://management.azure.com{0}?api-version={1}".format(
+        default_rule_group_id,
+        RULES_API
+    )
+
+    for _ in range(3):
+        try:
+            send_raw_request(cmd.cli_ctx, "DELETE", url)
+            error = None
+            print("Successully DELETED Kubernetes Recording rules")
+            break
+        except CLIError as e:
+            error = e
+    else:
+        raise error
+
+
 def link_azure_monitor_profile_artifacts(cmd,
             cluster_subscription,
             cluster_resource_group_name,
@@ -694,6 +742,9 @@ def unlink_azure_monitor_profile_artifacts(cmd,
     # Remove DCRA link
     isSuccessfulDeletion = delete_dcra(cmd, cluster_region, cluster_subscription, cluster_resource_group_name, cluster_name)
     print("DCRA removal successful -> ", isSuccessfulDeletion)
+    
+    # Delete rules (Conflict({"error":{"code":"InvalidResourceLocation","message":"The resource 'NodeRecordingRulesRuleGroup-grace-cli-3' already exists in location 'eastus2' in resource group 'grace-cli-3'. A resource with the same name cannot be created in location 'eastus'. Please select a new resource name."}})
+    delete_rules(cmd, cluster_region, cluster_subscription, cluster_resource_group_name, cluster_name)
 
 # pylint: disable=too-many-locals,too-many-branches,too-many-statements,line-too-long
 def ensure_azure_monitor_profile_prerequisites(
