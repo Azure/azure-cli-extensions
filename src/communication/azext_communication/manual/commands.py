@@ -44,6 +44,8 @@ def load_command_table(self, _):
                                        deprecate_info=self.deprecate(redirect='show', hide=True))
 
     chat_arguments = ['endpoint', 'access_token']
+    self.command_group('communication chat', is_preview=True)
+
     # thread management
     with self.command_group('communication chat thread', client_factory=cf_communication_chat, is_preview=True) as g:
         g.communication_custom_command('list', 'communication_chat_list_threads', chat_arguments)
