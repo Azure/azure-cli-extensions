@@ -2218,14 +2218,27 @@ def aks_trustedaccess_role_binding_get(cmd, client, resource_group_name, cluster
     return client.get(resource_group_name, cluster_name, role_binding_name)
 
 
-def aks_trustedaccess_role_binding_create_or_update(cmd, client, resource_group_name, cluster_name, role_binding_name,
-                                                    source_resource_id, roles):
+def aks_trustedaccess_role_binding_create(cmd, client, resource_group_name, cluster_name, role_binding_name,
+                                          source_resource_id, roles):
     TrustedAccessRoleBinding = cmd.get_models(
         "TrustedAccessRoleBinding",
         resource_type=CUSTOM_MGMT_AKS_PREVIEW,
         operation_group="trusted_access_role_bindings",
     )
-    roleBinding = TrustedAccessRoleBinding(source_resource_id=source_resource_id, roles=roles)
+    roleList = roles.split(',')
+    roleBinding = TrustedAccessRoleBinding(source_resource_id=source_resource_id, roles=roleList)
+    return client.create_or_update(resource_group_name, cluster_name, role_binding_name, roleBinding)
+
+
+def aks_trustedaccess_role_binding_update(cmd, client, resource_group_name, cluster_name, role_binding_name, roles):
+    TrustedAccessRoleBinding = cmd.get_models(
+        "TrustedAccessRoleBinding",
+        resource_type=CUSTOM_MGMT_AKS_PREVIEW,
+        operation_group="trusted_access_role_bindings",
+    )
+    existedBinding = client.get(resource_group_name, cluster_name, role_binding_name)
+
+    roleBinding = TrustedAccessRoleBinding(source_resource_id=existedBinding.source_resource_id, roles=roles)
     return client.create_or_update(resource_group_name, cluster_name, role_binding_name, roleBinding)
 
 

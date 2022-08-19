@@ -21,6 +21,9 @@ helps['network firewall create'] = """
     - name: Create a Virtual WAN Secure Hub Firewall
       text: |
         az network firewall create -g MyResourceGroup -n MyFirewall --sku AZFW_Hub --tier Standard --virtual-hub MyVirtualHub1 --public-ip-count 1
+    - name: Create a Basic SKU Firewall with Management IP Configuration
+      text: |
+        az network firewall create -g MyResourceGroup -n MyFirewall --sku AZFW_VNet --tier Basic --vnet-name MyVNet --conf-name MyIpConfig --m-conf-name MyManagementIpConfig --m-public-ip MyPublicIp
 """
 
 helps['network firewall delete'] = """
@@ -405,6 +408,11 @@ helps['network firewall policy rule-collection-group collection add-filter-colle
     short-summary: Add a filter collection into an Azure firewall policy rule collection group.
     long-summary: |
         Common Rule Arguments are used for both Network rule and Application rule. If you want to add more rules into filter collection, please use "az network policy rule-collection-group collection rule add/remove"
+    parameters:
+      - name: --destination-ports
+        short-summary: Space-separated list of destination ports. This argument is supported for Nat and Network Rule.
+        long-summary: |
+            Notice: When the parameter --rule-name is 'network_rule', --destination-ports is required.
     examples:
         - name: Add a filter collection with Network rule into the rule collection group
           text: az network firewall policy rule-collection-group collection add-filter-collection -g {rg} --policy-name {policy} --rule-collection-group-name {collectiongroup}
