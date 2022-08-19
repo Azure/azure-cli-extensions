@@ -1837,7 +1837,7 @@ helps['aks trustedaccess rolebinding create'] = """
 
     examples:
         - name: Create a new trusted access role binding
-          text: az aks trustedaccess rolebinding create -g myResourceGroup --cluster-name myCluster -n bindingName -s /subscriptions/0000/resourceGroups/myResourceGroup/providers/Microsoft.Demo/samples --roles Microsoft.Demo/samples/reader Microsoft.Demo/samples/writer
+          text: az aks trustedaccess rolebinding create -g myResourceGroup --cluster-name myCluster -n bindingName -s /subscriptions/0000/resourceGroups/myResourceGroup/providers/Microsoft.Demo/samples --roles Microsoft.Demo/samples/reader,Microsoft.Demo/samples/writer
 """
 
 helps['aks trustedaccess rolebinding update'] = """
