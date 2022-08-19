@@ -1780,8 +1780,6 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         metriclabelsallowlist = self._AKSPreviewManagedClusterCreateDecorator__raw_parameters.get("metriclabelsallowlist")
         metricannotationsallowlist = self._AKSPreviewManagedClusterCreateDecorator__raw_parameters.get("metricannotationsallowlist")
 
-        print("REACHES HERE 2")
-
         # Validate Param
         metriclabelsallowlist = validate_ksm_parameter(metriclabelsallowlist)
         metricannotationsallowlist = validate_ksm_parameter(metricannotationsallowlist)

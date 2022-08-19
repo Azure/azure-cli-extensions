@@ -75,7 +75,7 @@ MapToClosestMACRegion = {
         "eastus2euap": "eastus2euap",
         "centraluseuap": "westeurope",
         "brazilsoutheast": "eastus"
-    }
+}
 
 AzureCloudLocationToOmsRegionCodeMap = {
         "australiasoutheast": "ASE",
@@ -111,7 +111,7 @@ AzureCloudLocationToOmsRegionCodeMap = {
         "switzerlandnorth": "CHN",
         "switzerlandwest": "CHW",
         "uaecentral": "AUH",
-    }
+}
 
 def validate_ksm_parameter(ksmparam):
     print("Calling validate_ksm_parameter")
@@ -140,7 +140,7 @@ def validate_ksm_parameter(ksmparam):
         if v == "=":
             if previous == ord(",") or next != ord("["):
                 raise InvalidArgumentValueError(
-                    "Please format --metric properly. For eg. : --metriclabelsallowlist \"=namespaces=[k8s-label-1,k8s-label-n,...],pods=[app],...)\" and --metricannotationsallowlist \"=namespaces=[kubernetes.io/team,...],pods=[kubernetes.io/team],...\""
+                    "Please format --metric properly. For eg. : --metriclabelsallowlist \"=namespaces=[k8s-label-1,k8s-label-n,...],pods=[app],...)\" and --metricannotationsallowlist \"namespaces=[kubernetes.io/team,...],pods=[kubernetes.io/team],...\""
                     )
             name = ksmparam[firstWordPos:i]
             labelValueMap[name] = []
@@ -148,14 +148,14 @@ def validate_ksm_parameter(ksmparam):
         elif v == "[":
             if previous != ord("="):
                 raise InvalidArgumentValueError(
-                    "Please format --metric properly. For eg. : --metriclabelsallowlist \"=namespaces=[k8s-label-1,k8s-label-n,...],pods=[app],...)\" and --metricannotationsallowlist \"=namespaces=[kubernetes.io/team,...],pods=[kubernetes.io/team],...\""
+                    "Please format --metric properly. For eg. : --metriclabelsallowlist \"=namespaces=[k8s-label-1,k8s-label-n,...],pods=[app],...)\" and --metricannotationsallowlist \"namespaces=[kubernetes.io/team,...],pods=[kubernetes.io/team],...\""
                     )
             firstWordPos = i + 1
         elif v == "]":
             # if after metric group, has char not comma or end.
             if next != EOF and next != ord(","):
                 raise InvalidArgumentValueError(
-                    "Please format --metric properly. For eg. : --metriclabelsallowlist \"=namespaces=[k8s-label-1,k8s-label-n,...],pods=[app],...)\" and --metricannotationsallowlist \"=namespaces=[kubernetes.io/team,...],pods=[kubernetes.io/team],...\""
+                    "Please format --metric properly. For eg. : --metriclabelsallowlist \"=namespaces=[k8s-label-1,k8s-label-n,...],pods=[app],...)\" and --metricannotationsallowlist \"namespaces=[kubernetes.io/team,...],pods=[kubernetes.io/team],...\""
                     )
             if previous != ord("["):
                 labelValueMap[name].append(ksmparam[firstWordPos:i])
@@ -164,7 +164,7 @@ def validate_ksm_parameter(ksmparam):
             # if starts or ends with comma
             if previous == v or next == EOF or next == ord("]"):
                 raise InvalidArgumentValueError(
-                    "Please format --metric properly. For eg. : --metriclabelsallowlist \"=namespaces=[k8s-label-1,k8s-label-n,...],pods=[app],...)\" and --metricannotationsallowlist \"=namespaces=[kubernetes.io/team,...],pods=[kubernetes.io/team],...\""
+                    "Please format --metric properly. For eg. : --metriclabelsallowlist \"=namespaces=[k8s-label-1,k8s-label-n,...],pods=[app],...)\" and --metricannotationsallowlist \"namespaces=[kubernetes.io/team,...],pods=[kubernetes.io/team],...\""
                     )
             if previous != ord("]"):
                 labelValueMap[name].append(ksmparam[firstWordPos:i])
@@ -177,13 +177,13 @@ def validate_ksm_parameter(ksmparam):
     for label in labelValueMap:
         if (bool(re.match(r'^[a-zA-Z_][A-Za-z0-9_]+$', label)))== False:
             raise InvalidArgumentValueError(
-                    "Please format --metric properly. For eg. : --metriclabelsallowlist \"=namespaces=[k8s-label-1,k8s-label-n,...],pods=[app],...)\" and --metricannotationsallowlist \"=namespaces=[kubernetes.io/team,...],pods=[kubernetes.io/team],...\""
+                    "Please format --metric properly. For eg. : --metriclabelsallowlist \"=namespaces=[k8s-label-1,k8s-label-n,...],pods=[app],...)\" and --metricannotationsallowlist \"namespaces=[kubernetes.io/team,...],pods=[kubernetes.io/team],...\""
                     )
         # else:
         #     for value in labelValueMap[label]:
         #         if (bool(labelValuePattern.match(value))) == False:
         #             raise InvalidArgumentValueError(
-        #                 "Please format --metric properly. For eg. : --metriclabelsallowlist \"=namespaces=[k8s-label-1,k8s-label-n,...],pods=[app],...)\" and --metricannotationsallowlist \"=namespaces=[kubernetes.io/team,...],pods=[kubernetes.io/team],...\""
+        #                 "Please format --metric properly. For eg. : --metriclabelsallowlist \"=namespaces=[k8s-label-1,k8s-label-n,...],pods=[app],...)\" and --metricannotationsallowlist \"namespaces=[kubernetes.io/team,...],pods=[kubernetes.io/team],...\""
         #             )
     return ksmparam
 
@@ -474,12 +474,12 @@ def link_grafana_instance(cmd, raw_parameters, mac_resource_id):
     try:
         MonitoringReader = "43d0d8ad-25c7-4714-9337-8ba259a9fe05"
         roleDefinitionURI = "https://management.azure.com{0}/providers/Microsoft.Authorization/roleAssignments/{1}?api-version={2}".format(
-            grafana_resource_id,
+            mac_resource_id,
             uuid.uuid4(),
             GRAFANA_ROLE_ASSIGNMENT_API
         )
         roleDefinitionId = "{0}/providers/Microsoft.Authorization/roleDefinitions/{1}".format(
-            grafana_resource_id,
+            mac_resource_id,
             MonitoringReader
         )
 
@@ -490,6 +490,7 @@ def link_grafana_instance(cmd, raw_parameters, mac_resource_id):
             }})
 
         send_raw_request(cmd.cli_ctx, "PUT", roleDefinitionURI, body=association_body)
+        print("Role Assignment successful")
     except CLIError as e:
         error = e
         if e.response.status_code != 409:

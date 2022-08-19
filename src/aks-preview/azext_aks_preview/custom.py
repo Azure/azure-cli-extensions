@@ -671,11 +671,6 @@ def aks_create(
     apiserver_subnet_id=None,
     dns_zone_resource_id=None,
     enable_keda=False,
-    enable_azuremonitormetrics=False,
-    mac_resource_id=None,
-    metriclabelsallowlist=None,
-    metricannotationsallowlist=None,
-    grafana_resource_id=None,
     # nodepool
     host_group_id=None,
     crg_id=None,
