@@ -173,7 +173,7 @@ def load_command_table(self, _):
 
     with self.command_group('network manager connection management-group', network_managementgroupconnection, client_factory=cf_managementgroupconnection) as g:
         g.custom_command('create', 'network_manager_connection_management_group_create')
-        g.generic_update_command('update', setter_arg_name='connection_management_group', custom_func_name='network_manager_connection_management_group_update')
+        g.generic_update_command('update', custom_func_name='network_manager_connection_management_group_update')
         g.custom_command('list', 'network_manager_connection_management_group_list')
         g.custom_show_command('show', 'network_manager_connection_management_group_show')
         g.custom_command('delete', 'network_manager_connection_management_group_delete', confirmation=True)
