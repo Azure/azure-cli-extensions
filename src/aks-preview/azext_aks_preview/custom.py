@@ -2225,8 +2225,7 @@ def aks_trustedaccess_role_binding_create(cmd, client, resource_group_name, clus
         resource_type=CUSTOM_MGMT_AKS_PREVIEW,
         operation_group="trusted_access_role_bindings",
     )
-    roleList = roles.split(',')
-    roleBinding = TrustedAccessRoleBinding(source_resource_id=source_resource_id, roles=roleList)
+    roleBinding = TrustedAccessRoleBinding(source_resource_id=source_resource_id, roles=roles)
     return client.create_or_update(resource_group_name, cluster_name, role_binding_name, roleBinding)
 
 

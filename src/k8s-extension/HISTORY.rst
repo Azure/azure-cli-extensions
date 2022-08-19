@@ -3,10 +3,6 @@
 Release History
 ===============
 
-1.3.3
-++++++++++++++++++
-* microsoft.azuremonitor.containers: add condition to use different api version for provisioned clusters
-
 1.3.2
 ++++++++++++++++++
 * Create identity for Appliances clusters
