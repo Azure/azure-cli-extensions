@@ -7,7 +7,6 @@
 import os
 from argcomplete.completers import FilesCompleter
 from azure.cli.core.commands.parameters import (
-    get_resource_name_completion_list,
     tags_type,
     file_type
 )
@@ -22,10 +21,10 @@ def load_arguments(self, _):
     with self.argument_context('fleet create') as c:
         c.argument('tags', tags_type)
         c.argument('dns_name_prefix', options_list=['--dns-name-prefix', '-p'])
-    
+
     with self.argument_context('fleet patch') as c:
         c.argument('tags', tags_type)
-    
+
     with self.argument_context('fleet get-credentials') as c:
         c.argument('context_name', options_list=['--context'], help='If specified, overwrite the default context name.')
         c.argument('path', options_list=['--file', '-f'], type=file_type, completer=FilesCompleter(), default=os.path.join(os.path.expanduser('~'), '.kube', 'config'))

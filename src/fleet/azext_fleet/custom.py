@@ -45,13 +45,13 @@ def create_fleet(cmd,
         if not name_part[0].isalpha():
             name_part = (str('a') + name_part)[0:10]
         resource_group_part = re.sub('[^A-Za-z0-9-]', '', resource_group_name)[0:16]
-        dns_name_prefix = '{}-{}-{}'.format(name_part, resource_group_part, subscription_id[0:6])
+        dns_name_prefix = f'{name_part}-{resource_group_part}-{subscription_id[0:6]}'
 
     fleetHubProfile = FleetHubProfile(dns_prefix=dns_name_prefix)
     rg_location = get_rg_location(cmd.cli_ctx, resource_group_name)
     if location is None:
         location = rg_location
-    
+
     fleet = Fleet(
         location=location,
         tags=tags,
@@ -60,10 +60,11 @@ def create_fleet(cmd,
 
     return sdk_no_wait(no_wait, client.begin_create_or_update, resource_group_name, name, fleet)
 
-def patch_fleet(cmd, 
-                client, 
-                resource_group_name, 
-                name, 
+
+def patch_fleet(cmd,
+                client,
+                resource_group_name,
+                name,
                 tags=None):
     FleetPatch = cmd.get_models(
         "FleetPatch",
@@ -73,24 +74,28 @@ def patch_fleet(cmd,
     fleetPatch = FleetPatch(tags=tags)
     return client.update(resource_group_name, name, None, fleetPatch)
 
-def get_fleet(cmd, # pylint: disable=unused-argument
-              client, 
-              resource_group_name, 
+
+def get_fleet(cmd,  # pylint: disable=unused-argument
+              client,
+              resource_group_name,
               name):
-    logger.info('Getting fleet: {0} for resource group: {1}'.format(name, resource_group_name))
+    logger.info('Getting fleet: %s for resource group: %s', name, resource_group_name)
     return client.get(resource_group_name, name)
 
-def list_fleet_by_resource_group(cmd, # pylint: disable=unused-argument
-                                 client, 
+
+def list_fleet_by_resource_group(cmd,  # pylint: disable=unused-argument
+                                 client,
                                  resource_group_name):
-    logger.info('Listing fleet for resource group: {0}'.format(resource_group_name))
+    logger.info('Listing fleet for resource group: %s', resource_group_name)
     return client.list_by_resource_group(resource_group_name)
 
-def list_fleet_by_subscription(cmd, # pylint: disable=unused-argument
+
+def list_fleet_by_subscription(cmd,  # pylint: disable=unused-argument
                                client):
     subscription_id = get_subscription_id(cmd.cli_ctx)
-    logger.info('Listing fleet for subscription id: {0}'.format(subscription_id))
+    logger.info('Listing fleet for subscription id: %s', subscription_id)
     return client.list()
+
 
 def delete_fleet(cmd,  # pylint: disable=unused-argument
                  client,
@@ -99,14 +104,15 @@ def delete_fleet(cmd,  # pylint: disable=unused-argument
                  no_wait=False):
     return sdk_no_wait(no_wait, client.begin_delete, resource_group_name, name)
 
-def get_credentials(cmd,    # pylint: disable=unused-argument
-                     client,
-                     resource_group_name,
-                     name,
-                     path=os.path.join(os.path.expanduser(
-                         '~'), '.kube', 'config'),
-                     overwrite_existing=False,
-                     context_name=None):
+
+def get_credentials(cmd,  # pylint: disable=unused-argument
+                    client,
+                    resource_group_name,
+                    name,
+                    path=os.path.join(os.path.expanduser(
+                        '~'), '.kube', 'config'),
+                    overwrite_existing=False,
+                    context_name=None):
     credentialResults = client.list_credentials(resource_group_name, name)
     if not credentialResults:
         raise CLIError("No Kubernetes credentials found.")
@@ -118,6 +124,7 @@ def get_credentials(cmd,    # pylint: disable=unused-argument
             path, kubeconfig, overwrite_existing, context_name)
     except (IndexError, ValueError):
         raise CLIError("Fail to find kubeconfig file.")
+
 
 def join_fleet_member(cmd,
                       client,
@@ -134,19 +141,22 @@ def join_fleet_member(cmd,
     fleetMember = FleetMember(cluster_resource_id=member_cluster_id)
     return sdk_no_wait(no_wait, client.begin_create_or_update, resource_group_name, fleet_name, name, fleetMember)
 
+
 def list_fleet_member(cmd,  # pylint: disable=unused-argument
                       client,
                       resource_group_name,
                       fleet_name):
-    logger.info('Listing fleet member(s) for fleet: {0} for resource group: {1}'.format(fleet_name, resource_group_name))
+    logger.info('Listing fleet member(s) for fleet: %s for resource group: %s', fleet_name, resource_group_name)
     return client.list_by_fleet(resource_group_name, fleet_name)
 
+
 def get_fleet_member(cmd,  # pylint: disable=unused-argument
-                     client, 
-                     resource_group_name, 
-                     fleet_name, 
+                     client,
+                     resource_group_name,
+                     fleet_name,
                      name):
     return client.get(resource_group_name, fleet_name, name)
+
 
 def remove_fleet_member(cmd,  # pylint: disable=unused-argument
                         client,

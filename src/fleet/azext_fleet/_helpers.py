@@ -8,9 +8,9 @@ import yaml
 from knack.log import get_logger
 from knack.prompting import NoTTYException, prompt_y_n
 from knack.util import CLIError
-from knack.log import get_logger
 
 logger = get_logger(__name__)
+
 
 def print_or_merge_credentials(path, kubeconfig, overwrite_existing, context_name):
     """Merge an unencrypted kubeconfig into the file at the specified path, or print it to
@@ -48,6 +48,7 @@ def print_or_merge_credentials(path, kubeconfig, overwrite_existing, context_nam
         additional_file.close()
         os.remove(temp_path)
 
+
 def _merge_kubernetes_configurations(existing_file, addition_file, replace, context_name=None):
     existing = _load_kubernetes_configuration(existing_file)
     addition = _load_kubernetes_configuration(addition_file)
@@ -70,7 +71,7 @@ def _merge_kubernetes_configurations(existing_file, addition_file, replace, cont
 
     if addition is None:
         raise CLIError(
-            'failed to load additional configuration from {}'.format(addition_file))
+            f'failed to load additional configuration from {addition_file}')
 
     if existing is None:
         existing = addition
@@ -94,9 +95,9 @@ def _merge_kubernetes_configurations(existing_file, addition_file, replace, cont
         yaml.safe_dump(existing, stream, default_flow_style=False)
 
     current_context = addition.get('current-context', 'UNKNOWN')
-    msg = 'Merged "{}" as current context in {}'.format(
-        current_context, existing_file)
+    msg = f'Merged "{current_context}" as current context in {existing_file}'
     print(msg)
+
 
 def _handle_merge(existing, addition, key, replace):
     if not addition[key]:
@@ -124,12 +125,13 @@ def _handle_merge(existing, addition, key, replace):
                         raise CLIError(msg.format(i['name'], key))
         existing[key].append(i)
 
+
 def _load_kubernetes_configuration(filename):
     try:
         with open(filename) as stream:
             return yaml.safe_load(stream)
     except (IOError, OSError) as ex:
         if getattr(ex, 'errno', 0) == errno.ENOENT:
-            raise CLIError('{} does not exist'.format(filename))
+            raise CLIError(f'{filename} does not exist')
     except (yaml.parser.ParserError, UnicodeDecodeError) as ex:
-        raise CLIError('Error parsing {} ({})'.format(filename, str(ex)))
+        raise CLIError(f'Error parsing {filename} ({str(ex)})')
