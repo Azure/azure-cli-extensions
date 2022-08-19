@@ -472,7 +472,7 @@ def link_grafana_instance(cmd, raw_parameters, mac_resource_id):
 
     # Add Role Assignment
     try:
-        MonitoringReader = "43d0d8ad-25c7-4714-9337-8ba259a9fe05"
+        MonitoringDataReader = "b0d8363b-8ddd-447d-831f-62ca05bff136"
         roleDefinitionURI = "https://management.azure.com{0}/providers/Microsoft.Authorization/roleAssignments/{1}?api-version={2}".format(
             mac_resource_id,
             uuid.uuid4(),
@@ -480,7 +480,7 @@ def link_grafana_instance(cmd, raw_parameters, mac_resource_id):
         )
         roleDefinitionId = "{0}/providers/Microsoft.Authorization/roleDefinitions/{1}".format(
             mac_resource_id,
-            MonitoringReader
+            MonitoringDataReader
         )
 
         association_body = json.dumps({
