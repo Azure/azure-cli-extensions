@@ -24,7 +24,7 @@ def cf_schedule(cli_ctx, *_):
 
 
 def cf_software_update_configuration(cli_ctx, *_):
-    return cf_automation_cl(cli_ctx).software_update_configuration
+    return cf_automation_cl(cli_ctx).software_update_configurations
 
 
 def cf_software_update_configuration_runs(cli_ctx, *_):

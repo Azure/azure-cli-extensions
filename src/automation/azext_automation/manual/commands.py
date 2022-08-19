@@ -84,33 +84,28 @@ def load_command_table(self, _):
         g.custom_command('delete', 'automation_account_delete', confirmation=True)
 
     with self.command_group('automation schedule', automation_schedule,
-                            client_factory=cf_automation_account) as g:
-        g.custom_command('list', 'automation_account_list')
-        g.custom_show_command('show', 'automation_account_show')
-        g.custom_command('create', 'automation_account_create')
-        g.custom_command('update', 'automation_account_update')
-        g.custom_command('delete', 'automation_account_delete', confirmation=True)
+                            client_factory=cf_schedule) as g:
+        g.custom_command('list', 'automation_schedule_list')
+        g.custom_show_command('show', 'automation_schedule_show')
+        g.custom_command('create', 'automation_schedule_create')
+        g.custom_command('update', 'automation_schedule_update')
+        g.custom_command('delete', 'automation_schedule_delete', confirmation=True)
 
-    with self.command_group('automation schedule', automation_software_update_configuration,
+    with self.command_group('automation software-update-configuration', automation_software_update_configuration,
                             client_factory=cf_software_update_configuration) as g:
-        g.custom_command('list', 'automation_account_list')
-        g.custom_show_command('show', 'automation_account_show')
-        g.custom_command('create', 'automation_account_create')
-        g.custom_command('update', 'automation_account_update')
-        g.custom_command('delete', 'automation_account_delete', confirmation=True)
+        g.custom_command('list', 'automation_software_update_configuration_list')
+        g.custom_show_command('show', 'automation_software_update_configuration_show')
+        g.custom_command('create', 'automation_software_update_configuration_create')
+        g.custom_command('delete', 'automation_software_update_configuration_delete', confirmation=True)
 
-    with self.command_group('automation schedule', automation_software_update_configuration_runs,
+    with self.command_group('automation software-update-configuration runs',
+                            automation_software_update_configuration_runs,
                             client_factory=cf_software_update_configuration_runs) as g:
-        g.custom_command('list', 'automation_account_list')
-        g.custom_show_command('show', 'automation_account_show')
-        g.custom_command('create', 'automation_account_create')
-        g.custom_command('update', 'automation_account_update')
-        g.custom_command('delete', 'automation_account_delete', confirmation=True)
+        g.custom_command('list', 'automation_software_update_configuration_runs_list')
+        g.custom_show_command('show', 'automation_software_update_configuration_runs_show')
 
-    with self.command_group('automation schedule', automation_software_update_configuration_machine_runs,
+    with self.command_group('automation software-update-configuration machine-runs',
+                            automation_software_update_configuration_machine_runs,
                             client_factory=cf_software_update_configuration_machine_runs) as g:
-        g.custom_command('list', 'automation_account_list')
-        g.custom_show_command('show', 'automation_account_show')
-        g.custom_command('create', 'automation_account_create')
-        g.custom_command('update', 'automation_account_update')
-        g.custom_command('delete', 'automation_account_delete', confirmation=True)
+        g.custom_command('list', 'automation_software_update_configuration_machine_runs_list')
+        g.custom_show_command('show', 'automation_software_update_configuration_machine_runs_show')
