@@ -53,7 +53,6 @@ from ._models import (
     ContainerAppCertificateEnvelope as ContainerAppCertificateEnvelopeModel,
     ContainerAppCustomDomain as ContainerAppCustomDomainModel,
     AzureFileProperties as AzureFilePropertiesModel)
-from ._up_utils import validate_environment_location
 from ._utils import (_validate_subscription_registered, _get_location_from_resource_group, _ensure_location_allowed,
                      parse_secret_flags, store_as_secret_and_return_secret_ref, parse_env_var_flags,
                      _generate_log_analytics_if_not_provided, _get_existing_secrets, _convert_object_from_snake_to_camel_case,
@@ -65,7 +64,8 @@ from ._utils import (_validate_subscription_registered, _get_location_from_resou
                      validate_container_app_name, _update_weights, get_vnet_location, register_provider_if_needed,
                      generate_randomized_cert_name, _get_name, load_cert_file, check_cert_name_availability,
                      validate_hostname, patch_new_custom_domain, get_custom_domains, _validate_revision_name, set_managed_identity,
-                     create_acrpull_role_assignment, is_registry_msi_system, clean_null_values, _populate_secret_values)
+                     create_acrpull_role_assignment, is_registry_msi_system, clean_null_values, _populate_secret_values,
+                     validate_environment_location)
 from ._validators import validate_create
 from ._ssh_utils import (SSH_DEFAULT_ENCODING, WebSocketConnection, read_ssh, get_stdin_writer, SSH_CTRL_C_MSG,
                          SSH_BACKUP_ENCODING)
