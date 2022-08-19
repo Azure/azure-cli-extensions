@@ -31,6 +31,23 @@ class StorageMoverScenario(ScenarioTest):
         self.cmd('az storage-mover delete -g {rg} -n {mover_name} -y')
         self.cmd('az storage-mover list -g {rg}', checks=[JMESPathCheck('length(@)', 0)])
 
+    @record_only()
+    # need to manually register agent
+    def test_storage_mover_agent_scenarios(self):
+        self.kwargs.update({
+            "rg": "test-storagemover-rg",
+            "mover_name": "teststoragemover",
+            "agent_name": "testagent"
+        })
+        self.cmd('az storage-mover agent show -g {rg} -n {agent_name} --storage-mover-name {mover_name}')
+        self.cmd('az storage-mover agent list -g {rg} --storage-mover-name {mover_name}',
+                 checks=[JMESPathCheck('length(@)', 1)])
+        self.cmd('az storage-mover agent update -g {rg} -n {agent_name} --storage-mover-name {mover_name} '
+                 '--description 123')
+        self.cmd('az storage-mover agent unregister -g {rg} -n {agent_name} --storage-mover-name {mover_name} -y')
+        self.cmd('az storage-mover agent list -g {rg} --storage-mover-name {mover_name}',
+                 checks=[JMESPathCheck('length(@)', 0)])
+
     @ResourceGroupPreparer(location='eastus2euap')
     @StorageAccountPreparer()
     @AllowLargeResponse()

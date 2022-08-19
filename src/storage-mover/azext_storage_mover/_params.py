@@ -9,8 +9,8 @@
 # pylint: disable=too-many-statements
 from azure.cli.core.commands.parameters import (get_enum_type)
 
-def load_arguments(self, _):  # pylint: disable=unused-argument
 
+def load_arguments(self, _):  # pylint: disable=unused-argument
 
     for command in ['create-for-storage-container', 'create-for-nfs', 'update-for-storage-container', 'update-for-nfs']:
         with self.argument_context('storage-mover endpoint ' + command) as c:
