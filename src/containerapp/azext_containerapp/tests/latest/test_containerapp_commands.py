@@ -561,6 +561,34 @@ class ContainerappRevisionTests(ScenarioTest):
         self.assertEqual(len([w for w in traffic_weight if "label" in w]), 0)
 
 
+class ContainerappAnonymousRegistryTests(ScenarioTest):
+    @AllowLargeResponse(8192)
+    @ResourceGroupPreparer(location="northeurope")
+    @live_only()  # encounters 'CannotOverwriteExistingCassetteException' only when run from recording (passes when run live)
+    def test_containerapp_anonymous_registry(self, resource_group):
+        import requests
+
+        env = self.create_random_name(prefix='env', length=24)
+        app = self.create_random_name(prefix='aca', length=24)
+        image = "mcr.microsoft.com/azuredocs/containerapps-helloworld:latest"
+
+        self.cmd(f'containerapp env create -g {resource_group} -n {env}')
+
+        containerapp_env = self.cmd(f'containerapp env show -g {resource_group} -n {env}').get_output_in_json()
+
+        while containerapp_env["properties"]["provisioningState"].lower() == "waiting":
+            time.sleep(5)
+            containerapp_env = self.cmd(f'containerapp env show -g {resource_group} -n {env}').get_output_in_json()
+
+        self.cmd(f'containerapp create -g {resource_group} -n {app} --image {image} --ingress external --target-port 80 --environment {env}')
+
+        url = self.cmd(f'containerapp show -g {resource_group} -n {app}').get_output_in_json()["properties"]["configuration"]["ingress"]["fqdn"]
+        url = f"https://{url}"
+        resp = requests.get(url)
+        self.assertTrue(resp.ok)
+        self.assertEqual(resp.status_code, 200)
+
+
 class ContainerappRegistryIdentityTests(ScenarioTest):
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="westeurope")

@@ -6,6 +6,7 @@ Release History
 0.3.10
 ++++++
 * 'az containerapp up': autogenerate a docker container with --source when no dockerfile present
+* 'az containerapp create': Fix bug with --image caused by assuming a value for --registry-server
 
 0.3.9
 ++++++
