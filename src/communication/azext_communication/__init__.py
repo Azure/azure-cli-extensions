@@ -51,13 +51,15 @@ class CommunicationServiceManagementClientCommandsLoader(AzCommandsLoader):
 
 class CommunicationCommandGroup(AzCommandGroup):
 
-    def communication_custom_command(self, name, method_name, **kwargs):
+    def communication_custom_command(self, name, method_name, arguments, **kwargs):
         command_name = self.custom_command(name, method_name, **kwargs)
-        self._register_data_plane_account_arguments(command_name)
+        self._register_data_plane_account_arguments(command_name, arguments)
 
-    def _register_data_plane_account_arguments(self, command_name):
+    def _register_data_plane_account_arguments(self, command_name, arguments):
         """ Add parameters required to create a communication client """
         from .manual._validators import validate_client_parameters
+        from .manual._validators import validate_endpoint
+        from .manual._validators import validate_access_token
 
         command = self.command_loader.command_table.get(command_name, None)
 
@@ -65,10 +67,23 @@ class CommunicationCommandGroup(AzCommandGroup):
             return
 
         group_name = 'communication'
-        command.add_argument('connection_string', '--connection-string', required=False, default=None,
-                             validator=validate_client_parameters, arg_group=group_name,
-                             help='Communication connection string. Environment variable: '
-                                  'AZURE_COMMUNICATION_CONNECTION_STRING')
+        if 'connection_string' in arguments:
+            command.add_argument('connection_string', '--connection-string', required=False, default=None,
+                                 validator=validate_client_parameters, arg_group=group_name,
+                                 help='Communication connection string. Environment variable: '
+                                      'AZURE_COMMUNICATION_CONNECTION_STRING')
+
+        if 'endpoint' in arguments:
+            command.add_argument('endpoint', '--endpoint', required=False, default=None,
+                                 validator=validate_endpoint, arg_group=group_name,
+                                 help='Communication endpoint. Environment variable: '
+                                      'AZURE_COMMUNICATION_ENDPOINT')
+
+        if 'access_token' in arguments:
+            command.add_argument('access_token', '--access-token', required=False, default=None,
+                                 validator=validate_access_token, arg_group=group_name,
+                                 help='Communication access token. Environment variable: '
+                                 'AZURE_COMMUNICATION_ACCESS_TOKEN')
 
 
 COMMAND_LOADER_CLS = CommunicationServiceManagementClientCommandsLoader

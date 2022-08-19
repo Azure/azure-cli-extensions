@@ -12,13 +12,15 @@ import tempfile
 import time
 
 from azure.cli.core.commands.client_factory import get_mgmt_service_client, get_subscription_id
+from enum import Flag, auto
 from knack.log import get_logger
 from knack.prompting import prompt_y_n
 from knack.util import CLIError
 from msrestazure.azure_exceptions import CloudError
+from packaging import version
 from tabulate import tabulate
 
-from azext_aks_preview._client_factory import get_storage_client
+from azext_aks_preview._client_factory import cf_agent_pools, get_storage_client
 
 from azext_aks_preview._consts import (
     CONST_CONTAINER_NAME_MAX_LENGTH,
@@ -32,6 +34,11 @@ from azext_aks_preview._consts import (
 from azext_aks_preview._helpers import which, print_or_merge_credentials
 
 logger = get_logger(__name__)
+
+
+class ClusterFeatures(Flag):
+    NONE = 0
+    WIN_HPC = auto()
 
 
 # pylint: disable=line-too-long
@@ -137,7 +144,10 @@ def aks_kollect_cmd(cmd,    # pylint: disable=too-many-statements,too-many-local
     container_name = _generate_container_name(mc.fqdn, mc.private_fqdn)
     sas_token = sas_token.strip('?')
 
-    kustomize_yaml = _get_kustomize_yaml(storage_account_name, sas_token, container_name, container_logs, kube_objects, node_logs, node_logs_windows)
+    cluster_features = _get_cluster_features(cmd.cli_ctx, resource_group_name, name)
+
+    run_id = datetime.datetime.utcnow().strftime("%Y-%m-%dT%H-%M-%SZ")
+    kustomize_yaml = _get_kustomize_yaml(storage_account_name, sas_token, container_name, run_id, cluster_features, container_logs, kube_objects, node_logs, node_logs_windows)
     kustomize_folder = tempfile.mkdtemp()
     kustomize_file_path = os.path.join(kustomize_folder, "kustomization.yaml")
     try:
@@ -227,11 +237,20 @@ def aks_kanalyze_cmd(client, resource_group_name: str, name: str) -> None:
 def _get_kustomize_yaml(storage_account_name,
                         sas_token,
                         container_name,
+                        run_id,
+                        cluster_features,
                         container_logs=None,
                         kube_objects=None,
                         node_logs_linux=None,
                         node_logs_windows=None):
+    components = {
+        'win-hpc': bool(cluster_features & ClusterFeatures.WIN_HPC)
+    }
+
+    component_content = "\n".join(f'- https://github.com/{CONST_PERISCOPE_REPO_ORG}/aks-periscope//deployment/components/{c}?ref={CONST_PERISCOPE_RELEASE_TAG}' for c, enabled in components.items() if enabled)
+
     diag_config_vars = {
+        'DIAGNOSTIC_RUN_ID': run_id,
         'DIAGNOSTIC_CONTAINERLOGS_LIST': container_logs,
         'DIAGNOSTIC_KUBEOBJECTS_LIST': kube_objects,
         'DIAGNOSTIC_NODELOGS_LIST_LINUX': node_logs_linux,
@@ -246,6 +265,9 @@ def _get_kustomize_yaml(storage_account_name,
     return f"""
 resources:
 - https://github.com/{CONST_PERISCOPE_REPO_ORG}/aks-periscope//deployment/base?ref={CONST_PERISCOPE_RELEASE_TAG}
+
+components:
+{component_content}
 
 namespace: {CONST_PERISCOPE_NAMESPACE}
 
@@ -311,6 +333,26 @@ def _generate_container_name(fqdn: str, private_fqdn: str) -> str:
     container_name = container_name.replace('.', '-')
     container_name = container_name[:CONST_CONTAINER_NAME_MAX_LENGTH].rstrip('-')
     return container_name
+
+
+def _get_cluster_features(cli_ctx, resource_group_name, cluster_name):
+    agent_pool_client = cf_agent_pools(cli_ctx)
+    agent_pool_items = agent_pool_client.list(resource_group_name, cluster_name)
+    agent_pools = list(agent_pool_items)
+
+    features = ClusterFeatures.NONE
+    if _is_windows_hpc_supported(agent_pools):
+        features |= ClusterFeatures.WIN_HPC
+
+    return features
+
+
+def _is_windows_hpc_supported(agent_pools):
+    # https://docs.microsoft.com/en-us/rest/api/aks/agent-pools/list?tabs=HTTP#agentpool
+    # The full (major.minor.patch) version *may* be stored in currentOrchestratorVersion.
+    # If not, it'll be in orchestratorVersion.
+    windows_k8s_versions = [p.current_orchestrator_version or p.orchestrator_version for p in agent_pools if p.os_type.casefold() == "Windows".casefold()]
+    return all([version.parse(v) >= version.parse("1.23.0") for v in windows_k8s_versions])
 
 
 def _display_diagnostics_report(temp_kubeconfig_path):   # pylint: disable=too-many-statements
