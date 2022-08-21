@@ -321,7 +321,7 @@ helps['communication chat participant add'] = """
     type: command
     short-summary: "Adds a participant to a chat thread."
     examples:
-      - name: Add participant 
+      - name: Add participant
         text: |-
                az communication chat participant add --thread "19:a-bcd=xyz" --user "8:acs:xxxxxx" --display-name "John Doe" --start-time "2022-07-14T10:21"
 """
