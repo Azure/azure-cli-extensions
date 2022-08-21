@@ -71,10 +71,10 @@ jobs:
     vmImage: 'ubuntu-20.04'
   steps:
     - task: UsePythonVersion@0
-      displayName: 'Use Python 3.8'
+      displayName: 'Use Python 3.10'
       inputs:
-        versionSpec: 3.8
-    - bash: pip install wheel==0.30.0 pylint==2.11.1 flake8==3.9.2 requests
+        versionSpec: 3.10
+    - bash: pip install wheel==0.30.0 pylint==2.11.1 flake8 requests
       displayName: 'Install wheel, pylint, flake8, requests'
     - bash: python scripts/ci/source_code_static_analysis.py
       displayName: "Static Analysis"
