@@ -12,7 +12,12 @@ reports=no
 # unspecified-encoding: Allow using the system encoding, instead of forcing utf-8 to avoid opening errors
 disable=
     arguments-out-of-order,
+    arguments-renamed,
     bad-option-value,
+    consider-using-dict-items,
+    consider-using-enumerate,
+    consider-using-f-string,
+    consider-using-in,
     consider-using-with,
     cyclic-import,
     duplicate-code,
@@ -27,25 +32,23 @@ disable=
     no-member,
     no-value-for-parameter,
     raise-missing-from,
+    raising-bad-type,
+    redundant-u-string-prefix,
     subprocess-run-check,
     super-with-arguments,
     too-many-arguments,
     too-many-function-args,
     too-many-lines,
+    unspecified-encoding,
+    unused-private-member,
+    use-dict-literal,
+    use-maxsplit-arg,
+    used-before-assignment
     using-constant-test,
     wrong-import-order,
-    consider-using-f-string,
-    unspecified-encoding,
-    use-maxsplit-arg,
-    arguments-renamed,
-    consider-using-in,
-    use-dict-literal,
-    consider-using-dict-items,
-    consider-using-enumerate,
-    redundant-u-string-prefix,
-    raising-bad-type,
-    unused-private-member,
-    used-before-assignment
+    too-many-locals,
+    line-too-long,
+    trailing-whitespace
 
 [TYPECHECK]
 # For Azure CLI extensions, we ignore some import errors as they'll be available in the environment of the CLI
