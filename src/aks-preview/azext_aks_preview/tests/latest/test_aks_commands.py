@@ -280,14 +280,14 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         ])
 
         update_cmd = 'aks update --resource-group={resource_group} --name={name} ' \
-                     '--disable_node_restriction -o json'
+                     '--disable-node-restriction -o json'
         self.cmd(update_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
             self.check('securityProfile.nodeRestriction.enabled', False)
         ])
 
         update_cmd = 'aks update --resource-group={resource_group} --name={name} ' \
-                     '--disable-azure-rbac -o json'
+                     '--enable-node-restriction -o json'
         self.cmd(update_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
             self.check('securityProfile.nodeRestriction.enabled', True)
