@@ -789,8 +789,7 @@ helps['network manager connection management-group list'] = """
     examples:
       - name: List management-group connections in a network manager
         text: |-
-               az network manager connection management-group list --management-group-id "testManagementGroupId" \
---resource-group "rg1"
+               az network manager connection management-group list --management-group-id "testManagementGroupId"
 """
 
 helps['network manager connection management-group show'] = """
@@ -800,7 +799,7 @@ helps['network manager connection management-group show'] = """
       - name: Get network manager connection management-group
         text: |-
                az network manager connection management-group show --management-group-id "testManagementGroupId" \
---connection-name "testNetworkManagerConnection" --resource-group "rg1"
+--connection-name "testNetworkManagerConnection"
 """
 
 helps['network manager connection management-group create'] = """
@@ -810,13 +809,18 @@ helps['network manager connection management-group create'] = """
       - name: Create network manager connection management-group
         text: |-
                az network manager connection management-group create --management-group-id "testManagementGroupId" \
---connection-name "testNetworkManagerConnection" --resource-group "rg1" --network-manager "testNetworkManagerId" \
+--connection-name "testNetworkManagerConnection" --network-manager "testNetworkManagerId" \
 --description "A sample policy"
 """
 
 helps['network manager connection management-group update'] = """
     type: command
     short-summary: "Update a connection to a cross tenant network manager"
+    examples:
+      - name: Update network manager connection management-group
+        text: |-
+               az network manager connection management-group update --management-group-id "testManagementGroupId" \
+--connection-name "testNetworkManagerConnection" --description "My Test Network Manager Connection"
 """
 
 helps['network manager connection management-group delete'] = """
@@ -826,7 +830,7 @@ helps['network manager connection management-group delete'] = """
       - name: Delete network manager connection management-group
         text: |-
                az network manager connection management-group delete --management-group-id "testManagementGroupId" \
---connection-name "testNetworkManagerConnection" --resource-group "rg1"
+--connection-name "testNetworkManagerConnection"
 """
 
 helps['network manager scope-connection'] = """

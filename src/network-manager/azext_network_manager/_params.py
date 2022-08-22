@@ -589,7 +589,7 @@ def load_arguments(self, _):
         c.argument('network_manager_connection_name', options_list=['--name', '-n', '--connection-name'], type=str,
                    help='The name of the network manager connection.', id_part='child_name_1')
         c.argument('management_group_id', type=str, help='The management group id which uniquely identify '
-                   'the microsoft azure management group', id_part='name')
+                   'the microsoft azure management group', required=True, id_part='name')
         c.argument('network_manager_id', options_list=['--network-manager', '--network-manager-id'], type=str,
                    help='the name or id of the network manager.')
         c.argument('description', type=str, help='A description of the scope connection.')
