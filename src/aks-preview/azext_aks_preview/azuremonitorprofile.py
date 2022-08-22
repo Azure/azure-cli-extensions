@@ -533,7 +533,7 @@ def link_grafana_instance(cmd, raw_parameters, mac_resource_id):
 def create_rules(cmd, cluster_region, cluster_subscription, cluster_resource_group_name, cluster_name, mac_resource_id, mac_region):
     from azure.cli.core.util import send_raw_request
     
-    with urllib.request.urlopen("https://aka.ms/ama-default-rules") as url:
+    with urllib.request.urlopen("https://defaultrulessc.blob.core.windows.net/defaultrules/ManagedPrometheusDefaultRecordingRules.json") as url:
         default_rules_template = json.loads(url.read().decode())
 
     default_rule_group_name = "NodeRecordingRulesRuleGroup-{0}".format(cluster_name)
