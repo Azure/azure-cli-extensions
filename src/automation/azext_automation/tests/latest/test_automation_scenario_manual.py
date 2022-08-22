@@ -70,7 +70,8 @@ class AutomationScenarioTest(ScenarioTest):
         self.kwargs.update({
             'account_name': self.create_random_name(prefix='test-account-', length=24),
             'runbook_name': self.create_random_name(prefix='test-runbook-', length=24),
-            'runbook_content': RUNBOOK_CONTENT
+            'runbook_content': RUNBOOK_CONTENT,
+            'hybrid_runbook_worker_group_name' : self.create_random_name(prefix='hwg-', length=10)
         })
         self.cmd('automation account create --resource-group {rg} --name {account_name} --location "West US 2"',
                  checks=[self.check('name', '{account_name}')])
@@ -107,6 +108,17 @@ class AutomationScenarioTest(ScenarioTest):
                  '--name {runbook_name} --content @{script_path}')
         self.cmd('automation runbook publish --resource-group {rg} --automation-account-name {account_name} '
                  '--name {runbook_name}')
+
+        self.cmd('automation hybrid-runbook-worker-group create --resource-group {rg} --automation-account-name {account_name} --name {hybrid_runbook_worker_group}',
+        checks=[self.check('name', '{hybrid_worker_group_name}')])
+
+        self.cmd('automation hybrid-runbook-worker-group show --resource-group {rg} --automation-account-name {account_name} --name {hybrid_runbook_worker_group}',
+        checks=[self.check('name', '{hybrid_worker_group_name}')])
+
+        self.cmd('automation hybrid-runbook-worker-group list --resource-group {rg} --automation-account-name {account_name}',
+        checks=[self.check('length(@)', 1)])
+
+        self.cmd('automation hybrid-runbook-worker-group delete --resource-group {rg} --automation-account-name {account_name} --name {hybrid_runbook_worker_group}')
 
         with mock.patch('azext_automation.manual.custom._uuid', side_effect=_uuid):
             job = self.cmd('automation runbook start --resource-group {rg} --automation-account-name {account_name} '
