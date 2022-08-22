@@ -173,7 +173,7 @@ class AutomationScenarioTest(ScenarioTest):
             'vm_name':self.create_random_name('vm-', 15),
         })
 
-        vm_id = self.cmd('vm create -n {vm_name} -g {rg} --image ubuntults --nsg-rule None').get_output_in_json()['id']
+        vm_id = self.cmd('vm create -n {vm_name} -g {rg} --image ubuntults --generate-ssh-key --nsg-rule NONE').get_output_in_json()['id']
         self.kwargs.update({
             'vm_id': vm_id
         })
