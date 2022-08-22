@@ -692,7 +692,6 @@ def delete_rules(cmd, cluster_region, cluster_subscription, cluster_resource_gro
     else:
         raise error
 
-
 def link_azure_monitor_profile_artifacts(cmd,
             cluster_subscription,
             cluster_resource_group_name,
