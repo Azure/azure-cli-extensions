@@ -178,7 +178,7 @@ class AutomationScenarioTest(ScenarioTest):
             'vm_id': vm_id
         })
         self.cmd('automation account create -n {account_name} -g {rg}')
-        self.cmd('automation software-update-configuration create -n {conf_name} -g {rg} --automation-account-name {account_name} --description test --frequency Hour --interval 1 --operating-system windows --excluded-kb-numbers 16800 16800 --included-kb-numbers 15000 15000 --included-update-classifications Critical --duration pT2H0M --azure-virtual-machines {vm_id} --time-zone UTC+08:00 --start-time 2022-08-23 18:00:00 --expiry-time 2022-08-30 18:00:00 --next-run 2022-08-25 18:00:00 --non-azure-computer-names nonvm1 nonvm2 --reboot-setting IfRequired --azure-queries-scope /subscriptions/0b1f6471-1bf0-4dda-aec3-cb9272f09590 --azure-queries-location eastus westus --tags tag1 tag2', checks=[
+        self.cmd('automation software-update-configuration create -n {conf_name} -g {rg} --automation-account-name {account_name} --description test --frequency Hour --interval 1 --operating-system windows --excluded-kb-numbers 16800 16800 --included-kb-numbers 15000 15000 --included-update-classifications Critical --duration pT2H0M --azure-virtual-machines {vm_id} --time-zone UTC+08:00 --start-time 2022-08-23 18:00:00 --expiry-time 2022-08-30 18:00:00 --next-run 2022-08-25 18:00:00 --non-azure-computer-names nonvm1 nonvm2 --reboot-setting IfRequired --azure-queries-scope /subscriptions/00000000-0000-0000-0000-000000000000 --azure-queries-location eastus westus --tags tag1 tag2', checks=[
             self.check('name', '{conf_name}'),
             self.check('scheduleInfo.description', 'test'),
             self.check('scheduleInfo.frequency', 'Hour'),
@@ -192,7 +192,7 @@ class AutomationScenarioTest(ScenarioTest):
             self.check('updateConfiguration.nonAzureComputerNames', ['nonvm1', 'nonvm2']),
             self.check('updateConfiguration.operatingSystem', 'Windows'),
             self.check('updateConfiguration.targets.azureQueries[0].locations', ['eastus', 'westus']),
-            self.check('updateConfiguration.targets.azureQueries[0].scope', ['/subscriptions/0b1f6471-1bf0-4dda-aec3-cb9272f09590']),
+            self.check('updateConfiguration.targets.azureQueries[0].scope', ['/subscriptions/00000000-0000-0000-0000-000000000000']),
             self.check('updateConfiguration.targets.azureQueries[0].tagSettings.tags.tag',  ['tag1','tag2']),
             self.check('updateConfiguration.windows.excludedKbNumbers', ['16800', '16800']),
             self.check('updateConfiguration.windows.includedKbNumbers', ['15000', '15000']),
@@ -206,7 +206,7 @@ class AutomationScenarioTest(ScenarioTest):
             self.check('value[0].updateConfiguration.nonAzureComputerNames', ['nonvm1', 'nonvm2']),
             self.check('value[0].updateConfiguration.operatingSystem', 'Windows'),
             self.check('value[0].updateConfiguration.targets.azureQueries[0].locations', ['eastus', 'westus']),
-            self.check('value[0].updateConfiguration.targets.azureQueries[0].scope', ['/subscriptions/0b1f6471-1bf0-4dda-aec3-cb9272f09590']),
+            self.check('value[0].updateConfiguration.targets.azureQueries[0].scope', ['/subscriptions/00000000-0000-0000-0000-000000000000']),
             self.check('value[0].updateConfiguration.targets.azureQueries[0].tagSettings.tags.tag', ['tag1', 'tag2']),
             self.check('value[0].updateConfiguration.windows.excludedKbNumbers', ['16800', '16800']),
             self.check('value[0].updateConfiguration.windows.includedKbNumbers', ['15000', '15000']),
@@ -227,7 +227,7 @@ class AutomationScenarioTest(ScenarioTest):
             self.check('updateConfiguration.nonAzureComputerNames', ['nonvm1', 'nonvm2']),
             self.check('updateConfiguration.operatingSystem', 'Windows'),
             self.check('updateConfiguration.targets.azureQueries[0].locations', ['eastus', 'westus']),
-            self.check('updateConfiguration.targets.azureQueries[0].scope', ['/subscriptions/0b1f6471-1bf0-4dda-aec3-cb9272f09590']),
+            self.check('updateConfiguration.targets.azureQueries[0].scope', ['/subscriptions/00000000-0000-0000-0000-000000000000']),
             self.check('updateConfiguration.targets.azureQueries[0].tagSettings.tags.tag', ['tag1', 'tag2']),
             self.check('updateConfiguration.windows.excludedKbNumbers', ['16800', '16800']),
             self.check('updateConfiguration.windows.includedKbNumbers', ['15000', '15000']),
