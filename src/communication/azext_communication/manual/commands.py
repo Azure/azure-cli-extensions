@@ -36,7 +36,7 @@ def load_command_table(self, _):
     with self.command_group('communication phonenumber', client_factory=cf_communication_phonenumbers, is_preview=True) as g:
         g.communication_custom_command('list', 'communication_list_phonenumbers', phonenumber_arguments)
         g.communication_custom_command('show', 'communication_show_phonenumber', phonenumber_arguments)
-    with self.command_group('communication phonenumbers', client_factory=cf_communication_phonenumbers, 
+    with self.command_group('communication phonenumbers', client_factory=cf_communication_phonenumbers,
                             deprecate_info=self.deprecate(redirect='phonenumber', hide=True)) as g:
         g.communication_custom_command('list-phonenumbers', 'communication_list_phonenumbers', phonenumber_arguments,
                                        deprecate_info=self.deprecate(redirect='list', hide=True))
