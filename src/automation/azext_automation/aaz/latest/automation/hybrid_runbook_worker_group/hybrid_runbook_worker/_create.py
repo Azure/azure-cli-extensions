@@ -12,16 +12,16 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "automation hybrid-runbook-worker-group create",
+    "automation hybrid-runbook-worker-group hybrid-runbook-worker create",
 )
 class Create(AAZCommand):
-    """Create a hybrid runbook worker group.
+    """Create a hybrid runbook worker.
     """
 
     _aaz_info = {
-        "version": "2022-02-22",
+        "version": "2021-06-22",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.automation/automationaccounts/{}/hybridrunbookworkergroups/{}", "2022-02-22"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.automation/automationaccounts/{}/hybridrunbookworkergroups/{}/hybridrunbookworkers/{}", "2021-06-22"],
         ]
     }
 
@@ -48,10 +48,16 @@ class Create(AAZCommand):
             id_part="name",
         )
         _args_schema.hybrid_runbook_worker_group_name = AAZStrArg(
-            options=["-n", "--name", "--hybrid-runbook-worker-group-name"],
+            options=["--hybrid-runbook-worker-group-name"],
             help="The hybrid runbook worker group name",
             required=True,
             id_part="child_name_1",
+        )
+        _args_schema.hybrid_runbook_worker_id = AAZStrArg(
+            options=["-n", "--name", "--hybrid-runbook-worker-id"],
+            help="The hybrid runbook worker id",
+            required=True,
+            id_part="child_name_2",
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -60,27 +66,21 @@ class Create(AAZCommand):
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
-        _args_schema.credential = AAZObjectArg(
-            options=["--credential"],
+        _args_schema.vm_resource_id = AAZStrArg(
+            options=["--vm-resource-id"],
             arg_group="Properties",
-            help="Sets the credential of a worker group.",
-        )
-
-        credential = cls._args_schema.credential
-        credential.name = AAZStrArg(
-            options=["name"],
-            help="Gets or sets the name of the credential.",
+            help="Azure Resource Manager Id for a virtual machine.",
         )
         return cls._args_schema
 
     def _execute_operations(self):
-        self.HybridRunbookWorkerGroupCreate(ctx=self.ctx)()
+        self.HybridRunbookWorkersCreate(ctx=self.ctx)()
 
     def _output(self, *args, **kwargs):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class HybridRunbookWorkerGroupCreate(AAZHttpOperation):
+    class HybridRunbookWorkersCreate(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -94,7 +94,7 @@ class Create(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Automation/automationAccounts/{automationAccountName}/hybridRunbookWorkerGroups/{hybridRunbookWorkerGroupName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Automation/automationAccounts/{automationAccountName}/hybridRunbookWorkerGroups/{hybridRunbookWorkerGroupName}/hybridRunbookWorkers/{hybridRunbookWorkerId}",
                 **self.url_parameters
             )
 
@@ -118,6 +118,10 @@ class Create(AAZCommand):
                     required=True,
                 ),
                 **self.serialize_url_param(
+                    "hybridRunbookWorkerId", self.ctx.args.hybrid_runbook_worker_id,
+                    required=True,
+                ),
+                **self.serialize_url_param(
                     "resourceGroupName", self.ctx.args.resource_group,
                     required=True,
                 ),
@@ -132,7 +136,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-02-22",
+                    "api-version", "2021-06-22",
                     required=True,
                 ),
             }
@@ -157,16 +161,12 @@ class Create(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
-            _builder.set_prop("name", AAZStrType, ".hybrid_runbook_worker_group_name")
-            _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
+            _builder.set_prop("name", AAZStrType, ".hybrid_runbook_worker_id")
+            _builder.set_prop("properties", AAZObjectType, ".", typ_kwargs={"flags": {"required": True, "client_flatten": True}})
 
             properties = _builder.get(".properties")
             if properties is not None:
-                properties.set_prop("credential", AAZObjectType, ".credential")
-
-            credential = _builder.get(".properties.credential")
-            if credential is not None:
-                credential.set_prop("name", AAZStrType, ".name")
+                properties.set_prop("vmResourceId", AAZStrType, ".vm_resource_id")
 
             return self.serialize_content(_content_value)
 
@@ -206,13 +206,22 @@ class Create(AAZCommand):
             )
 
             properties = cls._schema_on_200.properties
-            properties.credential = AAZObjectType()
-            properties.group_type = AAZStrType(
-                serialized_name="groupType",
+            properties.ip = AAZStrType()
+            properties.last_seen_date_time = AAZStrType(
+                serialized_name="lastSeenDateTime",
             )
-
-            credential = cls._schema_on_200.properties.credential
-            credential.name = AAZStrType()
+            properties.registered_date_time = AAZStrType(
+                serialized_name="registeredDateTime",
+            )
+            properties.vm_resource_id = AAZStrType(
+                serialized_name="vmResourceId",
+            )
+            properties.worker_name = AAZStrType(
+                serialized_name="workerName",
+            )
+            properties.worker_type = AAZStrType(
+                serialized_name="workerType",
+            )
 
             system_data = cls._schema_on_200.system_data
             system_data.created_at = AAZStrType(
