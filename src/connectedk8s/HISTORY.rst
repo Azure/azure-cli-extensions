@@ -2,6 +2,11 @@
 
 Release History
 ===============
+1.3.0
+++++++
+
+* Added private link support
+
 1.2.11
 ++++++
 
