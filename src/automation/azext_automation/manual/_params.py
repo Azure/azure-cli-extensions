@@ -18,7 +18,8 @@ from azure.cli.core.commands.parameters import get_datetime_type
 from azext_automation.action import (
     AddPropertiesParameters, validator_duration
 )
-from azext_automation.vendored_sdks.automation.models import SkuNameEnum, RunbookTypeEnum
+from azext_automation.vendored_sdks.automation.models import SkuNameEnum, RunbookTypeEnum, WindowsUpdateClasses, \
+    OperatingSystemType
 
 
 def load_arguments(self, _):
@@ -147,7 +148,7 @@ def load_arguments(self, _):
 
     with self.argument_context('automation schedule update') as c:
         c.argument('description', help='The description of the schedule.')
-        c.argument('is_enabled', arg_type=get_three_state_flag(), help='Indicating whether this schedule is enabled.')
+        c.argument('is_enabled', arg_type=get_three_state_flag(), help='Indicate whether this schedule is enabled.')
 
     with self.argument_context('automation schedule list') as c:
         c.argument('automation_account_name', help='The name of the automation account.', id_part=None)
@@ -158,12 +159,11 @@ def load_arguments(self, _):
                    help='The name of the software update configuration.')
 
     with self.argument_context('automation software-update-configuration create') as c:
-        c.argument('operating_system', arg_type=get_enum_type(['Windows', 'Linux']),
+        c.argument('operating_system', arg_type=get_enum_type(OperatingSystemType),
                    help='Operating system of target machines.')
 
         c.argument('included_update_classifications',
-                   arg_type=get_enum_type(["Unclassified", "Critical", "Security", "UpdateRollup", "FeaturePack",
-                                           "ServicePack", "Definition", "Tools", "Updates"]),
+                   arg_type=get_enum_type(WindowsUpdateClasses),
                    help='Update classification included in the software update configuration.'
                         ' A comma separated string with required values.')
         c.argument('excluded_kb_numbers', nargs='+', help='KB numbers excluded from the software update configuration.')
@@ -183,7 +183,7 @@ def load_arguments(self, _):
         c.argument('tags', nargs='+',
                    help='List of Azure queries tag settings in the software update configuration.')
         c.argument('non_azure_queries_function_alias', help='Log Analytics Saved Search name.')
-        c.argument('non_azure_queries_workspace_id', help=' Workspace Id for Log Analytics.')
+        c.argument('non_azure_queries_workspace_id', help='Workspace Id for Log Analytics.')
         c.argument('start_time', arg_type=get_datetime_type(help='The start time of the schedule.'))
         c.argument('expiry_time', arg_type=get_datetime_type(help='The end time of the schedule.'))
         c.argument('expiry_time_offset_minutes', type=float, help="the expiry time's offset in minutes")

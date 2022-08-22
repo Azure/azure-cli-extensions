@@ -277,7 +277,7 @@ def automation_software_update_configuration_create(client, resource_group_name,
     if frequency is not None:
         schedule_info['frequency'] = frequency
     if time_zone is not None:
-        schedule_info['time_zone'] = time_zone
+        schedule_info['timeZone'] = time_zone
     if creation_time is not None:
         schedule_info['creationTime'] = creation_time
     if last_modified_time is not None:
@@ -294,14 +294,14 @@ def automation_software_update_configuration_create(client, resource_group_name,
     if pre_task_source is not None:
         pre_task['source'] = pre_task_source
     if pre_task_status is not None:
-        pre_task['job_id'] = pre_task_job_id
+        pre_task['jobId'] = pre_task_job_id
     post_task = {}
     if post_task_status is not None:
         post_task['status'] = post_task_status
     if post_task_source is not None:
         post_task['source'] = post_task_source
     if post_task_status is not None:
-        post_task['job_id'] = post_task_job_id
+        post_task['jobId'] = post_task_job_id
 
     if pre_task:
         tasks['preTask'] = pre_task

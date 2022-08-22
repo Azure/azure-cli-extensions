@@ -287,7 +287,7 @@ helps['automation software-update-configuration'] = """
 
 helps['automation software-update-configuration list'] = """
     type: command
-    short-summary: "Get all software-update-configurations for the account."
+    short-summary: "List all software-update-configurations for the account."
     examples:
       - name: List software-update-configurations by automation account
         text: |-
@@ -360,9 +360,9 @@ helps['automation software-update-configuration machine-runs'] = """
 
 helps['automation software-update-configuration machine-runs list'] = """
     type: command
-    short-summary: "Return list of software update configuration machine-runs."
+    short-summary: "List software update configuration machine-runs."
     examples:
-      - name: List software-update-configurations by automation account
+      - name: List software-update-configurations machine-runs by automation account
         text: |-
                az automation software-update-configuration machine-runs list --automation-account-name \
                "myAutomationAccount" --resource-group "rg"
@@ -372,7 +372,7 @@ helps['automation software-update-configuration machine-runs show'] = """
     type: command
     short-summary: "Get a single software update configuration machine runs by Id."
     examples:
-      - name: List software-update-configurations machine runs by Id
+      - name: List software-update-configurations machine-runs by Id
         text: |-
                az automation software-update-configuration machine-runs show --automation-account-name \
                "myAutomationAccount" --resource-group "rg" --software-update-configuration-machine-run-id \
