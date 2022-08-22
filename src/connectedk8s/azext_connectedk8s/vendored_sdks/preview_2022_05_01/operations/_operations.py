@@ -16,7 +16,6 @@ from azure.core.pipeline import PipelineResponse
 from azure.core.pipeline.transport import HttpResponse
 from azure.core.rest import HttpRequest
 from azure.core.tracing.decorator import distributed_trace
-from azure.core.utils import case_insensitive_dict
 from azure.mgmt.core.exceptions import ARMErrorFormat
 
 from .. import models as _models
@@ -27,108 +26,99 @@ ClsType = Optional[Callable[[PipelineResponse[HttpRequest, HttpResponse], T, Dic
 _SERIALIZER = Serializer()
 _SERIALIZER.client_side_validation = False
 
-def build_list_request(
+def build_get_request(
     **kwargs: Any
 ) -> HttpRequest:
-    _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
-    _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
+    api_version = kwargs.pop('api_version', "2022-05-01-preview")  # type: str
 
-    api_version = kwargs.pop('api_version', _params.pop('api-version', "2022-06-02-preview"))  # type: str
-    accept = _headers.pop('Accept', "application/json")
-
+    accept = "application/json"
     # Construct URL
-    _url = kwargs.pop("template_url", "/providers/Microsoft.ContainerService/operations")
+    _url = kwargs.pop("template_url", "/providers/Microsoft.Kubernetes/operations")
 
     # Construct parameters
-    _params['api-version'] = _SERIALIZER.query("api_version", api_version, 'str')
+    _query_parameters = kwargs.pop("params", {})  # type: Dict[str, Any]
+    _query_parameters['api-version'] = _SERIALIZER.query("api_version", api_version, 'str')
 
     # Construct headers
-    _headers['Accept'] = _SERIALIZER.header("accept", accept, 'str')
+    _header_parameters = kwargs.pop("headers", {})  # type: Dict[str, Any]
+    _header_parameters['Accept'] = _SERIALIZER.header("accept", accept, 'str')
 
     return HttpRequest(
         method="GET",
         url=_url,
-        params=_params,
-        headers=_headers,
+        params=_query_parameters,
+        headers=_header_parameters,
         **kwargs
     )
 
-class Operations:
-    """
-    .. warning::
-        **DO NOT** instantiate this class directly.
+class Operations(object):
+    """Operations operations.
 
-        Instead, you should access the following operations through
-        :class:`~azure.mgmt.containerservice.v2022_06_02_preview.ContainerServiceClient`'s
-        :attr:`operations` attribute.
+    You should not instantiate this class directly. Instead, you should create a Client instance that
+    instantiates it for you and attaches it as an attribute.
+
+    :ivar models: Alias to model classes used in this operation group.
+    :type models: ~azure.mgmt.hybridkubernetes.models
+    :param client: Client for service requests.
+    :param config: Configuration of service client.
+    :param serializer: An object model serializer.
+    :param deserializer: An object model deserializer.
     """
 
     models = _models
 
-    def __init__(self, *args, **kwargs):
-        input_args = list(args)
-        self._client = input_args.pop(0) if input_args else kwargs.pop("client")
-        self._config = input_args.pop(0) if input_args else kwargs.pop("config")
-        self._serialize = input_args.pop(0) if input_args else kwargs.pop("serializer")
-        self._deserialize = input_args.pop(0) if input_args else kwargs.pop("deserializer")
-
+    def __init__(self, client, config, serializer, deserializer):
+        self._client = client
+        self._serialize = serializer
+        self._deserialize = deserializer
+        self._config = config
 
     @distributed_trace
-    def list(
+    def get(
         self,
         **kwargs: Any
-    ) -> Iterable[_models.OperationListResult]:
-        """Gets a list of operations.
-
-        Gets a list of operations.
+    ) -> Iterable["_models.OperationList"]:
+        """Lists all of the available API operations for Connected Cluster resource.
 
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: An iterator like instance of either OperationListResult or the result of cls(response)
-        :rtype:
-         ~azure.core.paging.ItemPaged[~azure.mgmt.containerservice.v2022_06_02_preview.models.OperationListResult]
+        :return: An iterator like instance of either OperationList or the result of cls(response)
+        :rtype: ~azure.core.paging.ItemPaged[~azure.mgmt.hybridkubernetes.models.OperationList]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        _headers = kwargs.pop("headers", {}) or {}
-        _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
+        api_version = kwargs.pop('api_version', "2022-05-01-preview")  # type: str
 
-        api_version = kwargs.pop('api_version', _params.pop('api-version', "2022-06-02-preview"))  # type: str
-        cls = kwargs.pop('cls', None)  # type: ClsType[_models.OperationListResult]
-
+        cls = kwargs.pop('cls', None)  # type: ClsType["_models.OperationList"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
-        error_map.update(kwargs.pop('error_map', {}) or {})
+        error_map.update(kwargs.pop('error_map', {}))
         def prepare_request(next_link=None):
             if not next_link:
                 
-                request = build_list_request(
+                request = build_get_request(
                     api_version=api_version,
-                    template_url=self.list.metadata['url'],
-                    headers=_headers,
-                    params=_params,
+                    template_url=self.get.metadata['url'],
                 )
                 request = _convert_request(request)
-                request.url = self._client.format_url(request.url)  # type: ignore
+                request.url = self._client.format_url(request.url)
 
             else:
                 
-                request = build_list_request(
+                request = build_get_request(
                     api_version=api_version,
                     template_url=next_link,
-                    headers=_headers,
-                    params=_params,
                 )
                 request = _convert_request(request)
-                request.url = self._client.format_url(request.url)  # type: ignore
+                request.url = self._client.format_url(request.url)
                 request.method = "GET"
             return request
 
         def extract_data(pipeline_response):
-            deserialized = self._deserialize("OperationListResult", pipeline_response)
+            deserialized = self._deserialize("OperationList", pipeline_response)
             list_of_elem = deserialized.value
             if cls:
                 list_of_elem = cls(list_of_elem)
-            return None, iter(list_of_elem)
+            return deserialized.next_link or None, iter(list_of_elem)
 
         def get_next(next_link=None):
             request = prepare_request(next_link)
@@ -142,7 +132,8 @@ class Operations:
 
             if response.status_code not in [200]:
                 map_error(status_code=response.status_code, response=response, error_map=error_map)
-                raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+                error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
+                raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
             return pipeline_response
 
@@ -150,4 +141,4 @@ class Operations:
         return ItemPaged(
             get_next, extract_data
         )
-    list.metadata = {'url': "/providers/Microsoft.ContainerService/operations"}  # type: ignore
+    get.metadata = {'url': "/providers/Microsoft.Kubernetes/operations"}  # type: ignore

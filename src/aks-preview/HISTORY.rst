@@ -11,17 +11,25 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
-*  [BREAKING CHANGE] Since the service no longer supports updating source resource id for role binding, so remove --source-resource-id of `aks trustedaccess rolebinding update` command
+
+0.5.95
+++++++
+* Add support for AzureMonitorMetrics Addon (managed prometheus metrics in public preview) for AKS
+
+0.5.94
+++++++
+
+* [BREAKING CHANGE] Since the service no longer supports updating source resource id for role binding, so remove --source-resource-id of `aks trustedaccess rolebinding update` command.
+* Change the acceptable values of the `--roles` option to comma-seperated.
+    * az aks trustedaccess rolebinding create
+    * az aks trustedaccess rolebinding update
+* Upgrade `az aks kollect` command to use Periscope version 0.0.10 supporting enhanced Windows log collection.
+* Update to use 2022-07-02-preview api version.
 
 0.5.93
 ++++++
 
 * Fix for "'Namespace' object has no attribute 'nodepool_name' error" in command `az aks nodepool wait`, see issue `\#23468 <https://github.com/Azure/azure-cli/issues/23468>`_.
-
-0.5.93
-++++++
-
-* Add support for AzureMonitorMetrics Addon (managed prometheus metrics in public preview) for AKS
 
 0.5.92
 ++++++

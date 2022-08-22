@@ -12,14 +12,15 @@ from azure.core.configuration import Configuration
 from azure.core.pipeline import policies
 from azure.mgmt.core.policies import ARMChallengeAuthenticationPolicy, ARMHttpLoggingPolicy
 
+from ._version import VERSION
+
 if TYPE_CHECKING:
     # pylint: disable=unused-import,ungrouped-imports
     from azure.core.credentials import TokenCredential
 
-VERSION = "unknown"
 
-class ContainerServiceClientConfiguration(Configuration):  # pylint: disable=too-many-instance-attributes
-    """Configuration for ContainerServiceClient.
+class ConnectedKubernetesClientConfiguration(Configuration):  # pylint: disable=too-many-instance-attributes
+    """Configuration for ConnectedKubernetesClient.
 
     Note that all parameters used to create this instance are saved as instance
     attributes.
@@ -28,8 +29,8 @@ class ContainerServiceClientConfiguration(Configuration):  # pylint: disable=too
     :type credential: ~azure.core.credentials.TokenCredential
     :param subscription_id: The ID of the target subscription.
     :type subscription_id: str
-    :keyword api_version: Api Version. Default value is "2022-06-02-preview". Note that overriding
-     this default value may result in unsupported behavior.
+    :keyword api_version: Api Version. Default value is "2021-10-01". Note that overriding this
+     default value may result in unsupported behavior.
     :paramtype api_version: str
     """
 
@@ -39,8 +40,8 @@ class ContainerServiceClientConfiguration(Configuration):  # pylint: disable=too
         subscription_id: str,
         **kwargs: Any
     ) -> None:
-        super(ContainerServiceClientConfiguration, self).__init__(**kwargs)
-        api_version = kwargs.pop('api_version', "2022-06-02-preview")  # type: str
+        super(ConnectedKubernetesClientConfiguration, self).__init__(**kwargs)
+        api_version = kwargs.pop('api_version', "2021-10-01")  # type: str
 
         if credential is None:
             raise ValueError("Parameter 'credential' must not be None.")
@@ -51,7 +52,7 @@ class ContainerServiceClientConfiguration(Configuration):  # pylint: disable=too
         self.subscription_id = subscription_id
         self.api_version = api_version
         self.credential_scopes = kwargs.pop('credential_scopes', ['https://management.azure.com/.default'])
-        kwargs.setdefault('sdk_moniker', 'mgmt-containerservice/{}'.format(VERSION))
+        kwargs.setdefault('sdk_moniker', 'mgmt-hybridkubernetes/{}'.format(VERSION))
         self._configure(**kwargs)
 
     def _configure(

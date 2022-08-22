@@ -17,7 +17,6 @@ def register_aks_preview_resource_type():
         "latest",
         CUSTOM_MGMT_AKS_PREVIEW,
         SDKProfile("2022-07-02-preview", {"container_services": "2017-07-01"}),
-        # SDKProfile("2022-06-02-preview", {"container_services": "2017-07-01"}),
     )
 
 
