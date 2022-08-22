@@ -4,7 +4,7 @@ Release History
 ===============
 0.5.2
 +++++
-* 'az network manager connection management-group': Reopen the set of commands.
+* 'az network manager connection management-group': reopen the set of commands.
 
 0.5.1
 +++++

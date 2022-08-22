@@ -114,8 +114,8 @@ def network_manager_commit_post(cmd,
     parameters['configuration_ids'] = configuration_ids
     parameters['commit_type'] = commit_type
     return client.begin_post(resource_group_name=resource_group_name,
-                       network_manager_name=network_manager_name,
-                       parameters=parameters)
+                             network_manager_name=network_manager_name,
+                             parameters=parameters)
 
 
 def network_manager_deploy_status_list(cmd,
