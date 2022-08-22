@@ -109,16 +109,16 @@ class AutomationScenarioTest(ScenarioTest):
         self.cmd('automation runbook publish --resource-group {rg} --automation-account-name {account_name} '
                  '--name {runbook_name}')
 
-        self.cmd('automation hybrid-runbook-worker-group create --resource-group {rg} --automation-account-name {account_name} --name {hybrid_runbook_worker_group}',
-        checks=[self.check('name', '{hybrid_worker_group_name}')])
+        self.cmd('automation hybrid-runbook-worker-group create --resource-group {rg} --automation-account-name {account_name} --name {hybrid_runbook_worker_group_name}',
+        checks=[self.check('name', '{hybrid_runbook_worker_group_name}')])
 
-        self.cmd('automation hybrid-runbook-worker-group show --resource-group {rg} --automation-account-name {account_name} --name {hybrid_runbook_worker_group}',
-        checks=[self.check('name', '{hybrid_worker_group_name}')])
+        self.cmd('automation hybrid-runbook-worker-group show --resource-group {rg} --automation-account-name {account_name} --name {hybrid_runbook_worker_group_name}',
+        checks=[self.check('name', '{hybrid_runbook_worker_group_name}')])
 
         self.cmd('automation hybrid-runbook-worker-group list --resource-group {rg} --automation-account-name {account_name}',
         checks=[self.check('length(@)', 1)])
 
-        self.cmd('automation hybrid-runbook-worker-group delete --resource-group {rg} --automation-account-name {account_name} --name {hybrid_runbook_worker_group}')
+        self.cmd('automation hybrid-runbook-worker-group delete --resource-group {rg} --automation-account-name {account_name} --name {hybrid_runbook_worker_group_name} --yes')
 
         with mock.patch('azext_automation.manual.custom._uuid', side_effect=_uuid):
             job = self.cmd('automation runbook start --resource-group {rg} --automation-account-name {account_name} '
