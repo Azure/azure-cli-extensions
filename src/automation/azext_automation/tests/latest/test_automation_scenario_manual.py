@@ -131,34 +131,34 @@ class AutomationScenarioTest(ScenarioTest):
         })
 
         self.cmd('automation account create -n {account_name} -g {rg}')
-        self.cmd('automation schedule create -n {schedule_name} -g {rg} --automation-account-name {account_name} --description test --frequency Hour --interval 1 --start-time 2022-08-20 18:00:00 --time-zone UTC+08:00', checks=[
-            self.check('frequency', 'Hours'),
+        self.cmd('automation schedule create -n {schedule_name} -g {rg} --automation-account-name {account_name} --description test --frequency Hour --interval 1 --start-time 2022-08-30 18:00:00 --time-zone UTC+08:00', checks=[
+            self.check('frequency', 'Hour'),
             self.check('interval', '1'),
-            self.check('startTime', '2022-08-20T18:00:00+08:00'),
+            self.check('startTime', '2022-08-30T18:00:00+08:00'),
             self.check('timeZone', 'UTC+08:00'),
             self.check('description', 'test'),
             self.check('isEnabled', True)
         ])
         self.cmd('automation schedule update -n {schedule_name} -g {rg} --automation-account-name {account_name} --description test1 --is-enabled false', checks=[
-            self.check('frequency', 'Hours'),
+            self.check('frequency', 'Hour'),
             self.check('interval', '1'),
-            self.check('startTime', '2022-08-20T18:00:00+08:00'),
+            self.check('startTime', '2022-08-30T18:00:00+08:00'),
             self.check('timeZone', 'UTC+08:00'),
             self.check('description', 'test1'),
             self.check('isEnabled', False)
         ])
         self.cmd('automation schedule list -g {rg} --automation-account-name {account_name} ', checks=[
-            self.check('[0].frequency', 'Hours'),
+            self.check('[0].frequency', 'Hour'),
             self.check('[0].interval', '1'),
-            self.check('[0].startTime', '2022-08-20T18:00:00+08:00'),
+            self.check('[0].startTime', '2022-08-30T18:00:00+08:00'),
             self.check('[0].timeZone', 'UTC+08:00'),
             self.check('[0].description', 'test1'),
             self.check('[0].isEnabled', False)
         ])
         self.cmd('automation schedule show -n {schedule_name} -g {rg} --automation-account-name {account_name} ', checks=[
-            self.check('frequency', 'Hours'),
+            self.check('frequency', 'Hour'),
             self.check('interval', '1'),
-            self.check('startTime', '2022-08-20T18:00:00+08:00'),
+            self.check('startTime', '2022-08-30T18:00:00+08:00'),
             self.check('timeZone', 'UTC+08:00'),
             self.check('description', 'test1'),
             self.check('isEnabled', False),
@@ -178,12 +178,12 @@ class AutomationScenarioTest(ScenarioTest):
             'vm_id': vm_id
         })
         self.cmd('automation account create -n {account_name} -g {rg}')
-        self.cmd('automation software-update-configuration create -n {conf_name} -g {rg} --automation-account-name {account_name} --description test --frequency Hour --interval 1 --operating-system windows --excluded-kb-numbers 16800,16800 --included-kb-numbers 15000 15000 --included-update-classifications Critical --duration pT2H0M --azure-virtual-machines {vm_id} --time-zone UTC+08:00 --start-time 2022-08-20 18:00:00 --expiry-time 2022-08-30 18:00:00 --next-run 2022-08-25 18:00:00 --non-azure-computer-names nonvm1 nonvm2 --reboot-setting IfRequired --azure-queries-scope /subscriptions/0b1f6471-1bf0-4dda-aec3-cb9272f09590 --azure-queries-location eastus westus --tags tag1 tag2', checks=[
-            self.check('name', {conf_name}),
-            self.check('description', 'test'),
-            self.check('scheduleInfo.frequency', 'Hours'),
+        self.cmd('automation software-update-configuration create -n {conf_name} -g {rg} --automation-account-name {account_name} --description test --frequency Hour --interval 1 --operating-system windows --excluded-kb-numbers 16800 16800 --included-kb-numbers 15000 15000 --included-update-classifications Critical --duration pT2H0M --azure-virtual-machines {vm_id} --time-zone UTC+08:00 --start-time 2022-08-23 18:00:00 --expiry-time 2022-08-30 18:00:00 --next-run 2022-08-25 18:00:00 --non-azure-computer-names nonvm1 nonvm2 --reboot-setting IfRequired --azure-queries-scope /subscriptions/0b1f6471-1bf0-4dda-aec3-cb9272f09590 --azure-queries-location eastus westus --tags tag1 tag2', checks=[
+            self.check('name', '{conf_name}'),
+            self.check('scheduleInfo.description', 'test'),
+            self.check('scheduleInfo.frequency', 'Hour'),
             self.check('scheduleInfo.interval', '1'),
-            self.check('scheduleInfo.startTime', '2022-08-20T18:00:00+08:00'),
+            self.check('scheduleInfo.startTime', '2022-08-23T10:00:00+08:00'),
             self.check('scheduleInfo.timeZone', 'UTC+08:00'),
             self.check('scheduleInfo.description', 'test'),
             self.check('scheduleInfo.isEnabled', True),
@@ -191,41 +191,34 @@ class AutomationScenarioTest(ScenarioTest):
             self.check('updateConfiguration.duration', '2:00:00'),
             self.check('updateConfiguration.nonAzureComputerNames', ['nonvm1', 'nonvm2']),
             self.check('updateConfiguration.operatingSystem', 'Windows'),
-            self.check('updateConfiguration.targets.azureQueries.locations', ['eastus', 'westus']),
-            self.check('updateConfiguration.targets.azureQueries.scope', ['/subscriptions/0b1f6471-1bf0-4dda-aec3-cb9272f09590']),
-            self.check('updateConfiguration.targets.azureQueries.tagSettings.tags.tag',  ['tag1','tag2']),
+            self.check('updateConfiguration.targets.azureQueries[0].locations', ['eastus', 'westus']),
+            self.check('updateConfiguration.targets.azureQueries[0].scope', ['/subscriptions/0b1f6471-1bf0-4dda-aec3-cb9272f09590']),
+            self.check('updateConfiguration.targets.azureQueries[0].tagSettings.tags.tag',  ['tag1','tag2']),
             self.check('updateConfiguration.windows.excludedKbNumbers', ['16800', '16800']),
             self.check('updateConfiguration.windows.includedKbNumbers', ['15000', '15000']),
             self.check('updateConfiguration.windows.includedUpdateClassifications', 'Critical'),
             self.check('updateConfiguration.windows.rebootSetting', 'IfRequired')
         ])
         self.cmd('automation software-update-configuration list -g {rg} --automation-account-name {account_name}', checks=[
-            self.check('[0].name', {conf_name}),
-            self.check('[0].description', 'test'),
-            self.check('[0].scheduleInfo.frequency', 'Hours'),
-            self.check('[0].scheduleInfo.interval', '1'),
-            self.check('[0].scheduleInfo.startTime', '2022-08-20T18:00:00+08:00'),
-            self.check('[0].scheduleInfo.timeZone', 'UTC+08:00'),
-            self.check('[0].scheduleInfo.description', 'test'),
-            self.check('[0].scheduleInfo.isEnabled', True),
-            self.check('[0].updateConfiguration.azureVirtualMachines', [vm_id]),
-            self.check('[0].updateConfiguration.duration', '2:00:00'),
-            self.check('[0].updateConfiguration.nonAzureComputerNames', ['nonvm1', 'nonvm2']),
-            self.check('[0].updateConfiguration.operatingSystem', 'Windows'),
-            self.check('[0].updateConfiguration.targets.azureQueries.locations', ['eastus', 'westus']),
-            self.check('[0].updateConfiguration.targets.azureQueries.scope', ['/subscriptions/0b1f6471-1bf0-4dda-aec3-cb9272f09590']),
-            self.check('[0].updateConfiguration.targets.azureQueries.tagSettings.tags.tag', ['tag1', 'tag2']),
-            self.check('[0].updateConfiguration.windows.excludedKbNumbers', ['16800', '16800']),
-            self.check('[0].updateConfiguration.windows.includedKbNumbers', ['15000', '15000']),
-            self.check('[0].updateConfiguration.windows.includedUpdateClassifications', 'Critical'),
-            self.check('[0].updateConfiguration.windows.rebootSetting', 'IfRequired')
+            self.check('value[0].name', '{conf_name}'),
+            self.check('value[0].updateConfiguration.azureVirtualMachines', [vm_id]),
+            self.check('value[0].updateConfiguration.duration', '2:00:00'),
+            self.check('value[0].updateConfiguration.nonAzureComputerNames', ['nonvm1', 'nonvm2']),
+            self.check('value[0].updateConfiguration.operatingSystem', 'Windows'),
+            self.check('value[0].updateConfiguration.targets.azureQueries[0].locations', ['eastus', 'westus']),
+            self.check('value[0].updateConfiguration.targets.azureQueries[0].scope', ['/subscriptions/0b1f6471-1bf0-4dda-aec3-cb9272f09590']),
+            self.check('value[0].updateConfiguration.targets.azureQueries[0].tagSettings.tags.tag', ['tag1', 'tag2']),
+            self.check('value[0].updateConfiguration.windows.excludedKbNumbers', ['16800', '16800']),
+            self.check('value[0].updateConfiguration.windows.includedKbNumbers', ['15000', '15000']),
+            self.check('value[0].updateConfiguration.windows.includedUpdateClassifications', 'Critical'),
+            self.check('value[0].updateConfiguration.windows.rebootSetting', 'IfRequired')
         ])
         self.cmd('automation software-update-configuration show -n {conf_name} -g {rg} --automation-account-name {account_name} -n {conf_name}', checks=[
-            self.check('name', {conf_name}),
-            self.check('description', 'test'),
-            self.check('scheduleInfo.frequency', 'Hours'),
+            self.check('name', '{conf_name}'),
+            self.check('scheduleInfo.description', 'test'),
+            self.check('scheduleInfo.frequency', 'Hour'),
             self.check('scheduleInfo.interval', '1'),
-            self.check('scheduleInfo.startTime', '2022-08-20T18:00:00+08:00'),
+            self.check('scheduleInfo.startTime', '2022-08-23T10:00:00+08:00'),
             self.check('scheduleInfo.timeZone', 'UTC+08:00'),
             self.check('scheduleInfo.description', 'test'),
             self.check('scheduleInfo.isEnabled', True),
@@ -233,13 +226,18 @@ class AutomationScenarioTest(ScenarioTest):
             self.check('updateConfiguration.duration', '2:00:00'),
             self.check('updateConfiguration.nonAzureComputerNames', ['nonvm1', 'nonvm2']),
             self.check('updateConfiguration.operatingSystem', 'Windows'),
-            self.check('updateConfiguration.targets.azureQueries.locations', ['eastus', 'westus']),
-            self.check('updateConfiguration.targets.azureQueries.scope',
-                       ['/subscriptions/0b1f6471-1bf0-4dda-aec3-cb9272f09590']),
-            self.check('updateConfiguration.targets.azureQueries.tagSettings.tags.tag', ['tag1', 'tag2']),
+            self.check('updateConfiguration.targets.azureQueries[0].locations', ['eastus', 'westus']),
+            self.check('updateConfiguration.targets.azureQueries[0].scope', ['/subscriptions/0b1f6471-1bf0-4dda-aec3-cb9272f09590']),
+            self.check('updateConfiguration.targets.azureQueries[0].tagSettings.tags.tag', ['tag1', 'tag2']),
             self.check('updateConfiguration.windows.excludedKbNumbers', ['16800', '16800']),
             self.check('updateConfiguration.windows.includedKbNumbers', ['15000', '15000']),
             self.check('updateConfiguration.windows.includedUpdateClassifications', 'Critical'),
             self.check('updateConfiguration.windows.rebootSetting', 'IfRequired')
+        ])
+        self.cmd('automation software-update-configuration runs list -g {rg} --automation-account-name {account_name}', checks=[
+            self.check('value', [])
+        ])
+        self.cmd('automation software-update-configuration machine-runs list -g {rg} --automation-account-name {account_name}', checks=[
+            self.check('value', [])
         ])
         self.cmd('automation software-update-configuration delete -n {conf_name} -g {rg} --automation-account-name {account_name} -y')

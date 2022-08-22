@@ -13,7 +13,7 @@ from azure.cli.core.commands.parameters import (
     resource_group_name_type,
     get_location_type
 )
-from azure.cli.core.commands.validators import get_default_location_from_resource_group, validate_file_or_dict
+from azure.cli.core.commands.validators import get_default_location_from_resource_group
 from azure.cli.core.commands.parameters import get_datetime_type
 from azext_automation.action import (
     AddPropertiesParameters, validator_duration
@@ -203,11 +203,15 @@ def load_arguments(self, _):
         c.argument('post_task_source', help='The name of the source of the task.')
         c.argument('post_task_job_id', help='The job id of the task.')
 
-    # with self.argument_context('automation software-update-configuration list') as c:
-    #     c.argument('automation_account_name', help='The name of the automation account.', id_part=None)
-
-    with self.argument_context('automation software update configuration runs') as c:
+    with self.argument_context('automation software-update-configuration runs') as c:
         c.argument('automation_account_name', help='The name of the automation account.')
 
-    with self.argument_context('automation software-update-configuration machine runs') as c:
+    with self.argument_context('automation software-update-configuration runs show') as c:
+        c.argument('software_update_configuration_run_id', help='The Id of the software update configuration run.')
+
+    with self.argument_context('automation software-update-configuration machine-runs') as c:
         c.argument('automation_account_name', help='The name of the automation account.')
+
+    with self.argument_context('automation software-update-configuration machine-runs') as c:
+        c.argument('software_update_configuration_machine_run_id',
+                   help='The Id of the software update configuration machine run.')

@@ -311,13 +311,12 @@ helps['automation software-update-configuration create'] = """
     examples:
       - name: Create an automation software-update-configuration
         text: |-
-               az automation software-update-configuration create --automation-account-name "myAutomationAccount"
+               az automation software-update-configuration create --automation-account-name "myAutomationAccount" \
                  --resource-group "rg" -n mySoftwareUpdateConfiguration --frequency Hour --interval 1 \
-                 --operating-system windows --excluded-kb-numbers 16800,16800 \
+                 --operating-system windows --excluded-kb-numbers 16800,16800 -n confgname \
                  --included-update-classifications Critical --duration pT2H0M --azure-virtual-machines \
                  /subscriptions/{subid}/resourceGroups/{rg}/providers/Microsoft.Compute/virtualMachines/myVM
 """
-
 
 helps['automation software-update-configuration delete'] = """
     type: command
@@ -329,3 +328,53 @@ helps['automation software-update-configuration delete'] = """
                --resource-group "rg" --automation-account-name "myAutomationAccount"
 """
 
+helps['automation software-update-configuration runs'] = """
+    type: group
+    short-summary: "Software Update Configuration Runs."
+"""
+
+helps['automation software-update-configuration runs list'] = """
+    type: command
+    short-summary: "Return list of software update configuration runs."
+    examples:
+      - name: List software-update-configurations by automation account
+        text: |-
+               az automation software-update-configuration runs list --automation-account-name "myAutomationAccount" \
+                --resource-group "rg"
+"""
+
+helps['automation software-update-configuration runs show'] = """
+    type: command
+    short-summary: "Get a single software update configuration runs by Id."
+    examples:
+      - name: List software-update-configurations runs by Id
+        text: |-
+               az automation software-update-configuration runs show --automation-account-name \
+               "myAutomationAccount" --resource-group "rg" --software-update-configuration-run-id \
+               "MyconfigurationRunId"
+"""
+helps['automation software-update-configuration machine-runs'] = """
+    type: group
+    short-summary: "Software Update Configuration Machine Runs."
+"""
+
+helps['automation software-update-configuration machine-runs list'] = """
+    type: command
+    short-summary: "Return list of software update configuration machine-runs."
+    examples:
+      - name: List software-update-configurations by automation account
+        text: |-
+               az automation software-update-configuration machine-runs list --automation-account-name \
+               "myAutomationAccount" --resource-group "rg"
+"""
+
+helps['automation software-update-configuration machine-runs show'] = """
+    type: command
+    short-summary: "Get a single software update configuration machine runs by Id."
+    examples:
+      - name: List software-update-configurations machine runs by Id
+        text: |-
+               az automation software-update-configuration machine-runs show --automation-account-name \
+               "myAutomationAccount" --resource-group "rg" --software-update-configuration-machine-run-id \
+               "MyconfigurationMachineRunId"
+"""

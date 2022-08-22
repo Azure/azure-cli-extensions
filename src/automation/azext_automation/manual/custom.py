@@ -242,7 +242,7 @@ def automation_software_update_configuration_create(client, resource_group_name,
     if azure_queries_locations is not None:
         azure_queries['locations'] = azure_queries_locations
     if tags is not None:
-        azure_queries['tagSettings'] = {'tags': {'tag':tags}}
+        azure_queries['tagSettings'] = {'tags': {'tag': tags}}
     if azure_queries:
         targets['azureQueries'] = [azure_queries]
 
@@ -253,7 +253,6 @@ def automation_software_update_configuration_create(client, resource_group_name,
         non_azure_queries['workspaceId'] = non_azure_queries_workspace_id
     if non_azure_queries:
         targets['nonAzureQueries'] = [non_azure_queries]
-
 
     if targets:
         update_configuration['targets'] = targets
