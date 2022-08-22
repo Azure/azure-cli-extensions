@@ -6,11 +6,7 @@
 # Changes may cause incorrect behavior and will be lost if the code is regenerated.
 # --------------------------------------------------------------------------
 
-from typing import Dict, List, Optional, Union
-
 import msrest.serialization
-
-from ._container_service_client_enums import *
 
 
 class Resource(msrest.serialization.Model):
@@ -49,17 +45,14 @@ class Resource(msrest.serialization.Model):
 
     def __init__(
         self,
-        *,
-        location: str,
-        tags: Optional[Dict[str, str]] = None,
         **kwargs
     ):
         super(Resource, self).__init__(**kwargs)
         self.id = None
         self.name = None
         self.type = None
-        self.location = location
-        self.tags = tags
+        self.location = kwargs['location']
+        self.tags = kwargs.get('tags', None)
 
 
 class ContainerService(Resource):
@@ -137,29 +130,18 @@ class ContainerService(Resource):
 
     def __init__(
         self,
-        *,
-        location: str,
-        tags: Optional[Dict[str, str]] = None,
-        orchestrator_profile: Optional["ContainerServiceOrchestratorProfile"] = None,
-        custom_profile: Optional["ContainerServiceCustomProfile"] = None,
-        service_principal_profile: Optional["ContainerServicePrincipalProfile"] = None,
-        master_profile: Optional["ContainerServiceMasterProfile"] = None,
-        agent_pool_profiles: Optional[List["ContainerServiceAgentPoolProfile"]] = None,
-        windows_profile: Optional["ContainerServiceWindowsProfile"] = None,
-        linux_profile: Optional["ContainerServiceLinuxProfile"] = None,
-        diagnostics_profile: Optional["ContainerServiceDiagnosticsProfile"] = None,
         **kwargs
     ):
-        super(ContainerService, self).__init__(location=location, tags=tags, **kwargs)
+        super(ContainerService, self).__init__(**kwargs)
         self.provisioning_state = None
-        self.orchestrator_profile = orchestrator_profile
-        self.custom_profile = custom_profile
-        self.service_principal_profile = service_principal_profile
-        self.master_profile = master_profile
-        self.agent_pool_profiles = agent_pool_profiles
-        self.windows_profile = windows_profile
-        self.linux_profile = linux_profile
-        self.diagnostics_profile = diagnostics_profile
+        self.orchestrator_profile = kwargs.get('orchestrator_profile', None)
+        self.custom_profile = kwargs.get('custom_profile', None)
+        self.service_principal_profile = kwargs.get('service_principal_profile', None)
+        self.master_profile = kwargs.get('master_profile', None)
+        self.agent_pool_profiles = kwargs.get('agent_pool_profiles', None)
+        self.windows_profile = kwargs.get('windows_profile', None)
+        self.linux_profile = kwargs.get('linux_profile', None)
+        self.diagnostics_profile = kwargs.get('diagnostics_profile', None)
 
 
 class ContainerServiceAgentPoolProfile(msrest.serialization.Model):
@@ -261,29 +243,19 @@ class ContainerServiceAgentPoolProfile(msrest.serialization.Model):
 
     def __init__(
         self,
-        *,
-        name: str,
-        vm_size: Union[str, "ContainerServiceVMSizeTypes"],
-        count: Optional[int] = 1,
-        os_disk_size_gb: Optional[int] = None,
-        dns_prefix: Optional[str] = None,
-        ports: Optional[List[int]] = None,
-        storage_profile: Optional[Union[str, "ContainerServiceStorageProfileTypes"]] = None,
-        vnet_subnet_id: Optional[str] = None,
-        os_type: Optional[Union[str, "OSType"]] = "Linux",
         **kwargs
     ):
         super(ContainerServiceAgentPoolProfile, self).__init__(**kwargs)
-        self.name = name
-        self.count = count
-        self.vm_size = vm_size
-        self.os_disk_size_gb = os_disk_size_gb
-        self.dns_prefix = dns_prefix
+        self.name = kwargs['name']
+        self.count = kwargs.get('count', 1)
+        self.vm_size = kwargs['vm_size']
+        self.os_disk_size_gb = kwargs.get('os_disk_size_gb', None)
+        self.dns_prefix = kwargs.get('dns_prefix', None)
         self.fqdn = None
-        self.ports = ports
-        self.storage_profile = storage_profile
-        self.vnet_subnet_id = vnet_subnet_id
-        self.os_type = os_type
+        self.ports = kwargs.get('ports', None)
+        self.storage_profile = kwargs.get('storage_profile', None)
+        self.vnet_subnet_id = kwargs.get('vnet_subnet_id', None)
+        self.os_type = kwargs.get('os_type', "Linux")
 
 
 class ContainerServiceCustomProfile(msrest.serialization.Model):
@@ -305,12 +277,10 @@ class ContainerServiceCustomProfile(msrest.serialization.Model):
 
     def __init__(
         self,
-        *,
-        orchestrator: str,
         **kwargs
     ):
         super(ContainerServiceCustomProfile, self).__init__(**kwargs)
-        self.orchestrator = orchestrator
+        self.orchestrator = kwargs['orchestrator']
 
 
 class ContainerServiceDiagnosticsProfile(msrest.serialization.Model):
@@ -333,12 +303,10 @@ class ContainerServiceDiagnosticsProfile(msrest.serialization.Model):
 
     def __init__(
         self,
-        *,
-        vm_diagnostics: "ContainerServiceVMDiagnostics",
         **kwargs
     ):
         super(ContainerServiceDiagnosticsProfile, self).__init__(**kwargs)
-        self.vm_diagnostics = vm_diagnostics
+        self.vm_diagnostics = kwargs['vm_diagnostics']
 
 
 class ContainerServiceLinuxProfile(msrest.serialization.Model):
@@ -364,14 +332,11 @@ class ContainerServiceLinuxProfile(msrest.serialization.Model):
 
     def __init__(
         self,
-        *,
-        admin_username: str,
-        ssh: "ContainerServiceSshConfiguration",
         **kwargs
     ):
         super(ContainerServiceLinuxProfile, self).__init__(**kwargs)
-        self.admin_username = admin_username
-        self.ssh = ssh
+        self.admin_username = kwargs['admin_username']
+        self.ssh = kwargs['ssh']
 
 
 class ContainerServiceListResult(msrest.serialization.Model):
@@ -396,12 +361,10 @@ class ContainerServiceListResult(msrest.serialization.Model):
 
     def __init__(
         self,
-        *,
-        value: Optional[List["ContainerService"]] = None,
         **kwargs
     ):
         super(ContainerServiceListResult, self).__init__(**kwargs)
-        self.value = value
+        self.value = kwargs.get('value', None)
         self.next_link = None
 
 
@@ -495,24 +458,16 @@ class ContainerServiceMasterProfile(msrest.serialization.Model):
 
     def __init__(
         self,
-        *,
-        dns_prefix: str,
-        vm_size: Union[str, "ContainerServiceVMSizeTypes"],
-        count: Optional[Union[int, "Count"]] = "1",
-        os_disk_size_gb: Optional[int] = None,
-        vnet_subnet_id: Optional[str] = None,
-        first_consecutive_static_ip: Optional[str] = "10.240.255.5",
-        storage_profile: Optional[Union[str, "ContainerServiceStorageProfileTypes"]] = None,
         **kwargs
     ):
         super(ContainerServiceMasterProfile, self).__init__(**kwargs)
-        self.count = count
-        self.dns_prefix = dns_prefix
-        self.vm_size = vm_size
-        self.os_disk_size_gb = os_disk_size_gb
-        self.vnet_subnet_id = vnet_subnet_id
-        self.first_consecutive_static_ip = first_consecutive_static_ip
-        self.storage_profile = storage_profile
+        self.count = kwargs.get('count', "1")
+        self.dns_prefix = kwargs['dns_prefix']
+        self.vm_size = kwargs['vm_size']
+        self.os_disk_size_gb = kwargs.get('os_disk_size_gb', None)
+        self.vnet_subnet_id = kwargs.get('vnet_subnet_id', None)
+        self.first_consecutive_static_ip = kwargs.get('first_consecutive_static_ip', "10.240.255.5")
+        self.storage_profile = kwargs.get('storage_profile', None)
         self.fqdn = None
 
 
@@ -542,14 +497,11 @@ class ContainerServiceOrchestratorProfile(msrest.serialization.Model):
 
     def __init__(
         self,
-        *,
-        orchestrator_type: Union[str, "ContainerServiceOrchestratorTypes"],
-        orchestrator_version: Optional[str] = None,
         **kwargs
     ):
         super(ContainerServiceOrchestratorProfile, self).__init__(**kwargs)
-        self.orchestrator_type = orchestrator_type
-        self.orchestrator_version = orchestrator_version
+        self.orchestrator_type = kwargs['orchestrator_type']
+        self.orchestrator_version = kwargs.get('orchestrator_version', None)
 
 
 class ContainerServicePrincipalProfile(msrest.serialization.Model):
@@ -577,16 +529,12 @@ class ContainerServicePrincipalProfile(msrest.serialization.Model):
 
     def __init__(
         self,
-        *,
-        client_id: str,
-        secret: Optional[str] = None,
-        key_vault_secret_ref: Optional["KeyVaultSecretRef"] = None,
         **kwargs
     ):
         super(ContainerServicePrincipalProfile, self).__init__(**kwargs)
-        self.client_id = client_id
-        self.secret = secret
-        self.key_vault_secret_ref = key_vault_secret_ref
+        self.client_id = kwargs['client_id']
+        self.secret = kwargs.get('secret', None)
+        self.key_vault_secret_ref = kwargs.get('key_vault_secret_ref', None)
 
 
 class ContainerServiceSshConfiguration(msrest.serialization.Model):
@@ -610,12 +558,10 @@ class ContainerServiceSshConfiguration(msrest.serialization.Model):
 
     def __init__(
         self,
-        *,
-        public_keys: List["ContainerServiceSshPublicKey"],
         **kwargs
     ):
         super(ContainerServiceSshConfiguration, self).__init__(**kwargs)
-        self.public_keys = public_keys
+        self.public_keys = kwargs['public_keys']
 
 
 class ContainerServiceSshPublicKey(msrest.serialization.Model):
@@ -638,12 +584,10 @@ class ContainerServiceSshPublicKey(msrest.serialization.Model):
 
     def __init__(
         self,
-        *,
-        key_data: str,
         **kwargs
     ):
         super(ContainerServiceSshPublicKey, self).__init__(**kwargs)
-        self.key_data = key_data
+        self.key_data = kwargs['key_data']
 
 
 class ContainerServiceVMDiagnostics(msrest.serialization.Model):
@@ -671,12 +615,10 @@ class ContainerServiceVMDiagnostics(msrest.serialization.Model):
 
     def __init__(
         self,
-        *,
-        enabled: bool,
         **kwargs
     ):
         super(ContainerServiceVMDiagnostics, self).__init__(**kwargs)
-        self.enabled = enabled
+        self.enabled = kwargs['enabled']
         self.storage_uri = None
 
 
@@ -703,14 +645,11 @@ class ContainerServiceWindowsProfile(msrest.serialization.Model):
 
     def __init__(
         self,
-        *,
-        admin_username: str,
-        admin_password: str,
         **kwargs
     ):
         super(ContainerServiceWindowsProfile, self).__init__(**kwargs)
-        self.admin_username = admin_username
-        self.admin_password = admin_password
+        self.admin_username = kwargs['admin_username']
+        self.admin_password = kwargs['admin_password']
 
 
 class KeyVaultSecretRef(msrest.serialization.Model):
@@ -739,16 +678,12 @@ class KeyVaultSecretRef(msrest.serialization.Model):
 
     def __init__(
         self,
-        *,
-        vault_id: str,
-        secret_name: str,
-        version: Optional[str] = None,
         **kwargs
     ):
         super(KeyVaultSecretRef, self).__init__(**kwargs)
-        self.vault_id = vault_id
-        self.secret_name = secret_name
-        self.version = version
+        self.vault_id = kwargs['vault_id']
+        self.secret_name = kwargs['secret_name']
+        self.version = kwargs.get('version', None)
 
 
 class OrchestratorProfile(msrest.serialization.Model):
@@ -776,16 +711,12 @@ class OrchestratorProfile(msrest.serialization.Model):
 
     def __init__(
         self,
-        *,
-        orchestrator_version: str,
-        orchestrator_type: Optional[str] = None,
-        is_preview: Optional[bool] = None,
         **kwargs
     ):
         super(OrchestratorProfile, self).__init__(**kwargs)
-        self.orchestrator_type = orchestrator_type
-        self.orchestrator_version = orchestrator_version
-        self.is_preview = is_preview
+        self.orchestrator_type = kwargs.get('orchestrator_type', None)
+        self.orchestrator_version = kwargs['orchestrator_version']
+        self.is_preview = kwargs.get('is_preview', None)
 
 
 class OrchestratorVersionProfile(msrest.serialization.Model):
@@ -820,20 +751,14 @@ class OrchestratorVersionProfile(msrest.serialization.Model):
 
     def __init__(
         self,
-        *,
-        orchestrator_type: str,
-        orchestrator_version: str,
-        default: Optional[bool] = None,
-        is_preview: Optional[bool] = None,
-        upgrades: Optional[List["OrchestratorProfile"]] = None,
         **kwargs
     ):
         super(OrchestratorVersionProfile, self).__init__(**kwargs)
-        self.orchestrator_type = orchestrator_type
-        self.orchestrator_version = orchestrator_version
-        self.default = default
-        self.is_preview = is_preview
-        self.upgrades = upgrades
+        self.orchestrator_type = kwargs['orchestrator_type']
+        self.orchestrator_version = kwargs['orchestrator_version']
+        self.default = kwargs.get('default', None)
+        self.is_preview = kwargs.get('is_preview', None)
+        self.upgrades = kwargs.get('upgrades', None)
 
 
 class OrchestratorVersionProfileListResult(msrest.serialization.Model):
@@ -870,12 +795,10 @@ class OrchestratorVersionProfileListResult(msrest.serialization.Model):
 
     def __init__(
         self,
-        *,
-        orchestrators: List["OrchestratorVersionProfile"],
         **kwargs
     ):
         super(OrchestratorVersionProfileListResult, self).__init__(**kwargs)
         self.id = None
         self.name = None
         self.type = None
-        self.orchestrators = orchestrators
+        self.orchestrators = kwargs['orchestrators']
