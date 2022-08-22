@@ -161,7 +161,6 @@ def load_arguments(self, _):
     with self.argument_context('automation software-update-configuration create') as c:
         c.argument('operating_system', arg_type=get_enum_type(OperatingSystemType),
                    help='Operating system of target machines.')
-
         c.argument('included_update_classifications',
                    arg_type=get_enum_type(WindowsUpdateClasses),
                    help='Update classification included in the software update configuration.'
