@@ -10,6 +10,7 @@ from sre_constants import FAILURE, SUCCESS
 
 from knack.util import CLIError
 from azure.cli.core.azclierror import (
+    UnknownError,
     ClientRequestError,
     InvalidArgumentValueError
 )
@@ -22,6 +23,7 @@ MAC_API = "2021-06-03-preview"
 GRAFANA_API = "2022-08-01"
 GRAFANA_ROLE_ASSIGNMENT_API = "2018-01-01-preview"
 RULES_API = "2021-07-22-preview"
+FEATURE_API = "2021-07-01"
 
 class GrafanaLink(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
     """Status of Grafana link to the Prometheus Addon
@@ -112,6 +114,23 @@ AzureCloudLocationToOmsRegionCodeMap = {
         "switzerlandwest": "CHW",
         "uaecentral": "AUH",
 }
+
+# check if `az feature register --namespace Microsoft.ContainerService --name AKS-PrometheusAddonPreview` needs to be called or not
+def check_azuremonitoraddon_feature(cmd, cluster_subscription):
+    from azure.cli.core.util import send_raw_request
+    feature_check_url = f"https://management.azure.com/subscriptions/{cluster_subscription}/providers/Microsoft.Features/providers/Microsoft.ContainerService/features/AKS-PrometheusAddonPreview?api-version={FEATURE_API}"
+    try:
+        r = send_raw_request(cmd.cli_ctx, "GET", feature_check_url,
+                             body={})
+    except CLIError as e:
+        raise UnknownError(e)
+    
+    json_response = json.loads(r.text)
+    if json_response["properties"]["state"] == "Registered":
+        return
+
+    raise CLIError("Please enable the feature AKS-PrometheusAddonPreview on your subscription using `az feature register --namespace Microsoft.ContainerService --name AKS-PrometheusAddonPreview` to use this feature.\
+                    If this feature was recently registered then please wait upto 5 mins for the feature registration to finish")
 
 def validate_ksm_parameter(ksmparam):
     print("Calling validate_ksm_parameter")
@@ -756,6 +775,10 @@ def ensure_azure_monitor_profile_prerequisites(
     remove_azuremonitormetrics
 ):
     print("Calling ensure_azure_monitor_profile_prerequisites...")
+
+    # If the feature is not registered then STOP onboarding
+    check_azuremonitoraddon_feature(cmd, cluster_subscription)
+
     if (remove_azuremonitormetrics):
         unlink_azure_monitor_profile_artifacts(cmd,
             cluster_subscription,
