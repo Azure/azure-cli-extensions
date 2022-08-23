@@ -6,8 +6,8 @@ Release History
 0.3.10
 ++++++
 * 'az containerapp create': Fix bug with --image caused by assuming a value for --registry-server
-* 'az hostname bind': Removed location set automatically by resource group
-* 'az env create': Added location validation
+* 'az containerapp hostname bind': Remove location set automatically by resource group
+* 'az containerapp env create': Add location validation
 
 0.3.9
 ++++++
