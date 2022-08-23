@@ -22,7 +22,7 @@ def load_arguments(self, _):
         c.argument('tags', tags_type)
         c.argument('dns_name_prefix', options_list=['--dns-name-prefix', '-p'])
 
-    with self.argument_context('fleet patch') as c:
+    with self.argument_context('fleet update') as c:
         c.argument('tags', tags_type)
 
     with self.argument_context('fleet get-credentials') as c:
@@ -33,5 +33,5 @@ def load_arguments(self, _):
         c.argument('name', options_list=['--name', '-n'], help='Specify the fleet member name.')
         c.argument('fleet_name', help='Specify the fleet name.')
 
-    with self.argument_context('fleet member join') as c:
+    with self.argument_context('fleet member create') as c:
         c.argument('member_cluster_id', validator=validate_member_cluster_id)

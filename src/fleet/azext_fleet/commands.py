@@ -25,16 +25,15 @@ def load_command_table(self, _):
     # fleets command group
     with self.command_group("fleet", fleets_sdk, client_factory=cf_fleets) as g:
         g.custom_command("create", "create_fleet", supports_no_wait=True)
-        g.custom_command("patch", "patch_fleet")
-        g.custom_command("get", "get_fleet")
-        g.custom_command("list-by-resource-group", "list_fleet_by_resource_group")
-        g.custom_command("list-by-subscription", "list_fleet_by_subscription")
+        g.custom_command("update", "update_fleet")
+        g.custom_show_command("show", "show_fleet")
+        g.custom_command("list", "list_fleet")
         g.custom_command("delete", "delete_fleet", supports_no_wait=True)
         g.custom_command("get-credentials", "get_credentials")
 
     # fleet members command group
     with self.command_group("fleet member", fleet_members_sdk, client_factory=cf_fleet_members) as g:
-        g.custom_command("join", "join_fleet_member", supports_no_wait=True)
-        g.custom_command("remove", "remove_fleet_member", supports_no_wait=True)
+        g.custom_command("create", "create_fleet_member", supports_no_wait=True)
+        g.custom_command("delete", "delete_fleet_member", supports_no_wait=True)
         g.custom_command("list", "list_fleet_member")
-        g.custom_command("get", "get_fleet_member")
+        g.custom_show_command("show", "show_fleet_member")

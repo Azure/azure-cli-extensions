@@ -61,11 +61,11 @@ def create_fleet(cmd,
     return sdk_no_wait(no_wait, client.begin_create_or_update, resource_group_name, name, fleet)
 
 
-def patch_fleet(cmd,
-                client,
-                resource_group_name,
-                name,
-                tags=None):
+def update_fleet(cmd,
+                 client,
+                 resource_group_name,
+                 name,
+                 tags=None):
     FleetPatch = cmd.get_models(
         "FleetPatch",
         resource_type=CUSTOM_MGMT_FLEET,
@@ -75,25 +75,19 @@ def patch_fleet(cmd,
     return client.update(resource_group_name, name, None, fleetPatch)
 
 
-def get_fleet(cmd,  # pylint: disable=unused-argument
-              client,
-              resource_group_name,
-              name):
+def show_fleet(cmd,  # pylint: disable=unused-argument
+               client,
+               resource_group_name,
+               name):
     logger.info('Getting fleet: %s for resource group: %s', name, resource_group_name)
     return client.get(resource_group_name, name)
 
 
-def list_fleet_by_resource_group(cmd,  # pylint: disable=unused-argument
-                                 client,
-                                 resource_group_name):
-    logger.info('Listing fleet for resource group: %s', resource_group_name)
-    return client.list_by_resource_group(resource_group_name)
-
-
-def list_fleet_by_subscription(cmd,  # pylint: disable=unused-argument
-                               client):
-    subscription_id = get_subscription_id(cmd.cli_ctx)
-    logger.info('Listing fleet for subscription id: %s', subscription_id)
+def list_fleet(cmd,  # pylint: disable=unused-argument
+               client,
+               resource_group_name=None):
+    if resource_group_name:
+        return client.list_by_resource_group(resource_group_name)
     return client.list()
 
 
@@ -126,13 +120,13 @@ def get_credentials(cmd,  # pylint: disable=unused-argument
         raise CLIError("Fail to find kubeconfig file.")
 
 
-def join_fleet_member(cmd,
-                      client,
-                      resource_group_name,
-                      name,
-                      fleet_name,
-                      member_cluster_id,
-                      no_wait=False):
+def create_fleet_member(cmd,
+                        client,
+                        resource_group_name,
+                        name,
+                        fleet_name,
+                        member_cluster_id,
+                        no_wait=False):
     FleetMember = cmd.get_models(
         "FleetMember",
         resource_type=CUSTOM_MGMT_FLEET,
@@ -150,15 +144,15 @@ def list_fleet_member(cmd,  # pylint: disable=unused-argument
     return client.list_by_fleet(resource_group_name, fleet_name)
 
 
-def get_fleet_member(cmd,  # pylint: disable=unused-argument
-                     client,
-                     resource_group_name,
-                     fleet_name,
-                     name):
+def show_fleet_member(cmd,  # pylint: disable=unused-argument
+                      client,
+                      resource_group_name,
+                      fleet_name,
+                      name):
     return client.get(resource_group_name, fleet_name, name)
 
 
-def remove_fleet_member(cmd,  # pylint: disable=unused-argument
+def delete_fleet_member(cmd,  # pylint: disable=unused-argument
                         client,
                         resource_group_name,
                         fleet_name,

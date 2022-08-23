@@ -25,28 +25,23 @@ helps['fleet create'] = """
                          managed cluster and resource group names.
 """
 
-helps['fleet patch'] = """
+helps['fleet update'] = """
     type: command
-    short-summary: Patch an existing fleet.
+    short-summary: Update an existing fleet.
     parameters:
         - name: --tags
           type: string
           short-summary: The tags of the managed cluster. The managed cluster instance and all resources managed by the cloud provider will be tagged.
 """
 
-helps['fleet get'] = """
+helps['fleet show'] = """
     type: command
     short-summary: Get an existing fleet.
 """
 
-helps['fleet list-by-resource-group'] = """
+helps['fleet list'] = """
     type: command
-    short-summary: List fleet by resource group.
-"""
-
-helps['fleet list-by-subscription'] = """
-    type: command
-    short-summary: List fleet by subscription id.
+    short-summary: List fleet by resource group & subscription id.
 """
 
 helps['fleet delete'] = """
@@ -71,7 +66,7 @@ helps['fleet member'] = """
     short-summary: Commands to manage a fleet member.
 """
 
-helps['fleet member join'] = """
+helps['fleet member create'] = """
     type: command
     short-summary: Join member cluster to a fleet.
     parameters:
@@ -85,12 +80,12 @@ helps['fleet member list'] = """
     short-summary: List member cluster(s) of a fleet.
 """
 
-helps['fleet member get'] = """
+helps['fleet member show'] = """
     type: command
     short-summary: Get member cluster of a fleet.
 """
 
-helps['fleet member remove'] = """
+helps['fleet member delete'] = """
     type: command
     short-summary: Remove member cluster from a fleet
 """
