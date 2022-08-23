@@ -1495,7 +1495,7 @@ def validate_environment_location(cmd, location):
 
     if len(res_locations) > 0:
         if not location:
-            logger.warning("Creating environment on location {}.".format(res_locations[0]))
+            logger.warning("Creating environment on location %s.", res_locations[0])
             return res_locations[0]
         if location in disallowed_locations:
             raise ValidationError("You have more than {} environments in location {}. List of eligible locations: {}.".format(MAX_ENV_PER_LOCATION, location, allowed_locs))
@@ -1505,7 +1505,6 @@ def validate_environment_location(cmd, location):
 
 
 def list_environment_locations(cmd):
-    from ._utils import providers_client_factory
     providers_client = providers_client_factory(cmd.cli_ctx, get_subscription_id(cmd.cli_ctx))
     resource_types = getattr(providers_client.get(CONTAINER_APPS_RP), 'resource_types', [])
     res_locations = []
