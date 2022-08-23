@@ -3,6 +3,12 @@
 Release History
 ===============
 
+1.2.1
+++++++
+ * Update command helps
+ * Fix bugs preview and deprecated flags
+
+
 1.2.0
 ++++++
 * Add communication chat command group in preview mode.
