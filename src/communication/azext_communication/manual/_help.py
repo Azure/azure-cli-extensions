@@ -114,7 +114,30 @@ helps['communication wait'] = """
 
 helps['communication identity'] = """
     type: group
-    short-summary: Commands to manage User Identity for a CommunicationService resource.
+    short-summary: Commands to manage user identities and their tokens for a CommunicationService resource.
+"""
+
+helps['communication identity user'] = """
+    type: group
+    short-summary: Commands to manage user Identities for a CommunicationService resource.
+"""
+
+helps['communication identity user create'] = """
+    type: command
+    short-summary: "Craetes a new ACS identity."
+    examples:
+      - name: create
+        text: |-
+               az communication identity user create
+"""
+
+helps['communication identity user delete'] = """
+    type: command
+    short-summary: "Deletes the ACS identity, revokes all tokens for the identity and deletes all associated data."
+    examples:
+      - name: delete
+        text: |-
+               az communication identity user delete --user "8:acs:xxxxxx"
 """
 
 helps['communication identity issue-access-token'] = """
@@ -124,9 +147,44 @@ helps['communication identity issue-access-token'] = """
       - name: issue-access-token
         text: |-
                az communication identity issue-access-token --scope chat
-      - name: issue-access-token with multiple scopes and userid
+      - name: issue access-token with multiple scopes and user
         text: |-
                az communication identity issue-access-token --scope chat voip --userid "8:acs:xxxxxx"
+"""
+
+helps['communication identity token'] = """
+    type: group
+    short-summary: Commands to manage user tokens for a CommunicationService resource.
+"""
+
+helps['communication identity token issue'] = """
+    type: command
+    short-summary: "Issues a new access token with the specified scopes for a given User Identity. If no User Identity is specified, creates a new User Identity as well."
+    examples:
+      - name: issue access-token
+        text: |-
+               az communication identity token issue --scope chat
+      - name: issue access-token with multiple scopes and user
+        text: |-
+               az communication identity token issue --scope chat voip --user "8:acs:xxxxxx"
+"""
+
+helps['communication identity token revoke'] = """
+    type: command
+    short-summary: "Revokes all access tokens for the specific identity."
+    examples:
+      - name: revoke access-tokens
+        text: |-
+               az communication identity token revoke --user "8:acs:xxxxxx"
+"""
+
+helps['communication identity token get-for-teams-user'] = """
+    type: command
+    short-summary: "Exchanges an Azure Active Directory (Azure AD) access token of a Teams user for a new Communication Identity access token with a matching expiration time."
+    examples:
+      - name: token get-for-teams-user
+        text: |-
+               az communication identity token get-for-teams-user --aad-token "aad-123-xyz" --client "app-id-123-xyz" --aad-user "uid"
 """
 
 helps['communication sms'] = """
@@ -134,11 +192,21 @@ helps['communication sms'] = """
     short-summary: Commands to manage SMS for a CommunicationService resource.
 """
 
-helps['communication sms send-sms'] = """
+helps['communication sms send'] = """
     type: command
     short-summary: "Sends an SMS from the sender phone number to the recipient(s) phone number."
     examples:
       - name: send sms
+        text: |-
+               az communication sms send --sender "+1833xxxxxxx" \
+--recipient "+1425xxxxxxx" "+1426xxxxxxx" "+1427xxxxxxx" --message "Hello there!!"
+"""
+
+helps['communication sms send-sms'] = """
+    type: command
+    short-summary: "Sends an SMS from the sender phone number to the recipient(s) phone number."
+    examples:
+      - name: send-sms
         text: |-
                az communication sms send-sms --sender "+1833xxxxxxx" \
 --recipient "+1425xxxxxxx" "+1426xxxxxxx" "+1427xxxxxxx" --message "Hello there!!"
@@ -153,7 +221,7 @@ helps['communication phonenumbers list-phonenumbers'] = """
     type: command
     short-summary: "Lists all phone numbers associated with the CommunicationService resource."
     examples:
-      - name: list phonenumbers
+      - name: list-phonenumbers
         text: |-
                az communication phonenumbers list-phonenumbers
 """
@@ -162,7 +230,181 @@ helps['communication phonenumbers show-phonenumber'] = """
     type: command
     short-summary: "Shows the details for a phone number associated with the CommunicationService resource."
     examples:
-      - name: show phonenumber
+      - name: show-phonenumber
         text: |-
                az communication phonenumbers show-phonenumber --phonenumber "+1833xxxxxxx"
+"""
+
+helps['communication phonenumber'] = """
+    type: group
+    short-summary: Commands to manage phone numbers for a CommunicationService resource.
+"""
+
+helps['communication phonenumber list'] = """
+    type: command
+    short-summary: "Lists all phone numbers associated with the CommunicationService resource."
+    examples:
+      - name: list phonenumbers
+        text: |-
+               az communication phonenumber list
+"""
+
+helps['communication phonenumber show'] = """
+    type: command
+    short-summary: "Shows the details for a phone number associated with the CommunicationService resource."
+    examples:
+      - name: show phonenumber
+        text: |-
+               az communication phonenumber show --phonenumber "+1833xxxxxxx"
+"""
+
+helps['communication chat'] = """
+    type: group
+    short-summary: Commands to interact with Azure Communication Services Chat gateway.
+"""
+
+helps['communication chat thread'] = """
+    type: group
+    short-summary: Commands to manage chat thread of a CommunicationService resource.
+"""
+
+helps['communication chat thread list'] = """
+    type: command
+    short-summary: "Gets the list of chat threads of a user."
+    examples:
+      - name: chat list threads
+        text: |-
+               az communication chat thread list
+"""
+
+helps['communication chat thread create'] = """
+    type: command
+    short-summary: "Creates a chat thread."
+    examples:
+      - name: chat create thread
+        text: |-
+               az communication chat thread create --topic "chat-topic"
+"""
+
+helps['communication chat thread delete'] = """
+    type: command
+    short-summary: "Deletes a chat thread."
+    examples:
+      - name: chat delete thread
+        text: |-
+               az communication chat thread delete --thread "19:a-bcd=xyz"
+"""
+
+helps['communication chat thread update-topic'] = """
+    type: command
+    short-summary: "Updates the topic of a chat thread."
+    examples:
+      - name: chat update-topic
+        text: |-
+               az communication chat thread update-topic --thread "19:a-bcd=xyz" --topic "New topic!"
+"""
+
+helps['communication chat participant'] = """
+    type: group
+    short-summary: Commands to manage participants in a chat thread of a CommunicationService resource.
+"""
+
+helps['communication chat participant list'] = """
+    type: command
+    short-summary: "Gets the participants of a chat thread."
+    examples:
+      - name: chat list participants
+        text: |-
+               az communication chat participant list --thread "19:a-bcd=xyz" --skip "4"
+"""
+
+helps['communication chat participant add'] = """
+    type: command
+    short-summary: "Adds a participant to a chat thread."
+    examples:
+      - name: chat add participant
+        text: |-
+               az communication chat participant add --thread "19:a-bcd=xyz" --user "8:acs:xxxxxx" --display-name "John Doe" --start-time "2022-07-14T10:21"
+"""
+
+helps['communication chat participant remove'] = """
+    type: command
+    short-summary: "Removes a participant from a chat thread."
+    examples:
+      - name: chat remove participant
+        text: |-
+               az communication chat participant remove --thread "19:a-bcd=xyz" --user "8:acs:xxxxxx"
+"""
+
+helps['communication chat message'] = """
+    type: group
+    short-summary: Commands to manage messages in a chat thread of a CommunicationService resource.
+"""
+
+helps['communication chat message send'] = """
+    type: command
+    short-summary: "Sends a message to a chat thread."
+    examples:
+      - name: chat send message
+        text: |-
+               az communication chat message send --thread "19:a-bcd=xyz" --display-name "John Doe" --content "Hello there!" --message-type "text"
+"""
+
+helps['communication chat message list'] = """
+    type: command
+    short-summary: "Gets list of messages from a chat thread."
+    examples:
+      - name: chat list messages
+        text: |-
+               az communication chat message list --thread "19:a-bcd=xyz" --start-time "2022-07-14T10:21"
+"""
+
+helps['communication chat message get'] = """
+    type: command
+    short-summary: "Gets a message from a chat thread by id."
+    examples:
+      - name: chat get message
+        text: |-
+               az communication chat message get --thread "19:a-bcd=xyz" --message-id "12345678"
+"""
+
+helps['communication chat message update'] = """
+    type: command
+    short-summary: "Updates a message."
+    examples:
+      - name: chat update message
+        text: |-
+               az communication chat message update --thread "19:a-bcd=xyz" --message-id "12345678" --content "Hello, there!"
+"""
+
+helps['communication chat message delete'] = """
+    type: command
+    short-summary: "Deletes a message from a chat thread by id."
+    examples:
+      - name: chat delete message
+        text: |-
+               az communication chat message delete --thread "19:a-bcd=xyz" --message-id "12345678"
+"""
+
+helps['communication chat message receipt'] = """
+    type: group
+    short-summary: Commands to manage message read-receipts in a chat thread of a CommunicationService resource.
+"""
+
+helps['communication chat message receipt list'] = """
+    type: command
+    short-summary: "Gets read receipts of a chat thread."
+    examples:
+      - name: chat list read-receipts
+        text: |-
+               az communication chat message receipt list --thread "19:a-bcd=xyz" --skip "4"
+"""
+
+helps['communication chat message receipt send'] = """
+    type: command
+    short-summary: "Posts a read receipt event to a chat thread, on behalf of a user."
+    examples:
+      - name: chat send read-receipt
+        text: |-
+               az communication chat message receipt send --thread "19:a-bcd=xyz" --message-id "12345678"
 """
