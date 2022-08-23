@@ -18,8 +18,8 @@ def load_command_table(self, _):
 
     fleet_members_sdk = CliCommandType(
         operations_tmpl="azext_fleet.vendored_sdks.operations._fleet_members_operations#FleetMembersOperations.{}",
-        operation_group="fleets",
-        client_factory=cf_fleets
+        operation_group="fleet_members",
+        client_factory=cf_fleet_members
     )
 
     # fleets command group

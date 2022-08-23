@@ -17,9 +17,6 @@ from azext_fleet._resourcegroup import get_rg_location
 from azext_fleet._helpers import print_or_merge_credentials
 
 
-logger = get_logger(__name__)
-
-
 def create_fleet(cmd,
                  client,
                  resource_group_name,
@@ -79,7 +76,6 @@ def show_fleet(cmd,  # pylint: disable=unused-argument
                client,
                resource_group_name,
                name):
-    logger.info('Getting fleet: %s for resource group: %s', name, resource_group_name)
     return client.get(resource_group_name, name)
 
 
@@ -140,7 +136,6 @@ def list_fleet_member(cmd,  # pylint: disable=unused-argument
                       client,
                       resource_group_name,
                       fleet_name):
-    logger.info('Listing fleet member(s) for fleet: %s for resource group: %s', fleet_name, resource_group_name)
     return client.list_by_fleet(resource_group_name, fleet_name)
 
 
