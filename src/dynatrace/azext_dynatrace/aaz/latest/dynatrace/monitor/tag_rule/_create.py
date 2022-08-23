@@ -53,7 +53,7 @@ class Create(AAZCommand):
         )
         _args_schema.rule_set_name = AAZStrArg(
             options=["-n", "--name", "--rule-set-name"],
-            help="Monitor resource name",
+            help="Monitor rule set name",
             required=True,
             id_part="child_name_1",
         )
