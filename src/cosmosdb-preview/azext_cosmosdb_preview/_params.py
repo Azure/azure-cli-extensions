@@ -18,7 +18,13 @@ from azext_cosmosdb_preview._validators import (
     validate_mongo_user_definition_id)
 
 from azext_cosmosdb_preview.actions import (
-    CreateGremlinDatabaseRestoreResource, CreateTableRestoreResource, AddCassandraTableAction, AddSqlContainerAction)
+    CreateGremlinDatabaseRestoreResource,
+    CreateTableRestoreResource,
+    AddCassandraTableAction,
+    AddSqlContainerAction,
+    CreateTargetPhysicalPartitionThroughputInfoAction,
+    CreateSourcePhysicalPartitionThroughputInfoAction,
+    CreatePhysicalPartitionIdListAction)
 
 from azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.models import (
     ContinuousTier
@@ -331,3 +337,37 @@ def load_arguments(self, _):
         c.argument('account_name', account_name_type, id_part=None, required=True, help='Name of the CosmosDB database account')
         c.argument('database_name', database_name_type, required=True, help='Name of the mongoDB database')
         c.argument('container_name', options_list=['--name', '-n'], required=True, help='Name of the mongoDB collection')
+
+    # Sql container partition retrieve throughput
+    with self.argument_context('cosmosdb sql container retrieve-partition-throughput') as c:
+        c.argument('account_name', account_name_type, id_part=None, required=True, help='Name of the CosmosDB database account')
+        c.argument('database_name', database_name_type, required=True, help='Name of the CosmosDB database name')
+        c.argument('container_name', options_list=['--name', '-n'], required=True, help='Name of the CosmosDB container')
+        c.argument('physical_partition_ids', options_list=['--physical-partition-ids', '-p'], nargs='+', action=CreatePhysicalPartitionIdListAction, required=False, help='space separated list of physical partition ids')
+        c.argument('all_partitions', arg_type=get_three_state_flag(), help="switch to retrieve throughput for all physical partitions")
+
+    # Sql container partition redistribute throughput
+    with self.argument_context('cosmosdb sql container redistribute-partition-throughput') as c:
+        c.argument('account_name', account_name_type, id_part=None, required=True, help='Name of the CosmosDB database account')
+        c.argument('database_name', database_name_type, required=True, help='Name of the CosmosDB database name')
+        c.argument('container_name', options_list=['--name', '-n'], required=True, help='Name of the CosmosDB collection')
+        c.argument('evenly_distribute', arg_type=get_three_state_flag(), help="switch to distribute throughput equally among all physical partitions")
+        c.argument('target_partition_info', nargs='+', action=CreateTargetPhysicalPartitionThroughputInfoAction, required=False, help="information about desired target physical partition throughput eg: 0=1200 1=1200")
+        c.argument('source_partition_info', nargs='+', action=CreateSourcePhysicalPartitionThroughputInfoAction, required=False, help="space separated source physical partition ids eg: 1 2")
+
+    # Mongodb collection partition retrieve throughput
+    with self.argument_context('cosmosdb mongodb collection retrieve-partition-throughput') as c:
+        c.argument('account_name', account_name_type, id_part=None, required=True, help='Name of the CosmosDB database account')
+        c.argument('database_name', database_name_type, required=True, help='Name of the CosmosDB database name')
+        c.argument('collection_name', options_list=['--name', '-n'], required=True, help='Name of the CosmosDB container')
+        c.argument('physical_partition_ids', options_list=['--physical-partition-ids', '-p'], nargs='+', action=CreatePhysicalPartitionIdListAction, required=False, help='space separated list of physical partition ids')
+        c.argument('all_partitions', arg_type=get_three_state_flag(), help="switch to retrieve throughput for all physical partitions")
+
+    # Mongodb collection partition redistribute throughput
+    with self.argument_context('cosmosdb mongodb collection redistribute-partition-throughput') as c:
+        c.argument('account_name', account_name_type, id_part=None, required=True, help='Name of the CosmosDB database account')
+        c.argument('database_name', database_name_type, required=True, help='Name of the CosmosDB database name')
+        c.argument('collection_name', options_list=['--name', '-n'], required=True, help='Name of the CosmosDB collection')
+        c.argument('evenly_distribute', arg_type=get_three_state_flag(), help="switch to distribute throughput equally among all physical partitions")
+        c.argument('target_partition_info', nargs='+', action=CreateTargetPhysicalPartitionThroughputInfoAction, required=False, help="information about desired target physical partition throughput eg: '0=1200 1=1200'")
+        c.argument('source_partition_info', nargs='+', action=CreateSourcePhysicalPartitionThroughputInfoAction, required=False, help="space separated source physical partition ids eg: 1 2")

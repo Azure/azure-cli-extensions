@@ -18,7 +18,9 @@ from azure.mgmt.core.tools import is_valid_resource_id
 from azure.mgmt.core.tools import parse_resource_id
 from azure.mgmt.core.tools import resource_id
 from knack.log import get_logger
+from ._clierror import NotSupportedPricingTierError
 from ._utils import (ApiType, _get_rg_location, _get_file_type, _get_sku_name)
+from ._util_enterprise import is_enterprise_tier
 from .vendored_sdks.appplatform.v2020_07_01 import models
 from ._constant import (MARKETPLACE_OFFER_ID, MARKETPLACE_PLAN_ID, MARKETPLACE_PUBLISHER_ID)
 
@@ -99,6 +101,13 @@ def validate_instance_count(namespace):
     if namespace.instance_count is not None:
         if namespace.instance_count < 1:
             raise InvalidArgumentValueError("--instance-count must be greater than 0")
+
+
+def validate_instance_not_existed(client, resource_group, name, location):
+    availability_parameters = models.NameAvailabilityParameters(type="Microsoft.AppPlatform/Spring", name=name)
+    name_availability = client.services.check_name_availability(location, availability_parameters)
+    if not name_availability.name_available and name_availability.reason == "AlreadyExists":
+        raise InvalidArgumentValueError("Service instance '{}' under resource group '{}' is already existed in region '{}', cannot be created again.".format(name, resource_group, location))
 
 
 def validate_name(namespace):
@@ -239,7 +248,7 @@ def validate_java_agent_parameters(namespace):
             "can not be set at the same time.")
 
 
-def validate_app_insights_parameters(namespace):
+def validate_app_insights_parameters(cmd, namespace):
     if (namespace.app_insights or namespace.app_insights_key or namespace.sampling_rate is not None) \
             and namespace.disable:
         raise InvalidArgumentValueError(
@@ -251,6 +260,7 @@ def validate_app_insights_parameters(namespace):
             and not namespace.disable:
         raise InvalidArgumentValueError("Invalid value: nothing is updated for application insights.")
     _validate_app_insights_parameters(namespace)
+    validate_app_insights_command_not_supported_tier(cmd, namespace)
 
 
 def _validate_app_insights_parameters(namespace):
@@ -263,6 +273,12 @@ def _validate_app_insights_parameters(namespace):
         raise InvalidArgumentValueError("Invalid value: '--app-insights-key' can not be empty.")
     if namespace.sampling_rate is not None and (namespace.sampling_rate < 0 or namespace.sampling_rate > 100):
         raise InvalidArgumentValueError("Invalid value: Sampling Rate must be in the range [0,100].")
+
+
+def validate_app_insights_command_not_supported_tier(cmd, namespace):
+    if is_enterprise_tier(cmd, namespace.resource_group, namespace.name):
+        raise NotSupportedPricingTierError("Enterprise tier service instance {} in group {} is not supported in this command, ".format(namespace.name, namespace.resource_group) +
+                                           "please refer to 'az spring build-service builder buildpack-binding' command group.")
 
 
 def validate_vnet(cmd, namespace):

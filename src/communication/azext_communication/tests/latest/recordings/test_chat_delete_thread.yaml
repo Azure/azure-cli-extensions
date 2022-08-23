@@ -1,0 +1,144 @@
+interactions:
+- request:
+    body: '{"createTokenWithScopes": ["chat"]}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '35'
+      Content-Type:
+      - application/json
+      User-Agent:
+      - azsdk-python-communication-identity/1.1.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+      x-ms-content-sha256:
+      - kWpGozyV35fifbpKdY8mbdG64VG0Pdq5upzo7YKAFM0=
+      x-ms-date:
+      - Tue, 16 Aug 2022 09:51:38 GMT
+      x-ms-return-client-request-id:
+      - 'true'
+    method: POST
+    uri: https://sanitized.communication.azure.com/identities?api-version=2022-06-01
+  response:
+    body:
+      string: '{"identity": {"id": "sanitized"}, "accessToken": {"token": "sanitized",
+        "expiresOn": "2022-08-17T09:51:40.8504947+00:00"}}'
+    headers:
+      api-supported-versions:
+      - 2020-07-20-preview2, 2021-02-22-preview1, 2021-03-07, 2021-10-31-preview,
+        2021-11-01, 2022-06-01
+      connection:
+      - keep-alive
+      content-length:
+      - '122'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 16 Aug 2022 09:51:40 GMT
+      ms-cv:
+      - 16j9c0qbeUeLe6oR5sh+Og.0
+      request-context:
+      - appId=
+      strict-transport-security:
+      - max-age=2592000
+      x-azure-ref:
+      - 20220816T095140Z-r0s9pbvvdt0w72q6sqrkc1ktpw00000005g0000000011ptr
+      x-cache:
+      - CONFIG_NOCACHE
+      x-processing-time:
+      - 117ms
+    status:
+      code: 201
+      message: Created
+- request:
+    body: '{"topic": "some-topic", "participants": []}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '43'
+      Content-Type:
+      - application/json
+      User-Agent:
+      - azsdk-python-communication-chat/1.1.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+      repeatability-request-id:
+      - 9e94686e-d149-4e85-8b58-829b51c14763
+    method: POST
+    uri: https://sanitized.communication.azure.com/chat/threads?api-version=2021-09-07
+  response:
+    body:
+      string: '{"chatThread": {"id": "sanitized", "topic": "some-topic", "createdOn":
+        "2022-08-16T09:51:41Z", "createdByCommunicationIdentifier": {"rawId": "sanitized",
+        "communicationUser": {"id": "sanitized"}}}}'
+    headers:
+      api-supported-versions:
+      - 2021-03-07, 2021-04-05-preview6, 2021-09-07, 2022-11-15-preview8
+      connection:
+      - keep-alive
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 16 Aug 2022 09:51:42 GMT
+      location:
+      - https://clitest000002.communication.azure.com/chat/threads/19%3AegRS6dK60O9yYgN3WDWOe4LXHLInS3YRU96XF2qy3ME1@thread.v2
+      ms-cv:
+      - mpFI5LJDOUC3q74/ITAdIw.0
+      strict-transport-security:
+      - max-age=2592000
+      transfer-encoding:
+      - chunked
+      x-azure-ref:
+      - 20220816T095141Z-zvdmwacghh4c97ggppewnyshxn00000000fg00000001qn7y
+      x-cache:
+      - CONFIG_NOCACHE
+      x-processing-time:
+      - 715ms
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      User-Agent:
+      - azsdk-python-communication-chat/1.1.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+    method: DELETE
+    uri: https://sanitized.communication.azure.com/chat/threads/sanitized?api-version=2021-09-07
+  response:
+    body:
+      string: ''
+    headers:
+      api-supported-versions:
+      - 2021-03-07, 2021-04-05-preview6, 2021-09-07, 2022-11-15-preview8
+      connection:
+      - keep-alive
+      date:
+      - Tue, 16 Aug 2022 09:51:42 GMT
+      ms-cv:
+      - UANS+3WfV0662gMTvJTrxA.0
+      strict-transport-security:
+      - max-age=2592000
+      x-azure-ref:
+      - 20220816T095142Z-p18hf8s3dx4xf8cgexx53pe93400000000dg0000000031dn
+      x-cache:
+      - CONFIG_NOCACHE
+      x-processing-time:
+      - 212ms
+    status:
+      code: 204
+      message: No Content
+version: 1

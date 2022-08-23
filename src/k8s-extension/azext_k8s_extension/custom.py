@@ -53,10 +53,10 @@ def ExtensionFactory(extension_name):
     return extension_map.get(extension_name, DefaultExtension)()
 
 
-def show_k8s_extension(client, resource_group_name, cluster_name, name, cluster_type):
+def show_k8s_extension(client, resource_group_name, cluster_name, name, cluster_type, cluster_resource_provider=None):
     """Get an existing K8s Extension."""
     # Determine ClusterRP
-    cluster_rp, _ = get_cluster_rp_api_version(cluster_type)
+    cluster_rp, _ = get_cluster_rp_api_version(cluster_type=cluster_type, cluster_rp=cluster_resource_provider)
 
     try:
         extension = client.get(
@@ -95,6 +95,7 @@ def create_k8s_extension(
     name,
     cluster_type,
     extension_type,
+    cluster_resource_provider=None,
     scope=None,
     auto_upgrade_minor_version=None,
     release_train=None,
@@ -110,7 +111,7 @@ def create_k8s_extension(
     """Create a new Extension Instance."""
 
     extension_type_lower = extension_type.lower()
-    cluster_rp, _ = get_cluster_rp_api_version(cluster_type)
+    cluster_rp, _ = get_cluster_rp_api_version(cluster_type=cluster_type, cluster_rp=cluster_resource_provider)
 
     # Configuration Settings & Configuration Protected Settings
     if configuration_settings is not None and configuration_settings_file is not None:
@@ -167,6 +168,7 @@ def create_k8s_extension(
         cluster_name,
         name,
         cluster_type,
+        cluster_rp,
         extension_type_lower,
         scope,
         auto_upgrade_minor_version,
@@ -193,7 +195,7 @@ def create_k8s_extension(
     # We don't create the identity if we are in DF
     if create_identity and not is_dogfood_cluster(cmd):
         identity_object, location = __create_identity(
-            cmd, resource_group_name, cluster_name, cluster_type
+            cmd, resource_group_name, cluster_name, cluster_type, cluster_rp
         )
         if identity_object is not None and location is not None:
             extension_instance.identity, extension_instance.location = (
@@ -214,8 +216,8 @@ def create_k8s_extension(
     )
 
 
-def list_k8s_extension(client, resource_group_name, cluster_name, cluster_type):
-    cluster_rp, _ = get_cluster_rp_api_version(cluster_type)
+def list_k8s_extension(client, resource_group_name, cluster_name, cluster_type, cluster_resource_provider=None):
+    cluster_rp, _ = get_cluster_rp_api_version(cluster_type=cluster_type, cluster_rp=cluster_resource_provider)
     return client.list(resource_group_name, cluster_rp, cluster_type, cluster_name)
 
 
@@ -226,6 +228,7 @@ def update_k8s_extension(
     cluster_name,
     name,
     cluster_type,
+    cluster_resource_provider=None,
     auto_upgrade_minor_version=None,
     release_train=None,
     version=None,
@@ -253,22 +256,21 @@ def update_k8s_extension(
         user_confirmation_factory(cmd, yes, msg)
 
     # Determine ClusterRP
-    cluster_rp, _ = get_cluster_rp_api_version(cluster_type)
+    cluster_rp, _ = get_cluster_rp_api_version(cluster_type=cluster_type, cluster_rp=cluster_resource_provider)
 
     # We need to determine the ExtensionType to call ExtensionFactory and create Extension class
     extension = show_k8s_extension(
-        client, resource_group_name, cluster_name, name, cluster_type
+        client, resource_group_name, cluster_name, name, cluster_type, cluster_rp
     )
     extension_type_lower = extension.extension_type.lower()
 
-    config_settings = None
-    config_protected_settings = None
+    config_settings = {}
+    config_protected_settings = {}
     # Get Configuration Settings from file
     if configuration_settings_file is not None:
         config_settings = read_config_settings_file(configuration_settings_file)
 
     if configuration_settings is not None:
-        config_settings = {}
         for dicts in configuration_settings:
             for key, value in dicts.items():
                 config_settings[key] = value
@@ -280,7 +282,6 @@ def update_k8s_extension(
         )
 
     if configuration_protected_settings is not None:
-        config_protected_settings = {}
         for dicts in configuration_protected_settings:
             for key, value in dicts.items():
                 config_protected_settings[key] = value
@@ -320,13 +321,14 @@ def delete_k8s_extension(
     cluster_name,
     name,
     cluster_type,
+    cluster_resource_provider=None,
     no_wait=False,
     yes=False,
     force=False,
 ):
     """Delete an existing Kubernetes Extension."""
     # Determine ClusterRP
-    cluster_rp, _ = get_cluster_rp_api_version(cluster_type)
+    cluster_rp, _ = get_cluster_rp_api_version(cluster_type=cluster_type, cluster_rp=cluster_resource_provider)
     extension = None
     try:
         extension = client.get(
@@ -343,7 +345,7 @@ def delete_k8s_extension(
 
     # If there is any custom delete logic, this will call the logic
     extension_class.Delete(
-        cmd, client, resource_group_name, cluster_name, name, cluster_type, yes
+        cmd, client, resource_group_name, cluster_name, name, cluster_type, cluster_rp, yes
     )
 
     return sdk_no_wait(
@@ -358,18 +360,63 @@ def delete_k8s_extension(
     )
 
 
-def __create_identity(cmd, resource_group_name, cluster_name, cluster_type):
+def list_k8s_extension_type_versions(cmd, client, location, extension_type):
+    """ List available extension type versions
+    """
+    versions_list = client.list(location, extension_type)
+    return versions_list
+
+
+def list_k8s_cluster_extension_types(client, resource_group_name, cluster_name, cluster_type):
+    """ List available extension types
+    """
+    cluster_rp, parent_api_version = get_cluster_rp_api_version(cluster_type)
+    return client.list(resource_group_name, cluster_rp, cluster_type, cluster_name)
+
+
+def list_k8s_location_extension_types(client, location):
+    """ List available extension types based on location
+    """
+    return client.list(location)
+
+
+def show_k8s_cluster_extension_type(client, resource_group_name, cluster_type, cluster_name, extension_type):
+    """Get an existing Extension Type.
+    """
+    # Determine ClusterRP
+    cluster_rp, parent_api_version = get_cluster_rp_api_version(cluster_type)
+
+    try:
+        extension_type = client.get(resource_group_name,
+                                    cluster_rp, cluster_type, cluster_name, extension_type)
+        return extension_type
+    except HttpResponseError as ex:
+        # Customize the error message for resources not found
+        if ex.response.status_code == 404:
+            # If Cluster not found
+            if ex.message.__contains__("(ResourceNotFound)"):
+                message = "{0} Verify that the extension type is correct and the resource exists.".format(
+                    ex.message)
+            # If Configuration not found
+            elif ex.message.__contains__("Operation returned an invalid status code 'Not Found'"):
+                message = "(ExtensionNotFound) The Resource {0}/{1}/{2}/Microsoft.KubernetesConfiguration/" \
+                          "extensions/{3} could not be found!".format(
+                              cluster_rp, cluster_type, cluster_name, extension_type)
+            else:
+                message = ex.message
+            raise ResourceNotFoundError(message) from ex
+        raise ex
+
+
+def __create_identity(cmd, resource_group_name, cluster_name, cluster_type, cluster_rp):
     subscription_id = get_subscription_id(cmd.cli_ctx)
     resources = cf_resources(cmd.cli_ctx, subscription_id)
 
-    # We do not create any identities for managedClusters or appliances
-    if (
-        cluster_type.lower() == consts.MANAGED_CLUSTER_TYPE
-        or cluster_type.lower() == consts.APPLIANCE_TYPE
-    ):
+    # We do not create any identities for managedClusters
+    if cluster_type.lower() == consts.MANAGED_CLUSTER_TYPE:
         return None, None
 
-    cluster_rp, parent_api_version = get_cluster_rp_api_version(cluster_type)
+    cluster_rp, parent_api_version = get_cluster_rp_api_version(cluster_type=cluster_type, cluster_rp=cluster_rp)
 
     cluster_resource_id = (
         "/subscriptions/{0}/resourceGroups/{1}/providers/{2}/{3}/{4}".format(

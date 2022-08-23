@@ -465,6 +465,11 @@ class TestAppUpdate(BasicTest):
         self.assertEqual('Java_11', resource.properties.source.runtime_version)
         self.assertEqual('test-option', resource.properties.source.jvm_options)
 
+    def test_app_set_termination_grace_period_seconds(self):
+        self._execute('rg', 'asc', 'app', deployment=self._get_deployment(), termination_grace_period_seconds=88)
+        resource = self.patch_deployment_resource
+        self.assertEqual(88, resource.properties.deployment_settings.termination_grace_period_seconds)
+
     def test_app_disable_probes(self):
         self._execute('rg', 'asc', 'app', deployment=self._get_deployment(), enable_liveness_probe=False,
         enable_readiness_probe=False, enable_startup_probe=False)

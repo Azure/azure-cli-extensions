@@ -30,6 +30,7 @@ def load_command_table(self, _):
         g.custom_command('restore trigger', 'dataprotection_backup_instance_restore_trigger', supports_no_wait=True)
         g.custom_command('update-policy', "dataprotection_backup_instance_update_policy", supports_no_wait=True)
         g.custom_command('list-from-resourcegraph', 'dataprotection_backup_instance_list_from_resourcegraph', client_factory=cf_resource_graph_client)
+        g.custom_command('update-msi-permissions', 'dataprotection_backup_instance_update_msi_permissions', client_factory=cf_backup_vault)
 
     with self.command_group('dataprotection backup-policy', exception_handler=exception_handler) as g:
         g.custom_command('get-default-policy-template', "dataprotection_backup_policy_get_default_policy_template")

@@ -7,10 +7,14 @@
 # --------------------------------------------------------------------------
 
 try:
+    from ._models_py3 import ArcConnectivityProperties
+    from ._models_py3 import ArcIdentityResponse
     from ._models_py3 import ArcSetting
     from ._models_py3 import ArcSettingList
+    from ._models_py3 import ArcSettingsPatch
     from ._models_py3 import Cluster
     from ._models_py3 import ClusterDesiredProperties
+    from ._models_py3 import ClusterIdentityResponse
     from ._models_py3 import ClusterList
     from ._models_py3 import ClusterNode
     from ._models_py3 import ClusterPatch
@@ -23,16 +27,23 @@ try:
     from ._models_py3 import Operation
     from ._models_py3 import OperationDisplay
     from ._models_py3 import OperationListResult
+    from ._models_py3 import PasswordCredential
     from ._models_py3 import PerNodeExtensionState
     from ._models_py3 import PerNodeState
     from ._models_py3 import ProxyResource
+    from ._models_py3 import RawCertificateData
     from ._models_py3 import Resource
     from ._models_py3 import TrackedResource
+    from ._models_py3 import UploadCertificateRequest
 except (SyntaxError, ImportError):
+    from ._models import ArcConnectivityProperties  # type: ignore
+    from ._models import ArcIdentityResponse  # type: ignore
     from ._models import ArcSetting  # type: ignore
     from ._models import ArcSettingList  # type: ignore
+    from ._models import ArcSettingsPatch  # type: ignore
     from ._models import Cluster  # type: ignore
     from ._models import ClusterDesiredProperties  # type: ignore
+    from ._models import ClusterIdentityResponse  # type: ignore
     from ._models import ClusterList  # type: ignore
     from ._models import ClusterNode  # type: ignore
     from ._models import ClusterPatch  # type: ignore
@@ -45,11 +56,14 @@ except (SyntaxError, ImportError):
     from ._models import Operation  # type: ignore
     from ._models import OperationDisplay  # type: ignore
     from ._models import OperationListResult  # type: ignore
+    from ._models import PasswordCredential  # type: ignore
     from ._models import PerNodeExtensionState  # type: ignore
     from ._models import PerNodeState  # type: ignore
     from ._models import ProxyResource  # type: ignore
+    from ._models import RawCertificateData  # type: ignore
     from ._models import Resource  # type: ignore
     from ._models import TrackedResource  # type: ignore
+    from ._models import UploadCertificateRequest  # type: ignore
 
 from ._azure_stack_hci_client_enums import (
     ActionType,
@@ -67,10 +81,14 @@ from ._azure_stack_hci_client_enums import (
 )
 
 __all__ = [
+    'ArcConnectivityProperties',
+    'ArcIdentityResponse',
     'ArcSetting',
     'ArcSettingList',
+    'ArcSettingsPatch',
     'Cluster',
     'ClusterDesiredProperties',
+    'ClusterIdentityResponse',
     'ClusterList',
     'ClusterNode',
     'ClusterPatch',
@@ -83,11 +101,14 @@ __all__ = [
     'Operation',
     'OperationDisplay',
     'OperationListResult',
+    'PasswordCredential',
     'PerNodeExtensionState',
     'PerNodeState',
     'ProxyResource',
+    'RawCertificateData',
     'Resource',
     'TrackedResource',
+    'UploadCertificateRequest',
     'ActionType',
     'ArcSettingAggregateState',
     'CreatedByType',

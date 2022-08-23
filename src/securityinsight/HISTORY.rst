@@ -3,6 +3,10 @@
 Release History
 ===============
 
+0.2.0
+++++++
+Upgrade based on 2022-06-01-preview.
+
 0.1.2
 ++++++
 Rebrand the terms in help.

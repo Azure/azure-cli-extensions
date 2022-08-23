@@ -17,7 +17,7 @@ from knack.log import get_logger
 from knack.prompting import NoTTYException, prompt_y_n
 from knack.util import CLIError
 
-from azext_aks_preview._client_factory import cf_nodepool_snapshots, cf_mc_snapshots
+from azext_aks_preview._client_factory import get_nodepool_snapshots_client, get_mc_snapshots_client
 
 logger = get_logger(__name__)
 
@@ -216,14 +216,15 @@ def get_nodepool_snapshot_by_snapshot_id(cli_ctx, snapshot_id):
     snapshot_id = snapshot_id.lower()
     match = _re_snapshot_resource_id.search(snapshot_id)
     if match:
+        subscription_id = match.group(1)
         resource_group_name = match.group(2)
         snapshot_name = match.group(3)
-        return get_nodepool_snapshot(cli_ctx, resource_group_name, snapshot_name)
+        return get_nodepool_snapshot(cli_ctx, subscription_id, resource_group_name, snapshot_name)
     raise InvalidArgumentValueError("Cannot parse snapshot name from provided resource id '{}'.".format(snapshot_id))
 
 
-def get_nodepool_snapshot(cli_ctx, resource_group_name, snapshot_name):
-    snapshot_client = cf_nodepool_snapshots(cli_ctx)
+def get_nodepool_snapshot(cli_ctx, subscription_id, resource_group_name, snapshot_name):
+    snapshot_client = get_nodepool_snapshots_client(cli_ctx, subscription_id=subscription_id)
     try:
         snapshot = snapshot_client.get(resource_group_name, snapshot_name)
     # track 2 sdk raise exception from azure.core.exceptions
@@ -242,15 +243,16 @@ def get_cluster_snapshot_by_snapshot_id(cli_ctx, snapshot_id):
     snapshot_id = snapshot_id.lower()
     match = _re_mc_snapshot_resource_id.search(snapshot_id)
     if match:
+        subscription_id = match.group(1)
         resource_group_name = match.group(2)
         snapshot_name = match.group(3)
-        return get_cluster_snapshot(cli_ctx, resource_group_name, snapshot_name)
+        return get_cluster_snapshot(cli_ctx, subscription_id, resource_group_name, snapshot_name)
     raise InvalidArgumentValueError(
         "Cannot parse snapshot name from provided resource id {}.".format(snapshot_id))
 
 
-def get_cluster_snapshot(cli_ctx, resource_group_name, snapshot_name):
-    snapshot_client = cf_mc_snapshots(cli_ctx)
+def get_cluster_snapshot(cli_ctx, subscription_id, resource_group_name, snapshot_name):
+    snapshot_client = get_mc_snapshots_client(cli_ctx, subscription_id)
     try:
         snapshot = snapshot_client.get(resource_group_name, snapshot_name)
     # track 2 sdk raise exception from azure.core.exceptions

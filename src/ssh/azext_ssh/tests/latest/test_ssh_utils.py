@@ -15,13 +15,13 @@ from azext_ssh import ssh_info
 class SSHUtilsTests(unittest.TestCase):   
     @mock.patch.object(ssh_utils, '_start_cleanup')
     @mock.patch.object(ssh_utils, '_terminate_cleanup')
-    @mock.patch.object(ssh_utils, '_get_ssh_client_path')
+    @mock.patch.object(ssh_utils, 'get_ssh_client_path')
     @mock.patch('subprocess.run')
     @mock.patch('os.environ.copy')
     @mock.patch('platform.system')
     def test_start_ssh_connection_compute(self, mock_system, mock_copy_env, mock_call, mock_path, mock_terminatecleanup, mock_startcleanup):
 
-        op_info = ssh_info.SSHSession("rg", "vm", "ip", None, None, False, "user", None, "port", None, ['arg1', 'arg2', 'arg3'], False, "Microsof.Compute", None, None)
+        op_info = ssh_info.SSHSession("rg", "vm", "ip", None, None, False, "user", None, "port", None, ['arg1', 'arg2', 'arg3'], False, "Microsof.Compute", None, None, False)
         op_info.public_key_file = "pub"
         op_info.private_key_file = "priv"
         op_info.cert_file = "cert"
@@ -44,13 +44,13 @@ class SSHUtilsTests(unittest.TestCase):
     
     @mock.patch.object(ssh_utils, '_terminate_cleanup')
     @mock.patch('os.environ.copy')
-    @mock.patch.object(ssh_utils, '_get_ssh_client_path')
+    @mock.patch.object(ssh_utils, 'get_ssh_client_path')
     @mock.patch('subprocess.run')
     @mock.patch('azext_ssh.custom.connectivity_utils.format_relay_info_string')
     @mock.patch('platform.system')
     def test_start_ssh_connection_arc(self, mock_system, mock_relay_str, mock_call, mock_path, mock_copy_env, mock_terminatecleanup):
         
-        op_info = ssh_info.SSHSession("rg", "vm", None, None, None, False, "user", None, "port", None, ['arg1'], False, "Microsoft.HybridCompute", None, None)
+        op_info = ssh_info.SSHSession("rg", "vm", None, None, None, False, "user", None, "port", None, ['arg1'], False, "Microsoft.HybridCompute", None, None, False)
         op_info.public_key_file = "pub"
         op_info.private_key_file = "priv"
         op_info.cert_file = "cert"
@@ -147,7 +147,7 @@ class SSHUtilsTests(unittest.TestCase):
         mock_join.return_value = "ssh_path"
         mock_system.return_value = "Linux"
         mock_isfile.return_value = True
-        actual_path = ssh_utils._get_ssh_client_path(ssh_client_folder='/client/folder')
+        actual_path = ssh_utils.get_ssh_client_path(ssh_client_folder='/client/folder')
         self.assertEqual(actual_path, "ssh_path")
         mock_join.assert_called_once_with('/client/folder', 'ssh')
         mock_isfile.assert_called_once_with("ssh_path")
@@ -159,7 +159,7 @@ class SSHUtilsTests(unittest.TestCase):
         mock_join.return_value = "ssh_keygen_path"
         mock_system.return_value = "Windows"
         mock_isfile.return_value = True
-        actual_path = ssh_utils._get_ssh_client_path(ssh_command='ssh-keygen', ssh_client_folder='/client/folder')
+        actual_path = ssh_utils.get_ssh_client_path(ssh_command='ssh-keygen', ssh_client_folder='/client/folder')
         self.assertEqual(actual_path, "ssh_keygen_path.exe")
         mock_join.assert_called_once_with('/client/folder', 'ssh-keygen')
         mock_isfile.assert_called_once_with("ssh_keygen_path.exe")
@@ -171,7 +171,7 @@ class SSHUtilsTests(unittest.TestCase):
         mock_join.return_value = "ssh_path"
         mock_system.return_value = "Mac"
         mock_isfile.return_value = False
-        actual_path = ssh_utils._get_ssh_client_path(ssh_client_folder='/client/folder')
+        actual_path = ssh_utils.get_ssh_client_path(ssh_client_folder='/client/folder')
         self.assertEqual(actual_path, "ssh")
         mock_join.assert_called_once_with('/client/folder', 'ssh')
         mock_isfile.assert_called_once_with("ssh_path")
@@ -179,7 +179,7 @@ class SSHUtilsTests(unittest.TestCase):
     @mock.patch('platform.system')
     def test_get_ssh_client_preinstalled_non_windows(self, mock_system):
         mock_system.return_value = "Mac"
-        actual_path = ssh_utils._get_ssh_client_path()
+        actual_path = ssh_utils.get_ssh_client_path()
         self.assertEqual('ssh', actual_path)
         mock_system.assert_called_once_with()
 
@@ -211,7 +211,7 @@ class SSHUtilsTests(unittest.TestCase):
             mock.call("system32path", "openSSH", "ssh.exe")
         ]
         
-        actual_path = ssh_utils._get_ssh_client_path()
+        actual_path = ssh_utils.get_ssh_client_path()
 
         self.assertEqual("sshfilepath", actual_path)
         mock_system.assert_called_once_with()
@@ -233,4 +233,4 @@ class SSHUtilsTests(unittest.TestCase):
         mock_environ.__getitem__.return_value = "rootpath"
         mock_isfile.return_value = False
 
-        self.assertRaises(azclierror.UnclassifiedUserFault, ssh_utils._get_ssh_client_path)
+        self.assertRaises(azclierror.UnclassifiedUserFault, ssh_utils.get_ssh_client_path)
