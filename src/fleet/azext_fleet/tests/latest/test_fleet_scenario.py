@@ -50,20 +50,20 @@ class FleetScenarioTest(ScenarioTest):
             self.check('name', '{fleet_name}')
         ])
 
-        self.cmd('fleet patch -g {rg} -n {fleet_name} --tags foo=doo', checks=[
+        self.cmd('fleet update -g {rg} -n {fleet_name} --tags foo=doo', checks=[
             self.check('name', '{fleet_name}'),
             self.check('tags.foo', 'doo')
         ])
 
-        self.cmd('fleet get -g {rg} -n {fleet_name}', checks=[
+        self.cmd('fleet show -g {rg} -n {fleet_name}', checks=[
             self.check('name', '{fleet_name}')
         ])
 
-        self.cmd('fleet list-by-resource-group -g {rg}', checks=[
+        self.cmd('fleet list -g {rg}', checks=[
             self.check('length([])', 1)
         ])
 
-        self.cmd('fleet list-by-subscription', checks=[
+        self.cmd('fleet list', checks=[
             self.greater_than('length([])', 0)
         ])
         
@@ -77,7 +77,7 @@ class FleetScenarioTest(ScenarioTest):
             'mc_id': mc_id,
         })
 
-        self.cmd('fleet member join -g {rg} --fleet-name {fleet_name} -n {member_name} --member-cluster-id {mc_id}', checks=[
+        self.cmd('fleet member create -g {rg} --fleet-name {fleet_name} -n {member_name} --member-cluster-id {mc_id}', checks=[
             self.check('name', '{member_name}'),
             self.check('clusterResourceId', '{mc_id}')
         ])
@@ -86,10 +86,10 @@ class FleetScenarioTest(ScenarioTest):
             self.check('length([])', 1)
         ])
 
-        self.cmd('fleet member get -g {rg} --fleet-name {fleet_name} -n {member_name}', checks=[
+        self.cmd('fleet member show -g {rg} --fleet-name {fleet_name} -n {member_name}', checks=[
             self.check('name', '{member_name}')
         ])
         
-        self.cmd('fleet member remove -g {rg} --fleet-name {fleet_name} -n {member_name}')
+        self.cmd('fleet member delete -g {rg} --fleet-name {fleet_name} -n {member_name}')
 
         self.cmd('fleet delete -g {rg} -n {fleet_name}')
