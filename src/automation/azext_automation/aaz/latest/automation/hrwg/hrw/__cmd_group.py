@@ -12,7 +12,7 @@ from azure.cli.core.aaz import *
 
 
 @register_command_group(
-    "automation hybrid-runbook-worker-group hybrid-runbook-worker",
+    "automation hrwg hrw",
 )
 class __CMDGroup(AAZCommandGroup):
     """Automation Hybrid Runbook Worker

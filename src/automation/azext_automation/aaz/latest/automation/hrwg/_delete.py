@@ -12,16 +12,17 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "automation hybrid-runbook-worker-group hybrid-runbook-worker move",
+    "automation hrwg delete",
+    confirmation="Are you sure you want to perform this operation?",
 )
-class Move(AAZCommand):
-    """Move a hybrid worker to a different group.
+class Delete(AAZCommand):
+    """Delete a hybrid runbook worker group.
     """
 
     _aaz_info = {
-        "version": "2021-06-22",
+        "version": "2022-02-22",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.automation/automationaccounts/{}/hybridrunbookworkergroups/{}/hybridrunbookworkers/{}/move", "2021-06-22"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.automation/automationaccounts/{}/hybridrunbookworkergroups/{}", "2022-02-22"],
         ]
     }
 
@@ -45,16 +46,13 @@ class Move(AAZCommand):
             options=["--automation-account-name"],
             help="The name of the automation account.",
             required=True,
+            id_part="name",
         )
         _args_schema.hybrid_runbook_worker_group_name = AAZStrArg(
-            options=["--hybrid-runbook-worker-group-name"],
+            options=["-n", "--name", "--hybrid-runbook-worker-group-name"],
             help="The hybrid runbook worker group name",
             required=True,
-        )
-        _args_schema.hybrid_runbook_worker_id = AAZStrArg(
-            options=["--hybrid-runbook-worker-id"],
-            help="The hybrid runbook worker id",
-            required=True,
+            id_part="child_name_1",
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -62,9 +60,9 @@ class Move(AAZCommand):
         return cls._args_schema
 
     def _execute_operations(self):
-        self.HybridRunbookWorkersMove(ctx=self.ctx)()
+        self.HybridRunbookWorkerGroupDelete(ctx=self.ctx)()
 
-    class HybridRunbookWorkersMove(AAZHttpOperation):
+    class HybridRunbookWorkerGroupDelete(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -78,13 +76,13 @@ class Move(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Automation/automationAccounts/{automationAccountName}/hybridRunbookWorkerGroups/{hybridRunbookWorkerGroupName}/hybridRunbookWorkers/{hybridRunbookWorkerId}/move",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Automation/automationAccounts/{automationAccountName}/hybridRunbookWorkerGroups/{hybridRunbookWorkerGroupName}",
                 **self.url_parameters
             )
 
         @property
         def method(self):
-            return "POST"
+            return "DELETE"
 
         @property
         def error_format(self):
@@ -102,10 +100,6 @@ class Move(AAZCommand):
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "hybridRunbookWorkerId", self.ctx.args.hybrid_runbook_worker_id,
-                    required=True,
-                ),
-                **self.serialize_url_param(
                     "resourceGroupName", self.ctx.args.resource_group,
                     required=True,
                 ),
@@ -120,34 +114,14 @@ class Move(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2021-06-22",
+                    "api-version", "2022-02-22",
                     required=True,
                 ),
             }
             return parameters
 
-        @property
-        def header_parameters(self):
-            parameters = {
-                **self.serialize_header_param(
-                    "Content-Type", "application/json",
-                ),
-            }
-            return parameters
-
-        @property
-        def content(self):
-            _content_value, _builder = self.new_content_builder(
-                self.ctx.args,
-                typ=AAZObjectType,
-                typ_kwargs={"flags": {"required": True, "client_flatten": True}}
-            )
-            _builder.set_prop("hybridRunbookWorkerGroupName", AAZStrType, ".hybrid_runbook_worker_group_name")
-
-            return self.serialize_content(_content_value)
-
         def on_200(self, session):
             pass
 
 
-__all__ = ["Move"]
+__all__ = ["Delete"]

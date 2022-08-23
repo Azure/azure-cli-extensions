@@ -12,10 +12,11 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "automation hybrid-runbook-worker-group hybrid-runbook-worker show",
+    "automation hrwg hrw delete",
+    confirmation="Are you sure you want to perform this operation?",
 )
-class Show(AAZCommand):
-    """Retrieve a hybrid runbook worker.
+class Delete(AAZCommand):
+    """Delete a hybrid runbook worker.
     """
 
     _aaz_info = {
@@ -28,7 +29,7 @@ class Show(AAZCommand):
     def _handler(self, command_args):
         super()._handler(command_args)
         self._execute_operations()
-        return self._output()
+        return None
 
     _args_schema = None
 
@@ -65,13 +66,9 @@ class Show(AAZCommand):
         return cls._args_schema
 
     def _execute_operations(self):
-        self.HybridRunbookWorkersGet(ctx=self.ctx)()
+        self.HybridRunbookWorkersDelete(ctx=self.ctx)()
 
-    def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
-        return result
-
-    class HybridRunbookWorkersGet(AAZHttpOperation):
+    class HybridRunbookWorkersDelete(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -79,6 +76,8 @@ class Show(AAZCommand):
             session = self.client.send_request(request=request, stream=False, **kwargs)
             if session.http_response.status_code in [200]:
                 return self.on_200(session)
+            if session.http_response.status_code in [204]:
+                return self.on_204(session)
 
             return self.on_error(session.http_response)
 
@@ -91,7 +90,7 @@ class Show(AAZCommand):
 
         @property
         def method(self):
-            return "GET"
+            return "DELETE"
 
         @property
         def error_format(self):
@@ -133,95 +132,11 @@ class Show(AAZCommand):
             }
             return parameters
 
-        @property
-        def header_parameters(self):
-            parameters = {
-                **self.serialize_header_param(
-                    "Accept", "application/json",
-                ),
-            }
-            return parameters
-
         def on_200(self, session):
-            data = self.deserialize_http_content(session)
-            self.ctx.set_var(
-                "instance",
-                data,
-                schema_builder=self._build_schema_on_200
-            )
+            pass
 
-        _schema_on_200 = None
-
-        @classmethod
-        def _build_schema_on_200(cls):
-            if cls._schema_on_200 is not None:
-                return cls._schema_on_200
-
-            cls._schema_on_200 = AAZObjectType()
-
-            _schema_on_200 = cls._schema_on_200
-            _schema_on_200.id = AAZStrType(
-                flags={"read_only": True},
-            )
-            _schema_on_200.name = AAZStrType(
-                flags={"read_only": True},
-            )
-            _schema_on_200.properties = AAZObjectType(
-                flags={"client_flatten": True},
-            )
-            _schema_on_200.system_data = AAZObjectType(
-                serialized_name="systemData",
-                flags={"read_only": True},
-            )
-            _schema_on_200.type = AAZStrType(
-                flags={"read_only": True},
-            )
-
-            properties = cls._schema_on_200.properties
-            properties.ip = AAZStrType()
-            properties.last_seen_date_time = AAZStrType(
-                serialized_name="lastSeenDateTime",
-            )
-            properties.registered_date_time = AAZStrType(
-                serialized_name="registeredDateTime",
-            )
-            properties.vm_resource_id = AAZStrType(
-                serialized_name="vmResourceId",
-            )
-            properties.worker_name = AAZStrType(
-                serialized_name="workerName",
-            )
-            properties.worker_type = AAZStrType(
-                serialized_name="workerType",
-            )
-
-            system_data = cls._schema_on_200.system_data
-            system_data.created_at = AAZStrType(
-                serialized_name="createdAt",
-                flags={"read_only": True},
-            )
-            system_data.created_by = AAZStrType(
-                serialized_name="createdBy",
-                flags={"read_only": True},
-            )
-            system_data.created_by_type = AAZStrType(
-                serialized_name="createdByType",
-                flags={"read_only": True},
-            )
-            system_data.last_modified_at = AAZStrType(
-                serialized_name="lastModifiedAt",
-                flags={"read_only": True},
-            )
-            system_data.last_modified_by = AAZStrType(
-                serialized_name="lastModifiedBy",
-                flags={"read_only": True},
-            )
-            system_data.last_modified_by_type = AAZStrType(
-                serialized_name="lastModifiedByType",
-                flags={"read_only": True},
-            )
-
-            return cls._schema_on_200
+        def on_204(self, session):
+            pass
 
 
-__all__ = ["Show"]
+__all__ = ["Delete"]

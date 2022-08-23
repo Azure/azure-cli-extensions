@@ -12,16 +12,16 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "automation hybrid-runbook-worker-group hybrid-runbook-worker list",
+    "automation hrwg list",
 )
 class List(AAZCommand):
-    """Retrieve a list of hybrid runbook workers.
+    """Retrieve a list of hybrid runbook worker groups.
     """
 
     _aaz_info = {
-        "version": "2021-06-22",
+        "version": "2022-02-22",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.automation/automationaccounts/{}/hybridrunbookworkergroups/{}/hybridrunbookworkers", "2021-06-22"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.automation/automationaccounts/{}/hybridrunbookworkergroups", "2022-02-22"],
         ]
     }
 
@@ -45,11 +45,6 @@ class List(AAZCommand):
             help="The name of the automation account.",
             required=True,
         )
-        _args_schema.hybrid_runbook_worker_group_name = AAZStrArg(
-            options=["--hybrid-runbook-worker-group-name"],
-            help="The hybrid runbook worker group name",
-            required=True,
-        )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
@@ -60,14 +55,14 @@ class List(AAZCommand):
         return cls._args_schema
 
     def _execute_operations(self):
-        self.HybridRunbookWorkersListByHybridRunbookWorkerGroup(ctx=self.ctx)()
+        self.HybridRunbookWorkerGroupListByAutomationAccount(ctx=self.ctx)()
 
     def _output(self, *args, **kwargs):
         result = self.deserialize_output(self.ctx.vars.instance.value, client_flatten=True)
         next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
         return result, next_link
 
-    class HybridRunbookWorkersListByHybridRunbookWorkerGroup(AAZHttpOperation):
+    class HybridRunbookWorkerGroupListByAutomationAccount(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -81,7 +76,7 @@ class List(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Automation/automationAccounts/{automationAccountName}/hybridRunbookWorkerGroups/{hybridRunbookWorkerGroupName}/hybridRunbookWorkers",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Automation/automationAccounts/{automationAccountName}/hybridRunbookWorkerGroups",
                 **self.url_parameters
             )
 
@@ -98,10 +93,6 @@ class List(AAZCommand):
             parameters = {
                 **self.serialize_url_param(
                     "automationAccountName", self.ctx.args.automation_account_name,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "hybridRunbookWorkerGroupName", self.ctx.args.hybrid_runbook_worker_group_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -122,7 +113,7 @@ class List(AAZCommand):
                     "$filter", self.ctx.args.filter,
                 ),
                 **self.serialize_query_param(
-                    "api-version", "2021-06-22",
+                    "api-version", "2022-02-22",
                     required=True,
                 ),
             }
@@ -182,22 +173,13 @@ class List(AAZCommand):
             )
 
             properties = cls._schema_on_200.value.Element.properties
-            properties.ip = AAZStrType()
-            properties.last_seen_date_time = AAZStrType(
-                serialized_name="lastSeenDateTime",
+            properties.credential = AAZObjectType()
+            properties.group_type = AAZStrType(
+                serialized_name="groupType",
             )
-            properties.registered_date_time = AAZStrType(
-                serialized_name="registeredDateTime",
-            )
-            properties.vm_resource_id = AAZStrType(
-                serialized_name="vmResourceId",
-            )
-            properties.worker_name = AAZStrType(
-                serialized_name="workerName",
-            )
-            properties.worker_type = AAZStrType(
-                serialized_name="workerType",
-            )
+
+            credential = cls._schema_on_200.value.Element.properties.credential
+            credential.name = AAZStrType()
 
             system_data = cls._schema_on_200.value.Element.system_data
             system_data.created_at = AAZStrType(

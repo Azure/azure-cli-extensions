@@ -12,23 +12,22 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "automation hybrid-runbook-worker-group create",
+    "automation hrwg hrw list",
 )
-class Create(AAZCommand):
-    """Create a hybrid runbook worker group.
+class List(AAZCommand):
+    """Retrieve a list of hybrid runbook workers.
     """
 
     _aaz_info = {
-        "version": "2022-02-22",
+        "version": "2021-06-22",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.automation/automationaccounts/{}/hybridrunbookworkergroups/{}", "2022-02-22"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.automation/automationaccounts/{}/hybridrunbookworkergroups/{}/hybridrunbookworkers", "2021-06-22"],
         ]
     }
 
     def _handler(self, command_args):
         super()._handler(command_args)
-        self._execute_operations()
-        return self._output()
+        return self.build_paging(self._execute_operations, self._output)
 
     _args_schema = None
 
@@ -45,62 +44,50 @@ class Create(AAZCommand):
             options=["--automation-account-name"],
             help="The name of the automation account.",
             required=True,
-            id_part="name",
         )
         _args_schema.hybrid_runbook_worker_group_name = AAZStrArg(
-            options=["-n", "--name", "--hybrid-runbook-worker-group-name"],
+            options=["--hybrid-runbook-worker-group-name"],
             help="The hybrid runbook worker group name",
             required=True,
-            id_part="child_name_1",
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
-
-        # define Arg Group "Properties"
-
-        _args_schema = cls._args_schema
-        _args_schema.credential = AAZObjectArg(
-            options=["--credential"],
-            arg_group="Properties",
-            help="Sets the credential of a worker group.",
-        )
-
-        credential = cls._args_schema.credential
-        credential.name = AAZStrArg(
-            options=["name"],
-            help="Gets or sets the name of the credential.",
+        _args_schema.filter = AAZStrArg(
+            options=["--filter"],
+            help="The filter to apply on the operation.",
         )
         return cls._args_schema
 
     def _execute_operations(self):
-        self.HybridRunbookWorkerGroupCreate(ctx=self.ctx)()
+        self.HybridRunbookWorkersListByHybridRunbookWorkerGroup(ctx=self.ctx)()
 
     def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
-        return result
+        result = self.deserialize_output(self.ctx.vars.instance.value, client_flatten=True)
+        next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
+        return result, next_link
 
-    class HybridRunbookWorkerGroupCreate(AAZHttpOperation):
+    class HybridRunbookWorkersListByHybridRunbookWorkerGroup(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
             request = self.make_request()
             session = self.client.send_request(request=request, stream=False, **kwargs)
-            if session.http_response.status_code in [201]:
-                return self.on_201(session)
+            if session.http_response.status_code in [200]:
+                return self.on_200(session)
 
             return self.on_error(session.http_response)
 
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Automation/automationAccounts/{automationAccountName}/hybridRunbookWorkerGroups/{hybridRunbookWorkerGroupName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Automation/automationAccounts/{automationAccountName}/hybridRunbookWorkerGroups/{hybridRunbookWorkerGroupName}/hybridRunbookWorkers",
                 **self.url_parameters
             )
 
         @property
         def method(self):
-            return "PUT"
+            return "GET"
 
         @property
         def error_format(self):
@@ -132,7 +119,10 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-02-22",
+                    "$filter", self.ctx.args.filter,
+                ),
+                **self.serialize_query_param(
+                    "api-version", "2021-06-22",
                     required=True,
                 ),
             }
@@ -142,79 +132,74 @@ class Create(AAZCommand):
         def header_parameters(self):
             parameters = {
                 **self.serialize_header_param(
-                    "Content-Type", "application/json",
-                ),
-                **self.serialize_header_param(
                     "Accept", "application/json",
                 ),
             }
             return parameters
 
-        @property
-        def content(self):
-            _content_value, _builder = self.new_content_builder(
-                self.ctx.args,
-                typ=AAZObjectType,
-                typ_kwargs={"flags": {"required": True, "client_flatten": True}}
-            )
-            _builder.set_prop("name", AAZStrType, ".hybrid_runbook_worker_group_name")
-            _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
-
-            properties = _builder.get(".properties")
-            if properties is not None:
-                properties.set_prop("credential", AAZObjectType, ".credential")
-
-            credential = _builder.get(".properties.credential")
-            if credential is not None:
-                credential.set_prop("name", AAZStrType, ".name")
-
-            return self.serialize_content(_content_value)
-
-        def on_201(self, session):
+        def on_200(self, session):
             data = self.deserialize_http_content(session)
             self.ctx.set_var(
                 "instance",
                 data,
-                schema_builder=self._build_schema_on_201
+                schema_builder=self._build_schema_on_200
             )
 
-        _schema_on_201 = None
+        _schema_on_200 = None
 
         @classmethod
-        def _build_schema_on_201(cls):
-            if cls._schema_on_201 is not None:
-                return cls._schema_on_201
+        def _build_schema_on_200(cls):
+            if cls._schema_on_200 is not None:
+                return cls._schema_on_200
 
-            cls._schema_on_201 = AAZObjectType()
+            cls._schema_on_200 = AAZObjectType()
 
-            _schema_on_201 = cls._schema_on_201
-            _schema_on_201.id = AAZStrType(
+            _schema_on_200 = cls._schema_on_200
+            _schema_on_200.next_link = AAZStrType(
+                serialized_name="nextLink",
+            )
+            _schema_on_200.value = AAZListType()
+
+            value = cls._schema_on_200.value
+            value.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element
+            _element.id = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_201.name = AAZStrType(
+            _element.name = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_201.properties = AAZObjectType(
+            _element.properties = AAZObjectType(
                 flags={"client_flatten": True},
             )
-            _schema_on_201.system_data = AAZObjectType(
+            _element.system_data = AAZObjectType(
                 serialized_name="systemData",
                 flags={"read_only": True},
             )
-            _schema_on_201.type = AAZStrType(
+            _element.type = AAZStrType(
                 flags={"read_only": True},
             )
 
-            properties = cls._schema_on_201.properties
-            properties.credential = AAZObjectType()
-            properties.group_type = AAZStrType(
-                serialized_name="groupType",
+            properties = cls._schema_on_200.value.Element.properties
+            properties.ip = AAZStrType()
+            properties.last_seen_date_time = AAZStrType(
+                serialized_name="lastSeenDateTime",
+            )
+            properties.registered_date_time = AAZStrType(
+                serialized_name="registeredDateTime",
+            )
+            properties.vm_resource_id = AAZStrType(
+                serialized_name="vmResourceId",
+            )
+            properties.worker_name = AAZStrType(
+                serialized_name="workerName",
+            )
+            properties.worker_type = AAZStrType(
+                serialized_name="workerType",
             )
 
-            credential = cls._schema_on_201.properties.credential
-            credential.name = AAZStrType()
-
-            system_data = cls._schema_on_201.system_data
+            system_data = cls._schema_on_200.value.Element.system_data
             system_data.created_at = AAZStrType(
                 serialized_name="createdAt",
                 flags={"read_only": True},
@@ -240,7 +225,7 @@ class Create(AAZCommand):
                 flags={"read_only": True},
             )
 
-            return cls._schema_on_201
+            return cls._schema_on_200
 
 
-__all__ = ["Create"]
+__all__ = ["List"]

@@ -12,7 +12,7 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "automation hybrid-runbook-worker-group hybrid-runbook-worker update",
+    "automation hrwg hrw update",
 )
 class Update(AAZCommand):
     """Create a hybrid runbook worker.
