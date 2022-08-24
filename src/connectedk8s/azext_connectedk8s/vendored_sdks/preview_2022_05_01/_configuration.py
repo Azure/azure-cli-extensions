@@ -21,8 +21,10 @@ if TYPE_CHECKING:
 
 class ConnectedKubernetesClientConfiguration(Configuration):  # pylint: disable=too-many-instance-attributes
     """Configuration for ConnectedKubernetesClient.
+
     Note that all parameters used to create this instance are saved as instance
     attributes.
+
     :param credential: Credential needed for the client to connect to Azure.
     :type credential: ~azure.core.credentials.TokenCredential
     :param subscription_id: The ID of the target subscription.

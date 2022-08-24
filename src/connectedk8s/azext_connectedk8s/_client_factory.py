@@ -80,8 +80,6 @@ def resource_providers_client(cli_ctx, subscription_id=None):
 
 def _graph_client_factory(cli_ctx, **_):
     if os.getenv('AZURE_ACCESS_TOKEN'):
-        # import pdb
-        # pdb.set_trace()
         credential = AccessTokenCredential(access_token=os.getenv('AZURE_ACCESS_TOKEN'))
         client = GraphRbacManagementClient(credential, os.getenv('AZURE_TENANT_ID'),
                                            base_url=cli_ctx.cloud.endpoints.active_directory_graph_resource_id)
