@@ -133,6 +133,9 @@ automation hrwg hrw move:
     hybrid_runbook_worker_id:
       rule_exclusions:
       - option_length_too_long
+    target_hybrid_runbook_worker_group_name:
+      rule_exclusions:
+      - option_length_too_long
 automation hrwg hrw show:
   parameters:
     automation_account_name:

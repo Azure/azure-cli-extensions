@@ -51,6 +51,11 @@ class Move(AAZCommand):
             help="The hybrid runbook worker group name",
             required=True,
         )
+        _args_schema.target_hybrid_runbook_worker_group_name = AAZStrArg(
+            options=["--target-hybrid-runbook-worker-group-name"],
+            help="The target hybrid worker group name",
+            required=True,
+        )
         _args_schema.hybrid_runbook_worker_id = AAZStrArg(
             options=["--hybrid-runbook-worker-id"],
             help="The hybrid runbook worker id",
@@ -142,7 +147,7 @@ class Move(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
-            _builder.set_prop("hybridRunbookWorkerGroupName", AAZStrType, ".hybrid_runbook_worker_group_name")
+            _builder.set_prop("hybridRunbookWorkerGroupName", AAZStrType, ".target_hybrid_runbook_worker_group_name")
 
             return self.serialize_content(_content_value)
 
