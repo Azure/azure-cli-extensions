@@ -238,7 +238,7 @@ def create_default_mac(cmd, cluster_subscription, cluster_region):
     from azure.cli.core.util import send_raw_request
 
     default_mac_name = get_default_mac_name(cluster_region)
-    default_resource_group_name = "DefaultResourceGroup-{0}".format( AzureCloudLocationToOmsRegionCodeMap[MapToClosestMACRegion[cluster_region]] )
+    default_resource_group_name = "DefaultResourceGroup-{0}".format(get_default_mac_region_code(cluster_region))
     mac_resource_id = "/subscriptions/{0}/resourceGroups/{1}/providers/microsoft.monitor/accounts/{2}".format(
             cluster_subscription,
             default_resource_group_name,
@@ -270,16 +270,12 @@ def create_default_mac(cmd, cluster_subscription, cluster_region):
                                    }})
     association_url = f"https://management.azure.com{mac_resource_id}?api-version={MAC_API}"
 
-    for _ in range(3):
-        try:
-            send_raw_request(cmd.cli_ctx, "PUT", association_url,
-                             body=association_body)
-            error = None
-            return mac_resource_id
-        except CLIError as e:
-            error = e
-    else:
-        raise error
+    try:
+        send_raw_request(cmd.cli_ctx, "PUT", association_url,
+                         body=association_body)
+        return mac_resource_id
+    except CLIError as e:
+        raise e
 
 def get_mac_resource_id(cmd, cluster_subscription, cluster_region, raw_parameters):
     mac_resource_id = raw_parameters.get("mac_resource_id")
@@ -305,7 +301,7 @@ def get_default_dcra_name(cluster_region, cluster_name):
     default_dcra_name = default_dcra_name[0:43]
     return default_dcra_name
 
-def get_mac_region(cmd, mac_resource_id, cluster_region):
+def get_mac_region_and_check_support(cmd, mac_resource_id, cluster_region):
     from azure.cli.core.util import send_raw_request
     from azure.core.exceptions import HttpResponseError
 
@@ -384,13 +380,8 @@ def create_dce(cmd, cluster_subscription, cluster_resource_group_name, cluster_n
             dce_url = f"https://management.azure.com{dce_resource_id}?api-version=2021-09-01-preview"
             dce_creation_body = json.dumps({"name": dce_name,
                                             "location": mac_region,
-                                            # "tags": {
-                                            #   "tagName1": "tagValue1",
-                                            #   "tagName2": "tagValue2"
-                                            # },
                                             "kind": "Linux",
-                                            "properties": {
-                                            }})
+                                            "properties": {}})
             send_raw_request(cmd.cli_ctx, "PUT",
                              dce_url, body=dce_creation_body)
             error = None
@@ -423,9 +414,7 @@ def create_dcr(cmd, mac_region, mac_resource_id, cluster_subscription, cluster_r
                                                     "streams": [
                                                         "Microsoft-PrometheusMetrics"
                                                     ],
-                                                    "labelIncludeFilter": {
-                                                        # "microsoft_metrics_include_label": "MonitoringData"
-                                                    }
+                                                    "labelIncludeFilter": { }
                                                 }
                                             ]
                                         },
@@ -478,9 +467,8 @@ def create_dcra(cmd, cluster_region, cluster_subscription, cluster_resource_grou
     # only create or delete the association between the DCR and cluster
     association_body = json.dumps({"location": cluster_region,
                                    "properties": {
-                                    #    "dataCollectionEndpointId": dce_resource_id,
                                        "dataCollectionRuleId": dcr_resource_id,
-                                       "description": "Data collection association between DCR, DCE and target AKS resource"
+                                       "description": "Promtheus data collection association between DCR, DCE and target AKS resource"
                                    }})
     association_url = f"https://management.azure.com{cluster_resource_id}/providers/Microsoft.Insights/dataCollectionRuleAssociations/{dcra_name}?api-version=2021-09-01-preview"
     for _ in range(3):
@@ -668,11 +656,6 @@ def delete_dcra(cmd, cluster_region, cluster_subscription, cluster_resource_grou
     )
 
     dcra_name = get_default_dcra_name(cluster_region, cluster_name)
-    dcra_resource_id = "/subscriptions/{0}/resourceGroups/{1}/providers/Microsoft.Insights/dataCollectionRuleAssociations/{2}".format(
-        cluster_subscription,
-        cluster_resource_group_name,
-        dcra_name
-    )
 
     # only create or delete the association between the DCR and cluster
     association_body = json.dumps({"location": cluster_region, "properties": {}})
@@ -748,12 +731,11 @@ def link_azure_monitor_profile_artifacts(cmd,
     print("Calling link_azure_monitor_profile_artifacts...")
     
     # MAC creation if required
-    # mac_resource_id = "/subscriptions/ce4d1293-71c0-4c72-bc55-133553ee9e50/resourceGroups/kaveeshMACRG/providers/microsoft.monitor/accounts/kaveesheastusmac"
     mac_resource_id = get_mac_resource_id(cmd, cluster_subscription, cluster_region, raw_parameters)
     print(mac_resource_id)
 
-    # Get MAC region (required for DCE, DCR creation)
-    mac_region = get_mac_region(cmd, mac_resource_id, cluster_region)
+    # Get MAC region (required for DCE, DCR creation) and check support for DCE,DCR creation
+    mac_region = get_mac_region_and_check_support(cmd, mac_resource_id, cluster_region)
     print(mac_region)
 
     # DCE creation
@@ -779,8 +761,7 @@ def unlink_azure_monitor_profile_artifacts(cmd,
             cluster_subscription,
             cluster_resource_group_name,
             cluster_name,
-            cluster_region,
-            raw_parameters,
+            cluster_region
         ):
     print("Calling unlink_azure_monitor_profile_artifacts...")
     # Remove DCRA link
@@ -822,8 +803,7 @@ def ensure_azure_monitor_profile_prerequisites(
             cluster_subscription,
             cluster_resource_group_name,
             cluster_name,
-            cluster_region,
-            raw_parameters
+            cluster_region
         )
 
     return
