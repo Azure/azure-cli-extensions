@@ -54,170 +54,14 @@ class Update(AAZCommand):
         # define Arg Group "Resource"
 
         _args_schema = cls._args_schema
-        _args_schema.dynatrace_environment_properties = AAZObjectArg(
-            options=["--dynatrace-environment-properties"],
-            arg_group="Resource",
-            help="Properties of the Dynatrace environment.",
-        )
-        _args_schema.marketplace_subscription_status = AAZStrArg(
-            options=["--marketplace-subscription-status"],
-            arg_group="Resource",
-            help="Marketplace subscription status.",
-            enum={"Active": "Active", "Suspended": "Suspended"},
-        )
-        _args_schema.monitoring_status = AAZStrArg(
-            options=["--monitoring-status"],
-            arg_group="Resource",
-            help="Status of the monitor.",
-            enum={"Disabled": "Disabled", "Enabled": "Enabled"},
-        )
-        _args_schema.plan_data = AAZObjectArg(
-            options=["--plan-data"],
-            arg_group="Resource",
-            help="Billing plan information.",
-        )
         _args_schema.tags = AAZDictArg(
             options=["--tags"],
             arg_group="Resource",
             help="Resource tags.",
         )
-        _args_schema.user_info = AAZObjectArg(
-            options=["--user-info"],
-            arg_group="Resource",
-            help="User info.",
-        )
-
-        dynatrace_environment_properties = cls._args_schema.dynatrace_environment_properties
-        dynatrace_environment_properties.account_info = AAZObjectArg(
-            options=["account-info"],
-            help="Dynatrace Account Information",
-        )
-        dynatrace_environment_properties.environment_info = AAZObjectArg(
-            options=["environment-info"],
-            help="Dynatrace Environment Information",
-        )
-        dynatrace_environment_properties.single_sign_on_properties = AAZObjectArg(
-            options=["single-sign-on-properties"],
-            help="The details of a Dynatrace single sign-on.",
-        )
-        dynatrace_environment_properties.user_id = AAZStrArg(
-            options=["user-id"],
-            help="User id",
-        )
-
-        account_info = cls._args_schema.dynatrace_environment_properties.account_info
-        account_info.account_id = AAZStrArg(
-            options=["account-id"],
-            help="Account Id of the account this environment is linked to",
-        )
-        account_info.region_id = AAZStrArg(
-            options=["region-id"],
-            help="Region in which the account is created",
-        )
-
-        environment_info = cls._args_schema.dynatrace_environment_properties.environment_info
-        environment_info.environment_id = AAZStrArg(
-            options=["environment-id"],
-            help="Id of the environment created",
-        )
-        environment_info.ingestion_key = AAZStrArg(
-            options=["ingestion-key"],
-            help="Ingestion key of the environment",
-        )
-        environment_info.landing_url = AAZStrArg(
-            options=["landing-url"],
-            help="Landing URL for Dynatrace environment",
-        )
-        environment_info.logs_ingestion_endpoint = AAZStrArg(
-            options=["logs-ingestion-endpoint"],
-            help="Ingestion endpoint used for sending logs",
-        )
-
-        single_sign_on_properties = cls._args_schema.dynatrace_environment_properties.single_sign_on_properties
-        single_sign_on_properties.aad_domains = AAZListArg(
-            options=["aad-domains"],
-            help="array of Aad(azure active directory) domains",
-        )
-        single_sign_on_properties.enterprise_app_id = AAZStrArg(
-            options=["enterprise-app-id"],
-            help="Version of the Dynatrace agent installed on the VM.",
-        )
-        single_sign_on_properties.single_sign_on_state = AAZStrArg(
-            options=["single-sign-on-state"],
-            help="State of Single Sign On",
-            enum={"Disable": "Disable", "Enable": "Enable", "Existing": "Existing", "Initial": "Initial"},
-        )
-        single_sign_on_properties.single_sign_on_url = AAZStrArg(
-            options=["single-sign-on-url"],
-            help="The login URL specific to this Dynatrace Environment",
-        )
-
-        aad_domains = cls._args_schema.dynatrace_environment_properties.single_sign_on_properties.aad_domains
-        aad_domains.Element = AAZStrArg()
-
-        plan_data = cls._args_schema.plan_data
-        plan_data.billing_cycle = AAZStrArg(
-            options=["billing-cycle"],
-            help="different billing cycles like MONTHLY/WEEKLY. this could be enum",
-            fmt=AAZStrArgFormat(
-                max_length=50,
-            ),
-        )
-        plan_data.effective_date = AAZDateTimeArg(
-            options=["effective-date"],
-            help="date when plan was applied",
-        )
-        plan_data.plan_details = AAZStrArg(
-            options=["plan-details"],
-            help="plan id as published by Dynatrace",
-            fmt=AAZStrArgFormat(
-                max_length=100,
-            ),
-        )
-        plan_data.usage_type = AAZStrArg(
-            options=["usage-type"],
-            help="different usage type like PAYG/COMMITTED. this could be enum",
-            fmt=AAZStrArgFormat(
-                max_length=50,
-            ),
-        )
 
         tags = cls._args_schema.tags
         tags.Element = AAZStrArg()
-
-        user_info = cls._args_schema.user_info
-        user_info.country = AAZStrArg(
-            options=["country"],
-            help="Country of the user",
-        )
-        user_info.email_address = AAZStrArg(
-            options=["email-address"],
-            help="Email of the user used by Dynatrace for contacting them if needed",
-            fmt=AAZStrArgFormat(
-                pattern="^[A-Za-z0-9._%+-]+@(?:[A-Za-z0-9-]+\.)+[A-Za-z]{2,}$",
-            ),
-        )
-        user_info.first_name = AAZStrArg(
-            options=["first-name"],
-            help="First Name of the user",
-            fmt=AAZStrArgFormat(
-                max_length=50,
-            ),
-        )
-        user_info.last_name = AAZStrArg(
-            options=["last-name"],
-            help="Last Name of the user",
-            fmt=AAZStrArgFormat(
-                max_length=50,
-            ),
-        )
-        user_info.phone_number = AAZStrArg(
-            options=["phone-number"],
-            help="Phone number of the user used by Dynatrace for contacting them if needed",
-            fmt=AAZStrArgFormat(
-                max_length=40,
-            ),
-        )
         return cls._args_schema
 
     def _execute_operations(self):
@@ -300,61 +144,11 @@ class Update(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
-            _builder.set_prop("dynatraceEnvironmentProperties", AAZObjectType, ".dynatrace_environment_properties")
-            _builder.set_prop("marketplaceSubscriptionStatus", AAZStrType, ".marketplace_subscription_status")
-            _builder.set_prop("monitoringStatus", AAZStrType, ".monitoring_status")
-            _builder.set_prop("planData", AAZObjectType, ".plan_data")
             _builder.set_prop("tags", AAZDictType, ".tags")
-            _builder.set_prop("userInfo", AAZObjectType, ".user_info")
-
-            dynatrace_environment_properties = _builder.get(".dynatraceEnvironmentProperties")
-            if dynatrace_environment_properties is not None:
-                dynatrace_environment_properties.set_prop("accountInfo", AAZObjectType, ".account_info")
-                dynatrace_environment_properties.set_prop("environmentInfo", AAZObjectType, ".environment_info")
-                dynatrace_environment_properties.set_prop("singleSignOnProperties", AAZObjectType, ".single_sign_on_properties")
-                dynatrace_environment_properties.set_prop("userId", AAZStrType, ".user_id")
-
-            account_info = _builder.get(".dynatraceEnvironmentProperties.accountInfo")
-            if account_info is not None:
-                account_info.set_prop("accountId", AAZStrType, ".account_id")
-                account_info.set_prop("regionId", AAZStrType, ".region_id")
-
-            environment_info = _builder.get(".dynatraceEnvironmentProperties.environmentInfo")
-            if environment_info is not None:
-                environment_info.set_prop("environmentId", AAZStrType, ".environment_id")
-                environment_info.set_prop("ingestionKey", AAZStrType, ".ingestion_key")
-                environment_info.set_prop("landingURL", AAZStrType, ".landing_url")
-                environment_info.set_prop("logsIngestionEndpoint", AAZStrType, ".logs_ingestion_endpoint")
-
-            single_sign_on_properties = _builder.get(".dynatraceEnvironmentProperties.singleSignOnProperties")
-            if single_sign_on_properties is not None:
-                single_sign_on_properties.set_prop("aadDomains", AAZListType, ".aad_domains")
-                single_sign_on_properties.set_prop("enterpriseAppId", AAZStrType, ".enterprise_app_id")
-                single_sign_on_properties.set_prop("singleSignOnState", AAZStrType, ".single_sign_on_state")
-                single_sign_on_properties.set_prop("singleSignOnUrl", AAZStrType, ".single_sign_on_url")
-
-            aad_domains = _builder.get(".dynatraceEnvironmentProperties.singleSignOnProperties.aadDomains")
-            if aad_domains is not None:
-                aad_domains.set_elements(AAZStrType, ".")
-
-            plan_data = _builder.get(".planData")
-            if plan_data is not None:
-                plan_data.set_prop("billingCycle", AAZStrType, ".billing_cycle")
-                plan_data.set_prop("effectiveDate", AAZStrType, ".effective_date")
-                plan_data.set_prop("planDetails", AAZStrType, ".plan_details")
-                plan_data.set_prop("usageType", AAZStrType, ".usage_type")
 
             tags = _builder.get(".tags")
             if tags is not None:
                 tags.set_elements(AAZStrType, ".")
-
-            user_info = _builder.get(".userInfo")
-            if user_info is not None:
-                user_info.set_prop("country", AAZStrType, ".country")
-                user_info.set_prop("emailAddress", AAZStrType, ".email_address")
-                user_info.set_prop("firstName", AAZStrType, ".first_name")
-                user_info.set_prop("lastName", AAZStrType, ".last_name")
-                user_info.set_prop("phoneNumber", AAZStrType, ".phone_number")
 
             return self.serialize_content(_content_value)
 
