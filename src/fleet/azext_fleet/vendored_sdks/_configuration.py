@@ -69,4 +69,3 @@ class ContainerServiceClientConfiguration(Configuration):
         self.authentication_policy = kwargs.get('authentication_policy')
         if self.credential and not self.authentication_policy:
             self.authentication_policy = ARMChallengeAuthenticationPolicy(self.credential, *self.credential_scopes, **kwargs)
-        
