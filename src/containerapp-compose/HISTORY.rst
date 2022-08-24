@@ -3,6 +3,11 @@
 Release History
 ===============
 
+0.2.1
+++++++
+* Fix bug where location parameter was not being passed to containerapp environment creation
+* Make memory/cpu resolution more resilient and improve warning messages
+
 0.2.0
 ++++++
 * Add basic build support for compose services
