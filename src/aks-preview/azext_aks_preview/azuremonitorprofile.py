@@ -14,10 +14,12 @@ from azure.cli.core.azclierror import (
     ClientRequestError,
     InvalidArgumentValueError
 )
-from ._client_factory import get_resources_client
+from ._client_factory import get_resources_client, get_resource_groups_client
 from enum import Enum
 from six import with_metaclass
 from azure.core import CaseInsensitiveEnumMeta
+from azure.core.exceptions import HttpResponseError
+
 
 MAC_API = "2021-06-03-preview"
 GRAFANA_API = "2022-08-01"
@@ -115,7 +117,13 @@ AzureCloudLocationToOmsRegionCodeMap = {
         "uaecentral": "AUH",
 }
 
-# check if `az feature register --namespace Microsoft.ContainerService --name AKS-PrometheusAddonPreview` needs to be called or not
+def check_msi_cluster(client, cluster_resource_group_name, cluster_name):
+    instance = client.get(cluster_resource_group_name, cluster_name)
+    if instance.service_principal_profile.client_id != "msi":
+        raise UnknownError("Azure Monitor Metrics (Managed Prometheus) is only supported for MSI enabled clusters")
+        
+
+# check if `az feature register --namespace Microsoft.ContainerService --name AKS-PrometheusAddonPreview` is Registered
 def check_azuremonitoraddon_feature(cmd, cluster_subscription):
     from azure.cli.core.util import send_raw_request
     feature_check_url = f"https://management.azure.com/subscriptions/{cluster_subscription}/providers/Microsoft.Features/providers/Microsoft.ContainerService/features/AKS-PrometheusAddonPreview?api-version={FEATURE_API}"
@@ -130,7 +138,7 @@ def check_azuremonitoraddon_feature(cmd, cluster_subscription):
         return
 
     raise CLIError("Please enable the feature AKS-PrometheusAddonPreview on your subscription using `az feature register --namespace Microsoft.ContainerService --name AKS-PrometheusAddonPreview` to use this feature.\
-                    If this feature was recently registered then please wait upto 5 mins for the feature registration to finish")
+        If this feature was recently registered then please wait upto 5 mins for the feature registration to finish")
 
 def validate_ksm_parameter(ksmparam):
     print("Calling validate_ksm_parameter")
@@ -214,8 +222,14 @@ def sanitize_resource_id(resource_id):
         resource_id = resource_id.rstrip("/")
     return resource_id
 
+def get_default_mac_region(cluster_region):
+    return MapToClosestMACRegion[cluster_region]
+
+def get_default_mac_region_code(cluster_region):
+    return AzureCloudLocationToOmsRegionCodeMap[get_default_mac_region(cluster_region)]
+
 def get_default_mac_name(cluster_region):
-    default_mac_name = "DefaultAzureMonitorWorkspace-" + AzureCloudLocationToOmsRegionCodeMap[MapToClosestMACRegion[cluster_region]]
+    default_mac_name = "DefaultAzureMonitorWorkspace-" + get_default_mac_region_code(cluster_region)
     default_mac_name = default_mac_name[0:43]
 
     return default_mac_name
@@ -231,17 +245,30 @@ def create_default_mac(cmd, cluster_subscription, cluster_region):
             default_mac_name,
         )
 
-    association_body = json.dumps({"location": cluster_region,
+    # Check if default resource group exists or not, if it does not then create it
+    resource_groups = get_resource_groups_client(cmd.cli_ctx, cluster_subscription)
+    resources = get_resources_client(cmd.cli_ctx, cluster_subscription)
+
+    if resource_groups.check_existence(default_resource_group_name):
+        try:
+            resources.get_by_id(
+                mac_resource_id, "2021-06-01-preview"
+            )
+            # If MAC already exists then return from here
+            return mac_resource_id
+        except HttpResponseError as ex:
+            if ex.status_code != 404:
+                raise ex
+    else:
+        resource_groups.create_or_update(
+            default_resource_group_name, {"location": get_default_mac_region(cluster_region)}
+        )
+
+    association_body = json.dumps({"location": get_default_mac_region(cluster_region),
                                    "properties": {
                                     # do I need to link an existing MDM account for 
                                    }})
     association_url = f"https://management.azure.com{mac_resource_id}?api-version={MAC_API}"
-
-    # If mac already exists then just return the mac_resource_id
-    # response = send_raw_request(cmd.cli_ctx, "GET", association_url)
-    # print(response)
-    # return mac_resource_id
-    # raise CLIError("TEMP ERROR")
 
     for _ in range(3):
         try:
@@ -254,7 +281,7 @@ def create_default_mac(cmd, cluster_subscription, cluster_region):
     else:
         raise error
 
-def get_mac_resource_id(cmd, cluster_subscription, cluster_resource_group_name, cluster_name, cluster_region, raw_parameters):
+def get_mac_resource_id(cmd, cluster_subscription, cluster_region, raw_parameters):
     mac_resource_id = raw_parameters.get("mac_resource_id")
     if mac_resource_id is None or mac_resource_id == "":
         print("Creating default MAC account")
@@ -264,7 +291,6 @@ def get_mac_resource_id(cmd, cluster_subscription, cluster_resource_group_name, 
     return mac_resource_id
 
 def get_default_dce_name(mac_region, cluster_name):
-    ######## USE SHORT CODE
     default_dce_name = "MSProm-" + AzureCloudLocationToOmsRegionCodeMap[mac_region] + "-" + cluster_name
     default_dce_name = default_dce_name[0:43]
     return default_dce_name
@@ -723,7 +749,7 @@ def link_azure_monitor_profile_artifacts(cmd,
     
     # MAC creation if required
     # mac_resource_id = "/subscriptions/ce4d1293-71c0-4c72-bc55-133553ee9e50/resourceGroups/kaveeshMACRG/providers/microsoft.monitor/accounts/kaveesheastusmac"
-    mac_resource_id = get_mac_resource_id(cmd, cluster_subscription, cluster_resource_group_name, cluster_name, cluster_region, raw_parameters)
+    mac_resource_id = get_mac_resource_id(cmd, cluster_subscription, cluster_region, raw_parameters)
     print(mac_resource_id)
 
     # Get MAC region (required for DCE, DCR creation)
@@ -767,6 +793,7 @@ def unlink_azure_monitor_profile_artifacts(cmd,
 # pylint: disable=too-many-locals,too-many-branches,too-many-statements,line-too-long
 def ensure_azure_monitor_profile_prerequisites(
     cmd,
+    client,
     cluster_subscription,
     cluster_resource_group_name,
     cluster_name,
@@ -776,7 +803,10 @@ def ensure_azure_monitor_profile_prerequisites(
 ):
     print("Calling ensure_azure_monitor_profile_prerequisites...")
 
-    # If the feature is not registered then STOP onboarding
+    # Check if MSI cluster
+    check_msi_cluster(client, cluster_resource_group_name, cluster_name)
+
+    # If the feature is not registered then STOP onboarding and request to register the feature
     check_azuremonitoraddon_feature(cmd, cluster_subscription)
 
     if (remove_azuremonitormetrics):

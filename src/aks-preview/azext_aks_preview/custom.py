@@ -818,7 +818,8 @@ def aks_update(
             if raw_parameters.get("disable_azuremonitormetrics"):
                 remove_azuremonitormetrics = True
 
-            ensure_azure_monitor_profile_prerequisites(cmd,
+            ensure_azure_monitor_profile_prerequisites(cmd, 
+                client,
                 subscription_id,
                 resource_group_name,
                 name,
