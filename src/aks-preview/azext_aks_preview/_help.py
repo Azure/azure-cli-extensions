@@ -1349,6 +1349,39 @@ helps['aks nodepool delete'] = """
           text: az aks nodepool delete --resource-group MyResourceGroup --cluster-name MyManagedCluster --name nodepool1 --ignore-pod-disruption-budget=true
 """
 
+helps['aks nodepool operation-abort'] = """
+    type: command
+    short-summary: Abort last running operation on nodepool.
+    parameters:
+        - name: --resource-group
+          type: string
+          short-summary: Name of the resource group
+        - name: --cluster-name
+          type: string
+          short-summary: Name of the managed cluster
+        - name: --nodepool-name
+          type: string
+          short-summary: Name of the node pool
+    examples:
+        - name: Abort operation on agent pool
+          text: az aks nodepool operation-abort --resource-group myResourceGroup --cluster-name myAKSCluster --nodepool-name nodepool1
+"""
+
+helps['aks operation-abort'] = """
+    type: command
+    short-summary: Abort last running operation on managed cluster.
+    parameters:
+        - name: --resource-group
+          type: string
+          short-summary: Name of the resource group
+        - name: --cluster-name
+          type: string
+          short-summary: Name of the managed cluster
+    examples:
+        - name: Abort operation on managed cluster
+          text: az aks operation-abort --resource-group myResourceGroup --cluster-name myAKSCluster 
+"""
+
 helps['aks addon'] = """
     type: group
     short-summary: Commands to manage and view single addon conditions.
