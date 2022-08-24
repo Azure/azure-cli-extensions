@@ -24,8 +24,10 @@ if TYPE_CHECKING:
 
 class ContainerServiceClientConfiguration(Configuration):
     """Configuration for ContainerServiceClient.
+
     Note that all parameters used to create this instance are saved as instance
     attributes.
+
     :param credential: Credential needed for the client to connect to Azure.
     :type credential: ~azure.core.credentials.TokenCredential
     :param subscription_id: The ID of the target subscription.
@@ -67,3 +69,4 @@ class ContainerServiceClientConfiguration(Configuration):
         self.authentication_policy = kwargs.get('authentication_policy')
         if self.credential and not self.authentication_policy:
             self.authentication_policy = ARMChallengeAuthenticationPolicy(self.credential, *self.credential_scopes, **kwargs)
+        
