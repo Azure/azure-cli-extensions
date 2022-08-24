@@ -264,7 +264,7 @@ class ContainerappScenarioTest(ScenarioTest):
     # TODO rename
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="northeurope")
-    def test_containerapp_update(self, resource_group):
+    def test_containerapp_update_containers(self, resource_group):
         env_name = self.create_random_name(prefix='containerapp-e2e-env', length=24)
         logs_workspace_name = self.create_random_name(prefix='containerapp-env', length=24)
 
@@ -443,11 +443,11 @@ class ContainerappScenarioTest(ScenarioTest):
         self.assertEqual(app_data["properties"]["configuration"]["registries"][0].get("server"), f'{acr}.azurecr.io')
         self.assertIsNotNone(app_data["properties"]["configuration"]["registries"][0].get("passwordSecretRef"))
         self.assertIsNotNone(app_data["properties"]["configuration"]["registries"][0].get("username"))
-        self.assertIsNone(app_data["properties"]["configuration"]["registries"][0].get("identity"))
+        self.assertEqual(app_data["properties"]["configuration"]["registries"][0].get("identity"), "")
 
         self.cmd(f'containerapp registry set --server {acr}.azurecr.io -g {resource_group} -n {app} --identity system')
         app_data = self.cmd(f'containerapp show -g {resource_group} -n {app}').get_output_in_json()
         self.assertEqual(app_data["properties"]["configuration"]["registries"][0].get("server"), f'{acr}.azurecr.io')
-        self.assertIsNone(app_data["properties"]["configuration"]["registries"][0].get("passwordSecretRef"))
-        self.assertIsNone(app_data["properties"]["configuration"]["registries"][0].get("username"))
+        self.assertEqual(app_data["properties"]["configuration"]["registries"][0].get("passwordSecretRef"), "")
+        self.assertEqual(app_data["properties"]["configuration"]["registries"][0].get("username"), "")
         self.assertEqual(app_data["properties"]["configuration"]["registries"][0].get("identity"), "system")

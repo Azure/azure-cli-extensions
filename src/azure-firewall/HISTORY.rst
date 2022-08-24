@@ -2,6 +2,14 @@
 
 Release History
 ===============
+0.14.3
+++++++
+* `az network firewall create`: Support Basic SKU creation with management IP configuration
+
+0.14.2
+++++++
+* `az network firewall create/update`: add parameter `--fat-flow-logging`
+
 0.14.1
 ++++++
 * `az network firewall policy`: add parameter `sql`

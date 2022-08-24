@@ -2,7 +2,7 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
-# pylint: disable=line-too-long, consider-using-f-string, no-else-return, duplicate-string-formatting-argument, expression-not-assigned, too-many-locals, logging-fstring-interpolation
+# pylint: disable=line-too-long, consider-using-f-string, no-else-return, duplicate-string-formatting-argument, expression-not-assigned, too-many-locals, logging-fstring-interpolation, broad-except
 
 import time
 import json
@@ -12,10 +12,15 @@ from urllib.parse import urlparse
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
 from azure.cli.core.azclierror import (ValidationError, RequiredArgumentMissingError, CLIInternalError,
-                                       ResourceNotFoundError, FileOperationError, CLIError)
+                                       ResourceNotFoundError, FileOperationError, CLIError, InvalidArgumentValueError, UnauthorizedError)
 from azure.cli.core.commands.client_factory import get_subscription_id
 from azure.cli.command_modules.appservice.utils import _normalize_location
 from azure.cli.command_modules.network._client_factory import network_client_factory
+from azure.cli.command_modules.role.custom import create_role_assignment
+from azure.cli.command_modules.acr.custom import acr_show
+from azure.cli.core.commands.client_factory import get_mgmt_service_client
+from azure.cli.core.profiles import ResourceType
+from azure.mgmt.containerregistry import ContainerRegistryManagementClient
 
 from knack.log import get_logger
 from msrestazure.tools import parse_resource_id, is_valid_resource_id, resource_id
@@ -788,6 +793,36 @@ def _remove_readonly_attributes(containerapp_def):
             del containerapp_def['properties'][unneeded_property]
 
 
+# Remove null/None properties in a model since the PATCH API will delete those. Not needed once we move to the SDK
+def clean_null_values(d):
+    if isinstance(d, dict):
+        return {
+            k: v
+            for k, v in ((k, clean_null_values(v)) for k, v in d.items())
+            if v
+        }
+    if isinstance(d, list):
+        return [v for v in map(clean_null_values, d) if v]
+    return d
+
+
+def _populate_secret_values(containerapp_def, secret_values):
+    secrets = safe_get(containerapp_def, "properties", "configuration", "secrets", default=None)
+    if not secrets:
+        secrets = []
+    if not secret_values:
+        secret_values = []
+    index = 0
+    while index < len(secrets):
+        value = secrets[index]
+        if "value" not in value or not value["value"]:
+            try:
+                value["value"] = next(s["value"] for s in secret_values if s["name"] == value["name"])
+            except StopIteration:
+                pass
+        index += 1
+
+
 def _remove_dapr_readonly_attributes(daprcomponent_def):
     unneeded_properties = [
         "id",
@@ -1016,7 +1051,7 @@ def generate_randomized_cert_name(thumbprint, prefix, initial="rg"):
     cert_name = "{}-{}-{}-{:04}".format(prefix[:14], initial[:14], thumbprint[:4].lower(), randint(0, 9999))
     for c in cert_name:
         if not (c.isalnum() or c == '-' or c == '.'):
-            cert_name.replace(c, '-')
+            cert_name = cert_name.replace(c, '-')
     return cert_name.lower()
 
 
@@ -1277,8 +1312,7 @@ def load_cert_file(file_path, cert_password=None):
                 x509 = p12.get_certificate()
                 digest_algorithm = 'sha256'
                 thumbprint = x509.digest(digest_algorithm).decode("utf-8").replace(':', '')
-                pem_data = crypto.dump_certificate(crypto.FILETYPE_PEM, x509)
-                blob = b64encode(pem_data).decode("utf-8")
+                blob = b64encode(cert_data).decode("utf-8")
             else:
                 raise FileOperationError('Not a valid file type. Only .PFX and .PEM files are supported.')
     except Exception as e:
@@ -1401,3 +1435,31 @@ def set_managed_identity(cmd, resource_group_name, containerapp_def, system_assi
 
             if not isExisting:
                 containerapp_def["identity"]["userAssignedIdentities"][r] = {}
+
+
+def create_acrpull_role_assignment(cmd, registry_server, registry_identity=None, service_principal=None, skip_error=False):
+    if registry_identity:
+        registry_identity_parsed = parse_resource_id(registry_identity)
+        registry_identity_name, registry_identity_rg = registry_identity_parsed.get("name"), registry_identity_parsed.get("resource_group")
+        sp_id = get_mgmt_service_client(cmd.cli_ctx, ResourceType.MGMT_MSI).user_assigned_identities.get(resource_name=registry_identity_name, resource_group_name=registry_identity_rg).principal_id
+    else:
+        sp_id = service_principal
+
+    client = get_mgmt_service_client(cmd.cli_ctx, ContainerRegistryManagementClient).registries
+    acr_id = acr_show(cmd, client, registry_server[: registry_server.rindex(ACR_IMAGE_SUFFIX)]).id
+    try:
+        create_role_assignment(cmd, role="acrpull", assignee=sp_id, scope=acr_id)
+    except Exception as e:
+        message = (f"Role assignment failed with error message: \"{' '.join(e.args)}\". \n"
+                   f"To add the role assignment manually, please run 'az role assignment create --assignee {sp_id} --scope {acr_id} --role acrpull'. \n"
+                   "You may have to restart the containerapp with 'az containerapp revision restart'.")
+        if skip_error:
+            logger.error(message)
+        else:
+            raise UnauthorizedError(message)
+
+
+def is_registry_msi_system(identity):
+    if identity is None:
+        return False
+    return identity.lower() == "system"
