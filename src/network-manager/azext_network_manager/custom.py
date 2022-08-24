@@ -113,9 +113,9 @@ def network_manager_commit_post(cmd,
     parameters['target_locations'] = target_locations
     parameters['configuration_ids'] = configuration_ids
     parameters['commit_type'] = commit_type
-    return client.post(resource_group_name=resource_group_name,
-                       network_manager_name=network_manager_name,
-                       parameters=parameters)
+    return client.begin_post(resource_group_name=resource_group_name,
+                             network_manager_name=network_manager_name,
+                             parameters=parameters)
 
 
 def network_manager_deploy_status_list(cmd,
@@ -366,7 +366,10 @@ def network_manager_group_create(client,
                                  if_match=None,
                                  description=None):
     parameters = {}
-    parameters['description'] = description
+    if description is not None:
+        parameters['description'] = description
+    else:
+        parameters['description'] = ""
     return client.create_or_update(resource_group_name=resource_group_name,
                                    network_manager_name=network_manager_name,
                                    network_group_name=network_group_name,
@@ -1025,54 +1028,49 @@ def network_manager_connection_subscription_delete(client,
     return client.delete(network_manager_connection_name=network_manager_connection_name)
 
 
-# def network_manager_connection_management_group_list(client,
-#                                                      top=None,
-#                                                      skip_token=None):
-#     return client.list(top=top,
-#                        skip_token=skip_token)
-#
-#
-# def network_manager_connection_management_group_create(client,
-#                                                        resource_group_name,
-#                                                        network_manager_connection_name,
-#                                                        management_group_id,
-#                                                        network_manager_id,
-#                                                        description=None):
-#     parameters = {}
-#     parameters['description'] = description
-#     parameters['network_manager_id'] = network_manager_id
-#     return client.create_or_update(resource_group_name=resource_group_name,
-#                                    network_manager_connection_name=network_manager_connection_name,
-#                                    management_group_id=management_group_id,
-#                                    parameters=parameters)
-#
-#
-# def network_manager_connection_management_group_update(instance,
-#                                                        management_group_id,
-#                                                        description=None):
-#     if description is not None:
-#         instance.description = description
-#     if management_group_id is not None:
-#         instance.management_group_id = management_group_id
-#     return instance
-#
-#
-# def network_manager_connection_management_group_show(client,
-#                                                      resource_group_name,
-#                                                      network_manager_connection_name,
-#                                                      management_group_id):
-#     return client.get(resource_group_name=resource_group_name,
-#                       network_manager_connection_name=network_manager_connection_name,
-#                       management_group_id=management_group_id)
-#
-#
-# def network_manager_connection_management_group_delete(client,
-#                                                        resource_group_name,
-#                                                        network_manager_connection_name,
-#                                                        management_group_id):
-#     return client.begin_delete(resource_group_name=resource_group_name,
-#                          network_manager_connection_name=network_manager_connection_name,
-#                          management_group_id=management_group_id)
+def network_manager_connection_management_group_list(client,
+                                                     management_group_id,
+                                                     top=None,
+                                                     skip_token=None):
+    return client.list(management_group_id=management_group_id,
+                       top=top,
+                       skip_token=skip_token)
+
+
+def network_manager_connection_management_group_create(client,
+                                                       network_manager_connection_name,
+                                                       management_group_id,
+                                                       network_manager_id,
+                                                       description=None):
+    parameters = {}
+    parameters['description'] = description
+    parameters['network_manager_id'] = network_manager_id
+    return client.create_or_update(network_manager_connection_name=network_manager_connection_name,
+                                   management_group_id=management_group_id,
+                                   parameters=parameters)
+
+
+def network_manager_connection_management_group_update(instance,
+                                                       management_group_id,
+                                                       network_manager_connection_name,
+                                                       description=None):
+    if description is not None:
+        instance.description = description
+    return instance
+
+
+def network_manager_connection_management_group_show(client,
+                                                     network_manager_connection_name,
+                                                     management_group_id):
+    return client.get(network_manager_connection_name=network_manager_connection_name,
+                      management_group_id=management_group_id)
+
+
+def network_manager_connection_management_group_delete(client,
+                                                       network_manager_connection_name,
+                                                       management_group_id):
+    return client.delete(network_manager_connection_name=network_manager_connection_name,
+                         management_group_id=management_group_id)
 
 
 def network_manager_scope_connection_list(client,
