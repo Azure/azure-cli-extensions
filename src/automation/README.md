@@ -169,6 +169,7 @@ az automation hrwg hrw move \
     --automation-account-name accountName \
     --resource-group groupName \
     --hybrid-runbook-worker-group-name hybridRunbookWorkerGroupName \
+    --target-hybrid-runbook-worker-group-name targetHybridWorkerGroupName \
     --name hybridRunbookWorkerName
 ```
 
