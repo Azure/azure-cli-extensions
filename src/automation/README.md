@@ -133,7 +133,7 @@ az automation hrwg hrw create \
     --automation-account-name accountName \
     --resource-group groupName \
     --hybrid-runbook-worker-group-name hybridRunbookWorkerGroupName \
-    --name hybridRunbookWorkerName \
+    --hybrid-runbook-worker-id hybridRunbookWorkerId \
     --vm-resource-id vmResourceId
 ```
 
@@ -151,7 +151,7 @@ az automation hrwg hrw show \
     --automation-account-name accountName \
     --resource-group groupName \
     --hybrid-runbook-worker-group-name hybridRunbookWorkerGroupName \
-    --name hybridRunbookWorkerName
+    --hybrid-runbook-worker-id hybridRunbookWorkerId
 ```
 
 ##### delete a hybrid worker 
@@ -160,7 +160,7 @@ az automation hrwg hrw delete \
     --automation-account-name accountName \
     --resource-group groupName \
     --hybrid-runbook-worker-group-name hybridRunbookWorkerGroupName \
-    --name hybridRunbookWorkerName
+    --hybrid-runbook-worker-id hybridRunbookWorkerId
 ```
 
 ##### Move a hybrid runbook worker to a different hybrid runbook worker group
@@ -170,7 +170,7 @@ az automation hrwg hrw move \
     --resource-group groupName \
     --hybrid-runbook-worker-group-name hybridRunbookWorkerGroupName \
     --target-hybrid-runbook-worker-group-name targetHybridWorkerGroupName \
-    --name hybridRunbookWorkerName
+    --hybrid-runbook-worker-id hybridRunbookWorkerId
 ```
 
 

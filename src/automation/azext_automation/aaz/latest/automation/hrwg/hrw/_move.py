@@ -57,7 +57,7 @@ class Move(AAZCommand):
             required=True,
         )
         _args_schema.hybrid_runbook_worker_id = AAZStrArg(
-            options=["--hybrid-runbook-worker-id"],
+            options=["-n", "--name","--hybrid-runbook-worker-id"],
             help="The hybrid runbook worker id",
             required=True,
         )
