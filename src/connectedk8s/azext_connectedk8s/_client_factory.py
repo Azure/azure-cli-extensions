@@ -53,7 +53,7 @@ def cf_connectedmachine(cli_ctx, subscription_id):
     if os.getenv('AZURE_ACCESS_TOKEN'):
         credential = AccessTokenCredential(access_token=os.getenv('AZURE_ACCESS_TOKEN'))
         return HybridComputeManagementClient(credential=credential, subscription_id=os.getenv('AZURE_SUBSCRIPTION_ID'),
-                                             base_url=cli_ctx.cloud.endpoints.resource_manager, credential_scopes=[cli_ctx.cloud.endpoints.resource_manager + '/.default'])
+                                             base_url=cli_ctx.cloud.endpoints.resource_manager, credential_scopes=[cli_ctx.cloud.endpoints.resource_manager + '/.default']).private_link_scopes
     return get_mgmt_service_client(cli_ctx, HybridComputeManagementClient, subscription_id=subscription_id).private_link_scopes
 
 

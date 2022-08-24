@@ -2,6 +2,12 @@
 
 Release History
 ===============
+1.3.1
+++++++
+
+* Added custom token support
+* Added new parameter for container log path in connectedk8s connect
+
 1.3.0
 ++++++
 
