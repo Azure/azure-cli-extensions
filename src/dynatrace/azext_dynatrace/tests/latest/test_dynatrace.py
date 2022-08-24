@@ -34,6 +34,11 @@ class DynatraceScenario(ScenarioTest):
             self.check('userInfo.lastName', 'Bobab'),
             self.check('userInfo.phoneNumber', '1234567890')
         ])
+        self.cmd('dynatrace monitor update -g {rg} -n {monitor} --tags {{env:dev}}', checks=[
+            self.check('name', '{monitor}'),
+            self.check('resourceGroup', '{rg}'),
+            self.check('tags', {'env': 'dev'})
+        ])
         self.cmd('dynatrace monitor list -g {rg}', checks=[
             self.check('[0].name', '{monitor}'),
             self.check('[0].resourceGroup', '{rg}'),
