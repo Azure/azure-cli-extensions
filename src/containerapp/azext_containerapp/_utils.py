@@ -1466,7 +1466,6 @@ def create_acrpull_role_assignment(cmd, registry_server, registry_identity=None,
                 time.sleep(5)
 
 
-
 def is_registry_msi_system(identity):
     if identity is None:
         return False
