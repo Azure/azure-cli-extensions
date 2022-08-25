@@ -47,6 +47,7 @@ class QuantumTargetsScenarioTest(ScenarioTest):
     # @pytest.fixture(autouse=True)
     # def _pass_fixtures(self, capsys):
     #     self.capsys = capsys
+    # # See "TODO" in issue_cmd_with_param_missing un utils.py
 
     def test_target_errors(self):
         self.cmd(f'az quantum target clear')
