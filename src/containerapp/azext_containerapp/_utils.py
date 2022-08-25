@@ -1447,16 +1447,24 @@ def create_acrpull_role_assignment(cmd, registry_server, registry_identity=None,
 
     client = get_mgmt_service_client(cmd.cli_ctx, ContainerRegistryManagementClient).registries
     acr_id = acr_show(cmd, client, registry_server[: registry_server.rindex(ACR_IMAGE_SUFFIX)]).id
-    try:
-        create_role_assignment(cmd, role="acrpull", assignee=sp_id, scope=acr_id)
-    except Exception as e:
-        message = (f"Role assignment failed with error message: \"{' '.join(e.args)}\". \n"
-                   f"To add the role assignment manually, please run 'az role assignment create --assignee {sp_id} --scope {acr_id} --role acrpull'. \n"
-                   "You may have to restart the containerapp with 'az containerapp revision restart'.")
-        if skip_error:
-            logger.error(message)
-        else:
-            raise UnauthorizedError(message)
+    retries = 10
+    while retries > 0:
+        try:
+            create_role_assignment(cmd, role="acrpull", assignee=sp_id, scope=acr_id)
+            return
+        except Exception as e:
+            retries -= 1
+            if retries <= 0:
+                message = (f"Role assignment failed with error message: \"{' '.join(e.args)}\". \n"
+                           f"To add the role assignment manually, please run 'az role assignment create --assignee {sp_id} --scope {acr_id} --role acrpull'. \n"
+                           "You may have to restart the containerapp with 'az containerapp revision restart'.")
+                if skip_error:
+                    logger.error(message)
+                else:
+                    raise UnauthorizedError(message)
+            else:
+                time.sleep(5)
+
 
 
 def is_registry_msi_system(identity):
