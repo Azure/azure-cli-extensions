@@ -152,9 +152,9 @@ class QuantumWorkspacesScenarioTest(ScenarioTest):
         else:
             self.skipTest(f"Skipping test_workspace_create_destroy: One or more providers in '{test_provider_sku_list}' not found in AZURE_QUANTUM_CAPABILITIES")
 
-    @pytest.fixture(autouse=True)
-    def _pass_fixtures(self, capsys):
-        self.capsys = capsys
+    # @pytest.fixture(autouse=True)
+    # def _pass_fixtures(self, capsys):
+    #     self.capsys = capsys
 
     @live_only()
     def test_workspace_errors(self):
