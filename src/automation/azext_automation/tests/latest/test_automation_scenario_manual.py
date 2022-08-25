@@ -70,7 +70,8 @@ class AutomationScenarioTest(ScenarioTest):
         self.kwargs.update({
             'account_name': self.create_random_name(prefix='test-account-', length=24),
             'runbook_name': self.create_random_name(prefix='test-runbook-', length=24),
-            'runbook_content': RUNBOOK_CONTENT
+            'runbook_content': RUNBOOK_CONTENT,
+            'hybrid_runbook_worker_group_name' : self.create_random_name(prefix='hwg-', length=10)
         })
         self.cmd('automation account create --resource-group {rg} --name {account_name} --location "West US 2"',
                  checks=[self.check('name', '{account_name}')])
@@ -107,6 +108,20 @@ class AutomationScenarioTest(ScenarioTest):
                  '--name {runbook_name} --content @{script_path}')
         self.cmd('automation runbook publish --resource-group {rg} --automation-account-name {account_name} '
                  '--name {runbook_name}')
+
+        self.cmd('automation hrwg create --resource-group {rg} --automation-account-name {account_name} --name {hybrid_runbook_worker_group_name}',
+        checks=[self.check('name', '{hybrid_runbook_worker_group_name}')])
+
+        self.cmd('automation hrwg show --resource-group {rg} --automation-account-name {account_name} --name {hybrid_runbook_worker_group_name}',
+        checks=[self.check('name', '{hybrid_runbook_worker_group_name}')])
+
+        self.cmd('automation hrwg list --resource-group {rg} --automation-account-name {account_name}',
+        checks=[self.check('length(@)', 1)])
+
+        self.cmd('automation hrwg hrw list --automation-account-name {account_name} --hybrid-runbook-worker-group-name {hybrid_runbook_worker_group_name} -g {rg}',
+        checks=[self.check('length(@)', 0)])
+
+        self.cmd('automation hrwg delete --resource-group {rg} --automation-account-name {account_name} --name {hybrid_runbook_worker_group_name} --yes')
 
         with mock.patch('azext_automation.manual.custom._uuid', side_effect=_uuid):
             job = self.cmd('automation runbook start --resource-group {rg} --automation-account-name {account_name} '

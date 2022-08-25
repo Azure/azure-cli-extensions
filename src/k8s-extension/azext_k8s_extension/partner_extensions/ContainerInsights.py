@@ -9,6 +9,7 @@ import datetime
 import json
 
 from ..utils import get_cluster_rp_api_version
+from .. import consts
 
 from knack.log import get_logger
 
@@ -32,8 +33,8 @@ logger = get_logger(__name__)
 
 
 class ContainerInsights(DefaultExtension):
-    def Create(self, cmd, client, resource_group_name, cluster_name, name, cluster_type, extension_type,
-               scope, auto_upgrade_minor_version, release_train, version, target_namespace,
+    def Create(self, cmd, client, resource_group_name, cluster_name, name, cluster_type, cluster_rp,
+               extension_type, scope, auto_upgrade_minor_version, release_train, version, target_namespace,
                release_namespace, configuration_settings, configuration_protected_settings,
                configuration_settings_file, configuration_protected_settings_file):
         """ExtensionType 'microsoft.azuremonitor.containers' specific validations & defaults for Create
@@ -56,7 +57,7 @@ class ContainerInsights(DefaultExtension):
                        'only supports cluster scope and single instance of this extension.', extension_type)
         logger.warning("Defaulting to extension name '%s' and release-namespace '%s'", name, release_namespace)
 
-        _get_container_insights_settings(cmd, resource_group_name, cluster_name, configuration_settings,
+        _get_container_insights_settings(cmd, resource_group_name, cluster_rp, cluster_type, cluster_name, configuration_settings,
                                          configuration_protected_settings, is_ci_extension_type)
 
         # NOTE-2: Return a valid Extension object, Instance name and flag for Identity
@@ -72,11 +73,11 @@ class ContainerInsights(DefaultExtension):
         )
         return extension, name, create_identity
 
-    def Delete(self, cmd, client, resource_group_name, cluster_name, name, cluster_type, yes):
+    def Delete(self, cmd, client, resource_group_name, cluster_name, name, cluster_type, cluster_rp, yes):
         # Delete DCR-A if it exists incase of MSI Auth
         useAADAuth = False
         isDCRAExists = False
-        cluster_rp, _ = get_cluster_rp_api_version(cluster_type)
+        cluster_rp, _ = get_cluster_rp_api_version(cluster_type=cluster_type, cluster_rp=cluster_rp)
         try:
             extension = client.get(resource_group_name, cluster_rp, cluster_type, cluster_name, name)
         except Exception:
@@ -87,8 +88,13 @@ class ContainerInsights(DefaultExtension):
         cluster_resource_id = '/subscriptions/{0}/resourceGroups/{1}/providers/{2}/{3}/{4}'.format(subscription_id, resource_group_name, cluster_rp, cluster_type, cluster_name)
         if (extension is not None) and (extension.configuration_settings is not None):
             configSettings = extension.configuration_settings
+            # omsagent is being renamed to ama-logs. Check for both for compatibility
             if 'omsagent.useAADAuth' in configSettings:
                 useAADAuthSetting = configSettings['omsagent.useAADAuth']
+                if (isinstance(useAADAuthSetting, str) and str(useAADAuthSetting).lower() == "true") or (isinstance(useAADAuthSetting, bool) and useAADAuthSetting):
+                    useAADAuth = True
+            elif 'amalogs.useAADAuth' in configSettings:
+                useAADAuthSetting = configSettings['amalogs.useAADAuth']
                 if (isinstance(useAADAuthSetting, str) and str(useAADAuthSetting).lower() == "true") or (isinstance(useAADAuthSetting, bool) and useAADAuthSetting):
                     useAADAuth = True
         if useAADAuth:
@@ -140,8 +146,8 @@ def _invoke_deployment(cmd, resource_group_name, deployment_name, template, para
     return sdk_no_wait(no_wait, smc.begin_create_or_update, resource_group_name, deployment_name, deployment)
 
 
-def _ensure_default_log_analytics_workspace_for_monitoring(cmd, subscription_id,
-                                                           cluster_resource_group_name, cluster_name):
+def _ensure_default_log_analytics_workspace_for_monitoring(cmd, subscription_id, cluster_resource_group_name,
+                                                           cluster_rp, cluster_type, cluster_name):
     # mapping for azure public cloud
     # log analytics workspaces cannot be created in WCUS region due to capacity limits
     # so mapped to EUS per discussion with log analytics team
@@ -236,10 +242,13 @@ def _ensure_default_log_analytics_workspace_for_monitoring(cmd, subscription_id,
     cluster_location = ''
     resources = cf_resources(cmd.cli_ctx, subscription_id)
 
-    cluster_resource_id = '/subscriptions/{0}/resourceGroups/{1}/providers/Microsoft.Kubernetes' \
-        '/connectedClusters/{2}'.format(subscription_id, cluster_resource_group_name, cluster_name)
+    cluster_resource_id = '/subscriptions/{0}/resourceGroups/{1}/providers/{2}/{3}/{4}'.format(
+        subscription_id, cluster_resource_group_name, cluster_rp, cluster_type, cluster_name)
     try:
-        resource = resources.get_by_id(cluster_resource_id, '2020-01-01-preview')
+        if cluster_rp.lower() == consts.HYBRIDCONTAINERSERVICE_RP:
+            resource = resources.get_by_id(cluster_resource_id, consts.HYBRIDCONTAINERSERVICE_API_VERSION)
+        else:
+            resource = resources.get_by_id(cluster_resource_id, '2020-01-01-preview')
         cluster_location = resource.location.lower()
     except HttpResponseError as ex:
         raise ex
@@ -438,8 +447,8 @@ def _ensure_container_insights_for_monitoring(cmd, workspace_resource_id):
                               validate=False, no_wait=False, subscription_id=subscription_id)
 
 
-def _get_container_insights_settings(cmd, cluster_resource_group_name, cluster_name, configuration_settings,
-                                     configuration_protected_settings, is_ci_extension_type):
+def _get_container_insights_settings(cmd, cluster_resource_group_name, cluster_rp, cluster_type, cluster_name,
+                                     configuration_settings, configuration_protected_settings, is_ci_extension_type):
 
     subscription_id = get_subscription_id(cmd.cli_ctx)
     workspace_resource_id = ''
@@ -453,8 +462,14 @@ def _get_container_insights_settings(cmd, cluster_resource_group_name, cluster_n
         if 'logAnalyticsWorkspaceResourceID' in configuration_settings:
             workspace_resource_id = configuration_settings['logAnalyticsWorkspaceResourceID']
 
+        # omsagent is being renamed to ama-logs. Check for both for compatibility
         if 'omsagent.useAADAuth' in configuration_settings:
             useAADAuthSetting = configuration_settings['omsagent.useAADAuth']
+            logger.info("provided useAADAuth flag is : %s", useAADAuthSetting)
+            if (isinstance(useAADAuthSetting, str) and str(useAADAuthSetting).lower() == "true") or (isinstance(useAADAuthSetting, bool) and useAADAuthSetting):
+                useAADAuth = True
+        elif 'amalogs.useAADAuth' in configuration_settings:
+            useAADAuthSetting = configuration_settings['amalogs.useAADAuth']
             logger.info("provided useAADAuth flag is : %s", useAADAuthSetting)
             if (isinstance(useAADAuthSetting, str) and str(useAADAuthSetting).lower() == "true") or (isinstance(useAADAuthSetting, bool) and useAADAuthSetting):
                 useAADAuth = True
@@ -473,22 +488,24 @@ def _get_container_insights_settings(cmd, cluster_resource_group_name, cluster_n
                     'proxyEndpoint url should in this format http(s)://<user>:<pwd>@<proxyhost>:<port>'
                 )
             logger.info("successfully validated proxyEndpoint url hence passing proxy endpoint to extension")
+            # omsagent is being renamed to ama-logs. Set for both for compatibility
             configuration_protected_settings['omsagent.proxy'] = configuration_protected_settings['proxyEndpoint']
+            configuration_protected_settings['amalogs.proxy'] = configuration_protected_settings['proxyEndpoint']
 
     if not workspace_resource_id:
         workspace_resource_id = _ensure_default_log_analytics_workspace_for_monitoring(
-            cmd, subscription_id, cluster_resource_group_name, cluster_name)
+            cmd, subscription_id, cluster_resource_group_name, cluster_rp, cluster_type, cluster_name)
     else:
         if not is_valid_resource_id(workspace_resource_id):
             raise InvalidArgumentValueError('{} is not a valid Azure resource ID.'.format(workspace_resource_id))
 
     if is_ci_extension_type:
-        if not _is_container_insights_solution_exists(cmd, workspace_resource_id):
-            logger.info("creating containerinsights solution resource since it doesnt exist")
-            _ensure_container_insights_for_monitoring(cmd, workspace_resource_id).result()
         if useAADAuth:
             logger.info("creating data collection rule and association")
-            _ensure_container_insights_dcr_for_monitoring(cmd, subscription_id, cluster_resource_group_name, cluster_name, workspace_resource_id)
+            _ensure_container_insights_dcr_for_monitoring(cmd, subscription_id, cluster_resource_group_name, cluster_rp, cluster_type, cluster_name, workspace_resource_id)
+        elif not _is_container_insights_solution_exists(cmd, workspace_resource_id):
+            logger.info("Creating ContainerInsights solution resource, since it doesn't exist and it is using legacy authentication")
+            _ensure_container_insights_for_monitoring(cmd, workspace_resource_id).result()
 
     # extract subscription ID and resource group from workspace_resource_id URL
     parsed = parse_resource_id(workspace_resource_id)
@@ -499,26 +516,38 @@ def _get_container_insights_settings(cmd, cluster_resource_group_name, cluster_n
     log_analytics_workspace = log_analytics_client.workspaces.get(workspace_rg_name, workspace_name)
     if not log_analytics_workspace:
         raise InvalidArgumentValueError(
-            'Fails to retrieve workspace by {}'.format(workspace_name))
+            'Failed to retrieve workspace by {}'.format(workspace_name))
 
-    shared_keys = log_analytics_client.shared_keys.get_shared_keys(
-        workspace_rg_name, workspace_name)
-    if not shared_keys:
-        raise InvalidArgumentValueError('Fails to retrieve shared key for workspace {}'.format(
-            log_analytics_workspace))
+    # workspace key not used in case of AAD MSI auth
+    configuration_protected_settings['omsagent.secret.key'] = "<not_used>"
+    if not useAADAuth:
+        shared_keys = log_analytics_client.shared_keys.get_shared_keys(
+            workspace_rg_name, workspace_name)
+        if not shared_keys:
+            raise InvalidArgumentValueError('Failed to retrieve shared key for workspace {}'.format(
+                log_analytics_workspace))
+        # omsagent is being renamed to ama-logs. Set for both for compatibility
+        configuration_protected_settings['omsagent.secret.key'] = shared_keys.primary_shared_key
+        configuration_protected_settings['amalogs.secret.key'] = shared_keys.primary_shared_key
+    # omsagent is being renamed to ama-logs. Set for both for compatibility
     configuration_protected_settings['omsagent.secret.wsid'] = log_analytics_workspace.customer_id
+    configuration_protected_settings['amalogs.secret.wsid'] = log_analytics_workspace.customer_id
     configuration_settings['logAnalyticsWorkspaceResourceID'] = workspace_resource_id
-    configuration_protected_settings['omsagent.secret.key'] = shared_keys.primary_shared_key
+
     # set the domain for the ci agent for non azure public clouds
     cloud_name = cmd.cli_ctx.cloud.name
     if cloud_name.lower() == 'azurechinacloud':
         configuration_settings['omsagent.domain'] = 'opinsights.azure.cn'
+        configuration_settings['amalogs.domain'] = 'opinsights.azure.cn'
     elif cloud_name.lower() == 'azureusgovernment':
         configuration_settings['omsagent.domain'] = 'opinsights.azure.us'
+        configuration_settings['amalogs.domain'] = 'opinsights.azure.us'
     elif cloud_name.lower() == 'usnat':
         configuration_settings['omsagent.domain'] = 'opinsights.azure.eaglex.ic.gov'
+        configuration_settings['amalogs.domain'] = 'opinsights.azure.eaglex.ic.gov'
     elif cloud_name.lower() == 'ussec':
         configuration_settings['omsagent.domain'] = 'opinsights.azure.microsoft.scloud'
+        configuration_settings['amalogs.domain'] = 'opinsights.azure.microsoft.scloud'
 
 
 def get_existing_container_insights_extension_dcr_tags(cmd, dcr_url):
@@ -541,15 +570,18 @@ def get_existing_container_insights_extension_dcr_tags(cmd, dcr_url):
     return tags
 
 
-def _ensure_container_insights_dcr_for_monitoring(cmd, subscription_id, cluster_resource_group_name, cluster_name, workspace_resource_id):
+def _ensure_container_insights_dcr_for_monitoring(cmd, subscription_id, cluster_resource_group_name, cluster_rp, cluster_type, cluster_name, workspace_resource_id):
     from azure.core.exceptions import HttpResponseError
 
     cluster_region = ''
     resources = cf_resources(cmd.cli_ctx, subscription_id)
-    cluster_resource_id = '/subscriptions/{0}/resourceGroups/{1}/providers/Microsoft.Kubernetes' \
-        '/connectedClusters/{2}'.format(subscription_id, cluster_resource_group_name, cluster_name)
+    cluster_resource_id = '/subscriptions/{0}/resourceGroups/{1}/providers/{2}/{3}/{4}'.format(
+        subscription_id, cluster_resource_group_name, cluster_rp, cluster_type, cluster_name)
     try:
-        resource = resources.get_by_id(cluster_resource_id, '2020-01-01-preview')
+        if cluster_rp.lower() == consts.HYBRIDCONTAINERSERVICE_RP:
+            resource = resources.get_by_id(cluster_resource_id, consts.HYBRIDCONTAINERSERVICE_API_VERSION)
+        else:
+            resource = resources.get_by_id(cluster_resource_id, '2020-01-01-preview')
         cluster_region = resource.location.lower()
     except HttpResponseError as ex:
         raise ex
@@ -562,6 +594,9 @@ def _ensure_container_insights_dcr_for_monitoring(cmd, subscription_id, cluster_
     try:
         resource = resources.get_by_id(workspace_resource_id, '2015-11-01-preview')
         workspace_region = resource.location
+        # location can have spaces for example 'East US'
+        # and some workspaces it will be "eastus" hence remove the spaces and converting lowercase
+        workspace_region = workspace_region.replace(" ", "").lower()
     except HttpResponseError as ex:
         raise ex
 

@@ -71,3 +71,47 @@ properties is supported before updating these properties.
 --configuration-settings-file=config-settings-file \
 --configuration-protected-settings-file=protected-settings-file
 """
+
+helps[f'{consts.EXTENSION_NAME} extension-types'] = """
+    type: group
+    short-summary: Commands to discover Kubernetes Extension Types.
+"""
+
+helps[f'{consts.EXTENSION_NAME} extension-types list'] = f"""
+    type: command
+    short-summary: List Kubernetes Extension Types.
+    examples:
+      - name: List Kubernetes Extension Types
+        text: |-
+          az {consts.EXTENSION_NAME} extension-types list --resource-group my-resource-group \
+--cluster-name mycluster --cluster-type connectedClusters
+"""
+
+helps[f'{consts.EXTENSION_NAME} extension-types list-by-location'] = f"""
+    type: command
+    short-summary: List available Kubernetes Extension Types in a specified region.
+    examples:
+      - name: List Kubernetes Extension Types by location
+        text: |-
+          az {consts.EXTENSION_NAME} extension-types list-by-location --location eastus2euap
+"""
+
+helps[f'{consts.EXTENSION_NAME} extension-types show'] = f"""
+    type: command
+    short-summary: Show properties for a Kubernetes Extension Type.
+    examples:
+      - name: Show Kubernetes Extension Type
+        text: |-
+          az {consts.EXTENSION_NAME} extension-types show --resource-group my-resource-group \
+--cluster-name mycluster --cluster-type connectedClusters --extension-type cassandradatacenteroperator
+"""
+
+helps[f'{consts.EXTENSION_NAME} extension-types list-versions'] = f"""
+    type: command
+    short-summary: List available versions for a Kubernetes Extension Type.
+    examples:
+      - name: List versions for an Extension Type
+        text: |-
+          az {consts.EXTENSION_NAME} extension-types list-versions --location eastus2euap \
+--extension-type cassandradatacenteroperator
+"""

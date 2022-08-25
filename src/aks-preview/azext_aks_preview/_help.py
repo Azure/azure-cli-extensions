@@ -956,15 +956,15 @@ helps['aks maintenanceconfiguration add'] = """
     examples:
         - name: Add a maintenance configuration with --weekday and --start-hour.
           text: |
-            az aks maintenanceconfiguration add -g xiazhan-mtc-stg --cluster-name test1 -n default --weekday Monday  --start-hour 1
+            az aks maintenanceconfiguration add -g MyResourceGroup --cluster-name test1 -n default --weekday Monday  --start-hour 1
               The maintenance is allowed on Monday 1:00am to 2:00am
-        - name: Add a maintenance configuration with --weekday.The maintenance is allowd on any time of that day.
+        - name: Add a maintenance configuration with --weekday. The maintenance is allowd on any time of that day.
           text: |
-            az aks maintenanceconfiguration add -g xiazhan-mtc-stg --cluster-name test1 -n default --weekday Monday
+            az aks maintenanceconfiguration add -g MyResourceGroup --cluster-name test1 -n default --weekday Monday
               The maintenance is allowed on Monday.
         - name: Add a maintenance configuration with maintenance configuration json file
           text: |
-            az aks maintenanceconfiguration add -g xiazhan-mtc-stg --cluster-name test1 -n default --config-file ./test.json
+            az aks maintenanceconfiguration add -g MyResourceGroup --cluster-name test1 -n default --config-file ./test.json
                 The content of json file looks below. It means the maintenance is allowed on UTC time Tuesday 1:00am - 3:00 am and Wednesday 1:00am - 2:00am, 6:00am-7:00am
                 No maintenance is allowed from 2020-11-26T03:00:00Z to 2020-11-30T12:00:00Z and from 2020-12-26T03:00:00Z to 2020-12-26T12:00:00Z even if they are allowed in the above weekly setting
                 {
@@ -1013,15 +1013,15 @@ helps['aks maintenanceconfiguration update'] = """
     examples:
         - name: Update a maintenance configuration with --weekday and --start-hour.
           text: |
-            az aks maintenanceconfiguration update -g xiazhan-mtc-stg --cluster-name test1 -n default --weekday Monday  --start-hour 1
+            az aks maintenanceconfiguration update -g MyResourceGroup --cluster-name test1 -n default --weekday Monday  --start-hour 1
               The maintenance is allowed on Monday 1:00am to 2:00am
         - name: Update a maintenance configuration with --weekday.The maintenance is allowd on any time of that day.
           text: |
-            az aks maintenanceconfiguration update -g xiazhan-mtc-stg --cluster-name test1 -n default --weekday Monday
+            az aks maintenanceconfiguration update -g MyResourceGroup --cluster-name test1 -n default --weekday Monday
               The maintenance is allowed on Monday.
         - name: Update a maintenance configuration with maintenance configuration json file
           text: |
-            az aks maintenanceconfiguration update -g xiazhan-mtc-stg --cluster-name test1 -n default --config-file ./test.json
+            az aks maintenanceconfiguration update -g MyResourceGroup --cluster-name test1 -n default --config-file ./test.json
                 The content of json file looks below. It means the maintenance is allowed on UTC time Tuesday 1:00am - 3:00 am and Wednesday 1:00am - 2:00am, 6:00am-7:00am
                 No maintenance is allowed from 2020-11-26T03:00:00Z to 2020-11-30T12:00:00Z and from 2020-12-26T03:00:00Z to 2020-12-26T12:00:00Z even if they are allowed in the above weekly setting
                 {
@@ -1837,7 +1837,7 @@ helps['aks trustedaccess rolebinding create'] = """
 
     examples:
         - name: Create a new trusted access role binding
-          text: az aks trustedaccess rolebinding create -g myResourceGroup --cluster-name myCluster -n bindingName -s /subscriptions/0000/resourceGroups/myResourceGroup/providers/Microsoft.Demo/samples --roles Microsoft.Demo/samples/reader Microsoft.Demo/samples/writer
+          text: az aks trustedaccess rolebinding create -g myResourceGroup --cluster-name myCluster -n bindingName -s /subscriptions/0000/resourceGroups/myResourceGroup/providers/Microsoft.Demo/samples --roles Microsoft.Demo/samples/reader,Microsoft.Demo/samples/writer
 """
 
 helps['aks trustedaccess rolebinding update'] = """
@@ -1850,9 +1850,6 @@ helps['aks trustedaccess rolebinding update'] = """
         - name: --roles
           type: string
           short-summary: Specify the space-separated roles.
-        - name: --source-resource-id -s
-          type: string
-          short-summary: Specify the source resource id of the binding.
 """
 
 helps['aks trustedaccess rolebinding delete'] = """

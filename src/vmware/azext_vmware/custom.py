@@ -56,14 +56,16 @@ def privatecloud_create(client: AVSClient, resource_group_name, name, sku, clust
         if not yes and not prompt_y_n(msg, default="n"):
             return None
 
-    from azext_vmware.vendored_sdks.avs_client.models import PrivateCloud, Circuit, ManagementCluster, Sku, PrivateCloudIdentity
+    from azext_vmware.vendored_sdks.avs_client.models import PrivateCloud, Circuit, ManagementCluster, Sku, PrivateCloudIdentity, ResourceIdentityType
     cloud = PrivateCloud(sku=Sku(name=sku), ciruit=Circuit(), management_cluster=ManagementCluster(cluster_size=cluster_size), network_block=network_block)
     if location is not None:
         cloud.location = location
     if tags is not None:
         cloud.tags = tags
     if mi_system_assigned:
-        cloud.identity = PrivateCloudIdentity(type='SystemAssigned')
+        cloud.identity = PrivateCloudIdentity(type=ResourceIdentityType.SYSTEM_ASSIGNED)
+    else:
+        cloud.identity = PrivateCloudIdentity(type=ResourceIdentityType.NONE)
     if internet is not None:
         cloud.internet = internet
     if vcenter_password is not None:
@@ -74,8 +76,8 @@ def privatecloud_create(client: AVSClient, resource_group_name, name, sku, clust
 
 
 def privatecloud_update(client: AVSClient, resource_group_name, name, cluster_size=None, internet=None, tags=None):
-    from azext_vmware.vendored_sdks.avs_client.models import PrivateCloudUpdate, ManagementCluster
-    private_cloud_update = PrivateCloudUpdate()
+    from azext_vmware.vendored_sdks.avs_client.models import ManagementCluster
+    private_cloud_update = client.private_clouds.get(resource_group_name, name)
     if tags is not None:
         private_cloud_update.tags = tags
     if cluster_size is not None:
@@ -122,8 +124,8 @@ def privatecloud_deleteidentitysource(client: AVSClient, resource_group_name, na
 
 
 def privatecloud_addavailabilityzone(client: AVSClient, resource_group_name, private_cloud, strategy=None, zone=None, secondary_zone=None):
-    from azext_vmware.vendored_sdks.avs_client.models import AvailabilityProperties, PrivateCloudUpdate
-    pc = PrivateCloudUpdate()
+    from azext_vmware.vendored_sdks.avs_client.models import AvailabilityProperties
+    pc = client.private_clouds.get(resource_group_name, private_cloud)
     pc.availability = AvailabilityProperties(strategy=strategy, zone=zone, secondary_zone=secondary_zone)
     return client.private_clouds.begin_update(resource_group_name=resource_group_name, private_cloud_name=private_cloud, private_cloud_update=pc)
 
@@ -133,16 +135,15 @@ def privatecloud_deleteavailabilityzone(client: AVSClient, resource_group_name, 
     msg = 'This will delete the availability zone. Are you sure?'
     if not yes and not prompt_y_n(msg, default="n"):
         return None
-    from azext_vmware.vendored_sdks.avs_client.models import PrivateCloudUpdate
-    pc = PrivateCloudUpdate()
+    pc = client.private_clouds.get(resource_group_name, private_cloud)
     pc.availability = None
     return client.private_clouds.begin_update(resource_group_name=resource_group_name, private_cloud_name=private_cloud, private_cloud_update=pc)
 
 
-def privatecloud_addcmkencryption(client: AVSClient, resource_group_name, private_cloud, enc_status=None, enc_kv_key_name=None, enc_kv_key_version=None, enc_kv_url=None):
-    from azext_vmware.vendored_sdks.avs_client.models import Encryption, EncryptionKeyVaultProperties, PrivateCloudUpdate
-    pc = PrivateCloudUpdate()
-    pc.encryption = Encryption(status=enc_status, key_vault_properties=EncryptionKeyVaultProperties(key_name=enc_kv_key_name, key_version=enc_kv_key_version, key_vault_url=enc_kv_url))
+def privatecloud_addcmkencryption(client: AVSClient, resource_group_name, private_cloud, enc_kv_key_name=None, enc_kv_key_version=None, enc_kv_url=None):
+    from azext_vmware.vendored_sdks.avs_client.models import Encryption, EncryptionKeyVaultProperties, EncryptionState
+    pc = client.private_clouds.get(resource_group_name, private_cloud)
+    pc.encryption = Encryption(status=EncryptionState.ENABLED, key_vault_properties=EncryptionKeyVaultProperties(key_name=enc_kv_key_name, key_version=enc_kv_key_version, key_vault_url=enc_kv_url))
     return client.private_clouds.begin_update(resource_group_name=resource_group_name, private_cloud_name=private_cloud, private_cloud_update=pc)
 
 
@@ -151,24 +152,25 @@ def privatecloud_deletecmkenryption(client: AVSClient, resource_group_name, priv
     msg = 'This will delete the managed keys encryption. Are you sure?'
     if not yes and not prompt_y_n(msg, default="n"):
         return None
-    from azext_vmware.vendored_sdks.avs_client.models import PrivateCloudUpdate
-    pc = PrivateCloudUpdate()
-    pc.encryption = None
+    from azext_vmware.vendored_sdks.avs_client.models import Encryption, EncryptionState
+    pc = client.private_clouds.get(resource_group_name, private_cloud)
+    pc.encryption = Encryption(status=EncryptionState.DISABLED)
     return client.private_clouds.begin_update(resource_group_name=resource_group_name, private_cloud_name=private_cloud, private_cloud_update=pc)
 
 
 def privatecloud_identity_assign(client: AVSClient, resource_group_name, private_cloud, system_assigned=False):
-    from azext_vmware.vendored_sdks.avs_client.models import PrivateCloudIdentity, PrivateCloudUpdate
-    pc = PrivateCloudUpdate()
+    from azext_vmware.vendored_sdks.avs_client.models import PrivateCloudIdentity, ResourceIdentityType
+    pc = client.private_clouds.get(resource_group_name, private_cloud)
     if system_assigned:
-        pc.identity = PrivateCloudIdentity(type="SystemAssigned")
+        pc.identity = PrivateCloudIdentity(type=ResourceIdentityType.SYSTEM_ASSIGNED)
     return client.private_clouds.begin_update(resource_group_name=resource_group_name, private_cloud_name=private_cloud, private_cloud_update=pc)
 
 
-def privatecloud_identity_remove(client: AVSClient, resource_group_name, private_cloud):
-    from azext_vmware.vendored_sdks.avs_client.models import PrivateCloudIdentity, PrivateCloudUpdate
-    pc = PrivateCloudUpdate()
-    pc.identity = PrivateCloudIdentity(type="None")
+def privatecloud_identity_remove(client: AVSClient, resource_group_name, private_cloud, system_assigned=False):
+    from azext_vmware.vendored_sdks.avs_client.models import PrivateCloudIdentity, ResourceIdentityType
+    pc = client.private_clouds.get(resource_group_name, private_cloud)
+    if system_assigned:
+        pc.identity = PrivateCloudIdentity(type=ResourceIdentityType.NONE)
     return client.private_clouds.begin_update(resource_group_name=resource_group_name, private_cloud_name=private_cloud, private_cloud_update=pc)
 
 

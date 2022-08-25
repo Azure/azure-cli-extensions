@@ -95,6 +95,12 @@ class VmwareScenarioTest(ScenarioTest):
         # delete the private cloud
         self.cmd('vmware private-cloud delete -g {rg} -n {privatecloud} --yes')
 
+        # enable cmk encryption
+        self.cmd('az vmware private-cloud enable-cmk-encryption -c {privatecloud} -g {rg} --enc-kv-key-name test-key-name --enc-kv-key-version 1 --enc-kv-url test-url')
+
+        # disable cmk encyrption
+        self.cmd('az vmware private-cloud disable-cmk-encryption -c {privatecloud} -g {rg} --yes')
+
         # set managed identity
         self.cmd('vmware private-cloud identity assign -g {rg} -c {privatecloud} --system-assigned')
 

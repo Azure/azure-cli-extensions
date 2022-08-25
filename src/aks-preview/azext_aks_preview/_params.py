@@ -47,6 +47,7 @@ from azext_aks_preview._consts import (
     CONST_OS_DISK_TYPE_EPHEMERAL,
     CONST_OS_DISK_TYPE_MANAGED,
     CONST_OS_SKU_CBLMARINER,
+    CONST_OS_SKU_CBLMARINERV2,
     CONST_OS_SKU_UBUNTU,
     CONST_OS_SKU_WINDOWS2019,
     CONST_OS_SKU_WINDOWS2022,
@@ -74,6 +75,7 @@ from azext_aks_preview._validators import (
     validate_acr,
     validate_addon,
     validate_addons,
+    validate_agent_pool_name,
     validate_apiserver_subnet_id,
     validate_assign_identity,
     validate_assign_kubelet_identity,
@@ -126,7 +128,13 @@ node_priorities = [CONST_SCALE_SET_PRIORITY_REGULAR, CONST_SCALE_SET_PRIORITY_SP
 node_eviction_policies = [CONST_SPOT_EVICTION_POLICY_DELETE, CONST_SPOT_EVICTION_POLICY_DEALLOCATE]
 node_os_disk_types = [CONST_OS_DISK_TYPE_MANAGED, CONST_OS_DISK_TYPE_EPHEMERAL]
 node_mode_types = [CONST_NODEPOOL_MODE_SYSTEM, CONST_NODEPOOL_MODE_USER]
-node_os_skus = [CONST_OS_SKU_UBUNTU, CONST_OS_SKU_CBLMARINER, CONST_OS_SKU_WINDOWS2019, CONST_OS_SKU_WINDOWS2022]
+node_os_skus = [
+    CONST_OS_SKU_UBUNTU,
+    CONST_OS_SKU_CBLMARINER,
+    CONST_OS_SKU_CBLMARINERV2,
+    CONST_OS_SKU_WINDOWS2019,
+    CONST_OS_SKU_WINDOWS2022,
+]
 scale_down_modes = [CONST_SCALE_DOWN_MODE_DELETE, CONST_SCALE_DOWN_MODE_DEALLOCATE]
 workload_runtimes = [CONST_WORKLOAD_RUNTIME_OCI_CONTAINER, CONST_WORKLOAD_RUNTIME_WASM_WASI]
 gpu_instance_profiles = [
@@ -416,6 +424,8 @@ def load_arguments(self, _):
 
     with self.argument_context('aks nodepool') as c:
         c.argument('cluster_name', help='The cluster name.')
+        # the following argument is declared for the wait command
+        c.argument('agent_pool_name', options_list=['--nodepool-name', '--agent-pool-name'], validator=validate_agent_pool_name, help='The node pool name.')
 
     for sub_command in ['add', 'update', 'upgrade', 'scale', 'show', 'list', 'delete']:
         with self.argument_context('aks nodepool ' + sub_command) as c:
@@ -692,12 +702,12 @@ def load_arguments(self, _):
             c.argument('role_binding_name', options_list=[
                        '--name', '-n'], required=True, help='The role binding name.')
 
-    for scope in ['aks trustedaccess rolebinding create', 'aks trustedaccess rolebinding update']:
-        with self.argument_context(scope) as c:
-            c.argument('roles', nargs='*',
-                       help='space-separated roles: Microsoft.Demo/samples/reader Microsoft.Demo/samples/writer ...')
-            c.argument('source_resource_id', options_list=['--source-resource-id', '-s'],
-                       help='The source resource id of the binding')
+    with self.argument_context('aks trustedaccess rolebinding create') as c:
+        c.argument('roles', help='comma-separated roles: Microsoft.Demo/samples/reader,Microsoft.Demo/samples/writer,...')
+        c.argument('source_resource_id', options_list=['--source-resource-id', '-s'], help='The source resource id of the binding')
+
+    with self.argument_context('aks trustedaccess rolebinding update') as c:
+        c.argument('roles', help='comma-separated roles: Microsoft.Demo/samples/reader,Microsoft.Demo/samples/writer,...')
 
 
 def _get_default_install_location(exe_name):
