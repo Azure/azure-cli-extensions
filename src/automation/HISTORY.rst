@@ -15,3 +15,7 @@ Release History
 ++++++
 * Added Hybrid Runbook worker move command.
 
+0.1.4
+++++++
+* Added handling for success responses on create resources.
+
