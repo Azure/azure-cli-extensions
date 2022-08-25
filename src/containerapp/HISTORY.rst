@@ -3,6 +3,10 @@
 Release History
 ===============
 
+0.3.11
+++++++
+
+
 0.3.10
 ++++++
 * 'az containerapp create': Fix bug with --image caused by assuming a value for --registry-server
