@@ -51,3 +51,13 @@ def cf_log_analytics(cli_ctx, subscription_id=None):
 def _resource_providers_client(cli_ctx):
     from azure.mgmt.resource import ResourceManagementClient
     return get_mgmt_service_client(cli_ctx, ResourceManagementClient).providers
+
+
+def cf_storage(cli_ctx, subscription_id=None):
+    from azure.mgmt.storage import StorageManagementClient
+    return get_mgmt_service_client(cli_ctx, StorageManagementClient, subscription_id=subscription_id)
+
+
+def cf_managed_clusters(cli_ctx, subscription_id=None):
+    from azure.mgmt.containerservice import ContainerServiceClient
+    return get_mgmt_service_client(cli_ctx, ContainerServiceClient, subscription_id=subscription_id).managed_clusters
