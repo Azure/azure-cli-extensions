@@ -850,7 +850,7 @@ def update_connected_cluster_internal(client, resource_group_name, cluster_name,
 
 
 def update_connected_cluster(cmd, client, resource_group_name, cluster_name, https_proxy="", http_proxy="", no_proxy="", proxy_cert="",
-                             disable_proxy=False, kube_config=None, kube_context=None, auto_upgrade=None, tags=None):
+                             disable_proxy=False, kube_config=None, kube_context=None, auto_upgrade=None, container_log_path=None, tags=None):
 
     # Send cloud information to telemetry
     send_cloud_telemetry(cmd)
@@ -884,7 +884,7 @@ def update_connected_cluster(cmd, client, resource_group_name, cluster_name, htt
     patch_cc_response = update_connected_cluster_internal(client, resource_group_name, cluster_name, tags)
 
     proxy_params_unset = (https_proxy == "" and http_proxy == "" and no_proxy == "" and proxy_cert == "" and not disable_proxy)
-    if proxy_params_unset and not auto_upgrade and not tags:
+    if proxy_params_unset and not auto_upgrade and not container_log_path and not tags:
         raise RequiredArgumentMissingError(consts.No_Param_Error)
 
     if (https_proxy or http_proxy or no_proxy) and disable_proxy:
@@ -1001,6 +1001,8 @@ def update_connected_cluster(cmd, client, resource_group_name, cluster_name, htt
     if proxy_cert:
         cmd_helm_upgrade.extend(["--set-file", "global.proxyCert={}".format(proxy_cert)])
         cmd_helm_upgrade.extend(["--set", "global.isCustomCert={}".format(True)])
+    if container_log_path is not None:
+        cmd_helm_upgrade.extend(["--set", "systemDefaultValues.fluent-bit.containerLogPath={}".format(container_log_path)])
     if kube_config:
         cmd_helm_upgrade.extend(["--kubeconfig", kube_config])
     if kube_context:

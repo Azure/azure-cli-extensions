@@ -59,6 +59,7 @@ def load_arguments(self, _):
         c.argument('proxy_cert', options_list=['--proxy-cert'], arg_group='Proxy', type=file_type, completer=FilesCompleter(), help='Path to the any additional certificate file (for proxy as well)')
         c.argument('disable_proxy', options_list=['--disable-proxy'], arg_group='Proxy', action='store_true', help='Disables proxy settings for agents')
         c.argument('auto_upgrade', options_list=['--auto-upgrade'], help='Flag to enable/disable auto upgrade of arc agents. By default, auto upgrade of agents is enabled.', arg_type=get_enum_type(["true", "false"]))
+        c.argument('container_log_path', options_list=['--container-log-path'], help='Override the default container log path to enable fluent-bit logging')
 
     with self.argument_context('connectedk8s upgrade') as c:
         c.argument('cluster_name', options_list=['--name', '-n'], id_part='name', help='The name of the connected cluster.')
