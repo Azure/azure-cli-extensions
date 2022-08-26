@@ -13,6 +13,8 @@ Pending
 +++++++
 *  Add --enable-node-restriction/--disable-node-restriction to enable/disable node restriction feature
 
+* Update the minimum required cli core version to `2.38.0` (actually since `0.5.92`).
+
 0.5.94
 ++++++
 
