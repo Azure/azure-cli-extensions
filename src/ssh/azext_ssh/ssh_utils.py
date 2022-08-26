@@ -94,11 +94,13 @@ def _read_ssh_logs(ssh_sub, print_ssh_logs, op_info, delete_cert, delete_keys):
                not next_line.startswith('Transferred: sent') and \
                not next_line.startswith('Bytes per second: sent') and \
                not next_line.startswith('OpenSSH_'):
-                print(next_line, end='', file=sys.stderr)
+                #print(next_line, end='', file=sys.stderr)
+                sys.stderr.write(next_line)
 
             _check_for_known_errors(next_line, delete_cert, log_list)
         elif print_ssh_logs:
-            print(next_line, end='', file=sys.stderr)
+            #print(next_line, end='', file=sys.stderr)
+            sys.stderr.write(next_line)
 
         log_list.append(next_line)
 
@@ -107,7 +109,6 @@ def _read_ssh_logs(ssh_sub, print_ssh_logs, op_info, delete_cert, delete_keys):
             do_cleanup(delete_keys, delete_cert, op_info.cert_file, op_info.private_key_file, op_info.public_key_file)
 
         next_line = ssh_sub.stderr.readline()
-
     ssh_sub.wait()
     return ssh_sucess
 
