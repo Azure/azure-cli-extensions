@@ -268,9 +268,12 @@ def ensure_namespace_cleanup(configuration):
             kubernetes_exception_handler(e, consts.Get_Kubernetes_Namespace_Fault_Type, 'Unable to fetch kubernetes namespace',
                                          raise_error=False)
 
-
-def delete_arc_agents(release_namespace, kube_config, kube_context, configuration, helm_client_location):
-    cmd_helm_delete = [helm_client_location, "delete", "azure-arc", "--namespace", release_namespace]
+# def delete_arc_agents(release_namespace, kube_config, kube_context, configuration, helm_client_location):
+def delete_arc_agents(release_namespace, kube_config, kube_context, configuration, helm_client_location , no_hooks=False):
+    if(no_hooks):
+        cmd_helm_delete = [helm_client_location, "delete", "azure-arc", "--namespace", release_namespace , "--no-hooks"]
+    else:
+        cmd_helm_delete = [helm_client_location, "delete", "azure-arc", "--namespace", release_namespace]
     if kube_config:
         cmd_helm_delete.extend(["--kubeconfig", kube_config])
     if kube_context:

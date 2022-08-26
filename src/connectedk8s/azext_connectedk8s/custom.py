@@ -3,6 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+from argparse import Namespace
 import errno
 import logging
 from logging import exception
@@ -10,6 +11,7 @@ import os
 import json
 import tempfile
 import time
+import subprocess
 from subprocess import Popen, PIPE, run, STDOUT, call, DEVNULL
 from base64 import b64encode, b64decode
 import stat
@@ -50,6 +52,7 @@ from threading import Timer, Thread
 import sys
 import hashlib
 import re
+import datetime
 logger = get_logger(__name__)
 # pylint:disable=unused-argument
 # pylint: disable=too-many-locals
@@ -658,7 +661,7 @@ def list_connectedk8s(cmd, client, resource_group_name=None):
 
 
 def delete_connectedk8s(cmd, client, resource_group_name, cluster_name,
-                        kube_config=None, kube_context=None, no_wait=False):
+                        kube_config=None, kube_context=None, no_wait=False,force_delete=False):
     logger.warning("This operation might take a while ...\n")
 
     # Send cloud information to telemetry
@@ -682,6 +685,51 @@ def delete_connectedk8s(cmd, client, resource_group_name, cluster_name,
     # Check Release Existance
     release_namespace = get_release_namespace(kube_config, kube_context, helm_client_location)
 
+    #Check if the forced delete flag is used 
+    if(force_delete):
+        
+        confirmation_message = "You can check using 'kubectl config get-contexts' to check if your current context is pointing to the the right cluster. \n" + "Are you sure you want to execute the delete command:"
+        utils.user_confirmation(confirmation_message, False)
+
+        kubectl_client_location = install_kubectl_client()
+        
+        delete_cc_resource(client, resource_group_name, cluster_name, no_wait).result()
+        
+        # Explicit CRD Deletion
+        for crds in consts.Connected_Cluster_CRDs:
+            cmd_helm_delete = [kubectl_client_location, "delete", "crdS",crds, "--ignore-not-found"]
+            response_helm_delete = Popen(cmd_helm_delete, stdout=PIPE, stderr=PIPE)
+            _, error_helm_delete = response_helm_delete.communicate()
+
+        # Timer added to have sufficient time after CRD deletion
+        # to check the status of the CRD ( deleted or terminating )
+        time.sleep(1)
+
+        # patching yaml file path
+        current_path = os.path.abspath(os.path.dirname(__file__))
+        yaml_file_path=os.path.join(current_path,"patch-file.yaml")
+
+        #Checking the status of CRD and patching if stuck in terminating state
+        for crds in consts.Connected_Cluster_CRDs:
+
+            cmd = [kubectl_client_location,"get","crd", crds,"-ojson"]
+            cmd_output = Popen(cmd, stdout=PIPE, stderr=PIPE)
+            _, error_helm_delete = cmd_output.communicate()
+
+            if(cmd_output.returncode==0):
+                changed_cmd= json.loads(cmd_output.communicate()[0].strip())
+                status=changed_cmd['status']['conditions'][-1]['type']
+
+                if(status=="Terminating"):
+                    print("yeah it worked")
+                    patch_cmd = [kubectl_client_location,"patch","crd",crds, "--type=merge","--patch-file",yaml_file_path]
+                    output = subprocess.Popen( patch_cmd, stdout=subprocess.PIPE ).communicate()[0].strip()
+
+        if(release_namespace):  
+            utils.delete_arc_agents(release_namespace, kube_config, kube_context, configuration, helm_client_location ,True)
+        
+        return
+        
     if not release_namespace:
         delete_cc_resource(client, resource_group_name, cluster_name, no_wait).result()
         return
