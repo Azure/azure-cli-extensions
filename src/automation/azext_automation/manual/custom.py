@@ -196,7 +196,7 @@ def automation_software_update_configuration_create(client, resource_group_name,
                                                     reboot_setting=None, duration=None, azure_virtual_machines=None,
                                                     non_azure_computer_names=None, azure_queries_scope=None,
                                                     azure_queries_locations=None, non_azure_queries_function_alias=None,
-                                                    non_azure_queries_workspace_id=None, tags=None,
+                                                    non_azure_queries_workspace_id=None, azure_queries_tags=None,
                                                     start_time=None, expiry_time=None, time_zone=None,
                                                     expiry_time_offset_minutes=None, is_enabled=None, next_run=None,
                                                     next_run_offset_minutes=None, creation_time=None,
@@ -241,8 +241,8 @@ def automation_software_update_configuration_create(client, resource_group_name,
         azure_queries['scope'] = azure_queries_scope
     if azure_queries_locations is not None:
         azure_queries['locations'] = azure_queries_locations
-    if tags is not None:
-        azure_queries['tagSettings'] = {'tags': {'tag': tags}}
+    if azure_queries_tags is not None:
+        azure_queries['tagSettings'] = {'tags': {'tag': azure_queries_tags}}
     if azure_queries:
         targets['azureQueries'] = [azure_queries]
 

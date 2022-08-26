@@ -165,22 +165,26 @@ def load_arguments(self, _):
                    arg_type=get_enum_type(WindowsUpdateClasses),
                    help='Update classification included in the software update configuration.'
                         ' A comma separated string with required values.')
-        c.argument('excluded_kb_numbers', nargs='+', help='KB numbers excluded from the software update configuration.')
-        c.argument('included_kb_numbers', nargs='+', help='KB numbers included from the software update configuration.')
+        c.argument('excluded_kb_numbers', nargs='+',
+                   help='Space-separated list of KB numbers excluded from the software update configuration.')
+        c.argument('included_kb_numbers', nargs='+',
+                   help='Space-separated list of KB numbers included from the software update configuration.')
         c.argument('reboot_setting', help='Reboot setting for the software update configuration.')
         c.argument('duration', validator=validator_duration,
                    help='Maximum time allowed for the software update configuration run.'
                         ' Duration needs to be specified using the format PT[n]H[n]M[n]S as per ISO8601.')
-        c.argument('azure_virtual_machines', nargs='+', help='List of azure resource Ids for azure virtual machines'
-                                                             ' targeted by the software update configuration.')
+        c.argument('azure_virtual_machines', nargs='+',
+                   help='Space-separated list of azure resource Ids for azure virtual machines targeted'
+                        ' by the software update configuration.')
         c.argument('non_azure_computer_names', nargs='+',
-                   help='List of names of non-azure machines targeted by the software update configuration.')
+                   help='Space-separated list of names of non-azure machines targeted'
+                        ' by the software update configuration.')
         c.argument('azure_queries_scope', nargs='+',
-                   help='List of Azure queries scope in the software update configuration.')
+                   help='Space-separated list of Azure queries scope in the software update configuration.')
         c.argument('azure_queries_locations', nargs='+',
-                   help='List of Azure queries location in the software update configuration.')
-        c.argument('tags', nargs='+',
-                   help='List of Azure queries tag settings in the software update configuration.')
+                   help='Space-separated list of Azure queries location in the software update configuration.')
+        c.argument('azure_queries_tags', nargs='+',
+                   help='Space-separated list of Azure queries tag settings in the software update configuration.')
         c.argument('non_azure_queries_function_alias', help='Log Analytics Saved Search name.')
         c.argument('non_azure_queries_workspace_id', help='Workspace Id for Log Analytics.')
         c.argument('start_time', arg_type=get_datetime_type(help='The start time of the schedule.'))
