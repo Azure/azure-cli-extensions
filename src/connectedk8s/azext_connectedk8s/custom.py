@@ -720,7 +720,6 @@ def delete_connectedk8s(cmd, client, resource_group_name, cluster_name,
                 status=changed_cmd['status']['conditions'][-1]['type']
 
                 if(status=="Terminating"):
-                    print("yeah it worked")
                     patch_cmd = [kubectl_client_location,"patch","crd",crds, "--type=merge","--patch-file",yaml_file_path]
                     output = subprocess.Popen( patch_cmd, stdout=subprocess.PIPE ).communicate()[0].strip()
 
