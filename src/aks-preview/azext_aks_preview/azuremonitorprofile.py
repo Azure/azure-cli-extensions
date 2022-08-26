@@ -25,7 +25,7 @@ MAC_API = "2021-06-03-preview"
 GRAFANA_API = "2022-08-01"
 GRAFANA_ROLE_ASSIGNMENT_API = "2018-01-01-preview"
 RULES_API = "2021-07-22-preview"
-FEATURE_API = "2021-07-01"
+FEATURE_API = "2020-09-01"
 
 class GrafanaLink(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
     """Status of Grafana link to the Prometheus Addon
@@ -119,14 +119,15 @@ AzureCloudLocationToOmsRegionCodeMap = {
 
 def check_msi_cluster(client, cluster_resource_group_name, cluster_name):
     instance = client.get(cluster_resource_group_name, cluster_name)
-    if instance.service_principal_profile.client_id != "msi":
+    if instance.service_principal_profile.client_id.lower() != "msi":
         raise UnknownError("Azure Monitor Metrics (Managed Prometheus) is only supported for MSI enabled clusters")
         
 
 # check if `az feature register --namespace Microsoft.ContainerService --name AKS-PrometheusAddonPreview` is Registered
 def check_azuremonitoraddon_feature(cmd, cluster_subscription):
     from azure.cli.core.util import send_raw_request
-    feature_check_url = f"https://management.azure.com/subscriptions/{cluster_subscription}/providers/Microsoft.Features/providers/Microsoft.ContainerService/features/AKS-PrometheusAddonPreview?api-version={FEATURE_API}"
+
+    feature_check_url = f"https://management.azure.com/subscriptions/{cluster_subscription}/providers/Microsoft.Features/subscriptionFeatureRegistrations?api-version={FEATURE_API}&featurename=AKS-PrometheusAddonPreview"
     try:
         r = send_raw_request(cmd.cli_ctx, "GET", feature_check_url,
                              body={})
@@ -134,8 +135,11 @@ def check_azuremonitoraddon_feature(cmd, cluster_subscription):
         raise UnknownError(e)
     
     json_response = json.loads(r.text)
-    if json_response["properties"]["state"] == "Registered":
-        return
+    values_array = json_response["value"]
+
+    for value in values_array:
+        if value["properties"]["providerNamespace"].lower() == "microsoft.containerservice" and value["properties"]["state"].lower() == "registered":
+            return
 
     raise CLIError("Please enable the feature AKS-PrometheusAddonPreview on your subscription using `az feature register --namespace Microsoft.ContainerService --name AKS-PrometheusAddonPreview` to use this feature.\
         If this feature was recently registered then please wait upto 5 mins for the feature registration to finish")
