@@ -1240,7 +1240,7 @@ helps['aks nodepool upgrade'] = """
 helps['aks nodepool update'] = """
     type: command
     short-summary: Update a node pool properties.
-    long-summary: Update a node pool to enable/disable cluster-autoscaler or change min-count or max-count.  When called with no optional arguments this attempts to move the cluster to its goal state without changing the current cluster configuration. This can be used to move out of a non succeeded state.
+    long-summary: Update a node pool to enable/disable cluster-autoscaler or change min-count or max-count.  When called with no optional arguments this attempts to move the node pool to its goal state without changing the current node pool configuration. This can be used to move out of a non succeeded state.
     parameters:
         - name: --enable-cluster-autoscaler -e
           type: bool
