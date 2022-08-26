@@ -35,6 +35,7 @@ class QuantumJobsScenarioTest(ScenarioTest):
     # @pytest.fixture(autouse=True)
     # def _pass_fixtures(self, capsys):
     #     self.capsys = capsys
+    # # See "TODO" in issue_cmd_with_param_missing un utils.py
 
     def test_job_errors(self):
         issue_cmd_with_param_missing(self, "az quantum job cancel", "az quantum job cancel -g MyResourceGroup -w MyWorkspace -l MyLocation -j yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy\nCancel an Azure Quantum job by id.")
