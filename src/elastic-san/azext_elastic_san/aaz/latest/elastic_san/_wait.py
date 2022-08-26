@@ -152,7 +152,7 @@ class Wait(AAZWaitCommand):
                 flags={"read_only": True},
             )
             _schema_on_200.properties = AAZObjectType(
-                flags={"client_flatten": True},
+                flags={"required": True, "client_flatten": True},
             )
             _schema_on_200.system_data = AAZObjectType(
                 serialized_name="systemData",
@@ -166,7 +166,6 @@ class Wait(AAZWaitCommand):
             properties = cls._schema_on_200.properties
             properties.availability_zones = AAZListType(
                 serialized_name="availabilityZones",
-                flags={"required": True},
             )
             properties.base_size_ti_b = AAZIntType(
                 serialized_name="baseSizeTiB",
@@ -180,7 +179,9 @@ class Wait(AAZWaitCommand):
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
-            properties.sku = AAZObjectType()
+            properties.sku = AAZObjectType(
+                flags={"required": True},
+            )
             properties.total_iops = AAZIntType(
                 serialized_name="totalIops",
                 flags={"read_only": True},
@@ -206,7 +207,9 @@ class Wait(AAZWaitCommand):
             availability_zones.Element = AAZStrType()
 
             sku = cls._schema_on_200.properties.sku
-            sku.name = AAZStrType()
+            sku.name = AAZStrType(
+                flags={"required": True},
+            )
             sku.tier = AAZStrType()
 
             system_data = cls._schema_on_200.system_data

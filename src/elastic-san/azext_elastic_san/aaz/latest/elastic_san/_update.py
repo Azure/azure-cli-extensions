@@ -82,6 +82,7 @@ class Update(AAZCommand):
             options=["--availability-zones"],
             arg_group="Properties",
             help="Logical zone for Elastic San resource; example: [\"1\"].",
+            nullable=True,
         )
         _args_schema.base_size_tib = AAZIntArg(
             options=["--base-size-tib"],
@@ -89,7 +90,7 @@ class Update(AAZCommand):
             help="Base size of the Elastic San appliance in TiB.",
         )
         _args_schema.extended_capacity_size_tib = AAZIntArg(
-            options=["--extended-size-tib", "--extended-capacity-size-tib"],
+            options=["--extended-capacity-size-tib"],
             arg_group="Properties",
             help="Extended size of the Elastic San appliance in TiB.",
         )
@@ -97,7 +98,6 @@ class Update(AAZCommand):
             options=["--sku"],
             arg_group="Properties",
             help="resource sku",
-            nullable=True,
         )
 
         availability_zones = cls._args_schema.availability_zones
@@ -109,7 +109,6 @@ class Update(AAZCommand):
         sku.name = AAZStrArg(
             options=["name"],
             help="The sku name.",
-            nullable=True,
             enum={"Premium_LRS": "Premium_LRS", "Premium_ZRS": "Premium_ZRS"},
         )
         sku.tier = AAZStrArg(
@@ -335,15 +334,15 @@ class Update(AAZCommand):
                 value=instance,
                 typ=AAZObjectType
             )
-            _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
+            _builder.set_prop("properties", AAZObjectType, ".", typ_kwargs={"flags": {"required": True, "client_flatten": True}})
             _builder.set_prop("tags", AAZDictType, ".tags")
 
             properties = _builder.get(".properties")
             if properties is not None:
-                properties.set_prop("availabilityZones", AAZListType, ".availability_zones", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("availabilityZones", AAZListType, ".availability_zones")
                 properties.set_prop("baseSizeTiB", AAZIntType, ".base_size_tib", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("extendedCapacitySizeTiB", AAZIntType, ".extended_capacity_size_tib", typ_kwargs={"flags": {"required": True}})
-                properties.set_prop("sku", AAZObjectType, ".sku")
+                properties.set_prop("sku", AAZObjectType, ".sku", typ_kwargs={"flags": {"required": True}})
 
             availability_zones = _builder.get(".properties.availabilityZones")
             if availability_zones is not None:
@@ -351,7 +350,7 @@ class Update(AAZCommand):
 
             sku = _builder.get(".properties.sku")
             if sku is not None:
-                sku.set_prop("name", AAZStrType, ".name")
+                sku.set_prop("name", AAZStrType, ".name", typ_kwargs={"flags": {"required": True}})
                 sku.set_prop("tier", AAZStrType, ".tier")
 
             tags = _builder.get(".tags")
@@ -395,7 +394,7 @@ def _build_schema_elastic_san_read(_schema):
         flags={"read_only": True},
     )
     elastic_san_read.properties = AAZObjectType(
-        flags={"client_flatten": True},
+        flags={"required": True, "client_flatten": True},
     )
     elastic_san_read.system_data = AAZObjectType(
         serialized_name="systemData",
@@ -409,7 +408,6 @@ def _build_schema_elastic_san_read(_schema):
     properties = _schema_elastic_san_read.properties
     properties.availability_zones = AAZListType(
         serialized_name="availabilityZones",
-        flags={"required": True},
     )
     properties.base_size_ti_b = AAZIntType(
         serialized_name="baseSizeTiB",
@@ -423,7 +421,9 @@ def _build_schema_elastic_san_read(_schema):
         serialized_name="provisioningState",
         flags={"read_only": True},
     )
-    properties.sku = AAZObjectType()
+    properties.sku = AAZObjectType(
+        flags={"required": True},
+    )
     properties.total_iops = AAZIntType(
         serialized_name="totalIops",
         flags={"read_only": True},
@@ -449,7 +449,9 @@ def _build_schema_elastic_san_read(_schema):
     availability_zones.Element = AAZStrType()
 
     sku = _schema_elastic_san_read.properties.sku
-    sku.name = AAZStrType()
+    sku.name = AAZStrType(
+        flags={"required": True},
+    )
     sku.tier = AAZStrType()
 
     system_data = _schema_elastic_san_read.system_data

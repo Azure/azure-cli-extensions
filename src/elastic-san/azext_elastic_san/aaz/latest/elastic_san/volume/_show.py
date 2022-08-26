@@ -16,7 +16,7 @@ from azure.cli.core.aaz import *
     is_experimental=True,
 )
 class Show(AAZCommand):
-    """Get a specific Volume.
+    """Get a Volume.
     """
 
     _aaz_info = {
@@ -43,7 +43,7 @@ class Show(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.elastic_san_name = AAZStrArg(
-            options=["--elastic-san-name"],
+            options=["-e", "--elastic-san-name"],
             help="The name of the ElasticSan.",
             required=True,
             id_part="name",
@@ -57,7 +57,7 @@ class Show(AAZCommand):
             required=True,
         )
         _args_schema.volume_group_name = AAZStrArg(
-            options=["--volume-group-name"],
+            options=["-v", "--volume-group-name"],
             help="The name of the VolumeGroup.",
             required=True,
             id_part="child_name_1",
@@ -213,7 +213,6 @@ class Show(AAZCommand):
             creation_data = cls._schema_on_200.properties.creation_data
             creation_data.create_source = AAZStrType(
                 serialized_name="createSource",
-                flags={"required": True},
             )
             creation_data.source_uri = AAZStrType(
                 serialized_name="sourceUri",

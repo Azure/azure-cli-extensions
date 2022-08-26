@@ -155,7 +155,7 @@ class List(AAZCommand):
                 flags={"read_only": True},
             )
             _element.properties = AAZObjectType(
-                flags={"client_flatten": True},
+                flags={"required": True, "client_flatten": True},
             )
             _element.system_data = AAZObjectType(
                 serialized_name="systemData",
@@ -169,7 +169,6 @@ class List(AAZCommand):
             properties = cls._schema_on_200.value.Element.properties
             properties.availability_zones = AAZListType(
                 serialized_name="availabilityZones",
-                flags={"required": True},
             )
             properties.base_size_ti_b = AAZIntType(
                 serialized_name="baseSizeTiB",
@@ -183,7 +182,9 @@ class List(AAZCommand):
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
-            properties.sku = AAZObjectType()
+            properties.sku = AAZObjectType(
+                flags={"required": True},
+            )
             properties.total_iops = AAZIntType(
                 serialized_name="totalIops",
                 flags={"read_only": True},
@@ -209,7 +210,9 @@ class List(AAZCommand):
             availability_zones.Element = AAZStrType()
 
             sku = cls._schema_on_200.value.Element.properties.sku
-            sku.name = AAZStrType()
+            sku.name = AAZStrType(
+                flags={"required": True},
+            )
             sku.tier = AAZStrType()
 
             system_data = cls._schema_on_200.value.Element.system_data
@@ -336,7 +339,7 @@ class List(AAZCommand):
                 flags={"read_only": True},
             )
             _element.properties = AAZObjectType(
-                flags={"client_flatten": True},
+                flags={"required": True, "client_flatten": True},
             )
             _element.system_data = AAZObjectType(
                 serialized_name="systemData",
@@ -350,7 +353,6 @@ class List(AAZCommand):
             properties = cls._schema_on_200.value.Element.properties
             properties.availability_zones = AAZListType(
                 serialized_name="availabilityZones",
-                flags={"required": True},
             )
             properties.base_size_ti_b = AAZIntType(
                 serialized_name="baseSizeTiB",
@@ -364,7 +366,9 @@ class List(AAZCommand):
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
-            properties.sku = AAZObjectType()
+            properties.sku = AAZObjectType(
+                flags={"required": True},
+            )
             properties.total_iops = AAZIntType(
                 serialized_name="totalIops",
                 flags={"read_only": True},
@@ -390,7 +394,9 @@ class List(AAZCommand):
             availability_zones.Element = AAZStrType()
 
             sku = cls._schema_on_200.value.Element.properties.sku
-            sku.name = AAZStrType()
+            sku.name = AAZStrType(
+                flags={"required": True},
+            )
             sku.tier = AAZStrType()
 
             system_data = cls._schema_on_200.value.Element.system_data

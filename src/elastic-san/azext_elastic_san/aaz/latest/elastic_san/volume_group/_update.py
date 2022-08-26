@@ -46,7 +46,7 @@ class Update(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.elastic_san_name = AAZStrArg(
-            options=["--elastic-san-name"],
+            options=["-e", "--elastic-san-name"],
             help="The name of the ElasticSan.",
             required=True,
             id_part="name",
@@ -93,12 +93,14 @@ class Update(AAZCommand):
             options=["--encryption"],
             arg_group="Properties",
             help="Type of encryption",
+            nullable=True,
             enum={"EncryptionAtRestWithPlatformKey": "EncryptionAtRestWithPlatformKey"},
         )
         _args_schema.protocol_type = AAZStrArg(
             options=["--protocol-type"],
             arg_group="Properties",
             help="Type of storage target",
+            nullable=True,
             enum={"Iscsi": "Iscsi", "None": "None"},
         )
         return cls._args_schema
@@ -331,8 +333,8 @@ class Update(AAZCommand):
 
             properties = _builder.get(".properties")
             if properties is not None:
-                properties.set_prop("encryption", AAZStrType, ".encryption", typ_kwargs={"flags": {"required": True}})
-                properties.set_prop("protocolType", AAZStrType, ".protocol_type", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("encryption", AAZStrType, ".encryption")
+                properties.set_prop("protocolType", AAZStrType, ".protocol_type")
 
             tags = _builder.get(".tags")
             if tags is not None:
@@ -385,15 +387,12 @@ def _build_schema_volume_group_read(_schema):
     )
 
     properties = _schema_volume_group_read.properties
-    properties.encryption = AAZStrType(
-        flags={"required": True},
-    )
+    properties.encryption = AAZStrType()
     properties.network_acls = AAZObjectType(
         serialized_name="networkAcls",
     )
     properties.protocol_type = AAZStrType(
         serialized_name="protocolType",
-        flags={"required": True},
     )
     properties.provisioning_state = AAZStrType(
         serialized_name="provisioningState",

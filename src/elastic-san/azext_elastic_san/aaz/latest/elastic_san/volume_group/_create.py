@@ -44,7 +44,7 @@ class Create(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.elastic_san_name = AAZStrArg(
-            options=["--elastic-san-name"],
+            options=["-e", "--elastic-san-name"],
             help="The name of the ElasticSan.",
             required=True,
             id_part="name",
@@ -230,9 +230,9 @@ class Create(AAZCommand):
 
             properties = _builder.get(".properties")
             if properties is not None:
-                properties.set_prop("encryption", AAZStrType, ".encryption", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("encryption", AAZStrType, ".encryption")
                 properties.set_prop("networkAcls", AAZObjectType, ".network_acls")
-                properties.set_prop("protocolType", AAZStrType, ".protocol_type", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("protocolType", AAZStrType, ".protocol_type")
 
             network_acls = _builder.get(".properties.networkAcls")
             if network_acls is not None:
@@ -310,15 +310,12 @@ def _build_schema_volume_group_read(_schema):
     )
 
     properties = _schema_volume_group_read.properties
-    properties.encryption = AAZStrType(
-        flags={"required": True},
-    )
+    properties.encryption = AAZStrType()
     properties.network_acls = AAZObjectType(
         serialized_name="networkAcls",
     )
     properties.protocol_type = AAZStrType(
         serialized_name="protocolType",
-        flags={"required": True},
     )
     properties.provisioning_state = AAZStrType(
         serialized_name="provisioningState",

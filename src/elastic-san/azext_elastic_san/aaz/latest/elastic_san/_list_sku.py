@@ -209,7 +209,7 @@ class ListSku(AAZCommand):
 
             _element = cls._schema_on_200.value.Element.sku.Element
             _element.name = AAZStrType(
-                flags={"read_only": True},
+                flags={"required": True, "read_only": True},
             )
             _element.tier = AAZStrType(
                 flags={"read_only": True},

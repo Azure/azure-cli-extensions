@@ -16,7 +16,7 @@ from azure.cli.core.aaz import *
     is_experimental=True,
 )
 class Update(AAZCommand):
-    """Create a Volume.
+    """Update a Volume.
     """
 
     _aaz_info = {
@@ -46,7 +46,7 @@ class Update(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.elastic_san_name = AAZStrArg(
-            options=["--elastic-san-name"],
+            options=["-e", "--elastic-san-name"],
             help="The name of the ElasticSan.",
             required=True,
             id_part="name",
@@ -60,7 +60,7 @@ class Update(AAZCommand):
             required=True,
         )
         _args_schema.volume_group_name = AAZStrArg(
-            options=["--volume-group-name"],
+            options=["-v", "--volume-group-name"],
             help="The name of the VolumeGroup.",
             required=True,
             id_part="child_name_1",
@@ -117,6 +117,7 @@ class Update(AAZCommand):
         creation_data.create_source = AAZStrArg(
             options=["create-source"],
             help="This enumerates the possible sources of a volume creation.",
+            nullable=True,
             enum={"None": "None"},
         )
         creation_data.source_uri = AAZStrArg(
@@ -367,7 +368,7 @@ class Update(AAZCommand):
 
             creation_data = _builder.get(".properties.creationData")
             if creation_data is not None:
-                creation_data.set_prop("createSource", AAZStrType, ".create_source", typ_kwargs={"flags": {"required": True}})
+                creation_data.set_prop("createSource", AAZStrType, ".create_source")
                 creation_data.set_prop("sourceUri", AAZStrType, ".source_uri")
 
             tags = _builder.get(".tags")
@@ -439,7 +440,6 @@ def _build_schema_volume_read(_schema):
     creation_data = _schema_volume_read.properties.creation_data
     creation_data.create_source = AAZStrType(
         serialized_name="createSource",
-        flags={"required": True},
     )
     creation_data.source_uri = AAZStrType(
         serialized_name="sourceUri",

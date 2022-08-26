@@ -16,7 +16,7 @@ from azure.cli.core.aaz import *
     is_preview=True,
 )
 class List(AAZCommand):
-    """List Volume Groups under a SAN.
+    """List Volume Groups.
     """
 
     _aaz_info = {
@@ -42,7 +42,7 @@ class List(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.elastic_san_name = AAZStrArg(
-            options=["--elastic-san-name"],
+            options=["-e", "--elastic-san-name"],
             help="The name of the ElasticSan.",
             required=True,
             fmt=AAZStrArgFormat(
@@ -176,15 +176,12 @@ class List(AAZCommand):
             )
 
             properties = cls._schema_on_200.value.Element.properties
-            properties.encryption = AAZStrType(
-                flags={"required": True},
-            )
+            properties.encryption = AAZStrType()
             properties.network_acls = AAZObjectType(
                 serialized_name="networkAcls",
             )
             properties.protocol_type = AAZStrType(
                 serialized_name="protocolType",
-                flags={"required": True},
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
