@@ -52,7 +52,6 @@ from threading import Timer, Thread
 import sys
 import hashlib
 import re
-import datetime
 logger = get_logger(__name__)
 # pylint:disable=unused-argument
 # pylint: disable=too-many-locals
