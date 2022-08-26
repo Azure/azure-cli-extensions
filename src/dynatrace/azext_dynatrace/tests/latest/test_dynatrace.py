@@ -7,9 +7,16 @@
 
 import unittest
 from azure.cli.testsdk import *
+from .credential_replacer import ExpressRoutePortLOAContentReplacer
 
 
 class DynatraceScenario(ScenarioTest):
+
+    def __init__(self, method_name):
+        super().__init__(method_name, recording_processors=[
+            ExpressRoutePortLOAContentReplacer()
+        ])
+
     @ResourceGroupPreparer(name_prefix='cli_test_dynatrace_monitor', location='eastus2euap')
     def test_dynatrace_monitor(self, resource_group):
         self.kwargs.update({
@@ -56,6 +63,9 @@ class DynatraceScenario(ScenarioTest):
             self.check('[0].userInfo.lastName', 'Bobab'),
             self.check('[0].userInfo.phoneNumber', '1234567890'),
         ])
+        self.cmd('dynatrace monitor list-app-service -g {rg} --monitor-name {monitor}')
+        self.cmd('dynatrace monitor list-host -g {rg} --monitor-name {monitor}')
+        self.cmd('dynatrace monitor list-monitored-resource -g {rg} --monitor-name {monitor}')
         self.cmd('dynatrace monitor get-vm-host-payload -g {rg} --monitor-name {monitor}', checks=[
             self.exists('environmentId'),
             self.exists('ingestionKey')
@@ -67,22 +77,21 @@ class DynatraceScenario(ScenarioTest):
     def test_dynatrace_monitor_single_sign_on_configurations(self, resource_group):
         self.kwargs.update({
             'monitor': self.create_random_name('monitor', 15),
-            'conf': self.create_random_name('conf', 15)
         })
         self.cmd('dynatrace monitor create -g {rg} -n {monitor} --user-info {{first-name:Alice,last-name:Bobab,email-address:agarwald@microsoft.com,phone-number:1234567890,country:US}} --plan-data {{usage-type:committed,billing-cycle:Monthly,plan-details:azureportalintegration_privatepreview@TIDhjdtn7tfnxcy,effective-date:2022-08-20}} --dynatrace-environment-properties {{single-sign-on-properties:{{aad-domains:[\'abc\']}}}}')
-        self.cmd('dynatrace monitor single-sign-on-configurations create -g {rg} --monitor-name {monitor} -n {conf}', checks=[
+        self.cmd('dynatrace monitor single-sign-on-configurations create -g {rg} --monitor-name {monitor} -n default', checks=[
 
         ])
-        self.cmd('dynatrace monitor single-sign-on-configurations update -g {rg} --monitor-name {monitor} -n {conf}', checks=[
+        self.cmd('dynatrace monitor single-sign-on-configurations update -g {rg} --monitor-name {monitor} -n default', checks=[
 
         ])
-        self.cmd('dynatrace monitor single-sign-on-configurations show -g {rg} --monitor-name {monitor} -n {conf}', checks=[
+        self.cmd('dynatrace monitor single-sign-on-configurations show -g {rg} --monitor-name {monitor} -n default', checks=[
 
         ])
         self.cmd('dynatrace monitor single-sign-on-configurations list -g {rg} --monitor-name {monitor}', checks=[
 
         ])
-        self.cmd('dynatrace monitor single-sign-on-configurations delete -g {rg} --monitor-name {monitor} -n {conf} -y')
+        self.cmd('dynatrace monitor single-sign-on-configurations delete -g {rg} --monitor-name {monitor} -n default -y')
 
     @ResourceGroupPreparer(name_prefix='cli_test_dynatrace_monitor_tag_rule', location='eastus2euap')
     def test_dynatrace_monitor_tag_rule(self, resource_group):
