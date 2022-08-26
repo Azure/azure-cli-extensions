@@ -803,7 +803,8 @@ def ensure_azure_monitor_profile_prerequisites(
             cluster_subscription,
             cluster_resource_group_name,
             cluster_name,
-            cluster_region
+            cluster_region,
+            raw_parameters
         )
 
     return
