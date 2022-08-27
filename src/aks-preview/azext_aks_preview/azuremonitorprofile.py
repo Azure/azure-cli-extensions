@@ -791,9 +791,6 @@ def ensure_azure_monitor_profile_prerequisites(
     # Check if MSI cluster
     check_msi_cluster(client, cluster_resource_group_name, cluster_name)
 
-    # If the feature is not registered then STOP onboarding and request to register the feature
-    check_azuremonitoraddon_feature(cmd, cluster_subscription)
-
     if (remove_azuremonitormetrics):
         unlink_azure_monitor_profile_artifacts(cmd,
             cluster_subscription,
@@ -802,6 +799,8 @@ def ensure_azure_monitor_profile_prerequisites(
             cluster_region
         )
     else:
+        # If the feature is not registered then STOP onboarding and request to register the feature
+        check_azuremonitoraddon_feature(cmd, cluster_subscription)
         link_azure_monitor_profile_artifacts(cmd,
             cluster_subscription,
             cluster_resource_group_name,
