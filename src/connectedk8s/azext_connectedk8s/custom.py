@@ -696,22 +696,22 @@ def delete_connectedk8s(cmd, client, resource_group_name, cluster_name,
         
         # Explicit CRD Deletion
         for crds in consts.Connected_Cluster_CRDs:
-            cmd_helm_delete = [kubectl_client_location, "delete", "crdS",crds, "--ignore-not-found"]
+            cmd_helm_delete = [kubectl_client_location, "delete", "crds", crds, "--ignore-not-found"]
             response_helm_delete = Popen(cmd_helm_delete, stdout=PIPE, stderr=PIPE)
             _, error_helm_delete = response_helm_delete.communicate()
 
         # Timer added to have sufficient time after CRD deletion
         # to check the status of the CRD ( deleted or terminating )
-        time.sleep(1)
+        time.sleep(2)
 
         # patching yaml file path
         current_path = os.path.abspath(os.path.dirname(__file__))
-        yaml_file_path=os.path.join(current_path,"patch-file.yaml")
+        yaml_file_path=os.path.join(current_path, "patch-file.yaml")
 
         #Checking the status of CRD and patching if stuck in terminating state
         for crds in consts.Connected_Cluster_CRDs:
 
-            cmd = [kubectl_client_location,"get","crd", crds,"-ojson"]
+            cmd = [kubectl_client_location, "get", "crd", crds, "-ojson"]
             cmd_output = Popen(cmd, stdout=PIPE, stderr=PIPE)
             _, error_helm_delete = cmd_output.communicate()
 
@@ -720,11 +720,11 @@ def delete_connectedk8s(cmd, client, resource_group_name, cluster_name,
                 status=changed_cmd['status']['conditions'][-1]['type']
 
                 if(status=="Terminating"):
-                    patch_cmd = [kubectl_client_location,"patch","crd",crds, "--type=merge","--patch-file",yaml_file_path]
-                    output = subprocess.Popen( patch_cmd, stdout=subprocess.PIPE ).communicate()[0].strip()
+                    patch_cmd = [kubectl_client_location, "patch", "crd", crds, "--type=merge", "--patch-file", yaml_file_path]
+                    output = subprocess.Popen(patch_cmd, stdout=subprocess.PIPE).communicate()[0].strip()
 
         if(release_namespace):  
-            utils.delete_arc_agents(release_namespace, kube_config, kube_context, configuration, helm_client_location ,True)
+            utils.delete_arc_agents(release_namespace, kube_config, kube_context, configuration, helm_client_location , True)
         
         return
         
