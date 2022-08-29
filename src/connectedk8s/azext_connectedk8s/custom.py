@@ -763,7 +763,7 @@ def delete_connectedk8s(cmd, client, resource_group_name, cluster_name,
         # to check the status of the CRD ( deleted or terminating )
         time.sleep(1)
 
-        # patching yaml file path
+        # patching yaml file path which is explicitly created in azext_connectedk8s
         current_path = os.path.abspath(os.path.dirname(__file__))
         yaml_file_path=os.path.join(current_path, "patch-file.yaml")
 
