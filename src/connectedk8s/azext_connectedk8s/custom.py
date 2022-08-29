@@ -42,12 +42,16 @@ from azext_connectedk8s._client_factory import cf_resource_groups
 from azext_connectedk8s._client_factory import _resource_client_factory
 from azext_connectedk8s._client_factory import _resource_providers_client
 from azext_connectedk8s._client_factory import get_graph_client_service_principals
+from azext_connectedk8s._client_factory import cf_connected_cluster_prev_2022_05_01
+from azext_connectedk8s._client_factory import cf_connectedmachine
 import azext_connectedk8s._constants as consts
 import azext_connectedk8s._utils as utils
 import azext_connectedk8s._clientproxyutils as clientproxyutils
 import azext_connectedk8s._troubleshootutils as troubleshootutils
 from glob import glob
 from .vendored_sdks.models import ConnectedCluster, ConnectedClusterIdentity, ListClusterUserCredentialProperties
+from .vendored_sdks.preview_2022_05_01.models import ConnectedCluster as ConnectedClusterPreview
+from .vendored_sdks.preview_2022_05_01.models import ConnectedClusterPatch as ConnectedClusterPatchPreview
 from threading import Timer, Thread
 import sys
 import hashlib
@@ -686,7 +690,7 @@ def delete_connectedk8s(cmd, client, resource_group_name, cluster_name,
 
     #Check if the forced delete flag is used 
     if(force_delete):
-        
+
         confirmation_message = "You can check using 'kubectl config get-contexts' to check if your current context is pointing to the the right cluster. \n" + "Are you sure you want to execute the delete command:"
         utils.user_confirmation(confirmation_message, False)
 
@@ -723,7 +727,7 @@ def delete_connectedk8s(cmd, client, resource_group_name, cluster_name,
                     patch_cmd = [kubectl_client_location, "patch", "crd", crds, "--type=merge", "--patch-file", yaml_file_path]
                     output = subprocess.Popen(patch_cmd, stdout=subprocess.PIPE).communicate()[0].strip()
 
-        if(release_namespace):  
+        if(release_namespace):
             utils.delete_arc_agents(release_namespace, kube_config, kube_context, configuration, helm_client_location , True)
         
         return
@@ -745,15 +749,15 @@ def delete_connectedk8s(cmd, client, resource_group_name, cluster_name,
 
     if (configmap.data["AZURE_RESOURCE_GROUP"].lower() == resource_group_name.lower() and
             configmap.data["AZURE_RESOURCE_NAME"].lower() == cluster_name.lower() and configmap.data["AZURE_SUBSCRIPTION_ID"].lower() == subscription_id.lower()):
-
+                    
         armid = "/subscriptions/{}/resourceGroups/{}/providers/Microsoft.Kubernetes/connectedClusters/{}".format(subscription_id, resource_group_name, cluster_name)
         arm_hash = hashlib.sha256(armid.lower().encode('utf-8')).hexdigest()
 
         if check_proxy_kubeconfig(kube_config, kube_context, arm_hash):
             telemetry.set_exception(exception='Encountered proxy kubeconfig during deletion.', fault_type=consts.Proxy_Kubeconfig_During_Deletion_Fault_Type,
                                     summary='The resource cannot be deleted as user is using proxy kubeconfig.')
-            raise ClientRequestError("az connectedk8s delete is not supported when using the Cluster Connect kubeconfig.", recommendation="Run the az connectedk8s delete command with your kubeconfig file pointing to the actual Kubernetes cluster to ensure that the agents are cleaned up successfully as part of the delete command.")
-
+            raise ClientRequestError("az connectedk8s delete is not supported when using the Cluster Connect kubeconfig.", recommendation = "Run the az connectedk8s delete command with your kubeconfig file pointing to the actual Kubernetes cluster to ensure that the agents are cleaned up successfully as part of the delete command.")
+           
         delete_cc_resource(client, resource_group_name, cluster_name, no_wait).result()
     else:
         telemetry.set_exception(exception='Unable to delete connected cluster', fault_type=consts.Bad_DeleteRequest_Fault_Type,
