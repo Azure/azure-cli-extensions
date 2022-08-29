@@ -719,7 +719,7 @@ def list_connectedk8s(cmd, client, resource_group_name=None):
 
 
 def delete_connectedk8s(cmd, client, resource_group_name, cluster_name,
-                        kube_config=None, kube_context=None, no_wait=False,force_delete=False):
+                        kube_config=None, kube_context=None, no_wait=False, force_delete=False):
     logger.warning("This operation might take a while ...\n")
 
     # Send cloud information to telemetry
@@ -743,16 +743,16 @@ def delete_connectedk8s(cmd, client, resource_group_name, cluster_name,
     # Check Release Existance
     release_namespace = get_release_namespace(kube_config, kube_context, helm_client_location)
 
-    #Check if the forced delete flag is passed 
+    #Check forced delete flag 
     if(force_delete):
 
         confirmation_message = "You can check using 'kubectl config get-contexts' to check if your current context is pointing to the the right cluster. \n" + "Are you sure you want to execute the delete command:"
         utils.user_confirmation(confirmation_message, False)
 
         kubectl_client_location = install_kubectl_client()
-        
+
         delete_cc_resource(client, resource_group_name, cluster_name, no_wait).result()
-        
+
         # Explicit CRD Deletion
         for crds in consts.Connected_Cluster_CRDs:
             cmd_helm_delete = [kubectl_client_location, "delete", "crds", crds, "--ignore-not-found"]
@@ -765,28 +765,29 @@ def delete_connectedk8s(cmd, client, resource_group_name, cluster_name,
 
         # patching yaml file path which is explicitly created in azext_connectedk8s
         current_path = os.path.abspath(os.path.dirname(__file__))
-        yaml_file_path=os.path.join(current_path, "patch-file.yaml")
+        yaml_file_path = os.path.join(current_path, "patch-file.yaml")
 
-        #Checking the status of CRD and patching if stuck in terminating state
+        #Patch if CRD is in Terminating state
         for crds in consts.Connected_Cluster_CRDs:
 
             cmd = [kubectl_client_location, "get", "crd", crds, "-ojson"]
             cmd_output = Popen(cmd, stdout=PIPE, stderr=PIPE)
             _, error_helm_delete = cmd_output.communicate()
 
-            if(cmd_output.returncode==0):
-                changed_cmd= json.loads(cmd_output.communicate()[0].strip())
-                status=changed_cmd['status']['conditions'][-1]['type']
+            if(cmd_output.returncode == 0):
+                changed_cmd = json.loads(cmd_output.communicate()[0].strip())
+                status = changed_cmd['status']['conditions'][-1]['type']
 
-                if(status=="Terminating"):
+                if(status == "Terminating"):
                     patch_cmd = [kubectl_client_location, "patch", "crd", crds, "--type=merge", "--patch-file", yaml_file_path]
-                    output = subprocess.Popen(patch_cmd, stdout=subprocess.PIPE).communicate()[0].strip()
+                    output_patch_cmd = Popen(patch_cmd, stdout=PIPE, stderr=PIPE)
+                    _, error_helm_delete = output_patch_cmd.communicate()
 
         if(release_namespace):
-            utils.delete_arc_agents(release_namespace, kube_config, kube_context, configuration, helm_client_location , True)
-        
+            utils.delete_arc_agents(release_namespace, kube_config, kube_context, configuration, helm_client_location, True)
+
         return
-        
+
     if not release_namespace:
         delete_cc_resource(client, resource_group_name, cluster_name, no_wait).result()
         return
@@ -804,15 +805,15 @@ def delete_connectedk8s(cmd, client, resource_group_name, cluster_name,
 
     if (configmap.data["AZURE_RESOURCE_GROUP"].lower() == resource_group_name.lower() and
             configmap.data["AZURE_RESOURCE_NAME"].lower() == cluster_name.lower() and configmap.data["AZURE_SUBSCRIPTION_ID"].lower() == subscription_id.lower()):
-                    
+
         armid = "/subscriptions/{}/resourceGroups/{}/providers/Microsoft.Kubernetes/connectedClusters/{}".format(subscription_id, resource_group_name, cluster_name)
         arm_hash = hashlib.sha256(armid.lower().encode('utf-8')).hexdigest()
 
         if check_proxy_kubeconfig(kube_config, kube_context, arm_hash):
             telemetry.set_exception(exception='Encountered proxy kubeconfig during deletion.', fault_type=consts.Proxy_Kubeconfig_During_Deletion_Fault_Type,
                                     summary='The resource cannot be deleted as user is using proxy kubeconfig.')
-            raise ClientRequestError("az connectedk8s delete is not supported when using the Cluster Connect kubeconfig.", recommendation = "Run the az connectedk8s delete command with your kubeconfig file pointing to the actual Kubernetes cluster to ensure that the agents are cleaned up successfully as part of the delete command.")
-           
+            raise ClientRequestError("az connectedk8s delete is not supported when using the Cluster Connect kubeconfig.", recommendation="Run the az connectedk8s delete command with your kubeconfig file pointing to the actual Kubernetes cluster to ensure that the agents are cleaned up successfully as part of the delete command.")
+
         delete_cc_resource(client, resource_group_name, cluster_name, no_wait).result()
     else:
         telemetry.set_exception(exception='Unable to delete connected cluster', fault_type=consts.Bad_DeleteRequest_Fault_Type,
