@@ -50,8 +50,6 @@ import azext_connectedk8s._clientproxyutils as clientproxyutils
 import azext_connectedk8s._troubleshootutils as troubleshootutils
 from glob import glob
 from .vendored_sdks.models import ConnectedCluster, ConnectedClusterIdentity, ListClusterUserCredentialProperties
-from .vendored_sdks.preview_2022_05_01.models import ConnectedCluster as ConnectedClusterPreview
-from .vendored_sdks.preview_2022_05_01.models import ConnectedClusterPatch as ConnectedClusterPatchPreview
 from threading import Timer, Thread
 import sys
 import hashlib
