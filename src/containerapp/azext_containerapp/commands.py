@@ -7,7 +7,7 @@
 # from azure.cli.core.commands import CliCommandType
 # from msrestazure.tools import is_valid_resource_id, parse_resource_id
 from azext_containerapp._client_factory import ex_handler_factory
-from ._validators import validate_ssh
+from ._validators import validate_ssh, validate_create
 
 
 def transform_containerapp_output(app):

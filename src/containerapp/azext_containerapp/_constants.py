@@ -4,7 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 MAXIMUM_SECRET_LENGTH = 20
-MAXIMUM_CONTAINER_APP_NAME_LENGTH = 40
+MAXIMUM_CONTAINER_APP_NAME_LENGTH = 32
 
 SHORT_POLLING_INTERVAL_SECS = 3
 LONG_POLLING_INTERVAL_SECS = 10
@@ -14,7 +14,7 @@ ACR_IMAGE_SUFFIX = ".azurecr.io"
 LOG_ANALYTICS_RP = "Microsoft.OperationalInsights"
 CONTAINER_APPS_RP = "Microsoft.App"
 
-MAX_ENV_PER_LOCATION = 2
+MAX_ENV_PER_LOCATION = 5
 
 MICROSOFT_SECRET_SETTING_NAME = "microsoft-provider-authentication-secret"
 FACEBOOK_SECRET_SETTING_NAME = "facebook-provider-authentication-secret"
@@ -29,3 +29,5 @@ CHECK_CERTIFICATE_NAME_AVAILABILITY_TYPE = "Microsoft.App/managedEnvironments/ce
 
 NAME_INVALID = "Invalid"
 NAME_ALREADY_EXISTS = "AlreadyExists"
+
+HELLO_WORLD_IMAGE = "mcr.microsoft.com/azuredocs/containerapps-helloworld:latest"
