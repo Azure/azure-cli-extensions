@@ -21,7 +21,7 @@ STORAGE_ACCOUNT_NAME_LENGTH = 24
 def create_target_image(cmd, location, transient_resource_group_name, source_type, source_object_name,
                         source_os_disk_snapshot_name, source_os_disk_snapshot_url, source_os_type,
                         target_resource_group_name, azure_pool_frequency, tags, target_name, target_subscription,
-                        export_as_snapshot, timeout, hyper_v_generation=None):
+                        export_as_snapshot, timeout, hyper_v_generation='V1'):
 
     random_string = get_random_string(
         STORAGE_ACCOUNT_NAME_LENGTH - len(location))
@@ -123,9 +123,8 @@ def create_target_image(cmd, location, transient_resource_group_name, source_typ
                    '--name', target_snapshot_name,
                    '--location', location,
                    '--source', target_blob_path,
-                   '--source-storage-account-id', source_storage_account_id]
-    if hyper_v_generation:
-        cmd_content = cmd_content + ['--hyper-v-generation', hyper_v_generation]
+                   '--source-storage-account-id', source_storage_account_id,
+                   '--hyper-v-generation', hyper_v_generation]
     cli_cmd = prepare_cli_command(cmd_content, subscription=target_subscription)
 
     json_output = run_cli_command(cli_cmd, return_as_json=True)
@@ -149,9 +148,8 @@ def create_target_image(cmd, location, transient_resource_group_name, source_typ
                        '--name', target_image_name,
                        '--location', location,
                        '--os-type', source_os_type,
-                       '--source', target_snapshot_id]
-        if hyper_v_generation:
-            cmd_content = cmd_content + ['--hyper-v-generation', hyper_v_generation]
+                       '--source', target_snapshot_id,
+                       '--hyper-v-generation', hyper_v_generation]
         cli_cmd = prepare_cli_command(cmd_content,
                                       tags=tags,
                                       subscription=target_subscription)
