@@ -743,7 +743,7 @@ def delete_connectedk8s(cmd, client, resource_group_name, cluster_name,
     # Check Release Existance
     release_namespace = get_release_namespace(kube_config, kube_context, helm_client_location)
 
-    #Check forced delete flag 
+    # Check forced delete flag
     if(force_delete):
 
         confirmation_message = "You can check using 'kubectl config get-contexts' to check if your current context is pointing to the the right cluster. \n" + "Are you sure you want to execute the delete command:"
@@ -767,7 +767,7 @@ def delete_connectedk8s(cmd, client, resource_group_name, cluster_name,
         current_path = os.path.abspath(os.path.dirname(__file__))
         yaml_file_path = os.path.join(current_path, "patch-file.yaml")
 
-        #Patch if CRD is in Terminating state
+        # Patch if CRD is in Terminating state
         for crds in consts.Connected_Cluster_CRDs:
 
             cmd = [kubectl_client_location, "get", "crd", crds, "-ojson"]
