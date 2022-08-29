@@ -686,7 +686,7 @@ def delete_connectedk8s(cmd, client, resource_group_name, cluster_name,
     # Check Release Existance
     release_namespace = get_release_namespace(kube_config, kube_context, helm_client_location)
 
-    #Check if the forced delete flag is used 
+    #Check if the forced delete flag is passed 
     if(force_delete):
 
         confirmation_message = "You can check using 'kubectl config get-contexts' to check if your current context is pointing to the the right cluster. \n" + "Are you sure you want to execute the delete command:"
