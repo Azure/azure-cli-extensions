@@ -761,7 +761,7 @@ def delete_connectedk8s(cmd, client, resource_group_name, cluster_name,
 
         # Timer added to have sufficient time after CRD deletion
         # to check the status of the CRD ( deleted or terminating )
-        time.sleep(2)
+        time.sleep(1)
 
         # patching yaml file path
         current_path = os.path.abspath(os.path.dirname(__file__))
