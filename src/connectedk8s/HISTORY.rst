@@ -2,6 +2,11 @@
 
 Release History
 ===============
+1.3.1
+++++++
+
+* Updated min cli core version
+
 1.3.0
 ++++++
 
