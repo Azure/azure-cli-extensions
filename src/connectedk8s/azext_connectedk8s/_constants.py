@@ -14,7 +14,6 @@ Custom_Locations_Provider_Namespace = 'Microsoft.ExtendedLocation'
 Connected_Cluster_Provider_Namespace = 'Microsoft.Kubernetes'
 Kubernetes_Configuration_Provider_Namespace = 'Microsoft.KubernetesConfiguration'
 Arc_Namespace = 'azure-arc'
-
 Azure_PublicCloudName = 'AZUREPUBLICCLOUD'
 Azure_USGovCloudName = 'AZUREUSGOVERNMENTCLOUD'
 Azure_ChinaCloudName = 'AZURECHINACLOUD'
