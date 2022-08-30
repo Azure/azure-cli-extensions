@@ -2,6 +2,10 @@
 
 Release History
 ===============
+0.5.3
++++++
+* Fix issue for https://github.com/Azure/azure-cli/issues/23707
+
 0.5.2
 +++++
 * 'az network manager connection management-group': reopen the set of commands.
