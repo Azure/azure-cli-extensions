@@ -11,6 +11,7 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
+*  Add --enable-node-restriction/--disable-node-restriction to enable/disable node restriction feature
 
 0.5.94
 ++++++

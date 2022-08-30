@@ -320,6 +320,7 @@ def load_arguments(self, _):
         c.argument('apiserver_subnet_id', validator=validate_apiserver_subnet_id, is_preview=True)
         c.argument('dns_zone_resource_id')
         c.argument('enable_keda', action='store_true', is_preview=True)
+        c.argument('enable_node_restriction', action='store_true', is_preview=True, help="enable node restriction for cluster")
         # nodepool
         c.argument('host_group_id', validator=validate_host_group_id, is_preview=True)
         c.argument('crg_id', validator=validate_crg_id, is_preview=True)
@@ -414,6 +415,8 @@ def load_arguments(self, _):
         c.argument('apiserver_subnet_id', validator=validate_apiserver_subnet_id, is_preview=True)
         c.argument('enable_keda', action='store_true', is_preview=True)
         c.argument('disable_keda', action='store_true', is_preview=True)
+        c.argument('enable_node_restriction', action='store_true', is_preview=True, help="enable node restriction for cluster")
+        c.argument('disable_node_restriction', action='store_true', is_preview=True, help="disable node restriction for cluster")
 
     with self.argument_context('aks upgrade') as c:
         c.argument('kubernetes_version', completer=get_k8s_upgrades_completion_list)
