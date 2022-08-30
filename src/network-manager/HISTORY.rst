@@ -4,7 +4,7 @@ Release History
 ===============
 0.5.3
 +++++
-* Fix issue for https://github.com/Azure/azure-cli/issues/23707
+* Fix force delete behavior.
 
 0.5.2
 +++++
