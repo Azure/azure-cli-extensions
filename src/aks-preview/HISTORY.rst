@@ -11,8 +11,8 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
-*  Add --enable-node-restriction/--disable-node-restriction to enable/disable node restriction feature
 
+* Add `--enable-node-restriction`/`--disable-node-restriction` to enable/disable node restriction feature
 * Update the minimum required cli core version to `2.38.0` (actually since `0.5.92`).
 
 0.5.94
