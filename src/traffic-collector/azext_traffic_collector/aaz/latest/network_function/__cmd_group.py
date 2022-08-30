@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "network-function",
 )
 class __CMDGroup(AAZCommandGroup):
-    """Microsoft Azure PowerShell: NetworkFunction cmdlets
+    """Manage network function
     """
     pass
 

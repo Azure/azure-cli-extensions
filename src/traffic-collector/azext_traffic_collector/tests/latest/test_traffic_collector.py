@@ -26,7 +26,7 @@ class TrafficCollectorScenario(ScenarioTest):
         })
         self.cmd('az network-function traffic-collector create '
                  '--resource-group {rg} '
-                 '--name {name} --tags foo=doo',
+                 '--name {name} --location {location} --tags foo=doo',
                  checks=[
                      self.check('name', self.kwargs['name']),
                      self.check('tags.foo', 'doo')
@@ -56,13 +56,13 @@ class TrafficCollectorScenario(ScenarioTest):
 
         # Collector Policy Tests
         self.cmd('az network-function traffic-collector collector-policy create --resource-group {rg} '
-                 '--azure-traffic-collector-name {name} -n {cp_name} -l {location} --ingestion-policy {ip}',
+                 '--traffic-collector-name {name} -n {cp_name} -l {location} --ingestion-policy {ip}',
                  checks=[
                      self.check('name', self.kwargs['cp_name'])
                  ])
 
         self.cmd('az network-function traffic-collector collector-policy show --resource-group {rg} '
-                 '--azure-traffic-collector-name {name} -n {cp_name}',
+                 '--traffic-collector-name {name} -n {cp_name}',
                  checks=[
                      self.check('name', self.kwargs['cp_name']),
                      self.check('emissionPolicies | length(@)', 0),
@@ -71,13 +71,13 @@ class TrafficCollectorScenario(ScenarioTest):
                  ])
 
         self.cmd('az network-function traffic-collector collector-policy update --resource-group {rg} '
-                 '--azure-traffic-collector-name {name} -n {cp_name} -l {location} --emission-policies [0]={ep}',
+                 '--traffic-collector-name {name} -n {cp_name} --emission-policies [0]={ep}',
                  checks=[
                      self.check('name', self.kwargs['cp_name'])
                  ])
 
         self.cmd('az network-function traffic-collector collector-policy show --resource-group {rg} '
-                 '--azure-traffic-collector-name {name} -n {cp_name}',
+                 '--traffic-collector-name {name} -n {cp_name}',
                  checks=[
                      self.check('name', self.kwargs['cp_name']),
                      self.check('emissionPolicies | length(@)', 1),
@@ -87,7 +87,7 @@ class TrafficCollectorScenario(ScenarioTest):
 
         self.cmd(
             'az network-function traffic-collector collector-policy delete --resource-group {rg} '
-            '--azure-traffic-collector-name {name} --name {cp_name} --yes')
+            '--traffic-collector-name {name} --name {cp_name} --yes')
 
         time.sleep(120)
         self.cmd('az network-function traffic-collector delete --resource-group {rg} --name {name} --yes')

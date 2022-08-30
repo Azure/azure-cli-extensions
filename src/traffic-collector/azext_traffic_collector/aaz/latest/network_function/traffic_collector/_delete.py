@@ -16,7 +16,10 @@ from azure.cli.core.aaz import *
     confirmation="Are you sure you want to perform this operation?",
 )
 class Delete(AAZCommand):
-    """Deletes a specified Azure Traffic Collector resource.
+    """Delete a specified Azure Traffic Collector resource
+
+    :example: Delete a specified azure traffic collector resource
+        az network-function traffic-collector delete --resource-group rg1 --traffic-collector-name atc1
     """
 
     _aaz_info = {
@@ -43,8 +46,8 @@ class Delete(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.azure_traffic_collector_name = AAZStrArg(
-            options=["-n", "--name", "--azure-traffic-collector-name"],
+        _args_schema.traffic_collector_name = AAZStrArg(
+            options=["-n", "--name", "--traffic-collector-name"],
             help="Azure Traffic Collector name",
             required=True,
             id_part="name",
@@ -112,7 +115,7 @@ class Delete(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "azureTrafficCollectorName", self.ctx.args.azure_traffic_collector_name,
+                    "azureTrafficCollectorName", self.ctx.args.traffic_collector_name,
                     required=True,
                 ),
                 **self.serialize_url_param(

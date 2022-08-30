@@ -15,7 +15,10 @@ from azure.cli.core.aaz import *
     "network-function traffic-collector collector-policy update",
 )
 class Update(AAZCommand):
-    """Creates or updates a Collector Policy resource
+    """Update a specified Collector Policy
+
+    :example: Update a specified collector policy
+        az network-function traffic-collector collector-policy update --resource-group rg1 --traffic-collector-name atc1 --name cp1 --location eastus --emission-policies [0]={emission-destinations:[{destination-type:AzureMonitor}],emission-type:IPFIX}
     """
 
     _aaz_info = {
@@ -44,8 +47,8 @@ class Update(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.azure_traffic_collector_name = AAZStrArg(
-            options=["--azure-traffic-collector-name"],
+        _args_schema.traffic_collector_name = AAZStrArg(
+            options=["-t", "--traffic-collector-name"],
             help="Azure Traffic Collector name",
             required=True,
             id_part="name",
@@ -63,14 +66,6 @@ class Update(AAZCommand):
         # define Arg Group "Parameters"
 
         _args_schema = cls._args_schema
-        _args_schema.location = AAZResourceLocationArg(
-            arg_group="Parameters",
-            help="Resource location.",
-            nullable=True,
-            fmt=AAZResourceLocationArgFormat(
-                resource_group_arg="resource_group",
-            ),
-        )
         _args_schema.tags = AAZDictArg(
             options=["--tags"],
             arg_group="Parameters",
@@ -202,7 +197,7 @@ class Update(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "azureTrafficCollectorName", self.ctx.args.azure_traffic_collector_name,
+                    "azureTrafficCollectorName", self.ctx.args.traffic_collector_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -305,7 +300,7 @@ class Update(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "azureTrafficCollectorName", self.ctx.args.azure_traffic_collector_name,
+                    "azureTrafficCollectorName", self.ctx.args.traffic_collector_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -385,7 +380,6 @@ class Update(AAZCommand):
                 value=instance,
                 typ=AAZObjectType
             )
-            _builder.set_prop("location", AAZStrType, ".location")
             _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
             _builder.set_prop("tags", AAZDictType, ".tags")
 
@@ -465,7 +459,9 @@ def _build_schema_collector_policy_read(_schema):
     collector_policy_read.id = AAZStrType(
         flags={"read_only": True},
     )
-    collector_policy_read.location = AAZStrType()
+    collector_policy_read.location = AAZStrType(
+        flags={"required": True},
+    )
     collector_policy_read.name = AAZStrType(
         flags={"read_only": True},
     )

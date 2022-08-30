@@ -15,7 +15,10 @@ from azure.cli.core.aaz import *
     "network-function traffic-collector update",
 )
 class Update(AAZCommand):
-    """Updates a Azure Traffic Collector resource
+    """Update an Azure Traffic Collector resource
+
+    :example: Update an azure traffic collector resource
+        az network-function traffic-collector update --resource-group rg1 --traffic-collector-name atc1 --tags key=value
     """
 
     _aaz_info = {
@@ -44,8 +47,8 @@ class Update(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.azure_traffic_collector_name = AAZStrArg(
-            options=["-n", "--name", "--azure-traffic-collector-name"],
+        _args_schema.traffic_collector_name = AAZStrArg(
+            options=["-n", "--name", "--traffic-collector-name"],
             help="Azure Traffic Collector name",
             required=True,
             id_part="name",
@@ -57,14 +60,6 @@ class Update(AAZCommand):
         # define Arg Group "Parameters"
 
         _args_schema = cls._args_schema
-        _args_schema.location = AAZResourceLocationArg(
-            arg_group="Parameters",
-            help="Resource location.",
-            nullable=True,
-            fmt=AAZResourceLocationArgFormat(
-                resource_group_arg="resource_group",
-            ),
-        )
         _args_schema.tags = AAZDictArg(
             options=["--tags"],
             arg_group="Parameters",
@@ -93,14 +88,6 @@ class Update(AAZCommand):
         )
 
         _element = cls._args_schema.collector_policies.Element
-        _element.location = AAZResourceLocationArg(
-            options=["l", "location"],
-            help="Resource location.",
-            nullable=True,
-            fmt=AAZResourceLocationArgFormat(
-                resource_group_arg="resource_group",
-            ),
-        )
         _element.emission_policies = AAZListArg(
             options=["emission-policies"],
             help="Emission policies.",
@@ -225,7 +212,7 @@ class Update(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "azureTrafficCollectorName", self.ctx.args.azure_traffic_collector_name,
+                    "azureTrafficCollectorName", self.ctx.args.traffic_collector_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -324,7 +311,7 @@ class Update(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "azureTrafficCollectorName", self.ctx.args.azure_traffic_collector_name,
+                    "azureTrafficCollectorName", self.ctx.args.traffic_collector_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -400,7 +387,6 @@ class Update(AAZCommand):
                 value=instance,
                 typ=AAZObjectType
             )
-            _builder.set_prop("location", AAZStrType, ".location")
             _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
             _builder.set_prop("tags", AAZDictType, ".tags")
 
@@ -414,7 +400,6 @@ class Update(AAZCommand):
 
             _elements = _builder.get(".properties.collectorPolicies[]")
             if _elements is not None:
-                _elements.set_prop("location", AAZStrType, ".location")
                 _elements.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
                 _elements.set_prop("tags", AAZDictType, ".tags")
 
@@ -498,7 +483,9 @@ def _build_schema_azure_traffic_collector_read(_schema):
     azure_traffic_collector_read.id = AAZStrType(
         flags={"read_only": True},
     )
-    azure_traffic_collector_read.location = AAZStrType()
+    azure_traffic_collector_read.location = AAZStrType(
+        flags={"required": True},
+    )
     azure_traffic_collector_read.name = AAZStrType(
         flags={"read_only": True},
     )
@@ -536,7 +523,9 @@ def _build_schema_azure_traffic_collector_read(_schema):
     _element.id = AAZStrType(
         flags={"read_only": True},
     )
-    _element.location = AAZStrType()
+    _element.location = AAZStrType(
+        flags={"required": True},
+    )
     _element.name = AAZStrType(
         flags={"read_only": True},
     )

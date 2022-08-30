@@ -1,48 +1,5 @@
 interactions:
 - request:
-    body: null
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - network-function traffic-collector create
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - --resource-group --name --tags
-      User-Agent:
-      - AZURECLI/2.39.0 (PIP) azsdk-python-azure-mgmt-resource/21.1.0b1 Python/3.8.10
-        (Windows-10-10.0.22000-SP0)
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_azure_traffic_collector000001?api-version=2021-04-01
-  response:
-    body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_traffic_collector000001","name":"cli_test_azure_traffic_collector000001","type":"Microsoft.Resources/resourceGroups","location":"westus","tags":{"product":"azurecli","cause":"automation","date":"2022-08-22T20:10:43Z","Created":"2022-08-22T20:10:46.5374880Z"},"properties":{"provisioningState":"Succeeded"}}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '395'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Mon, 22 Aug 2022 20:10:47 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-    status:
-      code: 200
-      message: OK
-- request:
     body: '{"location": "westus", "tags": {"foo": "doo"}}'
     headers:
       Accept:
@@ -58,7 +15,7 @@ interactions:
       Content-Type:
       - application/json
       ParameterSetName:
-      - --resource-group --name --tags
+      - --resource-group --name --location --tags
       User-Agent:
       - AZURECLI/2.39.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.8.10 (Windows-10-10.0.22000-SP0)
     method: PUT
@@ -68,11 +25,11 @@ interactions:
       string: "{\r\n  \"properties\": {\r\n    \"collectorPolicies\": [],\r\n    \"provisioningState\":
         \"Updating\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_traffic_collector000001/providers/Microsoft.NetworkFunction/azureTrafficCollectors/cli_test_atc-000002\",\r\n
         \ \"name\": \"cli_test_atc-000002\",\r\n  \"type\": \"Microsoft.NetworkFunction/AzureTrafficCollectors\",\r\n
-        \ \"etag\": \"9657e2fa-610d-489c-a286-77f68d13f4e1\",\r\n  \"location\": \"westus\",\r\n
+        \ \"etag\": \"8d4165eb-e798-4c02-8da7-7b9fe62f2f1b\",\r\n  \"location\": \"westus\",\r\n
         \ \"tags\": {\r\n    \"foo\": \"doo\"\r\n  }\r\n}"
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkFunction/locations/westus/nfvOperations/b4b3f62a-a177-4988-baee-ccdab2423e40?api-version=2022-08-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkFunction/locations/westus/nfvOperations/7a55817b-7420-4c7e-8888-9568e2750745?api-version=2022-08-01
       cache-control:
       - no-cache
       content-length:
@@ -80,7 +37,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 22 Aug 2022 20:10:48 GMT
+      - Fri, 02 Sep 2022 04:53:19 GMT
       expires:
       - '-1'
       pragma:
@@ -114,11 +71,11 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --resource-group --name --tags
+      - --resource-group --name --location --tags
       User-Agent:
       - AZURECLI/2.39.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.8.10 (Windows-10-10.0.22000-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkFunction/locations/westus/nfvOperations/b4b3f62a-a177-4988-baee-ccdab2423e40?api-version=2022-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkFunction/locations/westus/nfvOperations/7a55817b-7420-4c7e-8888-9568e2750745?api-version=2022-08-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -130,7 +87,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 22 Aug 2022 20:10:58 GMT
+      - Fri, 02 Sep 2022 04:53:29 GMT
       expires:
       - '-1'
       pragma:
@@ -166,11 +123,11 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --resource-group --name --tags
+      - --resource-group --name --location --tags
       User-Agent:
       - AZURECLI/2.39.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.8.10 (Windows-10-10.0.22000-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkFunction/locations/westus/nfvOperations/b4b3f62a-a177-4988-baee-ccdab2423e40?api-version=2022-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkFunction/locations/westus/nfvOperations/7a55817b-7420-4c7e-8888-9568e2750745?api-version=2022-08-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -182,7 +139,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 22 Aug 2022 20:11:08 GMT
+      - Fri, 02 Sep 2022 04:53:40 GMT
       expires:
       - '-1'
       pragma:
@@ -218,11 +175,11 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --resource-group --name --tags
+      - --resource-group --name --location --tags
       User-Agent:
       - AZURECLI/2.39.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.8.10 (Windows-10-10.0.22000-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkFunction/locations/westus/nfvOperations/b4b3f62a-a177-4988-baee-ccdab2423e40?api-version=2022-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkFunction/locations/westus/nfvOperations/7a55817b-7420-4c7e-8888-9568e2750745?api-version=2022-08-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -234,7 +191,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 22 Aug 2022 20:11:19 GMT
+      - Fri, 02 Sep 2022 04:53:50 GMT
       expires:
       - '-1'
       pragma:
@@ -270,11 +227,11 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --resource-group --name --tags
+      - --resource-group --name --location --tags
       User-Agent:
       - AZURECLI/2.39.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.8.10 (Windows-10-10.0.22000-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkFunction/locations/westus/nfvOperations/b4b3f62a-a177-4988-baee-ccdab2423e40?api-version=2022-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkFunction/locations/westus/nfvOperations/7a55817b-7420-4c7e-8888-9568e2750745?api-version=2022-08-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -286,7 +243,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 22 Aug 2022 20:11:29 GMT
+      - Fri, 02 Sep 2022 04:54:00 GMT
       expires:
       - '-1'
       pragma:
@@ -322,11 +279,11 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --resource-group --name --tags
+      - --resource-group --name --location --tags
       User-Agent:
       - AZURECLI/2.39.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.8.10 (Windows-10-10.0.22000-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkFunction/locations/westus/nfvOperations/b4b3f62a-a177-4988-baee-ccdab2423e40?api-version=2022-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkFunction/locations/westus/nfvOperations/7a55817b-7420-4c7e-8888-9568e2750745?api-version=2022-08-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -338,7 +295,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 22 Aug 2022 20:11:39 GMT
+      - Fri, 02 Sep 2022 04:54:10 GMT
       expires:
       - '-1'
       pragma:
@@ -374,11 +331,11 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --resource-group --name --tags
+      - --resource-group --name --location --tags
       User-Agent:
       - AZURECLI/2.39.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.8.10 (Windows-10-10.0.22000-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkFunction/locations/westus/nfvOperations/b4b3f62a-a177-4988-baee-ccdab2423e40?api-version=2022-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkFunction/locations/westus/nfvOperations/7a55817b-7420-4c7e-8888-9568e2750745?api-version=2022-08-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -390,7 +347,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 22 Aug 2022 20:11:49 GMT
+      - Fri, 02 Sep 2022 04:54:20 GMT
       expires:
       - '-1'
       pragma:
@@ -426,11 +383,11 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --resource-group --name --tags
+      - --resource-group --name --location --tags
       User-Agent:
       - AZURECLI/2.39.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.8.10 (Windows-10-10.0.22000-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkFunction/locations/westus/nfvOperations/b4b3f62a-a177-4988-baee-ccdab2423e40?api-version=2022-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkFunction/locations/westus/nfvOperations/7a55817b-7420-4c7e-8888-9568e2750745?api-version=2022-08-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -442,7 +399,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 22 Aug 2022 20:11:59 GMT
+      - Fri, 02 Sep 2022 04:54:30 GMT
       expires:
       - '-1'
       pragma:
@@ -478,11 +435,11 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --resource-group --name --tags
+      - --resource-group --name --location --tags
       User-Agent:
       - AZURECLI/2.39.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.8.10 (Windows-10-10.0.22000-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkFunction/locations/westus/nfvOperations/b4b3f62a-a177-4988-baee-ccdab2423e40?api-version=2022-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkFunction/locations/westus/nfvOperations/7a55817b-7420-4c7e-8888-9568e2750745?api-version=2022-08-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -494,7 +451,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 22 Aug 2022 20:12:09 GMT
+      - Fri, 02 Sep 2022 04:54:40 GMT
       expires:
       - '-1'
       pragma:
@@ -530,11 +487,11 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --resource-group --name --tags
+      - --resource-group --name --location --tags
       User-Agent:
       - AZURECLI/2.39.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.8.10 (Windows-10-10.0.22000-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkFunction/locations/westus/nfvOperations/b4b3f62a-a177-4988-baee-ccdab2423e40?api-version=2022-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkFunction/locations/westus/nfvOperations/7a55817b-7420-4c7e-8888-9568e2750745?api-version=2022-08-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -546,7 +503,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 22 Aug 2022 20:12:19 GMT
+      - Fri, 02 Sep 2022 04:54:50 GMT
       expires:
       - '-1'
       pragma:
@@ -582,11 +539,11 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --resource-group --name --tags
+      - --resource-group --name --location --tags
       User-Agent:
       - AZURECLI/2.39.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.8.10 (Windows-10-10.0.22000-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkFunction/locations/westus/nfvOperations/b4b3f62a-a177-4988-baee-ccdab2423e40?api-version=2022-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkFunction/locations/westus/nfvOperations/7a55817b-7420-4c7e-8888-9568e2750745?api-version=2022-08-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -598,7 +555,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 22 Aug 2022 20:12:29 GMT
+      - Fri, 02 Sep 2022 04:55:01 GMT
       expires:
       - '-1'
       pragma:
@@ -634,11 +591,11 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --resource-group --name --tags
+      - --resource-group --name --location --tags
       User-Agent:
       - AZURECLI/2.39.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.8.10 (Windows-10-10.0.22000-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkFunction/locations/westus/nfvOperations/b4b3f62a-a177-4988-baee-ccdab2423e40?api-version=2022-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkFunction/locations/westus/nfvOperations/7a55817b-7420-4c7e-8888-9568e2750745?api-version=2022-08-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -650,7 +607,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 22 Aug 2022 20:12:39 GMT
+      - Fri, 02 Sep 2022 04:55:11 GMT
       expires:
       - '-1'
       pragma:
@@ -686,11 +643,11 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --resource-group --name --tags
+      - --resource-group --name --location --tags
       User-Agent:
       - AZURECLI/2.39.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.8.10 (Windows-10-10.0.22000-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkFunction/locations/westus/nfvOperations/b4b3f62a-a177-4988-baee-ccdab2423e40?api-version=2022-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkFunction/locations/westus/nfvOperations/7a55817b-7420-4c7e-8888-9568e2750745?api-version=2022-08-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -702,7 +659,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 22 Aug 2022 20:12:49 GMT
+      - Fri, 02 Sep 2022 04:55:21 GMT
       expires:
       - '-1'
       pragma:
@@ -738,11 +695,11 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --resource-group --name --tags
+      - --resource-group --name --location --tags
       User-Agent:
       - AZURECLI/2.39.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.8.10 (Windows-10-10.0.22000-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkFunction/locations/westus/nfvOperations/b4b3f62a-a177-4988-baee-ccdab2423e40?api-version=2022-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkFunction/locations/westus/nfvOperations/7a55817b-7420-4c7e-8888-9568e2750745?api-version=2022-08-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -754,7 +711,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 22 Aug 2022 20:12:59 GMT
+      - Fri, 02 Sep 2022 04:55:31 GMT
       expires:
       - '-1'
       pragma:
@@ -790,11 +747,11 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --resource-group --name --tags
+      - --resource-group --name --location --tags
       User-Agent:
       - AZURECLI/2.39.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.8.10 (Windows-10-10.0.22000-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkFunction/locations/westus/nfvOperations/b4b3f62a-a177-4988-baee-ccdab2423e40?api-version=2022-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkFunction/locations/westus/nfvOperations/7a55817b-7420-4c7e-8888-9568e2750745?api-version=2022-08-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -806,7 +763,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 22 Aug 2022 20:13:10 GMT
+      - Fri, 02 Sep 2022 04:55:41 GMT
       expires:
       - '-1'
       pragma:
@@ -842,11 +799,11 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --resource-group --name --tags
+      - --resource-group --name --location --tags
       User-Agent:
       - AZURECLI/2.39.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.8.10 (Windows-10-10.0.22000-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkFunction/locations/westus/nfvOperations/b4b3f62a-a177-4988-baee-ccdab2423e40?api-version=2022-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkFunction/locations/westus/nfvOperations/7a55817b-7420-4c7e-8888-9568e2750745?api-version=2022-08-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -858,7 +815,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 22 Aug 2022 20:13:20 GMT
+      - Fri, 02 Sep 2022 04:55:51 GMT
       expires:
       - '-1'
       pragma:
@@ -894,11 +851,11 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --resource-group --name --tags
+      - --resource-group --name --location --tags
       User-Agent:
       - AZURECLI/2.39.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.8.10 (Windows-10-10.0.22000-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkFunction/locations/westus/nfvOperations/b4b3f62a-a177-4988-baee-ccdab2423e40?api-version=2022-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkFunction/locations/westus/nfvOperations/7a55817b-7420-4c7e-8888-9568e2750745?api-version=2022-08-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -910,7 +867,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 22 Aug 2022 20:13:30 GMT
+      - Fri, 02 Sep 2022 04:56:01 GMT
       expires:
       - '-1'
       pragma:
@@ -946,11 +903,11 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --resource-group --name --tags
+      - --resource-group --name --location --tags
       User-Agent:
       - AZURECLI/2.39.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.8.10 (Windows-10-10.0.22000-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkFunction/locations/westus/nfvOperations/b4b3f62a-a177-4988-baee-ccdab2423e40?api-version=2022-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkFunction/locations/westus/nfvOperations/7a55817b-7420-4c7e-8888-9568e2750745?api-version=2022-08-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -962,7 +919,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 22 Aug 2022 20:13:40 GMT
+      - Fri, 02 Sep 2022 04:56:11 GMT
       expires:
       - '-1'
       pragma:
@@ -998,11 +955,11 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --resource-group --name --tags
+      - --resource-group --name --location --tags
       User-Agent:
       - AZURECLI/2.39.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.8.10 (Windows-10-10.0.22000-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkFunction/locations/westus/nfvOperations/b4b3f62a-a177-4988-baee-ccdab2423e40?api-version=2022-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkFunction/locations/westus/nfvOperations/7a55817b-7420-4c7e-8888-9568e2750745?api-version=2022-08-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -1014,7 +971,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 22 Aug 2022 20:13:50 GMT
+      - Fri, 02 Sep 2022 04:56:22 GMT
       expires:
       - '-1'
       pragma:
@@ -1050,11 +1007,11 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --resource-group --name --tags
+      - --resource-group --name --location --tags
       User-Agent:
       - AZURECLI/2.39.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.8.10 (Windows-10-10.0.22000-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkFunction/locations/westus/nfvOperations/b4b3f62a-a177-4988-baee-ccdab2423e40?api-version=2022-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkFunction/locations/westus/nfvOperations/7a55817b-7420-4c7e-8888-9568e2750745?api-version=2022-08-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -1066,7 +1023,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 22 Aug 2022 20:14:00 GMT
+      - Fri, 02 Sep 2022 04:56:32 GMT
       expires:
       - '-1'
       pragma:
@@ -1102,11 +1059,11 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --resource-group --name --tags
+      - --resource-group --name --location --tags
       User-Agent:
       - AZURECLI/2.39.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.8.10 (Windows-10-10.0.22000-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkFunction/locations/westus/nfvOperations/b4b3f62a-a177-4988-baee-ccdab2423e40?api-version=2022-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkFunction/locations/westus/nfvOperations/7a55817b-7420-4c7e-8888-9568e2750745?api-version=2022-08-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -1118,7 +1075,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 22 Aug 2022 20:14:10 GMT
+      - Fri, 02 Sep 2022 04:56:42 GMT
       expires:
       - '-1'
       pragma:
@@ -1154,11 +1111,11 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --resource-group --name --tags
+      - --resource-group --name --location --tags
       User-Agent:
       - AZURECLI/2.39.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.8.10 (Windows-10-10.0.22000-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkFunction/locations/westus/nfvOperations/b4b3f62a-a177-4988-baee-ccdab2423e40?api-version=2022-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkFunction/locations/westus/nfvOperations/7a55817b-7420-4c7e-8888-9568e2750745?api-version=2022-08-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -1170,7 +1127,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 22 Aug 2022 20:14:20 GMT
+      - Fri, 02 Sep 2022 04:56:52 GMT
       expires:
       - '-1'
       pragma:
@@ -1206,11 +1163,11 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --resource-group --name --tags
+      - --resource-group --name --location --tags
       User-Agent:
       - AZURECLI/2.39.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.8.10 (Windows-10-10.0.22000-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkFunction/locations/westus/nfvOperations/b4b3f62a-a177-4988-baee-ccdab2423e40?api-version=2022-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkFunction/locations/westus/nfvOperations/7a55817b-7420-4c7e-8888-9568e2750745?api-version=2022-08-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -1222,7 +1179,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 22 Aug 2022 20:14:30 GMT
+      - Fri, 02 Sep 2022 04:57:02 GMT
       expires:
       - '-1'
       pragma:
@@ -1258,11 +1215,11 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --resource-group --name --tags
+      - --resource-group --name --location --tags
       User-Agent:
       - AZURECLI/2.39.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.8.10 (Windows-10-10.0.22000-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkFunction/locations/westus/nfvOperations/b4b3f62a-a177-4988-baee-ccdab2423e40?api-version=2022-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkFunction/locations/westus/nfvOperations/7a55817b-7420-4c7e-8888-9568e2750745?api-version=2022-08-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -1274,7 +1231,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 22 Aug 2022 20:14:41 GMT
+      - Fri, 02 Sep 2022 04:57:12 GMT
       expires:
       - '-1'
       pragma:
@@ -1310,11 +1267,11 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --resource-group --name --tags
+      - --resource-group --name --location --tags
       User-Agent:
       - AZURECLI/2.39.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.8.10 (Windows-10-10.0.22000-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkFunction/locations/westus/nfvOperations/b4b3f62a-a177-4988-baee-ccdab2423e40?api-version=2022-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkFunction/locations/westus/nfvOperations/7a55817b-7420-4c7e-8888-9568e2750745?api-version=2022-08-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -1326,7 +1283,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 22 Aug 2022 20:14:51 GMT
+      - Fri, 02 Sep 2022 04:57:23 GMT
       expires:
       - '-1'
       pragma:
@@ -1362,11 +1319,11 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --resource-group --name --tags
+      - --resource-group --name --location --tags
       User-Agent:
       - AZURECLI/2.39.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.8.10 (Windows-10-10.0.22000-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkFunction/locations/westus/nfvOperations/b4b3f62a-a177-4988-baee-ccdab2423e40?api-version=2022-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkFunction/locations/westus/nfvOperations/7a55817b-7420-4c7e-8888-9568e2750745?api-version=2022-08-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -1378,7 +1335,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 22 Aug 2022 20:15:02 GMT
+      - Fri, 02 Sep 2022 04:57:33 GMT
       expires:
       - '-1'
       pragma:
@@ -1414,11 +1371,11 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --resource-group --name --tags
+      - --resource-group --name --location --tags
       User-Agent:
       - AZURECLI/2.39.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.8.10 (Windows-10-10.0.22000-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkFunction/locations/westus/nfvOperations/b4b3f62a-a177-4988-baee-ccdab2423e40?api-version=2022-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkFunction/locations/westus/nfvOperations/7a55817b-7420-4c7e-8888-9568e2750745?api-version=2022-08-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -1430,7 +1387,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 22 Aug 2022 20:15:12 GMT
+      - Fri, 02 Sep 2022 04:57:43 GMT
       expires:
       - '-1'
       pragma:
@@ -1466,11 +1423,11 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --resource-group --name --tags
+      - --resource-group --name --location --tags
       User-Agent:
       - AZURECLI/2.39.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.8.10 (Windows-10-10.0.22000-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkFunction/locations/westus/nfvOperations/b4b3f62a-a177-4988-baee-ccdab2423e40?api-version=2022-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkFunction/locations/westus/nfvOperations/7a55817b-7420-4c7e-8888-9568e2750745?api-version=2022-08-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -1482,7 +1439,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 22 Aug 2022 20:15:22 GMT
+      - Fri, 02 Sep 2022 04:57:53 GMT
       expires:
       - '-1'
       pragma:
@@ -1518,11 +1475,11 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --resource-group --name --tags
+      - --resource-group --name --location --tags
       User-Agent:
       - AZURECLI/2.39.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.8.10 (Windows-10-10.0.22000-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkFunction/locations/westus/nfvOperations/b4b3f62a-a177-4988-baee-ccdab2423e40?api-version=2022-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkFunction/locations/westus/nfvOperations/7a55817b-7420-4c7e-8888-9568e2750745?api-version=2022-08-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -1534,7 +1491,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 22 Aug 2022 20:15:32 GMT
+      - Fri, 02 Sep 2022 04:58:03 GMT
       expires:
       - '-1'
       pragma:
@@ -1570,11 +1527,11 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --resource-group --name --tags
+      - --resource-group --name --location --tags
       User-Agent:
       - AZURECLI/2.39.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.8.10 (Windows-10-10.0.22000-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkFunction/locations/westus/nfvOperations/b4b3f62a-a177-4988-baee-ccdab2423e40?api-version=2022-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkFunction/locations/westus/nfvOperations/7a55817b-7420-4c7e-8888-9568e2750745?api-version=2022-08-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -1586,7 +1543,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 22 Aug 2022 20:15:42 GMT
+      - Fri, 02 Sep 2022 04:58:13 GMT
       expires:
       - '-1'
       pragma:
@@ -1622,11 +1579,11 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --resource-group --name --tags
+      - --resource-group --name --location --tags
       User-Agent:
       - AZURECLI/2.39.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.8.10 (Windows-10-10.0.22000-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkFunction/locations/westus/nfvOperations/b4b3f62a-a177-4988-baee-ccdab2423e40?api-version=2022-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkFunction/locations/westus/nfvOperations/7a55817b-7420-4c7e-8888-9568e2750745?api-version=2022-08-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -1638,7 +1595,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 22 Aug 2022 20:15:52 GMT
+      - Fri, 02 Sep 2022 04:58:23 GMT
       expires:
       - '-1'
       pragma:
@@ -1674,11 +1631,11 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --resource-group --name --tags
+      - --resource-group --name --location --tags
       User-Agent:
       - AZURECLI/2.39.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.8.10 (Windows-10-10.0.22000-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkFunction/locations/westus/nfvOperations/b4b3f62a-a177-4988-baee-ccdab2423e40?api-version=2022-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkFunction/locations/westus/nfvOperations/7a55817b-7420-4c7e-8888-9568e2750745?api-version=2022-08-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -1690,7 +1647,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 22 Aug 2022 20:16:02 GMT
+      - Fri, 02 Sep 2022 04:58:33 GMT
       expires:
       - '-1'
       pragma:
@@ -1726,11 +1683,11 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --resource-group --name --tags
+      - --resource-group --name --location --tags
       User-Agent:
       - AZURECLI/2.39.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.8.10 (Windows-10-10.0.22000-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkFunction/locations/westus/nfvOperations/b4b3f62a-a177-4988-baee-ccdab2423e40?api-version=2022-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkFunction/locations/westus/nfvOperations/7a55817b-7420-4c7e-8888-9568e2750745?api-version=2022-08-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -1742,7 +1699,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 22 Aug 2022 20:16:12 GMT
+      - Fri, 02 Sep 2022 04:58:44 GMT
       expires:
       - '-1'
       pragma:
@@ -1778,11 +1735,11 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --resource-group --name --tags
+      - --resource-group --name --location --tags
       User-Agent:
       - AZURECLI/2.39.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.8.10 (Windows-10-10.0.22000-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkFunction/locations/westus/nfvOperations/b4b3f62a-a177-4988-baee-ccdab2423e40?api-version=2022-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkFunction/locations/westus/nfvOperations/7a55817b-7420-4c7e-8888-9568e2750745?api-version=2022-08-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -1794,7 +1751,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 22 Aug 2022 20:16:22 GMT
+      - Fri, 02 Sep 2022 04:58:54 GMT
       expires:
       - '-1'
       pragma:
@@ -1830,11 +1787,11 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --resource-group --name --tags
+      - --resource-group --name --location --tags
       User-Agent:
       - AZURECLI/2.39.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.8.10 (Windows-10-10.0.22000-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkFunction/locations/westus/nfvOperations/b4b3f62a-a177-4988-baee-ccdab2423e40?api-version=2022-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkFunction/locations/westus/nfvOperations/7a55817b-7420-4c7e-8888-9568e2750745?api-version=2022-08-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -1846,7 +1803,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 22 Aug 2022 20:16:32 GMT
+      - Fri, 02 Sep 2022 04:59:04 GMT
       expires:
       - '-1'
       pragma:
@@ -1882,11 +1839,323 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --resource-group --name --tags
+      - --resource-group --name --location --tags
       User-Agent:
       - AZURECLI/2.39.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.8.10 (Windows-10-10.0.22000-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkFunction/locations/westus/nfvOperations/b4b3f62a-a177-4988-baee-ccdab2423e40?api-version=2022-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkFunction/locations/westus/nfvOperations/7a55817b-7420-4c7e-8888-9568e2750745?api-version=2022-08-01
+  response:
+    body:
+      string: "{\r\n  \"status\": \"InProgress\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '30'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 02 Sep 2022 04:59:14 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      www-authenticate-dsts:
+      - http://schemas.microsoft.com/dsts/saml2-bearer metadata-version=1,sts-realm=realm://dsts.core.windows.net/,certificate-sts-address=https://uswest-dsts.dsts.core.windows.net/v2/wstrust/13/certificate,issued-token-sts-address=https://uswest-dsts.dsts.core.windows.net/v2/wstrust/13/issuedtoken-bearer,discovery-sts-address=https://uswest-dsts.dsts.core.windows.net/2012/IDstsDiscoveryService,service-dns-name=westus.test.nfvrp.azure.com,known-sts-thumbprints=ForBackwardCompatibility,trusted-sts-thumbprints=ForBackwardCompatibility,error=3,error-description="The
+        security token is invalid. Cannot decode base64 encoded string. The input
+        is not a valid Base-64 string as it contains a non-base 64 character, more
+        than two padding characters, or an illegal character among the padding characters.
+        "
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network-function traffic-collector create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name --location --tags
+      User-Agent:
+      - AZURECLI/2.39.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.8.10 (Windows-10-10.0.22000-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkFunction/locations/westus/nfvOperations/7a55817b-7420-4c7e-8888-9568e2750745?api-version=2022-08-01
+  response:
+    body:
+      string: "{\r\n  \"status\": \"InProgress\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '30'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 02 Sep 2022 04:59:24 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      www-authenticate-dsts:
+      - http://schemas.microsoft.com/dsts/saml2-bearer metadata-version=1,sts-realm=realm://dsts.core.windows.net/,certificate-sts-address=https://uswest-dsts.dsts.core.windows.net/v2/wstrust/13/certificate,issued-token-sts-address=https://uswest-dsts.dsts.core.windows.net/v2/wstrust/13/issuedtoken-bearer,discovery-sts-address=https://uswest-dsts.dsts.core.windows.net/2012/IDstsDiscoveryService,service-dns-name=westus.test.nfvrp.azure.com,known-sts-thumbprints=ForBackwardCompatibility,trusted-sts-thumbprints=ForBackwardCompatibility,error=3,error-description="The
+        security token is invalid. Cannot decode base64 encoded string. The input
+        is not a valid Base-64 string as it contains a non-base 64 character, more
+        than two padding characters, or an illegal character among the padding characters.
+        "
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network-function traffic-collector create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name --location --tags
+      User-Agent:
+      - AZURECLI/2.39.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.8.10 (Windows-10-10.0.22000-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkFunction/locations/westus/nfvOperations/7a55817b-7420-4c7e-8888-9568e2750745?api-version=2022-08-01
+  response:
+    body:
+      string: "{\r\n  \"status\": \"InProgress\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '30'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 02 Sep 2022 04:59:34 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      www-authenticate-dsts:
+      - http://schemas.microsoft.com/dsts/saml2-bearer metadata-version=1,sts-realm=realm://dsts.core.windows.net/,certificate-sts-address=https://uswest-dsts.dsts.core.windows.net/v2/wstrust/13/certificate,issued-token-sts-address=https://uswest-dsts.dsts.core.windows.net/v2/wstrust/13/issuedtoken-bearer,discovery-sts-address=https://uswest-dsts.dsts.core.windows.net/2012/IDstsDiscoveryService,service-dns-name=westus.test.nfvrp.azure.com,known-sts-thumbprints=ForBackwardCompatibility,trusted-sts-thumbprints=ForBackwardCompatibility,error=3,error-description="The
+        security token is invalid. Cannot decode base64 encoded string. The input
+        is not a valid Base-64 string as it contains a non-base 64 character, more
+        than two padding characters, or an illegal character among the padding characters.
+        "
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network-function traffic-collector create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name --location --tags
+      User-Agent:
+      - AZURECLI/2.39.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.8.10 (Windows-10-10.0.22000-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkFunction/locations/westus/nfvOperations/7a55817b-7420-4c7e-8888-9568e2750745?api-version=2022-08-01
+  response:
+    body:
+      string: "{\r\n  \"status\": \"InProgress\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '30'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 02 Sep 2022 04:59:44 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      www-authenticate-dsts:
+      - http://schemas.microsoft.com/dsts/saml2-bearer metadata-version=1,sts-realm=realm://dsts.core.windows.net/,certificate-sts-address=https://uswest-dsts.dsts.core.windows.net/v2/wstrust/13/certificate,issued-token-sts-address=https://uswest-dsts.dsts.core.windows.net/v2/wstrust/13/issuedtoken-bearer,discovery-sts-address=https://uswest-dsts.dsts.core.windows.net/2012/IDstsDiscoveryService,service-dns-name=westus.test.nfvrp.azure.com,known-sts-thumbprints=ForBackwardCompatibility,trusted-sts-thumbprints=ForBackwardCompatibility,error=3,error-description="The
+        security token is invalid. Cannot decode base64 encoded string. The input
+        is not a valid Base-64 string as it contains a non-base 64 character, more
+        than two padding characters, or an illegal character among the padding characters.
+        "
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network-function traffic-collector create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name --location --tags
+      User-Agent:
+      - AZURECLI/2.39.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.8.10 (Windows-10-10.0.22000-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkFunction/locations/westus/nfvOperations/7a55817b-7420-4c7e-8888-9568e2750745?api-version=2022-08-01
+  response:
+    body:
+      string: "{\r\n  \"status\": \"InProgress\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '30'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 02 Sep 2022 04:59:54 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      www-authenticate-dsts:
+      - http://schemas.microsoft.com/dsts/saml2-bearer metadata-version=1,sts-realm=realm://dsts.core.windows.net/,certificate-sts-address=https://uswest-dsts.dsts.core.windows.net/v2/wstrust/13/certificate,issued-token-sts-address=https://uswest-dsts.dsts.core.windows.net/v2/wstrust/13/issuedtoken-bearer,discovery-sts-address=https://uswest-dsts.dsts.core.windows.net/2012/IDstsDiscoveryService,service-dns-name=westus.test.nfvrp.azure.com,known-sts-thumbprints=ForBackwardCompatibility,trusted-sts-thumbprints=ForBackwardCompatibility,error=3,error-description="The
+        security token is invalid. Cannot decode base64 encoded string. The input
+        is not a valid Base-64 string as it contains a non-base 64 character, more
+        than two padding characters, or an illegal character among the padding characters.
+        "
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network-function traffic-collector create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name --location --tags
+      User-Agent:
+      - AZURECLI/2.39.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.8.10 (Windows-10-10.0.22000-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkFunction/locations/westus/nfvOperations/7a55817b-7420-4c7e-8888-9568e2750745?api-version=2022-08-01
+  response:
+    body:
+      string: "{\r\n  \"status\": \"InProgress\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '30'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 02 Sep 2022 05:00:05 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      www-authenticate-dsts:
+      - http://schemas.microsoft.com/dsts/saml2-bearer metadata-version=1,sts-realm=realm://dsts.core.windows.net/,certificate-sts-address=https://uswest-dsts.dsts.core.windows.net/v2/wstrust/13/certificate,issued-token-sts-address=https://uswest-dsts.dsts.core.windows.net/v2/wstrust/13/issuedtoken-bearer,discovery-sts-address=https://uswest-dsts.dsts.core.windows.net/2012/IDstsDiscoveryService,service-dns-name=westus.test.nfvrp.azure.com,known-sts-thumbprints=ForBackwardCompatibility,trusted-sts-thumbprints=ForBackwardCompatibility,error=3,error-description="The
+        security token is invalid. Cannot decode base64 encoded string. The input
+        is not a valid Base-64 string as it contains a non-base 64 character, more
+        than two padding characters, or an illegal character among the padding characters.
+        "
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network-function traffic-collector create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name --location --tags
+      User-Agent:
+      - AZURECLI/2.39.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.8.10 (Windows-10-10.0.22000-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkFunction/locations/westus/nfvOperations/7a55817b-7420-4c7e-8888-9568e2750745?api-version=2022-08-01
   response:
     body:
       string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
@@ -1898,7 +2167,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 22 Aug 2022 20:16:42 GMT
+      - Fri, 02 Sep 2022 05:00:15 GMT
       expires:
       - '-1'
       pragma:
@@ -1934,7 +2203,7 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --resource-group --name --tags
+      - --resource-group --name --location --tags
       User-Agent:
       - AZURECLI/2.39.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.8.10 (Windows-10-10.0.22000-SP0)
     method: GET
@@ -1944,7 +2213,7 @@ interactions:
       string: "{\r\n  \"properties\": {\r\n    \"collectorPolicies\": [],\r\n    \"provisioningState\":
         \"Succeeded\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_traffic_collector000001/providers/Microsoft.NetworkFunction/azureTrafficCollectors/cli_test_atc-000002\",\r\n
         \ \"name\": \"cli_test_atc-000002\",\r\n  \"type\": \"Microsoft.NetworkFunction/AzureTrafficCollectors\",\r\n
-        \ \"etag\": \"9657e2fa-610d-489c-a286-77f68d13f4e1\",\r\n  \"location\": \"westus\",\r\n
+        \ \"etag\": \"8d4165eb-e798-4c02-8da7-7b9fe62f2f1b\",\r\n  \"location\": \"westus\",\r\n
         \ \"tags\": {\r\n    \"foo\": \"doo\"\r\n  }\r\n}"
     headers:
       cache-control:
@@ -1954,9 +2223,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 22 Aug 2022 20:16:42 GMT
+      - Fri, 02 Sep 2022 05:00:15 GMT
       etag:
-      - '"9657e2fa-610d-489c-a286-77f68d13f4e1"'
+      - '"8d4165eb-e798-4c02-8da7-7b9fe62f2f1b"'
       expires:
       - '-1'
       pragma:
@@ -2003,7 +2272,7 @@ interactions:
         [],\r\n        \"provisioningState\": \"Succeeded\"\r\n      },\r\n      \"id\":
         \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_traffic_collector000001/providers/Microsoft.NetworkFunction/azureTrafficCollectors/cli_test_atc-000002\",\r\n
         \     \"name\": \"cli_test_atc-000002\",\r\n      \"type\": \"Microsoft.NetworkFunction/AzureTrafficCollectors\",\r\n
-        \     \"etag\": \"9657e2fa-610d-489c-a286-77f68d13f4e1\",\r\n      \"location\":
+        \     \"etag\": \"8d4165eb-e798-4c02-8da7-7b9fe62f2f1b\",\r\n      \"location\":
         \"westus\",\r\n      \"tags\": {\r\n        \"foo\": \"doo\"\r\n      }\r\n
         \   }\r\n  ]\r\n}"
     headers:
@@ -2014,7 +2283,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 22 Aug 2022 20:16:44 GMT
+      - Fri, 02 Sep 2022 05:00:15 GMT
       expires:
       - '-1'
       pragma:
@@ -2060,7 +2329,7 @@ interactions:
       string: "{\r\n  \"properties\": {\r\n    \"collectorPolicies\": [],\r\n    \"provisioningState\":
         \"Succeeded\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_traffic_collector000001/providers/Microsoft.NetworkFunction/azureTrafficCollectors/cli_test_atc-000002\",\r\n
         \ \"name\": \"cli_test_atc-000002\",\r\n  \"type\": \"Microsoft.NetworkFunction/AzureTrafficCollectors\",\r\n
-        \ \"etag\": \"9657e2fa-610d-489c-a286-77f68d13f4e1\",\r\n  \"location\": \"westus\",\r\n
+        \ \"etag\": \"8d4165eb-e798-4c02-8da7-7b9fe62f2f1b\",\r\n  \"location\": \"westus\",\r\n
         \ \"tags\": {\r\n    \"foo\": \"doo\"\r\n  }\r\n}"
     headers:
       cache-control:
@@ -2070,9 +2339,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 22 Aug 2022 20:16:44 GMT
+      - Fri, 02 Sep 2022 05:00:16 GMT
       etag:
-      - '"9657e2fa-610d-489c-a286-77f68d13f4e1"'
+      - '"8d4165eb-e798-4c02-8da7-7b9fe62f2f1b"'
       expires:
       - '-1'
       pragma:
@@ -2110,49 +2379,6 @@ interactions:
       ParameterSetName:
       - --resource-group --name --tags
       User-Agent:
-      - AZURECLI/2.39.0 (PIP) azsdk-python-azure-mgmt-resource/21.1.0b1 Python/3.8.10
-        (Windows-10-10.0.22000-SP0)
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_azure_traffic_collector000001?api-version=2021-04-01
-  response:
-    body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_traffic_collector000001","name":"cli_test_azure_traffic_collector000001","type":"Microsoft.Resources/resourceGroups","location":"westus","tags":{"product":"azurecli","cause":"automation","date":"2022-08-22T20:10:43Z","Created":"2022-08-22T20:10:46.5374880Z"},"properties":{"provisioningState":"Succeeded"}}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '395'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Mon, 22 Aug 2022 20:16:45 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - network-function traffic-collector update
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - --resource-group --name --tags
-      User-Agent:
       - AZURECLI/2.39.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.8.10 (Windows-10-10.0.22000-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_traffic_collector000001/providers/Microsoft.NetworkFunction/azureTrafficCollectors/cli_test_atc-000002?api-version=2022-08-01
@@ -2161,7 +2387,7 @@ interactions:
       string: "{\r\n  \"properties\": {\r\n    \"collectorPolicies\": [],\r\n    \"provisioningState\":
         \"Succeeded\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_traffic_collector000001/providers/Microsoft.NetworkFunction/azureTrafficCollectors/cli_test_atc-000002\",\r\n
         \ \"name\": \"cli_test_atc-000002\",\r\n  \"type\": \"Microsoft.NetworkFunction/AzureTrafficCollectors\",\r\n
-        \ \"etag\": \"9657e2fa-610d-489c-a286-77f68d13f4e1\",\r\n  \"location\": \"westus\",\r\n
+        \ \"etag\": \"8d4165eb-e798-4c02-8da7-7b9fe62f2f1b\",\r\n  \"location\": \"westus\",\r\n
         \ \"tags\": {\r\n    \"foo\": \"doo\"\r\n  }\r\n}"
     headers:
       cache-control:
@@ -2171,9 +2397,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 22 Aug 2022 20:16:44 GMT
+      - Fri, 02 Sep 2022 05:00:16 GMT
       etag:
-      - '"9657e2fa-610d-489c-a286-77f68d13f4e1"'
+      - '"8d4165eb-e798-4c02-8da7-7b9fe62f2f1b"'
       expires:
       - '-1'
       pragma:
@@ -2224,11 +2450,11 @@ interactions:
       string: "{\r\n  \"properties\": {\r\n    \"collectorPolicies\": [],\r\n    \"provisioningState\":
         \"Updating\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_traffic_collector000001/providers/Microsoft.NetworkFunction/azureTrafficCollectors/cli_test_atc-000002\",\r\n
         \ \"name\": \"cli_test_atc-000002\",\r\n  \"type\": \"Microsoft.NetworkFunction/AzureTrafficCollectors\",\r\n
-        \ \"etag\": \"a0a8de9f-bba4-4a20-8c5a-29a833964190\",\r\n  \"location\": \"westus\",\r\n
+        \ \"etag\": \"4b8181c9-426e-4e83-97f3-83f72e74c517\",\r\n  \"location\": \"westus\",\r\n
         \ \"tags\": {\r\n    \"foo\": \"doo1\"\r\n  }\r\n}"
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkFunction/locations/westus/nfvOperations/476adfdd-662a-47d0-a53a-f5930fde88b7?api-version=2022-08-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkFunction/locations/westus/nfvOperations/58196799-d4e0-4389-9fd2-8b8099111751?api-version=2022-08-01
       cache-control:
       - no-cache
       content-length:
@@ -2236,7 +2462,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 22 Aug 2022 20:16:46 GMT
+      - Fri, 02 Sep 2022 05:00:17 GMT
       expires:
       - '-1'
       pragma:
@@ -2278,7 +2504,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.39.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.8.10 (Windows-10-10.0.22000-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkFunction/locations/westus/nfvOperations/476adfdd-662a-47d0-a53a-f5930fde88b7?api-version=2022-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkFunction/locations/westus/nfvOperations/58196799-d4e0-4389-9fd2-8b8099111751?api-version=2022-08-01
   response:
     body:
       string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
@@ -2290,7 +2516,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 22 Aug 2022 20:16:57 GMT
+      - Fri, 02 Sep 2022 05:00:27 GMT
       expires:
       - '-1'
       pragma:
@@ -2336,7 +2562,7 @@ interactions:
       string: "{\r\n  \"properties\": {\r\n    \"collectorPolicies\": [],\r\n    \"provisioningState\":
         \"Succeeded\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_traffic_collector000001/providers/Microsoft.NetworkFunction/azureTrafficCollectors/cli_test_atc-000002\",\r\n
         \ \"name\": \"cli_test_atc-000002\",\r\n  \"type\": \"Microsoft.NetworkFunction/AzureTrafficCollectors\",\r\n
-        \ \"etag\": \"a0a8de9f-bba4-4a20-8c5a-29a833964190\",\r\n  \"location\": \"westus\",\r\n
+        \ \"etag\": \"4b8181c9-426e-4e83-97f3-83f72e74c517\",\r\n  \"location\": \"westus\",\r\n
         \ \"tags\": {\r\n    \"foo\": \"doo1\"\r\n  }\r\n}"
     headers:
       cache-control:
@@ -2346,9 +2572,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 22 Aug 2022 20:16:57 GMT
+      - Fri, 02 Sep 2022 05:00:27 GMT
       etag:
-      - '"a0a8de9f-bba4-4a20-8c5a-29a833964190"'
+      - '"4b8181c9-426e-4e83-97f3-83f72e74c517"'
       expires:
       - '-1'
       pragma:
@@ -2390,7 +2616,7 @@ interactions:
       Content-Type:
       - application/json
       ParameterSetName:
-      - --resource-group --azure-traffic-collector-name -n -l --ingestion-policy
+      - --resource-group --traffic-collector-name -n -l --ingestion-policy
       User-Agent:
       - AZURECLI/2.39.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.8.10 (Windows-10-10.0.22000-SP0)
     method: PUT
@@ -2403,10 +2629,10 @@ interactions:
         \       }\r\n      ]\r\n    },\r\n    \"emissionPolicies\": [],\r\n    \"processingPolcies\":
         [],\r\n    \"provisioningState\": \"Updating\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_traffic_collector000001/providers/Microsoft.NetworkFunction/azureTrafficCollectors/cli_test_atc-000002/collectorPolicies/cli_test_cp-000003\",\r\n
         \ \"name\": \"cli_test_cp-000003\",\r\n  \"type\": \"Microsoft.NetworkFunction/AzureTrafficCollectors/CollectorPolicies\",\r\n
-        \ \"etag\": \"0f98e51d-4bc5-4b8a-93dc-bea974effc1d\",\r\n  \"location\": \"westus\"\r\n}"
+        \ \"etag\": \"507a5cf1-dad8-4b1e-9f60-0e4b700edab2\",\r\n  \"location\": \"westus\"\r\n}"
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkFunction/locations/westus/nfvOperations/9a0d265a-747c-4926-b7c9-350a8c317b81?api-version=2022-08-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkFunction/locations/westus/nfvOperations/037fda10-453e-4e6c-acac-3474afac1b5b?api-version=2022-08-01
       cache-control:
       - no-cache
       content-length:
@@ -2414,7 +2640,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 22 Aug 2022 20:16:59 GMT
+      - Fri, 02 Sep 2022 05:00:30 GMT
       expires:
       - '-1'
       pragma:
@@ -2448,11 +2674,11 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --resource-group --azure-traffic-collector-name -n -l --ingestion-policy
+      - --resource-group --traffic-collector-name -n -l --ingestion-policy
       User-Agent:
       - AZURECLI/2.39.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.8.10 (Windows-10-10.0.22000-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkFunction/locations/westus/nfvOperations/9a0d265a-747c-4926-b7c9-350a8c317b81?api-version=2022-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkFunction/locations/westus/nfvOperations/037fda10-453e-4e6c-acac-3474afac1b5b?api-version=2022-08-01
   response:
     body:
       string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
@@ -2464,7 +2690,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 22 Aug 2022 20:17:09 GMT
+      - Fri, 02 Sep 2022 05:00:40 GMT
       expires:
       - '-1'
       pragma:
@@ -2500,7 +2726,7 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --resource-group --azure-traffic-collector-name -n -l --ingestion-policy
+      - --resource-group --traffic-collector-name -n -l --ingestion-policy
       User-Agent:
       - AZURECLI/2.39.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.8.10 (Windows-10-10.0.22000-SP0)
     method: GET
@@ -2513,7 +2739,7 @@ interactions:
         \       }\r\n      ]\r\n    },\r\n    \"emissionPolicies\": [],\r\n    \"processingPolcies\":
         [],\r\n    \"provisioningState\": \"Succeeded\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_traffic_collector000001/providers/Microsoft.NetworkFunction/azureTrafficCollectors/cli_test_atc-000002/collectorPolicies/cli_test_cp-000003\",\r\n
         \ \"name\": \"cli_test_cp-000003\",\r\n  \"type\": \"Microsoft.NetworkFunction/AzureTrafficCollectors/CollectorPolicies\",\r\n
-        \ \"etag\": \"0f98e51d-4bc5-4b8a-93dc-bea974effc1d\",\r\n  \"location\": \"westus\"\r\n}"
+        \ \"etag\": \"507a5cf1-dad8-4b1e-9f60-0e4b700edab2\",\r\n  \"location\": \"westus\"\r\n}"
     headers:
       cache-control:
       - no-cache
@@ -2522,9 +2748,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 22 Aug 2022 20:17:09 GMT
+      - Fri, 02 Sep 2022 05:00:40 GMT
       etag:
-      - '"0f98e51d-4bc5-4b8a-93dc-bea974effc1d"'
+      - '"507a5cf1-dad8-4b1e-9f60-0e4b700edab2"'
       expires:
       - '-1'
       pragma:
@@ -2560,7 +2786,7 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --resource-group --azure-traffic-collector-name -n
+      - --resource-group --traffic-collector-name -n
       User-Agent:
       - AZURECLI/2.39.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.8.10 (Windows-10-10.0.22000-SP0)
     method: GET
@@ -2573,7 +2799,7 @@ interactions:
         \       }\r\n      ]\r\n    },\r\n    \"emissionPolicies\": [],\r\n    \"processingPolcies\":
         [],\r\n    \"provisioningState\": \"Succeeded\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_traffic_collector000001/providers/Microsoft.NetworkFunction/azureTrafficCollectors/cli_test_atc-000002/collectorPolicies/cli_test_cp-000003\",\r\n
         \ \"name\": \"cli_test_cp-000003\",\r\n  \"type\": \"Microsoft.NetworkFunction/AzureTrafficCollectors/CollectorPolicies\",\r\n
-        \ \"etag\": \"0f98e51d-4bc5-4b8a-93dc-bea974effc1d\",\r\n  \"location\": \"westus\"\r\n}"
+        \ \"etag\": \"507a5cf1-dad8-4b1e-9f60-0e4b700edab2\",\r\n  \"location\": \"westus\"\r\n}"
     headers:
       cache-control:
       - no-cache
@@ -2582,9 +2808,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 22 Aug 2022 20:17:09 GMT
+      - Fri, 02 Sep 2022 05:00:41 GMT
       etag:
-      - '"0f98e51d-4bc5-4b8a-93dc-bea974effc1d"'
+      - '"507a5cf1-dad8-4b1e-9f60-0e4b700edab2"'
       expires:
       - '-1'
       pragma:
@@ -2620,7 +2846,7 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --resource-group --azure-traffic-collector-name -n -l --emission-policies
+      - --resource-group --traffic-collector-name -n --emission-policies
       User-Agent:
       - AZURECLI/2.39.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.8.10 (Windows-10-10.0.22000-SP0)
     method: GET
@@ -2633,7 +2859,7 @@ interactions:
         \       }\r\n      ]\r\n    },\r\n    \"emissionPolicies\": [],\r\n    \"processingPolcies\":
         [],\r\n    \"provisioningState\": \"Succeeded\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_traffic_collector000001/providers/Microsoft.NetworkFunction/azureTrafficCollectors/cli_test_atc-000002/collectorPolicies/cli_test_cp-000003\",\r\n
         \ \"name\": \"cli_test_cp-000003\",\r\n  \"type\": \"Microsoft.NetworkFunction/AzureTrafficCollectors/CollectorPolicies\",\r\n
-        \ \"etag\": \"0f98e51d-4bc5-4b8a-93dc-bea974effc1d\",\r\n  \"location\": \"westus\"\r\n}"
+        \ \"etag\": \"507a5cf1-dad8-4b1e-9f60-0e4b700edab2\",\r\n  \"location\": \"westus\"\r\n}"
     headers:
       cache-control:
       - no-cache
@@ -2642,9 +2868,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 22 Aug 2022 20:17:10 GMT
+      - Fri, 02 Sep 2022 05:00:41 GMT
       etag:
-      - '"0f98e51d-4bc5-4b8a-93dc-bea974effc1d"'
+      - '"507a5cf1-dad8-4b1e-9f60-0e4b700edab2"'
       expires:
       - '-1'
       pragma:
@@ -2687,7 +2913,7 @@ interactions:
       Content-Type:
       - application/json
       ParameterSetName:
-      - --resource-group --azure-traffic-collector-name -n -l --emission-policies
+      - --resource-group --traffic-collector-name -n --emission-policies
       User-Agent:
       - AZURECLI/2.39.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.8.10 (Windows-10-10.0.22000-SP0)
     method: PUT
@@ -2703,10 +2929,10 @@ interactions:
         \         }\r\n        ]\r\n      }\r\n    ],\r\n    \"processingPolcies\":
         [],\r\n    \"provisioningState\": \"Updating\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_traffic_collector000001/providers/Microsoft.NetworkFunction/azureTrafficCollectors/cli_test_atc-000002/collectorPolicies/cli_test_cp-000003\",\r\n
         \ \"name\": \"cli_test_cp-000003\",\r\n  \"type\": \"Microsoft.NetworkFunction/AzureTrafficCollectors/CollectorPolicies\",\r\n
-        \ \"etag\": \"44c6b260-99d9-422e-a350-7f926842636c\",\r\n  \"location\": \"westus\"\r\n}"
+        \ \"etag\": \"955125b4-d3b8-4ebd-9e18-cdd87e9bbce2\",\r\n  \"location\": \"westus\"\r\n}"
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkFunction/locations/westus/nfvOperations/2cd1677b-5fa6-44fd-ac64-143d1a5be36f?api-version=2022-08-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkFunction/locations/westus/nfvOperations/9d190357-8755-4d64-89b3-16f63c2d751c?api-version=2022-08-01
       cache-control:
       - no-cache
       content-length:
@@ -2714,7 +2940,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 22 Aug 2022 20:17:11 GMT
+      - Fri, 02 Sep 2022 05:00:42 GMT
       expires:
       - '-1'
       pragma:
@@ -2752,11 +2978,11 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --resource-group --azure-traffic-collector-name -n -l --emission-policies
+      - --resource-group --traffic-collector-name -n --emission-policies
       User-Agent:
       - AZURECLI/2.39.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.8.10 (Windows-10-10.0.22000-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkFunction/locations/westus/nfvOperations/2cd1677b-5fa6-44fd-ac64-143d1a5be36f?api-version=2022-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkFunction/locations/westus/nfvOperations/9d190357-8755-4d64-89b3-16f63c2d751c?api-version=2022-08-01
   response:
     body:
       string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
@@ -2768,7 +2994,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 22 Aug 2022 20:17:21 GMT
+      - Fri, 02 Sep 2022 05:00:52 GMT
       expires:
       - '-1'
       pragma:
@@ -2804,7 +3030,7 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --resource-group --azure-traffic-collector-name -n -l --emission-policies
+      - --resource-group --traffic-collector-name -n --emission-policies
       User-Agent:
       - AZURECLI/2.39.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.8.10 (Windows-10-10.0.22000-SP0)
     method: GET
@@ -2820,7 +3046,7 @@ interactions:
         \         }\r\n        ]\r\n      }\r\n    ],\r\n    \"processingPolcies\":
         [],\r\n    \"provisioningState\": \"Succeeded\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_traffic_collector000001/providers/Microsoft.NetworkFunction/azureTrafficCollectors/cli_test_atc-000002/collectorPolicies/cli_test_cp-000003\",\r\n
         \ \"name\": \"cli_test_cp-000003\",\r\n  \"type\": \"Microsoft.NetworkFunction/AzureTrafficCollectors/CollectorPolicies\",\r\n
-        \ \"etag\": \"44c6b260-99d9-422e-a350-7f926842636c\",\r\n  \"location\": \"westus\"\r\n}"
+        \ \"etag\": \"955125b4-d3b8-4ebd-9e18-cdd87e9bbce2\",\r\n  \"location\": \"westus\"\r\n}"
     headers:
       cache-control:
       - no-cache
@@ -2829,9 +3055,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 22 Aug 2022 20:17:21 GMT
+      - Fri, 02 Sep 2022 05:00:52 GMT
       etag:
-      - '"44c6b260-99d9-422e-a350-7f926842636c"'
+      - '"955125b4-d3b8-4ebd-9e18-cdd87e9bbce2"'
       expires:
       - '-1'
       pragma:
@@ -2867,7 +3093,7 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --resource-group --azure-traffic-collector-name -n
+      - --resource-group --traffic-collector-name -n
       User-Agent:
       - AZURECLI/2.39.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.8.10 (Windows-10-10.0.22000-SP0)
     method: GET
@@ -2883,7 +3109,7 @@ interactions:
         \         }\r\n        ]\r\n      }\r\n    ],\r\n    \"processingPolcies\":
         [],\r\n    \"provisioningState\": \"Succeeded\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_traffic_collector000001/providers/Microsoft.NetworkFunction/azureTrafficCollectors/cli_test_atc-000002/collectorPolicies/cli_test_cp-000003\",\r\n
         \ \"name\": \"cli_test_cp-000003\",\r\n  \"type\": \"Microsoft.NetworkFunction/AzureTrafficCollectors/CollectorPolicies\",\r\n
-        \ \"etag\": \"44c6b260-99d9-422e-a350-7f926842636c\",\r\n  \"location\": \"westus\"\r\n}"
+        \ \"etag\": \"955125b4-d3b8-4ebd-9e18-cdd87e9bbce2\",\r\n  \"location\": \"westus\"\r\n}"
     headers:
       cache-control:
       - no-cache
@@ -2892,9 +3118,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 22 Aug 2022 20:17:22 GMT
+      - Fri, 02 Sep 2022 05:00:52 GMT
       etag:
-      - '"44c6b260-99d9-422e-a350-7f926842636c"'
+      - '"955125b4-d3b8-4ebd-9e18-cdd87e9bbce2"'
       expires:
       - '-1'
       pragma:
@@ -2932,7 +3158,7 @@ interactions:
       Content-Length:
       - '0'
       ParameterSetName:
-      - --resource-group --azure-traffic-collector-name --name --yes
+      - --resource-group --traffic-collector-name --name --yes
       User-Agent:
       - AZURECLI/2.39.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.8.10 (Windows-10-10.0.22000-SP0)
     method: DELETE
@@ -2942,7 +3168,7 @@ interactions:
       string: 'null'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkFunction/locations/westus/nfvOperations/c7cc41ee-9572-439f-84da-4d98fecbdab9?api-version=2022-08-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkFunction/locations/westus/nfvOperations/bc09cd1c-dec1-4c21-96c2-4978713c321b?api-version=2022-08-01
       cache-control:
       - no-cache
       content-length:
@@ -2950,11 +3176,11 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 22 Aug 2022 20:17:24 GMT
+      - Fri, 02 Sep 2022 05:00:54 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkFunction/locations/westus/nfvOperationResults/c7cc41ee-9572-439f-84da-4d98fecbdab9?api-version=2022-08-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkFunction/locations/westus/nfvOperationResults/bc09cd1c-dec1-4c21-96c2-4978713c321b?api-version=2022-08-01
       pragma:
       - no-cache
       server:
@@ -2986,11 +3212,11 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --resource-group --azure-traffic-collector-name --name --yes
+      - --resource-group --traffic-collector-name --name --yes
       User-Agent:
       - AZURECLI/2.39.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.8.10 (Windows-10-10.0.22000-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkFunction/locations/westus/nfvOperations/c7cc41ee-9572-439f-84da-4d98fecbdab9?api-version=2022-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkFunction/locations/westus/nfvOperations/bc09cd1c-dec1-4c21-96c2-4978713c321b?api-version=2022-08-01
   response:
     body:
       string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
@@ -3002,7 +3228,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 22 Aug 2022 20:17:34 GMT
+      - Fri, 02 Sep 2022 05:01:04 GMT
       expires:
       - '-1'
       pragma:
@@ -3038,11 +3264,11 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --resource-group --azure-traffic-collector-name --name --yes
+      - --resource-group --traffic-collector-name --name --yes
       User-Agent:
       - AZURECLI/2.39.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.8.10 (Windows-10-10.0.22000-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkFunction/locations/westus/nfvOperationResults/c7cc41ee-9572-439f-84da-4d98fecbdab9?api-version=2022-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkFunction/locations/westus/nfvOperationResults/bc09cd1c-dec1-4c21-96c2-4978713c321b?api-version=2022-08-01
   response:
     body:
       string: 'null'
@@ -3054,7 +3280,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 22 Aug 2022 20:17:34 GMT
+      - Fri, 02 Sep 2022 05:01:04 GMT
       expires:
       - '-1'
       pragma:
@@ -3102,7 +3328,7 @@ interactions:
       string: 'null'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkFunction/locations/westus/nfvOperations/49ba0368-31c6-4f5c-9e8d-2bfba46e8434?api-version=2022-08-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkFunction/locations/westus/nfvOperations/9369d065-2fcc-4ca1-a870-ab49ff97ad70?api-version=2022-08-01
       cache-control:
       - no-cache
       content-length:
@@ -3110,11 +3336,11 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 22 Aug 2022 20:19:34 GMT
+      - Fri, 02 Sep 2022 05:03:06 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkFunction/locations/westus/nfvOperationResults/49ba0368-31c6-4f5c-9e8d-2bfba46e8434?api-version=2022-08-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkFunction/locations/westus/nfvOperationResults/9369d065-2fcc-4ca1-a870-ab49ff97ad70?api-version=2022-08-01
       pragma:
       - no-cache
       server:
@@ -3150,7 +3376,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.39.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.8.10 (Windows-10-10.0.22000-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkFunction/locations/westus/nfvOperations/49ba0368-31c6-4f5c-9e8d-2bfba46e8434?api-version=2022-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkFunction/locations/westus/nfvOperations/9369d065-2fcc-4ca1-a870-ab49ff97ad70?api-version=2022-08-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -3162,7 +3388,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 22 Aug 2022 20:19:45 GMT
+      - Fri, 02 Sep 2022 05:03:16 GMT
       expires:
       - '-1'
       pragma:
@@ -3202,7 +3428,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.39.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.8.10 (Windows-10-10.0.22000-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkFunction/locations/westus/nfvOperations/49ba0368-31c6-4f5c-9e8d-2bfba46e8434?api-version=2022-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkFunction/locations/westus/nfvOperations/9369d065-2fcc-4ca1-a870-ab49ff97ad70?api-version=2022-08-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -3214,7 +3440,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 22 Aug 2022 20:19:56 GMT
+      - Fri, 02 Sep 2022 05:03:27 GMT
       expires:
       - '-1'
       pragma:
@@ -3254,7 +3480,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.39.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.8.10 (Windows-10-10.0.22000-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkFunction/locations/westus/nfvOperations/49ba0368-31c6-4f5c-9e8d-2bfba46e8434?api-version=2022-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkFunction/locations/westus/nfvOperations/9369d065-2fcc-4ca1-a870-ab49ff97ad70?api-version=2022-08-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -3266,7 +3492,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 22 Aug 2022 20:20:06 GMT
+      - Fri, 02 Sep 2022 05:03:37 GMT
       expires:
       - '-1'
       pragma:
@@ -3306,7 +3532,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.39.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.8.10 (Windows-10-10.0.22000-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkFunction/locations/westus/nfvOperations/49ba0368-31c6-4f5c-9e8d-2bfba46e8434?api-version=2022-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkFunction/locations/westus/nfvOperations/9369d065-2fcc-4ca1-a870-ab49ff97ad70?api-version=2022-08-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -3318,7 +3544,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 22 Aug 2022 20:20:16 GMT
+      - Fri, 02 Sep 2022 05:03:47 GMT
       expires:
       - '-1'
       pragma:
@@ -3358,7 +3584,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.39.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.8.10 (Windows-10-10.0.22000-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkFunction/locations/westus/nfvOperations/49ba0368-31c6-4f5c-9e8d-2bfba46e8434?api-version=2022-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkFunction/locations/westus/nfvOperations/9369d065-2fcc-4ca1-a870-ab49ff97ad70?api-version=2022-08-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -3370,7 +3596,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 22 Aug 2022 20:20:26 GMT
+      - Fri, 02 Sep 2022 05:03:57 GMT
       expires:
       - '-1'
       pragma:
@@ -3410,7 +3636,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.39.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.8.10 (Windows-10-10.0.22000-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkFunction/locations/westus/nfvOperations/49ba0368-31c6-4f5c-9e8d-2bfba46e8434?api-version=2022-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkFunction/locations/westus/nfvOperations/9369d065-2fcc-4ca1-a870-ab49ff97ad70?api-version=2022-08-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -3422,7 +3648,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 22 Aug 2022 20:20:36 GMT
+      - Fri, 02 Sep 2022 05:04:07 GMT
       expires:
       - '-1'
       pragma:
@@ -3462,7 +3688,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.39.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.8.10 (Windows-10-10.0.22000-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkFunction/locations/westus/nfvOperations/49ba0368-31c6-4f5c-9e8d-2bfba46e8434?api-version=2022-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkFunction/locations/westus/nfvOperations/9369d065-2fcc-4ca1-a870-ab49ff97ad70?api-version=2022-08-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -3474,7 +3700,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 22 Aug 2022 20:20:46 GMT
+      - Fri, 02 Sep 2022 05:04:17 GMT
       expires:
       - '-1'
       pragma:
@@ -3514,7 +3740,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.39.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.8.10 (Windows-10-10.0.22000-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkFunction/locations/westus/nfvOperations/49ba0368-31c6-4f5c-9e8d-2bfba46e8434?api-version=2022-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkFunction/locations/westus/nfvOperations/9369d065-2fcc-4ca1-a870-ab49ff97ad70?api-version=2022-08-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -3526,7 +3752,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 22 Aug 2022 20:20:56 GMT
+      - Fri, 02 Sep 2022 05:04:27 GMT
       expires:
       - '-1'
       pragma:
@@ -3566,7 +3792,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.39.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.8.10 (Windows-10-10.0.22000-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkFunction/locations/westus/nfvOperations/49ba0368-31c6-4f5c-9e8d-2bfba46e8434?api-version=2022-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkFunction/locations/westus/nfvOperations/9369d065-2fcc-4ca1-a870-ab49ff97ad70?api-version=2022-08-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -3578,7 +3804,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 22 Aug 2022 20:21:06 GMT
+      - Fri, 02 Sep 2022 05:04:37 GMT
       expires:
       - '-1'
       pragma:
@@ -3618,7 +3844,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.39.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.8.10 (Windows-10-10.0.22000-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkFunction/locations/westus/nfvOperations/49ba0368-31c6-4f5c-9e8d-2bfba46e8434?api-version=2022-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkFunction/locations/westus/nfvOperations/9369d065-2fcc-4ca1-a870-ab49ff97ad70?api-version=2022-08-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -3630,7 +3856,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 22 Aug 2022 20:21:16 GMT
+      - Fri, 02 Sep 2022 05:04:47 GMT
       expires:
       - '-1'
       pragma:
@@ -3670,7 +3896,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.39.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.8.10 (Windows-10-10.0.22000-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkFunction/locations/westus/nfvOperations/49ba0368-31c6-4f5c-9e8d-2bfba46e8434?api-version=2022-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkFunction/locations/westus/nfvOperations/9369d065-2fcc-4ca1-a870-ab49ff97ad70?api-version=2022-08-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -3682,7 +3908,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 22 Aug 2022 20:21:27 GMT
+      - Fri, 02 Sep 2022 05:04:57 GMT
       expires:
       - '-1'
       pragma:
@@ -3722,7 +3948,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.39.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.8.10 (Windows-10-10.0.22000-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkFunction/locations/westus/nfvOperations/49ba0368-31c6-4f5c-9e8d-2bfba46e8434?api-version=2022-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkFunction/locations/westus/nfvOperations/9369d065-2fcc-4ca1-a870-ab49ff97ad70?api-version=2022-08-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -3734,7 +3960,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 22 Aug 2022 20:21:37 GMT
+      - Fri, 02 Sep 2022 05:05:08 GMT
       expires:
       - '-1'
       pragma:
@@ -3774,7 +4000,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.39.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.8.10 (Windows-10-10.0.22000-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkFunction/locations/westus/nfvOperations/49ba0368-31c6-4f5c-9e8d-2bfba46e8434?api-version=2022-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkFunction/locations/westus/nfvOperations/9369d065-2fcc-4ca1-a870-ab49ff97ad70?api-version=2022-08-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -3786,7 +4012,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 22 Aug 2022 20:21:47 GMT
+      - Fri, 02 Sep 2022 05:05:18 GMT
       expires:
       - '-1'
       pragma:
@@ -3826,7 +4052,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.39.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.8.10 (Windows-10-10.0.22000-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkFunction/locations/westus/nfvOperations/49ba0368-31c6-4f5c-9e8d-2bfba46e8434?api-version=2022-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkFunction/locations/westus/nfvOperations/9369d065-2fcc-4ca1-a870-ab49ff97ad70?api-version=2022-08-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -3838,7 +4064,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 22 Aug 2022 20:21:57 GMT
+      - Fri, 02 Sep 2022 05:05:28 GMT
       expires:
       - '-1'
       pragma:
@@ -3878,7 +4104,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.39.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.8.10 (Windows-10-10.0.22000-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkFunction/locations/westus/nfvOperations/49ba0368-31c6-4f5c-9e8d-2bfba46e8434?api-version=2022-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkFunction/locations/westus/nfvOperations/9369d065-2fcc-4ca1-a870-ab49ff97ad70?api-version=2022-08-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -3890,7 +4116,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 22 Aug 2022 20:22:07 GMT
+      - Fri, 02 Sep 2022 05:05:38 GMT
       expires:
       - '-1'
       pragma:
@@ -3930,7 +4156,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.39.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.8.10 (Windows-10-10.0.22000-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkFunction/locations/westus/nfvOperations/49ba0368-31c6-4f5c-9e8d-2bfba46e8434?api-version=2022-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkFunction/locations/westus/nfvOperations/9369d065-2fcc-4ca1-a870-ab49ff97ad70?api-version=2022-08-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -3942,7 +4168,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 22 Aug 2022 20:22:17 GMT
+      - Fri, 02 Sep 2022 05:05:48 GMT
       expires:
       - '-1'
       pragma:
@@ -3982,7 +4208,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.39.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.8.10 (Windows-10-10.0.22000-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkFunction/locations/westus/nfvOperations/49ba0368-31c6-4f5c-9e8d-2bfba46e8434?api-version=2022-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkFunction/locations/westus/nfvOperations/9369d065-2fcc-4ca1-a870-ab49ff97ad70?api-version=2022-08-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -3994,7 +4220,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 22 Aug 2022 20:22:27 GMT
+      - Fri, 02 Sep 2022 05:05:58 GMT
       expires:
       - '-1'
       pragma:
@@ -4034,7 +4260,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.39.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.8.10 (Windows-10-10.0.22000-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkFunction/locations/westus/nfvOperations/49ba0368-31c6-4f5c-9e8d-2bfba46e8434?api-version=2022-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkFunction/locations/westus/nfvOperations/9369d065-2fcc-4ca1-a870-ab49ff97ad70?api-version=2022-08-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -4046,7 +4272,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 22 Aug 2022 20:22:37 GMT
+      - Fri, 02 Sep 2022 05:06:08 GMT
       expires:
       - '-1'
       pragma:
@@ -4086,7 +4312,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.39.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.8.10 (Windows-10-10.0.22000-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkFunction/locations/westus/nfvOperations/49ba0368-31c6-4f5c-9e8d-2bfba46e8434?api-version=2022-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkFunction/locations/westus/nfvOperations/9369d065-2fcc-4ca1-a870-ab49ff97ad70?api-version=2022-08-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -4098,7 +4324,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 22 Aug 2022 20:22:48 GMT
+      - Fri, 02 Sep 2022 05:06:18 GMT
       expires:
       - '-1'
       pragma:
@@ -4138,7 +4364,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.39.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.8.10 (Windows-10-10.0.22000-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkFunction/locations/westus/nfvOperations/49ba0368-31c6-4f5c-9e8d-2bfba46e8434?api-version=2022-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkFunction/locations/westus/nfvOperations/9369d065-2fcc-4ca1-a870-ab49ff97ad70?api-version=2022-08-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -4150,7 +4376,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 22 Aug 2022 20:22:58 GMT
+      - Fri, 02 Sep 2022 05:06:28 GMT
       expires:
       - '-1'
       pragma:
@@ -4190,7 +4416,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.39.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.8.10 (Windows-10-10.0.22000-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkFunction/locations/westus/nfvOperations/49ba0368-31c6-4f5c-9e8d-2bfba46e8434?api-version=2022-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkFunction/locations/westus/nfvOperations/9369d065-2fcc-4ca1-a870-ab49ff97ad70?api-version=2022-08-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -4202,7 +4428,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 22 Aug 2022 20:23:08 GMT
+      - Fri, 02 Sep 2022 05:06:39 GMT
       expires:
       - '-1'
       pragma:
@@ -4242,7 +4468,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.39.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.8.10 (Windows-10-10.0.22000-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkFunction/locations/westus/nfvOperations/49ba0368-31c6-4f5c-9e8d-2bfba46e8434?api-version=2022-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkFunction/locations/westus/nfvOperations/9369d065-2fcc-4ca1-a870-ab49ff97ad70?api-version=2022-08-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -4254,7 +4480,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 22 Aug 2022 20:23:18 GMT
+      - Fri, 02 Sep 2022 05:06:49 GMT
       expires:
       - '-1'
       pragma:
@@ -4294,7 +4520,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.39.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.8.10 (Windows-10-10.0.22000-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkFunction/locations/westus/nfvOperations/49ba0368-31c6-4f5c-9e8d-2bfba46e8434?api-version=2022-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkFunction/locations/westus/nfvOperations/9369d065-2fcc-4ca1-a870-ab49ff97ad70?api-version=2022-08-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -4306,7 +4532,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 22 Aug 2022 20:23:28 GMT
+      - Fri, 02 Sep 2022 05:06:59 GMT
       expires:
       - '-1'
       pragma:
@@ -4346,7 +4572,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.39.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.8.10 (Windows-10-10.0.22000-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkFunction/locations/westus/nfvOperations/49ba0368-31c6-4f5c-9e8d-2bfba46e8434?api-version=2022-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkFunction/locations/westus/nfvOperations/9369d065-2fcc-4ca1-a870-ab49ff97ad70?api-version=2022-08-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -4358,7 +4584,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 22 Aug 2022 20:23:38 GMT
+      - Fri, 02 Sep 2022 05:07:09 GMT
       expires:
       - '-1'
       pragma:
@@ -4398,7 +4624,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.39.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.8.10 (Windows-10-10.0.22000-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkFunction/locations/westus/nfvOperations/49ba0368-31c6-4f5c-9e8d-2bfba46e8434?api-version=2022-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkFunction/locations/westus/nfvOperations/9369d065-2fcc-4ca1-a870-ab49ff97ad70?api-version=2022-08-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -4410,7 +4636,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 22 Aug 2022 20:23:48 GMT
+      - Fri, 02 Sep 2022 05:07:19 GMT
       expires:
       - '-1'
       pragma:
@@ -4450,7 +4676,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.39.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.8.10 (Windows-10-10.0.22000-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkFunction/locations/westus/nfvOperations/49ba0368-31c6-4f5c-9e8d-2bfba46e8434?api-version=2022-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkFunction/locations/westus/nfvOperations/9369d065-2fcc-4ca1-a870-ab49ff97ad70?api-version=2022-08-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -4462,7 +4688,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 22 Aug 2022 20:23:58 GMT
+      - Fri, 02 Sep 2022 05:07:29 GMT
       expires:
       - '-1'
       pragma:
@@ -4502,7 +4728,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.39.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.8.10 (Windows-10-10.0.22000-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkFunction/locations/westus/nfvOperations/49ba0368-31c6-4f5c-9e8d-2bfba46e8434?api-version=2022-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkFunction/locations/westus/nfvOperations/9369d065-2fcc-4ca1-a870-ab49ff97ad70?api-version=2022-08-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -4514,7 +4740,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 22 Aug 2022 20:24:08 GMT
+      - Fri, 02 Sep 2022 05:07:39 GMT
       expires:
       - '-1'
       pragma:
@@ -4554,7 +4780,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.39.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.8.10 (Windows-10-10.0.22000-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkFunction/locations/westus/nfvOperations/49ba0368-31c6-4f5c-9e8d-2bfba46e8434?api-version=2022-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkFunction/locations/westus/nfvOperations/9369d065-2fcc-4ca1-a870-ab49ff97ad70?api-version=2022-08-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -4566,7 +4792,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 22 Aug 2022 20:24:19 GMT
+      - Fri, 02 Sep 2022 05:07:49 GMT
       expires:
       - '-1'
       pragma:
@@ -4606,7 +4832,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.39.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.8.10 (Windows-10-10.0.22000-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkFunction/locations/westus/nfvOperations/49ba0368-31c6-4f5c-9e8d-2bfba46e8434?api-version=2022-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkFunction/locations/westus/nfvOperations/9369d065-2fcc-4ca1-a870-ab49ff97ad70?api-version=2022-08-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -4618,7 +4844,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 22 Aug 2022 20:24:29 GMT
+      - Fri, 02 Sep 2022 05:07:59 GMT
       expires:
       - '-1'
       pragma:
@@ -4658,7 +4884,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.39.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.8.10 (Windows-10-10.0.22000-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkFunction/locations/westus/nfvOperations/49ba0368-31c6-4f5c-9e8d-2bfba46e8434?api-version=2022-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkFunction/locations/westus/nfvOperations/9369d065-2fcc-4ca1-a870-ab49ff97ad70?api-version=2022-08-01
   response:
     body:
       string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
@@ -4670,7 +4896,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 22 Aug 2022 20:24:40 GMT
+      - Fri, 02 Sep 2022 05:08:09 GMT
       expires:
       - '-1'
       pragma:
@@ -4710,7 +4936,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.39.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.8.10 (Windows-10-10.0.22000-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkFunction/locations/westus/nfvOperationResults/49ba0368-31c6-4f5c-9e8d-2bfba46e8434?api-version=2022-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkFunction/locations/westus/nfvOperationResults/9369d065-2fcc-4ca1-a870-ab49ff97ad70?api-version=2022-08-01
   response:
     body:
       string: 'null'
@@ -4722,7 +4948,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 22 Aug 2022 20:24:40 GMT
+      - Fri, 02 Sep 2022 05:08:10 GMT
       expires:
       - '-1'
       pragma:

@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "network-function traffic-collector collector-policy",
 )
 class __CMDGroup(AAZCommandGroup):
-    """Creates or updates a Collector Policy of Azure Traffic Collector resource
+    """Manage Collector Policy for Azure Traffic Collector resource
     """
     pass
 

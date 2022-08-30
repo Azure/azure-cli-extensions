@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "network-function traffic-collector",
 )
 class __CMDGroup(AAZCommandGroup):
-    """Creates or updates a Azure Traffic Collector resource
+    """Manage Azure Traffic Collector resources
     """
     pass
 

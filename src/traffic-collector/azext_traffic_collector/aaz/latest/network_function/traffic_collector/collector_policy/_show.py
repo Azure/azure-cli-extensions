@@ -15,7 +15,10 @@ from azure.cli.core.aaz import *
     "network-function traffic-collector collector-policy show",
 )
 class Show(AAZCommand):
-    """Gets the collector policy in a specified Traffic Collector
+    """Get the specified Collector Policy
+
+    :example: Get the specified collector policy
+        az network-function traffic-collector collector-policy show --resource-group rg1 --traffic-collector-name atc1 --name cp1
     """
 
     _aaz_info = {
@@ -41,8 +44,8 @@ class Show(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.azure_traffic_collector_name = AAZStrArg(
-            options=["--azure-traffic-collector-name"],
+        _args_schema.traffic_collector_name = AAZStrArg(
+            options=["-t", "--traffic-collector-name"],
             help="Azure Traffic Collector name",
             required=True,
             id_part="name",
@@ -95,7 +98,7 @@ class Show(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "azureTrafficCollectorName", self.ctx.args.azure_traffic_collector_name,
+                    "azureTrafficCollectorName", self.ctx.args.traffic_collector_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -156,7 +159,9 @@ class Show(AAZCommand):
             _schema_on_200.id = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200.location = AAZStrType()
+            _schema_on_200.location = AAZStrType(
+                flags={"required": True},
+            )
             _schema_on_200.name = AAZStrType(
                 flags={"read_only": True},
             )

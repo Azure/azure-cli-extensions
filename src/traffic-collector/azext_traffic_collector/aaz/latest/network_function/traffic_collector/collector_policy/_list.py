@@ -15,7 +15,10 @@ from azure.cli.core.aaz import *
     "network-function traffic-collector collector-policy list",
 )
 class List(AAZCommand):
-    """Return list of Collector policies in a Azure Traffic Collector
+    """List Collector policies
+
+    :example: Return a list of collector policies by resource group and traffic-collector name
+        az network-function traffic-collector collector-policy list --resource-group rg1 --traffic-collector-name atc1
     """
 
     _aaz_info = {
@@ -40,8 +43,8 @@ class List(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.azure_traffic_collector_name = AAZStrArg(
-            options=["--azure-traffic-collector-name"],
+        _args_schema.traffic_collector_name = AAZStrArg(
+            options=["-t", "--traffic-collector-name"],
             help="Azure Traffic Collector name",
             required=True,
         )
@@ -88,7 +91,7 @@ class List(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "azureTrafficCollectorName", self.ctx.args.azure_traffic_collector_name,
+                    "azureTrafficCollectorName", self.ctx.args.traffic_collector_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -155,7 +158,9 @@ class List(AAZCommand):
             _element.id = AAZStrType(
                 flags={"read_only": True},
             )
-            _element.location = AAZStrType()
+            _element.location = AAZStrType(
+                flags={"required": True},
+            )
             _element.name = AAZStrType(
                 flags={"read_only": True},
             )
