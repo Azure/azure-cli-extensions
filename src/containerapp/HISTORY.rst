@@ -3,6 +3,10 @@
 Release History
 ===============
 
+0.3.12
+++++++
+* 'az containerapp compose create': Migrated from containerapp-compose extension
+
 0.3.11
 ++++++
 * Add keda scale rule parameters to 'az containerapp create', 'az containerapp update' and 'az containerapp revision copy'

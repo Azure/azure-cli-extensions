@@ -351,3 +351,10 @@ def load_arguments(self, _):
 
     with self.argument_context('containerapp hostname delete') as c:
         c.argument('hostname', help='The custom domain name.')
+
+    # Compose
+
+    with self.argument_context('containerapp compose create') as c:
+        c.argument('environment', options_list=['--environment', '-e'], help='Name or resource id of the Container App environment.')
+        c.argument('compose_file_path', options_list=['--compose-file-path', '-f'], help='Path to a Docker Compose file with the configuration to import to Azure Container Apps.')
+        c.argument('transport_mapping', options_list=['--transport-mapping', c.deprecate(target='--transport', redirect='--transport-mapping')], action='append', nargs='+', help="Transport options per Container App instance (servicename=transportsetting).")
