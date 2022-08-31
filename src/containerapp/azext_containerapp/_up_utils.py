@@ -45,7 +45,8 @@ from ._utils import (
     get_container_app_if_exists,
     trigger_workflow,
     _ensure_location_allowed,
-    register_provider_if_needed
+    register_provider_if_needed,
+    validate_environment_location
 )
 
 from ._constants import (MAXIMUM_SECRET_LENGTH,
@@ -872,58 +873,6 @@ def find_existing_acr(cmd, app: "ContainerApp"):
         app.should_create_acr = False
         return acr.name, parse_resource_id(acr.id)["resource_group"]
     return None, None
-
-
-def validate_environment_location(cmd, location):
-    from ._constants import MAX_ENV_PER_LOCATION
-    env_list = list_managed_environments(cmd)
-
-    locations = [loc["location"] for loc in env_list]
-    locations = list(set(locations))  # remove duplicates
-
-    location_count = {}
-    for loc in locations:
-        location_count[loc] = len([e for e in env_list if e["location"] == loc])
-
-    disallowed_locations = []
-    for _, value in enumerate(location_count):
-        if location_count[value] > MAX_ENV_PER_LOCATION - 1:
-            disallowed_locations.append(value)
-
-    res_locations = list_environment_locations(cmd)
-    res_locations = [loc for loc in res_locations if loc not in disallowed_locations]
-
-    allowed_locs = ", ".join(res_locations)
-
-    if location:
-        try:
-            _ensure_location_allowed(cmd, location, CONTAINER_APPS_RP, "managedEnvironments")
-        except Exception as e:  # pylint: disable=broad-except
-            raise ValidationError("You cannot create a Containerapp environment in location {}. List of eligible locations: {}.".format(location, allowed_locs)) from e
-
-    if len(res_locations) > 0:
-        if not location:
-            logger.warning("Creating environment on location {}.".format(res_locations[0]))
-            return res_locations[0]
-        if location in disallowed_locations:
-            raise ValidationError("You have more than {} environments in location {}. List of eligible locations: {}.".format(MAX_ENV_PER_LOCATION, location, allowed_locs))
-        return location
-    else:
-        raise ValidationError("You cannot create any more environments. Environments are limited to {} per location in a subscription. Please specify an existing environment using --environment.".format(MAX_ENV_PER_LOCATION))
-
-
-def list_environment_locations(cmd):
-    from ._utils import providers_client_factory
-    providers_client = providers_client_factory(cmd.cli_ctx, get_subscription_id(cmd.cli_ctx))
-    resource_types = getattr(providers_client.get(CONTAINER_APPS_RP), 'resource_types', [])
-    res_locations = []
-    for res in resource_types:
-        if res and getattr(res, 'resource_type', "") == "managedEnvironments":
-            res_locations = getattr(res, 'locations', [])
-
-    res_locations = [res_loc.lower().replace(" ", "").replace("(", "").replace(")", "") for res_loc in res_locations if res_loc.strip()]
-
-    return res_locations
 
 
 def check_env_name_on_rg(cmd, managed_env, resource_group_name, location):

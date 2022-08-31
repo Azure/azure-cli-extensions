@@ -16,6 +16,9 @@ VnetConfiguration = {
 ManagedEnvironment = {
     "location": None,
     "tags": None,
+    "sku": {
+        "name": "Consumption",
+    },
     "properties": {
         "daprAIInstrumentationKey": None,
         "vnetConfiguration": None,  # VnetConfiguration

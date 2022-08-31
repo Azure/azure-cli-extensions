@@ -21,12 +21,12 @@ from .example_steps import step_link_notification_hub
 from .example_steps import step_list_key
 from .example_steps import step_regenerate_key
 from .example_steps import step_delete
+from .recording_processors import BodyReplacerProcessor
 from .. import (
     try_manual,
     raise_if,
     calc_coverage
 )
-
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
@@ -60,6 +60,9 @@ def call_scenario(test, rg_2, rg):
     step_list(test, rg_2, rg, checks=[
         test.check('length(@)', 1),
     ])
+    step_list2(test, rg_2, rg, checks=[
+        test.check('length(@)', 1),
+    ])
     step_update(test, rg_2, rg, checks=[
         test.check("name", "{myCommunicationService}", case_sensitive=False),
         test.check("location", "Global", case_sensitive=False),
@@ -78,7 +81,7 @@ def call_scenario(test, rg_2, rg):
 class CommunicationScenarioTest(ScenarioTest):
 
     def __init__(self, *args, **kwargs):
-        super(CommunicationScenarioTest, self).__init__(*args, **kwargs)
+        super(CommunicationScenarioTest, self).__init__(recording_processors=[], *args, **kwargs)
         self.kwargs.update({
             'subscription_id': self.get_subscription_id()
         })
@@ -92,7 +95,7 @@ class CommunicationScenarioTest(ScenarioTest):
     @ResourceGroupPreparer(name_prefix='clitestcommunication_MyOtherResourceGroup'[:7], key='rg_2',
                            parameter_name='rg_2')
     @ResourceGroupPreparer(name_prefix='clitestcommunication_MyResourceGroup'[:7], key='rg', parameter_name='rg')
-    def test_communication_Scenario(self, rg_2, rg):
+    def test_communication_scenario(self, rg_2, rg):
         call_scenario(self, rg_2, rg)
         calc_coverage(__file__)
         raise_if()
