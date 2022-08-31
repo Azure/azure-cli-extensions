@@ -202,5 +202,5 @@ def load_command_table(self, _):
         g.custom_command('list', 'aks_trustedaccess_role_binding_list')
         g.custom_show_command('show', 'aks_trustedaccess_role_binding_get')
         g.custom_command('create', 'aks_trustedaccess_role_binding_create')
-        g.custom_command('update', 'aks_trustedaccess_role_binding_create')
+        g.custom_command('update', 'aks_trustedaccess_role_binding_update')
         g.custom_command('delete', 'aks_trustedaccess_role_binding_delete', confirmation=True)
