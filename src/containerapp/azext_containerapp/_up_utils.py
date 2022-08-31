@@ -5,6 +5,7 @@
 # pylint: disable=line-too-long, consider-using-f-string, no-else-return, duplicate-string-formatting-argument, expression-not-assigned, too-many-locals, logging-fstring-interpolation, arguments-differ, abstract-method, logging-format-interpolation, broad-except
 
 
+from tempfile import NamedTemporaryFile
 from urllib.parse import urlparse
 import requests
 
@@ -13,6 +14,7 @@ from azure.cli.core.azclierror import (
     ValidationError,
     InvalidArgumentValueError,
     MutuallyExclusiveArgumentError,
+    CLIError,
 )
 from azure.cli.core.commands.client_factory import get_subscription_id
 from azure.cli.command_modules.appservice._create_util import (
@@ -47,7 +49,13 @@ from ._utils import (
     validate_environment_location
 )
 
-from ._constants import MAXIMUM_SECRET_LENGTH, LOG_ANALYTICS_RP, CONTAINER_APPS_RP, ACR_IMAGE_SUFFIX, MAXIMUM_CONTAINER_APP_NAME_LENGTH
+from ._constants import (MAXIMUM_SECRET_LENGTH,
+                         LOG_ANALYTICS_RP,
+                         CONTAINER_APPS_RP,
+                         ACR_IMAGE_SUFFIX,
+                         MAXIMUM_CONTAINER_APP_NAME_LENGTH,
+                         ACR_TASK_TEMPLATE,
+                         DEFAULT_PORT)
 
 from .custom import (
     create_managed_environment,
@@ -314,7 +322,46 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
             self.cmd.cli_ctx, registry_name
         )
 
-    def run_acr_build(self, dockerfile, source, quiet=False):
+    def build_container_from_source(self, image_name, source):
+        from azure.cli.command_modules.acr.task import acr_task_create, acr_task_run
+        from azure.cli.command_modules.acr._client_factory import cf_acr_tasks, cf_acr_runs
+        from azure.cli.core.profiles import ResourceType
+
+        task_name = "cli_build_containerapp"
+        registry_name = (self.registry_server[: self.registry_server.rindex(ACR_IMAGE_SUFFIX)]).lower()
+        if not self.target_port:
+            self.target_port = DEFAULT_PORT
+        task_content = ACR_TASK_TEMPLATE.replace("{{image_name}}", image_name).replace("{{target_port}}", str(self.target_port))
+        task_client = cf_acr_tasks(self.cmd.cli_ctx)
+        run_client = cf_acr_runs(self.cmd.cli_ctx)
+        task_command_kwargs = {"resource_type": ResourceType.MGMT_CONTAINERREGISTRY, 'operation_group': 'webhooks'}
+        old_command_kwargs = {}
+        for key in task_command_kwargs:
+            old_command_kwargs[key] = self.cmd.command_kwargs.get(key)
+            self.cmd.command_kwargs[key] = task_command_kwargs[key]
+
+        with NamedTemporaryFile(mode="w") as task_file:
+            task_file.write(task_content)
+            task_file.flush()
+
+            acr_task_create(self.cmd, task_client, task_name, registry_name, context_path="/dev/null", file=task_file.name)
+            logger.warning("Created ACR task %s in registry %s", task_name, registry_name)
+            from time import sleep
+            sleep(10)
+
+            logger.warning("Running ACR build...")
+            try:
+                acr_task_run(self.cmd, run_client, task_name, registry_name, file=task_file.name, context_path=source)
+            except CLIError as e:
+                logger.error("Failed to automatically generate a docker container from your source. \n"
+                             "See the ACR logs above for more error information. \nPlease check the supported langauges for autogenerating docker containers (https://github.com/microsoft/Oryx/blob/main/doc/supportedRuntimeVersions.md), "
+                             "or consider using a Dockerfile for your app.")
+                raise e
+
+        for k, v in old_command_kwargs.items():
+            self.cmd.command_kwargs[k] = v
+
+    def run_acr_build(self, dockerfile, source, quiet=False, build_from_source=False):
         image_name = self.image if self.image is not None else self.name
         from datetime import datetime
 
@@ -326,15 +373,21 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
 
         self.image = self.registry_server + "/" + image_name
 
-        queue_acr_build(
-            self.cmd,
-            self.acr.resource_group.name,
-            self.acr.name,
-            image_name,
-            source,
-            dockerfile,
-            quiet,
-        )
+
+        if build_from_source:
+            # TODO should we prompt for confirmation here?
+            logger.warning("No dockerfile detected. Attempting to build a container directly from the provided source...")
+            self.build_container_from_source(image_name, source)
+        else:
+            queue_acr_build(
+                self.cmd,
+                self.acr.resource_group.name,
+                self.acr.name,
+                image_name,
+                source,
+                dockerfile,
+                quiet,
+            )
 
 
 def _create_service_principal(cmd, resource_group_name, env_resource_group_name):
@@ -478,6 +531,14 @@ def _reformat_image(source, repo, image):
         image = image.split("/")[-1]  # if link is given
         image = image.replace(":", "")
     return image
+
+
+def _has_dockerfile(source, dockerfile):
+    try:
+        content = _get_dockerfile_content_local(source, dockerfile)
+        return bool(content)
+    except InvalidArgumentValueError:
+        return False
 
 
 def _get_dockerfile_content_local(source, dockerfile):
@@ -772,7 +833,7 @@ def _create_github_action(
     )
 
 
-def up_output(app):
+def up_output(app: 'ContainerApp', no_dockerfile):
     url = safe_get(
         ContainerAppClient.show(app.cmd, app.resource_group.name, app.name),
         "properties",
@@ -786,6 +847,9 @@ def up_output(app):
     logger.warning(
         f"\nYour container app {app.name} has been created and deployed! Congrats! \n"
     )
+    if no_dockerfile and app.ingress:
+        logger.warning(f"Your app is running image {app.image} and listening on port {app.target_port}")
+
     url and logger.warning(f"Browse to your container app at: {url} \n")
     logger.warning(
         f"Stream logs for your container with: az containerapp logs show -n {app.name} -g {app.resource_group.name} \n"
