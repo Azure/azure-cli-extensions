@@ -515,7 +515,10 @@ def create_containerapp(cmd,
         if "configuration" in r["properties"] and "ingress" in r["properties"]["configuration"] and "fqdn" in r["properties"]["configuration"]["ingress"]:
             not disable_warnings and logger.warning("\nContainer app created. Access your app at https://{}/\n".format(r["properties"]["configuration"]["ingress"]["fqdn"]))
         else:
-            not disable_warnings and logger.warning("\nContainer app created. To access it over HTTPS, enable ingress: az containerapp ingress enable --help\n")
+            target_port = target_port or "<port>"
+            not disable_warnings and logger.warning("\nContainer app created. To access it over HTTPS, enable ingress: "
+                                                    "az containerapp ingress enable -n %s -g %s --type external --target-port %s"
+                                                    " --transport auto\n", name, resource_group_name, target_port)
 
         return r
     except Exception as e:
@@ -2389,7 +2392,7 @@ def containerapp_up(cmd,
     if browse:
         open_containerapp_in_browser(cmd, app.name, app.resource_group.name)
 
-    up_output(app)
+    up_output(app, no_dockerfile=(source and not _has_dockerfile(source, dockerfile)))
 
 
 def containerapp_up_logic(cmd, resource_group_name, name, managed_env, image, env_vars, ingress, target_port, registry_server, registry_user, registry_pass):

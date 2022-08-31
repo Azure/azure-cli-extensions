@@ -832,7 +832,7 @@ def _create_github_action(
     )
 
 
-def up_output(app):
+def up_output(app: 'ContainerApp', no_dockerfile):
     url = safe_get(
         ContainerAppClient.show(app.cmd, app.resource_group.name, app.name),
         "properties",
@@ -846,6 +846,9 @@ def up_output(app):
     logger.warning(
         f"\nYour container app {app.name} has been created and deployed! Congrats! \n"
     )
+    if no_dockerfile and app.ingress:
+        logger.warning(f"Your app is running image {app.image} and listening on port {app.target_port}")
+
     url and logger.warning(f"Browse to your container app at: {url} \n")
     logger.warning(
         f"Stream logs for your container with: az containerapp logs show -n {app.name} -g {app.resource_group.name} \n"
