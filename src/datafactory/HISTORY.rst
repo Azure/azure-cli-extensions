@@ -2,6 +2,9 @@
 
 Release History
 ===============
+0.6.0
++++++
+* dependency module update
 
 0.5.0
 +++++

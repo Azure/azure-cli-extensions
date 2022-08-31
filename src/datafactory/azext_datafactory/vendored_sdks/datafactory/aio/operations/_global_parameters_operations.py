@@ -20,18 +20,18 @@ from azure.mgmt.core.exceptions import ARMErrorFormat
 
 from ... import models as _models
 from ..._vendor import _convert_request
-from ...operations._linked_services_operations import build_create_or_update_request, build_delete_request, build_get_request, build_list_by_factory_request
+from ...operations._global_parameters_operations import build_create_or_update_request, build_delete_request, build_get_request, build_list_by_factory_request
 T = TypeVar('T')
 ClsType = Optional[Callable[[PipelineResponse[HttpRequest, AsyncHttpResponse], T, Dict[str, Any]], Any]]
 
-class LinkedServicesOperations:
+class GlobalParametersOperations:
     """
     .. warning::
         **DO NOT** instantiate this class directly.
 
         Instead, you should access the following operations through
         :class:`~azure.mgmt.datafactory.aio.DataFactoryManagementClient`'s
-        :attr:`linked_services` attribute.
+        :attr:`global_parameters` attribute.
     """
 
     models = _models
@@ -50,25 +50,25 @@ class LinkedServicesOperations:
         resource_group_name: str,
         factory_name: str,
         **kwargs: Any
-    ) -> AsyncIterable[_models.LinkedServiceListResponse]:
-        """Lists linked services.
+    ) -> AsyncIterable[_models.GlobalParameterListResponse]:
+        """Lists Global parameters.
 
         :param resource_group_name: The resource group name.
         :type resource_group_name: str
         :param factory_name: The factory name.
         :type factory_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: An iterator like instance of either LinkedServiceListResponse or the result of
+        :return: An iterator like instance of either GlobalParameterListResponse or the result of
          cls(response)
         :rtype:
-         ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.datafactory.models.LinkedServiceListResponse]
+         ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.datafactory.models.GlobalParameterListResponse]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
         api_version = kwargs.pop('api_version', _params.pop('api-version', "2018-06-01"))  # type: str
-        cls = kwargs.pop('cls', None)  # type: ClsType[_models.LinkedServiceListResponse]
+        cls = kwargs.pop('cls', None)  # type: ClsType[_models.GlobalParameterListResponse]
 
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
@@ -106,7 +106,7 @@ class LinkedServicesOperations:
             return request
 
         async def extract_data(pipeline_response):
-            deserialized = self._deserialize("LinkedServiceListResponse", pipeline_response)
+            deserialized = self._deserialize("GlobalParameterListResponse", pipeline_response)
             list_of_elem = deserialized.value
             if cls:
                 list_of_elem = cls(list_of_elem)
@@ -132,35 +132,97 @@ class LinkedServicesOperations:
         return AsyncItemPaged(
             get_next, extract_data
         )
-    list_by_factory.metadata = {'url': "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DataFactory/factories/{factoryName}/linkedservices"}  # type: ignore
+    list_by_factory.metadata = {'url': "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DataFactory/factories/{factoryName}/globalParameters"}  # type: ignore
+
+    @distributed_trace_async
+    async def get(
+        self,
+        resource_group_name: str,
+        factory_name: str,
+        global_parameter_name: str,
+        **kwargs: Any
+    ) -> _models.GlobalParameterResource:
+        """Gets a Global parameter.
+
+        :param resource_group_name: The resource group name.
+        :type resource_group_name: str
+        :param factory_name: The factory name.
+        :type factory_name: str
+        :param global_parameter_name: The global parameter name.
+        :type global_parameter_name: str
+        :keyword callable cls: A custom type or function that will be passed the direct response
+        :return: GlobalParameterResource, or the result of cls(response)
+        :rtype: ~azure.mgmt.datafactory.models.GlobalParameterResource
+        :raises: ~azure.core.exceptions.HttpResponseError
+        """
+        error_map = {
+            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
+        }
+        error_map.update(kwargs.pop('error_map', {}) or {})
+
+        _headers = kwargs.pop("headers", {}) or {}
+        _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
+
+        api_version = kwargs.pop('api_version', _params.pop('api-version', "2018-06-01"))  # type: str
+        cls = kwargs.pop('cls', None)  # type: ClsType[_models.GlobalParameterResource]
+
+        
+        request = build_get_request(
+            subscription_id=self._config.subscription_id,
+            resource_group_name=resource_group_name,
+            factory_name=factory_name,
+            global_parameter_name=global_parameter_name,
+            api_version=api_version,
+            template_url=self.get.metadata['url'],
+            headers=_headers,
+            params=_params,
+        )
+        request = _convert_request(request)
+        request.url = self._client.format_url(request.url)  # type: ignore
+
+        pipeline_response = await self._client._pipeline.run(  # type: ignore # pylint: disable=protected-access
+            request,
+            stream=False,
+            **kwargs
+        )
+        response = pipeline_response.http_response
+
+        if response.status_code not in [200]:
+            map_error(status_code=response.status_code, response=response, error_map=error_map)
+            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+
+        deserialized = self._deserialize('GlobalParameterResource', pipeline_response)
+
+        if cls:
+            return cls(pipeline_response, deserialized, {})
+
+        return deserialized
+
+    get.metadata = {'url': "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DataFactory/factories/{factoryName}/globalParameters/{globalParameterName}"}  # type: ignore
+
 
     @distributed_trace_async
     async def create_or_update(
         self,
         resource_group_name: str,
         factory_name: str,
-        linked_service_name: str,
-        linked_service: _models.LinkedServiceResource,
-        if_match: Optional[str] = None,
+        global_parameter_name: str,
+        default: _models.GlobalParameterResource,
         **kwargs: Any
-    ) -> _models.LinkedServiceResource:
-        """Creates or updates a linked service.
+    ) -> _models.GlobalParameterResource:
+        """Creates or updates a Global parameter.
 
         :param resource_group_name: The resource group name.
         :type resource_group_name: str
         :param factory_name: The factory name.
         :type factory_name: str
-        :param linked_service_name: The linked service name.
-        :type linked_service_name: str
-        :param linked_service: Linked service resource definition.
-        :type linked_service: ~azure.mgmt.datafactory.models.LinkedServiceResource
-        :param if_match: ETag of the linkedService entity.  Should only be specified for update, for
-         which it should match existing entity or can be * for unconditional update. Default value is
-         None.
-        :type if_match: str
+        :param global_parameter_name: The global parameter name.
+        :type global_parameter_name: str
+        :param default: Global parameter resource definition.
+        :type default: ~azure.mgmt.datafactory.models.GlobalParameterResource
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: LinkedServiceResource, or the result of cls(response)
-        :rtype: ~azure.mgmt.datafactory.models.LinkedServiceResource
+        :return: GlobalParameterResource, or the result of cls(response)
+        :rtype: ~azure.mgmt.datafactory.models.GlobalParameterResource
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         error_map = {
@@ -173,19 +235,18 @@ class LinkedServicesOperations:
 
         api_version = kwargs.pop('api_version', _params.pop('api-version', "2018-06-01"))  # type: str
         content_type = kwargs.pop('content_type', _headers.pop('Content-Type', "application/json"))  # type: Optional[str]
-        cls = kwargs.pop('cls', None)  # type: ClsType[_models.LinkedServiceResource]
+        cls = kwargs.pop('cls', None)  # type: ClsType[_models.GlobalParameterResource]
 
-        _json = self._serialize.body(linked_service, 'LinkedServiceResource')
+        _json = self._serialize.body(default, 'GlobalParameterResource')
 
         request = build_create_or_update_request(
             subscription_id=self._config.subscription_id,
             resource_group_name=resource_group_name,
             factory_name=factory_name,
-            linked_service_name=linked_service_name,
+            global_parameter_name=global_parameter_name,
             api_version=api_version,
             content_type=content_type,
             json=_json,
-            if_match=if_match,
             template_url=self.create_or_update.metadata['url'],
             headers=_headers,
             params=_params,
@@ -204,89 +265,14 @@ class LinkedServicesOperations:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
-        deserialized = self._deserialize('LinkedServiceResource', pipeline_response)
+        deserialized = self._deserialize('GlobalParameterResource', pipeline_response)
 
         if cls:
             return cls(pipeline_response, deserialized, {})
 
         return deserialized
 
-    create_or_update.metadata = {'url': "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DataFactory/factories/{factoryName}/linkedservices/{linkedServiceName}"}  # type: ignore
-
-
-    @distributed_trace_async
-    async def get(
-        self,
-        resource_group_name: str,
-        factory_name: str,
-        linked_service_name: str,
-        if_none_match: Optional[str] = None,
-        **kwargs: Any
-    ) -> Optional[_models.LinkedServiceResource]:
-        """Gets a linked service.
-
-        :param resource_group_name: The resource group name.
-        :type resource_group_name: str
-        :param factory_name: The factory name.
-        :type factory_name: str
-        :param linked_service_name: The linked service name.
-        :type linked_service_name: str
-        :param if_none_match: ETag of the linked service entity. Should only be specified for get. If
-         the ETag matches the existing entity tag, or if * was provided, then no content will be
-         returned. Default value is None.
-        :type if_none_match: str
-        :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: LinkedServiceResource, or the result of cls(response)
-        :rtype: ~azure.mgmt.datafactory.models.LinkedServiceResource or None
-        :raises: ~azure.core.exceptions.HttpResponseError
-        """
-        error_map = {
-            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
-        }
-        error_map.update(kwargs.pop('error_map', {}) or {})
-
-        _headers = kwargs.pop("headers", {}) or {}
-        _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
-
-        api_version = kwargs.pop('api_version', _params.pop('api-version', "2018-06-01"))  # type: str
-        cls = kwargs.pop('cls', None)  # type: ClsType[Optional[_models.LinkedServiceResource]]
-
-        
-        request = build_get_request(
-            subscription_id=self._config.subscription_id,
-            resource_group_name=resource_group_name,
-            factory_name=factory_name,
-            linked_service_name=linked_service_name,
-            api_version=api_version,
-            if_none_match=if_none_match,
-            template_url=self.get.metadata['url'],
-            headers=_headers,
-            params=_params,
-        )
-        request = _convert_request(request)
-        request.url = self._client.format_url(request.url)  # type: ignore
-
-        pipeline_response = await self._client._pipeline.run(  # type: ignore # pylint: disable=protected-access
-            request,
-            stream=False,
-            **kwargs
-        )
-        response = pipeline_response.http_response
-
-        if response.status_code not in [200, 304]:
-            map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
-
-        deserialized = None
-        if response.status_code == 200:
-            deserialized = self._deserialize('LinkedServiceResource', pipeline_response)
-
-        if cls:
-            return cls(pipeline_response, deserialized, {})
-
-        return deserialized
-
-    get.metadata = {'url': "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DataFactory/factories/{factoryName}/linkedservices/{linkedServiceName}"}  # type: ignore
+    create_or_update.metadata = {'url': "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DataFactory/factories/{factoryName}/globalParameters/{globalParameterName}"}  # type: ignore
 
 
     @distributed_trace_async
@@ -294,17 +280,17 @@ class LinkedServicesOperations:
         self,
         resource_group_name: str,
         factory_name: str,
-        linked_service_name: str,
+        global_parameter_name: str,
         **kwargs: Any
     ) -> None:
-        """Deletes a linked service.
+        """Deletes a Global parameter.
 
         :param resource_group_name: The resource group name.
         :type resource_group_name: str
         :param factory_name: The factory name.
         :type factory_name: str
-        :param linked_service_name: The linked service name.
-        :type linked_service_name: str
+        :param global_parameter_name: The global parameter name.
+        :type global_parameter_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: None, or the result of cls(response)
         :rtype: None
@@ -326,7 +312,7 @@ class LinkedServicesOperations:
             subscription_id=self._config.subscription_id,
             resource_group_name=resource_group_name,
             factory_name=factory_name,
-            linked_service_name=linked_service_name,
+            global_parameter_name=global_parameter_name,
             api_version=api_version,
             template_url=self.delete.metadata['url'],
             headers=_headers,
@@ -349,5 +335,5 @@ class LinkedServicesOperations:
         if cls:
             return cls(pipeline_response, None, {})
 
-    delete.metadata = {'url': "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DataFactory/factories/{factoryName}/linkedservices/{linkedServiceName}"}  # type: ignore
+    delete.metadata = {'url': "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DataFactory/factories/{factoryName}/globalParameters/{globalParameterName}"}  # type: ignore
 
