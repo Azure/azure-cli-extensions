@@ -1411,6 +1411,8 @@ def aks_operation_abort(cmd,   # pylint: disable=unused-argument
     
     instance = client.get(resource_group_name, cluster_name)
     power_state = PowerState(code="Running")
+    if instance is None:
+        raise InvalidArgumentValueError("Cluster {} doesnt exist, use 'aks list' to get current cluster list".format(cluster_name))
     instance.power_state = power_state
     headers = get_aks_custom_headers(aks_custom_headers)
     return sdk_no_wait(no_wait, client.abort_latest_operation, resource_group_name, cluster_name, headers=headers)
