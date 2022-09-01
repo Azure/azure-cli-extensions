@@ -1367,7 +1367,7 @@ helps['aks nodepool operation-abort'] = """
           short-summary: Send custom headers. When specified, format should be Key1=Value1,Key2=Value2
     examples:
         - name: Abort operation on agent pool
-          text: az aks nodepool operation-abort --resource-group myResourceGroup --name myAKSCluster --nodepool-name nodepool1
+          text: az aks nodepool operation-abort -g myResourceGroup -n nodepool1 --cluster-name myAKSCluster
 """
 
 helps['aks operation-abort'] = """
