@@ -47,7 +47,7 @@ from azext_aks_preview._consts import (
     CONST_OS_DISK_TYPE_EPHEMERAL,
     CONST_OS_DISK_TYPE_MANAGED,
     CONST_OS_SKU_CBLMARINER,
-    CONST_OS_SKU_CBLMARINERV2,
+    CONST_OS_SKU_MARINER,
     CONST_OS_SKU_UBUNTU,
     CONST_OS_SKU_WINDOWS2019,
     CONST_OS_SKU_WINDOWS2022,
@@ -131,7 +131,7 @@ node_mode_types = [CONST_NODEPOOL_MODE_SYSTEM, CONST_NODEPOOL_MODE_USER]
 node_os_skus = [
     CONST_OS_SKU_UBUNTU,
     CONST_OS_SKU_CBLMARINER,
-    CONST_OS_SKU_CBLMARINERV2,
+    CONST_OS_SKU_MARINER,
     CONST_OS_SKU_WINDOWS2019,
     CONST_OS_SKU_WINDOWS2022,
 ]
@@ -320,6 +320,7 @@ def load_arguments(self, _):
         c.argument('apiserver_subnet_id', validator=validate_apiserver_subnet_id, is_preview=True)
         c.argument('dns_zone_resource_id')
         c.argument('enable_keda', action='store_true', is_preview=True)
+        c.argument('enable_node_restriction', action='store_true', is_preview=True, help="enable node restriction for cluster")
         # nodepool
         c.argument('host_group_id', validator=validate_host_group_id, is_preview=True)
         c.argument('crg_id', validator=validate_crg_id, is_preview=True)
@@ -414,6 +415,8 @@ def load_arguments(self, _):
         c.argument('apiserver_subnet_id', validator=validate_apiserver_subnet_id, is_preview=True)
         c.argument('enable_keda', action='store_true', is_preview=True)
         c.argument('disable_keda', action='store_true', is_preview=True)
+        c.argument('enable_node_restriction', action='store_true', is_preview=True, help="enable node restriction for cluster")
+        c.argument('disable_node_restriction', action='store_true', is_preview=True, help="disable node restriction for cluster")
 
     with self.argument_context('aks upgrade') as c:
         c.argument('kubernetes_version', completer=get_k8s_upgrades_completion_list)
@@ -702,12 +705,12 @@ def load_arguments(self, _):
             c.argument('role_binding_name', options_list=[
                        '--name', '-n'], required=True, help='The role binding name.')
 
-    for scope in ['aks trustedaccess rolebinding create', 'aks trustedaccess rolebinding update']:
-        with self.argument_context(scope) as c:
-            c.argument('roles', nargs='*',
-                       help='space-separated roles: Microsoft.Demo/samples/reader Microsoft.Demo/samples/writer ...')
-            c.argument('source_resource_id', options_list=['--source-resource-id', '-s'],
-                       help='The source resource id of the binding')
+    with self.argument_context('aks trustedaccess rolebinding create') as c:
+        c.argument('roles', help='comma-separated roles: Microsoft.Demo/samples/reader,Microsoft.Demo/samples/writer,...')
+        c.argument('source_resource_id', options_list=['--source-resource-id', '-s'], help='The source resource id of the binding')
+
+    with self.argument_context('aks trustedaccess rolebinding update') as c:
+        c.argument('roles', help='comma-separated roles: Microsoft.Demo/samples/reader,Microsoft.Demo/samples/writer,...')
 
 
 def _get_default_install_location(exe_name):
