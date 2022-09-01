@@ -2,6 +2,9 @@
 
 Release History
 ===============
+0.6.0
++++++
+* Bug fix for `az datafactory pipeline list`.
 
 0.5.0
 +++++

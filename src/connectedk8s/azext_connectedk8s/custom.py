@@ -877,7 +877,7 @@ def update_connected_cluster(cmd, client, resource_group_name, cluster_name, htt
     patch_cc_response = update_connected_cluster_internal(client, resource_group_name, cluster_name, tags)
 
     proxy_params_unset = (https_proxy == "" and http_proxy == "" and no_proxy == "" and proxy_cert == "" and not disable_proxy)
-    if proxy_params_unset and not auto_upgrade and not tags:
+    if proxy_params_unset and not auto_upgrade and tags is None:
         raise RequiredArgumentMissingError(consts.No_Param_Error)
 
     if (https_proxy or http_proxy or no_proxy) and disable_proxy:
