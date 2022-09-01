@@ -1369,13 +1369,14 @@ def aks_agentpool_delete(cmd,   # pylint: disable=unused-argument
 
     return sdk_no_wait(no_wait, client.begin_delete, resource_group_name, cluster_name, nodepool_name, ignore_pod_disruption_budget=ignore_pod_disruption_budget)
 
+
 def aks_agentpool_operation_abort(cmd,   # pylint: disable=unused-argument
-                        client,
-                        resource_group_name,
-                        cluster_name,
-                        nodepool_name,
-                        aks_custom_headers=None,
-                        no_wait=False):
+                                  client,
+                                  resource_group_name,
+                                  cluster_name,
+                                  nodepool_name,
+                                  aks_custom_headers=None,
+                                  no_wait=False):
     PowerState = cmd.get_models(
         "PowerState",
         resource_type=CUSTOM_MGMT_AKS_PREVIEW,
@@ -1397,6 +1398,7 @@ def aks_agentpool_operation_abort(cmd,   # pylint: disable=unused-argument
     headers = get_aks_custom_headers(aks_custom_headers)
     return sdk_no_wait(no_wait, client.abort_latest_operation, resource_group_name, cluster_name, nodepool_name, headers=headers)
 
+
 def aks_operation_abort(cmd,   # pylint: disable=unused-argument
                         client,
                         resource_group_name,
@@ -1408,7 +1410,7 @@ def aks_operation_abort(cmd,   # pylint: disable=unused-argument
         resource_type=CUSTOM_MGMT_AKS_PREVIEW,
         operation_group="managed_clusters",
     )
-    
+
     instance = client.get(resource_group_name, cluster_name)
     power_state = PowerState(code="Running")
     if instance is None:
@@ -1416,6 +1418,7 @@ def aks_operation_abort(cmd,   # pylint: disable=unused-argument
     instance.power_state = power_state
     headers = get_aks_custom_headers(aks_custom_headers)
     return sdk_no_wait(no_wait, client.abort_latest_operation, resource_group_name, cluster_name, headers=headers)
+
 
 def aks_addon_list_available():
     available_addons = []

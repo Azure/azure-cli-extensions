@@ -1359,12 +1359,12 @@ helps['aks nodepool operation-abort'] = """
         - name: --cluster-name
           type: string
           short-summary: Name of the managed cluster
-        - name: --nodepool-name --name -n 
+        - name: --name -n 
           type: string
           short-summary: Name of the node pool
     examples:
         - name: Abort operation on agent pool
-          text: az aks nodepool operation-abort --resource-group myResourceGroup --cluster-name myAKSCluster --nodepool-name nodepool1
+          text: az aks nodepool operation-abort --resource-group myResourceGroup --name myAKSCluster --nodepool-name nodepool1
 """
 
 helps['aks operation-abort'] = """
@@ -1374,12 +1374,12 @@ helps['aks operation-abort'] = """
         - name: --resource-group
           type: string
           short-summary: Name of the resource group
-        - name: --cluster-name --name -n
+        - name: --name -n
           type: string
           short-summary: Name of the managed cluster
     examples:
         - name: Abort operation on managed cluster
-          text: az aks operation-abort --resource-group myResourceGroup --cluster-name myAKSCluster 
+          text: az aks operation-abort --resource-group myResourceGroup --name myAKSCluster 
 """
 
 helps['aks addon'] = """
