@@ -6,7 +6,6 @@
 
 from knack.help_files import helps  # pylint: disable=unused-import
 
-
 helps['containerapp'] = """
     type: group
     short-summary: Manage Azure Container Apps.
@@ -117,7 +116,7 @@ helps['containerapp up'] = """
     - name: Create a container app from a dockerfile in a GitHub repo (setting up github actions)
       text: |
           az containerapp up -n MyContainerapp --repo https://github.com/myAccount/myRepo
-    - name: Create a container app from a dockerfile in a local directory
+    - name: Create a container app from a dockerfile in a local directory (or autogenerate a container if no dockerfile is found)
       text: |
           az containerapp up -n MyContainerapp --source .
     - name: Create a container app from an image in a registry
