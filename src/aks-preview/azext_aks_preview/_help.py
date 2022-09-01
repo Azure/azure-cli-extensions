@@ -1377,6 +1377,9 @@ helps['aks operation-abort'] = """
         - name: --name -n
           type: string
           short-summary: Name of the managed cluster
+        - name: --aks-custom-headers
+          type: string
+          short-summary: Send custom headers. When specified, format should be Key1=Value1,Key2=Value2
     examples:
         - name: Abort operation on managed cluster
           text: az aks operation-abort --resource-group myResourceGroup --name myAKSCluster
