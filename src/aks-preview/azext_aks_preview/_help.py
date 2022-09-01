@@ -448,6 +448,12 @@ helps['aks create'] = """
         - name: --azure-keyvault-kms-key-vault-resource-id
           type: string
           short-summary: Resource ID of Azure Key Vault.
+        - name: --enable-image-cleaner
+          type: bool
+          short-summary: Enable ImageCleaner Service.
+        - name: --image-cleaner-interval-hours
+          type: int
+          short-summary: ImageCleaner scanning interval.
         - name: --dns-zone-resource-id
           type: string
           short-summary: The resource ID of the DNS zone resource to use with the web_application_routing addon.
@@ -784,6 +790,15 @@ helps['aks update'] = """
         - name: --azure-keyvault-kms-key-vault-resource-id
           type: string
           short-summary: Resource ID of Azure Key Vault.
+        - name: --enable-image-cleaner
+          type: bool
+          short-summary: Enable ImageCleaner Service.
+        - name: --disable-image-cleaner
+          type: bool
+          short-summary: Disable ImageCleaner Service.
+        - name: --image-cleaner-interval-hours
+          type: int
+          short-summary: ImageCleaner scanning interval.
         - name: --enable-apiserver-vnet-integration
           type: bool
           short-summary: Enable integration of user vnet with control plane apiserver pods.
