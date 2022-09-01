@@ -1359,12 +1359,15 @@ helps['aks nodepool operation-abort'] = """
         - name: --cluster-name
           type: string
           short-summary: Name of the managed cluster
-        - name: --name -n
+        - name: --nodepool-name --name -n
           type: string
           short-summary: Name of the node pool
+        - name: --aks-custom-headers
+          type: string
+          short-summary: Send custom headers. When specified, format should be Key1=Value1,Key2=Value2
     examples:
         - name: Abort operation on agent pool
-          text: az aks nodepool operation-abort --resource-group myResourceGroup --name myAKSCluster --nodepool-name nodepool1
+          text: az aks nodepool operation-abort -g myResourceGroup -n nodepool1 --cluster-name myAKSCluster
 """
 
 helps['aks operation-abort'] = """
@@ -1377,9 +1380,12 @@ helps['aks operation-abort'] = """
         - name: --name -n
           type: string
           short-summary: Name of the managed cluster
+        - name: --aks-custom-headers
+          type: string
+          short-summary: Send custom headers. When specified, format should be Key1=Value1,Key2=Value2
     examples:
         - name: Abort operation on managed cluster
-          text: az aks operation-abort --resource-group myResourceGroup --name myAKSCluster
+          text: az aks operation-abort -g myResourceGroup -n myAKSCluster
 """
 
 helps['aks addon'] = """
