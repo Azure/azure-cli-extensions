@@ -516,10 +516,7 @@ def create_containerapp(cmd,
         if "configuration" in r["properties"] and "ingress" in r["properties"]["configuration"] and "fqdn" in r["properties"]["configuration"]["ingress"]:
             not disable_warnings and logger.warning("\nContainer app created. Access your app at https://{}/\n".format(r["properties"]["configuration"]["ingress"]["fqdn"]))
         else:
-            target_port = target_port or "<port>"
-            not disable_warnings and logger.warning("\nContainer app created. To access it over HTTPS, enable ingress: "
-                                                    "az containerapp ingress enable -n %s -g %s --type external --target-port %s"
-                                                    " --transport auto\n", name, resource_group_name, target_port)
+            not disable_warnings and logger.warning("\nContainer app created. To access it over HTTPS, enable ingress: az containerapp ingress enable --help\n")
 
         return r
     except Exception as e:
@@ -2331,7 +2328,7 @@ def containerapp_up(cmd,
     from ._up_utils import (_validate_up_args, _reformat_image, _get_dockerfile_content, _get_ingress_and_target_port,
                             ResourceGroup, ContainerAppEnvironment, ContainerApp, _get_registry_from_app,
                             _get_registry_details, _create_github_action, _set_up_defaults, up_output,
-                            check_env_name_on_rg, get_token, _validate_containerapp_name, _has_dockerfile)
+                            check_env_name_on_rg, get_token, _validate_containerapp_name)
     from ._github_oauth import cache_github_token
     HELLOWORLD = "mcr.microsoft.com/azuredocs/containerapps-helloworld"
     dockerfile = "Dockerfile"  # for now the dockerfile name must be "Dockerfile" (until GH actions API is updated)
@@ -2355,11 +2352,8 @@ def containerapp_up(cmd,
             target_port = 80
             logger.warning("No ingress provided, defaulting to port 80. Try `az containerapp up --ingress %s --target-port <port>` to set a custom port.", ingress)
 
-    if source and not _has_dockerfile(source, dockerfile):
-        pass
-    else:
-        dockerfile_content = _get_dockerfile_content(repo, branch, token, source, context_path, dockerfile)
-        ingress, target_port = _get_ingress_and_target_port(ingress, target_port, dockerfile_content)
+    dockerfile_content = _get_dockerfile_content(repo, branch, token, source, context_path, dockerfile)
+    ingress, target_port = _get_ingress_and_target_port(ingress, target_port, dockerfile_content)
 
     resource_group = ResourceGroup(cmd, name=resource_group_name, location=location)
     env = ContainerAppEnvironment(cmd, managed_env, resource_group, location=location, logs_key=logs_key, logs_customer_id=logs_customer_id)
@@ -2382,7 +2376,7 @@ def containerapp_up(cmd,
     app.create_acr_if_needed()
 
     if source:
-        app.run_acr_build(dockerfile, source, quiet=False, build_from_source=not _has_dockerfile(source, dockerfile))
+        app.run_acr_build(dockerfile, source, False)
 
     app.create(no_registry=bool(repo))
     if repo:
@@ -2393,7 +2387,7 @@ def containerapp_up(cmd,
     if browse:
         open_containerapp_in_browser(cmd, app.name, app.resource_group.name)
 
-    up_output(app, no_dockerfile=(source and not _has_dockerfile(source, dockerfile)))
+    up_output(app)
 
 
 def containerapp_up_logic(cmd, resource_group_name, name, managed_env, image, env_vars, ingress, target_port, registry_server, registry_user, registry_pass):
