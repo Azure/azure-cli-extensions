@@ -91,6 +91,7 @@ def load_arguments(self, _):
         c.argument('kube_config', options_list=['--kube-config'], help='Path to the kube config file.')
         c.argument('kube_context', options_list=['--kube-context'], help='Kubconfig context from current machine.')
         c.argument('force_delete', options_list=['--force'], help='Force delete to remove all hanging azure-arc resources from the cluster even if the config map is missing.', action='store_true')
+        c.argument('yes', options_list=['--yes', '-y'], help='Do not prompt for confirmation.', action='store_true')
 
     with self.argument_context('connectedk8s proxy') as c:
         c.argument('cluster_name', options_list=['--name', '-n'], id_part='name', help='The name of the connected cluster.')

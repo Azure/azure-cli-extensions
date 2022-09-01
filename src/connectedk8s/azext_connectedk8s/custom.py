@@ -719,7 +719,11 @@ def list_connectedk8s(cmd, client, resource_group_name=None):
 
 
 def delete_connectedk8s(cmd, client, resource_group_name, cluster_name,
-                        kube_config=None, kube_context=None, no_wait=False, force_delete=False):
+                        kube_config=None, kube_context=None, no_wait=False, force_delete=False, yes=False):
+
+    confirmation_message = "Are you sure you want to perform delete operation?"
+    utils.user_confirmation(confirmation_message, yes)
+
     logger.warning("This operation might take a while ...\n")
 
     # Send cloud information to telemetry
@@ -747,7 +751,7 @@ def delete_connectedk8s(cmd, client, resource_group_name, cluster_name,
     if(force_delete):
 
         confirmation_message = "You can check using 'kubectl config get-contexts' to check if your current context is pointing to the the right cluster. \n" + "Are you sure you want to execute the delete command:"
-        utils.user_confirmation(confirmation_message, False)
+        utils.user_confirmation(confirmation_message, yes)
 
         kubectl_client_location = install_kubectl_client()
 
