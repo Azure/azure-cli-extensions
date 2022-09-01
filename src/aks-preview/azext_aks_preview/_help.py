@@ -1359,7 +1359,7 @@ helps['aks nodepool operation-abort'] = """
         - name: --cluster-name
           type: string
           short-summary: Name of the managed cluster
-        - name: --name -n
+        - name: --nodepool-name --name -n
           type: string
           short-summary: Name of the node pool
     examples:
