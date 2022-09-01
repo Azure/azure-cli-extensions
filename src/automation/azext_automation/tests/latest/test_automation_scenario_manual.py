@@ -112,6 +112,9 @@ class AutomationScenarioTest(ScenarioTest):
         self.cmd('automation hrwg create --resource-group {rg} --automation-account-name {account_name} --name {hybrid_runbook_worker_group_name}',
         checks=[self.check('name', '{hybrid_runbook_worker_group_name}')])
 
+        self.cmd('automation hrwg create --resource-group {rg} --automation-account-name {account_name} --name {hybrid_runbook_worker_group_name}',
+        checks=[self.check('name', '{hybrid_runbook_worker_group_name}')])
+
         self.cmd('automation hrwg show --resource-group {rg} --automation-account-name {account_name} --name {hybrid_runbook_worker_group_name}',
         checks=[self.check('name', '{hybrid_runbook_worker_group_name}')])
 

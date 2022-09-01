@@ -91,8 +91,8 @@ def network_manager_update(instance,
 def network_manager_delete(client,
                            resource_group_name,
                            network_manager_name,
-                           force=None):
-    if force is None or force is False:
+                           force=False):
+    if force is False:
         print("The \'--force\' flag was not provided for the delete operation. "
               "If this resource or any of its child resources are part of a deployed configuration, "
               "this delete will fail.")
@@ -328,8 +328,8 @@ def network_manager_connect_config_delete(client,
                                           resource_group_name,
                                           network_manager_name,
                                           configuration_name,
-                                          force=None):
-    if force is None or force is False:
+                                          force=False):
+    if force is False:
         print("The \'--force\' flag was not provided for the delete operation. "
               "If this resource or any of its child resources are part of a deployed configuration, "
               "this delete will fail.")
@@ -395,8 +395,8 @@ def network_manager_group_delete(client,
                                  resource_group_name,
                                  network_manager_name,
                                  network_group_name,
-                                 force=None):
-    if force is None or force is False:
+                                 force=False):
+    if force is False:
         print("The \'--force\' flag was not provided for the delete operation. "
               "If this resource or any of its child resources are part of a deployed configuration, "
               "this delete will fail.")
@@ -534,8 +534,8 @@ def network_manager_security_admin_config_delete(client,
                                                  resource_group_name,
                                                  network_manager_name,
                                                  configuration_name,
-                                                 force=None):
-    if force is None or force is False:
+                                                 force=False):
+    if force is False:
         print("The \'--force\' flag was not provided for the delete operation. "
               "If this resource or any of its child resources are part of a deployed configuration, "
               "this delete will fail.")
@@ -610,8 +610,8 @@ def network_manager_admin_rule_collection_delete(client,
                                                  network_manager_name,
                                                  configuration_name,
                                                  rule_collection_name,
-                                                 force=None):
-    if force is None or force is False:
+                                                 force=False):
+    if force is False:
         print("The \'--force\' flag was not provided for the delete operation. "
               "If this resource or any of its child resources are part of a deployed configuration, "
               "this delete will fail.")
@@ -740,8 +740,8 @@ def network_manager_admin_rule_delete(client,
                                       configuration_name,
                                       rule_collection_name,
                                       rule_name,
-                                      force=None):
-    if force is None or force is False:
+                                      force=False):
+    if force is False:
         print("The \'--force\' flag was not provided for the delete operation. "
               "If this resource or any of its child resources are part of a deployed configuration, "
               "this delete will fail.")
