@@ -1353,33 +1353,21 @@ helps['aks nodepool operation-abort'] = """
     type: command
     short-summary: Abort last running operation on nodepool.
     parameters:
-        - name: --resource-group
+        - name: --nodepool-name
           type: string
-          short-summary: Name of the resource group
-        - name: --cluster-name
-          type: string
-          short-summary: Name of the managed cluster
-        - name: --nodepool-name --name -n
-          type: string
-          short-summary: Name of the node pool
+          short-summary: Agent pool name
         - name: --aks-custom-headers
           type: string
           short-summary: Send custom headers. When specified, format should be Key1=Value1,Key2=Value2
     examples:
         - name: Abort operation on agent pool
-          text: az aks nodepool operation-abort -g myResourceGroup -n nodepool1 --cluster-name myAKSCluster
+          text: az aks nodepool operation-abort -g myResourceGroup --nodepool-name nodepool1 --cluster-name myAKSCluster
 """
 
 helps['aks operation-abort'] = """
     type: command
     short-summary: Abort last running operation on managed cluster.
     parameters:
-        - name: --resource-group
-          type: string
-          short-summary: Name of the resource group
-        - name: --name -n
-          type: string
-          short-summary: Name of the managed cluster
         - name: --aks-custom-headers
           type: string
           short-summary: Send custom headers. When specified, format should be Key1=Value1,Key2=Value2
