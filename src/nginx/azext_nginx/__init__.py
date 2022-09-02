@@ -12,10 +12,8 @@ class NginxCommandsLoader(AzCommandsLoader):
 
     def __init__(self, cli_ctx=None):
         from azure.cli.core.commands import CliCommandType
-        from azext_nginx._client_factory import cf_nginx
         nginx_custom = CliCommandType(
-            operations_tmpl='azext_nginx.custom#{}',
-            client_factory=cf_nginx)
+            operations_tmpl='azext_nginx.custom#{}')
         super(NginxCommandsLoader, self).__init__(cli_ctx=cli_ctx,
                                                   custom_command_type=nginx_custom)
 
