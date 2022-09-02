@@ -12,10 +12,10 @@ from azure.cli.core.aaz import *
 
 
 @register_command_group(
-    "automation",
+    "automation python3package",
 )
 class __CMDGroup(AAZCommandGroup):
-    """Manage Automation Account
+    """python3package
     """
     pass
 
