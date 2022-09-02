@@ -727,7 +727,7 @@ def delete_connectedk8s(cmd, client, resource_group_name, cluster_name,
         confirmation_message = "Are you sure you want to perform delete operation?"
         utils.user_confirmation(confirmation_message, yes)
     elif force_delete:
-        confirmation_message = "Force delete will clean up all the arc custom resources in your current context.\n"+ "Are you sure you want to perform force delete operation:"
+        confirmation_message = "Force delete will clean up all the arc custom resources in your current context.\n" + "Are you sure you want to perform force delete operation:"
         utils.user_confirmation(confirmation_message, yes)
 
     logger.warning("This operation might take a while ...\n")
