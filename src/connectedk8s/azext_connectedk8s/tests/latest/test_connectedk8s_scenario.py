@@ -62,7 +62,6 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
         self.kwargs.update({
             'name': self.create_random_name(prefix='cc-', length=12),
             'kubeconfig': kubeconfig,
-            # 'kubeconfig': "%s" % (_get_test_data_file(managed_cluster_name + '-config.yaml')),
             'managed_cluster_name': managed_cluster_name
         })
 
