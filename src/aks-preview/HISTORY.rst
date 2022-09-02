@@ -12,6 +12,11 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+0.5.96
+++++++
+
+* Add support for enabling ImageCleaner with `--enable-image-cleaner` flag.
+
 0.5.95
 ++++++
 
