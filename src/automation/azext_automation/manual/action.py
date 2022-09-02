@@ -3,7 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for
 # license information.
 # --------------------------------------------------------------------------
-# pylint: disable=protected-access, disable=unused-argument
+# pylint: disable=protected-access, disable=unused-argument, line-too-long
 
 import argparse
 from collections import defaultdict
@@ -49,7 +49,8 @@ def period_type(value, as_timedelta=False):
             return ''
         return value[indices[0]: indices[1]]
 
-    regex = r'(p)?(\d+y)?(\d+m)?(\d+d)?(t)?(\d+h)?(\d+m)?(\d+s)?'  # example: P3Y6M4DT12H30M5S
+    regex = r'(p)?(\d+y)?(\d+m)?(\d+d)?(t)?(\d+h)?(\d+m)?(\d+s)?'
+    # example: P3Y6M4DT12H30M5S represents a duration of "three years, six months, four days, twelve hours, thirty minutes, and five seconds"
     match = re.match(regex, value.lower())
     match_len = match.span(0)
     if match_len != tuple([0, len(value)]):
