@@ -45,6 +45,7 @@ from azext_aks_preview._consts import (
     CONST_AZURE_KEYVAULT_NETWORK_ACCESS_PUBLIC,
     CONST_LOAD_BALANCER_SKU_BASIC,
     CONST_PRIVATE_DNS_ZONE_NONE,
+    CONST_PRIVATE_DNS_ZONE_SYSTEM,
 )
 from azext_aks_preview._helpers import (
     get_cluster_snapshot_by_snapshot_id,
@@ -64,6 +65,7 @@ from azext_aks_preview.agentpool_decorator import (
     AKSPreviewAgentPoolAddDecorator,
     AKSPreviewAgentPoolUpdateDecorator,
 )
+from msrestazure.tools import is_valid_resource_id
 
 logger = get_logger(__name__)
 
@@ -1505,7 +1507,10 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
                         raise MutuallyExclusiveArgumentError(
                             "Cannot specify '--enable-public-fqdn' and '--disable-public-fqdn' at the same time"
                         )
-                    if safe_lower(self._get_private_dns_zone(enable_validation=False)) == CONST_PRIVATE_DNS_ZONE_NONE:
+                    if (
+                        safe_lower(self._get_private_dns_zone(enable_validation=False)) == CONST_PRIVATE_DNS_ZONE_NONE or
+                        safe_lower(self.mc.api_server_access_profile.private_dns_zone) == CONST_PRIVATE_DNS_ZONE_NONE
+                    ):
                         raise InvalidArgumentValueError(
                             "--disable-public-fqdn cannot be applied for none mode private dns zone cluster"
                         )
@@ -1554,6 +1559,74 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         :return: bool
         """
         return self._get_enable_public_fqdn(enable_validation=True)
+
+    def _get_private_dns_zone(self, enable_validation: bool = False) -> Union[str, None]:
+        """Internal function to obtain the value of private_dns_zone.
+        This function supports the option of enable_validation. When enabled and private_dns_zone is assigned, if
+        enable_private_cluster is not specified raise an InvalidArgumentValueError. It will also check when both
+        private_dns_zone and fqdn_subdomain are assigned, if the value of private_dns_zone is
+        CONST_PRIVATE_DNS_ZONE_SYSTEM or CONST_PRIVATE_DNS_ZONE_NONE, raise an InvalidArgumentValueError; Otherwise if
+        the value of private_dns_zone is not a valid resource ID, raise an InvalidArgumentValueError. In update mode,
+        if disable_public_fqdn is assigned and private_dns_zone equals to CONST_PRIVATE_DNS_ZONE_NONE, raise an
+        InvalidArgumentValueError.
+        :return: string or None
+        """
+        # read the original value passed by the command
+        private_dns_zone = self.raw_param.get("private_dns_zone")
+        # In create mode, try to read the property value corresponding to the parameter from the `mc` object.
+        if self.decorator_mode == DecoratorMode.CREATE:
+            if (
+                self.mc and
+                self.mc.api_server_access_profile and
+                self.mc.api_server_access_profile.private_dns_zone is not None
+            ):
+                private_dns_zone = self.mc.api_server_access_profile.private_dns_zone
+
+        # this parameter does not need dynamic completion
+        # validation
+        if enable_validation:
+            if self.decorator_mode == DecoratorMode.CREATE:
+                if private_dns_zone:
+                    if not self._get_enable_private_cluster(enable_validation=False):
+                        raise InvalidArgumentValueError(
+                            "Invalid private dns zone for public cluster. It should always be empty for public cluster"
+                        )
+                    if (
+                        private_dns_zone.lower() != CONST_PRIVATE_DNS_ZONE_SYSTEM and
+                        private_dns_zone.lower() != CONST_PRIVATE_DNS_ZONE_NONE
+                    ):
+                        if not is_valid_resource_id(private_dns_zone):
+                            raise InvalidArgumentValueError(
+                                private_dns_zone + " is not a valid Azure resource ID."
+                            )
+                    else:
+                        if self._get_fqdn_subdomain(enable_validation=False):
+                            raise InvalidArgumentValueError(
+                                "--fqdn-subdomain should only be used for private cluster with custom private dns zone"
+                            )
+            elif self.decorator_mode == DecoratorMode.UPDATE:
+                if (
+                    self.mc and
+                    self.mc.api_server_access_profile and
+                    self.mc.api_server_access_profile.private_dns_zone == CONST_PRIVATE_DNS_ZONE_NONE
+                ):
+                    if self._get_disable_public_fqdn(enable_validation=False):
+                        raise InvalidArgumentValueError(
+                            "--disable-public-fqdn cannot be applied for none mode private dns zone cluster"
+                        )
+        return private_dns_zone
+
+    def get_private_dns_zone(self) -> Union[str, None]:
+        """Obtain the value of private_dns_zone.
+        This function will verify the parameter by default. When private_dns_zone is assigned, if enable_private_cluster
+        is not specified raise an InvalidArgumentValueError. It will also check when both private_dns_zone and
+        fqdn_subdomain are assigned, if the value of private_dns_zone is CONST_PRIVATE_DNS_ZONE_SYSTEM or
+        CONST_PRIVATE_DNS_ZONE_NONE, raise an InvalidArgumentValueError; Otherwise if the value of private_dns_zone is
+        not a valid resource ID, raise an InvalidArgumentValueError. In update mode, if disable_public_fqdn is assigned
+        and private_dns_zone equals to CONST_PRIVATE_DNS_ZONE_NONE, raise an InvalidArgumentValueError.
+        :return: string or None
+        """
+        return self._get_private_dns_zone(enable_validation=True)
 
     def _get_api_server_authorized_ip_ranges(self, enable_validation: bool = False) -> List[str]:
         """Internal function to obtain the value of api_server_authorized_ip_ranges for update.

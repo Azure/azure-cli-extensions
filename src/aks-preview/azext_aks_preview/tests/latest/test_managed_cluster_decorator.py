@@ -34,6 +34,7 @@ from azext_aks_preview._consts import (
     CONST_NODEPOOL_MODE_SYSTEM,
     CONST_OPEN_SERVICE_MESH_ADDON_NAME,
     CONST_PRIVATE_DNS_ZONE_NONE,
+    CONST_PRIVATE_DNS_ZONE_SYSTEM,
     CONST_ROTATION_POLL_INTERVAL,
     CONST_SECRET_ROTATION_ENABLED,
     CONST_VIRTUAL_MACHINE_SCALE_SETS,
@@ -3012,6 +3013,88 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         # fail on invalid private_dns_zone (none) when disable_public_fqdn is specified
         with self.assertRaises(InvalidArgumentValueError):
             self.assertEqual(ctx_4.get_disable_public_fqdn(), True)
+
+    def test_get_private_dns_zone(self):
+        # default
+        ctx_1 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict(
+                {
+                    "private_dns_zone": None,
+                }
+            ),
+            self.models,
+            DecoratorMode.CREATE,
+        )
+        self.assertEqual(ctx_1.get_private_dns_zone(), None)
+        api_server_access_profile = self.models.ManagedClusterAPIServerAccessProfile(
+            private_dns_zone="test_private_dns_zone",
+        )
+        mc = self.models.ManagedCluster(
+            location="test_location",
+            api_server_access_profile=api_server_access_profile,
+        )
+        ctx_1.attach_mc(mc)
+        # fail on private_dns_zone specified when enable_private_cluster is not specified
+        with self.assertRaises(InvalidArgumentValueError):
+            self.assertEqual(ctx_1.get_private_dns_zone(), "test_private_dns_zone")
+
+        # invalid parameter
+        ctx_2 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict(
+                {
+                    "enable_private_cluster": True,
+                    "private_dns_zone": "test_private_dns_zone",
+                }
+            ),
+            self.models,
+            DecoratorMode.CREATE,
+        )
+        # fail on invalid private_dns_zone
+        with self.assertRaises(InvalidArgumentValueError):
+            self.assertEqual(ctx_2.get_private_dns_zone(), "test_private_dns_zone")
+
+        # invalid parameter
+        ctx_3 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict(
+                {
+                    "enable_private_cluster": True,
+                    "private_dns_zone": CONST_PRIVATE_DNS_ZONE_SYSTEM,
+                    "fqdn_subdomain": "test_fqdn_subdomain",
+                }
+            ),
+            self.models,
+            DecoratorMode.CREATE,
+        )
+        # fail on invalid private_dns_zone when fqdn_subdomain is specified
+        with self.assertRaises(InvalidArgumentValueError):
+            self.assertEqual(ctx_3.get_private_dns_zone(), CONST_PRIVATE_DNS_ZONE_SYSTEM)
+
+        # custom value
+        ctx_4 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict(
+                {
+                    "disable_public_fqdn": True,
+                }
+            ),
+            self.models,
+            DecoratorMode.UPDATE,
+        )
+        api_server_access_profile_4 = self.models.ManagedClusterAPIServerAccessProfile(
+            enable_private_cluster=True,
+            private_dns_zone=CONST_PRIVATE_DNS_ZONE_NONE,
+        )
+        mc_4 = self.models.ManagedCluster(
+            location="test_location",
+            api_server_access_profile=api_server_access_profile_4,
+        )
+        ctx_4.attach_mc(mc_4)
+        # fail on invalid private_dns_zone (none) when disable_public_fqdn is specified
+        with self.assertRaises(InvalidArgumentValueError):
+            self.assertEqual(ctx_4.get_private_dns_zone(), CONST_PRIVATE_DNS_ZONE_NONE)
 
 class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
     def setUp(self):
