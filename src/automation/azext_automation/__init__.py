@@ -24,8 +24,7 @@ class AutomationClientCommandsLoader(AzCommandsLoader):
         automation_custom = CliCommandType(
             operations_tmpl='azext_automation.custom#{}',
             client_factory=cf_automation_cl)
-        parent = super(AutomationClientCommandsLoader, self)
-        parent.__init__(cli_ctx=cli_ctx, custom_command_type=automation_custom)
+        super().__init__(cli_ctx=cli_ctx, custom_command_type=automation_custom)
 
     def load_command_table(self, args):
         from azext_automation.generated.commands import load_command_table

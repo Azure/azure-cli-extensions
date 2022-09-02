@@ -2,11 +2,16 @@
 
 Release History
 ===============
-1.3.1
+1.3.2
 ++++++
 
 * Added custom token support
 * Added new parameter for container log path in connectedk8s connect
+
+1.3.1
+++++++
+
+* Updated min cli core version to 2.30.0
 
 1.3.0
 ++++++
