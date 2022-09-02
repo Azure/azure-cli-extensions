@@ -174,6 +174,11 @@ def validate_run(cmd, namespace):
         raise CLIError('Repair resource id is not valid.')
 
 
+def validate_reset_nic(cmd, namespace):
+    check_extension_version(EXTENSION_NAME)
+    _validate_and_get_vm(cmd, namespace.resource_group_name, namespace.vm_name)
+
+
 def _prompt_encrypted_vm(namespace):
     from knack.prompting import prompt_y_n, NoTTYException
     try:
@@ -299,7 +304,7 @@ def fetch_repair_vm(namespace):
     # Find repair VM
     tag = _get_repair_resource_tag(namespace.resource_group_name, namespace.vm_name)
     try:
-        find_repair_command = 'az resource list --tag {tag} --query "[?type==\'Microsoft.Compute/virtualMachines\']" -o json' \
+        find_repair_command = 'az resource list --tag {tag} --query "[?type==\'microsoft.compute/virtualmachines\']" -o json' \
                               .format(tag=tag)
         logger.info('Searching for repair-vm within subscription...')
         output = _call_az_command(find_repair_command)

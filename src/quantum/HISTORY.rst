@@ -3,6 +3,12 @@
 Release History
 ===============
 
+0.16.0
+++++++
+* [2022-06-30] Version intended to work with QDK version 0.25.218240
+* Providers participating in the "Credits for All" program will automatically be added when you create a workspace with the CLI. See https://docs.microsoft.com/en-us/azure/quantum/credits-faq
+* You can pass a TargetCapability value to the Q# compiler by adding the --target-capability parameter to an az quantum run, execute, or job submit command.
+
 0.15.0
 ++++++
 * [2022-04-25] Version intended to work with QDK version v0.24.208024
@@ -64,7 +70,7 @@ Release History
 
 0.6.1
 ++++++
-* [2021-07-22] Reduced the lenghth of the user agent reported by the tool.
+* [2021-07-22] Reduced the length of the user agent reported by the tool.
 
 0.6.0
 ++++++

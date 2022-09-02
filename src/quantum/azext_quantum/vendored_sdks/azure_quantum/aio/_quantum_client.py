@@ -7,11 +7,12 @@
 # --------------------------------------------------------------------------
 
 from copy import deepcopy
-from typing import Any, Awaitable, Optional, TYPE_CHECKING
+from typing import Any, Awaitable, TYPE_CHECKING
+
+from msrest import Deserializer, Serializer
 
 from azure.core import AsyncPipelineClient
 from azure.core.rest import AsyncHttpResponse, HttpRequest
-from msrest import Deserializer, Serializer
 
 from .. import models
 from ._configuration import QuantumClientConfiguration
@@ -41,7 +42,7 @@ class QuantumClient:
     :type resource_group_name: str
     :param workspace_name: Name of the workspace.
     :type workspace_name: str
-    :param base_url: Service URL. Default value is 'https://quantum.azure.com'.
+    :param base_url: Service URL. Default value is "https://quantum.azure.com".
     :type base_url: str
     """
 
@@ -61,10 +62,18 @@ class QuantumClient:
         self._serialize = Serializer(client_models)
         self._deserialize = Deserializer(client_models)
         self._serialize.client_side_validation = False
-        self.jobs = JobsOperations(self._client, self._config, self._serialize, self._deserialize)
-        self.providers = ProvidersOperations(self._client, self._config, self._serialize, self._deserialize)
-        self.storage = StorageOperations(self._client, self._config, self._serialize, self._deserialize)
-        self.quotas = QuotasOperations(self._client, self._config, self._serialize, self._deserialize)
+        self.jobs = JobsOperations(
+            self._client, self._config, self._serialize, self._deserialize
+        )
+        self.providers = ProvidersOperations(
+            self._client, self._config, self._serialize, self._deserialize
+        )
+        self.storage = StorageOperations(
+            self._client, self._config, self._serialize, self._deserialize
+        )
+        self.quotas = QuotasOperations(
+            self._client, self._config, self._serialize, self._deserialize
+        )
 
 
     def _send_request(

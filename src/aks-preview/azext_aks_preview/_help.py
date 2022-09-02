@@ -198,6 +198,12 @@ helps['aks create'] = """
           type: string
           short-summary: The Kubernetes network plugin to use.
           long-summary: Specify "azure" for routable pod IPs from VNET, "kubenet" for non-routable pod IPs with an overlay network, or "none" for no networking configured.
+        - name: --network-plugin-mode
+          type: string
+          short-summary: The network plugin mode to use.
+          long-summary: |
+              Used to control the mode the network plugin should operate in. For example, "overlay" used with
+              --network-plugin=azure will use an overlay network (non-VNET IPs) for pods in the cluster.
         - name: --network-policy
           type: string
           short-summary: (PREVIEW) The Kubernetes network policy to use.
@@ -366,6 +372,9 @@ helps['aks create'] = """
         - name: --disable-snapshot-controller
           type: bool
           short-summary: Disable CSI Snapshot Controller.
+        - name: --enable-blob-driver
+          type: bool
+          short-summary: Enable AzureBlob CSI Driver.
         - name: --aci-subnet-name
           type: string
           short-summary: The name of a subnet in an existing VNet into which to deploy the virtual nodes.
@@ -439,6 +448,12 @@ helps['aks create'] = """
         - name: --azure-keyvault-kms-key-vault-resource-id
           type: string
           short-summary: Resource ID of Azure Key Vault.
+        - name: --enable-image-cleaner
+          type: bool
+          short-summary: Enable ImageCleaner Service.
+        - name: --image-cleaner-interval-hours
+          type: int
+          short-summary: ImageCleaner scanning interval.
         - name: --dns-zone-resource-id
           type: string
           short-summary: The resource ID of the DNS zone resource to use with the web_application_routing addon.
@@ -697,6 +712,12 @@ helps['aks update'] = """
         - name: --disable-snapshot-controller
           type: bool
           short-summary: Disable CSI Snapshot Controller.
+        - name: --enable-blob-driver
+          type: bool
+          short-summary: Enable AzureBlob CSI Driver.
+        - name: --disable-blob-driver
+          type: bool
+          short-summary: Disable AzureBlob CSI Driver.
         - name: --tags
           type: string
           short-summary: The tags of the managed cluster. The managed cluster instance and all resources managed by the cloud provider will be tagged.
@@ -756,6 +777,9 @@ helps['aks update'] = """
         - name: --enable-azure-keyvault-kms
           type: bool
           short-summary: Enable Azure KeyVault Key Management Service.
+        - name: --disable-azure-keyvault-kms
+          type: bool
+          short-summary: Disable Azure KeyVault Key Management Service.
         - name: --azure-keyvault-kms-key-id
           type: string
           short-summary: Identifier of Azure Key Vault key.
@@ -766,6 +790,15 @@ helps['aks update'] = """
         - name: --azure-keyvault-kms-key-vault-resource-id
           type: string
           short-summary: Resource ID of Azure Key Vault.
+        - name: --enable-image-cleaner
+          type: bool
+          short-summary: Enable ImageCleaner Service.
+        - name: --disable-image-cleaner
+          type: bool
+          short-summary: Disable ImageCleaner Service.
+        - name: --image-cleaner-interval-hours
+          type: int
+          short-summary: ImageCleaner scanning interval.
         - name: --enable-apiserver-vnet-integration
           type: bool
           short-summary: Enable integration of user vnet with control plane apiserver pods.
@@ -787,6 +820,12 @@ helps['aks update'] = """
         - name: --defender-config
           type: string
           short-summary: Path to JSON file containing Microsoft Defender profile configurations.
+        - name: --enable-node-restriction
+          type: bool
+          short-summary: Enable node restriction option on cluster.
+        - name: --disable-node-restriction
+          type: bool
+          short-summary: Disable node restriction option on cluster.
     examples:
       - name: Reconcile the cluster back to its current state.
         text: az aks update -g MyResourceGroup -n MyManagedCluster
@@ -938,15 +977,15 @@ helps['aks maintenanceconfiguration add'] = """
     examples:
         - name: Add a maintenance configuration with --weekday and --start-hour.
           text: |
-            az aks maintenanceconfiguration add -g xiazhan-mtc-stg --cluster-name test1 -n default --weekday Monday  --start-hour 1
+            az aks maintenanceconfiguration add -g MyResourceGroup --cluster-name test1 -n default --weekday Monday  --start-hour 1
               The maintenance is allowed on Monday 1:00am to 2:00am
-        - name: Add a maintenance configuration with --weekday.The maintenance is allowd on any time of that day.
+        - name: Add a maintenance configuration with --weekday. The maintenance is allowd on any time of that day.
           text: |
-            az aks maintenanceconfiguration add -g xiazhan-mtc-stg --cluster-name test1 -n default --weekday Monday
+            az aks maintenanceconfiguration add -g MyResourceGroup --cluster-name test1 -n default --weekday Monday
               The maintenance is allowed on Monday.
         - name: Add a maintenance configuration with maintenance configuration json file
           text: |
-            az aks maintenanceconfiguration add -g xiazhan-mtc-stg --cluster-name test1 -n default --config-file ./test.json
+            az aks maintenanceconfiguration add -g MyResourceGroup --cluster-name test1 -n default --config-file ./test.json
                 The content of json file looks below. It means the maintenance is allowed on UTC time Tuesday 1:00am - 3:00 am and Wednesday 1:00am - 2:00am, 6:00am-7:00am
                 No maintenance is allowed from 2020-11-26T03:00:00Z to 2020-11-30T12:00:00Z and from 2020-12-26T03:00:00Z to 2020-12-26T12:00:00Z even if they are allowed in the above weekly setting
                 {
@@ -995,15 +1034,15 @@ helps['aks maintenanceconfiguration update'] = """
     examples:
         - name: Update a maintenance configuration with --weekday and --start-hour.
           text: |
-            az aks maintenanceconfiguration update -g xiazhan-mtc-stg --cluster-name test1 -n default --weekday Monday  --start-hour 1
+            az aks maintenanceconfiguration update -g MyResourceGroup --cluster-name test1 -n default --weekday Monday  --start-hour 1
               The maintenance is allowed on Monday 1:00am to 2:00am
         - name: Update a maintenance configuration with --weekday.The maintenance is allowd on any time of that day.
           text: |
-            az aks maintenanceconfiguration update -g xiazhan-mtc-stg --cluster-name test1 -n default --weekday Monday
+            az aks maintenanceconfiguration update -g MyResourceGroup --cluster-name test1 -n default --weekday Monday
               The maintenance is allowed on Monday.
         - name: Update a maintenance configuration with maintenance configuration json file
           text: |
-            az aks maintenanceconfiguration update -g xiazhan-mtc-stg --cluster-name test1 -n default --config-file ./test.json
+            az aks maintenanceconfiguration update -g MyResourceGroup --cluster-name test1 -n default --config-file ./test.json
                 The content of json file looks below. It means the maintenance is allowed on UTC time Tuesday 1:00am - 3:00 am and Wednesday 1:00am - 2:00am, 6:00am-7:00am
                 No maintenance is allowed from 2020-11-26T03:00:00Z to 2020-11-30T12:00:00Z and from 2020-12-26T03:00:00Z to 2020-12-26T12:00:00Z even if they are allowed in the above weekly setting
                 {
@@ -1222,7 +1261,7 @@ helps['aks nodepool upgrade'] = """
 helps['aks nodepool update'] = """
     type: command
     short-summary: Update a node pool properties.
-    long-summary: Update a node pool to enable/disable cluster-autoscaler or change min-count or max-count.  When called with no optional arguments this attempts to move the cluster to its goal state without changing the current cluster configuration. This can be used to move out of a non succeeded state.
+    long-summary: Update a node pool to enable/disable cluster-autoscaler or change min-count or max-count.  When called with no optional arguments this attempts to move the node pool to its goal state without changing the current node pool configuration. This can be used to move out of a non succeeded state.
     parameters:
         - name: --enable-cluster-autoscaler -e
           type: bool
@@ -1329,6 +1368,33 @@ helps['aks nodepool delete'] = """
     examples:
         - name: Delete an agent pool with ignore-pod-disruption-budget
           text: az aks nodepool delete --resource-group MyResourceGroup --cluster-name MyManagedCluster --name nodepool1 --ignore-pod-disruption-budget=true
+"""
+
+helps['aks nodepool operation-abort'] = """
+    type: command
+    short-summary: Abort last running operation on nodepool.
+    parameters:
+        - name: --nodepool-name
+          type: string
+          short-summary: Agent pool name
+        - name: --aks-custom-headers
+          type: string
+          short-summary: Send custom headers. When specified, format should be Key1=Value1,Key2=Value2
+    examples:
+        - name: Abort operation on agent pool
+          text: az aks nodepool operation-abort -g myResourceGroup --nodepool-name nodepool1 --cluster-name myAKSCluster
+"""
+
+helps['aks operation-abort'] = """
+    type: command
+    short-summary: Abort last running operation on managed cluster.
+    parameters:
+        - name: --aks-custom-headers
+          type: string
+          short-summary: Send custom headers. When specified, format should be Key1=Value1,Key2=Value2
+    examples:
+        - name: Abort operation on managed cluster
+          text: az aks operation-abort -g myResourceGroup -n myAKSCluster
 """
 
 helps['aks addon'] = """
@@ -1819,7 +1885,7 @@ helps['aks trustedaccess rolebinding create'] = """
 
     examples:
         - name: Create a new trusted access role binding
-          text: az aks trustedaccess rolebinding create -g myResourceGroup --cluster-name myCluster -n bindingName -s /subscriptions/0000/resourceGroups/myResourceGroup/providers/Microsoft.Demo/samples --roles Microsoft.Demo/samples/reader Microsoft.Demo/samples/writer
+          text: az aks trustedaccess rolebinding create -g myResourceGroup --cluster-name myCluster -n bindingName -s /subscriptions/0000/resourceGroups/myResourceGroup/providers/Microsoft.Demo/samples --roles Microsoft.Demo/samples/reader,Microsoft.Demo/samples/writer
 """
 
 helps['aks trustedaccess rolebinding update'] = """
@@ -1832,9 +1898,6 @@ helps['aks trustedaccess rolebinding update'] = """
         - name: --roles
           type: string
           short-summary: Specify the space-separated roles.
-        - name: --source-resource-id -s
-          type: string
-          short-summary: Specify the source resource id of the binding.
 """
 
 helps['aks trustedaccess rolebinding delete'] = """

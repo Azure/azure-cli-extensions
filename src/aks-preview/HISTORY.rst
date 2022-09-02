@@ -7,17 +7,96 @@ Guidance
 ++++++++
 If there is no rush to release a new version, please just add a description of the modification under the *Pending* section.
 
-To release a new version, please select a new version number (usually plus 1 to the minor of the current latest version number), and then add a new section named as the new version number in this file, the content should include the new modifications and everything from the *Pending* section. Finally, update the `VERSION` in `setup.py` with this new version number.
+To release a new version, please select a new version number (usually plus 1 to last patch version, X.Y.Z -> Major.Minor.Patch, more details in `\doc <https://semver.org/>`_), and then add a new section named as the new version number in this file, the content should include the new modifications and everything from the *Pending* section. Finally, update the `VERSION` variable in `setup.py` with this new version number.
 
 Pending
 +++++++
 
+0.5.96
+++++++
+
+* Add support for enabling ImageCleaner with `--enable-image-cleaner` flag.
+
+0.5.95
+++++++
+
+* Add `--enable-node-restriction`/`--disable-node-restriction` to enable/disable node restriction feature
+* Update the minimum required cli core version to `2.38.0` (actually since `0.5.92`).
+
+0.5.94
+++++++
+
+* [BREAKING CHANGE] Since the service no longer supports updating source resource id for role binding, so remove --source-resource-id of `aks trustedaccess rolebinding update` command.
+* Change the acceptable values of the `--roles` option to comma-seperated.
+    * az aks trustedaccess rolebinding create
+    * az aks trustedaccess rolebinding update
+* Upgrade `az aks kollect` command to use Periscope version 0.0.10 supporting enhanced Windows log collection.
+* Update to use 2022-07-02-preview api version.
+
+0.5.93
+++++++
+
+* Fix for "'Namespace' object has no attribute 'nodepool_name' error" in command `az aks nodepool wait`, see issue `\#23468 <https://github.com/Azure/azure-cli/issues/23468>`_.
+
+0.5.92
+++++++
+
+* Move Azure KeyVault KMS to GA.
+* Support disabling Azure KeyVault KMS.
+* Update to use 2022-06-02-preview api version.
+
+0.5.91
+++++++
+
+* Fix compatibility issue when enabling Microsoft Defender via aks-preview.
+    * az aks create
+    * az aks update
+
+0.5.90 (NOT RELEASED)
++++++++++++++++++++++
+
+* Skip this version due to conflict.
+
+0.5.89
+++++++
+
+* Fix for the az aks addon list command to return enable:true, if virtual-node addon is enabled for the AKS cluster.
+
+0.5.88
+++++++
+
+* AKS Monitoring MSI Auth related code imported from Azure CLI to reuse the code between aks-preview and Azure CLI.
+
+0.5.87
+++++++
+
+* Fix snapshot not resolved according to the subscriptions field in the `--snapshot-id`` option.
+
+0.5.86
+++++++
+
+* Support network plugin mode for enabling Azure CNI Overlay preview feature.
+
+0.5.85
+++++++
+
+* Add support for Blob csi driver.
+
+0.5.84 (NOT RELEASED)
++++++++++++++++++++++
+
+* Skip this version due to conflict.
+
+0.5.83
+++++++
+
 * Update the minimum required cli core version to `2.37.0`.
 * Enable v2 decorator pattern.
 * Fix container name inconsistency for private clusters in kollect command.
+* Temp fix for properties missing in KMS profile in update scenario.
 
 0.5.82
-+++++++
+++++++
 
 * Support Key Vault with private link when enabling Azure KeyVault KMS.
 
@@ -75,8 +154,8 @@ Pending
 
 * Fix import issues with command group `az aks draft`
 
-0.5.72
-++++++
+0.5.72 (NOT RELEASED)
++++++++++++++++++++++
 
 * First public release for `az aks draft`
 
