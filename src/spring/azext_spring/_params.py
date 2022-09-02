@@ -13,7 +13,7 @@ from ._validators import (validate_env, validate_cosmos_type, validate_resource_
                           validate_vnet, validate_vnet_required_parameters, validate_node_resource_group,
                           validate_tracing_parameters_asc_create, validate_tracing_parameters_asc_update,
                           validate_app_insights_parameters, validate_instance_count, validate_java_agent_parameters,
-                          validate_ingress_timeout, validate_jar)
+                          validate_ingress_timeout, validate_jar, validate_ingress_send_timeout, validate_ingress_session_max_age)
 from ._validators_enterprise import (only_support_enterprise, validate_builder_resource, validate_builder_create,
                                      validate_builder_update, validate_build_pool_size,
                                      validate_git_uri, validate_acs_patterns, validate_config_file_patterns,
@@ -37,6 +37,7 @@ from .vendored_sdks.appplatform.v2020_07_01.models import RuntimeVersion, TestKe
 from .vendored_sdks.appplatform.v2022_01_01_preview.models \
     import _app_platform_management_client_enums as v20220101_preview_AppPlatformEnums
 from .vendored_sdks.appplatform.v2022_01_01_preview.models._app_platform_management_client_enums import SupportedRuntimeValue, TestKeyType
+from .vendored_sdks.appplatform.v2022_09_01_preview.models._app_platform_management_client_enums import BackendProtocol, SessionAffinity
 
 name_type = CLIArgumentType(options_list=[
     '--name', '-n'], help='The primary resource name', validator=validate_name)
@@ -350,6 +351,25 @@ def load_arguments(self, _):
             c.argument('enable_persistent_storage', arg_type=get_three_state_flag(),
                        options_list=['--enable-persistent-storage', '--enable-ps'],
                        help='If true, mount a 50G (Standard Pricing tier) or 1G (Basic Pricing tier) disk with default path.')
+            c.argument('ingress_read_timeout',
+                       type=int,
+                       help='Ingress read timeout value in seconds. Default 300, minimum is 1, maximum is 1800.',
+                       validator=validate_ingress_timeout)
+            c.argument('ingress_send_timeout',
+                       type=int,
+                       help='Ingress send timeout value in seconds. Default 60, minimum is 1, maximum is 1800.',
+                       validator=validate_ingress_send_timeout)
+            c.argument('session_affinity',
+                       arg_type=get_enum_type(SessionAffinity),
+                       help='Ingress session afiinity of app.',
+                       validator=validate_ingress_timeout)
+            c.argument('session_max_age',
+                       type=int,
+                       help='Time until the cookie expires. Minimum is 1 second, maximum is 7 days. If set to 0, the expiration period is equal to the browser session period.',
+                       validator=validate_ingress_session_max_age)
+            c.argument('backend_protocol',
+                       arg_type=get_enum_type(BackendProtocol),
+                       help='Ingress backend protocol of app.')
 
     for scope in ['spring app update', 'spring app deployment create', 'spring app deploy', 'spring app create']:
         with self.argument_context(scope) as c:

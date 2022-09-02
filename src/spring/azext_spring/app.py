@@ -60,7 +60,12 @@ def app_create(cmd, client, resource_group, service, name,
                startup_probe_config=None,
                termination_grace_period_seconds=None,
                assign_public_endpoint=None,
-               loaded_public_certificate_file=None):
+               loaded_public_certificate_file=None,
+               ingress_read_timeout=None,
+               ingress_send_timeout=None,
+               session_affinity=None,
+               session_max_age=None,
+               backend_protocol=None):
     '''app_create
     Create app with an active deployment, deployment should be deployed with default banner
     1. Create app
@@ -88,7 +93,12 @@ def app_create(cmd, client, resource_group, service, name,
         'persistent_storage': persistent_storage,
         'public': assign_endpoint,
         'public_for_vnet': assign_public_endpoint,
-        'loaded_public_certificate_file': loaded_public_certificate_file
+        'loaded_public_certificate_file': loaded_public_certificate_file,
+        'ingress_read_timeout': ingress_read_timeout,
+        'ingress_send_timeout': ingress_send_timeout,
+        'session_affinity': session_affinity,
+        'session_max_age': session_max_age,
+        'backend_protocol': backend_protocol
     }
     create_deployment_kwargs = {
         'cpu': cpu,
@@ -110,7 +120,12 @@ def app_create(cmd, client, resource_group, service, name,
     update_app_kwargs = {
         'enable_persistent_storage': enable_persistent_storage,
         'public': assign_endpoint,
-        'public_for_vnet': assign_public_endpoint
+        'public_for_vnet': assign_public_endpoint,
+        'ingress_read_timeout': ingress_read_timeout,
+        'ingress_send_timeout': ingress_send_timeout,
+        'session_affinity': session_affinity,
+        'session_max_age': session_max_age,
+        'backend_protocol': backend_protocol
     }
 
     deployable = deployable_selector(**create_deployment_kwargs, **basic_kwargs)
@@ -151,6 +166,11 @@ def app_update(cmd, client, resource_group, service, name,
                https_only=None,
                persistent_storage=None,
                loaded_public_certificate_file=None,
+               ingress_read_timeout=None,
+               ingress_send_timeout=None,
+               session_affinity=None,
+               session_max_age=None,
+               backend_protocol=None,
                # deployment.source
                runtime_version=None,
                jvm_options=None,
@@ -210,6 +230,11 @@ def app_update(cmd, client, resource_group, service, name,
         'loaded_public_certificate_file': loaded_public_certificate_file,
         'enable_end_to_end_tls': enable_ingress_to_app_tls,
         'https_only': https_only,
+        'ingress_read_timeout': ingress_read_timeout,
+        'ingress_send_timeout': ingress_send_timeout,
+        'session_affinity': session_affinity,
+        'session_max_age': session_max_age,
+        'backend_protocol': backend_protocol
     }
     if deployment is None:
         updated_deployment_kwargs = {k: v for k, v in deployment_kwargs.items() if v}
