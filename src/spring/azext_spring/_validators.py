@@ -315,6 +315,8 @@ def validate_vnet(cmd, namespace):
         vnet_id = app_vnet_id
     if namespace.app_subnet.lower() == namespace.service_runtime_subnet.lower():
         raise InvalidArgumentValueError('--app-subnet and --service-runtime-subnet should not be the same.')
+    if namespace.outbound_type.lower() != "loadBalancer".lower() and namespace.outbound_type.lower() != "userDefinedRouting".lower():
+        raise InvalidArgumentValueError('--outbound-type could only be loadBalancer or userDefinedRouting')
 
     vnet_obj = _get_vnet(cmd, vnet_id)
     instance_location = namespace.location

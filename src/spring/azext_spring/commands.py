@@ -7,7 +7,8 @@
 from azure.cli.core.commands import CliCommandType
 from azext_spring._utils import handle_asc_exception
 
-from ._client_factory import (cf_spring_20220501preview,
+from ._client_factory import (cf_spring_20220901preview,
+                              cf_spring_20220501preview,
                               cf_spring_20220301preview,
                               cf_spring_20220101preview,
                               cf_spring_20201101preview,
@@ -31,7 +32,7 @@ from ._app_managed_identity_validator import (validate_app_identity_remove_or_wa
 def load_command_table(self, _):
     spring_routing_util = CliCommandType(
         operations_tmpl='azext_spring.spring_instance#{}',
-        client_factory=cf_spring_20220501preview
+        client_factory=cf_spring_20220901preview
     )
 
     app_command = CliCommandType(
