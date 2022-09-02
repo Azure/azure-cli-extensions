@@ -721,8 +721,14 @@ def list_connectedk8s(cmd, client, resource_group_name=None):
 def delete_connectedk8s(cmd, client, resource_group_name, cluster_name,
                         kube_config=None, kube_context=None, no_wait=False, force_delete=False, yes=False):
 
-    confirmation_message = "Are you sure you want to perform delete operation?"
-    utils.user_confirmation(confirmation_message, yes)
+    # The force delete prompt is added because it can be used in the case where the config map is missing
+    # so we cannot check if the user context is pointing to the cluster that he intends to delete
+    if not force_delete:
+        confirmation_message = "Are you sure you want to perform delete operation?"
+        utils.user_confirmation(confirmation_message, yes)
+    elif force_delete:
+        confirmation_message = "Force delete will clean up all the arc custom resources in your current context.\n"+ "Are you sure you want to perform force delete operation:"
+        utils.user_confirmation(confirmation_message, yes)
 
     logger.warning("This operation might take a while ...\n")
 
@@ -750,29 +756,26 @@ def delete_connectedk8s(cmd, client, resource_group_name, cluster_name,
     # Check forced delete flag
     if(force_delete):
 
-        confirmation_message = "You can check using 'kubectl config get-contexts' to check if your current context is pointing to the the right cluster. \n" + "Are you sure you want to execute the delete command:"
-        utils.user_confirmation(confirmation_message, yes)
-
         kubectl_client_location = install_kubectl_client()
 
         delete_cc_resource(client, resource_group_name, cluster_name, no_wait).result()
 
         # Explicit CRD Deletion
-        for crds in consts.Connected_Cluster_CRDs:
+        for crds in consts.CRD_FOR_FORCE_DELETE:
             cmd_helm_delete = [kubectl_client_location, "delete", "crds", crds, "--ignore-not-found"]
             response_helm_delete = Popen(cmd_helm_delete, stdout=PIPE, stderr=PIPE)
             _, error_helm_delete = response_helm_delete.communicate()
 
         # Timer added to have sufficient time after CRD deletion
         # to check the status of the CRD ( deleted or terminating )
-        time.sleep(1)
+        time.sleep(3)
 
-        # patching yaml file path which is explicitly created in azext_connectedk8s
+        # patching yaml file path for removing CRD finalizer
         current_path = os.path.abspath(os.path.dirname(__file__))
-        yaml_file_path = os.path.join(current_path, "patch-file.yaml")
+        yaml_file_path = os.path.join(current_path, "remove_crd_finalizer.yaml")
 
         # Patch if CRD is in Terminating state
-        for crds in consts.Connected_Cluster_CRDs:
+        for crds in consts.CRD_FOR_FORCE_DELETE:
 
             cmd = [kubectl_client_location, "get", "crd", crds, "-ojson"]
             cmd_output = Popen(cmd, stdout=PIPE, stderr=PIPE)

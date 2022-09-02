@@ -5,6 +5,7 @@
 
 import os
 import unittest
+import subprocess
 
 from azure.cli.testsdk import (LiveScenarioTest, ResourceGroupPreparer)  # pylint: disable=import-error
 
@@ -57,9 +58,11 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
     def test_forcedelete(self):
 
         managed_cluster_name = self.create_random_name(prefix='test-force-delete', length=24)
+        kubeconfig="%s" % (_get_test_data_file(managed_cluster_name + '-config.yaml')) 
         self.kwargs.update({
             'name': self.create_random_name(prefix='cc-', length=12),
-            'kubeconfig': "%s" % (_get_test_data_file(managed_cluster_name + '-config.yaml')),
+            'kubeconfig': kubeconfig,
+            # 'kubeconfig': "%s" % (_get_test_data_file(managed_cluster_name + '-config.yaml')),
             'managed_cluster_name': managed_cluster_name
         })
 
@@ -74,6 +77,10 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
             self.check('resourceGroup', 'rohanazuregroup'),
             self.check('tags.foo', 'doo')
         ])
+
+        # Simulating the condition in which the azure-arc namespace got deleted
+        # connectedk8s delete command fails in this case
+        subprocess.run(["kubectl", "delete", "namespace", "azure-arc","--kube-config", kubeconfig])
 
         # Using the force delete command
         # -y to supress the prompts
