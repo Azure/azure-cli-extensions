@@ -1289,7 +1289,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         # stop nodepool
         self.cmd('aks nodepool stop --no-wait --resource-group={resource_group} --cluster-name={name} --nodepool-name={node_pool_name} --aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/PreviewStartStopAgentPool')
 
-        abort_cmd = 'aks nodepool operation-abort --resource-group={resource_group} --name={name} --nodepool-name={node_pool_name}'
+        abort_cmd = 'aks nodepool operation-abort --resource-group={resource_group} --cluster-name={name} --nodepool-name={node_pool_name}'
         self.cmd(abort_cmd, checks=[self.is_empty()])
 
         time.sleep(10)
