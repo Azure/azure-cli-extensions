@@ -47,12 +47,12 @@ def load_arguments(self, _):
     provider_sku_list_type = CLIArgumentType(options_list=['--provider-sku-list', '-r'], help='Comma separated list of Provider/SKU pairs. Separate the Provider and SKU with a slash. Enclose the entire list in quotes. Values from `az quantum offerings list -l <location> -o table`')
     auto_accept_type = CLIArgumentType(help='If specified, provider terms are accepted without an interactive Y/N prompt.')
     autoadd_only_type = CLIArgumentType(help='If specified, only the plans flagged "autoAdd" are displayed.')
-    # >>>>> Finalize these names <<<<<
-    # Peter's names:
+    # >>>>> TODO: Finalize these names <<<<<
+    # Peter's proposed param names:
     job_input_source_type = CLIArgumentType(help='The location of the QIR input file to submit. Defaults to current folder.')
     job_input_format_type = CLIArgumentType(help='The format of the file to submit. Defaults to Q# project.')
     job_output_format_type = CLIArgumentType(help='The format of the file to submit. Defaults to [TBD].')
-    # Guen's names:
+    # Guen's proposed param names:
     qir_payload_type = CLIArgumentType(help='The pathname of the QIR input file to submit.')
     qir_endpoint_type = CLIArgumentType(help='The URL of the QIR endpoint.')
     qir_param_type = CLIArgumentType(help='A QIR parameter. May be repeated.')
@@ -84,7 +84,7 @@ def load_arguments(self, _):
     with self.argument_context('quantum job submit') as c:
         c.argument('job_params', job_params_type)
         c.argument('target_capability', target_capability_type)
-        # >>>>> Finalize these names <<<<<
+        # >>>>> TODO: Finalize these names <<<<<
         # Peter's proposed param names:
         c.argument('job_input_source', job_input_source_type)
         c.argument('job_input_format', job_input_format_type)
@@ -128,7 +128,7 @@ def load_arguments(self, _):
         c.argument('no_build', no_build_type)
         c.argument('job_params', job_params_type)
         c.argument('target_capability', target_capability_type)
-        # >>>>> Finalize these names <<<<<
+        # >>>>> TODO: Finalize these names <<<<<
         # Peter's proposed param names:
         c.argument('job_input_source', job_input_source_type)
         c.argument('job_input_format', job_input_format_type)

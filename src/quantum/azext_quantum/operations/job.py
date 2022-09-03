@@ -169,8 +169,33 @@ def _has_completed(job):
 
 
 def submit(cmd, program_args, resource_group_name=None, workspace_name=None, location=None, target_id=None,
-           project=None, job_name=None, shots=None, storage=None, no_build=False, job_params=None,
-           target_capability=None):
+           project=None, job_name=None, shots=None, storage=None, no_build=False, job_params=None, target_capability=None,
+           # >>>>> TODO: Finalize these names <<<<<
+           # Peter's proposed param names:
+           job_input_source=None, job_input_format=None, job_output_format=None,
+           # Guen's proposed param names:
+           qir_payload=None, qir_endpoint=None, qir_param=None,
+           ):
+# def submit(cmd, program_args, resource_group_name=None, workspace_name=None, location=None, target_id=None,
+#            project=None, job_name=None, shots=None, storage=None, no_build=False, job_params=None, target_capability=None,
+#            job_input_source=None, job_input_format=None, job_output_format=None,
+#            qir_payload=None, qir_endpoint=None, qir_param=None):
+    """
+    Submit a quantum program to run on Azure Quantum.
+    """
+
+    # >>>>> TODO: add logic that determines what type of job we're running <<<<<
+
+    # Submit a Q# project. [Keep using old code for Q# for now]
+    return _submit_qsharp(cmd, program_args, resource_group_name, workspace_name, location, target_id,
+                   project, job_name, shots, storage, no_build, job_params, target_capability)
+
+
+# def submit(cmd, program_args, resource_group_name=None, workspace_name=None, location=None, target_id=None,
+#            project=None, job_name=None, shots=None, storage=None, no_build=False, job_params=None,
+#            target_capability=None):
+def _submit_qsharp(cmd, program_args, resource_group_name, workspace_name, location, target_id,
+                   project, job_name, shots, storage, no_build, job_params, target_capability):
     """
     Submit a Q# project to run on Azure Quantum.
     """
