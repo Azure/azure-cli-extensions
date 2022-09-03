@@ -106,7 +106,7 @@ def load_arguments(self, _):
         c.argument('no_build', no_build_type)
         c.argument('job_params', job_params_type)
         c.argument('target_capability', target_capability_type)
-        # >>>>> Finalize these names <<<<<
+        # >>>>> TODO: Finalize these names <<<<<
         # Peter's proposed param names:
         c.argument('job_input_source', job_input_source_type)
         c.argument('job_input_format', job_input_format_type)
