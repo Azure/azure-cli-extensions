@@ -12,6 +12,11 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+0.5.97
+++++++
+
+* Add support for apiserver vnet integration public cluster.
+
 0.5.96
 ++++++
 

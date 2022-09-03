@@ -826,6 +826,15 @@ helps['aks update'] = """
         - name: --disable-node-restriction
           type: bool
           short-summary: Disable node restriction option on cluster.
+        - name: --enable-private-cluster
+          type: bool
+          short-summary: Enable private cluster for apiserver vnet integration cluster.
+        - name: --disable-private-cluster
+          type: bool
+          short-summary: Disable private cluster for apiserver vnet integration cluster.
+        - name: --private-dns-zone
+          type: string
+          short-summary: The private dns zone mode for private cluster.
     examples:
       - name: Reconcile the cluster back to its current state.
         text: az aks update -g MyResourceGroup -n MyManagedCluster
