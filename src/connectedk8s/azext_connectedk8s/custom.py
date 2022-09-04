@@ -69,7 +69,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
     logger.warning("This operation might take a while...\n")
 
     # Validate custom token operation
-    custom_token_passed = utils.validate_custom_token(location, "dummyCloid")
+    custom_token_passed, location = utils.validate_custom_token(cmd, resource_group_name, location)
 
     # Setting subscription id and tenant Id
     subscription_id = os.getenv('AZURE_SUBSCRIPTION_ID') if custom_token_passed is True else get_subscription_id(cmd.cli_ctx)
@@ -1287,7 +1287,7 @@ def enable_features(cmd, client, resource_group_name, cluster_name, features, ku
     logger.warning("This operation might take a while...\n")
 
     # Validate custom token operation
-    custom_token_passed = utils.validate_custom_token("dummyLocation", cl_oid)
+    custom_token_passed, _ = utils.validate_custom_token(cmd, resource_group_name, "dummyLocation")
 
     features = [x.lower() for x in features]
     enable_cluster_connect, enable_azure_rbac, enable_cl = utils.check_features_to_update(features)

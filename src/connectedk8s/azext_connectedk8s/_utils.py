@@ -23,7 +23,7 @@ from azure.core.exceptions import ResourceNotFoundError, HttpResponseError
 from msrest.exceptions import AuthenticationError, HttpOperationError, TokenExpiredError
 from msrest.exceptions import ValidationError as MSRestValidationError
 from kubernetes.client.rest import ApiException
-from azext_connectedk8s._client_factory import resource_providers_client
+from azext_connectedk8s._client_factory import resource_providers_client, cf_resource_groups
 import azext_connectedk8s._constants as consts
 from kubernetes import client as kube_client
 from azure.cli.core import get_default_cli
@@ -69,7 +69,7 @@ def validate_location(cmd, location):
             break
 
 
-def validate_custom_token(location, cl_oid):
+def validate_custom_token(cmd, resource_group_name, location):
     if os.getenv('AZURE_ACCESS_TOKEN'):
         if os.getenv('AZURE_SUBSCRIPTION_ID') is None:
             telemetry.set_exception(exception='Required environment variables and parameters are not set', fault_type=consts.Custom_Token_Environments_Fault_Type,
@@ -80,15 +80,16 @@ def validate_custom_token(location, cl_oid):
                                     summary='Required environment variables and parameters are not set')
             raise ValidationError("Environment variable 'AZURE_TENANT_ID' should be set when custom access token is enabled.")
         if location is None:
-            telemetry.set_exception(exception='Required environment variables and parameters are not set', fault_type=consts.Custom_Token_Environments_Fault_Type,
-                                    summary='Required environment variables and parameters are not set')
-            raise ValidationError("Parameter '--location' should be set when custom access token is enabled.")
-        if cl_oid is None:
-            telemetry.set_exception(exception='Required environment variables and parameters are not set', fault_type=consts.Custom_Token_Environments_Fault_Type,
-                                    summary='Required environment variables and parameters are not set')
-            raise ValidationError("Parameter '--custom-locations-oid' should be set when custom access token is enabled.")
-        return True
-    return False
+            try:
+                resource_client = cf_resource_groups(cmd.cli_ctx, os.getenv('AZURE_SUBSCRIPTION_ID'))
+                rg = resource_client.get(resource_group_name)
+                location = rg.location
+            except Exception as ex:
+                telemetry.set_exception(exception=ex, fault_type=consts.Location_Fetch_Fault_Type,
+                                        summary='Unable to fetch location from resource group')
+                raise ValidationError("Unable to fetch location from resource group: ".format(str(ex)))
+        return True, location
+    return False, location
 
 
 def get_chart_path(registry_path, kube_config, kube_context, helm_client_location):
