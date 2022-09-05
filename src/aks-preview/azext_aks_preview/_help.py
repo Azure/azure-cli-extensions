@@ -2104,5 +2104,5 @@ helps['aks draft update'] = """
       - name: Prompt to update the application to be internet accessible in a specific project directory.
         text: az aks draft update --destination=/projects/some_project
       - name: Update the application to be internet accessible with a host of the ingress resource and a Keyvault certificate in a specific project directory.
-        text: az aks draft update --host=some_host --certificate=some_certificate --destination=/projects/some_project
+        text: az aks draft update --destination=/projects/some_project
 """
