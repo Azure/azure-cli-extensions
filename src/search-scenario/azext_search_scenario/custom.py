@@ -288,8 +288,7 @@ def _parse_argument_value_sample(command_sample):
 
 
 def send_feedback(scope, option, keyword, search_results=None, adoption=None):
-    feedback = str(int(scope)) + "#" + str(option) + "#" + \
-               keyword.replace("\\", "\\\\").replace("#", "\\sharp") + "#"
+    feedback = str(int(scope)) + "#" + str(option) + "#" + keyword.replace("\\", "\\\\").replace("#", "\\sharp") + "#"
     if search_results and isinstance(search_results, list):
         feedback += " ".join(map(lambda r: str(r.get("source", 0)), search_results))
     else:
@@ -297,7 +296,7 @@ def send_feedback(scope, option, keyword, search_results=None, adoption=None):
     feedback += "#"
     if adoption:
         feedback += str(adoption.get("source", " ")) + "#" + adoption.get("scenario", " ") + \
-            "#" + adoption.get("description", " ").replace("\\",  "\\\\").replace("#", "\\sharp")
+            "#" + adoption.get("description", " ").replace("\\", "\\\\").replace("#", "\\sharp")
     else:
         feedback += " # # "
 
