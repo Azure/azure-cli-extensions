@@ -3,6 +3,27 @@
 Release History
 ===============
 
+0.3.10
+++++++
+* 'az containerapp create': Fix bug with --image caused by assuming a value for --registry-server
+* 'az containerapp hostname bind': Remove location set automatically by resource group
+* 'az containerapp env create': Add location validation
+
+0.3.9
+++++++
+* 'az containerapp create': Allow authenticating with managed identity (MSI) instead of ACR username & password
+* 'az containerapp show': Add parameter --show-secrets to show secret values
+* 'az containerapp env create': Add better message when polling times out
+* 'az containerapp env certificate upload': Fix bug where certificate uploading failed with error "Certificate must contain one private key"
+* 'az containerapp env certificate upload': Fix bug where replacing invalid character in certificate name failed
+
+0.3.8
+++++++
+* 'az containerapp update': Fix bug where --yaml would error out due to secret values
+* 'az containerapp update': use PATCH API instead of GET and PUT
+* 'az containerapp up': Fix bug where using --source with an invalid name parameter causes ACR build to fail
+* 'az containerapp logs show'/'az containerapp exec': Fix bug where ssh/logstream they would fail on apps with networking restrictions
+
 0.3.7
 ++++++
 * Fixed bug with 'az containerapp up' where --registry-server was ignored

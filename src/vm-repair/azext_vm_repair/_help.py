@@ -77,3 +77,18 @@ helps['vm repair list-scripts'] = """
           text: >
             az vm repair list-scripts --preview "https://github.com/haagha/repair-script-library/blob/master/map.json"
 """
+
+helps['vm repair reset-nic'] = """
+    type: command
+    short-summary: Reset the network interface stack on the VM guest OS. https://docs.microsoft.com/en-us/troubleshoot/azure/virtual-machines/reset-network-interface
+    examples:
+        - name: Reset the VM guest NIC. Specify VM resource group and name.
+          text: >
+            az vm repair reset-nic -g MyResourceGroup -n MyVM --verbose
+        - name: Reset the VM guest NIC and auto-start the VM if it is not in running state.
+          text: >
+            az vm repair reset-nic -g MyResourceGroup -n MyVM --yes --verbose
+        - name: Reset the VM guest NIC. Specify VM resource id.
+          text: >
+            az vm repair reset-nic --ids /subscriptions/MySubscriptionId/resourceGroups/MyResourceGroup/providers/Microsoft.Compute/virtualMachines/MyVM --verbose
+"""

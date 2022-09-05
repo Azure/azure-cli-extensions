@@ -203,3 +203,19 @@ def load_command_table(self, _):
 
     with self.command_group('cosmosdb mongodb collection', cosmosdb_mongo_sdk, client_factory=cf_mongo_db_resources) as g:
         g.custom_command('merge', 'cli_begin_list_mongo_db_collection_partition_merge', is_preview=True)
+
+    # Retrieve partition throughput for Sql containers
+    with self.command_group('cosmosdb sql container', cosmosdb_sql_sdk, client_factory=cf_sql_resources) as g:
+        g.custom_command('retrieve-partition-throughput', 'cli_begin_retrieve_sql_container_partition_throughput', is_preview=True)
+
+    # Redistribute partition throughput for Sql containers
+    with self.command_group('cosmosdb sql container', cosmosdb_sql_sdk, client_factory=cf_sql_resources) as g:
+        g.custom_command('redistribute-partition-throughput', 'cli_begin_redistribute_sql_container_partition_throughput', is_preview=True)
+
+    # Retrieve partition throughput for Mongo collection
+    with self.command_group('cosmosdb mongodb collection', cosmosdb_mongo_sdk, client_factory=cf_mongo_db_resources) as g:
+        g.custom_command('retrieve-partition-throughput', 'cli_begin_retrieve_mongo_container_partition_throughput', is_preview=True)
+
+    # Redistribute partition throughput for Mongo collection
+    with self.command_group('cosmosdb mongodb collection', cosmosdb_mongo_sdk, client_factory=cf_mongo_db_resources) as g:
+        g.custom_command('redistribute-partition-throughput', 'cli_begin_redistribute_mongo_container_partition_throughput', is_preview=True)

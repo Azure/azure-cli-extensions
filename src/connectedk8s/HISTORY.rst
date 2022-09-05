@@ -2,6 +2,21 @@
 
 Release History
 ===============
+1.3.1
+++++++
+
+* Updated min cli core version to 2.30.0
+
+1.3.0
+++++++
+
+* Added private link support
+
+1.2.11
+++++++
+
+* Increased the timeout of diagnoser job completion to 180 seconds
+
 1.2.10
 ++++++
 

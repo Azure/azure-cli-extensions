@@ -10,11 +10,13 @@ import os.path
 import re
 from ipaddress import ip_network
 from math import isclose, isnan
+from sre_compile import dis
 
 import azure.cli.core.keys as keys
 from azure.cli.core.azclierror import (
     ArgumentUsageError,
     InvalidArgumentValueError,
+    MutuallyExclusiveArgumentError,
     RequiredArgumentMissingError,
 )
 from azure.cli.core.commands.validators import validate_tag
@@ -138,14 +140,23 @@ def validate_ip_ranges(namespace):
                 "--api-server-authorized-ip-ranges should be a list of IPv4 addresses or CIDRs")
 
 
+def _validate_nodepool_name(nodepool_name):
+    """Validates a nodepool name to be at most 12 characters, alphanumeric only."""
+    if nodepool_name != "":
+        if len(nodepool_name) > 12:
+            raise InvalidArgumentValueError('--nodepool-name can contain at most 12 characters')
+        if not nodepool_name.isalnum():
+            raise InvalidArgumentValueError('--nodepool-name should contain only alphanumeric characters')
+
+
 def validate_nodepool_name(namespace):
     """Validates a nodepool name to be at most 12 characters, alphanumeric only."""
-    if namespace.nodepool_name != "":
-        if len(namespace.nodepool_name) > 12:
-            raise CLIError('--nodepool-name can contain atmost 12 characters')
-        if not namespace.nodepool_name.isalnum():
-            raise CLIError(
-                '--nodepool-name should only contain alphanumeric characters')
+    _validate_nodepool_name(namespace.nodepool_name)
+
+
+def validate_agent_pool_name(namespace):
+    """Validates a nodepool name to be at most 12 characters, alphanumeric only."""
+    _validate_nodepool_name(namespace.agent_pool_name)
 
 
 def validate_vm_set_type(namespace):
@@ -597,6 +608,16 @@ def validate_azure_keyvault_kms_key_vault_resource_id(namespace):
     from msrestazure.tools import is_valid_resource_id
     if not is_valid_resource_id(key_vault_resource_id):
         raise InvalidArgumentValueError("--azure-keyvault-kms-key-vault-resource-id is not a valid Azure resource ID.")
+
+
+def validate_image_cleaner_enable_disable_mutually_exclusive(namespace):
+    enable_image_cleaner = namespace.enable_image_cleaner
+    disable_image_cleaner = namespace.disable_image_cleaner
+
+    if enable_image_cleaner and disable_image_cleaner:
+        raise MutuallyExclusiveArgumentError(
+            "Cannot specify --enable-image-cleaner and --disable-image-cleaner at the same time."
+        )
 
 
 def validate_enable_custom_ca_trust(namespace):

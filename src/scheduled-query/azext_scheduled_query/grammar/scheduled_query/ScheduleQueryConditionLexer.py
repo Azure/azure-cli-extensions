@@ -3,12 +3,15 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 # pylint: disable=all
-# Generated from ScheduleQueryCondition.g4 by ANTLR 4.7.2
+# Generated from ScheduleQueryCondition.g4 by ANTLR 4.9.3
 # encoding: utf-8
 from antlr4 import *
 from io import StringIO
-from typing.io import TextIO
 import sys
+if sys.version_info[1] > 5:
+    from typing import TextIO
+else:
+    from typing.io import TextIO
 
 
 
@@ -214,30 +217,30 @@ class ScheduleQueryConditionLexer(Lexer):
     modeNames = [ "DEFAULT_MODE" ]
 
     literalNames = [ "<INVALID>",
-            "'/'", "'.'", "'_'", "'\\'", "':'", "'%'", "'-'", "','", "'|'",
+            "'/'", "'.'", "'_'", "'\\'", "':'", "'%'", "'-'", "','", "'|'", 
             "'&'", "'('", "')'", "'=='", "'\\\"'", "'\\''", "'*'", "'~'" ]
 
     symbolicNames = [ "<INVALID>",
-            "WHERE", "COMESFROM", "RESOURCE", "COLUMN", "AT", "LEAST", "OUT",
-            "OF", "VIOLATIONS", "AGGREGATED", "POINTS", "AND", "INCLUDES",
-            "EXCLUDES", "OR", "OPERATOR", "NUMBER", "QUOTE", "WHITESPACE",
+            "WHERE", "COMESFROM", "RESOURCE", "COLUMN", "AT", "LEAST", "OUT", 
+            "OF", "VIOLATIONS", "AGGREGATED", "POINTS", "AND", "INCLUDES", 
+            "EXCLUDES", "OR", "OPERATOR", "NUMBER", "QUOTE", "WHITESPACE", 
             "NEWLINE", "WORD" ]
 
-    ruleNames = [ "T__0", "T__1", "T__2", "T__3", "T__4", "T__5", "T__6",
-                  "T__7", "T__8", "T__9", "T__10", "T__11", "T__12", "T__13",
-                  "T__14", "T__15", "T__16", "A", "C", "D", "E", "F", "G",
-                  "H", "I", "L", "M", "N", "O", "P", "R", "S", "U", "V",
-                  "W", "X", "T", "DIGIT", "LOWERCASE", "UPPERCASE", "WHERE",
-                  "COMESFROM", "RESOURCE", "COLUMN", "AT", "LEAST", "OUT",
-                  "OF", "VIOLATIONS", "AGGREGATED", "POINTS", "AND", "INCLUDES",
-                  "EXCLUDES", "OR", "OPERATOR", "NUMBER", "QUOTE", "WHITESPACE",
+    ruleNames = [ "T__0", "T__1", "T__2", "T__3", "T__4", "T__5", "T__6", 
+                  "T__7", "T__8", "T__9", "T__10", "T__11", "T__12", "T__13", 
+                  "T__14", "T__15", "T__16", "A", "C", "D", "E", "F", "G", 
+                  "H", "I", "L", "M", "N", "O", "P", "R", "S", "U", "V", 
+                  "W", "X", "T", "DIGIT", "LOWERCASE", "UPPERCASE", "WHERE", 
+                  "COMESFROM", "RESOURCE", "COLUMN", "AT", "LEAST", "OUT", 
+                  "OF", "VIOLATIONS", "AGGREGATED", "POINTS", "AND", "INCLUDES", 
+                  "EXCLUDES", "OR", "OPERATOR", "NUMBER", "QUOTE", "WHITESPACE", 
                   "NEWLINE", "WORD" ]
 
     grammarFileName = "ScheduleQueryCondition.g4"
 
     def __init__(self, input=None, output:TextIO = sys.stdout):
         super().__init__(input, output)
-        self.checkVersion("4.7.2")
+        self.checkVersion("4.9.3")
         self._interp = LexerATNSimulator(self, self.atn, self.decisionsToDFA, PredictionContextCache())
         self._actions = None
         self._predicates = None
