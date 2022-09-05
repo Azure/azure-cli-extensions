@@ -7,6 +7,11 @@ Release History
 
 * Added force delete command which is an added functionality in connectedk8s delete function
 
+1.3.1
+++++++
+
+* Updated min cli core version to 2.30.0
+
 1.3.0
 ++++++
 

@@ -657,6 +657,8 @@ def aks_create(
     azure_keyvault_kms_key_id=None,
     azure_keyvault_kms_key_vault_network_access=None,
     azure_keyvault_kms_key_vault_resource_id=None,
+    enable_image_cleaner=False,
+    image_cleaner_interval_hours=None,
     cluster_snapshot_id=None,
     disk_driver_version=None,
     disable_disk_driver=False,
@@ -667,6 +669,7 @@ def aks_create(
     apiserver_subnet_id=None,
     dns_zone_resource_id=None,
     enable_keda=False,
+    enable_node_restriction=False,
     # nodepool
     host_group_id=None,
     crg_id=None,
@@ -770,6 +773,9 @@ def aks_update(
     azure_keyvault_kms_key_id=None,
     azure_keyvault_kms_key_vault_network_access=None,
     azure_keyvault_kms_key_vault_resource_id=None,
+    enable_image_cleaner=False,
+    disable_image_cleaner=False,
+    image_cleaner_interval_hours=None,
     enable_disk_driver=False,
     disk_driver_version=None,
     disable_disk_driver=False,
@@ -783,6 +789,11 @@ def aks_update(
     apiserver_subnet_id=None,
     enable_keda=False,
     disable_keda=False,
+    enable_node_restriction=False,
+    disable_node_restriction=False,
+    enable_private_cluster=False,
+    disable_private_cluster=False,
+    private_dns_zone=None,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
@@ -1368,6 +1379,56 @@ def aks_agentpool_delete(cmd,   # pylint: disable=unused-argument
                        "use 'aks nodepool list' to get current node pool list".format(nodepool_name))
 
     return sdk_no_wait(no_wait, client.begin_delete, resource_group_name, cluster_name, nodepool_name, ignore_pod_disruption_budget=ignore_pod_disruption_budget)
+
+
+def aks_agentpool_operation_abort(cmd,   # pylint: disable=unused-argument
+                                  client,
+                                  resource_group_name,
+                                  cluster_name,
+                                  nodepool_name,
+                                  aks_custom_headers=None,
+                                  no_wait=False):
+    PowerState = cmd.get_models(
+        "PowerState",
+        resource_type=CUSTOM_MGMT_AKS_PREVIEW,
+        operation_group="agent_pools",
+    )
+
+    agentpool_exists = False
+    instances = client.list(resource_group_name, cluster_name)
+    for agentpool_profile in instances:
+        if agentpool_profile.name.lower() == nodepool_name.lower():
+            agentpool_exists = True
+            break
+    if not agentpool_exists:
+        raise InvalidArgumentValueError(
+            "Node pool {} doesnt exist, use 'aks nodepool list' to get current node pool list".format(nodepool_name))
+    instance = client.get(resource_group_name, cluster_name, nodepool_name)
+    power_state = PowerState(code="Running")
+    instance.power_state = power_state
+    headers = get_aks_custom_headers(aks_custom_headers)
+    return sdk_no_wait(no_wait, client.abort_latest_operation, resource_group_name, cluster_name, nodepool_name, headers=headers)
+
+
+def aks_operation_abort(cmd,   # pylint: disable=unused-argument
+                        client,
+                        resource_group_name,
+                        name,
+                        aks_custom_headers=None,
+                        no_wait=False):
+    PowerState = cmd.get_models(
+        "PowerState",
+        resource_type=CUSTOM_MGMT_AKS_PREVIEW,
+        operation_group="managed_clusters",
+    )
+
+    instance = client.get(resource_group_name, name)
+    power_state = PowerState(code="Running")
+    if instance is None:
+        raise InvalidArgumentValueError("Cluster {} doesnt exist, use 'aks list' to get current cluster list".format(name))
+    instance.power_state = power_state
+    headers = get_aks_custom_headers(aks_custom_headers)
+    return sdk_no_wait(no_wait, client.abort_latest_operation, resource_group_name, name, headers=headers)
 
 
 def aks_addon_list_available():
