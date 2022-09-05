@@ -14,10 +14,10 @@ import platform
 from pathlib import Path
 from knack.prompting import prompt_y_n
 import logging
-
 from azext_aks_preview._consts import (
     CONST_DRAFT_CLI_VERSION
 )
+
 
 # `az aks draft create` function
 def aks_draft_cmd_create(destination: str,
@@ -123,8 +123,8 @@ def aks_draft_cmd_up(app: str,
 
 
 # `az aks draft update` function
-def aks_draft_cmd_update(host: str, certificate: str, destination: str, download_path: str) -> None:
-    file_path, arguments = _pre_run(download_path, host=host, certificate=certificate, destination=destination)
+def aks_draft_cmd_update(destination: str, download_path: str) -> None:
+    file_path, arguments = _pre_run(download_path, destination=destination)
     run_successful = _run(file_path, 'update', arguments)
     if run_successful:
         _run_finish()
@@ -201,8 +201,6 @@ def _binary_pre_check(download_path: str) -> Optional[str]:
 
 # Returns True if the local binary is the latest version, False otherwise
 def _is_latest_version(binary_path: str) -> bool:
-    # We should run this from some kind of config, but since there is none 
-    # lets pass this sttaic from here to fix failing tests, periscope does same.
     latest_version = CONST_DRAFT_CLI_VERSION
     process = subprocess.Popen([binary_path, 'version'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     stdout, stderr = process.communicate()
