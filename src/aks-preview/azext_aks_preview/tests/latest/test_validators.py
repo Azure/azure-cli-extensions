@@ -3,6 +3,8 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 import unittest
+from types import SimpleNamespace
+
 from azure.cli.core.util import CLIError
 from azure.cli.core.azclierror import InvalidArgumentValueError
 import azext_aks_preview._validators as validators
@@ -384,6 +386,28 @@ class TestValidateAzureKeyVaultKmsKeyId(unittest.TestCase):
             validators.validate_azure_keyvault_kms_key_id(namespace)
         self.assertEqual(str(cm.exception), err)
 
+class ImageCleanerNamespace:
+    def __init__(
+        self,
+        enable_image_cleaner=False,
+        disable_image_cleaner=False,
+        image_cleaner_interval_hours=None,
+    ):
+        self.enable_image_cleaner = enable_image_cleaner 
+        self.disable_image_cleaner = disable_image_cleaner 
+        self.image_cleaner_interval_hours = image_cleaner_interval_hours 
+
+class TestValidateImageCleanerEnableDiasble(unittest.TestCase):
+    def test_invalid_image_cleaner_enable_disable_not_existing_together(self):
+        namespace = ImageCleanerNamespace(
+            enable_image_cleaner=True,
+            disable_image_cleaner=True,
+        )
+        err = 'Cannot specify --enable-image-cleaner and --disable-image-cleaner at the same time.'
+
+        with self.assertRaises(CLIError) as cm:
+            validators.validate_image_cleaner_enable_disable_mutually_exclusive(namespace)
+        self.assertEqual(str(cm.exception), err)
 
 class AzureKeyVaultKmsKeyVaultResourceIdNamespace:
 
@@ -406,6 +430,72 @@ class TestValidateAzureKeyVaultKmsKeyVaultResourceId(unittest.TestCase):
         namespace = AzureKeyVaultKmsKeyVaultResourceIdNamespace(azure_keyvault_kms_key_vault_resource_id=valid_azure_keyvault_kms_key_vault_resource_id)
 
         validators.validate_azure_keyvault_kms_key_vault_resource_id(namespace)
+
+
+class TestValidateNodepoolName(unittest.TestCase):
+    def test_invalid_nodepool_name_too_long(self):
+        namespace = SimpleNamespace(
+            **{
+                "nodepool_name": "tooLongNodepoolName",
+            }
+        )
+        with self.assertRaises(InvalidArgumentValueError):
+            validators.validate_nodepool_name(
+                namespace
+            )
+
+    def test_invalid_agent_pool_name_too_long(self):
+        namespace = SimpleNamespace(
+            **{
+                "agent_pool_name": "tooLongNodepoolName",
+            }
+        )
+        with self.assertRaises(InvalidArgumentValueError):
+            validators.validate_agent_pool_name(
+                namespace
+            )
+
+    def test_invalid_nodepool_name_not_alnum(self):
+        namespace = SimpleNamespace(
+            **{
+                "nodepool_name": "invalid-np*",
+            }
+        )
+        with self.assertRaises(InvalidArgumentValueError):
+            validators.validate_nodepool_name(
+                namespace
+            )
+
+    def test_invalid_agent_pool_name_not_alnum(self):
+        namespace = SimpleNamespace(
+            **{
+                "agent_pool_name": "invalid-np*",
+            }
+        )
+        with self.assertRaises(InvalidArgumentValueError):
+            validators.validate_agent_pool_name(
+                namespace
+            )
+
+    def test_valid_nodepool_name(self):
+        namespace = SimpleNamespace(
+            **{
+                "nodepool_name": "np100",
+            }
+        )
+        validators.validate_nodepool_name(
+            namespace
+        )
+
+    def test_valid_agent_pool_name(self):
+        namespace = SimpleNamespace(
+            **{
+                "agent_pool_name": "np100",
+            }
+        )
+        validators.validate_agent_pool_name(
+            namespace
+        )
 
 
 if __name__ == "__main__":

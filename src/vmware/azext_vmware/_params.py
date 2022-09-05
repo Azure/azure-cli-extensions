@@ -60,7 +60,11 @@ def load_arguments(self, _):
         c.argument('secondary_zone', help='The secondary availability zone for the private cloud.')
 
     with self.argument_context('vmware private-cloud add-cmk-encryption') as c:
-        c.argument('enc_status', help='Status of customer managed encryption key. Possible values include "Enabled" and "Disabled".')
+        c.argument('enc_kv_key_name', help='The name of the encryption key vault key.')
+        c.argument('enc_kv_url', help='The URL of the encryption key vault.')
+        c.argument('enc_kv_key_version', help='The version of the encryption key vault key.')
+
+    with self.argument_context('vmware private-cloud enable-cmk-encryption') as c:
         c.argument('enc_kv_key_name', help='The name of the encryption key vault key.')
         c.argument('enc_kv_url', help='The URL of the encryption key vault.')
         c.argument('enc_kv_key_version', help='The version of the encryption key vault key.')
@@ -99,8 +103,11 @@ def load_arguments(self, _):
         c.argument('domain', help='The domain\'s dns name.')
         c.argument('name', options_list=['--name', '-n'], help='The name of the identity source.')
 
-    with self.argument_context('vmware private-cloud identity') as c:
+    with self.argument_context('vmware private-cloud identity assign') as c:
         c.argument('system_assigned', help='Enable a system assigned identity.')
+
+    with self.argument_context('vmware private-cloud identity remove') as c:
+        c.argument('system_assigned', help='Disable a system assigned identity.')
 
     with self.argument_context('vmware private-cloud update') as c:
         c.argument('name', options_list=['--name', '-n'], help='Name of the private cloud.')

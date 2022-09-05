@@ -778,56 +778,60 @@ helps['network manager connection'] = """
     short-summary: Manage connection with network manager
 """
 
-# helps['network manager connection management-group'] = """
-#     type: group
-#     short-summary: Manage management-group connection with network
-# """
-#
-# helps['network manager connection management-group list'] = """
-#     type: command
-#     short-summary: "List all network manager connections created by this management group."
-#     examples:
-#       - name: List management-group connections in a network manager
-#         text: |-
-#                az network manager connection management-group list --management-group-id "testManagementGroupId" \
-# --resource-group "rg1"
-# """
-#
-# helps['network manager connection management-group show'] = """
-#     type: command
-#     short-summary: "Get a specified connection created by this management group."
-#     examples:
-#       - name: Get network manager connection management-group
-#         text: |-
-#                az network manager connection management-group show --management-group-id "testManagementGroupId" \
-# --connection-name "testNetworkManagerConnection" --resource-group "rg1"
-# """
-#
-# helps['network manager connection management-group create'] = """
-#     type: command
-#     short-summary: Create a connection to a cross tenant network manager"
-#     examples:
-#       - name: Create network manager connection management-group
-#         text: |-
-#                az network manager connection management-group create --management-group-id "testManagementGroupId" \
-# --connection-name "testNetworkManagerConnection" --resource-group "rg1" --network-manager "testNetworkManagerId" \
-# --description "A sample policy"
-# """
-#
-# helps['network manager connection management-group update'] = """
-#     type: command
-#     short-summary: "Update a connection to a cross tenant network manager"
-# """
-#
-# helps['network manager connection management-group delete'] = """
-#     type: command
-#     short-summary: "Delete specified pending connection created by this management group."
-#     examples:
-#       - name: Delete network manager connection management-group
-#         text: |-
-#                az network manager connection management-group delete --management-group-id "testManagementGroupId" \
-# --connection-name "testNetworkManagerConnection" --resource-group "rg1"
-# """
+helps['network manager connection management-group'] = """
+    type: group
+    short-summary: Manage management-group connection with network
+"""
+
+helps['network manager connection management-group list'] = """
+    type: command
+    short-summary: "List all network manager connections created by this management group."
+    examples:
+      - name: List management-group connections in a network manager
+        text: |-
+               az network manager connection management-group list --management-group-id "testManagementGroupId"
+"""
+
+helps['network manager connection management-group show'] = """
+    type: command
+    short-summary: "Get a specified connection created by this management group."
+    examples:
+      - name: Get network manager connection management-group
+        text: |-
+               az network manager connection management-group show --management-group-id "testManagementGroupId" \
+--connection-name "testNetworkManagerConnection"
+"""
+
+helps['network manager connection management-group create'] = """
+    type: command
+    short-summary: Create a connection to a cross tenant network manager"
+    examples:
+      - name: Create network manager connection management-group
+        text: |-
+               az network manager connection management-group create --management-group-id "testManagementGroupId" \
+--connection-name "testNetworkManagerConnection" --network-manager "testNetworkManagerId" \
+--description "A sample policy"
+"""
+
+helps['network manager connection management-group update'] = """
+    type: command
+    short-summary: "Update a connection to a cross tenant network manager"
+    examples:
+      - name: Update network manager connection management-group
+        text: |-
+               az network manager connection management-group update --management-group-id "testManagementGroupId" \
+--connection-name "testNetworkManagerConnection" --description "My Test Network Manager Connection"
+"""
+
+helps['network manager connection management-group delete'] = """
+    type: command
+    short-summary: "Delete specified pending connection created by this management group."
+    examples:
+      - name: Delete network manager connection management-group
+        text: |-
+               az network manager connection management-group delete --management-group-id "testManagementGroupId" \
+--connection-name "testNetworkManagerConnection"
+"""
 
 helps['network manager scope-connection'] = """
     type: group

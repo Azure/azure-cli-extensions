@@ -2,6 +2,14 @@
 
 Release History
 ===============
+0.5.3
++++++
+* Fix force delete behavior.
+
+0.5.2
++++++
+* 'az network manager connection management-group': reopen the set of commands.
+
 0.5.1
 +++++
 * 'az network manager group': remove parameters '--member-type' and '--display-name'
