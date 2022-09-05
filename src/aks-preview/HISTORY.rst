@@ -12,6 +12,12 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+0.5.98
+++++++
+
+* Fix auto download issue for Draft CLI.
+* Remove host and certificates as draft tools update command no longer uses it.
+
 0.5.97
 ++++++
 
