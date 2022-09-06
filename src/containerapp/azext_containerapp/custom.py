@@ -321,6 +321,10 @@ def create_containerapp(cmd,
                         dapr_app_port=None,
                         dapr_app_id=None,
                         dapr_app_protocol=None,
+                        dapr_http_read_buffer_size=None,
+                        dapr_http_max_request_size=None,
+                        dapr_log_level=None,
+                        dapr_enable_api_logging=False,
                         revision_suffix=None,
                         startup_command=None,
                         args=None,
@@ -412,6 +416,10 @@ def create_containerapp(cmd,
         dapr_def["appId"] = dapr_app_id
         dapr_def["appPort"] = dapr_app_port
         dapr_def["appProtocol"] = dapr_app_protocol
+        dapr_def["httpReadBufferSize"] = dapr_http_read_buffer_size
+        dapr_def["httpMaxRequestSize"] = dapr_http_max_request_size
+        dapr_def["logLevel"] = dapr_log_level
+        dapr_def["enableApiLogging"] = dapr_enable_api_logging
 
     config_def = ConfigurationModel
     config_def["secrets"] = secrets_def
@@ -2084,7 +2092,15 @@ def set_secrets(cmd, name, resource_group_name, secrets,
         handle_raw_exception(e)
 
 
-def enable_dapr(cmd, name, resource_group_name, dapr_app_id=None, dapr_app_port=None, dapr_app_protocol=None, no_wait=False):
+def enable_dapr(cmd, name, resource_group_name,
+                dapr_app_id=None,
+                dapr_app_port=None,
+                dapr_app_protocol=None,
+                dapr_http_read_buffer_size=None,
+                dapr_http_max_request_size=None,
+                dapr_log_level=None,
+                dapr_enable_api_logging=False,
+                no_wait=False):
     _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     containerapp_def = None
@@ -2112,6 +2128,18 @@ def enable_dapr(cmd, name, resource_group_name, dapr_app_id=None, dapr_app_port=
 
     if dapr_app_protocol:
         containerapp_def['properties']['configuration']['dapr']['appProtocol'] = dapr_app_protocol
+
+    if dapr_http_read_buffer_size:
+        containerapp_def['properties']['configuration']['dapr']['httpReadBufferSize'] = dapr_http_read_buffer_size
+
+    if dapr_http_max_request_size:
+        containerapp_def['properties']['configuration']['dapr']['httpMaxRequestSize'] = dapr_http_max_request_size
+
+    if dapr_log_level:
+        containerapp_def['properties']['configuration']['dapr']['logLevel'] = dapr_log_level
+
+    if dapr_enable_api_logging:
+        containerapp_def['properties']['configuration']['dapr']['enableApiLogging'] = dapr_enable_api_logging
 
     containerapp_def['properties']['configuration']['dapr']['enabled'] = True
 

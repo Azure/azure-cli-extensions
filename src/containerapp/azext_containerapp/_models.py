@@ -43,7 +43,11 @@ Dapr = {
     "enabled": False,
     "appId": None,
     "appProtocol": None,
-    "appPort": None
+    "appPort": None,
+    "httpReadBufferSize": None,
+    "httpMaxRequestSize": None,
+    "logLevel": None,
+    "enableApiLogging": None
 }
 
 EnvironmentVar = {
