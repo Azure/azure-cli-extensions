@@ -13,14 +13,14 @@ class SearchScope(int, Enum):
     Command = 3
 
     @staticmethod
-    def get_search_scope_by_name(name):
-        if not name:
+    def get(scope):
+        if not scope:
             return SearchScope.All
 
-        if name.lower() == "scenario":
+        if scope.lower() == "scenario":
             return SearchScope.Scenario
 
-        if name.lower() == "command":
+        if scope.lower() == "command":
             return SearchScope.Command
 
         return SearchScope.All
@@ -32,17 +32,26 @@ class MatchRule(int, Enum):
     Or = 3
 
     @staticmethod
-    def get_match_rule_by_name(name):
-        if not name:
+    def get(rule):
+        if not rule:
             return MatchRule.All
 
-        if name.lower() == "and":
+        if rule.lower() == "and":
             return MatchRule.And
 
-        if name.lower() == "or":
+        if rule.lower() == "or":
             return MatchRule.Or
 
         return MatchRule.All
 
 
 SEARCH_SERVICE_URL = "https://cli-recommendation.azurewebsites.net/api/SearchService"
+
+
+class FeedbackOption(int, Enum):
+    NO_RESULT = -1
+    NO_SELECT = 0
+
+    @staticmethod
+    def SELECT(option):
+        return option

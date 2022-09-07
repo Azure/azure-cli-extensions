@@ -12,7 +12,7 @@ def read_int(default_value=0):
     if ret == '' or ret is None:
         return default_value
     while not ret.isnumeric():
-        ret = input("Please input a legal number: ")
+        ret = input("Please input a valid number: ")
         if ret == '' or ret is None:
             return default_value
     return int(ret)

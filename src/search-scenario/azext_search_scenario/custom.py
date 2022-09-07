@@ -6,21 +6,21 @@
 from azure.cli.core import telemetry
 from azure.cli.core.style import Style, print_styled_text
 
-from .constants import MatchRule, SearchScope
-from .requests import get_search_result_from_api
+from .constants import FeedbackOption, MatchRule, SearchScope
+from .requests import search_online
 from .utils import get_int_option
 
 
-def search_scenario(cmd, search_keyword, scope=None, match_rule=None, top=None):
+def search(cmd, search_keyword, scope=None, match_rule=None, top=None):
 
-    scope = SearchScope.get_search_scope_by_name(scope)
-    match_rule = MatchRule.get_match_rule_by_name(match_rule)
+    scope = SearchScope.get(scope)
+    match_rule = MatchRule.get(match_rule)
     # Replacing "-" is to solve the problem that the search engine cannot match "-"
     search_keyword = " ".join(map(lambda w: w.replace("-", " "), search_keyword))
-    results = get_search_result_from_api(search_keyword, scope, match_rule, top)
+    results = search_online(search_keyword, scope, match_rule, top)
 
     if not results:
-        send_feedback(scope, -1, search_keyword)
+        send_feedback(scope, FeedbackOption.NO_RESULT, search_keyword)
         print("\nSorry, no relevant E2E scenario examples found")
         return
 
@@ -32,13 +32,13 @@ def search_scenario(cmd, search_keyword, scope=None, match_rule=None, top=None):
     print()
 
     if option == 0:
-        send_feedback(scope, 0, search_keyword, results)
+        send_feedback(scope, FeedbackOption.NO_SELECT, search_keyword, results)
         print('Thank you for your feedback. If you have more feedback, please submit it by using "az feedback" \n')
         return
 
     chosen_scenario = results[option - 1]
     _show_detail(cmd, chosen_scenario)
-    send_feedback(scope, option, search_keyword, results, chosen_scenario)
+    send_feedback(scope, FeedbackOption.SELECT(option), search_keyword, results, chosen_scenario)
 
     if cmd.cli_ctx.config.getboolean('search_scenario', 'execute_in_prompt', fallback=True):
         _execute_scenario(cmd, chosen_scenario)
@@ -118,7 +118,7 @@ def _execute_scenario(ctx_cmd, scenario):
             _print_help_info(ctx_cmd, command["command"])
 
         print_styled_text([(Style.ACTION, "Running: ")], end='')
-        print_styled_text(_get_command_item_sample(command))
+        print_styled_text(_get_command_sample(command))
         option_msg = [(Style.ACTION, " ? "),
                       (Style.PRIMARY, "How do you want to run this step? 1. Run it 2. Skip it 3. Quit process "),
                       (Style.SECONDARY, "(Enter is to Run)"), (Style.PRIMARY, ": ")]
@@ -232,7 +232,7 @@ def _execute_cmd(ctx_cmd, command, params, catch_exception=False):
     return exit_code
 
 
-def _get_command_item_sample(command):
+def _get_command_sample(command):
     if "example" in command and command["example"]:
         command_sample, _ = _parse_argument_value_sample(command["example"].replace(" $", " "))
         return command_sample

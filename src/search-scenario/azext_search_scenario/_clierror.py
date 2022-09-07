@@ -8,6 +8,6 @@ from azure.cli.core.azclierror import ClientRequestError
 # pylint: disable=unnecessary-pass
 
 
-class ScenarioSearchError(ClientRequestError):
+class SearchScenarioError(ClientRequestError):
     """ The client error raised by `az search-scenario`. """
     pass
