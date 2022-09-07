@@ -103,6 +103,7 @@ def load_command_table(self, _):
         g.command('stop', 'begin_stop', supports_no_wait=True)
         g.command('start', 'begin_start', supports_no_wait=True)
         g.custom_command('get-os-options', 'aks_get_os_options')
+        g.custom_command('operation-abort', 'aks_operation_abort', supports_no_wait=True)
 
     # AKS maintenance configuration commands
     with self.command_group('aks maintenanceconfiguration', maintenance_configuration_sdk, client_factory=cf_maintenance_configurations) as g:
@@ -141,6 +142,7 @@ def load_command_table(self, _):
         g.custom_command('get-upgrades', 'aks_agentpool_get_upgrade_profile')
         g.custom_command('stop', 'aks_agentpool_stop', supports_no_wait=True)
         g.custom_command('start', 'aks_agentpool_start', supports_no_wait=True)
+        g.custom_command('operation-abort', 'aks_agentpool_operation_abort', supports_no_wait=True)
 
     # AKS draft commands
     with self.command_group('aks draft', managed_clusters_sdk, client_factory=cf_managed_clusters) as g:
