@@ -42,4 +42,3 @@ steps:
 DEFAULT_PORT = 8080  # used for no dockerfile scenario; not the hello world image
 
 HELLO_WORLD_IMAGE = "mcr.microsoft.com/azuredocs/containerapps-helloworld:latest"
-

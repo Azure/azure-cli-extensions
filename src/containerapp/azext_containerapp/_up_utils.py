@@ -373,7 +373,6 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
 
         self.image = self.registry_server + "/" + image_name
 
-
         if build_from_source:
             # TODO should we prompt for confirmation here?
             logger.warning("No dockerfile detected. Attempting to build a container directly from the provided source...")
