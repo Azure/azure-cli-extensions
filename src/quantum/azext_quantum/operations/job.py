@@ -174,8 +174,7 @@ def submit(cmd, program_args, resource_group_name=None, workspace_name=None, loc
            # Peter's proposed param names:
            job_input_source=None, job_input_format=None, job_output_format=None,
            # Guen's proposed param names:
-           qir_payload=None, qir_endpoint=None, qir_param=None,
-           ):
+           qir_payload=None, qir_endpoint=None, qir_param=None):
 # def submit(cmd, program_args, resource_group_name=None, workspace_name=None, location=None, target_id=None,
 #            project=None, job_name=None, shots=None, storage=None, no_build=False, job_params=None, target_capability=None,
 #            job_input_source=None, job_input_format=None, job_output_format=None,
@@ -185,6 +184,15 @@ def submit(cmd, program_args, resource_group_name=None, workspace_name=None, loc
     """
 
     # >>>>> TODO: add logic that determines what type of job we're running <<<<<
+    if job_input_source is not None:
+        # >>>>>
+        # >>>>>
+        # >>>>>
+        raise AzureInternalError(">>>>> Got a path for the QIR job: " + job_input_source + " <<<<<")
+        # <<<<<
+        # <<<<<
+        # <<<<<
+
 
     # Submit a Q# project. [Keep using old code for Q# for now]
     return _submit_qsharp(cmd, program_args, resource_group_name, workspace_name, location, target_id,
@@ -359,13 +367,27 @@ def wait(cmd, job_id, resource_group_name=None, workspace_name=None, location=No
     return job
 
 
-def run(cmd, program_args, resource_group_name=None, workspace_name=None, location=None, target_id=None,
-        project=None, job_name=None, shots=None, storage=None, no_build=False, job_params=None, target_capability=None):
+# def run(cmd, program_args, resource_group_name=None, workspace_name=None, location=None, target_id=None,
+#         project=None, job_name=None, shots=None, storage=None, no_build=False, job_params=None, target_capability=None):
+def run (cmd, program_args, resource_group_name=None, workspace_name=None, location=None, target_id=None,
+           project=None, job_name=None, shots=None, storage=None, no_build=False, job_params=None, target_capability=None,
+           # >>>>> TODO: Finalize these names <<<<<
+           # Peter's proposed param names:
+           job_input_source=None, job_input_format=None, job_output_format=None,
+           # Guen's proposed param names:
+           qir_payload=None, qir_endpoint=None, qir_param=None):
     """
     Submit a job to run on Azure Quantum, and waits for the result.
     """
+    # job = submit(cmd, program_args, resource_group_name, workspace_name, location, target_id,
+    #              project, job_name, shots, storage, no_build, job_params, target_capability)
     job = submit(cmd, program_args, resource_group_name, workspace_name, location, target_id,
-                 project, job_name, shots, storage, no_build, job_params, target_capability)
+                 project, job_name, shots, storage, no_build, job_params, target_capability,
+                 # >>>>> TODO: Finalize these names <<<<<
+                 # Peter's proposed param names:
+                 job_input_source, job_input_format, job_output_format,
+                 # Guen's proposed param names:
+                 qir_payload, qir_endpoint, qir_param)
     logger.warning("Job id: %s", job.id)
     logger.debug(job)
 
