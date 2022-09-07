@@ -53,12 +53,6 @@ def setup(test):
         "rgid": "/subscriptions/" + account_res["id"] + "/resourceGroups/sarath-rg"
     })
 
-    # run the below commands only in record mode
-    time.sleep(10)
-    # test.cmd('az role assignment create --assignee "{principalId}" --role "Disk Backup Reader" --scope "{diskid}"')
-    # test.cmd('az role assignment create --assignee "{principalId}" --role "Disk Snapshot Contributor" --scope "{rgid}"')
-
-
 def test_resource_guard(test):
     test.cmd('az dataprotection resource-guard create -g "{rg}" -n "{resourceGuardName}"', checks=[
         test.check('name', "{resourceGuardName}")
@@ -115,6 +109,73 @@ def create_policy(test):
     test.cmd('az dataprotection backup-policy create -n diskhourlypolicy --policy "{policyjson}" -g "{rg}" --vault-name "{vaultName}"')
 
 
+def initialize_backup_instance(test):
+    backup_instance_guid = "b7e6f082-b310-11eb-8f55-9cfce85d4fae"
+    backup_instance_json = test.cmd('az dataprotection backup-instance initialize --datasource-type AzureDisk'
+                                    ' -l centraluseuap --policy-id "{policyid}" --datasource-id "{diskid}" --snapshot-rg "{rg}" --tags Owner=dppclitest').get_output_in_json()
+    backup_instance_json["backup_instance_name"] = test.kwargs['diskname'] + "-" + test.kwargs['diskname'] + "-" + backup_instance_guid
+    test.kwargs.update({
+        "backup_instance_json": backup_instance_json,
+        "backup_instance_name": backup_instance_json["backup_instance_name"]
+    })
+
+    backup_instance_json = test.cmd('az dataprotection backup-instance initialize --datasource-type AzureBlob'
+                                    ' -l centraluseuap --policy-id "{storagepolicyid}" --datasource-id "{storageaccountid}"').get_output_in_json()
+    backup_instance_json["backup_instance_name"] = test.kwargs['storageaccountname'] + "-" + test.kwargs['storageaccountname'] + "-" + backup_instance_guid
+    test.kwargs.update({
+        "storage_backup_instance_json": backup_instance_json,
+        "storage_backup_instance_name": backup_instance_json["backup_instance_name"]
+    })
+
+    backup_instance_guid = "faec6818-0720-11ec-bd1b-c8f750f92764"
+    backup_instance_json = test.cmd('az dataprotection backup-instance initialize --datasource-type AzureDatabaseForPostgreSQL'
+                                    ' -l centraluseuap --policy-id "{serverpolicyid}" --datasource-id "{ossdbid}" --secret-store-type AzureKeyVault --secret-store-uri "{secretstoreuri}"').get_output_in_json()
+    backup_instance_json["backup_instance_name"] = test.kwargs['ossserver'] + "-" + test.kwargs['ossdb'] + "-" + backup_instance_guid
+    test.kwargs.update({
+        "server_backup_instance_json": backup_instance_json,
+        "server_backup_instance_name": backup_instance_json["backup_instance_name"]
+    })
+
+
+def assign_permissions_and_validate(test):
+    # run only in record mode - grant permission
+
+    # test.cmd('az dataprotection backup-instance update-msi-permissions --datasource-type AzureDisk --operation Backup --permissions-scope Resource -g "{rg}" --vault-name "{vaultName}" --backup-instance "{backup_instance_json}" --yes').get_output_in_json()
+    # test.cmd('az dataprotection backup-instance update-msi-permissions --datasource-type AzureBlob --operation Backup --permissions-scope Resource -g "{rg}" --vault-name "{vaultName}" --backup-instance "{storage_backup_instance_json}" --yes').get_output_in_json()
+    # test.cmd('az dataprotection backup-instance update-msi-permissions --datasource-type AzureDatabaseForPostgreSQL --permissions-scope Resource -g "{serverrgname}" --vault-name "{servervaultname}" --operation Backup --backup-instance "{server_backup_instance_json}" --keyvault-id "{keyvaultid}" --yes')
+    # test.cmd('az role assignment create --assignee "{principalId}" --role "Disk Restore Operator" --scope "{rgid}"')
+    # time.sleep(120) # Wait for permissions to propagate
+
+    test.cmd('az dataprotection backup-instance validate-for-backup -g "{rg}" --vault-name "{vaultName}" --backup-instance "{backup_instance_json}"', checks=[
+        test.check('objectType', 'OperationJobExtendedInfo')
+    ])
+    test.cmd('az dataprotection backup-instance validate-for-backup -g "{rg}" --vault-name "{vaultName}" --backup-instance "{storage_backup_instance_json}"', checks=[
+        test.check('objectType', 'OperationJobExtendedInfo')
+    ])
+    test.cmd('az dataprotection backup-instance validate-for-backup -g "{serverrgname}" --vault-name "{servervaultname}" --backup-instance "{server_backup_instance_json}"', checks=[
+        test.check('objectType', 'OperationJobExtendedInfo')
+    ])
+
+    # run only in record mode - reset firewall rule
+
+    # test.cmd('az postgres server firewall-rule delete -g "{serverrgname}" -s "{ossserver}" -n AllowAllWindowsAzureIps --yes')
+
+
+def configure_backup(test):
+    test.cmd('az dataprotection backup-instance create -g "{rg}" --vault-name "{vaultName}" --backup-instance "{backup_instance_json}"')
+
+    backup_instance_res = test.cmd('az dataprotection backup-instance list -g "{rg}" --vault-name "{vaultName}" --query "[0].properties.protectionStatus"').get_output_in_json()
+    protection_status = backup_instance_res["status"]
+    while protection_status != "ProtectionConfigured":
+        time.sleep(10)
+        backup_instance_res = test.cmd('az dataprotection backup-instance list -g "{rg}" --vault-name "{vaultName}" --query "[0].properties.protectionStatus"').get_output_in_json()
+        protection_status = backup_instance_res["status"]
+
+    test.cmd('az dataprotection backup-instance create -g "{rg}" --vault-name "{vaultName}" --backup-instance "{storage_backup_instance_json}"')
+    
+    time.sleep(30)
+
+
 def stop_resume_protection(test):
     test.cmd('az dataprotection backup-instance stop-protection -n "{backup_instance_name}" -g "{rg}" --vault-name "{vaultName}"')
 
@@ -147,7 +208,6 @@ def trigger_disk_backup(test):
     job_status = None
     test.kwargs.update({"backup_job_id": response_json["jobId"]})
     while job_status != "Completed":
-        # run the below code only in record mode
         time.sleep(10)
         job_response = test.cmd('az dataprotection job show --ids "{backup_job_id}"').get_output_in_json()
         job_status = job_response["properties"]["status"]
@@ -174,80 +234,11 @@ def trigger_disk_restore(test):
     job_status = None
     test.kwargs.update({"backup_job_id": response_json["jobId"]})
     while job_status != "Completed":
-        # run the below code only in record mode
         time.sleep(10)
         job_response = test.cmd('az dataprotection job show --ids "{backup_job_id}"').get_output_in_json()
         job_status = job_response["properties"]["status"]
         if job_status not in ["Completed", "InProgress"]:
             raise Exception("Undefined job status received")
-
-
-def initialize_backup_instance(test):
-    backup_instance_guid = "b7e6f082-b310-11eb-8f55-9cfce85d4fae"
-    backup_instance_json = test.cmd('az dataprotection backup-instance initialize --datasource-type AzureDisk'
-                                    ' -l centraluseuap --policy-id "{policyid}" --datasource-id "{diskid}" --snapshot-rg "{rg}"').get_output_in_json()
-    backup_instance_json["backup_instance_name"] = test.kwargs['diskname'] + "-" + test.kwargs['diskname'] + "-" + backup_instance_guid
-    test.kwargs.update({
-        "backup_instance_json": backup_instance_json,
-        "backup_instance_name": backup_instance_json["backup_instance_name"]
-    })
-
-    backup_instance_json = test.cmd('az dataprotection backup-instance initialize --datasource-type AzureBlob'
-                                    ' -l centraluseuap --policy-id "{storagepolicyid}" --datasource-id "{storageaccountid}"').get_output_in_json()
-    backup_instance_json["backup_instance_name"] = test.kwargs['storageaccountname'] + "-" + test.kwargs['storageaccountname'] + "-" + backup_instance_guid
-    test.kwargs.update({
-        "storage_backup_instance_json": backup_instance_json,
-        "storage_backup_instance_name": backup_instance_json["backup_instance_name"]
-    })
-
-    backup_instance_guid = "faec6818-0720-11ec-bd1b-c8f750f92764"
-    backup_instance_json = test.cmd('az dataprotection backup-instance initialize --datasource-type AzureDatabaseForPostgreSQL'
-                                    ' -l centraluseuap --policy-id "{serverpolicyid}" --datasource-id "{ossdbid}" --secret-store-type AzureKeyVault --secret-store-uri "{secretstoreuri}"').get_output_in_json()
-    backup_instance_json["backup_instance_name"] = test.kwargs['ossserver'] + "-" + test.kwargs['ossdb'] + "-" + backup_instance_guid
-    test.kwargs.update({
-        "server_backup_instance_json": backup_instance_json,
-        "server_backup_instance_name": backup_instance_json["backup_instance_name"]
-    })
-
-
-def assign_permissions_and_validate(test):
-    test.cmd('az dataprotection backup-instance validate-for-backup -g "{rg}" --vault-name "{vaultName}" --backup-instance "{backup_instance_json}"', expect_failure=True)
-    test.cmd('az dataprotection backup-instance validate-for-backup -g "{rg}" --vault-name "{vaultName}" --backup-instance "{storage_backup_instance_json}"', expect_failure=True)
-    test.cmd('az dataprotection backup-instance validate-for-backup -g "{serverrgname}" --vault-name "{servervaultname}" --backup-instance "{server_backup_instance_json}"', expect_failure=True)
-    # test.cmd('az dataprotection backup-instance update-msi-permissions --datasource-type AzureDisk --operation Backup --permissions-scope Resource -g "{rg}" --vault-name "{vaultName}" --backup-instance "{backup_instance_json}" --yes').get_output_in_json()
-    # test.cmd('az dataprotection backup-instance update-msi-permissions --datasource-type AzureBlob --operation Backup --permissions-scope Resource -g "{rg}" --vault-name "{vaultName}" --backup-instance "{storage_backup_instance_json}" --yes').get_output_in_json()
-    # test.cmd('az dataprotection backup-instance update-msi-permissions --datasource-type AzureDatabaseForPostgreSQL --permissions-scope Resource -g "{serverrgname}" --vault-name "{servervaultname}" --operation Backup --backup-instance "{server_backup_instance_json}" --keyvault-id "{keyvaultid}" --yes')
-    # test.cmd('az role assignment create --assignee "{principalId}" --role "Disk Restore Operator" --scope "{rgid}"')
-    # time.sleep(120) # Wait for permissions to propagate
-    test.cmd('az dataprotection backup-instance validate-for-backup -g "{rg}" --vault-name "{vaultName}" --backup-instance "{backup_instance_json}"', checks=[
-        test.check('objectType', 'OperationJobExtendedInfo')
-    ])
-    test.cmd('az dataprotection backup-instance validate-for-backup -g "{rg}" --vault-name "{vaultName}" --backup-instance "{storage_backup_instance_json}"', checks=[
-        test.check('objectType', 'OperationJobExtendedInfo')
-    ])
-    test.cmd('az dataprotection backup-instance validate-for-backup -g "{serverrgname}" --vault-name "{servervaultname}" --backup-instance "{server_backup_instance_json}"', checks=[
-        test.check('objectType', 'OperationJobExtendedInfo')
-    ])
-    # test.cmd('az role assignment delete --assignee "{servervaultprincipalid}" --role Reader --scope "{serverid}"')
-    test.cmd('az postgres server firewall-rule delete -g "{serverrgname}" -s "{ossserver}" -n AllowAllWindowsAzureIps --yes')
-    # test.cmd('az keyvault delete-policy -g "{serverrgname}" -n "{keyvaultname}" --object-id "{servervaultprincipalid}"')
-
-
-def configure_backup(test):
-    test.cmd('az dataprotection backup-instance create -g "{rg}" --vault-name "{vaultName}" --backup-instance "{backup_instance_json}"')
-
-    backup_instance_res = test.cmd('az dataprotection backup-instance list -g "{rg}" --vault-name "{vaultName}" --query "[0].properties.protectionStatus"').get_output_in_json()
-    protection_status = backup_instance_res["status"]
-    while protection_status != "ProtectionConfigured":
-        # run the below line only in record mode
-        time.sleep(10)
-        backup_instance_res = test.cmd('az dataprotection backup-instance list -g "{rg}" --vault-name "{vaultName}" --query "[0].properties.protectionStatus"').get_output_in_json()
-        protection_status = backup_instance_res["status"]
-
-    test.cmd('az dataprotection backup-instance create -g "{rg}" --vault-name "{vaultName}" --backup-instance "{storage_backup_instance_json}"')
-    
-    # run the below line only in record mode
-    time.sleep(30)
 
 
 def delete_backup(test):
