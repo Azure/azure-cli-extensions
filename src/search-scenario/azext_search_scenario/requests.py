@@ -20,12 +20,15 @@ def search_online(keyword, scope=SearchScope.All, match_rule=MatchRule.All, top=
         "match_rule": match_rule,
         "top_num": top,
     }
-
-    response = requests.post(SEARCH_SERVICE_URL, json.dumps(payload))
-    if response.status_code != 200:
-        raise SearchScenarioError(
-            f"Failed to connect to '{SEARCH_SERVICE_URL}' with status code "
-            f"'{response.status_code}' and reason '{response.reason}'")
+    try:
+        response = requests.post(SEARCH_SERVICE_URL, json.dumps(payload))
+        response.raise_for_status()
+    except requests.ConnectionError as e:
+        raise SearchScenarioError(f'Network Error: {e}')
+    except requests.exceptions.HTTPError as e:
+        raise SearchScenarioError(f'{e}')
+    except requests.RequestException:
+        raise SearchScenarioError(f'Request Error: {e}')
 
     results = []
     if 'data' in response.json():
