@@ -39,6 +39,22 @@ helps['containerapp create'] = """
           az containerapp create -n MyContainerapp -g MyResourceGroup \\
               --environment MyContainerappEnv \\
               --yaml "path/to/yaml/file.yml"
+    - name: Create a container app with an http scale rule
+      text: |
+          az containerapp create -n myapp -g mygroup --environment myenv --image nginx \\
+              --scale-rule-name my-http-rule \\
+              --scale-rule-http-concurrency 50
+    - name: Create a container app with a custom scale rule
+      text: |
+          az containerapp create -n MyContainerapp -g MyResourceGroup \\
+              --image my-queue-processor --environment MyContainerappEnv \\
+              --min-replicas 4 --max-replicas 8 \\
+              --scale-rule-name queue-based-autoscaling \\
+              --scale-rule-type azure-queue \\
+              --scale-rule-metadata "accountName=mystorageaccountname" \\
+                                    "cloud=AzurePublicCloud" \\
+                                    "queueLength": "5" "queueName": "foo" \\
+              --scale-rule-auth "connection=my-connection-string-secret-name"
 """
 
 helps['containerapp update'] = """
@@ -54,6 +70,18 @@ helps['containerapp update'] = """
           az containerapp update -n MyContainerapp -g MyResourceGroup \\
               --cpu 0.5 --memory 1.0Gi \\
               --min-replicas 4 --max-replicas 8
+    - name: Update a container app with an http scale rule
+      text: |
+          az containerapp update -n myapp -g mygroup \\
+              --scale-rule-name my-http-rule \\
+              --scale-rule-http-concurrency 50
+    - name: Update a container app with a custom scale rule
+      text: |
+          az containerapp update -n myapp -g mygroup \\
+              --scale-rule-name my-custom-rule \\
+              --scale-rule-type my-custom-type \\
+              --scale-rule-metadata key=value key2=value2 \\
+              --scale-rule-auth triggerparam=secretref triggerparam=secretref
 """
 
 helps['containerapp delete'] = """

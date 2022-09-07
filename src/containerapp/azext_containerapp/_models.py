@@ -107,8 +107,8 @@ HttpScaleRule = {
 ScaleRule = {
     "name": None,
     "azureQueue": None,  # QueueScaleRule
-    "customScaleRule": None,  # CustomScaleRule
-    "httpScaleRule": None,  # HttpScaleRule
+    "custom": None,  # CustomScaleRule
+    "http": None,  # HttpScaleRule
 }
 
 Secret = {

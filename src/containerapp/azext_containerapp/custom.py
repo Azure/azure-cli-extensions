@@ -2,7 +2,7 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
-# pylint: disable=line-too-long, consider-using-f-string, logging-format-interpolation, inconsistent-return-statements, broad-except, bare-except, too-many-statements, too-many-locals, too-many-boolean-expressions, too-many-branches, too-many-nested-blocks, pointless-statement, expression-not-assigned, unbalanced-tuple-unpacking
+# pylint: disable=line-too-long, consider-using-f-string, logging-format-interpolation, inconsistent-return-statements, broad-except, bare-except, too-many-statements, too-many-locals, too-many-boolean-expressions, too-many-branches, too-many-nested-blocks, pointless-statement, expression-not-assigned, unbalanced-tuple-unpacking, unsupported-assignment-operation
 
 import threading
 import sys
@@ -52,7 +52,8 @@ from ._models import (
     ManagedServiceIdentity as ManagedServiceIdentityModel,
     ContainerAppCertificateEnvelope as ContainerAppCertificateEnvelopeModel,
     ContainerAppCustomDomain as ContainerAppCustomDomainModel,
-    AzureFileProperties as AzureFilePropertiesModel)
+    AzureFileProperties as AzureFilePropertiesModel,
+    ScaleRule as ScaleRuleModel)
 from ._utils import (_validate_subscription_registered, _get_location_from_resource_group, _ensure_location_allowed,
                      parse_secret_flags, store_as_secret_and_return_secret_ref, parse_env_var_flags,
                      _generate_log_analytics_if_not_provided, _get_existing_secrets, _convert_object_from_snake_to_camel_case,
@@ -65,7 +66,7 @@ from ._utils import (_validate_subscription_registered, _get_location_from_resou
                      generate_randomized_cert_name, _get_name, load_cert_file, check_cert_name_availability,
                      validate_hostname, patch_new_custom_domain, get_custom_domains, _validate_revision_name, set_managed_identity,
                      create_acrpull_role_assignment, is_registry_msi_system, clean_null_values, _populate_secret_values,
-                     validate_environment_location)
+                     validate_environment_location, parse_metadata_flags, parse_auth_flags)
 from ._validators import validate_create
 from ._ssh_utils import (SSH_DEFAULT_ENCODING, WebSocketConnection, read_ssh, get_stdin_writer, SSH_CTRL_C_MSG,
                          SSH_BACKUP_ENCODING)
@@ -306,6 +307,11 @@ def create_containerapp(cmd,
                         managed_env=None,
                         min_replicas=None,
                         max_replicas=None,
+                        scale_rule_name=None,
+                        scale_rule_type=None,
+                        scale_rule_http_concurrency=None,
+                        scale_rule_metadata=None,
+                        scale_rule_auth=None,
                         target_port=None,
                         transport="auto",
                         ingress=None,
@@ -459,6 +465,34 @@ def create_containerapp(cmd,
         scale_def["minReplicas"] = min_replicas
         scale_def["maxReplicas"] = max_replicas
 
+    if scale_rule_name:
+        if not scale_rule_type:
+            scale_rule_type = "http"
+        scale_rule_type = scale_rule_type.lower()
+        scale_rule_def = ScaleRuleModel
+        curr_metadata = {}
+        if scale_rule_http_concurrency:
+            if scale_rule_type == "http":
+                curr_metadata["concurrentRequests"] = str(scale_rule_http_concurrency)
+        metadata_def = parse_metadata_flags(scale_rule_metadata, curr_metadata)
+        auth_def = parse_auth_flags(scale_rule_auth)
+        if scale_rule_type == "http":
+            scale_rule_def["name"] = scale_rule_name
+            scale_rule_def["custom"] = None
+            scale_rule_def["http"] = {}
+            scale_rule_def["http"]["metadata"] = metadata_def
+            scale_rule_def["http"]["auth"] = auth_def
+        else:
+            scale_rule_def["name"] = scale_rule_name
+            scale_rule_def["http"] = None
+            scale_rule_def["custom"] = {}
+            scale_rule_def["custom"]["type"] = scale_rule_type
+            scale_rule_def["custom"]["metadata"] = metadata_def
+            scale_rule_def["custom"]["auth"] = auth_def
+        if not scale_def:
+            scale_def = ScaleModel
+        scale_def["rules"] = [scale_rule_def]
+
     resources_def = None
     if cpu is not None or memory is not None:
         resources_def = ContainerResourcesModel
@@ -497,7 +531,6 @@ def create_containerapp(cmd,
             set_managed_identity(cmd, resource_group_name, containerapp_def, system_assigned=True)
         else:
             set_managed_identity(cmd, resource_group_name, containerapp_def, user_assigned=[registry_identity])
-
     try:
         r = ContainerAppClient.create_or_update(
             cmd=cmd, resource_group_name=resource_group_name, name=name, container_app_envelope=containerapp_def, no_wait=no_wait)
@@ -542,6 +575,11 @@ def update_containerapp_logic(cmd,
                               container_name=None,
                               min_replicas=None,
                               max_replicas=None,
+                              scale_rule_name=None,
+                              scale_rule_type="http",
+                              scale_rule_http_concurrency=None,
+                              scale_rule_metadata=None,
+                              scale_rule_auth=None,
                               set_env_vars=None,
                               remove_env_vars=None,
                               replace_env_vars=None,
@@ -603,7 +641,7 @@ def update_containerapp_logic(cmd,
                         e["value"] = ""
 
     update_map = {}
-    update_map['scale'] = min_replicas or max_replicas
+    update_map['scale'] = min_replicas or max_replicas or scale_rule_name
     update_map['container'] = image or container_name or set_env_vars is not None or remove_env_vars is not None or replace_env_vars is not None or remove_all_env_vars or cpu or memory or startup_command is not None or args is not None
     update_map['ingress'] = ingress or target_port
     update_map['registry'] = registry_server or registry_user or registry_pass
@@ -732,6 +770,42 @@ def update_containerapp_logic(cmd,
         if max_replicas is not None:
             new_containerapp["properties"]["template"]["scale"]["maxReplicas"] = max_replicas
 
+    scale_def = None
+    if min_replicas is not None or max_replicas is not None:
+        scale_def = ScaleModel
+        scale_def["minReplicas"] = min_replicas
+        scale_def["maxReplicas"] = max_replicas
+    # so we don't overwrite rules
+    if "rules" in new_containerapp["properties"]["template"]["scale"]:
+        new_containerapp["properties"]["template"]["scale"].pop(["rules"])
+    if scale_rule_name:
+        if not scale_rule_type:
+            scale_rule_type = "http"
+        scale_rule_type = scale_rule_type.lower()
+        scale_rule_def = ScaleRuleModel
+        curr_metadata = {}
+        if scale_rule_http_concurrency:
+            if scale_rule_type == "http":
+                curr_metadata["concurrentRequests"] = str(scale_rule_http_concurrency)
+        metadata_def = parse_metadata_flags(scale_rule_metadata, curr_metadata)
+        auth_def = parse_auth_flags(scale_rule_auth)
+        if scale_rule_type == "http":
+            scale_rule_def["name"] = scale_rule_name
+            scale_rule_def["custom"] = None
+            scale_rule_def["http"] = {}
+            scale_rule_def["http"]["metadata"] = metadata_def
+            scale_rule_def["http"]["auth"] = auth_def
+        else:
+            scale_rule_def["name"] = scale_rule_name
+            scale_rule_def["http"] = None
+            scale_rule_def["custom"] = {}
+            scale_rule_def["custom"]["type"] = scale_rule_type
+            scale_rule_def["custom"]["metadata"] = metadata_def
+            scale_rule_def["custom"]["auth"] = auth_def
+        if not scale_def:
+            scale_def = ScaleModel
+        scale_def["rules"] = [scale_rule_def]
+        new_containerapp["properties"]["template"]["scale"]["rules"] = scale_def["rules"]
     # Ingress
     if update_map["ingress"]:
         new_containerapp["properties"]["configuration"] = {} if "configuration" not in new_containerapp["properties"] else new_containerapp["properties"]["configuration"]
@@ -821,6 +895,11 @@ def update_containerapp(cmd,
                         container_name=None,
                         min_replicas=None,
                         max_replicas=None,
+                        scale_rule_name=None,
+                        scale_rule_type=None,
+                        scale_rule_http_concurrency=None,
+                        scale_rule_metadata=None,
+                        scale_rule_auth=None,
                         set_env_vars=None,
                         remove_env_vars=None,
                         replace_env_vars=None,
@@ -834,25 +913,30 @@ def update_containerapp(cmd,
                         no_wait=False):
     _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
-    return update_containerapp_logic(cmd,
-                                     name,
-                                     resource_group_name,
-                                     yaml,
-                                     image,
-                                     container_name,
-                                     min_replicas,
-                                     max_replicas,
-                                     set_env_vars,
-                                     remove_env_vars,
-                                     replace_env_vars,
-                                     remove_all_env_vars,
-                                     cpu,
-                                     memory,
-                                     revision_suffix,
-                                     startup_command,
-                                     args,
-                                     tags,
-                                     no_wait)
+    return update_containerapp_logic(cmd=cmd,
+                                     name=name,
+                                     resource_group_name=resource_group_name,
+                                     yaml=yaml,
+                                     image=image,
+                                     container_name=container_name,
+                                     min_replicas=min_replicas,
+                                     max_replicas=max_replicas,
+                                     scale_rule_name=scale_rule_name,
+                                     scale_rule_type=scale_rule_type,
+                                     scale_rule_http_concurrency=scale_rule_http_concurrency,
+                                     scale_rule_metadata=scale_rule_metadata,
+                                     scale_rule_auth=scale_rule_auth,
+                                     set_env_vars=set_env_vars,
+                                     remove_env_vars=remove_env_vars,
+                                     replace_env_vars=replace_env_vars,
+                                     remove_all_env_vars=remove_all_env_vars,
+                                     cpu=cpu,
+                                     memory=memory,
+                                     revision_suffix=revision_suffix,
+                                     startup_command=startup_command,
+                                     args=args,
+                                     tags=tags,
+                                     no_wait=no_wait)
 
 
 def show_containerapp(cmd, name, resource_group_name, show_secrets=False):
@@ -1402,6 +1486,11 @@ def copy_revision(cmd,
                   container_name=None,
                   min_replicas=None,
                   max_replicas=None,
+                  scale_rule_name=None,
+                  scale_rule_type=None,
+                  scale_rule_http_concurrency=None,
+                  scale_rule_metadata=None,
+                  scale_rule_auth=None,
                   set_env_vars=None,
                   replace_env_vars=None,
                   remove_env_vars=None,
@@ -1421,26 +1510,31 @@ def copy_revision(cmd,
     if not name:
         name = _get_app_from_revision(from_revision)
 
-    return update_containerapp_logic(cmd,
-                                     name,
-                                     resource_group_name,
-                                     yaml,
-                                     image,
-                                     container_name,
-                                     min_replicas,
-                                     max_replicas,
-                                     set_env_vars,
-                                     remove_env_vars,
-                                     replace_env_vars,
-                                     remove_all_env_vars,
-                                     cpu,
-                                     memory,
-                                     revision_suffix,
-                                     startup_command,
-                                     args,
-                                     tags,
-                                     no_wait,
-                                     from_revision)
+    return update_containerapp_logic(cmd=cmd,
+                                     name=name,
+                                     resource_group_name=resource_group_name,
+                                     yaml=yaml,
+                                     image=image,
+                                     container_name=container_name,
+                                     min_replicas=min_replicas,
+                                     max_replicas=max_replicas,
+                                     scale_rule_name=scale_rule_name,
+                                     scale_rule_type=scale_rule_type,
+                                     scale_rule_http_concurrency=scale_rule_http_concurrency,
+                                     scale_rule_metadata=scale_rule_metadata,
+                                     scale_rule_auth=scale_rule_auth,
+                                     set_env_vars=set_env_vars,
+                                     remove_env_vars=remove_env_vars,
+                                     replace_env_vars=replace_env_vars,
+                                     remove_all_env_vars=remove_all_env_vars,
+                                     cpu=cpu,
+                                     memory=memory,
+                                     revision_suffix=revision_suffix,
+                                     startup_command=startup_command,
+                                     args=args,
+                                     tags=tags,
+                                     no_wait=no_wait,
+                                     from_revision=from_revision)
 
 
 def set_revision_mode(cmd, resource_group_name, name, mode, no_wait=False):
