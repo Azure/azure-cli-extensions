@@ -8,7 +8,7 @@ from azure.cli.core.style import Style, print_styled_text
 
 from .constants import FeedbackOption, MatchRule, SearchScope
 from .requests import search_online
-from .utils import get_int_option
+from .utils import input_int_option
 
 
 def search(cmd, search_keyword, scope=None, match_rule=None, top=None):
@@ -28,7 +28,7 @@ def search(cmd, search_keyword, scope=None, match_rule=None, top=None):
 
     option_msg = [(Style.ACTION, " ? "), (Style.PRIMARY, "Please select your option "),
                   (Style.SECONDARY, "(if none, enter 0)"), (Style.PRIMARY, ": ")]
-    option = get_int_option(option_msg, 0, len(results), -1)
+    option = input_int_option(option_msg, 0, len(results), -1)
     print()
 
     if option == 0:
@@ -122,7 +122,7 @@ def _execute_scenario(ctx_cmd, scenario):
         option_msg = [(Style.ACTION, " ? "),
                       (Style.PRIMARY, "How do you want to run this step? 1. Run it 2. Skip it 3. Quit process "),
                       (Style.SECONDARY, "(Enter is to Run)"), (Style.PRIMARY, ": ")]
-        run_option = get_int_option(option_msg, 1, 3, 1)
+        run_option = input_int_option(option_msg, 1, 3, 1)
         if run_option == 1:
             print_styled_text([(Style.SECONDARY, "Input Enter to skip unnecessary parameters")])
             execute_result = _execute_cmd(ctx_cmd, command['command'], parameters, catch_exception=True)
@@ -136,7 +136,7 @@ def _execute_scenario(ctx_cmd, scenario):
                 option_msg = [(Style.ACTION, " ? "),
                               (Style.PRIMARY, "Do you want to retry this step? 1. Run it 2. Skip it 3. Quit process "),
                               (Style.SECONDARY, "(Enter is to Run)"), (Style.PRIMARY, ": ")]
-                run_option = get_int_option(option_msg, 1, 3, 1)
+                run_option = input_int_option(option_msg, 1, 3, 1)
                 if run_option == 1:
                     execute_result = _execute_cmd(ctx_cmd, command['command'], parameters, catch_exception=True)
                 elif run_option == 2:
@@ -178,6 +178,25 @@ def _execute_cmd(ctx_cmd, command, params, catch_exception=False):
     args.extend(command.split())
     if args[0] == "az":
         args.pop(0)
+    args.extend(_input_args(params))
+
+    output_format = ctx_cmd.cli_ctx.config.get('search_scenario', 'output', fallback='status')
+
+    if '--output' not in args and '-o' not in args:
+        args.extend(_get_output_arg(command, output_format))
+
+    exit_code = _invoke(ctx_cmd, args, catch_exception)
+
+    if output_format == 'status' and exit_code == 0:
+        print()
+        from .utils import print_successful_styled_text
+        print_successful_styled_text('command completed\n')
+
+    return exit_code
+
+
+def _input_args(params):
+    args = []
     params = [param for param in params if param and param != '']
     for param in params:
         store_true_params = ['-h', '--yes', '-y', '--no-wait', '--dry-run', '--no-log']
@@ -195,46 +214,43 @@ def _execute_cmd(ctx_cmd, command, params, catch_exception=False):
                     args.append(value)
                 else:
                     args.pop()
+    return args
 
-    output_format = ctx_cmd.cli_ctx.config.get('search_scenario', 'output', fallback='status')
 
-    if '--output' not in args and '-o' not in args:
-        args.append('--output')
-        if output_format == 'status':
-            is_show_operation = False
-            for operation in ['show', 'list', 'get', 'version']:
-                if operation in command:
-                    is_show_operation = True
-                    break
-            if is_show_operation:
-                args.append('json')
-            else:
-                args.append('none')
+def _get_output_arg(command, output_format):
+    args = []
+    args.append('--output')
+    if output_format == 'status':
+        is_show_operation = False
+        for operation in ['show', 'list', 'get', 'version']:
+            if operation in command:
+                is_show_operation = True
+                break
+        if is_show_operation:
+            args.append('json')
         else:
-            args.append(output_format)
+            args.append('none')
+    else:
+        args.append(output_format)
+    return args
 
+
+def _invoke(ctx_cmd, args, catch_exception=False):
     if not catch_exception:
-        exit_code = ctx_cmd.cli_ctx.invoke(args)
+        return ctx_cmd.cli_ctx.invoke(args)
 
     else:
         try:
-            exit_code = ctx_cmd.cli_ctx.invoke(args)
+            return ctx_cmd.cli_ctx.invoke(args)
         except Exception:   # pylint: disable=broad-except
             return -1
         except SystemExit:
             return -1
 
-    if output_format == 'status' and exit_code == 0:
-        print()
-        from .utils import print_successful_styled_text
-        print_successful_styled_text('command completed\n')
-
-    return exit_code
-
 
 def _get_command_sample(command):
     if "example" in command and command["example"]:
-        command_sample, _ = _parse_argument_value_sample(command["example"].replace(" $", " "))
+        command_sample, _ = _reformat_sample(command["example"].replace(" $", " "))
         return command_sample
 
     from knack import help_files
@@ -245,7 +261,7 @@ def _get_command_sample(command):
         cmd_help = help_files._load_help_file(command['command'])   # pylint: disable=protected-access
         if cmd_help and 'examples' in cmd_help and cmd_help['examples']:
             for cmd_example in cmd_help['examples']:
-                command_sample, example_arguments = _parse_argument_value_sample(cmd_example['text'])
+                command_sample, example_arguments = _reformat_sample(cmd_example['text'])
                 if sorted(example_arguments) == sorted_param:
                     return command_sample
 
@@ -254,7 +270,11 @@ def _get_command_sample(command):
     return [(Style.PRIMARY, command_sample)]
 
 
-def _parse_argument_value_sample(command_sample):
+def _reformat_sample(command_sample):
+    '''
+    Reformat command sample in the style of `az xxx --name <appServicePlan>`.
+    Also return the arguments used in the sample.
+    '''
     if not command_sample:
         return
 
@@ -288,6 +308,7 @@ def _parse_argument_value_sample(command_sample):
 
 
 def send_feedback(scope, option, keyword, search_results=None, adoption=None):
+    '''Send feedback to telemetry for further anlysis'''
     feedback = str(int(scope)) + "#" + str(option) + "#" + keyword.replace("\\", "\\\\").replace("#", "\\sharp") + "#"
     if search_results and isinstance(search_results, list):
         feedback += " ".join(map(lambda r: str(r.get("source", 0)), search_results))

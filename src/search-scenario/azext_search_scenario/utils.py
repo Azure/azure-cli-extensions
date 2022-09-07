@@ -7,7 +7,7 @@
 from azure.cli.core.style import print_styled_text, Style, is_modern_terminal
 
 
-def read_int(default_value=0):
+def input_int(default_value=0):
     ret = input()
     if ret == '' or ret is None:
         return default_value
@@ -18,13 +18,13 @@ def read_int(default_value=0):
     return int(ret)
 
 
-def get_int_option(option_msg, min_option, max_option, default_option):
+def input_int_option(option_msg, min_option, max_option, default_option):
     print_styled_text(option_msg, end='')
-    option = read_int(default_option)
+    option = input_int(default_option)
     while option < min_option or option > max_option:
         print_styled_text([(Style.PRIMARY, f"Please enter a valid option ({min_option}-{max_option}): ")],
                           end='')
-        option = read_int(default_option)
+        option = input_int(default_option)
     return option
 
 
