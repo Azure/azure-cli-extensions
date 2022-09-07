@@ -407,3 +407,85 @@ helps['communication chat message receipt send'] = """
         text: |-
                az communication chat message receipt send --thread "19:a-bcd=xyz" --message-id "12345678"
 """
+
+helps['communication rooms'] = """
+    type: group
+    short-summary: Commands to interact with Azure Communication Services Rooms gateway.
+"""
+
+helps['communication rooms create'] = """
+    type: command
+    short-summary: "Creates a new room."
+    examples:
+      - name: Create room
+        text: |-
+               az communication rooms
+"""
+
+helps['communication rooms get'] = """
+    type: command
+    short-summary: "Returns attributes of an existing room."
+    examples:
+      - name: Get room
+        text: |-
+               az communication rooms
+"""
+
+helps['communication rooms update'] = """
+    type: command
+    short-summary: "Updates attributes of an existing room."
+    examples:
+      - name: Update room
+        text: |-
+               az communication rooms
+"""
+
+helps['communication rooms delete'] = """
+    type: command
+    short-summary: "Deletes an existing room."
+    examples:
+      - name: Delete room
+        text: |-
+               az communication rooms
+"""
+
+helps['communication rooms participant'] = """
+    type: group
+    short-summary: Commands to manage participants of an existing room.
+"""
+
+helps['communication rooms participant get'] = """
+    type: command
+    short-summary: "Gets participants of a room."
+    examples:
+      - name: Get room's participants
+        text: |-
+               az communication rooms
+"""
+
+helps['communication rooms participant add'] = """
+    type: command
+    short-summary: "Adds participants to a room."
+    examples:
+      - name: Add room participants
+        text: |-
+               az communication rooms
+"""
+
+helps['communication rooms participant update'] = """
+    type: command
+    short-summary: "Replaces the participants of a room."
+    examples:
+      - name: Update room participants
+        text: |-
+               az communication rooms
+"""
+
+helps['communication rooms participant remove'] = """
+    type: command
+    short-summary: "Removes participants from a room."
+    examples:
+      - name: Remove room participants
+        text: |-
+               az communication rooms
+"""

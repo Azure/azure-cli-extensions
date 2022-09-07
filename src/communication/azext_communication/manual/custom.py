@@ -148,3 +148,65 @@ def communication_chat_list_read_receipts(client, thread_id, skip=None):
 def communication_chat_send_read_receipt(client, thread_id, message_id):
     chat_thread_client = client.get_chat_thread_client(thread_id)
     return chat_thread_client.send_read_receipt(message_id)
+
+
+def __to_room_participant(participants):
+    from azure.communication.identity._shared.models import identifier_from_raw_id
+    from azure.communication.rooms import RoomParticipant
+
+    identifiers = [identifier_from_raw_id(p) for p in participants]
+    participants = [RoomParticipant(communication_identifier=i) for i in identifiers]
+
+    # TODO: investigate
+    # as of azure-communication-identity-1.2.0, raw_id is missing in the objects returned by identifier_from_raw_id()  
+
+    return participants
+
+
+def communication_rooms_get_room(client, room_id):
+    return client.get_room(room_id)
+
+
+def communication_rooms_create_room(client, valid_from=None, valid_until=None, join_policy=None, participants=None):
+    room_participants = __to_room_participant(participants)
+
+    return client.create_room(
+        valid_from=valid_from,
+        valid_until=valid_until,
+        room_join_policy=join_policy,
+        participants=room_participants)
+
+
+def communication_rooms_delete_room(client, room_id):
+    return client.delete_room(room_id)
+
+
+def communication_rooms_update_room(client, room_id,
+                                    valid_from=None,
+                                    valid_until=None,
+                                    join_policy=None,
+                                    participants=None):
+    room_participants = __to_room_participant(participants)
+
+    return client.update_room(
+        room_id=room_id,
+        valid_from=valid_from,
+        valid_until=valid_until,
+        room_join_policy=join_policy,
+        participants=room_participants)
+
+
+def communication_rooms_get_participants(client, room_id):
+    return client.get_participants(room_id)
+
+
+def communication_rooms_add_participants(client, room_id, participants):
+    return client.add_participants(room_id, __to_room_participant(participants))
+
+
+def communication_rooms_update_participants(client, room_id, participants):
+    return client.update_participants(room_id, __to_room_participant(participants))
+
+
+def communication_rooms_remove_participants(client, room_id, participants):
+    return client.remove_participants(room_id, __to_room_participant(participants))

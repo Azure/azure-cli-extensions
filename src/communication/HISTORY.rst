@@ -3,6 +3,11 @@
 Release History
 ===============
 
+1.3.0
+++++++
+ * Add communication rooms command group in preview mode.
+
+
 1.2.1
 ++++++
  * Update command helps

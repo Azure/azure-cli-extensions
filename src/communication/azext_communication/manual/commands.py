@@ -8,10 +8,18 @@ from azext_communication.manual._client_factory import cf_communication_identity
 from azext_communication.manual._client_factory import cf_communication_sms
 from azext_communication.manual._client_factory import cf_communication_phonenumbers
 from azext_communication.manual._client_factory import cf_communication_chat
+from azext_communication.manual._client_factory import cf_communication_rooms
 
 
 def load_command_table(self, _):
+    _load_identity_command_table(self)
+    _load_sms_command_table(self)
+    _load_phonenumber_command_table(self)
+    _load_chat_command_table(self)
+    _load_rooms_command_table(self)
 
+
+def _load_identity_command_table(self):
     identity_arguments = ['connection_string']
     with self.command_group('communication identity user', client_factory=cf_communication_identity, is_preview=True) as g:
         g.communication_custom_command('create', "communication_identity_create_user", identity_arguments, client_factory=cf_communication_identity)
@@ -26,12 +34,16 @@ def load_command_table(self, _):
         g.communication_custom_command('revoke', "communication_identity_revoke_access_tokens", identity_arguments, client_factory=cf_communication_identity)
         g.communication_custom_command('get-for-teams-user', "communication_identity_get_token_for_teams_user", identity_arguments, client_factory=cf_communication_identity)
 
+
+def _load_sms_command_table(self):
     sms_arguments = ['connection_string']
     with self.command_group('communication sms', client_factory=cf_communication_sms) as g:
         g.communication_custom_command('send', 'communication_send_sms', sms_arguments, is_preview=True)
         g.communication_custom_command('send-sms', 'communication_send_sms', sms_arguments,
                                        deprecate_info=self.deprecate(redirect='send', hide=True))
 
+
+def _load_phonenumber_command_table(self):
     phonenumber_arguments = ['connection_string']
     with self.command_group('communication phonenumber', client_factory=cf_communication_phonenumbers, is_preview=True) as g:
         g.communication_custom_command('list', 'communication_list_phonenumbers', phonenumber_arguments)
@@ -43,6 +55,8 @@ def load_command_table(self, _):
         g.communication_custom_command('show-phonenumber', 'communication_show_phonenumber', phonenumber_arguments,
                                        deprecate_info=self.deprecate(redirect='show', hide=True))
 
+
+def _load_chat_command_table(self):
     chat_arguments = ['endpoint', 'access_token']
     self.command_group('communication chat', is_preview=True)
 
@@ -69,3 +83,28 @@ def load_command_table(self, _):
     with self.command_group('communication chat message receipt', client_factory=cf_communication_chat, is_preview=True) as g:
         g.communication_custom_command('list', 'communication_chat_list_read_receipts', chat_arguments)
         g.communication_custom_command('send', 'communication_chat_send_read_receipt', chat_arguments)
+
+
+def _load_rooms_command_table(self):
+    rooms_arguments = ['connection_string']
+    self.command_group('communication rooms', is_preview=True)
+
+    # TODO:
+    # for all commands that accept a list of participants as input:
+    # we may need to modify commands to allow different roles (presenter, attendee, consumer?)
+    # on option I did think of:
+    # replace --participant with three new arguments --presenter, --attendee, --consumer
+
+    # room management
+    with self.command_group('communication rooms', client_factory=cf_communication_rooms, is_preview=True) as g:
+        g.communication_custom_command('get', 'communication_rooms_get_room', rooms_arguments)
+        g.communication_custom_command('create', 'communication_rooms_create_room', rooms_arguments)
+        g.communication_custom_command('update', 'communication_rooms_update_room', rooms_arguments)
+        g.communication_custom_command('delete', 'communication_rooms_delete_room', rooms_arguments)
+
+    # rooms participant management
+    with self.command_group('communication rooms participant', client_factory=cf_communication_rooms, is_preview=True) as g:
+        g.communication_custom_command('get', 'communication_rooms_get_participant', rooms_arguments)
+        g.communication_custom_command('add', 'communication_rooms_add_participant', rooms_arguments)
+        g.communication_custom_command('update', 'communication_rooms_update_participant', rooms_arguments)
+        g.communication_custom_command('remove', 'communication_rooms_remove_participant', rooms_arguments)
