@@ -1777,20 +1777,20 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         self._ensure_mc(mc)
 
         # read the original value passed by the command
-        metriclabelsallowlist = self._AKSPreviewManagedClusterCreateDecorator__raw_parameters.get("metriclabelsallowlist")
-        metricannotationsallowlist = self._AKSPreviewManagedClusterCreateDecorator__raw_parameters.get("metricannotationsallowlist")
+        ksm_metriclabelsallowlist = self._AKSPreviewManagedClusterCreateDecorator__raw_parameters.get("ksm_metriclabelsallowlist")
+        ksm_metricannotationsallowlist = self._AKSPreviewManagedClusterCreateDecorator__raw_parameters.get("ksm_metricannotationsallowlist")
 
         # Validate Param
-        metriclabelsallowlist = validate_ksm_parameter(metriclabelsallowlist)
-        metricannotationsallowlist = validate_ksm_parameter(metricannotationsallowlist)
+        ksm_metriclabelsallowlist = validate_ksm_parameter(ksm_metriclabelsallowlist)
+        ksm_metricannotationsallowlist = validate_ksm_parameter(ksm_metricannotationsallowlist)
 
         if self.context.get_enable_azure_monitor_metrics():
             if mc.azure_monitor_profile is None:
                 mc.azure_monitor_profile = self.models.ManagedClusterAzureMonitorMetricsProfile()
             mc.azure_monitor_profile.metrics = self.models.ManagedClusterAzureMonitorMetricsProfileMetrics(enabled=True)
             mc.azure_monitor_profile.metrics.kube_state_metrics = self.models.ManagedClusterAzureMonitorProfileKubeStateMetrics(
-                metric_labels_allowlist=str(metriclabelsallowlist), 
-                metric_annotations_allow_list=str(metricannotationsallowlist)
+                metric_labels_allowlist=str(ksm_metriclabelsallowlist), 
+                metric_annotations_allow_list=str(ksm_metricannotationsallowlist)
                 )
 
         return mc
@@ -2139,20 +2139,20 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         self._ensure_mc(mc)
 
         # read the original value passed by the command
-        metriclabelsallowlist = self._AKSPreviewManagedClusterUpdateDecorator__raw_parameters.get("metriclabelsallowlist")
-        metricannotationsallowlist = self._AKSPreviewManagedClusterUpdateDecorator__raw_parameters.get("metricannotationsallowlist")
+        ksm_metriclabelsallowlist = self._AKSPreviewManagedClusterUpdateDecorator__raw_parameters.get("ksm_metriclabelsallowlist")
+        ksm_metricannotationsallowlist = self._AKSPreviewManagedClusterUpdateDecorator__raw_parameters.get("ksm_metricannotationsallowlist")
 
         # Validate Param
-        metriclabelsallowlist = validate_ksm_parameter(metriclabelsallowlist)
-        metricannotationsallowlist = validate_ksm_parameter(metricannotationsallowlist)
+        ksm_metriclabelsallowlist = validate_ksm_parameter(ksm_metriclabelsallowlist)
+        ksm_metricannotationsallowlist = validate_ksm_parameter(ksm_metricannotationsallowlist)
 
         if self.context.get_enable_azure_monitor_metrics():
             if mc.azure_monitor_profile is None:
                 mc.azure_monitor_profile = self.models.ManagedClusterAzureMonitorProfile()
             mc.azure_monitor_profile.metrics = self.models.ManagedClusterAzureMonitorProfileMetrics(enabled=True)
             mc.azure_monitor_profile.metrics.kube_state_metrics = self.models.ManagedClusterAzureMonitorProfileKubeStateMetrics(
-                metric_labels_allowlist=str(metriclabelsallowlist), 
-                metric_annotations_allow_list=str(metricannotationsallowlist)
+                metric_labels_allowlist=str(ksm_metriclabelsallowlist), 
+                metric_annotations_allow_list=str(ksm_metricannotationsallowlist)
                 )
 
         if self.context.get_disable_azure_monitor_metrics():

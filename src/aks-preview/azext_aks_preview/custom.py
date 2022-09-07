@@ -788,9 +788,9 @@ def aks_update(
     enable_keda=False,
     disable_keda=False,
     enable_azuremonitormetrics=False,
-    mac_resource_id=None,
-    metriclabelsallowlist=None,
-    metricannotationsallowlist=None,
+    azure_monitor_workspace_resource_id=None,
+    ksm_metriclabelsallowlist=None,
+    ksm_metricannotationsallowlist=None,
     grafana_resource_id=None,
     disable_azuremonitormetrics=False,
 ):

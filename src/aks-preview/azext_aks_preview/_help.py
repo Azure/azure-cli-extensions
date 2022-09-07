@@ -463,9 +463,6 @@ helps['aks create'] = """
         - name: --defender-config
           type: string
           short-summary: Path to JSON file containing Microsoft Defender profile configurations.
-        - name: --enable-azuremonitormetrics
-          type: bool
-          short-summary: Enable Azure Monitor Metrics Profile
     examples:
         - name: Create a Kubernetes cluster with an existing SSH public key.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --ssh-key-value /path/to/publickey
@@ -811,6 +808,21 @@ helps['aks update'] = """
         - name: --enable-azuremonitormetrics
           type: bool
           short-summary: Enable Azure Monitor Metrics Profile
+        - name: --azure-monitor-workspace-resource-id
+          type: bool
+          short-summary: Resource ID  of the Azure Monitor Workspace
+        - name: --ksm-metriclabelsallowlist
+          type: bool
+          short-summary: Comma-separated list of additional Kubernetes label keys that will be used in the resource' labels metric. By default the metric contains only name and namespace labels. To include additional labels provide a list of resource names in their plural form and Kubernetes label keys you would like to allow for them (Example: '=namespaces=[k8s-label-1,k8s-label-n,...],pods=[app],...)'. A single '*' can be provided per resource instead to allow any labels, but that has severe performance implications (Example: '=pods=[*]').\
+        - name: --ksm-metricannotationsallowlist
+          type: bool
+          short-summary: Comma-separated list of additional Kubernetes label keys that will be used in the resource' labels metric. By default the metric contains only name and namespace labels. To include additional labels provide a list of resource names in their plural form and Kubernetes label keys you would like to allow for them (Example: '=namespaces=[k8s-label-1,k8s-label-n,...],pods=[app],...)'. A single '*' can be provided per resource instead to allow any labels, but that has severe performance implications (Example: '=pods=[*]').
+        - name: --grafana-resource-id
+          type: bool
+          short-summary: Resource ID  of the Azure Managed Grafana Workspace
+        - name: --disable-azuremonitormetrics
+          type: bool
+          short-summary: Disable Azure Monitor Metrics Profile
     examples:
       - name: Reconcile the cluster back to its current state.
         text: az aks update -g MyResourceGroup -n MyManagedCluster

@@ -22,6 +22,7 @@ from azure.core.exceptions import HttpResponseError
 
 
 MAC_API = "2021-06-03-preview"
+DC_API = "2021-09-01-preview"
 GRAFANA_API = "2022-08-01"
 GRAFANA_ROLE_ASSIGNMENT_API = "2018-01-01-preview"
 RULES_API = "2021-07-22-preview"
@@ -171,7 +172,7 @@ def validate_ksm_parameter(ksmparam):
         if v == "=":
             if previous == ord(",") or next != ord("["):
                 raise InvalidArgumentValueError(
-                    "Please format --metric properly. For eg. : --metriclabelsallowlist \"=namespaces=[k8s-label-1,k8s-label-n,...],pods=[app],...)\" and --metricannotationsallowlist \"namespaces=[kubernetes.io/team,...],pods=[kubernetes.io/team],...\""
+                    "Please format --metric properly. For eg. : --ksm_metriclabelsallowlist \"=namespaces=[k8s-label-1,k8s-label-n,...],pods=[app],...)\" and --ksm_metricannotationsallowlist \"namespaces=[kubernetes.io/team,...],pods=[kubernetes.io/team],...\""
                     )
             name = ksmparam[firstWordPos:i]
             labelValueMap[name] = []
@@ -179,14 +180,14 @@ def validate_ksm_parameter(ksmparam):
         elif v == "[":
             if previous != ord("="):
                 raise InvalidArgumentValueError(
-                    "Please format --metric properly. For eg. : --metriclabelsallowlist \"=namespaces=[k8s-label-1,k8s-label-n,...],pods=[app],...)\" and --metricannotationsallowlist \"namespaces=[kubernetes.io/team,...],pods=[kubernetes.io/team],...\""
+                    "Please format --metric properly. For eg. : --ksm_metriclabelsallowlist \"=namespaces=[k8s-label-1,k8s-label-n,...],pods=[app],...)\" and --ksm_metricannotationsallowlist \"namespaces=[kubernetes.io/team,...],pods=[kubernetes.io/team],...\""
                     )
             firstWordPos = i + 1
         elif v == "]":
             # if after metric group, has char not comma or end.
             if next != EOF and next != ord(","):
                 raise InvalidArgumentValueError(
-                    "Please format --metric properly. For eg. : --metriclabelsallowlist \"=namespaces=[k8s-label-1,k8s-label-n,...],pods=[app],...)\" and --metricannotationsallowlist \"namespaces=[kubernetes.io/team,...],pods=[kubernetes.io/team],...\""
+                    "Please format --metric properly. For eg. : --ksm_metriclabelsallowlist \"=namespaces=[k8s-label-1,k8s-label-n,...],pods=[app],...)\" and --ksm_metricannotationsallowlist \"namespaces=[kubernetes.io/team,...],pods=[kubernetes.io/team],...\""
                     )
             if previous != ord("["):
                 labelValueMap[name].append(ksmparam[firstWordPos:i])
@@ -195,7 +196,7 @@ def validate_ksm_parameter(ksmparam):
             # if starts or ends with comma
             if previous == v or next == EOF or next == ord("]"):
                 raise InvalidArgumentValueError(
-                    "Please format --metric properly. For eg. : --metriclabelsallowlist \"=namespaces=[k8s-label-1,k8s-label-n,...],pods=[app],...)\" and --metricannotationsallowlist \"namespaces=[kubernetes.io/team,...],pods=[kubernetes.io/team],...\""
+                    "Please format --metric properly. For eg. : --ksm_metriclabelsallowlist \"=namespaces=[k8s-label-1,k8s-label-n,...],pods=[app],...)\" and --ksm_metricannotationsallowlist \"namespaces=[kubernetes.io/team,...],pods=[kubernetes.io/team],...\""
                     )
             if previous != ord("]"):
                 labelValueMap[name].append(ksmparam[firstWordPos:i])
@@ -208,13 +209,13 @@ def validate_ksm_parameter(ksmparam):
     for label in labelValueMap:
         if (bool(re.match(r'^[a-zA-Z_][A-Za-z0-9_]+$', label)))== False:
             raise InvalidArgumentValueError(
-                    "Please format --metric properly. For eg. : --metriclabelsallowlist \"=namespaces=[k8s-label-1,k8s-label-n,...],pods=[app],...)\" and --metricannotationsallowlist \"namespaces=[kubernetes.io/team,...],pods=[kubernetes.io/team],...\""
+                    "Please format --metric properly. For eg. : --ksm_metriclabelsallowlist \"=namespaces=[k8s-label-1,k8s-label-n,...],pods=[app],...)\" and --ksm_metricannotationsallowlist \"namespaces=[kubernetes.io/team,...],pods=[kubernetes.io/team],...\""
                     )
         # else:
         #     for value in labelValueMap[label]:
         #         if (bool(labelValuePattern.match(value))) == False:
         #             raise InvalidArgumentValueError(
-        #                 "Please format --metric properly. For eg. : --metriclabelsallowlist \"=namespaces=[k8s-label-1,k8s-label-n,...],pods=[app],...)\" and --metricannotationsallowlist \"namespaces=[kubernetes.io/team,...],pods=[kubernetes.io/team],...\""
+        #                 "Please format --metric properly. For eg. : --ksm_metriclabelsallowlist \"=namespaces=[k8s-label-1,k8s-label-n,...],pods=[app],...)\" and --ksm_metricannotationsallowlist \"namespaces=[kubernetes.io/team,...],pods=[kubernetes.io/team],...\""
         #             )
     return ksmparam
 
@@ -243,7 +244,7 @@ def create_default_mac(cmd, cluster_subscription, cluster_region):
 
     default_mac_name = get_default_mac_name(cluster_region)
     default_resource_group_name = "DefaultResourceGroup-{0}".format(get_default_mac_region_code(cluster_region))
-    mac_resource_id = "/subscriptions/{0}/resourceGroups/{1}/providers/microsoft.monitor/accounts/{2}".format(
+    azure_monitor_workspace_resource_id = "/subscriptions/{0}/resourceGroups/{1}/providers/microsoft.monitor/accounts/{2}".format(
             cluster_subscription,
             default_resource_group_name,
             default_mac_name,
@@ -256,10 +257,10 @@ def create_default_mac(cmd, cluster_subscription, cluster_region):
     if resource_groups.check_existence(default_resource_group_name):
         try:
             resources.get_by_id(
-                mac_resource_id, "2021-06-01-preview"
+                azure_monitor_workspace_resource_id, "2021-06-01-preview"
             )
             # If MAC already exists then return from here
-            return mac_resource_id
+            return azure_monitor_workspace_resource_id
         except HttpResponseError as ex:
             if ex.status_code != 404:
                 raise ex
@@ -272,23 +273,23 @@ def create_default_mac(cmd, cluster_subscription, cluster_region):
                                    "properties": {
                                     # do I need to link an existing MDM account for 
                                    }})
-    association_url = f"https://management.azure.com{mac_resource_id}?api-version={MAC_API}"
+    association_url = f"https://management.azure.com{azure_monitor_workspace_resource_id}?api-version={MAC_API}"
 
     try:
         send_raw_request(cmd.cli_ctx, "PUT", association_url,
                          body=association_body)
-        return mac_resource_id
+        return azure_monitor_workspace_resource_id
     except CLIError as e:
         raise e
 
-def get_mac_resource_id(cmd, cluster_subscription, cluster_region, raw_parameters):
-    mac_resource_id = raw_parameters.get("mac_resource_id")
-    if mac_resource_id is None or mac_resource_id == "":
+def get_azure_monitor_workspace_resource_id(cmd, cluster_subscription, cluster_region, raw_parameters):
+    azure_monitor_workspace_resource_id = raw_parameters.get("azure_monitor_workspace_resource_id")
+    if azure_monitor_workspace_resource_id is None or azure_monitor_workspace_resource_id == "":
         print("Creating default MAC account")
-        mac_resource_id = create_default_mac(cmd, cluster_subscription, cluster_region)
+        azure_monitor_workspace_resource_id = create_default_mac(cmd, cluster_subscription, cluster_region)
     else:
-        mac_resource_id = sanitize_resource_id(mac_resource_id)
-    return mac_resource_id
+        azure_monitor_workspace_resource_id = sanitize_resource_id(azure_monitor_workspace_resource_id)
+    return azure_monitor_workspace_resource_id
 
 def get_default_dce_name(mac_region, cluster_name):
     default_dce_name = "MSProm-" + AzureCloudLocationToOmsRegionCodeMap[mac_region] + "-" + cluster_name
@@ -305,16 +306,16 @@ def get_default_dcra_name(cluster_region, cluster_name):
     default_dcra_name = default_dcra_name[0:43]
     return default_dcra_name
 
-def get_mac_region_and_check_support(cmd, mac_resource_id, cluster_region):
+def get_mac_region_and_check_support(cmd, azure_monitor_workspace_resource_id, cluster_region):
     from azure.cli.core.util import send_raw_request
     from azure.core.exceptions import HttpResponseError
 
-    # region of MAC can be different from region of RG so find the location of the mac_resource_id
-    mac_subscription_id = mac_resource_id.split("/")[2]
+    # region of MAC can be different from region of RG so find the location of the azure_monitor_workspace_resource_id
+    mac_subscription_id = azure_monitor_workspace_resource_id.split("/")[2]
     resources = get_resources_client(cmd.cli_ctx, mac_subscription_id)
     try:
         resource = resources.get_by_id(
-            mac_resource_id, "2021-06-01-preview")
+            azure_monitor_workspace_resource_id, "2021-06-01-preview")
         mac_location = resource.location
     except HttpResponseError as ex:
         raise ex
@@ -381,7 +382,7 @@ def create_dce(cmd, cluster_subscription, cluster_resource_group_name, cluster_n
 
     for _ in range(3):
         try:
-            dce_url = f"https://management.azure.com{dce_resource_id}?api-version=2021-09-01-preview"
+            dce_url = f"https://management.azure.com{dce_resource_id}?api-version={DC_API}"
             dce_creation_body = json.dumps({"name": dce_name,
                                             "location": mac_region,
                                             "kind": "Linux",
@@ -395,7 +396,7 @@ def create_dce(cmd, cluster_subscription, cluster_resource_group_name, cluster_n
     else:
         raise error
 
-def create_dcr(cmd, mac_region, mac_resource_id, cluster_subscription, cluster_resource_group_name, cluster_name, dce_resource_id):
+def create_dcr(cmd, mac_region, azure_monitor_workspace_resource_id, cluster_subscription, cluster_resource_group_name, cluster_name, dce_resource_id):
     from azure.cli.core.util import send_raw_request
 
     print("Calling function create_dcr")
@@ -432,13 +433,13 @@ def create_dcr(cmd, mac_region, mac_resource_id, cluster_subscription, cluster_r
                                         "destinations": {
                                             "monitoringAccounts": [
                                                 {
-                                                    "accountResourceId": mac_resource_id,
+                                                    "accountResourceId": azure_monitor_workspace_resource_id,
                                                     "name": "MonitoringAccount1"
                                                 }
                                             ]
                                         }
                                     }})                          
-    dcr_url = f"https://management.azure.com{dcr_resource_id}?api-version=2021-09-01-preview"
+    dcr_url = f"https://management.azure.com{dcr_resource_id}?api-version={DC_API}"
     for _ in range(3):
         try:
             send_raw_request(cmd.cli_ctx, "PUT",
@@ -474,7 +475,7 @@ def create_dcra(cmd, cluster_region, cluster_subscription, cluster_resource_grou
                                        "dataCollectionRuleId": dcr_resource_id,
                                        "description": "Promtheus data collection association between DCR, DCE and target AKS resource"
                                    }})
-    association_url = f"https://management.azure.com{cluster_resource_id}/providers/Microsoft.Insights/dataCollectionRuleAssociations/{dcra_name}?api-version=2021-09-01-preview"
+    association_url = f"https://management.azure.com{cluster_resource_id}/providers/Microsoft.Insights/dataCollectionRuleAssociations/{dcra_name}?api-version={DC_API}"
     for _ in range(3):
         try:
             send_raw_request(cmd.cli_ctx, "PUT", association_url,
@@ -486,7 +487,7 @@ def create_dcra(cmd, cluster_region, cluster_subscription, cluster_resource_grou
     else:
         raise error
 
-def link_grafana_instance(cmd, raw_parameters, mac_resource_id):
+def link_grafana_instance(cmd, raw_parameters, azure_monitor_workspace_resource_id):
     from azure.cli.core.util import send_raw_request
 
     # GET grafana principal ID
@@ -511,12 +512,12 @@ def link_grafana_instance(cmd, raw_parameters, mac_resource_id):
     try:
         MonitoringDataReader = "b0d8363b-8ddd-447d-831f-62ca05bff136"
         roleDefinitionURI = "https://management.azure.com{0}/providers/Microsoft.Authorization/roleAssignments/{1}?api-version={2}".format(
-            mac_resource_id,
+            azure_monitor_workspace_resource_id,
             uuid.uuid4(),
             GRAFANA_ROLE_ASSIGNMENT_API
         )
         roleDefinitionId = "{0}/providers/Microsoft.Authorization/roleDefinitions/{1}".format(
-            mac_resource_id,
+            azure_monitor_workspace_resource_id,
             MonitoringDataReader
         )
 
@@ -546,7 +547,7 @@ def link_grafana_instance(cmd, raw_parameters, mac_resource_id):
 
     amwIntegrations = targetGrafanaArmPayload["properties"]["grafanaIntegrations"]["azureMonitorWorkspaceIntegrations"]
 
-    if amwIntegrations != [] and mac_resource_id in json.dumps(amwIntegrations):
+    if amwIntegrations != [] and azure_monitor_workspace_resource_id in json.dumps(amwIntegrations):
         print("Grafana already has AMW integration")
         return GrafanaLink.ALREADYPRESENT
 
@@ -555,7 +556,7 @@ def link_grafana_instance(cmd, raw_parameters, mac_resource_id):
             grafana_resource_id,
             GRAFANA_API
         )
-        targetGrafanaArmPayload["properties"]["grafanaIntegrations"]["azureMonitorWorkspaceIntegrations"].append({ "azureMonitorWorkspaceResourceId" : mac_resource_id })
+        targetGrafanaArmPayload["properties"]["grafanaIntegrations"]["azureMonitorWorkspaceIntegrations"].append({ "azureMonitorWorkspaceResourceId" : azure_monitor_workspace_resource_id })
         targetGrafanaArmPayload=json.dumps(targetGrafanaArmPayload)
 
         final_response = send_raw_request(cmd.cli_ctx, "PUT", grafanaURI, body=targetGrafanaArmPayload, headers={'Content-Type=application/json'})
@@ -567,7 +568,7 @@ def link_grafana_instance(cmd, raw_parameters, mac_resource_id):
 
     return GrafanaLink.SUCCESS
 
-def create_rules(cmd, cluster_region, cluster_subscription, cluster_resource_group_name, cluster_name, mac_resource_id, mac_region):
+def create_rules(cmd, cluster_region, cluster_subscription, cluster_resource_group_name, cluster_name, azure_monitor_workspace_resource_id, mac_region):
     from azure.cli.core.util import send_raw_request
     
     with urllib.request.urlopen("https://defaultrulessc.blob.core.windows.net/defaultrules/ManagedPrometheusDefaultRecordingRules.json") as url:
@@ -591,7 +592,7 @@ def create_rules(cmd, cluster_region, cluster_subscription, cluster_resource_gro
         "location": mac_region,
         "properties": {
             "scopes": [
-                mac_resource_id
+                azure_monitor_workspace_resource_id
             ],
             "clusterName": cluster_name,
             "interval": "PT1M",
@@ -629,7 +630,7 @@ def create_rules(cmd, cluster_region, cluster_subscription, cluster_resource_gro
         "location": mac_region,
         "properties": {
             "scopes": [
-                mac_resource_id
+                azure_monitor_workspace_resource_id
             ],
             "clusterName": cluster_name,
             "rules": default_rules_template["resources"][1]["properties"]["rules"]
@@ -663,7 +664,7 @@ def delete_dcra(cmd, cluster_region, cluster_subscription, cluster_resource_grou
 
     # only create or delete the association between the DCR and cluster
     association_body = json.dumps({"location": cluster_region, "properties": {}})
-    association_url = f"https://management.azure.com{cluster_resource_id}/providers/Microsoft.Insights/dataCollectionRuleAssociations/{dcra_name}?api-version=2021-09-01-preview"
+    association_url = f"https://management.azure.com{cluster_resource_id}/providers/Microsoft.Insights/dataCollectionRuleAssociations/{dcra_name}?api-version={DC_API}"
     for _ in range(3):
         try:
             send_raw_request(cmd.cli_ctx, "DELETE", association_url,
@@ -735,11 +736,11 @@ def link_azure_monitor_profile_artifacts(cmd,
     print("Calling link_azure_monitor_profile_artifacts...")
     
     # MAC creation if required
-    mac_resource_id = get_mac_resource_id(cmd, cluster_subscription, cluster_region, raw_parameters)
-    print(mac_resource_id)
+    azure_monitor_workspace_resource_id = get_azure_monitor_workspace_resource_id(cmd, cluster_subscription, cluster_region, raw_parameters)
+    print(azure_monitor_workspace_resource_id)
 
     # Get MAC region (required for DCE, DCR creation) and check support for DCE,DCR creation
-    mac_region = get_mac_region_and_check_support(cmd, mac_resource_id, cluster_region)
+    mac_region = get_mac_region_and_check_support(cmd, azure_monitor_workspace_resource_id, cluster_region)
     print(mac_region)
 
     # DCE creation
@@ -747,7 +748,7 @@ def link_azure_monitor_profile_artifacts(cmd,
     print(dce_resource_id)
 
     # DCR creation
-    dcr_resource_id = create_dcr(cmd, mac_region, mac_resource_id, cluster_subscription, cluster_resource_group_name, cluster_name, dce_resource_id)
+    dcr_resource_id = create_dcr(cmd, mac_region, azure_monitor_workspace_resource_id, cluster_subscription, cluster_resource_group_name, cluster_name, dce_resource_id)
     print(dcr_resource_id)
 
     # DCRA creation
@@ -755,11 +756,11 @@ def link_azure_monitor_profile_artifacts(cmd,
     print(dcra_resource_id)
 
     # Link grafana
-    isGrafanaLinkSuccessful = link_grafana_instance(cmd, raw_parameters, mac_resource_id)
+    isGrafanaLinkSuccessful = link_grafana_instance(cmd, raw_parameters, azure_monitor_workspace_resource_id)
     print(isGrafanaLinkSuccessful)
 
     # create recording rules and alerts
-    create_rules(cmd, cluster_region, cluster_subscription, cluster_resource_group_name, cluster_name, mac_resource_id, mac_region)
+    create_rules(cmd, cluster_region, cluster_subscription, cluster_resource_group_name, cluster_name, azure_monitor_workspace_resource_id, mac_region)
 
 def unlink_azure_monitor_profile_artifacts(cmd,
             cluster_subscription,
@@ -772,7 +773,7 @@ def unlink_azure_monitor_profile_artifacts(cmd,
     isSuccessfulDeletion = delete_dcra(cmd, cluster_region, cluster_subscription, cluster_resource_group_name, cluster_name)
     print("DCRA removal successful -> ", isSuccessfulDeletion)
     
-    # Delete rules (Conflict({"error":{"code":"InvalidResourceLocation","message":"The resource 'NodeRecordingRulesRuleGroup-grace-cli-3' already exists in location 'eastus2' in resource group 'grace-cli-3'. A resource with the same name cannot be created in location 'eastus'. Please select a new resource name."}})
+    # Delete rules (Conflict({"error":{"code":"InvalidResourceLocation","message":"The resource 'NodeRecordingRulesRuleGroup-<clustername>' already exists in location 'eastus2' in resource group '<clustername>'. A resource with the same name cannot be created in location 'eastus'. Please select a new resource name."}})
     delete_rules(cmd, cluster_region, cluster_subscription, cluster_resource_group_name, cluster_name)
 
 # pylint: disable=too-many-locals,too-many-branches,too-many-statements,line-too-long

@@ -120,8 +120,8 @@ from azext_aks_preview._validators import (
     validate_enable_custom_ca_trust,
     validate_defender_config_parameter,
     validate_defender_disable_and_enable_parameters,
-    validate_metriclabelsallowlist,
-    validate_metricannotationsallowlist,
+    validate_ksm_metriclabelsallowlist,
+    validate_ksm_metricannotationsallowlist,
 )
 
 # candidates for enumeration
@@ -322,11 +322,6 @@ def load_arguments(self, _):
         c.argument('apiserver_subnet_id', validator=validate_apiserver_subnet_id, is_preview=True)
         c.argument('dns_zone_resource_id')
         c.argument('enable_keda', action='store_true', is_preview=True)
-        c.argument('enable_azuremonitormetrics', action='store_true', is_preview=True)
-        c.argument('mac_resource_id', is_preview=True)
-        c.argument('metriclabelsallowlist', validator=validate_metriclabelsallowlist, is_preview=True)
-        c.argument('metricannotationsallowlist', validator=validate_metricannotationsallowlist, is_preview=True)
-        c.argument('grafana_resource_id', is_preview=True)
         # nodepool
         c.argument('host_group_id', validator=validate_host_group_id, is_preview=True)
         c.argument('crg_id', validator=validate_crg_id, is_preview=True)
@@ -422,9 +417,9 @@ def load_arguments(self, _):
         c.argument('enable_keda', action='store_true', is_preview=True)
         c.argument('disable_keda', action='store_true', is_preview=True)
         c.argument('enable_azuremonitormetrics', action='store_true', is_preview=True)
-        c.argument('mac_resource_id', is_preview=True)
-        c.argument('metriclabelsallowlist', validator=validate_metriclabelsallowlist, is_preview=True)
-        c.argument('metricannotationsallowlist', validator=validate_metricannotationsallowlist, is_preview=True)
+        c.argument('azure_monitor_workspace_resource_id', is_preview=True)
+        c.argument('ksm_metriclabelsallowlist', validator=validate_ksm_metriclabelsallowlist, is_preview=True)
+        c.argument('ksm_metricannotationsallowlist', validator=validate_ksm_metricannotationsallowlist, is_preview=True)
         c.argument('grafana_resource_id', is_preview=True)
         c.argument('disable_azuremonitormetrics', action='store_true', is_preview=True)
 
