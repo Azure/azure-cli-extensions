@@ -27,12 +27,14 @@ Pending
 ++++++
 
 * Add support for enabling ImageCleaner with `--enable-image-cleaner` flag.
+* Add sub-command `operation-abort` for `az aks` and `az aks nodepool` to support canceling the previous operation.
 
 0.5.95
 ++++++
 
 * Add `--enable-node-restriction`/`--disable-node-restriction` to enable/disable node restriction feature
 * Update the minimum required cli core version to `2.38.0` (actually since `0.5.92`).
+* Add new value `Mariner` for option `--os-sku` in `az aks create` and `az aks nodepool add`.
 
 0.5.94
 ++++++
