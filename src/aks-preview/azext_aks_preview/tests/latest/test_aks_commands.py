@@ -5258,7 +5258,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             assert os.path.isfile(f'{tmp_dir}/charts/production.yaml') and os.path.isfile(f'{tmp_dir}/.github/workflows/azure-kubernetes-service-helm.yml')
 
             # test `update`
-            update_cmd = f'aks draft update --name=azure --addon=??? --path={tmp_dir} --destination={tmp_dir}'
+            update_cmd = f'aks draft update --path={tmp_dir} --destination={tmp_dir} --host=testHost --certificate=testKV'
             self.cmd(update_cmd)
             assert os.path.isfile(f'{tmp_dir}/charts/production.yaml')
 
@@ -5283,7 +5283,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             assert os.path.isfile(f'{tmp_dir}/overlays/production/deployment.yaml') and os.path.isfile(f'{tmp_dir}/.github/workflows/azure-kubernetes-service-kustomize.yml')
 
             # test `update`
-            update_cmd = f'aks draft update --name=azure --addon=??? --path={tmp_dir} --destination={tmp_dir}'
+            update_cmd = f'aks draft update --path={tmp_dir} --destination={tmp_dir} --host=testHost --certificate=testKV'
             self.cmd(update_cmd)
             assert os.path.isfile(f'{tmp_dir}/overlays/production/service.yaml')
 
@@ -5308,7 +5308,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             assert os.path.isfile(f'{tmp_dir}/.github/workflows/azure-kubernetes-service.yml')
 
             # test `update`
-            update_cmd = f'aks draft update --name=azure --addon=??? --path={tmp_dir} --destination={tmp_dir}'
+            update_cmd = f'aks draft update --path={tmp_dir} --destination={tmp_dir} --host=testHost --certificate=testKV'
             self.cmd(update_cmd)
             assert os.path.isfile(f'{tmp_dir}/manifests/service.yaml')
 
