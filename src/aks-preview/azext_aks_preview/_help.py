@@ -2086,6 +2086,12 @@ helps['aks draft update'] = """
     long-summary: This command automatically updates your yaml files as necessary so that your
                   application will be able to receive external requests.
     parameters:
+        - name: --providers
+          type: string
+          short-summary: Specify the providers for cloud (default is azure).
+        - name: --addon
+          type: string
+          short-summary: Specify the add on to the project directory.
         - name: --destination
           type: string
           short-summary: Specify the path to the project directory (default is .).
@@ -2096,5 +2102,5 @@ helps['aks draft update'] = """
       - name: Prompt to update the application to be internet accessible.
         text: az aks draft update
       - name: Prompt to update the application to be internet accessible in a specific project directory.
-        text: az aks draft update --destination=/projects/some_project
+        text: az aks draft update --addon=??? --destination=/projects/some_project
 """

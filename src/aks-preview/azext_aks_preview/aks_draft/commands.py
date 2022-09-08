@@ -123,7 +123,7 @@ def aks_draft_cmd_up(app: str,
 
 
 # `az aks draft update` function
-def aks_draft_cmd_update(destination: str, download_path: str) -> None:
+def aks_draft_cmd_update(provider:str, addon:str, destination: str, download_path: str) -> None:
     file_path, arguments = _pre_run(download_path, destination=destination)
     run_successful = _run(file_path, 'update', arguments)
     if run_successful:
