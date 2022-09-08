@@ -89,10 +89,10 @@ def load_arguments(self, _):
         c.argument('dapr_app_port', type=int, help="The port Dapr uses to talk to the application.")
         c.argument('dapr_app_id', help="The Dapr application identifier.")
         c.argument('dapr_app_protocol', arg_type=get_enum_type(['http', 'grpc']), help="The protocol Dapr uses to talk to the application.")
-        c.argument('dapr_http_read_buffer_size', options_list=['--dapr-http-read-buffer-size', '-dhrbs'], type=int, help="Dapr max size of http header read buffer in KB to handle when sending multi-KB headers..")
-        c.argument('dapr_http_max_request_size', options_list=['--dapr-http-max-request-size', '-dhmrs'], type=int, help="Increasing max size of request body http and grpc servers parameter in MB to handle uploading of big files.")
+        c.argument('dapr_http_read_buffer_size', options_list=['--dapr-http-read-buffer-size', '--dhrbs'], type=int, help="Dapr max size of http header read buffer in KB to handle when sending multi-KB headers..")
+        c.argument('dapr_http_max_request_size', options_list=['--dapr-http-max-request-size', '--dhmrs'], type=int, help="Increasing max size of request body http and grpc servers parameter in MB to handle uploading of big files.")
         c.argument('dapr_log_level', arg_type=get_enum_type(["info", "debug", "warn", "error"]), help="Sets the log level for the Dapr sidecar.")
-        c.argument('dapr_enable_api_logging', options_list=['--dapr-enable-api-logging', '-dal'], help="Enables API logging for the Dapr sidecar.")
+        c.argument('dapr_enable_api_logging', options_list=['--dapr-enable-api-logging', '--dal'], help="Enables API logging for the Dapr sidecar.")
 
     # Configuration
     with self.argument_context('containerapp', arg_group='Configuration') as c:
