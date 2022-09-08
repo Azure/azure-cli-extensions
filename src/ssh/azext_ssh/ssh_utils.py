@@ -80,7 +80,6 @@ def start_ssh_connection(op_info, delete_keys, delete_cert):
 
 def _read_ssh_logs(ssh_sub, print_ssh_logs, op_info, delete_cert, delete_keys):
     log_list = []
-    ssh_sucess = False
 
     next_line = ssh_sub.stderr.readline()
     while next_line:
@@ -110,7 +109,6 @@ def _read_ssh_logs(ssh_sub, print_ssh_logs, op_info, delete_cert, delete_keys):
 
         next_line = ssh_sub.stderr.readline()
     ssh_sub.wait()
-    return ssh_sucess
 
 
 def write_ssh_config(config_info, delete_keys, delete_cert):
