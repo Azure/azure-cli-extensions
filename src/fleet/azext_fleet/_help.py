@@ -61,6 +61,12 @@ helps['fleet get-credentials'] = """
       short-summary: Kubernetes configuration file to update. Use "-" to print YAML to stdout instead.
 """
 
+helps['fleet wait'] = """
+type: command
+short-summary: Wait for a fleet resouce to reach a desired state.
+long-summary: If an operation on fleet was interrupted or was started with `--no-wait`, use this command to wait for it to complete.
+"""
+
 helps['fleet member'] = """
     type: group
     short-summary: Commands to manage a fleet member.
@@ -88,4 +94,10 @@ helps['fleet member show'] = """
 helps['fleet member delete'] = """
     type: command
     short-summary: Remove member cluster from a fleet
+"""
+
+helps['fleet member wait'] = """
+type: command
+short-summary: Wait for a fleet member resouce to reach a desired state.
+long-summary: If an operation on fleet member was interrupted or was started with `--no-wait`, use this command to wait for it to complete.
 """
