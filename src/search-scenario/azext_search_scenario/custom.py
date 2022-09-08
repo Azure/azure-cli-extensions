@@ -243,14 +243,12 @@ def _get_output_arg(command, output_format):
 def _invoke(ctx_cmd, args, catch_exception=False):
     if not catch_exception:
         return ctx_cmd.cli_ctx.invoke(args)
-
-    else:
-        try:
-            return ctx_cmd.cli_ctx.invoke(args)
-        except Exception:   # pylint: disable=broad-except
-            return -1
-        except SystemExit:
-            return -1
+    try:
+        return ctx_cmd.cli_ctx.invoke(args)
+    except Exception:   # pylint: disable=broad-except
+        return -1
+    except SystemExit:
+        return -1
 
 
 def _get_command_sample(command):
@@ -281,7 +279,7 @@ def _reformat_sample(command_sample):
     Also return the arguments used in the sample.
     '''
     if not command_sample:
-        return
+        return [], []
 
     cmd_items = command_sample.split()
     arguments_start = False

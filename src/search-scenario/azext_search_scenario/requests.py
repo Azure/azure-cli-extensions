@@ -24,11 +24,11 @@ def search_online(keyword, scope=SearchScope.All, match_rule=MatchRule.All, top=
         response = requests.post(SEARCH_SERVICE_URL, json.dumps(payload))
         response.raise_for_status()
     except requests.ConnectionError as e:
-        raise SearchScenarioError(f'Network Error: {e}')
+        raise SearchScenarioError(f'Network Error: {e}') from e
     except requests.exceptions.HTTPError as e:
-        raise SearchScenarioError(f'{e}')
-    except requests.RequestException:
-        raise SearchScenarioError(f'Request Error: {e}')
+        raise SearchScenarioError(f'{e}') from e
+    except requests.RequestException as e:
+        raise SearchScenarioError(f'Request Error: {e}') from e
 
     results = []
     if 'data' in response.json():
