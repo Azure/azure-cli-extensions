@@ -24,7 +24,7 @@ def load_command_table(self, _):
         g.custom_command('connect', 'create_connectedk8s', supports_no_wait=True)
         g.custom_command('update', 'update_connected_cluster')
         g.custom_command('upgrade', 'upgrade_agents')
-        g.custom_command('delete', 'delete_connectedk8s', confirmation=True, supports_no_wait=True)
+        g.custom_command('delete', 'delete_connectedk8s', supports_no_wait=True)
         g.custom_command('enable-features', 'enable_features', is_preview=True)
         g.custom_command('disable-features', 'disable_features', is_preview=True)
         g.custom_command('list', 'list_connectedk8s', table_transformer=connectedk8s_list_table_format)
