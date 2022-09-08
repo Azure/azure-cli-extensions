@@ -173,6 +173,7 @@ def _execute_cmd_with_retry(ctx_cmd, command, params):
 
 
 def _execute_cmd(ctx_cmd, command, params, catch_exception=False):
+    '''Read arguments from `stdin` and execute the command'''
     args = []
     args.extend(command.split())
     if args[0] == "az":
