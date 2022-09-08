@@ -2087,11 +2087,11 @@ helps['aks draft update'] = """
                   application will be able to receive external requests.
     parameters:
         - name: --host
-           type: string
-           short-summary: Specify the host of the ingress resource.
-         - name: --certificate
-           type: string
-           short-summary: Specify the URI of the Keyvault certificate to present.
+          type: string
+          short-summary: Specify the host of the ingress resource.
+        - name: --certificate
+          type: string
+          short-summary: Specify the URI of the Keyvault certificate to present.
         - name: --destination
           type: string
           short-summary: Specify the path to the project directory (default is .).
@@ -2104,5 +2104,5 @@ helps['aks draft update'] = """
       - name: Prompt to update the application to be internet accessible in a specific project directory.
         text: az aks draft update --destination=/projects/some_project
       - name: Update the application to be internet accessible with a host of the ingress resource and a Keyvault certificate in a specific project directory.
-         text: az aks draft update --host=some_host --certificate=some_certificate --destination=/projects/some_project
+        text: az aks draft update --host=some_host --certificate=some_certificate --destination=/projects/some_project
 """
