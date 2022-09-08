@@ -107,57 +107,8 @@ def _show_detail(cmd, scenario):
         print()
 
 
-def _execute_scenario(ctx_cmd, scenario):
-
-    for command in scenario["commandSet"]:
-        parameters = []
-        if "arguments" in command:
-            parameters = command["arguments"]
-
-        if ctx_cmd.cli_ctx.config.getboolean('search_scenario', 'print_help', fallback=False):
-            _print_help_info(ctx_cmd, command["command"])
-
-        print_styled_text([(Style.ACTION, "Running: ")], end='')
-        print_styled_text(_get_command_sample(command))
-        option_msg = [(Style.ACTION, " ? "),
-                      (Style.PRIMARY, "How do you want to run this step? 1. Run it 2. Skip it 3. Quit process "),
-                      (Style.SECONDARY, "(Enter is to Run)"), (Style.PRIMARY, ": ")]
-        run_option = input_int_option(option_msg, 1, 3, 1)
-        if run_option == 1:
-            print_styled_text([(Style.SECONDARY, "Input Enter to skip unnecessary parameters")])
-            execute_result = _execute_cmd(ctx_cmd, command['command'], parameters, catch_exception=True)
-            is_help_printed = False
-            while execute_result != 0:
-                if not ctx_cmd.cli_ctx.config.getboolean('search_scenario', 'print_help', fallback=False) \
-                        and not is_help_printed:
-                    _print_help_info(ctx_cmd, command["command"])
-                    is_help_printed = True
-
-                option_msg = [(Style.ACTION, " ? "),
-                              (Style.PRIMARY, "Do you want to retry this step? 1. Run it 2. Skip it 3. Quit process "),
-                              (Style.SECONDARY, "(Enter is to Run)"), (Style.PRIMARY, ": ")]
-                run_option = input_int_option(option_msg, 1, 3, 1)
-                if run_option == 1:
-                    execute_result = _execute_cmd(ctx_cmd, command['command'], parameters, catch_exception=True)
-                elif run_option == 2:
-                    print()
-                    break
-                else:
-                    print()
-                    return
-
-        elif run_option == 2:
-            print()
-            continue
-        else:
-            print()
-            break
-
-    from .utils import print_successful_styled_text
-    print_successful_styled_text('All commands in this scenario have been executed! \n')
-
-
 def _style_highlight(highlight_content: str) -> list:
+    '''Build `styled_text` from content with `<em></em>` as highlight mark'''
     styled_description = []
     remain = highlight_content
     in_highlight = False
@@ -171,6 +122,54 @@ def _style_highlight(highlight_content: str) -> list:
         styled_description.append((Style.SECONDARY if not in_highlight else Style.WARNING, content))
         in_highlight = not in_highlight
     return styled_description
+
+
+def _execute_scenario(ctx_cmd, scenario):
+    '''Execute all commands in scenario'''
+    for command in scenario["commandSet"]:
+        parameters = []
+        if "arguments" in command:
+            parameters = command["arguments"]
+        if not _execute_cmd_with_retry(ctx_cmd, command, parameters):
+            break
+
+    from .utils import print_successful_styled_text
+    print_successful_styled_text('All commands in this scenario have been executed! \n')
+
+
+def _execute_cmd_with_retry(ctx_cmd, command, params):
+    '''Execute a command in scenario. Users can retry if it fails.'''
+    if ctx_cmd.cli_ctx.config.getboolean('search_scenario', 'print_help', fallback=False):
+        _print_help_info(ctx_cmd, command["command"])
+
+    print_styled_text([(Style.ACTION, "Running: ")], end='')
+    print_styled_text(_get_command_sample(command))
+    option_msg = [(Style.ACTION, " ? "),
+                  (Style.PRIMARY, "How do you want to run this step? 1. Run it 2. Skip it 3. Quit process "),
+                  (Style.SECONDARY, "(Enter is to Run)"), (Style.PRIMARY, ": ")]
+    run_option = input_int_option(option_msg, 1, 3, 1)
+    is_help_printed = False
+    while True:
+        if run_option == 1:
+            print_styled_text([(Style.SECONDARY, "Input Enter to skip unnecessary parameters")])
+            execute_result = _execute_cmd(ctx_cmd, command['command'], params, catch_exception=True)
+            if execute_result == 0:
+                return True
+            if not ctx_cmd.cli_ctx.config.getboolean('search_scenario', 'print_help', fallback=False) \
+                    and not is_help_printed:
+                _print_help_info(ctx_cmd, command["command"])
+                is_help_printed = True
+
+            option_msg = [(Style.ACTION, " ? "),
+                          (Style.PRIMARY, "Do you want to retry this step? 1. Run it 2. Skip it 3. Quit process "),
+                          (Style.SECONDARY, "(Enter is to Run)"), (Style.PRIMARY, ": ")]
+            run_option = input_int_option(option_msg, 1, 3, 1)
+        elif run_option == 2:
+            print()
+            return True
+        else:
+            print()
+            return False
 
 
 def _execute_cmd(ctx_cmd, command, params, catch_exception=False):
@@ -196,6 +195,10 @@ def _execute_cmd(ctx_cmd, command, params, catch_exception=False):
 
 
 def _input_args(params):
+    '''
+    Interact with user and read arguments from `stdin`.
+    Return read arguments list.
+    '''
     args = []
     params = [param for param in params if param and param != '']
     for param in params:
@@ -218,6 +221,7 @@ def _input_args(params):
 
 
 def _get_output_arg(command, output_format):
+    '''Get arguments for `az xxx --output <format>`'''
     args = []
     args.append('--output')
     if output_format == 'status':
