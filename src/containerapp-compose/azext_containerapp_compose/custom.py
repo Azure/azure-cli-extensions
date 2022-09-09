@@ -112,7 +112,7 @@ def create_containerapps_from_compose(cmd,  # pylint: disable=R0914
                                       registry_server=None,
                                       registry_user=None,
                                       registry_pass=None,
-                                      transport=None,
+                                      transport_mapping=None,
                                       logs_workspace_name=None,
                                       location=None,
                                       tags=None):
@@ -159,7 +159,7 @@ def create_containerapps_from_compose(cmd,  # pylint: disable=R0914
             f"Creating the Container Apps instance for {service_name} under {resource_group_name} in {location}.")
         ingress_type, target_port = resolve_ingress_and_target_port(service)
         registry, registry_username, registry_password = resolve_registry_from_cli_args(registry_server, registry_user, registry_pass)  # pylint: disable=C0301
-        transport_setting = resolve_transport_from_cli_args(service_name, transport)
+        transport_setting = resolve_transport_from_cli_args(service_name, transport_mapping)
         startup_command, startup_args = resolve_service_startup_command(service)
         cpu, memory = validate_memory_and_cpu_setting(
             resolve_cpu_configuration_from_service(service),
