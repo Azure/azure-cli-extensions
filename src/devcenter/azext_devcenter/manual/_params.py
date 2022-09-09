@@ -464,6 +464,18 @@ def load_arguments(self, _):
         c.argument('environment_type_name', options_list=['--name', '-n', '--environment-type-name'], type=str,
                    help='The name of the environment type.', id_part='child_name_1')
 
+    with self.argument_context('devcenter admin project-allowed-environment-type list') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('project_name', type=str, help='The name of the project.')
+        c.argument('top', type=int, help='The maximum number of resources to return from the operation. Example: '
+                   '\'$top=10\'.')
+
+    with self.argument_context('devcenter admin project-allowed-environment-type show') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('project_name', type=str, help='The name of the project.', id_part='name')
+        c.argument('environment_type_name', type=str, help='The name of the environment type.',
+                   id_part='child_name_1')
+
     with self.argument_context('devcenter admin project-environment-type list') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('project_name', options_list=['--project-name', '--project'], type=str, help='The name of the project.')
