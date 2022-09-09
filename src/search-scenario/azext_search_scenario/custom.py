@@ -253,7 +253,7 @@ def _invoke(ctx_cmd, args, catch_exception=False):
 
 def _get_command_sample(command):
     if "example" in command and command["example"]:
-        command_sample, _ = _reformat_sample(command["example"].replace(" $", " "))
+        command_sample, _ = _format_sample(command["example"].replace(" $", " "))
         return command_sample
 
     from knack import help_files
@@ -264,7 +264,7 @@ def _get_command_sample(command):
         cmd_help = help_files._load_help_file(command['command'])   # pylint: disable=protected-access
         if cmd_help and 'examples' in cmd_help and cmd_help['examples']:
             for cmd_example in cmd_help['examples']:
-                command_sample, example_arguments = _reformat_sample(cmd_example['text'])
+                command_sample, example_arguments = _format_sample(cmd_example['text'])
                 if sorted(example_arguments) == sorted_param:
                     return command_sample
 
@@ -273,9 +273,9 @@ def _get_command_sample(command):
     return [(Style.PRIMARY, command_sample)]
 
 
-def _reformat_sample(command_sample):
+def _format_sample(command_sample):
     '''
-    Reformat command sample in the style of `az xxx --name <appServicePlan>`.
+    Format command sample in the style of `az xxx --name <appServicePlan>`.
     Also return the arguments used in the sample.
     '''
     if not command_sample:
