@@ -10,7 +10,6 @@ import os.path
 import re
 from ipaddress import ip_network
 from math import isclose, isnan
-from sre_compile import dis
 
 import azure.cli.core.keys as keys
 from azure.cli.core.azclierror import (
