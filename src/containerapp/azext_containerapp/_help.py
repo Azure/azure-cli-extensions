@@ -591,9 +591,9 @@ helps['containerapp ingress show'] = """
 
 helps['containerapp ingress enable'] = """
     type: command
-    short-summary: Enable ingress for a container app.
+    short-summary: Enable or update ingress for a container app.
     examples:
-    - name: Enable ingress for a container app.
+    - name: Enable or update ingress for a container app.
       text: |
           az containerapp ingress enable -n MyContainerapp -g MyResourceGroup \\
               --type external --allow-insecure --target-port 80 --transport auto
