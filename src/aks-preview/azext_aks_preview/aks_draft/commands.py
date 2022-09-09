@@ -266,7 +266,7 @@ def _download_binary(download_path: str = '~/.aksdraft') -> Optional[str]:
     if not filename:
         return None
 
-    url = f'https://github.com/Azure/draft/releases/latest/download/{filename}'
+    url = f'https://github.com/Azure/draft/releases/download/{CONST_DRAFT_CLI_VERSION}/{filename}'
     headers = {'Accept': 'application/octet-stream'}
 
     # Downloading the file by sending the request to the URL
