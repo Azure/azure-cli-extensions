@@ -313,6 +313,7 @@ def create_containerapp(cmd,
                         scale_rule_metadata=None,
                         scale_rule_auth=None,
                         target_port=None,
+                        exposed_port=None,
                         transport="auto",
                         ingress=None,
                         revisions_mode="single",
@@ -392,6 +393,7 @@ def create_containerapp(cmd,
         ingress_def["external"] = external_ingress
         ingress_def["targetPort"] = target_port
         ingress_def["transport"] = transport
+        ingress_def["exposedPort"] = exposed_port if transport == "tcp" else None
 
     secrets_def = None
     if secrets is not None:
@@ -1738,7 +1740,7 @@ def show_ingress(cmd, name, resource_group_name):
         raise ValidationError("The containerapp '{}' does not have ingress enabled.".format(name)) from e
 
 
-def enable_ingress(cmd, name, resource_group_name, type, target_port, transport="auto", allow_insecure=False, disable_warnings=False, no_wait=False):  # pylint: disable=redefined-builtin
+def enable_ingress(cmd, name, resource_group_name, type, target_port, transport="auto", exposed_port=None, allow_insecure=False, disable_warnings=False, no_wait=False):  # pylint: disable=redefined-builtin
     _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     containerapp_def = None
@@ -1764,6 +1766,7 @@ def enable_ingress(cmd, name, resource_group_name, type, target_port, transport=
         ingress_def["targetPort"] = target_port
         ingress_def["transport"] = transport
         ingress_def["allowInsecure"] = allow_insecure
+        ingress_def["exposedPort"] = exposed_port if transport == "tcp" else None
 
     containerapp_def["properties"]["configuration"]["ingress"] = ingress_def
 
