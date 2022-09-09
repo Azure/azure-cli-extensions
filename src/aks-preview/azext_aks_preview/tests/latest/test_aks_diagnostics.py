@@ -25,3 +25,7 @@ class TestGenerateContainerName(unittest.TestCase):
         expected_container_name = 'abcdef-dns-ed55ba6d-e48fe2bd-b4bc-4aac-bc23-29bc44154fe1-privat'
         trim_container_name = commands._generate_container_name(None, private_fqdn)
         self.assertEqual(expected_container_name, trim_container_name)
+
+
+if __name__ == "__main__":
+    unittest.main()

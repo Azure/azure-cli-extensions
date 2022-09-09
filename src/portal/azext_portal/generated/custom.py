@@ -56,7 +56,7 @@ def portal_dashboard_import(cmd, client,
 
 def parse_properties_json(input_path):
     try:
-        with open(input_path) as json_file:
+        with open(input_path, 'rb') as json_file:
             try:
                 properties = json.load(json_file)
             except json.decoder.JSONDecodeError as ex:

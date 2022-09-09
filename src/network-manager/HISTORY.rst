@@ -2,6 +2,24 @@
 
 Release History
 ===============
+0.5.3
++++++
+* Fix force delete behavior.
+
+0.5.2
++++++
+* 'az network manager connection management-group': reopen the set of commands.
+
+0.5.1
++++++
+* 'az network manager group': remove parameters '--member-type' and '--display-name'
+* 'az network manager security-user-config': hide this command
+* 'az network manager group list-effect-vnet': hide this command
+* 'az network manager delete': add parameter 'force'
+* 'az network manager connect-config delete': add parameter 'force'
+* 'az network manager security-admin-config rule-collection delete': add parameter 'force'
+* 'az network manager security-admin-config rule-collection rule delete': add parameter 'force'
+
 0.5.0
 +++++
 * 'az network manager list-effect-vnet': hide this command
@@ -15,7 +33,7 @@ Release History
 0.4.1
 +++++
 * 'az network manager connect-config update': update parameter '--connectivity-topology'
-* 'az network manager group create': update parameter '--member-type' and remove parameters `--group-members` and '--conditional-membership'
+* 'az network manager group create': update parameter '--member-type' and remove parameters '--group-members' and '--conditional-membership'
 * 'az network manager security-admin-config create': add parameter '--apply-on'
 
 0.4.0

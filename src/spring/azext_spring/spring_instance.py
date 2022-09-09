@@ -16,7 +16,7 @@ from ._tanzu_component import (create_application_configuration_service,
                                create_api_portal)
 
 
-from ._validators import (_parse_sku_name)
+from ._validators import (_parse_sku_name, validate_instance_not_existed)
 from knack.log import get_logger
 
 logger = get_logger(__name__)
@@ -38,6 +38,10 @@ class DefaultSpringCloud:
 
     def before_create(self, **kwargs):
         _warn_enable_java_agent(**kwargs)
+        validate_instance_not_existed(self.client,
+                                      self.resource_group,
+                                      self.name,
+                                      self.location)
 
     def after_create(self, **kwargs):
         _update_application_insights_asc_create(self.cmd,
@@ -95,7 +99,10 @@ class DefaultSpringCloud:
 
 class EnterpriseSpringCloud(DefaultSpringCloud):
     def before_create(self, **_):
-        pass
+        validate_instance_not_existed(self.client,
+                                      self.resource_group,
+                                      self.name,
+                                      self.location)
 
     def after_create(self, no_wait=None, **kwargs):
         pollers = [

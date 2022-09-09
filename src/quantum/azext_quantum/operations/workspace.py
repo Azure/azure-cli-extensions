@@ -7,6 +7,7 @@
 
 import os.path
 import json
+import sys
 import time
 
 from azure.cli.command_modules.storage.operations.account import list_storage_accounts
@@ -22,7 +23,7 @@ from .._client_factory import cf_workspaces, cf_quotas, cf_offerings, _get_data_
 from ..vendored_sdks.azure_mgmt_quantum.models import QuantumWorkspace
 from ..vendored_sdks.azure_mgmt_quantum.models import QuantumWorkspaceIdentity
 from ..vendored_sdks.azure_mgmt_quantum.models import Provider
-from .offerings import _get_publisher_and_offer_from_provider_id, _get_terms_from_marketplace, OFFER_NOT_AVAILABLE, PUBLISHER_NOT_AVAILABLE
+from .offerings import accept_terms, _get_publisher_and_offer_from_provider_id, _get_terms_from_marketplace, OFFER_NOT_AVAILABLE, PUBLISHER_NOT_AVAILABLE
 
 DEFAULT_WORKSPACE_LOCATION = 'westus'
 DEFAULT_STORAGE_SKU = 'Standard_LRS'
@@ -35,6 +36,12 @@ DEPLOYMENT_NAME_PREFIX = 'Microsoft.AzureQuantum-'
 POLLING_TIME_DURATION = 3  # Seconds
 MAX_RETRIES_ROLE_ASSIGNMENT = 20
 MAX_POLLS_CREATE_WORKSPACE = 300
+
+C4A_TERMS_ACCEPTANCE_MESSAGE = "\nBy continuing you accept the Azure Quantum terms and conditions and privacy policy and agree that " \
+                               "Microsoft can share your account details with the provider for their transactional purposes.\n\n" \
+                               "https://privacy.microsoft.com/privacystatement\n" \
+                               "https://azure.microsoft.com/support/legal/preview-supplemental-terms/\n\n" \
+                               "Continue? (Y/N) "
 
 
 class WorkspaceInfo:
@@ -106,20 +113,57 @@ def _provider_terms_need_acceptance(cmd, provider):
     return not _get_terms_from_marketplace(cmd, provider['publisher_id'], provider['offer_id'], provider['sku']).accepted
 
 
-def _add_quantum_providers(cmd, workspace, providers):
+def _autoadd_providers(cmd, providers_in_region, providers_selected, workspace_location, auto_accept):
+    already_accepted_terms = False
+    for provider in providers_in_region:
+        for sku in provider.properties.skus:
+            if sku.auto_add:
+                # Don't duplicate a provider/sku if it was also specified in the command's -r parameter
+                provider_already_added = False
+                for already_selected_provider in providers_selected:
+                    if already_selected_provider['provider_id'] == provider.id and already_selected_provider['sku'] == sku.id:
+                        provider_already_added = True
+                        break
+                if not provider_already_added:
+                    (publisher, offer) = _get_publisher_and_offer_from_provider_id(providers_in_region, provider.id)
+                    if (offer is None or publisher is None):
+                        raise RequiredArgumentMissingError(f"Error adding 'autoAdd' provider: Publisher or Offer not found for '{provider.id}'")
+
+                    provider_selected = {'provider_id': provider.id, 'sku': sku.id, 'offer_id': offer, 'publisher_id': publisher}
+                    if cmd is not None and not already_accepted_terms and _provider_terms_need_acceptance(cmd, provider_selected):
+                        if not auto_accept:
+                            print(C4A_TERMS_ACCEPTANCE_MESSAGE, end='')
+                            if input().lower() != 'y':
+                                sys.exit('Terms not accepted. No workspace created.')
+                        accept_terms(cmd, provider.id, sku.id, workspace_location)
+                        already_accepted_terms = True
+                    providers_selected.append(provider_selected)
+
+    # If there weren't any autoAdd providers and none were specified with the -r parameter, we have a problem...
+    if providers_selected == []:
+        raise RequiredArgumentMissingError("A list of Azure Quantum providers and SKUs is required.",
+                                           "Supply the missing -r parameter. For example:\n"
+                                           "\t-r \"Microsoft/Basic, Microsoft.FleetManagement/Basic\"\n"
+                                           "To display a list of Provider IDs and their SKUs, use the following command:\n"
+                                           "\taz quantum offerings list -l MyLocation -o table")
+
+
+def _add_quantum_providers(cmd, workspace, providers, auto_accept):
     providers_in_region_paged = cf_offerings(cmd.cli_ctx).list(location_name=workspace.location)
     providers_in_region = [item for item in providers_in_region_paged]
     providers_selected = []
-    for pair in providers.split(','):
-        es = [e.strip() for e in pair.split('/')]
-        if len(es) != 2:
-            raise InvalidArgumentValueError(f"Invalid Provider/SKU specified: '{pair.strip()}'")
-        provider_id = es[0]
-        sku = es[1]
-        (publisher, offer) = _get_publisher_and_offer_from_provider_id(providers_in_region, provider_id)
-        if (offer is None or publisher is None):
-            raise InvalidArgumentValueError(f"Provider '{provider_id}' not found in region {workspace.location}.")
-        providers_selected.append({'provider_id': provider_id, 'sku': sku, 'offer_id': offer, 'publisher_id': publisher})
+    if providers is not None:
+        for pair in providers.split(','):
+            es = [e.strip() for e in pair.split('/')]
+            if len(es) != 2:
+                raise InvalidArgumentValueError(f"Invalid Provider/SKU specified: '{pair.strip()}'")
+            provider_id = es[0]
+            sku = es[1]
+            (publisher, offer) = _get_publisher_and_offer_from_provider_id(providers_in_region, provider_id)
+            if (offer is None or publisher is None):
+                raise InvalidArgumentValueError(f"Provider '{provider_id}' not found in region {workspace.location}.")
+            providers_selected.append({'provider_id': provider_id, 'sku': sku, 'offer_id': offer, 'publisher_id': publisher})
+    _autoadd_providers(cmd, providers_in_region, providers_selected, workspace.location, auto_accept)
     _show_tip(f"Workspace creation has been requested with the following providers:\n{providers_selected}")
     # Now that the providers have been requested, add each of them into the workspace
     for provider in providers_selected:
@@ -167,7 +211,7 @@ def _validate_storage_account(tier_or_kind_msg_text, tier_or_kind, supported_tie
                                         f"Storage account {tier_or_kind_msg_text}{plural} currently supported: {tier_or_kind_list[:-2]}")
 
 
-def create(cmd, resource_group_name=None, workspace_name=None, location=None, storage_account=None, skip_role_assignment=False, provider_sku_list=None):
+def create(cmd, resource_group_name=None, workspace_name=None, location=None, storage_account=None, skip_role_assignment=False, provider_sku_list=None, auto_accept=False):
     """
     Create a new Azure Quantum workspace.
     """
@@ -178,12 +222,6 @@ def create(cmd, resource_group_name=None, workspace_name=None, location=None, st
         raise RequiredArgumentMissingError("A quantum workspace requires a valid storage account.")
     if not location:
         raise RequiredArgumentMissingError("A location for the new quantum workspace is required.")
-    if provider_sku_list is None:
-        raise RequiredArgumentMissingError("A list of Azure Quantum providers and SKUs is required.",
-                                           "Supply the missing -r parameter. For example:\n"
-                                           "\t-r \"Microsoft/Basic, Microsoft.FleetManagement/Basic\"\n"
-                                           "To display a list of Provider IDs and their SKUs, use the following command:\n"
-                                           "\taz quantum offerings list -l MyLocation -o table")
     info = WorkspaceInfo(cmd, resource_group_name, workspace_name, location)
     if not info.resource_group:
         raise ResourceNotFoundError("Please run 'az quantum workspace set' first to select a default resource group.")
@@ -191,7 +229,7 @@ def create(cmd, resource_group_name=None, workspace_name=None, location=None, st
 
     # Until the "--skip-role-assignment" parameter is deprecated, use the old non-ARM code to create a workspace without doing a role assignment
     if skip_role_assignment:
-        _add_quantum_providers(cmd, quantum_workspace, provider_sku_list)
+        _add_quantum_providers(cmd, quantum_workspace, provider_sku_list, auto_accept)
         poller = client.begin_create_or_update(info.resource_group, info.name, quantum_workspace, polling=False)
         while not poller.done():
             time.sleep(POLLING_TIME_DURATION)
@@ -204,7 +242,7 @@ def create(cmd, resource_group_name=None, workspace_name=None, location=None, st
     with open(template_path, 'r', encoding='utf8') as template_file_fd:
         template = json.load(template_file_fd)
 
-    _add_quantum_providers(cmd, quantum_workspace, provider_sku_list)
+    _add_quantum_providers(cmd, quantum_workspace, provider_sku_list, auto_accept)
     validated_providers = []
     for provider in quantum_workspace.providers:
         validated_providers.append({"providerId": provider.provider_id, "providerSku": provider.provider_sku})

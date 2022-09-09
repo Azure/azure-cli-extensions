@@ -1,4 +1,5 @@
 # coding=utf-8
+# pylint: disable=too-many-lines
 # --------------------------------------------------------------------------
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
@@ -7,14 +8,22 @@
 # --------------------------------------------------------------------------
 
 import datetime
-from typing import Any, Dict, List, Optional, Union
+import sys
+from typing import Any, Dict, List, Optional, TYPE_CHECKING, Union
 
-import msrest.serialization
+from ... import _serialization
 
-from ._app_platform_management_client_enums import *
+if TYPE_CHECKING:
+    # pylint: disable=unused-import,ungrouped-imports
+    from .. import models as _models
+if sys.version_info >= (3, 9):
+    from collections.abc import MutableMapping
+else:
+    from typing import MutableMapping  # type: ignore  # pylint: disable=ungrouped-imports
+JSON = MutableMapping[str, Any]  # pylint: disable=unsubscriptable-object
 
 
-class ActiveDeploymentCollection(msrest.serialization.Model):
+class ActiveDeploymentCollection(_serialization.Model):
     """Object that includes an array of Deployment resource name and set them as active.
 
     :ivar active_deployment_names: Collection of Deployment name.
@@ -22,24 +31,19 @@ class ActiveDeploymentCollection(msrest.serialization.Model):
     """
 
     _attribute_map = {
-        'active_deployment_names': {'key': 'activeDeploymentNames', 'type': '[str]'},
+        "active_deployment_names": {"key": "activeDeploymentNames", "type": "[str]"},
     }
 
-    def __init__(
-        self,
-        *,
-        active_deployment_names: Optional[List[str]] = None,
-        **kwargs
-    ):
+    def __init__(self, *, active_deployment_names: Optional[List[str]] = None, **kwargs):
         """
         :keyword active_deployment_names: Collection of Deployment name.
         :paramtype active_deployment_names: list[str]
         """
-        super(ActiveDeploymentCollection, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.active_deployment_names = active_deployment_names
 
 
-class ApiPortalCustomDomainProperties(msrest.serialization.Model):
+class ApiPortalCustomDomainProperties(_serialization.Model):
     """The properties of custom domain for API portal.
 
     :ivar thumbprint: The thumbprint of bound certificate.
@@ -47,24 +51,19 @@ class ApiPortalCustomDomainProperties(msrest.serialization.Model):
     """
 
     _attribute_map = {
-        'thumbprint': {'key': 'thumbprint', 'type': 'str'},
+        "thumbprint": {"key": "thumbprint", "type": "str"},
     }
 
-    def __init__(
-        self,
-        *,
-        thumbprint: Optional[str] = None,
-        **kwargs
-    ):
+    def __init__(self, *, thumbprint: Optional[str] = None, **kwargs):
         """
         :keyword thumbprint: The thumbprint of bound certificate.
         :paramtype thumbprint: str
         """
-        super(ApiPortalCustomDomainProperties, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.thumbprint = thumbprint
 
 
-class Resource(msrest.serialization.Model):
+class Resource(_serialization.Model):
     """The core properties of ARM resources.
 
     Variables are only populated by the server, and will be ignored when sending a request.
@@ -80,26 +79,22 @@ class Resource(msrest.serialization.Model):
     """
 
     _validation = {
-        'id': {'readonly': True},
-        'name': {'readonly': True},
-        'type': {'readonly': True},
-        'system_data': {'readonly': True},
+        "id": {"readonly": True},
+        "name": {"readonly": True},
+        "type": {"readonly": True},
+        "system_data": {"readonly": True},
     }
 
     _attribute_map = {
-        'id': {'key': 'id', 'type': 'str'},
-        'name': {'key': 'name', 'type': 'str'},
-        'type': {'key': 'type', 'type': 'str'},
-        'system_data': {'key': 'systemData', 'type': 'SystemData'},
+        "id": {"key": "id", "type": "str"},
+        "name": {"key": "name", "type": "str"},
+        "type": {"key": "type", "type": "str"},
+        "system_data": {"key": "systemData", "type": "SystemData"},
     }
 
-    def __init__(
-        self,
-        **kwargs
-    ):
-        """
-        """
-        super(Resource, self).__init__(**kwargs)
+    def __init__(self, **kwargs):
+        """ """
+        super().__init__(**kwargs)
         self.id = None
         self.name = None
         self.type = None
@@ -122,26 +117,22 @@ class ProxyResource(Resource):
     """
 
     _validation = {
-        'id': {'readonly': True},
-        'name': {'readonly': True},
-        'type': {'readonly': True},
-        'system_data': {'readonly': True},
+        "id": {"readonly": True},
+        "name": {"readonly": True},
+        "type": {"readonly": True},
+        "system_data": {"readonly": True},
     }
 
     _attribute_map = {
-        'id': {'key': 'id', 'type': 'str'},
-        'name': {'key': 'name', 'type': 'str'},
-        'type': {'key': 'type', 'type': 'str'},
-        'system_data': {'key': 'systemData', 'type': 'SystemData'},
+        "id": {"key": "id", "type": "str"},
+        "name": {"key": "name", "type": "str"},
+        "type": {"key": "type", "type": "str"},
+        "system_data": {"key": "systemData", "type": "SystemData"},
     }
 
-    def __init__(
-        self,
-        **kwargs
-    ):
-        """
-        """
-        super(ProxyResource, self).__init__(**kwargs)
+    def __init__(self, **kwargs):
+        """ """
+        super().__init__(**kwargs)
 
 
 class ApiPortalCustomDomainResource(ProxyResource):
@@ -163,36 +154,31 @@ class ApiPortalCustomDomainResource(ProxyResource):
     """
 
     _validation = {
-        'id': {'readonly': True},
-        'name': {'readonly': True},
-        'type': {'readonly': True},
-        'system_data': {'readonly': True},
+        "id": {"readonly": True},
+        "name": {"readonly": True},
+        "type": {"readonly": True},
+        "system_data": {"readonly": True},
     }
 
     _attribute_map = {
-        'id': {'key': 'id', 'type': 'str'},
-        'name': {'key': 'name', 'type': 'str'},
-        'type': {'key': 'type', 'type': 'str'},
-        'system_data': {'key': 'systemData', 'type': 'SystemData'},
-        'properties': {'key': 'properties', 'type': 'ApiPortalCustomDomainProperties'},
+        "id": {"key": "id", "type": "str"},
+        "name": {"key": "name", "type": "str"},
+        "type": {"key": "type", "type": "str"},
+        "system_data": {"key": "systemData", "type": "SystemData"},
+        "properties": {"key": "properties", "type": "ApiPortalCustomDomainProperties"},
     }
 
-    def __init__(
-        self,
-        *,
-        properties: Optional["ApiPortalCustomDomainProperties"] = None,
-        **kwargs
-    ):
+    def __init__(self, *, properties: Optional["_models.ApiPortalCustomDomainProperties"] = None, **kwargs):
         """
         :keyword properties: The properties of custom domain for API portal.
         :paramtype properties:
          ~azure.mgmt.appplatform.v2022_03_01_preview.models.ApiPortalCustomDomainProperties
         """
-        super(ApiPortalCustomDomainResource, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.properties = properties
 
 
-class ApiPortalCustomDomainResourceCollection(msrest.serialization.Model):
+class ApiPortalCustomDomainResourceCollection(_serialization.Model):
     """Object that includes an array of API portal custom domain resources and a possible link for next set.
 
     :ivar value: Collection of API portal custom domain resources.
@@ -204,14 +190,14 @@ class ApiPortalCustomDomainResourceCollection(msrest.serialization.Model):
     """
 
     _attribute_map = {
-        'value': {'key': 'value', 'type': '[ApiPortalCustomDomainResource]'},
-        'next_link': {'key': 'nextLink', 'type': 'str'},
+        "value": {"key": "value", "type": "[ApiPortalCustomDomainResource]"},
+        "next_link": {"key": "nextLink", "type": "str"},
     }
 
     def __init__(
         self,
         *,
-        value: Optional[List["ApiPortalCustomDomainResource"]] = None,
+        value: Optional[List["_models.ApiPortalCustomDomainResource"]] = None,
         next_link: Optional[str] = None,
         **kwargs
     ):
@@ -223,12 +209,12 @@ class ApiPortalCustomDomainResourceCollection(msrest.serialization.Model):
          It's null for now, added for future use.
         :paramtype next_link: str
         """
-        super(ApiPortalCustomDomainResourceCollection, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.value = value
         self.next_link = next_link
 
 
-class ApiPortalInstance(msrest.serialization.Model):
+class ApiPortalInstance(_serialization.Model):
     """Collection of instances belong to the API portal.
 
     Variables are only populated by the server, and will be ignored when sending a request.
@@ -240,33 +226,29 @@ class ApiPortalInstance(msrest.serialization.Model):
     """
 
     _validation = {
-        'name': {'readonly': True},
-        'status': {'readonly': True},
+        "name": {"readonly": True},
+        "status": {"readonly": True},
     }
 
     _attribute_map = {
-        'name': {'key': 'name', 'type': 'str'},
-        'status': {'key': 'status', 'type': 'str'},
+        "name": {"key": "name", "type": "str"},
+        "status": {"key": "status", "type": "str"},
     }
 
-    def __init__(
-        self,
-        **kwargs
-    ):
-        """
-        """
-        super(ApiPortalInstance, self).__init__(**kwargs)
+    def __init__(self, **kwargs):
+        """ """
+        super().__init__(**kwargs)
         self.name = None
         self.status = None
 
 
-class ApiPortalProperties(msrest.serialization.Model):
+class ApiPortalProperties(_serialization.Model):
     """API portal properties payload.
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
-    :ivar provisioning_state: State of the API portal. Possible values include: "Creating",
-     "Updating", "Succeeded", "Failed", "Deleting".
+    :ivar provisioning_state: State of the API portal. Known values are: "Creating", "Updating",
+     "Succeeded", "Failed", and "Deleting".
     :vartype provisioning_state: str or
      ~azure.mgmt.appplatform.v2022_03_01_preview.models.ApiPortalProvisioningState
     :ivar public: Indicates whether the API portal exposes endpoint.
@@ -289,32 +271,32 @@ class ApiPortalProperties(msrest.serialization.Model):
     """
 
     _validation = {
-        'provisioning_state': {'readonly': True},
-        'url': {'readonly': True},
-        'resource_requests': {'readonly': True},
-        'instances': {'readonly': True},
+        "provisioning_state": {"readonly": True},
+        "url": {"readonly": True},
+        "resource_requests": {"readonly": True},
+        "instances": {"readonly": True},
     }
 
     _attribute_map = {
-        'provisioning_state': {'key': 'provisioningState', 'type': 'str'},
-        'public': {'key': 'public', 'type': 'bool'},
-        'url': {'key': 'url', 'type': 'str'},
-        'https_only': {'key': 'httpsOnly', 'type': 'bool'},
-        'gateway_ids': {'key': 'gatewayIds', 'type': '[str]'},
-        'source_urls': {'key': 'sourceUrls', 'type': '[str]'},
-        'sso_properties': {'key': 'ssoProperties', 'type': 'SsoProperties'},
-        'resource_requests': {'key': 'resourceRequests', 'type': 'ApiPortalResourceRequests'},
-        'instances': {'key': 'instances', 'type': '[ApiPortalInstance]'},
+        "provisioning_state": {"key": "provisioningState", "type": "str"},
+        "public": {"key": "public", "type": "bool"},
+        "url": {"key": "url", "type": "str"},
+        "https_only": {"key": "httpsOnly", "type": "bool"},
+        "gateway_ids": {"key": "gatewayIds", "type": "[str]"},
+        "source_urls": {"key": "sourceUrls", "type": "[str]"},
+        "sso_properties": {"key": "ssoProperties", "type": "SsoProperties"},
+        "resource_requests": {"key": "resourceRequests", "type": "ApiPortalResourceRequests"},
+        "instances": {"key": "instances", "type": "[ApiPortalInstance]"},
     }
 
     def __init__(
         self,
         *,
-        public: Optional[bool] = None,
-        https_only: Optional[bool] = None,
+        public: bool = False,
+        https_only: bool = False,
         gateway_ids: Optional[List[str]] = None,
         source_urls: Optional[List[str]] = None,
-        sso_properties: Optional["SsoProperties"] = None,
+        sso_properties: Optional["_models.SsoProperties"] = None,
         **kwargs
     ):
         """
@@ -329,7 +311,7 @@ class ApiPortalProperties(msrest.serialization.Model):
         :keyword sso_properties: Single sign-on related configuration.
         :paramtype sso_properties: ~azure.mgmt.appplatform.v2022_03_01_preview.models.SsoProperties
         """
-        super(ApiPortalProperties, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.provisioning_state = None
         self.public = public
         self.url = None
@@ -361,26 +343,26 @@ class ApiPortalResource(ProxyResource):
     """
 
     _validation = {
-        'id': {'readonly': True},
-        'name': {'readonly': True},
-        'type': {'readonly': True},
-        'system_data': {'readonly': True},
+        "id": {"readonly": True},
+        "name": {"readonly": True},
+        "type": {"readonly": True},
+        "system_data": {"readonly": True},
     }
 
     _attribute_map = {
-        'id': {'key': 'id', 'type': 'str'},
-        'name': {'key': 'name', 'type': 'str'},
-        'type': {'key': 'type', 'type': 'str'},
-        'system_data': {'key': 'systemData', 'type': 'SystemData'},
-        'properties': {'key': 'properties', 'type': 'ApiPortalProperties'},
-        'sku': {'key': 'sku', 'type': 'Sku'},
+        "id": {"key": "id", "type": "str"},
+        "name": {"key": "name", "type": "str"},
+        "type": {"key": "type", "type": "str"},
+        "system_data": {"key": "systemData", "type": "SystemData"},
+        "properties": {"key": "properties", "type": "ApiPortalProperties"},
+        "sku": {"key": "sku", "type": "Sku"},
     }
 
     def __init__(
         self,
         *,
-        properties: Optional["ApiPortalProperties"] = None,
-        sku: Optional["Sku"] = None,
+        properties: Optional["_models.ApiPortalProperties"] = None,
+        sku: Optional["_models.Sku"] = None,
         **kwargs
     ):
         """
@@ -389,12 +371,12 @@ class ApiPortalResource(ProxyResource):
         :keyword sku: Sku of the API portal resource.
         :paramtype sku: ~azure.mgmt.appplatform.v2022_03_01_preview.models.Sku
         """
-        super(ApiPortalResource, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.properties = properties
         self.sku = sku
 
 
-class ApiPortalResourceCollection(msrest.serialization.Model):
+class ApiPortalResourceCollection(_serialization.Model):
     """Object that includes an array of API portal resources and a possible link for next set.
 
     :ivar value: Collection of API portal resources.
@@ -405,16 +387,12 @@ class ApiPortalResourceCollection(msrest.serialization.Model):
     """
 
     _attribute_map = {
-        'value': {'key': 'value', 'type': '[ApiPortalResource]'},
-        'next_link': {'key': 'nextLink', 'type': 'str'},
+        "value": {"key": "value", "type": "[ApiPortalResource]"},
+        "next_link": {"key": "nextLink", "type": "str"},
     }
 
     def __init__(
-        self,
-        *,
-        value: Optional[List["ApiPortalResource"]] = None,
-        next_link: Optional[str] = None,
-        **kwargs
+        self, *, value: Optional[List["_models.ApiPortalResource"]] = None, next_link: Optional[str] = None, **kwargs
     ):
         """
         :keyword value: Collection of API portal resources.
@@ -423,12 +401,12 @@ class ApiPortalResourceCollection(msrest.serialization.Model):
          It's null for now, added for future use.
         :paramtype next_link: str
         """
-        super(ApiPortalResourceCollection, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.value = value
         self.next_link = next_link
 
 
-class ApiPortalResourceRequests(msrest.serialization.Model):
+class ApiPortalResourceRequests(_serialization.Model):
     """Resource requests of the API portal.
 
     Variables are only populated by the server, and will be ignored when sending a request.
@@ -440,27 +418,23 @@ class ApiPortalResourceRequests(msrest.serialization.Model):
     """
 
     _validation = {
-        'cpu': {'readonly': True},
-        'memory': {'readonly': True},
+        "cpu": {"readonly": True},
+        "memory": {"readonly": True},
     }
 
     _attribute_map = {
-        'cpu': {'key': 'cpu', 'type': 'str'},
-        'memory': {'key': 'memory', 'type': 'str'},
+        "cpu": {"key": "cpu", "type": "str"},
+        "memory": {"key": "memory", "type": "str"},
     }
 
-    def __init__(
-        self,
-        **kwargs
-    ):
-        """
-        """
-        super(ApiPortalResourceRequests, self).__init__(**kwargs)
+    def __init__(self, **kwargs):
+        """ """
+        super().__init__(**kwargs)
         self.cpu = None
         self.memory = None
 
 
-class ApplicationInsightsAgentVersions(msrest.serialization.Model):
+class ApplicationInsightsAgentVersions(_serialization.Model):
     """Application Insights agent versions properties payload.
 
     Variables are only populated by the server, and will be ignored when sending a request.
@@ -470,20 +444,16 @@ class ApplicationInsightsAgentVersions(msrest.serialization.Model):
     """
 
     _validation = {
-        'java': {'readonly': True},
+        "java": {"readonly": True},
     }
 
     _attribute_map = {
-        'java': {'key': 'java', 'type': 'str'},
+        "java": {"key": "java", "type": "str"},
     }
 
-    def __init__(
-        self,
-        **kwargs
-    ):
-        """
-        """
-        super(ApplicationInsightsAgentVersions, self).__init__(**kwargs)
+    def __init__(self, **kwargs):
+        """ """
+        super().__init__(**kwargs)
         self.java = None
 
 
@@ -509,27 +479,27 @@ class AppResource(ProxyResource):
     """
 
     _validation = {
-        'id': {'readonly': True},
-        'name': {'readonly': True},
-        'type': {'readonly': True},
-        'system_data': {'readonly': True},
+        "id": {"readonly": True},
+        "name": {"readonly": True},
+        "type": {"readonly": True},
+        "system_data": {"readonly": True},
     }
 
     _attribute_map = {
-        'id': {'key': 'id', 'type': 'str'},
-        'name': {'key': 'name', 'type': 'str'},
-        'type': {'key': 'type', 'type': 'str'},
-        'system_data': {'key': 'systemData', 'type': 'SystemData'},
-        'properties': {'key': 'properties', 'type': 'AppResourceProperties'},
-        'identity': {'key': 'identity', 'type': 'ManagedIdentityProperties'},
-        'location': {'key': 'location', 'type': 'str'},
+        "id": {"key": "id", "type": "str"},
+        "name": {"key": "name", "type": "str"},
+        "type": {"key": "type", "type": "str"},
+        "system_data": {"key": "systemData", "type": "SystemData"},
+        "properties": {"key": "properties", "type": "AppResourceProperties"},
+        "identity": {"key": "identity", "type": "ManagedIdentityProperties"},
+        "location": {"key": "location", "type": "str"},
     }
 
     def __init__(
         self,
         *,
-        properties: Optional["AppResourceProperties"] = None,
-        identity: Optional["ManagedIdentityProperties"] = None,
+        properties: Optional["_models.AppResourceProperties"] = None,
+        identity: Optional["_models.ManagedIdentityProperties"] = None,
         location: Optional[str] = None,
         **kwargs
     ):
@@ -543,13 +513,13 @@ class AppResource(ProxyResource):
          resource.
         :paramtype location: str
         """
-        super(AppResource, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.properties = properties
         self.identity = identity
         self.location = location
 
 
-class AppResourceCollection(msrest.serialization.Model):
+class AppResourceCollection(_serialization.Model):
     """Object that includes an array of App resources and a possible link for next set.
 
     :ivar value: Collection of App resources.
@@ -560,16 +530,12 @@ class AppResourceCollection(msrest.serialization.Model):
     """
 
     _attribute_map = {
-        'value': {'key': 'value', 'type': '[AppResource]'},
-        'next_link': {'key': 'nextLink', 'type': 'str'},
+        "value": {"key": "value", "type": "[AppResource]"},
+        "next_link": {"key": "nextLink", "type": "str"},
     }
 
     def __init__(
-        self,
-        *,
-        value: Optional[List["AppResource"]] = None,
-        next_link: Optional[str] = None,
-        **kwargs
+        self, *, value: Optional[List["_models.AppResource"]] = None, next_link: Optional[str] = None, **kwargs
     ):
         """
         :keyword value: Collection of App resources.
@@ -578,12 +544,12 @@ class AppResourceCollection(msrest.serialization.Model):
          It's null for now, added for future use.
         :paramtype next_link: str
         """
-        super(AppResourceCollection, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.value = value
         self.next_link = next_link
 
 
-class AppResourceProperties(msrest.serialization.Model):
+class AppResourceProperties(_serialization.Model):  # pylint: disable=too-many-instance-attributes
     """App resource properties payload.
 
     Variables are only populated by the server, and will be ignored when sending a request.
@@ -593,9 +559,9 @@ class AppResourceProperties(msrest.serialization.Model):
     :ivar url: URL of the App.
     :vartype url: str
     :ivar addon_configs: Collection of addons.
-    :vartype addon_configs: dict[str, dict[str, any]]
-    :ivar provisioning_state: Provisioning state of the App. Possible values include: "Succeeded",
-     "Failed", "Creating", "Updating", "Deleting".
+    :vartype addon_configs: dict[str, dict[str, JSON]]
+    :ivar provisioning_state: Provisioning state of the App. Known values are: "Succeeded",
+     "Failed", "Creating", "Updating", and "Deleting".
     :vartype provisioning_state: str or
      ~azure.mgmt.appplatform.v2022_03_01_preview.models.AppResourceProvisioningState
     :ivar fqdn: Fully qualified dns Name.
@@ -617,43 +583,43 @@ class AppResourceProperties(msrest.serialization.Model):
     """
 
     _validation = {
-        'url': {'readonly': True},
-        'provisioning_state': {'readonly': True},
+        "url": {"readonly": True},
+        "provisioning_state": {"readonly": True},
     }
 
     _attribute_map = {
-        'public': {'key': 'public', 'type': 'bool'},
-        'url': {'key': 'url', 'type': 'str'},
-        'addon_configs': {'key': 'addonConfigs', 'type': '{{object}}'},
-        'provisioning_state': {'key': 'provisioningState', 'type': 'str'},
-        'fqdn': {'key': 'fqdn', 'type': 'str'},
-        'https_only': {'key': 'httpsOnly', 'type': 'bool'},
-        'temporary_disk': {'key': 'temporaryDisk', 'type': 'TemporaryDisk'},
-        'persistent_disk': {'key': 'persistentDisk', 'type': 'PersistentDisk'},
-        'custom_persistent_disks': {'key': 'customPersistentDisks', 'type': '[CustomPersistentDiskResource]'},
-        'enable_end_to_end_tls': {'key': 'enableEndToEndTLS', 'type': 'bool'},
-        'loaded_certificates': {'key': 'loadedCertificates', 'type': '[LoadedCertificate]'},
+        "public": {"key": "public", "type": "bool"},
+        "url": {"key": "url", "type": "str"},
+        "addon_configs": {"key": "addonConfigs", "type": "{{object}}"},
+        "provisioning_state": {"key": "provisioningState", "type": "str"},
+        "fqdn": {"key": "fqdn", "type": "str"},
+        "https_only": {"key": "httpsOnly", "type": "bool"},
+        "temporary_disk": {"key": "temporaryDisk", "type": "TemporaryDisk"},
+        "persistent_disk": {"key": "persistentDisk", "type": "PersistentDisk"},
+        "custom_persistent_disks": {"key": "customPersistentDisks", "type": "[CustomPersistentDiskResource]"},
+        "enable_end_to_end_tls": {"key": "enableEndToEndTLS", "type": "bool"},
+        "loaded_certificates": {"key": "loadedCertificates", "type": "[LoadedCertificate]"},
     }
 
     def __init__(
         self,
         *,
         public: Optional[bool] = None,
-        addon_configs: Optional[Dict[str, Dict[str, Any]]] = None,
+        addon_configs: Optional[Dict[str, Dict[str, JSON]]] = None,
         fqdn: Optional[str] = None,
-        https_only: Optional[bool] = False,
-        temporary_disk: Optional["TemporaryDisk"] = None,
-        persistent_disk: Optional["PersistentDisk"] = None,
-        custom_persistent_disks: Optional[List["CustomPersistentDiskResource"]] = None,
-        enable_end_to_end_tls: Optional[bool] = False,
-        loaded_certificates: Optional[List["LoadedCertificate"]] = None,
+        https_only: bool = False,
+        temporary_disk: Optional["_models.TemporaryDisk"] = None,
+        persistent_disk: Optional["_models.PersistentDisk"] = None,
+        custom_persistent_disks: Optional[List["_models.CustomPersistentDiskResource"]] = None,
+        enable_end_to_end_tls: bool = False,
+        loaded_certificates: Optional[List["_models.LoadedCertificate"]] = None,
         **kwargs
     ):
         """
         :keyword public: Indicates whether the App exposes public endpoint.
         :paramtype public: bool
         :keyword addon_configs: Collection of addons.
-        :paramtype addon_configs: dict[str, dict[str, any]]
+        :paramtype addon_configs: dict[str, dict[str, JSON]]
         :keyword fqdn: Fully qualified dns Name.
         :paramtype fqdn: str
         :keyword https_only: Indicate if only https is allowed.
@@ -671,7 +637,7 @@ class AppResourceProperties(msrest.serialization.Model):
         :paramtype loaded_certificates:
          list[~azure.mgmt.appplatform.v2022_03_01_preview.models.LoadedCertificate]
         """
-        super(AppResourceProperties, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.public = public
         self.url = None
         self.addon_configs = addon_configs
@@ -685,7 +651,7 @@ class AppResourceProperties(msrest.serialization.Model):
         self.loaded_certificates = loaded_certificates
 
 
-class AvailableOperations(msrest.serialization.Model):
+class AvailableOperations(_serialization.Model):
     """Available operations of the service.
 
     :ivar value: Collection of available operation details.
@@ -696,16 +662,12 @@ class AvailableOperations(msrest.serialization.Model):
     """
 
     _attribute_map = {
-        'value': {'key': 'value', 'type': '[OperationDetail]'},
-        'next_link': {'key': 'nextLink', 'type': 'str'},
+        "value": {"key": "value", "type": "[OperationDetail]"},
+        "next_link": {"key": "nextLink", "type": "str"},
     }
 
     def __init__(
-        self,
-        *,
-        value: Optional[List["OperationDetail"]] = None,
-        next_link: Optional[str] = None,
-        **kwargs
+        self, *, value: Optional[List["_models.OperationDetail"]] = None, next_link: Optional[str] = None, **kwargs
     ):
         """
         :keyword value: Collection of available operation details.
@@ -714,12 +676,12 @@ class AvailableOperations(msrest.serialization.Model):
          It's null for now, added for future use.
         :paramtype next_link: str
         """
-        super(AvailableOperations, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.value = value
         self.next_link = next_link
 
 
-class AvailableRuntimeVersions(msrest.serialization.Model):
+class AvailableRuntimeVersions(_serialization.Model):
     """AvailableRuntimeVersions.
 
     Variables are only populated by the server, and will be ignored when sending a request.
@@ -730,35 +692,31 @@ class AvailableRuntimeVersions(msrest.serialization.Model):
     """
 
     _validation = {
-        'value': {'readonly': True},
+        "value": {"readonly": True},
     }
 
     _attribute_map = {
-        'value': {'key': 'value', 'type': '[SupportedRuntimeVersion]'},
+        "value": {"key": "value", "type": "[SupportedRuntimeVersion]"},
     }
 
-    def __init__(
-        self,
-        **kwargs
-    ):
-        """
-        """
-        super(AvailableRuntimeVersions, self).__init__(**kwargs)
+    def __init__(self, **kwargs):
+        """ """
+        super().__init__(**kwargs)
         self.value = None
 
 
-class CustomPersistentDiskProperties(msrest.serialization.Model):
+class CustomPersistentDiskProperties(_serialization.Model):
     """Custom persistent disk resource payload.
 
-    You probably want to use the sub-classes and not this class directly. Known
-    sub-classes are: AzureFileVolume.
+    You probably want to use the sub-classes and not this class directly. Known sub-classes are:
+    AzureFileVolume
 
     All required parameters must be populated in order to send to Azure.
 
-    :ivar type: Required. The type of the underlying resource to mount as a persistent
-     disk.Constant filled by server.
-    :vartype type: str
-    :ivar mount_path: Required. The mount path of the persistent disk.
+    :ivar type: The type of the underlying resource to mount as a persistent disk. Required.
+     "AzureFileVolume"
+    :vartype type: str or ~azure.mgmt.appplatform.v2022_03_01_preview.models.Type
+    :ivar mount_path: The mount path of the persistent disk. Required.
     :vartype mount_path: str
     :ivar read_only: Indicates whether the persistent disk is a readOnly one.
     :vartype read_only: bool
@@ -767,38 +725,31 @@ class CustomPersistentDiskProperties(msrest.serialization.Model):
     """
 
     _validation = {
-        'type': {'required': True},
-        'mount_path': {'required': True},
+        "type": {"required": True},
+        "mount_path": {"required": True},
     }
 
     _attribute_map = {
-        'type': {'key': 'type', 'type': 'str'},
-        'mount_path': {'key': 'mountPath', 'type': 'str'},
-        'read_only': {'key': 'readOnly', 'type': 'bool'},
-        'mount_options': {'key': 'mountOptions', 'type': '[str]'},
+        "type": {"key": "type", "type": "str"},
+        "mount_path": {"key": "mountPath", "type": "str"},
+        "read_only": {"key": "readOnly", "type": "bool"},
+        "mount_options": {"key": "mountOptions", "type": "[str]"},
     }
 
-    _subtype_map = {
-        'type': {'AzureFileVolume': 'AzureFileVolume'}
-    }
+    _subtype_map = {"type": {"AzureFileVolume": "AzureFileVolume"}}
 
     def __init__(
-        self,
-        *,
-        mount_path: str,
-        read_only: Optional[bool] = None,
-        mount_options: Optional[List[str]] = None,
-        **kwargs
+        self, *, mount_path: str, read_only: Optional[bool] = None, mount_options: Optional[List[str]] = None, **kwargs
     ):
         """
-        :keyword mount_path: Required. The mount path of the persistent disk.
+        :keyword mount_path: The mount path of the persistent disk. Required.
         :paramtype mount_path: str
         :keyword read_only: Indicates whether the persistent disk is a readOnly one.
         :paramtype read_only: bool
         :keyword mount_options: These are the mount options for a persistent disk.
         :paramtype mount_options: list[str]
         """
-        super(CustomPersistentDiskProperties, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.type = None  # type: Optional[str]
         self.mount_path = mount_path
         self.read_only = read_only
@@ -810,31 +761,31 @@ class AzureFileVolume(CustomPersistentDiskProperties):
 
     All required parameters must be populated in order to send to Azure.
 
-    :ivar type: Required. The type of the underlying resource to mount as a persistent
-     disk.Constant filled by server.
-    :vartype type: str
-    :ivar mount_path: Required. The mount path of the persistent disk.
+    :ivar type: The type of the underlying resource to mount as a persistent disk. Required.
+     "AzureFileVolume"
+    :vartype type: str or ~azure.mgmt.appplatform.v2022_03_01_preview.models.Type
+    :ivar mount_path: The mount path of the persistent disk. Required.
     :vartype mount_path: str
     :ivar read_only: Indicates whether the persistent disk is a readOnly one.
     :vartype read_only: bool
     :ivar mount_options: These are the mount options for a persistent disk.
     :vartype mount_options: list[str]
-    :ivar share_name: Required. The share name of the Azure File share.
+    :ivar share_name: The share name of the Azure File share. Required.
     :vartype share_name: str
     """
 
     _validation = {
-        'type': {'required': True},
-        'mount_path': {'required': True},
-        'share_name': {'required': True},
+        "type": {"required": True},
+        "mount_path": {"required": True},
+        "share_name": {"required": True},
     }
 
     _attribute_map = {
-        'type': {'key': 'type', 'type': 'str'},
-        'mount_path': {'key': 'mountPath', 'type': 'str'},
-        'read_only': {'key': 'readOnly', 'type': 'bool'},
-        'mount_options': {'key': 'mountOptions', 'type': '[str]'},
-        'share_name': {'key': 'shareName', 'type': 'str'},
+        "type": {"key": "type", "type": "str"},
+        "mount_path": {"key": "mountPath", "type": "str"},
+        "read_only": {"key": "readOnly", "type": "bool"},
+        "mount_options": {"key": "mountOptions", "type": "[str]"},
+        "share_name": {"key": "shareName", "type": "str"},
     }
 
     def __init__(
@@ -847,17 +798,17 @@ class AzureFileVolume(CustomPersistentDiskProperties):
         **kwargs
     ):
         """
-        :keyword mount_path: Required. The mount path of the persistent disk.
+        :keyword mount_path: The mount path of the persistent disk. Required.
         :paramtype mount_path: str
         :keyword read_only: Indicates whether the persistent disk is a readOnly one.
         :paramtype read_only: bool
         :keyword mount_options: These are the mount options for a persistent disk.
         :paramtype mount_options: list[str]
-        :keyword share_name: Required. The share name of the Azure File share.
+        :keyword share_name: The share name of the Azure File share. Required.
         :paramtype share_name: str
         """
-        super(AzureFileVolume, self).__init__(mount_path=mount_path, read_only=read_only, mount_options=mount_options, **kwargs)
-        self.type = 'AzureFileVolume'  # type: str
+        super().__init__(mount_path=mount_path, read_only=read_only, mount_options=mount_options, **kwargs)
+        self.type = "AzureFileVolume"  # type: str
         self.share_name = share_name
 
 
@@ -880,36 +831,31 @@ class BindingResource(ProxyResource):
     """
 
     _validation = {
-        'id': {'readonly': True},
-        'name': {'readonly': True},
-        'type': {'readonly': True},
-        'system_data': {'readonly': True},
+        "id": {"readonly": True},
+        "name": {"readonly": True},
+        "type": {"readonly": True},
+        "system_data": {"readonly": True},
     }
 
     _attribute_map = {
-        'id': {'key': 'id', 'type': 'str'},
-        'name': {'key': 'name', 'type': 'str'},
-        'type': {'key': 'type', 'type': 'str'},
-        'system_data': {'key': 'systemData', 'type': 'SystemData'},
-        'properties': {'key': 'properties', 'type': 'BindingResourceProperties'},
+        "id": {"key": "id", "type": "str"},
+        "name": {"key": "name", "type": "str"},
+        "type": {"key": "type", "type": "str"},
+        "system_data": {"key": "systemData", "type": "SystemData"},
+        "properties": {"key": "properties", "type": "BindingResourceProperties"},
     }
 
-    def __init__(
-        self,
-        *,
-        properties: Optional["BindingResourceProperties"] = None,
-        **kwargs
-    ):
+    def __init__(self, *, properties: Optional["_models.BindingResourceProperties"] = None, **kwargs):
         """
         :keyword properties: Properties of the Binding resource.
         :paramtype properties:
          ~azure.mgmt.appplatform.v2022_03_01_preview.models.BindingResourceProperties
         """
-        super(BindingResource, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.properties = properties
 
 
-class BindingResourceCollection(msrest.serialization.Model):
+class BindingResourceCollection(_serialization.Model):
     """Object that includes an array of Binding resources and a possible link for next set.
 
     :ivar value: Collection of Binding resources.
@@ -920,16 +866,12 @@ class BindingResourceCollection(msrest.serialization.Model):
     """
 
     _attribute_map = {
-        'value': {'key': 'value', 'type': '[BindingResource]'},
-        'next_link': {'key': 'nextLink', 'type': 'str'},
+        "value": {"key": "value", "type": "[BindingResource]"},
+        "next_link": {"key": "nextLink", "type": "str"},
     }
 
     def __init__(
-        self,
-        *,
-        value: Optional[List["BindingResource"]] = None,
-        next_link: Optional[str] = None,
-        **kwargs
+        self, *, value: Optional[List["_models.BindingResource"]] = None, next_link: Optional[str] = None, **kwargs
     ):
         """
         :keyword value: Collection of Binding resources.
@@ -938,12 +880,12 @@ class BindingResourceCollection(msrest.serialization.Model):
          It's null for now, added for future use.
         :paramtype next_link: str
         """
-        super(BindingResourceCollection, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.value = value
         self.next_link = next_link
 
 
-class BindingResourceProperties(msrest.serialization.Model):
+class BindingResourceProperties(_serialization.Model):
     """Binding resource properties payload.
 
     Variables are only populated by the server, and will be ignored when sending a request.
@@ -957,7 +899,7 @@ class BindingResourceProperties(msrest.serialization.Model):
     :ivar key: The key of the bound resource.
     :vartype key: str
     :ivar binding_parameters: Binding parameters of the Binding resource.
-    :vartype binding_parameters: dict[str, any]
+    :vartype binding_parameters: dict[str, JSON]
     :ivar generated_properties: The generated Spring Boot property file for this binding. The
      secret will be deducted.
     :vartype generated_properties: str
@@ -968,22 +910,22 @@ class BindingResourceProperties(msrest.serialization.Model):
     """
 
     _validation = {
-        'resource_name': {'readonly': True},
-        'resource_type': {'readonly': True},
-        'generated_properties': {'readonly': True},
-        'created_at': {'readonly': True},
-        'updated_at': {'readonly': True},
+        "resource_name": {"readonly": True},
+        "resource_type": {"readonly": True},
+        "generated_properties": {"readonly": True},
+        "created_at": {"readonly": True},
+        "updated_at": {"readonly": True},
     }
 
     _attribute_map = {
-        'resource_name': {'key': 'resourceName', 'type': 'str'},
-        'resource_type': {'key': 'resourceType', 'type': 'str'},
-        'resource_id': {'key': 'resourceId', 'type': 'str'},
-        'key': {'key': 'key', 'type': 'str'},
-        'binding_parameters': {'key': 'bindingParameters', 'type': '{object}'},
-        'generated_properties': {'key': 'generatedProperties', 'type': 'str'},
-        'created_at': {'key': 'createdAt', 'type': 'str'},
-        'updated_at': {'key': 'updatedAt', 'type': 'str'},
+        "resource_name": {"key": "resourceName", "type": "str"},
+        "resource_type": {"key": "resourceType", "type": "str"},
+        "resource_id": {"key": "resourceId", "type": "str"},
+        "key": {"key": "key", "type": "str"},
+        "binding_parameters": {"key": "bindingParameters", "type": "{object}"},
+        "generated_properties": {"key": "generatedProperties", "type": "str"},
+        "created_at": {"key": "createdAt", "type": "str"},
+        "updated_at": {"key": "updatedAt", "type": "str"},
     }
 
     def __init__(
@@ -991,7 +933,7 @@ class BindingResourceProperties(msrest.serialization.Model):
         *,
         resource_id: Optional[str] = None,
         key: Optional[str] = None,
-        binding_parameters: Optional[Dict[str, Any]] = None,
+        binding_parameters: Optional[Dict[str, JSON]] = None,
         **kwargs
     ):
         """
@@ -1000,9 +942,9 @@ class BindingResourceProperties(msrest.serialization.Model):
         :keyword key: The key of the bound resource.
         :paramtype key: str
         :keyword binding_parameters: Binding parameters of the Binding resource.
-        :paramtype binding_parameters: dict[str, any]
+        :paramtype binding_parameters: dict[str, JSON]
         """
-        super(BindingResourceProperties, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.resource_name = None
         self.resource_type = None
         self.resource_id = resource_id
@@ -1031,35 +973,30 @@ class Build(ProxyResource):
     """
 
     _validation = {
-        'id': {'readonly': True},
-        'name': {'readonly': True},
-        'type': {'readonly': True},
-        'system_data': {'readonly': True},
+        "id": {"readonly": True},
+        "name": {"readonly": True},
+        "type": {"readonly": True},
+        "system_data": {"readonly": True},
     }
 
     _attribute_map = {
-        'id': {'key': 'id', 'type': 'str'},
-        'name': {'key': 'name', 'type': 'str'},
-        'type': {'key': 'type', 'type': 'str'},
-        'system_data': {'key': 'systemData', 'type': 'SystemData'},
-        'properties': {'key': 'properties', 'type': 'BuildProperties'},
+        "id": {"key": "id", "type": "str"},
+        "name": {"key": "name", "type": "str"},
+        "type": {"key": "type", "type": "str"},
+        "system_data": {"key": "systemData", "type": "SystemData"},
+        "properties": {"key": "properties", "type": "BuildProperties"},
     }
 
-    def __init__(
-        self,
-        *,
-        properties: Optional["BuildProperties"] = None,
-        **kwargs
-    ):
+    def __init__(self, *, properties: Optional["_models.BuildProperties"] = None, **kwargs):
         """
         :keyword properties: Properties of the build resource.
         :paramtype properties: ~azure.mgmt.appplatform.v2022_03_01_preview.models.BuildProperties
         """
-        super(Build, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.properties = properties
 
 
-class BuildCollection(msrest.serialization.Model):
+class BuildCollection(_serialization.Model):
     """Object that includes an array of Build resources and a possible link for next set.
 
     :ivar value: Collection of Build resources.
@@ -1070,17 +1007,11 @@ class BuildCollection(msrest.serialization.Model):
     """
 
     _attribute_map = {
-        'value': {'key': 'value', 'type': '[Build]'},
-        'next_link': {'key': 'nextLink', 'type': 'str'},
+        "value": {"key": "value", "type": "[Build]"},
+        "next_link": {"key": "nextLink", "type": "str"},
     }
 
-    def __init__(
-        self,
-        *,
-        value: Optional[List["Build"]] = None,
-        next_link: Optional[str] = None,
-        **kwargs
-    ):
+    def __init__(self, *, value: Optional[List["_models.Build"]] = None, next_link: Optional[str] = None, **kwargs):
         """
         :keyword value: Collection of Build resources.
         :paramtype value: list[~azure.mgmt.appplatform.v2022_03_01_preview.models.Build]
@@ -1088,18 +1019,18 @@ class BuildCollection(msrest.serialization.Model):
          It's null for now, added for future use.
         :paramtype next_link: str
         """
-        super(BuildCollection, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.value = value
         self.next_link = next_link
 
 
-class BuilderProperties(msrest.serialization.Model):
+class BuilderProperties(_serialization.Model):
     """KPack Builder properties payload.
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
-    :ivar provisioning_state: Builder provision status. Possible values include: "Creating",
-     "Updating", "Succeeded", "Failed", "Deleting".
+    :ivar provisioning_state: Builder provision status. Known values are: "Creating", "Updating",
+     "Succeeded", "Failed", and "Deleting".
     :vartype provisioning_state: str or
      ~azure.mgmt.appplatform.v2022_03_01_preview.models.BuilderProvisioningState
     :ivar stack: Builder cluster stack property.
@@ -1110,20 +1041,20 @@ class BuilderProperties(msrest.serialization.Model):
     """
 
     _validation = {
-        'provisioning_state': {'readonly': True},
+        "provisioning_state": {"readonly": True},
     }
 
     _attribute_map = {
-        'provisioning_state': {'key': 'provisioningState', 'type': 'str'},
-        'stack': {'key': 'stack', 'type': 'StackProperties'},
-        'buildpack_groups': {'key': 'buildpackGroups', 'type': '[BuildpacksGroupProperties]'},
+        "provisioning_state": {"key": "provisioningState", "type": "str"},
+        "stack": {"key": "stack", "type": "StackProperties"},
+        "buildpack_groups": {"key": "buildpackGroups", "type": "[BuildpacksGroupProperties]"},
     }
 
     def __init__(
         self,
         *,
-        stack: Optional["StackProperties"] = None,
-        buildpack_groups: Optional[List["BuildpacksGroupProperties"]] = None,
+        stack: Optional["_models.StackProperties"] = None,
+        buildpack_groups: Optional[List["_models.BuildpacksGroupProperties"]] = None,
         **kwargs
     ):
         """
@@ -1133,7 +1064,7 @@ class BuilderProperties(msrest.serialization.Model):
         :paramtype buildpack_groups:
          list[~azure.mgmt.appplatform.v2022_03_01_preview.models.BuildpacksGroupProperties]
         """
-        super(BuilderProperties, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.provisioning_state = None
         self.stack = stack
         self.buildpack_groups = buildpack_groups
@@ -1157,35 +1088,30 @@ class BuilderResource(ProxyResource):
     """
 
     _validation = {
-        'id': {'readonly': True},
-        'name': {'readonly': True},
-        'type': {'readonly': True},
-        'system_data': {'readonly': True},
+        "id": {"readonly": True},
+        "name": {"readonly": True},
+        "type": {"readonly": True},
+        "system_data": {"readonly": True},
     }
 
     _attribute_map = {
-        'id': {'key': 'id', 'type': 'str'},
-        'name': {'key': 'name', 'type': 'str'},
-        'type': {'key': 'type', 'type': 'str'},
-        'system_data': {'key': 'systemData', 'type': 'SystemData'},
-        'properties': {'key': 'properties', 'type': 'BuilderProperties'},
+        "id": {"key": "id", "type": "str"},
+        "name": {"key": "name", "type": "str"},
+        "type": {"key": "type", "type": "str"},
+        "system_data": {"key": "systemData", "type": "SystemData"},
+        "properties": {"key": "properties", "type": "BuilderProperties"},
     }
 
-    def __init__(
-        self,
-        *,
-        properties: Optional["BuilderProperties"] = None,
-        **kwargs
-    ):
+    def __init__(self, *, properties: Optional["_models.BuilderProperties"] = None, **kwargs):
         """
         :keyword properties: Property of the Builder resource.
         :paramtype properties: ~azure.mgmt.appplatform.v2022_03_01_preview.models.BuilderProperties
         """
-        super(BuilderResource, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.properties = properties
 
 
-class BuilderResourceCollection(msrest.serialization.Model):
+class BuilderResourceCollection(_serialization.Model):
     """Object that includes an array of Builder resources and a possible link for next set.
 
     :ivar value: Collection of Builder resources.
@@ -1196,16 +1122,12 @@ class BuilderResourceCollection(msrest.serialization.Model):
     """
 
     _attribute_map = {
-        'value': {'key': 'value', 'type': '[BuilderResource]'},
-        'next_link': {'key': 'nextLink', 'type': 'str'},
+        "value": {"key": "value", "type": "[BuilderResource]"},
+        "next_link": {"key": "nextLink", "type": "str"},
     }
 
     def __init__(
-        self,
-        *,
-        value: Optional[List["BuilderResource"]] = None,
-        next_link: Optional[str] = None,
-        **kwargs
+        self, *, value: Optional[List["_models.BuilderResource"]] = None, next_link: Optional[str] = None, **kwargs
     ):
         """
         :keyword value: Collection of Builder resources.
@@ -1214,12 +1136,12 @@ class BuilderResourceCollection(msrest.serialization.Model):
          It's null for now, added for future use.
         :paramtype next_link: str
         """
-        super(BuilderResourceCollection, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.value = value
         self.next_link = next_link
 
 
-class BuildpackBindingLaunchProperties(msrest.serialization.Model):
+class BuildpackBindingLaunchProperties(_serialization.Model):
     """Buildpack Binding Launch Properties.
 
     :ivar properties: Non-sensitive properties for launchProperties.
@@ -1229,16 +1151,12 @@ class BuildpackBindingLaunchProperties(msrest.serialization.Model):
     """
 
     _attribute_map = {
-        'properties': {'key': 'properties', 'type': '{str}'},
-        'secrets': {'key': 'secrets', 'type': '{str}'},
+        "properties": {"key": "properties", "type": "{str}"},
+        "secrets": {"key": "secrets", "type": "{str}"},
     }
 
     def __init__(
-        self,
-        *,
-        properties: Optional[Dict[str, str]] = None,
-        secrets: Optional[Dict[str, str]] = None,
-        **kwargs
+        self, *, properties: Optional[Dict[str, str]] = None, secrets: Optional[Dict[str, str]] = None, **kwargs
     ):
         """
         :keyword properties: Non-sensitive properties for launchProperties.
@@ -1246,21 +1164,21 @@ class BuildpackBindingLaunchProperties(msrest.serialization.Model):
         :keyword secrets: Sensitive properties for launchProperties.
         :paramtype secrets: dict[str, str]
         """
-        super(BuildpackBindingLaunchProperties, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.properties = properties
         self.secrets = secrets
 
 
-class BuildpackBindingProperties(msrest.serialization.Model):
+class BuildpackBindingProperties(_serialization.Model):
     """Properties of a buildpack binding.
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
-    :ivar binding_type: Buildpack Binding Type. Possible values include: "ApplicationInsights",
-     "ApacheSkyWalking", "AppDynamics", "Dynatrace", "NewRelic", "ElasticAPM".
+    :ivar binding_type: Buildpack Binding Type. Known values are: "ApplicationInsights",
+     "ApacheSkyWalking", "AppDynamics", "Dynatrace", "NewRelic", and "ElasticAPM".
     :vartype binding_type: str or ~azure.mgmt.appplatform.v2022_03_01_preview.models.BindingType
-    :ivar provisioning_state: State of the Buildpack Binding. Possible values include: "Creating",
-     "Updating", "Succeeded", "Failed", "Deleting".
+    :ivar provisioning_state: State of the Buildpack Binding. Known values are: "Creating",
+     "Updating", "Succeeded", "Failed", and "Deleting".
     :vartype provisioning_state: str or
      ~azure.mgmt.appplatform.v2022_03_01_preview.models.BuildpackBindingProvisioningState
     :ivar launch_properties: The object describes the buildpack binding launch properties.
@@ -1269,31 +1187,31 @@ class BuildpackBindingProperties(msrest.serialization.Model):
     """
 
     _validation = {
-        'provisioning_state': {'readonly': True},
+        "provisioning_state": {"readonly": True},
     }
 
     _attribute_map = {
-        'binding_type': {'key': 'bindingType', 'type': 'str'},
-        'provisioning_state': {'key': 'provisioningState', 'type': 'str'},
-        'launch_properties': {'key': 'launchProperties', 'type': 'BuildpackBindingLaunchProperties'},
+        "binding_type": {"key": "bindingType", "type": "str"},
+        "provisioning_state": {"key": "provisioningState", "type": "str"},
+        "launch_properties": {"key": "launchProperties", "type": "BuildpackBindingLaunchProperties"},
     }
 
     def __init__(
         self,
         *,
-        binding_type: Optional[Union[str, "BindingType"]] = None,
-        launch_properties: Optional["BuildpackBindingLaunchProperties"] = None,
+        binding_type: Optional[Union[str, "_models.BindingType"]] = None,
+        launch_properties: Optional["_models.BuildpackBindingLaunchProperties"] = None,
         **kwargs
     ):
         """
-        :keyword binding_type: Buildpack Binding Type. Possible values include: "ApplicationInsights",
-         "ApacheSkyWalking", "AppDynamics", "Dynatrace", "NewRelic", "ElasticAPM".
+        :keyword binding_type: Buildpack Binding Type. Known values are: "ApplicationInsights",
+         "ApacheSkyWalking", "AppDynamics", "Dynatrace", "NewRelic", and "ElasticAPM".
         :paramtype binding_type: str or ~azure.mgmt.appplatform.v2022_03_01_preview.models.BindingType
         :keyword launch_properties: The object describes the buildpack binding launch properties.
         :paramtype launch_properties:
          ~azure.mgmt.appplatform.v2022_03_01_preview.models.BuildpackBindingLaunchProperties
         """
-        super(BuildpackBindingProperties, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.binding_type = binding_type
         self.provisioning_state = None
         self.launch_properties = launch_properties
@@ -1318,36 +1236,31 @@ class BuildpackBindingResource(ProxyResource):
     """
 
     _validation = {
-        'id': {'readonly': True},
-        'name': {'readonly': True},
-        'type': {'readonly': True},
-        'system_data': {'readonly': True},
+        "id": {"readonly": True},
+        "name": {"readonly": True},
+        "type": {"readonly": True},
+        "system_data": {"readonly": True},
     }
 
     _attribute_map = {
-        'id': {'key': 'id', 'type': 'str'},
-        'name': {'key': 'name', 'type': 'str'},
-        'type': {'key': 'type', 'type': 'str'},
-        'system_data': {'key': 'systemData', 'type': 'SystemData'},
-        'properties': {'key': 'properties', 'type': 'BuildpackBindingProperties'},
+        "id": {"key": "id", "type": "str"},
+        "name": {"key": "name", "type": "str"},
+        "type": {"key": "type", "type": "str"},
+        "system_data": {"key": "systemData", "type": "SystemData"},
+        "properties": {"key": "properties", "type": "BuildpackBindingProperties"},
     }
 
-    def __init__(
-        self,
-        *,
-        properties: Optional["BuildpackBindingProperties"] = None,
-        **kwargs
-    ):
+    def __init__(self, *, properties: Optional["_models.BuildpackBindingProperties"] = None, **kwargs):
         """
         :keyword properties: Properties of a buildpack binding.
         :paramtype properties:
          ~azure.mgmt.appplatform.v2022_03_01_preview.models.BuildpackBindingProperties
         """
-        super(BuildpackBindingResource, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.properties = properties
 
 
-class BuildpackBindingResourceCollection(msrest.serialization.Model):
+class BuildpackBindingResourceCollection(_serialization.Model):
     """Object that includes an array of BuildpackBinding resources and a possible link for next set.
 
     :ivar value: Collection of BuildpackBinding resources.
@@ -1359,14 +1272,14 @@ class BuildpackBindingResourceCollection(msrest.serialization.Model):
     """
 
     _attribute_map = {
-        'value': {'key': 'value', 'type': '[BuildpackBindingResource]'},
-        'next_link': {'key': 'nextLink', 'type': 'str'},
+        "value": {"key": "value", "type": "[BuildpackBindingResource]"},
+        "next_link": {"key": "nextLink", "type": "str"},
     }
 
     def __init__(
         self,
         *,
-        value: Optional[List["BuildpackBindingResource"]] = None,
+        value: Optional[List["_models.BuildpackBindingResource"]] = None,
         next_link: Optional[str] = None,
         **kwargs
     ):
@@ -1378,12 +1291,12 @@ class BuildpackBindingResourceCollection(msrest.serialization.Model):
          It's null for now, added for future use.
         :paramtype next_link: str
         """
-        super(BuildpackBindingResourceCollection, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.value = value
         self.next_link = next_link
 
 
-class BuildpackProperties(msrest.serialization.Model):
+class BuildpackProperties(_serialization.Model):
     """Buildpack properties payload.
 
     :ivar id: Id of the buildpack.
@@ -1391,24 +1304,19 @@ class BuildpackProperties(msrest.serialization.Model):
     """
 
     _attribute_map = {
-        'id': {'key': 'id', 'type': 'str'},
+        "id": {"key": "id", "type": "str"},
     }
 
-    def __init__(
-        self,
-        *,
-        id: Optional[str] = None,
-        **kwargs
-    ):
+    def __init__(self, *, id: Optional[str] = None, **kwargs):  # pylint: disable=redefined-builtin
         """
         :keyword id: Id of the buildpack.
         :paramtype id: str
         """
-        super(BuildpackProperties, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.id = id
 
 
-class BuildpacksGroupProperties(msrest.serialization.Model):
+class BuildpacksGroupProperties(_serialization.Model):
     """Buildpack group properties of the Builder.
 
     :ivar name: Buildpack group name.
@@ -1419,16 +1327,12 @@ class BuildpacksGroupProperties(msrest.serialization.Model):
     """
 
     _attribute_map = {
-        'name': {'key': 'name', 'type': 'str'},
-        'buildpacks': {'key': 'buildpacks', 'type': '[BuildpackProperties]'},
+        "name": {"key": "name", "type": "str"},
+        "buildpacks": {"key": "buildpacks", "type": "[BuildpackProperties]"},
     }
 
     def __init__(
-        self,
-        *,
-        name: Optional[str] = None,
-        buildpacks: Optional[List["BuildpackProperties"]] = None,
-        **kwargs
+        self, *, name: Optional[str] = None, buildpacks: Optional[List["_models.BuildpackProperties"]] = None, **kwargs
     ):
         """
         :keyword name: Buildpack group name.
@@ -1437,12 +1341,12 @@ class BuildpacksGroupProperties(msrest.serialization.Model):
         :paramtype buildpacks:
          list[~azure.mgmt.appplatform.v2022_03_01_preview.models.BuildpackProperties]
         """
-        super(BuildpacksGroupProperties, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.name = name
         self.buildpacks = buildpacks
 
 
-class BuildProperties(msrest.serialization.Model):
+class BuildProperties(_serialization.Model):
     """Build resource properties payload.
 
     Variables are only populated by the server, and will be ignored when sending a request.
@@ -1453,8 +1357,8 @@ class BuildProperties(msrest.serialization.Model):
     :vartype builder: str
     :ivar agent_pool: The resource id of agent pool.
     :vartype agent_pool: str
-    :ivar provisioning_state: Provisioning state of the KPack build result. Possible values
-     include: "Creating", "Updating", "Succeeded", "Failed", "Deleting".
+    :ivar provisioning_state: Provisioning state of the KPack build result. Known values are:
+     "Creating", "Updating", "Succeeded", "Failed", and "Deleting".
     :vartype provisioning_state: str or
      ~azure.mgmt.appplatform.v2022_03_01_preview.models.BuildProvisioningState
     :ivar env: The environment variables for this build.
@@ -1465,17 +1369,17 @@ class BuildProperties(msrest.serialization.Model):
     """
 
     _validation = {
-        'provisioning_state': {'readonly': True},
-        'triggered_build_result': {'readonly': True},
+        "provisioning_state": {"readonly": True},
+        "triggered_build_result": {"readonly": True},
     }
 
     _attribute_map = {
-        'relative_path': {'key': 'relativePath', 'type': 'str'},
-        'builder': {'key': 'builder', 'type': 'str'},
-        'agent_pool': {'key': 'agentPool', 'type': 'str'},
-        'provisioning_state': {'key': 'provisioningState', 'type': 'str'},
-        'env': {'key': 'env', 'type': '{str}'},
-        'triggered_build_result': {'key': 'triggeredBuildResult', 'type': 'TriggeredBuildResult'},
+        "relative_path": {"key": "relativePath", "type": "str"},
+        "builder": {"key": "builder", "type": "str"},
+        "agent_pool": {"key": "agentPool", "type": "str"},
+        "provisioning_state": {"key": "provisioningState", "type": "str"},
+        "env": {"key": "env", "type": "{str}"},
+        "triggered_build_result": {"key": "triggeredBuildResult", "type": "TriggeredBuildResult"},
     }
 
     def __init__(
@@ -1497,7 +1401,7 @@ class BuildProperties(msrest.serialization.Model):
         :keyword env: The environment variables for this build.
         :paramtype env: dict[str, str]
         """
-        super(BuildProperties, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.relative_path = relative_path
         self.builder = builder
         self.agent_pool = agent_pool
@@ -1524,35 +1428,30 @@ class BuildResult(ProxyResource):
     """
 
     _validation = {
-        'id': {'readonly': True},
-        'name': {'readonly': True},
-        'type': {'readonly': True},
-        'system_data': {'readonly': True},
+        "id": {"readonly": True},
+        "name": {"readonly": True},
+        "type": {"readonly": True},
+        "system_data": {"readonly": True},
     }
 
     _attribute_map = {
-        'id': {'key': 'id', 'type': 'str'},
-        'name': {'key': 'name', 'type': 'str'},
-        'type': {'key': 'type', 'type': 'str'},
-        'system_data': {'key': 'systemData', 'type': 'SystemData'},
-        'properties': {'key': 'properties', 'type': 'BuildResultProperties'},
+        "id": {"key": "id", "type": "str"},
+        "name": {"key": "name", "type": "str"},
+        "type": {"key": "type", "type": "str"},
+        "system_data": {"key": "systemData", "type": "SystemData"},
+        "properties": {"key": "properties", "type": "BuildResultProperties"},
     }
 
-    def __init__(
-        self,
-        *,
-        properties: Optional["BuildResultProperties"] = None,
-        **kwargs
-    ):
+    def __init__(self, *, properties: Optional["_models.BuildResultProperties"] = None, **kwargs):
         """
         :keyword properties: Properties of the build result resource.
         :paramtype properties: ~azure.mgmt.appplatform.v2022_03_01_preview.models.BuildResultProperties
         """
-        super(BuildResult, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.properties = properties
 
 
-class BuildResultCollection(msrest.serialization.Model):
+class BuildResultCollection(_serialization.Model):
     """Object that includes an array of Build result resources and a possible link for next set.
 
     :ivar value: Collection of Build result resources.
@@ -1563,16 +1462,12 @@ class BuildResultCollection(msrest.serialization.Model):
     """
 
     _attribute_map = {
-        'value': {'key': 'value', 'type': '[BuildResult]'},
-        'next_link': {'key': 'nextLink', 'type': 'str'},
+        "value": {"key": "value", "type": "[BuildResult]"},
+        "next_link": {"key": "nextLink", "type": "str"},
     }
 
     def __init__(
-        self,
-        *,
-        value: Optional[List["BuildResult"]] = None,
-        next_link: Optional[str] = None,
-        **kwargs
+        self, *, value: Optional[List["_models.BuildResult"]] = None, next_link: Optional[str] = None, **kwargs
     ):
         """
         :keyword value: Collection of Build result resources.
@@ -1581,12 +1476,12 @@ class BuildResultCollection(msrest.serialization.Model):
          It's null for now, added for future use.
         :paramtype next_link: str
         """
-        super(BuildResultCollection, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.value = value
         self.next_link = next_link
 
 
-class BuildResultLog(msrest.serialization.Model):
+class BuildResultLog(_serialization.Model):
     """Build result log resource properties payload.
 
     :ivar blob_url: The public download URL of this build result log.
@@ -1594,32 +1489,27 @@ class BuildResultLog(msrest.serialization.Model):
     """
 
     _attribute_map = {
-        'blob_url': {'key': 'blobUrl', 'type': 'str'},
+        "blob_url": {"key": "blobUrl", "type": "str"},
     }
 
-    def __init__(
-        self,
-        *,
-        blob_url: Optional[str] = None,
-        **kwargs
-    ):
+    def __init__(self, *, blob_url: Optional[str] = None, **kwargs):
         """
         :keyword blob_url: The public download URL of this build result log.
         :paramtype blob_url: str
         """
-        super(BuildResultLog, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.blob_url = blob_url
 
 
-class BuildResultProperties(msrest.serialization.Model):
+class BuildResultProperties(_serialization.Model):
     """Build result resource properties payload.
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
     :ivar name: The name of this build result.
     :vartype name: str
-    :ivar provisioning_state: Provisioning state of the KPack build result. Possible values
-     include: "Queuing", "Building", "Succeeded", "Failed", "Deleting".
+    :ivar provisioning_state: Provisioning state of the KPack build result. Known values are:
+     "Queuing", "Building", "Succeeded", "Failed", and "Deleting".
     :vartype provisioning_state: str or
      ~azure.mgmt.appplatform.v2022_03_01_preview.models.BuildResultProvisioningState
     :ivar build_pod_name: The build pod name which can be used to get the build log streaming.
@@ -1631,75 +1521,68 @@ class BuildResultProperties(msrest.serialization.Model):
     """
 
     _validation = {
-        'provisioning_state': {'readonly': True},
-        'build_stages': {'readonly': True},
+        "provisioning_state": {"readonly": True},
+        "build_stages": {"readonly": True},
     }
 
     _attribute_map = {
-        'name': {'key': 'name', 'type': 'str'},
-        'provisioning_state': {'key': 'provisioningState', 'type': 'str'},
-        'build_pod_name': {'key': 'buildPodName', 'type': 'str'},
-        'build_stages': {'key': 'buildStages', 'type': '[BuildStageProperties]'},
+        "name": {"key": "name", "type": "str"},
+        "provisioning_state": {"key": "provisioningState", "type": "str"},
+        "build_pod_name": {"key": "buildPodName", "type": "str"},
+        "build_stages": {"key": "buildStages", "type": "[BuildStageProperties]"},
     }
 
-    def __init__(
-        self,
-        *,
-        name: Optional[str] = None,
-        build_pod_name: Optional[str] = None,
-        **kwargs
-    ):
+    def __init__(self, *, name: Optional[str] = None, build_pod_name: Optional[str] = None, **kwargs):
         """
         :keyword name: The name of this build result.
         :paramtype name: str
         :keyword build_pod_name: The build pod name which can be used to get the build log streaming.
         :paramtype build_pod_name: str
         """
-        super(BuildResultProperties, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.name = name
         self.provisioning_state = None
         self.build_pod_name = build_pod_name
         self.build_stages = None
 
 
-class UserSourceInfo(msrest.serialization.Model):
+class UserSourceInfo(_serialization.Model):
     """Source information for a deployment.
 
-    You probably want to use the sub-classes and not this class directly. Known
-    sub-classes are: BuildResultUserSourceInfo, CustomContainerUserSourceInfo, UploadedUserSourceInfo.
+    You probably want to use the sub-classes and not this class directly. Known sub-classes are:
+    BuildResultUserSourceInfo, CustomContainerUserSourceInfo, UploadedUserSourceInfo
 
     All required parameters must be populated in order to send to Azure.
 
-    :ivar type: Required. Type of the source uploaded.Constant filled by server.
+    :ivar type: Type of the source uploaded. Required.
     :vartype type: str
     :ivar version: Version of the source.
     :vartype version: str
     """
 
     _validation = {
-        'type': {'required': True},
+        "type": {"required": True},
     }
 
     _attribute_map = {
-        'type': {'key': 'type', 'type': 'str'},
-        'version': {'key': 'version', 'type': 'str'},
+        "type": {"key": "type", "type": "str"},
+        "version": {"key": "version", "type": "str"},
     }
 
     _subtype_map = {
-        'type': {'BuildResult': 'BuildResultUserSourceInfo', 'Container': 'CustomContainerUserSourceInfo', 'UploadedUserSourceInfo': 'UploadedUserSourceInfo'}
+        "type": {
+            "BuildResult": "BuildResultUserSourceInfo",
+            "Container": "CustomContainerUserSourceInfo",
+            "UploadedUserSourceInfo": "UploadedUserSourceInfo",
+        }
     }
 
-    def __init__(
-        self,
-        *,
-        version: Optional[str] = None,
-        **kwargs
-    ):
+    def __init__(self, *, version: Optional[str] = None, **kwargs):
         """
         :keyword version: Version of the source.
         :paramtype version: str
         """
-        super(UserSourceInfo, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.type = None  # type: Optional[str]
         self.version = version
 
@@ -1709,7 +1592,7 @@ class BuildResultUserSourceInfo(UserSourceInfo):
 
     All required parameters must be populated in order to send to Azure.
 
-    :ivar type: Required. Type of the source uploaded.Constant filled by server.
+    :ivar type: Type of the source uploaded. Required.
     :vartype type: str
     :ivar version: Version of the source.
     :vartype version: str
@@ -1719,22 +1602,16 @@ class BuildResultUserSourceInfo(UserSourceInfo):
     """
 
     _validation = {
-        'type': {'required': True},
+        "type": {"required": True},
     }
 
     _attribute_map = {
-        'type': {'key': 'type', 'type': 'str'},
-        'version': {'key': 'version', 'type': 'str'},
-        'build_result_id': {'key': 'buildResultId', 'type': 'str'},
+        "type": {"key": "type", "type": "str"},
+        "version": {"key": "version", "type": "str"},
+        "build_result_id": {"key": "buildResultId", "type": "str"},
     }
 
-    def __init__(
-        self,
-        *,
-        version: Optional[str] = None,
-        build_result_id: Optional[str] = None,
-        **kwargs
-    ):
+    def __init__(self, *, version: Optional[str] = None, build_result_id: Optional[str] = None, **kwargs):
         """
         :keyword version: Version of the source.
         :paramtype version: str
@@ -1742,8 +1619,8 @@ class BuildResultUserSourceInfo(UserSourceInfo):
          Spring instance.
         :paramtype build_result_id: str
         """
-        super(BuildResultUserSourceInfo, self).__init__(version=version, **kwargs)
-        self.type = 'BuildResult'  # type: str
+        super().__init__(version=version, **kwargs)
+        self.type = "BuildResult"  # type: str
         self.build_result_id = build_result_id
 
 
@@ -1765,36 +1642,31 @@ class BuildService(ProxyResource):
     """
 
     _validation = {
-        'id': {'readonly': True},
-        'name': {'readonly': True},
-        'type': {'readonly': True},
-        'system_data': {'readonly': True},
+        "id": {"readonly": True},
+        "name": {"readonly": True},
+        "type": {"readonly": True},
+        "system_data": {"readonly": True},
     }
 
     _attribute_map = {
-        'id': {'key': 'id', 'type': 'str'},
-        'name': {'key': 'name', 'type': 'str'},
-        'type': {'key': 'type', 'type': 'str'},
-        'system_data': {'key': 'systemData', 'type': 'SystemData'},
-        'properties': {'key': 'properties', 'type': 'BuildServiceProperties'},
+        "id": {"key": "id", "type": "str"},
+        "name": {"key": "name", "type": "str"},
+        "type": {"key": "type", "type": "str"},
+        "system_data": {"key": "systemData", "type": "SystemData"},
+        "properties": {"key": "properties", "type": "BuildServiceProperties"},
     }
 
-    def __init__(
-        self,
-        *,
-        properties: Optional["BuildServiceProperties"] = None,
-        **kwargs
-    ):
+    def __init__(self, *, properties: Optional["_models.BuildServiceProperties"] = None, **kwargs):
         """
         :keyword properties: Properties of the build resource.
         :paramtype properties:
          ~azure.mgmt.appplatform.v2022_03_01_preview.models.BuildServiceProperties
         """
-        super(BuildService, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.properties = properties
 
 
-class BuildServiceAgentPoolProperties(msrest.serialization.Model):
+class BuildServiceAgentPoolProperties(_serialization.Model):
     """Build service agent pool properties.
 
     Variables are only populated by the server, and will be ignored when sending a request.
@@ -1807,26 +1679,21 @@ class BuildServiceAgentPoolProperties(msrest.serialization.Model):
     """
 
     _validation = {
-        'provisioning_state': {'readonly': True},
+        "provisioning_state": {"readonly": True},
     }
 
     _attribute_map = {
-        'provisioning_state': {'key': 'provisioningState', 'type': 'str'},
-        'pool_size': {'key': 'poolSize', 'type': 'BuildServiceAgentPoolSizeProperties'},
+        "provisioning_state": {"key": "provisioningState", "type": "str"},
+        "pool_size": {"key": "poolSize", "type": "BuildServiceAgentPoolSizeProperties"},
     }
 
-    def __init__(
-        self,
-        *,
-        pool_size: Optional["BuildServiceAgentPoolSizeProperties"] = None,
-        **kwargs
-    ):
+    def __init__(self, *, pool_size: Optional["_models.BuildServiceAgentPoolSizeProperties"] = None, **kwargs):
         """
         :keyword pool_size: build service agent pool size properties.
         :paramtype pool_size:
          ~azure.mgmt.appplatform.v2022_03_01_preview.models.BuildServiceAgentPoolSizeProperties
         """
-        super(BuildServiceAgentPoolProperties, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.provisioning_state = None
         self.pool_size = pool_size
 
@@ -1850,36 +1717,31 @@ class BuildServiceAgentPoolResource(ProxyResource):
     """
 
     _validation = {
-        'id': {'readonly': True},
-        'name': {'readonly': True},
-        'type': {'readonly': True},
-        'system_data': {'readonly': True},
+        "id": {"readonly": True},
+        "name": {"readonly": True},
+        "type": {"readonly": True},
+        "system_data": {"readonly": True},
     }
 
     _attribute_map = {
-        'id': {'key': 'id', 'type': 'str'},
-        'name': {'key': 'name', 'type': 'str'},
-        'type': {'key': 'type', 'type': 'str'},
-        'system_data': {'key': 'systemData', 'type': 'SystemData'},
-        'properties': {'key': 'properties', 'type': 'BuildServiceAgentPoolProperties'},
+        "id": {"key": "id", "type": "str"},
+        "name": {"key": "name", "type": "str"},
+        "type": {"key": "type", "type": "str"},
+        "system_data": {"key": "systemData", "type": "SystemData"},
+        "properties": {"key": "properties", "type": "BuildServiceAgentPoolProperties"},
     }
 
-    def __init__(
-        self,
-        *,
-        properties: Optional["BuildServiceAgentPoolProperties"] = None,
-        **kwargs
-    ):
+    def __init__(self, *, properties: Optional["_models.BuildServiceAgentPoolProperties"] = None, **kwargs):
         """
         :keyword properties: build service agent pool properties.
         :paramtype properties:
          ~azure.mgmt.appplatform.v2022_03_01_preview.models.BuildServiceAgentPoolProperties
         """
-        super(BuildServiceAgentPoolResource, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.properties = properties
 
 
-class BuildServiceAgentPoolResourceCollection(msrest.serialization.Model):
+class BuildServiceAgentPoolResourceCollection(_serialization.Model):
     """Object that includes an array of build service agent pool resources and a possible link for next set.
 
     :ivar value: Collection of build service agent pool resource.
@@ -1891,14 +1753,14 @@ class BuildServiceAgentPoolResourceCollection(msrest.serialization.Model):
     """
 
     _attribute_map = {
-        'value': {'key': 'value', 'type': '[BuildServiceAgentPoolResource]'},
-        'next_link': {'key': 'nextLink', 'type': 'str'},
+        "value": {"key": "value", "type": "[BuildServiceAgentPoolResource]"},
+        "next_link": {"key": "nextLink", "type": "str"},
     }
 
     def __init__(
         self,
         *,
-        value: Optional[List["BuildServiceAgentPoolResource"]] = None,
+        value: Optional[List["_models.BuildServiceAgentPoolResource"]] = None,
         next_link: Optional[str] = None,
         **kwargs
     ):
@@ -1910,12 +1772,12 @@ class BuildServiceAgentPoolResourceCollection(msrest.serialization.Model):
          It's null for now, added for future use.
         :paramtype next_link: str
         """
-        super(BuildServiceAgentPoolResourceCollection, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.value = value
         self.next_link = next_link
 
 
-class BuildServiceAgentPoolSizeProperties(msrest.serialization.Model):
+class BuildServiceAgentPoolSizeProperties(_serialization.Model):
     """Build service agent pool size properties.
 
     Variables are only populated by the server, and will be ignored when sending a request.
@@ -1929,33 +1791,28 @@ class BuildServiceAgentPoolSizeProperties(msrest.serialization.Model):
     """
 
     _validation = {
-        'cpu': {'readonly': True},
-        'memory': {'readonly': True},
+        "cpu": {"readonly": True},
+        "memory": {"readonly": True},
     }
 
     _attribute_map = {
-        'name': {'key': 'name', 'type': 'str'},
-        'cpu': {'key': 'cpu', 'type': 'str'},
-        'memory': {'key': 'memory', 'type': 'str'},
+        "name": {"key": "name", "type": "str"},
+        "cpu": {"key": "cpu", "type": "str"},
+        "memory": {"key": "memory", "type": "str"},
     }
 
-    def __init__(
-        self,
-        *,
-        name: Optional[str] = None,
-        **kwargs
-    ):
+    def __init__(self, *, name: Optional[str] = None, **kwargs):
         """
         :keyword name: The name of build service agent pool size.
         :paramtype name: str
         """
-        super(BuildServiceAgentPoolSizeProperties, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.name = name
         self.cpu = None
         self.memory = None
 
 
-class BuildServiceCollection(msrest.serialization.Model):
+class BuildServiceCollection(_serialization.Model):
     """Object that includes an array of Build service resources and a possible link for next set.
 
     :ivar value: Collection of Build service resources.
@@ -1966,16 +1823,12 @@ class BuildServiceCollection(msrest.serialization.Model):
     """
 
     _attribute_map = {
-        'value': {'key': 'value', 'type': '[BuildService]'},
-        'next_link': {'key': 'nextLink', 'type': 'str'},
+        "value": {"key": "value", "type": "[BuildService]"},
+        "next_link": {"key": "nextLink", "type": "str"},
     }
 
     def __init__(
-        self,
-        *,
-        value: Optional[List["BuildService"]] = None,
-        next_link: Optional[str] = None,
-        **kwargs
+        self, *, value: Optional[List["_models.BuildService"]] = None, next_link: Optional[str] = None, **kwargs
     ):
         """
         :keyword value: Collection of Build service resources.
@@ -1984,20 +1837,20 @@ class BuildServiceCollection(msrest.serialization.Model):
          It's null for now, added for future use.
         :paramtype next_link: str
         """
-        super(BuildServiceCollection, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.value = value
         self.next_link = next_link
 
 
-class BuildServiceProperties(msrest.serialization.Model):
+class BuildServiceProperties(_serialization.Model):
     """Build service resource properties payload.
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
     :ivar k_pack_version: The installed KPack version in this build service.
     :vartype k_pack_version: str
-    :ivar provisioning_state: Provisioning state of the KPack build result. Possible values
-     include: "Creating", "Updating", "Succeeded", "Failed", "Deleting".
+    :ivar provisioning_state: Provisioning state of the KPack build result. Known values are:
+     "Creating", "Updating", "Succeeded", "Failed", and "Deleting".
     :vartype provisioning_state: str or
      ~azure.mgmt.appplatform.v2022_03_01_preview.models.BuildServiceProvisioningState
     :ivar resource_requests: The runtime resource configuration of this build service.
@@ -2006,20 +1859,20 @@ class BuildServiceProperties(msrest.serialization.Model):
     """
 
     _validation = {
-        'provisioning_state': {'readonly': True},
+        "provisioning_state": {"readonly": True},
     }
 
     _attribute_map = {
-        'k_pack_version': {'key': 'kPackVersion', 'type': 'str'},
-        'provisioning_state': {'key': 'provisioningState', 'type': 'str'},
-        'resource_requests': {'key': 'resourceRequests', 'type': 'BuildServicePropertiesResourceRequests'},
+        "k_pack_version": {"key": "kPackVersion", "type": "str"},
+        "provisioning_state": {"key": "provisioningState", "type": "str"},
+        "resource_requests": {"key": "resourceRequests", "type": "BuildServicePropertiesResourceRequests"},
     }
 
     def __init__(
         self,
         *,
         k_pack_version: Optional[str] = None,
-        resource_requests: Optional["BuildServicePropertiesResourceRequests"] = None,
+        resource_requests: Optional["_models.BuildServicePropertiesResourceRequests"] = None,
         **kwargs
     ):
         """
@@ -2029,13 +1882,13 @@ class BuildServiceProperties(msrest.serialization.Model):
         :paramtype resource_requests:
          ~azure.mgmt.appplatform.v2022_03_01_preview.models.BuildServicePropertiesResourceRequests
         """
-        super(BuildServiceProperties, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.k_pack_version = k_pack_version
         self.provisioning_state = None
         self.resource_requests = resource_requests
 
 
-class BuildServicePropertiesResourceRequests(msrest.serialization.Model):
+class BuildServicePropertiesResourceRequests(_serialization.Model):
     """The runtime resource configuration of this build service.
 
     Variables are only populated by the server, and will be ignored when sending a request.
@@ -2047,71 +1900,63 @@ class BuildServicePropertiesResourceRequests(msrest.serialization.Model):
     """
 
     _validation = {
-        'cpu': {'readonly': True},
-        'memory': {'readonly': True},
+        "cpu": {"readonly": True},
+        "memory": {"readonly": True},
     }
 
     _attribute_map = {
-        'cpu': {'key': 'cpu', 'type': 'str'},
-        'memory': {'key': 'memory', 'type': 'str'},
+        "cpu": {"key": "cpu", "type": "str"},
+        "memory": {"key": "memory", "type": "str"},
     }
 
-    def __init__(
-        self,
-        **kwargs
-    ):
-        """
-        """
-        super(BuildServicePropertiesResourceRequests, self).__init__(**kwargs)
+    def __init__(self, **kwargs):
+        """ """
+        super().__init__(**kwargs)
         self.cpu = None
         self.memory = None
 
 
-class BuildStageProperties(msrest.serialization.Model):
+class BuildStageProperties(_serialization.Model):
     """The build stage (init-container and container) resources in build pod.
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
     :ivar name: The name of this build stage resource.
     :vartype name: str
-    :ivar status: The provisioning state of this build stage resource. Possible values include:
-     "NotStarted", "Running", "Succeeded", "Failed".
+    :ivar status: The provisioning state of this build stage resource. Known values are:
+     "NotStarted", "Running", "Succeeded", and "Failed".
     :vartype status: str or
      ~azure.mgmt.appplatform.v2022_03_01_preview.models.KPackBuildStageProvisioningState
     """
 
     _validation = {
-        'name': {'readonly': True},
-        'status': {'readonly': True},
+        "name": {"readonly": True},
+        "status": {"readonly": True},
     }
 
     _attribute_map = {
-        'name': {'key': 'name', 'type': 'str'},
-        'status': {'key': 'status', 'type': 'str'},
+        "name": {"key": "name", "type": "str"},
+        "status": {"key": "status", "type": "str"},
     }
 
-    def __init__(
-        self,
-        **kwargs
-    ):
-        """
-        """
-        super(BuildStageProperties, self).__init__(**kwargs)
+    def __init__(self, **kwargs):
+        """ """
+        super().__init__(**kwargs)
         self.name = None
         self.status = None
 
 
-class CertificateProperties(msrest.serialization.Model):
+class CertificateProperties(_serialization.Model):
     """Certificate resource payload.
 
-    You probably want to use the sub-classes and not this class directly. Known
-    sub-classes are: ContentCertificateProperties, KeyVaultCertificateProperties.
+    You probably want to use the sub-classes and not this class directly. Known sub-classes are:
+    ContentCertificateProperties, KeyVaultCertificateProperties
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
     All required parameters must be populated in order to send to Azure.
 
-    :ivar type: Required. The type of the certificate source.Constant filled by server.
+    :ivar type: The type of the certificate source. Required.
     :vartype type: str
     :ivar thumbprint: The thumbprint of certificate.
     :vartype thumbprint: str
@@ -2130,38 +1975,37 @@ class CertificateProperties(msrest.serialization.Model):
     """
 
     _validation = {
-        'type': {'required': True},
-        'thumbprint': {'readonly': True},
-        'issuer': {'readonly': True},
-        'issued_date': {'readonly': True},
-        'expiration_date': {'readonly': True},
-        'activate_date': {'readonly': True},
-        'subject_name': {'readonly': True},
-        'dns_names': {'readonly': True},
+        "type": {"required": True},
+        "thumbprint": {"readonly": True},
+        "issuer": {"readonly": True},
+        "issued_date": {"readonly": True},
+        "expiration_date": {"readonly": True},
+        "activate_date": {"readonly": True},
+        "subject_name": {"readonly": True},
+        "dns_names": {"readonly": True},
     }
 
     _attribute_map = {
-        'type': {'key': 'type', 'type': 'str'},
-        'thumbprint': {'key': 'thumbprint', 'type': 'str'},
-        'issuer': {'key': 'issuer', 'type': 'str'},
-        'issued_date': {'key': 'issuedDate', 'type': 'str'},
-        'expiration_date': {'key': 'expirationDate', 'type': 'str'},
-        'activate_date': {'key': 'activateDate', 'type': 'str'},
-        'subject_name': {'key': 'subjectName', 'type': 'str'},
-        'dns_names': {'key': 'dnsNames', 'type': '[str]'},
+        "type": {"key": "type", "type": "str"},
+        "thumbprint": {"key": "thumbprint", "type": "str"},
+        "issuer": {"key": "issuer", "type": "str"},
+        "issued_date": {"key": "issuedDate", "type": "str"},
+        "expiration_date": {"key": "expirationDate", "type": "str"},
+        "activate_date": {"key": "activateDate", "type": "str"},
+        "subject_name": {"key": "subjectName", "type": "str"},
+        "dns_names": {"key": "dnsNames", "type": "[str]"},
     }
 
     _subtype_map = {
-        'type': {'ContentCertificate': 'ContentCertificateProperties', 'KeyVaultCertificate': 'KeyVaultCertificateProperties'}
+        "type": {
+            "ContentCertificate": "ContentCertificateProperties",
+            "KeyVaultCertificate": "KeyVaultCertificateProperties",
+        }
     }
 
-    def __init__(
-        self,
-        **kwargs
-    ):
-        """
-        """
-        super(CertificateProperties, self).__init__(**kwargs)
+    def __init__(self, **kwargs):
+        """ """
+        super().__init__(**kwargs)
         self.type = None  # type: Optional[str]
         self.thumbprint = None
         self.issuer = None
@@ -2190,35 +2034,30 @@ class CertificateResource(ProxyResource):
     """
 
     _validation = {
-        'id': {'readonly': True},
-        'name': {'readonly': True},
-        'type': {'readonly': True},
-        'system_data': {'readonly': True},
+        "id": {"readonly": True},
+        "name": {"readonly": True},
+        "type": {"readonly": True},
+        "system_data": {"readonly": True},
     }
 
     _attribute_map = {
-        'id': {'key': 'id', 'type': 'str'},
-        'name': {'key': 'name', 'type': 'str'},
-        'type': {'key': 'type', 'type': 'str'},
-        'system_data': {'key': 'systemData', 'type': 'SystemData'},
-        'properties': {'key': 'properties', 'type': 'CertificateProperties'},
+        "id": {"key": "id", "type": "str"},
+        "name": {"key": "name", "type": "str"},
+        "type": {"key": "type", "type": "str"},
+        "system_data": {"key": "systemData", "type": "SystemData"},
+        "properties": {"key": "properties", "type": "CertificateProperties"},
     }
 
-    def __init__(
-        self,
-        *,
-        properties: Optional["CertificateProperties"] = None,
-        **kwargs
-    ):
+    def __init__(self, *, properties: Optional["_models.CertificateProperties"] = None, **kwargs):
         """
         :keyword properties: Properties of the certificate resource payload.
         :paramtype properties: ~azure.mgmt.appplatform.v2022_03_01_preview.models.CertificateProperties
         """
-        super(CertificateResource, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.properties = properties
 
 
-class CertificateResourceCollection(msrest.serialization.Model):
+class CertificateResourceCollection(_serialization.Model):
     """Collection compose of certificate resources list and a possible link for next page.
 
     :ivar value: The certificate resources list.
@@ -2228,16 +2067,12 @@ class CertificateResourceCollection(msrest.serialization.Model):
     """
 
     _attribute_map = {
-        'value': {'key': 'value', 'type': '[CertificateResource]'},
-        'next_link': {'key': 'nextLink', 'type': 'str'},
+        "value": {"key": "value", "type": "[CertificateResource]"},
+        "next_link": {"key": "nextLink", "type": "str"},
     }
 
     def __init__(
-        self,
-        *,
-        value: Optional[List["CertificateResource"]] = None,
-        next_link: Optional[str] = None,
-        **kwargs
+        self, *, value: Optional[List["_models.CertificateResource"]] = None, next_link: Optional[str] = None, **kwargs
     ):
         """
         :keyword value: The certificate resources list.
@@ -2245,12 +2080,12 @@ class CertificateResourceCollection(msrest.serialization.Model):
         :keyword next_link: The link to next page of certificate list.
         :paramtype next_link: str
         """
-        super(CertificateResourceCollection, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.value = value
         self.next_link = next_link
 
 
-class CloudErrorBody(msrest.serialization.Model):
+class CloudErrorBody(_serialization.Model):
     """An error response from the service.
 
     :ivar code: An identifier for the error. Codes are invariant and are intended to be consumed
@@ -2267,10 +2102,10 @@ class CloudErrorBody(msrest.serialization.Model):
     """
 
     _attribute_map = {
-        'code': {'key': 'code', 'type': 'str'},
-        'message': {'key': 'message', 'type': 'str'},
-        'target': {'key': 'target', 'type': 'str'},
-        'details': {'key': 'details', 'type': '[CloudErrorBody]'},
+        "code": {"key": "code", "type": "str"},
+        "message": {"key": "message", "type": "str"},
+        "target": {"key": "target", "type": "str"},
+        "details": {"key": "details", "type": "[CloudErrorBody]"},
     }
 
     def __init__(
@@ -2279,7 +2114,7 @@ class CloudErrorBody(msrest.serialization.Model):
         code: Optional[str] = None,
         message: Optional[str] = None,
         target: Optional[str] = None,
-        details: Optional[List["CloudErrorBody"]] = None,
+        details: Optional[List["_models.CloudErrorBody"]] = None,
         **kwargs
     ):
         """
@@ -2295,21 +2130,21 @@ class CloudErrorBody(msrest.serialization.Model):
         :keyword details: A list of additional details about the error.
         :paramtype details: list[~azure.mgmt.appplatform.v2022_03_01_preview.models.CloudErrorBody]
         """
-        super(CloudErrorBody, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.code = code
         self.message = message
         self.target = target
         self.details = details
 
 
-class ClusterResourceProperties(msrest.serialization.Model):
+class ClusterResourceProperties(_serialization.Model):
     """Service properties payload.
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
-    :ivar provisioning_state: Provisioning state of the Service. Possible values include:
-     "Creating", "Updating", "Starting", "Stopping", "Deleting", "Deleted", "Succeeded", "Failed",
-     "Moving", "Moved", "MoveFailed".
+    :ivar provisioning_state: Provisioning state of the Service. Known values are: "Creating",
+     "Updating", "Starting", "Stopping", "Deleting", "Deleted", "Succeeded", "Failed", "Moving",
+     "Moved", and "MoveFailed".
     :vartype provisioning_state: str or
      ~azure.mgmt.appplatform.v2022_03_01_preview.models.ProvisioningState
     :ivar network_profile: Network profile of the Service.
@@ -2318,7 +2153,7 @@ class ClusterResourceProperties(msrest.serialization.Model):
     :vartype version: int
     :ivar service_id: ServiceInstanceEntity GUID which uniquely identifies a created resource.
     :vartype service_id: str
-    :ivar power_state: Power state of the Service. Possible values include: "Running", "Stopped".
+    :ivar power_state: Power state of the Service. Known values are: "Running" and "Stopped".
     :vartype power_state: str or ~azure.mgmt.appplatform.v2022_03_01_preview.models.PowerState
     :ivar zone_redundant:
     :vartype zone_redundant: bool
@@ -2327,29 +2162,25 @@ class ClusterResourceProperties(msrest.serialization.Model):
     """
 
     _validation = {
-        'provisioning_state': {'readonly': True},
-        'version': {'readonly': True},
-        'service_id': {'readonly': True},
-        'power_state': {'readonly': True},
-        'fqdn': {'readonly': True},
+        "provisioning_state": {"readonly": True},
+        "version": {"readonly": True},
+        "service_id": {"readonly": True},
+        "power_state": {"readonly": True},
+        "fqdn": {"readonly": True},
     }
 
     _attribute_map = {
-        'provisioning_state': {'key': 'provisioningState', 'type': 'str'},
-        'network_profile': {'key': 'networkProfile', 'type': 'NetworkProfile'},
-        'version': {'key': 'version', 'type': 'int'},
-        'service_id': {'key': 'serviceId', 'type': 'str'},
-        'power_state': {'key': 'powerState', 'type': 'str'},
-        'zone_redundant': {'key': 'zoneRedundant', 'type': 'bool'},
-        'fqdn': {'key': 'fqdn', 'type': 'str'},
+        "provisioning_state": {"key": "provisioningState", "type": "str"},
+        "network_profile": {"key": "networkProfile", "type": "NetworkProfile"},
+        "version": {"key": "version", "type": "int"},
+        "service_id": {"key": "serviceId", "type": "str"},
+        "power_state": {"key": "powerState", "type": "str"},
+        "zone_redundant": {"key": "zoneRedundant", "type": "bool"},
+        "fqdn": {"key": "fqdn", "type": "str"},
     }
 
     def __init__(
-        self,
-        *,
-        network_profile: Optional["NetworkProfile"] = None,
-        zone_redundant: Optional[bool] = False,
-        **kwargs
+        self, *, network_profile: Optional["_models.NetworkProfile"] = None, zone_redundant: bool = False, **kwargs
     ):
         """
         :keyword network_profile: Network profile of the Service.
@@ -2357,7 +2188,7 @@ class ClusterResourceProperties(msrest.serialization.Model):
         :keyword zone_redundant:
         :paramtype zone_redundant: bool
         """
-        super(ClusterResourceProperties, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.provisioning_state = None
         self.network_profile = network_profile
         self.version = None
@@ -2367,7 +2198,7 @@ class ClusterResourceProperties(msrest.serialization.Model):
         self.fqdn = None
 
 
-class ConfigServerGitProperty(msrest.serialization.Model):
+class ConfigServerGitProperty(_serialization.Model):
     """Property of git.
 
     All required parameters must be populated in order to send to Azure.
@@ -2375,7 +2206,7 @@ class ConfigServerGitProperty(msrest.serialization.Model):
     :ivar repositories: Repositories of git.
     :vartype repositories:
      list[~azure.mgmt.appplatform.v2022_03_01_preview.models.GitPatternRepository]
-    :ivar uri: Required. URI of the repository.
+    :ivar uri: URI of the repository. Required.
     :vartype uri: str
     :ivar label: Label of the repository.
     :vartype label: str
@@ -2396,27 +2227,27 @@ class ConfigServerGitProperty(msrest.serialization.Model):
     """
 
     _validation = {
-        'uri': {'required': True},
+        "uri": {"required": True},
     }
 
     _attribute_map = {
-        'repositories': {'key': 'repositories', 'type': '[GitPatternRepository]'},
-        'uri': {'key': 'uri', 'type': 'str'},
-        'label': {'key': 'label', 'type': 'str'},
-        'search_paths': {'key': 'searchPaths', 'type': '[str]'},
-        'username': {'key': 'username', 'type': 'str'},
-        'password': {'key': 'password', 'type': 'str'},
-        'host_key': {'key': 'hostKey', 'type': 'str'},
-        'host_key_algorithm': {'key': 'hostKeyAlgorithm', 'type': 'str'},
-        'private_key': {'key': 'privateKey', 'type': 'str'},
-        'strict_host_key_checking': {'key': 'strictHostKeyChecking', 'type': 'bool'},
+        "repositories": {"key": "repositories", "type": "[GitPatternRepository]"},
+        "uri": {"key": "uri", "type": "str"},
+        "label": {"key": "label", "type": "str"},
+        "search_paths": {"key": "searchPaths", "type": "[str]"},
+        "username": {"key": "username", "type": "str"},
+        "password": {"key": "password", "type": "str"},
+        "host_key": {"key": "hostKey", "type": "str"},
+        "host_key_algorithm": {"key": "hostKeyAlgorithm", "type": "str"},
+        "private_key": {"key": "privateKey", "type": "str"},
+        "strict_host_key_checking": {"key": "strictHostKeyChecking", "type": "bool"},
     }
 
     def __init__(
         self,
         *,
         uri: str,
-        repositories: Optional[List["GitPatternRepository"]] = None,
+        repositories: Optional[List["_models.GitPatternRepository"]] = None,
         label: Optional[str] = None,
         search_paths: Optional[List[str]] = None,
         username: Optional[str] = None,
@@ -2431,7 +2262,7 @@ class ConfigServerGitProperty(msrest.serialization.Model):
         :keyword repositories: Repositories of git.
         :paramtype repositories:
          list[~azure.mgmt.appplatform.v2022_03_01_preview.models.GitPatternRepository]
-        :keyword uri: Required. URI of the repository.
+        :keyword uri: URI of the repository. Required.
         :paramtype uri: str
         :keyword label: Label of the repository.
         :paramtype label: str
@@ -2450,7 +2281,7 @@ class ConfigServerGitProperty(msrest.serialization.Model):
         :keyword strict_host_key_checking: Strict host key checking or not.
         :paramtype strict_host_key_checking: bool
         """
-        super(ConfigServerGitProperty, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.repositories = repositories
         self.uri = uri
         self.label = label
@@ -2463,13 +2294,13 @@ class ConfigServerGitProperty(msrest.serialization.Model):
         self.strict_host_key_checking = strict_host_key_checking
 
 
-class ConfigServerProperties(msrest.serialization.Model):
+class ConfigServerProperties(_serialization.Model):
     """Config server git properties payload.
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
-    :ivar provisioning_state: State of the config server. Possible values include: "NotAvailable",
-     "Deleted", "Failed", "Succeeded", "Updating".
+    :ivar provisioning_state: State of the config server. Known values are: "NotAvailable",
+     "Deleted", "Failed", "Succeeded", and "Updating".
     :vartype provisioning_state: str or
      ~azure.mgmt.appplatform.v2022_03_01_preview.models.ConfigServerState
     :ivar error: Error when apply config server settings.
@@ -2479,20 +2310,20 @@ class ConfigServerProperties(msrest.serialization.Model):
     """
 
     _validation = {
-        'provisioning_state': {'readonly': True},
+        "provisioning_state": {"readonly": True},
     }
 
     _attribute_map = {
-        'provisioning_state': {'key': 'provisioningState', 'type': 'str'},
-        'error': {'key': 'error', 'type': 'Error'},
-        'config_server': {'key': 'configServer', 'type': 'ConfigServerSettings'},
+        "provisioning_state": {"key": "provisioningState", "type": "str"},
+        "error": {"key": "error", "type": "Error"},
+        "config_server": {"key": "configServer", "type": "ConfigServerSettings"},
     }
 
     def __init__(
         self,
         *,
-        error: Optional["Error"] = None,
-        config_server: Optional["ConfigServerSettings"] = None,
+        error: Optional["_models.Error"] = None,
+        config_server: Optional["_models.ConfigServerSettings"] = None,
         **kwargs
     ):
         """
@@ -2502,7 +2333,7 @@ class ConfigServerProperties(msrest.serialization.Model):
         :paramtype config_server:
          ~azure.mgmt.appplatform.v2022_03_01_preview.models.ConfigServerSettings
         """
-        super(ConfigServerProperties, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.provisioning_state = None
         self.error = error
         self.config_server = config_server
@@ -2526,36 +2357,31 @@ class ConfigServerResource(ProxyResource):
     """
 
     _validation = {
-        'id': {'readonly': True},
-        'name': {'readonly': True},
-        'type': {'readonly': True},
-        'system_data': {'readonly': True},
+        "id": {"readonly": True},
+        "name": {"readonly": True},
+        "type": {"readonly": True},
+        "system_data": {"readonly": True},
     }
 
     _attribute_map = {
-        'id': {'key': 'id', 'type': 'str'},
-        'name': {'key': 'name', 'type': 'str'},
-        'type': {'key': 'type', 'type': 'str'},
-        'system_data': {'key': 'systemData', 'type': 'SystemData'},
-        'properties': {'key': 'properties', 'type': 'ConfigServerProperties'},
+        "id": {"key": "id", "type": "str"},
+        "name": {"key": "name", "type": "str"},
+        "type": {"key": "type", "type": "str"},
+        "system_data": {"key": "systemData", "type": "SystemData"},
+        "properties": {"key": "properties", "type": "ConfigServerProperties"},
     }
 
-    def __init__(
-        self,
-        *,
-        properties: Optional["ConfigServerProperties"] = None,
-        **kwargs
-    ):
+    def __init__(self, *, properties: Optional["_models.ConfigServerProperties"] = None, **kwargs):
         """
         :keyword properties: Properties of the Config Server resource.
         :paramtype properties:
          ~azure.mgmt.appplatform.v2022_03_01_preview.models.ConfigServerProperties
         """
-        super(ConfigServerResource, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.properties = properties
 
 
-class ConfigServerSettings(msrest.serialization.Model):
+class ConfigServerSettings(_serialization.Model):
     """The settings of config server.
 
     :ivar git_property: Property of git environment.
@@ -2564,25 +2390,20 @@ class ConfigServerSettings(msrest.serialization.Model):
     """
 
     _attribute_map = {
-        'git_property': {'key': 'gitProperty', 'type': 'ConfigServerGitProperty'},
+        "git_property": {"key": "gitProperty", "type": "ConfigServerGitProperty"},
     }
 
-    def __init__(
-        self,
-        *,
-        git_property: Optional["ConfigServerGitProperty"] = None,
-        **kwargs
-    ):
+    def __init__(self, *, git_property: Optional["_models.ConfigServerGitProperty"] = None, **kwargs):
         """
         :keyword git_property: Property of git environment.
         :paramtype git_property:
          ~azure.mgmt.appplatform.v2022_03_01_preview.models.ConfigServerGitProperty
         """
-        super(ConfigServerSettings, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.git_property = git_property
 
 
-class ConfigServerSettingsErrorRecord(msrest.serialization.Model):
+class ConfigServerSettingsErrorRecord(_serialization.Model):
     """Error record of the config server settings.
 
     :ivar name: The name of the config server settings error record.
@@ -2594,18 +2415,13 @@ class ConfigServerSettingsErrorRecord(msrest.serialization.Model):
     """
 
     _attribute_map = {
-        'name': {'key': 'name', 'type': 'str'},
-        'uri': {'key': 'uri', 'type': 'str'},
-        'messages': {'key': 'messages', 'type': '[str]'},
+        "name": {"key": "name", "type": "str"},
+        "uri": {"key": "uri", "type": "str"},
+        "messages": {"key": "messages", "type": "[str]"},
     }
 
     def __init__(
-        self,
-        *,
-        name: Optional[str] = None,
-        uri: Optional[str] = None,
-        messages: Optional[List[str]] = None,
-        **kwargs
+        self, *, name: Optional[str] = None, uri: Optional[str] = None, messages: Optional[List[str]] = None, **kwargs
     ):
         """
         :keyword name: The name of the config server settings error record.
@@ -2615,13 +2431,13 @@ class ConfigServerSettingsErrorRecord(msrest.serialization.Model):
         :keyword messages: The detail error messages of the record.
         :paramtype messages: list[str]
         """
-        super(ConfigServerSettingsErrorRecord, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.name = name
         self.uri = uri
         self.messages = messages
 
 
-class ConfigServerSettingsValidateResult(msrest.serialization.Model):
+class ConfigServerSettingsValidateResult(_serialization.Model):
     """Validation result for config server settings.
 
     :ivar is_valid: Indicate if the config server settings are valid.
@@ -2632,15 +2448,15 @@ class ConfigServerSettingsValidateResult(msrest.serialization.Model):
     """
 
     _attribute_map = {
-        'is_valid': {'key': 'isValid', 'type': 'bool'},
-        'details': {'key': 'details', 'type': '[ConfigServerSettingsErrorRecord]'},
+        "is_valid": {"key": "isValid", "type": "bool"},
+        "details": {"key": "details", "type": "[ConfigServerSettingsErrorRecord]"},
     }
 
     def __init__(
         self,
         *,
         is_valid: Optional[bool] = None,
-        details: Optional[List["ConfigServerSettingsErrorRecord"]] = None,
+        details: Optional[List["_models.ConfigServerSettingsErrorRecord"]] = None,
         **kwargs
     ):
         """
@@ -2650,12 +2466,12 @@ class ConfigServerSettingsValidateResult(msrest.serialization.Model):
         :paramtype details:
          list[~azure.mgmt.appplatform.v2022_03_01_preview.models.ConfigServerSettingsErrorRecord]
         """
-        super(ConfigServerSettingsValidateResult, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.is_valid = is_valid
         self.details = details
 
 
-class ConfigurationServiceGitProperty(msrest.serialization.Model):
+class ConfigurationServiceGitProperty(_serialization.Model):
     """Property of git environment.
 
     :ivar repositories: Repositories of Application Configuration Service git property.
@@ -2664,25 +2480,20 @@ class ConfigurationServiceGitProperty(msrest.serialization.Model):
     """
 
     _attribute_map = {
-        'repositories': {'key': 'repositories', 'type': '[ConfigurationServiceGitRepository]'},
+        "repositories": {"key": "repositories", "type": "[ConfigurationServiceGitRepository]"},
     }
 
-    def __init__(
-        self,
-        *,
-        repositories: Optional[List["ConfigurationServiceGitRepository"]] = None,
-        **kwargs
-    ):
+    def __init__(self, *, repositories: Optional[List["_models.ConfigurationServiceGitRepository"]] = None, **kwargs):
         """
         :keyword repositories: Repositories of Application Configuration Service git property.
         :paramtype repositories:
          list[~azure.mgmt.appplatform.v2022_03_01_preview.models.ConfigurationServiceGitRepository]
         """
-        super(ConfigurationServiceGitProperty, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.repositories = repositories
 
 
-class ConfigurationServiceGitPropertyValidateResult(msrest.serialization.Model):
+class ConfigurationServiceGitPropertyValidateResult(_serialization.Model):
     """Validation result for configuration service settings.
 
     :ivar is_valid: Indicate if the configuration service settings are valid.
@@ -2693,15 +2504,15 @@ class ConfigurationServiceGitPropertyValidateResult(msrest.serialization.Model):
     """
 
     _attribute_map = {
-        'is_valid': {'key': 'isValid', 'type': 'bool'},
-        'git_repos_validation_result': {'key': 'gitReposValidationResult', 'type': '[ValidationMessages]'},
+        "is_valid": {"key": "isValid", "type": "bool"},
+        "git_repos_validation_result": {"key": "gitReposValidationResult", "type": "[ValidationMessages]"},
     }
 
     def __init__(
         self,
         *,
         is_valid: Optional[bool] = None,
-        git_repos_validation_result: Optional[List["ValidationMessages"]] = None,
+        git_repos_validation_result: Optional[List["_models.ValidationMessages"]] = None,
         **kwargs
     ):
         """
@@ -2711,23 +2522,23 @@ class ConfigurationServiceGitPropertyValidateResult(msrest.serialization.Model):
         :paramtype git_repos_validation_result:
          list[~azure.mgmt.appplatform.v2022_03_01_preview.models.ValidationMessages]
         """
-        super(ConfigurationServiceGitPropertyValidateResult, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.is_valid = is_valid
         self.git_repos_validation_result = git_repos_validation_result
 
 
-class ConfigurationServiceGitRepository(msrest.serialization.Model):
+class ConfigurationServiceGitRepository(_serialization.Model):  # pylint: disable=too-many-instance-attributes
     """Git repository property payload for Application Configuration Service.
 
     All required parameters must be populated in order to send to Azure.
 
-    :ivar name: Required. Name of the repository.
+    :ivar name: Name of the repository. Required.
     :vartype name: str
-    :ivar patterns: Required. Collection of patterns of the repository.
+    :ivar patterns: Collection of patterns of the repository. Required.
     :vartype patterns: list[str]
-    :ivar uri: Required. URI of the repository.
+    :ivar uri: URI of the repository. Required.
     :vartype uri: str
-    :ivar label: Required. Label of the repository.
+    :ivar label: Label of the repository. Required.
     :vartype label: str
     :ivar search_paths: Searching path of the repository.
     :vartype search_paths: list[str]
@@ -2746,24 +2557,24 @@ class ConfigurationServiceGitRepository(msrest.serialization.Model):
     """
 
     _validation = {
-        'name': {'required': True},
-        'patterns': {'required': True},
-        'uri': {'required': True},
-        'label': {'required': True},
+        "name": {"required": True},
+        "patterns": {"required": True},
+        "uri": {"required": True},
+        "label": {"required": True},
     }
 
     _attribute_map = {
-        'name': {'key': 'name', 'type': 'str'},
-        'patterns': {'key': 'patterns', 'type': '[str]'},
-        'uri': {'key': 'uri', 'type': 'str'},
-        'label': {'key': 'label', 'type': 'str'},
-        'search_paths': {'key': 'searchPaths', 'type': '[str]'},
-        'username': {'key': 'username', 'type': 'str'},
-        'password': {'key': 'password', 'type': 'str'},
-        'host_key': {'key': 'hostKey', 'type': 'str'},
-        'host_key_algorithm': {'key': 'hostKeyAlgorithm', 'type': 'str'},
-        'private_key': {'key': 'privateKey', 'type': 'str'},
-        'strict_host_key_checking': {'key': 'strictHostKeyChecking', 'type': 'bool'},
+        "name": {"key": "name", "type": "str"},
+        "patterns": {"key": "patterns", "type": "[str]"},
+        "uri": {"key": "uri", "type": "str"},
+        "label": {"key": "label", "type": "str"},
+        "search_paths": {"key": "searchPaths", "type": "[str]"},
+        "username": {"key": "username", "type": "str"},
+        "password": {"key": "password", "type": "str"},
+        "host_key": {"key": "hostKey", "type": "str"},
+        "host_key_algorithm": {"key": "hostKeyAlgorithm", "type": "str"},
+        "private_key": {"key": "privateKey", "type": "str"},
+        "strict_host_key_checking": {"key": "strictHostKeyChecking", "type": "bool"},
     }
 
     def __init__(
@@ -2783,13 +2594,13 @@ class ConfigurationServiceGitRepository(msrest.serialization.Model):
         **kwargs
     ):
         """
-        :keyword name: Required. Name of the repository.
+        :keyword name: Name of the repository. Required.
         :paramtype name: str
-        :keyword patterns: Required. Collection of patterns of the repository.
+        :keyword patterns: Collection of patterns of the repository. Required.
         :paramtype patterns: list[str]
-        :keyword uri: Required. URI of the repository.
+        :keyword uri: URI of the repository. Required.
         :paramtype uri: str
-        :keyword label: Required. Label of the repository.
+        :keyword label: Label of the repository. Required.
         :paramtype label: str
         :keyword search_paths: Searching path of the repository.
         :paramtype search_paths: list[str]
@@ -2806,7 +2617,7 @@ class ConfigurationServiceGitRepository(msrest.serialization.Model):
         :keyword strict_host_key_checking: Strict host key checking or not.
         :paramtype strict_host_key_checking: bool
         """
-        super(ConfigurationServiceGitRepository, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.name = name
         self.patterns = patterns
         self.uri = uri
@@ -2820,7 +2631,7 @@ class ConfigurationServiceGitRepository(msrest.serialization.Model):
         self.strict_host_key_checking = strict_host_key_checking
 
 
-class ConfigurationServiceInstance(msrest.serialization.Model):
+class ConfigurationServiceInstance(_serialization.Model):
     """Collection of instances belong to the Application Configuration Service.
 
     Variables are only populated by the server, and will be ignored when sending a request.
@@ -2832,33 +2643,29 @@ class ConfigurationServiceInstance(msrest.serialization.Model):
     """
 
     _validation = {
-        'name': {'readonly': True},
-        'status': {'readonly': True},
+        "name": {"readonly": True},
+        "status": {"readonly": True},
     }
 
     _attribute_map = {
-        'name': {'key': 'name', 'type': 'str'},
-        'status': {'key': 'status', 'type': 'str'},
+        "name": {"key": "name", "type": "str"},
+        "status": {"key": "status", "type": "str"},
     }
 
-    def __init__(
-        self,
-        **kwargs
-    ):
-        """
-        """
-        super(ConfigurationServiceInstance, self).__init__(**kwargs)
+    def __init__(self, **kwargs):
+        """ """
+        super().__init__(**kwargs)
         self.name = None
         self.status = None
 
 
-class ConfigurationServiceProperties(msrest.serialization.Model):
+class ConfigurationServiceProperties(_serialization.Model):
     """Application Configuration Service properties payload.
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
-    :ivar provisioning_state: State of the Application Configuration Service. Possible values
-     include: "Creating", "Updating", "Succeeded", "Failed", "Deleting".
+    :ivar provisioning_state: State of the Application Configuration Service. Known values are:
+     "Creating", "Updating", "Succeeded", "Failed", and "Deleting".
     :vartype provisioning_state: str or
      ~azure.mgmt.appplatform.v2022_03_01_preview.models.ConfigurationServiceProvisioningState
     :ivar resource_requests: The requested resource quantity for required CPU and Memory.
@@ -2873,30 +2680,25 @@ class ConfigurationServiceProperties(msrest.serialization.Model):
     """
 
     _validation = {
-        'provisioning_state': {'readonly': True},
-        'resource_requests': {'readonly': True},
-        'instances': {'readonly': True},
+        "provisioning_state": {"readonly": True},
+        "resource_requests": {"readonly": True},
+        "instances": {"readonly": True},
     }
 
     _attribute_map = {
-        'provisioning_state': {'key': 'provisioningState', 'type': 'str'},
-        'resource_requests': {'key': 'resourceRequests', 'type': 'ConfigurationServiceResourceRequests'},
-        'instances': {'key': 'instances', 'type': '[ConfigurationServiceInstance]'},
-        'settings': {'key': 'settings', 'type': 'ConfigurationServiceSettings'},
+        "provisioning_state": {"key": "provisioningState", "type": "str"},
+        "resource_requests": {"key": "resourceRequests", "type": "ConfigurationServiceResourceRequests"},
+        "instances": {"key": "instances", "type": "[ConfigurationServiceInstance]"},
+        "settings": {"key": "settings", "type": "ConfigurationServiceSettings"},
     }
 
-    def __init__(
-        self,
-        *,
-        settings: Optional["ConfigurationServiceSettings"] = None,
-        **kwargs
-    ):
+    def __init__(self, *, settings: Optional["_models.ConfigurationServiceSettings"] = None, **kwargs):
         """
         :keyword settings: The settings of Application Configuration Service.
         :paramtype settings:
          ~azure.mgmt.appplatform.v2022_03_01_preview.models.ConfigurationServiceSettings
         """
-        super(ConfigurationServiceProperties, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.provisioning_state = None
         self.resource_requests = None
         self.instances = None
@@ -2922,36 +2724,31 @@ class ConfigurationServiceResource(ProxyResource):
     """
 
     _validation = {
-        'id': {'readonly': True},
-        'name': {'readonly': True},
-        'type': {'readonly': True},
-        'system_data': {'readonly': True},
+        "id": {"readonly": True},
+        "name": {"readonly": True},
+        "type": {"readonly": True},
+        "system_data": {"readonly": True},
     }
 
     _attribute_map = {
-        'id': {'key': 'id', 'type': 'str'},
-        'name': {'key': 'name', 'type': 'str'},
-        'type': {'key': 'type', 'type': 'str'},
-        'system_data': {'key': 'systemData', 'type': 'SystemData'},
-        'properties': {'key': 'properties', 'type': 'ConfigurationServiceProperties'},
+        "id": {"key": "id", "type": "str"},
+        "name": {"key": "name", "type": "str"},
+        "type": {"key": "type", "type": "str"},
+        "system_data": {"key": "systemData", "type": "SystemData"},
+        "properties": {"key": "properties", "type": "ConfigurationServiceProperties"},
     }
 
-    def __init__(
-        self,
-        *,
-        properties: Optional["ConfigurationServiceProperties"] = None,
-        **kwargs
-    ):
+    def __init__(self, *, properties: Optional["_models.ConfigurationServiceProperties"] = None, **kwargs):
         """
         :keyword properties: Application Configuration Service properties payload.
         :paramtype properties:
          ~azure.mgmt.appplatform.v2022_03_01_preview.models.ConfigurationServiceProperties
         """
-        super(ConfigurationServiceResource, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.properties = properties
 
 
-class ConfigurationServiceResourceCollection(msrest.serialization.Model):
+class ConfigurationServiceResourceCollection(_serialization.Model):
     """Object that includes an array of configuration service resources and a possible link for next set.
 
     :ivar value: Collection of configuration service resources.
@@ -2963,14 +2760,14 @@ class ConfigurationServiceResourceCollection(msrest.serialization.Model):
     """
 
     _attribute_map = {
-        'value': {'key': 'value', 'type': '[ConfigurationServiceResource]'},
-        'next_link': {'key': 'nextLink', 'type': 'str'},
+        "value": {"key": "value", "type": "[ConfigurationServiceResource]"},
+        "next_link": {"key": "nextLink", "type": "str"},
     }
 
     def __init__(
         self,
         *,
-        value: Optional[List["ConfigurationServiceResource"]] = None,
+        value: Optional[List["_models.ConfigurationServiceResource"]] = None,
         next_link: Optional[str] = None,
         **kwargs
     ):
@@ -2982,12 +2779,12 @@ class ConfigurationServiceResourceCollection(msrest.serialization.Model):
          It's null for now, added for future use.
         :paramtype next_link: str
         """
-        super(ConfigurationServiceResourceCollection, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.value = value
         self.next_link = next_link
 
 
-class ConfigurationServiceResourceRequests(msrest.serialization.Model):
+class ConfigurationServiceResourceRequests(_serialization.Model):
     """Resource request payload of Application Configuration Service.
 
     Variables are only populated by the server, and will be ignored when sending a request.
@@ -3001,30 +2798,26 @@ class ConfigurationServiceResourceRequests(msrest.serialization.Model):
     """
 
     _validation = {
-        'cpu': {'readonly': True},
-        'memory': {'readonly': True},
-        'instance_count': {'readonly': True},
+        "cpu": {"readonly": True},
+        "memory": {"readonly": True},
+        "instance_count": {"readonly": True},
     }
 
     _attribute_map = {
-        'cpu': {'key': 'cpu', 'type': 'str'},
-        'memory': {'key': 'memory', 'type': 'str'},
-        'instance_count': {'key': 'instanceCount', 'type': 'int'},
+        "cpu": {"key": "cpu", "type": "str"},
+        "memory": {"key": "memory", "type": "str"},
+        "instance_count": {"key": "instanceCount", "type": "int"},
     }
 
-    def __init__(
-        self,
-        **kwargs
-    ):
-        """
-        """
-        super(ConfigurationServiceResourceRequests, self).__init__(**kwargs)
+    def __init__(self, **kwargs):
+        """ """
+        super().__init__(**kwargs)
         self.cpu = None
         self.memory = None
         self.instance_count = None
 
 
-class ConfigurationServiceSettings(msrest.serialization.Model):
+class ConfigurationServiceSettings(_serialization.Model):
     """The settings of Application Configuration Service.
 
     :ivar git_property: Property of git environment.
@@ -3033,25 +2826,20 @@ class ConfigurationServiceSettings(msrest.serialization.Model):
     """
 
     _attribute_map = {
-        'git_property': {'key': 'gitProperty', 'type': 'ConfigurationServiceGitProperty'},
+        "git_property": {"key": "gitProperty", "type": "ConfigurationServiceGitProperty"},
     }
 
-    def __init__(
-        self,
-        *,
-        git_property: Optional["ConfigurationServiceGitProperty"] = None,
-        **kwargs
-    ):
+    def __init__(self, *, git_property: Optional["_models.ConfigurationServiceGitProperty"] = None, **kwargs):
         """
         :keyword git_property: Property of git environment.
         :paramtype git_property:
          ~azure.mgmt.appplatform.v2022_03_01_preview.models.ConfigurationServiceGitProperty
         """
-        super(ConfigurationServiceSettings, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.git_property = git_property
 
 
-class ConfigurationServiceSettingsValidateResult(msrest.serialization.Model):
+class ConfigurationServiceSettingsValidateResult(_serialization.Model):
     """Validation result for configuration service settings.
 
     :ivar git_property_validation_result: Validation result for configuration service settings.
@@ -3060,13 +2848,16 @@ class ConfigurationServiceSettingsValidateResult(msrest.serialization.Model):
     """
 
     _attribute_map = {
-        'git_property_validation_result': {'key': 'gitPropertyValidationResult', 'type': 'ConfigurationServiceGitPropertyValidateResult'},
+        "git_property_validation_result": {
+            "key": "gitPropertyValidationResult",
+            "type": "ConfigurationServiceGitPropertyValidateResult",
+        },
     }
 
     def __init__(
         self,
         *,
-        git_property_validation_result: Optional["ConfigurationServiceGitPropertyValidateResult"] = None,
+        git_property_validation_result: Optional["_models.ConfigurationServiceGitPropertyValidateResult"] = None,
         **kwargs
     ):
         """
@@ -3074,11 +2865,11 @@ class ConfigurationServiceSettingsValidateResult(msrest.serialization.Model):
         :paramtype git_property_validation_result:
          ~azure.mgmt.appplatform.v2022_03_01_preview.models.ConfigurationServiceGitPropertyValidateResult
         """
-        super(ConfigurationServiceSettingsValidateResult, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.git_property_validation_result = git_property_validation_result
 
 
-class ContainerProbeSettings(msrest.serialization.Model):
+class ContainerProbeSettings(_serialization.Model):
     """Container liveness and readiness probe settings.
 
     :ivar disable_probe: Indicates whether disable the liveness and readiness probe.
@@ -3086,20 +2877,15 @@ class ContainerProbeSettings(msrest.serialization.Model):
     """
 
     _attribute_map = {
-        'disable_probe': {'key': 'disableProbe', 'type': 'bool'},
+        "disable_probe": {"key": "disableProbe", "type": "bool"},
     }
 
-    def __init__(
-        self,
-        *,
-        disable_probe: Optional[bool] = None,
-        **kwargs
-    ):
+    def __init__(self, *, disable_probe: Optional[bool] = None, **kwargs):
         """
         :keyword disable_probe: Indicates whether disable the liveness and readiness probe.
         :paramtype disable_probe: bool
         """
-        super(ContainerProbeSettings, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.disable_probe = disable_probe
 
 
@@ -3110,7 +2896,7 @@ class ContentCertificateProperties(CertificateProperties):
 
     All required parameters must be populated in order to send to Azure.
 
-    :ivar type: Required. The type of the certificate source.Constant filled by server.
+    :ivar type: The type of the certificate source. Required.
     :vartype type: str
     :ivar thumbprint: The thumbprint of certificate.
     :vartype thumbprint: str
@@ -3131,44 +2917,39 @@ class ContentCertificateProperties(CertificateProperties):
     """
 
     _validation = {
-        'type': {'required': True},
-        'thumbprint': {'readonly': True},
-        'issuer': {'readonly': True},
-        'issued_date': {'readonly': True},
-        'expiration_date': {'readonly': True},
-        'activate_date': {'readonly': True},
-        'subject_name': {'readonly': True},
-        'dns_names': {'readonly': True},
+        "type": {"required": True},
+        "thumbprint": {"readonly": True},
+        "issuer": {"readonly": True},
+        "issued_date": {"readonly": True},
+        "expiration_date": {"readonly": True},
+        "activate_date": {"readonly": True},
+        "subject_name": {"readonly": True},
+        "dns_names": {"readonly": True},
     }
 
     _attribute_map = {
-        'type': {'key': 'type', 'type': 'str'},
-        'thumbprint': {'key': 'thumbprint', 'type': 'str'},
-        'issuer': {'key': 'issuer', 'type': 'str'},
-        'issued_date': {'key': 'issuedDate', 'type': 'str'},
-        'expiration_date': {'key': 'expirationDate', 'type': 'str'},
-        'activate_date': {'key': 'activateDate', 'type': 'str'},
-        'subject_name': {'key': 'subjectName', 'type': 'str'},
-        'dns_names': {'key': 'dnsNames', 'type': '[str]'},
-        'content': {'key': 'content', 'type': 'str'},
+        "type": {"key": "type", "type": "str"},
+        "thumbprint": {"key": "thumbprint", "type": "str"},
+        "issuer": {"key": "issuer", "type": "str"},
+        "issued_date": {"key": "issuedDate", "type": "str"},
+        "expiration_date": {"key": "expirationDate", "type": "str"},
+        "activate_date": {"key": "activateDate", "type": "str"},
+        "subject_name": {"key": "subjectName", "type": "str"},
+        "dns_names": {"key": "dnsNames", "type": "[str]"},
+        "content": {"key": "content", "type": "str"},
     }
 
-    def __init__(
-        self,
-        *,
-        content: Optional[str] = None,
-        **kwargs
-    ):
+    def __init__(self, *, content: Optional[str] = None, **kwargs):
         """
         :keyword content: The content of uploaded certificate.
         :paramtype content: str
         """
-        super(ContentCertificateProperties, self).__init__(**kwargs)
-        self.type = 'ContentCertificate'  # type: str
+        super().__init__(**kwargs)
+        self.type = "ContentCertificate"  # type: str
         self.content = content
 
 
-class CustomContainer(msrest.serialization.Model):
+class CustomContainer(_serialization.Model):
     """Custom container payload.
 
     :ivar server: The name of the registry that contains the container image.
@@ -3190,12 +2971,12 @@ class CustomContainer(msrest.serialization.Model):
     """
 
     _attribute_map = {
-        'server': {'key': 'server', 'type': 'str'},
-        'container_image': {'key': 'containerImage', 'type': 'str'},
-        'command': {'key': 'command', 'type': '[str]'},
-        'args': {'key': 'args', 'type': '[str]'},
-        'image_registry_credential': {'key': 'imageRegistryCredential', 'type': 'ImageRegistryCredential'},
-        'language_framework': {'key': 'languageFramework', 'type': 'str'},
+        "server": {"key": "server", "type": "str"},
+        "container_image": {"key": "containerImage", "type": "str"},
+        "command": {"key": "command", "type": "[str]"},
+        "args": {"key": "args", "type": "[str]"},
+        "image_registry_credential": {"key": "imageRegistryCredential", "type": "ImageRegistryCredential"},
+        "language_framework": {"key": "languageFramework", "type": "str"},
     }
 
     def __init__(
@@ -3205,7 +2986,7 @@ class CustomContainer(msrest.serialization.Model):
         container_image: Optional[str] = None,
         command: Optional[List[str]] = None,
         args: Optional[List[str]] = None,
-        image_registry_credential: Optional["ImageRegistryCredential"] = None,
+        image_registry_credential: Optional["_models.ImageRegistryCredential"] = None,
         language_framework: Optional[str] = None,
         **kwargs
     ):
@@ -3227,7 +3008,7 @@ class CustomContainer(msrest.serialization.Model):
         :keyword language_framework: Language framework of the container image uploaded.
         :paramtype language_framework: str
         """
-        super(CustomContainer, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.server = server
         self.container_image = container_image
         self.command = command
@@ -3241,7 +3022,7 @@ class CustomContainerUserSourceInfo(UserSourceInfo):
 
     All required parameters must be populated in order to send to Azure.
 
-    :ivar type: Required. Type of the source uploaded.Constant filled by server.
+    :ivar type: Type of the source uploaded. Required.
     :vartype type: str
     :ivar version: Version of the source.
     :vartype version: str
@@ -3250,21 +3031,17 @@ class CustomContainerUserSourceInfo(UserSourceInfo):
     """
 
     _validation = {
-        'type': {'required': True},
+        "type": {"required": True},
     }
 
     _attribute_map = {
-        'type': {'key': 'type', 'type': 'str'},
-        'version': {'key': 'version', 'type': 'str'},
-        'custom_container': {'key': 'customContainer', 'type': 'CustomContainer'},
+        "type": {"key": "type", "type": "str"},
+        "version": {"key": "version", "type": "str"},
+        "custom_container": {"key": "customContainer", "type": "CustomContainer"},
     }
 
     def __init__(
-        self,
-        *,
-        version: Optional[str] = None,
-        custom_container: Optional["CustomContainer"] = None,
-        **kwargs
+        self, *, version: Optional[str] = None, custom_container: Optional["_models.CustomContainer"] = None, **kwargs
     ):
         """
         :keyword version: Version of the source.
@@ -3272,12 +3049,12 @@ class CustomContainerUserSourceInfo(UserSourceInfo):
         :keyword custom_container: Custom container payload.
         :paramtype custom_container: ~azure.mgmt.appplatform.v2022_03_01_preview.models.CustomContainer
         """
-        super(CustomContainerUserSourceInfo, self).__init__(version=version, **kwargs)
-        self.type = 'Container'  # type: str
+        super().__init__(version=version, **kwargs)
+        self.type = "Container"  # type: str
         self.custom_container = custom_container
 
 
-class CustomDomainProperties(msrest.serialization.Model):
+class CustomDomainProperties(_serialization.Model):
     """Custom domain of app resource payload.
 
     Variables are only populated by the server, and will be ignored when sending a request.
@@ -3291,29 +3068,23 @@ class CustomDomainProperties(msrest.serialization.Model):
     """
 
     _validation = {
-        'app_name': {'readonly': True},
+        "app_name": {"readonly": True},
     }
 
     _attribute_map = {
-        'thumbprint': {'key': 'thumbprint', 'type': 'str'},
-        'app_name': {'key': 'appName', 'type': 'str'},
-        'cert_name': {'key': 'certName', 'type': 'str'},
+        "thumbprint": {"key": "thumbprint", "type": "str"},
+        "app_name": {"key": "appName", "type": "str"},
+        "cert_name": {"key": "certName", "type": "str"},
     }
 
-    def __init__(
-        self,
-        *,
-        thumbprint: Optional[str] = None,
-        cert_name: Optional[str] = None,
-        **kwargs
-    ):
+    def __init__(self, *, thumbprint: Optional[str] = None, cert_name: Optional[str] = None, **kwargs):
         """
         :keyword thumbprint: The thumbprint of bound certificate.
         :paramtype thumbprint: str
         :keyword cert_name: The bound certificate name of domain.
         :paramtype cert_name: str
         """
-        super(CustomDomainProperties, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.thumbprint = thumbprint
         self.app_name = None
         self.cert_name = cert_name
@@ -3337,36 +3108,31 @@ class CustomDomainResource(ProxyResource):
     """
 
     _validation = {
-        'id': {'readonly': True},
-        'name': {'readonly': True},
-        'type': {'readonly': True},
-        'system_data': {'readonly': True},
+        "id": {"readonly": True},
+        "name": {"readonly": True},
+        "type": {"readonly": True},
+        "system_data": {"readonly": True},
     }
 
     _attribute_map = {
-        'id': {'key': 'id', 'type': 'str'},
-        'name': {'key': 'name', 'type': 'str'},
-        'type': {'key': 'type', 'type': 'str'},
-        'system_data': {'key': 'systemData', 'type': 'SystemData'},
-        'properties': {'key': 'properties', 'type': 'CustomDomainProperties'},
+        "id": {"key": "id", "type": "str"},
+        "name": {"key": "name", "type": "str"},
+        "type": {"key": "type", "type": "str"},
+        "system_data": {"key": "systemData", "type": "SystemData"},
+        "properties": {"key": "properties", "type": "CustomDomainProperties"},
     }
 
-    def __init__(
-        self,
-        *,
-        properties: Optional["CustomDomainProperties"] = None,
-        **kwargs
-    ):
+    def __init__(self, *, properties: Optional["_models.CustomDomainProperties"] = None, **kwargs):
         """
         :keyword properties: Properties of the custom domain resource.
         :paramtype properties:
          ~azure.mgmt.appplatform.v2022_03_01_preview.models.CustomDomainProperties
         """
-        super(CustomDomainResource, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.properties = properties
 
 
-class CustomDomainResourceCollection(msrest.serialization.Model):
+class CustomDomainResourceCollection(_serialization.Model):
     """Collection compose of a custom domain resources list and a possible link for next page.
 
     :ivar value: The custom domain resources list.
@@ -3376,16 +3142,12 @@ class CustomDomainResourceCollection(msrest.serialization.Model):
     """
 
     _attribute_map = {
-        'value': {'key': 'value', 'type': '[CustomDomainResource]'},
-        'next_link': {'key': 'nextLink', 'type': 'str'},
+        "value": {"key": "value", "type": "[CustomDomainResource]"},
+        "next_link": {"key": "nextLink", "type": "str"},
     }
 
     def __init__(
-        self,
-        *,
-        value: Optional[List["CustomDomainResource"]] = None,
-        next_link: Optional[str] = None,
-        **kwargs
+        self, *, value: Optional[List["_models.CustomDomainResource"]] = None, next_link: Optional[str] = None, **kwargs
     ):
         """
         :keyword value: The custom domain resources list.
@@ -3393,43 +3155,38 @@ class CustomDomainResourceCollection(msrest.serialization.Model):
         :keyword next_link: The link to next page of custom domain list.
         :paramtype next_link: str
         """
-        super(CustomDomainResourceCollection, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.value = value
         self.next_link = next_link
 
 
-class CustomDomainValidatePayload(msrest.serialization.Model):
+class CustomDomainValidatePayload(_serialization.Model):
     """Custom domain validate payload.
 
     All required parameters must be populated in order to send to Azure.
 
-    :ivar name: Required. Name to be validated.
+    :ivar name: Name to be validated. Required.
     :vartype name: str
     """
 
     _validation = {
-        'name': {'required': True},
+        "name": {"required": True},
     }
 
     _attribute_map = {
-        'name': {'key': 'name', 'type': 'str'},
+        "name": {"key": "name", "type": "str"},
     }
 
-    def __init__(
-        self,
-        *,
-        name: str,
-        **kwargs
-    ):
+    def __init__(self, *, name: str, **kwargs):
         """
-        :keyword name: Required. Name to be validated.
+        :keyword name: Name to be validated. Required.
         :paramtype name: str
         """
-        super(CustomDomainValidatePayload, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.name = name
 
 
-class CustomDomainValidateResult(msrest.serialization.Model):
+class CustomDomainValidateResult(_serialization.Model):
     """Validation result for custom domain.
 
     :ivar is_valid: Indicates if domain name is valid.
@@ -3439,29 +3196,23 @@ class CustomDomainValidateResult(msrest.serialization.Model):
     """
 
     _attribute_map = {
-        'is_valid': {'key': 'isValid', 'type': 'bool'},
-        'message': {'key': 'message', 'type': 'str'},
+        "is_valid": {"key": "isValid", "type": "bool"},
+        "message": {"key": "message", "type": "str"},
     }
 
-    def __init__(
-        self,
-        *,
-        is_valid: Optional[bool] = None,
-        message: Optional[str] = None,
-        **kwargs
-    ):
+    def __init__(self, *, is_valid: Optional[bool] = None, message: Optional[str] = None, **kwargs):
         """
         :keyword is_valid: Indicates if domain name is valid.
         :paramtype is_valid: bool
         :keyword message: Message of why domain name is invalid.
         :paramtype message: str
         """
-        super(CustomDomainValidateResult, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.is_valid = is_valid
         self.message = message
 
 
-class CustomPersistentDiskResource(msrest.serialization.Model):
+class CustomPersistentDiskResource(_serialization.Model):
     """Custom persistent disk resource payload.
 
     All required parameters must be populated in order to send to Azure.
@@ -3470,24 +3221,27 @@ class CustomPersistentDiskResource(msrest.serialization.Model):
      payload.
     :vartype custom_persistent_disk_properties:
      ~azure.mgmt.appplatform.v2022_03_01_preview.models.CustomPersistentDiskProperties
-    :ivar storage_id: Required. The resource id of Azure Spring Cloud Storage resource.
+    :ivar storage_id: The resource id of Azure Spring Cloud Storage resource. Required.
     :vartype storage_id: str
     """
 
     _validation = {
-        'storage_id': {'required': True},
+        "storage_id": {"required": True},
     }
 
     _attribute_map = {
-        'custom_persistent_disk_properties': {'key': 'customPersistentDiskProperties', 'type': 'CustomPersistentDiskProperties'},
-        'storage_id': {'key': 'storageId', 'type': 'str'},
+        "custom_persistent_disk_properties": {
+            "key": "customPersistentDiskProperties",
+            "type": "CustomPersistentDiskProperties",
+        },
+        "storage_id": {"key": "storageId", "type": "str"},
     }
 
     def __init__(
         self,
         *,
         storage_id: str,
-        custom_persistent_disk_properties: Optional["CustomPersistentDiskProperties"] = None,
+        custom_persistent_disk_properties: Optional["_models.CustomPersistentDiskProperties"] = None,
         **kwargs
     ):
         """
@@ -3495,15 +3249,15 @@ class CustomPersistentDiskResource(msrest.serialization.Model):
          payload.
         :paramtype custom_persistent_disk_properties:
          ~azure.mgmt.appplatform.v2022_03_01_preview.models.CustomPersistentDiskProperties
-        :keyword storage_id: Required. The resource id of Azure Spring Cloud Storage resource.
+        :keyword storage_id: The resource id of Azure Spring Cloud Storage resource. Required.
         :paramtype storage_id: str
         """
-        super(CustomPersistentDiskResource, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.custom_persistent_disk_properties = custom_persistent_disk_properties
         self.storage_id = storage_id
 
 
-class DeploymentInstance(msrest.serialization.Model):
+class DeploymentInstance(_serialization.Model):
     """Deployment instance payload.
 
     Variables are only populated by the server, and will be ignored when sending a request.
@@ -3523,30 +3277,26 @@ class DeploymentInstance(msrest.serialization.Model):
     """
 
     _validation = {
-        'name': {'readonly': True},
-        'status': {'readonly': True},
-        'reason': {'readonly': True},
-        'discovery_status': {'readonly': True},
-        'start_time': {'readonly': True},
-        'zone': {'readonly': True},
+        "name": {"readonly": True},
+        "status": {"readonly": True},
+        "reason": {"readonly": True},
+        "discovery_status": {"readonly": True},
+        "start_time": {"readonly": True},
+        "zone": {"readonly": True},
     }
 
     _attribute_map = {
-        'name': {'key': 'name', 'type': 'str'},
-        'status': {'key': 'status', 'type': 'str'},
-        'reason': {'key': 'reason', 'type': 'str'},
-        'discovery_status': {'key': 'discoveryStatus', 'type': 'str'},
-        'start_time': {'key': 'startTime', 'type': 'str'},
-        'zone': {'key': 'zone', 'type': 'str'},
+        "name": {"key": "name", "type": "str"},
+        "status": {"key": "status", "type": "str"},
+        "reason": {"key": "reason", "type": "str"},
+        "discovery_status": {"key": "discoveryStatus", "type": "str"},
+        "start_time": {"key": "startTime", "type": "str"},
+        "zone": {"key": "zone", "type": "str"},
     }
 
-    def __init__(
-        self,
-        **kwargs
-    ):
-        """
-        """
-        super(DeploymentInstance, self).__init__(**kwargs)
+    def __init__(self, **kwargs):
+        """ """
+        super().__init__(**kwargs)
         self.name = None
         self.status = None
         self.reason = None
@@ -3576,26 +3326,26 @@ class DeploymentResource(ProxyResource):
     """
 
     _validation = {
-        'id': {'readonly': True},
-        'name': {'readonly': True},
-        'type': {'readonly': True},
-        'system_data': {'readonly': True},
+        "id": {"readonly": True},
+        "name": {"readonly": True},
+        "type": {"readonly": True},
+        "system_data": {"readonly": True},
     }
 
     _attribute_map = {
-        'id': {'key': 'id', 'type': 'str'},
-        'name': {'key': 'name', 'type': 'str'},
-        'type': {'key': 'type', 'type': 'str'},
-        'system_data': {'key': 'systemData', 'type': 'SystemData'},
-        'properties': {'key': 'properties', 'type': 'DeploymentResourceProperties'},
-        'sku': {'key': 'sku', 'type': 'Sku'},
+        "id": {"key": "id", "type": "str"},
+        "name": {"key": "name", "type": "str"},
+        "type": {"key": "type", "type": "str"},
+        "system_data": {"key": "systemData", "type": "SystemData"},
+        "properties": {"key": "properties", "type": "DeploymentResourceProperties"},
+        "sku": {"key": "sku", "type": "Sku"},
     }
 
     def __init__(
         self,
         *,
-        properties: Optional["DeploymentResourceProperties"] = None,
-        sku: Optional["Sku"] = None,
+        properties: Optional["_models.DeploymentResourceProperties"] = None,
+        sku: Optional["_models.Sku"] = None,
         **kwargs
     ):
         """
@@ -3605,12 +3355,12 @@ class DeploymentResource(ProxyResource):
         :keyword sku: Sku of the Deployment resource.
         :paramtype sku: ~azure.mgmt.appplatform.v2022_03_01_preview.models.Sku
         """
-        super(DeploymentResource, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.properties = properties
         self.sku = sku
 
 
-class DeploymentResourceCollection(msrest.serialization.Model):
+class DeploymentResourceCollection(_serialization.Model):
     """Object that includes an array of App resources and a possible link for next set.
 
     :ivar value: Collection of Deployment resources.
@@ -3621,16 +3371,12 @@ class DeploymentResourceCollection(msrest.serialization.Model):
     """
 
     _attribute_map = {
-        'value': {'key': 'value', 'type': '[DeploymentResource]'},
-        'next_link': {'key': 'nextLink', 'type': 'str'},
+        "value": {"key": "value", "type": "[DeploymentResource]"},
+        "next_link": {"key": "nextLink", "type": "str"},
     }
 
     def __init__(
-        self,
-        *,
-        value: Optional[List["DeploymentResource"]] = None,
-        next_link: Optional[str] = None,
-        **kwargs
+        self, *, value: Optional[List["_models.DeploymentResource"]] = None, next_link: Optional[str] = None, **kwargs
     ):
         """
         :keyword value: Collection of Deployment resources.
@@ -3639,12 +3385,12 @@ class DeploymentResourceCollection(msrest.serialization.Model):
          It's null for now, added for future use.
         :paramtype next_link: str
         """
-        super(DeploymentResourceCollection, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.value = value
         self.next_link = next_link
 
 
-class DeploymentResourceProperties(msrest.serialization.Model):
+class DeploymentResourceProperties(_serialization.Model):
     """Deployment resource properties payload.
 
     Variables are only populated by the server, and will be ignored when sending a request.
@@ -3654,11 +3400,11 @@ class DeploymentResourceProperties(msrest.serialization.Model):
     :ivar deployment_settings: Deployment settings of the Deployment.
     :vartype deployment_settings:
      ~azure.mgmt.appplatform.v2022_03_01_preview.models.DeploymentSettings
-    :ivar provisioning_state: Provisioning state of the Deployment. Possible values include:
-     "Creating", "Updating", "Succeeded", "Failed".
+    :ivar provisioning_state: Provisioning state of the Deployment. Known values are: "Creating",
+     "Updating", "Succeeded", and "Failed".
     :vartype provisioning_state: str or
      ~azure.mgmt.appplatform.v2022_03_01_preview.models.DeploymentResourceProvisioningState
-    :ivar status: Status of the Deployment. Possible values include: "Stopped", "Running".
+    :ivar status: Status of the Deployment. Known values are: "Stopped" and "Running".
     :vartype status: str or
      ~azure.mgmt.appplatform.v2022_03_01_preview.models.DeploymentResourceStatus
     :ivar active: Indicates whether the Deployment is active.
@@ -3668,25 +3414,25 @@ class DeploymentResourceProperties(msrest.serialization.Model):
     """
 
     _validation = {
-        'provisioning_state': {'readonly': True},
-        'status': {'readonly': True},
-        'instances': {'readonly': True},
+        "provisioning_state": {"readonly": True},
+        "status": {"readonly": True},
+        "instances": {"readonly": True},
     }
 
     _attribute_map = {
-        'source': {'key': 'source', 'type': 'UserSourceInfo'},
-        'deployment_settings': {'key': 'deploymentSettings', 'type': 'DeploymentSettings'},
-        'provisioning_state': {'key': 'provisioningState', 'type': 'str'},
-        'status': {'key': 'status', 'type': 'str'},
-        'active': {'key': 'active', 'type': 'bool'},
-        'instances': {'key': 'instances', 'type': '[DeploymentInstance]'},
+        "source": {"key": "source", "type": "UserSourceInfo"},
+        "deployment_settings": {"key": "deploymentSettings", "type": "DeploymentSettings"},
+        "provisioning_state": {"key": "provisioningState", "type": "str"},
+        "status": {"key": "status", "type": "str"},
+        "active": {"key": "active", "type": "bool"},
+        "instances": {"key": "instances", "type": "[DeploymentInstance]"},
     }
 
     def __init__(
         self,
         *,
-        source: Optional["UserSourceInfo"] = None,
-        deployment_settings: Optional["DeploymentSettings"] = None,
+        source: Optional["_models.UserSourceInfo"] = None,
+        deployment_settings: Optional["_models.DeploymentSettings"] = None,
         active: Optional[bool] = None,
         **kwargs
     ):
@@ -3699,7 +3445,7 @@ class DeploymentResourceProperties(msrest.serialization.Model):
         :keyword active: Indicates whether the Deployment is active.
         :paramtype active: bool
         """
-        super(DeploymentResourceProperties, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.source = source
         self.deployment_settings = deployment_settings
         self.provisioning_state = None
@@ -3708,7 +3454,7 @@ class DeploymentResourceProperties(msrest.serialization.Model):
         self.instances = None
 
 
-class DeploymentSettings(msrest.serialization.Model):
+class DeploymentSettings(_serialization.Model):
     """Deployment settings payload.
 
     :ivar resource_requests: The requested resource quantity for required CPU and Memory. It is
@@ -3718,26 +3464,26 @@ class DeploymentSettings(msrest.serialization.Model):
     :ivar environment_variables: Collection of environment variables.
     :vartype environment_variables: dict[str, str]
     :ivar addon_configs: Collection of addons.
-    :vartype addon_configs: dict[str, dict[str, any]]
+    :vartype addon_configs: dict[str, dict[str, JSON]]
     :ivar container_probe_settings: Container liveness and readiness probe settings.
     :vartype container_probe_settings:
      ~azure.mgmt.appplatform.v2022_03_01_preview.models.ContainerProbeSettings
     """
 
     _attribute_map = {
-        'resource_requests': {'key': 'resourceRequests', 'type': 'ResourceRequests'},
-        'environment_variables': {'key': 'environmentVariables', 'type': '{str}'},
-        'addon_configs': {'key': 'addonConfigs', 'type': '{{object}}'},
-        'container_probe_settings': {'key': 'containerProbeSettings', 'type': 'ContainerProbeSettings'},
+        "resource_requests": {"key": "resourceRequests", "type": "ResourceRequests"},
+        "environment_variables": {"key": "environmentVariables", "type": "{str}"},
+        "addon_configs": {"key": "addonConfigs", "type": "{{object}}"},
+        "container_probe_settings": {"key": "containerProbeSettings", "type": "ContainerProbeSettings"},
     }
 
     def __init__(
         self,
         *,
-        resource_requests: Optional["ResourceRequests"] = None,
+        resource_requests: Optional["_models.ResourceRequests"] = None,
         environment_variables: Optional[Dict[str, str]] = None,
-        addon_configs: Optional[Dict[str, Dict[str, Any]]] = None,
-        container_probe_settings: Optional["ContainerProbeSettings"] = None,
+        addon_configs: Optional[Dict[str, Dict[str, JSON]]] = None,
+        container_probe_settings: Optional["_models.ContainerProbeSettings"] = None,
         **kwargs
     ):
         """
@@ -3749,19 +3495,19 @@ class DeploymentSettings(msrest.serialization.Model):
         :keyword environment_variables: Collection of environment variables.
         :paramtype environment_variables: dict[str, str]
         :keyword addon_configs: Collection of addons.
-        :paramtype addon_configs: dict[str, dict[str, any]]
+        :paramtype addon_configs: dict[str, dict[str, JSON]]
         :keyword container_probe_settings: Container liveness and readiness probe settings.
         :paramtype container_probe_settings:
          ~azure.mgmt.appplatform.v2022_03_01_preview.models.ContainerProbeSettings
         """
-        super(DeploymentSettings, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.resource_requests = resource_requests
         self.environment_variables = environment_variables
         self.addon_configs = addon_configs
         self.container_probe_settings = container_probe_settings
 
 
-class DiagnosticParameters(msrest.serialization.Model):
+class DiagnosticParameters(_serialization.Model):
     """Diagnostic parameters of diagnostic operations.
 
     :ivar app_instance: App instance name.
@@ -3773,9 +3519,9 @@ class DiagnosticParameters(msrest.serialization.Model):
     """
 
     _attribute_map = {
-        'app_instance': {'key': 'appInstance', 'type': 'str'},
-        'file_path': {'key': 'filePath', 'type': 'str'},
-        'duration': {'key': 'duration', 'type': 'str'},
+        "app_instance": {"key": "appInstance", "type": "str"},
+        "file_path": {"key": "filePath", "type": "str"},
+        "duration": {"key": "duration", "type": "str"},
     }
 
     def __init__(
@@ -3794,13 +3540,13 @@ class DiagnosticParameters(msrest.serialization.Model):
         :keyword duration: Duration of your JFR. 1 min can be represented by 1m or 60s.
         :paramtype duration: str
         """
-        super(DiagnosticParameters, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.app_instance = app_instance
         self.file_path = file_path
         self.duration = duration
 
 
-class Error(msrest.serialization.Model):
+class Error(_serialization.Model):
     """The error code compose of code and message.
 
     :ivar code: The code of error.
@@ -3810,29 +3556,23 @@ class Error(msrest.serialization.Model):
     """
 
     _attribute_map = {
-        'code': {'key': 'code', 'type': 'str'},
-        'message': {'key': 'message', 'type': 'str'},
+        "code": {"key": "code", "type": "str"},
+        "message": {"key": "message", "type": "str"},
     }
 
-    def __init__(
-        self,
-        *,
-        code: Optional[str] = None,
-        message: Optional[str] = None,
-        **kwargs
-    ):
+    def __init__(self, *, code: Optional[str] = None, message: Optional[str] = None, **kwargs):
         """
         :keyword code: The code of error.
         :paramtype code: str
         :keyword message: The message of error.
         :paramtype message: str
         """
-        super(Error, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.code = code
         self.message = message
 
 
-class GatewayApiMetadataProperties(msrest.serialization.Model):
+class GatewayApiMetadataProperties(_serialization.Model):
     """API metadata property for Spring Cloud Gateway.
 
     :ivar title: Title describing the context of the APIs available on the Gateway instance
@@ -3851,11 +3591,11 @@ class GatewayApiMetadataProperties(msrest.serialization.Model):
     """
 
     _attribute_map = {
-        'title': {'key': 'title', 'type': 'str'},
-        'description': {'key': 'description', 'type': 'str'},
-        'documentation': {'key': 'documentation', 'type': 'str'},
-        'version': {'key': 'version', 'type': 'str'},
-        'server_url': {'key': 'serverUrl', 'type': 'str'},
+        "title": {"key": "title", "type": "str"},
+        "description": {"key": "description", "type": "str"},
+        "documentation": {"key": "documentation", "type": "str"},
+        "version": {"key": "version", "type": "str"},
+        "server_url": {"key": "serverUrl", "type": "str"},
     }
 
     def __init__(
@@ -3885,7 +3625,7 @@ class GatewayApiMetadataProperties(msrest.serialization.Model):
          instance.
         :paramtype server_url: str
         """
-        super(GatewayApiMetadataProperties, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.title = title
         self.description = description
         self.documentation = documentation
@@ -3893,7 +3633,7 @@ class GatewayApiMetadataProperties(msrest.serialization.Model):
         self.server_url = server_url
 
 
-class GatewayApiRoute(msrest.serialization.Model):
+class GatewayApiRoute(_serialization.Model):
     """API route config of the Spring Cloud Gateway.
 
     :ivar title: A title, will be applied to methods in the generated OpenAPI documentation.
@@ -3917,21 +3657,21 @@ class GatewayApiRoute(msrest.serialization.Model):
     :vartype filters: list[str]
     :ivar order: Route processing order.
     :vartype order: int
-    :ivar tags: A set of tags. Classification tags, will be applied to methods in the generated
-     OpenAPI documentation.
+    :ivar tags: Classification tags, will be applied to methods in the generated OpenAPI
+     documentation.
     :vartype tags: list[str]
     """
 
     _attribute_map = {
-        'title': {'key': 'title', 'type': 'str'},
-        'description': {'key': 'description', 'type': 'str'},
-        'uri': {'key': 'uri', 'type': 'str'},
-        'sso_enabled': {'key': 'ssoEnabled', 'type': 'bool'},
-        'token_relay': {'key': 'tokenRelay', 'type': 'bool'},
-        'predicates': {'key': 'predicates', 'type': '[str]'},
-        'filters': {'key': 'filters', 'type': '[str]'},
-        'order': {'key': 'order', 'type': 'int'},
-        'tags': {'key': 'tags', 'type': '[str]'},
+        "title": {"key": "title", "type": "str"},
+        "description": {"key": "description", "type": "str"},
+        "uri": {"key": "uri", "type": "str"},
+        "sso_enabled": {"key": "ssoEnabled", "type": "bool"},
+        "token_relay": {"key": "tokenRelay", "type": "bool"},
+        "predicates": {"key": "predicates", "type": "[str]"},
+        "filters": {"key": "filters", "type": "[str]"},
+        "order": {"key": "order", "type": "int"},
+        "tags": {"key": "tags", "type": "[str]"},
     }
 
     def __init__(
@@ -3970,11 +3710,11 @@ class GatewayApiRoute(msrest.serialization.Model):
         :paramtype filters: list[str]
         :keyword order: Route processing order.
         :paramtype order: int
-        :keyword tags: A set of tags. Classification tags, will be applied to methods in the generated
-         OpenAPI documentation.
+        :keyword tags: Classification tags, will be applied to methods in the generated OpenAPI
+         documentation.
         :paramtype tags: list[str]
         """
-        super(GatewayApiRoute, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.title = title
         self.description = description
         self.uri = uri
@@ -3986,7 +3726,7 @@ class GatewayApiRoute(msrest.serialization.Model):
         self.tags = tags
 
 
-class GatewayCorsProperties(msrest.serialization.Model):
+class GatewayCorsProperties(_serialization.Model):
     """Cross-Origin Resource Sharing property.
 
     :ivar allowed_origins: Allowed origins to make cross-site requests. The special value ``*``
@@ -4009,12 +3749,12 @@ class GatewayCorsProperties(msrest.serialization.Model):
     """
 
     _attribute_map = {
-        'allowed_origins': {'key': 'allowedOrigins', 'type': '[str]'},
-        'allowed_methods': {'key': 'allowedMethods', 'type': '[str]'},
-        'allowed_headers': {'key': 'allowedHeaders', 'type': '[str]'},
-        'max_age': {'key': 'maxAge', 'type': 'int'},
-        'allow_credentials': {'key': 'allowCredentials', 'type': 'bool'},
-        'exposed_headers': {'key': 'exposedHeaders', 'type': '[str]'},
+        "allowed_origins": {"key": "allowedOrigins", "type": "[str]"},
+        "allowed_methods": {"key": "allowedMethods", "type": "[str]"},
+        "allowed_headers": {"key": "allowedHeaders", "type": "[str]"},
+        "max_age": {"key": "maxAge", "type": "int"},
+        "allow_credentials": {"key": "allowCredentials", "type": "bool"},
+        "exposed_headers": {"key": "exposedHeaders", "type": "[str]"},
     }
 
     def __init__(
@@ -4047,7 +3787,7 @@ class GatewayCorsProperties(msrest.serialization.Model):
         :keyword exposed_headers: HTTP response headers to expose for cross-site requests.
         :paramtype exposed_headers: list[str]
         """
-        super(GatewayCorsProperties, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.allowed_origins = allowed_origins
         self.allowed_methods = allowed_methods
         self.allowed_headers = allowed_headers
@@ -4056,7 +3796,7 @@ class GatewayCorsProperties(msrest.serialization.Model):
         self.exposed_headers = exposed_headers
 
 
-class GatewayCustomDomainProperties(msrest.serialization.Model):
+class GatewayCustomDomainProperties(_serialization.Model):
     """The properties of custom domain for Spring Cloud Gateway.
 
     :ivar thumbprint: The thumbprint of bound certificate.
@@ -4064,20 +3804,15 @@ class GatewayCustomDomainProperties(msrest.serialization.Model):
     """
 
     _attribute_map = {
-        'thumbprint': {'key': 'thumbprint', 'type': 'str'},
+        "thumbprint": {"key": "thumbprint", "type": "str"},
     }
 
-    def __init__(
-        self,
-        *,
-        thumbprint: Optional[str] = None,
-        **kwargs
-    ):
+    def __init__(self, *, thumbprint: Optional[str] = None, **kwargs):
         """
         :keyword thumbprint: The thumbprint of bound certificate.
         :paramtype thumbprint: str
         """
-        super(GatewayCustomDomainProperties, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.thumbprint = thumbprint
 
 
@@ -4100,36 +3835,31 @@ class GatewayCustomDomainResource(ProxyResource):
     """
 
     _validation = {
-        'id': {'readonly': True},
-        'name': {'readonly': True},
-        'type': {'readonly': True},
-        'system_data': {'readonly': True},
+        "id": {"readonly": True},
+        "name": {"readonly": True},
+        "type": {"readonly": True},
+        "system_data": {"readonly": True},
     }
 
     _attribute_map = {
-        'id': {'key': 'id', 'type': 'str'},
-        'name': {'key': 'name', 'type': 'str'},
-        'type': {'key': 'type', 'type': 'str'},
-        'system_data': {'key': 'systemData', 'type': 'SystemData'},
-        'properties': {'key': 'properties', 'type': 'GatewayCustomDomainProperties'},
+        "id": {"key": "id", "type": "str"},
+        "name": {"key": "name", "type": "str"},
+        "type": {"key": "type", "type": "str"},
+        "system_data": {"key": "systemData", "type": "SystemData"},
+        "properties": {"key": "properties", "type": "GatewayCustomDomainProperties"},
     }
 
-    def __init__(
-        self,
-        *,
-        properties: Optional["GatewayCustomDomainProperties"] = None,
-        **kwargs
-    ):
+    def __init__(self, *, properties: Optional["_models.GatewayCustomDomainProperties"] = None, **kwargs):
         """
         :keyword properties: The properties of custom domain for Spring Cloud Gateway.
         :paramtype properties:
          ~azure.mgmt.appplatform.v2022_03_01_preview.models.GatewayCustomDomainProperties
         """
-        super(GatewayCustomDomainResource, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.properties = properties
 
 
-class GatewayCustomDomainResourceCollection(msrest.serialization.Model):
+class GatewayCustomDomainResourceCollection(_serialization.Model):
     """Object that includes an array of Spring Cloud Gateway custom domain resources and a possible link for next set.
 
     :ivar value: Collection of Spring Cloud Gateway custom domain resources.
@@ -4141,14 +3871,14 @@ class GatewayCustomDomainResourceCollection(msrest.serialization.Model):
     """
 
     _attribute_map = {
-        'value': {'key': 'value', 'type': '[GatewayCustomDomainResource]'},
-        'next_link': {'key': 'nextLink', 'type': 'str'},
+        "value": {"key": "value", "type": "[GatewayCustomDomainResource]"},
+        "next_link": {"key": "nextLink", "type": "str"},
     }
 
     def __init__(
         self,
         *,
-        value: Optional[List["GatewayCustomDomainResource"]] = None,
+        value: Optional[List["_models.GatewayCustomDomainResource"]] = None,
         next_link: Optional[str] = None,
         **kwargs
     ):
@@ -4160,12 +3890,12 @@ class GatewayCustomDomainResourceCollection(msrest.serialization.Model):
          It's null for now, added for future use.
         :paramtype next_link: str
         """
-        super(GatewayCustomDomainResourceCollection, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.value = value
         self.next_link = next_link
 
 
-class GatewayInstance(msrest.serialization.Model):
+class GatewayInstance(_serialization.Model):
     """Collection of instances belong to the Spring Cloud Gateway.
 
     Variables are only populated by the server, and will be ignored when sending a request.
@@ -4177,27 +3907,23 @@ class GatewayInstance(msrest.serialization.Model):
     """
 
     _validation = {
-        'name': {'readonly': True},
-        'status': {'readonly': True},
+        "name": {"readonly": True},
+        "status": {"readonly": True},
     }
 
     _attribute_map = {
-        'name': {'key': 'name', 'type': 'str'},
-        'status': {'key': 'status', 'type': 'str'},
+        "name": {"key": "name", "type": "str"},
+        "status": {"key": "status", "type": "str"},
     }
 
-    def __init__(
-        self,
-        **kwargs
-    ):
-        """
-        """
-        super(GatewayInstance, self).__init__(**kwargs)
+    def __init__(self, **kwargs):
+        """ """
+        super().__init__(**kwargs)
         self.name = None
         self.status = None
 
 
-class GatewayOperatorProperties(msrest.serialization.Model):
+class GatewayOperatorProperties(_serialization.Model):
     """Properties of the Spring Cloud Gateway Operator.
 
     Variables are only populated by the server, and will be ignored when sending a request.
@@ -4210,27 +3936,23 @@ class GatewayOperatorProperties(msrest.serialization.Model):
     """
 
     _validation = {
-        'resource_requests': {'readonly': True},
-        'instances': {'readonly': True},
+        "resource_requests": {"readonly": True},
+        "instances": {"readonly": True},
     }
 
     _attribute_map = {
-        'resource_requests': {'key': 'resourceRequests', 'type': 'GatewayOperatorResourceRequests'},
-        'instances': {'key': 'instances', 'type': '[GatewayInstance]'},
+        "resource_requests": {"key": "resourceRequests", "type": "GatewayOperatorResourceRequests"},
+        "instances": {"key": "instances", "type": "[GatewayInstance]"},
     }
 
-    def __init__(
-        self,
-        **kwargs
-    ):
-        """
-        """
-        super(GatewayOperatorProperties, self).__init__(**kwargs)
+    def __init__(self, **kwargs):
+        """ """
+        super().__init__(**kwargs)
         self.resource_requests = None
         self.instances = None
 
 
-class GatewayOperatorResourceRequests(msrest.serialization.Model):
+class GatewayOperatorResourceRequests(_serialization.Model):
     """Properties of the Spring Cloud Gateway Operator.
 
     Variables are only populated by the server, and will be ignored when sending a request.
@@ -4244,36 +3966,32 @@ class GatewayOperatorResourceRequests(msrest.serialization.Model):
     """
 
     _validation = {
-        'cpu': {'readonly': True},
-        'memory': {'readonly': True},
-        'instance_count': {'readonly': True},
+        "cpu": {"readonly": True},
+        "memory": {"readonly": True},
+        "instance_count": {"readonly": True},
     }
 
     _attribute_map = {
-        'cpu': {'key': 'cpu', 'type': 'str'},
-        'memory': {'key': 'memory', 'type': 'str'},
-        'instance_count': {'key': 'instanceCount', 'type': 'int'},
+        "cpu": {"key": "cpu", "type": "str"},
+        "memory": {"key": "memory", "type": "str"},
+        "instance_count": {"key": "instanceCount", "type": "int"},
     }
 
-    def __init__(
-        self,
-        **kwargs
-    ):
-        """
-        """
-        super(GatewayOperatorResourceRequests, self).__init__(**kwargs)
+    def __init__(self, **kwargs):
+        """ """
+        super().__init__(**kwargs)
         self.cpu = None
         self.memory = None
         self.instance_count = None
 
 
-class GatewayProperties(msrest.serialization.Model):
+class GatewayProperties(_serialization.Model):
     """Spring Cloud Gateway properties payload.
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
-    :ivar provisioning_state: State of the Spring Cloud Gateway. Possible values include:
-     "Creating", "Updating", "Succeeded", "Failed", "Deleting".
+    :ivar provisioning_state: State of the Spring Cloud Gateway. Known values are: "Creating",
+     "Updating", "Succeeded", "Failed", and "Deleting".
     :vartype provisioning_state: str or
      ~azure.mgmt.appplatform.v2022_03_01_preview.models.GatewayProvisioningState
     :ivar public: Indicates whether the Spring Cloud Gateway exposes endpoint.
@@ -4301,34 +4019,34 @@ class GatewayProperties(msrest.serialization.Model):
     """
 
     _validation = {
-        'provisioning_state': {'readonly': True},
-        'url': {'readonly': True},
-        'instances': {'readonly': True},
-        'operator_properties': {'readonly': True},
+        "provisioning_state": {"readonly": True},
+        "url": {"readonly": True},
+        "instances": {"readonly": True},
+        "operator_properties": {"readonly": True},
     }
 
     _attribute_map = {
-        'provisioning_state': {'key': 'provisioningState', 'type': 'str'},
-        'public': {'key': 'public', 'type': 'bool'},
-        'url': {'key': 'url', 'type': 'str'},
-        'https_only': {'key': 'httpsOnly', 'type': 'bool'},
-        'sso_properties': {'key': 'ssoProperties', 'type': 'SsoProperties'},
-        'api_metadata_properties': {'key': 'apiMetadataProperties', 'type': 'GatewayApiMetadataProperties'},
-        'cors_properties': {'key': 'corsProperties', 'type': 'GatewayCorsProperties'},
-        'resource_requests': {'key': 'resourceRequests', 'type': 'GatewayResourceRequests'},
-        'instances': {'key': 'instances', 'type': '[GatewayInstance]'},
-        'operator_properties': {'key': 'operatorProperties', 'type': 'GatewayOperatorProperties'},
+        "provisioning_state": {"key": "provisioningState", "type": "str"},
+        "public": {"key": "public", "type": "bool"},
+        "url": {"key": "url", "type": "str"},
+        "https_only": {"key": "httpsOnly", "type": "bool"},
+        "sso_properties": {"key": "ssoProperties", "type": "SsoProperties"},
+        "api_metadata_properties": {"key": "apiMetadataProperties", "type": "GatewayApiMetadataProperties"},
+        "cors_properties": {"key": "corsProperties", "type": "GatewayCorsProperties"},
+        "resource_requests": {"key": "resourceRequests", "type": "GatewayResourceRequests"},
+        "instances": {"key": "instances", "type": "[GatewayInstance]"},
+        "operator_properties": {"key": "operatorProperties", "type": "GatewayOperatorProperties"},
     }
 
     def __init__(
         self,
         *,
-        public: Optional[bool] = None,
-        https_only: Optional[bool] = None,
-        sso_properties: Optional["SsoProperties"] = None,
-        api_metadata_properties: Optional["GatewayApiMetadataProperties"] = None,
-        cors_properties: Optional["GatewayCorsProperties"] = None,
-        resource_requests: Optional["GatewayResourceRequests"] = None,
+        public: bool = False,
+        https_only: bool = False,
+        sso_properties: Optional["_models.SsoProperties"] = None,
+        api_metadata_properties: Optional["_models.GatewayApiMetadataProperties"] = None,
+        cors_properties: Optional["_models.GatewayCorsProperties"] = None,
+        resource_requests: Optional["_models.GatewayResourceRequests"] = None,
         **kwargs
     ):
         """
@@ -4348,7 +4066,7 @@ class GatewayProperties(msrest.serialization.Model):
         :paramtype resource_requests:
          ~azure.mgmt.appplatform.v2022_03_01_preview.models.GatewayResourceRequests
         """
-        super(GatewayProperties, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.provisioning_state = None
         self.public = public
         self.url = None
@@ -4381,27 +4099,23 @@ class GatewayResource(ProxyResource):
     """
 
     _validation = {
-        'id': {'readonly': True},
-        'name': {'readonly': True},
-        'type': {'readonly': True},
-        'system_data': {'readonly': True},
+        "id": {"readonly": True},
+        "name": {"readonly": True},
+        "type": {"readonly": True},
+        "system_data": {"readonly": True},
     }
 
     _attribute_map = {
-        'id': {'key': 'id', 'type': 'str'},
-        'name': {'key': 'name', 'type': 'str'},
-        'type': {'key': 'type', 'type': 'str'},
-        'system_data': {'key': 'systemData', 'type': 'SystemData'},
-        'properties': {'key': 'properties', 'type': 'GatewayProperties'},
-        'sku': {'key': 'sku', 'type': 'Sku'},
+        "id": {"key": "id", "type": "str"},
+        "name": {"key": "name", "type": "str"},
+        "type": {"key": "type", "type": "str"},
+        "system_data": {"key": "systemData", "type": "SystemData"},
+        "properties": {"key": "properties", "type": "GatewayProperties"},
+        "sku": {"key": "sku", "type": "Sku"},
     }
 
     def __init__(
-        self,
-        *,
-        properties: Optional["GatewayProperties"] = None,
-        sku: Optional["Sku"] = None,
-        **kwargs
+        self, *, properties: Optional["_models.GatewayProperties"] = None, sku: Optional["_models.Sku"] = None, **kwargs
     ):
         """
         :keyword properties: Spring Cloud Gateway properties payload.
@@ -4409,12 +4123,12 @@ class GatewayResource(ProxyResource):
         :keyword sku: Sku of the Spring Cloud Gateway resource.
         :paramtype sku: ~azure.mgmt.appplatform.v2022_03_01_preview.models.Sku
         """
-        super(GatewayResource, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.properties = properties
         self.sku = sku
 
 
-class GatewayResourceCollection(msrest.serialization.Model):
+class GatewayResourceCollection(_serialization.Model):
     """Object that includes an array of gateway resources and a possible link for next set.
 
     :ivar value: Collection of gateway resources.
@@ -4425,16 +4139,12 @@ class GatewayResourceCollection(msrest.serialization.Model):
     """
 
     _attribute_map = {
-        'value': {'key': 'value', 'type': '[GatewayResource]'},
-        'next_link': {'key': 'nextLink', 'type': 'str'},
+        "value": {"key": "value", "type": "[GatewayResource]"},
+        "next_link": {"key": "nextLink", "type": "str"},
     }
 
     def __init__(
-        self,
-        *,
-        value: Optional[List["GatewayResource"]] = None,
-        next_link: Optional[str] = None,
-        **kwargs
+        self, *, value: Optional[List["_models.GatewayResource"]] = None, next_link: Optional[str] = None, **kwargs
     ):
         """
         :keyword value: Collection of gateway resources.
@@ -4443,12 +4153,12 @@ class GatewayResourceCollection(msrest.serialization.Model):
          It's null for now, added for future use.
         :paramtype next_link: str
         """
-        super(GatewayResourceCollection, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.value = value
         self.next_link = next_link
 
 
-class GatewayResourceRequests(msrest.serialization.Model):
+class GatewayResourceRequests(_serialization.Model):
     """Resource request payload of Spring Cloud Gateway.
 
     :ivar cpu: Cpu allocated to each Spring Cloud Gateway instance.
@@ -4458,35 +4168,29 @@ class GatewayResourceRequests(msrest.serialization.Model):
     """
 
     _attribute_map = {
-        'cpu': {'key': 'cpu', 'type': 'str'},
-        'memory': {'key': 'memory', 'type': 'str'},
+        "cpu": {"key": "cpu", "type": "str"},
+        "memory": {"key": "memory", "type": "str"},
     }
 
-    def __init__(
-        self,
-        *,
-        cpu: Optional[str] = None,
-        memory: Optional[str] = None,
-        **kwargs
-    ):
+    def __init__(self, *, cpu: str = "1", memory: str = "2Gi", **kwargs):
         """
         :keyword cpu: Cpu allocated to each Spring Cloud Gateway instance.
         :paramtype cpu: str
         :keyword memory: Memory allocated to each Spring Cloud Gateway instance.
         :paramtype memory: str
         """
-        super(GatewayResourceRequests, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.cpu = cpu
         self.memory = memory
 
 
-class GatewayRouteConfigProperties(msrest.serialization.Model):
+class GatewayRouteConfigProperties(_serialization.Model):
     """API route config of the Spring Cloud Gateway.
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
-    :ivar provisioning_state: State of the Spring Cloud Gateway route config. Possible values
-     include: "Creating", "Updating", "Succeeded", "Failed", "Deleting".
+    :ivar provisioning_state: State of the Spring Cloud Gateway route config. Known values are:
+     "Creating", "Updating", "Succeeded", "Failed", and "Deleting".
     :vartype provisioning_state: str or
      ~azure.mgmt.appplatform.v2022_03_01_preview.models.GatewayProvisioningState
     :ivar app_resource_id: The resource Id of the Azure Spring Cloud app, required unless route
@@ -4498,20 +4202,20 @@ class GatewayRouteConfigProperties(msrest.serialization.Model):
     """
 
     _validation = {
-        'provisioning_state': {'readonly': True},
+        "provisioning_state": {"readonly": True},
     }
 
     _attribute_map = {
-        'provisioning_state': {'key': 'provisioningState', 'type': 'str'},
-        'app_resource_id': {'key': 'appResourceId', 'type': 'str'},
-        'routes': {'key': 'routes', 'type': '[GatewayApiRoute]'},
+        "provisioning_state": {"key": "provisioningState", "type": "str"},
+        "app_resource_id": {"key": "appResourceId", "type": "str"},
+        "routes": {"key": "routes", "type": "[GatewayApiRoute]"},
     }
 
     def __init__(
         self,
         *,
         app_resource_id: Optional[str] = None,
-        routes: Optional[List["GatewayApiRoute"]] = None,
+        routes: Optional[List["_models.GatewayApiRoute"]] = None,
         **kwargs
     ):
         """
@@ -4522,7 +4226,7 @@ class GatewayRouteConfigProperties(msrest.serialization.Model):
          ``uri``\ , ``ssoEnabled``\ , ``predicates``\ , ``filters``.
         :paramtype routes: list[~azure.mgmt.appplatform.v2022_03_01_preview.models.GatewayApiRoute]
         """
-        super(GatewayRouteConfigProperties, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.provisioning_state = None
         self.app_resource_id = app_resource_id
         self.routes = routes
@@ -4547,36 +4251,31 @@ class GatewayRouteConfigResource(ProxyResource):
     """
 
     _validation = {
-        'id': {'readonly': True},
-        'name': {'readonly': True},
-        'type': {'readonly': True},
-        'system_data': {'readonly': True},
+        "id": {"readonly": True},
+        "name": {"readonly": True},
+        "type": {"readonly": True},
+        "system_data": {"readonly": True},
     }
 
     _attribute_map = {
-        'id': {'key': 'id', 'type': 'str'},
-        'name': {'key': 'name', 'type': 'str'},
-        'type': {'key': 'type', 'type': 'str'},
-        'system_data': {'key': 'systemData', 'type': 'SystemData'},
-        'properties': {'key': 'properties', 'type': 'GatewayRouteConfigProperties'},
+        "id": {"key": "id", "type": "str"},
+        "name": {"key": "name", "type": "str"},
+        "type": {"key": "type", "type": "str"},
+        "system_data": {"key": "systemData", "type": "SystemData"},
+        "properties": {"key": "properties", "type": "GatewayRouteConfigProperties"},
     }
 
-    def __init__(
-        self,
-        *,
-        properties: Optional["GatewayRouteConfigProperties"] = None,
-        **kwargs
-    ):
+    def __init__(self, *, properties: Optional["_models.GatewayRouteConfigProperties"] = None, **kwargs):
         """
         :keyword properties: API route config of the Spring Cloud Gateway.
         :paramtype properties:
          ~azure.mgmt.appplatform.v2022_03_01_preview.models.GatewayRouteConfigProperties
         """
-        super(GatewayRouteConfigResource, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.properties = properties
 
 
-class GatewayRouteConfigResourceCollection(msrest.serialization.Model):
+class GatewayRouteConfigResourceCollection(_serialization.Model):
     """Object that includes an array of Spring Cloud Gateway route config resources and a possible link for next set.
 
     :ivar value: Collection of Spring Cloud Gateway route config resources.
@@ -4588,14 +4287,14 @@ class GatewayRouteConfigResourceCollection(msrest.serialization.Model):
     """
 
     _attribute_map = {
-        'value': {'key': 'value', 'type': '[GatewayRouteConfigResource]'},
-        'next_link': {'key': 'nextLink', 'type': 'str'},
+        "value": {"key": "value", "type": "[GatewayRouteConfigResource]"},
+        "next_link": {"key": "nextLink", "type": "str"},
     }
 
     def __init__(
         self,
         *,
-        value: Optional[List["GatewayRouteConfigResource"]] = None,
+        value: Optional[List["_models.GatewayRouteConfigResource"]] = None,
         next_link: Optional[str] = None,
         **kwargs
     ):
@@ -4607,21 +4306,21 @@ class GatewayRouteConfigResourceCollection(msrest.serialization.Model):
          It's null for now, added for future use.
         :paramtype next_link: str
         """
-        super(GatewayRouteConfigResourceCollection, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.value = value
         self.next_link = next_link
 
 
-class GitPatternRepository(msrest.serialization.Model):
+class GitPatternRepository(_serialization.Model):  # pylint: disable=too-many-instance-attributes
     """Git repository property payload for config server.
 
     All required parameters must be populated in order to send to Azure.
 
-    :ivar name: Required. Name of the repository.
+    :ivar name: Name of the repository. Required.
     :vartype name: str
     :ivar pattern: Collection of pattern of the repository.
     :vartype pattern: list[str]
-    :ivar uri: Required. URI of the repository.
+    :ivar uri: URI of the repository. Required.
     :vartype uri: str
     :ivar label: Label of the repository.
     :vartype label: str
@@ -4642,22 +4341,22 @@ class GitPatternRepository(msrest.serialization.Model):
     """
 
     _validation = {
-        'name': {'required': True},
-        'uri': {'required': True},
+        "name": {"required": True},
+        "uri": {"required": True},
     }
 
     _attribute_map = {
-        'name': {'key': 'name', 'type': 'str'},
-        'pattern': {'key': 'pattern', 'type': '[str]'},
-        'uri': {'key': 'uri', 'type': 'str'},
-        'label': {'key': 'label', 'type': 'str'},
-        'search_paths': {'key': 'searchPaths', 'type': '[str]'},
-        'username': {'key': 'username', 'type': 'str'},
-        'password': {'key': 'password', 'type': 'str'},
-        'host_key': {'key': 'hostKey', 'type': 'str'},
-        'host_key_algorithm': {'key': 'hostKeyAlgorithm', 'type': 'str'},
-        'private_key': {'key': 'privateKey', 'type': 'str'},
-        'strict_host_key_checking': {'key': 'strictHostKeyChecking', 'type': 'bool'},
+        "name": {"key": "name", "type": "str"},
+        "pattern": {"key": "pattern", "type": "[str]"},
+        "uri": {"key": "uri", "type": "str"},
+        "label": {"key": "label", "type": "str"},
+        "search_paths": {"key": "searchPaths", "type": "[str]"},
+        "username": {"key": "username", "type": "str"},
+        "password": {"key": "password", "type": "str"},
+        "host_key": {"key": "hostKey", "type": "str"},
+        "host_key_algorithm": {"key": "hostKeyAlgorithm", "type": "str"},
+        "private_key": {"key": "privateKey", "type": "str"},
+        "strict_host_key_checking": {"key": "strictHostKeyChecking", "type": "bool"},
     }
 
     def __init__(
@@ -4677,11 +4376,11 @@ class GitPatternRepository(msrest.serialization.Model):
         **kwargs
     ):
         """
-        :keyword name: Required. Name of the repository.
+        :keyword name: Name of the repository. Required.
         :paramtype name: str
         :keyword pattern: Collection of pattern of the repository.
         :paramtype pattern: list[str]
-        :keyword uri: Required. URI of the repository.
+        :keyword uri: URI of the repository. Required.
         :paramtype uri: str
         :keyword label: Label of the repository.
         :paramtype label: str
@@ -4700,7 +4399,7 @@ class GitPatternRepository(msrest.serialization.Model):
         :keyword strict_host_key_checking: Strict host key checking or not.
         :paramtype strict_host_key_checking: bool
         """
-        super(GitPatternRepository, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.name = name
         self.pattern = pattern
         self.uri = uri
@@ -4714,7 +4413,7 @@ class GitPatternRepository(msrest.serialization.Model):
         self.strict_host_key_checking = strict_host_key_checking
 
 
-class ImageRegistryCredential(msrest.serialization.Model):
+class ImageRegistryCredential(_serialization.Model):
     """Credential of the image registry.
 
     :ivar username: The username of the image registry credential.
@@ -4724,24 +4423,18 @@ class ImageRegistryCredential(msrest.serialization.Model):
     """
 
     _attribute_map = {
-        'username': {'key': 'username', 'type': 'str'},
-        'password': {'key': 'password', 'type': 'str'},
+        "username": {"key": "username", "type": "str"},
+        "password": {"key": "password", "type": "str"},
     }
 
-    def __init__(
-        self,
-        *,
-        username: Optional[str] = None,
-        password: Optional[str] = None,
-        **kwargs
-    ):
+    def __init__(self, *, username: Optional[str] = None, password: Optional[str] = None, **kwargs):
         """
         :keyword username: The username of the image registry credential.
         :paramtype username: str
         :keyword password: The password of the image registry credential.
         :paramtype password: str
         """
-        super(ImageRegistryCredential, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.username = username
         self.password = password
 
@@ -4749,12 +4442,12 @@ class ImageRegistryCredential(msrest.serialization.Model):
 class UploadedUserSourceInfo(UserSourceInfo):
     """Source with uploaded location.
 
-    You probably want to use the sub-classes and not this class directly. Known
-    sub-classes are: JarUploadedUserSourceInfo, NetCoreZipUploadedUserSourceInfo, SourceUploadedUserSourceInfo.
+    You probably want to use the sub-classes and not this class directly. Known sub-classes are:
+    JarUploadedUserSourceInfo, NetCoreZipUploadedUserSourceInfo, SourceUploadedUserSourceInfo
 
     All required parameters must be populated in order to send to Azure.
 
-    :ivar type: Required. Type of the source uploaded.Constant filled by server.
+    :ivar type: Type of the source uploaded. Required.
     :vartype type: str
     :ivar version: Version of the source.
     :vartype version: str
@@ -4763,34 +4456,32 @@ class UploadedUserSourceInfo(UserSourceInfo):
     """
 
     _validation = {
-        'type': {'required': True},
+        "type": {"required": True},
     }
 
     _attribute_map = {
-        'type': {'key': 'type', 'type': 'str'},
-        'version': {'key': 'version', 'type': 'str'},
-        'relative_path': {'key': 'relativePath', 'type': 'str'},
+        "type": {"key": "type", "type": "str"},
+        "version": {"key": "version", "type": "str"},
+        "relative_path": {"key": "relativePath", "type": "str"},
     }
 
     _subtype_map = {
-        'type': {'Jar': 'JarUploadedUserSourceInfo', 'NetCoreZip': 'NetCoreZipUploadedUserSourceInfo', 'Source': 'SourceUploadedUserSourceInfo'}
+        "type": {
+            "Jar": "JarUploadedUserSourceInfo",
+            "NetCoreZip": "NetCoreZipUploadedUserSourceInfo",
+            "Source": "SourceUploadedUserSourceInfo",
+        }
     }
 
-    def __init__(
-        self,
-        *,
-        version: Optional[str] = None,
-        relative_path: Optional[str] = None,
-        **kwargs
-    ):
+    def __init__(self, *, version: Optional[str] = None, relative_path: Optional[str] = None, **kwargs):
         """
         :keyword version: Version of the source.
         :paramtype version: str
         :keyword relative_path: Relative path of the storage which stores the source.
         :paramtype relative_path: str
         """
-        super(UploadedUserSourceInfo, self).__init__(version=version, **kwargs)
-        self.type = 'UploadedUserSourceInfo'  # type: str
+        super().__init__(version=version, **kwargs)
+        self.type = "UploadedUserSourceInfo"  # type: str
         self.relative_path = relative_path
 
 
@@ -4799,7 +4490,7 @@ class JarUploadedUserSourceInfo(UploadedUserSourceInfo):
 
     All required parameters must be populated in order to send to Azure.
 
-    :ivar type: Required. Type of the source uploaded.Constant filled by server.
+    :ivar type: Type of the source uploaded. Required.
     :vartype type: str
     :ivar version: Version of the source.
     :vartype version: str
@@ -4812,15 +4503,15 @@ class JarUploadedUserSourceInfo(UploadedUserSourceInfo):
     """
 
     _validation = {
-        'type': {'required': True},
+        "type": {"required": True},
     }
 
     _attribute_map = {
-        'type': {'key': 'type', 'type': 'str'},
-        'version': {'key': 'version', 'type': 'str'},
-        'relative_path': {'key': 'relativePath', 'type': 'str'},
-        'runtime_version': {'key': 'runtimeVersion', 'type': 'str'},
-        'jvm_options': {'key': 'jvmOptions', 'type': 'str'},
+        "type": {"key": "type", "type": "str"},
+        "version": {"key": "version", "type": "str"},
+        "relative_path": {"key": "relativePath", "type": "str"},
+        "runtime_version": {"key": "runtimeVersion", "type": "str"},
+        "jvm_options": {"key": "jvmOptions", "type": "str"},
     }
 
     def __init__(
@@ -4842,20 +4533,20 @@ class JarUploadedUserSourceInfo(UploadedUserSourceInfo):
         :keyword jvm_options: JVM parameter.
         :paramtype jvm_options: str
         """
-        super(JarUploadedUserSourceInfo, self).__init__(version=version, relative_path=relative_path, **kwargs)
-        self.type = 'Jar'  # type: str
+        super().__init__(version=version, relative_path=relative_path, **kwargs)
+        self.type = "Jar"  # type: str
         self.runtime_version = runtime_version
         self.jvm_options = jvm_options
 
 
-class KeyVaultCertificateProperties(CertificateProperties):
+class KeyVaultCertificateProperties(CertificateProperties):  # pylint: disable=too-many-instance-attributes
     """Properties of certificate imported from key vault.
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
     All required parameters must be populated in order to send to Azure.
 
-    :ivar type: Required. The type of the certificate source.Constant filled by server.
+    :ivar type: The type of the certificate source. Required.
     :vartype type: str
     :ivar thumbprint: The thumbprint of certificate.
     :vartype thumbprint: str
@@ -4871,9 +4562,9 @@ class KeyVaultCertificateProperties(CertificateProperties):
     :vartype subject_name: str
     :ivar dns_names: The domain list of certificate.
     :vartype dns_names: list[str]
-    :ivar vault_uri: Required. The vault uri of user key vault.
+    :ivar vault_uri: The vault uri of user key vault. Required.
     :vartype vault_uri: str
-    :ivar key_vault_cert_name: Required. The certificate name of key vault.
+    :ivar key_vault_cert_name: The certificate name of key vault. Required.
     :vartype key_vault_cert_name: str
     :ivar cert_version: The certificate version of key vault.
     :vartype cert_version: str
@@ -4883,31 +4574,31 @@ class KeyVaultCertificateProperties(CertificateProperties):
     """
 
     _validation = {
-        'type': {'required': True},
-        'thumbprint': {'readonly': True},
-        'issuer': {'readonly': True},
-        'issued_date': {'readonly': True},
-        'expiration_date': {'readonly': True},
-        'activate_date': {'readonly': True},
-        'subject_name': {'readonly': True},
-        'dns_names': {'readonly': True},
-        'vault_uri': {'required': True},
-        'key_vault_cert_name': {'required': True},
+        "type": {"required": True},
+        "thumbprint": {"readonly": True},
+        "issuer": {"readonly": True},
+        "issued_date": {"readonly": True},
+        "expiration_date": {"readonly": True},
+        "activate_date": {"readonly": True},
+        "subject_name": {"readonly": True},
+        "dns_names": {"readonly": True},
+        "vault_uri": {"required": True},
+        "key_vault_cert_name": {"required": True},
     }
 
     _attribute_map = {
-        'type': {'key': 'type', 'type': 'str'},
-        'thumbprint': {'key': 'thumbprint', 'type': 'str'},
-        'issuer': {'key': 'issuer', 'type': 'str'},
-        'issued_date': {'key': 'issuedDate', 'type': 'str'},
-        'expiration_date': {'key': 'expirationDate', 'type': 'str'},
-        'activate_date': {'key': 'activateDate', 'type': 'str'},
-        'subject_name': {'key': 'subjectName', 'type': 'str'},
-        'dns_names': {'key': 'dnsNames', 'type': '[str]'},
-        'vault_uri': {'key': 'vaultUri', 'type': 'str'},
-        'key_vault_cert_name': {'key': 'keyVaultCertName', 'type': 'str'},
-        'cert_version': {'key': 'certVersion', 'type': 'str'},
-        'exclude_private_key': {'key': 'excludePrivateKey', 'type': 'bool'},
+        "type": {"key": "type", "type": "str"},
+        "thumbprint": {"key": "thumbprint", "type": "str"},
+        "issuer": {"key": "issuer", "type": "str"},
+        "issued_date": {"key": "issuedDate", "type": "str"},
+        "expiration_date": {"key": "expirationDate", "type": "str"},
+        "activate_date": {"key": "activateDate", "type": "str"},
+        "subject_name": {"key": "subjectName", "type": "str"},
+        "dns_names": {"key": "dnsNames", "type": "[str]"},
+        "vault_uri": {"key": "vaultUri", "type": "str"},
+        "key_vault_cert_name": {"key": "keyVaultCertName", "type": "str"},
+        "cert_version": {"key": "certVersion", "type": "str"},
+        "exclude_private_key": {"key": "excludePrivateKey", "type": "bool"},
     }
 
     def __init__(
@@ -4916,13 +4607,13 @@ class KeyVaultCertificateProperties(CertificateProperties):
         vault_uri: str,
         key_vault_cert_name: str,
         cert_version: Optional[str] = None,
-        exclude_private_key: Optional[bool] = False,
+        exclude_private_key: bool = False,
         **kwargs
     ):
         """
-        :keyword vault_uri: Required. The vault uri of user key vault.
+        :keyword vault_uri: The vault uri of user key vault. Required.
         :paramtype vault_uri: str
-        :keyword key_vault_cert_name: Required. The certificate name of key vault.
+        :keyword key_vault_cert_name: The certificate name of key vault. Required.
         :paramtype key_vault_cert_name: str
         :keyword cert_version: The certificate version of key vault.
         :paramtype cert_version: str
@@ -4930,20 +4621,20 @@ class KeyVaultCertificateProperties(CertificateProperties):
          vault.
         :paramtype exclude_private_key: bool
         """
-        super(KeyVaultCertificateProperties, self).__init__(**kwargs)
-        self.type = 'KeyVaultCertificate'  # type: str
+        super().__init__(**kwargs)
+        self.type = "KeyVaultCertificate"  # type: str
         self.vault_uri = vault_uri
         self.key_vault_cert_name = key_vault_cert_name
         self.cert_version = cert_version
         self.exclude_private_key = exclude_private_key
 
 
-class LoadedCertificate(msrest.serialization.Model):
+class LoadedCertificate(_serialization.Model):
     """Loaded certificate payload.
 
     All required parameters must be populated in order to send to Azure.
 
-    :ivar resource_id: Required. Resource Id of loaded certificate.
+    :ivar resource_id: Resource Id of loaded certificate. Required.
     :vartype resource_id: str
     :ivar load_trust_store: Indicate whether the certificate will be loaded into default trust
      store, only work for Java runtime.
@@ -4951,65 +4642,54 @@ class LoadedCertificate(msrest.serialization.Model):
     """
 
     _validation = {
-        'resource_id': {'required': True},
+        "resource_id": {"required": True},
     }
 
     _attribute_map = {
-        'resource_id': {'key': 'resourceId', 'type': 'str'},
-        'load_trust_store': {'key': 'loadTrustStore', 'type': 'bool'},
+        "resource_id": {"key": "resourceId", "type": "str"},
+        "load_trust_store": {"key": "loadTrustStore", "type": "bool"},
     }
 
-    def __init__(
-        self,
-        *,
-        resource_id: str,
-        load_trust_store: Optional[bool] = False,
-        **kwargs
-    ):
+    def __init__(self, *, resource_id: str, load_trust_store: bool = False, **kwargs):
         """
-        :keyword resource_id: Required. Resource Id of loaded certificate.
+        :keyword resource_id: Resource Id of loaded certificate. Required.
         :paramtype resource_id: str
         :keyword load_trust_store: Indicate whether the certificate will be loaded into default trust
          store, only work for Java runtime.
         :paramtype load_trust_store: bool
         """
-        super(LoadedCertificate, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.resource_id = resource_id
         self.load_trust_store = load_trust_store
 
 
-class LogFileUrlResponse(msrest.serialization.Model):
+class LogFileUrlResponse(_serialization.Model):
     """Log file URL payload.
 
     All required parameters must be populated in order to send to Azure.
 
-    :ivar url: Required. URL of the log file.
+    :ivar url: URL of the log file. Required.
     :vartype url: str
     """
 
     _validation = {
-        'url': {'required': True},
+        "url": {"required": True},
     }
 
     _attribute_map = {
-        'url': {'key': 'url', 'type': 'str'},
+        "url": {"key": "url", "type": "str"},
     }
 
-    def __init__(
-        self,
-        *,
-        url: str,
-        **kwargs
-    ):
+    def __init__(self, *, url: str, **kwargs):
         """
-        :keyword url: Required. URL of the log file.
+        :keyword url: URL of the log file. Required.
         :paramtype url: str
         """
-        super(LogFileUrlResponse, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.url = url
 
 
-class LogSpecification(msrest.serialization.Model):
+class LogSpecification(_serialization.Model):
     """Specifications of the Log for Azure Monitoring.
 
     :ivar name: Name of the log.
@@ -5021,9 +4701,9 @@ class LogSpecification(msrest.serialization.Model):
     """
 
     _attribute_map = {
-        'name': {'key': 'name', 'type': 'str'},
-        'display_name': {'key': 'displayName', 'type': 'str'},
-        'blob_duration': {'key': 'blobDuration', 'type': 'str'},
+        "name": {"key": "name", "type": "str"},
+        "display_name": {"key": "displayName", "type": "str"},
+        "blob_duration": {"key": "blobDuration", "type": "str"},
     }
 
     def __init__(
@@ -5042,17 +4722,17 @@ class LogSpecification(msrest.serialization.Model):
         :keyword blob_duration: Blob duration of the log.
         :paramtype blob_duration: str
         """
-        super(LogSpecification, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.name = name
         self.display_name = display_name
         self.blob_duration = blob_duration
 
 
-class ManagedIdentityProperties(msrest.serialization.Model):
+class ManagedIdentityProperties(_serialization.Model):
     """Managed identity properties retrieved from ARM request headers.
 
-    :ivar type: Type of the managed identity. Possible values include: "None", "SystemAssigned",
-     "UserAssigned", "SystemAssigned,UserAssigned".
+    :ivar type: Type of the managed identity. Known values are: "None", "SystemAssigned",
+     "UserAssigned", and "SystemAssigned,UserAssigned".
     :vartype type: str or ~azure.mgmt.appplatform.v2022_03_01_preview.models.ManagedIdentityType
     :ivar principal_id: Principal Id of system-assigned managed identity.
     :vartype principal_id: str
@@ -5064,24 +4744,24 @@ class ManagedIdentityProperties(msrest.serialization.Model):
     """
 
     _attribute_map = {
-        'type': {'key': 'type', 'type': 'str'},
-        'principal_id': {'key': 'principalId', 'type': 'str'},
-        'tenant_id': {'key': 'tenantId', 'type': 'str'},
-        'user_assigned_identities': {'key': 'userAssignedIdentities', 'type': '{UserAssignedManagedIdentity}'},
+        "type": {"key": "type", "type": "str"},
+        "principal_id": {"key": "principalId", "type": "str"},
+        "tenant_id": {"key": "tenantId", "type": "str"},
+        "user_assigned_identities": {"key": "userAssignedIdentities", "type": "{UserAssignedManagedIdentity}"},
     }
 
     def __init__(
         self,
         *,
-        type: Optional[Union[str, "ManagedIdentityType"]] = None,
+        type: Optional[Union[str, "_models.ManagedIdentityType"]] = None,
         principal_id: Optional[str] = None,
         tenant_id: Optional[str] = None,
-        user_assigned_identities: Optional[Dict[str, "UserAssignedManagedIdentity"]] = None,
+        user_assigned_identities: Optional[Dict[str, "_models.UserAssignedManagedIdentity"]] = None,
         **kwargs
     ):
         """
-        :keyword type: Type of the managed identity. Possible values include: "None", "SystemAssigned",
-         "UserAssigned", "SystemAssigned,UserAssigned".
+        :keyword type: Type of the managed identity. Known values are: "None", "SystemAssigned",
+         "UserAssigned", and "SystemAssigned,UserAssigned".
         :paramtype type: str or ~azure.mgmt.appplatform.v2022_03_01_preview.models.ManagedIdentityType
         :keyword principal_id: Principal Id of system-assigned managed identity.
         :paramtype principal_id: str
@@ -5091,14 +4771,14 @@ class ManagedIdentityProperties(msrest.serialization.Model):
         :paramtype user_assigned_identities: dict[str,
          ~azure.mgmt.appplatform.v2022_03_01_preview.models.UserAssignedManagedIdentity]
         """
-        super(ManagedIdentityProperties, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.type = type
         self.principal_id = principal_id
         self.tenant_id = tenant_id
         self.user_assigned_identities = user_assigned_identities
 
 
-class MetricDimension(msrest.serialization.Model):
+class MetricDimension(_serialization.Model):
     """Specifications of the Dimension of metrics.
 
     :ivar name: Name of the dimension.
@@ -5111,9 +4791,9 @@ class MetricDimension(msrest.serialization.Model):
     """
 
     _attribute_map = {
-        'name': {'key': 'name', 'type': 'str'},
-        'display_name': {'key': 'displayName', 'type': 'str'},
-        'to_be_exported_for_shoebox': {'key': 'toBeExportedForShoebox', 'type': 'bool'},
+        "name": {"key": "name", "type": "str"},
+        "display_name": {"key": "displayName", "type": "str"},
+        "to_be_exported_for_shoebox": {"key": "toBeExportedForShoebox", "type": "bool"},
     }
 
     def __init__(
@@ -5133,13 +4813,13 @@ class MetricDimension(msrest.serialization.Model):
          export scenario.
         :paramtype to_be_exported_for_shoebox: bool
         """
-        super(MetricDimension, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.name = name
         self.display_name = display_name
         self.to_be_exported_for_shoebox = to_be_exported_for_shoebox
 
 
-class MetricSpecification(msrest.serialization.Model):
+class MetricSpecification(_serialization.Model):  # pylint: disable=too-many-instance-attributes
     """Specifications of the Metrics for Azure Monitoring.
 
     :ivar name: Name of the metric.
@@ -5170,17 +4850,17 @@ class MetricSpecification(msrest.serialization.Model):
     """
 
     _attribute_map = {
-        'name': {'key': 'name', 'type': 'str'},
-        'display_name': {'key': 'displayName', 'type': 'str'},
-        'display_description': {'key': 'displayDescription', 'type': 'str'},
-        'unit': {'key': 'unit', 'type': 'str'},
-        'category': {'key': 'category', 'type': 'str'},
-        'aggregation_type': {'key': 'aggregationType', 'type': 'str'},
-        'supported_aggregation_types': {'key': 'supportedAggregationTypes', 'type': '[str]'},
-        'supported_time_grain_types': {'key': 'supportedTimeGrainTypes', 'type': '[str]'},
-        'fill_gap_with_zero': {'key': 'fillGapWithZero', 'type': 'bool'},
-        'dimensions': {'key': 'dimensions', 'type': '[MetricDimension]'},
-        'source_mdm_namespace': {'key': 'sourceMdmNamespace', 'type': 'str'},
+        "name": {"key": "name", "type": "str"},
+        "display_name": {"key": "displayName", "type": "str"},
+        "display_description": {"key": "displayDescription", "type": "str"},
+        "unit": {"key": "unit", "type": "str"},
+        "category": {"key": "category", "type": "str"},
+        "aggregation_type": {"key": "aggregationType", "type": "str"},
+        "supported_aggregation_types": {"key": "supportedAggregationTypes", "type": "[str]"},
+        "supported_time_grain_types": {"key": "supportedTimeGrainTypes", "type": "[str]"},
+        "fill_gap_with_zero": {"key": "fillGapWithZero", "type": "bool"},
+        "dimensions": {"key": "dimensions", "type": "[MetricDimension]"},
+        "source_mdm_namespace": {"key": "sourceMdmNamespace", "type": "str"},
     }
 
     def __init__(
@@ -5195,7 +4875,7 @@ class MetricSpecification(msrest.serialization.Model):
         supported_aggregation_types: Optional[List[str]] = None,
         supported_time_grain_types: Optional[List[str]] = None,
         fill_gap_with_zero: Optional[bool] = None,
-        dimensions: Optional[List["MetricDimension"]] = None,
+        dimensions: Optional[List["_models.MetricDimension"]] = None,
         source_mdm_namespace: Optional[str] = None,
         **kwargs
     ):
@@ -5226,7 +4906,7 @@ class MetricSpecification(msrest.serialization.Model):
         :keyword source_mdm_namespace: Name of the MDM namespace. Optional.
         :paramtype source_mdm_namespace: str
         """
-        super(MetricSpecification, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.name = name
         self.display_name = display_name
         self.display_description = display_description
@@ -5240,13 +4920,13 @@ class MetricSpecification(msrest.serialization.Model):
         self.source_mdm_namespace = source_mdm_namespace
 
 
-class MonitoringSettingProperties(msrest.serialization.Model):
+class MonitoringSettingProperties(_serialization.Model):
     """Monitoring Setting properties payload.
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
-    :ivar provisioning_state: State of the Monitoring Setting. Possible values include:
-     "NotAvailable", "Failed", "Succeeded", "Updating".
+    :ivar provisioning_state: State of the Monitoring Setting. Known values are: "NotAvailable",
+     "Failed", "Succeeded", and "Updating".
     :vartype provisioning_state: str or
      ~azure.mgmt.appplatform.v2022_03_01_preview.models.MonitoringSettingState
     :ivar error: Error when apply Monitoring Setting changes.
@@ -5267,27 +4947,27 @@ class MonitoringSettingProperties(msrest.serialization.Model):
     """
 
     _validation = {
-        'provisioning_state': {'readonly': True},
-        'app_insights_sampling_rate': {'maximum': 100, 'minimum': 0},
+        "provisioning_state": {"readonly": True},
+        "app_insights_sampling_rate": {"maximum": 100, "minimum": 0},
     }
 
     _attribute_map = {
-        'provisioning_state': {'key': 'provisioningState', 'type': 'str'},
-        'error': {'key': 'error', 'type': 'Error'},
-        'trace_enabled': {'key': 'traceEnabled', 'type': 'bool'},
-        'app_insights_instrumentation_key': {'key': 'appInsightsInstrumentationKey', 'type': 'str'},
-        'app_insights_sampling_rate': {'key': 'appInsightsSamplingRate', 'type': 'float'},
-        'app_insights_agent_versions': {'key': 'appInsightsAgentVersions', 'type': 'ApplicationInsightsAgentVersions'},
+        "provisioning_state": {"key": "provisioningState", "type": "str"},
+        "error": {"key": "error", "type": "Error"},
+        "trace_enabled": {"key": "traceEnabled", "type": "bool"},
+        "app_insights_instrumentation_key": {"key": "appInsightsInstrumentationKey", "type": "str"},
+        "app_insights_sampling_rate": {"key": "appInsightsSamplingRate", "type": "float"},
+        "app_insights_agent_versions": {"key": "appInsightsAgentVersions", "type": "ApplicationInsightsAgentVersions"},
     }
 
     def __init__(
         self,
         *,
-        error: Optional["Error"] = None,
+        error: Optional["_models.Error"] = None,
         trace_enabled: Optional[bool] = None,
         app_insights_instrumentation_key: Optional[str] = None,
         app_insights_sampling_rate: Optional[float] = None,
-        app_insights_agent_versions: Optional["ApplicationInsightsAgentVersions"] = None,
+        app_insights_agent_versions: Optional["_models.ApplicationInsightsAgentVersions"] = None,
         **kwargs
     ):
         """
@@ -5307,7 +4987,7 @@ class MonitoringSettingProperties(msrest.serialization.Model):
         :paramtype app_insights_agent_versions:
          ~azure.mgmt.appplatform.v2022_03_01_preview.models.ApplicationInsightsAgentVersions
         """
-        super(MonitoringSettingProperties, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.provisioning_state = None
         self.error = error
         self.trace_enabled = trace_enabled
@@ -5335,36 +5015,31 @@ class MonitoringSettingResource(ProxyResource):
     """
 
     _validation = {
-        'id': {'readonly': True},
-        'name': {'readonly': True},
-        'type': {'readonly': True},
-        'system_data': {'readonly': True},
+        "id": {"readonly": True},
+        "name": {"readonly": True},
+        "type": {"readonly": True},
+        "system_data": {"readonly": True},
     }
 
     _attribute_map = {
-        'id': {'key': 'id', 'type': 'str'},
-        'name': {'key': 'name', 'type': 'str'},
-        'type': {'key': 'type', 'type': 'str'},
-        'system_data': {'key': 'systemData', 'type': 'SystemData'},
-        'properties': {'key': 'properties', 'type': 'MonitoringSettingProperties'},
+        "id": {"key": "id", "type": "str"},
+        "name": {"key": "name", "type": "str"},
+        "type": {"key": "type", "type": "str"},
+        "system_data": {"key": "systemData", "type": "SystemData"},
+        "properties": {"key": "properties", "type": "MonitoringSettingProperties"},
     }
 
-    def __init__(
-        self,
-        *,
-        properties: Optional["MonitoringSettingProperties"] = None,
-        **kwargs
-    ):
+    def __init__(self, *, properties: Optional["_models.MonitoringSettingProperties"] = None, **kwargs):
         """
         :keyword properties: Properties of the Monitoring Setting resource.
         :paramtype properties:
          ~azure.mgmt.appplatform.v2022_03_01_preview.models.MonitoringSettingProperties
         """
-        super(MonitoringSettingResource, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.properties = properties
 
 
-class NameAvailability(msrest.serialization.Model):
+class NameAvailability(_serialization.Model):
     """Name availability result payload.
 
     :ivar name_available: Indicates whether the name is available.
@@ -5376,9 +5051,9 @@ class NameAvailability(msrest.serialization.Model):
     """
 
     _attribute_map = {
-        'name_available': {'key': 'nameAvailable', 'type': 'bool'},
-        'reason': {'key': 'reason', 'type': 'str'},
-        'message': {'key': 'message', 'type': 'str'},
+        "name_available": {"key": "nameAvailable", "type": "bool"},
+        "reason": {"key": "reason", "type": "str"},
+        "message": {"key": "message", "type": "str"},
     }
 
     def __init__(
@@ -5397,47 +5072,41 @@ class NameAvailability(msrest.serialization.Model):
         :keyword message: Message why the name is not available.
         :paramtype message: str
         """
-        super(NameAvailability, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.name_available = name_available
         self.reason = reason
         self.message = message
 
 
-class NameAvailabilityParameters(msrest.serialization.Model):
+class NameAvailabilityParameters(_serialization.Model):
     """Name availability parameters payload.
 
     All required parameters must be populated in order to send to Azure.
 
-    :ivar type: Required. Type of the resource to check name availability.
+    :ivar type: Type of the resource to check name availability. Required.
     :vartype type: str
-    :ivar name: Required. Name to be checked.
+    :ivar name: Name to be checked. Required.
     :vartype name: str
     """
 
     _validation = {
-        'type': {'required': True},
-        'name': {'required': True},
+        "type": {"required": True},
+        "name": {"required": True},
     }
 
     _attribute_map = {
-        'type': {'key': 'type', 'type': 'str'},
-        'name': {'key': 'name', 'type': 'str'},
+        "type": {"key": "type", "type": "str"},
+        "name": {"key": "name", "type": "str"},
     }
 
-    def __init__(
-        self,
-        *,
-        type: str,
-        name: str,
-        **kwargs
-    ):
+    def __init__(self, *, type: str, name: str, **kwargs):
         """
-        :keyword type: Required. Type of the resource to check name availability.
+        :keyword type: Type of the resource to check name availability. Required.
         :paramtype type: str
-        :keyword name: Required. Name to be checked.
+        :keyword name: Name to be checked. Required.
         :paramtype name: str
         """
-        super(NameAvailabilityParameters, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.type = type
         self.name = name
 
@@ -5447,7 +5116,7 @@ class NetCoreZipUploadedUserSourceInfo(UploadedUserSourceInfo):
 
     All required parameters must be populated in order to send to Azure.
 
-    :ivar type: Required. Type of the source uploaded.Constant filled by server.
+    :ivar type: Type of the source uploaded. Required.
     :vartype type: str
     :ivar version: Version of the source.
     :vartype version: str
@@ -5460,15 +5129,15 @@ class NetCoreZipUploadedUserSourceInfo(UploadedUserSourceInfo):
     """
 
     _validation = {
-        'type': {'required': True},
+        "type": {"required": True},
     }
 
     _attribute_map = {
-        'type': {'key': 'type', 'type': 'str'},
-        'version': {'key': 'version', 'type': 'str'},
-        'relative_path': {'key': 'relativePath', 'type': 'str'},
-        'net_core_main_entry_path': {'key': 'netCoreMainEntryPath', 'type': 'str'},
-        'runtime_version': {'key': 'runtimeVersion', 'type': 'str'},
+        "type": {"key": "type", "type": "str"},
+        "version": {"key": "version", "type": "str"},
+        "relative_path": {"key": "relativePath", "type": "str"},
+        "net_core_main_entry_path": {"key": "netCoreMainEntryPath", "type": "str"},
+        "runtime_version": {"key": "runtimeVersion", "type": "str"},
     }
 
     def __init__(
@@ -5490,13 +5159,13 @@ class NetCoreZipUploadedUserSourceInfo(UploadedUserSourceInfo):
         :keyword runtime_version: Runtime version of the .Net file.
         :paramtype runtime_version: str
         """
-        super(NetCoreZipUploadedUserSourceInfo, self).__init__(version=version, relative_path=relative_path, **kwargs)
-        self.type = 'NetCoreZip'  # type: str
+        super().__init__(version=version, relative_path=relative_path, **kwargs)
+        self.type = "NetCoreZip"  # type: str
         self.net_core_main_entry_path = net_core_main_entry_path
         self.runtime_version = runtime_version
 
 
-class NetworkProfile(msrest.serialization.Model):
+class NetworkProfile(_serialization.Model):
     """Service network profile payload.
 
     Variables are only populated by the server, and will be ignored when sending a request.
@@ -5523,18 +5192,18 @@ class NetworkProfile(msrest.serialization.Model):
     """
 
     _validation = {
-        'outbound_i_ps': {'readonly': True},
-        'required_traffics': {'readonly': True},
+        "outbound_i_ps": {"readonly": True},
+        "required_traffics": {"readonly": True},
     }
 
     _attribute_map = {
-        'service_runtime_subnet_id': {'key': 'serviceRuntimeSubnetId', 'type': 'str'},
-        'app_subnet_id': {'key': 'appSubnetId', 'type': 'str'},
-        'service_cidr': {'key': 'serviceCidr', 'type': 'str'},
-        'service_runtime_network_resource_group': {'key': 'serviceRuntimeNetworkResourceGroup', 'type': 'str'},
-        'app_network_resource_group': {'key': 'appNetworkResourceGroup', 'type': 'str'},
-        'outbound_i_ps': {'key': 'outboundIPs', 'type': 'NetworkProfileOutboundIPs'},
-        'required_traffics': {'key': 'requiredTraffics', 'type': '[RequiredTraffic]'},
+        "service_runtime_subnet_id": {"key": "serviceRuntimeSubnetId", "type": "str"},
+        "app_subnet_id": {"key": "appSubnetId", "type": "str"},
+        "service_cidr": {"key": "serviceCidr", "type": "str"},
+        "service_runtime_network_resource_group": {"key": "serviceRuntimeNetworkResourceGroup", "type": "str"},
+        "app_network_resource_group": {"key": "appNetworkResourceGroup", "type": "str"},
+        "outbound_i_ps": {"key": "outboundIPs", "type": "NetworkProfileOutboundIPs"},
+        "required_traffics": {"key": "requiredTraffics", "type": "[RequiredTraffic]"},
     }
 
     def __init__(
@@ -5563,7 +5232,7 @@ class NetworkProfile(msrest.serialization.Model):
          Azure Spring Cloud Apps.
         :paramtype app_network_resource_group: str
         """
-        super(NetworkProfile, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.service_runtime_subnet_id = service_runtime_subnet_id
         self.app_subnet_id = app_subnet_id
         self.service_cidr = service_cidr
@@ -5573,7 +5242,7 @@ class NetworkProfile(msrest.serialization.Model):
         self.required_traffics = None
 
 
-class NetworkProfileOutboundIPs(msrest.serialization.Model):
+class NetworkProfileOutboundIPs(_serialization.Model):
     """Desired outbound IP resources for Azure Spring Cloud instance.
 
     Variables are only populated by the server, and will be ignored when sending a request.
@@ -5583,24 +5252,20 @@ class NetworkProfileOutboundIPs(msrest.serialization.Model):
     """
 
     _validation = {
-        'public_i_ps': {'readonly': True},
+        "public_i_ps": {"readonly": True},
     }
 
     _attribute_map = {
-        'public_i_ps': {'key': 'publicIPs', 'type': '[str]'},
+        "public_i_ps": {"key": "publicIPs", "type": "[str]"},
     }
 
-    def __init__(
-        self,
-        **kwargs
-    ):
-        """
-        """
-        super(NetworkProfileOutboundIPs, self).__init__(**kwargs)
+    def __init__(self, **kwargs):
+        """ """
+        super().__init__(**kwargs)
         self.public_i_ps = None
 
 
-class OperationDetail(msrest.serialization.Model):
+class OperationDetail(_serialization.Model):
     """Operation detail payload.
 
     Variables are only populated by the server, and will be ignored when sending a request.
@@ -5612,7 +5277,7 @@ class OperationDetail(msrest.serialization.Model):
     :ivar display: Display of the operation.
     :vartype display: ~azure.mgmt.appplatform.v2022_03_01_preview.models.OperationDisplay
     :ivar action_type: Enum. Indicates the action type. "Internal" refers to actions that are for
-     internal only APIs. Possible values include: "Internal".
+     internal only APIs. "Internal"
     :vartype action_type: str or ~azure.mgmt.appplatform.v2022_03_01_preview.models.ActionType
     :ivar origin: Origin of the operation.
     :vartype origin: str
@@ -5621,16 +5286,16 @@ class OperationDetail(msrest.serialization.Model):
     """
 
     _validation = {
-        'action_type': {'readonly': True},
+        "action_type": {"readonly": True},
     }
 
     _attribute_map = {
-        'name': {'key': 'name', 'type': 'str'},
-        'is_data_action': {'key': 'isDataAction', 'type': 'bool'},
-        'display': {'key': 'display', 'type': 'OperationDisplay'},
-        'action_type': {'key': 'actionType', 'type': 'str'},
-        'origin': {'key': 'origin', 'type': 'str'},
-        'properties': {'key': 'properties', 'type': 'OperationProperties'},
+        "name": {"key": "name", "type": "str"},
+        "is_data_action": {"key": "isDataAction", "type": "bool"},
+        "display": {"key": "display", "type": "OperationDisplay"},
+        "action_type": {"key": "actionType", "type": "str"},
+        "origin": {"key": "origin", "type": "str"},
+        "properties": {"key": "properties", "type": "OperationProperties"},
     }
 
     def __init__(
@@ -5638,9 +5303,9 @@ class OperationDetail(msrest.serialization.Model):
         *,
         name: Optional[str] = None,
         is_data_action: Optional[bool] = None,
-        display: Optional["OperationDisplay"] = None,
+        display: Optional["_models.OperationDisplay"] = None,
         origin: Optional[str] = None,
-        properties: Optional["OperationProperties"] = None,
+        properties: Optional["_models.OperationProperties"] = None,
         **kwargs
     ):
         """
@@ -5655,7 +5320,7 @@ class OperationDetail(msrest.serialization.Model):
         :keyword properties: Properties of the operation.
         :paramtype properties: ~azure.mgmt.appplatform.v2022_03_01_preview.models.OperationProperties
         """
-        super(OperationDetail, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.name = name
         self.is_data_action = is_data_action
         self.display = display
@@ -5664,7 +5329,7 @@ class OperationDetail(msrest.serialization.Model):
         self.properties = properties
 
 
-class OperationDisplay(msrest.serialization.Model):
+class OperationDisplay(_serialization.Model):
     """Operation display payload.
 
     :ivar provider: Resource provider of the operation.
@@ -5678,10 +5343,10 @@ class OperationDisplay(msrest.serialization.Model):
     """
 
     _attribute_map = {
-        'provider': {'key': 'provider', 'type': 'str'},
-        'resource': {'key': 'resource', 'type': 'str'},
-        'operation': {'key': 'operation', 'type': 'str'},
-        'description': {'key': 'description', 'type': 'str'},
+        "provider": {"key": "provider", "type": "str"},
+        "resource": {"key": "resource", "type": "str"},
+        "operation": {"key": "operation", "type": "str"},
+        "description": {"key": "description", "type": "str"},
     }
 
     def __init__(
@@ -5703,14 +5368,14 @@ class OperationDisplay(msrest.serialization.Model):
         :keyword description: Localized friendly description for the operation.
         :paramtype description: str
         """
-        super(OperationDisplay, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.provider = provider
         self.resource = resource
         self.operation = operation
         self.description = description
 
 
-class OperationProperties(msrest.serialization.Model):
+class OperationProperties(_serialization.Model):
     """Extra Operation properties.
 
     :ivar service_specification: Service specifications of the operation.
@@ -5719,25 +5384,20 @@ class OperationProperties(msrest.serialization.Model):
     """
 
     _attribute_map = {
-        'service_specification': {'key': 'serviceSpecification', 'type': 'ServiceSpecification'},
+        "service_specification": {"key": "serviceSpecification", "type": "ServiceSpecification"},
     }
 
-    def __init__(
-        self,
-        *,
-        service_specification: Optional["ServiceSpecification"] = None,
-        **kwargs
-    ):
+    def __init__(self, *, service_specification: Optional["_models.ServiceSpecification"] = None, **kwargs):
         """
         :keyword service_specification: Service specifications of the operation.
         :paramtype service_specification:
          ~azure.mgmt.appplatform.v2022_03_01_preview.models.ServiceSpecification
         """
-        super(OperationProperties, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.service_specification = service_specification
 
 
-class PersistentDisk(msrest.serialization.Model):
+class PersistentDisk(_serialization.Model):
     """Persistent disk payload.
 
     Variables are only populated by the server, and will be ignored when sending a request.
@@ -5751,69 +5411,56 @@ class PersistentDisk(msrest.serialization.Model):
     """
 
     _validation = {
-        'size_in_gb': {'maximum': 50, 'minimum': 0},
-        'used_in_gb': {'readonly': True, 'maximum': 50, 'minimum': 0},
+        "size_in_gb": {"maximum": 50, "minimum": 0},
+        "used_in_gb": {"readonly": True, "maximum": 50, "minimum": 0},
     }
 
     _attribute_map = {
-        'size_in_gb': {'key': 'sizeInGB', 'type': 'int'},
-        'used_in_gb': {'key': 'usedInGB', 'type': 'int'},
-        'mount_path': {'key': 'mountPath', 'type': 'str'},
+        "size_in_gb": {"key": "sizeInGB", "type": "int"},
+        "used_in_gb": {"key": "usedInGB", "type": "int"},
+        "mount_path": {"key": "mountPath", "type": "str"},
     }
 
-    def __init__(
-        self,
-        *,
-        size_in_gb: Optional[int] = None,
-        mount_path: Optional[str] = None,
-        **kwargs
-    ):
+    def __init__(self, *, size_in_gb: Optional[int] = None, mount_path: Optional[str] = None, **kwargs):
         """
         :keyword size_in_gb: Size of the persistent disk in GB.
         :paramtype size_in_gb: int
         :keyword mount_path: Mount path of the persistent disk.
         :paramtype mount_path: str
         """
-        super(PersistentDisk, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.size_in_gb = size_in_gb
         self.used_in_gb = None
         self.mount_path = mount_path
 
 
-class RegenerateTestKeyRequestPayload(msrest.serialization.Model):
+class RegenerateTestKeyRequestPayload(_serialization.Model):
     """Regenerate test key request payload.
 
     All required parameters must be populated in order to send to Azure.
 
-    :ivar key_type: Required. Type of the test key. Possible values include: "Primary",
-     "Secondary".
+    :ivar key_type: Type of the test key. Required. Known values are: "Primary" and "Secondary".
     :vartype key_type: str or ~azure.mgmt.appplatform.v2022_03_01_preview.models.TestKeyType
     """
 
     _validation = {
-        'key_type': {'required': True},
+        "key_type": {"required": True},
     }
 
     _attribute_map = {
-        'key_type': {'key': 'keyType', 'type': 'str'},
+        "key_type": {"key": "keyType", "type": "str"},
     }
 
-    def __init__(
-        self,
-        *,
-        key_type: Union[str, "TestKeyType"],
-        **kwargs
-    ):
+    def __init__(self, *, key_type: Union[str, "_models.TestKeyType"], **kwargs):
         """
-        :keyword key_type: Required. Type of the test key. Possible values include: "Primary",
-         "Secondary".
+        :keyword key_type: Type of the test key. Required. Known values are: "Primary" and "Secondary".
         :paramtype key_type: str or ~azure.mgmt.appplatform.v2022_03_01_preview.models.TestKeyType
         """
-        super(RegenerateTestKeyRequestPayload, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.key_type = key_type
 
 
-class RequiredTraffic(msrest.serialization.Model):
+class RequiredTraffic(_serialization.Model):
     """Required inbound or outbound traffic for Azure Spring Cloud instance.
 
     Variables are only populated by the server, and will be ignored when sending a request.
@@ -5826,34 +5473,29 @@ class RequiredTraffic(msrest.serialization.Model):
     :vartype ips: list[str]
     :ivar fqdns: The FQDN list of required traffic.
     :vartype fqdns: list[str]
-    :ivar direction: The direction of required traffic. Possible values include: "Inbound",
-     "Outbound".
+    :ivar direction: The direction of required traffic. Known values are: "Inbound" and "Outbound".
     :vartype direction: str or ~azure.mgmt.appplatform.v2022_03_01_preview.models.TrafficDirection
     """
 
     _validation = {
-        'protocol': {'readonly': True},
-        'port': {'readonly': True},
-        'ips': {'readonly': True},
-        'fqdns': {'readonly': True},
-        'direction': {'readonly': True},
+        "protocol": {"readonly": True},
+        "port": {"readonly": True},
+        "ips": {"readonly": True},
+        "fqdns": {"readonly": True},
+        "direction": {"readonly": True},
     }
 
     _attribute_map = {
-        'protocol': {'key': 'protocol', 'type': 'str'},
-        'port': {'key': 'port', 'type': 'int'},
-        'ips': {'key': 'ips', 'type': '[str]'},
-        'fqdns': {'key': 'fqdns', 'type': '[str]'},
-        'direction': {'key': 'direction', 'type': 'str'},
+        "protocol": {"key": "protocol", "type": "str"},
+        "port": {"key": "port", "type": "int"},
+        "ips": {"key": "ips", "type": "[str]"},
+        "fqdns": {"key": "fqdns", "type": "[str]"},
+        "direction": {"key": "direction", "type": "str"},
     }
 
-    def __init__(
-        self,
-        **kwargs
-    ):
-        """
-        """
-        super(RequiredTraffic, self).__init__(**kwargs)
+    def __init__(self, **kwargs):
+        """ """
+        super().__init__(**kwargs)
         self.protocol = None
         self.port = None
         self.ips = None
@@ -5861,7 +5503,7 @@ class RequiredTraffic(msrest.serialization.Model):
         self.direction = None
 
 
-class ResourceRequests(msrest.serialization.Model):
+class ResourceRequests(_serialization.Model):
     """Deployment resource request payload.
 
     :ivar cpu: Required CPU. 1 core can be represented by 1 or 1000m. This should be 500m or 1 for
@@ -5873,17 +5515,11 @@ class ResourceRequests(msrest.serialization.Model):
     """
 
     _attribute_map = {
-        'cpu': {'key': 'cpu', 'type': 'str'},
-        'memory': {'key': 'memory', 'type': 'str'},
+        "cpu": {"key": "cpu", "type": "str"},
+        "memory": {"key": "memory", "type": "str"},
     }
 
-    def __init__(
-        self,
-        *,
-        cpu: Optional[str] = None,
-        memory: Optional[str] = None,
-        **kwargs
-    ):
+    def __init__(self, *, cpu: Optional[str] = None, memory: Optional[str] = None, **kwargs):
         """
         :keyword cpu: Required CPU. 1 core can be represented by 1 or 1000m. This should be 500m or 1
          for Basic tier, and {500m, 1, 2, 3, 4} for Standard tier.
@@ -5892,12 +5528,12 @@ class ResourceRequests(msrest.serialization.Model):
          {512Mi, 1Gi, 2Gi} for Basic tier, and {512Mi, 1Gi, 2Gi, ..., 8Gi} for Standard tier.
         :paramtype memory: str
         """
-        super(ResourceRequests, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.cpu = cpu
         self.memory = memory
 
 
-class ResourceSku(msrest.serialization.Model):
+class ResourceSku(_serialization.Model):
     """Describes an available Azure Spring Cloud SKU.
 
     :ivar resource_type: Gets the type of resource the SKU applies to.
@@ -5921,13 +5557,13 @@ class ResourceSku(msrest.serialization.Model):
     """
 
     _attribute_map = {
-        'resource_type': {'key': 'resourceType', 'type': 'str'},
-        'name': {'key': 'name', 'type': 'str'},
-        'tier': {'key': 'tier', 'type': 'str'},
-        'capacity': {'key': 'capacity', 'type': 'SkuCapacity'},
-        'locations': {'key': 'locations', 'type': '[str]'},
-        'location_info': {'key': 'locationInfo', 'type': '[ResourceSkuLocationInfo]'},
-        'restrictions': {'key': 'restrictions', 'type': '[ResourceSkuRestrictions]'},
+        "resource_type": {"key": "resourceType", "type": "str"},
+        "name": {"key": "name", "type": "str"},
+        "tier": {"key": "tier", "type": "str"},
+        "capacity": {"key": "capacity", "type": "SkuCapacity"},
+        "locations": {"key": "locations", "type": "[str]"},
+        "location_info": {"key": "locationInfo", "type": "[ResourceSkuLocationInfo]"},
+        "restrictions": {"key": "restrictions", "type": "[ResourceSkuRestrictions]"},
     }
 
     def __init__(
@@ -5936,10 +5572,10 @@ class ResourceSku(msrest.serialization.Model):
         resource_type: Optional[str] = None,
         name: Optional[str] = None,
         tier: Optional[str] = None,
-        capacity: Optional["SkuCapacity"] = None,
+        capacity: Optional["_models.SkuCapacity"] = None,
         locations: Optional[List[str]] = None,
-        location_info: Optional[List["ResourceSkuLocationInfo"]] = None,
-        restrictions: Optional[List["ResourceSkuRestrictions"]] = None,
+        location_info: Optional[List["_models.ResourceSkuLocationInfo"]] = None,
+        restrictions: Optional[List["_models.ResourceSkuRestrictions"]] = None,
         **kwargs
     ):
         """
@@ -5962,7 +5598,7 @@ class ResourceSku(msrest.serialization.Model):
         :paramtype restrictions:
          list[~azure.mgmt.appplatform.v2022_03_01_preview.models.ResourceSkuRestrictions]
         """
-        super(ResourceSku, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.resource_type = resource_type
         self.name = name
         self.tier = tier
@@ -5972,7 +5608,7 @@ class ResourceSku(msrest.serialization.Model):
         self.restrictions = restrictions
 
 
-class ResourceSkuCapabilities(msrest.serialization.Model):
+class ResourceSkuCapabilities(_serialization.Model):
     """ResourceSkuCapabilities.
 
     :ivar name: Gets an invariant to describe the feature.
@@ -5982,29 +5618,23 @@ class ResourceSkuCapabilities(msrest.serialization.Model):
     """
 
     _attribute_map = {
-        'name': {'key': 'name', 'type': 'str'},
-        'value': {'key': 'value', 'type': 'str'},
+        "name": {"key": "name", "type": "str"},
+        "value": {"key": "value", "type": "str"},
     }
 
-    def __init__(
-        self,
-        *,
-        name: Optional[str] = None,
-        value: Optional[str] = None,
-        **kwargs
-    ):
+    def __init__(self, *, name: Optional[str] = None, value: Optional[str] = None, **kwargs):
         """
         :keyword name: Gets an invariant to describe the feature.
         :paramtype name: str
         :keyword value: Gets an invariant if the feature is measured by quantity.
         :paramtype value: str
         """
-        super(ResourceSkuCapabilities, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.name = name
         self.value = value
 
 
-class ResourceSkuCollection(msrest.serialization.Model):
+class ResourceSkuCollection(_serialization.Model):
     """Object that includes an array of Azure Spring Cloud SKU and a possible link for next set.
 
     :ivar value: Collection of resource SKU.
@@ -6015,16 +5645,12 @@ class ResourceSkuCollection(msrest.serialization.Model):
     """
 
     _attribute_map = {
-        'value': {'key': 'value', 'type': '[ResourceSku]'},
-        'next_link': {'key': 'nextLink', 'type': 'str'},
+        "value": {"key": "value", "type": "[ResourceSku]"},
+        "next_link": {"key": "nextLink", "type": "str"},
     }
 
     def __init__(
-        self,
-        *,
-        value: Optional[List["ResourceSku"]] = None,
-        next_link: Optional[str] = None,
-        **kwargs
+        self, *, value: Optional[List["_models.ResourceSku"]] = None, next_link: Optional[str] = None, **kwargs
     ):
         """
         :keyword value: Collection of resource SKU.
@@ -6033,12 +5659,12 @@ class ResourceSkuCollection(msrest.serialization.Model):
          It's null for now, added for future use.
         :paramtype next_link: str
         """
-        super(ResourceSkuCollection, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.value = value
         self.next_link = next_link
 
 
-class ResourceSkuLocationInfo(msrest.serialization.Model):
+class ResourceSkuLocationInfo(_serialization.Model):
     """Locations and availability zones where the SKU is available.
 
     :ivar location: Gets location of the SKU.
@@ -6051,9 +5677,9 @@ class ResourceSkuLocationInfo(msrest.serialization.Model):
     """
 
     _attribute_map = {
-        'location': {'key': 'location', 'type': 'str'},
-        'zones': {'key': 'zones', 'type': '[str]'},
-        'zone_details': {'key': 'zoneDetails', 'type': '[ResourceSkuZoneDetails]'},
+        "location": {"key": "location", "type": "str"},
+        "zones": {"key": "zones", "type": "[str]"},
+        "zone_details": {"key": "zoneDetails", "type": "[ResourceSkuZoneDetails]"},
     }
 
     def __init__(
@@ -6061,7 +5687,7 @@ class ResourceSkuLocationInfo(msrest.serialization.Model):
         *,
         location: Optional[str] = None,
         zones: Optional[List[str]] = None,
-        zone_details: Optional[List["ResourceSkuZoneDetails"]] = None,
+        zone_details: Optional[List["_models.ResourceSkuZoneDetails"]] = None,
         **kwargs
     ):
         """
@@ -6073,13 +5699,13 @@ class ResourceSkuLocationInfo(msrest.serialization.Model):
         :paramtype zone_details:
          list[~azure.mgmt.appplatform.v2022_03_01_preview.models.ResourceSkuZoneDetails]
         """
-        super(ResourceSkuLocationInfo, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.location = location
         self.zones = zones
         self.zone_details = zone_details
 
 
-class ResourceSkuRestrictionInfo(msrest.serialization.Model):
+class ResourceSkuRestrictionInfo(_serialization.Model):
     """Information about the restriction where the SKU cannot be used.
 
     :ivar locations: Gets locations where the SKU is restricted.
@@ -6089,33 +5715,27 @@ class ResourceSkuRestrictionInfo(msrest.serialization.Model):
     """
 
     _attribute_map = {
-        'locations': {'key': 'locations', 'type': '[str]'},
-        'zones': {'key': 'zones', 'type': '[str]'},
+        "locations": {"key": "locations", "type": "[str]"},
+        "zones": {"key": "zones", "type": "[str]"},
     }
 
-    def __init__(
-        self,
-        *,
-        locations: Optional[List[str]] = None,
-        zones: Optional[List[str]] = None,
-        **kwargs
-    ):
+    def __init__(self, *, locations: Optional[List[str]] = None, zones: Optional[List[str]] = None, **kwargs):
         """
         :keyword locations: Gets locations where the SKU is restricted.
         :paramtype locations: list[str]
         :keyword zones: Gets list of availability zones where the SKU is restricted.
         :paramtype zones: list[str]
         """
-        super(ResourceSkuRestrictionInfo, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.locations = locations
         self.zones = zones
 
 
-class ResourceSkuRestrictions(msrest.serialization.Model):
+class ResourceSkuRestrictions(_serialization.Model):
     """Restrictions where the SKU cannot be used.
 
-    :ivar type: Gets the type of restrictions. Possible values include: 'Location', 'Zone'.
-     Possible values include: "Location", "Zone".
+    :ivar type: Gets the type of restrictions. Possible values include: 'Location', 'Zone'. Known
+     values are: "Location" and "Zone".
     :vartype type: str or
      ~azure.mgmt.appplatform.v2022_03_01_preview.models.ResourceSkuRestrictionsType
     :ivar values: Gets the value of restrictions. If the restriction type is set to
@@ -6126,31 +5746,30 @@ class ResourceSkuRestrictions(msrest.serialization.Model):
     :vartype restriction_info:
      ~azure.mgmt.appplatform.v2022_03_01_preview.models.ResourceSkuRestrictionInfo
     :ivar reason_code: Gets the reason for restriction. Possible values include: 'QuotaId',
-     'NotAvailableForSubscription'. Possible values include: "QuotaId",
-     "NotAvailableForSubscription".
+     'NotAvailableForSubscription'. Known values are: "QuotaId" and "NotAvailableForSubscription".
     :vartype reason_code: str or
      ~azure.mgmt.appplatform.v2022_03_01_preview.models.ResourceSkuRestrictionsReasonCode
     """
 
     _attribute_map = {
-        'type': {'key': 'type', 'type': 'str'},
-        'values': {'key': 'values', 'type': '[str]'},
-        'restriction_info': {'key': 'restrictionInfo', 'type': 'ResourceSkuRestrictionInfo'},
-        'reason_code': {'key': 'reasonCode', 'type': 'str'},
+        "type": {"key": "type", "type": "str"},
+        "values": {"key": "values", "type": "[str]"},
+        "restriction_info": {"key": "restrictionInfo", "type": "ResourceSkuRestrictionInfo"},
+        "reason_code": {"key": "reasonCode", "type": "str"},
     }
 
     def __init__(
         self,
         *,
-        type: Optional[Union[str, "ResourceSkuRestrictionsType"]] = None,
+        type: Optional[Union[str, "_models.ResourceSkuRestrictionsType"]] = None,
         values: Optional[List[str]] = None,
-        restriction_info: Optional["ResourceSkuRestrictionInfo"] = None,
-        reason_code: Optional[Union[str, "ResourceSkuRestrictionsReasonCode"]] = None,
+        restriction_info: Optional["_models.ResourceSkuRestrictionInfo"] = None,
+        reason_code: Optional[Union[str, "_models.ResourceSkuRestrictionsReasonCode"]] = None,
         **kwargs
     ):
         """
         :keyword type: Gets the type of restrictions. Possible values include: 'Location', 'Zone'.
-         Possible values include: "Location", "Zone".
+         Known values are: "Location" and "Zone".
         :paramtype type: str or
          ~azure.mgmt.appplatform.v2022_03_01_preview.models.ResourceSkuRestrictionsType
         :keyword values: Gets the value of restrictions. If the restriction type is set to
@@ -6161,19 +5780,18 @@ class ResourceSkuRestrictions(msrest.serialization.Model):
         :paramtype restriction_info:
          ~azure.mgmt.appplatform.v2022_03_01_preview.models.ResourceSkuRestrictionInfo
         :keyword reason_code: Gets the reason for restriction. Possible values include: 'QuotaId',
-         'NotAvailableForSubscription'. Possible values include: "QuotaId",
-         "NotAvailableForSubscription".
+         'NotAvailableForSubscription'. Known values are: "QuotaId" and "NotAvailableForSubscription".
         :paramtype reason_code: str or
          ~azure.mgmt.appplatform.v2022_03_01_preview.models.ResourceSkuRestrictionsReasonCode
         """
-        super(ResourceSkuRestrictions, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.type = type
         self.values = values
         self.restriction_info = restriction_info
         self.reason_code = reason_code
 
 
-class ResourceSkuZoneDetails(msrest.serialization.Model):
+class ResourceSkuZoneDetails(_serialization.Model):
     """Details of capabilities available to a SKU in specific zones.
 
     :ivar name: Gets the set of zones that the SKU is available in with the
@@ -6186,15 +5804,15 @@ class ResourceSkuZoneDetails(msrest.serialization.Model):
     """
 
     _attribute_map = {
-        'name': {'key': 'name', 'type': '[str]'},
-        'capabilities': {'key': 'capabilities', 'type': '[ResourceSkuCapabilities]'},
+        "name": {"key": "name", "type": "[str]"},
+        "capabilities": {"key": "capabilities", "type": "[ResourceSkuCapabilities]"},
     }
 
     def __init__(
         self,
         *,
         name: Optional[List[str]] = None,
-        capabilities: Optional[List["ResourceSkuCapabilities"]] = None,
+        capabilities: Optional[List["_models.ResourceSkuCapabilities"]] = None,
         **kwargs
     ):
         """
@@ -6206,12 +5824,12 @@ class ResourceSkuZoneDetails(msrest.serialization.Model):
         :paramtype capabilities:
          list[~azure.mgmt.appplatform.v2022_03_01_preview.models.ResourceSkuCapabilities]
         """
-        super(ResourceSkuZoneDetails, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.name = name
         self.capabilities = capabilities
 
 
-class ResourceUploadDefinition(msrest.serialization.Model):
+class ResourceUploadDefinition(_serialization.Model):
     """Resource upload definition payload.
 
     :ivar relative_path: Source relative path.
@@ -6221,29 +5839,23 @@ class ResourceUploadDefinition(msrest.serialization.Model):
     """
 
     _attribute_map = {
-        'relative_path': {'key': 'relativePath', 'type': 'str'},
-        'upload_url': {'key': 'uploadUrl', 'type': 'str'},
+        "relative_path": {"key": "relativePath", "type": "str"},
+        "upload_url": {"key": "uploadUrl", "type": "str"},
     }
 
-    def __init__(
-        self,
-        *,
-        relative_path: Optional[str] = None,
-        upload_url: Optional[str] = None,
-        **kwargs
-    ):
+    def __init__(self, *, relative_path: Optional[str] = None, upload_url: Optional[str] = None, **kwargs):
         """
         :keyword relative_path: Source relative path.
         :paramtype relative_path: str
         :keyword upload_url: Upload URL.
         :paramtype upload_url: str
         """
-        super(ResourceUploadDefinition, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.relative_path = relative_path
         self.upload_url = upload_url
 
 
-class ServiceRegistryInstance(msrest.serialization.Model):
+class ServiceRegistryInstance(_serialization.Model):
     """Collection of instances belong to the Service Registry.
 
     Variables are only populated by the server, and will be ignored when sending a request.
@@ -6255,33 +5867,29 @@ class ServiceRegistryInstance(msrest.serialization.Model):
     """
 
     _validation = {
-        'name': {'readonly': True},
-        'status': {'readonly': True},
+        "name": {"readonly": True},
+        "status": {"readonly": True},
     }
 
     _attribute_map = {
-        'name': {'key': 'name', 'type': 'str'},
-        'status': {'key': 'status', 'type': 'str'},
+        "name": {"key": "name", "type": "str"},
+        "status": {"key": "status", "type": "str"},
     }
 
-    def __init__(
-        self,
-        **kwargs
-    ):
-        """
-        """
-        super(ServiceRegistryInstance, self).__init__(**kwargs)
+    def __init__(self, **kwargs):
+        """ """
+        super().__init__(**kwargs)
         self.name = None
         self.status = None
 
 
-class ServiceRegistryProperties(msrest.serialization.Model):
+class ServiceRegistryProperties(_serialization.Model):
     """Service Registry properties payload.
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
-    :ivar provisioning_state: State of the Service Registry. Possible values include: "Creating",
-     "Updating", "Succeeded", "Failed", "Deleting".
+    :ivar provisioning_state: State of the Service Registry. Known values are: "Creating",
+     "Updating", "Succeeded", "Failed", and "Deleting".
     :vartype provisioning_state: str or
      ~azure.mgmt.appplatform.v2022_03_01_preview.models.ServiceRegistryProvisioningState
     :ivar resource_requests: The requested resource quantity for required CPU and Memory.
@@ -6293,24 +5901,20 @@ class ServiceRegistryProperties(msrest.serialization.Model):
     """
 
     _validation = {
-        'provisioning_state': {'readonly': True},
-        'resource_requests': {'readonly': True},
-        'instances': {'readonly': True},
+        "provisioning_state": {"readonly": True},
+        "resource_requests": {"readonly": True},
+        "instances": {"readonly": True},
     }
 
     _attribute_map = {
-        'provisioning_state': {'key': 'provisioningState', 'type': 'str'},
-        'resource_requests': {'key': 'resourceRequests', 'type': 'ServiceRegistryResourceRequests'},
-        'instances': {'key': 'instances', 'type': '[ServiceRegistryInstance]'},
+        "provisioning_state": {"key": "provisioningState", "type": "str"},
+        "resource_requests": {"key": "resourceRequests", "type": "ServiceRegistryResourceRequests"},
+        "instances": {"key": "instances", "type": "[ServiceRegistryInstance]"},
     }
 
-    def __init__(
-        self,
-        **kwargs
-    ):
-        """
-        """
-        super(ServiceRegistryProperties, self).__init__(**kwargs)
+    def __init__(self, **kwargs):
+        """ """
+        super().__init__(**kwargs)
         self.provisioning_state = None
         self.resource_requests = None
         self.instances = None
@@ -6335,36 +5939,31 @@ class ServiceRegistryResource(ProxyResource):
     """
 
     _validation = {
-        'id': {'readonly': True},
-        'name': {'readonly': True},
-        'type': {'readonly': True},
-        'system_data': {'readonly': True},
+        "id": {"readonly": True},
+        "name": {"readonly": True},
+        "type": {"readonly": True},
+        "system_data": {"readonly": True},
     }
 
     _attribute_map = {
-        'id': {'key': 'id', 'type': 'str'},
-        'name': {'key': 'name', 'type': 'str'},
-        'type': {'key': 'type', 'type': 'str'},
-        'system_data': {'key': 'systemData', 'type': 'SystemData'},
-        'properties': {'key': 'properties', 'type': 'ServiceRegistryProperties'},
+        "id": {"key": "id", "type": "str"},
+        "name": {"key": "name", "type": "str"},
+        "type": {"key": "type", "type": "str"},
+        "system_data": {"key": "systemData", "type": "SystemData"},
+        "properties": {"key": "properties", "type": "ServiceRegistryProperties"},
     }
 
-    def __init__(
-        self,
-        *,
-        properties: Optional["ServiceRegistryProperties"] = None,
-        **kwargs
-    ):
+    def __init__(self, *, properties: Optional["_models.ServiceRegistryProperties"] = None, **kwargs):
         """
         :keyword properties: Service Registry properties payload.
         :paramtype properties:
          ~azure.mgmt.appplatform.v2022_03_01_preview.models.ServiceRegistryProperties
         """
-        super(ServiceRegistryResource, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.properties = properties
 
 
-class ServiceRegistryResourceCollection(msrest.serialization.Model):
+class ServiceRegistryResourceCollection(_serialization.Model):
     """Object that includes an array of Service Registry resources and a possible link for next set.
 
     :ivar value: Collection of Service Registry resources.
@@ -6376,14 +5975,14 @@ class ServiceRegistryResourceCollection(msrest.serialization.Model):
     """
 
     _attribute_map = {
-        'value': {'key': 'value', 'type': '[ServiceRegistryResource]'},
-        'next_link': {'key': 'nextLink', 'type': 'str'},
+        "value": {"key": "value", "type": "[ServiceRegistryResource]"},
+        "next_link": {"key": "nextLink", "type": "str"},
     }
 
     def __init__(
         self,
         *,
-        value: Optional[List["ServiceRegistryResource"]] = None,
+        value: Optional[List["_models.ServiceRegistryResource"]] = None,
         next_link: Optional[str] = None,
         **kwargs
     ):
@@ -6395,12 +5994,12 @@ class ServiceRegistryResourceCollection(msrest.serialization.Model):
          It's null for now, added for future use.
         :paramtype next_link: str
         """
-        super(ServiceRegistryResourceCollection, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.value = value
         self.next_link = next_link
 
 
-class ServiceRegistryResourceRequests(msrest.serialization.Model):
+class ServiceRegistryResourceRequests(_serialization.Model):
     """Resource request payload of Service Registry.
 
     Variables are only populated by the server, and will be ignored when sending a request.
@@ -6414,24 +6013,20 @@ class ServiceRegistryResourceRequests(msrest.serialization.Model):
     """
 
     _validation = {
-        'cpu': {'readonly': True},
-        'memory': {'readonly': True},
-        'instance_count': {'readonly': True},
+        "cpu": {"readonly": True},
+        "memory": {"readonly": True},
+        "instance_count": {"readonly": True},
     }
 
     _attribute_map = {
-        'cpu': {'key': 'cpu', 'type': 'str'},
-        'memory': {'key': 'memory', 'type': 'str'},
-        'instance_count': {'key': 'instanceCount', 'type': 'int'},
+        "cpu": {"key": "cpu", "type": "str"},
+        "memory": {"key": "memory", "type": "str"},
+        "instance_count": {"key": "instanceCount", "type": "int"},
     }
 
-    def __init__(
-        self,
-        **kwargs
-    ):
-        """
-        """
-        super(ServiceRegistryResourceRequests, self).__init__(**kwargs)
+    def __init__(self, **kwargs):
+        """ """
+        super().__init__(**kwargs)
         self.cpu = None
         self.memory = None
         self.instance_count = None
@@ -6452,42 +6047,35 @@ class TrackedResource(Resource):
     :vartype system_data: ~azure.mgmt.appplatform.v2022_03_01_preview.models.SystemData
     :ivar location: The GEO location of the resource.
     :vartype location: str
-    :ivar tags: A set of tags. Tags of the service which is a list of key value pairs that describe
-     the resource.
+    :ivar tags: Tags of the service which is a list of key value pairs that describe the resource.
     :vartype tags: dict[str, str]
     """
 
     _validation = {
-        'id': {'readonly': True},
-        'name': {'readonly': True},
-        'type': {'readonly': True},
-        'system_data': {'readonly': True},
+        "id": {"readonly": True},
+        "name": {"readonly": True},
+        "type": {"readonly": True},
+        "system_data": {"readonly": True},
     }
 
     _attribute_map = {
-        'id': {'key': 'id', 'type': 'str'},
-        'name': {'key': 'name', 'type': 'str'},
-        'type': {'key': 'type', 'type': 'str'},
-        'system_data': {'key': 'systemData', 'type': 'SystemData'},
-        'location': {'key': 'location', 'type': 'str'},
-        'tags': {'key': 'tags', 'type': '{str}'},
+        "id": {"key": "id", "type": "str"},
+        "name": {"key": "name", "type": "str"},
+        "type": {"key": "type", "type": "str"},
+        "system_data": {"key": "systemData", "type": "SystemData"},
+        "location": {"key": "location", "type": "str"},
+        "tags": {"key": "tags", "type": "{str}"},
     }
 
-    def __init__(
-        self,
-        *,
-        location: Optional[str] = None,
-        tags: Optional[Dict[str, str]] = None,
-        **kwargs
-    ):
+    def __init__(self, *, location: Optional[str] = None, tags: Optional[Dict[str, str]] = None, **kwargs):
         """
         :keyword location: The GEO location of the resource.
         :paramtype location: str
-        :keyword tags: A set of tags. Tags of the service which is a list of key value pairs that
-         describe the resource.
+        :keyword tags: Tags of the service which is a list of key value pairs that describe the
+         resource.
         :paramtype tags: dict[str, str]
         """
-        super(TrackedResource, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.location = location
         self.tags = tags
 
@@ -6507,8 +6095,7 @@ class ServiceResource(TrackedResource):
     :vartype system_data: ~azure.mgmt.appplatform.v2022_03_01_preview.models.SystemData
     :ivar location: The GEO location of the resource.
     :vartype location: str
-    :ivar tags: A set of tags. Tags of the service which is a list of key value pairs that describe
-     the resource.
+    :ivar tags: Tags of the service which is a list of key value pairs that describe the resource.
     :vartype tags: dict[str, str]
     :ivar properties: Properties of the Service resource.
     :vartype properties:
@@ -6518,21 +6105,21 @@ class ServiceResource(TrackedResource):
     """
 
     _validation = {
-        'id': {'readonly': True},
-        'name': {'readonly': True},
-        'type': {'readonly': True},
-        'system_data': {'readonly': True},
+        "id": {"readonly": True},
+        "name": {"readonly": True},
+        "type": {"readonly": True},
+        "system_data": {"readonly": True},
     }
 
     _attribute_map = {
-        'id': {'key': 'id', 'type': 'str'},
-        'name': {'key': 'name', 'type': 'str'},
-        'type': {'key': 'type', 'type': 'str'},
-        'system_data': {'key': 'systemData', 'type': 'SystemData'},
-        'location': {'key': 'location', 'type': 'str'},
-        'tags': {'key': 'tags', 'type': '{str}'},
-        'properties': {'key': 'properties', 'type': 'ClusterResourceProperties'},
-        'sku': {'key': 'sku', 'type': 'Sku'},
+        "id": {"key": "id", "type": "str"},
+        "name": {"key": "name", "type": "str"},
+        "type": {"key": "type", "type": "str"},
+        "system_data": {"key": "systemData", "type": "SystemData"},
+        "location": {"key": "location", "type": "str"},
+        "tags": {"key": "tags", "type": "{str}"},
+        "properties": {"key": "properties", "type": "ClusterResourceProperties"},
+        "sku": {"key": "sku", "type": "Sku"},
     }
 
     def __init__(
@@ -6540,15 +6127,15 @@ class ServiceResource(TrackedResource):
         *,
         location: Optional[str] = None,
         tags: Optional[Dict[str, str]] = None,
-        properties: Optional["ClusterResourceProperties"] = None,
-        sku: Optional["Sku"] = None,
+        properties: Optional["_models.ClusterResourceProperties"] = None,
+        sku: Optional["_models.Sku"] = None,
         **kwargs
     ):
         """
         :keyword location: The GEO location of the resource.
         :paramtype location: str
-        :keyword tags: A set of tags. Tags of the service which is a list of key value pairs that
-         describe the resource.
+        :keyword tags: Tags of the service which is a list of key value pairs that describe the
+         resource.
         :paramtype tags: dict[str, str]
         :keyword properties: Properties of the Service resource.
         :paramtype properties:
@@ -6556,12 +6143,12 @@ class ServiceResource(TrackedResource):
         :keyword sku: Sku of the Service resource.
         :paramtype sku: ~azure.mgmt.appplatform.v2022_03_01_preview.models.Sku
         """
-        super(ServiceResource, self).__init__(location=location, tags=tags, **kwargs)
+        super().__init__(location=location, tags=tags, **kwargs)
         self.properties = properties
         self.sku = sku
 
 
-class ServiceResourceList(msrest.serialization.Model):
+class ServiceResourceList(_serialization.Model):
     """Object that includes an array of Service resources and a possible link for next set.
 
     :ivar value: Collection of Service resources.
@@ -6572,16 +6159,12 @@ class ServiceResourceList(msrest.serialization.Model):
     """
 
     _attribute_map = {
-        'value': {'key': 'value', 'type': '[ServiceResource]'},
-        'next_link': {'key': 'nextLink', 'type': 'str'},
+        "value": {"key": "value", "type": "[ServiceResource]"},
+        "next_link": {"key": "nextLink", "type": "str"},
     }
 
     def __init__(
-        self,
-        *,
-        value: Optional[List["ServiceResource"]] = None,
-        next_link: Optional[str] = None,
-        **kwargs
+        self, *, value: Optional[List["_models.ServiceResource"]] = None, next_link: Optional[str] = None, **kwargs
     ):
         """
         :keyword value: Collection of Service resources.
@@ -6590,12 +6173,12 @@ class ServiceResourceList(msrest.serialization.Model):
          It's null for now, added for future use.
         :paramtype next_link: str
         """
-        super(ServiceResourceList, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.value = value
         self.next_link = next_link
 
 
-class ServiceSpecification(msrest.serialization.Model):
+class ServiceSpecification(_serialization.Model):
     """Service specification payload.
 
     :ivar log_specifications: Specifications of the Log for Azure Monitoring.
@@ -6607,15 +6190,15 @@ class ServiceSpecification(msrest.serialization.Model):
     """
 
     _attribute_map = {
-        'log_specifications': {'key': 'logSpecifications', 'type': '[LogSpecification]'},
-        'metric_specifications': {'key': 'metricSpecifications', 'type': '[MetricSpecification]'},
+        "log_specifications": {"key": "logSpecifications", "type": "[LogSpecification]"},
+        "metric_specifications": {"key": "metricSpecifications", "type": "[MetricSpecification]"},
     }
 
     def __init__(
         self,
         *,
-        log_specifications: Optional[List["LogSpecification"]] = None,
-        metric_specifications: Optional[List["MetricSpecification"]] = None,
+        log_specifications: Optional[List["_models.LogSpecification"]] = None,
+        metric_specifications: Optional[List["_models.MetricSpecification"]] = None,
         **kwargs
     ):
         """
@@ -6626,12 +6209,12 @@ class ServiceSpecification(msrest.serialization.Model):
         :paramtype metric_specifications:
          list[~azure.mgmt.appplatform.v2022_03_01_preview.models.MetricSpecification]
         """
-        super(ServiceSpecification, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.log_specifications = log_specifications
         self.metric_specifications = metric_specifications
 
 
-class Sku(msrest.serialization.Model):
+class Sku(_serialization.Model):
     """Sku of Azure Spring Cloud.
 
     :ivar name: Name of the Sku.
@@ -6643,19 +6226,12 @@ class Sku(msrest.serialization.Model):
     """
 
     _attribute_map = {
-        'name': {'key': 'name', 'type': 'str'},
-        'tier': {'key': 'tier', 'type': 'str'},
-        'capacity': {'key': 'capacity', 'type': 'int'},
+        "name": {"key": "name", "type": "str"},
+        "tier": {"key": "tier", "type": "str"},
+        "capacity": {"key": "capacity", "type": "int"},
     }
 
-    def __init__(
-        self,
-        *,
-        name: Optional[str] = "S0",
-        tier: Optional[str] = "Standard",
-        capacity: Optional[int] = None,
-        **kwargs
-    ):
+    def __init__(self, *, name: str = "S0", tier: str = "Standard", capacity: Optional[int] = None, **kwargs):
         """
         :keyword name: Name of the Sku.
         :paramtype name: str
@@ -6664,37 +6240,37 @@ class Sku(msrest.serialization.Model):
         :keyword capacity: Current capacity of the target resource.
         :paramtype capacity: int
         """
-        super(Sku, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.name = name
         self.tier = tier
         self.capacity = capacity
 
 
-class SkuCapacity(msrest.serialization.Model):
+class SkuCapacity(_serialization.Model):
     """The SKU capacity.
 
     All required parameters must be populated in order to send to Azure.
 
-    :ivar minimum: Required. Gets or sets the minimum.
+    :ivar minimum: Gets or sets the minimum. Required.
     :vartype minimum: int
     :ivar maximum: Gets or sets the maximum.
     :vartype maximum: int
     :ivar default: Gets or sets the default.
     :vartype default: int
-    :ivar scale_type: Gets or sets the type of the scale. Possible values include: "None",
-     "Manual", "Automatic".
+    :ivar scale_type: Gets or sets the type of the scale. Known values are: "None", "Manual", and
+     "Automatic".
     :vartype scale_type: str or ~azure.mgmt.appplatform.v2022_03_01_preview.models.SkuScaleType
     """
 
     _validation = {
-        'minimum': {'required': True},
+        "minimum": {"required": True},
     }
 
     _attribute_map = {
-        'minimum': {'key': 'minimum', 'type': 'int'},
-        'maximum': {'key': 'maximum', 'type': 'int'},
-        'default': {'key': 'default', 'type': 'int'},
-        'scale_type': {'key': 'scaleType', 'type': 'str'},
+        "minimum": {"key": "minimum", "type": "int"},
+        "maximum": {"key": "maximum", "type": "int"},
+        "default": {"key": "default", "type": "int"},
+        "scale_type": {"key": "scaleType", "type": "str"},
     }
 
     def __init__(
@@ -6703,21 +6279,21 @@ class SkuCapacity(msrest.serialization.Model):
         minimum: int,
         maximum: Optional[int] = None,
         default: Optional[int] = None,
-        scale_type: Optional[Union[str, "SkuScaleType"]] = None,
+        scale_type: Optional[Union[str, "_models.SkuScaleType"]] = None,
         **kwargs
     ):
         """
-        :keyword minimum: Required. Gets or sets the minimum.
+        :keyword minimum: Gets or sets the minimum. Required.
         :paramtype minimum: int
         :keyword maximum: Gets or sets the maximum.
         :paramtype maximum: int
         :keyword default: Gets or sets the default.
         :paramtype default: int
-        :keyword scale_type: Gets or sets the type of the scale. Possible values include: "None",
-         "Manual", "Automatic".
+        :keyword scale_type: Gets or sets the type of the scale. Known values are: "None", "Manual",
+         and "Automatic".
         :paramtype scale_type: str or ~azure.mgmt.appplatform.v2022_03_01_preview.models.SkuScaleType
         """
-        super(SkuCapacity, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.minimum = minimum
         self.maximum = maximum
         self.default = default
@@ -6729,7 +6305,7 @@ class SourceUploadedUserSourceInfo(UploadedUserSourceInfo):
 
     All required parameters must be populated in order to send to Azure.
 
-    :ivar type: Required. Type of the source uploaded.Constant filled by server.
+    :ivar type: Type of the source uploaded. Required.
     :vartype type: str
     :ivar version: Version of the source.
     :vartype version: str
@@ -6744,15 +6320,15 @@ class SourceUploadedUserSourceInfo(UploadedUserSourceInfo):
     """
 
     _validation = {
-        'type': {'required': True},
+        "type": {"required": True},
     }
 
     _attribute_map = {
-        'type': {'key': 'type', 'type': 'str'},
-        'version': {'key': 'version', 'type': 'str'},
-        'relative_path': {'key': 'relativePath', 'type': 'str'},
-        'artifact_selector': {'key': 'artifactSelector', 'type': 'str'},
-        'runtime_version': {'key': 'runtimeVersion', 'type': 'str'},
+        "type": {"key": "type", "type": "str"},
+        "version": {"key": "version", "type": "str"},
+        "relative_path": {"key": "relativePath", "type": "str"},
+        "artifact_selector": {"key": "artifactSelector", "type": "str"},
+        "runtime_version": {"key": "runtimeVersion", "type": "str"},
     }
 
     def __init__(
@@ -6776,13 +6352,13 @@ class SourceUploadedUserSourceInfo(UploadedUserSourceInfo):
         :keyword runtime_version: Runtime version of the source file.
         :paramtype runtime_version: str
         """
-        super(SourceUploadedUserSourceInfo, self).__init__(version=version, relative_path=relative_path, **kwargs)
-        self.type = 'Source'  # type: str
+        super().__init__(version=version, relative_path=relative_path, **kwargs)
+        self.type = "Source"  # type: str
         self.artifact_selector = artifact_selector
         self.runtime_version = runtime_version
 
 
-class SsoProperties(msrest.serialization.Model):
+class SsoProperties(_serialization.Model):
     """Single sign-on related configuration.
 
     :ivar scope: It defines the specific actions applications can be allowed to do on a user's
@@ -6797,10 +6373,10 @@ class SsoProperties(msrest.serialization.Model):
     """
 
     _attribute_map = {
-        'scope': {'key': 'scope', 'type': '[str]'},
-        'client_id': {'key': 'clientId', 'type': 'str'},
-        'client_secret': {'key': 'clientSecret', 'type': 'str'},
-        'issuer_uri': {'key': 'issuerUri', 'type': 'str'},
+        "scope": {"key": "scope", "type": "[str]"},
+        "client_id": {"key": "clientId", "type": "str"},
+        "client_secret": {"key": "clientSecret", "type": "str"},
+        "issuer_uri": {"key": "issuerUri", "type": "str"},
     }
 
     def __init__(
@@ -6823,14 +6399,14 @@ class SsoProperties(msrest.serialization.Model):
         :keyword issuer_uri: The URI of Issuer Identifier.
         :paramtype issuer_uri: str
         """
-        super(SsoProperties, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.scope = scope
         self.client_id = client_id
         self.client_secret = client_secret
         self.issuer_uri = issuer_uri
 
 
-class StackProperties(msrest.serialization.Model):
+class StackProperties(_serialization.Model):
     """KPack ClusterStack properties payload.
 
     :ivar id: Id of the ClusterStack.
@@ -6840,16 +6416,12 @@ class StackProperties(msrest.serialization.Model):
     """
 
     _attribute_map = {
-        'id': {'key': 'id', 'type': 'str'},
-        'version': {'key': 'version', 'type': 'str'},
+        "id": {"key": "id", "type": "str"},
+        "version": {"key": "version", "type": "str"},
     }
 
     def __init__(
-        self,
-        *,
-        id: Optional[str] = None,
-        version: Optional[str] = None,
-        **kwargs
+        self, *, id: Optional[str] = None, version: Optional[str] = None, **kwargs  # pylint: disable=redefined-builtin
     ):
         """
         :keyword id: Id of the ClusterStack.
@@ -6857,42 +6429,36 @@ class StackProperties(msrest.serialization.Model):
         :keyword version: Version of the ClusterStack.
         :paramtype version: str
         """
-        super(StackProperties, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.id = id
         self.version = version
 
 
-class StorageProperties(msrest.serialization.Model):
+class StorageProperties(_serialization.Model):
     """Storage resource payload.
 
-    You probably want to use the sub-classes and not this class directly. Known
-    sub-classes are: StorageAccount.
+    You probably want to use the sub-classes and not this class directly. Known sub-classes are:
+    StorageAccount
 
     All required parameters must be populated in order to send to Azure.
 
-    :ivar storage_type: Required. The type of the storage.Constant filled by server.
-    :vartype storage_type: str
+    :ivar storage_type: The type of the storage. Required. "StorageAccount"
+    :vartype storage_type: str or ~azure.mgmt.appplatform.v2022_03_01_preview.models.StorageType
     """
 
     _validation = {
-        'storage_type': {'required': True},
+        "storage_type": {"required": True},
     }
 
     _attribute_map = {
-        'storage_type': {'key': 'storageType', 'type': 'str'},
+        "storage_type": {"key": "storageType", "type": "str"},
     }
 
-    _subtype_map = {
-        'storage_type': {'StorageAccount': 'StorageAccount'}
-    }
+    _subtype_map = {"storage_type": {"StorageAccount": "StorageAccount"}}
 
-    def __init__(
-        self,
-        **kwargs
-    ):
-        """
-        """
-        super(StorageProperties, self).__init__(**kwargs)
+    def __init__(self, **kwargs):
+        """ """
+        super().__init__(**kwargs)
         self.storage_type = None  # type: Optional[str]
 
 
@@ -6901,41 +6467,35 @@ class StorageAccount(StorageProperties):
 
     All required parameters must be populated in order to send to Azure.
 
-    :ivar storage_type: Required. The type of the storage.Constant filled by server.
-    :vartype storage_type: str
-    :ivar account_name: Required. The account name of the Azure Storage Account.
+    :ivar storage_type: The type of the storage. Required. "StorageAccount"
+    :vartype storage_type: str or ~azure.mgmt.appplatform.v2022_03_01_preview.models.StorageType
+    :ivar account_name: The account name of the Azure Storage Account. Required.
     :vartype account_name: str
-    :ivar account_key: Required. The account key of the Azure Storage Account.
+    :ivar account_key: The account key of the Azure Storage Account. Required.
     :vartype account_key: str
     """
 
     _validation = {
-        'storage_type': {'required': True},
-        'account_name': {'required': True},
-        'account_key': {'required': True},
+        "storage_type": {"required": True},
+        "account_name": {"required": True},
+        "account_key": {"required": True},
     }
 
     _attribute_map = {
-        'storage_type': {'key': 'storageType', 'type': 'str'},
-        'account_name': {'key': 'accountName', 'type': 'str'},
-        'account_key': {'key': 'accountKey', 'type': 'str'},
+        "storage_type": {"key": "storageType", "type": "str"},
+        "account_name": {"key": "accountName", "type": "str"},
+        "account_key": {"key": "accountKey", "type": "str"},
     }
 
-    def __init__(
-        self,
-        *,
-        account_name: str,
-        account_key: str,
-        **kwargs
-    ):
+    def __init__(self, *, account_name: str, account_key: str, **kwargs):
         """
-        :keyword account_name: Required. The account name of the Azure Storage Account.
+        :keyword account_name: The account name of the Azure Storage Account. Required.
         :paramtype account_name: str
-        :keyword account_key: Required. The account key of the Azure Storage Account.
+        :keyword account_key: The account key of the Azure Storage Account. Required.
         :paramtype account_key: str
         """
-        super(StorageAccount, self).__init__(**kwargs)
-        self.storage_type = 'StorageAccount'  # type: str
+        super().__init__(**kwargs)
+        self.storage_type = "StorageAccount"  # type: str
         self.account_name = account_name
         self.account_key = account_key
 
@@ -6958,35 +6518,30 @@ class StorageResource(ProxyResource):
     """
 
     _validation = {
-        'id': {'readonly': True},
-        'name': {'readonly': True},
-        'type': {'readonly': True},
-        'system_data': {'readonly': True},
+        "id": {"readonly": True},
+        "name": {"readonly": True},
+        "type": {"readonly": True},
+        "system_data": {"readonly": True},
     }
 
     _attribute_map = {
-        'id': {'key': 'id', 'type': 'str'},
-        'name': {'key': 'name', 'type': 'str'},
-        'type': {'key': 'type', 'type': 'str'},
-        'system_data': {'key': 'systemData', 'type': 'SystemData'},
-        'properties': {'key': 'properties', 'type': 'StorageProperties'},
+        "id": {"key": "id", "type": "str"},
+        "name": {"key": "name", "type": "str"},
+        "type": {"key": "type", "type": "str"},
+        "system_data": {"key": "systemData", "type": "SystemData"},
+        "properties": {"key": "properties", "type": "StorageProperties"},
     }
 
-    def __init__(
-        self,
-        *,
-        properties: Optional["StorageProperties"] = None,
-        **kwargs
-    ):
+    def __init__(self, *, properties: Optional["_models.StorageProperties"] = None, **kwargs):
         """
         :keyword properties: Properties of the storage resource payload.
         :paramtype properties: ~azure.mgmt.appplatform.v2022_03_01_preview.models.StorageProperties
         """
-        super(StorageResource, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.properties = properties
 
 
-class StorageResourceCollection(msrest.serialization.Model):
+class StorageResourceCollection(_serialization.Model):
     """Collection compose of storage resources list and a possible link for next page.
 
     :ivar value: The storage resources list.
@@ -6996,16 +6551,12 @@ class StorageResourceCollection(msrest.serialization.Model):
     """
 
     _attribute_map = {
-        'value': {'key': 'value', 'type': '[StorageResource]'},
-        'next_link': {'key': 'nextLink', 'type': 'str'},
+        "value": {"key": "value", "type": "[StorageResource]"},
+        "next_link": {"key": "nextLink", "type": "str"},
     }
 
     def __init__(
-        self,
-        *,
-        value: Optional[List["StorageResource"]] = None,
-        next_link: Optional[str] = None,
-        **kwargs
+        self, *, value: Optional[List["_models.StorageResource"]] = None, next_link: Optional[str] = None, **kwargs
     ):
         """
         :keyword value: The storage resources list.
@@ -7013,7 +6564,7 @@ class StorageResourceCollection(msrest.serialization.Model):
         :keyword next_link: The link to next page of storage list.
         :paramtype next_link: str
         """
-        super(StorageResourceCollection, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.value = value
         self.next_link = next_link
 
@@ -7037,36 +6588,31 @@ class SupportedBuildpackResource(ProxyResource):
     """
 
     _validation = {
-        'id': {'readonly': True},
-        'name': {'readonly': True},
-        'type': {'readonly': True},
-        'system_data': {'readonly': True},
+        "id": {"readonly": True},
+        "name": {"readonly": True},
+        "type": {"readonly": True},
+        "system_data": {"readonly": True},
     }
 
     _attribute_map = {
-        'id': {'key': 'id', 'type': 'str'},
-        'name': {'key': 'name', 'type': 'str'},
-        'type': {'key': 'type', 'type': 'str'},
-        'system_data': {'key': 'systemData', 'type': 'SystemData'},
-        'properties': {'key': 'properties', 'type': 'SupportedBuildpackResourceProperties'},
+        "id": {"key": "id", "type": "str"},
+        "name": {"key": "name", "type": "str"},
+        "type": {"key": "type", "type": "str"},
+        "system_data": {"key": "systemData", "type": "SystemData"},
+        "properties": {"key": "properties", "type": "SupportedBuildpackResourceProperties"},
     }
 
-    def __init__(
-        self,
-        *,
-        properties: Optional["SupportedBuildpackResourceProperties"] = None,
-        **kwargs
-    ):
+    def __init__(self, *, properties: Optional["_models.SupportedBuildpackResourceProperties"] = None, **kwargs):
         """
         :keyword properties: Supported buildpack resource properties.
         :paramtype properties:
          ~azure.mgmt.appplatform.v2022_03_01_preview.models.SupportedBuildpackResourceProperties
         """
-        super(SupportedBuildpackResource, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.properties = properties
 
 
-class SupportedBuildpackResourceProperties(msrest.serialization.Model):
+class SupportedBuildpackResourceProperties(_serialization.Model):
     """Supported buildpack resource properties.
 
     :ivar buildpack_id: The id of supported buildpack.
@@ -7074,24 +6620,19 @@ class SupportedBuildpackResourceProperties(msrest.serialization.Model):
     """
 
     _attribute_map = {
-        'buildpack_id': {'key': 'buildpackId', 'type': 'str'},
+        "buildpack_id": {"key": "buildpackId", "type": "str"},
     }
 
-    def __init__(
-        self,
-        *,
-        buildpack_id: Optional[str] = None,
-        **kwargs
-    ):
+    def __init__(self, *, buildpack_id: Optional[str] = None, **kwargs):
         """
         :keyword buildpack_id: The id of supported buildpack.
         :paramtype buildpack_id: str
         """
-        super(SupportedBuildpackResourceProperties, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.buildpack_id = buildpack_id
 
 
-class SupportedBuildpacksCollection(msrest.serialization.Model):
+class SupportedBuildpacksCollection(_serialization.Model):
     """Object that includes an array of supported buildpacks resources and a possible link for next set.
 
     :ivar value: Collection of supported buildpacks resources.
@@ -7103,14 +6644,14 @@ class SupportedBuildpacksCollection(msrest.serialization.Model):
     """
 
     _attribute_map = {
-        'value': {'key': 'value', 'type': '[SupportedBuildpackResource]'},
-        'next_link': {'key': 'nextLink', 'type': 'str'},
+        "value": {"key": "value", "type": "[SupportedBuildpackResource]"},
+        "next_link": {"key": "nextLink", "type": "str"},
     }
 
     def __init__(
         self,
         *,
-        value: Optional[List["SupportedBuildpackResource"]] = None,
+        value: Optional[List["_models.SupportedBuildpackResource"]] = None,
         next_link: Optional[str] = None,
         **kwargs
     ):
@@ -7122,19 +6663,19 @@ class SupportedBuildpacksCollection(msrest.serialization.Model):
          It's null for now, added for future use.
         :paramtype next_link: str
         """
-        super(SupportedBuildpacksCollection, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.value = value
         self.next_link = next_link
 
 
-class SupportedRuntimeVersion(msrest.serialization.Model):
+class SupportedRuntimeVersion(_serialization.Model):
     """Supported deployment runtime version descriptor.
 
-    :ivar value: The raw value which could be passed to deployment CRUD operations. Possible values
-     include: "Java_8", "Java_11", "Java_17", "NetCore_31".
+    :ivar value: The raw value which could be passed to deployment CRUD operations. Known values
+     are: "Java_8", "Java_11", "Java_17", and "NetCore_31".
     :vartype value: str or ~azure.mgmt.appplatform.v2022_03_01_preview.models.SupportedRuntimeValue
-    :ivar platform: The platform of this runtime version (possible values: "Java" or ".NET").
-     Possible values include: "Java", ".NET Core".
+    :ivar platform: The platform of this runtime version (possible values: "Java" or ".NET"). Known
+     values are: "Java" and ".NET Core".
     :vartype platform: str or
      ~azure.mgmt.appplatform.v2022_03_01_preview.models.SupportedRuntimePlatform
     :ivar version: The detailed version (major.minor) of the platform.
@@ -7142,32 +6683,32 @@ class SupportedRuntimeVersion(msrest.serialization.Model):
     """
 
     _attribute_map = {
-        'value': {'key': 'value', 'type': 'str'},
-        'platform': {'key': 'platform', 'type': 'str'},
-        'version': {'key': 'version', 'type': 'str'},
+        "value": {"key": "value", "type": "str"},
+        "platform": {"key": "platform", "type": "str"},
+        "version": {"key": "version", "type": "str"},
     }
 
     def __init__(
         self,
         *,
-        value: Optional[Union[str, "SupportedRuntimeValue"]] = None,
-        platform: Optional[Union[str, "SupportedRuntimePlatform"]] = None,
+        value: Optional[Union[str, "_models.SupportedRuntimeValue"]] = None,
+        platform: Optional[Union[str, "_models.SupportedRuntimePlatform"]] = None,
         version: Optional[str] = None,
         **kwargs
     ):
         """
-        :keyword value: The raw value which could be passed to deployment CRUD operations. Possible
-         values include: "Java_8", "Java_11", "Java_17", "NetCore_31".
+        :keyword value: The raw value which could be passed to deployment CRUD operations. Known values
+         are: "Java_8", "Java_11", "Java_17", and "NetCore_31".
         :paramtype value: str or
          ~azure.mgmt.appplatform.v2022_03_01_preview.models.SupportedRuntimeValue
         :keyword platform: The platform of this runtime version (possible values: "Java" or ".NET").
-         Possible values include: "Java", ".NET Core".
+         Known values are: "Java" and ".NET Core".
         :paramtype platform: str or
          ~azure.mgmt.appplatform.v2022_03_01_preview.models.SupportedRuntimePlatform
         :keyword version: The detailed version (major.minor) of the platform.
         :paramtype version: str
         """
-        super(SupportedRuntimeVersion, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.value = value
         self.platform = platform
         self.version = version
@@ -7192,36 +6733,31 @@ class SupportedStackResource(ProxyResource):
     """
 
     _validation = {
-        'id': {'readonly': True},
-        'name': {'readonly': True},
-        'type': {'readonly': True},
-        'system_data': {'readonly': True},
+        "id": {"readonly": True},
+        "name": {"readonly": True},
+        "type": {"readonly": True},
+        "system_data": {"readonly": True},
     }
 
     _attribute_map = {
-        'id': {'key': 'id', 'type': 'str'},
-        'name': {'key': 'name', 'type': 'str'},
-        'type': {'key': 'type', 'type': 'str'},
-        'system_data': {'key': 'systemData', 'type': 'SystemData'},
-        'properties': {'key': 'properties', 'type': 'SupportedStackResourceProperties'},
+        "id": {"key": "id", "type": "str"},
+        "name": {"key": "name", "type": "str"},
+        "type": {"key": "type", "type": "str"},
+        "system_data": {"key": "systemData", "type": "SystemData"},
+        "properties": {"key": "properties", "type": "SupportedStackResourceProperties"},
     }
 
-    def __init__(
-        self,
-        *,
-        properties: Optional["SupportedStackResourceProperties"] = None,
-        **kwargs
-    ):
+    def __init__(self, *, properties: Optional["_models.SupportedStackResourceProperties"] = None, **kwargs):
         """
         :keyword properties: Supported stack resource properties.
         :paramtype properties:
          ~azure.mgmt.appplatform.v2022_03_01_preview.models.SupportedStackResourceProperties
         """
-        super(SupportedStackResource, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.properties = properties
 
 
-class SupportedStackResourceProperties(msrest.serialization.Model):
+class SupportedStackResourceProperties(_serialization.Model):
     """Supported stack resource properties.
 
     :ivar stack_id: The id of supported stack.
@@ -7231,29 +6767,23 @@ class SupportedStackResourceProperties(msrest.serialization.Model):
     """
 
     _attribute_map = {
-        'stack_id': {'key': 'stackId', 'type': 'str'},
-        'version': {'key': 'version', 'type': 'str'},
+        "stack_id": {"key": "stackId", "type": "str"},
+        "version": {"key": "version", "type": "str"},
     }
 
-    def __init__(
-        self,
-        *,
-        stack_id: Optional[str] = None,
-        version: Optional[str] = None,
-        **kwargs
-    ):
+    def __init__(self, *, stack_id: Optional[str] = None, version: Optional[str] = None, **kwargs):
         """
         :keyword stack_id: The id of supported stack.
         :paramtype stack_id: str
         :keyword version: The version of supported stack.
         :paramtype version: str
         """
-        super(SupportedStackResourceProperties, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.stack_id = stack_id
         self.version = version
 
 
-class SupportedStacksCollection(msrest.serialization.Model):
+class SupportedStacksCollection(_serialization.Model):
     """Object that includes an array of supported stacks resources and a possible link for next set.
 
     :ivar value: Collection of supported stacks resources.
@@ -7264,14 +6794,14 @@ class SupportedStacksCollection(msrest.serialization.Model):
     """
 
     _attribute_map = {
-        'value': {'key': 'value', 'type': '[SupportedStackResource]'},
-        'next_link': {'key': 'nextLink', 'type': 'str'},
+        "value": {"key": "value", "type": "[SupportedStackResource]"},
+        "next_link": {"key": "nextLink", "type": "str"},
     }
 
     def __init__(
         self,
         *,
-        value: Optional[List["SupportedStackResource"]] = None,
+        value: Optional[List["_models.SupportedStackResource"]] = None,
         next_link: Optional[str] = None,
         **kwargs
     ):
@@ -7283,26 +6813,26 @@ class SupportedStacksCollection(msrest.serialization.Model):
          It's null for now, added for future use.
         :paramtype next_link: str
         """
-        super(SupportedStacksCollection, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.value = value
         self.next_link = next_link
 
 
-class SystemData(msrest.serialization.Model):
+class SystemData(_serialization.Model):
     """Metadata pertaining to creation and last modification of the resource.
 
     :ivar created_by: The identity that created the resource.
     :vartype created_by: str
-    :ivar created_by_type: The type of identity that created the resource. Possible values include:
-     "User", "Application", "ManagedIdentity", "Key".
+    :ivar created_by_type: The type of identity that created the resource. Known values are:
+     "User", "Application", "ManagedIdentity", and "Key".
     :vartype created_by_type: str or
      ~azure.mgmt.appplatform.v2022_03_01_preview.models.CreatedByType
     :ivar created_at: The timestamp of resource creation (UTC).
     :vartype created_at: ~datetime.datetime
     :ivar last_modified_by: The identity that last modified the resource.
     :vartype last_modified_by: str
-    :ivar last_modified_by_type: The type of identity that last modified the resource. Possible
-     values include: "User", "Application", "ManagedIdentity", "Key".
+    :ivar last_modified_by_type: The type of identity that last modified the resource. Known values
+     are: "User", "Application", "ManagedIdentity", and "Key".
     :vartype last_modified_by_type: str or
      ~azure.mgmt.appplatform.v2022_03_01_preview.models.LastModifiedByType
     :ivar last_modified_at: The timestamp of resource modification (UTC).
@@ -7310,44 +6840,44 @@ class SystemData(msrest.serialization.Model):
     """
 
     _attribute_map = {
-        'created_by': {'key': 'createdBy', 'type': 'str'},
-        'created_by_type': {'key': 'createdByType', 'type': 'str'},
-        'created_at': {'key': 'createdAt', 'type': 'iso-8601'},
-        'last_modified_by': {'key': 'lastModifiedBy', 'type': 'str'},
-        'last_modified_by_type': {'key': 'lastModifiedByType', 'type': 'str'},
-        'last_modified_at': {'key': 'lastModifiedAt', 'type': 'iso-8601'},
+        "created_by": {"key": "createdBy", "type": "str"},
+        "created_by_type": {"key": "createdByType", "type": "str"},
+        "created_at": {"key": "createdAt", "type": "iso-8601"},
+        "last_modified_by": {"key": "lastModifiedBy", "type": "str"},
+        "last_modified_by_type": {"key": "lastModifiedByType", "type": "str"},
+        "last_modified_at": {"key": "lastModifiedAt", "type": "iso-8601"},
     }
 
     def __init__(
         self,
         *,
         created_by: Optional[str] = None,
-        created_by_type: Optional[Union[str, "CreatedByType"]] = None,
+        created_by_type: Optional[Union[str, "_models.CreatedByType"]] = None,
         created_at: Optional[datetime.datetime] = None,
         last_modified_by: Optional[str] = None,
-        last_modified_by_type: Optional[Union[str, "LastModifiedByType"]] = None,
+        last_modified_by_type: Optional[Union[str, "_models.LastModifiedByType"]] = None,
         last_modified_at: Optional[datetime.datetime] = None,
         **kwargs
     ):
         """
         :keyword created_by: The identity that created the resource.
         :paramtype created_by: str
-        :keyword created_by_type: The type of identity that created the resource. Possible values
-         include: "User", "Application", "ManagedIdentity", "Key".
+        :keyword created_by_type: The type of identity that created the resource. Known values are:
+         "User", "Application", "ManagedIdentity", and "Key".
         :paramtype created_by_type: str or
          ~azure.mgmt.appplatform.v2022_03_01_preview.models.CreatedByType
         :keyword created_at: The timestamp of resource creation (UTC).
         :paramtype created_at: ~datetime.datetime
         :keyword last_modified_by: The identity that last modified the resource.
         :paramtype last_modified_by: str
-        :keyword last_modified_by_type: The type of identity that last modified the resource. Possible
-         values include: "User", "Application", "ManagedIdentity", "Key".
+        :keyword last_modified_by_type: The type of identity that last modified the resource. Known
+         values are: "User", "Application", "ManagedIdentity", and "Key".
         :paramtype last_modified_by_type: str or
          ~azure.mgmt.appplatform.v2022_03_01_preview.models.LastModifiedByType
         :keyword last_modified_at: The timestamp of resource modification (UTC).
         :paramtype last_modified_at: ~datetime.datetime
         """
-        super(SystemData, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.created_by = created_by
         self.created_by_type = created_by_type
         self.created_at = created_at
@@ -7356,7 +6886,7 @@ class SystemData(msrest.serialization.Model):
         self.last_modified_at = last_modified_at
 
 
-class TemporaryDisk(msrest.serialization.Model):
+class TemporaryDisk(_serialization.Model):
     """Temporary disk payload.
 
     :ivar size_in_gb: Size of the temporary disk in GB.
@@ -7366,33 +6896,27 @@ class TemporaryDisk(msrest.serialization.Model):
     """
 
     _validation = {
-        'size_in_gb': {'maximum': 5, 'minimum': 0},
+        "size_in_gb": {"maximum": 5, "minimum": 0},
     }
 
     _attribute_map = {
-        'size_in_gb': {'key': 'sizeInGB', 'type': 'int'},
-        'mount_path': {'key': 'mountPath', 'type': 'str'},
+        "size_in_gb": {"key": "sizeInGB", "type": "int"},
+        "mount_path": {"key": "mountPath", "type": "str"},
     }
 
-    def __init__(
-        self,
-        *,
-        size_in_gb: Optional[int] = None,
-        mount_path: Optional[str] = "/tmp",
-        **kwargs
-    ):
+    def __init__(self, *, size_in_gb: Optional[int] = None, mount_path: str = "/tmp", **kwargs):
         """
         :keyword size_in_gb: Size of the temporary disk in GB.
         :paramtype size_in_gb: int
         :keyword mount_path: Mount path of the temporary disk.
         :paramtype mount_path: str
         """
-        super(TemporaryDisk, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.size_in_gb = size_in_gb
         self.mount_path = mount_path
 
 
-class TestKeys(msrest.serialization.Model):
+class TestKeys(_serialization.Model):
     """Test keys payload.
 
     :ivar primary_key: Primary key.
@@ -7408,11 +6932,11 @@ class TestKeys(msrest.serialization.Model):
     """
 
     _attribute_map = {
-        'primary_key': {'key': 'primaryKey', 'type': 'str'},
-        'secondary_key': {'key': 'secondaryKey', 'type': 'str'},
-        'primary_test_endpoint': {'key': 'primaryTestEndpoint', 'type': 'str'},
-        'secondary_test_endpoint': {'key': 'secondaryTestEndpoint', 'type': 'str'},
-        'enabled': {'key': 'enabled', 'type': 'bool'},
+        "primary_key": {"key": "primaryKey", "type": "str"},
+        "secondary_key": {"key": "secondaryKey", "type": "str"},
+        "primary_test_endpoint": {"key": "primaryTestEndpoint", "type": "str"},
+        "secondary_test_endpoint": {"key": "secondaryTestEndpoint", "type": "str"},
+        "enabled": {"key": "enabled", "type": "bool"},
     }
 
     def __init__(
@@ -7437,7 +6961,7 @@ class TestKeys(msrest.serialization.Model):
         :keyword enabled: Indicates whether the test endpoint feature enabled or not.
         :paramtype enabled: bool
         """
-        super(TestKeys, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.primary_key = primary_key
         self.secondary_key = secondary_key
         self.primary_test_endpoint = primary_test_endpoint
@@ -7445,7 +6969,7 @@ class TestKeys(msrest.serialization.Model):
         self.enabled = enabled
 
 
-class TriggeredBuildResult(msrest.serialization.Model):
+class TriggeredBuildResult(_serialization.Model):
     """The build result triggered by a build.
 
     :ivar id: The unique build id of this build result.
@@ -7453,24 +6977,19 @@ class TriggeredBuildResult(msrest.serialization.Model):
     """
 
     _attribute_map = {
-        'id': {'key': 'id', 'type': 'str'},
+        "id": {"key": "id", "type": "str"},
     }
 
-    def __init__(
-        self,
-        *,
-        id: Optional[str] = None,
-        **kwargs
-    ):
+    def __init__(self, *, id: Optional[str] = None, **kwargs):  # pylint: disable=redefined-builtin
         """
         :keyword id: The unique build id of this build result.
         :paramtype id: str
         """
-        super(TriggeredBuildResult, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.id = id
 
 
-class UserAssignedManagedIdentity(msrest.serialization.Model):
+class UserAssignedManagedIdentity(_serialization.Model):
     """The details of the user-assigned managed identity assigned to an App.
 
     Variables are only populated by the server, and will be ignored when sending a request.
@@ -7482,27 +7001,23 @@ class UserAssignedManagedIdentity(msrest.serialization.Model):
     """
 
     _validation = {
-        'principal_id': {'readonly': True},
-        'client_id': {'readonly': True},
+        "principal_id": {"readonly": True},
+        "client_id": {"readonly": True},
     }
 
     _attribute_map = {
-        'principal_id': {'key': 'principalId', 'type': 'str'},
-        'client_id': {'key': 'clientId', 'type': 'str'},
+        "principal_id": {"key": "principalId", "type": "str"},
+        "client_id": {"key": "clientId", "type": "str"},
     }
 
-    def __init__(
-        self,
-        **kwargs
-    ):
-        """
-        """
-        super(UserAssignedManagedIdentity, self).__init__(**kwargs)
+    def __init__(self, **kwargs):
+        """ """
+        super().__init__(**kwargs)
         self.principal_id = None
         self.client_id = None
 
 
-class ValidationMessages(msrest.serialization.Model):
+class ValidationMessages(_serialization.Model):
     """Validate messages of the configuration service git repositories.
 
     :ivar name: The name of the configuration service git repository.
@@ -7512,23 +7027,17 @@ class ValidationMessages(msrest.serialization.Model):
     """
 
     _attribute_map = {
-        'name': {'key': 'name', 'type': 'str'},
-        'messages': {'key': 'messages', 'type': '[str]'},
+        "name": {"key": "name", "type": "str"},
+        "messages": {"key": "messages", "type": "[str]"},
     }
 
-    def __init__(
-        self,
-        *,
-        name: Optional[str] = None,
-        messages: Optional[List[str]] = None,
-        **kwargs
-    ):
+    def __init__(self, *, name: Optional[str] = None, messages: Optional[List[str]] = None, **kwargs):
         """
         :keyword name: The name of the configuration service git repository.
         :paramtype name: str
         :keyword messages: Detailed validation messages.
         :paramtype messages: list[str]
         """
-        super(ValidationMessages, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.name = name
         self.messages = messages

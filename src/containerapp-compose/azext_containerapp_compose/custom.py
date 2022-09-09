@@ -14,7 +14,9 @@ from pycomposefile import ComposeFile
 logger = get_logger(__name__)
 
 
-def resolve_configuration_element_list(compose_service, unsupported_configuration):
+def resolve_configuration_element_list(compose_service, unsupported_configuration, area=None):
+    if area is not None:
+        compose_service = getattr(compose_service, area)
     config_list = []
     for configuration_element in unsupported_configuration:
         try:
@@ -27,11 +29,18 @@ def resolve_configuration_element_list(compose_service, unsupported_configuratio
 
 
 def warn_about_unsupported_build_configuration(compose_service):
+    unsupported_configuration = ["args", "ssh", "cache_from", "cache_to", "extra_hosts",
+                                 "isolation", "labels", "no_cache", "pull", "shm_size",
+                                 "target", "secrets", "tags"]
     if compose_service.build is not None:
-        message = f"Build configuration for {compose_service.build.compose_path} is not currently supported."
-        message += " Work is planned to add that capability."
+        config_list = resolve_configuration_element_list(compose_service, unsupported_configuration, 'build')
+        message = "These build configuration settings from the docker-compose file are yet supported."
+        message += " Currently, we support supplying a build context and optionally target Dockerfile for a service."
         message += " See https://aka.ms/containerapp/compose/build_support for more information or to add feedback."
-        logger.warning(message)
+        if len(config_list) >= 1:
+            logger.warning(message)
+            for item in config_list:
+                logger.warning("     %s", item)
 
 
 def warn_about_unsupported_runtime_host_configuration(compose_service):
@@ -110,6 +119,7 @@ def create_containerapps_from_compose(cmd,  # pylint: disable=R0914
     from ._monkey_patch import (
         create_containerapp_from_service,
         create_containerapps_compose_environment,
+        build_containerapp_from_compose_service,
         load_yaml_file,
         show_managed_environment)
 
@@ -124,6 +134,7 @@ def create_containerapps_from_compose(cmd,  # pylint: disable=R0914
         managed_environment = create_containerapps_compose_environment(cmd,
                                                                        managed_env,
                                                                        resource_group_name,
+                                                                       location,
                                                                        logs_workspace_name=logs_workspace_name,
                                                                        tags=tags)
 
@@ -142,6 +153,7 @@ def create_containerapps_from_compose(cmd,  # pylint: disable=R0914
             message = "Unsupported platform found. "
             message += "Azure Container Apps only supports linux/amd64 container images."
             raise InvalidArgumentValueError(message)
+        image = service.image
         warn_about_unsupported_elements(service)
         logger.info(  # pylint: disable=W1203
             f"Creating the Container Apps instance for {service_name} under {resource_group_name} in {location}.")
@@ -161,11 +173,34 @@ def create_containerapps_from_compose(cmd,  # pylint: disable=R0914
         elif secret_env_ref is not None:
             environment = secret_env_ref
 
+        if service.build is not None:
+            logger.warning("Build configuration defined for this service.")
+            logger.warning("The build will be performed by Azure Container Registry.")
+            context = service.build.context
+            dockerfile = "Dockerfile"
+            if service.build.dockerfile is not None:
+                dockerfile = service.build.dockerfile
+            image, registry, registry_username, registry_password = build_containerapp_from_compose_service(
+                cmd,
+                service_name,
+                context,
+                dockerfile,
+                resource_group_name,
+                managed_env,
+                location,
+                image,
+                target_port,
+                ingress_type,
+                registry,
+                registry_username,
+                registry_password,
+                environment)
+
         containerapps_from_compose.append(
             create_containerapp_from_service(cmd,
                                              service_name,
                                              resource_group_name,
-                                             image=service.image,
+                                             image=image,
                                              container_name=service.container_name,
                                              managed_env=managed_environment["id"],
                                              ingress=ingress_type,
@@ -283,31 +318,55 @@ def valid_resource_settings():
     # https://docs.microsoft.com/azure/container-apps/containers#configuration
     return {
         "0.25": "0.5",
-        "0.5": "1.0",
+        "0.5": "1",
         "0.75": "1.5",
-        "1.0": "2.0",
+        "1.0": "2",
         "1.25": "2.5",
-        "1.5": "3.0",
+        "1.5": "3",
         "1.75": "3.5",
-        "2.0": "4.0",
+        "2.0": "4",
     }
 
 
 def validate_memory_and_cpu_setting(cpu, memory):
     settings = valid_resource_settings()
-
     if cpu in settings.keys():  # pylint: disable=C0201
         if memory != settings[cpu]:
             if memory is not None:
-                warning = f"Unsupported memory reservation request of {memory}."
-                warning += f"The default value of {settings[cpu]}Gi will be used."
+                warning = f"Unsupported memory reservation request of {memory}. "
+                warning += f"The default value of {settings[cpu]} GB for {cpu} vCPUs will be used. "
+                warning += "Please see memory and vCPU configuration options for Azure Container Apps at "
+                warning += "https://docs.microsoft.com/en-us/azure/container-apps/containers#configuration "
                 logger.warning(warning)
             memory = settings[cpu]
         return (cpu, f"{memory}Gi")
 
-    if cpu is not None:
-        logger.warning(  # pylint: disable=W1203
-            f"Invalid CPU reservation request of {cpu}. The default resource values will be used.")
+    if memory in settings.values():
+        new_cpu = "0.25"
+        for c, m in settings.items():
+            if memory == m:
+                new_cpu = c
+        if cpu != new_cpu:
+            if cpu is not None:
+                warning = f"Unsupported cpu configuration request of {cpu}. "
+                warning += f"The default value of {new_cpu} vCPUs for {memory} GB will be used. "
+                warning += "Please see memory and vCPU configuration options for Azure Container Apps at "
+                warning += "https://docs.microsoft.com/en-us/azure/container-apps/containers#configuration "
+                logger.warning(warning)
+        return (new_cpu, f"{memory}Gi")
+
+    warning = ""
+    if cpu is not None and memory is not None:
+        warning += f"Invalid CPU and memory reservation request of {cpu} vCPU and {memory}. "
+    elif cpu is not None:
+        warning += f"Invalid CPU reservation request of {cpu} vCPU. "
+    elif memory is not None:
+        warning += f"Invalid memory reservation request of {memory} GB. "
+    if cpu is not None or memory is not None:
+        warning += "The default resource values of 0.25 vCPU and 0.5 GB will be used. "
+        warning += "Please see memory and vCPU configuration options for Azure Container Apps at "
+        warning += "https://docs.microsoft.com/en-us/azure/container-apps/containers#configuration "
+        logger.warning(warning)
     return (None, None)
 
 
@@ -327,9 +386,9 @@ def resolve_memory_configuration_from_service(service):
     if service_deploy_resources_exists(service):
         resources = service.deploy.resources
         if resources.reservations is not None and resources.reservations.memory is not None:
-            memory = str(resources.reservations.memory.gigabytes())
+            memory = str(resources.reservations.memory.as_gigabytes())
     elif service.mem_reservation is not None:
-        memory = str(service.mem_reservation.gigabytes())
+        memory = str(service.mem_reservation.as_gigabytes())
     return memory
 
 

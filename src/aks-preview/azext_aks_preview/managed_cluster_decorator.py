@@ -43,8 +43,15 @@ from knack.prompting import prompt_y_n
 from azext_aks_preview._consts import (
     CONST_AZURE_KEYVAULT_NETWORK_ACCESS_PRIVATE,
     CONST_AZURE_KEYVAULT_NETWORK_ACCESS_PUBLIC,
+    CONST_LOAD_BALANCER_SKU_BASIC,
+    CONST_PRIVATE_DNS_ZONE_NONE,
+    CONST_PRIVATE_DNS_ZONE_SYSTEM,
 )
-from azext_aks_preview._helpers import get_cluster_snapshot_by_snapshot_id
+from azext_aks_preview._helpers import (
+    get_cluster_snapshot_by_snapshot_id,
+    check_is_private_cluster,
+    check_is_apiserver_vnet_integration_cluster,
+)
 from azext_aks_preview._loadbalancer import create_load_balancer_profile
 from azext_aks_preview._loadbalancer import (
     update_load_balancer_profile as _update_load_balancer_profile,
@@ -58,6 +65,7 @@ from azext_aks_preview.agentpool_decorator import (
     AKSPreviewAgentPoolAddDecorator,
     AKSPreviewAgentPoolUpdateDecorator,
 )
+from msrestazure.tools import is_valid_resource_id
 
 logger = get_logger(__name__)
 
@@ -72,8 +80,11 @@ ManagedClusterSnapshot = TypeVar("ManagedClusterSnapshot")
 ManagedClusterStorageProfile = TypeVar('ManagedClusterStorageProfile')
 ManagedClusterStorageProfileDiskCSIDriver = TypeVar('ManagedClusterStorageProfileDiskCSIDriver')
 ManagedClusterStorageProfileFileCSIDriver = TypeVar('ManagedClusterStorageProfileFileCSIDriver')
+ManagedClusterStorageProfileBlobCSIDriver = TypeVar('ManagedClusterStorageProfileBlobCSIDriver')
 ManagedClusterStorageProfileSnapshotController = TypeVar('ManagedClusterStorageProfileSnapshotController')
 ManagedClusterIngressProfileWebAppRouting = TypeVar("ManagedClusterIngressProfileWebAppRouting")
+ManagedClusterSecurityProfileDefender = TypeVar("ManagedClusterSecurityProfileDefender")
+ManagedClusterSecurityProfileNodeRestriction = TypeVar("ManagedClusterSecurityProfileNodeRestriction")
 
 
 # pylint: disable=too-few-public-methods
@@ -297,6 +308,13 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         # this parameter does not need dynamic completion
         # this parameter does not need validation
         return load_balancer_managed_outbound_ip_count
+
+    def get_network_plugin_mode(self) -> Union[str, None]:
+        """Get the value of network_plugin_mode
+
+        :return: str or None
+        """
+        return self.raw_param.get('network_plugin_mode')
 
     def get_load_balancer_managed_outbound_ipv6_count(self) -> Union[int, None]:
         """Obtain the expected count of IPv6 managed outbound IPs.
@@ -671,6 +689,37 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         """
         return self._get_enable_azure_keyvault_kms(enable_validation=True)
 
+    def _get_disable_azure_keyvault_kms(self, enable_validation: bool = False) -> bool:
+        """Internal function to obtain the value of disable_azure_keyvault_kms.
+
+        This function supports the option of enable_validation. When enabled, if both enable_azure_keyvault_kms and disable_azure_keyvault_kms are
+        specified, raise a MutuallyExclusiveArgumentError.
+
+        :return: bool
+        """
+        # Read the original value passed by the command.
+        disable_azure_keyvault_kms = self.raw_param.get("disable_azure_keyvault_kms")
+
+        # This option is not supported in create mode, hence we do not read the property value from the `mc` object.
+        # This parameter does not need dynamic completion.
+        if enable_validation:
+            if disable_azure_keyvault_kms and self._get_enable_azure_keyvault_kms(enable_validation=False):
+                raise MutuallyExclusiveArgumentError(
+                    "Cannot specify --enable-azure-keyvault-kms and --disable-azure-keyvault-kms at the same time."
+                )
+
+        return disable_azure_keyvault_kms
+
+    def get_disable_azure_keyvault_kms(self) -> bool:
+        """Obtain the value of disable_azure_keyvault_kms.
+
+        This function will verify the parameter by default. If both enable_azure_keyvault_kms and disable_azure_keyvault_kms are specified, raise a
+        MutuallyExclusiveArgumentError.
+
+        :return: bool
+        """
+        return self._get_disable_azure_keyvault_kms(enable_validation=True)
+
     def _get_azure_keyvault_kms_key_id(self, enable_validation: bool = False) -> Union[str, None]:
         """Internal function to obtain the value of azure_keyvault_kms_key_id according to the context.
 
@@ -728,12 +777,17 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         """
         # read the original value passed by the command
         azure_keyvault_kms_key_vault_network_access = self.raw_param.get(
-            "azure_keyvault_kms_key_vault_network_access")
-        # Do not read the property value corresponding to the parameter from the `mc` object in create mode,
-        # because keyVaultNetworkAccess has the default value "Public" in azure-rest-api-specs.
+            "azure_keyvault_kms_key_vault_network_access"
+        )
+
+        # validation
         if enable_validation:
             enable_azure_keyvault_kms = self._get_enable_azure_keyvault_kms(
                 enable_validation=False)
+            if azure_keyvault_kms_key_vault_network_access is None:
+                raise RequiredArgumentMissingError(
+                    '"--azure-keyvault-kms-key-vault-network-access" is required.')
+
             if (
                 azure_keyvault_kms_key_vault_network_access and
                 (
@@ -743,6 +797,16 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
             ):
                 raise RequiredArgumentMissingError(
                     '"--azure-keyvault-kms-key-vault-network-access" requires "--enable-azure-keyvault-kms".')
+
+            if azure_keyvault_kms_key_vault_network_access == CONST_AZURE_KEYVAULT_NETWORK_ACCESS_PRIVATE:
+                key_vault_resource_id = self._get_azure_keyvault_kms_key_vault_resource_id(
+                    enable_validation=False)
+                if (
+                    key_vault_resource_id is None or
+                    key_vault_resource_id == ""
+                ):
+                    raise RequiredArgumentMissingError(
+                        '"--azure-keyvault-kms-key-vault-resource-id" is required when "--azure-keyvault-kms-key-vault-network-access" is Private.')
 
         return azure_keyvault_kms_key_vault_network_access
 
@@ -766,8 +830,8 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         """
         # read the original value passed by the command
         azure_keyvault_kms_key_vault_resource_id = self.raw_param.get(
-            "azure_keyvault_kms_key_vault_resource_id")
-        # In create mode, try to read the property value corresponding to the parameter from the `mc` object.
+            "azure_keyvault_kms_key_vault_resource_id"
+        )
         if self.decorator_mode == DecoratorMode.CREATE:
             if (
                 self.mc and
@@ -779,6 +843,7 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
                     self.mc.security_profile.azure_key_vault_kms.key_vault_resource_id
                 )
 
+        # validation
         if enable_validation:
             enable_azure_keyvault_kms = self._get_enable_azure_keyvault_kms(
                 enable_validation=False)
@@ -828,6 +893,86 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         :return: bool
         """
         return self._get_azure_keyvault_kms_key_vault_resource_id(enable_validation=True)
+
+    def get_enable_image_cleaner(self) -> bool:
+        """Obtain the value of enable_image_cleaner.
+
+        :return: bool
+        """
+        # read the original value passed by the command
+        enable_image_cleaner = self.raw_param.get("enable_image_cleaner")
+
+        return enable_image_cleaner
+
+    def get_disable_image_cleaner(self) -> bool:
+        """Obtain the value of disable_image_cleaner.
+
+        This function supports the option of enable_validation. When enabled, if both enable_image_cleaner and
+        disable_image_cleaner are specified, raise a MutuallyExclusiveArgumentError.
+
+        :return: bool
+        """
+        # read the original value passed by the command
+        disable_image_cleaner = self.raw_param.get("disable_image_cleaner")
+
+        return disable_image_cleaner
+
+    def _get_image_cleaner_interval_hours(self, enable_validation: bool = False) -> Union[int, None]:
+        """Internal function to obtain the value of image_cleaner_interval_hours according to the context.
+
+        This function supports the option of enable_validation. When enabled
+          1. In Create mode
+            a. if image_cleaner_interval_hours is specified but enable_image_cleaner is missed, raise a RequiredArgumentMissingError.
+          2. In update mode
+            b. if image_cleaner_interval_hours is specified and image cleaner wat not enabled, raise a RequiredArgumentMissingError.
+            c. if image_cleaner_interval_hours is specified and disable_image_cleaner is specified, raise a MutuallyExclusiveArgumentError.
+
+        :return: int or None
+        """
+        # read the original value passed by the command
+        image_cleaner_interval_hours = self.raw_param.get("image_cleaner_interval_hours")
+
+        if image_cleaner_interval_hours is not None and enable_validation:
+
+            enable_image_cleaner = self.get_enable_image_cleaner()
+            disable_image_cleaner = self.get_disable_image_cleaner()
+
+            if self.decorator_mode == DecoratorMode.CREATE:
+                if not enable_image_cleaner:
+                    raise RequiredArgumentMissingError(
+                        '"--image-cleaner-interval-hours" requires "--enable-image-cleaner" in create mode.')
+
+            elif self.decorator_mode == DecoratorMode.UPDATE:
+                if not enable_image_cleaner and (
+                    not self.mc or
+                    not self.mc.security_profile or
+                    not self.mc.security_profile.image_cleaner or
+                    not self.mc.security_profile.image_cleaner.enabled
+                ):
+                    raise RequiredArgumentMissingError(
+                        'Update "--image-cleaner-interval-hours" requires specifying "--enable-image-cleaner" or ImageCleaner enabled on managed cluster.')
+
+                if disable_image_cleaner:
+                    raise MutuallyExclusiveArgumentError(
+                        'Cannot specify --image-cleaner-interval-hours and --disable-image-cleaner at the same time.')
+
+        return image_cleaner_interval_hours
+
+    def get_image_cleaner_interval_hours(self) -> Union[int, None]:
+        """Obtain the value of image_cleaner_interval_hours.
+
+        This function supports the option of enable_validation. When enabled
+          1. In Create mode
+            a. if image_cleaner_interval_hours is specified but enable_image_cleaner is missed, raise a RequiredArgumentMissingError.
+          2. In update mode
+            b. if image_cleaner_interval_hours is specified and image cleaner wat not enabled, raise a RequiredArgumentMissingError.
+            c. if image_cleaner_interval_hours is specified and disable_image_cleaner is specified, raise a MutuallyExclusiveArgumentError.
+
+        :return: int or None
+        """
+        interval_hours = self._get_image_cleaner_interval_hours(enable_validation=True)
+
+        return interval_hours
 
     def get_cluster_snapshot_id(self) -> Union[str, None]:
         """Obtain the values of cluster_snapshot_id.
@@ -1011,6 +1156,43 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
 
         return profile
 
+    def get_blob_driver(self) -> Optional[ManagedClusterStorageProfileBlobCSIDriver]:
+        """Obtain the value of storage_profile.blob_csi_driver
+
+        :return: Optional[ManagedClusterStorageProfileBlobCSIDriver]
+        """
+        enable_blob_driver = self.raw_param.get("enable_blob_driver")
+        disable_blob_driver = self.raw_param.get("disable_blob_driver")
+
+        if enable_blob_driver is None and disable_blob_driver is None:
+            return None
+
+        profile = self.models.ManagedClusterStorageProfileBlobCSIDriver()
+
+        if enable_blob_driver and disable_blob_driver:
+            raise MutuallyExclusiveArgumentError(
+                "Cannot specify --enable-blob-driver and "
+                "--disable-blob-driver at the same time."
+            )
+
+        if self.decorator_mode == DecoratorMode.CREATE:
+            if enable_blob_driver:
+                profile.enabled = True
+
+        if self.decorator_mode == DecoratorMode.UPDATE:
+            if enable_blob_driver:
+                msg = "Please make sure there is no open-source Blob CSI driver installed before enabling."
+                if not self.get_yes() and not prompt_y_n(msg, default="n"):
+                    raise DecoratorEarlyExitException()
+                profile.enabled = True
+            elif disable_blob_driver:
+                msg = "Please make sure there are no existing PVs and PVCs that are used by Blob CSI driver before disabling."
+                if not self.get_yes() and not prompt_y_n(msg, default="n"):
+                    raise DecoratorEarlyExitException()
+                profile.enabled = False
+
+        return profile
+
     def get_snapshot_controller(self) -> Optional[ManagedClusterStorageProfileSnapshotController]:
         """Obtain the value of storage_profile.snapshot_controller
 
@@ -1056,6 +1238,7 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
             profile = self.mc.storage_profile
         profile.disk_csi_driver = self.get_disk_driver()
         profile.file_csi_driver = self.get_file_driver()
+        profile.blob_csi_driver = self.get_blob_driver()
         profile.snapshot_controller = self.get_snapshot_controller()
 
         return profile
@@ -1064,7 +1247,6 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         """Internal function to obtain the value of enable_apiserver_vnet_integration.
 
         This function supports the option of enable_validation. When enable_apiserver_vnet_integration is specified,
-        For CREATE: if enable-private-cluster is not used, raise an RequiredArgumentMissingError;
         For UPDATE: if apiserver-subnet-id is not used, raise an RequiredArgumentMissingError;
 
         :return: bool
@@ -1083,14 +1265,6 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         # this parameter does not need dynamic completion
         # validation
         if enable_validation:
-            if self.decorator_mode == DecoratorMode.CREATE:
-                if enable_apiserver_vnet_integration:
-                    # remove this validation after we support public cluster
-                    if not self._get_enable_private_cluster(enable_validation=False):
-                        raise RequiredArgumentMissingError(
-                            "--apiserver-vnet-integration is only supported for private cluster right now. "
-                            "Please use it together with --enable-private-cluster"
-                        )
             if self.decorator_mode == DecoratorMode.UPDATE:
                 if enable_apiserver_vnet_integration:
                     if self._get_apiserver_subnet_id(enable_validation=False) is None:
@@ -1104,7 +1278,6 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         """Obtain the value of enable_apiserver_vnet_integration.
 
         This function will verify the parameter by default. When enable_apiserver_vnet_integration is specified,
-        For CREATE: if enable-private-cluster is not used, raise an RequiredArgumentMissingError;
         For UPDATE: if apiserver-subnet-id is not used, raise an RequiredArgumentMissingError
 
         :return: bool
@@ -1163,6 +1336,375 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         :return: bool
         """
         return self._get_apiserver_subnet_id(enable_validation=True)
+
+    def _get_enable_private_cluster(self, enable_validation: bool = False) -> bool:
+        """Internal function to obtain the value of enable_private_cluster for update.
+
+        This function supports the option of enable_validation during update. When enable_private_cluster is specified,
+        if api_server_authorized_ip_ranges is assigned, raise an MutuallyExclusiveArgumentError;
+        When enable_private_cluster is not specified, disable_public_fqdn, enable_public_fqdn or private_dns_zone is assigned, raise an InvalidArgumentValueError.
+
+        For UPDATE: if existing cluster is not using apiserver vnet integration, raise an ArgumentUsageError;
+
+        :return: bool
+        """
+        # read the original value passed by the command
+        enable_apiserver_vnet_integration = self.raw_param.get("enable_apiserver_vnet_integration")
+        enable_private_cluster = self.raw_param.get("enable_private_cluster")
+
+        # In create mode, try to read the property value corresponding to the parameter from the `mc` object.
+        if self.decorator_mode == DecoratorMode.CREATE:
+            if (
+                self.mc and
+                self.mc.api_server_access_profile and
+                self.mc.api_server_access_profile.enable_private_cluster is not None
+            ):
+                enable_private_cluster = self.mc.api_server_access_profile.enable_private_cluster
+
+        # this parameter does not need dynamic completion
+        # validation
+        if enable_validation:
+            # copy from cli core
+            if self.decorator_mode == DecoratorMode.CREATE:
+                if enable_private_cluster:
+                    if (
+                        safe_lower(self._get_load_balancer_sku(enable_validation=False)) ==
+                        CONST_LOAD_BALANCER_SKU_BASIC
+                    ):
+                        raise InvalidArgumentValueError(
+                            "Please use standard load balancer for private cluster"
+                        )
+                    if self._get_api_server_authorized_ip_ranges(enable_validation=False):
+                        raise MutuallyExclusiveArgumentError(
+                            "--api-server-authorized-ip-ranges is not supported for private cluster"
+                        )
+                else:
+                    if self._get_disable_public_fqdn(enable_validation=False):
+                        raise InvalidArgumentValueError(
+                            "--disable-public-fqdn should only be used with --enable-private-cluster"
+                        )
+                    if self._get_private_dns_zone(enable_validation=False):
+                        raise InvalidArgumentValueError(
+                            "Invalid private dns zone for public cluster. It should always be empty for public cluster"
+                        )
+
+            if self.decorator_mode == DecoratorMode.UPDATE:
+                # copy logic from cli core
+                is_private_cluster = check_is_private_cluster(self.mc)
+                is_apiserver_vnet_integration_cluster = check_is_apiserver_vnet_integration_cluster(self.mc)
+
+                if is_private_cluster or enable_private_cluster:
+                    if self._get_api_server_authorized_ip_ranges(enable_validation=False):
+                        raise MutuallyExclusiveArgumentError(
+                            "--api-server-authorized-ip-ranges is not supported for private cluster"
+                        )
+                else:
+                    if self._get_disable_public_fqdn(enable_validation=False):
+                        raise InvalidArgumentValueError(
+                            "--disable-public-fqdn can only be used for private cluster"
+                        )
+                    if self._get_enable_public_fqdn(enable_validation=False):
+                        raise InvalidArgumentValueError(
+                            "--enable-public-fqdn can only be used for private cluster"
+                        )
+                # new validation added for vnet integration
+                if enable_private_cluster and not enable_apiserver_vnet_integration:
+                    if not is_apiserver_vnet_integration_cluster:
+                        raise ArgumentUsageError(
+                            "Enabling private cluster requires enabling apiserver vnet integration(--enable-apiserver-vnet-integration)."
+                        )
+
+        return enable_private_cluster
+
+    def get_enable_private_cluster(self) -> bool:
+        """Obtain the value of enable_private_cluster.
+
+        This function will verify the parameter by default. When enable_private_cluster is specified,
+        For UPDATE: if enable-apiserver-vnet-integration is not used and existing cluster is not using apiserver vnet integration, raise an ArgumentUsageError
+
+        :return: bool
+        """
+        return self._get_enable_private_cluster(enable_validation=True)
+
+    def _get_disable_private_cluster(self, enable_validation: bool = False) -> bool:
+        """Internal function to obtain the value of disable_private_cluster.
+
+        This function supports the option of enable_validation.
+        For UPDATE: if existing cluster is not using apiserver vnet integration, raise an ArgumentUsageError;
+
+        :return: bool
+        """
+        # read the original value passed by the command
+        enable_apiserver_vnet_integration = self.raw_param.get("enable_apiserver_vnet_integration")
+        disable_private_cluster = self.raw_param.get("disable_private_cluster")
+
+        # this parameter does not need dynamic completion
+        # validation
+        if enable_validation:
+            if self.decorator_mode == DecoratorMode.UPDATE:
+                # logic copied from cli core
+                if disable_private_cluster:
+                    if self._get_disable_public_fqdn(enable_validation=False):
+                        raise InvalidArgumentValueError(
+                            "--disable-public-fqdn can only be used for private cluster"
+                        )
+                    if self._get_enable_public_fqdn(enable_validation=False):
+                        raise InvalidArgumentValueError(
+                            "--enable-public-fqdn can only be used for private cluster"
+                        )
+                # new validation added for apiserver vnet integration
+                if disable_private_cluster and not enable_apiserver_vnet_integration:
+                    if self.mc.api_server_access_profile is None or self.mc.api_server_access_profile.enable_vnet_integration is not True:
+                        raise ArgumentUsageError(
+                            "Disabling private cluster requires enabling apiserver vnet integration(--enable-apiserver-vnet-integration)."
+                        )
+
+        return disable_private_cluster
+
+    def get_disable_private_cluster(self) -> bool:
+        """Obtain the value of disable_private_cluster.
+
+        This function will verify the parameter by default. When disable_private_cluster is specified,
+        For UPDATE: if enable-apiserver-vnet-integration is not used and existing cluster is not using apiserver vnet integration, raise an ArgumentUsageError
+
+        :return: bool
+        """
+        return self._get_disable_private_cluster(enable_validation=True)
+
+    def _get_disable_public_fqdn(self, enable_validation: bool = False) -> bool:
+        """Internal function to obtain the value of disable_public_fqdn for update.
+
+        This function supports the option of enable_validation. When enabled, if enable_private_cluster is not specified
+        and disable_public_fqdn is assigned, raise an InvalidArgumentValueError. If both disable_public_fqdn and
+        enable_public_fqdn are assigned, raise a MutuallyExclusiveArgumentError. In update mode, if
+        disable_public_fqdn is assigned and private_dns_zone equals to CONST_PRIVATE_DNS_ZONE_NONE, raise an
+        InvalidArgumentValueError.
+        :return: bool
+        """
+        # read the original value passed by the command
+        disable_public_fqdn = self.raw_param.get("disable_public_fqdn")
+
+        # In create mode, try to read the property value corresponding to the parameter from the `mc` object.
+        if self.decorator_mode == DecoratorMode.CREATE:
+            if (
+                self.mc and
+                self.mc.api_server_access_profile and
+                self.mc.api_server_access_profile.enable_private_cluster_public_fqdn is not None
+            ):
+                disable_public_fqdn = not self.mc.api_server_access_profile.enable_private_cluster_public_fqdn
+
+        # this parameter does not need dynamic completion
+        # validation
+        if enable_validation:
+            if self.decorator_mode == DecoratorMode.CREATE:
+                if disable_public_fqdn and not self._get_enable_private_cluster(enable_validation=False):
+                    raise InvalidArgumentValueError(
+                        "--disable-public-fqdn should only be used with --enable-private-cluster"
+                    )
+            if self.decorator_mode == DecoratorMode.UPDATE:
+                if disable_public_fqdn:
+                    if self._get_enable_public_fqdn(enable_validation=False):
+                        raise MutuallyExclusiveArgumentError(
+                            "Cannot specify '--enable-public-fqdn' and '--disable-public-fqdn' at the same time"
+                        )
+                    if (
+                        safe_lower(self._get_private_dns_zone(enable_validation=False)) == CONST_PRIVATE_DNS_ZONE_NONE or
+                        safe_lower(self.mc.api_server_access_profile.private_dns_zone) == CONST_PRIVATE_DNS_ZONE_NONE
+                    ):
+                        raise InvalidArgumentValueError(
+                            "--disable-public-fqdn cannot be applied for none mode private dns zone cluster"
+                        )
+
+        return disable_public_fqdn
+
+    def get_disable_public_fqdn(self) -> bool:
+        """Obtain the value of disable_public_fqdn.
+        This function will verify the parameter by default. If enable_private_cluster is not specified and
+        disable_public_fqdn is assigned, raise an InvalidArgumentValueError. If both disable_public_fqdn and
+        enable_public_fqdn are assigned, raise a MutuallyExclusiveArgumentError. In update mode, if
+        disable_public_fqdn is assigned and private_dns_zone equals to CONST_PRIVATE_DNS_ZONE_NONE, raise an
+        InvalidArgumentValueError.
+        :return: bool
+        """
+        return self._get_disable_public_fqdn(enable_validation=True)
+
+    def _get_enable_public_fqdn(self, enable_validation: bool = False) -> bool:
+        """Internal function to obtain the value of enable_public_fqdn for update.
+
+        This function supports the option of enable_validation. When enabled, if private cluster is not enabled and
+        enable_public_fqdn is assigned, raise an InvalidArgumentValueError. If both disable_public_fqdn and
+        enable_public_fqdn are assigned, raise a MutuallyExclusiveArgumentError.
+        :return: bool
+        """
+        # read the original value passed by the command
+        enable_public_fqdn = self.raw_param.get("enable_public_fqdn")
+
+        # this parameter does not need dynamic completion
+        # validation
+        if enable_validation:
+            if self.decorator_mode == DecoratorMode.UPDATE:
+                if enable_public_fqdn:
+                    if self._get_disable_public_fqdn(enable_validation=False):
+                        raise MutuallyExclusiveArgumentError(
+                            "Cannot specify '--enable-public-fqdn' and '--disable-public-fqdn' at the same time"
+                        )
+
+        return enable_public_fqdn
+
+    def get_enable_public_fqdn(self) -> bool:
+        """Obtain the value of enable_public_fqdn.
+        This function will verify the parameter by default. If private cluster is not enabled and enable_public_fqdn
+        is assigned, raise an InvalidArgumentValueError. If both disable_public_fqdn and enable_private_cluster are
+        assigned, raise a MutuallyExclusiveArgumentError.
+        :return: bool
+        """
+        return self._get_enable_public_fqdn(enable_validation=True)
+
+    def _get_private_dns_zone(self, enable_validation: bool = False) -> Union[str, None]:
+        """Internal function to obtain the value of private_dns_zone.
+        This function supports the option of enable_validation. When enabled and private_dns_zone is assigned, if
+        enable_private_cluster is not specified raise an InvalidArgumentValueError. It will also check when both
+        private_dns_zone and fqdn_subdomain are assigned, if the value of private_dns_zone is
+        CONST_PRIVATE_DNS_ZONE_SYSTEM or CONST_PRIVATE_DNS_ZONE_NONE, raise an InvalidArgumentValueError; Otherwise if
+        the value of private_dns_zone is not a valid resource ID, raise an InvalidArgumentValueError. In update mode,
+        if disable_public_fqdn is assigned and private_dns_zone equals to CONST_PRIVATE_DNS_ZONE_NONE, raise an
+        InvalidArgumentValueError.
+        :return: string or None
+        """
+        # read the original value passed by the command
+        private_dns_zone = self.raw_param.get("private_dns_zone")
+        # In create mode, try to read the property value corresponding to the parameter from the `mc` object.
+        if self.decorator_mode == DecoratorMode.CREATE:
+            if (
+                self.mc and
+                self.mc.api_server_access_profile and
+                self.mc.api_server_access_profile.private_dns_zone is not None
+            ):
+                private_dns_zone = self.mc.api_server_access_profile.private_dns_zone
+
+        # this parameter does not need dynamic completion
+        # validation
+        if enable_validation:
+            if self.decorator_mode == DecoratorMode.CREATE:
+                if private_dns_zone:
+                    if not self._get_enable_private_cluster(enable_validation=False):
+                        raise InvalidArgumentValueError(
+                            "Invalid private dns zone for public cluster. It should always be empty for public cluster"
+                        )
+                    if (
+                        private_dns_zone.lower() != CONST_PRIVATE_DNS_ZONE_SYSTEM and
+                        private_dns_zone.lower() != CONST_PRIVATE_DNS_ZONE_NONE
+                    ):
+                        if not is_valid_resource_id(private_dns_zone):
+                            raise InvalidArgumentValueError(
+                                private_dns_zone + " is not a valid Azure resource ID."
+                            )
+                    else:
+                        if self._get_fqdn_subdomain(enable_validation=False):
+                            raise InvalidArgumentValueError(
+                                "--fqdn-subdomain should only be used for private cluster with custom private dns zone"
+                            )
+            elif self.decorator_mode == DecoratorMode.UPDATE:
+                if (
+                    self.mc and
+                    self.mc.api_server_access_profile and
+                    self.mc.api_server_access_profile.private_dns_zone == CONST_PRIVATE_DNS_ZONE_NONE
+                ):
+                    if self._get_disable_public_fqdn(enable_validation=False):
+                        raise InvalidArgumentValueError(
+                            "--disable-public-fqdn cannot be applied for none mode private dns zone cluster"
+                        )
+        return private_dns_zone
+
+    def get_private_dns_zone(self) -> Union[str, None]:
+        """Obtain the value of private_dns_zone.
+        This function will verify the parameter by default. When private_dns_zone is assigned, if enable_private_cluster
+        is not specified raise an InvalidArgumentValueError. It will also check when both private_dns_zone and
+        fqdn_subdomain are assigned, if the value of private_dns_zone is CONST_PRIVATE_DNS_ZONE_SYSTEM or
+        CONST_PRIVATE_DNS_ZONE_NONE, raise an InvalidArgumentValueError; Otherwise if the value of private_dns_zone is
+        not a valid resource ID, raise an InvalidArgumentValueError. In update mode, if disable_public_fqdn is assigned
+        and private_dns_zone equals to CONST_PRIVATE_DNS_ZONE_NONE, raise an InvalidArgumentValueError.
+        :return: string or None
+        """
+        return self._get_private_dns_zone(enable_validation=True)
+
+    def _get_api_server_authorized_ip_ranges(self, enable_validation: bool = False) -> List[str]:
+        """Internal function to obtain the value of api_server_authorized_ip_ranges for update.
+
+        This function supports the option of enable_validation. When enabled and api_server_authorized_ip_ranges is
+        assigned, if load_balancer_sku equals to CONST_LOAD_BALANCER_SKU_BASIC, raise an InvalidArgumentValueError;
+        if enable_private_cluster is specified, raise a MutuallyExclusiveArgumentError.
+        This function will normalize the parameter by default. It will split the string into a list with "," as the
+        delimiter.
+        :return: empty list or list of strings
+        """
+        # read the original value passed by the command
+        api_server_authorized_ip_ranges = self.raw_param.get(
+            "api_server_authorized_ip_ranges"
+        )
+        # In create mode, try to read the property value corresponding to the parameter from the `mc` object.
+        if self.decorator_mode == DecoratorMode.CREATE:
+            read_from_mc = False
+            if (
+                self.mc and
+                self.mc.api_server_access_profile and
+                self.mc.api_server_access_profile.authorized_ip_ranges is not None
+            ):
+                api_server_authorized_ip_ranges = (
+                    self.mc.api_server_access_profile.authorized_ip_ranges
+                )
+                read_from_mc = True
+
+            # normalize
+            if not read_from_mc:
+                api_server_authorized_ip_ranges = [
+                    x.strip()
+                    for x in (
+                        api_server_authorized_ip_ranges.split(",")
+                        if api_server_authorized_ip_ranges
+                        else []
+                    )
+                ]
+        elif self.decorator_mode == DecoratorMode.UPDATE:
+            # normalize, keep None as None
+            if api_server_authorized_ip_ranges is not None:
+                api_server_authorized_ip_ranges = [
+                    x.strip()
+                    for x in (
+                        api_server_authorized_ip_ranges.split(",")
+                        if api_server_authorized_ip_ranges
+                        else []
+                    )
+                ]
+
+        # validation
+        if enable_validation:
+            if self.decorator_mode == DecoratorMode.CREATE:
+                if api_server_authorized_ip_ranges:
+                    if (
+                        safe_lower(self._get_load_balancer_sku(enable_validation=False)) ==
+                        CONST_LOAD_BALANCER_SKU_BASIC
+                    ):
+                        raise InvalidArgumentValueError(
+                            "--api-server-authorized-ip-ranges can only be used with standard load balancer"
+                        )
+                    if self._get_enable_private_cluster(enable_validation=False):
+                        raise MutuallyExclusiveArgumentError(
+                            "--api-server-authorized-ip-ranges is not supported for private cluster"
+                        )
+
+        return api_server_authorized_ip_ranges
+
+    def get_api_server_authorized_ip_ranges(self) -> List[str]:
+        """Obtain the value of api_server_authorized_ip_ranges.
+        This function will verify the parameter by default. When api_server_authorized_ip_ranges is assigned, if
+        load_balancer_sku equals to CONST_LOAD_BALANCER_SKU_BASIC, raise an InvalidArgumentValueError; if
+        enable_private_cluster is specified, raise a MutuallyExclusiveArgumentError.
+        This function will normalize the parameter by default. It will split the string into a list with "," as the
+        delimiter.
+        :return: empty list or list of strings
+        """
+        return self._get_api_server_authorized_ip_ranges(enable_validation=True)
 
     def get_dns_zone_resource_id(self) -> Union[str, None]:
         """Obtain the value of ip_families.
@@ -1254,6 +1796,114 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         """
         return self._get_disable_keda(enable_validation=True)
 
+    def get_defender_config(self) -> Union[ManagedClusterSecurityProfileDefender, None]:
+        """Obtain the value of defender.
+
+        Note: Overwritten in aks-preview to adapt to v2 defender structure.
+
+        :return: ManagedClusterSecurityProfileDefender or None
+        """
+        disable_defender = self.raw_param.get("disable_defender")
+        if disable_defender:
+            return self.models.ManagedClusterSecurityProfileDefender(
+                security_monitoring=self.models.ManagedClusterSecurityProfileDefenderSecurityMonitoring(
+                    enabled=False
+                )
+            )
+
+        enable_defender = self.raw_param.get("enable_defender")
+
+        if not enable_defender:
+            return None
+
+        workspace = ""
+        config_file_path = self.raw_param.get("defender_config")
+        if config_file_path:
+            if not os.path.isfile(config_file_path):
+                raise InvalidArgumentValueError(
+                    "{} is not valid file, or not accessable.".format(
+                        config_file_path
+                    )
+                )
+            defender_config = get_file_json(config_file_path)
+            if "logAnalyticsWorkspaceResourceId" in defender_config:
+                workspace = defender_config["logAnalyticsWorkspaceResourceId"]
+
+        if workspace == "":
+            workspace = self.external_functions.ensure_default_log_analytics_workspace_for_monitoring(
+                self.cmd,
+                self.get_subscription_id(),
+                self.get_resource_group_name())
+
+        azure_defender = self.models.ManagedClusterSecurityProfileDefender(
+            log_analytics_workspace_resource_id=workspace,
+            security_monitoring=self.models.ManagedClusterSecurityProfileDefenderSecurityMonitoring(
+                enabled=enable_defender
+            ),
+        )
+        return azure_defender
+
+    def _get_enable_node_restriction(self, enable_validation: bool = False) -> bool:
+        """Internal function to obtain the value of enable_node_restriction.
+
+        This function supports the option of enable_node_restriction. When enabled, if both enable_node_restriction and disable_node_restriction are
+        specified, raise a MutuallyExclusiveArgumentError.
+
+        :return: bool
+        """
+        # Read the original value passed by the command.
+        enable_node_restriction = self.raw_param.get("enable_node_restriction")
+
+        # This parameter does not need dynamic completion.
+        if enable_validation:
+            if enable_node_restriction and self._get_disable_node_restriction(enable_validation=False):
+                raise MutuallyExclusiveArgumentError(
+                    "Cannot specify --enable-node-restriction and --disable-node-restriction at the same time."
+                )
+
+        return enable_node_restriction
+
+    def get_enable_node_restriction(self) -> bool:
+        """Obtain the value of enable_node_restriction.
+
+        This function will verify the parameter by default. If both enable_node_restriction and disable_node_restriction are specified, raise a
+        MutuallyExclusiveArgumentError.
+
+        :return: bool
+        """
+        return self._get_enable_node_restriction(enable_validation=True)
+
+    def _get_disable_node_restriction(self, enable_validation: bool = False) -> bool:
+        """Internal function to obtain the value of disable_node_restriction.
+
+        This function supports the option of enable_validation. When enabled, if both enable_node_restriction and disable_node_restriction are
+        specified, raise a MutuallyExclusiveArgumentError.
+
+        :return: bool
+        """
+        # Read the original value passed by the command.
+        disable_node_restriction = self.raw_param.get("disable_node_restriction")
+
+        # This option is not supported in create mode, hence we do not read the property value from the `mc` object.
+        # This parameter does not need dynamic completion.
+        if enable_validation:
+            if disable_node_restriction and self._get_enable_node_restriction(enable_validation=False):
+                raise MutuallyExclusiveArgumentError(
+                    "Cannot specify --enable-node-restriction and --disable-node-restriction at the same time."
+                )
+
+        return disable_node_restriction
+
+    def get_disable_node_restriction(self) -> bool:
+        """Obtain the value of disable_node_restriction.
+
+        This function will verify the parameter by default. If both enable_node_restriction and disable_node_restriction are specified, raise a
+        MutuallyExclusiveArgumentError.
+
+        :return: bool
+        """
+        return self._get_disable_node_restriction(enable_validation=True)
+
 
 class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
     def __init__(
@@ -1309,7 +1959,8 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
     def set_up_network_profile(self, mc: ManagedCluster) -> ManagedCluster:
         """Set up network profile for the ManagedCluster object.
 
-        Note: Inherited and extended in aks-preview to set ipv6 configs.
+        Note: Inherited and extended in aks-preview to set ipv6 configs and
+        network plugin mode.
 
         :return: the ManagedCluster object
         """
@@ -1337,6 +1988,9 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
                 self.context.get_load_balancer_idle_timeout(),
                 models=self.models.load_balancer_models,
             )
+
+        network_profile.network_plugin_mode = self.context.get_network_plugin_mode()
+
         return mc
 
     def set_up_api_server_access_profile(self, mc: ManagedCluster) -> ManagedCluster:
@@ -1348,6 +2002,8 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         """
         mc = super().set_up_api_server_access_profile(mc)
         if self.context.get_enable_apiserver_vnet_integration():
+            if mc.api_server_access_profile is None:
+                mc.api_server_access_profile = self.models.ManagedClusterAPIServerAccessProfile()
             mc.api_server_access_profile.enable_vnet_integration = True
         if self.context.get_apiserver_subnet_id():
             mc.api_server_access_profile.subnet_id = self.context.get_apiserver_subnet_id()
@@ -1478,6 +2134,31 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
 
         return mc
 
+    def set_up_image_cleaner(self, mc: ManagedCluster) -> ManagedCluster:
+        """Set up security profile imageCleaner for the ManagedCluster object.
+
+        :return: the ManagedCluster object
+        """
+        self._ensure_mc(mc)
+
+        interval_hours = self.context.get_image_cleaner_interval_hours()
+
+        if self.context.get_enable_image_cleaner():
+
+            if mc.security_profile is None:
+                mc.security_profile = self.models.ManagedClusterSecurityProfile()
+
+            if not interval_hours:
+                # default value for intervalHours - one week
+                interval_hours = 24 * 7
+
+            mc.security_profile.image_cleaner = self.models.ManagedClusterSecurityProfileImageCleaner(
+                enabled=True,
+                interval_hours=interval_hours,
+            )
+
+        return mc
+
     def set_up_creationdata_of_cluster_snapshot(self, mc: ManagedCluster) -> ManagedCluster:
         """Set up creationData of cluster snapshot for the ManagedCluster object.
 
@@ -1538,6 +2219,40 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
 
         return mc
 
+    def set_up_defender(self, mc: ManagedCluster) -> ManagedCluster:
+        """Set up defender for the ManagedCluster object.
+
+        Note: Overwritten in aks-preview to adapt to v2 defender structure.
+
+        :return: the ManagedCluster object
+        """
+        self._ensure_mc(mc)
+
+        defender = self.context.get_defender_config()
+        if defender:
+            if mc.security_profile is None:
+                mc.security_profile = self.models.ManagedClusterSecurityProfile()
+
+            mc.security_profile.defender = defender
+
+        return mc
+
+    def set_up_node_restriction(self, mc: ManagedCluster) -> ManagedCluster:
+        """Set up security profile nodeRestriction for the ManagedCluster object.
+
+        :return: the ManagedCluster object
+        """
+        self._ensure_mc(mc)
+
+        if self.context.get_enable_node_restriction():
+            if mc.security_profile is None:
+                    mc.security_profile = self.models.ManagedClusterSecurityProfile()
+            mc.security_profile.node_restriction = self.models.ManagedClusterSecurityProfileNodeRestriction(
+                enabled=True,
+            )
+
+        return mc
+
     def construct_mc_profile_preview(self, bypass_restore_defaults: bool = False) -> ManagedCluster:
         """The overall controller used to construct the default ManagedCluster profile.
 
@@ -1566,6 +2281,10 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
 
         # set up azure keyvalut kms
         mc = self.set_up_azure_keyvault_kms(mc)
+        # set up node restriction
+        mc = self.set_up_node_restriction(mc)
+        # set up image cleaner
+        mc = self.set_up_image_cleaner(mc)
         # set up cluster snapshot
         mc = self.set_up_creationdata_of_cluster_snapshot(mc)
         # set up storage profile
@@ -1685,19 +2404,51 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         return mc
 
     def update_api_server_access_profile(self, mc: ManagedCluster) -> ManagedCluster:
-        """Update apiServerAccessProfile vnet integration related property for the ManagedCluster object.
+        """Update apiServerAccessProfile property for the ManagedCluster object.
 
-        Note: Inherited and extended in aks-preview to set vnet integration configs.
+        Note: It completely rewrite the update_api_server_access_profile.
 
         :return: the ManagedCluster object
         """
-        mc = super().update_api_server_access_profile(mc)
+        #
+        self._ensure_mc(mc)
+
+        if mc.api_server_access_profile is None:
+            profile_holder = self.models.ManagedClusterAPIServerAccessProfile()
+        else:
+            profile_holder = mc.api_server_access_profile
+
         if self.context.get_enable_apiserver_vnet_integration():
-            if mc.api_server_access_profile is None:
-                mc.api_server_access_profile = self.models.ManagedClusterAPIServerAccessProfile()
-            mc.api_server_access_profile.enable_vnet_integration = True
+            profile_holder.enable_vnet_integration = True
         if self.context.get_apiserver_subnet_id():
-            mc.api_server_access_profile.subnet_id = self.context.get_apiserver_subnet_id()
+            profile_holder.subnet_id = self.context.get_apiserver_subnet_id()
+
+        if self.context.get_enable_private_cluster():
+            profile_holder.enable_private_cluster = True
+        if self.context.get_disable_private_cluster():
+            profile_holder.enable_private_cluster = False
+
+        api_server_authorized_ip_ranges = self.context.get_api_server_authorized_ip_ranges()
+        if api_server_authorized_ip_ranges is not None:
+            # empty string is valid as it disables ip whitelisting
+            profile_holder.authorized_ip_ranges = api_server_authorized_ip_ranges
+
+        if self.context.get_enable_public_fqdn():
+            profile_holder.enable_private_cluster_public_fqdn = True
+        if self.context.get_disable_public_fqdn():
+            profile_holder.enable_private_cluster_public_fqdn = False
+
+        private_dns_zone = self.context.get_private_dns_zone()
+        if private_dns_zone is not None:
+            mc.api_server_access_profile.private_dns_zone = private_dns_zone
+
+        # keep api_server_access_profile empty if none of its properties are updated
+        if (
+            profile_holder != mc.api_server_access_profile and
+            profile_holder == self.models.ManagedClusterAPIServerAccessProfile()
+        ):
+            profile_holder = None
+        mc.api_server_access_profile = profile_holder
 
         return mc
 
@@ -1789,18 +2540,77 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         self._ensure_mc(mc)
 
         if self.context.get_enable_azure_keyvault_kms():
-            key_id = self.context.get_azure_keyvault_kms_key_id()
-            if key_id:
-                if mc.security_profile is None:
-                    mc.security_profile = self.models.ManagedClusterSecurityProfile()
-                mc.security_profile.azure_key_vault_kms = self.models.AzureKeyVaultKms(
-                    enabled=True,
-                    key_id=key_id,
-                )
-                key_vault_network_access = self.context.get_azure_keyvault_kms_key_vault_network_access()
-                mc.security_profile.azure_key_vault_kms.key_vault_network_access = key_vault_network_access
-                if key_vault_network_access == CONST_AZURE_KEYVAULT_NETWORK_ACCESS_PRIVATE:
-                    mc.security_profile.azure_key_vault_kms.key_vault_resource_id = self.context.get_azure_keyvault_kms_key_vault_resource_id()
+            # get kms profile
+            if mc.security_profile is None:
+                mc.security_profile = self.models.ManagedClusterSecurityProfile()
+            azure_key_vault_kms_profile = mc.security_profile.azure_key_vault_kms
+            if azure_key_vault_kms_profile is None:
+                azure_key_vault_kms_profile = self.models.AzureKeyVaultKms()
+                mc.security_profile.azure_key_vault_kms = azure_key_vault_kms_profile
+
+            # set enabled
+            azure_key_vault_kms_profile.enabled = True
+            # set key id
+            azure_key_vault_kms_profile.key_id = self.context.get_azure_keyvault_kms_key_id()
+            # set network access, should never be None for now, can be safely assigned, temp fix for rp
+            # the value is obtained from user input or backfilled from existing mc or to default value
+            azure_key_vault_kms_profile.key_vault_network_access = self.context.get_azure_keyvault_kms_key_vault_network_access()
+            # set key vault resource id
+            if azure_key_vault_kms_profile.key_vault_network_access == CONST_AZURE_KEYVAULT_NETWORK_ACCESS_PRIVATE:
+                azure_key_vault_kms_profile.key_vault_resource_id = self.context.get_azure_keyvault_kms_key_vault_resource_id()
+            else:
+                azure_key_vault_kms_profile.key_vault_resource_id = ""
+
+        if self.context.get_disable_azure_keyvault_kms():
+            # get kms profile
+            if mc.security_profile is None:
+                mc.security_profile = self.models.ManagedClusterSecurityProfile()
+            azure_key_vault_kms_profile = mc.security_profile.azure_key_vault_kms
+            if azure_key_vault_kms_profile is None:
+                azure_key_vault_kms_profile = self.models.AzureKeyVaultKms()
+                mc.security_profile.azure_key_vault_kms = azure_key_vault_kms_profile
+
+            # set enabled to False
+            azure_key_vault_kms_profile.enabled = False
+
+        return mc
+
+    def update_image_cleaner(self, mc: ManagedCluster) -> ManagedCluster:
+        """Update security profile imageCleaner for the ManagedCluster object.
+
+        :return: the ManagedCluster object
+        """
+        self._ensure_mc(mc)
+
+        enable_image_cleaner = self.context.get_enable_image_cleaner()
+        disable_image_cleaner = self.context.get_disable_image_cleaner()
+        interval_hours = self.context.get_image_cleaner_interval_hours()
+
+        # no image cleaner related changes
+        if not enable_image_cleaner and not disable_image_cleaner and interval_hours is None:
+            return mc
+
+        if mc.security_profile is None:
+            mc.security_profile = self.models.ManagedClusterSecurityProfile()
+
+        image_cleaner_profile = mc.security_profile.image_cleaner
+
+        if image_cleaner_profile is None:
+            image_cleaner_profile = self.models.ManagedClusterSecurityProfileImageCleaner()
+            mc.security_profile.image_cleaner = image_cleaner_profile
+
+            # init the image cleaner profile
+            image_cleaner_profile.enabled = False
+            image_cleaner_profile.interval_hours = 7 * 24
+
+        if enable_image_cleaner:
+            image_cleaner_profile.enabled = True
+
+        if disable_image_cleaner:
+            image_cleaner_profile.enabled = False
+
+        if interval_hours is not None:
+            image_cleaner_profile.interval_hours = interval_hours
 
         return mc
 
@@ -1834,6 +2644,51 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
 
         return mc
 
+    def update_defender(self, mc: ManagedCluster) -> ManagedCluster:
+        """Update defender for the ManagedCluster object.
+
+        Note: Overwritten in aks-preview to adapt to v2 defender structure.
+
+        :return: the ManagedCluster object
+        """
+        self._ensure_mc(mc)
+
+        defender = self.context.get_defender_config()
+        if defender:
+            if mc.security_profile is None:
+                mc.security_profile = self.models.ManagedClusterSecurityProfile()
+
+            mc.security_profile.defender = defender
+
+        return mc
+
+    def update_node_restriction(self, mc: ManagedCluster) -> ManagedCluster:
+        """Update security profile nodeRestriction for the ManagedCluster object.
+
+        :return: the ManagedCluster object
+        """
+        self._ensure_mc(mc)
+
+        if self.context.get_enable_node_restriction():
+            if mc.security_profile is None:
+                mc.security_profile = self.models.ManagedClusterSecurityProfile()
+            if mc.security_profile.node_restriction is None:
+                mc.security_profile.node_restriction = self.models.ManagedClusterSecurityProfileNodeRestriction()
+
+            # set enabled
+            mc.security_profile.node_restriction.enabled = True
+
+        if self.context.get_disable_node_restriction():
+            if mc.security_profile is None:
+                mc.security_profile = self.models.ManagedClusterSecurityProfile()
+            if mc.security_profile.node_restriction is None:
+                mc.security_profile.node_restriction = self.models.ManagedClusterSecurityProfileNodeRestriction()
+
+            # set disabled
+            mc.security_profile.node_restriction.enabled = False
+
+        return mc
+
     def update_mc_profile_preview(self) -> ManagedCluster:
         """The overall controller used to update the preview ManagedCluster profile.
 
@@ -1862,6 +2717,10 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
 
         # update azure keyvalut kms
         mc = self.update_azure_keyvault_kms(mc)
+        # update node restriction
+        mc = self.update_node_restriction(mc)
+        # update image cleaner
+        mc = self.update_image_cleaner(mc)
         # update stroage profile
         mc = self.update_storage_profile(mc)
         # update workload auto scaler profile

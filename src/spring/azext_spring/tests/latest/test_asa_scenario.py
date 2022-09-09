@@ -196,15 +196,16 @@ class SslTests(ScenarioTest):
 class CustomImageTest(ScenarioTest):
 
     def test_app_deploy_container(self):
-        py_path = os.path.abspath(os.path.dirname(__file__))
-        file_path = os.path.join(py_path, 'files/test.jar').replace("\\","/")
         self.kwargs.update({
             'app': 'test-container',
             'serviceName': 'cli-unittest',
             'containerImage': 'springio/gs-spring-boot-docker',
             'resourceGroup': 'cli',
-            'file': file_path
+            'location': 'westus'
         })
+
+        self.cmd('group create -n {resourceGroup} -l {location}')
+        self.cmd('spring create -n {serviceName} -g {resourceGroup}')
 
         self.cmd('spring app create -s {serviceName} -g {resourceGroup} -n {app}')
 
@@ -214,7 +215,16 @@ class CustomImageTest(ScenarioTest):
             self.check('properties.source.customContainer.containerImage', '{containerImage}'),
         ])
 
-        self.cmd('spring app deployment create -g {resourceGroup} -s {serviceName} --app {app} -n green'
-                 + ' --container-image {containerImage} --registry-username PLACEHOLDER --registry-password PLACEHOLDER', checks=[
+        self.cmd('spring app deploy -g {resourceGroup} -s {serviceName} -n {app} --container-image {containerImage} --container-command "java" --container-args "-cp /app/resources:/app/classes:/app/libs/* hello.Application"', checks=[
+            self.check('name', 'default'),
+            self.check('properties.source.type', 'Container'),
+            self.check('properties.source.customContainer.containerImage', '{containerImage}'),
+            self.check('properties.source.customContainer.command', ['java']),
+            self.check('properties.source.customContainer.args', ['-cp', '/app/resources:/app/classes:/app/libs/*', 'hello.Application']),
+        ])
+
+        self.cmd('spring app deployment create -g {resourceGroup} -s {serviceName} --app {app} -n green --container-image {containerImage}', checks=[
             self.check('name', 'green'),
+            self.check('properties.source.type', 'Container'),
+            self.check('properties.source.customContainer.containerImage', '{containerImage}'),
         ])

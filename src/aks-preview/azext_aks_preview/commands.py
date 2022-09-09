@@ -5,25 +5,30 @@
 
 from azure.cli.core.commands import CliCommandType
 
-from ._client_factory import cf_managed_clusters
-from ._client_factory import cf_maintenance_configurations
-from ._client_factory import cf_agent_pools
-from ._client_factory import cf_nodepool_snapshots
-from ._client_factory import cf_mc_snapshots
-from ._client_factory import cf_trustedaccess_role
-from ._client_factory import cf_trustedaccess_role_binding
-from ._format import aks_show_table_format
-from ._format import aks_addon_list_available_table_format, aks_addon_list_table_format, aks_addon_show_table_format
-from ._format import aks_agentpool_show_table_format
-from ._format import aks_agentpool_list_table_format
-from ._format import aks_versions_table_format
-from ._format import aks_upgrades_table_format
-from ._format import aks_pod_identities_table_format
-from ._format import aks_pod_identity_exceptions_table_format
-from ._format import aks_show_nodepool_snapshot_table_format
-from ._format import aks_list_nodepool_snapshot_table_format
-from ._format import aks_show_snapshot_table_format
-from ._format import aks_list_snapshot_table_format
+from azext_aks_preview._client_factory import (
+    cf_agent_pools,
+    cf_maintenance_configurations,
+    cf_managed_clusters,
+    cf_mc_snapshots,
+    cf_nodepool_snapshots,
+    cf_trustedaccess_role,
+    cf_trustedaccess_role_binding,
+)
+from azext_aks_preview._format import (
+    aks_addon_list_available_table_format,
+    aks_addon_list_table_format,
+    aks_addon_show_table_format,
+    aks_agentpool_list_table_format,
+    aks_agentpool_show_table_format,
+    aks_list_nodepool_snapshot_table_format,
+    aks_list_snapshot_table_format,
+    aks_pod_identities_table_format,
+    aks_pod_identity_exceptions_table_format,
+    aks_show_nodepool_snapshot_table_format,
+    aks_show_snapshot_table_format,
+    aks_show_table_format,
+    aks_upgrades_table_format,
+)
 
 
 def load_command_table(self, _):
@@ -98,6 +103,7 @@ def load_command_table(self, _):
         g.command('stop', 'begin_stop', supports_no_wait=True)
         g.command('start', 'begin_start', supports_no_wait=True)
         g.custom_command('get-os-options', 'aks_get_os_options')
+        g.custom_command('operation-abort', 'aks_operation_abort', supports_no_wait=True)
 
     # AKS maintenance configuration commands
     with self.command_group('aks maintenanceconfiguration', maintenance_configuration_sdk, client_factory=cf_maintenance_configurations) as g:
@@ -136,6 +142,7 @@ def load_command_table(self, _):
         g.custom_command('get-upgrades', 'aks_agentpool_get_upgrade_profile')
         g.custom_command('stop', 'aks_agentpool_stop', supports_no_wait=True)
         g.custom_command('start', 'aks_agentpool_start', supports_no_wait=True)
+        g.custom_command('operation-abort', 'aks_agentpool_operation_abort', supports_no_wait=True)
 
     # AKS draft commands
     with self.command_group('aks draft', managed_clusters_sdk, client_factory=cf_managed_clusters) as g:
@@ -194,6 +201,6 @@ def load_command_table(self, _):
     with self.command_group('aks trustedaccess rolebinding', trustedaccess_role_binding_sdk, client_factory=cf_trustedaccess_role_binding) as g:
         g.custom_command('list', 'aks_trustedaccess_role_binding_list')
         g.custom_show_command('show', 'aks_trustedaccess_role_binding_get')
-        g.custom_command('create', 'aks_trustedaccess_role_binding_create_or_update')
-        g.custom_command('update', 'aks_trustedaccess_role_binding_create_or_update')
+        g.custom_command('create', 'aks_trustedaccess_role_binding_create')
+        g.custom_command('update', 'aks_trustedaccess_role_binding_update')
         g.custom_command('delete', 'aks_trustedaccess_role_binding_delete', confirmation=True)

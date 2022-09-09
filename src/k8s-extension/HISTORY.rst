@@ -3,6 +3,39 @@
 Release History
 ===============
 
+1.3.3
+++++++++++++++++++
+* microsoft.azuremonitor.containers: add condition to use different api version for provisioned clusters
+
+1.3.2
+++++++++++++++++++
+* Create identity for Appliances clusters
+
+1.3.1
+++++++++++++++++++
+* microsoft.azureml.kubernetes: Always show TSG link for AzureMLKubernetes extension at the head.
+* microsoft.azuremonitor.containers: add omsagent rename changes
+* microsoft.azuremonitor.containers: fix script to support provisionedClusters
+
+1.3.0
+++++++++++++++++++
+* Add support for provisionedClusters
+
+1.2.6
+++++++++++++++++++
+* k8s-extension new sub command group for extension types
+
+1.2.5
+++++++++++++++++++
+* microsoft.azuremonitor.containers: ContainerInsights Extension Managed Identity Auth Onboarding related bug fixes.
+* microsoft.openservicemesh: Fix osm-arc installations for non-connectedClusters
+* k8s-extension azuredefender namespace to mdc
+
+1.2.4
+++++++++++++++++++
+* microsoft.azureml.kubernetes: Do not invoke `create_or_update` for already existed resources.
+* microsoft.azuremonitor.containers: ContainerInsights Extension Managed Identity Auth Onboarding updates.
+
 1.2.3
 ++++++++++++++++++
 * Fix warning message returned on PATCH
