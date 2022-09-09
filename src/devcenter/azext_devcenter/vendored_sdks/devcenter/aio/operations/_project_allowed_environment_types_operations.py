@@ -19,8 +19,8 @@ from ... import models
 T = TypeVar('T')
 ClsType = Optional[Callable[[PipelineResponse[HttpRequest, AsyncHttpResponse], T, Dict[str, Any]], Any]]
 
-class ImagesOperations:
-    """ImagesOperations async operations.
+class ProjectAllowedEnvironmentTypesOperations:
+    """ProjectAllowedEnvironmentTypesOperations async operations.
 
     You should not instantiate this class directly. Instead, you should create a Client instance that
     instantiates it for you and attaches it as an attribute.
@@ -41,27 +41,27 @@ class ImagesOperations:
         self._deserialize = deserializer
         self._config = config
 
-    def list_by_dev_center(
+    def list(
         self,
         resource_group_name: str,
-        dev_center_name: str,
+        project_name: str,
         top: Optional[int] = None,
         **kwargs
-    ) -> AsyncIterable["models.ImageListResult"]:
-        """Lists images for a devcenter.
+    ) -> AsyncIterable["models.AllowedEnvironmentTypeListResult"]:
+        """Lists allowed environment types for a project.
 
         :param resource_group_name: Name of the resource group within the Azure subscription.
         :type resource_group_name: str
-        :param dev_center_name: The name of the devcenter.
-        :type dev_center_name: str
+        :param project_name: The name of the project.
+        :type project_name: str
         :param top: The maximum number of resources to return from the operation. Example: '$top=10'.
         :type top: int
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: An iterator like instance of either ImageListResult or the result of cls(response)
-        :rtype: ~azure.core.async_paging.AsyncItemPaged[~dev_center.models.ImageListResult]
+        :return: An iterator like instance of either AllowedEnvironmentTypeListResult or the result of cls(response)
+        :rtype: ~azure.core.async_paging.AsyncItemPaged[~dev_center.models.AllowedEnvironmentTypeListResult]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["models.ImageListResult"]
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.AllowedEnvironmentTypeListResult"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
@@ -76,11 +76,11 @@ class ImagesOperations:
 
             if not next_link:
                 # Construct URL
-                url = self.list_by_dev_center.metadata['url']  # type: ignore
+                url = self.list.metadata['url']  # type: ignore
                 path_format_arguments = {
                     'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
                     'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
-                    'devCenterName': self._serialize.url("dev_center_name", dev_center_name, 'str'),
+                    'projectName': self._serialize.url("project_name", project_name, 'str'),
                 }
                 url = self._client.format_url(url, **path_format_arguments)
                 # Construct parameters
@@ -97,7 +97,7 @@ class ImagesOperations:
             return request
 
         async def extract_data(pipeline_response):
-            deserialized = self._deserialize('ImageListResult', pipeline_response)
+            deserialized = self._deserialize('AllowedEnvironmentTypeListResult', pipeline_response)
             list_of_elem = deserialized.value
             if cls:
                 list_of_elem = cls(list_of_elem)
@@ -118,115 +118,29 @@ class ImagesOperations:
         return AsyncItemPaged(
             get_next, extract_data
         )
-    list_by_dev_center.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DevCenter/devcenters/{devCenterName}/images'}  # type: ignore
-
-    def list_by_gallery(
-        self,
-        resource_group_name: str,
-        dev_center_name: str,
-        gallery_name: str,
-        top: Optional[int] = None,
-        **kwargs
-    ) -> AsyncIterable["models.ImageListResult"]:
-        """Lists images for a gallery.
-
-        :param resource_group_name: Name of the resource group within the Azure subscription.
-        :type resource_group_name: str
-        :param dev_center_name: The name of the devcenter.
-        :type dev_center_name: str
-        :param gallery_name: The name of the gallery.
-        :type gallery_name: str
-        :param top: The maximum number of resources to return from the operation. Example: '$top=10'.
-        :type top: int
-        :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: An iterator like instance of either ImageListResult or the result of cls(response)
-        :rtype: ~azure.core.async_paging.AsyncItemPaged[~dev_center.models.ImageListResult]
-        :raises: ~azure.core.exceptions.HttpResponseError
-        """
-        cls = kwargs.pop('cls', None)  # type: ClsType["models.ImageListResult"]
-        error_map = {
-            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
-        }
-        error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2022-09-01-preview"
-        accept = "application/json"
-
-        def prepare_request(next_link=None):
-            # Construct headers
-            header_parameters = {}  # type: Dict[str, Any]
-            header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
-
-            if not next_link:
-                # Construct URL
-                url = self.list_by_gallery.metadata['url']  # type: ignore
-                path_format_arguments = {
-                    'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
-                    'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
-                    'devCenterName': self._serialize.url("dev_center_name", dev_center_name, 'str'),
-                    'galleryName': self._serialize.url("gallery_name", gallery_name, 'str'),
-                }
-                url = self._client.format_url(url, **path_format_arguments)
-                # Construct parameters
-                query_parameters = {}  # type: Dict[str, Any]
-                query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
-                if top is not None:
-                    query_parameters['$top'] = self._serialize.query("top", top, 'int')
-
-                request = self._client.get(url, query_parameters, header_parameters)
-            else:
-                url = next_link
-                query_parameters = {}  # type: Dict[str, Any]
-                request = self._client.get(url, query_parameters, header_parameters)
-            return request
-
-        async def extract_data(pipeline_response):
-            deserialized = self._deserialize('ImageListResult', pipeline_response)
-            list_of_elem = deserialized.value
-            if cls:
-                list_of_elem = cls(list_of_elem)
-            return deserialized.next_link or None, AsyncList(list_of_elem)
-
-        async def get_next(next_link=None):
-            request = prepare_request(next_link)
-
-            pipeline_response = await self._client._pipeline.run(request, stream=False, **kwargs)
-            response = pipeline_response.http_response
-
-            if response.status_code not in [200]:
-                map_error(status_code=response.status_code, response=response, error_map=error_map)
-                raise HttpResponseError(response=response, error_format=ARMErrorFormat)
-
-            return pipeline_response
-
-        return AsyncItemPaged(
-            get_next, extract_data
-        )
-    list_by_gallery.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DevCenter/devcenters/{devCenterName}/galleries/{galleryName}/images'}  # type: ignore
+    list.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DevCenter/projects/{projectName}/allowedEnvironmentTypes'}  # type: ignore
 
     async def get(
         self,
         resource_group_name: str,
-        dev_center_name: str,
-        gallery_name: str,
-        image_name: str,
+        project_name: str,
+        environment_type_name: str,
         **kwargs
-    ) -> "models.Image":
-        """Gets a gallery image.
+    ) -> "models.AllowedEnvironmentType":
+        """Gets an allowed environment type.
 
         :param resource_group_name: Name of the resource group within the Azure subscription.
         :type resource_group_name: str
-        :param dev_center_name: The name of the devcenter.
-        :type dev_center_name: str
-        :param gallery_name: The name of the gallery.
-        :type gallery_name: str
-        :param image_name: The name of the image.
-        :type image_name: str
+        :param project_name: The name of the project.
+        :type project_name: str
+        :param environment_type_name: The name of the environment type.
+        :type environment_type_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: Image, or the result of cls(response)
-        :rtype: ~dev_center.models.Image
+        :return: AllowedEnvironmentType, or the result of cls(response)
+        :rtype: ~dev_center.models.AllowedEnvironmentType
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["models.Image"]
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.AllowedEnvironmentType"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
@@ -239,9 +153,8 @@ class ImagesOperations:
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
-            'devCenterName': self._serialize.url("dev_center_name", dev_center_name, 'str'),
-            'galleryName': self._serialize.url("gallery_name", gallery_name, 'str'),
-            'imageName': self._serialize.url("image_name", image_name, 'str'),
+            'projectName': self._serialize.url("project_name", project_name, 'str'),
+            'environmentTypeName': self._serialize.url("environment_type_name", environment_type_name, 'str'),
         }
         url = self._client.format_url(url, **path_format_arguments)
 
@@ -261,10 +174,10 @@ class ImagesOperations:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
-        deserialized = self._deserialize('Image', pipeline_response)
+        deserialized = self._deserialize('AllowedEnvironmentType', pipeline_response)
 
         if cls:
             return cls(pipeline_response, deserialized, {})
 
         return deserialized
-    get.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DevCenter/devcenters/{devCenterName}/galleries/{galleryName}/images/{imageName}'}  # type: ignore
+    get.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DevCenter/projects/{projectName}/allowedEnvironmentTypes/{environmentTypeName}'}  # type: ignore

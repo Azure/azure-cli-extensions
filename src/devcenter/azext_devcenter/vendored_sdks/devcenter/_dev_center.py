@@ -26,6 +26,7 @@ from .operations import ImagesOperations
 from .operations import ImageVersionsOperations
 from .operations import CatalogsOperations
 from .operations import EnvironmentTypesOperations
+from .operations import ProjectAllowedEnvironmentTypesOperations
 from .operations import ProjectEnvironmentTypesOperations
 from .operations import DevBoxDefinitionsOperations
 from .operations import Operations
@@ -57,6 +58,8 @@ class DevCenter(object):
     :vartype catalogs: dev_center.operations.CatalogsOperations
     :ivar environment_types: EnvironmentTypesOperations operations
     :vartype environment_types: dev_center.operations.EnvironmentTypesOperations
+    :ivar project_allowed_environment_types: ProjectAllowedEnvironmentTypesOperations operations
+    :vartype project_allowed_environment_types: dev_center.operations.ProjectAllowedEnvironmentTypesOperations
     :ivar project_environment_types: ProjectEnvironmentTypesOperations operations
     :vartype project_environment_types: dev_center.operations.ProjectEnvironmentTypesOperations
     :ivar dev_box_definitions: DevBoxDefinitionsOperations operations
@@ -116,6 +119,8 @@ class DevCenter(object):
         self.catalogs = CatalogsOperations(
             self._client, self._config, self._serialize, self._deserialize)
         self.environment_types = EnvironmentTypesOperations(
+            self._client, self._config, self._serialize, self._deserialize)
+        self.project_allowed_environment_types = ProjectAllowedEnvironmentTypesOperations(
             self._client, self._config, self._serialize, self._deserialize)
         self.project_environment_types = ProjectEnvironmentTypesOperations(
             self._client, self._config, self._serialize, self._deserialize)
