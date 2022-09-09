@@ -12,6 +12,11 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+0.5.100
++++++++
+
+* Remove unused import to avoid failure in Python3.6, see issue `\#5303 <https://github.com/Azure/azure-cli-extensions/issues/5303>`_.
+
 0.5.99
 ++++++
 
