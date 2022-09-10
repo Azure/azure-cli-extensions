@@ -190,7 +190,7 @@ helps['quantum target set'] = """
 
 helps['quantum target show'] = """
     type: command
-    short-summary: Get the details of the given (or current) target to use when submitting jobs to Azure Quantum.
+    short-summary: Get the Target ID of the current default target to use when submitting jobs to Azure Quantum.
     examples:
       - name: Show the currently selected default target
         text: |-
