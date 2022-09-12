@@ -800,8 +800,8 @@ def aks_update(
     private_dns_zone=None,
     enable_azuremonitormetrics=False,
     azure_monitor_workspace_resource_id=None,
-    ksm_metriclabelsallowlist=None,
-    ksm_metricannotationsallowlist=None,
+    ksm_metric_labels_allow_list=None,
+    ksm_metric_annotations_allow_list=None,
     grafana_resource_id=None,
     disable_azuremonitormetrics=False,
 ):

@@ -172,7 +172,7 @@ def validate_ksm_parameter(ksmparam):
         if v == "=":
             if previous == ord(",") or next != ord("["):
                 raise InvalidArgumentValueError(
-                    "Please format --metric properly. For eg. : --ksm_metriclabelsallowlist \"=namespaces=[k8s-label-1,k8s-label-n,...],pods=[app],...)\" and --ksm_metricannotationsallowlist \"namespaces=[kubernetes.io/team,...],pods=[kubernetes.io/team],...\""
+                    "Please format --metric properly. For eg. : --ksm-metric-labels-allow-list \"=namespaces=[k8s-label-1,k8s-label-n,...],pods=[app],...)\" and --ksm-metric-annotations-allow-list \"namespaces=[kubernetes.io/team,...],pods=[kubernetes.io/team],...\""
                     )
             name = ksmparam[firstWordPos:i]
             labelValueMap[name] = []
@@ -180,14 +180,14 @@ def validate_ksm_parameter(ksmparam):
         elif v == "[":
             if previous != ord("="):
                 raise InvalidArgumentValueError(
-                    "Please format --metric properly. For eg. : --ksm_metriclabelsallowlist \"=namespaces=[k8s-label-1,k8s-label-n,...],pods=[app],...)\" and --ksm_metricannotationsallowlist \"namespaces=[kubernetes.io/team,...],pods=[kubernetes.io/team],...\""
+                    "Please format --metric properly. For eg. : --ksm-metric-labels-allow-list \"=namespaces=[k8s-label-1,k8s-label-n,...],pods=[app],...)\" and --ksm-metric-annotations-allow-list \"namespaces=[kubernetes.io/team,...],pods=[kubernetes.io/team],...\""
                     )
             firstWordPos = i + 1
         elif v == "]":
             # if after metric group, has char not comma or end.
             if next != EOF and next != ord(","):
                 raise InvalidArgumentValueError(
-                    "Please format --metric properly. For eg. : --ksm_metriclabelsallowlist \"=namespaces=[k8s-label-1,k8s-label-n,...],pods=[app],...)\" and --ksm_metricannotationsallowlist \"namespaces=[kubernetes.io/team,...],pods=[kubernetes.io/team],...\""
+                    "Please format --metric properly. For eg. : --ksm-metric-labels-allow-list \"=namespaces=[k8s-label-1,k8s-label-n,...],pods=[app],...)\" and --ksm-metric-annotations-allow-list \"namespaces=[kubernetes.io/team,...],pods=[kubernetes.io/team],...\""
                     )
             if previous != ord("["):
                 labelValueMap[name].append(ksmparam[firstWordPos:i])
@@ -196,27 +196,17 @@ def validate_ksm_parameter(ksmparam):
             # if starts or ends with comma
             if previous == v or next == EOF or next == ord("]"):
                 raise InvalidArgumentValueError(
-                    "Please format --metric properly. For eg. : --ksm_metriclabelsallowlist \"=namespaces=[k8s-label-1,k8s-label-n,...],pods=[app],...)\" and --ksm_metricannotationsallowlist \"namespaces=[kubernetes.io/team,...],pods=[kubernetes.io/team],...\""
+                    "Please format --metric properly. For eg. : --ksm-metric-labels-allow-list \"=namespaces=[k8s-label-1,k8s-label-n,...],pods=[app],...)\" and --ksm-metric-annotations-allow-list \"namespaces=[kubernetes.io/team,...],pods=[kubernetes.io/team],...\""
                     )
             if previous != ord("]"):
                 labelValueMap[name].append(ksmparam[firstWordPos:i])
             firstWordPos = i + 1
 
-    labelPattern = re.compile("[a-zA-Z_][a-zA-Z0-9_]*")
-    # Values are just a list of unicode characters so anything goes
-    # labelValuePattern = re.compile()
-
     for label in labelValueMap:
         if (bool(re.match(r'^[a-zA-Z_][A-Za-z0-9_]+$', label)))== False:
             raise InvalidArgumentValueError(
-                    "Please format --metric properly. For eg. : --ksm_metriclabelsallowlist \"=namespaces=[k8s-label-1,k8s-label-n,...],pods=[app],...)\" and --ksm_metricannotationsallowlist \"namespaces=[kubernetes.io/team,...],pods=[kubernetes.io/team],...\""
+                    "Please format --metric properly. For eg. : --ksm-metric-labels-allow-list \"=namespaces=[k8s-label-1,k8s-label-n,...],pods=[app],...)\" and --ksm-metric-annotations-allow-list \"namespaces=[kubernetes.io/team,...],pods=[kubernetes.io/team],...\""
                     )
-        # else:
-        #     for value in labelValueMap[label]:
-        #         if (bool(labelValuePattern.match(value))) == False:
-        #             raise InvalidArgumentValueError(
-        #                 "Please format --metric properly. For eg. : --ksm_metriclabelsallowlist \"=namespaces=[k8s-label-1,k8s-label-n,...],pods=[app],...)\" and --ksm_metricannotationsallowlist \"namespaces=[kubernetes.io/team,...],pods=[kubernetes.io/team],...\""
-        #             )
     return ksmparam
 
 def sanitize_resource_id(resource_id):
