@@ -20,7 +20,7 @@ def load_arguments(self, _):
                    help='Path to a certificate file used for authentication when using local user credentials.')
         c.argument('port', options_list=['--port'], help='SSH port')
         c.argument('resource_type', options_list=['--resource-type'],
-                   help='Resource type should be either Microsoft.Compute or Microsoft.HybridCompute',
+                   help='Resource type should be either Microsoft.Compute/virtualMachines, Microsoft.HybridCompute/machines, or Microsoft.ConnectedVMwareSphere.',
                    completer=["Microsoft.HybridCompute", "Microsoft.Compute"])
         c.argument('ssh_client_folder', options_list=['--ssh-client-folder'],
                    help='Folder path that contains ssh executables (ssh.exe, ssh-keygen.exe, etc). '
@@ -79,6 +79,9 @@ def load_arguments(self, _):
                    help='The username for a local user')
         c.argument('cert_file', options_list=['--certificate-file', '-c'], help='Path to certificate file')
         c.argument('port', options_list=['--port'], help='Port to connect to on the remote host.')
+        c.argument('resource_type', options_list=['--resource-type'],
+                   help='Resource type should be either Microsoft.Compute/virtualMachines, Microsoft.HybridCompute/machines, or Microsoft.ConnectedVMwareSphere.',
+                   completer=["Microsoft.HybridCompute", "Microsoft.Compute"])
         c.argument('ssh_client_folder', options_list=['--ssh-client-folder'],
                    help='Folder path that contains ssh executables (ssh.exe, ssh-keygen.exe, etc). '
                    'Default to ssh pre-installed if not provided.')
