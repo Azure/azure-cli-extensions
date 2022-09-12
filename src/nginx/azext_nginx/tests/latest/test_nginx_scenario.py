@@ -20,9 +20,11 @@ class NginxScenarioTest(ScenarioTest):
             'public_ip_name': 'azclitest-public-ip',
             'vnet_name': 'azclitest-vnet',
             'subnet_name': 'azclitest-subnet',
-            'tags': 'tag1="value1" tag2="value2"'
+            'tags': 'tag1="value1" tag2="value2"',
+            'kv_name': 'azclitestkv',
+            'cert_name': 'azclitestcert'
         })
-        
+        # Nginx on Azure Deployment
         public_ip = self.cmd('network public-ip create --resource-group {rg} --name {public_ip_name} --version IPv4 --sku Standard --zone 2').get_output_in_json()
         vnet = self.cmd('network vnet create --resource-group {rg} --name {vnet_name} --address-prefixes 10.0.0.0/16 --subnet-name {subnet_name}').get_output_in_json()
         self.cmd('network vnet subnet update --resource-group {rg} --name {subnet_name} --vnet-name {vnet_name} --delegations NGINX.NGINXPLUS/nginxDeployments')
@@ -42,12 +44,44 @@ class NginxScenarioTest(ScenarioTest):
             self.check('properties.provisioningState', 'Succeeded'),
             self.check('name', self.kwargs['deployment_name'])
         ])
-
+        self.cmd('nginx deployment wait --updated --name {deployment_name} --resource-group {rg}')
         updated_deployment = self.cmd('nginx deployment show --name {deployment_name} --resource-group {rg}').get_output_in_json()
         assert updated_deployment['tags'] is not None
         assert updated_deployment['properties']['enableDiagnosticsSupport'] is False
 
+        # Nginx on Azure certificates
+        self.cmd('keyvault create --name {kv_name} --resource-group {rg} --location {location}')
+        self.cmd('keyvault certificate create --vault-name {kv_name} -n {cert_name} -p "$(az keyvault certificate get-default-policy)"')
+        certificate = self.cmd('keyvault certificate show --name {cert_name} --vault-name {kv_name}')
+        self.kwargs['kv_secret_id'] = certificate['id']
+        self.cmd('nginx deployment certificate create --certificate-name {cert_name} --deployment-name {deployment_name} --resource-group {rg} --certificate-virtual-path /etc/nginx/test.cert --key-virtual-path /etc/nginx/test.key --key-vault-secret-id {kv_secret_id}', checks=[
+            self.check('properties.provisioningState', 'Succeeded'),
+            self.check('name', self.kwargs['cert_name']),
+            self.check('location', self.kwargs['location']),
+            self.check('properties.keyVaultSecretId', self.kwargs['kv_secret_id'])
+        ])
         
+        cert_list = self.cmd('nginx deployment certificate list --deployment-name {deployment_name} --resource-group {rg}').get_output_in_json()
+        assert len(cert_list) > 0
+
+        self.cmd('nginx deployment certificate update --certificate-name {cert_name} --deployment-name {deployment_name} --resource-group {rg} --certificate-virtual-path /etc/nginx/testupdated.cert --key-virtual-path /etc/nginx/testupdated.key', checks=[
+            self.check('properties.provisioningState', 'Succeeded'),
+            self.check('name', self.kwargs['cert_name']),
+            self.check('location', self.kwargs['location']),
+            self.check('properties.keyVaultSecretId', self.kwargs['kv_secret_id'])
+        ])
+        self.cmd('nginx deployment certificate wait --updated --name {cert_name} --deployment-name {deployment_name} --resource-group {rg}')
+        self.cmd('nginx deployment certificate show --certificate-name {cert_name} --deployment-name {deployment_name} --resource-group {rg}', checks=[
+            self.check('name', self.kwargs['cert_name']),
+            self.check('properties.certificateVirtualPath', '/etc/nginx/testupdated.cert'),
+            self.check('properties.keyVirtualPath', '/etc/nginx/testupdated.key')
+        ])
+
+        self.cmd('nginx deployment certificate delete --name {cert_name} --deployment-name {deployment_name} --resource-group {rg} --yes')
+        cert_list = self.cmd('nginx deployment certificate list --deployment-name {deployment_name} --resource-group {rg}').get_output_in_json()
+        assert len(cert_list) == 0
+
+
         
     def test_list_deployments(self):
         deployment_list = self.cmd('nginx deployment list').get_output_in_json()
