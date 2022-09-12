@@ -2,6 +2,11 @@
 
 Release History
 ===============
+1.3.3
+++++++
+
+* Added a timeout in the force delete command inside the connectedk8s delete function
+
 1.3.2
 ++++++
 
