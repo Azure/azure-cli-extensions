@@ -4276,8 +4276,8 @@ class ManagedClusterAzureMonitorProfileKubeStateMetrics(msrest.serialization.Mod
     """
 
     _attribute_map = {
-        'metric_labels_allowlist': {'key': 'ksm_metriclabelsallowlist', 'type': 'str'},
-        'metric_annotations_allow_list': {'key': 'ksm_metricannotationsallowlist', 'type': 'str'},
+        'metric_labels_allowlist': {'key': 'metricLabelsAllowlist', 'type': 'str'},
+        'metric_annotations_allow_list': {'key': 'metricAnnotationsAllowList', 'type': 'str'},
     }
 
     def __init__(
