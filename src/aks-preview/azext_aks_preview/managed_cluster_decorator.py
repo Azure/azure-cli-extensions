@@ -2033,10 +2033,9 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         """
         profile = self.models.ManagedClusterAddonProfile(
             enabled=True,
-            config={"addonv2":"true"},
+            config={"addonv2": "true"},
         )
         return profile
-
 
     def set_up_addon_profiles(self, mc: ManagedCluster) -> ManagedCluster:
         """Set up addon profiles for the ManagedCluster object.
@@ -2055,7 +2054,7 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
             addon_profiles[
                 CONST_GITOPS_ADDON_NAME
             ] = self.build_gitops_addon_profile()
-        
+
         if self.context.get_enable_cluster_snapshot():
             supported = ["coredns", "overlay-upgrade-data", "kube-proxy", "tunnelfront", "metrics-server", "csi-azurefile-node", "csi-azuredisk-node"]
             for addon in supported:

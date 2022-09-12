@@ -678,7 +678,7 @@ def aks_create(
     gpu_instance_profile=None,
     workload_runtime=None,
     enable_custom_ca_trust=False,
-):  
+):
     if enable_cluster_snapshot:
         header = "AKSHTTPCustomFeatures=AddonManagerV2Preview,AKSHTTPCustomFeatures=CSIControllersV2Preview"
         if aks_custom_headers is None:

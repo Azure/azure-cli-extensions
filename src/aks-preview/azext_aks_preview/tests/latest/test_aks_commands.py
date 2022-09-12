@@ -1942,32 +1942,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                 'kubernetesVersion', upgrade_version)
         ]).get_output_in_json()
 
-        try:
-            subprocess.call(['az', 'aks', 'install-cli'])
-        except subprocess.CalledProcessError as err:
-            raise CliTestError(f"Failed to install kubectl with error: '{err}'")
-
-        # verfiy cluster has running addons deployed with adapter chart
-         # Create kubeconfig file
-        fd, kubeconfig_path = tempfile.mkstemp()
-        self.kwargs.update({ 'kubeconfig_path': kubeconfig_path })
-        try:
-            get_credential_cmd = 'aks get-credentials --resource-group={resource_group} --name={aks_name2} -f {kubeconfig_path}'
-            self.cmd(get_credential_cmd)
-        finally:
-            os.close(fd)
-
-        # Invoke to get the coredns addon deployed to the cluster
-        k_get_coredns_addon_cmd = ["kubectl", "-n", "kube-system", "get", "deployment", "coredns", "-o", "yaml", "--kubeconfig", kubeconfig_path]
-        k_get_coredns_addon_output = subprocess.check_output(k_get_coredns_addon_cmd, text=True)
-
-        for pattern in [
-            "meta.helm.sh/release-name",
-            "helm.toolkit.fluxcd.io/name"
-        ]:
-            if not pattern in k_get_coredns_addon_output:
-                raise CliTestError(f"Output from 'kubectl get deployment' did not contain '{pattern}'. Output:\n{k_get_coredns_addon_output}")
-
         # delete the 2nd AKS cluster
         self.cmd(
             'aks delete -g {resource_group} -n {aks_name2} --yes --no-wait', checks=[self.is_empty()])
