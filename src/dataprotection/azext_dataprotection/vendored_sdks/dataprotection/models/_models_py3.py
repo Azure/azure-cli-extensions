@@ -1646,18 +1646,67 @@ class BackupInstance(msrest.serialization.Model):
         self.object_type = object_type
 
 
-class BackupInstanceResource(DppResource):
+class DppProxyResource(msrest.serialization.Model):
+    """DppProxyResource.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar id: Proxy Resource Id represents the complete path to the resource.
+    :vartype id: str
+    :ivar name: Proxy Resource name associated with the resource.
+    :vartype name: str
+    :ivar type: Proxy Resource type represents the complete path of the form
+     Namespace/ResourceType/ResourceType/...
+    :vartype type: str
+    :param tags: A set of tags. Proxy Resource tags.
+    :type tags: dict[str, str]
+    :ivar system_data: Metadata pertaining to creation and last modification of the resource.
+    :vartype system_data: ~azure.mgmt.dataprotection.models.SystemData
+    """
+
+    _validation = {
+        'id': {'readonly': True},
+        'name': {'readonly': True},
+        'type': {'readonly': True},
+        'system_data': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'id': {'key': 'id', 'type': 'str'},
+        'name': {'key': 'name', 'type': 'str'},
+        'type': {'key': 'type', 'type': 'str'},
+        'tags': {'key': 'tags', 'type': '{str}'},
+        'system_data': {'key': 'systemData', 'type': 'SystemData'},
+    }
+
+    def __init__(
+        self,
+        *,
+        tags: Optional[Dict[str, str]] = None,
+        **kwargs
+    ):
+        super(DppProxyResource, self).__init__(**kwargs)
+        self.id = None
+        self.name = None
+        self.type = None
+        self.tags = tags
+        self.system_data = None
+
+
+class BackupInstanceResource(DppProxyResource):
     """BackupInstance Resource.
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
-    :ivar id: Resource Id represents the complete path to the resource.
+    :ivar id: Proxy Resource Id represents the complete path to the resource.
     :vartype id: str
-    :ivar name: Resource name associated with the resource.
+    :ivar name: Proxy Resource name associated with the resource.
     :vartype name: str
-    :ivar type: Resource type represents the complete path of the form
+    :ivar type: Proxy Resource type represents the complete path of the form
      Namespace/ResourceType/ResourceType/...
     :vartype type: str
+    :param tags: A set of tags. Proxy Resource tags.
+    :type tags: dict[str, str]
     :ivar system_data: Metadata pertaining to creation and last modification of the resource.
     :vartype system_data: ~azure.mgmt.dataprotection.models.SystemData
     :param properties: BackupInstanceResource properties.
@@ -1675,6 +1724,7 @@ class BackupInstanceResource(DppResource):
         'id': {'key': 'id', 'type': 'str'},
         'name': {'key': 'name', 'type': 'str'},
         'type': {'key': 'type', 'type': 'str'},
+        'tags': {'key': 'tags', 'type': '{str}'},
         'system_data': {'key': 'systemData', 'type': 'SystemData'},
         'properties': {'key': 'properties', 'type': 'BackupInstance'},
     }
@@ -1682,10 +1732,11 @@ class BackupInstanceResource(DppResource):
     def __init__(
         self,
         *,
+        tags: Optional[Dict[str, str]] = None,
         properties: Optional["BackupInstance"] = None,
         **kwargs
     ):
-        super(BackupInstanceResource, self).__init__(**kwargs)
+        super(BackupInstanceResource, self).__init__(tags=tags, **kwargs)
         self.properties = properties
 
 
@@ -4408,7 +4459,7 @@ class StorageSetting(msrest.serialization.Model):
      "ArchiveStore", "SnapshotStore", "VaultStore".
     :type datastore_type: str or ~azure.mgmt.dataprotection.models.StorageSettingStoreTypes
     :param type: Gets or sets the type. Possible values include: "GeoRedundant",
-     "LocallyRedundant".
+     "LocallyRedundant", "ZoneRedundant".
     :type type: str or ~azure.mgmt.dataprotection.models.StorageSettingTypes
     """
 

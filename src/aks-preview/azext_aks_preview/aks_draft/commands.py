@@ -14,6 +14,9 @@ import platform
 from pathlib import Path
 from knack.prompting import prompt_y_n
 import logging
+from azext_aks_preview._consts import (
+    CONST_DRAFT_CLI_VERSION
+)
 
 
 # `az aks draft create` function
@@ -196,16 +199,9 @@ def _binary_pre_check(download_path: str) -> Optional[str]:
         return _download_binary()
 
 
-# Returns the latest version str of Draft on Github
-def _get_latest_version() -> str:
-    response = requests.get('https://api.github.com/repos/Azure/draft/releases/latest')
-    response_json = json.loads(response.text)
-    return response_json.get('tag_name')
-
-
 # Returns True if the local binary is the latest version, False otherwise
 def _is_latest_version(binary_path: str) -> bool:
-    latest_version = _get_latest_version()
+    latest_version = CONST_DRAFT_CLI_VERSION
     process = subprocess.Popen([binary_path, 'version'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     stdout, stderr = process.communicate()
     if stderr.decode():
@@ -270,7 +266,7 @@ def _download_binary(download_path: str = '~/.aksdraft') -> Optional[str]:
     if not filename:
         return None
 
-    url = f'https://github.com/Azure/draft/releases/latest/download/{filename}'
+    url = f'https://github.com/Azure/draft/releases/download/{CONST_DRAFT_CLI_VERSION}/{filename}'
     headers = {'Accept': 'application/octet-stream'}
 
     # Downloading the file by sending the request to the URL
