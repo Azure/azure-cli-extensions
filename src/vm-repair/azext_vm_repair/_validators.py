@@ -304,7 +304,7 @@ def fetch_repair_vm(namespace):
     # Find repair VM
     tag = _get_repair_resource_tag(namespace.resource_group_name, namespace.vm_name)
     try:
-        find_repair_command = 'az resource list --tag {tag} --query "[?type==\'Microsoft.Compute/virtualMachines\']" -o json' \
+        find_repair_command = 'az resource list --tag {tag} --query "[?type==\'microsoft.compute/virtualmachines\']" -o json' \
                               .format(tag=tag)
         logger.info('Searching for repair-vm within subscription...')
         output = _call_az_command(find_repair_command)
