@@ -1917,8 +1917,8 @@ def aks_draft_up(app=None,
                      cluster_name, registry_name, container_name, destination, branch, path)
 
 
-def aks_draft_update(destination=None, path=None):
-    aks_draft_cmd_update(destination, path)
+def aks_draft_update(host=None, certificate=None, destination=None, path=None):
+    aks_draft_cmd_update(host, certificate, destination, path)
 
 
 def aks_kollect(cmd,    # pylint: disable=too-many-statements,too-many-locals

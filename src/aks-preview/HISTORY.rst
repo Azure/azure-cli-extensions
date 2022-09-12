@@ -12,10 +12,21 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
-0.5.99
+0.5.101
 ++++++
 
 * Add enable-managed-cluster-snapshot to "az aks create" command, which can create a cluster that can be snapshotted, with this command, there is no need to pass "aks-custom-headers".
+
+0.5.100
+++++++
+
+* Remove unused import to avoid failure in Python3.6, see issue `\#5303 <https://github.com/Azure/azure-cli-extensions/issues/5303>`_.
+
+0.5.99
+++++++
+
+* Fix DRAFT CLI to 0.0.22.
+* Fix the URL for Download.
 
 0.5.98
 ++++++
