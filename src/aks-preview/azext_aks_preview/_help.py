@@ -820,7 +820,6 @@ helps['aks update'] = """
         - name: --defender-config
           type: string
           short-summary: Path to JSON file containing Microsoft Defender profile configurations.
-<<<<<<< HEAD
         - name: --enable-azuremonitormetrics
           type: bool
           short-summary: Enable Azure Monitor Metrics Profile
@@ -839,7 +838,6 @@ helps['aks update'] = """
         - name: --disable-azuremonitormetrics
           type: bool
           short-summary: Disable Azure Monitor Metrics Profile
-=======
         - name: --enable-node-restriction
           type: bool
           short-summary: Enable node restriction option on cluster.
@@ -855,7 +853,6 @@ helps['aks update'] = """
         - name: --private-dns-zone
           type: string
           short-summary: The private dns zone mode for private cluster.
->>>>>>> main
     examples:
       - name: Reconcile the cluster back to its current state.
         text: az aks update -g MyResourceGroup -n MyManagedCluster
@@ -872,7 +869,7 @@ helps['aks update'] = """
       - name: Update a kubernetes cluster with standard SKU load balancer to use two AKS created IPs for the load balancer outbound connection usage.
         text: az aks update -g MyResourceGroup -n MyManagedCluster --load-balancer-managed-outbound-ip-count 2
       - name: Update a kubernetes cluster with standard SKU load balancer to use the provided public IPs for the load balancer outbound connection usage.
-        text: az aks update -g MyResourceGroup -n MyManagedCluster --load-balancer-outbound-ips <ip-resource-id-1,ip-resource-id-2>
+        text: az aks update -g MyResourceGroup -n MyManagedCluster --load-balancer-outbound-ips `<`ip-resource-id-1,ip-resource-id-2>
       - name: Update a kubernetes cluster with standard SKU load balancer to use the provided public IP prefixes for the load balancer outbound connection usage.
         text: az aks update -g MyResourceGroup -n MyManagedCluster --load-balancer-outbound-ip-prefixes <ip-prefix-resource-id-1,ip-prefix-resource-id-2>
       - name: Update a kubernetes cluster with two outbound AKS managed IPs an idle flow timeout of 5 minutes and 8000 allocated ports per machine
