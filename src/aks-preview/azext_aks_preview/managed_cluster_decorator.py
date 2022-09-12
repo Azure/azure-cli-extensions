@@ -1796,6 +1796,12 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         """
         return self._get_disable_keda(enable_validation=True)
 
+    def get_enable_managed_cluster_snapshot(self) -> bool:
+        """Obtain the value of enable_managed_cluster_snapshot.
+        :return: bool
+        """
+        return self.raw_param.get("enable_managed_cluster_snapshot")
+
     def get_defender_config(self) -> Union[ManagedClusterSecurityProfileDefender, None]:
         """Obtain the value of defender.
 
@@ -2020,6 +2026,18 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         )
         return gitops_addon_profile
 
+    def build_addon_manager_v2_addon_profile(self) -> ManagedClusterAddonProfile:
+        """Build addon profile which enabled addon manager v2.
+
+        :return: a ManagedClusterAddonProfile object
+        """
+        profile = self.models.ManagedClusterAddonProfile(
+            enabled=True,
+            config={"addonv2":"true"},
+        )
+        return profile
+
+
     def set_up_addon_profiles(self, mc: ManagedCluster) -> ManagedCluster:
         """Set up addon profiles for the ManagedCluster object.
 
@@ -2037,6 +2055,12 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
             addon_profiles[
                 CONST_GITOPS_ADDON_NAME
             ] = self.build_gitops_addon_profile()
+        
+        if self.context.get_enable_managed_cluster_snapshot():
+            supported = ["coredns", "overlay-upgrade-data", "kube-proxy", "tunnelfront", "metrics-server", "csi-azurefile-node", "csi-azuredisk-node"]
+            for addon in supported:
+                addon_profiles[addon] = self.build_addon_manager_v2_addon_profile()
+
         mc.addon_profiles = addon_profiles
         return mc
 
@@ -2293,6 +2317,8 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         mc = self.set_up_ingress_web_app_routing(mc)
         # set up workload auto scaler profile
         mc = self.set_up_workload_auto_scaler_profile(mc)
+        # set up addon profile
+        mc = self.set_up_addon_profiles(mc)
 
         # DO NOT MOVE: keep this at the bottom, restore defaults
         mc = self._restore_defaults_in_mc(mc)

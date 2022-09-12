@@ -12,6 +12,11 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+0.5.99
+++++++
+
+* Add enable-managed-cluster-snapshot to "az aks create" command, which can create a cluster that can be snapshotted, with this command, there is no need to pass "aks-custom-headers".
+
 0.5.98
 ++++++
 

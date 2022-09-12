@@ -463,6 +463,9 @@ helps['aks create'] = """
         - name: --enable-keda
           type: bool
           short-summary: Enable KEDA workload auto-scaler.
+        - name: --enable-managed-cluster-snapshot
+          type: bool
+          short-summary: Cluster created can be snapshotable. 
         - name: --enable-defender
           type: bool
           short-summary: Enable Microsoft Defender security profile.
