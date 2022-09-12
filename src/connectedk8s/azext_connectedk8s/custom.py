@@ -761,16 +761,11 @@ def delete_connectedk8s(cmd, client, resource_group_name, cluster_name,
         delete_cc_resource(client, resource_group_name, cluster_name, no_wait).result()
 
         # Explicit CRD Deletion
-<<<<<<< HEAD
 
         timeout_for_crd_deletion= "20s"
         for crds in consts.CRD_FOR_FORCE_DELETE:
             cmd_helm_delete = [kubectl_client_location, "delete", "crds", crds, "--ignore-not-found"]
             cmd_helm_delete.extend(["--wait", "--timeout", "{}".format(timeout_for_crd_deletion)])
-=======
-        for crds in consts.CRD_FOR_FORCE_DELETE:
-            cmd_helm_delete = [kubectl_client_location, "delete", "crds", crds, "--ignore-not-found"]
->>>>>>> c15670efcb175ef1daffe93a5b86616af4dda197
             response_helm_delete = Popen(cmd_helm_delete, stdout=PIPE, stderr=PIPE)
             _, error_helm_delete = response_helm_delete.communicate()
 
