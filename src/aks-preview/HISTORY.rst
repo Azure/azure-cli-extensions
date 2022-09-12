@@ -7,10 +7,55 @@ Guidance
 ++++++++
 If there is no rush to release a new version, please just add a description of the modification under the *Pending* section.
 
-To release a new version, please select a new version number (usually plus 1 to the minor of the current latest version number), and then add a new section named as the new version number in this file, the content should include the new modifications and everything from the *Pending* section. Finally, update the `VERSION` in `setup.py` with this new version number.
+To release a new version, please select a new version number (usually plus 1 to last patch version, X.Y.Z -> Major.Minor.Patch, more details in `\doc <https://semver.org/>`_), and then add a new section named as the new version number in this file, the content should include the new modifications and everything from the *Pending* section. Finally, update the `VERSION` variable in `setup.py` with this new version number.
 
 Pending
 +++++++
+
+0.5.100
++++++++
+
+* Remove unused import to avoid failure in Python3.6, see issue `\#5303 <https://github.com/Azure/azure-cli-extensions/issues/5303>`_.
+
+0.5.99
+++++++
+
+* Fix DRAFT CLI to 0.0.22.
+* Fix the URL for Download.
+
+0.5.98
+++++++
+
+* Fix auto download issue for Draft CLI.
+* Remove host and certificates as draft tools update command no longer uses it.
+
+0.5.97
+++++++
+
+* Add support for apiserver vnet integration public cluster.
+
+0.5.96
+++++++
+
+* Add support for enabling ImageCleaner with `--enable-image-cleaner` flag.
+* Add sub-command `operation-abort` for `az aks` and `az aks nodepool` to support canceling the previous operation.
+
+0.5.95
+++++++
+
+* Add `--enable-node-restriction`/`--disable-node-restriction` to enable/disable node restriction feature
+* Update the minimum required cli core version to `2.38.0` (actually since `0.5.92`).
+* Add new value `Mariner` for option `--os-sku` in `az aks create` and `az aks nodepool add`.
+
+0.5.94
+++++++
+
+* [BREAKING CHANGE] Since the service no longer supports updating source resource id for role binding, so remove --source-resource-id of `aks trustedaccess rolebinding update` command.
+* Change the acceptable values of the `--roles` option to comma-seperated.
+    * az aks trustedaccess rolebinding create
+    * az aks trustedaccess rolebinding update
+* Upgrade `az aks kollect` command to use Periscope version 0.0.10 supporting enhanced Windows log collection.
+* Update to use 2022-07-02-preview api version.
 
 0.5.93
 ++++++

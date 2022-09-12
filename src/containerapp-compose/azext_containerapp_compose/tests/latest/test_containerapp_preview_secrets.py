@@ -20,7 +20,7 @@ class ContainerappComposePreviewSecretsScenarioTest(ContainerappComposePreviewSc
         compose_text = """
 services:
   foo:
-    image: mcr.microsoft.com/azuredocs/aks-helloworld:v1
+    image: mcr.microsoft.com/azuredocs/containerapps-helloworld:latest
     secrets:
       - source: my_secret
         target: redis_secret
@@ -67,7 +67,7 @@ secrets:
         compose_text = """
 services:
   foo:
-    image: mcr.microsoft.com/azuredocs/aks-helloworld:v1
+    image: mcr.microsoft.com/azuredocs/containerapps-helloworld:latest
     environment:
       database__client: mysql
       database__connection__host: db
@@ -118,7 +118,7 @@ secrets:
         compose_text = """
 services:
   foo:
-    image: mcr.microsoft.com/azuredocs/aks-helloworld:v1
+    image: mcr.microsoft.com/azuredocs/containerapps-helloworld:latest
     environment:
       database--client: mysql
     secrets:

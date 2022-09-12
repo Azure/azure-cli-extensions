@@ -24,11 +24,21 @@ class AutomationClientCommandsLoader(AzCommandsLoader):
         automation_custom = CliCommandType(
             operations_tmpl='azext_automation.custom#{}',
             client_factory=cf_automation_cl)
-        parent = super(AutomationClientCommandsLoader, self)
-        parent.__init__(cli_ctx=cli_ctx, custom_command_type=automation_custom)
+        super().__init__(cli_ctx=cli_ctx, custom_command_type=automation_custom)
 
     def load_command_table(self, args):
         from azext_automation.generated.commands import load_command_table
+        from azure.cli.core.aaz import load_aaz_command_table
+        try:
+            from . import aaz
+        except ImportError:
+            aaz = None
+        if aaz:
+            load_aaz_command_table(
+                loader=self,
+                aaz_pkg_name=aaz.__name__,
+                args=args
+            )
         load_command_table(self, args)
         try:
             from azext_automation.manual.commands import load_command_table as load_command_table_manual

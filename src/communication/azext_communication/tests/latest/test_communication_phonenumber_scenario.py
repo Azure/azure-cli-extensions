@@ -53,3 +53,33 @@ class CommunicationPhonenumberScenarios(ScenarioTest):
         self.assertIsNotNone(phonenumber_info['capabilities'])
         self.assertIsNotNone(phonenumber_info['cost'])
         self.check(phonenumber_info['phoneNumber'], phonenumber)
+
+    @ResourceGroupPreparer(name_prefix='clitestcommunication_MyResourceGroup'[:7], key='rg', parameter_name='rg')
+    @CommunicationResourcePreparer(resource_group_parameter_name='rg')
+    def test_phonenumber_list(self, communication_resource_info):
+        if self.is_live or self.in_recording:
+            get_new_phonenumber(communication_resource_info[1])
+
+        os.environ['AZURE_COMMUNICATION_CONNECTION_STRING'] = communication_resource_info[1]
+        
+        phonenumber_list = self.cmd(
+            'az communication phonenumber list').get_output_in_json()
+        assert len(phonenumber_list) > 0
+
+    @ResourceGroupPreparer(name_prefix='clitestcommunication_MyResourceGroup'[:7], key='rg', parameter_name='rg')
+    @CommunicationResourcePreparer(resource_group_parameter_name='rg')
+    def test_phonenumber_show(self, communication_resource_info):
+        phonenumber = get_test_source_phonenumber(self.is_live, self.in_recording)
+        if phonenumber is None:
+            phonenumber = get_new_phonenumber(communication_resource_info[1])
+
+        self.kwargs.update({'phonenumber': phonenumber})
+        os.environ['AZURE_COMMUNICATION_CONNECTION_STRING'] = communication_resource_info[1]
+
+        phonenumber_info = self.cmd(
+            'az communication phonenumber show --phonenumber \"{phonenumber}\"').get_output_in_json()
+        self.assertIsNotNone(phonenumber_info['id'])
+        self.assertIsNotNone(phonenumber_info['assignmentType'])
+        self.assertIsNotNone(phonenumber_info['capabilities'])
+        self.assertIsNotNone(phonenumber_info['cost'])
+        self.check(phonenumber_info['phoneNumber'], phonenumber)

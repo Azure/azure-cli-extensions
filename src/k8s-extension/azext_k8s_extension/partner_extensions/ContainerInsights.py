@@ -9,6 +9,7 @@ import datetime
 import json
 
 from ..utils import get_cluster_rp_api_version
+from .. import consts
 
 from knack.log import get_logger
 
@@ -87,8 +88,13 @@ class ContainerInsights(DefaultExtension):
         cluster_resource_id = '/subscriptions/{0}/resourceGroups/{1}/providers/{2}/{3}/{4}'.format(subscription_id, resource_group_name, cluster_rp, cluster_type, cluster_name)
         if (extension is not None) and (extension.configuration_settings is not None):
             configSettings = extension.configuration_settings
+            # omsagent is being renamed to ama-logs. Check for both for compatibility
             if 'omsagent.useAADAuth' in configSettings:
                 useAADAuthSetting = configSettings['omsagent.useAADAuth']
+                if (isinstance(useAADAuthSetting, str) and str(useAADAuthSetting).lower() == "true") or (isinstance(useAADAuthSetting, bool) and useAADAuthSetting):
+                    useAADAuth = True
+            elif 'amalogs.useAADAuth' in configSettings:
+                useAADAuthSetting = configSettings['amalogs.useAADAuth']
                 if (isinstance(useAADAuthSetting, str) and str(useAADAuthSetting).lower() == "true") or (isinstance(useAADAuthSetting, bool) and useAADAuthSetting):
                     useAADAuth = True
         if useAADAuth:
@@ -236,10 +242,13 @@ def _ensure_default_log_analytics_workspace_for_monitoring(cmd, subscription_id,
     cluster_location = ''
     resources = cf_resources(cmd.cli_ctx, subscription_id)
 
-    cluster_resource_id = '/subscriptions/{0}/resourceGroups/{1}/providers//{2}/{3}/{4}'.format(
+    cluster_resource_id = '/subscriptions/{0}/resourceGroups/{1}/providers/{2}/{3}/{4}'.format(
         subscription_id, cluster_resource_group_name, cluster_rp, cluster_type, cluster_name)
     try:
-        resource = resources.get_by_id(cluster_resource_id, '2020-01-01-preview')
+        if cluster_rp.lower() == consts.HYBRIDCONTAINERSERVICE_RP:
+            resource = resources.get_by_id(cluster_resource_id, consts.HYBRIDCONTAINERSERVICE_API_VERSION)
+        else:
+            resource = resources.get_by_id(cluster_resource_id, '2020-01-01-preview')
         cluster_location = resource.location.lower()
     except HttpResponseError as ex:
         raise ex
@@ -453,8 +462,14 @@ def _get_container_insights_settings(cmd, cluster_resource_group_name, cluster_r
         if 'logAnalyticsWorkspaceResourceID' in configuration_settings:
             workspace_resource_id = configuration_settings['logAnalyticsWorkspaceResourceID']
 
+        # omsagent is being renamed to ama-logs. Check for both for compatibility
         if 'omsagent.useAADAuth' in configuration_settings:
             useAADAuthSetting = configuration_settings['omsagent.useAADAuth']
+            logger.info("provided useAADAuth flag is : %s", useAADAuthSetting)
+            if (isinstance(useAADAuthSetting, str) and str(useAADAuthSetting).lower() == "true") or (isinstance(useAADAuthSetting, bool) and useAADAuthSetting):
+                useAADAuth = True
+        elif 'amalogs.useAADAuth' in configuration_settings:
+            useAADAuthSetting = configuration_settings['amalogs.useAADAuth']
             logger.info("provided useAADAuth flag is : %s", useAADAuthSetting)
             if (isinstance(useAADAuthSetting, str) and str(useAADAuthSetting).lower() == "true") or (isinstance(useAADAuthSetting, bool) and useAADAuthSetting):
                 useAADAuth = True
@@ -473,7 +488,9 @@ def _get_container_insights_settings(cmd, cluster_resource_group_name, cluster_r
                     'proxyEndpoint url should in this format http(s)://<user>:<pwd>@<proxyhost>:<port>'
                 )
             logger.info("successfully validated proxyEndpoint url hence passing proxy endpoint to extension")
+            # omsagent is being renamed to ama-logs. Set for both for compatibility
             configuration_protected_settings['omsagent.proxy'] = configuration_protected_settings['proxyEndpoint']
+            configuration_protected_settings['amalogs.proxy'] = configuration_protected_settings['proxyEndpoint']
 
     if not workspace_resource_id:
         workspace_resource_id = _ensure_default_log_analytics_workspace_for_monitoring(
@@ -509,20 +526,28 @@ def _get_container_insights_settings(cmd, cluster_resource_group_name, cluster_r
         if not shared_keys:
             raise InvalidArgumentValueError('Failed to retrieve shared key for workspace {}'.format(
                 log_analytics_workspace))
+        # omsagent is being renamed to ama-logs. Set for both for compatibility
         configuration_protected_settings['omsagent.secret.key'] = shared_keys.primary_shared_key
+        configuration_protected_settings['amalogs.secret.key'] = shared_keys.primary_shared_key
+    # omsagent is being renamed to ama-logs. Set for both for compatibility
     configuration_protected_settings['omsagent.secret.wsid'] = log_analytics_workspace.customer_id
+    configuration_protected_settings['amalogs.secret.wsid'] = log_analytics_workspace.customer_id
     configuration_settings['logAnalyticsWorkspaceResourceID'] = workspace_resource_id
 
     # set the domain for the ci agent for non azure public clouds
     cloud_name = cmd.cli_ctx.cloud.name
     if cloud_name.lower() == 'azurechinacloud':
         configuration_settings['omsagent.domain'] = 'opinsights.azure.cn'
+        configuration_settings['amalogs.domain'] = 'opinsights.azure.cn'
     elif cloud_name.lower() == 'azureusgovernment':
         configuration_settings['omsagent.domain'] = 'opinsights.azure.us'
+        configuration_settings['amalogs.domain'] = 'opinsights.azure.us'
     elif cloud_name.lower() == 'usnat':
         configuration_settings['omsagent.domain'] = 'opinsights.azure.eaglex.ic.gov'
+        configuration_settings['amalogs.domain'] = 'opinsights.azure.eaglex.ic.gov'
     elif cloud_name.lower() == 'ussec':
         configuration_settings['omsagent.domain'] = 'opinsights.azure.microsoft.scloud'
+        configuration_settings['amalogs.domain'] = 'opinsights.azure.microsoft.scloud'
 
 
 def get_existing_container_insights_extension_dcr_tags(cmd, dcr_url):
@@ -553,7 +578,10 @@ def _ensure_container_insights_dcr_for_monitoring(cmd, subscription_id, cluster_
     cluster_resource_id = '/subscriptions/{0}/resourceGroups/{1}/providers/{2}/{3}/{4}'.format(
         subscription_id, cluster_resource_group_name, cluster_rp, cluster_type, cluster_name)
     try:
-        resource = resources.get_by_id(cluster_resource_id, '2020-01-01-preview')
+        if cluster_rp.lower() == consts.HYBRIDCONTAINERSERVICE_RP:
+            resource = resources.get_by_id(cluster_resource_id, consts.HYBRIDCONTAINERSERVICE_API_VERSION)
+        else:
+            resource = resources.get_by_id(cluster_resource_id, '2020-01-01-preview')
         cluster_region = resource.location.lower()
     except HttpResponseError as ex:
         raise ex

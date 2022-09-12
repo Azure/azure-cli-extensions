@@ -1,0 +1,938 @@
+interactions:
+- request:
+    body: '{"contactProfile": {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/contactProfiles/aqua"},
+      "endTime": "2022-11-15T00:55:31.820Z", "groundStationName": "westus2_0", "startTime":
+      "2022-11-14T00:55:31.820Z"}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - orbital spacecraft list-available-contact
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '274'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g --spacecraft-name --contact-profile --ground-station-name --start-time
+        --end-time
+      User-Agent:
+      - AZURECLI/2.39.0 (AAZ) azsdk-python-core/1.24.0 Python/3.8.10 (Windows-10-10.0.22000-SP0)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/listAvailableContacts?api-version=2022-03-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Wed, 10 Aug 2022 17:42:30 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Orbital/locations/westus2/operationResults/ae57015e-c369-4baf-88ed-116d65a4230e?api-version=2022-03-01
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - orbital spacecraft list-available-contact
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --spacecraft-name --contact-profile --ground-station-name --start-time
+        --end-time
+      User-Agent:
+      - AZURECLI/2.39.0 (AAZ) azsdk-python-core/1.24.0 Python/3.8.10 (Windows-10-10.0.22000-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Orbital/locations/westus2/operationResults/ae57015e-c369-4baf-88ed-116d65a4230e?api-version=2022-03-01
+  response:
+    body:
+      string: '{"nextLink":null,"value":[]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '28'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 10 Aug 2022 17:43:00 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"contactProfile": {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/contactProfiles/aqua"},
+      "groundStationName": "westus2_0", "reservationEndTime": "2022-08-14T09:27:55.809Z",
+      "reservationStartTime": "2022-08-14T09:17:09.523Z"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - orbital spacecraft contact create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '312'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g --name --spacecraft-name --contact-profile --ground-station-name --reservation-end-time
+        --reservation-start-time
+      User-Agent:
+      - AZURECLI/2.39.0 (AAZ) azsdk-python-core/1.24.0 Python/3.8.10 (Windows-10-10.0.22000-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts/az-cli-contact?api-version=2022-03-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts/az-cli-contact","name":"az-cli-contact","type":"Microsoft.Orbital/spacecrafts/contacts","properties":{"status":"scheduled","provisioningState":"succeeded","reservationStartTime":"2022-08-14T09:17:09.523Z","reservationEndTime":"2022-08-14T09:27:55.809Z","errorMessage":null,"groundStationName":"WESTUS2_0","contactProfile":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/contactProfiles/aqua"},"antennaConfiguration":{"destinationIp":"10.0.4.179","sourceIps":["10.0.4.20","10.0.4.21"]},"maximumElevationDegrees":32.10479,"txStartTime":null,"txEndTime":null,"rxStartTime":"2022-08-14T09:17:09.523Z","rxEndTime":"2022-08-14T09:27:55Z","startAzimuthDegrees":26.513116,"endAzimuthDegrees":164.889898,"startElevationDegrees":5.0,"endElevationDegrees":5.055486}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '963'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 10 Aug 2022 17:43:01 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - orbital spacecraft contact show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --spacecraft-name --name
+      User-Agent:
+      - AZURECLI/2.39.0 (AAZ) azsdk-python-core/1.24.0 Python/3.8.10 (Windows-10-10.0.22000-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts/az-cli-contact?api-version=2022-03-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts/az-cli-contact","name":"az-cli-contact","type":"Microsoft.Orbital/spacecrafts/contacts","properties":{"status":"scheduled","provisioningState":"succeeded","reservationStartTime":"2022-08-14T09:17:09.523Z","reservationEndTime":"2022-08-14T09:27:55.809Z","errorMessage":null,"groundStationName":"WESTUS2_0","contactProfile":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/contactProfiles/aqua"},"antennaConfiguration":{"destinationIp":"10.0.4.179","sourceIps":["10.0.4.20","10.0.4.21"]},"maximumElevationDegrees":32.10479,"txStartTime":null,"txEndTime":null,"rxStartTime":"2022-08-14T09:17:09.523Z","rxEndTime":"2022-08-14T09:27:55Z","startAzimuthDegrees":26.513116,"endAzimuthDegrees":164.889898,"startElevationDegrees":5.0,"endElevationDegrees":5.055486}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '963'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 10 Aug 2022 17:43:03 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - orbital spacecraft contact list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --spacecraft-name
+      User-Agent:
+      - AZURECLI/2.39.0 (AAZ) azsdk-python-core/1.24.0 Python/3.8.10 (Windows-10-10.0.22000-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts?api-version=2022-03-01
+  response:
+    body:
+      string: '{"nextLink":"https://management.azure.com:443/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts?api-version=2022-03-01&$skipToken=%7B%22NextPartitionKey%22%3Anull%2C%22NextRowKey%22%3A%22%7B%5C%22token%5C%22%3A%5C%22%2BRID%3A~cNoYANLXpvwADwAAAAAAAQ%3D%3D%23RT%3A1%23TRC%3A10%23ISV%3A2%23IEO%3A65551%23QCF%3A8%5C%22%2C%5C%22range%5C%22%3A%7B%5C%22min%5C%22%3A%5C%2227FFFFFFFFFFFFFFFFFFFFFFFFFFFFFF%5C%22%2C%5C%22max%5C%22%3A%5C%222FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF%5C%22%7D%7D%22%2C%22NextTableName%22%3Anull%2C%22TargetLocation%22%3Anull%7D","value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts/contact_2021-12-04_08-32-43-171","name":"contact_2021-12-04_08-32-43-171","type":"Microsoft.Orbital/spacecrafts/contacts","properties":{"status":"scheduled","provisioningState":"creating","reservationStartTime":"2021-12-04T08:32:43.171Z","reservationEndTime":"2021-12-04T08:34:43.171Z","errorMessage":null,"groundStationName":"LONG_BEACH","contactProfile":{"id":"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000/RESOURCEGROUPS/Rgp/PROVIDERS/MICROSOFT.ORBITAL/CONTACTPROFILES/aqua"},"antennaConfiguration":null,"maximumElevationDegrees":8.006212,"txStartTime":null,"txEndTime":null,"rxStartTime":"2021-12-04T08:32:43.171Z","rxEndTime":"2021-12-04T08:34:43Z","startAzimuthDegrees":46.840266,"endAzimuthDegrees":65.355591,"startElevationDegrees":5.0,"endElevationDegrees":10.771187}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts/71fce7637ff4","name":"71fce7637ff4","type":"Microsoft.Orbital/spacecrafts/contacts","properties":{"status":"scheduled","provisioningState":"creating","reservationStartTime":"2021-12-11T19:41:29.183Z","reservationEndTime":"2021-12-11T19:43:29.183Z","errorMessage":null,"groundStationName":"LONG_BEACH","contactProfile":{"id":"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000/RESOURCEGROUPS/Rgp/PROVIDERS/MICROSOFT.ORBITAL/CONTACTPROFILES/aqua"},"antennaConfiguration":null,"maximumElevationDegrees":7.810388,"txStartTime":null,"txEndTime":null,"rxStartTime":"2021-12-11T19:41:29.183Z","rxEndTime":"2021-12-11T19:43:29Z","startAzimuthDegrees":106.192024,"endAzimuthDegrees":87.049796,"startElevationDegrees":5.0,"endElevationDegrees":10.224546}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts/6dfb7295dd63","name":"6dfb7295dd63","type":"Microsoft.Orbital/spacecrafts/contacts","properties":{"status":"providerCancelled","provisioningState":"creating","reservationStartTime":"2021-12-18T19:46:58.679Z","reservationEndTime":"2021-12-18T19:48:58.679Z","errorMessage":"Capacity
+        problem. (contactId = 4522df10-df4d-4ad4-8c60-afb9713bc5d1)","groundStationName":"LONG_BEACH","contactProfile":{"id":"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000/RESOURCEGROUPS/Rgp/PROVIDERS/MICROSOFT.ORBITAL/CONTACTPROFILES/aqua"},"antennaConfiguration":null,"maximumElevationDegrees":8.124863,"txStartTime":null,"txEndTime":null,"rxStartTime":"2021-12-18T19:46:58.679Z","rxEndTime":"2021-12-18T19:48:58Z","startAzimuthDegrees":111.541915,"endAzimuthDegrees":93.278464,"startElevationDegrees":5.0,"endElevationDegrees":11.013602}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts/3dc27d921158","name":"3dc27d921158","type":"Microsoft.Orbital/spacecrafts/contacts","properties":{"status":"providerCancelled","provisioningState":"creating","reservationStartTime":"2021-12-18T21:22:40.526Z","reservationEndTime":"2021-12-18T21:24:40.526Z","errorMessage":"Capacity
+        problem. (contactId = ab10a531-ceb7-4327-9f79-9d545b839bc5)","groundStationName":"LONG_BEACH","contactProfile":{"id":"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000/RESOURCEGROUPS/Rgp/PROVIDERS/MICROSOFT.ORBITAL/CONTACTPROFILES/aqua"},"antennaConfiguration":null,"maximumElevationDegrees":9.800985,"txStartTime":null,"txEndTime":null,"rxStartTime":"2021-12-18T21:22:40.526Z","rxEndTime":"2021-12-18T21:24:40Z","startAzimuthDegrees":181.196021,"endAzimuthDegrees":187.988918,"startElevationDegrees":5.0,"endElevationDegrees":15.810355}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts/a22e82517074","name":"a22e82517074","type":"Microsoft.Orbital/spacecrafts/contacts","properties":{"status":"providerCancelled","provisioningState":"creating","reservationStartTime":"2021-12-18T21:31:11Z","reservationEndTime":"2021-12-18T21:33:11Z","errorMessage":"Capacity
+        problem. (contactId = f911b9df-f370-4450-8766-fa80c3ddb834)","groundStationName":"LONG_BEACH","contactProfile":{"id":"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000/RESOURCEGROUPS/Rgp/PROVIDERS/MICROSOFT.ORBITAL/CONTACTPROFILES/aqua"},"antennaConfiguration":null,"maximumElevationDegrees":14.437215,"txStartTime":null,"txEndTime":null,"rxStartTime":"2021-12-18T21:31:11Z","rxEndTime":"2021-12-18T21:33:11Z","startAzimuthDegrees":327.220021,"endAzimuthDegrees":336.847141,"startElevationDegrees":21.86285,"endElevationDegrees":8.755254}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts/d919ba309cf6","name":"d919ba309cf6","type":"Microsoft.Orbital/spacecrafts/contacts","properties":{"status":"failed","provisioningState":"creating","reservationStartTime":"2021-12-19T09:25:55.114Z","reservationEndTime":"2021-12-19T09:27:55.114Z","errorMessage":"","groundStationName":"LONG_BEACH","contactProfile":{"id":"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000/RESOURCEGROUPS/Rgp/PROVIDERS/MICROSOFT.ORBITAL/CONTACTPROFILES/aqua"},"antennaConfiguration":null,"maximumElevationDegrees":9.813893,"txStartTime":null,"txEndTime":null,"rxStartTime":"2021-12-19T09:25:55.114Z","rxEndTime":"2021-12-19T09:27:55Z","startAzimuthDegrees":19.546149,"endAzimuthDegrees":25.43833,"startElevationDegrees":5.0,"endElevationDegrees":15.880041}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts/c64b3feebae5","name":"c64b3feebae5","type":"Microsoft.Orbital/spacecrafts/contacts","properties":{"status":"failed","provisioningState":"creating","reservationStartTime":"2021-12-19T11:04:56.653Z","reservationEndTime":"2021-12-19T11:06:56.653Z","errorMessage":"","groundStationName":"LONG_BEACH","contactProfile":{"id":"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000/RESOURCEGROUPS/Rgp/PROVIDERS/MICROSOFT.ORBITAL/CONTACTPROFILES/aqua"},"antennaConfiguration":null,"maximumElevationDegrees":7.931077,"txStartTime":null,"txEndTime":null,"rxStartTime":"2021-12-19T11:04:56.653Z","rxEndTime":"2021-12-19T11:06:56Z","startAzimuthDegrees":337.628542,"endAzimuthDegrees":318.990353,"startElevationDegrees":5.0,"endElevationDegrees":10.529878}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts/b648cee1bc16","name":"b648cee1bc16","type":"Microsoft.Orbital/spacecrafts/contacts","properties":{"status":"failed","provisioningState":"creating","reservationStartTime":"2021-12-19T20:27:57.111Z","reservationEndTime":"2021-12-19T20:29:57.111Z","errorMessage":"","groundStationName":"LONG_BEACH","contactProfile":{"id":"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000/RESOURCEGROUPS/Rgp/PROVIDERS/MICROSOFT.ORBITAL/CONTACTPROFILES/aqua"},"antennaConfiguration":null,"maximumElevationDegrees":9.659019,"txStartTime":null,"txEndTime":null,"rxStartTime":"2021-12-19T20:27:57.111Z","rxEndTime":"2021-12-19T20:29:57Z","startAzimuthDegrees":144.133782,"endAzimuthDegrees":134.794026,"startElevationDegrees":5.0,"endElevationDegrees":15.328253}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts/d97533d93ab0","name":"d97533d93ab0","type":"Microsoft.Orbital/spacecrafts/contacts","properties":{"status":"failed","provisioningState":"creating","reservationStartTime":"2021-12-19T22:06:42.602Z","reservationEndTime":"2021-12-19T22:08:42.602Z","errorMessage":"","groundStationName":"LONG_BEACH","contactProfile":{"id":"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000/RESOURCEGROUPS/Rgp/PROVIDERS/MICROSOFT.ORBITAL/CONTACTPROFILES/aqua"},"antennaConfiguration":null,"maximumElevationDegrees":8.474879,"txStartTime":null,"txEndTime":null,"rxStartTime":"2021-12-19T22:06:42.602Z","rxEndTime":"2021-12-19T22:08:42Z","startAzimuthDegrees":213.345736,"endAzimuthDegrees":230.498275,"startElevationDegrees":5.0,"endElevationDegrees":11.94837}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts/72869665a87f","name":"72869665a87f","type":"Microsoft.Orbital/spacecrafts/contacts","properties":{"status":"failed","provisioningState":"creating","reservationStartTime":"2021-12-20T08:32:15.134Z","reservationEndTime":"2021-12-20T08:34:15.134Z","errorMessage":"","groundStationName":"LONG_BEACH","contactProfile":{"id":"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000/RESOURCEGROUPS/Rgp/PROVIDERS/MICROSOFT.ORBITAL/CONTACTPROFILES/aqua"},"antennaConfiguration":null,"maximumElevationDegrees":7.978278,"txStartTime":null,"txEndTime":null,"rxStartTime":"2021-12-20T08:32:15.134Z","rxEndTime":"2021-12-20T08:34:15Z","startAzimuthDegrees":47.204562,"endAzimuthDegrees":65.810924,"startElevationDegrees":5.0,"endElevationDegrees":10.700112}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '9829'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 10 Aug 2022 17:43:04 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - orbital spacecraft contact list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --spacecraft-name
+      User-Agent:
+      - AZURECLI/2.39.0 (AAZ) azsdk-python-core/1.24.0 Python/3.8.10 (Windows-10-10.0.22000-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts?api-version=2022-03-01&$skipToken=%7B%22NextPartitionKey%22%3Anull%2C%22NextRowKey%22%3A%22%7B%5C%22token%5C%22%3A%5C%22%2BRID%3A~cNoYANLXpvwADwAAAAAAAQ%3D%3D%23RT%3A1%23TRC%3A10%23ISV%3A2%23IEO%3A65551%23QCF%3A8%5C%22%2C%5C%22range%5C%22%3A%7B%5C%22min%5C%22%3A%5C%2227FFFFFFFFFFFFFFFFFFFFFFFFFFFFFF%5C%22%2C%5C%22max%5C%22%3A%5C%222FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF%5C%22%7D%7D%22%2C%22NextTableName%22%3Anull%2C%22TargetLocation%22%3Anull%7D
+  response:
+    body:
+      string: '{"nextLink":"https://management.azure.com:443/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts?api-version=2022-03-01&$skipToken=%7B%22NextPartitionKey%22%3Anull%2C%22NextRowKey%22%3A%22%7B%5C%22token%5C%22%3A%5C%22%2BRID%3A~cNoYANLXpvwzQAEAAAAAAQ%3D%3D%23RT%3A2%23TRC%3A20%23ISV%3A2%23IEO%3A65551%23QCF%3A8%5C%22%2C%5C%22range%5C%22%3A%7B%5C%22min%5C%22%3A%5C%2227FFFFFFFFFFFFFFFFFFFFFFFFFFFFFF%5C%22%2C%5C%22max%5C%22%3A%5C%222FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF%5C%22%7D%7D%22%2C%22NextTableName%22%3Anull%2C%22TargetLocation%22%3Anull%7D","value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts/d42e4f1cd1b6","name":"d42e4f1cd1b6","type":"Microsoft.Orbital/spacecrafts/contacts","properties":{"status":"failed","provisioningState":"creating","reservationStartTime":"2021-12-20T08:35:14Z","reservationEndTime":"2021-12-20T08:37:14Z","errorMessage":"","groundStationName":"LONG_BEACH","contactProfile":{"id":"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000/RESOURCEGROUPS/Rgp/PROVIDERS/MICROSOFT.ORBITAL/CONTACTPROFILES/aqua"},"antennaConfiguration":null,"maximumElevationDegrees":13.599692,"txStartTime":null,"txEndTime":null,"rxStartTime":"2021-12-20T08:35:14Z","rxEndTime":"2021-12-20T08:37:14Z","startAzimuthDegrees":77.834551,"endAzimuthDegrees":105.216593,"startElevationDegrees":12.718208,"endElevationDegrees":13.021003}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts/f22e8866536e","name":"f22e8866536e","type":"Microsoft.Orbital/spacecrafts/contacts","properties":{"status":"failed","provisioningState":"creating","reservationStartTime":"2021-12-20T10:08:40.329Z","reservationEndTime":"2021-12-20T10:10:40.329Z","errorMessage":"","groundStationName":"LONG_BEACH","contactProfile":{"id":"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000/RESOURCEGROUPS/Rgp/PROVIDERS/MICROSOFT.ORBITAL/CONTACTPROFILES/aqua"},"antennaConfiguration":null,"maximumElevationDegrees":9.774721,"txStartTime":null,"txEndTime":null,"rxStartTime":"2021-12-20T10:08:40.329Z","rxEndTime":"2021-12-20T10:10:40Z","startAzimuthDegrees":2.796633,"endAzimuthDegrees":356.123818,"startElevationDegrees":5.0,"endElevationDegrees":15.728739}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts/1816e7adc0e4","name":"1816e7adc0e4","type":"Microsoft.Orbital/spacecrafts/contacts","properties":{"status":"scheduled","provisioningState":"creating","reservationStartTime":"2021-12-20T19:35:36.168Z","reservationEndTime":"2021-12-20T19:37:36.168Z","errorMessage":null,"groundStationName":"LONG_BEACH","contactProfile":{"id":"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000/RESOURCEGROUPS/Rgp/PROVIDERS/MICROSOFT.ORBITAL/CONTACTPROFILES/aqua"},"antennaConfiguration":null,"maximumElevationDegrees":7.399467,"txStartTime":null,"txEndTime":null,"rxStartTime":"2021-12-20T19:35:36.168Z","rxEndTime":"2021-12-20T19:37:36Z","startAzimuthDegrees":99.772655,"endAzimuthDegrees":79.888967,"startElevationDegrees":5.0,"endElevationDegrees":9.247448}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts/contact-01-06-2022-17:13:40","name":"contact-01-06-2022-17:13:40","type":"Microsoft.Orbital/spacecrafts/contacts","properties":{"status":"succeeded","provisioningState":"creating","reservationStartTime":"2022-01-06T17:13:40.202Z","reservationEndTime":"2022-01-06T17:18:55.226Z","errorMessage":"","groundStationName":"SVALSAT","contactProfile":{"id":"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000/RESOURCEGROUPS/Rgp/PROVIDERS/MICROSOFT.ORBITAL/CONTACTPROFILES/aqua"},"antennaConfiguration":null,"maximumElevationDegrees":7.692815,"txStartTime":null,"txEndTime":null,"rxStartTime":"2022-01-06T17:13:40.202Z","rxEndTime":"2022-01-06T17:18:55Z","startAzimuthDegrees":311.96184,"endAzimuthDegrees":6.599083,"startElevationDegrees":5.0,"endElevationDegrees":5.006955}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts/ceb6ba258686","name":"ceb6ba258686","type":"Microsoft.Orbital/spacecrafts/contacts","properties":{"status":"failed","provisioningState":"succeeded","reservationStartTime":"2022-03-25T20:23:17.37Z","reservationEndTime":"2022-03-25T20:24:17.37Z","errorMessage":"","groundStationName":"LONG_BEACH","contactProfile":{"id":"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000/RESOURCEGROUPS/Rgp/PROVIDERS/MICROSOFT.ORBITAL/CONTACTPROFILES/aqua"},"antennaConfiguration":null,"maximumElevationDegrees":7.168492,"txStartTime":null,"txEndTime":null,"rxStartTime":"2022-03-25T20:23:17.37Z","rxEndTime":"2022-03-25T20:24:17Z","startAzimuthDegrees":140.719047,"endAzimuthDegrees":136.413805,"startElevationDegrees":5.0,"endElevationDegrees":9.522801}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts/afbd30b56c1d","name":"afbd30b56c1d","type":"Microsoft.Orbital/spacecrafts/contacts","properties":{"status":"failed","provisioningState":"succeeded","reservationStartTime":"2022-03-25T20:26:17Z","reservationEndTime":"2022-03-25T20:27:17Z","errorMessage":"","groundStationName":"LONG_BEACH","contactProfile":{"id":"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000/RESOURCEGROUPS/Rgp/PROVIDERS/MICROSOFT.ORBITAL/CONTACTPROFILES/aqua"},"antennaConfiguration":null,"maximumElevationDegrees":25.062183,"txStartTime":null,"txEndTime":null,"rxStartTime":"2022-03-25T20:26:17Z","rxEndTime":"2022-03-25T20:27:17Z","startAzimuthDegrees":120.535958,"endAzimuthDegrees":105.147301,"startElevationDegrees":21.470377,"endElevationDegrees":28.639608}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts/fcadf07990bb","name":"fcadf07990bb","type":"Microsoft.Orbital/spacecrafts/contacts","properties":{"status":"failed","provisioningState":"succeeded","reservationStartTime":"2022-03-25T20:29:17Z","reservationEndTime":"2022-03-25T20:30:17Z","errorMessage":"","groundStationName":"LONG_BEACH","contactProfile":{"id":"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000/RESOURCEGROUPS/Rgp/PROVIDERS/MICROSOFT.ORBITAL/CONTACTPROFILES/aqua"},"antennaConfiguration":null,"maximumElevationDegrees":30.299498,"txStartTime":null,"txEndTime":null,"rxStartTime":"2022-03-25T20:29:17Z","rxEndTime":"2022-03-25T20:30:17Z","startAzimuthDegrees":54.725034,"endAzimuthDegrees":33.42454,"startElevationDegrees":32.991173,"endElevationDegrees":26.883888}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts/8925118196f7","name":"8925118196f7","type":"Microsoft.Orbital/spacecrafts/contacts","properties":{"status":"failed","provisioningState":"succeeded","reservationStartTime":"2022-03-25T20:23:17.37Z","reservationEndTime":"2022-03-25T20:24:17.37Z","errorMessage":"","groundStationName":"LONG_BEACH","contactProfile":{"id":"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000/RESOURCEGROUPS/Rgp/PROVIDERS/MICROSOFT.ORBITAL/CONTACTPROFILES/aqua"},"antennaConfiguration":null,"maximumElevationDegrees":7.168492,"txStartTime":null,"txEndTime":null,"rxStartTime":"2022-03-25T20:23:17.37Z","rxEndTime":"2022-03-25T20:24:17Z","startAzimuthDegrees":140.719047,"endAzimuthDegrees":136.413805,"startElevationDegrees":5.0,"endElevationDegrees":9.522801}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts/221ec5a4072a","name":"221ec5a4072a","type":"Microsoft.Orbital/spacecrafts/contacts","properties":{"status":"failed","provisioningState":"succeeded","reservationStartTime":"2022-03-25T20:26:17Z","reservationEndTime":"2022-03-25T20:27:17Z","errorMessage":"","groundStationName":"LONG_BEACH","contactProfile":{"id":"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000/RESOURCEGROUPS/Rgp/PROVIDERS/MICROSOFT.ORBITAL/CONTACTPROFILES/aqua"},"antennaConfiguration":null,"maximumElevationDegrees":25.062183,"txStartTime":null,"txEndTime":null,"rxStartTime":"2022-03-25T20:26:17Z","rxEndTime":"2022-03-25T20:27:17Z","startAzimuthDegrees":120.535958,"endAzimuthDegrees":105.147301,"startElevationDegrees":21.470377,"endElevationDegrees":28.639608}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts/e88c666228a6","name":"e88c666228a6","type":"Microsoft.Orbital/spacecrafts/contacts","properties":{"status":"succeeded","provisioningState":"succeeded","reservationStartTime":"2022-03-25T20:29:17Z","reservationEndTime":"2022-03-25T20:30:17Z","errorMessage":"","groundStationName":"LONG_BEACH","contactProfile":{"id":"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000/RESOURCEGROUPS/Rgp/PROVIDERS/MICROSOFT.ORBITAL/CONTACTPROFILES/aqua"},"antennaConfiguration":null,"maximumElevationDegrees":30.299498,"txStartTime":null,"txEndTime":null,"rxStartTime":"2022-03-25T20:29:17Z","rxEndTime":"2022-03-25T20:30:17Z","startAzimuthDegrees":54.725034,"endAzimuthDegrees":33.42454,"startElevationDegrees":32.991173,"endElevationDegrees":26.883888}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '9556'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 10 Aug 2022 17:43:05 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - orbital spacecraft contact list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --spacecraft-name
+      User-Agent:
+      - AZURECLI/2.39.0 (AAZ) azsdk-python-core/1.24.0 Python/3.8.10 (Windows-10-10.0.22000-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts?api-version=2022-03-01&$skipToken=%7B%22NextPartitionKey%22%3Anull%2C%22NextRowKey%22%3A%22%7B%5C%22token%5C%22%3A%5C%22%2BRID%3A~cNoYANLXpvwzQAEAAAAAAQ%3D%3D%23RT%3A2%23TRC%3A20%23ISV%3A2%23IEO%3A65551%23QCF%3A8%5C%22%2C%5C%22range%5C%22%3A%7B%5C%22min%5C%22%3A%5C%2227FFFFFFFFFFFFFFFFFFFFFFFFFFFFFF%5C%22%2C%5C%22max%5C%22%3A%5C%222FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF%5C%22%7D%7D%22%2C%22NextTableName%22%3Anull%2C%22TargetLocation%22%3Anull%7D
+  response:
+    body:
+      string: '{"nextLink":"https://management.azure.com:443/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts?api-version=2022-03-01&$skipToken=%7B%22NextPartitionKey%22%3Anull%2C%22NextRowKey%22%3A%22%7B%5C%22token%5C%22%3A%5C%22%2BRID%3A~cNoYANLXpvzsQAEAAAAAAQ%3D%3D%23RT%3A3%23TRC%3A30%23ISV%3A2%23IEO%3A65551%23QCF%3A8%5C%22%2C%5C%22range%5C%22%3A%7B%5C%22min%5C%22%3A%5C%2227FFFFFFFFFFFFFFFFFFFFFFFFFFFFFF%5C%22%2C%5C%22max%5C%22%3A%5C%222FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF%5C%22%7D%7D%22%2C%22NextTableName%22%3Anull%2C%22TargetLocation%22%3Anull%7D","value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts/b1469138e1ab","name":"b1469138e1ab","type":"Microsoft.Orbital/spacecrafts/contacts","properties":{"status":"succeeded","provisioningState":"succeeded","reservationStartTime":"2022-03-25T22:01:40.633Z","reservationEndTime":"2022-03-25T22:02:40.633Z","errorMessage":"","groundStationName":"LONG_BEACH","contactProfile":{"id":"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000/RESOURCEGROUPS/Rgp/PROVIDERS/MICROSOFT.ORBITAL/CONTACTPROFILES/aqua"},"antennaConfiguration":null,"maximumElevationDegrees":6.812025,"txStartTime":null,"txEndTime":null,"rxStartTime":"2022-03-25T22:01:40.633Z","rxEndTime":"2022-03-25T22:02:40Z","startAzimuthDegrees":209.14794,"endAzimuthDegrees":216.089767,"startElevationDegrees":5.0,"endElevationDegrees":8.68408}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts/ad3da7d672d1","name":"ad3da7d672d1","type":"Microsoft.Orbital/spacecrafts/contacts","properties":{"status":"failed","provisioningState":"succeeded","reservationStartTime":"2022-03-26T08:27:43.988Z","reservationEndTime":"2022-03-26T08:28:43.988Z","errorMessage":"","groundStationName":"LONG_BEACH","contactProfile":{"id":"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000/RESOURCEGROUPS/Rgp/PROVIDERS/MICROSOFT.ORBITAL/CONTACTPROFILES/aqua"},"antennaConfiguration":null,"maximumElevationDegrees":6.343894,"txStartTime":null,"txEndTime":null,"rxStartTime":"2022-03-26T08:27:43.988Z","rxEndTime":"2022-03-26T08:28:43Z","startAzimuthDegrees":50.782196,"endAzimuthDegrees":59.406927,"startElevationDegrees":5.0,"endElevationDegrees":7.632553}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts/5cf66754b73c","name":"5cf66754b73c","type":"Microsoft.Orbital/spacecrafts/contacts","properties":{"status":"failed","provisioningState":"succeeded","reservationStartTime":"2022-03-26T08:30:43Z","reservationEndTime":"2022-03-26T08:31:43Z","errorMessage":"","groundStationName":"LONG_BEACH","contactProfile":{"id":"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000/RESOURCEGROUPS/Rgp/PROVIDERS/MICROSOFT.ORBITAL/CONTACTPROFILES/aqua"},"antennaConfiguration":null,"maximumElevationDegrees":11.781743,"txStartTime":null,"txEndTime":null,"rxStartTime":"2022-03-26T08:30:43Z","rxEndTime":"2022-03-26T08:31:43Z","startAzimuthDegrees":82.00879,"endAzimuthDegrees":94.983652,"startElevationDegrees":11.438511,"endElevationDegrees":11.807419}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts/8a61900d7eb8","name":"8a61900d7eb8","type":"Microsoft.Orbital/spacecrafts/contacts","properties":{"status":"failed","provisioningState":"succeeded","reservationStartTime":"2022-03-26T08:33:43Z","reservationEndTime":"2022-03-26T08:34:43Z","errorMessage":"","groundStationName":"LONG_BEACH","contactProfile":{"id":"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000/RESOURCEGROUPS/Rgp/PROVIDERS/MICROSOFT.ORBITAL/CONTACTPROFILES/aqua"},"antennaConfiguration":null,"maximumElevationDegrees":7.799266,"txStartTime":null,"txEndTime":null,"rxStartTime":"2022-03-26T08:33:43Z","rxEndTime":"2022-03-26T08:34:43Z","startAzimuthDegrees":119.258647,"endAzimuthDegrees":129.061751,"startElevationDegrees":9.009698,"endElevationDegrees":6.484757}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts/90de55af94c8","name":"90de55af94c8","type":"Microsoft.Orbital/spacecrafts/contacts","properties":{"status":"failed","provisioningState":"succeeded","reservationStartTime":"2022-03-26T08:27:43.988Z","reservationEndTime":"2022-03-26T08:28:43.988Z","errorMessage":"","groundStationName":"LONG_BEACH","contactProfile":{"id":"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000/RESOURCEGROUPS/Rgp/PROVIDERS/MICROSOFT.ORBITAL/CONTACTPROFILES/aqua"},"antennaConfiguration":null,"maximumElevationDegrees":6.343894,"txStartTime":null,"txEndTime":null,"rxStartTime":"2022-03-26T08:27:43.988Z","rxEndTime":"2022-03-26T08:28:43Z","startAzimuthDegrees":50.782196,"endAzimuthDegrees":59.406927,"startElevationDegrees":5.0,"endElevationDegrees":7.632553}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts/2df728fb6965","name":"2df728fb6965","type":"Microsoft.Orbital/spacecrafts/contacts","properties":{"status":"failed","provisioningState":"succeeded","reservationStartTime":"2022-03-26T08:30:43Z","reservationEndTime":"2022-03-26T08:31:43Z","errorMessage":"","groundStationName":"LONG_BEACH","contactProfile":{"id":"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000/RESOURCEGROUPS/Rgp/PROVIDERS/MICROSOFT.ORBITAL/CONTACTPROFILES/aqua"},"antennaConfiguration":null,"maximumElevationDegrees":11.781743,"txStartTime":null,"txEndTime":null,"rxStartTime":"2022-03-26T08:30:43Z","rxEndTime":"2022-03-26T08:31:43Z","startAzimuthDegrees":82.00879,"endAzimuthDegrees":94.983652,"startElevationDegrees":11.438511,"endElevationDegrees":11.807419}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts/3538b2bb63cc","name":"3538b2bb63cc","type":"Microsoft.Orbital/spacecrafts/contacts","properties":{"status":"failed","provisioningState":"succeeded","reservationStartTime":"2022-03-26T08:33:43Z","reservationEndTime":"2022-03-26T08:34:43Z","errorMessage":"","groundStationName":"LONG_BEACH","contactProfile":{"id":"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000/RESOURCEGROUPS/Rgp/PROVIDERS/MICROSOFT.ORBITAL/CONTACTPROFILES/aqua"},"antennaConfiguration":null,"maximumElevationDegrees":7.799266,"txStartTime":null,"txEndTime":null,"rxStartTime":"2022-03-26T08:33:43Z","rxEndTime":"2022-03-26T08:34:43Z","startAzimuthDegrees":119.258647,"endAzimuthDegrees":129.061751,"startElevationDegrees":9.009698,"endElevationDegrees":6.484757}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts/fc00684f4fc4","name":"fc00684f4fc4","type":"Microsoft.Orbital/spacecrafts/contacts","properties":{"status":"failed","provisioningState":"succeeded","reservationStartTime":"2022-03-26T08:27:43.988Z","reservationEndTime":"2022-03-26T08:28:43.988Z","errorMessage":"","groundStationName":"LONG_BEACH","contactProfile":{"id":"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000/RESOURCEGROUPS/Rgp/PROVIDERS/MICROSOFT.ORBITAL/CONTACTPROFILES/aqua"},"antennaConfiguration":null,"maximumElevationDegrees":6.343894,"txStartTime":null,"txEndTime":null,"rxStartTime":"2022-03-26T08:27:43.988Z","rxEndTime":"2022-03-26T08:28:43Z","startAzimuthDegrees":50.782196,"endAzimuthDegrees":59.406927,"startElevationDegrees":5.0,"endElevationDegrees":7.632553}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts/6a0d6e220cb0","name":"6a0d6e220cb0","type":"Microsoft.Orbital/spacecrafts/contacts","properties":{"status":"failed","provisioningState":"succeeded","reservationStartTime":"2022-03-26T08:30:43Z","reservationEndTime":"2022-03-26T08:31:43Z","errorMessage":"","groundStationName":"LONG_BEACH","contactProfile":{"id":"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000/RESOURCEGROUPS/Rgp/PROVIDERS/MICROSOFT.ORBITAL/CONTACTPROFILES/aqua"},"antennaConfiguration":null,"maximumElevationDegrees":11.781743,"txStartTime":null,"txEndTime":null,"rxStartTime":"2022-03-26T08:30:43Z","rxEndTime":"2022-03-26T08:31:43Z","startAzimuthDegrees":82.00879,"endAzimuthDegrees":94.983652,"startElevationDegrees":11.438511,"endElevationDegrees":11.807419}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts/623aa38bcb71","name":"623aa38bcb71","type":"Microsoft.Orbital/spacecrafts/contacts","properties":{"status":"succeeded","provisioningState":"succeeded","reservationStartTime":"2022-03-26T08:33:43Z","reservationEndTime":"2022-03-26T08:34:43Z","errorMessage":"","groundStationName":"LONG_BEACH","contactProfile":{"id":"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000/RESOURCEGROUPS/Rgp/PROVIDERS/MICROSOFT.ORBITAL/CONTACTPROFILES/aqua"},"antennaConfiguration":null,"maximumElevationDegrees":7.799266,"txStartTime":null,"txEndTime":null,"rxStartTime":"2022-03-26T08:33:43Z","rxEndTime":"2022-03-26T08:34:43Z","startAzimuthDegrees":119.258647,"endAzimuthDegrees":129.061751,"startElevationDegrees":9.009698,"endElevationDegrees":6.484757}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '9517'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 10 Aug 2022 17:43:05 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - orbital spacecraft contact list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --spacecraft-name
+      User-Agent:
+      - AZURECLI/2.39.0 (AAZ) azsdk-python-core/1.24.0 Python/3.8.10 (Windows-10-10.0.22000-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts?api-version=2022-03-01&$skipToken=%7B%22NextPartitionKey%22%3Anull%2C%22NextRowKey%22%3A%22%7B%5C%22token%5C%22%3A%5C%22%2BRID%3A~cNoYANLXpvzsQAEAAAAAAQ%3D%3D%23RT%3A3%23TRC%3A30%23ISV%3A2%23IEO%3A65551%23QCF%3A8%5C%22%2C%5C%22range%5C%22%3A%7B%5C%22min%5C%22%3A%5C%2227FFFFFFFFFFFFFFFFFFFFFFFFFFFFFF%5C%22%2C%5C%22max%5C%22%3A%5C%222FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF%5C%22%7D%7D%22%2C%22NextTableName%22%3Anull%2C%22TargetLocation%22%3Anull%7D
+  response:
+    body:
+      string: '{"nextLink":"https://management.azure.com:443/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts?api-version=2022-03-01&$skipToken=%7B%22NextPartitionKey%22%3Anull%2C%22NextRowKey%22%3A%22%7B%5C%22token%5C%22%3A%5C%22%2BRID%3A~cNoYANLXpvyRQQEAAAAAAQ%3D%3D%23RT%3A4%23TRC%3A40%23ISV%3A2%23IEO%3A65551%23QCF%3A8%5C%22%2C%5C%22range%5C%22%3A%7B%5C%22min%5C%22%3A%5C%2227FFFFFFFFFFFFFFFFFFFFFFFFFFFFFF%5C%22%2C%5C%22max%5C%22%3A%5C%222FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF%5C%22%7D%7D%22%2C%22NextTableName%22%3Anull%2C%22TargetLocation%22%3Anull%7D","value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts/13e4d935b253","name":"13e4d935b253","type":"Microsoft.Orbital/spacecrafts/contacts","properties":{"status":"succeeded","provisioningState":"succeeded","reservationStartTime":"2022-03-26T10:03:50.425Z","reservationEndTime":"2022-03-26T10:04:50.425Z","errorMessage":"","groundStationName":"LONG_BEACH","contactProfile":{"id":"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000/RESOURCEGROUPS/Rgp/PROVIDERS/MICROSOFT.ORBITAL/CONTACTPROFILES/aqua"},"antennaConfiguration":null,"maximumElevationDegrees":7.284998,"txStartTime":null,"txEndTime":null,"rxStartTime":"2022-03-26T10:03:50.425Z","rxEndTime":"2022-03-26T10:04:50Z","startAzimuthDegrees":4.726729,"endAzimuthDegrees":2.661918,"startElevationDegrees":5.0,"endElevationDegrees":9.811436}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts/c72962d8b76f","name":"c72962d8b76f","type":"Microsoft.Orbital/spacecrafts/contacts","properties":{"status":"failed","provisioningState":"succeeded","reservationStartTime":"2022-03-26T19:31:14.547Z","reservationEndTime":"2022-03-26T19:32:14.547Z","errorMessage":"","groundStationName":"LONG_BEACH","contactProfile":{"id":"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000/RESOURCEGROUPS/Rgp/PROVIDERS/MICROSOFT.ORBITAL/CONTACTPROFILES/aqua"},"antennaConfiguration":null,"maximumElevationDegrees":6.074762,"txStartTime":null,"txEndTime":null,"rxStartTime":"2022-03-26T19:31:14.547Z","rxEndTime":"2022-03-26T19:32:14Z","startAzimuthDegrees":94.37478,"endAzimuthDegrees":84.965674,"startElevationDegrees":5.0,"endElevationDegrees":7.02769}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts/3ab89c778a68","name":"3ab89c778a68","type":"Microsoft.Orbital/spacecrafts/contacts","properties":{"status":"succeeded","provisioningState":"succeeded","reservationStartTime":"2022-03-26T19:34:14Z","reservationEndTime":"2022-03-26T19:35:14Z","errorMessage":"","groundStationName":"LONG_BEACH","contactProfile":{"id":"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000/RESOURCEGROUPS/Rgp/PROVIDERS/MICROSOFT.ORBITAL/CONTACTPROFILES/aqua"},"antennaConfiguration":null,"maximumElevationDegrees":8.750291,"txStartTime":null,"txEndTime":null,"rxStartTime":"2022-03-26T19:34:14Z","rxEndTime":"2022-03-26T19:35:14Z","startAzimuthDegrees":62.591633,"endAzimuthDegrees":51.063474,"startElevationDegrees":8.902866,"endElevationDegrees":8.344754}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts/8ffe6e9451de","name":"8ffe6e9451de","type":"Microsoft.Orbital/spacecrafts/contacts","properties":{"status":"failed","provisioningState":"succeeded","reservationStartTime":"2022-03-26T21:05:27.051Z","reservationEndTime":"2022-03-26T21:06:27.051Z","errorMessage":"","groundStationName":"LONG_BEACH","contactProfile":{"id":"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000/RESOURCEGROUPS/Rgp/PROVIDERS/MICROSOFT.ORBITAL/CONTACTPROFILES/aqua"},"antennaConfiguration":null,"maximumElevationDegrees":7.356696,"txStartTime":null,"txEndTime":null,"rxStartTime":"2022-03-26T21:05:27.051Z","rxEndTime":"2022-03-26T21:06:27Z","startAzimuthDegrees":169.543197,"endAzimuthDegrees":170.229614,"startElevationDegrees":5.0,"endElevationDegrees":9.981652}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts/be4a467eae24","name":"be4a467eae24","type":"Microsoft.Orbital/spacecrafts/contacts","properties":{"status":"failed","provisioningState":"succeeded","reservationStartTime":"2022-03-26T21:08:27Z","reservationEndTime":"2022-03-26T21:09:27Z","errorMessage":"","groundStationName":"LONG_BEACH","contactProfile":{"id":"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000/RESOURCEGROUPS/Rgp/PROVIDERS/MICROSOFT.ORBITAL/CONTACTPROFILES/aqua"},"antennaConfiguration":null,"maximumElevationDegrees":31.50683,"txStartTime":null,"txEndTime":null,"rxStartTime":"2022-03-26T21:08:27Z","rxEndTime":"2022-03-26T21:09:27Z","startAzimuthDegrees":172.869297,"endAzimuthDegrees":176.210362,"startElevationDegrees":25.376891,"endElevationDegrees":39.341266}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts/e21b83111194","name":"e21b83111194","type":"Microsoft.Orbital/spacecrafts/contacts","properties":{"status":"failed","provisioningState":"succeeded","reservationStartTime":"2022-03-26T21:11:27Z","reservationEndTime":"2022-03-26T21:12:27Z","errorMessage":"","groundStationName":"LONG_BEACH","contactProfile":{"id":"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000/RESOURCEGROUPS/Rgp/PROVIDERS/MICROSOFT.ORBITAL/CONTACTPROFILES/aqua"},"antennaConfiguration":null,"maximumElevationDegrees":62.604714,"txStartTime":null,"txEndTime":null,"rxStartTime":"2022-03-26T21:11:27Z","rxEndTime":"2022-03-26T21:12:27Z","startAzimuthDegrees":299.702853,"endAzimuthDegrees":335.409263,"startElevationDegrees":76.610679,"endElevationDegrees":49.69508}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts/785debc314ad","name":"785debc314ad","type":"Microsoft.Orbital/spacecrafts/contacts","properties":{"status":"failed","provisioningState":"succeeded","reservationStartTime":"2022-03-26T21:05:27.051Z","reservationEndTime":"2022-03-26T21:06:27.051Z","errorMessage":"","groundStationName":"LONG_BEACH","contactProfile":{"id":"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000/RESOURCEGROUPS/Rgp/PROVIDERS/MICROSOFT.ORBITAL/CONTACTPROFILES/aqua"},"antennaConfiguration":null,"maximumElevationDegrees":7.356696,"txStartTime":null,"txEndTime":null,"rxStartTime":"2022-03-26T21:05:27.051Z","rxEndTime":"2022-03-26T21:06:27Z","startAzimuthDegrees":169.543197,"endAzimuthDegrees":170.229614,"startElevationDegrees":5.0,"endElevationDegrees":9.981652}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts/9e0eacfc6b78","name":"9e0eacfc6b78","type":"Microsoft.Orbital/spacecrafts/contacts","properties":{"status":"failed","provisioningState":"succeeded","reservationStartTime":"2022-03-26T21:08:27Z","reservationEndTime":"2022-03-26T21:09:27Z","errorMessage":"","groundStationName":"LONG_BEACH","contactProfile":{"id":"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000/RESOURCEGROUPS/Rgp/PROVIDERS/MICROSOFT.ORBITAL/CONTACTPROFILES/aqua"},"antennaConfiguration":null,"maximumElevationDegrees":31.50683,"txStartTime":null,"txEndTime":null,"rxStartTime":"2022-03-26T21:08:27Z","rxEndTime":"2022-03-26T21:09:27Z","startAzimuthDegrees":172.869297,"endAzimuthDegrees":176.210362,"startElevationDegrees":25.376891,"endElevationDegrees":39.341266}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts/a4b14b174b02","name":"a4b14b174b02","type":"Microsoft.Orbital/spacecrafts/contacts","properties":{"status":"succeeded","provisioningState":"succeeded","reservationStartTime":"2022-03-26T21:11:27Z","reservationEndTime":"2022-03-26T21:12:27Z","errorMessage":"","groundStationName":"LONG_BEACH","contactProfile":{"id":"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000/RESOURCEGROUPS/Rgp/PROVIDERS/MICROSOFT.ORBITAL/CONTACTPROFILES/aqua"},"antennaConfiguration":null,"maximumElevationDegrees":62.604714,"txStartTime":null,"txEndTime":null,"rxStartTime":"2022-03-26T21:11:27Z","rxEndTime":"2022-03-26T21:12:27Z","startAzimuthDegrees":299.702853,"endAzimuthDegrees":335.409263,"startElevationDegrees":76.610679,"endElevationDegrees":49.69508}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts/b72eb8a7eaac","name":"b72eb8a7eaac","type":"Microsoft.Orbital/spacecrafts/contacts","properties":{"status":"failed","provisioningState":"succeeded","reservationStartTime":"2022-03-27T09:09:00.869Z","reservationEndTime":"2022-03-27T09:10:00.869Z","errorMessage":"","groundStationName":"LONG_BEACH","contactProfile":{"id":"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000/RESOURCEGROUPS/Rgp/PROVIDERS/MICROSOFT.ORBITAL/CONTACTPROFILES/aqua"},"antennaConfiguration":null,"maximumElevationDegrees":7.119415,"txStartTime":null,"txEndTime":null,"rxStartTime":"2022-03-27T09:09:00.869Z","rxEndTime":"2022-03-27T09:10:00Z","startAzimuthDegrees":26.874674,"endAzimuthDegrees":31.212316,"startElevationDegrees":5.0,"endElevationDegrees":9.418891}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '9531'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 10 Aug 2022 17:43:05 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - orbital spacecraft contact list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --spacecraft-name
+      User-Agent:
+      - AZURECLI/2.39.0 (AAZ) azsdk-python-core/1.24.0 Python/3.8.10 (Windows-10-10.0.22000-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts?api-version=2022-03-01&$skipToken=%7B%22NextPartitionKey%22%3Anull%2C%22NextRowKey%22%3A%22%7B%5C%22token%5C%22%3A%5C%22%2BRID%3A~cNoYANLXpvyRQQEAAAAAAQ%3D%3D%23RT%3A4%23TRC%3A40%23ISV%3A2%23IEO%3A65551%23QCF%3A8%5C%22%2C%5C%22range%5C%22%3A%7B%5C%22min%5C%22%3A%5C%2227FFFFFFFFFFFFFFFFFFFFFFFFFFFFFF%5C%22%2C%5C%22max%5C%22%3A%5C%222FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF%5C%22%7D%7D%22%2C%22NextTableName%22%3Anull%2C%22TargetLocation%22%3Anull%7D
+  response:
+    body:
+      string: '{"nextLink":"https://management.azure.com:443/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts?api-version=2022-03-01&$skipToken=%7B%22NextPartitionKey%22%3Anull%2C%22NextRowKey%22%3A%22%7B%5C%22token%5C%22%3A%5C%22%2BRID%3A~cNoYANLXpvxEQgEAAAAAAQ%3D%3D%23RT%3A5%23TRC%3A50%23ISV%3A2%23IEO%3A65551%23QCF%3A8%5C%22%2C%5C%22range%5C%22%3A%7B%5C%22min%5C%22%3A%5C%2227FFFFFFFFFFFFFFFFFFFFFFFFFFFFFF%5C%22%2C%5C%22max%5C%22%3A%5C%222FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF%5C%22%7D%7D%22%2C%22NextTableName%22%3Anull%2C%22TargetLocation%22%3Anull%7D","value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts/21f08304bb27","name":"21f08304bb27","type":"Microsoft.Orbital/spacecrafts/contacts","properties":{"status":"failed","provisioningState":"succeeded","reservationStartTime":"2022-03-27T09:12:00Z","reservationEndTime":"2022-03-27T09:13:00Z","errorMessage":"","groundStationName":"LONG_BEACH","contactProfile":{"id":"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000/RESOURCEGROUPS/Rgp/PROVIDERS/MICROSOFT.ORBITAL/CONTACTPROFILES/aqua"},"antennaConfiguration":null,"maximumElevationDegrees":24.861984,"txStartTime":null,"txEndTime":null,"rxStartTime":"2022-03-27T09:12:00Z","rxEndTime":"2022-03-27T09:13:00Z","startAzimuthDegrees":46.792185,"endAzimuthDegrees":61.707252,"startElevationDegrees":21.242778,"endElevationDegrees":28.545065}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts/307533fda316","name":"307533fda316","type":"Microsoft.Orbital/spacecrafts/contacts","properties":{"status":"failed","provisioningState":"succeeded","reservationStartTime":"2022-03-27T09:15:00Z","reservationEndTime":"2022-03-27T09:16:00Z","errorMessage":"","groundStationName":"LONG_BEACH","contactProfile":{"id":"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000/RESOURCEGROUPS/Rgp/PROVIDERS/MICROSOFT.ORBITAL/CONTACTPROFILES/aqua"},"antennaConfiguration":null,"maximumElevationDegrees":31.593509,"txStartTime":null,"txEndTime":null,"rxStartTime":"2022-03-27T09:15:00Z","rxEndTime":"2022-03-27T09:16:00Z","startAzimuthDegrees":112.752244,"endAzimuthDegrees":135.489248,"startElevationDegrees":34.160839,"endElevationDegrees":28.151776}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts/89e2d9ca3a8c","name":"89e2d9ca3a8c","type":"Microsoft.Orbital/spacecrafts/contacts","properties":{"status":"failed","provisioningState":"succeeded","reservationStartTime":"2022-03-27T09:09:00.869Z","reservationEndTime":"2022-03-27T09:10:00.869Z","errorMessage":"","groundStationName":"LONG_BEACH","contactProfile":{"id":"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000/RESOURCEGROUPS/Rgp/PROVIDERS/MICROSOFT.ORBITAL/CONTACTPROFILES/aqua"},"antennaConfiguration":null,"maximumElevationDegrees":7.119415,"txStartTime":null,"txEndTime":null,"rxStartTime":"2022-03-27T09:09:00.869Z","rxEndTime":"2022-03-27T09:10:00Z","startAzimuthDegrees":26.874674,"endAzimuthDegrees":31.212316,"startElevationDegrees":5.0,"endElevationDegrees":9.418891}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts/938b95514a33","name":"938b95514a33","type":"Microsoft.Orbital/spacecrafts/contacts","properties":{"status":"failed","provisioningState":"succeeded","reservationStartTime":"2022-03-27T09:12:00Z","reservationEndTime":"2022-03-27T09:13:00Z","errorMessage":"","groundStationName":"LONG_BEACH","contactProfile":{"id":"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000/RESOURCEGROUPS/Rgp/PROVIDERS/MICROSOFT.ORBITAL/CONTACTPROFILES/aqua"},"antennaConfiguration":null,"maximumElevationDegrees":24.861984,"txStartTime":null,"txEndTime":null,"rxStartTime":"2022-03-27T09:12:00Z","rxEndTime":"2022-03-27T09:13:00Z","startAzimuthDegrees":46.792185,"endAzimuthDegrees":61.707252,"startElevationDegrees":21.242778,"endElevationDegrees":28.545065}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts/d1f1ede751b5","name":"d1f1ede751b5","type":"Microsoft.Orbital/spacecrafts/contacts","properties":{"status":"failed","provisioningState":"succeeded","reservationStartTime":"2022-03-27T09:15:00Z","reservationEndTime":"2022-03-27T09:16:00Z","errorMessage":"","groundStationName":"LONG_BEACH","contactProfile":{"id":"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000/RESOURCEGROUPS/Rgp/PROVIDERS/MICROSOFT.ORBITAL/CONTACTPROFILES/aqua"},"antennaConfiguration":null,"maximumElevationDegrees":31.593509,"txStartTime":null,"txEndTime":null,"rxStartTime":"2022-03-27T09:15:00Z","rxEndTime":"2022-03-27T09:16:00Z","startAzimuthDegrees":112.752244,"endAzimuthDegrees":135.489248,"startElevationDegrees":34.160839,"endElevationDegrees":28.151776}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts/d98a96629319","name":"d98a96629319","type":"Microsoft.Orbital/spacecrafts/contacts","properties":{"status":"failed","provisioningState":"succeeded","reservationStartTime":"2022-03-27T09:09:00.869Z","reservationEndTime":"2022-03-27T09:10:00.869Z","errorMessage":"","groundStationName":"LONG_BEACH","contactProfile":{"id":"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000/RESOURCEGROUPS/Rgp/PROVIDERS/MICROSOFT.ORBITAL/CONTACTPROFILES/aqua"},"antennaConfiguration":null,"maximumElevationDegrees":7.119415,"txStartTime":null,"txEndTime":null,"rxStartTime":"2022-03-27T09:09:00.869Z","rxEndTime":"2022-03-27T09:10:00Z","startAzimuthDegrees":26.874674,"endAzimuthDegrees":31.212316,"startElevationDegrees":5.0,"endElevationDegrees":9.418891}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts/cac2a35f0954","name":"cac2a35f0954","type":"Microsoft.Orbital/spacecrafts/contacts","properties":{"status":"failed","provisioningState":"succeeded","reservationStartTime":"2022-03-27T09:12:00Z","reservationEndTime":"2022-03-27T09:13:00Z","errorMessage":"","groundStationName":"LONG_BEACH","contactProfile":{"id":"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000/RESOURCEGROUPS/Rgp/PROVIDERS/MICROSOFT.ORBITAL/CONTACTPROFILES/aqua"},"antennaConfiguration":null,"maximumElevationDegrees":24.861984,"txStartTime":null,"txEndTime":null,"rxStartTime":"2022-03-27T09:12:00Z","rxEndTime":"2022-03-27T09:13:00Z","startAzimuthDegrees":46.792185,"endAzimuthDegrees":61.707252,"startElevationDegrees":21.242778,"endElevationDegrees":28.545065}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts/ea412c724efb","name":"ea412c724efb","type":"Microsoft.Orbital/spacecrafts/contacts","properties":{"status":"succeeded","provisioningState":"succeeded","reservationStartTime":"2022-03-27T09:15:00Z","reservationEndTime":"2022-03-27T09:16:00Z","errorMessage":"","groundStationName":"LONG_BEACH","contactProfile":{"id":"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000/RESOURCEGROUPS/Rgp/PROVIDERS/MICROSOFT.ORBITAL/CONTACTPROFILES/aqua"},"antennaConfiguration":null,"maximumElevationDegrees":31.593509,"txStartTime":null,"txEndTime":null,"rxStartTime":"2022-03-27T09:15:00Z","rxEndTime":"2022-03-27T09:16:00Z","startAzimuthDegrees":112.752244,"endAzimuthDegrees":135.489248,"startElevationDegrees":34.160839,"endElevationDegrees":28.151776}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts/bb7873461622","name":"bb7873461622","type":"Microsoft.Orbital/spacecrafts/contacts","properties":{"status":"failed","provisioningState":"succeeded","reservationStartTime":"2022-03-27T10:47:13.673Z","reservationEndTime":"2022-03-27T10:48:13.673Z","errorMessage":"","groundStationName":"LONG_BEACH","contactProfile":{"id":"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000/RESOURCEGROUPS/Rgp/PROVIDERS/MICROSOFT.ORBITAL/CONTACTPROFILES/aqua"},"antennaConfiguration":null,"maximumElevationDegrees":6.832042,"txStartTime":null,"txEndTime":null,"rxStartTime":"2022-03-27T10:47:13.673Z","rxEndTime":"2022-03-27T10:48:13Z","startAzimuthDegrees":346.806165,"endAzimuthDegrees":340.116348,"startElevationDegrees":5.0,"endElevationDegrees":8.727049}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts/520bea34fbe5","name":"520bea34fbe5","type":"Microsoft.Orbital/spacecrafts/contacts","properties":{"status":"succeeded","provisioningState":"succeeded","reservationStartTime":"2022-03-27T10:50:13Z","reservationEndTime":"2022-03-27T10:51:13Z","errorMessage":"","groundStationName":"LONG_BEACH","contactProfile":{"id":"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000/RESOURCEGROUPS/Rgp/PROVIDERS/MICROSOFT.ORBITAL/CONTACTPROFILES/aqua"},"antennaConfiguration":null,"maximumElevationDegrees":17.889784,"txStartTime":null,"txEndTime":null,"rxStartTime":"2022-03-27T10:50:13Z","rxEndTime":"2022-03-27T10:51:13Z","startAzimuthDegrees":319.034877,"endAzimuthDegrees":303.870475,"startElevationDegrees":16.373833,"endElevationDegrees":18.992555}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '9529'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 10 Aug 2022 17:43:06 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - orbital spacecraft contact list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --spacecraft-name
+      User-Agent:
+      - AZURECLI/2.39.0 (AAZ) azsdk-python-core/1.24.0 Python/3.8.10 (Windows-10-10.0.22000-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts?api-version=2022-03-01&$skipToken=%7B%22NextPartitionKey%22%3Anull%2C%22NextRowKey%22%3A%22%7B%5C%22token%5C%22%3A%5C%22%2BRID%3A~cNoYANLXpvxEQgEAAAAAAQ%3D%3D%23RT%3A5%23TRC%3A50%23ISV%3A2%23IEO%3A65551%23QCF%3A8%5C%22%2C%5C%22range%5C%22%3A%7B%5C%22min%5C%22%3A%5C%2227FFFFFFFFFFFFFFFFFFFFFFFFFFFFFF%5C%22%2C%5C%22max%5C%22%3A%5C%222FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF%5C%22%7D%7D%22%2C%22NextTableName%22%3Anull%2C%22TargetLocation%22%3Anull%7D
+  response:
+    body:
+      string: '{"nextLink":"https://management.azure.com:443/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts?api-version=2022-03-01&$skipToken=%7B%22NextPartitionKey%22%3Anull%2C%22NextRowKey%22%3A%22%7B%5C%22token%5C%22%3A%5C%22%2BRID%3A~cNoYANLXpvzyQgEAAAAAAQ%3D%3D%23RT%3A6%23TRC%3A60%23ISV%3A2%23IEO%3A65551%23QCF%3A8%5C%22%2C%5C%22range%5C%22%3A%7B%5C%22min%5C%22%3A%5C%2227FFFFFFFFFFFFFFFFFFFFFFFFFFFFFF%5C%22%2C%5C%22max%5C%22%3A%5C%222FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF%5C%22%7D%7D%22%2C%22NextTableName%22%3Anull%2C%22TargetLocation%22%3Anull%7D","value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts/5fcdc7620b5c","name":"5fcdc7620b5c","type":"Microsoft.Orbital/spacecrafts/contacts","properties":{"status":"failed","provisioningState":"succeeded","reservationStartTime":"2022-03-27T20:11:19.771Z","reservationEndTime":"2022-03-27T20:12:19.771Z","errorMessage":"","groundStationName":"LONG_BEACH","contactProfile":{"id":"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000/RESOURCEGROUPS/Rgp/PROVIDERS/MICROSOFT.ORBITAL/CONTACTPROFILES/aqua"},"antennaConfiguration":null,"maximumElevationDegrees":7.011655,"txStartTime":null,"txEndTime":null,"rxStartTime":"2022-03-27T20:11:19.771Z","rxEndTime":"2022-03-27T20:12:19Z","startAzimuthDegrees":131.861032,"endAzimuthDegrees":126.268663,"startElevationDegrees":5.0,"endElevationDegrees":9.14997}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts/ba7da709cc97","name":"ba7da709cc97","type":"Microsoft.Orbital/spacecrafts/contacts","properties":{"status":"failed","provisioningState":"succeeded","reservationStartTime":"2022-03-27T20:14:19Z","reservationEndTime":"2022-03-27T20:15:19Z","errorMessage":"","groundStationName":"LONG_BEACH","contactProfile":{"id":"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000/RESOURCEGROUPS/Rgp/PROVIDERS/MICROSOFT.ORBITAL/CONTACTPROFILES/aqua"},"antennaConfiguration":null,"maximumElevationDegrees":21.407784,"txStartTime":null,"txEndTime":null,"rxStartTime":"2022-03-27T20:14:19Z","rxEndTime":"2022-03-27T20:15:19Z","startAzimuthDegrees":107.148757,"endAzimuthDegrees":91.355603,"startElevationDegrees":18.964014,"endElevationDegrees":23.525716}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts/d754e142c087","name":"d754e142c087","type":"Microsoft.Orbital/spacecrafts/contacts","properties":{"status":"failed","provisioningState":"succeeded","reservationStartTime":"2022-03-27T20:17:19Z","reservationEndTime":"2022-03-27T20:18:19Z","errorMessage":"","groundStationName":"LONG_BEACH","contactProfile":{"id":"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000/RESOURCEGROUPS/Rgp/PROVIDERS/MICROSOFT.ORBITAL/CONTACTPROFILES/aqua"},"antennaConfiguration":null,"maximumElevationDegrees":22.151481,"txStartTime":null,"txEndTime":null,"rxStartTime":"2022-03-27T20:17:19Z","rxEndTime":"2022-03-27T20:18:19Z","startAzimuthDegrees":51.108844,"endAzimuthDegrees":34.598068,"startElevationDegrees":24.100435,"endElevationDegrees":19.793957}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts/547965ad2b42","name":"547965ad2b42","type":"Microsoft.Orbital/spacecrafts/contacts","properties":{"status":"failed","provisioningState":"succeeded","reservationStartTime":"2022-03-27T20:11:19.771Z","reservationEndTime":"2022-03-27T20:12:19.771Z","errorMessage":"","groundStationName":"LONG_BEACH","contactProfile":{"id":"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000/RESOURCEGROUPS/Rgp/PROVIDERS/MICROSOFT.ORBITAL/CONTACTPROFILES/aqua"},"antennaConfiguration":null,"maximumElevationDegrees":7.011655,"txStartTime":null,"txEndTime":null,"rxStartTime":"2022-03-27T20:11:19.771Z","rxEndTime":"2022-03-27T20:12:19Z","startAzimuthDegrees":131.861032,"endAzimuthDegrees":126.268663,"startElevationDegrees":5.0,"endElevationDegrees":9.14997}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts/0bb672900664","name":"0bb672900664","type":"Microsoft.Orbital/spacecrafts/contacts","properties":{"status":"failed","provisioningState":"succeeded","reservationStartTime":"2022-03-27T20:14:19Z","reservationEndTime":"2022-03-27T20:15:19Z","errorMessage":"","groundStationName":"LONG_BEACH","contactProfile":{"id":"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000/RESOURCEGROUPS/Rgp/PROVIDERS/MICROSOFT.ORBITAL/CONTACTPROFILES/aqua"},"antennaConfiguration":null,"maximumElevationDegrees":21.407784,"txStartTime":null,"txEndTime":null,"rxStartTime":"2022-03-27T20:14:19Z","rxEndTime":"2022-03-27T20:15:19Z","startAzimuthDegrees":107.148757,"endAzimuthDegrees":91.355603,"startElevationDegrees":18.964014,"endElevationDegrees":23.525716}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts/e4904ee7a4d8","name":"e4904ee7a4d8","type":"Microsoft.Orbital/spacecrafts/contacts","properties":{"status":"failed","provisioningState":"succeeded","reservationStartTime":"2022-03-27T20:17:19Z","reservationEndTime":"2022-03-27T20:18:19Z","errorMessage":"","groundStationName":"LONG_BEACH","contactProfile":{"id":"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000/RESOURCEGROUPS/Rgp/PROVIDERS/MICROSOFT.ORBITAL/CONTACTPROFILES/aqua"},"antennaConfiguration":null,"maximumElevationDegrees":22.151481,"txStartTime":null,"txEndTime":null,"rxStartTime":"2022-03-27T20:17:19Z","rxEndTime":"2022-03-27T20:18:19Z","startAzimuthDegrees":51.108844,"endAzimuthDegrees":34.598068,"startElevationDegrees":24.100435,"endElevationDegrees":19.793957}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts/43e8d02617a1","name":"43e8d02617a1","type":"Microsoft.Orbital/spacecrafts/contacts","properties":{"status":"succeeded","provisioningState":"succeeded","reservationStartTime":"2022-03-27T20:11:19.771Z","reservationEndTime":"2022-03-27T20:12:19.771Z","errorMessage":"","groundStationName":"LONG_BEACH","contactProfile":{"id":"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000/RESOURCEGROUPS/Rgp/PROVIDERS/MICROSOFT.ORBITAL/CONTACTPROFILES/aqua"},"antennaConfiguration":null,"maximumElevationDegrees":7.011655,"txStartTime":null,"txEndTime":null,"rxStartTime":"2022-03-27T20:11:19.771Z","rxEndTime":"2022-03-27T20:12:19Z","startAzimuthDegrees":131.861032,"endAzimuthDegrees":126.268663,"startElevationDegrees":5.0,"endElevationDegrees":9.14997}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts/edf112ad8e66","name":"edf112ad8e66","type":"Microsoft.Orbital/spacecrafts/contacts","properties":{"status":"succeeded","provisioningState":"succeeded","reservationStartTime":"2022-03-27T21:48:50.392Z","reservationEndTime":"2022-03-27T21:49:50.392Z","errorMessage":"","groundStationName":"LONG_BEACH","contactProfile":{"id":"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000/RESOURCEGROUPS/Rgp/PROVIDERS/MICROSOFT.ORBITAL/CONTACTPROFILES/aqua"},"antennaConfiguration":null,"maximumElevationDegrees":7.022353,"txStartTime":null,"txEndTime":null,"rxStartTime":"2022-03-27T21:48:50.392Z","rxEndTime":"2022-03-27T21:49:50Z","startAzimuthDegrees":199.402255,"endAzimuthDegrees":205.062824,"startElevationDegrees":5.0,"endElevationDegrees":9.175832}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts/c437fbde78fe","name":"c437fbde78fe","type":"Microsoft.Orbital/spacecrafts/contacts","properties":{"status":"failed","provisioningState":"succeeded","reservationStartTime":"2022-03-28T08:16:20.909Z","reservationEndTime":"2022-03-28T08:17:20.909Z","errorMessage":"","groundStationName":"LONG_BEACH","contactProfile":{"id":"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000/RESOURCEGROUPS/Rgp/PROVIDERS/MICROSOFT.ORBITAL/CONTACTPROFILES/aqua"},"antennaConfiguration":null,"maximumElevationDegrees":5.902404,"txStartTime":null,"txEndTime":null,"rxStartTime":"2022-03-28T08:16:20.909Z","rxEndTime":"2022-03-28T08:17:20Z","startAzimuthDegrees":62.298126,"endAzimuthDegrees":71.896535,"startElevationDegrees":5.0,"endElevationDegrees":6.673732}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts/666cc6cb0dc7","name":"666cc6cb0dc7","type":"Microsoft.Orbital/spacecrafts/contacts","properties":{"status":"succeeded","provisioningState":"succeeded","reservationStartTime":"2022-03-28T08:19:20Z","reservationEndTime":"2022-03-28T08:20:20Z","errorMessage":"","groundStationName":"LONG_BEACH","contactProfile":{"id":"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000/RESOURCEGROUPS/Rgp/PROVIDERS/MICROSOFT.ORBITAL/CONTACTPROFILES/aqua"},"antennaConfiguration":null,"maximumElevationDegrees":7.637437,"txStartTime":null,"txEndTime":null,"rxStartTime":"2022-03-28T08:19:20Z","rxEndTime":"2022-03-28T08:20:20Z","startAzimuthDegrees":93.971488,"endAzimuthDegrees":105.054335,"startElevationDegrees":7.892088,"endElevationDegrees":7.167075}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '9535'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 10 Aug 2022 17:43:06 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - orbital spacecraft contact list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --spacecraft-name
+      User-Agent:
+      - AZURECLI/2.39.0 (AAZ) azsdk-python-core/1.24.0 Python/3.8.10 (Windows-10-10.0.22000-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts?api-version=2022-03-01&$skipToken=%7B%22NextPartitionKey%22%3Anull%2C%22NextRowKey%22%3A%22%7B%5C%22token%5C%22%3A%5C%22%2BRID%3A~cNoYANLXpvzyQgEAAAAAAQ%3D%3D%23RT%3A6%23TRC%3A60%23ISV%3A2%23IEO%3A65551%23QCF%3A8%5C%22%2C%5C%22range%5C%22%3A%7B%5C%22min%5C%22%3A%5C%2227FFFFFFFFFFFFFFFFFFFFFFFFFFFFFF%5C%22%2C%5C%22max%5C%22%3A%5C%222FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF%5C%22%7D%7D%22%2C%22NextTableName%22%3Anull%2C%22TargetLocation%22%3Anull%7D
+  response:
+    body:
+      string: '{"nextLink":"https://management.azure.com:443/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts?api-version=2022-03-01&$skipToken=%7B%22NextPartitionKey%22%3Anull%2C%22NextRowKey%22%3A%22%7B%5C%22token%5C%22%3A%5C%22%2BRID%3A~cNoYANLXpvyaQwEAAAAAAQ%3D%3D%23RT%3A7%23TRC%3A70%23ISV%3A2%23IEO%3A65551%23QCF%3A8%5C%22%2C%5C%22range%5C%22%3A%7B%5C%22min%5C%22%3A%5C%2227FFFFFFFFFFFFFFFFFFFFFFFFFFFFFF%5C%22%2C%5C%22max%5C%22%3A%5C%222FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF%5C%22%7D%7D%22%2C%22NextTableName%22%3Anull%2C%22TargetLocation%22%3Anull%7D","value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts/fb4a6a70e86f","name":"fb4a6a70e86f","type":"Microsoft.Orbital/spacecrafts/contacts","properties":{"status":"failed","provisioningState":"succeeded","reservationStartTime":"2022-03-28T09:51:26.004Z","reservationEndTime":"2022-03-28T09:52:26.004Z","errorMessage":"","groundStationName":"LONG_BEACH","contactProfile":{"id":"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000/RESOURCEGROUPS/Rgp/PROVIDERS/MICROSOFT.ORBITAL/CONTACTPROFILES/aqua"},"antennaConfiguration":null,"maximumElevationDegrees":7.338102,"txStartTime":null,"txEndTime":null,"rxStartTime":"2022-03-28T09:51:26.004Z","rxEndTime":"2022-03-28T09:52:26Z","startAzimuthDegrees":9.509095,"endAzimuthDegrees":8.888563,"startElevationDegrees":5.0,"endElevationDegrees":9.939587}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts/52b007c750d9","name":"52b007c750d9","type":"Microsoft.Orbital/spacecrafts/contacts","properties":{"status":"failed","provisioningState":"succeeded","reservationStartTime":"2022-03-28T09:54:26Z","reservationEndTime":"2022-03-28T09:55:26Z","errorMessage":"","groundStationName":"LONG_BEACH","contactProfile":{"id":"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000/RESOURCEGROUPS/Rgp/PROVIDERS/MICROSOFT.ORBITAL/CONTACTPROFILES/aqua"},"antennaConfiguration":null,"maximumElevationDegrees":31.109109,"txStartTime":null,"txEndTime":null,"rxStartTime":"2022-03-28T09:54:26Z","rxEndTime":"2022-03-28T09:55:26Z","startAzimuthDegrees":5.957859,"endAzimuthDegrees":1.827128,"startElevationDegrees":25.110281,"endElevationDegrees":38.735414}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts/ae977e939aa7","name":"ae977e939aa7","type":"Microsoft.Orbital/spacecrafts/contacts","properties":{"status":"failed","provisioningState":"succeeded","reservationStartTime":"2022-03-28T09:57:26Z","reservationEndTime":"2022-03-28T09:58:26Z","errorMessage":"","groundStationName":"LONG_BEACH","contactProfile":{"id":"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000/RESOURCEGROUPS/Rgp/PROVIDERS/MICROSOFT.ORBITAL/CONTACTPROFILES/aqua"},"antennaConfiguration":null,"maximumElevationDegrees":61.611414,"txStartTime":null,"txEndTime":null,"rxStartTime":"2022-03-28T09:57:26Z","rxEndTime":"2022-03-28T09:58:26Z","startAzimuthDegrees":252.018349,"endAzimuthDegrees":211.009731,"startElevationDegrees":74.008222,"endElevationDegrees":49.185728}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts/c02a57dc9323","name":"c02a57dc9323","type":"Microsoft.Orbital/spacecrafts/contacts","properties":{"status":"failed","provisioningState":"succeeded","reservationStartTime":"2022-03-28T09:51:26.004Z","reservationEndTime":"2022-03-28T09:52:26.004Z","errorMessage":"","groundStationName":"LONG_BEACH","contactProfile":{"id":"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000/RESOURCEGROUPS/Rgp/PROVIDERS/MICROSOFT.ORBITAL/CONTACTPROFILES/aqua"},"antennaConfiguration":null,"maximumElevationDegrees":7.338102,"txStartTime":null,"txEndTime":null,"rxStartTime":"2022-03-28T09:51:26.004Z","rxEndTime":"2022-03-28T09:52:26Z","startAzimuthDegrees":9.509095,"endAzimuthDegrees":8.888563,"startElevationDegrees":5.0,"endElevationDegrees":9.939587}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts/9bc2a69d2e93","name":"9bc2a69d2e93","type":"Microsoft.Orbital/spacecrafts/contacts","properties":{"status":"failed","provisioningState":"succeeded","reservationStartTime":"2022-03-28T09:54:26Z","reservationEndTime":"2022-03-28T09:55:26Z","errorMessage":"","groundStationName":"LONG_BEACH","contactProfile":{"id":"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000/RESOURCEGROUPS/Rgp/PROVIDERS/MICROSOFT.ORBITAL/CONTACTPROFILES/aqua"},"antennaConfiguration":null,"maximumElevationDegrees":31.109109,"txStartTime":null,"txEndTime":null,"rxStartTime":"2022-03-28T09:54:26Z","rxEndTime":"2022-03-28T09:55:26Z","startAzimuthDegrees":5.957859,"endAzimuthDegrees":1.827128,"startElevationDegrees":25.110281,"endElevationDegrees":38.735414}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts/6639ab00c28c","name":"6639ab00c28c","type":"Microsoft.Orbital/spacecrafts/contacts","properties":{"status":"failed","provisioningState":"succeeded","reservationStartTime":"2022-03-28T09:57:26Z","reservationEndTime":"2022-03-28T09:58:26Z","errorMessage":"","groundStationName":"LONG_BEACH","contactProfile":{"id":"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000/RESOURCEGROUPS/Rgp/PROVIDERS/MICROSOFT.ORBITAL/CONTACTPROFILES/aqua"},"antennaConfiguration":null,"maximumElevationDegrees":61.611414,"txStartTime":null,"txEndTime":null,"rxStartTime":"2022-03-28T09:57:26Z","rxEndTime":"2022-03-28T09:58:26Z","startAzimuthDegrees":252.018349,"endAzimuthDegrees":211.009731,"startElevationDegrees":74.008222,"endElevationDegrees":49.185728}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts/f6ed72f3ff13","name":"f6ed72f3ff13","type":"Microsoft.Orbital/spacecrafts/contacts","properties":{"status":"failed","provisioningState":"succeeded","reservationStartTime":"2022-03-28T09:51:26.004Z","reservationEndTime":"2022-03-28T09:52:26.004Z","errorMessage":"","groundStationName":"LONG_BEACH","contactProfile":{"id":"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000/RESOURCEGROUPS/Rgp/PROVIDERS/MICROSOFT.ORBITAL/CONTACTPROFILES/aqua"},"antennaConfiguration":null,"maximumElevationDegrees":7.338102,"txStartTime":null,"txEndTime":null,"rxStartTime":"2022-03-28T09:51:26.004Z","rxEndTime":"2022-03-28T09:52:26Z","startAzimuthDegrees":9.509095,"endAzimuthDegrees":8.888563,"startElevationDegrees":5.0,"endElevationDegrees":9.939587}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts/6be76ef7514f","name":"6be76ef7514f","type":"Microsoft.Orbital/spacecrafts/contacts","properties":{"status":"succeeded","provisioningState":"succeeded","reservationStartTime":"2022-03-28T09:54:26Z","reservationEndTime":"2022-03-28T09:55:26Z","errorMessage":"","groundStationName":"LONG_BEACH","contactProfile":{"id":"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000/RESOURCEGROUPS/Rgp/PROVIDERS/MICROSOFT.ORBITAL/CONTACTPROFILES/aqua"},"antennaConfiguration":null,"maximumElevationDegrees":31.109109,"txStartTime":null,"txEndTime":null,"rxStartTime":"2022-03-28T09:54:26Z","rxEndTime":"2022-03-28T09:55:26Z","startAzimuthDegrees":5.957859,"endAzimuthDegrees":1.827128,"startElevationDegrees":25.110281,"endElevationDegrees":38.735414}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts/07372c598a30","name":"07372c598a30","type":"Microsoft.Orbital/spacecrafts/contacts","properties":{"status":"succeeded","provisioningState":"succeeded","reservationStartTime":"2022-03-28T11:32:30.174Z","reservationEndTime":"2022-03-28T11:33:30.174Z","errorMessage":"","groundStationName":"LONG_BEACH","contactProfile":{"id":"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000/RESOURCEGROUPS/Rgp/PROVIDERS/MICROSOFT.ORBITAL/CONTACTPROFILES/aqua"},"antennaConfiguration":null,"maximumElevationDegrees":5.502341,"txStartTime":null,"txEndTime":null,"rxStartTime":"2022-03-28T11:32:30.174Z","rxEndTime":"2022-03-28T11:33:30Z","startAzimuthDegrees":314.658461,"endAzimuthDegrees":304.548275,"startElevationDegrees":5.0,"endElevationDegrees":5.820521}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts/4c6bd7a14ff1","name":"4c6bd7a14ff1","type":"Microsoft.Orbital/spacecrafts/contacts","properties":{"status":"succeeded","provisioningState":"succeeded","reservationStartTime":"2022-03-28T19:20:35.753Z","reservationEndTime":"2022-03-28T19:21:35.753Z","errorMessage":"","groundStationName":"LONG_BEACH","contactProfile":{"id":"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000/RESOURCEGROUPS/Rgp/PROVIDERS/MICROSOFT.ORBITAL/CONTACTPROFILES/aqua"},"antennaConfiguration":null,"maximumElevationDegrees":5.459557,"txStartTime":null,"txEndTime":null,"rxStartTime":"2022-03-28T19:20:35.753Z","rxEndTime":"2022-03-28T19:21:35Z","startAzimuthDegrees":75.782224,"endAzimuthDegrees":65.754462,"startElevationDegrees":5.0,"endElevationDegrees":5.737373}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '9524'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 10 Aug 2022 17:43:06 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - orbital spacecraft contact list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --spacecraft-name
+      User-Agent:
+      - AZURECLI/2.39.0 (AAZ) azsdk-python-core/1.24.0 Python/3.8.10 (Windows-10-10.0.22000-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts?api-version=2022-03-01&$skipToken=%7B%22NextPartitionKey%22%3Anull%2C%22NextRowKey%22%3A%22%7B%5C%22token%5C%22%3A%5C%22%2BRID%3A~cNoYANLXpvyaQwEAAAAAAQ%3D%3D%23RT%3A7%23TRC%3A70%23ISV%3A2%23IEO%3A65551%23QCF%3A8%5C%22%2C%5C%22range%5C%22%3A%7B%5C%22min%5C%22%3A%5C%2227FFFFFFFFFFFFFFFFFFFFFFFFFFFFFF%5C%22%2C%5C%22max%5C%22%3A%5C%222FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF%5C%22%7D%7D%22%2C%22NextTableName%22%3Anull%2C%22TargetLocation%22%3Anull%7D
+  response:
+    body:
+      string: '{"nextLink":"https://management.azure.com:443/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts?api-version=2022-03-01&$skipToken=%7B%22NextPartitionKey%22%3Anull%2C%22NextRowKey%22%3A%22%7B%5C%22token%5C%22%3A%5C%22%2BRID%3A~cNoYANLXpvw-RAEAAAAAAQ%3D%3D%23RT%3A8%23TRC%3A80%23ISV%3A2%23IEO%3A65551%23QCF%3A8%5C%22%2C%5C%22range%5C%22%3A%7B%5C%22min%5C%22%3A%5C%2227FFFFFFFFFFFFFFFFFFFFFFFFFFFFFF%5C%22%2C%5C%22max%5C%22%3A%5C%222FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF%5C%22%7D%7D%22%2C%22NextTableName%22%3Anull%2C%22TargetLocation%22%3Anull%7D","value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts/5b1d8e2c3374","name":"5b1d8e2c3374","type":"Microsoft.Orbital/spacecrafts/contacts","properties":{"status":"failed","provisioningState":"succeeded","reservationStartTime":"2022-03-28T20:53:07.96Z","reservationEndTime":"2022-03-28T20:54:07.96Z","errorMessage":"","groundStationName":"LONG_BEACH","contactProfile":{"id":"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000/RESOURCEGROUPS/Rgp/PROVIDERS/MICROSOFT.ORBITAL/CONTACTPROFILES/aqua"},"antennaConfiguration":null,"maximumElevationDegrees":7.317531,"txStartTime":null,"txEndTime":null,"rxStartTime":"2022-03-28T20:53:07.96Z","rxEndTime":"2022-03-28T20:54:07Z","startAzimuthDegrees":161.310471,"endAzimuthDegrees":160.523073,"startElevationDegrees":5.0,"endElevationDegrees":9.893063}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts/5fc4a029971e","name":"5fc4a029971e","type":"Microsoft.Orbital/spacecrafts/contacts","properties":{"status":"failed","provisioningState":"succeeded","reservationStartTime":"2022-03-28T20:56:07Z","reservationEndTime":"2022-03-28T20:57:07Z","errorMessage":"","groundStationName":"LONG_BEACH","contactProfile":{"id":"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000/RESOURCEGROUPS/Rgp/PROVIDERS/MICROSOFT.ORBITAL/CONTACTPROFILES/aqua"},"antennaConfiguration":null,"maximumElevationDegrees":31.176,"txStartTime":null,"txEndTime":null,"rxStartTime":"2022-03-28T20:56:07Z","rxEndTime":"2022-03-28T20:57:07Z","startAzimuthDegrees":157.109829,"endAzimuthDegrees":152.475333,"startElevationDegrees":25.148981,"endElevationDegrees":38.821634}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts/871a374ae582","name":"871a374ae582","type":"Microsoft.Orbital/spacecrafts/contacts","properties":{"status":"failed","provisioningState":"succeeded","reservationStartTime":"2022-03-28T20:59:07Z","reservationEndTime":"2022-03-28T21:00:07Z","errorMessage":"","groundStationName":"LONG_BEACH","contactProfile":{"id":"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000/RESOURCEGROUPS/Rgp/PROVIDERS/MICROSOFT.ORBITAL/CONTACTPROFILES/aqua"},"antennaConfiguration":null,"maximumElevationDegrees":60.843045,"txStartTime":null,"txEndTime":null,"rxStartTime":"2022-03-28T20:59:07Z","rxEndTime":"2022-03-28T21:00:07Z","startAzimuthDegrees":44.974999,"endAzimuthDegrees":4.34221,"startElevationDegrees":72.705006,"endElevationDegrees":48.782278}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts/58af7f0d0787","name":"58af7f0d0787","type":"Microsoft.Orbital/spacecrafts/contacts","properties":{"status":"failed","provisioningState":"succeeded","reservationStartTime":"2022-03-28T20:53:07.96Z","reservationEndTime":"2022-03-28T20:54:07.96Z","errorMessage":"","groundStationName":"LONG_BEACH","contactProfile":{"id":"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000/RESOURCEGROUPS/Rgp/PROVIDERS/MICROSOFT.ORBITAL/CONTACTPROFILES/aqua"},"antennaConfiguration":null,"maximumElevationDegrees":7.317531,"txStartTime":null,"txEndTime":null,"rxStartTime":"2022-03-28T20:53:07.96Z","rxEndTime":"2022-03-28T20:54:07Z","startAzimuthDegrees":161.310471,"endAzimuthDegrees":160.523073,"startElevationDegrees":5.0,"endElevationDegrees":9.893063}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts/632a8ead95a4","name":"632a8ead95a4","type":"Microsoft.Orbital/spacecrafts/contacts","properties":{"status":"failed","provisioningState":"succeeded","reservationStartTime":"2022-03-28T20:56:07Z","reservationEndTime":"2022-03-28T20:57:07Z","errorMessage":"","groundStationName":"LONG_BEACH","contactProfile":{"id":"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000/RESOURCEGROUPS/Rgp/PROVIDERS/MICROSOFT.ORBITAL/CONTACTPROFILES/aqua"},"antennaConfiguration":null,"maximumElevationDegrees":31.176,"txStartTime":null,"txEndTime":null,"rxStartTime":"2022-03-28T20:56:07Z","rxEndTime":"2022-03-28T20:57:07Z","startAzimuthDegrees":157.109829,"endAzimuthDegrees":152.475333,"startElevationDegrees":25.148981,"endElevationDegrees":38.821634}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts/813901be85ec","name":"813901be85ec","type":"Microsoft.Orbital/spacecrafts/contacts","properties":{"status":"failed","provisioningState":"succeeded","reservationStartTime":"2022-03-28T20:59:07Z","reservationEndTime":"2022-03-28T21:00:07Z","errorMessage":"","groundStationName":"LONG_BEACH","contactProfile":{"id":"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000/RESOURCEGROUPS/Rgp/PROVIDERS/MICROSOFT.ORBITAL/CONTACTPROFILES/aqua"},"antennaConfiguration":null,"maximumElevationDegrees":60.843045,"txStartTime":null,"txEndTime":null,"rxStartTime":"2022-03-28T20:59:07Z","rxEndTime":"2022-03-28T21:00:07Z","startAzimuthDegrees":44.974999,"endAzimuthDegrees":4.34221,"startElevationDegrees":72.705006,"endElevationDegrees":48.782278}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts/ab593348c3bb","name":"ab593348c3bb","type":"Microsoft.Orbital/spacecrafts/contacts","properties":{"status":"succeeded","provisioningState":"succeeded","reservationStartTime":"2022-03-28T20:53:07.96Z","reservationEndTime":"2022-03-28T20:54:07.96Z","errorMessage":"","groundStationName":"LONG_BEACH","contactProfile":{"id":"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000/RESOURCEGROUPS/Rgp/PROVIDERS/MICROSOFT.ORBITAL/CONTACTPROFILES/aqua"},"antennaConfiguration":null,"maximumElevationDegrees":7.317531,"txStartTime":null,"txEndTime":null,"rxStartTime":"2022-03-28T20:53:07.96Z","rxEndTime":"2022-03-28T20:54:07Z","startAzimuthDegrees":161.310471,"endAzimuthDegrees":160.523073,"startElevationDegrees":5.0,"endElevationDegrees":9.893063}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts/f7ac42fd8ac3","name":"f7ac42fd8ac3","type":"Microsoft.Orbital/spacecrafts/contacts","properties":{"status":"succeeded","provisioningState":"succeeded","reservationStartTime":"2022-03-28T22:34:15.65Z","reservationEndTime":"2022-03-28T22:35:15.65Z","errorMessage":"","groundStationName":"LONG_BEACH","contactProfile":{"id":"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000/RESOURCEGROUPS/Rgp/PROVIDERS/MICROSOFT.ORBITAL/CONTACTPROFILES/aqua"},"antennaConfiguration":null,"maximumElevationDegrees":5.950607,"txStartTime":null,"txEndTime":null,"rxStartTime":"2022-03-28T22:34:15.65Z","rxEndTime":"2022-03-28T22:35:15Z","startAzimuthDegrees":240.110485,"endAzimuthDegrees":249.725447,"startElevationDegrees":5.0,"endElevationDegrees":6.770575}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts/4355e99aa2a7","name":"4355e99aa2a7","type":"Microsoft.Orbital/spacecrafts/contacts","properties":{"status":"failed","provisioningState":"succeeded","reservationStartTime":"2022-03-29T08:56:54.498Z","reservationEndTime":"2022-03-29T08:57:54.498Z","errorMessage":"","groundStationName":"LONG_BEACH","contactProfile":{"id":"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000/RESOURCEGROUPS/Rgp/PROVIDERS/MICROSOFT.ORBITAL/CONTACTPROFILES/aqua"},"antennaConfiguration":null,"maximumElevationDegrees":6.98299,"txStartTime":null,"txEndTime":null,"rxStartTime":"2022-03-29T08:56:54.498Z","rxEndTime":"2022-03-29T08:57:54Z","startAzimuthDegrees":32.644738,"endAzimuthDegrees":38.375463,"startElevationDegrees":5.0,"endElevationDegrees":9.09099}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts/1a35364533d2","name":"1a35364533d2","type":"Microsoft.Orbital/spacecrafts/contacts","properties":{"status":"failed","provisioningState":"succeeded","reservationStartTime":"2022-03-29T08:59:54Z","reservationEndTime":"2022-03-29T09:00:54Z","errorMessage":"","groundStationName":"LONG_BEACH","contactProfile":{"id":"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000/RESOURCEGROUPS/Rgp/PROVIDERS/MICROSOFT.ORBITAL/CONTACTPROFILES/aqua"},"antennaConfiguration":null,"maximumElevationDegrees":21.21912,"txStartTime":null,"txEndTime":null,"rxStartTime":"2022-03-29T08:59:54Z","rxEndTime":"2022-03-29T09:00:54Z","startAzimuthDegrees":57.401658,"endAzimuthDegrees":72.969903,"startElevationDegrees":18.766088,"endElevationDegrees":23.392193}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '9514'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 10 Aug 2022 17:43:07 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - orbital spacecraft contact list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --spacecraft-name
+      User-Agent:
+      - AZURECLI/2.39.0 (AAZ) azsdk-python-core/1.24.0 Python/3.8.10 (Windows-10-10.0.22000-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts?api-version=2022-03-01&$skipToken=%7B%22NextPartitionKey%22%3Anull%2C%22NextRowKey%22%3A%22%7B%5C%22token%5C%22%3A%5C%22%2BRID%3A~cNoYANLXpvw-RAEAAAAAAQ%3D%3D%23RT%3A8%23TRC%3A80%23ISV%3A2%23IEO%3A65551%23QCF%3A8%5C%22%2C%5C%22range%5C%22%3A%7B%5C%22min%5C%22%3A%5C%2227FFFFFFFFFFFFFFFFFFFFFFFFFFFFFF%5C%22%2C%5C%22max%5C%22%3A%5C%222FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF%5C%22%7D%7D%22%2C%22NextTableName%22%3Anull%2C%22TargetLocation%22%3Anull%7D
+  response:
+    body:
+      string: '{"nextLink":"https://management.azure.com:443/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts?api-version=2022-03-01&$skipToken=%7B%22NextPartitionKey%22%3Anull%2C%22NextRowKey%22%3A%22%7B%5C%22token%5C%22%3A%5C%22%2BRID%3A~cNoYANLXpvznRAEAAAAAAQ%3D%3D%23RT%3A9%23TRC%3A90%23ISV%3A2%23IEO%3A65551%23QCF%3A8%5C%22%2C%5C%22range%5C%22%3A%7B%5C%22min%5C%22%3A%5C%2227FFFFFFFFFFFFFFFFFFFFFFFFFFFFFF%5C%22%2C%5C%22max%5C%22%3A%5C%222FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF%5C%22%7D%7D%22%2C%22NextTableName%22%3Anull%2C%22TargetLocation%22%3Anull%7D","value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts/59cb7247d156","name":"59cb7247d156","type":"Microsoft.Orbital/spacecrafts/contacts","properties":{"status":"failed","provisioningState":"succeeded","reservationStartTime":"2022-03-29T09:02:54Z","reservationEndTime":"2022-03-29T09:03:54Z","errorMessage":"","groundStationName":"LONG_BEACH","contactProfile":{"id":"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000/RESOURCEGROUPS/Rgp/PROVIDERS/MICROSOFT.ORBITAL/CONTACTPROFILES/aqua"},"antennaConfiguration":null,"maximumElevationDegrees":22.716567,"txStartTime":null,"txEndTime":null,"rxStartTime":"2022-03-29T09:02:54Z","rxEndTime":"2022-03-29T09:03:54Z","startAzimuthDegrees":113.555395,"endAzimuthDegrees":130.789251,"startElevationDegrees":24.563852,"endElevationDegrees":20.408534}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts/8e27d6d6f288","name":"8e27d6d6f288","type":"Microsoft.Orbital/spacecrafts/contacts","properties":{"status":"failed","provisioningState":"succeeded","reservationStartTime":"2022-03-29T08:56:54.498Z","reservationEndTime":"2022-03-29T08:57:54.498Z","errorMessage":"","groundStationName":"LONG_BEACH","contactProfile":{"id":"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000/RESOURCEGROUPS/Rgp/PROVIDERS/MICROSOFT.ORBITAL/CONTACTPROFILES/aqua"},"antennaConfiguration":null,"maximumElevationDegrees":6.98299,"txStartTime":null,"txEndTime":null,"rxStartTime":"2022-03-29T08:56:54.498Z","rxEndTime":"2022-03-29T08:57:54Z","startAzimuthDegrees":32.644738,"endAzimuthDegrees":38.375463,"startElevationDegrees":5.0,"endElevationDegrees":9.09099}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts/cdd2122e7525","name":"cdd2122e7525","type":"Microsoft.Orbital/spacecrafts/contacts","properties":{"status":"failed","provisioningState":"succeeded","reservationStartTime":"2022-03-29T08:59:54Z","reservationEndTime":"2022-03-29T09:00:54Z","errorMessage":"","groundStationName":"LONG_BEACH","contactProfile":{"id":"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000/RESOURCEGROUPS/Rgp/PROVIDERS/MICROSOFT.ORBITAL/CONTACTPROFILES/aqua"},"antennaConfiguration":null,"maximumElevationDegrees":21.21912,"txStartTime":null,"txEndTime":null,"rxStartTime":"2022-03-29T08:59:54Z","rxEndTime":"2022-03-29T09:00:54Z","startAzimuthDegrees":57.401658,"endAzimuthDegrees":72.969903,"startElevationDegrees":18.766088,"endElevationDegrees":23.392193}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts/d91a5b12fb46","name":"d91a5b12fb46","type":"Microsoft.Orbital/spacecrafts/contacts","properties":{"status":"failed","provisioningState":"succeeded","reservationStartTime":"2022-03-29T09:02:54Z","reservationEndTime":"2022-03-29T09:03:54Z","errorMessage":"","groundStationName":"LONG_BEACH","contactProfile":{"id":"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000/RESOURCEGROUPS/Rgp/PROVIDERS/MICROSOFT.ORBITAL/CONTACTPROFILES/aqua"},"antennaConfiguration":null,"maximumElevationDegrees":22.716567,"txStartTime":null,"txEndTime":null,"rxStartTime":"2022-03-29T09:02:54Z","rxEndTime":"2022-03-29T09:03:54Z","startAzimuthDegrees":113.555395,"endAzimuthDegrees":130.789251,"startElevationDegrees":24.563852,"endElevationDegrees":20.408534}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts/300b7f2bf80b","name":"300b7f2bf80b","type":"Microsoft.Orbital/spacecrafts/contacts","properties":{"status":"failed","provisioningState":"succeeded","reservationStartTime":"2022-03-29T08:56:54.498Z","reservationEndTime":"2022-03-29T08:57:54.498Z","errorMessage":"","groundStationName":"LONG_BEACH","contactProfile":{"id":"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000/RESOURCEGROUPS/Rgp/PROVIDERS/MICROSOFT.ORBITAL/CONTACTPROFILES/aqua"},"antennaConfiguration":null,"maximumElevationDegrees":6.98299,"txStartTime":null,"txEndTime":null,"rxStartTime":"2022-03-29T08:56:54.498Z","rxEndTime":"2022-03-29T08:57:54Z","startAzimuthDegrees":32.644738,"endAzimuthDegrees":38.375463,"startElevationDegrees":5.0,"endElevationDegrees":9.09099}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts/f17e4f893f4a","name":"f17e4f893f4a","type":"Microsoft.Orbital/spacecrafts/contacts","properties":{"status":"failed","provisioningState":"succeeded","reservationStartTime":"2022-03-29T08:59:54Z","reservationEndTime":"2022-03-29T09:00:54Z","errorMessage":"","groundStationName":"LONG_BEACH","contactProfile":{"id":"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000/RESOURCEGROUPS/Rgp/PROVIDERS/MICROSOFT.ORBITAL/CONTACTPROFILES/aqua"},"antennaConfiguration":null,"maximumElevationDegrees":21.21912,"txStartTime":null,"txEndTime":null,"rxStartTime":"2022-03-29T08:59:54Z","rxEndTime":"2022-03-29T09:00:54Z","startAzimuthDegrees":57.401658,"endAzimuthDegrees":72.969903,"startElevationDegrees":18.766088,"endElevationDegrees":23.392193}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts/2d72132b269b","name":"2d72132b269b","type":"Microsoft.Orbital/spacecrafts/contacts","properties":{"status":"succeeded","provisioningState":"succeeded","reservationStartTime":"2022-03-29T09:02:54Z","reservationEndTime":"2022-03-29T09:03:54Z","errorMessage":"","groundStationName":"LONG_BEACH","contactProfile":{"id":"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000/RESOURCEGROUPS/Rgp/PROVIDERS/MICROSOFT.ORBITAL/CONTACTPROFILES/aqua"},"antennaConfiguration":null,"maximumElevationDegrees":22.716567,"txStartTime":null,"txEndTime":null,"rxStartTime":"2022-03-29T09:02:54Z","rxEndTime":"2022-03-29T09:03:54Z","startAzimuthDegrees":113.555395,"endAzimuthDegrees":130.789251,"startElevationDegrees":24.563852,"endElevationDegrees":20.408534}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts/ec6dcb90c189","name":"ec6dcb90c189","type":"Microsoft.Orbital/spacecrafts/contacts","properties":{"status":"succeeded","provisioningState":"succeeded","reservationStartTime":"2022-03-29T10:34:34.948Z","reservationEndTime":"2022-03-29T10:35:34.948Z","errorMessage":"","groundStationName":"LONG_BEACH","contactProfile":{"id":"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000/RESOURCEGROUPS/Rgp/PROVIDERS/MICROSOFT.ORBITAL/CONTACTPROFILES/aqua"},"antennaConfiguration":null,"maximumElevationDegrees":7.006282,"txStartTime":null,"txEndTime":null,"rxStartTime":"2022-03-29T10:34:34.948Z","rxEndTime":"2022-03-29T10:35:34Z","startAzimuthDegrees":352.416755,"endAzimuthDegrees":347.01493,"startElevationDegrees":5.0,"endElevationDegrees":9.140301}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts/99fa1f5c0d21","name":"99fa1f5c0d21","type":"Microsoft.Orbital/spacecrafts/contacts","properties":{"status":"failed","provisioningState":"succeeded","reservationStartTime":"2022-03-29T19:59:29.78Z","reservationEndTime":"2022-03-29T20:00:29.78Z","errorMessage":"","groundStationName":"LONG_BEACH","contactProfile":{"id":"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000/RESOURCEGROUPS/Rgp/PROVIDERS/MICROSOFT.ORBITAL/CONTACTPROFILES/aqua"},"antennaConfiguration":null,"maximumElevationDegrees":6.82266,"txStartTime":null,"txEndTime":null,"rxStartTime":"2022-03-29T19:59:29.78Z","rxEndTime":"2022-03-29T20:00:29Z","startAzimuthDegrees":122.466258,"endAzimuthDegrees":115.635749,"startElevationDegrees":5.0,"endElevationDegrees":8.705219}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts/d21bbd7e0302","name":"d21bbd7e0302","type":"Microsoft.Orbital/spacecrafts/contacts","properties":{"status":"failed","provisioningState":"succeeded","reservationStartTime":"2022-03-29T20:02:29Z","reservationEndTime":"2022-03-29T20:03:29Z","errorMessage":"","groundStationName":"LONG_BEACH","contactProfile":{"id":"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000/RESOURCEGROUPS/Rgp/PROVIDERS/MICROSOFT.ORBITAL/CONTACTPROFILES/aqua"},"antennaConfiguration":null,"maximumElevationDegrees":17.733156,"txStartTime":null,"txEndTime":null,"rxStartTime":"2022-03-29T20:02:29Z","rxEndTime":"2022-03-29T20:03:29Z","startAzimuthDegrees":94.327152,"endAzimuthDegrees":79.182032,"startElevationDegrees":16.258298,"endElevationDegrees":18.792574}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '9522'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 10 Aug 2022 17:43:07 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - orbital spacecraft contact list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --spacecraft-name
+      User-Agent:
+      - AZURECLI/2.39.0 (AAZ) azsdk-python-core/1.24.0 Python/3.8.10 (Windows-10-10.0.22000-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts?api-version=2022-03-01&$skipToken=%7B%22NextPartitionKey%22%3Anull%2C%22NextRowKey%22%3A%22%7B%5C%22token%5C%22%3A%5C%22%2BRID%3A~cNoYANLXpvznRAEAAAAAAQ%3D%3D%23RT%3A9%23TRC%3A90%23ISV%3A2%23IEO%3A65551%23QCF%3A8%5C%22%2C%5C%22range%5C%22%3A%7B%5C%22min%5C%22%3A%5C%2227FFFFFFFFFFFFFFFFFFFFFFFFFFFFFF%5C%22%2C%5C%22max%5C%22%3A%5C%222FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF%5C%22%7D%7D%22%2C%22NextTableName%22%3Anull%2C%22TargetLocation%22%3Anull%7D
+  response:
+    body:
+      string: '{"nextLink":"https://management.azure.com:443/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts?api-version=2022-03-01&$skipToken=%7B%22NextPartitionKey%22%3Anull%2C%22NextRowKey%22%3A%22%7B%5C%22token%5C%22%3A%5C%22%2BRID%3A~cNoYANLXpvx-RQEAAAAAAQ%3D%3D%23RT%3A10%23TRC%3A100%23ISV%3A2%23IEO%3A65551%23QCF%3A8%5C%22%2C%5C%22range%5C%22%3A%7B%5C%22min%5C%22%3A%5C%2227FFFFFFFFFFFFFFFFFFFFFFFFFFFFFF%5C%22%2C%5C%22max%5C%22%3A%5C%222FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF%5C%22%7D%7D%22%2C%22NextTableName%22%3Anull%2C%22TargetLocation%22%3Anull%7D","value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts/5c041a6fc213","name":"5c041a6fc213","type":"Microsoft.Orbital/spacecrafts/contacts","properties":{"status":"failed","provisioningState":"succeeded","reservationStartTime":"2022-03-29T20:05:29Z","reservationEndTime":"2022-03-29T20:06:29Z","errorMessage":"","groundStationName":"LONG_BEACH","contactProfile":{"id":"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000/RESOURCEGROUPS/Rgp/PROVIDERS/MICROSOFT.ORBITAL/CONTACTPROFILES/aqua"},"antennaConfiguration":null,"maximumElevationDegrees":15.766499,"txStartTime":null,"txEndTime":null,"rxStartTime":"2022-03-29T20:05:29Z","rxEndTime":"2022-03-29T20:06:29Z","startAzimuthDegrees":46.419308,"endAzimuthDegrees":33.252527,"startElevationDegrees":17.333752,"endElevationDegrees":13.96583}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts/22284f4f62ef","name":"22284f4f62ef","type":"Microsoft.Orbital/spacecrafts/contacts","properties":{"status":"failed","provisioningState":"succeeded","reservationStartTime":"2022-03-29T19:59:29.78Z","reservationEndTime":"2022-03-29T20:00:29.78Z","errorMessage":"","groundStationName":"LONG_BEACH","contactProfile":{"id":"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000/RESOURCEGROUPS/Rgp/PROVIDERS/MICROSOFT.ORBITAL/CONTACTPROFILES/aqua"},"antennaConfiguration":null,"maximumElevationDegrees":6.82266,"txStartTime":null,"txEndTime":null,"rxStartTime":"2022-03-29T19:59:29.78Z","rxEndTime":"2022-03-29T20:00:29Z","startAzimuthDegrees":122.466258,"endAzimuthDegrees":115.635749,"startElevationDegrees":5.0,"endElevationDegrees":8.705219}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts/4fe8b90a7e5a","name":"4fe8b90a7e5a","type":"Microsoft.Orbital/spacecrafts/contacts","properties":{"status":"failed","provisioningState":"succeeded","reservationStartTime":"2022-03-29T20:02:29Z","reservationEndTime":"2022-03-29T20:03:29Z","errorMessage":"","groundStationName":"LONG_BEACH","contactProfile":{"id":"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000/RESOURCEGROUPS/Rgp/PROVIDERS/MICROSOFT.ORBITAL/CONTACTPROFILES/aqua"},"antennaConfiguration":null,"maximumElevationDegrees":17.733156,"txStartTime":null,"txEndTime":null,"rxStartTime":"2022-03-29T20:02:29Z","rxEndTime":"2022-03-29T20:03:29Z","startAzimuthDegrees":94.327152,"endAzimuthDegrees":79.182032,"startElevationDegrees":16.258298,"endElevationDegrees":18.792574}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts/affc033ec2c4","name":"affc033ec2c4","type":"Microsoft.Orbital/spacecrafts/contacts","properties":{"status":"failed","provisioningState":"succeeded","reservationStartTime":"2022-03-29T20:05:29Z","reservationEndTime":"2022-03-29T20:06:29Z","errorMessage":"","groundStationName":"LONG_BEACH","contactProfile":{"id":"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000/RESOURCEGROUPS/Rgp/PROVIDERS/MICROSOFT.ORBITAL/CONTACTPROFILES/aqua"},"antennaConfiguration":null,"maximumElevationDegrees":15.766499,"txStartTime":null,"txEndTime":null,"rxStartTime":"2022-03-29T20:05:29Z","rxEndTime":"2022-03-29T20:06:29Z","startAzimuthDegrees":46.419308,"endAzimuthDegrees":33.252527,"startElevationDegrees":17.333752,"endElevationDegrees":13.96583}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts/7b0caa383d8d","name":"7b0caa383d8d","type":"Microsoft.Orbital/spacecrafts/contacts","properties":{"status":"succeeded","provisioningState":"succeeded","reservationStartTime":"2022-03-29T19:59:29.78Z","reservationEndTime":"2022-03-29T20:00:29.78Z","errorMessage":"","groundStationName":"LONG_BEACH","contactProfile":{"id":"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000/RESOURCEGROUPS/Rgp/PROVIDERS/MICROSOFT.ORBITAL/CONTACTPROFILES/aqua"},"antennaConfiguration":null,"maximumElevationDegrees":6.82266,"txStartTime":null,"txEndTime":null,"rxStartTime":"2022-03-29T19:59:29.78Z","rxEndTime":"2022-03-29T20:00:29Z","startAzimuthDegrees":122.466258,"endAzimuthDegrees":115.635749,"startElevationDegrees":5.0,"endElevationDegrees":8.705219}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts/d23984229d6f","name":"d23984229d6f","type":"Microsoft.Orbital/spacecrafts/contacts","properties":{"status":"succeeded","provisioningState":"succeeded","reservationStartTime":"2022-03-29T21:36:08.758Z","reservationEndTime":"2022-03-29T21:37:08.758Z","errorMessage":"","groundStationName":"LONG_BEACH","contactProfile":{"id":"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000/RESOURCEGROUPS/Rgp/PROVIDERS/MICROSOFT.ORBITAL/CONTACTPROFILES/aqua"},"antennaConfiguration":null,"maximumElevationDegrees":7.157038,"txStartTime":null,"txEndTime":null,"rxStartTime":"2022-03-29T21:36:08.758Z","rxEndTime":"2022-03-29T21:37:08Z","startAzimuthDegrees":190.334451,"endAzimuthDegrees":194.574644,"startElevationDegrees":5.0,"endElevationDegrees":9.501345}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts/7d65640f025e","name":"7d65640f025e","type":"Microsoft.Orbital/spacecrafts/contacts","properties":{"status":"failed","provisioningState":"succeeded","reservationStartTime":"2022-03-30T09:39:04.967Z","reservationEndTime":"2022-03-30T09:40:04.967Z","errorMessage":"","groundStationName":"LONG_BEACH","contactProfile":{"id":"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000/RESOURCEGROUPS/Rgp/PROVIDERS/MICROSOFT.ORBITAL/CONTACTPROFILES/aqua"},"antennaConfiguration":null,"maximumElevationDegrees":7.295234,"txStartTime":null,"txEndTime":null,"rxStartTime":"2022-03-30T09:39:04.967Z","rxEndTime":"2022-03-30T09:40:04Z","startAzimuthDegrees":14.317625,"endAzimuthDegrees":15.156997,"startElevationDegrees":5.0,"endElevationDegrees":9.844154}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts/a0e8a2d1b4f4","name":"a0e8a2d1b4f4","type":"Microsoft.Orbital/spacecrafts/contacts","properties":{"status":"failed","provisioningState":"succeeded","reservationStartTime":"2022-03-30T09:42:04Z","reservationEndTime":"2022-03-30T09:43:04Z","errorMessage":"","groundStationName":"LONG_BEACH","contactProfile":{"id":"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000/RESOURCEGROUPS/Rgp/PROVIDERS/MICROSOFT.ORBITAL/CONTACTPROFILES/aqua"},"antennaConfiguration":null,"maximumElevationDegrees":30.880884,"txStartTime":null,"txEndTime":null,"rxStartTime":"2022-03-30T09:42:04Z","rxEndTime":"2022-03-30T09:43:04Z","startAzimuthDegrees":18.197341,"endAzimuthDegrees":21.871911,"startElevationDegrees":24.919676,"endElevationDegrees":38.473784}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts/9ee70b267ae8","name":"9ee70b267ae8","type":"Microsoft.Orbital/spacecrafts/contacts","properties":{"status":"failed","provisioningState":"succeeded","reservationStartTime":"2022-03-30T09:45:04Z","reservationEndTime":"2022-03-30T09:46:04Z","errorMessage":"","groundStationName":"LONG_BEACH","contactProfile":{"id":"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000/RESOURCEGROUPS/Rgp/PROVIDERS/MICROSOFT.ORBITAL/CONTACTPROFILES/aqua"},"antennaConfiguration":null,"maximumElevationDegrees":63.26729,"txStartTime":null,"txEndTime":null,"rxStartTime":"2022-03-30T09:45:04Z","rxEndTime":"2022-03-30T09:46:04Z","startAzimuthDegrees":135.516574,"endAzimuthDegrees":177.961265,"startElevationDegrees":76.416985,"endElevationDegrees":50.310086}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts/1b03b7e0205f","name":"1b03b7e0205f","type":"Microsoft.Orbital/spacecrafts/contacts","properties":{"status":"failed","provisioningState":"succeeded","reservationStartTime":"2022-03-30T09:39:04.967Z","reservationEndTime":"2022-03-30T09:40:04.967Z","errorMessage":"","groundStationName":"LONG_BEACH","contactProfile":{"id":"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000/RESOURCEGROUPS/Rgp/PROVIDERS/MICROSOFT.ORBITAL/CONTACTPROFILES/aqua"},"antennaConfiguration":null,"maximumElevationDegrees":7.295234,"txStartTime":null,"txEndTime":null,"rxStartTime":"2022-03-30T09:39:04.967Z","rxEndTime":"2022-03-30T09:40:04Z","startAzimuthDegrees":14.317625,"endAzimuthDegrees":15.156997,"startElevationDegrees":5.0,"endElevationDegrees":9.844154}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '9526'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 10 Aug 2022 17:43:07 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - orbital spacecraft contact list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --spacecraft-name
+      User-Agent:
+      - AZURECLI/2.39.0 (AAZ) azsdk-python-core/1.24.0 Python/3.8.10 (Windows-10-10.0.22000-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts?api-version=2022-03-01&$skipToken=%7B%22NextPartitionKey%22%3Anull%2C%22NextRowKey%22%3A%22%7B%5C%22token%5C%22%3A%5C%22%2BRID%3A~cNoYANLXpvx-RQEAAAAAAQ%3D%3D%23RT%3A10%23TRC%3A100%23ISV%3A2%23IEO%3A65551%23QCF%3A8%5C%22%2C%5C%22range%5C%22%3A%7B%5C%22min%5C%22%3A%5C%2227FFFFFFFFFFFFFFFFFFFFFFFFFFFFFF%5C%22%2C%5C%22max%5C%22%3A%5C%222FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF%5C%22%7D%7D%22%2C%22NextTableName%22%3Anull%2C%22TargetLocation%22%3Anull%7D
+  response:
+    body:
+      string: '{"nextLink":"https://management.azure.com:443/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts?api-version=2022-03-01&$skipToken=%7B%22NextPartitionKey%22%3Anull%2C%22NextRowKey%22%3A%22%7B%5C%22token%5C%22%3A%5C%22%2BRID%3A~cNoYANLXpvwsRgEAAAAAAQ%3D%3D%23RT%3A11%23TRC%3A110%23ISV%3A2%23IEO%3A65551%23QCF%3A8%5C%22%2C%5C%22range%5C%22%3A%7B%5C%22min%5C%22%3A%5C%2227FFFFFFFFFFFFFFFFFFFFFFFFFFFFFF%5C%22%2C%5C%22max%5C%22%3A%5C%222FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF%5C%22%7D%7D%22%2C%22NextTableName%22%3Anull%2C%22TargetLocation%22%3Anull%7D","value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts/76b3855a78e6","name":"76b3855a78e6","type":"Microsoft.Orbital/spacecrafts/contacts","properties":{"status":"failed","provisioningState":"succeeded","reservationStartTime":"2022-03-30T09:42:04Z","reservationEndTime":"2022-03-30T09:43:04Z","errorMessage":"","groundStationName":"LONG_BEACH","contactProfile":{"id":"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000/RESOURCEGROUPS/Rgp/PROVIDERS/MICROSOFT.ORBITAL/CONTACTPROFILES/aqua"},"antennaConfiguration":null,"maximumElevationDegrees":30.880884,"txStartTime":null,"txEndTime":null,"rxStartTime":"2022-03-30T09:42:04Z","rxEndTime":"2022-03-30T09:43:04Z","startAzimuthDegrees":18.197341,"endAzimuthDegrees":21.871911,"startElevationDegrees":24.919676,"endElevationDegrees":38.473784}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts/e83604a8638b","name":"e83604a8638b","type":"Microsoft.Orbital/spacecrafts/contacts","properties":{"status":"failed","provisioningState":"succeeded","reservationStartTime":"2022-03-30T09:45:04Z","reservationEndTime":"2022-03-30T09:46:04Z","errorMessage":"","groundStationName":"LONG_BEACH","contactProfile":{"id":"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000/RESOURCEGROUPS/Rgp/PROVIDERS/MICROSOFT.ORBITAL/CONTACTPROFILES/aqua"},"antennaConfiguration":null,"maximumElevationDegrees":63.26729,"txStartTime":null,"txEndTime":null,"rxStartTime":"2022-03-30T09:45:04Z","rxEndTime":"2022-03-30T09:46:04Z","startAzimuthDegrees":135.516574,"endAzimuthDegrees":177.961265,"startElevationDegrees":76.416985,"endElevationDegrees":50.310086}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts/b5952d4185c8","name":"b5952d4185c8","type":"Microsoft.Orbital/spacecrafts/contacts","properties":{"status":"failed","provisioningState":"succeeded","reservationStartTime":"2022-03-30T09:39:04.967Z","reservationEndTime":"2022-03-30T09:40:04.967Z","errorMessage":"","groundStationName":"LONG_BEACH","contactProfile":{"id":"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000/RESOURCEGROUPS/Rgp/PROVIDERS/MICROSOFT.ORBITAL/CONTACTPROFILES/aqua"},"antennaConfiguration":null,"maximumElevationDegrees":7.295234,"txStartTime":null,"txEndTime":null,"rxStartTime":"2022-03-30T09:39:04.967Z","rxEndTime":"2022-03-30T09:40:04Z","startAzimuthDegrees":14.317625,"endAzimuthDegrees":15.156997,"startElevationDegrees":5.0,"endElevationDegrees":9.844154}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts/25b99d6ec021","name":"25b99d6ec021","type":"Microsoft.Orbital/spacecrafts/contacts","properties":{"status":"failed","provisioningState":"succeeded","reservationStartTime":"2022-03-30T09:42:04Z","reservationEndTime":"2022-03-30T09:43:04Z","errorMessage":"","groundStationName":"LONG_BEACH","contactProfile":{"id":"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000/RESOURCEGROUPS/Rgp/PROVIDERS/MICROSOFT.ORBITAL/CONTACTPROFILES/aqua"},"antennaConfiguration":null,"maximumElevationDegrees":30.880884,"txStartTime":null,"txEndTime":null,"rxStartTime":"2022-03-30T09:42:04Z","rxEndTime":"2022-03-30T09:43:04Z","startAzimuthDegrees":18.197341,"endAzimuthDegrees":21.871911,"startElevationDegrees":24.919676,"endElevationDegrees":38.473784}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts/7c30469c6e79","name":"7c30469c6e79","type":"Microsoft.Orbital/spacecrafts/contacts","properties":{"status":"failed","provisioningState":"succeeded","reservationStartTime":"2022-03-30T09:45:04Z","reservationEndTime":"2022-03-30T09:46:04Z","errorMessage":"","groundStationName":"LONG_BEACH","contactProfile":{"id":"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000/RESOURCEGROUPS/Rgp/PROVIDERS/MICROSOFT.ORBITAL/CONTACTPROFILES/aqua"},"antennaConfiguration":null,"maximumElevationDegrees":63.26729,"txStartTime":null,"txEndTime":null,"rxStartTime":"2022-03-30T09:45:04Z","rxEndTime":"2022-03-30T09:46:04Z","startAzimuthDegrees":135.516574,"endAzimuthDegrees":177.961265,"startElevationDegrees":76.416985,"endElevationDegrees":50.310086}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts/59834a5f11b7","name":"59834a5f11b7","type":"Microsoft.Orbital/spacecrafts/contacts","properties":{"status":"failed","provisioningState":"succeeded","reservationStartTime":"2022-03-30T09:39:04.967Z","reservationEndTime":"2022-03-30T09:40:04.967Z","errorMessage":"","groundStationName":"LONG_BEACH","contactProfile":{"id":"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000/RESOURCEGROUPS/Rgp/PROVIDERS/MICROSOFT.ORBITAL/CONTACTPROFILES/aqua"},"antennaConfiguration":null,"maximumElevationDegrees":7.295234,"txStartTime":null,"txEndTime":null,"rxStartTime":"2022-03-30T09:39:04.967Z","rxEndTime":"2022-03-30T09:40:04Z","startAzimuthDegrees":14.317625,"endAzimuthDegrees":15.156997,"startElevationDegrees":5.0,"endElevationDegrees":9.844154}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts/de61ed38d050","name":"de61ed38d050","type":"Microsoft.Orbital/spacecrafts/contacts","properties":{"status":"succeeded","provisioningState":"succeeded","reservationStartTime":"2022-03-30T09:42:04Z","reservationEndTime":"2022-03-30T09:43:04Z","errorMessage":"","groundStationName":"LONG_BEACH","contactProfile":{"id":"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000/RESOURCEGROUPS/Rgp/PROVIDERS/MICROSOFT.ORBITAL/CONTACTPROFILES/aqua"},"antennaConfiguration":null,"maximumElevationDegrees":30.880884,"txStartTime":null,"txEndTime":null,"rxStartTime":"2022-03-30T09:42:04Z","rxEndTime":"2022-03-30T09:43:04Z","startAzimuthDegrees":18.197341,"endAzimuthDegrees":21.871911,"startElevationDegrees":24.919676,"endElevationDegrees":38.473784}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts/5ce433282eae","name":"5ce433282eae","type":"Microsoft.Orbital/spacecrafts/contacts","properties":{"status":"failed","provisioningState":"succeeded","reservationStartTime":"2022-03-30T11:18:53.523Z","reservationEndTime":"2022-03-30T11:19:53.523Z","errorMessage":"","groundStationName":"LONG_BEACH","contactProfile":{"id":"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000/RESOURCEGROUPS/Rgp/PROVIDERS/MICROSOFT.ORBITAL/CONTACTPROFILES/aqua"},"antennaConfiguration":null,"maximumElevationDegrees":6.09429,"txStartTime":null,"txEndTime":null,"rxStartTime":"2022-03-30T11:18:53.523Z","rxEndTime":"2022-03-30T11:19:53Z","startAzimuthDegrees":328.570962,"endAzimuthDegrees":319.232233,"startElevationDegrees":5.0,"endElevationDegrees":7.069313}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts/235242000520","name":"235242000520","type":"Microsoft.Orbital/spacecrafts/contacts","properties":{"status":"failed","provisioningState":"succeeded","reservationStartTime":"2022-03-30T20:40:54.661Z","reservationEndTime":"2022-03-30T20:41:54.661Z","errorMessage":"","groundStationName":"LONG_BEACH","contactProfile":{"id":"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000/RESOURCEGROUPS/Rgp/PROVIDERS/MICROSOFT.ORBITAL/CONTACTPROFILES/aqua"},"antennaConfiguration":null,"maximumElevationDegrees":7.28873,"txStartTime":null,"txEndTime":null,"rxStartTime":"2022-03-30T20:40:54.661Z","rxEndTime":"2022-03-30T20:41:54Z","startAzimuthDegrees":153.042369,"endAzimuthDegrees":150.798913,"startElevationDegrees":5.0,"endElevationDegrees":9.819093}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts/39a9878eb099","name":"39a9878eb099","type":"Microsoft.Orbital/spacecrafts/contacts","properties":{"status":"failed","provisioningState":"succeeded","reservationStartTime":"2022-03-30T20:43:54Z","reservationEndTime":"2022-03-30T20:44:54Z","errorMessage":"","groundStationName":"LONG_BEACH","contactProfile":{"id":"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000/RESOURCEGROUPS/Rgp/PROVIDERS/MICROSOFT.ORBITAL/CONTACTPROFILES/aqua"},"antennaConfiguration":null,"maximumElevationDegrees":29.485176,"txStartTime":null,"txEndTime":null,"rxStartTime":"2022-03-30T20:43:54Z","rxEndTime":"2022-03-30T20:44:54Z","startAzimuthDegrees":141.684597,"endAzimuthDegrees":130.65311,"startElevationDegrees":24.199608,"endElevationDegrees":35.725041}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '9527'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 10 Aug 2022 17:43:08 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - orbital spacecraft contact list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --spacecraft-name
+      User-Agent:
+      - AZURECLI/2.39.0 (AAZ) azsdk-python-core/1.24.0 Python/3.8.10 (Windows-10-10.0.22000-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts?api-version=2022-03-01&$skipToken=%7B%22NextPartitionKey%22%3Anull%2C%22NextRowKey%22%3A%22%7B%5C%22token%5C%22%3A%5C%22%2BRID%3A~cNoYANLXpvwsRgEAAAAAAQ%3D%3D%23RT%3A11%23TRC%3A110%23ISV%3A2%23IEO%3A65551%23QCF%3A8%5C%22%2C%5C%22range%5C%22%3A%7B%5C%22min%5C%22%3A%5C%2227FFFFFFFFFFFFFFFFFFFFFFFFFFFFFF%5C%22%2C%5C%22max%5C%22%3A%5C%222FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF%5C%22%7D%7D%22%2C%22NextTableName%22%3Anull%2C%22TargetLocation%22%3Anull%7D
+  response:
+    body:
+      string: '{"nextLink":"https://management.azure.com:443/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts?api-version=2022-03-01&$skipToken=%7B%22NextPartitionKey%22%3Anull%2C%22NextRowKey%22%3A%22%7B%5C%22token%5C%22%3A%5C%22%2BRID%3A~cNoYANLXpvzvRgEAAAAAAQ%3D%3D%23RT%3A12%23TRC%3A120%23ISV%3A2%23IEO%3A65551%23QCF%3A8%5C%22%2C%5C%22range%5C%22%3A%7B%5C%22min%5C%22%3A%5C%2227FFFFFFFFFFFFFFFFFFFFFFFFFFFFFF%5C%22%2C%5C%22max%5C%22%3A%5C%222FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF%5C%22%7D%7D%22%2C%22NextTableName%22%3Anull%2C%22TargetLocation%22%3Anull%7D","value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts/5f41ce6535f7","name":"5f41ce6535f7","type":"Microsoft.Orbital/spacecrafts/contacts","properties":{"status":"failed","provisioningState":"succeeded","reservationStartTime":"2022-03-30T20:46:54Z","reservationEndTime":"2022-03-30T20:47:54Z","errorMessage":"","groundStationName":"LONG_BEACH","contactProfile":{"id":"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000/RESOURCEGROUPS/Rgp/PROVIDERS/MICROSOFT.ORBITAL/CONTACTPROFILES/aqua"},"antennaConfiguration":null,"maximumElevationDegrees":47.200064,"txStartTime":null,"txEndTime":null,"rxStartTime":"2022-03-30T20:46:54Z","rxEndTime":"2022-03-30T20:47:54Z","startAzimuthDegrees":56.643004,"endAzimuthDegrees":23.336872,"startElevationDegrees":52.804103,"endElevationDegrees":40.077455}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts/07bdba0383e4","name":"07bdba0383e4","type":"Microsoft.Orbital/spacecrafts/contacts","properties":{"status":"failed","provisioningState":"succeeded","reservationStartTime":"2022-03-30T20:40:54.661Z","reservationEndTime":"2022-03-30T20:41:54.661Z","errorMessage":"","groundStationName":"LONG_BEACH","contactProfile":{"id":"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000/RESOURCEGROUPS/Rgp/PROVIDERS/MICROSOFT.ORBITAL/CONTACTPROFILES/aqua"},"antennaConfiguration":null,"maximumElevationDegrees":7.28873,"txStartTime":null,"txEndTime":null,"rxStartTime":"2022-03-30T20:40:54.661Z","rxEndTime":"2022-03-30T20:41:54Z","startAzimuthDegrees":153.042369,"endAzimuthDegrees":150.798913,"startElevationDegrees":5.0,"endElevationDegrees":9.819093}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts/40be58e1e796","name":"40be58e1e796","type":"Microsoft.Orbital/spacecrafts/contacts","properties":{"status":"failed","provisioningState":"succeeded","reservationStartTime":"2022-03-30T20:43:54Z","reservationEndTime":"2022-03-30T20:44:54Z","errorMessage":"","groundStationName":"LONG_BEACH","contactProfile":{"id":"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000/RESOURCEGROUPS/Rgp/PROVIDERS/MICROSOFT.ORBITAL/CONTACTPROFILES/aqua"},"antennaConfiguration":null,"maximumElevationDegrees":29.485176,"txStartTime":null,"txEndTime":null,"rxStartTime":"2022-03-30T20:43:54Z","rxEndTime":"2022-03-30T20:44:54Z","startAzimuthDegrees":141.684597,"endAzimuthDegrees":130.65311,"startElevationDegrees":24.199608,"endElevationDegrees":35.725041}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts/643b8d87dc6d","name":"643b8d87dc6d","type":"Microsoft.Orbital/spacecrafts/contacts","properties":{"status":"failed","provisioningState":"succeeded","reservationStartTime":"2022-03-30T20:46:54Z","reservationEndTime":"2022-03-30T20:47:54Z","errorMessage":"","groundStationName":"LONG_BEACH","contactProfile":{"id":"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000/RESOURCEGROUPS/Rgp/PROVIDERS/MICROSOFT.ORBITAL/CONTACTPROFILES/aqua"},"antennaConfiguration":null,"maximumElevationDegrees":47.200064,"txStartTime":null,"txEndTime":null,"rxStartTime":"2022-03-30T20:46:54Z","rxEndTime":"2022-03-30T20:47:54Z","startAzimuthDegrees":56.643004,"endAzimuthDegrees":23.336872,"startElevationDegrees":52.804103,"endElevationDegrees":40.077455}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts/dbe88a7f36da","name":"dbe88a7f36da","type":"Microsoft.Orbital/spacecrafts/contacts","properties":{"status":"succeeded","provisioningState":"succeeded","reservationStartTime":"2022-03-30T20:40:54.661Z","reservationEndTime":"2022-03-30T20:41:54.661Z","errorMessage":"","groundStationName":"LONG_BEACH","contactProfile":{"id":"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000/RESOURCEGROUPS/Rgp/PROVIDERS/MICROSOFT.ORBITAL/CONTACTPROFILES/aqua"},"antennaConfiguration":null,"maximumElevationDegrees":7.28873,"txStartTime":null,"txEndTime":null,"rxStartTime":"2022-03-30T20:40:54.661Z","rxEndTime":"2022-03-30T20:41:54Z","startAzimuthDegrees":153.042369,"endAzimuthDegrees":150.798913,"startElevationDegrees":5.0,"endElevationDegrees":9.819093}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts/77208e3c1f8b","name":"77208e3c1f8b","type":"Microsoft.Orbital/spacecrafts/contacts","properties":{"status":"failed","provisioningState":"succeeded","reservationStartTime":"2022-03-30T22:20:44.329Z","reservationEndTime":"2022-03-30T22:21:44.329Z","errorMessage":"","groundStationName":"LONG_BEACH","contactProfile":{"id":"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000/RESOURCEGROUPS/Rgp/PROVIDERS/MICROSOFT.ORBITAL/CONTACTPROFILES/aqua"},"antennaConfiguration":null,"maximumElevationDegrees":6.39678,"txStartTime":null,"txEndTime":null,"rxStartTime":"2022-03-30T22:20:44.329Z","rxEndTime":"2022-03-30T22:21:44Z","startAzimuthDegrees":225.543363,"endAzimuthDegrees":234.24529,"startElevationDegrees":5.0,"endElevationDegrees":7.73886}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts/d3c8399b9d4d","name":"d3c8399b9d4d","type":"Microsoft.Orbital/spacecrafts/contacts","properties":{"status":"failed","provisioningState":"succeeded","reservationStartTime":"2022-03-31T08:44:54.544Z","reservationEndTime":"2022-03-31T08:45:54.544Z","errorMessage":"","groundStationName":"LONG_BEACH","contactProfile":{"id":"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000/RESOURCEGROUPS/Rgp/PROVIDERS/MICROSOFT.ORBITAL/CONTACTPROFILES/aqua"},"antennaConfiguration":null,"maximumElevationDegrees":6.777885,"txStartTime":null,"txEndTime":null,"rxStartTime":"2022-03-31T08:44:54.544Z","rxEndTime":"2022-03-31T08:45:54Z","startAzimuthDegrees":39.118279,"endAzimuthDegrees":46.130889,"startElevationDegrees":5.0,"endElevationDegrees":8.61165}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts/a7940385065d","name":"a7940385065d","type":"Microsoft.Orbital/spacecrafts/contacts","properties":{"status":"failed","provisioningState":"succeeded","reservationStartTime":"2022-03-31T08:47:54Z","reservationEndTime":"2022-03-31T08:48:54Z","errorMessage":"","groundStationName":"LONG_BEACH","contactProfile":{"id":"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000/RESOURCEGROUPS/Rgp/PROVIDERS/MICROSOFT.ORBITAL/CONTACTPROFILES/aqua"},"antennaConfiguration":null,"maximumElevationDegrees":17.393981,"txStartTime":null,"txEndTime":null,"rxStartTime":"2022-03-31T08:47:54Z","rxEndTime":"2022-03-31T08:48:54Z","startAzimuthDegrees":67.423827,"endAzimuthDegrees":82.389683,"startElevationDegrees":15.941323,"endElevationDegrees":18.46387}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts/162f43a76c60","name":"162f43a76c60","type":"Microsoft.Orbital/spacecrafts/contacts","properties":{"status":"failed","provisioningState":"succeeded","reservationStartTime":"2022-03-31T08:50:54Z","reservationEndTime":"2022-03-31T08:51:54Z","errorMessage":"","groundStationName":"LONG_BEACH","contactProfile":{"id":"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000/RESOURCEGROUPS/Rgp/PROVIDERS/MICROSOFT.ORBITAL/CONTACTPROFILES/aqua"},"antennaConfiguration":null,"maximumElevationDegrees":15.860156,"txStartTime":null,"txEndTime":null,"rxStartTime":"2022-03-31T08:50:54Z","rxEndTime":"2022-03-31T08:51:54Z","startAzimuthDegrees":115.189471,"endAzimuthDegrees":128.735798,"startElevationDegrees":17.336122,"endElevationDegrees":14.132952}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts/cab9b7bda48a","name":"cab9b7bda48a","type":"Microsoft.Orbital/spacecrafts/contacts","properties":{"status":"failed","provisioningState":"succeeded","reservationStartTime":"2022-03-31T08:44:54.544Z","reservationEndTime":"2022-03-31T08:45:54.544Z","errorMessage":"","groundStationName":"LONG_BEACH","contactProfile":{"id":"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000/RESOURCEGROUPS/Rgp/PROVIDERS/MICROSOFT.ORBITAL/CONTACTPROFILES/aqua"},"antennaConfiguration":null,"maximumElevationDegrees":6.777885,"txStartTime":null,"txEndTime":null,"rxStartTime":"2022-03-31T08:44:54.544Z","rxEndTime":"2022-03-31T08:45:54Z","startAzimuthDegrees":39.118279,"endAzimuthDegrees":46.130889,"startElevationDegrees":5.0,"endElevationDegrees":8.61165}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '9527'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 10 Aug 2022 17:43:08 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - orbital spacecraft contact list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --spacecraft-name
+      User-Agent:
+      - AZURECLI/2.39.0 (AAZ) azsdk-python-core/1.24.0 Python/3.8.10 (Windows-10-10.0.22000-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts?api-version=2022-03-01&$skipToken=%7B%22NextPartitionKey%22%3Anull%2C%22NextRowKey%22%3A%22%7B%5C%22token%5C%22%3A%5C%22%2BRID%3A~cNoYANLXpvzvRgEAAAAAAQ%3D%3D%23RT%3A12%23TRC%3A120%23ISV%3A2%23IEO%3A65551%23QCF%3A8%5C%22%2C%5C%22range%5C%22%3A%7B%5C%22min%5C%22%3A%5C%2227FFFFFFFFFFFFFFFFFFFFFFFFFFFFFF%5C%22%2C%5C%22max%5C%22%3A%5C%222FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF%5C%22%7D%7D%22%2C%22NextTableName%22%3Anull%2C%22TargetLocation%22%3Anull%7D
+  response:
+    body:
+      string: '{"nextLink":"https://management.azure.com:443/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts?api-version=2022-03-01&$skipToken=%7B%22NextPartitionKey%22%3Anull%2C%22NextRowKey%22%3A%22%7B%5C%22token%5C%22%3A%5C%22%2BRID%3A~cNoYANLXpvy-RwEAAAAAAQ%3D%3D%23RT%3A13%23TRC%3A130%23ISV%3A2%23IEO%3A65551%23QCF%3A8%5C%22%2C%5C%22range%5C%22%3A%7B%5C%22min%5C%22%3A%5C%2227FFFFFFFFFFFFFFFFFFFFFFFFFFFFFF%5C%22%2C%5C%22max%5C%22%3A%5C%222FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF%5C%22%7D%7D%22%2C%22NextTableName%22%3Anull%2C%22TargetLocation%22%3Anull%7D","value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts/a4f9f1132704","name":"a4f9f1132704","type":"Microsoft.Orbital/spacecrafts/contacts","properties":{"status":"failed","provisioningState":"succeeded","reservationStartTime":"2022-03-31T08:47:54Z","reservationEndTime":"2022-03-31T08:48:54Z","errorMessage":"","groundStationName":"LONG_BEACH","contactProfile":{"id":"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000/RESOURCEGROUPS/Rgp/PROVIDERS/MICROSOFT.ORBITAL/CONTACTPROFILES/aqua"},"antennaConfiguration":null,"maximumElevationDegrees":17.393981,"txStartTime":null,"txEndTime":null,"rxStartTime":"2022-03-31T08:47:54Z","rxEndTime":"2022-03-31T08:48:54Z","startAzimuthDegrees":67.423827,"endAzimuthDegrees":82.389683,"startElevationDegrees":15.941323,"endElevationDegrees":18.46387}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts/a6c3932edf0c","name":"a6c3932edf0c","type":"Microsoft.Orbital/spacecrafts/contacts","properties":{"status":"failed","provisioningState":"succeeded","reservationStartTime":"2022-03-31T08:50:54Z","reservationEndTime":"2022-03-31T08:51:54Z","errorMessage":"","groundStationName":"LONG_BEACH","contactProfile":{"id":"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000/RESOURCEGROUPS/Rgp/PROVIDERS/MICROSOFT.ORBITAL/CONTACTPROFILES/aqua"},"antennaConfiguration":null,"maximumElevationDegrees":15.860156,"txStartTime":null,"txEndTime":null,"rxStartTime":"2022-03-31T08:50:54Z","rxEndTime":"2022-03-31T08:51:54Z","startAzimuthDegrees":115.189471,"endAzimuthDegrees":128.735798,"startElevationDegrees":17.336122,"endElevationDegrees":14.132952}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts/7636b064697b","name":"7636b064697b","type":"Microsoft.Orbital/spacecrafts/contacts","properties":{"status":"failed","provisioningState":"succeeded","reservationStartTime":"2022-03-31T08:44:54.544Z","reservationEndTime":"2022-03-31T08:45:54.544Z","errorMessage":"","groundStationName":"LONG_BEACH","contactProfile":{"id":"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000/RESOURCEGROUPS/Rgp/PROVIDERS/MICROSOFT.ORBITAL/CONTACTPROFILES/aqua"},"antennaConfiguration":null,"maximumElevationDegrees":6.777885,"txStartTime":null,"txEndTime":null,"rxStartTime":"2022-03-31T08:44:54.544Z","rxEndTime":"2022-03-31T08:45:54Z","startAzimuthDegrees":39.118279,"endAzimuthDegrees":46.130889,"startElevationDegrees":5.0,"endElevationDegrees":8.61165}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts/83b3a6d0d39f","name":"83b3a6d0d39f","type":"Microsoft.Orbital/spacecrafts/contacts","properties":{"status":"succeeded","provisioningState":"succeeded","reservationStartTime":"2022-03-31T08:47:54Z","reservationEndTime":"2022-03-31T08:48:54Z","errorMessage":"","groundStationName":"LONG_BEACH","contactProfile":{"id":"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000/RESOURCEGROUPS/Rgp/PROVIDERS/MICROSOFT.ORBITAL/CONTACTPROFILES/aqua"},"antennaConfiguration":null,"maximumElevationDegrees":17.393981,"txStartTime":null,"txEndTime":null,"rxStartTime":"2022-03-31T08:47:54Z","rxEndTime":"2022-03-31T08:48:54Z","startAzimuthDegrees":67.423827,"endAzimuthDegrees":82.389683,"startElevationDegrees":15.941323,"endElevationDegrees":18.46387}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts/833da970bf96","name":"833da970bf96","type":"Microsoft.Orbital/spacecrafts/contacts","properties":{"status":"failed","provisioningState":"succeeded","reservationStartTime":"2022-03-31T10:22:01.064Z","reservationEndTime":"2022-03-31T10:23:01.064Z","errorMessage":"","groundStationName":"LONG_BEACH","contactProfile":{"id":"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000/RESOURCEGROUPS/Rgp/PROVIDERS/MICROSOFT.ORBITAL/CONTACTPROFILES/aqua"},"antennaConfiguration":null,"maximumElevationDegrees":7.175455,"txStartTime":null,"txEndTime":null,"rxStartTime":"2022-03-31T10:22:01.064Z","rxEndTime":"2022-03-31T10:23:01Z","startAzimuthDegrees":357.597912,"endAzimuthDegrees":353.451491,"startElevationDegrees":5.0,"endElevationDegrees":9.539287}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts/b092440330a7","name":"b092440330a7","type":"Microsoft.Orbital/spacecrafts/contacts","properties":{"status":"failed","provisioningState":"succeeded","reservationStartTime":"2022-03-31T19:47:49.194Z","reservationEndTime":"2022-03-31T19:48:49.194Z","errorMessage":"","groundStationName":"LONG_BEACH","contactProfile":{"id":"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000/RESOURCEGROUPS/Rgp/PROVIDERS/MICROSOFT.ORBITAL/CONTACTPROFILES/aqua"},"antennaConfiguration":null,"maximumElevationDegrees":6.593248,"txStartTime":null,"txEndTime":null,"rxStartTime":"2022-03-31T19:47:49.194Z","rxEndTime":"2022-03-31T19:48:49Z","startAzimuthDegrees":112.222841,"endAzimuthDegrees":104.166614,"startElevationDegrees":5.0,"endElevationDegrees":8.172644}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts/ebdd48585d22","name":"ebdd48585d22","type":"Microsoft.Orbital/spacecrafts/contacts","properties":{"status":"failed","provisioningState":"succeeded","reservationStartTime":"2022-03-31T19:50:49Z","reservationEndTime":"2022-03-31T19:51:49Z","errorMessage":"","groundStationName":"LONG_BEACH","contactProfile":{"id":"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000/RESOURCEGROUPS/Rgp/PROVIDERS/MICROSOFT.ORBITAL/CONTACTPROFILES/aqua"},"antennaConfiguration":null,"maximumElevationDegrees":14.111984,"txStartTime":null,"txEndTime":null,"rxStartTime":"2022-03-31T19:50:49Z","rxEndTime":"2022-03-31T19:51:49Z","startAzimuthDegrees":81.653347,"endAzimuthDegrees":67.728535,"startElevationDegrees":13.417982,"endElevationDegrees":14.421645}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts/e4e137604410","name":"e4e137604410","type":"Microsoft.Orbital/spacecrafts/contacts","properties":{"status":"failed","provisioningState":"succeeded","reservationStartTime":"2022-03-31T19:53:49Z","reservationEndTime":"2022-03-31T19:54:49Z","errorMessage":"","groundStationName":"LONG_BEACH","contactProfile":{"id":"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000/RESOURCEGROUPS/Rgp/PROVIDERS/MICROSOFT.ORBITAL/CONTACTPROFILES/aqua"},"antennaConfiguration":null,"maximumElevationDegrees":10.442604,"txStartTime":null,"txEndTime":null,"rxStartTime":"2022-03-31T19:53:49Z","rxEndTime":"2022-03-31T19:54:49Z","startAzimuthDegrees":40.830382,"endAzimuthDegrees":30.172412,"startElevationDegrees":11.796845,"endElevationDegrees":8.95488}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts/75b75a62fa10","name":"75b75a62fa10","type":"Microsoft.Orbital/spacecrafts/contacts","properties":{"status":"failed","provisioningState":"succeeded","reservationStartTime":"2022-03-31T19:47:49.194Z","reservationEndTime":"2022-03-31T19:48:49.194Z","errorMessage":"","groundStationName":"LONG_BEACH","contactProfile":{"id":"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000/RESOURCEGROUPS/Rgp/PROVIDERS/MICROSOFT.ORBITAL/CONTACTPROFILES/aqua"},"antennaConfiguration":null,"maximumElevationDegrees":6.593248,"txStartTime":null,"txEndTime":null,"rxStartTime":"2022-03-31T19:47:49.194Z","rxEndTime":"2022-03-31T19:48:49Z","startAzimuthDegrees":112.222841,"endAzimuthDegrees":104.166614,"startElevationDegrees":5.0,"endElevationDegrees":8.172644}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts/6e5a9313986d","name":"6e5a9313986d","type":"Microsoft.Orbital/spacecrafts/contacts","properties":{"status":"failed","provisioningState":"succeeded","reservationStartTime":"2022-03-31T19:50:49Z","reservationEndTime":"2022-03-31T19:51:49Z","errorMessage":"","groundStationName":"LONG_BEACH","contactProfile":{"id":"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000/RESOURCEGROUPS/Rgp/PROVIDERS/MICROSOFT.ORBITAL/CONTACTPROFILES/aqua"},"antennaConfiguration":null,"maximumElevationDegrees":14.111984,"txStartTime":null,"txEndTime":null,"rxStartTime":"2022-03-31T19:50:49Z","rxEndTime":"2022-03-31T19:51:49Z","startAzimuthDegrees":81.653347,"endAzimuthDegrees":67.728535,"startElevationDegrees":13.417982,"endElevationDegrees":14.421645}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '9525'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 10 Aug 2022 17:43:08 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - orbital spacecraft contact list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --spacecraft-name
+      User-Agent:
+      - AZURECLI/2.39.0 (AAZ) azsdk-python-core/1.24.0 Python/3.8.10 (Windows-10-10.0.22000-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts?api-version=2022-03-01&$skipToken=%7B%22NextPartitionKey%22%3Anull%2C%22NextRowKey%22%3A%22%7B%5C%22token%5C%22%3A%5C%22%2BRID%3A~cNoYANLXpvy-RwEAAAAAAQ%3D%3D%23RT%3A13%23TRC%3A130%23ISV%3A2%23IEO%3A65551%23QCF%3A8%5C%22%2C%5C%22range%5C%22%3A%7B%5C%22min%5C%22%3A%5C%2227FFFFFFFFFFFFFFFFFFFFFFFFFFFFFF%5C%22%2C%5C%22max%5C%22%3A%5C%222FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF%5C%22%7D%7D%22%2C%22NextTableName%22%3Anull%2C%22TargetLocation%22%3Anull%7D
+  response:
+    body:
+      string: '{"nextLink":"https://management.azure.com:443/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts?api-version=2022-03-01&$skipToken=%7B%22NextPartitionKey%22%3Anull%2C%22NextRowKey%22%3A%22%7B%5C%22token%5C%22%3A%5C%22%2BRID%3A~cNoYANLXpvxBWwUAAAAAAQ%3D%3D%23RT%3A14%23TRC%3A140%23ISV%3A2%23IEO%3A65551%23QCF%3A8%5C%22%2C%5C%22range%5C%22%3A%7B%5C%22min%5C%22%3A%5C%2227FFFFFFFFFFFFFFFFFFFFFFFFFFFFFF%5C%22%2C%5C%22max%5C%22%3A%5C%222FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF%5C%22%7D%7D%22%2C%22NextTableName%22%3Anull%2C%22TargetLocation%22%3Anull%7D","value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts/f43ffd5ff658","name":"f43ffd5ff658","type":"Microsoft.Orbital/spacecrafts/contacts","properties":{"status":"succeeded","provisioningState":"succeeded","reservationStartTime":"2022-03-31T21:23:34.325Z","reservationEndTime":"2022-03-31T21:24:34.325Z","errorMessage":"","groundStationName":"LONG_BEACH","contactProfile":{"id":"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000/RESOURCEGROUPS/Rgp/PROVIDERS/MICROSOFT.ORBITAL/CONTACTPROFILES/aqua"},"antennaConfiguration":null,"maximumElevationDegrees":7.274815,"txStartTime":null,"txEndTime":null,"rxStartTime":"2022-03-31T21:23:34.325Z","rxEndTime":"2022-03-31T21:24:34Z","startAzimuthDegrees":181.693835,"endAzimuthDegrees":184.526732,"startElevationDegrees":5.0,"endElevationDegrees":9.783445}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts/502075401bbe","name":"502075401bbe","type":"Microsoft.Orbital/spacecrafts/contacts","properties":{"status":"failed","provisioningState":"succeeded","reservationStartTime":"2022-04-01T09:26:47.449Z","reservationEndTime":"2022-04-01T09:27:47.449Z","errorMessage":"","groundStationName":"LONG_BEACH","contactProfile":{"id":"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000/RESOURCEGROUPS/Rgp/PROVIDERS/MICROSOFT.ORBITAL/CONTACTPROFILES/aqua"},"antennaConfiguration":null,"maximumElevationDegrees":7.27312,"txStartTime":null,"txEndTime":null,"rxStartTime":"2022-04-01T09:26:47.449Z","rxEndTime":"2022-04-01T09:27:47Z","startAzimuthDegrees":19.250501,"endAzimuthDegrees":21.555655,"startElevationDegrees":5.0,"endElevationDegrees":9.786575}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts/cc9c2e41dd7a","name":"cc9c2e41dd7a","type":"Microsoft.Orbital/spacecrafts/contacts","properties":{"status":"failed","provisioningState":"succeeded","reservationStartTime":"2022-04-01T09:29:47Z","reservationEndTime":"2022-04-01T09:30:47Z","errorMessage":"","groundStationName":"LONG_BEACH","contactProfile":{"id":"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000/RESOURCEGROUPS/Rgp/PROVIDERS/MICROSOFT.ORBITAL/CONTACTPROFILES/aqua"},"antennaConfiguration":null,"maximumElevationDegrees":29.348112,"txStartTime":null,"txEndTime":null,"rxStartTime":"2022-04-01T09:29:47Z","rxEndTime":"2022-04-01T09:30:47Z","startAzimuthDegrees":30.315272,"endAzimuthDegrees":40.56718,"startElevationDegrees":24.054761,"endElevationDegrees":35.678297}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts/4d41961e19fe","name":"4d41961e19fe","type":"Microsoft.Orbital/spacecrafts/contacts","properties":{"status":"failed","provisioningState":"succeeded","reservationStartTime":"2022-04-01T09:32:47Z","reservationEndTime":"2022-04-01T09:33:47Z","errorMessage":"","groundStationName":"LONG_BEACH","contactProfile":{"id":"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000/RESOURCEGROUPS/Rgp/PROVIDERS/MICROSOFT.ORBITAL/CONTACTPROFILES/aqua"},"antennaConfiguration":null,"maximumElevationDegrees":49.706672,"txStartTime":null,"txEndTime":null,"rxStartTime":"2022-04-01T09:32:47Z","rxEndTime":"2022-04-01T09:33:47Z","startAzimuthDegrees":116.172746,"endAzimuthDegrees":152.703484,"startElevationDegrees":55.475546,"endElevationDegrees":42.054922}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts/dbef447219fd","name":"dbef447219fd","type":"Microsoft.Orbital/spacecrafts/contacts","properties":{"status":"failed","provisioningState":"succeeded","reservationStartTime":"2022-04-01T09:26:47.449Z","reservationEndTime":"2022-04-01T09:27:47.449Z","errorMessage":"","groundStationName":"LONG_BEACH","contactProfile":{"id":"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000/RESOURCEGROUPS/Rgp/PROVIDERS/MICROSOFT.ORBITAL/CONTACTPROFILES/aqua"},"antennaConfiguration":null,"maximumElevationDegrees":7.27312,"txStartTime":null,"txEndTime":null,"rxStartTime":"2022-04-01T09:26:47.449Z","rxEndTime":"2022-04-01T09:27:47Z","startAzimuthDegrees":19.250501,"endAzimuthDegrees":21.555655,"startElevationDegrees":5.0,"endElevationDegrees":9.786575}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts/9cd0c74805e7","name":"9cd0c74805e7","type":"Microsoft.Orbital/spacecrafts/contacts","properties":{"status":"failed","provisioningState":"succeeded","reservationStartTime":"2022-04-01T09:29:47Z","reservationEndTime":"2022-04-01T09:30:47Z","errorMessage":"","groundStationName":"LONG_BEACH","contactProfile":{"id":"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000/RESOURCEGROUPS/Rgp/PROVIDERS/MICROSOFT.ORBITAL/CONTACTPROFILES/aqua"},"antennaConfiguration":null,"maximumElevationDegrees":29.348112,"txStartTime":null,"txEndTime":null,"rxStartTime":"2022-04-01T09:29:47Z","rxEndTime":"2022-04-01T09:30:47Z","startAzimuthDegrees":30.315272,"endAzimuthDegrees":40.56718,"startElevationDegrees":24.054761,"endElevationDegrees":35.678297}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts/2d6d78a19736","name":"2d6d78a19736","type":"Microsoft.Orbital/spacecrafts/contacts","properties":{"status":"failed","provisioningState":"succeeded","reservationStartTime":"2022-04-30T10:32:11.158Z","reservationEndTime":"2022-04-30T10:33:11.158Z","errorMessage":"","groundStationName":"LONG_BEACH","contactProfile":{"id":"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000/RESOURCEGROUPS/Rgp/PROVIDERS/MICROSOFT.ORBITAL/CONTACTPROFILES/aqua"},"antennaConfiguration":null,"maximumElevationDegrees":7.065597,"txStartTime":null,"txEndTime":null,"rxStartTime":"2022-04-30T10:32:11.158Z","rxEndTime":"2022-04-30T10:33:11Z","startAzimuthDegrees":353.453879,"endAzimuthDegrees":348.225277,"startElevationDegrees":5.0,"endElevationDegrees":9.274567}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts/888b2e4fc279","name":"888b2e4fc279","type":"Microsoft.Orbital/spacecrafts/contacts","properties":{"status":"failed","provisioningState":"succeeded","reservationStartTime":"2022-05-25T08:46:39.867Z","reservationEndTime":"2022-05-25T08:47:39.867Z","errorMessage":"","groundStationName":"LONG_BEACH","contactProfile":{"id":"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000/RESOURCEGROUPS/Rgp/PROVIDERS/MICROSOFT.ORBITAL/CONTACTPROFILES/aqua"},"antennaConfiguration":null,"maximumElevationDegrees":6.801025,"txStartTime":null,"txEndTime":null,"rxStartTime":"2022-05-25T08:46:39.867Z","rxEndTime":"2022-05-25T08:47:39Z","startAzimuthDegrees":38.087625,"endAzimuthDegrees":44.857713,"startElevationDegrees":5.0,"endElevationDegrees":8.667846}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts/c08f15dc1f0e","name":"c08f15dc1f0e","type":"Microsoft.Orbital/spacecrafts/contacts","properties":{"status":"scheduled","provisioningState":"succeeded","reservationStartTime":"2022-05-27T08:34:45.251Z","reservationEndTime":"2022-05-27T08:35:45.251Z","errorMessage":null,"groundStationName":"LONG_BEACH","contactProfile":{"id":"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000/RESOURCEGROUPS/Rgp/PROVIDERS/MICROSOFT.ORBITAL/CONTACTPROFILES/aqua"},"antennaConfiguration":null,"maximumElevationDegrees":6.558855,"txStartTime":null,"txEndTime":null,"rxStartTime":"2022-05-27T08:34:45.251Z","rxEndTime":"2022-05-27T08:35:45Z","startAzimuthDegrees":45.492275,"endAzimuthDegrees":53.549991,"startElevationDegrees":5.0,"endElevationDegrees":8.108524}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts/contact-07-05-2022-19:40:13","name":"contact-07-05-2022-19:40:13","type":"Microsoft.Orbital/spacecrafts/contacts","properties":{"status":"succeeded","provisioningState":"succeeded","reservationStartTime":"2022-07-05T19:40:13.486Z","reservationEndTime":"2022-07-05T19:47:32.421Z","errorMessage":"","groundStationName":"LONG_BEACH","contactProfile":{"id":"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000/RESOURCEGROUPS/JAMATEST/PROVIDERS/MICROSOFT.ORBITAL/CONTACTPROFILES/THIRDPARTYCP"},"antennaConfiguration":null,"maximumElevationDegrees":11.692273,"txStartTime":null,"txEndTime":null,"rxStartTime":"2022-07-05T19:40:13.486Z","rxEndTime":"2022-07-05T19:47:32Z","startAzimuthDegrees":104.570289,"endAzimuthDegrees":24.858971,"startElevationDegrees":5.0,"endElevationDegrees":5.0198}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '9576'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 10 Aug 2022 17:43:09 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - orbital spacecraft contact list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --spacecraft-name
+      User-Agent:
+      - AZURECLI/2.39.0 (AAZ) azsdk-python-core/1.24.0 Python/3.8.10 (Windows-10-10.0.22000-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts?api-version=2022-03-01&$skipToken=%7B%22NextPartitionKey%22%3Anull%2C%22NextRowKey%22%3A%22%7B%5C%22token%5C%22%3A%5C%22%2BRID%3A~cNoYANLXpvxBWwUAAAAAAQ%3D%3D%23RT%3A14%23TRC%3A140%23ISV%3A2%23IEO%3A65551%23QCF%3A8%5C%22%2C%5C%22range%5C%22%3A%7B%5C%22min%5C%22%3A%5C%2227FFFFFFFFFFFFFFFFFFFFFFFFFFFFFF%5C%22%2C%5C%22max%5C%22%3A%5C%222FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF%5C%22%7D%7D%22%2C%22NextTableName%22%3Anull%2C%22TargetLocation%22%3Anull%7D
+  response:
+    body:
+      string: '{"nextLink":null,"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts/powershell-contact1","name":"powershell-contact1","type":"Microsoft.Orbital/spacecrafts/contacts","properties":{"status":"succeeded","provisioningState":"succeeded","reservationStartTime":"2022-07-10T12:08:12Z","reservationEndTime":"2022-07-10T12:09:14Z","errorMessage":"","groundStationName":"WESTUS2_0","contactProfile":{"id":"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000/RESOURCEGROUPS/Rgp/PROVIDERS/MICROSOFT.ORBITAL/CONTACTPROFILES/aqua"},"antennaConfiguration":{"destinationIp":"10.0.4.171","sourceIps":["10.0.4.4","10.0.4.5"]},"maximumElevationDegrees":7.314143,"txStartTime":null,"txEndTime":null,"rxStartTime":"2022-07-10T12:08:12Z","rxEndTime":"2022-07-10T12:09:14Z","startAzimuthDegrees":332.32578,"endAzimuthDegrees":321.609522,"startElevationDegrees":6.4017,"endElevationDegrees":8.034283}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts/powershell-contact","name":"powershell-contact","type":"Microsoft.Orbital/spacecrafts/contacts","properties":{"status":"succeeded","provisioningState":"succeeded","reservationStartTime":"2022-07-22T20:25:12Z","reservationEndTime":"2022-07-22T20:30:14Z","errorMessage":"","groundStationName":"WESTUS2_0","contactProfile":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/contactProfiles/aqua"},"antennaConfiguration":{"destinationIp":"10.0.4.171","sourceIps":["10.0.4.4","10.0.4.5"]},"maximumElevationDegrees":45.97205,"txStartTime":null,"txEndTime":null,"rxStartTime":"2022-07-22T20:25:12Z","rxEndTime":"2022-07-22T20:30:14Z","startAzimuthDegrees":132.269473,"endAzimuthDegrees":11.793562,"startElevationDegrees":21.791695,"endElevationDegrees":26.67174}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts/az-cli-contact","name":"az-cli-contact","type":"Microsoft.Orbital/spacecrafts/contacts","properties":{"status":"scheduled","provisioningState":"succeeded","reservationStartTime":"2022-08-14T09:17:09.523Z","reservationEndTime":"2022-08-14T09:27:55.809Z","errorMessage":null,"groundStationName":"WESTUS2_0","contactProfile":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/contactProfiles/aqua"},"antennaConfiguration":{"destinationIp":"10.0.4.179","sourceIps":["10.0.4.20","10.0.4.21"]},"maximumElevationDegrees":32.10479,"txStartTime":null,"txEndTime":null,"rxStartTime":"2022-08-14T09:17:09.523Z","rxEndTime":"2022-08-14T09:27:55Z","startAzimuthDegrees":26.513116,"endAzimuthDegrees":164.889898,"startElevationDegrees":5.0,"endElevationDegrees":5.055486}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2914'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 10 Aug 2022 17:43:09 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - orbital spacecraft contact delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -g --spacecraft-name --name --yes
+      User-Agent:
+      - AZURECLI/2.39.0 (AAZ) azsdk-python-core/1.24.0 Python/3.8.10 (Windows-10-10.0.22000-SP0)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA/contacts/az-cli-contact?api-version=2022-03-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Wed, 10 Aug 2022 17:43:10 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14999'
+    status:
+      code: 200
+      message: OK
+version: 1

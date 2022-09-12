@@ -1,0 +1,337 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - automation account create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g
+      User-Agent:
+      - AZURECLI/2.39.0 azsdk-python-azure-mgmt-resource/21.1.0b1 Python/3.8.9 (Windows-10-10.0.22000-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_automation_schedule000001?api-version=2021-04-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_schedule000001","name":"cli_test_automation_schedule000001","type":"Microsoft.Resources/resourceGroups","location":"westus","tags":{"product":"azurecli","cause":"automation","date":"2022-08-22T02:10:38Z"},"properties":{"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '346'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 22 Aug 2022 02:10:40 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"name": "account-000002", "location": "westus", "properties": {"sku":
+      {"name": "Basic"}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - automation account create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '90'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -n -g
+      User-Agent:
+      - AZURECLI/2.39.0 azsdk-python-mgmt-automation/1.1.0b2 Python/3.8.9 (Windows-10-10.0.22000-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_schedule000001/providers/Microsoft.Automation/automationAccounts/account-000002?api-version=2021-06-22
+  response:
+    body:
+      string: '{"name":"account-000002","systemData":{"createdAt":"2022-08-22T02:10:48.5+00:00","lastModifiedAt":"2022-08-22T02:10:48.5+00:00"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_schedule000001/providers/Microsoft.Automation/automationAccounts/account-000002","type":"Microsoft.Automation/AutomationAccounts","location":"westus","tags":{},"etag":null,"properties":{"disableLocalAuth":false,"sku":{"name":"Basic","family":null,"capacity":null},"state":"Ok","RegistrationUrl":"https://87b4f14f-867a-40e9-bc31-280aafe76a13.agentsvc.wus.azure-automation.net/accounts/87b4f14f-867a-40e9-bc31-280aafe76a13","encryption":{"keySource":"Microsoft.Automation","identity":{"userAssignedIdentity":null}},"automationHybridServiceUrl":"https://87b4f14f-867a-40e9-bc31-280aafe76a13.jrds.wus.azure-automation.net/automationAccounts/87b4f14f-867a-40e9-bc31-280aafe76a13","RuntimeConfiguration":{"powershell":{"builtinModules":{"Az":"8.0.0"}},"powershell7":{"builtinModules":{"Az":"8.0.0"}}},"creationTime":"2022-08-22T02:10:48.5+00:00","lastModifiedBy":null,"lastModifiedTime":"2022-08-22T02:10:48.5+00:00"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1134'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 22 Aug 2022 02:10:50 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_schedule000001/providers/Microsoft.Automation/automationAccounts/account-000002?api-version=2021-06-22
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: '{"name": "schedule-000003", "properties": {"description": "test", "startTime":
+      "2022-08-30T10:00:00.000Z", "interval": 1, "frequency": "Hour", "timeZone":
+      "UTC+08:00"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - automation schedule create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '168'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -n -g --automation-account-name --description --frequency --interval --start-time
+        --time-zone
+      User-Agent:
+      - AZURECLI/2.39.0 azsdk-python-mgmt-automation/1.1.0b2 Python/3.8.9 (Windows-10-10.0.22000-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_schedule000001/providers/Microsoft.Automation/automationAccounts/account-000002/schedules/schedule-000003?api-version=2020-01-13-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_schedule000001/providers/Microsoft.Automation/automationAccounts/account-000002/schedules/schedule-000003","name":"schedule-000003","type":"Microsoft.Automation/AutomationAccounts/Schedules","properties":{"description":"test","startTime":"2022-08-30T18:00:00+08:00","startTimeOffsetMinutes":480.0,"expiryTime":"9999-12-31T23:59:59.9999999+00:00","expiryTimeOffsetMinutes":0.0,"isEnabled":true,"nextRun":"2022-08-30T18:00:00+08:00","nextRunOffsetMinutes":480.0,"interval":1,"frequency":"Hour","creationTime":"2022-08-22T02:10:51.9833333+00:00","lastModifiedTime":"2022-08-22T02:10:51.9833333+00:00","timeZone":"UTC+08:00","advancedSchedule":null}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '740'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 22 Aug 2022 02:10:51 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_schedule000001/providers/Microsoft.Automation/automationAccounts/account-000002/schedules/schedule-000003?api-version=2020-01-13-preview
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1198'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: '{"name": "schedule-000003", "properties": {"description": "test1", "isEnabled":
+      false}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - automation schedule update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '87'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -n -g --automation-account-name --description --is-enabled
+      User-Agent:
+      - AZURECLI/2.39.0 azsdk-python-mgmt-automation/1.1.0b2 Python/3.8.9 (Windows-10-10.0.22000-SP0)
+    method: PATCH
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_schedule000001/providers/Microsoft.Automation/automationAccounts/account-000002/schedules/schedule-000003?api-version=2020-01-13-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_schedule000001/providers/Microsoft.Automation/automationAccounts/account-000002/schedules/schedule-000003","name":"schedule-000003","type":"Microsoft.Automation/AutomationAccounts/Schedules","properties":{"description":"test1","startTime":"2022-08-30T18:00:00+08:00","startTimeOffsetMinutes":480.0,"expiryTime":"9999-12-31T23:59:59.9999999+00:00","expiryTimeOffsetMinutes":0.0,"isEnabled":false,"nextRun":"2022-08-30T18:00:00+08:00","nextRunOffsetMinutes":480.0,"interval":1,"frequency":"Hour","creationTime":"2022-08-22T02:10:51.9833333+00:00","lastModifiedTime":"2022-08-22T02:10:51.9833333+00:00","timeZone":"UTC+08:00","advancedSchedule":null}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '742'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 22 Aug 2022 02:10:52 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - automation schedule list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --automation-account-name
+      User-Agent:
+      - AZURECLI/2.39.0 azsdk-python-mgmt-automation/1.1.0b2 Python/3.8.9 (Windows-10-10.0.22000-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_schedule000001/providers/Microsoft.Automation/automationAccounts/account-000002/schedules?api-version=2020-01-13-preview
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_schedule000001/providers/Microsoft.Automation/automationAccounts/account-000002/schedules/schedule-000003","name":"schedule-000003","type":"Microsoft.Automation/AutomationAccounts/Schedules","properties":{"description":"test1","startTime":"2022-08-30T18:00:00+08:00","startTimeOffsetMinutes":480.0,"expiryTime":"9999-12-31T23:59:59.9999999+00:00","expiryTimeOffsetMinutes":0.0,"isEnabled":false,"nextRun":"2022-08-30T18:00:00+08:00","nextRunOffsetMinutes":480.0,"interval":1,"frequency":"Hour","creationTime":"2022-08-22T02:10:51.9833333+00:00","lastModifiedTime":"2022-08-22T02:10:52.7933333+00:00","timeZone":"UTC+08:00","advancedSchedule":null}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '754'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 22 Aug 2022 02:10:53 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - automation schedule show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --automation-account-name
+      User-Agent:
+      - AZURECLI/2.39.0 azsdk-python-mgmt-automation/1.1.0b2 Python/3.8.9 (Windows-10-10.0.22000-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_schedule000001/providers/Microsoft.Automation/automationAccounts/account-000002/schedules/schedule-000003?api-version=2020-01-13-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_schedule000001/providers/Microsoft.Automation/automationAccounts/account-000002/schedules/schedule-000003","name":"schedule-000003","type":"Microsoft.Automation/AutomationAccounts/Schedules","properties":{"description":"test1","startTime":"2022-08-30T18:00:00+08:00","startTimeOffsetMinutes":480.0,"expiryTime":"9999-12-31T23:59:59.9999999+00:00","expiryTimeOffsetMinutes":0.0,"isEnabled":false,"nextRun":"2022-08-30T18:00:00+08:00","nextRunOffsetMinutes":480.0,"interval":1,"frequency":"Hour","creationTime":"2022-08-22T02:10:51.9833333+00:00","lastModifiedTime":"2022-08-22T02:10:52.7933333+00:00","timeZone":"UTC+08:00","advancedSchedule":null}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '742'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 22 Aug 2022 02:10:55 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - automation schedule delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -n -g --automation-account-name -y
+      User-Agent:
+      - AZURECLI/2.39.0 azsdk-python-mgmt-automation/1.1.0b2 Python/3.8.9 (Windows-10-10.0.22000-SP0)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_schedule000001/providers/Microsoft.Automation/automationAccounts/account-000002/schedules/schedule-000003?api-version=2020-01-13-preview
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Mon, 22 Aug 2022 02:10:56 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14999'
+    status:
+      code: 200
+      message: OK
+version: 1

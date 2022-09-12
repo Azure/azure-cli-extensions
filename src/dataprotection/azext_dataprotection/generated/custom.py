@@ -139,6 +139,7 @@ def dataprotection_backup_instance_create(client,
                                           resource_group_name,
                                           vault_name,
                                           backup_instance_name,
+                                          tags=None,
                                           friendly_name=None,
                                           data_source_info=None,
                                           data_source_set_info=None,
@@ -156,6 +157,7 @@ def dataprotection_backup_instance_create(client,
     datasource_auth_credentials = all_datasource_auth_credentials[0] if len(all_datasource_auth_credentials) == 1 else \
         None
     parameters = {}
+    parameters['tags'] = tags
     parameters['properties'] = {}
     parameters['properties']['friendly_name'] = friendly_name
     parameters['properties']['data_source_info'] = data_source_info

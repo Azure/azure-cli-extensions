@@ -9,11 +9,11 @@
 Distribution_Enum_Values = ["auto", "generic", "openshift", "rancher_rke", "kind", "k3s", "minikube", "gke", "eks", "aks", "aks_management", "aks_workload", "capz", "aks_engine", "tkg"]
 Infrastructure_Enum_Values = ["auto", "generic", "azure", "aws", "gcp", "azure_stack_hci", "azure_stack_hub", "azure_stack_edge", "vsphere", "windows_server"]
 Feature_Values = ["cluster-connect", "azure-rbac", "custom-locations"]
+CRD_FOR_FORCE_DELETE = ["arccertificates.clusterconfig.azure.com", "azureclusteridentityrequests.clusterconfig.azure.com", "azureextensionidentities.clusterconfig.azure.com", "connectedclusters.arc.azure.com", "customlocationsettings.clusterconfig.azure.com", "extensionconfigs.clusterconfig.azure.com", "gitconfigs.clusterconfig.azure.com"]
 Custom_Locations_Provider_Namespace = 'Microsoft.ExtendedLocation'
 Connected_Cluster_Provider_Namespace = 'Microsoft.Kubernetes'
 Kubernetes_Configuration_Provider_Namespace = 'Microsoft.KubernetesConfiguration'
 Arc_Namespace = 'azure-arc'
-
 Azure_PublicCloudName = 'AZUREPUBLICCLOUD'
 Azure_USGovCloudName = 'AZUREUSGOVERNMENTCLOUD'
 Azure_ChinaCloudName = 'AZURECHINACLOUD'
@@ -27,11 +27,14 @@ Client_Request_Id_Header = 'x-ms-client-request-id'
 Default_Onboarding_Source_Tracking_Guid = "77ade16b-0f55-403b-b7d2-739554a897f2"
 Helm_Environment_File_Fault_Type = 'helm-environment-file-error'
 Invalid_Location_Fault_Type = 'location-validation-error'
+Pls_Location_Mismatch_Fault_Type = 'pls-location-mismatch-error'
+Invalid_Argument_Fault_Type = 'argument-validation-error'
 Load_Kubeconfig_Fault_Type = 'kubeconfig-load-error'
 Read_ConfigMap_Fault_Type = 'configmap-read-error'
 Get_ResourceProvider_Fault_Type = 'resource-provider-fetch-error'
 Get_ConnectedCluster_Fault_Type = 'connected-cluster-fetch-error'
 Create_ConnectedCluster_Fault_Type = 'connected-cluster-create-error'
+Update_ConnectedCluster_Fault_Type = 'connected-cluster-update-error'
 Delete_ConnectedCluster_Fault_Type = 'connected-cluster-delete-error'
 Bad_DeleteRequest_Fault_Type = 'bad-delete-request-error'
 Cluster_Already_Onboarded_Fault_Type = 'cluster-already-onboarded-error'

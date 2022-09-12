@@ -13,10 +13,10 @@ interactions:
       ParameterSetName:
       - -l
       User-Agent:
-      - AZURECLI/2.38.0 azsdk-python-azure-mgmt-containerservice/20.0.0b Python/3.8.10
-        (Linux-5.15.0-1014-azure-x86_64-with-glibc2.29)
+      - AZURECLI/2.39.0 azsdk-python-azure-mgmt-containerservice/20.2.0b Python/3.8.10
+        (Linux-5.15.0-1017-azure-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/eastus2euap/trustedAccessRoles?api-version=2022-06-02-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/eastus2euap/trustedAccessRoles?api-version=2022-07-02-preview
   response:
     body:
       string: "{\n  \"value\": [\n   {\n    \"sourceResourceType\": \"Microsoft.Compute/virtualMachineScaleSets\",\n
@@ -36,7 +36,9 @@ interactions:
         \     ],\n      \"apiGroups\": [\n       \"\"\n      ],\n      \"resources\":
         [\n       \"events\"\n      ]\n     },\n     {\n      \"verbs\": [\n       \"get\",\n
         \      \"list\"\n      ],\n      \"apiGroups\": [\n       \"\"\n      ],\n
-        \     \"resources\": [\n       \"namespaces\",\n       \"deployments\",\n
+        \     \"resources\": [\n       \"namespaces\"\n      ]\n     },\n     {\n
+        \     \"verbs\": [\n       \"get\",\n       \"list\"\n      ],\n      \"apiGroups\":
+        [\n       \"apps\"\n      ],\n      \"resources\": [\n       \"deployments\",\n
         \      \"statefulsets\",\n       \"replicasets\",\n       \"daemonsets\"\n
         \     ]\n     },\n     {\n      \"verbs\": [\n       \"create\",\n       \"get\",\n
         \      \"list\",\n       \"patch\",\n       \"update\",\n       \"delete\"\n
@@ -92,11 +94,11 @@ interactions:
       cache-control:
       - no-cache
       content-length:
-      - '4926'
+      - '5067'
       content-type:
       - application/json
       date:
-      - Tue, 26 Jul 2022 07:07:41 GMT
+      - Mon, 15 Aug 2022 04:41:06 GMT
       expires:
       - '-1'
       pragma:
