@@ -1796,11 +1796,11 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         """
         return self._get_disable_keda(enable_validation=True)
 
-    def get_enable_managed_cluster_snapshot(self) -> bool:
-        """Obtain the value of enable_managed_cluster_snapshot.
+    def get_enable_cluster_snapshot(self) -> bool:
+        """Obtain the value of enable_cluster_snapshot.
         :return: bool
         """
-        return self.raw_param.get("enable_managed_cluster_snapshot")
+        return self.raw_param.get("enable_cluster_snapshot")
 
     def get_defender_config(self) -> Union[ManagedClusterSecurityProfileDefender, None]:
         """Obtain the value of defender.
@@ -2056,7 +2056,7 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
                 CONST_GITOPS_ADDON_NAME
             ] = self.build_gitops_addon_profile()
         
-        if self.context.get_enable_managed_cluster_snapshot():
+        if self.context.get_enable_cluster_snapshot():
             supported = ["coredns", "overlay-upgrade-data", "kube-proxy", "tunnelfront", "metrics-server", "csi-azurefile-node", "csi-azuredisk-node"]
             for addon in supported:
                 addon_profiles[addon] = self.build_addon_manager_v2_addon_profile()

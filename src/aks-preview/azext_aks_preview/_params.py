@@ -334,7 +334,7 @@ def load_arguments(self, _):
         c.argument('workload_runtime', arg_type=get_enum_type(workload_runtimes), default=CONST_WORKLOAD_RUNTIME_OCI_CONTAINER)
         # no validation for aks create because it already only supports Linux.
         c.argument('enable_custom_ca_trust', action='store_true')
-        c.argument('enable_managed_cluster_snapshot', action='store_true', is_preview=True)
+        c.argument('enable_cluster_snapshot', action='store_true', is_preview=True)
 
     with self.argument_context('aks update') as c:
         # managed cluster paramerters

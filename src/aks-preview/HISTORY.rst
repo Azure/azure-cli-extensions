@@ -15,7 +15,7 @@ Pending
 0.5.101
 ++++++
 
-* Add enable-managed-cluster-snapshot to "az aks create" command, which can create a cluster that can be snapshotted, with this command, there is no need to pass "aks-custom-headers".
+* Add enable-cluster-snapshot to "az aks create" command, which can create a cluster that can be snapshotted, with this command, there is no need to pass "aks-custom-headers".
 
 0.5.100
 ++++++

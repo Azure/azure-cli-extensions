@@ -1881,7 +1881,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         create_cmd = 'aks create --resource-group {resource_group} --name {name} --location {location} ' \
                      '--nodepool-name {nodepool_name} ' \
                      '--node-count 1 ' \
-                     '--enable-managed-cluster-snapshot ' \
+                     '--enable-cluster-snapshot ' \
                      '-k {upgrade_k8s_version} ' \
                      '--ssh-key-value={ssh_key_value} -o json'
         response = self.cmd(create_cmd, checks=[
@@ -1929,7 +1929,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         # create another aks cluster using this snapshot
         create_cmd = 'aks create --resource-group {resource_group} --name {aks_name2} --location {location} ' \
                      '--nodepool-name {nodepool_name} ' \
-                     '--enable-managed-cluster-snapshot ' \
+                     '--enable-cluster-snapshot ' \
                      '--node-count 1 --cluster-snapshot-id {snapshot_resource_id} ' \
                      '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/ManagedClusterSnapshotPreview ' \
                      '--ssh-key-value={ssh_key_value} -o json'

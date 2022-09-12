@@ -670,7 +670,7 @@ def aks_create(
     dns_zone_resource_id=None,
     enable_keda=False,
     enable_node_restriction=False,
-    enable_managed_cluster_snapshot=False,
+    enable_cluster_snapshot=False,
     # nodepool
     host_group_id=None,
     crg_id=None,
@@ -679,7 +679,7 @@ def aks_create(
     workload_runtime=None,
     enable_custom_ca_trust=False,
 ):  
-    if enable_managed_cluster_snapshot:
+    if enable_cluster_snapshot:
         header = "AKSHTTPCustomFeatures=AddonManagerV2Preview,AKSHTTPCustomFeatures=CSIControllersV2Preview"
         if aks_custom_headers is None:
             aks_custom_headers = header
