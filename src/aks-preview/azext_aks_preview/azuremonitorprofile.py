@@ -220,7 +220,7 @@ def sanitize_resource_id(resource_id):
         resource_id = "/" + resource_id
     if resource_id.endswith("/"):
         resource_id = resource_id.rstrip("/")
-    return resource_id
+    return resource_id.lower()
 
 def get_default_mac_region(cluster_region):
     return MapToClosestMACRegion[cluster_region]
@@ -288,7 +288,7 @@ def get_azure_monitor_workspace_resource_id(cmd, cluster_subscription, cluster_r
         azure_monitor_workspace_resource_id = create_default_mac(cmd, cluster_subscription, cluster_region)
     else:
         azure_monitor_workspace_resource_id = sanitize_resource_id(azure_monitor_workspace_resource_id)
-    return azure_monitor_workspace_resource_id
+    return azure_monitor_workspace_resource_id.lower()
 
 def get_default_dce_name(mac_region, cluster_name):
     default_dce_name = "MSProm-" + AzureCloudLocationToOmsRegionCodeMap[mac_region] + "-" + cluster_name
@@ -575,7 +575,7 @@ def link_grafana_instance(cmd, raw_parameters, azure_monitor_workspace_resource_
 
     amwIntegrations = targetGrafanaArmPayload["properties"]["grafanaIntegrations"]["azureMonitorWorkspaceIntegrations"]
 
-    if amwIntegrations != [] and azure_monitor_workspace_resource_id in json.dumps(amwIntegrations):
+    if amwIntegrations != [] and azure_monitor_workspace_resource_id in json.dumps(amwIntegrations).lower():
         print("Grafana already has AMW integration")
         return GrafanaLink.ALREADYPRESENT
 
