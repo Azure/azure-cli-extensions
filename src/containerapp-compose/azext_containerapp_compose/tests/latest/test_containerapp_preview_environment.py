@@ -20,7 +20,7 @@ class ContainerappComposePreviewEnvironmentSettingsScenarioTest(ContainerappComp
         compose_text = """
 services:
   foo:
-    image: mcr.microsoft.com/azuredocs/aks-helloworld:v1
+    image: mcr.microsoft.com/azuredocs/containerapps-helloworld:latest
     environment:
       - RACK_ENV=development
       - SHOW=true
@@ -59,7 +59,7 @@ class ContainerappComposePreviewEnvironmentSettingsExpectedExceptionScenarioTest
         compose_text = """
 services:
   foo:
-    image: mcr.microsoft.com/azuredocs/aks-helloworld:v1
+    image: mcr.microsoft.com/azuredocs/containerapps-helloworld:latest
     environment:
       - LOREM=
 """

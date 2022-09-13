@@ -8,8 +8,10 @@ import os
 from argcomplete.completers import FilesCompleter
 from azure.cli.core.commands.parameters import (
     tags_type,
-    file_type
+    file_type,
+    get_location_type
 )
+from azure.cli.core.commands.validators import get_default_location_from_resource_group
 from azext_fleet._validators import validate_member_cluster_id
 
 
@@ -17,6 +19,7 @@ def load_arguments(self, _):
 
     with self.argument_context('fleet') as c:
         c.argument('name', options_list=['--name', '-n'], help='Specify the fleet name.')
+        c.argument('location', get_location_type(self.cli_ctx), validator=get_default_location_from_resource_group, help='aaa')
 
     with self.argument_context('fleet create') as c:
         c.argument('tags', tags_type)
@@ -31,7 +34,7 @@ def load_arguments(self, _):
 
     with self.argument_context('fleet member') as c:
         c.argument('name', options_list=['--name', '-n'], help='Specify the fleet member name.')
-        c.argument('fleet_name', help='Specify the fleet name.')
+        c.argument('fleet_name', options_list=['--fleet-name', '-f'], help='Specify the fleet name.')
 
     with self.argument_context('fleet member create') as c:
         c.argument('member_cluster_id', validator=validate_member_cluster_id)
