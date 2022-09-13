@@ -12,6 +12,8 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+* Update to use 2022-08-02-preview api version.
+
 0.5.100
 +++++++
 
