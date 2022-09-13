@@ -21,7 +21,7 @@ class NginxScenarioTest(ScenarioTest):
             'vnet_name': 'azclitest-vnet',
             'subnet_name': 'azclitest-subnet',
             'tags': 'tag1="value1" tag2="value2"',
-            'kv_name': 'azclitestkv',
+            'kv_name': self.create_random_name(prefix='cli', length=20),
             'cert_name': 'azclitestcert'
         })
         # Nginx on Azure Deployment
@@ -51,7 +51,9 @@ class NginxScenarioTest(ScenarioTest):
 
         # Nginx on Azure certificates
         self.cmd('keyvault create --name {kv_name} --resource-group {rg} --location {location}')
-        self.cmd('keyvault certificate create --vault-name {kv_name} -n {cert_name} -p "$(az keyvault certificate get-default-policy)"')
+        policy = self.cmd('keyvault certificate get-default-policy').get_output_in_json()
+        self.kwargs['policy'] = policy
+        self.cmd('keyvault certificate create --vault-name {kv_name} -n {cert_name} -p {policy}')
         certificate = self.cmd('keyvault certificate show --name {cert_name} --vault-name {kv_name}')
         self.kwargs['kv_secret_id'] = certificate['id']
         self.cmd('nginx deployment certificate create --certificate-name {cert_name} --deployment-name {deployment_name} --resource-group {rg} --certificate-virtual-path /etc/nginx/test.cert --key-virtual-path /etc/nginx/test.key --key-vault-secret-id {kv_secret_id}', checks=[
@@ -80,9 +82,3 @@ class NginxScenarioTest(ScenarioTest):
         self.cmd('nginx deployment certificate delete --name {cert_name} --deployment-name {deployment_name} --resource-group {rg} --yes')
         cert_list = self.cmd('nginx deployment certificate list --deployment-name {deployment_name} --resource-group {rg}').get_output_in_json()
         assert len(cert_list) == 0
-
-
-        
-    def test_list_deployments(self):
-        deployment_list = self.cmd('nginx deployment list').get_output_in_json()
-        assert len(deployment_list) > 0
