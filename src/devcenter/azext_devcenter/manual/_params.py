@@ -21,7 +21,7 @@ from azext_devcenter.action import (
     AddSku
 )
 
-from ._validators import validate_attached_network_or_dev_box_def
+from ._validators import (validate_attached_network_or_dev_box_def, validate_dev_box_list)
 
 def load_arguments(self, _):
 
@@ -71,8 +71,8 @@ def load_arguments(self, _):
         c.argument('schedule_name', options_list=['--name', '-n', '--schedule-name'], type=str, help='The name of a '
                    'schedule.')
 
-    with self.argument_context('devcenter dev dev-box list') as c:
-        c.argument('dev_center', options_list=['--dev-center', '-dc'], type=str, required=True, help='The DevCenter to operate on.')
+    with self.argument_context('devcenter dev dev-box list', validator=validate_dev_box_list) as c:
+        c.argument('dev_center', options_list=['--dev-center', '-dc'], required=True, type=str, help='The DevCenter to operate on.')
         c.argument('filter_', options_list=['--filter'], type=str, help='An OData $filter clause to apply to the '
                    'operation.')
         c.argument('top', type=int, help='The maximum number of resources to return from the operation. Example: '
@@ -160,8 +160,8 @@ def load_arguments(self, _):
         c.argument('environment_name', options_list=['--name', '-n', '--environment-name'], type=str, help='The name '
                    'of the environment.')
         c.argument('description', type=str, help='Description of the Environment.')
-        c.argument('catalog_name', type=str, help='Name of the catalog.')
-        c.argument('catalog_item_name', type=str, help='Name of the catalog item.')
+        c.argument('catalog_name', type=str, required=True, help='Name of the catalog.')
+        c.argument('catalog_item_name', type=str, required=True, help='Name of the catalog item.')
         c.argument('parameters', type=validate_file_or_dict, help='Parameters object for the deploy action Expected '
                    'value: json-string/json-file/@json-file.')
         c.argument('scheduled_tasks', type=validate_file_or_dict, help='Set of supported scheduled tasks to help '

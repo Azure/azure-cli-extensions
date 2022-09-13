@@ -305,12 +305,12 @@ def devcenter_environment_show(cmd, dev_center,
 
 def devcenter_environment_create(cmd, dev_center,
                                  project_name,
-                                 user_id,
                                  environment_name,
                                  environment_type,
+                                 catalog_name,
+                                 catalog_item_name,
+                                 user_id="me",
                                  description=None,
-                                 catalog_name=None,
-                                 catalog_item_name=None,
                                  parameters=None,
                                  scheduled_tasks=None,
                                  tags=None,
@@ -318,12 +318,10 @@ def devcenter_environment_create(cmd, dev_center,
                                  no_wait=False):
     cf_fidalgo =  cf_devcenter_dataplane(cmd.cli_ctx, dev_center)
     body = {}
+    body['catalog_name'] = catalog_name
+    body['catalog_item_name'] = catalog_item_name
     if description is not None:
         body['description'] = description
-    if catalog_name is not None:
-        body['catalog_name'] = catalog_name
-    if catalog_item_name is not None:
-        body['catalog_item_name'] = catalog_item_name
     if parameters is not None:
         body['parameters'] = parameters
     if scheduled_tasks is not None:
