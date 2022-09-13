@@ -314,7 +314,7 @@ def get_mac_region_and_check_support(cmd, azure_monitor_workspace_resource_id, c
     resources = get_resources_client(cmd.cli_ctx, mac_subscription_id)
     try:
         resource = resources.get_by_id(
-            azure_monitor_workspace_resource_id, "2021-06-01-preview")
+            azure_monitor_workspace_resource_id, MAC_API)
         mac_location = resource.location
     except HttpResponseError as ex:
         raise ex
