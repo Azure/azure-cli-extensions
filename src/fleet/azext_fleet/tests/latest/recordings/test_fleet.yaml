@@ -15,19 +15,19 @@ interactions:
       User-Agent:
       - AZURECLI/2.39.0 azsdk-python-azure-mgmt-resource/21.1.0b1 Python/3.8.10 (Linux-5.8.0-1040-azure-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/fleet-cli-000001?api-version=2021-04-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli-000001?api-version=2021-04-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/fleet-cli-000001","name":"fleet-cli-000001","type":"Microsoft.Resources/resourceGroups","location":"centraluseuap","tags":{"product":"azurecli","cause":"automation","date":"2022-08-23T05:49:26Z"},"properties":{"provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-000001","name":"cli-000001","type":"Microsoft.Resources/resourceGroups","location":"centraluseuap","tags":{"product":"azurecli","cause":"automation","date":"2022-09-08T16:49:54Z"},"properties":{"provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '317'
+      - '305'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 23 Aug 2022 05:49:29 GMT
+      - Thu, 08 Sep 2022 16:49:54 GMT
       expires:
       - '-1'
       pragma:
@@ -43,7 +43,7 @@ interactions:
       message: OK
 - request:
     body: '{"location": "centraluseuap", "properties": {"hubProfile": {"dnsPrefix":
-      "fleet-jcu7-fleet-cli-000001-8ecadf"}}}'
+      "fl-000002-cli-000001-8ecadf"}}}'
     headers:
       Accept:
       - application/json
@@ -54,7 +54,7 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '112'
+      - '105'
       Content-Type:
       - application/json
       ParameterSetName:
@@ -63,21 +63,21 @@ interactions:
       - AZURECLI/2.39.0 azsdk-python-azure-mgmt-containerservice/20.0.0 Python/3.8.10
         (Linux-5.8.0-1040-azure-x86_64-with-glibc2.29)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/fleet-cli-000001/providers/Microsoft.ContainerService/fleets/fleet-000002?api-version=2022-06-02-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-000001/providers/Microsoft.ContainerService/fleets/fl-000002?api-version=2022-06-02-preview
   response:
     body:
-      string: '{"etag":"\"00007428-0000-3300-0000-63046a6a0000\"","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/fleet-cli-000001/providers/Microsoft.ContainerService/fleets/fleet-000002","location":"centraluseuap","name":"fleet-000002","properties":{"hubProfile":{"dnsPrefix":"fleet-jcu7-fleet-cli-000001-8ecadf","fqdn":"","kubernetesVersion":""},"provisioningState":"Creating"},"type":"Microsoft.ContainerService/fleets"}'
+      string: '{"etag":"\"0000cb03-0000-3300-0000-631a1d350000\"","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-000001/providers/Microsoft.ContainerService/fleets/fl-000002","location":"centraluseuap","name":"fl-000002","properties":{"hubProfile":{"dnsPrefix":"fl-000002-cli-000001-8ecadf","fqdn":"","kubernetesVersion":""},"provisioningState":"Creating"},"systemData":{"createdAt":"2022-09-08T16:49:57.1489136Z","createdBy":"pdaru@microsoft.com","createdByType":"User","lastModifiedAt":"2022-09-08T16:49:57.1489136Z","lastModifiedBy":"pdaru@microsoft.com","lastModifiedByType":"User"},"type":"Microsoft.ContainerService/fleets"}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operations/ac25a686-b39e-47a4-bc21-a72c633a0bc5?api-version=2016-03-30
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operations/bd125ace-10ec-48ea-b15f-90470db5ea7e?api-version=2016-03-30
       cache-control:
       - no-cache
       content-length:
-      - '434'
+      - '645'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 23 Aug 2022 05:49:30 GMT
+      - Thu, 08 Sep 2022 16:49:57 GMT
       expires:
       - '-1'
       pragma:
@@ -89,7 +89,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1198'
+      - '1199'
     status:
       code: 201
       message: Created
@@ -110,11 +110,11 @@ interactions:
       - AZURECLI/2.39.0 azsdk-python-azure-mgmt-containerservice/20.0.0 Python/3.8.10
         (Linux-5.8.0-1040-azure-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operations/ac25a686-b39e-47a4-bc21-a72c633a0bc5?api-version=2016-03-30
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operations/bd125ace-10ec-48ea-b15f-90470db5ea7e?api-version=2016-03-30
   response:
     body:
-      string: "{\n  \"name\": \"86a625ac-9eb3-a447-bc21-a72c633a0bc5\",\n  \"status\":
-        \"InProgress\",\n  \"startTime\": \"2022-08-23T05:49:30.5548426Z\"\n }"
+      string: "{\n  \"name\": \"ce5a12bd-ec10-ea48-b15f-90470db5ea7e\",\n  \"status\":
+        \"InProgress\",\n  \"startTime\": \"2022-09-08T16:49:57.5943244Z\"\n }"
     headers:
       cache-control:
       - no-cache
@@ -123,7 +123,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 23 Aug 2022 05:50:00 GMT
+      - Thu, 08 Sep 2022 16:50:27 GMT
       expires:
       - '-1'
       pragma:
@@ -158,11 +158,11 @@ interactions:
       - AZURECLI/2.39.0 azsdk-python-azure-mgmt-containerservice/20.0.0 Python/3.8.10
         (Linux-5.8.0-1040-azure-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operations/ac25a686-b39e-47a4-bc21-a72c633a0bc5?api-version=2016-03-30
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operations/bd125ace-10ec-48ea-b15f-90470db5ea7e?api-version=2016-03-30
   response:
     body:
-      string: "{\n  \"name\": \"86a625ac-9eb3-a447-bc21-a72c633a0bc5\",\n  \"status\":
-        \"InProgress\",\n  \"startTime\": \"2022-08-23T05:49:30.5548426Z\"\n }"
+      string: "{\n  \"name\": \"ce5a12bd-ec10-ea48-b15f-90470db5ea7e\",\n  \"status\":
+        \"InProgress\",\n  \"startTime\": \"2022-09-08T16:49:57.5943244Z\"\n }"
     headers:
       cache-control:
       - no-cache
@@ -171,7 +171,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 23 Aug 2022 05:50:30 GMT
+      - Thu, 08 Sep 2022 16:50:58 GMT
       expires:
       - '-1'
       pragma:
@@ -206,11 +206,11 @@ interactions:
       - AZURECLI/2.39.0 azsdk-python-azure-mgmt-containerservice/20.0.0 Python/3.8.10
         (Linux-5.8.0-1040-azure-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operations/ac25a686-b39e-47a4-bc21-a72c633a0bc5?api-version=2016-03-30
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operations/bd125ace-10ec-48ea-b15f-90470db5ea7e?api-version=2016-03-30
   response:
     body:
-      string: "{\n  \"name\": \"86a625ac-9eb3-a447-bc21-a72c633a0bc5\",\n  \"status\":
-        \"InProgress\",\n  \"startTime\": \"2022-08-23T05:49:30.5548426Z\"\n }"
+      string: "{\n  \"name\": \"ce5a12bd-ec10-ea48-b15f-90470db5ea7e\",\n  \"status\":
+        \"InProgress\",\n  \"startTime\": \"2022-09-08T16:49:57.5943244Z\"\n }"
     headers:
       cache-control:
       - no-cache
@@ -219,7 +219,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 23 Aug 2022 05:51:01 GMT
+      - Thu, 08 Sep 2022 16:51:27 GMT
       expires:
       - '-1'
       pragma:
@@ -254,11 +254,11 @@ interactions:
       - AZURECLI/2.39.0 azsdk-python-azure-mgmt-containerservice/20.0.0 Python/3.8.10
         (Linux-5.8.0-1040-azure-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operations/ac25a686-b39e-47a4-bc21-a72c633a0bc5?api-version=2016-03-30
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operations/bd125ace-10ec-48ea-b15f-90470db5ea7e?api-version=2016-03-30
   response:
     body:
-      string: "{\n  \"name\": \"86a625ac-9eb3-a447-bc21-a72c633a0bc5\",\n  \"status\":
-        \"InProgress\",\n  \"startTime\": \"2022-08-23T05:49:30.5548426Z\"\n }"
+      string: "{\n  \"name\": \"ce5a12bd-ec10-ea48-b15f-90470db5ea7e\",\n  \"status\":
+        \"InProgress\",\n  \"startTime\": \"2022-09-08T16:49:57.5943244Z\"\n }"
     headers:
       cache-control:
       - no-cache
@@ -267,7 +267,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 23 Aug 2022 05:51:31 GMT
+      - Thu, 08 Sep 2022 16:51:57 GMT
       expires:
       - '-1'
       pragma:
@@ -302,11 +302,11 @@ interactions:
       - AZURECLI/2.39.0 azsdk-python-azure-mgmt-containerservice/20.0.0 Python/3.8.10
         (Linux-5.8.0-1040-azure-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operations/ac25a686-b39e-47a4-bc21-a72c633a0bc5?api-version=2016-03-30
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operations/bd125ace-10ec-48ea-b15f-90470db5ea7e?api-version=2016-03-30
   response:
     body:
-      string: "{\n  \"name\": \"86a625ac-9eb3-a447-bc21-a72c633a0bc5\",\n  \"status\":
-        \"InProgress\",\n  \"startTime\": \"2022-08-23T05:49:30.5548426Z\"\n }"
+      string: "{\n  \"name\": \"ce5a12bd-ec10-ea48-b15f-90470db5ea7e\",\n  \"status\":
+        \"InProgress\",\n  \"startTime\": \"2022-09-08T16:49:57.5943244Z\"\n }"
     headers:
       cache-control:
       - no-cache
@@ -315,7 +315,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 23 Aug 2022 05:52:01 GMT
+      - Thu, 08 Sep 2022 16:52:28 GMT
       expires:
       - '-1'
       pragma:
@@ -350,11 +350,11 @@ interactions:
       - AZURECLI/2.39.0 azsdk-python-azure-mgmt-containerservice/20.0.0 Python/3.8.10
         (Linux-5.8.0-1040-azure-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operations/ac25a686-b39e-47a4-bc21-a72c633a0bc5?api-version=2016-03-30
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operations/bd125ace-10ec-48ea-b15f-90470db5ea7e?api-version=2016-03-30
   response:
     body:
-      string: "{\n  \"name\": \"86a625ac-9eb3-a447-bc21-a72c633a0bc5\",\n  \"status\":
-        \"InProgress\",\n  \"startTime\": \"2022-08-23T05:49:30.5548426Z\"\n }"
+      string: "{\n  \"name\": \"ce5a12bd-ec10-ea48-b15f-90470db5ea7e\",\n  \"status\":
+        \"InProgress\",\n  \"startTime\": \"2022-09-08T16:49:57.5943244Z\"\n }"
     headers:
       cache-control:
       - no-cache
@@ -363,7 +363,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 23 Aug 2022 05:52:31 GMT
+      - Thu, 08 Sep 2022 16:52:57 GMT
       expires:
       - '-1'
       pragma:
@@ -398,11 +398,11 @@ interactions:
       - AZURECLI/2.39.0 azsdk-python-azure-mgmt-containerservice/20.0.0 Python/3.8.10
         (Linux-5.8.0-1040-azure-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operations/ac25a686-b39e-47a4-bc21-a72c633a0bc5?api-version=2016-03-30
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operations/bd125ace-10ec-48ea-b15f-90470db5ea7e?api-version=2016-03-30
   response:
     body:
-      string: "{\n  \"name\": \"86a625ac-9eb3-a447-bc21-a72c633a0bc5\",\n  \"status\":
-        \"InProgress\",\n  \"startTime\": \"2022-08-23T05:49:30.5548426Z\"\n }"
+      string: "{\n  \"name\": \"ce5a12bd-ec10-ea48-b15f-90470db5ea7e\",\n  \"status\":
+        \"InProgress\",\n  \"startTime\": \"2022-09-08T16:49:57.5943244Z\"\n }"
     headers:
       cache-control:
       - no-cache
@@ -411,7 +411,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 23 Aug 2022 05:53:01 GMT
+      - Thu, 08 Sep 2022 16:53:28 GMT
       expires:
       - '-1'
       pragma:
@@ -446,11 +446,11 @@ interactions:
       - AZURECLI/2.39.0 azsdk-python-azure-mgmt-containerservice/20.0.0 Python/3.8.10
         (Linux-5.8.0-1040-azure-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operations/ac25a686-b39e-47a4-bc21-a72c633a0bc5?api-version=2016-03-30
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operations/bd125ace-10ec-48ea-b15f-90470db5ea7e?api-version=2016-03-30
   response:
     body:
-      string: "{\n  \"name\": \"86a625ac-9eb3-a447-bc21-a72c633a0bc5\",\n  \"status\":
-        \"InProgress\",\n  \"startTime\": \"2022-08-23T05:49:30.5548426Z\"\n }"
+      string: "{\n  \"name\": \"ce5a12bd-ec10-ea48-b15f-90470db5ea7e\",\n  \"status\":
+        \"InProgress\",\n  \"startTime\": \"2022-09-08T16:49:57.5943244Z\"\n }"
     headers:
       cache-control:
       - no-cache
@@ -459,7 +459,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 23 Aug 2022 05:53:31 GMT
+      - Thu, 08 Sep 2022 16:53:58 GMT
       expires:
       - '-1'
       pragma:
@@ -494,11 +494,11 @@ interactions:
       - AZURECLI/2.39.0 azsdk-python-azure-mgmt-containerservice/20.0.0 Python/3.8.10
         (Linux-5.8.0-1040-azure-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operations/ac25a686-b39e-47a4-bc21-a72c633a0bc5?api-version=2016-03-30
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operations/bd125ace-10ec-48ea-b15f-90470db5ea7e?api-version=2016-03-30
   response:
     body:
-      string: "{\n  \"name\": \"86a625ac-9eb3-a447-bc21-a72c633a0bc5\",\n  \"status\":
-        \"InProgress\",\n  \"startTime\": \"2022-08-23T05:49:30.5548426Z\"\n }"
+      string: "{\n  \"name\": \"ce5a12bd-ec10-ea48-b15f-90470db5ea7e\",\n  \"status\":
+        \"InProgress\",\n  \"startTime\": \"2022-09-08T16:49:57.5943244Z\"\n }"
     headers:
       cache-control:
       - no-cache
@@ -507,7 +507,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 23 Aug 2022 05:54:01 GMT
+      - Thu, 08 Sep 2022 16:54:28 GMT
       expires:
       - '-1'
       pragma:
@@ -542,11 +542,11 @@ interactions:
       - AZURECLI/2.39.0 azsdk-python-azure-mgmt-containerservice/20.0.0 Python/3.8.10
         (Linux-5.8.0-1040-azure-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operations/ac25a686-b39e-47a4-bc21-a72c633a0bc5?api-version=2016-03-30
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operations/bd125ace-10ec-48ea-b15f-90470db5ea7e?api-version=2016-03-30
   response:
     body:
-      string: "{\n  \"name\": \"86a625ac-9eb3-a447-bc21-a72c633a0bc5\",\n  \"status\":
-        \"InProgress\",\n  \"startTime\": \"2022-08-23T05:49:30.5548426Z\"\n }"
+      string: "{\n  \"name\": \"ce5a12bd-ec10-ea48-b15f-90470db5ea7e\",\n  \"status\":
+        \"InProgress\",\n  \"startTime\": \"2022-09-08T16:49:57.5943244Z\"\n }"
     headers:
       cache-control:
       - no-cache
@@ -555,7 +555,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 23 Aug 2022 05:54:31 GMT
+      - Thu, 08 Sep 2022 16:54:59 GMT
       expires:
       - '-1'
       pragma:
@@ -590,11 +590,11 @@ interactions:
       - AZURECLI/2.39.0 azsdk-python-azure-mgmt-containerservice/20.0.0 Python/3.8.10
         (Linux-5.8.0-1040-azure-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operations/ac25a686-b39e-47a4-bc21-a72c633a0bc5?api-version=2016-03-30
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operations/bd125ace-10ec-48ea-b15f-90470db5ea7e?api-version=2016-03-30
   response:
     body:
-      string: "{\n  \"name\": \"86a625ac-9eb3-a447-bc21-a72c633a0bc5\",\n  \"status\":
-        \"InProgress\",\n  \"startTime\": \"2022-08-23T05:49:30.5548426Z\"\n }"
+      string: "{\n  \"name\": \"ce5a12bd-ec10-ea48-b15f-90470db5ea7e\",\n  \"status\":
+        \"InProgress\",\n  \"startTime\": \"2022-09-08T16:49:57.5943244Z\"\n }"
     headers:
       cache-control:
       - no-cache
@@ -603,7 +603,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 23 Aug 2022 05:55:02 GMT
+      - Thu, 08 Sep 2022 16:55:29 GMT
       expires:
       - '-1'
       pragma:
@@ -638,11 +638,11 @@ interactions:
       - AZURECLI/2.39.0 azsdk-python-azure-mgmt-containerservice/20.0.0 Python/3.8.10
         (Linux-5.8.0-1040-azure-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operations/ac25a686-b39e-47a4-bc21-a72c633a0bc5?api-version=2016-03-30
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operations/bd125ace-10ec-48ea-b15f-90470db5ea7e?api-version=2016-03-30
   response:
     body:
-      string: "{\n  \"name\": \"86a625ac-9eb3-a447-bc21-a72c633a0bc5\",\n  \"status\":
-        \"InProgress\",\n  \"startTime\": \"2022-08-23T05:49:30.5548426Z\"\n }"
+      string: "{\n  \"name\": \"ce5a12bd-ec10-ea48-b15f-90470db5ea7e\",\n  \"status\":
+        \"InProgress\",\n  \"startTime\": \"2022-09-08T16:49:57.5943244Z\"\n }"
     headers:
       cache-control:
       - no-cache
@@ -651,7 +651,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 23 Aug 2022 05:55:32 GMT
+      - Thu, 08 Sep 2022 16:55:58 GMT
       expires:
       - '-1'
       pragma:
@@ -686,11 +686,11 @@ interactions:
       - AZURECLI/2.39.0 azsdk-python-azure-mgmt-containerservice/20.0.0 Python/3.8.10
         (Linux-5.8.0-1040-azure-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operations/ac25a686-b39e-47a4-bc21-a72c633a0bc5?api-version=2016-03-30
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operations/bd125ace-10ec-48ea-b15f-90470db5ea7e?api-version=2016-03-30
   response:
     body:
-      string: "{\n  \"name\": \"86a625ac-9eb3-a447-bc21-a72c633a0bc5\",\n  \"status\":
-        \"InProgress\",\n  \"startTime\": \"2022-08-23T05:49:30.5548426Z\"\n }"
+      string: "{\n  \"name\": \"ce5a12bd-ec10-ea48-b15f-90470db5ea7e\",\n  \"status\":
+        \"InProgress\",\n  \"startTime\": \"2022-09-08T16:49:57.5943244Z\"\n }"
     headers:
       cache-control:
       - no-cache
@@ -699,7 +699,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 23 Aug 2022 05:56:02 GMT
+      - Thu, 08 Sep 2022 16:56:29 GMT
       expires:
       - '-1'
       pragma:
@@ -734,60 +734,12 @@ interactions:
       - AZURECLI/2.39.0 azsdk-python-azure-mgmt-containerservice/20.0.0 Python/3.8.10
         (Linux-5.8.0-1040-azure-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operations/ac25a686-b39e-47a4-bc21-a72c633a0bc5?api-version=2016-03-30
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operations/bd125ace-10ec-48ea-b15f-90470db5ea7e?api-version=2016-03-30
   response:
     body:
-      string: "{\n  \"name\": \"86a625ac-9eb3-a447-bc21-a72c633a0bc5\",\n  \"status\":
-        \"InProgress\",\n  \"startTime\": \"2022-08-23T05:49:30.5548426Z\"\n }"
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '126'
-      content-type:
-      - application/json
-      date:
-      - Tue, 23 Aug 2022 05:56:36 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      server:
-      - nginx
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - fleet create
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -g -n
-      User-Agent:
-      - AZURECLI/2.39.0 azsdk-python-azure-mgmt-containerservice/20.0.0 Python/3.8.10
-        (Linux-5.8.0-1040-azure-x86_64-with-glibc2.29)
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operations/ac25a686-b39e-47a4-bc21-a72c633a0bc5?api-version=2016-03-30
-  response:
-    body:
-      string: "{\n  \"name\": \"86a625ac-9eb3-a447-bc21-a72c633a0bc5\",\n  \"status\":
-        \"Succeeded\",\n  \"startTime\": \"2022-08-23T05:49:30.5548426Z\",\n  \"endTime\":
-        \"2022-08-23T05:56:46.7778247Z\"\n }"
+      string: "{\n  \"name\": \"ce5a12bd-ec10-ea48-b15f-90470db5ea7e\",\n  \"status\":
+        \"Succeeded\",\n  \"startTime\": \"2022-09-08T16:49:57.5943244Z\",\n  \"endTime\":
+        \"2022-09-08T16:56:45.0765742Z\"\n }"
     headers:
       cache-control:
       - no-cache
@@ -796,7 +748,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 23 Aug 2022 05:57:06 GMT
+      - Thu, 08 Sep 2022 16:56:59 GMT
       expires:
       - '-1'
       pragma:
@@ -831,19 +783,66 @@ interactions:
       - AZURECLI/2.39.0 azsdk-python-azure-mgmt-containerservice/20.0.0 Python/3.8.10
         (Linux-5.8.0-1040-azure-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/fleet-cli-000001/providers/Microsoft.ContainerService/fleets/fleet-000002?api-version=2022-06-02-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-000001/providers/Microsoft.ContainerService/fleets/fl-000002?api-version=2022-06-02-preview
   response:
     body:
-      string: '{"etag":"\"00007928-0000-3300-0000-63046c1e0000\"","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/fleet-cli-000001/providers/Microsoft.ContainerService/fleets/fleet-000002","location":"centraluseuap","name":"fleet-000002","properties":{"hubProfile":{"dnsPrefix":"fleet-jcu7-fleet-cli-000001-8ecadf","fqdn":"fleet-jcu7-fleet-cli-000001-8ecadf-c4cc44dd.hcp.centraluseuap.azmk8s.io","kubernetesVersion":"1.23.8"},"provisioningState":"Succeeded"},"type":"Microsoft.ContainerService/fleets"}'
+      string: '{"etag":"\"0000cc03-0000-3300-0000-631a1ecd0000\"","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-000001/providers/Microsoft.ContainerService/fleets/fl-000002","location":"centraluseuap","name":"fl-000002","properties":{"hubProfile":{"dnsPrefix":"fl-000002-cli-000001-8ecadf","fqdn":"fl-000002-cli-000001-8ecadf-cc2a2e9d.hcp.centraluseuap.azmk8s.io","kubernetesVersion":"1.23.8"},"provisioningState":"Succeeded"},"systemData":{"createdAt":"2022-09-08T16:49:57.1489136Z","createdBy":"pdaru@microsoft.com","createdByType":"User","lastModifiedAt":"2022-09-08T16:49:57.1489136Z","lastModifiedBy":"pdaru@microsoft.com","lastModifiedByType":"User"},"type":"Microsoft.ContainerService/fleets"}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '512'
+      - '716'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 23 Aug 2022 05:57:06 GMT
+      - Thu, 08 Sep 2022 16:56:59 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - nginx
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - fleet wait
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --fleet-name --created
+      User-Agent:
+      - AZURECLI/2.39.0 azsdk-python-azure-mgmt-containerservice/20.0.0 Python/3.8.10
+        (Linux-5.8.0-1040-azure-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-000001/providers/Microsoft.ContainerService/fleets/fl-000002?api-version=2022-06-02-preview
+  response:
+    body:
+      string: '{"etag":"\"0000cc03-0000-3300-0000-631a1ecd0000\"","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-000001/providers/Microsoft.ContainerService/fleets/fl-000002","location":"centraluseuap","name":"fl-000002","properties":{"hubProfile":{"dnsPrefix":"fl-000002-cli-000001-8ecadf","fqdn":"fl-000002-cli-000001-8ecadf-cc2a2e9d.hcp.centraluseuap.azmk8s.io","kubernetesVersion":"1.23.8"},"provisioningState":"Succeeded"},"systemData":{"createdAt":"2022-09-08T16:49:57.1489136Z","createdBy":"pdaru@microsoft.com","createdByType":"User","lastModifiedAt":"2022-09-08T16:49:57.1489136Z","lastModifiedBy":"pdaru@microsoft.com","lastModifiedByType":"User"},"type":"Microsoft.ContainerService/fleets"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '716'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 08 Sep 2022 16:57:00 GMT
       expires:
       - '-1'
       pragma:
@@ -882,19 +881,19 @@ interactions:
       - AZURECLI/2.39.0 azsdk-python-azure-mgmt-containerservice/20.0.0 Python/3.8.10
         (Linux-5.8.0-1040-azure-x86_64-with-glibc2.29)
     method: PATCH
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/fleet-cli-000001/providers/Microsoft.ContainerService/fleets/fleet-000002?api-version=2022-06-02-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-000001/providers/Microsoft.ContainerService/fleets/fl-000002?api-version=2022-06-02-preview
   response:
     body:
-      string: '{"etag":"\"00007a28-0000-3300-0000-63046c330000\"","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/fleet-cli-000001/providers/Microsoft.ContainerService/fleets/fleet-000002","location":"centraluseuap","name":"fleet-000002","properties":{"hubProfile":{"dnsPrefix":"fleet-jcu7-fleet-cli-000001-8ecadf","fqdn":"fleet-jcu7-fleet-cli-000001-8ecadf-c4cc44dd.hcp.centraluseuap.azmk8s.io","kubernetesVersion":"1.23.8"},"provisioningState":"Succeeded"},"tags":{"foo":"doo"},"type":"Microsoft.ContainerService/fleets"}'
+      string: '{"etag":"\"0000cd03-0000-3300-0000-631a1edc0000\"","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-000001/providers/Microsoft.ContainerService/fleets/fl-000002","location":"centraluseuap","name":"fl-000002","properties":{"hubProfile":{"dnsPrefix":"fl-000002-cli-000001-8ecadf","fqdn":"fl-000002-cli-000001-8ecadf-cc2a2e9d.hcp.centraluseuap.azmk8s.io","kubernetesVersion":"1.23.8"},"provisioningState":"Succeeded"},"systemData":{"createdAt":"2022-09-08T16:49:57.1489136Z","createdBy":"pdaru@microsoft.com","createdByType":"User","lastModifiedAt":"2022-09-08T16:49:57.1489136Z","lastModifiedBy":"pdaru@microsoft.com","lastModifiedByType":"User"},"tags":{"foo":"doo"},"type":"Microsoft.ContainerService/fleets"}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '533'
+      - '737'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 23 Aug 2022 05:57:08 GMT
+      - Thu, 08 Sep 2022 16:57:01 GMT
       expires:
       - '-1'
       pragma:
@@ -910,7 +909,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1196'
+      - '1199'
     status:
       code: 200
       message: OK
@@ -931,19 +930,19 @@ interactions:
       - AZURECLI/2.39.0 azsdk-python-azure-mgmt-containerservice/20.0.0 Python/3.8.10
         (Linux-5.8.0-1040-azure-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/fleet-cli-000001/providers/Microsoft.ContainerService/fleets/fleet-000002?api-version=2022-06-02-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-000001/providers/Microsoft.ContainerService/fleets/fl-000002?api-version=2022-06-02-preview
   response:
     body:
-      string: '{"etag":"\"00007a28-0000-3300-0000-63046c330000\"","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/fleet-cli-000001/providers/Microsoft.ContainerService/fleets/fleet-000002","location":"centraluseuap","name":"fleet-000002","properties":{"hubProfile":{"dnsPrefix":"fleet-jcu7-fleet-cli-000001-8ecadf","fqdn":"fleet-jcu7-fleet-cli-000001-8ecadf-c4cc44dd.hcp.centraluseuap.azmk8s.io","kubernetesVersion":"1.23.8"},"provisioningState":"Succeeded"},"tags":{"foo":"doo"},"type":"Microsoft.ContainerService/fleets"}'
+      string: '{"etag":"\"0000cd03-0000-3300-0000-631a1edc0000\"","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-000001/providers/Microsoft.ContainerService/fleets/fl-000002","location":"centraluseuap","name":"fl-000002","properties":{"hubProfile":{"dnsPrefix":"fl-000002-cli-000001-8ecadf","fqdn":"fl-000002-cli-000001-8ecadf-cc2a2e9d.hcp.centraluseuap.azmk8s.io","kubernetesVersion":"1.23.8"},"provisioningState":"Succeeded"},"systemData":{"createdAt":"2022-09-08T16:49:57.1489136Z","createdBy":"pdaru@microsoft.com","createdByType":"User","lastModifiedAt":"2022-09-08T16:49:57.1489136Z","lastModifiedBy":"pdaru@microsoft.com","lastModifiedByType":"User"},"tags":{"foo":"doo"},"type":"Microsoft.ContainerService/fleets"}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '533'
+      - '737'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 23 Aug 2022 05:57:08 GMT
+      - Thu, 08 Sep 2022 16:57:01 GMT
       expires:
       - '-1'
       pragma:
@@ -978,19 +977,19 @@ interactions:
       - AZURECLI/2.39.0 azsdk-python-azure-mgmt-containerservice/20.0.0 Python/3.8.10
         (Linux-5.8.0-1040-azure-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/fleet-cli-000001/providers/Microsoft.ContainerService/fleets?api-version=2022-06-02-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-000001/providers/Microsoft.ContainerService/fleets?api-version=2022-06-02-preview
   response:
     body:
-      string: '{"value":[{"etag":"\"00007928-0000-3300-0000-63046c1e0000\"","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/fleet-cli-000001/providers/Microsoft.ContainerService/fleets/fleet-000002","location":"centraluseuap","name":"fleet-000002","properties":{"hubProfile":{"dnsPrefix":"fleet-jcu7-fleet-cli-000001-8ecadf","fqdn":"fleet-jcu7-fleet-cli-000001-8ecadf-c4cc44dd.hcp.centraluseuap.azmk8s.io","kubernetesVersion":"1.23.8"},"provisioningState":"Succeeded"},"tags":{"foo":"doo"},"type":"Microsoft.ContainerService/fleets"}]}'
+      string: '{"value":[{"etag":"\"0000cc03-0000-3300-0000-631a1ecd0000\"","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-000001/providers/Microsoft.ContainerService/fleets/fl-000002","location":"centraluseuap","name":"fl-000002","properties":{"hubProfile":{"dnsPrefix":"fl-000002-cli-000001-8ecadf","fqdn":"fl-000002-cli-000001-8ecadf-cc2a2e9d.hcp.centraluseuap.azmk8s.io","kubernetesVersion":"1.23.8"},"provisioningState":"Succeeded"},"systemData":{"createdAt":"2022-09-08T16:49:57.1489136Z","createdBy":"pdaru@microsoft.com","createdByType":"User","lastModifiedAt":"2022-09-08T16:49:57.1489136Z","lastModifiedBy":"pdaru@microsoft.com","lastModifiedByType":"User"},"tags":{"foo":"doo"},"type":"Microsoft.ContainerService/fleets"}]}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '545'
+      - '749'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 23 Aug 2022 05:57:08 GMT
+      - Thu, 08 Sep 2022 16:57:02 GMT
       expires:
       - '-1'
       pragma:
@@ -1026,16 +1025,16 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/fleets?api-version=2022-06-02-preview
   response:
     body:
-      string: '{"value":[{"etag":"","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ster-fleet/providers/Microsoft.ContainerService/fleets/test-fleet","location":"centraluseuap","name":"test-fleet","properties":{"hubProfile":{"dnsPrefix":"testDnsPrefix","fqdn":"","kubernetesVersion":""},"provisioningState":"Creating"},"type":"Microsoft.ContainerService/fleets"},{"etag":"\"00000b13-0000-3300-0000-62f157a50000\"","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ster-fleettest/providers/Microsoft.ContainerService/fleets/test-fleet4","location":"centraluseuap","name":"test-fleet4","properties":{"hubProfile":{"dnsPrefix":"testDnsPrefix","fqdn":"","kubernetesVersion":""},"provisioningState":"Deleting"},"type":"Microsoft.ContainerService/fleets"},{"etag":"\"00000913-0000-3300-0000-62f157a50000\"","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ster-fleettest/providers/Microsoft.ContainerService/fleets/my-fleet1","location":"centraluseuap","name":"my-fleet1","properties":{"hubProfile":{"dnsPrefix":"testDnsPrefix","fqdn":"","kubernetesVersion":""},"provisioningState":"Deleting"},"type":"Microsoft.ContainerService/fleets"},{"etag":"\"00000613-0000-3300-0000-62f155cc0000\"","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ster-fleettest/providers/Microsoft.ContainerService/fleets/my-fleet5","location":"centraluseuap","name":"my-fleet5","properties":{"hubProfile":{"dnsPrefix":"testDnsPrefix","fqdn":"","kubernetesVersion":""},"provisioningState":"Deleting"},"type":"Microsoft.ContainerService/fleets"},{"etag":"\"00001a26-0000-3300-0000-6303de510000\"","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/pdaru-fleet-test5/providers/Microsoft.ContainerService/fleets/fleet1","location":"centraluseuap","name":"fleet1","properties":{"hubProfile":{"dnsPrefix":"1","fqdn":"1-36a467d5.hcp.centraluseuap.azmk8s.io","kubernetesVersion":""},"provisioningState":"Failed"},"type":"Microsoft.ContainerService/fleets"},{"etag":"\"0000b527-0000-3300-0000-63043cf30000\"","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ster-fleet-test/providers/Microsoft.ContainerService/fleets/ster-fleet-dpl4","location":"centraluseuap","name":"ster-fleet-dpl4","properties":{"hubProfile":{"dnsPrefix":"ster-fleet-dpl2","fqdn":"ster-fleet-dpl2-2ef32f52.hcp.centraluseuap.azmk8s.io","kubernetesVersion":""},"provisioningState":"Failed"},"type":"Microsoft.ContainerService/fleets"},{"etag":"\"0000d61f-0000-3300-0000-63025fdf0000\"","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/pdaru-fleet-test5/providers/Microsoft.ContainerService/fleets/ca-fleet1","location":"centraluseuap","name":"ca-fleet1","properties":{"hubProfile":{"dnsPrefix":"1","fqdn":"1-05e2aca4.hcp.centraluseuap.azmk8s.io","kubernetesVersion":""},"provisioningState":"Failed"},"type":"Microsoft.ContainerService/fleets"},{"etag":"\"00007728-0000-3300-0000-63046bab0000\"","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/fleet-cli-quaddapx4p4eyfrdy7jvajl552qyspz6emx4bdj5p4vlb4med4l4vekvkgzxyjdk4/providers/Microsoft.ContainerService/fleets/fleet-35lrup2ic","location":"centraluseuap","name":"fleet-35lrup2ic","properties":{"hubProfile":{"dnsPrefix":"dns-prefix","fqdn":"","kubernetesVersion":""},"provisioningState":"Failed"},"type":"Microsoft.ContainerService/fleets"},{"etag":"\"00007528-0000-3300-0000-63046b670000\"","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/fleet-cli-bxykzuspwlm4vol6ejz5b75iyzikrpvffkkp5ulfg2d3jm2j2rfob25k7ajtvlj3m/providers/Microsoft.ContainerService/fleets/fleet-l4opo6zn5","location":"centraluseuap","name":"fleet-l4opo6zn5","properties":{"hubProfile":{"dnsPrefix":"dns-prefix","fqdn":"","kubernetesVersion":""},"provisioningState":"Failed"},"type":"Microsoft.ContainerService/fleets"},{"etag":"\"0000c327-0000-3300-0000-63043fe10000\"","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/fleet-cli-4liqa/providers/Microsoft.ContainerService/fleets/fleet-j3dagi54m","location":"centraluseuap","name":"fleet-j3dagi54m","properties":{"hubProfile":{"dnsPrefix":"dns-prefix","fqdn":"dns-prefix-7c7075bf.hcp.centraluseuap.azmk8s.io","kubernetesVersion":""},"provisioningState":"Failed"},"type":"Microsoft.ContainerService/fleets"},{"etag":"\"00002d27-0000-3300-0000-63041d290000\"","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/fleet-cli-rs5rx/providers/Microsoft.ContainerService/fleets/fleet-26lq2rh7w","location":"centraluseuap","name":"fleet-26lq2rh7w","properties":{"hubProfile":{"dnsPrefix":"dns-prefix","fqdn":"dns-prefix-bfb27d29.hcp.centraluseuap.azmk8s.io","kubernetesVersion":""},"provisioningState":"Failed"},"type":"Microsoft.ContainerService/fleets"},{"etag":"\"00001427-0000-3300-0000-6304176c0000\"","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/fleet-cli-4y6ds/providers/Microsoft.ContainerService/fleets/fleet-xwzjlardn","location":"centraluseuap","name":"fleet-xwzjlardn","properties":{"hubProfile":{"dnsPrefix":"dns-prefix","fqdn":"dns-prefix-d78e3263.hcp.centraluseuap.azmk8s.io","kubernetesVersion":""},"provisioningState":"Failed"},"type":"Microsoft.ContainerService/fleets"},{"etag":"\"0000bf26-0000-3300-0000-630402ec0000\"","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/pdaru-fleet-test6/providers/Microsoft.ContainerService/fleets/fleet9","location":"centraluseuap","name":"fleet9","properties":{"hubProfile":{"dnsPrefix":"a","fqdn":"a-7ccb5e86.hcp.centraluseuap.azmk8s.io","kubernetesVersion":""},"provisioningState":"Failed"},"type":"Microsoft.ContainerService/fleets"},{"etag":"\"00004d1e-0000-3300-0000-6302007d0000\"","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/fleet-cli-63u6w/providers/Microsoft.ContainerService/fleets/fleet-n5ynxpr45","location":"centraluseuap","name":"fleet-n5ynxpr45","properties":{"hubProfile":{"dnsPrefix":"dns-prefix","fqdn":"dns-prefix-7cf5731a.hcp.centraluseuap.azmk8s.io","kubernetesVersion":""},"provisioningState":"Failed"},"type":"Microsoft.ContainerService/fleets"},{"etag":"\"00000d28-0000-3300-0000-6304535d0000\"","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/liqian-centraluseuap/providers/Microsoft.ContainerService/fleets/hello","location":"centraluseuap","name":"hello","properties":{"hubProfile":{"dnsPrefix":"hello","fqdn":"hello-4678c273.hcp.centraluseuap.azmk8s.io","kubernetesVersion":""},"provisioningState":"Failed"},"type":"Microsoft.ContainerService/fleets"},{"etag":"\"00005326-0000-3300-0000-6303ea250000\"","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ster-flt2/providers/Microsoft.ContainerService/fleets/ster-fleet-bicep","location":"centraluseuap","name":"ster-fleet-bicep","properties":{"hubProfile":{"dnsPrefix":"fleet-bicep","fqdn":"fleet-bicep-277918e9.hcp.centraluseuap.azmk8s.io","kubernetesVersion":""},"provisioningState":"Failed"},"type":"Microsoft.ContainerService/fleets"},{"etag":"\"00002b26-0000-3300-0000-6303e15c0000\"","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/fleet-cli-csbrl/providers/Microsoft.ContainerService/fleets/fleet-tq6syhdzd","location":"centraluseuap","name":"fleet-tq6syhdzd","properties":{"hubProfile":{"dnsPrefix":"dns-prefix","fqdn":"dns-prefix-c6116f87.hcp.centraluseuap.azmk8s.io","kubernetesVersion":""},"provisioningState":"Failed"},"type":"Microsoft.ContainerService/fleets"},{"etag":"\"00007a25-0000-3300-0000-6303b7e10000\"","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/minsha-centraluseuap/providers/Microsoft.ContainerService/fleets/minshatest","location":"centraluseuap","name":"minshatest","properties":{"hubProfile":{"dnsPrefix":"minshatest","fqdn":"minshatest-a6304b8f.hcp.centraluseuap.azmk8s.io","kubernetesVersion":""},"provisioningState":"Failed"},"type":"Microsoft.ContainerService/fleets"},{"etag":"\"0000c619-0000-3300-0000-6300f9330000\"","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/minsha-centraluseuap/providers/Microsoft.ContainerService/fleets/minshatest-2","location":"centraluseuap","name":"minshatest-2","properties":{"hubProfile":{"dnsPrefix":"minshatest-2","fqdn":"minshatest-2-77951ae4.hcp.centraluseuap.azmk8s.io","kubernetesVersion":""},"provisioningState":"Failed"},"type":"Microsoft.ContainerService/fleets"},{"etag":"\"0000b427-0000-3300-0000-63043cd60000\"","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/chenyu1-rg/providers/Microsoft.ContainerService/fleets/chenyu1-fleet","location":"centraluseuap","name":"chenyu1-fleet","properties":{"hubProfile":{"dnsPrefix":"chenyu1-fleet","fqdn":"chenyu1-fleet-27ac0942.hcp.centraluseuap.azmk8s.io","kubernetesVersion":"1.23.8"},"provisioningState":"Failed"},"type":"Microsoft.ContainerService/fleets"},{"etag":"\"0000f723-0000-3300-0000-63035cd10000\"","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/liqian-0817/providers/Microsoft.ContainerService/fleets/liqian-fleet","location":"centraluseuap","name":"liqian-fleet","properties":{"hubProfile":{"dnsPrefix":"liqian-fleet","fqdn":"liqian-fleet-bf6c1414.hcp.centraluseuap.azmk8s.io","kubernetesVersion":"1.23.8"},"provisioningState":"Failed"},"type":"Microsoft.ContainerService/fleets"},{"etag":"\"00004b28-0000-3300-0000-630460f80000\"","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ryan-bug-bash/providers/Microsoft.ContainerService/fleets/ryan-bug-bash-fleet","location":"centraluseuap","name":"ryan-bug-bash-fleet","properties":{"hubProfile":{"dnsPrefix":"ryan-bug-bash-fleet","fqdn":"ryan-bug-bash-fleet-d8dcf8fe.hcp.centraluseuap.azmk8s.io","kubernetesVersion":"1.23.8"},"provisioningState":"Failed"},"type":"Microsoft.ContainerService/fleets"},{"etag":"\"00001822-0000-3300-0000-6302ec540000\"","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/minsha-bugbash/providers/Microsoft.ContainerService/fleets/fleet-1","location":"centraluseuap","name":"fleet-1","properties":{"hubProfile":{"dnsPrefix":"fleet-1","fqdn":"fleet-1-72445aea.hcp.centraluseuap.azmk8s.io","kubernetesVersion":"1.23.8"},"provisioningState":"Failed"},"type":"Microsoft.ContainerService/fleets"},{"etag":"\"00005d26-0000-3300-0000-6303ec6c0000\"","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/wenjungaoabc/providers/Microsoft.ContainerService/fleets/wenjungaoone","location":"centraluseuap","name":"wenjungaoone","properties":{"hubProfile":{"dnsPrefix":"wenjungaoone","fqdn":"wenjungaoone-4d67d83f.hcp.centraluseuap.azmk8s.io","kubernetesVersion":"1.23.8"},"provisioningState":"Failed"},"type":"Microsoft.ContainerService/fleets"},{"etag":"\"0000a21f-0000-3300-0000-630256260000\"","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/zman-bug-bash/providers/Microsoft.ContainerService/fleets/zman-fleet","location":"centraluseuap","name":"zman-fleet","properties":{"hubProfile":{"dnsPrefix":"zman-fleet","fqdn":"zman-fleet-48b69723.hcp.centraluseuap.azmk8s.io","kubernetesVersion":"1.23.8"},"provisioningState":"Failed"},"type":"Microsoft.ContainerService/fleets"},{"etag":"\"0000f026-0000-3300-0000-63040f150000\"","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/arvinddemo/providers/Microsoft.ContainerService/fleets/arvindfleet","location":"centraluseuap","name":"arvindfleet","properties":{"hubProfile":{"dnsPrefix":"arvindfleet","fqdn":"arvindfleet-3aefa8d7.hcp.centraluseuap.azmk8s.io","kubernetesVersion":"1.23.8"},"provisioningState":"Failed"},"type":"Microsoft.ContainerService/fleets"},{"etag":"\"00000228-0000-3300-0000-630451240000\"","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/SillyGoose3/providers/Microsoft.ContainerService/fleets/bryces-fleet-thing","location":"centraluseuap","name":"bryces-fleet-thing","properties":{"hubProfile":{"dnsPrefix":"bryces-fleet-thing","fqdn":"bryces-fleet-thing-0649dcdf.hcp.centraluseuap.azmk8s.io","kubernetesVersion":"1.23.8"},"provisioningState":"Failed"},"type":"Microsoft.ContainerService/fleets"},{"etag":"\"00009024-0000-3300-0000-6303847c0000\"","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/chenyu1-rg2/providers/Microsoft.ContainerService/fleets/chenyu1-fleet","location":"centraluseuap","name":"chenyu1-fleet","properties":{"hubProfile":{"dnsPrefix":"chenyu1-fleet","fqdn":"chenyu1-fleet-bbe5c4ea.hcp.centraluseuap.azmk8s.io","kubernetesVersion":"1.23.8"},"provisioningState":"Failed"},"type":"Microsoft.ContainerService/fleets"},{"etag":"\"00000c24-0000-3300-0000-630362720000\"","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/fleet-cli-chmvi/providers/Microsoft.ContainerService/fleets/fleet-bsv5p4hol","location":"centraluseuap","name":"fleet-bsv5p4hol","properties":{"hubProfile":{"dnsPrefix":"dns-prefix","fqdn":"dns-prefix-42336c56.hcp.centraluseuap.azmk8s.io","kubernetesVersion":"1.23.8"},"provisioningState":"Failed"},"type":"Microsoft.ContainerService/fleets"},{"etag":"\"00002016-0000-3300-0000-6300148b0000\"","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nguyenminpcluster2/providers/Microsoft.ContainerService/fleets/nguyenminpcluster2","location":"centraluseuap","name":"nguyenminpcluster2","properties":{"hubProfile":{"dnsPrefix":"nguyenminpcluster2","fqdn":"nguyenminpcluster2-2bbe275d.hcp.centraluseuap.azmk8s.io","kubernetesVersion":"1.23.8"},"provisioningState":"Succeeded"},"type":"Microsoft.ContainerService/fleets"},{"etag":"\"0000d81c-0000-3300-0000-6301b3c30000\"","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/liqian-0820/providers/Microsoft.ContainerService/fleets/fleet1","location":"centraluseuap","name":"fleet1","properties":{"hubProfile":{"dnsPrefix":"fleet1","fqdn":"fleet1-f8ed35cb.hcp.centraluseuap.azmk8s.io","kubernetesVersion":"1.23.8"},"provisioningState":"Succeeded"},"type":"Microsoft.ContainerService/fleets"},{"etag":"\"0000e51c-0000-3300-0000-6301b5d30000\"","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/liqian-0820/providers/Microsoft.ContainerService/fleets/fleet2","location":"centraluseuap","name":"fleet2","properties":{"hubProfile":{"dnsPrefix":"fleet2","fqdn":"fleet2-01e34f1e.hcp.centraluseuap.azmk8s.io","kubernetesVersion":"1.23.8"},"provisioningState":"Succeeded"},"type":"Microsoft.ContainerService/fleets"},{"etag":"\"00002325-0000-3300-0000-6303ab220000\"","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/fleet-cli-ayvon/providers/Microsoft.ContainerService/fleets/fleet-by56cbbqu","location":"centraluseuap","name":"fleet-by56cbbqu","properties":{"hubProfile":{"dnsPrefix":"fleet-by56-fleet-cli-ayvon-8ecadf","fqdn":"fleet-by56-fleet-cli-ayvon-8ecadf-a804c43c.hcp.centraluseuap.azmk8s.io","kubernetesVersion":"1.23.8"},"provisioningState":"Succeeded"},"type":"Microsoft.ContainerService/fleets"},{"etag":"\"00002825-0000-3300-0000-6303ab9c0000\"","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/pdarufleet2/providers/Microsoft.ContainerService/fleets/fleet1","location":"centraluseuap","name":"fleet1","properties":{"hubProfile":{"dnsPrefix":"fleet1-pdarufleet2-8ecadf","fqdn":"fleet1-pdarufleet2-8ecadf-81e40f54.hcp.centraluseuap.azmk8s.io","kubernetesVersion":"1.23.8"},"provisioningState":"Succeeded"},"type":"Microsoft.ContainerService/fleets"},{"etag":"\"00002925-0000-3300-0000-6303abf80000\"","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/pdarufleet2/providers/Microsoft.ContainerService/fleets/fleet2","location":"centraluseuap","name":"fleet2","properties":{"hubProfile":{"dnsPrefix":"fleet2-pdarufleet2-8ecadf","fqdn":"fleet2-pdarufleet2-8ecadf-fb018ab1.hcp.centraluseuap.azmk8s.io","kubernetesVersion":"1.23.8"},"provisioningState":"Succeeded"},"type":"Microsoft.ContainerService/fleets"},{"etag":"\"00005225-0000-3300-0000-6303b1500000\"","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/fleet-cli-qmizs/providers/Microsoft.ContainerService/fleets/fleet-aj6xlgul6","location":"centraluseuap","name":"fleet-aj6xlgul6","properties":{"hubProfile":{"dnsPrefix":"fleet-aj6x-fleet-cli-qmizs-8ecadf","fqdn":"fleet-aj6x-fleet-cli-qmizs-8ecadf-e9fabe11.hcp.centraluseuap.azmk8s.io","kubernetesVersion":"1.23.8"},"provisioningState":"Succeeded"},"tags":{"foo":"doo"},"type":"Microsoft.ContainerService/fleets"},{"etag":"\"00004e27-0000-3300-0000-630425080000\"","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/zman-group-0822/providers/Microsoft.ContainerService/fleets/zman-fleet","location":"centraluseuap","name":"zman-fleet","properties":{"hubProfile":{"dnsPrefix":"zman-fleet","fqdn":"zman-fleet-8d819245.hcp.centraluseuap.azmk8s.io","kubernetesVersion":"1.23.8"},"provisioningState":"Succeeded"},"type":"Microsoft.ContainerService/fleets"},{"etag":"\"00007928-0000-3300-0000-63046c1e0000\"","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/fleet-cli-000001/providers/Microsoft.ContainerService/fleets/fleet-000002","location":"centraluseuap","name":"fleet-000002","properties":{"hubProfile":{"dnsPrefix":"fleet-jcu7-fleet-cli-000001-8ecadf","fqdn":"fleet-jcu7-fleet-cli-000001-8ecadf-c4cc44dd.hcp.centraluseuap.azmk8s.io","kubernetesVersion":"1.23.8"},"provisioningState":"Succeeded"},"tags":{"foo":"doo"},"type":"Microsoft.ContainerService/fleets"},{"etag":"\"c801c323-0000-0100-0000-630382d80000\"","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2erg-chenyuebld59367573-cGVzD/providers/Microsoft.ContainerService/fleets/fleet","location":"eastus","name":"fleet","properties":{"hubProfile":{"dnsPrefix":"fleet","fqdn":"fleet-1b7a6d5c.hcp.eastus.azmk8s.io","kubernetesVersion":"1.23.8"},"provisioningState":"Succeeded"},"tags":{"archv2":"","tier":"production"},"type":"Microsoft.ContainerService/fleets"},{"etag":"\"01006ea2-0000-3400-0000-62cf6db10000\"","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/liqianluo-fleet-test/providers/Microsoft.ContainerService/fleets/liqianluo-fleet","location":"eastus2euap","name":"liqianluo-fleet","properties":{"hubProfile":{"dnsPrefix":"testDnsPrefix","fqdn":"","kubernetesVersion":""},"provisioningState":"Deleting"},"type":"Microsoft.ContainerService/fleets"},{"etag":"\"0800071e-0000-3400-0000-62e82ea10000\"","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/pdaru-fleet-test4/providers/Microsoft.ContainerService/fleets/pdaru-fleet8","location":"eastus2euap","name":"pdaru-fleet8","properties":{"hubProfile":{"dnsPrefix":"prefix","fqdn":"prefix-1ffdf678.hcp.eastus2euap.azmk8s.io","kubernetesVersion":""},"provisioningState":"Succeeded"},"type":"Microsoft.ContainerService/fleets"},{"etag":"\"090041e5-0000-3400-0000-62fcf2f20000\"","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/zhiyinglin-test-rg/providers/Microsoft.ContainerService/fleets/zhiyinglin-fleet","location":"eastus2euap","name":"zhiyinglin-fleet","properties":{"hubProfile":{"dnsPrefix":"zhiyinglin-fleet","fqdn":"zhiyinglin-fleet-1b8d2ff3.hcp.eastus2euap.azmk8s.io","kubernetesVersion":"1.23.8"},"provisioningState":"Succeeded"},"type":"Microsoft.ContainerService/fleets"},{"etag":"\"00000900-0000-0600-0000-62fdf0250000\"","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/lima2-rg/providers/Microsoft.ContainerService/fleets/lima2-fleet","location":"westcentralus","name":"lima2-fleet","properties":{"hubProfile":{"dnsPrefix":"lima2-fleet","fqdn":"lima2-fleet-681147a8.hcp.westcentralus.azmk8s.io","kubernetesVersion":"1.23.8"},"provisioningState":"Succeeded"},"type":"Microsoft.ContainerService/fleets"},{"etag":"\"00000b00-0000-0600-0000-62fdf0b40000\"","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/binxi1-rg/providers/Microsoft.ContainerService/fleets/binxi1-fleet","location":"westcentralus","name":"binxi1-fleet","properties":{"hubProfile":{"dnsPrefix":"binxi1-fleet","fqdn":"binxi1-fleet-ccd17e0f.hcp.westcentralus.azmk8s.io","kubernetesVersion":"1.23.8"},"provisioningState":"Succeeded"},"type":"Microsoft.ContainerService/fleets"},{"etag":"\"00000c00-0000-0600-0000-62fdf0e90000\"","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/peni-test/providers/Microsoft.ContainerService/fleets/peni-fleet","location":"westcentralus","name":"peni-fleet","properties":{"hubProfile":{"dnsPrefix":"peni-fleet","fqdn":"peni-fleet-4525b2df.hcp.westcentralus.azmk8s.io","kubernetesVersion":"1.23.8"},"provisioningState":"Succeeded"},"type":"Microsoft.ContainerService/fleets"},{"etag":"\"00001000-0000-0600-0000-62fdf2ac0000\"","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/jialuncai-rg/providers/Microsoft.ContainerService/fleets/jialuncai-fleet","location":"westcentralus","name":"jialuncai-fleet","properties":{"hubProfile":{"dnsPrefix":"jialuncai-fleet","fqdn":"jialuncai-fleet-5a6870c1.hcp.westcentralus.azmk8s.io","kubernetesVersion":"1.23.8"},"provisioningState":"Succeeded"},"type":"Microsoft.ContainerService/fleets"},{"etag":"\"00001400-0000-0600-0000-62fdf48a0000\"","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/qinhao-fleet-rg/providers/Microsoft.ContainerService/fleets/qinhao-fleet-fleet","location":"westcentralus","name":"qinhao-fleet-fleet","properties":{"hubProfile":{"dnsPrefix":"qinhao-fleet-fleet","fqdn":"qinhao-fleet-fleet-57c87427.hcp.westcentralus.azmk8s.io","kubernetesVersion":"1.23.8"},"provisioningState":"Succeeded"},"type":"Microsoft.ContainerService/fleets"},{"etag":"\"00003800-0000-0600-0000-62fdf9830000\"","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/shafanabt-rg/providers/Microsoft.ContainerService/fleets/ashafanabt-fleet","location":"westcentralus","name":"ashafanabt-fleet","properties":{"hubProfile":{"dnsPrefix":"shafanabt-fleet","fqdn":"shafanabt-fleet-0c701083.hcp.westcentralus.azmk8s.io","kubernetesVersion":"1.23.8"},"provisioningState":"Succeeded"},"type":"Microsoft.ContainerService/fleets"},{"etag":"\"00004d00-0000-0600-0000-62fe00150000\"","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/wantjian-rg/providers/Microsoft.ContainerService/fleets/wantjian-fleet","location":"westcentralus","name":"wantjian-fleet","properties":{"hubProfile":{"dnsPrefix":"wantjian-fleet","fqdn":"wantjian-fleet-9ccca1a7.hcp.westcentralus.azmk8s.io","kubernetesVersion":"1.23.8"},"provisioningState":"Succeeded"},"type":"Microsoft.ContainerService/fleets"},{"etag":"\"00005700-0000-0600-0000-62fe03350000\"","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/guwe-rg-1/providers/Microsoft.ContainerService/fleets/guwe-fleet","location":"westcentralus","name":"guwe-fleet","properties":{"hubProfile":{"dnsPrefix":"guwe-fleet","fqdn":"guwe-fleet-50da5b9e.hcp.westcentralus.azmk8s.io","kubernetesVersion":"1.23.8"},"provisioningState":"Succeeded"},"type":"Microsoft.ContainerService/fleets"},{"etag":"\"00006900-0000-0600-0000-62fe1aa80000\"","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/weizhichen-rg/providers/Microsoft.ContainerService/fleets/weizhichen-fleet","location":"westcentralus","name":"weizhichen-fleet","properties":{"hubProfile":{"dnsPrefix":"weizhichen-fleet","fqdn":"weizhichen-fleet-5e475207.hcp.westcentralus.azmk8s.io","kubernetesVersion":"1.23.8"},"provisioningState":"Succeeded"},"type":"Microsoft.ContainerService/fleets"}]}'
+      string: '{"value":[{"etag":"","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ster-fleet/providers/Microsoft.ContainerService/fleets/test-fleet","location":"centraluseuap","name":"test-fleet","properties":{"hubProfile":{"dnsPrefix":"testDnsPrefix","fqdn":"","kubernetesVersion":""},"provisioningState":"Creating"},"type":"Microsoft.ContainerService/fleets"},{"etag":"\"00000b13-0000-3300-0000-62f157a50000\"","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ster-fleettest/providers/Microsoft.ContainerService/fleets/test-fleet4","location":"centraluseuap","name":"test-fleet4","properties":{"hubProfile":{"dnsPrefix":"testDnsPrefix","fqdn":"","kubernetesVersion":""},"provisioningState":"Deleting"},"type":"Microsoft.ContainerService/fleets"},{"etag":"\"00000913-0000-3300-0000-62f157a50000\"","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ster-fleettest/providers/Microsoft.ContainerService/fleets/my-fleet1","location":"centraluseuap","name":"my-fleet1","properties":{"hubProfile":{"dnsPrefix":"testDnsPrefix","fqdn":"","kubernetesVersion":""},"provisioningState":"Deleting"},"type":"Microsoft.ContainerService/fleets"},{"etag":"\"00000613-0000-3300-0000-62f155cc0000\"","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ster-fleettest/providers/Microsoft.ContainerService/fleets/my-fleet5","location":"centraluseuap","name":"my-fleet5","properties":{"hubProfile":{"dnsPrefix":"testDnsPrefix","fqdn":"","kubernetesVersion":""},"provisioningState":"Deleting"},"type":"Microsoft.ContainerService/fleets"},{"etag":"\"00000856-0000-3300-0000-630f97600000\"","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/pdaru-fleet-test5/providers/Microsoft.ContainerService/fleets/fleet1","location":"centraluseuap","name":"fleet1","properties":{"hubProfile":{"dnsPrefix":"1","fqdn":"1-36a467d5.hcp.centraluseuap.azmk8s.io","kubernetesVersion":""},"provisioningState":"Failed"},"type":"Microsoft.ContainerService/fleets"},{"etag":"\"0000be53-0000-3300-0000-630f07f70000\"","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ster-fleet-test/providers/Microsoft.ContainerService/fleets/ster-fleet-dpl4","location":"centraluseuap","name":"ster-fleet-dpl4","properties":{"hubProfile":{"dnsPrefix":"ster-fleet-dpl2","fqdn":"ster-fleet-dpl2-2ef32f52.hcp.centraluseuap.azmk8s.io","kubernetesVersion":""},"provisioningState":"Failed"},"type":"Microsoft.ContainerService/fleets"},{"etag":"\"00001044-0000-3300-0000-630b12300000\"","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/pdaru-fleet-test5/providers/Microsoft.ContainerService/fleets/ca-fleet1","location":"centraluseuap","name":"ca-fleet1","properties":{"hubProfile":{"dnsPrefix":"1","fqdn":"1-05e2aca4.hcp.centraluseuap.azmk8s.io","kubernetesVersion":""},"provisioningState":"Failed"},"type":"Microsoft.ContainerService/fleets"},{"etag":"\"0000ca4a-0000-3300-0000-630cace00000\"","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/fleet-cli-4liqa/providers/Microsoft.ContainerService/fleets/fleet-j3dagi54m","location":"centraluseuap","name":"fleet-j3dagi54m","properties":{"hubProfile":{"dnsPrefix":"dns-prefix","fqdn":"dns-prefix-7c7075bf.hcp.centraluseuap.azmk8s.io","kubernetesVersion":""},"provisioningState":"Failed"},"type":"Microsoft.ContainerService/fleets"},{"etag":"\"00004a55-0000-3300-0000-630f6d730000\"","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/fleet-cli-rs5rx/providers/Microsoft.ContainerService/fleets/fleet-26lq2rh7w","location":"centraluseuap","name":"fleet-26lq2rh7w","properties":{"hubProfile":{"dnsPrefix":"dns-prefix","fqdn":"dns-prefix-bfb27d29.hcp.centraluseuap.azmk8s.io","kubernetesVersion":""},"provisioningState":"Failed"},"type":"Microsoft.ContainerService/fleets"},{"etag":"\"0000ba55-0000-3300-0000-630f85fe0000\"","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/fleet-cli-4y6ds/providers/Microsoft.ContainerService/fleets/fleet-xwzjlardn","location":"centraluseuap","name":"fleet-xwzjlardn","properties":{"hubProfile":{"dnsPrefix":"dns-prefix","fqdn":"dns-prefix-d78e3263.hcp.centraluseuap.azmk8s.io","kubernetesVersion":""},"provisioningState":"Failed"},"type":"Microsoft.ContainerService/fleets"},{"etag":"\"0000bc53-0000-3300-0000-630f07090000\"","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/pdaru-fleet-test6/providers/Microsoft.ContainerService/fleets/fleet9","location":"centraluseuap","name":"fleet9","properties":{"hubProfile":{"dnsPrefix":"a","fqdn":"a-7ccb5e86.hcp.centraluseuap.azmk8s.io","kubernetesVersion":""},"provisioningState":"Failed"},"type":"Microsoft.ContainerService/fleets"},{"etag":"\"0000b155-0000-3300-0000-630f847a0000\"","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/fleet-cli-63u6w/providers/Microsoft.ContainerService/fleets/fleet-n5ynxpr45","location":"centraluseuap","name":"fleet-n5ynxpr45","properties":{"hubProfile":{"dnsPrefix":"dns-prefix","fqdn":"dns-prefix-7cf5731a.hcp.centraluseuap.azmk8s.io","kubernetesVersion":""},"provisioningState":"Failed"},"type":"Microsoft.ContainerService/fleets"},{"etag":"\"0000d056-0000-3300-0000-630fc68b0000\"","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/liqian-centraluseuap/providers/Microsoft.ContainerService/fleets/hello","location":"centraluseuap","name":"hello","properties":{"hubProfile":{"dnsPrefix":"hello","fqdn":"hello-4678c273.hcp.centraluseuap.azmk8s.io","kubernetesVersion":""},"provisioningState":"Failed"},"type":"Microsoft.ContainerService/fleets"},{"etag":"\"00008e51-0000-3300-0000-630e78480000\"","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ster-flt2/providers/Microsoft.ContainerService/fleets/ster-fleet-bicep","location":"centraluseuap","name":"ster-fleet-bicep","properties":{"hubProfile":{"dnsPrefix":"fleet-bicep","fqdn":"fleet-bicep-277918e9.hcp.centraluseuap.azmk8s.io","kubernetesVersion":""},"provisioningState":"Failed"},"type":"Microsoft.ContainerService/fleets"},{"etag":"\"0000c849-0000-3300-0000-630c702e0000\"","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/fleet-cli-csbrl/providers/Microsoft.ContainerService/fleets/fleet-tq6syhdzd","location":"centraluseuap","name":"fleet-tq6syhdzd","properties":{"hubProfile":{"dnsPrefix":"dns-prefix","fqdn":"dns-prefix-c6116f87.hcp.centraluseuap.azmk8s.io","kubernetesVersion":""},"provisioningState":"Failed"},"type":"Microsoft.ContainerService/fleets"},{"etag":"\"00007652-0000-3300-0000-630eb05b0000\"","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/minsha-centraluseuap/providers/Microsoft.ContainerService/fleets/minshatest","location":"centraluseuap","name":"minshatest","properties":{"hubProfile":{"dnsPrefix":"minshatest","fqdn":"minshatest-a6304b8f.hcp.centraluseuap.azmk8s.io","kubernetesVersion":""},"provisioningState":"Failed"},"type":"Microsoft.ContainerService/fleets"},{"etag":"\"0000cd56-0000-3300-0000-630fc64e0000\"","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/minsha-centraluseuap/providers/Microsoft.ContainerService/fleets/minshatest-2","location":"centraluseuap","name":"minshatest-2","properties":{"hubProfile":{"dnsPrefix":"minshatest-2","fqdn":"minshatest-2-77951ae4.hcp.centraluseuap.azmk8s.io","kubernetesVersion":""},"provisioningState":"Failed"},"type":"Microsoft.ContainerService/fleets"},{"etag":"\"0000d256-0000-3300-0000-630fc6a70000\"","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/chenyu1-rg/providers/Microsoft.ContainerService/fleets/chenyu1-fleet","location":"centraluseuap","name":"chenyu1-fleet","properties":{"hubProfile":{"dnsPrefix":"chenyu1-fleet","fqdn":"chenyu1-fleet-27ac0942.hcp.centraluseuap.azmk8s.io","kubernetesVersion":"1.23.8"},"provisioningState":"Failed"},"type":"Microsoft.ContainerService/fleets"},{"etag":"\"0000bf56-0000-3300-0000-630fc35a0000\"","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ryan-bug-bash/providers/Microsoft.ContainerService/fleets/ryan-bug-bash-fleet","location":"centraluseuap","name":"ryan-bug-bash-fleet","properties":{"hubProfile":{"dnsPrefix":"ryan-bug-bash-fleet","fqdn":"ryan-bug-bash-fleet-d8dcf8fe.hcp.centraluseuap.azmk8s.io","kubernetesVersion":"1.23.8"},"provisioningState":"Failed"},"type":"Microsoft.ContainerService/fleets"},{"etag":"\"00002856-0000-3300-0000-630f9f600000\"","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/minsha-bugbash/providers/Microsoft.ContainerService/fleets/fleet-1","location":"centraluseuap","name":"fleet-1","properties":{"hubProfile":{"dnsPrefix":"fleet-1","fqdn":"fleet-1-72445aea.hcp.centraluseuap.azmk8s.io","kubernetesVersion":"1.23.8"},"provisioningState":"Failed"},"type":"Microsoft.ContainerService/fleets"},{"etag":"\"0000df4d-0000-3300-0000-630d68ca0000\"","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/wenjungaoabc/providers/Microsoft.ContainerService/fleets/wenjungaoone","location":"centraluseuap","name":"wenjungaoone","properties":{"hubProfile":{"dnsPrefix":"wenjungaoone","fqdn":"wenjungaoone-4d67d83f.hcp.centraluseuap.azmk8s.io","kubernetesVersion":"1.23.8"},"provisioningState":"Failed"},"type":"Microsoft.ContainerService/fleets"},{"etag":"\"00004839-0000-3300-0000-6308617d0000\"","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/zman-bug-bash/providers/Microsoft.ContainerService/fleets/zman-fleet","location":"centraluseuap","name":"zman-fleet","properties":{"hubProfile":{"dnsPrefix":"zman-fleet","fqdn":"zman-fleet-48b69723.hcp.centraluseuap.azmk8s.io","kubernetesVersion":"1.23.8"},"provisioningState":"Failed"},"type":"Microsoft.ContainerService/fleets"},{"etag":"\"0000fe56-0000-3300-0000-630fce740000\"","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/SillyGoose3/providers/Microsoft.ContainerService/fleets/bryces-fleet-thing","location":"centraluseuap","name":"bryces-fleet-thing","properties":{"hubProfile":{"dnsPrefix":"bryces-fleet-thing","fqdn":"bryces-fleet-thing-0649dcdf.hcp.centraluseuap.azmk8s.io","kubernetesVersion":"1.23.8"},"provisioningState":"Failed"},"type":"Microsoft.ContainerService/fleets"},{"etag":"\"00009051-0000-3300-0000-630e78850000\"","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/chenyu1-rg2/providers/Microsoft.ContainerService/fleets/chenyu1-fleet","location":"centraluseuap","name":"chenyu1-fleet","properties":{"hubProfile":{"dnsPrefix":"chenyu1-fleet","fqdn":"chenyu1-fleet-bbe5c4ea.hcp.centraluseuap.azmk8s.io","kubernetesVersion":"1.23.8"},"provisioningState":"Failed"},"type":"Microsoft.ContainerService/fleets"},{"etag":"\"00000c24-0000-3300-0000-630362720000\"","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/fleet-cli-chmvi/providers/Microsoft.ContainerService/fleets/fleet-bsv5p4hol","location":"centraluseuap","name":"fleet-bsv5p4hol","properties":{"hubProfile":{"dnsPrefix":"dns-prefix","fqdn":"dns-prefix-42336c56.hcp.centraluseuap.azmk8s.io","kubernetesVersion":"1.23.8"},"provisioningState":"Failed"},"type":"Microsoft.ContainerService/fleets"},{"etag":"\"0000694d-0000-3300-0000-630d4be60000\"","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nguyenminpcluster2/providers/Microsoft.ContainerService/fleets/nguyenminpcluster2","location":"centraluseuap","name":"nguyenminpcluster2","properties":{"hubProfile":{"dnsPrefix":"nguyenminpcluster2","fqdn":"nguyenminpcluster2-2bbe275d.hcp.centraluseuap.azmk8s.io","kubernetesVersion":"1.23.8"},"provisioningState":"Failed"},"type":"Microsoft.ContainerService/fleets"},{"etag":"\"0000fe4c-0000-3300-0000-630d33800000\"","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/fleet-cli-qmizs/providers/Microsoft.ContainerService/fleets/fleet-aj6xlgul6","location":"centraluseuap","name":"fleet-aj6xlgul6","properties":{"hubProfile":{"dnsPrefix":"fleet-aj6x-fleet-cli-qmizs-8ecadf","fqdn":"fleet-aj6x-fleet-cli-qmizs-8ecadf-e9fabe11.hcp.centraluseuap.azmk8s.io","kubernetesVersion":"1.23.8"},"provisioningState":"Failed"},"tags":{"foo":"doo"},"type":"Microsoft.ContainerService/fleets"},{"etag":"\"0000864b-0000-3300-0000-630cdcd20000\"","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/fleet-cli-tei4d/providers/Microsoft.ContainerService/fleets/fleet-i662lnksx","location":"centraluseuap","name":"fleet-i662lnksx","properties":{"hubProfile":{"dnsPrefix":"fleet-i662-fleet-cli-tei4d-8ecadf","fqdn":"fleet-i662-fleet-cli-tei4d-8ecadf-5e3a80e6.hcp.centraluseuap.azmk8s.io","kubernetesVersion":"1.23.8"},"provisioningState":"Failed"},"tags":{"foo":"doo"},"type":"Microsoft.ContainerService/fleets"},{"etag":"\"00004955-0000-3300-0000-630f6d720000\"","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/chenyu1-e2e-experimental/providers/Microsoft.ContainerService/fleets/chenyu1-fleet","location":"centraluseuap","name":"chenyu1-fleet","properties":{"hubProfile":{"dnsPrefix":"chenyu1-fleet","fqdn":"chenyu1-fleet-3189e746.hcp.centraluseuap.azmk8s.io","kubernetesVersion":"1.23.8"},"provisioningState":"Failed"},"type":"Microsoft.ContainerService/fleets"},{"etag":"\"00009e4d-0000-3300-0000-630d58740000\"","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nguyenminomm/providers/Microsoft.ContainerService/fleets/nguyenminomm","location":"centraluseuap","name":"nguyenminomm","properties":{"hubProfile":{"dnsPrefix":"nguyenminomm","fqdn":"nguyenminomm-ac846e03.hcp.centraluseuap.azmk8s.io","kubernetesVersion":"1.23.8"},"provisioningState":"Failed"},"type":"Microsoft.ContainerService/fleets"},{"etag":"\"0000ec4a-0000-3300-0000-630cb5120000\"","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/sehobbs-fwotest-rg/providers/Microsoft.ContainerService/fleets/sehobbs-fwotest-fleet","location":"centraluseuap","name":"sehobbs-fwotest-fleet","properties":{"hubProfile":{"dnsPrefix":"sehobbs-fwotest-fleet","fqdn":"sehobbs-fwotest-fleet-9d590645.hcp.centraluseuap.azmk8s.io","kubernetesVersion":"1.23.8"},"provisioningState":"Failed"},"type":"Microsoft.ContainerService/fleets"},{"etag":"\"0000f454-0000-3300-0000-630f57830000\"","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/sehobbs-ft-rg/providers/Microsoft.ContainerService/fleets/sehobbs-fleet","location":"centraluseuap","name":"sehobbs-fleet","properties":{"hubProfile":{"dnsPrefix":"sehobbs-fleet","fqdn":"sehobbs-fleet-6936cc3a.hcp.centraluseuap.azmk8s.io","kubernetesVersion":"1.23.8"},"provisioningState":"Failed"},"type":"Microsoft.ContainerService/fleets"},{"etag":"\"0000624c-0000-3300-0000-630d129c0000\"","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/fleet-cli-dzqg4/providers/Microsoft.ContainerService/fleets/fleet-kri5xgrqf","location":"centraluseuap","name":"fleet-kri5xgrqf","properties":{"hubProfile":{"dnsPrefix":"fleet-kri5-fleet-cli-dzqg4-8ecadf","fqdn":"fleet-kri5-fleet-cli-dzqg4-8ecadf-8e6b3579.hcp.centraluseuap.azmk8s.io","kubernetesVersion":"1.23.8"},"provisioningState":"Failed"},"tags":{"foo":"doo"},"type":"Microsoft.ContainerService/fleets"},{"etag":"\"00006254-0000-3300-0000-630f32700000\"","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/sehobbs-ftwlp-rg/providers/Microsoft.ContainerService/fleets/sehobbs-ftwlp-fleet","location":"centraluseuap","name":"sehobbs-ftwlp-fleet","properties":{"hubProfile":{"dnsPrefix":"sehobbs-ftwlp-fleet","fqdn":"sehobbs-ftwlp-fleet-e95bcf4e.hcp.centraluseuap.azmk8s.io","kubernetesVersion":"1.23.8"},"provisioningState":"Failed"},"systemData":{"createdAt":"2022-08-26T01:05:31.2592831Z","createdBy":"sehobbs@microsoft.com","createdByType":"User","lastModifiedAt":"2022-08-26T01:05:31.2592831Z","lastModifiedBy":"sehobbs@microsoft.com","lastModifiedByType":"User"},"type":"Microsoft.ContainerService/fleets"},{"etag":"\"0000c854-0000-3300-0000-630f4c970000\"","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/bsoghigian-rg/providers/Microsoft.ContainerService/fleets/bsoghigian-fleet","location":"centraluseuap","name":"bsoghigian-fleet","properties":{"hubProfile":{"dnsPrefix":"bsoghigian-fleet","fqdn":"bsoghigian-fleet-5d23e343.hcp.centraluseuap.azmk8s.io","kubernetesVersion":"1.23.8"},"provisioningState":"Failed"},"systemData":{"createdAt":"2022-08-26T17:20:09.8806678Z","createdBy":"bsoghigian@microsoft.com","createdByType":"User","lastModifiedAt":"2022-08-26T17:20:09.8806678Z","lastModifiedBy":"bsoghigian@microsoft.com","lastModifiedByType":"User"},"type":"Microsoft.ContainerService/fleets"},{"etag":"\"00008f46-0000-3300-0000-630badb70000\"","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/liqianluo-0826-centraluseuap/providers/Microsoft.ContainerService/fleets/fleet","location":"centraluseuap","name":"fleet","properties":{"hubProfile":{"dnsPrefix":"fleet","fqdn":"fleet-80aaf5fe.hcp.centraluseuap.azmk8s.io","kubernetesVersion":"1.23.8"},"provisioningState":"Succeeded"},"systemData":{"createdAt":"2022-08-26T20:52:33.3971823Z","createdBy":"liqianluo@microsoft.com","createdByType":"User","lastModifiedAt":"2022-08-28T18:02:31.7582707Z","lastModifiedBy":"liqianluo@microsoft.com","lastModifiedByType":"User"},"type":"Microsoft.ContainerService/fleets"},{"etag":"\"0000b956-0000-3300-0000-630fc1c80000\"","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/pdarufleet2/providers/Microsoft.ContainerService/fleets/fleet1","location":"centraluseuap","name":"fleet1","properties":{"hubProfile":{"dnsPrefix":"fleet1-pdarufleet2-8ecadf","fqdn":"fleet1-pdarufleet2-8ecadf-ccad39a0.hcp.centraluseuap.azmk8s.io","kubernetesVersion":"1.23.8"},"provisioningState":"Succeeded"},"systemData":{"createdAt":"2022-08-30T19:55:35.2741276Z","createdBy":"pdaru@microsoft.com","createdByType":"User","lastModifiedAt":"2022-08-31T20:17:12.2201979Z","lastModifiedBy":"pdaru@microsoft.com","lastModifiedByType":"User"},"type":"Microsoft.ContainerService/fleets"},{"etag":"\"00009500-0000-3300-0000-63110b7a0000\"","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/liqianluo-0831-centraluseuap/providers/Microsoft.ContainerService/fleets/fleet","location":"centraluseuap","name":"fleet","properties":{"hubProfile":{"dnsPrefix":"fleet-liqianluo-0831-c-8ecadf","fqdn":"fleet-liqianluo-0831-c-8ecadf-414fdfe2.hcp.centraluseuap.azmk8s.io","kubernetesVersion":"1.23.8"},"provisioningState":"Succeeded"},"systemData":{"createdAt":"2022-08-31T20:45:50.2060935Z","createdBy":"liqianluo@microsoft.com","createdByType":"User","lastModifiedAt":"2022-08-31T20:45:50.2060935Z","lastModifiedBy":"liqianluo@microsoft.com","lastModifiedByType":"User"},"tags":{"hope":""},"type":"Microsoft.ContainerService/fleets"},{"etag":"\"00000b03-0000-3300-0000-6317fca30000\"","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/zhiyinglin-rg/providers/Microsoft.ContainerService/fleets/zhiyinglin-fleet","location":"centraluseuap","name":"zhiyinglin-fleet","properties":{"hubProfile":{"dnsPrefix":"zhiyinglin-fleet","fqdn":"zhiyinglin-fleet-f71d63c9.hcp.centraluseuap.azmk8s.io","kubernetesVersion":"1.23.8"},"provisioningState":"Succeeded"},"systemData":{"createdAt":"2022-09-07T02:06:27.0345047Z","createdBy":"zhiyinglin@microsoft.com","createdByType":"User","lastModifiedAt":"2022-09-07T02:06:27.0345047Z","lastModifiedBy":"zhiyinglin@microsoft.com","lastModifiedByType":"User"},"type":"Microsoft.ContainerService/fleets"},{"etag":"\"00005d03-0000-3300-0000-63191e5b0000\"","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-m-0/providers/Microsoft.ContainerService/fleets/fleet","location":"centraluseuap","name":"fleet","properties":{"hubProfile":{"dnsPrefix":"fleet","fqdn":"fleet-58e0e6a4.hcp.centraluseuap.azmk8s.io","kubernetesVersion":"1.23.8"},"provisioningState":"Succeeded"},"systemData":{"createdAt":"2022-09-07T22:42:35.2453913Z","createdBy":"nguyenmin@microsoft.com","createdByType":"User","lastModifiedAt":"2022-09-07T22:42:35.2453913Z","lastModifiedBy":"nguyenmin@microsoft.com","lastModifiedByType":"User"},"type":"Microsoft.ContainerService/fleets"},{"etag":"\"0000cc03-0000-3300-0000-631a1ecd0000\"","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-000001/providers/Microsoft.ContainerService/fleets/fl-000002","location":"centraluseuap","name":"fl-000002","properties":{"hubProfile":{"dnsPrefix":"fl-000002-cli-000001-8ecadf","fqdn":"fl-000002-cli-000001-8ecadf-cc2a2e9d.hcp.centraluseuap.azmk8s.io","kubernetesVersion":"1.23.8"},"provisioningState":"Succeeded"},"systemData":{"createdAt":"2022-09-08T16:49:57.1489136Z","createdBy":"pdaru@microsoft.com","createdByType":"User","lastModifiedAt":"2022-09-08T16:49:57.1489136Z","lastModifiedBy":"pdaru@microsoft.com","lastModifiedByType":"User"},"tags":{"foo":"doo"},"type":"Microsoft.ContainerService/fleets"},{"etag":"\"c801c323-0000-0100-0000-630382d80000\"","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2erg-chenyuebld59367573-cGVzD/providers/Microsoft.ContainerService/fleets/fleet","location":"eastus","name":"fleet","properties":{"hubProfile":{"dnsPrefix":"fleet","fqdn":"fleet-1b7a6d5c.hcp.eastus.azmk8s.io","kubernetesVersion":"1.23.8"},"provisioningState":"Succeeded"},"tags":{"archv2":"","tier":"production"},"type":"Microsoft.ContainerService/fleets"},{"etag":"\"660277c0-0000-0100-0000-630906a60000\"","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ryan-fleet-rg/providers/Microsoft.ContainerService/fleets/bugbash-fleet","location":"eastus","name":"bugbash-fleet","properties":{"hubProfile":{"dnsPrefix":"bugbash-fleet","fqdn":"bugbash-fleet-ee8aca20.hcp.eastus.azmk8s.io","kubernetesVersion":"1.23.8"},"provisioningState":"Succeeded"},"systemData":{"createdAt":"2022-08-26T17:45:09.7649266Z","createdBy":"zhangryan@microsoft.com","createdByType":"User","lastModifiedAt":"2022-08-26T17:45:09.7649266Z","lastModifiedBy":"zhangryan@microsoft.com","lastModifiedByType":"User"},"type":"Microsoft.ContainerService/fleets"},{"etag":"\"d602b1cb-0000-0100-0000-630e7e6b0000\"","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/pdarufleet2/providers/Microsoft.ContainerService/fleets/fleet2","location":"eastus","name":"fleet2","properties":{"hubProfile":{"dnsPrefix":"fleet2-pdarufleet2-8ecadf","fqdn":"fleet2-pdarufleet2-8ecadf-1d67581d.hcp.eastus.azmk8s.io","kubernetesVersion":"1.23.8"},"provisioningState":"Succeeded"},"systemData":{"createdAt":"2022-08-30T21:17:30.8828324Z","createdBy":"pdaru@microsoft.com","createdByType":"User","lastModifiedAt":"2022-08-30T21:17:30.8828324Z","lastModifiedBy":"pdaru@microsoft.com","lastModifiedByType":"User"},"type":"Microsoft.ContainerService/fleets"},{"etag":"\"0b03443a-0000-0100-0000-6311040f0000\"","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/bbarvindfleetrg/providers/Microsoft.ContainerService/fleets/bbarvindfleet","location":"eastus","name":"bbarvindfleet","properties":{"hubProfile":{"dnsPrefix":"bbarvindfleet-dns","fqdn":"bbarvindfleet-dns-6e4d63c5.hcp.eastus.azmk8s.io","kubernetesVersion":"1.23.8"},"provisioningState":"Succeeded"},"systemData":{"createdAt":"2022-09-01T19:12:15.2691451Z","createdBy":"arvindth@microsoft.com","createdByType":"User","lastModifiedAt":"2022-09-01T19:12:15.2691451Z","lastModifiedBy":"arvindth@microsoft.com","lastModifiedByType":"User"},"type":"Microsoft.ContainerService/fleets"},{"etag":"\"0b032452-0000-0100-0000-6311052f0000\"","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/fleet-fluffy/providers/Microsoft.ContainerService/fleets/fluffy","location":"eastus","name":"fluffy","properties":{"hubProfile":{"dnsPrefix":"fluffy-dns","fqdn":"fluffy-dns-5956fc5f.hcp.eastus.azmk8s.io","kubernetesVersion":"1.23.8"},"provisioningState":"Succeeded"},"systemData":{"createdAt":"2022-09-01T19:17:03.207904Z","createdBy":"ftran@microsoft.com","createdByType":"User","lastModifiedAt":"2022-09-01T19:17:03.207904Z","lastModifiedBy":"ftran@microsoft.com","lastModifiedByType":"User"},"type":"Microsoft.ContainerService/fleets"},{"etag":"\"0b032fe6-0000-0100-0000-63110b910000\"","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/yj-fleetm-group/providers/Microsoft.ContainerService/fleets/yj-fleet-manager","location":"eastus","name":"yj-fleet-manager","properties":{"hubProfile":{"dnsPrefix":"yj-fleet-manager-dns","fqdn":"yj-fleet-manager-dns-f0e190eb.hcp.eastus.azmk8s.io","kubernetesVersion":"1.23.8"},"provisioningState":"Succeeded"},"systemData":{"createdAt":"2022-09-01T19:44:17.1333567Z","createdBy":"younjaekim@microsoft.com","createdByType":"User","lastModifiedAt":"2022-09-01T19:44:17.1333567Z","lastModifiedBy":"younjaekim@microsoft.com","lastModifiedByType":"User"},"type":"Microsoft.ContainerService/fleets"},{"etag":"\"0c031195-0000-0100-0000-6311137b0000\"","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/zman-bugbash-0901/providers/Microsoft.ContainerService/fleets/fleet-2","location":"eastus","name":"fleet-2","properties":{"hubProfile":{"dnsPrefix":"fleet-2-dns","fqdn":"fleet-2-dns-63fef013.hcp.eastus.azmk8s.io","kubernetesVersion":"1.23.8"},"provisioningState":"Succeeded"},"systemData":{"createdAt":"2022-09-01T20:18:02.7508001Z","createdBy":"zichangsu@microsoft.com","createdByType":"User","lastModifiedAt":"2022-09-01T20:18:02.7508001Z","lastModifiedBy":"zichangsu@microsoft.com","lastModifiedByType":"User"},"type":"Microsoft.ContainerService/fleets"},{"etag":"\"01006ea2-0000-3400-0000-62cf6db10000\"","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/liqianluo-fleet-test/providers/Microsoft.ContainerService/fleets/liqianluo-fleet","location":"eastus2euap","name":"liqianluo-fleet","properties":{"hubProfile":{"dnsPrefix":"testDnsPrefix","fqdn":"","kubernetesVersion":""},"provisioningState":"Deleting"},"type":"Microsoft.ContainerService/fleets"},{"etag":"\"0800071e-0000-3400-0000-62e82ea10000\"","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/pdaru-fleet-test4/providers/Microsoft.ContainerService/fleets/pdaru-fleet8","location":"eastus2euap","name":"pdaru-fleet8","properties":{"hubProfile":{"dnsPrefix":"prefix","fqdn":"prefix-1ffdf678.hcp.eastus2euap.azmk8s.io","kubernetesVersion":""},"provisioningState":"Succeeded"},"type":"Microsoft.ContainerService/fleets"},{"etag":"\"090041e5-0000-3400-0000-62fcf2f20000\"","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/zhiyinglin-test-rg/providers/Microsoft.ContainerService/fleets/zhiyinglin-fleet","location":"eastus2euap","name":"zhiyinglin-fleet","properties":{"hubProfile":{"dnsPrefix":"zhiyinglin-fleet","fqdn":"zhiyinglin-fleet-1b8d2ff3.hcp.eastus2euap.azmk8s.io","kubernetesVersion":"1.23.8"},"provisioningState":"Succeeded"},"type":"Microsoft.ContainerService/fleets"},{"etag":"\"00000900-0000-0600-0000-62fdf0250000\"","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/lima2-rg/providers/Microsoft.ContainerService/fleets/lima2-fleet","location":"westcentralus","name":"lima2-fleet","properties":{"hubProfile":{"dnsPrefix":"lima2-fleet","fqdn":"lima2-fleet-681147a8.hcp.westcentralus.azmk8s.io","kubernetesVersion":"1.23.8"},"provisioningState":"Succeeded"},"type":"Microsoft.ContainerService/fleets"},{"etag":"\"00000b00-0000-0600-0000-62fdf0b40000\"","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/binxi1-rg/providers/Microsoft.ContainerService/fleets/binxi1-fleet","location":"westcentralus","name":"binxi1-fleet","properties":{"hubProfile":{"dnsPrefix":"binxi1-fleet","fqdn":"binxi1-fleet-ccd17e0f.hcp.westcentralus.azmk8s.io","kubernetesVersion":"1.23.8"},"provisioningState":"Succeeded"},"type":"Microsoft.ContainerService/fleets"},{"etag":"\"00000c00-0000-0600-0000-62fdf0e90000\"","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/peni-test/providers/Microsoft.ContainerService/fleets/peni-fleet","location":"westcentralus","name":"peni-fleet","properties":{"hubProfile":{"dnsPrefix":"peni-fleet","fqdn":"peni-fleet-4525b2df.hcp.westcentralus.azmk8s.io","kubernetesVersion":"1.23.8"},"provisioningState":"Succeeded"},"type":"Microsoft.ContainerService/fleets"},{"etag":"\"00001000-0000-0600-0000-62fdf2ac0000\"","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/jialuncai-rg/providers/Microsoft.ContainerService/fleets/jialuncai-fleet","location":"westcentralus","name":"jialuncai-fleet","properties":{"hubProfile":{"dnsPrefix":"jialuncai-fleet","fqdn":"jialuncai-fleet-5a6870c1.hcp.westcentralus.azmk8s.io","kubernetesVersion":"1.23.8"},"provisioningState":"Succeeded"},"type":"Microsoft.ContainerService/fleets"},{"etag":"\"00001400-0000-0600-0000-62fdf48a0000\"","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/qinhao-fleet-rg/providers/Microsoft.ContainerService/fleets/qinhao-fleet-fleet","location":"westcentralus","name":"qinhao-fleet-fleet","properties":{"hubProfile":{"dnsPrefix":"qinhao-fleet-fleet","fqdn":"qinhao-fleet-fleet-57c87427.hcp.westcentralus.azmk8s.io","kubernetesVersion":"1.23.8"},"provisioningState":"Succeeded"},"type":"Microsoft.ContainerService/fleets"},{"etag":"\"00003800-0000-0600-0000-62fdf9830000\"","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/shafanabt-rg/providers/Microsoft.ContainerService/fleets/ashafanabt-fleet","location":"westcentralus","name":"ashafanabt-fleet","properties":{"hubProfile":{"dnsPrefix":"shafanabt-fleet","fqdn":"shafanabt-fleet-0c701083.hcp.westcentralus.azmk8s.io","kubernetesVersion":"1.23.8"},"provisioningState":"Succeeded"},"type":"Microsoft.ContainerService/fleets"},{"etag":"\"00004d00-0000-0600-0000-62fe00150000\"","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/wantjian-rg/providers/Microsoft.ContainerService/fleets/wantjian-fleet","location":"westcentralus","name":"wantjian-fleet","properties":{"hubProfile":{"dnsPrefix":"wantjian-fleet","fqdn":"wantjian-fleet-9ccca1a7.hcp.westcentralus.azmk8s.io","kubernetesVersion":"1.23.8"},"provisioningState":"Succeeded"},"type":"Microsoft.ContainerService/fleets"},{"etag":"\"00005700-0000-0600-0000-62fe03350000\"","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/guwe-rg-1/providers/Microsoft.ContainerService/fleets/guwe-fleet","location":"westcentralus","name":"guwe-fleet","properties":{"hubProfile":{"dnsPrefix":"guwe-fleet","fqdn":"guwe-fleet-50da5b9e.hcp.westcentralus.azmk8s.io","kubernetesVersion":"1.23.8"},"provisioningState":"Succeeded"},"type":"Microsoft.ContainerService/fleets"},{"etag":"\"00006900-0000-0600-0000-62fe1aa80000\"","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/weizhichen-rg/providers/Microsoft.ContainerService/fleets/weizhichen-fleet","location":"westcentralus","name":"weizhichen-fleet","properties":{"hubProfile":{"dnsPrefix":"weizhichen-fleet","fqdn":"weizhichen-fleet-5e475207.hcp.westcentralus.azmk8s.io","kubernetesVersion":"1.23.8"},"provisioningState":"Succeeded"},"type":"Microsoft.ContainerService/fleets"},{"etag":"\"0000576c-0000-0600-0000-6305a0730000\"","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/chenyu1-experimental/providers/Microsoft.ContainerService/fleets/chenyu1-fleet","location":"westcentralus","name":"chenyu1-fleet","properties":{"hubProfile":{"dnsPrefix":"chenyu1-fleet","fqdn":"chenyu1-fleet-bd3ad123.hcp.westcentralus.azmk8s.io","kubernetesVersion":"1.23.8"},"provisioningState":"Succeeded"},"type":"Microsoft.ContainerService/fleets"},{"etag":"\"5703eb85-0000-0700-0000-63059f520000\"","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/fleet-cli-fjpxf/providers/Microsoft.ContainerService/fleets/fleet-tu76xu2oa","location":"westus","name":"fleet-tu76xu2oa","properties":{"hubProfile":{"dnsPrefix":"fleet-tu76-fleet-cli-fjpxf-8ecadf","fqdn":"fleet-tu76-fleet-cli-fjpxf-8ecadf-0bc6c839.hcp.westus.azmk8s.io","kubernetesVersion":"1.23.8"},"provisioningState":"Succeeded"},"tags":{"foo":"doo"},"type":"Microsoft.ContainerService/fleets"},{"etag":"\"d50639a7-0000-0700-0000-6317764b0000\"","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/pdfl-westus/providers/Microsoft.ContainerService/fleets/pdfl1","location":"westus","name":"pdfl1","properties":{"hubProfile":{"dnsPrefix":"pdfl1-pdfl-westus-8ecadf","fqdn":"pdfl1-pdfl-westus-8ecadf-747ea515.hcp.westus.azmk8s.io","kubernetesVersion":"1.23.8"},"provisioningState":"Succeeded"},"systemData":{"createdAt":"2022-09-06T16:33:15.2463458Z","createdBy":"pdaru@microsoft.com","createdByType":"User","lastModifiedAt":"2022-09-06T16:33:15.2463458Z","lastModifiedBy":"pdaru@microsoft.com","lastModifiedByType":"User"},"type":"Microsoft.ContainerService/fleets"},{"etag":"\"d50671af-0000-0700-0000-631777d40000\"","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/pdfl-westus/providers/Microsoft.ContainerService/fleets/pdfl2","location":"westus","name":"pdfl2","properties":{"hubProfile":{"dnsPrefix":"pdfl2-pdfl-westus-8ecadf","fqdn":"pdfl2-pdfl-westus-8ecadf-950c4396.hcp.westus.azmk8s.io","kubernetesVersion":"1.23.8"},"provisioningState":"Succeeded"},"systemData":{"createdAt":"2022-09-06T16:39:47.7570752Z","createdBy":"pdaru@microsoft.com","createdByType":"User","lastModifiedAt":"2022-09-06T16:39:47.7570752Z","lastModifiedBy":"pdaru@microsoft.com","lastModifiedByType":"User"},"type":"Microsoft.ContainerService/fleets"},{"etag":"\"47009528-0000-0800-0000-6308fae90000\"","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/minsha-bugbash-2/providers/Microsoft.ContainerService/fleets/fleet-1","location":"westus2","name":"fleet-1","properties":{"hubProfile":{"dnsPrefix":"fleet-1","fqdn":"fleet-1-27a60ba9.hcp.westus2.azmk8s.io","kubernetesVersion":"1.23.8"},"provisioningState":"Succeeded"},"type":"Microsoft.ContainerService/fleets"}]}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '23515'
+      - '33980'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 23 Aug 2022 05:57:09 GMT
+      - Thu, 08 Sep 2022 16:57:05 GMT
       expires:
       - '-1'
       pragma:
@@ -1047,6 +1046,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-original-request-ids:
+      - ''
       - ''
       - ''
       - ''
@@ -1074,19 +1074,19 @@ interactions:
       - AZURECLI/2.39.0 azsdk-python-azure-mgmt-containerservice/20.0.0 Python/3.8.10
         (Linux-5.8.0-1040-azure-x86_64-with-glibc2.29)
     method: POST
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/fleet-cli-000001/providers/Microsoft.ContainerService/fleets/fleet-000002/listCredentials?api-version=2022-06-02-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-000001/providers/Microsoft.ContainerService/fleets/fl-000002/listCredentials?api-version=2022-06-02-preview
   response:
     body:
-      string: '{"kubeconfigs":[{"name":"clusterUser","value":"YXBpVmVyc2lvbjogdjEKY2x1c3RlcnM6Ci0gY2x1c3RlcjoKICAgIGNlcnRpZmljYXRlLWF1dGhvcml0eS1kYXRhOiBMUzB0TFMxQ1JVZEpUaUJEUlZKVVNVWkpRMEZVUlMwdExTMHRDazFKU1VVMlJFTkRRWFJEWjBGM1NVSkJaMGxSU1VkWU9EQkllVzVYWlVkR09DdGpRa2xJTUVST1ZFRk9RbWRyY1docmFVYzVkekJDUVZGelJrRkVRVTRLVFZGemQwTlJXVVJXVVZGRVJYZEthbGxVUVdkR2R6QjVUV3BCTkUxcVRYZE9WRkYzVFZSc1lVZEJPSGxOUkZWNVRVUm5lVTE2UVRGT1ZFRjRUMVp2ZHdwRVZFVk1UVUZyUjBFeFZVVkJlRTFEV1RKRmQyZG5TV2xOUVRCSFExTnhSMU5KWWpORVVVVkNRVkZWUVVFMFNVTkVkMEYzWjJkSlMwRnZTVU5CVVVONUNqSlViWEpDWjFsNVlWWkNiMXBwUkRWUGRqZHVSa3RyVGxVNVRrNXNUbloyVVhOVU5qRmhaMnRYUmtoTVQwTk1PSGhaUWxZM1ZXdE9LMHhFUlVNNFFYQUthbWM0WlhWUGN6azBZVEJNYzFoc1NEWlBabVZvYmtGR2VXcEplSFZMUzA5VGNXWlVZMVJYUVdGU1YyVnJUbTh4UlZwYU1uUk1iRlZOU3pKWVJucFZZUXBxUTFOSFN6bHBiRmxNWkRWaWRVNXFXV05xVjJabVpYbHpZa3BVWlUxNk1rb3lia01yYVdKR1VpODFMeTh6WTNVeU1XcDRjSGxaZW1oVGJYQlNiMUJOQ25WNGJuaHhWbHA0VFU1NmQxRlFiMEZIVUhOU1Ywd3JTa2hPU20wcmVEaE9UREJxV0hZd2NVSk9PRXg0TUVWak5GVnFiekZpYW05TEwzbHpUMEpHVm0wS1lrWjVjMnhsV1ZwM01Fc3dPRFZaTUd0d05VeHJXRTFhV0dwd00xSXlLMHhUU0ZaRWRtTkRjMFYzYjFkTFdsUkRjazlJTUVWMFRHSjZjSEpVT0U5RVVnb3hiM1ZMUWxGeWFtNVJVemxJTTNoemVFVmxMemwwYUVORGJFMXpSMEpIYUVadlUwcHJlV3BtTjBaVFZYZDFVVW94YVRSTVpYTm1MM3BrUW1aU1ZHMW5Da1ZUY21aWE9VaFVaM1JhWW0xdWJEbGhjamh3YW5CSFVUVXJjbWRrVFRoMFlrMW5kRE5CTWk5Wk1tVXdiV3gxYURaT2JDdGhVR0ZIVldwNUswazRZVU1LYUdObGRGVnZTVGRpWjJReFIzY3lVREpxUlRaMGFGQnNkSFpSVlVkNVUxbEhVVlpKUlhNelV6bDRVbFJ1VG1sVkx6QnJja3h6V0VSeE9FaDNUakp2UkFwRVZUWmplRzUwZUd0TmFtNDFUamxHVXl0a2VEVjRTM2RWY0Zjd2F5OVljbmxMUkdOb00wdFhZWE5CY1V0MFdIaEtXa0pUTlZoUFZ6QklTamR1UVVObUNtWmljR1Y0VGtkMVpsaEJjMVJTUzJzeFIzTktZaTlHVUZGdGFFUldUVzgxVGpOTFIwNDBaRUpMYzA1T1oxVjJOVkkyVTJWVWNrdEtaV1l2ZDJSeVVUa0tUMjlEWjFsUlExUndTSEpOVlRSQ1puQlhkVWxYV1ZkV1duRlJkMXBqY1hGQksyeFhhRmgzYUVaUlNVUkJVVUZDYnpCSmQxRkVRVTlDWjA1V1NGRTRRZ3BCWmpoRlFrRk5RMEZ4VVhkRWQxbEVWbEl3VkVGUlNDOUNRVlYzUVhkRlFpOTZRV1JDWjA1V1NGRTBSVVpuVVZWM1dtdzJiMVZJUW5OS2JrTkJTMjVMQ25oWGRGSnZhV3g2VDNscmQwUlJXVXBMYjFwSmFIWmpUa0ZSUlV4Q1VVRkVaMmRKUWtGTFltZDVVRzUzUkhsalZ6WlBiSGhRYTFGWFZXZExjbGx5ZEdzS1pUbE5NRk5HV1hKTGFIUnlUazFrZDNOYVpqVnNWV2czZEhOQ2MxTlRkVkpFSzA5UVJHMUZRM1J3WlUxb1NVYzNMMWMyWjJoelJFTlhVV0Z5WkU1SWVRcEhjRmhpZERWRlZESlNjQzl5WVc0eVR6aHFOMmQzVFV3M1JuTTJWREJuTVdsNFlrSmhjMWxwVTJaamFHTmtXVk5DVVZaUFYwSkJVSHBUUjNCVFlTdG1Da2sxVlhjMlVsZGplbGs0TjJwdVYxVktaREoxZDBseGIxb3dNWEJTVEVjeVQxaFBWbE5ISzBaYWFFTlVkbUZVYnl0RFVrcEJRelptWkM5alV6TlpUMm9LTXpsWFl5ODVibXNyUnpSR1FuWktWM0ZKTkZWclVWUjJjbEZsWTNaSllpODFNVmxPVjFGaWNURk5aV3BTYjAxdVNsTktjMkpoWm1SQllreHpXRVo0ZEFweVoxVlJRVmt3VkU5V1JsQkNVVmhhTjA5allrdGhZVk5yYzJkVFdVNUhXbk4wVkVkVlRFVmpVWHBVVDNWTE4wcG5lVkkwY1dKMlkwOXhjbWxETUdzMENuQjNhRWh4TlZRMFYzb3lZak12YlRkcVlqTjFPV0phYjJGUGRscFBlbVZrVldoVlpWTlhVR05MUTFodlIxQjJVVmh2UTB0SWRXMVZPR3RTY2pORGFWY0tiRk5JWTJRM1MwRXhNMk5sTUVScGVtSkpkbHBJWjBSMlFuVlNZMGgyUjFwV2JXUXZTRmRsWWpsTlZXbEVZM2t4VDFnMVJuVlBNM1ZSYVVOVVNYUTRNQXBrVURkcFFWZE1aWFZ2Wm1reGRHdGtiV1JJZFZCNWJGbzVjbkZJZVRVNVpubDFkMEkyTlV4R1pVZEdPVE5QZVZvdlpqSXhVMDlhWmpOc2JFTm9SRmh3Q2t0dFZYZHJZMDlsUVdweVZUazFWRXBaTDBSMVRYVXdSbk5vT0V3ME1WVjNTME54U2xoVFIwTk5hRTlPYUVnNU1XSldjbXhTWlhnelJFSlVlR3RpVEZFS2NrTlJlV2R6ZWpKWGJFWkdZVkoyV0RVNU1FMDJTR3hNYlVoRE9VY3hXWE0wVlhOQlZrSlZXa3hvVmpWSVIwSkRhbEoyTlVwVmRUWjBZVTFvYjJaMFpRb3hTWHBaYlVOdlNVaEpLMEp3UW5VNUNpMHRMUzB0UlU1RUlFTkZVbFJKUmtsRFFWUkZMUzB0TFMwSwogICAgc2VydmVyOiBodHRwczovL2ZsZWV0LWpjdTctZmxlZXQtY2xpLXhhZzJqLThlY2FkZi1jNGNjNDRkZC5oY3AuY2VudHJhbHVzZXVhcC5hem1rOHMuaW86NDQzCiAgbmFtZTogaHViCmNvbnRleHRzOgotIGNvbnRleHQ6CiAgICBjbHVzdGVyOiBodWIKICAgIHVzZXI6IGNsdXN0ZXJVc2VyX0ZMX2ZsZWV0LWNsaS14YWcyal9mbGVldC1qY3U3cWhhM2VfY2VudHJhbHVzZXVhcF9odWIKICBuYW1lOiBodWIKY3VycmVudC1jb250ZXh0OiBodWIKa2luZDogQ29uZmlnCnByZWZlcmVuY2VzOiB7fQp1c2VyczoKLSBuYW1lOiBjbHVzdGVyVXNlcl9GTF9mbGVldC1jbGkteGFnMmpfZmxlZXQtamN1N3FoYTNlX2NlbnRyYWx1c2V1YXBfaHViCiAgdXNlcjoKICAgIGF1dGgtcHJvdmlkZXI6CiAgICAgIGNvbmZpZzoKICAgICAgICBhcGlzZXJ2ZXItaWQ6IDZkYWU0MmY4LTQzNjgtNDY3OC05NGZmLTM5NjBlMjhlMzYzMAogICAgICAgIGNsaWVudC1pZDogODBmYWY5MjAtMTkwOC00YjUyLWI1ZWYtYThlN2JlZGZjNjdhCiAgICAgICAgY29uZmlnLW1vZGU6ICIxIgogICAgICAgIGVudmlyb25tZW50OiBBenVyZVB1YmxpY0Nsb3VkCiAgICAgICAgdGVuYW50LWlkOiA3MmY5ODhiZi04NmYxLTQxYWYtOTFhYi0yZDdjZDAxMWRiNDcKICAgICAgbmFtZTogYXp1cmUK"}]}'
+      string: '{"kubeconfigs":[{"name":"clusterUser","value":"YXBpVmVyc2lvbjogdjEKY2x1c3RlcnM6Ci0gY2x1c3RlcjoKICAgIGNlcnRpZmljYXRlLWF1dGhvcml0eS1kYXRhOiBMUzB0TFMxQ1JVZEpUaUJEUlZKVVNVWkpRMEZVUlMwdExTMHRDazFKU1VVMlZFTkRRWFJIWjBGM1NVSkJaMGxTUVV3emNUSmxTelJ4ZVdvdksyaGxTRWxSYUhkNWJVMTNSRkZaU2t0dldrbG9kbU5PUVZGRlRFSlJRWGNLUkZSRlRFMUJhMGRCTVZWRlFYaE5RMWt5UlhkSlFtTk9UV3BKZDA5VVFUUk5WRmt3VFZSQmVWZG9aMUJOYWtFeFRXcEJOVTFFWjNoT2FsVjRUVVJLWVFwTlFUQjRRM3BCU2tKblRsWkNRVTFVUVcxT2FFMUpTVU5KYWtGT1FtZHJjV2hyYVVjNWR6QkNRVkZGUmtGQlQwTkJaemhCVFVsSlEwTm5TME5CWjBWQkNqTndjaXM0TTBFdk1qTk1UbG93YTBwelZtczBhV1ZVSzBVclF6TklWemwyZWtoamVITjRNWGhMYTAxRFRqbE5LME5tYldkQlFrRnBia0UxVEVOS2FFOEtRVUpyYkRscGF6RnVaRVJSVTFCNVRtRjVRME5FTjNWcVMxUnpka1pETlZCMkx6TkJaVlZ5YUZwSlJXMXBXR2g1VUd4dE0wTmxjbHB4WkRGM2FuaFFPQXBUTVdWUFdqSXZVV2RvZERKSk56Vmtaa0YzZEhwRlRtODVVbVU0YkhGdWJXSTFVMUZWZVcxQlNYbDFUMFo0WlVGa1JFbzBjV2N3U2swelZWbzFNVWhGQ2xodE9VRTRiMHRJTkVFMGFYbEhSWEZsVEc1R2RuTm5MMjl0VUVOTk1HdHNVblZWYVhkemVITk5VRkJLY1c1WGQwUlJOaTgxV0VsbU1tcFZUbWhvY1dJS2JEbDFibFpvTlhwTGIyeHBOMlZFYlU1UVZtd3JNVFpNTlU1VWRscHhaVWxzZDBzclNTOWtSR2R3TDBkNFEwdHFLM1J2U0hWRlFrczRZV1ZIWTJ0eWJ3b3pXRXR3YlVwVVFrVldlVmR4U1djeWFHTjBhakpxTkRGcFpVOVdXQzlrTTBoU1RXaEtOek0zZHpaT1lWa3JheXRaUlZsT1JVVkhWRVZvWWxBMWVGWlVDbXB5SzJsM2JreHFVMGRHTlhwMllXaHVRM0YxTXpsd01GRlRkemx3TjJFMFFWVm1kRmRMUTJ4R1lVOUhRbkp4VUdkek5XYzVTekpyUWs5b1QybEZOR0VLTnpBNVRUVjRWWE5ZTldSbmRIbzFVRWRSUVhOcFJsUXhOR2h1ZFZWUVQySm1PV2h3UVhoV2RqazBhazRyVG5sVlZtNVhaMDE2TjNaUGQzbFpSWFowY2dwUGRESXhNMFJYWjFJemFITkRlQ3N4TVZkeVZWWjRiRzFJV0U5TmJtVk1OWEZ1VG1nMVVIRkhSbFIzVXpCc1EzUk9WazVJUlVOU2FFSkZORlZMT0ZFeENtWmhUeTk0UW1RM1RFbDNWR0Y2YmpZMVIwNDRNR2g0WkRCUU4xWmFVMjF0ZFdONVVERmFNR0p3UkVJMmVsTnJPSGhDVlZocmVESkxVVm81TUdadWNWWUtaRGxtWXl0dE1HNW9Za1pKUm5kMk56WXlSSFZzY0hRM1NXazRZaTh6U2tKYU1XTnNhVzE0YUVKSFkwTkJkMFZCUVdGT1EwMUZRWGRFWjFsRVZsSXdVQXBCVVVndlFrRlJSRUZuUzJ0TlFUaEhRVEZWWkVWM1JVSXZkMUZHVFVGTlFrRm1PSGRJVVZsRVZsSXdUMEpDV1VWR1JYUjBTMU5DYVhaQldtSm9LMEUyQ2s1dE5VZENkemh0YTNWdWMwMUJNRWREVTNGSFUwbGlNMFJSUlVKRGQxVkJRVFJKUTBGUlFtNXlLMkkwVVZGNGVsQlBWbXh0YUhJNU1uVkVURWhCT0RnS2NXWjJkV1lyY1ZKM01sbEJOMll5TlVselduSlhNVnB3ZWpOalEwMVhkeXN5UjBGelZsZFBlVzF3Y1VoWFNuQnNTMHhuVERsNU16Rm1hRGQ0UldveFdncG9ZUzlJTUZOM1FuSnpNbEEzZFV4a1FXMTFPVnBsZUVWbFdHbHVVamRGZVhnd1RVeGtUamR0ZFZOTGNsaG9jRXcwYUhkcWRERndTSFUxU2k5R09ESlNDbk5tV2xOaFJGTnJRbEZDYzFGWmVUTlNOWG94VTBWWVF6TjVUeThyZDFaWmFrdFBReTk1TWtwS1VtRkdNRUp4Ynpkc1pXdHFZekJsZEdWQmIyOU1kVFVLTDNSb1pDOWpXVlU0U3pCMVkyRjRjVGxhTkRneVFVZHJPVlpRWjBWclkweE5hRTFsU2tveVRrOWxjbmRGYzJ4WFRXaDZia3BEYjA0elRrbHRSV3hLTndwT1lVTnNMM3BrTVZwVksybHhLMDVSYlZWQ2Vrd3JOVzVZZWxGdU1GZFRibVIyV1hkQk5WTnpUVlZCYXpWRWFVdFllSFZHWlVKclkyNUpkbkpTTWxGS0NrOVpaM1ZOZFdFeFkxZ3diSEZWZHpkVVJHbDFjRlptTlZWVVNVWjJaemhhUzI4MllWWTFNM2xKZVVKelJXUlRObVptWldoUWRXRm5TM1EwVURKWE1XVUtNVXBrVFVjeFdVcHJUblZzUzB3MWFYRmFWR2xtWm1sbFlucDZUREJpYVRSalIwOVhkMFJuUTBJM2JHbE5lbkZLSzBWbU0yUm9hVlZ3WlVocWJqVkRhZ3BqYW5aRE5tMURSRmhZVUdGQ2FuQk5SR2hTVTBGVU5FTm1jSFZRV1RCTFNVTlZjR1ZxVlZKMFQycEhSMkZCUkV4cVIwVkdLMWRRZVZRNFdUTm5aRTFQQ201TU5tOUhOUzlIZW1ST01XdFhNbGhTYmtkQlp6ZDNlRmMzWlhSdFVXSkVNSFpTVVROeU5GZ3pNR3hyUVhGcU9DOW9UR1IwU0daclFUZHlPVGRTWVhjS1JrRkhWVGwyYVdsbU1raHhOMnBGU0hWTlV6bEphM293UlVjcmFHUkdiRTk1WkdaaVJqaHpPVEJ1YUhKVVdXZGlRamhzUTIxMloyOU5LekpxY0VOTmFnbzNRWFUwV2xCeFlqTk1lV041VGpkWGNrRTlQUW90TFMwdExVVk9SQ0JEUlZKVVNVWkpRMEZVUlMwdExTMHRDZz09CiAgICBzZXJ2ZXI6IGh0dHBzOi8vZmwtNW1qNy1jbGktMmV5ci04ZWNhZGYtY2MyYTJlOWQuaGNwLmNlbnRyYWx1c2V1YXAuYXptazhzLmlvOjQ0MwogIG5hbWU6IGh1Ygpjb250ZXh0czoKLSBjb250ZXh0OgogICAgY2x1c3RlcjogaHViCiAgICB1c2VyOiBjbHVzdGVyVXNlcl9GTF9jbGktMmV5cl9mbC01bWo3X2NlbnRyYWx1c2V1YXBfaHViCiAgbmFtZTogaHViCmN1cnJlbnQtY29udGV4dDogaHViCmtpbmQ6IENvbmZpZwpwcmVmZXJlbmNlczoge30KdXNlcnM6Ci0gbmFtZTogY2x1c3RlclVzZXJfRkxfY2xpLTJleXJfZmwtNW1qN19jZW50cmFsdXNldWFwX2h1YgogIHVzZXI6CiAgICBhdXRoLXByb3ZpZGVyOgogICAgICBjb25maWc6CiAgICAgICAgYXBpc2VydmVyLWlkOiA2ZGFlNDJmOC00MzY4LTQ2NzgtOTRmZi0zOTYwZTI4ZTM2MzAKICAgICAgICBjbGllbnQtaWQ6IDgwZmFmOTIwLTE5MDgtNGI1Mi1iNWVmLWE4ZTdiZWRmYzY3YQogICAgICAgIGNvbmZpZy1tb2RlOiAiMSIKICAgICAgICBlbnZpcm9ubWVudDogQXp1cmVQdWJsaWNDbG91ZAogICAgICAgIHRlbmFudC1pZDogNzJmOTg4YmYtODZmMS00MWFmLTkxYWItMmQ3Y2QwMTFkYjQ3CiAgICAgIG5hbWU6IGF6dXJlCg=="}]}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '4147'
+      - '4107'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 23 Aug 2022 05:57:09 GMT
+      - Thu, 08 Sep 2022 16:57:06 GMT
       expires:
       - '-1'
       pragma:
@@ -1122,19 +1122,19 @@ interactions:
       User-Agent:
       - AZURECLI/2.39.0 azsdk-python-azure-mgmt-resource/21.1.0b1 Python/3.8.10 (Linux-5.8.0-1040-azure-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/fleet-cli-000001?api-version=2021-04-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli-000001?api-version=2021-04-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/fleet-cli-000001","name":"fleet-cli-000001","type":"Microsoft.Resources/resourceGroups","location":"centraluseuap","tags":{"cause":"automation","date":"2022-08-23T05:49:26Z","deletion_due_time":"1661493047","deletion_marked_by":"gc","product":"azurecli"},"properties":{"provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-000001","name":"cli-000001","type":"Microsoft.Resources/resourceGroups","location":"centraluseuap","tags":{"cause":"automation","date":"2022-09-08T16:49:54Z","deletion_due_time":"1662915157","deletion_marked_by":"gc","product":"azurecli"},"properties":{"provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '376'
+      - '364'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 23 Aug 2022 05:57:10 GMT
+      - Thu, 08 Sep 2022 16:57:06 GMT
       expires:
       - '-1'
       pragma:
@@ -1150,11 +1150,11 @@ interactions:
       message: OK
 - request:
     body: '{"location": "centraluseuap", "identity": {"type": "SystemAssigned"}, "properties":
-      {"kubernetesVersion": "", "dnsPrefix": "fleet-mc-w-fleet-cli-000001-8ecadf",
-      "agentPoolProfiles": [{"count": 3, "vmSize": "Standard_DS2_v2", "osDiskSizeGB":
-      0, "osType": "Linux", "enableAutoScaling": false, "type": "VirtualMachineScaleSets",
-      "mode": "System", "orchestratorVersion": "", "upgradeSettings": {}, "enableNodePublicIP":
-      false, "scaleSetPriority": "Regular", "scaleSetEvictionPolicy": "Delete", "spotMaxPrice":
+      {"kubernetesVersion": "", "dnsPrefix": "flmc-000003-cli-000001-8ecadf", "agentPoolProfiles":
+      [{"count": 3, "vmSize": "Standard_DS2_v2", "osDiskSizeGB": 0, "osType": "Linux",
+      "enableAutoScaling": false, "type": "VirtualMachineScaleSets", "mode": "System",
+      "orchestratorVersion": "", "upgradeSettings": {}, "enableNodePublicIP": false,
+      "scaleSetPriority": "Regular", "scaleSetEvictionPolicy": "Delete", "spotMaxPrice":
       -1.0, "nodeTaints": [], "enableEncryptionAtHost": false, "enableUltraSSD": false,
       "enableFIPS": false, "name": "nodepool1"}], "linuxProfile": {"adminUsername":
       "azureuser", "ssh": {"publicKeys": [{"keyData": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQCbIg1guRHbI0lV11wWDt1r2cUdcNd27CJsg+SfgC7miZeubtwUhbsPdhMQsfDyhOWHq1+ZL0M+nJZV63d/1dhmhtgyOqejUwrPlzKhydsbrsdUor+JmNJDdW01v7BXHyuymT8G4s09jCasNOwiufbP/qp72ruu0bIA1nySsvlf9pCQAuFkAnVnf/rFhUlOkhtRpwcq8SUNY2zRHR/EKb/4NWY1JzR4sa3q2fWIJdrrX0DvLoa5g9bIEd4Df79ba7v+yiUBOS0zT2ll+z4g9izHK3EO5d8hL4jYxcjKs+wcslSYRWrascfscLgMlMGh0CdKeNTDjHpGPncaf3Z+FwwwjWeuiNBxv7bJo13/8B/098KlVDl4GZqsoBCEjPyJfV6hO0y/LkRGkk7oHWKgeWAfKtfLItRp00eZ4fcJNK9kCaSMmEugoZWcI7NGbZXzqFWqbpRI7NcDP9+WIQ+i9U5vqWsqd/zng4kbuAJ6UuKqIzB0upYrLShfQE3SAck8oaLhJqqq56VfDuASNpJKidV+zq27HfSBmbXnkR/5AK337dc3MXKJypoK/QPMLKUAP5XLPbs+NddJQV7EZXd29DLgp+fRIg3edpKdO7ZErWhv7d+3Kws+e1Y+ypmR2WIVSwVyBEUfgv2C8Ts9gnTF4pNcEY/S2aBicz5Ew2+jdyGNQQ==
@@ -1172,7 +1172,7 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '1772'
+      - '1767'
       Content-Type:
       - application/json
       ParameterSetName:
@@ -1181,16 +1181,16 @@ interactions:
       - AZURECLI/2.39.0 azsdk-python-azure-mgmt-containerservice/20.2.0 Python/3.8.10
         (Linux-5.8.0-1040-azure-x86_64-with-glibc2.29)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/fleet-cli-000001/providers/Microsoft.ContainerService/managedClusters/fleet-mc-000003?api-version=2022-06-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-000001/providers/Microsoft.ContainerService/managedClusters/flmc-000003?api-version=2022-07-01
   response:
     body:
-      string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/fleet-cli-000001/providers/Microsoft.ContainerService/managedClusters/fleet-mc-000003\",\n
-        \ \"location\": \"centraluseuap\",\n  \"name\": \"fleet-mc-000003\",\n  \"type\":
+      string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli-000001/providers/Microsoft.ContainerService/managedClusters/flmc-000003\",\n
+        \ \"location\": \"centraluseuap\",\n  \"name\": \"flmc-000003\",\n  \"type\":
         \"Microsoft.ContainerService/ManagedClusters\",\n  \"properties\": {\n   \"provisioningState\":
         \"Creating\",\n   \"powerState\": {\n    \"code\": \"Running\"\n   },\n   \"kubernetesVersion\":
         \"1.23.8\",\n   \"currentKubernetesVersion\": \"1.23.8\",\n   \"dnsPrefix\":
-        \"fleet-mc-w-fleet-cli-000001-8ecadf\",\n   \"fqdn\": \"fleet-mc-w-fleet-cli-000001-8ecadf-7440f25e.hcp.centraluseuap.azmk8s.io\",\n
-        \  \"azurePortalFQDN\": \"fleet-mc-w-fleet-cli-000001-8ecadf-7440f25e.portal.hcp.centraluseuap.azmk8s.io\",\n
+        \"flmc-000003-cli-000001-8ecadf\",\n   \"fqdn\": \"flmc-000003-cli-000001-8ecadf-e0efa2f9.hcp.centraluseuap.azmk8s.io\",\n
+        \  \"azurePortalFQDN\": \"flmc-000003-cli-000001-8ecadf-e0efa2f9.portal.hcp.centraluseuap.azmk8s.io\",\n
         \  \"agentPoolProfiles\": [\n    {\n     \"name\": \"nodepool1\",\n     \"count\":
         3,\n     \"vmSize\": \"Standard_DS2_v2\",\n     \"osDiskSizeGB\": 128,\n     \"osDiskType\":
         \"Managed\",\n     \"kubeletDiskType\": \"OS\",\n     \"maxPods\": 110,\n
@@ -1200,12 +1200,12 @@ interactions:
         \"1.23.8\",\n     \"enableNodePublicIP\": false,\n     \"mode\": \"System\",\n
         \    \"enableEncryptionAtHost\": false,\n     \"enableUltraSSD\": false,\n
         \    \"osType\": \"Linux\",\n     \"osSKU\": \"Ubuntu\",\n     \"nodeImageVersion\":
-        \"AKSUbuntu-1804gen2containerd-2022.08.15\",\n     \"upgradeSettings\": {},\n
+        \"AKSUbuntu-1804gen2containerd-2022.08.29\",\n     \"upgradeSettings\": {},\n
         \    \"enableFIPS\": false\n    }\n   ],\n   \"linuxProfile\": {\n    \"adminUsername\":
         \"azureuser\",\n    \"ssh\": {\n     \"publicKeys\": [\n      {\n       \"keyData\":
         \"ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQCbIg1guRHbI0lV11wWDt1r2cUdcNd27CJsg+SfgC7miZeubtwUhbsPdhMQsfDyhOWHq1+ZL0M+nJZV63d/1dhmhtgyOqejUwrPlzKhydsbrsdUor+JmNJDdW01v7BXHyuymT8G4s09jCasNOwiufbP/qp72ruu0bIA1nySsvlf9pCQAuFkAnVnf/rFhUlOkhtRpwcq8SUNY2zRHR/EKb/4NWY1JzR4sa3q2fWIJdrrX0DvLoa5g9bIEd4Df79ba7v+yiUBOS0zT2ll+z4g9izHK3EO5d8hL4jYxcjKs+wcslSYRWrascfscLgMlMGh0CdKeNTDjHpGPncaf3Z+FwwwjWeuiNBxv7bJo13/8B/098KlVDl4GZqsoBCEjPyJfV6hO0y/LkRGkk7oHWKgeWAfKtfLItRp00eZ4fcJNK9kCaSMmEugoZWcI7NGbZXzqFWqbpRI7NcDP9+WIQ+i9U5vqWsqd/zng4kbuAJ6UuKqIzB0upYrLShfQE3SAck8oaLhJqqq56VfDuASNpJKidV+zq27HfSBmbXnkR/5AK337dc3MXKJypoK/QPMLKUAP5XLPbs+NddJQV7EZXd29DLgp+fRIg3edpKdO7ZErWhv7d+3Kws+e1Y+ypmR2WIVSwVyBEUfgv2C8Ts9gnTF4pNcEY/S2aBicz5Ew2+jdyGNQQ==
         test@example.com\\n\"\n      }\n     ]\n    }\n   },\n   \"servicePrincipalProfile\":
-        {\n    \"clientId\": \"msi\"\n   },\n   \"nodeResourceGroup\": \"MC_fleet-cli-000001_fleet-mc-000003_centraluseuap\",\n
+        {\n    \"clientId\": \"msi\"\n   },\n   \"nodeResourceGroup\": \"MC_cli-000001_flmc-000003_centraluseuap\",\n
         \  \"enableRBAC\": true,\n   \"networkProfile\": {\n    \"networkPlugin\":
         \"kubenet\",\n    \"loadBalancerSku\": \"standard\",\n    \"loadBalancerProfile\":
         {\n     \"managedOutboundIPs\": {\n      \"count\": 1\n     }\n    },\n    \"podCidr\":
@@ -1217,20 +1217,20 @@ interactions:
         {},\n   \"storageProfile\": {\n    \"diskCSIDriver\": {\n     \"enabled\":
         true\n    },\n    \"fileCSIDriver\": {\n     \"enabled\": true\n    },\n    \"snapshotController\":
         {\n     \"enabled\": true\n    }\n   }\n  },\n  \"identity\": {\n   \"type\":
-        \"SystemAssigned\",\n   \"principalId\": \"aaacee34-b678-4684-8490-54046040ae90\",\n
+        \"SystemAssigned\",\n   \"principalId\": \"8157c763-f9e2-46f4-8583-419353a7008d\",\n
         \  \"tenantId\": \"72f988bf-86f1-41af-91ab-2d7cd011db47\"\n  },\n  \"sku\":
         {\n   \"name\": \"Basic\",\n   \"tier\": \"Free\"\n  }\n }"
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operations/1a98f65b-c695-4cd8-87cc-ffe1bfe7db1b?api-version=2016-03-30
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operations/f919a6c9-587e-4c8e-9ee2-380f37799f4d?api-version=2016-03-30
       cache-control:
       - no-cache
       content-length:
-      - '3504'
+      - '3465'
       content-type:
       - application/json
       date:
-      - Tue, 23 Aug 2022 05:57:13 GMT
+      - Thu, 08 Sep 2022 16:57:12 GMT
       expires:
       - '-1'
       pragma:
@@ -1242,7 +1242,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1195'
+      - '1199'
     status:
       code: 201
       message: Created
@@ -1263,11 +1263,11 @@ interactions:
       - AZURECLI/2.39.0 azsdk-python-azure-mgmt-containerservice/20.2.0 Python/3.8.10
         (Linux-5.8.0-1040-azure-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operations/1a98f65b-c695-4cd8-87cc-ffe1bfe7db1b?api-version=2016-03-30
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operations/f919a6c9-587e-4c8e-9ee2-380f37799f4d?api-version=2016-03-30
   response:
     body:
-      string: "{\n  \"name\": \"5bf6981a-95c6-d84c-87cc-ffe1bfe7db1b\",\n  \"status\":
-        \"InProgress\",\n  \"startTime\": \"2022-08-23T05:57:13.9387638Z\"\n }"
+      string: "{\n  \"name\": \"c9a619f9-7e58-8e4c-9ee2-380f37799f4d\",\n  \"status\":
+        \"InProgress\",\n  \"startTime\": \"2022-09-08T16:57:12.2719442Z\"\n }"
     headers:
       cache-control:
       - no-cache
@@ -1276,7 +1276,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 23 Aug 2022 05:57:44 GMT
+      - Thu, 08 Sep 2022 16:57:42 GMT
       expires:
       - '-1'
       pragma:
@@ -1311,11 +1311,11 @@ interactions:
       - AZURECLI/2.39.0 azsdk-python-azure-mgmt-containerservice/20.2.0 Python/3.8.10
         (Linux-5.8.0-1040-azure-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operations/1a98f65b-c695-4cd8-87cc-ffe1bfe7db1b?api-version=2016-03-30
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operations/f919a6c9-587e-4c8e-9ee2-380f37799f4d?api-version=2016-03-30
   response:
     body:
-      string: "{\n  \"name\": \"5bf6981a-95c6-d84c-87cc-ffe1bfe7db1b\",\n  \"status\":
-        \"InProgress\",\n  \"startTime\": \"2022-08-23T05:57:13.9387638Z\"\n }"
+      string: "{\n  \"name\": \"c9a619f9-7e58-8e4c-9ee2-380f37799f4d\",\n  \"status\":
+        \"InProgress\",\n  \"startTime\": \"2022-09-08T16:57:12.2719442Z\"\n }"
     headers:
       cache-control:
       - no-cache
@@ -1324,7 +1324,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 23 Aug 2022 05:58:14 GMT
+      - Thu, 08 Sep 2022 16:58:12 GMT
       expires:
       - '-1'
       pragma:
@@ -1359,11 +1359,11 @@ interactions:
       - AZURECLI/2.39.0 azsdk-python-azure-mgmt-containerservice/20.2.0 Python/3.8.10
         (Linux-5.8.0-1040-azure-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operations/1a98f65b-c695-4cd8-87cc-ffe1bfe7db1b?api-version=2016-03-30
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operations/f919a6c9-587e-4c8e-9ee2-380f37799f4d?api-version=2016-03-30
   response:
     body:
-      string: "{\n  \"name\": \"5bf6981a-95c6-d84c-87cc-ffe1bfe7db1b\",\n  \"status\":
-        \"InProgress\",\n  \"startTime\": \"2022-08-23T05:57:13.9387638Z\"\n }"
+      string: "{\n  \"name\": \"c9a619f9-7e58-8e4c-9ee2-380f37799f4d\",\n  \"status\":
+        \"InProgress\",\n  \"startTime\": \"2022-09-08T16:57:12.2719442Z\"\n }"
     headers:
       cache-control:
       - no-cache
@@ -1372,7 +1372,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 23 Aug 2022 05:58:44 GMT
+      - Thu, 08 Sep 2022 16:58:42 GMT
       expires:
       - '-1'
       pragma:
@@ -1407,11 +1407,11 @@ interactions:
       - AZURECLI/2.39.0 azsdk-python-azure-mgmt-containerservice/20.2.0 Python/3.8.10
         (Linux-5.8.0-1040-azure-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operations/1a98f65b-c695-4cd8-87cc-ffe1bfe7db1b?api-version=2016-03-30
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operations/f919a6c9-587e-4c8e-9ee2-380f37799f4d?api-version=2016-03-30
   response:
     body:
-      string: "{\n  \"name\": \"5bf6981a-95c6-d84c-87cc-ffe1bfe7db1b\",\n  \"status\":
-        \"InProgress\",\n  \"startTime\": \"2022-08-23T05:57:13.9387638Z\"\n }"
+      string: "{\n  \"name\": \"c9a619f9-7e58-8e4c-9ee2-380f37799f4d\",\n  \"status\":
+        \"InProgress\",\n  \"startTime\": \"2022-09-08T16:57:12.2719442Z\"\n }"
     headers:
       cache-control:
       - no-cache
@@ -1420,7 +1420,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 23 Aug 2022 05:59:14 GMT
+      - Thu, 08 Sep 2022 16:59:13 GMT
       expires:
       - '-1'
       pragma:
@@ -1455,11 +1455,11 @@ interactions:
       - AZURECLI/2.39.0 azsdk-python-azure-mgmt-containerservice/20.2.0 Python/3.8.10
         (Linux-5.8.0-1040-azure-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operations/1a98f65b-c695-4cd8-87cc-ffe1bfe7db1b?api-version=2016-03-30
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operations/f919a6c9-587e-4c8e-9ee2-380f37799f4d?api-version=2016-03-30
   response:
     body:
-      string: "{\n  \"name\": \"5bf6981a-95c6-d84c-87cc-ffe1bfe7db1b\",\n  \"status\":
-        \"InProgress\",\n  \"startTime\": \"2022-08-23T05:57:13.9387638Z\"\n }"
+      string: "{\n  \"name\": \"c9a619f9-7e58-8e4c-9ee2-380f37799f4d\",\n  \"status\":
+        \"InProgress\",\n  \"startTime\": \"2022-09-08T16:57:12.2719442Z\"\n }"
     headers:
       cache-control:
       - no-cache
@@ -1468,7 +1468,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 23 Aug 2022 05:59:44 GMT
+      - Thu, 08 Sep 2022 16:59:42 GMT
       expires:
       - '-1'
       pragma:
@@ -1503,11 +1503,11 @@ interactions:
       - AZURECLI/2.39.0 azsdk-python-azure-mgmt-containerservice/20.2.0 Python/3.8.10
         (Linux-5.8.0-1040-azure-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operations/1a98f65b-c695-4cd8-87cc-ffe1bfe7db1b?api-version=2016-03-30
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operations/f919a6c9-587e-4c8e-9ee2-380f37799f4d?api-version=2016-03-30
   response:
     body:
-      string: "{\n  \"name\": \"5bf6981a-95c6-d84c-87cc-ffe1bfe7db1b\",\n  \"status\":
-        \"InProgress\",\n  \"startTime\": \"2022-08-23T05:57:13.9387638Z\"\n }"
+      string: "{\n  \"name\": \"c9a619f9-7e58-8e4c-9ee2-380f37799f4d\",\n  \"status\":
+        \"InProgress\",\n  \"startTime\": \"2022-09-08T16:57:12.2719442Z\"\n }"
     headers:
       cache-control:
       - no-cache
@@ -1516,7 +1516,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 23 Aug 2022 06:00:14 GMT
+      - Thu, 08 Sep 2022 17:00:13 GMT
       expires:
       - '-1'
       pragma:
@@ -1551,11 +1551,11 @@ interactions:
       - AZURECLI/2.39.0 azsdk-python-azure-mgmt-containerservice/20.2.0 Python/3.8.10
         (Linux-5.8.0-1040-azure-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operations/1a98f65b-c695-4cd8-87cc-ffe1bfe7db1b?api-version=2016-03-30
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operations/f919a6c9-587e-4c8e-9ee2-380f37799f4d?api-version=2016-03-30
   response:
     body:
-      string: "{\n  \"name\": \"5bf6981a-95c6-d84c-87cc-ffe1bfe7db1b\",\n  \"status\":
-        \"InProgress\",\n  \"startTime\": \"2022-08-23T05:57:13.9387638Z\"\n }"
+      string: "{\n  \"name\": \"c9a619f9-7e58-8e4c-9ee2-380f37799f4d\",\n  \"status\":
+        \"InProgress\",\n  \"startTime\": \"2022-09-08T16:57:12.2719442Z\"\n }"
     headers:
       cache-control:
       - no-cache
@@ -1564,7 +1564,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 23 Aug 2022 06:00:45 GMT
+      - Thu, 08 Sep 2022 17:00:42 GMT
       expires:
       - '-1'
       pragma:
@@ -1599,11 +1599,11 @@ interactions:
       - AZURECLI/2.39.0 azsdk-python-azure-mgmt-containerservice/20.2.0 Python/3.8.10
         (Linux-5.8.0-1040-azure-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operations/1a98f65b-c695-4cd8-87cc-ffe1bfe7db1b?api-version=2016-03-30
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operations/f919a6c9-587e-4c8e-9ee2-380f37799f4d?api-version=2016-03-30
   response:
     body:
-      string: "{\n  \"name\": \"5bf6981a-95c6-d84c-87cc-ffe1bfe7db1b\",\n  \"status\":
-        \"InProgress\",\n  \"startTime\": \"2022-08-23T05:57:13.9387638Z\"\n }"
+      string: "{\n  \"name\": \"c9a619f9-7e58-8e4c-9ee2-380f37799f4d\",\n  \"status\":
+        \"InProgress\",\n  \"startTime\": \"2022-09-08T16:57:12.2719442Z\"\n }"
     headers:
       cache-control:
       - no-cache
@@ -1612,7 +1612,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 23 Aug 2022 06:01:14 GMT
+      - Thu, 08 Sep 2022 17:01:13 GMT
       expires:
       - '-1'
       pragma:
@@ -1647,12 +1647,204 @@ interactions:
       - AZURECLI/2.39.0 azsdk-python-azure-mgmt-containerservice/20.2.0 Python/3.8.10
         (Linux-5.8.0-1040-azure-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operations/1a98f65b-c695-4cd8-87cc-ffe1bfe7db1b?api-version=2016-03-30
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operations/f919a6c9-587e-4c8e-9ee2-380f37799f4d?api-version=2016-03-30
   response:
     body:
-      string: "{\n  \"name\": \"5bf6981a-95c6-d84c-87cc-ffe1bfe7db1b\",\n  \"status\":
-        \"Succeeded\",\n  \"startTime\": \"2022-08-23T05:57:13.9387638Z\",\n  \"endTime\":
-        \"2022-08-23T06:01:43.2854766Z\"\n }"
+      string: "{\n  \"name\": \"c9a619f9-7e58-8e4c-9ee2-380f37799f4d\",\n  \"status\":
+        \"InProgress\",\n  \"startTime\": \"2022-09-08T16:57:12.2719442Z\"\n }"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '126'
+      content-type:
+      - application/json
+      date:
+      - Thu, 08 Sep 2022 17:01:43 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - nginx
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --ssh-key-value
+      User-Agent:
+      - AZURECLI/2.39.0 azsdk-python-azure-mgmt-containerservice/20.2.0 Python/3.8.10
+        (Linux-5.8.0-1040-azure-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operations/f919a6c9-587e-4c8e-9ee2-380f37799f4d?api-version=2016-03-30
+  response:
+    body:
+      string: "{\n  \"name\": \"c9a619f9-7e58-8e4c-9ee2-380f37799f4d\",\n  \"status\":
+        \"InProgress\",\n  \"startTime\": \"2022-09-08T16:57:12.2719442Z\"\n }"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '126'
+      content-type:
+      - application/json
+      date:
+      - Thu, 08 Sep 2022 17:02:13 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - nginx
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --ssh-key-value
+      User-Agent:
+      - AZURECLI/2.39.0 azsdk-python-azure-mgmt-containerservice/20.2.0 Python/3.8.10
+        (Linux-5.8.0-1040-azure-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operations/f919a6c9-587e-4c8e-9ee2-380f37799f4d?api-version=2016-03-30
+  response:
+    body:
+      string: "{\n  \"name\": \"c9a619f9-7e58-8e4c-9ee2-380f37799f4d\",\n  \"status\":
+        \"InProgress\",\n  \"startTime\": \"2022-09-08T16:57:12.2719442Z\"\n }"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '126'
+      content-type:
+      - application/json
+      date:
+      - Thu, 08 Sep 2022 17:02:43 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - nginx
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --ssh-key-value
+      User-Agent:
+      - AZURECLI/2.39.0 azsdk-python-azure-mgmt-containerservice/20.2.0 Python/3.8.10
+        (Linux-5.8.0-1040-azure-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operations/f919a6c9-587e-4c8e-9ee2-380f37799f4d?api-version=2016-03-30
+  response:
+    body:
+      string: "{\n  \"name\": \"c9a619f9-7e58-8e4c-9ee2-380f37799f4d\",\n  \"status\":
+        \"InProgress\",\n  \"startTime\": \"2022-09-08T16:57:12.2719442Z\"\n }"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '126'
+      content-type:
+      - application/json
+      date:
+      - Thu, 08 Sep 2022 17:03:13 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - nginx
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --ssh-key-value
+      User-Agent:
+      - AZURECLI/2.39.0 azsdk-python-azure-mgmt-containerservice/20.2.0 Python/3.8.10
+        (Linux-5.8.0-1040-azure-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operations/f919a6c9-587e-4c8e-9ee2-380f37799f4d?api-version=2016-03-30
+  response:
+    body:
+      string: "{\n  \"name\": \"c9a619f9-7e58-8e4c-9ee2-380f37799f4d\",\n  \"status\":
+        \"Succeeded\",\n  \"startTime\": \"2022-09-08T16:57:12.2719442Z\",\n  \"endTime\":
+        \"2022-09-08T17:03:20.1499583Z\"\n }"
     headers:
       cache-control:
       - no-cache
@@ -1661,7 +1853,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 23 Aug 2022 06:01:44 GMT
+      - Thu, 08 Sep 2022 17:03:44 GMT
       expires:
       - '-1'
       pragma:
@@ -1696,16 +1888,16 @@ interactions:
       - AZURECLI/2.39.0 azsdk-python-azure-mgmt-containerservice/20.2.0 Python/3.8.10
         (Linux-5.8.0-1040-azure-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/fleet-cli-000001/providers/Microsoft.ContainerService/managedClusters/fleet-mc-000003?api-version=2022-06-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-000001/providers/Microsoft.ContainerService/managedClusters/flmc-000003?api-version=2022-07-01
   response:
     body:
-      string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/fleet-cli-000001/providers/Microsoft.ContainerService/managedClusters/fleet-mc-000003\",\n
-        \ \"location\": \"centraluseuap\",\n  \"name\": \"fleet-mc-000003\",\n  \"type\":
+      string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli-000001/providers/Microsoft.ContainerService/managedClusters/flmc-000003\",\n
+        \ \"location\": \"centraluseuap\",\n  \"name\": \"flmc-000003\",\n  \"type\":
         \"Microsoft.ContainerService/ManagedClusters\",\n  \"properties\": {\n   \"provisioningState\":
         \"Succeeded\",\n   \"powerState\": {\n    \"code\": \"Running\"\n   },\n   \"kubernetesVersion\":
         \"1.23.8\",\n   \"currentKubernetesVersion\": \"1.23.8\",\n   \"dnsPrefix\":
-        \"fleet-mc-w-fleet-cli-000001-8ecadf\",\n   \"fqdn\": \"fleet-mc-w-fleet-cli-000001-8ecadf-7440f25e.hcp.centraluseuap.azmk8s.io\",\n
-        \  \"azurePortalFQDN\": \"fleet-mc-w-fleet-cli-000001-8ecadf-7440f25e.portal.hcp.centraluseuap.azmk8s.io\",\n
+        \"flmc-000003-cli-000001-8ecadf\",\n   \"fqdn\": \"flmc-000003-cli-000001-8ecadf-e0efa2f9.hcp.centraluseuap.azmk8s.io\",\n
+        \  \"azurePortalFQDN\": \"flmc-000003-cli-000001-8ecadf-e0efa2f9.portal.hcp.centraluseuap.azmk8s.io\",\n
         \  \"agentPoolProfiles\": [\n    {\n     \"name\": \"nodepool1\",\n     \"count\":
         3,\n     \"vmSize\": \"Standard_DS2_v2\",\n     \"osDiskSizeGB\": 128,\n     \"osDiskType\":
         \"Managed\",\n     \"kubeletDiskType\": \"OS\",\n     \"maxPods\": 110,\n
@@ -1715,41 +1907,41 @@ interactions:
         \"1.23.8\",\n     \"enableNodePublicIP\": false,\n     \"mode\": \"System\",\n
         \    \"enableEncryptionAtHost\": false,\n     \"enableUltraSSD\": false,\n
         \    \"osType\": \"Linux\",\n     \"osSKU\": \"Ubuntu\",\n     \"nodeImageVersion\":
-        \"AKSUbuntu-1804gen2containerd-2022.08.15\",\n     \"upgradeSettings\": {},\n
+        \"AKSUbuntu-1804gen2containerd-2022.08.29\",\n     \"upgradeSettings\": {},\n
         \    \"enableFIPS\": false\n    }\n   ],\n   \"linuxProfile\": {\n    \"adminUsername\":
         \"azureuser\",\n    \"ssh\": {\n     \"publicKeys\": [\n      {\n       \"keyData\":
         \"ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQCbIg1guRHbI0lV11wWDt1r2cUdcNd27CJsg+SfgC7miZeubtwUhbsPdhMQsfDyhOWHq1+ZL0M+nJZV63d/1dhmhtgyOqejUwrPlzKhydsbrsdUor+JmNJDdW01v7BXHyuymT8G4s09jCasNOwiufbP/qp72ruu0bIA1nySsvlf9pCQAuFkAnVnf/rFhUlOkhtRpwcq8SUNY2zRHR/EKb/4NWY1JzR4sa3q2fWIJdrrX0DvLoa5g9bIEd4Df79ba7v+yiUBOS0zT2ll+z4g9izHK3EO5d8hL4jYxcjKs+wcslSYRWrascfscLgMlMGh0CdKeNTDjHpGPncaf3Z+FwwwjWeuiNBxv7bJo13/8B/098KlVDl4GZqsoBCEjPyJfV6hO0y/LkRGkk7oHWKgeWAfKtfLItRp00eZ4fcJNK9kCaSMmEugoZWcI7NGbZXzqFWqbpRI7NcDP9+WIQ+i9U5vqWsqd/zng4kbuAJ6UuKqIzB0upYrLShfQE3SAck8oaLhJqqq56VfDuASNpJKidV+zq27HfSBmbXnkR/5AK337dc3MXKJypoK/QPMLKUAP5XLPbs+NddJQV7EZXd29DLgp+fRIg3edpKdO7ZErWhv7d+3Kws+e1Y+ypmR2WIVSwVyBEUfgv2C8Ts9gnTF4pNcEY/S2aBicz5Ew2+jdyGNQQ==
         test@example.com\\n\"\n      }\n     ]\n    }\n   },\n   \"servicePrincipalProfile\":
-        {\n    \"clientId\": \"msi\"\n   },\n   \"nodeResourceGroup\": \"MC_fleet-cli-000001_fleet-mc-000003_centraluseuap\",\n
+        {\n    \"clientId\": \"msi\"\n   },\n   \"nodeResourceGroup\": \"MC_cli-000001_flmc-000003_centraluseuap\",\n
         \  \"enableRBAC\": true,\n   \"networkProfile\": {\n    \"networkPlugin\":
         \"kubenet\",\n    \"loadBalancerSku\": \"Standard\",\n    \"loadBalancerProfile\":
         {\n     \"managedOutboundIPs\": {\n      \"count\": 1\n     },\n     \"effectiveOutboundIPs\":
-        [\n      {\n       \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MC_fleet-cli-000001_fleet-mc-000003_centraluseuap/providers/Microsoft.Network/publicIPAddresses/c71baf29-cdd3-4b0b-93cc-f229d22a0e5b\"\n
+        [\n      {\n       \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MC_cli-000001_flmc-000003_centraluseuap/providers/Microsoft.Network/publicIPAddresses/624f5d0a-92d0-43ed-bf7d-8ff7ab9f1f31\"\n
         \     }\n     ]\n    },\n    \"podCidr\": \"10.244.0.0/16\",\n    \"serviceCidr\":
         \"10.0.0.0/16\",\n    \"dnsServiceIP\": \"10.0.0.10\",\n    \"dockerBridgeCidr\":
         \"172.17.0.1/16\",\n    \"outboundType\": \"loadBalancer\",\n    \"podCidrs\":
         [\n     \"10.244.0.0/16\"\n    ],\n    \"serviceCidrs\": [\n     \"10.0.0.0/16\"\n
         \   ],\n    \"ipFamilies\": [\n     \"IPv4\"\n    ]\n   },\n   \"maxAgentPools\":
         100,\n   \"identityProfile\": {\n    \"kubeletidentity\": {\n     \"resourceId\":
-        \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/MC_fleet-cli-000001_fleet-mc-000003_centraluseuap/providers/Microsoft.ManagedIdentity/userAssignedIdentities/fleet-mc-000003-agentpool\",\n
-        \    \"clientId\": \"e8c929a1-66fb-4a64-aa7d-91c4d38cff05\",\n     \"objectId\":
-        \"9d386c00-4505-405c-9a98-166dabc41ab7\"\n    }\n   },\n   \"disableLocalAccounts\":
+        \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/MC_cli-000001_flmc-000003_centraluseuap/providers/Microsoft.ManagedIdentity/userAssignedIdentities/flmc-000003-agentpool\",\n
+        \    \"clientId\": \"15d6bac1-0acd-4ff8-9501-b06d32d6ebe2\",\n     \"objectId\":
+        \"afbdbcbc-363e-4e29-a1a2-0867d04c3bcd\"\n    }\n   },\n   \"disableLocalAccounts\":
         false,\n   \"securityProfile\": {},\n   \"storageProfile\": {\n    \"diskCSIDriver\":
         {\n     \"enabled\": true\n    },\n    \"fileCSIDriver\": {\n     \"enabled\":
         true\n    },\n    \"snapshotController\": {\n     \"enabled\": true\n    }\n
         \  }\n  },\n  \"identity\": {\n   \"type\": \"SystemAssigned\",\n   \"principalId\":
-        \"aaacee34-b678-4684-8490-54046040ae90\",\n   \"tenantId\": \"72f988bf-86f1-41af-91ab-2d7cd011db47\"\n
+        \"8157c763-f9e2-46f4-8583-419353a7008d\",\n   \"tenantId\": \"72f988bf-86f1-41af-91ab-2d7cd011db47\"\n
         \ },\n  \"sku\": {\n   \"name\": \"Basic\",\n   \"tier\": \"Free\"\n  }\n
         }"
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '4174'
+      - '4111'
       content-type:
       - application/json
       date:
-      - Tue, 23 Aug 2022 06:01:45 GMT
+      - Thu, 08 Sep 2022 17:03:44 GMT
       expires:
       - '-1'
       pragma:
@@ -1768,7 +1960,7 @@ interactions:
       code: 200
       message: OK
 - request:
-    body: '{"properties": {"clusterResourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/fleet-cli-000001/providers/Microsoft.ContainerService/managedClusters/fleet-mc-000003"}}'
+    body: '{"properties": {"clusterResourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli-000001/providers/Microsoft.ContainerService/managedClusters/flmc-000003"}}'
     headers:
       Accept:
       - application/json
@@ -1779,7 +1971,7 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '193'
+      - '183'
       Content-Type:
       - application/json
       ParameterSetName:
@@ -1788,21 +1980,21 @@ interactions:
       - AZURECLI/2.39.0 azsdk-python-azure-mgmt-containerservice/20.0.0 Python/3.8.10
         (Linux-5.8.0-1040-azure-x86_64-with-glibc2.29)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/fleet-cli-000001/providers/Microsoft.ContainerService/fleets/fleet-000002/members/fleet-mc-000003?api-version=2022-06-02-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-000001/providers/Microsoft.ContainerService/fleets/fl-000002/members/flmc-000003?api-version=2022-06-02-preview
   response:
     body:
-      string: '{"etag":"\"00008028-0000-3300-0000-63046d4c0000\"","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/fleet-cli-000001/providers/Microsoft.ContainerService/fleets/fleet-000002/members/fleet-mc-000003","name":"fleet-mc-000003","properties":{"clusterResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/fleet-cli-000001/providers/Microsoft.ContainerService/managedClusters/fleet-mc-000003","provisioningState":"Joining"},"type":"Microsoft.ContainerService/fleets/members"}'
+      string: '{"etag":"\"0000cf03-0000-3300-0000-631a20730000\"","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-000001/providers/Microsoft.ContainerService/fleets/fl-000002/members/flmc-000003","name":"flmc-000003","properties":{"clusterResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli-000001/providers/Microsoft.ContainerService/managedClusters/flmc-000003","provisioningState":"Joining"},"systemData":{"createdAt":"2022-09-08T17:03:45.8678163Z","createdBy":"pdaru@microsoft.com","createdByType":"User","lastModifiedAt":"2022-09-08T17:03:45.8678163Z","lastModifiedBy":"pdaru@microsoft.com","lastModifiedByType":"User"},"type":"Microsoft.ContainerService/fleets/members"}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operations/2148293e-8bca-49da-a538-77a2a8c8a6d3?api-version=2016-03-30
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operations/81fbf07d-d832-48bd-b001-996eabd04e70?api-version=2016-03-30
       cache-control:
       - no-cache
       content-length:
-      - '519'
+      - '722'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 23 Aug 2022 06:01:48 GMT
+      - Thu, 08 Sep 2022 17:03:47 GMT
       expires:
       - '-1'
       pragma:
@@ -1814,7 +2006,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1197'
+      - '1199'
     status:
       code: 201
       message: Created
@@ -1835,11 +2027,11 @@ interactions:
       - AZURECLI/2.39.0 azsdk-python-azure-mgmt-containerservice/20.0.0 Python/3.8.10
         (Linux-5.8.0-1040-azure-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operations/2148293e-8bca-49da-a538-77a2a8c8a6d3?api-version=2016-03-30
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operations/81fbf07d-d832-48bd-b001-996eabd04e70?api-version=2016-03-30
   response:
     body:
-      string: "{\n  \"name\": \"3e294821-ca8b-da49-a538-77a2a8c8a6d3\",\n  \"status\":
-        \"InProgress\",\n  \"startTime\": \"2022-08-23T06:01:48.6751945Z\"\n }"
+      string: "{\n  \"name\": \"7df0fb81-32d8-bd48-b001-996eabd04e70\",\n  \"status\":
+        \"InProgress\",\n  \"startTime\": \"2022-09-08T17:03:47.9510935Z\"\n }"
     headers:
       cache-control:
       - no-cache
@@ -1848,7 +2040,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 23 Aug 2022 06:02:18 GMT
+      - Thu, 08 Sep 2022 17:04:17 GMT
       expires:
       - '-1'
       pragma:
@@ -1883,11 +2075,11 @@ interactions:
       - AZURECLI/2.39.0 azsdk-python-azure-mgmt-containerservice/20.0.0 Python/3.8.10
         (Linux-5.8.0-1040-azure-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operations/2148293e-8bca-49da-a538-77a2a8c8a6d3?api-version=2016-03-30
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operations/81fbf07d-d832-48bd-b001-996eabd04e70?api-version=2016-03-30
   response:
     body:
-      string: "{\n  \"name\": \"3e294821-ca8b-da49-a538-77a2a8c8a6d3\",\n  \"status\":
-        \"InProgress\",\n  \"startTime\": \"2022-08-23T06:01:48.6751945Z\"\n }"
+      string: "{\n  \"name\": \"7df0fb81-32d8-bd48-b001-996eabd04e70\",\n  \"status\":
+        \"InProgress\",\n  \"startTime\": \"2022-09-08T17:03:47.9510935Z\"\n }"
     headers:
       cache-control:
       - no-cache
@@ -1896,7 +2088,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 23 Aug 2022 06:02:48 GMT
+      - Thu, 08 Sep 2022 17:04:47 GMT
       expires:
       - '-1'
       pragma:
@@ -1931,11 +2123,11 @@ interactions:
       - AZURECLI/2.39.0 azsdk-python-azure-mgmt-containerservice/20.0.0 Python/3.8.10
         (Linux-5.8.0-1040-azure-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operations/2148293e-8bca-49da-a538-77a2a8c8a6d3?api-version=2016-03-30
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operations/81fbf07d-d832-48bd-b001-996eabd04e70?api-version=2016-03-30
   response:
     body:
-      string: "{\n  \"name\": \"3e294821-ca8b-da49-a538-77a2a8c8a6d3\",\n  \"status\":
-        \"InProgress\",\n  \"startTime\": \"2022-08-23T06:01:48.6751945Z\"\n }"
+      string: "{\n  \"name\": \"7df0fb81-32d8-bd48-b001-996eabd04e70\",\n  \"status\":
+        \"InProgress\",\n  \"startTime\": \"2022-09-08T17:03:47.9510935Z\"\n }"
     headers:
       cache-control:
       - no-cache
@@ -1944,7 +2136,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 23 Aug 2022 06:03:18 GMT
+      - Thu, 08 Sep 2022 17:05:17 GMT
       expires:
       - '-1'
       pragma:
@@ -1979,11 +2171,11 @@ interactions:
       - AZURECLI/2.39.0 azsdk-python-azure-mgmt-containerservice/20.0.0 Python/3.8.10
         (Linux-5.8.0-1040-azure-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operations/2148293e-8bca-49da-a538-77a2a8c8a6d3?api-version=2016-03-30
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operations/81fbf07d-d832-48bd-b001-996eabd04e70?api-version=2016-03-30
   response:
     body:
-      string: "{\n  \"name\": \"3e294821-ca8b-da49-a538-77a2a8c8a6d3\",\n  \"status\":
-        \"InProgress\",\n  \"startTime\": \"2022-08-23T06:01:48.6751945Z\"\n }"
+      string: "{\n  \"name\": \"7df0fb81-32d8-bd48-b001-996eabd04e70\",\n  \"status\":
+        \"InProgress\",\n  \"startTime\": \"2022-09-08T17:03:47.9510935Z\"\n }"
     headers:
       cache-control:
       - no-cache
@@ -1992,7 +2184,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 23 Aug 2022 06:03:48 GMT
+      - Thu, 08 Sep 2022 17:05:47 GMT
       expires:
       - '-1'
       pragma:
@@ -2027,12 +2219,60 @@ interactions:
       - AZURECLI/2.39.0 azsdk-python-azure-mgmt-containerservice/20.0.0 Python/3.8.10
         (Linux-5.8.0-1040-azure-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operations/2148293e-8bca-49da-a538-77a2a8c8a6d3?api-version=2016-03-30
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operations/81fbf07d-d832-48bd-b001-996eabd04e70?api-version=2016-03-30
   response:
     body:
-      string: "{\n  \"name\": \"3e294821-ca8b-da49-a538-77a2a8c8a6d3\",\n  \"status\":
-        \"Succeeded\",\n  \"startTime\": \"2022-08-23T06:01:48.6751945Z\",\n  \"endTime\":
-        \"2022-08-23T06:04:05.8930674Z\"\n }"
+      string: "{\n  \"name\": \"7df0fb81-32d8-bd48-b001-996eabd04e70\",\n  \"status\":
+        \"InProgress\",\n  \"startTime\": \"2022-09-08T17:03:47.9510935Z\"\n }"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '126'
+      content-type:
+      - application/json
+      date:
+      - Thu, 08 Sep 2022 17:06:18 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - nginx
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - fleet member create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --fleet-name -n --member-cluster-id
+      User-Agent:
+      - AZURECLI/2.39.0 azsdk-python-azure-mgmt-containerservice/20.0.0 Python/3.8.10
+        (Linux-5.8.0-1040-azure-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operations/81fbf07d-d832-48bd-b001-996eabd04e70?api-version=2016-03-30
+  response:
+    body:
+      string: "{\n  \"name\": \"7df0fb81-32d8-bd48-b001-996eabd04e70\",\n  \"status\":
+        \"Succeeded\",\n  \"startTime\": \"2022-09-08T17:03:47.9510935Z\",\n  \"endTime\":
+        \"2022-09-08T17:06:30.7640402Z\"\n }"
     headers:
       cache-control:
       - no-cache
@@ -2041,7 +2281,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 23 Aug 2022 06:04:18 GMT
+      - Thu, 08 Sep 2022 17:06:48 GMT
       expires:
       - '-1'
       pragma:
@@ -2076,19 +2316,19 @@ interactions:
       - AZURECLI/2.39.0 azsdk-python-azure-mgmt-containerservice/20.0.0 Python/3.8.10
         (Linux-5.8.0-1040-azure-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/fleet-cli-000001/providers/Microsoft.ContainerService/fleets/fleet-000002/members/fleet-mc-000003?api-version=2022-06-02-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-000001/providers/Microsoft.ContainerService/fleets/fl-000002/members/flmc-000003?api-version=2022-06-02-preview
   response:
     body:
-      string: '{"etag":"\"00008728-0000-3300-0000-63046dd50000\"","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/fleet-cli-000001/providers/Microsoft.ContainerService/fleets/fleet-000002/members/fleet-mc-000003","name":"fleet-mc-000003","properties":{"clusterResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/fleet-cli-000001/providers/Microsoft.ContainerService/managedClusters/fleet-mc-000003","provisioningState":"Succeeded"},"type":"Microsoft.ContainerService/fleets/members"}'
+      string: '{"etag":"\"0000d203-0000-3300-0000-631a21160000\"","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-000001/providers/Microsoft.ContainerService/fleets/fl-000002/members/flmc-000003","name":"flmc-000003","properties":{"clusterResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli-000001/providers/Microsoft.ContainerService/managedClusters/flmc-000003","provisioningState":"Succeeded"},"systemData":{"createdAt":"2022-09-08T17:03:45.8678163Z","createdBy":"pdaru@microsoft.com","createdByType":"User","lastModifiedAt":"2022-09-08T17:03:45.8678163Z","lastModifiedBy":"pdaru@microsoft.com","lastModifiedByType":"User"},"type":"Microsoft.ContainerService/fleets/members"}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '521'
+      - '724'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 23 Aug 2022 06:04:18 GMT
+      - Thu, 08 Sep 2022 17:06:48 GMT
       expires:
       - '-1'
       pragma:
@@ -2123,19 +2363,19 @@ interactions:
       - AZURECLI/2.39.0 azsdk-python-azure-mgmt-containerservice/20.0.0 Python/3.8.10
         (Linux-5.8.0-1040-azure-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/fleet-cli-000001/providers/Microsoft.ContainerService/fleets/fleet-000002/members?api-version=2022-06-02-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-000001/providers/Microsoft.ContainerService/fleets/fl-000002/members?api-version=2022-06-02-preview
   response:
     body:
-      string: '{"value":[{"etag":"\"00008028-0000-3300-0000-63046d4c0000\"","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/fleet-cli-000001/providers/Microsoft.ContainerService/fleets/fleet-000002/members/fleet-mc-000003","name":"fleet-mc-000003","properties":{"clusterResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/fleet-cli-000001/providers/Microsoft.ContainerService/managedClusters/fleet-mc-000003","provisioningState":"Succeeded"},"type":"Microsoft.ContainerService/fleets/members"}]}'
+      string: '{"value":[{"etag":"\"0000cf03-0000-3300-0000-631a20730000\"","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-000001/providers/Microsoft.ContainerService/fleets/fl-000002/members/flmc-000003","name":"flmc-000003","properties":{"clusterResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli-000001/providers/Microsoft.ContainerService/managedClusters/flmc-000003","provisioningState":"Succeeded"},"systemData":{"createdAt":"2022-09-08T17:03:45.8678163Z","createdBy":"pdaru@microsoft.com","createdByType":"User","lastModifiedAt":"2022-09-08T17:03:45.8678163Z","lastModifiedBy":"pdaru@microsoft.com","lastModifiedByType":"User"},"type":"Microsoft.ContainerService/fleets/members"}]}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '533'
+      - '736'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 23 Aug 2022 06:04:19 GMT
+      - Thu, 08 Sep 2022 17:06:49 GMT
       expires:
       - '-1'
       pragma:
@@ -2170,19 +2410,19 @@ interactions:
       - AZURECLI/2.39.0 azsdk-python-azure-mgmt-containerservice/20.0.0 Python/3.8.10
         (Linux-5.8.0-1040-azure-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/fleet-cli-000001/providers/Microsoft.ContainerService/fleets/fleet-000002/members/fleet-mc-000003?api-version=2022-06-02-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-000001/providers/Microsoft.ContainerService/fleets/fl-000002/members/flmc-000003?api-version=2022-06-02-preview
   response:
     body:
-      string: '{"etag":"\"00008728-0000-3300-0000-63046dd50000\"","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/fleet-cli-000001/providers/Microsoft.ContainerService/fleets/fleet-000002/members/fleet-mc-000003","name":"fleet-mc-000003","properties":{"clusterResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/fleet-cli-000001/providers/Microsoft.ContainerService/managedClusters/fleet-mc-000003","provisioningState":"Succeeded"},"type":"Microsoft.ContainerService/fleets/members"}'
+      string: '{"etag":"\"0000d203-0000-3300-0000-631a21160000\"","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-000001/providers/Microsoft.ContainerService/fleets/fl-000002/members/flmc-000003","name":"flmc-000003","properties":{"clusterResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli-000001/providers/Microsoft.ContainerService/managedClusters/flmc-000003","provisioningState":"Succeeded"},"systemData":{"createdAt":"2022-09-08T17:03:45.8678163Z","createdBy":"pdaru@microsoft.com","createdByType":"User","lastModifiedAt":"2022-09-08T17:03:45.8678163Z","lastModifiedBy":"pdaru@microsoft.com","lastModifiedByType":"User"},"type":"Microsoft.ContainerService/fleets/members"}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '521'
+      - '724'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 23 Aug 2022 06:04:20 GMT
+      - Thu, 08 Sep 2022 17:06:49 GMT
       expires:
       - '-1'
       pragma:
@@ -2219,23 +2459,23 @@ interactions:
       - AZURECLI/2.39.0 azsdk-python-azure-mgmt-containerservice/20.0.0 Python/3.8.10
         (Linux-5.8.0-1040-azure-x86_64-with-glibc2.29)
     method: DELETE
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/fleet-cli-000001/providers/Microsoft.ContainerService/fleets/fleet-000002/members/fleet-mc-000003?api-version=2022-06-02-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-000001/providers/Microsoft.ContainerService/fleets/fl-000002/members/flmc-000003?api-version=2022-06-02-preview
   response:
     body:
-      string: '{"etag":"\"00008828-0000-3300-0000-63046de60000\"","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/fleet-cli-000001/providers/Microsoft.ContainerService/fleets/fleet-000002/members/fleet-mc-000003","name":"fleet-mc-000003","properties":{"clusterResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/fleet-cli-000001/providers/Microsoft.ContainerService/managedClusters/fleet-mc-000003","provisioningState":"Leaving"},"type":"Microsoft.ContainerService/fleets/members"}'
+      string: '{"etag":"\"0000d303-0000-3300-0000-631a212c0000\"","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-000001/providers/Microsoft.ContainerService/fleets/fl-000002/members/flmc-000003","name":"flmc-000003","properties":{"clusterResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli-000001/providers/Microsoft.ContainerService/managedClusters/flmc-000003","provisioningState":"Leaving"},"systemData":{"createdAt":"2022-09-08T17:03:45.8678163Z","createdBy":"pdaru@microsoft.com","createdByType":"User","lastModifiedAt":"2022-09-08T17:03:45.8678163Z","lastModifiedBy":"pdaru@microsoft.com","lastModifiedByType":"User"},"type":"Microsoft.ContainerService/fleets/members"}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '519'
+      - '722'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 23 Aug 2022 06:04:22 GMT
+      - Thu, 08 Sep 2022 17:06:52 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operationresults/ec6ebe2e-2f1a-4127-9674-f5bcb3c3a92c?api-version=2016-03-30
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operationresults/76e25a56-5106-4ecf-a782-e569fea83426?api-version=2016-03-30
       pragma:
       - no-cache
       server:
@@ -2266,11 +2506,11 @@ interactions:
       - AZURECLI/2.39.0 azsdk-python-azure-mgmt-containerservice/20.0.0 Python/3.8.10
         (Linux-5.8.0-1040-azure-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operationresults/ec6ebe2e-2f1a-4127-9674-f5bcb3c3a92c?api-version=2016-03-30
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operationresults/76e25a56-5106-4ecf-a782-e569fea83426?api-version=2016-03-30
   response:
     body:
-      string: "{\n  \"name\": \"2ebe6eec-1a2f-2741-9674-f5bcb3c3a92c\",\n  \"status\":
-        \"InProgress\",\n  \"startTime\": \"2022-08-23T06:04:22.6760728Z\"\n }"
+      string: "{\n  \"name\": \"565ae276-0651-cf4e-a782-e569fea83426\",\n  \"status\":
+        \"InProgress\",\n  \"startTime\": \"2022-09-08T17:06:52.8140397Z\"\n }"
     headers:
       cache-control:
       - no-cache
@@ -2279,11 +2519,11 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 23 Aug 2022 06:04:52 GMT
+      - Thu, 08 Sep 2022 17:07:22 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operationresults/ec6ebe2e-2f1a-4127-9674-f5bcb3c3a92c?api-version=2016-03-30
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operationresults/76e25a56-5106-4ecf-a782-e569fea83426?api-version=2016-03-30
       pragma:
       - no-cache
       server:
@@ -2312,11 +2552,11 @@ interactions:
       - AZURECLI/2.39.0 azsdk-python-azure-mgmt-containerservice/20.0.0 Python/3.8.10
         (Linux-5.8.0-1040-azure-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operationresults/ec6ebe2e-2f1a-4127-9674-f5bcb3c3a92c?api-version=2016-03-30
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operationresults/76e25a56-5106-4ecf-a782-e569fea83426?api-version=2016-03-30
   response:
     body:
-      string: "{\n  \"name\": \"2ebe6eec-1a2f-2741-9674-f5bcb3c3a92c\",\n  \"status\":
-        \"InProgress\",\n  \"startTime\": \"2022-08-23T06:04:22.6760728Z\"\n }"
+      string: "{\n  \"name\": \"565ae276-0651-cf4e-a782-e569fea83426\",\n  \"status\":
+        \"InProgress\",\n  \"startTime\": \"2022-09-08T17:06:52.8140397Z\"\n }"
     headers:
       cache-control:
       - no-cache
@@ -2325,11 +2565,11 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 23 Aug 2022 06:05:22 GMT
+      - Thu, 08 Sep 2022 17:07:52 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operationresults/ec6ebe2e-2f1a-4127-9674-f5bcb3c3a92c?api-version=2016-03-30
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operationresults/76e25a56-5106-4ecf-a782-e569fea83426?api-version=2016-03-30
       pragma:
       - no-cache
       server:
@@ -2358,11 +2598,11 @@ interactions:
       - AZURECLI/2.39.0 azsdk-python-azure-mgmt-containerservice/20.0.0 Python/3.8.10
         (Linux-5.8.0-1040-azure-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operationresults/ec6ebe2e-2f1a-4127-9674-f5bcb3c3a92c?api-version=2016-03-30
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operationresults/76e25a56-5106-4ecf-a782-e569fea83426?api-version=2016-03-30
   response:
     body:
-      string: "{\n  \"name\": \"2ebe6eec-1a2f-2741-9674-f5bcb3c3a92c\",\n  \"status\":
-        \"InProgress\",\n  \"startTime\": \"2022-08-23T06:04:22.6760728Z\"\n }"
+      string: "{\n  \"name\": \"565ae276-0651-cf4e-a782-e569fea83426\",\n  \"status\":
+        \"InProgress\",\n  \"startTime\": \"2022-09-08T17:06:52.8140397Z\"\n }"
     headers:
       cache-control:
       - no-cache
@@ -2371,11 +2611,11 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 23 Aug 2022 06:05:52 GMT
+      - Thu, 08 Sep 2022 17:08:22 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operationresults/ec6ebe2e-2f1a-4127-9674-f5bcb3c3a92c?api-version=2016-03-30
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operationresults/76e25a56-5106-4ecf-a782-e569fea83426?api-version=2016-03-30
       pragma:
       - no-cache
       server:
@@ -2404,11 +2644,11 @@ interactions:
       - AZURECLI/2.39.0 azsdk-python-azure-mgmt-containerservice/20.0.0 Python/3.8.10
         (Linux-5.8.0-1040-azure-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operationresults/ec6ebe2e-2f1a-4127-9674-f5bcb3c3a92c?api-version=2016-03-30
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operationresults/76e25a56-5106-4ecf-a782-e569fea83426?api-version=2016-03-30
   response:
     body:
-      string: "{\n  \"name\": \"2ebe6eec-1a2f-2741-9674-f5bcb3c3a92c\",\n  \"status\":
-        \"InProgress\",\n  \"startTime\": \"2022-08-23T06:04:22.6760728Z\"\n }"
+      string: "{\n  \"name\": \"565ae276-0651-cf4e-a782-e569fea83426\",\n  \"status\":
+        \"InProgress\",\n  \"startTime\": \"2022-09-08T17:06:52.8140397Z\"\n }"
     headers:
       cache-control:
       - no-cache
@@ -2417,11 +2657,11 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 23 Aug 2022 06:06:23 GMT
+      - Thu, 08 Sep 2022 17:08:52 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operationresults/ec6ebe2e-2f1a-4127-9674-f5bcb3c3a92c?api-version=2016-03-30
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operationresults/76e25a56-5106-4ecf-a782-e569fea83426?api-version=2016-03-30
       pragma:
       - no-cache
       server:
@@ -2450,7 +2690,7 @@ interactions:
       - AZURECLI/2.39.0 azsdk-python-azure-mgmt-containerservice/20.0.0 Python/3.8.10
         (Linux-5.8.0-1040-azure-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operationresults/ec6ebe2e-2f1a-4127-9674-f5bcb3c3a92c?api-version=2016-03-30
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operationresults/76e25a56-5106-4ecf-a782-e569fea83426?api-version=2016-03-30
   response:
     body:
       string: ''
@@ -2460,11 +2700,11 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 23 Aug 2022 06:06:52 GMT
+      - Thu, 08 Sep 2022 17:09:22 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operationresults/ec6ebe2e-2f1a-4127-9674-f5bcb3c3a92c?api-version=2016-03-30
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operationresults/76e25a56-5106-4ecf-a782-e569fea83426?api-version=2016-03-30
       pragma:
       - no-cache
       server:
@@ -2495,23 +2735,23 @@ interactions:
       - AZURECLI/2.39.0 azsdk-python-azure-mgmt-containerservice/20.0.0 Python/3.8.10
         (Linux-5.8.0-1040-azure-x86_64-with-glibc2.29)
     method: DELETE
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/fleet-cli-000001/providers/Microsoft.ContainerService/fleets/fleet-000002?api-version=2022-06-02-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-000001/providers/Microsoft.ContainerService/fleets/fl-000002?api-version=2022-06-02-preview
   response:
     body:
-      string: '{"etag":"\"00008a28-0000-3300-0000-63046e7e0000\"","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/fleet-cli-000001/providers/Microsoft.ContainerService/fleets/fleet-000002","location":"centraluseuap","name":"fleet-000002","properties":{"hubProfile":{"dnsPrefix":"fleet-jcu7-fleet-cli-000001-8ecadf","fqdn":"fleet-jcu7-fleet-cli-000001-8ecadf-c4cc44dd.hcp.centraluseuap.azmk8s.io","kubernetesVersion":"1.23.8"},"provisioningState":"Deleting"},"tags":{"foo":"doo"},"type":"Microsoft.ContainerService/fleets"}'
+      string: '{"etag":"\"0000d503-0000-3300-0000-631a21c40000\"","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-000001/providers/Microsoft.ContainerService/fleets/fl-000002","location":"centraluseuap","name":"fl-000002","properties":{"hubProfile":{"dnsPrefix":"fl-000002-cli-000001-8ecadf","fqdn":"fl-000002-cli-000001-8ecadf-cc2a2e9d.hcp.centraluseuap.azmk8s.io","kubernetesVersion":"1.23.8"},"provisioningState":"Deleting"},"systemData":{"createdAt":"2022-09-08T16:49:57.1489136Z","createdBy":"pdaru@microsoft.com","createdByType":"User","lastModifiedAt":"2022-09-08T16:49:57.1489136Z","lastModifiedBy":"pdaru@microsoft.com","lastModifiedByType":"User"},"tags":{"foo":"doo"},"type":"Microsoft.ContainerService/fleets"}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '532'
+      - '736'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 23 Aug 2022 06:06:53 GMT
+      - Thu, 08 Sep 2022 17:09:24 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operationresults/47520b20-9965-4a30-9e74-506f1467caa7?api-version=2016-03-30
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operationresults/43ade721-33b1-4a09-b1ae-7f64d28925dc?api-version=2016-03-30
       pragma:
       - no-cache
       server:
@@ -2521,7 +2761,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-deletes:
-      - '14998'
+      - '14999'
     status:
       code: 202
       message: Accepted
@@ -2542,11 +2782,11 @@ interactions:
       - AZURECLI/2.39.0 azsdk-python-azure-mgmt-containerservice/20.0.0 Python/3.8.10
         (Linux-5.8.0-1040-azure-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operationresults/47520b20-9965-4a30-9e74-506f1467caa7?api-version=2016-03-30
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operationresults/43ade721-33b1-4a09-b1ae-7f64d28925dc?api-version=2016-03-30
   response:
     body:
-      string: "{\n  \"name\": \"200b5247-6599-304a-9e74-506f1467caa7\",\n  \"status\":
-        \"InProgress\",\n  \"startTime\": \"2022-08-23T06:06:54.2589796Z\"\n }"
+      string: "{\n  \"name\": \"21e7ad43-b133-094a-b1ae-7f64d28925dc\",\n  \"status\":
+        \"InProgress\",\n  \"startTime\": \"2022-09-08T17:09:24.4725898Z\"\n }"
     headers:
       cache-control:
       - no-cache
@@ -2555,11 +2795,11 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 23 Aug 2022 06:07:23 GMT
+      - Thu, 08 Sep 2022 17:09:54 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operationresults/47520b20-9965-4a30-9e74-506f1467caa7?api-version=2016-03-30
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operationresults/43ade721-33b1-4a09-b1ae-7f64d28925dc?api-version=2016-03-30
       pragma:
       - no-cache
       server:
@@ -2588,11 +2828,11 @@ interactions:
       - AZURECLI/2.39.0 azsdk-python-azure-mgmt-containerservice/20.0.0 Python/3.8.10
         (Linux-5.8.0-1040-azure-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operationresults/47520b20-9965-4a30-9e74-506f1467caa7?api-version=2016-03-30
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operationresults/43ade721-33b1-4a09-b1ae-7f64d28925dc?api-version=2016-03-30
   response:
     body:
-      string: "{\n  \"name\": \"200b5247-6599-304a-9e74-506f1467caa7\",\n  \"status\":
-        \"InProgress\",\n  \"startTime\": \"2022-08-23T06:06:54.2589796Z\"\n }"
+      string: "{\n  \"name\": \"21e7ad43-b133-094a-b1ae-7f64d28925dc\",\n  \"status\":
+        \"InProgress\",\n  \"startTime\": \"2022-09-08T17:09:24.4725898Z\"\n }"
     headers:
       cache-control:
       - no-cache
@@ -2601,11 +2841,11 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 23 Aug 2022 06:07:54 GMT
+      - Thu, 08 Sep 2022 17:10:24 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operationresults/47520b20-9965-4a30-9e74-506f1467caa7?api-version=2016-03-30
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operationresults/43ade721-33b1-4a09-b1ae-7f64d28925dc?api-version=2016-03-30
       pragma:
       - no-cache
       server:
@@ -2634,11 +2874,11 @@ interactions:
       - AZURECLI/2.39.0 azsdk-python-azure-mgmt-containerservice/20.0.0 Python/3.8.10
         (Linux-5.8.0-1040-azure-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operationresults/47520b20-9965-4a30-9e74-506f1467caa7?api-version=2016-03-30
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operationresults/43ade721-33b1-4a09-b1ae-7f64d28925dc?api-version=2016-03-30
   response:
     body:
-      string: "{\n  \"name\": \"200b5247-6599-304a-9e74-506f1467caa7\",\n  \"status\":
-        \"InProgress\",\n  \"startTime\": \"2022-08-23T06:06:54.2589796Z\"\n }"
+      string: "{\n  \"name\": \"21e7ad43-b133-094a-b1ae-7f64d28925dc\",\n  \"status\":
+        \"InProgress\",\n  \"startTime\": \"2022-09-08T17:09:24.4725898Z\"\n }"
     headers:
       cache-control:
       - no-cache
@@ -2647,11 +2887,11 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 23 Aug 2022 06:08:24 GMT
+      - Thu, 08 Sep 2022 17:10:54 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operationresults/47520b20-9965-4a30-9e74-506f1467caa7?api-version=2016-03-30
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operationresults/43ade721-33b1-4a09-b1ae-7f64d28925dc?api-version=2016-03-30
       pragma:
       - no-cache
       server:
@@ -2680,11 +2920,11 @@ interactions:
       - AZURECLI/2.39.0 azsdk-python-azure-mgmt-containerservice/20.0.0 Python/3.8.10
         (Linux-5.8.0-1040-azure-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operationresults/47520b20-9965-4a30-9e74-506f1467caa7?api-version=2016-03-30
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operationresults/43ade721-33b1-4a09-b1ae-7f64d28925dc?api-version=2016-03-30
   response:
     body:
-      string: "{\n  \"name\": \"200b5247-6599-304a-9e74-506f1467caa7\",\n  \"status\":
-        \"InProgress\",\n  \"startTime\": \"2022-08-23T06:06:54.2589796Z\"\n }"
+      string: "{\n  \"name\": \"21e7ad43-b133-094a-b1ae-7f64d28925dc\",\n  \"status\":
+        \"InProgress\",\n  \"startTime\": \"2022-09-08T17:09:24.4725898Z\"\n }"
     headers:
       cache-control:
       - no-cache
@@ -2693,11 +2933,11 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 23 Aug 2022 06:08:54 GMT
+      - Thu, 08 Sep 2022 17:11:24 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operationresults/47520b20-9965-4a30-9e74-506f1467caa7?api-version=2016-03-30
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operationresults/43ade721-33b1-4a09-b1ae-7f64d28925dc?api-version=2016-03-30
       pragma:
       - no-cache
       server:
@@ -2726,11 +2966,11 @@ interactions:
       - AZURECLI/2.39.0 azsdk-python-azure-mgmt-containerservice/20.0.0 Python/3.8.10
         (Linux-5.8.0-1040-azure-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operationresults/47520b20-9965-4a30-9e74-506f1467caa7?api-version=2016-03-30
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operationresults/43ade721-33b1-4a09-b1ae-7f64d28925dc?api-version=2016-03-30
   response:
     body:
-      string: "{\n  \"name\": \"200b5247-6599-304a-9e74-506f1467caa7\",\n  \"status\":
-        \"InProgress\",\n  \"startTime\": \"2022-08-23T06:06:54.2589796Z\"\n }"
+      string: "{\n  \"name\": \"21e7ad43-b133-094a-b1ae-7f64d28925dc\",\n  \"status\":
+        \"InProgress\",\n  \"startTime\": \"2022-09-08T17:09:24.4725898Z\"\n }"
     headers:
       cache-control:
       - no-cache
@@ -2739,11 +2979,11 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 23 Aug 2022 06:09:24 GMT
+      - Thu, 08 Sep 2022 17:11:54 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operationresults/47520b20-9965-4a30-9e74-506f1467caa7?api-version=2016-03-30
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operationresults/43ade721-33b1-4a09-b1ae-7f64d28925dc?api-version=2016-03-30
       pragma:
       - no-cache
       server:
@@ -2772,11 +3012,11 @@ interactions:
       - AZURECLI/2.39.0 azsdk-python-azure-mgmt-containerservice/20.0.0 Python/3.8.10
         (Linux-5.8.0-1040-azure-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operationresults/47520b20-9965-4a30-9e74-506f1467caa7?api-version=2016-03-30
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operationresults/43ade721-33b1-4a09-b1ae-7f64d28925dc?api-version=2016-03-30
   response:
     body:
-      string: "{\n  \"name\": \"200b5247-6599-304a-9e74-506f1467caa7\",\n  \"status\":
-        \"InProgress\",\n  \"startTime\": \"2022-08-23T06:06:54.2589796Z\"\n }"
+      string: "{\n  \"name\": \"21e7ad43-b133-094a-b1ae-7f64d28925dc\",\n  \"status\":
+        \"InProgress\",\n  \"startTime\": \"2022-09-08T17:09:24.4725898Z\"\n }"
     headers:
       cache-control:
       - no-cache
@@ -2785,11 +3025,11 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 23 Aug 2022 06:09:54 GMT
+      - Thu, 08 Sep 2022 17:12:24 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operationresults/47520b20-9965-4a30-9e74-506f1467caa7?api-version=2016-03-30
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operationresults/43ade721-33b1-4a09-b1ae-7f64d28925dc?api-version=2016-03-30
       pragma:
       - no-cache
       server:
@@ -2818,11 +3058,11 @@ interactions:
       - AZURECLI/2.39.0 azsdk-python-azure-mgmt-containerservice/20.0.0 Python/3.8.10
         (Linux-5.8.0-1040-azure-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operationresults/47520b20-9965-4a30-9e74-506f1467caa7?api-version=2016-03-30
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operationresults/43ade721-33b1-4a09-b1ae-7f64d28925dc?api-version=2016-03-30
   response:
     body:
-      string: "{\n  \"name\": \"200b5247-6599-304a-9e74-506f1467caa7\",\n  \"status\":
-        \"InProgress\",\n  \"startTime\": \"2022-08-23T06:06:54.2589796Z\"\n }"
+      string: "{\n  \"name\": \"21e7ad43-b133-094a-b1ae-7f64d28925dc\",\n  \"status\":
+        \"InProgress\",\n  \"startTime\": \"2022-09-08T17:09:24.4725898Z\"\n }"
     headers:
       cache-control:
       - no-cache
@@ -2831,11 +3071,11 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 23 Aug 2022 06:10:24 GMT
+      - Thu, 08 Sep 2022 17:12:54 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operationresults/47520b20-9965-4a30-9e74-506f1467caa7?api-version=2016-03-30
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operationresults/43ade721-33b1-4a09-b1ae-7f64d28925dc?api-version=2016-03-30
       pragma:
       - no-cache
       server:
@@ -2864,11 +3104,11 @@ interactions:
       - AZURECLI/2.39.0 azsdk-python-azure-mgmt-containerservice/20.0.0 Python/3.8.10
         (Linux-5.8.0-1040-azure-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operationresults/47520b20-9965-4a30-9e74-506f1467caa7?api-version=2016-03-30
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operationresults/43ade721-33b1-4a09-b1ae-7f64d28925dc?api-version=2016-03-30
   response:
     body:
-      string: "{\n  \"name\": \"200b5247-6599-304a-9e74-506f1467caa7\",\n  \"status\":
-        \"InProgress\",\n  \"startTime\": \"2022-08-23T06:06:54.2589796Z\"\n }"
+      string: "{\n  \"name\": \"21e7ad43-b133-094a-b1ae-7f64d28925dc\",\n  \"status\":
+        \"InProgress\",\n  \"startTime\": \"2022-09-08T17:09:24.4725898Z\"\n }"
     headers:
       cache-control:
       - no-cache
@@ -2877,11 +3117,11 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 23 Aug 2022 06:10:54 GMT
+      - Thu, 08 Sep 2022 17:13:25 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operationresults/47520b20-9965-4a30-9e74-506f1467caa7?api-version=2016-03-30
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operationresults/43ade721-33b1-4a09-b1ae-7f64d28925dc?api-version=2016-03-30
       pragma:
       - no-cache
       server:
@@ -2910,11 +3150,11 @@ interactions:
       - AZURECLI/2.39.0 azsdk-python-azure-mgmt-containerservice/20.0.0 Python/3.8.10
         (Linux-5.8.0-1040-azure-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operationresults/47520b20-9965-4a30-9e74-506f1467caa7?api-version=2016-03-30
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operationresults/43ade721-33b1-4a09-b1ae-7f64d28925dc?api-version=2016-03-30
   response:
     body:
-      string: "{\n  \"name\": \"200b5247-6599-304a-9e74-506f1467caa7\",\n  \"status\":
-        \"InProgress\",\n  \"startTime\": \"2022-08-23T06:06:54.2589796Z\"\n }"
+      string: "{\n  \"name\": \"21e7ad43-b133-094a-b1ae-7f64d28925dc\",\n  \"status\":
+        \"InProgress\",\n  \"startTime\": \"2022-09-08T17:09:24.4725898Z\"\n }"
     headers:
       cache-control:
       - no-cache
@@ -2923,11 +3163,11 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 23 Aug 2022 06:11:25 GMT
+      - Thu, 08 Sep 2022 17:13:55 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operationresults/47520b20-9965-4a30-9e74-506f1467caa7?api-version=2016-03-30
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operationresults/43ade721-33b1-4a09-b1ae-7f64d28925dc?api-version=2016-03-30
       pragma:
       - no-cache
       server:
@@ -2956,11 +3196,11 @@ interactions:
       - AZURECLI/2.39.0 azsdk-python-azure-mgmt-containerservice/20.0.0 Python/3.8.10
         (Linux-5.8.0-1040-azure-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operationresults/47520b20-9965-4a30-9e74-506f1467caa7?api-version=2016-03-30
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operationresults/43ade721-33b1-4a09-b1ae-7f64d28925dc?api-version=2016-03-30
   response:
     body:
-      string: "{\n  \"name\": \"200b5247-6599-304a-9e74-506f1467caa7\",\n  \"status\":
-        \"InProgress\",\n  \"startTime\": \"2022-08-23T06:06:54.2589796Z\"\n }"
+      string: "{\n  \"name\": \"21e7ad43-b133-094a-b1ae-7f64d28925dc\",\n  \"status\":
+        \"InProgress\",\n  \"startTime\": \"2022-09-08T17:09:24.4725898Z\"\n }"
     headers:
       cache-control:
       - no-cache
@@ -2969,11 +3209,11 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 23 Aug 2022 06:11:55 GMT
+      - Thu, 08 Sep 2022 17:14:25 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operationresults/47520b20-9965-4a30-9e74-506f1467caa7?api-version=2016-03-30
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operationresults/43ade721-33b1-4a09-b1ae-7f64d28925dc?api-version=2016-03-30
       pragma:
       - no-cache
       server:
@@ -3002,11 +3242,11 @@ interactions:
       - AZURECLI/2.39.0 azsdk-python-azure-mgmt-containerservice/20.0.0 Python/3.8.10
         (Linux-5.8.0-1040-azure-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operationresults/47520b20-9965-4a30-9e74-506f1467caa7?api-version=2016-03-30
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operationresults/43ade721-33b1-4a09-b1ae-7f64d28925dc?api-version=2016-03-30
   response:
     body:
-      string: "{\n  \"name\": \"200b5247-6599-304a-9e74-506f1467caa7\",\n  \"status\":
-        \"InProgress\",\n  \"startTime\": \"2022-08-23T06:06:54.2589796Z\"\n }"
+      string: "{\n  \"name\": \"21e7ad43-b133-094a-b1ae-7f64d28925dc\",\n  \"status\":
+        \"InProgress\",\n  \"startTime\": \"2022-09-08T17:09:24.4725898Z\"\n }"
     headers:
       cache-control:
       - no-cache
@@ -3015,11 +3255,11 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 23 Aug 2022 06:12:25 GMT
+      - Thu, 08 Sep 2022 17:14:55 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operationresults/47520b20-9965-4a30-9e74-506f1467caa7?api-version=2016-03-30
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operationresults/43ade721-33b1-4a09-b1ae-7f64d28925dc?api-version=2016-03-30
       pragma:
       - no-cache
       server:
@@ -3048,11 +3288,11 @@ interactions:
       - AZURECLI/2.39.0 azsdk-python-azure-mgmt-containerservice/20.0.0 Python/3.8.10
         (Linux-5.8.0-1040-azure-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operationresults/47520b20-9965-4a30-9e74-506f1467caa7?api-version=2016-03-30
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operationresults/43ade721-33b1-4a09-b1ae-7f64d28925dc?api-version=2016-03-30
   response:
     body:
-      string: "{\n  \"name\": \"200b5247-6599-304a-9e74-506f1467caa7\",\n  \"status\":
-        \"InProgress\",\n  \"startTime\": \"2022-08-23T06:06:54.2589796Z\"\n }"
+      string: "{\n  \"name\": \"21e7ad43-b133-094a-b1ae-7f64d28925dc\",\n  \"status\":
+        \"InProgress\",\n  \"startTime\": \"2022-09-08T17:09:24.4725898Z\"\n }"
     headers:
       cache-control:
       - no-cache
@@ -3061,11 +3301,11 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 23 Aug 2022 06:12:55 GMT
+      - Thu, 08 Sep 2022 17:15:25 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operationresults/47520b20-9965-4a30-9e74-506f1467caa7?api-version=2016-03-30
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operationresults/43ade721-33b1-4a09-b1ae-7f64d28925dc?api-version=2016-03-30
       pragma:
       - no-cache
       server:
@@ -3094,7 +3334,7 @@ interactions:
       - AZURECLI/2.39.0 azsdk-python-azure-mgmt-containerservice/20.0.0 Python/3.8.10
         (Linux-5.8.0-1040-azure-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operationresults/47520b20-9965-4a30-9e74-506f1467caa7?api-version=2016-03-30
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operationresults/43ade721-33b1-4a09-b1ae-7f64d28925dc?api-version=2016-03-30
   response:
     body:
       string: ''
@@ -3104,11 +3344,11 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 23 Aug 2022 06:13:25 GMT
+      - Thu, 08 Sep 2022 17:15:55 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operationresults/47520b20-9965-4a30-9e74-506f1467caa7?api-version=2016-03-30
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operationresults/43ade721-33b1-4a09-b1ae-7f64d28925dc?api-version=2016-03-30
       pragma:
       - no-cache
       server:

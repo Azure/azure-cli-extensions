@@ -184,3 +184,8 @@ CONST_PERISCOPE_NAMESPACE = "aks-periscope"
 
 CONST_AZURE_KEYVAULT_NETWORK_ACCESS_PUBLIC = "Public"
 CONST_AZURE_KEYVAULT_NETWORK_ACCESS_PRIVATE = "Private"
+
+# refer https://api.github.com/repos/Azure/draft/releases/latest
+# tag_name gives latest version released.
+# Moving away from 1:n release to avoid unwanted breaking changes with auto upgrades.
+CONST_DRAFT_CLI_VERSION = "v0.0.22"

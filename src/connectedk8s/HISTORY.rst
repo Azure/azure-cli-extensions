@@ -2,6 +2,16 @@
 
 Release History
 ===============
+1.3.3
+++++++
+
+* Added a timeout in force delete's CRD deletion command
+
+1.3.2
+++++++
+
+* Added force delete command which is an added functionality in connectedk8s delete function
+
 1.3.1
 ++++++
 
