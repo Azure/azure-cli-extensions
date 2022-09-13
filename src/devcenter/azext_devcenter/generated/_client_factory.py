@@ -48,6 +48,10 @@ def cf_environment_type(cli_ctx, *_):
     return cf_devcenter_cl(cli_ctx).environment_types
 
 
+def cf_project_allowed_environment_type(cli_ctx, *_):
+    return cf_devcenter_cl(cli_ctx).project_allowed_environment_types
+
+
 def cf_project_environment_type(cli_ctx, *_):
     return cf_devcenter_cl(cli_ctx).project_environment_types
 

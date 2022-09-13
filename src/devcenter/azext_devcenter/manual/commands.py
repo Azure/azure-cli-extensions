@@ -11,6 +11,7 @@ from azext_devcenter.generated._client_factory import (
     cf_project,
     cf_attached_network,
     cf_environment_type,
+    cf_project_allowed_environment_type,
     cf_project_environment_type,
     cf_gallery,
     cf_image,
@@ -158,6 +159,11 @@ def load_command_table(self, _):
     devcenter_project = CliCommandType(
         operations_tmpl='azext_devcenter.vendored_sdks.devcenter.operations._projects_operations#ProjectsOperations.{}',
         client_factory=cf_project,
+    )
+    
+    devcenter_project_allowed_environment_type = CliCommandType(
+        operations_tmpl='azext_devcenter.vendored_sdks.devcenter.operations._project_allowed_environment_types_operations#ProjectAllowedEnvironmentTypesOperations.{}',
+        client_factory=cf_project_allowed_environment_type,
     )
 
     devcenter_project_environment_type = CliCommandType(
@@ -334,6 +340,15 @@ def load_command_table(self, _):
         g.custom_command('update', 'devcenter_project_update', supports_no_wait=True)
         g.custom_command('delete', 'devcenter_project_delete', supports_no_wait=True, confirmation=True)
         g.custom_wait_command('wait', 'devcenter_project_show')
+
+    with self.command_group(
+        'devcenter admin project-allowed-environment-type',
+        devcenter_project_allowed_environment_type,
+        client_factory=cf_project_allowed_environment_type,
+    ) as g:
+        g.custom_command('list', 'devcenter_project_allowed_environment_type_list')
+        g.custom_show_command('show', 'devcenter_project_allowed_environment_type_show')
+
 
     with self.command_group(
         'devcenter admin project-environment-type',

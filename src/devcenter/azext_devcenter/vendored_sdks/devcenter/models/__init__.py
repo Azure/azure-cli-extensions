@@ -7,6 +7,8 @@
 # --------------------------------------------------------------------------
 
 try:
+    from ._models_py3 import AllowedEnvironmentType
+    from ._models_py3 import AllowedEnvironmentTypeListResult
     from ._models_py3 import AttachedNetworkConnection
     from ._models_py3 import AttachedNetworkListResult
     from ._models_py3 import Capability
@@ -88,6 +90,8 @@ try:
     from ._models_py3 import UserAssignedIdentity
     from ._models_py3 import UserRoleAssignmentValue
 except (SyntaxError, ImportError):
+    from ._models import AllowedEnvironmentType  # type: ignore
+    from ._models import AllowedEnvironmentTypeListResult  # type: ignore
     from ._models import AttachedNetworkConnection  # type: ignore
     from ._models import AttachedNetworkListResult  # type: ignore
     from ._models import Capability  # type: ignore
@@ -187,6 +191,8 @@ from ._dev_center_enums import (
 )
 
 __all__ = [
+    'AllowedEnvironmentType',
+    'AllowedEnvironmentTypeListResult',
     'AttachedNetworkConnection',
     'AttachedNetworkListResult',
     'Capability',

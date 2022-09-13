@@ -766,6 +766,31 @@ helps['devcenter admin project-environment-type wait'] = """
 --resource-group "rg1" --deleted
 """
 
+helps['devcenter admin project-allowed-environment-type'] = """
+    type: group
+    short-summary: Manage project allowed environment type with devcenter
+"""
+
+helps['devcenter admin project-allowed-environment-type list'] = """
+    type: command
+    short-summary: "Lists allowed environment types for a project."
+    examples:
+      - name: ProjectAllowedEnvironmentTypes_List
+        text: |-
+               az devcenter admin project-allowed-environment-type list --project-name "Contoso" --resource-group "rg1"
+"""
+
+helps['devcenter admin project-allowed-environment-type show'] = """
+    type: command
+    short-summary: "Gets an allowed environment type."
+    examples:
+      - name: ProjectAllowedEnvironmentTypes_Get
+        text: |-
+               az devcenter admin project-allowed-environment-type show --environment-type-name "{environmentTypeName}" \
+--project-name "Contoso" --resource-group "rg1"
+"""
+
+
 helps['devcenter admin catalog'] = """
     type: group
     short-summary: Manage catalog with devcenter
