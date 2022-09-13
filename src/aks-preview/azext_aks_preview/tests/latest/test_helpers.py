@@ -125,14 +125,14 @@ class AKSCustomHeadersHelper(unittest.TestCase):
         self.assertEqual(r2, {"abc": "def", "xyz": "123"})
 
         s3 = {"abc": "def", "xyz": "123"}
-        t3 = "abc=ghi"
+        t3 = "abc=ghi,abc=jkl"
         r3 = merge_aks_custom_headers(s3, t3, overwrite_same_key=False)
-        self.assertEqual(r3, {"abc": "def,ghi", "xyz": "123"})
+        self.assertEqual(r3, {"abc": "def,ghi,jkl", "xyz": "123"})
 
         s4 = {"abc": "def", "xyz": "123"}
-        t4 = "abc=ghi"
+        t4 = "abc=ghi,abc=jkl"
         r4 = merge_aks_custom_headers(s4, t4, overwrite_same_key=True)
-        self.assertEqual(r4, {"abc": "ghi", "xyz": "123"})
+        self.assertEqual(r4, {"abc": "ghi,jkl", "xyz": "123"})
 
 
 if __name__ == "__main__":

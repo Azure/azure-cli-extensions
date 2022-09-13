@@ -297,9 +297,9 @@ def merge_aks_custom_headers(
 
     Examples:
     1. Do not overwrite the same key
-    merge_aks_custom_headers({"a": "b,c", "m": "n"}, "a:x,y", False) -> {"a": "b,c,x,y", "m": "n"}
+    merge_aks_custom_headers({"a": "b,c", "m": "n"}, "a=x,a=y", False) -> {"a": "b,c,x,y", "m": "n"}
     2. Overwrite the same key
-    merge_aks_custom_headers({"a": "b,c", "m": "n"}, "a:x,y", True) -> {"a": "x,y", "m": "n"}
+    merge_aks_custom_headers({"a": "b,c", "m": "n"}, "a=x,a=y", True) -> {"a": "x,y", "m": "n"}
 
     :return: Dict[str, str]
     """
