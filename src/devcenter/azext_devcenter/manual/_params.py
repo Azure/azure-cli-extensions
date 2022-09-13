@@ -21,6 +21,8 @@ from azext_devcenter.action import (
     AddSku
 )
 
+from ._validators import validate_attached_network_or_dev_box_def
+
 def load_arguments(self, _):
 
     from azure.cli.core.commands.parameters import tags_type
@@ -381,14 +383,14 @@ def load_arguments(self, _):
         c.argument('project_name', options_list=['--name', '-n', '--project-name'], type=str, help='The name of the '
                    'project.', id_part='name')
 
-    with self.argument_context('devcenter admin attached-network list') as c:
+    with self.argument_context('devcenter admin attached-network list', validator=validate_attached_network_or_dev_box_def) as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('project_name', options_list=['--project-name', '--project'], type=str, help='The name of the project.')
         c.argument('top', type=int, help='The maximum number of resources to return from the operation. Example: '
                    '\'$top=10\'.')
         c.argument('dev_center_name', options_list=['--dev-center-name', '--dev-center', '-dc'], type=str, help='The name of the devcenter.')
 
-    with self.argument_context('devcenter admin attached-network show') as c:
+    with self.argument_context('devcenter admin attached-network show', validator=validate_attached_network_or_dev_box_def) as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('project_name', options_list=['--project-name', '--project'], type=str, help='The name of the project.', id_part='name')
         c.argument('attached_network_connection_name', options_list=['--name', '-n', '--attached-network-connection-name'], type=str, help='The name of the attached NetworkConnection.',
@@ -660,13 +662,13 @@ def load_arguments(self, _):
         c.argument('catalog_name', options_list=['--name', '-n', '--catalog-name'], type=str, help='The name of the '
                    'Catalog.', id_part='child_name_1')
 
-    with self.argument_context('devcenter admin devbox-definition list') as c:
+    with self.argument_context('devcenter admin devbox-definition list', validator=validate_attached_network_or_dev_box_def) as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('dev_center_name', options_list=['--dev-center-name', '--dev-center', '-dc'], type=str, help='The name of the devcenter.')
         c.argument('top', type=int, help='The maximum number of resources to return from the operation. Example: '
                    '\'$top=10\'.')
 
-    with self.argument_context('devcenter admin devbox-definition show') as c:
+    with self.argument_context('devcenter admin devbox-definition show', validator=validate_attached_network_or_dev_box_def) as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('dev_center_name', options_list=['--dev-center-name', '--dev-center', '-dc'], type=str, help='The name of the devcenter.', id_part='name')
         c.argument('dev_box_definition_name', options_list=['--name', '-n', '--devbox-definition-name'], type=str,
