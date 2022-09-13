@@ -2,6 +2,11 @@
 
 Release History
 ===============
+0.7.0
++++++
+* Added GoogleSheets connector in ADF
+* Added Synapse Spark activities in ADF.
+
 0.6.0
 +++++
 * Bug fix for `az datafactory pipeline list`.
