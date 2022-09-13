@@ -103,7 +103,7 @@ particular user. And Lists Dev Boxes that the caller has access to in the DevCen
         text: |-
                az devcenter dev-box list --dev-center "{devCenter}" \
 --project-name "{projectName}" --user-id "me"
-      - name: DevBox_ListByUserByProject
+      - name: DevBox_ListByUser
         text: |-
                az devcenter dev-box list --dev-center "{devCenter}" \
 --user-id "me"
