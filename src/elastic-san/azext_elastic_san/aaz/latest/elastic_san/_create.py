@@ -92,7 +92,7 @@ class Create(AAZCommand):
             required=True,
         )
         _args_schema.extended_capacity_size_tib = AAZIntArg(
-            options=["--extended-capacity-size-tib"],
+            options=["--extended-size", "--extended-capacity-size-tib"],
             arg_group="Properties",
             help="Extended size of the Elastic San appliance in TiB.",
             required=True,

@@ -121,10 +121,6 @@ class ListSku(AAZCommand):
             cls._schema_on_200 = AAZObjectType()
 
             _schema_on_200 = cls._schema_on_200
-            _schema_on_200.next_link = AAZStrType(
-                serialized_name="nextLink",
-                flags={"read_only": True},
-            )
             _schema_on_200.value = AAZListType(
                 flags={"read_only": True},
             )
@@ -135,52 +131,37 @@ class ListSku(AAZCommand):
             )
 
             _element = cls._schema_on_200.value.Element
-            _element.elastic_san = AAZObjectType(
-                serialized_name="elasticSan",
+            _element.capabilities = AAZListType(
                 flags={"read_only": True},
             )
             _element.location_info = AAZListType(
                 serialized_name="locationInfo",
                 flags={"read_only": True},
             )
-            _element.sku = AAZListType(
+            _element.locations = AAZListType(
                 flags={"read_only": True},
             )
-            _element.volume = AAZObjectType(
+            _element.name = AAZStrType(
+                flags={"required": True, "read_only": True},
+            )
+            _element.resource_type = AAZStrType(
+                serialized_name="resourceType",
                 flags={"read_only": True},
             )
-            _element.volume_group = AAZObjectType(
-                serialized_name="volumeGroup",
+            _element.tier = AAZStrType(
                 flags={"read_only": True},
             )
 
-            elastic_san = cls._schema_on_200.value.Element.elastic_san
-            elastic_san.iops_per_base_ti_b = AAZIntType(
-                serialized_name="iopsPerBaseTiB",
+            capabilities = cls._schema_on_200.value.Element.capabilities
+            capabilities.Element = AAZObjectType(
                 flags={"read_only": True},
             )
-            elastic_san.max_m_bps = AAZIntType(
-                serialized_name="maxMBps",
+
+            _element = cls._schema_on_200.value.Element.capabilities.Element
+            _element.name = AAZStrType(
                 flags={"read_only": True},
             )
-            elastic_san.max_size_ti_b = AAZIntType(
-                serialized_name="maxSizeTiB",
-                flags={"read_only": True},
-            )
-            elastic_san.max_volume_group_count = AAZIntType(
-                serialized_name="maxVolumeGroupCount",
-                flags={"read_only": True},
-            )
-            elastic_san.mbps_per_base_ti_b = AAZIntType(
-                serialized_name="mbpsPerBaseTiB",
-                flags={"read_only": True},
-            )
-            elastic_san.min_increment_size_ti_b = AAZIntType(
-                serialized_name="minIncrementSizeTiB",
-                flags={"read_only": True},
-            )
-            elastic_san.min_size_ti_b = AAZIntType(
-                serialized_name="minSizeTiB",
+            _element.value = AAZStrType(
                 flags={"read_only": True},
             )
 
@@ -202,48 +183,8 @@ class ListSku(AAZCommand):
                 flags={"read_only": True},
             )
 
-            sku = cls._schema_on_200.value.Element.sku
-            sku.Element = AAZObjectType(
-                flags={"read_only": True},
-            )
-
-            _element = cls._schema_on_200.value.Element.sku.Element
-            _element.name = AAZStrType(
-                flags={"required": True, "read_only": True},
-            )
-            _element.tier = AAZStrType(
-                flags={"read_only": True},
-            )
-
-            volume = cls._schema_on_200.value.Element.volume
-            volume.iops_per_base_gi_b = AAZIntType(
-                serialized_name="iopsPerBaseGiB",
-                flags={"read_only": True},
-            )
-            volume.max_iops = AAZIntType(
-                serialized_name="maxIops",
-                flags={"read_only": True},
-            )
-            volume.max_m_bps = AAZIntType(
-                serialized_name="maxMBps",
-                flags={"read_only": True},
-            )
-            volume.max_size_gi_b = AAZIntType(
-                serialized_name="maxSizeGiB",
-                flags={"read_only": True},
-            )
-            volume.min_increment_size_gi_b = AAZIntType(
-                serialized_name="minIncrementSizeGiB",
-                flags={"read_only": True},
-            )
-            volume.min_size_gi_b = AAZIntType(
-                serialized_name="minSizeGiB",
-                flags={"read_only": True},
-            )
-
-            volume_group = cls._schema_on_200.value.Element.volume_group
-            volume_group.max_volume_count = AAZIntType(
-                serialized_name="maxVolumeCount",
+            locations = cls._schema_on_200.value.Element.locations
+            locations.Element = AAZStrType(
                 flags={"read_only": True},
             )
 

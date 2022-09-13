@@ -96,12 +96,42 @@ class Update(AAZCommand):
             nullable=True,
             enum={"EncryptionAtRestWithPlatformKey": "EncryptionAtRestWithPlatformKey"},
         )
+        _args_schema.network_acls = AAZObjectArg(
+            options=["--network-acls"],
+            arg_group="Properties",
+            help="A collection of rules governing the accessibility from specific network locations.",
+            nullable=True,
+        )
         _args_schema.protocol_type = AAZStrArg(
             options=["--protocol-type"],
             arg_group="Properties",
             help="Type of storage target",
             nullable=True,
             enum={"Iscsi": "Iscsi", "None": "None"},
+        )
+
+        network_acls = cls._args_schema.network_acls
+        network_acls.virtual_network_rules = AAZListArg(
+            options=["virtual-network-rules"],
+            help="The list of virtual network rules.",
+            nullable=True,
+        )
+
+        virtual_network_rules = cls._args_schema.network_acls.virtual_network_rules
+        virtual_network_rules.Element = AAZObjectArg(
+            nullable=True,
+        )
+
+        _element = cls._args_schema.network_acls.virtual_network_rules.Element
+        _element.action = AAZStrArg(
+            options=["action"],
+            help="The action of virtual network rule.",
+            nullable=True,
+            enum={"Allow": "Allow"},
+        )
+        _element.id = AAZStrArg(
+            options=["id"],
+            help="Resource ID of a subnet, for example: /subscriptions/{subscriptionId}/resourceGroups/{groupName}/providers/Microsoft.Network/virtualNetworks/{vnetName}/subnets/{subnetName}.",
         )
         return cls._args_schema
 
@@ -334,7 +364,21 @@ class Update(AAZCommand):
             properties = _builder.get(".properties")
             if properties is not None:
                 properties.set_prop("encryption", AAZStrType, ".encryption")
+                properties.set_prop("networkAcls", AAZObjectType, ".network_acls")
                 properties.set_prop("protocolType", AAZStrType, ".protocol_type")
+
+            network_acls = _builder.get(".properties.networkAcls")
+            if network_acls is not None:
+                network_acls.set_prop("virtualNetworkRules", AAZListType, ".virtual_network_rules")
+
+            virtual_network_rules = _builder.get(".properties.networkAcls.virtualNetworkRules")
+            if virtual_network_rules is not None:
+                virtual_network_rules.set_elements(AAZObjectType, ".")
+
+            _elements = _builder.get(".properties.networkAcls.virtualNetworkRules[]")
+            if _elements is not None:
+                _elements.set_prop("action", AAZStrType, ".action")
+                _elements.set_prop("id", AAZStrType, ".id", typ_kwargs={"flags": {"required": True}})
 
             tags = _builder.get(".tags")
             if tags is not None:
