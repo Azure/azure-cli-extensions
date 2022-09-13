@@ -9,7 +9,7 @@ import re
 import stat
 import tempfile
 import yaml
-from typing import Any, List, TypeVar
+from typing import Any, Dict, List, TypeVar
 from azure.cli.command_modules.acs._helpers import map_azure_error_to_cli_error
 from azure.cli.core.azclierror import InvalidArgumentValueError, ResourceNotFoundError
 from azure.core.exceptions import AzureError
@@ -282,3 +282,44 @@ def check_is_apiserver_vnet_integration_cluster(mc: ManagedCluster) -> bool:
     if mc and mc.api_server_access_profile:
         return bool(mc.api_server_access_profile.enable_vnet_integration)
     return False
+
+
+def merge_aks_custom_headers(
+    existing_headers_dict: Dict[str, str],
+    new_headers: str,
+    overwrite_same_key: bool = False,
+) -> Dict[str, str]:
+    """Merge aks custom headers.
+
+    Merge the parsed custom headers dictionary with the string containing the new headers. Provides option
+    `overwrite_same_key` to control whether to overwrite with the value in new_headers when the parsed dictionary has
+    the same key as the newly provided headers.
+
+    Examples:
+    1. Do not overwrite the same key
+    merge_aks_custom_headers({"a": "b,c", "m": "n"}, "a:x,y", False) -> {"a": "b,c,x,y", "m": "n"}
+    2. Overwrite the same key
+    merge_aks_custom_headers({"a": "b,c", "m": "n"}, "a:x,y", True) -> {"a": "x,y", "m": "n"}
+
+    :return: Dict[str, str]
+    """
+    from azure.cli.command_modules.acs._validators import (
+        extract_comma_separated_string,
+    )
+    result = existing_headers_dict.copy() if existing_headers_dict else {}
+    new_headers_dict = extract_comma_separated_string(
+        new_headers,
+        enable_strip=True,
+        extract_kv=True,
+        default_value={},
+        allow_appending_values_to_same_key=True,
+    )
+    for k, v in new_headers_dict.items():
+        if k in result:
+            if overwrite_same_key:
+                result[k] = v
+            else:
+                result[k] = f"{result[k]},{v}"
+        else:
+            result[k] = v
+    return result

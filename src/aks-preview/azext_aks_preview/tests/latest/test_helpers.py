@@ -12,6 +12,7 @@ from azext_aks_preview._helpers import (
     get_cluster_snapshot_by_snapshot_id,
     get_nodepool_snapshot,
     get_nodepool_snapshot_by_snapshot_id,
+    merge_aks_custom_headers,
 )
 from azure.cli.core.azclierror import (
     BadRequestError,
@@ -109,6 +110,29 @@ class GetManagedClusterSnapShotTestCase(unittest.TestCase):
             "azext_aks_preview._helpers.get_mc_snapshots_client", return_value=mock_snapshot_operations_3
         ), self.assertRaises(BadRequestError):
             get_cluster_snapshot("mock_cli_ctx", "test_sub", "mock_rg", "mock_snapshot_name")
+
+
+class AKSCustomHeadersHelper(unittest.TestCase):
+    def test_merge_aks_custom_headers(self):
+        s1 = None
+        t1 = ""
+        r1 = merge_aks_custom_headers(s1, t1, overwrite_same_key=False)
+        self.assertEqual(r1, {})
+
+        s2 = {}
+        t2 = "abc=def,xyz=123"
+        r2 = merge_aks_custom_headers(s2, t2, overwrite_same_key=False)
+        self.assertEqual(r2, {"abc": "def", "xyz": "123"})
+
+        s3 = {"abc": "def", "xyz": "123"}
+        t3 = "abc=ghi"
+        r3 = merge_aks_custom_headers(s3, t3, overwrite_same_key=False)
+        self.assertEqual(r3, {"abc": "def,ghi", "xyz": "123"})
+
+        s4 = {"abc": "def", "xyz": "123"}
+        t4 = "abc=ghi"
+        r4 = merge_aks_custom_headers(s4, t4, overwrite_same_key=True)
+        self.assertEqual(r4, {"abc": "ghi", "xyz": "123"})
 
 
 if __name__ == "__main__":
