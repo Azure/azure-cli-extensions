@@ -1874,7 +1874,7 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
 
         :return: bool
         """
-        print("_get_enable_azure_monitor_metrics being called...")
+        # print("_get_enable_azure_monitor_metrics being called...")
 
         # Read the original value passed by the command.
 
