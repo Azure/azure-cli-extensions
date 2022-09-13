@@ -8,20 +8,22 @@ import platform
 import re
 import stat
 import tempfile
-import yaml
 from typing import Dict, List, TypeVar, Union
-from azure.cli.command_modules.acs._validators import (
-        extract_comma_separated_string,
-    )
-from azext_aks_preview._consts import CONST_AKS_HTTP_CUSTOM_FEATURES_HEADER
+
+import yaml
 from azure.cli.command_modules.acs._helpers import map_azure_error_to_cli_error
-from azure.cli.core.azclierror import InvalidArgumentValueError, ResourceNotFoundError
+from azure.cli.command_modules.acs._validators import \
+    extract_comma_separated_string
+from azure.cli.core.azclierror import (InvalidArgumentValueError,
+                                       ResourceNotFoundError)
 from azure.core.exceptions import AzureError
 from knack.log import get_logger
 from knack.prompting import NoTTYException, prompt_y_n
 from knack.util import CLIError
 
-from azext_aks_preview._client_factory import get_nodepool_snapshots_client, get_mc_snapshots_client
+from azext_aks_preview._client_factory import (get_mc_snapshots_client,
+                                               get_nodepool_snapshots_client)
+from azext_aks_preview._consts import CONST_AKS_HTTP_CUSTOM_FEATURES_HEADER
 
 logger = get_logger(__name__)
 
