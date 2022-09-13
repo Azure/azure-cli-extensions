@@ -578,8 +578,6 @@ def link_grafana_instance(cmd, raw_parameters, azure_monitor_workspace_resource_
     if amwIntegrations != [] and azure_monitor_workspace_resource_id in json.dumps(amwIntegrations):
         print("Grafana already has AMW integration")
         return GrafanaLink.ALREADYPRESENT
-    else
-        print("Grafana not present, NEED to add")
 
     try:
         grafanaURI = "https://management.azure.com{0}?api-version={1}".format(
