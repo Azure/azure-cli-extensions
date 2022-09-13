@@ -4094,7 +4094,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         update_interval_cmd = ' '.join([
             'aks', 'update', '--resource-group={resource_group}', '--name={name}',
             '--image-cleaner-interval-hours 24',
-            '--ssh-key-value={ssh_key_value}',
             '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/EnableImageCleanerPreview',
         ])
         self.cmd(update_interval_cmd, checks=[
@@ -4106,7 +4105,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         disable_cmd = ' '.join([
             'aks', 'update', '--resource-group={resource_group}', '--name={name}',
             '--disable-image-cleaner',
-            '--ssh-key-value={ssh_key_value}',
             '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/EnableImageCleanerPreview',
         ])
         self.cmd(disable_cmd, checks=[
