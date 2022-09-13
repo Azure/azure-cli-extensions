@@ -189,3 +189,6 @@ CONST_AZURE_KEYVAULT_NETWORK_ACCESS_PRIVATE = "Private"
 # tag_name gives latest version released.
 # Moving away from 1:n release to avoid unwanted breaking changes with auto upgrades.
 CONST_DRAFT_CLI_VERSION = "v0.0.22"
+
+# consts for headers
+CONST_AKS_HTTP_CUSTOM_FEATURES_HEADER =  "AKSHTTPCustomFeatures"

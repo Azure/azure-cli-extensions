@@ -13,7 +13,9 @@ from azext_aks_preview._helpers import (
     get_nodepool_snapshot,
     get_nodepool_snapshot_by_snapshot_id,
     merge_aks_custom_headers,
+    merge_aks_http_custom_features_headers,
 )
+from azext_aks_preview._consts import CONST_AKS_HTTP_CUSTOM_FEATURES_HEADER
 from azure.cli.core.azclierror import (
     BadRequestError,
     InvalidArgumentValueError,
@@ -133,6 +135,43 @@ class AKSCustomHeadersHelper(unittest.TestCase):
         t4 = "abc=ghi,abc=jkl"
         r4 = merge_aks_custom_headers(s4, t4, overwrite_same_key=True)
         self.assertEqual(r4, {"abc": "ghi,jkl", "xyz": "123"})
+
+    def test_merge_aks_http_custom_features_headers(self):
+        s1 = None
+        t1 = ""
+        r1 = merge_aks_http_custom_features_headers(s1, t1, overwrite=False)
+        self.assertEqual(r1, {})
+
+        s2 = {}
+        t2 = []
+        r2 = merge_aks_http_custom_features_headers(s2, t2, overwrite=False)
+        self.assertEqual(r2, {})
+
+        s3 = {CONST_AKS_HTTP_CUSTOM_FEATURES_HEADER: "abc", "xyz": "123"}
+        t3 = "def,ghi"
+        r3 = merge_aks_http_custom_features_headers(s3, t3, overwrite=False)
+        self.assertEqual(r3, {CONST_AKS_HTTP_CUSTOM_FEATURES_HEADER: "abc,def,ghi", "xyz": "123"})
+
+        s4 = {CONST_AKS_HTTP_CUSTOM_FEATURES_HEADER: "abc", "xyz": "123"}
+        t4 = ["def", "ghi"]
+        r4 = merge_aks_http_custom_features_headers(s4, t4, overwrite=False)
+        self.assertEqual(r4, {CONST_AKS_HTTP_CUSTOM_FEATURES_HEADER: "abc,def,ghi", "xyz": "123"})
+
+        s5 = {CONST_AKS_HTTP_CUSTOM_FEATURES_HEADER: "abc", "xyz": "123"}
+        t5 = "def,ghi"
+        r5 = merge_aks_http_custom_features_headers(s5, t5, overwrite=True)
+        self.assertEqual(r5, {CONST_AKS_HTTP_CUSTOM_FEATURES_HEADER: "def,ghi", "xyz": "123"})
+
+        s6 = {CONST_AKS_HTTP_CUSTOM_FEATURES_HEADER: "abc", "xyz": "123"}
+        t6 = ["def", "ghi"]
+        r6 = merge_aks_http_custom_features_headers(s6, t6, overwrite=True)
+        self.assertEqual(r6, {CONST_AKS_HTTP_CUSTOM_FEATURES_HEADER: "def,ghi", "xyz": "123"})
+
+        s7 = {}
+        t7 = {}
+        # fail on invalid type
+        with self.assertRaises(InvalidArgumentValueError):
+            merge_aks_http_custom_features_headers(s7, t7, overwrite=False)
 
 
 if __name__ == "__main__":

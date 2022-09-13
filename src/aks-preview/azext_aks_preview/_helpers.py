@@ -9,7 +9,11 @@ import re
 import stat
 import tempfile
 import yaml
-from typing import Any, Dict, List, TypeVar
+from typing import Dict, List, TypeVar, Union
+from azure.cli.command_modules.acs._validators import (
+        extract_comma_separated_string,
+    )
+from azext_aks_preview._consts import CONST_AKS_HTTP_CUSTOM_FEATURES_HEADER
 from azure.cli.command_modules.acs._helpers import map_azure_error_to_cli_error
 from azure.cli.core.azclierror import InvalidArgumentValueError, ResourceNotFoundError
 from azure.core.exceptions import AzureError
@@ -297,15 +301,15 @@ def merge_aks_custom_headers(
 
     Examples:
     1. Do not overwrite the same key
-    merge_aks_custom_headers({"a": "b,c", "m": "n"}, "a=x,a=y", False) -> {"a": "b,c,x,y", "m": "n"}
+
+        merge_aks_custom_headers({"a": "b,c", "m": "n"}, "a=x,a=y", False) -> {"a": "b,c,x,y", "m": "n"}
+
     2. Overwrite the same key
-    merge_aks_custom_headers({"a": "b,c", "m": "n"}, "a=x,a=y", True) -> {"a": "x,y", "m": "n"}
+
+        merge_aks_custom_headers({"a": "b,c", "m": "n"}, "a=x,a=y", True) -> {"a": "x,y", "m": "n"}
 
     :return: Dict[str, str]
     """
-    from azure.cli.command_modules.acs._validators import (
-        extract_comma_separated_string,
-    )
     result = existing_headers_dict.copy() if existing_headers_dict else {}
     new_headers_dict = extract_comma_separated_string(
         new_headers,
@@ -315,11 +319,70 @@ def merge_aks_custom_headers(
         allow_appending_values_to_same_key=True,
     )
     for k, v in new_headers_dict.items():
-        if k in result:
-            if overwrite_same_key:
-                result[k] = v
-            else:
-                result[k] = f"{result[k]},{v}"
+        if k in result and not overwrite_same_key:
+            result[k] = f"{result[k]},{v}"
         else:
             result[k] = v
+    return result
+
+
+def merge_aks_http_custom_features_headers(
+    existing_headers_dict: Dict[str, str],
+    custom_features: Union[str, List],
+    overwrite: bool = False,
+) -> Dict[str, str]:
+    """Merge AKSHTTPCustomFeatures headers.
+
+    Merge the parsed custom headers dictionary with the string or list containing the new values of the
+    AKSHTTPCustomFeatures header. Provides option `overwrite` to control whether to overwrite with the value in
+    custom_features when the parsed dictionary already contains the AKSHTTPCustomFeatures key.
+
+    Examples:
+    1. Do not overwrite the same key
+
+        merge_aks_http_custom_features_headers({"AKSHTTPCustomFeatures": "b,c", "m": "n"}, "x,y", False) ->
+        {"AKSHTTPCustomFeatures": "b,c,x,y", "m": "n"}
+
+        merge_aks_http_custom_features_headers({"AKSHTTPCustomFeatures": "b,c", "m": "n"}, ["x", "y"], False) ->
+        {"AKSHTTPCustomFeatures": "b,c,x,y", "m": "n"}
+
+    2. Overwrite the same key
+
+        merge_aks_http_custom_features_headers({"AKSHTTPCustomFeatures": "b,c", "m": "n"}, "x,y", True) ->
+        {"AKSHTTPCustomFeatures": "x,y", "m": "n"}
+
+        merge_aks_http_custom_features_headers({"AKSHTTPCustomFeatures": "b,c", "m": "n"}, ["x", "y"], True) ->
+        {"AKSHTTPCustomFeatures": "x,y", "m": "n"}
+
+    :return: Dict[str, str]
+    """
+    result = existing_headers_dict.copy() if existing_headers_dict else {}
+    if isinstance(custom_features, str):
+        custom_features = extract_comma_separated_string(
+            custom_features,
+            enable_strip=True,
+            extract_kv=False,
+            default_value=[],
+        )
+    if isinstance(custom_features, list):
+        if custom_features:
+            if (
+                CONST_AKS_HTTP_CUSTOM_FEATURES_HEADER in result
+                and not overwrite
+            ):
+                result[CONST_AKS_HTTP_CUSTOM_FEATURES_HEADER] = ",".join(
+                    [
+                        result[CONST_AKS_HTTP_CUSTOM_FEATURES_HEADER],
+                        ",".join(custom_features),
+                    ]
+                )
+            else:
+                result[CONST_AKS_HTTP_CUSTOM_FEATURES_HEADER] = ",".join(
+                    custom_features
+                )
+    else:
+        raise InvalidArgumentValueError(
+            f"invalid custom features '{custom_features}' with type {type(custom_features)}, "
+            "please specify a string or list"
+        )
     return result
