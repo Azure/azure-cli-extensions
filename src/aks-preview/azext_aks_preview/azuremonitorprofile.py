@@ -252,7 +252,7 @@ def create_default_mac(cmd, cluster_subscription, cluster_region):
     if resource_groups.check_existence(default_resource_group_name):
         try:
             resources.get_by_id(
-                azure_monitor_workspace_resource_id, "2021-06-01-preview"
+                azure_monitor_workspace_resource_id, MAC_API
             )
             # If MAC already exists then return from here
             return azure_monitor_workspace_resource_id
