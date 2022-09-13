@@ -2,6 +2,10 @@
 
 Release History
 ===============
+0.14.4
+++++++
+* `az network firewall create/update`: Add parameter `--udp-log-optimization`
+
 0.14.3
 ++++++
 * `az network firewall create`: Support Basic SKU creation with management IP configuration
