@@ -11,8 +11,6 @@ import time
 import platform
 import oschmod
 
-import colorama
-
 from knack import log
 from azure.cli.core import azclierror
 from azure.cli.core import telemetry
@@ -143,12 +141,12 @@ def ssh_cert(cmd, cert_path=None, public_key_file=None, ssh_client_folder=None):
 
 
 def ssh_arc(cmd, resource_group_name=None, vm_name=None, public_key_file=None, private_key_file=None,
-            local_user=None, cert_file=None, port=None, resource_type=None, ssh_client_folder=None, 
+            local_user=None, cert_file=None, port=None, resource_type=None, ssh_client_folder=None,
             delete_credentials=False, ssh_proxy_folder=None, winrdp=False, ssh_args=None):
 
     if not resource_type:
         resource_type = const.ARC_RESOURCE_TYPE_PLACEHOLDER
-    
+
     ssh_vm(cmd, resource_group_name, vm_name, None, public_key_file, private_key_file, False, local_user, cert_file,
            port, ssh_client_folder, delete_credentials, resource_type, ssh_proxy_folder, winrdp, ssh_args)
 
@@ -267,7 +265,7 @@ def _prepare_jwk_data(public_key_file):
 
 
 def _assert_args(resource_group, vm_name, ssh_ip, resource_type, cert_file, username):
-    
+
     if resource_type and \
        resource_type.lower() not in const.SUPPORTED_RESOURCE_TYPES and \
        resource_type.lower() not in const.LEGACY_SUPPORTED_RESOURCE_TYPES:

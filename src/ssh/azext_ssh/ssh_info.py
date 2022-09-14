@@ -41,8 +41,8 @@ class SSHSession():
         self.credentials_folder = os.path.abspath(credentials_folder) if credentials_folder else None
 
     def is_arc(self):
-        if self.resource_type == "Microsoft.HybridCompute/machines" or\
-           self.resource_type == "Microsoft.ConnectedVMwarevSphere/virtualMachines":
+        if self.resource_type in ["Microsoft.HybridCompute/machines",
+                                  "Microsoft.ConnectedVMwarevSphere/virtualMachines"]:
             return True
         return False
 
@@ -101,8 +101,8 @@ class ConfigSession():
         self.credentials_folder = os.path.abspath(credentials_folder) if credentials_folder else None
 
     def is_arc(self):
-        if self.resource_type == "Microsoft.HybridCompute/machines" or\
-           self.resource_type == "Microsoft.ConnectedVMwarevSphere/virtualMachines":
+        if self.resource_type in ["Microsoft.HybridCompute/machines",
+                                  "Microsoft.ConnectedVMwarevSphere/virtualMachines"]:
             return True
         return False
 

@@ -5,9 +5,8 @@
 
 import colorama
 
-from azure.cli.core import telemetry
-from azure.cli.core import azclierror
 from knack import log
+from azure.cli.core import telemetry, azclierror
 from azure.mgmt.resource import ResourceManagementClient
 from azure.cli.core.commands.client_factory import get_mgmt_service_client
 
@@ -18,7 +17,9 @@ logger = log.get_logger(__name__)
 
 def _list_types_of_resources_with_provided_name(cmd, op_info):
     resource_client = get_mgmt_service_client(cmd.cli_ctx, ResourceManagementClient)
-    resources = resource_client.resources.list_by_resource_group(op_info.resource_group_name, filter=f"name eq '{op_info.vm_name}'")
+    resources = resource_client.resources.list_by_resource_group(
+        op_info.resource_group_name,
+        filter=f"name eq '{op_info.vm_name}'")
     resource_types_present = set()
 
     while True:
@@ -28,7 +29,7 @@ def _list_types_of_resources_with_provided_name(cmd, op_info):
                 resource_types_present.add(resource.type.lower())
         except StopIteration:
             break
-    
+
     return resource_types_present
 
 
@@ -38,7 +39,7 @@ def decide_resource_type(cmd, op_info):
     # Arc Server. Which just means that the Connectivity Proxy won't be used to establish connection.
     if op_info.ip:
         return "Microsoft.Compute/virtualMachines"
-    
+
     # Set of resource types in target resource group of resources that match vm_name
     types_in_rg = _list_types_of_resources_with_provided_name(cmd, op_info)
     target_resource_type = None
@@ -49,15 +50,16 @@ def decide_resource_type(cmd, op_info):
         if op_info.resource_type.lower() in types_in_rg:
             target_resource_type = consts.RESOURCE_TYPE_LOWER_CASE_TO_CORRECT_CASE[op_info.resource_type.lower()]
         else:
-            raise azclierror.ResourceNotFoundError(f"Unable to find resource {op_info.vm_name} of type "
-                                                   f"{consts.RESOURCE_TYPE_LOWER_CASE_TO_CORRECT_CASE[op_info.resource_type.lower()]} "
-                                                   f"under the resource group {op_info.resource_group}",
-                                                   consts.RECOMMENDATION_RESOURCE_NOT_FOUND)
+            raise azclierror.ResourceNotFoundError(
+                f"Unable to find resource {op_info.vm_name} of type "
+                f"{consts.RESOURCE_TYPE_LOWER_CASE_TO_CORRECT_CASE[op_info.resource_type.lower()]} "
+                f"under the resource group {op_info.resource_group}",
+                consts.RECOMMENDATION_RESOURCE_NOT_FOUND)
 
     else:
         if op_info.resource_type == consts.ARC_RESOURCE_TYPE_PLACEHOLDER:
             types_in_rg.discard("microsoft.compute/virtualmachines")
-        
+
         if len(types_in_rg) > 1:
             raise azclierror.BadRequestError(f"{op_info.resource_group_name} has more than one valid target with the "
                                              f"same name: {op_info.vm_name}.",
@@ -70,11 +72,7 @@ def decide_resource_type(cmd, op_info):
                                                    consts.RECOMMENDATION_RESOURCE_NOT_FOUND)
 
         target_resource_type = consts.RESOURCE_TYPE_LOWER_CASE_TO_CORRECT_CASE[types_in_rg.pop().lower()]
-    
+
     telemetry.add_extension_event('ssh', {'Context.Default.AzureCLI.TargetResourceType': target_resource_type})
     print(target_resource_type)
     return target_resource_type
-
-
-    
-

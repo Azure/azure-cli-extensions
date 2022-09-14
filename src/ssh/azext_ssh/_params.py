@@ -20,8 +20,9 @@ def load_arguments(self, _):
                    help='Path to a certificate file used for authentication when using local user credentials.')
         c.argument('port', options_list=['--port'], help='SSH port')
         c.argument('resource_type', options_list=['--resource-type'],
-                   help=('Resource type should be either Microsoft.Compute/virtualMachines, Microsoft.HybridCompute/machines, '
-                        'or Microsoft.ConnectedVMwareSphere/virtualMachines.'),
+                   help=('Resource type should be either Microsoft.Compute/virtualMachines, '
+                         'Microsoft.HybridCompute/machines, '
+                         'or Microsoft.ConnectedVMwareSphere/virtualMachines.'),
                    completer=['Microsoft.Compute/virtualMachines', 'Microsoft.HybridCompute/machines',
                               'Microsoft.ConnectedVMwareSphere/virtualMachines'])
         c.argument('ssh_client_folder', options_list=['--ssh-client-folder'],
@@ -54,8 +55,9 @@ def load_arguments(self, _):
                    help='Folder where new generated keys will be stored.')
         c.argument('port', options_list=['--port'], help='SSH Port')
         c.argument('resource_type', options_list=['--resource-type'],
-                   help=('Resource type should be either Microsoft.Compute/virtualMachines, Microsoft.HybridCompute/machines, '
-                        'or Microsoft.ConnectedVMwareSphere/virtualMachines.'),
+                   help=('Resource type should be either Microsoft.Compute/virtualMachines, '
+                         'Microsoft.HybridCompute/machines, '
+                         'or Microsoft.ConnectedVMwareSphere/virtualMachines.'),
                    completer=['Microsoft.Compute/virtualMachines', 'Microsoft.HybridCompute/machines',
                               'Microsoft.ConnectedVMwareSphere/virtualMachines'])
         c.argument('cert_file', options_list=['--certificate-file', '-c'], help='Path to certificate file')
@@ -86,7 +88,7 @@ def load_arguments(self, _):
         c.argument('port', options_list=['--port'], help='Port to connect to on the remote host.')
         c.argument('resource_type', options_list=['--resource-type'],
                    help=('Resource type should be either Microsoft.HybridCompute/machines '
-                        'or Microsoft.ConnectedVMwareSphere/virtualMachines.'),
+                         'or Microsoft.ConnectedVMwareSphere/virtualMachines.'),
                    completer=['Microsoft.HybridCompute/machines',
                               'Microsoft.ConnectedVMwareSphere/virtualMachines'])
         c.argument('ssh_client_folder', options_list=['--ssh-client-folder'],
