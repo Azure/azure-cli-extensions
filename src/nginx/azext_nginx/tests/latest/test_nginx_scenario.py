@@ -119,4 +119,3 @@ class NginxScenarioTest(ScenarioTest):
         self.cmd('nginx deployment delete --name {deployment_name} --resource-group {rg} --yes')
         deployment_list = self.cmd('nginx deployment list --resource-group {rg}').get_output_in_json()
         assert len(deployment_list) == 0
-        
