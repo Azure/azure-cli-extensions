@@ -57,14 +57,17 @@ def start_ssh_connection(op_info, delete_keys, delete_cert):
         logger.debug("Running ssh command %s", ' '.join(command))
 
         try:
-            # pylint: disable=consider-using-with
-            ssh_process = subprocess.Popen(command, stderr=subprocess.PIPE, env=env, encoding='utf-8')
+            # In these cases, there is no reason to read the logs. Not redirect stderr to avoid complications.
+            if (platform.system() != 'Windows' and not delete_cert or\
+                platform.system() == 'Windows' and not op_info.is_arc() and not delete_cert):
+                ssh_process = subprocess.Popen(command, env=env, encoding='utf-8')
+            else:
+                ssh_process = subprocess.Popen(command, stderr=subprocess.PIPE, env=env, encoding='utf-8')
+                _read_ssh_logs(ssh_process, print_ssh_logs, op_info, delete_cert, delete_keys)
         except OSError as e:
             colorama.init()
             raise azclierror.BadRequestError(f"Failed to run ssh command with error: {str(e)}.",
                                              const.RECOMMENDATION_SSH_CLIENT_NOT_FOUND)
-
-        _read_ssh_logs(ssh_process, print_ssh_logs, op_info, delete_cert, delete_keys)
 
         connection_duration = (time.time() - connection_duration) / 60
         ssh_connection_data = {'Context.Default.AzureCLI.SSHConnectionDurationInMinutes': connection_duration}
@@ -80,34 +83,40 @@ def start_ssh_connection(op_info, delete_keys, delete_cert):
 
 def _read_ssh_logs(ssh_sub, print_ssh_logs, op_info, delete_cert, delete_keys):
     log_list = []
+    connection_established = False
+    t0 = time.time()
 
     next_line = ssh_sub.stderr.readline()
     while next_line:
         if "debug1:" not in next_line and \
            "debug2:" not in next_line and \
            "debug3:" not in next_line:
-
-            # Filter out known logs that don't start with "debug",
-            # but that are not useful error messages or banners.
-            if not next_line.startswith('Authenticated to') and \
-               not next_line.startswith('Transferred: sent') and \
-               not next_line.startswith('Bytes per second: sent') and \
-               not next_line.startswith('OpenSSH_'):
-                #print(next_line, end='', file=sys.stderr)
-                sys.stderr.write(next_line)
-
+            sys.stderr.write(next_line)
             _check_for_known_errors(next_line, delete_cert, log_list)
         elif print_ssh_logs:
-            #print(next_line, end='', file=sys.stderr)
-            sys.stderr.write(next_line)
+            # with this approach logs don't get printed very gracefully after connection was
+            # established in linux. Save logs to print them once connection closes. 
+            if platform.system() == 'Windows' or not connection_established:
+                sys.stderr.write(next_line)
+            else:
+                log_list.append(next_line)
 
-        log_list.append(next_line)
-
+        # Credentials are deleted once we verify from the logs that the connection was established or
+        # after 2 minutes from the beginning of the connection.
         if "debug1: Entering interactive session." in next_line:
             logger.debug("SSH Connection estalished succesfully.")
+            connection_established = True
+            do_cleanup(delete_keys, delete_cert, op_info.cert_file, op_info.private_key_file, op_info.public_key_file)
+        
+        if not connection_established and \
+           time.time() - t0 > const.CLEANUP_TOTAL_TIME_LIMIT_IN_SECONDS:
             do_cleanup(delete_keys, delete_cert, op_info.cert_file, op_info.private_key_file, op_info.public_key_file)
 
         next_line = ssh_sub.stderr.readline()
+    
+    for line in log_list:
+        sys.stderr.write(line)
+
     ssh_sub.wait()
 
 
