@@ -51,7 +51,7 @@ class BuildServiceBuilderTest(ScenarioTest):
         ])
 
         self.cmd('spring build-service builder show-deployments -n default -g {rg} --service {serviceName}', checks=[
-            self.check('deployments[0]', '/subscriptions/0753feba-86f1-4242-aff1-27938fb04531/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test/deployments/default')
+            self.check('deployments[0]', '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test/deployments/default')
         ])
 
         self.cmd('spring build-service builder delete -n {name} -g {rg} --service {serviceName} -y')
