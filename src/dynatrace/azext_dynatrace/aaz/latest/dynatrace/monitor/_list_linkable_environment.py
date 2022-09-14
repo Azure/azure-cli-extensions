@@ -56,16 +56,19 @@ class ListLinkableEnvironment(AAZCommand):
             options=["--region"],
             arg_group="Request",
             help="Azure region in which we want to link the environment",
+            required=True,
         )
         _args_schema.tenant_id = AAZStrArg(
             options=["--tenant-id"],
             arg_group="Request",
             help="Tenant Id of the user in which they want to link the environment",
+            required=True,
         )
         _args_schema.user_principal = AAZStrArg(
             options=["--user-principal"],
             arg_group="Request",
             help="user principal id of the user",
+            required=True,
         )
         return cls._args_schema
 

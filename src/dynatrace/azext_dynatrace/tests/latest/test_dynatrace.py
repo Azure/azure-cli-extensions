@@ -66,32 +66,34 @@ class DynatraceScenario(ScenarioTest):
         self.cmd('dynatrace monitor list-app-service -g {rg} --monitor-name {monitor}')
         self.cmd('dynatrace monitor list-host -g {rg} --monitor-name {monitor}')
         self.cmd('dynatrace monitor list-monitored-resource -g {rg} --monitor-name {monitor}')
+        self.cmd('dynatrace monitor list-linkable-environment -g {rg} --monitor-name {monitor} --user-principal agarwald@microsoft.com --region eastus2euap --tenant-id be9927fa-821c-4178-9dae-e520c4beca74')
+        self.cmd('dynatrace monitor get-sso-detail -g {rg} --monitor-name {monitor} --user-principal agarwald@microsoft.com', checks=[
+            self.check('adminUsers[0]', 'agarwald@microsoft.com')
+        ])
         self.cmd('dynatrace monitor get-vm-host-payload -g {rg} --monitor-name {monitor}', checks=[
             self.exists('environmentId'),
             self.exists('ingestionKey')
         ])
         self.cmd('dynatrace monitor delete -n {monitor} -g {rg} -y')
 
-    @unittest.skip('Could not find requested user')
     @ResourceGroupPreparer(name_prefix='cli_test_dynatrace_monitor_single_sign_on_configurations', location='eastus2euap')
     def test_dynatrace_monitor_single_sign_on_configurations(self, resource_group):
         self.kwargs.update({
             'monitor': self.create_random_name('monitor', 15),
         })
         self.cmd('dynatrace monitor create -g {rg} -n {monitor} --user-info {{first-name:Alice,last-name:Bobab,email-address:agarwald@microsoft.com,phone-number:1234567890,country:US}} --plan-data {{usage-type:committed,billing-cycle:Monthly,plan-details:azureportalintegration_privatepreview@TIDhjdtn7tfnxcy,effective-date:2022-08-20}} --dynatrace-environment-properties {{single-sign-on-properties:{{aad-domains:[\'abc\']}}}}')
-        self.cmd('dynatrace monitor single-sign-on-configurations create -g {rg} --monitor-name {monitor} -n default', checks=[
-
-        ])
-        self.cmd('dynatrace monitor single-sign-on-configurations update -g {rg} --monitor-name {monitor} -n default', checks=[
-
+        self.cmd('dynatrace monitor single-sign-on-configurations create -g {rg} --monitor-name {monitor} -n default --aad-domains [\'mpliftrdt20210811outlook.onmicrosoft.com\'] --single-sign-on-url "https://www.dynatrace.io"', checks=[
+            self.check('aadDomains[0]', 'mpliftrdt20210811outlook.onmicrosoft.com'),
+            self.check('singleSignOnUrl', 'https://www.dynatrace.io')
         ])
         self.cmd('dynatrace monitor single-sign-on-configurations show -g {rg} --monitor-name {monitor} -n default', checks=[
-
+            self.check('aadDomains[0]', 'mpliftrdt20210811outlook.onmicrosoft.com'),
+            self.check('singleSignOnUrl', 'https://www.dynatrace.io')
         ])
         self.cmd('dynatrace monitor single-sign-on-configurations list -g {rg} --monitor-name {monitor}', checks=[
-
+            self.check('[0].aadDomains[0]', 'mpliftrdt20210811outlook.onmicrosoft.com'),
+            self.check('[0].singleSignOnUrl', 'https://www.dynatrace.io')
         ])
-        self.cmd('dynatrace monitor single-sign-on-configurations delete -g {rg} --monitor-name {monitor} -n default -y')
 
     @ResourceGroupPreparer(name_prefix='cli_test_dynatrace_monitor_tag_rule', location='eastus2euap')
     def test_dynatrace_monitor_tag_rule(self, resource_group):

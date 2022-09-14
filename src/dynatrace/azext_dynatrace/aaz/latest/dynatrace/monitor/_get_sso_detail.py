@@ -57,6 +57,7 @@ class GetSsoDetail(AAZCommand):
             options=["--user-principal"],
             arg_group="Request",
             help="user principal id of the user",
+            required=True
         )
         return cls._args_schema
 
