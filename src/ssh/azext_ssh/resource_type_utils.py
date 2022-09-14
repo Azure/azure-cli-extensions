@@ -53,7 +53,7 @@ def decide_resource_type(cmd, op_info):
             raise azclierror.ResourceNotFoundError(
                 f"Unable to find resource {op_info.vm_name} of type "
                 f"{consts.RESOURCE_TYPE_LOWER_CASE_TO_CORRECT_CASE[op_info.resource_type.lower()]} "
-                f"under the resource group {op_info.resource_group}",
+                f"under the resource group {op_info.resource_group_name}",
                 consts.RECOMMENDATION_RESOURCE_NOT_FOUND)
 
     else:
