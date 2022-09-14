@@ -1962,6 +1962,7 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         """
         return self._get_disable_vpa(enable_validation=True)
 
+
 class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
     def __init__(
         self, cmd: AzCliCommand, client: ContainerServiceClient, raw_parameters: Dict, resource_type: ResourceType
@@ -2312,7 +2313,7 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
 
     def set_up_vpa(self, mc: ManagedCluster) -> ManagedCluster:
         """Set up workload auto-scaler profile vpa for the ManagedCluster object.
-        
+
         :return: the ManagedCluster object
         """
         self._ensure_mc(mc)
@@ -2321,7 +2322,7 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
             if mc.workload_auto_scaler_profile is None:
                 mc.workload_auto_scaler_profile = self.models.ManagedClusterWorkloadAutoScalerProfile()
             mc.workload_auto_scaler_profile.vertical_pod_autoscaler = self.models.ManagedClusterWorkloadAutoScalerProfileVerticalPodAutoscaler(enable=True)
-        
+
         return mc
 
     def construct_mc_profile_preview(self, bypass_restore_defaults: bool = False) -> ManagedCluster:
@@ -2764,7 +2765,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
 
     def update_vpa(self, mc: ManagedCluster) -> ManagedCluster:
         """Update workload auto-scaler profile vertical pod auto-scaler for the ManagedCluster object.
-        
+
         :return: the ManagedCluster object
         """
         self._ensure_mc(mc)
@@ -2783,8 +2784,8 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                 mc.workload_auto_scaler_profile = self.models.ManagedClusterWorkloadAutoScalerProfile
             if mc.workload_auto_scaler_profile.vertical_pod_autoscaler is None:
                 mc.workload_auto_scaler_profile.vertical_pod_autoscaler = self.models.ManagedClusterWorkloadAutoScalerProfileVerticalPodAutoscaler()
-            
-            #set disabled
+
+            # set disabled
             mc.workload_auto_scaler_profile.vertical_pod_autoscaler.enabled = False
 
         return mc
