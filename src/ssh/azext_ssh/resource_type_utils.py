@@ -19,8 +19,7 @@ logger = log.get_logger(__name__)
 def _list_types_of_resources_with_provided_name(cmd, op_info):
     resource_client = get_mgmt_service_client(cmd.cli_ctx, ResourceManagementClient)
     resources = resource_client.resources.list_by_resource_group(op_info.resource_group_name, filter=f"name eq '{op_info.vm_name}'")
-
-    resource_types_present = {}
+    resource_types_present = set()
 
     while True:
         try:
@@ -40,7 +39,7 @@ def decide_resource_type(cmd, op_info):
     if op_info.ip:
         return "Microsoft.Compute/virtualMachines"
     
-    # Set of resource types in target resource group of resources 
+    # Set of resource types in target resource group of resources that match vm_name
     types_in_rg = _list_types_of_resources_with_provided_name(cmd, op_info)
     target_resource_type = None
 
@@ -73,6 +72,7 @@ def decide_resource_type(cmd, op_info):
         target_resource_type = consts.RESOURCE_TYPE_LOWER_CASE_TO_CORRECT_CASE[types_in_rg.pop().lower()]
     
     telemetry.add_extension_event('ssh', {'Context.Default.AzureCLI.TargetResourceType': target_resource_type})
+    print(target_resource_type)
     return target_resource_type
 
 
