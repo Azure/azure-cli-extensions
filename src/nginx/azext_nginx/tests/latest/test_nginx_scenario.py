@@ -5,13 +5,13 @@
 
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
-
+import json
 
 class NginxScenarioTest(ScenarioTest):
 
     @AllowLargeResponse(size_kb=10240)
     @ResourceGroupPreparer(name_prefix='AZcliDeploymentTestRG_', random_name_length=34, location='eastus2')
-    def test_create_deployment(self, resource_group):
+    def test_deployment_cert_config(self, resource_group):
         self.kwargs.update({
             'deployment_name': 'azclitest-deployment',
             'location': 'eastus2',
@@ -53,9 +53,12 @@ class NginxScenarioTest(ScenarioTest):
         self.cmd('keyvault create --name {kv_name} --resource-group {rg} --location {location}')
         policy = self.cmd('keyvault certificate get-default-policy').get_output_in_json()
         self.kwargs['policy'] = policy
-        self.cmd('keyvault certificate create --vault-name {kv_name} -n {cert_name} -p {policy}')
-        certificate = self.cmd('keyvault certificate show --name {cert_name} --vault-name {kv_name}')
-        self.kwargs['kv_secret_id'] = certificate['id']
+        with open('policy.json', 'w') as json_file:
+            json.dump(policy, json_file)
+        
+        self.cmd('keyvault certificate create --vault-name {kv_name} -n {cert_name} -p @policy.json')
+        certificate = self.cmd('keyvault certificate show --name {cert_name} --vault-name {kv_name}').get_output_in_json()
+        self.kwargs['kv_secret_id'] = certificate['sid']
         self.cmd('nginx deployment certificate create --certificate-name {cert_name} --deployment-name {deployment_name} --resource-group {rg} --certificate-virtual-path /etc/nginx/test.cert --key-virtual-path /etc/nginx/test.key --key-vault-secret-id {kv_secret_id}', checks=[
             self.check('properties.provisioningState', 'Succeeded'),
             self.check('name', self.kwargs['cert_name']),
