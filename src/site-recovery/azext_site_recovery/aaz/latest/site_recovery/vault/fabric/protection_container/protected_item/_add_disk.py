@@ -48,12 +48,12 @@ class AddDisk(AAZCommand):
             required=True,
         )
         _args_schema.protection_container_name = AAZStrArg(
-            options=["--protection-container-name"],
+            options=["--protection-container", "--protection-container-name"],
             help="Protection container name.",
             required=True,
         )
         _args_schema.replicated_protected_item_name = AAZStrArg(
-            options=["--replicated-protected-item-name"],
+            options=["-n", "--replicated-protected-item-name"],
             help="Replication protected item name.",
             required=True,
         )
@@ -70,7 +70,7 @@ class AddDisk(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.provider_specific_details = AAZObjectArg(
-            options=["--provider-specific-details"],
+            options=["--provider-details", "--provider-specific-details"],
             arg_group="Properties",
             help="The ReplicationProviderInput. For HyperVReplicaAzure provider, it will be AzureEnableProtectionInput object. For San provider, it will be SanEnableProtectionInput object. For HyperVReplicaAzure provider, it can be null.",
         )

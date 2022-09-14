@@ -63,7 +63,7 @@ class Show(AAZCommand):
             id_part="child_name_3",
         )
         _args_schema.storage_classification_name = AAZStrArg(
-            options=["--storage-classification-name"],
+            options=["--storage-classification", "--storage-classification-name"],
             help="Storage classification name.",
             required=True,
             id_part="child_name_2",

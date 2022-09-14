@@ -48,12 +48,12 @@ class TestFailover(AAZCommand):
             required=True,
         )
         _args_schema.protection_container_name = AAZStrArg(
-            options=["--protection-container-name"],
+            options=["--protection-container", "--protection-container-name"],
             help="Protection container name.",
             required=True,
         )
         _args_schema.replicated_protected_item_name = AAZStrArg(
-            options=["--replicated-protected-item-name"],
+            options=["-n", "--replicated-protected-item-name"],
             help="Replication protected item name.",
             required=True,
         )
@@ -85,7 +85,7 @@ class TestFailover(AAZCommand):
             help="Network type to be used for test failover.",
         )
         _args_schema.provider_specific_details = AAZObjectArg(
-            options=["--provider-specific-details"],
+            options=["--provider-details", "--provider-specific-details"],
             arg_group="Properties",
             help="Provider specific settings.",
         )

@@ -48,8 +48,8 @@ class Show(AAZCommand):
             id_part="child_name_1",
         )
         _args_schema.protection_container_name = AAZStrArg(
-            options=["--protection-container-name"],
-            help="The protection container name.",
+            options=["--protection-container", "--protection-container-name"],
+            help="Protection container name.",
             required=True,
             id_part="child_name_2",
         )
@@ -60,7 +60,7 @@ class Show(AAZCommand):
             id_part="child_name_4",
         )
         _args_schema.replicated_protected_item_name = AAZStrArg(
-            options=["--replicated-protected-item-name"],
+            options=["--protected-item", "--replicated-protected-item-name"],
             help="The replication protected item name.",
             required=True,
             id_part="child_name_3",

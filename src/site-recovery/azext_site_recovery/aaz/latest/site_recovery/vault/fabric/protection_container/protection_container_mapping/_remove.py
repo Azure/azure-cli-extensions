@@ -53,7 +53,7 @@ class Remove(AAZCommand):
             required=True,
         )
         _args_schema.protection_container_name = AAZStrArg(
-            options=["--protection-container-name"],
+            options=["--protection-container", "--protection-container-name"],
             help="Protection container name.",
             required=True,
         )

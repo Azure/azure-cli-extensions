@@ -70,7 +70,7 @@ class Update(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.provider_specific_input = AAZListArg(
-            options=["--provider-specific-input"],
+            options=["--provider-input", "--provider-specific-input"],
             arg_group="Properties",
             help="Provider specific inputs for container creation.",
             nullable=True,

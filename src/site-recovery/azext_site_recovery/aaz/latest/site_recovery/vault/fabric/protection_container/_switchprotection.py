@@ -48,8 +48,8 @@ class Switchprotection(AAZCommand):
             required=True,
         )
         _args_schema.protection_container_name = AAZStrArg(
-            options=["--protection-container-name"],
-            help="Protection container name.",
+            options=["-n", "--protection-container-name"],
+            help="The name of the protection container.",
             required=True,
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
@@ -65,7 +65,7 @@ class Switchprotection(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.provider_specific_details = AAZObjectArg(
-            options=["--provider-specific-details"],
+            options=["--provider-details", "--provider-specific-details"],
             arg_group="Properties",
             help="Provider specific switch protection input.",
         )

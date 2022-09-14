@@ -50,7 +50,7 @@ class Delete(AAZCommand):
             id_part="child_name_1",
         )
         _args_schema.protection_container_name = AAZStrArg(
-            options=["--protection-container-name"],
+            options=["--protection-container", "--protection-container-name"],
             help="Protection container name.",
             required=True,
             id_part="child_name_2",

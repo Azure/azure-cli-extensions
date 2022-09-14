@@ -53,7 +53,7 @@ class Resync(AAZCommand):
             required=True,
         )
         _args_schema.protection_container_name = AAZStrArg(
-            options=["--protection-container-name"],
+            options=["--protection-container", "--protection-container-name"],
             help="Protection container name.",
             required=True,
         )
@@ -70,7 +70,7 @@ class Resync(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.provider_specific_details = AAZObjectArg(
-            options=["--provider-specific-details"],
+            options=["--provider-details", "--provider-specific-details"],
             arg_group="Properties",
             help="The provider specific details.",
             required=True,

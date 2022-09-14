@@ -48,7 +48,7 @@ class DiscoverProtectableItem(AAZCommand):
             required=True,
         )
         _args_schema.protection_container_name = AAZStrArg(
-            options=["--protection-container-name"],
+            options=["-n", "--protection-container-name"],
             help="The name of the protection container.",
             required=True,
         )

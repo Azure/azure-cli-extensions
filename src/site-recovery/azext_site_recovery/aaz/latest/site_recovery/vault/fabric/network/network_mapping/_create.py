@@ -74,7 +74,7 @@ class Create(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.fabric_specific_details = AAZObjectArg(
-            options=["--fabric-specific-details"],
+            options=["--fabric-details", "--fabric-specific-details"],
             arg_group="Properties",
             help="Fabric specific input properties.",
         )

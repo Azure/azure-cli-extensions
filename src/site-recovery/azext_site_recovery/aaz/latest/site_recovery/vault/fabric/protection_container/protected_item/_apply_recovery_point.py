@@ -48,13 +48,13 @@ class ApplyRecoveryPoint(AAZCommand):
             required=True,
         )
         _args_schema.protection_container_name = AAZStrArg(
-            options=["--protection-container-name"],
-            help="The protection container name.",
+            options=["--protection-container", "--protection-container-name"],
+            help="Protection container name.",
             required=True,
         )
         _args_schema.replicated_protected_item_name = AAZStrArg(
-            options=["--replicated-protected-item-name"],
-            help="The replicated protected item name.",
+            options=["-n", "--replicated-protected-item-name"],
+            help="Replication protected item name.",
             required=True,
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
@@ -70,7 +70,7 @@ class ApplyRecoveryPoint(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.provider_specific_details = AAZObjectArg(
-            options=["--provider-specific-details"],
+            options=["--provider-details", "--provider-specific-details"],
             arg_group="Properties",
             help="Provider specific input for applying recovery point.",
             required=True,

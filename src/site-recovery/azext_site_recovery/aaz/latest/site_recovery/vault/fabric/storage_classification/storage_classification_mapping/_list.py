@@ -54,7 +54,7 @@ class List(AAZCommand):
             required=True,
         )
         _args_schema.storage_classification_name = AAZStrArg(
-            options=["--storage-classification-name"],
+            options=["--storage-classification", "--storage-classification-name"],
             help="Storage classification name.",
             required=True,
         )

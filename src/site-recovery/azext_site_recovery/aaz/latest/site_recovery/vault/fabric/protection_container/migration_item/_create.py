@@ -55,7 +55,7 @@ class Create(AAZCommand):
             id_part="child_name_3",
         )
         _args_schema.protection_container_name = AAZStrArg(
-            options=["--protection-container-name"],
+            options=["--protection-container", "--protection-container-name"],
             help="Protection container name.",
             required=True,
             id_part="child_name_2",
@@ -80,7 +80,7 @@ class Create(AAZCommand):
             required=True,
         )
         _args_schema.provider_specific_details = AAZObjectArg(
-            options=["--provider-specific-details"],
+            options=["--provider-details", "--provider-specific-details"],
             arg_group="Properties",
             help="The provider specific details.",
             required=True,

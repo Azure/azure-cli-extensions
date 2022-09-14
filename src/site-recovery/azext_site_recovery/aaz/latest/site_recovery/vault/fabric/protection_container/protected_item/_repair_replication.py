@@ -48,13 +48,13 @@ class RepairReplication(AAZCommand):
             required=True,
         )
         _args_schema.protection_container_name = AAZStrArg(
-            options=["--protection-container-name"],
-            help="The name of the container.",
+            options=["--protection-container", "--protection-container-name"],
+            help="Protection container name.",
             required=True,
         )
         _args_schema.replicated_protected_item_name = AAZStrArg(
-            options=["--replicated-protected-item-name"],
-            help="The name of the replication protected item.",
+            options=["-n", "--replicated-protected-item-name"],
+            help="Replication protected item name.",
             required=True,
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
