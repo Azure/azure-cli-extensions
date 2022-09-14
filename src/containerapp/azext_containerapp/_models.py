@@ -16,6 +16,9 @@ VnetConfiguration = {
 ManagedEnvironment = {
     "location": None,
     "tags": None,
+    "sku": {
+        "name": "Consumption",
+    },
     "properties": {
         "daprAIInstrumentationKey": None,
         "vnetConfiguration": None,  # VnetConfiguration
@@ -40,7 +43,11 @@ Dapr = {
     "enabled": False,
     "appId": None,
     "appProtocol": None,
-    "appPort": None
+    "appPort": None,
+    "httpReadBufferSize": None,
+    "httpMaxRequestSize": None,
+    "logLevel": None,
+    "enableApiLogging": None
 }
 
 EnvironmentVar = {
@@ -100,8 +107,8 @@ HttpScaleRule = {
 ScaleRule = {
     "name": None,
     "azureQueue": None,  # QueueScaleRule
-    "customScaleRule": None,  # CustomScaleRule
-    "httpScaleRule": None,  # HttpScaleRule
+    "custom": None,  # CustomScaleRule
+    "http": None,  # HttpScaleRule
 }
 
 Secret = {

@@ -45,7 +45,7 @@ class DataProtectionClientConfiguration(Configuration):
 
         self.credential = credential
         self.subscription_id = subscription_id
-        self.api_version = "2022-04-01"
+        self.api_version = "2022-05-01"
         self.credential_scopes = kwargs.pop('credential_scopes', ['https://management.azure.com/.default'])
         kwargs.setdefault('sdk_moniker', 'mgmt-dataprotection/{}'.format(VERSION))
         self._configure(**kwargs)
