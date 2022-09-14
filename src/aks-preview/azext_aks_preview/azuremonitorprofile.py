@@ -2,6 +2,7 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
+from curses.has_key import has_key
 import json
 import urllib.request
 import uuid
@@ -60,7 +61,7 @@ MapToClosestMACRegion = {
         "northeurope": "westeurope",
         "southafricanorth": "westeurope",
         "southafricawest": "westeurope",
-        "southcentralus": "westeurope",
+        "southcentralus": "eastus",
         "southeastasia": "westeurope",
         "southindia": "centralindia",
         "uksouth": "westeurope",
@@ -70,6 +71,7 @@ MapToClosestMACRegion = {
         "westindia": "centralindia",
         "westus": "westus",
         "westus2": "westus2",
+        "westus3": "westus",
         "norwayeast": "westeurope",
         "norwaywest": "westeurope",
         "switzerlandnorth": "westeurope",
@@ -80,21 +82,28 @@ MapToClosestMACRegion = {
         "uaecentral": "westeurope",
         "eastus2euap": "eastus2euap",
         "centraluseuap": "westeurope",
-        "brazilsoutheast": "eastus"
+        "brazilsoutheast": "eastus",
+        "jioindiacentral": "centralindia",
+        "swedencentral": "westeurope",
+        "swedensouth": "westeurope",
+        "qatarcentral": "westeurope"
 }
 
 AzureCloudLocationToOmsRegionCodeMap = {
-        "australiasoutheast": "ASE",
+        "australiasoutheast": "SEAU",
         "australiaeast": "EAU",
         "australiacentral": "CAU",
+        "australiacentral2": "CBR2",
         "canadacentral": "CCA",
-        "centralindia": "CIN",
+        "centralindia": "CID",
+        "southindia": "MA",
         "centralus": "CUS",
         "eastasia": "EA",
         "eastus": "EUS",
         "eastus2": "EUS2",
-        "eastus2euap": "EAP",
+        "eastus2euap": "EUS2P",
         "francecentral": "PAR",
+        "francesouth": "MRS",
         "japaneast": "EJP",
         "koreacentral": "SE",
         "northeurope": "NEU",
@@ -102,10 +111,11 @@ AzureCloudLocationToOmsRegionCodeMap = {
         "southeastasia": "SEA",
         "uksouth": "SUK",
         "usgovvirginia": "USGV",
-        "westcentralus": "EUS",
+        "westcentralus": "WCUS",
         "westeurope": "WEU",
         "westus": "WUS",
         "westus2": "WUS2",
+        "westus3": "WUS3",
         "brazilsouth": "CQ",
         "brazilsoutheast": "BRSE",
         "norwayeast": "NOE",
@@ -114,9 +124,19 @@ AzureCloudLocationToOmsRegionCodeMap = {
         "uaenorth": "DXB",
         "germanywestcentral": "DEWC",
         "ukwest": "WUK",
+        "swedencentral": "SEC",
         "switzerlandnorth": "CHN",
         "switzerlandwest": "CHW",
         "uaecentral": "AUH",
+        "norwaywest": "NOW",
+        "japanwest": "OS",
+        "centraluseuap": "CDM",
+        "canadaeast": "YQ",
+        "koreasouth": "PS",
+        "jioindiacentral": "JINC",
+        "swedensouth": "SES",
+        "qatarcentral": "QAC",
+        "southafricawest": "CPT"
 }
 
 def check_msi_cluster(client, cluster_resource_group_name, cluster_name):
@@ -223,7 +243,9 @@ def sanitize_resource_id(resource_id):
     return resource_id.lower()
 
 def get_default_mac_region(cluster_region):
-    return MapToClosestMACRegion[cluster_region]
+    if MapToClosestMACRegion.has_key(cluster_region):
+        return MapToClosestMACRegion[cluster_region]
+    return "eastus"
 
 def get_default_mac_region_code(cluster_region):
     return AzureCloudLocationToOmsRegionCodeMap[get_default_mac_region(cluster_region)]
@@ -291,17 +313,26 @@ def get_azure_monitor_workspace_resource_id(cmd, cluster_subscription, cluster_r
     return azure_monitor_workspace_resource_id.lower()
 
 def get_default_dce_name(mac_region, cluster_name):
-    default_dce_name = "MSProm-" + AzureCloudLocationToOmsRegionCodeMap[mac_region] + "-" + cluster_name
+    region_code = "EUS"
+    if AzureCloudLocationToOmsRegionCodeMap.has_key(mac_region):
+        region_code = AzureCloudLocationToOmsRegionCodeMap[mac_region]
+    default_dce_name = "MSProm-" + region_code + "-" + cluster_name
     default_dce_name = default_dce_name[0:43]
     return default_dce_name
 
 def get_default_dcr_name(mac_region, cluster_name):
-    default_dcr_name = "MSProm-" + AzureCloudLocationToOmsRegionCodeMap[mac_region] + "-" + cluster_name
+    region_code = "EUS"
+    if AzureCloudLocationToOmsRegionCodeMap.has_key(mac_region):
+        region_code = AzureCloudLocationToOmsRegionCodeMap[mac_region]
+    default_dcr_name = "MSProm-" + region_code + "-" + cluster_name
     default_dcr_name = default_dcr_name[0:43]
     return default_dcr_name
 
 def get_default_dcra_name(cluster_region, cluster_name):
-    default_dcra_name = "MSProm-" + AzureCloudLocationToOmsRegionCodeMap[cluster_region] + "-" + cluster_name
+    region_code = "EUS"
+    if AzureCloudLocationToOmsRegionCodeMap.has_key(cluster_region):
+        region_code = AzureCloudLocationToOmsRegionCodeMap[cluster_region]
+    default_dcra_name = "MSProm-" + region_code + "-" + cluster_name
     default_dcra_name = default_dcra_name[0:43]
     return default_dcra_name
 
