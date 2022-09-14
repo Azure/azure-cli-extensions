@@ -20,7 +20,7 @@ class ContainerappComposePreviewCommandScenarioTest(ContainerappComposePreviewSc
         compose_text = """
 services:
   foo:
-    image: mcr.microsoft.com/azuredocs/aks-helloworld:v1
+    image: mcr.microsoft.com/azuredocs/containerapps-helloworld:latest
     command: echo "hello world"
     expose:
       - "5000"
@@ -51,7 +51,7 @@ services:
         compose_text = """
 services:
   foo:
-    image: mcr.microsoft.com/azuredocs/aks-helloworld:v1
+    image: mcr.microsoft.com/azuredocs/containerapps-helloworld:latest
     command: ["echo", "hello world"]
     expose:
       - "5000"
@@ -82,7 +82,7 @@ services:
         compose_text = """
 services:
   foo:
-    image: mcr.microsoft.com/azuredocs/aks-helloworld:v1
+    image: mcr.microsoft.com/azuredocs/containerapps-helloworld:latest
     command: ["echo", "hello world"]
     entrypoint: /code/entrypoint.sh
     expose:
