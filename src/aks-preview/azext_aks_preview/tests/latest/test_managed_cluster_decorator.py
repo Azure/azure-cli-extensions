@@ -3096,6 +3096,40 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         with self.assertRaises(InvalidArgumentValueError):
             self.assertEqual(ctx_4.get_private_dns_zone(), CONST_PRIVATE_DNS_ZONE_NONE)
 
+        def test_get_enable_vpa(self):
+            ctx_0 = AKSPreviewManagedClusterContext(
+                self.cmd,
+                AKSManagedClusterParamDict({}),
+                self.models,
+                decorator_mode=DecoratorMode.CREATE,
+            )
+            self.assertIsNone(ctx_0.get_enable_vpa())
+
+            ctx_1 = AKSPreviewManagedClusterContext(
+                self.cmd,
+                AKSManagedClusterParamDict(
+                    {
+                        "enable_vpa": False,
+                    }
+                ),
+                self.models,
+                decorator_mode=DecoratorMode.CREATE,
+            )
+            self.assertEqual(ctx_1.get_enable_vpa(), False)
+
+            ctx_2 = AKSPreviewManagedClusterContext(
+                self.cmd,
+                AKSManagedClusterParamDict(
+                    {
+                        "enable_vpa": True,
+                    }
+                ),
+                self.models,
+                decorator_mode=DecoratorMode.CREATE,
+            )
+            workload_autoscaler_profile = self.models.ManagedClusterWorkloadAutoWcalerProfile()
+            workload_autoscaler_profile.vertical_pod_autoscaler
+
 class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
     def setUp(self):
         # manually register CUSTOM_MGMT_AKS_PREVIEW

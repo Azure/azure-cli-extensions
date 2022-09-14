@@ -14,6 +14,13 @@ Pending
 
 * Update to use 2022-08-02-preview api version.
 
++++++++
+
+0.5.101
++++++++
+
+* Add --enable-vpa/--disable-vpa to enable/disable vertical pod autoscaler feature.
+
 0.5.100
 +++++++
 

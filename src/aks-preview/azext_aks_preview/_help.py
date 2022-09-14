@@ -835,6 +835,12 @@ helps['aks update'] = """
         - name: --private-dns-zone
           type: string
           short-summary: The private dns zone mode for private cluster.
+        - name: --enable-vpa
+          type: bool
+          short-summary: Enable vertical pod autoscaler for cluster.
+        - name: --disable-vpa
+          type: bool
+          short-summary: Disable vertical pod autoscaler for cluster.
     examples:
       - name: Reconcile the cluster back to its current state.
         text: az aks update -g MyResourceGroup -n MyManagedCluster
