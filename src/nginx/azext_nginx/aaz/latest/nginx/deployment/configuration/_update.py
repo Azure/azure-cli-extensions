@@ -193,6 +193,26 @@ class Update(AAZCommand):
             return "ODataV4Format"
 
         @property
+        def query_parameters(self):
+            parameters = {
+                **self.serialize_query_param(
+                    "api-version", "2022-08-01",
+                    required=True,
+                ),
+            }
+            return parameters
+
+        @property
+        def query_parameters(self):
+            parameters = {
+                **self.serialize_query_param(
+                    "api-version", "2022-08-01",
+                    required=True,
+                ),
+            }
+            return parameters
+
+        @property
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
@@ -284,6 +304,16 @@ class Update(AAZCommand):
         @property
         def error_format(self):
             return "ODataV4Format"
+
+        @property
+        def query_parameters(self):
+            parameters = {
+                **self.serialize_query_param(
+                    "api-version", "2022-08-01",
+                    required=True,
+                ),
+            }
+            return parameters
 
         @property
         def url_parameters(self):

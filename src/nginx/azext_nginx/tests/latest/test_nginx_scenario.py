@@ -22,7 +22,8 @@ class NginxScenarioTest(ScenarioTest):
             'subnet_name': 'azclitest-subnet',
             'tags': 'tag1="value1" tag2="value2"',
             'kv_name': self.create_random_name(prefix='cli', length=20),
-            'cert_name': 'azclitestcert'
+            'cert_name': 'azclitestcert',
+            'config_files': '[{"content":"aHR0cCB7DQogICAgdXBzdHJlYW0gYXBwIHsNCiAgICAgICAgc2VydmVyIDE3Mi4yNy4wLjQ6ODA7DQogICAgfQ0KICAgIHNlcnZlciB7DQogICAgICAgIGxpc3RlbiA4MDsNCiAgICAgICAgbG9jYXRpb24gLyB7DQogICAgICAgICAgICBkZWZhdWx0X3R5cGUgdGV4dC9odG1sOw0KICAgICAgICAgICAgcmV0dXJuIDIwMCAnPCFET0NUWVBFIGh0bWw+PGgxIHN0eWxlPSJmb250LXNpemU6MzBweDsiPkhlbGxvIGZyb20gTmdpbnggV2ViIFNlcnZlciE8L2gxPlxuJzsNCiAgICAgICAgfQ0KICAgICAgICBsb2NhdGlvbiAvYXBwLyB7DQogICAgICAgICAgICBwcm94eV9wYXNzIGh0dHA6Ly9hcHAuYmxvYi5jb3JlLndpbmRvd3MubmV0LzsNCiAgICAgICAgICAgIHByb3h5X2h0dHBfdmVyc2lvbiAxLjE7DQogICAgICAgICAgICBwcm94eV9yZWFkX3RpbWVvdXQgNjAwOw0KCSAgICAgICAgcHJveHlfY29ubmVjdF90aW1lb3V0IDYwMDsNCgkgICAgICAgIHByb3h5X3NlbmRfdGltZW91dCA2MDA7DQogICAgICAgIH0NCiAgICB9DQp9","virtual-path":"/etc/nginx/nginx.conf"}]'
         })
         # Nginx on Azure Deployment
         public_ip = self.cmd('network public-ip create --resource-group {rg} --name {public_ip_name} --version IPv4 --sku Standard --zone 2').get_output_in_json()
@@ -85,3 +86,36 @@ class NginxScenarioTest(ScenarioTest):
         self.cmd('nginx deployment certificate delete --name {cert_name} --deployment-name {deployment_name} --resource-group {rg} --yes')
         cert_list = self.cmd('nginx deployment certificate list --deployment-name {deployment_name} --resource-group {rg}').get_output_in_json()
         assert len(cert_list) == 0
+
+        # Nginx on Azure configuration
+        self.cmd('nginx deployment configuration create --name default --deployment-name {deployment_name} --resource-group {rg} --root-file /etc/nginx/nginx.conf --files {config_files}', checks=[
+            self.check('properties.provisioningState', 'Succeeded'),
+            self.check('name', 'default'),
+            self.check('properties.files[0].virtualPath', '/etc/nginx/nginx.conf'),
+            self.check('properties.rootFile', '/etc/nginx/nginx.conf')
+        ])
+        config_list = self.cmd('nginx deployment configuration list --deployment-name {deployment_name} --resource-group {rg}').get_output_in_json()
+        assert len(config_list) > 0
+
+        new_root_config_file_path = '/etc/nginx/nginxupdate.conf'
+        updated_config_files = self.kwargs['config_files'].replace('/etc/nginx/nginx.conf', new_root_config_file_path)
+        self.kwargs['config_files'] = updated_config_files
+        self.cmd('nginx deployment configuration update --name default --deployment-name {deployment_name} --resource-group {rg} --root-file /etc/nginx/nginxupdate.conf --files {config_files}', checks=[
+            self.check('properties.provisioningState', 'Succeeded'),
+            self.check('name', 'default')
+        ])
+        self.cmd('nginx deployment configuration wait --updated --name default --deployment-name {deployment_name} --resource-group {rg}')
+        self.cmd('nginx deployment configuration show --name default --deployment-name {deployment_name} --resource-group {rg}', checks=[
+            self.check('name', 'default'),
+            self.check('properties.files[0].virtualPath', new_root_config_file_path),
+            self.check('properties.rootFile', new_root_config_file_path),
+            self.check('type', 'NGINX.NGINXPLUS/nginxDeployments/configurations')
+        ])
+
+        self.cmd('nginx deployment configuration delete --name default --deployment-name {deployment_name} --resource-group {rg} --yes')
+        #config_list = self.cmd('nginx deployment configuration list --deployment-name {deployment_name} --resource-group {rg}').get_output_in_json()
+        #assert len(config_list) == 0
+
+        self.cmd('nginx deployment delete --name {deployment_name} --resource-group {rg} --yes')
+        deployment_list = self.cmd('nginx deployment list --resource-group {rg}').get_output_in_json()
+        assert len(deployment_list) == 0
