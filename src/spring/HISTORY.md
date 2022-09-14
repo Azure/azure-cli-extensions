@@ -1,5 +1,9 @@
 Release History
 ===============
+1.1.6
+---
+* Add a new command `az spring build-service builder show-deployments` to list the deployments under a builder.
+
 1.1.5
 ---
 * Add service instance existance check before service creation

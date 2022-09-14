@@ -665,6 +665,14 @@ helps['spring build-service builder show'] = """
           text: az spring build-service builder show --name my-builder --service clitest --resource-group cli
 """
 
+helps['spring build-service builder show-deployments'] = """
+    type: command
+    short-summary: Show deployments.
+    examples:
+        - name: Show the list of deployments using this builder.
+          text: az spring build-service builder show-deployments --name my-builder --service clitest --resource-group cli
+"""
+
 helps['spring build-service builder delete'] = """
     type: command
     short-summary: Delete a builder.
