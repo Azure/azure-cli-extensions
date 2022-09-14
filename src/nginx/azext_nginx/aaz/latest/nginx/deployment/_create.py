@@ -102,7 +102,8 @@ class Create(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.enable_diagnostics_support = AAZBoolArg(
-            options=["--enable-diagnostics-support"],
+            options=["--enable-diagnostics"],
+            help="Boolean to enable or disable diagnostics on your deployment",
             arg_group="Properties",
         )
         _args_schema.logging = AAZObjectArg(
@@ -120,6 +121,7 @@ class Create(AAZCommand):
         )
         _args_schema.provisioning_state = AAZStrArg(
             options=["--provisioning-state"],
+            help="State of the deployment",
             arg_group="Properties",
             enum={"Accepted": "Accepted", "Canceled": "Canceled", "Creating": "Creating", "Deleted": "Deleted", "Deleting": "Deleting", "Failed": "Failed", "NotSpecified": "NotSpecified", "Succeeded": "Succeeded", "Updating": "Updating"},
         )

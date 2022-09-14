@@ -10,11 +10,11 @@ import json
 class NginxScenarioTest(ScenarioTest):
 
     @AllowLargeResponse(size_kb=10240)
-    @ResourceGroupPreparer(name_prefix='AZcliDeploymentTestRG_', random_name_length=34, location='eastus2')
+    @ResourceGroupPreparer(name_prefix='AZCLIDeploymentTestRG_', random_name_length=34, location='eastus2euap')
     def test_deployment_cert_config(self, resource_group):
         self.kwargs.update({
             'deployment_name': 'azclitest-deployment',
-            'location': 'eastus2',
+            'location': 'eastus2euap',
             'rg': resource_group,
             'sku': 'preview_Monthly_gmz7xq9ge3py',
             'public_ip_name': 'azclitest-public-ip',
@@ -33,7 +33,7 @@ class NginxScenarioTest(ScenarioTest):
         self.kwargs['public_ip_addresses'] = "{public-ip-addresses:[{id:" + public_ip['publicIp']['id'] + "}]}"
         self.kwargs['subnet_id'] = "{subnet-id:" + vnet['newVNet']['subnets'][0]['id'] + "}"
 
-        self.cmd('nginx deployment create --name {deployment_name} --resource-group {rg} --location {location} --sku name={sku} --enable-diagnostics-support true --network-profile front-end-ip-configuration="{public_ip_addresses}" network-interface-configuration="{subnet_id}"', checks=[
+        self.cmd('nginx deployment create --name {deployment_name} --resource-group {rg} --location {location} --sku name={sku} --enable-diagnostics true --network-profile front-end-ip-configuration="{public_ip_addresses}" network-interface-configuration="{subnet_id}"', checks=[
             self.check('properties.provisioningState', 'Succeeded'),
             self.check('name', self.kwargs['deployment_name'])
         ])
@@ -41,7 +41,7 @@ class NginxScenarioTest(ScenarioTest):
         deployment_list = self.cmd('nginx deployment list --resource-group {rg}',).get_output_in_json()
         assert len(deployment_list) > 0
         
-        self.cmd('nginx deployment update --name {deployment_name} --resource-group {rg} --location {location} --tags {tags} --enable-diagnostics-support false', checks=[
+        self.cmd('nginx deployment update --name {deployment_name} --resource-group {rg} --location {location} --tags {tags} --enable-diagnostics false', checks=[
             self.check('properties.provisioningState', 'Succeeded'),
             self.check('name', self.kwargs['deployment_name'])
         ])
@@ -60,7 +60,7 @@ class NginxScenarioTest(ScenarioTest):
         self.cmd('keyvault certificate create --vault-name {kv_name} -n {cert_name} -p @policy.json')
         certificate = self.cmd('keyvault certificate show --name {cert_name} --vault-name {kv_name}').get_output_in_json()
         self.kwargs['kv_secret_id'] = certificate['sid']
-        self.cmd('nginx deployment certificate create --certificate-name {cert_name} --deployment-name {deployment_name} --resource-group {rg} --certificate-virtual-path /etc/nginx/test.cert --key-virtual-path /etc/nginx/test.key --key-vault-secret-id {kv_secret_id}', checks=[
+        self.cmd('nginx deployment certificate create --certificate-name {cert_name} --deployment-name {deployment_name} --resource-group {rg} --certificate-path /etc/nginx/test.cert --key-path /etc/nginx/test.key --key-vault-secret-id {kv_secret_id}', checks=[
             self.check('properties.provisioningState', 'Succeeded'),
             self.check('name', self.kwargs['cert_name']),
             self.check('location', self.kwargs['location']),
@@ -70,7 +70,7 @@ class NginxScenarioTest(ScenarioTest):
         cert_list = self.cmd('nginx deployment certificate list --deployment-name {deployment_name} --resource-group {rg}').get_output_in_json()
         assert len(cert_list) > 0
 
-        self.cmd('nginx deployment certificate update --certificate-name {cert_name} --deployment-name {deployment_name} --resource-group {rg} --certificate-virtual-path /etc/nginx/testupdated.cert --key-virtual-path /etc/nginx/testupdated.key', checks=[
+        self.cmd('nginx deployment certificate update --certificate-name {cert_name} --deployment-name {deployment_name} --resource-group {rg} --certificate-path /etc/nginx/testupdated.cert --key-path /etc/nginx/testupdated.key', checks=[
             self.check('properties.provisioningState', 'Succeeded'),
             self.check('name', self.kwargs['cert_name']),
             self.check('location', self.kwargs['location']),

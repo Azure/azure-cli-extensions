@@ -79,20 +79,24 @@ class Create(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.certificate_virtual_path = AAZStrArg(
-            options=["--certificate-virtual-path"],
+            options=["--certificate-path"],
+            help="This path must match one or more ssl_certificate directive file argument in your Nginx configuration. This path must be unique between certificates within the same deployment",
             arg_group="Properties",
         )
         _args_schema.key_vault_secret_id = AAZStrArg(
             options=["--key-vault-secret-id"],
+            help="The secret id to the certificate in KeyVault",
             arg_group="Properties",
         )
         _args_schema.key_virtual_path = AAZStrArg(
-            options=["--key-virtual-path"],
+            options=["--key-path"],
+            help="This path must match one or more ssl_certificate_key directive file argument in your Nginx configuration. This path must be unique between certificates within the same deployment",
             arg_group="Properties",
         )
         _args_schema.provisioning_state = AAZStrArg(
             options=["--provisioning-state"],
             arg_group="Properties",
+            help="State of the certificate deployment",
             enum={"Accepted": "Accepted", "Canceled": "Canceled", "Creating": "Creating", "Deleted": "Deleted", "Deleting": "Deleting", "Failed": "Failed", "NotSpecified": "NotSpecified", "Succeeded": "Succeeded", "Updating": "Updating"},
         )
         return cls._args_schema

@@ -101,12 +101,14 @@ class Update(AAZCommand):
         )
         _args_schema.provisioning_state = AAZStrArg(
             options=["--provisioning-state"],
+            help="State of the configuration deployment",
             arg_group="Properties",
             nullable=True,
             enum={"Accepted": "Accepted", "Canceled": "Canceled", "Creating": "Creating", "Deleted": "Deleted", "Deleting": "Deleting", "Failed": "Failed", "NotSpecified": "NotSpecified", "Succeeded": "Succeeded", "Updating": "Updating"},
         )
         _args_schema.root_file = AAZStrArg(
             options=["--root-file"],
+            help="Aligns with your Nginx configuration structure",
             arg_group="Properties",
             nullable=True,
         )
