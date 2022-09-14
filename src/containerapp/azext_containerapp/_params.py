@@ -12,7 +12,7 @@ from azure.cli.core.commands.parameters import (resource_group_name_type, get_lo
 
 from ._validators import (validate_memory, validate_cpu, validate_managed_env_name_or_id, validate_registry_server,
                           validate_registry_user, validate_registry_pass, validate_target_port, validate_ingress)
-from ._constants import UNAUTHENTICATED_CLIENT_ACTION, FORWARD_PROXY_CONVENTION, MAXIMUM_CONTAINER_APP_NAME_LENGTH
+from ._constants import UNAUTHENTICATED_CLIENT_ACTION, FORWARD_PROXY_CONVENTION, MAXIMUM_CONTAINER_APP_NAME_LENGTH, DEFAULT_PORT
 
 
 def load_arguments(self, _):
@@ -77,6 +77,11 @@ def load_arguments(self, _):
     with self.argument_context('containerapp', arg_group='Scale') as c:
         c.argument('min_replicas', type=int, help="The minimum number of replicas.")
         c.argument('max_replicas', type=int, help="The maximum number of replicas.")
+        c.argument('scale_rule_name', options_list=['--scale-rule-name', '--srn'], help="The name of the scale rule.")
+        c.argument('scale_rule_type', options_list=['--scale-rule-type', '--srt'], help="The type of the scale rule. Default: http.")
+        c.argument('scale_rule_http_concurrency', type=int, options_list=['--scale-rule-http-concurrency', '--srhc'], help="The maximum number of concurrent http requests before scale out. Only supported for http scale rules.")
+        c.argument('scale_rule_metadata', nargs="+", options_list=['--scale-rule-metadata', '--srm'], help="Scale rule metadata. Metadata must be in format \"<key>=<value> <key>=<value> ...\".")
+        c.argument('scale_rule_auth', nargs="+", options_list=['--scale-rule-auth', '--sra'], help="Scale rule auth parameters. Auth parameters must be in format \"<triggerParameter>=<secretRef> <triggerParameter>=<secretRef> ...\".")
 
     # Dapr
     with self.argument_context('containerapp', arg_group='Dapr') as c:
@@ -84,6 +89,10 @@ def load_arguments(self, _):
         c.argument('dapr_app_port', type=int, help="The port Dapr uses to talk to the application.")
         c.argument('dapr_app_id', help="The Dapr application identifier.")
         c.argument('dapr_app_protocol', arg_type=get_enum_type(['http', 'grpc']), help="The protocol Dapr uses to talk to the application.")
+        c.argument('dapr_http_read_buffer_size', options_list=['--dapr-http-read-buffer-size', '--dhrbs'], type=int, help="Dapr max size of http header read buffer in KB to handle when sending multi-KB headers..")
+        c.argument('dapr_http_max_request_size', options_list=['--dapr-http-max-request-size', '--dhmrs'], type=int, help="Increase max size of request body http and grpc servers parameter in MB to handle uploading of big files.")
+        c.argument('dapr_log_level', arg_type=get_enum_type(["info", "debug", "warn", "error"]), help="Set the log level for the Dapr sidecar.")
+        c.argument('dapr_enable_api_logging', options_list=['--dapr-enable-api-logging', '--dal'], help="Enable API logging for the Dapr sidecar.")
 
     # Configuration
     with self.argument_context('containerapp', arg_group='Configuration') as c:
@@ -98,7 +107,8 @@ def load_arguments(self, _):
     with self.argument_context('containerapp', arg_group='Ingress') as c:
         c.argument('ingress', validator=validate_ingress, default=None, arg_type=get_enum_type(['internal', 'external']), help="The ingress type.")
         c.argument('target_port', type=int, validator=validate_target_port, help="The application port used for ingress traffic.")
-        c.argument('transport', arg_type=get_enum_type(['auto', 'http', 'http2']), help="The transport protocol used for ingress traffic.")
+        c.argument('transport', arg_type=get_enum_type(['auto', 'http', 'http2', 'tcp']), help="The transport protocol used for ingress traffic.")
+        c.argument('exposed_port', type=int, help="Additional exposed port. Only supported by tcp transport protocol. Must be unique per environment if the app ingress is external.")
 
     with self.argument_context('containerapp create') as c:
         c.argument('traffic_weights', nargs='*', options_list=['--traffic-weight'], help="A list of revision weight(s) for the container app. Space-separated values in 'revision_name=weight' format. For latest revision, use 'latest=weight'")
@@ -222,8 +232,9 @@ def load_arguments(self, _):
     with self.argument_context('containerapp ingress') as c:
         c.argument('allow_insecure', help='Allow insecure connections for ingress traffic.')
         c.argument('type', validator=validate_ingress, arg_type=get_enum_type(['internal', 'external']), help="The ingress type.")
-        c.argument('transport', arg_type=get_enum_type(['auto', 'http', 'http2']), help="The transport protocol used for ingress traffic.")
+        c.argument('transport', arg_type=get_enum_type(['auto', 'http', 'http2', 'tcp']), help="The transport protocol used for ingress traffic.")
         c.argument('target_port', type=int, validator=validate_target_port, help="The application port used for ingress traffic.")
+        c.argument('exposed_port', type=int, help="Additional exposed port. Only supported by tcp transport protocol. Must be unique per environment if the app ingress is external.")
 
     with self.argument_context('containerapp ingress traffic') as c:
         c.argument('revision_weights', nargs='+', options_list=['--revision-weight', c.deprecate(target='--traffic-weight', redirect='--revision-weight')], help="A list of revision weight(s) for the container app. Space-separated values in 'revision_name=weight' format. For latest revision, use 'latest=weight'")
@@ -267,7 +278,7 @@ def load_arguments(self, _):
         c.argument('name', configured_default='name', id_part=None)
         c.argument('managed_env', configured_default='managed_env')
         c.argument('registry_server', configured_default='registry_server')
-        c.argument('source', help='Local directory path to upload to Azure container registry.')
+        c.argument('source', help=f'Local directory path containing the application source and Dockerfile for building the container image. Preview: If no Dockerfile is present, a container image is generated using Oryx. See the supported Oryx runtimes here: https://github.com/microsoft/Oryx/blob/main/doc/supportedRuntimeVersions.md.')
         c.argument('image', options_list=['--image', '-i'], help="Container image, e.g. publisher/image-name:tag.")
         c.argument('browse', help='Open the app in a web browser after creation and deployment, if possible.')
 
