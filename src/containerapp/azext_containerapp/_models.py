@@ -23,8 +23,15 @@ ManagedEnvironment = {
         "daprAIInstrumentationKey": None,
         "vnetConfiguration": None,  # VnetConfiguration
         "internalLoadBalancerEnabled": None,
-        "appLogsConfiguration": None
+        "appLogsConfiguration": None,
+        "customDomainConfiguration": None  # CustomDomainConfiguration
     }
+}
+
+CustomDomainConfiguration = {
+    "dnsSuffix": None,
+    "certificateValue": None,
+    "certificatePassword": None
 }
 
 AppLogsConfiguration = {

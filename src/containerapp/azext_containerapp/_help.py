@@ -351,6 +351,17 @@ helps['containerapp env create'] = """
               --location eastus2
 """
 
+helps['containerapp env update'] = """
+    type: command
+    short-summary: Update a Container Apps environment.
+    examples:
+    - name: Update an environment's custom domain configuration.
+      text: |
+          az containerapp env update -n MyContainerappEnvironment -g MyResourceGroup \\
+              --dns-suffix my-suffix.net --certificate-file MyFilePath \\
+              --certificate-password MyCertPass
+"""
+
 
 helps['containerapp env delete'] = """
     type: command

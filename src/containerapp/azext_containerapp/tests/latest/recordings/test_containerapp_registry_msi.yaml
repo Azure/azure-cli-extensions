@@ -16,7 +16,7 @@ interactions:
       - AZURECLI/2.39.0 (PIP) azsdk-python-azure-mgmt-resource/21.1.0b1 Python/3.8.10
         (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001?api-version=2021-04-01
+    uri: https://brazilsouth.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001?api-version=2021-04-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001","name":"clitest.rg000001","type":"Microsoft.Resources/resourceGroups","location":"northeurope","tags":{"product":"azurecli","cause":"automation","date":"2022-09-08T17:16:56Z"},"properties":{"provisioningState":"Succeeded"}}'
@@ -64,7 +64,7 @@ interactions:
       - AZURECLI/2.39.0 (PIP) azsdk-python-mgmt-loganalytics/13.0.0b4 Python/3.8.10
         (Windows-10-10.0.19044-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.OperationalInsights/workspaces/logs000003?api-version=2021-12-01-preview
+    uri: https://brazilsouth.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.OperationalInsights/workspaces/logs000003?api-version=2021-12-01-preview
   response:
     body:
       string: '{"properties":{"customerId":"ec5a6d2e-ee36-4cf8-af0a-df8385271a63","provisioningState":"Creating","sku":{"name":"PerGB2018","lastSkuUpdate":"2022-09-08T17:17:07.4451322Z"},"retentionInDays":30,"features":{"legacy":0,"searchVersion":1,"enableLogAccessUsingOnlyResourcePermissions":true},"workspaceCapping":{"dailyQuotaGb":-1.0,"quotaNextResetTime":"2022-09-09T02:00:00Z","dataIngestionStatus":"RespectQuota"},"publicNetworkAccessForIngestion":"Enabled","publicNetworkAccessForQuery":"Enabled","createdDate":"2022-09-08T17:17:07.4451322Z","modifiedDate":"2022-09-08T17:17:07.4451322Z"},"location":"northeurope","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.OperationalInsights/workspaces/logs000003","name":"logs000003","type":"Microsoft.OperationalInsights/workspaces"}'
@@ -96,7 +96,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '1195'
       x-powered-by:
       - ASP.NET
     status:
@@ -176,7 +176,7 @@ interactions:
       - AZURECLI/2.39.0 (PIP) azsdk-python-mgmt-loganalytics/13.0.0b4 Python/3.8.10
         (Windows-10-10.0.19044-SP0)
     method: POST
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.OperationalInsights/workspaces/logs000003/sharedKeys?api-version=2020-08-01
+    uri: https://brazilsouth.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.OperationalInsights/workspaces/logs000003/sharedKeys?api-version=2020-08-01
   response:
     body:
       string: '{"primarySharedKey":"p3DOOyA0oyZ2Vw7nVJG2UiNgE8aZBHv8l09R8QnTHvkUD36uKvQgrOi0SJ6GakpMrDKz42lS4TGP4vcFk1NXGQ==","secondarySharedKey":"G1DMHvEKWLyUIaEYaI6g8sMLL3TU8rrNIbbYsA7Ys1CrZJMgXHbtPdMBuib+3snCUBBk3DF3wcimOQPdoZ+oNQ=="}'
@@ -210,7 +210,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '1197'
       x-powered-by:
       - ASP.NET
     status:
@@ -233,7 +233,7 @@ interactions:
       - AZURECLI/2.39.0 (PIP) azsdk-python-azure-mgmt-resource/21.1.0b1 Python/3.8.10
         (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App?api-version=2021-04-01
+    uri: https://brazilsouth.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App?api-version=2021-04-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App","namespace":"Microsoft.App","authorizations":[{"applicationId":"7e3bc4fd-85a3-4192-b177-5b8bfc87f42c","roleDefinitionId":"39a74f72-b40f-4bdc-b639-562fe2260bf0"},{"applicationId":"3734c1a4-2bed-4998-a37a-ff1a9e7bf019","roleDefinitionId":"5c779a4f-5cb2-4547-8c41-478d9be8ba90"}],"resourceTypes":[{"resourceType":"managedEnvironments","locations":["North
@@ -380,7 +380,7 @@ interactions:
       - AZURECLI/2.39.0 (PIP) azsdk-python-azure-mgmt-resource/21.1.0b1 Python/3.8.10
         (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App?api-version=2021-04-01
+    uri: https://brazilsouth.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App?api-version=2021-04-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App","namespace":"Microsoft.App","authorizations":[{"applicationId":"7e3bc4fd-85a3-4192-b177-5b8bfc87f42c","roleDefinitionId":"39a74f72-b40f-4bdc-b639-562fe2260bf0"},{"applicationId":"3734c1a4-2bed-4998-a37a-ff1a9e7bf019","roleDefinitionId":"5c779a4f-5cb2-4547-8c41-478d9be8ba90"}],"resourceTypes":[{"resourceType":"managedEnvironments","locations":["North
@@ -473,7 +473,7 @@ interactions:
       - AZURECLI/2.39.0 (PIP) azsdk-python-azure-mgmt-resource/21.1.0b1 Python/3.8.10
         (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App?api-version=2021-04-01
+    uri: https://brazilsouth.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App?api-version=2021-04-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App","namespace":"Microsoft.App","authorizations":[{"applicationId":"7e3bc4fd-85a3-4192-b177-5b8bfc87f42c","roleDefinitionId":"39a74f72-b40f-4bdc-b639-562fe2260bf0"},{"applicationId":"3734c1a4-2bed-4998-a37a-ff1a9e7bf019","roleDefinitionId":"5c779a4f-5cb2-4547-8c41-478d9be8ba90"}],"resourceTypes":[{"resourceType":"managedEnvironments","locations":["North
@@ -566,7 +566,7 @@ interactions:
       - AZURECLI/2.39.0 (PIP) azsdk-python-azure-mgmt-resource/21.1.0b1 Python/3.8.10
         (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App?api-version=2021-04-01
+    uri: https://brazilsouth.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App?api-version=2021-04-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App","namespace":"Microsoft.App","authorizations":[{"applicationId":"7e3bc4fd-85a3-4192-b177-5b8bfc87f42c","roleDefinitionId":"39a74f72-b40f-4bdc-b639-562fe2260bf0"},{"applicationId":"3734c1a4-2bed-4998-a37a-ff1a9e7bf019","roleDefinitionId":"5c779a4f-5cb2-4547-8c41-478d9be8ba90"}],"resourceTypes":[{"resourceType":"managedEnvironments","locations":["North
@@ -1970,7 +1970,7 @@ interactions:
       - AZURECLI/2.39.0 (PIP) azsdk-python-azure-mgmt-resource/21.1.0b1 Python/3.8.10
         (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App?api-version=2021-04-01
+    uri: https://brazilsouth.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App?api-version=2021-04-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App","namespace":"Microsoft.App","authorizations":[{"applicationId":"7e3bc4fd-85a3-4192-b177-5b8bfc87f42c","roleDefinitionId":"39a74f72-b40f-4bdc-b639-562fe2260bf0"},{"applicationId":"3734c1a4-2bed-4998-a37a-ff1a9e7bf019","roleDefinitionId":"5c779a4f-5cb2-4547-8c41-478d9be8ba90"}],"resourceTypes":[{"resourceType":"managedEnvironments","locations":["North
@@ -2113,7 +2113,7 @@ interactions:
       - AZURECLI/2.39.0 (PIP) azsdk-python-azure-mgmt-resource/21.1.0b1 Python/3.8.10
         (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App?api-version=2021-04-01
+    uri: https://brazilsouth.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App?api-version=2021-04-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App","namespace":"Microsoft.App","authorizations":[{"applicationId":"7e3bc4fd-85a3-4192-b177-5b8bfc87f42c","roleDefinitionId":"39a74f72-b40f-4bdc-b639-562fe2260bf0"},{"applicationId":"3734c1a4-2bed-4998-a37a-ff1a9e7bf019","roleDefinitionId":"5c779a4f-5cb2-4547-8c41-478d9be8ba90"}],"resourceTypes":[{"resourceType":"managedEnvironments","locations":["North
@@ -2256,7 +2256,7 @@ interactions:
       - AZURECLI/2.39.0 (PIP) azsdk-python-azure-mgmt-resource/21.1.0b1 Python/3.8.10
         (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App?api-version=2021-04-01
+    uri: https://brazilsouth.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App?api-version=2021-04-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App","namespace":"Microsoft.App","authorizations":[{"applicationId":"7e3bc4fd-85a3-4192-b177-5b8bfc87f42c","roleDefinitionId":"39a74f72-b40f-4bdc-b639-562fe2260bf0"},{"applicationId":"3734c1a4-2bed-4998-a37a-ff1a9e7bf019","roleDefinitionId":"5c779a4f-5cb2-4547-8c41-478d9be8ba90"}],"resourceTypes":[{"resourceType":"managedEnvironments","locations":["North
@@ -2391,7 +2391,7 @@ interactions:
       x-ms-async-operation-timeout:
       - PT15M
       x-ms-ratelimit-remaining-subscription-resource-requests:
-      - '499'
+      - '494'
       x-powered-by:
       - ASP.NET
     status:
@@ -2567,7 +2567,7 @@ interactions:
       - AZURECLI/2.39.0 (PIP) azsdk-python-azure-mgmt-resource/21.1.0b1 Python/3.8.10
         (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001?api-version=2021-04-01
+    uri: https://brazilsouth.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001?api-version=2021-04-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001","name":"clitest.rg000001","type":"Microsoft.Resources/resourceGroups","location":"northeurope","tags":{"product":"azurecli","cause":"automation","date":"2022-09-08T17:16:56Z"},"properties":{"provisioningState":"Succeeded"}}'
@@ -2615,7 +2615,7 @@ interactions:
       - AZURECLI/2.39.0 (PIP) azsdk-python-azure-mgmt-containerregistry/10.0.0 Python/3.8.10
         (Windows-10-10.0.19044-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.ContainerRegistry/registries/acr000005?api-version=2022-02-01-preview
+    uri: https://brazilsouth.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.ContainerRegistry/registries/acr000005?api-version=2022-02-01-preview
   response:
     body:
       string: '{"sku":{"name":"Basic","tier":"Basic"},"type":"Microsoft.ContainerRegistry/registries","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.ContainerRegistry/registries/acr000005","name":"acr000005","location":"northeurope","tags":{},"systemData":{"createdBy":"haroonfeisal@microsoft.com","createdByType":"User","createdAt":"2022-09-08T17:19:58.8581638+00:00","lastModifiedBy":"haroonfeisal@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-09-08T17:19:58.8581638+00:00"},"properties":{"loginServer":"acr000005.azurecr.io","creationDate":"2022-09-08T17:19:58.8581638Z","provisioningState":"Creating","adminUserEnabled":true,"policies":{"quarantinePolicy":{"status":"disabled"},"trustPolicy":{"type":"Notary","status":"disabled"},"retentionPolicy":{"days":7,"lastUpdatedTime":"2022-09-08T17:20:01.2558823+00:00","status":"disabled"},"exportPolicy":{"status":"enabled"},"azureADAuthenticationAsArmPolicy":{"status":"enabled"},"softDeletePolicy":{"retentionDays":7,"lastUpdatedTime":"2022-09-08T17:20:01.2558823+00:00","status":"disabled"}},"encryption":{"status":"disabled"},"dataEndpointEnabled":false,"dataEndpointHostNames":[],"privateEndpointConnections":[],"publicNetworkAccess":"Enabled","networkRuleBypassOptions":"AzureServices","zoneRedundancy":"Disabled","anonymousPullEnabled":false}}'
@@ -2643,7 +2643,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '1198'
     status:
       code: 201
       message: Created
@@ -2715,7 +2715,7 @@ interactions:
       - AZURECLI/2.39.0 (PIP) azsdk-python-azure-mgmt-containerregistry/10.0.0 Python/3.8.10
         (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.ContainerRegistry/registries/acr000005?api-version=2022-02-01-preview
+    uri: https://brazilsouth.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.ContainerRegistry/registries/acr000005?api-version=2022-02-01-preview
   response:
     body:
       string: '{"sku":{"name":"Basic","tier":"Basic"},"type":"Microsoft.ContainerRegistry/registries","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.ContainerRegistry/registries/acr000005","name":"acr000005","location":"northeurope","tags":{},"systemData":{"createdBy":"haroonfeisal@microsoft.com","createdByType":"User","createdAt":"2022-09-08T17:19:58.8581638+00:00","lastModifiedBy":"haroonfeisal@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-09-08T17:19:58.8581638+00:00"},"properties":{"loginServer":"acr000005.azurecr.io","creationDate":"2022-09-08T17:19:58.8581638Z","provisioningState":"Succeeded","adminUserEnabled":true,"policies":{"quarantinePolicy":{"status":"disabled"},"trustPolicy":{"type":"Notary","status":"disabled"},"retentionPolicy":{"days":7,"lastUpdatedTime":"2022-09-08T17:20:01.2558823+00:00","status":"disabled"},"exportPolicy":{"status":"enabled"},"azureADAuthenticationAsArmPolicy":{"status":"enabled"},"softDeletePolicy":{"retentionDays":7,"lastUpdatedTime":"2022-09-08T17:20:01.2558823+00:00","status":"disabled"}},"encryption":{"status":"disabled"},"dataEndpointEnabled":false,"dataEndpointHostNames":[],"privateEndpointConnections":[],"publicNetworkAccess":"Enabled","networkRuleBypassOptions":"AzureServices","zoneRedundancy":"Disabled","anonymousPullEnabled":false}}'
@@ -2764,7 +2764,7 @@ interactions:
       - AZURECLI/2.39.0 (PIP) azsdk-python-azure-mgmt-resource/21.1.0b1 Python/3.8.10
         (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App?api-version=2021-04-01
+    uri: https://brazilsouth.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App?api-version=2021-04-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App","namespace":"Microsoft.App","authorizations":[{"applicationId":"7e3bc4fd-85a3-4192-b177-5b8bfc87f42c","roleDefinitionId":"39a74f72-b40f-4bdc-b639-562fe2260bf0"},{"applicationId":"3734c1a4-2bed-4998-a37a-ff1a9e7bf019","roleDefinitionId":"5c779a4f-5cb2-4547-8c41-478d9be8ba90"}],"resourceTypes":[{"resourceType":"managedEnvironments","locations":["North
@@ -2908,7 +2908,7 @@ interactions:
       - AZURECLI/2.39.0 (PIP) azsdk-python-azure-mgmt-resource/21.1.0b1 Python/3.8.10
         (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resources?$filter=resourceType%20eq%20%27Microsoft.ContainerRegistry%2Fregistries%27&api-version=2021-04-01
+    uri: https://brazilsouth.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resources?$filter=resourceType%20eq%20%27Microsoft.ContainerRegistry%2Fregistries%27&api-version=2021-04-01
   response:
     body:
       string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/freshRadio2/providers/Microsoft.ContainerRegistry/registries/ca4787dc01f9acr","name":"ca4787dc01f9acr","type":"Microsoft.ContainerRegistry/registries","sku":{"name":"Basic","tier":"Basic"},"location":"westus","tags":{},"systemData":{"createdBy":"haroonfeisal@microsoft.com","createdByType":"User","createdAt":"2022-07-18T19:26:26.8953947Z","lastModifiedBy":"haroonfeisal@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-07-18T19:26:26.8953947Z"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/fresh-radio/providers/Microsoft.ContainerRegistry/registries/cad4599b37e8acr","name":"cad4599b37e8acr","type":"Microsoft.ContainerRegistry/registries","sku":{"name":"Basic","tier":"Basic"},"location":"eastus2","tags":{},"systemData":{"createdBy":"haroonfeisal@microsoft.com","createdByType":"User","createdAt":"2022-07-18T19:42:14.2526761Z","lastModifiedBy":"haroonfeisal@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-07-18T19:42:14.2526761Z"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/haroonfeisal_rg_5773/providers/Microsoft.ContainerRegistry/registries/ca9595c82ba2acr","name":"ca9595c82ba2acr","type":"Microsoft.ContainerRegistry/registries","sku":{"name":"Basic","tier":"Basic"},"location":"eastus","tags":{},"systemData":{"createdBy":"haroonfeisal@microsoft.com","createdByType":"User","createdAt":"2022-04-28T19:24:30.3032593Z","lastModifiedBy":"haroonfeisal@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-04-28T19:24:30.3032593Z"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/haroonfeisal_rg_3464/providers/Microsoft.ContainerRegistry/registries/canodeenvffeacr","name":"canodeenvffeacr","type":"Microsoft.ContainerRegistry/registries","sku":{"name":"Basic","tier":"Basic"},"location":"eastus","tags":{},"systemData":{"createdBy":"haroonfeisal@microsoft.com","createdByType":"User","createdAt":"2022-04-29T19:51:26.2898489Z","lastModifiedBy":"haroonfeisal@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-04-29T19:51:26.2898489Z"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/helloworldrg/providers/Microsoft.ContainerRegistry/registries/ca5d1f8ea6ddacr","name":"ca5d1f8ea6ddacr","type":"Microsoft.ContainerRegistry/registries","sku":{"name":"Basic","tier":"Basic"},"location":"eastus","tags":{},"systemData":{"createdBy":"haroonfeisal@microsoft.com","createdByType":"User","createdAt":"2022-05-04T17:27:08.3013601Z","lastModifiedBy":"haroonfeisal@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-05-04T17:27:08.3013601Z"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/haroonfeisal_rg_3464/providers/Microsoft.ContainerRegistry/registries/cacc3718b1b5acr","name":"cacc3718b1b5acr","type":"Microsoft.ContainerRegistry/registries","sku":{"name":"Basic","tier":"Basic"},"location":"eastus","tags":{},"systemData":{"createdBy":"haroonfeisal@microsoft.com","createdByType":"User","createdAt":"2022-05-05T16:38:55.396916Z","lastModifiedBy":"haroonfeisal@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-05-05T16:38:55.396916Z"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/haroonfeisal_rg_0941/providers/Microsoft.ContainerRegistry/registries/caf78e506bbdacr","name":"caf78e506bbdacr","type":"Microsoft.ContainerRegistry/registries","sku":{"name":"Basic","tier":"Basic"},"location":"canadacentral","tags":{},"systemData":{"createdBy":"haroonfeisal@microsoft.com","createdByType":"User","createdAt":"2022-05-05T16:43:32.3748723Z","lastModifiedBy":"haroonfeisal@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-05-05T16:43:32.3748723Z"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/helloworld/providers/Microsoft.ContainerRegistry/registries/cacb315c7af9acr","name":"cacb315c7af9acr","type":"Microsoft.ContainerRegistry/registries","sku":{"name":"Basic","tier":"Basic"},"location":"eastus","tags":{},"systemData":{"createdBy":"haroonfeisal@microsoft.com","createdByType":"User","createdAt":"2022-05-12T19:19:54.8218583Z","lastModifiedBy":"haroonfeisal@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-05-12T19:19:54.8218583Z"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/haroonfeisal_rg_2608/providers/Microsoft.ContainerRegistry/registries/cahelloworldacr","name":"cahelloworldacr","type":"Microsoft.ContainerRegistry/registries","sku":{"name":"Basic","tier":"Basic"},"location":"westeurope","tags":{},"systemData":{"createdBy":"haroonfeisal@microsoft.com","createdByType":"User","createdAt":"2022-04-28T20:40:21.8771608Z","lastModifiedBy":"haroonfeisal@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-04-28T20:40:21.8771608Z"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rgerxq5vptkxtkgrghsyrf5mqwmxgciz7g3w3hovoftmozr6f7xiauyfu2g23j5mfnd/providers/Microsoft.ContainerRegistry/registries/ca66ba77dacbacr","name":"ca66ba77dacbacr","type":"Microsoft.ContainerRegistry/registries","sku":{"name":"Basic","tier":"Basic"},"location":"eastus","tags":{},"systemData":{"createdBy":"haroonfeisal@microsoft.com","createdByType":"User","createdAt":"2022-05-09T20:33:15.6256751Z","lastModifiedBy":"haroonfeisal@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-05-09T20:33:15.6256751Z"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rgbwn3zmmmwdtzrutaxjybbmipazctsdstlnsiplnypamdwajueg3qbupvdqouagga4/providers/Microsoft.ContainerRegistry/registries/caea6522762cacr","name":"caea6522762cacr","type":"Microsoft.ContainerRegistry/registries","sku":{"name":"Basic","tier":"Basic"},"location":"eastus","tags":{},"systemData":{"createdBy":"haroonfeisal@microsoft.com","createdByType":"User","createdAt":"2022-05-10T18:12:10.6367295Z","lastModifiedBy":"haroonfeisal@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-05-10T18:12:10.6367295Z"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rgx7y6sggferixqku3c4ocmlsrntdeyu4ggkxdkcx7tvlgemdfybvhg53k4q42r43ep/providers/Microsoft.ContainerRegistry/registries/caf965cdb6ccacr","name":"caf965cdb6ccacr","type":"Microsoft.ContainerRegistry/registries","sku":{"name":"Basic","tier":"Basic"},"location":"eastus","tags":{},"systemData":{"createdBy":"haroonfeisal@microsoft.com","createdByType":"User","createdAt":"2022-05-10T18:34:59.7552648Z","lastModifiedBy":"haroonfeisal@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-05-10T18:34:59.7552648Z"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/helloworld/providers/Microsoft.ContainerRegistry/registries/haroonftstregistry","name":"haroonftstregistry","type":"Microsoft.ContainerRegistry/registries","sku":{"name":"Standard","tier":"Standard"},"location":"eastus","tags":{},"systemData":{"createdBy":"haroonfeisal@microsoft.com","createdByType":"User","createdAt":"2022-06-07T20:32:23.7924641Z","lastModifiedBy":"haroonfeisal@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-06-07T20:32:40.225309Z"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/helloworld/providers/Microsoft.ContainerRegistry/registries/caabd688af59acr","name":"caabd688af59acr","type":"Microsoft.ContainerRegistry/registries","sku":{"name":"Basic","tier":"Basic"},"location":"eastus","tags":{},"systemData":{"createdBy":"haroonfeisal@microsoft.com","createdByType":"User","createdAt":"2022-06-20T18:05:49.6130533Z","lastModifiedBy":"haroonfeisal@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-06-20T18:05:49.6130533Z"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/helloworld/providers/Microsoft.ContainerRegistry/registries/ca9378434a2dacr","name":"ca9378434a2dacr","type":"Microsoft.ContainerRegistry/registries","sku":{"name":"Basic","tier":"Basic"},"location":"eastus","tags":{},"systemData":{"createdBy":"haroonfeisal@microsoft.com","createdByType":"User","createdAt":"2022-07-11T18:17:50.0053326Z","lastModifiedBy":"haroonfeisal@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-07-11T18:17:50.0053326Z"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/freshRadio/providers/Microsoft.ContainerRegistry/registries/ca5090e42392acr","name":"ca5090e42392acr","type":"Microsoft.ContainerRegistry/registries","sku":{"name":"Basic","tier":"Basic"},"location":"eastus","tags":{},"systemData":{"createdBy":"haroonfeisal@microsoft.com","createdByType":"User","createdAt":"2022-07-18T19:12:40.1310975Z","lastModifiedBy":"haroonfeisal@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-07-18T19:12:40.1310975Z"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/freshRadio/providers/Microsoft.ContainerRegistry/registries/ca535afdac36acr","name":"ca535afdac36acr","type":"Microsoft.ContainerRegistry/registries","sku":{"name":"Basic","tier":"Basic"},"location":"westus","tags":{},"systemData":{"createdBy":"haroonfeisal@microsoft.com","createdByType":"User","createdAt":"2022-07-18T19:23:11.6682133Z","lastModifiedBy":"haroonfeisal@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-07-18T19:23:11.6682133Z"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.ContainerRegistry/registries/acr000005","name":"acr000005","type":"Microsoft.ContainerRegistry/registries","sku":{"name":"Basic","tier":"Basic"},"location":"northeurope","tags":{},"systemData":{"createdBy":"haroonfeisal@microsoft.com","createdByType":"User","createdAt":"2022-09-08T17:19:58.8581638Z","lastModifiedBy":"haroonfeisal@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-09-08T17:19:58.8581638Z"}}]}'
@@ -2951,7 +2951,7 @@ interactions:
       - AZURECLI/2.39.0 (PIP) azsdk-python-azure-mgmt-containerregistry/10.0.0 Python/3.8.10
         (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.ContainerRegistry/registries/acr000005?api-version=2021-09-01
+    uri: https://brazilsouth.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.ContainerRegistry/registries/acr000005?api-version=2021-09-01
   response:
     body:
       string: '{"sku":{"name":"Basic","tier":"Basic"},"type":"Microsoft.ContainerRegistry/registries","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.ContainerRegistry/registries/acr000005","name":"acr000005","location":"northeurope","tags":{},"systemData":{"createdBy":"haroonfeisal@microsoft.com","createdByType":"User","createdAt":"2022-09-08T17:19:58.8581638+00:00","lastModifiedBy":"haroonfeisal@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-09-08T17:19:58.8581638+00:00"},"properties":{"loginServer":"acr000005.azurecr.io","creationDate":"2022-09-08T17:19:58.8581638Z","provisioningState":"Succeeded","adminUserEnabled":true,"policies":{"quarantinePolicy":{"status":"disabled"},"trustPolicy":{"type":"Notary","status":"disabled"},"retentionPolicy":{"days":7,"lastUpdatedTime":"2022-09-08T17:20:01.2558823+00:00","status":"disabled"},"exportPolicy":{"status":"enabled"}},"encryption":{"status":"disabled"},"dataEndpointEnabled":false,"dataEndpointHostNames":[],"privateEndpointConnections":[],"publicNetworkAccess":"Enabled","networkRuleBypassOptions":"AzureServices","zoneRedundancy":"Disabled"}}'
@@ -3002,7 +3002,7 @@ interactions:
       - AZURECLI/2.39.0 (PIP) azsdk-python-azure-mgmt-containerregistry/10.0.0 Python/3.8.10
         (Windows-10-10.0.19044-SP0)
     method: POST
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.ContainerRegistry/registries/acr000005/listCredentials?api-version=2021-09-01
+    uri: https://brazilsouth.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.ContainerRegistry/registries/acr000005/listCredentials?api-version=2021-09-01
   response:
     body:
       string: '{"username":"acr000005","passwords":[{"name":"password","value":"3QyTvbbtRdOAQ6/i3kHiBz4A0SIpfe9t"},{"name":"password2","value":"E1FmgqI0=GSQu12Nc=LwgI6WpnrDGo81"}]}'
@@ -3032,7 +3032,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '1197'
     status:
       code: 200
       message: OK
@@ -3106,7 +3106,7 @@ interactions:
       x-ms-async-operation-timeout:
       - PT15M
       x-ms-ratelimit-remaining-subscription-resource-requests:
-      - '499'
+      - '498'
       x-powered-by:
       - ASP.NET
     status:
@@ -3384,7 +3384,7 @@ interactions:
       - AZURECLI/2.39.0 (PIP) azsdk-python-azure-mgmt-resource/21.1.0b1 Python/3.8.10
         (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App?api-version=2021-04-01
+    uri: https://brazilsouth.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App?api-version=2021-04-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App","namespace":"Microsoft.App","authorizations":[{"applicationId":"7e3bc4fd-85a3-4192-b177-5b8bfc87f42c","roleDefinitionId":"39a74f72-b40f-4bdc-b639-562fe2260bf0"},{"applicationId":"3734c1a4-2bed-4998-a37a-ff1a9e7bf019","roleDefinitionId":"5c779a4f-5cb2-4547-8c41-478d9be8ba90"}],"resourceTypes":[{"resourceType":"managedEnvironments","locations":["North
@@ -3528,7 +3528,7 @@ interactions:
       - AZURECLI/2.39.0 (PIP) azsdk-python-azure-mgmt-resource/21.1.0b1 Python/3.8.10
         (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App?api-version=2021-04-01
+    uri: https://brazilsouth.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App?api-version=2021-04-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App","namespace":"Microsoft.App","authorizations":[{"applicationId":"7e3bc4fd-85a3-4192-b177-5b8bfc87f42c","roleDefinitionId":"39a74f72-b40f-4bdc-b639-562fe2260bf0"},{"applicationId":"3734c1a4-2bed-4998-a37a-ff1a9e7bf019","roleDefinitionId":"5c779a4f-5cb2-4547-8c41-478d9be8ba90"}],"resourceTypes":[{"resourceType":"managedEnvironments","locations":["North
@@ -3703,7 +3703,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '1196'
       x-powered-by:
       - ASP.NET
     status:
@@ -3779,7 +3779,7 @@ interactions:
       x-ms-async-operation-timeout:
       - PT15M
       x-ms-ratelimit-remaining-subscription-resource-requests:
-      - '499'
+      - '497'
       x-powered-by:
       - ASP.NET
     status:
@@ -3955,7 +3955,7 @@ interactions:
       - AZURECLI/2.39.0 (PIP) azsdk-python-azure-mgmt-resource/21.1.0b1 Python/3.8.10
         (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App?api-version=2021-04-01
+    uri: https://brazilsouth.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App?api-version=2021-04-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App","namespace":"Microsoft.App","authorizations":[{"applicationId":"7e3bc4fd-85a3-4192-b177-5b8bfc87f42c","roleDefinitionId":"39a74f72-b40f-4bdc-b639-562fe2260bf0"},{"applicationId":"3734c1a4-2bed-4998-a37a-ff1a9e7bf019","roleDefinitionId":"5c779a4f-5cb2-4547-8c41-478d9be8ba90"}],"resourceTypes":[{"resourceType":"managedEnvironments","locations":["North

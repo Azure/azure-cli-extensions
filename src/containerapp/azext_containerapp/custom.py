@@ -53,7 +53,9 @@ from ._models import (
     ContainerAppCertificateEnvelope as ContainerAppCertificateEnvelopeModel,
     ContainerAppCustomDomain as ContainerAppCustomDomainModel,
     AzureFileProperties as AzureFilePropertiesModel,
+    CustomDomainConfiguration as CustomDomainConfigurationModel,
     ScaleRule as ScaleRuleModel)
+
 from ._utils import (_validate_subscription_registered, _get_location_from_resource_group, _ensure_location_allowed,
                      parse_secret_flags, store_as_secret_and_return_secret_ref, parse_env_var_flags,
                      _generate_log_analytics_if_not_provided, _get_existing_secrets, _convert_object_from_snake_to_camel_case,
@@ -66,7 +68,7 @@ from ._utils import (_validate_subscription_registered, _get_location_from_resou
                      generate_randomized_cert_name, _get_name, load_cert_file, check_cert_name_availability,
                      validate_hostname, patch_new_custom_domain, get_custom_domains, _validate_revision_name, set_managed_identity,
                      create_acrpull_role_assignment, is_registry_msi_system, clean_null_values, _populate_secret_values,
-                     validate_environment_location, parse_metadata_flags, parse_auth_flags)
+                     validate_environment_location, safe_set, parse_metadata_flags, parse_auth_flags)
 from ._validators import validate_create
 from ._ssh_utils import (SSH_DEFAULT_ENCODING, WebSocketConnection, read_ssh, get_stdin_writer, SSH_CTRL_C_MSG,
                          SSH_BACKUP_ENCODING)
@@ -1000,6 +1002,9 @@ def create_managed_environment(cmd,
                                tags=None,
                                disable_warnings=False,
                                zone_redundant=False,
+                               hostname=None,
+                               certificate_file=None,
+                               certificate_password=None,
                                no_wait=False):
     if zone_redundant:
         if not infrastructure_subnet_resource_id:
@@ -1036,6 +1041,14 @@ def create_managed_environment(cmd,
     managed_env_def["properties"]["appLogsConfiguration"] = app_logs_config_def
     managed_env_def["tags"] = tags
     managed_env_def["properties"]["zoneRedundant"] = zone_redundant
+
+    if hostname:
+        customDomain = CustomDomainConfigurationModel
+        blob, _ = load_cert_file(certificate_file, certificate_password)
+        customDomain["dnsSuffix"] = hostname
+        customDomain["certificatePassword"] = certificate_password
+        customDomain["certificateValue"] = blob
+        managed_env_def["properties"]["customDomainConfiguration"] = customDomain
 
     if instrumentation_key is not None:
         managed_env_def["properties"]["daprAIInstrumentationKey"] = instrumentation_key
@@ -1080,9 +1093,38 @@ def create_managed_environment(cmd,
 def update_managed_environment(cmd,
                                name,
                                resource_group_name,
+                               hostname=None,
+                               certificate_file=None,
+                               certificate_password=None,
                                tags=None,
                                no_wait=False):
-    raise CLIInternalError('Containerapp env update is not yet supported.')
+    try:
+        r = ManagedEnvironmentClient.show(cmd=cmd, resource_group_name=resource_group_name, name=name)
+    except CLIError as e:
+        handle_raw_exception(e)
+
+    # General setup
+    env_def = {}
+    safe_set(env_def, "location", value=r["location"])  # required for API
+    safe_set(env_def, "tags", value=tags)
+
+    # Custom domains
+    safe_set(env_def, "properties", "customDomainConfiguration", value={})
+    cert_def = env_def["properties"]["customDomainConfiguration"]
+    if hostname:
+        blob, _ = load_cert_file(certificate_file, certificate_password)
+        safe_set(cert_def, "dnsSuffix", value=hostname)
+        safe_set(cert_def, "certificatePassword", value=certificate_password)
+        safe_set(cert_def, "certificateValue", value=blob)
+
+    # no PATCH api support atm, put works fine even with partial json
+    try:
+        r = ManagedEnvironmentClient.create(
+            cmd=cmd, resource_group_name=resource_group_name, name=name, managed_environment_envelope=env_def, no_wait=no_wait)
+
+        return r
+    except Exception as e:
+        handle_raw_exception(e)
 
 
 def show_managed_environment(cmd, name, resource_group_name):
