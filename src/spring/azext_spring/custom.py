@@ -4,10 +4,15 @@
 # --------------------------------------------------------------------------------------------
 
 # pylint: disable=unused-argument, logging-format-interpolation, protected-access, wrong-import-order, too-many-lines
+import logging
 import requests
 import re
 import os
+import time
+import tty
+from azure.cli.core._profile import Profile
 
+from ._websocket import WebSocketConnection, recv_remote, send_stdin, SSH_CTRL_C_MSG
 from azure.mgmt.cosmosdb import CosmosDBManagementClient
 from azure.mgmt.redis import RedisManagementClient
 from requests.auth import HTTPBasicAuth
@@ -1462,3 +1467,49 @@ def app_insights_show(cmd, client, resource_group, name, no_wait=False):
     if not monitoring_setting_properties:
         raise CLIError("Application Insights not set.")
     return monitoring_setting_properties
+
+
+def app_connect(cmd, client, resource_group, service, name,
+                deployment=None, instance=None, shell_cmd='/bin/sh'):
+
+    profile = Profile(cli_ctx=cmd.cli_ctx)
+    creds, _, _ = profile.get_raw_token()
+    token = creds[1]
+
+    resource = client.services.get(resource_group, service)
+    hostname = resource.properties.fqdn
+    if not instance:
+        if not deployment.properties.instances:
+            raise CLIError("No instances found for deployment '{0}' in app '{1}'".format(
+                deployment.name, name))
+        instances = deployment.properties.instances
+        if len(instances) > 1:
+            logger.warning("Multiple app instances found:")
+            for temp_instance in instances:
+                logger.warning("{}".format(temp_instance.name))
+            logger.warning("Please use '-i/--instance' parameter to specify the instance name")
+            return None
+        instance = instances[0].name
+
+    connect_url = "wss://{0}/api/appconnect/apps/{1}/deployments/{2}/instances/{3}/connect?command={4}".format(
+        hostname, name, deployment.name, instance, shell_cmd)
+    logger.warning("Connecting to the app instance Microsoft.AppPlatform/Spring/%s/apps/%s/deployments/%s/instances/%s..." % (service, name, deployment.name, instance))
+    conn = WebSocketConnection(connect_url, token)
+
+    reader = Thread(target=recv_remote, args=(conn,))
+    reader.daemon = True
+    reader.start()
+
+    tty.setcbreak(sys.stdin.fileno())  # needed to prevent printing arrow key characters
+    writer = Thread(target=send_stdin, args=(conn,))
+    writer.daemon = True
+    writer.start()
+
+    logger.warning("Use ctrl + D to exit.")
+    while conn.is_connected:
+        try:
+            time.sleep(0.1)
+        except KeyboardInterrupt:
+            if conn.is_connected:
+                logger.info("Caught KeyboardInterrupt. Sending ctrl+c to server")
+                conn.send(SSH_CTRL_C_MSG)
