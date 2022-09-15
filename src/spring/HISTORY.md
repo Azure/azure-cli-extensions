@@ -1,5 +1,11 @@
 Release History
 ===============
+
+1.1.7
+---
+* Command `az spring create` and ` has new argument "--outboundType" to enable UDR for VNet instance.
+* Command `az spring app create` and `az spring app update` has new argument "--ingress-read-timeout", "--ingress-send-timeout", "--session-affinity", "--session-max-age", "--backend-protocol" to customize the ingress settings of user applications.
+
 1.1.6
 ---
 * Add a new command `az spring build-service builder show-deployments` to list the deployments under a builder.

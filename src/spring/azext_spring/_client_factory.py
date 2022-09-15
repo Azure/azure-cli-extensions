@@ -42,6 +42,10 @@ def cf_spring_20220901preview(cli_ctx, *_):
     return get_mgmt_service_client(cli_ctx, AppPlatformManagementClient_20220901preview)
 
 
+def cf_spring_20220901preview(cli_ctx, *_):
+    return get_mgmt_service_client(cli_ctx, AppPlatformManagementClient_20220901preview)
+
+
 def cf_spring_20220501preview(cli_ctx, *_):
     return get_mgmt_service_client(cli_ctx, AppPlatformManagementClient_20220501preview)
 

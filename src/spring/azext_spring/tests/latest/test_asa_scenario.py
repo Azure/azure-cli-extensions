@@ -201,7 +201,7 @@ class CustomImageTest(ScenarioTest):
             'serviceName': 'cli-unittest',
             'containerImage': 'springio/gs-spring-boot-docker',
             'resourceGroup': 'cli',
-            'location': 'westus'
+            'location': 'centralindia'
         })
 
         self.cmd('group create -n {resourceGroup} -l {location}')
