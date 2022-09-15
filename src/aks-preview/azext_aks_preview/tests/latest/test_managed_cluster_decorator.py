@@ -5566,6 +5566,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         )
         mc_3 = self.models.ManagedCluster(location="test_location")
         dec_3.context.attach_mc(mc_3)
+        dec_mc_3 = dec_3.update_vpa(mc_3)
 
         ground_truth_mc_3 = self.models.ManagedCluster(
             location="test_location",
