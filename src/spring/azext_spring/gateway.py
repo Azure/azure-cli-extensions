@@ -10,7 +10,7 @@ from azure.cli.core.util import sdk_no_wait
 from knack.log import get_logger
 
 from .custom import LOG_RUNNING_PROMPT
-from .vendored_sdks.appplatform.v2022_05_01_preview import models
+from .vendored_sdks.appplatform.v2022_09_01_preview import models
 
 logger = get_logger(__name__)
 DEFAULT_NAME = "default"

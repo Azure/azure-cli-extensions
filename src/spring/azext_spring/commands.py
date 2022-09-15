@@ -77,7 +77,7 @@ def load_command_table(self, _):
 
     gateway_route_config_cmd_group = CliCommandType(
         operations_tmpl='azext_spring.gateway#{}',
-        client_factory=cf_spring_20220501preview
+        client_factory=cf_spring_20220901preview
     )
 
     api_portal_cmd_group = CliCommandType(
