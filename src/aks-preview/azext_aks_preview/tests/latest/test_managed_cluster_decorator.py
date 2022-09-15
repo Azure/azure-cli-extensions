@@ -3128,7 +3128,7 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
             decorator_mode=DecoratorMode.CREATE,
         )
         workload_auto_scaler_profile = self.models.ManagedClusterWorkloadAutoScalerProfile()
-        workload_auto_scaler_profile.vertical_pod_autoscaler = self.ManagedClusterWorkloadAutoScalerProfileVerticalPodAutoscaler(enable=True)
+        workload_auto_scaler_profile.vertical_pod_autoscaler = self.models.ManagedClusterWorkloadAutoScalerProfileVerticalPodAutoscaler(enable=True)
         mc = self.models.ManagedCluster(
             location="test_location",
             workload_auto_scaler_profile=workload_auto_scaler_profile,
@@ -5539,7 +5539,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         )
         mc_2 = self.models.ManagedCluster(location="test_location")
         dec_2.context.attach_mc(mc_2)
-        dec_2 = dec_2.update_vpa(mc_2)
+        dec2_mc_2 = dec_2.update_vpa(mc_2)
 
         ground_truth_mc_2 = self.models.ManagedCluster( 
             location="test_location",
