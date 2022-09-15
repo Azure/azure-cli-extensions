@@ -52,7 +52,7 @@ def load_command_table(self, _):
 
     builder_cmd_group = CliCommandType(
         operations_tmpl="azext_spring._build_service#{}",
-        client_factory=cf_spring_20220101preview
+        client_factory=cf_spring_20220901preview
     )
 
     buildpack_binding_cmd_group = CliCommandType(
@@ -77,7 +77,7 @@ def load_command_table(self, _):
 
     gateway_route_config_cmd_group = CliCommandType(
         operations_tmpl='azext_spring.gateway#{}',
-        client_factory=cf_spring_20220501preview
+        client_factory=cf_spring_20220901preview
     )
 
     api_portal_cmd_group = CliCommandType(
@@ -300,6 +300,7 @@ def load_command_table(self, _):
         g.custom_command('create', 'create_or_update_builder', supports_no_wait=True)
         g.custom_command('update', 'create_or_update_builder', supports_no_wait=True)
         g.custom_show_command('show', 'builder_show')
+        g.custom_show_command('show-deployments', 'builder_show_deployments')
         g.custom_command('delete', 'builder_delete', supports_no_wait=True, confirmation=True)
 
     with self.command_group('spring build-service builder buildpack-binding',

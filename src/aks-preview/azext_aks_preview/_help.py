@@ -448,6 +448,12 @@ helps['aks create'] = """
         - name: --azure-keyvault-kms-key-vault-resource-id
           type: string
           short-summary: Resource ID of Azure Key Vault.
+        - name: --enable-image-cleaner
+          type: bool
+          short-summary: Enable ImageCleaner Service.
+        - name: --image-cleaner-interval-hours
+          type: int
+          short-summary: ImageCleaner scanning interval.
         - name: --dns-zone-resource-id
           type: string
           short-summary: The resource ID of the DNS zone resource to use with the web_application_routing addon.
@@ -784,6 +790,15 @@ helps['aks update'] = """
         - name: --azure-keyvault-kms-key-vault-resource-id
           type: string
           short-summary: Resource ID of Azure Key Vault.
+        - name: --enable-image-cleaner
+          type: bool
+          short-summary: Enable ImageCleaner Service.
+        - name: --disable-image-cleaner
+          type: bool
+          short-summary: Disable ImageCleaner Service.
+        - name: --image-cleaner-interval-hours
+          type: int
+          short-summary: ImageCleaner scanning interval.
         - name: --enable-apiserver-vnet-integration
           type: bool
           short-summary: Enable integration of user vnet with control plane apiserver pods.
@@ -811,6 +826,15 @@ helps['aks update'] = """
         - name: --disable-node-restriction
           type: bool
           short-summary: Disable node restriction option on cluster.
+        - name: --enable-private-cluster
+          type: bool
+          short-summary: Enable private cluster for apiserver vnet integration cluster.
+        - name: --disable-private-cluster
+          type: bool
+          short-summary: Disable private cluster for apiserver vnet integration cluster.
+        - name: --private-dns-zone
+          type: string
+          short-summary: The private dns zone mode for private cluster.
     examples:
       - name: Reconcile the cluster back to its current state.
         text: az aks update -g MyResourceGroup -n MyManagedCluster
@@ -1353,6 +1377,33 @@ helps['aks nodepool delete'] = """
     examples:
         - name: Delete an agent pool with ignore-pod-disruption-budget
           text: az aks nodepool delete --resource-group MyResourceGroup --cluster-name MyManagedCluster --name nodepool1 --ignore-pod-disruption-budget=true
+"""
+
+helps['aks nodepool operation-abort'] = """
+    type: command
+    short-summary: Abort last running operation on nodepool.
+    parameters:
+        - name: --nodepool-name
+          type: string
+          short-summary: Agent pool name
+        - name: --aks-custom-headers
+          type: string
+          short-summary: Send custom headers. When specified, format should be Key1=Value1,Key2=Value2
+    examples:
+        - name: Abort operation on agent pool
+          text: az aks nodepool operation-abort -g myResourceGroup --nodepool-name nodepool1 --cluster-name myAKSCluster
+"""
+
+helps['aks operation-abort'] = """
+    type: command
+    short-summary: Abort last running operation on managed cluster.
+    parameters:
+        - name: --aks-custom-headers
+          type: string
+          short-summary: Send custom headers. When specified, format should be Key1=Value1,Key2=Value2
+    examples:
+        - name: Abort operation on managed cluster
+          text: az aks operation-abort -g myResourceGroup -n myAKSCluster
 """
 
 helps['aks addon'] = """

@@ -20,7 +20,7 @@ class ContainerappComposePreviewRegistryAllArgsScenarioTest(ContainerappComposeP
         compose_text = """
 services:
   foo:
-    image: mcr.microsoft.com/azuredocs/aks-helloworld:v1
+    image: mcr.microsoft.com/azuredocs/containerapps-helloworld:latest
     ports: 8080:80
 """
         compose_file_name = f"{self._testMethodName}_compose.yml"
@@ -60,7 +60,7 @@ class ContainerappComposePreviewRegistryServerArgOnlyScenarioTest(ContainerappCo
         compose_text = """
 services:
   foo:
-    image: mcr.microsoft.com/azuredocs/aks-helloworld:v1
+    image: mcr.microsoft.com/azuredocs/containerapps-helloworld:latest
     ports: 8080:80
 """
         compose_file_name = f"{self._testMethodName}_compose.yml"
