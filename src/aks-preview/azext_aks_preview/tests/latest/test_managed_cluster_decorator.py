@@ -4047,8 +4047,8 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
 
         ground_truth_mc_2 = self.models.ManagedCluster(
             location="test_location",
-            security_profile=self.models.ManagedClusterWorkloadAutoScalerProfile(
-                vpa = self.models.ManagedClusterWorkloadAutoScalerProfileVerticalPodAutoscaler(
+            workload_auto_scaler_profile=self.models.ManagedClusterWorkloadAutoScalerProfile(
+                vertical_pod_autoscaler = self.models.ManagedClusterWorkloadAutoScalerProfileVerticalPodAutoscaler(
                     enabled = True,
                 )
             ),
@@ -5544,7 +5544,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         ground_truth_mc_2 = self.models.ManagedCluster( 
             location="test_location",
             workload_auto_scaler_profile=self.models.ManagedClusterWorkloadAutoScalerProfile(
-                vpa = self.models.ManagedClusterWorkloadAutoScalerProfileVerticalPodAutoscaler(
+                vertical_pod_autoscaler = self.models.ManagedClusterWorkloadAutoScalerProfileVerticalPodAutoscaler(
                     enabled = True,
                 )
             ),
