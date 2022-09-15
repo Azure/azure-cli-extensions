@@ -74,5 +74,5 @@ def decide_resource_type(cmd, op_info):
         target_resource_type = consts.RESOURCE_TYPE_LOWER_CASE_TO_CORRECT_CASE[types_in_rg.pop().lower()]
 
     telemetry.add_extension_event('ssh', {'Context.Default.AzureCLI.TargetResourceType': target_resource_type})
-
+    logger.debug("Target Resource Type: %s", target_resource_type)
     return target_resource_type
