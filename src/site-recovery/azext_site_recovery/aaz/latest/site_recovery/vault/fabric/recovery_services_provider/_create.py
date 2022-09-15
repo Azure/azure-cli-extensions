@@ -68,7 +68,7 @@ class Create(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.authentication_identity_input = AAZObjectArg(
-            options=["--authentication-identity-input"],
+            options=["--auth-identity", "--authentication-identity-input"],
             arg_group="Properties",
             help="The identity provider input for DRA authentication.",
             required=True,
@@ -80,7 +80,7 @@ class Create(AAZCommand):
             help="The Bios Id of the machine.",
         )
         _args_schema.data_plane_authentication_identity_input = AAZObjectArg(
-            options=["--data-plane-authentication-identity-input"],
+            options=["--data-plane-auth-identity", "--data-plane-authentication-identity-input"],
             arg_group="Properties",
             help="The identity provider input for data plane authentication.",
         )
@@ -97,7 +97,7 @@ class Create(AAZCommand):
             required=True,
         )
         _args_schema.resource_access_identity_input = AAZObjectArg(
-            options=["--resource-access-identity-input"],
+            options=["--resource-access-identity", "--resource-access-identity-input"],
             arg_group="Properties",
             help="The identity provider input for resource access.",
             required=True,

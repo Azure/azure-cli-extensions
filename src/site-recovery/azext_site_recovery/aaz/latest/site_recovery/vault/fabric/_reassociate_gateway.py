@@ -65,12 +65,12 @@ class ReassociateGateway(AAZCommand):
             help="The container identifier.",
         )
         _args_schema.source_process_server_id = AAZStrArg(
-            options=["--source-process-server-id"],
+            options=["--source-process-server", "--source-process-server-id"],
             arg_group="Properties",
             help="The source process server.",
         )
         _args_schema.target_process_server_id = AAZStrArg(
-            options=["--target-process-server-id"],
+            options=["--target-process-server", "--target-process-server-id"],
             arg_group="Properties",
             help="The new process server.",
         )

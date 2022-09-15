@@ -78,7 +78,7 @@ class TestFailover(AAZCommand):
             required=True,
         )
         _args_schema.provider_specific_details = AAZListArg(
-            options=["--provider-specific-details"],
+            options=["--provider-details", "--provider-specific-details"],
             arg_group="Properties",
             help="The provider specific properties.",
             fmt=AAZListArgFormat(

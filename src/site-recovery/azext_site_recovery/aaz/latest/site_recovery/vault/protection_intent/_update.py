@@ -63,7 +63,7 @@ class Update(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.provider_specific_details = AAZObjectArg(
-            options=["--provider-specific-details"],
+            options=["--provider-details", "--provider-specific-details"],
             arg_group="Properties",
             help="The ReplicationProviderInput. For A2A provider, it will be A2ACreateProtectionIntentInput object.",
             nullable=True,

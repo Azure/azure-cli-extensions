@@ -64,7 +64,7 @@ class Update(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.provider_specific_input = AAZObjectArg(
-            options=["--provider-specific-input"],
+            options=["--provider-input", "--provider-specific-input"],
             arg_group="Properties",
             help="The ReplicationProviderSettings.",
             nullable=True,

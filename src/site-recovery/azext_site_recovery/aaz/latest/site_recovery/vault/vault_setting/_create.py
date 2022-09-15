@@ -67,7 +67,7 @@ class Create(AAZCommand):
             help="The migration solution Id.",
         )
         _args_schema.vmware_to_azure_provider_type = AAZStrArg(
-            options=["--vmware-to-azure-provider-type"],
+            options=["--vmware-to-azure", "--vmware-to-azure-provider-type"],
             arg_group="Properties",
             help="VMware to Azure provider type.",
         )

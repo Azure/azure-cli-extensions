@@ -53,7 +53,7 @@ class UpdateMobilityService(AAZCommand):
             required=True,
         )
         _args_schema.replication_protected_item_name = AAZStrArg(
-            options=["--replication-protected-item-name"],
+            options=["--protected-item", "--replication-protected-item-name"],
             help="The name of the protected item on which the agent is to be updated.",
             required=True,
         )

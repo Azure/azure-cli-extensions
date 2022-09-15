@@ -70,13 +70,13 @@ class Remove(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.disable_protection_reason = AAZStrArg(
-            options=["--disable-protection-reason"],
+            options=["--disable-reason", "--disable-protection-reason"],
             arg_group="Properties",
             help="Disable protection reason. It can have values NotSpecified/MigrationComplete.",
             enum={"MigrationComplete": "MigrationComplete", "NotSpecified": "NotSpecified"},
         )
         _args_schema.replication_provider_input = AAZObjectArg(
-            options=["--replication-provider-input"],
+            options=["--provider-input", "--replication-provider-input"],
             arg_group="Properties",
             help="Replication provider specific input.",
         )

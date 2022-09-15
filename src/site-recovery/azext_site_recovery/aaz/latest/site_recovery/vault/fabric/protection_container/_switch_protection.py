@@ -12,9 +12,9 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "site-recovery vault fabric protection-container switchprotection",
+    "site-recovery vault fabric protection-container switch-protection",
 )
-class Switchprotection(AAZCommand):
+class SwitchProtection(AAZCommand):
     """Operation to switch protection from one container to another or one replication provider to another.
     """
 
@@ -70,7 +70,7 @@ class Switchprotection(AAZCommand):
             help="Provider specific switch protection input.",
         )
         _args_schema.replication_protected_item_name = AAZStrArg(
-            options=["--replication-protected-item-name"],
+            options=["--protected-item", "--replication-protected-item-name"],
             arg_group="Properties",
             help="The unique replication protected item name.",
         )
@@ -472,4 +472,4 @@ def _build_schema_disk_encryption_info_create(_builder):
         key_encryption_key_info.set_prop("keyVaultResourceArmId", AAZStrType, ".key_vault_resource_arm_id")
 
 
-__all__ = ["Switchprotection"]
+__all__ = ["SwitchProtection"]

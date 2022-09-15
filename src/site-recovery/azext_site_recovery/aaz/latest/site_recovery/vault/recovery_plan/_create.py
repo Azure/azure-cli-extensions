@@ -62,7 +62,7 @@ class Create(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.failover_deployment_model = AAZStrArg(
-            options=["--failover-deployment-model"],
+            options=["--failover-deploy-model", "--failover-deployment-model"],
             arg_group="Properties",
             help="The failover deployment model.",
             enum={"Classic": "Classic", "NotApplicable": "NotApplicable", "ResourceManager": "ResourceManager"},
@@ -80,7 +80,7 @@ class Create(AAZCommand):
             required=True,
         )
         _args_schema.provider_specific_input = AAZListArg(
-            options=["--provider-specific-input"],
+            options=["--provider-input", "--provider-specific-input"],
             arg_group="Properties",
             help="The provider specific input.",
         )

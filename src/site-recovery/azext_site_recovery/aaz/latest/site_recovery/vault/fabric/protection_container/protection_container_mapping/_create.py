@@ -79,12 +79,12 @@ class Create(AAZCommand):
             help="Applicable policy.",
         )
         _args_schema.provider_specific_input = AAZObjectArg(
-            options=["--provider-specific-input"],
+            options=["--provider-input", "--provider-specific-input"],
             arg_group="Properties",
             help="Provider specific input for pairing.",
         )
         _args_schema.target_protection_container_id = AAZStrArg(
-            options=["--target-protection-container-id"],
+            options=["--target-container", "--target-protection-container-id"],
             arg_group="Properties",
             help="The target unique protection container name.",
         )

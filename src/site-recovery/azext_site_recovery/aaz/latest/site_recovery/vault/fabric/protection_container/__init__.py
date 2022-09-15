@@ -14,5 +14,5 @@ from ._discover_protectable_item import *
 from ._list import *
 from ._remove import *
 from ._show import *
-from ._switchprotection import *
+from ._switch_protection import *
 from ._update import *
