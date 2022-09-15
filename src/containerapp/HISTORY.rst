@@ -57,6 +57,8 @@ Upcoming
 
 0.3.12
 ++++++
+* Add 'az containerapp env update' to update managed environment properties
+* Add custom domains support to 'az containerapp env create' and 'az containerapp env update'
 
 0.3.11
 ++++++

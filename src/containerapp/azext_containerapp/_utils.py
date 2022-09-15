@@ -1076,6 +1076,16 @@ def safe_set(model, *keys, value):
     penult[keys[-1]] = value
 
 
+def safe_set(model, *keys, value):
+    penult = {}
+    for k in keys:
+        if k not in model:
+            model[k] = {}
+        penult = model
+        model = model[k]
+    penult[keys[-1]] = value
+
+
 def is_platform_windows():
     return platform.system() == "Windows"
 

@@ -1073,6 +1073,14 @@ def create_managed_environment(cmd,
         customDomain["certificateValue"] = blob
         managed_env_def["properties"]["customDomainConfiguration"] = customDomain
 
+    if hostname:
+        customDomain = CustomDomainConfigurationModel
+        blob, _ = load_cert_file(certificate_file, certificate_password)
+        customDomain["dnsSuffix"] = hostname
+        customDomain["certificatePassword"] = certificate_password
+        customDomain["certificateValue"] = blob
+        managed_env_def["properties"]["customDomainConfiguration"] = customDomain
+
     if instrumentation_key is not None:
         managed_env_def["properties"]["daprAIInstrumentationKey"] = instrumentation_key
 
