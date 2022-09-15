@@ -76,7 +76,7 @@ class Update(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.target_storage_classification_id = AAZStrArg(
-            options=["--target-storage-classification", "--target-storage-classification-id"],
+            options=["--target-storage-class", "--target-storage-classification-id"],
             arg_group="Properties",
             help="The ID of the storage object.",
             nullable=True,

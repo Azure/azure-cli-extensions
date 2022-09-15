@@ -82,7 +82,7 @@ class Update(AAZCommand):
             nullable=True,
         )
         _args_schema.data_plane_authentication_identity_input = AAZObjectArg(
-            options=["--data-plane-auth-identity", "--data-plane-authentication-identity-input"],
+            options=["--data-plane-auth-id", "--data-plane-authentication-identity-input"],
             arg_group="Properties",
             help="The identity provider input for data plane authentication.",
         )
@@ -99,7 +99,7 @@ class Update(AAZCommand):
             help="The name of the machine where the provider is getting added.",
         )
         _args_schema.resource_access_identity_input = AAZObjectArg(
-            options=["--resource-access-identity", "--resource-access-identity-input"],
+            options=["--resource-access-id", "--resource-access-identity-input"],
             arg_group="Properties",
             help="The identity provider input for resource access.",
         )
