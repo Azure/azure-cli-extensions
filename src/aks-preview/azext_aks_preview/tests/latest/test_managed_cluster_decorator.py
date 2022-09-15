@@ -3140,7 +3140,7 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
             self.cmd,
             AKSManagedClusterParamDict(
                 {
-                    "enable_vpa": True,
+                    "enable_vpa": False,
                 }
             ),
             self.models,
@@ -5539,7 +5539,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         )
         mc_2 = self.models.ManagedCluster(location="test_location")
         dec_2.context.attach_mc(mc_2)
-        dec2_mc_2 = dec_2.update_vpa(mc_2)
+        dec_mc_2 = dec_2.update_vpa(mc_2)
 
         ground_truth_mc_2 = self.models.ManagedCluster( 
             location="test_location",
