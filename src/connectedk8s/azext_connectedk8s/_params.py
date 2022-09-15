@@ -7,11 +7,12 @@
 import os.path
 from ._validators import override_client_request_id_header
 from argcomplete.completers import FilesCompleter
-from azure.cli.core.commands.parameters import get_location_type, get_enum_type, file_type, tags_type
+from azure.cli.core.commands.parameters import get_location_type, get_enum_type, file_type, tags_type, get_three_state_flag
 from azure.cli.core.commands.validators import get_default_location_from_resource_group
 from azext_connectedk8s._constants import Distribution_Enum_Values, Infrastructure_Enum_Values, Feature_Values
 from knack.arguments import (CLIArgumentType, CaseInsensitiveList)
 
+from._validators import validate_private_link_properties
 
 features_types = CLIArgumentType(
     nargs='+',
@@ -20,6 +21,8 @@ features_types = CLIArgumentType(
 
 
 def load_arguments(self, _):
+
+    pls_arm_id_type = CLIArgumentType(options_list=['--private-link-scope-resource-id', '--pls-arm-id'], arg_group='PrivateLink', help='ARM resource id of the private link scope resource to which this connected cluster is associated.', is_preview=True)
 
     with self.argument_context('connectedk8s connect') as c:
         c.argument('tags', tags_type)
@@ -35,11 +38,14 @@ def load_arguments(self, _):
         c.argument('infrastructure', options_list=['--infrastructure'], help='The infrastructure on which the Kubernetes cluster represented by this connected cluster will be running on.', arg_type=get_enum_type(Infrastructure_Enum_Values))
         c.argument('disable_auto_upgrade', options_list=['--disable-auto-upgrade'], action='store_true', help='Flag to disable auto upgrade of arc agents.')
         c.argument('cl_oid', options_list=['--custom-locations-oid'], help="OID of 'custom-locations' app")
+        c.argument('enable_private_link', arg_type=get_three_state_flag(), arg_group='PrivateLink', help='Flag to enable/disable private link support on a connected cluster resource. Allowed values: false, true.', is_preview=True, validator=validate_private_link_properties)
+        c.argument('private_link_scope_resource_id', pls_arm_id_type)
         c.argument('onboarding_timeout', options_list=['--onboarding-timeout'], arg_group='Timeout', help='Time required (in seconds) for the arc-agent pods to be installed on the kubernetes cluster. Override this value if the hardware/network constraints on your cluster requires more time for installing the arc-agent pods.')
         c.argument('no_wait', options_list=['--no-wait'], arg_group='Timeout', help="Do not wait for the long-running operation to finish.")
         c.argument('correlation_id', options_list=['--correlation-id'], help='A guid that is used to internally track the source of cluster onboarding. Please do not modify it unless advised', validator=override_client_request_id_header)
 
     with self.argument_context('connectedk8s update') as c:
+        c.argument('tags', tags_type)
         c.argument('cluster_name', options_list=['--name', '-n'], id_part='name', help='The name of the connected cluster.')
         c.argument('kube_config', options_list=['--kube-config'], help='Path to the kube config file.')
         c.argument('kube_context', options_list=['--kube-context'], help='Kubconfig context from current machine.')
@@ -84,6 +90,8 @@ def load_arguments(self, _):
         c.argument('cluster_name', options_list=['--name', '-n'], id_part='name', help='The name of the connected cluster.')
         c.argument('kube_config', options_list=['--kube-config'], help='Path to the kube config file.')
         c.argument('kube_context', options_list=['--kube-context'], help='Kubconfig context from current machine.')
+        c.argument('force_delete', options_list=['--force'], help='Force delete to remove all azure-arc resources from the cluster.', action='store_true')
+        c.argument('yes', options_list=['--yes', '-y'], help='Do not prompt for confirmation.', action='store_true')
 
     with self.argument_context('connectedk8s proxy') as c:
         c.argument('cluster_name', options_list=['--name', '-n'], id_part='name', help='The name of the connected cluster.')

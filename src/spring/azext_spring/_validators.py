@@ -103,6 +103,13 @@ def validate_instance_count(namespace):
             raise InvalidArgumentValueError("--instance-count must be greater than 0")
 
 
+def validate_instance_not_existed(client, resource_group, name, location):
+    availability_parameters = models.NameAvailabilityParameters(type="Microsoft.AppPlatform/Spring", name=name)
+    name_availability = client.services.check_name_availability(location, availability_parameters)
+    if not name_availability.name_available and name_availability.reason == "AlreadyExists":
+        raise InvalidArgumentValueError("Service instance '{}' under resource group '{}' is already existed in region '{}', cannot be created again.".format(name, resource_group, location))
+
+
 def validate_name(namespace):
     namespace.name = namespace.name.lower()
     matchObj = match(r'^[a-z][a-z0-9-]{2,30}[a-z0-9]$', namespace.name)
@@ -209,6 +216,18 @@ def validate_ingress_timeout(namespace):
     if namespace.ingress_read_timeout is not None and (namespace.ingress_read_timeout < 1 or
                                                        namespace.ingress_read_timeout > 1800):
         raise InvalidArgumentValueError("Invalid value: Ingress read timeout must be in the range [1,1800].")
+
+
+def validate_ingress_send_timeout(namespace):
+    if namespace.ingress_send_timeout is not None and (namespace.ingress_read_timeout < 1 or
+                                                       namespace.ingress_read_timeout > 1800):
+        raise InvalidArgumentValueError("Invalid value: Ingress send timeout must be in the range [1,1800].")
+
+
+def validate_ingress_session_max_age(namespace):
+    if namespace.session_max_age is not None \
+            and (namespace.ingress_read_timeout < 0 or namespace.ingress_read_timeout > 7 * 24 * 3600):
+        raise InvalidArgumentValueError("Invalid value: Ingress session max-age must between 0 seconds and 7 days.")
 
 
 def validate_tracing_parameters_asc_create(namespace):

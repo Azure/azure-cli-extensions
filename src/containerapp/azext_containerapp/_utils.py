@@ -12,10 +12,15 @@ from urllib.parse import urlparse
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
 from azure.cli.core.azclierror import (ValidationError, RequiredArgumentMissingError, CLIInternalError,
-                                       ResourceNotFoundError, FileOperationError, CLIError)
+                                       ResourceNotFoundError, FileOperationError, CLIError, InvalidArgumentValueError, UnauthorizedError)
 from azure.cli.core.commands.client_factory import get_subscription_id
 from azure.cli.command_modules.appservice.utils import _normalize_location
 from azure.cli.command_modules.network._client_factory import network_client_factory
+from azure.cli.command_modules.role.custom import create_role_assignment
+from azure.cli.command_modules.acr.custom import acr_show
+from azure.cli.core.commands.client_factory import get_mgmt_service_client
+from azure.cli.core.profiles import ResourceType
+from azure.mgmt.containerregistry import ContainerRegistryManagementClient
 
 from knack.log import get_logger
 from msrestazure.tools import parse_resource_id, is_valid_resource_id, resource_id
@@ -362,6 +367,42 @@ def parse_secret_flags(secret_list):
         })
 
     return secret_var_def
+
+
+def parse_metadata_flags(metadata_list, metadata_def={}):
+    if not metadata_list:
+        metadata_list = []
+    for pair in metadata_list:
+        key_val = pair.split('=', 1)
+        if len(key_val) != 2:
+            raise ValidationError("Metadata must be in format \"<key>=<value> <key>=<value> ...\".")
+        if key_val[0] in metadata_def:
+            raise ValidationError("Duplicate metadata \"{metadata}\" found, metadata keys must be unique.".format(metadata=key_val[0]))
+        metadata_def[key_val[0]] = key_val[1]
+
+    return metadata_def
+
+
+def parse_auth_flags(auth_list):
+    auth_pairs = {}
+    if not auth_list:
+        auth_list = []
+    for pair in auth_list:
+        key_val = pair.split('=', 1)
+        if len(key_val) != 2:
+            raise ValidationError("Auth parameters must be in format \"<triggerParameter>=<secretRef> <triggerParameter>=<secretRef> ...\".")
+        if key_val[0] in auth_pairs:
+            raise ValidationError("Duplicate trigger parameter \"{param}\" found, trigger paramaters must be unique.".format(param=key_val[0]))
+        auth_pairs[key_val[0]] = key_val[1]
+
+    auth_def = []
+    for key, value in auth_pairs.items():
+        auth_def.append({
+            "triggerParameter": key,
+            "secretRef": value
+        })
+
+    return auth_def
 
 
 def _update_revision_env_secretrefs(containers, name):
@@ -1046,7 +1087,7 @@ def generate_randomized_cert_name(thumbprint, prefix, initial="rg"):
     cert_name = "{}-{}-{}-{:04}".format(prefix[:14], initial[:14], thumbprint[:4].lower(), randint(0, 9999))
     for c in cert_name:
         if not (c.isalnum() or c == '-' or c == '.'):
-            cert_name.replace(c, '-')
+            cert_name = cert_name.replace(c, '-')
     return cert_name.lower()
 
 
@@ -1307,8 +1348,7 @@ def load_cert_file(file_path, cert_password=None):
                 x509 = p12.get_certificate()
                 digest_algorithm = 'sha256'
                 thumbprint = x509.digest(digest_algorithm).decode("utf-8").replace(':', '')
-                pem_data = crypto.dump_certificate(crypto.FILETYPE_PEM, x509)
-                blob = b64encode(pem_data).decode("utf-8")
+                blob = b64encode(cert_data).decode("utf-8")
             else:
                 raise FileOperationError('Not a valid file type. Only .PFX and .PEM files are supported.')
     except Exception as e:
@@ -1431,3 +1471,90 @@ def set_managed_identity(cmd, resource_group_name, containerapp_def, system_assi
 
             if not isExisting:
                 containerapp_def["identity"]["userAssignedIdentities"][r] = {}
+
+
+def create_acrpull_role_assignment(cmd, registry_server, registry_identity=None, service_principal=None, skip_error=False):
+    if registry_identity:
+        registry_identity_parsed = parse_resource_id(registry_identity)
+        registry_identity_name, registry_identity_rg = registry_identity_parsed.get("name"), registry_identity_parsed.get("resource_group")
+        sp_id = get_mgmt_service_client(cmd.cli_ctx, ResourceType.MGMT_MSI).user_assigned_identities.get(resource_name=registry_identity_name, resource_group_name=registry_identity_rg).principal_id
+    else:
+        sp_id = service_principal
+
+    client = get_mgmt_service_client(cmd.cli_ctx, ContainerRegistryManagementClient).registries
+    acr_id = acr_show(cmd, client, registry_server[: registry_server.rindex(ACR_IMAGE_SUFFIX)]).id
+    retries = 10
+    while retries > 0:
+        try:
+            create_role_assignment(cmd, role="acrpull", assignee=sp_id, scope=acr_id)
+            return
+        except Exception as e:
+            retries -= 1
+            if retries <= 0:
+                message = (f"Role assignment failed with error message: \"{' '.join(e.args)}\". \n"
+                           f"To add the role assignment manually, please run 'az role assignment create --assignee {sp_id} --scope {acr_id} --role acrpull'. \n"
+                           "You may have to restart the containerapp with 'az containerapp revision restart'.")
+                if skip_error:
+                    logger.error(message)
+                else:
+                    raise UnauthorizedError(message)
+            else:
+                time.sleep(5)
+
+
+def is_registry_msi_system(identity):
+    if identity is None:
+        return False
+    return identity.lower() == "system"
+
+
+def validate_environment_location(cmd, location):
+    from ._constants import MAX_ENV_PER_LOCATION
+    from .custom import list_managed_environments
+    env_list = list_managed_environments(cmd)
+
+    locations = [loc["location"] for loc in env_list]
+    locations = list(set(locations))  # remove duplicates
+
+    location_count = {}
+    for loc in locations:
+        location_count[loc] = len([e for e in env_list if e["location"] == loc])
+
+    disallowed_locations = []
+    for _, value in enumerate(location_count):
+        if location_count[value] > MAX_ENV_PER_LOCATION - 1:
+            disallowed_locations.append(value)
+
+    res_locations = list_environment_locations(cmd)
+    res_locations = [loc for loc in res_locations if loc not in disallowed_locations]
+
+    allowed_locs = ", ".join(res_locations)
+
+    if location:
+        try:
+            _ensure_location_allowed(cmd, location, CONTAINER_APPS_RP, "managedEnvironments")
+        except Exception as e:  # pylint: disable=broad-except
+            raise ValidationError("You cannot create a Containerapp environment in location {}. List of eligible locations: {}.".format(location, allowed_locs)) from e
+
+    if len(res_locations) > 0:
+        if not location:
+            logger.warning("Creating environment on location %s.", res_locations[0])
+            return res_locations[0]
+        if location in disallowed_locations:
+            raise ValidationError("You have more than {} environments in location {}. List of eligible locations: {}.".format(MAX_ENV_PER_LOCATION, location, allowed_locs))
+        return location
+    else:
+        raise ValidationError("You cannot create any more environments. Environments are limited to {} per location in a subscription. Please specify an existing environment using --environment.".format(MAX_ENV_PER_LOCATION))
+
+
+def list_environment_locations(cmd):
+    providers_client = providers_client_factory(cmd.cli_ctx, get_subscription_id(cmd.cli_ctx))
+    resource_types = getattr(providers_client.get(CONTAINER_APPS_RP), 'resource_types', [])
+    res_locations = []
+    for res in resource_types:
+        if res and getattr(res, 'resource_type', "") == "managedEnvironments":
+            res_locations = getattr(res, 'locations', [])
+
+    res_locations = [res_loc.lower().replace(" ", "").replace("(", "").replace(")", "") for res_loc in res_locations if res_loc.strip()]
+
+    return res_locations
