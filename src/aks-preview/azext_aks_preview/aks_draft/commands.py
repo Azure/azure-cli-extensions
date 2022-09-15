@@ -223,7 +223,8 @@ def _get_filename() -> Optional[str]:
         logging.error('Cannot find a suitable download for the current system architecture. Draft only supports AMD64 and ARM64.')
         return None
 
-    return f'draft-{operating_system}-{architecture}'
+    file_suffix = ".exe" if operating_system == "windows" else ""
+    return f'draft-{operating_system}-{architecture}{file_suffix}'
 
 
 # Returns path to existing draft binary, None otherwise
