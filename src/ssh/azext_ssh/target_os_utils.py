@@ -16,9 +16,9 @@ def send_target_os_telemetry(cmd, op_info):
 
     os_type = None
 
-    if op_info.resource_type.lower() == "microsoft.compute":
+    if op_info.resource_type.lower() == "microsoft.compute/virtualmachines":
         os_type = _get_azure_vm_os(cmd, op_info.resource_group_name, op_info.vm_name)
-    elif op_info.resource_type.lower() == "microsoft.hybridcompute":
+    elif op_info.resource_type.lower() == "microsoft.hybridcompute/machines":
         os_type = _get_arc_server_os(cmd, op_info.resource_group_name, op_info.vm_name)
     elif op_info.resource_type.lower() == "microsoft.connectedvmwarevsphere/virtualmachines":
         os_type = _get_connected_vmware_os(cmd, op_info.resource_group_name, op_info.vm_name)

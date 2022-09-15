@@ -19,7 +19,7 @@ RECOMMENDATION_RESOURCE_NOT_FOUND = (Fore.YELLOW + "Please ensure the active sub
                                      "and resource exists." + Style.RESET_ALL)
 RDP_TERMINATE_SSH_WAIT_TIME_IN_SECONDS = 30
 
-ARC_RESOURCE_TYPE_PLACEHOLDER = "arc"
+ARC_RESOURCE_TYPE_PLACEHOLDER = "arc_resource_type_placeholder"
 
 SUPPORTED_RESOURCE_TYPES = ["microsoft.hybridcompute/machines",
                             "microsoft.compute/virtualmachines",

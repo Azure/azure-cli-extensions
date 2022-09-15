@@ -269,7 +269,8 @@ def _assert_args(resource_group, vm_name, ssh_ip, resource_type, cert_file, user
 
     if resource_type and \
        resource_type.lower() not in const.SUPPORTED_RESOURCE_TYPES and \
-       resource_type.lower() not in const.LEGACY_SUPPORTED_RESOURCE_TYPES:
+       resource_type.lower() not in const.LEGACY_SUPPORTED_RESOURCE_TYPES and \
+       resource_type != const.ARC_RESOURCE_TYPE_PLACEHOLDER:
         raise azclierror.InvalidArgumentValueError("--resource-type must be either "
                                                    "\"Microsoft.Compute/virtualMachines\", "
                                                    "\"Microsoft.HybridCompute/machines\", "
