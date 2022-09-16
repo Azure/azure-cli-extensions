@@ -9,16 +9,19 @@
 # regenerated.
 # --------------------------------------------------------------------------
 
-from .operations import Operations
-from .subscription_operations import SubscriptionOperations
-from .subscription_factory_operations import SubscriptionFactoryOperations
-from .subscriptions_operations import SubscriptionsOperations
-from .tenants_operations import TenantsOperations
+from msrest.paging import Paged
 
-__all__ = [
-    'Operations',
-    'SubscriptionOperations',
-    'SubscriptionFactoryOperations',
-    'SubscriptionsOperations',
-    'TenantsOperations',
-]
+
+class LocationPaged(Paged):
+    """
+    A paging container for iterating over a list of :class:`Location <azure.mgmt.subscription.models.Location>` object
+    """
+
+    _attribute_map = {
+        'next_link': {'key': 'nextLink', 'type': 'str'},
+        'current_page': {'key': 'value', 'type': '[Location]'}
+    }
+
+    def __init__(self, *args, **kwargs):
+
+        super(LocationPaged, self).__init__(*args, **kwargs)
