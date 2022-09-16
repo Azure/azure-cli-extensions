@@ -12,6 +12,11 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+0.5.102
++++++++
+
+* Add --enable-vpa/--disable-vpa to enable/disable vertical pod autoscaler feature.
+
 0.5.101
 +++++++
 
