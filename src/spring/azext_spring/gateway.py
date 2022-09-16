@@ -150,7 +150,7 @@ def gateway_route_config_update(cmd, client, resource_group, service, name,
                                 routes_json=None,
                                 routes_file=None):
     route_properties = client.gateway_route_configs.get(
-        resource_group, service, DEFAULT_NAME, name)
+        resource_group, service, DEFAULT_NAME, name).properties
     return _create_or_update_gateway_route_configs(client, resource_group, service, name, route_properties,
                                                    app_name, routes_file, routes_json)
 
