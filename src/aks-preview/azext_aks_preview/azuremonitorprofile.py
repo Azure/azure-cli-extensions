@@ -945,12 +945,12 @@ def ensure_azure_monitor_profile_prerequisites(
         check_azuremonitoraddon_feature(cmd, cluster_subscription)
         # Do RP registrations if required
         rp_registrations(cmd, cluster_subscription)
-        # link_azure_monitor_profile_artifacts(cmd,
-        #     cluster_subscription,
-        #     cluster_resource_group_name,
-        #     cluster_name,
-        #     cluster_region,
-        #     raw_parameters
-        # )
+        link_azure_monitor_profile_artifacts(cmd,
+            cluster_subscription,
+            cluster_resource_group_name,
+            cluster_name,
+            cluster_region,
+            raw_parameters
+        )
 
     return
