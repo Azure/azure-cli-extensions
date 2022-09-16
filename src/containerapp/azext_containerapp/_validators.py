@@ -125,7 +125,7 @@ def _set_ssh_defaults(cmd, namespace):
         # VVV this may not be necessary according to Anthony Chu
         try:
             ping_container_app(app)  # needed to get an alive replica
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-except
             logger.warning("Failed to ping container app with error '%s' \nPlease ensure there is an alive replica. ", str(e))
         replicas = ContainerAppClient.list_replicas(cmd=cmd,
                                                     resource_group_name=namespace.resource_group_name,
