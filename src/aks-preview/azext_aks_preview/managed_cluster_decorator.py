@@ -2839,8 +2839,10 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
 
     def update_node_restriction(self, mc: ManagedCluster) -> ManagedCluster:
         """Update security profile nodeRestriction for the ManagedCluster object.
+        
         :return: the ManagedCluster object
         """
+        self._ensure_mc(mc)
 
         if self.context.get_enable_node_restriction():
             if mc.security_profile is None:
