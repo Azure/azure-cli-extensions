@@ -3,10 +3,15 @@
 Release History
 ===============
 
+1.2.2
+++++++
+ * Fix a bug in chat 'message delete command'
+
+
 1.2.1
 ++++++
  * Update command helps
- * Fix bugs preview and deprecated flags
+ * Fix bugs in preview and deprecated flags
 
 
 1.2.0
