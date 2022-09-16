@@ -16,7 +16,7 @@ Pending
 
 +++++++
 
-0.5.101
+0.5.102
 +++++++
 
 * Add --enable-vpa/--disable-vpa to enable/disable vertical pod autoscaler feature.
