@@ -369,6 +369,42 @@ def parse_secret_flags(secret_list):
     return secret_var_def
 
 
+def parse_metadata_flags(metadata_list, metadata_def={}):
+    if not metadata_list:
+        metadata_list = []
+    for pair in metadata_list:
+        key_val = pair.split('=', 1)
+        if len(key_val) != 2:
+            raise ValidationError("Metadata must be in format \"<key>=<value> <key>=<value> ...\".")
+        if key_val[0] in metadata_def:
+            raise ValidationError("Duplicate metadata \"{metadata}\" found, metadata keys must be unique.".format(metadata=key_val[0]))
+        metadata_def[key_val[0]] = key_val[1]
+
+    return metadata_def
+
+
+def parse_auth_flags(auth_list):
+    auth_pairs = {}
+    if not auth_list:
+        auth_list = []
+    for pair in auth_list:
+        key_val = pair.split('=', 1)
+        if len(key_val) != 2:
+            raise ValidationError("Auth parameters must be in format \"<triggerParameter>=<secretRef> <triggerParameter>=<secretRef> ...\".")
+        if key_val[0] in auth_pairs:
+            raise ValidationError("Duplicate trigger parameter \"{param}\" found, trigger paramaters must be unique.".format(param=key_val[0]))
+        auth_pairs[key_val[0]] = key_val[1]
+
+    auth_def = []
+    for key, value in auth_pairs.items():
+        auth_def.append({
+            "triggerParameter": key,
+            "secretRef": value
+        })
+
+    return auth_def
+
+
 def _update_revision_env_secretrefs(containers, name):
     for container in containers:
         if "env" in container:

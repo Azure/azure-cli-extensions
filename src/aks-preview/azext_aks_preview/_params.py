@@ -334,6 +334,7 @@ def load_arguments(self, _):
         c.argument('workload_runtime', arg_type=get_enum_type(workload_runtimes), default=CONST_WORKLOAD_RUNTIME_OCI_CONTAINER)
         # no validation for aks create because it already only supports Linux.
         c.argument('enable_custom_ca_trust', action='store_true')
+        c.argument('enable_vpa', action='store_true', is_preview=True, help="enable vertical pod autoscaler for cluster")
 
     with self.argument_context('aks update') as c:
         # managed cluster paramerters
@@ -433,6 +434,8 @@ def load_arguments(self, _):
         c.argument('ksm_metric_annotations_allow_list', is_preview=True)
         c.argument('grafana_resource_id', is_preview=True)
         c.argument('disable_azuremonitormetrics', action='store_true', is_preview=True)
+        c.argument('enable_vpa', action='store_true', is_preview=True, help="enable vertical pod autoscaler for cluster")
+        c.argument('disable_vpa', action='store_true', is_preview=True, help="disable vertical pod autoscaler for cluster")
 
     with self.argument_context('aks upgrade') as c:
         c.argument('kubernetes_version', completer=get_k8s_upgrades_completion_list)

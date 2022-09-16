@@ -469,6 +469,9 @@ helps['aks create'] = """
         - name: --defender-config
           type: string
           short-summary: Path to JSON file containing Microsoft Defender profile configurations.
+        - name: --enable-vpa
+          type: bool
+          short-summary: Enable vertical pod autoscaler for cluster.
     examples:
         - name: Create a Kubernetes cluster with an existing SSH public key.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --ssh-key-value /path/to/publickey
@@ -853,6 +856,12 @@ helps['aks update'] = """
         - name: --private-dns-zone
           type: string
           short-summary: The private dns zone mode for private cluster.
+        - name: --enable-vpa
+          type: bool
+          short-summary: Enable vertical pod autoscaler for cluster.
+        - name: --disable-vpa
+          type: bool
+          short-summary: Disable vertical pod autoscaler for cluster.
     examples:
       - name: Reconcile the cluster back to its current state.
         text: az aks update -g MyResourceGroup -n MyManagedCluster
