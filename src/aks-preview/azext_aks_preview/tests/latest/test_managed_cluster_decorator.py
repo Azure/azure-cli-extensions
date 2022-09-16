@@ -4053,9 +4053,7 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
                 )
             ),
         )
-        # alextodo: remove print statement
-        print(dec_mc_2.workload_auto_scaler_profile)
-        print(ground_truth_mc_2.workload_auto_scaler_profile)
+
         self.assertEqual(dec_mc_2, ground_truth_mc_2)
 
     def test_construct_mc_profile_preview(self):
@@ -5571,7 +5569,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         ground_truth_mc_3 = self.models.ManagedCluster(
             location="test_location",
             workload_auto_scaler_profile=self.models.ManagedClusterWorkloadAutoScalerProfile(
-                vpa = self.models.ManagedClusterWorkloadAutoScalerProfileVerticalPodAutoscaler(
+                vertical_pod_autoscaler = self.models.ManagedClusterWorkloadAutoScalerProfileVerticalPodAutoscaler(
                     enabled = False,
                 )
             )

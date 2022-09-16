@@ -85,6 +85,7 @@ ManagedClusterStorageProfileSnapshotController = TypeVar('ManagedClusterStorageP
 ManagedClusterIngressProfileWebAppRouting = TypeVar("ManagedClusterIngressProfileWebAppRouting")
 ManagedClusterSecurityProfileDefender = TypeVar("ManagedClusterSecurityProfileDefender")
 ManagedClusterSecurityProfileNodeRestriction = TypeVar("ManagedClusterSecurityProfileNodeRestriction")
+ManagedClusterWorkloadProfileVerticalPodAutoscaler = TypeVar("ManagedClusterWorkloadProfileVerticalPodAutoscaler")
 
 
 # pylint: disable=too-few-public-methods
@@ -2321,8 +2322,7 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         if self.context.get_enable_vpa():
             if mc.workload_auto_scaler_profile is None:
                 mc.workload_auto_scaler_profile = self.models.ManagedClusterWorkloadAutoScalerProfile()
-            mc.workload_auto_scaler_profile.vertical_pod_autoscaler = self.models.ManagedClusterWorkloadAutoScalerProfileVerticalPodAutoscaler(enable=True)
-
+            mc.workload_auto_scaler_profile.vertical_pod_autoscaler = self.models.ManagedClusterWorkloadAutoScalerProfileVerticalPodAutoscaler(enabled=True)
         return mc
 
     def construct_mc_profile_preview(self, bypass_restore_defaults: bool = False) -> ManagedCluster:
