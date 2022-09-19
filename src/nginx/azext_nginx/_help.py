@@ -31,20 +31,10 @@ helps['nginx deployment create'] = """
     type: command
     short-summary: "Create an Nginx resource."
     parameters:
-      - name: --name
-        short-summary: "Name for the deployment"
-        long-summary: |
-            Name should contain only alphanumeric characters, up to 30 characters long. It cannot begin or end with a hyphen.
-
       - name: --sku
         short-summary: "The billing information for the resource"
         long-summary: |
             Usage: --sku name=XXX
-     
-      - name: tags
-        short-summary: "Tags for the deployment"
-        long-summary: |
-            Usage: --tags tag1="value1" tag2="value2"
 
       - name: --network-profile
         short-summary: "The IP address details"
@@ -72,7 +62,7 @@ helps['nginx deployment update'] = """
     examples:
       - name: Deployment_Update
         text: |-
-               az nginx deployment update --name myDeployment --resource-group myResourceGroup --location eastus2 --tags tag1="value1" tag2="value2 --enable-diagnostics true
+               az nginx deployment update --name myDeployment --resource-group myResourceGroup --location eastus2 --tags tag1="value1" tag2="value2" --enable-diagnostics true
 """
 
 helps['nginx deployment delete'] = """
@@ -121,9 +111,6 @@ helps['nginx deployment certificate create'] = """
     type: command
     short-summary: "Create a certificate for an Nginx deployment."
     parameters:
-      - name: --certificate-name
-        short-summary: "Name for the certificate"
-
       - name: --deployment-name
         short-summary: "The Nginx deployment name"
      
