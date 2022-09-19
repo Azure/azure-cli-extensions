@@ -32,7 +32,7 @@ helps['nginx deployment create'] = """
     short-summary: "Create an Nginx resource."
     parameters:
       - name: --sku
-        short-summary: "The billing information for the resource"
+        short-summary: "The billing information for the resource (https://docs.nginx.com/nginx-for-azure/billing/overview/)"
         long-summary: |
             Usage: --sku name=XXX
 
