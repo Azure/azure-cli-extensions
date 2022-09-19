@@ -5,9 +5,3 @@
 # --------------------------------------------------------------------------------------------
 
 from knack.help_files import helps  # pylint: disable=unused-import
-
-
-helps['nginx'] = """
-    type: group
-    short-summary: Commands to manage Nginxs.
-"""
