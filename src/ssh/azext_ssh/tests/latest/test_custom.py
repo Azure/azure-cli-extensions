@@ -163,7 +163,7 @@ class SshCustomCommandTest(unittest.TestCase):
         cmd = mock.Mock()
         custom.ssh_arc(cmd, "rg", "vm", "pub", "priv", "user", "cert", "port", None, "client", False, "proxy", False, [])
 
-        mock_vm.assert_called_once_with(cmd, "rg", "vm", None, "pub", "priv", False, "user", "cert", "port", "client", False, "arc", "proxy", False, [])
+        mock_vm.assert_called_once_with(cmd, "rg", "vm", None, "pub", "priv", False, "user", "cert", "port", "client", False, 'arc_resource_type_placeholder', "proxy", False, [])
 
     def test_ssh_cert_no_args(self):
         cmd = mock.Mock()
