@@ -39,10 +39,9 @@ helps['nginx deployment create'] = """
       - name: --network-profile
         short-summary: "The IP address details"
         long-summary: |
-            Usage with Public IP: --network-profile front-end-ip-configuration="{public-ip-addresses:[{id:/subscriptions/mySubscriptionId/resourceGroups/myResourceGroup/providers/Microsoft.Network/publicIPAddresses/myPublicIP}]}" network-interface-configuration="{subnet-id:/subscriptions/mySubscriptionId/resourceGroups/myResourceGroup/providers/Microsoft.Network/virtualNetworks/myVNet/subnets/mySubnet}"  
-            Usage with private IP: --network-profile front-end-ip-configuration="{private-ip-addresses:[{private-ip-allocation-method:Static/Dynamic,subnet-id:/subscriptions/mySubscription/resourceGroups/myResourceGroup/providers/Microsoft.Network/virtualNetworks/myVNet/subnets/mySubnet,private-ip-address:myPrivateIP}]}" network-interface-configuration="{subnet-id:/subscriptions/mySubscription/resourceGroups/myResourceGroup/providers/Microsoft.Network/virtualNetworks/myVNet/subnets/mySubnet}"
+            Usage: --network-profile front-end-ip-configuration="{public-ip-addresses:[{id:/subscriptions/mySubscriptionId/resourceGroups/myResourceGroup/providers/Microsoft.Network/publicIPAddresses/myPublicIP}]}" network-interface-configuration="{subnet-id:/subscriptions/mySubscriptionId/resourceGroups/myResourceGroup/providers/Microsoft.Network/virtualNetworks/myVNet/subnets/mySubnet}"
 
-            front-end-ip-configuration: IP information, public or private IP addresses  
+            front-end-ip-configuration: IP information, public or private IP addresses.
             network-interface-configuration: Subnet information. This subnet should be delegated to NGINX.NGINXPLUS/nginxDeployments
     examples:
       - name: Deployment_Create_With_PublicIP
@@ -119,7 +118,7 @@ helps['nginx deployment certificate create'] = """
         short-summary: "This path must match one or more ssl_certificate directive file argument in your Nginx configuration. This path must be unique between certificates within the same deployment"
 
       - name: --key-vault-secret-id
-        short-summary: "The secret ID for your certificate from Azure Key Vault"   
+        short-summary: "The secret ID for your certificate from Azure Key Vault"
     examples:
       - name: Certificate_Create
         text: |-
@@ -183,7 +182,7 @@ helps['nginx deployment configuration create'] = """
     parameters:
       - name: --deployment-name
         short-summary: "The Nginx deployment name"
-     
+
       - name: --root-file
         short-summary: "This should align with your Nginx configuration structure"
 
@@ -195,10 +194,10 @@ helps['nginx deployment configuration create'] = """
     examples:
       - name: SingleConfiguration_Create
         text: |-
-               az nginx deployment configuration create --name default --deployment-name myDeployment --resource-group myResourceGroup --root-file /etc/nginx/nginx.conf --files '[{"content":"aHR0cCB7CiAgICB1cHN0cmVhbSBhcHAgewogICAgICAgIHpvbmUgYXBwIDY0azsKICAgICAgICBsZWFzdF9jb25uOwogICAgICAgIHNlcnZlciAxMC4wLjEuNDo4MDAwOwogICAgfQoKICAgIHNlcnZlciB7CiAgICAgICAgbGlzdGVuIDgwOwogICAgICAgIHNlcnZlcl9uYW1lICouZXhhbXBsZS5jb207CgogICAgICAgIGxvY2F0aW9uIC8gewogICAgICAgICAgICBwcm94eV9zZXRfaGVhZGVyIEhvc3QgJGhvc3Q7CiAgICAgICAgICAgIHByb3h5X3NldF9oZWFkZXIgWC1SZWFsLUlQICRyZW1vdGVfYWRkcjsKICAgICAgICAgICAgcHJveHlfc2V0X2hlYWRlciBYLVByb3h5LUFwcCBhcHA7CiAgICAgICAgICAgIHByb3h5X3NldF9oZWFkZXIgR2l0aHViLVJ1bi1JZCAwMDAwMDA7CiAgICAgICAgICAgIHByb3h5X2J1ZmZlcmluZyBvbjsKICAgICAgICAgICAgcHJveHlfYnVmZmVyX3NpemUgNGs7CiAgICAgICAgICAgIHByb3h5X2J1ZmZlcnMgOCA4azsKICAgICAgICAgICAgcHJveHlfcmVhZF90aW1lb3V0IDYwczsKICAgICAgICAgICAgcHJveHlfcGFzcyBodHRwOi8vYXBwOwogICAgICAgICAgICBoZWFsdGhfY2hlY2s7CiAgICAgICAgfQogICAgICAgIAogICAgfQp9","virtual-path":"/etc/nginx/nginx.conf"}]' 
+               az nginx deployment configuration create --name default --deployment-name myDeployment --resource-group myResourceGroup --root-file /etc/nginx/nginx.conf --files '[{"content":"aHR0cCB7CiAgICB1cHN0cmVhbSBhcHAgewogICAgICAgIHpvbmUgYXBwIDY0azsKICAgICAgICBsZWFzdF9jb25uOwogICAgICAgIHNlcnZlciAxMC4wLjEuNDo4MDAwOwogICAgfQoKICAgIHNlcnZlciB7CiAgICAgICAgbGlzdGVuIDgwOwogICAgICAgIHNlcnZlcl9uYW1lICouZXhhbXBsZS5jb207CgogICAgICAgIGxvY2F0aW9uIC8gewogICAgICAgICAgICBwcm94eV9zZXRfaGVhZGVyIEhvc3QgJGhvc3Q7CiAgICAgICAgICAgIHByb3h5X3NldF9oZWFkZXIgWC1SZWFsLUlQICRyZW1vdGVfYWRkcjsKICAgICAgICAgICAgcHJveHlfc2V0X2hlYWRlciBYLVByb3h5LUFwcCBhcHA7CiAgICAgICAgICAgIHByb3h5X3NldF9oZWFkZXIgR2l0aHViLVJ1bi1JZCAwMDAwMDA7CiAgICAgICAgICAgIHByb3h5X2J1ZmZlcmluZyBvbjsKICAgICAgICAgICAgcHJveHlfYnVmZmVyX3NpemUgNGs7CiAgICAgICAgICAgIHByb3h5X2J1ZmZlcnMgOCA4azsKICAgICAgICAgICAgcHJveHlfcmVhZF90aW1lb3V0IDYwczsKICAgICAgICAgICAgcHJveHlfcGFzcyBodHRwOi8vYXBwOwogICAgICAgICAgICBoZWFsdGhfY2hlY2s7CiAgICAgICAgfQogICAgICAgIAogICAgfQp9","virtual-path":"/etc/nginx/nginx.conf"}]'
       - name: MultiConfiguration_Create
         text: |-
-               az nginx deployment configuration create --name default --deployment-name myDeployment --resource-group myResourceGroup --root-file /etc/nginx/nginx.conf --files '[{"content":"aHR0cCB7CiAgICB1cHN0cmVhbSBhcHAgewogICAgICAgIHpvbmUgYXBwIDY0azsKICAgICAgICBsZWFzdF9jb25uOwogICAgICAgIHNlcnZlciAxMC4wLjEuNDo4MDAwOwogICAgfQoKICAgIHNlcnZlciB7CiAgICAgICAgbGlzdGVuIDgwOwogICAgICAgIHNlcnZlcl9uYW1lICouZXhhbXBsZS5jb207CgogICAgICAgIGxvY2F0aW9uIC8gewogICAgICAgICAgICBpbmNsdWRlIC9ldGMvbmdpbngvY29uZi5kL3Byb3h5LmNvbmY7CiAgICAgICAgICAgIHByb3h5X3Bhc3MgaHR0cDovL2FwcDsKICAgICAgICAgICAgaGVhbHRoX2NoZWNrOwogICAgICAgIH0KICAgICAgICAKICAgIH0KfQ==","virtual-path":"/etc/nginx/nginx.conf"},{"content":"cHJveHlfc2V0X2hlYWRlciBIb3N0ICRob3N0Owpwcm94eV9zZXRfaGVhZGVyIFgtUmVhbC1JUCAkcmVtb3RlX2FkZHI7CnByb3h5X3NldF9oZWFkZXIgWC1Qcm94eS1BcHAgYXBwOwpwcm94eV9zZXRfaGVhZGVyIEdpdGh1Yi1SdW4tSWQgMDAwMDAwOwpwcm94eV9idWZmZXJpbmcgb247CnByb3h5X2J1ZmZlcl9zaXplIDRrOwpwcm94eV9idWZmZXJzIDggOGs7CnByb3h5X3JlYWRfdGltZW91dCA2MHM7","virtual-path":"/etc/nginx/conf.d/proxy.conf"}]' 
+               az nginx deployment configuration create --name default --deployment-name myDeployment --resource-group myResourceGroup --root-file /etc/nginx/nginx.conf --files '[{"content":"aHR0cCB7CiAgICB1cHN0cmVhbSBhcHAgewogICAgICAgIHpvbmUgYXBwIDY0azsKICAgICAgICBsZWFzdF9jb25uOwogICAgICAgIHNlcnZlciAxMC4wLjEuNDo4MDAwOwogICAgfQoKICAgIHNlcnZlciB7CiAgICAgICAgbGlzdGVuIDgwOwogICAgICAgIHNlcnZlcl9uYW1lICouZXhhbXBsZS5jb207CgogICAgICAgIGxvY2F0aW9uIC8gewogICAgICAgICAgICBpbmNsdWRlIC9ldGMvbmdpbngvY29uZi5kL3Byb3h5LmNvbmY7CiAgICAgICAgICAgIHByb3h5X3Bhc3MgaHR0cDovL2FwcDsKICAgICAgICAgICAgaGVhbHRoX2NoZWNrOwogICAgICAgIH0KICAgICAgICAKICAgIH0KfQ==","virtual-path":"/etc/nginx/nginx.conf"},{"content":"cHJveHlfc2V0X2hlYWRlciBIb3N0ICRob3N0Owpwcm94eV9zZXRfaGVhZGVyIFgtUmVhbC1JUCAkcmVtb3RlX2FkZHI7CnByb3h5X3NldF9oZWFkZXIgWC1Qcm94eS1BcHAgYXBwOwpwcm94eV9zZXRfaGVhZGVyIEdpdGh1Yi1SdW4tSWQgMDAwMDAwOwpwcm94eV9idWZmZXJpbmcgb247CnByb3h5X2J1ZmZlcl9zaXplIDRrOwpwcm94eV9idWZmZXJzIDggOGs7CnByb3h5X3JlYWRfdGltZW91dCA2MHM7","virtual-path":"/etc/nginx/conf.d/proxy.conf"}]'
 """
 
 helps['nginx deployment configuration update'] = """
