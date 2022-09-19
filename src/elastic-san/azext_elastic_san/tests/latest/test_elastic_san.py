@@ -6,8 +6,91 @@
 # --------------------------------------------------------------------------------------------
 
 from azure.cli.testsdk import *
-
+import time
 
 class ElasticSanScenario(ScenarioTest):
-    # TODO: add tests here
-    pass
+    @ResourceGroupPreparer(location='eastus2euap', name_prefix='clitest.rg.testelasticsan')
+    def test_elastic_san_scenarios(self, resource_group):
+        self.kwargs.update({
+            "san_name": self.create_random_name('elastic-san', 24)
+        })
+        self.cmd('az elastic-san create -n {san_name} -g {rg} --tags {{key1810:aaaa}} -l eastus2stage '
+                 '--availability-zones [eastus2stage] --base-size-tib 23 --extended-capacity-size-tib 14 '
+                 '--sku {{name:Premium_LRS,tier:Premium}}')
+        self.cmd('az elastic-san show -g {rg} -n {san_name}',
+                 checks=[JMESPathCheck('name', self.kwargs.get('san_name', '')),
+                         JMESPathCheck('location', "eastus2stage"),
+                         JMESPathCheck('tags', {"key1810": "aaaa"}),
+                         JMESPathCheck('baseSizeTiB', 23),
+                         JMESPathCheck('extendedCapacitySizeTiB', 14),
+                         JMESPathCheck('sku',  {"name": "Premium_LRS",
+                                                "tier": "Premium"})
+                         ])
+        self.cmd('az elastic-san list -g {rg}', checks=[JMESPathCheck('length(@)', 1)])
+        # TODO: server error for now
+        # self.cmd('az elastic-san list-sku')
+        self.cmd('az elastic-san update -n {san_name} -g {rg} --tags {{key1710:bbbb}} '
+                 '--base-size-tib 25 --extended-capacity-size-tib 15',
+                 checks=[JMESPathCheck('name', self.kwargs.get('san_name', '')),
+                         JMESPathCheck('tags', {"key1710": "bbbb"}),
+                         JMESPathCheck('baseSizeTiB', 25),
+                         JMESPathCheck('extendedCapacitySizeTiB', 15)])
+        self.cmd('az elastic-san delete -g {rg} -n {san_name} -y')
+        while True:
+            try:
+                self.cmd('az elastic-san show -g {rg} -n {san_name}',
+                     checks=[JMESPathCheck('status', 'deleting')])
+                time.sleep(5)
+            except:
+                break
+        self.cmd('az elastic-san list -g {rg}', checks=[JMESPathCheck('length(@)', 0)])
+
+    # @ResourceGroupPreparer(location='eastus2euap', name_prefix='clitest.rg.testelasticsan.volumegroup')
+    # def test_elastic_san_volume_group_scenarios(self, resource_group):
+    #     self.kwargs.update({
+    #         "san_name": self.create_random_name('elastic-san', 24),
+    #         "vg_name": self.create_random_name('volume-group', 24),
+    #         "vnet_name": self.create_random_name('vnet', 24),
+    #         "subnet_name": self.create_random_name('subnet', 24),
+    #         "subnet_name_2": self.create_random_name('subnet', 24),
+    #     })
+    #     self.cmd('az elastic-san create -n {san_name} -g {rg} --tags {{key1810:aaaa}} -l eastus2stage '
+    #              '--availability-zones [eastus2stage] --base-size-tib 23 --extended-capacity-size-tib 14 '
+    #              '--sku {{name:Premium_LRS,tier:Premium}}')
+    #     subnet_id = self.cmd('az network vnet create -g {rg} -n {vnet_name} --address-prefix 10.0.0.0/16 '
+    #                          '--subnet-name {subnet_name} '
+    #                          '--subnet-prefix 10.0.0.0/24').get_output_in_json()["newVNet"]["subnets"][0]["id"]
+    #     self.kwargs.update({"subnet_id": subnet_id})
+    #     self.cmd('az elastic-san volume-group create -e {san_name} -n {vg_name} -g {rg} --tags {{key1910:bbbb}} '
+    #              '--encryption EncryptionAtRestWithPlatformKey --protocol-type Iscsi '
+    #              '--network-acls {{virtual-network-rules:[{{id:{subnet_id},action:Allow}}]}}')
+    #     self.cmd('az elastic-san volume-group show -g {rg} -e {san_name} -n {vg_name}',
+    #              checks=[JMESPathCheck('name', self.kwargs.get('vg_name', '')),
+    #                      JMESPathCheck('tags', {"key1910": "bbbb"}),
+    #                      JMESPathCheck('encryption', "EncryptionAtRestWithPlatformKey"),
+    #                      JMESPathCheck('protocolType', "iSCSI"),
+    #                      JMESPathCheck('networkAcls', {"virtualNetworkRules":[{
+    #                          "action": "Allow",
+    #                          "id": subnet_id,
+    #                          "resourceGroup": self.kwargs.get('rg','')}]})])
+    #     self.cmd('az elastic-san volume-group list -g {rg} -e {san_name}', checks=[JMESPathCheck('length(@)', 1)])
+    #
+    #     subnet_id_2 = self.cmd('az network vnet subnet create -g {rg} --vnet-name {vnet_name} --name {subnet_name_2}'
+    #                          '--address-prefixes 10.0.1.0/24').get_output_in_json()["newVNet"]["subnets"][1]["id"]
+    #     self.kwargs.update({"subnet_id": subnet_id_2})
+    #     self.cmd('az elastic-san volume-group update -e {san_name} -n {vg_name} -g {rg} --tags {{key2011:cccc}} '
+    #              '--protocol-type None'
+    #              '--network-acls {{virtual-network-rules:[{{id:{subnet_id_2},action:Allow}}]}}',
+    #              checks=[JMESPathCheck('tags', {"key2011": "cccc"}),
+    #                      JMESPathCheck('protocolType', "None"),
+    #                      JMESPathCheck('networkAcls.virtualNetworkRules[0].id', subnet_id_2)])
+    #     self.cmd('az elastic-san volume-group delete -g {rg} -e {san_name} -n {vg_name} -y')
+    #     while True:
+    #         try:
+    #             self.cmd('az elastic-san volume-group show -g {rg} -n {san_name} -e {san_name}',
+    #                      checks=[JMESPathCheck('status', 'deleting')])
+    #             time.sleep(5)
+    #         except:
+    #             break
+    #     self.cmd('az elastic-san volume-group list -g {rg} -e {san_name}', checks=[JMESPathCheck('length(@)', 0)])
+    #     self.cmd('az elastic-san delete -g {rg} -n {san_name} -y')
