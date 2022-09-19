@@ -25,7 +25,7 @@ class NginxScenarioTest(ScenarioTest):
             'cert_name': 'azclitestcert',
             'config_files': '[{"content":"aHR0cCB7DQogICAgdXBzdHJlYW0gYXBwIHsNCiAgICAgICAgc2VydmVyIDE3Mi4yNy4wLjQ6ODA7DQogICAgfQ0KICAgIHNlcnZlciB7DQogICAgICAgIGxpc3RlbiA4MDsNCiAgICAgICAgbG9jYXRpb24gLyB7DQogICAgICAgICAgICBkZWZhdWx0X3R5cGUgdGV4dC9odG1sOw0KICAgICAgICAgICAgcmV0dXJuIDIwMCAnPCFET0NUWVBFIGh0bWw+PGgxIHN0eWxlPSJmb250LXNpemU6MzBweDsiPkhlbGxvIGZyb20gTmdpbnggV2ViIFNlcnZlciE8L2gxPlxuJzsNCiAgICAgICAgfQ0KICAgICAgICBsb2NhdGlvbiAvYXBwLyB7DQogICAgICAgICAgICBwcm94eV9wYXNzIGh0dHA6Ly9hcHAuYmxvYi5jb3JlLndpbmRvd3MubmV0LzsNCiAgICAgICAgICAgIHByb3h5X2h0dHBfdmVyc2lvbiAxLjE7DQogICAgICAgICAgICBwcm94eV9yZWFkX3RpbWVvdXQgNjAwOw0KCSAgICAgICAgcHJveHlfY29ubmVjdF90aW1lb3V0IDYwMDsNCgkgICAgICAgIHByb3h5X3NlbmRfdGltZW91dCA2MDA7DQogICAgICAgIH0NCiAgICB9DQp9","virtual-path":"/etc/nginx/nginx.conf"}]'
         })
-        # Nginx on Azure Deployment
+        # Nginx for Azure Deployment
         public_ip = self.cmd('network public-ip create --resource-group {rg} --name {public_ip_name} --version IPv4 --sku Standard --zone 2').get_output_in_json()
         vnet = self.cmd('network vnet create --resource-group {rg} --name {vnet_name} --address-prefixes 10.0.0.0/16 --subnet-name {subnet_name}').get_output_in_json()
         self.cmd('network vnet subnet update --resource-group {rg} --name {subnet_name} --vnet-name {vnet_name} --delegations NGINX.NGINXPLUS/nginxDeployments')
@@ -50,7 +50,7 @@ class NginxScenarioTest(ScenarioTest):
         assert updated_deployment['tags'] is not None
         assert updated_deployment['properties']['enableDiagnosticsSupport'] is False
 
-        # Nginx on Azure certificates
+        # Nginx for Azure certificates
         self.cmd('keyvault create --name {kv_name} --resource-group {rg} --location {location}')
         policy = self.cmd('keyvault certificate get-default-policy').get_output_in_json()
         self.kwargs['policy'] = policy
@@ -87,7 +87,7 @@ class NginxScenarioTest(ScenarioTest):
         cert_list = self.cmd('nginx deployment certificate list --deployment-name {deployment_name} --resource-group {rg}').get_output_in_json()
         assert len(cert_list) == 0
 
-        # Nginx on Azure configuration
+        # Nginx for Azure configuration
         self.cmd('nginx deployment configuration create --name default --deployment-name {deployment_name} --resource-group {rg} --root-file /etc/nginx/nginx.conf --files {config_files}', checks=[
             self.check('properties.provisioningState', 'Succeeded'),
             self.check('name', 'default'),
