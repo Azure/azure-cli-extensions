@@ -39,13 +39,11 @@ helps['nginx deployment create'] = """
       - name: --network-profile
         short-summary: "The IP address details"
         long-summary: |
-            Usage with Public IP: --network-profile front-end-ip-configuration="{public-ip-addresses:[{id:/subscriptions/mySubscriptionId/resourceGroups/myResourceGroup/providers/Microsoft.Network/publicIPAddresses/myPublicIP}]}" network-interface-configuration="{subnet-id:/subscriptions/mySubscriptionId/resourceGroups/myResourceGroup/providers/Microsoft.Network/virtualNetworks/myVNet/subnets/mySubnet}"
-            
+            Usage with Public IP: --network-profile front-end-ip-configuration="{public-ip-addresses:[{id:/subscriptions/mySubscriptionId/resourceGroups/myResourceGroup/providers/Microsoft.Network/publicIPAddresses/myPublicIP}]}" network-interface-configuration="{subnet-id:/subscriptions/mySubscriptionId/resourceGroups/myResourceGroup/providers/Microsoft.Network/virtualNetworks/myVNet/subnets/mySubnet}"  
             Usage with private IP: --network-profile front-end-ip-configuration="{private-ip-addresses:[{private-ip-allocation-method:Static/Dynamic,subnet-id:/subscriptions/mySubscription/resourceGroups/myResourceGroup/providers/Microsoft.Network/virtualNetworks/myVNet/subnets/mySubnet,private-ip-address:myPrivateIP}]}" network-interface-configuration="{subnet-id:/subscriptions/mySubscription/resourceGroups/myResourceGroup/providers/Microsoft.Network/virtualNetworks/myVNet/subnets/mySubnet}"
 
             front-end-ip-configuration: IP information, public or private IP addresses  
             network-interface-configuration: Subnet information. This subnet should be delegated to NGINX.NGINXPLUS/nginxDeployments
-
     examples:
       - name: Deployment_Create_With_PublicIP
         text: |-
@@ -113,7 +111,7 @@ helps['nginx deployment certificate create'] = """
     parameters:
       - name: --deployment-name
         short-summary: "The Nginx deployment name"
-     
+
       - name: --certificate-path
         short-summary: "This path must match one or more ssl_certificate_key directive file argument in your Nginx configuration. This path must be unique between certificates within the same deployment"
 
@@ -121,8 +119,7 @@ helps['nginx deployment certificate create'] = """
         short-summary: "This path must match one or more ssl_certificate directive file argument in your Nginx configuration. This path must be unique between certificates within the same deployment"
 
       - name: --key-vault-secret-id
-        short-summary: "The secret ID for your certificate from Azure Key Vault"
-        
+        short-summary: "The secret ID for your certificate from Azure Key Vault"   
     examples:
       - name: Certificate_Create
         text: |-
@@ -195,7 +192,6 @@ helps['nginx deployment configuration create'] = """
         long-summary: |
             One of the files virtual-path should match the root file. For a multi-file config set-up, the root file needs to have references to the other file(s) in an include directive.
             Usage: [{"content":"<Base64 content of config file>","virtual-path":"<path>"}].
-        
     examples:
       - name: SingleConfiguration_Create
         text: |-
