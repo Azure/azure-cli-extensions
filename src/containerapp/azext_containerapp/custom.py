@@ -303,6 +303,7 @@ def create_containerapp_yaml(cmd, name, resource_group_name, file_name, no_wait=
         handle_raw_exception(e)
 
 
+# TODO allow passing workload profile
 def create_containerapp(cmd,
                         name,
                         resource_group_name,
@@ -1051,6 +1052,18 @@ def create_managed_environment(cmd,
     managed_env_def["properties"]["appLogsConfiguration"] = app_logs_config_def
     managed_env_def["tags"] = tags
     managed_env_def["properties"]["zoneRedundant"] = zone_redundant
+    managed_env_def["sku"]["name"] = plan
+
+    if plan == "premium":
+        default_workload_profiles = [
+            {
+                "workloadProfileType": "GP1",
+                "MinimumCount": 3,  # TODO take this from the workload profiles API
+                "MaximumCount": 3,  # TODO increase once the API is fixed
+            }
+        ]
+        managed_env_def["properties"]["workloadProfiles"] = default_workload_profiles
+
 
     if hostname:
         customDomain = CustomDomainConfigurationModel
@@ -2634,6 +2647,7 @@ def open_containerapp_in_browser(cmd, name, resource_group_name):
     open_page_in_browser(url)
 
 
+# TODO allow deploying to premium SKU envs
 def containerapp_up(cmd,
                     name,
                     resource_group_name=None,
