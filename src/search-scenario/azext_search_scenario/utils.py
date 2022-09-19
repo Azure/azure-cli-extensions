@@ -18,7 +18,7 @@ def input_int(default_value=0):
     return int(ret)
 
 
-def input_int_option(option_msg, min_option, max_option, default_option):
+def select_option(option_msg, min_option, max_option, default_option):
     print_styled_text(option_msg, end='')
     option = input_int(default_option)
     while option < min_option or option > max_option:

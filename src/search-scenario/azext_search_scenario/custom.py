@@ -6,9 +6,9 @@
 from azure.cli.core import telemetry
 from azure.cli.core.style import Style, print_styled_text
 
-from .constants import FeedbackOption, MatchRule, SearchScope
+from .constants import FeedbackOption, MatchRule, SearchScope, HIGHLIGHT_MARKER
 from .requests import search_online
-from .utils import input_int_option
+from .utils import select_option
 
 
 def search(cmd, search_keyword, scope=None, match_rule=None, top=None):
@@ -16,6 +16,7 @@ def search(cmd, search_keyword, scope=None, match_rule=None, top=None):
     scope = SearchScope.get(scope)
     match_rule = MatchRule.get(match_rule)
     # Replacing "-" is to solve the problem that the search engine cannot match "-"
+    # e.g. `az search-scenario web-app create` => "web app create"
     search_keyword = " ".join(map(lambda w: w.replace("-", " "), search_keyword))
     results = search_online(search_keyword, scope, match_rule, top)
 
@@ -28,7 +29,7 @@ def search(cmd, search_keyword, scope=None, match_rule=None, top=None):
 
     option_msg = [(Style.ACTION, " ? "), (Style.PRIMARY, "Please select your option "),
                   (Style.SECONDARY, "(if none, enter 0)"), (Style.PRIMARY, ": ")]
-    option = input_int_option(option_msg, 0, len(results), -1)
+    option = select_option(option_msg, min_option=0, max_option=len(results), default_option=-1)
     print()
 
     if option == 0:
@@ -51,14 +52,29 @@ def search(cmd, search_keyword, scope=None, match_rule=None, top=None):
 
 
 def _show_search_item(results):
+    """
+    Display searched scenarios in following format.
 
+    e.g.
+    [1] Monitor an App Service app with web server logs (4 Commands)
+    Include command: az webapp create
+    """
+
+    # To learn the structure of result,
+    # visit https://github.com/hackathon-cli-recommendation/cli-recommendation/blob/master/Docs/API_design_doc.md
     for idx, result in enumerate(results):
 
         print()
+        # display idx as "[ 1]" if max index is larger than 9
         idx_str = f"[{idx+1:2}] " if len(results) >= 10 else f"[{idx+1:1}] "
         num_notice = f" ({len(result['commandSet'])} Commands)"
         print_styled_text([(Style.ACTION, idx_str), (Style.PRIMARY, result['scenario']), (Style.SECONDARY, num_notice)])
 
+        # Display a description or related command next line
+        # We will display the description if a matched keyword in description
+        # If there's no matched keyword in description, we will display the command with matched keyword instead
+        # If there's no matched keyword in commands, we will display the scenario name with matched keyword
+        # If there's no matched keyword in scenario name, we will display scenario description anyway
         highlight_desc = next(iter(result.get('highlights', {}).get('description', [])), None)
         if highlight_desc:
             print_styled_text(_style_highlight(highlight_desc))
@@ -66,7 +82,8 @@ def _show_search_item(results):
 
         # Show the command with the most matching keywords
         highlight_commands = result.get('highlights', {}).get('commandSet/command', [])
-        highlight_command = max(highlight_commands, key=lambda cmd: len(cmd.split("<em>")), default=None)
+        # display the command with most matched keywords
+        highlight_command = max(highlight_commands, key=lambda cmd: len(cmd.split(HIGHLIGHT_MARKER[0])), default=None)
         if highlight_command:
             include_command_style = [(Style.SECONDARY, "Include command: ")]
             include_command_style.extend(_style_highlight(highlight_command))
@@ -84,6 +101,7 @@ def _show_search_item(results):
 
 
 def _show_detail(cmd, scenario):
+    """Display the commands and command descriptions contained in the scenario"""
     print_styled_text([(Style.WARNING, scenario['scenario']), (Style.PRIMARY, " contains the following commands:\n")])
 
     for command in scenario["commandSet"]:
@@ -95,7 +113,9 @@ def _show_detail(cmd, scenario):
         print_styled_text([(Style.ACTION, " > "), (Style.PRIMARY, command_item)])
 
         if command['reason']:
+            # Display the first statement of the command reason
             command_desc = command['reason'].replace("\\n", " ").split(".")[0].strip()
+            # Capitalize the first letter
             command_desc = command_desc[:1].upper() + command_desc[1:]
             print_styled_text([(Style.SECONDARY, command_desc)])
 
@@ -108,12 +128,12 @@ def _show_detail(cmd, scenario):
 
 
 def _style_highlight(highlight_content: str) -> list:
-    '''Build `styled_text` from content with `<em></em>` as highlight mark'''
+    """Build `styled_text` from content with `<em></em>` as highlight mark"""
     styled_description = []
     remain = highlight_content
     in_highlight = False
     while remain:
-        split_result = remain.split('<em>' if not in_highlight else "</em>", 1)
+        split_result = remain.split(HIGHLIGHT_MARKER[0] if not in_highlight else HIGHLIGHT_MARKER[1], 1)
         content = split_result[0]
         try:
             remain = split_result[1]
@@ -125,20 +145,20 @@ def _style_highlight(highlight_content: str) -> list:
 
 
 def _execute_scenario(ctx_cmd, scenario):
-    '''Execute all commands in scenario'''
+    """Execute all commands in scenario"""
     for command in scenario["commandSet"]:
         parameters = []
         if "arguments" in command:
             parameters = command["arguments"]
-        if not _execute_cmd_with_retry(ctx_cmd, command, parameters):
+        if not _execute_cmd_interactively(ctx_cmd, command, parameters):
             break
 
     from .utils import print_successful_styled_text
     print_successful_styled_text('All commands in this scenario have been executed! \n')
 
 
-def _execute_cmd_with_retry(ctx_cmd, command, params):
-    '''Execute a command in scenario. Users can retry if it fails.'''
+def _execute_cmd_interactively(ctx_cmd, command, params):
+    """Execute a command in scenario. Users can retry if it fails."""
     if ctx_cmd.cli_ctx.config.getboolean('search_scenario', 'print_help', fallback=False):
         _print_help_info(ctx_cmd, command["command"])
 
@@ -147,7 +167,7 @@ def _execute_cmd_with_retry(ctx_cmd, command, params):
     option_msg = [(Style.ACTION, " ? "),
                   (Style.PRIMARY, "How do you want to run this step? 1. Run it 2. Skip it 3. Quit process "),
                   (Style.SECONDARY, "(Enter is to Run)"), (Style.PRIMARY, ": ")]
-    run_option = input_int_option(option_msg, 1, 3, 1)
+    run_option = select_option(option_msg, min_option=1, max_option=3, default_option=1)
     is_help_printed = False
     while True:
         if run_option == 1:
@@ -163,7 +183,7 @@ def _execute_cmd_with_retry(ctx_cmd, command, params):
             option_msg = [(Style.ACTION, " ? "),
                           (Style.PRIMARY, "Do you want to retry this step? 1. Run it 2. Skip it 3. Quit process "),
                           (Style.SECONDARY, "(Enter is to Run)"), (Style.PRIMARY, ": ")]
-            run_option = input_int_option(option_msg, 1, 3, 1)
+            run_option = select_option(option_msg, min_option=1, max_option=3, default_option=1)
         elif run_option == 2:
             print()
             return True
@@ -173,7 +193,7 @@ def _execute_cmd_with_retry(ctx_cmd, command, params):
 
 
 def _execute_cmd(ctx_cmd, command, params, catch_exception=False):
-    '''Read arguments from `stdin` and execute the command'''
+    """Read arguments from `stdin` and execute the command"""
     args = []
     args.extend(command.split())
     if args[0] == "az":
@@ -196,10 +216,10 @@ def _execute_cmd(ctx_cmd, command, params, catch_exception=False):
 
 
 def _input_args(params):
-    '''
+    """
     Interact with user and read arguments from `stdin`.
     Return read arguments list.
-    '''
+    """
     args = []
     params = [param for param in params if param and param != '']
     for param in params:
@@ -222,9 +242,8 @@ def _input_args(params):
 
 
 def _get_output_arg(command, output_format):
-    '''Get arguments for `az xxx --output <format>`'''
-    args = []
-    args.append('--output')
+    """Get arguments for `az xxx --output <format>`"""
+    args = ['--output']
     if output_format == 'status':
         is_show_operation = False
         for operation in ['show', 'list', 'get', 'version']:
@@ -241,6 +260,10 @@ def _get_output_arg(command, output_format):
 
 
 def _invoke(ctx_cmd, args, catch_exception=False):
+    """
+    Invoke a command execution.
+    Exception will not be caught when print help.
+    """
     if not catch_exception:
         return ctx_cmd.cli_ctx.invoke(args)
     try:
@@ -252,6 +275,7 @@ def _invoke(ctx_cmd, args, catch_exception=False):
 
 
 def _get_command_sample(command):
+    """Try getting example from command. Or load the example from `--help` if not found."""
     if "example" in command and command["example"]:
         command_sample, _ = _format_sample(command["example"].replace(" $", " "))
         return command_sample
@@ -274,10 +298,10 @@ def _get_command_sample(command):
 
 
 def _format_sample(command_sample):
-    '''
+    """
     Format command sample in the style of `az xxx --name <appServicePlan>`.
     Also return the arguments used in the sample.
-    '''
+    """
     if not command_sample:
         return [], []
 
@@ -311,7 +335,7 @@ def _format_sample(command_sample):
 
 
 def send_feedback(scope, option, keyword, search_results=None, adoption=None):
-    '''Send feedback to telemetry for further anlysis'''
+    """Send feedback to telemetry for further analysis"""
     feedback = str(int(scope)) + "#" + str(option) + "#" + keyword.replace("\\", "\\\\").replace("#", "\\sharp") + "#"
     if search_results and isinstance(search_results, list):
         feedback += " ".join(map(lambda r: str(r.get("source", 0)), search_results))
