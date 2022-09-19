@@ -244,7 +244,7 @@ def sanitize_resource_id(resource_id):
     return resource_id.lower()
 
 def get_default_mac_region(cluster_region):
-    if MapToClosestMACRegion.has_key(cluster_region):
+    if cluster_region in MapToClosestMACRegion:
         return MapToClosestMACRegion[cluster_region]
     return "eastus"
 
@@ -315,7 +315,7 @@ def get_azure_monitor_workspace_resource_id(cmd, cluster_subscription, cluster_r
 
 def get_default_dce_name(mac_region, cluster_name):
     region_code = "EUS"
-    if AzureCloudLocationToOmsRegionCodeMap.has_key(mac_region):
+    if mac_region in AzureCloudLocationToOmsRegionCodeMap:
         region_code = AzureCloudLocationToOmsRegionCodeMap[mac_region]
     default_dce_name = "MSProm-" + region_code + "-" + cluster_name
     default_dce_name = default_dce_name[0:43]
@@ -323,7 +323,7 @@ def get_default_dce_name(mac_region, cluster_name):
 
 def get_default_dcr_name(mac_region, cluster_name):
     region_code = "EUS"
-    if AzureCloudLocationToOmsRegionCodeMap.has_key(mac_region):
+    if mac_region in AzureCloudLocationToOmsRegionCodeMap:
         region_code = AzureCloudLocationToOmsRegionCodeMap[mac_region]
     default_dcr_name = "MSProm-" + region_code + "-" + cluster_name
     default_dcr_name = default_dcr_name[0:43]
@@ -331,7 +331,7 @@ def get_default_dcr_name(mac_region, cluster_name):
 
 def get_default_dcra_name(cluster_region, cluster_name):
     region_code = "EUS"
-    if AzureCloudLocationToOmsRegionCodeMap.has_key(cluster_region):
+    if cluster_region in AzureCloudLocationToOmsRegionCodeMap:
         region_code = AzureCloudLocationToOmsRegionCodeMap[cluster_region]
     default_dcra_name = "MSProm-" + region_code + "-" + cluster_name
     default_dcra_name = default_dcra_name[0:43]
@@ -673,7 +673,7 @@ def create_rules(cmd, cluster_region, cluster_subscription, cluster_resource_gro
             send_raw_request(cmd.cli_ctx, "PUT", url,
                              body=body, headers=headers)
             error = None
-            print("Successully deployed Node Recording rules")
+            # print("Successully deployed Node Recording rules")
             break
         except CLIError as e:
             error = e
@@ -896,10 +896,10 @@ def rp_registrations(cmd, subscription_id):
     for value in values_array:
         if value["namespace"].lower() == "microsoft.insights" and value["registrationState"].lower() == "registered":
                 isInsightsRpRegistered = True
-                print("Insights RP is already registerd")
+                # print("Insights RP is already registerd")
         if value["namespace"].lower() == "microsoft.alertsmanagement" and value["registrationState"].lower() == "registered":
                 isAlertsManagementRpRegistered = True
-                print("AlertsManagedment RP is already registerd")
+                # print("AlertsManagedment RP is already registerd")
     
     if isInsightsRpRegistered == False:
         headers = [
