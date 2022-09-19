@@ -51,7 +51,7 @@ def start_ssh_connection(op_info, delete_keys, delete_cert):
         command = command + op_info.build_args() + ssh_arg_list
 
         connection_duration = time.time()
-        logger.warning("Running ssh command %s", ' '.join(command))
+        logger.debug("Running ssh command %s", ' '.join(command))
 
         try:
             # pylint: disable=consider-using-with
