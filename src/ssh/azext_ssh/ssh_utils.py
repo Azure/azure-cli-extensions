@@ -25,45 +25,42 @@ logger = log.get_logger(__name__)
 
 def start_ssh_connection(op_info, delete_keys, delete_cert):
     try:
-        # Initialize these so that if something fails in the try block before these
-        # are initialized, then the finally block won't fail.
-
-        connection_status = None
-
         ssh_arg_list = []
         if op_info.ssh_args:
             ssh_arg_list = op_info.ssh_args
 
-        print_ssh_logs = False
-        if not set(['-v', '-vv', '-vvv']).isdisjoint(ssh_arg_list):
-            print_ssh_logs = True
-        else:
+        # Redirecting stderr:
+        # 1. Read SSH logs to determine if authentication was successful so credentials can be deleted
+        # 2. Read SSHProxy error messages to print friendly error messages for well known errors.
+        # On Linux when connecting to a local user on a host with a banner, output gets messed up if stderr redirected.
+        # If user expects logs to be printed, do not redirect logs. In some ocasions output gets messed up.
+        is_local_user_on_linux = (platform.system() != 'Windows' and not delete_cert)
+        redirect_stderr = set(['-v', '-vv', '-vvv']).isdisjoint(ssh_arg_list) and \
+            (op_info.is_arc or delete_cert or op_info.delete_credentials) and \
+            not is_local_user_on_linux
+
+        if redirect_stderr:
             ssh_arg_list = ['-v'] + ssh_arg_list
 
         env = os.environ.copy()
         if op_info.is_arc():
             env['SSHPROXY_RELAY_INFO'] = connectivity_utils.format_relay_info_string(op_info.relay_info)
 
-        # Get ssh client before starting the clean up process in case there is an error in getting client.
         command = [get_ssh_client_path('ssh', op_info.ssh_client_folder), op_info.get_host()]
-
-        if not op_info.cert_file and not op_info.private_key_file:
-            # In this case, even if delete_credentials is true, there is nothing to clean-up.
-            op_info.delete_credentials = False
 
         command = command + op_info.build_args() + ssh_arg_list
 
         connection_duration = time.time()
-        logger.debug("Running ssh command %s", ' '.join(command))
+        logger.warning("Running ssh command %s", ' '.join(command))
 
         try:
-            # In these cases, there is no reason to read the logs. Not redirect stderr to avoid complications.
-            if (platform.system() != 'Windows' and not delete_cert or\
-                platform.system() == 'Windows' and not op_info.is_arc() and not delete_cert):
-                ssh_process = subprocess.Popen(command, env=env, encoding='utf-8')
-            else:
+            # pylint: disable=consider-using-with
+            if redirect_stderr:
                 ssh_process = subprocess.Popen(command, stderr=subprocess.PIPE, env=env, encoding='utf-8')
-                _read_ssh_logs(ssh_process, print_ssh_logs, op_info, delete_cert, delete_keys)
+                _read_ssh_logs(ssh_process, op_info, delete_cert, delete_keys)
+            else:
+                ssh_process = subprocess.Popen(command, env=env, encoding='utf-8')
+                _wait_to_delete_credentials(ssh_process, op_info, delete_cert, delete_keys)
         except OSError as e:
             colorama.init()
             raise azclierror.BadRequestError(f"Failed to run ssh command with error: {str(e)}.",
@@ -71,53 +68,15 @@ def start_ssh_connection(op_info, delete_keys, delete_cert):
 
         connection_duration = (time.time() - connection_duration) / 60
         ssh_connection_data = {'Context.Default.AzureCLI.SSHConnectionDurationInMinutes': connection_duration}
-        if connection_status and connection_status.returncode == 0:
+        if ssh_process.poll() == 0:
             ssh_connection_data['Context.Default.AzureCLI.SSHConnectionStatus'] = "Success"
         telemetry.add_extension_event('ssh', ssh_connection_data)
 
     finally:
         # Even if something fails between the creation of the credentials and the end of the ssh connection, we
-        # want to make sure that all credentials are cleaned up, and that the clean up process is terminated.
-        do_cleanup(delete_keys, delete_cert, op_info.cert_file, op_info.private_key_file, op_info.public_key_file)
-
-
-def _read_ssh_logs(ssh_sub, print_ssh_logs, op_info, delete_cert, delete_keys):
-    log_list = []
-    connection_established = False
-    t0 = time.time()
-
-    next_line = ssh_sub.stderr.readline()
-    while next_line:
-        if "debug1:" not in next_line and \
-           "debug2:" not in next_line and \
-           "debug3:" not in next_line:
-            sys.stderr.write(next_line)
-            _check_for_known_errors(next_line, delete_cert, log_list)
-        elif print_ssh_logs:
-            # with this approach logs don't get printed very gracefully after connection was
-            # established in linux. Save logs to print them once connection closes. 
-            if platform.system() == 'Windows' or not connection_established:
-                sys.stderr.write(next_line)
-            else:
-                log_list.append(next_line)
-
-        # Credentials are deleted once we verify from the logs that the connection was established or
-        # after 2 minutes from the beginning of the connection.
-        if "debug1: Entering interactive session." in next_line:
-            logger.debug("SSH Connection estalished succesfully.")
-            connection_established = True
-            do_cleanup(delete_keys, delete_cert, op_info.cert_file, op_info.private_key_file, op_info.public_key_file)
-        
-        if not connection_established and \
-           time.time() - t0 > const.CLEANUP_TOTAL_TIME_LIMIT_IN_SECONDS:
-            do_cleanup(delete_keys, delete_cert, op_info.cert_file, op_info.private_key_file, op_info.public_key_file)
-
-        next_line = ssh_sub.stderr.readline()
-    
-    for line in log_list:
-        sys.stderr.write(line)
-
-    ssh_sub.wait()
+        # want to make sure that all credentials are cleaned up.
+        do_cleanup(delete_keys, delete_cert, op_info.delete_credentials,
+                   op_info.cert_file, op_info.private_key_file, op_info.public_key_file)
 
 
 def write_ssh_config(config_info, delete_keys, delete_cert):
@@ -132,6 +91,51 @@ def write_ssh_config(config_info, delete_keys, delete_cert):
         mode = 'a'
     with open(config_info.config_path, mode, encoding='utf-8') as f:
         f.write('\n'.join(config_text))
+
+
+def _read_ssh_logs(ssh_sub, op_info, delete_cert, delete_keys):
+    log_list = []
+    connection_established = False
+    t0 = time.time()
+
+    next_line = ssh_sub.stderr.readline()
+    while next_line:
+        log_list.append(next_line)
+        if not next_line.startswith("debug1:") and \
+           not next_line.startswith("debug2:") and \
+           not next_line.startswith("debug3:") and \
+           not next_line.startswith("Authenticated "):
+            sys.stderr.write(next_line)
+            _check_for_known_errors(next_line, delete_cert, log_list)
+
+        if "debug1: Entering interactive session." in next_line:
+            connection_established = True
+            do_cleanup(delete_keys, delete_cert, op_info.delete_credentials,
+                       op_info.cert_file, op_info.private_key_file, op_info.public_key_file)
+
+        if not connection_established and \
+           time.time() - t0 > const.CLEANUP_TOTAL_TIME_LIMIT_IN_SECONDS:
+            do_cleanup(delete_keys, delete_cert, op_info.delete_credentials,
+                       op_info.cert_file, op_info.private_key_file, op_info.public_key_file)
+
+        next_line = ssh_sub.stderr.readline()
+
+    ssh_sub.wait()
+
+
+def _wait_to_delete_credentials(ssh_sub, op_info, delete_cert, delete_keys):
+    # wait for 2 minutes. If the process isn't closed until then, delete credentials.
+    if delete_cert or op_info.delete_credentials:
+        t0 = time.time()
+        while (time.time() - t0) < const.CLEANUP_TOTAL_TIME_LIMIT_IN_SECONDS:
+            if ssh_sub.poll() is not None:
+                break
+            time.sleep(1)
+
+        do_cleanup(delete_keys, delete_cert, op_info.delete_credentials,
+                   op_info.cert_file, op_info.private_key_file, op_info.public_key_file)
+
+    ssh_sub.wait()
 
 
 def create_ssh_keyfile(private_key_file, ssh_client_folder=None):
@@ -296,12 +300,12 @@ def get_ssh_client_path(ssh_command="ssh", ssh_client_folder=None):
     return ssh_path
 
 
-def do_cleanup(delete_keys, delete_cert, cert_file, private_key, public_key):
-    if delete_keys and private_key:
+def do_cleanup(delete_keys, delete_cert, delete_credentials, cert_file, private_key, public_key):
+    if (delete_keys or delete_credentials) and private_key:
         file_utils.delete_file(private_key, f"Couldn't delete private key {private_key}. ", True)
     if delete_keys and public_key:
         file_utils.delete_file(public_key, f"Couldn't delete public key {public_key}. ", True)
-    if delete_cert and cert_file:
+    if (delete_cert or delete_credentials) and cert_file:
         file_utils.delete_file(cert_file, f"Couldn't delete certificate {cert_file}. ", True)
     if delete_keys:
         # This is only true if keys were generated, so they must be in a temp folder.

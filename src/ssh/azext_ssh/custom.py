@@ -44,9 +44,6 @@ def ssh_vm(cmd, resource_group_name=None, vm_name=None, ssh_ip=None, public_key_
     if '--debug' in cmd.cli_ctx.data['safe_params'] and set(['-v', '-vv', '-vvv']).isdisjoint(ssh_args):
         ssh_args = ['-vvv'] if not ssh_args else ['-vvv'] + ssh_args
 
-    if '-E' in ssh_args:
-        raise azclierror.ArgumentUsageError("The -E SSH agrgument is not supported.")
-
     _assert_args(resource_group_name, vm_name, ssh_ip, resource_type, cert_file, local_user)
 
     # all credentials for this command are saved in temp folder and deleted at the end of execution.
@@ -193,7 +190,7 @@ def _do_ssh_op(cmd, op_info, op_call):
                          op_info.private_key_file + ', ' if delete_keys else "",
                          op_info.public_key_file + ', ' if delete_keys else "",
                          op_info.cert_file if delete_cert else "")
-            ssh_utils.do_cleanup(delete_keys, delete_cert, op_info.cert_file,
+            ssh_utils.do_cleanup(delete_keys, delete_cert, op_info.delete_credentials, op_info.cert_file,
                                  op_info.private_key_file, op_info.public_key_file)
         raise e
 
