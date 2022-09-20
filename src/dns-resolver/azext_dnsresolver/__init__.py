@@ -17,10 +17,8 @@ class DnsResolverManagementClientCommandsLoader(AzCommandsLoader):
 
     def __init__(self, cli_ctx=None):
         from azure.cli.core.commands import CliCommandType
-        from azext_dnsresolver.generated._client_factory import cf_dns_resolver_cl
         dns_resolver_custom = CliCommandType(
-            operations_tmpl='azext_dnsresolver.custom#{}',
-            client_factory=cf_dns_resolver_cl)
+            operations_tmpl='azext_dnsresolver.custom#{}')
         parent = super()
         parent.__init__(cli_ctx=cli_ctx, custom_command_type=dns_resolver_custom)
 

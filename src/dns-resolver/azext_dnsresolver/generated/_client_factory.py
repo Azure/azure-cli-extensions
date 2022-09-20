@@ -7,10 +7,3 @@
 # Changes may cause incorrect behavior and will be lost if the code is
 # regenerated.
 # --------------------------------------------------------------------------
-
-
-def cf_dns_resolver_cl(cli_ctx, *_):
-    from azure.cli.core.commands.client_factory import get_mgmt_service_client
-    from azext_dnsresolver.vendored_sdks.dnsresolver import DnsResolverManagementClient
-    return get_mgmt_service_client(cli_ctx,
-                                   DnsResolverManagementClient)
