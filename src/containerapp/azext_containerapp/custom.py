@@ -303,7 +303,6 @@ def create_containerapp_yaml(cmd, name, resource_group_name, file_name, no_wait=
         handle_raw_exception(e)
 
 
-# TODO allow passing workload profile
 def create_containerapp(cmd,
                         name,
                         resource_group_name,
@@ -346,7 +345,8 @@ def create_containerapp(cmd,
                         system_assigned=False,
                         disable_warnings=False,
                         user_assigned=None,
-                        registry_identity=None):
+                        registry_identity=None,
+                        workload_profile=None):
     register_provider_if_needed(cmd, CONTAINER_APPS_RP)
     validate_container_app_name(name)
     validate_create(registry_identity, registry_pass, registry_user, registry_server, no_wait)
@@ -386,6 +386,12 @@ def create_containerapp(cmd,
 
     location = managed_env_info["location"]
     _ensure_location_allowed(cmd, location, CONTAINER_APPS_RP, "containerApps")
+
+    sku = managed_env_info["sku"]["name"].lower()
+    if workload_profile and sku != "premium":
+        raise ValidationError("--workload-profile: only allowed on premium sku managed environments")
+    if not workload_profile and sku == "premium":
+        workload_profile = get_default_workload_profile_from_env(cmd, managed_env_info, managed_env_rg)
 
     external_ingress = None
     if ingress is not None:
@@ -534,6 +540,10 @@ def create_containerapp(cmd,
     containerapp_def["properties"]["configuration"] = config_def
     containerapp_def["properties"]["template"] = template_def
     containerapp_def["tags"] = tags
+
+    if workload_profile:
+        workload_profile = get_workload_profile_type(cmd, workload_profile, location)
+        containerapp_def["properties"]["workloadProfileType"] = workload_profile
 
     if registry_identity:
         if is_registry_msi_system(registry_identity):
@@ -1055,15 +1065,7 @@ def create_managed_environment(cmd,
     managed_env_def["sku"]["name"] = plan
 
     if plan == "premium":
-        default_workload_profiles = [
-            {
-                "workloadProfileType": "GP1",
-                "MinimumCount": 3,  # TODO take this from the workload profiles API
-                "MaximumCount": 3,  # TODO increase once the API is fixed
-            }
-        ]
-        managed_env_def["properties"]["workloadProfiles"] = default_workload_profiles
-
+        managed_env_def["properties"]["workloadProfiles"] = get_default_workload_profiles(cmd, location)
 
     if hostname:
         customDomain = CustomDomainConfigurationModel
@@ -1136,11 +1138,18 @@ def update_managed_environment(cmd,
                                certificate_file=None,
                                certificate_password=None,
                                tags=None,
+                               plan=None,
+                               workload_name=None,
+                               min_nodes=None,
+                               max_nodes=None,
                                no_wait=False):
     try:
         r = ManagedEnvironmentClient.show(cmd=cmd, resource_group_name=resource_group_name, name=name)
     except CLIError as e:
         handle_raw_exception(e)
+
+    if plan and r["sku"]["name"].lower() == "premium" and plan.lower() == "consumption":
+        raise InvalidArgumentValueError("Cannot downgrade a premium sku environment to consumption")
 
     # General setup
     env_def = {}
@@ -1167,6 +1176,38 @@ def update_managed_environment(cmd,
         safe_set(cert_def, "dnsSuffix", value=hostname)
         safe_set(cert_def, "certificatePassword", value=certificate_password)
         safe_set(cert_def, "certificateValue", value=blob)
+
+    if plan and plan.lower() == "premium":
+        safe_set(env_def, "sku", "name", value="Premium")
+        safe_set(env_def, "properties", "workloadProfiles", value=get_default_workload_profiles(cmd, r["location"]))
+        safe_set(env_def, "properties", "vnetConfiguration", value=r["properties"]["vnetConfiguration"])
+
+    if workload_name:
+        if not r["sku"]["name"].lower() == "premium" and not (plan and plan.lower() == "premium"):
+            raise ValidationError("Environment is not a premium sku environment.")
+
+        workload_name = get_workload_profile_type(cmd, workload_name, r["location"])
+        workload_profiles = r["properties"]["workloadProfiles"]
+        profile = [p for p in workload_profiles if p["workloadProfileType"].lower() == workload_name.lower()]
+        update = False  # flag for updating an existing profile
+        if profile:
+            profile = profile[0]
+            update = True
+        else:
+            profile = {"workloadProfileType": workload_name}
+
+        profile["maximumCount"] = max_nodes
+        profile["minimumCount"] = min_nodes
+
+        if not update:
+            workload_profiles.append(profile)
+        else:
+            idx = [i for i, p in enumerate(workload_profiles) if p["workloadProfileType"].lower() == workload_name.lower()][0]
+            workload_profiles[idx] = profile
+
+        safe_set(env_def, "properties", "workloadProfiles", value=workload_profiles)
+        safe_set(env_def, "sku", "name", value=r["sku"]["name"])
+        safe_set(env_def, "properties", "vnetConfiguration", value=r["properties"]["vnetConfiguration"])
 
     # no PATCH api support atm, put works fine even with partial json
     try:
