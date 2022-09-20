@@ -15,7 +15,14 @@ from azure.cli.core.aaz import *
     "nginx deployment list",
 )
 class List(AAZCommand):
-    """List deployment resources
+    """List of Nginx deployments
+
+    List all deployments under the specified subscription.
+    List all Nginx Deployments under the specified resource group
+
+    :example: Deployment List
+        az nginx deployment list
+        az nginx deployment list --resource-group myResourceGroup
     """
 
     _aaz_info = {
@@ -45,19 +52,19 @@ class List(AAZCommand):
         return cls._args_schema
 
     def _execute_operations(self):
-        condition_0 = has_value(self.ctx.subscription_id) and has_value(self.ctx.args.resource_group) is not True
-        condition_1 = has_value(self.ctx.args.resource_group) and has_value(self.ctx.subscription_id)
+        condition_0 = has_value(self.ctx.args.resource_group) and has_value(self.ctx.subscription_id)
+        condition_1 = has_value(self.ctx.subscription_id) and has_value(self.ctx.args.resource_group) is not True
         if condition_0:
-            self.DeploymentsList(ctx=self.ctx)()
-        if condition_1:
             self.DeploymentsListByResourceGroup(ctx=self.ctx)()
+        if condition_1:
+            self.DeploymentsList(ctx=self.ctx)()
 
     def _output(self, *args, **kwargs):
         result = self.deserialize_output(self.ctx.vars.instance.value, client_flatten=True)
         next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
         return result, next_link
 
-    class DeploymentsList(AAZHttpOperation):
+    class DeploymentsListByResourceGroup(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -71,7 +78,7 @@ class List(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/providers/Nginx.NginxPlus/nginxDeployments",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Nginx.NginxPlus/nginxDeployments",
                 **self.url_parameters
             )
 
@@ -96,6 +103,10 @@ class List(AAZCommand):
         @property
         def url_parameters(self):
             parameters = {
+                **self.serialize_url_param(
+                    "resourceGroupName", self.ctx.args.resource_group,
+                    required=True,
+                ),
                 **self.serialize_url_param(
                     "subscriptionId", self.ctx.subscription_id,
                     required=True,
@@ -298,7 +309,7 @@ class List(AAZCommand):
 
             return cls._schema_on_200
 
-    class DeploymentsListByResourceGroup(AAZHttpOperation):
+    class DeploymentsList(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -312,7 +323,7 @@ class List(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Nginx.NginxPlus/nginxDeployments",
+                "/subscriptions/{subscriptionId}/providers/Nginx.NginxPlus/nginxDeployments",
                 **self.url_parameters
             )
 
@@ -333,14 +344,10 @@ class List(AAZCommand):
                 ),
             }
             return parameters
-            
+
         @property
         def url_parameters(self):
             parameters = {
-                **self.serialize_url_param(
-                    "resourceGroupName", self.ctx.args.resource_group,
-                    required=True,
-                ),
                 **self.serialize_url_param(
                     "subscriptionId", self.ctx.subscription_id,
                     required=True,

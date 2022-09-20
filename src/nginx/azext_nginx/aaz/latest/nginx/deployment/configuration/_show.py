@@ -15,7 +15,10 @@ from azure.cli.core.aaz import *
     "nginx deployment configuration show",
 )
 class Show(AAZCommand):
-    """Get the properties of a specific configuration resource.
+    """Get the properties of a specific Nginx configuration
+
+    :example: Configuration Get
+        az nginx deployment configuration show --name default --deployment-name myDeployment --resource-group myResourceGroup
     """
 
     _aaz_info = {
@@ -90,7 +93,7 @@ class Show(AAZCommand):
         @property
         def error_format(self):
             return "ODataV4Format"
-        
+
         @property
         def query_parameters(self):
             parameters = {

@@ -16,7 +16,10 @@ from azure.cli.core.aaz import *
     confirmation="Are you sure you want to perform this operation?",
 )
 class Delete(AAZCommand):
-    """Delete certificate resource
+    """Delete an Nginx deployment certificate
+
+    :example: Certificate_Delete
+        az nginx deployment certificate delete --certificate-name myCertificate --deployment-name myDeployment --resource-group myResourceGroup
     """
 
     _aaz_info = {
@@ -113,7 +116,7 @@ class Delete(AAZCommand):
         @property
         def error_format(self):
             return "ODataV4Format"
-        
+
         @property
         def query_parameters(self):
             parameters = {
@@ -123,7 +126,7 @@ class Delete(AAZCommand):
                 ),
             }
             return parameters
-            
+
         @property
         def url_parameters(self):
             parameters = {

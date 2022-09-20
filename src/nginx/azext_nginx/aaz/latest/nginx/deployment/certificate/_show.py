@@ -15,7 +15,10 @@ from azure.cli.core.aaz import *
     "nginx deployment certificate show",
 )
 class Show(AAZCommand):
-    """Get the properties of a specific certificate resource.
+    """Get the properties of a specific Nginx certificate.
+
+    :example: Certificate Get
+        az nginx deployment certificate show --certificate-name myCertificate --deployment-name myDeployment --resource-group myResourceGroup
     """
 
     _aaz_info = {
@@ -90,7 +93,7 @@ class Show(AAZCommand):
         @property
         def error_format(self):
             return "ODataV4Format"
-
+        
         @property
         def query_parameters(self):
             parameters = {
@@ -100,7 +103,7 @@ class Show(AAZCommand):
                 ),
             }
             return parameters
-            
+
         @property
         def url_parameters(self):
             parameters = {

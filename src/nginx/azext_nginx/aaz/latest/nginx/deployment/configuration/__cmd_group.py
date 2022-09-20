@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "nginx deployment configuration",
 )
 class __CMDGroup(AAZCommandGroup):
-    """Manage NGINX configuration resources.
+    """Manage NGINX configuration resources
     """
     pass
 

@@ -15,7 +15,10 @@ from azure.cli.core.aaz import *
     "nginx deployment configuration list",
 )
 class List(AAZCommand):
-    """List configuration resources.
+    """List all configurations under the specified deployment and resource group
+
+    :example: Configuration ListByDeployment
+        az nginx deployment configuration list --deployment-name myDeployment --resource-group myResourceGroup
     """
 
     _aaz_info = {
@@ -83,7 +86,7 @@ class List(AAZCommand):
         @property
         def error_format(self):
             return "ODataV4Format"
-
+        
         @property
         def query_parameters(self):
             parameters = {

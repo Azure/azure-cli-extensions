@@ -15,7 +15,10 @@ from azure.cli.core.aaz import *
     "nginx deployment certificate update",
 )
 class Update(AAZCommand):
-    """Update a certificate resource.
+    """Update an Nginx deployment certificate
+
+    :example: Certificate Update
+        az nginx deployment certificate update --certificate-name myCertificate --deployment-name myDeployment --resource-group myResourceGroup --certificate-path /etc/nginx/testupdated.cert --key-path /etc/nginx/testupdated.key --key-vault-secret-id newKeyVaultSecretId
     """
 
     _aaz_info = {
@@ -84,7 +87,7 @@ class Update(AAZCommand):
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
-        _args_schema.certificate_virtual_path = AAZStrArg(
+        _args_schema.certificate_path = AAZStrArg(
             options=["--certificate-path"],
             help="This path must match one or more ssl_certificate directive file argument in your Nginx configuration. This path must be unique between certificates within the same deployment",
             arg_group="Properties",
@@ -96,7 +99,7 @@ class Update(AAZCommand):
             arg_group="Properties",
             nullable=True,
         )
-        _args_schema.key_virtual_path = AAZStrArg(
+        _args_schema.key_path = AAZStrArg(
             options=["--key-path"],
             help="This path must match one or more ssl_certificate_key directive file argument in your Nginx configuration. This path must be unique between certificates within the same deployment",
             arg_group="Properties",
@@ -146,7 +149,7 @@ class Update(AAZCommand):
         @property
         def error_format(self):
             return "ODataV4Format"
-
+        
         @property
         def query_parameters(self):
             parameters = {
@@ -249,7 +252,7 @@ class Update(AAZCommand):
         @property
         def error_format(self):
             return "ODataV4Format"
-
+        
         @property
         def query_parameters(self):
             parameters = {
@@ -340,9 +343,9 @@ class Update(AAZCommand):
 
             properties = _builder.get(".properties")
             if properties is not None:
-                properties.set_prop("certificateVirtualPath", AAZStrType, ".certificate_virtual_path")
+                properties.set_prop("certificateVirtualPath", AAZStrType, ".certificate_path")
                 properties.set_prop("keyVaultSecretId", AAZStrType, ".key_vault_secret_id")
-                properties.set_prop("keyVirtualPath", AAZStrType, ".key_virtual_path")
+                properties.set_prop("keyVirtualPath", AAZStrType, ".key_path")
                 properties.set_prop("provisioningState", AAZStrType, ".provisioning_state")
 
             tags = _builder.get(".tags")

@@ -15,7 +15,10 @@ from azure.cli.core.aaz import *
     "nginx deployment show",
 )
 class Show(AAZCommand):
-    """Get the properties of a specific deployment resource.
+    """Get the properties of a specific Nginx Deployment
+
+    :example: Deployment Get
+        az nginx deployment show --name myDeployment --resource-group myResourceGroup
     """
 
     _aaz_info = {

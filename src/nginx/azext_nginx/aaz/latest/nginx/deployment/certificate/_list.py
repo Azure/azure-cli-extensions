@@ -15,7 +15,10 @@ from azure.cli.core.aaz import *
     "nginx deployment certificate list",
 )
 class List(AAZCommand):
-    """List certificate resources.
+    """List all certificates under the specified deployment and resource group
+
+    :example: Certificate ListByDeployment
+        az nginx deployment certificate list --deployment-name myDeployment --resource-group myResourceGroup
     """
 
     _aaz_info = {
@@ -93,7 +96,7 @@ class List(AAZCommand):
                 ),
             }
             return parameters
-            
+
         @property
         def url_parameters(self):
             parameters = {

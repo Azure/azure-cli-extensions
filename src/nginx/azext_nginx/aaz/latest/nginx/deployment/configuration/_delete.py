@@ -16,7 +16,10 @@ from azure.cli.core.aaz import *
     confirmation="Are you sure you want to perform this operation?",
 )
 class Delete(AAZCommand):
-    """Delete configuration resource
+    """Delete an Nginx configuration
+
+    :example: Configuration Delete
+        az nginx deployment configuration delete --name default --deployment-name myDeployment --resource-group myResourceGroup
     """
 
     _aaz_info = {

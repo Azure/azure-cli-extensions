@@ -16,7 +16,10 @@ from azure.cli.core.aaz import *
     confirmation="Are you sure you want to perform this operation?",
 )
 class Delete(AAZCommand):
-    """Delete deployment resource
+    """Delete an Nginx deployment
+
+    :example: Deployment Delete
+        az nginx deployment delete --name myDeployment --resource-group myResourceGroup
     """
 
     _aaz_info = {
@@ -117,7 +120,7 @@ class Delete(AAZCommand):
                 ),
             }
             return parameters
-            
+
         @property
         def url_parameters(self):
             parameters = {

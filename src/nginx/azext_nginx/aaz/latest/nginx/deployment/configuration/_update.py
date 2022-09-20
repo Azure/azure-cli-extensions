@@ -15,7 +15,10 @@ from azure.cli.core.aaz import *
     "nginx deployment configuration update",
 )
 class Update(AAZCommand):
-    """Update a configuration resource.
+    """Update an Nginx configuration
+
+    :example: Configuration Update
+        az nginx deployment configuration update --name default --deployment-name myDeployment --resource-group myResourceGroup --root-file /etc/nginx/nginx.conf --files '[{"content":"aHR0cCB7CiAgICB1cHN0cmVhbSBhcHAgewogICAgICAgIHpvbmUgYXBwIDY0azsKICAgICAgICBsZWFzdF9jb25uOwogICAgICAgIHNlcnZlciAxMC4wLjEuNDo4MDAwOwogICAgfQoKICAgIHNlcnZlciB7CiAgICAgICAgbGlzdGVuIDgwOwogICAgICAgIHNlcnZlcl9uYW1lICouZXhhbXBsZS5jb207CgogICAgICAgIGxvY2F0aW9uIC8gewogICAgICAgICAgICBwcm94eV9zZXRfaGVhZGVyIEhvc3QgJGhvc3Q7CiAgICAgICAgICAgIHByb3h5X3NldF9oZWFkZXIgWC1SZWFsLUlQICRyZW1vdGVfYWRkcjsKICAgICAgICAgICAgcHJveHlfc2V0X2hlYWRlciBYLVByb3h5LUFwcCBhcHA7CiAgICAgICAgICAgIHByb3h5X3NldF9oZWFkZXIgR2l0aHViLVJ1bi1JZCAwMDAwMDA7CiAgICAgICAgICAgIHByb3h5X2J1ZmZlcmluZyBvbjsKICAgICAgICAgICAgcHJveHlfYnVmZmVyX3NpemUgNGs7CiAgICAgICAgICAgIHByb3h5X2J1ZmZlcnMgOCA4azsKICAgICAgICAgICAgcHJveHlfcmVhZF90aW1lb3V0IDYwczsKICAgICAgICAgICAgcHJveHlfcGFzcyBodHRwOi8vYXBwOwogICAgICAgICAgICBoZWFsdGhfY2hlY2s7CiAgICAgICAgfQogICAgICAgIAogICAgfQp9","virtual-path":"/etc/nginx/nginx.conf"}]'
     """
 
     _aaz_info = {
@@ -193,17 +196,7 @@ class Update(AAZCommand):
         @property
         def error_format(self):
             return "ODataV4Format"
-
-        @property
-        def query_parameters(self):
-            parameters = {
-                **self.serialize_query_param(
-                    "api-version", "2022-08-01",
-                    required=True,
-                ),
-            }
-            return parameters
-
+        
         @property
         def query_parameters(self):
             parameters = {
@@ -306,7 +299,7 @@ class Update(AAZCommand):
         @property
         def error_format(self):
             return "ODataV4Format"
-
+        
         @property
         def query_parameters(self):
             parameters = {

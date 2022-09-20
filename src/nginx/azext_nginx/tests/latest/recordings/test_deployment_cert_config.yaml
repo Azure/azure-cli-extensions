@@ -19,7 +19,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/AZCLIDeploymentTestRG_000001?api-version=2021-04-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AZCLIDeploymentTestRG_000001","name":"AZCLIDeploymentTestRG_000001","type":"Microsoft.Resources/resourceGroups","location":"eastus2euap","tags":{"product":"azurecli","cause":"automation","date":"2022-09-14T22:09:10Z"},"properties":{"provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AZCLIDeploymentTestRG_000001","name":"AZCLIDeploymentTestRG_000001","type":"Microsoft.Resources/resourceGroups","location":"eastus2euap","tags":{"product":"azurecli","cause":"automation","date":"2022-09-20T11:54:33Z"},"properties":{"provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
@@ -28,7 +28,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 14 Sep 2022 22:09:19 GMT
+      - Tue, 20 Sep 2022 11:54:39 GMT
       expires:
       - '-1'
       pragma:
@@ -69,10 +69,10 @@ interactions:
   response:
     body:
       string: "{\r\n  \"name\": \"azclitest-public-ip\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AZCLIDeploymentTestRG_000001/providers/Microsoft.Network/publicIPAddresses/azclitest-public-ip\"\
-        ,\r\n  \"etag\": \"W/\\\"c2215fa8-e208-45b1-a2f0-9cf1b98e08a6\\\"\",\r\n \
+        ,\r\n  \"etag\": \"W/\\\"2e43a7a9-8397-4d69-9a1c-bfceedccee40\\\"\",\r\n \
         \ \"location\": \"eastus2euap\",\r\n  \"zones\": [\r\n    \"2\"\r\n  ],\r\n\
         \  \"properties\": {\r\n    \"provisioningState\": \"Updating\",\r\n    \"\
-        resourceGuid\": \"335becbc-7f2a-4d57-b9c3-fdb2c608b4e2\",\r\n    \"publicIPAddressVersion\"\
+        resourceGuid\": \"0ff0939e-4ab7-405c-9ae3-197768a24483\",\r\n    \"publicIPAddressVersion\"\
         : \"IPv4\",\r\n    \"publicIPAllocationMethod\": \"Static\",\r\n    \"idleTimeoutInMinutes\"\
         : 4,\r\n    \"ipTags\": []\r\n  },\r\n  \"type\": \"Microsoft.Network/publicIPAddresses\"\
         ,\r\n  \"sku\": {\r\n    \"name\": \"Standard\",\r\n    \"tier\": \"Regional\"\
@@ -81,7 +81,7 @@ interactions:
       azure-asyncnotification:
       - Enabled
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/operations/ec54437b-1652-493e-b76a-5a2cb6994c7e?api-version=2022-01-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/operations/e5a4a735-4be2-47b2-abef-878a86ca6c95?api-version=2022-01-01
       cache-control:
       - no-cache
       content-length:
@@ -89,7 +89,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 14 Sep 2022 22:09:31 GMT
+      - Tue, 20 Sep 2022 11:54:54 GMT
       expires:
       - '-1'
       pragma:
@@ -102,12 +102,12 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 2ad5f043-40d1-40a8-930e-0fd9a1830323
+      - 3bfc6497-fa37-47b6-a41f-02f45dd427a4
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1197'
+      - '1198'
     status:
       code: 201
-      message: Created
+      message: ''
 - request:
     body: null
     headers:
@@ -125,7 +125,7 @@ interactions:
       - AZURECLI/2.40.0 (PIP) azsdk-python-azure-mgmt-network/21.0.1 Python/3.10.7
         (Windows-10-10.0.22000-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/operations/ec54437b-1652-493e-b76a-5a2cb6994c7e?api-version=2022-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/operations/e5a4a735-4be2-47b2-abef-878a86ca6c95?api-version=2022-01-01
   response:
     body:
       string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
@@ -137,7 +137,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 14 Sep 2022 22:09:33 GMT
+      - Tue, 20 Sep 2022 11:54:55 GMT
       expires:
       - '-1'
       pragma:
@@ -154,10 +154,10 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 2cdb7892-f1c9-4643-aa1f-317ff93d6948
+      - 6bbf5296-bd72-45c0-8912-32297c4d6c04
     status:
       code: 200
-      message: OK
+      message: ''
 - request:
     body: null
     headers:
@@ -179,11 +179,11 @@ interactions:
   response:
     body:
       string: "{\r\n  \"name\": \"azclitest-public-ip\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AZCLIDeploymentTestRG_000001/providers/Microsoft.Network/publicIPAddresses/azclitest-public-ip\"\
-        ,\r\n  \"etag\": \"W/\\\"8fd6f751-3c73-4d29-b5c3-645a8c424a44\\\"\",\r\n \
+        ,\r\n  \"etag\": \"W/\\\"cca55565-bc4a-4a4b-a0bd-6a232976ab97\\\"\",\r\n \
         \ \"location\": \"eastus2euap\",\r\n  \"zones\": [\r\n    \"2\"\r\n  ],\r\n\
         \  \"properties\": {\r\n    \"provisioningState\": \"Succeeded\",\r\n    \"\
-        resourceGuid\": \"335becbc-7f2a-4d57-b9c3-fdb2c608b4e2\",\r\n    \"ipAddress\"\
-        : \"20.47.163.175\",\r\n    \"publicIPAddressVersion\": \"IPv4\",\r\n    \"\
+        resourceGuid\": \"0ff0939e-4ab7-405c-9ae3-197768a24483\",\r\n    \"ipAddress\"\
+        : \"20.47.162.158\",\r\n    \"publicIPAddressVersion\": \"IPv4\",\r\n    \"\
         publicIPAllocationMethod\": \"Static\",\r\n    \"idleTimeoutInMinutes\": 4,\r\
         \n    \"ipTags\": []\r\n  },\r\n  \"type\": \"Microsoft.Network/publicIPAddresses\"\
         ,\r\n  \"sku\": {\r\n    \"name\": \"Standard\",\r\n    \"tier\": \"Regional\"\
@@ -196,9 +196,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 14 Sep 2022 22:09:35 GMT
+      - Tue, 20 Sep 2022 11:54:56 GMT
       etag:
-      - W/"8fd6f751-3c73-4d29-b5c3-645a8c424a44"
+      - W/"cca55565-bc4a-4a4b-a0bd-6a232976ab97"
       expires:
       - '-1'
       pragma:
@@ -215,10 +215,10 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 50da888b-e0d6-432d-a463-7376982cb232
+      - 38841e60-bba4-40be-b396-e399e621fd88
     status:
       code: 200
-      message: OK
+      message: ''
 - request:
     body: null
     headers:
@@ -239,7 +239,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/AZCLIDeploymentTestRG_000001?api-version=2021-04-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AZCLIDeploymentTestRG_000001","name":"AZCLIDeploymentTestRG_000001","type":"Microsoft.Resources/resourceGroups","location":"eastus2euap","tags":{"product":"azurecli","cause":"automation","date":"2022-09-14T22:09:10Z"},"properties":{"provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AZCLIDeploymentTestRG_000001","name":"AZCLIDeploymentTestRG_000001","type":"Microsoft.Resources/resourceGroups","location":"eastus2euap","tags":{"product":"azurecli","cause":"automation","date":"2022-09-20T11:54:33Z"},"properties":{"provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
@@ -248,7 +248,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 14 Sep 2022 22:09:36 GMT
+      - Tue, 20 Sep 2022 11:54:57 GMT
       expires:
       - '-1'
       pragma:
@@ -290,15 +290,15 @@ interactions:
   response:
     body:
       string: "{\r\n  \"name\": \"azclitest-vnet\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AZCLIDeploymentTestRG_000001/providers/Microsoft.Network/virtualNetworks/azclitest-vnet\"\
-        ,\r\n  \"etag\": \"W/\\\"93954312-2f26-4690-9bc7-e1ffb962f32c\\\"\",\r\n \
+        ,\r\n  \"etag\": \"W/\\\"19500b87-f629-4a91-b88a-3742bedc82a0\\\"\",\r\n \
         \ \"type\": \"Microsoft.Network/virtualNetworks\",\r\n  \"location\": \"eastus2euap\"\
         ,\r\n  \"tags\": {},\r\n  \"properties\": {\r\n    \"provisioningState\":\
-        \ \"Updating\",\r\n    \"resourceGuid\": \"a5b01b9d-678f-4031-a906-e769de6eb3e8\"\
+        \ \"Updating\",\r\n    \"resourceGuid\": \"31a12cc0-1935-44c9-a872-af42b4afffd9\"\
         ,\r\n    \"addressSpace\": {\r\n      \"addressPrefixes\": [\r\n        \"\
         10.0.0.0/16\"\r\n      ]\r\n    },\r\n    \"dhcpOptions\": {\r\n      \"dnsServers\"\
         : []\r\n    },\r\n    \"subnets\": [\r\n      {\r\n        \"name\": \"azclitest-subnet\"\
         ,\r\n        \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AZCLIDeploymentTestRG_000001/providers/Microsoft.Network/virtualNetworks/azclitest-vnet/subnets/azclitest-subnet\"\
-        ,\r\n        \"etag\": \"W/\\\"93954312-2f26-4690-9bc7-e1ffb962f32c\\\"\"\
+        ,\r\n        \"etag\": \"W/\\\"19500b87-f629-4a91-b88a-3742bedc82a0\\\"\"\
         ,\r\n        \"properties\": {\r\n          \"provisioningState\": \"Updating\"\
         ,\r\n          \"addressPrefix\": \"10.0.0.0/24\",\r\n          \"delegations\"\
         : [],\r\n          \"privateEndpointNetworkPolicies\": \"Disabled\",\r\n \
@@ -310,7 +310,7 @@ interactions:
       azure-asyncnotification:
       - Enabled
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/operations/652b3634-a9d9-497d-bde0-228cfcbb03ac?api-version=2022-01-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/operations/c22dd807-61eb-4fdd-bac0-097bd08cb3c4?api-version=2022-01-01
       cache-control:
       - no-cache
       content-length:
@@ -318,7 +318,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 14 Sep 2022 22:09:47 GMT
+      - Tue, 20 Sep 2022 11:55:10 GMT
       expires:
       - '-1'
       pragma:
@@ -331,12 +331,12 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - d36ba7f4-be7a-4b6a-80b0-8f7f3fcb0dba
+      - febe6bd8-2011-43eb-b316-997be4f769c9
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1197'
+      - '1199'
     status:
       code: 201
-      message: Created
+      message: ''
 - request:
     body: null
     headers:
@@ -354,7 +354,7 @@ interactions:
       - AZURECLI/2.40.0 (PIP) azsdk-python-azure-mgmt-network/21.0.1 Python/3.10.7
         (Windows-10-10.0.22000-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/operations/652b3634-a9d9-497d-bde0-228cfcbb03ac?api-version=2022-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/operations/c22dd807-61eb-4fdd-bac0-097bd08cb3c4?api-version=2022-01-01
   response:
     body:
       string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
@@ -366,7 +366,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 14 Sep 2022 22:09:50 GMT
+      - Tue, 20 Sep 2022 11:55:13 GMT
       expires:
       - '-1'
       pragma:
@@ -383,10 +383,10 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - a9ee144d-3843-4b2b-a2a1-347cc4e354e4
+      - 23d65d0d-b606-479c-8823-f6573282f177
     status:
       code: 200
-      message: OK
+      message: ''
 - request:
     body: null
     headers:
@@ -408,15 +408,15 @@ interactions:
   response:
     body:
       string: "{\r\n  \"name\": \"azclitest-vnet\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AZCLIDeploymentTestRG_000001/providers/Microsoft.Network/virtualNetworks/azclitest-vnet\"\
-        ,\r\n  \"etag\": \"W/\\\"0f230e8f-8a94-4fcd-b370-dcf75c7fadd3\\\"\",\r\n \
+        ,\r\n  \"etag\": \"W/\\\"33fa1908-54a9-4335-bb8a-1175058b6e84\\\"\",\r\n \
         \ \"type\": \"Microsoft.Network/virtualNetworks\",\r\n  \"location\": \"eastus2euap\"\
         ,\r\n  \"tags\": {},\r\n  \"properties\": {\r\n    \"provisioningState\":\
-        \ \"Succeeded\",\r\n    \"resourceGuid\": \"a5b01b9d-678f-4031-a906-e769de6eb3e8\"\
+        \ \"Succeeded\",\r\n    \"resourceGuid\": \"31a12cc0-1935-44c9-a872-af42b4afffd9\"\
         ,\r\n    \"addressSpace\": {\r\n      \"addressPrefixes\": [\r\n        \"\
         10.0.0.0/16\"\r\n      ]\r\n    },\r\n    \"dhcpOptions\": {\r\n      \"dnsServers\"\
         : []\r\n    },\r\n    \"subnets\": [\r\n      {\r\n        \"name\": \"azclitest-subnet\"\
         ,\r\n        \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AZCLIDeploymentTestRG_000001/providers/Microsoft.Network/virtualNetworks/azclitest-vnet/subnets/azclitest-subnet\"\
-        ,\r\n        \"etag\": \"W/\\\"0f230e8f-8a94-4fcd-b370-dcf75c7fadd3\\\"\"\
+        ,\r\n        \"etag\": \"W/\\\"33fa1908-54a9-4335-bb8a-1175058b6e84\\\"\"\
         ,\r\n        \"properties\": {\r\n          \"provisioningState\": \"Succeeded\"\
         ,\r\n          \"addressPrefix\": \"10.0.0.0/24\",\r\n          \"delegations\"\
         : [],\r\n          \"privateEndpointNetworkPolicies\": \"Disabled\",\r\n \
@@ -432,9 +432,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 14 Sep 2022 22:09:51 GMT
+      - Tue, 20 Sep 2022 11:55:17 GMT
       etag:
-      - W/"0f230e8f-8a94-4fcd-b370-dcf75c7fadd3"
+      - W/"33fa1908-54a9-4335-bb8a-1175058b6e84"
       expires:
       - '-1'
       pragma:
@@ -451,10 +451,10 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - a1da6f6a-3c55-415b-8b16-db5546a366f4
+      - fbe5f823-87c0-4ec7-972b-815581701499
     status:
       code: 200
-      message: OK
+      message: ''
 - request:
     body: null
     headers:
@@ -476,7 +476,7 @@ interactions:
   response:
     body:
       string: "{\r\n  \"name\": \"azclitest-subnet\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AZCLIDeploymentTestRG_000001/providers/Microsoft.Network/virtualNetworks/azclitest-vnet/subnets/azclitest-subnet\"\
-        ,\r\n  \"etag\": \"W/\\\"0f230e8f-8a94-4fcd-b370-dcf75c7fadd3\\\"\",\r\n \
+        ,\r\n  \"etag\": \"W/\\\"33fa1908-54a9-4335-bb8a-1175058b6e84\\\"\",\r\n \
         \ \"properties\": {\r\n    \"provisioningState\": \"Succeeded\",\r\n    \"\
         addressPrefix\": \"10.0.0.0/24\",\r\n    \"delegations\": [],\r\n    \"privateEndpointNetworkPolicies\"\
         : \"Disabled\",\r\n    \"privateLinkServiceNetworkPolicies\": \"Enabled\"\r\
@@ -489,9 +489,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 14 Sep 2022 22:09:52 GMT
+      - Tue, 20 Sep 2022 11:55:21 GMT
       etag:
-      - W/"0f230e8f-8a94-4fcd-b370-dcf75c7fadd3"
+      - W/"33fa1908-54a9-4335-bb8a-1175058b6e84"
       expires:
       - '-1'
       pragma:
@@ -508,10 +508,10 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - e29a8e22-8fa8-4dae-a24a-a4589e1bee66
+      - 2da2b0e4-158e-4340-8789-5fb9ee883397
     status:
       code: 200
-      message: OK
+      message: ''
 - request:
     body: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AZCLIDeploymentTestRG_000001/providers/Microsoft.Network/virtualNetworks/azclitest-vnet/subnets/azclitest-subnet",
       "name": "azclitest-subnet", "type": "Microsoft.Network/virtualNetworks/subnets",
@@ -541,11 +541,11 @@ interactions:
   response:
     body:
       string: "{\r\n  \"name\": \"azclitest-subnet\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AZCLIDeploymentTestRG_000001/providers/Microsoft.Network/virtualNetworks/azclitest-vnet/subnets/azclitest-subnet\"\
-        ,\r\n  \"etag\": \"W/\\\"a607d572-40a5-4c3e-a797-29e65221cae9\\\"\",\r\n \
+        ,\r\n  \"etag\": \"W/\\\"954f7deb-66e1-4da2-b988-cbeb65f0de21\\\"\",\r\n \
         \ \"properties\": {\r\n    \"provisioningState\": \"Updating\",\r\n    \"\
         addressPrefix\": \"10.0.0.0/24\",\r\n    \"delegations\": [\r\n      {\r\n\
         \        \"name\": \"0\",\r\n        \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AZCLIDeploymentTestRG_000001/providers/Microsoft.Network/virtualNetworks/azclitest-vnet/subnets/azclitest-subnet/delegations/0\"\
-        ,\r\n        \"etag\": \"W/\\\"a607d572-40a5-4c3e-a797-29e65221cae9\\\"\"\
+        ,\r\n        \"etag\": \"W/\\\"954f7deb-66e1-4da2-b988-cbeb65f0de21\\\"\"\
         ,\r\n        \"properties\": {\r\n          \"provisioningState\": \"Succeeded\"\
         ,\r\n          \"serviceName\": \"NGINX.NGINXPLUS/nginxDeployments\",\r\n\
         \          \"actions\": [\r\n            \"Microsoft.Network/virtualNetworks/subnets/join/action\"\
@@ -555,7 +555,7 @@ interactions:
         type\": \"Microsoft.Network/virtualNetworks/subnets\"\r\n}"
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/operations/fb68f999-24af-40fc-95c8-0a505ce1a83f?api-version=2022-01-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/operations/09af3879-aed1-4d1a-a490-6077d3c99b29?api-version=2022-01-01
       cache-control:
       - no-cache
       content-length:
@@ -563,7 +563,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 14 Sep 2022 22:09:58 GMT
+      - Tue, 20 Sep 2022 11:55:24 GMT
       expires:
       - '-1'
       pragma:
@@ -580,12 +580,12 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - a72e0ed3-5596-4cab-822a-730c8146beed
+      - a5961c29-3b84-4ce0-bf9e-892b3dcffa41
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1195'
+      - '1198'
     status:
       code: 200
-      message: OK
+      message: ''
 - request:
     body: null
     headers:
@@ -603,7 +603,7 @@ interactions:
       - AZURECLI/2.40.0 (PIP) azsdk-python-azure-mgmt-network/21.0.1 Python/3.10.7
         (Windows-10-10.0.22000-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/operations/fb68f999-24af-40fc-95c8-0a505ce1a83f?api-version=2022-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/operations/09af3879-aed1-4d1a-a490-6077d3c99b29?api-version=2022-01-01
   response:
     body:
       string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
@@ -615,7 +615,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 14 Sep 2022 22:10:01 GMT
+      - Tue, 20 Sep 2022 11:55:27 GMT
       expires:
       - '-1'
       pragma:
@@ -632,10 +632,10 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - ac91d9b6-5c51-4e33-b281-a6dc3b7a4e67
+      - 1b873f0a-590f-4f11-9ad0-d84025604d42
     status:
       code: 200
-      message: OK
+      message: ''
 - request:
     body: null
     headers:
@@ -657,11 +657,11 @@ interactions:
   response:
     body:
       string: "{\r\n  \"name\": \"azclitest-subnet\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AZCLIDeploymentTestRG_000001/providers/Microsoft.Network/virtualNetworks/azclitest-vnet/subnets/azclitest-subnet\"\
-        ,\r\n  \"etag\": \"W/\\\"9bad3a87-3c00-433c-a505-3ee17871433e\\\"\",\r\n \
+        ,\r\n  \"etag\": \"W/\\\"8273100d-08a5-4c0d-b477-4270ef4a6834\\\"\",\r\n \
         \ \"properties\": {\r\n    \"provisioningState\": \"Succeeded\",\r\n    \"\
         addressPrefix\": \"10.0.0.0/24\",\r\n    \"delegations\": [\r\n      {\r\n\
         \        \"name\": \"0\",\r\n        \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AZCLIDeploymentTestRG_000001/providers/Microsoft.Network/virtualNetworks/azclitest-vnet/subnets/azclitest-subnet/delegations/0\"\
-        ,\r\n        \"etag\": \"W/\\\"9bad3a87-3c00-433c-a505-3ee17871433e\\\"\"\
+        ,\r\n        \"etag\": \"W/\\\"8273100d-08a5-4c0d-b477-4270ef4a6834\\\"\"\
         ,\r\n        \"properties\": {\r\n          \"provisioningState\": \"Succeeded\"\
         ,\r\n          \"serviceName\": \"NGINX.NGINXPLUS/nginxDeployments\",\r\n\
         \          \"actions\": [\r\n            \"Microsoft.Network/virtualNetworks/subnets/join/action\"\
@@ -677,9 +677,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 14 Sep 2022 22:10:02 GMT
+      - Tue, 20 Sep 2022 11:55:28 GMT
       etag:
-      - W/"9bad3a87-3c00-433c-a505-3ee17871433e"
+      - W/"8273100d-08a5-4c0d-b477-4270ef4a6834"
       expires:
       - '-1'
       pragma:
@@ -696,10 +696,10 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - bf6e413f-5db4-4562-8d7c-97999baa1c89
+      - 1d38dfaf-47c7-486f-8683-b74a9f1ae6cb
     status:
       code: 200
-      message: OK
+      message: ''
 - request:
     body: '{"location": "eastus2euap", "properties": {"enableDiagnosticsSupport":
       true, "networkProfile": {"frontEndIPConfiguration": {"publicIPAddresses": [{"id":
@@ -727,24 +727,24 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AZCLIDeploymentTestRG_000001/providers/Nginx.NginxPlus/nginxDeployments/azclitest-deployment?api-version=2022-08-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AZCLIDeploymentTestRG_000001/providers/Nginx.NginxPlus/nginxDeployments/azclitest-deployment","name":"azclitest-deployment","type":"nginx.nginxplus/nginxdeployments","sku":{"name":"preview_Monthly_gmz7xq9ge3py"},"location":"eastus2euap","systemData":{"createdBy":"georgengugi@microsoft.com","createdByType":"User","createdAt":"2022-09-14T22:10:12.8944783Z","lastModifiedBy":"georgengugi@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-09-14T22:10:12.8944783Z"},"properties":{"provisioningState":"Accepted","nginxVersion":null,"managedResourceGroup":null,"ipAddress":null,"networkProfile":{"frontEndIPConfiguration":{"publicIPAddresses":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AZCLIDeploymentTestRG_000001/providers/Microsoft.Network/publicIPAddresses/azclitest-public-ip"}]},"networkInterfaceConfiguration":{"subnetId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AZCLIDeploymentTestRG_000001/providers/Microsoft.Network/virtualNetworks/azclitest-vnet/subnets/azclitest-subnet"}},"enableDiagnosticsSupport":true,"logging":null}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AZCLIDeploymentTestRG_000001/providers/Nginx.NginxPlus/nginxDeployments/azclitest-deployment","name":"azclitest-deployment","type":"nginx.nginxplus/nginxdeployments","sku":{"name":"preview_Monthly_gmz7xq9ge3py"},"location":"eastus2euap","systemData":{"createdBy":"georgengugi@microsoft.com","createdByType":"User","createdAt":"2022-09-20T11:55:31.727496Z","lastModifiedBy":"georgengugi@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-09-20T11:55:31.727496Z"},"properties":{"provisioningState":"Accepted","nginxVersion":null,"managedResourceGroup":null,"ipAddress":null,"networkProfile":{"frontEndIPConfiguration":{"publicIPAddresses":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AZCLIDeploymentTestRG_000001/providers/Microsoft.Network/publicIPAddresses/azclitest-public-ip"}]},"networkInterfaceConfiguration":{"subnetId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AZCLIDeploymentTestRG_000001/providers/Microsoft.Network/virtualNetworks/azclitest-vnet/subnets/azclitest-subnet"}},"enableDiagnosticsSupport":true,"logging":null}}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/providers/Nginx.NginxPlus/locations/EASTUS2EUAP/operationStatuses/56c5e734-3677-4792-915e-3bc3342dc4f0*6F2948BC7F8DD771B249F57C88B4EE6CAC9020A2630F6F8918E010B6BD828050?api-version=2022-08-01
+      - https://management.azure.com/providers/Nginx.NginxPlus/locations/EASTUS2EUAP/operationStatuses/81ce1629-a593-4a4f-ac9f-b3d388206bac*23B61C80BD45EC670D58F6356F4F15E09A23A3DEEC48503E47ACA45B6209CAE3?api-version=2022-08-01
       cache-control:
       - no-cache
       content-length:
-      - '1178'
+      - '1176'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 14 Sep 2022 22:10:18 GMT
+      - Tue, 20 Sep 2022 11:55:38 GMT
       etag:
-      - '"900050b8-0000-3400-0000-632251490000"'
+      - '"d200837e-0000-3400-0000-6329aa380000"'
       expires:
       - '-1'
       location:
-      - https://management.azure.com/providers/Nginx.NginxPlus/locations/EASTUS2EUAP/operationStatuses/56c5e734-3677-4792-915e-3bc3342dc4f0*6F2948BC7F8DD771B249F57C88B4EE6CAC9020A2630F6F8918E010B6BD828050?api-version=2022-08-01
+      - https://management.azure.com/providers/Nginx.NginxPlus/locations/EASTUS2EUAP/operationStatuses/81ce1629-a593-4a4f-ac9f-b3d388206bac*23B61C80BD45EC670D58F6356F4F15E09A23A3DEEC48503E47ACA45B6209CAE3?api-version=2022-08-01
       pragma:
       - no-cache
       request-context:
@@ -776,10 +776,10 @@ interactions:
       User-Agent:
       - AZURECLI/2.40.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.10.7 (Windows-10-10.0.22000-SP0)
     method: GET
-    uri: https://management.azure.com/providers/Nginx.NginxPlus/locations/EASTUS2EUAP/operationStatuses/56c5e734-3677-4792-915e-3bc3342dc4f0*6F2948BC7F8DD771B249F57C88B4EE6CAC9020A2630F6F8918E010B6BD828050?api-version=2022-08-01
+    uri: https://management.azure.com/providers/Nginx.NginxPlus/locations/EASTUS2EUAP/operationStatuses/81ce1629-a593-4a4f-ac9f-b3d388206bac*23B61C80BD45EC670D58F6356F4F15E09A23A3DEEC48503E47ACA45B6209CAE3?api-version=2022-08-01
   response:
     body:
-      string: '{"id":"/providers/Nginx.NginxPlus/locations/EASTUS2EUAP/operationStatuses/56c5e734-3677-4792-915e-3bc3342dc4f0*6F2948BC7F8DD771B249F57C88B4EE6CAC9020A2630F6F8918E010B6BD828050","name":"56c5e734-3677-4792-915e-3bc3342dc4f0*6F2948BC7F8DD771B249F57C88B4EE6CAC9020A2630F6F8918E010B6BD828050","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AZCLIDeploymentTestRG_000001/providers/Nginx.NginxPlus/nginxDeployments/azclitest-deployment","status":"Accepted","startTime":"2022-09-14T22:10:16.4604061Z"}'
+      string: '{"id":"/providers/Nginx.NginxPlus/locations/EASTUS2EUAP/operationStatuses/81ce1629-a593-4a4f-ac9f-b3d388206bac*23B61C80BD45EC670D58F6356F4F15E09A23A3DEEC48503E47ACA45B6209CAE3","name":"81ce1629-a593-4a4f-ac9f-b3d388206bac*23B61C80BD45EC670D58F6356F4F15E09A23A3DEEC48503E47ACA45B6209CAE3","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AZCLIDeploymentTestRG_000001/providers/Nginx.NginxPlus/nginxDeployments/azclitest-deployment","status":"Accepted","startTime":"2022-09-20T11:55:35.7229086Z"}'
     headers:
       cache-control:
       - no-cache
@@ -788,9 +788,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 14 Sep 2022 22:10:48 GMT
+      - Tue, 20 Sep 2022 11:56:08 GMT
       etag:
-      - '"00005a49-0000-3400-0000-632251480000"'
+      - '"03000401-0000-3400-0000-6329aa370000"'
       expires:
       - '-1'
       pragma:
@@ -822,10 +822,10 @@ interactions:
       User-Agent:
       - AZURECLI/2.40.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.10.7 (Windows-10-10.0.22000-SP0)
     method: GET
-    uri: https://management.azure.com/providers/Nginx.NginxPlus/locations/EASTUS2EUAP/operationStatuses/56c5e734-3677-4792-915e-3bc3342dc4f0*6F2948BC7F8DD771B249F57C88B4EE6CAC9020A2630F6F8918E010B6BD828050?api-version=2022-08-01
+    uri: https://management.azure.com/providers/Nginx.NginxPlus/locations/EASTUS2EUAP/operationStatuses/81ce1629-a593-4a4f-ac9f-b3d388206bac*23B61C80BD45EC670D58F6356F4F15E09A23A3DEEC48503E47ACA45B6209CAE3?api-version=2022-08-01
   response:
     body:
-      string: '{"id":"/providers/Nginx.NginxPlus/locations/EASTUS2EUAP/operationStatuses/56c5e734-3677-4792-915e-3bc3342dc4f0*6F2948BC7F8DD771B249F57C88B4EE6CAC9020A2630F6F8918E010B6BD828050","name":"56c5e734-3677-4792-915e-3bc3342dc4f0*6F2948BC7F8DD771B249F57C88B4EE6CAC9020A2630F6F8918E010B6BD828050","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AZCLIDeploymentTestRG_000001/providers/Nginx.NginxPlus/nginxDeployments/azclitest-deployment","status":"Accepted","startTime":"2022-09-14T22:10:16.4604061Z"}'
+      string: '{"id":"/providers/Nginx.NginxPlus/locations/EASTUS2EUAP/operationStatuses/81ce1629-a593-4a4f-ac9f-b3d388206bac*23B61C80BD45EC670D58F6356F4F15E09A23A3DEEC48503E47ACA45B6209CAE3","name":"81ce1629-a593-4a4f-ac9f-b3d388206bac*23B61C80BD45EC670D58F6356F4F15E09A23A3DEEC48503E47ACA45B6209CAE3","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AZCLIDeploymentTestRG_000001/providers/Nginx.NginxPlus/nginxDeployments/azclitest-deployment","status":"Accepted","startTime":"2022-09-20T11:55:35.7229086Z"}'
     headers:
       cache-control:
       - no-cache
@@ -834,9 +834,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 14 Sep 2022 22:11:19 GMT
+      - Tue, 20 Sep 2022 11:56:38 GMT
       etag:
-      - '"00005a49-0000-3400-0000-632251480000"'
+      - '"03000401-0000-3400-0000-6329aa370000"'
       expires:
       - '-1'
       pragma:
@@ -868,10 +868,10 @@ interactions:
       User-Agent:
       - AZURECLI/2.40.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.10.7 (Windows-10-10.0.22000-SP0)
     method: GET
-    uri: https://management.azure.com/providers/Nginx.NginxPlus/locations/EASTUS2EUAP/operationStatuses/56c5e734-3677-4792-915e-3bc3342dc4f0*6F2948BC7F8DD771B249F57C88B4EE6CAC9020A2630F6F8918E010B6BD828050?api-version=2022-08-01
+    uri: https://management.azure.com/providers/Nginx.NginxPlus/locations/EASTUS2EUAP/operationStatuses/81ce1629-a593-4a4f-ac9f-b3d388206bac*23B61C80BD45EC670D58F6356F4F15E09A23A3DEEC48503E47ACA45B6209CAE3?api-version=2022-08-01
   response:
     body:
-      string: '{"id":"/providers/Nginx.NginxPlus/locations/EASTUS2EUAP/operationStatuses/56c5e734-3677-4792-915e-3bc3342dc4f0*6F2948BC7F8DD771B249F57C88B4EE6CAC9020A2630F6F8918E010B6BD828050","name":"56c5e734-3677-4792-915e-3bc3342dc4f0*6F2948BC7F8DD771B249F57C88B4EE6CAC9020A2630F6F8918E010B6BD828050","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AZCLIDeploymentTestRG_000001/providers/Nginx.NginxPlus/nginxDeployments/azclitest-deployment","status":"Accepted","startTime":"2022-09-14T22:10:16.4604061Z"}'
+      string: '{"id":"/providers/Nginx.NginxPlus/locations/EASTUS2EUAP/operationStatuses/81ce1629-a593-4a4f-ac9f-b3d388206bac*23B61C80BD45EC670D58F6356F4F15E09A23A3DEEC48503E47ACA45B6209CAE3","name":"81ce1629-a593-4a4f-ac9f-b3d388206bac*23B61C80BD45EC670D58F6356F4F15E09A23A3DEEC48503E47ACA45B6209CAE3","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AZCLIDeploymentTestRG_000001/providers/Nginx.NginxPlus/nginxDeployments/azclitest-deployment","status":"Accepted","startTime":"2022-09-20T11:55:35.7229086Z"}'
     headers:
       cache-control:
       - no-cache
@@ -880,9 +880,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 14 Sep 2022 22:11:50 GMT
+      - Tue, 20 Sep 2022 11:57:09 GMT
       etag:
-      - '"00005a49-0000-3400-0000-632251480000"'
+      - '"03000401-0000-3400-0000-6329aa370000"'
       expires:
       - '-1'
       pragma:
@@ -914,10 +914,10 @@ interactions:
       User-Agent:
       - AZURECLI/2.40.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.10.7 (Windows-10-10.0.22000-SP0)
     method: GET
-    uri: https://management.azure.com/providers/Nginx.NginxPlus/locations/EASTUS2EUAP/operationStatuses/56c5e734-3677-4792-915e-3bc3342dc4f0*6F2948BC7F8DD771B249F57C88B4EE6CAC9020A2630F6F8918E010B6BD828050?api-version=2022-08-01
+    uri: https://management.azure.com/providers/Nginx.NginxPlus/locations/EASTUS2EUAP/operationStatuses/81ce1629-a593-4a4f-ac9f-b3d388206bac*23B61C80BD45EC670D58F6356F4F15E09A23A3DEEC48503E47ACA45B6209CAE3?api-version=2022-08-01
   response:
     body:
-      string: '{"id":"/providers/Nginx.NginxPlus/locations/EASTUS2EUAP/operationStatuses/56c5e734-3677-4792-915e-3bc3342dc4f0*6F2948BC7F8DD771B249F57C88B4EE6CAC9020A2630F6F8918E010B6BD828050","name":"56c5e734-3677-4792-915e-3bc3342dc4f0*6F2948BC7F8DD771B249F57C88B4EE6CAC9020A2630F6F8918E010B6BD828050","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AZCLIDeploymentTestRG_000001/providers/Nginx.NginxPlus/nginxDeployments/azclitest-deployment","status":"Accepted","startTime":"2022-09-14T22:10:16.4604061Z"}'
+      string: '{"id":"/providers/Nginx.NginxPlus/locations/EASTUS2EUAP/operationStatuses/81ce1629-a593-4a4f-ac9f-b3d388206bac*23B61C80BD45EC670D58F6356F4F15E09A23A3DEEC48503E47ACA45B6209CAE3","name":"81ce1629-a593-4a4f-ac9f-b3d388206bac*23B61C80BD45EC670D58F6356F4F15E09A23A3DEEC48503E47ACA45B6209CAE3","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AZCLIDeploymentTestRG_000001/providers/Nginx.NginxPlus/nginxDeployments/azclitest-deployment","status":"Accepted","startTime":"2022-09-20T11:55:35.7229086Z"}'
     headers:
       cache-control:
       - no-cache
@@ -926,9 +926,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 14 Sep 2022 22:12:20 GMT
+      - Tue, 20 Sep 2022 11:57:39 GMT
       etag:
-      - '"00005a49-0000-3400-0000-632251480000"'
+      - '"03000401-0000-3400-0000-6329aa370000"'
       expires:
       - '-1'
       pragma:
@@ -960,10 +960,10 @@ interactions:
       User-Agent:
       - AZURECLI/2.40.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.10.7 (Windows-10-10.0.22000-SP0)
     method: GET
-    uri: https://management.azure.com/providers/Nginx.NginxPlus/locations/EASTUS2EUAP/operationStatuses/56c5e734-3677-4792-915e-3bc3342dc4f0*6F2948BC7F8DD771B249F57C88B4EE6CAC9020A2630F6F8918E010B6BD828050?api-version=2022-08-01
+    uri: https://management.azure.com/providers/Nginx.NginxPlus/locations/EASTUS2EUAP/operationStatuses/81ce1629-a593-4a4f-ac9f-b3d388206bac*23B61C80BD45EC670D58F6356F4F15E09A23A3DEEC48503E47ACA45B6209CAE3?api-version=2022-08-01
   response:
     body:
-      string: '{"id":"/providers/Nginx.NginxPlus/locations/EASTUS2EUAP/operationStatuses/56c5e734-3677-4792-915e-3bc3342dc4f0*6F2948BC7F8DD771B249F57C88B4EE6CAC9020A2630F6F8918E010B6BD828050","name":"56c5e734-3677-4792-915e-3bc3342dc4f0*6F2948BC7F8DD771B249F57C88B4EE6CAC9020A2630F6F8918E010B6BD828050","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AZCLIDeploymentTestRG_000001/providers/Nginx.NginxPlus/nginxDeployments/azclitest-deployment","status":"Accepted","startTime":"2022-09-14T22:10:16.4604061Z"}'
+      string: '{"id":"/providers/Nginx.NginxPlus/locations/EASTUS2EUAP/operationStatuses/81ce1629-a593-4a4f-ac9f-b3d388206bac*23B61C80BD45EC670D58F6356F4F15E09A23A3DEEC48503E47ACA45B6209CAE3","name":"81ce1629-a593-4a4f-ac9f-b3d388206bac*23B61C80BD45EC670D58F6356F4F15E09A23A3DEEC48503E47ACA45B6209CAE3","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AZCLIDeploymentTestRG_000001/providers/Nginx.NginxPlus/nginxDeployments/azclitest-deployment","status":"Accepted","startTime":"2022-09-20T11:55:35.7229086Z"}'
     headers:
       cache-control:
       - no-cache
@@ -972,9 +972,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 14 Sep 2022 22:12:51 GMT
+      - Tue, 20 Sep 2022 11:58:09 GMT
       etag:
-      - '"00005a49-0000-3400-0000-632251480000"'
+      - '"03000401-0000-3400-0000-6329aa370000"'
       expires:
       - '-1'
       pragma:
@@ -1006,10 +1006,10 @@ interactions:
       User-Agent:
       - AZURECLI/2.40.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.10.7 (Windows-10-10.0.22000-SP0)
     method: GET
-    uri: https://management.azure.com/providers/Nginx.NginxPlus/locations/EASTUS2EUAP/operationStatuses/56c5e734-3677-4792-915e-3bc3342dc4f0*6F2948BC7F8DD771B249F57C88B4EE6CAC9020A2630F6F8918E010B6BD828050?api-version=2022-08-01
+    uri: https://management.azure.com/providers/Nginx.NginxPlus/locations/EASTUS2EUAP/operationStatuses/81ce1629-a593-4a4f-ac9f-b3d388206bac*23B61C80BD45EC670D58F6356F4F15E09A23A3DEEC48503E47ACA45B6209CAE3?api-version=2022-08-01
   response:
     body:
-      string: '{"id":"/providers/Nginx.NginxPlus/locations/EASTUS2EUAP/operationStatuses/56c5e734-3677-4792-915e-3bc3342dc4f0*6F2948BC7F8DD771B249F57C88B4EE6CAC9020A2630F6F8918E010B6BD828050","name":"56c5e734-3677-4792-915e-3bc3342dc4f0*6F2948BC7F8DD771B249F57C88B4EE6CAC9020A2630F6F8918E010B6BD828050","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AZCLIDeploymentTestRG_000001/providers/Nginx.NginxPlus/nginxDeployments/azclitest-deployment","status":"Accepted","startTime":"2022-09-14T22:10:16.4604061Z"}'
+      string: '{"id":"/providers/Nginx.NginxPlus/locations/EASTUS2EUAP/operationStatuses/81ce1629-a593-4a4f-ac9f-b3d388206bac*23B61C80BD45EC670D58F6356F4F15E09A23A3DEEC48503E47ACA45B6209CAE3","name":"81ce1629-a593-4a4f-ac9f-b3d388206bac*23B61C80BD45EC670D58F6356F4F15E09A23A3DEEC48503E47ACA45B6209CAE3","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AZCLIDeploymentTestRG_000001/providers/Nginx.NginxPlus/nginxDeployments/azclitest-deployment","status":"Accepted","startTime":"2022-09-20T11:55:35.7229086Z"}'
     headers:
       cache-control:
       - no-cache
@@ -1018,9 +1018,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 14 Sep 2022 22:13:21 GMT
+      - Tue, 20 Sep 2022 11:58:40 GMT
       etag:
-      - '"00005a49-0000-3400-0000-632251480000"'
+      - '"03000401-0000-3400-0000-6329aa370000"'
       expires:
       - '-1'
       pragma:
@@ -1052,10 +1052,10 @@ interactions:
       User-Agent:
       - AZURECLI/2.40.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.10.7 (Windows-10-10.0.22000-SP0)
     method: GET
-    uri: https://management.azure.com/providers/Nginx.NginxPlus/locations/EASTUS2EUAP/operationStatuses/56c5e734-3677-4792-915e-3bc3342dc4f0*6F2948BC7F8DD771B249F57C88B4EE6CAC9020A2630F6F8918E010B6BD828050?api-version=2022-08-01
+    uri: https://management.azure.com/providers/Nginx.NginxPlus/locations/EASTUS2EUAP/operationStatuses/81ce1629-a593-4a4f-ac9f-b3d388206bac*23B61C80BD45EC670D58F6356F4F15E09A23A3DEEC48503E47ACA45B6209CAE3?api-version=2022-08-01
   response:
     body:
-      string: '{"id":"/providers/Nginx.NginxPlus/locations/EASTUS2EUAP/operationStatuses/56c5e734-3677-4792-915e-3bc3342dc4f0*6F2948BC7F8DD771B249F57C88B4EE6CAC9020A2630F6F8918E010B6BD828050","name":"56c5e734-3677-4792-915e-3bc3342dc4f0*6F2948BC7F8DD771B249F57C88B4EE6CAC9020A2630F6F8918E010B6BD828050","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AZCLIDeploymentTestRG_000001/providers/Nginx.NginxPlus/nginxDeployments/azclitest-deployment","status":"Succeeded","startTime":"2022-09-14T22:10:16.4604061Z","endTime":"2022-09-14T22:13:24.3263801Z","error":{},"properties":null}'
+      string: '{"id":"/providers/Nginx.NginxPlus/locations/EASTUS2EUAP/operationStatuses/81ce1629-a593-4a4f-ac9f-b3d388206bac*23B61C80BD45EC670D58F6356F4F15E09A23A3DEEC48503E47ACA45B6209CAE3","name":"81ce1629-a593-4a4f-ac9f-b3d388206bac*23B61C80BD45EC670D58F6356F4F15E09A23A3DEEC48503E47ACA45B6209CAE3","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AZCLIDeploymentTestRG_000001/providers/Nginx.NginxPlus/nginxDeployments/azclitest-deployment","status":"Succeeded","startTime":"2022-09-20T11:55:35.7229086Z","endTime":"2022-09-20T11:58:44.4423629Z","error":{},"properties":null}'
     headers:
       cache-control:
       - no-cache
@@ -1064,9 +1064,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 14 Sep 2022 22:13:52 GMT
+      - Tue, 20 Sep 2022 11:59:11 GMT
       etag:
-      - '"00005b49-0000-3400-0000-632252040000"'
+      - '"03000501-0000-3400-0000-6329aaf40000"'
       expires:
       - '-1'
       pragma:
@@ -1101,18 +1101,18 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AZCLIDeploymentTestRG_000001/providers/Nginx.NginxPlus/nginxDeployments/azclitest-deployment?api-version=2022-08-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AZCLIDeploymentTestRG_000001/providers/Nginx.NginxPlus/nginxDeployments/azclitest-deployment","name":"azclitest-deployment","type":"nginx.nginxplus/nginxdeployments","sku":{"name":"preview_Monthly_gmz7xq9ge3py"},"location":"eastus2euap","systemData":{"createdBy":"georgengugi@microsoft.com","createdByType":"User","createdAt":"2022-09-14T22:10:12.8944783Z","lastModifiedBy":"georgengugi@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-09-14T22:10:12.8944783Z"},"properties":{"provisioningState":"Succeeded","nginxVersion":"","managedResourceGroup":"NGX_AZCLIDeploymentTestRG_000001_azclitest-deployment_eastus2euap","ipAddress":"20.47.163.175","networkProfile":{"frontEndIPConfiguration":{"publicIPAddresses":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AZCLIDeploymentTestRG_000001/providers/Microsoft.Network/publicIPAddresses/azclitest-public-ip"}]},"networkInterfaceConfiguration":{"subnetId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AZCLIDeploymentTestRG_000001/providers/Microsoft.Network/virtualNetworks/azclitest-vnet/subnets/azclitest-subnet"}},"enableDiagnosticsSupport":true}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AZCLIDeploymentTestRG_000001/providers/Nginx.NginxPlus/nginxDeployments/azclitest-deployment","name":"azclitest-deployment","type":"nginx.nginxplus/nginxdeployments","sku":{"name":"preview_Monthly_gmz7xq9ge3py"},"location":"eastus2euap","systemData":{"createdBy":"georgengugi@microsoft.com","createdByType":"User","createdAt":"2022-09-20T11:55:31.727496Z","lastModifiedBy":"georgengugi@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-09-20T11:55:31.727496Z"},"properties":{"provisioningState":"Succeeded","nginxVersion":"","managedResourceGroup":"NGX_AZCLIDeploymentTestRG_000001_azclitest-deployment_eastus2euap","ipAddress":"20.47.162.158","networkProfile":{"frontEndIPConfiguration":{"publicIPAddresses":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AZCLIDeploymentTestRG_000001/providers/Microsoft.Network/publicIPAddresses/azclitest-public-ip"}]},"networkInterfaceConfiguration":{"subnetId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AZCLIDeploymentTestRG_000001/providers/Microsoft.Network/virtualNetworks/azclitest-vnet/subnets/azclitest-subnet"}},"enableDiagnosticsSupport":true}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1236'
+      - '1234'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 14 Sep 2022 22:13:52 GMT
+      - Tue, 20 Sep 2022 11:59:12 GMT
       etag:
-      - '"9000e1b9-0000-3400-0000-632252040000"'
+      - '"d2004b83-0000-3400-0000-6329aaf40000"'
       expires:
       - '-1'
       pragma:
@@ -1149,16 +1149,16 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AZCLIDeploymentTestRG_000001/providers/Nginx.NginxPlus/nginxDeployments?api-version=2022-08-01
   response:
     body:
-      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AZCLIDeploymentTestRG_000001/providers/Nginx.NginxPlus/nginxDeployments/azclitest-deployment","name":"azclitest-deployment","type":"nginx.nginxplus/nginxdeployments","sku":{"name":"preview_Monthly_gmz7xq9ge3py"},"location":"eastus2euap","systemData":{"createdBy":"georgengugi@microsoft.com","createdByType":"User","createdAt":"2022-09-14T22:10:12.8944783Z","lastModifiedBy":"georgengugi@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-09-14T22:10:12.8944783Z"},"properties":{"provisioningState":"Succeeded","nginxVersion":"","managedResourceGroup":"NGX_AZCLIDeploymentTestRG_000001_azclitest-deployment_eastus2euap","ipAddress":"20.47.163.175","networkProfile":{"frontEndIPConfiguration":{"publicIPAddresses":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AZCLIDeploymentTestRG_000001/providers/Microsoft.Network/publicIPAddresses/azclitest-public-ip"}]},"networkInterfaceConfiguration":{"subnetId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AZCLIDeploymentTestRG_000001/providers/Microsoft.Network/virtualNetworks/azclitest-vnet/subnets/azclitest-subnet"}},"enableDiagnosticsSupport":true}}]}'
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AZCLIDeploymentTestRG_000001/providers/Nginx.NginxPlus/nginxDeployments/azclitest-deployment","name":"azclitest-deployment","type":"nginx.nginxplus/nginxdeployments","sku":{"name":"preview_Monthly_gmz7xq9ge3py"},"location":"eastus2euap","systemData":{"createdBy":"georgengugi@microsoft.com","createdByType":"User","createdAt":"2022-09-20T11:55:31.727496Z","lastModifiedBy":"georgengugi@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-09-20T11:55:31.727496Z"},"properties":{"provisioningState":"Succeeded","nginxVersion":"","managedResourceGroup":"NGX_AZCLIDeploymentTestRG_000001_azclitest-deployment_eastus2euap","ipAddress":"20.47.162.158","networkProfile":{"frontEndIPConfiguration":{"publicIPAddresses":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AZCLIDeploymentTestRG_000001/providers/Microsoft.Network/publicIPAddresses/azclitest-public-ip"}]},"networkInterfaceConfiguration":{"subnetId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AZCLIDeploymentTestRG_000001/providers/Microsoft.Network/virtualNetworks/azclitest-vnet/subnets/azclitest-subnet"}},"enableDiagnosticsSupport":true}}]}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1248'
+      - '1246'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 14 Sep 2022 22:14:00 GMT
+      - Tue, 20 Sep 2022 11:59:16 GMT
       expires:
       - '-1'
       pragma:
@@ -1170,14 +1170,14 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-original-request-ids:
-      - e6dfec83-e18c-4716-bc1b-eafead0f943c
-      - 7f6a739c-533c-4f23-86c6-bd0b87dcec0f
-      - 88e39def-9bb1-4ae8-81a2-b9d11a610bda
-      - c43285de-5ba4-4a37-bf8b-d4e97780fbfb
-      - 43a23138-c071-4c27-bdfc-782e422f4229
-      - beb124ba-dd38-47ab-9b84-12955cfc4c7d
-      - 277d3caa-e385-4451-9018-06d87d2b3511
-      - 83c005a3-9b96-466b-92a4-405894475876
+      - 3ceb70b8-2a20-4567-aeab-e9e897d93847
+      - a950ec6f-40ce-41ac-a08a-d0dd4330dde5
+      - cc3b6798-cf45-4779-9666-6cce08e6ed9f
+      - e329178d-e69e-4af5-bcec-db162b139791
+      - 2826d8cd-9502-4b45-b4b3-d6def340e627
+      - 315cfd8e-f7fc-48dc-a35f-bd36b7809a06
+      - 785552b2-b354-46d4-a7f3-6d4294bad3ca
+      - 62507f5b-e5a8-48cc-b10a-d5574af9d5a8
     status:
       code: 200
       message: OK
@@ -1200,18 +1200,18 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AZCLIDeploymentTestRG_000001/providers/Nginx.NginxPlus/nginxDeployments/azclitest-deployment?api-version=2022-08-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AZCLIDeploymentTestRG_000001/providers/Nginx.NginxPlus/nginxDeployments/azclitest-deployment","name":"azclitest-deployment","type":"nginx.nginxplus/nginxdeployments","sku":{"name":"preview_Monthly_gmz7xq9ge3py"},"location":"eastus2euap","systemData":{"createdBy":"georgengugi@microsoft.com","createdByType":"User","createdAt":"2022-09-14T22:10:12.8944783Z","lastModifiedBy":"georgengugi@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-09-14T22:10:12.8944783Z"},"properties":{"provisioningState":"Succeeded","nginxVersion":"","managedResourceGroup":"NGX_AZCLIDeploymentTestRG_000001_azclitest-deployment_eastus2euap","ipAddress":"20.47.163.175","networkProfile":{"frontEndIPConfiguration":{"publicIPAddresses":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AZCLIDeploymentTestRG_000001/providers/Microsoft.Network/publicIPAddresses/azclitest-public-ip"}]},"networkInterfaceConfiguration":{"subnetId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AZCLIDeploymentTestRG_000001/providers/Microsoft.Network/virtualNetworks/azclitest-vnet/subnets/azclitest-subnet"}},"enableDiagnosticsSupport":true}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AZCLIDeploymentTestRG_000001/providers/Nginx.NginxPlus/nginxDeployments/azclitest-deployment","name":"azclitest-deployment","type":"nginx.nginxplus/nginxdeployments","sku":{"name":"preview_Monthly_gmz7xq9ge3py"},"location":"eastus2euap","systemData":{"createdBy":"georgengugi@microsoft.com","createdByType":"User","createdAt":"2022-09-20T11:55:31.727496Z","lastModifiedBy":"georgengugi@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-09-20T11:55:31.727496Z"},"properties":{"provisioningState":"Succeeded","nginxVersion":"","managedResourceGroup":"NGX_AZCLIDeploymentTestRG_000001_azclitest-deployment_eastus2euap","ipAddress":"20.47.162.158","networkProfile":{"frontEndIPConfiguration":{"publicIPAddresses":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AZCLIDeploymentTestRG_000001/providers/Microsoft.Network/publicIPAddresses/azclitest-public-ip"}]},"networkInterfaceConfiguration":{"subnetId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AZCLIDeploymentTestRG_000001/providers/Microsoft.Network/virtualNetworks/azclitest-vnet/subnets/azclitest-subnet"}},"enableDiagnosticsSupport":true}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1236'
+      - '1234'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 14 Sep 2022 22:14:03 GMT
+      - Tue, 20 Sep 2022 11:59:21 GMT
       etag:
-      - '"9000e1b9-0000-3400-0000-632252040000"'
+      - '"d2004b83-0000-3400-0000-6329aaf40000"'
       expires:
       - '-1'
       pragma:
@@ -1258,24 +1258,24 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AZCLIDeploymentTestRG_000001/providers/Nginx.NginxPlus/nginxDeployments/azclitest-deployment?api-version=2022-08-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AZCLIDeploymentTestRG_000001/providers/Nginx.NginxPlus/nginxDeployments/azclitest-deployment","name":"azclitest-deployment","type":"nginx.nginxplus/nginxdeployments","sku":{"name":"preview_Monthly_gmz7xq9ge3py"},"location":"eastus2euap","tags":{"tag1":"value1","tag2":"value2"},"systemData":{"createdBy":"georgengugi@microsoft.com","createdByType":"User","createdAt":"2022-09-14T22:10:12.8944783Z","lastModifiedBy":"georgengugi@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-09-14T22:14:05.5403622Z"},"properties":{"provisioningState":"Accepted","nginxVersion":"","managedResourceGroup":"NGX_AZCLIDeploymentTestRG_000001_azclitest-deployment_eastus2euap","ipAddress":"20.47.163.175","networkProfile":{"frontEndIPConfiguration":{"publicIPAddresses":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AZCLIDeploymentTestRG_000001/providers/Microsoft.Network/publicIPAddresses/azclitest-public-ip"}]},"networkInterfaceConfiguration":{"subnetId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AZCLIDeploymentTestRG_000001/providers/Microsoft.Network/virtualNetworks/azclitest-vnet/subnets/azclitest-subnet"}},"enableDiagnosticsSupport":false,"logging":null}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AZCLIDeploymentTestRG_000001/providers/Nginx.NginxPlus/nginxDeployments/azclitest-deployment","name":"azclitest-deployment","type":"nginx.nginxplus/nginxdeployments","sku":{"name":"preview_Monthly_gmz7xq9ge3py"},"location":"eastus2euap","tags":{"tag1":"value1","tag2":"value2"},"systemData":{"createdBy":"georgengugi@microsoft.com","createdByType":"User","createdAt":"2022-09-20T11:55:31.727496Z","lastModifiedBy":"georgengugi@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-09-20T11:59:25.1693125Z"},"properties":{"provisioningState":"Accepted","nginxVersion":"","managedResourceGroup":"NGX_AZCLIDeploymentTestRG_000001_azclitest-deployment_eastus2euap","ipAddress":"20.47.162.158","networkProfile":{"frontEndIPConfiguration":{"publicIPAddresses":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AZCLIDeploymentTestRG_000001/providers/Microsoft.Network/publicIPAddresses/azclitest-public-ip"}]},"networkInterfaceConfiguration":{"subnetId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AZCLIDeploymentTestRG_000001/providers/Microsoft.Network/virtualNetworks/azclitest-vnet/subnets/azclitest-subnet"}},"enableDiagnosticsSupport":false,"logging":null}}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/providers/Nginx.NginxPlus/locations/EASTUS2EUAP/operationStatuses/81897ec8-53b4-4e0f-828d-8b6f11b9dfb4*6F2948BC7F8DD771B249F57C88B4EE6CAC9020A2630F6F8918E010B6BD828050?api-version=2022-08-01
+      - https://management.azure.com/providers/Nginx.NginxPlus/locations/EASTUS2EUAP/operationStatuses/4ddc3930-5161-499d-bc34-347d074eeebd*23B61C80BD45EC670D58F6356F4F15E09A23A3DEEC48503E47ACA45B6209CAE3?api-version=2022-08-01
       cache-control:
       - no-cache
       content-length:
-      - '1292'
+      - '1291'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 14 Sep 2022 22:14:14 GMT
+      - Tue, 20 Sep 2022 11:59:33 GMT
       etag:
-      - '"900001ba-0000-3400-0000-632252320000"'
+      - '"d2003285-0000-3400-0000-6329ab200000"'
       expires:
       - '-1'
       location:
-      - https://management.azure.com/providers/Nginx.NginxPlus/locations/EASTUS2EUAP/operationStatuses/81897ec8-53b4-4e0f-828d-8b6f11b9dfb4*6F2948BC7F8DD771B249F57C88B4EE6CAC9020A2630F6F8918E010B6BD828050?api-version=2022-08-01
+      - https://management.azure.com/providers/Nginx.NginxPlus/locations/EASTUS2EUAP/operationStatuses/4ddc3930-5161-499d-bc34-347d074eeebd*23B61C80BD45EC670D58F6356F4F15E09A23A3DEEC48503E47ACA45B6209CAE3?api-version=2022-08-01
       pragma:
       - no-cache
       request-context:
@@ -1287,7 +1287,7 @@ interactions:
       x-ms-providerhub-traffic:
       - 'True'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1196'
+      - '1199'
     status:
       code: 201
       message: Created
@@ -1307,10 +1307,10 @@ interactions:
       User-Agent:
       - AZURECLI/2.40.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.10.7 (Windows-10-10.0.22000-SP0)
     method: GET
-    uri: https://management.azure.com/providers/Nginx.NginxPlus/locations/EASTUS2EUAP/operationStatuses/81897ec8-53b4-4e0f-828d-8b6f11b9dfb4*6F2948BC7F8DD771B249F57C88B4EE6CAC9020A2630F6F8918E010B6BD828050?api-version=2022-08-01
+    uri: https://management.azure.com/providers/Nginx.NginxPlus/locations/EASTUS2EUAP/operationStatuses/4ddc3930-5161-499d-bc34-347d074eeebd*23B61C80BD45EC670D58F6356F4F15E09A23A3DEEC48503E47ACA45B6209CAE3?api-version=2022-08-01
   response:
     body:
-      string: '{"id":"/providers/Nginx.NginxPlus/locations/EASTUS2EUAP/operationStatuses/81897ec8-53b4-4e0f-828d-8b6f11b9dfb4*6F2948BC7F8DD771B249F57C88B4EE6CAC9020A2630F6F8918E010B6BD828050","name":"81897ec8-53b4-4e0f-828d-8b6f11b9dfb4*6F2948BC7F8DD771B249F57C88B4EE6CAC9020A2630F6F8918E010B6BD828050","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AZCLIDeploymentTestRG_000001/providers/Nginx.NginxPlus/nginxDeployments/azclitest-deployment","status":"Succeeded","startTime":"2022-09-14T22:14:09.6370312Z","endTime":"2022-09-14T22:14:43.5177629Z","error":{},"properties":null}'
+      string: '{"id":"/providers/Nginx.NginxPlus/locations/EASTUS2EUAP/operationStatuses/4ddc3930-5161-499d-bc34-347d074eeebd*23B61C80BD45EC670D58F6356F4F15E09A23A3DEEC48503E47ACA45B6209CAE3","name":"4ddc3930-5161-499d-bc34-347d074eeebd*23B61C80BD45EC670D58F6356F4F15E09A23A3DEEC48503E47ACA45B6209CAE3","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AZCLIDeploymentTestRG_000001/providers/Nginx.NginxPlus/nginxDeployments/azclitest-deployment","status":"Succeeded","startTime":"2022-09-20T11:59:27.0419019Z","endTime":"2022-09-20T12:00:01.0824201Z","error":{},"properties":null}'
     headers:
       cache-control:
       - no-cache
@@ -1319,9 +1319,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 14 Sep 2022 22:14:44 GMT
+      - Tue, 20 Sep 2022 12:00:03 GMT
       etag:
-      - '"00005d49-0000-3400-0000-632252530000"'
+      - '"03000701-0000-3400-0000-6329ab410000"'
       expires:
       - '-1'
       pragma:
@@ -1356,19 +1356,19 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AZCLIDeploymentTestRG_000001/providers/Nginx.NginxPlus/nginxDeployments/azclitest-deployment?api-version=2022-08-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AZCLIDeploymentTestRG_000001/providers/Nginx.NginxPlus/nginxDeployments/azclitest-deployment","name":"azclitest-deployment","type":"nginx.nginxplus/nginxdeployments","sku":{"name":"preview_Monthly_gmz7xq9ge3py"},"location":"eastus2euap","tags":{"tag1":"value1","tag2":"value2"},"systemData":{"createdBy":"georgengugi@microsoft.com","createdByType":"User","createdAt":"2022-09-14T22:10:12.8944783Z","lastModifiedBy":"georgengugi@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-09-14T22:14:05.5403622Z"},"properties":{"provisioningState":"Succeeded","nginxVersion":"1.21.6
-        (nginx-plus-r27)","managedResourceGroup":"NGX_AZCLIDeploymentTestRG_000001_azclitest-deployment_eastus2euap","ipAddress":"20.47.163.175","networkProfile":{"frontEndIPConfiguration":{"publicIPAddresses":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AZCLIDeploymentTestRG_000001/providers/Microsoft.Network/publicIPAddresses/azclitest-public-ip"}]},"networkInterfaceConfiguration":{"subnetId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AZCLIDeploymentTestRG_000001/providers/Microsoft.Network/virtualNetworks/azclitest-vnet/subnets/azclitest-subnet"}},"enableDiagnosticsSupport":false}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AZCLIDeploymentTestRG_000001/providers/Nginx.NginxPlus/nginxDeployments/azclitest-deployment","name":"azclitest-deployment","type":"nginx.nginxplus/nginxdeployments","sku":{"name":"preview_Monthly_gmz7xq9ge3py"},"location":"eastus2euap","tags":{"tag1":"value1","tag2":"value2"},"systemData":{"createdBy":"georgengugi@microsoft.com","createdByType":"User","createdAt":"2022-09-20T11:55:31.727496Z","lastModifiedBy":"georgengugi@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-09-20T11:59:25.1693125Z"},"properties":{"provisioningState":"Succeeded","nginxVersion":"1.21.6
+        (nginx-plus-r27)","managedResourceGroup":"NGX_AZCLIDeploymentTestRG_000001_azclitest-deployment_eastus2euap","ipAddress":"20.47.162.158","networkProfile":{"frontEndIPConfiguration":{"publicIPAddresses":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AZCLIDeploymentTestRG_000001/providers/Microsoft.Network/publicIPAddresses/azclitest-public-ip"}]},"networkInterfaceConfiguration":{"subnetId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AZCLIDeploymentTestRG_000001/providers/Microsoft.Network/virtualNetworks/azclitest-vnet/subnets/azclitest-subnet"}},"enableDiagnosticsSupport":false}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1301'
+      - '1300'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 14 Sep 2022 22:14:45 GMT
+      - Tue, 20 Sep 2022 12:00:04 GMT
       etag:
-      - '"900003ba-0000-3400-0000-632252530000"'
+      - '"d2003586-0000-3400-0000-6329ab410000"'
       expires:
       - '-1'
       pragma:
@@ -1405,19 +1405,19 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AZCLIDeploymentTestRG_000001/providers/Nginx.NginxPlus/nginxDeployments/azclitest-deployment?api-version=2022-08-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AZCLIDeploymentTestRG_000001/providers/Nginx.NginxPlus/nginxDeployments/azclitest-deployment","name":"azclitest-deployment","type":"nginx.nginxplus/nginxdeployments","sku":{"name":"preview_Monthly_gmz7xq9ge3py"},"location":"eastus2euap","tags":{"tag1":"value1","tag2":"value2"},"systemData":{"createdBy":"georgengugi@microsoft.com","createdByType":"User","createdAt":"2022-09-14T22:10:12.8944783Z","lastModifiedBy":"georgengugi@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-09-14T22:14:05.5403622Z"},"properties":{"provisioningState":"Succeeded","nginxVersion":"1.21.6
-        (nginx-plus-r27)","managedResourceGroup":"NGX_AZCLIDeploymentTestRG_000001_azclitest-deployment_eastus2euap","ipAddress":"20.47.163.175","networkProfile":{"frontEndIPConfiguration":{"publicIPAddresses":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AZCLIDeploymentTestRG_000001/providers/Microsoft.Network/publicIPAddresses/azclitest-public-ip"}]},"networkInterfaceConfiguration":{"subnetId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AZCLIDeploymentTestRG_000001/providers/Microsoft.Network/virtualNetworks/azclitest-vnet/subnets/azclitest-subnet"}},"enableDiagnosticsSupport":false}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AZCLIDeploymentTestRG_000001/providers/Nginx.NginxPlus/nginxDeployments/azclitest-deployment","name":"azclitest-deployment","type":"nginx.nginxplus/nginxdeployments","sku":{"name":"preview_Monthly_gmz7xq9ge3py"},"location":"eastus2euap","tags":{"tag1":"value1","tag2":"value2"},"systemData":{"createdBy":"georgengugi@microsoft.com","createdByType":"User","createdAt":"2022-09-20T11:55:31.727496Z","lastModifiedBy":"georgengugi@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-09-20T11:59:25.1693125Z"},"properties":{"provisioningState":"Succeeded","nginxVersion":"1.21.6
+        (nginx-plus-r27)","managedResourceGroup":"NGX_AZCLIDeploymentTestRG_000001_azclitest-deployment_eastus2euap","ipAddress":"20.47.162.158","networkProfile":{"frontEndIPConfiguration":{"publicIPAddresses":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AZCLIDeploymentTestRG_000001/providers/Microsoft.Network/publicIPAddresses/azclitest-public-ip"}]},"networkInterfaceConfiguration":{"subnetId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AZCLIDeploymentTestRG_000001/providers/Microsoft.Network/virtualNetworks/azclitest-vnet/subnets/azclitest-subnet"}},"enableDiagnosticsSupport":false}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1301'
+      - '1300'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 14 Sep 2022 22:14:49 GMT
+      - Tue, 20 Sep 2022 12:00:07 GMT
       etag:
-      - '"900003ba-0000-3400-0000-632252530000"'
+      - '"d2003586-0000-3400-0000-6329ab410000"'
       expires:
       - '-1'
       pragma:
@@ -1454,19 +1454,19 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AZCLIDeploymentTestRG_000001/providers/Nginx.NginxPlus/nginxDeployments/azclitest-deployment?api-version=2022-08-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AZCLIDeploymentTestRG_000001/providers/Nginx.NginxPlus/nginxDeployments/azclitest-deployment","name":"azclitest-deployment","type":"nginx.nginxplus/nginxdeployments","sku":{"name":"preview_Monthly_gmz7xq9ge3py"},"location":"eastus2euap","tags":{"tag1":"value1","tag2":"value2"},"systemData":{"createdBy":"georgengugi@microsoft.com","createdByType":"User","createdAt":"2022-09-14T22:10:12.8944783Z","lastModifiedBy":"georgengugi@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-09-14T22:14:05.5403622Z"},"properties":{"provisioningState":"Succeeded","nginxVersion":"1.21.6
-        (nginx-plus-r27)","managedResourceGroup":"NGX_AZCLIDeploymentTestRG_000001_azclitest-deployment_eastus2euap","ipAddress":"20.47.163.175","networkProfile":{"frontEndIPConfiguration":{"publicIPAddresses":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AZCLIDeploymentTestRG_000001/providers/Microsoft.Network/publicIPAddresses/azclitest-public-ip"}]},"networkInterfaceConfiguration":{"subnetId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AZCLIDeploymentTestRG_000001/providers/Microsoft.Network/virtualNetworks/azclitest-vnet/subnets/azclitest-subnet"}},"enableDiagnosticsSupport":false}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AZCLIDeploymentTestRG_000001/providers/Nginx.NginxPlus/nginxDeployments/azclitest-deployment","name":"azclitest-deployment","type":"nginx.nginxplus/nginxdeployments","sku":{"name":"preview_Monthly_gmz7xq9ge3py"},"location":"eastus2euap","tags":{"tag1":"value1","tag2":"value2"},"systemData":{"createdBy":"georgengugi@microsoft.com","createdByType":"User","createdAt":"2022-09-20T11:55:31.727496Z","lastModifiedBy":"georgengugi@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-09-20T11:59:25.1693125Z"},"properties":{"provisioningState":"Succeeded","nginxVersion":"1.21.6
+        (nginx-plus-r27)","managedResourceGroup":"NGX_AZCLIDeploymentTestRG_000001_azclitest-deployment_eastus2euap","ipAddress":"20.47.162.158","networkProfile":{"frontEndIPConfiguration":{"publicIPAddresses":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AZCLIDeploymentTestRG_000001/providers/Microsoft.Network/publicIPAddresses/azclitest-public-ip"}]},"networkInterfaceConfiguration":{"subnetId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AZCLIDeploymentTestRG_000001/providers/Microsoft.Network/virtualNetworks/azclitest-vnet/subnets/azclitest-subnet"}},"enableDiagnosticsSupport":false}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1301'
+      - '1300'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 14 Sep 2022 22:14:53 GMT
+      - Tue, 20 Sep 2022 12:00:08 GMT
       etag:
-      - '"900003ba-0000-3400-0000-632252530000"'
+      - '"d2003586-0000-3400-0000-6329ab410000"'
       expires:
       - '-1'
       pragma:
@@ -1515,7 +1515,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 14 Sep 2022 22:14:58 GMT
+      - Tue, 20 Sep 2022 12:00:10 GMT
       expires:
       - '-1'
       pragma:
@@ -1560,11 +1560,11 @@ interactions:
       content-type:
       - application/json;odata.metadata=minimal;odata.streaming=true;IEEE754Compatible=false;charset=utf-8
       date:
-      - Wed, 14 Sep 2022 22:14:59 GMT
+      - Tue, 20 Sep 2022 12:00:12 GMT
       odata-version:
       - '4.0'
       request-id:
-      - fd677fda-dac9-435f-b990-60a4e0cf3f60
+      - 7599ddfd-6555-4376-a997-c323e029d9d8
       strict-transport-security:
       - max-age=31536000
       transfer-encoding:
@@ -1572,7 +1572,7 @@ interactions:
       vary:
       - Accept-Encoding
       x-ms-ags-diagnostic:
-      - '{"ServerInfo":{"DataCenter":"West Europe","Slice":"E","Ring":"5","ScaleUnit":"005","RoleInstance":"AM4PEPF00015145"}}'
+      - '{"ServerInfo":{"DataCenter":"West Europe","Slice":"E","Ring":"5","ScaleUnit":"000","RoleInstance":"AM1PEPF00016715"}}'
       x-ms-resource-unit:
       - '1'
     status:
@@ -1607,7 +1607,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AZCLIDeploymentTestRG_000001/providers/Microsoft.KeyVault/vaults/cli000002?api-version=2022-07-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AZCLIDeploymentTestRG_000001/providers/Microsoft.KeyVault/vaults/cli000002","name":"cli000002","type":"Microsoft.KeyVault/vaults","location":"eastus2euap","tags":{},"systemData":{"createdBy":"georgengugi@microsoft.com","createdByType":"User","createdAt":"2022-09-14T22:15:08.023Z","lastModifiedBy":"georgengugi@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-09-14T22:15:08.023Z"},"properties":{"sku":{"family":"A","name":"standard"},"tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","accessPolicies":[{"tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","objectId":"44307965-0ae2-4620-9a3d-0a9a0371e958","permissions":{"keys":["all"],"secrets":["all"],"certificates":["all"],"storage":["all"]}}],"enabledForDeployment":false,"enableSoftDelete":true,"softDeleteRetentionInDays":90,"vaultUri":"https://cli000002.vault.azure.net","provisioningState":"RegisteringDns","publicNetworkAccess":"Enabled"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AZCLIDeploymentTestRG_000001/providers/Microsoft.KeyVault/vaults/cli000002","name":"cli000002","type":"Microsoft.KeyVault/vaults","location":"eastus2euap","tags":{},"systemData":{"createdBy":"georgengugi@microsoft.com","createdByType":"User","createdAt":"2022-09-20T12:00:20.448Z","lastModifiedBy":"georgengugi@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-09-20T12:00:20.448Z"},"properties":{"sku":{"family":"A","name":"standard"},"tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","accessPolicies":[{"tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","objectId":"44307965-0ae2-4620-9a3d-0a9a0371e958","permissions":{"keys":["all"],"secrets":["all"],"certificates":["all"],"storage":["all"]}}],"enabledForDeployment":false,"enableSoftDelete":true,"softDeleteRetentionInDays":90,"vaultUri":"https://cli000002.vault.azure.net","provisioningState":"RegisteringDns","publicNetworkAccess":"Enabled"}}'
     headers:
       cache-control:
       - no-cache
@@ -1616,7 +1616,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 14 Sep 2022 22:15:11 GMT
+      - Tue, 20 Sep 2022 12:00:24 GMT
       expires:
       - '-1'
       pragma:
@@ -1660,7 +1660,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AZCLIDeploymentTestRG_000001/providers/Microsoft.KeyVault/vaults/cli000002?api-version=2022-07-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AZCLIDeploymentTestRG_000001/providers/Microsoft.KeyVault/vaults/cli000002","name":"cli000002","type":"Microsoft.KeyVault/vaults","location":"eastus2euap","tags":{},"systemData":{"createdBy":"georgengugi@microsoft.com","createdByType":"User","createdAt":"2022-09-14T22:15:08.023Z","lastModifiedBy":"georgengugi@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-09-14T22:15:08.023Z"},"properties":{"sku":{"family":"A","name":"standard"},"tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","accessPolicies":[{"tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","objectId":"44307965-0ae2-4620-9a3d-0a9a0371e958","permissions":{"keys":["all"],"secrets":["all"],"certificates":["all"],"storage":["all"]}}],"enabledForDeployment":false,"enableSoftDelete":true,"softDeleteRetentionInDays":90,"vaultUri":"https://cli000002.vault.azure.net/","provisioningState":"Succeeded","publicNetworkAccess":"Enabled"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AZCLIDeploymentTestRG_000001/providers/Microsoft.KeyVault/vaults/cli000002","name":"cli000002","type":"Microsoft.KeyVault/vaults","location":"eastus2euap","tags":{},"systemData":{"createdBy":"georgengugi@microsoft.com","createdByType":"User","createdAt":"2022-09-20T12:00:20.448Z","lastModifiedBy":"georgengugi@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-09-20T12:00:20.448Z"},"properties":{"sku":{"family":"A","name":"standard"},"tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","accessPolicies":[{"tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","objectId":"44307965-0ae2-4620-9a3d-0a9a0371e958","permissions":{"keys":["all"],"secrets":["all"],"certificates":["all"],"storage":["all"]}}],"enabledForDeployment":false,"enableSoftDelete":true,"softDeleteRetentionInDays":90,"vaultUri":"https://cli000002.vault.azure.net/","provisioningState":"Succeeded","publicNetworkAccess":"Enabled"}}'
     headers:
       cache-control:
       - no-cache
@@ -1669,7 +1669,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 14 Sep 2022 22:15:43 GMT
+      - Tue, 20 Sep 2022 12:00:54 GMT
       expires:
       - '-1'
       pragma:
@@ -1723,7 +1723,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 14 Sep 2022 22:15:48 GMT
+      - Tue, 20 Sep 2022 12:00:57 GMT
       expires:
       - '-1'
       pragma:
@@ -1736,7 +1736,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-keyvault-network-info:
-      - conn_type=Ipv4;addr=105.61.123.37;act_addr_fam=InterNetwork;
+      - conn_type=Ipv4;addr=41.80.97.57;act_addr_fam=InterNetwork;
       x-ms-keyvault-region:
       - eastus2euap
       x-ms-keyvault-service-version:
@@ -1772,9 +1772,9 @@ interactions:
     uri: https://cli000002.vault.azure.net/certificates/azclitestcert/create?api-version=7.0
   response:
     body:
-      string: '{"id":"https://cli000002.vault.azure.net/certificates/azclitestcert/pending","issuer":{"name":"Self"},"csr":"MIICrjCCAZYCAQAwHjEcMBoGA1UEAxMTQ0xJR2V0RGVmYXVsdFBvbGljeTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAKA7OqRXHX6k1iaCc9Qzw0iyx80VegyWxzrZ3LIK7VUo/2HxxGv1lNbTacVW1b5OvdpdeSrrjl2OSYDwOulHgbC54S8lyankpzFEBQdN9j7h8SnkqKDcyrsWbG9F+AW8PBUv8ON1tCBdsw4ZvyBZoGt/B3w766H34vMsaDsVrYh8d75ISEEB4ciW3C/tOFqjSp6SxgNHInt9Gnufx4Fkzpl7f2wcnIPR7oOdMrNmXiQ6PJf+gpfgHyySY0qNxImP8x2PDu+JH8JNTsceEi6bMlrT6+wc0t/CK/OnyKZsFCjKIB7hnHjzoeEoC2P02f2ggoaOM7Cw8iryII4NcfW2a4kCAwEAAaBLMEkGCSqGSIb3DQEJDjE8MDowDgYDVR0PAQH/BAQDAgG+MB0GA1UdJQQWMBQGCCsGAQUFBwMBBggrBgEFBQcDAjAJBgNVHRMEAjAAMA0GCSqGSIb3DQEBCwUAA4IBAQBfRF7l5S/YKvVsyNJYxh3QMkjZmppcOuAr6BL+aKZ/HtFdHvoxW4f+hAUrLtkEtDEcDg6iNU4ch42T2L8mSipZvegQD81BS1PeyxYFW0FdOd7/4QO8pV60w0myeweHUah3MQQV9dXa4iu374NcBCATx3FlGSZNSp6iS/nxpQ8jgyjE/q9qR5aebkcBY7w22TvnEK1D6mYdrVHGzdCcXmEFhmQxYS6z7hD7f3XsEFgP6nRBhIapwcd40C7vN7ROi6I6VfDKPRw129Bqlc7EJa/48bJnuBuWWtV9lkXkspoi0dQXqziRtW51USS6c04D/rNSfkYw1o6H4W0RBm5EcN3I","cancellation_requested":false,"status":"inProgress","status_details":"Pending
+      string: '{"id":"https://cli000002.vault.azure.net/certificates/azclitestcert/pending","issuer":{"name":"Self"},"csr":"MIICrjCCAZYCAQAwHjEcMBoGA1UEAxMTQ0xJR2V0RGVmYXVsdFBvbGljeTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMXDeemfCx2N38yRPPM9MxYc0CF4tyQ3xd6CJloiS4v5/td/4OWR57OZzg/BKdWSGtdIKUJhbFWxXH5ZX2EFwEqLkvn8AO8D25kWOJqizL2DFFyut3Hl8S+ANcv3czHtZRRe4z87J49z2v+oe3Nesa7YTAOlP7TGW5M5yE8hxGc7p+oszHwlto4vOKVx1mudtq01uf9WaJjq2Le0mYcFT/t9ySj+iVweuSUQLBxp8LErY8MNGKhjdph4YLOZqD7hKBhicLT+M3Qzt3U00RlgWxFm03m5nFAFzM1msvM36vLn1JyeiUggaOKb0Q6xEGaI+6XdzCLG2QuEGsLVp0tDw1kCAwEAAaBLMEkGCSqGSIb3DQEJDjE8MDowDgYDVR0PAQH/BAQDAgG+MB0GA1UdJQQWMBQGCCsGAQUFBwMBBggrBgEFBQcDAjAJBgNVHRMEAjAAMA0GCSqGSIb3DQEBCwUAA4IBAQAVCnLjFIWiAYPwtkrhoiwJDai/7pTkkKEj/3ij3NMtMnRqsqIbZYovDfxM8KUPjQXwJ0Lfs2uC8v1hch5XO5aYisMIss0EtAM0f2Ex2ifFSPRiooW8xolFe7JE9wC12dQXr1tvxNjLuQcdUi8IAilv5jclkxBLycwZHtz1BRh78KX0GCcfd95oAcj+EAVNvOH12Datb3STWa9HLEYEP8TCT66VNx4lPEA87pqFhTbp4s4q4ulWg21NZy6muOENjkNH+TiBd/7xof8lr+us9ouh1kDzq22jEMe5p+Pq99ph0kevtGX0zdJ0+ISwRGvjHSpDxOrK3N9XxaqAXpgVNagz","cancellation_requested":false,"status":"inProgress","status_details":"Pending
         certificate created. Certificate request is in progress. This may take some
-        time based on the issuer provider. Please check again later.","request_id":"85e7e45632e44901b693cd228e4de550"}'
+        time based on the issuer provider. Please check again later.","request_id":"b7ec94271b96444bbd618792b6ade03f"}'
     headers:
       cache-control:
       - no-cache
@@ -1783,11 +1783,11 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 14 Sep 2022 22:15:49 GMT
+      - Tue, 20 Sep 2022 12:00:59 GMT
       expires:
       - '-1'
       location:
-      - https://cli000002.vault.azure.net/certificates/azclitestcert/pending?api-version=7.0&request_id=85e7e45632e44901b693cd228e4de550
+      - https://cli000002.vault.azure.net/certificates/azclitestcert/pending?api-version=7.0&request_id=b7ec94271b96444bbd618792b6ade03f
       pragma:
       - no-cache
       strict-transport-security:
@@ -1795,7 +1795,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-keyvault-network-info:
-      - conn_type=Ipv4;addr=105.61.123.37;act_addr_fam=InterNetwork;
+      - conn_type=Ipv4;addr=41.80.97.57;act_addr_fam=InterNetwork;
       x-ms-keyvault-region:
       - eastus2euap
       x-ms-keyvault-service-version:
@@ -1823,9 +1823,9 @@ interactions:
     uri: https://cli000002.vault.azure.net/certificates/azclitestcert/pending?api-version=7.0
   response:
     body:
-      string: '{"id":"https://cli000002.vault.azure.net/certificates/azclitestcert/pending","issuer":{"name":"Self"},"csr":"MIICrjCCAZYCAQAwHjEcMBoGA1UEAxMTQ0xJR2V0RGVmYXVsdFBvbGljeTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAKA7OqRXHX6k1iaCc9Qzw0iyx80VegyWxzrZ3LIK7VUo/2HxxGv1lNbTacVW1b5OvdpdeSrrjl2OSYDwOulHgbC54S8lyankpzFEBQdN9j7h8SnkqKDcyrsWbG9F+AW8PBUv8ON1tCBdsw4ZvyBZoGt/B3w766H34vMsaDsVrYh8d75ISEEB4ciW3C/tOFqjSp6SxgNHInt9Gnufx4Fkzpl7f2wcnIPR7oOdMrNmXiQ6PJf+gpfgHyySY0qNxImP8x2PDu+JH8JNTsceEi6bMlrT6+wc0t/CK/OnyKZsFCjKIB7hnHjzoeEoC2P02f2ggoaOM7Cw8iryII4NcfW2a4kCAwEAAaBLMEkGCSqGSIb3DQEJDjE8MDowDgYDVR0PAQH/BAQDAgG+MB0GA1UdJQQWMBQGCCsGAQUFBwMBBggrBgEFBQcDAjAJBgNVHRMEAjAAMA0GCSqGSIb3DQEBCwUAA4IBAQBfRF7l5S/YKvVsyNJYxh3QMkjZmppcOuAr6BL+aKZ/HtFdHvoxW4f+hAUrLtkEtDEcDg6iNU4ch42T2L8mSipZvegQD81BS1PeyxYFW0FdOd7/4QO8pV60w0myeweHUah3MQQV9dXa4iu374NcBCATx3FlGSZNSp6iS/nxpQ8jgyjE/q9qR5aebkcBY7w22TvnEK1D6mYdrVHGzdCcXmEFhmQxYS6z7hD7f3XsEFgP6nRBhIapwcd40C7vN7ROi6I6VfDKPRw129Bqlc7EJa/48bJnuBuWWtV9lkXkspoi0dQXqziRtW51USS6c04D/rNSfkYw1o6H4W0RBm5EcN3I","cancellation_requested":false,"status":"inProgress","status_details":"Pending
+      string: '{"id":"https://cli000002.vault.azure.net/certificates/azclitestcert/pending","issuer":{"name":"Self"},"csr":"MIICrjCCAZYCAQAwHjEcMBoGA1UEAxMTQ0xJR2V0RGVmYXVsdFBvbGljeTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMXDeemfCx2N38yRPPM9MxYc0CF4tyQ3xd6CJloiS4v5/td/4OWR57OZzg/BKdWSGtdIKUJhbFWxXH5ZX2EFwEqLkvn8AO8D25kWOJqizL2DFFyut3Hl8S+ANcv3czHtZRRe4z87J49z2v+oe3Nesa7YTAOlP7TGW5M5yE8hxGc7p+oszHwlto4vOKVx1mudtq01uf9WaJjq2Le0mYcFT/t9ySj+iVweuSUQLBxp8LErY8MNGKhjdph4YLOZqD7hKBhicLT+M3Qzt3U00RlgWxFm03m5nFAFzM1msvM36vLn1JyeiUggaOKb0Q6xEGaI+6XdzCLG2QuEGsLVp0tDw1kCAwEAAaBLMEkGCSqGSIb3DQEJDjE8MDowDgYDVR0PAQH/BAQDAgG+MB0GA1UdJQQWMBQGCCsGAQUFBwMBBggrBgEFBQcDAjAJBgNVHRMEAjAAMA0GCSqGSIb3DQEBCwUAA4IBAQAVCnLjFIWiAYPwtkrhoiwJDai/7pTkkKEj/3ij3NMtMnRqsqIbZYovDfxM8KUPjQXwJ0Lfs2uC8v1hch5XO5aYisMIss0EtAM0f2Ex2ifFSPRiooW8xolFe7JE9wC12dQXr1tvxNjLuQcdUi8IAilv5jclkxBLycwZHtz1BRh78KX0GCcfd95oAcj+EAVNvOH12Datb3STWa9HLEYEP8TCT66VNx4lPEA87pqFhTbp4s4q4ulWg21NZy6muOENjkNH+TiBd/7xof8lr+us9ouh1kDzq22jEMe5p+Pq99ph0kevtGX0zdJ0+ISwRGvjHSpDxOrK3N9XxaqAXpgVNagz","cancellation_requested":false,"status":"inProgress","status_details":"Pending
         certificate created. Certificate request is in progress. This may take some
-        time based on the issuer provider. Please check again later.","request_id":"85e7e45632e44901b693cd228e4de550"}'
+        time based on the issuer provider. Please check again later.","request_id":"b7ec94271b96444bbd618792b6ade03f"}'
     headers:
       cache-control:
       - no-cache
@@ -1834,7 +1834,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 14 Sep 2022 22:15:50 GMT
+      - Tue, 20 Sep 2022 12:01:00 GMT
       expires:
       - '-1'
       pragma:
@@ -1844,7 +1844,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-keyvault-network-info:
-      - conn_type=Ipv4;addr=105.61.123.37;act_addr_fam=InterNetwork;
+      - conn_type=Ipv4;addr=41.80.97.57;act_addr_fam=InterNetwork;
       x-ms-keyvault-region:
       - eastus2euap
       x-ms-keyvault-service-version:
@@ -1872,7 +1872,7 @@ interactions:
     uri: https://cli000002.vault.azure.net/certificates/azclitestcert/pending?api-version=7.0
   response:
     body:
-      string: '{"id":"https://cli000002.vault.azure.net/certificates/azclitestcert/pending","issuer":{"name":"Self"},"csr":"MIICrjCCAZYCAQAwHjEcMBoGA1UEAxMTQ0xJR2V0RGVmYXVsdFBvbGljeTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAKA7OqRXHX6k1iaCc9Qzw0iyx80VegyWxzrZ3LIK7VUo/2HxxGv1lNbTacVW1b5OvdpdeSrrjl2OSYDwOulHgbC54S8lyankpzFEBQdN9j7h8SnkqKDcyrsWbG9F+AW8PBUv8ON1tCBdsw4ZvyBZoGt/B3w766H34vMsaDsVrYh8d75ISEEB4ciW3C/tOFqjSp6SxgNHInt9Gnufx4Fkzpl7f2wcnIPR7oOdMrNmXiQ6PJf+gpfgHyySY0qNxImP8x2PDu+JH8JNTsceEi6bMlrT6+wc0t/CK/OnyKZsFCjKIB7hnHjzoeEoC2P02f2ggoaOM7Cw8iryII4NcfW2a4kCAwEAAaBLMEkGCSqGSIb3DQEJDjE8MDowDgYDVR0PAQH/BAQDAgG+MB0GA1UdJQQWMBQGCCsGAQUFBwMBBggrBgEFBQcDAjAJBgNVHRMEAjAAMA0GCSqGSIb3DQEBCwUAA4IBAQBfRF7l5S/YKvVsyNJYxh3QMkjZmppcOuAr6BL+aKZ/HtFdHvoxW4f+hAUrLtkEtDEcDg6iNU4ch42T2L8mSipZvegQD81BS1PeyxYFW0FdOd7/4QO8pV60w0myeweHUah3MQQV9dXa4iu374NcBCATx3FlGSZNSp6iS/nxpQ8jgyjE/q9qR5aebkcBY7w22TvnEK1D6mYdrVHGzdCcXmEFhmQxYS6z7hD7f3XsEFgP6nRBhIapwcd40C7vN7ROi6I6VfDKPRw129Bqlc7EJa/48bJnuBuWWtV9lkXkspoi0dQXqziRtW51USS6c04D/rNSfkYw1o6H4W0RBm5EcN3I","cancellation_requested":false,"status":"completed","target":"https://cli000002.vault.azure.net/certificates/azclitestcert","request_id":"85e7e45632e44901b693cd228e4de550"}'
+      string: '{"id":"https://cli000002.vault.azure.net/certificates/azclitestcert/pending","issuer":{"name":"Self"},"csr":"MIICrjCCAZYCAQAwHjEcMBoGA1UEAxMTQ0xJR2V0RGVmYXVsdFBvbGljeTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMXDeemfCx2N38yRPPM9MxYc0CF4tyQ3xd6CJloiS4v5/td/4OWR57OZzg/BKdWSGtdIKUJhbFWxXH5ZX2EFwEqLkvn8AO8D25kWOJqizL2DFFyut3Hl8S+ANcv3czHtZRRe4z87J49z2v+oe3Nesa7YTAOlP7TGW5M5yE8hxGc7p+oszHwlto4vOKVx1mudtq01uf9WaJjq2Le0mYcFT/t9ySj+iVweuSUQLBxp8LErY8MNGKhjdph4YLOZqD7hKBhicLT+M3Qzt3U00RlgWxFm03m5nFAFzM1msvM36vLn1JyeiUggaOKb0Q6xEGaI+6XdzCLG2QuEGsLVp0tDw1kCAwEAAaBLMEkGCSqGSIb3DQEJDjE8MDowDgYDVR0PAQH/BAQDAgG+MB0GA1UdJQQWMBQGCCsGAQUFBwMBBggrBgEFBQcDAjAJBgNVHRMEAjAAMA0GCSqGSIb3DQEBCwUAA4IBAQAVCnLjFIWiAYPwtkrhoiwJDai/7pTkkKEj/3ij3NMtMnRqsqIbZYovDfxM8KUPjQXwJ0Lfs2uC8v1hch5XO5aYisMIss0EtAM0f2Ex2ifFSPRiooW8xolFe7JE9wC12dQXr1tvxNjLuQcdUi8IAilv5jclkxBLycwZHtz1BRh78KX0GCcfd95oAcj+EAVNvOH12Datb3STWa9HLEYEP8TCT66VNx4lPEA87pqFhTbp4s4q4ulWg21NZy6muOENjkNH+TiBd/7xof8lr+us9ouh1kDzq22jEMe5p+Pq99ph0kevtGX0zdJ0+ISwRGvjHSpDxOrK3N9XxaqAXpgVNagz","cancellation_requested":false,"status":"completed","target":"https://cli000002.vault.azure.net/certificates/azclitestcert","request_id":"b7ec94271b96444bbd618792b6ade03f"}'
     headers:
       cache-control:
       - no-cache
@@ -1881,7 +1881,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 14 Sep 2022 22:16:02 GMT
+      - Tue, 20 Sep 2022 12:01:12 GMT
       expires:
       - '-1'
       pragma:
@@ -1891,7 +1891,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-keyvault-network-info:
-      - conn_type=Ipv4;addr=105.61.123.37;act_addr_fam=InterNetwork;
+      - conn_type=Ipv4;addr=41.80.97.57;act_addr_fam=InterNetwork;
       x-ms-keyvault-region:
       - eastus2euap
       x-ms-keyvault-service-version:
@@ -1919,7 +1919,7 @@ interactions:
     uri: https://cli000002.vault.azure.net/certificates/azclitestcert/?api-version=7.0
   response:
     body:
-      string: '{"id":"https://cli000002.vault.azure.net/certificates/azclitestcert/9acfa1669ec34de4be7071e09b2a3697","kid":"https://cli000002.vault.azure.net/keys/azclitestcert/9acfa1669ec34de4be7071e09b2a3697","sid":"https://cli000002.vault.azure.net/secrets/azclitestcert/9acfa1669ec34de4be7071e09b2a3697","x5t":"1ye8aazuNlbaN_Dk9eA_ZLEnsf0","cer":"MIIDQjCCAiqgAwIBAgIQSvGpPR/LQwqvhMvV3l98cTANBgkqhkiG9w0BAQsFADAeMRwwGgYDVQQDExNDTElHZXREZWZhdWx0UG9saWN5MB4XDTIyMDkxNDIyMDU1MFoXDTIzMDkxNDIyMTU1MFowHjEcMBoGA1UEAxMTQ0xJR2V0RGVmYXVsdFBvbGljeTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAKA7OqRXHX6k1iaCc9Qzw0iyx80VegyWxzrZ3LIK7VUo/2HxxGv1lNbTacVW1b5OvdpdeSrrjl2OSYDwOulHgbC54S8lyankpzFEBQdN9j7h8SnkqKDcyrsWbG9F+AW8PBUv8ON1tCBdsw4ZvyBZoGt/B3w766H34vMsaDsVrYh8d75ISEEB4ciW3C/tOFqjSp6SxgNHInt9Gnufx4Fkzpl7f2wcnIPR7oOdMrNmXiQ6PJf+gpfgHyySY0qNxImP8x2PDu+JH8JNTsceEi6bMlrT6+wc0t/CK/OnyKZsFCjKIB7hnHjzoeEoC2P02f2ggoaOM7Cw8iryII4NcfW2a4kCAwEAAaN8MHowDgYDVR0PAQH/BAQDAgG+MAkGA1UdEwQCMAAwHQYDVR0lBBYwFAYIKwYBBQUHAwEGCCsGAQUFBwMCMB8GA1UdIwQYMBaAFItt1nQkbrDDQPrM+s/9DDxqsuD9MB0GA1UdDgQWBBSLbdZ0JG6ww0D6zPrP/Qw8arLg/TANBgkqhkiG9w0BAQsFAAOCAQEARIkqbZePodtd+ALH66GOh6dxyhoD7XHUkx3N+yhwlHcIvWiYmfc+mTa0Pgf4vf6FnR0J0+oakd6PtCOxa3QmrYr4X9S70AvMn7DENI98vY85OLkRN2b6UA6cExbTiMUcxCML8naqPmEGObRPQQZAfouol8cmpcsxiJxkiZGbPg8xu+EH+Osy58iZ+UJCJEDDAbf9o6sZX3ZsgbQkqncUhPdbEFFmP3zV/CIXYhSelEeOsSDUdtwOWmVuTiAFUtDSjs2PSAVQbk4CwllBC4t6eP7nZPARcH9GX29VsnGH4pE0bX3oOHMcwEAcC+G/S+1KdHc/Mt6Po8xK1Jxvm4/00Q==","attributes":{"enabled":true,"nbf":1663193150,"exp":1694729750,"created":1663193750,"updated":1663193750,"recoveryLevel":"Recoverable+Purgeable"},"policy":{"id":"https://cli000002.vault.azure.net/certificates/azclitestcert/policy","key_props":{"exportable":true,"kty":"RSA","key_size":2048,"reuse_key":true},"secret_props":{"contentType":"application/x-pkcs12"},"x509_props":{"subject":"CN=CLIGetDefaultPolicy","ekus":["1.3.6.1.5.5.7.3.1","1.3.6.1.5.5.7.3.2"],"key_usage":["cRLSign","dataEncipherment","digitalSignature","keyAgreement","keyCertSign","keyEncipherment"],"validity_months":12,"basic_constraints":{"ca":false}},"lifetime_actions":[{"trigger":{"days_before_expiry":90},"action":{"action_type":"AutoRenew"}}],"issuer":{"name":"Self"},"attributes":{"enabled":true,"created":1663193749,"updated":1663193749}},"pending":{"id":"https://cli000002.vault.azure.net/certificates/azclitestcert/pending"}}'
+      string: '{"id":"https://cli000002.vault.azure.net/certificates/azclitestcert/a165560bf3b94d4ab44c6aa2e04b32bf","kid":"https://cli000002.vault.azure.net/keys/azclitestcert/a165560bf3b94d4ab44c6aa2e04b32bf","sid":"https://cli000002.vault.azure.net/secrets/azclitestcert/a165560bf3b94d4ab44c6aa2e04b32bf","x5t":"oPrt2n74Edsc7FL0fYYLIBq_pwo","cer":"MIIDQjCCAiqgAwIBAgIQJIKpEQnKQHCVZ47DueqPnTANBgkqhkiG9w0BAQsFADAeMRwwGgYDVQQDExNDTElHZXREZWZhdWx0UG9saWN5MB4XDTIyMDkyMDExNTEwMloXDTIzMDkyMDEyMDEwMlowHjEcMBoGA1UEAxMTQ0xJR2V0RGVmYXVsdFBvbGljeTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMXDeemfCx2N38yRPPM9MxYc0CF4tyQ3xd6CJloiS4v5/td/4OWR57OZzg/BKdWSGtdIKUJhbFWxXH5ZX2EFwEqLkvn8AO8D25kWOJqizL2DFFyut3Hl8S+ANcv3czHtZRRe4z87J49z2v+oe3Nesa7YTAOlP7TGW5M5yE8hxGc7p+oszHwlto4vOKVx1mudtq01uf9WaJjq2Le0mYcFT/t9ySj+iVweuSUQLBxp8LErY8MNGKhjdph4YLOZqD7hKBhicLT+M3Qzt3U00RlgWxFm03m5nFAFzM1msvM36vLn1JyeiUggaOKb0Q6xEGaI+6XdzCLG2QuEGsLVp0tDw1kCAwEAAaN8MHowDgYDVR0PAQH/BAQDAgG+MAkGA1UdEwQCMAAwHQYDVR0lBBYwFAYIKwYBBQUHAwEGCCsGAQUFBwMCMB8GA1UdIwQYMBaAFB4TFe0VK7+udT1uYv4+GuquTFovMB0GA1UdDgQWBBQeExXtFSu/rnU9bmL+PhrqrkxaLzANBgkqhkiG9w0BAQsFAAOCAQEAOzC2EaJByMzOGiLnwMEdFB3KjPn/7i1+wx+mem0WtcaGUP/5ck29yYb9x/D523dUQdy0Yu1t1ZZGP2+c+YZzZdxD35xcnR4Ck6hgrcr87M1J8xkSsd1U6hVMNB04N6rcdKGEYqCt4Apng8UJ4EMEsc9ga/mY2baVHa2bQqQDFC53RFW+qfysQNfBhWn16lKF/z9jx2rZJ2dIsySG2Ekj2/XMk+/XtgH0b4qigaxVS7MCa4SUplpq4aiJWNp+SLZAm+K6RAi+3B2uMLGdW4P+LFlwgX66BRYxZDlwWVTZdYtzWTxDV+ttQkTSAD0lPyzMyMoDsun5tAQZv0W5hibZ4g==","attributes":{"enabled":true,"nbf":1663674662,"exp":1695211262,"created":1663675262,"updated":1663675262,"recoveryLevel":"Recoverable+Purgeable"},"policy":{"id":"https://cli000002.vault.azure.net/certificates/azclitestcert/policy","key_props":{"exportable":true,"kty":"RSA","key_size":2048,"reuse_key":true},"secret_props":{"contentType":"application/x-pkcs12"},"x509_props":{"subject":"CN=CLIGetDefaultPolicy","ekus":["1.3.6.1.5.5.7.3.1","1.3.6.1.5.5.7.3.2"],"key_usage":["cRLSign","dataEncipherment","digitalSignature","keyAgreement","keyCertSign","keyEncipherment"],"validity_months":12,"basic_constraints":{"ca":false}},"lifetime_actions":[{"trigger":{"days_before_expiry":90},"action":{"action_type":"AutoRenew"}}],"issuer":{"name":"Self"},"attributes":{"enabled":true,"created":1663675259,"updated":1663675259}},"pending":{"id":"https://cli000002.vault.azure.net/certificates/azclitestcert/pending"}}'
     headers:
       cache-control:
       - no-cache
@@ -1928,7 +1928,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 14 Sep 2022 22:16:03 GMT
+      - Tue, 20 Sep 2022 12:01:13 GMT
       expires:
       - '-1'
       pragma:
@@ -1938,7 +1938,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-keyvault-network-info:
-      - conn_type=Ipv4;addr=105.61.123.37;act_addr_fam=InterNetwork;
+      - conn_type=Ipv4;addr=41.80.97.57;act_addr_fam=InterNetwork;
       x-ms-keyvault-region:
       - eastus2euap
       x-ms-keyvault-service-version:
@@ -1967,7 +1967,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/AZCLIDeploymentTestRG_000001?api-version=2021-04-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AZCLIDeploymentTestRG_000001","name":"AZCLIDeploymentTestRG_000001","type":"Microsoft.Resources/resourceGroups","location":"eastus2euap","tags":{"product":"azurecli","cause":"automation","date":"2022-09-14T22:09:10Z"},"properties":{"provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AZCLIDeploymentTestRG_000001","name":"AZCLIDeploymentTestRG_000001","type":"Microsoft.Resources/resourceGroups","location":"eastus2euap","tags":{"product":"azurecli","cause":"automation","date":"2022-09-20T11:54:33Z"},"properties":{"provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
@@ -1976,7 +1976,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 14 Sep 2022 22:16:03 GMT
+      - Tue, 20 Sep 2022 12:01:14 GMT
       expires:
       - '-1'
       pragma:
@@ -1992,7 +1992,7 @@ interactions:
       message: OK
 - request:
     body: '{"location": "eastus2euap", "properties": {"certificateVirtualPath": "/etc/nginx/test.cert",
-      "keyVaultSecretId": "https://cli000002.vault.azure.net/secrets/azclitestcert/9acfa1669ec34de4be7071e09b2a3697",
+      "keyVaultSecretId": "https://cli000002.vault.azure.net/secrets/azclitestcert/a165560bf3b94d4ab44c6aa2e04b32bf",
       "keyVirtualPath": "/etc/nginx/test.key"}}'
     headers:
       Accept:
@@ -2016,10 +2016,10 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AZCLIDeploymentTestRG_000001/providers/Nginx.NginxPlus/nginxDeployments/azclitest-deployment/certificates/azclitestcert?api-version=2022-08-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AZCLIDeploymentTestRG_000001/providers/Nginx.NginxPlus/nginxDeployments/azclitest-deployment/certificates/azclitestcert","name":"azclitestcert","type":"nginx.nginxplus/nginxdeployments/certificates","location":"eastus2euap","systemData":{"createdBy":"georgengugi@microsoft.com","createdByType":"User","createdAt":"2022-09-14T22:16:06.0481213Z","lastModifiedBy":"georgengugi@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-09-14T22:16:06.0481213Z"},"properties":{"provisioningState":"Accepted","keyVirtualPath":"/etc/nginx/test.key","certificateVirtualPath":"/etc/nginx/test.cert","keyVaultSecretId":"https://cli000002.vault.azure.net/secrets/azclitestcert/9acfa1669ec34de4be7071e09b2a3697"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AZCLIDeploymentTestRG_000001/providers/Nginx.NginxPlus/nginxDeployments/azclitest-deployment/certificates/azclitestcert","name":"azclitestcert","type":"nginx.nginxplus/nginxdeployments/certificates","location":"eastus2euap","systemData":{"createdBy":"georgengugi@microsoft.com","createdByType":"User","createdAt":"2022-09-20T12:01:17.7195687Z","lastModifiedBy":"georgengugi@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-09-20T12:01:17.7195687Z"},"properties":{"provisioningState":"Accepted","keyVirtualPath":"/etc/nginx/test.key","certificateVirtualPath":"/etc/nginx/test.cert","keyVaultSecretId":"https://cli000002.vault.azure.net/secrets/azclitestcert/a165560bf3b94d4ab44c6aa2e04b32bf"}}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/providers/Nginx.NginxPlus/locations/EASTUS2EUAP/operationStatuses/24efd3c1-cb1f-4b72-aa1e-ac9fb7b515d8*92C1EEFAA8C0F05E1E2AF3EB2C39717A31900244A73BB150BE905A19D6C7886C?api-version=2022-08-01
+      - https://management.azure.com/providers/Nginx.NginxPlus/locations/EASTUS2EUAP/operationStatuses/6c89329d-abbd-4730-9e4d-8d6a132ae3de*6FBC0F4BE96DC50259163649998A3947513717641C775827E2176DF1894A4F1B?api-version=2022-08-01
       cache-control:
       - no-cache
       content-length:
@@ -2027,13 +2027,13 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 14 Sep 2022 22:16:10 GMT
+      - Tue, 20 Sep 2022 12:01:21 GMT
       etag:
-      - '"00001416-0000-3400-0000-632252aa0000"'
+      - '"00004519-0000-3400-0000-6329ab910000"'
       expires:
       - '-1'
       location:
-      - https://management.azure.com/providers/Nginx.NginxPlus/locations/EASTUS2EUAP/operationStatuses/24efd3c1-cb1f-4b72-aa1e-ac9fb7b515d8*92C1EEFAA8C0F05E1E2AF3EB2C39717A31900244A73BB150BE905A19D6C7886C?api-version=2022-08-01
+      - https://management.azure.com/providers/Nginx.NginxPlus/locations/EASTUS2EUAP/operationStatuses/6c89329d-abbd-4730-9e4d-8d6a132ae3de*6FBC0F4BE96DC50259163649998A3947513717641C775827E2176DF1894A4F1B?api-version=2022-08-01
       pragma:
       - no-cache
       request-context:
@@ -2045,7 +2045,7 @@ interactions:
       x-ms-providerhub-traffic:
       - 'True'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1193'
+      - '1199'
     status:
       code: 201
       message: Created
@@ -2066,68 +2066,21 @@ interactions:
       User-Agent:
       - AZURECLI/2.40.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.10.7 (Windows-10-10.0.22000-SP0)
     method: GET
-    uri: https://management.azure.com/providers/Nginx.NginxPlus/locations/EASTUS2EUAP/operationStatuses/24efd3c1-cb1f-4b72-aa1e-ac9fb7b515d8*92C1EEFAA8C0F05E1E2AF3EB2C39717A31900244A73BB150BE905A19D6C7886C?api-version=2022-08-01
+    uri: https://management.azure.com/providers/Nginx.NginxPlus/locations/EASTUS2EUAP/operationStatuses/6c89329d-abbd-4730-9e4d-8d6a132ae3de*6FBC0F4BE96DC50259163649998A3947513717641C775827E2176DF1894A4F1B?api-version=2022-08-01
   response:
     body:
-      string: '{"id":"/providers/Nginx.NginxPlus/locations/EASTUS2EUAP/operationStatuses/24efd3c1-cb1f-4b72-aa1e-ac9fb7b515d8*92C1EEFAA8C0F05E1E2AF3EB2C39717A31900244A73BB150BE905A19D6C7886C","name":"24efd3c1-cb1f-4b72-aa1e-ac9fb7b515d8*92C1EEFAA8C0F05E1E2AF3EB2C39717A31900244A73BB150BE905A19D6C7886C","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AZCLIDeploymentTestRG_000001/providers/Nginx.NginxPlus/nginxDeployments/azclitest-deployment/certificates/azclitestcert","status":"Accepted","startTime":"2022-09-14T22:16:10.0766839Z"}'
+      string: '{"id":"/providers/Nginx.NginxPlus/locations/EASTUS2EUAP/operationStatuses/6c89329d-abbd-4730-9e4d-8d6a132ae3de*6FBC0F4BE96DC50259163649998A3947513717641C775827E2176DF1894A4F1B","name":"6c89329d-abbd-4730-9e4d-8d6a132ae3de*6FBC0F4BE96DC50259163649998A3947513717641C775827E2176DF1894A4F1B","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AZCLIDeploymentTestRG_000001/providers/Nginx.NginxPlus/nginxDeployments/azclitest-deployment/certificates/azclitestcert","status":"Succeeded","startTime":"2022-09-20T12:01:21.6233454Z","endTime":"2022-09-20T12:01:52.6340822Z","error":{},"properties":null}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '553'
+      - '624'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 14 Sep 2022 22:16:40 GMT
+      - Tue, 20 Sep 2022 12:01:52 GMT
       etag:
-      - '"00005e49-0000-3400-0000-632252aa0000"'
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - nginx deployment certificate create
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - --certificate-name --deployment-name --resource-group --certificate-path --key-path
-        --key-vault-secret-id
-      User-Agent:
-      - AZURECLI/2.40.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.10.7 (Windows-10-10.0.22000-SP0)
-    method: GET
-    uri: https://management.azure.com/providers/Nginx.NginxPlus/locations/EASTUS2EUAP/operationStatuses/24efd3c1-cb1f-4b72-aa1e-ac9fb7b515d8*92C1EEFAA8C0F05E1E2AF3EB2C39717A31900244A73BB150BE905A19D6C7886C?api-version=2022-08-01
-  response:
-    body:
-      string: '{"id":"/providers/Nginx.NginxPlus/locations/EASTUS2EUAP/operationStatuses/24efd3c1-cb1f-4b72-aa1e-ac9fb7b515d8*92C1EEFAA8C0F05E1E2AF3EB2C39717A31900244A73BB150BE905A19D6C7886C","name":"24efd3c1-cb1f-4b72-aa1e-ac9fb7b515d8*92C1EEFAA8C0F05E1E2AF3EB2C39717A31900244A73BB150BE905A19D6C7886C","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AZCLIDeploymentTestRG_000001/providers/Nginx.NginxPlus/nginxDeployments/azclitest-deployment/certificates/azclitestcert","status":"Succeeded","startTime":"2022-09-14T22:16:10.0766839Z","endTime":"2022-09-14T22:16:41.313744Z","error":{},"properties":null}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '623'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Wed, 14 Sep 2022 22:17:11 GMT
-      etag:
-      - '"00005f49-0000-3400-0000-632252c90000"'
+      - '"03000901-0000-3400-0000-6329abb00000"'
       expires:
       - '-1'
       pragma:
@@ -2163,7 +2116,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AZCLIDeploymentTestRG_000001/providers/Nginx.NginxPlus/nginxDeployments/azclitest-deployment/certificates/azclitestcert?api-version=2022-08-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AZCLIDeploymentTestRG_000001/providers/Nginx.NginxPlus/nginxDeployments/azclitest-deployment/certificates/azclitestcert","name":"azclitestcert","type":"nginx.nginxplus/nginxdeployments/certificates","location":"eastus2euap","systemData":{"createdBy":"georgengugi@microsoft.com","createdByType":"User","createdAt":"2022-09-14T22:16:06.0481213Z","lastModifiedBy":"georgengugi@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-09-14T22:16:06.0481213Z"},"properties":{"provisioningState":"Succeeded","keyVirtualPath":"/etc/nginx/test.key","certificateVirtualPath":"/etc/nginx/test.cert","keyVaultSecretId":"https://cli000002.vault.azure.net/secrets/azclitestcert/9acfa1669ec34de4be7071e09b2a3697"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AZCLIDeploymentTestRG_000001/providers/Nginx.NginxPlus/nginxDeployments/azclitest-deployment/certificates/azclitestcert","name":"azclitestcert","type":"nginx.nginxplus/nginxdeployments/certificates","location":"eastus2euap","systemData":{"createdBy":"georgengugi@microsoft.com","createdByType":"User","createdAt":"2022-09-20T12:01:17.7195687Z","lastModifiedBy":"georgengugi@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-09-20T12:01:17.7195687Z"},"properties":{"provisioningState":"Succeeded","keyVirtualPath":"/etc/nginx/test.key","certificateVirtualPath":"/etc/nginx/test.cert","keyVaultSecretId":"https://cli000002.vault.azure.net/secrets/azclitestcert/a165560bf3b94d4ab44c6aa2e04b32bf"}}'
     headers:
       cache-control:
       - no-cache
@@ -2172,9 +2125,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 14 Sep 2022 22:17:13 GMT
+      - Tue, 20 Sep 2022 12:01:54 GMT
       etag:
-      - '"00001516-0000-3400-0000-632252c90000"'
+      - '"00004619-0000-3400-0000-6329abb00000"'
       expires:
       - '-1'
       pragma:
@@ -2211,7 +2164,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AZCLIDeploymentTestRG_000001/providers/Nginx.NginxPlus/nginxDeployments/azclitest-deployment/certificates?api-version=2022-08-01
   response:
     body:
-      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AZCLIDeploymentTestRG_000001/providers/Nginx.NginxPlus/nginxDeployments/azclitest-deployment/certificates/azclitestcert","name":"azclitestcert","type":"nginx.nginxplus/nginxdeployments/certificates","location":"eastus2euap","systemData":{"createdBy":"georgengugi@microsoft.com","createdByType":"User","createdAt":"2022-09-14T22:16:06.0481213Z","lastModifiedBy":"georgengugi@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-09-14T22:16:06.0481213Z"},"properties":{"provisioningState":"Succeeded","keyVirtualPath":"/etc/nginx/test.key","certificateVirtualPath":"/etc/nginx/test.cert","keyVaultSecretId":"https://cli000002.vault.azure.net/secrets/azclitestcert/9acfa1669ec34de4be7071e09b2a3697"}}]}'
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AZCLIDeploymentTestRG_000001/providers/Nginx.NginxPlus/nginxDeployments/azclitest-deployment/certificates/azclitestcert","name":"azclitestcert","type":"nginx.nginxplus/nginxdeployments/certificates","location":"eastus2euap","systemData":{"createdBy":"georgengugi@microsoft.com","createdByType":"User","createdAt":"2022-09-20T12:01:17.7195687Z","lastModifiedBy":"georgengugi@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-09-20T12:01:17.7195687Z"},"properties":{"provisioningState":"Succeeded","keyVirtualPath":"/etc/nginx/test.key","certificateVirtualPath":"/etc/nginx/test.cert","keyVaultSecretId":"https://cli000002.vault.azure.net/secrets/azclitestcert/a165560bf3b94d4ab44c6aa2e04b32bf"}}]}'
     headers:
       cache-control:
       - no-cache
@@ -2220,7 +2173,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 14 Sep 2022 22:17:18 GMT
+      - Tue, 20 Sep 2022 12:02:01 GMT
       expires:
       - '-1'
       pragma:
@@ -2258,7 +2211,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/AZCLIDeploymentTestRG_000001?api-version=2021-04-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AZCLIDeploymentTestRG_000001","name":"AZCLIDeploymentTestRG_000001","type":"Microsoft.Resources/resourceGroups","location":"eastus2euap","tags":{"product":"azurecli","cause":"automation","date":"2022-09-14T22:09:10Z"},"properties":{"provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AZCLIDeploymentTestRG_000001","name":"AZCLIDeploymentTestRG_000001","type":"Microsoft.Resources/resourceGroups","location":"eastus2euap","tags":{"product":"azurecli","cause":"automation","date":"2022-09-20T11:54:33Z"},"properties":{"provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
@@ -2267,7 +2220,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 14 Sep 2022 22:17:19 GMT
+      - Tue, 20 Sep 2022 12:02:01 GMT
       expires:
       - '-1'
       pragma:
@@ -2300,7 +2253,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AZCLIDeploymentTestRG_000001/providers/Nginx.NginxPlus/nginxDeployments/azclitest-deployment/certificates/azclitestcert?api-version=2022-08-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AZCLIDeploymentTestRG_000001/providers/Nginx.NginxPlus/nginxDeployments/azclitest-deployment/certificates/azclitestcert","name":"azclitestcert","type":"nginx.nginxplus/nginxdeployments/certificates","location":"eastus2euap","systemData":{"createdBy":"georgengugi@microsoft.com","createdByType":"User","createdAt":"2022-09-14T22:16:06.0481213Z","lastModifiedBy":"georgengugi@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-09-14T22:16:06.0481213Z"},"properties":{"provisioningState":"Succeeded","keyVirtualPath":"/etc/nginx/test.key","certificateVirtualPath":"/etc/nginx/test.cert","keyVaultSecretId":"https://cli000002.vault.azure.net/secrets/azclitestcert/9acfa1669ec34de4be7071e09b2a3697"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AZCLIDeploymentTestRG_000001/providers/Nginx.NginxPlus/nginxDeployments/azclitest-deployment/certificates/azclitestcert","name":"azclitestcert","type":"nginx.nginxplus/nginxdeployments/certificates","location":"eastus2euap","systemData":{"createdBy":"georgengugi@microsoft.com","createdByType":"User","createdAt":"2022-09-20T12:01:17.7195687Z","lastModifiedBy":"georgengugi@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-09-20T12:01:17.7195687Z"},"properties":{"provisioningState":"Succeeded","keyVirtualPath":"/etc/nginx/test.key","certificateVirtualPath":"/etc/nginx/test.cert","keyVaultSecretId":"https://cli000002.vault.azure.net/secrets/azclitestcert/a165560bf3b94d4ab44c6aa2e04b32bf"}}'
     headers:
       cache-control:
       - no-cache
@@ -2309,9 +2262,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 14 Sep 2022 22:17:22 GMT
+      - Tue, 20 Sep 2022 12:02:04 GMT
       etag:
-      - '"00001516-0000-3400-0000-632252c90000"'
+      - '"00004619-0000-3400-0000-6329abb00000"'
       expires:
       - '-1'
       pragma:
@@ -2331,7 +2284,7 @@ interactions:
       message: OK
 - request:
     body: '{"location": "eastus2euap", "properties": {"certificateVirtualPath": "/etc/nginx/testupdated.cert",
-      "keyVaultSecretId": "https://cli000002.vault.azure.net/secrets/azclitestcert/9acfa1669ec34de4be7071e09b2a3697",
+      "keyVaultSecretId": "https://cli000002.vault.azure.net/secrets/azclitestcert/a165560bf3b94d4ab44c6aa2e04b32bf",
       "keyVirtualPath": "/etc/nginx/testupdated.key", "provisioningState": "Succeeded"}}'
     headers:
       Accept:
@@ -2354,10 +2307,10 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AZCLIDeploymentTestRG_000001/providers/Nginx.NginxPlus/nginxDeployments/azclitest-deployment/certificates/azclitestcert?api-version=2022-08-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AZCLIDeploymentTestRG_000001/providers/Nginx.NginxPlus/nginxDeployments/azclitest-deployment/certificates/azclitestcert","name":"azclitestcert","type":"nginx.nginxplus/nginxdeployments/certificates","location":"eastus2euap","systemData":{"createdBy":"georgengugi@microsoft.com","createdByType":"User","createdAt":"2022-09-14T22:16:06.0481213Z","lastModifiedBy":"georgengugi@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-09-14T22:17:23.5227129Z"},"properties":{"provisioningState":"Accepted","keyVirtualPath":"/etc/nginx/testupdated.key","certificateVirtualPath":"/etc/nginx/testupdated.cert","keyVaultSecretId":"https://cli000002.vault.azure.net/secrets/azclitestcert/9acfa1669ec34de4be7071e09b2a3697"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AZCLIDeploymentTestRG_000001/providers/Nginx.NginxPlus/nginxDeployments/azclitest-deployment/certificates/azclitestcert","name":"azclitestcert","type":"nginx.nginxplus/nginxdeployments/certificates","location":"eastus2euap","systemData":{"createdBy":"georgengugi@microsoft.com","createdByType":"User","createdAt":"2022-09-20T12:01:17.7195687Z","lastModifiedBy":"georgengugi@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-09-20T12:02:06.1027763Z"},"properties":{"provisioningState":"Accepted","keyVirtualPath":"/etc/nginx/testupdated.key","certificateVirtualPath":"/etc/nginx/testupdated.cert","keyVaultSecretId":"https://cli000002.vault.azure.net/secrets/azclitestcert/a165560bf3b94d4ab44c6aa2e04b32bf"}}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/providers/Nginx.NginxPlus/locations/EASTUS2EUAP/operationStatuses/50cb9a07-76e9-41bd-86f7-c088e7b20ce8*92C1EEFAA8C0F05E1E2AF3EB2C39717A31900244A73BB150BE905A19D6C7886C?api-version=2022-08-01
+      - https://management.azure.com/providers/Nginx.NginxPlus/locations/EASTUS2EUAP/operationStatuses/a4d627cf-e729-4b4f-bdfc-725b01458cb2*6FBC0F4BE96DC50259163649998A3947513717641C775827E2176DF1894A4F1B?api-version=2022-08-01
       cache-control:
       - no-cache
       content-length:
@@ -2365,13 +2318,13 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 14 Sep 2022 22:17:24 GMT
+      - Tue, 20 Sep 2022 12:02:07 GMT
       etag:
-      - '"00001616-0000-3400-0000-632252f50000"'
+      - '"00004719-0000-3400-0000-6329abbf0000"'
       expires:
       - '-1'
       location:
-      - https://management.azure.com/providers/Nginx.NginxPlus/locations/EASTUS2EUAP/operationStatuses/50cb9a07-76e9-41bd-86f7-c088e7b20ce8*92C1EEFAA8C0F05E1E2AF3EB2C39717A31900244A73BB150BE905A19D6C7886C?api-version=2022-08-01
+      - https://management.azure.com/providers/Nginx.NginxPlus/locations/EASTUS2EUAP/operationStatuses/a4d627cf-e729-4b4f-bdfc-725b01458cb2*6FBC0F4BE96DC50259163649998A3947513717641C775827E2176DF1894A4F1B?api-version=2022-08-01
       pragma:
       - no-cache
       request-context:
@@ -2383,7 +2336,7 @@ interactions:
       x-ms-providerhub-traffic:
       - 'True'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1194'
+      - '1196'
     status:
       code: 201
       message: Created
@@ -2403,10 +2356,10 @@ interactions:
       User-Agent:
       - AZURECLI/2.40.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.10.7 (Windows-10-10.0.22000-SP0)
     method: GET
-    uri: https://management.azure.com/providers/Nginx.NginxPlus/locations/EASTUS2EUAP/operationStatuses/50cb9a07-76e9-41bd-86f7-c088e7b20ce8*92C1EEFAA8C0F05E1E2AF3EB2C39717A31900244A73BB150BE905A19D6C7886C?api-version=2022-08-01
+    uri: https://management.azure.com/providers/Nginx.NginxPlus/locations/EASTUS2EUAP/operationStatuses/a4d627cf-e729-4b4f-bdfc-725b01458cb2*6FBC0F4BE96DC50259163649998A3947513717641C775827E2176DF1894A4F1B?api-version=2022-08-01
   response:
     body:
-      string: '{"id":"/providers/Nginx.NginxPlus/locations/EASTUS2EUAP/operationStatuses/50cb9a07-76e9-41bd-86f7-c088e7b20ce8*92C1EEFAA8C0F05E1E2AF3EB2C39717A31900244A73BB150BE905A19D6C7886C","name":"50cb9a07-76e9-41bd-86f7-c088e7b20ce8*92C1EEFAA8C0F05E1E2AF3EB2C39717A31900244A73BB150BE905A19D6C7886C","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AZCLIDeploymentTestRG_000001/providers/Nginx.NginxPlus/nginxDeployments/azclitest-deployment/certificates/azclitestcert","status":"Accepted","startTime":"2022-09-14T22:17:24.9258543Z"}'
+      string: '{"id":"/providers/Nginx.NginxPlus/locations/EASTUS2EUAP/operationStatuses/a4d627cf-e729-4b4f-bdfc-725b01458cb2*6FBC0F4BE96DC50259163649998A3947513717641C775827E2176DF1894A4F1B","name":"a4d627cf-e729-4b4f-bdfc-725b01458cb2*6FBC0F4BE96DC50259163649998A3947513717641C775827E2176DF1894A4F1B","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AZCLIDeploymentTestRG_000001/providers/Nginx.NginxPlus/nginxDeployments/azclitest-deployment/certificates/azclitestcert","status":"Accepted","startTime":"2022-09-20T12:02:07.1518212Z"}'
     headers:
       cache-control:
       - no-cache
@@ -2415,9 +2368,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 14 Sep 2022 22:17:54 GMT
+      - Tue, 20 Sep 2022 12:02:37 GMT
       etag:
-      - '"00006049-0000-3400-0000-632252f40000"'
+      - '"03000a01-0000-3400-0000-6329abbf0000"'
       expires:
       - '-1'
       pragma:
@@ -2449,10 +2402,10 @@ interactions:
       User-Agent:
       - AZURECLI/2.40.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.10.7 (Windows-10-10.0.22000-SP0)
     method: GET
-    uri: https://management.azure.com/providers/Nginx.NginxPlus/locations/EASTUS2EUAP/operationStatuses/50cb9a07-76e9-41bd-86f7-c088e7b20ce8*92C1EEFAA8C0F05E1E2AF3EB2C39717A31900244A73BB150BE905A19D6C7886C?api-version=2022-08-01
+    uri: https://management.azure.com/providers/Nginx.NginxPlus/locations/EASTUS2EUAP/operationStatuses/a4d627cf-e729-4b4f-bdfc-725b01458cb2*6FBC0F4BE96DC50259163649998A3947513717641C775827E2176DF1894A4F1B?api-version=2022-08-01
   response:
     body:
-      string: '{"id":"/providers/Nginx.NginxPlus/locations/EASTUS2EUAP/operationStatuses/50cb9a07-76e9-41bd-86f7-c088e7b20ce8*92C1EEFAA8C0F05E1E2AF3EB2C39717A31900244A73BB150BE905A19D6C7886C","name":"50cb9a07-76e9-41bd-86f7-c088e7b20ce8*92C1EEFAA8C0F05E1E2AF3EB2C39717A31900244A73BB150BE905A19D6C7886C","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AZCLIDeploymentTestRG_000001/providers/Nginx.NginxPlus/nginxDeployments/azclitest-deployment/certificates/azclitestcert","status":"Succeeded","startTime":"2022-09-14T22:17:24.9258543Z","endTime":"2022-09-14T22:18:00.7749101Z","error":{},"properties":null}'
+      string: '{"id":"/providers/Nginx.NginxPlus/locations/EASTUS2EUAP/operationStatuses/a4d627cf-e729-4b4f-bdfc-725b01458cb2*6FBC0F4BE96DC50259163649998A3947513717641C775827E2176DF1894A4F1B","name":"a4d627cf-e729-4b4f-bdfc-725b01458cb2*6FBC0F4BE96DC50259163649998A3947513717641C775827E2176DF1894A4F1B","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AZCLIDeploymentTestRG_000001/providers/Nginx.NginxPlus/nginxDeployments/azclitest-deployment/certificates/azclitestcert","status":"Succeeded","startTime":"2022-09-20T12:02:07.1518212Z","endTime":"2022-09-20T12:02:38.0427516Z","error":{},"properties":null}'
     headers:
       cache-control:
       - no-cache
@@ -2461,9 +2414,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 14 Sep 2022 22:18:26 GMT
+      - Tue, 20 Sep 2022 12:03:07 GMT
       etag:
-      - '"00006149-0000-3400-0000-632253190000"'
+      - '"03000b01-0000-3400-0000-6329abde0000"'
       expires:
       - '-1'
       pragma:
@@ -2498,7 +2451,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AZCLIDeploymentTestRG_000001/providers/Nginx.NginxPlus/nginxDeployments/azclitest-deployment/certificates/azclitestcert?api-version=2022-08-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AZCLIDeploymentTestRG_000001/providers/Nginx.NginxPlus/nginxDeployments/azclitest-deployment/certificates/azclitestcert","name":"azclitestcert","type":"nginx.nginxplus/nginxdeployments/certificates","location":"eastus2euap","systemData":{"createdBy":"georgengugi@microsoft.com","createdByType":"User","createdAt":"2022-09-14T22:16:06.0481213Z","lastModifiedBy":"georgengugi@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-09-14T22:17:23.5227129Z"},"properties":{"provisioningState":"Succeeded","keyVirtualPath":"/etc/nginx/testupdated.key","certificateVirtualPath":"/etc/nginx/testupdated.cert","keyVaultSecretId":"https://cli000002.vault.azure.net/secrets/azclitestcert/9acfa1669ec34de4be7071e09b2a3697"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AZCLIDeploymentTestRG_000001/providers/Nginx.NginxPlus/nginxDeployments/azclitest-deployment/certificates/azclitestcert","name":"azclitestcert","type":"nginx.nginxplus/nginxdeployments/certificates","location":"eastus2euap","systemData":{"createdBy":"georgengugi@microsoft.com","createdByType":"User","createdAt":"2022-09-20T12:01:17.7195687Z","lastModifiedBy":"georgengugi@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-09-20T12:02:06.1027763Z"},"properties":{"provisioningState":"Succeeded","keyVirtualPath":"/etc/nginx/testupdated.key","certificateVirtualPath":"/etc/nginx/testupdated.cert","keyVaultSecretId":"https://cli000002.vault.azure.net/secrets/azclitestcert/a165560bf3b94d4ab44c6aa2e04b32bf"}}'
     headers:
       cache-control:
       - no-cache
@@ -2507,9 +2460,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 14 Sep 2022 22:18:27 GMT
+      - Tue, 20 Sep 2022 12:03:08 GMT
       etag:
-      - '"00001716-0000-3400-0000-632253190000"'
+      - '"00004819-0000-3400-0000-6329abde0000"'
       expires:
       - '-1'
       pragma:
@@ -2546,7 +2499,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AZCLIDeploymentTestRG_000001/providers/Nginx.NginxPlus/nginxDeployments/azclitest-deployment/certificates/azclitestcert?api-version=2022-08-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AZCLIDeploymentTestRG_000001/providers/Nginx.NginxPlus/nginxDeployments/azclitest-deployment/certificates/azclitestcert","name":"azclitestcert","type":"nginx.nginxplus/nginxdeployments/certificates","location":"eastus2euap","systemData":{"createdBy":"georgengugi@microsoft.com","createdByType":"User","createdAt":"2022-09-14T22:16:06.0481213Z","lastModifiedBy":"georgengugi@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-09-14T22:17:23.5227129Z"},"properties":{"provisioningState":"Succeeded","keyVirtualPath":"/etc/nginx/testupdated.key","certificateVirtualPath":"/etc/nginx/testupdated.cert","keyVaultSecretId":"https://cli000002.vault.azure.net/secrets/azclitestcert/9acfa1669ec34de4be7071e09b2a3697"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AZCLIDeploymentTestRG_000001/providers/Nginx.NginxPlus/nginxDeployments/azclitest-deployment/certificates/azclitestcert","name":"azclitestcert","type":"nginx.nginxplus/nginxdeployments/certificates","location":"eastus2euap","systemData":{"createdBy":"georgengugi@microsoft.com","createdByType":"User","createdAt":"2022-09-20T12:01:17.7195687Z","lastModifiedBy":"georgengugi@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-09-20T12:02:06.1027763Z"},"properties":{"provisioningState":"Succeeded","keyVirtualPath":"/etc/nginx/testupdated.key","certificateVirtualPath":"/etc/nginx/testupdated.cert","keyVaultSecretId":"https://cli000002.vault.azure.net/secrets/azclitestcert/a165560bf3b94d4ab44c6aa2e04b32bf"}}'
     headers:
       cache-control:
       - no-cache
@@ -2555,9 +2508,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 14 Sep 2022 22:18:29 GMT
+      - Tue, 20 Sep 2022 12:03:11 GMT
       etag:
-      - '"00001716-0000-3400-0000-632253190000"'
+      - '"00004819-0000-3400-0000-6329abde0000"'
       expires:
       - '-1'
       pragma:
@@ -2594,7 +2547,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AZCLIDeploymentTestRG_000001/providers/Nginx.NginxPlus/nginxDeployments/azclitest-deployment/certificates/azclitestcert?api-version=2022-08-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AZCLIDeploymentTestRG_000001/providers/Nginx.NginxPlus/nginxDeployments/azclitest-deployment/certificates/azclitestcert","name":"azclitestcert","type":"nginx.nginxplus/nginxdeployments/certificates","location":"eastus2euap","systemData":{"createdBy":"georgengugi@microsoft.com","createdByType":"User","createdAt":"2022-09-14T22:16:06.0481213Z","lastModifiedBy":"georgengugi@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-09-14T22:17:23.5227129Z"},"properties":{"provisioningState":"Succeeded","keyVirtualPath":"/etc/nginx/testupdated.key","certificateVirtualPath":"/etc/nginx/testupdated.cert","keyVaultSecretId":"https://cli000002.vault.azure.net/secrets/azclitestcert/9acfa1669ec34de4be7071e09b2a3697"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AZCLIDeploymentTestRG_000001/providers/Nginx.NginxPlus/nginxDeployments/azclitest-deployment/certificates/azclitestcert","name":"azclitestcert","type":"nginx.nginxplus/nginxdeployments/certificates","location":"eastus2euap","systemData":{"createdBy":"georgengugi@microsoft.com","createdByType":"User","createdAt":"2022-09-20T12:01:17.7195687Z","lastModifiedBy":"georgengugi@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-09-20T12:02:06.1027763Z"},"properties":{"provisioningState":"Succeeded","keyVirtualPath":"/etc/nginx/testupdated.key","certificateVirtualPath":"/etc/nginx/testupdated.cert","keyVaultSecretId":"https://cli000002.vault.azure.net/secrets/azclitestcert/a165560bf3b94d4ab44c6aa2e04b32bf"}}'
     headers:
       cache-control:
       - no-cache
@@ -2603,9 +2556,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 14 Sep 2022 22:18:34 GMT
+      - Tue, 20 Sep 2022 12:03:14 GMT
       etag:
-      - '"00001716-0000-3400-0000-632253190000"'
+      - '"00004819-0000-3400-0000-6329abde0000"'
       expires:
       - '-1'
       pragma:
@@ -2647,7 +2600,7 @@ interactions:
       string: 'null'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/providers/Nginx.NginxPlus/locations/EASTUS2EUAP/operationStatuses/0e368623-2cf3-4d7f-a48f-5fe3f368ba71*92C1EEFAA8C0F05E1E2AF3EB2C39717A31900244A73BB150BE905A19D6C7886C?api-version=2022-08-01
+      - https://management.azure.com/providers/Nginx.NginxPlus/locations/EASTUS2EUAP/operationStatuses/58397e49-1e06-4646-a77c-47920c093758*6FBC0F4BE96DC50259163649998A3947513717641C775827E2176DF1894A4F1B?api-version=2022-08-01
       cache-control:
       - no-cache
       content-length:
@@ -2655,13 +2608,13 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 14 Sep 2022 22:18:38 GMT
+      - Tue, 20 Sep 2022 12:03:20 GMT
       etag:
-      - '"00001816-0000-3400-0000-6322533e0000"'
+      - '"00004919-0000-3400-0000-6329ac080000"'
       expires:
       - '-1'
       location:
-      - https://management.azure.com/providers/Nginx.NginxPlus/locations/EASTUS2EUAP/operationStatuses/0e368623-2cf3-4d7f-a48f-5fe3f368ba71*92C1EEFAA8C0F05E1E2AF3EB2C39717A31900244A73BB150BE905A19D6C7886C?api-version=2022-08-01
+      - https://management.azure.com/providers/Nginx.NginxPlus/locations/EASTUS2EUAP/operationStatuses/58397e49-1e06-4646-a77c-47920c093758*6FBC0F4BE96DC50259163649998A3947513717641C775827E2176DF1894A4F1B?api-version=2022-08-01
       pragma:
       - no-cache
       request-context:
@@ -2673,7 +2626,7 @@ interactions:
       x-ms-providerhub-traffic:
       - 'True'
       x-ms-ratelimit-remaining-subscription-deletes:
-      - '14998'
+      - '14999'
     status:
       code: 202
       message: Accepted
@@ -2693,21 +2646,21 @@ interactions:
       User-Agent:
       - AZURECLI/2.40.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.10.7 (Windows-10-10.0.22000-SP0)
     method: GET
-    uri: https://management.azure.com/providers/Nginx.NginxPlus/locations/EASTUS2EUAP/operationStatuses/0e368623-2cf3-4d7f-a48f-5fe3f368ba71*92C1EEFAA8C0F05E1E2AF3EB2C39717A31900244A73BB150BE905A19D6C7886C?api-version=2022-08-01
+    uri: https://management.azure.com/providers/Nginx.NginxPlus/locations/EASTUS2EUAP/operationStatuses/58397e49-1e06-4646-a77c-47920c093758*6FBC0F4BE96DC50259163649998A3947513717641C775827E2176DF1894A4F1B?api-version=2022-08-01
   response:
     body:
-      string: '{"id":"/providers/Nginx.NginxPlus/locations/EASTUS2EUAP/operationStatuses/0e368623-2cf3-4d7f-a48f-5fe3f368ba71*92C1EEFAA8C0F05E1E2AF3EB2C39717A31900244A73BB150BE905A19D6C7886C","name":"0e368623-2cf3-4d7f-a48f-5fe3f368ba71*92C1EEFAA8C0F05E1E2AF3EB2C39717A31900244A73BB150BE905A19D6C7886C","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AZCLIDeploymentTestRG_000001/providers/Nginx.NginxPlus/nginxDeployments/azclitest-deployment/certificates/azclitestcert","status":"Succeeded","startTime":"2022-09-14T22:18:37.8175423Z","endTime":"2022-09-14T22:19:09.9672338Z","error":{},"properties":null}'
+      string: '{"id":"/providers/Nginx.NginxPlus/locations/EASTUS2EUAP/operationStatuses/58397e49-1e06-4646-a77c-47920c093758*6FBC0F4BE96DC50259163649998A3947513717641C775827E2176DF1894A4F1B","name":"58397e49-1e06-4646-a77c-47920c093758*6FBC0F4BE96DC50259163649998A3947513717641C775827E2176DF1894A4F1B","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AZCLIDeploymentTestRG_000001/providers/Nginx.NginxPlus/nginxDeployments/azclitest-deployment/certificates/azclitestcert","status":"Succeeded","startTime":"2022-09-20T12:03:20.002478Z","endTime":"2022-09-20T12:03:52.1668594Z","error":{},"properties":null}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '624'
+      - '623'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 14 Sep 2022 22:19:10 GMT
+      - Tue, 20 Sep 2022 12:03:52 GMT
       etag:
-      - '"00006449-0000-3400-0000-6322535d0000"'
+      - '"03000e01-0000-3400-0000-6329ac280000"'
       expires:
       - '-1'
       pragma:
@@ -2751,7 +2704,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 14 Sep 2022 22:19:14 GMT
+      - Tue, 20 Sep 2022 12:03:58 GMT
       expires:
       - '-1'
       pragma:
@@ -2789,7 +2742,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/AZCLIDeploymentTestRG_000001?api-version=2021-04-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AZCLIDeploymentTestRG_000001","name":"AZCLIDeploymentTestRG_000001","type":"Microsoft.Resources/resourceGroups","location":"eastus2euap","tags":{"product":"azurecli","cause":"automation","date":"2022-09-14T22:09:10Z"},"properties":{"provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AZCLIDeploymentTestRG_000001","name":"AZCLIDeploymentTestRG_000001","type":"Microsoft.Resources/resourceGroups","location":"eastus2euap","tags":{"product":"azurecli","cause":"automation","date":"2022-09-20T11:54:33Z"},"properties":{"provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
@@ -2798,7 +2751,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 14 Sep 2022 22:19:16 GMT
+      - Tue, 20 Sep 2022 12:03:59 GMT
       expires:
       - '-1'
       pragma:
@@ -2836,22 +2789,22 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AZCLIDeploymentTestRG_000001/providers/Nginx.NginxPlus/nginxDeployments/azclitest-deployment/configurations/default?api-version=2022-08-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AZCLIDeploymentTestRG_000001/providers/Nginx.NginxPlus/nginxDeployments/azclitest-deployment/configurations/default","name":"default","type":"nginx.nginxplus/nginxdeployments/configurations","location":"eastus2euap","systemData":{"createdBy":"georgengugi@microsoft.com","createdByType":"User","createdAt":"2022-09-14T22:19:19.4943926Z","lastModifiedBy":"georgengugi@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-09-14T22:19:19.4943926Z"},"properties":{"provisioningState":"Accepted","files":[{"content":"aHR0cCB7DQogICAgdXBzdHJlYW0gYXBwIHsNCiAgICAgICAgc2VydmVyIDE3Mi4yNy4wLjQ6ODA7DQogICAgfQ0KICAgIHNlcnZlciB7DQogICAgICAgIGxpc3RlbiA4MDsNCiAgICAgICAgbG9jYXRpb24gLyB7DQogICAgICAgICAgICBkZWZhdWx0X3R5cGUgdGV4dC9odG1sOw0KICAgICAgICAgICAgcmV0dXJuIDIwMCAnPCFET0NUWVBFIGh0bWw+PGgxIHN0eWxlPSJmb250LXNpemU6MzBweDsiPkhlbGxvIGZyb20gTmdpbnggV2ViIFNlcnZlciE8L2gxPlxuJzsNCiAgICAgICAgfQ0KICAgICAgICBsb2NhdGlvbiAvYXBwLyB7DQogICAgICAgICAgICBwcm94eV9wYXNzIGh0dHA6Ly9hcHAuYmxvYi5jb3JlLndpbmRvd3MubmV0LzsNCiAgICAgICAgICAgIHByb3h5X2h0dHBfdmVyc2lvbiAxLjE7DQogICAgICAgICAgICBwcm94eV9yZWFkX3RpbWVvdXQgNjAwOw0KCSAgICAgICAgcHJveHlfY29ubmVjdF90aW1lb3V0IDYwMDsNCgkgICAgICAgIHByb3h5X3NlbmRfdGltZW91dCA2MDA7DQogICAgICAgIH0NCiAgICB9DQp9","virtualPath":"/etc/nginx/nginx.conf"}],"package":null,"rootFile":"/etc/nginx/nginx.conf"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AZCLIDeploymentTestRG_000001/providers/Nginx.NginxPlus/nginxDeployments/azclitest-deployment/configurations/default","name":"default","type":"nginx.nginxplus/nginxdeployments/configurations","location":"eastus2euap","systemData":{"createdBy":"georgengugi@microsoft.com","createdByType":"User","createdAt":"2022-09-20T12:04:03.237431Z","lastModifiedBy":"georgengugi@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-09-20T12:04:03.237431Z"},"properties":{"provisioningState":"Accepted","files":[{"content":"aHR0cCB7DQogICAgdXBzdHJlYW0gYXBwIHsNCiAgICAgICAgc2VydmVyIDE3Mi4yNy4wLjQ6ODA7DQogICAgfQ0KICAgIHNlcnZlciB7DQogICAgICAgIGxpc3RlbiA4MDsNCiAgICAgICAgbG9jYXRpb24gLyB7DQogICAgICAgICAgICBkZWZhdWx0X3R5cGUgdGV4dC9odG1sOw0KICAgICAgICAgICAgcmV0dXJuIDIwMCAnPCFET0NUWVBFIGh0bWw+PGgxIHN0eWxlPSJmb250LXNpemU6MzBweDsiPkhlbGxvIGZyb20gTmdpbnggV2ViIFNlcnZlciE8L2gxPlxuJzsNCiAgICAgICAgfQ0KICAgICAgICBsb2NhdGlvbiAvYXBwLyB7DQogICAgICAgICAgICBwcm94eV9wYXNzIGh0dHA6Ly9hcHAuYmxvYi5jb3JlLndpbmRvd3MubmV0LzsNCiAgICAgICAgICAgIHByb3h5X2h0dHBfdmVyc2lvbiAxLjE7DQogICAgICAgICAgICBwcm94eV9yZWFkX3RpbWVvdXQgNjAwOw0KCSAgICAgICAgcHJveHlfY29ubmVjdF90aW1lb3V0IDYwMDsNCgkgICAgICAgIHByb3h5X3NlbmRfdGltZW91dCA2MDA7DQogICAgICAgIH0NCiAgICB9DQp9","virtualPath":"/etc/nginx/nginx.conf"}],"package":null,"rootFile":"/etc/nginx/nginx.conf"}}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/providers/Nginx.NginxPlus/locations/EASTUS2EUAP/operationStatuses/adeb1842-fbc6-4fac-ad8a-f5eaceae21f1*988B2A822EF0E0F84E2275B1CF4E428BD333B249F303D594C5A108946F39EC61?api-version=2022-08-01
+      - https://management.azure.com/providers/Nginx.NginxPlus/locations/EASTUS2EUAP/operationStatuses/e8f418d0-1784-4b46-ba5a-bd9cfcbc20f8*C7123AD722AA79897AF9FB6A904A3F3397462A9CD64F1869D7CBF731F5B6E354?api-version=2022-08-01
       cache-control:
       - no-cache
       content-length:
-      - '1391'
+      - '1389'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 14 Sep 2022 22:19:19 GMT
+      - Tue, 20 Sep 2022 12:04:04 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/providers/Nginx.NginxPlus/locations/EASTUS2EUAP/operationStatuses/adeb1842-fbc6-4fac-ad8a-f5eaceae21f1*988B2A822EF0E0F84E2275B1CF4E428BD333B249F303D594C5A108946F39EC61?api-version=2022-08-01
+      - https://management.azure.com/providers/Nginx.NginxPlus/locations/EASTUS2EUAP/operationStatuses/e8f418d0-1784-4b46-ba5a-bd9cfcbc20f8*C7123AD722AA79897AF9FB6A904A3F3397462A9CD64F1869D7CBF731F5B6E354?api-version=2022-08-01
       pragma:
       - no-cache
       request-context:
@@ -2883,10 +2836,10 @@ interactions:
       User-Agent:
       - AZURECLI/2.40.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.10.7 (Windows-10-10.0.22000-SP0)
     method: GET
-    uri: https://management.azure.com/providers/Nginx.NginxPlus/locations/EASTUS2EUAP/operationStatuses/adeb1842-fbc6-4fac-ad8a-f5eaceae21f1*988B2A822EF0E0F84E2275B1CF4E428BD333B249F303D594C5A108946F39EC61?api-version=2022-08-01
+    uri: https://management.azure.com/providers/Nginx.NginxPlus/locations/EASTUS2EUAP/operationStatuses/e8f418d0-1784-4b46-ba5a-bd9cfcbc20f8*C7123AD722AA79897AF9FB6A904A3F3397462A9CD64F1869D7CBF731F5B6E354?api-version=2022-08-01
   response:
     body:
-      string: '{"id":"/providers/Nginx.NginxPlus/locations/EASTUS2EUAP/operationStatuses/adeb1842-fbc6-4fac-ad8a-f5eaceae21f1*988B2A822EF0E0F84E2275B1CF4E428BD333B249F303D594C5A108946F39EC61","name":"adeb1842-fbc6-4fac-ad8a-f5eaceae21f1*988B2A822EF0E0F84E2275B1CF4E428BD333B249F303D594C5A108946F39EC61","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AZCLIDeploymentTestRG_000001/providers/Nginx.NginxPlus/nginxDeployments/azclitest-deployment/configurations/default","status":"Succeeded","startTime":"2022-09-14T22:19:19.9670906Z","endTime":"2022-09-14T22:19:30.5291137Z","error":{},"properties":null}'
+      string: '{"id":"/providers/Nginx.NginxPlus/locations/EASTUS2EUAP/operationStatuses/e8f418d0-1784-4b46-ba5a-bd9cfcbc20f8*C7123AD722AA79897AF9FB6A904A3F3397462A9CD64F1869D7CBF731F5B6E354","name":"e8f418d0-1784-4b46-ba5a-bd9cfcbc20f8*C7123AD722AA79897AF9FB6A904A3F3397462A9CD64F1869D7CBF731F5B6E354","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AZCLIDeploymentTestRG_000001/providers/Nginx.NginxPlus/nginxDeployments/azclitest-deployment/configurations/default","status":"Succeeded","startTime":"2022-09-20T12:04:04.9771649Z","endTime":"2022-09-20T12:04:15.7456227Z","error":{},"properties":null}'
     headers:
       cache-control:
       - no-cache
@@ -2895,9 +2848,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 14 Sep 2022 22:19:50 GMT
+      - Tue, 20 Sep 2022 12:04:35 GMT
       etag:
-      - '"00006649-0000-3400-0000-632253720000"'
+      - '"03001001-0000-3400-0000-6329ac3f0000"'
       expires:
       - '-1'
       pragma:
@@ -2941,7 +2894,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 14 Sep 2022 22:19:51 GMT
+      - Tue, 20 Sep 2022 12:04:36 GMT
       expires:
       - '-1'
       pragma:
@@ -2989,7 +2942,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 14 Sep 2022 22:19:54 GMT
+      - Tue, 20 Sep 2022 12:04:43 GMT
       expires:
       - '-1'
       pragma:
@@ -3029,7 +2982,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/AZCLIDeploymentTestRG_000001?api-version=2021-04-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AZCLIDeploymentTestRG_000001","name":"AZCLIDeploymentTestRG_000001","type":"Microsoft.Resources/resourceGroups","location":"eastus2euap","tags":{"product":"azurecli","cause":"automation","date":"2022-09-14T22:09:10Z"},"properties":{"provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AZCLIDeploymentTestRG_000001","name":"AZCLIDeploymentTestRG_000001","type":"Microsoft.Resources/resourceGroups","location":"eastus2euap","tags":{"product":"azurecli","cause":"automation","date":"2022-09-20T11:54:33Z"},"properties":{"provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
@@ -3038,7 +2991,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 14 Sep 2022 22:19:55 GMT
+      - Tue, 20 Sep 2022 12:04:44 GMT
       expires:
       - '-1'
       pragma:
@@ -3080,7 +3033,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 14 Sep 2022 22:19:59 GMT
+      - Tue, 20 Sep 2022 12:04:50 GMT
       expires:
       - '-1'
       pragma:
@@ -3125,22 +3078,22 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AZCLIDeploymentTestRG_000001/providers/Nginx.NginxPlus/nginxDeployments/azclitest-deployment/configurations/default?api-version=2022-08-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AZCLIDeploymentTestRG_000001/providers/Nginx.NginxPlus/nginxDeployments/azclitest-deployment/configurations/default","name":"default","type":"nginx.nginxplus/nginxdeployments/configurations","location":"eastus2euap","systemData":{"createdBy":"georgengugi@microsoft.com","createdByType":"User","createdAt":"2022-09-14T22:20:00.898867Z","lastModifiedBy":"georgengugi@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-09-14T22:20:00.898867Z"},"properties":{"provisioningState":"Accepted","files":[{"content":"aHR0cCB7DQogICAgdXBzdHJlYW0gYXBwIHsNCiAgICAgICAgc2VydmVyIDE3Mi4yNy4wLjQ6ODA7DQogICAgfQ0KICAgIHNlcnZlciB7DQogICAgICAgIGxpc3RlbiA4MDsNCiAgICAgICAgbG9jYXRpb24gLyB7DQogICAgICAgICAgICBkZWZhdWx0X3R5cGUgdGV4dC9odG1sOw0KICAgICAgICAgICAgcmV0dXJuIDIwMCAnPCFET0NUWVBFIGh0bWw+PGgxIHN0eWxlPSJmb250LXNpemU6MzBweDsiPkhlbGxvIGZyb20gTmdpbnggV2ViIFNlcnZlciE8L2gxPlxuJzsNCiAgICAgICAgfQ0KICAgICAgICBsb2NhdGlvbiAvYXBwLyB7DQogICAgICAgICAgICBwcm94eV9wYXNzIGh0dHA6Ly9hcHAuYmxvYi5jb3JlLndpbmRvd3MubmV0LzsNCiAgICAgICAgICAgIHByb3h5X2h0dHBfdmVyc2lvbiAxLjE7DQogICAgICAgICAgICBwcm94eV9yZWFkX3RpbWVvdXQgNjAwOw0KCSAgICAgICAgcHJveHlfY29ubmVjdF90aW1lb3V0IDYwMDsNCgkgICAgICAgIHByb3h5X3NlbmRfdGltZW91dCA2MDA7DQogICAgICAgIH0NCiAgICB9DQp9","virtualPath":"/etc/nginx/nginxupdate.conf"}],"package":{"data":null},"rootFile":"/etc/nginx/nginxupdate.conf"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AZCLIDeploymentTestRG_000001/providers/Nginx.NginxPlus/nginxDeployments/azclitest-deployment/configurations/default","name":"default","type":"nginx.nginxplus/nginxdeployments/configurations","location":"eastus2euap","systemData":{"createdBy":"georgengugi@microsoft.com","createdByType":"User","createdAt":"2022-09-20T12:04:54.5932767Z","lastModifiedBy":"georgengugi@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-09-20T12:04:54.5932767Z"},"properties":{"provisioningState":"Accepted","files":[{"content":"aHR0cCB7DQogICAgdXBzdHJlYW0gYXBwIHsNCiAgICAgICAgc2VydmVyIDE3Mi4yNy4wLjQ6ODA7DQogICAgfQ0KICAgIHNlcnZlciB7DQogICAgICAgIGxpc3RlbiA4MDsNCiAgICAgICAgbG9jYXRpb24gLyB7DQogICAgICAgICAgICBkZWZhdWx0X3R5cGUgdGV4dC9odG1sOw0KICAgICAgICAgICAgcmV0dXJuIDIwMCAnPCFET0NUWVBFIGh0bWw+PGgxIHN0eWxlPSJmb250LXNpemU6MzBweDsiPkhlbGxvIGZyb20gTmdpbnggV2ViIFNlcnZlciE8L2gxPlxuJzsNCiAgICAgICAgfQ0KICAgICAgICBsb2NhdGlvbiAvYXBwLyB7DQogICAgICAgICAgICBwcm94eV9wYXNzIGh0dHA6Ly9hcHAuYmxvYi5jb3JlLndpbmRvd3MubmV0LzsNCiAgICAgICAgICAgIHByb3h5X2h0dHBfdmVyc2lvbiAxLjE7DQogICAgICAgICAgICBwcm94eV9yZWFkX3RpbWVvdXQgNjAwOw0KCSAgICAgICAgcHJveHlfY29ubmVjdF90aW1lb3V0IDYwMDsNCgkgICAgICAgIHByb3h5X3NlbmRfdGltZW91dCA2MDA7DQogICAgICAgIH0NCiAgICB9DQp9","virtualPath":"/etc/nginx/nginxupdate.conf"}],"package":{"data":null},"rootFile":"/etc/nginx/nginxupdate.conf"}}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/providers/Nginx.NginxPlus/locations/EASTUS2EUAP/operationStatuses/16851e8d-d593-401d-a468-af192923799c*988B2A822EF0E0F84E2275B1CF4E428BD333B249F303D594C5A108946F39EC61?api-version=2022-08-01
+      - https://management.azure.com/providers/Nginx.NginxPlus/locations/EASTUS2EUAP/operationStatuses/515af680-704a-40cd-a5e9-f2f3769fec9e*C7123AD722AA79897AF9FB6A904A3F3397462A9CD64F1869D7CBF731F5B6E354?api-version=2022-08-01
       cache-control:
       - no-cache
       content-length:
-      - '1410'
+      - '1412'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 14 Sep 2022 22:20:01 GMT
+      - Tue, 20 Sep 2022 12:04:54 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/providers/Nginx.NginxPlus/locations/EASTUS2EUAP/operationStatuses/16851e8d-d593-401d-a468-af192923799c*988B2A822EF0E0F84E2275B1CF4E428BD333B249F303D594C5A108946F39EC61?api-version=2022-08-01
+      - https://management.azure.com/providers/Nginx.NginxPlus/locations/EASTUS2EUAP/operationStatuses/515af680-704a-40cd-a5e9-f2f3769fec9e*C7123AD722AA79897AF9FB6A904A3F3397462A9CD64F1869D7CBF731F5B6E354?api-version=2022-08-01
       pragma:
       - no-cache
       request-context:
@@ -3152,7 +3105,7 @@ interactions:
       x-ms-providerhub-traffic:
       - 'True'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1193'
+      - '1199'
     status:
       code: 201
       message: Created
@@ -3172,21 +3125,21 @@ interactions:
       User-Agent:
       - AZURECLI/2.40.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.10.7 (Windows-10-10.0.22000-SP0)
     method: GET
-    uri: https://management.azure.com/providers/Nginx.NginxPlus/locations/EASTUS2EUAP/operationStatuses/16851e8d-d593-401d-a468-af192923799c*988B2A822EF0E0F84E2275B1CF4E428BD333B249F303D594C5A108946F39EC61?api-version=2022-08-01
+    uri: https://management.azure.com/providers/Nginx.NginxPlus/locations/EASTUS2EUAP/operationStatuses/515af680-704a-40cd-a5e9-f2f3769fec9e*C7123AD722AA79897AF9FB6A904A3F3397462A9CD64F1869D7CBF731F5B6E354?api-version=2022-08-01
   response:
     body:
-      string: '{"id":"/providers/Nginx.NginxPlus/locations/EASTUS2EUAP/operationStatuses/16851e8d-d593-401d-a468-af192923799c*988B2A822EF0E0F84E2275B1CF4E428BD333B249F303D594C5A108946F39EC61","name":"16851e8d-d593-401d-a468-af192923799c*988B2A822EF0E0F84E2275B1CF4E428BD333B249F303D594C5A108946F39EC61","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AZCLIDeploymentTestRG_000001/providers/Nginx.NginxPlus/nginxDeployments/azclitest-deployment/configurations/default","status":"Succeeded","startTime":"2022-09-14T22:20:01.3196519Z","endTime":"2022-09-14T22:20:11.8183123Z","error":{},"properties":null}'
+      string: '{"id":"/providers/Nginx.NginxPlus/locations/EASTUS2EUAP/operationStatuses/515af680-704a-40cd-a5e9-f2f3769fec9e*C7123AD722AA79897AF9FB6A904A3F3397462A9CD64F1869D7CBF731F5B6E354","name":"515af680-704a-40cd-a5e9-f2f3769fec9e*C7123AD722AA79897AF9FB6A904A3F3397462A9CD64F1869D7CBF731F5B6E354","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AZCLIDeploymentTestRG_000001/providers/Nginx.NginxPlus/nginxDeployments/azclitest-deployment/configurations/default","status":"Succeeded","startTime":"2022-09-20T12:04:55.044734Z","endTime":"2022-09-20T12:05:05.8385283Z","error":{},"properties":null}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '620'
+      - '619'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 14 Sep 2022 22:20:32 GMT
+      - Tue, 20 Sep 2022 12:05:24 GMT
       etag:
-      - '"00006849-0000-3400-0000-6322539b0000"'
+      - '"03001201-0000-3400-0000-6329ac710000"'
       expires:
       - '-1'
       pragma:
@@ -3230,7 +3183,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 14 Sep 2022 22:20:33 GMT
+      - Tue, 20 Sep 2022 12:05:25 GMT
       expires:
       - '-1'
       pragma:
@@ -3278,7 +3231,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 14 Sep 2022 22:20:35 GMT
+      - Tue, 20 Sep 2022 12:05:30 GMT
       expires:
       - '-1'
       pragma:
@@ -3326,7 +3279,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 14 Sep 2022 22:20:39 GMT
+      - Tue, 20 Sep 2022 12:05:32 GMT
       expires:
       - '-1'
       pragma:
@@ -3370,7 +3323,7 @@ interactions:
       string: 'null'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/providers/Nginx.NginxPlus/locations/EASTUS2EUAP/operationStatuses/cc88b4df-8e00-48bf-8c76-b9ee0774f5f7*988B2A822EF0E0F84E2275B1CF4E428BD333B249F303D594C5A108946F39EC61?api-version=2022-08-01
+      - https://management.azure.com/providers/Nginx.NginxPlus/locations/EASTUS2EUAP/operationStatuses/6670423d-15ba-4453-8c04-b684756c8653*C7123AD722AA79897AF9FB6A904A3F3397462A9CD64F1869D7CBF731F5B6E354?api-version=2022-08-01
       cache-control:
       - no-cache
       content-length:
@@ -3378,11 +3331,11 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 14 Sep 2022 22:20:41 GMT
+      - Tue, 20 Sep 2022 12:05:35 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/providers/Nginx.NginxPlus/locations/EASTUS2EUAP/operationStatuses/cc88b4df-8e00-48bf-8c76-b9ee0774f5f7*988B2A822EF0E0F84E2275B1CF4E428BD333B249F303D594C5A108946F39EC61?api-version=2022-08-01
+      - https://management.azure.com/providers/Nginx.NginxPlus/locations/EASTUS2EUAP/operationStatuses/6670423d-15ba-4453-8c04-b684756c8653*C7123AD722AA79897AF9FB6A904A3F3397462A9CD64F1869D7CBF731F5B6E354?api-version=2022-08-01
       pragma:
       - no-cache
       request-context:
@@ -3394,7 +3347,7 @@ interactions:
       x-ms-providerhub-traffic:
       - 'True'
       x-ms-ratelimit-remaining-subscription-deletes:
-      - '14997'
+      - '14999'
     status:
       code: 202
       message: Accepted
@@ -3414,21 +3367,21 @@ interactions:
       User-Agent:
       - AZURECLI/2.40.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.10.7 (Windows-10-10.0.22000-SP0)
     method: GET
-    uri: https://management.azure.com/providers/Nginx.NginxPlus/locations/EASTUS2EUAP/operationStatuses/cc88b4df-8e00-48bf-8c76-b9ee0774f5f7*988B2A822EF0E0F84E2275B1CF4E428BD333B249F303D594C5A108946F39EC61?api-version=2022-08-01
+    uri: https://management.azure.com/providers/Nginx.NginxPlus/locations/EASTUS2EUAP/operationStatuses/6670423d-15ba-4453-8c04-b684756c8653*C7123AD722AA79897AF9FB6A904A3F3397462A9CD64F1869D7CBF731F5B6E354?api-version=2022-08-01
   response:
     body:
-      string: '{"id":"/providers/Nginx.NginxPlus/locations/EASTUS2EUAP/operationStatuses/cc88b4df-8e00-48bf-8c76-b9ee0774f5f7*988B2A822EF0E0F84E2275B1CF4E428BD333B249F303D594C5A108946F39EC61","name":"cc88b4df-8e00-48bf-8c76-b9ee0774f5f7*988B2A822EF0E0F84E2275B1CF4E428BD333B249F303D594C5A108946F39EC61","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AZCLIDeploymentTestRG_000001/providers/Nginx.NginxPlus/nginxDeployments/azclitest-deployment/configurations/default","status":"Deleting","startTime":"2022-09-14T22:20:41.2693017Z","error":{}}'
+      string: '{"id":"/providers/Nginx.NginxPlus/locations/EASTUS2EUAP/operationStatuses/6670423d-15ba-4453-8c04-b684756c8653*C7123AD722AA79897AF9FB6A904A3F3397462A9CD64F1869D7CBF731F5B6E354","name":"6670423d-15ba-4453-8c04-b684756c8653*C7123AD722AA79897AF9FB6A904A3F3397462A9CD64F1869D7CBF731F5B6E354","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AZCLIDeploymentTestRG_000001/providers/Nginx.NginxPlus/nginxDeployments/azclitest-deployment/configurations/default","status":"Deleting","startTime":"2022-09-20T12:05:35.37626Z","error":{}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '560'
+      - '558'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 14 Sep 2022 22:21:11 GMT
+      - Tue, 20 Sep 2022 12:06:05 GMT
       etag:
-      - '"00006a49-0000-3400-0000-632253ba0000"'
+      - '"03001401-0000-3400-0000-6329ac900000"'
       expires:
       - '-1'
       pragma:
@@ -3456,21 +3409,21 @@ interactions:
       User-Agent:
       - AZURECLI/2.40.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.10.7 (Windows-10-10.0.22000-SP0)
     method: GET
-    uri: https://management.azure.com/providers/Nginx.NginxPlus/locations/EASTUS2EUAP/operationStatuses/cc88b4df-8e00-48bf-8c76-b9ee0774f5f7*988B2A822EF0E0F84E2275B1CF4E428BD333B249F303D594C5A108946F39EC61?api-version=2022-08-01
+    uri: https://management.azure.com/providers/Nginx.NginxPlus/locations/EASTUS2EUAP/operationStatuses/6670423d-15ba-4453-8c04-b684756c8653*C7123AD722AA79897AF9FB6A904A3F3397462A9CD64F1869D7CBF731F5B6E354?api-version=2022-08-01
   response:
     body:
-      string: '{"id":"/providers/Nginx.NginxPlus/locations/EASTUS2EUAP/operationStatuses/cc88b4df-8e00-48bf-8c76-b9ee0774f5f7*988B2A822EF0E0F84E2275B1CF4E428BD333B249F303D594C5A108946F39EC61","name":"cc88b4df-8e00-48bf-8c76-b9ee0774f5f7*988B2A822EF0E0F84E2275B1CF4E428BD333B249F303D594C5A108946F39EC61","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AZCLIDeploymentTestRG_000001/providers/Nginx.NginxPlus/nginxDeployments/azclitest-deployment/configurations/default","status":"Succeeded","startTime":"2022-09-14T22:20:41.2693017Z","endTime":"2022-09-14T22:21:12.9705103Z","error":{},"properties":null}'
+      string: '{"id":"/providers/Nginx.NginxPlus/locations/EASTUS2EUAP/operationStatuses/6670423d-15ba-4453-8c04-b684756c8653*C7123AD722AA79897AF9FB6A904A3F3397462A9CD64F1869D7CBF731F5B6E354","name":"6670423d-15ba-4453-8c04-b684756c8653*C7123AD722AA79897AF9FB6A904A3F3397462A9CD64F1869D7CBF731F5B6E354","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AZCLIDeploymentTestRG_000001/providers/Nginx.NginxPlus/nginxDeployments/azclitest-deployment/configurations/default","status":"Succeeded","startTime":"2022-09-20T12:05:35.37626Z","endTime":"2022-09-20T12:06:06.4463236Z","error":{},"properties":null}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '620'
+      - '618'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 14 Sep 2022 22:21:41 GMT
+      - Tue, 20 Sep 2022 12:10:47 GMT
       etag:
-      - '"00006b49-0000-3400-0000-632253d80000"'
+      - '"03001501-0000-3400-0000-6329acae0000"'
       expires:
       - '-1'
       pragma:
@@ -3510,7 +3463,7 @@ interactions:
       string: 'null'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/providers/Nginx.NginxPlus/locations/EASTUS2EUAP/operationStatuses/33aedff2-b6cc-4641-9790-dadd74b4459d*6F2948BC7F8DD771B249F57C88B4EE6CAC9020A2630F6F8918E010B6BD828050?api-version=2022-08-01
+      - https://management.azure.com/providers/Nginx.NginxPlus/locations/EASTUS2EUAP/operationStatuses/c153635b-4b01-4bc7-946b-32f72ff0dca4*23B61C80BD45EC670D58F6356F4F15E09A23A3DEEC48503E47ACA45B6209CAE3?api-version=2022-08-01
       cache-control:
       - no-cache
       content-length:
@@ -3518,13 +3471,13 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 14 Sep 2022 22:21:46 GMT
+      - Tue, 20 Sep 2022 12:10:52 GMT
       etag:
-      - '"9000eebc-0000-3400-0000-632253fa0000"'
+      - '"d2009192-0000-3400-0000-6329adcd0000"'
       expires:
       - '-1'
       location:
-      - https://management.azure.com/providers/Nginx.NginxPlus/locations/EASTUS2EUAP/operationStatuses/33aedff2-b6cc-4641-9790-dadd74b4459d*6F2948BC7F8DD771B249F57C88B4EE6CAC9020A2630F6F8918E010B6BD828050?api-version=2022-08-01
+      - https://management.azure.com/providers/Nginx.NginxPlus/locations/EASTUS2EUAP/operationStatuses/c153635b-4b01-4bc7-946b-32f72ff0dca4*23B61C80BD45EC670D58F6356F4F15E09A23A3DEEC48503E47ACA45B6209CAE3?api-version=2022-08-01
       pragma:
       - no-cache
       strict-transport-security:
@@ -3554,10 +3507,10 @@ interactions:
       User-Agent:
       - AZURECLI/2.40.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.10.7 (Windows-10-10.0.22000-SP0)
     method: GET
-    uri: https://management.azure.com/providers/Nginx.NginxPlus/locations/EASTUS2EUAP/operationStatuses/33aedff2-b6cc-4641-9790-dadd74b4459d*6F2948BC7F8DD771B249F57C88B4EE6CAC9020A2630F6F8918E010B6BD828050?api-version=2022-08-01
+    uri: https://management.azure.com/providers/Nginx.NginxPlus/locations/EASTUS2EUAP/operationStatuses/c153635b-4b01-4bc7-946b-32f72ff0dca4*23B61C80BD45EC670D58F6356F4F15E09A23A3DEEC48503E47ACA45B6209CAE3?api-version=2022-08-01
   response:
     body:
-      string: '{"id":"/providers/Nginx.NginxPlus/locations/EASTUS2EUAP/operationStatuses/33aedff2-b6cc-4641-9790-dadd74b4459d*6F2948BC7F8DD771B249F57C88B4EE6CAC9020A2630F6F8918E010B6BD828050","name":"33aedff2-b6cc-4641-9790-dadd74b4459d*6F2948BC7F8DD771B249F57C88B4EE6CAC9020A2630F6F8918E010B6BD828050","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AZCLIDeploymentTestRG_000001/providers/Nginx.NginxPlus/nginxDeployments/azclitest-deployment","status":"Deleting","startTime":"2022-09-14T22:21:46.1748436Z"}'
+      string: '{"id":"/providers/Nginx.NginxPlus/locations/EASTUS2EUAP/operationStatuses/c153635b-4b01-4bc7-946b-32f72ff0dca4*23B61C80BD45EC670D58F6356F4F15E09A23A3DEEC48503E47ACA45B6209CAE3","name":"c153635b-4b01-4bc7-946b-32f72ff0dca4*23B61C80BD45EC670D58F6356F4F15E09A23A3DEEC48503E47ACA45B6209CAE3","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AZCLIDeploymentTestRG_000001/providers/Nginx.NginxPlus/nginxDeployments/azclitest-deployment","status":"Deleting","startTime":"2022-09-20T12:10:52.6699277Z"}'
     headers:
       cache-control:
       - no-cache
@@ -3566,9 +3519,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 14 Sep 2022 22:22:17 GMT
+      - Tue, 20 Sep 2022 12:11:23 GMT
       etag:
-      - '"00006c49-0000-3400-0000-632253fa0000"'
+      - '"03001601-0000-3400-0000-6329adcc0000"'
       expires:
       - '-1'
       pragma:
@@ -3596,10 +3549,10 @@ interactions:
       User-Agent:
       - AZURECLI/2.40.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.10.7 (Windows-10-10.0.22000-SP0)
     method: GET
-    uri: https://management.azure.com/providers/Nginx.NginxPlus/locations/EASTUS2EUAP/operationStatuses/33aedff2-b6cc-4641-9790-dadd74b4459d*6F2948BC7F8DD771B249F57C88B4EE6CAC9020A2630F6F8918E010B6BD828050?api-version=2022-08-01
+    uri: https://management.azure.com/providers/Nginx.NginxPlus/locations/EASTUS2EUAP/operationStatuses/c153635b-4b01-4bc7-946b-32f72ff0dca4*23B61C80BD45EC670D58F6356F4F15E09A23A3DEEC48503E47ACA45B6209CAE3?api-version=2022-08-01
   response:
     body:
-      string: '{"id":"/providers/Nginx.NginxPlus/locations/EASTUS2EUAP/operationStatuses/33aedff2-b6cc-4641-9790-dadd74b4459d*6F2948BC7F8DD771B249F57C88B4EE6CAC9020A2630F6F8918E010B6BD828050","name":"33aedff2-b6cc-4641-9790-dadd74b4459d*6F2948BC7F8DD771B249F57C88B4EE6CAC9020A2630F6F8918E010B6BD828050","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AZCLIDeploymentTestRG_000001/providers/Nginx.NginxPlus/nginxDeployments/azclitest-deployment","status":"Deleting","startTime":"2022-09-14T22:21:46.1748436Z"}'
+      string: '{"id":"/providers/Nginx.NginxPlus/locations/EASTUS2EUAP/operationStatuses/c153635b-4b01-4bc7-946b-32f72ff0dca4*23B61C80BD45EC670D58F6356F4F15E09A23A3DEEC48503E47ACA45B6209CAE3","name":"c153635b-4b01-4bc7-946b-32f72ff0dca4*23B61C80BD45EC670D58F6356F4F15E09A23A3DEEC48503E47ACA45B6209CAE3","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AZCLIDeploymentTestRG_000001/providers/Nginx.NginxPlus/nginxDeployments/azclitest-deployment","status":"Deleting","startTime":"2022-09-20T12:10:52.6699277Z"}'
     headers:
       cache-control:
       - no-cache
@@ -3608,9 +3561,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 14 Sep 2022 22:22:47 GMT
+      - Tue, 20 Sep 2022 12:11:53 GMT
       etag:
-      - '"00006c49-0000-3400-0000-632253fa0000"'
+      - '"03001601-0000-3400-0000-6329adcc0000"'
       expires:
       - '-1'
       pragma:
@@ -3638,10 +3591,10 @@ interactions:
       User-Agent:
       - AZURECLI/2.40.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.10.7 (Windows-10-10.0.22000-SP0)
     method: GET
-    uri: https://management.azure.com/providers/Nginx.NginxPlus/locations/EASTUS2EUAP/operationStatuses/33aedff2-b6cc-4641-9790-dadd74b4459d*6F2948BC7F8DD771B249F57C88B4EE6CAC9020A2630F6F8918E010B6BD828050?api-version=2022-08-01
+    uri: https://management.azure.com/providers/Nginx.NginxPlus/locations/EASTUS2EUAP/operationStatuses/c153635b-4b01-4bc7-946b-32f72ff0dca4*23B61C80BD45EC670D58F6356F4F15E09A23A3DEEC48503E47ACA45B6209CAE3?api-version=2022-08-01
   response:
     body:
-      string: '{"id":"/providers/Nginx.NginxPlus/locations/EASTUS2EUAP/operationStatuses/33aedff2-b6cc-4641-9790-dadd74b4459d*6F2948BC7F8DD771B249F57C88B4EE6CAC9020A2630F6F8918E010B6BD828050","name":"33aedff2-b6cc-4641-9790-dadd74b4459d*6F2948BC7F8DD771B249F57C88B4EE6CAC9020A2630F6F8918E010B6BD828050","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AZCLIDeploymentTestRG_000001/providers/Nginx.NginxPlus/nginxDeployments/azclitest-deployment","status":"Deleting","startTime":"2022-09-14T22:21:46.1748436Z"}'
+      string: '{"id":"/providers/Nginx.NginxPlus/locations/EASTUS2EUAP/operationStatuses/c153635b-4b01-4bc7-946b-32f72ff0dca4*23B61C80BD45EC670D58F6356F4F15E09A23A3DEEC48503E47ACA45B6209CAE3","name":"c153635b-4b01-4bc7-946b-32f72ff0dca4*23B61C80BD45EC670D58F6356F4F15E09A23A3DEEC48503E47ACA45B6209CAE3","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AZCLIDeploymentTestRG_000001/providers/Nginx.NginxPlus/nginxDeployments/azclitest-deployment","status":"Deleting","startTime":"2022-09-20T12:10:52.6699277Z"}'
     headers:
       cache-control:
       - no-cache
@@ -3650,9 +3603,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 14 Sep 2022 22:23:18 GMT
+      - Tue, 20 Sep 2022 12:12:23 GMT
       etag:
-      - '"00006c49-0000-3400-0000-632253fa0000"'
+      - '"03001601-0000-3400-0000-6329adcc0000"'
       expires:
       - '-1'
       pragma:
@@ -3680,10 +3633,10 @@ interactions:
       User-Agent:
       - AZURECLI/2.40.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.10.7 (Windows-10-10.0.22000-SP0)
     method: GET
-    uri: https://management.azure.com/providers/Nginx.NginxPlus/locations/EASTUS2EUAP/operationStatuses/33aedff2-b6cc-4641-9790-dadd74b4459d*6F2948BC7F8DD771B249F57C88B4EE6CAC9020A2630F6F8918E010B6BD828050?api-version=2022-08-01
+    uri: https://management.azure.com/providers/Nginx.NginxPlus/locations/EASTUS2EUAP/operationStatuses/c153635b-4b01-4bc7-946b-32f72ff0dca4*23B61C80BD45EC670D58F6356F4F15E09A23A3DEEC48503E47ACA45B6209CAE3?api-version=2022-08-01
   response:
     body:
-      string: '{"id":"/providers/Nginx.NginxPlus/locations/EASTUS2EUAP/operationStatuses/33aedff2-b6cc-4641-9790-dadd74b4459d*6F2948BC7F8DD771B249F57C88B4EE6CAC9020A2630F6F8918E010B6BD828050","name":"33aedff2-b6cc-4641-9790-dadd74b4459d*6F2948BC7F8DD771B249F57C88B4EE6CAC9020A2630F6F8918E010B6BD828050","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AZCLIDeploymentTestRG_000001/providers/Nginx.NginxPlus/nginxDeployments/azclitest-deployment","status":"Deleting","startTime":"2022-09-14T22:21:46.1748436Z"}'
+      string: '{"id":"/providers/Nginx.NginxPlus/locations/EASTUS2EUAP/operationStatuses/c153635b-4b01-4bc7-946b-32f72ff0dca4*23B61C80BD45EC670D58F6356F4F15E09A23A3DEEC48503E47ACA45B6209CAE3","name":"c153635b-4b01-4bc7-946b-32f72ff0dca4*23B61C80BD45EC670D58F6356F4F15E09A23A3DEEC48503E47ACA45B6209CAE3","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AZCLIDeploymentTestRG_000001/providers/Nginx.NginxPlus/nginxDeployments/azclitest-deployment","status":"Deleting","startTime":"2022-09-20T12:10:52.6699277Z"}'
     headers:
       cache-control:
       - no-cache
@@ -3692,9 +3645,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 14 Sep 2022 22:23:48 GMT
+      - Tue, 20 Sep 2022 12:12:55 GMT
       etag:
-      - '"00006c49-0000-3400-0000-632253fa0000"'
+      - '"03001601-0000-3400-0000-6329adcc0000"'
       expires:
       - '-1'
       pragma:
@@ -3722,10 +3675,10 @@ interactions:
       User-Agent:
       - AZURECLI/2.40.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.10.7 (Windows-10-10.0.22000-SP0)
     method: GET
-    uri: https://management.azure.com/providers/Nginx.NginxPlus/locations/EASTUS2EUAP/operationStatuses/33aedff2-b6cc-4641-9790-dadd74b4459d*6F2948BC7F8DD771B249F57C88B4EE6CAC9020A2630F6F8918E010B6BD828050?api-version=2022-08-01
+    uri: https://management.azure.com/providers/Nginx.NginxPlus/locations/EASTUS2EUAP/operationStatuses/c153635b-4b01-4bc7-946b-32f72ff0dca4*23B61C80BD45EC670D58F6356F4F15E09A23A3DEEC48503E47ACA45B6209CAE3?api-version=2022-08-01
   response:
     body:
-      string: '{"id":"/providers/Nginx.NginxPlus/locations/EASTUS2EUAP/operationStatuses/33aedff2-b6cc-4641-9790-dadd74b4459d*6F2948BC7F8DD771B249F57C88B4EE6CAC9020A2630F6F8918E010B6BD828050","name":"33aedff2-b6cc-4641-9790-dadd74b4459d*6F2948BC7F8DD771B249F57C88B4EE6CAC9020A2630F6F8918E010B6BD828050","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AZCLIDeploymentTestRG_000001/providers/Nginx.NginxPlus/nginxDeployments/azclitest-deployment","status":"Deleting","startTime":"2022-09-14T22:21:46.1748436Z"}'
+      string: '{"id":"/providers/Nginx.NginxPlus/locations/EASTUS2EUAP/operationStatuses/c153635b-4b01-4bc7-946b-32f72ff0dca4*23B61C80BD45EC670D58F6356F4F15E09A23A3DEEC48503E47ACA45B6209CAE3","name":"c153635b-4b01-4bc7-946b-32f72ff0dca4*23B61C80BD45EC670D58F6356F4F15E09A23A3DEEC48503E47ACA45B6209CAE3","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AZCLIDeploymentTestRG_000001/providers/Nginx.NginxPlus/nginxDeployments/azclitest-deployment","status":"Deleting","startTime":"2022-09-20T12:10:52.6699277Z"}'
     headers:
       cache-control:
       - no-cache
@@ -3734,9 +3687,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 14 Sep 2022 22:24:19 GMT
+      - Tue, 20 Sep 2022 12:13:25 GMT
       etag:
-      - '"00006c49-0000-3400-0000-632253fa0000"'
+      - '"03001601-0000-3400-0000-6329adcc0000"'
       expires:
       - '-1'
       pragma:
@@ -3764,10 +3717,10 @@ interactions:
       User-Agent:
       - AZURECLI/2.40.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.10.7 (Windows-10-10.0.22000-SP0)
     method: GET
-    uri: https://management.azure.com/providers/Nginx.NginxPlus/locations/EASTUS2EUAP/operationStatuses/33aedff2-b6cc-4641-9790-dadd74b4459d*6F2948BC7F8DD771B249F57C88B4EE6CAC9020A2630F6F8918E010B6BD828050?api-version=2022-08-01
+    uri: https://management.azure.com/providers/Nginx.NginxPlus/locations/EASTUS2EUAP/operationStatuses/c153635b-4b01-4bc7-946b-32f72ff0dca4*23B61C80BD45EC670D58F6356F4F15E09A23A3DEEC48503E47ACA45B6209CAE3?api-version=2022-08-01
   response:
     body:
-      string: '{"id":"/providers/Nginx.NginxPlus/locations/EASTUS2EUAP/operationStatuses/33aedff2-b6cc-4641-9790-dadd74b4459d*6F2948BC7F8DD771B249F57C88B4EE6CAC9020A2630F6F8918E010B6BD828050","name":"33aedff2-b6cc-4641-9790-dadd74b4459d*6F2948BC7F8DD771B249F57C88B4EE6CAC9020A2630F6F8918E010B6BD828050","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AZCLIDeploymentTestRG_000001/providers/Nginx.NginxPlus/nginxDeployments/azclitest-deployment","status":"Deleting","startTime":"2022-09-14T22:21:46.1748436Z"}'
+      string: '{"id":"/providers/Nginx.NginxPlus/locations/EASTUS2EUAP/operationStatuses/c153635b-4b01-4bc7-946b-32f72ff0dca4*23B61C80BD45EC670D58F6356F4F15E09A23A3DEEC48503E47ACA45B6209CAE3","name":"c153635b-4b01-4bc7-946b-32f72ff0dca4*23B61C80BD45EC670D58F6356F4F15E09A23A3DEEC48503E47ACA45B6209CAE3","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AZCLIDeploymentTestRG_000001/providers/Nginx.NginxPlus/nginxDeployments/azclitest-deployment","status":"Deleting","startTime":"2022-09-20T12:10:52.6699277Z"}'
     headers:
       cache-control:
       - no-cache
@@ -3776,9 +3729,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 14 Sep 2022 22:24:50 GMT
+      - Tue, 20 Sep 2022 12:13:55 GMT
       etag:
-      - '"00006c49-0000-3400-0000-632253fa0000"'
+      - '"03001601-0000-3400-0000-6329adcc0000"'
       expires:
       - '-1'
       pragma:
@@ -3806,10 +3759,10 @@ interactions:
       User-Agent:
       - AZURECLI/2.40.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.10.7 (Windows-10-10.0.22000-SP0)
     method: GET
-    uri: https://management.azure.com/providers/Nginx.NginxPlus/locations/EASTUS2EUAP/operationStatuses/33aedff2-b6cc-4641-9790-dadd74b4459d*6F2948BC7F8DD771B249F57C88B4EE6CAC9020A2630F6F8918E010B6BD828050?api-version=2022-08-01
+    uri: https://management.azure.com/providers/Nginx.NginxPlus/locations/EASTUS2EUAP/operationStatuses/c153635b-4b01-4bc7-946b-32f72ff0dca4*23B61C80BD45EC670D58F6356F4F15E09A23A3DEEC48503E47ACA45B6209CAE3?api-version=2022-08-01
   response:
     body:
-      string: '{"id":"/providers/Nginx.NginxPlus/locations/EASTUS2EUAP/operationStatuses/33aedff2-b6cc-4641-9790-dadd74b4459d*6F2948BC7F8DD771B249F57C88B4EE6CAC9020A2630F6F8918E010B6BD828050","name":"33aedff2-b6cc-4641-9790-dadd74b4459d*6F2948BC7F8DD771B249F57C88B4EE6CAC9020A2630F6F8918E010B6BD828050","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AZCLIDeploymentTestRG_000001/providers/Nginx.NginxPlus/nginxDeployments/azclitest-deployment","status":"Deleting","startTime":"2022-09-14T22:21:46.1748436Z"}'
+      string: '{"id":"/providers/Nginx.NginxPlus/locations/EASTUS2EUAP/operationStatuses/c153635b-4b01-4bc7-946b-32f72ff0dca4*23B61C80BD45EC670D58F6356F4F15E09A23A3DEEC48503E47ACA45B6209CAE3","name":"c153635b-4b01-4bc7-946b-32f72ff0dca4*23B61C80BD45EC670D58F6356F4F15E09A23A3DEEC48503E47ACA45B6209CAE3","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AZCLIDeploymentTestRG_000001/providers/Nginx.NginxPlus/nginxDeployments/azclitest-deployment","status":"Deleting","startTime":"2022-09-20T12:10:52.6699277Z"}'
     headers:
       cache-control:
       - no-cache
@@ -3818,9 +3771,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 14 Sep 2022 22:25:20 GMT
+      - Tue, 20 Sep 2022 12:14:26 GMT
       etag:
-      - '"00006c49-0000-3400-0000-632253fa0000"'
+      - '"03001601-0000-3400-0000-6329adcc0000"'
       expires:
       - '-1'
       pragma:
@@ -3848,10 +3801,52 @@ interactions:
       User-Agent:
       - AZURECLI/2.40.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.10.7 (Windows-10-10.0.22000-SP0)
     method: GET
-    uri: https://management.azure.com/providers/Nginx.NginxPlus/locations/EASTUS2EUAP/operationStatuses/33aedff2-b6cc-4641-9790-dadd74b4459d*6F2948BC7F8DD771B249F57C88B4EE6CAC9020A2630F6F8918E010B6BD828050?api-version=2022-08-01
+    uri: https://management.azure.com/providers/Nginx.NginxPlus/locations/EASTUS2EUAP/operationStatuses/c153635b-4b01-4bc7-946b-32f72ff0dca4*23B61C80BD45EC670D58F6356F4F15E09A23A3DEEC48503E47ACA45B6209CAE3?api-version=2022-08-01
   response:
     body:
-      string: '{"id":"/providers/Nginx.NginxPlus/locations/EASTUS2EUAP/operationStatuses/33aedff2-b6cc-4641-9790-dadd74b4459d*6F2948BC7F8DD771B249F57C88B4EE6CAC9020A2630F6F8918E010B6BD828050","name":"33aedff2-b6cc-4641-9790-dadd74b4459d*6F2948BC7F8DD771B249F57C88B4EE6CAC9020A2630F6F8918E010B6BD828050","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AZCLIDeploymentTestRG_000001/providers/Nginx.NginxPlus/nginxDeployments/azclitest-deployment","status":"Succeeded","startTime":"2022-09-14T22:21:46.1748436Z","properties":null}'
+      string: '{"id":"/providers/Nginx.NginxPlus/locations/EASTUS2EUAP/operationStatuses/c153635b-4b01-4bc7-946b-32f72ff0dca4*23B61C80BD45EC670D58F6356F4F15E09A23A3DEEC48503E47ACA45B6209CAE3","name":"c153635b-4b01-4bc7-946b-32f72ff0dca4*23B61C80BD45EC670D58F6356F4F15E09A23A3DEEC48503E47ACA45B6209CAE3","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AZCLIDeploymentTestRG_000001/providers/Nginx.NginxPlus/nginxDeployments/azclitest-deployment","status":"Deleting","startTime":"2022-09-20T12:10:52.6699277Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '526'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 20 Sep 2022 12:14:56 GMT
+      etag:
+      - '"03001601-0000-3400-0000-6329adcc0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - nginx deployment delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group --yes
+      User-Agent:
+      - AZURECLI/2.40.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.10.7 (Windows-10-10.0.22000-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Nginx.NginxPlus/locations/EASTUS2EUAP/operationStatuses/c153635b-4b01-4bc7-946b-32f72ff0dca4*23B61C80BD45EC670D58F6356F4F15E09A23A3DEEC48503E47ACA45B6209CAE3?api-version=2022-08-01
+  response:
+    body:
+      string: '{"id":"/providers/Nginx.NginxPlus/locations/EASTUS2EUAP/operationStatuses/c153635b-4b01-4bc7-946b-32f72ff0dca4*23B61C80BD45EC670D58F6356F4F15E09A23A3DEEC48503E47ACA45B6209CAE3","name":"c153635b-4b01-4bc7-946b-32f72ff0dca4*23B61C80BD45EC670D58F6356F4F15E09A23A3DEEC48503E47ACA45B6209CAE3","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AZCLIDeploymentTestRG_000001/providers/Nginx.NginxPlus/nginxDeployments/azclitest-deployment","status":"Succeeded","startTime":"2022-09-20T12:10:52.6699277Z","properties":null}'
     headers:
       cache-control:
       - no-cache
@@ -3860,9 +3855,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 14 Sep 2022 22:25:50 GMT
+      - Tue, 20 Sep 2022 12:15:27 GMT
       etag:
-      - '"00007049-0000-3400-0000-632254ea0000"'
+      - '"03001a01-0000-3400-0000-6329aed00000"'
       expires:
       - '-1'
       pragma:
@@ -3906,7 +3901,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 14 Sep 2022 22:25:54 GMT
+      - Tue, 20 Sep 2022 12:15:31 GMT
       expires:
       - '-1'
       pragma:
@@ -3918,14 +3913,14 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-original-request-ids:
-      - fdf748ac-49ea-4404-80eb-d22ac65e5146
-      - 0e981196-199b-474f-b583-e664e419b5bd
-      - 7791fabd-3d24-4e5b-8032-da8926db2916
-      - 242b7fcb-7cec-46bc-86f9-43f733403f59
-      - 6cf1fe17-7dc1-48f5-905f-dbaa5142fc12
-      - 07c573d2-1d22-4168-88f0-81c8a1694d21
-      - 7254f3e7-4e32-4955-88cb-e21e9c66df9f
-      - df87716c-4899-4929-a5c3-bade51fa6a28
+      - b27f6345-a9c8-47b8-9508-eebe7afd2737
+      - c731e407-bcf7-471b-b1fa-f54a1e59df76
+      - c9d453a4-8d55-44c4-98aa-c5f3e329e633
+      - e005ba19-f7a0-4f41-bc00-65d6a44dc18b
+      - 091320ee-1b13-43b5-ab32-5789880b1f3a
+      - 02d1b570-e57b-4aeb-8c72-5e23b9fb4a6b
+      - 3de6b131-506d-4b18-814a-486056568425
+      - bfcada51-e0bb-4a71-9741-0b2174a7ade8
     status:
       code: 200
       message: OK

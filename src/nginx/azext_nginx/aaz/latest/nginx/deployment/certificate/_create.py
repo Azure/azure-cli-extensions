@@ -15,7 +15,18 @@ from azure.cli.core.aaz import *
     "nginx deployment certificate create",
 )
 class Create(AAZCommand):
-    """Create certificate resource
+    """Create a certificate for an Nginx deployment
+
+    parameters:
+          - name: --certificate-path
+            This path must match one or more ssl_certificate_key directive file argument in your Nginx configuration. This path must be unique between certificates within the same deployment
+          - name: --key-path
+            This path must match one or more ssl_certificate directive file argument in your Nginx configuration. This path must be unique between certificates within the same deployment
+          - name: --key-vault-secret-id
+            The secret ID for your certificate from Azure Key Vault
+
+    :example: Certificate Create
+        az nginx deployment certificate create --certificate-name myCertificate --deployment-name myDeployment --resource-group myResourceGroup --certificate-path /etc/nginx/test.cert --key-path /etc/nginx/test.key --key-vault-secret-id keyVaultSecretId
     """
 
     _aaz_info = {
@@ -78,7 +89,7 @@ class Create(AAZCommand):
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
-        _args_schema.certificate_virtual_path = AAZStrArg(
+        _args_schema.certificate_path = AAZStrArg(
             options=["--certificate-path"],
             help="This path must match one or more ssl_certificate directive file argument in your Nginx configuration. This path must be unique between certificates within the same deployment",
             arg_group="Properties",
@@ -88,7 +99,7 @@ class Create(AAZCommand):
             help="The secret id to the certificate in KeyVault",
             arg_group="Properties",
         )
-        _args_schema.key_virtual_path = AAZStrArg(
+        _args_schema.key_path = AAZStrArg(
             options=["--key-path"],
             help="This path must match one or more ssl_certificate_key directive file argument in your Nginx configuration. This path must be unique between certificates within the same deployment",
             arg_group="Properties",
@@ -159,7 +170,7 @@ class Create(AAZCommand):
                 ),
             }
             return parameters
-            
+
         @property
         def url_parameters(self):
             parameters = {
@@ -207,9 +218,9 @@ class Create(AAZCommand):
 
             properties = _builder.get(".properties")
             if properties is not None:
-                properties.set_prop("certificateVirtualPath", AAZStrType, ".certificate_virtual_path")
+                properties.set_prop("certificateVirtualPath", AAZStrType, ".certificate_path")
                 properties.set_prop("keyVaultSecretId", AAZStrType, ".key_vault_secret_id")
-                properties.set_prop("keyVirtualPath", AAZStrType, ".key_virtual_path")
+                properties.set_prop("keyVirtualPath", AAZStrType, ".key_path")
                 properties.set_prop("provisioningState", AAZStrType, ".provisioning_state")
 
             tags = _builder.get(".tags")

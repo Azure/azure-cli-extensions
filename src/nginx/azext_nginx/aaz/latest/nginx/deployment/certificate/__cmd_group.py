@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "nginx deployment certificate",
 )
 class __CMDGroup(AAZCommandGroup):
-    """Manage NGINX certificate resources.
+    """Manage NGINX certificate resources
     """
     pass
 

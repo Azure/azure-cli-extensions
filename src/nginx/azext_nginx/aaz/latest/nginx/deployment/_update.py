@@ -15,7 +15,10 @@ from azure.cli.core.aaz import *
     "nginx deployment update",
 )
 class Update(AAZCommand):
-    """Update a deployment resource.
+    """Update an Nginx deployment
+
+    :example: Deployment Update
+        az nginx deployment update --name myDeployment --resource-group myResourceGroup --location eastus2 --tags tag1="value1" tag2="value2" --enable-diagnostics true
     """
 
     _aaz_info = {
@@ -105,7 +108,7 @@ class Update(AAZCommand):
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
-        _args_schema.enable_diagnostics_support = AAZBoolArg(
+        _args_schema.enable_diagnostics = AAZBoolArg(
             options=["--enable-diagnostics"],
             help="Boolean to enable or disable diagnostics on your deployment",
             arg_group="Properties",
@@ -244,7 +247,7 @@ class Update(AAZCommand):
         @property
         def error_format(self):
             return "ODataV4Format"
-        
+
         @property
         def query_parameters(self):
             parameters = {
@@ -254,7 +257,7 @@ class Update(AAZCommand):
                 ),
             }
             return parameters
-            
+
         @property
         def url_parameters(self):
             parameters = {
@@ -343,7 +346,7 @@ class Update(AAZCommand):
         @property
         def error_format(self):
             return "ODataV4Format"
-
+        
         @property
         def query_parameters(self):
             parameters = {
@@ -353,7 +356,7 @@ class Update(AAZCommand):
                 ),
             }
             return parameters
-            
+
         @property
         def url_parameters(self):
             parameters = {
@@ -437,7 +440,7 @@ class Update(AAZCommand):
 
             properties = _builder.get(".properties")
             if properties is not None:
-                properties.set_prop("enableDiagnosticsSupport", AAZBoolType, ".enable_diagnostics_support")
+                properties.set_prop("enableDiagnosticsSupport", AAZBoolType, ".enable_diagnostics")
                 properties.set_prop("logging", AAZObjectType, ".logging")
                 properties.set_prop("managedResourceGroup", AAZStrType, ".managed_resource_group")
                 properties.set_prop("networkProfile", AAZObjectType, ".network_profile")

@@ -15,7 +15,23 @@ from azure.cli.core.aaz import *
     "nginx deployment configuration create",
 )
 class Create(AAZCommand):
-    """Create configuration resource
+    """Create a configuration for an Nginx deployment
+
+    parameters:
+          - name: --deployment-name
+            The Nginx deployment name
+          - name: --root-file
+            This should align with your Nginx configuration structure
+          - name: --files
+            This is an array of files required for the config set-up
+            One of the files virtual-path should match the root file. For a multi-file config set-up, the root file needs to have references to the other file(s) in an include directive.
+                Usage: --files [{"content":"<Base64 content of config file>","virtual-path":"<path>"}].
+
+    :example: Single file Configuration Create
+        az nginx deployment configuration create --name default --deployment-name myDeployment --resource-group myResourceGroup --root-file /etc/nginx/nginx.conf --files '[{"content":"aHR0cCB7CiAgICB1cHN0cmVhbSBhcHAgewogICAgICAgIHpvbmUgYXBwIDY0azsKICAgICAgICBsZWFzdF9jb25uOwogICAgICAgIHNlcnZlciAxMC4wLjEuNDo4MDAwOwogICAgfQoKICAgIHNlcnZlciB7CiAgICAgICAgbGlzdGVuIDgwOwogICAgICAgIHNlcnZlcl9uYW1lICouZXhhbXBsZS5jb207CgogICAgICAgIGxvY2F0aW9uIC8gewogICAgICAgICAgICBwcm94eV9zZXRfaGVhZGVyIEhvc3QgJGhvc3Q7CiAgICAgICAgICAgIHByb3h5X3NldF9oZWFkZXIgWC1SZWFsLUlQICRyZW1vdGVfYWRkcjsKICAgICAgICAgICAgcHJveHlfc2V0X2hlYWRlciBYLVByb3h5LUFwcCBhcHA7CiAgICAgICAgICAgIHByb3h5X3NldF9oZWFkZXIgR2l0aHViLVJ1bi1JZCAwMDAwMDA7CiAgICAgICAgICAgIHByb3h5X2J1ZmZlcmluZyBvbjsKICAgICAgICAgICAgcHJveHlfYnVmZmVyX3NpemUgNGs7CiAgICAgICAgICAgIHByb3h5X2J1ZmZlcnMgOCA4azsKICAgICAgICAgICAgcHJveHlfcmVhZF90aW1lb3V0IDYwczsKICAgICAgICAgICAgcHJveHlfcGFzcyBodHRwOi8vYXBwOwogICAgICAgICAgICBoZWFsdGhfY2hlY2s7CiAgICAgICAgfQogICAgICAgIAogICAgfQp9","virtual-path":"/etc/nginx/nginx.conf"}]'
+
+    :example: Multi-file Configuration Create
+        az nginx deployment configuration create --name default --deployment-name myDeployment --resource-group myResourceGroup --root-file /etc/nginx/nginx.conf --files '[{"content":"aHR0cCB7CiAgICB1cHN0cmVhbSBhcHAgewogICAgICAgIHpvbmUgYXBwIDY0azsKICAgICAgICBsZWFzdF9jb25uOwogICAgICAgIHNlcnZlciAxMC4wLjEuNDo4MDAwOwogICAgfQoKICAgIHNlcnZlciB7CiAgICAgICAgbGlzdGVuIDgwOwogICAgICAgIHNlcnZlcl9uYW1lICouZXhhbXBsZS5jb207CgogICAgICAgIGxvY2F0aW9uIC8gewogICAgICAgICAgICBpbmNsdWRlIC9ldGMvbmdpbngvY29uZi5kL3Byb3h5LmNvbmY7CiAgICAgICAgICAgIHByb3h5X3Bhc3MgaHR0cDovL2FwcDsKICAgICAgICAgICAgaGVhbHRoX2NoZWNrOwogICAgICAgIH0KICAgICAgICAKICAgIH0KfQ==","virtual-path":"/etc/nginx/nginx.conf"},{"content":"cHJveHlfc2V0X2hlYWRlciBIb3N0ICRob3N0Owpwcm94eV9zZXRfaGVhZGVyIFgtUmVhbC1JUCAkcmVtb3RlX2FkZHI7CnByb3h5X3NldF9oZWFkZXIgWC1Qcm94eS1BcHAgYXBwOwpwcm94eV9zZXRfaGVhZGVyIEdpdGh1Yi1SdW4tSWQgMDAwMDAwOwpwcm94eV9idWZmZXJpbmcgb247CnByb3h5X2J1ZmZlcl9zaXplIDRrOwpwcm94eV9idWZmZXJzIDggOGs7CnByb3h5X3JlYWRfdGltZW91dCA2MHM7","virtual-path":"/etc/nginx/conf.d/proxy.conf"}]'
     """
 
     _aaz_info = {
