@@ -16,7 +16,7 @@ from azure.mgmt.core import AsyncARMPipelineClient
 
 from .. import models
 from ._configuration import AzureArcVMwareManagementServiceAPIConfiguration
-from .operations import ClustersOperations, DatastoresOperations, GuestAgentsOperations, HostsOperations, HybridIdentityMetadataOperations, InventoryItemsOperations, MachineExtensionsOperations, Operations, ResourcePoolsOperations, VCentersOperations, VirtualMachineTemplatesOperations, VirtualMachinesOperations, VirtualNetworksOperations
+from .operations import VirtualMachinesOperations, Operations
 
 if TYPE_CHECKING:
     # pylint: disable=unused-import,ungrouped-imports
@@ -87,40 +87,6 @@ class AzureArcVMwareManagementServiceAPI:    # pylint: disable=too-many-instance
         self.virtual_machines = VirtualMachinesOperations(
             self._client, self._config, self._serialize, self._deserialize
         )
-        self.resource_pools = ResourcePoolsOperations(
-            self._client, self._config, self._serialize, self._deserialize
-        )
-        self.clusters = ClustersOperations(
-            self._client, self._config, self._serialize, self._deserialize
-        )
-        self.hosts = HostsOperations(
-            self._client, self._config, self._serialize, self._deserialize
-        )
-        self.datastores = DatastoresOperations(
-            self._client, self._config, self._serialize, self._deserialize
-        )
-        self.vcenters = VCentersOperations(
-            self._client, self._config, self._serialize, self._deserialize
-        )
-        self.virtual_machine_templates = VirtualMachineTemplatesOperations(
-            self._client, self._config, self._serialize, self._deserialize
-        )
-        self.virtual_networks = VirtualNetworksOperations(
-            self._client, self._config, self._serialize, self._deserialize
-        )
-        self.inventory_items = InventoryItemsOperations(
-            self._client, self._config, self._serialize, self._deserialize
-        )
-        self.hybrid_identity_metadata = HybridIdentityMetadataOperations(
-            self._client, self._config, self._serialize, self._deserialize
-        )
-        self.machine_extensions = MachineExtensionsOperations(
-            self._client, self._config, self._serialize, self._deserialize
-        )
-        self.guest_agents = GuestAgentsOperations(
-            self._client, self._config, self._serialize, self._deserialize
-        )
-
 
     def _send_request(
         self,
