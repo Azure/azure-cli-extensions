@@ -670,6 +670,7 @@ def aks_create(
     dns_zone_resource_id=None,
     enable_keda=False,
     enable_node_restriction=False,
+    enable_vpa=False,
     # nodepool
     host_group_id=None,
     crg_id=None,
@@ -794,6 +795,8 @@ def aks_update(
     enable_private_cluster=False,
     disable_private_cluster=False,
     private_dns_zone=None,
+    enable_vpa=False,
+    disable_vpa=False,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
