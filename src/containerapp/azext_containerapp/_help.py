@@ -1079,3 +1079,24 @@ examples:
         az containerapp auth twitter update  -g myResourceGroup --name MyContainerapp \\
           --consumer-key my-client-id --consumer-secret very_secret_password
 """
+
+# Compose commands
+helps['containerapp compose'] = """
+    type: group
+    short-summary: Commands to create Azure Container Apps from Compose specifications.
+"""
+
+helps['containerapp compose create'] = """
+    type: command
+    short-summary: Create one or more Container Apps in a new or existing Container App Environment from a Compose specification.
+    examples:
+    - name: Create a container app by implicitly passing in a Compose configuration file from current directory.
+      text: |
+          az containerapp compose create -g MyResourceGroup \\
+              --environment MyContainerappEnv
+    - name: Create a container app by explicitly passing in a Compose configuration file.
+      text: |
+          az containerapp compose create -g MyResourceGroup \\
+              --environment MyContainerappEnv \\
+              --compose-file-path "path/to/docker-compose.yml"
+"""

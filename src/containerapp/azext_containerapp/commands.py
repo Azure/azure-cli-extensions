@@ -175,3 +175,6 @@ def load_command_table(self, _):
         g.custom_command('bind', 'bind_hostname', exception_handler=ex_handler_factory())
         g.custom_command('list', 'list_hostname')
         g.custom_command('delete', 'delete_hostname', confirmation=True, exception_handler=ex_handler_factory())
+
+    with self.command_group('containerapp compose') as g:
+        g.custom_command('create', 'create_containerapps_from_compose')
