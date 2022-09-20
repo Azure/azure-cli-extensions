@@ -7,6 +7,7 @@ Release History
 
 * Added custom token support
 * Added new parameter for container log path in connectedk8s connect
+* Added force delete command which is an added functionality in connectedk8s delete function
 
 1.3.1
 ++++++

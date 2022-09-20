@@ -424,6 +424,9 @@ def load_arguments(self, _):
         c.argument('disable_keda', action='store_true', is_preview=True)
         c.argument('enable_node_restriction', action='store_true', is_preview=True, help="enable node restriction for cluster")
         c.argument('disable_node_restriction', action='store_true', is_preview=True, help="disable node restriction for cluster")
+        c.argument('enable_private_cluster', action='store_true', is_preview=True, help='enable private cluster for apiserver vnet integration')
+        c.argument('disable_private_cluster', action='store_true', is_preview=True, help='disable private cluster for apiserver vnet integration')
+        c.argument('private_dns_zone', is_preview=True)
 
     with self.argument_context('aks upgrade') as c:
         c.argument('kubernetes_version', completer=get_k8s_upgrades_completion_list)
