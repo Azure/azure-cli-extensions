@@ -50,7 +50,7 @@ from azure.mgmt.cosmosdb.models import (
     ResourceIdentityType,
     ManagedServiceIdentity,
     AnalyticalStorageConfiguration,
-    Components1Jq1T4ISchemasManagedserviceidentityPropertiesUserassignedidentitiesAdditionalproperties
+    ManagedServiceIdentityUserAssignedIdentity
 )
 
 from azure.cli.command_modules.cosmosdb.custom import _convert_to_utc_timestamp
@@ -927,7 +927,7 @@ def _create_database_account(client,
             user_identities = {}
             for x in assign_identity:
                 if x != SYSTEM_ID:
-                    user_identities[x] = Components1Jq1T4ISchemasManagedserviceidentityPropertiesUserassignedidentitiesAdditionalproperties()  # pylint: disable=line-too-long
+                    user_identities[x] = ManagedServiceIdentityUserAssignedIdentity()  # pylint: disable=line-too-long
                 else:
                     enable_system = True
             if enable_system:
