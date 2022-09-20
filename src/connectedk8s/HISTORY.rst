@@ -2,6 +2,12 @@
 
 Release History
 ===============
+1.3.4
+++++++
+
+* Added support for custom AAD token
+* Added parameter for overriding container log path
+
 1.3.3
 ++++++
 
@@ -10,8 +16,6 @@ Release History
 1.3.2
 ++++++
 
-* Added custom token support
-* Added new parameter for container log path in connectedk8s connect
 * Added force delete command which is an added functionality in connectedk8s delete function
 
 1.3.1
