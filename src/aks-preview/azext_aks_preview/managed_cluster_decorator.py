@@ -20,6 +20,7 @@ from azure.cli.command_modules.acs._validators import (
     extract_comma_separated_string,
 )
 from azext_aks_preview.azuremonitorprofile import (
+    ensure_azure_monitor_profile_prerequisites,
     validate_ksm_parameter
 )
 from azure.cli.command_modules.acs.managed_cluster_decorator import (
@@ -2931,5 +2932,16 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         mc = self.update_azure_monitor_profile(mc)
         # update vpa
         mc = self.update_vpa(mc)
+
+        if ( self.__raw_parameters.get("enable_azuremonitormetrics") or self.__raw_parameters.get("disable_azuremonitormetrics")):
+            ensure_azure_monitor_profile_prerequisites(
+                self.cmd, 
+                self.client,
+                self.context.get_subscription_id(),
+                self.context.get_resource_group_name(),
+                self.context.get_name(),
+                self.context.get_location(),
+                self.__raw_parameters,
+                self.context.get_disable_azure_monitor_metrics())
 
         return mc

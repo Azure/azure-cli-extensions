@@ -49,10 +49,6 @@ from azure.cli.command_modules.acs.addonconfiguration import (
     ensure_default_log_analytics_workspace_for_monitoring
 )
 
-from azext_aks_preview.azuremonitorprofile import (
-    ensure_azure_monitor_profile_prerequisites,
-)
-
 from azext_aks_preview._client_factory import (
     CUSTOM_MGMT_AKS_PREVIEW,
     cf_agent_pools,
@@ -824,23 +820,6 @@ def aks_update(
     try:
         # update mc profile
         mc = aks_update_decorator.update_mc_profile_preview()
-
-        if ( raw_parameters.get("enable_azuremonitormetrics") or raw_parameters.get("disable_azuremonitormetrics")):
-            subscription_id = get_subscription_id(cmd.cli_ctx)
-            instance = client.get(resource_group_name, name)
-            remove_azuremonitormetrics = False
-            if raw_parameters.get("disable_azuremonitormetrics"):
-                remove_azuremonitormetrics = True
-
-            ensure_azure_monitor_profile_prerequisites(cmd, 
-                client,
-                subscription_id,
-                resource_group_name,
-                name,
-                instance.location,
-                raw_parameters,
-                remove_azuremonitormetrics)
-
     except DecoratorEarlyExitException:
         # exit gracefully
         return None
