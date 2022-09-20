@@ -4,7 +4,8 @@ Release History
 ===============
 0.2.0
 ++++++
-* Bump up api version to 2022_07_01 and Remove SDK
+* Bump from 2020-04-01-preview to 2022-07-01
+* Remove SDK
 
 0.1.0
 ++++++
