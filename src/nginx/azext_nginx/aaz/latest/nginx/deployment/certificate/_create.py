@@ -15,15 +15,7 @@ from azure.cli.core.aaz import *
     "nginx deployment certificate create",
 )
 class Create(AAZCommand):
-    """Create a certificate for an Nginx deployment
-
-    parameters:
-          - name: --certificate-path
-            This path must match one or more ssl_certificate_key directive file argument in your Nginx configuration. This path must be unique between certificates within the same deployment
-          - name: --key-path
-            This path must match one or more ssl_certificate directive file argument in your Nginx configuration. This path must be unique between certificates within the same deployment
-          - name: --key-vault-secret-id
-            The secret ID for your certificate from Azure Key Vault
+    """Create a certificate for an NGINX deployment
 
     :example: Certificate Create
         az nginx deployment certificate create --certificate-name myCertificate --deployment-name myDeployment --resource-group myResourceGroup --certificate-path /etc/nginx/test.cert --key-path /etc/nginx/test.key --key-vault-secret-id keyVaultSecretId

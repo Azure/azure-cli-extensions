@@ -15,18 +15,7 @@ from azure.cli.core.aaz import *
     "nginx deployment create",
 )
 class Create(AAZCommand):
-    """Create an Nginx for Azure resource
-
-    parameters:
-          - name: --name
-             It should contain only alphanumeric characters, up to 30 characters long; and cannot begin or end with a hyphen.
-          - name: --sku
-            The billing information for the resource- https://docs.nginx.com/nginx-for-azure/billing/overview/
-             Usage: --sku name=XXX
-          - name: --network-profile
-            Usage: --network-profile front-end-ip-configuration="<private or public IP address information>" network-interface-configuration="<subnet information>"
-                 front-end-ip-configuration: IP information, public or private IP addresses.
-                 network-interface-configuration: A subnet within your virtual network. This subnet should be delegated to NGINX.NGINXPLUS/nginxDeployments
+    """Create an NGINX for Azure resource
 
     :example: Deployment Create with PublicIP
         az nginx deployment create --name myDeployment --resource-group myResourceGroup --location eastus2 --sku name="preview_Monthly_gmz7xq9ge3py" --network-profile front-end-ip-configuration="{public-ip-addresses:[{id:/subscriptions/mySubscription/resourceGroups/myResourceGroup/providers/Microsoft.Network/publicIPAddresses/myPublicIP}]}" network-interface-configuration="{subnet-id:/subscriptions/mySubscription/resourceGroups/myResourceGroup/providers/Microsoft.Network/virtualNetworks/myVNet/subnets/mySubnet}"
