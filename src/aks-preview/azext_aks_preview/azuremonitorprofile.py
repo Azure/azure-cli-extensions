@@ -32,208 +32,190 @@ RP_API = "2019-08-01"
 
 
 class GrafanaLink(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
-    """Status of Grafana link to the Prometheus Addon
+    """
+    Status of Grafana link to the Prometheus Addon
     """
     SUCCESS = "SUCCESS"
     FAILURE = "FAILURE"
     ALREADYPRESENT = "ALREADYPRESENT"
     NOPARAMPROVIDED = "NOPARAMPROVIDED"
 
+
 MapToClosestMACRegion = {
-        "australiacentral": "eastus",
-        "australiacentral2": "eastus",
-        "australiaeast": "eastus",
-        "australiasoutheast": "eastus",
-        "brazilsouth": "eastus",
-        "canadacentral": "eastus",
-        "canadaeast": "eastus",
-        "centralus": "centralus",
-        "centralindia": "centralindia",
-        "eastasia": "westeurope",
-        "eastus": "eastus",
-        "eastus2": "eastus2",
-        "francecentral": "westeurope",
-        "francesouth": "westeurope",
-        "japaneast": "eastus",
-        "japanwest": "eastus",
-        "koreacentral": "westeurope",
-        "koreasouth": "westeurope",
-        "northcentralus": "eastus",
-        "northeurope": "westeurope",
-        "southafricanorth": "westeurope",
-        "southafricawest": "westeurope",
-        "southcentralus": "eastus",
-        "southeastasia": "westeurope",
-        "southindia": "centralindia",
-        "uksouth": "westeurope",
-        "ukwest": "westeurope",
-        "westcentralus": "eastus",
-        "westeurope": "westeurope",
-        "westindia": "centralindia",
-        "westus": "westus",
-        "westus2": "westus2",
-        "westus3": "westus",
-        "norwayeast": "westeurope",
-        "norwaywest": "westeurope",
-        "switzerlandnorth": "westeurope",
-        "switzerlandwest": "westeurope",
-        "uaenorth": "westeurope",
-        "germanywestcentral": "westeurope",
-        "germanynorth": "westeurope",
-        "uaecentral": "westeurope",
-        "eastus2euap": "eastus2euap",
-        "centraluseuap": "westeurope",
-        "brazilsoutheast": "eastus",
-        "jioindiacentral": "centralindia",
-        "swedencentral": "westeurope",
-        "swedensouth": "westeurope",
-        "qatarcentral": "westeurope"
+    "australiacentral": "eastus",
+    "australiacentral2": "eastus",
+    "australiaeast": "eastus",
+    "australiasoutheast": "eastus",
+    "brazilsouth": "eastus",
+    "canadacentral": "eastus",
+    "canadaeast": "eastus",
+    "centralus": "centralus",
+    "centralindia": "centralindia",
+    "eastasia": "westeurope",
+    "eastus": "eastus",
+    "eastus2": "eastus2",
+    "francecentral": "westeurope",
+    "francesouth": "westeurope",
+    "japaneast": "eastus",
+    "japanwest": "eastus",
+    "koreacentral": "westeurope",
+    "koreasouth": "westeurope",
+    "northcentralus": "eastus",
+    "northeurope": "westeurope",
+    "southafricanorth": "westeurope",
+    "southafricawest": "westeurope",
+    "southcentralus": "eastus",
+    "southeastasia": "westeurope",
+    "southindia": "centralindia",
+    "uksouth": "westeurope",
+    "ukwest": "westeurope",
+    "westcentralus": "eastus",
+    "westeurope": "westeurope",
+    "westindia": "centralindia",
+    "westus": "westus",
+    "westus2": "westus2",
+    "westus3": "westus",
+    "norwayeast": "westeurope",
+    "norwaywest": "westeurope",
+    "switzerlandnorth": "westeurope",
+    "switzerlandwest": "westeurope",
+    "uaenorth": "westeurope",
+    "germanywestcentral": "westeurope",
+    "germanynorth": "westeurope",
+    "uaecentral": "westeurope",
+    "eastus2euap": "eastus2euap",
+    "centraluseuap": "westeurope",
+    "brazilsoutheast": "eastus",
+    "jioindiacentral": "centralindia",
+    "swedencentral": "westeurope",
+    "swedensouth": "westeurope",
+    "qatarcentral": "westeurope"
 }
 
+
 AzureCloudLocationToOmsRegionCodeMap = {
-        "australiasoutheast": "SEAU",
-        "australiaeast": "EAU",
-        "australiacentral": "CAU",
-        "australiacentral2": "CBR2",
-        "canadacentral": "CCA",
-        "centralindia": "CID",
-        "southindia": "MA",
-        "centralus": "CUS",
-        "eastasia": "EA",
-        "eastus": "EUS",
-        "eastus2": "EUS2",
-        "eastus2euap": "EUS2P",
-        "francecentral": "PAR",
-        "francesouth": "MRS",
-        "japaneast": "EJP",
-        "koreacentral": "SE",
-        "northeurope": "NEU",
-        "southcentralus": "SCUS",
-        "southeastasia": "SEA",
-        "uksouth": "SUK",
-        "usgovvirginia": "USGV",
-        "westcentralus": "WCUS",
-        "westeurope": "WEU",
-        "westus": "WUS",
-        "westus2": "WUS2",
-        "westus3": "WUS3",
-        "brazilsouth": "CQ",
-        "brazilsoutheast": "BRSE",
-        "norwayeast": "NOE",
-        "southafricanorth": "JNB",
-        "northcentralus": "NCUS",
-        "uaenorth": "DXB",
-        "germanywestcentral": "DEWC",
-        "ukwest": "WUK",
-        "swedencentral": "SEC",
-        "switzerlandnorth": "CHN",
-        "switzerlandwest": "CHW",
-        "uaecentral": "AUH",
-        "norwaywest": "NOW",
-        "japanwest": "OS",
-        "centraluseuap": "CDM",
-        "canadaeast": "YQ",
-        "koreasouth": "PS",
-        "jioindiacentral": "JINC",
-        "swedensouth": "SES",
-        "qatarcentral": "QAC",
-        "southafricawest": "CPT"
+    "australiasoutheast": "SEAU",
+    "australiaeast": "EAU",
+    "australiacentral": "CAU",
+    "australiacentral2": "CBR2",
+    "canadacentral": "CCA",
+    "centralindia": "CID",
+    "southindia": "MA",
+    "centralus": "CUS",
+    "eastasia": "EA",
+    "eastus": "EUS",
+    "eastus2": "EUS2",
+    "eastus2euap": "EUS2P",
+    "francecentral": "PAR",
+    "francesouth": "MRS",
+    "japaneast": "EJP",
+    "koreacentral": "SE",
+    "northeurope": "NEU",
+    "southcentralus": "SCUS",
+    "southeastasia": "SEA",
+    "uksouth": "SUK",
+    "usgovvirginia": "USGV",
+    "westcentralus": "WCUS",
+    "westeurope": "WEU",
+    "westus": "WUS",
+    "westus2": "WUS2",
+    "westus3": "WUS3",
+    "brazilsouth": "CQ",
+    "brazilsoutheast": "BRSE",
+    "norwayeast": "NOE",
+    "southafricanorth": "JNB",
+    "northcentralus": "NCUS",
+    "uaenorth": "DXB",
+    "germanywestcentral": "DEWC",
+    "ukwest": "WUK",
+    "swedencentral": "SEC",
+    "switzerlandnorth": "CHN",
+    "switzerlandwest": "CHW",
+    "uaecentral": "AUH",
+    "norwaywest": "NOW",
+    "japanwest": "OS",
+    "centraluseuap": "CDM",
+    "canadaeast": "YQ",
+    "koreasouth": "PS",
+    "jioindiacentral": "JINC",
+    "swedensouth": "SES",
+    "qatarcentral": "QAC",
+    "southafricawest": "CPT"
 }
+
 
 def check_msi_cluster(client, cluster_resource_group_name, cluster_name):
     instance = client.get(cluster_resource_group_name, cluster_name)
     if instance.service_principal_profile.client_id.lower() != "msi":
         raise UnknownError("Azure Monitor Metrics (Managed Prometheus) is only supported for MSI enabled clusters")
-        
+
 
 # check if `az feature register --namespace Microsoft.ContainerService --name AKS-PrometheusAddonPreview` is Registered
 def check_azuremonitoraddon_feature(cmd, cluster_subscription):
     from azure.cli.core.util import send_raw_request
-
     feature_check_url = f"https://management.azure.com/subscriptions/{cluster_subscription}/providers/Microsoft.Features/subscriptionFeatureRegistrations?api-version={FEATURE_API}&featurename=AKS-PrometheusAddonPreview"
     try:
-        headers = [
-        'x-ms-azuremonitormetrics=true',
-        'x-ms-handledat=check_azuremonitoraddon_feature'
-        ]
+        headers = ['x-ms-azuremonitormetrics=true', 'x-ms-handledat=check_azuremonitoraddon_feature']
         r = send_raw_request(cmd.cli_ctx, "GET", feature_check_url,
                              body={}, headers=headers)
     except CLIError as e:
         raise UnknownError(e)
-    
     json_response = json.loads(r.text)
     values_array = json_response["value"]
-
     for value in values_array:
         if value["properties"]["providerNamespace"].lower() == "microsoft.containerservice" and value["properties"]["state"].lower() == "registered":
             return
-
     raise CLIError("Please enable the feature AKS-PrometheusAddonPreview on your subscription using `az feature register --namespace Microsoft.ContainerService --name AKS-PrometheusAddonPreview` to use this feature.\
         If this feature was recently registered then please wait upto 5 mins for the feature registration to finish")
 
+
 def validate_ksm_parameter(ksmparam):
-    # print("Calling validate_ksm_parameter")
     if ksmparam is None:
         return ""
-        
     labelValueMap = {}
     ksmStrLength = len(ksmparam)
     EOF = -1
     next = ""
     name = ""
     firstWordPos = 0
-
-    # Iterate over the string
     for i, v in enumerate(ksmparam):
-        if i+1 == ksmStrLength:
+        if i + 1 == ksmStrLength:
             next = EOF
         else:
-            next = ord(ksmparam[i+1])
-        
-        if i-1 >= 0:
-            previous = ord(ksmparam[i-1])
+            next = ord(ksmparam[i + 1])
+        if i - 1 >= 0:
+            previous = ord(ksmparam[i - 1])
         else:
             previous = v
-        
         if v == "=":
             if previous == ord(",") or next != ord("["):
-                raise InvalidArgumentValueError(
-                    "Please format --metric properly. For eg. : --ksm-metric-labels-allow-list \"=namespaces=[k8s-label-1,k8s-label-n,...],pods=[app],...)\" and --ksm-metric-annotations-allow-list \"namespaces=[kubernetes.io/team,...],pods=[kubernetes.io/team],...\""
-                    )
+                raise InvalidArgumentValueError("Please format --metric properly. For eg. : --ksm-metric-labels-allow-list \"=namespaces=[k8s-label-1,k8s-label-n,...],pods=[app],...)\" and --ksm-metric-annotations-allow-list \"namespaces=[kubernetes.io/team,...],pods=[kubernetes.io/team],...\"")
             name = ksmparam[firstWordPos:i]
             labelValueMap[name] = []
             firstWordPos = i + 1
         elif v == "[":
             if previous != ord("="):
-                raise InvalidArgumentValueError(
-                    "Please format --metric properly. For eg. : --ksm-metric-labels-allow-list \"=namespaces=[k8s-label-1,k8s-label-n,...],pods=[app],...)\" and --ksm-metric-annotations-allow-list \"namespaces=[kubernetes.io/team,...],pods=[kubernetes.io/team],...\""
-                    )
+                raise InvalidArgumentValueError("Please format --metric properly. For eg. : --ksm-metric-labels-allow-list \"=namespaces=[k8s-label-1,k8s-label-n,...],pods=[app],...)\" and --ksm-metric-annotations-allow-list \"namespaces=[kubernetes.io/team,...],pods=[kubernetes.io/team],...\"")
             firstWordPos = i + 1
         elif v == "]":
             # if after metric group, has char not comma or end.
             if next != EOF and next != ord(","):
-                raise InvalidArgumentValueError(
-                    "Please format --metric properly. For eg. : --ksm-metric-labels-allow-list \"=namespaces=[k8s-label-1,k8s-label-n,...],pods=[app],...)\" and --ksm-metric-annotations-allow-list \"namespaces=[kubernetes.io/team,...],pods=[kubernetes.io/team],...\""
-                    )
+                raise InvalidArgumentValueError("Please format --metric properly. For eg. : --ksm-metric-labels-allow-list \"=namespaces=[k8s-label-1,k8s-label-n,...],pods=[app],...)\" and --ksm-metric-annotations-allow-list \"namespaces=[kubernetes.io/team,...],pods=[kubernetes.io/team],...\"")
             if previous != ord("["):
                 labelValueMap[name].append(ksmparam[firstWordPos:i])
             firstWordPos = i + 1
         elif v == ",":
             # if starts or ends with comma
             if previous == v or next == EOF or next == ord("]"):
-                raise InvalidArgumentValueError(
-                    "Please format --metric properly. For eg. : --ksm-metric-labels-allow-list \"=namespaces=[k8s-label-1,k8s-label-n,...],pods=[app],...)\" and --ksm-metric-annotations-allow-list \"namespaces=[kubernetes.io/team,...],pods=[kubernetes.io/team],...\""
-                    )
+                raise InvalidArgumentValueError("Please format --metric properly. For eg. : --ksm-metric-labels-allow-list \"=namespaces=[k8s-label-1,k8s-label-n,...],pods=[app],...)\" and --ksm-metric-annotations-allow-list \"namespaces=[kubernetes.io/team,...],pods=[kubernetes.io/team],...\"")
             if previous != ord("]"):
                 labelValueMap[name].append(ksmparam[firstWordPos:i])
             firstWordPos = i + 1
-
     for label in labelValueMap:
-        if (bool(re.match(r'^[a-zA-Z_][A-Za-z0-9_]+$', label)))== False:
-            raise InvalidArgumentValueError(
-                    "Please format --metric properly. For eg. : --ksm-metric-labels-allow-list \"=namespaces=[k8s-label-1,k8s-label-n,...],pods=[app],...)\" and --ksm-metric-annotations-allow-list \"namespaces=[kubernetes.io/team,...],pods=[kubernetes.io/team],...\""
-                    )
+        if (bool(re.match(r'^[a-zA-Z_][A-Za-z0-9_]+$', label))) is False:
+            raise InvalidArgumentValueError("Please format --metric properly. For eg. : --ksm-metric-labels-allow-list \"=namespaces=[k8s-label-1,k8s-label-n,...],pods=[app],...)\" and --ksm-metric-annotations-allow-list \"namespaces=[kubernetes.io/team,...],pods=[kubernetes.io/team],...\"")
     return ksmparam
+
 
 def sanitize_resource_id(resource_id):
     resource_id = resource_id.strip()
@@ -243,75 +225,61 @@ def sanitize_resource_id(resource_id):
         resource_id = resource_id.rstrip("/")
     return resource_id.lower()
 
+
 def get_default_mac_region(cluster_region):
     if cluster_region in MapToClosestMACRegion:
         return MapToClosestMACRegion[cluster_region]
     return "eastus"
 
+
 def get_default_mac_region_code(cluster_region):
     return AzureCloudLocationToOmsRegionCodeMap[get_default_mac_region(cluster_region)]
+
 
 def get_default_mac_name(cluster_region):
     default_mac_name = "DefaultAzureMonitorWorkspace-" + get_default_mac_region_code(cluster_region)
     default_mac_name = default_mac_name[0:43]
-
     return default_mac_name
+
 
 def create_default_mac(cmd, cluster_subscription, cluster_region):
     from azure.cli.core.util import send_raw_request
-
     default_mac_name = get_default_mac_name(cluster_region)
     default_resource_group_name = "DefaultResourceGroup-{0}".format(get_default_mac_region_code(cluster_region))
-    azure_monitor_workspace_resource_id = "/subscriptions/{0}/resourceGroups/{1}/providers/microsoft.monitor/accounts/{2}".format(
-            cluster_subscription,
-            default_resource_group_name,
-            default_mac_name,
-        )
-
+    azure_monitor_workspace_resource_id = "/subscriptions/{0}/resourceGroups/{1}/providers/microsoft.monitor/accounts/{2}".format(cluster_subscription, default_resource_group_name, default_mac_name)
     # Check if default resource group exists or not, if it does not then create it
     resource_groups = get_resource_groups_client(cmd.cli_ctx, cluster_subscription)
     resources = get_resources_client(cmd.cli_ctx, cluster_subscription)
 
     if resource_groups.check_existence(default_resource_group_name):
         try:
-            resources.get_by_id(
-                azure_monitor_workspace_resource_id, MAC_API
-            )
+            resources.get_by_id(azure_monitor_workspace_resource_id, MAC_API)
             # If MAC already exists then return from here
             return azure_monitor_workspace_resource_id
         except HttpResponseError as ex:
             if ex.status_code != 404:
                 raise ex
     else:
-        resource_groups.create_or_update(
-            default_resource_group_name, {"location": get_default_mac_region(cluster_region)}
-        )
-
-    association_body = json.dumps({"location": get_default_mac_region(cluster_region),
-                                   "properties": {
-                                    # do I need to link an existing MDM account for 
-                                   }})
+        resource_groups.create_or_update(default_resource_group_name, {"location": get_default_mac_region(cluster_region)})
+    association_body = json.dumps({"location": get_default_mac_region(cluster_region), "properties": {}})
     association_url = f"https://management.azure.com{azure_monitor_workspace_resource_id}?api-version={MAC_API}"
-
     try:
-        headers = [
-        'x-ms-azuremonitormetrics=true',
-        'x-ms-handledat=create_default_mac'
-        ]
+        headers = ['x-ms-azuremonitormetrics=true', 'x-ms-handledat=create_default_mac']
         send_raw_request(cmd.cli_ctx, "PUT", association_url,
                          body=association_body, headers=headers)
         return azure_monitor_workspace_resource_id
     except CLIError as e:
         raise e
 
+
 def get_azure_monitor_workspace_resource_id(cmd, cluster_subscription, cluster_region, raw_parameters):
     azure_monitor_workspace_resource_id = raw_parameters.get("azure_monitor_workspace_resource_id")
     if azure_monitor_workspace_resource_id is None or azure_monitor_workspace_resource_id == "":
-        # print("Creating default MAC account")
         azure_monitor_workspace_resource_id = create_default_mac(cmd, cluster_subscription, cluster_region)
     else:
         azure_monitor_workspace_resource_id = sanitize_resource_id(azure_monitor_workspace_resource_id)
     return azure_monitor_workspace_resource_id.lower()
+
 
 def get_default_dce_name(mac_region, cluster_name):
     region_code = "EUS"
@@ -321,6 +289,7 @@ def get_default_dce_name(mac_region, cluster_name):
     default_dce_name = default_dce_name[0:43]
     return default_dce_name
 
+
 def get_default_dcr_name(mac_region, cluster_name):
     region_code = "EUS"
     if mac_region in AzureCloudLocationToOmsRegionCodeMap:
@@ -328,6 +297,7 @@ def get_default_dcr_name(mac_region, cluster_name):
     default_dcr_name = "MSProm-" + region_code + "-" + cluster_name
     default_dcr_name = default_dcr_name[0:43]
     return default_dcr_name
+
 
 def get_default_dcra_name(cluster_region, cluster_name):
     region_code = "EUS"
@@ -337,10 +307,10 @@ def get_default_dcra_name(cluster_region, cluster_name):
     default_dcra_name = default_dcra_name[0:43]
     return default_dcra_name
 
+
 def get_mac_region_and_check_support(cmd, azure_monitor_workspace_resource_id, cluster_region):
     from azure.cli.core.util import send_raw_request
     from azure.core.exceptions import HttpResponseError
-
     # region of MAC can be different from region of RG so find the location of the azure_monitor_workspace_resource_id
     mac_subscription_id = azure_monitor_workspace_resource_id.split("/")[2]
     resources = get_resources_client(cmd.cli_ctx, mac_subscription_id)
@@ -350,17 +320,13 @@ def get_mac_region_and_check_support(cmd, azure_monitor_workspace_resource_id, c
         mac_location = resource.location
     except HttpResponseError as ex:
         raise ex
-
     # first get the association between region display names and region IDs (because for some reason
     # the "which RPs are available in which regions" check returns region display names)
     region_names_to_id = {}
     # retry the request up to two times
     for _ in range(3):
         try:
-            headers = [
-                'x-ms-azuremonitormetrics=true',
-                'x-ms-handledat=get_mac_region_and_check_support.mac_subscription_location_support_check'
-            ]
+            headers = ['x-ms-azuremonitormetrics=true', 'x-ms-handledat=get_mac_region_and_check_support.mac_subscription_location_support_check']
             location_list_url = f"https://management.azure.com/subscriptions/{mac_subscription_id}/locations?api-version=2019-11-01"
             r = send_raw_request(cmd.cli_ctx, "GET", location_list_url, headers=headers)
 
@@ -373,20 +339,15 @@ def get_mac_region_and_check_support(cmd, azure_monitor_workspace_resource_id, c
     else:
         # This will run if the above for loop was not broken out of. This means all three requests failed
         raise error
-    
     json_response = json.loads(r.text)
     for region_data in json_response["value"]:
         region_names_to_id[region_data["displayName"]
                            ] = region_data["name"]
-
     # check if region supports DCR and DCRA
     for _ in range(3):
         try:
             feature_check_url = f"https://management.azure.com/subscriptions/{mac_subscription_id}/providers/Microsoft.Insights?api-version=2020-10-01"
-            headers = [
-                'x-ms-azuremonitormetrics=true',
-                'x-ms-handledat=get_mac_region_and_check_support.mac_subscription_dcr_dcra_regions_support_check'
-            ]
+            headers = ['x-ms-azuremonitormetrics=true', 'x-ms-handledat=get_mac_region_and_check_support.mac_subscription_dcr_dcra_regions_support_check']
             r = send_raw_request(cmd.cli_ctx, "GET", feature_check_url, headers=headers)
             error = None
             break
@@ -407,18 +368,11 @@ def get_mac_region_and_check_support(cmd, azure_monitor_workspace_resource_id, c
                 f"Data Collection Rule Associations are not supported for cluster region {cluster_region}")
     return mac_location
 
+
 def create_dce(cmd, cluster_subscription, cluster_resource_group_name, cluster_name, mac_region):
-    # print("Calling function create_dce")
     from azure.cli.core.util import send_raw_request
-
     dce_name = get_default_dce_name(mac_region, cluster_name)
-
-    dce_resource_id = "/subscriptions/{0}/resourceGroups/{1}/providers/Microsoft.Insights/dataCollectionEndpoints/{2}".format(
-            cluster_subscription,
-            cluster_resource_group_name,
-            dce_name,
-        )
-
+    dce_resource_id = "/subscriptions/{0}/resourceGroups/{1}/providers/Microsoft.Insights/dataCollectionEndpoints/{2}".format(cluster_subscription, cluster_resource_group_name, dce_name)
     for _ in range(3):
         try:
             dce_url = f"https://management.azure.com{dce_resource_id}?api-version={DC_API}"
@@ -426,10 +380,7 @@ def create_dce(cmd, cluster_subscription, cluster_resource_group_name, cluster_n
                                             "location": mac_region,
                                             "kind": "Linux",
                                             "properties": {}})
-            headers = [
-                'x-ms-azuremonitormetrics=true',
-                'x-ms-handledat=azuremonitorprofile.create_dce'
-            ]
+            headers = ['x-ms-azuremonitormetrics=true', 'x-ms-handledat=azuremonitorprofile.create_dce']
             send_raw_request(cmd.cli_ctx, "PUT",
                              dce_url, body=dce_creation_body, headers=headers)
             error = None
@@ -439,49 +390,25 @@ def create_dce(cmd, cluster_subscription, cluster_resource_group_name, cluster_n
     else:
         raise error
 
+
+# pylint: disable=too-many-locals,too-many-branches,too-many-statements,line-too-long
 def create_dcr(cmd, mac_region, azure_monitor_workspace_resource_id, cluster_subscription, cluster_resource_group_name, cluster_name, dce_resource_id):
     from azure.cli.core.util import send_raw_request
-
-    # print("Calling function create_dcr")
-
     dcr_name = get_default_dcr_name(mac_region, cluster_name)
     dcr_resource_id = "/subscriptions/{0}/resourceGroups/{1}/providers/Microsoft.Insights/dataCollectionRules/{2}".format(
         cluster_subscription,
         cluster_resource_group_name,
         dcr_name
     )
-
     dcr_creation_body = json.dumps({"location": mac_region,
                                     "kind": "Linux",
                                     "properties": {
                                         "dataCollectionEndpointId": dce_resource_id,
-                                        "dataSources": {
-                                            "prometheusForwarder": [
-                                                {
-                                                    "name": "PrometheusDataSource",
-                                                    "streams": [
-                                                        "Microsoft-PrometheusMetrics"
-                                                    ],
-                                                    "labelIncludeFilter": { }
-                                                }
-                                            ]
-                                        },
-                                        "dataFlows": [
-                                            {
-                                                "destinations": [ "MonitoringAccount1" ],
-                                                "streams": [ "Microsoft-PrometheusMetrics" ]
-                                            }
-                                        ],
+                                        "dataSources": {"prometheusForwarder": [{"name": "PrometheusDataSource", "streams": ["Microsoft-PrometheusMetrics"], "labelIncludeFilter": {}}]},
+                                        "dataFlows": [{"destinations": ["MonitoringAccount1"], "streams": ["Microsoft-PrometheusMetrics"]}],
                                         "description": "DCR description",
                                         "destinations": {
-                                            "monitoringAccounts": [
-                                                {
-                                                    "accountResourceId": azure_monitor_workspace_resource_id,
-                                                    "name": "MonitoringAccount1"
-                                                }
-                                            ]
-                                        }
-                                    }})                          
+                                            "monitoringAccounts": [{"accountResourceId": azure_monitor_workspace_resource_id, "name": "MonitoringAccount1"}]}}})
     dcr_url = f"https://management.azure.com{dcr_resource_id}?api-version={DC_API}"
     for _ in range(3):
         try:
@@ -498,24 +425,20 @@ def create_dcr(cmd, mac_region, azure_monitor_workspace_resource_id, cluster_sub
     else:
         raise error
 
+
 def create_dcra(cmd, cluster_region, cluster_subscription, cluster_resource_group_name, cluster_name, dcr_resource_id):
     from azure.cli.core.util import send_raw_request
-
-    # print("Calling function create_dcra")
-
     cluster_resource_id = "/subscriptions/{0}/resourceGroups/{1}/providers/Microsoft.ContainerService/managedClusters/{2}".format(
         cluster_subscription,
         cluster_resource_group_name,
         cluster_name
     )
-
     dcra_name = get_default_dcra_name(cluster_region, cluster_name)
     dcra_resource_id = "/subscriptions/{0}/resourceGroups/{1}/providers/Microsoft.Insights/dataCollectionRuleAssociations/{2}".format(
         cluster_subscription,
         cluster_resource_group_name,
         dcra_name
     )
-
     # only create or delete the association between the DCR and cluster
     association_body = json.dumps({"location": cluster_region,
                                    "properties": {
@@ -538,9 +461,9 @@ def create_dcra(cmd, cluster_region, cluster_subscription, cluster_resource_grou
     else:
         raise error
 
+
 def link_grafana_instance(cmd, raw_parameters, azure_monitor_workspace_resource_id):
     from azure.cli.core.util import send_raw_request
-
     # GET grafana principal ID
     try:
         grafana_resource_id = raw_parameters.get("grafana_resource_id")
@@ -551,18 +474,11 @@ def link_grafana_instance(cmd, raw_parameters, azure_monitor_workspace_resource_
             grafana_resource_id,
             GRAFANA_API
         )
-        # print(grafanaURI)
-        headers = [
-                'x-ms-azuremonitormetrics=true',
-                'x-ms-handledat=azuremonitorprofile.link_grafana_instance'
-        ]
+        headers = ['x-ms-azuremonitormetrics=true', 'x-ms-handledat=azuremonitorprofile.link_grafana_instance']
         grafanaArmResponse = send_raw_request(cmd.cli_ctx, "GET", grafanaURI, body={}, headers=headers)
         servicePrincipalId = grafanaArmResponse.json()["identity"]["principalId"]
-        # print(grafanaArmResponse.json())
     except CLIError as e:
-        error = e
         raise CLIError(e)
-
     # Add Role Assignment
     try:
         MonitoringDataReader = "b0d8363b-8ddd-447d-831f-62ca05bff136"
@@ -575,27 +491,12 @@ def link_grafana_instance(cmd, raw_parameters, azure_monitor_workspace_resource_
             azure_monitor_workspace_resource_id,
             MonitoringDataReader
         )
-
-        association_body = json.dumps({
-            "properties": {
-                "roleDefinitionId": roleDefinitionId,
-                "principalId": servicePrincipalId
-            }})
-
-        headers = [
-                'x-ms-azuremonitormetrics=true',
-                'x-ms-handledat=azuremonitorprofile.add_role_assignment'
-        ]
-
+        association_body = json.dumps({"properties": {"roleDefinitionId": roleDefinitionId, "principalId": servicePrincipalId}})
+        headers = ['x-ms-azuremonitormetrics=true', 'x-ms-handledat=azuremonitorprofile.add_role_assignment']
         send_raw_request(cmd.cli_ctx, "PUT", roleDefinitionURI, body=association_body, headers=headers)
-        # print("Role Assignment successful")
     except CLIError as e:
-        error = e
         if e.response.status_code != 409:
             raise CLIError(e)
-
-    # Add AMW integration to grafana
-    
     # Setting up AMW Integration
     targetGrafanaArmPayload = grafanaArmResponse.json()
     if targetGrafanaArmPayload["properties"] is None:
@@ -604,40 +505,27 @@ def link_grafana_instance(cmd, raw_parameters, azure_monitor_workspace_resource_
         targetGrafanaArmPayload["properties"]["grafanaIntegrations"] = {}
     if "azureMonitorWorkspaceIntegrations" not in json.dumps(targetGrafanaArmPayload):
         targetGrafanaArmPayload["properties"]["grafanaIntegrations"]["azureMonitorWorkspaceIntegrations"] = []
-
     amwIntegrations = targetGrafanaArmPayload["properties"]["grafanaIntegrations"]["azureMonitorWorkspaceIntegrations"]
-
     if amwIntegrations != [] and azure_monitor_workspace_resource_id in json.dumps(amwIntegrations).lower():
-        # print("Grafana already has AMW integration")
         return GrafanaLink.ALREADYPRESENT
-
     try:
         grafanaURI = "https://management.azure.com{0}?api-version={1}".format(
             grafana_resource_id,
             GRAFANA_API
         )
-        targetGrafanaArmPayload["properties"]["grafanaIntegrations"]["azureMonitorWorkspaceIntegrations"].append({ "azureMonitorWorkspaceResourceId" : azure_monitor_workspace_resource_id })
-        targetGrafanaArmPayload=json.dumps(targetGrafanaArmPayload)
-
-        headers = [
-                'x-ms-azuremonitormetrics=true',
-                'x-ms-handledat=azuremonitorprofile.setup_amw_grafana_integration',
-                'Content-Type=application/json'
-        ]
-        final_response = send_raw_request(cmd.cli_ctx, "PUT", grafanaURI, body=targetGrafanaArmPayload, headers=headers)
-        # print(final_response.json())        
+        targetGrafanaArmPayload["properties"]["grafanaIntegrations"]["azureMonitorWorkspaceIntegrations"].append({"azureMonitorWorkspaceResourceId": azure_monitor_workspace_resource_id})
+        targetGrafanaArmPayload = json.dumps(targetGrafanaArmPayload)
+        headers = ['x-ms-azuremonitormetrics=true', 'x-ms-handledat=azuremonitorprofile.setup_amw_grafana_integration', 'Content-Type=application/json']
+        send_raw_request(cmd.cli_ctx, "PUT", grafanaURI, body=targetGrafanaArmPayload, headers=headers)
     except CLIError as e:
-        error = e
         raise CLIError(e)
-
     return GrafanaLink.SUCCESS
 
-def create_rules(cmd, cluster_region, cluster_subscription, cluster_resource_group_name, cluster_name, azure_monitor_workspace_resource_id, mac_region):
+
+def create_rules(cmd, cluster_subscription, cluster_resource_group_name, cluster_name, azure_monitor_workspace_resource_id, mac_region):
     from azure.cli.core.util import send_raw_request
-    
     with urllib.request.urlopen("https://defaultrulessc.blob.core.windows.net/defaultrules/ManagedPrometheusDefaultRecordingRules.json") as url:
         default_rules_template = json.loads(url.read().decode())
-
     default_rule_group_name = "NodeRecordingRulesRuleGroup-{0}".format(cluster_name)
     default_rule_group_id = "/subscriptions/{0}/resourceGroups/{1}/providers/Microsoft.AlertsManagement/prometheusRuleGroups/{2}".format(
         cluster_subscription,
@@ -648,7 +536,6 @@ def create_rules(cmd, cluster_region, cluster_subscription, cluster_resource_gro
         default_rule_group_id,
         RULES_API
     )
-
     body = json.dumps({
         "id": default_rule_group_id,
         "name": default_rule_group_name,
@@ -663,7 +550,6 @@ def create_rules(cmd, cluster_region, cluster_subscription, cluster_resource_gro
             "rules": default_rules_template["resources"][0]["properties"]["rules"]
         }
     })
-
     for _ in range(3):
         try:
             headers = [
@@ -673,13 +559,11 @@ def create_rules(cmd, cluster_region, cluster_subscription, cluster_resource_gro
             send_raw_request(cmd.cli_ctx, "PUT", url,
                              body=body, headers=headers)
             error = None
-            # print("Successully deployed Node Recording rules")
             break
         except CLIError as e:
             error = e
     else:
         raise error
-
     default_rule_group_name = "KubernetesRecordingRulesRuleGroup-{0}".format(cluster_name)
     default_rule_group_id = "/subscriptions/{0}/resourceGroups/{1}/providers/Microsoft.AlertsManagement/prometheusRuleGroups/{2}".format(
         cluster_subscription,
@@ -690,7 +574,6 @@ def create_rules(cmd, cluster_region, cluster_subscription, cluster_resource_gro
         default_rule_group_id,
         RULES_API
     )
-
     body = json.dumps({
         "id": default_rule_group_id,
         "name": default_rule_group_name,
@@ -704,7 +587,6 @@ def create_rules(cmd, cluster_region, cluster_subscription, cluster_resource_gro
             "rules": default_rules_template["resources"][1]["properties"]["rules"]
         }
     })
-
     for _ in range(3):
         try:
             headers = [
@@ -714,7 +596,6 @@ def create_rules(cmd, cluster_region, cluster_subscription, cluster_resource_gro
             send_raw_request(cmd.cli_ctx, "PUT", url,
                              body=body, headers=headers)
             error = None
-            # print("Successully deployed Kuberenetes Recording rules")
             break
         except CLIError as e:
             print(e)
@@ -722,18 +603,15 @@ def create_rules(cmd, cluster_region, cluster_subscription, cluster_resource_gro
     else:
         raise error
 
+
 def delete_dcra(cmd, cluster_region, cluster_subscription, cluster_resource_group_name, cluster_name):
     from azure.cli.core.util import send_raw_request
-    # print("Calling function delete_dcra")
-
     cluster_resource_id = "/subscriptions/{0}/resourceGroups/{1}/providers/Microsoft.ContainerService/managedClusters/{2}".format(
         cluster_subscription,
         cluster_resource_group_name,
         cluster_name
     )
-
     dcra_name = get_default_dcra_name(cluster_region, cluster_name)
-
     # only create or delete the association between the DCR and cluster
     association_body = json.dumps({"location": cluster_region, "properties": {}})
     association_url = f"https://management.azure.com{cluster_resource_id}/providers/Microsoft.Insights/dataCollectionRuleAssociations/{dcra_name}?api-version={DC_API}"
@@ -753,9 +631,9 @@ def delete_dcra(cmd, cluster_region, cluster_subscription, cluster_resource_grou
     else:
         raise error
 
+
 def delete_rules(cmd, cluster_region, cluster_subscription, cluster_resource_group_name, cluster_name):
     from azure.cli.core.util import send_raw_request
-
     default_rule_group_name = "NodeRecordingRulesRuleGroup-{0}".format(cluster_name)
     default_rule_group_id = "/subscriptions/{0}/resourceGroups/{1}/providers/Microsoft.AlertsManagement/prometheusRuleGroups/{2}".format(
         cluster_subscription,
@@ -766,7 +644,6 @@ def delete_rules(cmd, cluster_region, cluster_subscription, cluster_resource_gro
         default_rule_group_id,
         RULES_API
     )
-
     for _ in range(3):
         try:
             headers = [
@@ -781,8 +658,6 @@ def delete_rules(cmd, cluster_region, cluster_subscription, cluster_resource_gro
             error = e
     else:
         raise error
-
-
     default_rule_group_name = "KubernetesRecordingRulesRuleGroup-{0}".format(cluster_name)
     default_rule_group_id = "/subscriptions/{0}/resourceGroups/{1}/providers/Microsoft.AlertsManagement/prometheusRuleGroups/{2}".format(
         cluster_subscription,
@@ -793,7 +668,6 @@ def delete_rules(cmd, cluster_region, cluster_subscription, cluster_resource_gro
         default_rule_group_id,
         RULES_API
     )
-
     for _ in range(3):
         try:
             headers = [
@@ -802,63 +676,36 @@ def delete_rules(cmd, cluster_region, cluster_subscription, cluster_resource_gro
             ]
             send_raw_request(cmd.cli_ctx, "DELETE", url, headers=headers)
             error = None
-            # print("Successully DELETED Kubernetes Recording rules")
             break
         except CLIError as e:
             error = e
     else:
         raise error
 
-def link_azure_monitor_profile_artifacts(cmd,
-            cluster_subscription,
-            cluster_resource_group_name,
-            cluster_name,
-            cluster_region,
-            raw_parameters,
-        ):
 
-    # print("Calling link_azure_monitor_profile_artifacts...")
-    
+def link_azure_monitor_profile_artifacts(cmd, cluster_subscription, cluster_resource_group_name, cluster_name, cluster_region, raw_parameters):
     # MAC creation if required
     azure_monitor_workspace_resource_id = get_azure_monitor_workspace_resource_id(cmd, cluster_subscription, cluster_region, raw_parameters)
-    # print(azure_monitor_workspace_resource_id)
-
     # Get MAC region (required for DCE, DCR creation) and check support for DCE,DCR creation
     mac_region = get_mac_region_and_check_support(cmd, azure_monitor_workspace_resource_id, cluster_region)
-    # print(mac_region)
-
     # DCE creation
     dce_resource_id = create_dce(cmd, cluster_subscription, cluster_resource_group_name, cluster_name, mac_region)
-    # print(dce_resource_id)
-
     # DCR creation
     dcr_resource_id = create_dcr(cmd, mac_region, azure_monitor_workspace_resource_id, cluster_subscription, cluster_resource_group_name, cluster_name, dce_resource_id)
-    # print(dcr_resource_id)
-
     # DCRA creation
-    dcra_resource_id = create_dcra(cmd, cluster_region, cluster_subscription, cluster_resource_group_name, cluster_name, dcr_resource_id)
-    # print(dcra_resource_id)
-
+    create_dcra(cmd, cluster_region, cluster_subscription, cluster_resource_group_name, cluster_name, dcr_resource_id)
     # Link grafana
-    isGrafanaLinkSuccessful = link_grafana_instance(cmd, raw_parameters, azure_monitor_workspace_resource_id)
-    # print(isGrafanaLinkSuccessful)
-
+    link_grafana_instance(cmd, raw_parameters, azure_monitor_workspace_resource_id)
     # create recording rules and alerts
-    create_rules(cmd, cluster_region, cluster_subscription, cluster_resource_group_name, cluster_name, azure_monitor_workspace_resource_id, mac_region)
+    create_rules(cmd, cluster_subscription, cluster_resource_group_name, cluster_name, azure_monitor_workspace_resource_id, mac_region)
 
-def unlink_azure_monitor_profile_artifacts(cmd,
-            cluster_subscription,
-            cluster_resource_group_name,
-            cluster_name,
-            cluster_region
-        ):
-    # print("Calling unlink_azure_monitor_profile_artifacts...")
+
+def unlink_azure_monitor_profile_artifacts(cmd, cluster_subscription, cluster_resource_group_name, cluster_name, cluster_region):
     # Remove DCRA link
-    isSuccessfulDeletion = delete_dcra(cmd, cluster_region, cluster_subscription, cluster_resource_group_name, cluster_name)
-    # print("DCRA removal successful -> ", isSuccessfulDeletion)
-    
+    delete_dcra(cmd, cluster_region, cluster_subscription, cluster_resource_group_name, cluster_name)
     # Delete rules (Conflict({"error":{"code":"InvalidResourceLocation","message":"The resource 'NodeRecordingRulesRuleGroup-<clustername>' already exists in location 'eastus2' in resource group '<clustername>'. A resource with the same name cannot be created in location 'eastus'. Please select a new resource name."}})
     delete_rules(cmd, cluster_region, cluster_subscription, cluster_resource_group_name, cluster_name)
+
 
 def post_request(cmd, subscription_id, rp_name, headers):
     from azure.cli.core.util import send_raw_request
@@ -867,10 +714,11 @@ def post_request(cmd, subscription_id, rp_name, headers):
         rp_name,
         RP_API
     )
-    try: 
+    try:
         send_raw_request(cmd.cli_ctx, "POST", customUrl, headers=headers)
     except CLIError as e:
         raise CLIError(e)
+
 
 def rp_registrations(cmd, subscription_id):
     from azure.cli.core.util import send_raw_request
@@ -887,35 +735,27 @@ def rp_registrations(cmd, subscription_id):
         r = send_raw_request(cmd.cli_ctx, "GET", customUrl, headers=headers)
     except CLIError as e:
         raise CLIError(e)
-
     isInsightsRpRegistered = False
     isAlertsManagementRpRegistered = False
     json_response = json.loads(r.text)
     values_array = json_response["value"]
-
     for value in values_array:
         if value["namespace"].lower() == "microsoft.insights" and value["registrationState"].lower() == "registered":
-                isInsightsRpRegistered = True
-                # print("Insights RP is already registerd")
+            isInsightsRpRegistered = True
         if value["namespace"].lower() == "microsoft.alertsmanagement" and value["registrationState"].lower() == "registered":
-                isAlertsManagementRpRegistered = True
-                # print("AlertsManagedment RP is already registerd")
-    
-    if isInsightsRpRegistered == False:
+            isAlertsManagementRpRegistered = True
+    if isInsightsRpRegistered is False:
         headers = [
             'x-ms-azuremonitormetrics=true',
             'x-ms-handledat=rp_registrations.register_insights_rp'
         ]
         post_request(cmd, subscription_id, "microsoft.insights", headers)
-        # print("microsoft.insights successfully registered")
-
-    if isAlertsManagementRpRegistered == False:
+    if isAlertsManagementRpRegistered is False:
         headers = [
             'x-ms-azuremonitormetrics=true',
             'x-ms-handledat=rp_registrations.register_alertsmanagement_rp'
         ]
         post_request(cmd, subscription_id, "microsoft.alertsmanagement", headers)
-        # print("microsoft.alertsmanagement successfully registered")
 
 
 # pylint: disable=too-many-locals,too-many-branches,too-many-statements,line-too-long
@@ -929,10 +769,9 @@ def ensure_azure_monitor_profile_prerequisites(
     raw_parameters,
     remove_azuremonitormetrics
 ):
-    # print("Calling ensure_azure_monitor_profile_prerequisites...")
-
     if (remove_azuremonitormetrics):
-        unlink_azure_monitor_profile_artifacts(cmd,
+        unlink_azure_monitor_profile_artifacts(
+            cmd,
             cluster_subscription,
             cluster_resource_group_name,
             cluster_name,
@@ -945,12 +784,12 @@ def ensure_azure_monitor_profile_prerequisites(
         check_azuremonitoraddon_feature(cmd, cluster_subscription)
         # Do RP registrations if required
         rp_registrations(cmd, cluster_subscription)
-        link_azure_monitor_profile_artifacts(cmd,
+        link_azure_monitor_profile_artifacts(
+            cmd,
             cluster_subscription,
             cluster_resource_group_name,
             cluster_name,
             cluster_region,
             raw_parameters
         )
-
     return

@@ -1850,7 +1850,6 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
 
     def _get_enable_node_restriction(self, enable_validation: bool = False) -> bool:
         """Internal function to obtain the value of enable_node_restriction.
-
         This function supports the option of enable_node_restriction. When enabled, if both enable_node_restriction and disable_node_restriction are
         specified, raise a MutuallyExclusiveArgumentError.
 
@@ -1867,21 +1866,17 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
                 )
 
         return enable_node_restriction
-        
+
     def _get_enable_azure_monitor_metrics(self, enable_validation: bool = False) -> bool:
         """Internal function to obtain the value of enable_azure_monitor_metrics.
-
         This function supports the option of enable_validation. When enabled, if both enable_azure_monitor_metrics and disable_azure_monitor_metrics are
         specified, raise a MutuallyExclusiveArgumentError.
 
         :return: bool
         """
         # print("_get_enable_azure_monitor_metrics being called...")
-
         # Read the original value passed by the command.
-
         enable_azure_monitor_metrics = self.raw_param.get("enable_azuremonitormetrics")
-
         # In create mode, try to read the property value corresponding to the parameter from the `mc` object.
         if self.decorator_mode == DecoratorMode.CREATE:
             if (
@@ -1890,14 +1885,12 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
                 self.mc.azure_monitor_profile.metrics
             ):
                 enable_azure_monitor_metrics = self.mc.azure_monitor_profile.metrics.enabled
-
         # This parameter does not need dynamic completion.
         if enable_validation:
             if enable_azure_monitor_metrics and self._get_disable_azure_monitor_metrics(False):
                 raise MutuallyExclusiveArgumentError(
                     "Cannot specify --enable-azuremonitormetrics and --enable-azuremonitormetrics at the same time."
                 )
-
         return enable_azure_monitor_metrics
 
     def get_enable_azure_monitor_metrics(self) -> bool:
@@ -1916,12 +1909,8 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         """
         # Read the original value passed by the command.
         disable_azure_monitor_metrics = self.raw_param.get("disable_azuremonitormetrics")
-        
         if disable_azure_monitor_metrics and self._get_enable_azure_monitor_metrics(False):
-                raise MutuallyExclusiveArgumentError(
-                    "Cannot specify --enable-azuremonitormetrics and --disable-azuremonitormetrics at the same time."
-                )
-
+            raise MutuallyExclusiveArgumentError("Cannot specify --enable-azuremonitormetrics and --disable-azuremonitormetrics at the same time.")
         return disable_azure_monitor_metrics
 
     def get_disable_azure_monitor_metrics(self) -> bool:
@@ -1931,7 +1920,6 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         :return: bool
         """
         return self._get_disable_azure_monitor_metrics(enable_validation=True)
-        
 
     def get_enable_node_restriction(self) -> bool:
         """Obtain the value of enable_node_restriction.
@@ -2374,7 +2362,7 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
 
         if self.context.get_enable_node_restriction():
             if mc.security_profile is None:
-                    mc.security_profile = self.models.ManagedClusterSecurityProfile()
+                mc.security_profile = self.models.ManagedClusterSecurityProfile()
             mc.security_profile.node_restriction = self.models.ManagedClusterSecurityProfileNodeRestriction(
                 enabled=True,
             )
@@ -2827,42 +2815,34 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                 mc.azure_monitor_profile = self.models.ManagedClusterAzureMonitorProfile()
             mc.azure_monitor_profile.metrics = self.models.ManagedClusterAzureMonitorProfileMetrics(enabled=True)
             mc.azure_monitor_profile.metrics.kube_state_metrics = self.models.ManagedClusterAzureMonitorProfileKubeStateMetrics(
-                metric_labels_allowlist=str(ksm_metric_labels_allow_list), 
-                metric_annotations_allow_list=str(ksm_metric_annotations_allow_list)
-                )
+                metric_labels_allowlist=str(ksm_metric_labels_allow_list),
+                metric_annotations_allow_list=str(ksm_metric_annotations_allow_list))
 
         if self.context.get_disable_azure_monitor_metrics():
             if mc.azure_monitor_profile is None:
                 mc.azure_monitor_profile = self.models.ManagedClusterAzureMonitorProfile()
             mc.azure_monitor_profile.metrics = self.models.ManagedClusterAzureMonitorProfileMetrics(enabled=False)
-        
         return mc
 
     def update_node_restriction(self, mc: ManagedCluster) -> ManagedCluster:
         """Update security profile nodeRestriction for the ManagedCluster object.
-        
         :return: the ManagedCluster object
         """
         self._ensure_mc(mc)
-
         if self.context.get_enable_node_restriction():
             if mc.security_profile is None:
                 mc.security_profile = self.models.ManagedClusterSecurityProfile()
             if mc.security_profile.node_restriction is None:
                 mc.security_profile.node_restriction = self.models.ManagedClusterSecurityProfileNodeRestriction()
-
             # set enabled
             mc.security_profile.node_restriction.enabled = True
-
         if self.context.get_disable_node_restriction():
             if mc.security_profile is None:
                 mc.security_profile = self.models.ManagedClusterSecurityProfile()
             if mc.security_profile.node_restriction is None:
                 mc.security_profile.node_restriction = self.models.ManagedClusterSecurityProfileNodeRestriction()
-
             # set disabled
             mc.security_profile.node_restriction.enabled = False
-
         return mc
 
     def update_vpa(self, mc: ManagedCluster) -> ManagedCluster:
@@ -2933,9 +2913,9 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         # update vpa
         mc = self.update_vpa(mc)
 
-        if ( self.__raw_parameters.get("enable_azuremonitormetrics") or self.__raw_parameters.get("disable_azuremonitormetrics")):
+        if (self.__raw_parameters.get("enable_azuremonitormetrics") or self.__raw_parameters.get("disable_azuremonitormetrics")):
             ensure_azure_monitor_profile_prerequisites(
-                self.cmd, 
+                self.cmd,
                 self.client,
                 self.context.get_subscription_id(),
                 self.context.get_resource_group_name(),
