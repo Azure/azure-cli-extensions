@@ -3595,3 +3595,128 @@ def show_auth_config(cmd, resource_group_name, name):
     except:
         pass
     return auth_settings
+
+# Compose
+
+
+def create_containerapps_from_compose(cmd,  # pylint: disable=R0914
+                                      resource_group_name,
+                                      managed_env,
+                                      compose_file_path='./docker-compose.yml',
+                                      registry_server=None,
+                                      registry_user=None,
+                                      registry_pass=None,
+                                      transport_mapping=None,
+                                      location=None,
+                                      tags=None):
+
+    from pycomposefile import ComposeFile
+
+    from ._compose_utils import (create_containerapps_compose_environment,
+                                 build_containerapp_from_compose_service,
+                                 check_supported_platform,
+                                 warn_about_unsupported_elements,
+                                 resolve_ingress_and_target_port,
+                                 resolve_registry_from_cli_args,
+                                 resolve_transport_from_cli_args,
+                                 resolve_service_startup_command,
+                                 validate_memory_and_cpu_setting,
+                                 resolve_cpu_configuration_from_service,
+                                 resolve_memory_configuration_from_service,
+                                 resolve_replicas_from_service,
+                                 resolve_environment_from_service,
+                                 resolve_secret_from_service)
+
+    # Validate managed environment
+    parsed_managed_env = parse_resource_id(managed_env)
+    managed_env_name = parsed_managed_env['name']
+
+    logger.info(   # pylint: disable=W1203
+        f"Creating the Container Apps managed environment {managed_env_name} under {resource_group_name} in {location}.")
+
+    try:
+        managed_environment = show_managed_environment(cmd=cmd,
+                                                       name=managed_env_name,
+                                                       resource_group_name=resource_group_name)
+    except CLIInternalError:  # pylint: disable=W0702
+        managed_environment = create_containerapps_compose_environment(cmd,
+                                                                       managed_env_name,
+                                                                       resource_group_name,
+                                                                       tags=tags)
+
+    compose_yaml = load_yaml_file(compose_file_path)
+    parsed_compose_file = ComposeFile(compose_yaml)
+    logger.info(parsed_compose_file)
+    containerapps_from_compose = []
+    # Using the key to iterate to get the service name
+    # pylint: disable=C0201,C0206
+    for service_name in parsed_compose_file.ordered_services.keys():
+        service = parsed_compose_file.services[service_name]
+        if not check_supported_platform(service.platform):
+            message = "Unsupported platform found. "
+            message += "Azure Container Apps only supports linux/amd64 container images."
+            raise InvalidArgumentValueError(message)
+        image = service.image
+        warn_about_unsupported_elements(service)
+        logger.info(  # pylint: disable=W1203
+            f"Creating the Container Apps instance for {service_name} under {resource_group_name} in {location}.")
+        ingress_type, target_port = resolve_ingress_and_target_port(service)
+        registry, registry_username, registry_password = resolve_registry_from_cli_args(registry_server, registry_user, registry_pass)  # pylint: disable=C0301
+        transport_setting = resolve_transport_from_cli_args(service_name, transport_mapping)
+        startup_command, startup_args = resolve_service_startup_command(service)
+        cpu, memory = validate_memory_and_cpu_setting(
+            resolve_cpu_configuration_from_service(service),
+            resolve_memory_configuration_from_service(service)
+        )
+        replicas = resolve_replicas_from_service(service)
+        environment = resolve_environment_from_service(service)
+        secret_vars, secret_env_ref = resolve_secret_from_service(service, parsed_compose_file.secrets)
+        if environment is not None and secret_env_ref is not None:
+            environment.extend(secret_env_ref)
+        elif secret_env_ref is not None:
+            environment = secret_env_ref
+        if service.build is not None:
+            logger.warning("Build configuration defined for this service.")
+            logger.warning("The build will be performed by Azure Container Registry.")
+            context = service.build.context
+            dockerfile = "Dockerfile"
+            if service.build.dockerfile is not None:
+                dockerfile = service.build.dockerfile
+            image, registry, registry_username, registry_password = build_containerapp_from_compose_service(
+                cmd,
+                service_name,
+                context,
+                dockerfile,
+                resource_group_name,
+                managed_env,
+                location,
+                image,
+                target_port,
+                ingress_type,
+                registry,
+                registry_username,
+                registry_password,
+                environment)
+        containerapps_from_compose.append(
+            create_containerapp(cmd,
+                                service_name,
+                                resource_group_name,
+                                image=image,
+                                container_name=service.container_name,
+                                managed_env=managed_environment["id"],
+                                ingress=ingress_type,
+                                target_port=target_port,
+                                registry_server=registry,
+                                registry_user=registry_username,
+                                registry_pass=registry_password,
+                                transport=transport_setting,
+                                startup_command=startup_command,
+                                args=startup_args,
+                                cpu=cpu,
+                                memory=memory,
+                                env_vars=environment,
+                                secrets=secret_vars,
+                                min_replicas=replicas,
+                                max_replicas=replicas,)
+        )
+    return containerapps_from_compose

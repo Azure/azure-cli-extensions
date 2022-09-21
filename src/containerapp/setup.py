@@ -37,7 +37,8 @@ CLASSIFIERS = [
 
 # TODO: Add any additional SDK dependencies here
 DEPENDENCIES = [
-    'azure-cli-core'
+    'azure-cli-core',
+    'pycomposefile>=0.0.29'
 ]
 
 with open('README.rst', 'r', encoding='utf-8') as f:
