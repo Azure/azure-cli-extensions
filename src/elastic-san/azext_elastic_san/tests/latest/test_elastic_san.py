@@ -46,13 +46,14 @@ class ElasticSanScenario(ScenarioTest):
         self.cmd('az elastic-san list -g {rg}', checks=[JMESPathCheck('length(@)', 0)])
 
     @ResourceGroupPreparer(location='eastus2euap', name_prefix='clitest.rg.testelasticsan.volumegroup')
-    def test_elastic_san_volume_group_scenarios(self, resource_group):
+    def test_elastic_san_volume_group_and_volume_scenarios(self, resource_group):
         self.kwargs.update({
             "san_name": self.create_random_name('elastic-san', 24),
             "vg_name": self.create_random_name('volume-group', 24),
             "vnet_name": self.create_random_name('vnet', 24),
             "subnet_name": self.create_random_name('subnet', 24),
             "subnet_name_2": self.create_random_name('subnet', 24),
+            "volume_name": self.create_random_name('volume', 24)
         })
         self.cmd('az elastic-san create -n {san_name} -g {rg} --tags {{key1810:aaaa}} -l eastus2stage '
                  '--availability-zones [eastus2stage] --base-size-tib 23 --extended-capacity-size-tib 14 '
@@ -84,6 +85,17 @@ class ElasticSanScenario(ScenarioTest):
                  checks=[JMESPathCheck('tags', {"key2011": "cccc"}),
                          JMESPathCheck('protocolType', "None"),
                          JMESPathCheck('networkAcls.virtualNetworkRules[0].id', subnet_id_2)])
+
+        self.cmd('az elastic-san volume create -g {rg} -e {san_name} -v {vg_name} -n {volume_name} --size-gib 2')
+        self.cmd('az elastic-san volume show -g {rg} -e {san_name} -v {vg_name} -n {volume_name} ',
+                 checks=[JMESPathCheck('name', self.kwargs.get('volume_name', '')),
+                         JMESPathCheck('sizeGib', 2)])
+        self.cmd('az elastic-san volume list -g {rg} -e {san_name} -v {vg_name}',
+                 checks=[JMESPathCheck('length(@)', 1)])
+        self.cmd('az elastic-san volume delete -g {rg} -e {san_name} -v {vg_name} -n {volume_name')
+        self.cmd('az elastic-san volume list -g {rg} -e {san_name} -v {vg_name}',
+                 checks=[JMESPathCheck('length(@)', 0)])
+
         self.cmd('az elastic-san volume-group delete -g {rg} -e {san_name} -n {vg_name} -y')
         time.sleep(20)
         self.cmd('az elastic-san delete -g {rg} -n {san_name} -y')
