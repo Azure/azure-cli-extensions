@@ -13,6 +13,7 @@ from ._clients import ContainerAppClient
 from ._ssh_utils import ping_container_app
 from ._utils import safe_get, is_registry_msi_system
 from ._constants import ACR_IMAGE_SUFFIX
+import re
 
 
 logger = get_logger(__name__)
@@ -37,6 +38,14 @@ def _is_number(s):
     except ValueError:
         return False
 
+      
+def validate_revision_suffix(value):
+    if value is not None:
+        matched = re.match(r"^[a-z](?!.*-{2})([-a-z0-9]*[a-z0-9])?$", value)
+        if not matched:
+            raise ValidationError("Revision suffix value must consist of lower case alphanumeric characters or '-', "
+                                  "start with an alphabetic character, "
+                                  " and end with an alphanumeric character and cannot have '--'.")
 
 def validate_memory(namespace):
     if namespace.memory is not None:
