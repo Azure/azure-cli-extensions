@@ -1,6 +1,10 @@
 Release History
 ===============
 
+1.1.9
+---
+* Fix the crash in windows.
+
 1.1.8
 ---
 * Add command `az spring app connect`.

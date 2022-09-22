@@ -9,7 +9,6 @@ import requests
 import re
 import os
 import time
-import tty
 from azure.cli.core._profile import Profile
 
 from ._websocket import WebSocketConnection, recv_remote, send_stdin, EXEC_PROTOCOL_CTRL_C_MSG
@@ -1499,7 +1498,13 @@ def app_connect(cmd, client, resource_group, service, name,
     reader.daemon = True
     reader.start()
 
-    tty.setcbreak(sys.stdin.fileno())  # needed to prevent printing arrow key characters
+    try:
+        import tty
+        tty.setcbreak(sys.stdin.fileno())  # needed to prevent printing arrow key characters
+    except ModuleNotFoundError:
+        # tty works only on Unix
+        pass
+
     writer = Thread(target=send_stdin, args=(conn,))
     writer.daemon = True
     writer.start()
