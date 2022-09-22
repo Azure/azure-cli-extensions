@@ -32,12 +32,11 @@ from .vendored_sdks.appplatform.v2020_11_01_preview import (
 )
 from ._client_factory import (cf_spring)
 from knack.log import get_logger
-from azure.cli.core.azclierror import ClientRequestError, FileOperationError, InvalidArgumentValueError
+from azure.cli.core.azclierror import ClientRequestError, FileOperationError, InvalidArgumentValueError, ResourceNotFoundError
 from azure.cli.core.commands.client_factory import get_mgmt_service_client
 from azure.cli.core.util import sdk_no_wait
 from azure.mgmt.applicationinsights import ApplicationInsightsManagementClient
 from azure.cli.core.commands import cached_put
-from azure.core.exceptions import ResourceNotFoundError
 from ._utils import _get_rg_location
 from ._resource_quantity import validate_cpu, validate_memory
 from six.moves.urllib import parse
@@ -1480,7 +1479,7 @@ def app_connect(cmd, client, resource_group, service, name,
     hostname = resource.properties.fqdn
     if not instance:
         if not deployment.properties.instances:
-            raise CLIError("No instances found for deployment '{0}' in app '{1}'".format(
+            raise ResourceNotFoundError("No instances found for deployment '{0}' in app '{1}'".format(
                 deployment.name, name))
         instances = deployment.properties.instances
         if len(instances) > 1:
