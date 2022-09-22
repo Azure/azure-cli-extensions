@@ -12,6 +12,11 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+0.5.112
++++++++
+
+* Add --outbound-type to update managed cluster command.
+
 0.5.111
 +++++++
 
