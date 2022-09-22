@@ -38,7 +38,7 @@ def _is_number(s):
     except ValueError:
         return False
 
-      
+
 def validate_revision_suffix(value):
     if value is not None:
         matched = re.match(r"^[a-z](?!.*-{2})([-a-z0-9]*[a-z0-9])?$", value)
@@ -46,6 +46,7 @@ def validate_revision_suffix(value):
             raise ValidationError("Revision suffix value must consist of lower case alphanumeric characters or '-', "
                                   "start with an alphabetic character, "
                                   " and end with an alphanumeric character and cannot have '--'.")
+
 
 def validate_memory(namespace):
     if namespace.memory is not None:
