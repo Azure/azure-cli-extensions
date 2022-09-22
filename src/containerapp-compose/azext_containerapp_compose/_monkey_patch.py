@@ -51,6 +51,7 @@ def override_random_log_analytics_name(resource_group_name):  # pylint: disable=
 def create_containerapps_compose_environment(cmd,
                                              name,
                                              resource_group_name,
+                                             location,
                                              logs_workspace_name=None,
                                              tags=None):
     if logs_workspace_name is not None:
@@ -60,6 +61,7 @@ def create_containerapps_compose_environment(cmd,
     return custom.create_managed_environment(cmd,
                                              name,
                                              resource_group_name,
+                                             location=location,
                                              tags=tags)
 
 

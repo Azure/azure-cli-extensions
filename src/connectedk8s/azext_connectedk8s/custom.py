@@ -3,6 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+from argparse import Namespace
 import errno
 import logging
 from logging import exception
@@ -10,6 +11,7 @@ import os
 import json
 import tempfile
 import time
+import subprocess
 from subprocess import Popen, PIPE, run, STDOUT, call, DEVNULL
 from base64 import b64encode, b64decode
 import stat
@@ -717,7 +719,17 @@ def list_connectedk8s(cmd, client, resource_group_name=None):
 
 
 def delete_connectedk8s(cmd, client, resource_group_name, cluster_name,
-                        kube_config=None, kube_context=None, no_wait=False):
+                        kube_config=None, kube_context=None, no_wait=False, force_delete=False, yes=False):
+
+    # The force delete prompt is added because it can be used in the case where the config map is missing
+    # so we cannot check if the user context is pointing to the cluster that he intends to delete
+    if not force_delete:
+        confirmation_message = "Are you sure you want to perform delete operation?"
+        utils.user_confirmation(confirmation_message, yes)
+    elif force_delete:
+        confirmation_message = "Force delete will clean up all the azure-arc resources, including extensions. Please make sure your current kubeconfig is pointing to the right cluster.\n" + "Are you sure you want to perform force delete:"
+        utils.user_confirmation(confirmation_message, yes)
+
     logger.warning("This operation might take a while ...\n")
 
     # Send cloud information to telemetry
@@ -740,6 +752,50 @@ def delete_connectedk8s(cmd, client, resource_group_name, cluster_name,
 
     # Check Release Existance
     release_namespace = get_release_namespace(kube_config, kube_context, helm_client_location)
+
+    # Check forced delete flag
+    if(force_delete):
+
+        kubectl_client_location = install_kubectl_client()
+
+        delete_cc_resource(client, resource_group_name, cluster_name, no_wait).result()
+
+        # Explicit CRD Deletion
+
+        timeout_for_crd_deletion = "20s"
+        for crds in consts.CRD_FOR_FORCE_DELETE:
+            cmd_helm_delete = [kubectl_client_location, "delete", "crds", crds, "--ignore-not-found", "--wait", "--timeout", "{}".format(timeout_for_crd_deletion)]
+            response_helm_delete = Popen(cmd_helm_delete, stdout=PIPE, stderr=PIPE)
+            _, error_helm_delete = response_helm_delete.communicate()
+
+        # Timer added to have sufficient time after CRD deletion
+        # to check the status of the CRD ( deleted or terminating )
+        time.sleep(3)
+
+        # patching yaml file path for removing CRD finalizer
+        current_path = os.path.abspath(os.path.dirname(__file__))
+        yaml_file_path = os.path.join(current_path, "remove_crd_finalizer.yaml")
+
+        # Patch if CRD is in Terminating state
+        for crds in consts.CRD_FOR_FORCE_DELETE:
+
+            cmd = [kubectl_client_location, "get", "crd", crds, "-ojson"]
+            cmd_output = Popen(cmd, stdout=PIPE, stderr=PIPE)
+            _, error_helm_delete = cmd_output.communicate()
+
+            if(cmd_output.returncode == 0):
+                changed_cmd = json.loads(cmd_output.communicate()[0].strip())
+                status = changed_cmd['status']['conditions'][-1]['type']
+
+                if(status == "Terminating"):
+                    patch_cmd = [kubectl_client_location, "patch", "crd", crds, "--type=merge", "--patch-file", yaml_file_path]
+                    output_patch_cmd = Popen(patch_cmd, stdout=PIPE, stderr=PIPE)
+                    _, error_helm_delete = output_patch_cmd.communicate()
+
+        if(release_namespace):
+            utils.delete_arc_agents(release_namespace, kube_config, kube_context, configuration, helm_client_location, True)
+
+        return
 
     if not release_namespace:
         delete_cc_resource(client, resource_group_name, cluster_name, no_wait).result()
@@ -877,7 +933,7 @@ def update_connected_cluster(cmd, client, resource_group_name, cluster_name, htt
     patch_cc_response = update_connected_cluster_internal(client, resource_group_name, cluster_name, tags)
 
     proxy_params_unset = (https_proxy == "" and http_proxy == "" and no_proxy == "" and proxy_cert == "" and not disable_proxy)
-    if proxy_params_unset and not auto_upgrade and not tags:
+    if proxy_params_unset and not auto_upgrade and tags is None:
         raise RequiredArgumentMissingError(consts.No_Param_Error)
 
     if (https_proxy or http_proxy or no_proxy) and disable_proxy:

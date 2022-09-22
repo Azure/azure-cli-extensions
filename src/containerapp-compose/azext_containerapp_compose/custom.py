@@ -112,7 +112,7 @@ def create_containerapps_from_compose(cmd,  # pylint: disable=R0914
                                       registry_server=None,
                                       registry_user=None,
                                       registry_pass=None,
-                                      transport=None,
+                                      transport_mapping=None,
                                       logs_workspace_name=None,
                                       location=None,
                                       tags=None):
@@ -134,6 +134,7 @@ def create_containerapps_from_compose(cmd,  # pylint: disable=R0914
         managed_environment = create_containerapps_compose_environment(cmd,
                                                                        managed_env,
                                                                        resource_group_name,
+                                                                       location,
                                                                        logs_workspace_name=logs_workspace_name,
                                                                        tags=tags)
 
@@ -158,7 +159,7 @@ def create_containerapps_from_compose(cmd,  # pylint: disable=R0914
             f"Creating the Container Apps instance for {service_name} under {resource_group_name} in {location}.")
         ingress_type, target_port = resolve_ingress_and_target_port(service)
         registry, registry_username, registry_password = resolve_registry_from_cli_args(registry_server, registry_user, registry_pass)  # pylint: disable=C0301
-        transport_setting = resolve_transport_from_cli_args(service_name, transport)
+        transport_setting = resolve_transport_from_cli_args(service_name, transport_mapping)
         startup_command, startup_args = resolve_service_startup_command(service)
         cpu, memory = validate_memory_and_cpu_setting(
             resolve_cpu_configuration_from_service(service),
@@ -317,31 +318,55 @@ def valid_resource_settings():
     # https://docs.microsoft.com/azure/container-apps/containers#configuration
     return {
         "0.25": "0.5",
-        "0.5": "1.0",
+        "0.5": "1",
         "0.75": "1.5",
-        "1.0": "2.0",
+        "1.0": "2",
         "1.25": "2.5",
-        "1.5": "3.0",
+        "1.5": "3",
         "1.75": "3.5",
-        "2.0": "4.0",
+        "2.0": "4",
     }
 
 
 def validate_memory_and_cpu_setting(cpu, memory):
     settings = valid_resource_settings()
-
     if cpu in settings.keys():  # pylint: disable=C0201
         if memory != settings[cpu]:
             if memory is not None:
-                warning = f"Unsupported memory reservation request of {memory}."
-                warning += f"The default value of {settings[cpu]}Gi will be used."
+                warning = f"Unsupported memory reservation request of {memory}. "
+                warning += f"The default value of {settings[cpu]} GB for {cpu} vCPUs will be used. "
+                warning += "Please see memory and vCPU configuration options for Azure Container Apps at "
+                warning += "https://docs.microsoft.com/en-us/azure/container-apps/containers#configuration "
                 logger.warning(warning)
             memory = settings[cpu]
         return (cpu, f"{memory}Gi")
 
-    if cpu is not None:
-        logger.warning(  # pylint: disable=W1203
-            f"Invalid CPU reservation request of {cpu}. The default resource values will be used.")
+    if memory in settings.values():
+        new_cpu = "0.25"
+        for c, m in settings.items():
+            if memory == m:
+                new_cpu = c
+        if cpu != new_cpu:
+            if cpu is not None:
+                warning = f"Unsupported cpu configuration request of {cpu}. "
+                warning += f"The default value of {new_cpu} vCPUs for {memory} GB will be used. "
+                warning += "Please see memory and vCPU configuration options for Azure Container Apps at "
+                warning += "https://docs.microsoft.com/en-us/azure/container-apps/containers#configuration "
+                logger.warning(warning)
+        return (new_cpu, f"{memory}Gi")
+
+    warning = ""
+    if cpu is not None and memory is not None:
+        warning += f"Invalid CPU and memory reservation request of {cpu} vCPU and {memory}. "
+    elif cpu is not None:
+        warning += f"Invalid CPU reservation request of {cpu} vCPU. "
+    elif memory is not None:
+        warning += f"Invalid memory reservation request of {memory} GB. "
+    if cpu is not None or memory is not None:
+        warning += "The default resource values of 0.25 vCPU and 0.5 GB will be used. "
+        warning += "Please see memory and vCPU configuration options for Azure Container Apps at "
+        warning += "https://docs.microsoft.com/en-us/azure/container-apps/containers#configuration "
+        logger.warning(warning)
     return (None, None)
 
 

@@ -8,12 +8,13 @@ from azure.cli.core.azclierror import FileOperationError, InvalidArgumentValueEr
 from .vendored_sdks.appplatform.v2022_01_01_preview import models
 from .vendored_sdks.appplatform.v2022_03_01_preview import models as models_20220301preview
 from .vendored_sdks.appplatform.v2022_05_01_preview import models as models_20220501preview
+from .vendored_sdks.appplatform.v2022_09_01_preview import models as models_20220901preview
 from azure.cli.core.util import get_file_json
 
 
 class DefaultApp:
     def format_resource(self, **kwargs):
-        return models_20220501preview.AppResource(
+        return models_20220901preview.AppResource(
             properties=self._format_properties(**kwargs),
             identity=self._format_identity(**kwargs)
         )
@@ -24,7 +25,8 @@ class DefaultApp:
         kwargs['persistent_disk'] = self._load_persistent_disk(**kwargs)
         kwargs['temporary_disk'] = self._load_temp_disk(**kwargs)
         kwargs['vnet_addons'] = self._load_vnet_addons(**kwargs)
-        return models_20220501preview.AppResourceProperties(**kwargs)
+        kwargs['ingress_settings'] = self._load_ingress_settings(**kwargs)
+        return models_20220901preview.AppResourceProperties(**kwargs)
 
     def _format_identity(self, system_assigned=None, user_assigned=None, **_):
         target_identity_type = self._get_identity_assign_type(system_assigned, user_assigned)
@@ -124,6 +126,19 @@ class DefaultApp:
         if public_for_vnet is not None:
             return models_20220501preview.AppVNetAddons(
                 public_endpoint=public_for_vnet
+            )
+        else:
+            return None
+
+    def _load_ingress_settings(self, ingress_read_timeout=None, ingress_send_timeout=None, session_affinity=None, session_max_age=None, backend_protocol=None, **_):
+        if (ingress_read_timeout is not None) or (ingress_send_timeout is not None) or \
+                (session_affinity is not None) or (session_max_age is not None) or (backend_protocol is not None):
+            return models_20220901preview.IngressSettings(
+                read_timeout_in_seconds=ingress_read_timeout,
+                send_timeout_in_seconds=ingress_send_timeout,
+                session_affinity=session_affinity,
+                session_cookie_max_age=session_max_age,
+                backend_protocol=backend_protocol
             )
         else:
             return None

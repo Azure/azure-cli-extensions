@@ -15,6 +15,7 @@ import azure.cli.core.keys as keys
 from azure.cli.core.azclierror import (
     ArgumentUsageError,
     InvalidArgumentValueError,
+    MutuallyExclusiveArgumentError,
     RequiredArgumentMissingError,
 )
 from azure.cli.core.commands.validators import validate_tag
@@ -606,6 +607,16 @@ def validate_azure_keyvault_kms_key_vault_resource_id(namespace):
     from msrestazure.tools import is_valid_resource_id
     if not is_valid_resource_id(key_vault_resource_id):
         raise InvalidArgumentValueError("--azure-keyvault-kms-key-vault-resource-id is not a valid Azure resource ID.")
+
+
+def validate_image_cleaner_enable_disable_mutually_exclusive(namespace):
+    enable_image_cleaner = namespace.enable_image_cleaner
+    disable_image_cleaner = namespace.disable_image_cleaner
+
+    if enable_image_cleaner and disable_image_cleaner:
+        raise MutuallyExclusiveArgumentError(
+            "Cannot specify --enable-image-cleaner and --disable-image-cleaner at the same time."
+        )
 
 
 def validate_enable_custom_ca_trust(namespace):

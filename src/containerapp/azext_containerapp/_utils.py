@@ -369,6 +369,42 @@ def parse_secret_flags(secret_list):
     return secret_var_def
 
 
+def parse_metadata_flags(metadata_list, metadata_def={}):
+    if not metadata_list:
+        metadata_list = []
+    for pair in metadata_list:
+        key_val = pair.split('=', 1)
+        if len(key_val) != 2:
+            raise ValidationError("Metadata must be in format \"<key>=<value> <key>=<value> ...\".")
+        if key_val[0] in metadata_def:
+            raise ValidationError("Duplicate metadata \"{metadata}\" found, metadata keys must be unique.".format(metadata=key_val[0]))
+        metadata_def[key_val[0]] = key_val[1]
+
+    return metadata_def
+
+
+def parse_auth_flags(auth_list):
+    auth_pairs = {}
+    if not auth_list:
+        auth_list = []
+    for pair in auth_list:
+        key_val = pair.split('=', 1)
+        if len(key_val) != 2:
+            raise ValidationError("Auth parameters must be in format \"<triggerParameter>=<secretRef> <triggerParameter>=<secretRef> ...\".")
+        if key_val[0] in auth_pairs:
+            raise ValidationError("Duplicate trigger parameter \"{param}\" found, trigger paramaters must be unique.".format(param=key_val[0]))
+        auth_pairs[key_val[0]] = key_val[1]
+
+    auth_def = []
+    for key, value in auth_pairs.items():
+        auth_def.append({
+            "triggerParameter": key,
+            "secretRef": value
+        })
+
+    return auth_def
+
+
 def _update_revision_env_secretrefs(containers, name):
     for container in containers:
         if "env" in container:
@@ -1447,19 +1483,78 @@ def create_acrpull_role_assignment(cmd, registry_server, registry_identity=None,
 
     client = get_mgmt_service_client(cmd.cli_ctx, ContainerRegistryManagementClient).registries
     acr_id = acr_show(cmd, client, registry_server[: registry_server.rindex(ACR_IMAGE_SUFFIX)]).id
-    try:
-        create_role_assignment(cmd, role="acrpull", assignee=sp_id, scope=acr_id)
-    except Exception as e:
-        message = (f"Role assignment failed with error message: \"{' '.join(e.args)}\". \n"
-                   f"To add the role assignment manually, please run 'az role assignment create --assignee {sp_id} --scope {acr_id} --role acrpull'. \n"
-                   "You may have to restart the containerapp with 'az containerapp revision restart'.")
-        if skip_error:
-            logger.error(message)
-        else:
-            raise UnauthorizedError(message)
+    retries = 10
+    while retries > 0:
+        try:
+            create_role_assignment(cmd, role="acrpull", assignee=sp_id, scope=acr_id)
+            return
+        except Exception as e:
+            retries -= 1
+            if retries <= 0:
+                message = (f"Role assignment failed with error message: \"{' '.join(e.args)}\". \n"
+                           f"To add the role assignment manually, please run 'az role assignment create --assignee {sp_id} --scope {acr_id} --role acrpull'. \n"
+                           "You may have to restart the containerapp with 'az containerapp revision restart'.")
+                if skip_error:
+                    logger.error(message)
+                else:
+                    raise UnauthorizedError(message)
+            else:
+                time.sleep(5)
 
 
 def is_registry_msi_system(identity):
     if identity is None:
         return False
     return identity.lower() == "system"
+
+
+def validate_environment_location(cmd, location):
+    from ._constants import MAX_ENV_PER_LOCATION
+    from .custom import list_managed_environments
+    env_list = list_managed_environments(cmd)
+
+    locations = [loc["location"] for loc in env_list]
+    locations = list(set(locations))  # remove duplicates
+
+    location_count = {}
+    for loc in locations:
+        location_count[loc] = len([e for e in env_list if e["location"] == loc])
+
+    disallowed_locations = []
+    for _, value in enumerate(location_count):
+        if location_count[value] > MAX_ENV_PER_LOCATION - 1:
+            disallowed_locations.append(value)
+
+    res_locations = list_environment_locations(cmd)
+    res_locations = [loc for loc in res_locations if loc not in disallowed_locations]
+
+    allowed_locs = ", ".join(res_locations)
+
+    if location:
+        try:
+            _ensure_location_allowed(cmd, location, CONTAINER_APPS_RP, "managedEnvironments")
+        except Exception as e:  # pylint: disable=broad-except
+            raise ValidationError("You cannot create a Containerapp environment in location {}. List of eligible locations: {}.".format(location, allowed_locs)) from e
+
+    if len(res_locations) > 0:
+        if not location:
+            logger.warning("Creating environment on location %s.", res_locations[0])
+            return res_locations[0]
+        if location in disallowed_locations:
+            raise ValidationError("You have more than {} environments in location {}. List of eligible locations: {}.".format(MAX_ENV_PER_LOCATION, location, allowed_locs))
+        return location
+    else:
+        raise ValidationError("You cannot create any more environments. Environments are limited to {} per location in a subscription. Please specify an existing environment using --environment.".format(MAX_ENV_PER_LOCATION))
+
+
+def list_environment_locations(cmd):
+    providers_client = providers_client_factory(cmd.cli_ctx, get_subscription_id(cmd.cli_ctx))
+    resource_types = getattr(providers_client.get(CONTAINER_APPS_RP), 'resource_types', [])
+    res_locations = []
+    for res in resource_types:
+        if res and getattr(res, 'resource_type', "") == "managedEnvironments":
+            res_locations = getattr(res, 'locations', [])
+
+    res_locations = [res_loc.lower().replace(" ", "").replace("(", "").replace(")", "") for res_loc in res_locations if res_loc.strip()]
+
+    return res_locations

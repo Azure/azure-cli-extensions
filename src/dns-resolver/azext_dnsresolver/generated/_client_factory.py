@@ -7,34 +7,3 @@
 # Changes may cause incorrect behavior and will be lost if the code is
 # regenerated.
 # --------------------------------------------------------------------------
-
-
-def cf_dns_resolver_cl(cli_ctx, *_):
-    from azure.cli.core.commands.client_factory import get_mgmt_service_client
-    from azext_dnsresolver.vendored_sdks.dnsresolver import DnsResolverManagementClient
-    return get_mgmt_service_client(cli_ctx,
-                                   DnsResolverManagementClient)
-
-
-def cf_dns_resolver(cli_ctx, *_):
-    return cf_dns_resolver_cl(cli_ctx).dns_resolvers
-
-
-def cf_inbound_endpoint(cli_ctx, *_):
-    return cf_dns_resolver_cl(cli_ctx).inbound_endpoints
-
-
-def cf_outbound_endpoint(cli_ctx, *_):
-    return cf_dns_resolver_cl(cli_ctx).outbound_endpoints
-
-
-def cf_dns_forwarding_ruleset(cli_ctx, *_):
-    return cf_dns_resolver_cl(cli_ctx).dns_forwarding_rulesets
-
-
-def cf_forwarding_rule(cli_ctx, *_):
-    return cf_dns_resolver_cl(cli_ctx).forwarding_rules
-
-
-def cf_virtual_network_link(cli_ctx, *_):
-    return cf_dns_resolver_cl(cli_ctx).virtual_network_links
