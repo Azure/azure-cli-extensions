@@ -432,6 +432,8 @@ def load_arguments(self, _):
             c.argument(
                 'container_args', help='The arguments of the container image.', arg_group='Custom Container')
             c.argument(
+                'language_framework', help='Language framework of the container image uploaded. Supported values: "springboot", "".', arg_group='Custom Container')
+            c.argument(
                 'build_env', build_env_type)
             c.argument(
                 'build_cpu', arg_type=build_cpu_type, default="1")
