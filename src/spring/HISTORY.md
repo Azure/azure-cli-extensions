@@ -1,6 +1,11 @@
 Release History
 ===============
 
+1.1.8
+---
+* Add command `az spring app connect`.
+* Add the parameter `language_framework` for deploying the customer image app.
+
 1.1.7
 ---
 * Update `minCliCoreVersion` requirement from `2.30.0` to `2.38.0`.

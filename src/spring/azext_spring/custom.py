@@ -12,7 +12,7 @@ import time
 import tty
 from azure.cli.core._profile import Profile
 
-from ._websocket import WebSocketConnection, recv_remote, send_stdin, SSH_CTRL_C_MSG
+from ._websocket import WebSocketConnection, recv_remote, send_stdin, EXEC_PROTOCOL_CTRL_C_MSG
 from azure.mgmt.cosmosdb import CosmosDBManagementClient
 from azure.mgmt.redis import RedisManagementClient
 from requests.auth import HTTPBasicAuth
@@ -1512,4 +1512,4 @@ def app_connect(cmd, client, resource_group, service, name,
         except KeyboardInterrupt:
             if conn.is_connected:
                 logger.info("Caught KeyboardInterrupt. Sending ctrl+c to server")
-                conn.send(SSH_CTRL_C_MSG)
+                conn.send(EXEC_PROTOCOL_CTRL_C_MSG)

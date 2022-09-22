@@ -12,7 +12,10 @@ from knack.log import get_logger
 from azure.cli.core.azclierror import CLIInternalError
 
 logger = get_logger(__name__)
-SSH_CTRL_C_MSG = b"\x00\x03"
+EXEC_PROTOCOL_CONTROL_BYTE_STDOUT = 1
+EXEC_PROTOCOL_CONTROL_BYTE_STDERR = 2
+EXEC_PROTOCOL_CONTROL_BYTE_CLUSTER = 3
+EXEC_PROTOCOL_CTRL_C_MSG = b"\x00\x03"
 
 
 class WebSocketConnection:
@@ -44,9 +47,11 @@ def recv_remote(connection: WebSocketConnection):
             connection.disconnect()
         else:
             logger.info("Received raw response %s", response.hex())
-            control_byte = response[0]
-            if control_byte in (sys.stdout.fileno(), sys.stderr.fileno()):
+            control_byte = int(response[0])
+            if control_byte in (EXEC_PROTOCOL_CONTROL_BYTE_STDOUT, EXEC_PROTOCOL_CONTROL_BYTE_STDERR):
                 os.write(sys.stdout.fileno(), response[1:])
+            elif control_byte == EXEC_PROTOCOL_CONTROL_BYTE_CLUSTER:
+                pass    # Do nothing for this control byte
             else:
                 connection.disconnect()
                 raise CLIInternalError("Unexpected message received: %d" % control_byte)
