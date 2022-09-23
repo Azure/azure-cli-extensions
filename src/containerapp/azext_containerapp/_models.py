@@ -149,7 +149,8 @@ Ingress = {
     "fqdn": None,
     "external": False,
     "targetPort": None,
-    "transport": None,  # 'auto', 'http', 'http2'
+    "transport": None,  # 'auto', 'http', 'http2', 'tcp'
+    "exposedPort": None,
     "traffic": None,  # TrafficWeight
     "customDomains": None  # [CustomDomain]
 }
