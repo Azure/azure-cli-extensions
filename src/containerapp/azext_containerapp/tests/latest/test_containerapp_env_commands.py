@@ -443,3 +443,41 @@ class ContainerappEnvScenarioTest(ScenarioTest):
             JMESPathCheck('name', env),
             JMESPathCheck('properties.vnetConfiguration.internal', True),
         ])
+
+
+class ContainerAppPremiumSkuTest(ScenarioTest):
+    @AllowLargeResponse(8192)
+    @ResourceGroupPreparer(location="eastus")
+    def test_containerapp_env_premium_sku_e2e(self, resource_group):
+        env = self.create_random_name(prefix='env', length=24)
+        vnet = self.create_random_name(prefix='name', length=24)
+
+        self.cmd(f"az network vnet create -l centraluseuap --address-prefixes '14.0.0.0/23' -g {resource_group} -n {vnet}")
+        sub_id = self.cmd(f"az network vnet subnet create --address-prefixes '14.0.0.0/23' -n sub -g {resource_group} --vnet-name {vnet}").get_output_in_json()["id"]
+
+        self.cmd(f'containerapp env create -g {resource_group} -n {env} -s {sub_id} --location centraluseuap --plan premium')
+
+        containerapp_env = self.cmd(f'containerapp env show -g {resource_group} -n {env}').get_output_in_json()
+
+        while containerapp_env["properties"]["provisioningState"].lower() == "waiting":
+            time.sleep(5)
+            containerapp_env = self.cmd(f'containerapp env show -g {resource_group} -n {env}').get_output_in_json()
+
+        self.cmd(f'containerapp env show -n {env} -g {resource_group}', checks=[
+            JMESPathCheck('name', env),
+            JMESPathCheck('sku.name', "Premium", case_sensitive=False),
+        ])
+
+        self.cmd(f"az containerapp env workoad-profile list-supported -l centraluseuap")
+
+        profiles = self.cmd(f"az containerapp env workoad-profile list -g {resource_group} -n {env}")
+        self.assertEqual(len(profiles), 1)
+        self.assertEqual(profiles[0]["name"], "GP1")
+
+        # self.cmd(f"az containerapp env workoad-profile show -g {resource_group} -n {env} -p 'general purpose 1' ", checks=[
+        #     JMESPathCheck("")
+        # ])
+
+        # self.cmd(f"az containerapp env workoad-profile set ")
+
+        # self.cmd(f"az containerapp env workoad-profile set ")

@@ -1208,7 +1208,7 @@ def update_managed_environment(cmd,
         safe_set(env_def, "properties", "workloadProfiles", value=workload_profiles)
         safe_set(env_def, "sku", "name", value=r["sku"]["name"])
         safe_set(env_def, "properties", "vnetConfiguration", value=r["properties"]["vnetConfiguration"])
-        if safe_get(r, "properties", "appLogsConfiguration", "destination") == "log-analytics":
+        if safe_get(r, "properties", "appLogsConfiguration"):
             safe_set(env_def, "properties", "appLogsConfiguration", value=safe_get(r, "properties", "appLogsConfiguration"))
 
     # no PATCH api support atm, put works fine even with partial json
