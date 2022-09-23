@@ -97,16 +97,6 @@ helps['vmware private-cloud addidentitysource'] = """
     short-summary: Add a vCenter Single Sign On Identity Source to a private cloud.
 """
 
-helps['vmware private-cloud add-availability-zone'] = """
-    type: command
-    short-summary: Add an Availability Zone to a private cloud.
-"""
-
-helps['vmware private-cloud delete-availability-zone'] = """
-    type: command
-    short-summary: Delete an Availability Zone from a private cloud.
-"""
-
 helps['vmware private-cloud add-cmk-encryption'] = """
     type: command
     short-summary: Add a Customer Managed Keys Encryption to a private cloud.

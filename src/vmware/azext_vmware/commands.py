@@ -26,8 +26,6 @@ def load_command_table(self, _):
         g.custom_command('add-identity-source', 'privatecloud_addidentitysource')
         g.custom_command('deleteidentitysource', 'privatecloud_deleteidentitysource', deprecate_info=g.deprecate(redirect='az vmware private-cloud delete-identity-source', hide=True))
         g.custom_command('delete-identity-source', 'privatecloud_deleteidentitysource')
-        g.custom_command('add-availability-zone', 'privatecloud_addavailabilityzone')
-        g.custom_command('delete-availability-zone', 'privatecloud_deleteavailabilityzone')
         g.custom_command('add-cmk-encryption', 'privatecloud_addcmkencryption', deprecate_info=g.deprecate(redirect='az vmware private-cloud enable-cmk-encryption', hide=True))
         g.custom_command('delete-cmk-encryption', 'privatecloud_deletecmkenryption', deprecate_info=g.deprecate(redirect='az vmware private-cloud disable-cmk-encryption', hide=True))
         g.custom_command('enable-cmk-encryption', 'privatecloud_addcmkencryption')

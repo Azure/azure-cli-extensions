@@ -48,15 +48,22 @@ def privatecloud_show(client: AVSClient, resource_group_name, name):
     return client.private_clouds.get(resource_group_name, name)
 
 
-def privatecloud_create(client: AVSClient, resource_group_name, name, sku, cluster_size, network_block, location=None, internet=None, vcenter_password=None, nsxt_password=None, tags=None, accept_eula=False, mi_system_assigned=False, yes=False):
+def privatecloud_addavailabilityzone(client: AVSClient, resource_group_name, private_cloud, strategy=None, zone=None, secondary_zone=None):
+    from azext_vmware.vendored_sdks.avs_client.models import AvailabilityProperties
+    pc = client.private_clouds.get(resource_group_name, private_cloud)
+    pc.availability = AvailabilityProperties(strategy=strategy, zone=zone, secondary_zone=secondary_zone)
+    return client.private_clouds.begin_update(resource_group_name=resource_group_name, private_cloud_name=private_cloud, private_cloud_update=pc)
+
+
+# pylint: disable=too-many-locals
+def privatecloud_create(client: AVSClient, resource_group_name, name, sku, cluster_size, network_block, location=None, internet=None, vcenter_password=None, nsxt_password=None, strategy=None, zone=None, secondary_zone=None, tags=None, accept_eula=False, mi_system_assigned=False, yes=False):
     from knack.prompting import prompt_y_n
     if not accept_eula:
         print(LEGAL_TERMS)
         msg = 'Do you agree to the above additional terms for AVS?'
         if not yes and not prompt_y_n(msg, default="n"):
             return None
-
-    from azext_vmware.vendored_sdks.avs_client.models import PrivateCloud, Circuit, ManagementCluster, Sku, PrivateCloudIdentity, ResourceIdentityType
+    from azext_vmware.vendored_sdks.avs_client.models import PrivateCloud, Circuit, ManagementCluster, Sku, PrivateCloudIdentity, ResourceIdentityType, AvailabilityProperties, AvailabilityStrategy
     cloud = PrivateCloud(sku=Sku(name=sku), ciruit=Circuit(), management_cluster=ManagementCluster(cluster_size=cluster_size), network_block=network_block)
     if location is not None:
         cloud.location = location
@@ -72,6 +79,10 @@ def privatecloud_create(client: AVSClient, resource_group_name, name, sku, clust
         cloud.vcenter_password = vcenter_password
     if nsxt_password is not None:
         cloud.nsxt_password = nsxt_password
+    if strategy == AvailabilityStrategy.SINGLE_ZONE:
+        cloud.availability = AvailabilityProperties(strategy=AvailabilityStrategy.SINGLE_ZONE, zone=zone, secondary_zone=secondary_zone)
+    if strategy == AvailabilityStrategy.DUAL_ZONE:
+        cloud.availability = AvailabilityProperties(strategy=AvailabilityStrategy.DUAL_ZONE, zone=zone, secondary_zone=secondary_zone)
     return client.private_clouds.begin_create_or_update(resource_group_name, name, cloud)
 
 
@@ -121,23 +132,6 @@ def privatecloud_deleteidentitysource(client: AVSClient, resource_group_name, na
         pc.identity_sources.remove(found)
         return client.private_clouds.begin_create_or_update(resource_group_name=resource_group_name, private_cloud_name=private_cloud, private_cloud=pc)
     return pc
-
-
-def privatecloud_addavailabilityzone(client: AVSClient, resource_group_name, private_cloud, strategy=None, zone=None, secondary_zone=None):
-    from azext_vmware.vendored_sdks.avs_client.models import AvailabilityProperties
-    pc = client.private_clouds.get(resource_group_name, private_cloud)
-    pc.availability = AvailabilityProperties(strategy=strategy, zone=zone, secondary_zone=secondary_zone)
-    return client.private_clouds.begin_update(resource_group_name=resource_group_name, private_cloud_name=private_cloud, private_cloud_update=pc)
-
-
-def privatecloud_deleteavailabilityzone(client: AVSClient, resource_group_name, private_cloud, yes=False):
-    from knack.prompting import prompt_y_n
-    msg = 'This will delete the availability zone. Are you sure?'
-    if not yes and not prompt_y_n(msg, default="n"):
-        return None
-    pc = client.private_clouds.get(resource_group_name, private_cloud)
-    pc.availability = None
-    return client.private_clouds.begin_update(resource_group_name=resource_group_name, private_cloud_name=private_cloud, private_cloud_update=pc)
 
 
 def privatecloud_addcmkencryption(client: AVSClient, resource_group_name, private_cloud, enc_kv_key_name=None, enc_kv_key_version=None, enc_kv_url=None):

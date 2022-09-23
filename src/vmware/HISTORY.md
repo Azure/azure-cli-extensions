@@ -1,5 +1,10 @@
 # Release History
 
+## 5.0.0 (2022-09)
+
+- [BREAKING CHANGE] `az vmware private-cloud add-availability-zone` has been removed. Availability zone cannot be modified after private cloud creation
+- [BREAKING CHANGE] `az vmware private-cloud delete-availability-zone` has been removed. Availability zone cannot be modified after private cloud creation.
+
 ## 4.1.0 (2022-07)
 
 - Add `az vmware private-cloud enable-cmk-encryption`

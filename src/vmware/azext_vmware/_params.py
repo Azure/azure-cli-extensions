@@ -40,6 +40,9 @@ def load_arguments(self, _):
         c.argument('accept_eula', help='Accept the end-user license agreement without prompting.')
         c.argument('network_block', help='A subnet at least of size /22. Make sure the CIDR format is conformed to (A.B.C.D/X) where A,B,C,D are between 0 and 255, and X is between 0 and 22.')
         c.argument('mi_system_assigned', help='Enable a system assigned identity.')
+        c.argument('strategy', arg_type=get_enum_type(['SingleZone', 'DualZone']), help='The availability strategy for the private cloud.')
+        c.argument('zone', help='The primary availability zone for the private cloud')
+        c.argument('secondary_zone', help='The secondary availability zone for the private cloud.')
 
     with self.argument_context('vmware private-cloud show') as c:
         c.argument('name', options_list=['--name', '-n'], help='Name of the private cloud.')
@@ -53,11 +56,6 @@ def load_arguments(self, _):
     with self.argument_context('vmware authorization') as c:
         c.argument('name', options_list=['--name', '-n'], help='Name of the authorization.')
         c.argument('yes', help='Delete without confirmation.')
-
-    with self.argument_context('vmware private-cloud add-availability-zone') as c:
-        c.argument('strategy', help='The availability strategy for the private cloud. Possible values include: "SingleZone", "DualZone".')
-        c.argument('zone', help='The primary availability zone for the private cloud')
-        c.argument('secondary_zone', help='The secondary availability zone for the private cloud.')
 
     with self.argument_context('vmware private-cloud add-cmk-encryption') as c:
         c.argument('enc_kv_key_name', help='The name of the encryption key vault key.')
