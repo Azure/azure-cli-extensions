@@ -525,6 +525,7 @@ class ContainerappAnonymousRegistryTests(ScenarioTest):
 class ContainerappRegistryIdentityTests(ScenarioTest):
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="westeurope")
+    @live_only()  # encounters 'CannotOverwriteExistingCassetteException' only when run from recording (passes when run live)
     def test_containerapp_registry_identity_user(self, resource_group):
         env = self.create_random_name(prefix='env', length=24)
         app = self.create_random_name(prefix='aca', length=24)
@@ -533,7 +534,7 @@ class ContainerappRegistryIdentityTests(ScenarioTest):
         image_source = "mcr.microsoft.com/azuredocs/containerapps-helloworld:latest"
         image_name = f"{acr}.azurecr.io/azuredocs/containerapps-helloworld:latest"
 
-        create_containerapp_env(self, env, resource_group)
+        create_containerapp_env(self, env, resource_group, "westeurope")
 
         identity_rid = self.cmd(f'identity create -g {resource_group} -n {identity}').get_output_in_json()["id"]
 
