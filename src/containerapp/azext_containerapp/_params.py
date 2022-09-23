@@ -79,7 +79,7 @@ def load_arguments(self, _):
         c.argument('max_replicas', type=int, help="The maximum number of replicas.")
         c.argument('scale_rule_name', options_list=['--scale-rule-name', '--srn'], help="The name of the scale rule.")
         c.argument('scale_rule_type', options_list=['--scale-rule-type', '--srt'], help="The type of the scale rule. Default: http.")
-        c.argument('scale_rule_http_concurrency', type=int, options_list=['--scale-rule-http-concurrency', '--srhc'], help="The maximum number of concurrent http requests before scale out. Only supported for http scale rules.")
+        c.argument('scale_rule_http_concurrency', type=int, options_list=['--scale-rule-http-concurrency', '--src', '--scale-rule-tcp-concurrency'], help="The maximum number of concurrent requests before scale out. Only supported for http and tcp scale rules.")
         c.argument('scale_rule_metadata', nargs="+", options_list=['--scale-rule-metadata', '--srm'], help="Scale rule metadata. Metadata must be in format \"<key>=<value> <key>=<value> ...\".")
         c.argument('scale_rule_auth', nargs="+", options_list=['--scale-rule-auth', '--sra'], help="Scale rule auth parameters. Auth parameters must be in format \"<triggerParameter>=<secretRef> <triggerParameter>=<secretRef> ...\".")
 
