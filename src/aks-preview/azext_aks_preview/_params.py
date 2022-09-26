@@ -126,7 +126,8 @@ from azext_aks_preview._validators import (
     validate_azuremonitorworkspaceresourceid,
     validate_grafanaresourceid,
     validate_ksm_labels,
-    validate_ksm_annotations
+    validate_ksm_annotations,
+    validate_disable_windows_outbound_nat,
 )
 
 # candidates for enumeration
@@ -504,6 +505,7 @@ def load_arguments(self, _):
         c.argument('workload_runtime', arg_type=get_enum_type(workload_runtimes), default=CONST_WORKLOAD_RUNTIME_OCI_CONTAINER)
         c.argument('gpu_instance_profile', arg_type=get_enum_type(gpu_instance_profiles))
         c.argument('enable_custom_ca_trust', action='store_true', validator=validate_enable_custom_ca_trust)
+        c.argument('disable_windows_outbound_nat', action='store_true', validator=validate_disable_windows_outbound_nat)
 
     with self.argument_context('aks nodepool update') as c:
         c.argument('enable_cluster_autoscaler', options_list=[
