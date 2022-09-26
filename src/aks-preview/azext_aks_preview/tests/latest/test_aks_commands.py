@@ -2072,11 +2072,8 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         self.cmd(upgrade_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
             self.check(
-                'creationData.sourceResourceId', snapshot_resource_id),
-            self.check(
                 'kubernetesVersion', upgrade_version)
-        ]).get_output_in_json()
-
+        ])
         # delete the 2nd AKS cluster
         self.cmd(
             'aks delete -g {resource_group} -n {aks_name2} --yes --no-wait', checks=[self.is_empty()])

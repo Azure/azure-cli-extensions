@@ -2804,7 +2804,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                 raise UnknownError(
                     "Given managed cluster snapshot not exsit, input id: " + snapshot_id
                 )
-            if mc.kubernetes_version != snapshot.kubernetes_version:
+            if mc.kubernetes_version != snapshot.managed_cluster_properties_read_only.kubernetes_version:
                 raise UnknownError(
                     "Please use az aks upgrade --cluster-snapshot-id to upgrade cluster version"
                 )
