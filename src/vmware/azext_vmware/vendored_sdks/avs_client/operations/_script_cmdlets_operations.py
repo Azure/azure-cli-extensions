@@ -30,7 +30,7 @@ class ScriptCmdletsOperations(object):
     instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~avs_client.models
+    :type models: ~azure.mgmt.avs.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -64,7 +64,7 @@ class ScriptCmdletsOperations(object):
         :type script_package_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either ScriptCmdletsList or the result of cls(response)
-        :rtype: ~azure.core.paging.ItemPaged[~avs_client.models.ScriptCmdletsList]
+        :rtype: ~azure.core.paging.ItemPaged[~azure.mgmt.avs.models.ScriptCmdletsList]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.ScriptCmdletsList"]
@@ -72,7 +72,7 @@ class ScriptCmdletsOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-12-01"
+        api_version = "2022-05-01"
         accept = "application/json"
 
         def prepare_request(next_link=None):
@@ -147,7 +147,7 @@ class ScriptCmdletsOperations(object):
         :type script_cmdlet_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: ScriptCmdlet, or the result of cls(response)
-        :rtype: ~avs_client.models.ScriptCmdlet
+        :rtype: ~azure.mgmt.avs.models.ScriptCmdlet
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.ScriptCmdlet"]
@@ -155,7 +155,7 @@ class ScriptCmdletsOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-12-01"
+        api_version = "2022-05-01"
         accept = "application/json"
 
         # Construct URL

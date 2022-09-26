@@ -44,6 +44,14 @@ class AddonType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     SRM = "SRM"
     VR = "VR"
     HCX = "HCX"
+    ARC = "Arc"
+
+class AffinityStrength(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+    """VM-Host placement policy affinity strength (should/must)
+    """
+
+    SHOULD = "Should"
+    MUST = "Must"
 
 class AffinityType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """Placement policy affinity type
@@ -58,6 +66,13 @@ class AvailabilityStrategy(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
 
     SINGLE_ZONE = "SingleZone"
     DUAL_ZONE = "DualZone"
+
+class AzureHybridBenefitType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+    """Placement policy hosts opt-in Azure Hybrid Benefit type
+    """
+
+    SQL_HOST = "SqlHost"
+    NONE = "None"
 
 class CloudLinkStatus(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """The state of the cloud link.
@@ -194,6 +209,14 @@ class MountOptionEnum(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
 
     MOUNT = "MOUNT"
     ATTACH = "ATTACH"
+
+class NsxPublicIpQuotaRaisedEnum(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+    """Flag to indicate whether the private cloud has the quota for provisioned NSX Public IP count
+    raised from 64 to 1024
+    """
+
+    ENABLED = "Enabled"
+    DISABLED = "Disabled"
 
 class OptionalParamEnum(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """Is this parameter required or optional

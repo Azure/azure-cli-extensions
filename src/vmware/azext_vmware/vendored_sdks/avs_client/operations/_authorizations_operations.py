@@ -32,7 +32,7 @@ class AuthorizationsOperations(object):
     instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~avs_client.models
+    :type models: ~azure.mgmt.avs.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -64,7 +64,7 @@ class AuthorizationsOperations(object):
         :type private_cloud_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either ExpressRouteAuthorizationList or the result of cls(response)
-        :rtype: ~azure.core.paging.ItemPaged[~avs_client.models.ExpressRouteAuthorizationList]
+        :rtype: ~azure.core.paging.ItemPaged[~azure.mgmt.avs.models.ExpressRouteAuthorizationList]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.ExpressRouteAuthorizationList"]
@@ -72,7 +72,7 @@ class AuthorizationsOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-12-01"
+        api_version = "2022-05-01"
         accept = "application/json"
 
         def prepare_request(next_link=None):
@@ -144,7 +144,7 @@ class AuthorizationsOperations(object):
         :type authorization_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: ExpressRouteAuthorization, or the result of cls(response)
-        :rtype: ~avs_client.models.ExpressRouteAuthorization
+        :rtype: ~azure.mgmt.avs.models.ExpressRouteAuthorization
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.ExpressRouteAuthorization"]
@@ -152,7 +152,7 @@ class AuthorizationsOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-12-01"
+        api_version = "2022-05-01"
         accept = "application/json"
 
         # Construct URL
@@ -194,7 +194,7 @@ class AuthorizationsOperations(object):
         resource_group_name,  # type: str
         private_cloud_name,  # type: str
         authorization_name,  # type: str
-        express_route_id=None,  # type: Optional[str]
+        authorization,  # type: "_models.ExpressRouteAuthorization"
         **kwargs  # type: Any
     ):
         # type: (...) -> "_models.ExpressRouteAuthorization"
@@ -203,9 +203,7 @@ class AuthorizationsOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-
-        _authorization = _models.ExpressRouteAuthorization(express_route_id=express_route_id)
-        api_version = "2021-12-01"
+        api_version = "2022-05-01"
         content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
 
@@ -229,7 +227,7 @@ class AuthorizationsOperations(object):
         header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
 
         body_content_kwargs = {}  # type: Dict[str, Any]
-        body_content = self._serialize.body(_authorization, 'ExpressRouteAuthorization')
+        body_content = self._serialize.body(authorization, 'ExpressRouteAuthorization')
         body_content_kwargs['content'] = body_content
         request = self._client.put(url, query_parameters, header_parameters, **body_content_kwargs)
         pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
@@ -256,7 +254,7 @@ class AuthorizationsOperations(object):
         resource_group_name,  # type: str
         private_cloud_name,  # type: str
         authorization_name,  # type: str
-        express_route_id=None,  # type: Optional[str]
+        authorization,  # type: "_models.ExpressRouteAuthorization"
         **kwargs  # type: Any
     ):
         # type: (...) -> LROPoller["_models.ExpressRouteAuthorization"]
@@ -270,8 +268,8 @@ class AuthorizationsOperations(object):
         :type private_cloud_name: str
         :param authorization_name: Name of the ExpressRoute Circuit Authorization in the private cloud.
         :type authorization_name: str
-        :param express_route_id: The ID of the ExpressRoute Circuit.
-        :type express_route_id: str
+        :param authorization: An ExpressRoute Circuit Authorization.
+        :type authorization: ~azure.mgmt.avs.models.ExpressRouteAuthorization
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: By default, your polling method will be ARMPolling.
@@ -279,7 +277,7 @@ class AuthorizationsOperations(object):
         :paramtype polling: bool or ~azure.core.polling.PollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
         :return: An instance of LROPoller that returns either ExpressRouteAuthorization or the result of cls(response)
-        :rtype: ~azure.core.polling.LROPoller[~avs_client.models.ExpressRouteAuthorization]
+        :rtype: ~azure.core.polling.LROPoller[~azure.mgmt.avs.models.ExpressRouteAuthorization]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         polling = kwargs.pop('polling', True)  # type: Union[bool, PollingMethod]
@@ -294,7 +292,7 @@ class AuthorizationsOperations(object):
                 resource_group_name=resource_group_name,
                 private_cloud_name=private_cloud_name,
                 authorization_name=authorization_name,
-                express_route_id=express_route_id,
+                authorization=authorization,
                 cls=lambda x,y,z: x,
                 **kwargs
             )
@@ -343,7 +341,7 @@ class AuthorizationsOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-12-01"
+        api_version = "2022-05-01"
         accept = "application/json"
 
         # Construct URL

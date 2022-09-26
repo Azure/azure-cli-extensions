@@ -28,7 +28,7 @@ class GlobalReachConnectionsOperations:
     instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~avs_client.models
+    :type models: ~azure.mgmt.avs.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -59,7 +59,7 @@ class GlobalReachConnectionsOperations:
         :type private_cloud_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either GlobalReachConnectionList or the result of cls(response)
-        :rtype: ~azure.core.async_paging.AsyncItemPaged[~avs_client.models.GlobalReachConnectionList]
+        :rtype: ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.avs.models.GlobalReachConnectionList]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.GlobalReachConnectionList"]
@@ -67,7 +67,7 @@ class GlobalReachConnectionsOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-12-01"
+        api_version = "2022-05-01"
         accept = "application/json"
 
         def prepare_request(next_link=None):
@@ -138,7 +138,7 @@ class GlobalReachConnectionsOperations:
         :type global_reach_connection_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: GlobalReachConnection, or the result of cls(response)
-        :rtype: ~avs_client.models.GlobalReachConnection
+        :rtype: ~azure.mgmt.avs.models.GlobalReachConnection
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.GlobalReachConnection"]
@@ -146,7 +146,7 @@ class GlobalReachConnectionsOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-12-01"
+        api_version = "2022-05-01"
         accept = "application/json"
 
         # Construct URL
@@ -196,7 +196,7 @@ class GlobalReachConnectionsOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-12-01"
+        api_version = "2022-05-01"
         content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
 
@@ -261,7 +261,7 @@ class GlobalReachConnectionsOperations:
         :param global_reach_connection_name: Name of the global reach connection in the private cloud.
         :type global_reach_connection_name: str
         :param global_reach_connection: A global reach connection in the private cloud.
-        :type global_reach_connection: ~avs_client.models.GlobalReachConnection
+        :type global_reach_connection: ~azure.mgmt.avs.models.GlobalReachConnection
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: By default, your polling method will be AsyncARMPolling.
@@ -269,7 +269,7 @@ class GlobalReachConnectionsOperations:
         :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns either GlobalReachConnection or the result of cls(response)
-        :rtype: ~azure.core.polling.AsyncLROPoller[~avs_client.models.GlobalReachConnection]
+        :rtype: ~azure.core.polling.AsyncLROPoller[~azure.mgmt.avs.models.GlobalReachConnection]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         polling = kwargs.pop('polling', True)  # type: Union[bool, AsyncPollingMethod]
@@ -332,7 +332,7 @@ class GlobalReachConnectionsOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-12-01"
+        api_version = "2022-05-01"
         accept = "application/json"
 
         # Construct URL

@@ -32,7 +32,7 @@ class PrivateCloudsOperations(object):
     instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~avs_client.models
+    :type models: ~azure.mgmt.avs.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -61,7 +61,7 @@ class PrivateCloudsOperations(object):
         :type resource_group_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either PrivateCloudList or the result of cls(response)
-        :rtype: ~azure.core.paging.ItemPaged[~avs_client.models.PrivateCloudList]
+        :rtype: ~azure.core.paging.ItemPaged[~azure.mgmt.avs.models.PrivateCloudList]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.PrivateCloudList"]
@@ -69,7 +69,7 @@ class PrivateCloudsOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-12-01"
+        api_version = "2022-05-01"
         accept = "application/json"
 
         def prepare_request(next_link=None):
@@ -131,7 +131,7 @@ class PrivateCloudsOperations(object):
 
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either PrivateCloudList or the result of cls(response)
-        :rtype: ~azure.core.paging.ItemPaged[~avs_client.models.PrivateCloudList]
+        :rtype: ~azure.core.paging.ItemPaged[~azure.mgmt.avs.models.PrivateCloudList]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.PrivateCloudList"]
@@ -139,7 +139,7 @@ class PrivateCloudsOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-12-01"
+        api_version = "2022-05-01"
         accept = "application/json"
 
         def prepare_request(next_link=None):
@@ -206,7 +206,7 @@ class PrivateCloudsOperations(object):
         :type private_cloud_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: PrivateCloud, or the result of cls(response)
-        :rtype: ~avs_client.models.PrivateCloud
+        :rtype: ~azure.mgmt.avs.models.PrivateCloud
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.PrivateCloud"]
@@ -214,7 +214,7 @@ class PrivateCloudsOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-12-01"
+        api_version = "2022-05-01"
         accept = "application/json"
 
         # Construct URL
@@ -263,7 +263,7 @@ class PrivateCloudsOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-12-01"
+        api_version = "2022-05-01"
         content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
 
@@ -325,7 +325,7 @@ class PrivateCloudsOperations(object):
         :param private_cloud_name: Name of the private cloud.
         :type private_cloud_name: str
         :param private_cloud: The private cloud.
-        :type private_cloud: ~avs_client.models.PrivateCloud
+        :type private_cloud: ~azure.mgmt.avs.models.PrivateCloud
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: By default, your polling method will be ARMPolling.
@@ -333,7 +333,7 @@ class PrivateCloudsOperations(object):
         :paramtype polling: bool or ~azure.core.polling.PollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
         :return: An instance of LROPoller that returns either PrivateCloud or the result of cls(response)
-        :rtype: ~azure.core.polling.LROPoller[~avs_client.models.PrivateCloud]
+        :rtype: ~azure.core.polling.LROPoller[~azure.mgmt.avs.models.PrivateCloud]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         polling = kwargs.pop('polling', True)  # type: Union[bool, PollingMethod]
@@ -395,7 +395,7 @@ class PrivateCloudsOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-12-01"
+        api_version = "2022-05-01"
         content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
 
@@ -457,7 +457,7 @@ class PrivateCloudsOperations(object):
         :param private_cloud_name: Name of the private cloud.
         :type private_cloud_name: str
         :param private_cloud_update: The private cloud properties to be updated.
-        :type private_cloud_update: ~avs_client.models.PrivateCloudUpdate
+        :type private_cloud_update: ~azure.mgmt.avs.models.PrivateCloudUpdate
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: By default, your polling method will be ARMPolling.
@@ -465,7 +465,7 @@ class PrivateCloudsOperations(object):
         :paramtype polling: bool or ~azure.core.polling.PollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
         :return: An instance of LROPoller that returns either PrivateCloud or the result of cls(response)
-        :rtype: ~azure.core.polling.LROPoller[~avs_client.models.PrivateCloud]
+        :rtype: ~azure.core.polling.LROPoller[~azure.mgmt.avs.models.PrivateCloud]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         polling = kwargs.pop('polling', True)  # type: Union[bool, PollingMethod]
@@ -526,7 +526,7 @@ class PrivateCloudsOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-12-01"
+        api_version = "2022-05-01"
         accept = "application/json"
 
         # Construct URL
@@ -638,7 +638,7 @@ class PrivateCloudsOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-12-01"
+        api_version = "2022-05-01"
         accept = "application/json"
 
         # Construct URL
@@ -750,7 +750,7 @@ class PrivateCloudsOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-12-01"
+        api_version = "2022-05-01"
         accept = "application/json"
 
         # Construct URL
@@ -867,7 +867,7 @@ class PrivateCloudsOperations(object):
         :type private_cloud_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: AdminCredentials, or the result of cls(response)
-        :rtype: ~avs_client.models.AdminCredentials
+        :rtype: ~azure.mgmt.avs.models.AdminCredentials
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.AdminCredentials"]
@@ -875,7 +875,7 @@ class PrivateCloudsOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-12-01"
+        api_version = "2022-05-01"
         accept = "application/json"
 
         # Construct URL

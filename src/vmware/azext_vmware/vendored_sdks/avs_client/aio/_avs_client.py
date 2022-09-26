@@ -40,37 +40,37 @@ class AVSClient(object):
     """Azure VMware Solution API.
 
     :ivar operations: Operations operations
-    :vartype operations: avs_client.aio.operations.Operations
+    :vartype operations: azure.mgmt.avs.aio.operations.Operations
     :ivar locations: LocationsOperations operations
-    :vartype locations: avs_client.aio.operations.LocationsOperations
+    :vartype locations: azure.mgmt.avs.aio.operations.LocationsOperations
     :ivar private_clouds: PrivateCloudsOperations operations
-    :vartype private_clouds: avs_client.aio.operations.PrivateCloudsOperations
+    :vartype private_clouds: azure.mgmt.avs.aio.operations.PrivateCloudsOperations
     :ivar clusters: ClustersOperations operations
-    :vartype clusters: avs_client.aio.operations.ClustersOperations
+    :vartype clusters: azure.mgmt.avs.aio.operations.ClustersOperations
     :ivar datastores: DatastoresOperations operations
-    :vartype datastores: avs_client.aio.operations.DatastoresOperations
+    :vartype datastores: azure.mgmt.avs.aio.operations.DatastoresOperations
     :ivar hcx_enterprise_sites: HcxEnterpriseSitesOperations operations
-    :vartype hcx_enterprise_sites: avs_client.aio.operations.HcxEnterpriseSitesOperations
+    :vartype hcx_enterprise_sites: azure.mgmt.avs.aio.operations.HcxEnterpriseSitesOperations
     :ivar authorizations: AuthorizationsOperations operations
-    :vartype authorizations: avs_client.aio.operations.AuthorizationsOperations
+    :vartype authorizations: azure.mgmt.avs.aio.operations.AuthorizationsOperations
     :ivar global_reach_connections: GlobalReachConnectionsOperations operations
-    :vartype global_reach_connections: avs_client.aio.operations.GlobalReachConnectionsOperations
+    :vartype global_reach_connections: azure.mgmt.avs.aio.operations.GlobalReachConnectionsOperations
     :ivar workload_networks: WorkloadNetworksOperations operations
-    :vartype workload_networks: avs_client.aio.operations.WorkloadNetworksOperations
+    :vartype workload_networks: azure.mgmt.avs.aio.operations.WorkloadNetworksOperations
     :ivar cloud_links: CloudLinksOperations operations
-    :vartype cloud_links: avs_client.aio.operations.CloudLinksOperations
+    :vartype cloud_links: azure.mgmt.avs.aio.operations.CloudLinksOperations
     :ivar addons: AddonsOperations operations
-    :vartype addons: avs_client.aio.operations.AddonsOperations
+    :vartype addons: azure.mgmt.avs.aio.operations.AddonsOperations
     :ivar virtual_machines: VirtualMachinesOperations operations
-    :vartype virtual_machines: avs_client.aio.operations.VirtualMachinesOperations
+    :vartype virtual_machines: azure.mgmt.avs.aio.operations.VirtualMachinesOperations
     :ivar placement_policies: PlacementPoliciesOperations operations
-    :vartype placement_policies: avs_client.aio.operations.PlacementPoliciesOperations
+    :vartype placement_policies: azure.mgmt.avs.aio.operations.PlacementPoliciesOperations
     :ivar script_packages: ScriptPackagesOperations operations
-    :vartype script_packages: avs_client.aio.operations.ScriptPackagesOperations
+    :vartype script_packages: azure.mgmt.avs.aio.operations.ScriptPackagesOperations
     :ivar script_cmdlets: ScriptCmdletsOperations operations
-    :vartype script_cmdlets: avs_client.aio.operations.ScriptCmdletsOperations
+    :vartype script_cmdlets: azure.mgmt.avs.aio.operations.ScriptCmdletsOperations
     :ivar script_executions: ScriptExecutionsOperations operations
-    :vartype script_executions: avs_client.aio.operations.ScriptExecutionsOperations
+    :vartype script_executions: azure.mgmt.avs.aio.operations.ScriptExecutionsOperations
     :param credential: Credential needed for the client to connect to Azure.
     :type credential: ~azure.core.credentials_async.AsyncTokenCredential
     :param subscription_id: The ID of the target subscription.

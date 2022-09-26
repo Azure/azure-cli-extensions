@@ -28,7 +28,7 @@ class DatastoresOperations:
     instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~avs_client.models
+    :type models: ~azure.mgmt.avs.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -62,7 +62,7 @@ class DatastoresOperations:
         :type cluster_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either DatastoreList or the result of cls(response)
-        :rtype: ~azure.core.async_paging.AsyncItemPaged[~avs_client.models.DatastoreList]
+        :rtype: ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.avs.models.DatastoreList]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.DatastoreList"]
@@ -70,7 +70,7 @@ class DatastoresOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-12-01"
+        api_version = "2022-05-01"
         accept = "application/json"
 
         def prepare_request(next_link=None):
@@ -145,7 +145,7 @@ class DatastoresOperations:
         :type datastore_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: Datastore, or the result of cls(response)
-        :rtype: ~avs_client.models.Datastore
+        :rtype: ~azure.mgmt.avs.models.Datastore
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.Datastore"]
@@ -153,7 +153,7 @@ class DatastoresOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-12-01"
+        api_version = "2022-05-01"
         accept = "application/json"
 
         # Construct URL
@@ -197,8 +197,7 @@ class DatastoresOperations:
         private_cloud_name: str,
         cluster_name: str,
         datastore_name: str,
-        net_app_volume: Optional["_models.NetAppVolume"] = None,
-        disk_pool_volume: Optional["_models.DiskPoolVolume"] = None,
+        datastore: "_models.Datastore",
         **kwargs: Any
     ) -> "_models.Datastore":
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.Datastore"]
@@ -206,9 +205,7 @@ class DatastoresOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-
-        _datastore = _models.Datastore(net_app_volume=net_app_volume, disk_pool_volume=disk_pool_volume)
-        api_version = "2021-12-01"
+        api_version = "2022-05-01"
         content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
 
@@ -233,7 +230,7 @@ class DatastoresOperations:
         header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
 
         body_content_kwargs = {}  # type: Dict[str, Any]
-        body_content = self._serialize.body(_datastore, 'Datastore')
+        body_content = self._serialize.body(datastore, 'Datastore')
         body_content_kwargs['content'] = body_content
         request = self._client.put(url, query_parameters, header_parameters, **body_content_kwargs)
         pipeline_response = await self._client._pipeline.run(request, stream=False, **kwargs)
@@ -261,8 +258,7 @@ class DatastoresOperations:
         private_cloud_name: str,
         cluster_name: str,
         datastore_name: str,
-        net_app_volume: Optional["_models.NetAppVolume"] = None,
-        disk_pool_volume: Optional["_models.DiskPoolVolume"] = None,
+        datastore: "_models.Datastore",
         **kwargs: Any
     ) -> AsyncLROPoller["_models.Datastore"]:
         """Create or update a datastore in a private cloud cluster.
@@ -277,10 +273,8 @@ class DatastoresOperations:
         :type cluster_name: str
         :param datastore_name: Name of the datastore in the private cloud cluster.
         :type datastore_name: str
-        :param net_app_volume: An Azure NetApp Files volume.
-        :type net_app_volume: ~avs_client.models.NetAppVolume
-        :param disk_pool_volume: An iSCSI volume.
-        :type disk_pool_volume: ~avs_client.models.DiskPoolVolume
+        :param datastore: A datastore in a private cloud cluster.
+        :type datastore: ~azure.mgmt.avs.models.Datastore
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: By default, your polling method will be AsyncARMPolling.
@@ -288,7 +282,7 @@ class DatastoresOperations:
         :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns either Datastore or the result of cls(response)
-        :rtype: ~azure.core.polling.AsyncLROPoller[~avs_client.models.Datastore]
+        :rtype: ~azure.core.polling.AsyncLROPoller[~azure.mgmt.avs.models.Datastore]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         polling = kwargs.pop('polling', True)  # type: Union[bool, AsyncPollingMethod]
@@ -304,8 +298,7 @@ class DatastoresOperations:
                 private_cloud_name=private_cloud_name,
                 cluster_name=cluster_name,
                 datastore_name=datastore_name,
-                net_app_volume=net_app_volume,
-                disk_pool_volume=disk_pool_volume,
+                datastore=datastore,
                 cls=lambda x,y,z: x,
                 **kwargs
             )
@@ -355,7 +348,7 @@ class DatastoresOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-12-01"
+        api_version = "2022-05-01"
         accept = "application/json"
 
         # Construct URL

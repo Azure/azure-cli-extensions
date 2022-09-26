@@ -32,7 +32,7 @@ class VirtualMachinesOperations(object):
     instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~avs_client.models
+    :type models: ~azure.mgmt.avs.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -67,7 +67,7 @@ class VirtualMachinesOperations(object):
         :type cluster_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either VirtualMachinesList or the result of cls(response)
-        :rtype: ~azure.core.paging.ItemPaged[~avs_client.models.VirtualMachinesList]
+        :rtype: ~azure.core.paging.ItemPaged[~azure.mgmt.avs.models.VirtualMachinesList]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.VirtualMachinesList"]
@@ -75,7 +75,7 @@ class VirtualMachinesOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-12-01"
+        api_version = "2022-05-01"
         accept = "application/json"
 
         def prepare_request(next_link=None):
@@ -151,7 +151,7 @@ class VirtualMachinesOperations(object):
         :type virtual_machine_id: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: VirtualMachine, or the result of cls(response)
-        :rtype: ~avs_client.models.VirtualMachine
+        :rtype: ~azure.mgmt.avs.models.VirtualMachine
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.VirtualMachine"]
@@ -159,7 +159,7 @@ class VirtualMachinesOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-12-01"
+        api_version = "2022-05-01"
         accept = "application/json"
 
         # Construct URL
@@ -203,7 +203,7 @@ class VirtualMachinesOperations(object):
         private_cloud_name,  # type: str
         cluster_name,  # type: str
         virtual_machine_id,  # type: str
-        restrict_movement=None,  # type: Optional[Union[str, "_models.VirtualMachineRestrictMovementState"]]
+        restrict_movement,  # type: "_models.VirtualMachineRestrictMovement"
         **kwargs  # type: Any
     ):
         # type: (...) -> None
@@ -212,9 +212,7 @@ class VirtualMachinesOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-
-        _restrict_movement = _models.VirtualMachineRestrictMovement(restrict_movement=restrict_movement)
-        api_version = "2021-12-01"
+        api_version = "2022-05-01"
         content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
 
@@ -239,7 +237,7 @@ class VirtualMachinesOperations(object):
         header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
 
         body_content_kwargs = {}  # type: Dict[str, Any]
-        body_content = self._serialize.body(_restrict_movement, 'VirtualMachineRestrictMovement')
+        body_content = self._serialize.body(restrict_movement, 'VirtualMachineRestrictMovement')
         body_content_kwargs['content'] = body_content
         request = self._client.post(url, query_parameters, header_parameters, **body_content_kwargs)
         pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
@@ -260,7 +258,7 @@ class VirtualMachinesOperations(object):
         private_cloud_name,  # type: str
         cluster_name,  # type: str
         virtual_machine_id,  # type: str
-        restrict_movement=None,  # type: Optional[Union[str, "_models.VirtualMachineRestrictMovementState"]]
+        restrict_movement,  # type: "_models.VirtualMachineRestrictMovement"
         **kwargs  # type: Any
     ):
         # type: (...) -> LROPoller[None]
@@ -276,9 +274,9 @@ class VirtualMachinesOperations(object):
         :type cluster_name: str
         :param virtual_machine_id: Virtual Machine identifier.
         :type virtual_machine_id: str
-        :param restrict_movement: Whether VM DRS-driven movement is restricted (enabled) or not
-         (disabled).
-        :type restrict_movement: str or ~avs_client.models.VirtualMachineRestrictMovementState
+        :param restrict_movement: Whether VM DRS-driven movement is restricted (Enabled) or not
+         (Disabled).
+        :type restrict_movement: ~azure.mgmt.avs.models.VirtualMachineRestrictMovement
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: By default, your polling method will be ARMPolling.
