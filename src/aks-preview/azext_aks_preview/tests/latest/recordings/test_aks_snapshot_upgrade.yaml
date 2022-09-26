@@ -3164,7 +3164,11 @@ interactions:
       string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.ContainerService/managedClusters/cliakstest000003\",\n
         \ \"location\": \"westcentralus\",\n  \"name\": \"cliakstest000003\",\n  \"type\":
         \"Microsoft.ContainerService/ManagedClusters\",\n  \"properties\": {\n   \"provisioningState\":
-        \"Succeeded\",\n   \"powerState\": {\n    \"code\": \"Running\"\n   },\n   \"kubernetesVersion\":
+        \"Succeeded\",\n   \"powerState\": {\n    \"code\": \"Running\"\n   },\n   
+        \"creationData\":
+        {\n    \"sourceResourceId\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ContainerService/managedclustersnapshots/s000005\"\n
+        \  },\n
+        \"kubernetesVersion\":
         \"1.24.3\",\n   \"currentKubernetesVersion\": \"1.24.3\",\n   \"dnsPrefix\":
         \"cliaksdns000002\",\n   \"fqdn\": \"cliaksdns000002-a6c12e55.hcp.westcentralus.azmk8s.io\",\n
         \  \"azurePortalFQDN\": \"cliaksdns000002-a6c12e55.portal.hcp.westcentralus.azmk8s.io\",\n
@@ -3185,9 +3189,7 @@ interactions:
         \    \"type\": \"VirtualMachineScaleSets\",\n     \"enableAutoScaling\": false,\n
         \    \"scaleDownMode\": \"Delete\",\n     \"provisioningState\": \"Succeeded\",\n
         \    \"powerState\": {\n      \"code\": \"Running\"\n     },\n    \"provisioningState\":
-        \"Succeeded\",\n   \"powerState\": {\n    \"code\": \"Running\"\n   },\n   \"creationData\":
-        {\n    \"sourceResourceId\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ContainerService/managedclustersnapshots/s000005\"\n
-        \  },\n  \"orchestratorVersion\":
+        \"Succeeded\",\n   \"powerState\": {\n    \"code\": \"Running\"\n   },\n \"orchestratorVersion\":
         \"1.24.3\",\n     \"enableNodePublicIP\": false,\n     \"enableCustomCATrust\":
         false,\n     \"mode\": \"User\",\n     \"enableEncryptionAtHost\": false,\n
         \    \"enableUltraSSD\": false,\n     \"osType\": \"Windows\",\n     \"osSKU\":
