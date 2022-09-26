@@ -565,6 +565,9 @@ helps['aks upgrade'] = """
         - name: --node-image-only
           type: bool
           short-summary: Only upgrade node image for agent pools.
+        - name: --cluster-snapshot-id
+          type: string
+          short-summary: The source cluster snapshot id is used to upgrade existing cluster.
         - name: --aks-custom-headers
           type: string
           short-summary: Send custom headers. When specified, format should be Key1=Value1,Key2=Value2
@@ -844,6 +847,9 @@ helps['aks update'] = """
         - name: --disable-vpa
           type: bool
           short-summary: Disable vertical pod autoscaler for cluster.
+        - name: --cluster-snapshot-id
+          type: string
+          short-summary: The source cluster snapshot id is used to update existing cluster.
     examples:
       - name: Reconcile the cluster back to its current state.
         text: az aks update -g MyResourceGroup -n MyManagedCluster
@@ -901,6 +907,8 @@ helps['aks update'] = """
         text: az aks update -g MyResourceGroup -n MyManagedCluster --enable-windows-gmsa
       - name: Enable Windows gmsa for a kubernetes cluster without setting DNS server in the vnet used by the cluster.
         text: az aks update -g MyResourceGroup -n MyManagedCluster --enable-windows-gmsa --gmsa-dns-server "10.240.0.4" --gmsa-root-domain-name "contoso.com"
+      - name: Update a existing managed cluster to a managed cluster snapshot.
+        text: az aks update --cluster-snapshot-id <clustersnapshot resource id> -g MyResourceGroup -n MyManagedCluster
 """
 
 helps['aks kollect'] = """

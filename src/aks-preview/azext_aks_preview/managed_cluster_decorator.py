@@ -2793,6 +2793,27 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
 
         return mc
 
+    def update_creation_data(self, mc: ManagedCluster) -> ManagedCluster:
+        self._ensure_mc(mc)
+        snapshot_id = self.context.get_cluster_snapshot_id()
+        # snapshot creation data
+        creation_data = None
+        if snapshot_id:
+            snapshot = self.get_cluster_snapshot()
+            if not snapshot:
+                raise UnknownError(
+                    "Given managed cluster snapshot not exsit, input id: " + snapshot_id
+                )
+            if mc.kubernetes_version != snapshot.kubernetes_version:
+                raise UnknownError(
+                    "Please use az aks upgrade --cluster-snapshot-id to upgrade cluster version"
+                )
+            creation_data = self.models.CreationData(
+                source_resource_id=snapshot_id
+            )
+            mc.creation_data = creation_data
+        return mc
+
     def update_mc_profile_preview(self) -> ManagedCluster:
         """The overall controller used to update the preview ManagedCluster profile.
 
@@ -2831,5 +2852,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         mc = self.update_workload_auto_scaler_profile(mc)
         # update vpa
         mc = self.update_vpa(mc)
+        # update creation data 
+        mc = self.update_creation_data(mc)
 
         return mc
