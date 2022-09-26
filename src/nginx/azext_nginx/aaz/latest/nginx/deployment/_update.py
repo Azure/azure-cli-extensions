@@ -18,7 +18,7 @@ class Update(AAZCommand):
     """Update an Nginx deployment
 
     :example: Deployment Update
-        az nginx deployment update --name myDeployment --resource-group myResourceGroup --location eastus2 --tags tag1="value1" tag2="value2" --enable-diagnostics true
+        az nginx deployment update --name myDeployment --resource-group myResourceGroup --location eastus2 --tags tag1="value1" tag2="value2" --enable-diagnostics
     """
 
     _aaz_info = {
