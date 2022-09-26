@@ -13,7 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "elastic-san list-sku",
-    is_experimental=True,
+    is_preview=True,
 )
 class ListSku(AAZCommand):
     """Get a list of Elastic SAN skus.
@@ -22,7 +22,7 @@ class ListSku(AAZCommand):
     _aaz_info = {
         "version": "2021-11-20-preview",
         "resources": [
-            ["mgmt-plane", "/providers/microsoft.elasticsan/skus", "2021-11-20-preview"],
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.elasticsan/skus", "2021-11-20-preview"],
         ]
     }
 
@@ -49,7 +49,17 @@ class ListSku(AAZCommand):
         return cls._args_schema
 
     def _execute_operations(self):
+        self.pre_operations()
         self.SkusList(ctx=self.ctx)()
+        self.post_operations()
+
+    # @register_callback
+    def pre_operations(self):
+        pass
+
+    # @register_callback
+    def post_operations(self):
+        pass
 
     def _output(self, *args, **kwargs):
         result = self.deserialize_output(self.ctx.vars.instance.value, client_flatten=True)
@@ -69,7 +79,7 @@ class ListSku(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/providers/Microsoft.ElasticSan/skus",
+                "/subscriptions/{subscriptionId}/providers/Microsoft.ElasticSan/skus",
                 **self.url_parameters
             )
 
@@ -80,6 +90,16 @@ class ListSku(AAZCommand):
         @property
         def error_format(self):
             return "MgmtErrorFormat"
+
+        @property
+        def url_parameters(self):
+            parameters = {
+                **self.serialize_url_param(
+                    "subscriptionId", self.ctx.subscription_id,
+                    required=True,
+                ),
+            }
+            return parameters
 
         @property
         def query_parameters(self):

@@ -13,7 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "elastic-san delete",
-    is_experimental=True,
+    is_preview=True,
     confirmation="Are you sure you want to perform this operation?",
 )
 class Delete(AAZCommand):
@@ -61,7 +61,17 @@ class Delete(AAZCommand):
         return cls._args_schema
 
     def _execute_operations(self):
+        self.pre_operations()
         yield self.ElasticSansDelete(ctx=self.ctx)()
+        self.post_operations()
+
+    # @register_callback
+    def pre_operations(self):
+        pass
+
+    # @register_callback
+    def post_operations(self):
+        pass
 
     class ElasticSansDelete(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
