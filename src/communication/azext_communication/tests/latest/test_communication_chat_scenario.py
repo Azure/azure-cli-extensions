@@ -481,11 +481,24 @@ class CommunicationChatScenarios(ScenarioTest):
             'thread_id': thread_id,
             'content': content })
         message = self.cmd('az communication chat message send --thread {thread_id} --content {content}').get_output_in_json()
+                
+        # check that the message is there, and it is not deleted
+        self.kwargs.update({
+            'message_id': message['id'] })
+        self.cmd('az communication chat message get --thread {thread_id} --message-id {message_id}', checks = [
+            self.check('deletedOn', None)
+        ])
 
         # and delete it
         self.kwargs.update({
             'message_id': message['id'] })
         self.cmd('az communication chat message delete --thread {thread_id} --message-id {message_id}')
+        
+        # now, check that it is actually deleted
+        self.kwargs.update({
+            'message_id': message['id'] })
+        deletedMessage = self.cmd('az communication chat message get --thread {thread_id} --message-id {message_id}').get_output_in_json()
+        assert deletedMessage['deletedOn'] is not None
         
 
     @ResourceGroupPreparer(name_prefix='clitestcommunication_MyResourceGroup'[:7], key='rg', parameter_name='rg')

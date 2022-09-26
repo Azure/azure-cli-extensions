@@ -10,9 +10,8 @@ from codecs import open
 from setuptools import setup, find_packages
 
 # HISTORY.rst entry.
-VERSION = '1.2.1'
 try:
-    from azext_communication.manual.version import VERSION
+    from azext_communication.version import VERSION
 except ImportError:
     pass
 

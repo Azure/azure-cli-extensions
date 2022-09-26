@@ -22,4 +22,4 @@ def load_arguments(self, _):
         c.argument('registry_user', options_list=['--registry-username'], help="Supplied container registry's username")
         c.argument('registry_pass', options_list=['--registry-password'], help="Supplied container registry's password")
         c.argument('logs_workspace_name', options_list=['--logs-workspace', '-w'], help=SUPPRESS)
-        c.argument('transport', action='append', nargs='+', help="Transport options per Container App instance (servicename=transportsetting).")
+        c.argument('transport_mapping', options_list=['--transport-mapping', c.deprecate(target='--transport', redirect='--transport-mapping')], action='append', nargs='+', help="Transport options per Container App instance (servicename=transportsetting).")

@@ -22,5 +22,5 @@ def clean_up_test_file(filename):
 
 class ContainerappComposePreviewScenarioTest(ScenarioTest):
     def setUp(self):
-        self.cmd("extension add --name containerapp --upgrade --version 0.3.8 --yes")
+        self.cmd("extension add --name containerapp --upgrade --yes")
         return super().setUp()
