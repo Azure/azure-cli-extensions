@@ -155,7 +155,7 @@ def check_azuremonitoraddon_feature(cmd, cluster_subscription):
     from azure.cli.core.util import send_raw_request
     feature_check_url = f"https://management.azure.com/subscriptions/{cluster_subscription}/providers/Microsoft.Features/subscriptionFeatureRegistrations?api-version={FEATURE_API}&featurename=AKS-PrometheusAddonPreview"
     try:
-        headers = ['x-ms-azuremonitormetrics=true', 'x-ms-handledat=check_azuremonitoraddon_feature']
+        headers = ['User-Agent=azuremonitormetrics.check_azuremonitoraddon_feature']
         r = send_raw_request(cmd.cli_ctx, "GET", feature_check_url,
                              body={}, headers=headers)
     except CLIError as e:
@@ -264,7 +264,7 @@ def create_default_mac(cmd, cluster_subscription, cluster_region):
     association_body = json.dumps({"location": get_default_mac_region(cluster_region), "properties": {}})
     association_url = f"https://management.azure.com{azure_monitor_workspace_resource_id}?api-version={MAC_API}"
     try:
-        headers = ['x-ms-azuremonitormetrics=true', 'x-ms-handledat=create_default_mac']
+        headers = ['User-Agent=azuremonitormetrics.create_default_mac']
         send_raw_request(cmd.cli_ctx, "PUT", association_url,
                          body=association_body, headers=headers)
         return azure_monitor_workspace_resource_id
@@ -326,7 +326,7 @@ def get_mac_region_and_check_support(cmd, azure_monitor_workspace_resource_id, c
     # retry the request up to two times
     for _ in range(3):
         try:
-            headers = ['x-ms-azuremonitormetrics=true', 'x-ms-handledat=get_mac_region_and_check_support.mac_subscription_location_support_check']
+            headers = ['User-Agent=azuremonitormetrics.get_mac_region_and_check_support.mac_subscription_location_support_check']
             location_list_url = f"https://management.azure.com/subscriptions/{mac_subscription_id}/locations?api-version=2019-11-01"
             r = send_raw_request(cmd.cli_ctx, "GET", location_list_url, headers=headers)
 
@@ -347,7 +347,7 @@ def get_mac_region_and_check_support(cmd, azure_monitor_workspace_resource_id, c
     for _ in range(3):
         try:
             feature_check_url = f"https://management.azure.com/subscriptions/{mac_subscription_id}/providers/Microsoft.Insights?api-version=2020-10-01"
-            headers = ['x-ms-azuremonitormetrics=true', 'x-ms-handledat=get_mac_region_and_check_support.mac_subscription_dcr_dcra_regions_support_check']
+            headers = ['User-Agent=azuremonitormetrics.get_mac_region_and_check_support.mac_subscription_dcr_dcra_regions_support_check']
             r = send_raw_request(cmd.cli_ctx, "GET", feature_check_url, headers=headers)
             error = None
             break
@@ -380,7 +380,7 @@ def create_dce(cmd, cluster_subscription, cluster_resource_group_name, cluster_n
                                             "location": mac_region,
                                             "kind": "Linux",
                                             "properties": {}})
-            headers = ['x-ms-azuremonitormetrics=true', 'x-ms-handledat=azuremonitorprofile.create_dce']
+            headers = ['User-Agent=azuremonitormetrics.create_dce']
             send_raw_request(cmd.cli_ctx, "PUT",
                              dce_url, body=dce_creation_body, headers=headers)
             error = None
@@ -412,10 +412,7 @@ def create_dcr(cmd, mac_region, azure_monitor_workspace_resource_id, cluster_sub
     dcr_url = f"https://management.azure.com{dcr_resource_id}?api-version={DC_API}"
     for _ in range(3):
         try:
-            headers = [
-                'x-ms-azuremonitormetrics=true',
-                'x-ms-handledat=azuremonitorprofile.create_dcr'
-            ]
+            headers = ['User-Agent=azuremonitormetrics.create_dcr']
             send_raw_request(cmd.cli_ctx, "PUT",
                              dcr_url, body=dcr_creation_body, headers=headers)
             error = None
@@ -448,10 +445,7 @@ def create_dcra(cmd, cluster_region, cluster_subscription, cluster_resource_grou
     association_url = f"https://management.azure.com{cluster_resource_id}/providers/Microsoft.Insights/dataCollectionRuleAssociations/{dcra_name}?api-version={DC_API}"
     for _ in range(3):
         try:
-            headers = [
-                'x-ms-azuremonitormetrics=true',
-                'x-ms-handledat=azuremonitorprofile.create_dcra'
-            ]
+            headers = ['User-Agent=azuremonitormetrics.create_dcra']
             send_raw_request(cmd.cli_ctx, "PUT", association_url,
                              body=association_body, headers=headers)
             error = None
@@ -474,7 +468,7 @@ def link_grafana_instance(cmd, raw_parameters, azure_monitor_workspace_resource_
             grafana_resource_id,
             GRAFANA_API
         )
-        headers = ['x-ms-azuremonitormetrics=true', 'x-ms-handledat=azuremonitorprofile.link_grafana_instance']
+        headers = ['User-Agent=azuremonitormetrics.link_grafana_instance']
         grafanaArmResponse = send_raw_request(cmd.cli_ctx, "GET", grafanaURI, body={}, headers=headers)
         servicePrincipalId = grafanaArmResponse.json()["identity"]["principalId"]
     except CLIError as e:
@@ -492,7 +486,7 @@ def link_grafana_instance(cmd, raw_parameters, azure_monitor_workspace_resource_
             MonitoringDataReader
         )
         association_body = json.dumps({"properties": {"roleDefinitionId": roleDefinitionId, "principalId": servicePrincipalId}})
-        headers = ['x-ms-azuremonitormetrics=true', 'x-ms-handledat=azuremonitorprofile.add_role_assignment']
+        headers = ['User-Agent=azuremonitormetrics.add_role_assignment']
         send_raw_request(cmd.cli_ctx, "PUT", roleDefinitionURI, body=association_body, headers=headers)
     except CLIError as e:
         if e.response.status_code != 409:
@@ -515,7 +509,7 @@ def link_grafana_instance(cmd, raw_parameters, azure_monitor_workspace_resource_
         )
         targetGrafanaArmPayload["properties"]["grafanaIntegrations"]["azureMonitorWorkspaceIntegrations"].append({"azureMonitorWorkspaceResourceId": azure_monitor_workspace_resource_id})
         targetGrafanaArmPayload = json.dumps(targetGrafanaArmPayload)
-        headers = ['x-ms-azuremonitormetrics=true', 'x-ms-handledat=azuremonitorprofile.setup_amw_grafana_integration', 'Content-Type=application/json']
+        headers = ['User-Agent=azuremonitormetrics.setup_amw_grafana_integration', 'Content-Type=application/json']
         send_raw_request(cmd.cli_ctx, "PUT", grafanaURI, body=targetGrafanaArmPayload, headers=headers)
     except CLIError as e:
         raise CLIError(e)
@@ -552,10 +546,7 @@ def create_rules(cmd, cluster_subscription, cluster_resource_group_name, cluster
     })
     for _ in range(3):
         try:
-            headers = [
-                'x-ms-azuremonitormetrics=true',
-                'x-ms-handledat=azuremonitorprofile.create_rules_node',
-            ]
+            headers = ['User-Agent=azuremonitormetrics.create_rules_node']
             send_raw_request(cmd.cli_ctx, "PUT", url,
                              body=body, headers=headers)
             error = None
@@ -589,10 +580,7 @@ def create_rules(cmd, cluster_subscription, cluster_resource_group_name, cluster
     })
     for _ in range(3):
         try:
-            headers = [
-                'x-ms-azuremonitormetrics=true',
-                'x-ms-handledat=azuremonitorprofile.create_rules_kubernetes'
-            ]
+            headers = ['User-Agent=azuremonitormetrics.create_rules_kubernetes']
             send_raw_request(cmd.cli_ctx, "PUT", url,
                              body=body, headers=headers)
             error = None
@@ -617,10 +605,7 @@ def delete_dcra(cmd, cluster_region, cluster_subscription, cluster_resource_grou
     association_url = f"https://management.azure.com{cluster_resource_id}/providers/Microsoft.Insights/dataCollectionRuleAssociations/{dcra_name}?api-version={DC_API}"
     for _ in range(3):
         try:
-            headers = [
-                'x-ms-azuremonitormetrics=true',
-                'x-ms-handledat=azuremonitorprofile.delete_dcra'
-            ]
+            headers = ['User-Agent=azuremonitormetrics.delete_dcra']
             send_raw_request(cmd.cli_ctx, "DELETE", association_url,
                              body=association_body, headers=headers)
             error = None
@@ -646,10 +631,7 @@ def delete_rules(cmd, cluster_region, cluster_subscription, cluster_resource_gro
     )
     for _ in range(3):
         try:
-            headers = [
-                'x-ms-azuremonitormetrics=true',
-                'x-ms-handledat=azuremonitorprofile.delete_rules_node'
-            ]
+            headers = ['User-Agent=azuremonitormetrics.delete_rules_node']
             send_raw_request(cmd.cli_ctx, "DELETE", url, headers=headers)
             error = None
             # print("Successully DELETED Node Recording rules")
@@ -670,10 +652,7 @@ def delete_rules(cmd, cluster_region, cluster_subscription, cluster_resource_gro
     )
     for _ in range(3):
         try:
-            headers = [
-                'x-ms-azuremonitormetrics=true',
-                'x-ms-handledat=azuremonitorprofile.delete_rules_kubernetes'
-            ]
+            headers = ['User-Agent=azuremonitormetrics.delete_rules_kubernetes']
             send_raw_request(cmd.cli_ctx, "DELETE", url, headers=headers)
             error = None
             break
@@ -724,10 +703,7 @@ def rp_registrations(cmd, subscription_id):
     from azure.cli.core.util import send_raw_request
     # Get list of RP's for RP's subscription
     try:
-        headers = [
-            'x-ms-azuremonitormetrics=true',
-            'x-ms-handledat=rp_registrations.get_mac_sub_list'
-        ]
+        headers = ['User-Agent=azuremonitormetrics.get_mac_sub_list']
         customUrl = "https://management.azure.com/subscriptions/{0}/providers?api-version={1}&$select=namespace,registrationstate".format(
             subscription_id,
             RP_API
@@ -745,16 +721,10 @@ def rp_registrations(cmd, subscription_id):
         if value["namespace"].lower() == "microsoft.alertsmanagement" and value["registrationState"].lower() == "registered":
             isAlertsManagementRpRegistered = True
     if isInsightsRpRegistered is False:
-        headers = [
-            'x-ms-azuremonitormetrics=true',
-            'x-ms-handledat=rp_registrations.register_insights_rp'
-        ]
+        headers = ['User-Agent=azuremonitormetrics.register_insights_rp']
         post_request(cmd, subscription_id, "microsoft.insights", headers)
     if isAlertsManagementRpRegistered is False:
-        headers = [
-            'x-ms-azuremonitormetrics=true',
-            'x-ms-handledat=rp_registrations.register_alertsmanagement_rp'
-        ]
+        headers = ['User-Agent=azuremonitormetrics.register_alertsmanagement_rp']
         post_request(cmd, subscription_id, "microsoft.alertsmanagement", headers)
 
 
