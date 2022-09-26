@@ -157,6 +157,10 @@ helps['aks create'] = """
           type: int
           short-summary: Load balancer idle timeout in minutes.
           long-summary: Desired idle timeout for load balancer outbound flows, default is 30 minutes. Please specify a value in the range of [4, 100].
+        - name: --load-balancer-backend-pool-type
+          type: string
+          short-summary: Load balancer backend pool type.
+          long-summary: Load balancer backend pool type, supported values are nodeIP and nodeIPConfiguration.
         - name: --nat-gateway-managed-outbound-ip-count
           type: int
           short-summary: NAT gateway managed outbound IP count.
@@ -620,6 +624,10 @@ helps['aks update'] = """
           type: int
           short-summary: Load balancer idle timeout in minutes.
           long-summary: Desired idle timeout for load balancer outbound flows, default is 30 minutes. Please specify a value in the range of [4, 100].
+        - name: --load-balancer-backend-pool-type
+          type: string
+          short-summary: Load balancer backend pool type.
+          long-summary: Load balancer backend pool type, supported values are nodeIP and nodeIPConfiguration.
         - name: --nat-gateway-managed-outbound-ip-count
           type: int
           short-summary: NAT gateway managed outbound IP count.

@@ -28,6 +28,7 @@ from azext_aks_preview._consts import (
     CONST_INGRESS_APPGW_WATCH_NAMESPACE,
     CONST_KUBE_DASHBOARD_ADDON_NAME,
     CONST_LOAD_BALANCER_SKU_STANDARD,
+    CONST_LOAD_BALANCER_BACKEND_POOL_TYPE_NODE_IP,
     CONST_MONITORING_ADDON_NAME,
     CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID,
     CONST_MONITORING_USING_AAD_MSI_AUTH,
@@ -439,6 +440,20 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         mc_3 = self.models.ManagedCluster(location="test_location", network_profile=network_profile_3)
         ctx_3.attach_mc(mc_3)
         self.assertEqual(ctx_3.get_load_balancer_managed_outbound_ipv6_count(), 20)
+    
+    def test_get_load_balancer_backend_pool_type(self):
+        ctx = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict(
+                {
+                    "load_balancer_backend_pool_type": "nodeIP",
+                }
+            ),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertEqual(ctx.get_load_balancer_backend_pool_type(), "nodeIP")
+
 
     def test_get_enable_pod_security_policy(self):
         # default
@@ -3317,6 +3332,7 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
                 "load_balancer_outbound_ip_prefixes": None,
                 "load_balancer_outbound_ports": None,
                 "load_balancer_idle_timeout": None,
+                "load_balancer_backend_pool_type": "nodeIP",
                 "outbound_type": None,
                 "network_plugin": None,
                 "pod_cidr": None,
@@ -3346,7 +3362,8 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
         load_balancer_profile_1 = self.models.load_balancer_models.ManagedClusterLoadBalancerProfile(
             managed_outbound_i_ps=self.models.load_balancer_models.ManagedClusterLoadBalancerProfileManagedOutboundIPs(
                 count_ipv6=3,
-            )
+            ),
+            backend_pool_type=CONST_LOAD_BALANCER_BACKEND_POOL_TYPE_NODE_IP,
         )
         network_profile_1.load_balancer_profile = load_balancer_profile_1
         ground_truth_mc_1 = self.models.ManagedCluster(location="test_location", network_profile=network_profile_1)

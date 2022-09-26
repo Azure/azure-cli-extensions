@@ -64,6 +64,9 @@ aks create:
     load_balancer_outbound_ports:
       rule_exclusions:
       - option_length_too_long
+    load_balancer_backend_pool_type:
+      rule_exclusions:
+      - option_length_too_long
     nat_gateway_idle_timeout:
       rule_exclusions:
       - option_length_too_long
@@ -174,6 +177,9 @@ aks update:
       rule_exclusions:
       - option_length_too_long
     load_balancer_outbound_ports:
+      rule_exclusions:
+      - option_length_too_long
+    load_balancer_backend_pool_type:
       rule_exclusions:
       - option_length_too_long
     nat_gateway_idle_timeout:

@@ -22,7 +22,11 @@ from azure.cli.core.commands.validators import validate_tag
 from azure.cli.core.util import CLIError
 from knack.log import get_logger
 
-from azext_aks_preview._consts import ADDONS
+from azext_aks_preview._consts import (
+    ADDONS,
+    CONST_LOAD_BALANCER_BACKEND_POOL_TYPE_NODE_IP,
+    CONST_LOAD_BALANCER_BACKEND_POOL_TYPE_NODE_IPCONFIGURATION,
+)
 from azext_aks_preview._helpers import _fuzzy_match
 
 logger = get_logger(__name__)
@@ -307,6 +311,14 @@ def validate_load_balancer_idle_timeout(namespace):
         if namespace.load_balancer_idle_timeout < 4 or namespace.load_balancer_idle_timeout > 100:
             raise CLIError(
                 "--load-balancer-idle-timeout must be in the range [4,100]")
+
+
+def validate_load_balancer_backend_pool_type(namespace):
+    """validate load balancer backend pool type"""
+    if namespace.load_balancer_backend_pool_type is not None:
+        if namespace.load_balancer_backend_pool_type not in [CONST_LOAD_BALANCER_BACKEND_POOL_TYPE_NODE_IP, CONST_LOAD_BALANCER_BACKEND_POOL_TYPE_NODE_IPCONFIGURATION]:
+            raise InvalidArgumentValueError(
+                f"Invalid Load Balancer Backend Pool Type {namespace.load_balancer_backend_pool_type}, supported values are nodeIP and nodeIPConfiguration")
 
 
 def validate_nat_gateway_managed_outbound_ip_count(namespace):
