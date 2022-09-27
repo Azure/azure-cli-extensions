@@ -14,12 +14,20 @@ class ElasticSanScenario(ScenarioTest):
         self.kwargs.update({
             "san_name": self.create_random_name('elastic-san', 24)
         })
-        self.cmd('az elastic-san create -n {san_name} -g {rg} --tags {{key1810:aaaa}} -l eastus2stage '
-                 '--availability-zones [eastus2stage] --base-size-tib 23 --extended-capacity-size-tib 14 '
-                 '--sku {{name:Premium_LRS,tier:Premium}}')
+        self.cmd('az elastic-san create -n {san_name} -g {rg} --tags {{key1810:aaaa}} -l southcentralusstg '
+                 '--base-size-tib 23 --extended-capacity-size-tib 14 '
+                 '--sku {{name:Premium_LRS,tier:Premium}}',
+                 checks=[JMESPathCheck('name', self.kwargs.get('san_name', '')),
+                         JMESPathCheck('location', "southcentralusstg"),
+                         JMESPathCheck('tags', {"key1810": "aaaa"}),
+                         JMESPathCheck('baseSizeTiB', 23),
+                         JMESPathCheck('extendedCapacitySizeTiB', 14),
+                         JMESPathCheck('sku', {"name": "Premium_LRS",
+                                               "tier": "Premium"})
+                         ])
         self.cmd('az elastic-san show -g {rg} -n {san_name}',
                  checks=[JMESPathCheck('name', self.kwargs.get('san_name', '')),
-                         JMESPathCheck('location', "eastus2stage"),
+                         JMESPathCheck('location', "southcentralusstg"),
                          JMESPathCheck('tags', {"key1810": "aaaa"}),
                          JMESPathCheck('baseSizeTiB', 23),
                          JMESPathCheck('extendedCapacitySizeTiB', 14),
@@ -27,8 +35,7 @@ class ElasticSanScenario(ScenarioTest):
                                                 "tier": "Premium"})
                          ])
         self.cmd('az elastic-san list -g {rg}', checks=[JMESPathCheck('length(@)', 1)])
-        # TODO: server error for now
-        # self.cmd('az elastic-san list-sku')
+        self.cmd('az elastic-san list-sku')
         self.cmd('az elastic-san update -n {san_name} -g {rg} --tags {{key1710:bbbb}} '
                  '--base-size-tib 25 --extended-capacity-size-tib 15',
                  checks=[JMESPathCheck('name', self.kwargs.get('san_name', '')),
@@ -55,8 +62,8 @@ class ElasticSanScenario(ScenarioTest):
             "subnet_name_2": self.create_random_name('subnet', 24),
             "volume_name": self.create_random_name('volume', 24)
         })
-        self.cmd('az elastic-san create -n {san_name} -g {rg} --tags {{key1810:aaaa}} -l eastus2stage '
-                 '--availability-zones [eastus2stage] --base-size-tib 23 --extended-capacity-size-tib 14 '
+        self.cmd('az elastic-san create -n {san_name} -g {rg} --tags {{key1810:aaaa}} -l southcentralusstg '
+                 '--base-size-tib 23 --extended-capacity-size-tib 14 '
                  '--sku {{name:Premium_LRS,tier:Premium}}')
         subnet_id = self.cmd('az network vnet create -g {rg} -n {vnet_name} --address-prefix 10.0.0.0/16 '
                              '--subnet-name {subnet_name} '
@@ -77,7 +84,8 @@ class ElasticSanScenario(ScenarioTest):
         self.cmd('az elastic-san volume-group list -g {rg} -e {san_name}', checks=[JMESPathCheck('length(@)', 1)])
 
         subnet_id_2 = self.cmd('az network vnet subnet create -g {rg} --vnet-name {vnet_name} --name {subnet_name_2} '
-                             '--address-prefixes 10.0.1.0/24').get_output_in_json()["id"]
+                               '--address-prefixes 10.0.1.0/24 '
+                               '--service-endpoints Microsoft.Storage').get_output_in_json()["id"]
         self.kwargs.update({"subnet_id_2": subnet_id_2})
         self.cmd('az elastic-san volume-group update -e {san_name} -n {vg_name} -g {rg} --tags {{key2011:cccc}} '
                  '--protocol-type None '
@@ -86,13 +94,13 @@ class ElasticSanScenario(ScenarioTest):
                          JMESPathCheck('protocolType', "None"),
                          JMESPathCheck('networkAcls.virtualNetworkRules[0].id', subnet_id_2)])
 
-        self.cmd('az elastic-san volume create -g {rg} -e {san_name} -v {vg_name} -n {volume_name} --size-gib 2')
+        self.cmd('az elastic-san volume create -g {rg} -e {san_name} -v {vg_name} -n {volume_name} --size-gib 2 --debug')
         self.cmd('az elastic-san volume show -g {rg} -e {san_name} -v {vg_name} -n {volume_name} ',
                  checks=[JMESPathCheck('name', self.kwargs.get('volume_name', '')),
-                         JMESPathCheck('sizeGib', 2)])
+                         JMESPathCheck('sizeGiB', 2)])
         self.cmd('az elastic-san volume list -g {rg} -e {san_name} -v {vg_name}',
                  checks=[JMESPathCheck('length(@)', 1)])
-        self.cmd('az elastic-san volume delete -g {rg} -e {san_name} -v {vg_name} -n {volume_name')
+        self.cmd('az elastic-san volume delete -g {rg} -e {san_name} -v {vg_name} -n {volume_name} -y')
         self.cmd('az elastic-san volume list -g {rg} -e {san_name} -v {vg_name}',
                  checks=[JMESPathCheck('length(@)', 0)])
 
