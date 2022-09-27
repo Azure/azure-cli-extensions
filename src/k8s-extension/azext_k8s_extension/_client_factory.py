@@ -13,7 +13,7 @@ def cf_k8s_extension(cli_ctx, **kwargs):
     return get_mgmt_service_client(cli_ctx, SourceControlConfigurationClient, **kwargs)
 
 
-def cf_k8s_extension_operation(cli_ctx, *_):
+def cf_k8s_extension_operation(cli_ctx, _):
     return cf_k8s_extension(cli_ctx).extensions
 
 
