@@ -126,7 +126,7 @@ class Cosmosdb_previewInAccountRestoreScenarioTest(ScenarioTest):
         database_list = self.cmd('az cosmosdb sql database list -g {rg} -a {acc}').get_output_in_json()
         assert len(database_list) == 1
 
-        container_list = self.cmd('az cosmosdb sql container list -g {rg} -a {acc} - d {db_name}').get_output_in_json()
+        container_list = self.cmd('az cosmosdb sql container list -g {rg} -a {acc} -d {db_name}').get_output_in_json()
         assert len(container_list) == 0
 
 
@@ -320,7 +320,8 @@ class Cosmosdb_previewInAccountRestoreScenarioTest(ScenarioTest):
             'unique_key': unique_key_policy,
             "conflict_resolution": conflict_resolution_policy,
             "indexing": indexing,
-            'loc': location
+            'loc': location,
+            'tp1': tp1
         })
 
         self.cmd('az cosmosdb create -n {acc} -g {rg} --backup-policy-type Continuous --locations regionName={loc}')
@@ -328,7 +329,7 @@ class Cosmosdb_previewInAccountRestoreScenarioTest(ScenarioTest):
 
         assert not self.cmd('az cosmosdb sql container exists -g {rg} -a {acc} -d {db_name} -n {ctn_name}').get_output_in_json()
 
-        container_create = self.cmd('az cosmosdb sql container create -g {rg} -a {acc} -d {db_name} -n {ctn_name} -p {part} --unique-key-policy {unique_key} --conflict-resolution-policy {conflict_resolution} --idx {indexing}').get_output_in_json()
+        container_create = self.cmd('az cosmosdb sql container create -g {rg} -a {acc} -d {db_name} -n {ctn_name} -p {part} --unique-key-policy {unique_key} --conflict-resolution-policy {conflict_resolution} --idx {indexing} --throughput {tp1}').get_output_in_json()
 
         assert container_create["name"] == ctn_name
         assert container_create["resource"]["partitionKey"]["paths"][0] == partition_key
