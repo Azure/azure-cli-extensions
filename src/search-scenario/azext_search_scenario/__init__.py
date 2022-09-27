@@ -7,13 +7,13 @@ from azure.cli.core import AzCommandsLoader
 from ._help import helps  # pylint: disable=unused-import
 
 
-class SearchScenarioCommandsLoader(AzCommandsLoader):
+class ScenarioGuideCommandsLoader(AzCommandsLoader):
 
     def __init__(self, cli_ctx=None):
         from azure.cli.core.commands import CliCommandType
-        search_scenario_custom = CliCommandType(
+        scenario_guide_custom = CliCommandType(
             operations_tmpl='azext_search_scenario.custom#{}')
-        super().__init__(cli_ctx=cli_ctx, custom_command_type=search_scenario_custom)
+        super().__init__(cli_ctx=cli_ctx, custom_command_type=scenario_guide_custom)
 
     def load_command_table(self, args):
         from .commands import load_command_table
@@ -25,4 +25,4 @@ class SearchScenarioCommandsLoader(AzCommandsLoader):
         load_arguments(self, command)
 
 
-COMMAND_LOADER_CLS = SearchScenarioCommandsLoader
+COMMAND_LOADER_CLS = ScenarioGuideCommandsLoader

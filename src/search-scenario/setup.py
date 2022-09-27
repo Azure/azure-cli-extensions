@@ -37,9 +37,9 @@ with open('HISTORY.rst', 'r', encoding='utf-8') as f:
     HISTORY = f.read()
 
 setup(
-    name='search-scenario',
+    name='scenario-guide',
     version=VERSION,
-    description='Microsoft Azure Command-Line Tools Search-scenario Extension',
+    description='Microsoft Azure Command-Line Tools Scenario Guidance Extension',
     author='Microsoft Corporation',
     author_email='azpycli@microsoft.com',
     url='https://github.com/Azure/azure-cli-extensions/tree/main/src/search-scenario',

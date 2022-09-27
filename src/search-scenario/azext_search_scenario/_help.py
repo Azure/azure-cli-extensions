@@ -7,9 +7,15 @@
 from knack.help_files import helps  # pylint: disable=unused-import
 
 
-helps['search-scenario'] = """
+helps['scenario'] = """
+type: group
+short-summary: E2E Scenario Usage Guidance
+"""
+
+
+helps['scenario guide'] = """
 type: command
-short-summary: Fuzzy search the E2E scenario examples you need
+short-summary: Fuzzy search and execute the E2E scenario examples you need
 long-summary: >
 
     This a search tool that can help you find and explore E2E scenario samples!
@@ -34,12 +40,12 @@ long-summary: >
 examples:
   - name: Search scenario examples of how to connect the App Service to SQL Database.
     text: |-
-        az search-scenario app service database
+        az scenario guide app service database
   - name: Search scenario examples whose title or description related to app service or web app.
     text: |-
-        az search-scenario web app service --scope "scenario" --match-rule "or"
+        az scenario guide web app service --scope "scenario" --match-rule "or"
   - name: Search top 3 scenario examples whose commands contain keywords "network","vnet" and "subnet" at the same time.
     text: |-
-        az search-scenario network vnet subnet --scope "command" --match-rule "and" --top 3
+        az scenario guide network vnet subnet --scope "command" --match-rule "and" --top 3
 
 """

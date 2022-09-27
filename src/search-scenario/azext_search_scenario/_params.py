@@ -9,7 +9,7 @@ def load_arguments(self, _):
 
     from azure.cli.core.commands.parameters import get_enum_type
 
-    with self.argument_context('search-scenario') as c:
+    with self.argument_context('scenario guide') as c:
         c.positional('search_keyword', nargs='+', help="Keywords for search. If there are multiple keywords, please separate them with spaces. Fuzzy search is supported, and the returned results are sorted by keyword matching degree.")
         c.argument('scope', arg_type=get_enum_type(["all", "scenario", "command"], default='all'),
                    help='The scope of search: "scenario" is to search whether the title and description in E2E scenario data contain keywords, "command" is to search whether the commands in E2E scenario data contain keywords, "all" is to search all contents.')

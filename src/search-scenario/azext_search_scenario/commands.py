@@ -6,5 +6,5 @@
 
 def load_command_table(self, _):
 
-    with self.command_group('') as g:
-        g.custom_command('search-scenario', 'search')
+    with self.command_group('scenario') as g:
+        g.custom_command('guide', 'scenario_guide')

@@ -6,12 +6,12 @@
 
 import json
 
-from ._clierror import SearchScenarioError
+from ._clierror import ScenarioGuideError
 from .constants import MatchRule, SearchScope, SEARCH_SERVICE_URL
 
 
 def search_online(keyword, scope=SearchScope.All, match_rule=MatchRule.All, top=5):
-    '''Search related e2e scenarios'''
+    """Search related e2e scenarios"""
     import requests
 
     payload = {
@@ -24,11 +24,11 @@ def search_online(keyword, scope=SearchScope.All, match_rule=MatchRule.All, top=
         response = requests.post(SEARCH_SERVICE_URL, json.dumps(payload))
         response.raise_for_status()
     except requests.ConnectionError as e:
-        raise SearchScenarioError(f'Network Error: {e}') from e
+        raise ScenarioGuideError(f'Network Error: {e}') from e
     except requests.exceptions.HTTPError as e:
-        raise SearchScenarioError(f'{e}') from e
+        raise ScenarioGuideError(f'{e}') from e
     except requests.RequestException as e:
-        raise SearchScenarioError(f'Request Error: {e}') from e
+        raise ScenarioGuideError(f'Request Error: {e}') from e
 
     results = []
     if 'data' in response.json():

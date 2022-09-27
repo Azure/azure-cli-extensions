@@ -11,7 +11,7 @@ from .requests import search_online
 from .utils import select_option
 
 
-def search(cmd, search_keyword, scope=None, match_rule=None, top=None):
+def scenario_guide(cmd, search_keyword, scope=None, match_rule=None, top=None):
 
     scope = SearchScope.get(scope)
     match_rule = MatchRule.get(match_rule)
