@@ -201,7 +201,7 @@ class CustomImageTest(ScenarioTest):
             'serviceName': 'cli-unittest',
             'containerImage': 'springio/gs-spring-boot-docker',
             'resourceGroup': 'cli',
-            'location': 'westus'
+            'location': 'centralindia'
         })
 
         self.cmd('group create -n {resourceGroup} -l {location}')
@@ -213,6 +213,7 @@ class CustomImageTest(ScenarioTest):
             self.check('name', 'default'),
             self.check('properties.source.type', 'Container'),
             self.check('properties.source.customContainer.containerImage', '{containerImage}'),
+            self.check('properties.source.customContainer.languageFramework', None),
         ])
 
         self.cmd('spring app deploy -g {resourceGroup} -s {serviceName} -n {app} --container-image {containerImage} --container-command "java" --container-args "-cp /app/resources:/app/classes:/app/libs/* hello.Application"', checks=[
@@ -223,8 +224,21 @@ class CustomImageTest(ScenarioTest):
             self.check('properties.source.customContainer.args', ['-cp', '/app/resources:/app/classes:/app/libs/*', 'hello.Application']),
         ])
 
-        self.cmd('spring app deployment create -g {resourceGroup} -s {serviceName} --app {app} -n green --container-image {containerImage}', checks=[
+        self.cmd('spring app deployment create -g {resourceGroup} -s {serviceName} --app {app} -n green --container-image {containerImage} --language-framework springboot', checks=[
             self.check('name', 'green'),
             self.check('properties.source.type', 'Container'),
             self.check('properties.source.customContainer.containerImage', '{containerImage}'),
+            self.check('properties.source.customContainer.languageFramework', 'springboot'),
         ])
+
+class AppConnectTest(ScenarioTest):
+
+    def test_app_connect(self):
+        self.kwargs.update({
+            'app': 'test-app',
+            'serviceName': 'cli-unittest',
+            'resourceGroup': 'cli'
+        })
+
+        # Test the failed case only since this is an interactive command
+        self.cmd('spring app connect -s {serviceName} -g {resourceGroup} -n {app} --shell-cmd /bin/placeholder', expect_failure=True)

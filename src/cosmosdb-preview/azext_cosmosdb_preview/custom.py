@@ -43,7 +43,7 @@ from azext_cosmosdb_preview._client_factory import (
 from azure.cli.core.azclierror import InvalidArgumentValueError
 from azure.core.exceptions import ResourceNotFoundError
 
-from azure.mgmt.cosmosdb.models import (
+from azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.models import (
     Location,
     CreateMode,
     ConsistencyPolicy,

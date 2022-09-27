@@ -41,20 +41,30 @@ class AzureFirewallScenario(ScenarioTest):
         self.cmd('network firewall list -g {rg}')
         self.cmd('network firewall delete -g {rg} -n {af}')
 
-    @ResourceGroupPreparer(name_prefix='cli_test_azure_firewall_with_v2')
-    def test_azure_firewall_with_v2(self, resource_group):
+    @ResourceGroupPreparer(name_prefix="cli_test_firewall_with_additional_log_", location="westus")
+    def test_firewall_with_additional_log(self):
         self.kwargs.update({
-            'af': 'af1'
+            "firewall_name": self.create_random_name("firewall-", 16)
         })
-        self.cmd('network firewall create -g {rg} -n {af} --fat-flow-logging', checks=[
-            self.check('"Network.AdditionalLogs.EnableFatFlowLogging"', 'true')
-        ])
-        self.cmd('network firewall update -g {rg} -n {af} --fat-flow-logging false', checks=[
-            self.not_exists('"Network.AdditionalLogs.EnableFatFlowLogging"')
-        ])
-        self.cmd('network firewall show -g {rg} -n {af}')
-        self.cmd('network firewall list -g {rg}')
-        self.cmd('network firewall delete -g {rg} -n {af}')
+
+        self.cmd(
+            "network firewall create -n {firewall_name} -g {rg} "
+            "--enable-fat-flow-logging --enable-udp-log-optimization",
+            checks=[
+                self.check('"Network.AdditionalLogs.EnableFatFlowLogging"', "true"),
+                self.check('"Network.AdditionalLogs.EnableUdpLogOptimization"', "true")
+            ]
+        )
+        self.cmd(
+             "network firewall update -n {firewall_name} -g {rg} "
+             "--enable-fat-flow-logging false --enable-udp-log-optimization false",
+             checks=[
+                 self.not_exists('"Network.AdditionalLogs.EnableFatFlowLogging"'),
+                 self.not_exists('"Network.AdditionalLogs.EnableUdpLogOptimization"')
+             ]
+        )
+
+        self.cmd("network firewall delete -n {firewall_name} -g {rg}")
 
     @ResourceGroupPreparer(name_prefix='cli_test_azure_firewall_ip_config')
     def test_azure_firewall_ip_config(self, resource_group):
