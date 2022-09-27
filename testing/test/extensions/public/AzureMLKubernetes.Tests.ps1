@@ -78,7 +78,9 @@ Describe 'AzureML Kubernetes Testing' {
     }
 
     It "Perform Update extension" {
-        az $Env:K8sExtensionName update -c $($ENVCONFIG.arcClusterName) -g $($ENVCONFIG.resourceGroup) --cluster-type connectedClusters -n $extensionName --config "$($mockUpdateKey)=true" --config-protected "$($mockProtectedUpdateKey)=true" --no-wait
+        $sslKeyPemFile = Join-Path (Join-Path (Join-Path (Split-Path $PSScriptRoot -Parent) "data") "azure_ml") "test_key.pem"
+        $sslCertPemFile = Join-Path (Join-Path (Join-Path (Split-Path $PSScriptRoot -Parent) "data") "azure_ml") "test_cert.pem"
+        az $Env:K8sExtensionName update -c $($ENVCONFIG.arcClusterName) -g $($ENVCONFIG.resourceGroup) --cluster-type connectedClusters -n $extensionName --config "$($mockUpdateKey)=true" --config-protected "$($mockProtectedUpdateKey)=true" sslKeyPemFile=$sslKeyPemFile sslCertPemFile=$sslCertPemFile --no-wait
         $? | Should -BeTrue        
 
         # Loop and retry until the extension updated
