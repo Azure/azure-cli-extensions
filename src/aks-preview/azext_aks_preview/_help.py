@@ -573,7 +573,7 @@ helps['aks upgrade'] = """
           short-summary: Send custom headers. When specified, format should be Key1=Value1,Key2=Value2
     examples:
       - name: Upgrade a existing managed cluster to a managed cluster snapshot.
-        text: az aks upgrade --cluster-snapshot-id <clustersnapshot resource id> -g MyResourceGroup -n MyManagedCluster
+        text: az aks upgrade -g MyResourceGroup -n MyManagedCluster --cluster-snapshot-id "/subscriptions/00000/resourceGroups/AnotherResourceGroup/providers/Microsoft.ContainerService/managedclustersnapshots/mysnapshot1"
 """
 
 helps['aks update'] = """
@@ -911,7 +911,7 @@ helps['aks update'] = """
       - name: Enable Windows gmsa for a kubernetes cluster without setting DNS server in the vnet used by the cluster.
         text: az aks update -g MyResourceGroup -n MyManagedCluster --enable-windows-gmsa --gmsa-dns-server "10.240.0.4" --gmsa-root-domain-name "contoso.com"
       - name: Update a existing managed cluster to a managed cluster snapshot.
-        text: az aks update --cluster-snapshot-id <clustersnapshot resource id> -g MyResourceGroup -n MyManagedCluster
+        text: az aks update -g MyResourceGroup -n MyManagedCluster --cluster-snapshot-id "/subscriptions/00000/resourceGroups/AnotherResourceGroup/providers/Microsoft.ContainerService/managedclustersnapshots/mysnapshot1"
 """
 
 helps['aks kollect'] = """
