@@ -250,8 +250,8 @@ redentials"} --friendly-name "harshitbi2" --object-type "BackupInstance" --polic
 -9f70-7708a3a2283b/resourceGroups/000pikumar/providers/Microsoft.DataProtection/Backupvaults/PratikPrivatePreviewVault1\
 /backupPolicies/PratikPolicy1" --policy-parameters data-store-parameters-list={"dataStoreType":"OperationalStore","obje\
 ctType":"AzureOperationalStoreParameters","resourceGroupId":"/subscriptions/f75d8d8b-6735-4697-82e1-1a7a3ff0d5d4/resour\
-ceGroups/viveksipgtest"} --validation-type "ShallowValidation" --resource-group "000pikumar" --vault-name \
-"PratikPrivatePreviewVault1"
+ceGroups/viveksipgtest"} --validation-type "ShallowValidation" --tags key1="val1" --resource-group "000pikumar" \
+--vault-name "PratikPrivatePreviewVault1"
 """
 
 helps['dataprotection backup-instance delete'] = """

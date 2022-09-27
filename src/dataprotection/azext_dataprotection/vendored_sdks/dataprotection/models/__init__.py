@@ -68,6 +68,7 @@ try:
     from ._models_py3 import DppBaseResource
     from ._models_py3 import DppBaseResourceList
     from ._models_py3 import DppIdentityDetails
+    from ._models_py3 import DppProxyResource
     from ._models_py3 import DppResource
     from ._models_py3 import DppResourceList
     from ._models_py3 import DppTrackedResource
@@ -190,6 +191,7 @@ except (SyntaxError, ImportError):
     from ._models import DppBaseResource  # type: ignore
     from ._models import DppBaseResourceList  # type: ignore
     from ._models import DppIdentityDetails  # type: ignore
+    from ._models import DppProxyResource  # type: ignore
     from ._models import DppResource  # type: ignore
     from ._models import DppResourceList  # type: ignore
     from ._models import DppTrackedResource  # type: ignore
@@ -340,6 +342,7 @@ __all__ = [
     'DppBaseResource',
     'DppBaseResourceList',
     'DppIdentityDetails',
+    'DppProxyResource',
     'DppResource',
     'DppResourceList',
     'DppTrackedResource',

@@ -10,7 +10,7 @@ from azure.cli.core.util import sdk_no_wait
 from knack.log import get_logger
 
 from .custom import LOG_RUNNING_PROMPT
-from .vendored_sdks.appplatform.v2022_05_01_preview import models
+from .vendored_sdks.appplatform.v2022_09_01_preview import models
 
 logger = get_logger(__name__)
 DEFAULT_NAME = "default"
@@ -150,7 +150,7 @@ def gateway_route_config_update(cmd, client, resource_group, service, name,
                                 routes_json=None,
                                 routes_file=None):
     route_properties = client.gateway_route_configs.get(
-        resource_group, service, DEFAULT_NAME, name)
+        resource_group, service, DEFAULT_NAME, name).properties
     return _create_or_update_gateway_route_configs(client, resource_group, service, name, route_properties,
                                                    app_name, routes_file, routes_json)
 
