@@ -198,8 +198,8 @@ class _Getch:
 
 class Terminal:
     ERROR_MESSAGE = "Unable to configure terminal."
-    RECOMENDATION = ("Make sure that app in running in a terminal on a Windows 10 "
-                     "or Unix based machine. Versions earlier than Windows 10 are not supported.")
+    RECOMMENDATION = ("Make sure that app in running in a terminal on a Windows 10 "
+                      "or Unix based machine. Versions earlier than Windows 10 are not supported.")
 
     def __init__(self):
         self.win_original_out_mode = None
@@ -232,7 +232,7 @@ class Terminal:
             if (not kernel32.GetConsoleMode(self.win_out, ctypes.byref(dw_original_out_mode)) or
                     not kernel32.GetConsoleMode(self.win_in, ctypes.byref(dw_original_in_mode))):
                 quitapp(error_message=Terminal.ERROR_MESSAGE,
-                        error_recommendation=Terminal.RECOMENDATION, error_func=UnclassifiedUserFault)
+                        error_recommendation=Terminal.RECOMMENDATION, error_func=UnclassifiedUserFault)
 
             self.win_original_out_mode = dw_original_out_mode.value
             self.win_original_in_mode = dw_original_in_mode.value
@@ -244,7 +244,7 @@ class Terminal:
             if (not kernel32.SetConsoleMode(self.win_out, dw_out_mode) or
                     not kernel32.SetConsoleMode(self.win_in, dw_in_mode)):
                 quitapp(error_message=Terminal.ERROR_MESSAGE,
-                        error_recommendation=Terminal.RECOMENDATION, error_func=UnclassifiedUserFault)
+                        error_recommendation=Terminal.RECOMMENDATION, error_func=UnclassifiedUserFault)
         else:
             try:
                 import tty
@@ -252,7 +252,7 @@ class Terminal:
                 fd = sys.stdin.fileno()
             except (ModuleNotFoundError, ValueError):
                 quitapp(error_message=Terminal.ERROR_MESSAGE,
-                        error_recommendation=Terminal.RECOMENDATION, error_func=UnclassifiedUserFault)
+                        error_recommendation=Terminal.RECOMMENDATION, error_func=UnclassifiedUserFault)
 
             self.unix_original_mode = termios.tcgetattr(fd)
             tty.setraw(fd)
@@ -277,7 +277,7 @@ class Terminal:
 
 class SerialConsole:
     def __init__(self, cmd, resource_group_name, vm_vmss_name, vmss_instanceid):
-        client = cf_serial_port(cmd.cli_ctx)
+        client = cf_serial_port(cmd.cli_ctx, resource_group_name, vm_vmss_name)
         if vmss_instanceid is None:
             self.connect_func = lambda: client.connect(
                 resource_group_name=resource_group_name,
@@ -457,7 +457,7 @@ class SerialConsole:
                 GV.websocket_instance.run_forever(skip_utf8_validation=True)
             else:
                 GV.loading = False
-                message = ("\r\nAn unexpected error occured. Could not establish connection to VM or VMSS. "
+                message = ("\r\nAn unexpected error occurred. Could not establish connection to VM or VMSS. "
                            "Check network connection and press \"Enter\" to try again...")
                 PC.print(message, color=PrintClass.RED)
 
@@ -563,14 +563,14 @@ class SerialConsole:
                     error_message, recommendation=recommendation)
         else:
             GV.loading = False
-            error_message = "An unexpected error occured. Could not establish connection to VM or VMSS."
+            error_message = "An unexpected error occurred. Could not establish connection to VM or VMSS."
             recommendation = "Check network connection and try again."
             raise ResourceNotFoundError(
                 error_message, recommendation=recommendation)
 
 
-def check_serial_console_enabled(cli_ctx):
-    client = cf_serialconsole(cli_ctx)
+def check_serial_console_enabled(cli_ctx, resource_group_name, vm_vmss_name):
+    client = cf_serialconsole(cli_ctx, resource_group_name, vm_vmss_name)
     result = client.get_console_status().additional_properties
     if ("properties" in result and "disabled" in result["properties"] and
             not result["properties"]["disabled"]):
@@ -581,7 +581,7 @@ def check_serial_console_enabled(cli_ctx):
 
 
 def check_resource(cli_ctx, resource_group_name, vm_vmss_name, vmss_instanceid):
-    check_serial_console_enabled(cli_ctx)
+    check_serial_console_enabled(cli_ctx, resource_group_name, vm_vmss_name)
     client = _compute_client_factory(cli_ctx)
     if vmss_instanceid:
         result = client.virtual_machine_scale_set_vms.get_instance_view(

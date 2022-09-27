@@ -3,9 +3,10 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+from azure.cli.core.profiles import ResourceType
+
 
 def _compute_client_factory(cli_ctx, **kwargs):
-    from azure.cli.core.profiles import ResourceType
     from azure.cli.core.commands.client_factory import get_mgmt_service_client
     return get_mgmt_service_client(cli_ctx, ResourceType.MGMT_COMPUTE,
                                    subscription_id=kwargs.get('subscription_id'),
@@ -15,9 +16,18 @@ def _compute_client_factory(cli_ctx, **kwargs):
 def cf_serialconsole(cli_ctx, *_):
     from azure.cli.core.commands.client_factory import get_mgmt_service_client
     from azext_serialconsole.vendored_sdks.serialconsole import MicrosoftSerialConsoleClient
+    if len(*_) > 0:
+        kwargs = {'client_ctx': cli_ctx, 'resource_group_name': _[0], 'vm_name': _[1]}
+    else:
+        kwargs = {'client_ctx': cli_ctx}
     return get_mgmt_service_client(cli_ctx,
-                                   MicrosoftSerialConsoleClient)
+                                   MicrosoftSerialConsoleClient, **kwargs)
 
 
 def cf_serial_port(cli_ctx, *_):
-    return cf_serialconsole(cli_ctx).serial_ports
+    return cf_serialconsole(cli_ctx, *_).serial_ports
+
+
+def storage_client_factory(cli_ctx, *_):
+    from azure.cli.core.commands.client_factory import get_mgmt_service_client
+    return get_mgmt_service_client(cli_ctx, ResourceType.MGMT_STORAGE)
