@@ -185,7 +185,6 @@ def validate_reset_nic(cmd, namespace):
         except AzCommandError as azCommandError:
             logger.error(azCommandError)
             raise CLIError('Unexpected error occured while setting the subscription..')
-    logger.info('validate and get VM...\n') #TBD
     _validate_and_get_vm(cmd, namespace.resource_group_name, namespace.vm_name)
 
 
