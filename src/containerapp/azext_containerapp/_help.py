@@ -6,7 +6,6 @@
 
 from knack.help_files import helps  # pylint: disable=unused-import
 
-
 helps['containerapp'] = """
     type: group
     short-summary: Manage Azure Container Apps.
@@ -40,6 +39,22 @@ helps['containerapp create'] = """
           az containerapp create -n MyContainerapp -g MyResourceGroup \\
               --environment MyContainerappEnv \\
               --yaml "path/to/yaml/file.yml"
+    - name: Create a container app with an http scale rule
+      text: |
+          az containerapp create -n myapp -g mygroup --environment myenv --image nginx \\
+              --scale-rule-name my-http-rule \\
+              --scale-rule-http-concurrency 50
+    - name: Create a container app with a custom scale rule
+      text: |
+          az containerapp create -n MyContainerapp -g MyResourceGroup \\
+              --image my-queue-processor --environment MyContainerappEnv \\
+              --min-replicas 4 --max-replicas 8 \\
+              --scale-rule-name queue-based-autoscaling \\
+              --scale-rule-type azure-queue \\
+              --scale-rule-metadata "accountName=mystorageaccountname" \\
+                                    "cloud=AzurePublicCloud" \\
+                                    "queueLength": "5" "queueName": "foo" \\
+              --scale-rule-auth "connection=my-connection-string-secret-name"
 """
 
 helps['containerapp update'] = """
@@ -55,6 +70,18 @@ helps['containerapp update'] = """
           az containerapp update -n MyContainerapp -g MyResourceGroup \\
               --cpu 0.5 --memory 1.0Gi \\
               --min-replicas 4 --max-replicas 8
+    - name: Update a container app with an http scale rule
+      text: |
+          az containerapp update -n myapp -g mygroup \\
+              --scale-rule-name my-http-rule \\
+              --scale-rule-http-concurrency 50
+    - name: Update a container app with a custom scale rule
+      text: |
+          az containerapp update -n myapp -g mygroup \\
+              --scale-rule-name my-custom-rule \\
+              --scale-rule-type my-custom-type \\
+              --scale-rule-metadata key=value key2=value2 \\
+              --scale-rule-auth triggerparam=secretref triggerparam=secretref
 """
 
 helps['containerapp delete'] = """
@@ -117,7 +144,7 @@ helps['containerapp up'] = """
     - name: Create a container app from a dockerfile in a GitHub repo (setting up github actions)
       text: |
           az containerapp up -n MyContainerapp --repo https://github.com/myAccount/myRepo
-    - name: Create a container app from a dockerfile in a local directory
+    - name: Create a container app from a dockerfile in a local directory (or autogenerate a container if no dockerfile is found)
       text: |
           az containerapp up -n MyContainerapp --source .
     - name: Create a container app from an image in a registry
@@ -564,9 +591,9 @@ helps['containerapp ingress show'] = """
 
 helps['containerapp ingress enable'] = """
     type: command
-    short-summary: Enable ingress for a container app.
+    short-summary: Enable or update ingress for a container app.
     examples:
-    - name: Enable ingress for a container app.
+    - name: Enable or update ingress for a container app.
       text: |
           az containerapp ingress enable -n MyContainerapp -g MyResourceGroup \\
               --type external --allow-insecure --target-port 80 --transport auto
