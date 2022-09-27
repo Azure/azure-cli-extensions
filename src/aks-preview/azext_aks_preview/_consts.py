@@ -64,6 +64,10 @@ CONST_OUTBOUND_TYPE_USER_DEFINED_ROUTING = "userDefinedRouting"
 CONST_OUTBOUND_TYPE_MANAGED_NAT_GATEWAY = "managedNATGateway"
 CONST_OUTBOUND_TYPE_USER_ASSIGNED_NAT_GATEWAY = "userAssignedNATGateway"
 
+# load balancer backend pool type
+CONST_LOAD_BALANCER_BACKEND_POOL_TYPE_NODE_IP = "nodeIP"
+CONST_LOAD_BALANCER_BACKEND_POOL_TYPE_NODE_IPCONFIGURATION = "nodeIPConfiguration"
+
 # private dns zone mode
 CONST_PRIVATE_DNS_ZONE_SYSTEM = "system"
 CONST_PRIVATE_DNS_ZONE_NONE = "none"
@@ -188,4 +192,4 @@ CONST_AZURE_KEYVAULT_NETWORK_ACCESS_PRIVATE = "Private"
 # refer https://api.github.com/repos/Azure/draft/releases/latest
 # tag_name gives latest version released.
 # Moving away from 1:n release to avoid unwanted breaking changes with auto upgrades.
-CONST_DRAFT_CLI_VERSION = "v0.0.23"
+CONST_DRAFT_CLI_VERSION = "v0.0.22"

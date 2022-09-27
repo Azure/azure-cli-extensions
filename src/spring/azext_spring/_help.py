@@ -329,6 +329,11 @@ helps['spring app logs'] = """
     short-summary: Show logs of an app instance, logs will be streamed when setting '-f/--follow'.
 """
 
+helps['spring app connect'] = """
+    type: command
+    short-summary: Connect to the interactive shell of an app instance for troubleshooting'.
+"""
+
 helps['spring app deployment'] = """
     type: group
     short-summary: Commands to manage life cycle of deployments of an app in Azure Spring Apps. More operations on deployments can be done on app level with parameter --deployment. e.g. az spring app deploy --deployment <staging deployment>
@@ -663,6 +668,14 @@ helps['spring build-service builder show'] = """
     examples:
         - name: Show a builder.
           text: az spring build-service builder show --name my-builder --service clitest --resource-group cli
+"""
+
+helps['spring build-service builder show-deployments'] = """
+    type: command
+    short-summary: Show deployments.
+    examples:
+        - name: Show the list of deployments using this builder.
+          text: az spring build-service builder show-deployments --name my-builder --service clitest --resource-group cli
 """
 
 helps['spring build-service builder delete'] = """

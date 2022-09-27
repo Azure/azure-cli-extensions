@@ -296,6 +296,41 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
+    def test_aks_create_and_update_with_vpa(self, resource_group, resource_group_location):
+        aks_name = self.create_random_name('cliakstest', 16)
+        _, create_version = self._get_versions(resource_group_location)
+        self.kwargs.update({
+            'resource_group': resource_group,
+            'name': aks_name,
+            'ssh_key_value': self.generate_ssh_keys(),
+            'k8s_version': create_version
+        })
+        create_cmd = 'aks create --resource-group={resource_group} --name={name} ' \
+                     '--vm-set-type VirtualMachineScaleSets -c 1 ' \
+                     '--enable-vpa ' \
+                     '--kubernetes-version={k8s_version} ' \
+                     '--ssh-key-value={ssh_key_value} -o json'
+        self.cmd(create_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.check('workloadAutoScalerProfile.verticalPodAutoscaler.enabled', True),
+        ])
+
+        update_cmd = 'aks update --resource-group={resource_group} --name={name} ' \
+                     '--disable-vpa -o json'
+        self.cmd(update_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.check('workloadAutoScalerProfile.verticalPodAutoscaler.enabled', False)
+        ])
+
+        update_cmd = 'aks update --resource-group={resource_group} --name={name} ' \
+                     '--enable-vpa -o json'
+        self.cmd(update_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.check('workloadAutoScalerProfile.verticalPodAutoscaler.enabled', True)
+        ])
+
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
     def test_aks_create_with_ingress_appgw_addon(self, resource_group, resource_group_location):
         aks_name = self.create_random_name('cliakstest', 16)
         self.kwargs.update({
@@ -2390,7 +2425,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
         # check that the DCR was created
         dataCollectionRuleName = f"MSCI-{aks_name}-{resource_group_location}"
-        dcr_resource_id = f"/subscriptions/{subscription}/resourceGroups/{workspace_resource_group}/providers/Microsoft.Insights/dataCollectionRules/{dataCollectionRuleName}"
+        dcr_resource_id = f"/subscriptions/{subscription}/resourceGroups/{resource_group}/providers/Microsoft.Insights/dataCollectionRules/{dataCollectionRuleName}"
         get_cmd = f'rest --method get --url https://management.azure.com{dcr_resource_id}?api-version=2021-04-01'
         self.cmd(get_cmd, checks=[
             self.check(
@@ -2468,7 +2503,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
         # check that the DCR was created
         dataCollectionRuleName = f"MSCI-{aks_name}-{resource_group_location}"
-        dcr_resource_id = f"/subscriptions/{subscription}/resourceGroups/{workspace_resource_group}/providers/Microsoft.Insights/dataCollectionRules/{dataCollectionRuleName}"
+        dcr_resource_id = f"/subscriptions/{subscription}/resourceGroups/{resource_group}/providers/Microsoft.Insights/dataCollectionRules/{dataCollectionRuleName}"
         get_cmd = f'rest --method get --url https://management.azure.com{dcr_resource_id}?api-version=2021-04-01'
         self.cmd(get_cmd, checks=[
             self.check(
@@ -2525,7 +2560,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         try:
             # check that the DCR was created
             dataCollectionRuleName = f"MSCI-{aks_name}-{resource_group_location}"
-            dcr_resource_id = f"/subscriptions/{subscription}/resourceGroups/{workspace_resource_group}/providers/Microsoft.Insights/dataCollectionRules/{dataCollectionRuleName}"
+            dcr_resource_id = f"/subscriptions/{subscription}/resourceGroups/{resource_group}/providers/Microsoft.Insights/dataCollectionRules/{dataCollectionRuleName}"
             get_cmd = f'rest --method get --url https://management.azure.com{dcr_resource_id}?api-version=2021-04-01'
             self.cmd(get_cmd, checks=[
                 self.check(
@@ -3593,6 +3628,34 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         # delete
         self.cmd(
             'aks delete -g {resource_group} -n {name} --yes --no-wait', checks=[self.is_empty()])
+    
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='centraluseuap', preserve_default_location=True)
+    def test_aks_create_or_update_with_load_balancer_backend_pool_type(self, resource_group, resource_group_location):
+        _, create_version = self._get_versions(resource_group_location)
+        aks_name = self.create_random_name('cliakstest', 16)
+        self.kwargs.update({
+            'resource_group': resource_group,
+            'name': aks_name,
+            'location': resource_group_location,
+            'k8s_version': create_version,
+            'ssh_key_value': self.generate_ssh_keys(),
+        })
+
+        # create
+        create_cmd = 'aks create --resource-group={resource_group} --name={name} --location={location} ' \
+            '--ssh-key-value={ssh_key_value} ' \
+            '--kubernetes-version={k8s_version} ' \
+            '--load-balancer-backend-pool-type=nodeIP'
+        self.cmd(create_cmd, checks=[
+            self.check('networkProfile.loadBalancerProfile.backendPoolType', 'nodeIP'),
+        ])
+
+        # update
+        update_cmd = 'aks update -g {resource_group} -n {name} --load-balancer-backend-pool-type=nodeIP'
+        self.cmd(update_cmd, checks=[
+            self.check('networkProfile.loadBalancerProfile.backendPoolType', 'nodeIP'),
+        ])
 
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='centraluseuap')
@@ -3989,7 +4052,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             self.check('securityProfile.workloadIdentity.enabled', False),
         ])
 
-    @live_only()
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
     def test_aks_create_with_image_cleaner_enabled_with_default_interval_hours(self, resource_group, resource_group_location):
@@ -4023,7 +4085,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             self.check('securityProfile.imageCleaner.intervalHours', 7*24),
         ])
 
-    @live_only()
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
     def test_aks_create_with_image_cleaner_enabled_with_interval_hours(self, resource_group, resource_group_location):
@@ -4058,7 +4119,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             self.check('securityProfile.imageCleaner.intervalHours', 24),
         ])
 
-    @live_only()
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
     def test_aks_update_with_image_cleaner(self, resource_group, resource_group_location):
@@ -4094,7 +4154,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         update_interval_cmd = ' '.join([
             'aks', 'update', '--resource-group={resource_group}', '--name={name}',
             '--image-cleaner-interval-hours 24',
-            '--ssh-key-value={ssh_key_value}',
             '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/EnableImageCleanerPreview',
         ])
         self.cmd(update_interval_cmd, checks=[
@@ -4106,7 +4165,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         disable_cmd = ' '.join([
             'aks', 'update', '--resource-group={resource_group}', '--name={name}',
             '--disable-image-cleaner',
-            '--ssh-key-value={ssh_key_value}',
             '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/EnableImageCleanerPreview',
         ])
         self.cmd(disable_cmd, checks=[
@@ -5069,7 +5127,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         ])
 
     @AllowLargeResponse()
-    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='centraluseuap')
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='centraluseuap', preserve_default_location=True)
     def test_aks_create_with_apiserver_vnet_integration_public(self, resource_group, resource_group_location):
         # kwargs for string formatting
         aks_name = self.create_random_name('cliakstest', 16)
@@ -5258,7 +5316,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             assert os.path.isfile(f'{tmp_dir}/charts/production.yaml') and os.path.isfile(f'{tmp_dir}/.github/workflows/azure-kubernetes-service-helm.yml')
 
             # test `update`
-            update_cmd = f'aks draft update --path={tmp_dir} --destination={tmp_dir}'
+            update_cmd = f'aks draft update --path={tmp_dir} --destination={tmp_dir} --host=testHost --certificate=testKV'
             self.cmd(update_cmd)
             assert os.path.isfile(f'{tmp_dir}/charts/production.yaml')
 
@@ -5283,7 +5341,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             assert os.path.isfile(f'{tmp_dir}/overlays/production/deployment.yaml') and os.path.isfile(f'{tmp_dir}/.github/workflows/azure-kubernetes-service-kustomize.yml')
 
             # test `update`
-            update_cmd = f'aks draft update --path={tmp_dir} --destination={tmp_dir}'
+            update_cmd = f'aks draft update --path={tmp_dir} --destination={tmp_dir} --host=testHost --certificate=testKV'
             self.cmd(update_cmd)
             assert os.path.isfile(f'{tmp_dir}/overlays/production/service.yaml')
 
@@ -5308,7 +5366,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             assert os.path.isfile(f'{tmp_dir}/.github/workflows/azure-kubernetes-service.yml')
 
             # test `update`
-            update_cmd = f'aks draft update --path={tmp_dir} --destination={tmp_dir}'
+            update_cmd = f'aks draft update --path={tmp_dir} --destination={tmp_dir} --host=testHost --certificate=testKV'
             self.cmd(update_cmd)
             assert os.path.isfile(f'{tmp_dir}/manifests/service.yaml')
 

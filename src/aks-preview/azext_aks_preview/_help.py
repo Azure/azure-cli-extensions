@@ -157,6 +157,10 @@ helps['aks create'] = """
           type: int
           short-summary: Load balancer idle timeout in minutes.
           long-summary: Desired idle timeout for load balancer outbound flows, default is 30 minutes. Please specify a value in the range of [4, 100].
+        - name: --load-balancer-backend-pool-type
+          type: string
+          short-summary: Load balancer backend pool type.
+          long-summary: Load balancer backend pool type, supported values are nodeIP and nodeIPConfiguration.
         - name: --nat-gateway-managed-outbound-ip-count
           type: int
           short-summary: NAT gateway managed outbound IP count.
@@ -469,6 +473,9 @@ helps['aks create'] = """
         - name: --defender-config
           type: string
           short-summary: Path to JSON file containing Microsoft Defender profile configurations.
+        - name: --enable-vpa
+          type: bool
+          short-summary: Enable vertical pod autoscaler for cluster.
     examples:
         - name: Create a Kubernetes cluster with an existing SSH public key.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --ssh-key-value /path/to/publickey
@@ -617,6 +624,10 @@ helps['aks update'] = """
           type: int
           short-summary: Load balancer idle timeout in minutes.
           long-summary: Desired idle timeout for load balancer outbound flows, default is 30 minutes. Please specify a value in the range of [4, 100].
+        - name: --load-balancer-backend-pool-type
+          type: string
+          short-summary: Load balancer backend pool type.
+          long-summary: Load balancer backend pool type, supported values are nodeIP and nodeIPConfiguration.
         - name: --nat-gateway-managed-outbound-ip-count
           type: int
           short-summary: NAT gateway managed outbound IP count.
@@ -835,6 +846,12 @@ helps['aks update'] = """
         - name: --private-dns-zone
           type: string
           short-summary: The private dns zone mode for private cluster.
+        - name: --enable-vpa
+          type: bool
+          short-summary: Enable vertical pod autoscaler for cluster.
+        - name: --disable-vpa
+          type: bool
+          short-summary: Disable vertical pod autoscaler for cluster.
     examples:
       - name: Reconcile the cluster back to its current state.
         text: az aks update -g MyResourceGroup -n MyManagedCluster
@@ -2086,6 +2103,12 @@ helps['aks draft update'] = """
     long-summary: This command automatically updates your yaml files as necessary so that your
                   application will be able to receive external requests.
     parameters:
+        - name: --host
+          type: string
+          short-summary: Specify the host of the ingress resource.
+        - name: --certificate
+          type: string
+          short-summary: Specify the URI of the Keyvault certificate to present.
         - name: --destination
           type: string
           short-summary: Specify the path to the project directory (default is .).
@@ -2097,4 +2120,6 @@ helps['aks draft update'] = """
         text: az aks draft update
       - name: Prompt to update the application to be internet accessible in a specific project directory.
         text: az aks draft update --destination=/projects/some_project
+      - name: Update the application to be internet accessible with a host of the ingress resource and a Keyvault certificate in a specific project directory.
+        text: az aks draft update --host=some_host --certificate=some_certificate --destination=/projects/some_project
 """

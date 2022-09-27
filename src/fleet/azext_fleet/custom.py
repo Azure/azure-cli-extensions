@@ -6,14 +6,12 @@
 import os
 import re
 
-from knack.log import get_logger
 from knack.util import CLIError
 
 from azure.cli.core.commands.client_factory import get_subscription_id
 from azure.cli.core.util import sdk_no_wait
 
 from azext_fleet._client_factory import CUSTOM_MGMT_FLEET
-from azext_fleet._resourcegroup import get_rg_location
 from azext_fleet._helpers import print_or_merge_credentials
 
 
@@ -45,10 +43,6 @@ def create_fleet(cmd,
         dns_name_prefix = f'{name_part}-{resource_group_part}-{subscription_id[0:6]}'
 
     fleetHubProfile = FleetHubProfile(dns_prefix=dns_name_prefix)
-    rg_location = get_rg_location(cmd.cli_ctx, resource_group_name)
-    if location is None:
-        location = rg_location
-
     fleet = Fleet(
         location=location,
         tags=tags,

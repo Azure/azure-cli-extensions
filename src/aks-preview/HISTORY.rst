@@ -12,6 +12,33 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+0.5.103
++++++++
+
+* Add load-balancer-backend-pool-type to create and update api.
+
+0.5.102
++++++++
+
+* Add --enable-vpa/--disable-vpa to enable/disable vertical pod autoscaler feature.
+
+0.5.101
++++++++
+
+* Fix `az aks draft` command crashed on windows during binary check, see issue `\#5336 <https://github.com/Azure/azure-cli-extensions/issues/5336>`_.
+* Update to use 2022-08-02-preview api version.
+
+0.5.100
++++++++
+
+* Remove unused import to avoid failure in Python3.6, see issue `\#5303 <https://github.com/Azure/azure-cli-extensions/issues/5303>`_.
+
+0.5.99
+++++++
+
+* Fix DRAFT CLI to 0.0.22.
+* Fix the URL for Download.
+
 0.5.98
 ++++++
 
