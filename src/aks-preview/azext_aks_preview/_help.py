@@ -571,6 +571,9 @@ helps['aks upgrade'] = """
         - name: --aks-custom-headers
           type: string
           short-summary: Send custom headers. When specified, format should be Key1=Value1,Key2=Value2
+    examples:
+      - name: Upgrade a existing managed cluster to a managed cluster snapshot.
+        text: az aks upgrade --cluster-snapshot-id <clustersnapshot resource id> -g MyResourceGroup -n MyManagedCluster
 """
 
 helps['aks update'] = """

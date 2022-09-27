@@ -981,10 +981,6 @@ def aks_upgrade(cmd,    # pylint: disable=unused-argument, too-many-return-state
             source_resource_id=cluster_snapshot_id
         )
         mcsnapshot = get_cluster_snapshot_by_snapshot_id(cmd.cli_ctx, cluster_snapshot_id)
-        if not mcsnapshot:
-            raise CLIError(
-                "Given managed cluster snapshot not exsit, input id: {}".format(cluster_snapshot_id)
-            )
         kubernetes_version = mcsnapshot.managed_cluster_properties_read_only.kubernetes_version
 
     if instance.kubernetes_version == kubernetes_version:

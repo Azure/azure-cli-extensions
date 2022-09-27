@@ -2167,11 +2167,11 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                 'kubernetesVersion', upgrade_version)
         ]).get_output_in_json()
 
-        # upgrade the second aks cluster using this snapshot
-        upgrade_cmd = 'aks update --resource-group {resource_group} --name {aks_name2} ' \
+        # update the second aks cluster using this snapshot
+        update_cmd = 'aks update --resource-group {resource_group} --name {aks_name2} ' \
                      '--cluster-snapshot-id {snapshot_resource_id} ' \
                      '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/ManagedClusterSnapshotPreview -o json'
-        self.cmd(upgrade_cmd, checks=[
+        self.cmd(update_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
             self.check(
                 'creationData.sourceResourceId', snapshot_resource_id),
