@@ -171,7 +171,7 @@ def load_arguments(self, _):
     with self.argument_context('containerapp env update') as c:
         c.argument('name', name_type, help='Name of the Container Apps environment.')
         c.argument('tags', arg_type=tags_type)
-        c.argument('plan', help="The sku of the containerapp environment. Downgrading from premium to consumption is not supported. Environment must have a subnet to be upgraded to premium sku.", arg_type=get_enum_type(['consumption', 'premium', None], default=None))
+        # c.argument('plan', help="The sku of the containerapp environment. Downgrading from premium to consumption is not supported. Environment must have a subnet to be upgraded to premium sku.", arg_type=get_enum_type(['consumption', 'premium', None], default=None))
         c.ignore('workload_name')
         c.ignore('min_nodes')
         c.ignore('max_nodes')

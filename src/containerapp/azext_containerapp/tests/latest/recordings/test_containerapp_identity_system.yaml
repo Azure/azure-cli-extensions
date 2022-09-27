@@ -15,7 +15,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.43.0 azsdk-python-azure-mgmt-resource/21.1.0b1 Python/3.9.7 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://brazilsouth.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001?api-version=2021-04-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001?api-version=2021-04-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001","name":"clitest.rg000001","type":"Microsoft.Resources/resourceGroups","location":"canadacentral","tags":{"product":"azurecli","cause":"automation","date":"2022-12-14T11:14:15Z"},"properties":{"provisioningState":"Succeeded"}}'
@@ -62,7 +62,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.43.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.7 (Windows-10-10.0.22621-SP0)
     method: PUT
-    uri: https://brazilsouth.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.OperationalInsights/workspaces/containerapp-env000004?api-version=2021-12-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.OperationalInsights/workspaces/containerapp-env000004?api-version=2021-12-01-preview
   response:
     body:
       string: '{"properties":{"customerId":"483e55b4-8b6d-4ef7-8cca-74b7d95069b1","provisioningState":"Creating","sku":{"name":"PerGB2018","lastSkuUpdate":"2022-12-14T11:14:25.8667928Z"},"retentionInDays":30,"features":{"legacy":0,"searchVersion":1,"enableLogAccessUsingOnlyResourcePermissions":true},"workspaceCapping":{"dailyQuotaGb":-1.0,"quotaNextResetTime":"2022-12-14T14:00:00Z","dataIngestionStatus":"RespectQuota"},"publicNetworkAccessForIngestion":"Enabled","publicNetworkAccessForQuery":"Enabled","createdDate":"2022-12-14T11:14:25.8667928Z","modifiedDate":"2022-12-14T11:14:25.8667928Z"},"location":"canadacentral","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.OperationalInsights/workspaces/containerapp-env000004","name":"containerapp-env000004","type":"Microsoft.OperationalInsights/workspaces"}'
@@ -92,7 +92,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1193'
+      - '1199'
       x-powered-by:
       - ASP.NET
     status:
@@ -168,7 +168,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.43.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.7 (Windows-10-10.0.22621-SP0)
     method: POST
-    uri: https://brazilsouth.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.OperationalInsights/workspaces/containerapp-env000004/sharedKeys?api-version=2020-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.OperationalInsights/workspaces/containerapp-env000004/sharedKeys?api-version=2020-08-01
   response:
     body:
       string: '{"primarySharedKey":"PUhMKngK3Eg1i1q89/ZT2OZmSNBSjvEDvfcy1QbS0YsPjmrRLdjpPJkLjmVhrKnFEVhYkYSQyg53Dz/ySgDo8g==","secondarySharedKey":"t0ZZ9GMemmS9T/J/chThgJGoDP/spWa7gN7q705FDj8J9Ycr00vDxeO7xbhGYpLHU3xihFRjbjCoUN8W+PVZ5A=="}'
@@ -222,7 +222,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.43.0 azsdk-python-azure-mgmt-resource/21.1.0b1 Python/3.9.7 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://brazilsouth.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App?api-version=2021-04-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App?api-version=2021-04-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App","namespace":"Microsoft.App","authorizations":[{"applicationId":"7e3bc4fd-85a3-4192-b177-5b8bfc87f42c","roleDefinitionId":"39a74f72-b40f-4bdc-b639-562fe2260bf0"},{"applicationId":"3734c1a4-2bed-4998-a37a-ff1a9e7bf019","roleDefinitionId":"5c779a4f-5cb2-4547-8c41-478d9be8ba90"},{"applicationId":"55ebbb62-3b9c-49fd-9b87-9595226dd4ac","roleDefinitionId":"e49ca620-7992-4561-a7df-4ed67dad77b5"}],"resourceTypes":[{"resourceType":"managedEnvironments","locations":["North
@@ -1302,18 +1302,12 @@ interactions:
       - '-1'
       pragma:
       - no-cache
-      server:
-      - Microsoft-IIS/10.0
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
       vary:
-      - Accept-Encoding,Accept-Encoding
+      - Accept-Encoding
       x-content-type-options:
       - nosniff
-      x-powered-by:
-      - ASP.NET
     status:
       code: 200
       message: OK
@@ -1321,7 +1315,7 @@ interactions:
     body: null
     headers:
       Accept:
-      - '*/*'
+      - application/json
       Accept-Encoding:
       - gzip, deflate
       CommandName:
@@ -1333,7 +1327,7 @@ interactions:
       User-Agent:
       - python/3.9.7 (Windows-10-10.0.22621-SP0) AZURECLI/2.43.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-env000002?api-version=2022-06-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App?api-version=2021-04-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-env000002","name":"containerapp-env000002","type":"Microsoft.App/managedEnvironments","location":"canadacentral","systemData":{"createdBy":"zuh@microsoft.com","createdByType":"User","createdAt":"2022-12-14T11:15:19.8160435","lastModifiedBy":"zuh@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-12-14T11:15:19.8160435"},"properties":{"provisioningState":"Waiting","useLegionServerlessCompute":false,"defaultDomain":"bravebay-b67121fd.canadacentral.azurecontainerapps.io","staticIp":"20.104.6.254","appLogsConfiguration":{"destination":"log-analytics","logAnalyticsConfiguration":{"customerId":"483e55b4-8b6d-4ef7-8cca-74b7d95069b1"}},"zoneRedundant":false,"customDomainConfiguration":{"customDomainVerificationId":"79CA8690E6B618792A80838552EF20F439BB6386E447A1FE057FC382E98FF1B3"}},"sku":{"name":"Consumption"}}'
@@ -1352,18 +1346,12 @@ interactions:
       - '-1'
       pragma:
       - no-cache
-      server:
-      - Microsoft-IIS/10.0
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
       vary:
-      - Accept-Encoding,Accept-Encoding
+      - Accept-Encoding
       x-content-type-options:
       - nosniff
-      x-powered-by:
-      - ASP.NET
     status:
       code: 200
       message: OK
@@ -1371,7 +1359,7 @@ interactions:
     body: null
     headers:
       Accept:
-      - '*/*'
+      - application/json
       Accept-Encoding:
       - gzip, deflate
       CommandName:
@@ -1383,7 +1371,7 @@ interactions:
       User-Agent:
       - python/3.9.7 (Windows-10-10.0.22621-SP0) AZURECLI/2.43.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-env000002?api-version=2022-06-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App?api-version=2021-04-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-env000002","name":"containerapp-env000002","type":"Microsoft.App/managedEnvironments","location":"canadacentral","systemData":{"createdBy":"zuh@microsoft.com","createdByType":"User","createdAt":"2022-12-14T11:15:19.8160435","lastModifiedBy":"zuh@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-12-14T11:15:19.8160435"},"properties":{"provisioningState":"Waiting","useLegionServerlessCompute":false,"defaultDomain":"bravebay-b67121fd.canadacentral.azurecontainerapps.io","staticIp":"20.104.6.254","appLogsConfiguration":{"destination":"log-analytics","logAnalyticsConfiguration":{"customerId":"483e55b4-8b6d-4ef7-8cca-74b7d95069b1"}},"zoneRedundant":false,"customDomainConfiguration":{"customDomainVerificationId":"79CA8690E6B618792A80838552EF20F439BB6386E447A1FE057FC382E98FF1B3"}},"sku":{"name":"Consumption"}}'
@@ -1402,23 +1390,22 @@ interactions:
       - '-1'
       pragma:
       - no-cache
-      server:
-      - Microsoft-IIS/10.0
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
       vary:
-      - Accept-Encoding,Accept-Encoding
+      - Accept-Encoding
       x-content-type-options:
       - nosniff
-      x-powered-by:
-      - ASP.NET
     status:
       code: 200
       message: OK
 - request:
-    body: null
+    body: '{"location": "canadacentral", "tags": null, "sku": {"name": "Consumption"},
+      "properties": {"daprAIInstrumentationKey": null, "vnetConfiguration": null,
+      "internalLoadBalancerEnabled": null, "appLogsConfiguration": {"destination":
+      "log-analytics", "logAnalyticsConfiguration": {"customerId": "c50e5126-d4db-447c-b99b-9ffdbdb28722",
+      "sharedKey": "r/WHptqaoB72rPxZkOW6E74EgfEm3kjddnIz5hWBBPHySclzUPjBgrEviRynOnCZ+7TCNhnTNx+pOEp+RuqBnw=="}},
+      "customDomainConfiguration": null, "zoneRedundant": false}}'
     headers:
       Accept:
       - '*/*'
@@ -1428,6 +1415,10 @@ interactions:
       - containerapp env create
       Connection:
       - keep-alive
+      Content-Length:
+      - '496'
+      Content-Type:
+      - application/json
       ParameterSetName:
       - -g -n --logs-workspace-id --logs-workspace-key -l
       User-Agent:
@@ -1456,17 +1447,17 @@ interactions:
       - Microsoft-IIS/10.0
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding,Accept-Encoding
       x-content-type-options:
       - nosniff
+      x-ms-async-operation-timeout:
+      - PT15M
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '99'
       x-powered-by:
       - ASP.NET
     status:
-      code: 200
-      message: OK
+      code: 201
+      message: Created
 - request:
     body: null
     headers:
@@ -3133,7 +3124,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.43.0 azsdk-python-azure-mgmt-resource/21.1.0b1 Python/3.9.7 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://brazilsouth.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App?api-version=2021-04-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App?api-version=2021-04-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App","namespace":"Microsoft.App","authorizations":[{"applicationId":"7e3bc4fd-85a3-4192-b177-5b8bfc87f42c","roleDefinitionId":"39a74f72-b40f-4bdc-b639-562fe2260bf0"},{"applicationId":"3734c1a4-2bed-4998-a37a-ff1a9e7bf019","roleDefinitionId":"5c779a4f-5cb2-4547-8c41-478d9be8ba90"},{"applicationId":"55ebbb62-3b9c-49fd-9b87-9595226dd4ac","roleDefinitionId":"e49ca620-7992-4561-a7df-4ed67dad77b5"}],"resourceTypes":[{"resourceType":"managedEnvironments","locations":["North
@@ -3283,7 +3274,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.43.0 azsdk-python-azure-mgmt-resource/21.1.0b1 Python/3.9.7 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://brazilsouth.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App?api-version=2021-04-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App?api-version=2021-04-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App","namespace":"Microsoft.App","authorizations":[{"applicationId":"7e3bc4fd-85a3-4192-b177-5b8bfc87f42c","roleDefinitionId":"39a74f72-b40f-4bdc-b639-562fe2260bf0"},{"applicationId":"3734c1a4-2bed-4998-a37a-ff1a9e7bf019","roleDefinitionId":"5c779a4f-5cb2-4547-8c41-478d9be8ba90"},{"applicationId":"55ebbb62-3b9c-49fd-9b87-9595226dd4ac","roleDefinitionId":"e49ca620-7992-4561-a7df-4ed67dad77b5"}],"resourceTypes":[{"resourceType":"managedEnvironments","locations":["North
@@ -3433,7 +3424,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.43.0 azsdk-python-azure-mgmt-resource/21.1.0b1 Python/3.9.7 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://brazilsouth.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App?api-version=2021-04-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App?api-version=2021-04-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App","namespace":"Microsoft.App","authorizations":[{"applicationId":"7e3bc4fd-85a3-4192-b177-5b8bfc87f42c","roleDefinitionId":"39a74f72-b40f-4bdc-b639-562fe2260bf0"},{"applicationId":"3734c1a4-2bed-4998-a37a-ff1a9e7bf019","roleDefinitionId":"5c779a4f-5cb2-4547-8c41-478d9be8ba90"},{"applicationId":"55ebbb62-3b9c-49fd-9b87-9595226dd4ac","roleDefinitionId":"e49ca620-7992-4561-a7df-4ed67dad77b5"}],"resourceTypes":[{"resourceType":"managedEnvironments","locations":["North
@@ -3698,7 +3689,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.43.0 azsdk-python-azure-mgmt-resource/21.1.0b1 Python/3.9.7 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://brazilsouth.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App?api-version=2021-04-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App?api-version=2021-04-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App","namespace":"Microsoft.App","authorizations":[{"applicationId":"7e3bc4fd-85a3-4192-b177-5b8bfc87f42c","roleDefinitionId":"39a74f72-b40f-4bdc-b639-562fe2260bf0"},{"applicationId":"3734c1a4-2bed-4998-a37a-ff1a9e7bf019","roleDefinitionId":"5c779a4f-5cb2-4547-8c41-478d9be8ba90"},{"applicationId":"55ebbb62-3b9c-49fd-9b87-9595226dd4ac","roleDefinitionId":"e49ca620-7992-4561-a7df-4ed67dad77b5"}],"resourceTypes":[{"resourceType":"managedEnvironments","locations":["North
@@ -3849,7 +3840,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.43.0 azsdk-python-azure-mgmt-resource/21.1.0b1 Python/3.9.7 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://brazilsouth.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App?api-version=2021-04-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App?api-version=2021-04-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App","namespace":"Microsoft.App","authorizations":[{"applicationId":"7e3bc4fd-85a3-4192-b177-5b8bfc87f42c","roleDefinitionId":"39a74f72-b40f-4bdc-b639-562fe2260bf0"},{"applicationId":"3734c1a4-2bed-4998-a37a-ff1a9e7bf019","roleDefinitionId":"5c779a4f-5cb2-4547-8c41-478d9be8ba90"},{"applicationId":"55ebbb62-3b9c-49fd-9b87-9595226dd4ac","roleDefinitionId":"e49ca620-7992-4561-a7df-4ed67dad77b5"}],"resourceTypes":[{"resourceType":"managedEnvironments","locations":["North
@@ -4173,7 +4164,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.43.0 azsdk-python-azure-mgmt-resource/21.1.0b1 Python/3.9.7 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://brazilsouth.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App?api-version=2021-04-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App?api-version=2021-04-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App","namespace":"Microsoft.App","authorizations":[{"applicationId":"7e3bc4fd-85a3-4192-b177-5b8bfc87f42c","roleDefinitionId":"39a74f72-b40f-4bdc-b639-562fe2260bf0"},{"applicationId":"3734c1a4-2bed-4998-a37a-ff1a9e7bf019","roleDefinitionId":"5c779a4f-5cb2-4547-8c41-478d9be8ba90"},{"applicationId":"55ebbb62-3b9c-49fd-9b87-9595226dd4ac","roleDefinitionId":"e49ca620-7992-4561-a7df-4ed67dad77b5"}],"resourceTypes":[{"resourceType":"managedEnvironments","locations":["North
@@ -4496,7 +4487,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.43.0 azsdk-python-azure-mgmt-resource/21.1.0b1 Python/3.9.7 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://brazilsouth.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App?api-version=2021-04-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App?api-version=2021-04-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App","namespace":"Microsoft.App","authorizations":[{"applicationId":"7e3bc4fd-85a3-4192-b177-5b8bfc87f42c","roleDefinitionId":"39a74f72-b40f-4bdc-b639-562fe2260bf0"},{"applicationId":"3734c1a4-2bed-4998-a37a-ff1a9e7bf019","roleDefinitionId":"5c779a4f-5cb2-4547-8c41-478d9be8ba90"},{"applicationId":"55ebbb62-3b9c-49fd-9b87-9595226dd4ac","roleDefinitionId":"e49ca620-7992-4561-a7df-4ed67dad77b5"}],"resourceTypes":[{"resourceType":"managedEnvironments","locations":["North
@@ -4696,7 +4687,7 @@ interactions:
       x-ms-async-operation-timeout:
       - PT15M
       x-ms-ratelimit-remaining-subscription-resource-requests:
-      - '497'
+      - '499'
       x-powered-by:
       - ASP.NET
     status:

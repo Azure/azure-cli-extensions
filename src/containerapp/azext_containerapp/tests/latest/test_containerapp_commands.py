@@ -780,7 +780,7 @@ class ContainerappRegistryIdentityTests(ScenarioTest):
         image_source = "mcr.microsoft.com/azuredocs/containerapps-helloworld:latest"
         image_name = f"{acr}.azurecr.io/azuredocs/containerapps-helloworld:latest"
 
-        create_containerapp_env(self, env, resource_group)
+        create_containerapp_env(self, env, resource_group, "westeurope")
 
         identity_rid = self.cmd(f'identity create -g {resource_group} -n {identity}').get_output_in_json()["id"]
 

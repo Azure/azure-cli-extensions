@@ -15,7 +15,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.43.0 azsdk-python-azure-mgmt-resource/21.1.0b1 Python/3.9.7 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://brazilsouth.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001?api-version=2021-04-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001?api-version=2021-04-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001","name":"clitest.rg000001","type":"Microsoft.Resources/resourceGroups","location":"eastus2","tags":{"product":"azurecli","cause":"automation","date":"2022-12-14T13:08:52Z"},"properties":{"provisioningState":"Succeeded"}}'
@@ -62,7 +62,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.43.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.7 (Windows-10-10.0.22621-SP0)
     method: PUT
-    uri: https://brazilsouth.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.OperationalInsights/workspaces/containerapp-env000003?api-version=2021-12-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.OperationalInsights/workspaces/containerapp-env000003?api-version=2021-12-01-preview
   response:
     body:
       string: '{"properties":{"customerId":"ec135c18-04e1-4b49-b19e-579fede8c114","provisioningState":"Creating","sku":{"name":"PerGB2018","lastSkuUpdate":"2022-12-14T13:09:03.9206903Z"},"retentionInDays":30,"features":{"legacy":0,"searchVersion":1,"enableLogAccessUsingOnlyResourcePermissions":true},"workspaceCapping":{"dailyQuotaGb":-1.0,"quotaNextResetTime":"2022-12-15T03:00:00Z","dataIngestionStatus":"RespectQuota"},"publicNetworkAccessForIngestion":"Enabled","publicNetworkAccessForQuery":"Enabled","createdDate":"2022-12-14T13:09:03.9206903Z","modifiedDate":"2022-12-14T13:09:03.9206903Z"},"location":"eastus2","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.OperationalInsights/workspaces/containerapp-env000003","name":"containerapp-env000003","type":"Microsoft.OperationalInsights/workspaces"}'
@@ -74,7 +74,7 @@ interactions:
       cache-control:
       - no-cache
       content-length:
-      - '852'
+      - '849'
       content-type:
       - application/json; charset=utf-8
       date:
@@ -92,7 +92,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1197'
+      - '1199'
       x-powered-by:
       - ASP.NET
     status:
@@ -126,7 +126,7 @@ interactions:
       cache-control:
       - no-cache
       content-length:
-      - '853'
+      - '850'
       content-type:
       - application/json; charset=utf-8
       date:
@@ -168,7 +168,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.43.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.7 (Windows-10-10.0.22621-SP0)
     method: POST
-    uri: https://brazilsouth.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.OperationalInsights/workspaces/containerapp-env000003/sharedKeys?api-version=2020-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.OperationalInsights/workspaces/containerapp-env000003/sharedKeys?api-version=2020-08-01
   response:
     body:
       string: '{"primarySharedKey":"RRIyuPK2mXMZe4bikvcd22C053fc74NBR/phcgkIbjZu7LJ5hVNV4t6sCziN4MRFcBIJxppjdHd2pjBo1XvO2g==","secondarySharedKey":"X2L5pWZMIH7mYxBsvePBGh6OqmOFMOiDBZLbugO20LpHiWEr4X1GSm0RV9i7H+45FvH7d9BfD9S2UXhX/po0Nw=="}'
@@ -222,7 +222,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.43.0 azsdk-python-azure-mgmt-resource/21.1.0b1 Python/3.9.7 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://brazilsouth.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App?api-version=2021-04-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App?api-version=2021-04-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App","namespace":"Microsoft.App","authorizations":[{"applicationId":"7e3bc4fd-85a3-4192-b177-5b8bfc87f42c","roleDefinitionId":"39a74f72-b40f-4bdc-b639-562fe2260bf0"},{"applicationId":"3734c1a4-2bed-4998-a37a-ff1a9e7bf019","roleDefinitionId":"5c779a4f-5cb2-4547-8c41-478d9be8ba90"},{"applicationId":"55ebbb62-3b9c-49fd-9b87-9595226dd4ac","roleDefinitionId":"e49ca620-7992-4561-a7df-4ed67dad77b5"}],"resourceTypes":[{"resourceType":"managedEnvironments","locations":["North
@@ -322,7 +322,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.43.0 azsdk-python-azure-mgmt-resource/21.1.0b1 Python/3.9.7 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://brazilsouth.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App?api-version=2021-04-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App?api-version=2021-04-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App","namespace":"Microsoft.App","authorizations":[{"applicationId":"7e3bc4fd-85a3-4192-b177-5b8bfc87f42c","roleDefinitionId":"39a74f72-b40f-4bdc-b639-562fe2260bf0"},{"applicationId":"3734c1a4-2bed-4998-a37a-ff1a9e7bf019","roleDefinitionId":"5c779a4f-5cb2-4547-8c41-478d9be8ba90"},{"applicationId":"55ebbb62-3b9c-49fd-9b87-9595226dd4ac","roleDefinitionId":"e49ca620-7992-4561-a7df-4ed67dad77b5"}],"resourceTypes":[{"resourceType":"managedEnvironments","locations":["North
@@ -422,7 +422,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.43.0 azsdk-python-azure-mgmt-resource/21.1.0b1 Python/3.9.7 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://brazilsouth.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App?api-version=2021-04-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App?api-version=2021-04-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App","namespace":"Microsoft.App","authorizations":[{"applicationId":"7e3bc4fd-85a3-4192-b177-5b8bfc87f42c","roleDefinitionId":"39a74f72-b40f-4bdc-b639-562fe2260bf0"},{"applicationId":"3734c1a4-2bed-4998-a37a-ff1a9e7bf019","roleDefinitionId":"5c779a4f-5cb2-4547-8c41-478d9be8ba90"},{"applicationId":"55ebbb62-3b9c-49fd-9b87-9595226dd4ac","roleDefinitionId":"e49ca620-7992-4561-a7df-4ed67dad77b5"}],"resourceTypes":[{"resourceType":"managedEnvironments","locations":["North
@@ -1271,15 +1271,15 @@ interactions:
     body: null
     headers:
       Accept:
-      - application/json
+      - '*/*'
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - containerapp env show
+      - containerapp env create
       Connection:
       - keep-alive
       ParameterSetName:
-      - -g -n
+      - -g -n --logs-workspace-id --logs-workspace-key
       User-Agent:
       - python/3.9.7 (Windows-10-10.0.22621-SP0) AZURECLI/2.43.0
     method: GET
@@ -1302,12 +1302,18 @@ interactions:
       - '-1'
       pragma:
       - no-cache
+      server:
+      - Microsoft-IIS/10.0
       strict-transport-security:
       - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
       vary:
-      - Accept-Encoding
+      - Accept-Encoding,Accept-Encoding
       x-content-type-options:
       - nosniff
+      x-powered-by:
+      - ASP.NET
     status:
       code: 200
       message: OK
@@ -1319,11 +1325,11 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - containerapp env show
+      - containerapp env create
       Connection:
       - keep-alive
       ParameterSetName:
-      - -g -n
+      - -g -n --logs-workspace-id --logs-workspace-key
       User-Agent:
       - python/3.9.7 (Windows-10-10.0.22621-SP0) AZURECLI/2.43.0
     method: GET
@@ -1365,15 +1371,15 @@ interactions:
     body: null
     headers:
       Accept:
-      - application/json
+      - '*/*'
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - acr create
+      - containerapp env create
       Connection:
       - keep-alive
       ParameterSetName:
-      - -g -n --sku --admin-enabled
+      - -g -n --logs-workspace-id --logs-workspace-key
       User-Agent:
       - python/3.9.7 (Windows-10-10.0.22621-SP0) AZURECLI/2.43.0
     method: GET
@@ -1396,33 +1402,34 @@ interactions:
       - '-1'
       pragma:
       - no-cache
+      server:
+      - Microsoft-IIS/10.0
       strict-transport-security:
       - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
       vary:
-      - Accept-Encoding
+      - Accept-Encoding,Accept-Encoding
       x-content-type-options:
       - nosniff
+      x-powered-by:
+      - ASP.NET
     status:
       code: 200
       message: OK
 - request:
-    body: '{"location": "eastus2", "sku": {"name": "Basic"}, "properties": {"adminUserEnabled":
-      true, "anonymousPullEnabled": false}}'
+    body: null
     headers:
       Accept:
-      - application/json
+      - '*/*'
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - acr create
+      - containerapp env create
       Connection:
       - keep-alive
-      Content-Length:
-      - '122'
-      Content-Type:
-      - application/json
       ParameterSetName:
-      - -g -n --sku --admin-enabled
+      - -g -n --logs-workspace-id --logs-workspace-key
       User-Agent:
       - python/3.9.7 (Windows-10-10.0.22621-SP0) AZURECLI/2.43.0
     method: GET
@@ -1446,16 +1453,20 @@ interactions:
       pragma:
       - no-cache
       server:
-      - Microsoft-HTTPAPI/2.0
+      - Microsoft-IIS/10.0
       strict-transport-security:
       - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
       x-content-type-options:
       - nosniff
-      x-ms-ratelimit-remaining-subscription-writes:
-      - '1198'
+      x-powered-by:
+      - ASP.NET
     status:
-      code: 201
-      message: Created
+      code: 200
+      message: OK
 - request:
     body: null
     headers:
@@ -1464,11 +1475,11 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - acr create
+      - containerapp env create
       Connection:
       - keep-alive
       ParameterSetName:
-      - -g -n --sku --admin-enabled
+      - -g -n --logs-workspace-id --logs-workspace-key
       User-Agent:
       - python/3.9.7 (Windows-10-10.0.22621-SP0) AZURECLI/2.43.0
     method: GET
@@ -1492,15 +1503,17 @@ interactions:
       pragma:
       - no-cache
       server:
-      - Microsoft-HTTPAPI/2.0
+      - Microsoft-IIS/10.0
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       transfer-encoding:
       - chunked
       vary:
-      - Accept-Encoding
+      - Accept-Encoding,Accept-Encoding
       x-content-type-options:
       - nosniff
+      x-powered-by:
+      - ASP.NET
     status:
       code: 200
       message: OK
@@ -1512,11 +1525,11 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - acr create
+      - containerapp env create
       Connection:
       - keep-alive
       ParameterSetName:
-      - -g -n --sku --admin-enabled
+      - -g -n --logs-workspace-id --logs-workspace-key
       User-Agent:
       - python/3.9.7 (Windows-10-10.0.22621-SP0) AZURECLI/2.43.0
     method: GET
@@ -1540,15 +1553,17 @@ interactions:
       pragma:
       - no-cache
       server:
-      - Microsoft-HTTPAPI/2.0
+      - Microsoft-IIS/10.0
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       transfer-encoding:
       - chunked
       vary:
-      - Accept-Encoding
+      - Accept-Encoding,Accept-Encoding
       x-content-type-options:
       - nosniff
+      x-powered-by:
+      - ASP.NET
     status:
       code: 200
       message: OK
@@ -1556,15 +1571,15 @@ interactions:
     body: null
     headers:
       Accept:
-      - application/json
+      - '*/*'
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - acr credential show
+      - containerapp env create
       Connection:
       - keep-alive
       ParameterSetName:
-      - -g -n
+      - -g -n --logs-workspace-id --logs-workspace-key
       User-Agent:
       - python/3.9.7 (Windows-10-10.0.22621-SP0) AZURECLI/2.43.0
     method: GET
@@ -1588,15 +1603,17 @@ interactions:
       pragma:
       - no-cache
       server:
-      - Microsoft-HTTPAPI/2.0
+      - Microsoft-IIS/10.0
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       transfer-encoding:
       - chunked
       vary:
-      - Accept-Encoding
+      - Accept-Encoding,Accept-Encoding
       x-content-type-options:
       - nosniff
+      x-powered-by:
+      - ASP.NET
     status:
       code: 200
       message: OK
@@ -1604,17 +1621,15 @@ interactions:
     body: null
     headers:
       Accept:
-      - application/json
+      - '*/*'
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - acr credential show
+      - containerapp env create
       Connection:
       - keep-alive
-      Content-Length:
-      - '0'
       ParameterSetName:
-      - -g -n
+      - -g -n --logs-workspace-id --logs-workspace-key
       User-Agent:
       - python/3.9.7 (Windows-10-10.0.22621-SP0) AZURECLI/2.43.0
     method: GET
@@ -1638,17 +1653,17 @@ interactions:
       pragma:
       - no-cache
       server:
-      - Microsoft-HTTPAPI/2.0
+      - Microsoft-IIS/10.0
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       transfer-encoding:
       - chunked
       vary:
-      - Accept-Encoding
+      - Accept-Encoding,Accept-Encoding
       x-content-type-options:
       - nosniff
-      x-ms-ratelimit-remaining-subscription-writes:
-      - '1198'
+      x-powered-by:
+      - ASP.NET
     status:
       code: 200
       message: OK
@@ -1656,15 +1671,15 @@ interactions:
     body: null
     headers:
       Accept:
-      - application/json
+      - '*/*'
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - containerapp create
+      - containerapp env create
       Connection:
       - keep-alive
       ParameterSetName:
-      - -g -n --environment --registry-username --registry-server --registry-password
+      - -g -n --logs-workspace-id --logs-workspace-key
       User-Agent:
       - python/3.9.7 (Windows-10-10.0.22621-SP0) AZURECLI/2.43.0
     method: GET
@@ -1687,12 +1702,18 @@ interactions:
       - '-1'
       pragma:
       - no-cache
+      server:
+      - Microsoft-IIS/10.0
       strict-transport-security:
       - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
       vary:
-      - Accept-Encoding
+      - Accept-Encoding,Accept-Encoding
       x-content-type-options:
       - nosniff
+      x-powered-by:
+      - ASP.NET
     status:
       code: 200
       message: OK
@@ -1704,7 +1725,7 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - containerapp create
+      - containerapp env create
       Connection:
       - keep-alive
       ParameterSetName:
@@ -1850,15 +1871,15 @@ interactions:
     body: null
     headers:
       Accept:
-      - application/json
+      - '*/*'
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - containerapp create
+      - containerapp env create
       Connection:
       - keep-alive
       ParameterSetName:
-      - -g -n --environment --registry-username --registry-server --registry-password
+      - -g -n --logs-workspace-id --logs-workspace-key
       User-Agent:
       - python/3.9.7 (Windows-10-10.0.22621-SP0) AZURECLI/2.43.0
     method: GET
@@ -1881,41 +1902,34 @@ interactions:
       - '-1'
       pragma:
       - no-cache
+      server:
+      - Microsoft-IIS/10.0
       strict-transport-security:
       - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
       vary:
-      - Accept-Encoding
+      - Accept-Encoding,Accept-Encoding
       x-content-type-options:
       - nosniff
+      x-powered-by:
+      - ASP.NET
     status:
       code: 200
       message: OK
 - request:
-    body: '{"location": "canadacentral", "identity": {"type": "None", "userAssignedIdentities":
-      null}, "properties": {"managedEnvironmentId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-e2e-env000002",
-      "configuration": {"secrets": [{"name": "containerapp000005azurecrio-containerapp000005",
-      "value": "2McHVDTcDYv/vMuKEE2mOjcSelDwP=rS"}], "activeRevisionsMode": "single",
-      "ingress": null, "dapr": null, "registries": [{"server": "containerapp000005.azurecr.io",
-      "username": "containerapp000005", "passwordSecretRef": "containerapp000005azurecrio-containerapp000005"}]},
-      "template": {"revisionSuffix": null, "containers": [{"image": "mcr.microsoft.com/azuredocs/containerapps-helloworld:latest",
-      "name": "containerapp-e2e000006", "command": null, "args": null, "env": null,
-      "resources": null, "volumeMounts": null}], "scale": null, "volumes": null}},
-      "tags": null}'
+    body: null
     headers:
       Accept:
       - '*/*'
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - containerapp create
+      - containerapp env create
       Connection:
       - keep-alive
-      Content-Length:
-      - '949'
-      Content-Type:
-      - application/json
       ParameterSetName:
-      - -g -n --environment --registry-username --registry-server --registry-password
+      - -g -n --logs-workspace-id --logs-workspace-key
       User-Agent:
       - python/3.9.7 (Windows-10-10.0.22621-SP0) AZURECLI/2.43.0
     method: GET
@@ -1942,17 +1956,17 @@ interactions:
       - Microsoft-IIS/10.0
       strict-transport-security:
       - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
       x-content-type-options:
       - nosniff
-      x-ms-async-operation-timeout:
-      - PT15M
-      x-ms-ratelimit-remaining-subscription-resource-requests:
-      - '497'
       x-powered-by:
       - ASP.NET
     status:
-      code: 201
-      message: Created
+      code: 200
+      message: OK
 - request:
     body: null
     headers:
@@ -1961,11 +1975,11 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - containerapp create
+      - containerapp env create
       Connection:
       - keep-alive
       ParameterSetName:
-      - -g -n --environment --registry-username --registry-server --registry-password
+      - -g -n --logs-workspace-id --logs-workspace-key
       User-Agent:
       - python/3.9.7 (Windows-10-10.0.22621-SP0) AZURECLI/2.43.0
     method: GET
@@ -2011,11 +2025,11 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - containerapp create
+      - containerapp env create
       Connection:
       - keep-alive
       ParameterSetName:
-      - -g -n --environment --registry-username --registry-server --registry-password
+      - -g -n --logs-workspace-id --logs-workspace-key
       User-Agent:
       - python/3.9.7 (Windows-10-10.0.22621-SP0) AZURECLI/2.43.0
     method: GET
@@ -2061,11 +2075,11 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - containerapp create
+      - containerapp env create
       Connection:
       - keep-alive
       ParameterSetName:
-      - -g -n --environment --registry-username --registry-server --registry-password
+      - -g -n --logs-workspace-id --logs-workspace-key
       User-Agent:
       - python/3.9.7 (Windows-10-10.0.22621-SP0) AZURECLI/2.43.0
     method: GET
@@ -2111,11 +2125,11 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - containerapp create
+      - containerapp env create
       Connection:
       - keep-alive
       ParameterSetName:
-      - -g -n --environment --registry-username --registry-server --registry-password
+      - -g -n --logs-workspace-id --logs-workspace-key
       User-Agent:
       - python/3.9.7 (Windows-10-10.0.22621-SP0) AZURECLI/2.43.0
     method: GET
@@ -2161,11 +2175,11 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - containerapp create
+      - containerapp env create
       Connection:
       - keep-alive
       ParameterSetName:
-      - -g -n --environment --registry-username --registry-server --registry-password
+      - -g -n --logs-workspace-id --logs-workspace-key
       User-Agent:
       - python/3.9.7 (Windows-10-10.0.22621-SP0) AZURECLI/2.43.0
     method: GET
@@ -2211,11 +2225,11 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - containerapp create
+      - containerapp env create
       Connection:
       - keep-alive
       ParameterSetName:
-      - -g -n --environment --registry-username --registry-server --registry-password
+      - -g -n --logs-workspace-id --logs-workspace-key
       User-Agent:
       - python/3.9.7 (Windows-10-10.0.22621-SP0) AZURECLI/2.43.0
     method: GET
@@ -2261,11 +2275,11 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - containerapp create
+      - containerapp env create
       Connection:
       - keep-alive
       ParameterSetName:
-      - -g -n --environment --registry-username --registry-server --registry-password
+      - -g -n --logs-workspace-id --logs-workspace-key
       User-Agent:
       - python/3.9.7 (Windows-10-10.0.22621-SP0) AZURECLI/2.43.0
     method: GET
@@ -2311,11 +2325,11 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - containerapp create
+      - containerapp env create
       Connection:
       - keep-alive
       ParameterSetName:
-      - -g -n --environment --registry-username --registry-server --registry-password
+      - -g -n --logs-workspace-id --logs-workspace-key
       User-Agent:
       - python/3.9.7 (Windows-10-10.0.22621-SP0) AZURECLI/2.43.0
     method: GET
@@ -2361,11 +2375,11 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - containerapp create
+      - containerapp env create
       Connection:
       - keep-alive
       ParameterSetName:
-      - -g -n --environment --registry-username --registry-server --registry-password
+      - -g -n --logs-workspace-id --logs-workspace-key
       User-Agent:
       - python/3.9.7 (Windows-10-10.0.22621-SP0) AZURECLI/2.43.0
     method: GET
@@ -2457,7 +2471,7 @@ interactions:
     body: null
     headers:
       Accept:
-      - application/json
+      - '*/*'
       Accept-Encoding:
       - gzip, deflate
       CommandName:
@@ -3667,7 +3681,7 @@ interactions:
       - AZURECLI/2.43.0 azsdk-python-azure-mgmt-containerregistry/10.0.0 Python/3.9.7
         (Windows-10-10.0.22621-SP0)
     method: PUT
-    uri: https://brazilsouth.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.ContainerRegistry/registries/containerapp000005?api-version=2022-02-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.ContainerRegistry/registries/containerapp000005?api-version=2022-02-01-preview
   response:
     body:
       string: '{"sku":{"name":"Basic","tier":"Basic"},"type":"Microsoft.ContainerRegistry/registries","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.ContainerRegistry/registries/containerapp000005","name":"containerapp000005","location":"eastus2","tags":{},"systemData":{"createdBy":"zuh@microsoft.com","createdByType":"User","createdAt":"2022-12-14T13:13:26.7519253+00:00","lastModifiedBy":"zuh@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-12-14T13:13:26.7519253+00:00"},"properties":{"loginServer":"containerapp000005.azurecr.io","creationDate":"2022-12-14T13:13:26.7519253Z","provisioningState":"Creating","adminUserEnabled":true,"policies":{"quarantinePolicy":{"status":"disabled"},"trustPolicy":{"type":"Notary","status":"disabled"},"retentionPolicy":{"days":7,"lastUpdatedTime":"2022-12-14T13:13:34.6208435+00:00","status":"disabled"},"exportPolicy":{"status":"enabled"},"azureADAuthenticationAsArmPolicy":{"status":"enabled"},"softDeletePolicy":{"retentionDays":7,"lastUpdatedTime":"2022-12-14T13:13:34.6208435+00:00","status":"disabled"}},"encryption":{"status":"disabled"},"dataEndpointEnabled":false,"dataEndpointHostNames":[],"privateEndpointConnections":[],"publicNetworkAccess":"Enabled","networkRuleBypassOptions":"AzureServices","zoneRedundancy":"Disabled","anonymousPullEnabled":false}}'
@@ -3767,7 +3781,7 @@ interactions:
       - AZURECLI/2.43.0 azsdk-python-azure-mgmt-containerregistry/10.0.0 Python/3.9.7
         (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://brazilsouth.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.ContainerRegistry/registries/containerapp000005?api-version=2022-02-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.ContainerRegistry/registries/containerapp000005?api-version=2022-02-01-preview
   response:
     body:
       string: '{"sku":{"name":"Basic","tier":"Basic"},"type":"Microsoft.ContainerRegistry/registries","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.ContainerRegistry/registries/containerapp000005","name":"containerapp000005","location":"eastus2","tags":{},"systemData":{"createdBy":"zuh@microsoft.com","createdByType":"User","createdAt":"2022-12-14T13:13:26.7519253+00:00","lastModifiedBy":"zuh@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-12-14T13:13:26.7519253+00:00"},"properties":{"loginServer":"containerapp000005.azurecr.io","creationDate":"2022-12-14T13:13:26.7519253Z","provisioningState":"Succeeded","adminUserEnabled":true,"policies":{"quarantinePolicy":{"status":"disabled"},"trustPolicy":{"type":"Notary","status":"disabled"},"retentionPolicy":{"days":7,"lastUpdatedTime":"2022-12-14T13:13:34.6208435+00:00","status":"disabled"},"exportPolicy":{"status":"enabled"},"azureADAuthenticationAsArmPolicy":{"status":"enabled"},"softDeletePolicy":{"retentionDays":7,"lastUpdatedTime":"2022-12-14T13:13:34.6208435+00:00","status":"disabled"}},"encryption":{"status":"disabled"},"dataEndpointEnabled":false,"dataEndpointHostNames":[],"privateEndpointConnections":[],"publicNetworkAccess":"Enabled","networkRuleBypassOptions":"AzureServices","zoneRedundancy":"Disabled","anonymousPullEnabled":false}}'
@@ -3816,7 +3830,7 @@ interactions:
       - AZURECLI/2.43.0 azsdk-python-azure-mgmt-containerregistry/10.0.0 Python/3.9.7
         (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://brazilsouth.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.ContainerRegistry/registries/containerapp000005?api-version=2022-02-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.ContainerRegistry/registries/containerapp000005?api-version=2022-02-01-preview
   response:
     body:
       string: '{"sku":{"name":"Basic","tier":"Basic"},"type":"Microsoft.ContainerRegistry/registries","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.ContainerRegistry/registries/containerapp000005","name":"containerapp000005","location":"eastus2","tags":{},"systemData":{"createdBy":"zuh@microsoft.com","createdByType":"User","createdAt":"2022-12-14T13:13:26.7519253+00:00","lastModifiedBy":"zuh@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-12-14T13:13:26.7519253+00:00"},"properties":{"loginServer":"containerapp000005.azurecr.io","creationDate":"2022-12-14T13:13:26.7519253Z","provisioningState":"Succeeded","adminUserEnabled":true,"policies":{"quarantinePolicy":{"status":"disabled"},"trustPolicy":{"type":"Notary","status":"disabled"},"retentionPolicy":{"days":7,"lastUpdatedTime":"2022-12-14T13:13:34.6208435+00:00","status":"disabled"},"exportPolicy":{"status":"enabled"},"azureADAuthenticationAsArmPolicy":{"status":"enabled"},"softDeletePolicy":{"retentionDays":7,"lastUpdatedTime":"2022-12-14T13:13:34.6208435+00:00","status":"disabled"}},"encryption":{"status":"disabled"},"dataEndpointEnabled":false,"dataEndpointHostNames":[],"privateEndpointConnections":[],"publicNetworkAccess":"Enabled","networkRuleBypassOptions":"AzureServices","zoneRedundancy":"Disabled","anonymousPullEnabled":false}}'
@@ -3867,7 +3881,7 @@ interactions:
       - AZURECLI/2.43.0 azsdk-python-azure-mgmt-containerregistry/10.0.0 Python/3.9.7
         (Windows-10-10.0.22621-SP0)
     method: POST
-    uri: https://brazilsouth.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.ContainerRegistry/registries/containerapp000005/listCredentials?api-version=2022-02-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.ContainerRegistry/registries/containerapp000005/listCredentials?api-version=2022-02-01-preview
   response:
     body:
       string: '{"username":"containerapp000005","passwords":[{"name":"password","value":"J02hToLKcbRfRComTGRInET4xCgNmGI7fehabYRvh5+ACRAJFoeT"},{"name":"password2","value":"6bArwyjfwtW3BbItlIIftOPwKz9P6jg7MXTAz7v+JE+ACRAKSh8t"}]}'
@@ -3897,7 +3911,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1198'
+      - '1199'
     status:
       code: 200
       message: OK
@@ -3917,7 +3931,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.43.0 azsdk-python-azure-mgmt-resource/21.1.0b1 Python/3.9.7 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://brazilsouth.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App?api-version=2021-04-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App?api-version=2021-04-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App","namespace":"Microsoft.App","authorizations":[{"applicationId":"7e3bc4fd-85a3-4192-b177-5b8bfc87f42c","roleDefinitionId":"39a74f72-b40f-4bdc-b639-562fe2260bf0"},{"applicationId":"3734c1a4-2bed-4998-a37a-ff1a9e7bf019","roleDefinitionId":"5c779a4f-5cb2-4547-8c41-478d9be8ba90"},{"applicationId":"55ebbb62-3b9c-49fd-9b87-9595226dd4ac","roleDefinitionId":"e49ca620-7992-4561-a7df-4ed67dad77b5"}],"resourceTypes":[{"resourceType":"managedEnvironments","locations":["North
@@ -4067,7 +4081,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.43.0 azsdk-python-azure-mgmt-resource/21.1.0b1 Python/3.9.7 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://brazilsouth.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App?api-version=2021-04-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App?api-version=2021-04-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App","namespace":"Microsoft.App","authorizations":[{"applicationId":"7e3bc4fd-85a3-4192-b177-5b8bfc87f42c","roleDefinitionId":"39a74f72-b40f-4bdc-b639-562fe2260bf0"},{"applicationId":"3734c1a4-2bed-4998-a37a-ff1a9e7bf019","roleDefinitionId":"5c779a4f-5cb2-4547-8c41-478d9be8ba90"},{"applicationId":"55ebbb62-3b9c-49fd-9b87-9595226dd4ac","roleDefinitionId":"e49ca620-7992-4561-a7df-4ed67dad77b5"}],"resourceTypes":[{"resourceType":"managedEnvironments","locations":["North
@@ -4600,8 +4614,6 @@ interactions:
         Central US (Stage)","Australia East","East US 2","West Europe","Central US","East
         US","North Europe","South Central US","UK South","West US 3","Central US EUAP"],"apiVersions":["2022-10-01","2022-06-01-preview"],"capabilities":"None"}],"registrationState":"Registered","registrationPolicy":"RegistrationRequired"}'
     headers:
-      api-supported-versions:
-      - 2022-01-01-preview, 2022-03-01, 2022-05-01, 2022-06-01-preview
       cache-control:
       - no-cache
       content-length:
@@ -4612,23 +4624,17 @@ interactions:
       - Wed, 14 Dec 2022 13:14:12 GMT
       expires:
       - '-1'
-      location:
-      - https://brazilsouth.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App/locations/canadacentral/containerappOperationResults/74b18bf0-a6ea-440a-babc-52700bc81f3d?api-version=2022-06-01-preview
       pragma:
       - no-cache
-      server:
-      - Microsoft-IIS/10.0
       strict-transport-security:
       - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
       x-content-type-options:
       - nosniff
-      x-ms-ratelimit-remaining-subscription-resource-requests:
-      - '497'
-      x-powered-by:
-      - ASP.NET
     status:
-      code: 202
-      message: Accepted
+      code: 200
+      message: OK
 - request:
     body: null
     headers:
@@ -4706,17 +4712,14 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerApps/containerapp-e2e000006?api-version=2022-06-01-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerapps/containerapp-e2e000006","name":"containerapp-e2e000006","type":"Microsoft.App/containerApps","location":"Canada
-        Central","systemData":{"createdBy":"haroonfeisal@microsoft.com","createdByType":"User","createdAt":"2022-08-25T21:17:37.8579365","lastModifiedBy":"haroonfeisal@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-08-25T21:18:17.5369836"},"properties":{"provisioningState":"InProgress","managedEnvironmentId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-e2e-env000002","environmentId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-e2e-env000002","outboundIpAddresses":["20.200.79.7","20.151.197.197","20.151.197.249"],"latestRevisionName":"containerapp-e2e000006--qxmbcci","latestRevisionFqdn":"","customDomainVerificationId":"99A6464610F70E526E50B6B7BECF7E0698398F28CB03C7A235D70FDF654D411E","configuration":{"secrets":[{"name":"containerapp000005azurecrio-containerapp000005"}],"activeRevisionsMode":"Single","registries":[{"server":"containerapp000005.azurecr.io","username":"containerapp000005","passwordSecretRef":"containerapp000005azurecrio-containerapp000005","identity":""}]},"template":{"revisionSuffix":"","containers":[{"image":"mcr.microsoft.com/azuredocs/containerapps-helloworld:latest","name":"containerapp-e2e000006","env":[{"name":"testenv","value":"testing"}],"resources":{"cpu":0.5,"memory":"1Gi","ephemeralStorage":""}}],"scale":{"minReplicas":0,"maxReplicas":1}}},"identity":{"type":"None"}}'
+      string: ''
     headers:
       api-supported-versions:
       - 2022-01-01-preview, 2022-03-01, 2022-06-01-preview, 2022-10-01, 2022-11-01-preview
       cache-control:
       - no-cache
       content-length:
-      - '1759'
-      content-type:
-      - application/json; charset=utf-8
+      - '0'
       date:
       - Wed, 14 Dec 2022 13:14:15 GMT
       expires:
@@ -4729,10 +4732,6 @@ interactions:
       - Microsoft-IIS/10.0
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding,Accept-Encoding
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-resource-requests:
@@ -4740,8 +4739,8 @@ interactions:
       x-powered-by:
       - ASP.NET
     status:
-      code: 200
-      message: OK
+      code: 202
+      message: Accepted
 - request:
     body: null
     headers:
@@ -4911,7 +4910,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.43.0 azsdk-python-azure-mgmt-resource/21.1.0b1 Python/3.9.7 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://brazilsouth.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App?api-version=2021-04-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App?api-version=2021-04-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App","namespace":"Microsoft.App","authorizations":[{"applicationId":"7e3bc4fd-85a3-4192-b177-5b8bfc87f42c","roleDefinitionId":"39a74f72-b40f-4bdc-b639-562fe2260bf0"},{"applicationId":"3734c1a4-2bed-4998-a37a-ff1a9e7bf019","roleDefinitionId":"5c779a4f-5cb2-4547-8c41-478d9be8ba90"},{"applicationId":"55ebbb62-3b9c-49fd-9b87-9595226dd4ac","roleDefinitionId":"e49ca620-7992-4561-a7df-4ed67dad77b5"}],"resourceTypes":[{"resourceType":"managedEnvironments","locations":["North
@@ -5062,7 +5061,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.43.0 azsdk-python-azure-mgmt-resource/21.1.0b1 Python/3.9.7 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://brazilsouth.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App?api-version=2021-04-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App?api-version=2021-04-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App","namespace":"Microsoft.App","authorizations":[{"applicationId":"7e3bc4fd-85a3-4192-b177-5b8bfc87f42c","roleDefinitionId":"39a74f72-b40f-4bdc-b639-562fe2260bf0"},{"applicationId":"3734c1a4-2bed-4998-a37a-ff1a9e7bf019","roleDefinitionId":"5c779a4f-5cb2-4547-8c41-478d9be8ba90"},{"applicationId":"55ebbb62-3b9c-49fd-9b87-9595226dd4ac","roleDefinitionId":"e49ca620-7992-4561-a7df-4ed67dad77b5"}],"resourceTypes":[{"resourceType":"managedEnvironments","locations":["North
@@ -5447,7 +5446,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.43.0 azsdk-python-azure-mgmt-resource/21.1.0b1 Python/3.9.7 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://brazilsouth.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App?api-version=2021-04-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App?api-version=2021-04-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App","namespace":"Microsoft.App","authorizations":[{"applicationId":"7e3bc4fd-85a3-4192-b177-5b8bfc87f42c","roleDefinitionId":"39a74f72-b40f-4bdc-b639-562fe2260bf0"},{"applicationId":"3734c1a4-2bed-4998-a37a-ff1a9e7bf019","roleDefinitionId":"5c779a4f-5cb2-4547-8c41-478d9be8ba90"},{"applicationId":"55ebbb62-3b9c-49fd-9b87-9595226dd4ac","roleDefinitionId":"e49ca620-7992-4561-a7df-4ed67dad77b5"}],"resourceTypes":[{"resourceType":"managedEnvironments","locations":["North
@@ -5705,7 +5704,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-resource-requests:
-      - '497'
+      - '499'
       x-powered-by:
       - ASP.NET
     status:

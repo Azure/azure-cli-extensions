@@ -59,6 +59,7 @@ Upcoming
 ++++++
 * Add 'az containerapp env update' to update managed environment properties
 * Add custom domains support to 'az containerapp env create' and 'az containerapp env update'
+* Add tcp support for ingress transport and scale rules
 
 0.3.11
 ++++++
