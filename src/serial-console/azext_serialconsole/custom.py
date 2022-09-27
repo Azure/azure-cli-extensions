@@ -277,7 +277,8 @@ class Terminal:
 
 class SerialConsole:
     def __init__(self, cmd, resource_group_name, vm_vmss_name, vmss_instanceid):
-        client = cf_serial_port(cmd.cli_ctx, resource_group_name, vm_vmss_name)
+        kwargs = {'client_ctx': cmd.cli_ctx, 'resource_group_name': resource_group_name, 'vm_name': vm_vmss_name}
+        client = cf_serial_port(cmd.cli_ctx, **kwargs)
         if vmss_instanceid is None:
             self.connect_func = lambda: client.connect(
                 resource_group_name=resource_group_name,
@@ -570,7 +571,8 @@ class SerialConsole:
 
 
 def check_serial_console_enabled(cli_ctx, resource_group_name, vm_vmss_name):
-    client = cf_serialconsole(cli_ctx, resource_group_name, vm_vmss_name)
+    kwargs = {'client_ctx': cli_ctx, 'resource_group_name': resource_group_name, 'vm_name': vm_vmss_name}
+    client = cf_serialconsole(cli_ctx, **kwargs)
     result = client.get_console_status().additional_properties
     if ("properties" in result and "disabled" in result["properties"] and
             not result["properties"]["disabled"]):
