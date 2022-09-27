@@ -16,7 +16,7 @@ def scenario_guide(cmd, search_keyword, scope=None, match_rule=None, top=None):
     scope = SearchScope.get(scope)
     match_rule = MatchRule.get(match_rule)
     # Replacing "-" is to solve the problem that the search engine cannot match "-"
-    # e.g. `az search-scenario web-app create` => "web app create"
+    # e.g. `az scenario guide web-app create` => "web app create"
     search_keyword = " ".join(map(lambda w: w.replace("-", " "), search_keyword))
     results = search_online(search_keyword, scope, match_rule, top)
 
@@ -41,12 +41,12 @@ def scenario_guide(cmd, search_keyword, scope=None, match_rule=None, top=None):
     _show_detail(cmd, chosen_scenario)
     send_feedback(scope, FeedbackOption.SELECT(option), search_keyword, results, chosen_scenario)
 
-    if cmd.cli_ctx.config.getboolean('search_scenario', 'execute_in_prompt', fallback=True):
+    if cmd.cli_ctx.config.getboolean('scenario_guide', 'execute_in_prompt', fallback=True):
         _execute_scenario(cmd, chosen_scenario)
     else:
         print('\nThank you for your feedback. AZ SEARCH-SCENARIO is completed. '
               'If you want to execute the commands in interactive mode, '
-              'you can use "az config set search_scenario.execute_in_prompt=True" to set it up.\n')
+              'you can use "az config set scenario_guide.execute_in_prompt=True" to set it up.\n')
 
     return
 
@@ -107,7 +107,7 @@ def _show_detail(cmd, scenario):
     for command in scenario["commandSet"]:
         command_item = command["command"]
         if 'arguments' in command and \
-                cmd.cli_ctx.config.getboolean('search_scenario', 'show_arguments', fallback=False):
+                cmd.cli_ctx.config.getboolean('scenario_guide', 'show_arguments', fallback=False):
             command_item = f"{command_item} {' '.join(command['arguments'])}"
 
         print_styled_text([(Style.ACTION, " > "), (Style.PRIMARY, command_item)])
@@ -159,7 +159,7 @@ def _execute_scenario(ctx_cmd, scenario):
 
 def _execute_cmd_interactively(ctx_cmd, command, params):
     """Execute a command in scenario. Users can retry if it fails."""
-    if ctx_cmd.cli_ctx.config.getboolean('search_scenario', 'print_help', fallback=False):
+    if ctx_cmd.cli_ctx.config.getboolean('scenario_guide', 'print_help', fallback=False):
         _print_help_info(ctx_cmd, command["command"])
 
     print_styled_text([(Style.ACTION, "Running: ")], end='')
@@ -175,7 +175,7 @@ def _execute_cmd_interactively(ctx_cmd, command, params):
             execute_result = _execute_cmd(ctx_cmd, command['command'], params, catch_exception=True)
             if execute_result == 0:
                 return True
-            if not ctx_cmd.cli_ctx.config.getboolean('search_scenario', 'print_help', fallback=False) \
+            if not ctx_cmd.cli_ctx.config.getboolean('scenario_guide', 'print_help', fallback=False) \
                     and not is_help_printed:
                 _print_help_info(ctx_cmd, command["command"])
                 is_help_printed = True
@@ -200,7 +200,7 @@ def _execute_cmd(ctx_cmd, command, params, catch_exception=False):
         args.pop(0)
     args.extend(_input_args(params))
 
-    output_format = ctx_cmd.cli_ctx.config.get('search_scenario', 'output', fallback='status')
+    output_format = ctx_cmd.cli_ctx.config.get('scenario_guide', 'output', fallback='status')
 
     if '--output' not in args and '-o' not in args:
         args.extend(_get_output_arg(command, output_format))

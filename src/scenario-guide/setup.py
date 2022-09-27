@@ -42,11 +42,11 @@ setup(
     description='Microsoft Azure Command-Line Tools Scenario Guidance Extension',
     author='Microsoft Corporation',
     author_email='azpycli@microsoft.com',
-    url='https://github.com/Azure/azure-cli-extensions/tree/main/src/search-scenario',
+    url='https://github.com/Azure/azure-cli-extensions/tree/main/src/scenario-guide',
     long_description=README + '\n\n' + HISTORY,
     license='MIT',
     classifiers=CLASSIFIERS,
     packages=find_packages(),
     install_requires=DEPENDENCIES,
-    package_data={'azext_search-scenario': ['azext_metadata.json']},
+    package_data={'azext_scenario-guide': ['azext_metadata.json']},
 )

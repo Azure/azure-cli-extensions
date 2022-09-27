@@ -9,5 +9,5 @@ from azure.cli.core.azclierror import ClientRequestError
 
 
 class ScenarioGuideError(ClientRequestError):
-    """ The client error raised by `az search-scenario`. """
+    """ The client error raised by `az scenario guide`. """
     pass

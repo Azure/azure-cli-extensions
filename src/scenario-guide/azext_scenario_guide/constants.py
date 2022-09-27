@@ -53,7 +53,7 @@ HIGHLIGHT_MARKER = ("<em>", "</em>")
 
 class FeedbackOption(int, Enum):
     NO_RESULT = -1
-    """`az search-scenario` get no result from search service"""
+    """`az scenario guide` get no result from search service"""
     NO_SELECT = 0
     """User selects none of the results and exits immediately after searching"""
 
