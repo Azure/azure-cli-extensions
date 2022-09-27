@@ -1281,10 +1281,11 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         # validation
         if enable_validation:
             if self.decorator_mode == DecoratorMode.UPDATE:
-                if enable_apiserver_vnet_integration:
+                is_apiserver_vnet_integration_cluster = check_is_apiserver_vnet_integration_cluster(self.mc)
+                if enable_apiserver_vnet_integration and not is_apiserver_vnet_integration_cluster:
                     if self._get_apiserver_subnet_id(enable_validation=False) is None:
                         raise RequiredArgumentMissingError(
-                            "--apiserver-subnet-id is required for update with --apiserver-vnet-integration."
+                            "--apiserver-subnet-id is required for update with --enable-apiserver-vnet-integration."
                         )
 
         return enable_apiserver_vnet_integration

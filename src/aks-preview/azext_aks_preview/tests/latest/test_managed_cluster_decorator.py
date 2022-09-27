@@ -2163,6 +2163,24 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         with self.assertRaises(RequiredArgumentMissingError):
             ctx_5.get_enable_apiserver_vnet_integration()
 
+
+        ctx_6 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({
+                "enable_apiserver_vnet_integration": True,
+            }),
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        api_server_access_profile = self.models.ManagedClusterAPIServerAccessProfile()
+        api_server_access_profile.enable_vnet_integration = True
+        mc = self.models.ManagedCluster(
+            location="test_location",
+            api_server_access_profile=api_server_access_profile,
+        )
+        ctx_6.attach_mc(mc)
+        self.assertEqual(ctx_6.get_enable_apiserver_vnet_integration(), True)
+
     def test_get_apiserver_subnet_id(self):
         ctx_0 = AKSPreviewManagedClusterContext(
             self.cmd,
