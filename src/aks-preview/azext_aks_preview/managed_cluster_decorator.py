@@ -2799,7 +2799,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         # snapshot creation data
         creation_data = None
         if snapshot_id:
-            snapshot = self.get_cluster_snapshot()
+            snapshot = self.context.get_cluster_snapshot()
             if not snapshot:
                 raise UnknownError(
                     "Given managed cluster snapshot not exsit, input id: " + snapshot_id
