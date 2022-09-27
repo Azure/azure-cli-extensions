@@ -532,7 +532,7 @@ def list_scripts(cmd, preview=None):
     return return_dict
 
 
-def reset_nic(cmd, vm_name, resource_group_name, yes=False):
+def reset_nic(cmd, vm_name, resource_group_name, subscriptionid="", yes=False):
 
     # Init command helper object
     command = command_helper(logger, cmd, 'vm repair reset-nic')
@@ -541,6 +541,7 @@ def reset_nic(cmd, vm_name, resource_group_name, yes=False):
     try:
         # 0) Check if VM is deallocated or off. If it is, ask to run start the VM.
         VM_OFF_MESSAGE = 'VM is not running. The VM must be in running to reset its NIC.\n'
+        logger.info('validate and get VM...\n') #TBD
         vm_instance_view = get_vm(cmd, resource_group_name, vm_name, 'instanceView')
         VM_started = _check_n_start_vm(vm_name, resource_group_name, not yes, VM_OFF_MESSAGE, vm_instance_view)
         if not VM_started:
