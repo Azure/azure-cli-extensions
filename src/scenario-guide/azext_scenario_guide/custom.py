@@ -44,7 +44,7 @@ def scenario_guide(cmd, search_keyword, scope=None, match_rule=None, top=None):
     if cmd.cli_ctx.config.getboolean('scenario_guide', 'execute_in_prompt', fallback=True):
         _execute_scenario(cmd, chosen_scenario)
     else:
-        print('\nThank you for your feedback. AZ SEARCH-SCENARIO is completed. '
+        print('\nThank you for your feedback. AZ SCENARIO GUIDE is completed. '
               'If you want to execute the commands in interactive mode, '
               'you can use "az config set scenario_guide.execute_in_prompt=True" to set it up.\n')
 
