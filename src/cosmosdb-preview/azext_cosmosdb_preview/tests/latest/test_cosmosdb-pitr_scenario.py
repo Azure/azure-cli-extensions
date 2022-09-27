@@ -674,3 +674,31 @@ class Cosmosdb_previewPitrScenarioTest(ScenarioTest):
         restorable_database_account = next(acc for acc in restorable_accounts_list if acc['name'] == account['instanceId'])
         account_oldest_restorable_time = restorable_database_account['oldestRestorableTime']
         assert account_oldest_restorable_time is not None
+
+    @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_system_identity_restore', location='eastus2')
+    def test_cosmosdb_system_identity_restore(self, resource_group):
+        col = self.create_random_name(prefix='cli', length=15)
+        db_name = self.create_random_name(prefix='cli', length=15)
+
+        key = "https://vinhvault.vault.azure.net/keys/theawesomekey"
+        user_id_1 = "/subscriptions/259fbb24-9bcd-4cfc-865c-fc33b22fe38a/resourceGroups/vinhrg/providers/Microsoft.ManagedIdentity/userAssignedIdentities/vitrinh-clone1"
+        default_id = 'UserAssignedIdentity=' + user_id_1
+
+        self.kwargs.update({
+            'acc': self.create_random_name(prefix='cli-systemid-', length=25),
+            'db_name': db_name,
+            'col': col,
+            'loc': 'eastus2',
+            'key': key,
+            'user_id_1' : user_id_1,
+            'default_id' : default_id
+        })
+
+        # Create periodic backup account (by default is --backup-policy-type is not specified, then it is a Periodic account)
+        self.cmd('az cosmosdb create -n {acc} -g {rg} --backup-policy-type Continuous --continuous-tier Continuous7Days --locations regionName={loc} --kind GlobalDocumentDB --key-uri {key} --assign-identity {user_id_1} --default-identity {default_id}')
+        account = self.cmd('az cosmosdb show -n {acc} -g {rg}').get_output_in_json()
+        print(account)
+
+        account_defaultIdentity = account['defaultIdentity']
+
+        assert account_defaultIdentity is not None
