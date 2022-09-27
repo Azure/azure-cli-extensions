@@ -87,7 +87,7 @@ helps['vm repair reset-nic'] = """
             az vm repair reset-nic -g MyResourceGroup -n MyVM --verbose
         - name: Reset the VM guest NIC. Specify subscription id, VM resource group and name.
           text: >
-            az vm repair reset-nic -g MyResourceGroup -n MyVM --subscription mySub --subscriptionid mySub --verbose            
+            az vm repair reset-nic -g MyResourceGroup -n MyVM --subscription mySub --subscriptionid mySub --verbose
         - name: Reset the VM guest NIC and auto-start the VM if it is not in running state.
           text: >
             az vm repair reset-nic -g MyResourceGroup -n MyVM --yes --verbose
