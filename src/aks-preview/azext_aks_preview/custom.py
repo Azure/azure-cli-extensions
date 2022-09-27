@@ -810,6 +810,7 @@ def aks_update(
     enable_vpa=False,
     disable_vpa=False,
     cluster_snapshot_id=None,
+    ssh_key_value=None,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()

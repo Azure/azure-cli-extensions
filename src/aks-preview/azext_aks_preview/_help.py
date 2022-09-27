@@ -894,6 +894,10 @@ helps['aks update'] = """
         - name: --cluster-snapshot-id
           type: string
           short-summary: The source cluster snapshot id is used to update existing cluster.
+        - name: --ssh-key-value
+          type: string
+          short-summary: Public key path or key contents to install on node VMs for SSH access. For example,
+                         'ssh-rsa AAAAB...snip...UcyupgH azureuser@linuxvm'.
     examples:
       - name: Reconcile the cluster back to its current state.
         text: az aks update -g MyResourceGroup -n MyManagedCluster

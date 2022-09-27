@@ -12,6 +12,11 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+0.5.111
++++++++
+
+* Support updating SSH public key with `az aks update --ssh-key-value`.
+
 0.5.110
 +++++++
 

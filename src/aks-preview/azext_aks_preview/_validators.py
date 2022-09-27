@@ -64,6 +64,20 @@ def validate_ssh_key(namespace):
     namespace.ssh_key_value = content
 
 
+def validate_ssh_key_for_update(namespace):
+    string_or_file = namespace.ssh_key_value
+    if not string_or_file:
+        return
+    content = string_or_file
+    if os.path.exists(string_or_file):
+        logger.info('Use existing SSH public key file: %s', string_or_file)
+        with open(string_or_file, 'r') as f:
+            content = f.read()
+    elif not keys.is_valid_ssh_rsa_public_key(content):
+        raise InvalidArgumentValueError('An RSA key file or key value must be supplied to SSH Key Value')
+    namespace.ssh_key_value = content
+
+
 def validate_create_parameters(namespace):
     if not namespace.name:
         raise CLIError('--name has no value')
