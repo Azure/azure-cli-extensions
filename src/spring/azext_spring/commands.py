@@ -148,6 +148,7 @@ def load_command_table(self, _):
         g.custom_command('logs', 'app_tail_log')
         g.custom_command('append-persistent-storage', 'app_append_persistent_storage')
         g.custom_command('append-loaded-public-certificate', 'app_append_loaded_public_certificate')
+        g.custom_command('connect', 'app_connect')
 
     with self.command_group('spring app identity', custom_command_type=app_managed_identity_command,
                             exception_handler=handle_asc_exception) as g:

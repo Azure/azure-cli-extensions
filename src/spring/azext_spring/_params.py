@@ -342,6 +342,12 @@ def load_arguments(self, _):
     with self.argument_context('spring app log tail') as c:
         prepare_logs_argument(c)
 
+    with self.argument_context('spring app connect') as c:
+        c.argument('instance', options_list=['--instance', '-i'], help='Name of an existing instance of the deployment.')
+        c.argument('deployment', options_list=[
+            '--deployment', '-d'], help='Name of an existing deployment of the app. Default to the production deployment if not specified.', validator=fulfill_deployment_param)
+        c.argument('shell_cmd', help='The shell command to run when connect to the app instance.')
+
     with self.argument_context('spring app set-deployment') as c:
         c.argument('deployment', options_list=[
             '--deployment', '-d'], help='Name of an existing deployment of the app.', validator=ensure_not_active_deployment)
@@ -425,6 +431,8 @@ def load_arguments(self, _):
                 'container_command', help='The command of the container image.', arg_group='Custom Container')
             c.argument(
                 'container_args', help='The arguments of the container image.', arg_group='Custom Container')
+            c.argument(
+                'language_framework', help='Language framework of the container image uploaded. Supported values: "springboot", "".', arg_group='Custom Container')
             c.argument(
                 'build_env', build_env_type)
             c.argument(
