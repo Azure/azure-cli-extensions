@@ -356,6 +356,20 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
 
         return count_ipv6
 
+    def get_load_balancer_backend_pool_type(self) -> str:
+        """Obtain the value of load_balancer_backend_pool_type.
+
+        :return: string
+        """
+        # read the original value passed by the command
+        load_balancer_backend_pool_type = self.raw_param.get(
+            "load_balancer_backend_pool_type"
+        )
+
+        # this parameter does not need dynamic completion
+        # this parameter does not need validation
+        return load_balancer_backend_pool_type
+
     def _get_enable_pod_security_policy(self, enable_validation: bool = False) -> bool:
         """Internal function to obtain the value of enable_pod_security_policy.
 
@@ -1267,10 +1281,11 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         # validation
         if enable_validation:
             if self.decorator_mode == DecoratorMode.UPDATE:
-                if enable_apiserver_vnet_integration:
+                is_apiserver_vnet_integration_cluster = check_is_apiserver_vnet_integration_cluster(self.mc)
+                if enable_apiserver_vnet_integration and not is_apiserver_vnet_integration_cluster:
                     if self._get_apiserver_subnet_id(enable_validation=False) is None:
                         raise RequiredArgumentMissingError(
-                            "--apiserver-subnet-id is required for update with --apiserver-vnet-integration."
+                            "--apiserver-subnet-id is required for update with --enable-apiserver-vnet-integration."
                         )
 
         return enable_apiserver_vnet_integration
@@ -2037,7 +2052,7 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         network_profile.ip_families = ip_families
 
         # recreate the load balancer profile if load_balancer_managed_outbound_ipv6_count is not None
-        if self.context.get_load_balancer_managed_outbound_ipv6_count() is not None:
+        if self.context.get_load_balancer_managed_outbound_ipv6_count() is not None or self.context.get_load_balancer_backend_pool_type() is not None:
             network_profile.load_balancer_profile = create_load_balancer_profile(
                 self.context.get_load_balancer_managed_outbound_ip_count(),
                 self.context.get_load_balancer_managed_outbound_ipv6_count(),
@@ -2045,6 +2060,7 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
                 self.context.get_load_balancer_outbound_ip_prefixes(),
                 self.context.get_load_balancer_outbound_ports(),
                 self.context.get_load_balancer_idle_timeout(),
+                self.context.get_load_balancer_backend_pool_type(),
                 models=self.models.load_balancer_models,
             )
 
@@ -2475,6 +2491,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
             outbound_ip_prefixes=self.context.get_load_balancer_outbound_ip_prefixes(),
             outbound_ports=self.context.get_load_balancer_outbound_ports(),
             idle_timeout=self.context.get_load_balancer_idle_timeout(),
+            backend_pool_type=self.context.get_load_balancer_backend_pool_type(),
             profile=mc.network_profile.load_balancer_profile,
             models=self.models.load_balancer_models,
         )
