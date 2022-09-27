@@ -6,15 +6,8 @@ Release History
 0.2.4
 +++++
 * Update SDK `azure-mgmt-subscription` version to 3.1.1
-* Add new command `az account accept-ownership-status` to support accept subscription ownership status
-
-0.2.3
-+++++
 * GA of `az account alias`: Manage subscription alias.
-
-0.2.2
-+++++
-* Update SDK `azure-mgmt-subscription` version to 3.0.0 and api-version to 2021-10-01.
+* Add new command `az account accept-ownership-status` to support accept subscription ownership status
 
 0.2.1
 +++++
