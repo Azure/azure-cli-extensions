@@ -12,12 +12,17 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
-0.5.103
+0.5.104
 +++++++
 
 * Add support to upgrade or update cluster with managed cluster snapshot. Command is
     * `az aks upgrade --cluster-snapshot-id <snapshot-id>`
     * `az aks update --cluster-snapshot-id <snapshot-id>`
+
+0.5.103
++++++++
+
+* Add load-balancer-backend-pool-type to create and update api.
 
 0.5.102
 +++++++
