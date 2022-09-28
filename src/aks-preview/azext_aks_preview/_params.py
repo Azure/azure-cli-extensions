@@ -9,7 +9,6 @@ import os.path
 import platform
 
 from argcomplete.completers import FilesCompleter
-from azure.cli.core.commands import validators
 from azure.cli.core.commands.parameters import (
     edge_zone_type,
     file_type,
@@ -48,7 +47,7 @@ from azext_aks_preview._consts import (
     CONST_OS_DISK_TYPE_EPHEMERAL,
     CONST_OS_DISK_TYPE_MANAGED,
     CONST_OS_SKU_CBLMARINER,
-    CONST_OS_SKU_MARINER,
+    CONST_OS_SKU_CBLMARINERV2,
     CONST_OS_SKU_UBUNTU,
     CONST_OS_SKU_WINDOWS2019,
     CONST_OS_SKU_WINDOWS2022,
@@ -82,7 +81,6 @@ from azext_aks_preview._validators import (
     validate_assign_kubelet_identity,
     validate_azure_keyvault_kms_key_id,
     validate_azure_keyvault_kms_key_vault_resource_id,
-    validate_image_cleaner_enable_disable_mutually_exclusive,
     validate_cluster_id,
     validate_cluster_snapshot_id,
     validate_create_parameters,
@@ -93,7 +91,6 @@ from azext_aks_preview._validators import (
     validate_k8s_version,
     validate_linux_host_name,
     validate_load_balancer_idle_timeout,
-    validate_load_balancer_backend_pool_type,
     validate_load_balancer_outbound_ip_prefixes,
     validate_load_balancer_outbound_ips,
     validate_load_balancer_outbound_ports,
@@ -134,7 +131,7 @@ node_mode_types = [CONST_NODEPOOL_MODE_SYSTEM, CONST_NODEPOOL_MODE_USER]
 node_os_skus = [
     CONST_OS_SKU_UBUNTU,
     CONST_OS_SKU_CBLMARINER,
-    CONST_OS_SKU_MARINER,
+    CONST_OS_SKU_CBLMARINERV2,
     CONST_OS_SKU_WINDOWS2019,
     CONST_OS_SKU_WINDOWS2022,
 ]
@@ -213,7 +210,6 @@ def load_arguments(self, _):
         c.argument('load_balancer_outbound_ip_prefixes', validator=validate_load_balancer_outbound_ip_prefixes)
         c.argument('load_balancer_outbound_ports', type=int, validator=validate_load_balancer_outbound_ports)
         c.argument('load_balancer_idle_timeout', type=int, validator=validate_load_balancer_idle_timeout)
-        c.argument('load_balancer_backend_pool_type', validator=validate_load_balancer_backend_pool_type)
         c.argument('nat_gateway_managed_outbound_ip_count', type=int, validator=validate_nat_gateway_managed_outbound_ip_count)
         c.argument('nat_gateway_idle_timeout', type=int, validator=validate_nat_gateway_idle_timeout)
         c.argument('outbound_type', arg_type=get_enum_type(outbound_types))
@@ -314,8 +310,6 @@ def load_arguments(self, _):
         c.argument('azure_keyvault_kms_key_id', validator=validate_azure_keyvault_kms_key_id)
         c.argument('azure_keyvault_kms_key_vault_network_access', arg_type=get_enum_type(keyvault_network_access_types), default=CONST_AZURE_KEYVAULT_NETWORK_ACCESS_PUBLIC)
         c.argument('azure_keyvault_kms_key_vault_resource_id', validator=validate_azure_keyvault_kms_key_vault_resource_id)
-        c.argument('enable_image_cleaner', action='store_true', is_preview=True)
-        c.argument('image_cleaner_interval_hours', type=int, is_preview=True)
         c.argument('cluster_snapshot_id', validator=validate_cluster_snapshot_id, is_preview=True)
         c.argument('disk_driver_version', arg_type=get_enum_type(disk_driver_versions))
         c.argument('disable_disk_driver', action='store_true')
@@ -326,7 +320,6 @@ def load_arguments(self, _):
         c.argument('apiserver_subnet_id', validator=validate_apiserver_subnet_id, is_preview=True)
         c.argument('dns_zone_resource_id')
         c.argument('enable_keda', action='store_true', is_preview=True)
-        c.argument('enable_node_restriction', action='store_true', is_preview=True, help="enable node restriction for cluster")
         # nodepool
         c.argument('host_group_id', validator=validate_host_group_id, is_preview=True)
         c.argument('crg_id', validator=validate_crg_id, is_preview=True)
@@ -336,7 +329,6 @@ def load_arguments(self, _):
         c.argument('workload_runtime', arg_type=get_enum_type(workload_runtimes), default=CONST_WORKLOAD_RUNTIME_OCI_CONTAINER)
         # no validation for aks create because it already only supports Linux.
         c.argument('enable_custom_ca_trust', action='store_true')
-        c.argument('enable_vpa', action='store_true', is_preview=True, help="enable vertical pod autoscaler for cluster")
 
     with self.argument_context('aks update') as c:
         # managed cluster paramerters
@@ -347,7 +339,6 @@ def load_arguments(self, _):
         c.argument('load_balancer_outbound_ip_prefixes', validator=validate_load_balancer_outbound_ip_prefixes)
         c.argument('load_balancer_outbound_ports', type=int, validator=validate_load_balancer_outbound_ports)
         c.argument('load_balancer_idle_timeout', type=int, validator=validate_load_balancer_idle_timeout)
-        c.argument('load_balancer_backend_pool_type', validator=validate_load_balancer_backend_pool_type)
         c.argument('nat_gateway_managed_outbound_ip_count', type=int, validator=validate_nat_gateway_managed_outbound_ip_count)
         c.argument('nat_gateway_idle_timeout', type=int, validator=validate_nat_gateway_idle_timeout)
         c.argument('auto_upgrade_channel', arg_type=get_enum_type(auto_upgrade_channels))
@@ -410,9 +401,6 @@ def load_arguments(self, _):
         c.argument('azure_keyvault_kms_key_id', validator=validate_azure_keyvault_kms_key_id)
         c.argument('azure_keyvault_kms_key_vault_network_access', arg_type=get_enum_type(keyvault_network_access_types))
         c.argument('azure_keyvault_kms_key_vault_resource_id', validator=validate_azure_keyvault_kms_key_vault_resource_id)
-        c.argument('enable_image_cleaner', action='store_true', is_preview=True)
-        c.argument('disable_image_cleaner', action='store_true', validator=validate_image_cleaner_enable_disable_mutually_exclusive, is_preview=True)
-        c.argument('image_cleaner_interval_hours', type=int, is_preview=True)
         c.argument('enable_disk_driver', action='store_true')
         c.argument('disk_driver_version', arg_type=get_enum_type(disk_driver_versions))
         c.argument('disable_disk_driver', action='store_true')
@@ -426,13 +414,6 @@ def load_arguments(self, _):
         c.argument('apiserver_subnet_id', validator=validate_apiserver_subnet_id, is_preview=True)
         c.argument('enable_keda', action='store_true', is_preview=True)
         c.argument('disable_keda', action='store_true', is_preview=True)
-        c.argument('enable_node_restriction', action='store_true', is_preview=True, help="enable node restriction for cluster")
-        c.argument('disable_node_restriction', action='store_true', is_preview=True, help="disable node restriction for cluster")
-        c.argument('enable_private_cluster', action='store_true', is_preview=True, help='enable private cluster for apiserver vnet integration')
-        c.argument('disable_private_cluster', action='store_true', is_preview=True, help='disable private cluster for apiserver vnet integration')
-        c.argument('private_dns_zone', is_preview=True)
-        c.argument('enable_vpa', action='store_true', is_preview=True, help="enable vertical pod autoscaler for cluster")
-        c.argument('disable_vpa', action='store_true', is_preview=True, help="disable vertical pod autoscaler for cluster")
 
     with self.argument_context('aks upgrade') as c:
         c.argument('kubernetes_version', completer=get_k8s_upgrades_completion_list)

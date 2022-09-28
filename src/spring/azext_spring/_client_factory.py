@@ -8,9 +8,6 @@ from .vendored_sdks.appplatform.v2020_07_01 import AppPlatformManagementClient
 from .vendored_sdks.appplatform.v2020_11_01_preview import (
     AppPlatformManagementClient as AppPlatformManagementClient_20201101preview
 )
-from .vendored_sdks.appplatform.v2022_09_01_preview import (
-    AppPlatformManagementClient as AppPlatformManagementClient_20220901preview
-)
 from .vendored_sdks.appplatform.v2022_05_01_preview import (
     AppPlatformManagementClient as AppPlatformManagementClient_20220501preview
 )
@@ -29,21 +26,6 @@ from .vendored_sdks.appplatform.v2021_06_01_preview import (
 from .vendored_sdks.appplatform.v2021_09_01_preview import (
     AppPlatformManagementClient as AppPlatformManagementClient_20210901preview
 )
-from .vendored_sdks.appplatform.v2022_09_01_preview import (
-    AppPlatformManagementClient as AppPlatformManagementClient_20220901preview
-)
-
-
-def cf_spring_20220901preview(cli_ctx, *_):
-    return get_mgmt_service_client(cli_ctx, AppPlatformManagementClient_20220901preview)
-
-
-def cf_spring_20220901preview(cli_ctx, *_):
-    return get_mgmt_service_client(cli_ctx, AppPlatformManagementClient_20220901preview)
-
-
-def cf_spring_20220901preview(cli_ctx, *_):
-    return get_mgmt_service_client(cli_ctx, AppPlatformManagementClient_20220901preview)
 
 
 def cf_spring_20220501preview(cli_ctx, *_):

@@ -3,10 +3,10 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+
 # pylint: disable=unused-argument
 
 from azure.cli.core.azclierror import RequiredArgumentMissingError
-from ..version import cli_application_id
 
 
 def cf_communication_identity(cli_ctx, kwargs):
@@ -17,9 +17,7 @@ def cf_communication_identity(cli_ctx, kwargs):
         error_msg = 'Please specify --connection-string, or set AZURE_COMMUNICATION_CONNECTION_STRING.'
         raise RequiredArgumentMissingError(error_msg)
 
-    args = {'user_agent': cli_application_id()}
-    client = CommunicationIdentityClient.from_connection_string(connection_string, **args)
-
+    client = CommunicationIdentityClient.from_connection_string(connection_string)
     return client
 
 
@@ -31,9 +29,7 @@ def cf_communication_sms(cli_ctx, kwargs):
         error_msg = 'Please specify --connection-string, or set AZURE_COMMUNICATION_CONNECTION_STRING.'
         raise RequiredArgumentMissingError(error_msg)
 
-    args = {'user_agent': cli_application_id()}
-    client = SmsClient.from_connection_string(connection_string, **args)
-
+    client = SmsClient.from_connection_string(connection_string)
     return client
 
 
@@ -45,9 +41,7 @@ def cf_communication_phonenumbers(cli_ctx, kwargs):
         error_msg = 'Please specify --connection-string, or set AZURE_COMMUNICATION_CONNECTION_STRING.'
         raise RequiredArgumentMissingError(error_msg)
 
-    args = {'user_agent': cli_application_id()}
-    client = PhoneNumbersClient.from_connection_string(connection_string, **args)
-
+    client = PhoneNumbersClient.from_connection_string(connection_string)
     return client
 
 
@@ -62,7 +56,5 @@ def cf_communication_chat(cli_ctx, kwargs):
     if token is None:
         raise RequiredArgumentMissingError('Please specify --access-token or set AZURE_COMMUNICATION_ACCESS_TOKEN.')
 
-    args = {'user_agent': cli_application_id()}
-    client = ChatClient(endpoint, CommunicationTokenCredential(token), **args)
-
+    client = ChatClient(endpoint, CommunicationTokenCredential(token))
     return client

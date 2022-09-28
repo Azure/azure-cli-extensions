@@ -2,9 +2,6 @@
 
 Release History
 ===============
-0.18.1
-++++++
-* Modify parameter for Managed Identity name.
 
 0.18.0
 ++++++

@@ -2,10 +2,6 @@
 Release History
 ===============
 
-0.4.6
-++++++
-Updating the fetch_repair_vm to use the small letters in the query instead of capital letters
-
 0.4.5
 ++++++
 Improve az vm repair reset-nic command to use subnet list available ips command

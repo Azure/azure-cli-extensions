@@ -12,13 +12,8 @@
 def cf_communication_cl(cli_ctx, *_):
     from azure.cli.core.commands.client_factory import get_mgmt_service_client
     from azext_communication.vendored_sdks.communication import CommunicationServiceManagementClient
-    from ..version import cli_application_id
-
-    args = {'user_agent': cli_application_id()}
-
     return get_mgmt_service_client(cli_ctx,
-                                   CommunicationServiceManagementClient,
-                                   **args)
+                                   CommunicationServiceManagementClient)
 
 
 def cf_communication_service(cli_ctx, *_):

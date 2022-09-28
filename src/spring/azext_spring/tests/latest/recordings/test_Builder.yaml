@@ -13,39 +13,41 @@ interactions:
       ParameterSetName:
       - -n -g --service --builder-file
       User-Agent:
-      - AZURECLI/2.40.0 (PIP) azsdk-python-mgmt-appplatform/6.1.0 Python/3.8.3 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.32.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.8.3 (Windows-10-10.0.19041-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest?api-version=2022-01-01-preview
   response:
     body:
-      string: '{"properties":{"provisioningState":"Succeeded","zoneRedundant":false,"version":3,"serviceId":"4c0e8168e93e4d54b77d255f95557b3c","networkProfile":{"outboundIPs":{"publicIPs":["20.102.6.42","20.102.5.239"]},"outboundType":"loadBalancer"},"powerState":"Running","fqdn":"cli-unittest.asc-test.net"},"type":"Microsoft.AppPlatform/Spring","sku":{"name":"E0","tier":"Enterprise"},"location":"eastus","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest","name":"cli-unittest","systemData":{"createdBy":"qingyliu@microsoft.com","createdByType":"User","createdAt":"2022-09-13T09:15:56.0034586Z","lastModifiedBy":"qingyliu@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-09-13T09:15:56.0034586Z"}}'
+      string: '{"properties":{"provisioningState":"Succeeded","zoneRedundant":false,"version":3,"serviceId":"294e799ca70d4793a10f543e97d3764f","networkProfile":{"outboundIPs":{"publicIPs":["13.78.187.43","13.78.187.220"]}},"powerState":"Running","fqdn":"cli-unittest.azuremicroservices.io"},"type":"Microsoft.AppPlatform/Spring","sku":{"name":"E0","tier":"Enterprise"},"location":"westcentralus","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest","name":"cli-unittest","systemData":{"createdBy":"qingyliu@microsoft.com","createdByType":"User","createdAt":"2022-01-11T01:32:35.972125Z","lastModifiedBy":"qingyliu@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-01-11T01:32:35.972125Z"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '791'
+      - '777'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 14 Sep 2022 05:38:05 GMT
+      - Tue, 11 Jan 2022 02:15:03 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
       request-context:
-      - appId=cid-v1:ccd65fc4-7cd4-497e-8dc8-9a76e9a43ae2
+      - appId=cid-v1:797d7e4e-8180-497e-a254-780fbd39ba4d
+      server:
+      - nginx/1.17.7
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       transfer-encoding:
       - chunked
       vary:
-      - Accept-Encoding
+      - Accept-Encoding,Accept-Encoding
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-resource-requests:
-      - '11999'
+      - '11997'
       x-rp-server-mvid:
-      - 2280a6c9-18a5-42a9-8739-f9f9148ed236
+      - e71904c2-6563-484c-b527-529f24365ac6
     status:
       code: 200
       message: OK
@@ -63,7 +65,7 @@ interactions:
       ParameterSetName:
       - -n -g --service --builder-file
       User-Agent:
-      - AZURECLI/2.40.0 (PIP) azsdk-python-mgmt-appplatform/6.1.0 Python/3.8.3 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.32.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.8.3 (Windows-10-10.0.19041-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/buildServices/default/builders/test-builder?api-version=2022-01-01-preview
   response:
@@ -77,19 +79,21 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 14 Sep 2022 05:38:08 GMT
+      - Tue, 11 Jan 2022 02:15:05 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
       request-context:
-      - appId=cid-v1:ccd65fc4-7cd4-497e-8dc8-9a76e9a43ae2
+      - appId=cid-v1:797d7e4e-8180-497e-a254-780fbd39ba4d
+      server:
+      - nginx/1.17.7
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       x-content-type-options:
       - nosniff
       x-rp-server-mvid:
-      - 2280a6c9-18a5-42a9-8739-f9f9148ed236
+      - e71904c2-6563-484c-b527-529f24365ac6
     status:
       code: 404
       message: Not Found
@@ -112,15 +116,15 @@ interactions:
       ParameterSetName:
       - -n -g --service --builder-file
       User-Agent:
-      - AZURECLI/2.40.0 (PIP) azsdk-python-mgmt-appplatform/6.1.0 Python/3.8.3 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.32.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.8.3 (Windows-10-10.0.19041-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/buildServices/default/builders/test-builder?api-version=2022-09-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/buildServices/default/builders/test-builder?api-version=2022-01-01-preview
   response:
     body:
-      string: '{"type":"Microsoft.AppPlatform/Spring/buildServices/builders","properties":{"provisioningState":"Creating","stack":{"id":"io.buildpacks.stacks.bionic","version":"base"},"buildpackGroups":[{"name":"mix","buildpacks":[{"id":"tanzu-buildpacks/java-azure"}]}]},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/buildServices/default/builders/test-builder","name":"test-builder","systemData":{"createdBy":"qingyliu@microsoft.com","createdByType":"User","createdAt":"2022-09-14T05:38:09.1999786Z","lastModifiedBy":"qingyliu@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-09-14T05:38:09.1999786Z"}}'
+      string: '{"type":"Microsoft.AppPlatform/Spring/buildServices/builders","properties":{"provisioningState":"Creating","stack":{"id":"io.buildpacks.stacks.bionic","version":"base"},"buildpackGroups":[{"name":"mix","buildpacks":[{"id":"tanzu-buildpacks/java-azure"}]}]},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/buildServices/default/builders/test-builder","name":"test-builder","systemData":{"createdBy":"qingyliu@microsoft.com","createdByType":"User","createdAt":"2022-01-11T02:15:06.9479322Z","lastModifiedBy":"qingyliu@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-01-11T02:15:06.9479322Z"}}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/cli-unittest/operationId/8e5f273d-b78f-47fa-b462-e6c366e129e7?api-version=2022-09-01-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/westcentralus/operationStatus/cli-unittest/operationId/8a8ac5c9-d5c4-4596-b3cb-d3c419f42dde?api-version=2022-01-01-preview
       cache-control:
       - no-cache
       content-length:
@@ -128,23 +132,25 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 14 Sep 2022 05:38:09 GMT
+      - Tue, 11 Jan 2022 02:15:06 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/eastus/operationResults/8e5f273d-b78f-47fa-b462-e6c366e129e7/Spring/cli-unittest?api-version=2022-09-01-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/westcentralus/operationResults/8a8ac5c9-d5c4-4596-b3cb-d3c419f42dde/Spring/cli-unittest?api-version=2022-01-01-preview
       pragma:
       - no-cache
       request-context:
-      - appId=cid-v1:ccd65fc4-7cd4-497e-8dc8-9a76e9a43ae2
+      - appId=cid-v1:797d7e4e-8180-497e-a254-780fbd39ba4d
+      server:
+      - nginx/1.17.7
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '1198'
       x-rp-server-mvid:
-      - 2280a6c9-18a5-42a9-8739-f9f9148ed236
+      - e71904c2-6563-484c-b527-529f24365ac6
     status:
       code: 201
       message: Created
@@ -162,37 +168,39 @@ interactions:
       ParameterSetName:
       - -n -g --service --builder-file
       User-Agent:
-      - AZURECLI/2.40.0 (PIP) azsdk-python-mgmt-appplatform/6.1.0 Python/3.8.3 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.32.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.8.3 (Windows-10-10.0.19041-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/cli-unittest/operationId/8e5f273d-b78f-47fa-b462-e6c366e129e7?api-version=2022-09-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/westcentralus/operationStatus/cli-unittest/operationId/8a8ac5c9-d5c4-4596-b3cb-d3c419f42dde?api-version=2022-01-01-preview
   response:
     body:
-      string: '{"id":"subscriptions/0753feba-86f1-4242-aff1-27938fb04531/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/cli-unittest/operationId/8e5f273d-b78f-47fa-b462-e6c366e129e7","name":"8e5f273d-b78f-47fa-b462-e6c366e129e7","status":"Succeeded","startTime":"2022-09-14T05:38:10.6065091Z","endTime":"2022-09-14T05:38:30.9524Z"}'
+      string: '{"id":"subscriptions/799c12ba-353c-44a1-883d-84808ebb2216/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/westcentralus/operationStatus/cli-unittest/operationId/8a8ac5c9-d5c4-4596-b3cb-d3c419f42dde","name":"8a8ac5c9-d5c4-4596-b3cb-d3c419f42dde","status":"Succeeded","startTime":"2022-01-11T02:15:07.0211358Z","endTime":"2022-01-11T02:15:21.6215191Z"}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '353'
+      - '363'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 14 Sep 2022 05:38:41 GMT
+      - Tue, 11 Jan 2022 02:15:37 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
       request-context:
-      - appId=cid-v1:ccd65fc4-7cd4-497e-8dc8-9a76e9a43ae2
+      - appId=cid-v1:797d7e4e-8180-497e-a254-780fbd39ba4d
+      server:
+      - nginx/1.17.7
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       transfer-encoding:
       - chunked
       vary:
-      - Accept-Encoding
+      - Accept-Encoding,Accept-Encoding
       x-content-type-options:
       - nosniff
       x-rp-server-mvid:
-      - 2280a6c9-18a5-42a9-8739-f9f9148ed236
+      - e71904c2-6563-484c-b527-529f24365ac6
     status:
       code: 200
       message: OK
@@ -210,12 +218,12 @@ interactions:
       ParameterSetName:
       - -n -g --service --builder-file
       User-Agent:
-      - AZURECLI/2.40.0 (PIP) azsdk-python-mgmt-appplatform/6.1.0 Python/3.8.3 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.32.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.8.3 (Windows-10-10.0.19041-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/buildServices/default/builders/test-builder?api-version=2022-09-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/buildServices/default/builders/test-builder?api-version=2022-01-01-preview
   response:
     body:
-      string: '{"type":"Microsoft.AppPlatform/Spring/buildServices/builders","properties":{"provisioningState":"Succeeded","stack":{"id":"io.buildpacks.stacks.bionic","version":"base"},"buildpackGroups":[{"name":"mix","buildpacks":[{"id":"tanzu-buildpacks/java-azure"}]}]},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/buildServices/default/builders/test-builder","name":"test-builder","systemData":{"createdBy":"qingyliu@microsoft.com","createdByType":"User","createdAt":"2022-09-14T05:38:09.1999786Z","lastModifiedBy":"qingyliu@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-09-14T05:38:09.1999786Z"}}'
+      string: '{"type":"Microsoft.AppPlatform/Spring/buildServices/builders","properties":{"provisioningState":"Succeeded","stack":{"id":"io.buildpacks.stacks.bionic","version":"base"},"buildpackGroups":[{"name":"mix","buildpacks":[{"id":"tanzu-buildpacks/java-azure"}]}]},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/buildServices/default/builders/test-builder","name":"test-builder","systemData":{"createdBy":"qingyliu@microsoft.com","createdByType":"User","createdAt":"2022-01-11T02:15:06.9479322Z","lastModifiedBy":"qingyliu@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-01-11T02:15:06.9479322Z"}}'
     headers:
       cache-control:
       - no-cache
@@ -224,23 +232,25 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 14 Sep 2022 05:38:42 GMT
+      - Tue, 11 Jan 2022 02:15:37 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
       request-context:
-      - appId=cid-v1:ccd65fc4-7cd4-497e-8dc8-9a76e9a43ae2
+      - appId=cid-v1:797d7e4e-8180-497e-a254-780fbd39ba4d
+      server:
+      - nginx/1.17.7
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       transfer-encoding:
       - chunked
       vary:
-      - Accept-Encoding
+      - Accept-Encoding,Accept-Encoding
       x-content-type-options:
       - nosniff
       x-rp-server-mvid:
-      - 2280a6c9-18a5-42a9-8739-f9f9148ed236
+      - e71904c2-6563-484c-b527-529f24365ac6
     status:
       code: 200
       message: OK
@@ -258,39 +268,41 @@ interactions:
       ParameterSetName:
       - -n -g --service --builder-file
       User-Agent:
-      - AZURECLI/2.40.0 (PIP) azsdk-python-mgmt-appplatform/6.1.0 Python/3.8.3 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.32.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.8.3 (Windows-10-10.0.19041-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest?api-version=2022-01-01-preview
   response:
     body:
-      string: '{"properties":{"provisioningState":"Succeeded","zoneRedundant":false,"version":3,"serviceId":"4c0e8168e93e4d54b77d255f95557b3c","networkProfile":{"outboundIPs":{"publicIPs":["20.102.6.42","20.102.5.239"]},"outboundType":"loadBalancer"},"powerState":"Running","fqdn":"cli-unittest.asc-test.net"},"type":"Microsoft.AppPlatform/Spring","sku":{"name":"E0","tier":"Enterprise"},"location":"eastus","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest","name":"cli-unittest","systemData":{"createdBy":"qingyliu@microsoft.com","createdByType":"User","createdAt":"2022-09-13T09:15:56.0034586Z","lastModifiedBy":"qingyliu@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-09-13T09:15:56.0034586Z"}}'
+      string: '{"properties":{"provisioningState":"Succeeded","zoneRedundant":false,"version":3,"serviceId":"294e799ca70d4793a10f543e97d3764f","networkProfile":{"outboundIPs":{"publicIPs":["13.78.187.43","13.78.187.220"]}},"powerState":"Running","fqdn":"cli-unittest.azuremicroservices.io"},"type":"Microsoft.AppPlatform/Spring","sku":{"name":"E0","tier":"Enterprise"},"location":"westcentralus","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest","name":"cli-unittest","systemData":{"createdBy":"qingyliu@microsoft.com","createdByType":"User","createdAt":"2022-01-11T01:32:35.972125Z","lastModifiedBy":"qingyliu@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-01-11T01:32:35.972125Z"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '791'
+      - '777'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 14 Sep 2022 05:38:43 GMT
+      - Tue, 11 Jan 2022 02:15:39 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
       request-context:
-      - appId=cid-v1:ccd65fc4-7cd4-497e-8dc8-9a76e9a43ae2
+      - appId=cid-v1:797d7e4e-8180-497e-a254-780fbd39ba4d
+      server:
+      - nginx/1.17.7
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       transfer-encoding:
       - chunked
       vary:
-      - Accept-Encoding
+      - Accept-Encoding,Accept-Encoding
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-resource-requests:
       - '11999'
       x-rp-server-mvid:
-      - 2280a6c9-18a5-42a9-8739-f9f9148ed236
+      - e71904c2-6563-484c-b527-529f24365ac6
     status:
       code: 200
       message: OK
@@ -308,12 +320,12 @@ interactions:
       ParameterSetName:
       - -n -g --service --builder-file
       User-Agent:
-      - AZURECLI/2.40.0 (PIP) azsdk-python-mgmt-appplatform/6.1.0 Python/3.8.3 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.32.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.8.3 (Windows-10-10.0.19041-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/buildServices/default/builders/test?api-version=2022-01-01-preview
   response:
     body:
-      string: '{"type":"Microsoft.AppPlatform/Spring/buildServices/builders","properties":{"provisioningState":"Succeeded","stack":{"id":"io.buildpacks.stacks.bionic","version":"base"},"buildpackGroups":[{"name":"mix","buildpacks":[{"id":"tanzu-buildpacks/java-azure"}]}]},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/buildServices/default/builders/test","name":"test","systemData":{"createdBy":"qingyliu@microsoft.com","createdByType":"User","createdAt":"2022-09-14T05:17:47.9520459Z","lastModifiedBy":"qingyliu@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-09-14T05:23:16.6521425Z"}}'
+      string: '{"type":"Microsoft.AppPlatform/Spring/buildServices/builders","properties":{"provisioningState":"Succeeded","stack":{"id":"io.buildpacks.stacks.bionic","version":"base"},"buildpackGroups":[{"name":"mix","buildpacks":[{"id":"tanzu-buildpacks/java-azure"}]}]},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/buildServices/default/builders/test","name":"test","systemData":{"createdBy":"qingyliu@microsoft.com","createdByType":"User","createdAt":"2022-01-11T01:44:30.3882983Z","lastModifiedBy":"qingyliu@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-01-11T02:11:47.3483879Z"}}'
     headers:
       cache-control:
       - no-cache
@@ -322,23 +334,25 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 14 Sep 2022 05:38:44 GMT
+      - Tue, 11 Jan 2022 02:15:40 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
       request-context:
-      - appId=cid-v1:ccd65fc4-7cd4-497e-8dc8-9a76e9a43ae2
+      - appId=cid-v1:797d7e4e-8180-497e-a254-780fbd39ba4d
+      server:
+      - nginx/1.17.7
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       transfer-encoding:
       - chunked
       vary:
-      - Accept-Encoding
+      - Accept-Encoding,Accept-Encoding
       x-content-type-options:
       - nosniff
       x-rp-server-mvid:
-      - 2280a6c9-18a5-42a9-8739-f9f9148ed236
+      - e71904c2-6563-484c-b527-529f24365ac6
     status:
       code: 200
       message: OK
@@ -361,15 +375,15 @@ interactions:
       ParameterSetName:
       - -n -g --service --builder-file
       User-Agent:
-      - AZURECLI/2.40.0 (PIP) azsdk-python-mgmt-appplatform/6.1.0 Python/3.8.3 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.32.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.8.3 (Windows-10-10.0.19041-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/buildServices/default/builders/test?api-version=2022-09-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/buildServices/default/builders/test?api-version=2022-01-01-preview
   response:
     body:
-      string: '{"type":"Microsoft.AppPlatform/Spring/buildServices/builders","properties":{"provisioningState":"Updating","stack":{"id":"io.buildpacks.stacks.bionic","version":"base"},"buildpackGroups":[{"name":"mix","buildpacks":[{"id":"tanzu-buildpacks/java-azure"}]}]},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/buildServices/default/builders/test","name":"test","systemData":{"createdBy":"qingyliu@microsoft.com","createdByType":"User","createdAt":"2022-09-14T05:17:47.9520459Z","lastModifiedBy":"qingyliu@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-09-14T05:38:45.8564663Z"}}'
+      string: '{"type":"Microsoft.AppPlatform/Spring/buildServices/builders","properties":{"provisioningState":"Updating","stack":{"id":"io.buildpacks.stacks.bionic","version":"base"},"buildpackGroups":[{"name":"mix","buildpacks":[{"id":"tanzu-buildpacks/java-azure"}]}]},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/buildServices/default/builders/test","name":"test","systemData":{"createdBy":"qingyliu@microsoft.com","createdByType":"User","createdAt":"2022-01-11T01:44:30.3882983Z","lastModifiedBy":"qingyliu@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-01-11T02:15:42.5922402Z"}}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/cli-unittest/operationId/654cc100-686f-4c9c-abab-6ffd244706c0?api-version=2022-09-01-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/westcentralus/operationStatus/cli-unittest/operationId/a7de9bbd-f91a-47a9-9658-f7390aa3c084?api-version=2022-01-01-preview
       cache-control:
       - no-cache
       content-length:
@@ -377,23 +391,25 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 14 Sep 2022 05:38:47 GMT
+      - Tue, 11 Jan 2022 02:15:42 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/eastus/operationResults/654cc100-686f-4c9c-abab-6ffd244706c0/Spring/cli-unittest?api-version=2022-09-01-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/westcentralus/operationResults/a7de9bbd-f91a-47a9-9658-f7390aa3c084/Spring/cli-unittest?api-version=2022-01-01-preview
       pragma:
       - no-cache
       request-context:
-      - appId=cid-v1:ccd65fc4-7cd4-497e-8dc8-9a76e9a43ae2
+      - appId=cid-v1:797d7e4e-8180-497e-a254-780fbd39ba4d
+      server:
+      - nginx/1.17.7
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '1197'
       x-rp-server-mvid:
-      - 2280a6c9-18a5-42a9-8739-f9f9148ed236
+      - e71904c2-6563-484c-b527-529f24365ac6
     status:
       code: 201
       message: Created
@@ -411,33 +427,39 @@ interactions:
       ParameterSetName:
       - -n -g --service --builder-file
       User-Agent:
-      - AZURECLI/2.40.0 (PIP) azsdk-python-mgmt-appplatform/6.1.0 Python/3.8.3 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.32.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.8.3 (Windows-10-10.0.19041-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/cli-unittest/operationId/654cc100-686f-4c9c-abab-6ffd244706c0?api-version=2022-09-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/westcentralus/operationStatus/cli-unittest/operationId/a7de9bbd-f91a-47a9-9658-f7390aa3c084?api-version=2022-01-01-preview
   response:
     body:
-      string: '{"id":"subscriptions/0753feba-86f1-4242-aff1-27938fb04531/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/cli-unittest/operationId/654cc100-686f-4c9c-abab-6ffd244706c0","name":"654cc100-686f-4c9c-abab-6ffd244706c0","status":"Succeeded","startTime":"2022-09-14T05:38:47.3335213Z","endTime":"2022-09-14T05:39:07.3299337Z"}'
+      string: '{"id":"subscriptions/799c12ba-353c-44a1-883d-84808ebb2216/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/westcentralus/operationStatus/cli-unittest/operationId/a7de9bbd-f91a-47a9-9658-f7390aa3c084","name":"a7de9bbd-f91a-47a9-9658-f7390aa3c084","status":"Succeeded","startTime":"2022-01-11T02:15:42.664553Z","endTime":"2022-01-11T02:15:56.8152284Z"}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '356'
+      - '362'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 14 Sep 2022 05:39:17 GMT
+      - Tue, 11 Jan 2022 02:16:12 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
       request-context:
-      - appId=cid-v1:ccd65fc4-7cd4-497e-8dc8-9a76e9a43ae2
+      - appId=cid-v1:797d7e4e-8180-497e-a254-780fbd39ba4d
+      server:
+      - nginx/1.17.7
       strict-transport-security:
       - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
       x-content-type-options:
       - nosniff
       x-rp-server-mvid:
-      - 2280a6c9-18a5-42a9-8739-f9f9148ed236
+      - e71904c2-6563-484c-b527-529f24365ac6
     status:
       code: 200
       message: OK
@@ -455,12 +477,12 @@ interactions:
       ParameterSetName:
       - -n -g --service --builder-file
       User-Agent:
-      - AZURECLI/2.40.0 (PIP) azsdk-python-mgmt-appplatform/6.1.0 Python/3.8.3 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.32.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.8.3 (Windows-10-10.0.19041-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/buildServices/default/builders/test?api-version=2022-09-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/buildServices/default/builders/test?api-version=2022-01-01-preview
   response:
     body:
-      string: '{"type":"Microsoft.AppPlatform/Spring/buildServices/builders","properties":{"provisioningState":"Succeeded","stack":{"id":"io.buildpacks.stacks.bionic","version":"base"},"buildpackGroups":[{"name":"mix","buildpacks":[{"id":"tanzu-buildpacks/java-azure"}]}]},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/buildServices/default/builders/test","name":"test","systemData":{"createdBy":"qingyliu@microsoft.com","createdByType":"User","createdAt":"2022-09-14T05:17:47.9520459Z","lastModifiedBy":"qingyliu@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-09-14T05:38:45.8564663Z"}}'
+      string: '{"type":"Microsoft.AppPlatform/Spring/buildServices/builders","properties":{"provisioningState":"Succeeded","stack":{"id":"io.buildpacks.stacks.bionic","version":"base"},"buildpackGroups":[{"name":"mix","buildpacks":[{"id":"tanzu-buildpacks/java-azure"}]}]},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/buildServices/default/builders/test","name":"test","systemData":{"createdBy":"qingyliu@microsoft.com","createdByType":"User","createdAt":"2022-01-11T01:44:30.3882983Z","lastModifiedBy":"qingyliu@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-01-11T02:15:42.5922402Z"}}'
     headers:
       cache-control:
       - no-cache
@@ -469,69 +491,25 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 14 Sep 2022 05:39:18 GMT
+      - Tue, 11 Jan 2022 02:16:13 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
       request-context:
-      - appId=cid-v1:ccd65fc4-7cd4-497e-8dc8-9a76e9a43ae2
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-content-type-options:
-      - nosniff
-      x-rp-server-mvid:
-      - 2280a6c9-18a5-42a9-8739-f9f9148ed236
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - spring build-service builder show
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -n -g --service
-      User-Agent:
-      - AZURECLI/2.40.0 (PIP) azsdk-python-mgmt-appplatform/6.1.0 Python/3.8.3 (Windows-10-10.0.19041-SP0)
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest?api-version=2022-01-01-preview
-  response:
-    body:
-      string: '{"properties":{"provisioningState":"Succeeded","zoneRedundant":false,"version":3,"serviceId":"4c0e8168e93e4d54b77d255f95557b3c","networkProfile":{"outboundIPs":{"publicIPs":["20.102.6.42","20.102.5.239"]},"outboundType":"loadBalancer"},"powerState":"Running","fqdn":"cli-unittest.asc-test.net"},"type":"Microsoft.AppPlatform/Spring","sku":{"name":"E0","tier":"Enterprise"},"location":"eastus","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest","name":"cli-unittest","systemData":{"createdBy":"qingyliu@microsoft.com","createdByType":"User","createdAt":"2022-09-13T09:15:56.0034586Z","lastModifiedBy":"qingyliu@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-09-13T09:15:56.0034586Z"}}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '791'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Wed, 14 Sep 2022 05:39:20 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      request-context:
-      - appId=cid-v1:ccd65fc4-7cd4-497e-8dc8-9a76e9a43ae2
+      - appId=cid-v1:797d7e4e-8180-497e-a254-780fbd39ba4d
+      server:
+      - nginx/1.17.7
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       transfer-encoding:
       - chunked
       vary:
-      - Accept-Encoding
+      - Accept-Encoding,Accept-Encoding
       x-content-type-options:
       - nosniff
-      x-ms-ratelimit-remaining-subscription-resource-requests:
-      - '11999'
       x-rp-server-mvid:
-      - 2280a6c9-18a5-42a9-8739-f9f9148ed236
+      - e71904c2-6563-484c-b527-529f24365ac6
     status:
       code: 200
       message: OK
@@ -549,12 +527,64 @@ interactions:
       ParameterSetName:
       - -n -g --service
       User-Agent:
-      - AZURECLI/2.40.0 (PIP) azsdk-python-mgmt-appplatform/6.1.0 Python/3.8.3 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.32.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.8.3 (Windows-10-10.0.19041-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/buildServices/default/builders/test-builder?api-version=2022-09-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest?api-version=2022-01-01-preview
   response:
     body:
-      string: '{"type":"Microsoft.AppPlatform/Spring/buildServices/builders","properties":{"provisioningState":"Succeeded","stack":{"id":"io.buildpacks.stacks.bionic","version":"base"},"buildpackGroups":[{"name":"mix","buildpacks":[{"id":"tanzu-buildpacks/java-azure"}]}]},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/buildServices/default/builders/test-builder","name":"test-builder","systemData":{"createdBy":"qingyliu@microsoft.com","createdByType":"User","createdAt":"2022-09-14T05:38:09.1999786Z","lastModifiedBy":"qingyliu@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-09-14T05:38:09.1999786Z"}}'
+      string: '{"properties":{"provisioningState":"Succeeded","zoneRedundant":false,"version":3,"serviceId":"294e799ca70d4793a10f543e97d3764f","networkProfile":{"outboundIPs":{"publicIPs":["13.78.187.43","13.78.187.220"]}},"powerState":"Running","fqdn":"cli-unittest.azuremicroservices.io"},"type":"Microsoft.AppPlatform/Spring","sku":{"name":"E0","tier":"Enterprise"},"location":"westcentralus","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest","name":"cli-unittest","systemData":{"createdBy":"qingyliu@microsoft.com","createdByType":"User","createdAt":"2022-01-11T01:32:35.972125Z","lastModifiedBy":"qingyliu@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-01-11T01:32:35.972125Z"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '777'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 11 Jan 2022 02:16:15 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:797d7e4e-8180-497e-a254-780fbd39ba4d
+      server:
+      - nginx/1.17.7
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '11996'
+      x-rp-server-mvid:
+      - e71904c2-6563-484c-b527-529f24365ac6
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring build-service builder show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --service
+      User-Agent:
+      - AZURECLI/2.32.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.8.3 (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/buildServices/default/builders/test-builder?api-version=2022-01-01-preview
+  response:
+    body:
+      string: '{"type":"Microsoft.AppPlatform/Spring/buildServices/builders","properties":{"provisioningState":"Succeeded","stack":{"id":"io.buildpacks.stacks.bionic","version":"base"},"buildpackGroups":[{"name":"mix","buildpacks":[{"id":"tanzu-buildpacks/java-azure"}]}]},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/buildServices/default/builders/test-builder","name":"test-builder","systemData":{"createdBy":"qingyliu@microsoft.com","createdByType":"User","createdAt":"2022-01-11T02:15:06.9479322Z","lastModifiedBy":"qingyliu@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-01-11T02:15:06.9479322Z"}}'
     headers:
       cache-control:
       - no-cache
@@ -563,125 +593,25 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 14 Sep 2022 05:39:22 GMT
+      - Tue, 11 Jan 2022 02:16:16 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
       request-context:
-      - appId=cid-v1:ccd65fc4-7cd4-497e-8dc8-9a76e9a43ae2
+      - appId=cid-v1:797d7e4e-8180-497e-a254-780fbd39ba4d
+      server:
+      - nginx/1.17.7
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       transfer-encoding:
       - chunked
       vary:
-      - Accept-Encoding
+      - Accept-Encoding,Accept-Encoding
       x-content-type-options:
       - nosniff
       x-rp-server-mvid:
-      - 2280a6c9-18a5-42a9-8739-f9f9148ed236
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - spring build-service builder show-deployments
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -n -g --service
-      User-Agent:
-      - AZURECLI/2.40.0 (PIP) azsdk-python-mgmt-appplatform/6.1.0 Python/3.8.3 (Windows-10-10.0.19041-SP0)
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest?api-version=2022-01-01-preview
-  response:
-    body:
-      string: '{"properties":{"provisioningState":"Succeeded","zoneRedundant":false,"version":3,"serviceId":"4c0e8168e93e4d54b77d255f95557b3c","networkProfile":{"outboundIPs":{"publicIPs":["20.102.6.42","20.102.5.239"]},"outboundType":"loadBalancer"},"powerState":"Running","fqdn":"cli-unittest.asc-test.net"},"type":"Microsoft.AppPlatform/Spring","sku":{"name":"E0","tier":"Enterprise"},"location":"eastus","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest","name":"cli-unittest","systemData":{"createdBy":"qingyliu@microsoft.com","createdByType":"User","createdAt":"2022-09-13T09:15:56.0034586Z","lastModifiedBy":"qingyliu@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-09-13T09:15:56.0034586Z"}}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '791'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Wed, 14 Sep 2022 05:39:24 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      request-context:
-      - appId=cid-v1:ccd65fc4-7cd4-497e-8dc8-9a76e9a43ae2
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-      x-ms-ratelimit-remaining-subscription-resource-requests:
-      - '11999'
-      x-rp-server-mvid:
-      - 2280a6c9-18a5-42a9-8739-f9f9148ed236
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - spring build-service builder show-deployments
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '0'
-      ParameterSetName:
-      - -n -g --service
-      User-Agent:
-      - AZURECLI/2.40.0 (PIP) azsdk-python-mgmt-appplatform/6.1.0 Python/3.8.3 (Windows-10-10.0.19041-SP0)
-    method: POST
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/buildServices/default/builders/default/listUsingDeployments?api-version=2022-09-01-preview
-  response:
-    body:
-      string: '{"deployments":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test/deployments/default"]}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '172'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Wed, 14 Sep 2022 05:39:28 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      request-context:
-      - appId=cid-v1:ccd65fc4-7cd4-497e-8dc8-9a76e9a43ae2
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-      x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
-      x-rp-server-mvid:
-      - 2280a6c9-18a5-42a9-8739-f9f9148ed236
+      - e71904c2-6563-484c-b527-529f24365ac6
     status:
       code: 200
       message: OK
@@ -699,39 +629,41 @@ interactions:
       ParameterSetName:
       - -n -g --service -y
       User-Agent:
-      - AZURECLI/2.40.0 (PIP) azsdk-python-mgmt-appplatform/6.1.0 Python/3.8.3 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.32.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.8.3 (Windows-10-10.0.19041-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest?api-version=2022-01-01-preview
   response:
     body:
-      string: '{"properties":{"provisioningState":"Succeeded","zoneRedundant":false,"version":3,"serviceId":"4c0e8168e93e4d54b77d255f95557b3c","networkProfile":{"outboundIPs":{"publicIPs":["20.102.6.42","20.102.5.239"]},"outboundType":"loadBalancer"},"powerState":"Running","fqdn":"cli-unittest.asc-test.net"},"type":"Microsoft.AppPlatform/Spring","sku":{"name":"E0","tier":"Enterprise"},"location":"eastus","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest","name":"cli-unittest","systemData":{"createdBy":"qingyliu@microsoft.com","createdByType":"User","createdAt":"2022-09-13T09:15:56.0034586Z","lastModifiedBy":"qingyliu@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-09-13T09:15:56.0034586Z"}}'
+      string: '{"properties":{"provisioningState":"Succeeded","zoneRedundant":false,"version":3,"serviceId":"294e799ca70d4793a10f543e97d3764f","networkProfile":{"outboundIPs":{"publicIPs":["13.78.187.43","13.78.187.220"]}},"powerState":"Running","fqdn":"cli-unittest.azuremicroservices.io"},"type":"Microsoft.AppPlatform/Spring","sku":{"name":"E0","tier":"Enterprise"},"location":"westcentralus","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest","name":"cli-unittest","systemData":{"createdBy":"qingyliu@microsoft.com","createdByType":"User","createdAt":"2022-01-11T01:32:35.972125Z","lastModifiedBy":"qingyliu@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-01-11T01:32:35.972125Z"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '791'
+      - '777'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 14 Sep 2022 05:39:29 GMT
+      - Tue, 11 Jan 2022 02:16:17 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
       request-context:
-      - appId=cid-v1:ccd65fc4-7cd4-497e-8dc8-9a76e9a43ae2
+      - appId=cid-v1:797d7e4e-8180-497e-a254-780fbd39ba4d
+      server:
+      - nginx/1.17.7
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       transfer-encoding:
       - chunked
       vary:
-      - Accept-Encoding
+      - Accept-Encoding,Accept-Encoding
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-resource-requests:
-      - '11999'
+      - '11998'
       x-rp-server-mvid:
-      - 2280a6c9-18a5-42a9-8739-f9f9148ed236
+      - e71904c2-6563-484c-b527-529f24365ac6
     status:
       code: 200
       message: OK
@@ -751,29 +683,31 @@ interactions:
       ParameterSetName:
       - -n -g --service -y
       User-Agent:
-      - AZURECLI/2.40.0 (PIP) azsdk-python-mgmt-appplatform/6.1.0 Python/3.8.3 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.32.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.8.3 (Windows-10-10.0.19041-SP0)
     method: DELETE
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/buildServices/default/builders/test-builder?api-version=2022-09-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/buildServices/default/builders/test-builder?api-version=2022-01-01-preview
   response:
     body:
       string: ''
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/cli-unittest/operationId/d7d513b7-4061-4bc6-8cb9-69adde3eb5c2?api-version=2022-09-01-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/westcentralus/operationStatus/cli-unittest/operationId/09c75322-ba1d-4568-a88a-e387c4335671?api-version=2022-01-01-preview
       cache-control:
       - no-cache
       content-length:
       - '0'
       date:
-      - Wed, 14 Sep 2022 05:39:31 GMT
+      - Tue, 11 Jan 2022 02:16:19 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/eastus/operationResults/d7d513b7-4061-4bc6-8cb9-69adde3eb5c2/Spring/cli-unittest?api-version=2022-09-01-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/westcentralus/operationResults/09c75322-ba1d-4568-a88a-e387c4335671/Spring/cli-unittest?api-version=2022-01-01-preview
       pragma:
       - no-cache
       request-context:
-      - appId=cid-v1:ccd65fc4-7cd4-497e-8dc8-9a76e9a43ae2
+      - appId=cid-v1:797d7e4e-8180-497e-a254-780fbd39ba4d
+      server:
+      - nginx/1.17.7
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       x-content-type-options:
@@ -781,7 +715,7 @@ interactions:
       x-ms-ratelimit-remaining-subscription-deletes:
       - '14999'
       x-rp-server-mvid:
-      - 2280a6c9-18a5-42a9-8739-f9f9148ed236
+      - e71904c2-6563-484c-b527-529f24365ac6
     status:
       code: 202
       message: Accepted
@@ -799,37 +733,39 @@ interactions:
       ParameterSetName:
       - -n -g --service -y
       User-Agent:
-      - AZURECLI/2.40.0 (PIP) azsdk-python-mgmt-appplatform/6.1.0 Python/3.8.3 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.32.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.8.3 (Windows-10-10.0.19041-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/cli-unittest/operationId/d7d513b7-4061-4bc6-8cb9-69adde3eb5c2?api-version=2022-09-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/westcentralus/operationStatus/cli-unittest/operationId/09c75322-ba1d-4568-a88a-e387c4335671?api-version=2022-01-01-preview
   response:
     body:
-      string: '{"id":"subscriptions/0753feba-86f1-4242-aff1-27938fb04531/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/cli-unittest/operationId/d7d513b7-4061-4bc6-8cb9-69adde3eb5c2","name":"d7d513b7-4061-4bc6-8cb9-69adde3eb5c2","status":"Succeeded","startTime":"2022-09-14T05:39:32.1387832Z","endTime":"2022-09-14T05:39:38.7014511Z"}'
+      string: '{"id":"subscriptions/799c12ba-353c-44a1-883d-84808ebb2216/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/westcentralus/operationStatus/cli-unittest/operationId/09c75322-ba1d-4568-a88a-e387c4335671","name":"09c75322-ba1d-4568-a88a-e387c4335671","status":"Succeeded","startTime":"2022-01-11T02:16:20.005758Z","endTime":"2022-01-11T02:16:27.5094077Z"}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '356'
+      - '362'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 14 Sep 2022 05:40:02 GMT
+      - Tue, 11 Jan 2022 02:16:50 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
       request-context:
-      - appId=cid-v1:ccd65fc4-7cd4-497e-8dc8-9a76e9a43ae2
+      - appId=cid-v1:797d7e4e-8180-497e-a254-780fbd39ba4d
+      server:
+      - nginx/1.17.7
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       transfer-encoding:
       - chunked
       vary:
-      - Accept-Encoding
+      - Accept-Encoding,Accept-Encoding
       x-content-type-options:
       - nosniff
       x-rp-server-mvid:
-      - 2280a6c9-18a5-42a9-8739-f9f9148ed236
+      - e71904c2-6563-484c-b527-529f24365ac6
     status:
       code: 200
       message: OK

@@ -8,7 +8,7 @@
 # Changes may cause incorrect behavior and will be lost if the code is
 # regenerated.
 # --------------------------------------------------------------------------
-from typing import Any, TYPE_CHECKING
+from typing import TYPE_CHECKING
 
 from azure.core.configuration import Configuration
 from azure.core.pipeline import policies
@@ -18,6 +18,8 @@ from ._version import VERSION
 
 if TYPE_CHECKING:
     # pylint: disable=unused-import,ungrouped-imports
+    from typing import Any
+
     from azure.core.credentials import TokenCredential
 
 class ContainerServiceClientConfiguration(Configuration):
@@ -26,16 +28,16 @@ class ContainerServiceClientConfiguration(Configuration):
     Note that all parameters used to create this instance are saved as instance
     attributes.
 
-    :param credential: Credential needed for the client to connect to Azure. Required.
+    :param credential: Credential needed for the client to connect to Azure.
     :type credential: ~azure.core.credentials.TokenCredential
-    :param subscription_id: The ID of the target subscription. Required.
+    :param subscription_id: The ID of the target subscription.
     :type subscription_id: str
     """
 
     def __init__(
         self,
-        credential: "TokenCredential",
-        subscription_id: str,
+        credential,  # type: "TokenCredential"
+        subscription_id,  # type: str
         **kwargs  # type: Any
     ):
         # type: (...) -> None

@@ -3,22 +3,6 @@
 Release History
 ===============
 
-1.3.0
-++++++
- * Add AzureCli to the user-agent header
-
-
-1.2.2
-++++++
- * Fix a bug in chat 'message delete command'
-
-
-1.2.1
-++++++
- * Update command helps
- * Fix bugs in preview and deprecated flags
-
-
 1.2.0
 ++++++
 * Add communication chat command group in preview mode.
