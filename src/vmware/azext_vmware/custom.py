@@ -486,14 +486,6 @@ def script_execution_logs(client: AVSClient, resource_group_name, private_cloud,
     return client.script_executions.get_execution_logs(resource_group_name=resource_group_name, private_cloud_name=private_cloud, script_execution_name=name)
 
 
-def workload_network_list(client: AVSClient, resource_group_name, private_cloud):
-    return client.workload_networks.list(resource_group_name=resource_group_name, private_cloud_name=private_cloud)
-
-
-def workload_network_show(client: AVSClient, resource_group_name, private_cloud):
-    return client.workload_networks.get(resource_group_name=resource_group_name, private_cloud_name=private_cloud)
-
-
 def workload_network_dhcp_server_create(client: AVSClient, resource_group_name, private_cloud, dhcp: str, display_name=None, revision=None, server_address=None, lease_time=None):
     from azext_vmware.vendored_sdks.avs_client.models import WorkloadNetworkDhcpServer, WorkloadNetworkDhcp
     properties = WorkloadNetworkDhcp(properties=WorkloadNetworkDhcpServer(dhcp_type="SERVER", display_name=display_name, revision=revision, server_address=server_address, lease_time=lease_time))
