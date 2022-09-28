@@ -2035,6 +2035,77 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
 
         return mc
 
+    def update_node_restriction(self, mc: ManagedCluster) -> ManagedCluster:
+        """Update security profile nodeRestriction for the ManagedCluster object.
+
+        :return: the ManagedCluster object
+        """
+        self._ensure_mc(mc)
+
+        if self.context.get_enable_node_restriction():
+            if mc.security_profile is None:
+                mc.security_profile = self.models.ManagedClusterSecurityProfile()
+            if mc.security_profile.node_restriction is None:
+                mc.security_profile.node_restriction = self.models.ManagedClusterSecurityProfileNodeRestriction()
+
+            # set enabled
+            mc.security_profile.node_restriction.enabled = True
+
+        if self.context.get_disable_node_restriction():
+            if mc.security_profile is None:
+                mc.security_profile = self.models.ManagedClusterSecurityProfile()
+            if mc.security_profile.node_restriction is None:
+                mc.security_profile.node_restriction = self.models.ManagedClusterSecurityProfileNodeRestriction()
+
+            # set disabled
+            mc.security_profile.node_restriction.enabled = False
+
+        return mc
+
+    def update_vpa(self, mc: ManagedCluster) -> ManagedCluster:
+        """Update workload auto-scaler profile vertical pod auto-scaler for the ManagedCluster object.
+
+        :return: the ManagedCluster object
+        """
+        self._ensure_mc(mc)
+
+        if self.context.get_enable_vpa():
+            if mc.workload_auto_scaler_profile is None:
+                mc.workload_auto_scaler_profile = self.models.ManagedClusterWorkloadAutoScalerProfile()
+            if mc.workload_auto_scaler_profile.vertical_pod_autoscaler is None:
+                mc.workload_auto_scaler_profile.vertical_pod_autoscaler = self.models.ManagedClusterWorkloadAutoScalerProfileVerticalPodAutoscaler()
+
+            # set enabled
+            mc.workload_auto_scaler_profile.vertical_pod_autoscaler.enabled = True
+
+        if self.context.get_disable_vpa():
+            if mc.workload_auto_scaler_profile is None:
+                mc.workload_auto_scaler_profile = self.models.ManagedClusterWorkloadAutoScalerProfile()
+            if mc.workload_auto_scaler_profile.vertical_pod_autoscaler is None:
+                mc.workload_auto_scaler_profile.vertical_pod_autoscaler = self.models.ManagedClusterWorkloadAutoScalerProfileVerticalPodAutoscaler()
+
+            # set disabled
+            mc.workload_auto_scaler_profile.vertical_pod_autoscaler.enabled = False
+
+        return mc
+
+    def update_creation_data(self, mc: ManagedCluster) -> ManagedCluster:
+        self._ensure_mc(mc)
+        snapshot_id = self.context.get_cluster_snapshot_id()
+        # snapshot creation data
+        creation_data = None
+        if snapshot_id:
+            snapshot = self.context.get_cluster_snapshot()
+            if mc.kubernetes_version != snapshot.managed_cluster_properties_read_only.kubernetes_version:
+                raise UnknownError(
+                    "Please use az aks upgrade --cluster-snapshot-id to upgrade cluster version"
+                )
+            creation_data = self.models.CreationData(
+                source_resource_id=snapshot_id
+            )
+            mc.creation_data = creation_data
+        return mc
+
     def update_mc_profile_preview(self) -> ManagedCluster:
         """The overall controller used to update the preview ManagedCluster profile.
 
@@ -2067,5 +2138,8 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         mc = self.update_storage_profile(mc)
         # update workload auto scaler profile
         mc = self.update_workload_auto_scaler_profile(mc)
-
+        # update vpa
+        mc = self.update_vpa(mc)
+        # update creation data
+        mc = self.update_creation_data(mc)
         return mc
