@@ -532,7 +532,7 @@ def list_scripts(cmd, preview=None):
     return return_dict
 
 
-def reset_nic(cmd, vm_name, resource_group_name, subscriptionid="", yes=False):
+def reset_nic(cmd, vm_name, resource_group_name, yes=False):
 
     # Init command helper object
     command = command_helper(logger, cmd, 'vm repair reset-nic')

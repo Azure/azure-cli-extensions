@@ -176,10 +176,10 @@ def validate_run(cmd, namespace):
 
 def validate_reset_nic(cmd, namespace):
     check_extension_version(EXTENSION_NAME)
-    if namespace.subscriptionid:
+    if namespace._subscription:
         # setting subscription Id
         try:
-            set_sub_command = 'az account set --subscription {sid}'.format(sid=namespace.subscriptionid)
+            set_sub_command = 'az account set --subscription {sid}'.format(sid=namespace._subscription)
             logger.info('Setting the subscription...\n')
             _call_az_command(set_sub_command)
         except AzCommandError as azCommandError:
