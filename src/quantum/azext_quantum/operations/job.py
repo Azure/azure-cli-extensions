@@ -6,6 +6,7 @@
 # pylint: disable=redefined-builtin,bare-except,inconsistent-return-statements
 
 import logging
+import json
 import knack.log
 
 from azure.cli.core.azclierror import (FileOperationError, AzureInternalError,
@@ -142,7 +143,11 @@ def _generate_submit_args(program_args, ws, target, token, project, job_name, sh
     if job_params:
         args.append("--job-params")
         for k, v in job_params.items():
-            args.append(f"{k}={v}")
+            if isinstance(v, str):
+                # If value is string type already, do not use json.dumps(), since it will add extra escapes to the string
+                args.append(f"{k}={v}")
+            else:
+                args.append(f"{k}={json.dumps(v)}")
 
     args.extend(program_args)
 
@@ -265,7 +270,7 @@ def output(cmd, job_id, resource_group_name=None, workspace_name=None, location=
         if len(lines) == 0:
             return
 
-        if job.target.startswith("microsoft.simulator"):
+        if job.target.startswith("microsoft.simulator") and job.target != "microsoft.simulator.resources-estimator":
             result_start_line = len(lines) - 1
             is_result_string = lines[-1].endswith('"')
             if is_result_string:

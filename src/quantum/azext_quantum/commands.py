@@ -97,6 +97,21 @@ def transform_output(results):
     elif 'histogram' in results:
         histogram = results['histogram']
         return [one(key, histogram[key]) for key in histogram]
+    
+    elif 'reportData' in results:
+        table = []
+        for group in results['reportData']['groups']:
+            table.append(OrderedDict([("Label", (f"---{group['title']}---")),
+                    ('Value', '---'),
+                    ('Description', '---') ]))
+            for entry in group['entries']:
+                val = results
+                for key in entry['path'].split("/"):
+                    val = val[key]
+                table.append(OrderedDict([("Label", entry['label']), 
+                    ('Value', val), 
+                    ('Description', entry['description']) ]) )
+        return table
 
     elif 'errorData' in results:
         notFound = 'Not found'
