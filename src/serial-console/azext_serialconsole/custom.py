@@ -719,8 +719,8 @@ def get_region_from_storage_account(cli_ctx, resource_group_name, vm_vmss_name):
     except ComputeClientResourceNotFoundError as e:
         error_message = e.message
         recommendation = ("The specified Virtual Machine {} wasn't found within the resource group {}. "
-                          "Please verify that the Virtual Machine exists and is valid for your subscription.".format(
-            vm_vmss_name, resource_group_name))
+                          "Please verify that the Virtual Machine exists and is valid for your "
+                          "subscription.".format(vm_vmss_name, resource_group_name))
         raise ResourceNotFoundError(
             error_message, recommendation=recommendation) from e
 
