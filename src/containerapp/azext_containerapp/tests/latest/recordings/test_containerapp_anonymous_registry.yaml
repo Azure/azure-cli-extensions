@@ -74,7 +74,7 @@ interactions:
       cache-control:
       - no-cache
       content-length:
-      - '856'
+      - '853'
       content-type:
       - application/json; charset=utf-8
       date:
@@ -126,7 +126,7 @@ interactions:
       cache-control:
       - no-cache
       content-length:
-      - '857'
+      - '854'
       content-type:
       - application/json; charset=utf-8
       date:
@@ -200,7 +200,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '1198'
       x-powered-by:
       - ASP.NET
     status:
@@ -507,7 +507,7 @@ interactions:
       code: 200
       message: OK
 - request:
-    body: '{"location": "northcentralusstage", "tags": null, "sku": {"name": "Consumption"},
+    body: '{"location": "westeurope", "tags": null, "sku": {"name": "consumption"},
       "properties": {"daprAIInstrumentationKey": null, "vnetConfiguration": null,
       "internalLoadBalancerEnabled": null, "appLogsConfiguration": {"destination":
       "log-analytics", "logAnalyticsConfiguration": {"customerId": "a2899582-6850-4eda-84b5-945271695a3b",
@@ -523,7 +523,7 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '502'
+      - '493'
       Content-Type:
       - application/json
       ParameterSetName:
@@ -1371,19 +1371,19 @@ interactions:
     body: null
     headers:
       Accept:
-      - '*/*'
+      - application/json
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - containerapp env create
+      - containerapp env show
       Connection:
       - keep-alive
       ParameterSetName:
-      - -g -n --logs-workspace-id --logs-workspace-key
+      - -g -n
       User-Agent:
       - python/3.9.7 (Windows-10-10.0.22621-SP0) AZURECLI/2.43.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/env000002?api-version=2022-06-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App?api-version=2021-04-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/env000002","name":"env000002","type":"Microsoft.App/managedEnvironments","location":"northcentralusstage","systemData":{"createdBy":"zuh@microsoft.com","createdByType":"User","createdAt":"2022-12-14T07:55:39.5214757","lastModifiedBy":"zuh@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-12-14T07:55:39.5214757"},"properties":{"provisioningState":"Waiting","defaultDomain":"jollysand-6fcab405.northcentralusstage.azurecontainerapps.io","staticIp":"23.99.198.123","appLogsConfiguration":{"destination":"log-analytics","logAnalyticsConfiguration":{"customerId":"a2899582-6850-4eda-84b5-945271695a3b"}},"zoneRedundant":false,"customDomainConfiguration":{"customDomainVerificationId":"79CA8690E6B618792A80838552EF20F439BB6386E447A1FE057FC382E98FF1B3"}},"sku":{"name":"Consumption"}}'
@@ -1402,18 +1402,12 @@ interactions:
       - '-1'
       pragma:
       - no-cache
-      server:
-      - Microsoft-IIS/10.0
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
       vary:
-      - Accept-Encoding,Accept-Encoding
+      - Accept-Encoding
       x-content-type-options:
       - nosniff
-      x-powered-by:
-      - ASP.NET
     status:
       code: 200
       message: OK
@@ -1425,11 +1419,11 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - containerapp env create
+      - containerapp env show
       Connection:
       - keep-alive
       ParameterSetName:
-      - -g -n --logs-workspace-id --logs-workspace-key
+      - -g -n
       User-Agent:
       - python/3.9.7 (Windows-10-10.0.22621-SP0) AZURECLI/2.43.0
     method: GET
@@ -1471,19 +1465,19 @@ interactions:
     body: null
     headers:
       Accept:
-      - '*/*'
+      - application/json
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - containerapp env create
+      - containerapp create
       Connection:
       - keep-alive
       ParameterSetName:
-      - -g -n --logs-workspace-id --logs-workspace-key
+      - -g -n --image --ingress --target-port --environment
       User-Agent:
       - python/3.9.7 (Windows-10-10.0.22621-SP0) AZURECLI/2.43.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/env000002?api-version=2022-06-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App?api-version=2021-04-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/env000002","name":"env000002","type":"Microsoft.App/managedEnvironments","location":"northcentralusstage","systemData":{"createdBy":"zuh@microsoft.com","createdByType":"User","createdAt":"2022-12-14T07:55:39.5214757","lastModifiedBy":"zuh@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-12-14T07:55:39.5214757"},"properties":{"provisioningState":"Waiting","defaultDomain":"jollysand-6fcab405.northcentralusstage.azurecontainerapps.io","staticIp":"23.99.198.123","appLogsConfiguration":{"destination":"log-analytics","logAnalyticsConfiguration":{"customerId":"a2899582-6850-4eda-84b5-945271695a3b"}},"zoneRedundant":false,"customDomainConfiguration":{"customDomainVerificationId":"79CA8690E6B618792A80838552EF20F439BB6386E447A1FE057FC382E98FF1B3"}},"sku":{"name":"Consumption"}}'
@@ -1502,18 +1496,12 @@ interactions:
       - '-1'
       pragma:
       - no-cache
-      server:
-      - Microsoft-IIS/10.0
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
       vary:
-      - Accept-Encoding,Accept-Encoding
+      - Accept-Encoding
       x-content-type-options:
       - nosniff
-      x-powered-by:
-      - ASP.NET
     status:
       code: 200
       message: OK
@@ -1525,11 +1513,11 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - containerapp env create
+      - containerapp create
       Connection:
       - keep-alive
       ParameterSetName:
-      - -g -n --logs-workspace-id --logs-workspace-key
+      - -g -n --image --ingress --target-port --environment
       User-Agent:
       - python/3.9.7 (Windows-10-10.0.22621-SP0) AZURECLI/2.43.0
     method: GET
@@ -1571,19 +1559,19 @@ interactions:
     body: null
     headers:
       Accept:
-      - '*/*'
+      - application/json
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - containerapp env create
+      - containerapp create
       Connection:
       - keep-alive
       ParameterSetName:
-      - -g -n --logs-workspace-id --logs-workspace-key
+      - -g -n --image --ingress --target-port --environment
       User-Agent:
       - python/3.9.7 (Windows-10-10.0.22621-SP0) AZURECLI/2.43.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/env000002?api-version=2022-06-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App?api-version=2021-04-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/env000002","name":"env000002","type":"Microsoft.App/managedEnvironments","location":"northcentralusstage","systemData":{"createdBy":"zuh@microsoft.com","createdByType":"User","createdAt":"2022-12-14T07:55:39.5214757","lastModifiedBy":"zuh@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-12-14T07:55:39.5214757"},"properties":{"provisioningState":"Waiting","defaultDomain":"jollysand-6fcab405.northcentralusstage.azurecontainerapps.io","staticIp":"23.99.198.123","appLogsConfiguration":{"destination":"log-analytics","logAnalyticsConfiguration":{"customerId":"a2899582-6850-4eda-84b5-945271695a3b"}},"zoneRedundant":false,"customDomainConfiguration":{"customDomainVerificationId":"79CA8690E6B618792A80838552EF20F439BB6386E447A1FE057FC382E98FF1B3"}},"sku":{"name":"Consumption"}}'
@@ -1602,34 +1590,39 @@ interactions:
       - '-1'
       pragma:
       - no-cache
-      server:
-      - Microsoft-IIS/10.0
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
       vary:
-      - Accept-Encoding,Accept-Encoding
+      - Accept-Encoding
       x-content-type-options:
       - nosniff
-      x-powered-by:
-      - ASP.NET
     status:
       code: 200
       message: OK
 - request:
-    body: null
+    body: '{"location": "westeurope", "identity": {"type": "None", "userAssignedIdentities":
+      null}, "properties": {"managedEnvironmentId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/env000002",
+      "configuration": {"secrets": null, "activeRevisionsMode": "single", "ingress":
+      {"fqdn": null, "external": true, "targetPort": 80, "transport": "auto", "exposedPort":
+      null, "traffic": null, "customDomains": null}, "dapr": null, "registries": null},
+      "template": {"revisionSuffix": null, "containers": [{"image": "mcr.microsoft.com/azuredocs/containerapps-helloworld:latest",
+      "name": "aca000003", "command": null, "args": null, "env": null, "resources":
+      null, "volumeMounts": null}], "scale": null, "volumes": null}}, "tags": null}'
     headers:
       Accept:
       - '*/*'
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - containerapp env create
+      - containerapp create
       Connection:
       - keep-alive
+      Content-Length:
+      - '797'
+      Content-Type:
+      - application/json
       ParameterSetName:
-      - -g -n --logs-workspace-id --logs-workspace-key
+      - -g -n --image --ingress --target-port --environment
       User-Agent:
       - python/3.9.7 (Windows-10-10.0.22621-SP0) AZURECLI/2.43.0
     method: GET
@@ -1656,17 +1649,17 @@ interactions:
       - Microsoft-IIS/10.0
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding,Accept-Encoding
       x-content-type-options:
       - nosniff
+      x-ms-async-operation-timeout:
+      - PT15M
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '499'
       x-powered-by:
       - ASP.NET
     status:
-      code: 200
-      message: OK
+      code: 201
+      message: Created
 - request:
     body: null
     headers:
@@ -1675,11 +1668,11 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - containerapp env create
+      - containerapp create
       Connection:
       - keep-alive
       ParameterSetName:
-      - -g -n --logs-workspace-id --logs-workspace-key
+      - -g -n --image --ingress --target-port --environment
       User-Agent:
       - python/3.9.7 (Windows-10-10.0.22621-SP0) AZURECLI/2.43.0
     method: GET

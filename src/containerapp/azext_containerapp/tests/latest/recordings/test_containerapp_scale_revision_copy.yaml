@@ -6928,16 +6928,15 @@ interactions:
     body: null
     headers:
       Accept:
-      - '*/*'
+      - application/json
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - containerapp create
+      - containerapp show
       Connection:
       - keep-alive
       ParameterSetName:
-      - -g -n --image --ingress --target-port --environment --scale-rule-name --scale-rule-http-concurrency
-        --scale-rule-auth --scale-rule-metadata
+      - -g -n
       User-Agent:
       - python/3.9.7 (Windows-10-10.0.22621-SP0) AZURECLI/2.43.0
     method: GET
@@ -7754,7 +7753,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-resource-requests:
-      - '499'
+      - '498'
       x-powered-by:
       - ASP.NET
     status:

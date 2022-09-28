@@ -325,7 +325,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App?api-version=2021-04-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App","namespace":"Microsoft.App","authorizations":[{"applicationId":"7e3bc4fd-85a3-4192-b177-5b8bfc87f42c","roleDefinitionId":"39a74f72-b40f-4bdc-b639-562fe2260bf0"},{"applicationId":"3734c1a4-2bed-4998-a37a-ff1a9e7bf019","roleDefinitionId":"5c779a4f-5cb2-4547-8c41-478d9be8ba90"}],"resourceTypes":[{"resourceType":"managedEnvironments","locations":["North
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App","namespace":"Microsoft.App","authorizations":[{"applicationId":"7e3bc4fd-85a3-4192-b177-5b8bfc87f42c","roleDefinitionId":"39a74f72-b40f-4bdc-b639-562fe2260bf0"},{"applicationId":"3734c1a4-2bed-4998-a37a-ff1a9e7bf019","roleDefinitionId":"5c779a4f-5cb2-4547-8c41-478d9be8ba90"},{"applicationId":"55ebbb62-3b9c-49fd-9b87-9595226dd4ac","roleDefinitionId":"e49ca620-7992-4561-a7df-4ed67dad77b5"}],"resourceTypes":[{"resourceType":"managedEnvironments","locations":["North
         Central US (Stage)","Canada Central","West Europe","North Europe","East US","East
         US 2","East Asia","Australia East","Germany West Central","Japan East","UK
         South","West US","Central US","North Central US","South Central US","Korea
@@ -379,16 +379,18 @@ interactions:
         Central US (Stage)","Central US EUAP","East US 2 EUAP","North Central US","East
         US","East Asia","West Europe"],"apiVersions":["2022-06-01-preview"],"capabilities":"None"},{"resourceType":"locations/connectedEnvironmentOperationStatuses","locations":["North
         Central US (Stage)","Central US EUAP","East US 2 EUAP","North Central US","East
-        US","East Asia","West Europe"],"apiVersions":["2022-06-01-preview"],"capabilities":"None"}],"registrationState":"Registered","registrationPolicy":"RegistrationRequired"}'
+        US","East Asia","West Europe"],"apiVersions":["2022-06-01-preview"],"capabilities":"None"},{"resourceType":"locations/billingMeters","locations":["North
+        Central US (Stage)","Central US EUAP"],"apiVersions":["2022-06-01-preview"],"capabilities":"None"},{"resourceType":"locations/availableManagedEnvironmentsWorkloadProfileTypes","locations":["North
+        Central US (Stage)","Central US EUAP"],"apiVersions":["2022-06-01-preview"],"capabilities":"None"}],"registrationState":"Registered","registrationPolicy":"RegistrationRequired"}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '6210'
+      - '6682'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 19 Sep 2022 18:05:42 GMT
+      - Wed, 28 Sep 2022 17:12:22 GMT
       expires:
       - '-1'
       pragma:
@@ -416,8 +418,7 @@ interactions:
       ParameterSetName:
       - -g -n --logs-workspace-id --logs-workspace-key
       User-Agent:
-      - AZURECLI/2.39.0 (PIP) azsdk-python-azure-mgmt-resource/21.1.0b1 Python/3.8.10
-        (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.40.0 azsdk-python-azure-mgmt-resource/21.1.0b1 Python/3.8.13 (macOS-12.5.1-x86_64-i386-64bit)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App?api-version=2021-04-01
   response:
@@ -604,11 +605,11 @@ interactions:
       code: 200
       message: OK
 - request:
-    body: '{"location": "westeurope", "tags": null, "sku": {"name": "Consumption"},
+    body: '{"location": "westeurope", "tags": null, "sku": {"name": "consumption"},
       "properties": {"daprAIInstrumentationKey": null, "vnetConfiguration": null,
       "internalLoadBalancerEnabled": null, "appLogsConfiguration": {"destination":
-      "log-analytics", "logAnalyticsConfiguration": {"customerId": "d8e71d16-aa5a-4f67-ab60-f1312cdedd6b",
-      "sharedKey": "So6za1MTq5EdXUmWKSXrCG3nQIrTQrOV1vSQizDOam98Rxzq5op4yw+3l8ybYB1mgVT2eYpUOs4I2H0bx8Y7yg=="}},
+      "log-analytics", "logAnalyticsConfiguration": {"customerId": "d857012f-f481-4d53-b8a5-31057025225c",
+      "sharedKey": "x/W5YcCA7Kq/r4UFQhEobzEnyeyFNsBZ3jTnWYc00lGT4PeRWWRjfvK7DJ6FZkZ6Vo6QztvFQtgCQmA1VSER3g=="}},
       "customDomainConfiguration": null, "zoneRedundant": false}}'
     headers:
       Accept:
@@ -6572,17 +6573,17 @@ interactions:
       - Microsoft-IIS/10.0
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding,Accept-Encoding
       x-content-type-options:
       - nosniff
+      x-ms-async-operation-timeout:
+      - PT15M
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '99'
       x-powered-by:
       - ASP.NET
     status:
-      code: 200
-      message: OK
+      code: 201
+      message: Created
 - request:
     body: null
     headers:
@@ -8487,7 +8488,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '1198'
     status:
       code: 200
       message: OK
@@ -9097,7 +9098,7 @@ interactions:
       x-ms-async-operation-timeout:
       - PT15M
       x-ms-ratelimit-remaining-subscription-resource-requests:
-      - '498'
+      - '499'
       x-powered-by:
       - ASP.NET
     status:

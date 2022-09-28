@@ -545,6 +545,8 @@ def create_containerapp(cmd,
         workload_profile = get_workload_profile_type(cmd, workload_profile, location)
         containerapp_def["properties"]["workloadProfileType"] = workload_profile
 
+        ensure_workload_profile_supported(cmd, managed_env_name, managed_env_rg, workload_profile, managed_env_info)
+
     if registry_identity:
         if is_registry_msi_system(registry_identity):
             set_managed_identity(cmd, resource_group_name, containerapp_def, system_assigned=True)
