@@ -577,7 +577,7 @@ def check_serial_console_enabled(cli_ctx, storage_account_region=None):
     if storage_account_region is not None:
         kwargs = {'storage_account_region': storage_account_region}
     else:
-        kwargs = dict()
+        kwargs = {}
     client = cf_serialconsole(cli_ctx, **kwargs)
     result = client.get_console_status().additional_properties
     if ("properties" in result and "disabled" in result["properties"] and
@@ -707,7 +707,6 @@ def disable_serialconsole(cmd):
 
 
 def get_region_from_storage_account(cli_ctx, resource_group_name, vm_vmss_name):
-    from azext_serialconsole._client_factory import _compute_client_factory
     from azext_serialconsole._client_factory import storage_client_factory
     from . import _arm_endpoints as AE
 
@@ -719,7 +718,7 @@ def get_region_from_storage_account(cli_ctx, resource_group_name, vm_vmss_name):
             resource_group_name, vm_vmss_name, expand='instanceView')
     except ComputeClientResourceNotFoundError as e:
         error_message = e.message
-        recommendation = ("The specified Virtual Machine {} couldn't be within the resource group {}. "
+        recommendation = ("The specified Virtual Machine {} wasn't found within the resource group {}. "
                           "Please verify that the Virtual Machine exists and is valid for your subscription.".format(
             vm_vmss_name, resource_group_name))
         raise ResourceNotFoundError(
@@ -747,5 +746,3 @@ def parse_storage_account_url(url):
         return saUrl
 
     return None
-
-
