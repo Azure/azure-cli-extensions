@@ -3,7 +3,7 @@ Release History
 
 0.1.3
 ++++++
-* Change to use different region for http calls when custom storage account firewalls are enabled
+* Change to use different region for url calls when custom storage account firewalls are enabled
 
 0.1.2
 ++++++
