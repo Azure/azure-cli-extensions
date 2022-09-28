@@ -171,3 +171,10 @@ class VmwareWorkloadNetworkScenarioTest(ScenarioTest):
 
         gatewayGet = self.cmd('az vmware workload-network gateway show --resource-group {rg} --private-cloud {privatecloud} --gateway {gateway}').get_output_in_json()
         self.assertEqual(gatewayGet['name'], 'gateway1')
+
+        workloadNetworkList = self.cmd('az vmware workload-network list --resource-group {rg} --private-cloud {privatecloud}').get_output_in_json()
+        self.assertEqual(len(workloadNetworkList), 1)
+
+        workloadNetworkShow = self.cmd('az vmware workload-network show --resource-group {rg} --private-cloud {privatecloud}').get_output_in_json()
+        self.assertEqual(workloadNetworkShow['name'], 'default')
+

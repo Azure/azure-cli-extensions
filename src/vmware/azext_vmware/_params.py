@@ -20,6 +20,9 @@ def load_arguments(self, _):
         c.argument('location', validator=get_default_location_from_resource_group)
         c.argument('private_cloud', options_list=['--private-cloud', '-c'], help='Name of the private cloud.')
 
+    with self.argument_context('vmware location') as c:
+        c.argument('sku', help='The name of the SKU')
+
     with self.argument_context('vmware private-cloud') as c:
         c.argument('cluster_size', help='Number of hosts for the default management cluster. Minimum of 3 and maximum of 16.')
         c.argument('internet', help='Connectivity to internet. Specify "Enabled" or "Disabled".')
@@ -55,6 +58,7 @@ def load_arguments(self, _):
 
     with self.argument_context('vmware authorization') as c:
         c.argument('name', options_list=['--name', '-n'], help='Name of the authorization.')
+        c.argument('express_route_id', help='The ID of the ExpressRoute Circuit.')
         c.argument('yes', help='Delete without confirmation.')
 
     with self.argument_context('vmware private-cloud add-cmk-encryption') as c:
@@ -131,7 +135,6 @@ def load_arguments(self, _):
     with self.argument_context('vmware datastore disk-pool-volume create') as c:
         c.argument('target_id', help='Azure resource ID of the iSCSI target.')
         c.argument('mount_option', arg_type=get_enum_type(['MOUNT', 'ATTACH']), default="MOUNT", help='Mode that describes whether the LUN has to be mounted as a datastore or attached as a LUN.')
-        c.argument('path', help='Device path.')
 
     with self.argument_context('vmware addon') as c:
         c.argument('name', options_list=['--name', '-n'], help='Name of the addon.')
@@ -145,6 +148,9 @@ def load_arguments(self, _):
 
     with self.argument_context('vmware addon srm') as c:
         c.argument('license_key', help='The Site Recovery Manager (SRM) license.')
+
+    with self.argument_context('vmware addon arc') as c:
+        c.argument('vcenter', help='The VMware vCenter resource ID.')
 
     with self.argument_context('vmware global-reach-connection') as c:
         c.argument('name', options_list=['--name', '-n'], help='Name of the global reach connection.')
@@ -255,14 +261,16 @@ def load_arguments(self, _):
     with self.argument_context('vmware placement-policy') as c:
         c.argument('cluster_name', help="Name of the cluster in the private cloud.")
         c.argument('placement_policy_name', help="Name of the VMware vSphere Distributed Resource Scheduler (DRS) placement policy.")
-        c.argument('state', help="Whether the placement policy is enabled or disabled. Possible values include: 'Enabled', 'Disabled'.")
+        c.argument('state', arg_type=get_enum_type(['Enabled', 'Disabled']), help="Whether the placement policy is enabled or disabled.")
         c.argument('display_name', help="Display name of the placement policy.")
         c.argument('vm_members', nargs='+', help="Virtual machine members list.")
-        c.argument('affinity_type', help="Placement policy affinity type. Possible values include: 'Affinity', 'AntiAffinity'.")
+        c.argument('affinity_type', arg_type=get_enum_type(['Affinity', 'AntiAffinity']), help="Placement policy affinity type.")
         c.argument('host_members', nargs='+', help='Host members list.')
+        c.argument('affinity_strength', arg_type=get_enum_type(['Should', 'Must']), help='Vm host placement policy affinity strength (should/must).')
+        c.argument('azure_hybrid_benefit', arg_type=get_enum_type(['SqlHost', 'None']), help='Placement policy azure hybrid benefit opt-in type.')
         c.argument('yes', help='Delete without confirmation.')
 
     with self.argument_context('vmware vm') as c:
         c.argument('cluster_name', help='Name of the cluster in the private cloud.')
         c.argument('virtual_machine', help='Virtual Machine identifier.')
-        c.argument('restrict_movement', help='Whether VM DRS-driven movement is restricted (enabled) or not (disabled).')
+        c.argument('restrict_movement', arg_type=get_enum_type(['Enabled', 'Disabled']), help='Whether VM DRS-driven movement is restricted (enabled) or not (disabled).')

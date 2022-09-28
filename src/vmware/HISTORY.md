@@ -2,6 +2,18 @@
 
 ## 5.0.0 (2022-09)
 
+- Update to AVS 2022-05-01 API
+- Add `az vmware cluster list-zones`
+- Add `az vmware workload-network show`
+- Add `az vmware workload-network list`
+- Add `--affinity-strength` and `--azure-hybrid-benefit-type` parameter to `az vmware placement-policy vm-host create`
+- Add `--affinity-strength` and `--azure-hybrid-benefit-type` parameter to `az vmware placement-policy vm-host update`
+- Add `--express-route-id` parameter to `az vmware authorization create`
+- Add `vmware addon arc` command group
+- Add `az vmware location check-trial-availability`
+- Add `az vmware location check-quota-availability`
+- Deprecate `az vmware location checktrialavailability`
+- Deprecate `az vmware location checkquotaavailability`
 - [BREAKING CHANGE] `az vmware private-cloud add-availability-zone` has been removed. Availability zone cannot be modified after private cloud creation
 - [BREAKING CHANGE] `az vmware private-cloud delete-availability-zone` has been removed. Availability zone cannot be modified after private cloud creation.
 

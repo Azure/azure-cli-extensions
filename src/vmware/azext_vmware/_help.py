@@ -32,6 +32,11 @@ helps['vmware addon vr'] = """
     short-summary: Commands to manage a vSphere Replication (VR) addon.
 """
 
+helps['vmware addon arc'] = """
+    type: group
+    short-summary: Commands to manage a Arc addon.
+"""
+
 helps['vmware private-cloud'] = """
     type: group
     short-summary: Commands to manage private clouds.
@@ -85,6 +90,11 @@ helps['vmware cluster show'] = """
 helps['vmware cluster update'] = """
     type: command
     short-summary: Update a cluster in a private cloud.
+"""
+
+helps['vmware cluster list-zones'] = """
+    type: command
+    short-summary: List hosts by zone in a cluster.
 """
 
 helps['vmware private-cloud add-identity-source'] = """
@@ -242,8 +252,17 @@ helps['vmware location checkquotaavailability'] = """
     type: command
     short-summary: Return quota for subscription by region.
 """
+helps['vmware location check-quota-availability'] = """
+    type: command
+    short-summary: Return quota for subscription by region.
+"""
 
 helps['vmware location checktrialavailability'] = """
+    type: command
+    short-summary: Return trial status for subscription by region.
+"""
+
+helps['vmware location check-trial-availability'] = """
     type: command
     short-summary: Return trial status for subscription by region.
 """
@@ -335,6 +354,14 @@ helps['vmware addon srm create'] = """
       text: az vmware addon srm create --resource-group MyResourceGroup --private-cloud MyPrivateCloud --license-key "41915-178A8-FF4A4-DB683-6D735"
 """
 
+helps['vmware addon arc create'] = """
+    type: command
+    short-summary: Create an Arc addon for a private cloud.
+    examples:
+    - name: Create an Arc addon.
+      text: az vmware addon arc create --resource-group MyResourceGroup --private-cloud MyPrivateCloud --vcenter "00000000-0000-0000-0000-000000000000"
+"""
+
 helps['vmware addon vr show'] = """
     type: command
     short-summary: Show details of a vSphere Replication (VR) addon for a private cloud.
@@ -357,6 +384,14 @@ helps['vmware addon srm show'] = """
     examples:
     - name: Show details of a Site Recovery Manager (SRM) addon.
       text: az vmware addon srm show --resource-group MyResourceGroup --private-cloud MyPrivateCloud
+"""
+
+helps['vmware addon arc show'] = """
+    type: command
+    short-summary: Show details of an Arc addon for a private cloud.
+    examples:
+    - name: Show details of an Arc addon.
+      text: az vmware addon arc show --resource-group MyResourceGroup --private-cloud MyPrivateCloud
 """
 
 helps['vmware addon vr update'] = """
@@ -383,6 +418,14 @@ helps['vmware addon srm update'] = """
       text: az vmware addon srm update --resource-group MyResourceGroup --private-cloud MyPrivateCloud --license-key "41915-178A8-FF4A4-DB683-6D735"
 """
 
+helps['vmware addon arc update'] = """
+    type: command
+    short-summary: Update an Arc addon for a private cloud.
+    examples:
+    - name: Update an Arc addon.
+      text: az vmware addon arc update --resource-group MyResourceGroup --private-cloud MyPrivateCloud --vcenter "00000000-0000-0000-0000-000000000000"
+"""
+
 helps['vmware addon vr delete'] = """
     type: command
     short-summary: Delete a vSphere Replication (VR) addon for a private cloud.
@@ -405,6 +448,14 @@ helps['vmware addon srm delete'] = """
     examples:
     - name: Delete a Site Recovery Manager (SRM) addon.
       text: az vmware addon srm delete --resource-group MyResourceGroup --private-cloud MyPrivateCloud
+"""
+
+helps['vmware addon arc delete'] = """
+    type: command
+    short-summary: Delete an Arc addon for a private cloud.
+    examples:
+    - name: Delete an Arc addon.
+      text: az vmware addon arc delete --resource-group MyResourceGroup --private-cloud MyPrivateCloud
 """
 
 helps['vmware global-reach-connection'] = """
@@ -547,9 +598,20 @@ helps['vmware script-execution delete'] = """
     - name: Delete a script execution.
       text: az vmware script-execution delete --resource-group group1 --private-cloud cloud1 --name addSsoServer
 """
+
 helps['vmware workload-network'] = """
     type: group
     short-summary: Commands to manage workload-networks in a private cloud.
+"""
+
+helps['vmware workload-network list'] = """
+    type: command
+    short-summary: List of workload networks in a private cloud.
+"""
+
+helps['vmware workload-network show'] = """
+    type: command
+    short-summary: Show details for a private cloud workload network.
 """
 
 helps['vmware workload-network dhcp'] = """
