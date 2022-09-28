@@ -81,10 +81,10 @@ def load_command_table(self, _):
         client_factory=cf_subscriptionconnection
     )
 
-#    network_managementgroupconnection = CliCommandType(
-#        operations_tmpl='azext_network_manager.vendored_sdks.operations._management_group_network_manager_connections_operations#ManagementGroupNetworkManagerConnectionsOperations.{}',
-#        client_factory=cf_managementgroupconnection
-#    )
+    network_managementgroupconnection = CliCommandType(
+        operations_tmpl='azext_network_manager.vendored_sdks.operations._operations#ManagementGroupNetworkManagerConnectionsOperations.{}',
+        client_factory=cf_managementgroupconnection
+    )
 
     with self.command_group('network manager', network_networkmanager, client_factory=cf_networkmanager) as g:
         g.custom_command('create', 'network_manager_create')
@@ -171,12 +171,12 @@ def load_command_table(self, _):
         g.custom_show_command('show', 'network_manager_connection_subscription_show')
         g.custom_command('delete', 'network_manager_connection_subscription_delete', confirmation=True)
 
-#    with self.command_group('network manager connection management-group', network_managementgroupconnection, client_factory=cf_managementgroupconnection) as g:
-#        g.custom_command('create', 'network_manager_connection_management_group_create')
-#        g.generic_update_command('update', setter_arg_name='connection_management_group', custom_func_name='network_manager_connection_management_group_update')
-#        g.custom_command('list', 'network_manager_connection_management_group_list')
-#        g.custom_show_command('show', 'network_manager_connection_management_group_show')
-#        g.custom_command('delete', 'network_manager_connection_management_group_delete', confirmation=True)
+    with self.command_group('network manager connection management-group', network_managementgroupconnection, client_factory=cf_managementgroupconnection) as g:
+        g.custom_command('create', 'network_manager_connection_management_group_create')
+        g.generic_update_command('update', custom_func_name='network_manager_connection_management_group_update')
+        g.custom_command('list', 'network_manager_connection_management_group_list')
+        g.custom_show_command('show', 'network_manager_connection_management_group_show')
+        g.custom_command('delete', 'network_manager_connection_management_group_delete', confirmation=True)
 
     with self.command_group('network manager scope-connection', network_scopeconnection, client_factory=cf_scopeconnection) as g:
         g.custom_command('create', 'network_manager_scope_connection_create')

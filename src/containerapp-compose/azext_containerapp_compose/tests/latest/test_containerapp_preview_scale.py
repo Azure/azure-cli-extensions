@@ -20,7 +20,7 @@ class ContainerappComposePreviewReplicasScenarioTest(ContainerappComposePreviewS
         compose_text = """
 services:
   foo:
-    image: mcr.microsoft.com/azuredocs/aks-helloworld:v1
+    image: mcr.microsoft.com/azuredocs/containerapps-helloworld:latest
     ports: 8080:80
     scale: 4
     deploy:
@@ -55,7 +55,7 @@ services:
         compose_text = """
 services:
   foo:
-    image: mcr.microsoft.com/azuredocs/aks-helloworld:v1
+    image: mcr.microsoft.com/azuredocs/containerapps-helloworld:latest
     ports: 8080:80
     deploy:
       mode: replicated

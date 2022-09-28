@@ -20,7 +20,7 @@ class ContainerappComposePreviewResourceSettingsScenarioTest(ContainerappCompose
         compose_text = """
 services:
   foo:
-    image: mcr.microsoft.com/azuredocs/aks-helloworld:v1
+    image: mcr.microsoft.com/azuredocs/containerapps-helloworld:latest
     cpus: 1.25
     expose:
       - "3000"
@@ -47,11 +47,43 @@ services:
 
     @serial_test()
     @ResourceGroupPreparer(name_prefix='cli_test_containerapp_preview', location='eastus')
+    def test_containerapp_compose_create_with_resources_from_service_memory(self, resource_group):
+        compose_text = """
+services:
+  foo:
+    image: mcr.microsoft.com/azuredocs/containerapps-helloworld:latest
+    mem_reservation: 4gb
+    expose:
+      - "3000"
+"""
+        compose_file_name = f"{self._testMethodName}_compose.yml"
+        write_test_file(compose_file_name, compose_text)
+
+        self.kwargs.update({
+            'environment': self.create_random_name(prefix='containerapp-compose', length=24),
+            'workspace': self.create_random_name(prefix='containerapp-compose', length=24),
+            'compose': compose_file_name,
+        })
+
+        command_string = 'containerapp compose create'
+        command_string += ' --compose-file-path {compose}'
+        command_string += ' --resource-group {rg}'
+        command_string += ' --environment {environment}'
+        command_string += ' --logs-workspace {workspace}'
+        self.cmd(command_string, checks=[
+            self.check('[?name==`foo`].properties.template.containers[0].resources.cpu', [2.0]),
+            self.check('[?name==`foo`].properties.template.containers[0].resources.memory', ["4Gi"]),
+        ])
+
+        clean_up_test_file(compose_file_name)
+
+    @serial_test()
+    @ResourceGroupPreparer(name_prefix='cli_test_containerapp_preview', location='eastus')
     def test_containerapp_compose_create_with_resources_from_deploy_cpu(self, resource_group):
         compose_text = """
 services:
   foo:
-    image: mcr.microsoft.com/azuredocs/aks-helloworld:v1
+    image: mcr.microsoft.com/azuredocs/containerapps-helloworld:latest
     deploy:
       resources:
         reservations:
@@ -85,7 +117,7 @@ services:
         compose_text = """
 services:
   foo:
-    image: mcr.microsoft.com/azuredocs/aks-helloworld:v1
+    image: mcr.microsoft.com/azuredocs/containerapps-helloworld:latest
     cpus: 0.75
     deploy:
       resources:
@@ -110,6 +142,42 @@ services:
         command_string += ' --logs-workspace {workspace}'
         self.cmd(command_string, checks=[
             self.check('[?name==`foo`].properties.template.containers[0].resources.cpu', [1.25]),
+        ])
+
+        clean_up_test_file(compose_file_name)
+
+    @serial_test()
+    @ResourceGroupPreparer(name_prefix='cli_test_containerapp_preview', location='eastus')
+    def test_containerapp_compose_create_with_resources_from_deploy_with_mismatched_cpu_memory(self, resource_group):
+        compose_text = """
+services:
+  foo:
+    image: mcr.microsoft.com/azuredocs/containerapps-helloworld:latest
+    deploy:
+      resources:
+        reservations:
+          cpus: 1.25
+          memory: 0.5gb
+    expose:
+      - "3000"
+"""
+        compose_file_name = f"{self._testMethodName}_compose.yml"
+        write_test_file(compose_file_name, compose_text)
+
+        self.kwargs.update({
+            'environment': self.create_random_name(prefix='containerapp-compose', length=24),
+            'workspace': self.create_random_name(prefix='containerapp-compose', length=24),
+            'compose': compose_file_name,
+        })
+
+        command_string = 'containerapp compose create'
+        command_string += ' --compose-file-path {compose}'
+        command_string += ' --resource-group {rg}'
+        command_string += ' --environment {environment}'
+        command_string += ' --logs-workspace {workspace}'
+        self.cmd(command_string, checks=[
+            self.check('[?name==`foo`].properties.template.containers[0].resources.cpu', [1.25]),
+            self.check('[?name==`foo`].properties.template.containers[0].resources.memory', ["2.5Gi"]),
         ])
 
         clean_up_test_file(compose_file_name)

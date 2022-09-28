@@ -27,9 +27,8 @@ def load_command_table(self, _):
         g.communication_custom_command('get-for-teams-user', "communication_identity_get_token_for_teams_user", identity_arguments, client_factory=cf_communication_identity)
 
     sms_arguments = ['connection_string']
-    with self.command_group('communication sms', client_factory=cf_communication_sms, is_preview=True) as g:
-        g.communication_custom_command('send', 'communication_send_sms', sms_arguments)
     with self.command_group('communication sms', client_factory=cf_communication_sms) as g:
+        g.communication_custom_command('send', 'communication_send_sms', sms_arguments, is_preview=True)
         g.communication_custom_command('send-sms', 'communication_send_sms', sms_arguments,
                                        deprecate_info=self.deprecate(redirect='send', hide=True))
 
@@ -37,13 +36,16 @@ def load_command_table(self, _):
     with self.command_group('communication phonenumber', client_factory=cf_communication_phonenumbers, is_preview=True) as g:
         g.communication_custom_command('list', 'communication_list_phonenumbers', phonenumber_arguments)
         g.communication_custom_command('show', 'communication_show_phonenumber', phonenumber_arguments)
-    with self.command_group('communication phonenumbers', client_factory=cf_communication_phonenumbers) as g:
+    with self.command_group('communication phonenumbers', client_factory=cf_communication_phonenumbers,
+                            deprecate_info=self.deprecate(redirect='phonenumber', hide=True)) as g:
         g.communication_custom_command('list-phonenumbers', 'communication_list_phonenumbers', phonenumber_arguments,
                                        deprecate_info=self.deprecate(redirect='list', hide=True))
         g.communication_custom_command('show-phonenumber', 'communication_show_phonenumber', phonenumber_arguments,
                                        deprecate_info=self.deprecate(redirect='show', hide=True))
 
     chat_arguments = ['endpoint', 'access_token']
+    self.command_group('communication chat', is_preview=True)
+
     # thread management
     with self.command_group('communication chat thread', client_factory=cf_communication_chat, is_preview=True) as g:
         g.communication_custom_command('list', 'communication_chat_list_threads', chat_arguments)
