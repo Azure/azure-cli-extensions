@@ -2,6 +2,9 @@
 
 Release History
 ===============
+1.3.5
+++++++++++++++++++
+* Use the api-version 2022-04-02-preview in the CLI command az k8s-extension extension-types list
 
 1.3.3
 ++++++++++++++++++
