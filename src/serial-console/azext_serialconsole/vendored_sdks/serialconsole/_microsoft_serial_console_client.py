@@ -43,7 +43,7 @@ class MicrosoftSerialConsoleClient(MicrosoftSerialConsoleClientOperationsMixin):
             **kwargs  # type: Any
     ):
         # type: (...) -> None
-        if len(kwargs) > 0 and kwargs['storage_account_region'] is not None:
+        if len(kwargs) > 0 and kwargs.get('storage_account_region') is not None:
             base_url = 'https://{}.management.azure.com'.format(kwargs['storage_account_region'])
 
         if not base_url:

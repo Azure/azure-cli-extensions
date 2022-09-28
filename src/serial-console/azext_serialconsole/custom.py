@@ -573,9 +573,11 @@ class SerialConsole:
                 error_message, recommendation=recommendation)
 
 
-def check_serial_console_enabled(cli_ctx, storage_account_region):
+def check_serial_console_enabled(cli_ctx, storage_account_region=None):
     if storage_account_region is not None:
         kwargs = {'storage_account_region': storage_account_region}
+    else:
+        kwargs = dict()
     client = cf_serialconsole(cli_ctx, **kwargs)
     result = client.get_console_status().additional_properties
     if ("properties" in result and "disabled" in result["properties"] and
@@ -705,7 +707,6 @@ def disable_serialconsole(cmd):
 
 
 def get_region_from_storage_account(cli_ctx, resource_group_name, vm_vmss_name):
-    from tld import get_tld
     from azext_serialconsole._client_factory import _compute_client_factory
     from azext_serialconsole._client_factory import storage_client_factory
     from . import _arm_endpoints as AE
@@ -727,10 +728,8 @@ def get_region_from_storage_account(cli_ctx, resource_group_name, vm_vmss_name):
     if (result.diagnostics_profile is not None and
             result.diagnostics_profile.boot_diagnostics is not None):
         storage_account_url = result.diagnostics_profile.boot_diagnostics.storage_uri
-        sa_info = get_tld(storage_account_url, as_object=True)
-        sa_info_list = sa_info.subdomain.split('.')
-        if len(sa_info_list) > 0:
-            storage_account = sa_info_list[0]
+        storage_account = parse_storage_account_url(storage_account_url)
+        if storage_account is not None:
             sa_result = scf.storage_accounts.get_properties(resource_group_name, storage_account)
             if (sa_result is not None and
                     sa_result.network_rule_set is not None and
@@ -738,3 +737,15 @@ def get_region_from_storage_account(cli_ctx, resource_group_name, vm_vmss_name):
                 return AE.ArmEndpoints.region_prefix_pairings[sa_result.location]
 
     return None
+
+
+def parse_storage_account_url(url):
+    saList = url.split('.')
+    if len(saList) > 0:
+        saUrl = saList[0]
+        saUrl = saUrl.replace("https://", "")
+        return saUrl
+
+    return None
+
+
