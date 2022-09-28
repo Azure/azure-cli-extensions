@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.3.5
+++++++++++++++++++
+* Fix to address the error TypeError: cf_k8s_extension() takes 1 positional argument but 2 were given while running command az k8s-extension extension-types list-versions
+
 1.3.4
 ++++++++++++++++++
 * Fix to address the error TypeError: cf_k8s_extension() takes 1 positional argument but 2 were given while running command az k8s-extension extension-types list 
