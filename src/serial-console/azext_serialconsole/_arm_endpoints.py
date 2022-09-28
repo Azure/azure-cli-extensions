@@ -4,7 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 
-class ArmEndpoints:
+class ArmEndpoints:  # pylint: disable=too-few-public-methods
     region_prefix_pairings = {'australiacentral': 'australiaeast',
                               'australiaeast': 'australiacentral',
                               'brazilsouth': 'brazilsoutheast',
