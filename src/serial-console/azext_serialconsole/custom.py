@@ -718,9 +718,9 @@ def get_region_from_storage_account(cli_ctx, resource_group_name, vm_vmss_name):
             resource_group_name, vm_vmss_name, expand='instanceView')
     except ComputeClientResourceNotFoundError as e:
         error_message = e.message
-        recommendation = ("The specified Virtual Machine {} wasn't found within the resource group {}. "
-                          "Please verify that the Virtual Machine exists and is valid for your "
-                          "subscription.".format(vm_vmss_name, resource_group_name))
+        recommendation = (f"The specified Virtual Machine {vm_vmss_name} wasn't found within the "
+                          f"resource group {resource_group_name}. Please verify that the Virtual Machine "
+                          "exists and is valid for your subscription.")
         raise ResourceNotFoundError(
             error_message, recommendation=recommendation) from e
 
@@ -739,10 +739,10 @@ def get_region_from_storage_account(cli_ctx, resource_group_name, vm_vmss_name):
 
 
 def parse_storage_account_url(url):
-    saList = url.split('.')
-    if len(saList) > 0:
-        saUrl = saList[0]
-        saUrl = saUrl.replace("https://", "")
-        return saUrl
+    sa_list = url.split('.')
+    if len(sa_list) > 0:
+        sa_url = sa_list[0]
+        sa_url = sa_url.replace("https://", "")
+        return sa_url
 
     return None
