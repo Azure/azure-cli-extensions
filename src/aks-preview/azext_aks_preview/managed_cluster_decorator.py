@@ -1285,10 +1285,11 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         # validation
         if enable_validation:
             if self.decorator_mode == DecoratorMode.UPDATE:
-                if enable_apiserver_vnet_integration:
+                is_apiserver_vnet_integration_cluster = check_is_apiserver_vnet_integration_cluster(self.mc)
+                if enable_apiserver_vnet_integration and not is_apiserver_vnet_integration_cluster:
                     if self._get_apiserver_subnet_id(enable_validation=False) is None:
                         raise RequiredArgumentMissingError(
-                            "--apiserver-subnet-id is required for update with --apiserver-vnet-integration."
+                            "--apiserver-subnet-id is required for update with --enable-apiserver-vnet-integration."
                         )
 
         return enable_apiserver_vnet_integration
@@ -2888,6 +2889,23 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
 
         return mc
 
+    def update_creation_data(self, mc: ManagedCluster) -> ManagedCluster:
+        self._ensure_mc(mc)
+        snapshot_id = self.context.get_cluster_snapshot_id()
+        # snapshot creation data
+        creation_data = None
+        if snapshot_id:
+            snapshot = self.context.get_cluster_snapshot()
+            if mc.kubernetes_version != snapshot.managed_cluster_properties_read_only.kubernetes_version:
+                raise UnknownError(
+                    "Please use az aks upgrade --cluster-snapshot-id to upgrade cluster version"
+                )
+            creation_data = self.models.CreationData(
+                source_resource_id=snapshot_id
+            )
+            mc.creation_data = creation_data
+        return mc
+
     def update_mc_profile_preview(self) -> ManagedCluster:
         """The overall controller used to update the preview ManagedCluster profile.
 
@@ -2928,6 +2946,8 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         mc = self.update_azure_monitor_profile(mc)
         # update vpa
         mc = self.update_vpa(mc)
+        # update creation data
+        mc = self.update_creation_data(mc)
 
         if (self.__raw_parameters.get("enable_azuremonitormetrics") or self.__raw_parameters.get("disable_azuremonitormetrics")):
             ensure_azure_monitor_profile_prerequisites(
