@@ -2865,7 +2865,6 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         mc = self.update_workload_auto_scaler_profile(mc)
         # update vpa
         mc = self.update_vpa(mc)
-        # update creation data 
+        # update creation data
         mc = self.update_creation_data(mc)
-
         return mc
