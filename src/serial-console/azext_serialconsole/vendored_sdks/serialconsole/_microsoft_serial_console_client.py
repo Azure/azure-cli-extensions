@@ -43,9 +43,8 @@ class MicrosoftSerialConsoleClient(MicrosoftSerialConsoleClientOperationsMixin):
             **kwargs  # type: Any
     ):
         # type: (...) -> None
-        storage_account_location = self.modify_baseurl_for_storage_account_firewall(**kwargs)
-        if storage_account_location is not None:
-            base_url = 'https://{}.management.azure.com'.format(storage_account_location)
+        if len(kwargs) > 0 and kwargs['storage_account_region'] is not None:
+            base_url = 'https://{}.management.azure.com'.format(kwargs['storage_account_region'])
 
         if not base_url:
             base_url = 'https://management.azure.com'
@@ -71,37 +70,3 @@ class MicrosoftSerialConsoleClient(MicrosoftSerialConsoleClientOperationsMixin):
     def __exit__(self, *exc_details):
         # type: (Any) -> None
         self._client.__exit__(*exc_details)
-
-    @staticmethod
-    def modify_baseurl_for_storage_account_firewall(**kwargs):
-        from tld import get_tld
-        from azext_serialconsole._client_factory import _compute_client_factory
-        from azext_serialconsole._client_factory import storage_client_factory
-        from . import _arm_endpoints as AE
-        if len(kwargs) > 0:
-            cli_ctx = kwargs['client_ctx']
-            resource_group_name = kwargs['resource_group_name']
-            vm_vmss_name = kwargs['vm_name']
-        else:
-            return None
-
-        client = _compute_client_factory(cli_ctx)
-        scf = storage_client_factory(cli_ctx)
-
-        result = client.virtual_machines.get(
-            resource_group_name, vm_vmss_name, expand='instanceView')
-
-        if (result.diagnostics_profile is not None and
-                result.diagnostics_profile.boot_diagnostics is not None):
-            storage_account_url = result.diagnostics_profile.boot_diagnostics.storage_uri
-            sa_info = get_tld(storage_account_url, as_object=True)
-            sa_info_list = sa_info.subdomain.split('.')
-            if len(sa_info_list) > 0:
-                storage_account = sa_info_list[0]
-                sa_result = scf.storage_accounts.get_properties(resource_group_name, storage_account)
-                if (sa_result is not None and
-                        sa_result.network_rule_set is not None and
-                        len(sa_result.network_rule_set.ip_rules) > 0):
-                    return AE.ArmEndpoints.region_prefix_pairings[sa_result.location]
-
-        return None

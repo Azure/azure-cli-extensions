@@ -277,7 +277,9 @@ class Terminal:
 
 class SerialConsole:
     def __init__(self, cmd, resource_group_name, vm_vmss_name, vmss_instanceid):
-        kwargs = {'client_ctx': cmd.cli_ctx, 'resource_group_name': resource_group_name, 'vm_name': vm_vmss_name}
+        storage_account_region = get_region_from_storage_account(cmd.cli_ctx, resource_group_name, vm_vmss_name)
+        if storage_account_region is not None:
+            kwargs = {'storage_account_region': storage_account_region}
         client = cf_serial_port(cmd.cli_ctx, **kwargs)
         if vmss_instanceid is None:
             self.connect_func = lambda: client.connect(
@@ -525,6 +527,7 @@ class SerialConsole:
         elif command == "sysrq" and arg_characters is not None:
             def wrapper():
                 return self.send_sys_rq(arg_characters)
+
             func = wrapper
             success_message = "Successfully sent SysRq command\r\n"
             failure_message = "Failed to send SysRq command. Make sure the input only contains numbers and letters.\r\n"
@@ -570,8 +573,9 @@ class SerialConsole:
                 error_message, recommendation=recommendation)
 
 
-def check_serial_console_enabled(cli_ctx, resource_group_name, vm_vmss_name):
-    kwargs = {'client_ctx': cli_ctx, 'resource_group_name': resource_group_name, 'vm_name': vm_vmss_name}
+def check_serial_console_enabled(cli_ctx, storage_account_region):
+    if storage_account_region is not None:
+        kwargs = {'storage_account_region': storage_account_region}
     client = cf_serialconsole(cli_ctx, **kwargs)
     result = client.get_console_status().additional_properties
     if ("properties" in result and "disabled" in result["properties"] and
@@ -583,7 +587,8 @@ def check_serial_console_enabled(cli_ctx, resource_group_name, vm_vmss_name):
 
 
 def check_resource(cli_ctx, resource_group_name, vm_vmss_name, vmss_instanceid):
-    check_serial_console_enabled(cli_ctx, resource_group_name, vm_vmss_name)
+    storage_account_region = get_region_from_storage_account(cli_ctx, resource_group_name, vm_vmss_name)
+    check_serial_console_enabled(cli_ctx, storage_account_region)
     client = _compute_client_factory(cli_ctx)
     if vmss_instanceid:
         result = client.virtual_machine_scale_set_vms.get_instance_view(
@@ -600,7 +605,7 @@ def check_resource(cli_ctx, resource_group_name, vm_vmss_name, vmss_instanceid):
                 error_message, recommendation=recommendation)
 
         if result.boot_diagnostics is None:
-            error_message = ("Azure Serial Console requires boot diagnostics to be enabled.")
+            error_message = "Azure Serial Console requires boot diagnostics to be enabled."
             recommendation = ('Use "az vmss update --name MyScaleSet --resource-group MyResourceGroup --set '
                               'virtualMachineProfile.diagnosticsProfile="{\\"bootDiagnostics\\": {\\"Enabled\\" : '
                               '\\"True\\",\\"StorageUri\\" : null}}"" to enable boot diagnostics. '
@@ -645,7 +650,7 @@ def check_resource(cli_ctx, resource_group_name, vm_vmss_name, vmss_instanceid):
         if (result.diagnostics_profile is None or
                 result.diagnostics_profile.boot_diagnostics is None or
                 not result.diagnostics_profile.boot_diagnostics.enabled):
-            error_message = ("Azure Serial Console requires boot diagnostics to be enabled.")
+            error_message = "Azure Serial Console requires boot diagnostics to be enabled."
             recommendation = ('Use "az vm boot-diagnostics enable --name MyVM --resource-group MyResourceGroup" '
                               'to enable boot diagnostics. You can specify a custom storage account with the '
                               'parameter "--storage https://mystor.blob.windows.net/".')
@@ -697,3 +702,39 @@ def enable_serialconsole(cmd):
 def disable_serialconsole(cmd):
     client = cf_serialconsole(cmd.cli_ctx)
     return client.disable_console()
+
+
+def get_region_from_storage_account(cli_ctx, resource_group_name, vm_vmss_name):
+    from tld import get_tld
+    from azext_serialconsole._client_factory import _compute_client_factory
+    from azext_serialconsole._client_factory import storage_client_factory
+    from . import _arm_endpoints as AE
+
+    client = _compute_client_factory(cli_ctx)
+    scf = storage_client_factory(cli_ctx)
+
+    try:
+        result = client.virtual_machines.get(
+            resource_group_name, vm_vmss_name, expand='instanceView')
+    except ComputeClientResourceNotFoundError as e:
+        error_message = e.message
+        recommendation = ("The specified Virtual Machine {} couldn't be within the resource group {}. "
+                          "Please verify that the Virtual Machine exists and is valid for your subscription.".format(
+            vm_vmss_name, resource_group_name))
+        raise ResourceNotFoundError(
+            error_message, recommendation=recommendation) from e
+
+    if (result.diagnostics_profile is not None and
+            result.diagnostics_profile.boot_diagnostics is not None):
+        storage_account_url = result.diagnostics_profile.boot_diagnostics.storage_uri
+        sa_info = get_tld(storage_account_url, as_object=True)
+        sa_info_list = sa_info.subdomain.split('.')
+        if len(sa_info_list) > 0:
+            storage_account = sa_info_list[0]
+            sa_result = scf.storage_accounts.get_properties(resource_group_name, storage_account)
+            if (sa_result is not None and
+                    sa_result.network_rule_set is not None and
+                    len(sa_result.network_rule_set.ip_rules) > 0):
+                return AE.ArmEndpoints.region_prefix_pairings[sa_result.location]
+
+    return None
