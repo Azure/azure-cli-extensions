@@ -5,9 +5,9 @@ Release History
 
 1.3.6
 ++++++++++++++++++
-* Fix to address the error TypeError: cf_k8s_extension() takes 1 positional argument but 2 were given while running all az k8s-extension extension-types commands
-* {AKS - ARC} fix: Update DCR creation to Clusters resource group instead of workspace
-* Authoring a new k8s partner extension - Data Protection Extension CLI - for the BCDR solution of AKS clusters
+* k8s-extension fix to address the error TypeError: cf_k8s_extension() takes 1 positional argument but 2 were given while running all az k8s-extension extension-types commands
+* microsoft.azuremonitor.containers: Update DCR creation to Clusters resource group instead of workspace
+* microsoft.dataprotection.kubernetes: Authoring a new k8s partner extension for the BCDR solution of AKS clusters
 
 1.3.5
 ++++++++++++++++++
