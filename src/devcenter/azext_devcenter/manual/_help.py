@@ -729,7 +729,7 @@ helps['devcenter admin project-environment-type create'] = """
     type: command
     short-summary: "Create an environment type for a Project."
     examples:
-      - name: EnvironmentTypes_CreateOrUpdate
+      - name: ProjectEnvironmentTypes_CreateOrUpdate
         text: |-
                az devcenter admin project-environment-type create --description "Developer/Testing environment" --dev-center-name \
 "Contoso" --name "{environmentTypeName}" --resource-group "rg1" --deployment-target-id "/subscriptions/00000000-0000-0000-0000-000000000000" \
@@ -740,7 +740,7 @@ helps['devcenter admin project-environment-type update'] = """
     type: command
     short-summary: "Partially updates an environment type for a Project."
     examples:
-      - name: EnvironmentTypes_Update
+      - name: ProjectEnvironmentTypes_Update
         text: |-
                az devcenter admin project-environment-type update --description "Updated description" --dev-center-name "Contoso" \
 --name "{environmentTypeName}" --resource-group "rg1"
