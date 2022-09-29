@@ -305,7 +305,7 @@ def load_arguments(self, _):
         c.argument('tags', tags_type)
         c.argument('location', arg_type=get_location_type(self.cli_ctx), required=False,
                    validator=get_default_location_from_resource_group)
-        c.argument('identity_type', arg_type=get_enum_type(['SystemAssigned, UserAssigned',
+        c.argument('identity_type', arg_type=get_enum_type(['SystemAssigned', 'UserAssigned',
                                                                              'SystemAssigned, UserAssigned', 'None']),
                    help='The type of identity used for the resource. The type \'SystemAssigned, UserAssigned\' '
                    'includes both an implicitly created identity and a user assigned identity. The type \'None\' will '
@@ -322,7 +322,7 @@ def load_arguments(self, _):
         c.argument('tags', tags_type)
         c.argument('location', arg_type=get_location_type(self.cli_ctx), required=False,
                    validator=get_default_location_from_resource_group)
-        c.argument('identity_type', arg_type=get_enum_type(['SystemAssigned, UserAssigned',
+        c.argument('identity_type', arg_type=get_enum_type(['SystemAssigned', 'UserAssigned',
                                                                              'SystemAssigned, UserAssigned', 'None']),
                    help='The type of identity used for the resource. The type \'SystemAssigned, UserAssigned\' '
                    'includes both an implicitly created identity and a user assigned identity. The type \'None\' will '
