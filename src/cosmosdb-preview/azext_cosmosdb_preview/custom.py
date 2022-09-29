@@ -57,14 +57,14 @@ from azure.cli.command_modules.cosmosdb._client_factory import (
     cf_restorable_mongodb_resources
 )
 
-from azure.mgmt.cosmosdb.models import (
+from azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.models import (
     Location,
     CreateMode,
     ConsistencyPolicy,
     ResourceIdentityType,
     ManagedServiceIdentity,
     AnalyticalStorageConfiguration,
-    Components1Jq1T4ISchemasManagedserviceidentityPropertiesUserassignedidentitiesAdditionalproperties
+    ManagedServiceIdentityUserAssignedIdentity
 )
 
 logger = get_logger(__name__)
@@ -927,7 +927,7 @@ def _create_database_account(client,
             user_identities = {}
             for x in assign_identity:
                 if x != SYSTEM_ID:
-                    user_identities[x] = Components1Jq1T4ISchemasManagedserviceidentityPropertiesUserassignedidentitiesAdditionalproperties()  # pylint: disable=line-too-long
+                    user_identities[x] = ManagedServiceIdentityUserAssignedIdentity()  # pylint: disable=line-too-long
                 else:
                     enable_system = True
             if enable_system:
