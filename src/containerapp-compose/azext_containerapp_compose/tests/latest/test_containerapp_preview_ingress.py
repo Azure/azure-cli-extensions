@@ -20,7 +20,7 @@ class ContainerappComposePreviewIngressScenarioTest(ContainerappComposePreviewSc
         compose_text = """
 services:
   foo:
-    image: mcr.microsoft.com/azuredocs/aks-helloworld:v1
+    image: mcr.microsoft.com/azuredocs/containerapps-helloworld:latest
     ports: 8080:80
 """
         compose_file_name = f"{self._testMethodName}_compose.yml"
@@ -52,7 +52,7 @@ class ContainerappComposePreviewIngressInternalScenarioTest(ContainerappComposeP
         compose_text = """
 services:
   foo:
-    image: mcr.microsoft.com/azuredocs/aks-helloworld:v1
+    image: mcr.microsoft.com/azuredocs/containerapps-helloworld:latest
     expose:
       - "3000"
 """
@@ -85,7 +85,7 @@ class ContainerappComposePreviewIngressBothScenarioTest(ContainerappComposePrevi
         compose_text = """
 services:
   foo:
-    image: mcr.microsoft.com/azuredocs/aks-helloworld:v1
+    image: mcr.microsoft.com/azuredocs/containerapps-helloworld:latest
     ports: 4000:3000
     expose:
       - "5000"
@@ -119,7 +119,7 @@ class ContainerappComposePreviewIngressPromptScenarioTest(ContainerappComposePre
         compose_text = """
 services:
   foo:
-    image: mcr.microsoft.com/azuredocs/aks-helloworld:v1
+    image: mcr.microsoft.com/azuredocs/containerapps-helloworld:latest
     ports:
       - 4000:3000
       - 443:443

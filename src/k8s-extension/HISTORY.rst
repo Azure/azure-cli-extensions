@@ -2,6 +2,13 @@
 
 Release History
 ===============
+1.3.5
+++++++++++++++++++
+* Use the api-version 2022-04-02-preview in the CLI command az k8s-extension extension-types list
+
+1.3.4
+++++++++++++++++++
+* Fix to address the error TypeError: cf_k8s_extension() takes 1 positional argument but 2 were given while running command az k8s-extension extension-types list 
 
 1.3.3
 ++++++++++++++++++

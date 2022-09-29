@@ -85,6 +85,7 @@ ManagedClusterStorageProfileSnapshotController = TypeVar('ManagedClusterStorageP
 ManagedClusterIngressProfileWebAppRouting = TypeVar("ManagedClusterIngressProfileWebAppRouting")
 ManagedClusterSecurityProfileDefender = TypeVar("ManagedClusterSecurityProfileDefender")
 ManagedClusterSecurityProfileNodeRestriction = TypeVar("ManagedClusterSecurityProfileNodeRestriction")
+ManagedClusterWorkloadProfileVerticalPodAutoscaler = TypeVar("ManagedClusterWorkloadProfileVerticalPodAutoscaler")
 
 
 # pylint: disable=too-few-public-methods
@@ -354,6 +355,20 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
                     )
 
         return count_ipv6
+
+    def get_load_balancer_backend_pool_type(self) -> str:
+        """Obtain the value of load_balancer_backend_pool_type.
+
+        :return: string
+        """
+        # read the original value passed by the command
+        load_balancer_backend_pool_type = self.raw_param.get(
+            "load_balancer_backend_pool_type"
+        )
+
+        # this parameter does not need dynamic completion
+        # this parameter does not need validation
+        return load_balancer_backend_pool_type
 
     def _get_enable_pod_security_policy(self, enable_validation: bool = False) -> bool:
         """Internal function to obtain the value of enable_pod_security_policy.
@@ -1266,10 +1281,11 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         # validation
         if enable_validation:
             if self.decorator_mode == DecoratorMode.UPDATE:
-                if enable_apiserver_vnet_integration:
+                is_apiserver_vnet_integration_cluster = check_is_apiserver_vnet_integration_cluster(self.mc)
+                if enable_apiserver_vnet_integration and not is_apiserver_vnet_integration_cluster:
                     if self._get_apiserver_subnet_id(enable_validation=False) is None:
                         raise RequiredArgumentMissingError(
-                            "--apiserver-subnet-id is required for update with --apiserver-vnet-integration."
+                            "--apiserver-subnet-id is required for update with --enable-apiserver-vnet-integration."
                         )
 
         return enable_apiserver_vnet_integration
@@ -1904,6 +1920,64 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         """
         return self._get_disable_node_restriction(enable_validation=True)
 
+    def _get_enable_vpa(self, enable_validation: bool = False) -> bool:
+        """Internal function to obtain the value of enable_vpa.
+        This function supports the option of enable_vpa. When enabled, if both enable_vpa and enable_vpa are
+        specified, raise a MutuallyExclusiveArgumentError.
+        :return: bool
+        """
+        # Read the original value passed by the command.
+        enable_vpa = self.raw_param.get("enable_vpa")
+
+        # This parameter does not need dynamic completion.
+        if enable_validation:
+            if enable_vpa and self._get_disable_vpa(enable_validation=False):
+                raise MutuallyExclusiveArgumentError(
+                    "Cannot specify --enable-vpa and --disable-vpa at the same time."
+                )
+
+        return enable_vpa
+
+    def get_enable_vpa(self) -> bool:
+        """Obtain the value of enable_vpa.
+
+        This function will verify the parameter by default. If both enable_vpa and disable_vpa are specified, raise
+        a MutuallyExclusiveArgumentError.
+
+        :return: bool
+        """
+        return self._get_enable_vpa(enable_validation=True)
+
+    def _get_disable_vpa(self, enable_validation: bool = False) -> bool:
+        """Internal function to obtain the value of disable_vpa.
+
+        This function supports the option of enable_vpa. When enabled, if both enable_vpa and disable_vpa are specified,
+        raise a MutuallyExclusiveArgumentError.
+
+        :return: bool
+        """
+        # Read the original value passed by the command.
+        disable_vpa = self.raw_param.get("disable_vpa")
+
+        # This option is not supported in create mode, hence we do not read the property value from the `mc` object.
+        # This parameter does not need dynamic completion.
+        if enable_validation:
+            if disable_vpa and self._get_enable_vpa(enable_validation=False):
+                raise MutuallyExclusiveArgumentError(
+                    "Cannot specify --enable-vpa and --disable-vpa at the same time."
+                )
+
+        return disable_vpa
+
+    def get_disable_vpa(self) -> bool:
+        """Obtain the value of disable_vpa.
+
+        This function will verify the parameter by default. If both enable_vpa and disable_vpa are specified, raise a MutuallyExclusiveArgumentError.
+
+        :return: bool
+        """
+        return self._get_disable_vpa(enable_validation=True)
+
 
 class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
     def __init__(
@@ -1978,7 +2052,7 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         network_profile.ip_families = ip_families
 
         # recreate the load balancer profile if load_balancer_managed_outbound_ipv6_count is not None
-        if self.context.get_load_balancer_managed_outbound_ipv6_count() is not None:
+        if self.context.get_load_balancer_managed_outbound_ipv6_count() is not None or self.context.get_load_balancer_backend_pool_type() is not None:
             network_profile.load_balancer_profile = create_load_balancer_profile(
                 self.context.get_load_balancer_managed_outbound_ip_count(),
                 self.context.get_load_balancer_managed_outbound_ipv6_count(),
@@ -1986,6 +2060,7 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
                 self.context.get_load_balancer_outbound_ip_prefixes(),
                 self.context.get_load_balancer_outbound_ports(),
                 self.context.get_load_balancer_idle_timeout(),
+                self.context.get_load_balancer_backend_pool_type(),
                 models=self.models.load_balancer_models,
             )
 
@@ -2253,6 +2328,22 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
 
         return mc
 
+    def set_up_vpa(self, mc: ManagedCluster) -> ManagedCluster:
+        """Set up workload auto-scaler profile vpa for the ManagedCluster object.
+
+        :return: the ManagedCluster object
+        """
+        self._ensure_mc(mc)
+
+        if self.context.get_enable_vpa():
+            if mc.workload_auto_scaler_profile is None:
+                mc.workload_auto_scaler_profile = self.models.ManagedClusterWorkloadAutoScalerProfile()
+            if mc.workload_auto_scaler_profile.vertical_pod_autoscaler is None:
+                mc.workload_auto_scaler_profile.vertical_pod_autoscaler = self.models.ManagedClusterWorkloadAutoScalerProfileVerticalPodAutoscaler(enabled=True)
+            else:
+                mc.workload_auto_scaler_profile.vertical_pod_autoscaler.enabled = True
+        return mc
+
     def construct_mc_profile_preview(self, bypass_restore_defaults: bool = False) -> ManagedCluster:
         """The overall controller used to construct the default ManagedCluster profile.
 
@@ -2293,6 +2384,8 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         mc = self.set_up_ingress_web_app_routing(mc)
         # set up workload auto scaler profile
         mc = self.set_up_workload_auto_scaler_profile(mc)
+        # set up vpa
+        mc = self.set_up_vpa(mc)
 
         # DO NOT MOVE: keep this at the bottom, restore defaults
         mc = self._restore_defaults_in_mc(mc)
@@ -2398,6 +2491,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
             outbound_ip_prefixes=self.context.get_load_balancer_outbound_ip_prefixes(),
             outbound_ports=self.context.get_load_balancer_outbound_ports(),
             idle_timeout=self.context.get_load_balancer_idle_timeout(),
+            backend_pool_type=self.context.get_load_balancer_backend_pool_type(),
             profile=mc.network_profile.load_balancer_profile,
             models=self.models.load_balancer_models,
         )
@@ -2689,6 +2783,50 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
 
         return mc
 
+    def update_vpa(self, mc: ManagedCluster) -> ManagedCluster:
+        """Update workload auto-scaler profile vertical pod auto-scaler for the ManagedCluster object.
+
+        :return: the ManagedCluster object
+        """
+        self._ensure_mc(mc)
+
+        if self.context.get_enable_vpa():
+            if mc.workload_auto_scaler_profile is None:
+                mc.workload_auto_scaler_profile = self.models.ManagedClusterWorkloadAutoScalerProfile()
+            if mc.workload_auto_scaler_profile.vertical_pod_autoscaler is None:
+                mc.workload_auto_scaler_profile.vertical_pod_autoscaler = self.models.ManagedClusterWorkloadAutoScalerProfileVerticalPodAutoscaler()
+
+            # set enabled
+            mc.workload_auto_scaler_profile.vertical_pod_autoscaler.enabled = True
+
+        if self.context.get_disable_vpa():
+            if mc.workload_auto_scaler_profile is None:
+                mc.workload_auto_scaler_profile = self.models.ManagedClusterWorkloadAutoScalerProfile()
+            if mc.workload_auto_scaler_profile.vertical_pod_autoscaler is None:
+                mc.workload_auto_scaler_profile.vertical_pod_autoscaler = self.models.ManagedClusterWorkloadAutoScalerProfileVerticalPodAutoscaler()
+
+            # set disabled
+            mc.workload_auto_scaler_profile.vertical_pod_autoscaler.enabled = False
+
+        return mc
+
+    def update_creation_data(self, mc: ManagedCluster) -> ManagedCluster:
+        self._ensure_mc(mc)
+        snapshot_id = self.context.get_cluster_snapshot_id()
+        # snapshot creation data
+        creation_data = None
+        if snapshot_id:
+            snapshot = self.context.get_cluster_snapshot()
+            if mc.kubernetes_version != snapshot.managed_cluster_properties_read_only.kubernetes_version:
+                raise UnknownError(
+                    "Please use az aks upgrade --cluster-snapshot-id to upgrade cluster version"
+                )
+            creation_data = self.models.CreationData(
+                source_resource_id=snapshot_id
+            )
+            mc.creation_data = creation_data
+        return mc
+
     def update_mc_profile_preview(self) -> ManagedCluster:
         """The overall controller used to update the preview ManagedCluster profile.
 
@@ -2725,5 +2863,8 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         mc = self.update_storage_profile(mc)
         # update workload auto scaler profile
         mc = self.update_workload_auto_scaler_profile(mc)
-
+        # update vpa
+        mc = self.update_vpa(mc)
+        # update creation data
+        mc = self.update_creation_data(mc)
         return mc

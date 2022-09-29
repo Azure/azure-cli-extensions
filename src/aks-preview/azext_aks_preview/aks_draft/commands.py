@@ -123,8 +123,8 @@ def aks_draft_cmd_up(app: str,
 
 
 # `az aks draft update` function
-def aks_draft_cmd_update(destination: str, download_path: str) -> None:
-    file_path, arguments = _pre_run(download_path, destination=destination)
+def aks_draft_cmd_update(host: str, certificate: str, destination: str, download_path: str) -> None:
+    file_path, arguments = _pre_run(download_path, host=host, certificate=certificate, destination=destination)
     run_successful = _run(file_path, 'update', arguments)
     if run_successful:
         _run_finish()
@@ -223,7 +223,8 @@ def _get_filename() -> Optional[str]:
         logging.error('Cannot find a suitable download for the current system architecture. Draft only supports AMD64 and ARM64.')
         return None
 
-    return f'draft-{operating_system}-{architecture}'
+    file_suffix = ".exe" if operating_system == "windows" else ""
+    return f'draft-{operating_system}-{architecture}{file_suffix}'
 
 
 # Returns path to existing draft binary, None otherwise
@@ -266,7 +267,7 @@ def _download_binary(download_path: str = '~/.aksdraft') -> Optional[str]:
     if not filename:
         return None
 
-    url = f'https://github.com/Azure/draft/releases/latest/download/{filename}'
+    url = f'https://github.com/Azure/draft/releases/download/{CONST_DRAFT_CLI_VERSION}/{filename}'
     headers = {'Accept': 'application/octet-stream'}
 
     # Downloading the file by sending the request to the URL

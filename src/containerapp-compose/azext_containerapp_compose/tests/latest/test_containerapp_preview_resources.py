@@ -20,7 +20,7 @@ class ContainerappComposePreviewResourceSettingsScenarioTest(ContainerappCompose
         compose_text = """
 services:
   foo:
-    image: mcr.microsoft.com/azuredocs/aks-helloworld:v1
+    image: mcr.microsoft.com/azuredocs/containerapps-helloworld:latest
     cpus: 1.25
     expose:
       - "3000"
@@ -51,7 +51,7 @@ services:
         compose_text = """
 services:
   foo:
-    image: mcr.microsoft.com/azuredocs/aks-helloworld:v1
+    image: mcr.microsoft.com/azuredocs/containerapps-helloworld:latest
     mem_reservation: 4gb
     expose:
       - "3000"
@@ -83,7 +83,7 @@ services:
         compose_text = """
 services:
   foo:
-    image: mcr.microsoft.com/azuredocs/aks-helloworld:v1
+    image: mcr.microsoft.com/azuredocs/containerapps-helloworld:latest
     deploy:
       resources:
         reservations:
@@ -117,7 +117,7 @@ services:
         compose_text = """
 services:
   foo:
-    image: mcr.microsoft.com/azuredocs/aks-helloworld:v1
+    image: mcr.microsoft.com/azuredocs/containerapps-helloworld:latest
     cpus: 0.75
     deploy:
       resources:
@@ -152,7 +152,7 @@ services:
         compose_text = """
 services:
   foo:
-    image: mcr.microsoft.com/azuredocs/aks-helloworld:v1
+    image: mcr.microsoft.com/azuredocs/containerapps-helloworld:latest
     deploy:
       resources:
         reservations:
