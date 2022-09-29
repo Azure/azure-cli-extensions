@@ -8,6 +8,7 @@ from azure.cli.core.style import print_styled_text, Style, is_modern_terminal
 
 
 def input_int(default_value=0):
+    """Read an int from `stdin`. Retry if input is not a number"""
     ret = input()
     if ret == '' or ret is None:
         return default_value
@@ -19,6 +20,9 @@ def input_int(default_value=0):
 
 
 def select_option(option_msg, min_option, max_option, default_option):
+    """Read an option from `stdin` ranging from `min_option` to `max_option`.
+    Retry if input is out of range.
+    """
     print_styled_text(option_msg, end='')
     option = input_int(default_option)
     while option < min_option or option > max_option:
