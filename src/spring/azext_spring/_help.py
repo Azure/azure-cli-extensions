@@ -329,6 +329,11 @@ helps['spring app logs'] = """
     short-summary: Show logs of an app instance, logs will be streamed when setting '-f/--follow'.
 """
 
+helps['spring app connect'] = """
+    type: command
+    short-summary: Connect to the interactive shell of an app instance for troubleshooting'.
+"""
+
 helps['spring app deployment'] = """
     type: group
     short-summary: Commands to manage life cycle of deployments of an app in Azure Spring Apps. More operations on deployments can be done on app level with parameter --deployment. e.g. az spring app deploy --deployment <staging deployment>
