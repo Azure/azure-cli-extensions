@@ -39,7 +39,14 @@ from azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.models import (
     MongoDBDatabaseResource,
     MongoDBDatabaseCreateUpdateParameters,
     MongoDBCollectionResource,
-    MongoDBCollectionCreateUpdateParameters
+    MongoDBCollectionCreateUpdateParameters,
+    Location,
+    CreateMode,
+    ConsistencyPolicy,
+    ResourceIdentityType,
+    ManagedServiceIdentity,
+    AnalyticalStorageConfiguration,
+    ManagedServiceIdentityUserAssignedIdentity
 )
 
 from azext_cosmosdb_preview._client_factory import (
@@ -55,16 +62,6 @@ from azure.core.exceptions import ResourceNotFoundError
 from azure.cli.command_modules.cosmosdb._client_factory import (
     cf_restorable_sql_resources,
     cf_restorable_mongodb_resources
-)
-
-from azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.models import (
-    Location,
-    CreateMode,
-    ConsistencyPolicy,
-    ResourceIdentityType,
-    ManagedServiceIdentity,
-    AnalyticalStorageConfiguration,
-    ManagedServiceIdentityUserAssignedIdentity
 )
 
 logger = get_logger(__name__)
