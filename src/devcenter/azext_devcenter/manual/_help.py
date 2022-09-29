@@ -8,12 +8,12 @@ from knack.help_files import helps  # pylint: disable=unused-import
 
 helps['devcenter admin'] = """
     type: group
-    short-summary: "Manages DevCenter admin resources"
+    short-summary: "Manages devcenter admin resources"
 """
 
 helps['devcenter dev'] = """
     type: group
-    short-summary: "Manages DevCenter developer resources"
+    short-summary: "Manages devcenter developer resources"
 """
 helps['devcenter dev project'] = """
     type: group
@@ -26,7 +26,7 @@ helps['devcenter dev project list'] = """
     examples:
       - name: Project_ListByDevCenter
         text: |-
-               az devcenter project list --dev-center "{devCenter}"
+               az devcenter dev project list --dev-center-name "{devCenterName}"
 """
 
 helps['devcenter dev project show'] = """
@@ -35,7 +35,7 @@ helps['devcenter dev project show'] = """
     examples:
       - name: Project_Get
         text: |-
-               az devcenter project show --dev-center "{devCenter}" \
+               az devcenter dev project show --dev-center-name "{devCenterName}" \
 --name "{projectName}"
 """
 
@@ -50,7 +50,7 @@ helps['devcenter dev pool list'] = """
     examples:
       - name: listPools
         text: |-
-               az devcenter pool list --dev-center "{devCenter}" \
+               az devcenter dev pool list --dev-center-name "{devCenterName}" \
 --project-name "{projectName}"
 """
 
@@ -60,7 +60,7 @@ helps['devcenter dev pool show'] = """
     examples:
       - name: Pools_Get
         text: |-
-               az devcenter pool show --dev-center "{devCenter}" --name \
+               az devcenter dev pool show --dev-center-name "{devCenterName}" --name \
 "{poolName}" --project-name "{projectName}"
 """
 
@@ -75,7 +75,7 @@ helps['devcenter dev schedule list'] = """
     examples:
       - name: listSchedules
         text: |-
-               az devcenter schedule list --dev-center "{devCenter}" \
+               az devcenter dev schedule list --dev-center-name "{devCenterName}" \
 --pool-name "{poolName}" --project-name "{projectName}"
 """
 
@@ -85,7 +85,7 @@ helps['devcenter dev schedule show'] = """
     examples:
       - name: Schedule_Get
         text: |-
-               az devcenter schedule show --dev-center "{devCenter}" \
+               az devcenter dev schedule show --dev-center-name "{devCenterName}" \
 --pool-name "{poolName}" --project-name "{projectName}" --name "{scheduleName}"
 """
 
@@ -96,50 +96,50 @@ helps['devcenter dev dev-box'] = """
 
 helps['devcenter dev dev-box list'] = """
     type: command
-    short-summary: "Lists Dev Boxes in the project for a particular user. And Lists Dev Boxes in the Dev Center for a \
-particular user. And Lists Dev Boxes that the caller has access to in the DevCenter."
+    short-summary: "Lists dev boxes in the project for a particular user, lists dev boxes in the dev center for a \
+particular user, or lists dev boxes that the caller has access to in the dev center."
     examples:
       - name: DevBox_ListByUserByProject
         text: |-
-               az devcenter dev-box list --dev-center "{devCenter}" \
+               az devcenter dev dev-box list --dev-center-name "{devCenterName}" \
 --project-name "{projectName}" --user-id "me"
       - name: DevBox_ListByUser
         text: |-
-               az devcenter dev-box list --dev-center "{devCenter}" \
+               az devcenter dev dev-box list --dev-center-name "{devCenterName}" \
 --user-id "me"
       - name: DevBox_List
         text: |-
-               az devcenter dev-box list --dev-center "{devCenter}"
+               az devcenter dev dev-box list --dev-center-name "{devCenterName}"
 """
 
 helps['devcenter dev dev-box show'] = """
     type: command
-    short-summary: "Gets a Dev Box."
+    short-summary: "Gets a dev box."
     examples:
       - name: getDevBoxForUser
         text: |-
-               az devcenter dev-box show --name "MyDevBox" --dev-center "{devCenter}" --dev-center-dns-suffix \
-"devcenter.azure.com" --project-name "{projectName}" --user-id "me"
+               az devcenter dev dev-box show --name "MyDevBox" --dev-center-name "{devCenterName}" \
+               --project-name "{projectName}" --user-id "me"
 """
 
 helps['devcenter dev dev-box create'] = """
     type: command
-    short-summary: "Creates or updates a Dev Box."
+    short-summary: "Creates or updates a dev box."
     examples:
       - name: createDevBox
         text: |-
-               az devcenter dev-box create --pool-name "LargeDevWorkStationPool" --name "MyDevBox" --dev-center \
-"{devCenter}" --project-name "{projectName}" --user-id "me"
+               az devcenter dev dev-box create --pool-name "LargeDevWorkStationPool" --name "MyDevBox" --dev-center-name \
+"{devCenterName}" --project-name "{projectName}" --user-id "me"
 """
 
 helps['devcenter dev dev-box delete'] = """
     type: command
-    short-summary: "Deletes a Dev Box."
+    short-summary: "Deletes a dev box."
     examples:
       - name: deleteDevBox
         text: |-
-               az devcenter dev-box delete --name "MyDevBox" --dev-center "{devCenter}" --dev-center-dns-suffix \
-"devcenter.azure.com" --project-name "{projectName}" --user-id "me"
+               az devcenter dev dev-box delete --name "MyDevBox" --dev-center-name "{devCenterName}"  \
+               --project-name "{projectName}" --user-id "me"
 """
 
 helps['devcenter dev dev-box show-remote-connection'] = """
@@ -148,28 +148,28 @@ helps['devcenter dev dev-box show-remote-connection'] = """
     examples:
       - name: DevBox_GetRemoteConnection
         text: |-
-               az devcenter dev-box show-remote-connection --name "MyDevBox" --dev-center "{devCenter}" \
---dev-center-dns-suffix "devcenter.azure.com" --project-name "{projectName}" --user-id "me"
+               az devcenter dev dev-box show-remote-connection --name "MyDevBox" --dev-center-name "{devCenterName}" \
+               --project-name "{projectName}" --user-id "me"
 """
 
 helps['devcenter dev dev-box start'] = """
     type: command
-    short-summary: "Starts a Dev Box."
+    short-summary: "Starts a dev box."
     examples:
       - name: startDevBoxForUser
         text: |-
-               az devcenter dev-box start --name "MyDevBox" --dev-center "{devCenter}" --dev-center-dns-suffix \
-"devcenter.azure.com" --project-name "{projectName}" --user-id "me"
+               az devcenter dev dev-box start --name "MyDevBox" --dev-center-name "{devCenterName}" \
+               --project-name "{projectName}" --user-id "me"
 """
 
 helps['devcenter dev dev-box stop'] = """
     type: command
-    short-summary: "Stops a Dev Box."
+    short-summary: "Stops a dev box."
     examples:
       - name: stopDevBoxForUser
         text: |-
-               az devcenter dev-box stop --name "MyDevBox" --dev-center "{devCenter}" --dev-center-dns-suffix \
-"devcenter.azure.com" --project-name "{projectName}" --user-id "me"
+               az devcenter dev dev-box stop --name "MyDevBox" --dev-center-name "{devCenterName}" \
+               --project-name "{projectName}" --user-id "me"
 """
 
 helps['devcenter dev dev-box wait'] = """
@@ -178,12 +178,12 @@ helps['devcenter dev dev-box wait'] = """
     examples:
       - name: Pause executing next line of CLI script until the devcenter dev-box is successfully created.
         text: |-
-               az devcenter dev-box wait --name "MyDevBox" --dev-center "{devCenter}" --dev-center-dns-suffix \
-"devcenter.azure.com" --project-name "{projectName}" --user-id "me" --created
+               az devcenter dev dev-box wait --name "MyDevBox" --dev-center-name "{devCenterName}"  \
+               --project-name "{projectName}" --user-id "me" --created
       - name: Pause executing next line of CLI script until the devcenter dev-box is successfully deleted.
         text: |-
-               az devcenter dev-box wait --name "MyDevBox" --dev-center "{devCenter}" --dev-center-dns-suffix \
-"devcenter.azure.com" --project-name "{projectName}" --user-id "me" --deleted
+               az devcenter dev dev-box wait --name "MyDevBox" --dev-center-name "{devCenterName}"  \
+               --project-name "{projectName}" --user-id "me" --deleted
 """
 
 helps['devcenter dev environment'] = """
@@ -197,7 +197,7 @@ helps['devcenter dev environment list'] = """
     examples:
       - name: Environments_ListByProject
         text: |-
-               az devcenter environment list --dev-center "{devCenter}" \
+              az devcenter dev environment list --dev-center-name "{devCenterName}" \
 --project-name "{projectName}"
 """
 
@@ -207,7 +207,7 @@ helps['devcenter dev environment show'] = """
     examples:
       - name: Environments_Get
         text: |-
-               az devcenter environment show --dev-center "{devCenter}" \
+              az devcenter dev environment show --dev-center-name "{devCenterName}" \
 --name "{environmentName}" --project-name "{projectName}" --user-id "{userId}"
 """
 
@@ -217,16 +217,16 @@ helps['devcenter dev environment create'] = """
     examples:
       - name: Environments_CreateByCatalogItem
         text: |-
-               az devcenter environment create --description "Personal Dev Environment" --catalog-item-name \
+              az devcenter dev environment create --description "Personal Dev Environment" --catalog-item-name \
 "helloworld" --catalog-name "main" --environment-type "DevTest" --parameters "{\\"functionAppRuntime\\":\\"node\\",\\"s\
-torageAccountType\\":\\"Standard_LRS\\"}" --dev-center "{devCenter}" \
+torageAccountType\\":\\"Standard_LRS\\"}" --dev-center-name "{devCenterName}" \
 --name "{environmentName}" --project-name "{projectName}" --user-id "{userId}"
       - name: Environments_CreateWithAutoExpire
         text: |-
-               az devcenter environment create --description "Personal Dev Environment" --catalog-item-name \
+              az devcenter dev environment create --description "Personal Dev Environment" --catalog-item-name \
 "helloworld" --catalog-name "main" --environment-type "DevTest" --parameters "{\\"functionAppRuntime\\":\\"node\\",\\"s\
 torageAccountType\\":\\"Standard_LRS\\"}" --scheduled-tasks "{\\"autoExpire\\":{\\"type\\":\\"AutoExpire\\",\\"startTim\
-e\\":\\"2022-01-01T00:01:00Z\\"}}" --dev-center "{devCenter}" --name \
+e\\":\\"2022-01-01T00:01:00Z\\"}}" --dev-center-name "{devCenterName}" --name \
 "{environmentName}" --project-name "{projectName}" --user-id "{userId}"
 """
 
@@ -236,9 +236,8 @@ helps['devcenter dev environment update'] = """
     examples:
       - name: Environments_Update
         text: |-
-               az devcenter environment update --description "Personal Dev Environment 2" --dev-center "{devCenter}" \
---dev-center-dns-suffix "devcenter.azure.com" --name "{environmentName}" --project-name "{projectName}" --user-id \
-"{userId}"
+              az devcenter dev environment update --description "Personal Dev Environment 2" --dev-center-name "{devCenterName}" \
+              --name "{environmentName}" --project-name "{projectName}" --user-id "{userId}"
 """
 
 helps['devcenter dev environment delete'] = """
@@ -247,8 +246,8 @@ helps['devcenter dev environment delete'] = """
     examples:
       - name: Environments_Delete
         text: |-
-               az devcenter environment delete --dev-center "{devCenter}" --dev-center-dns-suffix \
-"devcenter.azure.com" --name "{environmentName}" --project-name "{projectName}" --user-id "{userId}"
+              az devcenter dev environment delete --dev-center-name "{devCenterName}"  \
+              --name "{environmentName}" --project-name "{projectName}" --user-id "{userId}"
 """
 
 helps['devcenter dev environment custom-action'] = """
@@ -257,7 +256,7 @@ helps['devcenter dev environment custom-action'] = """
     examples:
       - name: Environments_CustomAction
         text: |-
-               az devcenter environment custom-action --action-id "someCustomActionId" --parameters \
+              az devcenter dev environment custom-action --action-id "someCustomActionId" --parameters \
 "{\\"functionAppRuntime\\":\\"node\\",\\"storageAccountType\\":\\"Standard_LRS\\"}" --name "{environmentName}" \
 --project-name "myProject" --user-id "me"
 """
@@ -268,7 +267,7 @@ helps['devcenter dev environment delete-action'] = """
     examples:
       - name: Environments_DeleteAction
         text: |-
-               az devcenter environment delete-action --action-id "delete" --parameters "{\\"functionAppRuntime\\":\\"n\
+              az devcenter dev environment delete-action --action-id "delete" --parameters "{\\"functionAppRuntime\\":\\"n\
 ode\\",\\"storageAccountType\\":\\"Standard_LRS\\"}" --name "{environmentName}" --project-name "myProject" --user-id \
 "me"
 """
@@ -279,7 +278,7 @@ helps['devcenter dev environment deploy-action'] = """
     examples:
       - name: Environments_DeployAction
         text: |-
-               az devcenter environment deploy-action --action-id "deploy" --parameters "{\\"functionAppRuntime\\":\\"n\
+              az devcenter dev environment deploy-action --action-id "deploy" --parameters "{\\"functionAppRuntime\\":\\"n\
 ode\\",\\"storageAccountType\\":\\"Standard_LRS\\"}" --name "{environmentName}" --project-name "myProject" --user-id \
 "me"
 """
@@ -290,8 +289,8 @@ helps['devcenter dev environment list-by-project'] = """
     examples:
       - name: Environments_ListByProject
         text: |-
-               az devcenter environment list-by-project --dev-center "{devCenter}" --dev-center-dns-suffix \
-"devcenter.azure.com" --project-name "{projectName}" --user-id "{userId}"
+              az devcenter dev environment list-by-project --dev-center-name "{devCenterName}"  \
+              --project-name "{projectName}" --user-id "{userId}"
 """
 
 helps['devcenter dev environment wait'] = """
@@ -300,15 +299,15 @@ helps['devcenter dev environment wait'] = """
     examples:
       - name: Pause executing next line of CLI script until the devcenter environment is successfully created.
         text: |-
-               az devcenter environment wait --dev-center "{devCenter}" \
+              az devcenter dev environment wait --dev-center-name "{devCenterName}" \
 --name "{environmentName}" --project-name "{projectName}" --user-id "{userId}" --created
       - name: Pause executing next line of CLI script until the devcenter environment is successfully updated.
         text: |-
-               az devcenter environment wait --dev-center "{devCenter}" \
+              az devcenter dev environment wait --dev-center-name "{devCenterName}" \
 --name "{environmentName}" --project-name "{projectName}" --user-id "{userId}" --updated
       - name: Pause executing next line of CLI script until the devcenter environment is successfully deleted.
         text: |-
-               az devcenter environment wait --dev-center "{devCenter}" \
+              az devcenter dev environment wait --dev-center-name "{devCenterName}" \
 --name "{environmentName}" --project-name "{projectName}" --user-id "{userId}" --deleted
 """
 
@@ -324,12 +323,12 @@ Lists the artifacts for an environment."
     examples:
       - name: Artifacts_Get
         text: |-
-               az devcenter artifact list --artifact-path "{artifactPath}" --dev-center "{devCenter}" \
---dev-center-dns-suffix "devcenter.azure.com" --environment-name "{environmentName}" --project-name "{projectName}" \
+               az devcenter dev artifact list --artifact-path "{artifactPath}" --dev-center-name "{devCenterName}" \
+               --environment-name "{environmentName}" --project-name "{projectName}" \
 --user-id "{userId}"
       - name: Artifacts_ListByEnvironment
         text: |-
-               az devcenter artifact list --dev-center "{devCenter}" \
+               az devcenter dev artifact list --dev-center-name "{devCenterName}" \
 --environment-name "{environmentName}" --project-name "{projectName}" --user-id "{userId}"
 """
 
@@ -344,8 +343,8 @@ helps['devcenter dev catalog-item list'] = """
     examples:
       - name: CatalogItems_ListByProject
         text: |-
-               az devcenter catalog-item list --dev-center "{devCenter}" \
---project-name "{projectName}"
+               az devcenter dev catalog-item list --dev-center-name "{devCenterName}" \
+               --project-name "{projectName}"
 """
 
 helps['devcenter dev catalog-item'] = """
@@ -359,8 +358,8 @@ helps['devcenter dev catalog-item show'] = """
     examples:
       - name: CatalogItems_Get
         text: |-
-               az devcenter catalog-item show --dev-center "{devCenter}" \
---project-name "{projectName}"
+               az devcenter dev catalog-item show --dev-center-name "{devCenterName}" \
+               --project-name "{projectName}"
 """
 
 helps['devcenter dev catalog-item-version'] = """
@@ -374,8 +373,8 @@ helps['devcenter dev catalog-item-version list'] = """
     examples:
       - name: CatalogItemVersions_ListByProject
         text: |-
-               az devcenter catalog-item-version list --dev-center "{devCenter}" --dev-center-dns-suffix \
-"devcenter.azure.com" --project-name "{projectName}"
+               az devcenter dev catalog-item-version list --dev-center-name "{devCenterName}"  \
+                --project-name "{projectName}"
 """
 
 helps['devcenter dev catalog-item-version show'] = """
@@ -384,8 +383,8 @@ helps['devcenter dev catalog-item-version show'] = """
     examples:
       - name: CatalogItemVersion_Get
         text: |-
-               az devcenter catalog-item-version show --dev-center "{devCenter}" --dev-center-dns-suffix \
-"devcenter.azure.com" --project-name "{projectName}"
+               az devcenter dev catalog-item-version show --dev-center-name "{devCenterName}"  \
+               --project-name "{projectName}"
 """
 
 helps['devcenter dev environment-type'] = """
@@ -399,8 +398,8 @@ helps['devcenter dev environment-type list'] = """
     examples:
       - name: EnvironmentType_ListByProject
         text: |-
-               az devcenter environment-type list --dev-center "{devCenter}" --dev-center-dns-suffix \
-"devcenter.azure.com" --project-name "{projectName}"
+               az devcenter dev environment-type list --dev-center-name "{devCenterName}"  \
+              --project-name "{projectName}"
 """
 
 #control plane
@@ -646,7 +645,7 @@ devcenter."
                az devcenter admin environment-type list --project-name "Contoso" --resource-group "rg1"
       - name: EnvironmentTypes_ListByDevCenter
         text: |-
-               az devcenter environment-type list --dev-center-name "Contoso" --resource-group "rg1"
+               az devcenter admin environment-type list --dev-center-name "Contoso" --resource-group "rg1"
 """
 
 helps['devcenter admin environment-type show'] = """
@@ -713,7 +712,7 @@ helps['devcenter admin project-environment-type list'] = """
                az devcenter admin project-environment-type list --project-name "Contoso" --resource-group "rg1"
       - name: EnvironmentTypes_ListByDevCenter
         text: |-
-               az devcenter project-environment-type list --dev-center-name "Contoso" --resource-group "rg1"
+               az devcenter admin project-environment-type list --dev-center-name "Contoso" --resource-group "rg1"
 """
 
 helps['devcenter admin project-environment-type show'] = """
@@ -920,12 +919,12 @@ helps['devcenter admin catalog wait'] = """
 
 helps['devcenter admin devbox-definition'] = """
     type: group
-    short-summary: Manage Dev Box definition with devcenter
+    short-summary: Manage dev box definition with devcenter
 """
 
 helps['devcenter admin devbox-definition list'] = """
     type: command
-    short-summary: "List Dev Box definitions for a devcenter."
+    short-summary: "List dev box definitions for a devcenter."
     examples:
       - name: DevBoxDefinitions_ListByDevCenter
         text: |-
@@ -934,7 +933,7 @@ helps['devcenter admin devbox-definition list'] = """
 
 helps['devcenter admin devbox-definition show'] = """
     type: command
-    short-summary: "Gets a Dev Box definition."
+    short-summary: "Gets a dev box definition."
     examples:
       - name: DevBoxDefinitions_Get
         text: |-
@@ -944,7 +943,7 @@ helps['devcenter admin devbox-definition show'] = """
 
 helps['devcenter admin devbox-definition create'] = """
     type: command
-    short-summary: "Create a Dev Box definition."
+    short-summary: "Create a dev box definition."
     parameters:
       - name: --image-reference
         short-summary: "Image reference information."
@@ -954,7 +953,7 @@ helps['devcenter admin devbox-definition create'] = """
             id: Image resource ID.
 
       - name: --sku
-        short-summary: "Dev Box Compute SKU to be used for Dev Boxes created with this definition."
+        short-summary: "Dev box Compute SKU to be used for dev boxes created with this definition."
         long-summary: |
             Usage: --sku name=XX
 
@@ -970,7 +969,7 @@ tosogallery/images/exampleImage/version/1.0.0" --dev-box-definition-name "WebDev
 
 helps['devcenter admin devbox-definition update'] = """
     type: command
-    short-summary: "Partially updates a Dev Box definition."
+    short-summary: "Partially updates a dev box definition."
     parameters:
       - name: --image-reference
         short-summary: "Image reference information."
@@ -980,7 +979,7 @@ helps['devcenter admin devbox-definition update'] = """
             id: Image resource ID.
 
       - name: --sku
-        short-summary: "Dev Box Compute SKU to be used for Dev Boxes created with this definition."
+        short-summary: "Dev box Compute SKU to be used for dev boxes created with this definition."
         long-summary: |
             Usage: --sku name=XX
 
@@ -995,7 +994,7 @@ helps['devcenter admin devbox-definition update'] = """
 
 helps['devcenter admin devbox-definition delete'] = """
     type: command
-    short-summary: "Deletes a Dev Box definition."
+    short-summary: "Deletes a dev box definition."
     examples:
       - name: DevBoxDefinitions_Delete
         text: |-
