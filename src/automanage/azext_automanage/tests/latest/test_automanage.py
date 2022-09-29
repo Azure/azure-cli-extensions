@@ -9,5 +9,11 @@ from azure.cli.testsdk import *
 
 
 class AutomanageScenario(ScenarioTest):
-    # TODO: add tests here
-    pass
+    @ResourceGroupPreparer(location='eastus2euap', name_prefix='clitest.rg.automanage')
+    def test_automanage_scenarios(self, resource_group):
+        # self.kwargs.update({
+        #     "san_name": self.create_random_name('elastic-san', 24)
+        # })
+
+        best_practice_name = self.cmd('az automanage best-practice list').get_output_in_json()[0]["name"]
+        self.cmd('az automanage best-practice show --best-practice-name {}'.format(best_practice_name))

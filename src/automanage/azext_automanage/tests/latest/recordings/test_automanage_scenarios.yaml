@@ -1,0 +1,96 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - automanage best-practice list
+      Connection:
+      - keep-alive
+      User-Agent:
+      - AZURECLI/2.40.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.9.6 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.Automanage/bestPractices?api-version=2022-05-04
+  response:
+    body:
+      string: '{"value":[{"id":"/providers/Microsoft.Automanage/bestPractices/AzureBestPracticesProduction","name":"AzureBestPracticesProduction","type":"Microsoft.Automanage/bestPractices","properties":{"configuration":{"Antimalware/Enable":"true","Antimalware/EnableRealTimeProtection":"true","Antimalware/RunScheduledScan":"true","Antimalware/ScanType":"Quick","Antimalware/ScanDay":"7","Antimalware/ScanTimeInMinutes":"120","Backup/Enable":"true","Backup/PolicyName":"dailyBackupPolicy","Backup/TimeZone":"UTC","Backup/InstantRpRetentionRangeInDays":"2","Backup/SchedulePolicy/ScheduleRunFrequency":"Daily","Backup/SchedulePolicy/ScheduleRunTimes":["2017-01-26T00:00:00Z"],"Backup/SchedulePolicy/SchedulePolicyType":"SimpleSchedulePolicy","Backup/RetentionPolicy/RetentionPolicyType":"LongTermRetentionPolicy","Backup/RetentionPolicy/DailySchedule/RetentionTimes":["2017-01-26T00:00:00Z"],"Backup/RetentionPolicy/DailySchedule/RetentionDuration/Count":"180","Backup/RetentionPolicy/DailySchedule/RetentionDuration/DurationType":"Days","VMInsights/Enable":"true","AzureSecurityCenter/Enable":"true","UpdateManagement/Enable":"true","ChangeTrackingAndInventory/Enable":"true","GuestConfiguration/Enable":"true","LogAnalytics/Enable":"true","BootDiagnostics/Enable":"true"}},"systemData":{"createdAt":"2021-06-30T00:00:00+00:00","createdBy":"SYSTEM","createdByType":"User","lastModifiedAt":"2021-06-30T00:00:00+00:00","lastModifiedBy":"SYSTEM","lastModifiedByType":"User"}},{"id":"/providers/Microsoft.Automanage/bestPractices/AzureBestPracticesDevTest","name":"AzureBestPracticesDevTest","type":"Microsoft.Automanage/bestPractices","properties":{"configuration":{"Antimalware/Enable":"true","Antimalware/EnableRealTimeProtection":"true","Antimalware/RunScheduledScan":"true","Antimalware/ScanType":"Quick","Antimalware/ScanDay":"7","Antimalware/ScanTimeInMinutes":"120","Backup/Enable":"false","VMInsights/Enable":"false","AzureSecurityCenter/Enable":"true","UpdateManagement/Enable":"true","ChangeTrackingAndInventory/Enable":"true","GuestConfiguration/Enable":"true","LogAnalytics/Enable":"true","BootDiagnostics/Enable":"true"}},"systemData":{"createdAt":"2021-06-30T00:00:00+00:00","createdBy":"SYSTEM","createdByType":"User","lastModifiedAt":"2021-06-30T00:00:00+00:00","lastModifiedBy":"SYSTEM","lastModifiedByType":"User"}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2319'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 29 Sep 2022 07:51:46 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:a4d240dc-d543-4b4e-a019-0a571290b85d
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - automanage best-practice show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --best-practice-name
+      User-Agent:
+      - AZURECLI/2.40.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.9.6 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.Automanage/bestPractices/AzureBestPracticesProduction?api-version=2022-05-04
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.Automanage/bestPractices/AzureBestPracticesProduction","name":"AzureBestPracticesProduction","type":"Microsoft.Automanage/bestPractices","properties":{"configuration":{"Antimalware/Enable":"true","Antimalware/EnableRealTimeProtection":"true","Antimalware/RunScheduledScan":"true","Antimalware/ScanType":"Quick","Antimalware/ScanDay":"7","Antimalware/ScanTimeInMinutes":"120","Backup/Enable":"true","Backup/PolicyName":"dailyBackupPolicy","Backup/TimeZone":"UTC","Backup/InstantRpRetentionRangeInDays":"2","Backup/SchedulePolicy/ScheduleRunFrequency":"Daily","Backup/SchedulePolicy/ScheduleRunTimes":["2017-01-26T00:00:00Z"],"Backup/SchedulePolicy/SchedulePolicyType":"SimpleSchedulePolicy","Backup/RetentionPolicy/RetentionPolicyType":"LongTermRetentionPolicy","Backup/RetentionPolicy/DailySchedule/RetentionTimes":["2017-01-26T00:00:00Z"],"Backup/RetentionPolicy/DailySchedule/RetentionDuration/Count":"180","Backup/RetentionPolicy/DailySchedule/RetentionDuration/DurationType":"Days","VMInsights/Enable":"true","AzureSecurityCenter/Enable":"true","UpdateManagement/Enable":"true","ChangeTrackingAndInventory/Enable":"true","GuestConfiguration/Enable":"true","LogAnalytics/Enable":"true","BootDiagnostics/Enable":"true"}},"systemData":{"createdAt":"2021-06-30T00:00:00+00:00","createdBy":"SYSTEM","createdByType":"User","lastModifiedAt":"2021-06-30T00:00:00+00:00","lastModifiedBy":"SYSTEM","lastModifiedByType":"User"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1449'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 29 Sep 2022 07:51:47 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:a4d240dc-d543-4b4e-a019-0a571290b85d
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+version: 1
