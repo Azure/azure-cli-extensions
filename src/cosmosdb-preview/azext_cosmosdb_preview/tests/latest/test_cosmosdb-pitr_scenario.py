@@ -675,6 +675,7 @@ class Cosmosdb_previewPitrScenarioTest(ScenarioTest):
         account_oldest_restorable_time = restorable_database_account['oldestRestorableTime']
         assert account_oldest_restorable_time is not None
 
+    @AllowLargeResponse()
     @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_system_identity_restore', location='eastus2')
     def test_cosmosdb_system_identity_restore(self, resource_group):
         col = self.create_random_name(prefix='cli', length=15)
@@ -682,23 +683,62 @@ class Cosmosdb_previewPitrScenarioTest(ScenarioTest):
 
         key = "https://vinhvault.vault.azure.net/keys/theawesomekey"
         user_id_1 = "/subscriptions/259fbb24-9bcd-4cfc-865c-fc33b22fe38a/resourceGroups/vinhrg/providers/Microsoft.ManagedIdentity/userAssignedIdentities/vitrinh-clone1"
-        default_id = 'UserAssignedIdentity=' + user_id_1
+        user_id_2 = "/subscriptions/259fbb24-9bcd-4cfc-865c-fc33b22fe38a/resourceGroups/vinhrg/providers/Microsoft.ManagedIdentity/userAssignedIdentities/vitrinh-clone2"
+        default_id1 = 'UserAssignedIdentity=' + user_id_1
+        default_id2 = 'UserAssignedIdentity=' + user_id_2
 
         self.kwargs.update({
-            'acc': self.create_random_name(prefix='cli-systemid-', length=25),
+            # 'acc': self.create_random_name(prefix='cli-systemid-', length=25),
+            'acc': 'vinh-cmk-qatar-actual-restore-live-sysid',
+            'restored_acc': 'vinh-cmk-qatar-actual-res-live-sysid-res2',
+            'rg': 'vinhrg-qatar',
             'db_name': db_name,
             'col': col,
             'loc': 'eastus2',
             'key': key,
             'user_id_1' : user_id_1,
-            'default_id' : default_id
+            'default_id1' : default_id1
         })
 
         # Create periodic backup account (by default is --backup-policy-type is not specified, then it is a Periodic account)
-        self.cmd('az cosmosdb create -n {acc} -g {rg} --backup-policy-type Continuous --continuous-tier Continuous7Days --locations regionName={loc} --kind GlobalDocumentDB --key-uri {key} --assign-identity {user_id_1} --default-identity {default_id}')
+        # self.cmd('az cosmosdb create -n {acc} -g {rg} --backup-policy-type Continuous --continuous-tier Continuous7Days --locations regionName={loc} --kind GlobalDocumentDB --key-uri {key} --assign-identity {user_id_1} --default-identity {default_id1}')
         account = self.cmd('az cosmosdb show -n {acc} -g {rg}').get_output_in_json()
         print(account)
 
-        account_defaultIdentity = account['defaultIdentity']
+        account_keyvault_uri = account['keyVaultKeyUri']
+        assert key in account_keyvault_uri
 
-        assert account_defaultIdentity is not None
+        account_defaultIdentity = account['defaultIdentity']
+        assert user_id_1 in account_defaultIdentity
+
+        account_userIdentity = account['identity']['userAssignedIdentities']
+        #assert user_id_1 in account_userIdentity
+
+        account_creation_time = account['systemData']['createdAt']
+        creation_timestamp_datetime = parser.parse(account_creation_time)
+        restore_ts = creation_timestamp_datetime + timedelta(minutes=1440)
+        import time
+        time.sleep(1)
+        restore_ts_string = restore_ts.isoformat()
+        self.kwargs.update({
+            'rts': restore_ts_string,
+            'loc': 'qatarcentral',
+            'user_id_2' : user_id_2,
+            'default_id2' : default_id2
+        })
+
+        self.cmd('az cosmosdb restore -n {restored_acc} -g {rg} -a {acc} --restore-timestamp {rts} --location {loc} --assign-identity {user_id_2} --default-identity {default_id2}')
+        restored_account = self.cmd('az cosmosdb show -n {restored_acc} -g {rg}', checks=[
+            self.check('restoreParameters.restoreMode', 'PointInTime')
+        ]).get_output_in_json()
+
+        print(restored_account)
+
+        restored_account_keyvault_uri = restored_account['keyVaultKeyUri']
+        assert key in restored_account_keyvault_uri
+
+        restored_account_defaultIdentity = restored_account['defaultIdentity']
+        assert user_id_2 in restored_account_defaultIdentity
+
+        account_userIdentity = restored_account['identity']['userAssignedIdentities']
+        #assert user_id_2 in account_userIdentity
