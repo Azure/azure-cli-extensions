@@ -731,8 +731,9 @@ helps['devcenter admin project-environment-type create'] = """
     examples:
       - name: EnvironmentTypes_CreateOrUpdate
         text: |-
-               az devcenter admin environment-type create --description "Developer/Testing environment" --dev-center-name \
-"Contoso" --name "{environmentTypeName}" --resource-group "rg1"
+               az devcenter admin project-environment-type create --description "Developer/Testing environment" --dev-center-name \
+"Contoso" --name "{environmentTypeName}" --resource-group "rg1" --deployment-target-id "/subscriptions/00000000-0000-0000-0000-000000000000" \
+--status Enabled --type SystemAssigned
 """
 
 helps['devcenter admin project-environment-type update'] = """
