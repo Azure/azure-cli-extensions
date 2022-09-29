@@ -9,7 +9,7 @@
 
 from azure.cli.core.commands.parameters import (get_enum_type, get_three_state_flag)
 
-from azure.mgmt.reservations.models import (
+from .vendored_sdks.reservations.models import (
     ReservedResourceType,
     InstanceFlexibility,
     AppliedScopeType,

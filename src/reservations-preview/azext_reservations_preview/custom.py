@@ -3,7 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-from azure.mgmt.reservations.models import (Patch,
+from .vendored_sdks.reservations.models import (Patch,
                                             PurchaseRequest,
                                             SplitRequest,
                                             MergeRequest,

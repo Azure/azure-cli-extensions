@@ -6,7 +6,7 @@
 
 def cf_reservations(cli_ctx, **_):
     from azure.cli.core.commands.client_factory import get_mgmt_service_client
-    from azure.mgmt.reservations import AzureReservationAPI
+    from .vendored_sdks.reservations import AzureReservationAPI
     return get_mgmt_service_client(cli_ctx, AzureReservationAPI, subscription_bound=False)
 
 
