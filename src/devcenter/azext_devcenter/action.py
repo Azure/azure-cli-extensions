@@ -55,9 +55,10 @@ class AddGitHub(argparse.Action):
                 d['path'] = v[0]
 
             else:
+                repo = 'git-hub' if option_string == "--git-hub" else 'ado-git'
                 raise CLIError(
-                    'Unsupported Key {} is provided for parameter git-hub. All possible keys are: uri, branch,'
-                    ' secret-identifier, path'.format(k)
+                    'Unsupported Key {} is provided for parameter %s. All possible keys are: uri, branch,'
+                    ' secret-identifier, path'%(repo).format(k)
                 )
 
         return d
