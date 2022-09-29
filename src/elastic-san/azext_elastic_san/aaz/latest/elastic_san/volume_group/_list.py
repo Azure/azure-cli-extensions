@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class List(AAZCommand):
     """List Volume Groups.
+
+    :example: List Volume Groups.
+        az elastic-san volume-group list -g {rg} -e {san_name}
     """
 
     _aaz_info = {

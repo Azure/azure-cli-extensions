@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class Show(AAZCommand):
     """Get an Elastic SAN.
+
+    :example: Get an Elastic SAN.
+        az elastic-san show -g {rg} -n {san_name}
     """
 
     _aaz_info = {

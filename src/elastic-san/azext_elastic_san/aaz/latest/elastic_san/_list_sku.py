@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class ListSku(AAZCommand):
     """Get a list of Elastic SAN skus.
+
+    :example: Get a list of Elastic SAN skus.
+        az elastic-san list-sku
     """
 
     _aaz_info = {

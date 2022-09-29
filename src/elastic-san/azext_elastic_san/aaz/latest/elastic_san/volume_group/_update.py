@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class Update(AAZCommand):
     """Update a Volume Group.
+
+    :example: Update a Volume Group.
+        az elastic-san volume-group update -e {san_name} -n {vg_name} -g {rg} --tags "{key2011:cccc}" --protocol-type None --network-acls "{virtual-network-rules:["{id:{subnet_id_2},action:Allow}"]}"
     """
 
     _aaz_info = {

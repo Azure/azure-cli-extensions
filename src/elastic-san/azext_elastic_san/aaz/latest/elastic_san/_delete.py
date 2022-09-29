@@ -18,6 +18,9 @@ from azure.cli.core.aaz import *
 )
 class Delete(AAZCommand):
     """Delete an Elastic SAN.
+
+    :example: Delete an Elastic SAN.
+        az elastic-san delete -g {rg} -n {san_name}
     """
 
     _aaz_info = {

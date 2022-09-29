@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class Update(AAZCommand):
     """Update an Elastic SAN.
+
+    :example: Update an Elastic SAN.
+        az elastic-san update -n {san_name} -g {rg} --tags "{key1710:bbbb}" --base-size-tib 25 --extended-capacity-size-tib 15
     """
 
     _aaz_info = {

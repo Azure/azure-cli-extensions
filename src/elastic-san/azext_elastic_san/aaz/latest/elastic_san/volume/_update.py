@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class Update(AAZCommand):
     """Update a Volume.
+
+    :example: Update a Volume.
+        az elastic-san volume update -g {rg} -e {san_name} -v {vg_name} -n {volume_name} --size-gib 3
     """
 
     _aaz_info = {

@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class Show(AAZCommand):
     """Get a Volume.
+
+    :example: Get a Volume.
+        az elastic-san volume show -g {rg} -e {san_name} -v {vg_name} -n {volume_name}
     """
 
     _aaz_info = {

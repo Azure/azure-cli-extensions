@@ -43,13 +43,7 @@ class ElasticSanScenario(ScenarioTest):
                          JMESPathCheck('baseSizeTiB', 25),
                          JMESPathCheck('extendedCapacitySizeTiB', 15)])
         self.cmd('az elastic-san delete -g {rg} -n {san_name} -y')
-        while True:
-            try:
-                self.cmd('az elastic-san show -g {rg} -n {san_name}',
-                     checks=[JMESPathCheck('status', 'deleting')])
-                time.sleep(5)
-            except:
-                break
+        time.sleep(20)
         self.cmd('az elastic-san list -g {rg}', checks=[JMESPathCheck('length(@)', 0)])
 
     @ResourceGroupPreparer(location='eastus2euap', name_prefix='clitest.rg.testelasticsan.volumegroup')
@@ -94,12 +88,14 @@ class ElasticSanScenario(ScenarioTest):
                          JMESPathCheck('protocolType', "None"),
                          JMESPathCheck('networkAcls.virtualNetworkRules[0].id', subnet_id_2)])
 
-        self.cmd('az elastic-san volume create -g {rg} -e {san_name} -v {vg_name} -n {volume_name} --size-gib 2 --debug')
-        self.cmd('az elastic-san volume show -g {rg} -e {san_name} -v {vg_name} -n {volume_name} ',
+        self.cmd('az elastic-san volume create -g {rg} -e {san_name} -v {vg_name} -n {volume_name} --size-gib 2')
+        self.cmd('az elastic-san volume show -g {rg} -e {san_name} -v {vg_name} -n {volume_name}',
                  checks=[JMESPathCheck('name', self.kwargs.get('volume_name', '')),
                          JMESPathCheck('sizeGiB', 2)])
         self.cmd('az elastic-san volume list -g {rg} -e {san_name} -v {vg_name}',
                  checks=[JMESPathCheck('length(@)', 1)])
+        self.cmd('az elastic-san volume update -g {rg} -e {san_name} -v {vg_name} -n {volume_name} --size-gib 3',
+                 checks=[JMESPathCheck('sizeGiB', 3)])
         self.cmd('az elastic-san volume delete -g {rg} -e {san_name} -v {vg_name} -n {volume_name} -y')
         self.cmd('az elastic-san volume list -g {rg} -e {san_name} -v {vg_name}',
                  checks=[JMESPathCheck('length(@)', 0)])

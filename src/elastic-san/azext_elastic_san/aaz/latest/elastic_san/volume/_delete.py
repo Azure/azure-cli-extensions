@@ -18,6 +18,9 @@ from azure.cli.core.aaz import *
 )
 class Delete(AAZCommand):
     """Delete a Volume.
+
+    :example: Delete a Volume.
+        az elastic-san volume delete -g {rg} -e {san_name} -v {vg_name} -n {volume_name}
     """
 
     _aaz_info = {
