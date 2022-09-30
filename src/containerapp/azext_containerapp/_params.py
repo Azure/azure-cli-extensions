@@ -12,7 +12,7 @@ from azure.cli.core.commands.parameters import (resource_group_name_type, get_lo
 
 from ._validators import (validate_memory, validate_cpu, validate_managed_env_name_or_id, validate_registry_server,
                           validate_registry_user, validate_registry_pass, validate_target_port, validate_ingress)
-from ._constants import UNAUTHENTICATED_CLIENT_ACTION, FORWARD_PROXY_CONVENTION, MAXIMUM_CONTAINER_APP_NAME_LENGTH
+from ._constants import UNAUTHENTICATED_CLIENT_ACTION, FORWARD_PROXY_CONVENTION, MAXIMUM_CONTAINER_APP_NAME_LENGTH, LOG_TYPE_CONSOLE, LOG_TYPE_SYSTEM
 
 
 def load_arguments(self, _):
@@ -48,6 +48,11 @@ def load_arguments(self, _):
         c.argument('revision', help="The name of the container app revision. Defaults to the latest revision.")
         c.argument('name', name_type, id_part=None, help="The name of the Containerapp.")
         c.argument('resource_group_name', arg_type=resource_group_name_type, id_part=None)
+        c.argument('kind', options_list=["--kind", "-k"], help="Type of logs to stream", arg_type=get_enum_type([LOG_TYPE_CONSOLE, LOG_TYPE_SYSTEM]), default=LOG_TYPE_CONSOLE)
+
+    with self.argument_context('containerapp env logs show') as c:
+        c.argument('follow', help="Print logs in real time if present.", arg_type=get_three_state_flag())
+        c.argument('tail', help="The number of past logs to print (0-300)", type=int, default=20)
 
     # Replica
     with self.argument_context('containerapp replica') as c:

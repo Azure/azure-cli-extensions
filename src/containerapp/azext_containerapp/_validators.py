@@ -12,7 +12,7 @@ from knack.log import get_logger
 from ._clients import ContainerAppClient
 from ._ssh_utils import ping_container_app
 from ._utils import safe_get, is_registry_msi_system
-from ._constants import ACR_IMAGE_SUFFIX
+from ._constants import ACR_IMAGE_SUFFIX, LOG_TYPE_SYSTEM
 
 
 logger = get_logger(__name__)
@@ -173,7 +173,8 @@ def _validate_container_exists(cmd, namespace):
 
 # also used to validate logstream
 def validate_ssh(cmd, namespace):
-    _set_ssh_defaults(cmd, namespace)
-    _validate_revision_exists(cmd, namespace)
-    _validate_replica_exists(cmd, namespace)
-    _validate_container_exists(cmd, namespace)
+    if not hasattr(namespace, "kind") or (namespace.kind and namespace.kind.lower() != LOG_TYPE_SYSTEM):
+        _set_ssh_defaults(cmd, namespace)
+        _validate_revision_exists(cmd, namespace)
+        _validate_replica_exists(cmd, namespace)
+        _validate_container_exists(cmd, namespace)

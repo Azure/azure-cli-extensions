@@ -60,6 +60,8 @@ def load_command_table(self, _):
 
     with self.command_group('containerapp logs') as g:
         g.custom_show_command('show', 'stream_containerapp_logs', validator=validate_ssh)
+    with self.command_group('containerapp env logs') as g:
+        g.custom_show_command('show', 'stream_environment_logs')
 
     with self.command_group('containerapp env') as g:
         g.custom_show_command('show', 'show_managed_environment')
