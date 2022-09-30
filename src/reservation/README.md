@@ -1,10 +1,10 @@
-# Azure CLI Reservations Preview Extension #
-This is the extension for reservations preview feature
+# Azure CLI Reservation Extension #
+This is the extension for reservation feature
 
 ### How to use ###
 Install this extension using the below CLI command
 ```
-az extension add --name reservations-preview
+az extension add --name reservation
 ```
 
 ### Included Features

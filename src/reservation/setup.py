@@ -38,17 +38,17 @@ with open('HISTORY.rst', 'r', encoding='utf-8') as f:
     HISTORY = f.read()
 
 setup(
-    name='reservations-preview',
+    name='reservation',
     version=VERSION,
-    description='Microsoft Azure Command-Line Tools Reservations preview Extension',
+    description='Microsoft Azure Command-Line Tools Reservation Extension',
     # TODO: Update author and email, if applicable
     author='Microsoft Corporation',
     author_email='azpycli@microsoft.com',
-    url='https://github.com/Azure/azure-cli-extensions/tree/main/src/reservations-preview',
+    url='https://github.com/Azure/azure-cli-extensions/tree/main/src/reservation',
     long_description=README + '\n\n' + HISTORY,
     license='MIT',
     classifiers=CLASSIFIERS,
     packages=find_packages(),
     install_requires=DEPENDENCIES,
-    package_data={'azext_reservations_preview': ['azext_metadata.json']},
+    package_data={'azext_reservation': ['azext_metadata.json']},
 )

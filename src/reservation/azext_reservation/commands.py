@@ -16,17 +16,17 @@ def load_command_table(self, _):
         return CliCommandType(*args, exception_handler=reservations_exception_handler, **kwargs)
 
     reservations_order_sdk = reservations_type(
-        operations_tmpl='azext_reservations_preview.vendored_sdks.reservations.operations._reservation_order_operations#ReservationOrderOperations.{}',
+        operations_tmpl='azext_reservation.vendored_sdks.reservations.operations._reservation_order_operations#ReservationOrderOperations.{}',
         client_factory=reservation_order_mgmt_client_factory
     )
 
     reservations_sdk = reservations_type(
-        operations_tmpl='azext_reservations_preview.vendored_sdks.reservations.operations._reservation_operations#ReservationOperations.{}',
+        operations_tmpl='azext_reservation.vendored_sdks.reservations.operations._reservation_operations#ReservationOperations.{}',
         client_factory=reservation_mgmt_client_factory
     )
 
     reservations_client_sdk = reservations_type(
-        operations_tmpl='azext_reservations_preview.vendored_sdks.reservations.operations._azure_reservation_api_operations#AzureReservationAPIOperationsMixin.{}',
+        operations_tmpl='azext_reservation.vendored_sdks.reservations.operations._azure_reservation_api_operations#AzureReservationAPIOperationsMixin.{}',
         client_factory=base_mgmt_client_factory
     )
 
