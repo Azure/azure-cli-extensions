@@ -43,6 +43,10 @@ stages:
       path: ./test/extensions/public/Cassandra.Tests.ps1
   - template: ./templates/run-test.yml
     parameters:
+      jobName: ExtensionTypes
+      path: ./test/extensions/public/ExtensionTypes.Tests.ps1
+  - template: ./templates/run-test.yml
+    parameters:
       jobName: OpenServiceMesh
       path: ./test/extensions/public/OpenServiceMesh.Tests.ps1
   - job: BuildPublishExtension
