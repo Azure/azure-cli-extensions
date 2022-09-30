@@ -28,19 +28,19 @@ def load_arguments(self, _):
     from azure.cli.core.commands.parameters import tags_type
 
     with self.argument_context('devcenter dev project list') as c:
-        c.argument('dev_center', options_list=['--dev-center', '-dc'], type=str, required=True, help='The DevCenter to operate on.')
+        c.argument('dev_center', options_list=['--dev-center-name', '--dev-center', '-dc'], type=str, required=True, help='The DevCenter to operate on.')
         #c.argument('filter_', options_list=['--filter'], type=str, help='An OData $filter clause to apply to the '
         #           'operation.')
         c.argument('top', type=int, help='The maximum number of resources to return from the operation. Example: '
                    '\'$top=10\'.')
 
     with self.argument_context('devcenter dev project show') as c:
-        c.argument('dev_center', options_list=['--dev-center', '-dc'], type=str, required=True, help='The DevCenter to operate on.')
+        c.argument('dev_center', options_list=['--dev-center-name', '--dev-center', '-dc'], type=str, required=True, help='The DevCenter to operate on.')
         c.argument('project_name', options_list=['--name', '-n', '--project-name'], type=str, help='The DevCenter '
                    'Project upon which to execute operations.')
 
     with self.argument_context('devcenter dev pool list') as c:
-        c.argument('dev_center', options_list=['--dev-center', '-dc'], type=str, required=True, help='The DevCenter to operate on.')
+        c.argument('dev_center', options_list=['--dev-center-name', '--dev-center', '-dc'], type=str, required=True, help='The DevCenter to operate on.')
         c.argument('top', type=int, help='The maximum number of resources to return from the operation. Example: '
                    '\'$top=10\'.')
         #c.argument('filter_', options_list=['--filter'], type=str, help='An OData $filter clause to apply to the '
@@ -48,7 +48,7 @@ def load_arguments(self, _):
         c.argument('project_name', options_list=['--project-name', '--project',], type=str, help='The DevCenter Project upon which to execute operations.')
 
     with self.argument_context('devcenter dev pool show') as c:
-        c.argument('dev_center', options_list=['--dev-center', '-dc'], type=str, required=True, help='The DevCenter to operate on.')
+        c.argument('dev_center', options_list=['--dev-center-name', '--dev-center', '-dc'], type=str, required=True, help='The DevCenter to operate on.')
         c.argument('dev_center_dns_suffix', type=str, help='The DNS suffix used as the base for all devcenter '
                    'requests.')
         c.argument('project_name', options_list=['--project-name', '--project',], type=str, help='The DevCenter Project upon which to execute operations.')
@@ -56,7 +56,7 @@ def load_arguments(self, _):
                    'Dev Boxes.')
 
     with self.argument_context('devcenter dev schedule list') as c:
-        c.argument('dev_center', options_list=['--dev-center', '-dc'], type=str, required=True, help='The DevCenter to operate on.')
+        c.argument('dev_center', options_list=['--dev-center-name', '--dev-center', '-dc'], type=str, required=True, help='The DevCenter to operate on.')
         c.argument('top', type=int, help='The maximum number of resources to return from the operation. Example: '
                    '\'$top=10\'.')
         #c.argument('filter_', options_list=['--filter'], type=str, help='An OData $filter clause to apply to the '
@@ -65,14 +65,14 @@ def load_arguments(self, _):
         c.argument('pool_name', options_list=['--pool-name', '--pool'], type=str, help='The name of a pool of Dev Boxes.')
 
     with self.argument_context('devcenter dev schedule show') as c:
-        c.argument('dev_center', options_list=['--dev-center', '-dc'], type=str, required=True, help='The DevCenter to operate on.')
+        c.argument('dev_center', options_list=['--dev-center-name', '--dev-center', '-dc'], type=str, required=True, help='The DevCenter to operate on.')
         c.argument('project_name', options_list=['--project-name', '--project',], type=str, help='The DevCenter Project upon which to execute operations.')
         c.argument('pool_name', options_list=['--pool-name', '--pool'], type=str, help='The name of a pool of Dev Boxes.')
         c.argument('schedule_name', options_list=['--name', '-n', '--schedule-name'], type=str, help='The name of a '
                    'schedule.')
 
     with self.argument_context('devcenter dev dev-box list', validator=validate_dev_box_list) as c:
-        c.argument('dev_center', options_list=['--dev-center', '-dc'], required=True, type=str, help='The DevCenter to operate on.')
+        c.argument('dev_center', options_list=['--dev-center-name', '--dev-center', '-dc'], required=True, type=str, help='The DevCenter to operate on.')
         c.argument('filter_', options_list=['--filter'], type=str, help='An OData $filter clause to apply to the '
                    'operation.')
         c.argument('top', type=int, help='The maximum number of resources to return from the operation. Example: '
@@ -82,7 +82,7 @@ def load_arguments(self, _):
                    'authentication context')
 
     with self.argument_context('devcenter dev dev-box show') as c:
-        c.argument('dev_center', options_list=['--dev-center', '-dc'], type=str, required=True, help='The DevCenter to operate on.')
+        c.argument('dev_center', options_list=['--dev-center-name', '--dev-center', '-dc'], type=str, required=True, help='The DevCenter to operate on.')
         c.argument('project_name', options_list=['--project-name', '--project'], type=str, help='The DevCenter Project upon which to execute operations.')
         c.argument('user_id', type=str, help='The id of the user. If value is \'me\', the identity is taken from the '
                    'authentication context')
@@ -90,7 +90,7 @@ def load_arguments(self, _):
                    'Box.')
 
     with self.argument_context('devcenter dev dev-box create') as c:
-        c.argument('dev_center', options_list=['--dev-center', '-dc'], type=str, required=True, help='The DevCenter to operate on.')
+        c.argument('dev_center', options_list=['--dev-center-name', '--dev-center', '-dc'], type=str, required=True, help='The DevCenter to operate on.')
         c.argument('project_name', options_list=['--project-name', '--project'], type=str, help='The DevCenter Project upon which to execute operations.')
         c.argument('user_id', type=str, help='The id of the user. If value is \'me\', the identity is taken from the '
                    'authentication context')
@@ -99,7 +99,7 @@ def load_arguments(self, _):
         c.argument('pool_name', options_list=['--pool-name', '--pool'], type=str, help='The name of the Dev Box pool this machine belongs to.')
 
     with self.argument_context('devcenter dev dev-box delete') as c:
-        c.argument('dev_center', options_list=['--dev-center', '-dc'], type=str, required=True, help='The DevCenter to operate on.')
+        c.argument('dev_center', options_list=['--dev-center-name', '--dev-center', '-dc'], type=str, required=True, help='The DevCenter to operate on.')
         c.argument('project_name', options_list=['--project-name', '--project'], type=str, help='The DevCenter Project upon which to execute operations.')
         c.argument('user_id', type=str, help='The id of the user. If value is \'me\', the identity is taken from the '
                    'authentication context')
@@ -107,7 +107,7 @@ def load_arguments(self, _):
                    'Box.')
 
     with self.argument_context('devcenter dev dev-box show-remote-connection') as c:
-        c.argument('dev_center', options_list=['--dev-center', '-dc'], type=str, required=True, help='The DevCenter to operate on.')
+        c.argument('dev_center', options_list=['--dev-center-name', '--dev-center', '-dc'], type=str, required=True, help='The DevCenter to operate on.')
         c.argument('project_name', options_list=['--project-name', '--project'], type=str, help='The DevCenter Project upon which to execute operations.')
         c.argument('user_id', type=str, help='The id of the user. If value is \'me\', the identity is taken from the '
                    'authentication context')
@@ -115,7 +115,7 @@ def load_arguments(self, _):
                    'Box.')
 
     with self.argument_context('devcenter dev dev-box start') as c:
-        c.argument('dev_center', options_list=['--dev-center', '-dc'], type=str, required=True, help='The DevCenter to operate on.')
+        c.argument('dev_center', options_list=['--dev-center-name', '--dev-center', '-dc'], type=str, required=True, help='The DevCenter to operate on.')
         c.argument('project_name', options_list=['--project-name', '--project'], type=str, help='The DevCenter Project upon which to execute operations.')
         c.argument('user_id', type=str, help='The id of the user. If value is \'me\', the identity is taken from the '
                    'authentication context')
@@ -123,7 +123,7 @@ def load_arguments(self, _):
                    'Box.')
 
     with self.argument_context('devcenter dev dev-box stop') as c:
-        c.argument('dev_center', options_list=['--dev-center', '-dc'], type=str, required=True, help='The DevCenter to operate on.')
+        c.argument('dev_center', options_list=['--dev-center-name', '--dev-center', '-dc'], type=str, required=True, help='The DevCenter to operate on.')
         c.argument('project_name', options_list=['--project-name', '--project'], type=str, help='The DevCenter Project upon which to execute operations.')
         c.argument('user_id', type=str, help='The id of the user. If value is \'me\', the identity is taken from the '
                    'authentication context')
@@ -131,7 +131,7 @@ def load_arguments(self, _):
                    'Box.')
 
     with self.argument_context('devcenter dev dev-box wait') as c:
-        c.argument('dev_center', options_list=['--dev-center', '-dc'], type=str, required=True, help='The DevCenter to operate on.')
+        c.argument('dev_center', options_list=['--dev-center-name', '--dev-center', '-dc'], type=str, required=True, help='The DevCenter to operate on.')
         c.argument('project_name', options_list=['--project-name', '--project'], type=str, help='The DevCenter Project upon which to execute operations.')
         c.argument('user_id', type=str, help='The id of the user. If value is \'me\', the identity is taken from the '
                    'authentication context')
@@ -139,13 +139,13 @@ def load_arguments(self, _):
                    'Box.')
 
     with self.argument_context('devcenter dev environment list') as c:
-        c.argument('dev_center', options_list=['--dev-center', '-dc'], type=str, required=True, help='The DevCenter to operate on.')
+        c.argument('dev_center', options_list=['--dev-center-name', '--dev-center', '-dc'], type=str, required=True, help='The DevCenter to operate on.')
         c.argument('top', type=int, help='The maximum number of resources to return from the operation. Example: '
                    '\'$top=10\'.')
         c.argument('project_name', options_list=['--project-name', '--project'], type=str, help='The DevCenter Project upon which to execute operations.')
 
     with self.argument_context('devcenter dev environment show') as c:
-        c.argument('dev_center', options_list=['--dev-center', '-dc'], type=str, required=True, help='The DevCenter to operate on.')
+        c.argument('dev_center', options_list=['--dev-center-name', '--dev-center', '-dc'], type=str, required=True, help='The DevCenter to operate on.')
         c.argument('project_name', options_list=['--project-name', '--project'], type=str, help='The DevCenter Project upon which to execute operations.')
         c.argument('user_id', type=str, help='The id of the user. If value is \'me\', the identity is taken from the '
                    'authentication context')
@@ -153,7 +153,7 @@ def load_arguments(self, _):
                    'of the environment.')
 
     with self.argument_context('devcenter dev environment create') as c:
-        c.argument('dev_center', options_list=['--dev-center', '-dc'], type=str, required=True, help='The DevCenter to operate on.')
+        c.argument('dev_center', options_list=['--dev-center-name', '--dev-center', '-dc'], type=str, required=True, help='The DevCenter to operate on.')
         c.argument('project_name', options_list=['--project-name', '--project'], type=str, help='The DevCenter Project upon which to execute operations.')
         c.argument('user_id', type=str, help='The id of the user. If value is \'me\', the identity is taken from the '
                    'authentication context')
@@ -171,7 +171,7 @@ def load_arguments(self, _):
         c.argument('owner', type=str, help='Identifier of the owner of this Environment.')
 
     with self.argument_context('devcenter dev environment update') as c:
-        c.argument('dev_center', options_list=['--dev-center', '-dc'], type=str, required=True, help='The DevCenter to operate on.')
+        c.argument('dev_center', options_list=['--dev-center-name', '--dev-center', '-dc'], type=str, required=True, help='The DevCenter to operate on.')
         c.argument('dev_center_dns_suffix', type=str, help='The DNS suffix used as the base for all devcenter '
                    'requests.')
         c.argument('project_name', options_list=['--project-name', '--project'], type=str, help='The DevCenter Project upon which to execute operations.')
@@ -189,7 +189,7 @@ def load_arguments(self, _):
         c.argument('tags', tags_type)
 
     with self.argument_context('devcenter dev environment delete') as c:
-        c.argument('dev_center', options_list=['--dev-center', '-dc'], type=str, required=True, help='The DevCenter to operate on.')
+        c.argument('dev_center', options_list=['--dev-center-name', '--dev-center', '-dc'], type=str, required=True, help='The DevCenter to operate on.')
         c.argument('project_name', options_list=['--project-name', '--project'], type=str, help='The DevCenter Project upon which to execute operations.')
         c.argument('user_id', type=str, help='The id of the user. If value is \'me\', the identity is taken from the '
                    'authentication context')
@@ -197,7 +197,7 @@ def load_arguments(self, _):
                    'of the environment.')
 
     with self.argument_context('devcenter dev environment list-by-project') as c:
-        c.argument('dev_center', options_list=['--dev-center', '-dc'], type=str, required=True, help='The DevCenter to operate on.')
+        c.argument('dev_center', options_list=['--dev-center-name', '--dev-center', '-dc'], type=str, required=True, help='The DevCenter to operate on.')
         c.argument('top', type=int, help='The maximum number of resources to return from the operation. Example: '
                    '\'$top=10\'.')
         c.argument('project_name', options_list=['--project-name', '--project'], type=str, help='The DevCenter Project upon which to execute operations.')
@@ -205,7 +205,7 @@ def load_arguments(self, _):
                    'authentication context')
 
     with self.argument_context('devcenter dev environment wait') as c:
-        c.argument('dev_center', options_list=['--dev-center', '-dc'], type=str, required=True, help='The DevCenter to operate on.')
+        c.argument('dev_center', options_list=['--dev-center-name', '--dev-center', '-dc'], type=str, required=True, help='The DevCenter to operate on.')
         c.argument('project_name', options_list=['--project-name', '--project'], type=str, help='The DevCenter Project upon which to execute operations.')
         c.argument('user_id', type=str, help='The id of the user. If value is \'me\', the identity is taken from the '
                    'authentication context')
@@ -213,7 +213,7 @@ def load_arguments(self, _):
                    'of the environment.')
 
     with self.argument_context('devcenter dev environment custom-action') as c:
-        c.argument('dev_center', options_list=['--dev-center', '-dc'], type=str, required=True, help='The DevCenter to operate on.')
+        c.argument('dev_center', options_list=['--dev-center-name', '--dev-center', '-dc'], type=str, required=True, help='The DevCenter to operate on.')
         c.argument('project_name', type=str, help='The DevCenter Project upon which to execute operations.')
         c.argument('user_id', type=str, help='The AAD object id of the user. If value is \'me\', the identity is taken '
                    'from the authentication context')
@@ -224,7 +224,7 @@ def load_arguments(self, _):
                    'json-string/json-file/@json-file.')
 
     with self.argument_context('devcenter dev environment delete-action') as c:
-        c.argument('dev_center', options_list=['--dev-center', '-dc'], type=str, required=True, help='The DevCenter to operate on.')
+        c.argument('dev_center', options_list=['--dev-center-name', '--dev-center', '-dc'], type=str, required=True, help='The DevCenter to operate on.')
         c.argument('project_name', type=str, help='The DevCenter Project upon which to execute operations.')
         c.argument('user_id', type=str, help='The AAD object id of the user. If value is \'me\', the identity is taken '
                    'from the authentication context')
@@ -235,7 +235,7 @@ def load_arguments(self, _):
                    'json-string/json-file/@json-file.')
 
     with self.argument_context('devcenter dev environment deploy-action') as c:
-        c.argument('dev_center', options_list=['--dev-center', '-dc'], type=str, required=True, help='The DevCenter to operate on.')
+        c.argument('dev_center', options_list=['--dev-center-name', '--dev-center', '-dc'], type=str, required=True, help='The DevCenter to operate on.')
         c.argument('project_name', type=str, help='The DevCenter Project upon which to execute operations.')
         c.argument('user_id', type=str, help='The AAD object id of the user. If value is \'me\', the identity is taken '
                    'from the authentication context')
@@ -246,7 +246,7 @@ def load_arguments(self, _):
                    'json-string/json-file/@json-file.')
 
     with self.argument_context('devcenter dev artifact list') as c:
-        c.argument('dev_center', options_list=['--dev-center', '-dc'], type=str, required=True, help='The DevCenter to operate on.')
+        c.argument('dev_center', options_list=['--dev-center-name', '--dev-center', '-dc'], type=str, required=True, help='The DevCenter to operate on.')
         c.argument('project_name', options_list=['--project-name', '--project'], type=str, help='The DevCenter Project upon which to execute operations.')
         c.argument('user_id', type=str, help='The id of the user. If value is \'me\', the identity is taken from the '
                    'authentication context')
@@ -254,27 +254,27 @@ def load_arguments(self, _):
         c.argument('artifact_path', type=str, help='The path of the artifact.')
 
     with self.argument_context('devcenter dev catalog-item list') as c:
-        c.argument('dev_center', options_list=['--dev-center', '-dc'], type=str, required=True, help='The DevCenter to operate on.')
+        c.argument('dev_center', options_list=['--dev-center-name', '--dev-center', '-dc'], type=str, required=True, help='The DevCenter to operate on.')
         c.argument('project_name', options_list=['--project-name', '--project'], type=str, help='The DevCenter Project upon which to execute operations.')
         c.argument('top', type=int, help='The maximum number of resources to return from the operation. Example: '
                    '\'$top=10\'.')
 
     with self.argument_context('devcenter dev catalog-item show') as c:
-        c.argument('dev_center', options_list=['--dev-center', '-dc'], type=str, required=True, help='The DevCenter to operate on.')
+        c.argument('dev_center', options_list=['--dev-center-name', '--dev-center', '-dc'], type=str, required=True, help='The DevCenter to operate on.')
         c.argument('project_name', options_list=['--project-name', '--project'], type=str, help='The DevCenter Project upon which to execute operations.')
         c.argument('top', type=int, help='The maximum number of resources to return from the operation. Example: '
                    '\'$top=10\'.')
         c.argument('catalog_item_id', type=str, help='The unique id of the catalog item.')
 
     with self.argument_context('devcenter dev catalog-item-version list') as c:
-        c.argument('dev_center', options_list=['--dev-center', '-dc'], type=str, required=True, help='The DevCenter to operate on.')
+        c.argument('dev_center', options_list=['--dev-center-name', '--dev-center', '-dc'], type=str, required=True, help='The DevCenter to operate on.')
         c.argument('project_name', options_list=['--project-name', '--project'], type=str, help='The DevCenter Project upon which to execute operations.')
         c.argument('top', type=int, help='The maximum number of resources to return from the operation. Example: '
                    '\'$top=10\'.')
         c.argument('catalog_item_id', type=str, help='The unique id of the catalog item.')
 
     with self.argument_context('devcenter dev catalog-item-version show') as c:
-        c.argument('dev_center', options_list=['--dev-center', '-dc'], type=str, required=True, help='The DevCenter to operate on.')
+        c.argument('dev_center', options_list=['--dev-center-name', '--dev-center', '-dc'], type=str, required=True, help='The DevCenter to operate on.')
         c.argument('project_name', options_list=['--project-name', '--project'], type=str, required=True, help='The DevCenter Project upon which to execute operations.')
         c.argument('top', type=int, help='The maximum number of resources to return from the operation. Example: '
                    '\'$top=10\'.')
@@ -282,7 +282,7 @@ def load_arguments(self, _):
         c.argument('version', type=str, help='The version of the catalog item.')
 
     with self.argument_context('devcenter dev environment-type list') as c:
-        c.argument('dev_center', options_list=['--dev-center', '-dc'], type=str, required=True, help='The DevCenter to operate on.')
+        c.argument('dev_center', options_list=['--dev-center-name', '--dev-center', '-dc'], type=str, required=True, help='The DevCenter to operate on.')
         c.argument('project_name', options_list=['--project-name', '--project'], type=str, help='The DevCenter Project upon which to execute operations.')
         c.argument('top', type=int, help='The maximum number of resources to return from the operation. Example: '
                    '\'$top=10\'.')
@@ -497,16 +497,16 @@ def load_arguments(self, _):
         c.argument('tags', tags_type)
         c.argument('location', arg_type=get_location_type(self.cli_ctx), required=False,
                    validator=get_default_location_from_resource_group)
-        c.argument('deployment_target_id', type=str, help='Id of a subscription that the environment type will be '
+        c.argument('deployment_target_id', required=True, type=str, help='Id of a subscription that the environment type will be '
                    'mapped to. The environment\'s resources will be deployed into this subscription.')
-        c.argument('status', arg_type=get_enum_type(['Enabled', 'Disabled']), help='Defines whether this Environment '
+        c.argument('status', required=True, arg_type=get_enum_type(['Enabled', 'Disabled']), help='Defines whether this Environment '
                    'Type can be used in this Project.')
         c.argument('user_role_assignments', type=validate_file_or_dict, help='Role Assignments created on environment '
                    'backing resources. This is a mapping from a user object ID to an object of role definition IDs. '
                    'Expected value: json-string/json-file/@json-file.')
         c.argument('roles', type=validate_file_or_dict, help='A map of roles to assign to the environment creator. '
                    'Expected value: json-string/json-file/@json-file.', arg_group='Creator Role Assignment')
-        c.argument('type_', options_list=['--type'], arg_type=get_enum_type(['None', 'SystemAssigned', 'UserAssigned',
+        c.argument('type_', required=True, options_list=['--identity-type'], arg_type=get_enum_type(['SystemAssigned', 'UserAssigned',
                                                                              'SystemAssigned, UserAssigned']),
                    help='Type of managed service identity (where both SystemAssigned and UserAssigned types are '
                    'allowed).', arg_group='Identity')
@@ -532,7 +532,7 @@ def load_arguments(self, _):
                    'Expected value: json-string/json-file/@json-file.')
         c.argument('roles', type=validate_file_or_dict, help='A map of roles to assign to the environment creator. '
                    'Expected value: json-string/json-file/@json-file.', arg_group='Creator Role Assignment')
-        c.argument('type_', options_list=['--identity-type'], arg_type=get_enum_type(['None', 'SystemAssigned', 'UserAssigned',
+        c.argument('type_', options_list=['--identity-type'], arg_type=get_enum_type(['SystemAssigned', 'UserAssigned',
                                                                              'SystemAssigned, UserAssigned']),
                    help='Type of managed service identity (where both SystemAssigned and UserAssigned types are '
                    'allowed).', arg_group='Identity')
