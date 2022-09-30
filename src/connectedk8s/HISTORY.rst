@@ -2,6 +2,10 @@
 
 Release History
 ===============
+1.3.4
+++++++
+
+* Added securityContext for diagnoser container
 1.3.3
 ++++++
 
