@@ -2,6 +2,11 @@
 
 Release History
 ===============
+1.3.4
+++++++
+
+* Added securityContext for diagnoser container, fixed a proxy related bug in connectedk8s upgrade
+
 1.3.3
 ++++++
 
