@@ -506,7 +506,7 @@ def load_arguments(self, _):
                    'Expected value: json-string/json-file/@json-file.')
         c.argument('roles', type=validate_file_or_dict, help='A map of roles to assign to the environment creator. '
                    'Expected value: json-string/json-file/@json-file.', arg_group='Creator Role Assignment')
-        c.argument('type_', options_list=['--type'], arg_type=get_enum_type(['None', 'SystemAssigned', 'UserAssigned',
+        c.argument('type_', required=True, options_list=['--identity-type'], arg_type=get_enum_type(['SystemAssigned', 'UserAssigned',
                                                                              'SystemAssigned, UserAssigned']),
                    help='Type of managed service identity (where both SystemAssigned and UserAssigned types are '
                    'allowed).', arg_group='Identity')
@@ -532,7 +532,7 @@ def load_arguments(self, _):
                    'Expected value: json-string/json-file/@json-file.')
         c.argument('roles', type=validate_file_or_dict, help='A map of roles to assign to the environment creator. '
                    'Expected value: json-string/json-file/@json-file.', arg_group='Creator Role Assignment')
-        c.argument('type_', options_list=['--identity-type'], arg_type=get_enum_type(['None', 'SystemAssigned', 'UserAssigned',
+        c.argument('type_', options_list=['--identity-type'], arg_type=get_enum_type(['SystemAssigned', 'UserAssigned',
                                                                              'SystemAssigned, UserAssigned']),
                    help='Type of managed service identity (where both SystemAssigned and UserAssigned types are '
                    'allowed).', arg_group='Identity')
