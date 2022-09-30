@@ -9,11 +9,29 @@ from azure.cli.testsdk import *
 
 
 class AutomanageScenario(ScenarioTest):
-    @ResourceGroupPreparer(location='eastus2euap', name_prefix='clitest.rg.automanage')
-    def test_automanage_scenarios(self, resource_group):
-        # self.kwargs.update({
-        #     "san_name": self.create_random_name('elastic-san', 24)
-        # })
+    @ResourceGroupPreparer(location='eastus2euap', name_prefix='clitest.rg.automanage.')
+    def test_automanage_scenarios(self):
+        # best-practice
+        best_practice_name = self.cmd('az automanage best-practice list').get_output_in_json()
+        if best_practice_name and len(best_practice_name)>=2:
+            best_practice_name = best_practice_name[1]["name"]
+            self.cmd('az automanage best-practice show --best-practice-name {}'.format(best_practice_name))
+            version_name = self.cmd('az automanage best-practice version list '
+                                    '--best-practice-name {}'.format(best_practice_name)).get_output_in_json()
+            if version_name and len(version_name)>=1:
+                version_name = version_name[0]["name"]
+                #TODO no permission
+                # self.cmd('az automanage best-practice version show --best-practice-name {} --version-name '
+                #          '{}'.format(best_practice_name, version_name))
 
-        best_practice_name = self.cmd('az automanage best-practice list').get_output_in_json()[0]["name"]
-        self.cmd('az automanage best-practice show --best-practice-name {}'.format(best_practice_name))
+        # service-principal
+        self.cmd('az automanage service-principal list')
+        self.cmd('az automanage service-principal show-default')
+
+
+    @ResourceGroupPreparer(location='eastus2euap', name_prefix='clitest.rg.automanage.configurationprofile.')
+    def test_automanage_configuration_profile_scenarios(self):
+        self.kwargs.update({
+            'profile_name': self.create_random_name(prefix='profile', length=24),
+        })
+        self.cmd('az automanage configuration-profile create -n {profile_name} -g {rg}')
