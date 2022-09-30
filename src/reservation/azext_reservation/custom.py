@@ -4,11 +4,11 @@
 # --------------------------------------------------------------------------------------------
 
 from .vendored_sdks.reservations.models import (Patch,
-                                            PurchaseRequest,
-                                            SplitRequest,
-                                            MergeRequest,
-                                            SkuName,
-                                            PurchaseRequestPropertiesReservedResourceProperties)
+                                                PurchaseRequest,
+                                                SplitRequest,
+                                                MergeRequest,
+                                                SkuName,
+                                                PurchaseRequestPropertiesReservedResourceProperties)
 
 
 def cli_reservation_update_reservation(client, reservation_order_id, reservation_id,
