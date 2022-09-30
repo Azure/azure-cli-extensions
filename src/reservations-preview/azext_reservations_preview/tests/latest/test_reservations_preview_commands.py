@@ -97,7 +97,7 @@ class AzureReservationsTests(ScenarioTest):
             'reservation_order_id': '0a47417c-cd30-4f67-add6-d631583e09f3',
             'reservation_id': 'ae1fbdad-6333-4964-9f4c-83f7e2b7f44f'
         })
-        history = self.cmd('reservations reservation list-history-testing --reservation-order-id {reservation_order_id}'
+        history = self.cmd('reservations reservation list-history --reservation-order-id {reservation_order_id}'
                            ' --reservation-id {reservation_id}').get_output_in_json()
         self.assertGreater(len(history), 0)
         for entry in history:
