@@ -12,10 +12,13 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "reservations reservation-order reservation archive",
+    "reservations reservation archive",
 )
 class Archive(AAZCommand):
-    """Archiving a `Reservation` moves it to `Archived` state.
+    """Archiving a `Reservation` which is in cancelled/expired state and move it to `Archived` state.
+
+    :example: Archive a reservation
+        az reservations reservation archive --reservation-order-id 40000000-aaaa-bbbb-cccc-20000000000 --reservation-id 50000000-aaaa-bbbb-cccc-200000000000
     """
 
     _aaz_info = {

@@ -12,11 +12,13 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "reservations reservation-order reservation available-scope",
+    "reservations reservation available-scope",
 )
 class AvailableScope(AAZCommand):
     """Get Available Scopes for `Reservation`.
 
+    :example: Get reservation available scope
+        az reservations reservation available-scope --reservation-order-id 40000000-aaaa-bbbb-cccc-20000000000 --reservation-id 30000000-aaaa-bbbb-cccc-20000000000 --scopes ['/subscriptions/60000000-aaaa-bbbb-cccc-20000000000']
     """
 
     _aaz_info = {

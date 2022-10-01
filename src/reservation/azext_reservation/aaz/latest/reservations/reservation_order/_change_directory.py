@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class ChangeDirectory(AAZCommand):
     """Change directory (tenant) of `ReservationOrder` and all `Reservation` under it to specified tenant id
+
+    :example: Change a reservation order to another tenant
+        az reservations reservation-order change-directory --reservation-order-id 50000000-aaaa-bbbb-cccc-200000000000 --destination-tenant-id 10000000-aaaa-bbbb-cccc-200000000011
     """
 
     _aaz_info = {

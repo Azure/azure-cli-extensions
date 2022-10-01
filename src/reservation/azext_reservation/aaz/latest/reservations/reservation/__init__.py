@@ -9,10 +9,13 @@
 # flake8: noqa
 
 from .__cmd_group import *
+from ._archive import *
+from ._available_scope import *
 from ._list import *
 from ._list_history import *
 from ._merge import *
 from ._show import *
 from ._split import *
+from ._unarchive import *
 from ._update import *
 from ._wait import *

@@ -131,30 +131,30 @@ class AzureReservationsTests(ScenarioTest):
         })
 
         single_reservation = self.cmd('reservations reservation update --reservation-order-id {reservation_order_id}'
-                                      ' --reservation-id {reservation_id} -t Single -s {scope}'
+                                      ' --reservation-id {reservation_id} --applied-scope-type Single --applied-scopes {scope}'
                                       ' --instance-flexibility {instance_flexibility}').get_output_in_json()
         self.assertEqual('Single', single_reservation['properties']['appliedScopeType'])
 
         shared_reservation = self.cmd('reservations reservation update --reservation-order-id {reservation_order_id} '
-                                      '--reservation-id {reservation_id} -t Shared'
+                                      '--reservation-id {reservation_id} --applied-scope-typ Shared'
                                       ' --instance-flexibility {instance_flexibility}').get_output_in_json()
         self.assertEqual('Shared', shared_reservation['properties']['appliedScopeType'])
 
     @record_only()  # This test relies on the existing reservation order
     def test_split_and_merge(self):
         self.kwargs.update({
-            'reservation_order_id': '0af601f3-7868-44ee-b833-4d2e64ad3d70',
-            'reservation_id': '6dee7663-3e63-4115-aa4d-41e9a57f551e',
-            'quantity1': 1,
-            'quantity2': 2
+            'reservation_order_id': '6d1613d2-d4f8-454d-aef3-fe6d5c8bef95',
+            'reservation_id': '646d427e-a133-4cb6-9f28-3de6157de83e',
+            'quantities': '[1,1]'
         })
 
-        original_reservation = self.cmd('reservations reservation show  --reservation-order-id {reservation_order_id}'
+        original_reservation = self.cmd('reservations reservation show --reservation-order-id {reservation_order_id}'
                                         ' --reservation-id {reservation_id}').get_output_in_json()
         original_quantity = original_reservation['properties']['quantity']
 
         split_items = self.cmd('reservations reservation split --reservation-order-id {reservation_order_id} '
-                               '--reservation-id {reservation_id} --quantity-1 {quantity1} --quantity-2 {quantity2}').get_output_in_json()
+                               '--reservation-id /providers/Microsoft.Capacity/reservationOrders/{reservation_order_id}/reservations/{reservation_id} '
+                               '--quantities {quantities}').get_output_in_json()
         self.assertIsNotNone(split_items)
 
         quantity_sum = 0
@@ -167,13 +167,13 @@ class AzureReservationsTests(ScenarioTest):
                 quantity_sum += item['properties']['quantity']
         self.assertEqual(original_quantity, quantity_sum)
         self.assertEqual(2, len(split_ids))
-
         self.kwargs.update({
             'split_id1': split_ids[0],
-            'split_id2': split_ids[1]
+            'split_id2': split_ids[1],
+            'sources': '[/providers/Microsoft.Capacity/reservationOrders/{reservation_order_id}/reservations/{split_id1},'
+                               '/providers/Microsoft.Capacity/reservationOrders/{reservation_order_id}/reservations/{split_id2}]'
         })
-        merge_items = self.cmd('reservations reservation merge --reservation-order-id {reservation_order_id} -1 '
-                               '{split_id1} -2 {split_id2}').get_output_in_json()
+        merge_items = self.cmd('reservations reservation merge --reservation-order-id {reservation_order_id} --sources {sources}').get_output_in_json()
         self.assertIsNotNone(merge_items)
         for item in merge_items:
             self._validate_reservation(item)
@@ -227,3 +227,50 @@ class AzureReservationsTests(ScenarioTest):
         self.assertIsNotNone(response['billingPlan'])
         self.assertIsNotNone(response['displayName'])
         self.assertEqual(2, response['originalQuantity'])
+
+    @record_only()
+    def test_archive_unarchive_reservation(self):
+        self.kwargs.update({
+            'reservation_order_id': 'be56711c-7ba2-4b62-bcb8-cb93ba191ea1',
+            'reservation_id': '5541e724-eae8-4ed3-aac1-cdc88cc5621f',
+        })
+        response = self.cmd('reservations reservation archive --reservation-order-id {reservation_order_id} --reservation-id {reservation_id}')
+        self.assertIsNotNone(response)
+        response = self.cmd('reservations reservation unarchive --reservation-order-id {reservation_order_id} --reservation-id {reservation_id}')
+        self.assertIsNotNone(response)
+
+    @record_only()
+    def test_reservation_available_scope(self):
+        self.kwargs.update({
+            'reservation_order_id': 'ef723fd0-9bd8-44a9-baed-ba4dc95ede38',
+            'reservation_id': 'a09b9fd7-b277-41f0-a58f-3469368d2088',
+            'subscription_id': 'fed2a274-8787-4a13-8371-f5282597b779'
+        })
+        response = self.cmd('reservations reservation available-scope --reservation-order-id {reservation_order_id} --reservation-id {reservation_id}'
+        ' --scopes [/subscriptions/{subscription_id}]').get_output_in_json()
+
+        self.assertIsNotNone(response)
+        self.assertIsNotNone(response['properties'])
+        self.assertIsNotNone(response['properties']['scopes'])
+        self.assertEqual(1, len(response['properties']['scopes']))
+        self.assertIn("/subscriptions/", response['properties']['scopes'][0]['scope'])
+        self.assertEqual(True, response['properties']['scopes'][0]['valid'])
+
+    @record_only()
+    def test_reservation_order_change_directory(self):
+        self.kwargs.update({
+            'reservation_order_id': '4861c652-9564-4e1c-aba2-5b96f639138c',
+            'destination_tenant_id': '4adcf5e7-539d-451c-85d5-b6c3b47335d7'
+        })
+        response = self.cmd('reservations reservation-order change-directory --reservation-order-id {reservation_order_id} '
+                               '--destination-tenant-id {destination_tenant_id}').get_output_in_json()
+        self.assertIsNotNone(response)
+        self.assertIsNotNone(response['reservationOrder'])
+        self.assertEqual("4861c652-9564-4e1c-aba2-5b96f639138c", response['reservationOrder']['id'])
+        self.assertEqual("TestVm1", response['reservationOrder']['name'])
+        self.assertEqual(True, response['reservationOrder']['isSucceeded'])
+        self.assertIsNotNone(response['reservations'])
+        self.assertEqual(1, len(response['reservations']))
+        self.assertEqual("e52281b9-2e20-4cb2-8611-4b8cbc76a51a", response['reservations'][0]['id'])
+        self.assertEqual("TestVm1", response['reservations'][0]['name'])
+        self.assertEqual(True, response['reservations'][0]['isSucceeded'])
