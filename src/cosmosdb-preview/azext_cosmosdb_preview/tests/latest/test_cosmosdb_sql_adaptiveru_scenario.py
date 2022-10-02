@@ -23,8 +23,8 @@ class Cosmosdb_previewAdaptiveRUScenarioTest(ScenarioTest):
         db_name = self.create_random_name(prefix='cli', length=15)
         # Assumption: There exists a cosmosTest rg with the account adrutest2. This test only creates the database and collection
         self.kwargs.update({
-            'rg' : 'canary-sdk-test',
-            'acc': 'sqladru2',            
+            'rg' : 'cosmosTest',
+            'acc': 'adrutest2',
             'db_name': db_name,
             'col': col,
             'loc': 'australiaeast',
@@ -64,8 +64,8 @@ class Cosmosdb_previewAdaptiveRUScenarioTest(ScenarioTest):
         db_name = self.create_random_name(prefix='cli', length=15)
 
         self.kwargs.update({
-            'rg':'canary-sdk-test',
-            'acc': 'sqladru3',            
+            'rg':'cosmosTest',
+            'acc': 'adrutest3',
             'db_name': db_name,
             'col': col,
             'loc': 'australiaeast',
