@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 class Exchange(AAZCommand):
     """Returns one or more `Reservations` in exchange for one or more `Reservation` purchases.
 
+
+    :example: Exchange reservations
+        az reservations exchange --session-id 40000000-aaaa-bbbb-cccc-200000000012
     """
 
     _aaz_info = {

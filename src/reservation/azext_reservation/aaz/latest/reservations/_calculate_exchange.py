@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 class CalculateExchange(AAZCommand):
     """Calculates price for exchanging `Reservations` if there are no policy errors.
 
+
+    :example: Calculate exchange
+        az reservations calculate-exchange --reservations-to-exchange [{reservation-id:/providers/microsoft.capacity/reservationOrders/40000000-aaaa-bbbb-cccc-200000000012/reservations/51000000-aaaa-bbbb-cccc-200000000012,quantity:1},{reservation-id:/providers/microsoft.capacity/reservationOrders/90000000-aaaa-bbbb-cccc-200000000012/reservations/36000000-aaaa-bbbb-cccc-200000000012,quantity:1}] --reservations-to-purchase [{reserved-resource-type:VirtualMachines,applied-scope-type:Shared,billing-scope:12350000-aaaa-bbbb-cccc-200000000012,display-name:exchangeTest1,quantity:1,sku:Standard_B1s,term:P1Y,billing-plan:Monthly,location:eastus},{reserved-resource-type:VirtualMachines,applied-scope-type:Shared,billing-scope:12350000-aaaa-bbbb-cccc-200000000012,display-name:exchangeTest2,quantity:1,sku:Standard_B1s,term:P1Y,billing-plan:Monthly,location:eastus}]
     """
 
     _aaz_info = {
@@ -80,8 +83,8 @@ class CalculateExchange(AAZCommand):
             help="Type of the Applied Scope.",
             enum={"Shared": "Shared", "Single": "Single"},
         )
-        _element.applied_scopes = AAZListArg(
-            options=["applied-scopes"],
+        _element.applied_scope = AAZListArg(
+            options=["applied-scope"],
             help="List of the subscriptions that the benefit will be applied. Do not specify if AppliedScopeType is Shared.",
         )
         _element.billing_plan = AAZStrArg(
@@ -89,8 +92,8 @@ class CalculateExchange(AAZCommand):
             help="Represent the billing plans.",
             enum={"Monthly": "Monthly", "Upfront": "Upfront"},
         )
-        _element.billing_scope_id = AAZStrArg(
-            options=["billing-scope-id"],
+        _element.billing_scope = AAZStrArg(
+            options=["billing-scope"],
             help="Subscription that will be charged for purchasing Reservation",
         )
         _element.display_name = AAZStrArg(
@@ -106,9 +109,10 @@ class CalculateExchange(AAZCommand):
             help="Setting this to true will automatically purchase a new reservation on the expiration date time.",
             default=False,
         )
-        _element.reserved_resource_properties = AAZObjectArg(
-            options=["reserved-resource-properties"],
-            help="Properties specific to each reserved resource type. Not required if not applicable.",
+        _element.instance_flexibility = AAZStrArg(
+            options=["instance-flexibility"],
+            help="Turning this on will apply the reservation discount to other VMs in the same VM size group. Only specify for VirtualMachines reserved resource type.",
+            enum={"Off": "Off", "On": "On"},
         )
         _element.reserved_resource_type = AAZStrArg(
             options=["reserved-resource-type"],
@@ -120,24 +124,12 @@ class CalculateExchange(AAZCommand):
             help="Represent the term of Reservation.",
             enum={"P1Y": "P1Y", "P3Y": "P3Y", "P5Y": "P5Y"},
         )
-        _element.sku = AAZObjectArg(
+        _element.sku = AAZStrArg(
             options=["sku"],
         )
 
-        applied_scopes = cls._args_schema.reservations_to_purchase.Element.applied_scopes
-        applied_scopes.Element = AAZStrArg()
-
-        reserved_resource_properties = cls._args_schema.reservations_to_purchase.Element.reserved_resource_properties
-        reserved_resource_properties.instance_flexibility = AAZStrArg(
-            options=["instance-flexibility"],
-            help="Turning this on will apply the reservation discount to other VMs in the same VM size group. Only specify for VirtualMachines reserved resource type.",
-            enum={"Off": "Off", "On": "On"},
-        )
-
-        sku = cls._args_schema.reservations_to_purchase.Element.sku
-        sku.name = AAZStrArg(
-            options=["name"],
-        )
+        applied_scope = cls._args_schema.reservations_to_purchase.Element.applied_scope
+        applied_scope.Element = AAZStrArg()
         return cls._args_schema
 
     def _execute_operations(self):
@@ -252,18 +244,18 @@ class CalculateExchange(AAZCommand):
             if _elements is not None:
                 _elements.set_prop("location", AAZStrType, ".location")
                 _elements.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
-                _elements.set_prop("sku", AAZObjectType, ".sku")
+                _elements.set_prop("sku", AAZObjectType)
 
             properties = _builder.get(".properties.reservationsToPurchase[].properties")
             if properties is not None:
                 properties.set_prop("appliedScopeType", AAZStrType, ".applied_scope_type")
-                properties.set_prop("appliedScopes", AAZListType, ".applied_scopes")
+                properties.set_prop("appliedScopes", AAZListType, ".applied_scope")
                 properties.set_prop("billingPlan", AAZStrType, ".billing_plan")
-                properties.set_prop("billingScopeId", AAZStrType, ".billing_scope_id")
+                properties.set_prop("billingScopeId", AAZStrType, ".billing_scope")
                 properties.set_prop("displayName", AAZStrType, ".display_name")
                 properties.set_prop("quantity", AAZIntType, ".quantity")
                 properties.set_prop("renew", AAZBoolType, ".renew")
-                properties.set_prop("reservedResourceProperties", AAZObjectType, ".reserved_resource_properties")
+                properties.set_prop("reservedResourceProperties", AAZObjectType)
                 properties.set_prop("reservedResourceType", AAZStrType, ".reserved_resource_type")
                 properties.set_prop("term", AAZStrType, ".term")
 
@@ -277,7 +269,7 @@ class CalculateExchange(AAZCommand):
 
             sku = _builder.get(".properties.reservationsToPurchase[].sku")
             if sku is not None:
-                sku.set_prop("name", AAZStrType, ".name")
+                sku.set_prop("name", AAZStrType, ".sku")
 
             return self.serialize_content(_content_value)
 

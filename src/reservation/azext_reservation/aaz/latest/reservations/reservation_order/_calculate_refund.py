@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 class CalculateRefund(AAZCommand):
     """Calculate price for returning `Reservations` if there are no policy errors.
 
+
+    :example: Calculate refund
+        az reservations reservation-order calculate-refund --reservation-order-id 0000000-aaaa-bbbb-cccc-20000000001 --id /providers/microsoft.capacity/reservationOrders/0000000-aaaa-bbbb-cccc-20000000001 --scope Reservation --quantity 1 --reservation-id /providers/microsoft.capacity/reservationOrders/0000000-aaaa-bbbb-cccc-20000000001/reservations/50000000-aaaa-bbbb-cccc-200000000000
     """
 
     _aaz_info = {
@@ -60,24 +63,23 @@ class CalculateRefund(AAZCommand):
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
-        _args_schema.reservation_to_return = AAZObjectArg(
-            options=["--reservation-to-return"],
-            arg_group="Properties",
-            help="Reservation to return",
-        )
         _args_schema.scope = AAZStrArg(
             options=["--scope"],
             arg_group="Properties",
             help="The scope of the refund, e.g. Reservation",
         )
 
-        reservation_to_return = cls._args_schema.reservation_to_return
-        reservation_to_return.quantity = AAZIntArg(
-            options=["quantity"],
+        # define Arg Group "ReservationToReturn"
+
+        _args_schema = cls._args_schema
+        _args_schema.quantity = AAZIntArg(
+            options=["--quantity"],
+            arg_group="ReservationToReturn",
             help="Quantity to be returned. Must be greater than zero.",
         )
-        reservation_to_return.reservation_id = AAZStrArg(
-            options=["reservation-id"],
+        _args_schema.reservation_id = AAZStrArg(
+            options=["--reservation-id"],
+            arg_group="ReservationToReturn",
             help="Fully qualified identifier of the Reservation being returned",
         )
         return cls._args_schema
@@ -169,7 +171,7 @@ class CalculateRefund(AAZCommand):
 
             properties = _builder.get(".properties")
             if properties is not None:
-                properties.set_prop("reservationToReturn", AAZObjectType, ".reservation_to_return")
+                properties.set_prop("reservationToReturn", AAZObjectType)
                 properties.set_prop("scope", AAZStrType, ".scope")
 
             reservation_to_return = _builder.get(".properties.reservationToReturn")

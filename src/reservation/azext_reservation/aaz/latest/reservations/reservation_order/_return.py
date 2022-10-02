@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Return(AAZCommand):
     """Return a reservation.
+
+    :example: Return a reservation
+        az reservations reservation-order return --reservation-order-id 50000000-aaaa-bbbb-cccc-200000000000 --return-reason mockReason --scope Reservation --quantity 1 --reservation-id /providers/microsoft.capacity/reservationOrders/50000000-aaaa-bbbb-cccc-200000000000/reservations/30000000-aaaa-bbbb-cccc-200000000011 --session-id 40000000-aaaa-bbbb-cccc-200000000012
     """
 
     _aaz_info = {
@@ -50,11 +53,6 @@ class Return(AAZCommand):
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
-        _args_schema.reservation_to_return = AAZObjectArg(
-            options=["--reservation-to-return"],
-            arg_group="Properties",
-            help="Reservation to return",
-        )
         _args_schema.return_reason = AAZStrArg(
             options=["--return-reason"],
             arg_group="Properties",
@@ -71,13 +69,17 @@ class Return(AAZCommand):
             help="SessionId that was returned by CalculateRefund API.",
         )
 
-        reservation_to_return = cls._args_schema.reservation_to_return
-        reservation_to_return.quantity = AAZIntArg(
-            options=["quantity"],
+        # define Arg Group "ReservationToReturn"
+
+        _args_schema = cls._args_schema
+        _args_schema.quantity = AAZIntArg(
+            options=["--quantity"],
+            arg_group="ReservationToReturn",
             help="Quantity to be returned. Must be greater than zero.",
         )
-        reservation_to_return.reservation_id = AAZStrArg(
-            options=["reservation-id"],
+        _args_schema.reservation_id = AAZStrArg(
+            options=["--reservation-id"],
+            arg_group="ReservationToReturn",
             help="Fully qualified identifier of the Reservation being returned",
         )
         return cls._args_schema
@@ -168,7 +170,7 @@ class Return(AAZCommand):
 
             properties = _builder.get(".properties")
             if properties is not None:
-                properties.set_prop("reservationToReturn", AAZObjectType, ".reservation_to_return")
+                properties.set_prop("reservationToReturn", AAZObjectType)
                 properties.set_prop("returnReason", AAZStrType, ".return_reason")
                 properties.set_prop("scope", AAZStrType, ".scope")
                 properties.set_prop("sessionId", AAZStrType, ".session_id")

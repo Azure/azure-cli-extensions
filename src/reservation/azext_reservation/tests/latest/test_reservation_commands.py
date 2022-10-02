@@ -4,7 +4,6 @@
 # --------------------------------------------------------------------------------------------
 from azure.cli.testsdk import ScenarioTest, record_only
 
-
 class AzureReservationsTests(ScenarioTest):
 
     def _validate_reservation_order(self, reservation_order):
@@ -32,6 +31,93 @@ class AzureReservationsTests(ScenarioTest):
         self.assertTrue(reservation['properties'])
         self.assertTrue(reservation['type'])
         self.assertTrue(reservation['type'] == 'Microsoft.Capacity/reservationOrders/reservations')
+
+    def _validate_reservation_refund(self, response):
+        self.assertIsNotNone(response)
+        self.assertEqual('/providers/Microsoft.Capacity/reservationOrders/4336d060-da34-4228-91b0-feab5b2a1e1d/reservations/2e2eb0e1-cea6-4df3-909d-6fe5c0e19320', response['id'])
+        self.assertIsNotNone(response['properties'])
+        self.assertIsNotNone(response['properties']['sessionId'])
+        self.assertEqual(1, response['properties']['quantity'])
+        self.assertIsNotNone(response['properties']['billingRefundAmount'])
+        self.assertEqual('USD', response['properties']['billingRefundAmount']['currencyCode'])
+        self.assertGreater(response['properties']['billingRefundAmount']['amount'], 0)
+        self.assertIsNotNone(response['properties']['pricingRefundAmount'])
+        self.assertEqual('USD', response['properties']['pricingRefundAmount']['currencyCode'])
+        self.assertGreater(response['properties']['pricingRefundAmount']['amount'], 0)
+        self.assertIsNotNone(response['properties']['policyResult'])
+        self.assertIsNotNone(response['properties']['policyResult']['properties'])
+        self.assertIsNotNone(response['properties']['policyResult']['properties']['consumedRefundsTotal'])
+        self.assertEqual('USD', response['properties']['policyResult']['properties']['consumedRefundsTotal']['currencyCode'])
+        self.assertGreater(response['properties']['policyResult']['properties']['consumedRefundsTotal']['amount'], 0)
+        self.assertIsNotNone(response['properties']['policyResult']['properties']['maxRefundLimit'])
+        self.assertEqual('USD', response['properties']['policyResult']['properties']['maxRefundLimit']['currencyCode'])
+        self.assertEqual(50000, response['properties']['policyResult']['properties']['maxRefundLimit']['amount'])
+        self.assertIsNotNone(response['properties']['billingInformation'])
+        self.assertEqual('Monthly', response['properties']['billingInformation']['billingPlan'])
+        self.assertGreater(response['properties']['billingInformation']['completedTransactions'], 0)
+        self.assertGreater(response['properties']['billingInformation']['totalTransactions'], 0)
+        self.assertIsNotNone(response['properties']['billingInformation']['billingCurrencyTotalPaidAmount'])
+        self.assertEqual('USD', response['properties']['billingInformation']['billingCurrencyTotalPaidAmount']['currencyCode'])
+        self.assertGreater(response['properties']['billingInformation']['billingCurrencyTotalPaidAmount']['amount'], 0)
+        self.assertIsNotNone(response['properties']['billingInformation']['billingCurrencyProratedAmount'])
+        self.assertEqual('USD', response['properties']['billingInformation']['billingCurrencyProratedAmount']['currencyCode'])
+        self.assertGreater(response['properties']['billingInformation']['billingCurrencyProratedAmount']['amount'], 0)
+        self.assertIsNotNone(response['properties']['billingInformation']['billingCurrencyRemainingCommitmentAmount'])
+        self.assertEqual('USD', response['properties']['billingInformation']['billingCurrencyRemainingCommitmentAmount']['currencyCode'])
+        self.assertGreater(response['properties']['billingInformation']['billingCurrencyRemainingCommitmentAmount']['amount'], 0)
+
+    def _validate_reservation_exchange(self, response):
+        self.assertIsNotNone(response)
+        self.assertIn('/providers/Microsoft.Capacity/operationResults/', response['id'])
+        self.assertEqual('Succeeded', response['status'])
+        self.assertIsNotNone(response['name'])
+        self.assertIsNotNone(response['properties'])
+        self.assertIsNotNone(response['properties']['sessionId'])
+        self.assertIsNotNone(response['properties']['netPayable'])
+        self.assertEqual('USD', response['properties']['netPayable']['currencyCode'])
+        self.assertGreater(response['properties']['netPayable']['amount'], 0)
+        self.assertIsNotNone(response['properties']['refundsTotal'])
+        self.assertEqual('USD', response['properties']['refundsTotal']['currencyCode'])
+        self.assertGreater(response['properties']['refundsTotal']['amount'], 0)        
+        self.assertIsNotNone(response['properties']['purchasesTotal'])
+        self.assertEqual('USD', response['properties']['purchasesTotal']['currencyCode'])
+        self.assertGreater(response['properties']['purchasesTotal']['amount'], 0)
+        self.assertIsNotNone(response['properties']['reservationsToPurchase'])
+        self.assertEqual(2, len(response['properties']['reservationsToPurchase']))
+        for item in response['properties']['reservationsToPurchase']:
+            self.assertIsNotNone(item['properties'])
+            self.assertEqual('eastus', item['properties']['location'])
+            self.assertIn('/subscriptions/', item['properties']['billingScopeId'])
+            self.assertEqual('P1Y', item['properties']['term'])
+            self.assertEqual('Monthly', item['properties']['billingPlan'])
+            self.assertEqual('Shared', item['properties']['appliedScopeType'])
+            self.assertEqual('VirtualMachines', item['properties']['reservedResourceType'])
+            self.assertGreater(item['properties']['quantity'], 0)
+            self.assertIsNotNone(item['properties']['displayName'])
+            self.assertIsNotNone(item['properties']['sku'])
+            self.assertIsNotNone(item['properties']['sku']['name'])
+            self.assertIsNotNone(item['billingCurrencyTotal'])
+            self.assertEqual('USD', item['billingCurrencyTotal']['currencyCode'])
+            self.assertGreater(item['billingCurrencyTotal']['amount'], 0)
+        
+        self.assertIsNotNone(response['properties']['reservationsToExchange'])
+        self.assertEqual(2, len(response['properties']['reservationsToExchange']))
+        for item in response['properties']['reservationsToExchange']:
+            self.assertIn('/providers/microsoft.capacity/reservationOrders/', item['reservationId'])
+            self.assertEqual(1, item['quantity'])
+            self.assertIsNotNone(item['billingRefundAmount'])
+            self.assertEqual('USD', item['billingRefundAmount']['currencyCode'])
+            self.assertGreater(item['billingRefundAmount']['amount'], 0)
+            self.assertIsNotNone(item['billingInformation'])
+            self.assertIsNotNone(item['billingInformation']['billingCurrencyTotalPaidAmount'])
+            self.assertEqual('USD', item['billingInformation']['billingCurrencyTotalPaidAmount']['currencyCode'])
+            self.assertGreater(item['billingInformation']['billingCurrencyTotalPaidAmount']['amount'], 0)
+            self.assertIsNotNone(item['billingInformation']['billingCurrencyProratedAmount'])
+            self.assertEqual('USD', item['billingInformation']['billingCurrencyProratedAmount']['currencyCode'])
+            self.assertGreaterEqual(item['billingInformation']['billingCurrencyProratedAmount']['amount'], 0)
+            self.assertIsNotNone(item['billingInformation']['billingCurrencyRemainingCommitmentAmount'])
+            self.assertEqual('USD', item['billingInformation']['billingCurrencyRemainingCommitmentAmount']['currencyCode'])
+            self.assertGreaterEqual(item['billingInformation']['billingCurrencyRemainingCommitmentAmount']['amount'], 0)
 
     @record_only()  # This test relies on a subscription id with the existing reservation orders
     def test_get_applied_reservation_order_ids(self):
@@ -274,3 +360,45 @@ class AzureReservationsTests(ScenarioTest):
         self.assertEqual("e52281b9-2e20-4cb2-8611-4b8cbc76a51a", response['reservations'][0]['id'])
         self.assertEqual("TestVm1", response['reservations'][0]['name'])
         self.assertEqual(True, response['reservations'][0]['isSucceeded'])
+
+    @record_only()
+    def test_reservation_refund(self):
+        self.kwargs.update({
+            'reservation_order_id': '4336d060-da34-4228-91b0-feab5b2a1e1d',
+            'reservation_id': '2e2eb0e1-cea6-4df3-909d-6fe5c0e19320',
+            'scope': 'Reservation',
+            'quantity': '1'
+        })
+        response = self.cmd('reservations reservation-order calculate-refund --reservation-order-id {reservation_order_id}' 
+                                ' --id /providers/microsoft.capacity/reservationOrders/{reservation_order_id} --scope {scope}' 
+                                ' --quantity {quantity} --reservation-id /providers/microsoft.capacity/reservationOrders/{reservation_order_id}/reservations/{reservation_id}').get_output_in_json()
+        self._validate_reservation_refund(response)
+        self.kwargs.update({
+            'reason': 'testing',
+            'session_id': response['properties']['sessionId']
+        })
+        response1 = self.cmd('reservations reservation-order return --reservation-order-id {reservation_order_id}' 
+                                ' --return-reason {reason} --scope {scope} --session-id {session_id}' 
+                                ' --quantity {quantity} --reservation-id /providers/microsoft.capacity/reservationOrders/{reservation_order_id}/reservations/{reservation_id}').get_output_in_json()
+        self._validate_reservation_refund(response1)
+
+    @record_only()
+    def test_reservation_exchange(self):
+        reservation_to_exchange1 = '{reservation-id:/providers/microsoft.capacity/reservationOrders/d023c621-2eb4-4614-a7ae-ec783387f4da/reservations/c3810815-e403-46c6-9102-1245334d1900,quantity:1}'
+        reservation_to_exchange2 = '{reservation-id:/providers/microsoft.capacity/reservationOrders/42dd2704-77c8-4fc1-aaef-5e8a86880575/reservations/285eb000-61d9-4d4f-a48b-798a0abc8026,quantity:1}'
+        reservations_to_exchange = '[{},{}]'.format(reservation_to_exchange1, reservation_to_exchange2)
+
+        reservation_to_purchase1 = '{reserved-resource-type:VirtualMachines,applied-scope-type:Shared,billing-scope:fed2a274-8787-4a13-8371-f5282597b779,display-name:exchangeTest2,quantity:10,sku:Standard_B1s,term:P1Y,billing-plan:Monthly,location:eastus}'
+        reservation_to_purchase2 = '{reserved-resource-type:VirtualMachines,applied-scope-type:Shared,billing-scope:fed2a274-8787-4a13-8371-f5282597b779,display-name:exchangeTest3,quantity:15,sku:Standard_B1ls,term:P1Y,billing-plan:Monthly,location:eastus}'
+        reservations_to_purchase = '[{},{}]'.format(reservation_to_purchase1, reservation_to_purchase2)
+        self.kwargs.update({
+            'reservations_to_exchange': reservations_to_exchange,
+            'reservations_to_purchase': reservations_to_purchase,
+        })
+        response = self.cmd('reservations calculate-exchange --reservations-to-exchange {reservations_to_exchange} --reservations-to-purchase {reservations_to_purchase}').get_output_in_json()
+        self._validate_reservation_exchange(response)
+        self.kwargs.update({
+            'session_id': response['properties']['sessionId'],
+        })
+        response1 = self.cmd('reservations exchange --session-id {session_id}').get_output_in_json()
+        self._validate_reservation_exchange(response1)
