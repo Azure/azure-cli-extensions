@@ -21,7 +21,7 @@ from azure.core import CaseInsensitiveEnumMeta
 from azure.core.exceptions import HttpResponseError
 from azure.cli.core.util import get_az_user_agent
 
-
+AKS_CLUSTER_API = "2022-07-02-preview"
 MAC_API = "2021-06-03-preview"
 DC_API = "2021-09-01-preview"
 GRAFANA_API = "2022-08-01"
@@ -143,6 +143,29 @@ AzureCloudLocationToOmsRegionCodeMap = {
     "southafricawest": "CPT"
 }
 
+def check_azuremonitormetrics_profile(cmd, cluster_subscription, cluster_resource_group_name, cluster_name):
+    from azure.cli.core.util import send_raw_request
+    feature_check_url = f"https://management.azure.com/subscriptions/{cluster_subscription}/resourceGroups/{cluster_resource_group_name}/providers/Microsoft.ContainerService/managedClusters/{cluster_name}?api-version={AKS_CLUSTER_API}"
+    try:
+        headers = ['User-Agent=azuremonitormetrics.check_azuremonitormetrics_profile']
+        r = send_raw_request(cmd.cli_ctx, "GET", feature_check_url,
+                             body={}, headers=headers)
+    except CLIError as e:
+        raise UnknownError(e)
+    json_response = json.loads(r.text)
+    values_array = json_response["properties"]
+    ##############################
+    ##############################
+    ##############################
+    # check the casing!!
+    ##############################
+    ##############################
+    ##############################
+    if "azureMonitorProfile" in values_array:
+        if "metrics" in values_array["azureMonitorProfile"]:
+            if values_array["azureMonitorProfile"]["metrics"]["enabled"] is True:
+                raise CLIError(f"Azure Monitor Metrics is already enabled for this cluster. Please use `az aks update --disable-azuremonitormetrics -g {cluster_resource_group_name} -n {cluster_name}` and then try enabling.")
+
 
 def check_msi_cluster(client, cluster_resource_group_name, cluster_name):
     instance = client.get(cluster_resource_group_name, cluster_name)
@@ -167,6 +190,26 @@ def check_azuremonitoraddon_feature(cmd, cluster_subscription):
             return
     raise CLIError("Please enable the feature AKS-PrometheusAddonPreview on your subscription using `az feature register --namespace Microsoft.ContainerService --name AKS-PrometheusAddonPreview` to use this feature.\
         If this feature was recently registered then please wait upto 5 mins for the feature registration to finish")
+
+
+def validate_azuremonitorworkspace_id(resource_id):
+    if resource_id is None:
+        return
+    resource_id = sanitize_resource_id(resource_id)
+    # /subscriptions/ce4d1293-71c0-4c72-bc55-133553ee9e50/resourceGroups/kaveesharm/providers/microsoft.monitor/accounts/kaveesharm
+    if (bool(re.match(r'/subscriptions/[a-zA-Z0-9]{8}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{12}/resourceGroups/[a-zA-Z0-9_]*/providers/microsoft.monitor/accounts/[a-zA-Z0-9_]*', resource_id))) is False:
+        raise CLIError("--azure-monitor-workspace-resource-id not in the correct format. It should match `/subscriptions/<subscriptionId>/resourceGroups/<resourceGroupName>/providers/microsoft.monitor/accounts/<resourceName>`")
+    return
+
+
+def validate_grafanaworkspace_id(resource_id):
+    if resource_id is None:
+        return
+    resource_id = sanitize_resource_id(resource_id)
+    # /subscriptions/ce4d1293-71c0-4c72-bc55-133553ee9e50/resourceGroups/kaveesharm/providers/microsoft.dashboard/grafana/kaveesharm
+    if (bool(re.match(r'/subscriptions/[a-zA-Z0-9]{8}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{12}/resourceGroups/[a-zA-Z0-9_]*/providers/microsoft.dashboard/grafana/[a-zA-Z0-9_]*', resource_id))) is False:
+        raise CLIError("--grafana-resource-id not in the correct format. It should match `/subscriptions/<subscriptionId>/resourceGroups/<resourceGroupName>/providers/microsoft.dashboard/grafana/<resourceName>`")
+    return
 
 
 def validate_ksm_parameter(ksmparam):
@@ -215,6 +258,11 @@ def validate_ksm_parameter(ksmparam):
         if (bool(re.match(r'^[a-zA-Z_][A-Za-z0-9_]+$', label))) is False:
             raise InvalidArgumentValueError("Please format --metric properly. For eg. : --ksm-metric-labels-allow-list \"=namespaces=[k8s-label-1,k8s-label-n,...],pods=[app],...)\" and --ksm-metric-annotations-allow-list \"namespaces=[kubernetes.io/team,...],pods=[kubernetes.io/team],...\"")
     return ksmparam
+
+
+# DCE/DCR/DCRA : Limit -> 44 characters, Can only contain alpha numeric and hyphens.
+def sanitize_name(name):
+    return (re.sub(r'[^a-zA-Z0-9-]', '', name))[0:43]
 
 
 def sanitize_resource_id(resource_id):
@@ -294,7 +342,7 @@ def get_default_dcr_name(mac_region, cluster_name):
     region_code = "EUS"
     if mac_region in AzureCloudLocationToOmsRegionCodeMap:
         region_code = AzureCloudLocationToOmsRegionCodeMap[mac_region]
-    default_dcr_name = "MSProm-" + region_code + "-" + cluster_name
+    default_dcr_name = "MSProm-" + region_code + "-" + sanitize_name(cluster_name)
     default_dcr_name = default_dcr_name[0:43]
     return default_dcr_name
 
@@ -303,7 +351,7 @@ def get_default_dcra_name(cluster_region, cluster_name):
     region_code = "EUS"
     if cluster_region in AzureCloudLocationToOmsRegionCodeMap:
         region_code = AzureCloudLocationToOmsRegionCodeMap[cluster_region]
-    default_dcra_name = "MSProm-" + region_code + "-" + cluster_name
+    default_dcra_name = "MSProm-" + region_code + "-" + sanitize_name(cluster_name)
     default_dcra_name = default_dcra_name[0:43]
     return default_dcra_name
 
@@ -638,7 +686,6 @@ def delete_rules(cmd, cluster_region, cluster_subscription, cluster_resource_gro
             headers = ['User-Agent=azuremonitormetrics.delete_rules_node']
             send_raw_request(cmd.cli_ctx, "DELETE", url, headers=headers)
             error = None
-            # print("Successully DELETED Node Recording rules")
             break
         except CLIError as e:
             error = e
@@ -752,6 +799,8 @@ def ensure_azure_monitor_profile_prerequisites(
             cluster_region
         )
     else:
+        # Check if already onboarded
+        check_azuremonitormetrics_profile(cmd, cluster_subscription, cluster_resource_group_name, cluster_name)
         # Check if MSI cluster
         check_msi_cluster(client, cluster_resource_group_name, cluster_name)
         # If the feature is not registered then STOP onboarding and request to register the feature

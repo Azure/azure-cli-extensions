@@ -21,7 +21,9 @@ from azure.cli.command_modules.acs._validators import (
 )
 from azext_aks_preview.azuremonitorprofile import (
     ensure_azure_monitor_profile_prerequisites,
-    validate_ksm_parameter
+    validate_ksm_parameter,
+    validate_azuremonitorworkspace_id,
+    validate_grafanaworkspace_id
 )
 from azure.cli.command_modules.acs.managed_cluster_decorator import (
     AKSManagedClusterContext,
@@ -2824,6 +2826,8 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         ksm_metric_annotations_allow_list = self._AKSPreviewManagedClusterUpdateDecorator__raw_parameters.get("ksm_metric_annotations_allow_list")
 
         # Validate Param
+        validate_azuremonitorworkspace_id(self._AKSPreviewManagedClusterUpdateDecorator__raw_parameters.get("azure_monitor_workspace_resource_id"))
+        validate_grafanaworkspace_id(self._AKSPreviewManagedClusterUpdateDecorator__raw_parameters.get("grafana_resource_id"))
         ksm_metric_labels_allow_list = validate_ksm_parameter(ksm_metric_labels_allow_list)
         ksm_metric_annotations_allow_list = validate_ksm_parameter(ksm_metric_annotations_allow_list)
 
