@@ -215,6 +215,12 @@ helps['aks create'] = """
               Using together with "azure" network plugin.
               Specify "azure" for Azure network policy manager and "calico" for calico network policy controller.
               Defaults to "" (network policy disabled).
+        - name: --enable-cilium-dataplane
+          type: bool
+          short-summary: Use Cilium as the networking dataplane for the Kubernetes cluster.
+          long-summary: |
+              Used together with the "azure" network plugin.
+              Requires either --pod-subnet-id or --network-plugin-mode=overlay.
         - name: --no-ssh-key -x
           type: string
           short-summary: Do not use or create a local SSH key.

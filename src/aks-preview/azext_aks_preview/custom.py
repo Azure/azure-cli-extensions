@@ -673,6 +673,7 @@ def aks_create(
     enable_keda=False,
     enable_node_restriction=False,
     enable_vpa=False,
+    enable_cilium_dataplane=False,
     # nodepool
     host_group_id=None,
     crg_id=None,

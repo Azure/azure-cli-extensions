@@ -49,6 +49,7 @@ from azext_aks_preview._consts import (
     CONST_LOAD_BALANCER_SKU_BASIC,
     CONST_PRIVATE_DNS_ZONE_NONE,
     CONST_PRIVATE_DNS_ZONE_SYSTEM,
+    CONST_EBPF_DATAPLANE_CILIUM,
 )
 from azext_aks_preview._helpers import (
     get_cluster_snapshot_by_snapshot_id,
@@ -320,6 +321,13 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         :return: str or None
         """
         return self.raw_param.get('network_plugin_mode')
+
+    def get_enable_cilium_dataplane(self) -> bool:
+        """Get the value of enable_cilium_dataplane
+
+        :return: bool
+        """
+        return bool(self.raw_param.get('enable_cilium_dataplane'))
 
     def get_load_balancer_managed_outbound_ipv6_count(self) -> Union[int, None]:
         """Obtain the expected count of IPv6 managed outbound IPs.
@@ -2159,6 +2167,9 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
             )
 
         network_profile.network_plugin_mode = self.context.get_network_plugin_mode()
+
+        if self.context.get_enable_cilium_dataplane():
+            network_profile.ebpf_dataplane = CONST_EBPF_DATAPLANE_CILIUM
 
         return mc
 
