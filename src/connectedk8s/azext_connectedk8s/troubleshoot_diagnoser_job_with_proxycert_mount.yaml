@@ -54,7 +54,7 @@ spec:
         - /bin/bash
         - /diagnoser_job_script.sh
         image: mcr.microsoft.com/arck8sdiagnoser:v0.1.0
-        name: azure-arc-diagnoser-container      
+        name: azure-arc-diagnoser-container
         volumeMounts:
         - mountPath: /etc/ssl/certs/
           name: ssl-certs
