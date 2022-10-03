@@ -17,9 +17,9 @@ class ReservationsCommandsLoader(AzCommandsLoader):
         reservations_custom = CliCommandType(operations_tmpl='azext_reservation.custom#{}',
                                              client_factory=reservation_mgmt_client_factory,
                                              exception_handler=reservations_exception_handler)
-        super(ReservationsCommandsLoader, self).__init__(cli_ctx=cli_ctx,
-                                                         custom_command_type=reservations_custom,
-                                                         resource_type=ResourceType.MGMT_RESERVATIONS)
+        super().__init__(cli_ctx=cli_ctx,
+                         custom_command_type=reservations_custom,
+                         resource_type=ResourceType.MGMT_RESERVATIONS)
 
     def load_command_table(self, args):
         from azext_reservation.commands import load_command_table
