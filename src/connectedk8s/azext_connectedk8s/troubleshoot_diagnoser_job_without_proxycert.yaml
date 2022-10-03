@@ -55,11 +55,5 @@ spec:
         - /diagnoser_job_script.sh
         image: mcr.microsoft.com/arck8sdiagnoser:v0.1.0
         name: azure-arc-diagnoser-container
-        securityContext:
-          readOnlyRootFilesystem: true
-          allowPrivilegeEscalation: false
-          runAsNonRoot: true
-          runAsUser: 13243 #Random non-root user and group to avoid default 0 which is root
-          runAsGroup: 12434
       restartPolicy: Never
       serviceAccountName: azure-arc-troubleshoot-sa
