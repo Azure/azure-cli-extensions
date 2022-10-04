@@ -603,6 +603,7 @@ def update_containerapp_logic(cmd,
                               registry_user=None,
                               registry_pass=None):
     _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
+    validate_revision_suffix(revision_suffix)
 
     # Validate that max_replicas is set to 0-30
     if max_replicas is not None:
