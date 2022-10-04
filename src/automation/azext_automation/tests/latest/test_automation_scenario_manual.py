@@ -71,7 +71,9 @@ class AutomationScenarioTest(ScenarioTest):
             'account_name': self.create_random_name(prefix='test-account-', length=24),
             'runbook_name': self.create_random_name(prefix='test-runbook-', length=24),
             'runbook_content': RUNBOOK_CONTENT,
-            'hybrid_runbook_worker_group_name' : self.create_random_name(prefix='hwg-', length=10)
+            'hybrid_runbook_worker_group_name' : self.create_random_name(prefix='hwg-', length=10),
+            'python3Package_name': self.create_random_name(prefix='py3-package-', length=24),
+            'python3PackageContentUri':'uri=https://files.pythonhosted.org/packages/7f/e2/85dfb9f7364cbd7a9213caea0e91fc948da3c912a2b222a3e43bc9cc6432/requires.io-0.2.6-py2.py3-none-any.whl'
         })
         self.cmd('automation account create --resource-group {rg} --name {account_name} --location "West US 2"',
                  checks=[self.check('name', '{account_name}')])
@@ -125,6 +127,20 @@ class AutomationScenarioTest(ScenarioTest):
         checks=[self.check('length(@)', 0)])
 
         self.cmd('automation hrwg delete --resource-group {rg} --automation-account-name {account_name} --name {hybrid_runbook_worker_group_name} --yes')
+
+        self.cmd('automation python3-package  create --resource-group {rg} --automation-account-name {account_name} --name {python3Package_name} --content-link {python3PackageContentUri}',
+        checks=[self.check('name', '{python3Package_name}')])
+
+        self.cmd('automation python3-package  update --resource-group {rg} --automation-account-name {account_name} --name {python3Package_name} --content-link {python3PackageContentUri}',
+        checks=[self.check('name', '{python3Package_name}')])
+
+        self.cmd('automation python3package  show --resource-group {rg} --automation-account-name {account_name} --name {python3Package_name}',
+        checks=[self.check('name', '{python3Package_name}')])
+
+        self.cmd('automation python3-package  list --resource-group {rg} --automation-account-name {account_name} ',
+        checks=[self.check('length(@)', 1)])
+
+        self.cmd('automation python3-package delete --resource-group {rg} --automation-account-name {account_name} --name {python3Package_name} --yes')
 
         with mock.patch('azext_automation.manual.custom._uuid', side_effect=_uuid):
             job = self.cmd('automation runbook start --resource-group {rg} --automation-account-name {account_name} '
