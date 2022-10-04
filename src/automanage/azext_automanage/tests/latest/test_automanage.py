@@ -20,7 +20,7 @@ class AutomanageScenario(ScenarioTest):
                                     '--best-practice-name {}'.format(best_practice_name)).get_output_in_json()
             if version_name and len(version_name)>=1:
                 version_name = version_name[0]["name"]
-                #TODO no permission
+                #TODO server error
                 # self.cmd('az automanage best-practice version show --best-practice-name {} --version-name '
                 #          '{}'.format(best_practice_name, version_name))
 
@@ -35,3 +35,11 @@ class AutomanageScenario(ScenarioTest):
             'profile_name': self.create_random_name(prefix='profile', length=24),
         })
         self.cmd('az automanage configuration-profile create -n {profile_name} -g {rg}')
+        self.cmd('az automanage configuration-profile show -n {profile_name} -g {rg}')
+        self.cmd('az automanage configuration-profile list -g {rg}', checks=[JMESPathCheck('length(@)', 1)])
+        self.cmd('az automanage configuration-profile update -n {profile_name} -g {rg}')
+        self.cmd('az automanage configuration-profile delete -n {profile_name} -g {rg} -y')
+        self.cmd('az automanage configuration-profile list -g {rg}', checks=[JMESPathCheck('length(@)', 0)])
+
+        # TODO server error
+        # self.cmd('az automanage configuration-profile version create')
