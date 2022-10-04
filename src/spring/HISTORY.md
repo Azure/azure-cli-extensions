@@ -1,5 +1,8 @@
 Release History
 ===============
+1.1.10
+---
+* Remove `Preview` tag for user-assigned identities of apps.
 
 1.1.9
 ---
