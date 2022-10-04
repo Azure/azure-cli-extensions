@@ -1401,7 +1401,7 @@ def create_or_update_github_action(cmd,
         logger.warning("Creating Github action...")
         r = GitHubActionClient.create_or_update(cmd=cmd, resource_group_name=resource_group_name, name=name, github_action_envelope=source_control_info, headers=headers, no_wait=no_wait)
         if not no_wait:
-            await_github_action(cmd, token, repo, branch, name, resource_group_name)
+            await_github_action(token, repo, r["properties"]["githubActionConfiguration"]["workflowName"])
         return r
     except Exception as e:
         handle_raw_exception(e)

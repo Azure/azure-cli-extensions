@@ -152,23 +152,24 @@ def get_github_repo(token, repo):
     return g.get_repo(repo)
 
 
-def get_workflow(github_repo, name):  # pylint: disable=inconsistent-return-statements
+def get_workflow(github_repo, workflow_name):  # pylint: disable=inconsistent-return-statements
     workflows = list(github_repo.get_workflows())
     workflows.sort(key=lambda r: r.created_at, reverse=True)  # sort by latest first
-    for wf in workflows:
-        if wf.path.startswith(f".github/workflows/{name}") and "Trigger auto deployment for" in wf.name:
-            return wf
+    workflow = [wf for wf in workflows if wf.path == f".github/workflows/{workflow_name}.yml"]
+
+    if not workflow:
+        raise CLIInternalError("Could not find workflow on github repo.")
+    return workflow[0]
 
 
-def trigger_workflow(token, repo, name, branch):
-    wf = get_workflow(get_github_repo(token, repo), name)
+def trigger_workflow(token, repo, workflow_name, branch):
+    wf = get_workflow(get_github_repo(token, repo), workflow_name)
     logger.warning(f"Triggering Github Action: {wf.path}")
     wf.create_dispatch(branch)
 
 
 # pylint:disable=unused-argument
-def await_github_action(cmd, token, repo, branch, name, resource_group_name, timeout_secs=1200):
-    from .custom import show_github_action
+def await_github_action(token, repo, workflow_name, timeout_secs=1200):
     from ._clients import PollingAnimation
 
     start = datetime.utcnow()
@@ -177,22 +178,14 @@ def await_github_action(cmd, token, repo, branch, name, resource_group_name, tim
 
     github_repo = get_github_repo(token, repo)
 
-    gh_action_status = "InProgress"
-    while gh_action_status == "InProgress":
-        time.sleep(SHORT_POLLING_INTERVAL_SECS)
-        animation.tick()
-        gh_action_status = safe_get(show_github_action(cmd, name, resource_group_name), "properties", "operationState")
-        if (datetime.utcnow() - start).seconds >= timeout_secs:
-            raise CLIInternalError("Timed out while waiting for the Github action to be created.")
-        animation.flush()
-    if gh_action_status == "Failed":
-        raise CLIInternalError("The Github Action creation failed.")  # TODO ask backend team for a status url / message
-
     workflow = None
     while workflow is None:
         animation.tick()
         time.sleep(SHORT_POLLING_INTERVAL_SECS)
-        workflow = get_workflow(github_repo, name)
+        try:
+            workflow = get_workflow(github_repo, workflow_name)
+        except CLIInternalError:
+            pass
         animation.flush()
 
         if (datetime.utcnow() - start).seconds >= timeout_secs:
