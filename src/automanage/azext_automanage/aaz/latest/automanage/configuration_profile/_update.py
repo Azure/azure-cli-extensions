@@ -67,6 +67,22 @@ class Update(AAZCommand):
         tags.Element = AAZStrArg(
             nullable=True,
         )
+
+        # define Arg Group "Properties"
+
+        _args_schema = cls._args_schema
+        _args_schema.configuration = AAZObjectArg(
+            options=["--configuration"],
+            arg_group="Properties",
+            help="configuration dictionary of the configuration profile.",
+            nullable=True,
+        )
+
+        configuration = cls._args_schema.configuration
+        configuration.antimalware_enable = AAZBoolArg(
+            options=["antimalware-enable"],
+            nullable=True,
+        )
         return cls._args_schema
 
     def _execute_operations(self):
@@ -288,7 +304,16 @@ class Update(AAZCommand):
                 value=instance,
                 typ=AAZObjectType
             )
+            _builder.set_prop("properties", AAZObjectType)
             _builder.set_prop("tags", AAZDictType, ".tags")
+
+            properties = _builder.get(".properties")
+            if properties is not None:
+                properties.set_prop("configuration", AAZObjectType, ".configuration")
+
+            configuration = _builder.get(".properties.configuration")
+            if configuration is not None:
+                configuration.set_prop("Antimalware-Enable", AAZBoolType, ".antimalware_enable")
 
             tags = _builder.get(".tags")
             if tags is not None:
@@ -314,6 +339,7 @@ def _build_schema_configuration_profile_read(_schema):
         _schema.id = _schema_configuration_profile_read.id
         _schema.location = _schema_configuration_profile_read.location
         _schema.name = _schema_configuration_profile_read.name
+        _schema.properties = _schema_configuration_profile_read.properties
         _schema.system_data = _schema_configuration_profile_read.system_data
         _schema.tags = _schema_configuration_profile_read.tags
         _schema.type = _schema_configuration_profile_read.type
@@ -331,6 +357,7 @@ def _build_schema_configuration_profile_read(_schema):
     configuration_profile_read.name = AAZStrType(
         flags={"read_only": True},
     )
+    configuration_profile_read.properties = AAZObjectType()
     configuration_profile_read.system_data = AAZObjectType(
         serialized_name="systemData",
         flags={"read_only": True},
@@ -338,6 +365,14 @@ def _build_schema_configuration_profile_read(_schema):
     configuration_profile_read.tags = AAZDictType()
     configuration_profile_read.type = AAZStrType(
         flags={"read_only": True},
+    )
+
+    properties = _schema_configuration_profile_read.properties
+    properties.configuration = AAZObjectType()
+
+    configuration = _schema_configuration_profile_read.properties.configuration
+    configuration.antimalware__enable = AAZBoolType(
+        serialized_name="Antimalware-Enable",
     )
 
     system_data = _schema_configuration_profile_read.system_data
@@ -372,6 +407,7 @@ def _build_schema_configuration_profile_read(_schema):
     _schema.id = _schema_configuration_profile_read.id
     _schema.location = _schema_configuration_profile_read.location
     _schema.name = _schema_configuration_profile_read.name
+    _schema.properties = _schema_configuration_profile_read.properties
     _schema.system_data = _schema_configuration_profile_read.system_data
     _schema.tags = _schema_configuration_profile_read.tags
     _schema.type = _schema_configuration_profile_read.type

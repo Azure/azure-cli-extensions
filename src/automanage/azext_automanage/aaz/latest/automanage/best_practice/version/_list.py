@@ -150,12 +150,23 @@ class List(AAZCommand):
             _element.name = AAZStrType(
                 flags={"read_only": True},
             )
+            _element.properties = AAZObjectType(
+                flags={"client_flatten": True},
+            )
             _element.system_data = AAZObjectType(
                 serialized_name="systemData",
                 flags={"read_only": True},
             )
             _element.type = AAZStrType(
                 flags={"read_only": True},
+            )
+
+            properties = cls._schema_on_200.value.Element.properties
+            properties.configuration = AAZObjectType()
+
+            configuration = cls._schema_on_200.value.Element.properties.configuration
+            configuration.antimalware__enable = AAZBoolType(
+                serialized_name="Antimalware-Enable",
             )
 
             system_data = cls._schema_on_200.value.Element.system_data

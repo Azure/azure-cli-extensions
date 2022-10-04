@@ -76,6 +76,20 @@ class Create(AAZCommand):
 
         tags = cls._args_schema.tags
         tags.Element = AAZStrArg()
+
+        # define Arg Group "Properties"
+
+        _args_schema = cls._args_schema
+        _args_schema.configuration = AAZObjectArg(
+            options=["--configuration"],
+            arg_group="Properties",
+            help="configuration dictionary of the configuration profile.",
+        )
+
+        configuration = cls._args_schema.configuration
+        configuration.antimalware_enable = AAZBoolArg(
+            options=["antimalware-enable"],
+        )
         return cls._args_schema
 
     def _execute_operations(self):
@@ -173,7 +187,16 @@ class Create(AAZCommand):
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
             _builder.set_prop("location", AAZStrType, ".location", typ_kwargs={"flags": {"required": True}})
+            _builder.set_prop("properties", AAZObjectType)
             _builder.set_prop("tags", AAZDictType, ".tags")
+
+            properties = _builder.get(".properties")
+            if properties is not None:
+                properties.set_prop("configuration", AAZObjectType, ".configuration")
+
+            configuration = _builder.get(".properties.configuration")
+            if configuration is not None:
+                configuration.set_prop("Antimalware-Enable", AAZBoolType, ".antimalware_enable")
 
             tags = _builder.get(".tags")
             if tags is not None:
@@ -208,6 +231,7 @@ class Create(AAZCommand):
             _schema_on_200_201.name = AAZStrType(
                 flags={"read_only": True},
             )
+            _schema_on_200_201.properties = AAZObjectType()
             _schema_on_200_201.system_data = AAZObjectType(
                 serialized_name="systemData",
                 flags={"read_only": True},
@@ -215,6 +239,14 @@ class Create(AAZCommand):
             _schema_on_200_201.tags = AAZDictType()
             _schema_on_200_201.type = AAZStrType(
                 flags={"read_only": True},
+            )
+
+            properties = cls._schema_on_200_201.properties
+            properties.configuration = AAZObjectType()
+
+            configuration = cls._schema_on_200_201.properties.configuration
+            configuration.antimalware__enable = AAZBoolType(
+                serialized_name="Antimalware-Enable",
             )
 
             system_data = cls._schema_on_200_201.system_data

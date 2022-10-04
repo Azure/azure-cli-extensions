@@ -144,12 +144,23 @@ class Show(AAZCommand):
             _schema_on_200.name = AAZStrType(
                 flags={"read_only": True},
             )
+            _schema_on_200.properties = AAZObjectType(
+                flags={"client_flatten": True},
+            )
             _schema_on_200.system_data = AAZObjectType(
                 serialized_name="systemData",
                 flags={"read_only": True},
             )
             _schema_on_200.type = AAZStrType(
                 flags={"read_only": True},
+            )
+
+            properties = cls._schema_on_200.properties
+            properties.configuration = AAZObjectType()
+
+            configuration = cls._schema_on_200.properties.configuration
+            configuration.antimalware__enable = AAZBoolType(
+                serialized_name="Antimalware-Enable",
             )
 
             system_data = cls._schema_on_200.system_data

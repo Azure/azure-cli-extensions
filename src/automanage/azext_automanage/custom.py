@@ -9,6 +9,26 @@
 # pylint: disable=too-many-statements
 
 from knack.log import get_logger
-
+import json
 
 logger = get_logger(__name__)
+
+from .aaz.latest.automanage.configuration_profile import Create, Update
+from .aaz.latest.automanage.best_practice import List
+
+
+def list_best_practice(cmd):
+    List_Best_Practice = List(cmd.loader)
+    args = {}
+    result = List_Best_Practice(args)
+    return result
+
+def create_configuration_profile(cmd, configuration_profile_name, resource_group, configuration=None):
+    Create_Confguration_Profile = Create(cmd.loader)
+    args = {
+        "configuration_profile_name": configuration_profile_name,
+        "resource_group": resource_group,
+        "configuration": json.loads(configuration) if configuration else {}
+    }
+    result = Create_Confguration_Profile(args)
+    return result
