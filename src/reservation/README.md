@@ -36,8 +36,7 @@ az reservations reservation list-history \
 ##### Merge two reservations.
 ```
 az reservations reservation merge \
-    --reservation-id-1 {reservationId1} \
-    --reservation-id-2 {reservationId2} \
+    --sources [{fullyQualifiedReservationId1},{fullyQualifiedReservationId2}] \
     --reservation-order-id {orderId}
 ```
 
