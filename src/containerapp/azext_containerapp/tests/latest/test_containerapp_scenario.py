@@ -435,7 +435,7 @@ class ContainerappScenarioTest(ScenarioTest):
 
         self.cmd(f'containerapp create -g {resource_group} -n {containerapp_name} --environment {env_name} --min-replicas 1 --ingress external --target-port 80')
 
-        self.cmd(f'containerapp logs show -n {containerapp_name} -g {resource_group} --kind system')
+        self.cmd(f'containerapp logs show -n {containerapp_name} -g {resource_group} --type system')
         self.cmd(f'containerapp env logs show -n {env_name} -g {resource_group}')
 
     @ResourceGroupPreparer(location="northeurope")

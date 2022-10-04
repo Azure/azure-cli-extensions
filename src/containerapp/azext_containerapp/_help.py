@@ -186,7 +186,7 @@ helps['containerapp logs show'] = """
           az containerapp logs show -n MyContainerapp -g MyResourceGroup
     - name: Fetch the past 20 lines of system logs from an app and return
       text: |
-          az containerapp logs show -n MyContainerapp -g MyResourceGroup --kind system
+          az containerapp logs show -n MyContainerapp -g MyResourceGroup --type system
     - name: Fetch 30 lines of past logs logs from an app and print logs as they come in
       text: |
           az containerapp logs show -n MyContainerapp -g MyResourceGroup --follow --tail 30

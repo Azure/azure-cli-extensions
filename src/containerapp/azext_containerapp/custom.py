@@ -2440,9 +2440,9 @@ def stream_containerapp_logs(cmd, resource_group_name, name, container=None, rev
             raise ValidationError("--tail must be between 0 and 300.")
     if kind == LOG_TYPE_SYSTEM:
         if container or replica or revision:
-            raise MutuallyExclusiveArgumentError("--kind: --container, --replica, and --revision not supported for system logs")
+            raise MutuallyExclusiveArgumentError("--type: --container, --replica, and --revision not supported for system logs")
         if output_format != "json":
-            raise MutuallyExclusiveArgumentError("--kind: only json logs supported for system logs")
+            raise MutuallyExclusiveArgumentError("--type: only json logs supported for system logs")
 
 
     sub = get_subscription_id(cmd.cli_ctx)
