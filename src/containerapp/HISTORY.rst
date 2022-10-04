@@ -10,6 +10,7 @@ Release History
 * 'az containerapp logs show': add new parameter "--kind" to allow showing system logs
 * Show system environment logs with new command 'az containerapp env logs show'
 * Add tcp support for ingress transport and scale rules
+* 'az containerapp create/update': validate revision suffixes
 
 0.3.11
 ++++++
