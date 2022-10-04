@@ -155,6 +155,23 @@ helps['containerapp up'] = """
           az containerapp up -n MyContainerapp --image myregistry.azurecr.io/myImage:myTag --ingress external --target-port 80 --environment MyEnv
 """
 
+helps['containerapp env logs'] = """
+    type: group
+    short-summary: Show container app environment logs
+"""
+
+helps['containerapp env logs show'] = """
+    type: command
+    short-summary: Show past environment logs and/or print logs in real time (with the --follow parameter)
+    examples:
+    - name: Fetch the past 20 lines of logs from an app and return
+      text: |
+          az containerapp env logs show -n MyEnvironment -g MyResourceGroup
+    - name: Fetch 30 lines of past logs logs from an environment and print logs as they come in
+      text: |
+          az containerapp env logs show -n MyEnvironment -g MyResourceGroup --follow --tail 30
+"""
+
 helps['containerapp logs'] = """
     type: group
     short-summary: Show container app logs
@@ -162,11 +179,14 @@ helps['containerapp logs'] = """
 
 helps['containerapp logs show'] = """
     type: command
-    short-summary: Show past logs and/or print logs in real time (with the --follow parameter). Note that the logs are only taken from one revision, replica, and container.
+    short-summary: Show past logs and/or print logs in real time (with the --follow parameter). Note that the logs are only taken from one revision, replica, and container (for non-system logs).
     examples:
     - name: Fetch the past 20 lines of logs from an app and return
       text: |
           az containerapp logs show -n MyContainerapp -g MyResourceGroup
+    - name: Fetch the past 20 lines of system logs from an app and return
+      text: |
+          az containerapp logs show -n MyContainerapp -g MyResourceGroup --kind system
     - name: Fetch 30 lines of past logs logs from an app and print logs as they come in
       text: |
           az containerapp logs show -n MyContainerapp -g MyResourceGroup --follow --tail 30
