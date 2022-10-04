@@ -236,7 +236,7 @@ helps['quantum workspace delete'] = """
             az quantum workspace delete -g MyResourceGroup -w MyWorkspace
       - name: Delete and clear the default Azure Quantum workspace (if one has been set).
         text: |-
-            az quantum workspace delete -g MyResourceGroup -w MyWorkspace
+            az quantum workspace delete
 """
 
 helps['quantum workspace list'] = """
