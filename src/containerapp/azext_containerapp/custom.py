@@ -2441,7 +2441,7 @@ def stream_containerapp_logs(cmd, resource_group_name, name, container=None, rev
     if kind == LOG_TYPE_SYSTEM:
         if container or replica or revision:
             raise MutuallyExclusiveArgumentError("--type: --container, --replica, and --revision not supported for system logs")
-        if output_format != "json":
+        if output_format and output_format != "json":
             raise MutuallyExclusiveArgumentError("--type: only json logs supported for system logs")
 
     sub = get_subscription_id(cmd.cli_ctx)
