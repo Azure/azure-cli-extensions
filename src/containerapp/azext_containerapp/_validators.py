@@ -46,7 +46,6 @@ def validate_revision_suffix(value):
             raise ValidationError(f"Invalid Container App revision name '{value}'. A revision name must consist of lower case alphanumeric characters or '-', start with a letter, end with an alphanumeric character and cannot have '--'.")
 
 
-
 def validate_memory(namespace):
     if namespace.memory is not None:
         valid = False

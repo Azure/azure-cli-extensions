@@ -689,7 +689,6 @@ class ManagedEnvironmentClient():
         r = send_raw_request(cmd.cli_ctx, "POST", request_url, body=json.dumps(name_availability_request))
         return r.json()
 
-
     @classmethod
     def get_auth_token(cls, cmd, resource_group_name, name):
         management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager

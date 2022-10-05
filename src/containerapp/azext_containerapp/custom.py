@@ -2444,7 +2444,6 @@ def stream_containerapp_logs(cmd, resource_group_name, name, container=None, rev
         if output_format != "json":
             raise MutuallyExclusiveArgumentError("--type: only json logs supported for system logs")
 
-
     sub = get_subscription_id(cmd.cli_ctx)
     token_response = ContainerAppClient.get_auth_token(cmd, resource_group_name, name)
     token = token_response["properties"]["token"]
@@ -2455,8 +2454,7 @@ def stream_containerapp_logs(cmd, resource_group_name, name, container=None, rev
         url = (f"{base_url}/subscriptions/{sub}/resourceGroups/{resource_group_name}/containerApps/{name}"
                f"/revisions/{revision}/replicas/{replica}/containers/{container}/logstream")
     else:
-        url = (f"{base_url}/subscriptions/{sub}/resourceGroups/{resource_group_name}/containerApps/{name}"
-            f"/eventstream")
+        url = f"{base_url}/subscriptions/{sub}/resourceGroups/{resource_group_name}/containerApps/{name}/eventstream"
 
     logger.info("connecting to : %s", url)
     request_params = {"follow": str(follow).lower(),
