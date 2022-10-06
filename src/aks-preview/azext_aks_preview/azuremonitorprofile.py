@@ -2,6 +2,7 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
+from curses.ascii import isalnum
 import json
 import urllib.request
 import uuid
@@ -39,6 +40,15 @@ class GrafanaLink(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
     FAILURE = "FAILURE"
     ALREADYPRESENT = "ALREADYPRESENT"
     NOPARAMPROVIDED = "NOPARAMPROVIDED"
+
+
+class DC_TYPE(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
+    """
+    Types of DC* objects
+    """
+    DCE = "DCE"
+    DCR = "DCR"
+    DCRA = "DCRA"
 
 
 MapToClosestMACRegion = {
@@ -142,6 +152,7 @@ AzureCloudLocationToOmsRegionCodeMap = {
     "qatarcentral": "QAC",
     "southafricawest": "CPT"
 }
+
 
 def check_azuremonitormetrics_profile(cmd, cluster_subscription, cluster_resource_group_name, cluster_name):
     from azure.cli.core.util import send_raw_request
@@ -260,9 +271,18 @@ def validate_ksm_parameter(ksmparam):
     return ksmparam
 
 
-# DCE/DCR/DCRA : Limit -> 44 characters, Can only contain alpha numeric and hyphens.
-def sanitize_name(name):
-    return (re.sub(r'[^a-zA-Z0-9-]', '', name))[0:43]
+# All DC* objects are 44 length
+# All DC* object names should end only in alpha numeric (after 44 char trim)
+# DCE remove underscore from cluster name
+def sanitize_name(name, type):
+    lastIndexAlphaNumeric = len(name)- 1
+    while (isalnum(name[lastIndexAlphaNumeric]) and lastIndexAlphaNumeric > -1):
+        lastIndexAlphaNumeric = lastIndexAlphaNumeric - 1
+    if (lastIndexAlphaNumeric < 0):
+        return ""
+    if type == DC_TYPE.DCE:
+        name = name.replace("_", "")
+    return name[0:lastIndexAlphaNumeric]
 
 
 def sanitize_resource_id(resource_id):
@@ -333,7 +353,7 @@ def get_default_dce_name(mac_region, cluster_name):
     region_code = "EUS"
     if mac_region in AzureCloudLocationToOmsRegionCodeMap:
         region_code = AzureCloudLocationToOmsRegionCodeMap[mac_region]
-    default_dce_name = "MSProm-" + region_code + "-" + cluster_name
+    default_dce_name = "MSProm-" + region_code + "-" + sanitize_name(cluster_name, DC_TYPE.DCE)
     default_dce_name = default_dce_name[0:43]
     return default_dce_name
 
@@ -342,7 +362,7 @@ def get_default_dcr_name(mac_region, cluster_name):
     region_code = "EUS"
     if mac_region in AzureCloudLocationToOmsRegionCodeMap:
         region_code = AzureCloudLocationToOmsRegionCodeMap[mac_region]
-    default_dcr_name = "MSProm-" + region_code + "-" + sanitize_name(cluster_name)
+    default_dcr_name = "MSProm-" + region_code + "-" + sanitize_name(cluster_name, DC_TYPE.DCR)
     default_dcr_name = default_dcr_name[0:43]
     return default_dcr_name
 
@@ -351,7 +371,7 @@ def get_default_dcra_name(cluster_region, cluster_name):
     region_code = "EUS"
     if cluster_region in AzureCloudLocationToOmsRegionCodeMap:
         region_code = AzureCloudLocationToOmsRegionCodeMap[cluster_region]
-    default_dcra_name = "MSProm-" + region_code + "-" + sanitize_name(cluster_name)
+    default_dcra_name = "MSProm-" + region_code + "-" + sanitize_name(cluster_name, DC_TYPE.DCRA)
     default_dcra_name = default_dcra_name[0:43]
     return default_dcra_name
 
