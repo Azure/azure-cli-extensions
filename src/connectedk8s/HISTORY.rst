@@ -2,11 +2,16 @@
 
 Release History
 ===============
-1.3.4
+1.3.5
 ++++++
 
 * Added support for custom AAD token
 * Added parameter for overriding container log path
+
+1.3.4
+++++++
+
+* Fixed a proxy related bug in connectedk8s upgrade
 
 1.3.3
 ++++++

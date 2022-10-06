@@ -102,7 +102,7 @@ class CustomContainerSource(BaseSource):
 
     def _format_container(self, container_registry=None, container_image=None,
                           container_command=None, container_args=None,
-                          registry_username=None, registry_password=None, **_):
+                          registry_username=None, registry_password=None, language_framework=None, **_):
         if all(x is None for x in [container_image,
                                    container_command, container_args,
                                    registry_username, registry_password]):
@@ -121,6 +121,7 @@ class CustomContainerSource(BaseSource):
             command=container_command,
             args=container_args,
             image_registry_credential=credential,
+            language_framework=language_framework
         )
 
 
