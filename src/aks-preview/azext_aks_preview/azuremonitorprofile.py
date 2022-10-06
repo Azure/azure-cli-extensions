@@ -2,7 +2,6 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
-from curses.ascii import isalnum
 import json
 import urllib.request
 import uuid
@@ -10,6 +9,7 @@ import re
 from sre_constants import FAILURE, SUCCESS
 
 from knack.util import CLIError
+from curses.ascii import isalnum
 from azure.cli.core.azclierror import (
     UnknownError,
     ClientRequestError,
