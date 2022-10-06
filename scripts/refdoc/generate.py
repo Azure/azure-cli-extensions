@@ -11,6 +11,7 @@ import copy
 import shutil
 import argparse
 import tempfile
+import traceback
 import datetime
 from subprocess import check_call, CalledProcessError
 
@@ -40,6 +41,9 @@ def generate(ext_file, output_dir):
                                                                ENV_KEY_AZURE_EXTENSION_DIR,
                                                                env['AZURE_EXTENSION_DIR']))
         check_call(sphinx_cmd, env=env)
+    except Exception as e:
+        traceback.print_exc()
+        raise e
     finally:
         shutil.rmtree(temp_extension_dir)
         print_status('Cleaned up temp directory {}'.format(temp_extension_dir))
