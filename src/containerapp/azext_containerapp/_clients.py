@@ -26,16 +26,15 @@ class PollingAnimation():
         self.currTicker = 0
 
     def tick(self):
-        sys.stdout.write('\r')
-        sys.stdout.write(self.tickers[self.currTicker] + " Running ..")
-        sys.stdout.flush()
+        sys.stderr.write('\r')
+        sys.stderr.write(self.tickers[self.currTicker] + " Running ..")
+        sys.stderr.flush()
         self.currTicker += 1
         self.currTicker = self.currTicker % len(self.tickers)
 
     def flush(self):
-        sys.stdout.flush()
-        sys.stdout.write('\r')
-        sys.stdout.write("\033[K")
+        sys.stderr.flush()
+        sys.stderr.write("\r\033[K")
 
 
 def poll(cmd, request_url, poll_if_status):  # pylint: disable=inconsistent-return-statements
