@@ -207,7 +207,7 @@ def validate_azuremonitorworkspace_id(resource_id):
         return
     resource_id = sanitize_resource_id(resource_id)
     # /subscriptions/ce4d1293-71c0-4c72-bc55-133553ee9e50/resourceGroups/kaveesharm/providers/microsoft.monitor/accounts/kaveesharm
-    if (bool(re.match(r'/subscriptions/[a-zA-Z0-9]{8}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{12}/resourcegroups/[a-zA-Z0-9_]*/providers/microsoft.monitor/accounts/[a-zA-Z0-9_]*', resource_id))) is False:
+    if (bool(re.match(r'/subscriptions/.*/resourcegroups/.*/providers/microsoft.monitor/accounts/.*', resource_id))) is False:
         raise CLIError("--azure-monitor-workspace-resource-id not in the correct format. It should match `/subscriptions/<subscriptionId>/resourceGroups/<resourceGroupName>/providers/microsoft.monitor/accounts/<resourceName>`")
     return
 
@@ -217,7 +217,7 @@ def validate_grafanaworkspace_id(resource_id):
         return
     resource_id = sanitize_resource_id(resource_id)
     # /subscriptions/ce4d1293-71c0-4c72-bc55-133553ee9e50/resourceGroups/kaveesharm/providers/microsoft.dashboard/grafana/kaveesharm
-    if (bool(re.match(r'/subscriptions/[a-zA-Z0-9]{8}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{12}/resourcegroups/[a-zA-Z0-9_]*/providers/microsoft.dashboard/grafana/[a-zA-Z0-9_]*', resource_id))) is False:
+    if (bool(re.match(r'/subscriptions/.*/resourcegroups/.*/providers/microsoft.dashboard/grafana/.*', resource_id))) is False:
         raise CLIError("--grafana-resource-id not in the correct format. It should match `/subscriptions/<subscriptionId>/resourceGroups/<resourceGroupName>/providers/microsoft.dashboard/grafana/<resourceName>`")
     return
 
