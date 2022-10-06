@@ -9,7 +9,6 @@ import re
 from sre_constants import FAILURE, SUCCESS
 
 from knack.util import CLIError
-from curses.ascii import isalnum
 from azure.cli.core.azclierror import (
     UnknownError,
     ClientRequestError,
@@ -276,7 +275,7 @@ def validate_ksm_parameter(ksmparam):
 # DCE remove underscore from cluster name
 def sanitize_name(name, type):
     lastIndexAlphaNumeric = len(name)- 1
-    while (isalnum(name[lastIndexAlphaNumeric]) and lastIndexAlphaNumeric > -1):
+    while (name[lastIndexAlphaNumeric].isalnum() and lastIndexAlphaNumeric > -1):
         lastIndexAlphaNumeric = lastIndexAlphaNumeric - 1
     if (lastIndexAlphaNumeric < 0):
         return ""
