@@ -5,6 +5,7 @@
 
 from __future__ import print_function
 
+import logging
 import os
 import sys
 import copy
@@ -14,6 +15,13 @@ import tempfile
 import traceback
 import datetime
 from subprocess import check_call, CalledProcessError
+
+
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
+ch = logging.StreamHandler()
+ch.setLevel(logging.DEBUG)
+logger.addHandler(ch)
 
 
 ENV_KEY_AZURE_EXTENSION_DIR = 'AZURE_EXTENSION_DIR'
@@ -42,7 +50,7 @@ def generate(ext_file, output_dir):
                                                                env['AZURE_EXTENSION_DIR']))
         check_call(sphinx_cmd, env=env)
     except Exception as e:
-        traceback.print_exc()
+        logger.error(traceback.print_exc())
         raise e
     finally:
         shutil.rmtree(temp_extension_dir)
