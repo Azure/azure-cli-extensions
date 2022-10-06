@@ -207,7 +207,7 @@ def validate_azuremonitorworkspace_id(resource_id):
         return
     resource_id = sanitize_resource_id(resource_id)
     # /subscriptions/ce4d1293-71c0-4c72-bc55-133553ee9e50/resourceGroups/kaveesharm/providers/microsoft.monitor/accounts/kaveesharm
-    if (bool(re.match(r'/subscriptions/[a-zA-Z0-9]{8}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{12}/resourceGroups/[a-zA-Z0-9_]*/providers/microsoft.monitor/accounts/[a-zA-Z0-9_]*', resource_id))) is False:
+    if (bool(re.match(r'/subscriptions/[a-zA-Z0-9]{8}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{12}/resourcegroups/[a-zA-Z0-9_]*/providers/microsoft.monitor/accounts/[a-zA-Z0-9_]*', resource_id))) is False:
         raise CLIError("--azure-monitor-workspace-resource-id not in the correct format. It should match `/subscriptions/<subscriptionId>/resourceGroups/<resourceGroupName>/providers/microsoft.monitor/accounts/<resourceName>`")
     return
 
@@ -217,7 +217,7 @@ def validate_grafanaworkspace_id(resource_id):
         return
     resource_id = sanitize_resource_id(resource_id)
     # /subscriptions/ce4d1293-71c0-4c72-bc55-133553ee9e50/resourceGroups/kaveesharm/providers/microsoft.dashboard/grafana/kaveesharm
-    if (bool(re.match(r'/subscriptions/[a-zA-Z0-9]{8}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{12}/resourceGroups/[a-zA-Z0-9_]*/providers/microsoft.dashboard/grafana/[a-zA-Z0-9_]*', resource_id))) is False:
+    if (bool(re.match(r'/subscriptions/[a-zA-Z0-9]{8}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{12}/resourcegroups/[a-zA-Z0-9_]*/providers/microsoft.dashboard/grafana/[a-zA-Z0-9_]*', resource_id))) is False:
         raise CLIError("--grafana-resource-id not in the correct format. It should match `/subscriptions/<subscriptionId>/resourceGroups/<resourceGroupName>/providers/microsoft.dashboard/grafana/<resourceName>`")
     return
 
@@ -274,14 +274,16 @@ def validate_ksm_parameter(ksmparam):
 # All DC* object names should end only in alpha numeric (after 44 char trim)
 # DCE remove underscore from cluster name
 def sanitize_name(name, type):
+    if type == DC_TYPE.DCE:
+        name = name.replace("_", "")
+    name = name[0:43]
     lastIndexAlphaNumeric = len(name)- 1
-    while (name[lastIndexAlphaNumeric].isalnum() and lastIndexAlphaNumeric > -1):
+    while ((name[lastIndexAlphaNumeric].isalnum() is False) and lastIndexAlphaNumeric > -1):
         lastIndexAlphaNumeric = lastIndexAlphaNumeric - 1
     if (lastIndexAlphaNumeric < 0):
         return ""
-    if type == DC_TYPE.DCE:
-        name = name.replace("_", "")
-    return name[0:lastIndexAlphaNumeric]
+
+    return name[0:lastIndexAlphaNumeric + 1]
 
 
 def sanitize_resource_id(resource_id):
@@ -352,27 +354,24 @@ def get_default_dce_name(mac_region, cluster_name):
     region_code = "EUS"
     if mac_region in AzureCloudLocationToOmsRegionCodeMap:
         region_code = AzureCloudLocationToOmsRegionCodeMap[mac_region]
-    default_dce_name = "MSProm-" + region_code + "-" + sanitize_name(cluster_name, DC_TYPE.DCE)
-    default_dce_name = default_dce_name[0:43]
-    return default_dce_name
+    default_dce_name = "MSProm-" + region_code + "-" + cluster_name
+    return sanitize_name(default_dce_name, DC_TYPE.DCE)
 
 
 def get_default_dcr_name(mac_region, cluster_name):
     region_code = "EUS"
     if mac_region in AzureCloudLocationToOmsRegionCodeMap:
         region_code = AzureCloudLocationToOmsRegionCodeMap[mac_region]
-    default_dcr_name = "MSProm-" + region_code + "-" + sanitize_name(cluster_name, DC_TYPE.DCR)
-    default_dcr_name = default_dcr_name[0:43]
-    return default_dcr_name
+    default_dcr_name = "MSProm-" + region_code + "-" + cluster_name
+    return sanitize_name(default_dcr_name, DC_TYPE.DCR)
 
 
 def get_default_dcra_name(cluster_region, cluster_name):
     region_code = "EUS"
     if cluster_region in AzureCloudLocationToOmsRegionCodeMap:
         region_code = AzureCloudLocationToOmsRegionCodeMap[cluster_region]
-    default_dcra_name = "MSProm-" + region_code + "-" + sanitize_name(cluster_name, DC_TYPE.DCRA)
-    default_dcra_name = default_dcra_name[0:43]
-    return default_dcra_name
+    default_dcra_name = "MSProm-" + region_code + "-" + cluster_name
+    return sanitize_name(default_dcra_name, DC_TYPE.DCRA)
 
 
 def get_mac_region_and_check_support(cmd, azure_monitor_workspace_resource_id, cluster_region):
