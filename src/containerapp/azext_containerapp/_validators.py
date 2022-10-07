@@ -8,11 +8,12 @@ from azure.cli.core.azclierror import (ValidationError, ResourceNotFoundError, I
                                        MutuallyExclusiveArgumentError)
 from msrestazure.tools import is_valid_resource_id
 from knack.log import get_logger
+import re
 
 from ._clients import ContainerAppClient
 from ._ssh_utils import ping_container_app
 from ._utils import safe_get, is_registry_msi_system
-from ._constants import ACR_IMAGE_SUFFIX
+from ._constants import ACR_IMAGE_SUFFIX, LOG_TYPE_SYSTEM
 
 
 logger = get_logger(__name__)
@@ -36,6 +37,13 @@ def _is_number(s):
         return True
     except ValueError:
         return False
+
+
+def validate_revision_suffix(value):
+    if value is not None:
+        matched = re.match(r"^[a-z](?!.*-{2})([-a-z0-9]*[a-z0-9])?$", value)
+        if not matched:
+            raise ValidationError(f"Invalid Container App revision name '{value}'. A revision name must consist of lower case alphanumeric characters or '-', start with a letter, end with an alphanumeric character and cannot have '--'.")
 
 
 def validate_memory(namespace):
@@ -125,7 +133,7 @@ def _set_ssh_defaults(cmd, namespace):
         # VVV this may not be necessary according to Anthony Chu
         try:
             ping_container_app(app)  # needed to get an alive replica
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-except
             logger.warning("Failed to ping container app with error '%s' \nPlease ensure there is an alive replica. ", str(e))
         replicas = ContainerAppClient.list_replicas(cmd=cmd,
                                                     resource_group_name=namespace.resource_group_name,
@@ -173,7 +181,8 @@ def _validate_container_exists(cmd, namespace):
 
 # also used to validate logstream
 def validate_ssh(cmd, namespace):
-    _set_ssh_defaults(cmd, namespace)
-    _validate_revision_exists(cmd, namespace)
-    _validate_replica_exists(cmd, namespace)
-    _validate_container_exists(cmd, namespace)
+    if not hasattr(namespace, "kind") or (namespace.kind and namespace.kind.lower() != LOG_TYPE_SYSTEM):
+        _set_ssh_defaults(cmd, namespace)
+        _validate_revision_exists(cmd, namespace)
+        _validate_replica_exists(cmd, namespace)
+        _validate_container_exists(cmd, namespace)
