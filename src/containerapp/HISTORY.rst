@@ -5,7 +5,7 @@ Release History
 
 0.3.13
 ++++++
-
+* 'az containerapp compose create': Migrated from containerapp-compose extension
 
 0.3.12
 ++++++
