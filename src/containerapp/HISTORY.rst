@@ -3,6 +3,10 @@
 Release History
 ===============
 
+0.3.13
+++++++
+
+
 0.3.12
 ++++++
 * Add 'az containerapp env update' to update managed environment properties
