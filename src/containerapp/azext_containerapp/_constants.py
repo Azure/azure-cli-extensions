@@ -45,3 +45,5 @@ steps:
 DEFAULT_PORT = 8080  # used for no dockerfile scenario; not the hello world image
 
 HELLO_WORLD_IMAGE = "mcr.microsoft.com/azuredocs/containerapps-helloworld:latest"
+
+LOGS_STRING = '[{"category":"ContainerAppConsoleLogs","categoryGroup":null,"enabled":true,"retentionPolicy":{"days":0,"enabled":false}},{"category":"ContainerAppSystemLogs","categoryGroup":null,"enabled":true,"retentionPolicy":{"days":0,"enabled":false}}]'  # pylint: disable=line-too-long

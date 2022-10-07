@@ -84,6 +84,21 @@ def validate_managed_env_name_or_id(cmd, namespace):
             )
 
 
+def validate_storage_name_or_id(cmd, namespace):
+    from azure.cli.core.commands.client_factory import get_subscription_id
+    from msrestazure.tools import resource_id
+
+    if namespace.storage_account:
+        if not is_valid_resource_id(namespace.storage_account):
+            namespace.storage_account = resource_id(
+                subscription=get_subscription_id(cmd.cli_ctx),
+                resource_group=namespace.resource_group_name,
+                namespace='Microsoft.Storage',
+                type='storageAccounts',
+                name=namespace.storage_account
+            )
+
+
 def validate_registry_server(namespace):
     if "create" in namespace.command.lower():
         if namespace.registry_server:
