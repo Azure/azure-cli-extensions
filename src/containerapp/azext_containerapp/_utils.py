@@ -28,7 +28,8 @@ from msrestazure.tools import parse_resource_id, is_valid_resource_id, resource_
 from ._clients import ContainerAppClient, ManagedEnvironmentClient
 from ._client_factory import handle_raw_exception, providers_client_factory, cf_resource_groups, log_analytics_client_factory, log_analytics_shared_key_client_factory
 from ._constants import (MAXIMUM_CONTAINER_APP_NAME_LENGTH, SHORT_POLLING_INTERVAL_SECS, LONG_POLLING_INTERVAL_SECS,
-                         LOG_ANALYTICS_RP, CONTAINER_APPS_RP, CHECK_CERTIFICATE_NAME_AVAILABILITY_TYPE, ACR_IMAGE_SUFFIX)
+                         LOG_ANALYTICS_RP, CONTAINER_APPS_RP, CHECK_CERTIFICATE_NAME_AVAILABILITY_TYPE, ACR_IMAGE_SUFFIX,
+                         LOGS_STRING)
 from ._models import (ContainerAppCustomDomainEnvelope as ContainerAppCustomDomainEnvelopeModel)
 
 logger = get_logger(__name__)
@@ -1554,3 +1555,31 @@ def list_environment_locations(cmd):
     res_locations = [res_loc.lower().replace(" ", "").replace("(", "").replace(")", "") for res_loc in res_locations if res_loc.strip()]
 
     return res_locations
+
+
+def _azure_monitor_quickstart(cmd, name, resource_group_name, storage_account, logs_destination):
+    if logs_destination != "azure-monitor":
+        if storage_account:
+            logger.warning("Storage accounts only accepted for Azure Monitor logs destination. Ignoring storage account value.")
+        return
+    if not storage_account:
+        logger.warning("Azure monitor must be set up manually. Run `az monitor diagnostic-settings create --name mydiagnosticsettings --resource myManagedEnvironmentId --storage-account myStorageAccountId --logs myJsonLogSettings` to set up Azure Monitor diagnostic settings on your storage account.")
+        return
+
+    from azure.cli.command_modules.monitor.operations.diagnostics_settings import create_diagnostics_settings
+    from azure.cli.command_modules.monitor._client_factory import cf_diagnostics
+
+    env_id = resource_id(subscription=get_subscription_id(cmd.cli_ctx),
+                         resource_group=resource_group_name,
+                         namespace='Microsoft.App',
+                         type='managedEnvironments',
+                         name=name)
+    try:
+        create_diagnostics_settings(client=cf_diagnostics(cmd.cli_ctx, None),
+                                    name="diagnosticsettings",
+                                    resource_uri=env_id,
+                                    storage_account=storage_account,
+                                    logs=json.loads(LOGS_STRING))
+        logger.warning("Azure Monitor diagnastic settings created successfully.")
+    except Exception as ex:
+        handle_raw_exception(ex)

@@ -8,7 +8,7 @@ import time
 import yaml
 
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
-from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, JMESPathCheck, live_only)
+from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, JMESPathCheck, live_only, StorageAccountPreparer)
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
@@ -46,6 +46,76 @@ class ContainerappEnvScenarioTest(ScenarioTest):
         self.cmd('containerapp env list -g {}'.format(resource_group), checks=[
             JMESPathCheck('length(@)', 0),
         ])
+
+    @AllowLargeResponse(8192)
+    @ResourceGroupPreparer(location="australiaeast")
+    @StorageAccountPreparer(location="australiaeast")
+    def test_containerapp_env_logs_e2e(self, resource_group, storage_account):
+        env_name = self.create_random_name(prefix='containerapp-env', length=24)
+        logs_workspace_name = self.create_random_name(prefix='containerapp-env', length=24)
+
+        logs_workspace_id = self.cmd('monitor log-analytics workspace create -g {} -n {}'.format(resource_group, logs_workspace_name)).get_output_in_json()["customerId"]
+        logs_workspace_key = self.cmd('monitor log-analytics workspace get-shared-keys -g {} -n {}'.format(resource_group, logs_workspace_name)).get_output_in_json()["primarySharedKey"]
+
+        self.cmd('containerapp env create -g {} -n {} --logs-workspace-id {} --logs-workspace-key {} --logs-destination log-analytics -l australiaeast'.format(resource_group, env_name, logs_workspace_id, logs_workspace_key))
+
+        containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
+
+        while containerapp_env["properties"]["provisioningState"].lower() == "waiting":
+            time.sleep(5)
+            containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
+
+        self.cmd('containerapp env show -n {} -g {}'.format(env_name, resource_group), checks=[
+            JMESPathCheck('name', env_name),
+            JMESPathCheck('properties.appLogsConfiguration.destination', "log-analytics"),
+            JMESPathCheck('properties.appLogsConfiguration.logAnalyticsConfiguration.customerId', logs_workspace_id),
+        ])
+
+        self.cmd('containerapp env update -g {} -n {} --logs-destination azure-monitor --storage-account {}'.format(resource_group, env_name, storage_account))
+
+        env = self.cmd('containerapp env show -n {} -g {}'.format(env_name, resource_group), checks=[
+            JMESPathCheck('name', env_name),
+            JMESPathCheck('properties.appLogsConfiguration.destination', "azure-monitor"),
+        ]).get_output_in_json()
+
+        diagnostic_settings = self.cmd('monitor diagnostic-settings show --name diagnosticsettings --resource {}'.format(env["id"])).get_output_in_json()
+
+        self.assertEqual(storage_account in diagnostic_settings["storageAccountId"], True)
+
+        self.cmd('containerapp env update -g {} -n {} --logs-destination none'.format(resource_group, env_name))
+
+        self.cmd('containerapp env show -n {} -g {}'.format(env_name, resource_group), checks=[
+            JMESPathCheck('name', env_name),
+            JMESPathCheck('properties.appLogsConfiguration.destination', None),
+        ])
+
+        self.cmd('containerapp env update -g {} -n {} --logs-workspace-id {} --logs-workspace-key {} --logs-destination log-analytics'.format(resource_group, env_name, logs_workspace_id, logs_workspace_key))
+
+        self.cmd('containerapp env show -n {} -g {}'.format(env_name, resource_group), checks=[
+            JMESPathCheck('name', env_name),
+            JMESPathCheck('properties.appLogsConfiguration.destination', "log-analytics"),
+            JMESPathCheck('properties.appLogsConfiguration.logAnalyticsConfiguration.customerId', logs_workspace_id),
+        ])
+
+        self.cmd('containerapp env create -g {} -n {} --logs-destination azure-monitor --storage-account {} -l "australiaeast"'.format(resource_group, env_name, storage_account))
+
+        env = self.cmd('containerapp env show -n {} -g {}'.format(env_name, resource_group), checks=[
+            JMESPathCheck('name', env_name),
+            JMESPathCheck('properties.appLogsConfiguration.destination', "azure-monitor"),
+        ]).get_output_in_json()
+
+        diagnostic_settings = self.cmd('monitor diagnostic-settings show --name diagnosticsettings --resource {}'.format(env["id"])).get_output_in_json()
+
+        self.assertEqual(storage_account in diagnostic_settings["storageAccountId"], True)
+
+        self.cmd('containerapp env create -g {} -n {} --logs-destination none -l "australiaeast"'.format(resource_group, env_name))
+
+        self.cmd('containerapp env show -n {} -g {}'.format(env_name, resource_group), checks=[
+            JMESPathCheck('name', env_name),
+            JMESPathCheck('properties.appLogsConfiguration.destination', None),
+        ])
+
+
 
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="northeurope")

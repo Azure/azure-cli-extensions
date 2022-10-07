@@ -458,7 +458,7 @@ class ManagedEnvironmentClient():
                 resource_group_name,
                 name,
                 api_version)
-            return poll(cmd, request_url, "waiting")
+            return poll(cmd, request_url, "inprogress")
 
         return r.json()
 

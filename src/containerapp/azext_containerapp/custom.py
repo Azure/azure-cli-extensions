@@ -68,7 +68,7 @@ from ._utils import (_validate_subscription_registered, _ensure_location_allowed
                      generate_randomized_cert_name, _get_name, load_cert_file, check_cert_name_availability,
                      validate_hostname, patch_new_custom_domain, get_custom_domains, _validate_revision_name, set_managed_identity,
                      create_acrpull_role_assignment, is_registry_msi_system, clean_null_values, _populate_secret_values,
-                     validate_environment_location, safe_set, parse_metadata_flags, parse_auth_flags)
+                     validate_environment_location, safe_set, parse_metadata_flags, parse_auth_flags, _azure_monitor_quickstart)
 from ._validators import validate_create, validate_revision_suffix
 from ._ssh_utils import (SSH_DEFAULT_ENCODING, WebSocketConnection, read_ssh, get_stdin_writer, SSH_CTRL_C_MSG,
                          SSH_BACKUP_ENCODING)
@@ -992,6 +992,8 @@ def delete_containerapp(cmd, name, resource_group_name, no_wait=False):
 def create_managed_environment(cmd,
                                name,
                                resource_group_name,
+                               logs_destination="log-analytics",
+                               storage_account=None,
                                logs_customer_id=None,
                                logs_key=None,
                                location=None,
@@ -1027,15 +1029,18 @@ def create_managed_environment(cmd,
     register_provider_if_needed(cmd, CONTAINER_APPS_RP)
     _ensure_location_allowed(cmd, location, CONTAINER_APPS_RP, "managedEnvironments")
 
-    if logs_customer_id is None or logs_key is None:
+    if (logs_customer_id is None or logs_key is None) and logs_destination == "log-analytics":
         logs_customer_id, logs_key = _generate_log_analytics_if_not_provided(cmd, logs_customer_id, logs_key, location, resource_group_name)
 
-    log_analytics_config_def = LogAnalyticsConfigurationModel
-    log_analytics_config_def["customerId"] = logs_customer_id
-    log_analytics_config_def["sharedKey"] = logs_key
+    if logs_destination == "log-analytics":
+        log_analytics_config_def = LogAnalyticsConfigurationModel
+        log_analytics_config_def["customerId"] = logs_customer_id
+        log_analytics_config_def["sharedKey"] = logs_key
+    else:
+        log_analytics_config_def = None
 
     app_logs_config_def = AppLogsConfigurationModel
-    app_logs_config_def["destination"] = "log-analytics"
+    app_logs_config_def["destination"] = logs_destination if logs_destination != "none" else None
     app_logs_config_def["logAnalyticsConfiguration"] = log_analytics_config_def
 
     managed_env_def = ManagedEnvironmentModel
@@ -1081,20 +1086,28 @@ def create_managed_environment(cmd,
         r = ManagedEnvironmentClient.create(
             cmd=cmd, resource_group_name=resource_group_name, name=name, managed_environment_envelope=managed_env_def, no_wait=no_wait)
 
-        if "properties" in r and "provisioningState" in r["properties"] and r["properties"]["provisioningState"].lower() == "waiting" and not no_wait:
-            not disable_warnings and logger.warning('Containerapp environment creation in progress. Please monitor the creation using `az containerapp env show -n {} -g {}`'.format(name, resource_group_name))
-
-        if "properties" in r and "provisioningState" in r["properties"] and r["properties"]["provisioningState"].lower() == "succeeded":
-            not disable_warnings and logger.warning("\nContainer Apps environment created. To deploy a container app, use: az containerapp create --help\n")
-
-        return r
     except Exception as e:
         handle_raw_exception(e)
+
+    _azure_monitor_quickstart(cmd, name, resource_group_name, storage_account, logs_destination)
+
+    # return ENV
+    if "properties" in r and "provisioningState" in r["properties"] and r["properties"]["provisioningState"].lower() != "succeeded" and not no_wait:
+        not disable_warnings and logger.warning('Containerapp environment creation in progress. Please monitor the creation using `az containerapp env show -n {} -g {}`'.format(name, resource_group_name))
+
+    if "properties" in r and "provisioningState" in r["properties"] and r["properties"]["provisioningState"].lower() == "succeeded":
+        not disable_warnings and logger.warning("\nContainer Apps environment created. To deploy a container app, use: az containerapp create --help\n")
+
+    return r
 
 
 def update_managed_environment(cmd,
                                name,
                                resource_group_name,
+                               logs_destination=None,
+                               storage_account=None,
+                               logs_customer_id=None,
+                               logs_key=None,
                                hostname=None,
                                certificate_file=None,
                                certificate_password=None,
@@ -1110,6 +1123,18 @@ def update_managed_environment(cmd,
     safe_set(env_def, "location", value=r["location"])  # required for API
     safe_set(env_def, "tags", value=tags)
 
+    # Logs
+    if logs_destination:
+        logs_destination = None if logs_destination == "none" else logs_destination
+        safe_set(env_def, "properties", "appLogsConfiguration", "destination", value=logs_destination)
+
+    if logs_destination == "log-analytics" and (not logs_customer_id or not logs_key):
+        raise ValidationError("Must provide logs-workspace-id and logs-workspace-key if updating logs destination to type 'log-analytics'.")
+
+    if logs_customer_id and logs_key:
+        safe_set(env_def, "properties", "appLogsConfiguration", "logAnalyticsConfiguration", "customerId", value=logs_customer_id)
+        safe_set(env_def, "properties", "appLogsConfiguration", "logAnalyticsConfiguration", "sharedKey", value=logs_key)
+
     # Custom domains
     safe_set(env_def, "properties", "customDomainConfiguration", value={})
     cert_def = env_def["properties"]["customDomainConfiguration"]
@@ -1124,10 +1149,12 @@ def update_managed_environment(cmd,
         r = ManagedEnvironmentClient.create(
             cmd=cmd, resource_group_name=resource_group_name, name=name, managed_environment_envelope=env_def, no_wait=no_wait)
 
-        return r
     except Exception as e:
         handle_raw_exception(e)
 
+    _azure_monitor_quickstart(cmd, name, resource_group_name, storage_account, logs_destination)
+
+    return r
 
 def show_managed_environment(cmd, name, resource_group_name):
     _validate_subscription_registered(cmd, CONTAINER_APPS_RP)

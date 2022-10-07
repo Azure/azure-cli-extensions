@@ -11,7 +11,8 @@ from azure.cli.core.commands.parameters import (resource_group_name_type, get_lo
                                                 get_three_state_flag, get_enum_type, tags_type)
 
 from ._validators import (validate_memory, validate_cpu, validate_managed_env_name_or_id, validate_registry_server,
-                          validate_registry_user, validate_registry_pass, validate_target_port, validate_ingress)
+                          validate_registry_user, validate_registry_pass, validate_target_port, validate_ingress,
+                          validate_storage_name_or_id)
 from ._constants import UNAUTHENTICATED_CLIENT_ACTION, FORWARD_PROXY_CONVENTION, MAXIMUM_CONTAINER_APP_NAME_LENGTH, LOG_TYPE_CONSOLE, LOG_TYPE_SYSTEM
 
 
@@ -141,9 +142,11 @@ def load_arguments(self, _):
         c.argument('location', arg_type=get_location_type(self.cli_ctx), help='Location of resource. Examples: eastus2, northeurope')
         c.argument('tags', arg_type=tags_type)
 
-    with self.argument_context('containerapp env', arg_group='Log Analytics') as c:
-        c.argument('logs_customer_id', options_list=['--logs-workspace-id'], help='Workspace ID of the Log Analytics workspace to send diagnostics logs to. You can use \"az monitor log-analytics workspace create\" to create one. Extra billing may apply.')
-        c.argument('logs_key', options_list=['--logs-workspace-key'], help='Log Analytics workspace key to configure your Log Analytics workspace. You can use \"az monitor log-analytics workspace get-shared-keys\" to retrieve the key.')
+    with self.argument_context('containerapp env', arg_group='Monitoring') as c:
+        c.argument('logs_destination', arg_type=get_enum_type(["log-analytics", "azure-monitor", "none"]), help='Logs destination.')
+        c.argument('logs_customer_id', options_list=['--logs-workspace-id'], help='Workspace ID of the Log Analytics workspace to send diagnostics logs to. Only works with logs destination "log-analytics". You can use \"az monitor log-analytics workspace create\" to create one. Extra billing may apply.')
+        c.argument('logs_key', options_list=['--logs-workspace-key'], help='Log Analytics workspace key to configure your Log Analytics workspace. Only works with logs destination "log-analytics". You can use \"az monitor log-analytics workspace get-shared-keys\" to retrieve the key.')
+        c.argument('storage_account', validator=validate_storage_name_or_id, help="Name or resource ID of the storage account used for Azure Monitor. If this value is provided, Azure Monitor Diagnostic Settings will be created automatically.")
 
     with self.argument_context('containerapp env', arg_group='Dapr') as c:
         c.argument('instrumentation_key', options_list=['--dapr-instrumentation-key'], help='Application Insights instrumentation key used by Dapr to export Service to Service communication telemetry')
