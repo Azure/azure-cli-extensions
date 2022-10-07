@@ -6,6 +6,7 @@ Release History
 0.3.13
 ++++++
 * 'az containerapp compose create': Migrated from containerapp-compose extension
+* Add parameters --logs-destination and --storage-account support for new logs destinations to `az containerapp env create` and `az containerapp env update`
 
 0.3.12
 ++++++
