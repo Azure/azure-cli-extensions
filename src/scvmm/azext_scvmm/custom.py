@@ -4,7 +4,6 @@
 # --------------------------------------------------------------------------------------------
 # pylint: disable=unused-argument,too-many-lines
 
-import sys
 from pwinput import pwinput
 from azure.cli.core.azclierror import (
     UnrecognizedArgumentError,
