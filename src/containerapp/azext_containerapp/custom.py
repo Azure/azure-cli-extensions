@@ -1156,6 +1156,7 @@ def update_managed_environment(cmd,
 
     return r
 
+
 def show_managed_environment(cmd, name, resource_group_name):
     _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
