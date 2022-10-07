@@ -355,6 +355,9 @@ helps['aks create'] = """
         - name: --http-proxy-config
           type: string
           short-summary: Http Proxy configuration for this cluster.
+        - name: --kube-proxy-config
+          type: string
+          short-summary: kube-proxy configuration for this cluster.
         - name: --enable-pod-identity
           type: bool
           short-summary: (PREVIEW) Enable pod identity addon.
