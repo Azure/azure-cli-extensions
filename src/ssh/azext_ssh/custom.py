@@ -61,7 +61,7 @@ def ssh_vm(cmd, resource_group_name=None, vm_name=None, ssh_ip=None, public_key_
                                       ssh_client_folder, ssh_args, delete_credentials, resource_type,
                                       ssh_proxy_folder, credentials_folder, winrdp)
     ssh_session.resource_type = resource_type_utils.decide_resource_type(cmd, ssh_session)
-    target_os_utils.send_target_os_telemetry(cmd, ssh_session)
+    target_os_utils.handle_target_os_type(cmd, ssh_session)
 
     _do_ssh_op(cmd, ssh_session, op_call)
 
@@ -83,7 +83,7 @@ def ssh_config(cmd, config_path, resource_group_name=None, vm_name=None, ssh_ip=
     op_call = ssh_utils.write_ssh_config
 
     config_session.resource_type = resource_type_utils.decide_resource_type(cmd, config_session)
-    target_os_utils.send_target_os_telemetry(cmd, config_session)
+    target_os_utils.handle_target_os_type(cmd, config_session)
 
     # if the folder doesn't exist, this extension won't create a new one.
     config_folder = os.path.dirname(config_session.config_path)

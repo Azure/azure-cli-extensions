@@ -12,7 +12,7 @@ from knack import log
 logger = log.get_logger(__name__)
 
 
-def send_target_os_telemetry(cmd, op_info):
+def handle_target_os_type(cmd, op_info):
 
     os_type = None
 

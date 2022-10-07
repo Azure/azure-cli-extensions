@@ -42,7 +42,9 @@ class SSHSession():
 
     def is_arc(self):
         if self.resource_type in ["Microsoft.HybridCompute/machines",
-                                  "Microsoft.ConnectedVMwarevSphere/virtualMachines"]:
+                                  "Microsoft.ConnectedVMwarevSphere/virtualMachines",
+                                  "Microsoft.ScVmm/virtualMachines",
+                                  "Microsoft.AzureStackHCI/virtualMachines"]:
             return True
         return False
 
