@@ -11,9 +11,6 @@
 from azure.cli.core.aaz import *
 
 
-@register_command(
-    "automanage configuration-profile version list",
-)
 class List(AAZCommand):
     """List a list of configuration profile version for a configuration profile 
     """
@@ -175,12 +172,10 @@ class List(AAZCommand):
             )
 
             properties = cls._schema_on_200.value.Element.properties
-            properties.configuration = AAZObjectType()
+            properties.configuration = AAZDictType()
 
             configuration = cls._schema_on_200.value.Element.properties.configuration
-            configuration.antimalware__enable = AAZBoolType(
-                serialized_name="Antimalware-Enable",
-            )
+            configuration.Element = AAZStrType()
 
             system_data = cls._schema_on_200.value.Element.system_data
             system_data.created_at = AAZStrType(

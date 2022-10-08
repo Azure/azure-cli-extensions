@@ -71,7 +71,7 @@ class Update(AAZCommand):
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
-        _args_schema.configuration = AAZObjectArg(
+        _args_schema.configuration = AAZDictArg(
             options=["--configuration"],
             arg_group="Properties",
             help="configuration dictionary of the configuration profile.",
@@ -79,8 +79,7 @@ class Update(AAZCommand):
         )
 
         configuration = cls._args_schema.configuration
-        configuration.antimalware_enable = AAZBoolArg(
-            options=["antimalware-enable"],
+        configuration.Element = AAZStrArg(
             nullable=True,
         )
         return cls._args_schema
@@ -309,11 +308,11 @@ class Update(AAZCommand):
 
             properties = _builder.get(".properties")
             if properties is not None:
-                properties.set_prop("configuration", AAZObjectType, ".configuration")
+                properties.set_prop("configuration", AAZDictType, ".configuration")
 
             configuration = _builder.get(".properties.configuration")
             if configuration is not None:
-                configuration.set_prop("Antimalware-Enable", AAZBoolType, ".antimalware_enable")
+                configuration.set_elements(AAZStrType, ".")
 
             tags = _builder.get(".tags")
             if tags is not None:
@@ -368,12 +367,10 @@ def _build_schema_configuration_profile_read(_schema):
     )
 
     properties = _schema_configuration_profile_read.properties
-    properties.configuration = AAZObjectType()
+    properties.configuration = AAZDictType()
 
     configuration = _schema_configuration_profile_read.properties.configuration
-    configuration.antimalware__enable = AAZBoolType(
-        serialized_name="Antimalware-Enable",
-    )
+    configuration.Element = AAZStrType()
 
     system_data = _schema_configuration_profile_read.system_data
     system_data.created_at = AAZStrType(

@@ -156,12 +156,10 @@ class Show(AAZCommand):
             )
 
             properties = cls._schema_on_200.properties
-            properties.configuration = AAZObjectType()
+            properties.configuration = AAZDictType()
 
             configuration = cls._schema_on_200.properties.configuration
-            configuration.antimalware__enable = AAZBoolType(
-                serialized_name="Antimalware-Enable",
-            )
+            configuration.Element = AAZStrType()
 
             system_data = cls._schema_on_200.system_data
             system_data.created_at = AAZStrType(

@@ -28,6 +28,7 @@ def create_configuration_profile(cmd, configuration_profile_name, resource_group
     args = {
         "configuration_profile_name": configuration_profile_name,
         "resource_group": resource_group,
+        # "configuration": configuration
         "configuration": json.loads(configuration) if configuration else {}
     }
     result = Create_Confguration_Profile(args)
