@@ -12,6 +12,8 @@ from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, JMESPathChec
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
+from .utils import create_containerapp_env
+
 class ContainerappEnvScenarioTest(ScenarioTest):
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="northeurope")
@@ -47,6 +49,7 @@ class ContainerappEnvScenarioTest(ScenarioTest):
 
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="northeurope")
+    @live_only()  # encounters 'CannotOverwriteExistingCassetteException' only when run from recording (passes when run live)
     def test_containerapp_env_dapr_components(self, resource_group):
         env_name = self.create_random_name(prefix='containerapp-e2e-env', length=24)
         dapr_comp_name = self.create_random_name(prefix='dapr-component', length=24)
@@ -158,21 +161,8 @@ class ContainerappEnvScenarioTest(ScenarioTest):
             JMESPathCheck('length(@)', 0),
         ])
 
-        # test pem file without password
-        pem_file = os.path.join(TEST_DIR, 'cert.pem')
-        cert_2 = self.cmd('containerapp env certificate upload -g {} -n {} --certificate-file "{}"'.format(resource_group, env_name, pem_file), checks=[
-            JMESPathCheck('type', "Microsoft.App/managedEnvironments/certificates"),
-        ]).get_output_in_json()
-        cert_name_2 = cert_2["name"]
-        cert_id_2 = cert_2["id"]
-        cert_thumbprint_2 = cert_2["properties"]["thumbprint"]
-
         # list certs with a wrong location
-        self.cmd('containerapp env certificate upload -g {} -n {} --certificate-file "{}" -l "{}"'.format(resource_group, env_name, pem_file, "eastus2"), expect_failure=True)
-
-        self.cmd('containerapp env certificate list -n {} -g {}'.format(env_name, resource_group), checks=[
-            JMESPathCheck('length(@)', 2),
-        ])
+        self.cmd('containerapp env certificate upload -g {} -n {} --certificate-file "{}" -l "{}"'.format(resource_group, env_name, pfx_file, "eastus2"), expect_failure=True)
 
         self.cmd('containerapp env certificate list -n {} -g {} --certificate {}'.format(env_name, resource_group, cert_name), checks=[
             JMESPathCheck('length(@)', 1),
@@ -197,17 +187,96 @@ class ContainerappEnvScenarioTest(ScenarioTest):
 
         self.cmd('containerapp env certificate delete -n {} -g {} --thumbprint {} -l {} --yes'.format(env_name, resource_group, cert_thumbprint, cert_location))
 
-        self.cmd('containerapp env certificate list -n {} -g {} --certificate {}'.format(env_name, resource_group, cert_id_2), checks=[
-            JMESPathCheck('length(@)', 1),
-            JMESPathCheck('[0].name', cert_name_2),
-            JMESPathCheck('[0].id', cert_id_2),
-            JMESPathCheck('[0].properties.thumbprint', cert_thumbprint_2),
-        ])
-
-        self.cmd('containerapp env certificate delete -n {} -g {} --certificate {} --yes'.format(env_name, resource_group, cert_name_2))
-
         self.cmd('containerapp env certificate list -g {} -n {}'.format(resource_group, env_name), checks=[
             JMESPathCheck('length(@)', 0),
+        ])
+
+
+    @AllowLargeResponse(8192)
+    @live_only()  # encounters 'CannotOverwriteExistingCassetteException' only when run from recording (passes when run live)
+    @ResourceGroupPreparer(location="westeurope")
+    def test_containerapp_env_custom_domains(self, resource_group):
+        env_name = self.create_random_name(prefix='containerapp-env', length=24)
+        logs_workspace_name = self.create_random_name(prefix='containerapp-env', length=24)
+
+        logs_workspace_id = self.cmd('monitor log-analytics workspace create -g {} -n {}'.format(resource_group, logs_workspace_name)).get_output_in_json()["customerId"]
+        logs_workspace_key = self.cmd('monitor log-analytics workspace get-shared-keys -g {} -n {}'.format(resource_group, logs_workspace_name)).get_output_in_json()["primarySharedKey"]
+
+        self.cmd('containerapp env create -g {} -n {} --logs-workspace-id {} --logs-workspace-key {}'.format(resource_group, env_name, logs_workspace_id, logs_workspace_key))
+
+        containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
+
+        while containerapp_env["properties"]["provisioningState"].lower() == "waiting":
+            time.sleep(5)
+            containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
+
+        # create an App service domain and update its txt records
+        contacts = os.path.join(TEST_DIR, 'domain-contact.json')
+        zone_name = "{}.com".format(env_name)
+        subdomain_1 = "devtest"
+        subdomain_2 = "clitest"
+        txt_name_1 = "asuid.{}".format(subdomain_1)
+        txt_name_2 = "asuid.{}".format(subdomain_2)
+        hostname_1 = "{}.{}".format(subdomain_1, zone_name)
+        hostname_2 = "{}.{}".format(subdomain_2, zone_name)
+        verification_id = containerapp_env["properties"]["customDomainConfiguration"]["customDomainVerificationId"]
+        self.cmd("appservice domain create -g {} --hostname {} --contact-info=@'{}' --accept-terms".format(resource_group, zone_name, contacts)).get_output_in_json()
+        self.cmd('network dns record-set txt add-record -g {} -z {} -n {} -v {}'.format(resource_group, zone_name, txt_name_1, verification_id)).get_output_in_json()
+        self.cmd('network dns record-set txt add-record -g {} -z {} -n {} -v {}'.format(resource_group, zone_name, txt_name_2, verification_id)).get_output_in_json()
+
+        # upload cert, add hostname & binding
+        pfx_file = os.path.join(TEST_DIR, 'cert.pfx')
+        pfx_password = 'test12'
+
+        self.cmd('containerapp env create -g {} -n {} --logs-workspace-id {} --logs-workspace-key {} --dns-suffix {} --certificate-file "{}" --certificate-password {}'.format(resource_group, env_name, logs_workspace_id, logs_workspace_key, hostname_1, pfx_file, pfx_password))
+
+        self.cmd(f'containerapp env show -n {env_name} -g {resource_group}', checks=[
+            JMESPathCheck('name', env_name),
+            JMESPathCheck('properties.customDomainConfiguration.dnsSuffix', hostname_1),
+        ])
+
+
+    @AllowLargeResponse(8192)
+    @live_only()  # encounters 'CannotOverwriteExistingCassetteException' only when run from recording (passes when run live)
+    @ResourceGroupPreparer(location="westeurope")
+    def test_containerapp_env_update_custom_domains(self, resource_group):
+        env_name = self.create_random_name(prefix='containerapp-env', length=24)
+        logs_workspace_name = self.create_random_name(prefix='containerapp-env', length=24)
+
+        logs_workspace_id = self.cmd('monitor log-analytics workspace create -g {} -n {}'.format(resource_group, logs_workspace_name)).get_output_in_json()["customerId"]
+        logs_workspace_key = self.cmd('monitor log-analytics workspace get-shared-keys -g {} -n {}'.format(resource_group, logs_workspace_name)).get_output_in_json()["primarySharedKey"]
+
+        self.cmd('containerapp env create -g {} -n {} --logs-workspace-id {} --logs-workspace-key {}'.format(resource_group, env_name, logs_workspace_id, logs_workspace_key))
+
+        containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
+
+        while containerapp_env["properties"]["provisioningState"].lower() == "waiting":
+            time.sleep(5)
+            containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
+
+        # create an App service domain and update its txt records
+        contacts = os.path.join(TEST_DIR, 'domain-contact.json')
+        zone_name = "{}.com".format(env_name)
+        subdomain_1 = "devtest"
+        subdomain_2 = "clitest"
+        txt_name_1 = "asuid.{}".format(subdomain_1)
+        txt_name_2 = "asuid.{}".format(subdomain_2)
+        hostname_1 = "{}.{}".format(subdomain_1, zone_name)
+        hostname_2 = "{}.{}".format(subdomain_2, zone_name)
+        verification_id = containerapp_env["properties"]["customDomainConfiguration"]["customDomainVerificationId"]
+        self.cmd("appservice domain create -g {} --hostname {} --contact-info=@'{}' --accept-terms".format(resource_group, zone_name, contacts)).get_output_in_json()
+        self.cmd('network dns record-set txt add-record -g {} -z {} -n {} -v {}'.format(resource_group, zone_name, txt_name_1, verification_id)).get_output_in_json()
+        self.cmd('network dns record-set txt add-record -g {} -z {} -n {} -v {}'.format(resource_group, zone_name, txt_name_2, verification_id)).get_output_in_json()
+
+        # upload cert, add hostname & binding
+        pfx_file = os.path.join(TEST_DIR, 'cert.pfx')
+        pfx_password = 'test12'
+
+        self.cmd('containerapp env update -g {} -n {} --dns-suffix {} --certificate-file "{}" --certificate-password {}'.format(resource_group, env_name, hostname_1, pfx_file, pfx_password))
+
+        self.cmd(f'containerapp env show -n {env_name} -g {resource_group}', checks=[
+            JMESPathCheck('name', env_name),
+            JMESPathCheck('properties.customDomainConfiguration.dnsSuffix', hostname_1),
         ])
 
 
@@ -225,7 +294,7 @@ class ContainerappEnvScenarioTest(ScenarioTest):
         logs_id = self.cmd(f"monitor log-analytics workspace create -g {resource_group} -n {logs}").get_output_in_json()["customerId"]
         logs_key = self.cmd(f'monitor log-analytics workspace get-shared-keys -g {resource_group} -n {logs}').get_output_in_json()["primarySharedKey"]
 
-        self.cmd(f'containerapp env create -g {resource_group} -n {env} --logs-workspace-id {logs_id} --logs-workspace-key {logs_key} --internal-only -s {sub_id}')
+        self.cmd(f'containerapp env create -g {resource_group} -n {env} --logs-workspace-id {logs_id} --logs-workspace-key {logs_key} --internal-only -s {sub_id} --location northeurope')
 
         containerapp_env = self.cmd(f'containerapp env show -g {resource_group} -n {env}').get_output_in_json()
 

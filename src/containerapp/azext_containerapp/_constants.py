@@ -14,7 +14,7 @@ ACR_IMAGE_SUFFIX = ".azurecr.io"
 LOG_ANALYTICS_RP = "Microsoft.OperationalInsights"
 CONTAINER_APPS_RP = "Microsoft.App"
 
-MAX_ENV_PER_LOCATION = 2
+MAX_ENV_PER_LOCATION = 5
 
 MICROSOFT_SECRET_SETTING_NAME = "microsoft-provider-authentication-secret"
 FACEBOOK_SECRET_SETTING_NAME = "facebook-provider-authentication-secret"
@@ -29,3 +29,19 @@ CHECK_CERTIFICATE_NAME_AVAILABILITY_TYPE = "Microsoft.App/managedEnvironments/ce
 
 NAME_INVALID = "Invalid"
 NAME_ALREADY_EXISTS = "AlreadyExists"
+
+LOG_TYPE_CONSOLE = "console"
+LOG_TYPE_SYSTEM = "system"
+
+ACR_TASK_TEMPLATE = """version: v1.1.0
+steps:
+  - cmd: mcr.microsoft.com/oryx/cli:20220811.1 oryx dockerfile --bind-port {{target_port}} --output ./Dockerfile .
+    timeout: 28800
+  - build: -t $Registry/{{image_name}} -f Dockerfile .
+    timeout: 28800
+  - push: ["$Registry/{{image_name}}"]
+    timeout: 1800
+"""
+DEFAULT_PORT = 8080  # used for no dockerfile scenario; not the hello world image
+
+HELLO_WORLD_IMAGE = "mcr.microsoft.com/azuredocs/containerapps-helloworld:latest"

@@ -6,15 +6,13 @@
 
 from knack.arguments import CLIArgumentType
 
-from azure.cli.core.commands.validators import get_default_location_from_resource_group
 from azure.cli.core.commands.parameters import (resource_group_name_type, get_location_type,
                                                 file_type,
                                                 get_three_state_flag, get_enum_type, tags_type)
-# from azure.cli.core.commands.validators import get_default_location_from_resource_group
 
 from ._validators import (validate_memory, validate_cpu, validate_managed_env_name_or_id, validate_registry_server,
                           validate_registry_user, validate_registry_pass, validate_target_port, validate_ingress)
-from ._constants import UNAUTHENTICATED_CLIENT_ACTION, FORWARD_PROXY_CONVENTION, MAXIMUM_CONTAINER_APP_NAME_LENGTH
+from ._constants import UNAUTHENTICATED_CLIENT_ACTION, FORWARD_PROXY_CONVENTION, MAXIMUM_CONTAINER_APP_NAME_LENGTH, LOG_TYPE_CONSOLE, LOG_TYPE_SYSTEM
 
 
 def load_arguments(self, _):
@@ -50,6 +48,11 @@ def load_arguments(self, _):
         c.argument('revision', help="The name of the container app revision. Defaults to the latest revision.")
         c.argument('name', name_type, id_part=None, help="The name of the Containerapp.")
         c.argument('resource_group_name', arg_type=resource_group_name_type, id_part=None)
+        c.argument('kind', options_list=["--type", "-t"], help="Type of logs to stream", arg_type=get_enum_type([LOG_TYPE_CONSOLE, LOG_TYPE_SYSTEM]), default=LOG_TYPE_CONSOLE)
+
+    with self.argument_context('containerapp env logs show') as c:
+        c.argument('follow', help="Print logs in real time if present.", arg_type=get_three_state_flag())
+        c.argument('tail', help="The number of past logs to print (0-300)", type=int, default=20)
 
     # Replica
     with self.argument_context('containerapp replica') as c:
@@ -79,6 +82,11 @@ def load_arguments(self, _):
     with self.argument_context('containerapp', arg_group='Scale') as c:
         c.argument('min_replicas', type=int, help="The minimum number of replicas.")
         c.argument('max_replicas', type=int, help="The maximum number of replicas.")
+        c.argument('scale_rule_name', options_list=['--scale-rule-name', '--srn'], help="The name of the scale rule.")
+        c.argument('scale_rule_type', options_list=['--scale-rule-type', '--srt'], help="The type of the scale rule. Default: http.")
+        c.argument('scale_rule_http_concurrency', type=int, options_list=['--scale-rule-http-concurrency', '--srhc', '--srtc', '--scale-rule-tcp-concurrency'], help="The maximum number of concurrent requests before scale out. Only supported for http and tcp scale rules.")
+        c.argument('scale_rule_metadata', nargs="+", options_list=['--scale-rule-metadata', '--srm'], help="Scale rule metadata. Metadata must be in format \"<key>=<value> <key>=<value> ...\".")
+        c.argument('scale_rule_auth', nargs="+", options_list=['--scale-rule-auth', '--sra'], help="Scale rule auth parameters. Auth parameters must be in format \"<triggerParameter>=<secretRef> <triggerParameter>=<secretRef> ...\".")
 
     # Dapr
     with self.argument_context('containerapp', arg_group='Dapr') as c:
@@ -86,6 +94,10 @@ def load_arguments(self, _):
         c.argument('dapr_app_port', type=int, help="The port Dapr uses to talk to the application.")
         c.argument('dapr_app_id', help="The Dapr application identifier.")
         c.argument('dapr_app_protocol', arg_type=get_enum_type(['http', 'grpc']), help="The protocol Dapr uses to talk to the application.")
+        c.argument('dapr_http_read_buffer_size', options_list=['--dapr-http-read-buffer-size', '--dhrbs'], type=int, help="Dapr max size of http header read buffer in KB to handle when sending multi-KB headers..")
+        c.argument('dapr_http_max_request_size', options_list=['--dapr-http-max-request-size', '--dhmrs'], type=int, help="Increase max size of request body http and grpc servers parameter in MB to handle uploading of big files.")
+        c.argument('dapr_log_level', arg_type=get_enum_type(["info", "debug", "warn", "error"]), help="Set the log level for the Dapr sidecar.")
+        c.argument('dapr_enable_api_logging', options_list=['--dapr-enable-api-logging', '--dal'], help="Enable API logging for the Dapr sidecar.")
 
     # Configuration
     with self.argument_context('containerapp', arg_group='Configuration') as c:
@@ -94,12 +106,14 @@ def load_arguments(self, _):
         c.argument('registry_pass', validator=validate_registry_pass, options_list=['--registry-password'], help="The password to log in to container registry. If stored as a secret, value must start with \'secretref:\' followed by the secret name.")
         c.argument('registry_user', validator=validate_registry_user, options_list=['--registry-username'], help="The username to log in to container registry.")
         c.argument('secrets', nargs='*', options_list=['--secrets', '-s'], help="A list of secret(s) for the container app. Space-separated values in 'key=value' format.")
+        c.argument('registry_identity', help="A Managed Identity to authenticate with the registry server instead of username/password. Use a resource ID or 'system' for user-defined and system-defined identities, respectively. The registry must be an ACR. If possible, an 'acrpull' role assignemnt will be created for the identity automatically.")
 
     # Ingress
     with self.argument_context('containerapp', arg_group='Ingress') as c:
         c.argument('ingress', validator=validate_ingress, default=None, arg_type=get_enum_type(['internal', 'external']), help="The ingress type.")
         c.argument('target_port', type=int, validator=validate_target_port, help="The application port used for ingress traffic.")
-        c.argument('transport', arg_type=get_enum_type(['auto', 'http', 'http2']), help="The transport protocol used for ingress traffic.")
+        c.argument('transport', arg_type=get_enum_type(['auto', 'http', 'http2', 'tcp']), help="The transport protocol used for ingress traffic.")
+        c.argument('exposed_port', type=int, help="Additional exposed port. Only supported by tcp transport protocol. Must be unique per environment if the app ingress is external.")
 
     with self.argument_context('containerapp create') as c:
         c.argument('traffic_weights', nargs='*', options_list=['--traffic-weight'], help="A list of revision weight(s) for the container app. Space-separated values in 'revision_name=weight' format. For latest revision, use 'latest=weight'")
@@ -110,6 +124,9 @@ def load_arguments(self, _):
 
     with self.argument_context('containerapp create', arg_group='Container') as c:
         c.argument('image', options_list=['--image', '-i'], help="Container image, e.g. publisher/image-name:tag.")
+
+    with self.argument_context('containerapp show') as c:
+        c.argument('show_secrets', help="Show Containerapp secrets.", action='store_true')
 
     with self.argument_context('containerapp update', arg_group='Container') as c:
         c.argument('image', options_list=['--image', '-i'], help="Container image, e.g. publisher/image-name:tag.")
@@ -138,6 +155,12 @@ def load_arguments(self, _):
         c.argument('platform_reserved_cidr', options_list=['--platform-reserved-cidr'], help='IP range in CIDR notation that can be reserved for environment infrastructure IP addresses. It must not overlap with any other Subnet IP ranges')
         c.argument('platform_reserved_dns_ip', options_list=['--platform-reserved-dns-ip'], help='An IP address from the IP range defined by Platform Reserved CIDR that will be reserved for the internal DNS server.')
         c.argument('internal_only', arg_type=get_three_state_flag(), options_list=['--internal-only'], help='Boolean indicating the environment only has an internal load balancer. These environments do not have a public static IP resource, therefore must provide infrastructureSubnetResourceId if enabling this property')
+
+    with self.argument_context('containerapp env', arg_group='Custom Domain') as c:
+        c.argument('hostname', options_list=['--custom-domain-dns-suffix', '--dns-suffix'], help='The DNS suffix for the environment\'s custom domain.')
+        c.argument('certificate_file', options_list=['--custom-domain-certificate-file', '--certificate-file'], help='The filepath of the certificate file (.pfx or .pem) for the environment\'s custom domain. To manage certificates for container apps, use `az containerapp env certificate`.')
+        c.argument('certificate_password', options_list=['--custom-domain-certificate-password', '--certificate-password'], help='The certificate file password for the environment\'s custom domain.')
+
     with self.argument_context('containerapp env create') as c:
         c.argument('zone_redundant', options_list=["--zone-redundant", "-z"], help="Enable zone redundancy on the environment. Cannot be used without --infrastructure-subnet-resource-id. If used with --location, the subnet's location must match")
 
@@ -220,8 +243,9 @@ def load_arguments(self, _):
     with self.argument_context('containerapp ingress') as c:
         c.argument('allow_insecure', help='Allow insecure connections for ingress traffic.')
         c.argument('type', validator=validate_ingress, arg_type=get_enum_type(['internal', 'external']), help="The ingress type.")
-        c.argument('transport', arg_type=get_enum_type(['auto', 'http', 'http2']), help="The transport protocol used for ingress traffic.")
+        c.argument('transport', arg_type=get_enum_type(['auto', 'http', 'http2', 'tcp']), help="The transport protocol used for ingress traffic.")
         c.argument('target_port', type=int, validator=validate_target_port, help="The application port used for ingress traffic.")
+        c.argument('exposed_port', type=int, help="Additional exposed port. Only supported by tcp transport protocol. Must be unique per environment if the app ingress is external.")
 
     with self.argument_context('containerapp ingress traffic') as c:
         c.argument('revision_weights', nargs='+', options_list=['--revision-weight', c.deprecate(target='--traffic-weight', redirect='--revision-weight')], help="A list of revision weight(s) for the container app. Space-separated values in 'revision_name=weight' format. For latest revision, use 'latest=weight'")
@@ -265,7 +289,7 @@ def load_arguments(self, _):
         c.argument('name', configured_default='name', id_part=None)
         c.argument('managed_env', configured_default='managed_env')
         c.argument('registry_server', configured_default='registry_server')
-        c.argument('source', help='Local directory path to upload to Azure container registry.')
+        c.argument('source', help='Local directory path containing the application source and Dockerfile for building the container image. Preview: If no Dockerfile is present, a container image is generated using Oryx. See the supported Oryx runtimes here: https://github.com/microsoft/Oryx/blob/main/doc/supportedRuntimeVersions.md.')
         c.argument('image', options_list=['--image', '-i'], help="Container image, e.g. publisher/image-name:tag.")
         c.argument('browse', help='Open the app in a web browser after creation and deployment, if possible.')
 
@@ -334,7 +358,7 @@ def load_arguments(self, _):
 
     with self.argument_context('containerapp hostname list') as c:
         c.argument('name', id_part=None)
-        c.argument('location', arg_type=get_location_type(self.cli_ctx), validator=get_default_location_from_resource_group)
+        c.argument('location', arg_type=get_location_type(self.cli_ctx))
 
     with self.argument_context('containerapp hostname delete') as c:
         c.argument('hostname', help='The custom domain name.')

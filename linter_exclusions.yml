@@ -64,6 +64,9 @@ aks create:
     load_balancer_outbound_ports:
       rule_exclusions:
       - option_length_too_long
+    load_balancer_backend_pool_type:
+      rule_exclusions:
+      - option_length_too_long
     nat_gateway_idle_timeout:
       rule_exclusions:
       - option_length_too_long
@@ -174,6 +177,9 @@ aks update:
       rule_exclusions:
       - option_length_too_long
     load_balancer_outbound_ports:
+      rule_exclusions:
+      - option_length_too_long
+    load_balancer_backend_pool_type:
       rule_exclusions:
       - option_length_too_long
     nat_gateway_idle_timeout:
@@ -1166,6 +1172,9 @@ iot central user update:
     central_dns_suffix:
       rule_exclusions:
       - no_parameter_defaults_for_update_commands
+iot device-update update:
+  rule_exclusions:
+    - require_wait_command_if_no_wait
 iot dps enrollment update:
   parameters:
     auth_type_dataplane:
