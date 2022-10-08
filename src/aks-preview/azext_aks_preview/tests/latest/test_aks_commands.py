@@ -309,6 +309,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                      '--vm-set-type VirtualMachineScaleSets -c 1 ' \
                      '--enable-vpa ' \
                      '--kubernetes-version={k8s_version} ' \
+                     '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AKS-VPAPreview ' \
                      '--ssh-key-value={ssh_key_value} -o json'
         self.cmd(create_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
@@ -316,6 +317,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         ])
 
         update_cmd = 'aks update --resource-group={resource_group} --name={name} ' \
+                     '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AKS-VPAPreview ' \
                      '--disable-vpa -o json'
         self.cmd(update_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
@@ -323,6 +325,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         ])
 
         update_cmd = 'aks update --resource-group={resource_group} --name={name} ' \
+                     '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AKS-VPAPreview ' \
                      '--enable-vpa -o json'
         self.cmd(update_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
@@ -3849,13 +3852,15 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         create_cmd = 'aks create --resource-group={resource_group} --name={name} --location={location} ' \
             '--ssh-key-value={ssh_key_value} ' \
             '--kubernetes-version={k8s_version} ' \
-            '--load-balancer-backend-pool-type=nodeIP'
+            '--load-balancer-backend-pool-type=nodeIP ' \
+            '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/IPBasedLoadBalancerPreview'
         self.cmd(create_cmd, checks=[
             self.check('networkProfile.loadBalancerProfile.backendPoolType', 'nodeIP'),
         ])
 
         # update
-        update_cmd = 'aks update -g {resource_group} -n {name} --load-balancer-backend-pool-type=nodeIP'
+        update_cmd = 'aks update -g {resource_group} -n {name} --load-balancer-backend-pool-type=nodeIP ' \
+            '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/IPBasedLoadBalancerPreview'
         self.cmd(update_cmd, checks=[
             self.check('networkProfile.loadBalancerProfile.backendPoolType', 'nodeIP'),
         ])
