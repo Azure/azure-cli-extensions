@@ -11,7 +11,8 @@ from azure.cli.core.commands.parameters import (resource_group_name_type, get_lo
                                                 get_three_state_flag, get_enum_type, tags_type)
 
 from ._validators import (validate_memory, validate_cpu, validate_managed_env_name_or_id, validate_registry_server,
-                          validate_registry_user, validate_registry_pass, validate_target_port, validate_ingress)
+                          validate_registry_user, validate_registry_pass, validate_target_port, validate_ingress,
+                          validate_storage_name_or_id)
 from ._constants import UNAUTHENTICATED_CLIENT_ACTION, FORWARD_PROXY_CONVENTION, MAXIMUM_CONTAINER_APP_NAME_LENGTH, LOG_TYPE_CONSOLE, LOG_TYPE_SYSTEM
 
 
@@ -141,9 +142,11 @@ def load_arguments(self, _):
         c.argument('location', arg_type=get_location_type(self.cli_ctx), help='Location of resource. Examples: eastus2, northeurope')
         c.argument('tags', arg_type=tags_type)
 
-    with self.argument_context('containerapp env', arg_group='Log Analytics') as c:
-        c.argument('logs_customer_id', options_list=['--logs-workspace-id'], help='Workspace ID of the Log Analytics workspace to send diagnostics logs to. You can use \"az monitor log-analytics workspace create\" to create one. Extra billing may apply.')
-        c.argument('logs_key', options_list=['--logs-workspace-key'], help='Log Analytics workspace key to configure your Log Analytics workspace. You can use \"az monitor log-analytics workspace get-shared-keys\" to retrieve the key.')
+    with self.argument_context('containerapp env', arg_group='Monitoring') as c:
+        c.argument('logs_destination', arg_type=get_enum_type(["log-analytics", "azure-monitor", "none"]), help='Logs destination.')
+        c.argument('logs_customer_id', options_list=['--logs-workspace-id'], help='Workspace ID of the Log Analytics workspace to send diagnostics logs to. Only works with logs destination "log-analytics". You can use \"az monitor log-analytics workspace create\" to create one. Extra billing may apply.')
+        c.argument('logs_key', options_list=['--logs-workspace-key'], help='Log Analytics workspace key to configure your Log Analytics workspace. Only works with logs destination "log-analytics". You can use \"az monitor log-analytics workspace get-shared-keys\" to retrieve the key.')
+        c.argument('storage_account', validator=validate_storage_name_or_id, help="Name or resource ID of the storage account used for Azure Monitor. If this value is provided, Azure Monitor Diagnostic Settings will be created automatically.")
 
     with self.argument_context('containerapp env', arg_group='Dapr') as c:
         c.argument('instrumentation_key', options_list=['--dapr-instrumentation-key'], help='Application Insights instrumentation key used by Dapr to export Service to Service communication telemetry')
@@ -155,7 +158,6 @@ def load_arguments(self, _):
         c.argument('platform_reserved_cidr', options_list=['--platform-reserved-cidr'], help='IP range in CIDR notation that can be reserved for environment infrastructure IP addresses. It must not overlap with any other Subnet IP ranges')
         c.argument('platform_reserved_dns_ip', options_list=['--platform-reserved-dns-ip'], help='An IP address from the IP range defined by Platform Reserved CIDR that will be reserved for the internal DNS server.')
         c.argument('internal_only', arg_type=get_three_state_flag(), options_list=['--internal-only'], help='Boolean indicating the environment only has an internal load balancer. These environments do not have a public static IP resource, therefore must provide infrastructureSubnetResourceId if enabling this property')
-
     with self.argument_context('containerapp env', arg_group='Custom Domain') as c:
         c.argument('hostname', options_list=['--custom-domain-dns-suffix', '--dns-suffix'], help='The DNS suffix for the environment\'s custom domain.')
         c.argument('certificate_file', options_list=['--custom-domain-certificate-file', '--certificate-file'], help='The filepath of the certificate file (.pfx or .pem) for the environment\'s custom domain. To manage certificates for container apps, use `az containerapp env certificate`.')
@@ -362,3 +364,9 @@ def load_arguments(self, _):
 
     with self.argument_context('containerapp hostname delete') as c:
         c.argument('hostname', help='The custom domain name.')
+
+    # Compose
+    with self.argument_context('containerapp compose create') as c:
+        c.argument('environment', options_list=['--environment', '-e'], help='Name or resource id of the Container App environment.')
+        c.argument('compose_file_path', options_list=['--compose-file-path', '-f'], help='Path to a Docker Compose file with the configuration to import to Azure Container Apps.')
+        c.argument('transport_mapping', options_list=['--transport-mapping', c.deprecate(target='--transport', redirect='--transport-mapping')], action='append', nargs='+', help="Transport options per Container App instance (servicename=transportsetting).")
