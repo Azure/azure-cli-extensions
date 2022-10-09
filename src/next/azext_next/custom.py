@@ -16,10 +16,12 @@ from azure.cli.core.style import print_styled_text, Style
 import azure.cli.core.telemetry as telemetry
 
 
-def handle_next(cmd):
+def handle_next(cmd, scenario=False):
     init(autoreset=True)  # turn on automatic color recovery for colorama
 
-    if cmd.cli_ctx.config.getboolean('next', 'filter_type', fallback=False):
+    if scenario:
+        request_type = RecommendType.Scenario.value
+    elif cmd.cli_ctx.config.getboolean('next', 'filter_type', fallback=False):
         request_type = _get_filter_option()
     else:
         request_type = RecommendType.All.value
@@ -307,7 +309,11 @@ def _execute_recommend_commands(cmd, rec):
 
 
 def _execute_recommend_scenarios(cmd, rec):
-    for nx_cmd in rec["nextCommandSet"]:
+    exec_idx = rec.get("execIdx")
+    for idx, nx_cmd in enumerate(rec["nextCommandSet"]):
+        cmd_active = exec_idx is None or idx in exec_idx
+        if not cmd_active:
+            continue
         nx_param = []
         if "arguments" in nx_cmd:
             nx_param = nx_cmd["arguments"]
@@ -368,13 +374,13 @@ def _show_details_for_e2e_scenario(cmd, rec):
                        (Style.ACTION, " contains the following commands:\n")])
 
     nx_cmd_set = rec["nextCommandSet"]
-    idx = 0
-    for nx_cmd in nx_cmd_set:
-        idx += 1
+    exec_idx = rec.get("execIdx")
+    for idx, nx_cmd in enumerate(nx_cmd_set):
         command_item = "az " + nx_cmd['command']
         if 'arguments' in nx_cmd and cmd.cli_ctx.config.getboolean('next', 'show_arguments', fallback=False):
             command_item = "{} {}".format(command_item, ' '.join(nx_cmd['arguments']))
-        print(command_item)
+        cmd_active = exec_idx is None or idx in exec_idx
+        print_styled_text([(Style.ACTION, " > "), (Style.PRIMARY if cmd_active else Style.SECONDARY, command_item)])
 
         if nx_cmd['reason']:
             print_styled_text([(Style.SECONDARY, get_title_case(nx_cmd['reason']) + "\n")])
