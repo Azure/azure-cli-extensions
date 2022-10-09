@@ -60,17 +60,31 @@ class AutomanageScenario(ScenarioTest):
         # TODO server error
         # self.cmd('az automanage configuration-profile version create')
 
-    # @ResourceGroupPreparer(location='eastus2euap', name_prefix='clitest.rg.automanage.configurationprofileassignment.')
-    # def test_automanage_configuration_profile_assignment_scenarios(self):
-    #     self.kwargs.update({
-    #         'profile_name': self.create_random_name(prefix='profile', length=24),
-    #         'arc_assignment_name': self.create_random_name(prefix='arc_assignment', length=24),
-    #     })
-    #     profile_id = self.cmd('az automanage configuration-profile create -n {profile_name} '
-    #                           '-g {rg}').get_output_in_json()["id"]
-    #     self.cmd('az automanage configuration-profile-assignment arc create -n {arc_assignment_name} -g {rg}')
-    #     self.cmd('az automanage configuration-profile show -n {profile_name} -g {rg}')
-    #     self.cmd('az automanage configuration-profile list -g {rg}', checks=[JMESPathCheck('length(@)', 1)])
-    #     self.cmd('az automanage configuration-profile update -n {profile_name} -g {rg}')
-    #     self.cmd('az automanage configuration-profile delete -n {profile_name} -g {rg} -y')
-    #     self.cmd('az automanage configuration-profile list -g {rg}', checks=[JMESPathCheck('length(@)', 0)])
+    @ResourceGroupPreparer(location='eastus2euap', name_prefix='clitest.rg.automanage.profileassignment.vm.')
+    def test_automanage_configuration_profile_assignment_vm_scenarios(self):
+        self.kwargs.update({
+            'profile_name': self.create_random_name(prefix='profile', length=24),
+            'vm_name': self.create_random_name(prefix='vm', length=24),
+            'profile_name_2': self.create_random_name(prefix='profile', length=24),
+        })
+        profile_id = self.cmd('az automanage configuration-profile create -n {profile_name} -g {rg} '
+                              '--configuration {{Antimalware/Enable:true}}').get_output_in_json()["id"]
+        self.kwargs.update({'profile_id': profile_id})
+        vm_id = self.cmd('az vm create -n {vm_name} -g {rg} --image UbuntuLTS').get_output_in_json()["id"]
+        self.cmd('az automanage configuration-profile-assignment vm create -n default -g {rg} '
+                 '--vm-name {vm_name} --configuration-profile {profile_id}')
+        self.cmd('az automanage configuration-profile-assignment vm show -n default -g {rg} --vm-name {vm_name}',
+                 checks=[JMESPathCheck('name', 'default'),
+                         JMESPathCheck('properties.configurationProfile', profile_id),
+                         JMESPathCheck('properties.targetId', vm_id)])
+        self.cmd('az automanage configuration-profile-assignment list -g {rg}', checks=[JMESPathCheck('length(@)', 1)])
+
+        profile_id_2 = self.cmd('az automanage configuration-profile create -n {profile_name_2} -g {rg} '
+                                '--configuration {{Antimalware/Enable:false}}').get_output_in_json()["id"]
+        self.kwargs.update({'profile_id_2': profile_id_2})
+        self.cmd('az automanage configuration-profile-assignment vm update --n default -g {rg} '
+                 '--vm-name {vm_name} --configuration-profile {profile_id_2}',
+                 checks=[JMESPathCheck('properties.configurationProfile', profile_id_2),
+                         JMESPathCheck('properties.targetId', vm_id)])
+        self.cmd('az automanage configuration-profile-assignment vm delete -n default -g {rg} --vm-name {vm_name} -y')
+        self.cmd('az automanage configuration-profile-assignment list -g {rg}', checks=[JMESPathCheck('length(@)', 0)])
