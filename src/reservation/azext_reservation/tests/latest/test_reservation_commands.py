@@ -331,7 +331,7 @@ class AzureReservationsTests(ScenarioTest):
             'reservation_id': 'a09b9fd7-b277-41f0-a58f-3469368d2088',
             'subscription_id': 'fed2a274-8787-4a13-8371-f5282597b779'
         })
-        response = self.cmd('reservations reservation available-scope --reservation-order-id {reservation_order_id} --reservation-id {reservation_id}'
+        response = self.cmd('reservations reservation list-available-scope --reservation-order-id {reservation_order_id} --reservation-id {reservation_id}'
         ' --scopes [/subscriptions/{subscription_id}]').get_output_in_json()
 
         self.assertIsNotNone(response)
