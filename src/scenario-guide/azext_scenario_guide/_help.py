@@ -15,7 +15,7 @@ short-summary: E2E Scenario Usage Guidance
 
 helps['scenario guide'] = """
 type: command
-short-summary: Fuzzy search and execute the E2E scenario examples you need
+short-summary: Fuzzy search E2E scenario examples and execute them with walk-through
 long-summary: >
 
     This a search tool that can help you find and explore E2E scenario samples!
