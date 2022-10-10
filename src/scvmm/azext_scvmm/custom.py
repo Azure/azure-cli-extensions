@@ -124,6 +124,10 @@ def connect_vmmserver(
             creds['password'] = pwinput('Please provide vmmserver password: ')
             if not creds['password']:
                 print('Parameter is required, please try again')
+            passwdConfim = pwinput('Please confirm vmmserver password: ')
+            if creds['password'] != passwdConfim:
+                print('Passwords do not match, please try again')
+                creds['password'] = None
         print('Confirm vmmserver details? [Y/n]: ', end='')
         res = input().lower()
         if res in ['y', '']:
