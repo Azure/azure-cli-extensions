@@ -38,7 +38,7 @@ long-summary: >
         Enable/disable whether to print help actively before executing each command. False is the default.
 
 examples:
-  - name: Search scenario examples of how to connect the App Service to SQL Database.
+  - name: Search and execute scenario examples of how to connect the App Service to SQL Database.
     text: |-
         az scenario guide app service database
   - name: Search scenario examples whose title or description related to app service or web app.
