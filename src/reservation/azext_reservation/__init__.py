@@ -10,11 +10,8 @@ class ReservationsCommandsLoader(AzCommandsLoader):
 
     def __init__(self, cli_ctx=None):
         from azure.cli.core.commands import CliCommandType
-        from azure.cli.core.profiles import ResourceType
         reservations_custom = CliCommandType(operations_tmpl='azext_reservation.custom#{}')
-        super().__init__(cli_ctx=cli_ctx,
-                         custom_command_type=reservations_custom,
-                         resource_type=ResourceType.MGMT_RESERVATIONS)
+        super().__init__(cli_ctx=cli_ctx, custom_command_type=reservations_custom)
 
     def load_command_table(self, args):
         from azext_reservation.commands import load_command_table
