@@ -70,11 +70,12 @@ def _show_search_item(results):
         num_notice = f" ({len(result['commandSet'])} Commands)"
         print_styled_text([(Style.ACTION, idx_str), (Style.PRIMARY, result['scenario']), (Style.SECONDARY, num_notice)])
 
-        # Display a description or related command next line
-        # We will display the description if a matched keyword in description
-        # If there's no matched keyword in description, we will display the command with matched keyword instead
-        # If there's no matched keyword in commands, we will display the scenario name with matched keyword
-        # If there's no matched keyword in scenario name, we will display scenario description anyway
+        # Display the command description or related command in the secondary information
+        # The specific display strategy are as follows:
+        # 1. It will display the description if a matched keyword in description
+        # 2. If there's no matched keyword in description, it will display the command with matched keyword instead
+        # 3. If there's no matched keyword in commands, it will display the scenario name with matched keyword
+        # 4. If there's no matched keyword in scenario name, it will display scenario description anyway
         highlight_desc = next(iter(result.get('highlights', {}).get('description', [])), None)
         if highlight_desc:
             print_styled_text(_style_highlight(highlight_desc))
@@ -100,7 +101,7 @@ def _show_search_item(results):
     print()
 
 
-def _show_detail(cmd, scenario):
+def _show_item_detail(cmd, scenario):
     """Display the commands and command descriptions contained in the scenario"""
     print_styled_text([(Style.WARNING, scenario['scenario']), (Style.PRIMARY, " contains the following commands:\n")])
 
@@ -127,7 +128,7 @@ def _show_detail(cmd, scenario):
         print()
 
 
-def _style_highlight(highlight_content: str) -> list:
+def _match_result_highlight(highlight_content: str) -> list:
     """Build `styled_text` from content with `<em></em>` as highlight mark"""
     styled_description = []
     remain = highlight_content
@@ -215,7 +216,7 @@ def _execute_cmd(ctx_cmd, command, params, catch_exception=False):
     return exit_code
 
 
-def _input_args(params):
+def _get_input_args(params):
     """
     Interact with user and read arguments from `stdin`.
     Return read arguments list.
@@ -259,7 +260,7 @@ def _get_output_arg(command, output_format):
     return args
 
 
-def _invoke(ctx_cmd, args, catch_exception=False):
+def _cmd_invoke(ctx_cmd, args, catch_exception=False):
     """
     Invoke a command execution.
     Exception will not be caught when print help.
@@ -297,7 +298,7 @@ def _get_command_sample(command):
     return [(Style.PRIMARY, command_sample)]
 
 
-def _format_sample(command_sample):
+def _format_command_sample(command_sample):
     """
     Format command sample in the style of `az xxx --name <appServicePlan>`.
     Also return the arguments used in the sample.

@@ -40,12 +40,12 @@ long-summary: >
 examples:
   - name: Search and execute scenario examples of how to connect the App Service to SQL Database.
     text: |-
-        az scenario guide app service database
+        az scenario guide "app service database"
   - name: Search scenario examples whose title or description related to app service or web app.
     text: |-
-        az scenario guide web app service --scope "scenario" --match-rule "or"
-  - name: Search top 3 scenario examples whose commands contain keywords "network","vnet" and "subnet" at the same time.
+        az scenario guide "web app service" --scope "scenario" --match-rule "or"
+  - name: Search and execute top 3 scenario examples whose commands contain keywords "network","vnet" and "subnet" at the same time.
     text: |-
-        az scenario guide network vnet subnet --scope "command" --match-rule "and" --top 3
+        az scenario guide "network vnet subnet" --scope "command" --match-rule "and" --top 3
 
 """
