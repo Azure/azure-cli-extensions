@@ -88,6 +88,7 @@ ManagedClusterSecurityProfileDefender = TypeVar("ManagedClusterSecurityProfileDe
 ManagedClusterSecurityProfileNodeRestriction = TypeVar("ManagedClusterSecurityProfileNodeRestriction")
 ManagedClusterWorkloadProfileVerticalPodAutoscaler = TypeVar("ManagedClusterWorkloadProfileVerticalPodAutoscaler")
 
+
 # pylint: disable=too-few-public-methods
 class AKSPreviewManagedClusterModels(AKSManagedClusterModels):
     """Store the models used in aks series of commands.
@@ -394,7 +395,7 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
                         kube_proxy_config_file_path
                     )
                 )
-        
+
         # try to read the property value corresponding to the parameter from the `mc` object
         if self.mc and self.mc.network_profile and self.mc.network_profile.kube_proxy_config is not None:
             kube_proxy_config = self.mc.network_profile.kube_proxy_config
@@ -2354,7 +2355,7 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
 
         if self.context.get_enable_node_restriction():
             if mc.security_profile is None:
-                    mc.security_profile = self.models.ManagedClusterSecurityProfile()
+                mc.security_profile = self.models.ManagedClusterSecurityProfile()
             mc.security_profile.node_restriction = self.models.ManagedClusterSecurityProfileNodeRestriction(
                 enabled=True,
             )
@@ -2389,7 +2390,7 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
                 "Unexpectedly get an empty network profile in the process of updating kube-proxy config."
             )
 
-        mc.network_profile.kube_proxy_config  = self.context.get_kube_proxy_config()
+        mc.network_profile.kube_proxy_config = self.context.get_kube_proxy_config()
         return mc
 
     def construct_mc_profile_preview(self, bypass_restore_defaults: bool = False) -> ManagedCluster:
@@ -2605,7 +2606,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
 
         mc.http_proxy_config = self.context.get_http_proxy_config()
         return mc
-        
+
     def update_pod_security_policy(self, mc: ManagedCluster) -> ManagedCluster:
         """Update pod security policy for the ManagedCluster object.
 
