@@ -170,7 +170,7 @@ def load_command_table(self, _):
                             exception_handler=handle_asc_exception) as g:
         g.custom_command('create', 'deployment_create', supports_no_wait=True)
 
-    with self.command_group('spring app deployment', client_factory=cf_spring_20220501preview,
+    with self.command_group('spring app deployment', client_factory=cf_spring_20220901preview,
                             exception_handler=handle_asc_exception) as g:
         g.custom_command('list', 'deployment_list',
                          table_transformer=transform_spring_deployment_output)
@@ -180,6 +180,9 @@ def load_command_table(self, _):
         g.custom_command('generate-heap-dump', 'deployment_generate_heap_dump')
         g.custom_command('generate-thread-dump', 'deployment_generate_thread_dump')
         g.custom_command('start-jfr', 'deployment_start_jfr')
+        g.custom_command('enable-remote-debugging', 'deployment_enable_remote_debugging')
+        g.custom_command('disable-remote-debugging', 'deployment_disable_remote_debugging')
+        g.custom_command('get-remote-debugging', 'deployment_get_remote_debugging')
 
     with self.command_group('spring app binding', client_factory=cf_spring_20220101preview,
                             exception_handler=handle_asc_exception) as g:

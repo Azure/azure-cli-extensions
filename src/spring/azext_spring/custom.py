@@ -25,13 +25,16 @@ from .vendored_sdks.appplatform.v2020_07_01 import models
 from .vendored_sdks.appplatform.v2020_11_01_preview import models as models_20201101preview
 from .vendored_sdks.appplatform.v2022_01_01_preview import models as models_20220101preview
 from .vendored_sdks.appplatform.v2022_05_01_preview import models as models_20220501preview
+from .vendored_sdks.appplatform.v2022_09_01_preview import models as models_20220901preview
+
 from .vendored_sdks.appplatform.v2020_07_01.models import _app_platform_management_client_enums as AppPlatformEnums
 from .vendored_sdks.appplatform.v2020_11_01_preview import (
     AppPlatformManagementClient as AppPlatformManagementClient_20201101preview
 )
 from ._client_factory import (cf_spring)
 from knack.log import get_logger
-from azure.cli.core.azclierror import ClientRequestError, FileOperationError, InvalidArgumentValueError, ResourceNotFoundError
+from azure.cli.core.azclierror import ClientRequestError, FileOperationError, InvalidArgumentValueError, \
+    ResourceNotFoundError
 from azure.cli.core.commands.client_factory import get_mgmt_service_client
 from azure.cli.core.util import sdk_no_wait
 from azure.mgmt.applicationinsights import ApplicationInsightsManagementClient
@@ -132,7 +135,8 @@ def spring_update(cmd, client, resource_group, name, app_insights_key=None, app_
         updated_resource.tags = tags
         update_service_tags = True
 
-    if update_service_tags is False and update_service_sku is False and update_log_stream_public_endpoint is False and (ingress_read_timeout is None):
+    if update_service_tags is False and update_service_sku is False and update_log_stream_public_endpoint is False and (
+            ingress_read_timeout is None):
         return resource
 
     updated_resource.properties = updated_resource_properties
@@ -196,7 +200,9 @@ def spring_start(cmd, client, resource_group, name, no_wait=False):
     state = resource.properties.provisioning_state
     power_state = resource.properties.power_state
     if state != "Succeeded" or power_state != "Stopped":
-        raise ClientRequestError("Service is in Provisioning State({}) and Power State({}), starting cannot be performed.".format(state, power_state))
+        raise ClientRequestError(
+            "Service is in Provisioning State({}) and Power State({}), starting cannot be performed.".format(state,
+                                                                                                             power_state))
     return sdk_no_wait(no_wait, client.services.begin_start, resource_group_name=resource_group, service_name=name)
 
 
@@ -205,7 +211,9 @@ def spring_stop(cmd, client, resource_group, name, no_wait=False):
     state = resource.properties.provisioning_state
     power_state = resource.properties.power_state
     if state != "Succeeded" or power_state != "Running":
-        raise ClientRequestError("Service is in Provisioning State({}) and Power State({}), stopping cannot be performed.".format(state, power_state))
+        raise ClientRequestError(
+            "Service is in Provisioning State({}) and Power State({}), stopping cannot be performed.".format(state,
+                                                                                                             power_state))
     return sdk_no_wait(no_wait, client.services.begin_stop, resource_group_name=resource_group, service_name=name)
 
 
@@ -236,7 +244,8 @@ def list_keys(cmd, client, resource_group, name, app=None, deployment=None):
             if deployment else app_get(cmd, client, resource_group, name, app).properties.active_deployment
         if deployment_resource:
             keys.primary_test_endpoint = "{}/{}/{}/".format(keys.primary_test_endpoint, app, deployment_resource.name)
-            keys.secondary_test_endpoint = "{}/{}/{}/".format(keys.secondary_test_endpoint, app, deployment_resource.name)
+            keys.secondary_test_endpoint = "{}/{}/{}/".format(keys.secondary_test_endpoint, app,
+                                                              deployment_resource.name)
     return keys
 
 
@@ -315,6 +324,23 @@ def app_stop(cmd, client,
                        resource_group, service, name, deployment.name)
 
 
+def deployment_enable_remote_debugging(cmd, client, resource_group, service, app, remote_debugging_port=None, deployment=None, no_wait=False):
+    logger.warning("Enable remote debugging for the app '{}', deployment '{}'".format(app, deployment.name))
+    remote_debugging_payload = models_20220901preview.RemoteDebuggingPayload(port=remote_debugging_port)
+    return sdk_no_wait(no_wait, client.deployments.begin_enable_remote_debugging,
+                       resource_group, service, app, deployment.name, remote_debugging_payload)
+
+
+def deployment_disable_remote_debugging(cmd, client, resource_group, service, app, deployment=None, no_wait=False):
+    logger.warning("Disable remote debugging for the app '{}', deployment '{}'".format(app, deployment.name))
+    return sdk_no_wait(no_wait, client.deployments.begin_disable_remote_debugging,
+                       resource_group, service, app, deployment.name)
+
+
+def deployment_get_remote_debugging(cmd, client, resource_group, service, app, deployment=None):
+    return client.deployments.get_remote_debugging_config(resource_group, service, app, deployment.name)
+
+
 def app_restart(cmd, client,
                 resource_group,
                 service,
@@ -334,7 +360,9 @@ def app_list(cmd, client,
         client.deployments.list_for_cluster(resource_group, service))
     for app in apps:
         app.properties.active_deployment = next(iter(x for x in deployments
-                                                if x.properties.active and x.id.startswith(app.id + '/deployments/')), None)
+                                                     if
+                                                     x.properties.active and x.id.startswith(app.id + '/deployments/')),
+                                                None)
     return apps
 
 
@@ -397,7 +425,9 @@ def app_tail_log(cmd, client, resource_group, service, name,
 
     log_stream = LogStream(client, resource_group, service)
     if not log_stream:
-        raise CLIError("To use the log streaming feature, please enable the test endpoint by running 'az spring test-endpoint enable -n {0} -g {1}'".format(service, resource_group))
+        raise CLIError(
+            "To use the log streaming feature, please enable the test endpoint by running 'az spring test-endpoint enable -n {0} -g {1}'".format(
+                service, resource_group))
 
     streaming_url = "https://{0}/api/logstream/apps/{1}/instances/{2}".format(
         log_stream.base_url, name, instance)
@@ -454,7 +484,8 @@ def _set_active_in_lagecy_api(cmd, client, resource_group, service, name, deploy
     return client.apps.begin_update(resource_group, service, name, app)
 
 
-def app_append_loaded_public_certificate(cmd, client, resource_group, service, name, certificate_name, load_trust_store):
+def app_append_loaded_public_certificate(cmd, client, resource_group, service, name, certificate_name,
+                                         load_trust_store):
     app_resource = client.apps.get(resource_group, service, name)
     certificate_resource = client.certificates.get(resource_group, service, certificate_name)
     certificate_resource_id = certificate_resource.id
@@ -504,14 +535,16 @@ def deployment_list(cmd, client, resource_group, service, app):
 def deployment_generate_heap_dump(cmd, client, resource_group, service, app, app_instance, file_path, deployment=None):
     diagnostic_parameters = models_20220101preview.DiagnosticParameters(app_instance=app_instance, file_path=file_path)
     logger.info("Heap dump is triggered.")
-    return client.deployments.begin_generate_heap_dump(resource_group, service, app, deployment.name, diagnostic_parameters)
+    return client.deployments.begin_generate_heap_dump(resource_group, service, app, deployment.name,
+                                                       diagnostic_parameters)
 
 
 def deployment_generate_thread_dump(cmd, client, resource_group, service, app, app_instance, file_path,
                                     deployment=None):
     diagnostic_parameters = models_20220101preview.DiagnosticParameters(app_instance=app_instance, file_path=file_path)
     logger.info("Thread dump is triggered.")
-    return client.deployments.begin_generate_thread_dump(resource_group, service, app, deployment.name, diagnostic_parameters)
+    return client.deployments.begin_generate_thread_dump(resource_group, service, app, deployment.name,
+                                                         diagnostic_parameters)
 
 
 def deployment_start_jfr(cmd, client, resource_group, service, app, app_instance, file_path, duration=None,
@@ -551,7 +584,9 @@ def validate_config_server_settings(client, resource_group, name, config_server_
     try:
         result = sdk_no_wait(False, client.begin_validate, resource_group, name, config_server_settings).result()
     except Exception as err:  # pylint: disable=broad-except
-        raise CLIError("{0}. You may raise a support ticket if needed by the following link: https://docs.microsoft.com/azure/spring-cloud/spring-cloud-faq?pivots=programming-language-java#how-can-i-provide-feedback-and-report-issues".format(err))
+        raise CLIError(
+            "{0}. You may raise a support ticket if needed by the following link: https://docs.microsoft.com/azure/spring-cloud/spring-cloud-faq?pivots=programming-language-java#how-can-i-provide-feedback-and-report-issues".format(
+                err))
 
     if not result.is_valid:
         for item in result.details or []:
@@ -1169,7 +1204,8 @@ def certificate_add(cmd, client, resource_group, service, name, only_public_cert
     if vault_uri is None and public_certificate_file is None:
         raise InvalidArgumentValueError("One of --vault-uri and --public-certificate-file should be provided")
     if vault_uri is not None and public_certificate_file is not None:
-        raise InvalidArgumentValueError("--vault-uri and --public-certificate-file could not be provided at the same time")
+        raise InvalidArgumentValueError(
+            "--vault-uri and --public-certificate-file could not be provided at the same time")
     if vault_uri is not None:
         if vault_certificate_name is None:
             raise InvalidArgumentValueError("--vault-certificate-name should be provided for Key Vault Certificate")
@@ -1200,7 +1236,8 @@ def certificate_add(cmd, client, resource_group, service, name, only_public_cert
     certificate_resource = models_20220101preview.CertificateResource(properties=properties)
 
     def callback(pipeline_response, deserialized, headers):
-        return models_20220101preview.CertificateResource.deserialize(json.loads(pipeline_response.http_response.text()))
+        return models_20220101preview.CertificateResource.deserialize(
+            json.loads(pipeline_response.http_response.text()))
 
     return client.certificates.begin_create_or_update(
         resource_group_name=resource_group,
@@ -1469,7 +1506,6 @@ def app_insights_show(cmd, client, resource_group, name, no_wait=False):
 
 def app_connect(cmd, client, resource_group, service, name,
                 deployment=None, instance=None, shell_cmd='/bin/sh'):
-
     profile = Profile(cli_ctx=cmd.cli_ctx)
     creds, _, _ = profile.get_raw_token()
     token = creds[1]
@@ -1491,7 +1527,9 @@ def app_connect(cmd, client, resource_group, service, name,
 
     connect_url = "wss://{0}/api/appconnect/apps/{1}/deployments/{2}/instances/{3}/connect?command={4}".format(
         hostname, name, deployment.name, instance, shell_cmd)
-    logger.warning("Connecting to the app instance Microsoft.AppPlatform/Spring/%s/apps/%s/deployments/%s/instances/%s..." % (service, name, deployment.name, instance))
+    logger.warning(
+        "Connecting to the app instance Microsoft.AppPlatform/Spring/%s/apps/%s/deployments/%s/instances/%s..." % (
+        service, name, deployment.name, instance))
     conn = WebSocketConnection(connect_url, token)
 
     reader = Thread(target=recv_remote, args=(conn,))

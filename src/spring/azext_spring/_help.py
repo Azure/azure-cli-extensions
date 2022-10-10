@@ -383,6 +383,21 @@ helps['spring app deployment start-jfr'] = """
     short-summary: Start a JFR on your target app instance to given file path.
 """
 
+helps['spring app deployment enable-remote-debugging'] = """
+    type: command
+    short-summary: Enable remote debugging for a deployment.
+"""
+
+helps['spring app deployment disable-remote-debugging'] = """
+    type: command
+    short-summary: Disable remote debugging for a deployment.
+"""
+
+helps['spring app deployment get-remote-debugging'] = """
+    type: command
+    short-summary: Get the remote debugging configuration of a deployment.
+"""
+
 helps['spring config-server'] = """
     type: group
     short-summary: (Support Standard Tier and Basic Tier) Commands to manage Config Server in Azure Spring Apps.
