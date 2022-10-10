@@ -253,7 +253,7 @@ helps['quantum workspace quotas'] = """
     type: command
     short-summary: List the quotas for the given (or current) Azure Quantum workspace.
     examples:
-      - name: List the quota information of a specified Azure Quantum workspace.
+      - name: List the quota information of a specified Azure Quantum workspace. If a default workspace has been set, the -g, -w, and -l parameters are not required.
         text: |-
             az quantum workspace quotas -g MyResourceGroup -w MyWorkspace -l MyLocation
 """
