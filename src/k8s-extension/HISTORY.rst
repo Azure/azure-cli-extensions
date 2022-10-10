@@ -5,9 +5,8 @@ Release History
 
 1.3.6
 ++++++++++++++++++
-* k8s-extension updating the api version for extension type calls
-* k8s-extension adding tests for all extension type calls
-* k8s-extension fix to address the error TypeError: cf_k8s_extension() takes 1 positional argument but 2 were given while running all az k8s-extension extension-types commands
+* Update the api version for extension type calls
+* Fix the TypeError: cf_k8s_extension() takes 1 positional argument but 2 were given while running all az k8s-extension extension-types commands
 * microsoft.azuremonitor.containers: Update DCR creation to Clusters resource group instead of workspace
 * microsoft.dataprotection.kubernetes: Authoring a new k8s partner extension for the BCDR solution of AKS clusters
 
