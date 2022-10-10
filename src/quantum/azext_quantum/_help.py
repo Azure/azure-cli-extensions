@@ -231,12 +231,9 @@ helps['quantum workspace delete'] = """
     type: command
     short-summary: Delete the given (or current) Azure Quantum workspace.
     examples:
-      - name: Delete an Azure Quantum workspace by name and group.
+      - name: Delete an Azure Quantum workspace by resource group and workspace name. If a default workspace has been set, the -g and -w parameters are not required.
         text: |-
             az quantum workspace delete -g MyResourceGroup -w MyWorkspace
-      - name: Delete and clear the default Azure Quantum workspace (if one has been set).
-        text: |-
-            az quantum workspace delete
 """
 
 helps['quantum workspace list'] = """
