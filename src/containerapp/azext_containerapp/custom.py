@@ -1965,7 +1965,7 @@ def set_ip_restriction(cmd, name, resource_group_name, ip_restriction_name, ip_a
         handle_raw_exception(e)
 
 
-def remove_ip_restrictions(cmd, name, resource_group_name):
+def remove_ip_restriction(cmd, name, resource_group_name, ip_restriction_name, no_wait=False):
     _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     containerapp_def = None
@@ -1977,10 +1977,26 @@ def remove_ip_restrictions(cmd, name, resource_group_name):
     if not containerapp_def:
         raise ResourceNotFoundError("The containerapp '{}' does not exist".format(name))
 
+    ip_restrictions = safe_get(containerapp_def, "properties", "configuration", "ingress", "ipSecurityRestrictions", default=[])
+
+    restriction_removed = False
+    for index, value in enumerate(ip_restrictions):
+        if value["name"].lower() == ip_restriction_name.lower():
+            ip_restrictions.pop(index)
+            restriction_removed = True
+            break
+
+    if not restriction_removed:
+        raise ValidationError(f"Ip restriction name '{ip_restriction_name}' does not exist.")
+
+    containerapp_patch = {}
+    safe_set(containerapp_patch, "properties", "configuration", "ingress", "ipSecurityRestrictions", value=ip_restrictions)
     try:
-        return containerapp_def["properties"]["configuration"]["ingress"]["traffic"]
+        r = ContainerAppClient.update(
+            cmd=cmd, resource_group_name=resource_group_name, name=name, container_app_envelope=containerapp_patch, no_wait=no_wait)
+        return r['properties']['configuration']['ingress']['ipSecurityRestrictions']
     except Exception as e:
-        raise ValidationError("Ingress must be enabled to show ingress traffic. Try running `az containerapp ingress -h` for more info.") from e
+        handle_raw_exception(e)
 
 
 def show_ip_restrictions(cmd, name, resource_group_name):
@@ -1996,9 +2012,9 @@ def show_ip_restrictions(cmd, name, resource_group_name):
         raise ResourceNotFoundError("The containerapp '{}' does not exist".format(name))
 
     try:
-        return containerapp_def["properties"]["configuration"]["ingress"]["traffic"]
+        return containerapp_def['properties']['configuration']['ingress']['ipSecurityRestrictions']
     except Exception as e:
-        raise ValidationError("Ingress must be enabled to show ingress traffic. Try running `az containerapp ingress -h` for more info.") from e
+        raise ValidationError("Ingress must be enabled to show ip restrictions. Try running `az containerapp ingress -h` for more info.") from e
 
 def show_registry(cmd, name, resource_group_name, server):
     _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
