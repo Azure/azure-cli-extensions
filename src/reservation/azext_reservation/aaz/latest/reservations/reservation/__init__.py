@@ -10,8 +10,8 @@
 
 from .__cmd_group import *
 from ._archive import *
-from ._available_scope import *
 from ._list import *
+from ._list_available_scope import *
 from ._list_history import *
 from ._merge import *
 from ._show import *

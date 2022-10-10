@@ -12,13 +12,13 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "reservations reservation available-scope",
+    "reservations reservation list-available-scope",
 )
-class AvailableScope(AAZCommand):
-    """Get Available Scopes for `Reservation`.
+class ListAvailableScope(AAZCommand):
+    """List Available Scopes for `Reservation`.
 
-    :example: Get reservation available scope
-        az reservations reservation available-scope --reservation-order-id 40000000-aaaa-bbbb-cccc-20000000000 --reservation-id 30000000-aaaa-bbbb-cccc-20000000000 --scopes ['/subscriptions/60000000-aaaa-bbbb-cccc-20000000000']
+    :example: List reservation available scopes
+        az reservations reservation list-available-scope --reservation-order-id 40000000-aaaa-bbbb-cccc-20000000000 --reservation-id 30000000-aaaa-bbbb-cccc-20000000000 --scopes ['/subscriptions/60000000-aaaa-bbbb-cccc-20000000000']
     """
 
     _aaz_info = {
@@ -215,4 +215,4 @@ class AvailableScope(AAZCommand):
             return cls._schema_on_200
 
 
-__all__ = ["AvailableScope"]
+__all__ = ["ListAvailableScope"]

@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "reservations reservation list",
 )
 class List(AAZCommand):
-    """List `Reservations within a single `ReservationOrder`.
+    """List Reservations within a single `ReservationOrder`.
 
     :example: List all reservations within a reservation order.
         az reservations reservation list --reservation-order-id 50000000-aaaa-bbbb-cccc-100000000002

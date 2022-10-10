@@ -17,7 +17,7 @@ from azure.cli.core.aaz import *
 class Archive(AAZCommand):
     """Archiving a `Reservation` which is in cancelled/expired state and move it to `Archived` state.
 
-    :example: Archive a reservation
+    :example: Archiving a reservation
         az reservations reservation archive --reservation-order-id 40000000-aaaa-bbbb-cccc-20000000000 --reservation-id 50000000-aaaa-bbbb-cccc-200000000000
     """
 

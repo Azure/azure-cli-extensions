@@ -17,7 +17,7 @@ from azure.cli.core.aaz import *
 class Unarchive(AAZCommand):
     """Unarchiving a `Reservation` moves it to the state it was before archiving.
 
-    :example: Unarchive a reservation
+    :example: Unarchiving a reservation
         az reservations reservation unarchive --reservation-order-id 40000000-aaaa-bbbb-cccc-20000000000 --reservation-id 50000000-aaaa-bbbb-cccc-200000000000
     """
 

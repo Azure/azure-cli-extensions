@@ -18,7 +18,7 @@ class Merge(AAZCommand):
     """Merge the specified `Reservation`s into a new `Reservation`. The two `Reservation`s being merged must have same properties.
 
     :example: Merge reservations
-        az reservations reservation merge --reservation-order-id 10000000-aaaa-bbbb-cccc-100000000005 --sources ['/providers/Microsoft.Capacity/reservationOrders/10000000-aaaa-bbbb-cccc-100000000005/reservations/30000000-aaaa-bbbb-cccc-100000000002','/providers/Microsoft.Capacity/reservationOrders/10000000-aaaa-bbbb-cccc-100000000005/reservations/30000000-aaaa-bbbb-cccc-100000000004']
+        az reservations reservation merge --reservation-order-id 10000000-aaaa-bbbb-cccc-100000000005 --sources "['/providers/Microsoft.Capacity/reservationOrders/10000000-aaaa-bbbb-cccc-100000000005/reservations/30000000-aaaa-bbbb-cccc-100000000002','/providers/Microsoft.Capacity/reservationOrders/10000000-aaaa-bbbb-cccc-100000000005/reservations/30000000-aaaa-bbbb-cccc-100000000004']"
     """
 
     _aaz_info = {
