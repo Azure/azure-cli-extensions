@@ -9,34 +9,34 @@
 from copy import deepcopy
 from typing import Any, TYPE_CHECKING
 
-from msrest import Deserializer, Serializer
-
 from azure.core.rest import HttpRequest, HttpResponse
 from azure.mgmt.core import ARMPipelineClient
 
 from . import models
 from ._configuration import ConnectedKubernetesClientConfiguration
+from ._serialization import Deserializer, Serializer
 from .operations import ConnectedClusterOperations, Operations
 
 if TYPE_CHECKING:
     # pylint: disable=unused-import,ungrouped-imports
     from azure.core.credentials import TokenCredential
 
-class ConnectedKubernetesClient:
+
+class ConnectedKubernetesClient:  # pylint: disable=client-accepts-api-version-keyword
     """Azure Connected Cluster Resource Provider API for adopting any Kubernetes Cluster.
 
     :ivar connected_cluster: ConnectedClusterOperations operations
     :vartype connected_cluster: azure.mgmt.hybridkubernetes.operations.ConnectedClusterOperations
     :ivar operations: Operations operations
     :vartype operations: azure.mgmt.hybridkubernetes.operations.Operations
-    :param credential: Credential needed for the client to connect to Azure.
+    :param credential: Credential needed for the client to connect to Azure. Required.
     :type credential: ~azure.core.credentials.TokenCredential
-    :param subscription_id: The ID of the target subscription.
+    :param subscription_id: The ID of the target subscription. Required.
     :type subscription_id: str
     :param base_url: Service URL. Default value is "https://management.azure.com".
     :type base_url: str
-    :keyword api_version: Api Version. Default value is "2021-10-01". Note that overriding this
-     default value may result in unsupported behavior.
+    :keyword api_version: Api Version. Default value is "2022-10-01-preview". Note that overriding
+     this default value may result in unsupported behavior.
     :paramtype api_version: str
     :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
      Retry-After header is present.
@@ -49,22 +49,21 @@ class ConnectedKubernetesClient:
         base_url: str = "https://management.azure.com",
         **kwargs: Any
     ) -> None:
-        self._config = ConnectedKubernetesClientConfiguration(credential=credential, subscription_id=subscription_id, **kwargs)
+        self._config = ConnectedKubernetesClientConfiguration(
+            credential=credential, subscription_id=subscription_id, **kwargs
+        )
         self._client = ARMPipelineClient(base_url=base_url, config=self._config, **kwargs)
 
         client_models = {k: v for k, v in models.__dict__.items() if isinstance(v, type)}
         self._serialize = Serializer(client_models)
         self._deserialize = Deserializer(client_models)
         self._serialize.client_side_validation = False
-        self.connected_cluster = ConnectedClusterOperations(self._client, self._config, self._serialize, self._deserialize)
+        self.connected_cluster = ConnectedClusterOperations(
+            self._client, self._config, self._serialize, self._deserialize
+        )
         self.operations = Operations(self._client, self._config, self._serialize, self._deserialize)
 
-
-    def _send_request(
-        self,
-        request: HttpRequest,
-        **kwargs: Any
-    ) -> HttpResponse:
+    def _send_request(self, request: HttpRequest, **kwargs: Any) -> HttpResponse:
         """Runs the network request through the client's chained policies.
 
         >>> from azure.core.rest import HttpRequest
@@ -73,7 +72,7 @@ class ConnectedKubernetesClient:
         >>> response = client._send_request(request)
         <HttpResponse: 200 OK>
 
-        For more information on this code flow, see https://aka.ms/azsdk/python/protocol/quickstart
+        For more information on this code flow, see https://aka.ms/azsdk/dpcodegen/python/send_request
 
         :param request: The network request you want to make. Required.
         :type request: ~azure.core.rest.HttpRequest

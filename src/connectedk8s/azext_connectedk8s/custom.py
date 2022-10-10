@@ -42,7 +42,7 @@ from azext_connectedk8s._client_factory import cf_resource_groups
 from azext_connectedk8s._client_factory import _resource_client_factory
 from azext_connectedk8s._client_factory import _resource_providers_client
 from azext_connectedk8s._client_factory import get_graph_client_service_principals
-from azext_connectedk8s._client_factory import cf_connected_cluster_prev_2022_05_01
+from azext_connectedk8s._client_factory import cf_connected_cluster_prev_2022_10_01
 from azext_connectedk8s._client_factory import cf_connectedmachine
 import azext_connectedk8s._constants as consts
 import azext_connectedk8s._utils as utils
@@ -50,8 +50,8 @@ import azext_connectedk8s._clientproxyutils as clientproxyutils
 import azext_connectedk8s._troubleshootutils as troubleshootutils
 from glob import glob
 from .vendored_sdks.models import ConnectedCluster, ConnectedClusterIdentity, ConnectedClusterPatch, ListClusterUserCredentialProperties
-from .vendored_sdks.preview_2022_05_01.models import ConnectedCluster as ConnectedClusterPreview
-from .vendored_sdks.preview_2022_05_01.models import ConnectedClusterPatch as ConnectedClusterPatchPreview
+from .vendored_sdks.preview_2022_10_01.models import ConnectedCluster as ConnectedClusterPreview
+from .vendored_sdks.preview_2022_10_01.models import ConnectedClusterPatch as ConnectedClusterPatchPreview
 from threading import Timer, Thread
 import sys
 import hashlib
@@ -110,7 +110,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
 
     # Set preview client if private link properties are provided.
     if enable_private_link is not None:
-        client = cf_connected_cluster_prev_2022_05_01(cmd.cli_ctx, None)
+        client = cf_connected_cluster_prev_2022_10_01(cmd.cli_ctx, None)
 
     # Checking whether optional extra values file has been provided.
     values_file_provided, values_file = utils.get_values_file()
@@ -706,13 +706,13 @@ def get_server_address(kube_config, kube_context):
 
 def get_connectedk8s(cmd, client, resource_group_name, cluster_name):
     # Override preview client to show private link properties to customers
-    client = cf_connected_cluster_prev_2022_05_01(cmd.cli_ctx, None)
+    client = cf_connected_cluster_prev_2022_10_01(cmd.cli_ctx, None)
     return client.get(resource_group_name, cluster_name)
 
 
 def list_connectedk8s(cmd, client, resource_group_name=None):
     # Override preview client to show private link properties to customers
-    client = cf_connected_cluster_prev_2022_05_01(cmd.cli_ctx, None)
+    client = cf_connected_cluster_prev_2022_10_01(cmd.cli_ctx, None)
     if not resource_group_name:
         return client.list_by_subscription()
     return client.list_by_resource_group(resource_group_name)
@@ -927,7 +927,7 @@ def update_connected_cluster(cmd, client, resource_group_name, cluster_name, htt
     # Set preview client if cluster is private link enabled.
     connected_cluster = get_connectedk8s(cmd, client, resource_group_name, cluster_name)
     if connected_cluster.private_link_state.lower() == "enabled":
-        client = cf_connected_cluster_prev_2022_05_01(cmd.cli_ctx, None)
+        client = cf_connected_cluster_prev_2022_10_01(cmd.cli_ctx, None)
 
     # Patching the connected cluster ARM resource
     patch_cc_response = update_connected_cluster_internal(client, resource_group_name, cluster_name, tags)

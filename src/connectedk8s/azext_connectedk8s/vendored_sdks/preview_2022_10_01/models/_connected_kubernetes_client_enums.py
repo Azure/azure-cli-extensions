@@ -7,54 +7,60 @@
 # --------------------------------------------------------------------------
 
 from enum import Enum
-from six import with_metaclass
 from azure.core import CaseInsensitiveEnumMeta
 
 
-class AuthenticationMethod(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
-    """The mode of client authentication.
-    """
+class AuthenticationMethod(str, Enum, metaclass=CaseInsensitiveEnumMeta):
+    """The mode of client authentication."""
 
     TOKEN = "Token"
     AAD = "AAD"
 
-class ConnectivityStatus(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
-    """Represents the connectivity status of the connected cluster.
-    """
+
+class AzureHybridBenefit(str, Enum, metaclass=CaseInsensitiveEnumMeta):
+    """Indicates whether Azure Hybrid Benefit is opted in."""
+
+    TRUE = "True"
+    FALSE = "False"
+    NOT_APPLICABLE = "NotApplicable"
+
+
+class ConnectivityStatus(str, Enum, metaclass=CaseInsensitiveEnumMeta):
+    """Represents the connectivity status of the connected cluster."""
 
     CONNECTING = "Connecting"
     CONNECTED = "Connected"
     OFFLINE = "Offline"
     EXPIRED = "Expired"
 
-class CreatedByType(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
-    """The type of identity that created the resource.
-    """
+
+class CreatedByType(str, Enum, metaclass=CaseInsensitiveEnumMeta):
+    """The type of identity that created the resource."""
 
     USER = "User"
     APPLICATION = "Application"
     MANAGED_IDENTITY = "ManagedIdentity"
     KEY = "Key"
 
-class LastModifiedByType(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
-    """The type of identity that last modified the resource.
-    """
+
+class LastModifiedByType(str, Enum, metaclass=CaseInsensitiveEnumMeta):
+    """The type of identity that last modified the resource."""
 
     USER = "User"
     APPLICATION = "Application"
     MANAGED_IDENTITY = "ManagedIdentity"
     KEY = "Key"
 
-class PrivateLinkState(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
-    """Property which describes the state of private link on a connected cluster resource.
-    """
+
+class PrivateLinkState(str, Enum, metaclass=CaseInsensitiveEnumMeta):
+    """Property which describes the state of private link on a connected cluster resource."""
 
     ENABLED = "Enabled"
     DISABLED = "Disabled"
 
-class ProvisioningState(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
-    """The current deployment state of connectedClusters.
-    """
+
+class ProvisioningState(str, Enum, metaclass=CaseInsensitiveEnumMeta):
+    """The current deployment state of connectedClusters."""
 
     SUCCEEDED = "Succeeded"
     FAILED = "Failed"
@@ -64,7 +70,8 @@ class ProvisioningState(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
     DELETING = "Deleting"
     ACCEPTED = "Accepted"
 
-class ResourceIdentityType(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
+
+class ResourceIdentityType(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     """The type of identity used for the connected cluster. The type 'SystemAssigned, includes a
     system created identity. The type 'None' means no identity is assigned to the connected
     cluster.
