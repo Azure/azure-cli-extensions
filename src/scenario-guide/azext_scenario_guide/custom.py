@@ -38,7 +38,7 @@ def scenario_guide(cmd, search_keyword, scope=None, match_rule=None, top=None):
         return
 
     chosen_scenario = results[option - 1]
-    _show_detail(cmd, chosen_scenario)
+    _show_item_detail(cmd, chosen_scenario)
     send_feedback(scope, FeedbackOption.SELECT(option), search_keyword, results, chosen_scenario)
 
     if cmd.cli_ctx.config.getboolean('scenario_guide', 'execute_in_prompt', fallback=True):
@@ -78,7 +78,7 @@ def _show_search_item(results):
         # 4. If there's no matched keyword in scenario name, it will display scenario description anyway
         highlight_desc = next(iter(result.get('highlights', {}).get('description', [])), None)
         if highlight_desc:
-            print_styled_text(_style_highlight(highlight_desc))
+            print_styled_text(_match_result_highlight(highlight_desc))
             continue
 
         # Show the command with the most matching keywords
@@ -87,13 +87,13 @@ def _show_search_item(results):
         highlight_command = max(highlight_commands, key=lambda cmd: len(cmd.split(HIGHLIGHT_MARKER[0])), default=None)
         if highlight_command:
             include_command_style = [(Style.SECONDARY, "Include command: ")]
-            include_command_style.extend(_style_highlight(highlight_command))
+            include_command_style.extend(_match_result_highlight(highlight_command))
             print_styled_text(include_command_style)
             continue
 
         highlight_name = next(iter(result.get('highlights', {}).get('scenario', [])), None)
         if highlight_name:
-            print_styled_text(_style_highlight(highlight_name))
+            print_styled_text(_match_result_highlight(highlight_name))
             continue
 
         print_styled_text((Style.SECONDARY, result.get('description', "")))
@@ -199,14 +199,14 @@ def _execute_cmd(ctx_cmd, command, params, catch_exception=False):
     args.extend(command.split())
     if args[0] == "az":
         args.pop(0)
-    args.extend(_input_args(params))
+    args.extend(_get_input_args(params))
 
     output_format = ctx_cmd.cli_ctx.config.get('scenario_guide', 'output', fallback='status')
 
     if '--output' not in args and '-o' not in args:
         args.extend(_get_output_arg(command, output_format))
 
-    exit_code = _invoke(ctx_cmd, args, catch_exception)
+    exit_code = _cmd_invoke(ctx_cmd, args, catch_exception)
 
     if output_format == 'status' and exit_code == 0:
         print()
@@ -278,7 +278,7 @@ def _cmd_invoke(ctx_cmd, args, catch_exception=False):
 def _get_command_sample(command):
     """Try getting example from command. Or load the example from `--help` if not found."""
     if "example" in command and command["example"]:
-        command_sample, _ = _format_sample(command["example"].replace(" $", " "))
+        command_sample, _ = _format_command_sample(command["example"].replace(" $", " "))
         return command_sample
 
     from knack import help_files
@@ -289,7 +289,7 @@ def _get_command_sample(command):
         cmd_help = help_files._load_help_file(command['command'])   # pylint: disable=protected-access
         if cmd_help and 'examples' in cmd_help and cmd_help['examples']:
             for cmd_example in cmd_help['examples']:
-                command_sample, example_arguments = _format_sample(cmd_example['text'])
+                command_sample, example_arguments = _format_command_sample(cmd_example['text'])
                 if sorted(example_arguments) == sorted_param:
                     return command_sample
 
