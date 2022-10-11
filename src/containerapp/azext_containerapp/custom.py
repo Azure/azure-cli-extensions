@@ -53,12 +53,14 @@ from ._models import (
     ContainerAppCertificateEnvelope as ContainerAppCertificateEnvelopeModel,
     ContainerAppCustomDomain as ContainerAppCustomDomainModel,
     AzureFileProperties as AzureFilePropertiesModel,
+    CustomDomainConfiguration as CustomDomainConfigurationModel,
     ScaleRule as ScaleRuleModel)
-from ._utils import (_validate_subscription_registered, _get_location_from_resource_group, _ensure_location_allowed,
+
+from ._utils import (_validate_subscription_registered, _ensure_location_allowed,
                      parse_secret_flags, store_as_secret_and_return_secret_ref, parse_env_var_flags,
                      _generate_log_analytics_if_not_provided, _get_existing_secrets, _convert_object_from_snake_to_camel_case,
                      _object_to_dict, _add_or_update_secrets, _remove_additional_attributes, _remove_readonly_attributes,
-                     _add_or_update_env_vars, _add_or_update_tags, update_nested_dictionary, _update_revision_weights, _append_label_weights,
+                     _add_or_update_env_vars, _add_or_update_tags, _update_revision_weights, _append_label_weights,
                      _get_app_from_revision, raise_missing_token_suggestion, _infer_acr_credentials, _remove_registry_secret, _remove_secret,
                      _ensure_identity_resource_id, _remove_dapr_readonly_attributes, _remove_env_vars, _validate_traffic_sum,
                      _update_revision_env_secretrefs, _get_acr_cred, safe_get, await_github_action, repo_url_to_name,
@@ -66,13 +68,13 @@ from ._utils import (_validate_subscription_registered, _get_location_from_resou
                      generate_randomized_cert_name, _get_name, load_cert_file, check_cert_name_availability,
                      validate_hostname, patch_new_custom_domain, get_custom_domains, _validate_revision_name, set_managed_identity,
                      create_acrpull_role_assignment, is_registry_msi_system, clean_null_values, _populate_secret_values,
-                     validate_environment_location, parse_metadata_flags, parse_auth_flags)
-from ._validators import validate_create
+                     validate_environment_location, safe_set, parse_metadata_flags, parse_auth_flags, _azure_monitor_quickstart)
+from ._validators import validate_create, validate_revision_suffix
 from ._ssh_utils import (SSH_DEFAULT_ENCODING, WebSocketConnection, read_ssh, get_stdin_writer, SSH_CTRL_C_MSG,
                          SSH_BACKUP_ENCODING)
 from ._constants import (MAXIMUM_SECRET_LENGTH, MICROSOFT_SECRET_SETTING_NAME, FACEBOOK_SECRET_SETTING_NAME, GITHUB_SECRET_SETTING_NAME,
                          GOOGLE_SECRET_SETTING_NAME, TWITTER_SECRET_SETTING_NAME, APPLE_SECRET_SETTING_NAME, CONTAINER_APPS_RP,
-                         NAME_INVALID, NAME_ALREADY_EXISTS, ACR_IMAGE_SUFFIX, HELLO_WORLD_IMAGE)
+                         NAME_INVALID, NAME_ALREADY_EXISTS, ACR_IMAGE_SUFFIX, HELLO_WORLD_IMAGE, LOG_TYPE_SYSTEM, LOG_TYPE_CONSOLE)
 
 logger = get_logger(__name__)
 
@@ -99,7 +101,7 @@ def load_yaml_file(file_name):
 
     try:
         with open(file_name) as stream:  # pylint: disable=unspecified-encoding
-            return yaml.safe_load(stream.read().replace(u'\x00', ''))
+            return yaml.safe_load(stream.read().replace('\x00', ''))
     except (IOError, OSError) as ex:
         if getattr(ex, 'errno', 0) == errno.ENOENT:
             raise ValidationError('{} does not exist'.format(file_name)) from ex
@@ -344,6 +346,7 @@ def create_containerapp(cmd,
     register_provider_if_needed(cmd, CONTAINER_APPS_RP)
     validate_container_app_name(name)
     validate_create(registry_identity, registry_pass, registry_user, registry_server, no_wait)
+    validate_revision_suffix(revision_suffix)
 
     if registry_identity and not is_registry_msi_system(registry_identity):
         logger.info("Creating an acrpull role assignment for the registry identity")
@@ -474,7 +477,7 @@ def create_containerapp(cmd,
         scale_rule_def = ScaleRuleModel
         curr_metadata = {}
         if scale_rule_http_concurrency:
-            if scale_rule_type == "http":
+            if scale_rule_type in ('http', 'tcp'):
                 curr_metadata["concurrentRequests"] = str(scale_rule_http_concurrency)
         metadata_def = parse_metadata_flags(scale_rule_metadata, curr_metadata)
         auth_def = parse_auth_flags(scale_rule_auth)
@@ -600,6 +603,7 @@ def update_containerapp_logic(cmd,
                               registry_user=None,
                               registry_pass=None):
     _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
+    validate_revision_suffix(revision_suffix)
 
     # Validate that max_replicas is set to 0-30
     if max_replicas is not None:
@@ -787,7 +791,7 @@ def update_containerapp_logic(cmd,
         scale_rule_def = ScaleRuleModel
         curr_metadata = {}
         if scale_rule_http_concurrency:
-            if scale_rule_type == "http":
+            if scale_rule_type in ('http', 'tcp'):
                 curr_metadata["concurrentRequests"] = str(scale_rule_http_concurrency)
         metadata_def = parse_metadata_flags(scale_rule_metadata, curr_metadata)
         auth_def = parse_auth_flags(scale_rule_auth)
@@ -988,6 +992,8 @@ def delete_containerapp(cmd, name, resource_group_name, no_wait=False):
 def create_managed_environment(cmd,
                                name,
                                resource_group_name,
+                               logs_destination="log-analytics",
+                               storage_account=None,
                                logs_customer_id=None,
                                logs_key=None,
                                location=None,
@@ -1000,6 +1006,9 @@ def create_managed_environment(cmd,
                                tags=None,
                                disable_warnings=False,
                                zone_redundant=False,
+                               hostname=None,
+                               certificate_file=None,
+                               certificate_password=None,
                                no_wait=False):
     if zone_redundant:
         if not infrastructure_subnet_resource_id:
@@ -1020,15 +1029,18 @@ def create_managed_environment(cmd,
     register_provider_if_needed(cmd, CONTAINER_APPS_RP)
     _ensure_location_allowed(cmd, location, CONTAINER_APPS_RP, "managedEnvironments")
 
-    if logs_customer_id is None or logs_key is None:
+    if (logs_customer_id is None or logs_key is None) and logs_destination == "log-analytics":
         logs_customer_id, logs_key = _generate_log_analytics_if_not_provided(cmd, logs_customer_id, logs_key, location, resource_group_name)
 
-    log_analytics_config_def = LogAnalyticsConfigurationModel
-    log_analytics_config_def["customerId"] = logs_customer_id
-    log_analytics_config_def["sharedKey"] = logs_key
+    if logs_destination == "log-analytics":
+        log_analytics_config_def = LogAnalyticsConfigurationModel
+        log_analytics_config_def["customerId"] = logs_customer_id
+        log_analytics_config_def["sharedKey"] = logs_key
+    else:
+        log_analytics_config_def = None
 
     app_logs_config_def = AppLogsConfigurationModel
-    app_logs_config_def["destination"] = "log-analytics"
+    app_logs_config_def["destination"] = logs_destination if logs_destination != "none" else None
     app_logs_config_def["logAnalyticsConfiguration"] = log_analytics_config_def
 
     managed_env_def = ManagedEnvironmentModel
@@ -1036,6 +1048,14 @@ def create_managed_environment(cmd,
     managed_env_def["properties"]["appLogsConfiguration"] = app_logs_config_def
     managed_env_def["tags"] = tags
     managed_env_def["properties"]["zoneRedundant"] = zone_redundant
+
+    if hostname:
+        customDomain = CustomDomainConfigurationModel
+        blob, _ = load_cert_file(certificate_file, certificate_password)
+        customDomain["dnsSuffix"] = hostname
+        customDomain["certificatePassword"] = certificate_password
+        customDomain["certificateValue"] = blob
+        managed_env_def["properties"]["customDomainConfiguration"] = customDomain
 
     if instrumentation_key is not None:
         managed_env_def["properties"]["daprAIInstrumentationKey"] = instrumentation_key
@@ -1066,23 +1086,75 @@ def create_managed_environment(cmd,
         r = ManagedEnvironmentClient.create(
             cmd=cmd, resource_group_name=resource_group_name, name=name, managed_environment_envelope=managed_env_def, no_wait=no_wait)
 
-        if "properties" in r and "provisioningState" in r["properties"] and r["properties"]["provisioningState"].lower() == "waiting" and not no_wait:
-            not disable_warnings and logger.warning('Containerapp environment creation in progress. Please monitor the creation using `az containerapp env show -n {} -g {}`'.format(name, resource_group_name))
-
-        if "properties" in r and "provisioningState" in r["properties"] and r["properties"]["provisioningState"].lower() == "succeeded":
-            not disable_warnings and logger.warning("\nContainer Apps environment created. To deploy a container app, use: az containerapp create --help\n")
-
-        return r
     except Exception as e:
         handle_raw_exception(e)
+
+    _azure_monitor_quickstart(cmd, name, resource_group_name, storage_account, logs_destination)
+
+    # return ENV
+    if "properties" in r and "provisioningState" in r["properties"] and r["properties"]["provisioningState"].lower() != "succeeded" and not no_wait:
+        not disable_warnings and logger.warning('Containerapp environment creation in progress. Please monitor the creation using `az containerapp env show -n {} -g {}`'.format(name, resource_group_name))
+
+    if "properties" in r and "provisioningState" in r["properties"] and r["properties"]["provisioningState"].lower() == "succeeded":
+        not disable_warnings and logger.warning("\nContainer Apps environment created. To deploy a container app, use: az containerapp create --help\n")
+
+    return r
 
 
 def update_managed_environment(cmd,
                                name,
                                resource_group_name,
+                               logs_destination=None,
+                               storage_account=None,
+                               logs_customer_id=None,
+                               logs_key=None,
+                               hostname=None,
+                               certificate_file=None,
+                               certificate_password=None,
                                tags=None,
                                no_wait=False):
-    raise CLIInternalError('Containerapp env update is not yet supported.')
+    try:
+        r = ManagedEnvironmentClient.show(cmd=cmd, resource_group_name=resource_group_name, name=name)
+    except CLIError as e:
+        handle_raw_exception(e)
+
+    # General setup
+    env_def = {}
+    safe_set(env_def, "location", value=r["location"])  # required for API
+    safe_set(env_def, "tags", value=tags)
+
+    # Logs
+    if logs_destination:
+        logs_destination = None if logs_destination == "none" else logs_destination
+        safe_set(env_def, "properties", "appLogsConfiguration", "destination", value=logs_destination)
+
+    if logs_destination == "log-analytics" and (not logs_customer_id or not logs_key):
+        raise ValidationError("Must provide logs-workspace-id and logs-workspace-key if updating logs destination to type 'log-analytics'.")
+
+    if logs_customer_id and logs_key:
+        safe_set(env_def, "properties", "appLogsConfiguration", "logAnalyticsConfiguration", "customerId", value=logs_customer_id)
+        safe_set(env_def, "properties", "appLogsConfiguration", "logAnalyticsConfiguration", "sharedKey", value=logs_key)
+
+    # Custom domains
+    safe_set(env_def, "properties", "customDomainConfiguration", value={})
+    cert_def = env_def["properties"]["customDomainConfiguration"]
+    if hostname:
+        blob, _ = load_cert_file(certificate_file, certificate_password)
+        safe_set(cert_def, "dnsSuffix", value=hostname)
+        safe_set(cert_def, "certificatePassword", value=certificate_password)
+        safe_set(cert_def, "certificateValue", value=blob)
+
+    # no PATCH api support atm, put works fine even with partial json
+    try:
+        r = ManagedEnvironmentClient.create(
+            cmd=cmd, resource_group_name=resource_group_name, name=name, managed_environment_envelope=env_def, no_wait=no_wait)
+
+    except Exception as e:
+        handle_raw_exception(e)
+
+    _azure_monitor_quickstart(cmd, name, resource_group_name, storage_account, logs_destination)
+
+    return r
 
 
 def show_managed_environment(cmd, name, resource_group_name):
@@ -1357,7 +1429,7 @@ def create_or_update_github_action(cmd,
         logger.warning("Creating Github action...")
         r = GitHubActionClient.create_or_update(cmd=cmd, resource_group_name=resource_group_name, name=name, github_action_envelope=source_control_info, headers=headers, no_wait=no_wait)
         if not no_wait:
-            await_github_action(cmd, token, repo, branch, name, resource_group_name)
+            await_github_action(token, repo, r["properties"]["githubActionConfiguration"]["workflowName"])
         return r
     except Exception as e:
         handle_raw_exception(e)
@@ -1428,7 +1500,7 @@ def delete_github_action(cmd, name, resource_group_name, token=None, login_with_
         handle_raw_exception(e)
 
 
-def list_revisions(cmd, name, resource_group_name, all=False):
+def list_revisions(cmd, name, resource_group_name, all=False):  # pylint: disable=redefined-builtin
     try:
         revision_list = ContainerAppClient.list_revisions(cmd=cmd, resource_group_name=resource_group_name, name=name)
         if all:
@@ -2390,10 +2462,15 @@ def containerapp_ssh(cmd, resource_group_name, name, container=None, revision=No
 
 
 def stream_containerapp_logs(cmd, resource_group_name, name, container=None, revision=None, replica=None, follow=False,
-                             tail=None, output_format=None):
+                             tail=None, output_format=None, kind=None):
     if tail:
         if tail < 0 or tail > 300:
             raise ValidationError("--tail must be between 0 and 300.")
+    if kind == LOG_TYPE_SYSTEM:
+        if container or replica or revision:
+            raise MutuallyExclusiveArgumentError("--type: --container, --replica, and --revision not supported for system logs")
+        if output_format and output_format != "json":
+            raise MutuallyExclusiveArgumentError("--type: only json logs supported for system logs")
 
     sub = get_subscription_id(cmd.cli_ctx)
     token_response = ContainerAppClient.get_auth_token(cmd, resource_group_name, name)
@@ -2401,13 +2478,57 @@ def stream_containerapp_logs(cmd, resource_group_name, name, container=None, rev
     logstream_endpoint = token_response["properties"]["logStreamEndpoint"]
     base_url = logstream_endpoint[:logstream_endpoint.index("/subscriptions/")]
 
-    url = (f"{base_url}/subscriptions/{sub}/resourceGroups/{resource_group_name}/containerApps/{name}"
-           f"/revisions/{revision}/replicas/{replica}/containers/{container}/logstream")
+    if kind == LOG_TYPE_CONSOLE:
+        url = (f"{base_url}/subscriptions/{sub}/resourceGroups/{resource_group_name}/containerApps/{name}"
+               f"/revisions/{revision}/replicas/{replica}/containers/{container}/logstream")
+    else:
+        url = f"{base_url}/subscriptions/{sub}/resourceGroups/{resource_group_name}/containerApps/{name}/eventstream"
 
     logger.info("connecting to : %s", url)
-    request_params = {"follow": str(follow).lower(), "output": output_format, "tailLines": tail}
+    request_params = {"follow": str(follow).lower(),
+                      "output": output_format,
+                      "tailLines": tail}
     headers = {"Authorization": f"Bearer {token}"}
-    resp = requests.get(url, timeout=None, stream=True, params=request_params, headers=headers)
+    resp = requests.get(url,
+                        timeout=None,
+                        stream=True,
+                        params=request_params,
+                        headers=headers)
+
+    if not resp.ok:
+        ValidationError(f"Got bad status from the logstream API: {resp.status_code}")
+
+    for line in resp.iter_lines():
+        if line:
+            logger.info("received raw log line: %s", line)
+            # these .replaces are needed to display color/quotations properly
+            # for some reason the API returns garbled unicode special characters (may need to add more in the future)
+            print(line.decode("utf-8").replace("\\u0022", "\u0022").replace("\\u001B", "\u001B").replace("\\u002B", "\u002B").replace("\\u0027", "\u0027"))
+
+
+def stream_environment_logs(cmd, resource_group_name, name, follow=False, tail=None):
+    if tail:
+        if tail < 0 or tail > 300:
+            raise ValidationError("--tail must be between 0 and 300.")
+
+    env = show_managed_environment(cmd, name, resource_group_name)
+    sub = get_subscription_id(cmd.cli_ctx)
+    token_response = ManagedEnvironmentClient.get_auth_token(cmd, resource_group_name, name)
+    token = token_response["properties"]["token"]
+    base_url = f"https://{env['location']}.azurecontainerapps.dev"
+
+    url = (f"{base_url}/subscriptions/{sub}/resourceGroups/{resource_group_name}/managedEnvironments/{name}"
+           f"/eventstream")
+
+    logger.info("connecting to : %s", url)
+    request_params = {"follow": str(follow).lower(),
+                      "tailLines": tail}
+    headers = {"Authorization": f"Bearer {token}"}
+    resp = requests.get(url,
+                        timeout=None,
+                        stream=True,
+                        params=request_params,
+                        headers=headers)
 
     if not resp.ok:
         ValidationError(f"Got bad status from the logstream API: {resp.status_code}")
@@ -3553,3 +3674,128 @@ def show_auth_config(cmd, resource_group_name, name):
     except:
         pass
     return auth_settings
+
+# Compose
+
+
+def create_containerapps_from_compose(cmd,  # pylint: disable=R0914
+                                      resource_group_name,
+                                      managed_env,
+                                      compose_file_path='./docker-compose.yml',
+                                      registry_server=None,
+                                      registry_user=None,
+                                      registry_pass=None,
+                                      transport_mapping=None,
+                                      location=None,
+                                      tags=None):
+
+    from pycomposefile import ComposeFile
+
+    from ._compose_utils import (create_containerapps_compose_environment,
+                                 build_containerapp_from_compose_service,
+                                 check_supported_platform,
+                                 warn_about_unsupported_elements,
+                                 resolve_ingress_and_target_port,
+                                 resolve_registry_from_cli_args,
+                                 resolve_transport_from_cli_args,
+                                 resolve_service_startup_command,
+                                 validate_memory_and_cpu_setting,
+                                 resolve_cpu_configuration_from_service,
+                                 resolve_memory_configuration_from_service,
+                                 resolve_replicas_from_service,
+                                 resolve_environment_from_service,
+                                 resolve_secret_from_service)
+
+    # Validate managed environment
+    parsed_managed_env = parse_resource_id(managed_env)
+    managed_env_name = parsed_managed_env['name']
+
+    logger.info(   # pylint: disable=W1203
+        f"Creating the Container Apps managed environment {managed_env_name} under {resource_group_name} in {location}.")
+
+    try:
+        managed_environment = show_managed_environment(cmd=cmd,
+                                                       name=managed_env_name,
+                                                       resource_group_name=resource_group_name)
+    except CLIInternalError:  # pylint: disable=W0702
+        managed_environment = create_containerapps_compose_environment(cmd,
+                                                                       managed_env_name,
+                                                                       resource_group_name,
+                                                                       tags=tags)
+
+    compose_yaml = load_yaml_file(compose_file_path)
+    parsed_compose_file = ComposeFile(compose_yaml)
+    logger.info(parsed_compose_file)
+    containerapps_from_compose = []
+    # Using the key to iterate to get the service name
+    # pylint: disable=C0201,C0206
+    for service_name in parsed_compose_file.ordered_services.keys():
+        service = parsed_compose_file.services[service_name]
+        if not check_supported_platform(service.platform):
+            message = "Unsupported platform found. "
+            message += "Azure Container Apps only supports linux/amd64 container images."
+            raise InvalidArgumentValueError(message)
+        image = service.image
+        warn_about_unsupported_elements(service)
+        logger.info(  # pylint: disable=W1203
+            f"Creating the Container Apps instance for {service_name} under {resource_group_name} in {location}.")
+        ingress_type, target_port = resolve_ingress_and_target_port(service)
+        registry, registry_username, registry_password = resolve_registry_from_cli_args(registry_server, registry_user, registry_pass)  # pylint: disable=C0301
+        transport_setting = resolve_transport_from_cli_args(service_name, transport_mapping)
+        startup_command, startup_args = resolve_service_startup_command(service)
+        cpu, memory = validate_memory_and_cpu_setting(
+            resolve_cpu_configuration_from_service(service),
+            resolve_memory_configuration_from_service(service)
+        )
+        replicas = resolve_replicas_from_service(service)
+        environment = resolve_environment_from_service(service)
+        secret_vars, secret_env_ref = resolve_secret_from_service(service, parsed_compose_file.secrets)
+        if environment is not None and secret_env_ref is not None:
+            environment.extend(secret_env_ref)
+        elif secret_env_ref is not None:
+            environment = secret_env_ref
+        if service.build is not None:
+            logger.warning("Build configuration defined for this service.")
+            logger.warning("The build will be performed by Azure Container Registry.")
+            context = service.build.context
+            dockerfile = "Dockerfile"
+            if service.build.dockerfile is not None:
+                dockerfile = service.build.dockerfile
+            image, registry, registry_username, registry_password = build_containerapp_from_compose_service(
+                cmd,
+                service_name,
+                context,
+                dockerfile,
+                resource_group_name,
+                managed_env,
+                location,
+                image,
+                target_port,
+                ingress_type,
+                registry,
+                registry_username,
+                registry_password,
+                environment)
+        containerapps_from_compose.append(
+            create_containerapp(cmd,
+                                service_name,
+                                resource_group_name,
+                                image=image,
+                                container_name=service.container_name,
+                                managed_env=managed_environment["id"],
+                                ingress=ingress_type,
+                                target_port=target_port,
+                                registry_server=registry,
+                                registry_user=registry_username,
+                                registry_pass=registry_password,
+                                transport=transport_setting,
+                                startup_command=startup_command,
+                                args=startup_args,
+                                cpu=cpu,
+                                memory=memory,
+                                env_vars=environment,
+                                secrets=secret_vars,
+                                min_replicas=replicas,
+                                max_replicas=replicas,)
+        )
+    return containerapps_from_compose

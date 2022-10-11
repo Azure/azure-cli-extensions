@@ -2,7 +2,7 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
-# pylint: disable=line-too-long, consider-using-f-string, no-else-return, duplicate-string-formatting-argument, expression-not-assigned, too-many-locals, logging-fstring-interpolation, broad-except
+# pylint: disable=line-too-long, consider-using-f-string, no-else-return, duplicate-string-formatting-argument, expression-not-assigned, too-many-locals, logging-fstring-interpolation, broad-except, pointless-statement, bare-except
 
 import time
 import json
@@ -12,7 +12,7 @@ from urllib.parse import urlparse
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
 from azure.cli.core.azclierror import (ValidationError, RequiredArgumentMissingError, CLIInternalError,
-                                       ResourceNotFoundError, FileOperationError, CLIError, InvalidArgumentValueError, UnauthorizedError)
+                                       ResourceNotFoundError, FileOperationError, CLIError, UnauthorizedError)
 from azure.cli.core.commands.client_factory import get_subscription_id
 from azure.cli.command_modules.appservice.utils import _normalize_location
 from azure.cli.command_modules.network._client_factory import network_client_factory
@@ -28,7 +28,8 @@ from msrestazure.tools import parse_resource_id, is_valid_resource_id, resource_
 from ._clients import ContainerAppClient, ManagedEnvironmentClient
 from ._client_factory import handle_raw_exception, providers_client_factory, cf_resource_groups, log_analytics_client_factory, log_analytics_shared_key_client_factory
 from ._constants import (MAXIMUM_CONTAINER_APP_NAME_LENGTH, SHORT_POLLING_INTERVAL_SECS, LONG_POLLING_INTERVAL_SECS,
-                         LOG_ANALYTICS_RP, CONTAINER_APPS_RP, CHECK_CERTIFICATE_NAME_AVAILABILITY_TYPE, ACR_IMAGE_SUFFIX)
+                         LOG_ANALYTICS_RP, CONTAINER_APPS_RP, CHECK_CERTIFICATE_NAME_AVAILABILITY_TYPE, ACR_IMAGE_SUFFIX,
+                         LOGS_STRING)
 from ._models import (ContainerAppCustomDomainEnvelope as ContainerAppCustomDomainEnvelopeModel)
 
 logger = get_logger(__name__)
@@ -86,8 +87,7 @@ def _create_service_principal(client, app_id):
 
 def _create_role_assignment(cli_ctx, role, assignee, scope=None):
     import uuid
-    from azure.cli.core.profiles import ResourceType, get_sdk, supported_api_version
-    from azure.cli.core.commands.client_factory import get_mgmt_service_client
+    from azure.cli.core.profiles import get_sdk, supported_api_version
 
     auth_client = get_mgmt_service_client(cli_ctx, ResourceType.MGMT_AUTHORIZATION)
     assignments_client = auth_client.role_assignments
@@ -153,23 +153,24 @@ def get_github_repo(token, repo):
     return g.get_repo(repo)
 
 
-def get_workflow(github_repo, name):  # pylint: disable=inconsistent-return-statements
+def get_workflow(github_repo, workflow_name):  # pylint: disable=inconsistent-return-statements
     workflows = list(github_repo.get_workflows())
     workflows.sort(key=lambda r: r.created_at, reverse=True)  # sort by latest first
-    for wf in workflows:
-        if wf.path.startswith(f".github/workflows/{name}") and "Trigger auto deployment for" in wf.name:
-            return wf
+    workflow = [wf for wf in workflows if wf.path == f".github/workflows/{workflow_name}.yml"]
+
+    if not workflow:
+        raise CLIInternalError("Could not find workflow on github repo.")
+    return workflow[0]
 
 
-def trigger_workflow(token, repo, name, branch):
-    wf = get_workflow(get_github_repo(token, repo), name)
+def trigger_workflow(token, repo, workflow_name, branch):
+    wf = get_workflow(get_github_repo(token, repo), workflow_name)
     logger.warning(f"Triggering Github Action: {wf.path}")
     wf.create_dispatch(branch)
 
 
 # pylint:disable=unused-argument
-def await_github_action(cmd, token, repo, branch, name, resource_group_name, timeout_secs=1200):
-    from .custom import show_github_action
+def await_github_action(token, repo, workflow_name, timeout_secs=1200):
     from ._clients import PollingAnimation
 
     start = datetime.utcnow()
@@ -178,22 +179,14 @@ def await_github_action(cmd, token, repo, branch, name, resource_group_name, tim
 
     github_repo = get_github_repo(token, repo)
 
-    gh_action_status = "InProgress"
-    while gh_action_status == "InProgress":
-        time.sleep(SHORT_POLLING_INTERVAL_SECS)
-        animation.tick()
-        gh_action_status = safe_get(show_github_action(cmd, name, resource_group_name), "properties", "operationState")
-        if (datetime.utcnow() - start).seconds >= timeout_secs:
-            raise CLIInternalError("Timed out while waiting for the Github action to be created.")
-        animation.flush()
-    if gh_action_status == "Failed":
-        raise CLIInternalError("The Github Action creation failed.")  # TODO ask backend team for a status url / message
-
     workflow = None
     while workflow is None:
         animation.tick()
         time.sleep(SHORT_POLLING_INTERVAL_SECS)
-        workflow = get_workflow(github_repo, name)
+        try:
+            workflow = get_workflow(github_repo, workflow_name)
+        except CLIInternalError:
+            pass
         animation.flush()
 
         if (datetime.utcnow() - start).seconds >= timeout_secs:
@@ -369,7 +362,7 @@ def parse_secret_flags(secret_list):
     return secret_var_def
 
 
-def parse_metadata_flags(metadata_list, metadata_def={}):
+def parse_metadata_flags(metadata_list, metadata_def={}):  # pylint: disable=dangerous-default-value
     if not metadata_list:
         metadata_list = []
     for pair in metadata_list:
@@ -569,7 +562,7 @@ def _get_log_analytics_workspace_name(cmd, logs_customer_id, resource_group_name
     raise ResourceNotFoundError("Cannot find Log Analytics workspace with customer ID {}".format(logs_customer_id))
 
 
-def _generate_log_analytics_if_not_provided(cmd, logs_customer_id, logs_key, location, resource_group_name):
+def _generate_log_analytics_if_not_provided(cmd, logs_customer_id, logs_key, location, resource_group_name):  # pylint: disable=too-many-statements
     if logs_customer_id is None and logs_key is None:
         logger.warning("No Log Analytics workspace provided.")
         _validate_subscription_registered(cmd, LOG_ANALYTICS_RP)
@@ -1070,6 +1063,16 @@ def safe_get(model, *keys, default=None):
     return model.get(keys[-1], default)
 
 
+def safe_set(model, *keys, value):
+    penult = {}
+    for k in keys:
+        if k not in model:
+            model[k] = {}
+        penult = model
+        model = model[k]
+    penult[keys[-1]] = value
+
+
 def is_platform_windows():
     return platform.system() == "Windows"
 
@@ -1123,7 +1126,7 @@ def get_profile_username():
 
 
 def create_resource_group(cmd, rg_name, location):
-    from azure.cli.core.profiles import ResourceType, get_sdk
+    from azure.cli.core.profiles import get_sdk
     rcf = _resource_client_factory(cmd.cli_ctx)
     resource_group = get_sdk(cmd.cli_ctx, ResourceType.MGMT_RESOURCE_RESOURCES, 'ResourceGroup', mod='models')
     rg_params = resource_group(location=location)
@@ -1136,8 +1139,6 @@ def get_resource_group(cmd, rg_name):
 
 
 def _resource_client_factory(cli_ctx, **_):
-    from azure.cli.core.commands.client_factory import get_mgmt_service_client
-    from azure.cli.core.profiles import ResourceType
     return get_mgmt_service_client(cli_ctx, ResourceType.MGMT_RESOURCE_RESOURCES)
 
 
@@ -1171,7 +1172,6 @@ def queue_acr_build(cmd, registry_rg, registry_name, img_name, src_dir, dockerfi
     # So we need to update the docker_file_path
     docker_file_path = docker_file_in_tar
 
-    from azure.cli.core.profiles import ResourceType
     OS, Architecture = cmd.get_models('OS', 'Architecture', resource_type=ResourceType.MGMT_CONTAINERREGISTRY, operation_group='runs')
     # Default platform values
     platform_os = OS.linux.value
@@ -1218,9 +1218,7 @@ def queue_acr_build(cmd, registry_rg, registry_name, img_name, src_dir, dockerfi
 
 
 def _get_acr_cred(cli_ctx, registry_name):
-    from azure.mgmt.containerregistry import ContainerRegistryManagementClient
     from azure.cli.core.commands.parameters import get_resources_in_subscription
-    from azure.cli.core.commands.client_factory import get_mgmt_service_client
 
     client = get_mgmt_service_client(cli_ctx, ContainerRegistryManagementClient).registries
 
@@ -1243,7 +1241,6 @@ def _get_acr_cred(cli_ctx, registry_name):
 def create_new_acr(cmd, registry_name, resource_group_name, location=None, sku="Basic"):
     # from azure.cli.command_modules.acr.custom import acr_create
     from azure.cli.command_modules.acr._client_factory import cf_acr_registries
-    from azure.cli.core.profiles import ResourceType
     from azure.cli.core.commands import LongRunningOperation
 
     client = cf_acr_registries(cmd.cli_ctx)
@@ -1497,7 +1494,7 @@ def create_acrpull_role_assignment(cmd, registry_server, registry_identity=None,
                 if skip_error:
                     logger.error(message)
                 else:
-                    raise UnauthorizedError(message)
+                    raise UnauthorizedError(message) from e
             else:
                 time.sleep(5)
 
@@ -1518,7 +1515,7 @@ def validate_environment_location(cmd, location):
 
     location_count = {}
     for loc in locations:
-        location_count[loc] = len([e for e in env_list if e["location"] == loc])
+        location_count[loc] = len([e for e in env_list if e["location"] == loc])  # pylint: disable=used-before-assignment
 
     disallowed_locations = []
     for _, value in enumerate(location_count):
@@ -1558,3 +1555,31 @@ def list_environment_locations(cmd):
     res_locations = [res_loc.lower().replace(" ", "").replace("(", "").replace(")", "") for res_loc in res_locations if res_loc.strip()]
 
     return res_locations
+
+
+def _azure_monitor_quickstart(cmd, name, resource_group_name, storage_account, logs_destination):
+    if logs_destination != "azure-monitor":
+        if storage_account:
+            logger.warning("Storage accounts only accepted for Azure Monitor logs destination. Ignoring storage account value.")
+        return
+    if not storage_account:
+        logger.warning("Azure monitor must be set up manually. Run `az monitor diagnostic-settings create --name mydiagnosticsettings --resource myManagedEnvironmentId --storage-account myStorageAccountId --logs myJsonLogSettings` to set up Azure Monitor diagnostic settings on your storage account.")
+        return
+
+    from azure.cli.command_modules.monitor.operations.diagnostics_settings import create_diagnostics_settings
+    from azure.cli.command_modules.monitor._client_factory import cf_diagnostics
+
+    env_id = resource_id(subscription=get_subscription_id(cmd.cli_ctx),
+                         resource_group=resource_group_name,
+                         namespace='Microsoft.App',
+                         type='managedEnvironments',
+                         name=name)
+    try:
+        create_diagnostics_settings(client=cf_diagnostics(cmd.cli_ctx, None),
+                                    name="diagnosticsettings",
+                                    resource_uri=env_id,
+                                    storage_account=storage_account,
+                                    logs=json.loads(LOGS_STRING))
+        logger.warning("Azure Monitor diagnastic settings created successfully.")
+    except Exception as ex:
+        handle_raw_exception(ex)
