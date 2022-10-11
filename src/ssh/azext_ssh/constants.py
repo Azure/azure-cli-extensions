@@ -23,7 +23,7 @@ ARC_RESOURCE_TYPE_PLACEHOLDER = "arc_resource_type_placeholder"
 
 SUPPORTED_RESOURCE_TYPES = ["microsoft.hybridcompute/machines",
                             "microsoft.compute/virtualmachines",
-                            "microsoft.connectedvmwarevsphere/virtualmachines", 
+                            "microsoft.connectedvmwarevsphere/virtualmachines",
                             "microsoft.scvmm/virtualmachines",
                             "microsoft.azurestackhci/virtualmachines"]
 
