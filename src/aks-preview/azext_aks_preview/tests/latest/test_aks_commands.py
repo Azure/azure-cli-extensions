@@ -5760,11 +5760,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             'name': aks_name,
             'location': resource_group_location,
             'ssh_key_value': self.generate_ssh_keys(),
-            'node_vm_size': node_vm_size,
-            'ksm_labels': "namespaces=[k8s-label-1,k8s-label-n]",
-            'ksm_annotations': "pods=[k8s-annotation-1,k8s-annotation-n]",
-            'azuremonitorworkspace': '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgName/providers/microsoft.monitor/accounts/amwName',
-            'grafanaworkspace': '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgName/providers/Microsoft.Dashboard/grafana/grafanaName'
+            'node_vm_size': node_vm_size
         })
 
         # create: without enable-azuremonitormetrics
@@ -5778,35 +5774,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         update_cmd = 'aks update --resource-group={resource_group} --name={name} --yes --output=json ' \
                      '--aks-custom-headers=AKSHTTPCustomFeatures=Microsoft.ContainerService/AKS-PrometheusAddonPreview ' \
                      '--enable-azuremonitormetrics'
-        self.cmd(update_cmd, checks=[
-            self.check('provisioningState', 'Succeeded'),
-            self.check('azureMonitorProfile.metrics.enabled', True),
-        ])
-
-        # update: enable-azuremonitormetrics with ksm parameters
-        update_cmd = 'aks update --resource-group={resource_group} --name={name} --yes --output=json ' \
-                     '--aks-custom-headers=AKSHTTPCustomFeatures=Microsoft.ContainerService/AKS-PrometheusAddonPreview ' \
-                     '--enable-azuremonitormetrics  --ksm-metric-labels-allow-list={ksm_labels} --ksm-metric-annotations-allow-list={ksm_annotations}'
-        self.cmd(update_cmd, checks=[
-            self.check('provisioningState', 'Succeeded'),
-            self.check('azureMonitorProfile.metrics.enabled', True),
-            self.check('azureMonitorProfile.metrics.kubeStateMetrics.metricLabelsAllowlist', 'namespaces=[k8s-label-1,k8s-label-n]'),
-            self.check('azureMonitorProfile.metrics.kubeStateMetrics.metricAnnotationsAllowList', 'pods=[k8s-annotation-1,k8s-annotation-n]')
-        ])
-
-        # update: enable-azuremonitormetrics with azure monitor worksapce resource id
-        update_cmd = 'aks update --resource-group={resource_group} --name={name} --yes --output=json ' \
-                     '--aks-custom-headers=AKSHTTPCustomFeatures=Microsoft.ContainerService/AKS-PrometheusAddonPreview ' \
-                     '--enable-azuremonitormetrics  --azure-monitor-workspace-resource-id={azuremonitorworkspace}'
-        self.cmd(update_cmd, checks=[
-            self.check('provisioningState', 'Succeeded'),
-            self.check('azureMonitorProfile.metrics.enabled', True),
-        ])
-
-        # update: enable-azuremonitormetrics with grafana resource id
-        update_cmd = 'aks update --resource-group={resource_group} --name={name} --yes --output=json ' \
-                     '--aks-custom-headers=AKSHTTPCustomFeatures=Microsoft.ContainerService/AKS-PrometheusAddonPreview ' \
-                     '--enable-azuremonitormetrics  --grafana-resource-id={grafanaworkspace}'
         self.cmd(update_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
             self.check('azureMonitorProfile.metrics.enabled', True),
