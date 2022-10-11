@@ -263,7 +263,8 @@ def step_data_flow_update(self):
         '--factory-name "{myFactory}" '
         '--resource-group "{rg}" '
         '--name "{myMappingDataFlow}" '
-        '--properties "{{\\"description\\": \\"A new example description\\"}}"'
+        '--properties "{{\\"description\\": \\"A new example description\\"}}"',
+        checks=checks,
     )
 
 
