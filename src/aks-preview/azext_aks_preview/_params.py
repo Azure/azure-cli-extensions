@@ -224,6 +224,7 @@ def load_arguments(self, _):
         c.argument('network_plugin', arg_type=get_enum_type(network_plugins))
         c.argument('network_plugin_mode', arg_type=get_enum_type(network_plugin_modes))
         c.argument('network_policy')
+        c.argument('kube_proxy_config')
         c.argument('auto_upgrade_channel', arg_type=get_enum_type(auto_upgrade_channels))
         c.argument('cluster_autoscaler_profile', nargs='+', options_list=["--cluster-autoscaler-profile", "--ca-profile"],
                    help="Space-separated list of key=value pairs for configuring cluster autoscaler. Pass an empty string to clear the profile.")
