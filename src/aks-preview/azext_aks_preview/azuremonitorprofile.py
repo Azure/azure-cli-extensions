@@ -173,7 +173,8 @@ def check_azuremonitormetrics_profile(cmd, cluster_subscription, cluster_resourc
 def check_msi_cluster(client, cluster_resource_group_name, cluster_name):
     instance = client.get(cluster_resource_group_name, cluster_name)
     if instance.service_principal_profile.client_id.lower() != "msi":
-        raise CLIError(f"Azure Monitor Metrics (Managed Prometheus) is only supported for MSI enabled clusters - {instance.service_principal_profile.client_id.lower()}")
+        print(instance.service_principal_profile.client_id.lower())
+        raise CLIError("Azure Monitor Metrics (Managed Prometheus) is only supported for MSI enabled clusters")
 
 
 # check if `az feature register --namespace Microsoft.ContainerService --name AKS-PrometheusAddonPreview` is Registered
