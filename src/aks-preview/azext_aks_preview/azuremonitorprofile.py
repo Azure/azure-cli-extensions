@@ -173,7 +173,7 @@ def check_azuremonitormetrics_profile(cmd, cluster_subscription, cluster_resourc
 def check_msi_cluster(client, cluster_resource_group_name, cluster_name):
     instance = client.get(cluster_resource_group_name, cluster_name)
     if instance.service_principal_profile.client_id.lower() != "msi":
-        raise UnknownError("Azure Monitor Metrics (Managed Prometheus) is only supported for MSI enabled clusters")
+        raise CLIError(f"Azure Monitor Metrics (Managed Prometheus) is only supported for MSI enabled clusters - {instance.service_principal_profile.client_id.lower()}")
 
 
 # check if `az feature register --namespace Microsoft.ContainerService --name AKS-PrometheusAddonPreview` is Registered
@@ -710,6 +710,8 @@ def rp_registrations(cmd, subscription_id):
         raise CLIError(e)
     isInsightsRpRegistered = False
     isAlertsManagementRpRegistered = False
+    isMoniotrRpRegistered = False
+    isDashboardRpRegistered = False
     json_response = json.loads(r.text)
     values_array = json_response["value"]
     for value in values_array:
@@ -717,12 +719,22 @@ def rp_registrations(cmd, subscription_id):
             isInsightsRpRegistered = True
         if value["namespace"].lower() == "microsoft.alertsmanagement" and value["registrationState"].lower() == "registered":
             isAlertsManagementRpRegistered = True
+        if value["namespace"].lower() == "microsoft.monitor" and value["registrationState"].lower() == "registered":
+            isAlertsManagementRpRegistered = True
+        if value["namespace"].lower() == "microsoft.dashboard" and value["registrationState"].lower() == "registered":
+            isAlertsManagementRpRegistered = True
     if isInsightsRpRegistered is False:
         headers = ['User-Agent=azuremonitormetrics.register_insights_rp']
         post_request(cmd, subscription_id, "microsoft.insights", headers)
     if isAlertsManagementRpRegistered is False:
         headers = ['User-Agent=azuremonitormetrics.register_alertsmanagement_rp']
         post_request(cmd, subscription_id, "microsoft.alertsmanagement", headers)
+    if isMoniotrRpRegistered is False:
+        headers = ['User-Agent=azuremonitormetrics.register_monitor_rp']
+        post_request(cmd, subscription_id, "microsoft.monitor", headers)
+    if isDashboardRpRegistered is False:
+        headers = ['User-Agent=azuremonitormetrics.register_dashboard_rp']
+        post_request(cmd, subscription_id, "microsoft.dashboard", headers)
 
 
 # pylint: disable=too-many-locals,too-many-branches,too-many-statements,line-too-long
