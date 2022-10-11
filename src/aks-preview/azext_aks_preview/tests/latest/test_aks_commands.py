@@ -5754,11 +5754,13 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
     @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
     def test_aks_update_with_azuremonitormetrics(self, resource_group, resource_group_location):
         aks_name = self.create_random_name('cliakstest', 16)
+        node_vm_size = 'standard_dc2s_v3'
         self.kwargs.update({
             'resource_group': resource_group,
             'name': aks_name,
             'location': resource_group_location,
             'ssh_key_value': self.generate_ssh_keys(),
+            'node_vm_size': node_vm_size,
             'ksm_labels': "namespaces=[k8s-label-1,k8s-label-n]",
             'ksm_annotations': "pods=[k8s-annotation-1,k8s-annotation-n]",
             'azuremonitorworkspace': '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgName/providers/microsoft.monitor/accounts/amwName',
@@ -5766,7 +5768,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         })
 
         # create: without enable-azuremonitormetrics
-        create_cmd = 'aks create --resource-group={resource_group} --name={name} --location={location} --ssh-key-value={ssh_key_value} --output=json'
+        create_cmd = 'aks create --resource-group={resource_group} --name={name} --location={location} --ssh-key-value={ssh_key_value} --node-vm-size={node_vm_size} --output=json'
         self.cmd(create_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
             self.not_exists('azureMonitorProfile.metrics'),
