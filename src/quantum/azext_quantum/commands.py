@@ -101,16 +101,20 @@ def transform_output(results):
     elif 'reportData' in results:
         table = []
         for group in results['reportData']['groups']:
-            table.append(OrderedDict([("Label", (f"---{group['title']}---")),
+            table.append(OrderedDict([
+                ("Label", (f"---{group['title']}---")),
                 ('Value', '---'),
-                ('Description', '---')]))
+                ('Description', '---')
+            ]))
             for entry in group['entries']:
                 val = results
                 for key in entry['path'].split("/"):
                     val = val[key]
-                table.append(OrderedDict([("Label", entry['label']),
-                    ('Value', val), 
-                    ('Description', entry['description'])]))
+                table.append(OrderedDict([
+                    ("Label", entry['label']),
+                    ('Value', val),
+                    ('Description', entry['description'])
+                ]))
         return table
 
     elif 'errorData' in results:
