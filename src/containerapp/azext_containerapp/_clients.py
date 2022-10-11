@@ -26,16 +26,15 @@ class PollingAnimation():
         self.currTicker = 0
 
     def tick(self):
-        sys.stdout.write('\r')
-        sys.stdout.write(self.tickers[self.currTicker] + " Running ..")
-        sys.stdout.flush()
+        sys.stderr.write('\r')
+        sys.stderr.write(self.tickers[self.currTicker] + " Running ..")
+        sys.stderr.flush()
         self.currTicker += 1
         self.currTicker = self.currTicker % len(self.tickers)
 
     def flush(self):
-        sys.stdout.flush()
-        sys.stdout.write('\r')
-        sys.stdout.write("\033[K")
+        sys.stderr.flush()
+        sys.stderr.write("\r\033[K")
 
 
 def poll(cmd, request_url, poll_if_status):  # pylint: disable=inconsistent-return-statements
@@ -405,7 +404,7 @@ class ContainerAppClient():
     def get_auth_token(cls, cmd, resource_group_name, name):
         management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
         sub_id = get_subscription_id(cmd.cli_ctx)
-        url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/containerApps/{}/authtoken?api-version={}"
+        url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/containerApps/{}/getAuthToken?api-version={}"
         request_url = url_fmt.format(
             management_hostname.strip('/'),
             sub_id,
@@ -459,7 +458,7 @@ class ManagedEnvironmentClient():
                 resource_group_name,
                 name,
                 api_version)
-            return poll(cmd, request_url, "waiting")
+            return poll(cmd, request_url, "inprogress")
 
         return r.json()
 
@@ -687,6 +686,21 @@ class ManagedEnvironmentClient():
             api_version)
 
         r = send_raw_request(cmd.cli_ctx, "POST", request_url, body=json.dumps(name_availability_request))
+        return r.json()
+
+    @classmethod
+    def get_auth_token(cls, cmd, resource_group_name, name):
+        management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
+        sub_id = get_subscription_id(cmd.cli_ctx)
+        url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/managedEnvironments/{}/getAuthToken?api-version={}"
+        request_url = url_fmt.format(
+            management_hostname.strip('/'),
+            sub_id,
+            resource_group_name,
+            name,
+            CURRENT_API_VERSION)
+
+        r = send_raw_request(cmd.cli_ctx, "POST", request_url)
         return r.json()
 
 
