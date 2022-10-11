@@ -3,6 +3,11 @@
 Release History
 ===============
 
+0.2.5
++++++
+* Update SDK `azure-mgmt-subscription` version to 3.1.1
+* Add new command `az account accept-ownership-status` to support accept subscription ownership status
+
 0.2.4
 +++++
 * Update `minCliCoreVersion` requirement from `2.3.1` to `2.38.0`.

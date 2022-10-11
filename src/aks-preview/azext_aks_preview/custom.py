@@ -85,7 +85,7 @@ from azext_aks_preview._consts import (
     CONST_VIRTUAL_NODE_ADDON_NAME,
     CONST_VIRTUAL_NODE_SUBNET_NAME,
 )
-from azext_aks_preview._helpers import print_or_merge_credentials, get_nodepool_snapshot_by_snapshot_id
+from azext_aks_preview._helpers import print_or_merge_credentials, get_nodepool_snapshot_by_snapshot_id, get_cluster_snapshot_by_snapshot_id
 from azext_aks_preview._podidentity import (
     _ensure_managed_identity_operator_permission,
     _ensure_pod_identity_addon_is_enabled,
@@ -567,6 +567,7 @@ def aks_create(
     network_plugin=None,
     network_plugin_mode=None,
     network_policy=None,
+    kube_proxy_config=None,
     auto_upgrade_channel=None,
     cluster_autoscaler_profile=None,
     uptime_sla=False,
@@ -799,6 +800,7 @@ def aks_update(
     private_dns_zone=None,
     enable_vpa=False,
     disable_vpa=False,
+    cluster_snapshot_id=None,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
@@ -934,6 +936,7 @@ def aks_upgrade(cmd,    # pylint: disable=unused-argument, too-many-return-state
                 control_plane_only=False,
                 no_wait=False,
                 node_image_only=False,
+                cluster_snapshot_id=None,
                 aks_custom_headers=None,
                 yes=False):
     msg = 'Kubernetes may be unavailable during cluster upgrades.\n Are you sure you want to perform this operation?'
@@ -970,6 +973,18 @@ def aks_upgrade(cmd,    # pylint: disable=unused-argument, too-many-return-state
                 True, agent_pool_client, resource_group_name, name, agent_pool_profile.name, None)
         mc = client.get(resource_group_name, name)
         return _remove_nulls([mc])[0]
+
+    if cluster_snapshot_id:
+        CreationData = cmd.get_models(
+            "CreationData",
+            resource_type=CUSTOM_MGMT_AKS_PREVIEW,
+            operation_group="managed_clusters",
+        )
+        instance.creation_data = CreationData(
+            source_resource_id=cluster_snapshot_id
+        )
+        mcsnapshot = get_cluster_snapshot_by_snapshot_id(cmd.cli_ctx, cluster_snapshot_id)
+        kubernetes_version = mcsnapshot.managed_cluster_properties_read_only.kubernetes_version
 
     if instance.kubernetes_version == kubernetes_version:
         if instance.provisioning_state == "Succeeded":
