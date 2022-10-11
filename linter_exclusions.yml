@@ -726,22 +726,6 @@ dt endpoint create eventhub:
     eventhub_resource_group:
       rule_exclusions:
       - parameter_should_not_end_in_resource_group
-dynatrace monitor create:
-  parameters:
-    dynatrace_environment_properties:
-      rule_exclusions:
-      - option_length_too_long
-    marketplace_subscription_status:
-      rule_exclusions:
-        - option_length_too_long
-dynatrace monitor update:
-  parameters:
-    dynatrace_environment_properties:
-      rule_exclusions:
-      - option_length_too_long
-    marketplace_subscription_status:
-      rule_exclusions:
-        - option_length_too_long
 eventgrid domain create:
   parameters:
     input_mapping_default_values:

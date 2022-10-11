@@ -15,7 +15,10 @@ from azure.cli.core.aaz import *
     "dynatrace monitor tag-rule update",
 )
 class Update(AAZCommand):
-    """Update a TagRule
+    """Update a tag rule
+
+    :example: Update a tag rule
+        az dynatrace monitor tag-rule update -g rg --monitor-name monitor -n default
     """
 
     _aaz_info = {

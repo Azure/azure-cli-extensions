@@ -15,7 +15,10 @@ from azure.cli.core.aaz import *
     "dynatrace monitor tag-rule create",
 )
 class Create(AAZCommand):
-    """Create a TagRule
+    """Create a tag rule
+
+    :example: Create a tag rule
+        az dynatrace monitor tag-rule create -g rg --monitor-name monitor -n default --log-rules {send-aad-logs:enabled,send-subscription-logs:enabled,send-activity-logs:enabled,filtering-tags:[{name:env,value:prod,action:include},{name:env,value:dev,action:exclude}] --metric-rules {{filtering-tags:[{{name:env,value:prod,action:include}}]}}
     """
 
     _aaz_info = {

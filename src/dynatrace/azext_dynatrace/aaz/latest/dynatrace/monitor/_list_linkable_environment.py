@@ -15,7 +15,10 @@ from azure.cli.core.aaz import *
     "dynatrace monitor list-linkable-environment",
 )
 class ListLinkableEnvironment(AAZCommand):
-    """Get all the Dynatrace environments that a user can link a azure resource to
+    """Get all the dynatrace environments that a user can link a azure resource to
+
+    :example: List-linkable-environment
+        az dynatrace monitor list-linkable-environment -g rg --monitor-name monitor --user-principal Alice@microsoft.com --region eastus2euap
     """
 
     _aaz_info = {
@@ -56,24 +59,31 @@ class ListLinkableEnvironment(AAZCommand):
             options=["--region"],
             arg_group="Request",
             help="Azure region in which we want to link the environment",
-            required=True,
         )
         _args_schema.tenant_id = AAZStrArg(
             options=["--tenant-id"],
             arg_group="Request",
             help="Tenant Id of the user in which they want to link the environment",
-            required=True,
         )
         _args_schema.user_principal = AAZStrArg(
             options=["--user-principal"],
             arg_group="Request",
             help="user principal id of the user",
-            required=True,
         )
         return cls._args_schema
 
     def _execute_operations(self):
+        self.pre_operations()
         self.MonitorsListLinkableEnvironments(ctx=self.ctx)()
+        self.post_operations()
+
+    # @register_callback
+    def pre_operations(self):
+        pass
+
+    # @register_callback
+    def post_operations(self):
+        pass
 
     def _output(self, *args, **kwargs):
         result = self.deserialize_output(self.ctx.vars.instance.value, client_flatten=True)

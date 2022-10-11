@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class GetVmHostPayload(AAZCommand):
     """Return the payload that need to be passed in the request body for installing Dynatrace agent on a VM
+
+    :example: Get-vm-host-payload
+        az dynatrace monitor get-vm-host-payload -g rg --monitor-name monitor
     """
 
     _aaz_info = {
@@ -52,7 +55,17 @@ class GetVmHostPayload(AAZCommand):
         return cls._args_schema
 
     def _execute_operations(self):
+        self.pre_operations()
         self.MonitorsGetVMHostPayload(ctx=self.ctx)()
+        self.post_operations()
+
+    # @register_callback
+    def pre_operations(self):
+        pass
+
+    # @register_callback
+    def post_operations(self):
+        pass
 
     def _output(self, *args, **kwargs):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)

@@ -15,7 +15,10 @@ from azure.cli.core.aaz import *
     "dynatrace monitor single-sign-on-configurations create",
 )
 class Create(AAZCommand):
-    """Create a DynatraceSingleSignOnResource
+    """Create a dynatrace single-sign-on resource
+
+    :example: Create a single-sign-on-configurations
+        az dynatrace monitor single-sign-on-configurations create -g rg --monitor-name monitor -n default --aad-domains [\'mpliftrdt20210811outlook.onmicrosoft.com\'] --single-sign-on-url "https://www.dynatrace.io"
     """
 
     _aaz_info = {
@@ -88,7 +91,17 @@ class Create(AAZCommand):
         return cls._args_schema
 
     def _execute_operations(self):
+        self.pre_operations()
         yield self.SingleSignOnCreateOrUpdate(ctx=self.ctx)()
+        self.post_operations()
+
+    # @register_callback
+    def pre_operations(self):
+        pass
+
+    # @register_callback
+    def post_operations(self):
+        pass
 
     def _output(self, *args, **kwargs):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)

@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class List(AAZCommand):
     """List all TagRule by monitorName
+
+    :example: List all tag rule by resource group and monitor name
+        az dynatrace monitor tag-rule list -g rg --monitor-name monitor
     """
 
     _aaz_info = {

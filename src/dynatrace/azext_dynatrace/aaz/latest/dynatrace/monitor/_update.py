@@ -15,7 +15,10 @@ from azure.cli.core.aaz import *
     "dynatrace monitor update",
 )
 class Update(AAZCommand):
-    """Update a MonitorResource
+    """Update a monitor resource
+
+    :example: Update monitor
+        az dynatrace update create -g rg -n monitor --user-info "{first-name:Alice,last-name:Bobab,email-address:Alice@microsoft.com,phone-number:1234567890,country:US}" --plan-data "{usage-type:committed,billing-cycle:Monthly,plan-details:azureportalintegration_privatepreview@TIDhjdtn7tfnxcy,effective-date:2022-08-20}" environment "{single-sign-on:{aad-domains:['abc']}}"
     """
 
     _aaz_info = {
@@ -222,7 +225,7 @@ class Update(AAZCommand):
             )
 
             properties = cls._schema_on_200.properties
-            properties.dynatrace_environment_properties = AAZObjectType(
+            properties.environment = AAZObjectType(
                 serialized_name="dynatraceEnvironmentProperties",
             )
             properties.liftr_resource_category = AAZStrType(
@@ -233,7 +236,7 @@ class Update(AAZCommand):
                 serialized_name="liftrResourcePreference",
                 flags={"read_only": True},
             )
-            properties.marketplace_subscription_status = AAZStrType(
+            properties.subscription_status = AAZStrType(
                 serialized_name="marketplaceSubscriptionStatus",
             )
             properties.monitoring_status = AAZStrType(
@@ -250,21 +253,21 @@ class Update(AAZCommand):
                 serialized_name="userInfo",
             )
 
-            dynatrace_environment_properties = cls._schema_on_200.properties.dynatrace_environment_properties
-            dynatrace_environment_properties.account_info = AAZObjectType(
+            environment= cls._schema_on_200.properties.environment
+            environment.account_info = AAZObjectType(
                 serialized_name="accountInfo",
             )
-            dynatrace_environment_properties.environment_info = AAZObjectType(
+            environment.environment_info = AAZObjectType(
                 serialized_name="environmentInfo",
             )
-            dynatrace_environment_properties.single_sign_on_properties = AAZObjectType(
+            environment.single_sign_on_properties = AAZObjectType(
                 serialized_name="singleSignOnProperties",
             )
-            dynatrace_environment_properties.user_id = AAZStrType(
+            environment.user_id = AAZStrType(
                 serialized_name="userId",
             )
 
-            account_info = cls._schema_on_200.properties.dynatrace_environment_properties.account_info
+            account_info = cls._schema_on_200.properties.environment.account_info
             account_info.account_id = AAZStrType(
                 serialized_name="accountId",
             )
@@ -272,7 +275,7 @@ class Update(AAZCommand):
                 serialized_name="regionId",
             )
 
-            environment_info = cls._schema_on_200.properties.dynatrace_environment_properties.environment_info
+            environment_info = cls._schema_on_200.properties.environment.environment_info
             environment_info.environment_id = AAZStrType(
                 serialized_name="environmentId",
             )
@@ -286,7 +289,7 @@ class Update(AAZCommand):
                 serialized_name="logsIngestionEndpoint",
             )
 
-            single_sign_on_properties = cls._schema_on_200.properties.dynatrace_environment_properties.single_sign_on_properties
+            single_sign_on_properties = cls._schema_on_200.properties.environment.single_sign_on_properties
             single_sign_on_properties.aad_domains = AAZListType(
                 serialized_name="aadDomains",
             )
@@ -304,7 +307,7 @@ class Update(AAZCommand):
                 serialized_name="singleSignOnUrl",
             )
 
-            aad_domains = cls._schema_on_200.properties.dynatrace_environment_properties.single_sign_on_properties.aad_domains
+            aad_domains = cls._schema_on_200.properties.environment.single_sign_on_properties.aad_domains
             aad_domains.Element = AAZStrType()
 
             plan_data = cls._schema_on_200.properties.plan_data

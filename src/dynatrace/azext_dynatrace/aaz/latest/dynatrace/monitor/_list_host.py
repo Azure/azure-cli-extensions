@@ -15,7 +15,10 @@ from azure.cli.core.aaz import *
     "dynatrace monitor list-host",
 )
 class ListHost(AAZCommand):
-    """List the compute resources currently being monitored by the Dynatrace resource
+    """List the compute resources currently being monitored by the dynatrace resource
+
+    :example: List-host
+        az dynatrace monitor list-host -g rg --monitor-name monitor
     """
 
     _aaz_info = {
@@ -51,7 +54,17 @@ class ListHost(AAZCommand):
         return cls._args_schema
 
     def _execute_operations(self):
+        self.pre_operations()
         self.MonitorsListHosts(ctx=self.ctx)()
+        self.post_operations()
+
+    # @register_callback
+    def pre_operations(self):
+        pass
+
+    # @register_callback
+    def post_operations(self):
+        pass
 
     def _output(self, *args, **kwargs):
         result = self.deserialize_output(self.ctx.vars.instance.value, client_flatten=True)

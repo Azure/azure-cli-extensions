@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class GetSsoDetail(AAZCommand):
     """Get the SSO configuration details from the partner
+
+    :example: Get the SSO configuration details
+        az dynatrace monitor single-sign-on-configurations list -g rg --monitor-name monitor
     """
 
     _aaz_info = {

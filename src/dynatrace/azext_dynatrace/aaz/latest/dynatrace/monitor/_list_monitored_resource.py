@@ -15,7 +15,10 @@ from azure.cli.core.aaz import *
     "dynatrace monitor list-monitored-resource",
 )
 class ListMonitoredResource(AAZCommand):
-    """List MonitorResource resources by resource group
+    """List monitor resources by resource group
+
+    :example: List-monitored-resource
+        az dynatrace monitor list-monitored-resource -g rg --monitor-name monitor
     """
 
     _aaz_info = {
@@ -51,7 +54,17 @@ class ListMonitoredResource(AAZCommand):
         return cls._args_schema
 
     def _execute_operations(self):
+        self.pre_operations()
         self.MonitorsListMonitoredResources(ctx=self.ctx)()
+        self.post_operations()
+
+    # @register_callback
+    def pre_operations(self):
+        pass
+
+    # @register_callback
+    def post_operations(self):
+        pass
 
     def _output(self, *args, **kwargs):
         result = self.deserialize_output(self.ctx.vars.instance.value, client_flatten=True)

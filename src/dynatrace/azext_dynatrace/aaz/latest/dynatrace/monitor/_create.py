@@ -15,7 +15,10 @@ from azure.cli.core.aaz import *
     "dynatrace monitor create",
 )
 class Create(AAZCommand):
-    """Create a MonitorResource
+    """Create a monitor resource
+
+    :example: Create a monitor
+        az dynatrace monitor create -g rg -n monitor --user-info "{first-name:Alice,last-name:Bobab,email-address:Alice@microsoft.com,phone-number:1234567890,country:US}" --plan-data "{usage-type:committed,billing-cycle:Monthly,plan-details:azureportalintegration_privatepreview@TIDhjdtn7tfnxcy,effective-date:2022-08-20}" --environment "{single-sign-on:{aad-domains:['abc']}}"
     """
 
     _aaz_info = {
@@ -55,13 +58,13 @@ class Create(AAZCommand):
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
-        _args_schema.dynatrace_environment_properties = AAZObjectArg(
-            options=["--dynatrace-environment-properties"],
+        _args_schema.environment = AAZObjectArg(
+            options=["--environment"],
             arg_group="Properties",
             help="Properties of the Dynatrace environment.",
         )
-        _args_schema.marketplace_subscription_status = AAZStrArg(
-            options=["--marketplace-subscription-status"],
+        _args_schema.subscription_status = AAZStrArg(
+            options=["--subscription-status"],
             arg_group="Properties",
             help="Marketplace subscription status.",
             enum={"Active": "Active", "Suspended": "Suspended"},
@@ -83,25 +86,25 @@ class Create(AAZCommand):
             help="User info.",
         )
 
-        dynatrace_environment_properties = cls._args_schema.dynatrace_environment_properties
-        dynatrace_environment_properties.account_info = AAZObjectArg(
+        environment = cls._args_schema.environment
+        environment.account_info = AAZObjectArg(
             options=["account-info"],
             help="Dynatrace Account Information",
         )
-        dynatrace_environment_properties.environment_info = AAZObjectArg(
+        environment.environment_info = AAZObjectArg(
             options=["environment-info"],
             help="Dynatrace Environment Information",
         )
-        dynatrace_environment_properties.single_sign_on_properties = AAZObjectArg(
-            options=["single-sign-on-properties"],
+        environment.single_sign_on = AAZObjectArg(
+            options=["single-sign-on"],
             help="The details of a Dynatrace single sign-on.",
         )
-        dynatrace_environment_properties.user_id = AAZStrArg(
+        environment.user_id = AAZStrArg(
             options=["user-id"],
             help="User id",
         )
 
-        account_info = cls._args_schema.dynatrace_environment_properties.account_info
+        account_info = cls._args_schema.environment.account_info
         account_info.account_id = AAZStrArg(
             options=["account-id"],
             help="Account Id of the account this environment is linked to",
@@ -111,7 +114,7 @@ class Create(AAZCommand):
             help="Region in which the account is created",
         )
 
-        environment_info = cls._args_schema.dynatrace_environment_properties.environment_info
+        environment_info = cls._args_schema.environment.environment_info
         environment_info.environment_id = AAZStrArg(
             options=["environment-id"],
             help="Id of the environment created",
@@ -129,35 +132,32 @@ class Create(AAZCommand):
             help="Ingestion endpoint used for sending logs",
         )
 
-        single_sign_on_properties = cls._args_schema.dynatrace_environment_properties.single_sign_on_properties
-        single_sign_on_properties.aad_domains = AAZListArg(
+        single_sign_on = cls._args_schema.environment.single_sign_on
+        single_sign_on.aad_domains = AAZListArg(
             options=["aad-domains"],
             help="array of Aad(azure active directory) domains",
         )
-        single_sign_on_properties.enterprise_app_id = AAZStrArg(
+        single_sign_on.enterprise_app_id = AAZStrArg(
             options=["enterprise-app-id"],
             help="Version of the Dynatrace agent installed on the VM.",
         )
-        single_sign_on_properties.single_sign_on_state = AAZStrArg(
+        single_sign_on.single_sign_on_state = AAZStrArg(
             options=["single-sign-on-state"],
             help="State of Single Sign On",
             enum={"Disable": "Disable", "Enable": "Enable", "Existing": "Existing", "Initial": "Initial"},
         )
-        single_sign_on_properties.single_sign_on_url = AAZStrArg(
+        single_sign_on.single_sign_on_url = AAZStrArg(
             options=["single-sign-on-url"],
             help="The login URL specific to this Dynatrace Environment",
         )
 
-        aad_domains = cls._args_schema.dynatrace_environment_properties.single_sign_on_properties.aad_domains
+        aad_domains = cls._args_schema.environment.single_sign_on.aad_domains
         aad_domains.Element = AAZStrArg()
 
         plan_data = cls._args_schema.plan_data
         plan_data.billing_cycle = AAZStrArg(
             options=["billing-cycle"],
             help="different billing cycles like MONTHLY/WEEKLY. this could be enum",
-            fmt=AAZStrArgFormat(
-                max_length=50,
-            ),
         )
         plan_data.effective_date = AAZDateTimeArg(
             options=["effective-date"],
@@ -166,16 +166,10 @@ class Create(AAZCommand):
         plan_data.plan_details = AAZStrArg(
             options=["plan-details"],
             help="plan id as published by Dynatrace",
-            fmt=AAZStrArgFormat(
-                max_length=100,
-            ),
         )
         plan_data.usage_type = AAZStrArg(
             options=["usage-type"],
             help="different usage type like PAYG/COMMITTED. this could be enum",
-            fmt=AAZStrArgFormat(
-                max_length=50,
-            ),
         )
 
         user_info = cls._args_schema.user_info
@@ -193,16 +187,10 @@ class Create(AAZCommand):
         user_info.first_name = AAZStrArg(
             options=["first-name"],
             help="First Name of the user",
-            fmt=AAZStrArgFormat(
-                max_length=50,
-            ),
         )
         user_info.last_name = AAZStrArg(
             options=["last-name"],
             help="Last Name of the user",
-            fmt=AAZStrArgFormat(
-                max_length=50,
-            ),
         )
         user_info.phone_number = AAZStrArg(
             options=["phone-number"],
@@ -266,7 +254,17 @@ class Create(AAZCommand):
         return cls._args_schema
 
     def _execute_operations(self):
+        self.pre_operations()
         yield self.MonitorsCreateOrUpdate(ctx=self.ctx)()
+        self.post_operations()
+
+    # @register_callback
+    def pre_operations(self):
+        pass
+
+    # @register_callback
+    def post_operations(self):
+        pass
 
     def _output(self, *args, **kwargs):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
@@ -382,8 +380,8 @@ class Create(AAZCommand):
 
             properties = _builder.get(".properties")
             if properties is not None:
-                properties.set_prop("dynatraceEnvironmentProperties", AAZObjectType, ".dynatrace_environment_properties")
-                properties.set_prop("marketplaceSubscriptionStatus", AAZStrType, ".marketplace_subscription_status")
+                properties.set_prop("dynatraceEnvironmentProperties", AAZObjectType, ".environment")
+                properties.set_prop("marketplaceSubscriptionStatus", AAZStrType, ".subscription_status")
                 properties.set_prop("monitoringStatus", AAZStrType, ".monitoring_status")
                 properties.set_prop("planData", AAZObjectType, ".plan_data")
                 properties.set_prop("userInfo", AAZObjectType, ".user_info")
@@ -392,7 +390,7 @@ class Create(AAZCommand):
             if dynatrace_environment_properties is not None:
                 dynatrace_environment_properties.set_prop("accountInfo", AAZObjectType, ".account_info")
                 dynatrace_environment_properties.set_prop("environmentInfo", AAZObjectType, ".environment_info")
-                dynatrace_environment_properties.set_prop("singleSignOnProperties", AAZObjectType, ".single_sign_on_properties")
+                dynatrace_environment_properties.set_prop("singleSignOnProperties", AAZObjectType, ".single_sign_on")
                 dynatrace_environment_properties.set_prop("userId", AAZStrType, ".user_id")
 
             account_info = _builder.get(".properties.dynatraceEnvironmentProperties.accountInfo")

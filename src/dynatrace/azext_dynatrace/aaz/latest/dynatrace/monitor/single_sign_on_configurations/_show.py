@@ -15,7 +15,10 @@ from azure.cli.core.aaz import *
     "dynatrace monitor single-sign-on-configurations show",
 )
 class Show(AAZCommand):
-    """Get a DynatraceSingleSignOnResource
+    """Show a dynatrace single-sign-on resource
+
+    :example: Show single-sign-on-configurations
+        az dynatrace monitor single-sign-on-configurations show -g rg --monitor-name monitor -n default
     """
 
     _aaz_info = {
@@ -59,7 +62,17 @@ class Show(AAZCommand):
         return cls._args_schema
 
     def _execute_operations(self):
+        self.pre_operations()
         self.SingleSignOnGet(ctx=self.ctx)()
+        self.post_operations()
+
+    # @register_callback
+    def pre_operations(self):
+        pass
+
+    # @register_callback
+    def post_operations(self):
+        pass
 
     def _output(self, *args, **kwargs):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)

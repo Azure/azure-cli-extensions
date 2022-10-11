@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class Delete(AAZCommand):
     """Delete a TagRule
+
+    :example: Delete a tag rule
+        az dynatrace monitor tag-rule delete -g rg --monitor-name monitor -n default -y
     """
 
     _aaz_info = {

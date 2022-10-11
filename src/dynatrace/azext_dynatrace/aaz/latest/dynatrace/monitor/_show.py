@@ -15,7 +15,10 @@ from azure.cli.core.aaz import *
     "dynatrace monitor show",
 )
 class Show(AAZCommand):
-    """Get a MonitorResource
+    """Show a monitor resource
+
+    :example: Show a monitor
+        az dynatrace monitor show -g rg -n monitor
     """
 
     _aaz_info = {
@@ -53,7 +56,17 @@ class Show(AAZCommand):
         return cls._args_schema
 
     def _execute_operations(self):
+        self.pre_operations()
         self.MonitorsGet(ctx=self.ctx)()
+        self.post_operations()
+
+    # @register_callback
+    def pre_operations(self):
+        pass
+
+    # @register_callback
+    def post_operations(self):
+        pass
 
     def _output(self, *args, **kwargs):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)

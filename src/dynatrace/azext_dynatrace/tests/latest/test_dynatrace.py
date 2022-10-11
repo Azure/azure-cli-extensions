@@ -23,7 +23,7 @@ class DynatraceScenario(ScenarioTest):
             'monitor': self.create_random_name('monitor', 15),
         })
 
-        self.cmd('dynatrace monitor create -g {rg} -n {monitor} --user-info {{first-name:Alice,last-name:Bobab,email-address:agarwald@microsoft.com,phone-number:1234567890,country:US}} --plan-data {{usage-type:committed,billing-cycle:Monthly,plan-details:azureportalintegration_privatepreview@TIDhjdtn7tfnxcy,effective-date:2022-08-20}} --dynatrace-environment-properties {{single-sign-on-properties:{{aad-domains:[\'abc\']}}}}')
+        self.cmd('dynatrace monitor create -g {rg} -n {monitor} --user-info {{first-name:Alice,last-name:Bobab,email-address:agarwald@microsoft.com,phone-number:1234567890,country:US}} --plan-data {{usage-type:committed,billing-cycle:Monthly,plan-details:azureportalintegration_privatepreview@TIDhjdtn7tfnxcy,effective-date:2022-08-20}} --environment {{single-sign-on:{{aad-domains:[\'abc\']}}}}')
         self.cmd('dynatrace monitor show -g {rg} -n {monitor}', checks=[
             self.check('name', '{monitor}'),
             self.check('resourceGroup', '{rg}'),
@@ -81,7 +81,7 @@ class DynatraceScenario(ScenarioTest):
         self.kwargs.update({
             'monitor': self.create_random_name('monitor', 15),
         })
-        self.cmd('dynatrace monitor create -g {rg} -n {monitor} --user-info {{first-name:Alice,last-name:Bobab,email-address:agarwald@microsoft.com,phone-number:1234567890,country:US}} --plan-data {{usage-type:committed,billing-cycle:Monthly,plan-details:azureportalintegration_privatepreview@TIDhjdtn7tfnxcy,effective-date:2022-08-20}} --dynatrace-environment-properties {{single-sign-on-properties:{{aad-domains:[\'abc\']}}}}')
+        self.cmd('dynatrace monitor create -g {rg} -n {monitor} --user-info {{first-name:Alice,last-name:Bobab,email-address:agarwald@microsoft.com,phone-number:1234567890,country:US}} --plan-data {{usage-type:committed,billing-cycle:Monthly,plan-details:azureportalintegration_privatepreview@TIDhjdtn7tfnxcy,effective-date:2022-08-20}} --environment {{single-sign-on:{{aad-domains:[\'abc\']}}}}')
         self.cmd('dynatrace monitor single-sign-on-configurations create -g {rg} --monitor-name {monitor} -n default --aad-domains [\'mpliftrdt20210811outlook.onmicrosoft.com\'] --single-sign-on-url "https://www.dynatrace.io"', checks=[
             self.check('aadDomains[0]', 'mpliftrdt20210811outlook.onmicrosoft.com'),
             self.check('singleSignOnUrl', 'https://www.dynatrace.io')
@@ -101,7 +101,7 @@ class DynatraceScenario(ScenarioTest):
             'monitor': self.create_random_name('monitor', 15),
         })
 
-        self.cmd('dynatrace monitor create -g {rg} -n {monitor} --user-info {{first-name:Alice,last-name:Bobab,email-address:agarwald@microsoft.com,phone-number:1234567890,country:US}} --plan-data {{usage-type:committed,billing-cycle:Monthly,plan-details:azureportalintegration_privatepreview@TIDhjdtn7tfnxcy,effective-date:2022-08-20}} --dynatrace-environment-properties {{single-sign-on-properties:{{aad-domains:[\'abc\']}}}} ')
+        self.cmd('dynatrace monitor create -g {rg} -n {monitor} --user-info {{first-name:Alice,last-name:Bobab,email-address:agarwald@microsoft.com,phone-number:1234567890,country:US}} --plan-data {{usage-type:committed,billing-cycle:Monthly,plan-details:azureportalintegration_privatepreview@TIDhjdtn7tfnxcy,effective-date:2022-08-20}} --environment {{single-sign-on:{{aad-domains:[\'abc\']}}}} ')
         self.cmd('dynatrace monitor tag-rule create -g {rg} --monitor-name {monitor} -n default --log-rules {{send-aad-logs:enabled,send-subscription-logs:enabled,send-activity-logs:enabled,filtering-tags:[{{name:env,value:prod,action:include}},{{name:env,value:dev,action:exclude}}]}} --metric-rules {{filtering-tags:[{{name:env,value:prod,action:include}}]}}', checks=[
             self.check('name', 'default'),
             self.check('resourceGroup', '{rg}'),
