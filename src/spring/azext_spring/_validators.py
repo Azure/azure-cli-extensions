@@ -107,9 +107,7 @@ def validate_instance_not_existed(client, resource_group, name, location):
     availability_parameters = models.NameAvailabilityParameters(type="Microsoft.AppPlatform/Spring", name=name)
     name_availability = client.services.check_name_availability(location, availability_parameters)
     if not name_availability.name_available and name_availability.reason == "AlreadyExists":
-        raise InvalidArgumentValueError(
-            "Service instance '{}' under resource group '{}' is already existed in region '{}', cannot be created again.".format(
-                name, resource_group, location))
+        raise InvalidArgumentValueError("Service instance '{}' under resource group '{}' is already existed in region '{}', cannot be created again.".format(name, resource_group, location))
 
 
 def validate_name(namespace):
@@ -297,15 +295,13 @@ def _validate_app_insights_parameters(namespace):
 
 def validate_app_insights_command_not_supported_tier(cmd, namespace):
     if is_enterprise_tier(cmd, namespace.resource_group, namespace.name):
-        raise NotSupportedPricingTierError(
-            "Enterprise tier service instance {} in group {} is not supported in this command, ".format(namespace.name,
-                                                                                                        namespace.resource_group) +
-            "please refer to 'az spring build-service builder buildpack-binding' command group.")
+        raise NotSupportedPricingTierError("Enterprise tier service instance {} in group {} is not supported in this command, ".format(namespace.name, namespace.resource_group) +
+                                           "please refer to 'az spring build-service builder buildpack-binding' command group.")
 
 
 def validate_vnet(cmd, namespace):
     if not namespace.vnet and not namespace.app_subnet and \
-            not namespace.service_runtime_subnet and not namespace.reserved_cidr_range:
+       not namespace.service_runtime_subnet and not namespace.reserved_cidr_range:
         return
     validate_vnet_required_parameters(namespace)
 
@@ -333,8 +329,7 @@ def validate_vnet(cmd, namespace):
         app_vnet_id = _parse_vnet_id_from_subnet(namespace.app_subnet)
         service_runtime_vnet_id = _parse_vnet_id_from_subnet(namespace.service_runtime_subnet)
         if app_vnet_id.lower() != service_runtime_vnet_id.lower():
-            raise InvalidArgumentValueError(
-                '--app-subnet and --service-runtime-subnet should be in the same Virtual Networks.')
+            raise InvalidArgumentValueError('--app-subnet and --service-runtime-subnet should be in the same Virtual Networks.')
         vnet_id = app_vnet_id
     if namespace.app_subnet.lower() == namespace.service_runtime_subnet.lower():
         raise InvalidArgumentValueError('--app-subnet and --service-runtime-subnet should not be the same.')
@@ -376,8 +371,7 @@ def _validate_subnet(namespace, subnet):
         raise InvalidArgumentValueError('--{} should not have connected device.'.format(name))
     address = ip_network(subnet.address_prefix, strict=False)
     if address.prefixlen > limit:
-        raise InvalidArgumentValueError(
-            '--{0} should contain at least /{1} address, got /{2}'.format(name, limit, address.prefixlen))
+        raise InvalidArgumentValueError('--{0} should contain at least /{1} address, got /{2}'.format(name, limit, address.prefixlen))
 
 
 def _get_vnet(cmd, vnet_id):
@@ -454,8 +448,8 @@ def _parse_vnet_id_from_subnet(subnet_id):
         raise InvalidArgumentValueError('{0} is not a valid subnet resource ID'.format(subnet_id))
     subnet = parse_resource_id(subnet_id)
     if subnet['namespace'].lower() != 'microsoft.network' or \
-            subnet['type'].lower() != 'virtualnetworks' or \
-            'resource_type' not in subnet or subnet['resource_type'].lower() != 'subnets':
+       subnet['type'].lower() != 'virtualnetworks' or \
+       'resource_type' not in subnet or subnet['resource_type'].lower() != 'subnets':
         raise InvalidArgumentValueError('{0} is not a valid subnet resource ID'.format(subnet_id))
     return resource_id(
         subscription=subnet['subscription'],
@@ -517,16 +511,16 @@ def _validate_ip(ip, prefix):
 def validate_vnet_required_parameters(namespace):
     # pylint: disable=too-many-boolean-expressions
     if not namespace.app_subnet and \
-            not namespace.service_runtime_subnet and \
-            not namespace.app_network_resource_group and \
-            not namespace.service_runtime_network_resource_group and \
-            not namespace.reserved_cidr_range and \
-            not namespace.vnet:
+       not namespace.service_runtime_subnet and \
+       not namespace.app_network_resource_group and \
+       not namespace.service_runtime_network_resource_group and \
+       not namespace.reserved_cidr_range and \
+       not namespace.vnet:
         return
     if namespace.sku and _parse_sku_name(namespace.sku) == 'basic':
         raise InvalidArgumentValueError('Virtual Network Injection is not supported for Basic tier.')
     if not namespace.app_subnet \
-            or not namespace.service_runtime_subnet:
+       or not namespace.service_runtime_subnet:
         raise InvalidArgumentValueError(
             '--app-subnet, --service-runtime-subnet must be set when deploying to VNet')
 
@@ -551,8 +545,7 @@ def _validate_resource_group_name(name, message_name):
         return
     matchObj = match(r'^[-\w\._\(\)]+$', name)
     if matchObj is None:
-        raise InvalidArgumentValueError(
-            '--{0} must conform to the following pattern: \'^[-\\w\\._\\(\\)]+$\'.'.format(message_name))
+        raise InvalidArgumentValueError('--{0} must conform to the following pattern: \'^[-\\w\\._\\(\\)]+$\'.'.format(message_name))
 
 
 def _validate_route_table(namespace, vnet_obj):
@@ -566,8 +559,7 @@ def _validate_route_table(namespace, vnet_obj):
 
     if app_route_table_id and runtime_route_table_id:
         if app_route_table_id == runtime_route_table_id:
-            raise InvalidArgumentValueError(
-                '--service-runtime-subnet and --app-subnet should associate with different route tables.')
+            raise InvalidArgumentValueError('--service-runtime-subnet and --app-subnet should associate with different route tables.')
     if (app_route_table_id and not runtime_route_table_id) \
             or (not app_route_table_id and runtime_route_table_id):
         raise InvalidArgumentValueError(
@@ -591,12 +583,10 @@ def validate_jar(namespace):
     tips = ", if you choose to ignore these errors, turn validation off with --disable-validation"
     if not has_jar and not has_class:
         telemetry.set_user_fault("invalid_jar_no_class_jar")
-        raise InvalidArgumentValueError(
-            "Do not find any class or jar file, please check if your artifact is a valid fat jar" + tips)
+        raise InvalidArgumentValueError("Do not find any class or jar file, please check if your artifact is a valid fat jar" + tips)
     if not has_manifest:
         telemetry.set_user_fault("invalid_jar_no_manifest")
-        raise InvalidArgumentValueError(
-            "Do not find MANIFEST.MF, please check if your artifact is a valid fat jar" + tips)
+        raise InvalidArgumentValueError("Do not find MANIFEST.MF, please check if your artifact is a valid fat jar" + tips)
     if file_size / 1024 / 1024 < 10:
         telemetry.set_user_fault("invalid_jar_thin_jar")
         raise InvalidArgumentValueError("Thin jar detected, please check if your artifact is a valid fat jar" + tips)
