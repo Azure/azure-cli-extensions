@@ -14,11 +14,12 @@ from azure.cli.testsdk import (ScenarioTest, record_only)
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
+
 @record_only()
 class AppDeploy(ScenarioTest):
     def test_deploy_app(self):
         py_path = os.path.abspath(os.path.dirname(__file__))
-        file_path = os.path.join(py_path, 'files/test.jar').replace("\\","/")
+        file_path = os.path.join(py_path, 'files/test.jar').replace("\\", "/")
         self.kwargs.update({
             'app': 'deploy',
             'serviceName': 'cli-unittest',
@@ -26,15 +27,18 @@ class AppDeploy(ScenarioTest):
             'file': file_path
         })
 
-        self.cmd('spring app create -n {app} -g {rg} -s {serviceName} --cpu 2  --env "foo=bar" --runtime-version Java_11', checks=[
-            self.check('name', '{app}'),
-            self.check('properties.activeDeployment.name', 'default'),
-            self.check('properties.activeDeployment.properties.deploymentSettings.resourceRequests.cpu', '2'),
-            self.check('properties.activeDeployment.sku.capacity', 1),
-            self.check('properties.activeDeployment.properties.source.type', 'Jar'),
-            self.check('properties.activeDeployment.properties.source.runtimeVersion', 'Java_11'),
-            self.check('properties.activeDeployment.properties.deploymentSettings.environmentVariables', {'foo': 'bar'}),
-        ])
+        self.cmd(
+            'spring app create -n {app} -g {rg} -s {serviceName} --cpu 2  --env "foo=bar" --runtime-version Java_11',
+            checks=[
+                self.check('name', '{app}'),
+                self.check('properties.activeDeployment.name', 'default'),
+                self.check('properties.activeDeployment.properties.deploymentSettings.resourceRequests.cpu', '2'),
+                self.check('properties.activeDeployment.sku.capacity', 1),
+                self.check('properties.activeDeployment.properties.source.type', 'Jar'),
+                self.check('properties.activeDeployment.properties.source.runtimeVersion', 'Java_11'),
+                self.check('properties.activeDeployment.properties.deploymentSettings.environmentVariables',
+                           {'foo': 'bar'}),
+            ])
 
         # deploy fake file, the fail is expected
         with self.assertRaisesRegexp(CLIError, "112404: Exit code 1: application error."):
@@ -65,7 +69,8 @@ class AppDeploy(ScenarioTest):
 
         # deploy change to .Net
         with self.assertRaisesRegexp(CLIError, "112404: Exit code 0: purposely stopped."):
-            self.cmd('spring app deploy -n {app} -g {rg} -s {serviceName} --artifact-path {file} --version v2 --runtime-version NetCore_31 --main-entry test')
+            self.cmd(
+                'spring app deploy -n {app} -g {rg} -s {serviceName} --artifact-path {file} --version v2 --runtime-version NetCore_31 --main-entry test')
         deployment = self.cmd('spring app deployment show -n default --app {app} -g {rg} -s {serviceName}', checks=[
             self.check('name', 'default'),
             self.check('properties.deploymentSettings.resourceRequests.cpu', '2'),
@@ -93,7 +98,8 @@ class AppDeploy(ScenarioTest):
 
         # keep deploy .net
         with self.assertRaisesRegexp(CLIError, "112404: Exit code 0: purposely stopped."):
-            self.cmd('spring app deploy -n {app} -g {rg} -s {serviceName} --artifact-path {file} --version v3 --main-entry test3')
+            self.cmd(
+                'spring app deploy -n {app} -g {rg} -s {serviceName} --artifact-path {file} --version v3 --main-entry test3')
         self.cmd('spring app deployment show -n default --app {app} -g {rg} -s {serviceName}', checks=[
             self.check('name', 'default'),
             self.check('properties.deploymentSettings.resourceRequests.cpu', '2'),
@@ -122,19 +128,21 @@ class AppCRUD(ScenarioTest):
             self.check('properties.activeDeployment.sku.capacity', 1),
             self.check('properties.activeDeployment.properties.source.type', 'Jar'),
             self.check('properties.activeDeployment.properties.source.runtimeVersion', 'Java_8'),
-            self.check('properties.activeDeployment.properties.deploymentSettings.environmentVariables', {'foo': 'bar'}),
+            self.check('properties.activeDeployment.properties.deploymentSettings.environmentVariables',
+                       {'foo': 'bar'}),
         ])
 
         # green deployment copy settings from active, but still accept input as highest priority
-        self.cmd('spring app deployment create -n green --app {app} -g {rg} -s {serviceName} --instance-count 2', checks=[
-            self.check('name', 'green'),
-            self.check('properties.deploymentSettings.resourceRequests.cpu', '2'),
-            self.check('properties.deploymentSettings.resourceRequests.memory', '1Gi'),
-            self.check('properties.source.type', 'Jar'),
-            self.check('properties.source.runtimeVersion', 'Java_8'),
-            self.check('sku.capacity', 2),
-            self.check('properties.deploymentSettings.environmentVariables', {'foo': 'bar'}),
-        ])
+        self.cmd('spring app deployment create -n green --app {app} -g {rg} -s {serviceName} --instance-count 2',
+                 checks=[
+                     self.check('name', 'green'),
+                     self.check('properties.deploymentSettings.resourceRequests.cpu', '2'),
+                     self.check('properties.deploymentSettings.resourceRequests.memory', '1Gi'),
+                     self.check('properties.source.type', 'Jar'),
+                     self.check('properties.source.runtimeVersion', 'Java_8'),
+                     self.check('sku.capacity', 2),
+                     self.check('properties.deploymentSettings.environmentVariables', {'foo': 'bar'}),
+                 ])
 
         self.cmd('spring app update -n {app} -g {rg} -s {serviceName} --runtime-version Java_11', checks=[
             self.check('properties.activeDeployment.name', 'default'),
@@ -143,10 +151,10 @@ class AppCRUD(ScenarioTest):
             self.check('properties.activeDeployment.sku.capacity', 1),
             self.check('properties.activeDeployment.properties.source.type', 'Jar'),
             self.check('properties.activeDeployment.properties.source.runtimeVersion', 'Java_11'),
-            self.check('properties.activeDeployment.properties.deploymentSettings.environmentVariables', {'foo': 'bar'}),
+            self.check('properties.activeDeployment.properties.deploymentSettings.environmentVariables',
+                       {'foo': 'bar'}),
         ])
         self.cmd('spring app delete -n {app} -g {rg} -s {serviceName}')
-
 
     def test_app_crud_1(self):
         self.kwargs.update({
@@ -165,12 +173,13 @@ class AppCRUD(ScenarioTest):
         ])
 
         # green deployment not copy settings from active
-        self.cmd('spring app deployment create -n green --app {app} -g {rg} -s {serviceName} --skip-clone-settings', checks=[
-            self.check('name', 'green'),
-            self.check('properties.deploymentSettings.resourceRequests.cpu', '1'),
-            self.check('properties.deploymentSettings.resourceRequests.memory', '1Gi'),
-            self.check('sku.capacity', 1)
-        ])
+        self.cmd('spring app deployment create -n green --app {app} -g {rg} -s {serviceName} --skip-clone-settings',
+                 checks=[
+                     self.check('name', 'green'),
+                     self.check('properties.deploymentSettings.resourceRequests.cpu', '1'),
+                     self.check('properties.deploymentSettings.resourceRequests.memory', '1Gi'),
+                     self.check('sku.capacity', 1)
+                 ])
 
 
 @record_only()
@@ -263,10 +272,48 @@ class GenerateDumpTest(ScenarioTest):
             'resourceGroup': 'cli',
             'path': file_path
         })
-        result = self.cmd('spring app deployment show -g {resourceGroup} -s {serviceName} --app {app} -n {deployment}').get_output_in_json()
+        result = self.cmd(
+            'spring app deployment show -g {resourceGroup} -s {serviceName} --app {app} -n {deployment}').get_output_in_json()
         self.kwargs['instance'] = result['properties'].get('instances', [{}])[0].get('name')
         self.assertTrue(self.kwargs['instance'])
-        self.cmd('spring app deployment generate-heap-dump -g {resourceGroup} -s {serviceName} --app {app} --deployment {deployment} --app-instance {instance} --file-path {path}')
+        self.cmd(
+            'spring app deployment generate-heap-dump -g {resourceGroup} -s {serviceName} --app {app} --deployment {deployment} --app-instance {instance} --file-path {path}')
+
+
+@record_only()
+class RemoteDebuggingTest(ScenarioTest):
+    def test_enable_remote_debugging(self):
+        self.kwargs.update({
+            'app': 'test-app-remote-debugging',
+            'deployment': 'default',
+            'serviceName': 'cli-unittest',
+            'resourceGroup': 'cli',
+        })
+        self.cmd(
+            'spring app deployment enable-remote-debugging --app {app} -g {resourceGroup} -s {serviceName} --deployment {deployment}')
+
+        self.cmd(
+            'spring app deployment get-remote-debugging --app {app} -g {resourceGroup} -s {serviceName} --deployment {deployment}',
+            checks=[
+                self.check('enabled', True),
+                self.check('port', 5005)
+            ])
+
+    def test_disable_remote_debugging(self):
+        self.kwargs.update({
+            'app': 'test-app-remote-debugging',
+            'deployment': 'default',
+            'serviceName': 'cli-unittest',
+            'resourceGroup': 'cli',
+        })
+        self.cmd(
+            'spring app deployment disable-remote-debugging --app {app} -g {resourceGroup} -s {serviceName} --deployment {deployment}')
+
+        self.cmd(
+            'spring app deployment get-remote-debugging --app {app} -g {resourceGroup} -s {serviceName} --deployment {deployment}',
+            checks=[
+                self.check('enabled', False)
+            ])
 
 
 @record_only()
