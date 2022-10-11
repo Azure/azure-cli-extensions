@@ -177,7 +177,10 @@ def check_msi_cluster(client, cluster_resource_group_name, cluster_name):
 
 
 # check if `az feature register --namespace Microsoft.ContainerService --name AKS-PrometheusAddonPreview` is Registered
-def check_azuremonitoraddon_feature(cmd, cluster_subscription):
+def check_azuremonitoraddon_feature(cmd, cluster_subscription, raw_parameters):
+    aks_custom_headers = raw_parameters.get("aks_custom_headers")
+    if (aks_custom_headers is not None) and ("aks-prometheusaddonpreview" in aks_custom_headers.lower()):
+        return
     from azure.cli.core.util import send_raw_request
     feature_check_url = f"https://management.azure.com/subscriptions/{cluster_subscription}/providers/Microsoft.Features/subscriptionFeatureRegistrations?api-version={FEATURE_API}&featurename=AKS-PrometheusAddonPreview"
     try:
@@ -747,7 +750,7 @@ def ensure_azure_monitor_profile_prerequisites(
         # Check if MSI cluster
         check_msi_cluster(client, cluster_resource_group_name, cluster_name)
         # If the feature is not registered then STOP onboarding and request to register the feature
-        check_azuremonitoraddon_feature(cmd, cluster_subscription)
+        check_azuremonitoraddon_feature(cmd, cluster_subscription, raw_parameters)
         # Do RP registrations if required
         rp_registrations(cmd, cluster_subscription)
         link_azure_monitor_profile_artifacts(
