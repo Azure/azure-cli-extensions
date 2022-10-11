@@ -281,42 +281,6 @@ class GenerateDumpTest(ScenarioTest):
 
 
 @record_only()
-class RemoteDebuggingTest(ScenarioTest):
-    def test_enable_remote_debugging(self):
-        self.kwargs.update({
-            'app': 'test-app-remote-debugging',
-            'deployment': 'default',
-            'serviceName': 'cli-unittest',
-            'resourceGroup': 'cli',
-        })
-        self.cmd(
-            'spring app deployment enable-remote-debugging --app {app} -g {resourceGroup} -s {serviceName} --deployment {deployment}')
-
-        self.cmd(
-            'spring app deployment get-remote-debugging --app {app} -g {resourceGroup} -s {serviceName} --deployment {deployment}',
-            checks=[
-                self.check('enabled', True),
-                self.check('port', 5005)
-            ])
-
-    def test_disable_remote_debugging(self):
-        self.kwargs.update({
-            'app': 'test-app-remote-debugging',
-            'deployment': 'default',
-            'serviceName': 'cli-unittest',
-            'resourceGroup': 'cli',
-        })
-        self.cmd(
-            'spring app deployment disable-remote-debugging --app {app} -g {resourceGroup} -s {serviceName} --deployment {deployment}')
-
-        self.cmd(
-            'spring app deployment get-remote-debugging --app {app} -g {resourceGroup} -s {serviceName} --deployment {deployment}',
-            checks=[
-                self.check('enabled', False)
-            ])
-
-
-@record_only()
 class VnetPublicEndpointTest(ScenarioTest):
     def test_vnet_public_endpoint(self):
         self.kwargs.update({
