@@ -202,7 +202,7 @@ def sanitize_name(name, type):
     if type == DC_TYPE.DCE:
         name = name.replace("_", "")
     name = name[0:43]
-    lastIndexAlphaNumeric = len(name)- 1
+    lastIndexAlphaNumeric = len(name) - 1
     while ((name[lastIndexAlphaNumeric].isalnum() is False) and lastIndexAlphaNumeric > -1):
         lastIndexAlphaNumeric = lastIndexAlphaNumeric - 1
     if (lastIndexAlphaNumeric < 0):
