@@ -164,13 +164,6 @@ def check_azuremonitormetrics_profile(cmd, cluster_subscription, cluster_resourc
         raise UnknownError(e)
     json_response = json.loads(r.text)
     values_array = json_response["properties"]
-    ##############################
-    ##############################
-    ##############################
-    # check the casing!!
-    ##############################
-    ##############################
-    ##############################
     if "azureMonitorProfile" in values_array:
         if "metrics" in values_array["azureMonitorProfile"]:
             if values_array["azureMonitorProfile"]["metrics"]["enabled"] is True:
@@ -200,74 +193,6 @@ def check_azuremonitoraddon_feature(cmd, cluster_subscription):
             return
     raise CLIError("Please enable the feature AKS-PrometheusAddonPreview on your subscription using `az feature register --namespace Microsoft.ContainerService --name AKS-PrometheusAddonPreview` to use this feature.\
         If this feature was recently registered then please wait upto 5 mins for the feature registration to finish")
-
-
-def validate_azuremonitorworkspace_id(resource_id):
-    if resource_id is None:
-        return
-    resource_id = sanitize_resource_id(resource_id)
-    # /subscriptions/ce4d1293-71c0-4c72-bc55-133553ee9e50/resourceGroups/kaveesharm/providers/microsoft.monitor/accounts/kaveesharm
-    if (bool(re.match(r'/subscriptions/.*/resourcegroups/.*/providers/microsoft.monitor/accounts/.*', resource_id))) is False:
-        raise CLIError("--azure-monitor-workspace-resource-id not in the correct format. It should match `/subscriptions/<subscriptionId>/resourceGroups/<resourceGroupName>/providers/microsoft.monitor/accounts/<resourceName>`")
-    return
-
-
-def validate_grafanaworkspace_id(resource_id):
-    if resource_id is None:
-        return
-    resource_id = sanitize_resource_id(resource_id)
-    # /subscriptions/ce4d1293-71c0-4c72-bc55-133553ee9e50/resourceGroups/kaveesharm/providers/microsoft.dashboard/grafana/kaveesharm
-    if (bool(re.match(r'/subscriptions/.*/resourcegroups/.*/providers/microsoft.dashboard/grafana/.*', resource_id))) is False:
-        raise CLIError("--grafana-resource-id not in the correct format. It should match `/subscriptions/<subscriptionId>/resourceGroups/<resourceGroupName>/providers/microsoft.dashboard/grafana/<resourceName>`")
-    return
-
-
-def validate_ksm_parameter(ksmparam):
-    if ksmparam is None:
-        return ""
-    labelValueMap = {}
-    ksmStrLength = len(ksmparam)
-    EOF = -1
-    next = ""
-    name = ""
-    firstWordPos = 0
-    for i, v in enumerate(ksmparam):
-        if i + 1 == ksmStrLength:
-            next = EOF
-        else:
-            next = ord(ksmparam[i + 1])
-        if i - 1 >= 0:
-            previous = ord(ksmparam[i - 1])
-        else:
-            previous = v
-        if v == "=":
-            if previous == ord(",") or next != ord("["):
-                raise InvalidArgumentValueError("Please format --metric properly. For eg. : --ksm-metric-labels-allow-list \"=namespaces=[k8s-label-1,k8s-label-n,...],pods=[app],...)\" and --ksm-metric-annotations-allow-list \"namespaces=[kubernetes.io/team,...],pods=[kubernetes.io/team],...\"")
-            name = ksmparam[firstWordPos:i]
-            labelValueMap[name] = []
-            firstWordPos = i + 1
-        elif v == "[":
-            if previous != ord("="):
-                raise InvalidArgumentValueError("Please format --metric properly. For eg. : --ksm-metric-labels-allow-list \"=namespaces=[k8s-label-1,k8s-label-n,...],pods=[app],...)\" and --ksm-metric-annotations-allow-list \"namespaces=[kubernetes.io/team,...],pods=[kubernetes.io/team],...\"")
-            firstWordPos = i + 1
-        elif v == "]":
-            # if after metric group, has char not comma or end.
-            if next != EOF and next != ord(","):
-                raise InvalidArgumentValueError("Please format --metric properly. For eg. : --ksm-metric-labels-allow-list \"=namespaces=[k8s-label-1,k8s-label-n,...],pods=[app],...)\" and --ksm-metric-annotations-allow-list \"namespaces=[kubernetes.io/team,...],pods=[kubernetes.io/team],...\"")
-            if previous != ord("["):
-                labelValueMap[name].append(ksmparam[firstWordPos:i])
-            firstWordPos = i + 1
-        elif v == ",":
-            # if starts or ends with comma
-            if previous == v or next == EOF or next == ord("]"):
-                raise InvalidArgumentValueError("Please format --metric properly. For eg. : --ksm-metric-labels-allow-list \"=namespaces=[k8s-label-1,k8s-label-n,...],pods=[app],...)\" and --ksm-metric-annotations-allow-list \"namespaces=[kubernetes.io/team,...],pods=[kubernetes.io/team],...\"")
-            if previous != ord("]"):
-                labelValueMap[name].append(ksmparam[firstWordPos:i])
-            firstWordPos = i + 1
-    for label in labelValueMap:
-        if (bool(re.match(r'^[a-zA-Z_][A-Za-z0-9_]+$', label))) is False:
-            raise InvalidArgumentValueError("Please format --metric properly. For eg. : --ksm-metric-labels-allow-list \"=namespaces=[k8s-label-1,k8s-label-n,...],pods=[app],...)\" and --ksm-metric-annotations-allow-list \"namespaces=[kubernetes.io/team,...],pods=[kubernetes.io/team],...\"")
-    return ksmparam
 
 
 # All DC* objects are 44 length

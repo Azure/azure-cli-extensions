@@ -20,10 +20,7 @@ from azure.cli.command_modules.acs._validators import (
     extract_comma_separated_string,
 )
 from azext_aks_preview.azuremonitorprofile import (
-    ensure_azure_monitor_profile_prerequisites,
-    validate_ksm_parameter,
-    validate_azuremonitorworkspace_id,
-    validate_grafanaworkspace_id
+    ensure_azure_monitor_profile_prerequisites
 )
 from azure.cli.command_modules.acs.managed_cluster_decorator import (
     AKSManagedClusterContext,
@@ -2822,14 +2819,13 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         self._ensure_mc(mc)
 
         # read the original value passed by the command
-        ksm_metric_labels_allow_list = self._AKSPreviewManagedClusterUpdateDecorator__raw_parameters.get("ksm_metric_labels_allow_list")
-        ksm_metric_annotations_allow_list = self._AKSPreviewManagedClusterUpdateDecorator__raw_parameters.get("ksm_metric_annotations_allow_list")
+        ksm_metric_labels_allow_list = self.context.raw_param.get("ksm_metric_labels_allow_list")
+        ksm_metric_annotations_allow_list = self.context.raw_param.get("ksm_metric_annotations_allow_list")
 
-        # Validate Param
-        validate_azuremonitorworkspace_id(self._AKSPreviewManagedClusterUpdateDecorator__raw_parameters.get("azure_monitor_workspace_resource_id"))
-        validate_grafanaworkspace_id(self._AKSPreviewManagedClusterUpdateDecorator__raw_parameters.get("grafana_resource_id"))
-        ksm_metric_labels_allow_list = validate_ksm_parameter(ksm_metric_labels_allow_list)
-        ksm_metric_annotations_allow_list = validate_ksm_parameter(ksm_metric_annotations_allow_list)
+        if ksm_metric_labels_allow_list is None:
+            ksm_metric_labels_allow_list = ""
+        if ksm_metric_annotations_allow_list is None:
+            ksm_metric_annotations_allow_list = ""
 
         if self.context.get_enable_azure_monitor_metrics():
             if mc.azure_monitor_profile is None:
@@ -2843,27 +2839,45 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
             if mc.azure_monitor_profile is None:
                 mc.azure_monitor_profile = self.models.ManagedClusterAzureMonitorProfile()
             mc.azure_monitor_profile.metrics = self.models.ManagedClusterAzureMonitorProfileMetrics(enabled=False)
+
+        if (self.context.raw_param.get("enable_azuremonitormetrics") or self.context.raw_param.get("disable_azuremonitormetrics")):
+            ensure_azure_monitor_profile_prerequisites(
+                self.cmd,
+                self.client,
+                self.context.get_subscription_id(),
+                self.context.get_resource_group_name(),
+                self.context.get_name(),
+                self.context.get_location(),
+                self.__raw_parameters,
+                self.context.get_disable_azure_monitor_metrics())
+
         return mc
 
     def update_node_restriction(self, mc: ManagedCluster) -> ManagedCluster:
         """Update security profile nodeRestriction for the ManagedCluster object.
+
         :return: the ManagedCluster object
         """
         self._ensure_mc(mc)
+
         if self.context.get_enable_node_restriction():
             if mc.security_profile is None:
                 mc.security_profile = self.models.ManagedClusterSecurityProfile()
             if mc.security_profile.node_restriction is None:
                 mc.security_profile.node_restriction = self.models.ManagedClusterSecurityProfileNodeRestriction()
+
             # set enabled
             mc.security_profile.node_restriction.enabled = True
+
         if self.context.get_disable_node_restriction():
             if mc.security_profile is None:
                 mc.security_profile = self.models.ManagedClusterSecurityProfile()
             if mc.security_profile.node_restriction is None:
                 mc.security_profile.node_restriction = self.models.ManagedClusterSecurityProfileNodeRestriction()
+
             # set disabled
             mc.security_profile.node_restriction.enabled = False
+
         return mc
 
     def update_vpa(self, mc: ManagedCluster) -> ManagedCluster:
@@ -2952,16 +2966,5 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         mc = self.update_vpa(mc)
         # update creation data
         mc = self.update_creation_data(mc)
-
-        if (self.__raw_parameters.get("enable_azuremonitormetrics") or self.__raw_parameters.get("disable_azuremonitormetrics")):
-            ensure_azure_monitor_profile_prerequisites(
-                self.cmd,
-                self.client,
-                self.context.get_subscription_id(),
-                self.context.get_resource_group_name(),
-                self.context.get_name(),
-                self.context.get_location(),
-                self.__raw_parameters,
-                self.context.get_disable_azure_monitor_metrics())
 
         return mc

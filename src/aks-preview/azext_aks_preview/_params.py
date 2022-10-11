@@ -123,6 +123,10 @@ from azext_aks_preview._validators import (
     validate_enable_custom_ca_trust,
     validate_defender_config_parameter,
     validate_defender_disable_and_enable_parameters,
+    validate_azuremonitorworkspaceresourceid,
+    validate_grafanaresourceid,
+    validate_ksm_labels,
+    validate_ksm_annotations
 )
 
 # candidates for enumeration
@@ -432,10 +436,10 @@ def load_arguments(self, _):
         c.argument('disable_private_cluster', action='store_true', is_preview=True, help='disable private cluster for apiserver vnet integration')
         c.argument('private_dns_zone', is_preview=True)
         c.argument('enable_azuremonitormetrics', action='store_true', is_preview=True)
-        c.argument('azure_monitor_workspace_resource_id', is_preview=True)
-        c.argument('ksm_metric_labels_allow_list', is_preview=True)
-        c.argument('ksm_metric_annotations_allow_list', is_preview=True)
-        c.argument('grafana_resource_id', is_preview=True)
+        c.argument('azure_monitor_workspace_resource_id', validator=validate_azuremonitorworkspaceresourceid, is_preview=True)
+        c.argument('ksm_metric_labels_allow_list', validator=validate_ksm_labels, is_preview=True)
+        c.argument('ksm_metric_annotations_allow_list', validator=validate_ksm_annotations, is_preview=True)
+        c.argument('grafana_resource_id', validator=validate_grafanaresourceid, is_preview=True)
         c.argument('disable_azuremonitormetrics', action='store_true', is_preview=True)
         c.argument('enable_vpa', action='store_true', is_preview=True, help="enable vertical pod autoscaler for cluster")
         c.argument('disable_vpa', action='store_true', is_preview=True, help="disable vertical pod autoscaler for cluster")
