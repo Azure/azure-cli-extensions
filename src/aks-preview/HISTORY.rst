@@ -12,6 +12,11 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+0.5.105
++++++++
+
+* Add support to create cluster with kube-proxy configuration via `az aks create --kube-proxy-config file.json`
+
 0.5.104
 +++++++
 

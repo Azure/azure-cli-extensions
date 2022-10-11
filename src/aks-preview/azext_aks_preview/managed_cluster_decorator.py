@@ -71,6 +71,7 @@ logger = get_logger(__name__)
 
 # type variables
 ContainerServiceClient = TypeVar("ContainerServiceClient")
+ContainerServiceNetworkProfileKubeProxyConfig = TypeVar("ContainerServiceNetworkProfileKubeProxyConfig")
 ManagedCluster = TypeVar("ManagedCluster")
 ManagedClusterAddonProfile = TypeVar("ManagedClusterAddonProfile")
 ManagedClusterHTTPProxyConfig = TypeVar("ManagedClusterHTTPProxyConfig")
@@ -369,6 +370,39 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         # this parameter does not need dynamic completion
         # this parameter does not need validation
         return load_balancer_backend_pool_type
+
+    def get_kube_proxy_config(self) -> Union[Dict, ContainerServiceNetworkProfileKubeProxyConfig, None]:
+        """Obtain the value of kube_proxy_config.
+
+        :return: dictionary, ContainerServiceNetworkProfileKubeProxyConfig or None
+        """
+        # read the original value passed by the command
+        kube_proxy_config = None
+        kube_proxy_config_file_path = self.raw_param.get("kube_proxy_config")
+        # validate user input
+        if kube_proxy_config_file_path:
+            if not os.path.isfile(kube_proxy_config_file_path):
+                raise InvalidArgumentValueError(
+                    "{} is not valid file, or not accessible.".format(
+                        kube_proxy_config_file_path
+                    )
+                )
+            kube_proxy_config = get_file_json(kube_proxy_config_file_path)
+            if not isinstance(kube_proxy_config, dict):
+                raise InvalidArgumentValueError(
+                    "Error reading kube-proxy config from {}. "
+                    "Please see https://aka.ms/KubeProxyConfig for correct format.".format(
+                        kube_proxy_config_file_path
+                    )
+                )
+
+        # try to read the property value corresponding to the parameter from the `mc` object
+        if self.mc and self.mc.network_profile and self.mc.network_profile.kube_proxy_config is not None:
+            kube_proxy_config = self.mc.network_profile.kube_proxy_config
+
+        # this parameter does not need dynamic completion
+        # this parameter does not need validation
+        return kube_proxy_config
 
     def _get_enable_pod_security_policy(self, enable_validation: bool = False) -> bool:
         """Internal function to obtain the value of enable_pod_security_policy.
@@ -2321,7 +2355,7 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
 
         if self.context.get_enable_node_restriction():
             if mc.security_profile is None:
-                    mc.security_profile = self.models.ManagedClusterSecurityProfile()
+                mc.security_profile = self.models.ManagedClusterSecurityProfile()
             mc.security_profile.node_restriction = self.models.ManagedClusterSecurityProfileNodeRestriction(
                 enabled=True,
             )
@@ -2342,6 +2376,21 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
                 mc.workload_auto_scaler_profile.vertical_pod_autoscaler = self.models.ManagedClusterWorkloadAutoScalerProfileVerticalPodAutoscaler(enabled=True)
             else:
                 mc.workload_auto_scaler_profile.vertical_pod_autoscaler.enabled = True
+        return mc
+
+    def set_up_kube_proxy_config(self, mc: ManagedCluster) -> ManagedCluster:
+        """Set up kube-proxy config for the ManagedCluster object.
+
+        :return: the ManagedCluster object
+        """
+        self._ensure_mc(mc)
+
+        if not mc.network_profile:
+            raise UnknownError(
+                "Unexpectedly get an empty network profile in the process of updating kube-proxy config."
+            )
+
+        mc.network_profile.kube_proxy_config = self.context.get_kube_proxy_config()
         return mc
 
     def construct_mc_profile_preview(self, bypass_restore_defaults: bool = False) -> ManagedCluster:
@@ -2386,6 +2435,8 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         mc = self.set_up_workload_auto_scaler_profile(mc)
         # set up vpa
         mc = self.set_up_vpa(mc)
+        # set up kube-proxy config
+        mc = self.set_up_kube_proxy_config(mc)
 
         # DO NOT MOVE: keep this at the bottom, restore defaults
         mc = self._restore_defaults_in_mc(mc)
