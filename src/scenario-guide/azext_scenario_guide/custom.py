@@ -48,8 +48,6 @@ def scenario_guide(cmd, search_keyword, scope=None, match_rule=None, top=None):
               'If you want to execute the commands in interactive mode, '
               'you can use "az config set scenario_guide.execute_in_prompt=True" to set it up.\n')
 
-    return
-
 
 def _show_search_item(results):
     """
