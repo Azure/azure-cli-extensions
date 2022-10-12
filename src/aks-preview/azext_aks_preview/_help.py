@@ -844,7 +844,7 @@ helps['aks update'] = """
           type: bool
           short-summary: Enable Azure Monitor Metrics Profile
         - name: --azure-monitor-workspace-resource-id
-          type: bool
+          type: string
           short-summary: Resource ID  of the Azure Monitor Workspace
         - name: --ksm-metric-labels-allow-list
           type: string
