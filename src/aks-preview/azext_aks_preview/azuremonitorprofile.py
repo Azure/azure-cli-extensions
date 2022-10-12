@@ -170,12 +170,6 @@ def check_azuremonitormetrics_profile(cmd, cluster_subscription, cluster_resourc
                 raise CLIError(f"Azure Monitor Metrics is already enabled for this cluster. Please use `az aks update --disable-azuremonitormetrics -g {cluster_resource_group_name} -n {cluster_name}` and then try enabling.")
 
 
-# def check_msi_cluster(client, cluster_resource_group_name, cluster_name):
-#     instance = client.get(cluster_resource_group_name, cluster_name)
-#     if instance.service_principal_profile.client_id.lower() != "msi":
-#         raise CLIError("Azure Monitor Metrics (Managed Prometheus) is only supported for MSI enabled clusters")
-
-
 # check if `az feature register --namespace Microsoft.ContainerService --name AKS-PrometheusAddonPreview` is Registered
 def check_azuremonitoraddon_feature(cmd, cluster_subscription, raw_parameters):
     aks_custom_headers = raw_parameters.get("aks_custom_headers")
@@ -759,8 +753,6 @@ def ensure_azure_monitor_profile_prerequisites(
     else:
         # Check if already onboarded
         check_azuremonitormetrics_profile(cmd, cluster_subscription, cluster_resource_group_name, cluster_name)
-        # Check if MSI cluster
-        # check_msi_cluster(client, cluster_resource_group_name, cluster_name)
         # If the feature is not registered then STOP onboarding and request to register the feature
         check_azuremonitoraddon_feature(cmd, cluster_subscription, raw_parameters)
         # Do RP registrations if required
