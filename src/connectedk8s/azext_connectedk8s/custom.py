@@ -66,7 +66,8 @@ logger = get_logger(__name__)
 
 def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlation_id=None, https_proxy="", http_proxy="", no_proxy="", proxy_cert="", location=None,
                         kube_config=None, kube_context=None, no_wait=False, tags=None, distribution='auto', infrastructure='auto',
-                        disable_auto_upgrade=False, cl_oid=None, onboarding_timeout="600", enable_private_link=None, private_link_scope_resource_id=None):
+                        disable_auto_upgrade=False, cl_oid=None, onboarding_timeout="600", enable_private_link=None, private_link_scope_resource_id=None,
+                        distribution_version=None, azure_hybrid_benefit=None):
     logger.warning("This operation might take a while...\n")
 
     # Setting subscription id and tenant Id
@@ -108,8 +109,8 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
         if cl_oid:
             logger.warning("Private Link is being enabled, and Custom Location is not supported by Private Link at this time, so the '--custom-locations-oid' parameter will be ignored.")
 
-    # Set preview client if private link properties are provided.
-    if enable_private_link is not None:
+    # Set preview client if latest preview properties are provided.
+    if enable_private_link is not None or distribution_version is not None or azure_hybrid_benefit is not None:
         client = cf_connected_cluster_prev_2022_10_01(cmd.cli_ctx, None)
 
     # Checking whether optional extra values file has been provided.
@@ -218,7 +219,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
                                             configmap_cluster_name).agent_public_key_certificate
                 except Exception as e:  # pylint: disable=broad-except
                     utils.arm_exception_handler(e, consts.Get_ConnectedCluster_Fault_Type, 'Failed to check if connected cluster resource already exists.')
-                cc = generate_request_payload(configuration, location, public_key, tags, kubernetes_distro, kubernetes_infra, enable_private_link, private_link_scope_resource_id)
+                cc = generate_request_payload(configuration, location, public_key, tags, kubernetes_distro, kubernetes_infra, enable_private_link, private_link_scope_resource_id, distribution_version, azure_hybrid_benefit)
                 cc_response = create_cc_resource(client, resource_group_name, cluster_name, cc, no_wait).result()
                 # Disabling cluster-connect if private link is getting enabled
                 if enable_private_link is True:
@@ -319,7 +320,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
         raise CLIInternalError("Failed to export private key." + str(e))
 
     # Generate request payload
-    cc = generate_request_payload(configuration, location, public_key, tags, kubernetes_distro, kubernetes_infra, enable_private_link, private_link_scope_resource_id)
+    cc = generate_request_payload(configuration, location, public_key, tags, kubernetes_distro, kubernetes_infra, enable_private_link, private_link_scope_resource_id, distribution_version, azure_hybrid_benefit)
 
     # Create connected cluster resource
     put_cc_response = create_cc_resource(client, resource_group_name, cluster_name, cc, no_wait).result()
@@ -605,7 +606,7 @@ def check_linux_amd64_node(api_response):
     return False
 
 
-def generate_request_payload(configuration, location, public_key, tags, kubernetes_distro, kubernetes_infra, enable_private_link, private_link_scope_resource_id):
+def generate_request_payload(configuration, location, public_key, tags, kubernetes_distro, kubernetes_infra, enable_private_link, private_link_scope_resource_id, distribution_version, azure_hybrid_benefit):
     # Create connected cluster resource object
     identity = ConnectedClusterIdentity(
         type="SystemAssigned"
@@ -621,8 +622,10 @@ def generate_request_payload(configuration, location, public_key, tags, kubernet
         infrastructure=kubernetes_infra
     )
 
-    if enable_private_link is not None:
-        private_link_state = "Enabled" if enable_private_link is True else "Disabled"
+    if enable_private_link is not None or distribution_version is not None or azure_hybrid_benefit is not None:
+        private_link_state = None
+        if enable_private_link is not None:
+            private_link_state = "Enabled" if enable_private_link is True else "Disabled"
         cc = ConnectedClusterPreview(
             location=location,
             identity=identity,
@@ -631,14 +634,19 @@ def generate_request_payload(configuration, location, public_key, tags, kubernet
             distribution=kubernetes_distro,
             infrastructure=kubernetes_infra,
             private_link_scope_resource_id=private_link_scope_resource_id,
-            private_link_state=private_link_state
+            private_link_state=private_link_state,
+            azure_hybrid_benefit=azure_hybrid_benefit,
+            distribution_version=distribution_version
         )
     return cc
 
 
-def generate_patch_payload(tags):
-    cc = ConnectedClusterPatch(
-        tags=tags
+def generate_patch_payload(tags, distribution, distribution_version, azure_hybrid_benefit):
+    cc = ConnectedClusterPatchPreview(
+        tags=tags,
+        distribution=distribution,
+        distribution_version=distribution_version,
+        azure_hybrid_benefit=azure_hybrid_benefit
     )
     return cc
 
@@ -886,8 +894,8 @@ def delete_cc_resource(client, resource_group_name, cluster_name, no_wait):
         utils.arm_exception_handler(e, consts.Delete_ConnectedCluster_Fault_Type, 'Unable to delete connected cluster resource')
 
 
-def update_connected_cluster_internal(client, resource_group_name, cluster_name, tags=None):
-    cc = generate_patch_payload(tags)
+def update_connected_cluster_internal(client, resource_group_name, cluster_name, tags=None, distribution=None, distribution_version=None, azure_hybrid_benefit=None):
+    cc = generate_patch_payload(tags, distribution, distribution_version, azure_hybrid_benefit)
     return patch_cc_resource(client, resource_group_name, cluster_name, cc)
 
 
@@ -899,7 +907,8 @@ def update_connected_cluster_internal(client, resource_group_name, cluster_name,
 
 
 def update_connected_cluster(cmd, client, resource_group_name, cluster_name, https_proxy="", http_proxy="", no_proxy="", proxy_cert="",
-                             disable_proxy=False, kube_config=None, kube_context=None, auto_upgrade=None, tags=None):
+                             disable_proxy=False, kube_config=None, kube_context=None, auto_upgrade=None, tags=None,
+                             distribution=None, distribution_version=None, azure_hybrid_benefit=None):
 
     # Send cloud information to telemetry
     send_cloud_telemetry(cmd)
@@ -924,16 +933,16 @@ def update_connected_cluster(cmd, client, resource_group_name, cluster_name, htt
 
     proxy_cert = proxy_cert.replace('\\', r'\\\\')
 
-    # Set preview client if cluster is private link enabled.
-    connected_cluster = get_connectedk8s(cmd, client, resource_group_name, cluster_name)
-    if connected_cluster.private_link_state.lower() == "enabled":
-        client = cf_connected_cluster_prev_2022_10_01(cmd.cli_ctx, None)
+    # Set preview client as most of the patchable fields are available in preview api-version
+    client = cf_connected_cluster_prev_2022_10_01(cmd.cli_ctx, None)
 
     # Patching the connected cluster ARM resource
-    patch_cc_response = update_connected_cluster_internal(client, resource_group_name, cluster_name, tags)
+    arm_properties_unset = (tags is None and distribution is None and distribution_version is None and azure_hybrid_benefit is None)
+    if not arm_properties_unset:
+        patch_cc_response = update_connected_cluster_internal(client, resource_group_name, cluster_name, tags, distribution, distribution_version, azure_hybrid_benefit)
 
     proxy_params_unset = (https_proxy == "" and http_proxy == "" and no_proxy == "" and proxy_cert == "" and not disable_proxy)
-    if proxy_params_unset and not auto_upgrade and tags is None:
+    if proxy_params_unset and not auto_upgrade and arm_properties_unset:
         raise RequiredArgumentMissingError(consts.No_Param_Error)
 
     if (https_proxy or http_proxy or no_proxy) and disable_proxy:
@@ -968,6 +977,7 @@ def update_connected_cluster(cmd, client, resource_group_name, cluster_name, htt
     release_namespace = validate_release_namespace(client, cluster_name, resource_group_name, configuration, kube_config, kube_context, helm_client_location)
 
     # Fetch Connected Cluster for agent version
+    connected_cluster = get_connectedk8s(cmd, client, resource_group_name, cluster_name)
     api_instance = kube_client.CoreV1Api(kube_client.ApiClient(configuration))
     node_api_response = None
 
@@ -1072,7 +1082,8 @@ def update_connected_cluster(cmd, client, resource_group_name, cluster_name, htt
         os.remove(user_values_location)
     except OSError:
         pass
-    return patch_cc_response
+    if not arm_properties_unset:
+        return patch_cc_response
 
 
 def upgrade_agents(cmd, client, resource_group_name, cluster_name, kube_config=None, kube_context=None, arc_agent_version=None, upgrade_timeout="600"):
