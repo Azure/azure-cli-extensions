@@ -27,17 +27,19 @@ class AzureVWanVHubScenario(ScenarioTest):
         self.cmd('network vwan create -n {vwan} -g {rg} --type Standard')
         self.cmd(
             'network vhub create -g {rg} -n {vhub} --vwan {vwan} --address-prefix 10.0.0.0/24 -l SouthCentralUS '
-            '--sku Standard --hub-routing-preference ExpressRoute',
+            '--sku Standard --hub-routing-preference ExpressRoute --asn 65515',
             checks=[
                 self.check('sku', 'Standard'),
-                self.check('hubRoutingPreference', 'ExpressRoute')
+                self.check('hubRoutingPreference', 'ExpressRoute'),
+                self.check('virtualRouterAsn', 65515)
             ]
         )
         self.cmd(
-            'network vhub update -g {rg} -n {vhub} --sku Basic --hub-routing-preference VpnGateway',
+            'network vhub update -g {rg} -n {vhub} --sku Basic --hub-routing-preference VpnGateway --asn 65515',
             checks=[
                 self.check('sku', 'Basic'),
-                self.check('hubRoutingPreference', 'VpnGateway')
+                self.check('hubRoutingPreference', 'VpnGateway'),
+                self.check('virtualRouterAsn', 65515)
             ]
         )
         self.cmd('network vwan update -g {rg} -n {vwan} --type Basic')

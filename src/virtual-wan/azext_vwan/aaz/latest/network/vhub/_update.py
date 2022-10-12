@@ -72,6 +72,15 @@ class Update(AAZCommand):
             help="The sku of the VirtualHub.",
             nullable=True,
         )
+        _args_schema.asn = AAZIntArg(
+            options=["--asn"],
+            help="VirtualRouter ASN.",
+            nullable=True,
+            fmt=AAZIntArgFormat(
+                maximum=4294967295,
+                minimum=0,
+            ),
+        )
         _args_schema.vwan = AAZResourceIdArg(
             options=["--vwan"],
             help="Name or ID of the virtual WAN.",
@@ -360,6 +369,7 @@ class Update(AAZCommand):
                 properties.set_prop("addressPrefix", AAZStrType, ".address_prefix")
                 properties.set_prop("hubRoutingPreference", AAZStrType, ".hub_routing_preference")
                 properties.set_prop("sku", AAZStrType, ".sku")
+                properties.set_prop("virtualRouterAsn", AAZIntType, ".asn")
                 properties.set_prop("virtualWan", AAZObjectType)
 
             virtual_wan = _builder.get(".properties.virtualWan")
