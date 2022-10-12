@@ -23,7 +23,7 @@ Pending
 * Add support to create cluster with kube-proxy configuration via `az aks create --kube-proxy-config file.json`
 
 0.5.104
-++++++
++++++++
 
 * Add support to upgrade or update cluster with managed cluster snapshot. Command is
     * `az aks upgrade --cluster-snapshot-id <snapshot-id>`
