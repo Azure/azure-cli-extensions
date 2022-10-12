@@ -21,7 +21,7 @@ logger = logging.getLogger(__name__)
 knack_logger = knack.log.get_logger(__name__)
 
 
-def list(cmd, resource_group_name=None, workspace_name=None, location=None):
+def list(cmd, resource_group_name, workspace_name, location):
     """
     Get the list of jobs in a Quantum Workspace.
     """
@@ -168,7 +168,7 @@ def _has_completed(job):
     return job.status in ("Succeeded", "Failed", "Cancelled")
 
 
-def submit(cmd, program_args, resource_group_name=None, workspace_name=None, location=None, target_id=None,
+def submit(cmd, program_args, resource_group_name, workspace_name, location, target_id,
            project=None, job_name=None, shots=None, storage=None, no_build=False, job_params=None,
            target_capability=None):
     """
@@ -203,7 +203,7 @@ def submit(cmd, program_args, resource_group_name=None, workspace_name=None, loc
         # Query for the job and return status to caller.
         return get(cmd, job_id, resource_group_name, workspace_name, location)
 
-    # The program compiled succesfully, but executing the stand-alone .exe failed to run.
+    # The program compiled successfully, but executing the stand-alone .exe failed to run.
     logger.error("Submission of job failed with error code %s", result.returncode)
     print(result.stdout.decode('ascii'))
     raise AzureInternalError("Failed to submit job.")
@@ -229,7 +229,7 @@ def _parse_blob_url(url):
     }
 
 
-def output(cmd, job_id, resource_group_name=None, workspace_name=None, location=None):
+def output(cmd, job_id, resource_group_name, workspace_name, location):
     """
     Get the results of running a Q# job.
     """
@@ -305,7 +305,7 @@ def _validate_max_poll_wait_secs(max_poll_wait_secs):
     return valid_max_poll_wait_secs
 
 
-def wait(cmd, job_id, resource_group_name=None, workspace_name=None, location=None, max_poll_wait_secs=5):
+def wait(cmd, job_id, resource_group_name, workspace_name, location, max_poll_wait_secs=5):
     """
     Place the CLI in a waiting state until the job finishes running.
     """
@@ -334,7 +334,17 @@ def wait(cmd, job_id, resource_group_name=None, workspace_name=None, location=No
     return job
 
 
-def run(cmd, program_args, resource_group_name=None, workspace_name=None, location=None, target_id=None,
+def job_show(cmd, job_id, resource_group_name, workspace_name, location):
+    """
+    Get the job's status and details.
+    """
+    info = WorkspaceInfo(cmd, resource_group_name, workspace_name, location)
+    client = cf_jobs(cmd.cli_ctx, info.subscription, info.resource_group, info.name, info.location)
+    job = client.get(job_id)
+    return job
+
+
+def run(cmd, program_args, resource_group_name, workspace_name, location, target_id,
         project=None, job_name=None, shots=None, storage=None, no_build=False, job_params=None, target_capability=None):
     """
     Submit a job to run on Azure Quantum, and waits for the result.
@@ -353,7 +363,7 @@ def run(cmd, program_args, resource_group_name=None, workspace_name=None, locati
     return output(cmd, job.id, resource_group_name, workspace_name, location)
 
 
-def cancel(cmd, job_id, resource_group_name=None, workspace_name=None, location=None):
+def cancel(cmd, job_id, resource_group_name, workspace_name, location):
     """
     Request to cancel a job on Azure Quantum if it hasn't completed.
     """

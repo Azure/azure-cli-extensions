@@ -132,13 +132,13 @@ def load_command_table(self, _):
 
     with self.command_group('quantum target', target_ops) as t:
         t.command('list', 'list', validator=validate_workspace_info, table_transformer=transform_targets)
-        t.show_command('show', validator=validate_target_info)
+        t.show_command('show', 'target_show', validator=validate_target_info)
         t.command('set', 'set', validator=validate_target_info)
         t.command('clear', 'clear')
 
     with self.command_group('quantum job', job_ops) as j:
         j.command('list', 'list', validator=validate_workspace_info, table_transformer=transform_jobs)
-        j.show_command('show', validator=validate_workspace_info, table_transformer=transform_job)
+        j.show_command('show', 'job_show', validator=validate_workspace_info, table_transformer=transform_job)
         j.command('submit', 'submit', validator=validate_workspace_and_target_info, table_transformer=transform_job)
         j.command('wait', 'wait', validator=validate_workspace_info, table_transformer=transform_job)
         j.command('output', 'output', validator=validate_workspace_info, table_transformer=transform_output)
