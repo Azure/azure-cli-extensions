@@ -29,5 +29,8 @@ class ReservationsCommandsLoader(AzCommandsLoader):
         load_command_table(self, args)
         return self.command_table
 
+    def load_arguments(self, command):
+        from azext_reservation._params import load_arguments
+        load_arguments(self)
 
 COMMAND_LOADER_CLS = ReservationsCommandsLoader
