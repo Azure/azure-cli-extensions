@@ -8,7 +8,7 @@ import json
 from azure.cli.core.azclierror import RecommendationError
 from knack import help_files
 from .utils import (get_int_option, get_command_list, get_last_exception, get_title_case, get_yes_or_no_option,
-                    get_latest_command)
+                    get_latest_command, get_combined_option, OptionRange)
 from .constants import RecommendType
 from colorama import Fore, init
 from .requests import get_recommend_from_api
@@ -16,15 +16,15 @@ from azure.cli.core.style import print_styled_text, Style
 import azure.cli.core.telemetry as telemetry
 
 
-def handle_next(cmd, scenario=False):
+def handle_next(cmd, command_only=False, scenario_only=False):
     init(autoreset=True)  # turn on automatic color recovery for colorama
 
-    if scenario:
+    if scenario_only:
         request_type = RecommendType.Scenario.value
-    elif cmd.cli_ctx.config.getboolean('next', 'filter_type', fallback=False):
-        request_type = _get_filter_option()
+    elif command_only:
+        request_type = RecommendType.Command.value
     else:
-        request_type = RecommendType.All.value
+        request_type = RecommendType.get(cmd.cli_ctx.config.get('next', 'filter_type', fallback='mix')).value
 
     # Upload all execution commands of local record for personalized analysis
     command_history = get_command_list(cmd, 0)
@@ -46,18 +46,51 @@ def handle_next(cmd, scenario=False):
         return
 
     print()
-    _give_recommends(cmd, recommends)
 
-    option = get_int_option("Please select your option " + Fore.LIGHTBLACK_EX + "(if none, enter 0)" +
-                            Fore.RESET + ": ", 0, len(recommends), -1)
-    if option == 0:
-        send_feedback(request_type, 0, command_history, processed_exception, recommends)
-        print('\nThank you for your feedback. If you have more feedback, please submit it by using "az feedback" \n')
-        return
-    print()
+    command_recommendations = [item for item in recommends if item['type'] != RecommendType.Scenario]
+    scenario_recommendations = [item for item in recommends if item['type'] == RecommendType.Scenario]
+    multi_type_recommendation = True
+    if len(command_recommendations) == 0:
+        multi_type_recommendation = False
+    if len(scenario_recommendations) == 0:
+        multi_type_recommendation = False
 
-    rec = recommends[option - 1]
-    send_feedback(request_type, option, command_history, processed_exception, recommends, rec)
+    if not multi_type_recommendation:
+        _give_recommends(cmd, recommends)
+
+        option = get_int_option("Please select your option " + Fore.LIGHTBLACK_EX + "(if none, enter 0)" +
+                                Fore.RESET + ": ", 0, len(recommends), -1)
+        if option == 0:
+            send_feedback(request_type, 0, command_history, processed_exception, recommends)
+            print(
+                '\nThank you for your feedback. If you have more feedback, please submit it by using "az feedback" \n')
+            return
+        print()
+
+        rec = recommends[option - 1]
+        send_feedback(request_type, option, command_history, processed_exception, recommends, rec)
+    else:
+        print_styled_text([(Style.PRIMARY, "SCENARIO")])
+        print()
+        _give_recommends(cmd, scenario_recommendations, prefix='a')
+        print_styled_text([(Style.PRIMARY, "COMMAND")])
+        print()
+        _give_recommends(cmd, command_recommendations, prefix='b')
+        group, option = get_combined_option(
+            "Please select your option " + Fore.LIGHTBLACK_EX + "(for example, enter \"a2\" for the second scenario. if none, enter 0)" +
+            Fore.RESET + ": ",
+            {'a': OptionRange(1, len(scenario_recommendations)), 'b': OptionRange(1, len(command_recommendations))},
+            (None, -1))
+        if group == 'a':
+            rec = scenario_recommendations[option - 1]
+        elif group == 'b':
+            rec = command_recommendations[option - 1]
+        else:
+            send_feedback(request_type, 0, command_history, processed_exception, recommends)
+            print(
+                '\nThank you for your feedback. If you have more feedback, please submit it by using "az feedback" \n')
+            return
+        print()
 
     if rec['type'] == RecommendType.Scenario:
         _show_details_for_e2e_scenario(cmd, rec)
@@ -85,14 +118,12 @@ def _handle_error_no_exception_found():
     az_error.print_error()
 
 
-def _give_recommends(cmd, recommends):
-    idx = 0
-    for rec in recommends:
-        idx += 1
+def _give_recommends(cmd, recommends, prefix=''):
+    for idx, rec in enumerate(recommends):
         if rec['type'] == RecommendType.Scenario:
-            _give_recommend_scenarios(idx, rec)
+            _give_recommend_scenarios(prefix + str(idx + 1), rec)
         else:
-            _give_recommend_commands(cmd, idx, rec)
+            _give_recommend_commands(cmd, prefix + str(idx + 1), rec)
 
 
 def _get_cmd_help_from_ctx(cmd, default_value):

@@ -18,6 +18,23 @@ def read_int(default_value=0):
     return int(ret)
 
 
+def read_combined_option(group_range, default_value=(None, 0)):
+    ret = input()
+    if ret == '' or ret is None:
+        return default_value
+    if ret.isnumeric():
+        return None, int(ret)
+    while True:
+        group = ret[:1]
+        option = ret[1:]
+        if group not in group_range:
+            ret = input("The option should start with " + " or ".join(group_range) + ":")
+        elif not option.isnumeric():
+            ret = input("The option should end with a ledge number: ")
+        else:
+            return group, int(option)
+
+
 def get_yes_or_no_option(option_description):
     print(Fore.LIGHTBLUE_EX + ' ? ' + Fore.RESET + option_description, end='')
     option = input()
@@ -26,6 +43,34 @@ def get_yes_or_no_option(option_description):
     while (option not in yes_options) and (option not in no_options):
         option = input("This option can only be Yes or No, please input again: ")
     return option in yes_options
+
+
+class OptionRange:
+    def __init__(self, min_option, max_option):
+        self.min_option = min_option
+        self.max_option = max_option
+
+    def __contains__(self, item):
+        return self.min_option <= item <= self.max_option
+
+
+def get_combined_option(option_description, valid_groups, default_option):
+    print(Fore.LIGHTBLUE_EX + ' ? ' + Fore.RESET + option_description, end='')
+    group, option = read_combined_option(valid_groups.keys(), default_option)
+    if group is None:
+        return group, option
+    while True:
+        if group is None:
+            if option == 0:
+                return group, option
+            else:
+                print("The option should start with \"a\" for scenario, \"b\" for commands or be \"0\". if none, enter 0", end='')
+                group, option = read_combined_option(valid_groups.keys(), default_option)
+        elif option not in valid_groups[group]:
+            print("The option should end with a valid option ({}{}-{}{}): ".format(group, valid_groups[group].min_option, group, valid_groups[group].max_option), end='')
+            group, option = read_combined_option(valid_groups.keys(), default_option)
+        else:
+            return group, option
 
 
 def get_int_option(option_description, min_option, max_option, default_option):

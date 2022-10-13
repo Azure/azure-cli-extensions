@@ -16,8 +16,8 @@ long-summary: >
     [1] az config set next.execute_in_prompt=True/False
         Turn on/off the step of executing recommended commands in interactive mode. Turn on by default.
 
-    [2] az config set next.filter_type=True/False
-        Turn on/off the step of filtering recommendation type. Turn off by default.
+    [2] az config set next.filter_type=mix/scenario/command
+        Set default filtering recommendation type. Mix is the default.
 
     [3] az config set next.output=json/jsonc/none/table/tsv/yaml/yamlc/status
         Set default output format. Status is the default.

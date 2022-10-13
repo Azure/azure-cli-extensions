@@ -11,3 +11,14 @@ class RecommendType(int, Enum):
     Solution = 2
     Command = 3
     Scenario = 4
+
+    @staticmethod
+    def get(name):
+        if name.lower() == "solution":
+            return RecommendType.Solution
+        elif name.lower() == "command":
+            return RecommendType.Command
+        elif name.lower() == "scenario":
+            return RecommendType.Scenario
+        else:
+            return RecommendType.All
