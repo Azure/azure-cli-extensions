@@ -132,7 +132,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
     # Checking the connection to kubernetes cluster.
     # This check was added to avoid large timeouts when connecting to AAD Enabled AKS clusters
     # if the user had not logged in.
-    check_kube_connection(configuration)
+    kubernetes_version = check_kube_connection(configuration)
 
     utils.try_list_node_fix()
     api_instance = kube_client.CoreV1Api(kube_client.ApiClient(configuration))
@@ -152,8 +152,6 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
         raise ValidationError("Your credentials doesn't have permission to create clusterrolebindings on this kubernetes cluster. Please check your permissions.")
 
     # Get kubernetes cluster info
-    kubernetes_version = get_server_version(configuration)
-
     if distribution == 'auto':
         kubernetes_distro = get_kubernetes_distro(node_api_response)  # (cluster heuristics)
     else:
@@ -397,9 +395,10 @@ def escape_proxy_settings(proxy_setting):
 
 
 def check_kube_connection(configuration):
-    api_instance = kube_client.NetworkingV1Api(kube_client.ApiClient(configuration))
+    api_instance = kube_client.VersionApi(kube_client.ApiClient(configuration))
     try:
-        api_instance.get_api_resources()
+        api_response = api_instance.get_code()
+        return api_response.git_version
     except Exception as e:  # pylint: disable=broad-except
         logger.warning("Unable to verify connectivity to the Kubernetes cluster.")
         utils.kubernetes_exception_handler(e, consts.Kubernetes_Connectivity_FaultType, 'Unable to verify connectivity to the Kubernetes cluster')
@@ -523,17 +522,6 @@ def load_kube_config(kube_config, kube_context):
 def get_private_key(key_pair):
     privKey_DER = key_pair.exportKey(format='DER')
     return PEM.encode(privKey_DER, "RSA PRIVATE KEY")
-
-
-def get_server_version(configuration):
-    api_instance = kube_client.VersionApi(kube_client.ApiClient(configuration))
-    try:
-        api_response = api_instance.get_code()
-        return api_response.git_version
-    except Exception as e:  # pylint: disable=broad-except
-        logger.warning("Unable to fetch kubernetes version.")
-        utils.kubernetes_exception_handler(e, consts.Get_Kubernetes_Version_Fault_Type, 'Unable to fetch kubernetes version',
-                                           raise_error=False)
 
 
 def get_kubernetes_distro(api_response):  # Heuristic
@@ -971,12 +959,9 @@ def update_connected_cluster(cmd, client, resource_group_name, cluster_name, htt
     # Checking the connection to kubernetes cluster.
     # This check was added to avoid large timeouts when connecting to AAD Enabled AKS clusters
     # if the user had not logged in.
-    check_kube_connection(configuration)
+    kubernetes_version = check_kube_connection(configuration)
 
     utils.try_list_node_fix()
-
-    # Get kubernetes cluster info for telemetry
-    kubernetes_version = get_server_version(configuration)
 
     # Install helm client
     helm_client_location = install_helm_client()
@@ -1120,14 +1105,11 @@ def upgrade_agents(cmd, client, resource_group_name, cluster_name, kube_config=N
     # Checking the connection to kubernetes cluster.
     # This check was added to avoid large timeouts when connecting to AAD Enabled AKS clusters
     # if the user had not logged in.
-    check_kube_connection(configuration)
+    kubernetes_version = check_kube_connection(configuration)
 
     utils.try_list_node_fix()
     api_instance = kube_client.CoreV1Api(kube_client.ApiClient(configuration))
     node_api_response = None
-
-    # Get kubernetes cluster info for telemetry
-    kubernetes_version = get_server_version(configuration)
 
     # Install helm client
     helm_client_location = install_helm_client()
@@ -1405,14 +1387,11 @@ def enable_features(cmd, client, resource_group_name, cluster_name, features, ku
     # Checking the connection to kubernetes cluster.
     # This check was added to avoid large timeouts when connecting to AAD Enabled AKS clusters
     # if the user had not logged in.
-    check_kube_connection(configuration)
+    kubernetes_version = check_kube_connection(configuration)
 
     utils.try_list_node_fix()
     api_instance = kube_client.CoreV1Api(kube_client.ApiClient(configuration))
     node_api_response = None
-
-    # Get kubernetes cluster info for telemetry
-    kubernetes_version = get_server_version(configuration)
 
     # Install helm client
     helm_client_location = install_helm_client()
@@ -1528,14 +1507,11 @@ def disable_features(cmd, client, resource_group_name, cluster_name, features, k
     # Checking the connection to kubernetes cluster.
     # This check was added to avoid large timeouts when connecting to AAD Enabled AKS clusters
     # if the user had not logged in.
-    check_kube_connection(configuration)
+    kubernetes_version = check_kube_connection(configuration)
 
     utils.try_list_node_fix()
     api_instance = kube_client.CoreV1Api(kube_client.ApiClient(configuration))
     node_api_response = None
-
-    # Get kubernetes cluster info for telemetry
-    kubernetes_version = get_server_version(configuration)
 
     # Install helm client
     helm_client_location = install_helm_client()

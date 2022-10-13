@@ -7,6 +7,7 @@ Release History
 
 * Added software assurance related changes for AKS HCI
 * Added parameter for overriding container log path
+* Updated kubernetes package dependency to 24.2.0
 
 1.3.4
 ++++++
