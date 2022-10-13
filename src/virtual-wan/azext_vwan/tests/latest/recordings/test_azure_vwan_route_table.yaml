@@ -13,12 +13,13 @@ interactions:
       ParameterSetName:
       - -n -g
       User-Agent:
-      - AZURECLI/2.38.0 azsdk-python-azure-mgmt-resource/21.1.0b1 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.40.0 (PIP) azsdk-python-azure-mgmt-resource/21.1.0b1 Python/3.8.10
+        (Windows-10-10.0.19044-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_azure_vwan_route_table000001?api-version=2021-04-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_route_table000001","name":"cli_test_azure_vwan_route_table000001","type":"Microsoft.Resources/resourceGroups","location":"eastus","tags":{"product":"azurecli","cause":"automation","date":"2022-07-27T13:35:10Z"},"properties":{"provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_route_table000001","name":"cli_test_azure_vwan_route_table000001","type":"Microsoft.Resources/resourceGroups","location":"eastus","tags":{"product":"azurecli","cause":"automation","date":"2022-10-12T08:40:22Z"},"properties":{"provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
@@ -27,15 +28,13 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 27 Jul 2022 13:35:10 GMT
+      - Wed, 12 Oct 2022 08:40:27 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      vary:
-      - Accept-Encoding
       x-content-type-options:
       - nosniff
     status:
@@ -59,13 +58,14 @@ interactions:
       ParameterSetName:
       - -n -g
       User-Agent:
-      - AZURECLI/2.38.0 azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.40.0 (PIP) azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.10
+        (Windows-10-10.0.19044-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_route_table000001/providers/Microsoft.Network/virtualWans/testvwan?api-version=2021-08-01
   response:
     body:
       string: "{\r\n  \"name\": \"testvwan\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_route_table000001/providers/Microsoft.Network/virtualWans/testvwan\",\r\n
-        \ \"etag\": \"W/\\\"2cfc2bb8-0414-4f11-b7ec-9c0173bfacd6\\\"\",\r\n  \"type\":
+        \ \"etag\": \"W/\\\"0d1ec1df-57d8-490f-a258-b96bd8208aa0\\\"\",\r\n  \"type\":
         \"Microsoft.Network/virtualWans\",\r\n  \"location\": \"eastus\",\r\n  \"properties\":
         {\r\n    \"provisioningState\": \"Updating\",\r\n    \"disableVpnEncryption\":
         false,\r\n    \"allowBranchToBranchTraffic\": true,\r\n    \"office365LocalBreakoutCategory\":
@@ -74,7 +74,7 @@ interactions:
       azure-asyncnotification:
       - Enabled
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/fb8c7cce-c5bf-430f-bb82-a031c5299797?api-version=2021-08-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/ccfaa607-4336-4b0a-bca5-c75a0b7d9f6d?api-version=2021-08-01
       cache-control:
       - no-cache
       content-length:
@@ -82,7 +82,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 27 Jul 2022 13:35:14 GMT
+      - Wed, 12 Oct 2022 08:40:35 GMT
       expires:
       - '-1'
       pragma:
@@ -95,9 +95,9 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - fbb7d2f6-4955-4712-97be-f68048bdaf84
+      - 1b2e85dd-9eed-4460-ba4b-3f6b05f4aca8
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '1198'
     status:
       code: 201
       message: Created
@@ -115,9 +115,10 @@ interactions:
       ParameterSetName:
       - -n -g
       User-Agent:
-      - AZURECLI/2.38.0 azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.40.0 (PIP) azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.10
+        (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/fb8c7cce-c5bf-430f-bb82-a031c5299797?api-version=2021-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/ccfaa607-4336-4b0a-bca5-c75a0b7d9f6d?api-version=2021-08-01
   response:
     body:
       string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
@@ -129,7 +130,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 27 Jul 2022 13:35:24 GMT
+      - Wed, 12 Oct 2022 08:40:46 GMT
       expires:
       - '-1'
       pragma:
@@ -146,7 +147,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 581d1d77-1f9c-4b62-96a8-e1a619ebf303
+      - 8e79b38e-47e2-4831-a9b6-4626bf0a8af0
     status:
       code: 200
       message: OK
@@ -164,13 +165,14 @@ interactions:
       ParameterSetName:
       - -n -g
       User-Agent:
-      - AZURECLI/2.38.0 azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.40.0 (PIP) azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.10
+        (Windows-10-10.0.19044-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_route_table000001/providers/Microsoft.Network/virtualWans/testvwan?api-version=2021-08-01
   response:
     body:
       string: "{\r\n  \"name\": \"testvwan\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_route_table000001/providers/Microsoft.Network/virtualWans/testvwan\",\r\n
-        \ \"etag\": \"W/\\\"877c3bb7-ad7b-456f-9a02-caa6345e6573\\\"\",\r\n  \"type\":
+        \ \"etag\": \"W/\\\"16613581-0d42-4c33-afad-bee98f13b34e\\\"\",\r\n  \"type\":
         \"Microsoft.Network/virtualWans\",\r\n  \"location\": \"eastus\",\r\n  \"properties\":
         {\r\n    \"provisioningState\": \"Succeeded\",\r\n    \"disableVpnEncryption\":
         false,\r\n    \"allowBranchToBranchTraffic\": true,\r\n    \"office365LocalBreakoutCategory\":
@@ -183,9 +185,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 27 Jul 2022 13:35:24 GMT
+      - Wed, 12 Oct 2022 08:40:46 GMT
       etag:
-      - W/"877c3bb7-ad7b-456f-9a02-caa6345e6573"
+      - W/"16613581-0d42-4c33-afad-bee98f13b34e"
       expires:
       - '-1'
       pragma:
@@ -202,13 +204,13 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 083cfabd-f358-4ab8-b4e0-7d59a422661e
+      - 3544f2ab-5738-4802-b13e-49022b479fb5
     status:
       code: 200
       message: OK
 - request:
-    body: '{"location": "eastus", "properties": {"virtualWan": {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_route_table000001/providers/Microsoft.Network/virtualWans/testvwan"},
-      "addressPrefix": "10.0.0.0/24"}}'
+    body: '{"location": "eastus", "properties": {"addressPrefix": "10.0.0.0/24", "virtualWan":
+      {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_route_table000001/providers/Microsoft.Network/virtualWans/testvwan"}}}'
     headers:
       Accept:
       - application/json
@@ -225,13 +227,13 @@ interactions:
       ParameterSetName:
       - -g -n --vwan --address-prefix -l
       User-Agent:
-      - AZURECLI/2.38.0 azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.40.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_route_table000001/providers/Microsoft.Network/virtualHubs/myclitestvhub?api-version=2021-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_route_table000001/providers/Microsoft.Network/virtualHubs/myclitestvhub?api-version=2022-05-01
   response:
     body:
       string: "{\r\n  \"name\": \"myclitestvhub\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_route_table000001/providers/Microsoft.Network/virtualHubs/myclitestvhub\",\r\n
-        \ \"etag\": \"W/\\\"d7d51091-198c-4b06-aeaa-3cb0cbc95a8c\\\"\",\r\n  \"type\":
+        \ \"etag\": \"W/\\\"c42c2779-f02b-4980-a8b8-f7d05d719cb1\\\"\",\r\n  \"type\":
         \"Microsoft.Network/virtualHubs\",\r\n  \"location\": \"eastus\",\r\n  \"properties\":
         {\r\n    \"provisioningState\": \"Updating\",\r\n    \"virtualHubRouteTableV2s\":
         [],\r\n    \"addressPrefix\": \"10.0.0.0/24\",\r\n    \"virtualRouterAsn\":
@@ -239,21 +241,21 @@ interactions:
         []\r\n    },\r\n    \"virtualRouterAutoScaleConfiguration\": {\r\n      \"minCapacity\":
         2\r\n    },\r\n    \"virtualWan\": {\r\n      \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_route_table000001/providers/Microsoft.Network/virtualWans/testvwan\"\r\n
         \   },\r\n    \"networkVirtualAppliances\": [],\r\n    \"routingState\": \"None\",\r\n
-        \   \"allowBranchToBranchTraffic\": false,\r\n    \"preferredRoutingGateway\":
-        \"ExpressRoute\",\r\n    \"hubRoutingPreference\": \"ExpressRoute\"\r\n  }\r\n}"
+        \   \"allowBranchToBranchTraffic\": false,\r\n    \"hubRoutingPreference\":
+        \"ExpressRoute\"\r\n  }\r\n}"
     headers:
       azure-asyncnotification:
       - Enabled
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/9eff5a9d-3692-42c8-a187-d914ca443d68?api-version=2021-08-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/bc64e00f-9a76-4065-9e00-3d0a7751e3ac?api-version=2022-05-01
       cache-control:
       - no-cache
       content-length:
-      - '1050'
+      - '1002'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 27 Jul 2022 13:35:33 GMT
+      - Wed, 12 Oct 2022 08:40:56 GMT
       expires:
       - '-1'
       pragma:
@@ -266,7 +268,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 97f667af-f8af-4768-8d2c-0c811cb092c1
+      - 628c0aa8-b7a4-4626-8870-c00e9350b10e
       x-ms-ratelimit-remaining-subscription-writes:
       - '1199'
     status:
@@ -286,9 +288,9 @@ interactions:
       ParameterSetName:
       - -g -n --vwan --address-prefix -l
       User-Agent:
-      - AZURECLI/2.38.0 azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.40.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/9eff5a9d-3692-42c8-a187-d914ca443d68?api-version=2021-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/bc64e00f-9a76-4065-9e00-3d0a7751e3ac?api-version=2022-05-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -300,7 +302,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 27 Jul 2022 13:35:43 GMT
+      - Wed, 12 Oct 2022 08:41:06 GMT
       expires:
       - '-1'
       pragma:
@@ -310,14 +312,10 @@ interactions:
       - Microsoft-HTTPAPI/2.0
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 66d545a9-5606-477d-aac6-6080c04e6678
+      - 3e9b0ae5-6f02-46fe-ba6b-4b0f2b7dbd90
     status:
       code: 200
       message: OK
@@ -335,9 +333,9 @@ interactions:
       ParameterSetName:
       - -g -n --vwan --address-prefix -l
       User-Agent:
-      - AZURECLI/2.38.0 azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.40.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/9eff5a9d-3692-42c8-a187-d914ca443d68?api-version=2021-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/bc64e00f-9a76-4065-9e00-3d0a7751e3ac?api-version=2022-05-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -349,7 +347,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 27 Jul 2022 13:35:54 GMT
+      - Wed, 12 Oct 2022 08:41:17 GMT
       expires:
       - '-1'
       pragma:
@@ -359,14 +357,10 @@ interactions:
       - Microsoft-HTTPAPI/2.0
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 82f41a1e-afd6-4155-8f1d-98de848ef08a
+      - 27ecc81e-ad0a-4546-81f3-406bd171f6f7
     status:
       code: 200
       message: OK
@@ -384,9 +378,9 @@ interactions:
       ParameterSetName:
       - -g -n --vwan --address-prefix -l
       User-Agent:
-      - AZURECLI/2.38.0 azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.40.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/9eff5a9d-3692-42c8-a187-d914ca443d68?api-version=2021-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/bc64e00f-9a76-4065-9e00-3d0a7751e3ac?api-version=2022-05-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -398,7 +392,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 27 Jul 2022 13:36:15 GMT
+      - Wed, 12 Oct 2022 08:41:37 GMT
       expires:
       - '-1'
       pragma:
@@ -408,14 +402,10 @@ interactions:
       - Microsoft-HTTPAPI/2.0
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - a55aeb0e-7a17-477f-bc72-2950e1d40c05
+      - a5d32cbf-6df6-498a-a367-32b04a40010b
     status:
       code: 200
       message: OK
@@ -433,9 +423,9 @@ interactions:
       ParameterSetName:
       - -g -n --vwan --address-prefix -l
       User-Agent:
-      - AZURECLI/2.38.0 azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.40.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/9eff5a9d-3692-42c8-a187-d914ca443d68?api-version=2021-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/bc64e00f-9a76-4065-9e00-3d0a7751e3ac?api-version=2022-05-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -447,7 +437,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 27 Jul 2022 13:36:35 GMT
+      - Wed, 12 Oct 2022 08:41:57 GMT
       expires:
       - '-1'
       pragma:
@@ -457,14 +447,10 @@ interactions:
       - Microsoft-HTTPAPI/2.0
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 8b83e8e5-0706-413f-b47e-94ef2bcf0f42
+      - fab2fde8-f20e-4b5c-b0ad-db5b6dc1852a
     status:
       code: 200
       message: OK
@@ -482,9 +468,9 @@ interactions:
       ParameterSetName:
       - -g -n --vwan --address-prefix -l
       User-Agent:
-      - AZURECLI/2.38.0 azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.40.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/9eff5a9d-3692-42c8-a187-d914ca443d68?api-version=2021-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/bc64e00f-9a76-4065-9e00-3d0a7751e3ac?api-version=2022-05-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -496,7 +482,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 27 Jul 2022 13:37:15 GMT
+      - Wed, 12 Oct 2022 08:42:37 GMT
       expires:
       - '-1'
       pragma:
@@ -506,14 +492,10 @@ interactions:
       - Microsoft-HTTPAPI/2.0
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 6aa5335c-6b86-4a79-94d0-3d057d149dfa
+      - f2931767-bda7-4953-b935-d61e035b074a
     status:
       code: 200
       message: OK
@@ -531,9 +513,9 @@ interactions:
       ParameterSetName:
       - -g -n --vwan --address-prefix -l
       User-Agent:
-      - AZURECLI/2.38.0 azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.40.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/9eff5a9d-3692-42c8-a187-d914ca443d68?api-version=2021-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/bc64e00f-9a76-4065-9e00-3d0a7751e3ac?api-version=2022-05-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -545,7 +527,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 27 Jul 2022 13:37:56 GMT
+      - Wed, 12 Oct 2022 08:43:18 GMT
       expires:
       - '-1'
       pragma:
@@ -555,14 +537,10 @@ interactions:
       - Microsoft-HTTPAPI/2.0
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 4cc26778-1c48-4df2-a2b0-60d3aed01e32
+      - d4825cf5-2834-46f1-b739-931c7f2831e9
     status:
       code: 200
       message: OK
@@ -580,9 +558,9 @@ interactions:
       ParameterSetName:
       - -g -n --vwan --address-prefix -l
       User-Agent:
-      - AZURECLI/2.38.0 azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.40.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/9eff5a9d-3692-42c8-a187-d914ca443d68?api-version=2021-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/bc64e00f-9a76-4065-9e00-3d0a7751e3ac?api-version=2022-05-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -594,7 +572,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 27 Jul 2022 13:39:16 GMT
+      - Wed, 12 Oct 2022 08:44:39 GMT
       expires:
       - '-1'
       pragma:
@@ -604,14 +582,10 @@ interactions:
       - Microsoft-HTTPAPI/2.0
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 93236c37-ce7c-4508-9549-a7501ad1e52d
+      - 73d64a71-cd93-4908-9ae4-060746288d94
     status:
       code: 200
       message: OK
@@ -629,9 +603,9 @@ interactions:
       ParameterSetName:
       - -g -n --vwan --address-prefix -l
       User-Agent:
-      - AZURECLI/2.38.0 azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.40.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/9eff5a9d-3692-42c8-a187-d914ca443d68?api-version=2021-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/bc64e00f-9a76-4065-9e00-3d0a7751e3ac?api-version=2022-05-01
   response:
     body:
       string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
@@ -643,7 +617,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 27 Jul 2022 13:41:57 GMT
+      - Wed, 12 Oct 2022 08:47:20 GMT
       expires:
       - '-1'
       pragma:
@@ -660,7 +634,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - ff360590-0c47-4912-ac7f-4ee2454ca513
+      - 7e03f086-0654-4741-8813-5dff7a06c68e
     status:
       code: 200
       message: OK
@@ -678,13 +652,13 @@ interactions:
       ParameterSetName:
       - -g -n --vwan --address-prefix -l
       User-Agent:
-      - AZURECLI/2.38.0 azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.40.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_route_table000001/providers/Microsoft.Network/virtualHubs/myclitestvhub?api-version=2021-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_route_table000001/providers/Microsoft.Network/virtualHubs/myclitestvhub?api-version=2022-05-01
   response:
     body:
       string: "{\r\n  \"name\": \"myclitestvhub\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_route_table000001/providers/Microsoft.Network/virtualHubs/myclitestvhub\",\r\n
-        \ \"etag\": \"W/\\\"96e405a5-a680-4911-bd7c-a475d6d915e2\\\"\",\r\n  \"type\":
+        \ \"etag\": \"W/\\\"d19d5fcd-cd1a-4b9f-bab3-9e84a0f4e1b3\\\"\",\r\n  \"type\":
         \"Microsoft.Network/virtualHubs\",\r\n  \"location\": \"eastus\",\r\n  \"properties\":
         {\r\n    \"provisioningState\": \"Succeeded\",\r\n    \"virtualHubRouteTableV2s\":
         [],\r\n    \"addressPrefix\": \"10.0.0.0/24\",\r\n    \"virtualRouterAsn\":
@@ -692,17 +666,17 @@ interactions:
         []\r\n    },\r\n    \"virtualRouterAutoScaleConfiguration\": {\r\n      \"minCapacity\":
         2\r\n    },\r\n    \"virtualWan\": {\r\n      \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_route_table000001/providers/Microsoft.Network/virtualWans/testvwan\"\r\n
         \   },\r\n    \"networkVirtualAppliances\": [],\r\n    \"routingState\": \"Provisioning\",\r\n
-        \   \"allowBranchToBranchTraffic\": false,\r\n    \"preferredRoutingGateway\":
-        \"ExpressRoute\",\r\n    \"hubRoutingPreference\": \"ExpressRoute\"\r\n  }\r\n}"
+        \   \"allowBranchToBranchTraffic\": false,\r\n    \"hubRoutingPreference\":
+        \"ExpressRoute\"\r\n  }\r\n}"
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1059'
+      - '1011'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 27 Jul 2022 13:41:57 GMT
+      - Wed, 12 Oct 2022 08:47:21 GMT
       expires:
       - '-1'
       pragma:
@@ -719,57 +693,12 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 1c3d2a1e-7ef3-4bec-9ee6-a9f9e142e999
+      - 34d61c51-8728-4b90-b161-f21edf737c32
     status:
       code: 200
       message: OK
 - request:
-    body: null
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - network vpn-gateway create
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -n -g --vhub -l
-      User-Agent:
-      - AZURECLI/2.38.0 azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_route_table000001/providers/Microsoft.Network/vpnGateways/mycligateway?api-version=2021-08-01
-  response:
-    body:
-      string: '{"error":{"code":"ResourceNotFound","message":"The Resource ''Microsoft.Network/vpnGateways/mycligateway''
-        under resource group ''cli_test_azure_vwan_route_table000001'' was not found.
-        For more details please go to https://aka.ms/ARMResourceNotFoundFix"}}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '251'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Wed, 27 Jul 2022 13:41:59 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-content-type-options:
-      - nosniff
-      x-ms-failure-cause:
-      - gateway
-    status:
-      code: 404
-      message: Not Found
-- request:
-    body: '{"location": "eastus", "properties": {"virtualHub": {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_route_table000001/providers/Microsoft.Network/virtualHubs/myclitestvhub"},
-      "bgpSettings": {}}}'
+    body: '{"location": "eastus", "properties": {"virtualHub": {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_route_table000001/providers/Microsoft.Network/virtualHubs/myclitestvhub"}}}'
     headers:
       Accept:
       - application/json
@@ -780,19 +709,19 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '241'
+      - '222'
       Content-Type:
       - application/json
       ParameterSetName:
       - -n -g --vhub -l
       User-Agent:
-      - AZURECLI/2.38.0 azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.40.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_route_table000001/providers/Microsoft.Network/vpnGateways/mycligateway?api-version=2021-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_route_table000001/providers/Microsoft.Network/vpnGateways/mycligateway?api-version=2022-05-01
   response:
     body:
       string: "{\r\n  \"name\": \"mycligateway\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_route_table000001/providers/Microsoft.Network/vpnGateways/mycligateway\",\r\n
-        \ \"etag\": \"W/\\\"c52f7240-1516-4b0e-b778-070a60050989\\\"\",\r\n  \"type\":
+        \ \"etag\": \"W/\\\"b09393f3-9202-400e-8606-77d726ad59d5\\\"\",\r\n  \"type\":
         \"Microsoft.Network/vpnGateways\",\r\n  \"location\": \"eastus\",\r\n  \"properties\":
         {\r\n    \"provisioningState\": \"Updating\",\r\n    \"connections\": [],\r\n
         \   \"virtualHub\": {\r\n      \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_route_table000001/providers/Microsoft.Network/virtualHubs/myclitestvhub\"\r\n
@@ -804,7 +733,7 @@ interactions:
       azure-asyncnotification:
       - Enabled
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/8a303882-30d6-4a3f-aa9d-81d66c7721c4?api-version=2021-08-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/04bdac2e-87bd-4f69-91af-1f4da68602ad?api-version=2022-05-01
       cache-control:
       - no-cache
       content-length:
@@ -812,7 +741,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 27 Jul 2022 13:42:04 GMT
+      - Wed, 12 Oct 2022 08:47:33 GMT
       expires:
       - '-1'
       pragma:
@@ -825,9 +754,9 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 730c95ff-1bee-4b65-bff3-c922e67347b5
+      - fb02ba7c-396f-452e-a172-fe2af570de6d
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1198'
+      - '1199'
     status:
       code: 201
       message: Created
@@ -845,9 +774,9 @@ interactions:
       ParameterSetName:
       - -n -g --vhub -l
       User-Agent:
-      - AZURECLI/2.38.0 azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.40.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/8a303882-30d6-4a3f-aa9d-81d66c7721c4?api-version=2021-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/04bdac2e-87bd-4f69-91af-1f4da68602ad?api-version=2022-05-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -859,7 +788,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 27 Jul 2022 13:42:15 GMT
+      - Wed, 12 Oct 2022 08:47:44 GMT
       expires:
       - '-1'
       pragma:
@@ -876,7 +805,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 971d7683-5136-4b1c-a6ac-64708b9feb36
+      - 800cefe1-0271-45b7-b26f-cf9e9165e709
     status:
       code: 200
       message: OK
@@ -894,9 +823,9 @@ interactions:
       ParameterSetName:
       - -n -g --vhub -l
       User-Agent:
-      - AZURECLI/2.38.0 azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.40.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/8a303882-30d6-4a3f-aa9d-81d66c7721c4?api-version=2021-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/04bdac2e-87bd-4f69-91af-1f4da68602ad?api-version=2022-05-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -908,7 +837,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 27 Jul 2022 13:42:25 GMT
+      - Wed, 12 Oct 2022 08:47:54 GMT
       expires:
       - '-1'
       pragma:
@@ -925,7 +854,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 8de3d092-12b2-433b-bcf4-0445dc420f78
+      - 0cb3e6c7-a23b-409b-a58c-5270a0a6cd9e
     status:
       code: 200
       message: OK
@@ -943,9 +872,9 @@ interactions:
       ParameterSetName:
       - -n -g --vhub -l
       User-Agent:
-      - AZURECLI/2.38.0 azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.40.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/8a303882-30d6-4a3f-aa9d-81d66c7721c4?api-version=2021-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/04bdac2e-87bd-4f69-91af-1f4da68602ad?api-version=2022-05-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -957,7 +886,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 27 Jul 2022 13:42:45 GMT
+      - Wed, 12 Oct 2022 08:48:15 GMT
       expires:
       - '-1'
       pragma:
@@ -974,7 +903,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - efd4dfb0-24ba-4c5c-9457-93a18ae7e368
+      - cfbac64a-3656-4d54-a23a-16a47b367f00
     status:
       code: 200
       message: OK
@@ -992,9 +921,9 @@ interactions:
       ParameterSetName:
       - -n -g --vhub -l
       User-Agent:
-      - AZURECLI/2.38.0 azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.40.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/8a303882-30d6-4a3f-aa9d-81d66c7721c4?api-version=2021-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/04bdac2e-87bd-4f69-91af-1f4da68602ad?api-version=2022-05-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -1006,7 +935,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 27 Jul 2022 13:43:05 GMT
+      - Wed, 12 Oct 2022 08:48:35 GMT
       expires:
       - '-1'
       pragma:
@@ -1023,7 +952,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - d4231c67-ddbc-49f6-87c5-45b26adee28d
+      - 47c593e3-ef5d-43d1-8b7c-619fed76eb20
     status:
       code: 200
       message: OK
@@ -1041,9 +970,9 @@ interactions:
       ParameterSetName:
       - -n -g --vhub -l
       User-Agent:
-      - AZURECLI/2.38.0 azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.40.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/8a303882-30d6-4a3f-aa9d-81d66c7721c4?api-version=2021-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/04bdac2e-87bd-4f69-91af-1f4da68602ad?api-version=2022-05-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -1055,7 +984,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 27 Jul 2022 13:43:46 GMT
+      - Wed, 12 Oct 2022 08:49:15 GMT
       expires:
       - '-1'
       pragma:
@@ -1072,7 +1001,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 3982bb45-6890-440e-bfc4-ef490370f6f4
+      - b2e23166-3ca5-48e4-bf41-80ae46a1efba
     status:
       code: 200
       message: OK
@@ -1090,9 +1019,9 @@ interactions:
       ParameterSetName:
       - -n -g --vhub -l
       User-Agent:
-      - AZURECLI/2.38.0 azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.40.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/8a303882-30d6-4a3f-aa9d-81d66c7721c4?api-version=2021-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/04bdac2e-87bd-4f69-91af-1f4da68602ad?api-version=2022-05-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -1104,7 +1033,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 27 Jul 2022 13:44:27 GMT
+      - Wed, 12 Oct 2022 08:49:56 GMT
       expires:
       - '-1'
       pragma:
@@ -1121,7 +1050,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - eabed4e5-a834-4c8f-9c1d-184620b3f745
+      - 42d66bb2-abfc-49af-9410-99fb5b084ca0
     status:
       code: 200
       message: OK
@@ -1139,9 +1068,9 @@ interactions:
       ParameterSetName:
       - -n -g --vhub -l
       User-Agent:
-      - AZURECLI/2.38.0 azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.40.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/8a303882-30d6-4a3f-aa9d-81d66c7721c4?api-version=2021-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/04bdac2e-87bd-4f69-91af-1f4da68602ad?api-version=2022-05-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -1153,7 +1082,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 27 Jul 2022 13:45:47 GMT
+      - Wed, 12 Oct 2022 08:51:16 GMT
       expires:
       - '-1'
       pragma:
@@ -1170,7 +1099,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 05625ec0-9c41-4905-904c-caed679ccb9c
+      - 53e895a4-eb8b-4c6b-80fa-5ffa76d43d4a
     status:
       code: 200
       message: OK
@@ -1188,9 +1117,9 @@ interactions:
       ParameterSetName:
       - -n -g --vhub -l
       User-Agent:
-      - AZURECLI/2.38.0 azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.40.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/8a303882-30d6-4a3f-aa9d-81d66c7721c4?api-version=2021-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/04bdac2e-87bd-4f69-91af-1f4da68602ad?api-version=2022-05-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -1202,7 +1131,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 27 Jul 2022 13:48:29 GMT
+      - Wed, 12 Oct 2022 08:53:57 GMT
       expires:
       - '-1'
       pragma:
@@ -1219,7 +1148,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 3030a96d-2603-4af7-b6a7-7ac8b8529dcc
+      - 75235646-5a43-47c7-ae70-9dfbcaecb033
     status:
       code: 200
       message: OK
@@ -1237,9 +1166,9 @@ interactions:
       ParameterSetName:
       - -n -g --vhub -l
       User-Agent:
-      - AZURECLI/2.38.0 azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.40.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/8a303882-30d6-4a3f-aa9d-81d66c7721c4?api-version=2021-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/04bdac2e-87bd-4f69-91af-1f4da68602ad?api-version=2022-05-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -1251,7 +1180,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 27 Jul 2022 13:50:09 GMT
+      - Wed, 12 Oct 2022 08:55:38 GMT
       expires:
       - '-1'
       pragma:
@@ -1268,7 +1197,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - bb8c3da5-e3e4-42cd-940b-f946f1326e9c
+      - ea13874a-be77-4569-92c6-58ac97ae96d1
     status:
       code: 200
       message: OK
@@ -1286,9 +1215,9 @@ interactions:
       ParameterSetName:
       - -n -g --vhub -l
       User-Agent:
-      - AZURECLI/2.38.0 azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.40.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/8a303882-30d6-4a3f-aa9d-81d66c7721c4?api-version=2021-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/04bdac2e-87bd-4f69-91af-1f4da68602ad?api-version=2022-05-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -1300,7 +1229,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 27 Jul 2022 13:51:49 GMT
+      - Wed, 12 Oct 2022 08:57:19 GMT
       expires:
       - '-1'
       pragma:
@@ -1317,7 +1246,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 43ae5f27-db60-472c-a3ed-89b9253511a5
+      - c8ff35ee-bce8-4fb3-9523-5c41a32e3e60
     status:
       code: 200
       message: OK
@@ -1335,9 +1264,9 @@ interactions:
       ParameterSetName:
       - -n -g --vhub -l
       User-Agent:
-      - AZURECLI/2.38.0 azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.40.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/8a303882-30d6-4a3f-aa9d-81d66c7721c4?api-version=2021-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/04bdac2e-87bd-4f69-91af-1f4da68602ad?api-version=2022-05-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -1349,7 +1278,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 27 Jul 2022 13:53:30 GMT
+      - Wed, 12 Oct 2022 08:58:58 GMT
       expires:
       - '-1'
       pragma:
@@ -1366,7 +1295,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 5cda5607-962f-4868-9f8d-38744cc88f6b
+      - 3257a9b3-58e0-42ee-ad77-a07c99409b49
     status:
       code: 200
       message: OK
@@ -1384,9 +1313,9 @@ interactions:
       ParameterSetName:
       - -n -g --vhub -l
       User-Agent:
-      - AZURECLI/2.38.0 azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.40.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/8a303882-30d6-4a3f-aa9d-81d66c7721c4?api-version=2021-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/04bdac2e-87bd-4f69-91af-1f4da68602ad?api-version=2022-05-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -1398,7 +1327,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 27 Jul 2022 13:55:11 GMT
+      - Wed, 12 Oct 2022 09:00:39 GMT
       expires:
       - '-1'
       pragma:
@@ -1415,7 +1344,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 655bf23a-feb6-493a-9d4e-3afcc31b66d2
+      - 3acaa8b2-d266-4d4d-afef-e8a76da169d2
     status:
       code: 200
       message: OK
@@ -1433,9 +1362,9 @@ interactions:
       ParameterSetName:
       - -n -g --vhub -l
       User-Agent:
-      - AZURECLI/2.38.0 azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.40.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/8a303882-30d6-4a3f-aa9d-81d66c7721c4?api-version=2021-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/04bdac2e-87bd-4f69-91af-1f4da68602ad?api-version=2022-05-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -1447,7 +1376,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 27 Jul 2022 13:56:51 GMT
+      - Wed, 12 Oct 2022 09:02:20 GMT
       expires:
       - '-1'
       pragma:
@@ -1464,7 +1393,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 2fe40116-20e8-4755-9281-fa1ed470ccf6
+      - 9d0ac39e-433d-40a0-9741-23f5bcf3c431
     status:
       code: 200
       message: OK
@@ -1482,9 +1411,9 @@ interactions:
       ParameterSetName:
       - -n -g --vhub -l
       User-Agent:
-      - AZURECLI/2.38.0 azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.40.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/8a303882-30d6-4a3f-aa9d-81d66c7721c4?api-version=2021-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/04bdac2e-87bd-4f69-91af-1f4da68602ad?api-version=2022-05-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -1496,7 +1425,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 27 Jul 2022 13:58:31 GMT
+      - Wed, 12 Oct 2022 09:04:00 GMT
       expires:
       - '-1'
       pragma:
@@ -1513,7 +1442,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 6dc05578-3d58-4601-a4c8-c7c5b5fe3877
+      - 12cd3dcf-92a9-414b-8b90-2fa38d90fa99
     status:
       code: 200
       message: OK
@@ -1531,9 +1460,9 @@ interactions:
       ParameterSetName:
       - -n -g --vhub -l
       User-Agent:
-      - AZURECLI/2.38.0 azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.40.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/8a303882-30d6-4a3f-aa9d-81d66c7721c4?api-version=2021-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/04bdac2e-87bd-4f69-91af-1f4da68602ad?api-version=2022-05-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -1545,7 +1474,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 27 Jul 2022 14:00:12 GMT
+      - Wed, 12 Oct 2022 09:05:41 GMT
       expires:
       - '-1'
       pragma:
@@ -1562,7 +1491,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 1ef36937-f6f2-4e97-9924-04ff5fdfdd0e
+      - e089bd76-1a8a-496a-abcc-7fe2fce41c4e
     status:
       code: 200
       message: OK
@@ -1580,9 +1509,9 @@ interactions:
       ParameterSetName:
       - -n -g --vhub -l
       User-Agent:
-      - AZURECLI/2.38.0 azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.40.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/8a303882-30d6-4a3f-aa9d-81d66c7721c4?api-version=2021-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/04bdac2e-87bd-4f69-91af-1f4da68602ad?api-version=2022-05-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -1594,7 +1523,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 27 Jul 2022 14:01:53 GMT
+      - Wed, 12 Oct 2022 09:07:21 GMT
       expires:
       - '-1'
       pragma:
@@ -1611,7 +1540,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 4bbb2d87-163a-4c38-ac8e-6fef026bcbd8
+      - 51dc2734-2fd7-444d-82d0-2993c161e276
     status:
       code: 200
       message: OK
@@ -1629,9 +1558,9 @@ interactions:
       ParameterSetName:
       - -n -g --vhub -l
       User-Agent:
-      - AZURECLI/2.38.0 azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.40.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/8a303882-30d6-4a3f-aa9d-81d66c7721c4?api-version=2021-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/04bdac2e-87bd-4f69-91af-1f4da68602ad?api-version=2022-05-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -1643,7 +1572,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 27 Jul 2022 14:03:33 GMT
+      - Wed, 12 Oct 2022 09:09:01 GMT
       expires:
       - '-1'
       pragma:
@@ -1660,7 +1589,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 33e61f4d-2d28-4bd7-b40b-e439559f7d0f
+      - 6d7ee39b-39bc-4c36-9cf2-36bb467e98a6
     status:
       code: 200
       message: OK
@@ -1678,9 +1607,9 @@ interactions:
       ParameterSetName:
       - -n -g --vhub -l
       User-Agent:
-      - AZURECLI/2.38.0 azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.40.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/8a303882-30d6-4a3f-aa9d-81d66c7721c4?api-version=2021-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/04bdac2e-87bd-4f69-91af-1f4da68602ad?api-version=2022-05-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -1692,7 +1621,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 27 Jul 2022 14:05:14 GMT
+      - Wed, 12 Oct 2022 09:10:42 GMT
       expires:
       - '-1'
       pragma:
@@ -1709,7 +1638,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 093fcf03-ba98-40bb-b99f-8460828d59fe
+      - 042183a4-ddff-4966-aa08-1aefc2a38e0d
     status:
       code: 200
       message: OK
@@ -1727,9 +1656,9 @@ interactions:
       ParameterSetName:
       - -n -g --vhub -l
       User-Agent:
-      - AZURECLI/2.38.0 azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.40.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/8a303882-30d6-4a3f-aa9d-81d66c7721c4?api-version=2021-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/04bdac2e-87bd-4f69-91af-1f4da68602ad?api-version=2022-05-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -1741,7 +1670,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 27 Jul 2022 14:06:54 GMT
+      - Wed, 12 Oct 2022 09:12:22 GMT
       expires:
       - '-1'
       pragma:
@@ -1758,7 +1687,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - b34206ea-df9e-410d-8f12-8dc32b328339
+      - 664ccbfd-3b94-4818-8f07-aa10ba870406
     status:
       code: 200
       message: OK
@@ -1776,9 +1705,9 @@ interactions:
       ParameterSetName:
       - -n -g --vhub -l
       User-Agent:
-      - AZURECLI/2.38.0 azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.40.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/8a303882-30d6-4a3f-aa9d-81d66c7721c4?api-version=2021-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/04bdac2e-87bd-4f69-91af-1f4da68602ad?api-version=2022-05-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -1790,7 +1719,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 27 Jul 2022 14:08:34 GMT
+      - Wed, 12 Oct 2022 09:14:03 GMT
       expires:
       - '-1'
       pragma:
@@ -1807,7 +1736,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 3659a797-53d1-47f3-92f0-f2e5be400e10
+      - bd8d5f13-6e05-4fef-92f6-1b2c6680eb49
     status:
       code: 200
       message: OK
@@ -1825,9 +1754,9 @@ interactions:
       ParameterSetName:
       - -n -g --vhub -l
       User-Agent:
-      - AZURECLI/2.38.0 azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.40.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/8a303882-30d6-4a3f-aa9d-81d66c7721c4?api-version=2021-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/04bdac2e-87bd-4f69-91af-1f4da68602ad?api-version=2022-05-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -1839,7 +1768,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 27 Jul 2022 14:10:14 GMT
+      - Wed, 12 Oct 2022 09:15:43 GMT
       expires:
       - '-1'
       pragma:
@@ -1856,7 +1785,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - ffb4aeca-9a8e-4494-8b8a-18246bb0eaa5
+      - 6accf8f8-843b-4a14-84f3-eeeb4ea88432
     status:
       code: 200
       message: OK
@@ -1874,9 +1803,9 @@ interactions:
       ParameterSetName:
       - -n -g --vhub -l
       User-Agent:
-      - AZURECLI/2.38.0 azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.40.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/8a303882-30d6-4a3f-aa9d-81d66c7721c4?api-version=2021-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/04bdac2e-87bd-4f69-91af-1f4da68602ad?api-version=2022-05-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -1888,7 +1817,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 27 Jul 2022 14:11:55 GMT
+      - Wed, 12 Oct 2022 09:17:23 GMT
       expires:
       - '-1'
       pragma:
@@ -1905,7 +1834,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - d0a1995e-36a5-498a-99f9-f72eba858ae9
+      - 200b79a7-85cc-4c75-9e6a-1f04b9faec20
     status:
       code: 200
       message: OK
@@ -1923,401 +1852,9 @@ interactions:
       ParameterSetName:
       - -n -g --vhub -l
       User-Agent:
-      - AZURECLI/2.38.0 azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.40.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/8a303882-30d6-4a3f-aa9d-81d66c7721c4?api-version=2021-08-01
-  response:
-    body:
-      string: "{\r\n  \"status\": \"InProgress\"\r\n}"
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '30'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Wed, 27 Jul 2022 14:13:35 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      server:
-      - Microsoft-HTTPAPI/2.0
-      - Microsoft-HTTPAPI/2.0
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-      x-ms-arm-service-request-id:
-      - adf36eb1-5b79-4394-bdef-d6b83c797870
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - network vpn-gateway create
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -n -g --vhub -l
-      User-Agent:
-      - AZURECLI/2.38.0 azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/8a303882-30d6-4a3f-aa9d-81d66c7721c4?api-version=2021-08-01
-  response:
-    body:
-      string: "{\r\n  \"status\": \"InProgress\"\r\n}"
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '30'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Wed, 27 Jul 2022 14:15:15 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      server:
-      - Microsoft-HTTPAPI/2.0
-      - Microsoft-HTTPAPI/2.0
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-      x-ms-arm-service-request-id:
-      - 86ad5721-bec2-41c0-9ee2-f09187f42509
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - network vpn-gateway create
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -n -g --vhub -l
-      User-Agent:
-      - AZURECLI/2.38.0 azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/8a303882-30d6-4a3f-aa9d-81d66c7721c4?api-version=2021-08-01
-  response:
-    body:
-      string: "{\r\n  \"status\": \"InProgress\"\r\n}"
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '30'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Wed, 27 Jul 2022 14:16:56 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      server:
-      - Microsoft-HTTPAPI/2.0
-      - Microsoft-HTTPAPI/2.0
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-      x-ms-arm-service-request-id:
-      - ebd86b08-1fd1-472a-90a6-ec5bb2ab63bf
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - network vpn-gateway create
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -n -g --vhub -l
-      User-Agent:
-      - AZURECLI/2.38.0 azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/8a303882-30d6-4a3f-aa9d-81d66c7721c4?api-version=2021-08-01
-  response:
-    body:
-      string: "{\r\n  \"status\": \"InProgress\"\r\n}"
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '30'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Wed, 27 Jul 2022 14:18:37 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      server:
-      - Microsoft-HTTPAPI/2.0
-      - Microsoft-HTTPAPI/2.0
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-      x-ms-arm-service-request-id:
-      - debd2dfc-5fa6-4ed7-9ab4-0ca1355da0d1
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - network vpn-gateway create
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -n -g --vhub -l
-      User-Agent:
-      - AZURECLI/2.38.0 azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/8a303882-30d6-4a3f-aa9d-81d66c7721c4?api-version=2021-08-01
-  response:
-    body:
-      string: "{\r\n  \"status\": \"InProgress\"\r\n}"
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '30'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Wed, 27 Jul 2022 14:20:17 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      server:
-      - Microsoft-HTTPAPI/2.0
-      - Microsoft-HTTPAPI/2.0
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-      x-ms-arm-service-request-id:
-      - 020b20b1-d3b7-4007-9f44-d83ddb31f9ca
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - network vpn-gateway create
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -n -g --vhub -l
-      User-Agent:
-      - AZURECLI/2.38.0 azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/8a303882-30d6-4a3f-aa9d-81d66c7721c4?api-version=2021-08-01
-  response:
-    body:
-      string: "{\r\n  \"status\": \"InProgress\"\r\n}"
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '30'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Wed, 27 Jul 2022 14:21:57 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      server:
-      - Microsoft-HTTPAPI/2.0
-      - Microsoft-HTTPAPI/2.0
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-      x-ms-arm-service-request-id:
-      - 15d51d26-67e0-4dc6-9938-0915a7f670ff
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - network vpn-gateway create
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -n -g --vhub -l
-      User-Agent:
-      - AZURECLI/2.38.0 azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/8a303882-30d6-4a3f-aa9d-81d66c7721c4?api-version=2021-08-01
-  response:
-    body:
-      string: "{\r\n  \"status\": \"InProgress\"\r\n}"
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '30'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Wed, 27 Jul 2022 14:23:37 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      server:
-      - Microsoft-HTTPAPI/2.0
-      - Microsoft-HTTPAPI/2.0
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-      x-ms-arm-service-request-id:
-      - 6cc747d3-7e46-4f53-a4a9-008f9a8f3e37
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - network vpn-gateway create
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -n -g --vhub -l
-      User-Agent:
-      - AZURECLI/2.38.0 azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/8a303882-30d6-4a3f-aa9d-81d66c7721c4?api-version=2021-08-01
-  response:
-    body:
-      string: "{\r\n  \"status\": \"InProgress\"\r\n}"
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '30'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Wed, 27 Jul 2022 14:25:18 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      server:
-      - Microsoft-HTTPAPI/2.0
-      - Microsoft-HTTPAPI/2.0
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-      x-ms-arm-service-request-id:
-      - 74a02fa8-d459-4b0a-b497-a3c7bc2ad0af
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - network vpn-gateway create
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -n -g --vhub -l
-      User-Agent:
-      - AZURECLI/2.38.0 azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/8a303882-30d6-4a3f-aa9d-81d66c7721c4?api-version=2021-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/04bdac2e-87bd-4f69-91af-1f4da68602ad?api-version=2022-05-01
   response:
     body:
       string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
@@ -2329,7 +1866,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 27 Jul 2022 14:26:59 GMT
+      - Wed, 12 Oct 2022 09:19:04 GMT
       expires:
       - '-1'
       pragma:
@@ -2346,7 +1883,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 2cc33144-669e-45f1-bcd0-4157a920c77e
+      - 2fb39009-fcb5-480b-8914-936feb9bc9a3
     status:
       code: 200
       message: OK
@@ -2364,13 +1901,13 @@ interactions:
       ParameterSetName:
       - -n -g --vhub -l
       User-Agent:
-      - AZURECLI/2.38.0 azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.40.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_route_table000001/providers/Microsoft.Network/vpnGateways/mycligateway?api-version=2021-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_route_table000001/providers/Microsoft.Network/vpnGateways/mycligateway?api-version=2022-05-01
   response:
     body:
       string: "{\r\n  \"name\": \"mycligateway\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_route_table000001/providers/Microsoft.Network/vpnGateways/mycligateway\",\r\n
-        \ \"etag\": \"W/\\\"9a2e9943-151c-4cf2-bad8-c1944350799d\\\"\",\r\n  \"type\":
+        \ \"etag\": \"W/\\\"8aea4bff-d5e8-47e0-8c70-a68cebd05a1a\\\"\",\r\n  \"type\":
         \"Microsoft.Network/vpnGateways\",\r\n  \"location\": \"eastus\",\r\n  \"properties\":
         {\r\n    \"provisioningState\": \"Succeeded\",\r\n    \"connections\": [],\r\n
         \   \"virtualHub\": {\r\n      \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_route_table000001/providers/Microsoft.Network/virtualHubs/myclitestvhub\"\r\n
@@ -2378,27 +1915,27 @@ interactions:
         0,\r\n      \"bgpPeeringAddresses\": [\r\n        {\r\n          \"ipconfigurationId\":
         \"Instance0\",\r\n          \"defaultBgpIpAddresses\": [\r\n            \"10.0.0.13\"\r\n
         \         ],\r\n          \"customBgpIpAddresses\": [],\r\n          \"tunnelIpAddresses\":
-        [\r\n            \"20.121.179.99\",\r\n            \"10.0.0.4\"\r\n          ]\r\n
+        [\r\n            \"20.121.160.145\",\r\n            \"10.0.0.4\"\r\n          ]\r\n
         \       },\r\n        {\r\n          \"ipconfigurationId\": \"Instance1\",\r\n
         \         \"defaultBgpIpAddresses\": [\r\n            \"10.0.0.12\"\r\n          ],\r\n
         \         \"customBgpIpAddresses\": [],\r\n          \"tunnelIpAddresses\":
-        [\r\n            \"20.121.181.154\",\r\n            \"10.0.0.5\"\r\n          ]\r\n
+        [\r\n            \"20.121.160.156\",\r\n            \"10.0.0.5\"\r\n          ]\r\n
         \       }\r\n      ]\r\n    },\r\n    \"vpnGatewayScaleUnit\": 1,\r\n    \"packetCaptureDiagnosticState\":
         \"None\",\r\n    \"ipConfigurations\": [\r\n      {\r\n        \"id\": \"Instance0\",\r\n
-        \       \"publicIpAddress\": \"20.121.179.99\",\r\n        \"privateIpAddress\":
+        \       \"publicIpAddress\": \"20.121.160.145\",\r\n        \"privateIpAddress\":
         \"10.0.0.4\"\r\n      },\r\n      {\r\n        \"id\": \"Instance1\",\r\n
-        \       \"publicIpAddress\": \"20.121.181.154\",\r\n        \"privateIpAddress\":
+        \       \"publicIpAddress\": \"20.121.160.156\",\r\n        \"privateIpAddress\":
         \"10.0.0.5\"\r\n      }\r\n    ],\r\n    \"natRules\": [],\r\n    \"enableBgpRouteTranslationForNat\":
         false,\r\n    \"isRoutingPreferenceInternet\": false\r\n  }\r\n}"
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1788'
+      - '1790'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 27 Jul 2022 14:27:00 GMT
+      - Wed, 12 Oct 2022 09:19:05 GMT
       expires:
       - '-1'
       pragma:
@@ -2415,7 +1952,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - f2f6efe0-2c5c-44b8-a25b-c1ff22ccb0f8
+      - d053a58b-3f91-4e71-8cf8-7d09efa95db7
     status:
       code: 200
       message: OK
@@ -2440,13 +1977,14 @@ interactions:
       - -n -g --vhub-name --connections --destination-type --destinations --next-hop-type
         --next-hops
       User-Agent:
-      - AZURECLI/2.38.0 azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.40.0 (PIP) azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.10
+        (Windows-10-10.0.19044-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_route_table000001/providers/Microsoft.Network/virtualHubs/myclitestvhub/routeTables/testroutetable?api-version=2021-08-01
   response:
     body:
       string: "{\r\n  \"name\": \"testroutetable\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_route_table000001/providers/Microsoft.Network/virtualHubs/myclitestvhub/routeTables/testroutetable\",\r\n
-        \ \"etag\": \"W/\\\"0cd7420b-6906-4edf-9e84-1589a54304c9\\\"\",\r\n  \"properties\":
+        \ \"etag\": \"W/\\\"4d64fceb-a01f-47aa-aa8a-e28e85312ce7\\\"\",\r\n  \"properties\":
         {\r\n    \"provisioningState\": \"Updating\",\r\n    \"routes\": [\r\n      {\r\n
         \       \"destinationType\": \"CIDR\",\r\n        \"destinations\": [\r\n
         \         \"10.4.0.0/16\",\r\n          \"10.6.0.0/16\"\r\n        ],\r\n
@@ -2454,8 +1992,10 @@ interactions:
         \       ]\r\n      }\r\n    ],\r\n    \"attachedConnections\": [\r\n      \"All_Vnets\"\r\n
         \   ]\r\n  },\r\n  \"type\": \"Microsoft.Network/virtualHubs/routeTables\"\r\n}"
     headers:
+      azure-asyncnotification:
+      - Enabled
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/dfece418-0d24-44d9-a8de-ee2b4bea4fd6?api-version=2021-08-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/324b6491-dfe9-4553-88ad-819d523f8f78?api-version=2021-08-01
       cache-control:
       - no-cache
       content-length:
@@ -2463,7 +2003,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 27 Jul 2022 14:27:01 GMT
+      - Wed, 12 Oct 2022 09:19:06 GMT
       expires:
       - '-1'
       pragma:
@@ -2476,7 +2016,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 69d6624c-6ae4-4134-bbc3-e445000f4024
+      - b0dec047-4e36-4846-a4f3-fd00a9055737
       x-ms-ratelimit-remaining-subscription-writes:
       - '1199'
     status:
@@ -2497,9 +2037,10 @@ interactions:
       - -n -g --vhub-name --connections --destination-type --destinations --next-hop-type
         --next-hops
       User-Agent:
-      - AZURECLI/2.38.0 azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.40.0 (PIP) azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.10
+        (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/dfece418-0d24-44d9-a8de-ee2b4bea4fd6?api-version=2021-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/324b6491-dfe9-4553-88ad-819d523f8f78?api-version=2021-08-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -2511,7 +2052,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 27 Jul 2022 14:27:12 GMT
+      - Wed, 12 Oct 2022 09:19:17 GMT
       expires:
       - '-1'
       pragma:
@@ -2521,14 +2062,10 @@ interactions:
       - Microsoft-HTTPAPI/2.0
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 11753b9e-462b-476d-b955-8c8f4b26e9f8
+      - a2eee529-bd1f-4a22-b63b-6e8b0281d82e
     status:
       code: 200
       message: OK
@@ -2547,9 +2084,10 @@ interactions:
       - -n -g --vhub-name --connections --destination-type --destinations --next-hop-type
         --next-hops
       User-Agent:
-      - AZURECLI/2.38.0 azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.40.0 (PIP) azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.10
+        (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/dfece418-0d24-44d9-a8de-ee2b4bea4fd6?api-version=2021-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/324b6491-dfe9-4553-88ad-819d523f8f78?api-version=2021-08-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -2561,7 +2099,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 27 Jul 2022 14:27:32 GMT
+      - Wed, 12 Oct 2022 09:19:29 GMT
       expires:
       - '-1'
       pragma:
@@ -2571,14 +2109,10 @@ interactions:
       - Microsoft-HTTPAPI/2.0
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - ab609049-422a-4891-a379-c3a26ad14266
+      - d5e4ab38-bd0f-4774-adca-bce93da75b53
     status:
       code: 200
       message: OK
@@ -2597,9 +2131,57 @@ interactions:
       - -n -g --vhub-name --connections --destination-type --destinations --next-hop-type
         --next-hops
       User-Agent:
-      - AZURECLI/2.38.0 azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.40.0 (PIP) azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.10
+        (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/dfece418-0d24-44d9-a8de-ee2b4bea4fd6?api-version=2021-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/324b6491-dfe9-4553-88ad-819d523f8f78?api-version=2021-08-01
+  response:
+    body:
+      string: "{\r\n  \"status\": \"InProgress\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '30'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 12 Oct 2022 09:19:49 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-arm-service-request-id:
+      - 834f5e48-23a7-425e-942b-b4a3d70b5c3e
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network vhub route-table create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --vhub-name --connections --destination-type --destinations --next-hop-type
+        --next-hops
+      User-Agent:
+      - AZURECLI/2.40.0 (PIP) azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.10
+        (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/324b6491-dfe9-4553-88ad-819d523f8f78?api-version=2021-08-01
   response:
     body:
       string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
@@ -2611,7 +2193,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 27 Jul 2022 14:28:13 GMT
+      - Wed, 12 Oct 2022 09:20:29 GMT
       expires:
       - '-1'
       pragma:
@@ -2621,14 +2203,10 @@ interactions:
       - Microsoft-HTTPAPI/2.0
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 12a81da4-11fc-4ffd-af0b-5983910399dd
+      - 510e3bfc-3c5a-450b-8e06-57216cd9686b
     status:
       code: 200
       message: OK
@@ -2647,13 +2225,14 @@ interactions:
       - -n -g --vhub-name --connections --destination-type --destinations --next-hop-type
         --next-hops
       User-Agent:
-      - AZURECLI/2.38.0 azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.40.0 (PIP) azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.10
+        (Windows-10-10.0.19044-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_route_table000001/providers/Microsoft.Network/virtualHubs/myclitestvhub/routeTables/testroutetable?api-version=2021-08-01
   response:
     body:
       string: "{\r\n  \"name\": \"testroutetable\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_route_table000001/providers/Microsoft.Network/virtualHubs/myclitestvhub/routeTables/testroutetable\",\r\n
-        \ \"etag\": \"W/\\\"818ccf87-a506-4d0d-bfe0-b48562fd298f\\\"\",\r\n  \"properties\":
+        \ \"etag\": \"W/\\\"e571b99f-c977-4c5a-afa4-fb7d2ab64cf4\\\"\",\r\n  \"properties\":
         {\r\n    \"provisioningState\": \"Succeeded\",\r\n    \"routes\": [\r\n      {\r\n
         \       \"destinationType\": \"CIDR\",\r\n        \"destinations\": [\r\n
         \         \"10.4.0.0/16\",\r\n          \"10.6.0.0/16\"\r\n        ],\r\n
@@ -2668,7 +2247,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 27 Jul 2022 14:28:14 GMT
+      - Wed, 12 Oct 2022 09:20:30 GMT
       expires:
       - '-1'
       pragma:
@@ -2678,14 +2257,10 @@ interactions:
       - Microsoft-HTTPAPI/2.0
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 8ecd425f-812e-4046-9ce5-7ef4ad3163e7
+      - 690b2a41-94f8-4cca-823e-1529adccb6fd
     status:
       code: 200
       message: OK
@@ -2703,7 +2278,8 @@ interactions:
       ParameterSetName:
       - -n -g --vhub-name
       User-Agent:
-      - AZURECLI/2.38.0 azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.40.0 (PIP) azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.10
+        (Windows-10-10.0.19044-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_route_table000001/providers/Microsoft.Network/virtualHubs/myclitestvhub/hubRouteTables/testroutetable?api-version=2021-08-01
   response:
@@ -2719,7 +2295,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 27 Jul 2022 14:28:15 GMT
+      - Wed, 12 Oct 2022 09:20:31 GMT
       expires:
       - '-1'
       pragma:
@@ -2732,7 +2308,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - cdf09c28-551f-41f2-b6d1-56887945dd02
+      - 4204a43d-a7fb-4086-aa43-0a3063f23b3e
     status:
       code: 404
       message: Not Found
@@ -2750,13 +2326,14 @@ interactions:
       ParameterSetName:
       - -n -g --vhub-name
       User-Agent:
-      - AZURECLI/2.38.0 azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.40.0 (PIP) azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.10
+        (Windows-10-10.0.19044-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_route_table000001/providers/Microsoft.Network/virtualHubs/myclitestvhub/routeTables/testroutetable?api-version=2021-08-01
   response:
     body:
       string: "{\r\n  \"name\": \"testroutetable\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_route_table000001/providers/Microsoft.Network/virtualHubs/myclitestvhub/routeTables/testroutetable\",\r\n
-        \ \"etag\": \"W/\\\"818ccf87-a506-4d0d-bfe0-b48562fd298f\\\"\",\r\n  \"properties\":
+        \ \"etag\": \"W/\\\"e571b99f-c977-4c5a-afa4-fb7d2ab64cf4\\\"\",\r\n  \"properties\":
         {\r\n    \"provisioningState\": \"Succeeded\",\r\n    \"routes\": [\r\n      {\r\n
         \       \"destinationType\": \"CIDR\",\r\n        \"destinations\": [\r\n
         \         \"10.4.0.0/16\",\r\n          \"10.6.0.0/16\"\r\n        ],\r\n
@@ -2771,7 +2348,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 27 Jul 2022 14:28:15 GMT
+      - Wed, 12 Oct 2022 09:20:33 GMT
       expires:
       - '-1'
       pragma:
@@ -2788,7 +2365,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 025ab186-f0ab-4fbe-ad63-6cbd076a29ba
+      - 3c45f908-d188-4953-b545-13093abac948
     status:
       code: 200
       message: OK
@@ -2806,14 +2383,15 @@ interactions:
       ParameterSetName:
       - -g --vhub-name
       User-Agent:
-      - AZURECLI/2.38.0 azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.40.0 (PIP) azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.10
+        (Windows-10-10.0.19044-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_route_table000001/providers/Microsoft.Network/virtualHubs/myclitestvhub/routeTables?api-version=2021-08-01
   response:
     body:
       string: "{\r\n  \"value\": [\r\n    {\r\n      \"name\": \"testroutetable\",\r\n
         \     \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_route_table000001/providers/Microsoft.Network/virtualHubs/myclitestvhub/routeTables/testroutetable\",\r\n
-        \     \"etag\": \"W/\\\"818ccf87-a506-4d0d-bfe0-b48562fd298f\\\"\",\r\n      \"properties\":
+        \     \"etag\": \"W/\\\"e571b99f-c977-4c5a-afa4-fb7d2ab64cf4\\\"\",\r\n      \"properties\":
         {\r\n        \"provisioningState\": \"Succeeded\",\r\n        \"routes\":
         [\r\n          {\r\n            \"destinationType\": \"CIDR\",\r\n            \"destinations\":
         [\r\n              \"10.4.0.0/16\",\r\n              \"10.6.0.0/16\"\r\n            ],\r\n
@@ -2830,7 +2408,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 27 Jul 2022 14:28:17 GMT
+      - Wed, 12 Oct 2022 09:20:33 GMT
       expires:
       - '-1'
       pragma:
@@ -2847,7 +2425,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 1aa6e308-2f7a-4864-814e-01abec49d577
+      - 0bc0813c-289f-4588-813b-9aa2bc7a2deb
     status:
       code: 200
       message: OK
@@ -2865,20 +2443,21 @@ interactions:
       ParameterSetName:
       - -g --vhub-name
       User-Agent:
-      - AZURECLI/2.38.0 azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.40.0 (PIP) azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.10
+        (Windows-10-10.0.19044-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_route_table000001/providers/Microsoft.Network/virtualHubs/myclitestvhub/hubRouteTables?api-version=2021-08-01
   response:
     body:
       string: "{\r\n  \"value\": [\r\n    {\r\n      \"name\": \"defaultRouteTable\",\r\n
         \     \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_route_table000001/providers/Microsoft.Network/virtualHubs/myclitestvhub/hubRouteTables/defaultRouteTable\",\r\n
-        \     \"etag\": \"W/\\\"818ccf87-a506-4d0d-bfe0-b48562fd298f\\\"\",\r\n      \"properties\":
+        \     \"etag\": \"W/\\\"e571b99f-c977-4c5a-afa4-fb7d2ab64cf4\\\"\",\r\n      \"properties\":
         {\r\n        \"provisioningState\": \"Succeeded\",\r\n        \"routes\":
         [],\r\n        \"labels\": [\r\n          \"default\"\r\n        ],\r\n        \"associatedConnections\":
         [],\r\n        \"propagatingConnections\": []\r\n      },\r\n      \"type\":
         \"Microsoft.Network/virtualHubs/hubRouteTables\"\r\n    },\r\n    {\r\n      \"name\":
         \"noneRouteTable\",\r\n      \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_route_table000001/providers/Microsoft.Network/virtualHubs/myclitestvhub/hubRouteTables/noneRouteTable\",\r\n
-        \     \"etag\": \"W/\\\"818ccf87-a506-4d0d-bfe0-b48562fd298f\\\"\",\r\n      \"properties\":
+        \     \"etag\": \"W/\\\"e571b99f-c977-4c5a-afa4-fb7d2ab64cf4\\\"\",\r\n      \"properties\":
         {\r\n        \"provisioningState\": \"Succeeded\",\r\n        \"routes\":
         [],\r\n        \"labels\": [\r\n          \"none\"\r\n        ],\r\n        \"associatedConnections\":
         [],\r\n        \"propagatingConnections\": []\r\n      },\r\n      \"type\":
@@ -2891,7 +2470,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 27 Jul 2022 14:28:18 GMT
+      - Wed, 12 Oct 2022 09:20:35 GMT
       expires:
       - '-1'
       pragma:
@@ -2901,14 +2480,10 @@ interactions:
       - Microsoft-HTTPAPI/2.0
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 75d3b5cc-e41a-4be9-976c-361e8fc84b96
+      - 659e3bb2-a405-44fb-a033-ff19be281d82
     status:
       code: 200
       message: OK
@@ -2926,7 +2501,8 @@ interactions:
       ParameterSetName:
       - -n -g --vhub-name --connections
       User-Agent:
-      - AZURECLI/2.38.0 azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.40.0 (PIP) azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.10
+        (Windows-10-10.0.19044-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_route_table000001/providers/Microsoft.Network/virtualHubs/myclitestvhub/hubRouteTables/testroutetable?api-version=2021-08-01
   response:
@@ -2942,7 +2518,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 27 Jul 2022 14:28:19 GMT
+      - Wed, 12 Oct 2022 09:20:36 GMT
       expires:
       - '-1'
       pragma:
@@ -2955,7 +2531,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 1487bec7-8d7f-40c9-9ee0-730105b58bef
+      - b5fd01d2-3cce-4a1c-9369-566af98bd01a
     status:
       code: 404
       message: Not Found
@@ -2973,13 +2549,14 @@ interactions:
       ParameterSetName:
       - -n -g --vhub-name --connections
       User-Agent:
-      - AZURECLI/2.38.0 azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.40.0 (PIP) azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.10
+        (Windows-10-10.0.19044-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_route_table000001/providers/Microsoft.Network/virtualHubs/myclitestvhub/routeTables/testroutetable?api-version=2021-08-01
   response:
     body:
       string: "{\r\n  \"name\": \"testroutetable\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_route_table000001/providers/Microsoft.Network/virtualHubs/myclitestvhub/routeTables/testroutetable\",\r\n
-        \ \"etag\": \"W/\\\"818ccf87-a506-4d0d-bfe0-b48562fd298f\\\"\",\r\n  \"properties\":
+        \ \"etag\": \"W/\\\"e571b99f-c977-4c5a-afa4-fb7d2ab64cf4\\\"\",\r\n  \"properties\":
         {\r\n    \"provisioningState\": \"Succeeded\",\r\n    \"routes\": [\r\n      {\r\n
         \       \"destinationType\": \"CIDR\",\r\n        \"destinations\": [\r\n
         \         \"10.4.0.0/16\",\r\n          \"10.6.0.0/16\"\r\n        ],\r\n
@@ -2994,7 +2571,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 27 Jul 2022 14:28:20 GMT
+      - Wed, 12 Oct 2022 09:20:36 GMT
       expires:
       - '-1'
       pragma:
@@ -3011,7 +2588,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 1929260e-f5de-477f-981d-0ed7f70ae20c
+      - 974a9099-13a2-48b1-84ed-bd2da482ec3b
     status:
       code: 200
       message: OK
@@ -3036,13 +2613,14 @@ interactions:
       ParameterSetName:
       - -n -g --vhub-name --connections
       User-Agent:
-      - AZURECLI/2.38.0 azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.40.0 (PIP) azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.10
+        (Windows-10-10.0.19044-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_route_table000001/providers/Microsoft.Network/virtualHubs/myclitestvhub/routeTables/testroutetable?api-version=2021-08-01
   response:
     body:
       string: "{\r\n  \"name\": \"testroutetable\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_route_table000001/providers/Microsoft.Network/virtualHubs/myclitestvhub/routeTables/testroutetable\",\r\n
-        \ \"etag\": \"W/\\\"0099f096-02db-4580-856f-2bf7861acde8\\\"\",\r\n  \"properties\":
+        \ \"etag\": \"W/\\\"79747501-bed1-45f5-8181-e4d2bd79e88b\\\"\",\r\n  \"properties\":
         {\r\n    \"provisioningState\": \"Updating\",\r\n    \"routes\": [\r\n      {\r\n
         \       \"destinationType\": \"CIDR\",\r\n        \"destinations\": [\r\n
         \         \"10.4.0.0/16\",\r\n          \"10.6.0.0/16\"\r\n        ],\r\n
@@ -3050,8 +2628,10 @@ interactions:
         \       ]\r\n      }\r\n    ],\r\n    \"attachedConnections\": [\r\n      \"All_Branches\"\r\n
         \   ]\r\n  },\r\n  \"type\": \"Microsoft.Network/virtualHubs/routeTables\"\r\n}"
     headers:
+      azure-asyncnotification:
+      - Enabled
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/2ba0447e-4e83-4a7a-bad7-bc05d8f4bc91?api-version=2021-08-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/6abbca52-3efc-47d4-911a-f6e6981a021e?api-version=2021-08-01
       cache-control:
       - no-cache
       content-length:
@@ -3059,7 +2639,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 27 Jul 2022 14:28:20 GMT
+      - Wed, 12 Oct 2022 09:20:37 GMT
       expires:
       - '-1'
       pragma:
@@ -3076,7 +2656,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - a06293c0-410a-496d-95f0-d4e0bcd7d45d
+      - ee0fd51d-09ef-483d-b7b8-37a0cdf9b2a3
       x-ms-ratelimit-remaining-subscription-writes:
       - '1199'
     status:
@@ -3096,9 +2676,10 @@ interactions:
       ParameterSetName:
       - -n -g --vhub-name --connections
       User-Agent:
-      - AZURECLI/2.38.0 azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.40.0 (PIP) azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.10
+        (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/2ba0447e-4e83-4a7a-bad7-bc05d8f4bc91?api-version=2021-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/6abbca52-3efc-47d4-911a-f6e6981a021e?api-version=2021-08-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -3110,7 +2691,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 27 Jul 2022 14:28:31 GMT
+      - Wed, 12 Oct 2022 09:20:47 GMT
       expires:
       - '-1'
       pragma:
@@ -3127,7 +2708,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - bf578c9e-0cf3-4ae5-a62a-bc9e0350c85c
+      - 4aec2607-92dd-44c0-bc40-1c9be71170a4
     status:
       code: 200
       message: OK
@@ -3145,9 +2726,10 @@ interactions:
       ParameterSetName:
       - -n -g --vhub-name --connections
       User-Agent:
-      - AZURECLI/2.38.0 azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.40.0 (PIP) azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.10
+        (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/2ba0447e-4e83-4a7a-bad7-bc05d8f4bc91?api-version=2021-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/6abbca52-3efc-47d4-911a-f6e6981a021e?api-version=2021-08-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -3159,7 +2741,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 27 Jul 2022 14:28:42 GMT
+      - Wed, 12 Oct 2022 09:20:59 GMT
       expires:
       - '-1'
       pragma:
@@ -3176,7 +2758,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - f66965cb-993d-4169-b2a9-e0075f225858
+      - be8ea083-79ef-4e8c-9d29-e5f85ddbebcd
     status:
       code: 200
       message: OK
@@ -3194,9 +2776,10 @@ interactions:
       ParameterSetName:
       - -n -g --vhub-name --connections
       User-Agent:
-      - AZURECLI/2.38.0 azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.40.0 (PIP) azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.10
+        (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/2ba0447e-4e83-4a7a-bad7-bc05d8f4bc91?api-version=2021-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/6abbca52-3efc-47d4-911a-f6e6981a021e?api-version=2021-08-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -3208,7 +2791,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 27 Jul 2022 14:29:02 GMT
+      - Wed, 12 Oct 2022 09:21:19 GMT
       expires:
       - '-1'
       pragma:
@@ -3225,7 +2808,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 0bee8577-4527-426a-8a15-cc2625afa552
+      - 85403735-4427-473d-b878-ef7158a1667e
     status:
       code: 200
       message: OK
@@ -3243,107 +2826,10 @@ interactions:
       ParameterSetName:
       - -n -g --vhub-name --connections
       User-Agent:
-      - AZURECLI/2.38.0 azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.40.0 (PIP) azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.10
+        (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/2ba0447e-4e83-4a7a-bad7-bc05d8f4bc91?api-version=2021-08-01
-  response:
-    body:
-      string: "{\r\n  \"status\": \"InProgress\"\r\n}"
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '30'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Wed, 27 Jul 2022 14:29:42 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      server:
-      - Microsoft-HTTPAPI/2.0
-      - Microsoft-HTTPAPI/2.0
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-      x-ms-arm-service-request-id:
-      - e0031cff-d210-43f9-9894-e69192bee38e
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - network vhub route-table update
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -n -g --vhub-name --connections
-      User-Agent:
-      - AZURECLI/2.38.0 azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/2ba0447e-4e83-4a7a-bad7-bc05d8f4bc91?api-version=2021-08-01
-  response:
-    body:
-      string: "{\r\n  \"status\": \"InProgress\"\r\n}"
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '30'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Wed, 27 Jul 2022 14:31:02 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      server:
-      - Microsoft-HTTPAPI/2.0
-      - Microsoft-HTTPAPI/2.0
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-      x-ms-arm-service-request-id:
-      - eaeb32fd-51eb-4f65-8b06-d2782e7d0268
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - network vhub route-table update
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -n -g --vhub-name --connections
-      User-Agent:
-      - AZURECLI/2.38.0 azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/2ba0447e-4e83-4a7a-bad7-bc05d8f4bc91?api-version=2021-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/6abbca52-3efc-47d4-911a-f6e6981a021e?api-version=2021-08-01
   response:
     body:
       string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
@@ -3355,7 +2841,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 27 Jul 2022 14:33:45 GMT
+      - Wed, 12 Oct 2022 09:22:00 GMT
       expires:
       - '-1'
       pragma:
@@ -3372,7 +2858,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 709a0ee7-1568-4747-85ac-88bb18f286e2
+      - fdca1990-bd68-4066-a7ea-70416eb3c403
     status:
       code: 200
       message: OK
@@ -3390,13 +2876,14 @@ interactions:
       ParameterSetName:
       - -n -g --vhub-name --connections
       User-Agent:
-      - AZURECLI/2.38.0 azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.40.0 (PIP) azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.10
+        (Windows-10-10.0.19044-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_route_table000001/providers/Microsoft.Network/virtualHubs/myclitestvhub/routeTables/testroutetable?api-version=2021-08-01
   response:
     body:
       string: "{\r\n  \"name\": \"testroutetable\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_route_table000001/providers/Microsoft.Network/virtualHubs/myclitestvhub/routeTables/testroutetable\",\r\n
-        \ \"etag\": \"W/\\\"029eba23-8094-4a15-a45c-5180c2e4982d\\\"\",\r\n  \"properties\":
+        \ \"etag\": \"W/\\\"56740a00-b1d9-423e-90b6-7e6f2e100a6b\\\"\",\r\n  \"properties\":
         {\r\n    \"provisioningState\": \"Succeeded\",\r\n    \"routes\": [\r\n      {\r\n
         \       \"destinationType\": \"CIDR\",\r\n        \"destinations\": [\r\n
         \         \"10.4.0.0/16\",\r\n          \"10.6.0.0/16\"\r\n        ],\r\n
@@ -3411,7 +2898,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 27 Jul 2022 14:33:46 GMT
+      - Wed, 12 Oct 2022 09:22:00 GMT
       expires:
       - '-1'
       pragma:
@@ -3428,7 +2915,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 470463a7-1bed-46e6-bbad-a905b4b14065
+      - bdf19302-15a5-4891-a3fe-76a5aaf50bc9
     status:
       code: 200
       message: OK
@@ -3446,7 +2933,8 @@ interactions:
       ParameterSetName:
       - -n -g --vhub-name --destination-type --destinations --next-hop-type --next-hops
       User-Agent:
-      - AZURECLI/2.38.0 azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.40.0 (PIP) azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.10
+        (Windows-10-10.0.19044-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_route_table000001/providers/Microsoft.Network/virtualHubs/myclitestvhub/hubRouteTables/testroutetable?api-version=2021-08-01
   response:
@@ -3462,7 +2950,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 27 Jul 2022 14:33:48 GMT
+      - Wed, 12 Oct 2022 09:22:03 GMT
       expires:
       - '-1'
       pragma:
@@ -3475,7 +2963,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - dcc8949e-8e42-4706-b865-6e581746623e
+      - 3d422855-66da-4442-b7a3-a26293e5ad1d
     status:
       code: 404
       message: Not Found
@@ -3493,13 +2981,14 @@ interactions:
       ParameterSetName:
       - -n -g --vhub-name --destination-type --destinations --next-hop-type --next-hops
       User-Agent:
-      - AZURECLI/2.38.0 azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.40.0 (PIP) azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.10
+        (Windows-10-10.0.19044-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_route_table000001/providers/Microsoft.Network/virtualHubs/myclitestvhub/routeTables/testroutetable?api-version=2021-08-01
   response:
     body:
       string: "{\r\n  \"name\": \"testroutetable\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_route_table000001/providers/Microsoft.Network/virtualHubs/myclitestvhub/routeTables/testroutetable\",\r\n
-        \ \"etag\": \"W/\\\"029eba23-8094-4a15-a45c-5180c2e4982d\\\"\",\r\n  \"properties\":
+        \ \"etag\": \"W/\\\"56740a00-b1d9-423e-90b6-7e6f2e100a6b\\\"\",\r\n  \"properties\":
         {\r\n    \"provisioningState\": \"Succeeded\",\r\n    \"routes\": [\r\n      {\r\n
         \       \"destinationType\": \"CIDR\",\r\n        \"destinations\": [\r\n
         \         \"10.4.0.0/16\",\r\n          \"10.6.0.0/16\"\r\n        ],\r\n
@@ -3514,7 +3003,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 27 Jul 2022 14:33:48 GMT
+      - Wed, 12 Oct 2022 09:22:03 GMT
       expires:
       - '-1'
       pragma:
@@ -3524,14 +3013,10 @@ interactions:
       - Microsoft-HTTPAPI/2.0
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 28cfc175-18f0-4221-952f-2ff7dd5a595e
+      - 934e5bd9-1bc6-44a0-8b02-4f82f228f745
     status:
       code: 200
       message: OK
@@ -3558,13 +3043,14 @@ interactions:
       ParameterSetName:
       - -n -g --vhub-name --destination-type --destinations --next-hop-type --next-hops
       User-Agent:
-      - AZURECLI/2.38.0 azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.40.0 (PIP) azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.10
+        (Windows-10-10.0.19044-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_route_table000001/providers/Microsoft.Network/virtualHubs/myclitestvhub/routeTables/testroutetable?api-version=2021-08-01
   response:
     body:
       string: "{\r\n  \"name\": \"testroutetable\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_route_table000001/providers/Microsoft.Network/virtualHubs/myclitestvhub/routeTables/testroutetable\",\r\n
-        \ \"etag\": \"W/\\\"87b09f83-575c-43f1-8240-46096a5de7d0\\\"\",\r\n  \"properties\":
+        \ \"etag\": \"W/\\\"ff2a0d8d-54a7-4ba3-9fd3-28af67f4e582\\\"\",\r\n  \"properties\":
         {\r\n    \"provisioningState\": \"Updating\",\r\n    \"routes\": [\r\n      {\r\n
         \       \"destinationType\": \"CIDR\",\r\n        \"destinations\": [\r\n
         \         \"10.4.0.0/16\",\r\n          \"10.6.0.0/16\"\r\n        ],\r\n
@@ -3575,8 +3061,10 @@ interactions:
         [\r\n          \"10.0.0.68\"\r\n        ]\r\n      }\r\n    ],\r\n    \"attachedConnections\":
         [\r\n      \"All_Branches\"\r\n    ]\r\n  },\r\n  \"type\": \"Microsoft.Network/virtualHubs/routeTables\"\r\n}"
     headers:
+      azure-asyncnotification:
+      - Enabled
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/932ce4df-d3ee-4102-8fa6-8b5ac2b41e32?api-version=2021-08-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/611ed22b-2a22-4ca0-a0e9-998d3ab79caf?api-version=2021-08-01
       cache-control:
       - no-cache
       content-length:
@@ -3584,7 +3072,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 27 Jul 2022 14:33:49 GMT
+      - Wed, 12 Oct 2022 09:22:04 GMT
       expires:
       - '-1'
       pragma:
@@ -3601,9 +3089,9 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - d1d5597d-d388-475e-9f4f-8ba0f7f4f994
+      - 51a1d6b1-d7e8-46d2-9719-e1deaa3e0aff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1198'
+      - '1199'
     status:
       code: 200
       message: OK
@@ -3621,9 +3109,10 @@ interactions:
       ParameterSetName:
       - -n -g --vhub-name --destination-type --destinations --next-hop-type --next-hops
       User-Agent:
-      - AZURECLI/2.38.0 azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.40.0 (PIP) azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.10
+        (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/932ce4df-d3ee-4102-8fa6-8b5ac2b41e32?api-version=2021-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/611ed22b-2a22-4ca0-a0e9-998d3ab79caf?api-version=2021-08-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -3635,7 +3124,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 27 Jul 2022 14:33:59 GMT
+      - Wed, 12 Oct 2022 09:22:14 GMT
       expires:
       - '-1'
       pragma:
@@ -3652,7 +3141,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 0ffb6d63-4543-451d-9c34-18f5b6f2a7ba
+      - 59cc6574-03d6-4a36-ac16-19c8fb5a5d88
     status:
       code: 200
       message: OK
@@ -3670,9 +3159,10 @@ interactions:
       ParameterSetName:
       - -n -g --vhub-name --destination-type --destinations --next-hop-type --next-hops
       User-Agent:
-      - AZURECLI/2.38.0 azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.40.0 (PIP) azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.10
+        (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/932ce4df-d3ee-4102-8fa6-8b5ac2b41e32?api-version=2021-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/611ed22b-2a22-4ca0-a0e9-998d3ab79caf?api-version=2021-08-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -3684,7 +3174,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 27 Jul 2022 14:34:10 GMT
+      - Wed, 12 Oct 2022 09:22:25 GMT
       expires:
       - '-1'
       pragma:
@@ -3701,7 +3191,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 52ce45e9-608c-425c-8ed1-542fdea7d10d
+      - 2709e02f-fc64-4c15-984b-22cbce3b093f
     status:
       code: 200
       message: OK
@@ -3719,9 +3209,10 @@ interactions:
       ParameterSetName:
       - -n -g --vhub-name --destination-type --destinations --next-hop-type --next-hops
       User-Agent:
-      - AZURECLI/2.38.0 azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.40.0 (PIP) azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.10
+        (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/932ce4df-d3ee-4102-8fa6-8b5ac2b41e32?api-version=2021-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/611ed22b-2a22-4ca0-a0e9-998d3ab79caf?api-version=2021-08-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -3733,7 +3224,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 27 Jul 2022 14:34:32 GMT
+      - Wed, 12 Oct 2022 09:22:46 GMT
       expires:
       - '-1'
       pragma:
@@ -3750,7 +3241,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 4edd6699-81ef-4411-97f1-73624c18af1b
+      - b6c8a66b-a469-49bb-b95b-ed9554dc07f3
     status:
       code: 200
       message: OK
@@ -3768,107 +3259,10 @@ interactions:
       ParameterSetName:
       - -n -g --vhub-name --destination-type --destinations --next-hop-type --next-hops
       User-Agent:
-      - AZURECLI/2.38.0 azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.40.0 (PIP) azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.10
+        (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/932ce4df-d3ee-4102-8fa6-8b5ac2b41e32?api-version=2021-08-01
-  response:
-    body:
-      string: "{\r\n  \"status\": \"InProgress\"\r\n}"
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '30'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Wed, 27 Jul 2022 14:35:13 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      server:
-      - Microsoft-HTTPAPI/2.0
-      - Microsoft-HTTPAPI/2.0
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-      x-ms-arm-service-request-id:
-      - 367eabf8-b297-4368-a4a8-9ff349bb5a1b
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - network vhub route-table route add
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -n -g --vhub-name --destination-type --destinations --next-hop-type --next-hops
-      User-Agent:
-      - AZURECLI/2.38.0 azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/932ce4df-d3ee-4102-8fa6-8b5ac2b41e32?api-version=2021-08-01
-  response:
-    body:
-      string: "{\r\n  \"status\": \"InProgress\"\r\n}"
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '30'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Wed, 27 Jul 2022 14:36:33 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      server:
-      - Microsoft-HTTPAPI/2.0
-      - Microsoft-HTTPAPI/2.0
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-      x-ms-arm-service-request-id:
-      - 76a189c4-c380-43b2-9b35-523e92c1669c
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - network vhub route-table route add
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -n -g --vhub-name --destination-type --destinations --next-hop-type --next-hops
-      User-Agent:
-      - AZURECLI/2.38.0 azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/932ce4df-d3ee-4102-8fa6-8b5ac2b41e32?api-version=2021-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/611ed22b-2a22-4ca0-a0e9-998d3ab79caf?api-version=2021-08-01
   response:
     body:
       string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
@@ -3880,7 +3274,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 27 Jul 2022 14:39:14 GMT
+      - Wed, 12 Oct 2022 09:23:25 GMT
       expires:
       - '-1'
       pragma:
@@ -3897,7 +3291,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 184d49d7-3e64-43a3-b39b-a45c9df7b92e
+      - 32b686cb-4430-464a-9b67-04003fe680a0
     status:
       code: 200
       message: OK
@@ -3915,13 +3309,14 @@ interactions:
       ParameterSetName:
       - -n -g --vhub-name --destination-type --destinations --next-hop-type --next-hops
       User-Agent:
-      - AZURECLI/2.38.0 azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.40.0 (PIP) azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.10
+        (Windows-10-10.0.19044-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_route_table000001/providers/Microsoft.Network/virtualHubs/myclitestvhub/routeTables/testroutetable?api-version=2021-08-01
   response:
     body:
       string: "{\r\n  \"name\": \"testroutetable\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_route_table000001/providers/Microsoft.Network/virtualHubs/myclitestvhub/routeTables/testroutetable\",\r\n
-        \ \"etag\": \"W/\\\"7ab5f01c-7a87-437b-8f18-0d60ad035bea\\\"\",\r\n  \"properties\":
+        \ \"etag\": \"W/\\\"71ac8e2e-bf81-427e-adec-f44b99a2099c\\\"\",\r\n  \"properties\":
         {\r\n    \"provisioningState\": \"Succeeded\",\r\n    \"routes\": [\r\n      {\r\n
         \       \"destinationType\": \"CIDR\",\r\n        \"destinations\": [\r\n
         \         \"10.4.0.0/16\",\r\n          \"10.6.0.0/16\"\r\n        ],\r\n
@@ -3939,7 +3334,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 27 Jul 2022 14:39:15 GMT
+      - Wed, 12 Oct 2022 09:23:26 GMT
       expires:
       - '-1'
       pragma:
@@ -3956,7 +3351,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - e12ee617-270b-40ce-970b-46a460ebecc6
+      - 36d47197-774a-4922-8756-1f2017039206
     status:
       code: 200
       message: OK
@@ -3974,7 +3369,8 @@ interactions:
       ParameterSetName:
       - -n -g --vhub-name --index
       User-Agent:
-      - AZURECLI/2.38.0 azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.40.0 (PIP) azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.10
+        (Windows-10-10.0.19044-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_route_table000001/providers/Microsoft.Network/virtualHubs/myclitestvhub/hubRouteTables/testroutetable?api-version=2021-08-01
   response:
@@ -3990,7 +3386,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 27 Jul 2022 14:39:15 GMT
+      - Wed, 12 Oct 2022 09:23:27 GMT
       expires:
       - '-1'
       pragma:
@@ -4003,7 +3399,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 402f9ef3-7a91-4c26-a06b-927e5b3589ea
+      - 3b599bb6-77e9-4121-83dd-9eea8900294a
     status:
       code: 404
       message: Not Found
@@ -4021,13 +3417,14 @@ interactions:
       ParameterSetName:
       - -n -g --vhub-name --index
       User-Agent:
-      - AZURECLI/2.38.0 azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.40.0 (PIP) azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.10
+        (Windows-10-10.0.19044-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_route_table000001/providers/Microsoft.Network/virtualHubs/myclitestvhub/routeTables/testroutetable?api-version=2021-08-01
   response:
     body:
       string: "{\r\n  \"name\": \"testroutetable\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_route_table000001/providers/Microsoft.Network/virtualHubs/myclitestvhub/routeTables/testroutetable\",\r\n
-        \ \"etag\": \"W/\\\"7ab5f01c-7a87-437b-8f18-0d60ad035bea\\\"\",\r\n  \"properties\":
+        \ \"etag\": \"W/\\\"71ac8e2e-bf81-427e-adec-f44b99a2099c\\\"\",\r\n  \"properties\":
         {\r\n    \"provisioningState\": \"Succeeded\",\r\n    \"routes\": [\r\n      {\r\n
         \       \"destinationType\": \"CIDR\",\r\n        \"destinations\": [\r\n
         \         \"10.4.0.0/16\",\r\n          \"10.6.0.0/16\"\r\n        ],\r\n
@@ -4045,7 +3442,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 27 Jul 2022 14:39:17 GMT
+      - Wed, 12 Oct 2022 09:23:27 GMT
       expires:
       - '-1'
       pragma:
@@ -4062,7 +3459,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - df18cbb8-3d11-48c6-bbc3-0bf922a5d31b
+      - d4d0f7f5-cca3-40f7-8628-fedb92d22062
     status:
       code: 200
       message: OK
@@ -4087,13 +3484,14 @@ interactions:
       ParameterSetName:
       - -n -g --vhub-name --index
       User-Agent:
-      - AZURECLI/2.38.0 azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.40.0 (PIP) azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.10
+        (Windows-10-10.0.19044-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_route_table000001/providers/Microsoft.Network/virtualHubs/myclitestvhub/routeTables/testroutetable?api-version=2021-08-01
   response:
     body:
       string: "{\r\n  \"name\": \"testroutetable\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_route_table000001/providers/Microsoft.Network/virtualHubs/myclitestvhub/routeTables/testroutetable\",\r\n
-        \ \"etag\": \"W/\\\"40b8e9f5-86d2-4567-bb1f-2ff2746c5926\\\"\",\r\n  \"properties\":
+        \ \"etag\": \"W/\\\"38beef0e-764a-4d12-9ef7-f8348b750645\\\"\",\r\n  \"properties\":
         {\r\n    \"provisioningState\": \"Updating\",\r\n    \"routes\": [\r\n      {\r\n
         \       \"destinationType\": \"Service\",\r\n        \"destinations\": [\r\n
         \         \"Skype\",\r\n          \"Sharepoint\"\r\n        ],\r\n        \"nextHopType\":
@@ -4101,8 +3499,10 @@ interactions:
         \     }\r\n    ],\r\n    \"attachedConnections\": [\r\n      \"All_Branches\"\r\n
         \   ]\r\n  },\r\n  \"type\": \"Microsoft.Network/virtualHubs/routeTables\"\r\n}"
     headers:
+      azure-asyncnotification:
+      - Enabled
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/963816c9-996c-4c57-a8ba-eedb30b102c6?api-version=2021-08-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/610032ba-70c9-4e37-9cbf-85a70ec5aaf2?api-version=2021-08-01
       cache-control:
       - no-cache
       content-length:
@@ -4110,7 +3510,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 27 Jul 2022 14:39:18 GMT
+      - Wed, 12 Oct 2022 09:23:29 GMT
       expires:
       - '-1'
       pragma:
@@ -4120,14 +3520,10 @@ interactions:
       - Microsoft-HTTPAPI/2.0
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 7ec2c9c5-7ed0-45d1-a6d3-a6bf7dee1dc5
+      - 0f51fd1c-ada6-4be5-96dd-b23ca3592f90
       x-ms-ratelimit-remaining-subscription-writes:
       - '1199'
     status:
@@ -4147,9 +3543,10 @@ interactions:
       ParameterSetName:
       - -n -g --vhub-name --index
       User-Agent:
-      - AZURECLI/2.38.0 azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.40.0 (PIP) azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.10
+        (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/963816c9-996c-4c57-a8ba-eedb30b102c6?api-version=2021-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/610032ba-70c9-4e37-9cbf-85a70ec5aaf2?api-version=2021-08-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -4161,7 +3558,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 27 Jul 2022 14:39:34 GMT
+      - Wed, 12 Oct 2022 09:23:40 GMT
       expires:
       - '-1'
       pragma:
@@ -4171,14 +3568,10 @@ interactions:
       - Microsoft-HTTPAPI/2.0
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 099fa464-ec6c-497c-b0a0-f0f8a0cf6871
+      - 53d7713d-0607-4e55-95dd-18d8b8227e24
     status:
       code: 200
       message: OK
@@ -4196,9 +3589,10 @@ interactions:
       ParameterSetName:
       - -n -g --vhub-name --index
       User-Agent:
-      - AZURECLI/2.38.0 azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.40.0 (PIP) azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.10
+        (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/963816c9-996c-4c57-a8ba-eedb30b102c6?api-version=2021-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/610032ba-70c9-4e37-9cbf-85a70ec5aaf2?api-version=2021-08-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -4210,7 +3604,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 27 Jul 2022 14:39:54 GMT
+      - Wed, 12 Oct 2022 09:24:02 GMT
       expires:
       - '-1'
       pragma:
@@ -4220,14 +3614,10 @@ interactions:
       - Microsoft-HTTPAPI/2.0
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - f2a6b71e-de08-4e44-a57f-006f7855c40a
+      - c47bd97f-6467-405d-b42a-0894d1ba3b72
     status:
       code: 200
       message: OK
@@ -4245,9 +3635,56 @@ interactions:
       ParameterSetName:
       - -n -g --vhub-name --index
       User-Agent:
-      - AZURECLI/2.38.0 azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.40.0 (PIP) azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.10
+        (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/963816c9-996c-4c57-a8ba-eedb30b102c6?api-version=2021-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/610032ba-70c9-4e37-9cbf-85a70ec5aaf2?api-version=2021-08-01
+  response:
+    body:
+      string: "{\r\n  \"status\": \"InProgress\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '30'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 12 Oct 2022 09:24:22 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-arm-service-request-id:
+      - b8d2181f-76f8-45fe-bde2-5e299816422b
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network vhub route-table route remove
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --vhub-name --index
+      User-Agent:
+      - AZURECLI/2.40.0 (PIP) azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.10
+        (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/610032ba-70c9-4e37-9cbf-85a70ec5aaf2?api-version=2021-08-01
   response:
     body:
       string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
@@ -4259,7 +3696,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 27 Jul 2022 14:40:35 GMT
+      - Wed, 12 Oct 2022 09:25:04 GMT
       expires:
       - '-1'
       pragma:
@@ -4269,14 +3706,10 @@ interactions:
       - Microsoft-HTTPAPI/2.0
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 672e0e27-1401-410b-9694-041ef257432b
+      - 33b4d664-2372-410e-b29f-25423bc652e6
     status:
       code: 200
       message: OK
@@ -4294,13 +3727,14 @@ interactions:
       ParameterSetName:
       - -n -g --vhub-name --index
       User-Agent:
-      - AZURECLI/2.38.0 azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.40.0 (PIP) azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.10
+        (Windows-10-10.0.19044-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_route_table000001/providers/Microsoft.Network/virtualHubs/myclitestvhub/routeTables/testroutetable?api-version=2021-08-01
   response:
     body:
       string: "{\r\n  \"name\": \"testroutetable\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_route_table000001/providers/Microsoft.Network/virtualHubs/myclitestvhub/routeTables/testroutetable\",\r\n
-        \ \"etag\": \"W/\\\"a6949399-8fb7-40e9-9b92-a73e92a9f0c7\\\"\",\r\n  \"properties\":
+        \ \"etag\": \"W/\\\"f0cead1f-1c5a-49f3-af49-dae89945e3af\\\"\",\r\n  \"properties\":
         {\r\n    \"provisioningState\": \"Succeeded\",\r\n    \"routes\": [\r\n      {\r\n
         \       \"destinationType\": \"Service\",\r\n        \"destinations\": [\r\n
         \         \"Skype\",\r\n          \"Sharepoint\"\r\n        ],\r\n        \"nextHopType\":
@@ -4315,7 +3749,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 27 Jul 2022 14:40:35 GMT
+      - Wed, 12 Oct 2022 09:25:05 GMT
       expires:
       - '-1'
       pragma:
@@ -4325,14 +3759,10 @@ interactions:
       - Microsoft-HTTPAPI/2.0
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 96ce5197-af7c-456d-8a62-b74ce36ea0ed
+      - a2b784f7-a3c2-4f10-ac9e-b1d4eae6583f
     status:
       code: 200
       message: OK
@@ -4350,7 +3780,8 @@ interactions:
       ParameterSetName:
       - -n -g --vhub-name
       User-Agent:
-      - AZURECLI/2.38.0 azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.40.0 (PIP) azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.10
+        (Windows-10-10.0.19044-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_route_table000001/providers/Microsoft.Network/virtualHubs/myclitestvhub/hubRouteTables/testroutetable?api-version=2021-08-01
   response:
@@ -4366,7 +3797,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 27 Jul 2022 14:40:37 GMT
+      - Wed, 12 Oct 2022 09:25:06 GMT
       expires:
       - '-1'
       pragma:
@@ -4379,7 +3810,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - c5a8740a-4930-4db7-b1e1-e6141b64b276
+      - 6fe8cbbe-5f36-4f72-b22e-740bb5d55aeb
     status:
       code: 404
       message: Not Found
@@ -4397,13 +3828,14 @@ interactions:
       ParameterSetName:
       - -n -g --vhub-name
       User-Agent:
-      - AZURECLI/2.38.0 azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.40.0 (PIP) azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.10
+        (Windows-10-10.0.19044-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_route_table000001/providers/Microsoft.Network/virtualHubs/myclitestvhub/routeTables/testroutetable?api-version=2021-08-01
   response:
     body:
       string: "{\r\n  \"name\": \"testroutetable\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_route_table000001/providers/Microsoft.Network/virtualHubs/myclitestvhub/routeTables/testroutetable\",\r\n
-        \ \"etag\": \"W/\\\"a6949399-8fb7-40e9-9b92-a73e92a9f0c7\\\"\",\r\n  \"properties\":
+        \ \"etag\": \"W/\\\"f0cead1f-1c5a-49f3-af49-dae89945e3af\\\"\",\r\n  \"properties\":
         {\r\n    \"provisioningState\": \"Succeeded\",\r\n    \"routes\": [\r\n      {\r\n
         \       \"destinationType\": \"Service\",\r\n        \"destinations\": [\r\n
         \         \"Skype\",\r\n          \"Sharepoint\"\r\n        ],\r\n        \"nextHopType\":
@@ -4418,7 +3850,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 27 Jul 2022 14:40:39 GMT
+      - Wed, 12 Oct 2022 09:25:07 GMT
       expires:
       - '-1'
       pragma:
@@ -4435,7 +3867,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 8764c3f1-306c-47fc-8f5a-c2adbd3e7e6b
+      - 86054fc7-61a5-4741-89c0-100ed7993836
     status:
       code: 200
       message: OK
@@ -4455,25 +3887,28 @@ interactions:
       ParameterSetName:
       - -n -g --vhub-name
       User-Agent:
-      - AZURECLI/2.38.0 azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.40.0 (PIP) azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.10
+        (Windows-10-10.0.19044-SP0)
     method: DELETE
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_route_table000001/providers/Microsoft.Network/virtualHubs/myclitestvhub/routeTables/testroutetable?api-version=2021-08-01
   response:
     body:
       string: ''
     headers:
+      azure-asyncnotification:
+      - Enabled
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/2d3537f2-6b9b-4e63-93b4-201ec76cdfae?api-version=2021-08-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/71acd95f-7681-4c5e-a64d-3e800928108e?api-version=2021-08-01
       cache-control:
       - no-cache
       content-length:
       - '0'
       date:
-      - Wed, 27 Jul 2022 14:40:40 GMT
+      - Wed, 12 Oct 2022 09:25:09 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operationResults/2d3537f2-6b9b-4e63-93b4-201ec76cdfae?api-version=2021-08-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operationResults/71acd95f-7681-4c5e-a64d-3e800928108e?api-version=2021-08-01
       pragma:
       - no-cache
       server:
@@ -4484,7 +3919,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 1906b1f5-82be-4cb5-8eb8-018e5a53f07a
+      - 38e57af9-f63f-4833-8363-5ca913fcbd07
       x-ms-ratelimit-remaining-subscription-deletes:
       - '14999'
     status:
@@ -4504,9 +3939,10 @@ interactions:
       ParameterSetName:
       - -n -g --vhub-name
       User-Agent:
-      - AZURECLI/2.38.0 azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.40.0 (PIP) azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.10
+        (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/2d3537f2-6b9b-4e63-93b4-201ec76cdfae?api-version=2021-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/71acd95f-7681-4c5e-a64d-3e800928108e?api-version=2021-08-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -4518,7 +3954,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 27 Jul 2022 14:40:50 GMT
+      - Wed, 12 Oct 2022 09:25:21 GMT
       expires:
       - '-1'
       pragma:
@@ -4535,7 +3971,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 78747817-4cf0-4bb9-b214-8f5cb1ac55b5
+      - a61badf1-e918-4ace-8db6-a6fef72f824b
     status:
       code: 200
       message: OK
@@ -4553,9 +3989,10 @@ interactions:
       ParameterSetName:
       - -n -g --vhub-name
       User-Agent:
-      - AZURECLI/2.38.0 azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.40.0 (PIP) azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.10
+        (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/2d3537f2-6b9b-4e63-93b4-201ec76cdfae?api-version=2021-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/71acd95f-7681-4c5e-a64d-3e800928108e?api-version=2021-08-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -4567,7 +4004,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 27 Jul 2022 14:41:01 GMT
+      - Wed, 12 Oct 2022 09:25:31 GMT
       expires:
       - '-1'
       pragma:
@@ -4584,7 +4021,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 63eed666-05e5-48b1-a425-d0f6b0a76827
+      - 63ba7985-7960-4b36-a44a-2ac58e07c514
     status:
       code: 200
       message: OK
@@ -4602,9 +4039,10 @@ interactions:
       ParameterSetName:
       - -n -g --vhub-name
       User-Agent:
-      - AZURECLI/2.38.0 azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.40.0 (PIP) azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.10
+        (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/2d3537f2-6b9b-4e63-93b4-201ec76cdfae?api-version=2021-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/71acd95f-7681-4c5e-a64d-3e800928108e?api-version=2021-08-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -4616,7 +4054,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 27 Jul 2022 14:41:21 GMT
+      - Wed, 12 Oct 2022 09:25:52 GMT
       expires:
       - '-1'
       pragma:
@@ -4633,7 +4071,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 6a09ae3f-92ac-4533-ab82-dae0fdd609e5
+      - 7f7ffa40-1ef8-4496-83b4-132b3b5f6e5c
     status:
       code: 200
       message: OK
@@ -4651,9 +4089,10 @@ interactions:
       ParameterSetName:
       - -n -g --vhub-name
       User-Agent:
-      - AZURECLI/2.38.0 azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.40.0 (PIP) azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.10
+        (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/2d3537f2-6b9b-4e63-93b4-201ec76cdfae?api-version=2021-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/71acd95f-7681-4c5e-a64d-3e800928108e?api-version=2021-08-01
   response:
     body:
       string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
@@ -4665,7 +4104,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 27 Jul 2022 14:42:02 GMT
+      - Wed, 12 Oct 2022 09:26:32 GMT
       expires:
       - '-1'
       pragma:
@@ -4682,7 +4121,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 56fe1444-909b-46b5-b2a0-3be126b52f6f
+      - 20ad26b9-f525-43aa-ade9-4cb7a4a5e11c
     status:
       code: 200
       message: OK
@@ -4700,25 +4139,28 @@ interactions:
       ParameterSetName:
       - -n -g --vhub-name
       User-Agent:
-      - AZURECLI/2.38.0 azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.40.0 (PIP) azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.10
+        (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operationResults/2d3537f2-6b9b-4e63-93b4-201ec76cdfae?api-version=2021-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operationResults/71acd95f-7681-4c5e-a64d-3e800928108e?api-version=2021-08-01
   response:
     body:
       string: ''
     headers:
+      azure-asyncnotification:
+      - Enabled
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/2d3537f2-6b9b-4e63-93b4-201ec76cdfae?api-version=2021-08-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/71acd95f-7681-4c5e-a64d-3e800928108e?api-version=2021-08-01
       cache-control:
       - no-cache
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 27 Jul 2022 14:42:02 GMT
+      - Wed, 12 Oct 2022 09:26:33 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operationResults/2d3537f2-6b9b-4e63-93b4-201ec76cdfae?api-version=2021-08-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operationResults/71acd95f-7681-4c5e-a64d-3e800928108e?api-version=2021-08-01
       pragma:
       - no-cache
       server:
@@ -4729,7 +4171,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 1906b1f5-82be-4cb5-8eb8-018e5a53f07a
+      - 38e57af9-f63f-4833-8363-5ca913fcbd07
     status:
       code: 204
       message: No Content
