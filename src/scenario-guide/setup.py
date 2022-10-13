@@ -14,7 +14,7 @@ except ImportError:
     from distutils import log as logger
     logger.warn("Wheel is not available, disabling bdist_wheel hook")
 
-VERSION = '0.1.0'
+VERSION = '0.1.1'
 
 # The full list of classifiers is available at
 # https://pypi.python.org/pypi?%3Aaction=list_classifiers
@@ -48,5 +48,5 @@ setup(
     classifiers=CLASSIFIERS,
     packages=find_packages(),
     install_requires=DEPENDENCIES,
-    package_data={'azext_scenario-guide': ['azext_metadata.json']},
+    package_data={'azext_scenario_guide': ['azext_metadata.json']},
 )
