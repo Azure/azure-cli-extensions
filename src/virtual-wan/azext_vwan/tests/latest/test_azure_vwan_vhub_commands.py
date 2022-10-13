@@ -286,8 +286,6 @@ class AzureVWanVHubScenario(ScenarioTest):
         self.cmd('network vwan create -n {vwan} -g {rg}')
         self.cmd('network vhub create -g {rg} -n {vhub} --vwan {vwan}  --address-prefix 10.0.0.0/24 -l westus')
         self.cmd('network vpn-gateway create -n {vpngateway} -g {rg} --vhub {vhub} -l westus')
-        with self.assertRaisesRegexp(CLIError, 'VPN gateway already exist'):
-            self.cmd('network vpn-gateway create -n {vpngateway} -g {rg} --vhub {vhub} -l westus')
         self.cmd('network vpn-gateway show -n {vpngateway} -g {rg}')
         self.cmd('network vpn-gateway list -g {rg}')
         self.cmd('network vpn-gateway list')
