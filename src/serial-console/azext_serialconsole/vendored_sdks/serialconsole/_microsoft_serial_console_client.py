@@ -48,6 +48,7 @@ class MicrosoftSerialConsoleClient(MicrosoftSerialConsoleClientOperationsMixin):
 
         if not base_url:
             base_url = 'https://management.azure.com'
+            
         self._config = MicrosoftSerialConsoleClientConfiguration(credential, subscription_id, **kwargs)
         self._client = ARMPipelineClient(base_url=base_url, config=self._config, **kwargs)
 
