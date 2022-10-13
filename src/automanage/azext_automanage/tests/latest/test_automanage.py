@@ -88,3 +88,36 @@ class AutomanageScenario(ScenarioTest):
                          JMESPathCheck('properties.targetId', vm_id)])
         self.cmd('az automanage configuration-profile-assignment vm delete -n default -g {rg} --vm-name {vm_name} -y')
         self.cmd('az automanage configuration-profile-assignment list -g {rg}', checks=[JMESPathCheck('length(@)', 0)])
+
+    # @record_only
+    def test_automanage_configuration_profile_assignment_arc_scenarios(self):
+        self.kwargs.update({
+            'profile_name': self.create_random_name(prefix='profile', length=24),
+            'rg': 'rgtestautomanage',
+            'arc_name': 'arc1',
+            'profile_name_2': self.create_random_name(prefix='profile', length=24),
+        })
+        arc_id = '/subscriptions/0b1f6471-1bf0-4dda-aec3-cb9272f09590/resourceGroups/rgtestautomanage/providers/' \
+                 'Microsoft.HybridCompute/machines/arc1'
+        profile_id = self.cmd('az automanage configuration-profile create -n {profile_name} -g {rg} '
+                              '--configuration {{Antimalware/Enable:true}}').get_output_in_json()["id"]
+        self.kwargs.update({'profile_id': profile_id})
+
+        self.cmd('az automanage configuration-profile-assignment arc create -n default -g {rg} '
+                 '--machine-name {arc_name} --configuration-profile {profile_id}')
+        self.cmd('az automanage configuration-profile-assignment arc show -n default -g {rg} --machine-name {arc_name}',
+                 checks=[JMESPathCheck('name', 'default'),
+                         JMESPathCheck('properties.configurationProfile', profile_id),
+                         JMESPathCheck('properties.targetId', arc_id)])
+        self.cmd('az automanage configuration-profile-assignment list -g {rg}', checks=[JMESPathCheck('length(@)', 1)])
+
+        profile_id_2 = self.cmd('az automanage configuration-profile create -n {profile_name_2} -g {rg} '
+                                '--configuration {{Antimalware/Enable:false}}').get_output_in_json()["id"]
+        self.kwargs.update({'profile_id_2': profile_id_2})
+        self.cmd('az automanage configuration-profile-assignment arc update --n default -g {rg} '
+                 '--machine-name {arc_name} --configuration-profile {profile_id_2}',
+                 checks=[JMESPathCheck('properties.configurationProfile', profile_id_2),
+                         JMESPathCheck('properties.targetId', arc_id)])
+        self.cmd('az automanage configuration-profile-assignment arc delete -n default -g {rg} --machine-name '
+                 '{arc_name} -y')
+        self.cmd('az automanage configuration-profile-assignment list -g {rg}', checks=[JMESPathCheck('length(@)', 0)])
