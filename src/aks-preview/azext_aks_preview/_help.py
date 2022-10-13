@@ -355,6 +355,9 @@ helps['aks create'] = """
         - name: --http-proxy-config
           type: string
           short-summary: Http Proxy configuration for this cluster.
+        - name: --kube-proxy-config
+          type: string
+          short-summary: kube-proxy configuration for this cluster.
         - name: --enable-pod-identity
           type: bool
           short-summary: (PREVIEW) Enable pod identity addon.
@@ -837,6 +840,24 @@ helps['aks update'] = """
         - name: --defender-config
           type: string
           short-summary: Path to JSON file containing Microsoft Defender profile configurations.
+        - name: --enable-azuremonitormetrics
+          type: bool
+          short-summary: Enable Azure Monitor Metrics Profile
+        - name: --azure-monitor-workspace-resource-id
+          type: string
+          short-summary: Resource ID of the Azure Monitor Workspace
+        - name: --ksm-metric-labels-allow-list
+          type: string
+          short-summary: Comma-separated list of additional Kubernetes label keys that will be used in the resource' labels metric. By default the metric contains only name and namespace labels. To include additional labels provide a list of resource names in their plural form and Kubernetes label keys you would like to allow for them (e.g. '=namespaces=[k8s-label-1,k8s-label-n,...],pods=[app],...)'. A single '*' can be provided per resource instead to allow any labels, but that has severe performance implications (e.g. '=pods=[*]').
+        - name: --ksm-metric-annotations-allow-list
+          type: string
+          short-summary: Comma-separated list of additional Kubernetes label keys that will be used in the resource' labels metric. By default the metric contains only name and namespace labels. To include additional labels provide a list of resource names in their plural form and Kubernetes label keys you would like to allow for them (e.g.'=namespaces=[k8s-label-1,k8s-label-n,...],pods=[app],...)'. A single '*' can be provided per resource instead to allow any labels, but that has severe performance implications (e.g. '=pods=[*]').
+        - name: --grafana-resource-id
+          type: string
+          short-summary: Resource ID of the Azure Managed Grafana Workspace
+        - name: --disable-azuremonitormetrics
+          type: bool
+          short-summary: Disable Azure Monitor Metrics Profile
         - name: --enable-node-restriction
           type: bool
           short-summary: Enable node restriction option on cluster.

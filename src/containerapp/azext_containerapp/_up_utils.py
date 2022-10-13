@@ -336,7 +336,7 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
         run_client = cf_acr_runs(self.cmd.cli_ctx)
         task_command_kwargs = {"resource_type": ResourceType.MGMT_CONTAINERREGISTRY, 'operation_group': 'webhooks'}
         old_command_kwargs = {}
-        for key in task_command_kwargs:
+        for key in task_command_kwargs:  # pylint: disable=consider-using-dict-items
             old_command_kwargs[key] = self.cmd.command_kwargs.get(key)
             self.cmd.command_kwargs[key] = task_command_kwargs[key]
 
@@ -809,7 +809,7 @@ def _create_github_action(
     try:
         action = GitHubActionClient.show(cmd=app.cmd, resource_group_name=app.resource_group.name, name=app.name)
         if action:
-            trigger_workflow(token, repo, app.name, branch)
+            trigger_workflow(token, repo, action["properties"]["githubActionConfiguration"]["workflowName"], branch)
     except:  # pylint: disable=bare-except
         pass
 

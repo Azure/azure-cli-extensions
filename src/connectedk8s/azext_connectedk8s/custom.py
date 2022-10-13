@@ -1232,6 +1232,7 @@ def upgrade_agents(cmd, client, resource_group_name, cluster_name, kube_config=N
             if key == "global.isProxyEnabled":
                 proxy_enabled_param_added = True
             if (key == "global.httpProxy" or key == "global.httpsProxy" or key == "global.noProxy"):
+                value = escape_proxy_settings(value)
                 if value and not proxy_enabled_param_added:
                     cmd_helm_upgrade.extend(["--set", "global.isProxyEnabled={}".format(True)])
                     proxy_enabled_param_added = True
