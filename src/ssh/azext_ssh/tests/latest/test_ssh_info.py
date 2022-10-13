@@ -45,9 +45,9 @@ class SSHInfoTest(unittest.TestCase):
 
     def test_ssh_session_get_host(self):
         session = ssh_info.SSHSession(None, None, "ip", None, None, False, "user", None, None, None, [], False, "Microsoft.Compute", None, None, False)
-        self.assertEqual("user@ip", session.get_host())
+        self.assertEqual("ip", session.get_host())
         session = ssh_info.SSHSession("rg", "vm", None, None, None, False, "user", None, None, None, [], False, "Microsoft.HybridCompute", None, None, True)
-        self.assertEqual("user@vm", session.get_host())
+        self.assertEqual("vm", session.get_host())
 
     @mock.patch('os.path.abspath')
     def test_ssh_session_build_args_compute(self, mock_abspath):

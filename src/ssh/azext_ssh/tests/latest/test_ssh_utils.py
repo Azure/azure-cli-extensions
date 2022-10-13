@@ -32,7 +32,7 @@ class SSHUtilsTests(unittest.TestCase):
         mock_path.return_value = 'ssh'
         mock_copy_env.return_value = {'var1':'value1', 'var2':'value2', 'var3':'value3'}
         mock_startcleanup.return_value = 'log', ['arg1', 'arg2', 'arg3', '-E', 'log', '-v'], 'cleanup process'
-        expected_command = ['ssh', 'user@ip', '-i', 'priv', '-o', 'CertificateFile=\"cert\"', '-p', 'port', 'arg1', 'arg2', 'arg3', '-E', 'log', '-v']
+        expected_command = ['ssh', 'ip', '-l', 'user', '-i', 'priv', '-o', 'CertificateFile=\"cert\"', '-p', 'port', 'arg1', 'arg2', 'arg3', '-E', 'log', '-v']
         expected_env = {'var1':'value1', 'var2':'value2', 'var3':'value3'}
 
         ssh_utils.start_ssh_connection(op_info, True, True)
@@ -63,7 +63,7 @@ class SSHUtilsTests(unittest.TestCase):
         mock_relay_str.return_value = 'relay_string'
         mock_copy_env.return_value = {'var1':'value1', 'var2':'value2', 'var3':'value3'}
         mock_path.return_value = 'ssh'
-        expected_command = ['ssh', 'user@vm', '-o', 'ProxyCommand=\"proxy\" -p port', '-i', 'priv', '-o', 'CertificateFile=\"cert\"', 'arg1']
+        expected_command = ['ssh', 'vm', '-l', 'user', '-o', 'ProxyCommand=\"proxy\" -p port', '-i', 'priv', '-o', 'CertificateFile=\"cert\"', 'arg1']
         expected_env = {'var1':'value1', 'var2':'value2', 'var3':'value3', 'SSHPROXY_RELAY_INFO':'relay_string'}
 
         ssh_utils.start_ssh_connection(op_info, False, False)
