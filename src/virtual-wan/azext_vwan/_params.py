@@ -54,6 +54,7 @@ def load_arguments(self, _):
         c.argument('vpn_gateway', help='Name or ID of a VPN gateway.', validator=get_network_resource_name_or_id('vpn_gateway', 'vpnGateways'))
 
     with self.argument_context('network vhub get-effective-routes') as c:
+        c.argument('virtual_hub_name', vhub_name_type, options_list=['--name', '-n'])
         c.argument('virtual_wan_resource_type', options_list='--resource-type', help='The type of the specified resource like RouteTable, ExpressRouteConnection, HubVirtualNetworkConnection, VpnConnection and P2SConnection.')
         c.argument('resource_id', options_list='--resource-id', help='The resource whose effective routes are being requested')
 

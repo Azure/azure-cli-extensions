@@ -544,7 +544,7 @@ def create_vpn_gateway_connection(cmd, resource_group_name, gateway_name, connec
         conn.vpn_link_connections = [link_conn]
     else:
         conn.routing_weight = routing_weight
-        cnn.connection_bandwidth = connection_bandwidth
+        conn.connection_bandwidth = connection_bandwidth
         conn.shared_key = shared_key
         conn.enable_bgp = enable_bgp
         conn.enable_rate_limiting = enable_rate_limiting
