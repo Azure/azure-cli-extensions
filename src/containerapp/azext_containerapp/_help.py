@@ -155,6 +155,23 @@ helps['containerapp up'] = """
           az containerapp up -n MyContainerapp --image myregistry.azurecr.io/myImage:myTag --ingress external --target-port 80 --environment MyEnv
 """
 
+helps['containerapp env logs'] = """
+    type: group
+    short-summary: Show container app environment logs
+"""
+
+helps['containerapp env logs show'] = """
+    type: command
+    short-summary: Show past environment logs and/or print logs in real time (with the --follow parameter)
+    examples:
+    - name: Fetch the past 20 lines of logs from an app and return
+      text: |
+          az containerapp env logs show -n MyEnvironment -g MyResourceGroup
+    - name: Fetch 30 lines of past logs logs from an environment and print logs as they come in
+      text: |
+          az containerapp env logs show -n MyEnvironment -g MyResourceGroup --follow --tail 30
+"""
+
 helps['containerapp logs'] = """
     type: group
     short-summary: Show container app logs
@@ -162,11 +179,14 @@ helps['containerapp logs'] = """
 
 helps['containerapp logs show'] = """
     type: command
-    short-summary: Show past logs and/or print logs in real time (with the --follow parameter). Note that the logs are only taken from one revision, replica, and container.
+    short-summary: Show past logs and/or print logs in real time (with the --follow parameter). Note that the logs are only taken from one revision, replica, and container (for non-system logs).
     examples:
     - name: Fetch the past 20 lines of logs from an app and return
       text: |
           az containerapp logs show -n MyContainerapp -g MyResourceGroup
+    - name: Fetch the past 20 lines of system logs from an app and return
+      text: |
+          az containerapp logs show -n MyContainerapp -g MyResourceGroup --type system
     - name: Fetch 30 lines of past logs logs from an app and print logs as they come in
       text: |
           az containerapp logs show -n MyContainerapp -g MyResourceGroup --follow --tail 30
@@ -349,6 +369,17 @@ helps['containerapp env create'] = """
               --logs-workspace-id myLogsWorkspaceID \\
               --logs-workspace-key myLogsWorkspaceKey \\
               --location eastus2
+"""
+
+helps['containerapp env update'] = """
+    type: command
+    short-summary: Update a Container Apps environment.
+    examples:
+    - name: Update an environment's custom domain configuration.
+      text: |
+          az containerapp env update -n MyContainerappEnvironment -g MyResourceGroup \\
+              --dns-suffix my-suffix.net --certificate-file MyFilePath \\
+              --certificate-password MyCertPass
 """
 
 
@@ -1067,4 +1098,25 @@ examples:
     text: |
         az containerapp auth twitter update  -g myResourceGroup --name MyContainerapp \\
           --consumer-key my-client-id --consumer-secret very_secret_password
+"""
+
+# Compose commands
+helps['containerapp compose'] = """
+    type: group
+    short-summary: Commands to create Azure Container Apps from Compose specifications.
+"""
+
+helps['containerapp compose create'] = """
+    type: command
+    short-summary: Create one or more Container Apps in a new or existing Container App Environment from a Compose specification.
+    examples:
+    - name: Create a container app by implicitly passing in a Compose configuration file from current directory.
+      text: |
+          az containerapp compose create -g MyResourceGroup \\
+              --environment MyContainerappEnv
+    - name: Create a container app by explicitly passing in a Compose configuration file.
+      text: |
+          az containerapp compose create -g MyResourceGroup \\
+              --environment MyContainerappEnv \\
+              --compose-file-path "path/to/docker-compose.yml"
 """

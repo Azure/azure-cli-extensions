@@ -17,8 +17,7 @@ except ImportError:
 # TODO: Confirm this is the right version number you want and it matches your
 # HISTORY.rst entry.
 
-VERSION = '0.3.11'
-
+VERSION = '0.3.13'
 
 # The full list of classifiers is available at
 # https://pypi.python.org/pypi?%3Aaction=list_classifiers
@@ -38,7 +37,8 @@ CLASSIFIERS = [
 
 # TODO: Add any additional SDK dependencies here
 DEPENDENCIES = [
-    'azure-cli-core'
+    'azure-cli-core',
+    'pycomposefile>=0.0.29'
 ]
 
 with open('README.rst', 'r', encoding='utf-8') as f:
