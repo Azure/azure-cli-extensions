@@ -249,13 +249,13 @@ class RemoteDebuggingTest(ScenarioTest):
 
         # remote debugging can only be supported for jar, here will throw exception for default banner
         self.cmd(
-            'spring app deployment enable-remote-debugging --app {app} -g {resourceGroup} -s {serviceName} --deployment {deployment}', expect_failure=True)
+            'spring app enable-remote-debugging -n {app} -g {resourceGroup} -s {serviceName} -d {deployment}', expect_failure=True)
 
         self.cmd(
-            'spring app deployment disable-remote-debugging --app {app} -g {resourceGroup} -s {serviceName} --deployment {deployment}')
+            'spring app disable-remote-debugging -n {app} -g {resourceGroup} -s {serviceName} -d {deployment}')
 
         self.cmd(
-            'spring app deployment get-remote-debugging --app {app} -g {resourceGroup} -s {serviceName} --deployment {deployment}',
+            'spring app get-remote-debugging-config -n {app} -g {resourceGroup} -s {serviceName} -d {deployment}',
             checks=[
                 self.check('enabled', False)
             ])

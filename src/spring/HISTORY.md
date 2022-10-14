@@ -4,7 +4,7 @@ Release History
 ---
 * Add command `az spring app deployment enable-remote-debugging`.
 * Add command `az spring app deployment disable-remote-debugging`.
-* Add command `az spring app deployment get-remote-debugging`.
+* Add command `az spring app deployment get-remote-debugging-config`.
 
 1.1.10
 ---

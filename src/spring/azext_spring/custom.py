@@ -316,21 +316,21 @@ def app_stop(cmd, client,
                        resource_group, service, name, deployment.name)
 
 
-def deployment_enable_remote_debugging(cmd, client, resource_group, service, app, remote_debugging_port=None, deployment=None, no_wait=False):
-    logger.warning("Enable remote debugging for the app '{}', deployment '{}'".format(app, deployment.name))
+def deployment_enable_remote_debugging(cmd, client, resource_group, service, name, remote_debugging_port=None, deployment=None, no_wait=False):
+    logger.warning("Enable remote debugging for the app '{}', deployment '{}'".format(name, deployment.name))
     remote_debugging_payload = models_20220901preview.RemoteDebuggingPayload(port=remote_debugging_port)
     return sdk_no_wait(no_wait, client.deployments.begin_enable_remote_debugging,
-                       resource_group, service, app, deployment.name, remote_debugging_payload)
+                       resource_group, service, name, deployment.name, remote_debugging_payload)
 
 
-def deployment_disable_remote_debugging(cmd, client, resource_group, service, app, deployment=None, no_wait=False):
-    logger.warning("Disable remote debugging for the app '{}', deployment '{}'".format(app, deployment.name))
+def deployment_disable_remote_debugging(cmd, client, resource_group, service, name, deployment=None, no_wait=False):
+    logger.warning("Disable remote debugging for the app '{}', deployment '{}'".format(name, deployment.name))
     return sdk_no_wait(no_wait, client.deployments.begin_disable_remote_debugging,
-                       resource_group, service, app, deployment.name)
+                       resource_group, service, name, deployment.name)
 
 
-def deployment_get_remote_debugging(cmd, client, resource_group, service, app, deployment=None):
-    return client.deployments.get_remote_debugging_config(resource_group, service, app, deployment.name)
+def deployment_get_remote_debugging(cmd, client, resource_group, service, name, deployment=None):
+    return client.deployments.get_remote_debugging_config(resource_group, service, name, deployment.name)
 
 
 def app_restart(cmd, client,

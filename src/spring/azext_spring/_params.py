@@ -288,6 +288,22 @@ def load_arguments(self, _):
             c.argument('deployment', options_list=[
                 '--deployment', '-d'], help='Name of an existing deployment of the app. Default to the production deployment if not specified.', validator=fulfill_deployment_param)
 
+    for scope in ['spring app disable-remote-debugging', 'spring app get-remote-debugging-config']:
+        with self.argument_context(scope) as c:
+            c.argument('deployment', options_list=[
+                '--deployment', '-d'],
+                       help='Name of an existing deployment of the app. Default to the production deployment if not specified.',
+                       validator=fulfill_deployment_param)
+
+    with self.argument_context('spring app enable-remote-debugging') as c:
+        c.argument('deployment', options_list=[
+            '--deployment', '-d'],
+                   help='Name of an existing deployment of the app. Default to the production deployment if not specified.',
+                   validator=fulfill_deployment_param)
+        c.argument('remote_debugging_port', options_list=['--port', '-p'], type=int, default=5005,
+                   help='Remote debugging port, the value should be from 1024 to 65536, default value is 5005',
+                   validator=validate_remote_debugging_port)
+
     with self.argument_context('spring app unset-deployment') as c:
         c.argument('name', name_type, help='Name of app.', validator=active_deployment_exist)
 
@@ -456,26 +472,6 @@ def load_arguments(self, _):
         c.argument('app', app_name_type, help='Name of app.',
                    validator=validate_app_name)
         c.argument('name', name_type, help='Name of deployment.')
-
-    for scope in ['spring app deployment disable-remote-debugging', 'spring app deployment get-remote-debugging']:
-        with self.argument_context(scope) as c:
-            c.argument('app', app_name_type, help='Name of app.',
-                       validator=validate_app_name)
-            c.argument('deployment', options_list=[
-                '--deployment', '-d'],
-                       help='Name of an existing deployment of the app. Default to the production deployment if not specified.',
-                       validator=fulfill_deployment_param)
-
-    with self.argument_context('spring app deployment enable-remote-debugging') as c:
-        c.argument('app', app_name_type, help='Name of app.',
-                           validator=validate_app_name)
-        c.argument('deployment', options_list=[
-            '--deployment', '-d'],
-                   help='Name of an existing deployment of the app. Default to the production deployment if not specified.',
-                   validator=fulfill_deployment_param)
-        c.argument('remote_debugging_port', options_list=['--port', '-p'], type=int, default=5005,
-                   help='Remote debugging port, the value should be from 1024 to 65536, default value is 5005',
-                   validator=validate_remote_debugging_port)
 
     for scope in ['spring app deployment generate-heap-dump', 'spring app deployment generate-thread-dump']:
         with self.argument_context(scope) as c:
