@@ -18,9 +18,9 @@ from .action import RadiusServerAddAction
 def load_arguments(self, _):
 
     (IpsecEncryption, IpsecIntegrity, IkeEncryption, IkeIntegrity, DhGroup, PfsGroup,
-     VirtualNetworkGatewayConnectionProtocol, AuthenticationMethod, HubRoutingPreference) = self.get_models(
+     VirtualNetworkGatewayConnectionProtocol, AuthenticationMethod) = self.get_models(
          'IpsecEncryption', 'IpsecIntegrity', 'IkeEncryption', 'IkeIntegrity', 'DhGroup', 'PfsGroup',
-         'VirtualNetworkGatewayConnectionProtocol', 'AuthenticationMethod', 'HubRoutingPreference')
+         'VirtualNetworkGatewayConnectionProtocol', 'AuthenticationMethod')
 
     (VpnGatewayTunnelingProtocol, VpnAuthenticationType) = self.get_models('VpnGatewayTunnelingProtocol', 'VpnAuthenticationType')
 
@@ -48,20 +48,13 @@ def load_arguments(self, _):
     # endregion
 
     # region VirtualHub
-    with self.argument_context('network vhub') as c:
-        c.argument('virtual_hub_name', vhub_name_type, options_list=['--name', '-n'])
-        c.argument('location', get_location_type(self.cli_ctx), validator=get_default_location_from_resource_group)
-        c.argument('virtual_wan', options_list='--vwan', help='Name or ID of the virtual WAN.', validator=get_network_resource_name_or_id('virtual_wan', 'virtualWans'))
-        c.argument('address_prefix', help='CIDR address prefix for the virtual hub.')
-        c.argument('sku', arg_type=get_enum_type(['Basic', 'Standard']), help='The sku of the VirtualHub.')
-        c.argument('hub_routing_preference', arg_type=get_enum_type(HubRoutingPreference), help='The hub routing preference gateway types')
-
     with self.argument_context('network vhub', arg_group='Gateway') as c:
         c.argument('express_route_gateway', help='Name or ID of an ExpressRoute gateway.', validator=get_network_resource_name_or_id('express_route_gateway', 'expressRouteGateways'))
         c.argument('p2s_vpn_gateway', help='Name or ID of a P2S VPN gateway.', validator=get_network_resource_name_or_id('p2s_vpn_gateway', 'P2sVpnGateways'))
         c.argument('vpn_gateway', help='Name or ID of a VPN gateway.', validator=get_network_resource_name_or_id('vpn_gateway', 'vpnGateways'))
 
     with self.argument_context('network vhub get-effective-routes') as c:
+        c.argument('virtual_hub_name', vhub_name_type, options_list=['--name', '-n'])
         c.argument('virtual_wan_resource_type', options_list='--resource-type', help='The type of the specified resource like RouteTable, ExpressRouteConnection, HubVirtualNetworkConnection, VpnConnection and P2SConnection.')
         c.argument('resource_id', options_list='--resource-id', help='The resource whose effective routes are being requested')
 
@@ -112,12 +105,6 @@ def load_arguments(self, _):
     # endregion
 
     # region VpnGateways
-    with self.argument_context('network vpn-gateway') as c:
-        c.argument('virtual_hub', options_list='--vhub', help='Name or ID of a virtual hub.', validator=get_network_resource_name_or_id('virtual_hub', 'virtualHubs'))
-        c.argument('scale_unit', type=int, help='The scale unit for this VPN gateway.')
-        c.argument('location', get_location_type(self.cli_ctx), validator=get_default_location_from_resource_group)
-        c.argument('gateway_name', vpn_gateway_name_type, options_list=['--name', '-n'])
-
     with self.argument_context('network vpn-gateway connection') as c:
         for dest in ['gateway_name', 'resource_name']:
             c.argument(dest, vpn_gateway_name_type)

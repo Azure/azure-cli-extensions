@@ -5,15 +5,32 @@
 
 from azure.cli.core.commands.client_factory import get_mgmt_service_client
 from azure.cli.core.profiles import ResourceType
+from . import consts
 
 
-def cf_k8s_extension(cli_ctx, *_):
+def cf_k8s_extension(cli_ctx, **kwargs):
     from .vendored_sdks import SourceControlConfigurationClient
-    return get_mgmt_service_client(cli_ctx, SourceControlConfigurationClient)
+    return get_mgmt_service_client(cli_ctx, SourceControlConfigurationClient, **kwargs)
 
 
 def cf_k8s_extension_operation(cli_ctx, _):
     return cf_k8s_extension(cli_ctx).extensions
+
+
+def cf_k8s_cluster_extension_types_operation(cli_ctx, _):
+    return cf_k8s_extension(cli_ctx).cluster_extension_types
+
+
+def cf_k8s_cluster_extension_type_operation(cli_ctx, _):
+    return cf_k8s_extension(cli_ctx, consts.EXTENSION_TYPE_API_VERSION).cluster_extension_type
+
+
+def cf_k8s_location_extension_types_operation(cli_ctx, _):
+    return cf_k8s_extension(cli_ctx, consts.EXTENSION_TYPE_API_VERSION).location_extension_types
+
+
+def cf_k8s_extension_type_versions_operation(cli_ctx, _):
+    return cf_k8s_extension(cli_ctx, consts.EXTENSION_TYPE_API_VERSION).extension_type_versions
 
 
 def cf_resource_groups(cli_ctx, subscription_id=None):

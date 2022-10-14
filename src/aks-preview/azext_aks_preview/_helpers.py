@@ -9,7 +9,7 @@ import re
 import stat
 import tempfile
 import yaml
-
+from typing import Any, List, TypeVar
 from azure.cli.command_modules.acs._helpers import map_azure_error_to_cli_error
 from azure.cli.core.azclierror import InvalidArgumentValueError, ResourceNotFoundError
 from azure.core.exceptions import AzureError
@@ -20,6 +20,9 @@ from knack.util import CLIError
 from azext_aks_preview._client_factory import get_nodepool_snapshots_client, get_mc_snapshots_client
 
 logger = get_logger(__name__)
+
+# type variables
+ManagedCluster = TypeVar("ManagedCluster")
 
 
 def which(binary):
@@ -261,3 +264,21 @@ def get_cluster_snapshot(cli_ctx, subscription_id, resource_group_name, snapshot
             raise ResourceNotFoundError("Managed cluster snapshot '{}' not found.".format(snapshot_name))
         raise map_azure_error_to_cli_error(ex)
     return snapshot
+
+
+def check_is_private_cluster(mc: ManagedCluster) -> bool:
+    """Check `mc` object to determine whether private cluster is enabled.
+    :return: bool
+    """
+    if mc and mc.api_server_access_profile:
+        return bool(mc.api_server_access_profile.enable_private_cluster)
+    return False
+
+
+def check_is_apiserver_vnet_integration_cluster(mc: ManagedCluster) -> bool:
+    """Check `mc` object to determine whether apiserver vnet integration is enabled.
+    :return: bool
+    """
+    if mc and mc.api_server_access_profile:
+        return bool(mc.api_server_access_profile.enable_vnet_integration)
+    return False

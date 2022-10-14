@@ -1,0 +1,54 @@
+interactions:
+- request:
+    body: '{"createTokenWithScopes": ["chat"]}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '35'
+      Content-Type:
+      - application/json
+      User-Agent:
+      - AzureCli/1.2.2 azsdk-python-communication-identity/1.2.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+      x-ms-content-sha256:
+      - kWpGozyV35fifbpKdY8mbdG64VG0Pdq5upzo7YKAFM0=
+      x-ms-date:
+      - Wed, 21 Sep 2022 22:42:52 GMT
+      x-ms-return-client-request-id:
+      - 'true'
+    method: POST
+    uri: https://sanitized.communication.azure.com/identities?api-version=2022-06-01
+  response:
+    body:
+      string: '{"identity": {"id": "sanitized"}, "accessToken": {"token": "sanitized",
+        "expiresOn": "2022-09-22T22:42:54.6670992+00:00"}}'
+    headers:
+      api-supported-versions:
+      - 2020-07-20-preview2, 2021-02-22-preview1, 2021-03-07, 2021-10-31-preview,
+        2021-11-01, 2022-06-01
+      content-length:
+      - '122'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 21 Sep 2022 22:42:54 GMT
+      ms-cv:
+      - hOdKiW8GG0W9mUt3AVe9tg.0
+      request-context:
+      - appId=
+      strict-transport-security:
+      - max-age=2592000
+      x-azure-ref:
+      - 0bpMrYwAAAADgUK1hUvynR4bzxx6YDmy+WVZSMzExMDAwMTE2MDE5ADlmYzdiNTE5LWE4Y2MtNGY4OS05MzVlLWM5MTQ4YWUwOWU4MQ==
+      x-cache:
+      - CONFIG_NOCACHE
+      x-processing-time:
+      - 120ms
+    status:
+      code: 201
+      message: Created
+version: 1

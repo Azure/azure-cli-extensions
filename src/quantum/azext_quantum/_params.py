@@ -6,8 +6,10 @@
 # pylint: disable=line-too-long,protected-access,no-self-use,too-many-statements
 
 import argparse
+import json
 from knack.arguments import CLIArgumentType
-from azure.cli.core.azclierror import InvalidArgumentValueError
+from azure.cli.core.azclierror import InvalidArgumentValueError, CLIError
+from azure.cli.core.util import shell_safe_json_parse
 
 
 class JobParamsAction(argparse._AppendAction):
@@ -19,22 +21,26 @@ class JobParamsAction(argparse._AppendAction):
         params = {}
         for item in values:
             try:
-                key, value = item.split('=', 1)
-                params[key] = value
-            except ValueError as e:
-                raise InvalidArgumentValueError('Usage error: {} KEY=VALUE [KEY=VALUE ...]'.format(option_string)) from e
+                json_obj = shell_safe_json_parse(item)
+                params.update(json_obj)
+            except CLIError:
+                try:
+                    key, value = item.split('=', 1)
+                    params[key] = value
+                except ValueError as e:
+                    raise InvalidArgumentValueError('Usage error: {} KEY=VALUE [KEY=VALUE ...], json string, or @file expected'.format(option_string)) from e
         return params
 
 
 def load_arguments(self, _):
-    workspace_name_type = CLIArgumentType(options_list=['--workspace-name', '-w'], help='Name of the Quantum Workspace. You can configure the default workspace using `az quantum workspace set`.', id_part=None, required=False)
+    workspace_name_type = CLIArgumentType(options_list=['--workspace-name', '-w'], help='Name of the Quantum Workspace. You can configure the default workspace using `az quantum workspace set`.', configured_default='workspace', id_part=None)
     storage_account_name_type = CLIArgumentType(options_list=['--storage-account', '-a'], help='Name of the storage account to be used by a quantum workspace.')
     program_args_type = CLIArgumentType(nargs='*', help='List of arguments expected by the Q# operation specified as --name=value after `--`.')
-    target_id_type = CLIArgumentType(options_list=['--target-id', '-t'], help='Execution engine for quantum computing jobs. When a workspace is configured with a set of provider, they each enable one or more targets. You can configure the default target using `az quantum target set`.')
+    target_id_type = CLIArgumentType(options_list=['--target-id', '-t'], help='Execution engine for quantum computing jobs. When a workspace is configured with a set of providers, they each enable one or more targets. You can configure the default target using `az quantum target set`.', configured_default='target_id')
     project_type = CLIArgumentType(help='The location of the Q# project to submit. Defaults to current folder.')
     job_name_type = CLIArgumentType(help='A friendly name to give to this run of the program.')
     job_id_type = CLIArgumentType(options_list=['--job-id', '-j'], help='Job unique identifier in GUID format.')
-    job_params_type = CLIArgumentType(options_list=['--job-params'], help='Job parameters passed to the target as a list of key=value pairs.', action=JobParamsAction, nargs='+')
+    job_params_type = CLIArgumentType(options_list=['--job-params'], help='Job parameters passed to the target as a list of key=value pairs, json string, or `@{file}` with json content.', action=JobParamsAction, nargs='+')
     target_capability_type = CLIArgumentType(options_list=['--target-capability'], help='Target-capability parameter passed to the compiler.')
     shots_type = CLIArgumentType(help='The number of times to run the Q# program on the given target.')
     no_build_type = CLIArgumentType(help='If specified, the Q# program is not built before submitting.')
@@ -59,6 +65,10 @@ def load_arguments(self, _):
     with self.argument_context('quantum target') as c:
         c.argument('workspace_name', workspace_name_type)
         c.argument('target_id', target_id_type)
+
+    with self.argument_context('quantum target show') as c:
+        c.argument('workspace_name', workspace_name_type)
+        c.argument('target_id', target_id_type, required=False)
 
     with self.argument_context('quantum job') as c:
         c.argument('workspace_name', workspace_name_type)
