@@ -24809,7 +24809,16 @@
                     "license": "MIT",
                     "metadata_version": "2.0",
                     "name": "hybridaks",
-                    "summary": "Microsoft Azure Command-Line Tools HybridAKS Extension",
+                    "run_requires": [
+                        {
+                            "requires": [
+                                "arcproxyutilities (==1.0.2)",
+                                "kubernetes (==11.0.0)",
+                                "pycryptodome (==3.12.0)"
+                            ]
+                        }
+                    ],
+                    "summary": "Microsoft Azure Command-Line Tools HybridContainerService Extension",
                     "version": "0.2.0"
                 },
                 "sha256Digest": "55cdd2814d365c6b5a5fbdac16f07a76633e567d7b52664401ad17c7f4584bae"
