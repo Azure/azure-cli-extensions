@@ -21,9 +21,9 @@ class JobParamsAction(argparse._AppendAction):
         params = {}
         for item in values:
             try:
-                    json_obj = shell_safe_json_parse(item)
-                    params.update(json_obj)
-            except CLIError as e:
+                json_obj = shell_safe_json_parse(item)
+                params.update(json_obj)
+            except CLIError:
                 try:
                     key, value = item.split('=', 1)
                     params[key] = value
