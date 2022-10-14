@@ -358,7 +358,7 @@ def _check_linux_hyperV_gen(source_vm):
                         .format(i=disk_id)
     hyperVGen = loads(_call_az_command(show_disk_command))
     if hyperVGen != 'V2':
-        logger.info('Trying to check on the source VM if it has the parameter of gen2')
+        logger.info('Checking if source VM is gen2')
         # if image is created from Marketplace gen2 image , the disk will not have the mark for gen2
         fetch_hypervgen_command = 'az vm get-instance-view --ids {id} --query "[instanceView.hyperVGeneration]" -o json'.format(id=source_vm.id)
         hyperVGen_list = loads(_call_az_command(fetch_hypervgen_command))
