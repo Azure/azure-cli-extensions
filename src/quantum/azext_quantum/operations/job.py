@@ -183,37 +183,48 @@ def submit(cmd, program_args, resource_group_name, workspace_name, location, tar
     """
     Submit a quantum program to run on Azure Quantum.
     """
+    # Submit QIR 
+    if job_input_format == "qir.v1":
+        return _submit_qir(cmd, program_args, resource_group_name, workspace_name, location, target_id,
+                           job_name, shots, storage, job_params, target_capability,
+                           # >>>>> TODO: Finalize these names <<<<<
+                           # Peter's proposed param names:
+                           job_input_source, job_input_format, job_output_format,
+                           # Guen's proposed param names:
+                           qir_payload, qir_endpoint, qir_param)
 
-    # # >>>>> Dummy code to show the job_input_source value <<<<<
-    # if job_input_source is not None:
-    #     raise AzureInternalError(">>>>> Got a path for the QIR job: " + job_input_source + " <<<<<")
-    # # <<<<<
+    # Submit a Q# project. (Do it the old way, for now.)
+    return _submit_qsharp(cmd, program_args, resource_group_name, workspace_name, location, target_id,
+                   project, job_name, shots, storage, no_build, job_params, target_capability)
 
 
-# # >>>>> Look at job_input_format value <<<<<
-#     if job_input_format is "qir.v1":
-#         return _submit_qir(???)
+def _submit_qir(cmd, program_args, resource_group_name, workspace_name, location, target_id,
+                job_name, shots, storage, job_params, target_capability,
+                # >>>>> TODO: Finalize these names <<<<<
+                # Peter's proposed param names:
+                job_input_source, job_input_format, job_output_format,
+                # Guen's proposed param names:
+                qir_payload, qir_endpoint, qir_param):
 
-#     # Submit a Q# project. [Keep using old code for Q# for now]
-#     return _submit_qsharp(cmd, program_args, resource_group_name, workspace_name, location, target_id,
-#                    project, job_name, shots, storage, no_build, job_params, target_capability)
+    """
+    Submit a QIR program to run on Azure Quantum.
+    """
+    if job_input_source is None:
+        raise AzureInternalError("Failed to submit QIR job: No --job-input-source path was specified.")
 
+    # >>>>> For debug: Show the job_input_source value <<<<<
+    #raise AzureInternalError(">>>>> Got a path for the QIR job: " + job_input_source + " <<<<<")
+    # <<<<<
 
-# def _submit_qir(???):
-#     .
-#     .
-#     .
+    # >>>>> Submit the QIR job here <<<<<
+   
+    # if result.returncode == 0:
+    #     return # What data do we return?
 
-#     if result.returncode == 0:
-#         .
-#         .
-#         .
-#         return ???
-
-#     # The QIR job failed to run.
-#     logger.error("Submission of job failed with error code %s", result.returncode)
-#     print(result.stdout.decode('ascii'))
-#     raise AzureInternalError("Failed to submit job.")
+    # The QIR job failed to run.
+    # logger.error("Submission of job failed with error code %s", result.returncode)
+    # print(result.stdout.decode('ascii'))
+    raise AzureInternalError("Failed to submit QIR job.")
 
 
 def _submit_qsharp(cmd, program_args, resource_group_name, workspace_name, location, target_id,
