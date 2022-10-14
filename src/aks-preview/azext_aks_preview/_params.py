@@ -123,6 +123,10 @@ from azext_aks_preview._validators import (
     validate_enable_custom_ca_trust,
     validate_defender_config_parameter,
     validate_defender_disable_and_enable_parameters,
+    validate_azuremonitorworkspaceresourceid,
+    validate_grafanaresourceid,
+    validate_ksm_labels,
+    validate_ksm_annotations
 )
 
 # candidates for enumeration
@@ -220,6 +224,7 @@ def load_arguments(self, _):
         c.argument('network_plugin', arg_type=get_enum_type(network_plugins))
         c.argument('network_plugin_mode', arg_type=get_enum_type(network_plugin_modes))
         c.argument('network_policy')
+        c.argument('kube_proxy_config')
         c.argument('auto_upgrade_channel', arg_type=get_enum_type(auto_upgrade_channels))
         c.argument('cluster_autoscaler_profile', nargs='+', options_list=["--cluster-autoscaler-profile", "--ca-profile"],
                    help="Space-separated list of key=value pairs for configuring cluster autoscaler. Pass an empty string to clear the profile.")
@@ -431,11 +436,19 @@ def load_arguments(self, _):
         c.argument('enable_private_cluster', action='store_true', is_preview=True, help='enable private cluster for apiserver vnet integration')
         c.argument('disable_private_cluster', action='store_true', is_preview=True, help='disable private cluster for apiserver vnet integration')
         c.argument('private_dns_zone', is_preview=True)
+        c.argument('enable_azuremonitormetrics', action='store_true', is_preview=True)
+        c.argument('azure_monitor_workspace_resource_id', validator=validate_azuremonitorworkspaceresourceid, is_preview=True)
+        c.argument('ksm_metric_labels_allow_list', validator=validate_ksm_labels, is_preview=True)
+        c.argument('ksm_metric_annotations_allow_list', validator=validate_ksm_annotations, is_preview=True)
+        c.argument('grafana_resource_id', validator=validate_grafanaresourceid, is_preview=True)
+        c.argument('disable_azuremonitormetrics', action='store_true', is_preview=True)
         c.argument('enable_vpa', action='store_true', is_preview=True, help="enable vertical pod autoscaler for cluster")
         c.argument('disable_vpa', action='store_true', is_preview=True, help="disable vertical pod autoscaler for cluster")
+        c.argument('cluster_snapshot_id', validator=validate_cluster_snapshot_id, is_preview=True)
 
     with self.argument_context('aks upgrade') as c:
         c.argument('kubernetes_version', completer=get_k8s_upgrades_completion_list)
+        c.argument('cluster_snapshot_id', validator=validate_cluster_snapshot_id, is_preview=True)
         c.argument('yes', options_list=['--yes', '-y'], help='Do not prompt for confirmation.', action='store_true')
 
     with self.argument_context('aks scale') as c:

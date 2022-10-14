@@ -19,6 +19,9 @@ from azure.cli.command_modules.acs._helpers import (
 from azure.cli.command_modules.acs._validators import (
     extract_comma_separated_string,
 )
+from azext_aks_preview.azuremonitorprofile import (
+    ensure_azure_monitor_profile_prerequisites
+)
 from azure.cli.command_modules.acs.managed_cluster_decorator import (
     AKSManagedClusterContext,
     AKSManagedClusterCreateDecorator,
@@ -71,6 +74,7 @@ logger = get_logger(__name__)
 
 # type variables
 ContainerServiceClient = TypeVar("ContainerServiceClient")
+ContainerServiceNetworkProfileKubeProxyConfig = TypeVar("ContainerServiceNetworkProfileKubeProxyConfig")
 ManagedCluster = TypeVar("ManagedCluster")
 ManagedClusterAddonProfile = TypeVar("ManagedClusterAddonProfile")
 ManagedClusterHTTPProxyConfig = TypeVar("ManagedClusterHTTPProxyConfig")
@@ -369,6 +373,39 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         # this parameter does not need dynamic completion
         # this parameter does not need validation
         return load_balancer_backend_pool_type
+
+    def get_kube_proxy_config(self) -> Union[Dict, ContainerServiceNetworkProfileKubeProxyConfig, None]:
+        """Obtain the value of kube_proxy_config.
+
+        :return: dictionary, ContainerServiceNetworkProfileKubeProxyConfig or None
+        """
+        # read the original value passed by the command
+        kube_proxy_config = None
+        kube_proxy_config_file_path = self.raw_param.get("kube_proxy_config")
+        # validate user input
+        if kube_proxy_config_file_path:
+            if not os.path.isfile(kube_proxy_config_file_path):
+                raise InvalidArgumentValueError(
+                    "{} is not valid file, or not accessible.".format(
+                        kube_proxy_config_file_path
+                    )
+                )
+            kube_proxy_config = get_file_json(kube_proxy_config_file_path)
+            if not isinstance(kube_proxy_config, dict):
+                raise InvalidArgumentValueError(
+                    "Error reading kube-proxy config from {}. "
+                    "Please see https://aka.ms/KubeProxyConfig for correct format.".format(
+                        kube_proxy_config_file_path
+                    )
+                )
+
+        # try to read the property value corresponding to the parameter from the `mc` object
+        if self.mc and self.mc.network_profile and self.mc.network_profile.kube_proxy_config is not None:
+            kube_proxy_config = self.mc.network_profile.kube_proxy_config
+
+        # this parameter does not need dynamic completion
+        # this parameter does not need validation
+        return kube_proxy_config
 
     def _get_enable_pod_security_policy(self, enable_validation: bool = False) -> bool:
         """Internal function to obtain the value of enable_pod_security_policy.
@@ -1861,7 +1898,6 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
 
     def _get_enable_node_restriction(self, enable_validation: bool = False) -> bool:
         """Internal function to obtain the value of enable_node_restriction.
-
         This function supports the option of enable_node_restriction. When enabled, if both enable_node_restriction and disable_node_restriction are
         specified, raise a MutuallyExclusiveArgumentError.
 
@@ -1878,6 +1914,64 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
                 )
 
         return enable_node_restriction
+
+    def _get_enable_azure_monitor_metrics(self, enable_validation: bool = False) -> bool:
+        """Internal function to obtain the value of enable_azure_monitor_metrics.
+        This function supports the option of enable_validation. When enabled, if both enable_azure_monitor_metrics and disable_azure_monitor_metrics are
+        specified, raise a MutuallyExclusiveArgumentError.
+
+        :return: bool
+        """
+        # print("_get_enable_azure_monitor_metrics being called...")
+        # Read the original value passed by the command.
+        enable_azure_monitor_metrics = self.raw_param.get("enable_azuremonitormetrics")
+        # In create mode, try to read the property value corresponding to the parameter from the `mc` object.
+        if self.decorator_mode == DecoratorMode.CREATE:
+            if (
+                self.mc and
+                self.mc.azure_monitor_profile and
+                self.mc.azure_monitor_profile.metrics
+            ):
+                enable_azure_monitor_metrics = self.mc.azure_monitor_profile.metrics.enabled
+        # This parameter does not need dynamic completion.
+        if enable_validation:
+            if enable_azure_monitor_metrics and self._get_disable_azure_monitor_metrics(False):
+                raise MutuallyExclusiveArgumentError(
+                    "Cannot specify --enable-azuremonitormetrics and --enable-azuremonitormetrics at the same time."
+                )
+            if not check_is_msi_cluster(self.mc):
+                    raise RequiredArgumentMissingError(
+                        "--enable-azuremonitormetrics can only be specified for clusters with managed identity enabled"
+                    )
+        return enable_azure_monitor_metrics
+
+    def get_enable_azure_monitor_metrics(self) -> bool:
+        """Obtain the value of enable_azure_monitor_metrics.
+        This function will verify the parameter by default. If both enable_azure_monitor_metrics and disable_azure_monitor_metrics are specified, raise a
+        MutuallyExclusiveArgumentError.
+        :return: bool
+        """
+        return self._get_enable_azure_monitor_metrics(enable_validation=True)
+
+    def _get_disable_azure_monitor_metrics(self, enable_validation: bool = False) -> bool:
+        """Internal function to obtain the value of disable_azure_monitor_metrics.
+        This function supports the option of enable_validation. When enabled, if both enable_azure_monitor_metrics and disable_azure_monitor_metrics are
+        specified, raise a MutuallyExclusiveArgumentError.
+        :return: bool
+        """
+        # Read the original value passed by the command.
+        disable_azure_monitor_metrics = self.raw_param.get("disable_azuremonitormetrics")
+        if disable_azure_monitor_metrics and self._get_enable_azure_monitor_metrics(False):
+            raise MutuallyExclusiveArgumentError("Cannot specify --enable-azuremonitormetrics and --disable-azuremonitormetrics at the same time.")
+        return disable_azure_monitor_metrics
+
+    def get_disable_azure_monitor_metrics(self) -> bool:
+        """Obtain the value of disable_azure_monitor_metrics.
+        This function will verify the parameter by default. If both enable_azure_monitor_metrics and disable_azure_monitor_metrics are specified, raise a
+        MutuallyExclusiveArgumentError.
+        :return: bool
+        """
+        return self._get_disable_azure_monitor_metrics(enable_validation=True)
 
     def get_enable_node_restriction(self) -> bool:
         """Obtain the value of enable_node_restriction.
@@ -2321,7 +2415,7 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
 
         if self.context.get_enable_node_restriction():
             if mc.security_profile is None:
-                    mc.security_profile = self.models.ManagedClusterSecurityProfile()
+                mc.security_profile = self.models.ManagedClusterSecurityProfile()
             mc.security_profile.node_restriction = self.models.ManagedClusterSecurityProfileNodeRestriction(
                 enabled=True,
             )
@@ -2342,6 +2436,21 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
                 mc.workload_auto_scaler_profile.vertical_pod_autoscaler = self.models.ManagedClusterWorkloadAutoScalerProfileVerticalPodAutoscaler(enabled=True)
             else:
                 mc.workload_auto_scaler_profile.vertical_pod_autoscaler.enabled = True
+        return mc
+
+    def set_up_kube_proxy_config(self, mc: ManagedCluster) -> ManagedCluster:
+        """Set up kube-proxy config for the ManagedCluster object.
+
+        :return: the ManagedCluster object
+        """
+        self._ensure_mc(mc)
+
+        if not mc.network_profile:
+            raise UnknownError(
+                "Unexpectedly get an empty network profile in the process of updating kube-proxy config."
+            )
+
+        mc.network_profile.kube_proxy_config = self.context.get_kube_proxy_config()
         return mc
 
     def construct_mc_profile_preview(self, bypass_restore_defaults: bool = False) -> ManagedCluster:
@@ -2386,6 +2495,8 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         mc = self.set_up_workload_auto_scaler_profile(mc)
         # set up vpa
         mc = self.set_up_vpa(mc)
+        # set up kube-proxy config
+        mc = self.set_up_kube_proxy_config(mc)
 
         # DO NOT MOVE: keep this at the bottom, restore defaults
         mc = self._restore_defaults_in_mc(mc)
@@ -2756,6 +2867,47 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
 
         return mc
 
+    def update_azure_monitor_profile(self, mc: ManagedCluster) -> ManagedCluster:
+        """Update azure monitor profile for the ManagedCluster object.
+        :return: the ManagedCluster object
+        """
+        self._ensure_mc(mc)
+
+        # read the original value passed by the command
+        ksm_metric_labels_allow_list = self.context.raw_param.get("ksm_metric_labels_allow_list")
+        ksm_metric_annotations_allow_list = self.context.raw_param.get("ksm_metric_annotations_allow_list")
+
+        if ksm_metric_labels_allow_list is None:
+            ksm_metric_labels_allow_list = ""
+        if ksm_metric_annotations_allow_list is None:
+            ksm_metric_annotations_allow_list = ""
+
+        if self.context.get_enable_azure_monitor_metrics():
+            if mc.azure_monitor_profile is None:
+                mc.azure_monitor_profile = self.models.ManagedClusterAzureMonitorProfile()
+            mc.azure_monitor_profile.metrics = self.models.ManagedClusterAzureMonitorProfileMetrics(enabled=True)
+            mc.azure_monitor_profile.metrics.kube_state_metrics = self.models.ManagedClusterAzureMonitorProfileKubeStateMetrics(
+                metric_labels_allowlist=str(ksm_metric_labels_allow_list),
+                metric_annotations_allow_list=str(ksm_metric_annotations_allow_list))
+
+        if self.context.get_disable_azure_monitor_metrics():
+            if mc.azure_monitor_profile is None:
+                mc.azure_monitor_profile = self.models.ManagedClusterAzureMonitorProfile()
+            mc.azure_monitor_profile.metrics = self.models.ManagedClusterAzureMonitorProfileMetrics(enabled=False)
+
+        if (self.context.raw_param.get("enable_azuremonitormetrics") or self.context.raw_param.get("disable_azuremonitormetrics")):
+            ensure_azure_monitor_profile_prerequisites(
+                self.cmd,
+                self.client,
+                self.context.get_subscription_id(),
+                self.context.get_resource_group_name(),
+                self.context.get_name(),
+                self.context.get_location(),
+                self.__raw_parameters,
+                self.context.get_disable_azure_monitor_metrics())
+
+        return mc
+
     def update_node_restriction(self, mc: ManagedCluster) -> ManagedCluster:
         """Update security profile nodeRestriction for the ManagedCluster object.
 
@@ -2810,6 +2962,23 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
 
         return mc
 
+    def update_creation_data(self, mc: ManagedCluster) -> ManagedCluster:
+        self._ensure_mc(mc)
+        snapshot_id = self.context.get_cluster_snapshot_id()
+        # snapshot creation data
+        creation_data = None
+        if snapshot_id:
+            snapshot = self.context.get_cluster_snapshot()
+            if mc.kubernetes_version != snapshot.managed_cluster_properties_read_only.kubernetes_version:
+                raise UnknownError(
+                    "Please use az aks upgrade --cluster-snapshot-id to upgrade cluster version"
+                )
+            creation_data = self.models.CreationData(
+                source_resource_id=snapshot_id
+            )
+            mc.creation_data = creation_data
+        return mc
+
     def update_mc_profile_preview(self) -> ManagedCluster:
         """The overall controller used to update the preview ManagedCluster profile.
 
@@ -2846,7 +3015,11 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         mc = self.update_storage_profile(mc)
         # update workload auto scaler profile
         mc = self.update_workload_auto_scaler_profile(mc)
+        # update azure monitor metrics profile
+        mc = self.update_azure_monitor_profile(mc)
         # update vpa
         mc = self.update_vpa(mc)
+        # update creation data
+        mc = self.update_creation_data(mc)
 
         return mc

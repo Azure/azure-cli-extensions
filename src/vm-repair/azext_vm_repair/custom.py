@@ -541,6 +541,7 @@ def reset_nic(cmd, vm_name, resource_group_name, yes=False):
     try:
         # 0) Check if VM is deallocated or off. If it is, ask to run start the VM.
         VM_OFF_MESSAGE = 'VM is not running. The VM must be in running to reset its NIC.\n'
+
         vm_instance_view = get_vm(cmd, resource_group_name, vm_name, 'instanceView')
         VM_started = _check_n_start_vm(vm_name, resource_group_name, not yes, VM_OFF_MESSAGE, vm_instance_view)
         if not VM_started:
