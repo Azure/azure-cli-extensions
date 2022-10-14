@@ -37,6 +37,10 @@ def builder_show(cmd, client, resource_group, service, name):
     return client.build_service_builder.get(resource_group, service, DEFAULT_BUILD_SERVICE_NAME, name)
 
 
+def builder_show_deployments(cmd, client, resource_group, service, name):
+    return client.build_service_builder.list_deployments(resource_group, service, DEFAULT_BUILD_SERVICE_NAME, name)
+
+
 def builder_delete(cmd, client, resource_group, service, name, no_wait=False):
     return sdk_no_wait(no_wait, client.build_service_builder.begin_delete, resource_group, service, DEFAULT_BUILD_SERVICE_NAME, name)
 

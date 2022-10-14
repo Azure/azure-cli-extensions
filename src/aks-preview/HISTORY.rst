@@ -12,6 +12,74 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+0.5.106
++++++++
+
+* Add support for AzureMonitorMetrics Addon (managed prometheus metrics in public preview) for AKS
+
+0.5.105
++++++++
+
+* Add support to create cluster with kube-proxy configuration via `az aks create --kube-proxy-config file.json`
+
+0.5.104
++++++++
+
+* Add support to upgrade or update cluster with managed cluster snapshot. Command is
+    * `az aks upgrade --cluster-snapshot-id <snapshot-id>`
+    * `az aks update --cluster-snapshot-id <snapshot-id>`
+
+0.5.103
++++++++
+
+* Add load-balancer-backend-pool-type to create and update api.
+
+0.5.102
++++++++
+
+* Add --enable-vpa/--disable-vpa to enable/disable vertical pod autoscaler feature.
+
+0.5.101
++++++++
+
+* Fix `az aks draft` command crashed on windows during binary check, see issue `\#5336 <https://github.com/Azure/azure-cli-extensions/issues/5336>`_.
+* Update to use 2022-08-02-preview api version.
+
+0.5.100
++++++++
+
+* Remove unused import to avoid failure in Python3.6, see issue `\#5303 <https://github.com/Azure/azure-cli-extensions/issues/5303>`_.
+
+0.5.99
+++++++
+
+* Fix DRAFT CLI to 0.0.22.
+* Fix the URL for Download.
+
+0.5.98
+++++++
+
+* Fix auto download issue for Draft CLI.
+* Remove host and certificates as draft tools update command no longer uses it.
+
+0.5.97
+++++++
+
+* Add support for apiserver vnet integration public cluster.
+
+0.5.96
+++++++
+
+* Add support for enabling ImageCleaner with `--enable-image-cleaner` flag.
+* Add sub-command `operation-abort` for `az aks` and `az aks nodepool` to support canceling the previous operation.
+
+0.5.95
+++++++
+
+* Add `--enable-node-restriction`/`--disable-node-restriction` to enable/disable node restriction feature
+* Update the minimum required cli core version to `2.38.0` (actually since `0.5.92`).
+* Add new value `Mariner` for option `--os-sku` in `az aks create` and `az aks nodepool add`.
+
 0.5.94
 ++++++
 

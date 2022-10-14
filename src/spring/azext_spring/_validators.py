@@ -218,6 +218,18 @@ def validate_ingress_timeout(namespace):
         raise InvalidArgumentValueError("Invalid value: Ingress read timeout must be in the range [1,1800].")
 
 
+def validate_ingress_send_timeout(namespace):
+    if namespace.ingress_send_timeout is not None and (namespace.ingress_read_timeout < 1 or
+                                                       namespace.ingress_read_timeout > 1800):
+        raise InvalidArgumentValueError("Invalid value: Ingress send timeout must be in the range [1,1800].")
+
+
+def validate_ingress_session_max_age(namespace):
+    if namespace.session_max_age is not None \
+            and (namespace.ingress_read_timeout < 0 or namespace.ingress_read_timeout > 7 * 24 * 3600):
+        raise InvalidArgumentValueError("Invalid value: Ingress session max-age must between 0 seconds and 7 days.")
+
+
 def validate_tracing_parameters_asc_create(namespace):
     if (namespace.app_insights or namespace.app_insights_key or namespace.sampling_rate is not None) \
             and namespace.disable_app_insights:

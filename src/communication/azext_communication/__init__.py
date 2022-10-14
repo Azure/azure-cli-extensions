@@ -66,7 +66,7 @@ class CommunicationCommandGroup(AzCommandGroup):
         if not command:
             return
 
-        group_name = 'communication'
+        group_name = 'Communication'
         if 'connection_string' in arguments:
             command.add_argument('connection_string', '--connection-string', required=False, default=None,
                                  validator=validate_client_parameters, arg_group=group_name,

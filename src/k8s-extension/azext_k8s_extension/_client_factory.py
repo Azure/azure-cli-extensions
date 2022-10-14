@@ -18,7 +18,7 @@ def cf_k8s_extension_operation(cli_ctx, _):
 
 
 def cf_k8s_cluster_extension_types_operation(cli_ctx, _):
-    return cf_k8s_extension(cli_ctx, consts.EXTENSION_TYPE_API_VERSION).cluster_extension_types
+    return cf_k8s_extension(cli_ctx).cluster_extension_types
 
 
 def cf_k8s_cluster_extension_type_operation(cli_ctx, _):
