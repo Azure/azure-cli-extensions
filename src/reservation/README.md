@@ -36,8 +36,7 @@ az reservations reservation list-history \
 ##### Merge two reservations.
 ```
 az reservations reservation merge \
-    --reservation-id-1 {reservationId1} \
-    --reservation-id-2 {reservationId2} \
+    --sources [{fullyQualifiedReservationId1},{fullyQualifiedReservationId2}] \
     --reservation-order-id {orderId}
 ```
 
@@ -114,4 +113,44 @@ az reservations reservation-order show --reservation-order-id {orderId}
 ##### Get applicable reservations that are applied to this subscription.
 ```
 az reservations reservation-order-id list --subscription-id {subId}
+```
+
+##### Calculates price for exchanging Reservations if there are no policy errors.
+```
+az reservations calculate-exchange --ris-to-exchange "[{reservation-id:/providers/microsoft.capacity/reservationOrders/40000000-aaaa-bbbb-cccc-200000000012/reservations/51000000-aaaa-bbbb-cccc-200000000012,quantity:1},{reservation-id:/providers/microsoft.capacity/reservationOrders/90000000-aaaa-bbbb-cccc-200000000012/reservations/36000000-aaaa-bbbb-cccc-200000000012,quantity:1}]" --ris-to-purchase "[{reserved-resource-type:VirtualMachines,applied-scope-type:Shared,billing-scope:12350000-aaaa-bbbb-cccc-200000000012,display-name:exchangeTest1,quantity:1,sku:Standard_B1s,term:P1Y,billing-plan:Monthly,location:eastus},{reserved-resource-type:VirtualMachines,applied-scope-type:Shared,billing-scope:12350000-aaaa-bbbb-cccc-200000000012,display-name:exchangeTest2,quantity:1,sku:Standard_B1s,term:P1Y,billing-plan:Monthly,location:eastus}]"
+```
+
+##### Returns one or more Reservations in exchange for one or more Reservation purchases.
+```
+az reservations exchange --session-id 40000000-aaaa-bbbb-cccc-200000000012
+```
+
+##### Archiving a reservation.
+```
+az reservations reservation archive --reservation-order-id 40000000-aaaa-bbbb-cccc-20000000000 --reservation-id 50000000-aaaa-bbbb-cccc-200000000000
+```
+
+##### Unarchiving a reservation.
+```
+az reservations reservation unarchive --reservation-order-id 40000000-aaaa-bbbb-cccc-20000000000 --reservation-id 50000000-aaaa-bbbb-cccc-200000000000
+```
+
+##### List reservation available scopes.
+```
+az reservations reservation list-available-scope --reservation-order-id 40000000-aaaa-bbbb-cccc-20000000000 --reservation-id 30000000-aaaa-bbbb-cccc-20000000000 --scopes ['/subscriptions/60000000-aaaa-bbbb-cccc-20000000000']
+```
+
+##### Change a reservation order to another tenant.
+```
+az reservations reservation-order change-directory --reservation-order-id 50000000-aaaa-bbbb-cccc-200000000000 --destination-tenant-id 10000000-aaaa-bbbb-cccc-200000000011
+```
+
+##### Calculates price for Reservations refund if there are no policy errors.
+```
+az reservations reservation-order calculate-refund --reservation-order-id 0000000-aaaa-bbbb-cccc-20000000001 --id /providers/microsoft.capacity/reservationOrders/0000000-aaaa-bbbb-cccc-20000000001 --scope Reservation --quantity 1 --reservation-id /providers/microsoft.capacity/reservationOrders/0000000-aaaa-bbbb-cccc-20000000001/reservations/50000000-aaaa-bbbb-cccc-200000000000
+```
+
+##### Return a reservation.
+```
+az reservations reservation-order return --reservation-order-id 50000000-aaaa-bbbb-cccc-200000000000 --return-reason mockReason --scope Reservation --quantity 1 --reservation-id /providers/microsoft.capacity/reservationOrders/50000000-aaaa-bbbb-cccc-200000000000/reservations/30000000-aaaa-bbbb-cccc-200000000011 --session-id 40000000-aaaa-bbbb-cccc-200000000012
 ```

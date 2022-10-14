@@ -223,6 +223,47 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         with self.assertRaises(InvalidArgumentValueError):
             ctx_3.get_http_proxy_config()
 
+    def test_get_kube_proxy_config(self):
+        # default
+        ctx_1 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({"kube_proxy_config": None}),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertEqual(ctx_1.get_kube_proxy_config(), None)
+        mc = self.models.ManagedCluster(
+            location="test_location",
+            network_profile=self.models.ContainerServiceNetworkProfile(kube_proxy_config=self.models.ContainerServiceNetworkProfileKubeProxyConfig(kube_proxy="test_kube_proxy")),
+        )
+        ctx_1.attach_mc(mc)
+        self.assertEqual(
+            ctx_1.get_kube_proxy_config(),
+            self.models.ContainerServiceNetworkProfileKubeProxyConfig(kube_proxy="test_kube_proxy"),
+        )
+
+        # custom value
+        ctx_2 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({"kube_proxy_config": "fake-path"}),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        # fail on invalid file path
+        with self.assertRaises(InvalidArgumentValueError):
+            ctx_2.get_kube_proxy_config()
+
+        # custom value
+        ctx_3 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({"kube_proxy_config": get_test_data_file_path("invalidconfig.json")}),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        # fail on invalid file path
+        with self.assertRaises(InvalidArgumentValueError):
+            ctx_3.get_kube_proxy_config()
+
     def test_get_pod_cidrs(self):
         # default
         ctx_1 = AKSPreviewManagedClusterContext(

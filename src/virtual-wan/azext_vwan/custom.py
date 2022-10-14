@@ -136,21 +136,6 @@ def list_virtual_wans(cmd, resource_group_name=None):
 
 
 # region VirtualHubs
-def create_virtual_hub(cmd, client, resource_group_name, virtual_hub_name, address_prefix, virtual_wan,
-                       location=None, tags=None, no_wait=False, sku=None, hub_routing_preference=None):
-    (VirtualHub, SubResource) = cmd.get_models('VirtualHub', 'SubResource')
-    hub = VirtualHub(
-        tags=tags,
-        location=location,
-        address_prefix=address_prefix,
-        virtual_wan=SubResource(id=virtual_wan),
-        sku=sku,
-        hub_routing_preference=hub_routing_preference
-    )
-    return sdk_no_wait(no_wait, client.begin_create_or_update,
-                       resource_group_name, virtual_hub_name, hub)
-
-
 def get_effective_virtual_hub_routes(cmd, resource_group_name, virtual_hub_name,
                                      virtual_wan_resource_type=None, resource_id=None, no_wait=False):
     parameters = None
@@ -176,21 +161,6 @@ def get_effective_virtual_hub_routes(cmd, resource_group_name, virtual_hub_name,
         parameters,
         cls=raw
     )
-
-
-def update_virtual_hub(cmd, instance, address_prefix=None, virtual_wan=None, tags=None, sku=None, hub_routing_preference=None):
-    SubResource = cmd.get_models('SubResource')
-    with UpdateContext(instance) as c:
-        c.update_param('tags', tags, True)
-        c.update_param('address_prefix', address_prefix, False)
-        c.update_param('virtual_wan', SubResource(id=virtual_wan) if virtual_wan else None, False)
-        c.update_param('sku', sku, False)
-        c.update_param('hub_routing_preference', hub_routing_preference, False)
-    return instance
-
-
-def list_virtual_hubs(cmd, resource_group_name=None):
-    return _generic_list(cmd.cli_ctx, 'virtual_hubs', resource_group_name)
 
 
 def update_hub_vnet_connection(instance, cmd, associated_route_table=None, propagated_route_tables=None, labels=None):
@@ -513,51 +483,6 @@ def _v3_route_table_client(cli_ctx):
 
 
 # region VpnGateways
-def create_vpn_gateway(cmd, resource_group_name, gateway_name, virtual_hub,
-                       location=None, tags=None, scale_unit=None,
-                       asn=None, bgp_peering_address=None, peer_weight=None, no_wait=False):
-    from msrestazure.azure_exceptions import CloudError
-    from azure.core.exceptions import AzureError as ErrorException
-    client = network_client_factory(cmd.cli_ctx).vpn_gateways
-    try:
-        client.get(resource_group_name, gateway_name)
-    except (CloudError, ErrorException):
-        pass
-    else:
-        raise CLIError('{} VPN gateway already exist. Please delete it first.'.format(gateway_name))
-    VpnGateway, SubResource = cmd.get_models('VpnGateway', 'SubResource')
-    gateway = VpnGateway(
-        location=location,
-        tags=tags,
-        virtual_hub=SubResource(id=virtual_hub) if virtual_hub else None,
-        vpn_gateway_scale_unit=scale_unit,
-        bgp_settings={
-            'asn': asn,
-            'bgpPeeringAddress': bgp_peering_address,
-            'peerWeight': peer_weight
-        }
-    )
-    return sdk_no_wait(no_wait, client.begin_create_or_update,
-                       resource_group_name, gateway_name, gateway)
-
-
-def update_vpn_gateway(instance, cmd, virtual_hub=None, tags=None, scale_unit=None,
-                       asn=None, bgp_peering_address=None, peer_weight=None):
-    SubResource = cmd.get_models('SubResource')
-    with UpdateContext(instance) as c:
-        c.update_param('virtual_hub', SubResource(id=virtual_hub) if virtual_hub else None, True)
-        c.update_param('tags', tags, True)
-        c.update_param('vpn_gateway_scale_unit', scale_unit, False)
-
-    bgp_settings = instance.bgp_settings
-    with UpdateContext(bgp_settings) as c:
-        c.update_param('asn', asn, False)
-        c.update_param('bgp_peering_address', bgp_peering_address, False)
-        c.update_param('peer_weight', peer_weight, False)
-
-    return instance
-
-
 def update_vpn_gateway_connection(instance, cmd, associated_route_table=None, propagated_route_tables=None,
                                   labels=None):
     SubResource = cmd.get_models('SubResource')
@@ -625,10 +550,6 @@ def create_vpn_gateway_connection(cmd, resource_group_name, gateway_name, connec
         conn.enable_rate_limiting = enable_rate_limiting
 
     return sdk_no_wait(no_wait, client.begin_create_or_update, resource_group_name, gateway_name, connection_name, conn)
-
-
-def list_vpn_gateways(cmd, resource_group_name=None):
-    return _generic_list(cmd.cli_ctx, 'vpn_gateways', resource_group_name)
 
 
 # pylint: disable=inconsistent-return-statements

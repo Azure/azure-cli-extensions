@@ -111,11 +111,6 @@ def load_command_table(self, _):
 
     # region VirtualHubs
     with self.command_group('network vhub', network_vhub_sdk, client_factory=cf_virtual_hubs) as g:
-        g.custom_command('create', 'create_virtual_hub', supports_no_wait=True)
-        g.command('delete', 'begin_delete')
-        g.show_command('show')
-        g.custom_command('list', 'list_virtual_hubs')
-        g.generic_update_command('update', custom_func_name='update_virtual_hub', setter_name="begin_create_or_update", setter_arg_name='virtual_hub_parameters', supports_no_wait=True)
         g.custom_command('get-effective-routes', 'get_effective_virtual_hub_routes', supports_no_wait=True, table_transformer=transform_effective_route_table)
 
     with self.command_group('network vhub connection', network_vhub_connection_sdk) as g:
@@ -156,13 +151,6 @@ def load_command_table(self, _):
     # endregion
 
     # region VpnGateways
-    with self.command_group('network vpn-gateway', network_vpn_gateway_sdk) as g:
-        g.custom_command('create', 'create_vpn_gateway', supports_no_wait=True)
-        g.command('delete', 'begin_delete')
-        g.custom_command('list', 'list_vpn_gateways')
-        g.show_command('show')
-        g.generic_update_command('update', custom_func_name='update_vpn_gateway', supports_no_wait=True, setter_name="begin_create_or_update", setter_arg_name='vpn_gateway_parameters')
-
     with self.command_group('network vpn-gateway connection', network_vpn_gateway_connection_sdk) as g:
         g.custom_command('create', 'create_vpn_gateway_connection', supports_no_wait=True)
         g.command('list', 'list_by_vpn_gateway')
