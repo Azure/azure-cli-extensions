@@ -8,15 +8,18 @@
 import logging
 import json
 import knack.log
+import os
 
 from azure.cli.core.azclierror import (FileOperationError, AzureInternalError,
-                                       InvalidArgumentValueError, AzureResponseError)
+                                       InvalidArgumentValueError, AzureResponseError,
+                                       RequiredArgumentMissingError)
 
 from .._client_factory import cf_jobs, _get_data_credentials
 from .workspace import WorkspaceInfo
 from .target import TargetInfo
 
 MINIMUM_MAX_POLL_WAIT_SECS = 1
+JOB_SUBMIT_DOC_LINK_MSG = "See https://learn.microsoft.com/en-us/cli/azure/quantum/job?view=azure-cli-latest#az-quantum-job-submit"
 
 logger = logging.getLogger(__name__)
 knack_logger = knack.log.get_logger(__name__)
@@ -183,34 +186,52 @@ def submit(cmd, program_args, resource_group_name, workspace_name, location, tar
     """
     Submit a quantum program to run on Azure Quantum.
     """
-    # Submit QIR 
-    if job_input_format == "qir.v1":
-        return _submit_qir(cmd, program_args, resource_group_name, workspace_name, location, target_id,
-                           job_name, shots, storage, job_params, target_capability,
-                           # >>>>> TODO: Finalize these names <<<<<
-                           # Peter's proposed param names:
-                           job_input_source, job_input_format, job_output_format,
-                           # Guen's proposed param names:
-                           qir_payload, qir_endpoint, qir_param)
+    if job_input_format is not None:
+        if job_input_format.lower() == "qir.v1":
+            # Submit QIR 
+            return _submit_qir_v1(cmd, program_args, resource_group_name, workspace_name, location, target_id,
+                            job_name, shots, storage, job_params, target_capability,
+                            # >>>>> TODO: Finalize these names <<<<<
+                            # Peter's proposed param names:
+                            job_input_source, job_output_format,
+                            # Guen's proposed param names:
+                            qir_payload, qir_endpoint, qir_param)
+
+        # Add elifs to handle new job_input_format values here
+
+        elif job_input_format.lower() == "q#" or job_input_format.lower() == "qsharp":
+            pass    # Fall through, same as when job_input_format is None 
+
+        else:
+            raise InvalidArgumentValueError("Job input format not recognized: " + job_input_format, JOB_SUBMIT_DOC_LINK_MSG)
 
     # Submit a Q# project. (Do it the old way, for now.)
     return _submit_qsharp(cmd, program_args, resource_group_name, workspace_name, location, target_id,
                    project, job_name, shots, storage, no_build, job_params, target_capability)
 
 
-def _submit_qir(cmd, program_args, resource_group_name, workspace_name, location, target_id,
+def _submit_qir_v1(cmd, program_args, resource_group_name, workspace_name, location, target_id,
                 job_name, shots, storage, job_params, target_capability,
                 # >>>>> TODO: Finalize these names <<<<<
                 # Peter's proposed param names:
-                job_input_source, job_input_format, job_output_format,
+                job_input_source, job_output_format,
                 # Guen's proposed param names:
                 qir_payload, qir_endpoint, qir_param):
 
     """
-    Submit a QIR program to run on Azure Quantum.
+    Submit a QIR program or circuit to run on Azure Quantum.
     """
     if job_input_source is None:
-        raise AzureInternalError("Failed to submit QIR job: No --job-input-source path was specified.")
+
+        # # If no filename of path was given, look in the current folder
+        # # example from https://stackoverflow.com/questions/45946148/find-a-file-from-a-partial-filename-in-python
+        # path = os.path.dirname(os.path.realpath(__file__))
+        # for f_name in os.listdir(path):
+        #     if f_name.endswith('.ll'):
+        #         print('found a match')
+
+
+        raise RequiredArgumentMissingError("Failed to submit QIR job: No --job-input-source path was specified.", JOB_SUBMIT_DOC_LINK_MSG)
 
     # >>>>> For debug: Show the job_input_source value <<<<<
     #raise AzureInternalError(">>>>> Got a path for the QIR job: " + job_input_source + " <<<<<")

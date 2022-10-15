@@ -55,12 +55,12 @@ def load_arguments(self, _):
     autoadd_only_type = CLIArgumentType(help='If specified, only the plans flagged "autoAdd" are displayed.')
     # >>>>> TODO: Finalize these names <<<<<
     # Peter's proposed param names:
-    job_input_source_type = CLIArgumentType(help='The location of the QIR input file to submit. Defaults to current folder.')
+    job_input_source_type = CLIArgumentType(help='The location of the input file to submit. Path defaults to current folder. Default filename extension based on --job-input-type')
     job_input_format_type = CLIArgumentType(help='The format of the file to submit. Defaults to Q# project.')
-    job_output_format_type = CLIArgumentType(help='The format of the file to submit. Defaults to [TBD].')
+    job_output_format_type = CLIArgumentType(help='The expected job output format.')
     # Guen's proposed param names:
     qir_payload_type = CLIArgumentType(help='The pathname of the QIR input file to submit.')
-    qir_endpoint_type = CLIArgumentType(help='The URL of the QIR endpoint.')
+    qir_endpoint_type = CLIArgumentType(help='The URI of the QIR endpoint.')
     qir_param_type = CLIArgumentType(help='A QIR parameter. May be repeated.')
     # <<<<<
 
