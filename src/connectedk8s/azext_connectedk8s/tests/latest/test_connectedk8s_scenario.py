@@ -41,6 +41,17 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
             self.check('tags.foo', 'doo')
         ])
         self.cmd('connectedk8s delete -g akkeshar -n {name} --kube-config {kubeconfig} -y')
+
+        # Test 2022-10-01-preview api properties
+        self.cmd('connectedk8s connect -g akkeshar -n {name} -l eastus --distribution aks_management --infrastructure azure_stack_hci --distribution-version 1.0 --tags foo=doo --kube-config {kubeconfig}', checks=[
+            self.check('distributionVersion', '1.0'),
+            self.check('name', '{name}')
+        ])
+        self.cmd('connectedk8s update -g akkeshar -n {name} --azure-hybrid-benefit true --kube-config {kubeconfig}', checks=[
+            self.check('azureHybridBenefit', 'true'),
+            self.check('name', '{name}')
+        ])
+
         self.cmd('aks delete -g akkeshar -n {} -y'.format(managed_cluster_name))
 
         # delete the kube config
