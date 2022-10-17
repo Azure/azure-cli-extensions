@@ -1269,6 +1269,9 @@ helps['aks nodepool add'] = """
         - name: --enable-custom-ca-trust
           type: bool
           short-summary: Enable Custom CA Trust on agent node pool.
+        - name: --disable-windows-outbound-nat
+          type: bool
+          short-summary: Disable Windows OutboundNAT on Windows agent node pool.
     examples:
         - name: Create a nodepool in an existing AKS cluster with ephemeral os enabled.
           text: az aks nodepool add -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster --node-osdisk-type Ephemeral --node-osdisk-size 48

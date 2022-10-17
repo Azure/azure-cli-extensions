@@ -1170,6 +1170,7 @@ def aks_agentpool_add(
     workload_runtime=None,
     gpu_instance_profile=None,
     enable_custom_ca_trust=False,
+    disable_windows_outbound_nat=False,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()

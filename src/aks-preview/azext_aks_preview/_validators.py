@@ -639,6 +639,14 @@ def validate_enable_custom_ca_trust(namespace):
                 '--enable_custom_ca_trust can only be set for Linux nodepools')
 
 
+def validate_disable_windows_outbound_nat(namespace):
+    """Validates disable_windows_outbound_nat can only be used on Windows."""
+    if namespace.disable_windows_outbound_nat:
+        if hasattr(namespace, 'os_type') and str(namespace.os_type).lower() != "windows":
+            raise ArgumentUsageError(
+                '--disable-windows-outbound-nat can only be set for Windows nodepools')
+
+
 def validate_defender_config_parameter(namespace):
     if namespace.defender_config and not namespace.enable_defender:
         raise RequiredArgumentMissingError("Please specify --enable-defnder")
