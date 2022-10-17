@@ -32,7 +32,7 @@ class GlobalReachConnectionsOperations(object):
     instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~azure.mgmt.avs.models
+    :type models: ~avs_client.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -64,7 +64,7 @@ class GlobalReachConnectionsOperations(object):
         :type private_cloud_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either GlobalReachConnectionList or the result of cls(response)
-        :rtype: ~azure.core.paging.ItemPaged[~azure.mgmt.avs.models.GlobalReachConnectionList]
+        :rtype: ~azure.core.paging.ItemPaged[~avs_client.models.GlobalReachConnectionList]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.GlobalReachConnectionList"]
@@ -144,7 +144,7 @@ class GlobalReachConnectionsOperations(object):
         :type global_reach_connection_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: GlobalReachConnection, or the result of cls(response)
-        :rtype: ~azure.mgmt.avs.models.GlobalReachConnection
+        :rtype: ~avs_client.models.GlobalReachConnection
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.GlobalReachConnection"]
@@ -269,7 +269,7 @@ class GlobalReachConnectionsOperations(object):
         :param global_reach_connection_name: Name of the global reach connection in the private cloud.
         :type global_reach_connection_name: str
         :param global_reach_connection: A global reach connection in the private cloud.
-        :type global_reach_connection: ~azure.mgmt.avs.models.GlobalReachConnection
+        :type global_reach_connection: ~avs_client.models.GlobalReachConnection
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: By default, your polling method will be ARMPolling.
@@ -277,7 +277,7 @@ class GlobalReachConnectionsOperations(object):
         :paramtype polling: bool or ~azure.core.polling.PollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
         :return: An instance of LROPoller that returns either GlobalReachConnection or the result of cls(response)
-        :rtype: ~azure.core.polling.LROPoller[~azure.mgmt.avs.models.GlobalReachConnection]
+        :rtype: ~azure.core.polling.LROPoller[~avs_client.models.GlobalReachConnection]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         polling = kwargs.pop('polling', True)  # type: Union[bool, PollingMethod]

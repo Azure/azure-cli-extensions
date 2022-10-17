@@ -28,7 +28,7 @@ class PrivateCloudsOperations:
     instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~azure.mgmt.avs.models
+    :type models: ~avs_client.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -56,7 +56,7 @@ class PrivateCloudsOperations:
         :type resource_group_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either PrivateCloudList or the result of cls(response)
-        :rtype: ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.avs.models.PrivateCloudList]
+        :rtype: ~azure.core.async_paging.AsyncItemPaged[~avs_client.models.PrivateCloudList]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.PrivateCloudList"]
@@ -125,7 +125,7 @@ class PrivateCloudsOperations:
 
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either PrivateCloudList or the result of cls(response)
-        :rtype: ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.avs.models.PrivateCloudList]
+        :rtype: ~azure.core.async_paging.AsyncItemPaged[~avs_client.models.PrivateCloudList]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.PrivateCloudList"]
@@ -199,7 +199,7 @@ class PrivateCloudsOperations:
         :type private_cloud_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: PrivateCloud, or the result of cls(response)
-        :rtype: ~azure.mgmt.avs.models.PrivateCloud
+        :rtype: ~avs_client.models.PrivateCloud
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.PrivateCloud"]
@@ -316,7 +316,7 @@ class PrivateCloudsOperations:
         :param private_cloud_name: Name of the private cloud.
         :type private_cloud_name: str
         :param private_cloud: The private cloud.
-        :type private_cloud: ~azure.mgmt.avs.models.PrivateCloud
+        :type private_cloud: ~avs_client.models.PrivateCloud
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: By default, your polling method will be AsyncARMPolling.
@@ -324,7 +324,7 @@ class PrivateCloudsOperations:
         :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns either PrivateCloud or the result of cls(response)
-        :rtype: ~azure.core.polling.AsyncLROPoller[~azure.mgmt.avs.models.PrivateCloud]
+        :rtype: ~azure.core.polling.AsyncLROPoller[~avs_client.models.PrivateCloud]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         polling = kwargs.pop('polling', True)  # type: Union[bool, AsyncPollingMethod]
@@ -446,7 +446,7 @@ class PrivateCloudsOperations:
         :param private_cloud_name: Name of the private cloud.
         :type private_cloud_name: str
         :param private_cloud_update: The private cloud properties to be updated.
-        :type private_cloud_update: ~azure.mgmt.avs.models.PrivateCloudUpdate
+        :type private_cloud_update: ~avs_client.models.PrivateCloudUpdate
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: By default, your polling method will be AsyncARMPolling.
@@ -454,7 +454,7 @@ class PrivateCloudsOperations:
         :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns either PrivateCloud or the result of cls(response)
-        :rtype: ~azure.core.polling.AsyncLROPoller[~azure.mgmt.avs.models.PrivateCloud]
+        :rtype: ~azure.core.polling.AsyncLROPoller[~avs_client.models.PrivateCloud]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         polling = kwargs.pop('polling', True)  # type: Union[bool, AsyncPollingMethod]
@@ -849,7 +849,7 @@ class PrivateCloudsOperations:
         :type private_cloud_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: AdminCredentials, or the result of cls(response)
-        :rtype: ~azure.mgmt.avs.models.AdminCredentials
+        :rtype: ~avs_client.models.AdminCredentials
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.AdminCredentials"]

@@ -25,7 +25,7 @@ class LocationsOperations:
     instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~azure.mgmt.avs.models
+    :type models: ~avs_client.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -50,11 +50,11 @@ class LocationsOperations:
 
         :param location: Azure region.
         :type location: str
-        :param sku: The sku to check for trail availability.
-        :type sku: ~azure.mgmt.avs.models.Sku
+        :param sku: The sku to check for trial availability.
+        :type sku: ~avs_client.models.Sku
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: Trial, or the result of cls(response)
-        :rtype: ~azure.mgmt.avs.models.Trial
+        :rtype: ~avs_client.models.Trial
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.Trial"]
@@ -116,7 +116,7 @@ class LocationsOperations:
         :type location: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: Quota, or the result of cls(response)
-        :rtype: ~azure.mgmt.avs.models.Quota
+        :rtype: ~avs_client.models.Quota
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.Quota"]

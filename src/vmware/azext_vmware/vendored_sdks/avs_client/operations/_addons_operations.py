@@ -32,7 +32,7 @@ class AddonsOperations(object):
     instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~azure.mgmt.avs.models
+    :type models: ~avs_client.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -64,7 +64,7 @@ class AddonsOperations(object):
         :type private_cloud_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either AddonList or the result of cls(response)
-        :rtype: ~azure.core.paging.ItemPaged[~azure.mgmt.avs.models.AddonList]
+        :rtype: ~azure.core.paging.ItemPaged[~avs_client.models.AddonList]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.AddonList"]
@@ -144,7 +144,7 @@ class AddonsOperations(object):
         :type addon_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: Addon, or the result of cls(response)
-        :rtype: ~azure.mgmt.avs.models.Addon
+        :rtype: ~avs_client.models.Addon
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.Addon"]
@@ -269,7 +269,7 @@ class AddonsOperations(object):
         :param addon_name: Name of the addon for the private cloud.
         :type addon_name: str
         :param addon: A addon in the private cloud.
-        :type addon: ~azure.mgmt.avs.models.Addon
+        :type addon: ~avs_client.models.Addon
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: By default, your polling method will be ARMPolling.
@@ -277,7 +277,7 @@ class AddonsOperations(object):
         :paramtype polling: bool or ~azure.core.polling.PollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
         :return: An instance of LROPoller that returns either Addon or the result of cls(response)
-        :rtype: ~azure.core.polling.LROPoller[~azure.mgmt.avs.models.Addon]
+        :rtype: ~azure.core.polling.LROPoller[~avs_client.models.Addon]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         polling = kwargs.pop('polling', True)  # type: Union[bool, PollingMethod]

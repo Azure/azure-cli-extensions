@@ -28,7 +28,7 @@ class DatastoresOperations:
     instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~azure.mgmt.avs.models
+    :type models: ~avs_client.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -62,7 +62,7 @@ class DatastoresOperations:
         :type cluster_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either DatastoreList or the result of cls(response)
-        :rtype: ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.avs.models.DatastoreList]
+        :rtype: ~azure.core.async_paging.AsyncItemPaged[~avs_client.models.DatastoreList]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.DatastoreList"]
@@ -145,7 +145,7 @@ class DatastoresOperations:
         :type datastore_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: Datastore, or the result of cls(response)
-        :rtype: ~azure.mgmt.avs.models.Datastore
+        :rtype: ~avs_client.models.Datastore
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.Datastore"]
@@ -274,7 +274,7 @@ class DatastoresOperations:
         :param datastore_name: Name of the datastore in the private cloud cluster.
         :type datastore_name: str
         :param datastore: A datastore in a private cloud cluster.
-        :type datastore: ~azure.mgmt.avs.models.Datastore
+        :type datastore: ~avs_client.models.Datastore
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: By default, your polling method will be AsyncARMPolling.
@@ -282,7 +282,7 @@ class DatastoresOperations:
         :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns either Datastore or the result of cls(response)
-        :rtype: ~azure.core.polling.AsyncLROPoller[~azure.mgmt.avs.models.Datastore]
+        :rtype: ~azure.core.polling.AsyncLROPoller[~avs_client.models.Datastore]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         polling = kwargs.pop('polling', True)  # type: Union[bool, AsyncPollingMethod]

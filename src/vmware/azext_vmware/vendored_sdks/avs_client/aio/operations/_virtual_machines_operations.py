@@ -28,7 +28,7 @@ class VirtualMachinesOperations:
     instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~azure.mgmt.avs.models
+    :type models: ~avs_client.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -62,7 +62,7 @@ class VirtualMachinesOperations:
         :type cluster_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either VirtualMachinesList or the result of cls(response)
-        :rtype: ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.avs.models.VirtualMachinesList]
+        :rtype: ~azure.core.async_paging.AsyncItemPaged[~avs_client.models.VirtualMachinesList]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.VirtualMachinesList"]
@@ -145,7 +145,7 @@ class VirtualMachinesOperations:
         :type virtual_machine_id: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: VirtualMachine, or the result of cls(response)
-        :rtype: ~azure.mgmt.avs.models.VirtualMachine
+        :rtype: ~avs_client.models.VirtualMachine
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.VirtualMachine"]
@@ -268,7 +268,7 @@ class VirtualMachinesOperations:
         :type virtual_machine_id: str
         :param restrict_movement: Whether VM DRS-driven movement is restricted (Enabled) or not
          (Disabled).
-        :type restrict_movement: ~azure.mgmt.avs.models.VirtualMachineRestrictMovement
+        :type restrict_movement: ~avs_client.models.VirtualMachineRestrictMovement
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: By default, your polling method will be AsyncARMPolling.

@@ -26,7 +26,7 @@ class HcxEnterpriseSitesOperations:
     instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~azure.mgmt.avs.models
+    :type models: ~avs_client.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -57,7 +57,7 @@ class HcxEnterpriseSitesOperations:
         :type private_cloud_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either HcxEnterpriseSiteList or the result of cls(response)
-        :rtype: ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.avs.models.HcxEnterpriseSiteList]
+        :rtype: ~azure.core.async_paging.AsyncItemPaged[~avs_client.models.HcxEnterpriseSiteList]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.HcxEnterpriseSiteList"]
@@ -136,7 +136,7 @@ class HcxEnterpriseSitesOperations:
         :type hcx_enterprise_site_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: HcxEnterpriseSite, or the result of cls(response)
-        :rtype: ~azure.mgmt.avs.models.HcxEnterpriseSite
+        :rtype: ~avs_client.models.HcxEnterpriseSite
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.HcxEnterpriseSite"]
@@ -200,10 +200,10 @@ class HcxEnterpriseSitesOperations:
         :param hcx_enterprise_site_name: Name of the HCX Enterprise Site in the private cloud.
         :type hcx_enterprise_site_name: str
         :param hcx_enterprise_site: The HCX Enterprise Site.
-        :type hcx_enterprise_site: ~azure.mgmt.avs.models.HcxEnterpriseSite
+        :type hcx_enterprise_site: ~avs_client.models.HcxEnterpriseSite
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: HcxEnterpriseSite, or the result of cls(response)
-        :rtype: ~azure.mgmt.avs.models.HcxEnterpriseSite
+        :rtype: ~avs_client.models.HcxEnterpriseSite
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.HcxEnterpriseSite"]

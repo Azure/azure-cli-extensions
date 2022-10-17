@@ -32,7 +32,7 @@ class PlacementPoliciesOperations(object):
     instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~azure.mgmt.avs.models
+    :type models: ~avs_client.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -67,7 +67,7 @@ class PlacementPoliciesOperations(object):
         :type cluster_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either PlacementPoliciesList or the result of cls(response)
-        :rtype: ~azure.core.paging.ItemPaged[~azure.mgmt.avs.models.PlacementPoliciesList]
+        :rtype: ~azure.core.paging.ItemPaged[~avs_client.models.PlacementPoliciesList]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.PlacementPoliciesList"]
@@ -152,7 +152,7 @@ class PlacementPoliciesOperations(object):
         :type placement_policy_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: PlacementPolicy, or the result of cls(response)
-        :rtype: ~azure.mgmt.avs.models.PlacementPolicy
+        :rtype: ~avs_client.models.PlacementPolicy
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.PlacementPolicy"]
@@ -284,7 +284,7 @@ class PlacementPoliciesOperations(object):
          placement policy.
         :type placement_policy_name: str
         :param placement_policy: A placement policy in the private cloud cluster.
-        :type placement_policy: ~azure.mgmt.avs.models.PlacementPolicy
+        :type placement_policy: ~avs_client.models.PlacementPolicy
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: By default, your polling method will be ARMPolling.
@@ -292,7 +292,7 @@ class PlacementPoliciesOperations(object):
         :paramtype polling: bool or ~azure.core.polling.PollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
         :return: An instance of LROPoller that returns either PlacementPolicy or the result of cls(response)
-        :rtype: ~azure.core.polling.LROPoller[~azure.mgmt.avs.models.PlacementPolicy]
+        :rtype: ~azure.core.polling.LROPoller[~avs_client.models.PlacementPolicy]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         polling = kwargs.pop('polling', True)  # type: Union[bool, PollingMethod]
@@ -431,7 +431,7 @@ class PlacementPoliciesOperations(object):
          placement policy.
         :type placement_policy_name: str
         :param placement_policy_update: The placement policy properties that may be updated.
-        :type placement_policy_update: ~azure.mgmt.avs.models.PlacementPolicyUpdate
+        :type placement_policy_update: ~avs_client.models.PlacementPolicyUpdate
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: By default, your polling method will be ARMPolling.
@@ -439,7 +439,7 @@ class PlacementPoliciesOperations(object):
         :paramtype polling: bool or ~azure.core.polling.PollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
         :return: An instance of LROPoller that returns either PlacementPolicy or the result of cls(response)
-        :rtype: ~azure.core.polling.LROPoller[~azure.mgmt.avs.models.PlacementPolicy]
+        :rtype: ~azure.core.polling.LROPoller[~avs_client.models.PlacementPolicy]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         polling = kwargs.pop('polling', True)  # type: Union[bool, PollingMethod]

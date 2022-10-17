@@ -26,7 +26,7 @@ class ScriptCmdletsOperations:
     instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~azure.mgmt.avs.models
+    :type models: ~avs_client.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -59,7 +59,7 @@ class ScriptCmdletsOperations:
         :type script_package_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either ScriptCmdletsList or the result of cls(response)
-        :rtype: ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.avs.models.ScriptCmdletsList]
+        :rtype: ~azure.core.async_paging.AsyncItemPaged[~avs_client.models.ScriptCmdletsList]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.ScriptCmdletsList"]
@@ -141,7 +141,7 @@ class ScriptCmdletsOperations:
         :type script_cmdlet_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: ScriptCmdlet, or the result of cls(response)
-        :rtype: ~azure.mgmt.avs.models.ScriptCmdlet
+        :rtype: ~avs_client.models.ScriptCmdlet
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.ScriptCmdlet"]

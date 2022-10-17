@@ -36,6 +36,7 @@ class AddonProvisioningState(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)
     BUILDING = "Building"
     DELETING = "Deleting"
     UPDATING = "Updating"
+    CANCELED = "Canceled"
 
 class AddonType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """The type of private cloud addon
@@ -93,6 +94,7 @@ class ClusterProvisioningState(with_metaclass(_CaseInsensitiveEnumMeta, str, Enu
     CANCELLED = "Cancelled"
     DELETING = "Deleting"
     UPDATING = "Updating"
+    CANCELED = "Canceled"
 
 class DatastoreProvisioningState(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """The state of the datastore provisioning
@@ -105,6 +107,7 @@ class DatastoreProvisioningState(with_metaclass(_CaseInsensitiveEnumMeta, str, E
     CREATING = "Creating"
     UPDATING = "Updating"
     DELETING = "Deleting"
+    CANCELED = "Canceled"
 
 class DatastoreStatus(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """The operational status of the datastore
@@ -170,6 +173,7 @@ class ExpressRouteAuthorizationProvisioningState(with_metaclass(_CaseInsensitive
     SUCCEEDED = "Succeeded"
     FAILED = "Failed"
     UPDATING = "Updating"
+    CANCELED = "Canceled"
 
 class GlobalReachConnectionProvisioningState(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """The state of the  ExpressRoute Circuit Authorization provisioning
@@ -178,6 +182,7 @@ class GlobalReachConnectionProvisioningState(with_metaclass(_CaseInsensitiveEnum
     SUCCEEDED = "Succeeded"
     FAILED = "Failed"
     UPDATING = "Updating"
+    CANCELED = "Canceled"
 
 class GlobalReachConnectionStatus(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """The connection status of the global reach connection
@@ -234,6 +239,7 @@ class PlacementPolicyProvisioningState(with_metaclass(_CaseInsensitiveEnumMeta, 
     BUILDING = "Building"
     DELETING = "Deleting"
     UPDATING = "Updating"
+    CANCELED = "Canceled"
 
 class PlacementPolicyState(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """Whether the placement policy is enabled or disabled
@@ -275,6 +281,7 @@ class PrivateCloudProvisioningState(with_metaclass(_CaseInsensitiveEnumMeta, str
     BUILDING = "Building"
     DELETING = "Deleting"
     UPDATING = "Updating"
+    CANCELED = "Canceled"
 
 class QuotaEnabled(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """Host quota is active for current subscription
@@ -310,6 +317,7 @@ class ScriptExecutionProvisioningState(with_metaclass(_CaseInsensitiveEnumMeta, 
     CANCELLING = "Cancelling"
     CANCELLED = "Cancelled"
     DELETING = "Deleting"
+    CANCELED = "Canceled"
 
 class ScriptOutputStreamType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
 
@@ -389,6 +397,7 @@ class WorkloadNetworkDhcpProvisioningState(with_metaclass(_CaseInsensitiveEnumMe
     BUILDING = "Building"
     DELETING = "Deleting"
     UPDATING = "Updating"
+    CANCELED = "Canceled"
 
 class WorkloadNetworkDnsServiceProvisioningState(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """The provisioning state
@@ -399,6 +408,7 @@ class WorkloadNetworkDnsServiceProvisioningState(with_metaclass(_CaseInsensitive
     BUILDING = "Building"
     DELETING = "Deleting"
     UPDATING = "Updating"
+    CANCELED = "Canceled"
 
 class WorkloadNetworkDnsZoneProvisioningState(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """The provisioning state
@@ -409,6 +419,11 @@ class WorkloadNetworkDnsZoneProvisioningState(with_metaclass(_CaseInsensitiveEnu
     BUILDING = "Building"
     DELETING = "Deleting"
     UPDATING = "Updating"
+    CANCELED = "Canceled"
+
+class WorkloadNetworkName(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+
+    DEFAULT = "default"
 
 class WorkloadNetworkPortMirroringProvisioningState(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """The provisioning state
@@ -419,6 +434,7 @@ class WorkloadNetworkPortMirroringProvisioningState(with_metaclass(_CaseInsensit
     BUILDING = "Building"
     DELETING = "Deleting"
     UPDATING = "Updating"
+    CANCELED = "Canceled"
 
 class WorkloadNetworkPublicIPProvisioningState(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """The provisioning state
@@ -429,6 +445,7 @@ class WorkloadNetworkPublicIPProvisioningState(with_metaclass(_CaseInsensitiveEn
     BUILDING = "Building"
     DELETING = "Deleting"
     UPDATING = "Updating"
+    CANCELED = "Canceled"
 
 class WorkloadNetworkSegmentProvisioningState(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """The provisioning state
@@ -439,6 +456,7 @@ class WorkloadNetworkSegmentProvisioningState(with_metaclass(_CaseInsensitiveEnu
     BUILDING = "Building"
     DELETING = "Deleting"
     UPDATING = "Updating"
+    CANCELED = "Canceled"
 
 class WorkloadNetworkVMGroupProvisioningState(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """The provisioning state
@@ -449,3 +467,4 @@ class WorkloadNetworkVMGroupProvisioningState(with_metaclass(_CaseInsensitiveEnu
     BUILDING = "Building"
     DELETING = "Deleting"
     UPDATING = "Updating"
+    CANCELED = "Canceled"

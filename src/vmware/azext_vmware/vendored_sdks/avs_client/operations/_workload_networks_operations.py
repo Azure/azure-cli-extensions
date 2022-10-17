@@ -32,7 +32,7 @@ class WorkloadNetworksOperations(object):
     instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~azure.mgmt.avs.models
+    :type models: ~avs_client.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -51,6 +51,7 @@ class WorkloadNetworksOperations(object):
         self,
         resource_group_name,  # type: str
         private_cloud_name,  # type: str
+        workload_network_name,  # type: Union[str, "_models.WorkloadNetworkName"]
         **kwargs  # type: Any
     ):
         # type: (...) -> "_models.WorkloadNetwork"
@@ -62,9 +63,11 @@ class WorkloadNetworksOperations(object):
         :type resource_group_name: str
         :param private_cloud_name: Name of the private cloud.
         :type private_cloud_name: str
+        :param workload_network_name: Name for the workload network in the private cloud.
+        :type workload_network_name: str or ~avs_client.models.WorkloadNetworkName
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: WorkloadNetwork, or the result of cls(response)
-        :rtype: ~azure.mgmt.avs.models.WorkloadNetwork
+        :rtype: ~avs_client.models.WorkloadNetwork
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.WorkloadNetwork"]
@@ -81,6 +84,7 @@ class WorkloadNetworksOperations(object):
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
             'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str'),
+            'workloadNetworkName': self._serialize.url("workload_network_name", workload_network_name, 'str'),
         }
         url = self._client.format_url(url, **path_format_arguments)
 
@@ -106,7 +110,7 @@ class WorkloadNetworksOperations(object):
             return cls(pipeline_response, deserialized, {})
 
         return deserialized
-    get.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AVS/privateClouds/{privateCloudName}/workloadNetworks/default'}  # type: ignore
+    get.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AVS/privateClouds/{privateCloudName}/workloadNetworks/{workloadNetworkName}'}  # type: ignore
 
     def list(
         self,
@@ -114,7 +118,7 @@ class WorkloadNetworksOperations(object):
         private_cloud_name,  # type: str
         **kwargs  # type: Any
     ):
-        # type: (...) -> Iterable["_models.WorkloadNetworkSegmentsList"]
+        # type: (...) -> Iterable["_models.WorkloadNetworkList"]
         """List of workload networks in a private cloud.
 
         List of workload networks in a private cloud.
@@ -124,11 +128,11 @@ class WorkloadNetworksOperations(object):
         :param private_cloud_name: Name of the private cloud.
         :type private_cloud_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: An iterator like instance of either WorkloadNetworkSegmentsList or the result of cls(response)
-        :rtype: ~azure.core.paging.ItemPaged[~azure.mgmt.avs.models.WorkloadNetworkSegmentsList]
+        :return: An iterator like instance of either WorkloadNetworkList or the result of cls(response)
+        :rtype: ~azure.core.paging.ItemPaged[~avs_client.models.WorkloadNetworkList]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["_models.WorkloadNetworkSegmentsList"]
+        cls = kwargs.pop('cls', None)  # type: ClsType["_models.WorkloadNetworkList"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
@@ -162,7 +166,7 @@ class WorkloadNetworksOperations(object):
             return request
 
         def extract_data(pipeline_response):
-            deserialized = self._deserialize('WorkloadNetworkSegmentsList', pipeline_response)
+            deserialized = self._deserialize('WorkloadNetworkList', pipeline_response)
             list_of_elem = deserialized.value
             if cls:
                 list_of_elem = cls(list_of_elem)
@@ -202,7 +206,7 @@ class WorkloadNetworksOperations(object):
         :type private_cloud_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either WorkloadNetworkSegmentsList or the result of cls(response)
-        :rtype: ~azure.core.paging.ItemPaged[~azure.mgmt.avs.models.WorkloadNetworkSegmentsList]
+        :rtype: ~azure.core.paging.ItemPaged[~avs_client.models.WorkloadNetworkSegmentsList]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.WorkloadNetworkSegmentsList"]
@@ -282,7 +286,7 @@ class WorkloadNetworksOperations(object):
         :type segment_id: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: WorkloadNetworkSegment, or the result of cls(response)
-        :rtype: ~azure.mgmt.avs.models.WorkloadNetworkSegment
+        :rtype: ~avs_client.models.WorkloadNetworkSegment
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.WorkloadNetworkSegment"]
@@ -407,7 +411,7 @@ class WorkloadNetworksOperations(object):
         :param segment_id: NSX Segment identifier. Generally the same as the Segment's display name.
         :type segment_id: str
         :param workload_network_segment: NSX Segment.
-        :type workload_network_segment: ~azure.mgmt.avs.models.WorkloadNetworkSegment
+        :type workload_network_segment: ~avs_client.models.WorkloadNetworkSegment
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: By default, your polling method will be ARMPolling.
@@ -415,7 +419,7 @@ class WorkloadNetworksOperations(object):
         :paramtype polling: bool or ~azure.core.polling.PollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
         :return: An instance of LROPoller that returns either WorkloadNetworkSegment or the result of cls(response)
-        :rtype: ~azure.core.polling.LROPoller[~azure.mgmt.avs.models.WorkloadNetworkSegment]
+        :rtype: ~azure.core.polling.LROPoller[~avs_client.models.WorkloadNetworkSegment]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         polling = kwargs.pop('polling', True)  # type: Union[bool, PollingMethod]
@@ -544,7 +548,7 @@ class WorkloadNetworksOperations(object):
         :param segment_id: NSX Segment identifier. Generally the same as the Segment's display name.
         :type segment_id: str
         :param workload_network_segment: NSX Segment.
-        :type workload_network_segment: ~azure.mgmt.avs.models.WorkloadNetworkSegment
+        :type workload_network_segment: ~avs_client.models.WorkloadNetworkSegment
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: By default, your polling method will be ARMPolling.
@@ -552,7 +556,7 @@ class WorkloadNetworksOperations(object):
         :paramtype polling: bool or ~azure.core.polling.PollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
         :return: An instance of LROPoller that returns either WorkloadNetworkSegment or the result of cls(response)
-        :rtype: ~azure.core.polling.LROPoller[~azure.mgmt.avs.models.WorkloadNetworkSegment]
+        :rtype: ~azure.core.polling.LROPoller[~avs_client.models.WorkloadNetworkSegment]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         polling = kwargs.pop('polling', True)  # type: Union[bool, PollingMethod]
@@ -739,7 +743,7 @@ class WorkloadNetworksOperations(object):
         :type private_cloud_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either WorkloadNetworkDhcpList or the result of cls(response)
-        :rtype: ~azure.core.paging.ItemPaged[~azure.mgmt.avs.models.WorkloadNetworkDhcpList]
+        :rtype: ~azure.core.paging.ItemPaged[~avs_client.models.WorkloadNetworkDhcpList]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.WorkloadNetworkDhcpList"]
@@ -819,7 +823,7 @@ class WorkloadNetworksOperations(object):
         :type private_cloud_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: WorkloadNetworkDhcp, or the result of cls(response)
-        :rtype: ~azure.mgmt.avs.models.WorkloadNetworkDhcp
+        :rtype: ~avs_client.models.WorkloadNetworkDhcp
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.WorkloadNetworkDhcp"]
@@ -944,7 +948,7 @@ class WorkloadNetworksOperations(object):
         :param dhcp_id: NSX DHCP identifier. Generally the same as the DHCP display name.
         :type dhcp_id: str
         :param workload_network_dhcp: NSX DHCP.
-        :type workload_network_dhcp: ~azure.mgmt.avs.models.WorkloadNetworkDhcp
+        :type workload_network_dhcp: ~avs_client.models.WorkloadNetworkDhcp
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: By default, your polling method will be ARMPolling.
@@ -952,7 +956,7 @@ class WorkloadNetworksOperations(object):
         :paramtype polling: bool or ~azure.core.polling.PollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
         :return: An instance of LROPoller that returns either WorkloadNetworkDhcp or the result of cls(response)
-        :rtype: ~azure.core.polling.LROPoller[~azure.mgmt.avs.models.WorkloadNetworkDhcp]
+        :rtype: ~azure.core.polling.LROPoller[~avs_client.models.WorkloadNetworkDhcp]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         polling = kwargs.pop('polling', True)  # type: Union[bool, PollingMethod]
@@ -1081,7 +1085,7 @@ class WorkloadNetworksOperations(object):
         :param dhcp_id: NSX DHCP identifier. Generally the same as the DHCP display name.
         :type dhcp_id: str
         :param workload_network_dhcp: NSX DHCP.
-        :type workload_network_dhcp: ~azure.mgmt.avs.models.WorkloadNetworkDhcp
+        :type workload_network_dhcp: ~avs_client.models.WorkloadNetworkDhcp
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: By default, your polling method will be ARMPolling.
@@ -1089,7 +1093,7 @@ class WorkloadNetworksOperations(object):
         :paramtype polling: bool or ~azure.core.polling.PollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
         :return: An instance of LROPoller that returns either WorkloadNetworkDhcp or the result of cls(response)
-        :rtype: ~azure.core.polling.LROPoller[~azure.mgmt.avs.models.WorkloadNetworkDhcp]
+        :rtype: ~azure.core.polling.LROPoller[~avs_client.models.WorkloadNetworkDhcp]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         polling = kwargs.pop('polling', True)  # type: Union[bool, PollingMethod]
@@ -1276,7 +1280,7 @@ class WorkloadNetworksOperations(object):
         :type private_cloud_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either WorkloadNetworkGatewayList or the result of cls(response)
-        :rtype: ~azure.core.paging.ItemPaged[~azure.mgmt.avs.models.WorkloadNetworkGatewayList]
+        :rtype: ~azure.core.paging.ItemPaged[~avs_client.models.WorkloadNetworkGatewayList]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.WorkloadNetworkGatewayList"]
@@ -1356,7 +1360,7 @@ class WorkloadNetworksOperations(object):
         :type gateway_id: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: WorkloadNetworkGateway, or the result of cls(response)
-        :rtype: ~azure.mgmt.avs.models.WorkloadNetworkGateway
+        :rtype: ~avs_client.models.WorkloadNetworkGateway
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.WorkloadNetworkGateway"]
@@ -1418,7 +1422,7 @@ class WorkloadNetworksOperations(object):
         :type private_cloud_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either WorkloadNetworkPortMirroringList or the result of cls(response)
-        :rtype: ~azure.core.paging.ItemPaged[~azure.mgmt.avs.models.WorkloadNetworkPortMirroringList]
+        :rtype: ~azure.core.paging.ItemPaged[~avs_client.models.WorkloadNetworkPortMirroringList]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.WorkloadNetworkPortMirroringList"]
@@ -1499,7 +1503,7 @@ class WorkloadNetworksOperations(object):
         :type port_mirroring_id: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: WorkloadNetworkPortMirroring, or the result of cls(response)
-        :rtype: ~azure.mgmt.avs.models.WorkloadNetworkPortMirroring
+        :rtype: ~avs_client.models.WorkloadNetworkPortMirroring
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.WorkloadNetworkPortMirroring"]
@@ -1625,7 +1629,7 @@ class WorkloadNetworksOperations(object):
          Mirroring display name.
         :type port_mirroring_id: str
         :param workload_network_port_mirroring: NSX port mirroring.
-        :type workload_network_port_mirroring: ~azure.mgmt.avs.models.WorkloadNetworkPortMirroring
+        :type workload_network_port_mirroring: ~avs_client.models.WorkloadNetworkPortMirroring
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: By default, your polling method will be ARMPolling.
@@ -1633,7 +1637,7 @@ class WorkloadNetworksOperations(object):
         :paramtype polling: bool or ~azure.core.polling.PollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
         :return: An instance of LROPoller that returns either WorkloadNetworkPortMirroring or the result of cls(response)
-        :rtype: ~azure.core.polling.LROPoller[~azure.mgmt.avs.models.WorkloadNetworkPortMirroring]
+        :rtype: ~azure.core.polling.LROPoller[~avs_client.models.WorkloadNetworkPortMirroring]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         polling = kwargs.pop('polling', True)  # type: Union[bool, PollingMethod]
@@ -1763,7 +1767,7 @@ class WorkloadNetworksOperations(object):
          Mirroring display name.
         :type port_mirroring_id: str
         :param workload_network_port_mirroring: NSX port mirroring.
-        :type workload_network_port_mirroring: ~azure.mgmt.avs.models.WorkloadNetworkPortMirroring
+        :type workload_network_port_mirroring: ~avs_client.models.WorkloadNetworkPortMirroring
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: By default, your polling method will be ARMPolling.
@@ -1771,7 +1775,7 @@ class WorkloadNetworksOperations(object):
         :paramtype polling: bool or ~azure.core.polling.PollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
         :return: An instance of LROPoller that returns either WorkloadNetworkPortMirroring or the result of cls(response)
-        :rtype: ~azure.core.polling.LROPoller[~azure.mgmt.avs.models.WorkloadNetworkPortMirroring]
+        :rtype: ~azure.core.polling.LROPoller[~avs_client.models.WorkloadNetworkPortMirroring]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         polling = kwargs.pop('polling', True)  # type: Union[bool, PollingMethod]
@@ -1959,7 +1963,7 @@ class WorkloadNetworksOperations(object):
         :type private_cloud_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either WorkloadNetworkVMGroupsList or the result of cls(response)
-        :rtype: ~azure.core.paging.ItemPaged[~azure.mgmt.avs.models.WorkloadNetworkVMGroupsList]
+        :rtype: ~azure.core.paging.ItemPaged[~avs_client.models.WorkloadNetworkVMGroupsList]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.WorkloadNetworkVMGroupsList"]
@@ -2039,7 +2043,7 @@ class WorkloadNetworksOperations(object):
         :type vm_group_id: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: WorkloadNetworkVMGroup, or the result of cls(response)
-        :rtype: ~azure.mgmt.avs.models.WorkloadNetworkVMGroup
+        :rtype: ~avs_client.models.WorkloadNetworkVMGroup
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.WorkloadNetworkVMGroup"]
@@ -2164,7 +2168,7 @@ class WorkloadNetworksOperations(object):
         :param vm_group_id: NSX VM Group identifier. Generally the same as the VM Group's display name.
         :type vm_group_id: str
         :param workload_network_vm_group: NSX VM Group.
-        :type workload_network_vm_group: ~azure.mgmt.avs.models.WorkloadNetworkVMGroup
+        :type workload_network_vm_group: ~avs_client.models.WorkloadNetworkVMGroup
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: By default, your polling method will be ARMPolling.
@@ -2172,7 +2176,7 @@ class WorkloadNetworksOperations(object):
         :paramtype polling: bool or ~azure.core.polling.PollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
         :return: An instance of LROPoller that returns either WorkloadNetworkVMGroup or the result of cls(response)
-        :rtype: ~azure.core.polling.LROPoller[~azure.mgmt.avs.models.WorkloadNetworkVMGroup]
+        :rtype: ~azure.core.polling.LROPoller[~avs_client.models.WorkloadNetworkVMGroup]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         polling = kwargs.pop('polling', True)  # type: Union[bool, PollingMethod]
@@ -2301,7 +2305,7 @@ class WorkloadNetworksOperations(object):
         :param vm_group_id: NSX VM Group identifier. Generally the same as the VM Group's display name.
         :type vm_group_id: str
         :param workload_network_vm_group: NSX VM Group.
-        :type workload_network_vm_group: ~azure.mgmt.avs.models.WorkloadNetworkVMGroup
+        :type workload_network_vm_group: ~avs_client.models.WorkloadNetworkVMGroup
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: By default, your polling method will be ARMPolling.
@@ -2309,7 +2313,7 @@ class WorkloadNetworksOperations(object):
         :paramtype polling: bool or ~azure.core.polling.PollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
         :return: An instance of LROPoller that returns either WorkloadNetworkVMGroup or the result of cls(response)
-        :rtype: ~azure.core.polling.LROPoller[~azure.mgmt.avs.models.WorkloadNetworkVMGroup]
+        :rtype: ~azure.core.polling.LROPoller[~avs_client.models.WorkloadNetworkVMGroup]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         polling = kwargs.pop('polling', True)  # type: Union[bool, PollingMethod]
@@ -2496,7 +2500,7 @@ class WorkloadNetworksOperations(object):
         :type private_cloud_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either WorkloadNetworkVirtualMachinesList or the result of cls(response)
-        :rtype: ~azure.core.paging.ItemPaged[~azure.mgmt.avs.models.WorkloadNetworkVirtualMachinesList]
+        :rtype: ~azure.core.paging.ItemPaged[~avs_client.models.WorkloadNetworkVirtualMachinesList]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.WorkloadNetworkVirtualMachinesList"]
@@ -2576,7 +2580,7 @@ class WorkloadNetworksOperations(object):
         :type virtual_machine_id: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: WorkloadNetworkVirtualMachine, or the result of cls(response)
-        :rtype: ~azure.mgmt.avs.models.WorkloadNetworkVirtualMachine
+        :rtype: ~avs_client.models.WorkloadNetworkVirtualMachine
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.WorkloadNetworkVirtualMachine"]
@@ -2638,7 +2642,7 @@ class WorkloadNetworksOperations(object):
         :type private_cloud_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either WorkloadNetworkDnsServicesList or the result of cls(response)
-        :rtype: ~azure.core.paging.ItemPaged[~azure.mgmt.avs.models.WorkloadNetworkDnsServicesList]
+        :rtype: ~azure.core.paging.ItemPaged[~avs_client.models.WorkloadNetworkDnsServicesList]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.WorkloadNetworkDnsServicesList"]
@@ -2719,7 +2723,7 @@ class WorkloadNetworksOperations(object):
         :type dns_service_id: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: WorkloadNetworkDnsService, or the result of cls(response)
-        :rtype: ~azure.mgmt.avs.models.WorkloadNetworkDnsService
+        :rtype: ~avs_client.models.WorkloadNetworkDnsService
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.WorkloadNetworkDnsService"]
@@ -2845,7 +2849,7 @@ class WorkloadNetworksOperations(object):
          display name.
         :type dns_service_id: str
         :param workload_network_dns_service: NSX DNS Service.
-        :type workload_network_dns_service: ~azure.mgmt.avs.models.WorkloadNetworkDnsService
+        :type workload_network_dns_service: ~avs_client.models.WorkloadNetworkDnsService
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: By default, your polling method will be ARMPolling.
@@ -2853,7 +2857,7 @@ class WorkloadNetworksOperations(object):
         :paramtype polling: bool or ~azure.core.polling.PollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
         :return: An instance of LROPoller that returns either WorkloadNetworkDnsService or the result of cls(response)
-        :rtype: ~azure.core.polling.LROPoller[~azure.mgmt.avs.models.WorkloadNetworkDnsService]
+        :rtype: ~azure.core.polling.LROPoller[~avs_client.models.WorkloadNetworkDnsService]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         polling = kwargs.pop('polling', True)  # type: Union[bool, PollingMethod]
@@ -2983,7 +2987,7 @@ class WorkloadNetworksOperations(object):
          display name.
         :type dns_service_id: str
         :param workload_network_dns_service: NSX DNS Service.
-        :type workload_network_dns_service: ~azure.mgmt.avs.models.WorkloadNetworkDnsService
+        :type workload_network_dns_service: ~avs_client.models.WorkloadNetworkDnsService
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: By default, your polling method will be ARMPolling.
@@ -2991,7 +2995,7 @@ class WorkloadNetworksOperations(object):
         :paramtype polling: bool or ~azure.core.polling.PollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
         :return: An instance of LROPoller that returns either WorkloadNetworkDnsService or the result of cls(response)
-        :rtype: ~azure.core.polling.LROPoller[~azure.mgmt.avs.models.WorkloadNetworkDnsService]
+        :rtype: ~azure.core.polling.LROPoller[~avs_client.models.WorkloadNetworkDnsService]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         polling = kwargs.pop('polling', True)  # type: Union[bool, PollingMethod]
@@ -3179,7 +3183,7 @@ class WorkloadNetworksOperations(object):
         :type private_cloud_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either WorkloadNetworkDnsZonesList or the result of cls(response)
-        :rtype: ~azure.core.paging.ItemPaged[~azure.mgmt.avs.models.WorkloadNetworkDnsZonesList]
+        :rtype: ~azure.core.paging.ItemPaged[~avs_client.models.WorkloadNetworkDnsZonesList]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.WorkloadNetworkDnsZonesList"]
@@ -3259,7 +3263,7 @@ class WorkloadNetworksOperations(object):
         :type dns_zone_id: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: WorkloadNetworkDnsZone, or the result of cls(response)
-        :rtype: ~azure.mgmt.avs.models.WorkloadNetworkDnsZone
+        :rtype: ~avs_client.models.WorkloadNetworkDnsZone
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.WorkloadNetworkDnsZone"]
@@ -3384,7 +3388,7 @@ class WorkloadNetworksOperations(object):
         :param dns_zone_id: NSX DNS Zone identifier. Generally the same as the DNS Zone's display name.
         :type dns_zone_id: str
         :param workload_network_dns_zone: NSX DNS Zone.
-        :type workload_network_dns_zone: ~azure.mgmt.avs.models.WorkloadNetworkDnsZone
+        :type workload_network_dns_zone: ~avs_client.models.WorkloadNetworkDnsZone
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: By default, your polling method will be ARMPolling.
@@ -3392,7 +3396,7 @@ class WorkloadNetworksOperations(object):
         :paramtype polling: bool or ~azure.core.polling.PollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
         :return: An instance of LROPoller that returns either WorkloadNetworkDnsZone or the result of cls(response)
-        :rtype: ~azure.core.polling.LROPoller[~azure.mgmt.avs.models.WorkloadNetworkDnsZone]
+        :rtype: ~azure.core.polling.LROPoller[~avs_client.models.WorkloadNetworkDnsZone]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         polling = kwargs.pop('polling', True)  # type: Union[bool, PollingMethod]
@@ -3521,7 +3525,7 @@ class WorkloadNetworksOperations(object):
         :param dns_zone_id: NSX DNS Zone identifier. Generally the same as the DNS Zone's display name.
         :type dns_zone_id: str
         :param workload_network_dns_zone: NSX DNS Zone.
-        :type workload_network_dns_zone: ~azure.mgmt.avs.models.WorkloadNetworkDnsZone
+        :type workload_network_dns_zone: ~avs_client.models.WorkloadNetworkDnsZone
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: By default, your polling method will be ARMPolling.
@@ -3529,7 +3533,7 @@ class WorkloadNetworksOperations(object):
         :paramtype polling: bool or ~azure.core.polling.PollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
         :return: An instance of LROPoller that returns either WorkloadNetworkDnsZone or the result of cls(response)
-        :rtype: ~azure.core.polling.LROPoller[~azure.mgmt.avs.models.WorkloadNetworkDnsZone]
+        :rtype: ~azure.core.polling.LROPoller[~avs_client.models.WorkloadNetworkDnsZone]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         polling = kwargs.pop('polling', True)  # type: Union[bool, PollingMethod]
@@ -3716,7 +3720,7 @@ class WorkloadNetworksOperations(object):
         :type private_cloud_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either WorkloadNetworkPublicIPsList or the result of cls(response)
-        :rtype: ~azure.core.paging.ItemPaged[~azure.mgmt.avs.models.WorkloadNetworkPublicIPsList]
+        :rtype: ~azure.core.paging.ItemPaged[~avs_client.models.WorkloadNetworkPublicIPsList]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.WorkloadNetworkPublicIPsList"]
@@ -3797,7 +3801,7 @@ class WorkloadNetworksOperations(object):
         :type public_ip_id: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: WorkloadNetworkPublicIP, or the result of cls(response)
-        :rtype: ~azure.mgmt.avs.models.WorkloadNetworkPublicIP
+        :rtype: ~avs_client.models.WorkloadNetworkPublicIP
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.WorkloadNetworkPublicIP"]
@@ -3923,7 +3927,7 @@ class WorkloadNetworksOperations(object):
          Block's display name.
         :type public_ip_id: str
         :param workload_network_public_ip: NSX Public IP Block.
-        :type workload_network_public_ip: ~azure.mgmt.avs.models.WorkloadNetworkPublicIP
+        :type workload_network_public_ip: ~avs_client.models.WorkloadNetworkPublicIP
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: By default, your polling method will be ARMPolling.
@@ -3931,7 +3935,7 @@ class WorkloadNetworksOperations(object):
         :paramtype polling: bool or ~azure.core.polling.PollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
         :return: An instance of LROPoller that returns either WorkloadNetworkPublicIP or the result of cls(response)
-        :rtype: ~azure.core.polling.LROPoller[~azure.mgmt.avs.models.WorkloadNetworkPublicIP]
+        :rtype: ~azure.core.polling.LROPoller[~avs_client.models.WorkloadNetworkPublicIP]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         polling = kwargs.pop('polling', True)  # type: Union[bool, PollingMethod]

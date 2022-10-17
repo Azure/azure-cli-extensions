@@ -32,7 +32,7 @@ class CloudLinksOperations(object):
     instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~azure.mgmt.avs.models
+    :type models: ~avs_client.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -64,7 +64,7 @@ class CloudLinksOperations(object):
         :type private_cloud_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either CloudLinkList or the result of cls(response)
-        :rtype: ~azure.core.paging.ItemPaged[~azure.mgmt.avs.models.CloudLinkList]
+        :rtype: ~azure.core.paging.ItemPaged[~avs_client.models.CloudLinkList]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.CloudLinkList"]
@@ -144,7 +144,7 @@ class CloudLinksOperations(object):
         :type cloud_link_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: CloudLink, or the result of cls(response)
-        :rtype: ~azure.mgmt.avs.models.CloudLink
+        :rtype: ~avs_client.models.CloudLink
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.CloudLink"]
@@ -269,7 +269,7 @@ class CloudLinksOperations(object):
         :param cloud_link_name: Name of the cloud link resource.
         :type cloud_link_name: str
         :param cloud_link: A cloud link in the private cloud.
-        :type cloud_link: ~azure.mgmt.avs.models.CloudLink
+        :type cloud_link: ~avs_client.models.CloudLink
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: By default, your polling method will be ARMPolling.
@@ -277,7 +277,7 @@ class CloudLinksOperations(object):
         :paramtype polling: bool or ~azure.core.polling.PollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
         :return: An instance of LROPoller that returns either CloudLink or the result of cls(response)
-        :rtype: ~azure.core.polling.LROPoller[~azure.mgmt.avs.models.CloudLink]
+        :rtype: ~azure.core.polling.LROPoller[~avs_client.models.CloudLink]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         polling = kwargs.pop('polling', True)  # type: Union[bool, PollingMethod]

@@ -42,37 +42,37 @@ class AVSClient(object):
     """Azure VMware Solution API.
 
     :ivar operations: Operations operations
-    :vartype operations: azure.mgmt.avs.operations.Operations
+    :vartype operations: avs_client.operations.Operations
     :ivar locations: LocationsOperations operations
-    :vartype locations: azure.mgmt.avs.operations.LocationsOperations
+    :vartype locations: avs_client.operations.LocationsOperations
     :ivar private_clouds: PrivateCloudsOperations operations
-    :vartype private_clouds: azure.mgmt.avs.operations.PrivateCloudsOperations
+    :vartype private_clouds: avs_client.operations.PrivateCloudsOperations
     :ivar clusters: ClustersOperations operations
-    :vartype clusters: azure.mgmt.avs.operations.ClustersOperations
+    :vartype clusters: avs_client.operations.ClustersOperations
     :ivar datastores: DatastoresOperations operations
-    :vartype datastores: azure.mgmt.avs.operations.DatastoresOperations
+    :vartype datastores: avs_client.operations.DatastoresOperations
     :ivar hcx_enterprise_sites: HcxEnterpriseSitesOperations operations
-    :vartype hcx_enterprise_sites: azure.mgmt.avs.operations.HcxEnterpriseSitesOperations
+    :vartype hcx_enterprise_sites: avs_client.operations.HcxEnterpriseSitesOperations
     :ivar authorizations: AuthorizationsOperations operations
-    :vartype authorizations: azure.mgmt.avs.operations.AuthorizationsOperations
+    :vartype authorizations: avs_client.operations.AuthorizationsOperations
     :ivar global_reach_connections: GlobalReachConnectionsOperations operations
-    :vartype global_reach_connections: azure.mgmt.avs.operations.GlobalReachConnectionsOperations
+    :vartype global_reach_connections: avs_client.operations.GlobalReachConnectionsOperations
     :ivar workload_networks: WorkloadNetworksOperations operations
-    :vartype workload_networks: azure.mgmt.avs.operations.WorkloadNetworksOperations
+    :vartype workload_networks: avs_client.operations.WorkloadNetworksOperations
     :ivar cloud_links: CloudLinksOperations operations
-    :vartype cloud_links: azure.mgmt.avs.operations.CloudLinksOperations
+    :vartype cloud_links: avs_client.operations.CloudLinksOperations
     :ivar addons: AddonsOperations operations
-    :vartype addons: azure.mgmt.avs.operations.AddonsOperations
+    :vartype addons: avs_client.operations.AddonsOperations
     :ivar virtual_machines: VirtualMachinesOperations operations
-    :vartype virtual_machines: azure.mgmt.avs.operations.VirtualMachinesOperations
+    :vartype virtual_machines: avs_client.operations.VirtualMachinesOperations
     :ivar placement_policies: PlacementPoliciesOperations operations
-    :vartype placement_policies: azure.mgmt.avs.operations.PlacementPoliciesOperations
+    :vartype placement_policies: avs_client.operations.PlacementPoliciesOperations
     :ivar script_packages: ScriptPackagesOperations operations
-    :vartype script_packages: azure.mgmt.avs.operations.ScriptPackagesOperations
+    :vartype script_packages: avs_client.operations.ScriptPackagesOperations
     :ivar script_cmdlets: ScriptCmdletsOperations operations
-    :vartype script_cmdlets: azure.mgmt.avs.operations.ScriptCmdletsOperations
+    :vartype script_cmdlets: avs_client.operations.ScriptCmdletsOperations
     :ivar script_executions: ScriptExecutionsOperations operations
-    :vartype script_executions: azure.mgmt.avs.operations.ScriptExecutionsOperations
+    :vartype script_executions: avs_client.operations.ScriptExecutionsOperations
     :param credential: Credential needed for the client to connect to Azure.
     :type credential: ~azure.core.credentials.TokenCredential
     :param subscription_id: The ID of the target subscription.

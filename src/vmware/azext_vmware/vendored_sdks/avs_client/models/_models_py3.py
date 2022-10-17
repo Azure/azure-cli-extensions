@@ -60,7 +60,7 @@ class Addon(Resource):
     :ivar type: Resource type.
     :vartype type: str
     :param properties: The properties of an addon resource.
-    :type properties: ~azure.mgmt.avs.models.AddonProperties
+    :type properties: ~avs_client.models.AddonProperties
     """
 
     _validation = {
@@ -98,10 +98,10 @@ class AddonProperties(msrest.serialization.Model):
 
     :param addon_type: Required. The type of private cloud addon.Constant filled by server.
      Possible values include: "SRM", "VR", "HCX", "Arc".
-    :type addon_type: str or ~azure.mgmt.avs.models.AddonType
+    :type addon_type: str or ~avs_client.models.AddonType
     :ivar provisioning_state: The state of the addon provisioning. Possible values include:
-     "Succeeded", "Failed", "Cancelled", "Building", "Deleting", "Updating".
-    :vartype provisioning_state: str or ~azure.mgmt.avs.models.AddonProvisioningState
+     "Succeeded", "Failed", "Cancelled", "Building", "Deleting", "Updating", "Canceled".
+    :vartype provisioning_state: str or ~avs_client.models.AddonProvisioningState
     """
 
     _validation = {
@@ -136,10 +136,10 @@ class AddonArcProperties(AddonProperties):
 
     :param addon_type: Required. The type of private cloud addon.Constant filled by server.
      Possible values include: "SRM", "VR", "HCX", "Arc".
-    :type addon_type: str or ~azure.mgmt.avs.models.AddonType
+    :type addon_type: str or ~avs_client.models.AddonType
     :ivar provisioning_state: The state of the addon provisioning. Possible values include:
-     "Succeeded", "Failed", "Cancelled", "Building", "Deleting", "Updating".
-    :vartype provisioning_state: str or ~azure.mgmt.avs.models.AddonProvisioningState
+     "Succeeded", "Failed", "Cancelled", "Building", "Deleting", "Updating", "Canceled".
+    :vartype provisioning_state: str or ~avs_client.models.AddonProvisioningState
     :param v_center: The VMware vCenter resource ID.
     :type v_center: str
     """
@@ -175,10 +175,10 @@ class AddonHcxProperties(AddonProperties):
 
     :param addon_type: Required. The type of private cloud addon.Constant filled by server.
      Possible values include: "SRM", "VR", "HCX", "Arc".
-    :type addon_type: str or ~azure.mgmt.avs.models.AddonType
+    :type addon_type: str or ~avs_client.models.AddonType
     :ivar provisioning_state: The state of the addon provisioning. Possible values include:
-     "Succeeded", "Failed", "Cancelled", "Building", "Deleting", "Updating".
-    :vartype provisioning_state: str or ~azure.mgmt.avs.models.AddonProvisioningState
+     "Succeeded", "Failed", "Cancelled", "Building", "Deleting", "Updating", "Canceled".
+    :vartype provisioning_state: str or ~avs_client.models.AddonProvisioningState
     :param offer: Required. The HCX offer, example VMware MaaS Cloud Provider (Enterprise).
     :type offer: str
     """
@@ -212,7 +212,7 @@ class AddonList(msrest.serialization.Model):
     Variables are only populated by the server, and will be ignored when sending a request.
 
     :ivar value: The items on a page.
-    :vartype value: list[~azure.mgmt.avs.models.Addon]
+    :vartype value: list[~avs_client.models.Addon]
     :ivar next_link: URL to get the next page if any.
     :vartype next_link: str
     """
@@ -245,10 +245,10 @@ class AddonSrmProperties(AddonProperties):
 
     :param addon_type: Required. The type of private cloud addon.Constant filled by server.
      Possible values include: "SRM", "VR", "HCX", "Arc".
-    :type addon_type: str or ~azure.mgmt.avs.models.AddonType
+    :type addon_type: str or ~avs_client.models.AddonType
     :ivar provisioning_state: The state of the addon provisioning. Possible values include:
-     "Succeeded", "Failed", "Cancelled", "Building", "Deleting", "Updating".
-    :vartype provisioning_state: str or ~azure.mgmt.avs.models.AddonProvisioningState
+     "Succeeded", "Failed", "Cancelled", "Building", "Deleting", "Updating", "Canceled".
+    :vartype provisioning_state: str or ~avs_client.models.AddonProvisioningState
     :param license_key: The Site Recovery Manager (SRM) license.
     :type license_key: str
     """
@@ -284,10 +284,10 @@ class AddonVrProperties(AddonProperties):
 
     :param addon_type: Required. The type of private cloud addon.Constant filled by server.
      Possible values include: "SRM", "VR", "HCX", "Arc".
-    :type addon_type: str or ~azure.mgmt.avs.models.AddonType
+    :type addon_type: str or ~avs_client.models.AddonType
     :ivar provisioning_state: The state of the addon provisioning. Possible values include:
-     "Succeeded", "Failed", "Cancelled", "Building", "Deleting", "Updating".
-    :vartype provisioning_state: str or ~azure.mgmt.avs.models.AddonProvisioningState
+     "Succeeded", "Failed", "Cancelled", "Building", "Deleting", "Updating", "Canceled".
+    :vartype provisioning_state: str or ~avs_client.models.AddonProvisioningState
     :param vrs_count: Required. The vSphere Replication Server (VRS) count.
     :type vrs_count: int
     """
@@ -360,7 +360,7 @@ class AvailabilityProperties(msrest.serialization.Model):
 
     :param strategy: The availability strategy for the private cloud. Possible values include:
      "SingleZone", "DualZone".
-    :type strategy: str or ~azure.mgmt.avs.models.AvailabilityStrategy
+    :type strategy: str or ~avs_client.models.AvailabilityStrategy
     :param zone: The primary availability zone for the private cloud.
     :type zone: int
     :param secondary_zone: The secondary availability zone for the private cloud.
@@ -440,7 +440,7 @@ class CloudLink(Resource):
     :vartype type: str
     :ivar status: The state of the cloud link. Possible values include: "Active", "Building",
      "Deleting", "Failed", "Disconnected".
-    :vartype status: str or ~azure.mgmt.avs.models.CloudLinkStatus
+    :vartype status: str or ~avs_client.models.CloudLinkStatus
     :param linked_cloud: Identifier of the other private cloud participating in the link.
     :type linked_cloud: str
     """
@@ -477,7 +477,7 @@ class CloudLinkList(msrest.serialization.Model):
     Variables are only populated by the server, and will be ignored when sending a request.
 
     :ivar value: The items on a page.
-    :vartype value: list[~azure.mgmt.avs.models.CloudLink]
+    :vartype value: list[~avs_client.models.CloudLink]
     :ivar next_link: URL to get the next page if any.
     :vartype next_link: str
     """
@@ -515,12 +515,12 @@ class Cluster(Resource):
     :ivar type: Resource type.
     :vartype type: str
     :param sku: Required. The cluster SKU.
-    :type sku: ~azure.mgmt.avs.models.Sku
+    :type sku: ~avs_client.models.Sku
     :param cluster_size: The cluster size.
     :type cluster_size: int
     :ivar provisioning_state: The state of the cluster provisioning. Possible values include:
-     "Succeeded", "Failed", "Cancelled", "Deleting", "Updating".
-    :vartype provisioning_state: str or ~azure.mgmt.avs.models.ClusterProvisioningState
+     "Succeeded", "Failed", "Cancelled", "Deleting", "Updating", "Canceled".
+    :vartype provisioning_state: str or ~avs_client.models.ClusterProvisioningState
     :ivar cluster_id: The identity.
     :vartype cluster_id: int
     :param hosts: The hosts.
@@ -569,7 +569,7 @@ class ClusterList(msrest.serialization.Model):
     Variables are only populated by the server, and will be ignored when sending a request.
 
     :ivar value: The items on a page.
-    :vartype value: list[~azure.mgmt.avs.models.Cluster]
+    :vartype value: list[~avs_client.models.Cluster]
     :ivar next_link: URL to get the next page if any.
     :vartype next_link: str
     """
@@ -601,8 +601,8 @@ class CommonClusterProperties(msrest.serialization.Model):
     :param cluster_size: The cluster size.
     :type cluster_size: int
     :ivar provisioning_state: The state of the cluster provisioning. Possible values include:
-     "Succeeded", "Failed", "Cancelled", "Deleting", "Updating".
-    :vartype provisioning_state: str or ~azure.mgmt.avs.models.ClusterProvisioningState
+     "Succeeded", "Failed", "Cancelled", "Deleting", "Updating", "Canceled".
+    :vartype provisioning_state: str or ~avs_client.models.ClusterProvisioningState
     :ivar cluster_id: The identity.
     :vartype cluster_id: int
     :param hosts: The hosts.
@@ -643,8 +643,8 @@ class ClusterProperties(CommonClusterProperties):
     :param cluster_size: The cluster size.
     :type cluster_size: int
     :ivar provisioning_state: The state of the cluster provisioning. Possible values include:
-     "Succeeded", "Failed", "Cancelled", "Deleting", "Updating".
-    :vartype provisioning_state: str or ~azure.mgmt.avs.models.ClusterProvisioningState
+     "Succeeded", "Failed", "Cancelled", "Deleting", "Updating", "Canceled".
+    :vartype provisioning_state: str or ~avs_client.models.ClusterProvisioningState
     :ivar cluster_id: The identity.
     :vartype cluster_id: int
     :param hosts: The hosts.
@@ -733,7 +733,7 @@ class ClusterZoneList(msrest.serialization.Model):
     """List of all zones and associated hosts for a cluster.
 
     :param zones: Zone and associated hosts info.
-    :type zones: list[~azure.mgmt.avs.models.ClusterZone]
+    :type zones: list[~avs_client.models.ClusterZone]
     """
 
     _attribute_map = {
@@ -762,15 +762,15 @@ class Datastore(Resource):
     :ivar type: Resource type.
     :vartype type: str
     :ivar provisioning_state: The state of the datastore provisioning. Possible values include:
-     "Succeeded", "Failed", "Cancelled", "Pending", "Creating", "Updating", "Deleting".
-    :vartype provisioning_state: str or ~azure.mgmt.avs.models.DatastoreProvisioningState
+     "Succeeded", "Failed", "Cancelled", "Pending", "Creating", "Updating", "Deleting", "Canceled".
+    :vartype provisioning_state: str or ~avs_client.models.DatastoreProvisioningState
     :param net_app_volume: An Azure NetApp Files volume.
-    :type net_app_volume: ~azure.mgmt.avs.models.NetAppVolume
+    :type net_app_volume: ~avs_client.models.NetAppVolume
     :param disk_pool_volume: An iSCSI volume.
-    :type disk_pool_volume: ~azure.mgmt.avs.models.DiskPoolVolume
+    :type disk_pool_volume: ~avs_client.models.DiskPoolVolume
     :ivar status: The operational status of the datastore. Possible values include: "Unknown",
      "Accessible", "Inaccessible", "Attached", "Detached", "LostCommunication", "DeadOrError".
-    :vartype status: str or ~azure.mgmt.avs.models.DatastoreStatus
+    :vartype status: str or ~avs_client.models.DatastoreStatus
     """
 
     _validation = {
@@ -811,7 +811,7 @@ class DatastoreList(msrest.serialization.Model):
     Variables are only populated by the server, and will be ignored when sending a request.
 
     :ivar value: The items on a page.
-    :vartype value: list[~azure.mgmt.avs.models.Datastore]
+    :vartype value: list[~avs_client.models.Datastore]
     :ivar next_link: URL to get the next page if any.
     :vartype next_link: str
     """
@@ -848,7 +848,7 @@ class DiskPoolVolume(msrest.serialization.Model):
     :type lun_name: str
     :param mount_option: Mode that describes whether the LUN has to be mounted as a datastore or
      attached as a LUN. Possible values include: "MOUNT", "ATTACH". Default value: "MOUNT".
-    :type mount_option: str or ~azure.mgmt.avs.models.MountOptionEnum
+    :type mount_option: str or ~avs_client.models.MountOptionEnum
     :ivar path: Device path.
     :vartype path: str
     """
@@ -886,9 +886,9 @@ class Encryption(msrest.serialization.Model):
 
     :param status: Status of customer managed encryption key. Possible values include: "Enabled",
      "Disabled".
-    :type status: str or ~azure.mgmt.avs.models.EncryptionState
+    :type status: str or ~avs_client.models.EncryptionState
     :param key_vault_properties: The key vault where the encryption key is stored.
-    :type key_vault_properties: ~azure.mgmt.avs.models.EncryptionKeyVaultProperties
+    :type key_vault_properties: ~avs_client.models.EncryptionKeyVaultProperties
     """
 
     _attribute_map = {
@@ -924,10 +924,10 @@ class EncryptionKeyVaultProperties(msrest.serialization.Model):
     :type key_vault_url: str
     :ivar key_state: The state of key provided. Possible values include: "Connected",
      "AccessDenied".
-    :vartype key_state: str or ~azure.mgmt.avs.models.EncryptionKeyStatus
+    :vartype key_state: str or ~avs_client.models.EncryptionKeyStatus
     :ivar version_type: Property of the key if user provided or auto detected. Possible values
      include: "Fixed", "AutoDetected".
-    :vartype version_type: str or ~azure.mgmt.avs.models.EncryptionVersionType
+    :vartype version_type: str or ~avs_client.models.EncryptionVersionType
     """
 
     _validation = {
@@ -1039,9 +1039,9 @@ class ErrorResponse(msrest.serialization.Model):
     :ivar target: The error target.
     :vartype target: str
     :ivar details: The error details.
-    :vartype details: list[~azure.mgmt.avs.models.ErrorResponse]
+    :vartype details: list[~avs_client.models.ErrorResponse]
     :ivar additional_info: The error additional info.
-    :vartype additional_info: list[~azure.mgmt.avs.models.ErrorAdditionalInfo]
+    :vartype additional_info: list[~avs_client.models.ErrorAdditionalInfo]
     """
 
     _validation = {
@@ -1084,9 +1084,9 @@ class ExpressRouteAuthorization(Resource):
     :ivar type: Resource type.
     :vartype type: str
     :ivar provisioning_state: The state of the  ExpressRoute Circuit Authorization provisioning.
-     Possible values include: "Succeeded", "Failed", "Updating".
+     Possible values include: "Succeeded", "Failed", "Updating", "Canceled".
     :vartype provisioning_state: str or
-     ~azure.mgmt.avs.models.ExpressRouteAuthorizationProvisioningState
+     ~avs_client.models.ExpressRouteAuthorizationProvisioningState
     :ivar express_route_authorization_id: The ID of the ExpressRoute Circuit Authorization.
     :vartype express_route_authorization_id: str
     :ivar express_route_authorization_key: The key of the ExpressRoute Circuit Authorization.
@@ -1133,7 +1133,7 @@ class ExpressRouteAuthorizationList(msrest.serialization.Model):
     Variables are only populated by the server, and will be ignored when sending a request.
 
     :ivar value: The items on a page.
-    :vartype value: list[~azure.mgmt.avs.models.ExpressRouteAuthorization]
+    :vartype value: list[~avs_client.models.ExpressRouteAuthorization]
     :ivar next_link: URL to get the next page if any.
     :vartype next_link: str
     """
@@ -1169,9 +1169,8 @@ class GlobalReachConnection(Resource):
     :ivar type: Resource type.
     :vartype type: str
     :ivar provisioning_state: The state of the  ExpressRoute Circuit Authorization provisioning.
-     Possible values include: "Succeeded", "Failed", "Updating".
-    :vartype provisioning_state: str or
-     ~azure.mgmt.avs.models.GlobalReachConnectionProvisioningState
+     Possible values include: "Succeeded", "Failed", "Updating", "Canceled".
+    :vartype provisioning_state: str or ~avs_client.models.GlobalReachConnectionProvisioningState
     :ivar address_prefix: The network used for global reach carved out from the original network
      block provided for the private cloud.
     :vartype address_prefix: str
@@ -1180,7 +1179,7 @@ class GlobalReachConnection(Resource):
     :type authorization_key: str
     :ivar circuit_connection_status: The connection status of the global reach connection. Possible
      values include: "Connected", "Connecting", "Disconnected".
-    :vartype circuit_connection_status: str or ~azure.mgmt.avs.models.GlobalReachConnectionStatus
+    :vartype circuit_connection_status: str or ~avs_client.models.GlobalReachConnectionStatus
     :param peer_express_route_circuit: Identifier of the ExpressRoute Circuit to peer with in the
      global reach connection.
     :type peer_express_route_circuit: str
@@ -1233,7 +1232,7 @@ class GlobalReachConnectionList(msrest.serialization.Model):
     Variables are only populated by the server, and will be ignored when sending a request.
 
     :ivar value: The items on a page.
-    :vartype value: list[~azure.mgmt.avs.models.GlobalReachConnection]
+    :vartype value: list[~avs_client.models.GlobalReachConnection]
     :ivar next_link: URL to get the next page if any.
     :vartype next_link: str
     """
@@ -1272,7 +1271,7 @@ class HcxEnterpriseSite(Resource):
     :vartype activation_key: str
     :ivar status: The status of the HCX Enterprise Site. Possible values include: "Available",
      "Consumed", "Deactivated", "Deleted".
-    :vartype status: str or ~azure.mgmt.avs.models.HcxEnterpriseSiteStatus
+    :vartype status: str or ~avs_client.models.HcxEnterpriseSiteStatus
     """
 
     _validation = {
@@ -1306,7 +1305,7 @@ class HcxEnterpriseSiteList(msrest.serialization.Model):
     Variables are only populated by the server, and will be ignored when sending a request.
 
     :ivar value: The items on a page.
-    :vartype value: list[~azure.mgmt.avs.models.HcxEnterpriseSite]
+    :vartype value: list[~avs_client.models.HcxEnterpriseSite]
     :ivar next_link: URL to get the next page if any.
     :vartype next_link: str
     """
@@ -1349,7 +1348,7 @@ class IdentitySource(msrest.serialization.Model):
     :type secondary_server: str
     :param ssl: Protect LDAP communication using SSL certificate (LDAPS). Possible values include:
      "Enabled", "Disabled".
-    :type ssl: str or ~azure.mgmt.avs.models.SslEnum
+    :type ssl: str or ~avs_client.models.SslEnum
     :param username: The ID of an Active Directory user with a minimum of read-only access to Base
      DN for users and group.
     :type username: str
@@ -1438,8 +1437,8 @@ class ManagementCluster(CommonClusterProperties):
     :param cluster_size: The cluster size.
     :type cluster_size: int
     :ivar provisioning_state: The state of the cluster provisioning. Possible values include:
-     "Succeeded", "Failed", "Cancelled", "Deleting", "Updating".
-    :vartype provisioning_state: str or ~azure.mgmt.avs.models.ClusterProvisioningState
+     "Succeeded", "Failed", "Cancelled", "Deleting", "Updating", "Canceled".
+    :vartype provisioning_state: str or ~avs_client.models.ClusterProvisioningState
     :ivar cluster_id: The identity.
     :vartype cluster_id: int
     :param hosts: The hosts.
@@ -1530,7 +1529,7 @@ class MetricSpecification(msrest.serialization.Model):
      duration where no metric is emitted/published.
     :type fill_gap_with_zero: bool
     :param dimensions: Dimensions of the metric.
-    :type dimensions: list[~azure.mgmt.avs.models.MetricDimension]
+    :type dimensions: list[~avs_client.models.MetricDimension]
     :param enable_regional_mdm_account: Whether or not the service is using regional MDM accounts.
     :type enable_regional_mdm_account: str
     :param source_mdm_account: The name of the MDM account.
@@ -1624,14 +1623,14 @@ class Operation(msrest.serialization.Model):
     :ivar name: Name of the operation being performed on this object.
     :vartype name: str
     :ivar display: Contains the localized display information for this operation.
-    :vartype display: ~azure.mgmt.avs.models.OperationDisplay
+    :vartype display: ~avs_client.models.OperationDisplay
     :param is_data_action: Gets or sets a value indicating whether the operation is a data action
      or not.
     :type is_data_action: bool
     :param origin: Origin of the operation.
     :type origin: str
     :param properties: Properties of the operation.
-    :type properties: ~azure.mgmt.avs.models.OperationProperties
+    :type properties: ~avs_client.models.OperationProperties
     """
 
     _validation = {
@@ -1709,7 +1708,7 @@ class OperationList(msrest.serialization.Model):
     Variables are only populated by the server, and will be ignored when sending a request.
 
     :ivar value: List of operations.
-    :vartype value: list[~azure.mgmt.avs.models.Operation]
+    :vartype value: list[~avs_client.models.Operation]
     :ivar next_link: URL to get the next page if any.
     :vartype next_link: str
     """
@@ -1737,7 +1736,7 @@ class OperationProperties(msrest.serialization.Model):
     """Extra Operation properties.
 
     :param service_specification: Service specifications of the operation.
-    :type service_specification: ~azure.mgmt.avs.models.ServiceSpecification
+    :type service_specification: ~avs_client.models.ServiceSpecification
     """
 
     _attribute_map = {
@@ -1760,7 +1759,7 @@ class PlacementPoliciesList(msrest.serialization.Model):
     Variables are only populated by the server, and will be ignored when sending a request.
 
     :ivar value: The items on the page.
-    :vartype value: list[~azure.mgmt.avs.models.PlacementPolicy]
+    :vartype value: list[~avs_client.models.PlacementPolicy]
     :ivar next_link: URL to get the next page if any.
     :vartype next_link: str
     """
@@ -1796,7 +1795,7 @@ class PlacementPolicy(Resource):
     :ivar type: Resource type.
     :vartype type: str
     :param properties: placement policy properties.
-    :type properties: ~azure.mgmt.avs.models.PlacementPolicyProperties
+    :type properties: ~avs_client.models.PlacementPolicyProperties
     """
 
     _validation = {
@@ -1834,15 +1833,15 @@ class PlacementPolicyProperties(msrest.serialization.Model):
 
     :param type: Required. placement policy type.Constant filled by server.  Possible values
      include: "VmVm", "VmHost".
-    :type type: str or ~azure.mgmt.avs.models.PlacementPolicyType
+    :type type: str or ~avs_client.models.PlacementPolicyType
     :param state: Whether the placement policy is enabled or disabled. Possible values include:
      "Enabled", "Disabled".
-    :type state: str or ~azure.mgmt.avs.models.PlacementPolicyState
+    :type state: str or ~avs_client.models.PlacementPolicyState
     :param display_name: Display name of the placement policy.
     :type display_name: str
     :ivar provisioning_state: The provisioning state. Possible values include: "Succeeded",
-     "Failed", "Building", "Deleting", "Updating".
-    :vartype provisioning_state: str or ~azure.mgmt.avs.models.PlacementPolicyProvisioningState
+     "Failed", "Building", "Deleting", "Updating", "Canceled".
+    :vartype provisioning_state: str or ~avs_client.models.PlacementPolicyProvisioningState
     """
 
     _validation = {
@@ -1880,17 +1879,17 @@ class PlacementPolicyUpdate(msrest.serialization.Model):
 
     :param state: Whether the placement policy is enabled or disabled. Possible values include:
      "Enabled", "Disabled".
-    :type state: str or ~azure.mgmt.avs.models.PlacementPolicyState
+    :type state: str or ~avs_client.models.PlacementPolicyState
     :param vm_members: Virtual machine members list.
     :type vm_members: list[str]
     :param host_members: Host members list.
     :type host_members: list[str]
     :param affinity_strength: vm-host placement policy affinity strength (should/must). Possible
      values include: "Should", "Must".
-    :type affinity_strength: str or ~azure.mgmt.avs.models.AffinityStrength
+    :type affinity_strength: str or ~avs_client.models.AffinityStrength
     :param azure_hybrid_benefit_type: placement policy azure hybrid benefit opt-in type. Possible
      values include: "SqlHost", "None".
-    :type azure_hybrid_benefit_type: str or ~azure.mgmt.avs.models.AzureHybridBenefitType
+    :type azure_hybrid_benefit_type: str or ~avs_client.models.AzureHybridBenefitType
     """
 
     _attribute_map = {
@@ -1980,28 +1979,28 @@ class PrivateCloud(TrackedResource):
     :param tags: A set of tags. Resource tags.
     :type tags: dict[str, str]
     :param sku: Required. The private cloud SKU.
-    :type sku: ~azure.mgmt.avs.models.Sku
+    :type sku: ~avs_client.models.Sku
     :param identity: The identity of the private cloud, if configured.
-    :type identity: ~azure.mgmt.avs.models.PrivateCloudIdentity
+    :type identity: ~avs_client.models.PrivateCloudIdentity
     :param management_cluster: The default cluster used for management.
-    :type management_cluster: ~azure.mgmt.avs.models.ManagementCluster
+    :type management_cluster: ~avs_client.models.ManagementCluster
     :param internet: Connectivity to internet is enabled or disabled. Possible values include:
      "Enabled", "Disabled". Default value: "Disabled".
-    :type internet: str or ~azure.mgmt.avs.models.InternetEnum
+    :type internet: str or ~avs_client.models.InternetEnum
     :param identity_sources: vCenter Single Sign On Identity Sources.
-    :type identity_sources: list[~azure.mgmt.avs.models.IdentitySource]
+    :type identity_sources: list[~avs_client.models.IdentitySource]
     :param availability: Properties describing how the cloud is distributed across availability
      zones.
-    :type availability: ~azure.mgmt.avs.models.AvailabilityProperties
+    :type availability: ~avs_client.models.AvailabilityProperties
     :param encryption: Customer managed key encryption, can be enabled or disabled.
-    :type encryption: ~azure.mgmt.avs.models.Encryption
+    :type encryption: ~avs_client.models.Encryption
     :ivar provisioning_state: The provisioning state. Possible values include: "Succeeded",
-     "Failed", "Cancelled", "Pending", "Building", "Deleting", "Updating".
-    :vartype provisioning_state: str or ~azure.mgmt.avs.models.PrivateCloudProvisioningState
+     "Failed", "Cancelled", "Pending", "Building", "Deleting", "Updating", "Canceled".
+    :vartype provisioning_state: str or ~avs_client.models.PrivateCloudProvisioningState
     :param circuit: An ExpressRoute Circuit.
-    :type circuit: ~azure.mgmt.avs.models.Circuit
+    :type circuit: ~avs_client.models.Circuit
     :ivar endpoints: The endpoints.
-    :vartype endpoints: ~azure.mgmt.avs.models.Endpoints
+    :vartype endpoints: ~avs_client.models.Endpoints
     :param network_block: The block of addresses should be unique across VNet in your subscription
      as well as on-premise. Make sure the CIDR format is conformed to (A.B.C.D/X) where A,B,C,D are
      between 0 and 255, and X is between 0 and 22.
@@ -2027,11 +2026,11 @@ class PrivateCloud(TrackedResource):
     :vartype external_cloud_links: list[str]
     :param secondary_circuit: A secondary expressRoute circuit from a separate AZ. Only present in
      a stretched private cloud.
-    :type secondary_circuit: ~azure.mgmt.avs.models.Circuit
+    :type secondary_circuit: ~avs_client.models.Circuit
     :ivar nsx_public_ip_quota_raised: Flag to indicate whether the private cloud has the quota for
      provisioned NSX Public IP count raised from 64 to 1024. Possible values include: "Enabled",
      "Disabled".
-    :vartype nsx_public_ip_quota_raised: str or ~azure.mgmt.avs.models.NsxPublicIpQuotaRaisedEnum
+    :vartype nsx_public_ip_quota_raised: str or ~avs_client.models.NsxPublicIpQuotaRaisedEnum
     """
 
     _validation = {
@@ -2136,7 +2135,7 @@ class PrivateCloudIdentity(msrest.serialization.Model):
     :param type: The type of identity used for the private cloud. The type 'SystemAssigned' refers
      to an implicitly created identity. The type 'None' will remove any identities from the Private
      Cloud. Possible values include: "SystemAssigned", "None".
-    :type type: str or ~azure.mgmt.avs.models.ResourceIdentityType
+    :type type: str or ~avs_client.models.ResourceIdentityType
     """
 
     _validation = {
@@ -2168,7 +2167,7 @@ class PrivateCloudList(msrest.serialization.Model):
     Variables are only populated by the server, and will be ignored when sending a request.
 
     :ivar value: The items on the page.
-    :vartype value: list[~azure.mgmt.avs.models.PrivateCloud]
+    :vartype value: list[~avs_client.models.PrivateCloud]
     :ivar next_link: URL to get the next page if any.
     :vartype next_link: str
     """
@@ -2196,17 +2195,17 @@ class PrivateCloudUpdateProperties(msrest.serialization.Model):
     """The properties of a private cloud resource that may be updated.
 
     :param management_cluster: The default cluster used for management.
-    :type management_cluster: ~azure.mgmt.avs.models.ManagementCluster
+    :type management_cluster: ~avs_client.models.ManagementCluster
     :param internet: Connectivity to internet is enabled or disabled. Possible values include:
      "Enabled", "Disabled". Default value: "Disabled".
-    :type internet: str or ~azure.mgmt.avs.models.InternetEnum
+    :type internet: str or ~avs_client.models.InternetEnum
     :param identity_sources: vCenter Single Sign On Identity Sources.
-    :type identity_sources: list[~azure.mgmt.avs.models.IdentitySource]
+    :type identity_sources: list[~avs_client.models.IdentitySource]
     :param availability: Properties describing how the cloud is distributed across availability
      zones.
-    :type availability: ~azure.mgmt.avs.models.AvailabilityProperties
+    :type availability: ~avs_client.models.AvailabilityProperties
     :param encryption: Customer managed key encryption, can be enabled or disabled.
-    :type encryption: ~azure.mgmt.avs.models.Encryption
+    :type encryption: ~avs_client.models.Encryption
     """
 
     _attribute_map = {
@@ -2243,24 +2242,24 @@ class PrivateCloudProperties(PrivateCloudUpdateProperties):
     All required parameters must be populated in order to send to Azure.
 
     :param management_cluster: The default cluster used for management.
-    :type management_cluster: ~azure.mgmt.avs.models.ManagementCluster
+    :type management_cluster: ~avs_client.models.ManagementCluster
     :param internet: Connectivity to internet is enabled or disabled. Possible values include:
      "Enabled", "Disabled". Default value: "Disabled".
-    :type internet: str or ~azure.mgmt.avs.models.InternetEnum
+    :type internet: str or ~avs_client.models.InternetEnum
     :param identity_sources: vCenter Single Sign On Identity Sources.
-    :type identity_sources: list[~azure.mgmt.avs.models.IdentitySource]
+    :type identity_sources: list[~avs_client.models.IdentitySource]
     :param availability: Properties describing how the cloud is distributed across availability
      zones.
-    :type availability: ~azure.mgmt.avs.models.AvailabilityProperties
+    :type availability: ~avs_client.models.AvailabilityProperties
     :param encryption: Customer managed key encryption, can be enabled or disabled.
-    :type encryption: ~azure.mgmt.avs.models.Encryption
+    :type encryption: ~avs_client.models.Encryption
     :ivar provisioning_state: The provisioning state. Possible values include: "Succeeded",
-     "Failed", "Cancelled", "Pending", "Building", "Deleting", "Updating".
-    :vartype provisioning_state: str or ~azure.mgmt.avs.models.PrivateCloudProvisioningState
+     "Failed", "Cancelled", "Pending", "Building", "Deleting", "Updating", "Canceled".
+    :vartype provisioning_state: str or ~avs_client.models.PrivateCloudProvisioningState
     :param circuit: An ExpressRoute Circuit.
-    :type circuit: ~azure.mgmt.avs.models.Circuit
+    :type circuit: ~avs_client.models.Circuit
     :ivar endpoints: The endpoints.
-    :vartype endpoints: ~azure.mgmt.avs.models.Endpoints
+    :vartype endpoints: ~avs_client.models.Endpoints
     :param network_block: Required. The block of addresses should be unique across VNet in your
      subscription as well as on-premise. Make sure the CIDR format is conformed to (A.B.C.D/X) where
      A,B,C,D are between 0 and 255, and X is between 0 and 22.
@@ -2286,11 +2285,11 @@ class PrivateCloudProperties(PrivateCloudUpdateProperties):
     :vartype external_cloud_links: list[str]
     :param secondary_circuit: A secondary expressRoute circuit from a separate AZ. Only present in
      a stretched private cloud.
-    :type secondary_circuit: ~azure.mgmt.avs.models.Circuit
+    :type secondary_circuit: ~avs_client.models.Circuit
     :ivar nsx_public_ip_quota_raised: Flag to indicate whether the private cloud has the quota for
      provisioned NSX Public IP count raised from 64 to 1024. Possible values include: "Enabled",
      "Disabled".
-    :vartype nsx_public_ip_quota_raised: str or ~azure.mgmt.avs.models.NsxPublicIpQuotaRaisedEnum
+    :vartype nsx_public_ip_quota_raised: str or ~avs_client.models.NsxPublicIpQuotaRaisedEnum
     """
 
     _validation = {
@@ -2366,19 +2365,19 @@ class PrivateCloudUpdate(msrest.serialization.Model):
     :param tags: A set of tags. Resource tags.
     :type tags: dict[str, str]
     :param identity: The identity of the private cloud, if configured.
-    :type identity: ~azure.mgmt.avs.models.PrivateCloudIdentity
+    :type identity: ~avs_client.models.PrivateCloudIdentity
     :param management_cluster: The default cluster used for management.
-    :type management_cluster: ~azure.mgmt.avs.models.ManagementCluster
+    :type management_cluster: ~avs_client.models.ManagementCluster
     :param internet: Connectivity to internet is enabled or disabled. Possible values include:
      "Enabled", "Disabled". Default value: "Disabled".
-    :type internet: str or ~azure.mgmt.avs.models.InternetEnum
+    :type internet: str or ~avs_client.models.InternetEnum
     :param identity_sources: vCenter Single Sign On Identity Sources.
-    :type identity_sources: list[~azure.mgmt.avs.models.IdentitySource]
+    :type identity_sources: list[~avs_client.models.IdentitySource]
     :param availability: Properties describing how the cloud is distributed across availability
      zones.
-    :type availability: ~azure.mgmt.avs.models.AvailabilityProperties
+    :type availability: ~avs_client.models.AvailabilityProperties
     :param encryption: Customer managed key encryption, can be enabled or disabled.
-    :type encryption: ~azure.mgmt.avs.models.Encryption
+    :type encryption: ~avs_client.models.Encryption
     """
 
     _attribute_map = {
@@ -2457,7 +2456,7 @@ class ScriptExecutionParameter(msrest.serialization.Model):
     :type name: str
     :param type: Required. The type of execution parameter.Constant filled by server.  Possible
      values include: "Value", "SecureValue", "Credential".
-    :type type: str or ~azure.mgmt.avs.models.ScriptExecutionParameterType
+    :type type: str or ~avs_client.models.ScriptExecutionParameterType
     """
 
     _validation = {
@@ -2494,7 +2493,7 @@ class PSCredentialExecutionParameter(ScriptExecutionParameter):
     :type name: str
     :param type: Required. The type of execution parameter.Constant filled by server.  Possible
      values include: "Value", "SecureValue", "Credential".
-    :type type: str or ~azure.mgmt.avs.models.ScriptExecutionParameterType
+    :type type: str or ~avs_client.models.ScriptExecutionParameterType
     :param username: username for login.
     :type username: str
     :param password: password for login.
@@ -2536,7 +2535,7 @@ class Quota(msrest.serialization.Model):
     :vartype hosts_remaining: dict[str, int]
     :ivar quota_enabled: Host quota is active for current subscription. Possible values include:
      "Enabled", "Disabled".
-    :vartype quota_enabled: str or ~azure.mgmt.avs.models.QuotaEnabled
+    :vartype quota_enabled: str or ~avs_client.models.QuotaEnabled
     """
 
     _validation = {
@@ -2574,7 +2573,7 @@ class ScriptCmdlet(ProxyResource):
     :ivar timeout: Recommended time limit for execution.
     :vartype timeout: str
     :ivar parameters: Parameters the script will accept.
-    :vartype parameters: list[~azure.mgmt.avs.models.ScriptParameter]
+    :vartype parameters: list[~avs_client.models.ScriptParameter]
     """
 
     _validation = {
@@ -2611,7 +2610,7 @@ class ScriptCmdletsList(msrest.serialization.Model):
     Variables are only populated by the server, and will be ignored when sending a request.
 
     :ivar value: List of scripts.
-    :vartype value: list[~azure.mgmt.avs.models.ScriptCmdlet]
+    :vartype value: list[~avs_client.models.ScriptCmdlet]
     :ivar next_link: URL to get the next page if any.
     :vartype next_link: str
     """
@@ -2650,10 +2649,10 @@ class ScriptExecution(ProxyResource):
      script.
     :type script_cmdlet_id: str
     :param parameters: Parameters the script will accept.
-    :type parameters: list[~azure.mgmt.avs.models.ScriptExecutionParameter]
+    :type parameters: list[~avs_client.models.ScriptExecutionParameter]
     :param hidden_parameters: Parameters that will be hidden/not visible to ARM, such as passwords
      and credentials.
-    :type hidden_parameters: list[~azure.mgmt.avs.models.ScriptExecutionParameter]
+    :type hidden_parameters: list[~avs_client.models.ScriptExecutionParameter]
     :param failure_reason: Error message if the script was able to run, but if the script itself
      had errors or powershell threw an exception.
     :type failure_reason: str
@@ -2669,8 +2668,8 @@ class ScriptExecution(ProxyResource):
     :ivar finished_at: Time the script execution was finished.
     :vartype finished_at: ~datetime.datetime
     :ivar provisioning_state: The state of the script execution resource. Possible values include:
-     "Pending", "Running", "Succeeded", "Failed", "Cancelling", "Cancelled", "Deleting".
-    :vartype provisioning_state: str or ~azure.mgmt.avs.models.ScriptExecutionProvisioningState
+     "Pending", "Running", "Succeeded", "Failed", "Cancelling", "Cancelled", "Deleting", "Canceled".
+    :vartype provisioning_state: str or ~avs_client.models.ScriptExecutionProvisioningState
     :param output: Standard output stream from the powershell execution.
     :type output: list[str]
     :param named_outputs: User-defined dictionary.
@@ -2754,7 +2753,7 @@ class ScriptExecutionsList(msrest.serialization.Model):
     Variables are only populated by the server, and will be ignored when sending a request.
 
     :ivar value: List of scripts.
-    :vartype value: list[~azure.mgmt.avs.models.ScriptExecution]
+    :vartype value: list[~avs_client.models.ScriptExecution]
     :ivar next_link: URL to get the next page if any.
     :vartype next_link: str
     """
@@ -2836,7 +2835,7 @@ class ScriptPackagesList(msrest.serialization.Model):
     Variables are only populated by the server, and will be ignored when sending a request.
 
     :ivar value: List of script package resources.
-    :vartype value: list[~azure.mgmt.avs.models.ScriptPackage]
+    :vartype value: list[~avs_client.models.ScriptPackage]
     :ivar next_link: URL to get the next page if any.
     :vartype next_link: str
     """
@@ -2868,17 +2867,17 @@ class ScriptParameter(msrest.serialization.Model):
     :ivar type: The type of parameter the script is expecting. psCredential is a
      PSCredentialObject. Possible values include: "String", "SecureString", "Credential", "Int",
      "Bool", "Float".
-    :vartype type: str or ~azure.mgmt.avs.models.ScriptParameterTypes
+    :vartype type: str or ~avs_client.models.ScriptParameterTypes
     :param name: The parameter name that the script will expect a parameter value for.
     :type name: str
     :ivar description: User friendly description of the parameter.
     :vartype description: str
     :ivar visibility: Should this parameter be visible to arm and passed in the parameters argument
      when executing. Possible values include: "Visible", "Hidden".
-    :vartype visibility: str or ~azure.mgmt.avs.models.VisibilityParameterEnum
+    :vartype visibility: str or ~avs_client.models.VisibilityParameterEnum
     :ivar optional: Is this parameter required or optional. Possible values include: "Optional",
      "Required".
-    :vartype optional: str or ~azure.mgmt.avs.models.OptionalParamEnum
+    :vartype optional: str or ~avs_client.models.OptionalParamEnum
     """
 
     _validation = {
@@ -2919,7 +2918,7 @@ class ScriptSecureStringExecutionParameter(ScriptExecutionParameter):
     :type name: str
     :param type: Required. The type of execution parameter.Constant filled by server.  Possible
      values include: "Value", "SecureValue", "Credential".
-    :type type: str or ~azure.mgmt.avs.models.ScriptExecutionParameterType
+    :type type: str or ~avs_client.models.ScriptExecutionParameterType
     :param secure_value: A secure value for the passed parameter, not to be stored in logs.
     :type secure_value: str
     """
@@ -2956,7 +2955,7 @@ class ScriptStringExecutionParameter(ScriptExecutionParameter):
     :type name: str
     :param type: Required. The type of execution parameter.Constant filled by server.  Possible
      values include: "Value", "SecureValue", "Credential".
-    :type type: str or ~azure.mgmt.avs.models.ScriptExecutionParameterType
+    :type type: str or ~avs_client.models.ScriptExecutionParameterType
     :param value: The value for the passed parameter.
     :type value: str
     """
@@ -2988,9 +2987,9 @@ class ServiceSpecification(msrest.serialization.Model):
     """Service specification payload.
 
     :param log_specifications: Specifications of the Log for Azure Monitoring.
-    :type log_specifications: list[~azure.mgmt.avs.models.LogSpecification]
+    :type log_specifications: list[~avs_client.models.LogSpecification]
     :param metric_specifications: Specifications of the Metrics for Azure Monitoring.
-    :type metric_specifications: list[~azure.mgmt.avs.models.MetricSpecification]
+    :type metric_specifications: list[~avs_client.models.MetricSpecification]
     """
 
     _attribute_map = {
@@ -3044,7 +3043,7 @@ class Trial(msrest.serialization.Model):
 
     :ivar status: Trial status. Possible values include: "TrialAvailable", "TrialUsed",
      "TrialDisabled".
-    :vartype status: str or ~azure.mgmt.avs.models.TrialStatus
+    :vartype status: str or ~avs_client.models.TrialStatus
     :ivar available_hosts: Number of trial hosts available.
     :vartype available_hosts: int
     """
@@ -3088,7 +3087,7 @@ class VirtualMachine(ProxyResource):
     :vartype folder_path: str
     :ivar restrict_movement: Whether VM DRS-driven movement is restricted (enabled) or not
      (disabled). Possible values include: "Enabled", "Disabled".
-    :vartype restrict_movement: str or ~azure.mgmt.avs.models.VirtualMachineRestrictMovementState
+    :vartype restrict_movement: str or ~avs_client.models.VirtualMachineRestrictMovementState
     """
 
     _validation = {
@@ -3127,7 +3126,7 @@ class VirtualMachineRestrictMovement(msrest.serialization.Model):
 
     :param restrict_movement: Whether VM DRS-driven movement is restricted (enabled) or not
      (disabled). Possible values include: "Enabled", "Disabled".
-    :type restrict_movement: str or ~azure.mgmt.avs.models.VirtualMachineRestrictMovementState
+    :type restrict_movement: str or ~avs_client.models.VirtualMachineRestrictMovementState
     """
 
     _attribute_map = {
@@ -3150,7 +3149,7 @@ class VirtualMachinesList(msrest.serialization.Model):
     Variables are only populated by the server, and will be ignored when sending a request.
 
     :ivar value: The items to be displayed on the page.
-    :vartype value: list[~azure.mgmt.avs.models.VirtualMachine]
+    :vartype value: list[~avs_client.models.VirtualMachine]
     :ivar next_link: URL to get the next page if any.
     :vartype next_link: str
     """
@@ -3183,28 +3182,28 @@ class VmHostPlacementPolicyProperties(PlacementPolicyProperties):
 
     :param type: Required. placement policy type.Constant filled by server.  Possible values
      include: "VmVm", "VmHost".
-    :type type: str or ~azure.mgmt.avs.models.PlacementPolicyType
+    :type type: str or ~avs_client.models.PlacementPolicyType
     :param state: Whether the placement policy is enabled or disabled. Possible values include:
      "Enabled", "Disabled".
-    :type state: str or ~azure.mgmt.avs.models.PlacementPolicyState
+    :type state: str or ~avs_client.models.PlacementPolicyState
     :param display_name: Display name of the placement policy.
     :type display_name: str
     :ivar provisioning_state: The provisioning state. Possible values include: "Succeeded",
-     "Failed", "Building", "Deleting", "Updating".
-    :vartype provisioning_state: str or ~azure.mgmt.avs.models.PlacementPolicyProvisioningState
+     "Failed", "Building", "Deleting", "Updating", "Canceled".
+    :vartype provisioning_state: str or ~avs_client.models.PlacementPolicyProvisioningState
     :param vm_members: Required. Virtual machine members list.
     :type vm_members: list[str]
     :param host_members: Required. Host members list.
     :type host_members: list[str]
     :param affinity_type: Required. placement policy affinity type. Possible values include:
      "Affinity", "AntiAffinity".
-    :type affinity_type: str or ~azure.mgmt.avs.models.AffinityType
+    :type affinity_type: str or ~avs_client.models.AffinityType
     :param affinity_strength: vm-host placement policy affinity strength (should/must). Possible
      values include: "Should", "Must".
-    :type affinity_strength: str or ~azure.mgmt.avs.models.AffinityStrength
+    :type affinity_strength: str or ~avs_client.models.AffinityStrength
     :param azure_hybrid_benefit_type: placement policy azure hybrid benefit opt-in type. Possible
      values include: "SqlHost", "None".
-    :type azure_hybrid_benefit_type: str or ~azure.mgmt.avs.models.AzureHybridBenefitType
+    :type azure_hybrid_benefit_type: str or ~avs_client.models.AzureHybridBenefitType
     """
 
     _validation = {
@@ -3257,20 +3256,20 @@ class VmPlacementPolicyProperties(PlacementPolicyProperties):
 
     :param type: Required. placement policy type.Constant filled by server.  Possible values
      include: "VmVm", "VmHost".
-    :type type: str or ~azure.mgmt.avs.models.PlacementPolicyType
+    :type type: str or ~avs_client.models.PlacementPolicyType
     :param state: Whether the placement policy is enabled or disabled. Possible values include:
      "Enabled", "Disabled".
-    :type state: str or ~azure.mgmt.avs.models.PlacementPolicyState
+    :type state: str or ~avs_client.models.PlacementPolicyState
     :param display_name: Display name of the placement policy.
     :type display_name: str
     :ivar provisioning_state: The provisioning state. Possible values include: "Succeeded",
-     "Failed", "Building", "Deleting", "Updating".
-    :vartype provisioning_state: str or ~azure.mgmt.avs.models.PlacementPolicyProvisioningState
+     "Failed", "Building", "Deleting", "Updating", "Canceled".
+    :vartype provisioning_state: str or ~avs_client.models.PlacementPolicyProvisioningState
     :param vm_members: Required. Virtual machine members list.
     :type vm_members: list[str]
     :param affinity_type: Required. placement policy affinity type. Possible values include:
      "Affinity", "AntiAffinity".
-    :type affinity_type: str or ~azure.mgmt.avs.models.AffinityType
+    :type affinity_type: str or ~avs_client.models.AffinityType
     """
 
     _validation = {
@@ -3348,7 +3347,7 @@ class WorkloadNetworkDhcp(ProxyResource):
     :ivar type: Resource type.
     :vartype type: str
     :param properties: DHCP properties.
-    :type properties: ~azure.mgmt.avs.models.WorkloadNetworkDhcpEntity
+    :type properties: ~avs_client.models.WorkloadNetworkDhcpEntity
     """
 
     _validation = {
@@ -3386,14 +3385,14 @@ class WorkloadNetworkDhcpEntity(msrest.serialization.Model):
 
     :param dhcp_type: Required. Type of DHCP: SERVER or RELAY.Constant filled by server.  Possible
      values include: "SERVER", "RELAY".
-    :type dhcp_type: str or ~azure.mgmt.avs.models.DhcpTypeEnum
+    :type dhcp_type: str or ~avs_client.models.DhcpTypeEnum
     :param display_name: Display name of the DHCP entity.
     :type display_name: str
     :ivar segments: NSX Segments consuming DHCP.
     :vartype segments: list[str]
     :ivar provisioning_state: The provisioning state. Possible values include: "Succeeded",
-     "Failed", "Building", "Deleting", "Updating".
-    :vartype provisioning_state: str or ~azure.mgmt.avs.models.WorkloadNetworkDhcpProvisioningState
+     "Failed", "Building", "Deleting", "Updating", "Canceled".
+    :vartype provisioning_state: str or ~avs_client.models.WorkloadNetworkDhcpProvisioningState
     :param revision: NSX revision number.
     :type revision: long
     """
@@ -3437,7 +3436,7 @@ class WorkloadNetworkDhcpList(msrest.serialization.Model):
     Variables are only populated by the server, and will be ignored when sending a request.
 
     :ivar value: The items on the page.
-    :vartype value: list[~azure.mgmt.avs.models.WorkloadNetworkDhcp]
+    :vartype value: list[~avs_client.models.WorkloadNetworkDhcp]
     :ivar next_link: URL to get the next page if any.
     :vartype next_link: str
     """
@@ -3470,14 +3469,14 @@ class WorkloadNetworkDhcpRelay(WorkloadNetworkDhcpEntity):
 
     :param dhcp_type: Required. Type of DHCP: SERVER or RELAY.Constant filled by server.  Possible
      values include: "SERVER", "RELAY".
-    :type dhcp_type: str or ~azure.mgmt.avs.models.DhcpTypeEnum
+    :type dhcp_type: str or ~avs_client.models.DhcpTypeEnum
     :param display_name: Display name of the DHCP entity.
     :type display_name: str
     :ivar segments: NSX Segments consuming DHCP.
     :vartype segments: list[str]
     :ivar provisioning_state: The provisioning state. Possible values include: "Succeeded",
-     "Failed", "Building", "Deleting", "Updating".
-    :vartype provisioning_state: str or ~azure.mgmt.avs.models.WorkloadNetworkDhcpProvisioningState
+     "Failed", "Building", "Deleting", "Updating", "Canceled".
+    :vartype provisioning_state: str or ~avs_client.models.WorkloadNetworkDhcpProvisioningState
     :param revision: NSX revision number.
     :type revision: long
     :param server_addresses: DHCP Relay Addresses. Max 3.
@@ -3522,14 +3521,14 @@ class WorkloadNetworkDhcpServer(WorkloadNetworkDhcpEntity):
 
     :param dhcp_type: Required. Type of DHCP: SERVER or RELAY.Constant filled by server.  Possible
      values include: "SERVER", "RELAY".
-    :type dhcp_type: str or ~azure.mgmt.avs.models.DhcpTypeEnum
+    :type dhcp_type: str or ~avs_client.models.DhcpTypeEnum
     :param display_name: Display name of the DHCP entity.
     :type display_name: str
     :ivar segments: NSX Segments consuming DHCP.
     :vartype segments: list[str]
     :ivar provisioning_state: The provisioning state. Possible values include: "Succeeded",
-     "Failed", "Building", "Deleting", "Updating".
-    :vartype provisioning_state: str or ~azure.mgmt.avs.models.WorkloadNetworkDhcpProvisioningState
+     "Failed", "Building", "Deleting", "Updating", "Canceled".
+    :vartype provisioning_state: str or ~avs_client.models.WorkloadNetworkDhcpProvisioningState
     :param revision: NSX revision number.
     :type revision: long
     :param server_address: DHCP Server Address.
@@ -3590,13 +3589,13 @@ class WorkloadNetworkDnsService(ProxyResource):
     :type fqdn_zones: list[str]
     :param log_level: DNS Service log level. Possible values include: "DEBUG", "INFO", "WARNING",
      "ERROR", "FATAL".
-    :type log_level: str or ~azure.mgmt.avs.models.DnsServiceLogLevelEnum
+    :type log_level: str or ~avs_client.models.DnsServiceLogLevelEnum
     :ivar status: DNS Service status. Possible values include: "SUCCESS", "FAILURE".
-    :vartype status: str or ~azure.mgmt.avs.models.DnsServiceStatusEnum
+    :vartype status: str or ~avs_client.models.DnsServiceStatusEnum
     :ivar provisioning_state: The provisioning state. Possible values include: "Succeeded",
-     "Failed", "Building", "Deleting", "Updating".
+     "Failed", "Building", "Deleting", "Updating", "Canceled".
     :vartype provisioning_state: str or
-     ~azure.mgmt.avs.models.WorkloadNetworkDnsServiceProvisioningState
+     ~avs_client.models.WorkloadNetworkDnsServiceProvisioningState
     :param revision: NSX revision number.
     :type revision: long
     """
@@ -3651,7 +3650,7 @@ class WorkloadNetworkDnsServicesList(msrest.serialization.Model):
     Variables are only populated by the server, and will be ignored when sending a request.
 
     :ivar value: The items on the page.
-    :vartype value: list[~azure.mgmt.avs.models.WorkloadNetworkDnsService]
+    :vartype value: list[~avs_client.models.WorkloadNetworkDnsService]
     :ivar next_link: URL to get the next page if any.
     :vartype next_link: str
     """
@@ -3697,9 +3696,8 @@ class WorkloadNetworkDnsZone(ProxyResource):
     :param dns_services: Number of DNS Services using the DNS zone.
     :type dns_services: long
     :ivar provisioning_state: The provisioning state. Possible values include: "Succeeded",
-     "Failed", "Building", "Deleting", "Updating".
-    :vartype provisioning_state: str or
-     ~azure.mgmt.avs.models.WorkloadNetworkDnsZoneProvisioningState
+     "Failed", "Building", "Deleting", "Updating", "Canceled".
+    :vartype provisioning_state: str or ~avs_client.models.WorkloadNetworkDnsZoneProvisioningState
     :param revision: NSX revision number.
     :type revision: long
     """
@@ -3751,7 +3749,7 @@ class WorkloadNetworkDnsZonesList(msrest.serialization.Model):
     Variables are only populated by the server, and will be ignored when sending a request.
 
     :ivar value: The items on the page.
-    :vartype value: list[~azure.mgmt.avs.models.WorkloadNetworkDnsZone]
+    :vartype value: list[~avs_client.models.WorkloadNetworkDnsZone]
     :ivar next_link: URL to get the next page if any.
     :vartype next_link: str
     """
@@ -3824,7 +3822,7 @@ class WorkloadNetworkGatewayList(msrest.serialization.Model):
     Variables are only populated by the server, and will be ignored when sending a request.
 
     :ivar value: The items on the page.
-    :vartype value: list[~azure.mgmt.avs.models.WorkloadNetworkGateway]
+    :vartype value: list[~avs_client.models.WorkloadNetworkGateway]
     :ivar next_link: URL to get the next page if any.
     :vartype next_link: str
     """
@@ -3854,7 +3852,7 @@ class WorkloadNetworkList(msrest.serialization.Model):
     Variables are only populated by the server, and will be ignored when sending a request.
 
     :ivar value: The items on the page.
-    :vartype value: list[~azure.mgmt.avs.models.WorkloadNetwork]
+    :vartype value: list[~avs_client.models.WorkloadNetwork]
     :ivar next_link: URL to get the next page if any.
     :vartype next_link: str
     """
@@ -3893,17 +3891,17 @@ class WorkloadNetworkPortMirroring(ProxyResource):
     :type display_name: str
     :param direction: Direction of port mirroring profile. Possible values include: "INGRESS",
      "EGRESS", "BIDIRECTIONAL".
-    :type direction: str or ~azure.mgmt.avs.models.PortMirroringDirectionEnum
+    :type direction: str or ~avs_client.models.PortMirroringDirectionEnum
     :param source: Source VM Group.
     :type source: str
     :param destination: Destination VM Group.
     :type destination: str
     :ivar status: Port Mirroring Status. Possible values include: "SUCCESS", "FAILURE".
-    :vartype status: str or ~azure.mgmt.avs.models.PortMirroringStatusEnum
+    :vartype status: str or ~avs_client.models.PortMirroringStatusEnum
     :ivar provisioning_state: The provisioning state. Possible values include: "Succeeded",
-     "Failed", "Building", "Deleting", "Updating".
+     "Failed", "Building", "Deleting", "Updating", "Canceled".
     :vartype provisioning_state: str or
-     ~azure.mgmt.avs.models.WorkloadNetworkPortMirroringProvisioningState
+     ~avs_client.models.WorkloadNetworkPortMirroringProvisioningState
     :param revision: NSX revision number.
     :type revision: long
     """
@@ -3955,7 +3953,7 @@ class WorkloadNetworkPortMirroringList(msrest.serialization.Model):
     Variables are only populated by the server, and will be ignored when sending a request.
 
     :ivar value: The items on the page.
-    :vartype value: list[~azure.mgmt.avs.models.WorkloadNetworkPortMirroring]
+    :vartype value: list[~avs_client.models.WorkloadNetworkPortMirroring]
     :ivar next_link: URL to get the next page if any.
     :vartype next_link: str
     """
@@ -3997,9 +3995,8 @@ class WorkloadNetworkPublicIP(ProxyResource):
     :ivar public_ip_block: CIDR Block of the Public IP Block.
     :vartype public_ip_block: str
     :ivar provisioning_state: The provisioning state. Possible values include: "Succeeded",
-     "Failed", "Building", "Deleting", "Updating".
-    :vartype provisioning_state: str or
-     ~azure.mgmt.avs.models.WorkloadNetworkPublicIPProvisioningState
+     "Failed", "Building", "Deleting", "Updating", "Canceled".
+    :vartype provisioning_state: str or ~avs_client.models.WorkloadNetworkPublicIPProvisioningState
     """
 
     _validation = {
@@ -4040,7 +4037,7 @@ class WorkloadNetworkPublicIPsList(msrest.serialization.Model):
     Variables are only populated by the server, and will be ignored when sending a request.
 
     :ivar value: The items on the page.
-    :vartype value: list[~azure.mgmt.avs.models.WorkloadNetworkPublicIP]
+    :vartype value: list[~avs_client.models.WorkloadNetworkPublicIP]
     :ivar next_link: URL to get the next page if any.
     :vartype next_link: str
     """
@@ -4080,15 +4077,14 @@ class WorkloadNetworkSegment(ProxyResource):
     :param connected_gateway: Gateway which to connect segment to.
     :type connected_gateway: str
     :param subnet: Subnet which to connect segment to.
-    :type subnet: ~azure.mgmt.avs.models.WorkloadNetworkSegmentSubnet
+    :type subnet: ~avs_client.models.WorkloadNetworkSegmentSubnet
     :ivar port_vif: Port Vif which segment is associated with.
-    :vartype port_vif: list[~azure.mgmt.avs.models.WorkloadNetworkSegmentPortVif]
+    :vartype port_vif: list[~avs_client.models.WorkloadNetworkSegmentPortVif]
     :ivar status: Segment status. Possible values include: "SUCCESS", "FAILURE".
-    :vartype status: str or ~azure.mgmt.avs.models.SegmentStatusEnum
+    :vartype status: str or ~avs_client.models.SegmentStatusEnum
     :ivar provisioning_state: The provisioning state. Possible values include: "Succeeded",
-     "Failed", "Building", "Deleting", "Updating".
-    :vartype provisioning_state: str or
-     ~azure.mgmt.avs.models.WorkloadNetworkSegmentProvisioningState
+     "Failed", "Building", "Deleting", "Updating", "Canceled".
+    :vartype provisioning_state: str or ~avs_client.models.WorkloadNetworkSegmentProvisioningState
     :param revision: NSX revision number.
     :type revision: long
     """
@@ -4161,7 +4157,7 @@ class WorkloadNetworkSegmentsList(msrest.serialization.Model):
     Variables are only populated by the server, and will be ignored when sending a request.
 
     :ivar value: The items on the page.
-    :vartype value: list[~azure.mgmt.avs.models.WorkloadNetworkSegment]
+    :vartype value: list[~avs_client.models.WorkloadNetworkSegment]
     :ivar next_link: URL to get the next page if any.
     :vartype next_link: str
     """
@@ -4225,7 +4221,7 @@ class WorkloadNetworkVirtualMachine(ProxyResource):
     :param display_name: Display name of the VM.
     :type display_name: str
     :ivar vm_type: Virtual machine type. Possible values include: "REGULAR", "EDGE", "SERVICE".
-    :vartype vm_type: str or ~azure.mgmt.avs.models.VMTypeEnum
+    :vartype vm_type: str or ~avs_client.models.VMTypeEnum
     """
 
     _validation = {
@@ -4260,7 +4256,7 @@ class WorkloadNetworkVirtualMachinesList(msrest.serialization.Model):
     Variables are only populated by the server, and will be ignored when sending a request.
 
     :ivar value: The items on the page.
-    :vartype value: list[~azure.mgmt.avs.models.WorkloadNetworkVirtualMachine]
+    :vartype value: list[~avs_client.models.WorkloadNetworkVirtualMachine]
     :ivar next_link: URL to get the next page if any.
     :vartype next_link: str
     """
@@ -4300,11 +4296,10 @@ class WorkloadNetworkVMGroup(ProxyResource):
     :param members: Virtual machine members of this group.
     :type members: list[str]
     :ivar status: VM Group status. Possible values include: "SUCCESS", "FAILURE".
-    :vartype status: str or ~azure.mgmt.avs.models.VMGroupStatusEnum
+    :vartype status: str or ~avs_client.models.VMGroupStatusEnum
     :ivar provisioning_state: The provisioning state. Possible values include: "Succeeded",
-     "Failed", "Building", "Deleting", "Updating".
-    :vartype provisioning_state: str or
-     ~azure.mgmt.avs.models.WorkloadNetworkVMGroupProvisioningState
+     "Failed", "Building", "Deleting", "Updating", "Canceled".
+    :vartype provisioning_state: str or ~avs_client.models.WorkloadNetworkVMGroupProvisioningState
     :param revision: NSX revision number.
     :type revision: long
     """
@@ -4350,7 +4345,7 @@ class WorkloadNetworkVMGroupsList(msrest.serialization.Model):
     Variables are only populated by the server, and will be ignored when sending a request.
 
     :ivar value: The items on the page.
-    :vartype value: list[~azure.mgmt.avs.models.WorkloadNetworkVMGroup]
+    :vartype value: list[~avs_client.models.WorkloadNetworkVMGroup]
     :ivar next_link: URL to get the next page if any.
     :vartype next_link: str
     """

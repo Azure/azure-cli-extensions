@@ -28,7 +28,7 @@ class ScriptExecutionsOperations:
     instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~azure.mgmt.avs.models
+    :type models: ~avs_client.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -59,7 +59,7 @@ class ScriptExecutionsOperations:
         :type private_cloud_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either ScriptExecutionsList or the result of cls(response)
-        :rtype: ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.avs.models.ScriptExecutionsList]
+        :rtype: ~azure.core.async_paging.AsyncItemPaged[~avs_client.models.ScriptExecutionsList]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.ScriptExecutionsList"]
@@ -138,7 +138,7 @@ class ScriptExecutionsOperations:
         :type script_execution_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: ScriptExecution, or the result of cls(response)
-        :rtype: ~azure.mgmt.avs.models.ScriptExecution
+        :rtype: ~avs_client.models.ScriptExecution
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.ScriptExecution"]
@@ -261,7 +261,7 @@ class ScriptExecutionsOperations:
         :param script_execution_name: Name of the user-invoked script execution resource.
         :type script_execution_name: str
         :param script_execution: A script running in the private cloud.
-        :type script_execution: ~azure.mgmt.avs.models.ScriptExecution
+        :type script_execution: ~avs_client.models.ScriptExecution
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: By default, your polling method will be AsyncARMPolling.
@@ -269,7 +269,7 @@ class ScriptExecutionsOperations:
         :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns either ScriptExecution or the result of cls(response)
-        :rtype: ~azure.core.polling.AsyncLROPoller[~azure.mgmt.avs.models.ScriptExecution]
+        :rtype: ~azure.core.polling.AsyncLROPoller[~avs_client.models.ScriptExecution]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         polling = kwargs.pop('polling', True)  # type: Union[bool, AsyncPollingMethod]
@@ -455,10 +455,10 @@ class ScriptExecutionsOperations:
         :type script_execution_name: str
         :param script_output_stream_type: Name of the desired output stream to return. If not provided,
          will return all. An empty array will return nothing.
-        :type script_output_stream_type: list[str or ~azure.mgmt.avs.models.ScriptOutputStreamType]
+        :type script_output_stream_type: list[str or ~avs_client.models.ScriptOutputStreamType]
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: ScriptExecution, or the result of cls(response)
-        :rtype: ~azure.mgmt.avs.models.ScriptExecution
+        :rtype: ~avs_client.models.ScriptExecution
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.ScriptExecution"]
