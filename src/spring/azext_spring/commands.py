@@ -299,7 +299,9 @@ def load_command_table(self, _):
                             custom_command_type=builder_cmd_group,
                             exception_handler=handle_asc_exception) as g:
         g.custom_command('create', 'create_or_update_builder', supports_no_wait=True)
-        g.custom_command('update', 'create_or_update_builder', supports_no_wait=True)
+        g.custom_command('update', 'create_or_update_builder', supports_no_wait=True, confirmation='Editing builder will regenerate images for all app deployments using this builder.' +
+                         'These new images will be used after app restart either manually by yourself or automatically by Azure Spring Apps in regular maintenance tasks. ' +
+                         'Use CLI command --"az spring build-service builder show-deployments" to view the app deployment list of the builder. Do you want to continue?')
         g.custom_show_command('show', 'builder_show')
         g.custom_show_command('show-deployments', 'builder_show_deployments')
         g.custom_command('delete', 'builder_delete', supports_no_wait=True, confirmation=True)
@@ -307,11 +309,17 @@ def load_command_table(self, _):
     with self.command_group('spring build-service builder buildpack-binding',
                             custom_command_type=buildpack_binding_cmd_group,
                             exception_handler=handle_asc_exception) as g:
-        g.custom_command('create', 'create_or_update_buildpack_binding')
-        g.custom_command('set', 'create_or_update_buildpack_binding')
+        g.custom_command('create', 'create_or_update_buildpack_binding', confirmation='Creating bindings will regenerate images for all app deployments using this builder.' +
+                         'These new images will be used after app restart either manually by yourself or automatically by Azure Spring Apps in regular maintenance tasks. ' +
+                         'Use CLI command --"az spring build-service builder show-deployments" to view the app deployment list of the builder. Do you want to continue?')
+        g.custom_command('set', 'create_or_update_buildpack_binding', confirmation='Setting bindings will regenerate images for all app deployments using this builder.' +
+                         'These new images will be used after app restart either manually by yourself or automatically by Azure Spring Apps in regular maintenance tasks. ' +
+                         'Use CLI command --"az spring build-service builder show-deployments" to view the app deployment list of the builder. Do you want to continue?')
         g.custom_show_command('show', 'buildpack_binding_show')
         g.custom_command('list', 'buildpack_binding_list')
-        g.custom_command('delete', 'buildpack_binding_delete', confirmation=True)
+        g.custom_command('delete', 'buildpack_binding_delete', confirmation='Deleting bindings will regenerate images for all app deployments using this builder.' +
+                         'These new images will be used after app restart either manually by yourself or automatically by Azure Spring Apps in regular maintenance tasks. ' +
+                         'Use CLI command --"az spring build-service builder show-deployments" to view the app deployment list of the builder. Do you want to continue?')
 
     with self.command_group('spring build-service', exception_handler=handle_asc_exception):
         pass

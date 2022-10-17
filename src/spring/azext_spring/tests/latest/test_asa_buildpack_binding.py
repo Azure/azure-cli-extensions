@@ -28,7 +28,7 @@ class BuildpackBindingTest(ScenarioTest):
         })
 
         self.cmd('spring build-service builder buildpack-binding create --name {bindingName} --type {bindingType} \
-            --properties {properties} --secrets {secrets} -g {rg} -s {serviceName}',
+            --properties {properties} --secrets {secrets} -g {rg} -s {serviceName} --yes',
             checks=[
                 self.check('properties.provisioningState', 'Succeeded'),
                 self.check('properties.bindingType', 'ApplicationInsights'),
@@ -43,7 +43,7 @@ class BuildpackBindingTest(ScenarioTest):
             ])
 
         self.cmd('spring build-service builder buildpack-binding set --name {bindingName} --type NewRelic \
-            --properties a=b --secrets c=d -g {rg} -s {serviceName}',
+            --properties a=b --secrets c=d -g {rg} -s {serviceName} --yes',
             checks=[
                 self.check('properties.provisioningState', 'Succeeded'),
                 self.check('properties.bindingType', 'NewRelic'),
@@ -54,7 +54,7 @@ class BuildpackBindingTest(ScenarioTest):
         self.cmd('spring build-service builder buildpack-binding delete --name {bindingName} -g {rg} -s {serviceName} --yes')
 
         self.cmd('spring build-service builder buildpack-binding create --name {bindingName}-0 --type ApplicationInsights \
-            --properties {properties} --secrets {secrets} -g {rg} -s {serviceName}',
+            --properties {properties} --secrets {secrets} -g {rg} -s {serviceName} --yes',
             checks=[
                 self.check('properties.provisioningState', 'Succeeded'),
                 self.check('properties.bindingType', 'ApplicationInsights'),
@@ -63,7 +63,7 @@ class BuildpackBindingTest(ScenarioTest):
             ])
 
         self.cmd('spring build-service builder buildpack-binding create --name {bindingName}-1 --type NewRelic \
-            --properties {properties} --secrets {secrets} -g {rg} -s {serviceName}',
+            --properties {properties} --secrets {secrets} -g {rg} -s {serviceName} --yes',
             checks=[
                 self.check('properties.provisioningState', 'Succeeded'),
                 self.check('properties.bindingType', 'NewRelic'),

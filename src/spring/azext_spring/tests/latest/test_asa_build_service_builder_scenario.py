@@ -32,7 +32,7 @@ class BuildServiceBuilderTest(ScenarioTest):
             self.check('properties.stack.version', 'base'),
         ])
         
-        self.cmd('spring build-service builder update -n test -g {rg} --service {serviceName} --builder-file {builderFile}', checks=[
+        self.cmd('spring build-service builder update -n test -g {rg} --service {serviceName} --builder-file {builderFile} -y', checks=[
             self.check('name', 'test'),
             self.check('properties.buildpackGroups[0].buildpacks[0].id', 'tanzu-buildpacks/java-azure'),
             self.check('properties.buildpackGroups[0].name', 'mix'),

@@ -1,5 +1,12 @@
 Release History
 ===============
+1.1.11
+---
+* Add confirmation for Command `az spring build-service builder update`.
+* Add confirmation for Command `az spring build-service builder buildpack-binding create`.
+* Add confirmation for Command `az spring build-service builder buildpack-binding set`.
+* Add confirmation for Command `az spring build-service builder buildpack-binding delete`.
+
 1.1.10
 ---
 * Remove `Preview` tag for user-assigned identities of apps.
