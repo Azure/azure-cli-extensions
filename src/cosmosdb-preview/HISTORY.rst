@@ -2,14 +2,17 @@
 
 Release History
 ===============
-0.18.1
-++++++
-* Modify parameter for Managed Identity name.
+0.20.0
+* Add support for Continuous mode restore with user provided identity.
 
 0.19.0
 ++++++
 * Add support for performing in-account restore of deleted databases and containers for a Sql database account.
 * Add support for performing in-account restore of deleted databases and collections for a MongoDB database account.
+
+0.18.1
+++++++
+* Modify parameter for Managed Identity name.
 
 0.18.0
 ++++++

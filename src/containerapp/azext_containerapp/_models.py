@@ -23,8 +23,15 @@ ManagedEnvironment = {
         "daprAIInstrumentationKey": None,
         "vnetConfiguration": None,  # VnetConfiguration
         "internalLoadBalancerEnabled": None,
-        "appLogsConfiguration": None
+        "appLogsConfiguration": None,
+        "customDomainConfiguration": None  # CustomDomainConfiguration
     }
+}
+
+CustomDomainConfiguration = {
+    "dnsSuffix": None,
+    "certificateValue": None,
+    "certificatePassword": None
 }
 
 AppLogsConfiguration = {
@@ -142,7 +149,8 @@ Ingress = {
     "fqdn": None,
     "external": False,
     "targetPort": None,
-    "transport": None,  # 'auto', 'http', 'http2'
+    "transport": None,  # 'auto', 'http', 'http2', 'tcp'
+    "exposedPort": None,
     "traffic": None,  # TrafficWeight
     "customDomains": None  # [CustomDomain]
 }
