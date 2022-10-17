@@ -12,5 +12,6 @@
 # pylint: disable=bad-continuation
 # pylint: disable=line-too-long
 
+
 def load_command_table(self, _):
     pass

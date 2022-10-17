@@ -8,28 +8,21 @@
 # regenerated.
 # --------------------------------------------------------------------------
 
-
-# def cf_devcenter_cl(cli_ctx, *_):
-#     from azure.cli.core.commands.client_factory import get_mgmt_service_client
-#     from azext_devcenter.vendored_sdks.devcenter_dataplane import DevCenter
-#     return get_mgmt_service_client(cli_ctx,
-#                                    DevCenter)
 def cf_devcenter_dataplane(cli_ctx, dev_center, *_):
 
     from azure.cli.core.commands.client_factory import get_mgmt_service_client
-    from azext_devcenter.vendored_sdks.devcenter_dataplane import DevCenterDataplaneClient
+    from azext_devcenter.vendored_sdks.devcenter_dataplane import (
+        DevCenterDataplaneClient,
+    )
     from azure.cli.core._profile import Profile
 
-    cli_ctx.cloud.endpoints.active_directory_resource_id = 'https://devcenter.azure.com'       # Temporary set to Fidalgo until 1st party app is updated.
-   
+    cli_ctx.cloud.endpoints.active_directory_resource_id = "https://devcenter.azure.com"
+
     profile = Profile(cli_ctx=cli_ctx)
     subscription = profile.get_subscription()
-    tenant_id = subscription['tenantId']
-    cloud = subscription['environmentName']
+    tenant_id = subscription["tenantId"]
+    cloud = subscription["environmentName"]
     dev_center_dns_suffix = get_dns_suffix(cloud)
-
-     # Override the client to use DevCenter resource rather than ARM's. The .default scope will be appended by the mgmt service client
-    #cli_ctx.cloud.endpoints.active_directory_resource_id = 'https://devcenter.azure.com'
 
     return get_mgmt_service_client(
         cli_ctx,
@@ -38,37 +31,47 @@ def cf_devcenter_dataplane(cli_ctx, dev_center, *_):
         base_url_bound=False,
         tenant_id=tenant_id,
         dev_center=dev_center,
-        dev_center_dns_suffix=dev_center_dns_suffix)
+        dev_center_dns_suffix=dev_center_dns_suffix,
+    )
+
 
 def get_dns_suffix(cloud):
     if cloud == "Dogfood":
-        return 'devcenter.azure-test.net'
-    else:
-        return 'devcenter.azure.com'
+        return "devcenter.azure-test.net"
+    return "devcenter.azure.com"
+
 
 def cf_project_dp(cli_ctx, dev_center, *_):
     return cf_devcenter_dataplane(cli_ctx, dev_center).project
 
+
 def cf_pool_dp(cli_ctx, dev_center, *_):
     return cf_devcenter_dataplane(cli_ctx, dev_center).pool
+
 
 def cf_schedule_dp(cli_ctx, dev_center, *_):
     return cf_devcenter_dataplane(cli_ctx, dev_center).schedule
 
+
 def cf_dev_box_dp(cli_ctx, dev_center, *_):
     return cf_devcenter_dataplane(cli_ctx, dev_center).dev_box
+
 
 def cf_environment_dp(cli_ctx, dev_center, *_):
     return cf_devcenter_dataplane(cli_ctx, dev_center).environments
 
+
 def cf_artifact_dp(cli_ctx, dev_center, *_):
     return cf_devcenter_dataplane(cli_ctx, dev_center).artifacts
+
 
 def cf_catalog_item_dp(cli_ctx, dev_center, *_):
     return cf_devcenter_dataplane(cli_ctx, dev_center).catalog_item
 
+
 def cf_catalog_item_version_dp(cli_ctx, dev_center, *_):
     return cf_devcenter_dataplane(cli_ctx, dev_center).catalog_item_versions
+
 
 def cf_environment_type_dp(cli_ctx, dev_center, *_):
     return cf_devcenter_dataplane(cli_ctx, dev_center).environment_type

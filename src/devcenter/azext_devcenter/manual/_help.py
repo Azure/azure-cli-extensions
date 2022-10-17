@@ -6,21 +6,29 @@
 
 from knack.help_files import helps  # pylint: disable=unused-import
 
-helps['devcenter admin'] = """
+helps[
+    "devcenter admin"
+] = """
     type: group
     short-summary: "Manages devcenter admin resources"
 """
 
-helps['devcenter dev'] = """
+helps[
+    "devcenter dev"
+] = """
     type: group
     short-summary: "Manages devcenter developer resources"
 """
-helps['devcenter dev project'] = """
+helps[
+    "devcenter dev project"
+] = """
     type: group
     short-summary: Manage project with devcenter
 """
 
-helps['devcenter dev project list'] = """
+helps[
+    "devcenter dev project list"
+] = """
     type: command
     short-summary: "Lists all projects."
     examples:
@@ -29,7 +37,9 @@ helps['devcenter dev project list'] = """
                az devcenter dev project list --dev-center-name "{devCenterName}"
 """
 
-helps['devcenter dev project show'] = """
+helps[
+    "devcenter dev project show"
+] = """
     type: command
     short-summary: "Gets a project."
     examples:
@@ -39,12 +49,16 @@ helps['devcenter dev project show'] = """
 --name "{projectName}"
 """
 
-helps['devcenter dev pool'] = """
+helps[
+    "devcenter dev pool"
+] = """
     type: group
     short-summary: Manage pool with devcenter
 """
 
-helps['devcenter dev pool list'] = """
+helps[
+    "devcenter dev pool list"
+] = """
     type: command
     short-summary: "Lists available pools."
     examples:
@@ -54,7 +68,9 @@ helps['devcenter dev pool list'] = """
 --project-name "{projectName}"
 """
 
-helps['devcenter dev pool show'] = """
+helps[
+    "devcenter dev pool show"
+] = """
     type: command
     short-summary: "Gets a pool."
     examples:
@@ -64,12 +80,16 @@ helps['devcenter dev pool show'] = """
 "{poolName}" --project-name "{projectName}"
 """
 
-helps['devcenter dev schedule'] = """
+helps[
+    "devcenter dev schedule"
+] = """
     type: group
     short-summary: Manage schedule with devcenter
 """
 
-helps['devcenter dev schedule list'] = """
+helps[
+    "devcenter dev schedule list"
+] = """
     type: command
     short-summary: "Lists available schedules for a pool."
     examples:
@@ -79,7 +99,9 @@ helps['devcenter dev schedule list'] = """
 --pool-name "{poolName}" --project-name "{projectName}"
 """
 
-helps['devcenter dev schedule show'] = """
+helps[
+    "devcenter dev schedule show"
+] = """
     type: command
     short-summary: "Gets a schedule."
     examples:
@@ -89,12 +111,16 @@ helps['devcenter dev schedule show'] = """
 --pool-name "{poolName}" --project-name "{projectName}" --name "{scheduleName}"
 """
 
-helps['devcenter dev dev-box'] = """
+helps[
+    "devcenter dev dev-box"
+] = """
     type: group
     short-summary: Manage dev box with devcenter
 """
 
-helps['devcenter dev dev-box list'] = """
+helps[
+    "devcenter dev dev-box list"
+] = """
     type: command
     short-summary: "Lists dev boxes in the project for a particular user, lists dev boxes in the dev center for a \
 particular user, or lists dev boxes that the caller has access to in the dev center."
@@ -112,7 +138,9 @@ particular user, or lists dev boxes that the caller has access to in the dev cen
                az devcenter dev dev-box list --dev-center-name "{devCenterName}"
 """
 
-helps['devcenter dev dev-box show'] = """
+helps[
+    "devcenter dev dev-box show"
+] = """
     type: command
     short-summary: "Gets a dev box."
     examples:
@@ -122,7 +150,9 @@ helps['devcenter dev dev-box show'] = """
                --project-name "{projectName}" --user-id "me"
 """
 
-helps['devcenter dev dev-box create'] = """
+helps[
+    "devcenter dev dev-box create"
+] = """
     type: command
     short-summary: "Creates or updates a dev box."
     examples:
@@ -132,7 +162,9 @@ helps['devcenter dev dev-box create'] = """
 "{devCenterName}" --project-name "{projectName}" --user-id "me"
 """
 
-helps['devcenter dev dev-box delete'] = """
+helps[
+    "devcenter dev dev-box delete"
+] = """
     type: command
     short-summary: "Deletes a dev box."
     examples:
@@ -142,7 +174,9 @@ helps['devcenter dev dev-box delete'] = """
                --project-name "{projectName}" --user-id "me"
 """
 
-helps['devcenter dev dev-box show-remote-connection'] = """
+helps[
+    "devcenter dev dev-box show-remote-connection"
+] = """
     type: command
     short-summary: "Gets Connection info."
     examples:
@@ -152,7 +186,9 @@ helps['devcenter dev dev-box show-remote-connection'] = """
                --project-name "{projectName}" --user-id "me"
 """
 
-helps['devcenter dev dev-box start'] = """
+helps[
+    "devcenter dev dev-box start"
+] = """
     type: command
     short-summary: "Starts a dev box."
     examples:
@@ -162,7 +198,9 @@ helps['devcenter dev dev-box start'] = """
                --project-name "{projectName}" --user-id "me"
 """
 
-helps['devcenter dev dev-box stop'] = """
+helps[
+    "devcenter dev dev-box stop"
+] = """
     type: command
     short-summary: "Stops a dev box."
     examples:
@@ -172,7 +210,9 @@ helps['devcenter dev dev-box stop'] = """
                --project-name "{projectName}" --user-id "me"
 """
 
-helps['devcenter dev dev-box wait'] = """
+helps[
+    "devcenter dev dev-box wait"
+] = """
     type: command
     short-summary: Place the CLI in a waiting state until a condition of the devcenter dev-box is met.
     examples:
@@ -186,12 +226,16 @@ helps['devcenter dev dev-box wait'] = """
                --project-name "{projectName}" --user-id "me" --deleted
 """
 
-helps['devcenter dev environment'] = """
+helps[
+    "devcenter dev environment"
+] = """
     type: group
     short-summary: Manage environment with devcenter
 """
 
-helps['devcenter dev environment list'] = """
+helps[
+    "devcenter dev environment list"
+] = """
     type: command
     short-summary: "Lists the environments for a project."
     examples:
@@ -201,7 +245,9 @@ helps['devcenter dev environment list'] = """
 --project-name "{projectName}"
 """
 
-helps['devcenter dev environment show'] = """
+helps[
+    "devcenter dev environment show"
+] = """
     type: command
     short-summary: "Gets an environment."
     examples:
@@ -211,7 +257,9 @@ helps['devcenter dev environment show'] = """
 --name "{environmentName}" --project-name "{projectName}" --user-id "{userId}"
 """
 
-helps['devcenter dev environment create'] = """
+helps[
+    "devcenter dev environment create"
+] = """
     type: command
     short-summary: "Create an environment."
     examples:
@@ -230,7 +278,9 @@ e\\":\\"2022-01-01T00:01:00Z\\"}}" --dev-center-name "{devCenterName}" --name \
 "{environmentName}" --project-name "{projectName}" --user-id "{userId}"
 """
 
-helps['devcenter dev environment update'] = """
+helps[
+    "devcenter dev environment update"
+] = """
     type: command
     short-summary: "Partially updates an environment."
     examples:
@@ -240,7 +290,9 @@ helps['devcenter dev environment update'] = """
               --name "{environmentName}" --project-name "{projectName}" --user-id "{userId}"
 """
 
-helps['devcenter dev environment delete'] = """
+helps[
+    "devcenter dev environment delete"
+] = """
     type: command
     short-summary: "Deletes an environment and all it's associated resources."
     examples:
@@ -250,7 +302,9 @@ helps['devcenter dev environment delete'] = """
               --name "{environmentName}" --project-name "{projectName}" --user-id "{userId}"
 """
 
-helps['devcenter dev environment custom-action'] = """
+helps[
+    "devcenter dev environment custom-action"
+] = """
     type: command
     short-summary: "Executes a custom action."
     examples:
@@ -261,7 +315,9 @@ helps['devcenter dev environment custom-action'] = """
 --project-name "myProject" --user-id "me"
 """
 
-helps['devcenter dev environment delete-action'] = """
+helps[
+    "devcenter dev environment delete-action"
+] = """
     type: command
     short-summary: "Executes a delete action."
     examples:
@@ -272,7 +328,9 @@ ode\\",\\"storageAccountType\\":\\"Standard_LRS\\"}" --name "{environmentName}" 
 "me"
 """
 
-helps['devcenter dev environment deploy-action'] = """
+helps[
+    "devcenter dev environment deploy-action"
+] = """
     type: command
     short-summary: "Executes a deploy action."
     examples:
@@ -283,7 +341,9 @@ ode\\",\\"storageAccountType\\":\\"Standard_LRS\\"}" --name "{environmentName}" 
 "me"
 """
 
-helps['devcenter dev environment list-by-project'] = """
+helps[
+    "devcenter dev environment list-by-project"
+] = """
     type: command
     short-summary: "Lists the environments for a project and user."
     examples:
@@ -293,7 +353,9 @@ helps['devcenter dev environment list-by-project'] = """
               --project-name "{projectName}" --user-id "{userId}"
 """
 
-helps['devcenter dev environment wait'] = """
+helps[
+    "devcenter dev environment wait"
+] = """
     type: command
     short-summary: Place the CLI in a waiting state until a condition of the devcenter environment is met.
     examples:
@@ -311,12 +373,16 @@ helps['devcenter dev environment wait'] = """
 --name "{environmentName}" --project-name "{projectName}" --user-id "{userId}" --deleted
 """
 
-helps['devcenter dev artifact'] = """
+helps[
+    "devcenter dev artifact"
+] = """
     type: group
     short-summary: Manage artifact with devcenter
 """
 
-helps['devcenter dev artifact list'] = """
+helps[
+    "devcenter dev artifact list"
+] = """
     type: command
     short-summary: "Lists the artifacts for an environment at a specified path, or returns the file at the path. And \
 Lists the artifacts for an environment."
@@ -332,12 +398,16 @@ Lists the artifacts for an environment."
 --environment-name "{environmentName}" --project-name "{projectName}" --user-id "{userId}"
 """
 
-helps['devcenter dev catalog-item'] = """
+helps[
+    "devcenter dev catalog-item"
+] = """
     type: group
     short-summary: Manage catalog item with devcenter
 """
 
-helps['devcenter dev catalog-item list'] = """
+helps[
+    "devcenter dev catalog-item list"
+] = """
     type: command
     short-summary: "Lists latest version of all catalog items available for a project."
     examples:
@@ -347,12 +417,16 @@ helps['devcenter dev catalog-item list'] = """
                --project-name "{projectName}"
 """
 
-helps['devcenter dev catalog-item'] = """
+helps[
+    "devcenter dev catalog-item"
+] = """
     type: group
     short-summary: Manage catalog item with devcenter
 """
 
-helps['devcenter dev catalog-item show'] = """
+helps[
+    "devcenter dev catalog-item show"
+] = """
     type: command
     short-summary: "Get a catalog item from a project."
     examples:
@@ -362,12 +436,16 @@ helps['devcenter dev catalog-item show'] = """
                --project-name "{projectName}"
 """
 
-helps['devcenter dev catalog-item-version'] = """
+helps[
+    "devcenter dev catalog-item-version"
+] = """
     type: group
     short-summary: Manage catalog item version with devcenter
 """
 
-helps['devcenter dev catalog-item-version list'] = """
+helps[
+    "devcenter dev catalog-item-version list"
+] = """
     type: command
     short-summary: "List all versions of a catalog item from a project."
     examples:
@@ -377,7 +455,9 @@ helps['devcenter dev catalog-item-version list'] = """
                 --project-name "{projectName}"
 """
 
-helps['devcenter dev catalog-item-version show'] = """
+helps[
+    "devcenter dev catalog-item-version show"
+] = """
     type: command
     short-summary: "Get a specific catalog item version from a project."
     examples:
@@ -387,12 +467,16 @@ helps['devcenter dev catalog-item-version show'] = """
                --project-name "{projectName}"
 """
 
-helps['devcenter dev environment-type'] = """
+helps[
+    "devcenter dev environment-type"
+] = """
     type: group
     short-summary: Manage environment type with devcenter
 """
 
-helps['devcenter dev environment-type list'] = """
+helps[
+    "devcenter dev environment-type list"
+] = """
     type: command
     short-summary: "Lists all environment types configured for a project."
     examples:
@@ -402,18 +486,24 @@ helps['devcenter dev environment-type list'] = """
               --project-name "{projectName}"
 """
 
-#control plane
-helps['devcenter'] = '''
+# control plane
+helps[
+    "devcenter"
+] = """
     type: group
     short-summary: Manage DevCenter
-'''
+"""
 
-helps['devcenter admin devcenter'] = """
+helps[
+    "devcenter admin devcenter"
+] = """
     type: group
     short-summary: Manage dev center with devcenter
 """
 
-helps['devcenter admin devcenter list'] = """
+helps[
+    "devcenter admin devcenter list"
+] = """
     type: command
     short-summary: "Lists all devcenters in a resource group. And Lists all devcenters in a subscription."
     examples:
@@ -425,7 +515,9 @@ helps['devcenter admin devcenter list'] = """
                az devcenter admin devcenter list
 """
 
-helps['devcenter admin devcenter show'] = """
+helps[
+    "devcenter admin devcenter show"
+] = """
     type: command
     short-summary: "Gets a devcenter."
     examples:
@@ -434,7 +526,9 @@ helps['devcenter admin devcenter show'] = """
                az devcenter admin devcenter show --name "Contoso" --resource-group "rg1"
 """
 
-helps['devcenter admin devcenter create'] = """
+helps[
+    "devcenter admin devcenter create"
+] = """
     type: command
     short-summary: "Create a devcenter resource."
     examples:
@@ -450,7 +544,9 @@ ty/userAssignedIdentities/testidentity1" --location "eastus" --tags CostCode="12
 --resource-group "rg1"
 """
 
-helps['devcenter admin devcenter update'] = """
+helps[
+    "devcenter admin devcenter update"
+] = """
     type: command
     short-summary: "Partially updates a devcenter."
     examples:
@@ -459,7 +555,9 @@ helps['devcenter admin devcenter update'] = """
                az devcenter admin devcenter update --tags CostCode="12345" --name "Contoso" --resource-group "rg1"
 """
 
-helps['devcenter admin devcenter delete'] = """
+helps[
+    "devcenter admin devcenter delete"
+] = """
     type: command
     short-summary: "Deletes a devcenter."
     examples:
@@ -468,7 +566,9 @@ helps['devcenter admin devcenter delete'] = """
                az devcenter admin devcenter delete --name "Contoso" --resource-group "rg1"
 """
 
-helps['devcenter admin devcenter wait'] = """
+helps[
+    "devcenter admin devcenter wait"
+] = """
     type: command
     short-summary: Place the CLI in a waiting state until a condition of the devcenter dev-center is met.
     examples:
@@ -483,12 +583,16 @@ helps['devcenter admin devcenter wait'] = """
                az devcenter admin devcenter wait --name "Contoso" --resource-group "rg1" --deleted
 """
 
-helps['devcenter admin project'] = """
+helps[
+    "devcenter admin project"
+] = """
     type: group
     short-summary: Manage project with devcenter
 """
 
-helps['devcenter admin project list'] = """
+helps[
+    "devcenter admin project list"
+] = """
     type: command
     short-summary: "Lists all projects in the resource group. And Lists all projects in the subscription."
     examples:
@@ -500,7 +604,9 @@ helps['devcenter admin project list'] = """
                az devcenter admin project list
 """
 
-helps['devcenter admin project show'] = """
+helps[
+    "devcenter admin project show"
+] = """
     type: command
     short-summary: "Gets a specific project."
     examples:
@@ -509,7 +615,9 @@ helps['devcenter admin project show'] = """
                az devcenter admin project show --name "{projectName}" --resource-group "rg1"
 """
 
-helps['devcenter admin project create'] = """
+helps[
+    "devcenter admin project create"
+] = """
     type: command
     short-summary: "Create a project."
     examples:
@@ -520,7 +628,9 @@ helps['devcenter admin project create'] = """
 me}" --tags CostCenter="R&D" --name "{projectName}" --resource-group "rg1"
 """
 
-helps['devcenter admin project update'] = """
+helps[
+    "devcenter admin project update"
+] = """
     type: command
     short-summary: "Partially updates a project."
     examples:
@@ -530,7 +640,9 @@ helps['devcenter admin project update'] = """
 "{projectName}" --resource-group "rg1"
 """
 
-helps['devcenter admin project delete'] = """
+helps[
+    "devcenter admin project delete"
+] = """
     type: command
     short-summary: "Deletes a project resource."
     examples:
@@ -539,7 +651,9 @@ helps['devcenter admin project delete'] = """
                az devcenter admin project delete --name "{projectName}" --resource-group "rg1"
 """
 
-helps['devcenter admin project wait'] = """
+helps[
+    "devcenter admin project wait"
+] = """
     type: command
     short-summary: Place the CLI in a waiting state until a condition of the devcenter project is met.
     examples:
@@ -554,12 +668,16 @@ helps['devcenter admin project wait'] = """
                az devcenter admin project wait --name "{projectName}" --resource-group "rg1" --deleted
 """
 
-helps['devcenter admin attached-network'] = """
+helps[
+    "devcenter admin attached-network"
+] = """
     type: group
     short-summary: Manage attached network with devcenter
 """
 
-helps['devcenter admin attached-network list'] = """
+helps[
+    "devcenter admin attached-network list"
+] = """
     type: command
     short-summary: "Lists the attached NetworkConnections for a Project. And Lists the attached NetworkConnections for \
 a DevCenter."
@@ -572,7 +690,9 @@ a DevCenter."
                az devcenter admin attached-network list --dev-center-name "Contoso" --resource-group "rg1"
 """
 
-helps['devcenter admin attached-network show'] = """
+helps[
+    "devcenter admin attached-network show"
+] = """
     type: command
     short-summary: "Gets an attached NetworkConnection. And Gets an attached NetworkConnection."
     examples:
@@ -586,7 +706,9 @@ helps['devcenter admin attached-network show'] = """
 --dev-center-name "Contoso" --resource-group "rg1"
 """
 
-helps['devcenter admin attached-network create'] = """
+helps[
+    "devcenter admin attached-network create"
+] = """
     type: command
     short-summary: "Create an attached NetworkConnection."
     examples:
@@ -597,12 +719,16 @@ helps['devcenter admin attached-network create'] = """
 kConnections/{networkConnectionName}" --dev-center-name "Contoso" --resource-group "rg1"
 """
 
-helps['devcenter admin attached-network update'] = """
+helps[
+    "devcenter admin attached-network update"
+] = """
     type: command
     short-summary: "Update an attached NetworkConnection."
 """
 
-helps['devcenter admin attached-network delete'] = """
+helps[
+    "devcenter admin attached-network delete"
+] = """
     type: command
     short-summary: "Un-attach a NetworkConnection."
     examples:
@@ -612,7 +738,9 @@ helps['devcenter admin attached-network delete'] = """
 --dev-center-name "Contoso" --resource-group "rg1"
 """
 
-helps['devcenter admin attached-network wait'] = """
+helps[
+    "devcenter admin attached-network wait"
+] = """
     type: command
     short-summary: Place the CLI in a waiting state until a condition of the devcenter admin attached-network is met.
     examples:
@@ -630,12 +758,16 @@ helps['devcenter admin attached-network wait'] = """
 --dev-center-name "Contoso" --resource-group "rg1" --deleted
 """
 
-helps['devcenter admin environment-type'] = """
+helps[
+    "devcenter admin environment-type"
+] = """
     type: group
     short-summary: Manage environment type with devcenter
 """
 
-helps['devcenter admin environment-type list'] = """
+helps[
+    "devcenter admin environment-type list"
+] = """
     type: command
     short-summary: "Lists all environment types configured for this project. And Lists environment types for the \
 devcenter."
@@ -648,7 +780,9 @@ devcenter."
                az devcenter admin environment-type list --dev-center-name "Contoso" --resource-group "rg1"
 """
 
-helps['devcenter admin environment-type show'] = """
+helps[
+    "devcenter admin environment-type show"
+] = """
     type: command
     short-summary: "Gets an environment type."
     examples:
@@ -658,7 +792,9 @@ helps['devcenter admin environment-type show'] = """
 --resource-group "rg1"
 """
 
-helps['devcenter admin environment-type create'] = """
+helps[
+    "devcenter admin environment-type create"
+] = """
     type: command
     short-summary: "Create an environment type."
     examples:
@@ -668,7 +804,9 @@ helps['devcenter admin environment-type create'] = """
 "Contoso" --name "{environmentTypeName}" --resource-group "rg1"
 """
 
-helps['devcenter admin environment-type update'] = """
+helps[
+    "devcenter admin environment-type update"
+] = """
     type: command
     short-summary: "Partially updates an environment type."
     examples:
@@ -678,7 +816,9 @@ helps['devcenter admin environment-type update'] = """
 --name "{environmentTypeName}" --resource-group "rg1"
 """
 
-helps['devcenter admin environment-type delete'] = """
+helps[
+    "devcenter admin environment-type delete"
+] = """
     type: command
     short-summary: "Deletes an environment type."
     examples:
@@ -688,7 +828,9 @@ helps['devcenter admin environment-type delete'] = """
 --resource-group "rg1"
 """
 
-helps['devcenter admin environment-type wait'] = """
+helps[
+    "devcenter admin environment-type wait"
+] = """
     type: command
     short-summary: Place the CLI in a waiting state until a condition of the devcenter environment-type is met.
     examples:
@@ -698,12 +840,16 @@ helps['devcenter admin environment-type wait'] = """
 --resource-group "rg1" --deleted
 """
 
-helps['devcenter admin project-environment-type'] = """
+helps[
+    "devcenter admin project-environment-type"
+] = """
     type: group
     short-summary: Manage environment types for a given Project
 """
 
-helps['devcenter admin project-environment-type list'] = """
+helps[
+    "devcenter admin project-environment-type list"
+] = """
     type: command
     short-summary: "Lists all environment types configured for this project."
     examples:
@@ -715,7 +861,9 @@ helps['devcenter admin project-environment-type list'] = """
                az devcenter admin project-environment-type list --dev-center-name "Contoso" --resource-group "rg1"
 """
 
-helps['devcenter admin project-environment-type show'] = """
+helps[
+    "devcenter admin project-environment-type show"
+] = """
     type: command
     short-summary: "Gets an environment type for a Project."
     examples:
@@ -725,7 +873,9 @@ helps['devcenter admin project-environment-type show'] = """
 --resource-group "rg1"
 """
 
-helps['devcenter admin project-environment-type create'] = """
+helps[
+    "devcenter admin project-environment-type create"
+] = """
     type: command
     short-summary: "Create an environment type for a Project."
     examples:
@@ -736,7 +886,9 @@ helps['devcenter admin project-environment-type create'] = """
 --status Enabled --type SystemAssigned
 """
 
-helps['devcenter admin project-environment-type update'] = """
+helps[
+    "devcenter admin project-environment-type update"
+] = """
     type: command
     short-summary: "Partially updates an environment type for a Project."
     examples:
@@ -746,7 +898,9 @@ helps['devcenter admin project-environment-type update'] = """
 --name "{environmentTypeName}" --resource-group "rg1"
 """
 
-helps['devcenter admin project-environment-type delete'] = """
+helps[
+    "devcenter admin project-environment-type delete"
+] = """
     type: command
     short-summary: "Deletes an environment type in a Project."
     examples:
@@ -756,7 +910,9 @@ helps['devcenter admin project-environment-type delete'] = """
 --resource-group "rg1"
 """
 
-helps['devcenter admin project-environment-type wait'] = """
+helps[
+    "devcenter admin project-environment-type wait"
+] = """
     type: command
     short-summary: Place the CLI in a waiting state until a condition of the devcenter environment-type is met.
     examples:
@@ -766,12 +922,16 @@ helps['devcenter admin project-environment-type wait'] = """
 --resource-group "rg1" --deleted
 """
 
-helps['devcenter admin project-allowed-environment-type'] = """
+helps[
+    "devcenter admin project-allowed-environment-type"
+] = """
     type: group
     short-summary: Manage project allowed environment type with devcenter
 """
 
-helps['devcenter admin project-allowed-environment-type list'] = """
+helps[
+    "devcenter admin project-allowed-environment-type list"
+] = """
     type: command
     short-summary: "Lists allowed environment types for a project."
     examples:
@@ -780,7 +940,9 @@ helps['devcenter admin project-allowed-environment-type list'] = """
                az devcenter admin project-allowed-environment-type list --project-name "Contoso" --resource-group "rg1"
 """
 
-helps['devcenter admin project-allowed-environment-type show'] = """
+helps[
+    "devcenter admin project-allowed-environment-type show"
+] = """
     type: command
     short-summary: "Gets an allowed environment type."
     examples:
@@ -791,12 +953,16 @@ helps['devcenter admin project-allowed-environment-type show'] = """
 """
 
 
-helps['devcenter admin catalog'] = """
+helps[
+    "devcenter admin catalog"
+] = """
     type: group
     short-summary: Manage catalog with devcenter
 """
 
-helps['devcenter admin catalog list'] = """
+helps[
+    "devcenter admin catalog list"
+] = """
     type: command
     short-summary: "Lists catalogs for a devcenter."
     examples:
@@ -805,7 +971,9 @@ helps['devcenter admin catalog list'] = """
                az devcenter admin catalog list --dev-center-name "Contoso" --resource-group "rg1"
 """
 
-helps['devcenter admin catalog show'] = """
+helps[
+    "devcenter admin catalog show"
+] = """
     type: command
     short-summary: "Gets a catalog."
     examples:
@@ -814,7 +982,9 @@ helps['devcenter admin catalog show'] = """
                az devcenter admin catalog show --name "{catalogName}" --dev-center-name "Contoso" --resource-group "rg1"
 """
 
-helps['devcenter admin catalog create'] = """
+helps[
+    "devcenter admin catalog create"
+] = """
     type: command
     short-summary: "Create a catalog."
     parameters:
@@ -851,7 +1021,9 @@ toso" --name "{catalogName}" --dev-center-name "Contoso" --resource-group "rg1"
 --dev-center-name "Contoso" --resource-group "rg1"
 """
 
-helps['devcenter admin catalog update'] = """
+helps[
+    "devcenter admin catalog update"
+] = """
     type: command
     short-summary: "Partially updates a catalog."
     parameters:
@@ -882,7 +1054,9 @@ Git repository.
 "Contoso" --resource-group "rg1"
 """
 
-helps['devcenter admin catalog delete'] = """
+helps[
+    "devcenter admin catalog delete"
+] = """
     type: command
     short-summary: "Deletes a catalog resource."
     examples:
@@ -891,7 +1065,9 @@ helps['devcenter admin catalog delete'] = """
                az devcenter admin catalog delete --name "{catalogName}" --dev-center-name "Contoso" --resource-group "rg1"
 """
 
-helps['devcenter admin catalog sync'] = """
+helps[
+    "devcenter admin catalog sync"
+] = """
     type: command
     short-summary: "Syncs templates for a template source."
     examples:
@@ -900,7 +1076,9 @@ helps['devcenter admin catalog sync'] = """
                az devcenter admin catalog sync --name "{catalogName}" --dev-center-name "Contoso" --resource-group "rg1"
 """
 
-helps['devcenter admin catalog wait'] = """
+helps[
+    "devcenter admin catalog wait"
+] = """
     type: command
     short-summary: Place the CLI in a waiting state until a condition of the devcenter catalog is met.
     examples:
@@ -918,12 +1096,16 @@ helps['devcenter admin catalog wait'] = """
 --deleted
 """
 
-helps['devcenter admin devbox-definition'] = """
+helps[
+    "devcenter admin devbox-definition"
+] = """
     type: group
     short-summary: Manage dev box definition with devcenter
 """
 
-helps['devcenter admin devbox-definition list'] = """
+helps[
+    "devcenter admin devbox-definition list"
+] = """
     type: command
     short-summary: "List dev box definitions for a devcenter."
     examples:
@@ -932,7 +1114,9 @@ helps['devcenter admin devbox-definition list'] = """
                az devcenter admin devbox-definition list --dev-center-name "Contoso" --resource-group "rg1"
 """
 
-helps['devcenter admin devbox-definition show'] = """
+helps[
+    "devcenter admin devbox-definition show"
+] = """
     type: command
     short-summary: "Gets a dev box definition."
     examples:
@@ -942,7 +1126,9 @@ helps['devcenter admin devbox-definition show'] = """
 "rg1"
 """
 
-helps['devcenter admin devbox-definition create'] = """
+helps[
+    "devcenter admin devbox-definition create"
+] = """
     type: command
     short-summary: "Create a dev box definition."
     parameters:
@@ -968,7 +1154,9 @@ tosogallery/images/exampleImage/version/1.0.0" --dev-box-definition-name "WebDev
 --resource-group "rg1" --os-storage-type "ssd_1024gb" --sku name=general_a_8c32gb_v1
 """
 
-helps['devcenter admin devbox-definition update'] = """
+helps[
+    "devcenter admin devbox-definition update"
+] = """
     type: command
     short-summary: "Partially updates a dev box definition."
     parameters:
@@ -993,7 +1181,9 @@ helps['devcenter admin devbox-definition update'] = """
 --dev-box-definition-name "WebDevBox" --dev-center-name "Contoso" --resource-group "rg1"
 """
 
-helps['devcenter admin devbox-definition delete'] = """
+helps[
+    "devcenter admin devbox-definition delete"
+] = """
     type: command
     short-summary: "Deletes a dev box definition."
     examples:
@@ -1003,7 +1193,9 @@ helps['devcenter admin devbox-definition delete'] = """
 "rg1"
 """
 
-helps['devcenter admin devbox-definition wait'] = """
+helps[
+    "devcenter admin devbox-definition wait"
+] = """
     type: command
     short-summary: Place the CLI in a waiting state until a condition of the devcenter admin devbox-definition is met.
     examples:
@@ -1021,12 +1213,16 @@ helps['devcenter admin devbox-definition wait'] = """
 "rg1" --deleted
 """
 
-helps['devcenter admin usage'] = """
+helps[
+    "devcenter admin usage"
+] = """
     type: group
     short-summary: Manage usage with devcenter
 """
 
-helps['devcenter admin usage list'] = """
+helps[
+    "devcenter admin usage list"
+] = """
     type: command
     short-summary: "Lists the current usages and limits in this location for the provided subscription."
     examples:
@@ -1035,12 +1231,16 @@ helps['devcenter admin usage list'] = """
                az devcenter usage list --location "westus"
 """
 
-helps['devcenter admin sku'] = """
+helps[
+    "devcenter admin sku"
+] = """
     type: group
     short-summary: Manage sku with devcenter
 """
 
-helps['devcenter admin sku list'] = """
+helps[
+    "devcenter admin sku list"
+] = """
     type: command
     short-summary: "Lists the Microsoft.SKUs available in a subscription."
     examples:
@@ -1049,12 +1249,16 @@ helps['devcenter admin sku list'] = """
                az devcenter admin sku list
 """
 
-helps['devcenter admin pool'] = """
+helps[
+    "devcenter admin pool"
+] = """
     type: group
     short-summary: Manage pool with devcenter
 """
 
-helps['devcenter admin pool list'] = """
+helps[
+    "devcenter admin pool list"
+] = """
     type: command
     short-summary: "Lists pools for a project."
     examples:
@@ -1063,18 +1267,22 @@ helps['devcenter admin pool list'] = """
                az devcenter admin pool list --project-name "{projectName}" --resource-group "rg1"
 """
 
-helps['devcenter admin pool show'] = """
+helps[
+    "devcenter admin pool show"
+] = """
     type: command
-    short-summary: "Gets a machine pool."
+    short-summary: "Gets a dev box pool."
     examples:
       - name: Pools_Get
         text: |-
                az devcenter admin pool show --name "{poolName}" --project-name "{projectName}" --resource-group "rg1"
 """
 
-helps['devcenter admin pool create'] = """
+helps[
+    "devcenter admin pool create"
+] = """
     type: command
-    short-summary: "Create a machine pool."
+    short-summary: "Create a dev box pool."
     examples:
       - name: Pools_CreateOrUpdate
         text: |-
@@ -1083,9 +1291,11 @@ helps['devcenter admin pool create'] = """
 "rg1" --license-type Windows_Client --local-administrator Enabled
 """
 
-helps['devcenter admin pool update'] = """
+helps[
+    "devcenter admin pool update"
+] = """
     type: command
-    short-summary: "Partially updates a machine pool."
+    short-summary: "Partially updates a dev box pool."
     examples:
       - name: Pools_Update
         text: |-
@@ -1093,16 +1303,20 @@ helps['devcenter admin pool update'] = """
 "{projectName}" --resource-group "rg1"
 """
 
-helps['devcenter admin pool delete'] = """
+helps[
+    "devcenter admin pool delete"
+] = """
     type: command
-    short-summary: "Deletes a machine pool."
+    short-summary: "Deletes a dev box pool."
     examples:
       - name: Pools_Delete
         text: |-
                az devcenter admin pool delete --name "poolName" --project-name "{projectName}" --resource-group "rg1"
 """
 
-helps['devcenter admin pool wait'] = """
+helps[
+    "devcenter admin pool wait"
+] = """
     type: command
     short-summary: Place the CLI in a waiting state until a condition of the devcenter pool is met.
     examples:
@@ -1120,12 +1334,16 @@ helps['devcenter admin pool wait'] = """
 --deleted
 """
 
-helps['devcenter admin schedule'] = """
+helps[
+    "devcenter admin schedule"
+] = """
     type: group
     short-summary: Manage schedule with devcenter
 """
 
-helps['devcenter admin schedule list'] = """
+helps[
+    "devcenter admin schedule list"
+] = """
     type: command
     short-summary: "Lists schedules for a pool."
     examples:
@@ -1134,7 +1352,9 @@ helps['devcenter admin schedule list'] = """
                az devcenter admin schedule list --pool-name "DevPool" --project-name "TestProject" --resource-group "rg1"
 """
 
-helps['devcenter admin schedule show'] = """
+helps[
+    "devcenter admin schedule show"
+] = """
     type: command
     short-summary: "Gets a schedule resource."
     examples:
@@ -1144,7 +1364,9 @@ helps['devcenter admin schedule show'] = """
 --name "autoShutdown"
 """
 
-helps['devcenter admin schedule create'] = """
+helps[
+    "devcenter admin schedule create"
+] = """
     type: command
     short-summary: "Create a Schedule."
     examples:
@@ -1154,7 +1376,9 @@ helps['devcenter admin schedule create'] = """
 --pool-name "DevPool" --project-name "DevProject" --resource-group "rg1" --name "autoShutdown"
 """
 
-helps['devcenter admin schedule update'] = """
+helps[
+    "devcenter admin schedule update"
+] = """
     type: command
     short-summary: "Partially updates a Scheduled."
     examples:
@@ -1164,7 +1388,9 @@ helps['devcenter admin schedule update'] = """
 --resource-group "rg1" --name "autoShutdown"
 """
 
-helps['devcenter admin schedule delete'] = """
+helps[
+    "devcenter admin schedule delete"
+] = """
     type: command
     short-summary: "Deletes a Scheduled."
     examples:
@@ -1174,7 +1400,9 @@ helps['devcenter admin schedule delete'] = """
 --name "autoShutdown"
 """
 
-helps['devcenter admin schedule wait'] = """
+helps[
+    "devcenter admin schedule wait"
+] = """
     type: command
     short-summary: Place the CLI in a waiting state until a condition of the devcenter admin schedule is met.
     examples:
@@ -1193,12 +1421,16 @@ helps['devcenter admin schedule wait'] = """
 """
 
 
-helps['devcenter admin network-connection'] = """
+helps[
+    "devcenter admin network-connection"
+] = """
     type: group
     short-summary: Manage network setting with devcenter
 """
 
-helps['devcenter admin network-connection list'] = """
+helps[
+    "devcenter admin network-connection list"
+] = """
     type: command
     short-summary: "Lists network settings in a resource group And Lists network settings in a subscription."
     examples:
@@ -1210,16 +1442,20 @@ helps['devcenter admin network-connection list'] = """
                az devcenter admin network-connection list
 """
 
-helps['devcenter admin network-connection show'] = """
+helps[
+    "devcenter admin network-connection show"
+] = """
     type: command
     short-summary: "Gets a network settings resource."
     examples:
       - name: NetworkConnections_Get
-        text: |- 
-               az devcenter admin network-connection show --name "{networkSettingName}" --resource-group "rg1"
+        text: |-
+               az devcenter admin network-connection show --name "{networkConnectionName}" --resource-group "rg1"
 """
 
-helps['devcenter admin network-connection create'] = """
+helps[
+    "devcenter admin network-connection create"
+] = """
     type: command
     short-summary: "Create a Network Settings resource."
     examples:
@@ -1227,38 +1463,43 @@ helps['devcenter admin network-connection create'] = """
         text: |-
                az devcenter admin network-connection create --location "centralus" --domain-join-type "HybridAzureADJoin" \
 --domain-name "mydomaincontroller.local" --domain-password "Password value for user" --domain-username \
-"testuser@mydomaincontroller.local" --networking-resource-group-id "/subscriptions/00000000-0000-0000-0000-000000000000\
-/resourceGroups/ExampleRG" --subnet-id "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ExampleRG/pr\
-oviders/Microsoft.Network/virtualNetworks/ExampleVNet/subnets/default" --name "{networkSettingName}" --resource-group \
+"testuser@mydomaincontroller.local" --subnet-id "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ExampleRG/pr\
+oviders/Microsoft.Network/virtualNetworks/ExampleVNet/subnets/default" --name "{networkConnectionName}" --resource-group \
 "rg1"
       - name: NetworkConnections_CreateAzureJoined
         text: |-
                az devcenter admin network-connection create --location "centralus" --domain-join-type "AzureADJoin" \
 --networking-resource-group-name "NetworkInterfacesRG" --subnet-id "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ExampleRG/pr\
-oviders/Microsoft.Network/virtualNetworks/ExampleVNet/subnets/default" --name "{networkSettingName}" --resource-group \
+oviders/Microsoft.Network/virtualNetworks/ExampleVNet/subnets/default" --name "{networkConnectionName}" --resource-group \
 "rg1"
 """
 
-helps['devcenter admin network-connection update'] = """
+helps[
+    "devcenter admin network-connection update"
+] = """
     type: command
     short-summary: "Partially updates Network Settings."
     examples:
       - name: NetworkConnections_Update
         text: |-
                az devcenter admin network-connection update --domain-password "New Password value for user" --name \
-"{networkSettingName}" --resource-group "rg1"
+"{networkConnectionName}" --resource-group "rg1"
 """
 
-helps['devcenter admin network-connection delete'] = """
+helps[
+    "devcenter admin network-connection delete"
+] = """
     type: command
     short-summary: "Deletes a Network Settings resource."
     examples:
       - name: NetworkConnections_Delete
         text: |-
-               az devcenter admin network-connection delete --name "{networkSettingName}" --resource-group "rg1"
+               az devcenter admin network-connection delete --name "{networkConnectionName}" --resource-group "rg1"
 """
 
-helps['devcenter admin network-connection run-health-check'] = """
+helps[
+    "devcenter admin network-connection run-health-check"
+] = """
     type: command
     short-summary: "Triggers a new health check run. The execution and health check result can be tracked via the \
 network Connection health check details."
@@ -1268,36 +1509,44 @@ network Connection health check details."
                az devcenter admin network-connection run-health-check --name "uswest3network" --resource-group "rg1"
 """
 
-helps['devcenter admin network-connection show-health-detail'] = """
+helps[
+    "devcenter admin network-connection show-health-detail"
+] = """
     type: command
     short-summary: "Gets health check status details."
     examples:
       - name: NetworkConnections_GetHealthDetails
         text: |-
-               az devcenter admin network-connection show-health-detail --name "{networkSettingName}" --resource-group "rg1"
+               az devcenter admin network-connection show-health-detail --name "{networkConnectionName}" --resource-group "rg1"
 """
 
-helps['devcenter admin network-connection wait'] = """
+helps[
+    "devcenter admin network-connection wait"
+] = """
     type: command
     short-summary: Place the CLI in a waiting state until a condition of the devcenter network-setting is met.
     examples:
       - name: Pause executing next line of CLI script until the devcenter network-setting is successfully created.
         text: |-
-               az devcenter admin network-connection wait --name "{networkSettingName}" --resource-group "rg1" --created
+               az devcenter admin network-connection wait --name "{networkConnectionName}" --resource-group "rg1" --created
       - name: Pause executing next line of CLI script until the devcenter network-setting is successfully updated.
         text: |-
-               az devcenter admin network-connection wait --name "{networkSettingName}" --resource-group "rg1" --updated
+               az devcenter admin network-connection wait --name "{networkConnectionName}" --resource-group "rg1" --updated
       - name: Pause executing next line of CLI script until the devcenter network-setting is successfully deleted.
         text: |-
-               az devcenter admin network-connection wait --name "{networkSettingName}" --resource-group "rg1" --deleted
+               az devcenter admin network-connection wait --name "{networkConnectionName}" --resource-group "rg1" --deleted
 """
 
-helps['devcenter admin gallery'] = """
+helps[
+    "devcenter admin gallery"
+] = """
     type: group
     short-summary: Manage gallery with devcenter
 """
 
-helps['devcenter admin gallery list'] = """
+helps[
+    "devcenter admin gallery list"
+] = """
     type: command
     short-summary: "Lists galleries for a devcenter."
     examples:
@@ -1306,7 +1555,9 @@ helps['devcenter admin gallery list'] = """
                az devcenter admin gallery list --dev-center-name "Contoso" --resource-group "rg1"
 """
 
-helps['devcenter admin gallery show'] = """
+helps[
+    "devcenter admin gallery show"
+] = """
     type: command
     short-summary: "Gets a gallery."
     examples:
@@ -1315,7 +1566,9 @@ helps['devcenter admin gallery show'] = """
                az devcenter admin gallery show --dev-center-name "Contoso" --name "{galleryName}" --resource-group "rg1"
 """
 
-helps['devcenter admin gallery create'] = """
+helps[
+    "devcenter admin gallery create"
+] = """
     type: command
     short-summary: "Create a gallery."
     examples:
@@ -1326,12 +1579,16 @@ iders/Microsoft.Compute/galleries/{galleryName}" --dev-center-name "Contoso" --n
 "rg1"
 """
 
-helps['devcenter admin gallery update'] = """
+helps[
+    "devcenter admin gallery update"
+] = """
     type: command
     short-summary: "Update a gallery."
 """
 
-helps['devcenter admin gallery delete'] = """
+helps[
+    "devcenter admin gallery delete"
+] = """
     type: command
     short-summary: "Deletes a gallery resource."
     examples:
@@ -1340,7 +1597,9 @@ helps['devcenter admin gallery delete'] = """
                az devcenter gallery delete --dev-center-name "Contoso" --name "{galleryName}" --resource-group "rg1"
 """
 
-helps['devcenter admin gallery wait'] = """
+helps[
+    "devcenter admin gallery wait"
+] = """
     type: command
     short-summary: Place the CLI in a waiting state until a condition of the devcenter gallery is met.
     examples:
@@ -1358,12 +1617,16 @@ helps['devcenter admin gallery wait'] = """
 --deleted
 """
 
-helps['devcenter admin image'] = """
+helps[
+    "devcenter admin image"
+] = """
     type: group
     short-summary: Manage image with devcenter
 """
 
-helps['devcenter admin image list'] = """
+helps[
+    "devcenter admin image list"
+] = """
     type: command
     short-summary: "Lists images for a gallery. And Lists images for a devcenter."
     examples:
@@ -1375,7 +1638,9 @@ helps['devcenter admin image list'] = """
                az devcenter image list --dev-center-name "Contoso" --resource-group "rg1"
 """
 
-helps['devcenter admin image show'] = """
+helps[
+    "devcenter admin image show"
+] = """
     type: command
     short-summary: "Gets a gallery image."
     examples:
@@ -1385,12 +1650,16 @@ helps['devcenter admin image show'] = """
 "{imageName}" --resource-group "rg1"
 """
 
-helps['devcenter admin image-version'] = """
+helps[
+    "devcenter admin image-version"
+] = """
     type: group
     short-summary: Manage image version with devcenter
 """
 
-helps['devcenter admin image-version list'] = """
+helps[
+    "devcenter admin image-version list"
+] = """
     type: command
     short-summary: "Lists versions for an image."
     examples:
@@ -1400,7 +1669,9 @@ helps['devcenter admin image-version list'] = """
 --image-name "Win11" --resource-group "rg1"
 """
 
-helps['devcenter admin image-version show'] = """
+helps[
+    "devcenter admin image-version show"
+] = """
     type: command
     short-summary: "Gets an image version."
     examples:
