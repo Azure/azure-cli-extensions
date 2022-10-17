@@ -129,10 +129,6 @@ def load_command_table(self, _):
         g.custom_command('delete', 'script_execution_delete')
         g.custom_show_command('show', 'script_execution_show')
 
-    with self.command_group('vmware workload-network', vmware_sdk, client_factory=cf_vmware) as g:
-        g.custom_command('list', 'workload_network_list')
-        g.custom_show_command('show', 'workload_network_show')
-
     with self.command_group('vmware workload-network dhcp', vmware_sdk, client_factory=cf_vmware) as g:
         g.custom_command('list', 'workload_network_dhcp_list')
         g.custom_show_command('show', 'workload_network_dhcp_show')
