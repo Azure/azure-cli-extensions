@@ -291,15 +291,11 @@ def load_arguments(self, _):
     for scope in ['spring app disable-remote-debugging', 'spring app get-remote-debugging-config']:
         with self.argument_context(scope) as c:
             c.argument('deployment', options_list=[
-                '--deployment', '-d'],
-                       help='Name of an existing deployment of the app. Default to the production deployment if not specified.',
-                       validator=fulfill_deployment_param)
+                '--deployment', '-d'], help='Name of an existing deployment of the app. Default to the production deployment if not specified.', validator=fulfill_deployment_param)
 
     with self.argument_context('spring app enable-remote-debugging') as c:
         c.argument('deployment', options_list=[
-            '--deployment', '-d'],
-                   help='Name of an existing deployment of the app. Default to the production deployment if not specified.',
-                   validator=fulfill_deployment_param)
+            '--deployment', '-d'], help='Name of an existing deployment of the app. Default to the production deployment if not specified.', validator=fulfill_deployment_param)
         c.argument('remote_debugging_port', options_list=['--port', '-p'], type=int, default=5005,
                    help='Remote debugging port, the value should be from 1024 to 65536, default value is 5005',
                    validator=validate_remote_debugging_port)
