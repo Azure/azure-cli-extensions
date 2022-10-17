@@ -105,7 +105,12 @@ class BuildService:
 
         if result.properties.provisioning_state != "Succeeded":
             log_url = self._try_get_build_log_url(build_result_id)
-            raise DeploymentError("Failed to build docker image, please check the build logs {} and retry.".format(log_url))
+            build_error = result.properties.error
+            if build_error:
+                error_msg = "Failed to build docker image: error code: {}, message: {}, build log: {}".format(build_error.code, build_error.message, log_url)
+            else:
+                error_msg = "Failed to build docker image, please check the build logs {} and retry.".format(log_url)
+            raise DeploymentError(error_msg)
 
     def _get_build_result(self, id):
         resource_id = parse_resource_id(id)
