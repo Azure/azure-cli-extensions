@@ -69,7 +69,7 @@ def validate_location(cmd, location):
             break
 
 
-def get_chart_path(registry_path, kube_config, kube_context, helm_client_location):
+def get_chart_path(registry_path, kube_config, kube_context, helm_client_location, release_train):
     # Pulling helm chart from registry
     os.environ['HELM_EXPERIMENTAL_OCI'] = '1'
     pull_helm_chart(registry_path, kube_config, kube_context, helm_client_location)
@@ -84,7 +84,10 @@ def get_chart_path(registry_path, kube_config, kube_context, helm_client_locatio
     export_helm_chart(registry_path, chart_export_path, kube_config, kube_context, helm_client_location)
 
     # Returning helm chart path
-    helm_chart_path = os.path.join(chart_export_path, 'azure-arc-k8sagents')
+    if(release_train == consts.Least_Privilege_Release_Train_Name):
+        helm_chart_path = os.path.join(chart_export_path, consts.Arc_Agent_Helm_Chart_Name_Least_Privileges)
+    else:
+        helm_chart_path = os.path.join(chart_export_path, consts.Arc_Agent_Helm_Chart_Name)
     chart_path = os.getenv('HELMCHART') if os.getenv('HELMCHART') else helm_chart_path
     return chart_path
 
@@ -133,14 +136,13 @@ def add_helm_repo(kube_config, kube_context, helm_client_location):
         raise CLIInternalError("Unable to add repository {} to helm: ".format(repo_url) + error_helm_repo.decode("ascii"))
 
 
-def get_helm_registry(cmd, config_dp_endpoint, dp_endpoint_dogfood=None, release_train_dogfood=None):
+def get_helm_registry(cmd, config_dp_endpoint, release_train=consts.Stable_Release_Train_Name):
     # Setting uri
-    get_chart_location_url = "{}/{}/GetLatestHelmPackagePath?api-version=2019-11-01-preview".format(config_dp_endpoint, 'azure-arc-k8sagents')
-    release_train = os.getenv('RELEASETRAIN') if os.getenv('RELEASETRAIN') else 'stable'
-    if dp_endpoint_dogfood:
-        get_chart_location_url = "{}/azure-arc-k8sagents/GetLatestHelmPackagePath?api-version=2019-11-01-preview".format(dp_endpoint_dogfood)
-        if release_train_dogfood:
-            release_train = release_train_dogfood
+    if release_train == consts.Least_Privilege_Release_Train_Name:
+        get_chart_location_url = "{}/{}/GetLatestHelmPackagePath?api-version=2019-11-01-preview".format(config_dp_endpoint, consts.Arc_Agent_Helm_Chart_Name_Least_Privileges)
+    else:
+        get_chart_location_url = "{}/{}/GetLatestHelmPackagePath?api-version=2019-11-01-preview".format(config_dp_endpoint, consts.Arc_Agent_Helm_Chart_Name)
+    release_train = os.getenv('RELEASETRAIN') if os.getenv('RELEASETRAIN') else release_train
     uri_parameters = ["releaseTrain={}".format(release_train)]
     resource = cmd.cli_ctx.cloud.endpoints.active_directory_resource_id
     # Sending request
@@ -294,7 +296,7 @@ def delete_arc_agents(release_namespace, kube_config, kube_context, configuratio
 def helm_install_release(chart_path, subscription_id, kubernetes_distro, kubernetes_infra, resource_group_name, cluster_name,
                          location, onboarding_tenant_id, http_proxy, https_proxy, no_proxy, proxy_cert, private_key_pem,
                          kube_config, kube_context, no_wait, values_file_provided, values_file, cloud_name, disable_auto_upgrade,
-                         enable_custom_locations, custom_locations_oid, helm_client_location, enable_private_link, onboarding_timeout="600"):
+                         enable_custom_locations, custom_locations_oid, helm_client_location, enable_private_link, release_train, config_settings, onboarding_timeout="600"):
     cmd_helm_install = [helm_client_location, "upgrade", "--install", "azure-arc", chart_path,
                         "--set", "global.subscriptionId={}".format(subscription_id),
                         "--set", "global.kubernetesDistro={}".format(kubernetes_distro),
@@ -339,6 +341,9 @@ def helm_install_release(chart_path, subscription_id, kubernetes_distro, kuberne
         # Change --timeout format for helm client to understand
         onboarding_timeout = onboarding_timeout + "s"
         cmd_helm_install.extend(["--wait", "--timeout", "{}".format(onboarding_timeout)])
+    if release_train == consts.Least_Privilege_Release_Train_Name:
+        arcAgentPlatformServiceAccount = get_serviceaccount_name_from_configsettings(config_settings)
+        cmd_helm_install.extend(["--set", "global.arcAgentPlatformServiceAccount={}".format(arcAgentPlatformServiceAccount)])
     response_helm_install = Popen(cmd_helm_install, stdout=PIPE, stderr=PIPE)
     _, error_helm_install = response_helm_install.communicate()
     if response_helm_install.returncode != 0:
@@ -349,6 +354,14 @@ def helm_install_release(chart_path, subscription_id, kubernetes_distro, kuberne
         logger.warning("Please check if the azure-arc namespace was deployed and run 'kubectl get pods -n azure-arc' to check if all the pods are in running state. A possible cause for pods stuck in pending state could be insufficient resources on the kubernetes cluster to onboard to arc.")
         raise CLIInternalError("Unable to install helm release: " + error_helm_install.decode("ascii"))
 
+def get_serviceaccount_name_from_configsettings(config_settings):
+    data = json.loads(config_settings)
+    if not (data.get('service-account-name') is None): 
+        serviceaccount_name = data['service-account-name']
+        return serviceaccount_name
+    else:
+        telemetry.set_exception(exception="Config settings input does not contain service-account-name", fault_type="", summary="Config settings input does not contain service-account-name")
+        raise ArgumentUsageError("Config settings input does not contain service-account-name", "Please ensure you pass the mandatory field- service-account-name in the config settings while onboarding the cluster in least privileges mode. For more details, please refer to <aka.ms link>")
 
 def flatten(dd, separator='.', prefix=''):
     try:

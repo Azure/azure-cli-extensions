@@ -9,7 +9,7 @@ from ._validators import override_client_request_id_header
 from argcomplete.completers import FilesCompleter
 from azure.cli.core.commands.parameters import get_location_type, get_enum_type, file_type, tags_type, get_three_state_flag
 from azure.cli.core.commands.validators import get_default_location_from_resource_group
-from azext_connectedk8s._constants import Distribution_Enum_Values, Infrastructure_Enum_Values, Feature_Values
+from azext_connectedk8s._constants import Distribution_Enum_Values, Infrastructure_Enum_Values, Feature_Values, ReleaseTrain_Enum_Values
 from knack.arguments import (CLIArgumentType, CaseInsensitiveList)
 
 from._validators import validate_private_link_properties
@@ -43,6 +43,8 @@ def load_arguments(self, _):
         c.argument('onboarding_timeout', options_list=['--onboarding-timeout'], arg_group='Timeout', help='Time required (in seconds) for the arc-agent pods to be installed on the kubernetes cluster. Override this value if the hardware/network constraints on your cluster requires more time for installing the arc-agent pods.')
         c.argument('no_wait', options_list=['--no-wait'], arg_group='Timeout', help="Do not wait for the long-running operation to finish.")
         c.argument('correlation_id', options_list=['--correlation-id'], help='A guid that is used to internally track the source of cluster onboarding. Please do not modify it unless advised', validator=override_client_request_id_header)
+        c.argument('config_settings', options_list=['--config-settings'], help='Configuration settings for least privilege mode release train')
+        c.argument('release_train', options_list=['--release-train'], help='Arc agents release train name', arg_type=get_enum_type(ReleaseTrain_Enum_Values))
 
     with self.argument_context('connectedk8s update') as c:
         c.argument('tags', tags_type)
