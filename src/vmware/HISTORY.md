@@ -4,8 +4,6 @@
 
 - Update to AVS 2022-05-01 API
 - Add `az vmware cluster list-zones`
-- Add `az vmware workload-network show`
-- Add `az vmware workload-network list`
 - Add `--affinity-strength` and `--azure-hybrid-benefit-type` parameter to `az vmware placement-policy vm-host create`
 - Add `--affinity-strength` and `--azure-hybrid-benefit-type` parameter to `az vmware placement-policy vm-host update`
 - Add `--express-route-id` parameter to `az vmware authorization create`
