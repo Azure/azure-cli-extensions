@@ -5754,7 +5754,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
     @AKSCustomResourceGroupPreparer(random_name_length=16, name_prefix='clitest', location='westus2')
     def test_aks_update_with_azuremonitormetrics(self, resource_group, resource_group_location):
         aks_name = self.create_random_name('cliakstest', 15)
-        node_vm_size = 'standard_dc2s_v3'
+        node_vm_size = 'standard_d2s_v3'
         self.kwargs.update({
             'resource_group': resource_group,
             'name': aks_name,
