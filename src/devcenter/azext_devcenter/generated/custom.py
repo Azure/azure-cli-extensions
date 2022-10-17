@@ -850,8 +850,8 @@ def devcenter_schedule_create(client,
                               state=None,
                               no_wait=False):
     body = {}
-    body['type_properties_type'] = schedule_type #"StopDevBox"
-    body['frequency'] = frequency #"Daily"
+    body['type_properties_type'] = schedule_type
+    body['frequency'] = frequency
     if time is not None:
         body['time'] = time
     if time_zone is not None:
