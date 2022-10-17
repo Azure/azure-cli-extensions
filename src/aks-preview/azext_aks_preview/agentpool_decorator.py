@@ -372,7 +372,7 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
         agentpool = self.set_up_gpu_properties(agentpool)
         # set up custom ca trust
         agentpool = self.set_up_custom_ca_trust(agentpool)
-        # set up custom ca trust
+        # set up agentpool windows profile
         agentpool = self.set_up_agentpool_windows_profile(agentpool)
 
         # DO NOT MOVE: keep this at the bottom, restore defaults

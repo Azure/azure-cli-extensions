@@ -642,7 +642,7 @@ def validate_enable_custom_ca_trust(namespace):
 def validate_disable_windows_outbound_nat(namespace):
     """Validates disable_windows_outbound_nat can only be used on Windows."""
     if namespace.disable_windows_outbound_nat:
-        if hasattr(namespace, 'os_type') and namespace.os_type != "Windows":
+        if hasattr(namespace, 'os_type') and str(namespace.os_type).lower() != "windows":
             raise ArgumentUsageError(
                 '--disable-windows-outbound-nat can only be set for Windows nodepools')
 
