@@ -81,11 +81,11 @@ def get_combined_option(option_description, valid_groups, default_option):
         if group is None:
             if option == 0:
                 return group, option
-            else:
-                print("The option should start with \"a\" for scenario, \"b\" for commands or be \"0\": ", end='')
-                group, option = read_combined_option(valid_groups.keys(), default_option)
+            print("The option should start with \"a\" for scenario, \"b\" for commands or be \"0\": ", end='')
+            group, option = read_combined_option(valid_groups.keys(), default_option)
         elif option not in valid_groups[group]:
-            print("The option should end with a valid option ({}{}-{}{}): ".format(group, valid_groups[group].min_option, group, valid_groups[group].max_option), end='')
+            print(f"The option should end with a valid option "
+                  f"({group}{valid_groups[group].min_option}-{group}{valid_groups[group].max_option}): ", end='')
             group, option = read_combined_option(valid_groups.keys(), default_option)
         else:
             return group, option
@@ -95,7 +95,7 @@ def get_int_option(option_description, min_option, max_option, default_option):
     print(Fore.LIGHTBLUE_EX + ' ? ' + Fore.RESET + option_description, end='')
     option = read_int(default_option)
     while option < min_option or option > max_option:
-        print("Please enter a valid option ({}-{}): ".format(min_option, max_option), end='')
+        print(f"Please enter a valid option ({min_option}-{max_option}): ", end='')
         option = read_int(default_option)
     return option
 
@@ -189,7 +189,6 @@ def get_last_exception(cmd, latest_command):
     if not cmd.cli_ctx.config.getboolean('core', 'collect_telemetry', fallback=True):
         return ''
 
-    import os
     telemetry_cache_file = os.path.join(cmd.cli_ctx.config.config_dir, 'telemetry', 'cache')
     if not os.path.exists(telemetry_cache_file):
         return ''
@@ -210,7 +209,7 @@ def get_last_exception(cmd, latest_command):
             if not data_dict or len(data_dict) != 1:
                 return
 
-            data_item = [item for item in data_dict.values()][0][0]
+            data_item = list(data_dict.values())[0][0]
             if not data_item or 'properties' not in data_item:
                 return
             properties = data_item['properties']

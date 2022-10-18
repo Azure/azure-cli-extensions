@@ -16,9 +16,8 @@ class RecommendType(int, Enum):
     def get(name):
         if name.lower() == "solution":
             return RecommendType.Solution
-        elif name.lower() == "command":
+        if name.lower() == "command":
             return RecommendType.Command
-        elif name.lower() == "scenario":
+        if name.lower() == "scenario":
             return RecommendType.Scenario
-        else:
-            return RecommendType.All
+        return RecommendType.All

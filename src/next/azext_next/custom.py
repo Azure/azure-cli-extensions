@@ -2,18 +2,20 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
-import re
 import json
+import re
 
+from azure.cli.core import telemetry
 from azure.cli.core.azclierror import RecommendationError
-from knack import help_files
-from .utils import (get_int_option, get_command_list, get_last_exception, get_title_case, get_yes_or_no_option,
-                    get_latest_command, get_combined_option, OptionRange)
-from .constants import RecommendType
+from azure.cli.core.style import Style, print_styled_text
 from colorama import Fore, init
+from knack import help_files
+
+from .constants import RecommendType
 from .requests import get_recommend_from_api
-from azure.cli.core.style import print_styled_text, Style
-import azure.cli.core.telemetry as telemetry
+from .utils import (OptionRange, get_combined_option, get_command_list,
+                    get_int_option, get_last_exception, get_latest_command,
+                    get_title_case, get_yes_or_no_option)
 
 
 def handle_next(cmd, command_only=False, scenario_only=False):
@@ -31,7 +33,7 @@ def handle_next(cmd, command_only=False, scenario_only=False):
     command_history = get_command_list(cmd, 0)
 
     processed_exception = None
-    if request_type == RecommendType.All or request_type == RecommendType.Solution:
+    if request_type in (RecommendType.All, RecommendType.Solution):
         processed_exception = get_last_exception(cmd, get_latest_command(command_history))
 
     if request_type == RecommendType.Solution and not processed_exception:
@@ -82,7 +84,8 @@ def handle_next(cmd, command_only=False, scenario_only=False):
         print()
         _give_recommends(cmd, command_recommendations, prefix='b')
         group, option = get_combined_option(
-            "Please select your option " + Fore.LIGHTBLACK_EX + "(for example, enter \"a2\" for the second scenario. if none, enter 0)" +
+            "Please select your option " + Fore.LIGHTBLACK_EX +
+            "(for example, enter \"a2\" for the second scenario. if none, enter 0)" +
             Fore.RESET + ": ",
             {'a': OptionRange(1, len(scenario_recommendations)), 'b': OptionRange(1, len(command_recommendations))},
             (None, -1))
@@ -370,8 +373,8 @@ def _execute_recommend_scenarios(cmd, rec):
                     _print_help_info(cmd, nx_cmd["command"])
                     is_help_printed = True
 
-                step_msg = "Do you want to retry this step? 1. Run it 2. Skip it 3. Quit process " + Fore.LIGHTBLACK_EX \
-                           + "(Enter is to Run)" + Fore.RESET + ": "
+                step_msg = "Do you want to retry this step? 1. Run it 2. Skip it 3. Quit process " \
+                           + Fore.LIGHTBLACK_EX + "(Enter is to Run)" + Fore.RESET + ": "
                 run_option = get_int_option(step_msg, 1, 3, 1)
                 if run_option == 1:
                     execute_result = _execute_nx_cmd(cmd, nx_cmd['command'], nx_param, catch_exception=True)
