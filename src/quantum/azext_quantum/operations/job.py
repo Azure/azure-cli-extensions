@@ -222,25 +222,42 @@ def _submit_qir_v1(cmd, program_args, resource_group_name, workspace_name, locat
     Submit a QIR program or circuit to run on Azure Quantum.
     """
     if job_input_source is None:
-
-        # # If no filename of path was given, look in the current folder
-        # # example from https://stackoverflow.com/questions/45946148/find-a-file-from-a-partial-filename-in-python
-        # path = os.path.dirname(os.path.realpath(__file__))
-        # for f_name in os.listdir(path):
-        #     if f_name.endswith('.ll'):
-        #         print('found a match')
-
-
+        # If no filename of path was given, look in the current folder
+        path = os.path.abspath(os.curdir)
+        for file_name in os.listdir(path):
+            if file_name.endswith('.ll'):
+                job_input_source = os.path.join(path, file_name)
+                break
+    if job_input_source is None:
         raise RequiredArgumentMissingError("Failed to submit QIR job: No --job-input-source path was specified.", JOB_SUBMIT_DOC_LINK_MSG)
 
     # >>>>> For debug: Show the job_input_source value <<<<<
-    #raise AzureInternalError(">>>>> Got a path for the QIR job: " + job_input_source + " <<<<<")
+    knack_logger.warning(">>>>> Got a path for the QIR input: " + job_input_source + " <<<<<")
     # <<<<<
 
-    # >>>>> Submit the QIR job here <<<<<
-   
+
+
+    # >>>>> Upload the QIR file to the storage account
+
+    # >>>>> For debug <<<<<
+    knack_logger.warning('>>>>> We should upload the QIR to storage now <<<<<')
+    # <<<<<
+
+
+    # >>>>> Code from output function, below...
+    # from azure.cli.command_modules.storage._client_factory import blob_data_service_factory
+    # path = os.path.join(tempfile.gettempdir(), job_id)
+    # info = WorkspaceInfo(cmd, resource_group_name, workspace_name, location)
+    # client = cf_jobs(cmd.cli_ctx, info.subscription, info.resource_group, info.name, info.location)
+
+
+    # >>>>> Submit the QIR job <<<<<
+
+
+
+
     # if result.returncode == 0:
-    #     return # What data do we return?
+    return # What data do we return?
 
     # The QIR job failed to run.
     # logger.error("Submission of job failed with error code %s", result.returncode)
