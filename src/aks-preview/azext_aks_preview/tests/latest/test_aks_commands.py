@@ -3432,7 +3432,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         self.cmd(
             'aks nodepool delete --resource-group={resource_group} --cluster-name={name} --name={nodepool2_name} --no-wait', checks=[self.is_empty()])
 
-    @live_only()
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='centraluseuap')
     def test_aks_custom_kubelet_identity(self, resource_group, resource_group_location):
