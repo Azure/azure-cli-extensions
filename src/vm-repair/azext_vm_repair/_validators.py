@@ -176,6 +176,15 @@ def validate_run(cmd, namespace):
 
 def validate_reset_nic(cmd, namespace):
     check_extension_version(EXTENSION_NAME)
+    if namespace._subscription:
+        # setting subscription Id
+        try:
+            set_sub_command = 'az account set --subscription {sid}'.format(sid=namespace._subscription)
+            logger.info('Setting the subscription...\n')
+            _call_az_command(set_sub_command)
+        except AzCommandError as azCommandError:
+            logger.error(azCommandError)
+            raise CLIError('Unexpected error occured while setting the subscription..')
     _validate_and_get_vm(cmd, namespace.resource_group_name, namespace.vm_name)
 
 
@@ -304,7 +313,7 @@ def fetch_repair_vm(namespace):
     # Find repair VM
     tag = _get_repair_resource_tag(namespace.resource_group_name, namespace.vm_name)
     try:
-        find_repair_command = 'az resource list --tag {tag} --query "[?type==\'Microsoft.Compute/virtualMachines\']" -o json' \
+        find_repair_command = 'az resource list --tag {tag} --query "[?type==\'microsoft.compute/virtualmachines\']" -o json' \
                               .format(tag=tag)
         logger.info('Searching for repair-vm within subscription...')
         output = _call_az_command(find_repair_command)

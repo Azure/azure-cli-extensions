@@ -3,7 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-# pylint: disable=line-too-long,redefined-builtin,unnecessary-comprehension, too-many-locals, too-many-statements
+# pylint: disable=line-too-long,redefined-builtin,unnecessary-comprehension, too-many-locals, too-many-statements, too-many-nested-blocks
 
 import os.path
 import json
@@ -50,12 +50,8 @@ class WorkspaceInfo:
 
         # Hierarchically selects the value for the given key.
         # First tries the value provided as argument, as that represents the value from the command line
-        # then it checks if the key exists in the 'quantum' section in config, and uses that if available.
-        # finally, it checks in the 'global' section in the config.
+        # then it checks if the key exists in the [defaults] section in config, and uses that if available.
         def select_value(key, value):
-            if value is not None:
-                return value
-            value = cmd.cli_ctx.config.get('quantum', key, None)
             if value is not None:
                 return value
             value = cmd.cli_ctx.config.get(cmd.cli_ctx.config.defaults_section_name, key, None)
@@ -75,10 +71,11 @@ class WorkspaceInfo:
     def save(self, cmd):
         from azure.cli.core.util import ConfiguredDefaultSetter
 
+        # Save in the global [defaults] section of the .azure\config file
         with ConfiguredDefaultSetter(cmd.cli_ctx.config, False):
-            cmd.cli_ctx.config.set_value('quantum', 'group', self.resource_group)
-            cmd.cli_ctx.config.set_value('quantum', 'workspace', self.name)
-            cmd.cli_ctx.config.set_value('quantum', 'location', self.location)
+            cmd.cli_ctx.config.set_value(cmd.cli_ctx.config.defaults_section_name, 'group', self.resource_group)
+            cmd.cli_ctx.config.set_value(cmd.cli_ctx.config.defaults_section_name, 'workspace', self.name)
+            cmd.cli_ctx.config.set_value(cmd.cli_ctx.config.defaults_section_name, 'location', self.location)
 
 
 def _show_tip(msg):
@@ -211,7 +208,7 @@ def _validate_storage_account(tier_or_kind_msg_text, tier_or_kind, supported_tie
                                         f"Storage account {tier_or_kind_msg_text}{plural} currently supported: {tier_or_kind_list[:-2]}")
 
 
-def create(cmd, resource_group_name=None, workspace_name=None, location=None, storage_account=None, skip_role_assignment=False, provider_sku_list=None, auto_accept=False):
+def create(cmd, resource_group_name, workspace_name, location, storage_account, skip_role_assignment=False, provider_sku_list=None, auto_accept=False):
     """
     Create a new Azure Quantum workspace.
     """
@@ -315,7 +312,7 @@ def create(cmd, resource_group_name=None, workspace_name=None, location=None, st
     return quantum_workspace
 
 
-def delete(cmd, resource_group_name=None, workspace_name=None):
+def delete(cmd, resource_group_name, workspace_name):
     """
     Delete the given (or current) Azure Quantum workspace.
     """
@@ -354,7 +351,7 @@ def get(cmd, resource_group_name=None, workspace_name=None):
     return ws
 
 
-def quotas(cmd, resource_group_name=None, workspace_name=None, location=None):
+def quotas(cmd, resource_group_name, workspace_name, location):
     """
     List the quotas for the given (or current) Azure Quantum workspace.
     """
@@ -363,7 +360,7 @@ def quotas(cmd, resource_group_name=None, workspace_name=None, location=None):
     return client.list()
 
 
-def set(cmd, workspace_name, resource_group_name=None, location=None):
+def set(cmd, workspace_name, resource_group_name, location):
     """
     Set the default Azure Quantum workspace.
     """

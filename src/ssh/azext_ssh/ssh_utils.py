@@ -46,7 +46,8 @@ def start_ssh_connection(op_info, delete_keys, delete_cert):
         if op_info.is_arc():
             env['SSHPROXY_RELAY_INFO'] = connectivity_utils.format_relay_info_string(op_info.relay_info)
 
-        command = [get_ssh_client_path('ssh', op_info.ssh_client_folder), op_info.get_host()]
+        # Get ssh client before starting the clean up process in case there is an error in getting client.
+        command = [get_ssh_client_path('ssh', op_info.ssh_client_folder), op_info.get_host(), "-l", op_info.local_user]
 
         command = command + op_info.build_args() + ssh_arg_list
 
