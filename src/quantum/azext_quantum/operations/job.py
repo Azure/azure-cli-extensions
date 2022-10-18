@@ -18,6 +18,17 @@ from .._client_factory import cf_jobs, _get_data_credentials
 from .workspace import WorkspaceInfo
 from .target import TargetInfo
 
+from ..vendored_sdks.azure_quantum import QuantumClient
+from ..vendored_sdks.azure_quantum.operations import (
+    JobsOperations,
+    StorageOperations,
+    QuotasOperations
+)
+from ..vendored_sdks.azure_quantum.models import BlobDetails, JobStatus
+from ..vendored_sdks.azure_quantum.operations._jobs_operations import JobsOperations    # Was "import Job" in qdk-python
+from .storage import create_container_using_client, get_container_uri, ContainerClient
+
+
 MINIMUM_MAX_POLL_WAIT_SECS = 1
 JOB_SUBMIT_DOC_LINK_MSG = "See https://learn.microsoft.com/en-us/cli/azure/quantum/job?view=azure-cli-latest#az-quantum-job-submit"
 
@@ -59,23 +70,6 @@ knack_logger = knack.log.get_logger(__name__)
 # DEFAULT_CONTAINER_NAME_FORMAT = "job-{job_id}"
 # USER_AGENT_APPID_ENV_VAR_NAME = "AZURE_QUANTUM_PYTHON_APPID"
 # <<<<< <<<<<
-# >>>>> >>>>>
-# >>>>> Imports modified for CLI extension AutoREST client files
-# >>>>>
-# from azure.quantum._client import QuantumClient   <----<<< qdk-python path structure
-from ..vendored_sdks.azure_quantum import QuantumClient
-
-from ..vendored_sdks.azure_quantum.operations import (
-    JobsOperations,
-    StorageOperations,
-    QuotasOperations
-)
-from ..vendored_sdks.azure_quantum.models import BlobDetails, JobStatus
-from ..vendored_sdks.azure_quantum.operations._jobs_operations import JobsOperations    # Was "import Job" in qdk-python
-from .storage import create_container_using_client, get_container_uri, ContainerClient
-# <<<<< <<<<<
-
-
 
 
 def list(cmd, resource_group_name, workspace_name, location):
@@ -241,35 +235,35 @@ def submit(cmd, program_args, resource_group_name, workspace_name, location, tar
     """
     if job_input_format is not None:
         if job_input_format.lower() == "qir.v1":
-            # Submit QIR 
+            # Submit QIR
             return _submit_qir_v1(cmd, program_args, resource_group_name, workspace_name, location, target_id,
-                            job_name, shots, storage, job_params, target_capability,
-                            # >>>>> TODO: Finalize these names <<<<<
-                            # Peter's proposed param names:
-                            job_input_source, job_output_format,
-                            # Guen's proposed param names:
-                            qir_payload, qir_endpoint, qir_param)
+                                  job_name, shots, storage, job_params, target_capability,
+                                  # >>>>> TODO: Finalize these names <<<<<
+                                  # Peter's proposed param names:
+                                  job_input_source, job_output_format,
+                                  # Guen's proposed param names:
+                                  qir_payload, qir_endpoint, qir_param)
 
         # Add elifs to handle new job_input_format values here
 
         elif job_input_format.lower() == "q#" or job_input_format.lower() == "qsharp":
-            pass    # Fall through, same as when job_input_format is None 
+            pass    # Fall through, same as when job_input_format is None
 
         else:
             raise InvalidArgumentValueError("Job input format not recognized: " + job_input_format, JOB_SUBMIT_DOC_LINK_MSG)
 
     # Submit a Q# project. (Do it the old way, for now.)
     return _submit_qsharp(cmd, program_args, resource_group_name, workspace_name, location, target_id,
-                   project, job_name, shots, storage, no_build, job_params, target_capability)
+                          project, job_name, shots, storage, no_build, job_params, target_capability)
 
 
 def _submit_qir_v1(cmd, program_args, resource_group_name, workspace_name, location, target_id,
-                job_name, shots, storage, job_params, target_capability,
-                # >>>>> TODO: Finalize these names <<<<<
-                # Peter's proposed param names:
-                job_input_source, job_output_format,
-                # Guen's proposed param names:
-                qir_payload, qir_endpoint, qir_param):
+                   job_name, shots, storage, job_params, target_capability,
+                   # >>>>> TODO: Finalize these names <<<<<
+                   # Peter's proposed param names:
+                   job_input_source, job_output_format,
+                   # Guen's proposed param names:
+                   qir_payload, qir_endpoint, qir_param):
 
     """
     Submit a QIR program or circuit to run on Azure Quantum.
@@ -288,26 +282,22 @@ def _submit_qir_v1(cmd, program_args, resource_group_name, workspace_name, locat
     knack_logger.warning(">>>>> Got a path for the QIR input: " + job_input_source + " <<<<<")
     # <<<<<
 
-
-
     # >>>>> Upload the QIR file to the storage account
 
     # >>>>> For debug <<<<<
     knack_logger.warning(">>>>> We should upload the QIR to storage now <<<<<")
     # <<<<<
 
-
     # >>>>> Code from old submit function (now renamed _submit_qsharp) with ws renamed ws_info:
-    ws_info = WorkspaceInfo(cmd, resource_group_name, workspace_name, location)
-    target = TargetInfo(cmd, target_id)
-    token = _get_data_credentials(cmd.cli_ctx, ws_info.subscription).get_token().token
+    # >>>>> Commented out for Flake8 >>>>>ws_info = WorkspaceInfo(cmd, resource_group_name, workspace_name, location)
+    # >>>>> Commented out for Flake8 >>>>>target = TargetInfo(cmd, target_id)
+    # >>>>> Commented out for Flake8 >>>>>token = _get_data_credentials(cmd.cli_ctx, ws_info.subscription).get_token().token
     # >>>>>
-    project = None  # >>>>> Is this arg relevant for a QIR job? <<<<< 
+    # >>>>> Commented out for Flake8 >>>>>project = None  # >>>>> Is this arg relevant for a QIR job? <<<<<
     # <<<<<
-    args = _generate_submit_args(program_args, ws_info, target, token, project, job_name, shots, storage, job_params)
+    # >>>>> Commented out for Flake8 >>>>>args = _generate_submit_args(program_args, ws_info, target, token, project, job_name, shots, storage, job_params)
     _set_cli_version()
 
- 
     # >>>>> Code from output function, below, with info renamed ws_info...
     import tempfile
     import json
@@ -323,7 +313,7 @@ def _submit_qir_v1(cmd, program_args, resource_group_name, workspace_name, locat
     # <<<<<
     # info = WorkspaceInfo(cmd, resource_group_name, workspace_name, location)
     # client = cf_jobs(cmd.cli_ctx, info.subscription, info.resource_group, info.name, info.location)
-    client = cf_jobs(cmd.cli_ctx, ws_info.subscription, ws_info.resource_group, ws_info.name, ws_info.location)
+    # >>>>> Commented out for Flake8 >>>>>client = cf_jobs(cmd.cli_ctx, ws_info.subscription, ws_info.resource_group, ws_info.name, ws_info.location)
     # job = client.get(job_id)
 
     # if os.path.exists(path):
@@ -346,7 +336,6 @@ def _submit_qir_v1(cmd, program_args, resource_group_name, workspace_name, locat
     # >>>>> FIX THIS >>>>>
     # job = client.create(job_id, job_details)  #  <-----<<< This fails.  Where do we info for _models.JobDetails ??
 
-
     # >>>>> >>>>> For reference...
     # def create(
     #     self,
@@ -368,17 +357,12 @@ def _submit_qir_v1(cmd, program_args, resource_group_name, workspace_name, locat
     #     """
     # <<<<< <<<<<
 
-
-
-
     # >>>>> For debug <<<<<
     knack_logger.warning(">>>>> Submit the QIR job now <<<<<")
     # <<<<<
 
-
-
     # if result.returncode == 0:
-    return # What data do we return?
+    return      # What data do we return?
 
     # The QIR job failed to run.
     # logger.error("Submission of job failed with error code %s", result.returncode)
@@ -551,7 +535,7 @@ def wait(cmd, job_id, resource_group_name, workspace_name, location, max_poll_wa
     return job
 
 
-def job_show (cmd, job_id, resource_group_name, workspace_name, location):
+def job_show(cmd, job_id, resource_group_name, workspace_name, location):
     """
     Get the job's status and details.
     """
@@ -562,12 +546,12 @@ def job_show (cmd, job_id, resource_group_name, workspace_name, location):
 
 
 def run(cmd, program_args, resource_group_name, workspace_name, location, target_id,
-           project=None, job_name=None, shots=None, storage=None, no_build=False, job_params=None, target_capability=None,
-           # >>>>> TODO: Finalize these names <<<<<
-           # Peter's proposed param names:
-           job_input_source=None, job_input_format=None, job_output_format=None,
-           # Guen's proposed param names:
-           qir_payload=None, qir_endpoint=None, qir_param=None):
+        project=None, job_name=None, shots=None, storage=None, no_build=False, job_params=None, target_capability=None,
+        # >>>>> TODO: Finalize these names <<<<<
+        # Peter's proposed param names:
+        job_input_source=None, job_input_format=None, job_output_format=None,
+        # Guen's proposed param names:
+        qir_payload=None, qir_endpoint=None, qir_param=None):
     """
     Submit a job to run on Azure Quantum, and wait for the result.
     """
