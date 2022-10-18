@@ -24,6 +24,59 @@ JOB_SUBMIT_DOC_LINK_MSG = "See https://learn.microsoft.com/en-us/cli/azure/quant
 logger = logging.getLogger(__name__)
 knack_logger = knack.log.get_logger(__name__)
 
+# >>>>> >>>>>
+# >>>>> Code from top of qdk-python\azure-quantum\azure\quantum\workspace.py
+# >>>>> qdk-python AutoREST client imports
+# >>>>>
+# from typing import Any, Dict, Iterable, List, Optional, TYPE_CHECKING, Tuple, Union
+# from deprecated import deprecated
+
+# # Temporarily replacing the DefaultAzureCredential with
+# # a custom _DefaultAzureCredential
+# #   from azure.identity import DefaultAzureCredential
+# from azure.quantum._authentication import _DefaultAzureCredential
+
+# from azure.quantum._client import QuantumClient
+# from azure.quantum._client.operations import (
+#     JobsOperations,
+#     StorageOperations,
+#     QuotasOperations
+# )
+# from azure.quantum._client.models import BlobDetails, JobStatus
+# from azure.quantum import Job
+# from azure.quantum.storage import create_container_using_client, get_container_uri, ContainerClient
+
+# from .version import __version__
+
+# if TYPE_CHECKING:
+#     from azure.quantum._client.models import TargetStatus
+#     from azure.quantum.target import Target
+
+# logger = logging.getLogger(__name__)
+
+# __all__ = ["Workspace"]
+
+# DEFAULT_CONTAINER_NAME_FORMAT = "job-{job_id}"
+# USER_AGENT_APPID_ENV_VAR_NAME = "AZURE_QUANTUM_PYTHON_APPID"
+# <<<<< <<<<<
+# >>>>> >>>>>
+# >>>>> Imports modified for CLI extension AutoREST client files
+# >>>>>
+# from azure.quantum._client import QuantumClient   <----<<< qdk-python path structure
+from ..vendored_sdks.azure_quantum import QuantumClient
+
+from ..vendored_sdks.azure_quantum.operations import (
+    JobsOperations,
+    StorageOperations,
+    QuotasOperations
+)
+from ..vendored_sdks.azure_quantum.models import BlobDetails, JobStatus
+from ..vendored_sdks.azure_quantum.operations._jobs_operations import JobsOperations    # Was "import Job" in qdk-python
+from .storage import create_container_using_client, get_container_uri, ContainerClient
+# <<<<< <<<<<
+
+
+
 
 def list(cmd, resource_group_name, workspace_name, location):
     """
@@ -240,19 +293,87 @@ def _submit_qir_v1(cmd, program_args, resource_group_name, workspace_name, locat
     # >>>>> Upload the QIR file to the storage account
 
     # >>>>> For debug <<<<<
-    knack_logger.warning('>>>>> We should upload the QIR to storage now <<<<<')
+    knack_logger.warning(">>>>> We should upload the QIR to storage now <<<<<")
     # <<<<<
 
 
-    # >>>>> Code from output function, below...
-    # from azure.cli.command_modules.storage._client_factory import blob_data_service_factory
-    # path = os.path.join(tempfile.gettempdir(), job_id)
+    # >>>>> Code from old submit function (now renamed _submit_qsharp) with ws renamed ws_info:
+    ws_info = WorkspaceInfo(cmd, resource_group_name, workspace_name, location)
+    target = TargetInfo(cmd, target_id)
+    token = _get_data_credentials(cmd.cli_ctx, ws_info.subscription).get_token().token
+    # >>>>>
+    project = None  # >>>>> Is this arg relevant for a QIR job? <<<<< 
+    # <<<<<
+    args = _generate_submit_args(program_args, ws_info, target, token, project, job_name, shots, storage, job_params)
+    _set_cli_version()
+
+ 
+    # >>>>> Code from output function, below, with info renamed ws_info...
+    import tempfile
+    import json
+    import os
+    from azure.cli.command_modules.storage._client_factory import blob_data_service_factory
+
+    # >>>>>
+    job_id = "debug-qir-job-id-debug"
+    # <<<<<
+    output_path = os.path.join(tempfile.gettempdir(), job_id)
+    # >>>>>
+    knack_logger.warning(">>>>> path = " + output_path + " <<<<<")
+    # <<<<<
     # info = WorkspaceInfo(cmd, resource_group_name, workspace_name, location)
     # client = cf_jobs(cmd.cli_ctx, info.subscription, info.resource_group, info.name, info.location)
+    client = cf_jobs(cmd.cli_ctx, ws_info.subscription, ws_info.resource_group, ws_info.name, ws_info.location)
+    # job = client.get(job_id)
+
+    # if os.path.exists(path):
+    #     logger.debug("Using existing blob from %s", path)
+    # else:
+    #     logger.debug("Downloading job results blob into %s", path)
+
+    #     if job.status != "Succeeded":
+    #         return job  # If "-o table" is specified, this allows transform_output() in commands.py
+    #         #             to format the output, so the error info is shown. If "-o json" or no "-o"
+    #         #             parameter is specified, then the full JSON job output is displayed, being
+    #         #             consistent with other commands.
+
+    #     args = _parse_blob_url(job.output_data_uri)
+    #     blob_service = blob_data_service_factory(cmd.cli_ctx, args)
+    #     blob_service.get_blob_to_path(args['container'], args['blob'], path)
+
+    # >>>>> FIX THIS >>>>>
+    # >>>>> FIX THIS >>>>>
+    # >>>>> FIX THIS >>>>>
+    # job = client.create(job_id, job_details)  #  <-----<<< This fails.  Where do we info for _models.JobDetails ??
 
 
-    # >>>>> Submit the QIR job <<<<<
+    # >>>>> >>>>> For reference...
+    # def create(
+    #     self,
+    #     job_id,  # type: str
+    #     job,  # type: _models.JobDetails
+    #     **kwargs  # type: Any
+    # ):
+    #     # type: (...) -> _models.JobDetails
+    #     """Create a job.
 
+    #     :param job_id: Id of the job.
+    #     :type job_id: str
+    #     :param job: The complete metadata of the job to submit.
+    #     :type job: ~azure.quantum._client.models.JobDetails
+    #     :keyword callable cls: A custom type or function that will be passed the direct response
+    #     :return: JobDetails, or the result of cls(response)
+    #     :rtype: ~azure.quantum._client.models.JobDetails
+    #     :raises: ~azure.core.exceptions.HttpResponseError
+    #     """
+    # <<<<< <<<<<
+
+
+
+
+    # >>>>> For debug <<<<<
+    knack_logger.warning(">>>>> Submit the QIR job now <<<<<")
+    # <<<<<
 
 
 
