@@ -176,6 +176,15 @@ def validate_run(cmd, namespace):
 
 def validate_reset_nic(cmd, namespace):
     check_extension_version(EXTENSION_NAME)
+    if namespace._subscription:
+        # setting subscription Id
+        try:
+            set_sub_command = 'az account set --subscription {sid}'.format(sid=namespace._subscription)
+            logger.info('Setting the subscription...\n')
+            _call_az_command(set_sub_command)
+        except AzCommandError as azCommandError:
+            logger.error(azCommandError)
+            raise CLIError('Unexpected error occured while setting the subscription..')
     _validate_and_get_vm(cmd, namespace.resource_group_name, namespace.vm_name)
 
 
