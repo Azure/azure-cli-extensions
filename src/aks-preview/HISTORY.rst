@@ -12,6 +12,21 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+0.5.107
++++++++
+
+* Add `--disable-windows-outbound-nat` for `az aks nodepool add` to add a Windows agent pool which the Windows OutboundNAT is disabled.
+
+0.5.106
++++++++
+
+* Add support for AzureMonitorMetrics Addon (managed prometheus metrics in public preview) for AKS
+
+0.5.105
++++++++
+
+* Add support to create cluster with kube-proxy configuration via `az aks create --kube-proxy-config file.json`
+
 0.5.104
 +++++++
 

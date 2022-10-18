@@ -5,30 +5,33 @@
 
 from azure.cli.core import AzCommandsLoader
 
-from azext_reservation._client_factory import reservation_mgmt_client_factory
-from ._exception_handler import reservations_exception_handler
-
 
 class ReservationsCommandsLoader(AzCommandsLoader):
 
     def __init__(self, cli_ctx=None):
         from azure.cli.core.commands import CliCommandType
-        from azure.cli.core.profiles import ResourceType
-        reservations_custom = CliCommandType(operations_tmpl='azext_reservation.custom#{}',
-                                             client_factory=reservation_mgmt_client_factory,
-                                             exception_handler=reservations_exception_handler)
-        super().__init__(cli_ctx=cli_ctx,
-                         custom_command_type=reservations_custom,
-                         resource_type=ResourceType.MGMT_RESERVATIONS)
+        reservations_custom = CliCommandType(operations_tmpl='azext_reservation.custom#{}')
+        super().__init__(cli_ctx=cli_ctx, custom_command_type=reservations_custom)
 
     def load_command_table(self, args):
         from azext_reservation.commands import load_command_table
+        from azure.cli.core.aaz import load_aaz_command_table
+        try:
+            from . import aaz
+        except ImportError:
+            aaz = None
+        if aaz:
+            load_aaz_command_table(
+                loader=self,
+                aaz_pkg_name=aaz.__name__,
+                args=args
+            )
         load_command_table(self, args)
         return self.command_table
 
-    def load_arguments(self, command):
+    def load_arguments(self, _):
         from azext_reservation._params import load_arguments
-        load_arguments(self, command)
+        load_arguments(self)
 
 
 COMMAND_LOADER_CLS = ReservationsCommandsLoader
