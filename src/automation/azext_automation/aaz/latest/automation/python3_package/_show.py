@@ -18,7 +18,7 @@ class Show(AAZCommand):
     """Retrieve the python 3 package identified by package name.
 
     :example: Get Python3Package by Name
-        az automation python3-package  show --automation-account-name  "MyAutomationAccount"  --resource-group "MyResourceGroup " --name "PackageName"
+        az automation python3-package show --automation-account-name "MyAutomationAccount" --resource-group "MyResourceGroup" --name "PackageName"
     """
 
     _aaz_info = {

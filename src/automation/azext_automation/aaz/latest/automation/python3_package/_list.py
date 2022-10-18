@@ -18,7 +18,7 @@ class List(AAZCommand):
     """Retrieve a list of python 3 packages.
 
     :example: List all Custom Python3Package in AutomationAccount
-        az automation python3-package  list  --automation-account-name  "MyAutomationAccount"  --resource-group "MyResourceGroup "
+        az automation python3-package list --automation-account-name "MyAutomationAccount" --resource-group "MyResourceGroup"
     """
 
     _aaz_info = {

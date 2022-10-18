@@ -19,7 +19,7 @@ class Delete(AAZCommand):
     """Delete the python 3 package by name.
 
     :example: Delete Python3 Package by Name
-        az automation python3-package  delete --automation-account-name  "MyAutomationAccount"  --resource-group "MyResourceGroup " --name "PackageName"
+        az automation python3-package delete --automation-account-name "MyAutomationAccount" --resource-group "MyResourceGroup" --name "PackageName"
     """
 
     _aaz_info = {

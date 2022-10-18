@@ -18,7 +18,7 @@ class Update(AAZCommand):
     """Create or Update the python 3 package identified by package name.
 
     :example: Update Python3Package by Name
-        az automation python3-package  update  --automation-account-name  "MyAutomationAccount"  --resource-group "MyResourceGroup " --name "PackageName" --content-link "uri=https://PackageUri.com"
+        az automation python3-package update --automation-account-name "MyAutomationAccount" --resource-group "MyResourceGroup" --name "PackageName" --content-link "uri=https://PackageUri.com"
     """
 
     _aaz_info = {

@@ -6,6 +6,7 @@
 
 import os
 from unittest import mock
+from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 import tempfile
 from azure.cli.testsdk import ScenarioTest, ResourceGroupPreparer
 
@@ -64,7 +65,7 @@ def _uuid():
 
 
 class AutomationScenarioTest(ScenarioTest):
-
+    @AllowLargeResponse()
     @ResourceGroupPreparer(name_prefix='cli_test_automation_', key='rg', location='westus2')
     def test_automation(self, resource_group):
         self.kwargs.update({
@@ -134,7 +135,7 @@ class AutomationScenarioTest(ScenarioTest):
         self.cmd('automation python3-package  update --resource-group {rg} --automation-account-name {account_name} --name {python3Package_name} --content-link {python3PackageContentUri}',
         checks=[self.check('name', '{python3Package_name}')])
 
-        self.cmd('automation python3package  show --resource-group {rg} --automation-account-name {account_name} --name {python3Package_name}',
+        self.cmd('automation python3-package  show --resource-group {rg} --automation-account-name {account_name} --name {python3Package_name}',
         checks=[self.check('name', '{python3Package_name}')])
 
         self.cmd('automation python3-package  list --resource-group {rg} --automation-account-name {account_name} ',
@@ -158,6 +159,7 @@ class AutomationScenarioTest(ScenarioTest):
         self.cmd('automation account delete --resource-group {rg} --name {account_name} -y')
 
     @ResourceGroupPreparer(name_prefix='cli_test_automation_schedule')
+    @AllowLargeResponse()
     def test_automation_schedule(self, resource_group):
         self.kwargs.update({
             'account_name': self.create_random_name('account-', 15),
@@ -165,10 +167,10 @@ class AutomationScenarioTest(ScenarioTest):
         })
 
         self.cmd('automation account create -n {account_name} -g {rg}')
-        self.cmd('automation schedule create -n {schedule_name} -g {rg} --automation-account-name {account_name} --description test --frequency Hour --interval 1 --start-time 2022-08-30 18:00:00 --time-zone UTC+08:00', checks=[
+        self.cmd('automation schedule create -n {schedule_name} -g {rg} --automation-account-name {account_name} --description test --frequency Hour --interval 1 --start-time 2022-10-18 14:38:00 --time-zone UTC+08:00', checks=[
             self.check('frequency', 'Hour'),
             self.check('interval', '1'),
-            self.check('startTime', '2022-08-30T18:00:00+08:00'),
+            self.check('startTime', '2022-10-18T17:08:00+08:00'),
             self.check('timeZone', 'UTC+08:00'),
             self.check('description', 'test'),
             self.check('isEnabled', True)
@@ -176,7 +178,7 @@ class AutomationScenarioTest(ScenarioTest):
         self.cmd('automation schedule update -n {schedule_name} -g {rg} --automation-account-name {account_name} --description test1 --is-enabled false', checks=[
             self.check('frequency', 'Hour'),
             self.check('interval', '1'),
-            self.check('startTime', '2022-08-30T18:00:00+08:00'),
+            self.check('startTime', '2022-10-18T17:08:00+08:00'),
             self.check('timeZone', 'UTC+08:00'),
             self.check('description', 'test1'),
             self.check('isEnabled', False)
@@ -184,7 +186,7 @@ class AutomationScenarioTest(ScenarioTest):
         self.cmd('automation schedule list -g {rg} --automation-account-name {account_name} ', checks=[
             self.check('[0].frequency', 'Hour'),
             self.check('[0].interval', '1'),
-            self.check('[0].startTime', '2022-08-30T18:00:00+08:00'),
+            self.check('[0].startTime', '2022-10-18T17:08:00+08:00'),
             self.check('[0].timeZone', 'UTC+08:00'),
             self.check('[0].description', 'test1'),
             self.check('[0].isEnabled', False)
@@ -192,7 +194,7 @@ class AutomationScenarioTest(ScenarioTest):
         self.cmd('automation schedule show -n {schedule_name} -g {rg} --automation-account-name {account_name} ', checks=[
             self.check('frequency', 'Hour'),
             self.check('interval', '1'),
-            self.check('startTime', '2022-08-30T18:00:00+08:00'),
+            self.check('startTime', '2022-10-18T17:08:00+08:00'),
             self.check('timeZone', 'UTC+08:00'),
             self.check('description', 'test1'),
             self.check('isEnabled', False),
@@ -200,6 +202,7 @@ class AutomationScenarioTest(ScenarioTest):
         self.cmd('automation schedule delete -n {schedule_name} -g {rg} --automation-account-name {account_name} -y')
 
     @ResourceGroupPreparer(name_prefix='cli_test_automation_software_update_configuration')
+    @AllowLargeResponse()
     def test_automation_software_update_configuration(self, resource_group):
         self.kwargs.update({
             'account_name': self.create_random_name('account-', 15),
