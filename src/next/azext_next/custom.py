@@ -39,7 +39,8 @@ def handle_next(cmd, command_only=False, scenario_only=False):
         return None
 
     recommends = get_recommend_from_api(command_history, request_type,
-                                        cmd.cli_ctx.config.getint('next', 'num_limit', fallback=5),
+                                        cmd.cli_ctx.config.getint('next', 'command_num_limit', fallback=5),
+                                        cmd.cli_ctx.config.getint('next', 'scenario_num_limit', fallback=5),
                                         error_info=processed_exception)
     if not recommends:
         send_feedback(request_type, -1, command_history, processed_exception)

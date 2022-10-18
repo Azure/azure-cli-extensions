@@ -10,7 +10,7 @@ from azure.cli.core import __version__ as version
 
 
 # pylint: disable=protected-access
-def get_recommend_from_api(command_list, type, top_num=5, error_info=None):  # pylint: disable=unused-argument
+def get_recommend_from_api(command_list, type, command_top_num=5, scenario_top_num=5, error_info=None):  # pylint: disable=unused-argument
     '''query next command from web api'''
     import requests
     url = "https://cli-recommendation.azurewebsites.net/api/RecommendationService"
@@ -20,7 +20,8 @@ def get_recommend_from_api(command_list, type, top_num=5, error_info=None):  # p
     payload = {
         "command_list": json.dumps(command_list),
         "type": type,
-        "top_num": top_num,
+        "command_top_num": command_top_num,
+        "scenario_top_num": scenario_top_num,
         'error_info': error_info,
         'cli_version': version,
         'user_id': hashed_user_id
