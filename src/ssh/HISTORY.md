@@ -1,5 +1,10 @@
 Release History
 ===============
+1.1.3
+-----
+* Add support to Microsoft.ConnectedVMwarevSphere/virtualMachines Resource Type
+* Correct the format of expected input for --resource-type parameter
+
 1.1.2
 -----
 * Remove dependency to cryptography (Az CLI core alredy has cryptography)
