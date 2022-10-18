@@ -79,11 +79,11 @@ class ShowForClusterAndVm(AAZCommand):
             self.HCIReportsGet(ctx=self.ctx)()
         self.post_operations()
 
-    # @register_callback
+    @register_callback
     def pre_operations(self):
         pass
 
-    # @register_callback
+    @register_callback
     def post_operations(self):
         pass
 
@@ -208,9 +208,7 @@ class ShowForClusterAndVm(AAZCommand):
             properties.end_time = AAZStrType(
                 serialized_name="endTime",
             )
-            properties.error = AAZObjectType(
-                flags={"read_only": True},
-            )
+            properties.error = AAZObjectType()
             _build_schema_error_detail_read(properties.error)
             properties.last_modified_time = AAZStrType(
                 serialized_name="lastModifiedTime",
@@ -234,14 +232,10 @@ class ShowForClusterAndVm(AAZCommand):
             )
 
             resources = cls._schema_on_200.properties.resources
-            resources.Element = AAZObjectType(
-                flags={"read_only": True},
-            )
+            resources.Element = AAZObjectType()
 
             _element = cls._schema_on_200.properties.resources.Element
-            _element.error = AAZObjectType(
-                flags={"read_only": True},
-            )
+            _element.error = AAZObjectType()
             _build_schema_error_detail_read(_element.error)
             _element.id = AAZStrType(
                 flags={"read_only": True},
@@ -259,27 +253,21 @@ class ShowForClusterAndVm(AAZCommand):
             system_data = cls._schema_on_200.system_data
             system_data.created_at = AAZStrType(
                 serialized_name="createdAt",
-                flags={"read_only": True},
             )
             system_data.created_by = AAZStrType(
                 serialized_name="createdBy",
-                flags={"read_only": True},
             )
             system_data.created_by_type = AAZStrType(
                 serialized_name="createdByType",
-                flags={"read_only": True},
             )
             system_data.last_modified_at = AAZStrType(
                 serialized_name="lastModifiedAt",
-                flags={"read_only": True},
             )
             system_data.last_modified_by = AAZStrType(
                 serialized_name="lastModifiedBy",
-                flags={"read_only": True},
             )
             system_data.last_modified_by_type = AAZStrType(
                 serialized_name="lastModifiedByType",
-                flags={"read_only": True},
             )
 
             return cls._schema_on_200
@@ -401,9 +389,7 @@ class ShowForClusterAndVm(AAZCommand):
             properties.end_time = AAZStrType(
                 serialized_name="endTime",
             )
-            properties.error = AAZObjectType(
-                flags={"read_only": True},
-            )
+            properties.error = AAZObjectType()
             _build_schema_error_detail_read(properties.error)
             properties.last_modified_time = AAZStrType(
                 serialized_name="lastModifiedTime",
@@ -427,14 +413,10 @@ class ShowForClusterAndVm(AAZCommand):
             )
 
             resources = cls._schema_on_200.properties.resources
-            resources.Element = AAZObjectType(
-                flags={"read_only": True},
-            )
+            resources.Element = AAZObjectType()
 
             _element = cls._schema_on_200.properties.resources.Element
-            _element.error = AAZObjectType(
-                flags={"read_only": True},
-            )
+            _element.error = AAZObjectType()
             _build_schema_error_detail_read(_element.error)
             _element.id = AAZStrType(
                 flags={"read_only": True},
@@ -452,27 +434,21 @@ class ShowForClusterAndVm(AAZCommand):
             system_data = cls._schema_on_200.system_data
             system_data.created_at = AAZStrType(
                 serialized_name="createdAt",
-                flags={"read_only": True},
             )
             system_data.created_by = AAZStrType(
                 serialized_name="createdBy",
-                flags={"read_only": True},
             )
             system_data.created_by_type = AAZStrType(
                 serialized_name="createdByType",
-                flags={"read_only": True},
             )
             system_data.last_modified_at = AAZStrType(
                 serialized_name="lastModifiedAt",
-                flags={"read_only": True},
             )
             system_data.last_modified_by = AAZStrType(
                 serialized_name="lastModifiedBy",
-                flags={"read_only": True},
             )
             system_data.last_modified_by_type = AAZStrType(
                 serialized_name="lastModifiedByType",
-                flags={"read_only": True},
             )
 
             return cls._schema_on_200
@@ -491,9 +467,7 @@ def _build_schema_error_detail_read(_schema):
         _schema.target = _schema_error_detail_read.target
         return
 
-    _schema_error_detail_read = AAZObjectType(
-        flags={"read_only": True}
-    )
+    _schema_error_detail_read = AAZObjectType()
 
     error_detail_read = _schema_error_detail_read
     error_detail_read.additional_info = AAZListType(
@@ -514,9 +488,7 @@ def _build_schema_error_detail_read(_schema):
     )
 
     additional_info = _schema_error_detail_read.additional_info
-    additional_info.Element = AAZObjectType(
-        flags={"read_only": True},
-    )
+    additional_info.Element = AAZObjectType()
 
     _element = _schema_error_detail_read.additional_info.Element
     _element.type = AAZStrType(
@@ -524,9 +496,7 @@ def _build_schema_error_detail_read(_schema):
     )
 
     details = _schema_error_detail_read.details
-    details.Element = AAZObjectType(
-        flags={"read_only": True},
-    )
+    details.Element = AAZObjectType()
     _build_schema_error_detail_read(details.Element)
 
     _schema.additional_info = _schema_error_detail_read.additional_info

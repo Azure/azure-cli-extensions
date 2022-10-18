@@ -80,19 +80,19 @@ class Update(AAZCommand):
         self.ConfigurationProfileHCRPAssignmentsCreateOrUpdate(ctx=self.ctx)()
         self.post_operations()
 
-    # @register_callback
+    @register_callback
     def pre_operations(self):
         pass
 
-    # @register_callback
+    @register_callback
     def post_operations(self):
         pass
 
-    # @register_callback
+    @register_callback
     def pre_instance_update(self, instance):
         pass
 
-    # @register_callback
+    @register_callback
     def post_instance_update(self, instance):
         pass
 
@@ -336,7 +336,6 @@ def _build_schema_configuration_profile_assignment_read(_schema):
     )
     configuration_profile_assignment_read.managed_by = AAZStrType(
         serialized_name="managedBy",
-        flags={"read_only": True},
     )
     configuration_profile_assignment_read.name = AAZStrType(
         flags={"read_only": True},
@@ -365,27 +364,21 @@ def _build_schema_configuration_profile_assignment_read(_schema):
     system_data = _schema_configuration_profile_assignment_read.system_data
     system_data.created_at = AAZStrType(
         serialized_name="createdAt",
-        flags={"read_only": True},
     )
     system_data.created_by = AAZStrType(
         serialized_name="createdBy",
-        flags={"read_only": True},
     )
     system_data.created_by_type = AAZStrType(
         serialized_name="createdByType",
-        flags={"read_only": True},
     )
     system_data.last_modified_at = AAZStrType(
         serialized_name="lastModifiedAt",
-        flags={"read_only": True},
     )
     system_data.last_modified_by = AAZStrType(
         serialized_name="lastModifiedBy",
-        flags={"read_only": True},
     )
     system_data.last_modified_by_type = AAZStrType(
         serialized_name="lastModifiedByType",
-        flags={"read_only": True},
     )
 
     _schema.id = _schema_configuration_profile_assignment_read.id

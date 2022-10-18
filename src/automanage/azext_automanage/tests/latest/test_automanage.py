@@ -12,17 +12,17 @@ class AutomanageScenario(ScenarioTest):
     @ResourceGroupPreparer(location='eastus2euap', name_prefix='clitest.rg.automanage.')
     def test_automanage_scenarios(self):
         # best-practice
-        # best_practice_name = self.cmd('az automanage best-practice list').get_output_in_json()
-        # if best_practice_name and len(best_practice_name) >= 2:
-        #     best_practice_name = best_practice_name[1]["name"]
-        #     self.cmd('az automanage best-practice show --best-practice-name {}'.format(best_practice_name))
-        #     version_name = self.cmd('az automanage best-practice version list '
-        #                             '--best-practice-name {}'.format(best_practice_name)).get_output_in_json()
-        #     if version_name and len(version_name) >= 1:
-        #         version_name = version_name[0]["name"]
-        #         # TODO server error
-        #         # self.cmd('az automanage best-practice version show --best-practice-name {} --version-name '
-        #         #          '{}'.format(best_practice_name, version_name))
+        best_practice_name = self.cmd('az automanage best-practice list').get_output_in_json()
+        if best_practice_name and len(best_practice_name) >= 2:
+            best_practice_name = best_practice_name[1]["name"]
+            self.cmd('az automanage best-practice show --best-practice-name {}'.format(best_practice_name))
+            # version_name = self.cmd('az automanage best-practice version list '
+            #                         '--best-practice-name {}'.format(best_practice_name)).get_output_in_json()
+            # if version_name and len(version_name) >= 1:
+            #     version_name = version_name[0]["name"]
+            #     ## TODO server error
+            #     self.cmd('az automanage best-practice version show --best-practice-name {} --version-name '
+            #              '{}'.format(best_practice_name, version_name))
 
         # service-principal
         self.cmd('az automanage service-principal list')
@@ -34,26 +34,26 @@ class AutomanageScenario(ScenarioTest):
             'profile_name': self.create_random_name(prefix='profile', length=24),
         })
         self.cmd('az automanage configuration-profile create -n {profile_name} -g {rg} --configuration '
-                 '{{Antimalware/Enable:false,Backup/Enable:false,VMInsights/Enable:true,'
-                 'AzureSecurityCenter/Enable:true,UpdateManagement/Enable:true,'
-                 'ChangeTrackingAndInventory/Enable:true,GuestConfiguration/Enable:true,'
-                 'LogAnalytics/Enable:true,BootDiagnostics/Enable:true}}')
+                 '{{\\\"Antimalware/Enable\\\":false,\\\"Backup/Enable\\\":false,\\\"VMInsights/Enable\\\":true,'
+                 '\\\"AzureSecurityCenter/Enable\\\":true,\\\"UpdateManagement/Enable\\\":true,'
+                 '\\\"ChangeTrackingAndInventory/Enable\\\":true,\\\"GuestConfiguration/Enable\\\":true,'
+                 '\\\"LogAnalytics/Enable\\\":true,\\\"BootDiagnostics/Enable\\\":true}}')
         self.cmd('az automanage configuration-profile show -n {profile_name} -g {rg}',
                  checks=[JMESPathCheck('name', self.kwargs.get('profile_name', '')),
-                         JMESPathCheck('properties.configuration', {"Antimalware/Enable": "false",
-                                                                    "AzureSecurityCenter/Enable": "true",
-                                                                    "Backup/Enable": "false",
-                                                                    "BootDiagnostics/Enable": "true",
-                                                                    "ChangeTrackingAndInventory/Enable": "true",
-                                                                    "GuestConfiguration/Enable": "true",
-                                                                    "LogAnalytics/Enable": "true",
-                                                                    "UpdateManagement/Enable": "true",
-                                                                    "VMInsights/Enable": "true"})])
+                         JMESPathCheck('properties.configuration', {"Antimalware/Enable": False,
+                                                                    "AzureSecurityCenter/Enable": True,
+                                                                    "Backup/Enable": False,
+                                                                    "BootDiagnostics/Enable": True,
+                                                                    "ChangeTrackingAndInventory/Enable": True,
+                                                                    "GuestConfiguration/Enable": True,
+                                                                    "LogAnalytics/Enable": True,
+                                                                    "UpdateManagement/Enable": True,
+                                                                    "VMInsights/Enable": True})])
         self.cmd('az automanage configuration-profile list -g {rg}', checks=[JMESPathCheck('length(@)', 1)])
         self.cmd('az automanage configuration-profile update -n {profile_name} -g {rg} --configuration '
-                 '{{Antimalware/Enable:true,VMInsights/Enable:false}}',
-                 checks=[JMESPathCheck('properties.configuration', {"Antimalware/Enable": "true",
-                                                                    "VMInsights/Enable": "false"})])
+                 '{{\\\"Antimalware/Enable\\\":true,\\\"VMInsights/Enable\\\":false}}',
+                 checks=[JMESPathCheck('properties.configuration', {"Antimalware/Enable": True,
+                                                                    "VMInsights/Enable": False})])
         self.cmd('az automanage configuration-profile delete -n {profile_name} -g {rg} -y')
         self.cmd('az automanage configuration-profile list -g {rg}', checks=[JMESPathCheck('length(@)', 0)])
 
@@ -68,7 +68,7 @@ class AutomanageScenario(ScenarioTest):
             'profile_name_2': self.create_random_name(prefix='profile', length=24),
         })
         profile_id = self.cmd('az automanage configuration-profile create -n {profile_name} -g {rg} '
-                              '--configuration {{Antimalware/Enable:true}}').get_output_in_json()["id"]
+                              '--configuration {{\\\"Antimalware/Enable\\\":true}}').get_output_in_json()["id"]
         self.kwargs.update({'profile_id': profile_id})
         vm_id = self.cmd('az vm create -n {vm_name} -g {rg} --image UbuntuLTS').get_output_in_json()["id"]
         self.cmd('az automanage configuration-profile-assignment vm create -n default -g {rg} '
@@ -80,7 +80,7 @@ class AutomanageScenario(ScenarioTest):
         self.cmd('az automanage configuration-profile-assignment list -g {rg}', checks=[JMESPathCheck('length(@)', 1)])
 
         profile_id_2 = self.cmd('az automanage configuration-profile create -n {profile_name_2} -g {rg} '
-                                '--configuration {{Antimalware/Enable:false}}').get_output_in_json()["id"]
+                                '--configuration {{\\\"Antimalware/Enable\\\":false}}').get_output_in_json()["id"]
         self.kwargs.update({'profile_id_2': profile_id_2})
         self.cmd('az automanage configuration-profile-assignment vm update --n default -g {rg} '
                  '--vm-name {vm_name} --configuration-profile {profile_id_2}',
@@ -90,34 +90,34 @@ class AutomanageScenario(ScenarioTest):
         self.cmd('az automanage configuration-profile-assignment list -g {rg}', checks=[JMESPathCheck('length(@)', 0)])
 
     # @record_only
-    def test_automanage_configuration_profile_assignment_arc_scenarios(self):
-        self.kwargs.update({
-            'profile_name': self.create_random_name(prefix='profile', length=24),
-            'rg': 'rgtestautomanage',
-            'arc_name': 'arc1',
-            'profile_name_2': self.create_random_name(prefix='profile', length=24),
-        })
-        arc_id = '/subscriptions/0b1f6471-1bf0-4dda-aec3-cb9272f09590/resourceGroups/rgtestautomanage/providers/' \
-                 'Microsoft.HybridCompute/machines/arc1'
-        profile_id = self.cmd('az automanage configuration-profile create -n {profile_name} -g {rg} '
-                              '--configuration {{Antimalware/Enable:true}}').get_output_in_json()["id"]
-        self.kwargs.update({'profile_id': profile_id})
-
-        self.cmd('az automanage configuration-profile-assignment arc create -n default -g {rg} '
-                 '--machine-name {arc_name} --configuration-profile {profile_id}')
-        self.cmd('az automanage configuration-profile-assignment arc show -n default -g {rg} --machine-name {arc_name}',
-                 checks=[JMESPathCheck('name', 'default'),
-                         JMESPathCheck('properties.configurationProfile', profile_id),
-                         JMESPathCheck('properties.targetId', arc_id)])
-        self.cmd('az automanage configuration-profile-assignment list -g {rg}', checks=[JMESPathCheck('length(@)', 1)])
-
-        profile_id_2 = self.cmd('az automanage configuration-profile create -n {profile_name_2} -g {rg} '
-                                '--configuration {{Antimalware/Enable:false}}').get_output_in_json()["id"]
-        self.kwargs.update({'profile_id_2': profile_id_2})
-        self.cmd('az automanage configuration-profile-assignment arc update --n default -g {rg} '
-                 '--machine-name {arc_name} --configuration-profile {profile_id_2}',
-                 checks=[JMESPathCheck('properties.configurationProfile', profile_id_2),
-                         JMESPathCheck('properties.targetId', arc_id)])
-        self.cmd('az automanage configuration-profile-assignment arc delete -n default -g {rg} --machine-name '
-                 '{arc_name} -y')
-        self.cmd('az automanage configuration-profile-assignment list -g {rg}', checks=[JMESPathCheck('length(@)', 0)])
+    # def test_automanage_configuration_profile_assignment_arc_scenarios(self):
+    #     self.kwargs.update({
+    #         'profile_name': self.create_random_name(prefix='profile', length=24),
+    #         'rg': 'rgtestautomanage',
+    #         'arc_name': 'arc1',
+    #         'profile_name_2': self.create_random_name(prefix='profile', length=24),
+    #     })
+    #     arc_id = '/subscriptions/0b1f6471-1bf0-4dda-aec3-cb9272f09590/resourceGroups/rgtestautomanage/providers/' \
+    #              'Microsoft.HybridCompute/machines/arc1'
+    #     profile_id = self.cmd('az automanage configuration-profile create -n {profile_name} -g {rg} '
+    #                           '--configuration {{Antimalware/Enable:true}}').get_output_in_json()["id"]
+    #     self.kwargs.update({'profile_id': profile_id})
+    #
+    #     self.cmd('az automanage configuration-profile-assignment arc create -n default -g {rg} '
+    #              '--machine-name {arc_name} --configuration-profile {profile_id}')
+    #     self.cmd('az automanage configuration-profile-assignment arc show -n default -g {rg} --machine-name {arc_name}',
+    #              checks=[JMESPathCheck('name', 'default'),
+    #                      JMESPathCheck('properties.configurationProfile', profile_id),
+    #                      JMESPathCheck('properties.targetId', arc_id)])
+    #     self.cmd('az automanage configuration-profile-assignment list -g {rg}', checks=[JMESPathCheck('length(@)', 1)])
+    #
+    #     profile_id_2 = self.cmd('az automanage configuration-profile create -n {profile_name_2} -g {rg} '
+    #                             '--configuration {{Antimalware/Enable:false}}').get_output_in_json()["id"]
+    #     self.kwargs.update({'profile_id_2': profile_id_2})
+    #     self.cmd('az automanage configuration-profile-assignment arc update --n default -g {rg} '
+    #              '--machine-name {arc_name} --configuration-profile {profile_id_2}',
+    #              checks=[JMESPathCheck('properties.configurationProfile', profile_id_2),
+    #                      JMESPathCheck('properties.targetId', arc_id)])
+    #     self.cmd('az automanage configuration-profile-assignment arc delete -n default -g {rg} --machine-name '
+    #              '{arc_name} -y')
+    #     self.cmd('az automanage configuration-profile-assignment list -g {rg}', checks=[JMESPathCheck('length(@)', 0)])
