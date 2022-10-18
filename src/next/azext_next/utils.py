@@ -2,9 +2,10 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
-from colorama import Fore
-import os
 import json
+import os
+
+from colorama import Fore
 
 
 def read_int(default_value=0):
@@ -247,7 +248,8 @@ def get_title_case(str):
 
 
 def print_successful_styled_text(message):
-    from azure.cli.core.style import print_styled_text, Style, is_modern_terminal
+    from azure.cli.core.style import (Style, is_modern_terminal,
+                                      print_styled_text)
 
     prefix_text = '\nDone: '
     if is_modern_terminal():
@@ -257,8 +259,9 @@ def print_successful_styled_text(message):
 
 def log_command_history(command, args):
     import os
-    from knack.util import ensure_dir
+
     from azure.cli.core._environment import get_config_dir
+    from knack.util import ensure_dir
 
     if not args or '--no-log' in args:
         return
