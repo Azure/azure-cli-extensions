@@ -144,14 +144,13 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
                 # linux with encryption
                 _create_repair_vm(copy_disk_id, create_repair_vm_command, repair_password, repair_username)
                 _unlock_encrypted_vm_run(repair_vm_name, repair_group_name, is_linux)
-            
-            if is_linux and (not unlock_encrypted_vm): 
+
+            if is_linux and (not unlock_encrypted_vm):
                 # linux without encryption
                 _create_repair_vm(copy_disk_id, create_repair_vm_command, repair_password, repair_username, fix_uuid=True)
                 logger.info('Attaching copied disk to repair VM as data disk...')
                 attach_disk_command = "az vm disk attach -g {g} --name {disk_id} --vm-name {vm_name} ".format(g=repair_group_name, disk_id=copy_disk_id, vm_name=repair_vm_name)
                 _call_az_command(attach_disk_command)
-
 
         # UNMANAGED DISK
         else:
