@@ -13,10 +13,10 @@ interactions:
       ParameterSetName:
       - -l
       User-Agent:
-      - AZURECLI/2.40.0 azsdk-python-azure-mgmt-containerservice/20.3.0b2 Python/3.8.10
+      - AZURECLI/2.41.0 azsdk-python-azure-mgmt-containerservice/20.4.0b Python/3.8.10
         (Linux-5.15.0-1020-azure-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/eastus2euap/trustedAccessRoles?api-version=2022-08-03-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/eastus2euap/trustedAccessRoles?api-version=2022-09-02-preview
   response:
     body:
       string: "{\n  \"value\": [\n   {\n    \"sourceResourceType\": \"Microsoft.Compute/virtualMachineScaleSets\",\n
@@ -87,44 +87,56 @@ interactions:
         \     ],\n      \"apiGroups\": [\n       \"\"\n      ],\n      \"resources\":
         [\n       \"events\"\n      ]\n     },\n     {\n      \"verbs\": [\n       \"get\",\n
         \      \"list\",\n       \"watch\"\n      ],\n      \"apiGroups\": [\n       \"\"\n
-        \     ],\n      \"resources\": [\n       \"nodes\"\n      ]\n     },\n     {\n
-        \     \"verbs\": [\n       \"get\",\n       \"list\",\n       \"watch\"\n
+        \     ],\n      \"resources\": [\n       \"nodes\",\n       \"endpoints\"\n
+        \     ]\n     },\n     {\n      \"verbs\": [\n       \"get\",\n       \"list\",\n
+        \      \"watch\"\n      ],\n      \"apiGroups\": [\n       \"storage.k8s.io\"\n
+        \     ],\n      \"resources\": [\n       \"storageclasses\"\n      ]\n     },\n
+        \    {\n      \"verbs\": [\n       \"get\",\n       \"list\",\n       \"watch\"\n
         \     ],\n      \"apiGroups\": [\n       \"storage.k8s.io\"\n      ],\n      \"resources\":
-        [\n       \"storageclasses\"\n      ]\n     },\n     {\n      \"verbs\": [\n
-        \      \"get\",\n       \"list\",\n       \"watch\"\n      ],\n      \"apiGroups\":
-        [\n       \"storage.k8s.io\"\n      ],\n      \"resources\": [\n       \"csinodes\"\n
+        [\n       \"csinodes\"\n      ]\n     },\n     {\n      \"verbs\": [\n       \"create\",\n
+        \      \"get\",\n       \"list\",\n       \"patch\",\n       \"update\",\n
+        \      \"delete\"\n      ],\n      \"apiGroups\": [\n       \"storage.k8s.io\"\n
+        \     ],\n      \"resources\": [\n       \"csidrivers\"\n      ]\n     },\n
+        \    {\n      \"verbs\": [\n       \"get\",\n       \"list\",\n       \"watch\",\n
+        \      \"create\",\n       \"update\",\n       \"patch\"\n      ],\n      \"apiGroups\":
+        [\n       \"coordination.k8s.io\"\n      ],\n      \"resources\": [\n       \"leases\"\n
         \     ]\n     },\n     {\n      \"verbs\": [\n       \"create\",\n       \"get\",\n
         \      \"list\",\n       \"patch\",\n       \"update\",\n       \"delete\"\n
-        \     ],\n      \"apiGroups\": [\n       \"storage.k8s.io\"\n      ],\n      \"resources\":
-        [\n       \"csidrivers\"\n      ]\n     },\n     {\n      \"verbs\": [\n       \"get\",\n
-        \      \"list\",\n       \"watch\",\n       \"create\",\n       \"update\",\n
-        \      \"patch\"\n      ],\n      \"apiGroups\": [\n       \"coordination.k8s.io\"\n
-        \     ],\n      \"resources\": [\n       \"leases\"\n      ]\n     },\n     {\n
-        \     \"verbs\": [\n       \"create\",\n       \"get\",\n       \"list\",\n
-        \      \"patch\",\n       \"update\",\n       \"delete\"\n      ],\n      \"apiGroups\":
-        [\n       \"\"\n      ],\n      \"resources\": [\n       \"namespaces\",\n
-        \      \"pods\",\n       \"pods/log\",\n       \"configmaps\",\n       \"secrets\",\n
-        \      \"services\",\n       \"services/proxy\",\n       \"serviceaccounts\"\n
+        \     ],\n      \"apiGroups\": [\n       \"\"\n      ],\n      \"resources\":
+        [\n       \"namespaces\",\n       \"pods\",\n       \"pods/log\",\n       \"configmaps\",\n
+        \      \"secrets\",\n       \"services\",\n       \"services/proxy\",\n       \"serviceaccounts\"\n
         \     ]\n     },\n     {\n      \"verbs\": [\n       \"create\",\n       \"get\",\n
         \      \"list\",\n       \"patch\",\n       \"update\",\n       \"delete\"\n
         \     ],\n      \"apiGroups\": [\n       \"apps\"\n      ],\n      \"resources\":
-        [\n       \"deployments\",\n       \"replicasets\",\n       \"daemonsets\"\n
-        \     ]\n     },\n     {\n      \"verbs\": [\n       \"create\",\n       \"get\",\n
-        \      \"list\"\n      ],\n      \"apiGroups\": [\n       \"batch\"\n      ],\n
-        \     \"resources\": [\n       \"jobs\"\n      ]\n     },\n     {\n      \"verbs\":
-        [\n       \"create\",\n       \"get\",\n       \"list\",\n       \"update\"\n
-        \     ],\n      \"apiGroups\": [\n       \"rbac.authorization.k8s.io\"\n      ],\n
-        \     \"resources\": [\n       \"clusterroles\",\n       \"clusterrolebindings\"\n
-        \     ]\n     }\n    ]\n   }\n  ]\n }"
+        [\n       \"deployments\",\n       \"replicasets\",\n       \"daemonsets\",\n
+        \      \"deployments/scale\"\n      ]\n     },\n     {\n      \"verbs\": [\n
+        \      \"create\",\n       \"get\",\n       \"list\"\n      ],\n      \"apiGroups\":
+        [\n       \"batch\"\n      ],\n      \"resources\": [\n       \"jobs\"\n      ]\n
+        \    },\n     {\n      \"verbs\": [\n       \"create\",\n       \"get\",\n
+        \      \"list\",\n       \"update\",\n       \"patch\"\n      ],\n      \"apiGroups\":
+        [\n       \"rbac.authorization.k8s.io\"\n      ],\n      \"resources\": [\n
+        \      \"clusterroles\",\n       \"clusterrolebindings\"\n      ]\n     },\n
+        \    {\n      \"verbs\": [\n       \"watch\"\n      ],\n      \"apiGroups\":
+        [\n       \"\"\n      ],\n      \"resources\": [\n       \"configmaps\",\n
+        \      \"services\"\n      ]\n     },\n     {\n      \"verbs\": [\n       \"watch\"\n
+        \     ],\n      \"apiGroups\": [\n       \"apps\"\n      ],\n      \"resources\":
+        [\n       \"deployments\",\n       \"deployments/scale\"\n      ]\n     },\n
+        \    {\n      \"verbs\": [\n       \"get\",\n       \"list\",\n       \"patch\",\n
+        \      \"update\",\n       \"watch\"\n      ],\n      \"apiGroups\": [\n       \"\"\n
+        \     ],\n      \"resources\": [\n       \"deployments\",\n       \"deployments/scale\"\n
+        \     ]\n     },\n     {\n      \"verbs\": [\n       \"get\",\n       \"list\",\n
+        \      \"watch\"\n      ],\n      \"apiGroups\": [\n       \"apps\"\n      ],\n
+        \     \"resources\": [\n       \"configmaps\",\n       \"endpoints\",\n       \"nodes\",\n
+        \      \"services\"\n      ]\n     }\n    ]\n   }\n  ]\n }"
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '6829'
+      - '7704'
       content-type:
       - application/json
       date:
-      - Wed, 28 Sep 2022 11:55:27 GMT
+      - Tue, 18 Oct 2022 06:13:46 GMT
       expires:
       - '-1'
       pragma:
