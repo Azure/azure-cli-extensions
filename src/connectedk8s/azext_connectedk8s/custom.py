@@ -127,15 +127,14 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
 
     # Loading the kubeconfig file in kubernetes client configuration
     load_kube_config(kube_config, kube_context)
-    configuration = kube_client.Configuration()
 
     # Checking the connection to kubernetes cluster.
     # This check was added to avoid large timeouts when connecting to AAD Enabled AKS clusters
     # if the user had not logged in.
-    kubernetes_version = check_kube_connection(configuration)
+    kubernetes_version = check_kube_connection()
 
     utils.try_list_node_fix()
-    api_instance = kube_client.CoreV1Api(kube_client.ApiClient(configuration))
+    api_instance = kube_client.CoreV1Api()
     node_api_response = utils.validate_node_api_response(api_instance, None)
 
     required_node_exists = check_linux_amd64_node(node_api_response)
@@ -145,7 +144,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
                                 summary="Couldn't find any node on the kubernetes cluster with the architecture type 'amd64' and OS 'linux'")
         logger.warning("Please ensure that this Kubernetes cluster have any nodes with OS 'linux' and architecture 'amd64', for scheduling the Arc-Agents onto and connecting to Azure. Learn more at {}".format("https://aka.ms/ArcK8sSupportedOSArchitecture"))
 
-    crb_permission = utils.can_create_clusterrolebindings(configuration)
+    crb_permission = utils.can_create_clusterrolebindings()
     if not crb_permission:
         telemetry.set_exception(exception="Your credentials doesn't have permission to create clusterrolebindings on this kubernetes cluster.", fault_type=consts.Cannot_Create_ClusterRoleBindings_Fault_Type,
                                 summary="Your credentials doesn't have permission to create clusterrolebindings on this kubernetes cluster.")
@@ -201,7 +200,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
 
     if release_namespace:
         # Loading config map
-        api_instance = kube_client.CoreV1Api(kube_client.ApiClient(configuration))
+        api_instance = kube_client.CoreV1Api()
         try:
             configmap = api_instance.read_namespaced_config_map('azure-clusterconfig', 'azure-arc')
         except Exception as e:  # pylint: disable=broad-except
@@ -219,7 +218,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
                                             configmap_cluster_name).agent_public_key_certificate
                 except Exception as e:  # pylint: disable=broad-except
                     utils.arm_exception_handler(e, consts.Get_ConnectedCluster_Fault_Type, 'Failed to check if connected cluster resource already exists.')
-                cc = generate_request_payload(configuration, location, public_key, tags, kubernetes_distro, kubernetes_infra, enable_private_link, private_link_scope_resource_id, distribution_version, azure_hybrid_benefit)
+                cc = generate_request_payload(location, public_key, tags, kubernetes_distro, kubernetes_infra, enable_private_link, private_link_scope_resource_id, distribution_version, azure_hybrid_benefit)
                 cc_response = create_cc_resource(client, resource_group_name, cluster_name, cc, no_wait).result()
                 # Disabling cluster-connect if private link is getting enabled
                 if enable_private_link is True:
@@ -233,7 +232,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
                                          " '{}' with resource name '{}'.".format(configmap_rg_name, configmap_cluster_name))
         else:
             # Cleanup agents and continue with put
-            utils.delete_arc_agents(release_namespace, kube_config, kube_context, configuration, helm_client_location)
+            utils.delete_arc_agents(release_namespace, kube_config, kube_context, helm_client_location)
     else:
         if connected_cluster_exists(client, resource_group_name, cluster_name):
             telemetry.set_exception(exception='The connected cluster resource already exists', fault_type=consts.Resource_Already_Exists_Fault_Type,
@@ -320,7 +319,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
         raise CLIInternalError("Failed to export private key." + str(e))
 
     # Generate request payload
-    cc = generate_request_payload(configuration, location, public_key, tags, kubernetes_distro, kubernetes_infra, enable_private_link, private_link_scope_resource_id, distribution_version, azure_hybrid_benefit)
+    cc = generate_request_payload(location, public_key, tags, kubernetes_distro, kubernetes_infra, enable_private_link, private_link_scope_resource_id, distribution_version, azure_hybrid_benefit)
 
     # Create connected cluster resource
     put_cc_response = create_cc_resource(client, resource_group_name, cluster_name, cc, no_wait).result()
@@ -394,8 +393,8 @@ def escape_proxy_settings(proxy_setting):
     return proxy_setting
 
 
-def check_kube_connection(configuration):
-    api_instance = kube_client.VersionApi(kube_client.ApiClient(configuration))
+def check_kube_connection():
+    api_instance = kube_client.VersionApi()
     try:
         api_response = api_instance.get_code()
         return api_response.git_version
@@ -596,7 +595,7 @@ def check_linux_amd64_node(api_response):
     return False
 
 
-def generate_request_payload(configuration, location, public_key, tags, kubernetes_distro, kubernetes_infra, enable_private_link, private_link_scope_resource_id, distribution_version, azure_hybrid_benefit):
+def generate_request_payload(location, public_key, tags, kubernetes_distro, kubernetes_infra, enable_private_link, private_link_scope_resource_id, distribution_version, azure_hybrid_benefit):
     # Create connected cluster resource object
     identity = ConnectedClusterIdentity(
         type="SystemAssigned"
@@ -738,12 +737,11 @@ def delete_connectedk8s(cmd, client, resource_group_name, cluster_name,
 
     # Loading the kubeconfig file in kubernetes client configuration
     load_kube_config(kube_config, kube_context)
-    configuration = kube_client.Configuration()
 
     # Checking the connection to kubernetes cluster.
     # This check was added to avoid large timeouts when connecting to AAD Enabled
     # AKS clusters if the user had not logged in.
-    check_kube_connection(configuration)
+    check_kube_connection()
 
     # Install helm client
     helm_client_location = install_helm_client()
@@ -763,6 +761,10 @@ def delete_connectedk8s(cmd, client, resource_group_name, cluster_name,
         timeout_for_crd_deletion = "20s"
         for crds in consts.CRD_FOR_FORCE_DELETE:
             cmd_helm_delete = [kubectl_client_location, "delete", "crds", crds, "--ignore-not-found", "--wait", "--timeout", "{}".format(timeout_for_crd_deletion)]
+            if kube_config:
+                cmd_helm_delete.extend(["--kubeconfig", kube_config])
+            if kube_context:
+                cmd_helm_delete.extend(["--context", kube_context])
             response_helm_delete = Popen(cmd_helm_delete, stdout=PIPE, stderr=PIPE)
             _, error_helm_delete = response_helm_delete.communicate()
 
@@ -778,6 +780,10 @@ def delete_connectedk8s(cmd, client, resource_group_name, cluster_name,
         for crds in consts.CRD_FOR_FORCE_DELETE:
 
             cmd = [kubectl_client_location, "get", "crd", crds, "-ojson"]
+            if kube_config:
+                cmd.extend(["--kubeconfig", kube_config])
+            if kube_context:
+                cmd.extend(["--context", kube_context])
             cmd_output = Popen(cmd, stdout=PIPE, stderr=PIPE)
             _, error_helm_delete = cmd_output.communicate()
 
@@ -787,11 +793,15 @@ def delete_connectedk8s(cmd, client, resource_group_name, cluster_name,
 
                 if(status == "Terminating"):
                     patch_cmd = [kubectl_client_location, "patch", "crd", crds, "--type=merge", "--patch-file", yaml_file_path]
+                    if kube_config:
+                        patch_cmd.extend(["--kubeconfig", kube_config])
+                    if kube_context:
+                        patch_cmd.extend(["--context", kube_context])
                     output_patch_cmd = Popen(patch_cmd, stdout=PIPE, stderr=PIPE)
                     _, error_helm_delete = output_patch_cmd.communicate()
 
         if(release_namespace):
-            utils.delete_arc_agents(release_namespace, kube_config, kube_context, configuration, helm_client_location, True)
+            utils.delete_arc_agents(release_namespace, kube_config, kube_context, helm_client_location, True)
 
         return
 
@@ -800,7 +810,7 @@ def delete_connectedk8s(cmd, client, resource_group_name, cluster_name,
         return
 
     # Loading config map
-    api_instance = kube_client.CoreV1Api(kube_client.ApiClient(configuration))
+    api_instance = kube_client.CoreV1Api()
     try:
         configmap = api_instance.read_namespaced_config_map('azure-clusterconfig', 'azure-arc')
     except Exception as e:  # pylint: disable=broad-except
@@ -831,7 +841,7 @@ def delete_connectedk8s(cmd, client, resource_group_name, cluster_name,
                                  "and resource name '{}'.".format(configmap.data["AZURE_RESOURCE_NAME"]))
 
     # Deleting the azure-arc agents
-    utils.delete_arc_agents(release_namespace, kube_config, kube_context, configuration, helm_client_location)
+    utils.delete_arc_agents(release_namespace, kube_config, kube_context, helm_client_location)
 
 
 def get_release_namespace(kube_config, kube_context, helm_client_location):
@@ -954,23 +964,22 @@ def update_connected_cluster(cmd, client, resource_group_name, cluster_name, htt
 
     # Loading the kubeconfig file in kubernetes client configuration
     load_kube_config(kube_config, kube_context)
-    configuration = kube_client.Configuration()
 
     # Checking the connection to kubernetes cluster.
     # This check was added to avoid large timeouts when connecting to AAD Enabled AKS clusters
     # if the user had not logged in.
-    kubernetes_version = check_kube_connection(configuration)
+    kubernetes_version = check_kube_connection()
 
     utils.try_list_node_fix()
 
     # Install helm client
     helm_client_location = install_helm_client()
 
-    release_namespace = validate_release_namespace(client, cluster_name, resource_group_name, configuration, kube_config, kube_context, helm_client_location)
+    release_namespace = validate_release_namespace(client, cluster_name, resource_group_name, kube_config, kube_context, helm_client_location)
 
     # Fetch Connected Cluster for agent version
     connected_cluster = get_connectedk8s(cmd, client, resource_group_name, cluster_name)
-    api_instance = kube_client.CoreV1Api(kube_client.ApiClient(configuration))
+    api_instance = kube_client.CoreV1Api()
     node_api_response = None
 
     if hasattr(connected_cluster, 'distribution') and (connected_cluster.distribution is not None):
@@ -1100,15 +1109,14 @@ def upgrade_agents(cmd, client, resource_group_name, cluster_name, kube_config=N
 
     # Loading the kubeconfig file in kubernetes client configuration
     load_kube_config(kube_config, kube_context)
-    configuration = kube_client.Configuration()
 
     # Checking the connection to kubernetes cluster.
     # This check was added to avoid large timeouts when connecting to AAD Enabled AKS clusters
     # if the user had not logged in.
-    kubernetes_version = check_kube_connection(configuration)
+    kubernetes_version = check_kube_connection()
 
     utils.try_list_node_fix()
-    api_instance = kube_client.CoreV1Api(kube_client.ApiClient(configuration))
+    api_instance = kube_client.CoreV1Api()
     node_api_response = None
 
     # Install helm client
@@ -1118,7 +1126,7 @@ def upgrade_agents(cmd, client, resource_group_name, cluster_name, kube_config=N
     release_namespace = get_release_namespace(kube_config, kube_context, helm_client_location)
     if release_namespace:
         # Loading config map
-        api_instance = kube_client.CoreV1Api(kube_client.ApiClient(configuration))
+        api_instance = kube_client.CoreV1Api()
         try:
             configmap = api_instance.read_namespaced_config_map('azure-clusterconfig', 'azure-arc')
         except Exception as e:  # pylint: disable=broad-except
@@ -1269,12 +1277,12 @@ def upgrade_agents(cmd, client, resource_group_name, cluster_name, kube_config=N
     return str.format(consts.Upgrade_Agent_Success, connected_cluster.name)
 
 
-def validate_release_namespace(client, cluster_name, resource_group_name, configuration, kube_config, kube_context, helm_client_location):
+def validate_release_namespace(client, cluster_name, resource_group_name, kube_config, kube_context, helm_client_location):
     # Check Release Existance
     release_namespace = get_release_namespace(kube_config, kube_context, helm_client_location)
     if release_namespace:
         # Loading config map
-        api_instance = kube_client.CoreV1Api(kube_client.ApiClient(configuration))
+        api_instance = kube_client.CoreV1Api()
         try:
             configmap = api_instance.read_namespaced_config_map('azure-clusterconfig', 'azure-arc')
         except Exception as e:  # pylint: disable=broad-except
@@ -1382,21 +1390,20 @@ def enable_features(cmd, client, resource_group_name, cluster_name, features, ku
 
     # Loading the kubeconfig file in kubernetes client configuration
     load_kube_config(kube_config, kube_context)
-    configuration = kube_client.Configuration()
 
     # Checking the connection to kubernetes cluster.
     # This check was added to avoid large timeouts when connecting to AAD Enabled AKS clusters
     # if the user had not logged in.
-    kubernetes_version = check_kube_connection(configuration)
+    kubernetes_version = check_kube_connection()
 
     utils.try_list_node_fix()
-    api_instance = kube_client.CoreV1Api(kube_client.ApiClient(configuration))
+    api_instance = kube_client.CoreV1Api()
     node_api_response = None
 
     # Install helm client
     helm_client_location = install_helm_client()
 
-    release_namespace = validate_release_namespace(client, cluster_name, resource_group_name, configuration, kube_config, kube_context, helm_client_location)
+    release_namespace = validate_release_namespace(client, cluster_name, resource_group_name, kube_config, kube_context, helm_client_location)
 
     # Fetch Connected Cluster for agent version
     connected_cluster = get_connectedk8s(cmd, client, resource_group_name, cluster_name)
@@ -1502,21 +1509,20 @@ def disable_features(cmd, client, resource_group_name, cluster_name, features, k
 
     # Loading the kubeconfig file in kubernetes client configuration
     load_kube_config(kube_config, kube_context)
-    configuration = kube_client.Configuration()
 
     # Checking the connection to kubernetes cluster.
     # This check was added to avoid large timeouts when connecting to AAD Enabled AKS clusters
     # if the user had not logged in.
-    kubernetes_version = check_kube_connection(configuration)
+    kubernetes_version = check_kube_connection()
 
     utils.try_list_node_fix()
-    api_instance = kube_client.CoreV1Api(kube_client.ApiClient(configuration))
+    api_instance = kube_client.CoreV1Api()
     node_api_response = None
 
     # Install helm client
     helm_client_location = install_helm_client()
 
-    release_namespace = validate_release_namespace(client, cluster_name, resource_group_name, configuration, kube_config, kube_context, helm_client_location)
+    release_namespace = validate_release_namespace(client, cluster_name, resource_group_name, kube_config, kube_context, helm_client_location)
 
     # Fetch Connected Cluster for agent version
     connected_cluster = get_connectedk8s(cmd, client, resource_group_name, cluster_name)
@@ -2222,19 +2228,18 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
 
         # Loading the kubeconfig file in kubernetes client configuration
         load_kube_config(kube_config, kube_context)
-        configuration = kube_client.Configuration()
 
         # Install helm client
         helm_client_location = install_helm_client()
 
         # Install kubectl client
         kubectl_client_location = install_kubectl_client()
-        release_namespace = validate_release_namespace(client, cluster_name, resource_group_name, configuration, kube_config, kube_context, helm_client_location)
+        release_namespace = validate_release_namespace(client, cluster_name, resource_group_name, kube_config, kube_context, helm_client_location)
 
         # Checking the connection to kubernetes cluster.
         # This check was added to avoid large timeouts when connecting to AAD Enabled AKS clusters
         # if the user had not logged in.
-        check_kube_connection(configuration)
+        check_kube_connection()
         utils.try_list_node_fix()
 
         # Fetch Connected Cluster for agent version
@@ -2259,11 +2264,11 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
             storage_space_available = False
 
         # To store the cluster-info of the cluster in current-context
-        diagnostic_checks[consts.Fetch_Kubectl_Cluster_Info], storage_space_available = troubleshootutils.fetch_kubectl_cluster_info(filepath_with_timestamp, storage_space_available, kubectl_client_location)
+        diagnostic_checks[consts.Fetch_Kubectl_Cluster_Info], storage_space_available = troubleshootutils.fetch_kubectl_cluster_info(filepath_with_timestamp, storage_space_available, kubectl_client_location, kube_config, kube_context)
 
         # To store the connected cluster resource logs in the diagnostic folder
         diagnostic_checks[consts.Fetch_Connected_Cluster_Resource], storage_space_available = troubleshootutils.fetch_connected_cluster_resource(filepath_with_timestamp, connected_cluster, storage_space_available)
-        corev1_api_instance = kube_client.CoreV1Api(kube_client.ApiClient(configuration))
+        corev1_api_instance = kube_client.CoreV1Api()
 
         # Check if agents have been added to the cluster
         arc_agents_pod_list = corev1_api_instance.list_namespaced_pod(namespace="azure-arc")
@@ -2275,10 +2280,10 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
             diagnostic_checks[consts.Retrieve_Arc_Agents_Logs], storage_space_available = troubleshootutils.retrieve_arc_agents_logs(corev1_api_instance, filepath_with_timestamp, storage_space_available)
 
             # For storing all arc agents events logs
-            diagnostic_checks[consts.Retrieve_Arc_Agents_Event_Logs], storage_space_available = troubleshootutils.retrieve_arc_agents_event_logs(filepath_with_timestamp, storage_space_available, kubectl_client_location)
+            diagnostic_checks[consts.Retrieve_Arc_Agents_Event_Logs], storage_space_available = troubleshootutils.retrieve_arc_agents_event_logs(filepath_with_timestamp, storage_space_available, kubectl_client_location, kube_config, kube_context)
 
             # For storing all the deployments logs using the AppsV1Api
-            appv1_api_instance = kube_client.AppsV1Api(kube_client.ApiClient(configuration))
+            appv1_api_instance = kube_client.AppsV1Api()
             diagnostic_checks[consts.Retrieve_Deployments_Logs], storage_space_available = troubleshootutils.retrieve_deployments_logs(appv1_api_instance, filepath_with_timestamp, storage_space_available)
 
             # Check for the azure arc agent states
@@ -2294,7 +2299,7 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
 
             # If msi certificate present then only we will do Kube aad proxy checks
             if diagnostic_checks[consts.MSI_Cert_Check] == consts.Diagnostic_Check_Passed:
-                diagnostic_checks[consts.KAP_Security_Policy_Check] = troubleshootutils.check_probable_cluster_security_policy(corev1_api_instance, helm_client_location, release_namespace)
+                diagnostic_checks[consts.KAP_Security_Policy_Check] = troubleshootutils.check_probable_cluster_security_policy(corev1_api_instance, helm_client_location, release_namespace, kube_config, kube_context)
 
                 # If no security policy is present in cluster then we can check for the Kube aad proxy certificate
                 if diagnostic_checks[consts.KAP_Security_Policy_Check] == consts.Diagnostic_Check_Passed:
@@ -2328,9 +2333,9 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
         else:
             logger.warning("Error: Azure Arc agents are not present on the cluster. Please verify whether Arc onboarding of the Kubernetes cluster has been attempted.\n")
 
-        batchv1_api_instance = kube_client.BatchV1Api(kube_client.ApiClient(configuration))
+        batchv1_api_instance = kube_client.BatchV1Api()
         # Performing diagnoser container check
-        diagnostic_checks[consts.Diagnoser_Check], storage_space_available = troubleshootutils.check_diagnoser_container(corev1_api_instance, batchv1_api_instance, filepath_with_timestamp, storage_space_available, absolute_path, probable_sufficient_resource_for_agents, helm_client_location, kubectl_client_location, release_namespace, diagnostic_checks[consts.KAP_Security_Policy_Check])
+        diagnostic_checks[consts.Diagnoser_Check], storage_space_available = troubleshootutils.check_diagnoser_container(corev1_api_instance, batchv1_api_instance, filepath_with_timestamp, storage_space_available, absolute_path, probable_sufficient_resource_for_agents, helm_client_location, kubectl_client_location, release_namespace, diagnostic_checks[consts.KAP_Security_Policy_Check], kube_config, kube_context)
 
         # Adding cli output to the logs
         diagnostic_checks[consts.Storing_Diagnoser_Results_Logs] = troubleshootutils.fetching_cli_output_logs(filepath_with_timestamp, storage_space_available, 1)

@@ -250,8 +250,8 @@ def get_values_file():
     return values_file_provided, values_file
 
 
-def ensure_namespace_cleanup(configuration):
-    api_instance = kube_client.CoreV1Api(kube_client.ApiClient(configuration))
+def ensure_namespace_cleanup():
+    api_instance = kube_client.CoreV1Api()
     timeout = time.time() + 180
     while True:
         if time.time() > timeout:
@@ -269,7 +269,7 @@ def ensure_namespace_cleanup(configuration):
                                          raise_error=False)
 
 
-def delete_arc_agents(release_namespace, kube_config, kube_context, configuration, helm_client_location, no_hooks=False):
+def delete_arc_agents(release_namespace, kube_config, kube_context, helm_client_location, no_hooks=False):
     if(no_hooks):
         cmd_helm_delete = [helm_client_location, "delete", "azure-arc", "--namespace", release_namespace, "--no-hooks"]
     else:
@@ -288,7 +288,7 @@ def delete_arc_agents(release_namespace, kube_config, kube_context, configuratio
         raise CLIInternalError("Error occured while cleaning up arc agents. " +
                                "Helm release deletion failed: " + error_helm_delete.decode("ascii") +
                                " Please run 'helm delete azure-arc' to ensure that the release is deleted.")
-    ensure_namespace_cleanup(configuration)
+    ensure_namespace_cleanup()
 
 
 def helm_install_release(chart_path, subscription_id, kubernetes_distro, kubernetes_infra, resource_group_name, cluster_name,
@@ -426,9 +426,9 @@ def check_provider_registrations(cli_ctx):
         logger.warning("Couldn't check the required provider's registration status. Error: {}".format(str(ex)))
 
 
-def can_create_clusterrolebindings(configuration):
+def can_create_clusterrolebindings():
     try:
-        api_instance = kube_client.AuthorizationV1Api(kube_client.ApiClient(configuration))
+        api_instance = kube_client.AuthorizationV1Api()
         access_review = kube_client.V1SelfSubjectAccessReview(spec={
             "resourceAttributes": {
                 "verb": "create",
