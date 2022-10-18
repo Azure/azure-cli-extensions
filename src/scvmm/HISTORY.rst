@@ -3,6 +3,10 @@
 Release History
 ===============
 
+0.1.6
+++++++
+* Displaying asterisks (*****) for password input.
+
 0.1.5
 +++
 * Requesting VMMServer credentials from the user until they are non-empty.

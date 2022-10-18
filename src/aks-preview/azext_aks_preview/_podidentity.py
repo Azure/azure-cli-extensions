@@ -78,7 +78,7 @@ def _update_addon_pod_identity(
     pod_identities=None,
     pod_identity_exceptions=None,
     allow_kubenet_consent=None,
-    models: SimpleNamespace=None,
+    models: SimpleNamespace = None,
 ):
     if not enable:
         ManagedClusterPodIdentityProfile = models.ManagedClusterPodIdentityProfile
