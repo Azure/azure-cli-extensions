@@ -71,7 +71,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             key_file.write(TEST_SSH_KEY_PUB)
         return pathname.replace('\\', '\\\\')
 
-    @live_only()  # live only is required for test environment setup like `az login`
     @AllowLargeResponse()
     def test_get_version(self):
         versions_cmd = 'aks get-versions -l westus2'
@@ -81,7 +80,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             self.check('orchestrators[0].orchestratorType', 'Kubernetes')
         ])
 
-    @live_only()  # live only is required for test environment setup like `az login`
     @AllowLargeResponse()
     def test_get_os_options(self):
         osOptions_cmd = 'aks get-os-options -l westus2'
@@ -3510,7 +3508,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         self.cmd(
             'aks delete -g {resource_group} -n {name} --yes --no-wait', checks=[self.is_empty()])
 
-    @live_only()
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
     def test_aks_disable_local_accounts(self, resource_group, resource_group_location):
