@@ -4724,7 +4724,14 @@
                 {
                   "name": "titleContains",
                   "parameters": {
-                    "titlePattern": "\\b([Ss][Tt][Oo][Rr][Aa][Gg][Ee])\\b",
+                    "titlePattern": "az storage",
+                    "isRegex": true
+                  }
+                },
+                {
+                  "name": "bodyContains",
+                  "parameters": {
+                    "bodyPattern": "az storage",
                     "isRegex": true
                   }
                 }
@@ -5185,7 +5192,14 @@
                 {
                   "name": "titleContains",
                   "parameters": {
-                    "titlePattern": "\\b(account|Account|ACCOUNT|login|Login|LOGIN)\\b",
+                    "titlePattern": "az \\b(account|login)\\b",
+                    "isRegex": true
+                  }
+                },
+                {
+                  "name": "bodyContains",
+                  "parameters": {
+                    "bodyPattern": "az \\b(account|login)\\b",
                     "isRegex": true
                   }
                 }
@@ -12384,6 +12398,83 @@
         ]
       },
       "disabled": false
+    },
+    {
+      "taskType": "trigger",
+      "capabilityId": "IssueResponder",
+      "subCapability": "PullRequestResponder",
+      "version": "1.0",
+      "config": {
+        "conditions": {
+          "operator": "and",
+          "operands": [
+            {
+              "name": "isAction",
+              "parameters": {
+                "action": "opened"
+              }
+            },
+            {
+              "operator": "or",
+              "operands": [
+                {
+                  "name": "titleContains",
+                  "parameters": {
+                    "titlePattern": "[Ss]erial-[Cc]onsole",
+                    "isRegex": true
+                  }
+                },
+                {
+                  "name": "bodyContains",
+                  "parameters": {
+                    "bodyPattern": "az serial-console",
+                    "isRegex": true
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        "eventType": "pull_request",
+        "eventNames": [
+          "pull_request",
+          "issues",
+          "project_card"
+        ],
+        "taskName": "[Serial-Console] Auto assign labels and reviewers based on PR title/description.",
+        "actions": [
+          {
+            "name": "requestReviewer",
+            "parameters": {
+              "reviewer": "kairu-ms"
+            }
+          },
+          {
+            "name": "addLabel",
+            "parameters": {
+              "label": "Auto-Assign"
+            }
+          },
+          {
+            "name": "assignToUser",
+            "parameters": {
+              "user": "kairu-ms"
+            }
+          },
+          {
+            "name": "addMilestone",
+            "parameters": {
+              "milestoneName": "Oct 2022 (2022-11-01)"
+            }
+          },
+          {
+            "name": "addLabel",
+            "parameters": {
+              "label": "Serial Console"
+            }
+          }
+        ]
+      }
     }
   ],
   "userGroups": [

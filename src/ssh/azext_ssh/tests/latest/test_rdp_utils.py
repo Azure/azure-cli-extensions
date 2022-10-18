@@ -29,7 +29,7 @@ class RDPUtilsTest(unittest.TestCase):
         mock_relay.return_value = 'relay_string'
         mock_popen.return_value = 'ssh_process'
 
-        expected_command = ['ssh', "user@vm", '-o', 'ProxyCommand=\"proxy\" -p port', '-i', 'priv', '-o', 'CertificateFile=\"cert\"', 'arg1', 'arg2', '-v']
+        expected_command = ['ssh', "vm", '-l', 'user', '-o', 'ProxyCommand=\"proxy\" -p port', '-i', 'priv', '-o', 'CertificateFile=\"cert\"', 'arg1', 'arg2', '-v']
         expected_env = {'var1':'value1', 'var2':'value2', 'var3':'value3', 'SSHPROXY_RELAY_INFO':'relay_string'}
 
         ssh_sub, print_logs = rdp_utils.start_ssh_tunnel(op_info)

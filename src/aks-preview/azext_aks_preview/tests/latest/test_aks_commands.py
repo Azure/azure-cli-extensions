@@ -71,7 +71,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             key_file.write(TEST_SSH_KEY_PUB)
         return pathname.replace('\\', '\\\\')
 
-    @live_only()  # live only is required for test environment setup like `az login`
     @AllowLargeResponse()
     def test_get_version(self):
         versions_cmd = 'aks get-versions -l westus2'
@@ -81,7 +80,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             self.check('orchestrators[0].orchestratorType', 'Kubernetes')
         ])
 
-    @live_only()  # live only is required for test environment setup like `az login`
     @AllowLargeResponse()
     def test_get_os_options(self):
         osOptions_cmd = 'aks get-os-options -l westus2'
@@ -680,7 +678,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         self.cmd(show_cmd, checks=[
             self.check("api_key", "openServiceMesh"),
             self.check("name", "open-service-mesh"),
-            self.exists('identity')
         ])
 
     @AllowLargeResponse()
@@ -3511,7 +3508,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         self.cmd(
             'aks delete -g {resource_group} -n {name} --yes --no-wait', checks=[self.is_empty()])
 
-    @live_only()
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
     def test_aks_disable_local_accounts(self, resource_group, resource_group_location):
@@ -5807,7 +5803,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
     @AKSCustomResourceGroupPreparer(random_name_length=16, name_prefix='clitest', location='westus2')
     def test_aks_update_with_azuremonitormetrics(self, resource_group, resource_group_location):
         aks_name = self.create_random_name('cliakstest', 15)
-        node_vm_size = 'standard_dc2s_v3'
+        node_vm_size = 'standard_d2s_v3'
         self.kwargs.update({
             'resource_group': resource_group,
             'name': aks_name,
