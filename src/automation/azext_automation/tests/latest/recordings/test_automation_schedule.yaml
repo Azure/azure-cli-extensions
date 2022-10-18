@@ -18,7 +18,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_automation_schedule000001?api-version=2021-04-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_schedule000001","name":"cli_test_automation_schedule000001","type":"Microsoft.Resources/resourceGroups","location":"westus","tags":{"product":"azurecli","cause":"automation","date":"2022-10-18T06:24:06Z"},"properties":{"provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_schedule000001","name":"cli_test_automation_schedule000001","type":"Microsoft.Resources/resourceGroups","location":"westus","tags":{"product":"azurecli","cause":"automation","date":"2022-10-18T07:51:03Z"},"properties":{"provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
@@ -27,7 +27,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 18 Oct 2022 06:24:13 GMT
+      - Tue, 18 Oct 2022 07:51:07 GMT
       expires:
       - '-1'
       pragma:
@@ -65,7 +65,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_schedule000001/providers/Microsoft.Automation/automationAccounts/account-000002?api-version=2021-06-22
   response:
     body:
-      string: '{"name":"account-000002","systemData":{"createdAt":"2022-10-18T06:24:20.85+00:00","lastModifiedAt":"2022-10-18T06:24:20.85+00:00"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_schedule000001/providers/Microsoft.Automation/automationAccounts/account-000002","type":"Microsoft.Automation/AutomationAccounts","location":"westus","tags":{},"etag":null,"properties":{"disableLocalAuth":false,"sku":{"name":"Basic","family":null,"capacity":null},"state":"Ok","RegistrationUrl":"https://0016186c-31c5-4790-80d2-7ca4cbd3281c.agentsvc.wus.azure-automation.net/accounts/0016186c-31c5-4790-80d2-7ca4cbd3281c","encryption":{"keySource":"Microsoft.Automation","identity":{"userAssignedIdentity":null}},"automationHybridServiceUrl":"https://0016186c-31c5-4790-80d2-7ca4cbd3281c.jrds.wus.azure-automation.net/automationAccounts/0016186c-31c5-4790-80d2-7ca4cbd3281c","RuntimeConfiguration":{"powershell":{"builtinModules":{"Az":"8.0.0"}},"powershell7":{"builtinModules":{"Az":"8.0.0"}}},"creationTime":"2022-10-18T06:24:20.85+00:00","lastModifiedBy":null,"lastModifiedTime":"2022-10-18T06:24:20.85+00:00"}}'
+      string: '{"name":"account-000002","systemData":{"createdAt":"2022-10-18T07:51:13.36+00:00","lastModifiedAt":"2022-10-18T07:51:13.36+00:00"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_schedule000001/providers/Microsoft.Automation/automationAccounts/account-000002","type":"Microsoft.Automation/AutomationAccounts","location":"westus","tags":{},"etag":null,"properties":{"disableLocalAuth":false,"sku":{"name":"Basic","family":null,"capacity":null},"state":"Ok","RegistrationUrl":"https://f670520d-04b5-4d74-87c0-98188397a743.agentsvc.wus.azure-automation.net/accounts/f670520d-04b5-4d74-87c0-98188397a743","encryption":{"keySource":"Microsoft.Automation","identity":{"userAssignedIdentity":null}},"automationHybridServiceUrl":"https://f670520d-04b5-4d74-87c0-98188397a743.jrds.wus.azure-automation.net/automationAccounts/f670520d-04b5-4d74-87c0-98188397a743","RuntimeConfiguration":{"powershell":{"builtinModules":{"Az":"8.0.0"}},"powershell7":{"builtinModules":{"Az":"8.0.0"}}},"creationTime":"2022-10-18T07:51:13.36+00:00","lastModifiedBy":null,"lastModifiedTime":"2022-10-18T07:51:13.36+00:00"}}'
     headers:
       cache-control:
       - no-cache
@@ -74,7 +74,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 18 Oct 2022 06:24:22 GMT
+      - Tue, 18 Oct 2022 07:51:15 GMT
       expires:
       - '-1'
       location:
@@ -94,7 +94,7 @@ interactions:
       message: Created
 - request:
     body: '{"name": "schedule-000003", "properties": {"description": "test", "startTime":
-      "2022-10-18T09:08:00.000Z", "interval": 1, "frequency": "Hour", "timeZone":
+      "2022-10-19T10:08:00.000Z", "interval": 1, "frequency": "Hour", "timeZone":
       "UTC+08:00"}}'
     headers:
       Accept:
@@ -118,16 +118,16 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_schedule000001/providers/Microsoft.Automation/automationAccounts/account-000002/schedules/schedule-000003?api-version=2020-01-13-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_schedule000001/providers/Microsoft.Automation/automationAccounts/account-000002/schedules/schedule-000003","name":"schedule-000003","type":"Microsoft.Automation/AutomationAccounts/Schedules","properties":{"description":"test","startTime":"2022-10-18T17:08:00+08:00","startTimeOffsetMinutes":480.0,"expiryTime":"9999-12-31T23:59:59.9999999+00:00","expiryTimeOffsetMinutes":0.0,"isEnabled":true,"nextRun":"2022-10-18T17:08:00+08:00","nextRunOffsetMinutes":480.0,"interval":1,"frequency":"Hour","creationTime":"2022-10-18T06:24:25.3333333+00:00","lastModifiedTime":"2022-10-18T06:24:25.3333333+00:00","timeZone":"UTC+08:00","advancedSchedule":null}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_schedule000001/providers/Microsoft.Automation/automationAccounts/account-000002/schedules/schedule-000003","name":"schedule-000003","type":"Microsoft.Automation/AutomationAccounts/Schedules","properties":{"description":"test","startTime":"2022-10-19T18:08:00+08:00","startTimeOffsetMinutes":480.0,"expiryTime":"9999-12-31T23:59:59.9999999+00:00","expiryTimeOffsetMinutes":0.0,"isEnabled":true,"nextRun":"2022-10-19T18:08:00+08:00","nextRunOffsetMinutes":480.0,"interval":1,"frequency":"Hour","creationTime":"2022-10-18T07:51:19.17+00:00","lastModifiedTime":"2022-10-18T07:51:19.17+00:00","timeZone":"UTC+08:00","advancedSchedule":null}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '740'
+      - '730'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 18 Oct 2022 06:24:24 GMT
+      - Tue, 18 Oct 2022 07:51:19 GMT
       expires:
       - '-1'
       location:
@@ -141,7 +141,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1196'
+      - '1199'
     status:
       code: 201
       message: Created
@@ -169,16 +169,16 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_schedule000001/providers/Microsoft.Automation/automationAccounts/account-000002/schedules/schedule-000003?api-version=2020-01-13-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_schedule000001/providers/Microsoft.Automation/automationAccounts/account-000002/schedules/schedule-000003","name":"schedule-000003","type":"Microsoft.Automation/AutomationAccounts/Schedules","properties":{"description":"test1","startTime":"2022-10-18T17:08:00+08:00","startTimeOffsetMinutes":480.0,"expiryTime":"9999-12-31T23:59:59.9999999+00:00","expiryTimeOffsetMinutes":0.0,"isEnabled":false,"nextRun":"2022-10-18T17:08:00+08:00","nextRunOffsetMinutes":480.0,"interval":1,"frequency":"Hour","creationTime":"2022-10-18T06:24:25.3333333+00:00","lastModifiedTime":"2022-10-18T06:24:25.3333333+00:00","timeZone":"UTC+08:00","advancedSchedule":null}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_schedule000001/providers/Microsoft.Automation/automationAccounts/account-000002/schedules/schedule-000003","name":"schedule-000003","type":"Microsoft.Automation/AutomationAccounts/Schedules","properties":{"description":"test1","startTime":"2022-10-19T18:08:00+08:00","startTimeOffsetMinutes":480.0,"expiryTime":"9999-12-31T23:59:59.9999999+00:00","expiryTimeOffsetMinutes":0.0,"isEnabled":false,"nextRun":"2022-10-19T18:08:00+08:00","nextRunOffsetMinutes":480.0,"interval":1,"frequency":"Hour","creationTime":"2022-10-18T07:51:19.17+00:00","lastModifiedTime":"2022-10-18T07:51:19.17+00:00","timeZone":"UTC+08:00","advancedSchedule":null}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '742'
+      - '732'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 18 Oct 2022 06:24:26 GMT
+      - Tue, 18 Oct 2022 07:51:22 GMT
       expires:
       - '-1'
       pragma:
@@ -194,7 +194,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1198'
+      - '1199'
     status:
       code: 200
       message: OK
@@ -217,16 +217,16 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_schedule000001/providers/Microsoft.Automation/automationAccounts/account-000002/schedules?api-version=2020-01-13-preview
   response:
     body:
-      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_schedule000001/providers/Microsoft.Automation/automationAccounts/account-000002/schedules/schedule-000003","name":"schedule-000003","type":"Microsoft.Automation/AutomationAccounts/Schedules","properties":{"description":"test1","startTime":"2022-10-18T17:08:00+08:00","startTimeOffsetMinutes":480.0,"expiryTime":"9999-12-31T23:59:59.9999999+00:00","expiryTimeOffsetMinutes":0.0,"isEnabled":false,"nextRun":"2022-10-18T17:08:00+08:00","nextRunOffsetMinutes":480.0,"interval":1,"frequency":"Hour","creationTime":"2022-10-18T06:24:25.3333333+00:00","lastModifiedTime":"2022-10-18T06:24:27.3633333+00:00","timeZone":"UTC+08:00","advancedSchedule":null}}]}'
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_schedule000001/providers/Microsoft.Automation/automationAccounts/account-000002/schedules/schedule-000003","name":"schedule-000003","type":"Microsoft.Automation/AutomationAccounts/Schedules","properties":{"description":"test1","startTime":"2022-10-19T18:08:00+08:00","startTimeOffsetMinutes":480.0,"expiryTime":"9999-12-31T23:59:59.9999999+00:00","expiryTimeOffsetMinutes":0.0,"isEnabled":false,"nextRun":"2022-10-19T18:08:00+08:00","nextRunOffsetMinutes":480.0,"interval":1,"frequency":"Hour","creationTime":"2022-10-18T07:51:19.17+00:00","lastModifiedTime":"2022-10-18T07:51:23.4633333+00:00","timeZone":"UTC+08:00","advancedSchedule":null}}]}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '754'
+      - '749'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 18 Oct 2022 06:24:30 GMT
+      - Tue, 18 Oct 2022 07:51:26 GMT
       expires:
       - '-1'
       pragma:
@@ -263,16 +263,16 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_schedule000001/providers/Microsoft.Automation/automationAccounts/account-000002/schedules/schedule-000003?api-version=2020-01-13-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_schedule000001/providers/Microsoft.Automation/automationAccounts/account-000002/schedules/schedule-000003","name":"schedule-000003","type":"Microsoft.Automation/AutomationAccounts/Schedules","properties":{"description":"test1","startTime":"2022-10-18T17:08:00+08:00","startTimeOffsetMinutes":480.0,"expiryTime":"9999-12-31T23:59:59.9999999+00:00","expiryTimeOffsetMinutes":0.0,"isEnabled":false,"nextRun":"2022-10-18T17:08:00+08:00","nextRunOffsetMinutes":480.0,"interval":1,"frequency":"Hour","creationTime":"2022-10-18T06:24:25.3333333+00:00","lastModifiedTime":"2022-10-18T06:24:27.3633333+00:00","timeZone":"UTC+08:00","advancedSchedule":null}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_schedule000001/providers/Microsoft.Automation/automationAccounts/account-000002/schedules/schedule-000003","name":"schedule-000003","type":"Microsoft.Automation/AutomationAccounts/Schedules","properties":{"description":"test1","startTime":"2022-10-19T18:08:00+08:00","startTimeOffsetMinutes":480.0,"expiryTime":"9999-12-31T23:59:59.9999999+00:00","expiryTimeOffsetMinutes":0.0,"isEnabled":false,"nextRun":"2022-10-19T18:08:00+08:00","nextRunOffsetMinutes":480.0,"interval":1,"frequency":"Hour","creationTime":"2022-10-18T07:51:19.17+00:00","lastModifiedTime":"2022-10-18T07:51:23.4633333+00:00","timeZone":"UTC+08:00","advancedSchedule":null}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '742'
+      - '737'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 18 Oct 2022 06:24:33 GMT
+      - Tue, 18 Oct 2022 07:51:29 GMT
       expires:
       - '-1'
       pragma:
@@ -318,7 +318,7 @@ interactions:
       content-length:
       - '0'
       date:
-      - Tue, 18 Oct 2022 06:24:35 GMT
+      - Tue, 18 Oct 2022 07:51:30 GMT
       expires:
       - '-1'
       pragma:
@@ -330,7 +330,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-deletes:
-      - '14999'
+      - '14998'
     status:
       code: 200
       message: OK
