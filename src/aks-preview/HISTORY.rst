@@ -12,6 +12,8 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+* Update to use 2022-09-02-preview api version.
+
 0.5.107
 +++++++
 
@@ -26,6 +28,7 @@ Pending
 +++++++
 
 * Add support to create cluster with kube-proxy configuration via `az aks create --kube-proxy-config file.json`
+* Update to use 2022-08-03-preview api version.
 
 0.5.104
 +++++++
