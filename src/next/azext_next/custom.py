@@ -24,6 +24,7 @@ def handle_next(cmd, command_only=False, scenario_only=False):
     elif command_only:
         request_type = RecommendType.Command.value
     else:
+        # Fallback to the configured filter_type if not command_only and scenario_only
         request_type = RecommendType.get(cmd.cli_ctx.config.get('next', 'filter_type', fallback='mix')).value
 
     # Upload all execution commands of local record for personalized analysis
@@ -47,13 +48,15 @@ def handle_next(cmd, command_only=False, scenario_only=False):
 
     print()
 
+    # divide recommendation items into two sets
     command_recommendations = [item for item in recommends if item['type'] != RecommendType.Scenario]
     scenario_recommendations = [item for item in recommends if item['type'] == RecommendType.Scenario]
-    multi_type_recommendation = True
     if len(command_recommendations) == 0:
         multi_type_recommendation = False
-    if len(scenario_recommendations) == 0:
+    elif len(scenario_recommendations) == 0:
         multi_type_recommendation = False
+    else:
+        multi_type_recommendation = True
 
     if not multi_type_recommendation:
         _give_recommends(cmd, recommends)
@@ -70,6 +73,7 @@ def handle_next(cmd, command_only=False, scenario_only=False):
         rec = recommends[option - 1]
         send_feedback(request_type, option, command_history, processed_exception, recommends, rec)
     else:
+        # display scenario recommendations with prefix 'a', and command recommendations with prefix 'b'
         print_styled_text([(Style.PRIMARY, "SCENARIO")])
         print()
         _give_recommends(cmd, scenario_recommendations, prefix='a')
@@ -340,7 +344,7 @@ def _execute_recommend_commands(cmd, rec):
 
 
 def _execute_recommend_scenarios(cmd, rec):
-    exec_idx = rec.get("execIdx")
+    exec_idx = rec.get("executeIndex")
     for idx, nx_cmd in enumerate(rec["nextCommandSet"]):
         cmd_active = exec_idx is None or idx in exec_idx
         if not cmd_active:
@@ -405,7 +409,7 @@ def _show_details_for_e2e_scenario(cmd, rec):
                        (Style.ACTION, " contains the following commands:\n")])
 
     nx_cmd_set = rec["nextCommandSet"]
-    exec_idx = rec.get("execIdx")
+    exec_idx = rec.get("executeIndex")
     for idx, nx_cmd in enumerate(nx_cmd_set):
         command_item = "az " + nx_cmd['command']
         if 'arguments' in nx_cmd and cmd.cli_ctx.config.getboolean('next', 'show_arguments', fallback=False):

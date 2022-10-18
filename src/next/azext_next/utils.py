@@ -19,6 +19,13 @@ def read_int(default_value=0):
 
 
 def read_combined_option(group_range, default_value=(None, 0)):
+    """
+    Read combined option from stdin, ensure the group_name is in range or be None and option is a ledge number
+    :param group_range: the range a valid group name should be in
+    :param default_value:
+    :return: the combined option read from stdin
+    :rtype: tuple[str|None, int]
+    """
     ret = input()
     if ret == '' or ret is None:
         return default_value
@@ -55,16 +62,27 @@ class OptionRange:
 
 
 def get_combined_option(option_description, valid_groups, default_option):
+    """
+    Read a combined option from stdin.
+    Request user to re-enter if not in valid_group or range
+
+    :param option_description: displayed description
+    :type option_description: str
+    :param valid_groups: a dict for valid group name and option range
+    :type valid_groups: dict[str, OptionRange]
+    :param default_option: default option if users input empty str
+    :type default_option: tuple[str|None, int]
+    :return: the group name and option the user input, which is ensured in valid groups or be (None, 0)
+    :rtype: tuple[str|None, int]
+    """
     print(Fore.LIGHTBLUE_EX + ' ? ' + Fore.RESET + option_description, end='')
     group, option = read_combined_option(valid_groups.keys(), default_option)
-    if group is None:
-        return group, option
     while True:
         if group is None:
             if option == 0:
                 return group, option
             else:
-                print("The option should start with \"a\" for scenario, \"b\" for commands or be \"0\". if none, enter 0", end='')
+                print("The option should start with \"a\" for scenario, \"b\" for commands or be \"0\": ", end='')
                 group, option = read_combined_option(valid_groups.keys(), default_option)
         elif option not in valid_groups[group]:
             print("The option should end with a valid option ({}{}-{}{}): ".format(group, valid_groups[group].min_option, group, valid_groups[group].max_option), end='')
