@@ -279,57 +279,72 @@ def _execute_nx_cmd(cmd, nx_cmd, nx_param, catch_exception=False):
     return exit_code
 
 
-def _get_command_item_sample(rec):
-    if "example" in rec and rec["example"]:
-        example = Fore.LIGHTBLUE_EX + rec["example"]
-        example = re.sub('<', Fore.RESET + '<', example)
-        example = re.sub('>', '>' + Fore.LIGHTBLUE_EX, example)
-        return example
+def _get_command_sample(command):
+    """Try getting example from command. Or load the example from `--help` if not found."""
+    if "example" in command and command["example"]:
+        command_sample, _ = _format_command_sample(command["example"].replace(" $", " "))
+        return command_sample
 
-    nx_param = []
-    if "arguments" in rec and rec["arguments"]:
-        nx_param = rec["arguments"]
-        sorted_nx_param = sorted(nx_param)
-        cmd_help = help_files._load_help_file(rec['command'])   # pylint: disable=protected-access
+    from knack import help_files
+    parameter = []
+    if "arguments" in command and command["arguments"]:
+        parameter = command["arguments"]
+        sorted_param = sorted(parameter)
+        cmd_help = help_files._load_help_file(command['command'])   # pylint: disable=protected-access
         if cmd_help and 'examples' in cmd_help and cmd_help['examples']:
             for cmd_example in cmd_help['examples']:
-                cmd_items = cmd_example['text'].split()
+                command_sample, example_arguments = _format_command_sample(cmd_example['text'])
+                if sorted(example_arguments) == sorted_param:
+                    return command_sample
 
-                arguments_start = False
-                example_arguments = []
-                command_item = []
-                argument_values = {}
+    command = command["command"] if command["command"].startswith("az ") else "az " + command["command"]
+    command_sample = f"{command} {' '.join(parameter) if parameter else ''}"
+    return [(Style.PRIMARY, command_sample)]
+
+
+def _format_command_sample(command_sample):
+    """
+    Format command sample in the style of `az xxx --name <appServicePlan>`.
+    Also return the arguments used in the sample.
+    """
+    if not command_sample:
+        return [], []
+
+    cmd_items = command_sample.split()
+    arguments_start = False
+    example_arguments = []
+    command_item = []
+    argument_values = {}
+    values = []
+    for item in cmd_items:
+        if item.startswith('-'):
+            arguments_start = True
+            if values and example_arguments:
+                argument_values[example_arguments[-1]] = values
                 values = []
-                for item in cmd_items:
-                    if item.startswith('-'):
-                        arguments_start = True
-                        if values and example_arguments:
-                            argument_values[example_arguments[-1]] = values
-                            values = []
-                        example_arguments.append(item)
-                    elif not arguments_start:
-                        command_item.append(item)
-                    else:
-                        values.append(item)
-                if values and example_arguments:
-                    argument_values[example_arguments[-1]] = values
+            example_arguments.append(item)
+        elif not arguments_start:
+            command_item.append(item)
+        else:
+            values.append(item)
+    if values and example_arguments:
+        argument_values[example_arguments[-1]] = values
 
-                if sorted(example_arguments) == sorted_nx_param:
-                    example = Fore.LIGHTBLUE_EX + ' '.join(command_item)
-                    for argument in example_arguments:
-                        example = example + " " + Fore.LIGHTBLUE_EX + argument
-                        if argument in argument_values and argument_values[argument]:
-                            example = example + Fore.RESET + ' <' + ' '.join(argument_values[argument]) + '>'
-                    return example
+    formatted_example = [(Style.PRIMARY, ' '.join(command_item))]
+    for argument in example_arguments:
+        formatted_example.append((Style.PRIMARY, " " + argument))
+        if argument in argument_values and argument_values[argument]:
+            formatted_example.append((Style.WARNING, ' <' + ' '.join(argument_values[argument]) + '>'))
 
-    return Fore.LIGHTBLUE_EX + f"az {rec['command']} {' '.join(nx_param) if nx_param else ''}"
+    return formatted_example, example_arguments
 
 
 def _execute_recommend_commands(cmd, rec):
     nx_param = []
     if "arguments" in rec:
         nx_param = rec["arguments"]
-    print("\nRunning: " + _get_command_item_sample(rec))
+    print_styled_text([(Style.ACTION, "Running: ")], end='')
+    print_styled_text(_get_command_sample(rec))
     print_styled_text([(Style.SECONDARY, "Input Enter to skip unnecessary parameters")])
     execute_result = _execute_nx_cmd(cmd, rec["command"], nx_param, catch_exception=True)
     is_help_printed = False
@@ -360,7 +375,8 @@ def _execute_recommend_scenarios(cmd, rec):
         if cmd.cli_ctx.config.getboolean('next', 'print_help', fallback=False):
             _print_help_info(cmd, nx_cmd["command"])
 
-        print("\nRunning: " + _get_command_item_sample(nx_cmd))
+        print_styled_text([(Style.ACTION, "Running: ")], end='')
+        print_styled_text(_get_command_sample(nx_cmd))
         step_msg = "How do you want to run this step? 1. Run it 2. Skip it 3. Quit process " + Fore.LIGHTBLACK_EX \
                    + "(Enter is to Run)" + Fore.RESET + ": "
         run_option = get_int_option(step_msg, 1, 3, 1)
