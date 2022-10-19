@@ -204,7 +204,7 @@ def _give_recommend_scenarios(idx, rec):
     num_notice = f" ({len(rec['nextCommandSet'])} Commands)"
     print_styled_text([(Style.ACTION, index_str), (Style.PRIMARY, rec['scenario']), (Style.SECONDARY, num_notice)])
     if 'reason' in rec:
-        reason = rec['reason']
+        reason = rec['reason'].split('. ')[0]
     else:
         reason = "This is a set of commands that may help you complete this scenario."
 
@@ -419,7 +419,10 @@ def _show_details_for_e2e_scenario(cmd, rec):
         if 'arguments' in nx_cmd and cmd.cli_ctx.config.getboolean('next', 'show_arguments', fallback=False):
             command_item = f"{command_item} {' '.join(nx_cmd['arguments'])}"
         cmd_active = exec_idx is None or idx in exec_idx
-        print_styled_text([(Style.ACTION, " > "), (Style.PRIMARY if cmd_active else Style.SECONDARY, command_item)])
+        styled_command = [(Style.ACTION, " > "), (Style.PRIMARY, command_item)]
+        if cmd_active:
+            styled_command.append((Style.WARNING, " (executed)"))
+        print_styled_text(styled_command)
 
         if nx_cmd['reason']:
             print_styled_text([(Style.SECONDARY, get_title_case(nx_cmd['reason']) + "\n")])
