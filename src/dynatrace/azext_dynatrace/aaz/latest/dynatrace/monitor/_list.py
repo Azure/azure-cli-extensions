@@ -18,7 +18,7 @@ class List(AAZCommand):
     """List all monitor resource by resource group and monitor name
 
     :example: List monitor
-        az dynatrace monitor list -g rg --monitor-name monitor
+        az dynatrace monitor list -g rg
     """
 
     _aaz_info = {

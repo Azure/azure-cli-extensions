@@ -22,7 +22,7 @@ az dynatrace monitor show -g rg -n monitor
 ```
 ##### List #####
 ```
-az dynatrace monitor list -g rg --monitor-name monitor
+az dynatrace monitor list -g rg
 ```
 ##### Update #####
 ```
