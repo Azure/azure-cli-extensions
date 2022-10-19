@@ -2,6 +2,35 @@
 
 Release History
 ===============
+1.3.5
+++++++++++++++++++
+* Use the api-version 2022-04-02-preview in the CLI command az k8s-extension extension-types list
+
+1.3.4
+++++++++++++++++++
+* Fix to address the error TypeError: cf_k8s_extension() takes 1 positional argument but 2 were given while running command az k8s-extension extension-types list 
+
+1.3.3
+++++++++++++++++++
+* microsoft.azuremonitor.containers: add condition to use different api version for provisioned clusters
+
+1.3.2
+++++++++++++++++++
+* Create identity for Appliances clusters
+
+1.3.1
+++++++++++++++++++
+* microsoft.azureml.kubernetes: Always show TSG link for AzureMLKubernetes extension at the head.
+* microsoft.azuremonitor.containers: add omsagent rename changes
+* microsoft.azuremonitor.containers: fix script to support provisionedClusters
+
+1.3.0
+++++++++++++++++++
+* Add support for provisionedClusters
+
+1.2.6
+++++++++++++++++++
+* k8s-extension new sub command group for extension types
 
 1.2.5
 ++++++++++++++++++

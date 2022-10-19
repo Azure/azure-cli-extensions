@@ -172,7 +172,7 @@ def dataprotection_backup_instance_validate_for_backup(client, vault_name, resou
 
 def dataprotection_backup_instance_initialize(datasource_type, datasource_id, datasource_location, policy_id,
                                               secret_store_type=None, secret_store_uri=None,
-                                              snapshot_resource_group_name=None):
+                                              snapshot_resource_group_name=None, tags=None):
     datasource_info = helper.get_datasource_info(datasource_type, datasource_id, datasource_location)
     datasourceset_info = None
     manifest = helper.load_manifest(datasource_type)
@@ -231,7 +231,8 @@ def dataprotection_backup_instance_initialize(datasource_type, datasource_id, da
             "policy_info": policy_info,
             "datasource_auth_credentials": datasource_auth_credentials_info,
             "object_type": "BackupInstance"
-        }
+        },
+        "tags": tags
     }
 
 
