@@ -289,14 +289,13 @@ def _submit_qir_v1(cmd, program_args, resource_group_name, workspace_name, locat
     # <<<<<
 
     # >>>>> Code from old submit function (now renamed _submit_qsharp) with ws renamed ws_info:
-    # >>>>> Commented out for Flake8 >>>>>ws_info = WorkspaceInfo(cmd, resource_group_name, workspace_name, location)
-    # >>>>> Commented out for Flake8 >>>>>target = TargetInfo(cmd, target_id)
-    # >>>>> Commented out for Flake8 >>>>>token = _get_data_credentials(cmd.cli_ctx, ws_info.subscription).get_token().token
-    # >>>>>
-    # >>>>> Commented out for Flake8 >>>>>project = None  # >>>>> Is this arg relevant for a QIR job? <<<<<
-    # <<<<<
-    # >>>>> Commented out for Flake8 >>>>>args = _generate_submit_args(program_args, ws_info, target, token, project, job_name, shots, storage, job_params)
-    _set_cli_version()
+    ws_info = WorkspaceInfo(cmd, resource_group_name, workspace_name, location)
+    # >>>>> This code works (no errors) but is commented out because Flake8 doesn't like variables that are assigned and never used >>>>>
+    # target = TargetInfo(cmd, target_id)
+    # token = _get_data_credentials(cmd.cli_ctx, ws_info.subscription).get_token().token
+    # project = None  # >>>>> Is this arg relevant for a QIR job? <<<<<
+    # args = _generate_submit_args(program_args, ws_info, target, token, project, job_name, shots, storage, job_params)
+    # _set_cli_version()  # Sets the USER_AGENT environment variable
 
     # >>>>> Code from output function, below, with info renamed ws_info...
     import tempfile
@@ -313,7 +312,16 @@ def _submit_qir_v1(cmd, program_args, resource_group_name, workspace_name, locat
     # <<<<<
     # info = WorkspaceInfo(cmd, resource_group_name, workspace_name, location)
     # client = cf_jobs(cmd.cli_ctx, info.subscription, info.resource_group, info.name, info.location)
-    # >>>>> Commented out for Flake8 >>>>>client = cf_jobs(cmd.cli_ctx, ws_info.subscription, ws_info.resource_group, ws_info.name, ws_info.location)
+    client = cf_jobs(cmd.cli_ctx, ws_info.subscription, ws_info.resource_group, ws_info.name, ws_info.location)
+
+    # >>>>> Debug code...
+    if client is None:
+        knack_logger.warning(">>>>> Client is None <<<<<")
+    else:
+        knack_logger.warning(">>>>> Client is type " + str(type(client)) + " <<<<<")
+    # <<<<<
+
+    # >>>>> The next line gets a "(JobNotFound) Job cannot be found" error >>>>>
     # job = client.get(job_id)
 
     # if os.path.exists(path):
@@ -331,8 +339,6 @@ def _submit_qir_v1(cmd, program_args, resource_group_name, workspace_name, locat
     #     blob_service = blob_data_service_factory(cmd.cli_ctx, args)
     #     blob_service.get_blob_to_path(args['container'], args['blob'], path)
 
-    # >>>>> FIX THIS >>>>>
-    # >>>>> FIX THIS >>>>>
     # >>>>> FIX THIS >>>>>
     # job = client.create(job_id, job_details)  #  <-----<<< This fails.  Where do we info for _models.JobDetails ??
 
