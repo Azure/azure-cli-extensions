@@ -1,5 +1,9 @@
 Release History
 ===============
+1.1.13
+---
+* Stop execution and throw exception when operation status is `Failed`.
+
 1.1.12
 ---
 * Add warning logs when editing builders and buildpack bindings.
