@@ -333,6 +333,7 @@ def load_arguments(self, _):
         c.argument('dns_zone_resource_id')
         c.argument('enable_keda', action='store_true', is_preview=True)
         c.argument('enable_node_restriction', action='store_true', is_preview=True, help="enable node restriction for cluster")
+        c.argument('enable_cilium_dataplane', action='store_true', is_preview=True)
         # nodepool
         c.argument('host_group_id', validator=validate_host_group_id, is_preview=True)
         c.argument('crg_id', validator=validate_crg_id, is_preview=True)
