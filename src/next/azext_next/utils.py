@@ -53,7 +53,7 @@ def get_yes_or_no_option(option_description):
     return option in yes_options
 
 
-class OptionRange:
+class OptionRange:  # pylint: disable=too-few-public-methods
     def __init__(self, min_option, max_option):
         self.min_option = min_option
         self.max_option = max_option
@@ -106,7 +106,7 @@ def get_command_list(cmd, num=2):
     history_file_name = os.path.join(cmd.cli_ctx.config.config_dir, 'recommendation', 'cmd_history.log')
     if not os.path.exists(history_file_name):
         return _get_command_list_from_core(cmd, num)
-    with open(history_file_name, "r") as f:
+    with open(history_file_name, "r", encoding="utf-8") as f:
         lines = f.read().splitlines()
         lines = [x for x in lines if x != 'next']
         return lines[-num:]
@@ -141,7 +141,7 @@ def _parse_command_file(command_file_path):
     if not os.path.exists(command_file_path):
         return ""
 
-    with open(command_file_path, "r") as f:
+    with open(command_file_path, "r", encoding="utf-8") as f:
         first_line = f.readline()
         if not first_line:
             return ""
@@ -194,7 +194,7 @@ def get_last_exception(cmd, latest_command):
     if not os.path.exists(telemetry_cache_file):
         return ''
 
-    with open(telemetry_cache_file, "r") as f:
+    with open(telemetry_cache_file, "r", encoding="utf-8") as f:
         lines = f.read().splitlines()
         history_data_list = reversed(lines)
         for history_data_item in history_data_list:
@@ -208,11 +208,11 @@ def get_last_exception(cmd, latest_command):
             import ast
             data_dict = ast.literal_eval(record_data[1])
             if not data_dict or len(data_dict) != 1:
-                return
+                return ''
 
             data_item = list(data_dict.values())[0][0]
             if not data_item or 'properties' not in data_item:
-                return
+                return ''
             properties = data_item['properties']
 
             command_key = 'Context.Default.AzureCLI.RawCommand'
@@ -240,11 +240,11 @@ def get_last_exception(cmd, latest_command):
     return ''
 
 
-def get_title_case(str):
-    if not str:
-        return str
-    str = str.strip()
-    return str[0].upper() + str[1:]
+def get_title_case(s):
+    if not s:
+        return s
+    s = s.strip()
+    return s[0].upper() + s[1:]
 
 
 def print_successful_styled_text(message):
@@ -258,8 +258,6 @@ def print_successful_styled_text(message):
 
 
 def log_command_history(command, args):
-    import os
-
     from azure.cli.core._environment import get_config_dir
     from knack.util import ensure_dir
 
@@ -274,15 +272,15 @@ def log_command_history(command, args):
 
     file_path = os.path.join(base_dir, 'cmd_history.log')
     if not os.path.exists(file_path):
-        with open(file_path, 'w') as fd:
+        with open(file_path, 'w', encoding='utf-8') as fd:
             fd.write('')
 
     lines = []
-    with open(file_path, 'r') as fd:
+    with open(file_path, 'r', encoding='utf-8') as fd:
         lines = fd.readlines()
         lines = [x.strip('\n') for x in lines if x]
 
-    with open(file_path, 'w') as fd:
+    with open(file_path, 'w', encoding='utf-8') as fd:
         command_info = {'command': command}
         params = []
         for arg in args:
