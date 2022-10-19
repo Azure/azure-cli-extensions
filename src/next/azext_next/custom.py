@@ -436,7 +436,7 @@ def _show_details_for_e2e_scenario(cmd, rec):
             command_item = f"{command_item} {' '.join(nx_cmd['arguments'])}"
         cmd_active = exec_idx is None or idx in exec_idx
         styled_command = [(Style.ACTION, " > "), (Style.PRIMARY, command_item)]
-        if cmd_active:
+        if not cmd_active:
             styled_command.append((Style.WARNING, " (executed)"))
         print_styled_text(styled_command)
 
