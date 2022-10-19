@@ -145,7 +145,7 @@ if [[ -n ${setup_option} ]]; then
         echo "Start to setup az-aks-tool!"
         local_setup=${3:-"n"}
         if [[ ${local_setup} == "y" ]]; then
-            wheel_file=${4}
+            wheel_file=${4:-"/az_aks_tool-latest-py3-none-any.whl"}
             installAZAKSTOOLFromLocal "${wheel_file}"
         else
             installAZAKSTOOL
