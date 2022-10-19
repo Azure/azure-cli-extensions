@@ -771,4 +771,4 @@ def validate_application_security_groups(namespace):
     from msrestazure.tools import is_valid_resource_id
     for asg in asg_ids.split(","):
         if not is_valid_resource_id(asg):
-            raise CLIError(asg + " is not a valid Azure resource ID.")
+            raise InvalidArgumentValueError(asg + " is not a valid Azure resource ID.")
