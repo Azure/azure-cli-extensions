@@ -12,6 +12,11 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+0.5.109
++++++++
+
+* Add --enable-cilium-dataplane flag for creating a cluster that uses Cilium as the networking dataplane.
+
 0.5.108
 +++++++
 
