@@ -741,6 +741,7 @@ def validate_ksm_annotations(namespace):
         return
     validate_ksm_parameter(namespace.ksm_metric_annotations_allow_list)
 
+
 def validate_allowed_host_ports(namespace):
     if hasattr(namespace, "nodepool_allowed_host_ports"):
         host_ports = namespace.nodepool_allowed_host_ports

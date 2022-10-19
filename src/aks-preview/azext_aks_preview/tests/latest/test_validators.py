@@ -519,5 +519,61 @@ class TestValidateNodepoolName(unittest.TestCase):
         )
 
 
+class TestValidateAllowedHostPorts(unittest.TestCase):
+    def test_invalid_allowed_host_ports(self):
+        namespace = SimpleNamespace(
+            **{
+                "allowed_host_ports": "80,443,8080",
+            }
+        )
+        with self.assertRaises(InvalidArgumentValueError):
+            validators.validate_allowed_host_ports(
+                namespace
+            )
+
+    def test_valid_allowed_host_ports(self):
+        namespace = SimpleNamespace(
+            **{
+                "allowed_host_ports": "80t/tcp,443/tcp,8080-8090/tcp,53/udp",
+            }
+        )
+        validators.validate_allowed_host_ports(
+            namespace
+        )
+
+
+class TestValidateApplicationSecurityGroups(unittest.TestCase):
+    def test_invalid_application_security_groups(self):
+        namespace = SimpleNamespace(
+            **{
+                "asg_ids": "invalid",
+            }
+        )
+        with self.assertRaises(InvalidArgumentValueError):
+            validators.validate_application_security_groups(
+                namespace
+            )
+
+    def test_empty_application_security_groups(self):
+        namespace = SimpleNamespace(
+            **{
+                "asg_ids": "",
+            }
+        )
+        validators.validate_application_security_groups(
+            namespace
+        )
+
+    def test_multiple_application_security_groups(self):
+        namespace = SimpleNamespace(
+            **{
+                "asg_ids": "asg1,asg2",
+            }
+        )
+        validators.validate_application_security_groups(
+            namespace
+        )
+
+
 if __name__ == "__main__":
     unittest.main()

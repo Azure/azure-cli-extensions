@@ -5899,3 +5899,70 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         # delete
         self.cmd(
             'aks delete -g {resource_group} -n {name} --yes --no-wait', checks=[self.is_empty()])
+
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
+    def test_aks_create_with_nsg_control(self, resource_group, resource_group_location):
+        aks_name = self.create_random_name('cliakstest', 16)
+        node_vm_size = 'standard_d2s_v3'
+        self.kwargs.update({
+            'resource_group': resource_group,
+            'name': aks_name,
+            'location': resource_group_location,
+            'ssh_key_value': self.generate_ssh_keys(),
+            'node_pool_name': 'nodepool2',
+            'node_vm_size': node_vm_size,
+            'original_asg_ids': ','.join([
+                '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg/providers/Microsoft.Network/applicationSecurityGroups/asg-1',
+                '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg/providers/Microsoft.Network/applicationSecurityGroups/asg-2',
+            ]),
+            'original_allowed_host_ports': ','.join([
+                '80/tcp',
+                '443/tcp',
+                '53/udp',
+                '4000-5000/tcp',
+                '4000-6000/udp',
+            ]),
+            'updated_asg_ids': ','.join([
+                '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg/providers/Microsoft.Network/applicationSecurityGroups/asg-1',
+                '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg/providers/Microsoft.Network/applicationSecurityGroups/asg-3',
+            ]),
+            'updated_allowed_host_ports': ','.join([
+                '443/tcp',
+                '53/udp',
+                '4000-6000/udp',
+            ]),
+        })
+        create_cmd = 'aks create --resource-group={resource_group} --name={name}' \
+                     ' --location={location} --ssh-key-value={ssh_key_value} --node-vm-size={node_vm_size}' \
+                     ' --nodepool-asg-ids={original_asg_ids}' \
+                     ' --nodepool-allowed-host-ports={original_allowed_host_ports}'
+        self.cmd(create_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.check('agentPoolProfiles[0].networkProfile.applicationSecurityGroups', self.kwargs['original_asg_ids'].split(',')),
+            self.check('agentPoolProfiles[0].networkProfile.allowedHostPorts', self.kwargs['original_allowed_host_ports'].split(',')),
+        ])
+
+        add_nodepool_cmd = 'aks nodepool add --resource-group={resource_group} --cluster-name={name}' \
+                           ' --name={node_pool_name} --node-vm-size={node_vm_size} --node-count=1' \
+                           ' --asg-ids={original_asg_ids} --allowed-host-ports={original_allowed_host_ports}'
+        self.cmd(add_nodepool_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.check('networkProfile.applicationSecurityGroups', self.kwargs['original_asg_ids'].split(',')),
+            self.check('networkProfile.allowedHostPorts', self.kwargs['original_allowed_host_ports'].split(',')),
+        ])
+
+        update_nodepool_cmd = 'aks nodepool update --resource-group={resource_group} --cluster-name={name}' \
+                              ' --name={node_pool_name}' \
+                              ' --asg-ids={updated_asg_ids} --allowed-host-ports={updated_allowed_host_ports}'
+        self.cmd(update_nodepool_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.check('networkProfile.applicationSecurityGroups', self.kwargs['updated_asg_ids'].split(',')),
+            self.check('networkProfile.allowedHostPorts', self.kwargs['updated_allowed_host_ports'].split(',')),
+        ])
+
+        # delete
+        cmd = 'aks delete --resource-group={resource_group} --name={name} --yes --no-wait'
+        self.cmd(cmd, checks=[
+            self.is_empty(),
+        ])
