@@ -10,6 +10,7 @@
 
 
 # pylint: disable=protected-access
+
 # pylint: disable=no-self-use
 
 
@@ -26,32 +27,32 @@ class AddGitHub(argparse.Action):
     def get_action(self, values, option_string):
         try:
             properties = defaultdict(list)
-            for (k, v) in (x.split("=", 1) for x in values):
+            for (k, v) in (x.split('=', 1) for x in values):
                 properties[k].append(v)
             properties = dict(properties)
         except ValueError:
-            raise CLIError("usage error: {} [KEY=VALUE ...]".format(option_string))
+            raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string))
         d = {}
         for k in properties:
             kl = k.lower()
             v = properties[k]
 
-            if kl == "uri":
-                d["uri"] = v[0]
+            if kl == 'uri':
+                d['uri'] = v[0]
 
-            elif kl == "branch":
-                d["branch"] = v[0]
+            elif kl == 'branch':
+                d['branch'] = v[0]
 
-            elif kl == "secret-identifier":
-                d["secret_identifier"] = v[0]
+            elif kl == 'secret-identifier':
+                d['secret_identifier'] = v[0]
 
-            elif kl == "path":
-                d["path"] = v[0]
+            elif kl == 'path':
+                d['path'] = v[0]
 
             else:
                 raise CLIError(
-                    "Unsupported Key {} is provided for parameter git-hub. All possible keys are: uri, branch,"
-                    " secret-identifier, path".format(k)
+                    'Unsupported Key {} is provided for parameter git-hub. All possible keys are: uri, branch,'
+                    ' secret-identifier, path'.format(k)
                 )
 
         return d
@@ -65,32 +66,32 @@ class AddImageReference(argparse.Action):
     def get_action(self, values, option_string):
         try:
             properties = defaultdict(list)
-            for (k, v) in (x.split("=", 1) for x in values):
+            for (k, v) in (x.split('=', 1) for x in values):
                 properties[k].append(v)
             properties = dict(properties)
         except ValueError:
-            raise CLIError("usage error: {} [KEY=VALUE ...]".format(option_string))
+            raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string))
         d = {}
         for k in properties:
             kl = k.lower()
             v = properties[k]
 
-            if kl == "id":
-                d["id"] = v[0]
+            if kl == 'id':
+                d['id'] = v[0]
 
-            elif kl == "publisher":
-                d["publisher"] = v[0]
+            elif kl == 'publisher':
+                d['publisher'] = v[0]
 
-            elif kl == "offer":
-                d["offer"] = v[0]
+            elif kl == 'offer':
+                d['offer'] = v[0]
 
-            elif kl == "sku":
-                d["sku"] = v[0]
+            elif kl == 'sku':
+                d['sku'] = v[0]
 
             else:
                 raise CLIError(
-                    "Unsupported Key {} is provided for parameter image-reference. All possible keys are: id,"
-                    " publisher, offer, sku".format(k)
+                    'Unsupported Key {} is provided for parameter image-reference. All possible keys are: id,'
+                    ' publisher, offer, sku'.format(k)
                 )
 
         return d
@@ -104,35 +105,35 @@ class AddSku(argparse.Action):
     def get_action(self, values, option_string):
         try:
             properties = defaultdict(list)
-            for (k, v) in (x.split("=", 1) for x in values):
+            for (k, v) in (x.split('=', 1) for x in values):
                 properties[k].append(v)
             properties = dict(properties)
         except ValueError:
-            raise CLIError("usage error: {} [KEY=VALUE ...]".format(option_string))
+            raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string))
         d = {}
         for k in properties:
             kl = k.lower()
             v = properties[k]
 
-            if kl == "name":
-                d["name"] = v[0]
+            if kl == 'name':
+                d['name'] = v[0]
 
-            elif kl == "tier":
-                d["tier"] = v[0]
+            elif kl == 'tier':
+                d['tier'] = v[0]
 
-            elif kl == "size":
-                d["size"] = v[0]
+            elif kl == 'size':
+                d['size'] = v[0]
 
-            elif kl == "family":
-                d["family"] = v[0]
+            elif kl == 'family':
+                d['family'] = v[0]
 
-            elif kl == "capacity":
-                d["capacity"] = v[0]
+            elif kl == 'capacity':
+                d['capacity'] = v[0]
 
             else:
                 raise CLIError(
-                    "Unsupported Key {} is provided for parameter sku. All possible keys are: name, tier, size, family,"
-                    " capacity".format(k)
+                    'Unsupported Key {} is provided for parameter sku. All possible keys are: name, tier, size, family,'
+                    ' capacity'.format(k)
                 )
 
         return d

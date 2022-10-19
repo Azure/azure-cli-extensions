@@ -52,7 +52,7 @@ class CatalogsOperations:
     ) -> AsyncIterable["models.CatalogListResult"]:
         """Lists catalogs for a devcenter.
 
-        :param resource_group_name: Name of the resource group within the Azure subscription.
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
         :param dev_center_name: The name of the devcenter.
         :type dev_center_name: str
@@ -68,7 +68,7 @@ class CatalogsOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2022-09-01-preview"
+        api_version = "2022-10-12-preview"
         accept = "application/json"
 
         def prepare_request(next_link=None):
@@ -80,8 +80,8 @@ class CatalogsOperations:
                 # Construct URL
                 url = self.list_by_dev_center.metadata['url']  # type: ignore
                 path_format_arguments = {
-                    'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
-                    'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
+                    'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
+                    'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
                     'devCenterName': self._serialize.url("dev_center_name", dev_center_name, 'str'),
                 }
                 url = self._client.format_url(url, **path_format_arguments)
@@ -131,7 +131,7 @@ class CatalogsOperations:
     ) -> "models.Catalog":
         """Gets a catalog.
 
-        :param resource_group_name: Name of the resource group within the Azure subscription.
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
         :param dev_center_name: The name of the devcenter.
         :type dev_center_name: str
@@ -147,14 +147,14 @@ class CatalogsOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2022-09-01-preview"
+        api_version = "2022-10-12-preview"
         accept = "application/json"
 
         # Construct URL
         url = self.get.metadata['url']  # type: ignore
         path_format_arguments = {
-            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
+            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
             'devCenterName': self._serialize.url("dev_center_name", dev_center_name, 'str'),
             'catalogName': self._serialize.url("catalog_name", catalog_name, 'str'),
         }
@@ -197,15 +197,15 @@ class CatalogsOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2022-09-01-preview"
+        api_version = "2022-10-12-preview"
         content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
 
         # Construct URL
         url = self._create_or_update_initial.metadata['url']  # type: ignore
         path_format_arguments = {
-            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
+            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
             'devCenterName': self._serialize.url("dev_center_name", dev_center_name, 'str'),
             'catalogName': self._serialize.url("catalog_name", catalog_name, 'str'),
         }
@@ -249,7 +249,7 @@ class CatalogsOperations:
     ) -> AsyncLROPoller["models.Catalog"]:
         """Creates or updates a catalog.
 
-        :param resource_group_name: Name of the resource group within the Azure subscription.
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
         :param dev_center_name: The name of the devcenter.
         :type dev_center_name: str
@@ -295,8 +295,8 @@ class CatalogsOperations:
             return deserialized
 
         path_format_arguments = {
-            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
+            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
             'devCenterName': self._serialize.url("dev_center_name", dev_center_name, 'str'),
             'catalogName': self._serialize.url("catalog_name", catalog_name, 'str'),
         }
@@ -328,15 +328,15 @@ class CatalogsOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2022-09-01-preview"
+        api_version = "2022-10-12-preview"
         content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
 
         # Construct URL
         url = self._update_initial.metadata['url']  # type: ignore
         path_format_arguments = {
-            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
+            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
             'devCenterName': self._serialize.url("dev_center_name", dev_center_name, 'str'),
             'catalogName': self._serialize.url("catalog_name", catalog_name, 'str'),
         }
@@ -382,7 +382,7 @@ class CatalogsOperations:
     ) -> AsyncLROPoller["models.Catalog"]:
         """Partially updates a catalog.
 
-        :param resource_group_name: Name of the resource group within the Azure subscription.
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
         :param dev_center_name: The name of the devcenter.
         :type dev_center_name: str
@@ -428,8 +428,8 @@ class CatalogsOperations:
             return deserialized
 
         path_format_arguments = {
-            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
+            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
             'devCenterName': self._serialize.url("dev_center_name", dev_center_name, 'str'),
             'catalogName': self._serialize.url("catalog_name", catalog_name, 'str'),
         }
@@ -460,14 +460,14 @@ class CatalogsOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2022-09-01-preview"
+        api_version = "2022-10-12-preview"
         accept = "application/json"
 
         # Construct URL
         url = self._delete_initial.metadata['url']  # type: ignore
         path_format_arguments = {
-            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
+            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
             'devCenterName': self._serialize.url("dev_center_name", dev_center_name, 'str'),
             'catalogName': self._serialize.url("catalog_name", catalog_name, 'str'),
         }
@@ -503,7 +503,7 @@ class CatalogsOperations:
     ) -> AsyncLROPoller[None]:
         """Deletes a catalog resource.
 
-        :param resource_group_name: Name of the resource group within the Azure subscription.
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
         :param dev_center_name: The name of the devcenter.
         :type dev_center_name: str
@@ -543,8 +543,8 @@ class CatalogsOperations:
                 return cls(pipeline_response, None, {})
 
         path_format_arguments = {
-            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
+            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
             'devCenterName': self._serialize.url("dev_center_name", dev_center_name, 'str'),
             'catalogName': self._serialize.url("catalog_name", catalog_name, 'str'),
         }
@@ -575,14 +575,14 @@ class CatalogsOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2022-09-01-preview"
+        api_version = "2022-10-12-preview"
         accept = "application/json"
 
         # Construct URL
         url = self._sync_initial.metadata['url']  # type: ignore
         path_format_arguments = {
-            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
+            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
             'devCenterName': self._serialize.url("dev_center_name", dev_center_name, 'str'),
             'catalogName': self._serialize.url("catalog_name", catalog_name, 'str'),
         }
@@ -618,7 +618,7 @@ class CatalogsOperations:
     ) -> AsyncLROPoller[None]:
         """Syncs templates for a template source.
 
-        :param resource_group_name: Name of the resource group within the Azure subscription.
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
         :param dev_center_name: The name of the devcenter.
         :type dev_center_name: str
@@ -658,8 +658,8 @@ class CatalogsOperations:
                 return cls(pipeline_response, None, {})
 
         path_format_arguments = {
-            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
+            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
             'devCenterName': self._serialize.url("dev_center_name", dev_center_name, 'str'),
             'catalogName': self._serialize.url("catalog_name", catalog_name, 'str'),
         }

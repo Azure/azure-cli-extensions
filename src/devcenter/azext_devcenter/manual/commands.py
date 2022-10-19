@@ -22,19 +22,20 @@ from azext_devcenter.generated._client_factory import (
     cf_dev_center,
     cf_project,
     cf_attached_network,
-    cf_environment_type,
-    cf_project_allowed_environment_type,
-    cf_project_environment_type,
     cf_gallery,
     cf_image,
     cf_image_version,
     cf_catalog,
+    cf_environment_type,
+    cf_project_allowed_environment_type,
+    cf_project_environment_type,
     cf_dev_box_definition,
+    cf_operation_statuses,
     cf_usage,
     cf_sku,
     cf_pool,
-    cf_network_connection,
     cf_schedule,
+    cf_network_connection,
 )
 
 
@@ -112,8 +113,15 @@ def load_command_table(self, _):
         client_factory=cf_catalog,
     )
 
+    devcenter_dev_box_definition = CliCommandType(
+        operations_tmpl="azext_devcenter.vendored_sdks.devcenter.operations._dev_box_definitions_operations#DevBoxDefinitionsOperations.{}",
+        client_factory=cf_dev_box_definition,
+    )
+
     devcenter_dev_center = CliCommandType(
-        operations_tmpl="azext_devcenter.vendored_sdks.devcenter.operations._dev_centers_operations#DevCentersOperations.{}",
+        operations_tmpl=(
+            "azext_devcenter.vendored_sdks.devcenter.operations._dev_centers_operations#DevCentersOperations.{}"
+        ),
         client_factory=cf_dev_center,
     )
 
@@ -122,13 +130,6 @@ def load_command_table(self, _):
             "azext_devcenter.vendored_sdks.devcenter.operations._environment_types_operations#EnvironmentTypesOperations.{}"
         ),
         client_factory=cf_environment_type,
-    )
-
-    devcenter_dev_box_definition = CliCommandType(
-        operations_tmpl=(
-            "azext_devcenter.vendored_sdks.devcenter.operations._dev_box_definitions_operations#DevBoxDefinitionsOperations.{}"
-        ),
-        client_factory=cf_dev_box_definition,
     )
 
     devcenter_gallery = CliCommandType(
@@ -149,10 +150,13 @@ def load_command_table(self, _):
     )
 
     devcenter_network_connection = CliCommandType(
-        operations_tmpl=(
-            "azext_devcenter.vendored_sdks.devcenter.operations._network_connections_operations#NetworkConnectionsOperations.{}"
-        ),
+        operations_tmpl="azext_devcenter.vendored_sdks.devcenter.operations._network_connections_operations#NetworkConnectionsOperations.{}",
         client_factory=cf_network_connection,
+    )
+
+    devcenter_operation_statuses = CliCommandType(
+        operations_tmpl="azext_devcenter.vendored_sdks.devcenter.operations._operation_statuses_operations#OperationStatusesOperations.{}",
+        client_factory=cf_operation_statuses,
     )
 
     devcenter_pool = CliCommandType(
@@ -382,12 +386,8 @@ def load_command_table(self, _):
         g.custom_command("create", "devcenter_environment_type_create")
         g.custom_command("update", "devcenter_environment_type_update")
         g.custom_command(
-            "delete",
-            "devcenter_environment_type_delete",
-            supports_no_wait=True,
-            confirmation=True,
+            "delete", "devcenter_environment_type_delete", confirmation=True
         )
-        g.custom_wait_command("wait", "devcenter_environment_type_show")
 
     with self.command_group(
         "devcenter admin gallery", devcenter_gallery, client_factory=cf_gallery
@@ -444,12 +444,22 @@ def load_command_table(self, _):
             confirmation=True,
         )
         g.custom_command(
+            "list-health-detail", "devcenter_network_connection_list_health_detail"
+        )
+        g.custom_command(
             "run-health-check", "devcenter_network_connection_run_health_check"
         )
         g.custom_command(
             "show-health-detail", "devcenter_network_connection_show_health_detail"
         )
         g.custom_wait_command("wait", "devcenter_network_connection_show")
+
+    with self.command_group(
+        "devcenter admin operation-statuses",
+        devcenter_operation_statuses,
+        client_factory=cf_operation_statuses,
+    ) as g:
+        g.custom_show_command("show", "devcenter_operation_statuses_show")
 
     with self.command_group(
         "devcenter admin pool", devcenter_pool, client_factory=cf_pool
@@ -514,9 +524,7 @@ def load_command_table(self, _):
         )
         g.custom_wait_command("wait", "devcenter_schedule_show")
 
-    with self.command_group(
-        "devcenter admin sku", devcenter_sku, client_factory=cf_sku
-    ) as g:
+    with self.command_group("devcenter admin sku", devcenter_sku, client_factory=cf_sku) as g:
         g.custom_command("list", "devcenter_sku_list")
 
     with self.command_group(

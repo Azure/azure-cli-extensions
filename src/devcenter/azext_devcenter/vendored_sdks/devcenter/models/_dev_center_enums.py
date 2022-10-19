@@ -32,6 +32,15 @@ class ActionType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
 
     INTERNAL = "Internal"
 
+class CatalogSyncState(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+    """The synchronization state of the catalog.
+    """
+
+    SUCCEEDED = "Succeeded"
+    IN_PROGRESS = "InProgress"
+    FAILED = "Failed"
+    CANCELED = "Canceled"
+
 class CreatedByType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """The type of identity that created the resource.
     """

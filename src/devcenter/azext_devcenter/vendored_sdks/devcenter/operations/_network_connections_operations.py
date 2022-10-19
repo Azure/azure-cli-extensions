@@ -67,7 +67,7 @@ class NetworkConnectionsOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2022-09-01-preview"
+        api_version = "2022-10-12-preview"
         accept = "application/json"
 
         def prepare_request(next_link=None):
@@ -79,7 +79,7 @@ class NetworkConnectionsOperations(object):
                 # Construct URL
                 url = self.list_by_subscription.metadata['url']  # type: ignore
                 path_format_arguments = {
-                    'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
+                    'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
                 }
                 url = self._client.format_url(url, **path_format_arguments)
                 # Construct parameters
@@ -128,7 +128,7 @@ class NetworkConnectionsOperations(object):
         # type: (...) -> Iterable["models.NetworkConnectionListResult"]
         """Lists network connections in a resource group.
 
-        :param resource_group_name: Name of the resource group within the Azure subscription.
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
         :param top: The maximum number of resources to return from the operation. Example: '$top=10'.
         :type top: int
@@ -142,7 +142,7 @@ class NetworkConnectionsOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2022-09-01-preview"
+        api_version = "2022-10-12-preview"
         accept = "application/json"
 
         def prepare_request(next_link=None):
@@ -154,8 +154,8 @@ class NetworkConnectionsOperations(object):
                 # Construct URL
                 url = self.list_by_resource_group.metadata['url']  # type: ignore
                 path_format_arguments = {
-                    'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
-                    'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
+                    'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
+                    'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
                 }
                 url = self._client.format_url(url, **path_format_arguments)
                 # Construct parameters
@@ -204,7 +204,7 @@ class NetworkConnectionsOperations(object):
         # type: (...) -> "models.NetworkConnection"
         """Gets a network connection resource.
 
-        :param resource_group_name: Name of the resource group within the Azure subscription.
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
         :param network_connection_name: Name of the Network Connection that can be applied to a Pool.
         :type network_connection_name: str
@@ -218,14 +218,14 @@ class NetworkConnectionsOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2022-09-01-preview"
+        api_version = "2022-10-12-preview"
         accept = "application/json"
 
         # Construct URL
         url = self.get.metadata['url']  # type: ignore
         path_format_arguments = {
-            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
+            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
             'networkConnectionName': self._serialize.url("network_connection_name", network_connection_name, 'str'),
         }
         url = self._client.format_url(url, **path_format_arguments)
@@ -267,15 +267,15 @@ class NetworkConnectionsOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2022-09-01-preview"
+        api_version = "2022-10-12-preview"
         content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
 
         # Construct URL
         url = self._create_or_update_initial.metadata['url']  # type: ignore
         path_format_arguments = {
-            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
+            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
             'networkConnectionName': self._serialize.url("network_connection_name", network_connection_name, 'str'),
         }
         url = self._client.format_url(url, **path_format_arguments)
@@ -322,7 +322,7 @@ class NetworkConnectionsOperations(object):
         # type: (...) -> LROPoller["models.NetworkConnection"]
         """Creates or updates a Network Connections resource.
 
-        :param resource_group_name: Name of the resource group within the Azure subscription.
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
         :param network_connection_name: Name of the Network Connection that can be applied to a Pool.
         :type network_connection_name: str
@@ -365,8 +365,8 @@ class NetworkConnectionsOperations(object):
             return deserialized
 
         path_format_arguments = {
-            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
+            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
             'networkConnectionName': self._serialize.url("network_connection_name", network_connection_name, 'str'),
         }
 
@@ -397,15 +397,15 @@ class NetworkConnectionsOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2022-09-01-preview"
+        api_version = "2022-10-12-preview"
         content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
 
         # Construct URL
         url = self._update_initial.metadata['url']  # type: ignore
         path_format_arguments = {
-            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
+            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
             'networkConnectionName': self._serialize.url("network_connection_name", network_connection_name, 'str'),
         }
         url = self._client.format_url(url, **path_format_arguments)
@@ -450,7 +450,7 @@ class NetworkConnectionsOperations(object):
         # type: (...) -> LROPoller["models.NetworkConnection"]
         """Partially updates a Network Connection.
 
-        :param resource_group_name: Name of the resource group within the Azure subscription.
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
         :param network_connection_name: Name of the Network Connection that can be applied to a Pool.
         :type network_connection_name: str
@@ -493,8 +493,8 @@ class NetworkConnectionsOperations(object):
             return deserialized
 
         path_format_arguments = {
-            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
+            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
             'networkConnectionName': self._serialize.url("network_connection_name", network_connection_name, 'str'),
         }
 
@@ -524,14 +524,14 @@ class NetworkConnectionsOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2022-09-01-preview"
+        api_version = "2022-10-12-preview"
         accept = "application/json"
 
         # Construct URL
         url = self._delete_initial.metadata['url']  # type: ignore
         path_format_arguments = {
-            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
+            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
             'networkConnectionName': self._serialize.url("network_connection_name", network_connection_name, 'str'),
         }
         url = self._client.format_url(url, **path_format_arguments)
@@ -566,7 +566,7 @@ class NetworkConnectionsOperations(object):
         # type: (...) -> LROPoller[None]
         """Deletes a Network Connections resource.
 
-        :param resource_group_name: Name of the resource group within the Azure subscription.
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
         :param network_connection_name: Name of the Network Connection that can be applied to a Pool.
         :type network_connection_name: str
@@ -603,8 +603,8 @@ class NetworkConnectionsOperations(object):
                 return cls(pipeline_response, None, {})
 
         path_format_arguments = {
-            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
+            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
             'networkConnectionName': self._serialize.url("network_connection_name", network_connection_name, 'str'),
         }
 
@@ -632,7 +632,7 @@ class NetworkConnectionsOperations(object):
         # type: (...) -> Iterable["models.HealthCheckStatusDetailsListResult"]
         """Lists health check status details.
 
-        :param resource_group_name: Name of the resource group within the Azure subscription.
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
         :param network_connection_name: Name of the Network Connection that can be applied to a Pool.
         :type network_connection_name: str
@@ -648,7 +648,7 @@ class NetworkConnectionsOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2022-09-01-preview"
+        api_version = "2022-10-12-preview"
         accept = "application/json"
 
         def prepare_request(next_link=None):
@@ -660,8 +660,8 @@ class NetworkConnectionsOperations(object):
                 # Construct URL
                 url = self.list_health_details.metadata['url']  # type: ignore
                 path_format_arguments = {
-                    'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
-                    'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
+                    'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
+                    'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
                     'networkConnectionName': self._serialize.url("network_connection_name", network_connection_name, 'str'),
                 }
                 url = self._client.format_url(url, **path_format_arguments)
@@ -711,7 +711,7 @@ class NetworkConnectionsOperations(object):
         # type: (...) -> "models.HealthCheckStatusDetails"
         """Gets health check status details.
 
-        :param resource_group_name: Name of the resource group within the Azure subscription.
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
         :param network_connection_name: Name of the Network Connection that can be applied to a Pool.
         :type network_connection_name: str
@@ -725,14 +725,14 @@ class NetworkConnectionsOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2022-09-01-preview"
+        api_version = "2022-10-12-preview"
         accept = "application/json"
 
         # Construct URL
         url = self.get_health_details.metadata['url']  # type: ignore
         path_format_arguments = {
-            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
+            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
             'networkConnectionName': self._serialize.url("network_connection_name", network_connection_name, 'str'),
         }
         url = self._client.format_url(url, **path_format_arguments)
@@ -771,7 +771,7 @@ class NetworkConnectionsOperations(object):
         """Triggers a new health check run. The execution and health check result can be tracked via the
         network Connection health check details.
 
-        :param resource_group_name: Name of the resource group within the Azure subscription.
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
         :param network_connection_name: Name of the Network Connection that can be applied to a Pool.
         :type network_connection_name: str
@@ -785,14 +785,14 @@ class NetworkConnectionsOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2022-09-01-preview"
+        api_version = "2022-10-12-preview"
         accept = "application/json"
 
         # Construct URL
         url = self.run_health_checks.metadata['url']  # type: ignore
         path_format_arguments = {
-            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
+            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
             'networkConnectionName': self._serialize.url("network_connection_name", network_connection_name, 'str'),
         }
         url = self._client.format_url(url, **path_format_arguments)

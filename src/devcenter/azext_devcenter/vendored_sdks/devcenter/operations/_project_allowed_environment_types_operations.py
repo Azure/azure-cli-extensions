@@ -55,7 +55,7 @@ class ProjectAllowedEnvironmentTypesOperations(object):
         # type: (...) -> Iterable["models.AllowedEnvironmentTypeListResult"]
         """Lists allowed environment types for a project.
 
-        :param resource_group_name: Name of the resource group within the Azure subscription.
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
         :param project_name: The name of the project.
         :type project_name: str
@@ -71,7 +71,7 @@ class ProjectAllowedEnvironmentTypesOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2022-09-01-preview"
+        api_version = "2022-10-12-preview"
         accept = "application/json"
 
         def prepare_request(next_link=None):
@@ -83,8 +83,8 @@ class ProjectAllowedEnvironmentTypesOperations(object):
                 # Construct URL
                 url = self.list.metadata['url']  # type: ignore
                 path_format_arguments = {
-                    'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
-                    'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
+                    'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
+                    'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
                     'projectName': self._serialize.url("project_name", project_name, 'str'),
                 }
                 url = self._client.format_url(url, **path_format_arguments)
@@ -135,7 +135,7 @@ class ProjectAllowedEnvironmentTypesOperations(object):
         # type: (...) -> "models.AllowedEnvironmentType"
         """Gets an allowed environment type.
 
-        :param resource_group_name: Name of the resource group within the Azure subscription.
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
         :param project_name: The name of the project.
         :type project_name: str
@@ -151,14 +151,14 @@ class ProjectAllowedEnvironmentTypesOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2022-09-01-preview"
+        api_version = "2022-10-12-preview"
         accept = "application/json"
 
         # Construct URL
         url = self.get.metadata['url']  # type: ignore
         path_format_arguments = {
-            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
+            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
             'projectName': self._serialize.url("project_name", project_name, 'str'),
             'environmentTypeName': self._serialize.url("environment_type_name", environment_type_name, 'str'),
         }

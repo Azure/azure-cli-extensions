@@ -55,7 +55,7 @@ class ImagesOperations(object):
         # type: (...) -> Iterable["models.ImageListResult"]
         """Lists images for a devcenter.
 
-        :param resource_group_name: Name of the resource group within the Azure subscription.
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
         :param dev_center_name: The name of the devcenter.
         :type dev_center_name: str
@@ -71,7 +71,7 @@ class ImagesOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2022-09-01-preview"
+        api_version = "2022-10-12-preview"
         accept = "application/json"
 
         def prepare_request(next_link=None):
@@ -83,8 +83,8 @@ class ImagesOperations(object):
                 # Construct URL
                 url = self.list_by_dev_center.metadata['url']  # type: ignore
                 path_format_arguments = {
-                    'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
-                    'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
+                    'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
+                    'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
                     'devCenterName': self._serialize.url("dev_center_name", dev_center_name, 'str'),
                 }
                 url = self._client.format_url(url, **path_format_arguments)
@@ -136,7 +136,7 @@ class ImagesOperations(object):
         # type: (...) -> Iterable["models.ImageListResult"]
         """Lists images for a gallery.
 
-        :param resource_group_name: Name of the resource group within the Azure subscription.
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
         :param dev_center_name: The name of the devcenter.
         :type dev_center_name: str
@@ -154,7 +154,7 @@ class ImagesOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2022-09-01-preview"
+        api_version = "2022-10-12-preview"
         accept = "application/json"
 
         def prepare_request(next_link=None):
@@ -166,8 +166,8 @@ class ImagesOperations(object):
                 # Construct URL
                 url = self.list_by_gallery.metadata['url']  # type: ignore
                 path_format_arguments = {
-                    'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
-                    'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
+                    'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
+                    'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
                     'devCenterName': self._serialize.url("dev_center_name", dev_center_name, 'str'),
                     'galleryName': self._serialize.url("gallery_name", gallery_name, 'str'),
                 }
@@ -220,7 +220,7 @@ class ImagesOperations(object):
         # type: (...) -> "models.Image"
         """Gets a gallery image.
 
-        :param resource_group_name: Name of the resource group within the Azure subscription.
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
         :param dev_center_name: The name of the devcenter.
         :type dev_center_name: str
@@ -238,14 +238,14 @@ class ImagesOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2022-09-01-preview"
+        api_version = "2022-10-12-preview"
         accept = "application/json"
 
         # Construct URL
         url = self.get.metadata['url']  # type: ignore
         path_format_arguments = {
-            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
+            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
             'devCenterName': self._serialize.url("dev_center_name", dev_center_name, 'str'),
             'galleryName': self._serialize.url("gallery_name", gallery_name, 'str'),
             'imageName': self._serialize.url("image_name", image_name, 'str'),

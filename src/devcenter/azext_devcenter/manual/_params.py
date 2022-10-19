@@ -1328,7 +1328,12 @@ def load_arguments(self, _):
         "devcenter admin project-allowed-environment-type list"
     ) as c:
         c.argument("resource_group_name", resource_group_name_type)
-        c.argument("project_name", type=str, help="The name of the project.")
+        c.argument(
+            "project_name",
+            options_list=["--project-name", "--project"],
+            type=str,
+            help="The name of the project.",
+        )
         c.argument(
             "top",
             type=int,
@@ -1341,7 +1346,11 @@ def load_arguments(self, _):
     ) as c:
         c.argument("resource_group_name", resource_group_name_type)
         c.argument(
-            "project_name", type=str, help="The name of the project.", id_part="name"
+            "project_name",
+            options_list=["--project-name", "--project"],
+            type=str,
+            help="The name of the project.",
+            id_part="name",
         )
         c.argument(
             "environment_type_name",

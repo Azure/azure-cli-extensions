@@ -26,7 +26,7 @@ class DevCenterConfiguration(Configuration):
 
     :param credential: Credential needed for the client to connect to Azure.
     :type credential: ~azure.core.credentials_async.AsyncTokenCredential
-    :param subscription_id: Unique identifier of the Azure subscription. This is a GUID-formatted string (e.g. 00000000-0000-0000-0000-000000000000).
+    :param subscription_id: The ID of the target subscription.
     :type subscription_id: str
     """
 
@@ -44,7 +44,7 @@ class DevCenterConfiguration(Configuration):
 
         self.credential = credential
         self.subscription_id = subscription_id
-        self.api_version = "2022-09-01-preview"
+        self.api_version = "2022-10-12-preview"
         self.credential_scopes = kwargs.pop('credential_scopes', ['https://management.azure.com/.default'])
         kwargs.setdefault('sdk_moniker', 'devcenter/{}'.format(VERSION))
         self._configure(**kwargs)

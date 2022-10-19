@@ -52,7 +52,7 @@ class PoolsOperations:
     ) -> AsyncIterable["models.PoolListResult"]:
         """Lists pools for a project.
 
-        :param resource_group_name: Name of the resource group within the Azure subscription.
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
         :param project_name: The name of the project.
         :type project_name: str
@@ -68,7 +68,7 @@ class PoolsOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2022-09-01-preview"
+        api_version = "2022-10-12-preview"
         accept = "application/json"
 
         def prepare_request(next_link=None):
@@ -80,8 +80,8 @@ class PoolsOperations:
                 # Construct URL
                 url = self.list_by_project.metadata['url']  # type: ignore
                 path_format_arguments = {
-                    'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
-                    'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
+                    'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
+                    'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
                     'projectName': self._serialize.url("project_name", project_name, 'str'),
                 }
                 url = self._client.format_url(url, **path_format_arguments)
@@ -131,7 +131,7 @@ class PoolsOperations:
     ) -> "models.Pool":
         """Gets a machine pool.
 
-        :param resource_group_name: Name of the resource group within the Azure subscription.
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
         :param project_name: The name of the project.
         :type project_name: str
@@ -147,14 +147,14 @@ class PoolsOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2022-09-01-preview"
+        api_version = "2022-10-12-preview"
         accept = "application/json"
 
         # Construct URL
         url = self.get.metadata['url']  # type: ignore
         path_format_arguments = {
-            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
+            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
             'projectName': self._serialize.url("project_name", project_name, 'str'),
             'poolName': self._serialize.url("pool_name", pool_name, 'str'),
         }
@@ -197,15 +197,15 @@ class PoolsOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2022-09-01-preview"
+        api_version = "2022-10-12-preview"
         content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
 
         # Construct URL
         url = self._create_or_update_initial.metadata['url']  # type: ignore
         path_format_arguments = {
-            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
+            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
             'projectName': self._serialize.url("project_name", project_name, 'str'),
             'poolName': self._serialize.url("pool_name", pool_name, 'str'),
         }
@@ -253,7 +253,7 @@ class PoolsOperations:
     ) -> AsyncLROPoller["models.Pool"]:
         """Creates or updates a machine pool.
 
-        :param resource_group_name: Name of the resource group within the Azure subscription.
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
         :param project_name: The name of the project.
         :type project_name: str
@@ -299,8 +299,8 @@ class PoolsOperations:
             return deserialized
 
         path_format_arguments = {
-            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
+            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
             'projectName': self._serialize.url("project_name", project_name, 'str'),
             'poolName': self._serialize.url("pool_name", pool_name, 'str'),
         }
@@ -332,15 +332,15 @@ class PoolsOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2022-09-01-preview"
+        api_version = "2022-10-12-preview"
         content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
 
         # Construct URL
         url = self._update_initial.metadata['url']  # type: ignore
         path_format_arguments = {
-            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
+            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
             'projectName': self._serialize.url("project_name", project_name, 'str'),
             'poolName': self._serialize.url("pool_name", pool_name, 'str'),
         }
@@ -386,7 +386,7 @@ class PoolsOperations:
     ) -> AsyncLROPoller["models.Pool"]:
         """Partially updates a machine pool.
 
-        :param resource_group_name: Name of the resource group within the Azure subscription.
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
         :param project_name: The name of the project.
         :type project_name: str
@@ -432,8 +432,8 @@ class PoolsOperations:
             return deserialized
 
         path_format_arguments = {
-            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
+            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
             'projectName': self._serialize.url("project_name", project_name, 'str'),
             'poolName': self._serialize.url("pool_name", pool_name, 'str'),
         }
@@ -464,14 +464,14 @@ class PoolsOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2022-09-01-preview"
+        api_version = "2022-10-12-preview"
         accept = "application/json"
 
         # Construct URL
         url = self._delete_initial.metadata['url']  # type: ignore
         path_format_arguments = {
-            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
+            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
             'projectName': self._serialize.url("project_name", project_name, 'str'),
             'poolName': self._serialize.url("pool_name", pool_name, 'str'),
         }
@@ -507,7 +507,7 @@ class PoolsOperations:
     ) -> AsyncLROPoller[None]:
         """Deletes a machine pool.
 
-        :param resource_group_name: Name of the resource group within the Azure subscription.
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
         :param project_name: The name of the project.
         :type project_name: str
@@ -547,8 +547,8 @@ class PoolsOperations:
                 return cls(pipeline_response, None, {})
 
         path_format_arguments = {
-            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
+            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
             'projectName': self._serialize.url("project_name", project_name, 'str'),
             'poolName': self._serialize.url("pool_name", pool_name, 'str'),
         }
