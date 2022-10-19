@@ -6,36 +6,6 @@
 from knack.help_files import helps
 
 # region VirtualHub
-helps['network vhub'] = """
-    type: group
-    short-summary: Manage virtual hubs.
-"""
-
-helps['network vhub create'] = """
-    type: command
-    short-summary: Create a virtual hub.
-"""
-
-helps['network vhub list'] = """
-    type: command
-    short-summary: List virtual hubs.
-"""
-
-helps['network vhub show'] = """
-    type: command
-    short-summary: Get the details of a virtual hub.
-"""
-
-helps['network vhub update'] = """
-    type: command
-    short-summary: Update settings of a virtual hub.
-"""
-
-helps['network vhub delete'] = """
-    type: command
-    short-summary: Delete a virtual hub.
-"""
-
 helps['network vhub get-effective-routes'] = """
     type: command
     short-summary: Get the effective routes configured for the Virtual Hub resource or the specified resource.
@@ -301,36 +271,6 @@ helps['network vwan delete'] = """
 # endregion
 
 # region VpnGateway
-helps['network vpn-gateway'] = """
-    type: group
-    short-summary: Manage site-to-site VPN gateways.
-"""
-
-helps['network vpn-gateway create'] = """
-    type: command
-    short-summary: Create a site-to-site VPN gateway.
-"""
-
-helps['network vpn-gateway list'] = """
-    type: command
-    short-summary: List site-to-site VPN gateways.
-"""
-
-helps['network vpn-gateway show'] = """
-    type: command
-    short-summary: Get the details of a site-to-site VPN gateway.
-"""
-
-helps['network vpn-gateway update'] = """
-    type: command
-    short-summary: Update settings of a site-to-site VPN gateway.
-"""
-
-helps['network vpn-gateway delete'] = """
-    type: command
-    short-summary: Delete a site-to-site VPN gateway.
-"""
-
 helps['network vpn-gateway connection'] = """
     type: group
     short-summary: Manage site-to-site VPN gateway connections.

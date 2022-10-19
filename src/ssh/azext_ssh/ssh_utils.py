@@ -40,7 +40,7 @@ def start_ssh_connection(op_info, delete_keys, delete_cert):
             env['SSHPROXY_RELAY_INFO'] = connectivity_utils.format_relay_info_string(op_info.relay_info)
 
         # Get ssh client before starting the clean up process in case there is an error in getting client.
-        command = [get_ssh_client_path('ssh', op_info.ssh_client_folder), op_info.get_host()]
+        command = [get_ssh_client_path('ssh', op_info.ssh_client_folder), op_info.get_host(), "-l", op_info.local_user]
 
         if not op_info.cert_file and not op_info.private_key_file:
             # In this case, even if delete_credentials is true, there is nothing to clean-up.

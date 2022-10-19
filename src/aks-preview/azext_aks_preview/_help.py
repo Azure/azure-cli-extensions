@@ -215,6 +215,12 @@ helps['aks create'] = """
               Using together with "azure" network plugin.
               Specify "azure" for Azure network policy manager and "calico" for calico network policy controller.
               Defaults to "" (network policy disabled).
+        - name: --enable-cilium-dataplane
+          type: bool
+          short-summary: Use Cilium as the networking dataplane for the Kubernetes cluster.
+          long-summary: |
+              Used together with the "azure" network plugin.
+              Requires either --pod-subnet-id or --network-plugin-mode=overlay.
         - name: --no-ssh-key -x
           type: string
           short-summary: Do not use or create a local SSH key.
@@ -1269,6 +1275,9 @@ helps['aks nodepool add'] = """
         - name: --enable-custom-ca-trust
           type: bool
           short-summary: Enable Custom CA Trust on agent node pool.
+        - name: --disable-windows-outbound-nat
+          type: bool
+          short-summary: Disable Windows OutboundNAT on Windows agent node pool.
     examples:
         - name: Create a nodepool in an existing AKS cluster with ephemeral os enabled.
           text: az aks nodepool add -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster --node-osdisk-type Ephemeral --node-osdisk-size 48

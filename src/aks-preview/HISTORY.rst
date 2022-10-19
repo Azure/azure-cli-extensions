@@ -12,6 +12,21 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+0.5.109
++++++++
+
+* Add --enable-cilium-dataplane flag for creating a cluster that uses Cilium as the networking dataplane.
+
+0.5.108
++++++++
+
+* Update to use 2022-09-02-preview api version.
+
+0.5.107
++++++++
+
+* Add `--disable-windows-outbound-nat` for `az aks nodepool add` to add a Windows agent pool which the Windows OutboundNAT is disabled.
+
 0.5.106
 +++++++
 
@@ -21,6 +36,7 @@ Pending
 +++++++
 
 * Add support to create cluster with kube-proxy configuration via `az aks create --kube-proxy-config file.json`
+* Update to use 2022-08-03-preview api version.
 
 0.5.104
 +++++++
