@@ -14,7 +14,7 @@ from .constants import RecommendType
 from .requests import get_recommend_from_api
 from .utils import (OptionRange, select_combined_option, get_command_list,
                     get_last_exception, get_latest_command,
-                    get_title_case, get_yes_or_no_option, select_option)
+                    capitalize_first_char, get_yes_or_no_option, select_option)
 
 
 def handle_next(cmd, command_only=False, scenario_only=False):
@@ -193,7 +193,7 @@ def _give_recommend_commands(cmd, idx, rec):
 
     if reason:
         space_padding = re.sub('.', ' ', index_str)
-        print_styled_text([(Style.SECONDARY, space_padding + get_title_case(reason) + "\n")])
+        print_styled_text([(Style.SECONDARY, space_padding + capitalize_first_char(reason) + "\n")])
     else:
         print()
 
@@ -209,7 +209,7 @@ def _give_recommend_scenarios(idx, rec):
 
     if reason:
         space_padding = re.sub('.', ' ', index_str)
-        print_styled_text([(Style.SECONDARY, space_padding + get_title_case(reason) + "\n")])
+        print_styled_text([(Style.SECONDARY, space_padding + capitalize_first_char(reason) + "\n")])
     else:
         print()
 
@@ -429,7 +429,7 @@ def _show_details_for_e2e_scenario(cmd, rec):
         print_styled_text(styled_command)
 
         if nx_cmd['reason']:
-            print_styled_text([(Style.SECONDARY, get_title_case(nx_cmd['reason']) + "\n")])
+            print_styled_text([(Style.SECONDARY, capitalize_first_char(nx_cmd['reason']) + "\n")])
         else:
             print()
 

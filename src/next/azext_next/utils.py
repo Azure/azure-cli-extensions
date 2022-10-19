@@ -244,7 +244,7 @@ def get_last_exception(cmd, latest_command):
     return ''
 
 
-def capitalize_first_character_case(string):
+def capitalize_first_char(string):
     if not string:
         return string
     string = string.strip()
