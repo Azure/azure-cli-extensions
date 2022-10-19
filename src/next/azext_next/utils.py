@@ -244,11 +244,11 @@ def get_last_exception(cmd, latest_command):
     return ''
 
 
-def get_title_case(s):
-    if not s:
-        return s
-    s = s.strip()
-    return s[0].upper() + s[1:]
+def capitalize_first_character_case(string):
+    if not string:
+        return string
+    string = string.strip()
+    return string[0].upper() + string[1:]
 
 
 def print_successful_styled_text(message):
