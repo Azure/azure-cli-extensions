@@ -5,21 +5,22 @@
 import json
 import os
 
-from colorama import Fore
+from azure.cli.core.style import print_styled_text, Style
 
 
-def read_int(default_value=0):
+def input_int(default_value=0):
+    """Read an int from `stdin`. Retry if input is not a number"""
     ret = input()
     if ret == '' or ret is None:
         return default_value
     while not ret.isnumeric():
-        ret = input("Please input a legal number: ")
+        ret = input("Please input a valid number: ")
         if ret == '' or ret is None:
             return default_value
     return int(ret)
 
 
-def read_combined_option(group_range, default_value=(None, 0)):
+def input_combined_option(group_range, default_value=(None, 0)):
     """
     Read combined option from stdin, ensure the group_name is in range or be None and option is a ledge number
     :param group_range: the range a valid group name should be in
@@ -43,8 +44,8 @@ def read_combined_option(group_range, default_value=(None, 0)):
             return group, int(option)
 
 
-def get_yes_or_no_option(option_description):
-    print(Fore.LIGHTBLUE_EX + ' ? ' + Fore.RESET + option_description, end='')
+def get_yes_or_no_option(option_msg):
+    print_styled_text([(Style.ACTION, " ? ")] + option_msg, end='')
     option = input()
     yes_options = ["y", "yes", "Y", "Yes", "YES"]
     no_options = ["n", "no", "N", "No", "NO"]
@@ -62,13 +63,12 @@ class OptionRange:  # pylint: disable=too-few-public-methods
         return self.min_option <= item <= self.max_option
 
 
-def get_combined_option(option_description, valid_groups, default_option):
+def select_combined_option(option_msg, valid_groups, default_option):
     """
     Read a combined option from stdin.
     Request user to re-enter if not in valid_group or range
 
-    :param option_description: displayed description
-    :type option_description: str
+    :param option_msg: styled description to display
     :param valid_groups: a dict for valid group name and option range
     :type valid_groups: dict[str, OptionRange]
     :param default_option: default option if users input empty str
@@ -76,28 +76,32 @@ def get_combined_option(option_description, valid_groups, default_option):
     :return: the group name and option the user input, which is ensured in valid groups or be (None, 0)
     :rtype: tuple[str|None, int]
     """
-    print(Fore.LIGHTBLUE_EX + ' ? ' + Fore.RESET + option_description, end='')
-    group, option = read_combined_option(valid_groups.keys(), default_option)
+    print_styled_text([(Style.ACTION, " ? ")] + option_msg, end='')
+    group, option = input_combined_option(valid_groups.keys(), default_option)
     while True:
         if group is None:
             if option == 0:
                 return group, option
             print("The option should start with \"a\" for scenario, \"b\" for commands or be \"0\": ", end='')
-            group, option = read_combined_option(valid_groups.keys(), default_option)
+            group, option = input_combined_option(valid_groups.keys(), default_option)
         elif option not in valid_groups[group]:
             print(f"The option should end with a valid option "
                   f"({group}{valid_groups[group].min_option}-{group}{valid_groups[group].max_option}): ", end='')
-            group, option = read_combined_option(valid_groups.keys(), default_option)
+            group, option = input_combined_option(valid_groups.keys(), default_option)
         else:
             return group, option
 
 
-def get_int_option(option_description, min_option, max_option, default_option):
-    print(Fore.LIGHTBLUE_EX + ' ? ' + Fore.RESET + option_description, end='')
-    option = read_int(default_option)
+def select_option(option_msg, min_option, max_option, default_option):
+    """Read an option from `stdin` ranging from `min_option` to `max_option`.
+    Retry if input is out of range.
+    """
+    print_styled_text([(Style.ACTION, " ? ")] + option_msg, end='')
+    option = input_int(default_option)
     while option < min_option or option > max_option:
-        print(f"Please enter a valid option ({min_option}-{max_option}): ", end='')
-        option = read_int(default_option)
+        print_styled_text([(Style.PRIMARY, f"Please enter a valid option ({min_option}-{max_option}): ")],
+                          end='')
+        option = input_int(default_option)
     return option
 
 

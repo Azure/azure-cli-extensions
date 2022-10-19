@@ -8,19 +8,16 @@ import re
 from azure.cli.core import telemetry
 from azure.cli.core.azclierror import RecommendationError
 from azure.cli.core.style import Style, print_styled_text
-from colorama import Fore, init
 from knack import help_files
 
 from .constants import RecommendType
 from .requests import get_recommend_from_api
-from .utils import (OptionRange, get_combined_option, get_command_list,
-                    get_int_option, get_last_exception, get_latest_command,
-                    get_title_case, get_yes_or_no_option)
+from .utils import (OptionRange, select_combined_option, get_command_list,
+                    get_last_exception, get_latest_command,
+                    get_title_case, get_yes_or_no_option, select_option)
 
 
 def handle_next(cmd, command_only=False, scenario_only=False):
-    init(autoreset=True)  # turn on automatic color recovery for colorama
-
     if scenario_only:
         request_type = RecommendType.Scenario.value
     elif command_only:
@@ -64,8 +61,9 @@ def handle_next(cmd, command_only=False, scenario_only=False):
     if not multi_type_recommendation:
         _give_recommends(cmd, recommends)
 
-        option = get_int_option("Please select your option " + Fore.LIGHTBLACK_EX + "(if none, enter 0)" +
-                                Fore.RESET + ": ", 0, len(recommends), -1)
+        option_msg = [(Style.PRIMARY, "Please select your option "),
+                      (Style.SECONDARY, "(if none, enter 0)"), (Style.PRIMARY, ": ")]
+        option = select_option(option_msg, min_option=0, max_option=len(recommends), default_option=-1)
         if option == 0:
             send_feedback(request_type, 0, command_history, processed_exception, recommends)
             print(
@@ -83,10 +81,11 @@ def handle_next(cmd, command_only=False, scenario_only=False):
         print_styled_text([(Style.PRIMARY, "COMMAND")])
         print()
         _give_recommends(cmd, command_recommendations, prefix='b')
-        group, option = get_combined_option(
-            "Please select your option " + Fore.LIGHTBLACK_EX +
-            "(for example, enter \"a2\" for the second scenario. if none, enter 0)" +
-            Fore.RESET + ": ",
+        option_msg = [(Style.PRIMARY, "Please select your option "),
+                      (Style.SECONDARY, "(for example, enter \"a2\" for the second scenario. if none, enter 0)"),
+                      (Style.PRIMARY, ": ")]
+        group, option = select_combined_option(
+            option_msg,
             {'a': OptionRange(1, len(scenario_recommendations)), 'b': OptionRange(1, len(command_recommendations))},
             (None, -1))
         if group == 'a':
@@ -231,7 +230,7 @@ def _execute_nx_cmd(cmd, nx_cmd, nx_param, catch_exception=False):
         if param in store_true_params:
             args.append(param)
         else:
-            print("Please input " + Fore.LIGHTBLUE_EX + param + Fore.RESET + ":", end='')
+            print_styled_text([(Style.ACTION, "Please input "), (Style.PRIMARY, param + ": ")], end='')
             value = input()
             if param == '<positional argument>':
                 if value:
@@ -353,7 +352,8 @@ def _execute_recommend_commands(cmd, rec):
             _print_help_info(cmd, rec["command"])
             is_help_printed = True
 
-        step_msg = "Do you want to retry this command? " + Fore.LIGHTBLACK_EX + "(y/n)" + Fore.RESET + ": "
+        step_msg = [(Style.PRIMARY, "Do you want to retry this command? "), (Style.SECONDARY, "(y/n)"),
+                    (Style.PRIMARY, ": ")]
         run_option = get_yes_or_no_option(step_msg)
         if run_option:
             execute_result = _execute_nx_cmd(cmd, rec["command"], nx_param, catch_exception=True)
@@ -377,9 +377,9 @@ def _execute_recommend_scenarios(cmd, rec):
 
         print_styled_text([(Style.ACTION, "Running: ")], end='')
         print_styled_text(_get_command_sample(nx_cmd))
-        step_msg = "How do you want to run this step? 1. Run it 2. Skip it 3. Quit process " + Fore.LIGHTBLACK_EX \
-                   + "(Enter is to Run)" + Fore.RESET + ": "
-        run_option = get_int_option(step_msg, 1, 3, 1)
+        option_msg = [(Style.PRIMARY, "How do you want to run this step? 1. Run it 2. Skip it 3. Quit process "),
+                      (Style.SECONDARY, "(Enter is to Run)"), (Style.PRIMARY, ": ")]
+        run_option = select_option(option_msg, 1, 3, 1)
         if run_option == 1:
             print_styled_text([(Style.SECONDARY, "Input Enter to skip unnecessary parameters")])
             execute_result = _execute_nx_cmd(cmd, nx_cmd['command'], nx_param, catch_exception=True)
@@ -389,9 +389,10 @@ def _execute_recommend_scenarios(cmd, rec):
                     _print_help_info(cmd, nx_cmd["command"])
                     is_help_printed = True
 
-                step_msg = "Do you want to retry this step? 1. Run it 2. Skip it 3. Quit process " \
-                           + Fore.LIGHTBLACK_EX + "(Enter is to Run)" + Fore.RESET + ": "
-                run_option = get_int_option(step_msg, 1, 3, 1)
+                option_msg = [
+                    (Style.PRIMARY, "How do you want to run this step? 1. Run it 2. Skip it 3. Quit process "),
+                    (Style.SECONDARY, "(Enter is to Run)"), (Style.PRIMARY, ": ")]
+                run_option = select_option(option_msg, 1, 3, 1)
                 if run_option == 1:
                     execute_result = _execute_nx_cmd(cmd, nx_cmd['command'], nx_param, catch_exception=True)
                 elif run_option == 2:
@@ -409,19 +410,6 @@ def _execute_recommend_scenarios(cmd, rec):
 
     from .utils import print_successful_styled_text
     print_successful_styled_text('All commands in this scenario have been executed! \n')
-
-
-def _get_filter_option():
-    msg = '''
-Please select the type of recommendation you need:
-1. all: It will intelligently analyze the types of recommendation you need, and may recommend multiple types of command to you
-2. solution: Only the solutions to problems when errors occur are recommend
-3. command: Only the commands with high correlation with previously executed commands are recommend
-4. scenario: Only the E2E scenarios related to current usage scenarios are recommended
-'''
-    print(msg)
-    return get_int_option("What kind of recommendation do you want? " + Fore.LIGHTBLACK_EX + "(RETURN is to set all)" +
-                          Fore.RESET + ": ", 1, 4, 1)
 
 
 def _show_details_for_e2e_scenario(cmd, rec):
