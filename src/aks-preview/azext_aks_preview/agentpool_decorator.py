@@ -490,6 +490,8 @@ class AKSPreviewAgentPoolUpdateDecorator(AKSAgentPoolUpdateDecorator):
 
         asg_ids = self.context.get_asg_ids()
         allowed_host_ports = self.context.get_allowed_host_ports()
+        if asg_ids or allowed_host_ports:
+            agentpool.network_profile = self.models.AgentPoolNetworkProfile()
         if asg_ids is not None:
             agentpool.network_profile.application_security_groups = asg_ids
         if allowed_host_ports is not None:
