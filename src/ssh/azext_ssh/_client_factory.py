@@ -9,9 +9,6 @@
 # --------------------------------------------------------------------------
 
 from azure.cli.core.commands.client_factory import get_mgmt_service_client
-from azure.cli.core.profiles import CustomResourceType
-
-CUSTOM_MGMT_CONNECTED_VMWARE = CustomResourceType('azext_ssh.vendored_sdks.connectedvmware', 'AzureArcVMwareManagementServiceAPI')
 
 def cf_hybridconnectivity_cl(cli_ctx, *_):
     from azext_ssh.vendored_sdks.hybridconnectivity import HybridConnectivityManagementAPI
@@ -34,8 +31,9 @@ def cf_machine(cli_ctx, *_):
 
 
 def cf_connectedvmware_cl(cli_ctx, *_):
+    from azext_ssh.vendored_sdks.connectedvmware import AzureArcVMwareManagementServiceAPI
     return get_mgmt_service_client(cli_ctx,
-                                   CUSTOM_MGMT_CONNECTED_VMWARE)
+                                   AzureArcVMwareManagementServiceAPI)
 
 
 def cf_vmware(cli_ctx, *_):
