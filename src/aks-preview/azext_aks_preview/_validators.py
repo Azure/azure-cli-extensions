@@ -316,7 +316,8 @@ def validate_load_balancer_idle_timeout(namespace):
 def validate_load_balancer_backend_pool_type(namespace):
     """validate load balancer backend pool type"""
     if namespace.load_balancer_backend_pool_type is not None:
-        if namespace.load_balancer_backend_pool_type not in [CONST_LOAD_BALANCER_BACKEND_POOL_TYPE_NODE_IP, CONST_LOAD_BALANCER_BACKEND_POOL_TYPE_NODE_IPCONFIGURATION]:
+        if namespace.load_balancer_backend_pool_type not in [CONST_LOAD_BALANCER_BACKEND_POOL_TYPE_NODE_IP,
+                                                             CONST_LOAD_BALANCER_BACKEND_POOL_TYPE_NODE_IPCONFIGURATION]:
             raise InvalidArgumentValueError(
                 f"Invalid Load Balancer Backend Pool Type {namespace.load_balancer_backend_pool_type}, supported values are nodeIP and nodeIPConfiguration")
 
@@ -739,3 +740,35 @@ def validate_ksm_annotations(namespace):
     if namespace.ksm_metric_annotations_allow_list is None:
         return
     validate_ksm_parameter(namespace.ksm_metric_annotations_allow_list)
+
+
+def validate_allowed_host_ports(namespace):
+    if hasattr(namespace, "nodepool_allowed_host_ports"):
+        host_ports = namespace.nodepool_allowed_host_ports
+    else:
+        host_ports = namespace.allowed_host_ports
+    if not host_ports:
+        return
+
+    regex = re.compile(r'^((\d+)|(\d+-\d+))/(tcp|udp)$')
+    for port_range in host_ports.split(","):
+        found = regex.findall(port_range)
+        if found:
+            continue
+        raise InvalidArgumentValueError(
+            "--allowed-host-ports must be a comma-separated list of port ranges in the format of <port-range>/<protocol>"
+        )
+
+
+def validate_application_security_groups(namespace):
+    if hasattr((namespace), "nodepool_asg_ids"):
+        asg_ids = namespace.nodepool_asg_ids
+    else:
+        asg_ids = namespace.asg_ids
+    if not asg_ids:
+        return
+
+    from msrestazure.tools import is_valid_resource_id
+    for asg in asg_ids.split(","):
+        if not is_valid_resource_id(asg):
+            raise InvalidArgumentValueError(asg + " is not a valid Azure resource ID.")
