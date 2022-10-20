@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Move(AAZCommand):
     """Move a hybrid worker to a different group.
+    
+    :example: Move a hybrid runbook worker to a different hybrid runbook worker group
+        az automation hrwg hrw move --automation-account-name accountName --resource-group groupName --hybrid-runbook-worker-group-name hybridRunbookWorkerGroupName --target-hybrid-runbook-worker-group-name targetHybridWorkerGroupName --hybrid-runbook-worker-id hybridRunbookWorkerId
     """
 
     _aaz_info = {

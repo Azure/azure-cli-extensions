@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Create(AAZCommand):
     """Create a hybrid runbook worker.
+
+    :example: Create a hybrid runbook worker
+        az automation hrwg hrw create --automation-account-name accountName --resource-group groupName --hybrid-runbook-worker-group-name hybridRunbookWorkerGroupName --hybrid-runbook-worker-id hybridRunbookWorkerId --vm-resource-id vmResourceId
     """
 
     _aaz_info = {

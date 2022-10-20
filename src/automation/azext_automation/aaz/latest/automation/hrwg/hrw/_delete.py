@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class Delete(AAZCommand):
     """Delete a hybrid runbook worker.
+
+    :example: Delete a hybrid worker
+        az automation hrwg hrw delete --automation-account-name accountName --resource-group groupName --hybrid-runbook-worker-group-name hybridRunbookWorkerGroupName --hybrid-runbook-worker-id hybridRunbookWorkerId
     """
 
     _aaz_info = {
