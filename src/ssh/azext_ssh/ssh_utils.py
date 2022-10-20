@@ -308,7 +308,7 @@ def do_cleanup(delete_keys, delete_cert, delete_credentials, cert_file, private_
         file_utils.delete_file(public_key, f"Couldn't delete public key {public_key}. ", True)
     if (delete_cert or delete_credentials) and cert_file:
         file_utils.delete_file(cert_file, f"Couldn't delete certificate {cert_file}. ", True)
-    if delete_keys:
+    if delete_keys and cert_file:
         # This is only true if keys were generated, so they must be in a temp folder.
         temp_dir = os.path.dirname(cert_file)
         file_utils.delete_folder(temp_dir, f"Couldn't delete temporary folder {temp_dir}", True)

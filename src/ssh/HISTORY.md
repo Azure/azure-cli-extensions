@@ -2,7 +2,7 @@ Release History
 ===============
 1.1.3
 -----
-* Fix bug where extension prints ssh banners after the connection is closed.
+* [bug fix] SSH Banners are printed before authentication.
 
 1.1.2
 -----
