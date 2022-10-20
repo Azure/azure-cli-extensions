@@ -1561,3 +1561,22 @@ def list_environment_locations(cmd):
     res_locations = [res_loc.lower().replace(" ", "").replace("(", "").replace(")", "") for res_loc in res_locations if res_loc.strip()]
 
     return res_locations
+
+def set_ip_restrictions(ip_restrictions, ip_restriction_name, ip_address_range, description, allow_access):
+    updated = False
+    for e in ip_restrictions:
+        if ip_restriction_name.lower() == e["name"].lower():
+            e["description"] = description
+            e["ipAddressRange"] = ip_address_range
+            e["action"] = "Allow" if allow_access else "Deny"
+            updated = True
+            break
+    if not updated:
+        new_ip_restriction = {
+            "name": ip_restriction_name,
+            "description": description,
+            "ipAddressRange": ip_address_range,
+            "action": "Allow" if allow_access else "Deny"
+        }
+        ip_restrictions.append(new_ip_restriction)
+    return ip_restrictions

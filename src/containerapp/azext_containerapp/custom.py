@@ -68,7 +68,7 @@ from ._utils import (_validate_subscription_registered, _ensure_location_allowed
                      generate_randomized_cert_name, _get_name, load_cert_file, check_cert_name_availability,
                      validate_hostname, patch_new_custom_domain, get_custom_domains, _validate_revision_name, set_managed_identity,
                      create_acrpull_role_assignment, is_registry_msi_system, clean_null_values, _populate_secret_values,
-                     validate_environment_location, safe_set, parse_metadata_flags, parse_auth_flags)
+                     validate_environment_location, safe_set, parse_metadata_flags, parse_auth_flags, set_ip_restrictions)
 from ._validators import validate_create
 from ._ssh_utils import (SSH_DEFAULT_ENCODING, WebSocketConnection, read_ssh, get_stdin_writer, SSH_CTRL_C_MSG,
                          SSH_BACKUP_ENCODING)
@@ -1935,25 +1935,6 @@ def set_ip_restriction(cmd, name, resource_group_name, ip_restriction_name, ip_a
 
     ip_restrictions = safe_get(containerapp_def, "properties", "configuration", "ingress", "ipSecurityRestrictions", default=[])
 
-    def set_ip_restrictions(ip_restrictions, ip_restriction_name, ip_address_range, description, allow_access):
-        updated = False
-        for e in ip_restrictions:
-            if ip_restriction_name.lower() == e["name"].lower():
-                e["description"] = description
-                e["ipAddressRange"] = ip_address_range
-                e["action"] = "Allow" if allow_access else "Deny"
-                updated = True
-                break
-        if not updated:
-            new_ip_restriction = {
-                "name": ip_restriction_name,
-                "description": description,
-                "ipAddressRange": ip_address_range,
-                "action": "Allow" if allow_access else "Deny"
-            }
-            ip_restrictions.append(new_ip_restriction)
-        return ip_restrictions
-
     ip_security_restrictions = set_ip_restrictions(ip_restrictions, ip_restriction_name, ip_address_range, description, allow_access)
     containerapp_patch = {}
     safe_set(containerapp_patch, "properties", "configuration", "ingress", "ipSecurityRestrictions", value=ip_security_restrictions)
@@ -1994,7 +1975,8 @@ def remove_ip_restriction(cmd, name, resource_group_name, ip_restriction_name, n
     try:
         r = ContainerAppClient.update(
             cmd=cmd, resource_group_name=resource_group_name, name=name, container_app_envelope=containerapp_patch, no_wait=no_wait)
-        return r['properties']['configuration']['ingress']['ipSecurityRestrictions']
+        ip_restrictions = safe_get(r, "properties", "configuration", "ingress", "ipSecurityRestrictions", default=[])
+        return ip_restrictions
     except Exception as e:
         handle_raw_exception(e)
 
@@ -2012,9 +1994,14 @@ def show_ip_restrictions(cmd, name, resource_group_name):
         raise ResourceNotFoundError("The containerapp '{}' does not exist".format(name))
 
     try:
+        try:
+            containerapp_def['properties']['configuration']['ingress']
+        except Exception as e:
+            raise ValidationError("Ingress must be enabled to show ip restrictions. Try running `az containerapp ingress -h` for more info.") from e
         return containerapp_def['properties']['configuration']['ingress']['ipSecurityRestrictions']
     except Exception as e:
-        raise ValidationError("Ingress must be enabled to show ip restrictions. Try running `az containerapp ingress -h` for more info.") from e
+        return []
+
 
 def show_registry(cmd, name, resource_group_name, server):
     _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
