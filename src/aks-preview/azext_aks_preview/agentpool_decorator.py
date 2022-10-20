@@ -402,10 +402,11 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
 
         asg_ids = self.context.get_asg_ids()
         allowed_host_ports = self.context.get_allowed_host_ports()
-        agentpool.network_profile = self.models.AgentPoolNetworkProfile(
-            application_security_groups=asg_ids,
-            allowed_host_ports=allowed_host_ports,
-        )
+        if asg_ids and allowed_host_ports:
+            agentpool.network_profile = self.models.AgentPoolNetworkProfile(
+                application_security_groups=asg_ids,
+                allowed_host_ports=allowed_host_ports,
+            )
         return agentpool
 
     def construct_agentpool_profile_preview(self) -> AgentPool:

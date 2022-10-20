@@ -1948,9 +1948,9 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
                     "Cannot specify --enable-azuremonitormetrics and --enable-azuremonitormetrics at the same time."
                 )
             if not check_is_msi_cluster(self.mc):
-                    raise RequiredArgumentMissingError(
-                        "--enable-azuremonitormetrics can only be specified for clusters with managed identity enabled"
-                    )
+                raise RequiredArgumentMissingError(
+                    "--enable-azuremonitormetrics can only be specified for clusters with managed identity enabled"
+                )
         return enable_azure_monitor_metrics
 
     def get_enable_azure_monitor_metrics(self) -> bool:
