@@ -698,7 +698,7 @@ def get_region_from_storage_account(cli_ctx, resource_group_name, vm_vmss_name, 
                 error_message, recommendation=recommendation)
         else:
             if result.boot_diagnostics is not None:
-                print(result.boot_diagnostics)
+                logger.debug(result.boot_diagnostics)
                 if result.boot_diagnostics.console_screenshot_blob_uri is not None:
                     storage_account_url = result.boot_diagnostics.console_screenshot_blob_uri
                     storage_account_region = get_storage_account_info(storage_account_url, resource_group_name, scf)
