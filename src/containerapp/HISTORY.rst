@@ -3,6 +3,33 @@
 Release History
 ===============
 
+0.3.13
+++++++
+* 'az containerapp compose create': Migrated from containerapp-compose extension
+* Add parameters --logs-destination and --storage-account support for new logs destinations to `az containerapp env create` and `az containerapp env update`
+
+0.3.12
+++++++
+* Add 'az containerapp env update' to update managed environment properties
+* Add custom domains support to 'az containerapp env create' and 'az containerapp env update'
+* 'az containerapp logs show': add new parameter "--type" to allow showing system logs
+* Show system environment logs with new command 'az containerapp env logs show'
+* Add tcp support for ingress transport and scale rules
+* `az containerapp up/github-action add`: Retrieve workflow file name from github actions API
+* 'az containerapp create/update': validate revision suffixes
+
+0.3.11
+++++++
+* Add keda scale rule parameters to 'az containerapp create', 'az containerapp update' and 'az containerapp revision copy'
+* Add new dapr params to 'az containerapp dapr enable' and 'az containerapp create'
+* 'az containerapp up': autogenerate a docker container with --source when no dockerfile present
+
+0.3.10
+++++++
+* 'az containerapp create': Fix bug with --image caused by assuming a value for --registry-server
+* 'az containerapp hostname bind': Remove location set automatically by resource group
+* 'az containerapp env create': Add location validation
+
 0.3.9
 ++++++
 * 'az containerapp create': Allow authenticating with managed identity (MSI) instead of ACR username & password

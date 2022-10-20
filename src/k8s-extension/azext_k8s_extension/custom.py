@@ -27,6 +27,7 @@ from .partner_extensions.ContainerInsights import ContainerInsights
 from .partner_extensions.AzureDefender import AzureDefender
 from .partner_extensions.OpenServiceMesh import OpenServiceMesh
 from .partner_extensions.AzureMLKubernetes import AzureMLKubernetes
+from .partner_extensions.DataProtectionKubernetes import DataProtectionKubernetes
 from .partner_extensions.Dapr import Dapr
 from .partner_extensions.DefaultExtension import (
     DefaultExtension,
@@ -47,6 +48,7 @@ def ExtensionFactory(extension_name):
         "microsoft.openservicemesh": OpenServiceMesh,
         "microsoft.azureml.kubernetes": AzureMLKubernetes,
         "microsoft.dapr": Dapr,
+        "microsoft.dataprotection.kubernetes": DataProtectionKubernetes,
     }
 
     # Return the extension if we find it in the map, else return the default
@@ -412,11 +414,8 @@ def __create_identity(cmd, resource_group_name, cluster_name, cluster_type, clus
     subscription_id = get_subscription_id(cmd.cli_ctx)
     resources = cf_resources(cmd.cli_ctx, subscription_id)
 
-    # We do not create any identities for managedClusters or appliances
-    if (
-        cluster_type.lower() == consts.MANAGED_CLUSTER_TYPE
-        or cluster_type.lower() == consts.APPLIANCE_TYPE
-    ):
+    # We do not create any identities for managedClusters
+    if cluster_type.lower() == consts.MANAGED_CLUSTER_TYPE:
         return None, None
 
     cluster_rp, parent_api_version = get_cluster_rp_api_version(cluster_type=cluster_type, cluster_rp=cluster_rp)

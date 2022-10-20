@@ -157,6 +157,10 @@ helps['aks create'] = """
           type: int
           short-summary: Load balancer idle timeout in minutes.
           long-summary: Desired idle timeout for load balancer outbound flows, default is 30 minutes. Please specify a value in the range of [4, 100].
+        - name: --load-balancer-backend-pool-type
+          type: string
+          short-summary: Load balancer backend pool type.
+          long-summary: Load balancer backend pool type, supported values are nodeIP and nodeIPConfiguration.
         - name: --nat-gateway-managed-outbound-ip-count
           type: int
           short-summary: NAT gateway managed outbound IP count.
@@ -211,6 +215,12 @@ helps['aks create'] = """
               Using together with "azure" network plugin.
               Specify "azure" for Azure network policy manager and "calico" for calico network policy controller.
               Defaults to "" (network policy disabled).
+        - name: --enable-cilium-dataplane
+          type: bool
+          short-summary: Use Cilium as the networking dataplane for the Kubernetes cluster.
+          long-summary: |
+              Used together with the "azure" network plugin.
+              Requires either --pod-subnet-id or --network-plugin-mode=overlay.
         - name: --no-ssh-key -x
           type: string
           short-summary: Do not use or create a local SSH key.
@@ -351,6 +361,9 @@ helps['aks create'] = """
         - name: --http-proxy-config
           type: string
           short-summary: Http Proxy configuration for this cluster.
+        - name: --kube-proxy-config
+          type: string
+          short-summary: kube-proxy configuration for this cluster.
         - name: --enable-pod-identity
           type: bool
           short-summary: (PREVIEW) Enable pod identity addon.
@@ -448,6 +461,12 @@ helps['aks create'] = """
         - name: --azure-keyvault-kms-key-vault-resource-id
           type: string
           short-summary: Resource ID of Azure Key Vault.
+        - name: --enable-image-cleaner
+          type: bool
+          short-summary: Enable ImageCleaner Service.
+        - name: --image-cleaner-interval-hours
+          type: int
+          short-summary: ImageCleaner scanning interval.
         - name: --dns-zone-resource-id
           type: string
           short-summary: The resource ID of the DNS zone resource to use with the web_application_routing addon.
@@ -463,6 +482,15 @@ helps['aks create'] = """
         - name: --defender-config
           type: string
           short-summary: Path to JSON file containing Microsoft Defender profile configurations.
+        - name: --enable-vpa
+          type: bool
+          short-summary: Enable vertical pod autoscaler for cluster.
+        - name: --nodepool-allowed-host-ports
+          type: string
+          short-summary: Expose host ports on the node pool. When specified, format should be a comma-separated list of ranges with protocol, eg. 80/TCP,443/TCP,4000-5000/TCP.
+        - name: --nodepool-asg-ids
+          type: string
+          short-summary: The IDs of the application security groups to which the node pool's network interface should belong. When specified, format should be a comma-separated list of IDs.
     examples:
         - name: Create a Kubernetes cluster with an existing SSH public key.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --ssh-key-value /path/to/publickey
@@ -556,9 +584,15 @@ helps['aks upgrade'] = """
         - name: --node-image-only
           type: bool
           short-summary: Only upgrade node image for agent pools.
+        - name: --cluster-snapshot-id
+          type: string
+          short-summary: The source cluster snapshot id is used to upgrade existing cluster.
         - name: --aks-custom-headers
           type: string
           short-summary: Send custom headers. When specified, format should be Key1=Value1,Key2=Value2
+    examples:
+      - name: Upgrade a existing managed cluster to a managed cluster snapshot.
+        text: az aks upgrade -g MyResourceGroup -n MyManagedCluster --cluster-snapshot-id "/subscriptions/00000/resourceGroups/AnotherResourceGroup/providers/Microsoft.ContainerService/managedclustersnapshots/mysnapshot1"
 """
 
 helps['aks update'] = """
@@ -611,6 +645,10 @@ helps['aks update'] = """
           type: int
           short-summary: Load balancer idle timeout in minutes.
           long-summary: Desired idle timeout for load balancer outbound flows, default is 30 minutes. Please specify a value in the range of [4, 100].
+        - name: --load-balancer-backend-pool-type
+          type: string
+          short-summary: Load balancer backend pool type.
+          long-summary: Load balancer backend pool type, supported values are nodeIP and nodeIPConfiguration.
         - name: --nat-gateway-managed-outbound-ip-count
           type: int
           short-summary: NAT gateway managed outbound IP count.
@@ -784,6 +822,15 @@ helps['aks update'] = """
         - name: --azure-keyvault-kms-key-vault-resource-id
           type: string
           short-summary: Resource ID of Azure Key Vault.
+        - name: --enable-image-cleaner
+          type: bool
+          short-summary: Enable ImageCleaner Service.
+        - name: --disable-image-cleaner
+          type: bool
+          short-summary: Disable ImageCleaner Service.
+        - name: --image-cleaner-interval-hours
+          type: int
+          short-summary: ImageCleaner scanning interval.
         - name: --enable-apiserver-vnet-integration
           type: bool
           short-summary: Enable integration of user vnet with control plane apiserver pods.
@@ -805,6 +852,52 @@ helps['aks update'] = """
         - name: --defender-config
           type: string
           short-summary: Path to JSON file containing Microsoft Defender profile configurations.
+        - name: --enable-azuremonitormetrics
+          type: bool
+          short-summary: Enable Azure Monitor Metrics Profile
+        - name: --azure-monitor-workspace-resource-id
+          type: string
+          short-summary: Resource ID of the Azure Monitor Workspace
+        - name: --ksm-metric-labels-allow-list
+          type: string
+          short-summary: Comma-separated list of additional Kubernetes label keys that will be used in the resource' labels metric. By default the metric contains only name and namespace labels. To include additional labels provide a list of resource names in their plural form and Kubernetes label keys you would like to allow for them (e.g. '=namespaces=[k8s-label-1,k8s-label-n,...],pods=[app],...)'. A single '*' can be provided per resource instead to allow any labels, but that has severe performance implications (e.g. '=pods=[*]').
+        - name: --ksm-metric-annotations-allow-list
+          type: string
+          short-summary: Comma-separated list of additional Kubernetes label keys that will be used in the resource' labels metric. By default the metric contains only name and namespace labels. To include additional labels provide a list of resource names in their plural form and Kubernetes label keys you would like to allow for them (e.g.'=namespaces=[k8s-label-1,k8s-label-n,...],pods=[app],...)'. A single '*' can be provided per resource instead to allow any labels, but that has severe performance implications (e.g. '=pods=[*]').
+        - name: --grafana-resource-id
+          type: string
+          short-summary: Resource ID of the Azure Managed Grafana Workspace
+        - name: --disable-azuremonitormetrics
+          type: bool
+          short-summary: Disable Azure Monitor Metrics Profile
+        - name: --enable-node-restriction
+          type: bool
+          short-summary: Enable node restriction option on cluster.
+        - name: --disable-node-restriction
+          type: bool
+          short-summary: Disable node restriction option on cluster.
+        - name: --enable-private-cluster
+          type: bool
+          short-summary: Enable private cluster for apiserver vnet integration cluster.
+        - name: --disable-private-cluster
+          type: bool
+          short-summary: Disable private cluster for apiserver vnet integration cluster.
+        - name: --private-dns-zone
+          type: string
+          short-summary: The private dns zone mode for private cluster.
+        - name: --enable-vpa
+          type: bool
+          short-summary: Enable vertical pod autoscaler for cluster.
+        - name: --disable-vpa
+          type: bool
+          short-summary: Disable vertical pod autoscaler for cluster.
+        - name: --cluster-snapshot-id
+          type: string
+          short-summary: The source cluster snapshot id is used to update existing cluster.
+        - name: --ssh-key-value
+          type: string
+          short-summary: Public key path or key contents to install on node VMs for SSH access. For example,
+                         'ssh-rsa AAAAB...snip...UcyupgH azureuser@linuxvm'.
     examples:
       - name: Reconcile the cluster back to its current state.
         text: az aks update -g MyResourceGroup -n MyManagedCluster
@@ -862,6 +955,8 @@ helps['aks update'] = """
         text: az aks update -g MyResourceGroup -n MyManagedCluster --enable-windows-gmsa
       - name: Enable Windows gmsa for a kubernetes cluster without setting DNS server in the vnet used by the cluster.
         text: az aks update -g MyResourceGroup -n MyManagedCluster --enable-windows-gmsa --gmsa-dns-server "10.240.0.4" --gmsa-root-domain-name "contoso.com"
+      - name: Update a existing managed cluster to a managed cluster snapshot.
+        text: az aks update -g MyResourceGroup -n MyManagedCluster --cluster-snapshot-id "/subscriptions/00000/resourceGroups/AnotherResourceGroup/providers/Microsoft.ContainerService/managedclustersnapshots/mysnapshot1"
 """
 
 helps['aks kollect'] = """
@@ -1190,6 +1285,15 @@ helps['aks nodepool add'] = """
         - name: --enable-custom-ca-trust
           type: bool
           short-summary: Enable Custom CA Trust on agent node pool.
+        - name: --disable-windows-outbound-nat
+          type: bool
+          short-summary: Disable Windows OutboundNAT on Windows agent node pool.
+        - name: --allowed-host-ports
+          type: string
+          short-summary: Expose host ports on the node pool. When specified, format should be a comma-separated list of ranges with protocol, eg. 80/TCP,443/TCP,4000-5000/TCP.
+        - name: --asg-ids
+          type: string
+          short-summary: The IDs of the application security groups to which the node pool's network interface should belong. When specified, format should be a comma-separated list of IDs.
     examples:
         - name: Create a nodepool in an existing AKS cluster with ephemeral os enabled.
           text: az aks nodepool add -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster --node-osdisk-type Ephemeral --node-osdisk-size 48
@@ -1240,7 +1344,7 @@ helps['aks nodepool upgrade'] = """
 helps['aks nodepool update'] = """
     type: command
     short-summary: Update a node pool properties.
-    long-summary: Update a node pool to enable/disable cluster-autoscaler or change min-count or max-count.  When called with no optional arguments this attempts to move the cluster to its goal state without changing the current cluster configuration. This can be used to move out of a non succeeded state.
+    long-summary: Update a node pool to enable/disable cluster-autoscaler or change min-count or max-count.  When called with no optional arguments this attempts to move the node pool to its goal state without changing the current node pool configuration. This can be used to move out of a non succeeded state.
     parameters:
         - name: --enable-cluster-autoscaler -e
           type: bool
@@ -1281,6 +1385,12 @@ helps['aks nodepool update'] = """
         - name: --aks-custom-headers
           type: string
           short-summary: Send custom headers. When specified, format should be Key1=Value1,Key2=Value2
+        - name: --allowed-host-ports
+          type: string
+          short-summary: Expose host ports on the node pool. When specified, format should be a comma-separated list of ranges with protocol, eg. 80/TCP,443/TCP,4000-5000/TCP.
+        - name: --asg-ids
+          type: string
+          short-summary: The IDs of the application security groups to which the node pool's network interface should belong. When specified, format should be a comma-separated list of IDs.
     examples:
       - name: Reconcile the nodepool back to its current state.
         text: az aks nodepool update -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster
@@ -1347,6 +1457,33 @@ helps['aks nodepool delete'] = """
     examples:
         - name: Delete an agent pool with ignore-pod-disruption-budget
           text: az aks nodepool delete --resource-group MyResourceGroup --cluster-name MyManagedCluster --name nodepool1 --ignore-pod-disruption-budget=true
+"""
+
+helps['aks nodepool operation-abort'] = """
+    type: command
+    short-summary: Abort last running operation on nodepool.
+    parameters:
+        - name: --nodepool-name
+          type: string
+          short-summary: Agent pool name
+        - name: --aks-custom-headers
+          type: string
+          short-summary: Send custom headers. When specified, format should be Key1=Value1,Key2=Value2
+    examples:
+        - name: Abort operation on agent pool
+          text: az aks nodepool operation-abort -g myResourceGroup --nodepool-name nodepool1 --cluster-name myAKSCluster
+"""
+
+helps['aks operation-abort'] = """
+    type: command
+    short-summary: Abort last running operation on managed cluster.
+    parameters:
+        - name: --aks-custom-headers
+          type: string
+          short-summary: Send custom headers. When specified, format should be Key1=Value1,Key2=Value2
+    examples:
+        - name: Abort operation on managed cluster
+          text: az aks operation-abort -g myResourceGroup -n myAKSCluster
 """
 
 helps['aks addon'] = """
@@ -1837,7 +1974,7 @@ helps['aks trustedaccess rolebinding create'] = """
 
     examples:
         - name: Create a new trusted access role binding
-          text: az aks trustedaccess rolebinding create -g myResourceGroup --cluster-name myCluster -n bindingName -s /subscriptions/0000/resourceGroups/myResourceGroup/providers/Microsoft.Demo/samples --roles Microsoft.Demo/samples/reader Microsoft.Demo/samples/writer
+          text: az aks trustedaccess rolebinding create -g myResourceGroup --cluster-name myCluster -n bindingName -s /subscriptions/0000/resourceGroups/myResourceGroup/providers/Microsoft.Demo/samples --roles Microsoft.Demo/samples/reader,Microsoft.Demo/samples/writer
 """
 
 helps['aks trustedaccess rolebinding update'] = """

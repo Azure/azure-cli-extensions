@@ -418,6 +418,27 @@ class ContainerappScenarioTest(ScenarioTest):
         self.cmd(f'containerapp logs show -n {containerapp_name} -g {resource_group}')
 
     @ResourceGroupPreparer(location="northeurope")
+    def test_containerapp_eventstream(self, resource_group):
+        containerapp_name = self.create_random_name(prefix='capp', length=24)
+        env_name = self.create_random_name(prefix='env', length=24)
+        logs_workspace_name = self.create_random_name(prefix='containerapp-env', length=24)
+
+        logs_workspace_id = self.cmd('monitor log-analytics workspace create -g {} -n {}'.format(resource_group, logs_workspace_name)).get_output_in_json()["customerId"]
+        logs_workspace_key = self.cmd('monitor log-analytics workspace get-shared-keys -g {} -n {}'.format(resource_group, logs_workspace_name)).get_output_in_json()["primarySharedKey"]
+
+        self.cmd('containerapp env create -g {} -n {} --logs-workspace-id {} --logs-workspace-key {}'.format(resource_group, env_name, logs_workspace_id, logs_workspace_key))
+        containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
+
+        while containerapp_env["properties"]["provisioningState"].lower() == "waiting":
+            time.sleep(5)
+            containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
+
+        self.cmd(f'containerapp create -g {resource_group} -n {containerapp_name} --environment {env_name} --min-replicas 1 --ingress external --target-port 80')
+
+        self.cmd(f'containerapp logs show -n {containerapp_name} -g {resource_group} --type system')
+        self.cmd(f'containerapp env logs show -n {env_name} -g {resource_group}')
+
+    @ResourceGroupPreparer(location="northeurope")
     def test_containerapp_registry_msi(self, resource_group):
         env = self.create_random_name(prefix='env', length=24)
         logs = self.create_random_name(prefix='logs', length=24)
