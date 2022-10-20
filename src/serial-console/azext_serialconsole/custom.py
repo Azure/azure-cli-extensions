@@ -675,7 +675,9 @@ def disable_serialconsole(cmd):
 
 def get_region_from_storage_account(cli_ctx, resource_group_name, vm_vmss_name, vmss_instanceid):
     from azext_serialconsole._client_factory import storage_client_factory
+    from knack.log import get_logger
 
+    logger = get_logger(__name__)
     result = None
     storage_account_region = None
     client = _compute_client_factory(cli_ctx)
