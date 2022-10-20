@@ -6,9 +6,6 @@
 from azure.cli.core import azclierror
 from unittest import mock
 import unittest
-import platform
-import os
-
 from azext_ssh import ssh_utils
 from azext_ssh import ssh_info
 

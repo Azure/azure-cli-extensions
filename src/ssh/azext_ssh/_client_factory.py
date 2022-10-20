@@ -10,6 +10,7 @@
 
 from azure.cli.core.commands.client_factory import get_mgmt_service_client
 
+
 def cf_hybridconnectivity_cl(cli_ctx, *_):
     from azext_ssh.vendored_sdks.hybridconnectivity import HybridConnectivityManagementAPI
     return get_mgmt_service_client(cli_ctx,
