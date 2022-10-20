@@ -116,6 +116,7 @@ from azext_aks_preview._validators import (
     validate_snapshot_name,
     validate_spot_max_price,
     validate_ssh_key,
+    validate_ssh_key_for_update,
     validate_taints,
     validate_user,
     validate_vm_set_type,
@@ -388,6 +389,7 @@ def load_arguments(self, _):
         c.argument('disable_defender', action='store_true', validator=validate_defender_disable_and_enable_parameters)
         c.argument('enable_defender', action='store_true')
         c.argument('defender_config', validator=validate_defender_config_parameter)
+        c.argument('ssh_key_value', type=file_type, completer=FilesCompleter(), validator=validate_ssh_key_for_update)
         # addons
         c.argument('enable_secret_rotation', action='store_true')
         c.argument('disable_secret_rotation', action='store_true')
