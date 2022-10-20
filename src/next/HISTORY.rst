@@ -5,8 +5,8 @@ Release History
 
 0.1.3
 ++++++
-* Display recommended commands and scenarios separately
-* Add parameter `--scenario` and `--command` to recommend only scenarios or commands
+* Support recommending similar E2E scenarios based on the recent multiple execution commands
+* Add new parameters `--scenario/-s` and `--command/-c` to support specifying recommendation type (command recommendation or scenario recommendation)
 
 0.1.2
 ++++++
