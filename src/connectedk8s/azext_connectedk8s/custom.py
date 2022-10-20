@@ -66,8 +66,15 @@ logger = get_logger(__name__)
 
 def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlation_id=None, https_proxy="", http_proxy="", no_proxy="", proxy_cert="", location=None,
                         kube_config=None, kube_context=None, no_wait=False, tags=None, distribution='auto', infrastructure='auto',
-                        disable_auto_upgrade=False, cl_oid=None, onboarding_timeout="600", enable_private_link=None, private_link_scope_resource_id=None):
-    logger.warning("This operation might take a while...\n")
+                        disable_auto_upgrade=False, cl_oid=None, onboarding_timeout="600", enable_private_link=None, private_link_scope_resource_id=None, release_train=None, config_settings=None):
+    logger.warning("(lp)This operation might take a while...\n")
+
+    # If agent installation is in least privilege mode, display warning to ensure all the required pre-requisites are met
+    if(release_train == consts.Least_Privilege_Release_Train_Name):
+        if config_settings == None:
+            raise ValidationError("Configuration settings are not passed", "Please pass required configuration settings using '--config-settings' flag while onboarding in least privileges mode. For more details on required configuration settings, refer to - <aka.ms link>")
+        else:
+            logger.warning("You are onboarding your k8s cluster to Azure Arc in least privileges mode. Please ensure you have met all the pre-requisites. For more details on the pre-requisites, see this - <aka.ms link>")
 
     # Setting subscription id and tenant Id
     subscription_id = get_subscription_id(cmd.cli_ctx)
@@ -112,15 +119,20 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
     if enable_private_link is not None:
         client = cf_connected_cluster_prev_2022_05_01(cmd.cli_ctx, None)
 
+    # Setting the config dataplane endpoint
+    config_dp_endpoint = get_config_dp_endpoint(cmd, location)
+
+    # Setting the release train default value to stable if not passed
+    if release_train is None:
+        release_train = consts.Stable_Release_Train_Name 
+
     # Checking whether optional extra values file has been provided.
     values_file_provided, values_file = utils.get_values_file()
 
     # Validate the helm environment file for Dogfood.
-    dp_endpoint_dogfood = None
-    release_train_dogfood = None
     if cmd.cli_ctx.cloud.endpoints.resource_manager == consts.Dogfood_RMEndpoint:
         azure_cloud = consts.Azure_DogfoodCloudName
-        dp_endpoint_dogfood, release_train_dogfood = validate_env_file_dogfood(values_file, values_file_provided)
+        config_dp_endpoint, release_train = validate_env_file_dogfood(values_file, values_file_provided)
 
     # Loading the kubeconfig file in kubernetes client configuration
     load_kube_config(kube_config, kube_context)
@@ -286,17 +298,14 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
     if os.getenv('HELMREPONAME') and os.getenv('HELMREPOURL'):
         utils.add_helm_repo(kube_config, kube_context, helm_client_location)
 
-    # Setting the config dataplane endpoint
-    config_dp_endpoint = get_config_dp_endpoint(cmd, location)
-
     # Retrieving Helm chart OCI Artifact location
-    registry_path = os.getenv('HELMREGISTRY') if os.getenv('HELMREGISTRY') else utils.get_helm_registry(cmd, config_dp_endpoint, dp_endpoint_dogfood, release_train_dogfood)
+    registry_path = os.getenv('HELMREGISTRY') if os.getenv('HELMREGISTRY') else utils.get_helm_registry(cmd, config_dp_endpoint, release_train) #"azurearcfork8sdev.azurecr.io/merge/private/azure-arc-k8sagents-leastprivileges:0.1.8249-private"
     # Get azure-arc agent version for telemetry
     azure_arc_agent_version = registry_path.split(':')[1]
     telemetry.add_extension_event('connectedk8s', {'Context.Default.AzureCLI.AgentVersion': azure_arc_agent_version})
 
     # Get helm chart path
-    chart_path = utils.get_chart_path(registry_path, kube_config, kube_context, helm_client_location)
+    chart_path = utils.get_chart_path(registry_path, kube_config, kube_context, helm_client_location, release_train)
 
     # Generate public-private key pair
     try:
@@ -331,7 +340,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
     utils.helm_install_release(chart_path, subscription_id, kubernetes_distro, kubernetes_infra, resource_group_name, cluster_name,
                                location, onboarding_tenant_id, http_proxy, https_proxy, no_proxy, proxy_cert, private_key_pem, kube_config,
                                kube_context, no_wait, values_file_provided, values_file, azure_cloud, disable_auto_upgrade, enable_custom_locations,
-                               custom_locations_oid, helm_client_location, enable_private_link, onboarding_timeout)
+                               custom_locations_oid, helm_client_location, enable_private_link, release_train, config_settings, onboarding_timeout)
 
     return put_cc_response
 
@@ -998,7 +1007,7 @@ def update_connected_cluster(cmd, client, resource_group_name, cluster_name, htt
     config_dp_endpoint = get_config_dp_endpoint(cmd, connected_cluster.location)
 
     # Retrieving Helm chart OCI Artifact location
-    registry_path = os.getenv('HELMREGISTRY') if os.getenv('HELMREGISTRY') else utils.get_helm_registry(cmd, config_dp_endpoint, dp_endpoint_dogfood, release_train_dogfood)
+    registry_path = "azurearcfork8sdev.azurecr.io/merge/private/azure-arc-k8sagents:0.1.8047-private"
 
     reg_path_array = registry_path.split(':')
     agent_version = reg_path_array[1]
@@ -1084,14 +1093,15 @@ def upgrade_agents(cmd, client, resource_group_name, cluster_name, kube_config=N
     # Setting kubeconfig
     kube_config = set_kube_config(kube_config)
 
+    # Setting the config dataplane endpoint
+    config_dp_endpoint = get_config_dp_endpoint(cmd, connected_cluster.location)
+
     # Checking whether optional extra values file has been provided.
     values_file_provided, values_file = utils.get_values_file()
 
     # Validate the helm environment file for Dogfood.
-    dp_endpoint_dogfood = None
-    release_train_dogfood = None
     if cmd.cli_ctx.cloud.endpoints.resource_manager == consts.Dogfood_RMEndpoint:
-        dp_endpoint_dogfood, release_train_dogfood = validate_env_file_dogfood(values_file, values_file_provided)
+        config_dp_endpoint, release_train = validate_env_file_dogfood(values_file, values_file_provided)
 
     # Loading the kubeconfig file in kubernetes client configuration
     load_kube_config(kube_config, kube_context)
@@ -1178,11 +1188,8 @@ def upgrade_agents(cmd, client, resource_group_name, cluster_name, kube_config=N
     if os.getenv('HELMREPONAME') and os.getenv('HELMREPOURL'):
         utils.add_helm_repo(kube_config, kube_context, helm_client_location)
 
-    # Setting the config dataplane endpoint
-    config_dp_endpoint = get_config_dp_endpoint(cmd, connected_cluster.location)
-
     # Retrieving Helm chart OCI Artifact location
-    registry_path = os.getenv('HELMREGISTRY') if os.getenv('HELMREGISTRY') else utils.get_helm_registry(cmd, config_dp_endpoint, dp_endpoint_dogfood, release_train_dogfood)
+    registry_path = os.getenv('HELMREGISTRY') if os.getenv('HELMREGISTRY') else utils.get_helm_registry(cmd, config_dp_endpoint, release_train)
 
     reg_path_array = registry_path.split(':')
     agent_version = reg_path_array[1]
@@ -1369,14 +1376,15 @@ def enable_features(cmd, client, resource_group_name, cluster_name, features, ku
     # Setting kubeconfig
     kube_config = set_kube_config(kube_config)
 
+    # Setting the config dataplane endpoint
+    config_dp_endpoint = get_config_dp_endpoint(cmd, connected_cluster.location)
+
     # Checking whether optional extra values file has been provided.
     values_file_provided, values_file = utils.get_values_file()
 
     # Validate the helm environment file for Dogfood.
-    dp_endpoint_dogfood = None
-    release_train_dogfood = None
     if cmd.cli_ctx.cloud.endpoints.resource_manager == consts.Dogfood_RMEndpoint:
-        dp_endpoint_dogfood, release_train_dogfood = validate_env_file_dogfood(values_file, values_file_provided)
+        config_dp_endpoint, release_train = validate_env_file_dogfood(values_file, values_file_provided)
 
     # Loading the kubeconfig file in kubernetes client configuration
     load_kube_config(kube_config, kube_context)
@@ -1425,11 +1433,8 @@ def enable_features(cmd, client, resource_group_name, cluster_name, features, ku
     if os.getenv('HELMREPONAME') and os.getenv('HELMREPOURL'):
         utils.add_helm_repo(kube_config, kube_context, helm_client_location)
 
-    # Setting the config dataplane endpoint
-    config_dp_endpoint = get_config_dp_endpoint(cmd, connected_cluster.location)
-
     # Retrieving Helm chart OCI Artifact location
-    registry_path = os.getenv('HELMREGISTRY') if os.getenv('HELMREGISTRY') else utils.get_helm_registry(cmd, config_dp_endpoint, dp_endpoint_dogfood, release_train_dogfood)
+    registry_path = os.getenv('HELMREGISTRY') if os.getenv('HELMREGISTRY') else utils.get_helm_registry(cmd, config_dp_endpoint, release_train)
 
     reg_path_array = registry_path.split(':')
     agent_version = reg_path_array[1]
@@ -1492,14 +1497,15 @@ def disable_features(cmd, client, resource_group_name, cluster_name, features, k
     # Setting kubeconfig
     kube_config = set_kube_config(kube_config)
 
+    # Setting the config dataplane endpoint
+    config_dp_endpoint = get_config_dp_endpoint(cmd, connected_cluster.location)
+
     # Checking whether optional extra values file has been provided.
     values_file_provided, values_file = utils.get_values_file()
 
     # Validate the helm environment file for Dogfood.
-    dp_endpoint_dogfood = None
-    release_train_dogfood = None
     if cmd.cli_ctx.cloud.endpoints.resource_manager == consts.Dogfood_RMEndpoint:
-        dp_endpoint_dogfood, release_train_dogfood = validate_env_file_dogfood(values_file, values_file_provided)
+        config_dp_endpoint, release_train = validate_env_file_dogfood(values_file, values_file_provided) 
 
     # Loading the kubeconfig file in kubernetes client configuration
     load_kube_config(kube_config, kube_context)
@@ -1561,21 +1567,19 @@ def disable_features(cmd, client, resource_group_name, cluster_name, features, k
     if os.getenv('HELMREPONAME') and os.getenv('HELMREPOURL'):
         utils.add_helm_repo(kube_config, kube_context, helm_client_location)
 
-    get_chart_and_disable_features(cmd, connected_cluster, dp_endpoint_dogfood, release_train_dogfood, kube_config, kube_context,
+    get_chart_and_disable_features(cmd, connected_cluster, config_dp_endpoint, release_train, kube_config, kube_context,
                                    helm_client_location, release_namespace, values_file_provided, values_file, disable_azure_rbac,
                                    disable_cluster_connect, disable_cl)
 
     return str.format(consts.Successfully_Disabled_Features, features, connected_cluster.name)
 
 
-def get_chart_and_disable_features(cmd, connected_cluster, dp_endpoint_dogfood, release_train_dogfood, kube_config, kube_context,
+def get_chart_and_disable_features(cmd, connected_cluster, config_dp_endpoint, release_train, kube_config, kube_context,
                                    helm_client_location, release_namespace, values_file_provided, values_file, disable_azure_rbac=False,
                                    disable_cluster_connect=False, disable_cl=False):
-    # Setting the config dataplane endpoint
-    config_dp_endpoint = get_config_dp_endpoint(cmd, connected_cluster.location)
 
     # Retrieving Helm chart OCI Artifact location
-    registry_path = os.getenv('HELMREGISTRY') if os.getenv('HELMREGISTRY') else utils.get_helm_registry(cmd, config_dp_endpoint, dp_endpoint_dogfood, release_train_dogfood)
+    registry_path = os.getenv('HELMREGISTRY') if os.getenv('HELMREGISTRY') else utils.get_helm_registry(cmd, config_dp_endpoint, config_dp_endpoint, release_train)
 
     reg_path_array = registry_path.split(':')
     agent_version = reg_path_array[1]
@@ -2304,25 +2308,23 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
                 if diagnostic_checks[consts.KAP_Security_Policy_Check] == consts.Diagnostic_Check_Passed:
                     diagnostic_checks[consts.KAP_Cert_Check] = troubleshootutils.check_kap_cert(corev1_api_instance)
 
+            # Setting the config dataplane endpoint
+            config_dp_endpoint = get_config_dp_endpoint(cmd, connected_cluster.location)
+
             # Checking whether optional extra values file has been provided.
             values_file_provided, values_file = utils.get_values_file()
 
             # Validate the helm environment file for Dogfood.
-            dp_endpoint_dogfood = None
-            release_train_dogfood = None
             if cmd.cli_ctx.cloud.endpoints.resource_manager == consts.Dogfood_RMEndpoint:
                 consts.Azure_DogfoodCloudName
-                dp_endpoint_dogfood, release_train_dogfood = validate_env_file_dogfood(values_file, values_file_provided)
+                config_dp_endpoint, release_train = validate_env_file_dogfood(values_file, values_file_provided)
 
             # Adding helm repo
             if os.getenv('HELMREPONAME') and os.getenv('HELMREPOURL'):
                 utils.add_helm_repo(kube_config, kube_context, helm_client_location)
 
-            # Setting the config dataplane endpoint
-            config_dp_endpoint = get_config_dp_endpoint(cmd, connected_cluster.location)
-
             # Retrieving Helm chart OCI Artifact location
-            registry_path = os.getenv('HELMREGISTRY') if os.getenv('HELMREGISTRY') else utils.get_helm_registry(cmd, config_dp_endpoint, dp_endpoint_dogfood, release_train_dogfood)
+            registry_path = os.getenv('HELMREGISTRY') if os.getenv('HELMREGISTRY') else utils.get_helm_registry(cmd, config_dp_endpoint, release_train)
 
             # Get azure-arc agent version for telemetry
             azure_arc_agent_version = registry_path.split(':')[1]
