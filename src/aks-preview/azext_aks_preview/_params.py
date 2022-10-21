@@ -116,6 +116,7 @@ from azext_aks_preview._validators import (
     validate_snapshot_name,
     validate_spot_max_price,
     validate_ssh_key,
+    validate_ssh_key_for_update,
     validate_taints,
     validate_user,
     validate_vm_set_type,
@@ -128,6 +129,8 @@ from azext_aks_preview._validators import (
     validate_ksm_labels,
     validate_ksm_annotations,
     validate_disable_windows_outbound_nat,
+    validate_allowed_host_ports,
+    validate_application_security_groups,
 )
 
 # candidates for enumeration
@@ -344,6 +347,8 @@ def load_arguments(self, _):
         # no validation for aks create because it already only supports Linux.
         c.argument('enable_custom_ca_trust', action='store_true')
         c.argument('enable_vpa', action='store_true', is_preview=True, help="enable vertical pod autoscaler for cluster")
+        c.argument('nodepool_allowed_host_ports', validator=validate_allowed_host_ports, is_preview=True, help="allowed host ports for agentpool")
+        c.argument('nodepool_asg_ids', validator=validate_application_security_groups, is_preview=True, help="application security groups for agentpool")
 
     with self.argument_context('aks update') as c:
         # managed cluster paramerters
@@ -384,6 +389,7 @@ def load_arguments(self, _):
         c.argument('disable_defender', action='store_true', validator=validate_defender_disable_and_enable_parameters)
         c.argument('enable_defender', action='store_true')
         c.argument('defender_config', validator=validate_defender_config_parameter)
+        c.argument('ssh_key_value', type=file_type, completer=FilesCompleter(), validator=validate_ssh_key_for_update)
         # addons
         c.argument('enable_secret_rotation', action='store_true')
         c.argument('disable_secret_rotation', action='store_true')
@@ -507,6 +513,8 @@ def load_arguments(self, _):
         c.argument('gpu_instance_profile', arg_type=get_enum_type(gpu_instance_profiles))
         c.argument('enable_custom_ca_trust', action='store_true', validator=validate_enable_custom_ca_trust)
         c.argument('disable_windows_outbound_nat', action='store_true', validator=validate_disable_windows_outbound_nat)
+        c.argument('allowed_host_ports', validator=validate_allowed_host_ports, is_preview=True)
+        c.argument('asg_ids', validator=validate_application_security_groups, is_preview=True)
 
     with self.argument_context('aks nodepool update') as c:
         c.argument('enable_cluster_autoscaler', options_list=[
@@ -526,6 +534,8 @@ def load_arguments(self, _):
         # extensions
         c.argument('enable_custom_ca_trust', action='store_true', validator=validate_enable_custom_ca_trust)
         c.argument('disable_custom_ca_trust', options_list=['--disable-custom-ca-trust', '--dcat'], action='store_true')
+        c.argument('allowed_host_ports', validator=validate_allowed_host_ports, is_preview=True)
+        c.argument('asg_ids', validator=validate_application_security_groups, is_preview=True)
 
     with self.argument_context('aks nodepool upgrade') as c:
         c.argument('max_surge', validator=validate_max_surge)

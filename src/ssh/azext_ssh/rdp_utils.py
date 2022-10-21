@@ -43,8 +43,8 @@ def start_rdp_connection(ssh_info, delete_keys, delete_cert):
         ssh_process, print_ssh_logs = start_ssh_tunnel(ssh_info)
         ssh_connection_t0 = time.time()
         ssh_success, log_list = wait_for_ssh_connection(ssh_process, print_ssh_logs)
-        ssh_utils.do_cleanup(delete_keys, delete_cert, ssh_info.cert_file, ssh_info.private_key_file,
-                             ssh_info.public_key_file)
+        ssh_utils.do_cleanup(delete_keys, delete_cert, ssh_info.delete_credentials, ssh_info.cert_file,
+                             ssh_info.private_key_file, ssh_info.public_key_file)
         if ssh_success and ssh_process.poll() is None:
             call_rdp(local_port)
 
@@ -56,8 +56,8 @@ def start_rdp_connection(ssh_info, delete_keys, delete_cert):
             telemetry.add_extension_event('ssh', ssh_connection_data)
 
         terminate_ssh(ssh_process, log_list, print_ssh_logs)
-        ssh_utils.do_cleanup(delete_keys, delete_cert, ssh_info.cert_file, ssh_info.private_key_file,
-                             ssh_info.public_key_file)
+        ssh_utils.do_cleanup(delete_keys, delete_cert, ssh_info.delete_credentials, ssh_info.cert_file,
+                             ssh_info.private_key_file, ssh_info.public_key_file)
         if delete_keys:
             # This is only true if keys were generated, so they must be in a temp folder.
             temp_dir = os.path.dirname(ssh_info.cert_file)

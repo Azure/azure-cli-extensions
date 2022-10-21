@@ -14,6 +14,7 @@ from azure.cli.command_modules.acs._consts import (
 from azure.cli.command_modules.acs._helpers import (
     check_is_msi_cluster,
     format_parameter_name_to_option_name,
+    safe_list_get,
     safe_lower,
 )
 from azure.cli.command_modules.acs._validators import (
@@ -1948,9 +1949,9 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
                     "Cannot specify --enable-azuremonitormetrics and --enable-azuremonitormetrics at the same time."
                 )
             if not check_is_msi_cluster(self.mc):
-                    raise RequiredArgumentMissingError(
-                        "--enable-azuremonitormetrics can only be specified for clusters with managed identity enabled"
-                    )
+                raise RequiredArgumentMissingError(
+                    "--enable-azuremonitormetrics can only be specified for clusters with managed identity enabled"
+                )
         return enable_azure_monitor_metrics
 
     def get_enable_azure_monitor_metrics(self) -> bool:
@@ -2079,6 +2080,24 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         :return: bool
         """
         return self._get_disable_vpa(enable_validation=True)
+
+    def get_ssh_key_value_for_update(self) -> Tuple[str, bool]:
+        """Obtain the value of ssh_key_value for "az aks update".
+
+        Note: no_ssh_key will not be decorated into the `mc` object.
+
+        If the user provides a string-like input for --ssh-key-value, the validator function "validate_ssh_key_for_update" will
+        check whether it is a file path, if so, read its content and return; if it is a valid public key, return it.
+        Otherwise, raise error.
+
+        :return: ssh_key_value of string type
+        """
+        # read the original value passed by the command
+        ssh_key_value = self.raw_param.get("ssh_key_value")
+
+        # this parameter does not need dynamic completion
+        # this parameter does not need validation
+        return ssh_key_value
 
 
 class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
@@ -2988,6 +3007,27 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                 source_resource_id=snapshot_id
             )
             mc.creation_data = creation_data
+
+        return mc
+
+    def update_linux_profile(self, mc: ManagedCluster) -> ManagedCluster:
+        """Update Linux profile for the ManagedCluster object.
+
+        :return: the ManagedCluster object
+        """
+        self._ensure_mc(mc)
+
+        ssh_key_value = self.context.get_ssh_key_value_for_update()
+
+        if ssh_key_value:
+            mc.linux_profile.ssh = self.models.ContainerServiceSshConfiguration(
+                public_keys=[
+                    self.models.ContainerServiceSshPublicKey(
+                        key_data=ssh_key_value
+                    )
+                ]
+            )
+
         return mc
 
     def update_mc_profile_preview(self) -> ManagedCluster:
@@ -3032,5 +3072,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         mc = self.update_vpa(mc)
         # update creation data
         mc = self.update_creation_data(mc)
+        # update linux profile
+        mc = self.update_linux_profile(mc)
 
         return mc
