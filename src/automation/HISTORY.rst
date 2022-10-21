@@ -5,7 +5,7 @@ Release History
 
 0.2.1
 ++++++
-* `az automation python3-package`: Add new command group to support managing python3 Package operations.
+* `az automation python3-package`: Add new command group to support managing python3 package operations.
 
 0.2.0
 ++++++

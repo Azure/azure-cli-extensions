@@ -18,7 +18,7 @@ class Show(AAZCommand):
     """Get hybrid worker group
 
     :example: Get hybrid worker group
-        az automation hrwg show --automation-account-name accountName --resource-group groupName  --name hybridrunbookworkergroupName
+        az automation hrwg show --automation-account-name accountName --resource-group groupName --name hybridrunbookworkergroupName
     """
 
     _aaz_info = {

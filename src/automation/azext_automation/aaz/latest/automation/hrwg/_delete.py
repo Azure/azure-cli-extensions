@@ -19,7 +19,7 @@ class Delete(AAZCommand):
     """Delete a hybrid runbook worker group.
 
     :example: Delete hybrid worker group
-        az automation hrwg delete --automation-account-name accountName --resource-group groupName  --name hybridrunbookworkergroupName
+        az automation hrwg delete --automation-account-name accountName --resource-group groupName --name hybridrunbookworkergroupName
     """
 
     _aaz_info = {

@@ -18,7 +18,7 @@ class Update(AAZCommand):
     """Update a hybrid runbook worker group.
 
     :example: Update hybrid worker group
-        az automation hrwg update --automation-account-name accountName --resource-group groupName  --name hybridrunbookworkergroupName --credential "{name: credentialname}"
+        az automation hrwg update --automation-account-name accountName --resource-group groupName --name hybridrunbookworkergroupName --credential "{name: credentialname}"
     """
 
     _aaz_info = {
