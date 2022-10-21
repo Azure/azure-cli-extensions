@@ -15,7 +15,10 @@ from azure.cli.core.aaz import *
     "automation hrwg list",
 )
 class List(AAZCommand):
-    """List a list of hybrid runbook worker groups.
+    """List all hybrid runbook worker groups
+
+    :example: List all hybrid runbook worker groups
+        az automation hrwg list --automation-account-name accountName --resource-group groupName
     """
 
     _aaz_info = {

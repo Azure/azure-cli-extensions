@@ -18,7 +18,7 @@ class Create(AAZCommand):
     """Create or Update the python 3 package identified by package name.
 
     :example: Add Python3 Package to automation account
-        az automation python3-package create --automation-account-name "MyAutomationAccount"  --resource-group "MyResourceGroup" --name "PackageName" --content-link "uri=https://PackageUri.com"
+        az automation python3-package create --automation-account-name "MyAutomationAccount" --resource-group "MyResourceGroup" --name "PackageName" --content-link "uri=https://PackageUri.com"
     """
 
     _aaz_info = {
