@@ -333,7 +333,10 @@ def _format_command_sample(command_sample):
     for argument in example_arguments:
         formatted_example.append((Style.PRIMARY, " " + argument))
         if argument in argument_values and argument_values[argument]:
-            formatted_example.append((Style.WARNING, ' <' + ' '.join(argument_values[argument]) + '>'))
+            argument_value = ' '.join(argument_values[argument])
+            if not (argument_value.startswith('<') and argument_value.endswith('>')):
+                argument_value = '<' + argument_value + '>'
+            formatted_example.append((Style.WARNING, ' ' + argument_value))
 
     return formatted_example, example_arguments
 
