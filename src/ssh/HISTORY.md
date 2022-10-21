@@ -1,5 +1,9 @@
 Release History
 ===============
+1.1.3
+-----
+* [bug fix] SSH Banners are printed before authentication.
+
 1.1.2
 -----
 * Remove dependency to cryptography (Az CLI core alredy has cryptography)

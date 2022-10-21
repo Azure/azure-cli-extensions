@@ -190,7 +190,7 @@ def _do_ssh_op(cmd, op_info, op_call):
                          op_info.private_key_file + ', ' if delete_keys else "",
                          op_info.public_key_file + ', ' if delete_keys else "",
                          op_info.cert_file if delete_cert else "")
-            ssh_utils.do_cleanup(delete_keys, delete_cert, op_info.cert_file,
+            ssh_utils.do_cleanup(delete_keys, delete_cert, op_info.delete_credentials, op_info.cert_file,
                                  op_info.private_key_file, op_info.public_key_file)
         raise e
 
