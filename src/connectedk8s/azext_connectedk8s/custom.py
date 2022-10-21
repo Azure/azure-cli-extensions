@@ -914,6 +914,12 @@ def update_connected_cluster(cmd, client, resource_group_name, cluster_name, htt
     # Setting kubeconfig
     kube_config = set_kube_config(kube_config)
 
+    helm_values = get_all_helm_values(release_namespace, kube_config, kube_context, helm_client_location)
+    
+    if helm_values.get('global').get('isLeastPrivilegesMode') is True:
+        if auto_upgrade is True:
+            raise InvalidArgumentValueError("Your cluster is running in least privileges mode. Autoupdates are not supported in this mode", "Refer to this link <aka.ms/link> for more details")
+
     # Escaping comma, forward slash present in https proxy urls, needed for helm params.
     https_proxy = escape_proxy_settings(https_proxy)
 
