@@ -9,6 +9,7 @@ import logging
 import json
 import knack.log
 import os
+import uuid
 
 from azure.cli.core.azclierror import (FileOperationError, AzureInternalError,
                                        InvalidArgumentValueError, AzureResponseError,
@@ -26,7 +27,7 @@ from ..vendored_sdks.azure_quantum.operations import (
 )
 from ..vendored_sdks.azure_quantum.models import BlobDetails, JobStatus
 from ..vendored_sdks.azure_quantum.operations._jobs_operations import JobsOperations    # Was "import Job" in qdk-python
-from .storage import create_container_using_client, get_container_uri, ContainerClient
+from .storage import create_container, create_container_using_client, get_container_uri, ContainerClient, upload_blob
 
 
 MINIMUM_MAX_POLL_WAIT_SECS = 1
@@ -268,8 +269,11 @@ def _submit_qir_v1(cmd, program_args, resource_group_name, workspace_name, locat
     """
     Submit a QIR program or circuit to run on Azure Quantum.
     """
+    if job_output_format is None:
+        job_output_format = "microsoft.quantum-results.v1"
+
     if job_input_source is None:
-        # If no filename of path was given, look in the current folder
+        # If no pathname was specified, look for a QIR file in the current folder
         path = os.path.abspath(os.curdir)
         for file_name in os.listdir(path):
             if file_name.endswith('.ll'):
@@ -278,102 +282,57 @@ def _submit_qir_v1(cmd, program_args, resource_group_name, workspace_name, locat
     if job_input_source is None:
         raise RequiredArgumentMissingError("Failed to submit QIR job: No --job-input-source path was specified.", JOB_SUBMIT_DOC_LINK_MSG)
 
-    # >>>>> For debug: Show the job_input_source value <<<<<
-    knack_logger.warning(">>>>> Got a path for the QIR input: " + job_input_source + " <<<<<")
-    # <<<<<
+    # Upload the QIR file to the workspace's storage account
+    # knack_logger.warning("Uploading the QIR file the Azure Storage account...")
+    
+    # >>>>> Temporarily use a hard-coded connection string <<<<<
+    connection_string = <DELETED BEFORE PUSHING TO GITHUB>
+    
+    container_name = "cli-qir-job-" + str(uuid.uuid4())     # <<<<< Should this start with "quantum-job"? <<<<<
 
-    # >>>>> Upload the QIR file to the storage account
+    container_client = create_container(connection_string, container_name)
+    blob_name = "inputData"
+    content_type = "qir.v1"
+    content_encoding = "utf-8"
+    return_sas_token = True
 
-    # >>>>> For debug <<<<<
-    knack_logger.warning(">>>>> We should upload the QIR to storage now <<<<<")
-    # <<<<<
+    # Open the QIR input file and upload it to a blob
+    with open(job_input_source, encoding="utf-8") as qir_file:
+        blob_data = qir_file.read()
+    blob_uri = upload_blob(container_client, blob_name, content_type, content_encoding, blob_data, return_sas_token)
 
-    # >>>>> Code from old submit function (now renamed _submit_qsharp) with ws renamed ws_info:
-    ws_info = WorkspaceInfo(cmd, resource_group_name, workspace_name, location)
-    # >>>>> This code works (no errors) but is commented out because Flake8 doesn't like variables that are assigned and never used >>>>>
+    # >>>>> What about "submit args"?
+    # >>>>> Code from old submit function, renamed _submit_qsharp, below. Where does this go? >>>>> 
+    # ws = WorkspaceInfo(cmd, resource_group_name, workspace_name, location)
     # target = TargetInfo(cmd, target_id)
-    # token = _get_data_credentials(cmd.cli_ctx, ws_info.subscription).get_token().token
-    # project = None  # >>>>> Is this arg relevant for a QIR job? <<<<<
-    # args = _generate_submit_args(program_args, ws_info, target, token, project, job_name, shots, storage, job_params)
-    # _set_cli_version()  # Sets the USER_AGENT environment variable
-
-    # >>>>> Code from output function, below, with info renamed ws_info...
-    import tempfile
-    import json
-    import os
-    from azure.cli.command_modules.storage._client_factory import blob_data_service_factory
-
-    # >>>>>
-    job_id = "debug-qir-job-id-debug"
+    # token = _get_data_credentials(cmd.cli_ctx, ws.subscription).get_token().token
+    #
+    # args = _generate_submit_args(program_args, ws, target, token, project, job_name, shots, storage, job_params)
+    # _set_cli_version()
     # <<<<<
-    output_path = os.path.join(tempfile.gettempdir(), job_id)
-    # >>>>>
-    knack_logger.warning(">>>>> path = " + output_path + " <<<<<")
-    # <<<<<
-    # info = WorkspaceInfo(cmd, resource_group_name, workspace_name, location)
-    # client = cf_jobs(cmd.cli_ctx, info.subscription, info.resource_group, info.name, info.location)
+
+    # Submit the job
+    start_of_blob_name = blob_uri.find(blob_name)
+    container_uri = blob_uri[0:start_of_blob_name - 1] + "?" + blob_uri.split('?')[1]
+    ws_info = WorkspaceInfo(cmd, resource_group_name, workspace_name, location)
+    target_info = TargetInfo(cmd, target_id)
+    job_id = str(uuid.uuid4())
     client = cf_jobs(cmd.cli_ctx, ws_info.subscription, ws_info.resource_group, ws_info.name, ws_info.location)
+    job_details = {'container_uri': container_uri,
+                   'input_data_format': 'irq.v1',
+                   'output_data_format': job_output_format,
+                   'provider_id': target_info.target_id.split('.')[0],
+                   'target': target_info.target_id}
+    job = client.create(job_id, job_details)
 
-    # >>>>> Debug code...
-    if client is None:
-        knack_logger.warning(">>>>> Client is None <<<<<")
-    else:
-        knack_logger.warning(">>>>> Client is type " + str(type(client)) + " <<<<<")
+    # >>>>>
+    # # job = client.get(job_id)
+    # knack_logger.warning(f"Job Status: {job.status}")
+    # knack_logger.warning(f"Job ID: {job_id}")
     # <<<<<
 
-    # >>>>> The next line gets a "(JobNotFound) Job cannot be found" error >>>>>
-    # job = client.get(job_id)
-
-    # if os.path.exists(path):
-    #     logger.debug("Using existing blob from %s", path)
-    # else:
-    #     logger.debug("Downloading job results blob into %s", path)
-
-    #     if job.status != "Succeeded":
-    #         return job  # If "-o table" is specified, this allows transform_output() in commands.py
-    #         #             to format the output, so the error info is shown. If "-o json" or no "-o"
-    #         #             parameter is specified, then the full JSON job output is displayed, being
-    #         #             consistent with other commands.
-
-    #     args = _parse_blob_url(job.output_data_uri)
-    #     blob_service = blob_data_service_factory(cmd.cli_ctx, args)
-    #     blob_service.get_blob_to_path(args['container'], args['blob'], path)
-
-    # >>>>> FIX THIS >>>>>
-    # job = client.create(job_id, job_details)  #  <-----<<< This fails.  Where do we info for _models.JobDetails ??
-
-    # >>>>> >>>>> For reference...
-    # def create(
-    #     self,
-    #     job_id,  # type: str
-    #     job,  # type: _models.JobDetails
-    #     **kwargs  # type: Any
-    # ):
-    #     # type: (...) -> _models.JobDetails
-    #     """Create a job.
-
-    #     :param job_id: Id of the job.
-    #     :type job_id: str
-    #     :param job: The complete metadata of the job to submit.
-    #     :type job: ~azure.quantum._client.models.JobDetails
-    #     :keyword callable cls: A custom type or function that will be passed the direct response
-    #     :return: JobDetails, or the result of cls(response)
-    #     :rtype: ~azure.quantum._client.models.JobDetails
-    #     :raises: ~azure.core.exceptions.HttpResponseError
-    #     """
-    # <<<<< <<<<<
-
-    # >>>>> For debug <<<<<
-    knack_logger.warning(">>>>> Submit the QIR job now <<<<<")
-    # <<<<<
-
-    # if result.returncode == 0:
-    return      # What data do we return?
-
-    # The QIR job failed to run.
-    # logger.error("Submission of job failed with error code %s", result.returncode)
-    # print(result.stdout.decode('ascii'))
-    raise AzureInternalError("Failed to submit QIR job.")
+    # >>>>> Do we need any logic based on status here? <<<<<
+    return job
 
 
 def _submit_qsharp(cmd, program_args, resource_group_name, workspace_name, location, target_id,
