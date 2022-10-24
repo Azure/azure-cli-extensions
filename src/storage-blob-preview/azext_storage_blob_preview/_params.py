@@ -264,6 +264,8 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
 
     with self.argument_context('storage blob filter') as c:
         c.argument('filter_expression', options_list=['--tag-filter'])
+        c.argument('container_name', container_name_type,
+                   help='Used when you want to list blobs under a specified container')
 
     with self.argument_context('storage blob generate-sas') as c:
         from .completers import get_storage_acl_name_completion_list
