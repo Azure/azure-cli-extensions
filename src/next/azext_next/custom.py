@@ -24,7 +24,7 @@ def handle_next(cmd, command_only=False, scenario_only=False):
         request_type = RecommendType.Command.value
     else:
         # Fallback to the configured filter_type if not command_only and scenario_only
-        request_type = RecommendType.get(cmd.cli_ctx.config.get('next', 'filter_type', fallback='mix')).value
+        request_type = RecommendType.get(cmd.cli_ctx.config.get('next', 'recommended_type', fallback='all')).value
 
     # Upload all execution commands of local record for personalized analysis
     command_history = get_command_list(cmd, 0)
