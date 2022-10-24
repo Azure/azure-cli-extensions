@@ -51,12 +51,7 @@ def handle_next(cmd, command_only=False, scenario_only=False):
     # divide recommendation items into two sets
     command_recommendations = [item for item in recommends if item['type'] != RecommendType.Scenario]
     scenario_recommendations = [item for item in recommends if item['type'] == RecommendType.Scenario]
-    if len(command_recommendations) == 0:
-        multi_type_recommendation = False
-    elif len(scenario_recommendations) == 0:
-        multi_type_recommendation = False
-    else:
-        multi_type_recommendation = True
+    multi_type_recommendation = command_recommendations and scenario_recommendations
 
     if not multi_type_recommendation:
         _give_recommends(cmd, recommends)
