@@ -1,5 +1,17 @@
 Release History
 ===============
+1.1.10
+---
+* Remove `Preview` tag for user-assigned identities of apps.
+
+1.1.9
+---
+* Fix the crash in windows.
+
+1.1.8
+---
+* Add command `az spring app connect`.
+* Add the parameter `language_framework` for deploying the customer image app.
 
 1.1.7
 ---

@@ -85,7 +85,7 @@ from azext_aks_preview._consts import (
     CONST_VIRTUAL_NODE_ADDON_NAME,
     CONST_VIRTUAL_NODE_SUBNET_NAME,
 )
-from azext_aks_preview._helpers import print_or_merge_credentials, get_nodepool_snapshot_by_snapshot_id
+from azext_aks_preview._helpers import print_or_merge_credentials, get_nodepool_snapshot_by_snapshot_id, get_cluster_snapshot_by_snapshot_id
 from azext_aks_preview._podidentity import (
     _ensure_managed_identity_operator_permission,
     _ensure_pod_identity_addon_is_enabled,
@@ -560,12 +560,14 @@ def aks_create(
     load_balancer_outbound_ip_prefixes=None,
     load_balancer_outbound_ports=None,
     load_balancer_idle_timeout=None,
+    load_balancer_backend_pool_type=None,
     nat_gateway_managed_outbound_ip_count=None,
     nat_gateway_idle_timeout=None,
     outbound_type=None,
     network_plugin=None,
     network_plugin_mode=None,
     network_policy=None,
+    kube_proxy_config=None,
     auto_upgrade_channel=None,
     cluster_autoscaler_profile=None,
     uptime_sla=False,
@@ -625,6 +627,8 @@ def aks_create(
     node_count=3,
     nodepool_tags=None,
     nodepool_labels=None,
+    nodepool_allowed_host_ports=None,
+    nodepool_asg_ids=None,
     node_osdisk_type=None,
     node_osdisk_size=0,
     vm_set_type=None,
@@ -671,6 +675,7 @@ def aks_create(
     enable_keda=False,
     enable_node_restriction=False,
     enable_vpa=False,
+    enable_cilium_dataplane=False,
     # nodepool
     host_group_id=None,
     crg_id=None,
@@ -716,6 +721,7 @@ def aks_update(
     load_balancer_outbound_ip_prefixes=None,
     load_balancer_outbound_ports=None,
     load_balancer_idle_timeout=None,
+    load_balancer_backend_pool_type=None,
     nat_gateway_managed_outbound_ip_count=None,
     nat_gateway_idle_timeout=None,
     auto_upgrade_channel=None,
@@ -795,8 +801,16 @@ def aks_update(
     enable_private_cluster=False,
     disable_private_cluster=False,
     private_dns_zone=None,
+    enable_azuremonitormetrics=False,
+    azure_monitor_workspace_resource_id=None,
+    ksm_metric_labels_allow_list=None,
+    ksm_metric_annotations_allow_list=None,
+    grafana_resource_id=None,
+    disable_azuremonitormetrics=False,
     enable_vpa=False,
     disable_vpa=False,
+    cluster_snapshot_id=None,
+    ssh_key_value=None,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
@@ -932,6 +946,7 @@ def aks_upgrade(cmd,    # pylint: disable=unused-argument, too-many-return-state
                 control_plane_only=False,
                 no_wait=False,
                 node_image_only=False,
+                cluster_snapshot_id=None,
                 aks_custom_headers=None,
                 yes=False):
     msg = 'Kubernetes may be unavailable during cluster upgrades.\n Are you sure you want to perform this operation?'
@@ -968,6 +983,18 @@ def aks_upgrade(cmd,    # pylint: disable=unused-argument, too-many-return-state
                 True, agent_pool_client, resource_group_name, name, agent_pool_profile.name, None)
         mc = client.get(resource_group_name, name)
         return _remove_nulls([mc])[0]
+
+    if cluster_snapshot_id:
+        CreationData = cmd.get_models(
+            "CreationData",
+            resource_type=CUSTOM_MGMT_AKS_PREVIEW,
+            operation_group="managed_clusters",
+        )
+        instance.creation_data = CreationData(
+            source_resource_id=cluster_snapshot_id
+        )
+        mcsnapshot = get_cluster_snapshot_by_snapshot_id(cmd.cli_ctx, cluster_snapshot_id)
+        kubernetes_version = mcsnapshot.managed_cluster_properties_read_only.kubernetes_version
 
     if instance.kubernetes_version == kubernetes_version:
         if instance.provisioning_state == "Succeeded":
@@ -1147,6 +1174,9 @@ def aks_agentpool_add(
     workload_runtime=None,
     gpu_instance_profile=None,
     enable_custom_ca_trust=False,
+    disable_windows_outbound_nat=False,
+    allowed_host_ports=None,
+    asg_ids=None,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
@@ -1194,6 +1224,8 @@ def aks_agentpool_update(
     # extensions
     enable_custom_ca_trust=False,
     disable_custom_ca_trust=False,
+    allowed_host_ports=None,
+    asg_ids=None,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
