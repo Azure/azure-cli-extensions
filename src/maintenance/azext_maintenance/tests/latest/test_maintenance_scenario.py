@@ -11,95 +11,223 @@
 import os
 from azure.cli.testsdk import ScenarioTest
 from azure.cli.testsdk import ResourceGroupPreparer
-from .example_steps import step_applyupdate_create
-from .example_steps import step_applyupdate_create_or_update_parent
-from .example_steps import step_applyupdate_show
-from .example_steps import step_applyupdate_show_parent
-from .example_steps import step_applyupdate_list
-from .example_steps import step_configuration_create
-from .example_steps import step_configuration_show
-from .example_steps import step_configuration_show2
-from .example_steps import step_configuration_show3
-from .example_steps import step_configuration_list
-from .example_steps import step_configuration_update
-from .example_steps import step_assignment_create
-from .example_steps import step_assignment_create_or_update_parent
-from .example_steps import step_assignment_show
-from .example_steps import step_assignment_show_parent
-from .example_steps import step_assignment_list
-from .example_steps import step_assignment_list_parent
-from .example_steps import step_assignment_delete
-from .example_steps import step_assignment_delete_parent
-from .example_steps import step_configuration_delete
-from .example_steps import step_public_configuration_show
-from .example_steps import step_public_configuration_list
-from .example_steps import step_update_list
-from .example_steps import step_update_list_parent
-from .. import (
-    try_manual,
-    raise_if,
-    calc_coverage
-)
 
 
-TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
+def setup(test):
+    test.cmd('az vmss create -n "clitestvmss" -g "{rg}"  --instance-count 1 --image "Win2016Datacenter" --data-disk-sizes-gb 2 --admin-password "PasswordCLIMaintenanceRP8!"  --upgrade-policy-mode Automatic ', checks=[])
 
+    # Disable AutomaticUpdates for VM
+    test.cmd('az vmss update --name  "clitestvmss"  -g "{rg}"  --set virtualMachineProfile.osProfile.windowsConfiguration.enableAutomaticUpdates=false', checks=[])
 
-# Env setup_scenario
-@try_manual
-def setup_scenario(test):
+    # Enable Health extension, it is required to enable AutomaticOSUpgradePolicy
+    test.cmd('az vmss extension set --name ApplicationHealthWindows --publisher Microsoft.ManagedServices --version 1.0 --resource-group "{rg}" --vmss-name  clitestvmss --settings \'{HSProbeSettings}\'', checks=[])
+
+    # Enable AutomaticOSUpgradePolicy
+    test.cmd('az vmss update --name "clitestvmss" -g "{rg}" --set UpgradePolicy.AutomaticOSUpgradePolicy.EnableAutomaticOSUpgrade=true', checks=[])
+
     pass
 
 
-# Env cleanup_scenario
-@try_manual
-def cleanup_scenario(test):
+def step__applyupdates_put_applyupdates_createorupdate(test):
+    test.cmd('az maintenance applyupdate create '
+             '--provider-name "Microsoft.Compute" '
+             '--resource-group "{rg}" '
+             '--resource-name "clitestvmss" '
+             '--resource-type "virtualMachineScaleSets"',
+             checks=[])
+
+
+def step__applyupdates_get_applyupdates_get(test):
+    test.cmd('az maintenance applyupdate show '
+             '--name "default" '
+             '--provider-name "Microsoft.Compute" '
+             '--resource-group "{rg}" '
+             '--resource-name "clitestvmss" '
+             '--resource-type "virtualMachineScaleSets"',
+             checks=[])
+
+
+def step__maintenanceconfigurations_put_maintenanceconfigurations_createorupdateforresource(test):
+    test.cmd('az maintenance configuration create '
+             '--location "eastus2euap" '
+             '--maintenance-scope "OSImage" '
+             '--maintenance-window-duration "05:00" '
+             '--maintenance-window-expiration-date-time "9999-12-31 00:00" '
+             '--maintenance-window-recur-every "Day" '
+             '--maintenance-window-start-date-time "2025-09-30 08:00" '
+             '--maintenance-window-time-zone "Pacific Standard Time" '
+             '--namespace "Microsoft.Maintenance" '
+             '--visibility "Custom" '
+             '--resource-group "{rg}" '
+             '--resource-name "configuration1"',
+             checks=[])
+
+
+def step__maintenanceconfigurations_get_maintenanceconfigurations_getforresource(test):
+    test.cmd('az maintenance configuration show '
+             '--resource-group "{rg}" '
+             '--resource-name "configuration1"',
+             checks=[])
+
+
+def step__maintenanceconfigurations_get_maintenanceconfigurations_list(test):
+    test.cmd('az maintenance configuration list',
+             checks=[])
+
+
+def step__maintenanceconfigurations_patch_maintenanceconfigurations_updateforresource(test):
+    test.cmd('az maintenance configuration update '
+             '--location "eastus2euap" '
+             '--maintenance-scope "OSImage" '
+             '--maintenance-window-duration "05:00" '
+             '--maintenance-window-expiration-date-time "9999-12-31 00:00" '
+             '--maintenance-window-recur-every "Day" '
+             '--maintenance-window-start-date-time "2025-09-30 08:00" '
+             '--maintenance-window-time-zone "Pacific Standard Time" '
+             '--namespace "Microsoft.Maintenance" '
+             '--visibility "Custom" '
+             '--resource-group "{rg}" '
+             '--resource-name "configuration1"',
+             checks=[])
+
+
+def step__configurationassignments_put_configurationassignments_createorupdate(test):
+    test.cmd('az maintenance assignment create '
+             '--maintenance-configuration-id "/subscriptions/{subscription_id}/resourcegroups/{rg}/providers/Microsoft.'
+             'Maintenance/maintenanceConfigurations/{MaintenanceConfigurations_2}" '
+             '--provider-name "Microsoft.Compute" '
+             '--resource-group "{rg}" '
+             '--resource-name "clitestvmss" '
+             '--name "{MaintenanceConfigurations_2}" '
+             '--resource-type "virtualMachineScaleSets"',
+             checks=[])
+
+
+def step__configurationassignments_get_configurationassignments_list(test):
+    test.cmd('az maintenance assignment list '
+             '--provider-name "Microsoft.Compute" '
+             '--resource-group "{rg}" '
+             '--resource-name "clitestvmss" '
+             '--resource-type "virtualMachineScaleSets"',
+             checks=[])
+
+
+def step__publicmaintenanceconfigurations_get_publicmaintenanceconfigurations_getforresource(test):
+    test.cmd('az maintenance public-configuration show '
+             '--resource-name "sql2"',
+             checks=[])
+
+
+def step__publicmaintenanceconfigurations_get_publicmaintenanceconfigurations_list(test):
+    test.cmd('az maintenance public-configuration list',
+             checks=[])
+
+
+def step__updates_get_updates_list(test):
+    test.cmd('az maintenance update list '
+             '--provider-name "Microsoft.Compute" '
+             '--resource-group "{rg}" '
+             '--resource-name "clitestvmss" '
+             '--resource-type "virtualMachineScaleSets"',
+             checks=[])
+
+
+def step__configurationassignments_delete_configurationassignments_delete(test):
+    test.cmd('az maintenance assignment delete '
+             '--name "{MaintenanceConfigurations_2}" '
+             '--provider-name "Microsoft.Compute" '
+             '--resource-group "{rg}" '
+             '--resource-name "clitestvmss" '
+             '--resource-type "virtualMachineScaleSets" '
+             '--yes',
+             checks=[])
+
+
+def step__maintenanceconfigurations_delete_maintenanceconfigurations_deleteforresource(test):
+    test.cmd('az maintenance configuration delete '
+             '--resource-group "{rg}" '
+             '--resource-name "configuration1" '
+             '--yes',
+             checks=[])
+
+
+def step__maintenanceconfigurations_delete_publicmaintenanceconfigurations_delete(test):
+    test.cmd('az maintenance configuration delete '
+             '--resource-group "{rg}" '
+             '--resource-name "sqlcli" '
+             '--yes',
+             checks=[])
+
+
+def step__maintenanceconfigurations_put_publicmaintenanceconfigurations_createorupdateforresource(test):
+    test.cmd('az maintenance configuration create '
+             '--location "eastus2euap" '
+             '--maintenance-scope "SQLDB" '
+             '--maintenance-window-duration "05:00" '
+             '--maintenance-window-expiration-date-time "9999-12-31 00:00" '
+             '--maintenance-window-recur-every "Day" '
+             '--maintenance-window-start-date-time "2025-09-30 08:00" '
+             '--maintenance-window-time-zone "Pacific Standard Time" '
+             '--namespace "Microsoft.Maintenance" '
+             '--visibility "Public" '
+             '--resource-group "{rg}" '
+             '--resource-name "sqlcli" '
+             '--extension-properties publicMaintenanceConfigurationId=sqlcli isAvailable=true',
+             checks=[])
+
+def step__maintenanceconfigurations_create_maintenanceconfigurations_inguestpatchdefault(test):
+    test.cmd('az maintenance configuration create --maintenance-scope InGuestPatch '
+        '--maintenance-window-duration "01:00" '
+        '--maintenance-window-expiration-date-time "9999-12-31 00:00" '
+        '--maintenance-window-recur-every "Day" '
+        '--maintenance-window-start-date-time "2022-04-30 08:00" '
+        '--maintenance-window-time-zone "Pacific Standard Time" '
+        '--resource-group  {rg} '
+        '--resource-name clitestmrpconfinguestdefault '
+        '--install-patches-linux-parameters package-name-masks-to-exclude=pkg1 '
+        ' package-name-masks-to-exclude=pkg2  classifications-to-include=Other  '
+        '--reboot-setting IfRequired'
+        , checks=[])
+
+def step__maintenanceconfigurations_create_maintenanceconfigurations_inguestpatchadvanced(test):
+    test.cmd('az maintenance configuration create --maintenance-scope InGuestPatch '
+        '--maintenance-window-duration "01:00" '
+        '--maintenance-window-expiration-date-time "9999-12-31 00:00" '
+        '--maintenance-window-recur-every "Day" '
+        '--maintenance-window-start-date-time "2022-04-30 08:00" '
+        '--maintenance-window-time-zone "Pacific Standard Time" '
+        '--resource-group  {rg} '
+        '--resource-name clitestmrpconfinguestadvanced '
+        , checks=[])
+
+def cleanup(test):
+    test.cmd('az vmss delete -n "clitestvmss" -g "{rg}"', checks=[])
     pass
 
 
-# Testcase: Scenario
-@try_manual
 def call_scenario(test):
-    setup_scenario(test)
-    step_applyupdate_create(test, checks=[])
-    step_applyupdate_create_or_update_parent(test, checks=[])
-    step_applyupdate_show(test, checks=[])
-    step_applyupdate_show_parent(test, checks=[])
-    step_applyupdate_list(test, checks=[])
-    step_configuration_create(test, checks=[])
-    step_configuration_show(test, checks=[])
-    step_configuration_show2(test, checks=[])
-    step_configuration_show3(test, checks=[])
-    step_configuration_list(test, checks=[])
-    step_configuration_update(test, checks=[])
-    step_assignment_create(test, checks=[
-        test.check("maintenanceConfigurationId", "/subscriptions/{subscription_id}/resourcegroups/{rg}/providers/Micros"
-                   "oft.Maintenance/maintenanceConfigurations/{myMaintenanceConfiguration}", case_sensitive=False),
-        test.check("name", "{myConfigurationAssignment}", case_sensitive=False),
-    ])
-    step_assignment_create_or_update_parent(test, checks=[])
-    step_assignment_show(test, checks=[
-        test.check("maintenanceConfigurationId", "/subscriptions/{subscription_id}/resourcegroups/{rg}/providers/Micros"
-                   "oft.Maintenance/maintenanceConfigurations/{myMaintenanceConfiguration}", case_sensitive=False),
-        test.check("name", "{myConfigurationAssignment}", case_sensitive=False),
-    ])
-    step_assignment_show_parent(test, checks=[])
-    step_assignment_list(test, checks=[
-        test.check('length(@)', 1),
-    ])
-    step_assignment_list_parent(test, checks=[])
-    step_assignment_delete(test, checks=[])
-    step_assignment_delete_parent(test, checks=[])
-    step_configuration_delete(test, checks=[])
-    step_public_configuration_show(test, checks=[])
-    step_public_configuration_list(test, checks=[])
-    step_update_list(test, checks=[])
-    step_update_list_parent(test, checks=[])
-    cleanup_scenario(test)
+    setup(test)
+    step__maintenanceconfigurations_put_maintenanceconfigurations_createorupdateforresource(test)
+    step__maintenanceconfigurations_get_maintenanceconfigurations_getforresource(test)
+    step__maintenanceconfigurations_get_maintenanceconfigurations_list(test)
+    step__maintenanceconfigurations_patch_maintenanceconfigurations_updateforresource(test)
+    step__configurationassignments_put_configurationassignments_createorupdate(test)
+    step__configurationassignments_get_configurationassignments_list(test)
+    step__publicmaintenanceconfigurations_get_publicmaintenanceconfigurations_getforresource(test)
+    step__publicmaintenanceconfigurations_get_publicmaintenanceconfigurations_list(test)
+    step__updates_get_updates_list(test)
+    step__applyupdates_put_applyupdates_createorupdate(test)
+    step__applyupdates_get_applyupdates_get(test)
+    step__configurationassignments_delete_configurationassignments_delete(test)
+    step__maintenanceconfigurations_delete_maintenanceconfigurations_deleteforresource(test)
+    step__maintenanceconfigurations_put_publicmaintenanceconfigurations_createorupdateforresource(test)
+    step__maintenanceconfigurations_delete_publicmaintenanceconfigurations_delete(test)
+    step__maintenanceconfigurations_create_maintenanceconfigurations_inguestpatchdefault(test)
+    step__maintenanceconfigurations_create_maintenanceconfigurations_inguestpatchadvanced(test)
+    cleanup(test)
 
 
 # Test class for Scenario
-@try_manual
 class MaintenanceScenarioTest(ScenarioTest):
     def __init__(self, *args, **kwargs):
         super(MaintenanceScenarioTest, self).__init__(*args, **kwargs)
@@ -120,5 +248,3 @@ class MaintenanceScenarioTest(ScenarioTest):
     @ResourceGroupPreparer(name_prefix='clitestmaintenance_examplerg'[:7], key='rg', parameter_name='rg', location="eastus2euap")
     def test_maintenance_Scenario(self, rg):
         call_scenario(self)
-        calc_coverage(__file__)
-        raise_if()
