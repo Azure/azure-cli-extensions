@@ -117,3 +117,33 @@ class AutomanageScenario(ScenarioTest):
         self.cmd('az automanage configuration-profile-assignment arc delete -n default -g {rg} --machine-name '
                  '{arc_name} -y')
         self.cmd('az automanage configuration-profile-assignment list -g {rg}', checks=[JMESPathCheck('length(@)', 0)])
+
+    @ResourceGroupPreparer(location='eastus2euap', name_prefix='clitest.rg.automanage.profileassignment.cluster.')
+    def test_automanage_configuration_profile_assignment_cluster_scenarios(self):
+        self.kwargs.update({
+            'profile_name': self.create_random_name(prefix='profile', length=24),
+            'cluster_name': 'cluster1',
+            'profile_name_2': self.create_random_name(prefix='profile', length=24),
+        })
+        profile_id = self.cmd('az automanage configuration-profile create -n {profile_name} -g {rg} '
+                              '--configuration {{\\\"Antimalware/Enable\\\":true}}').get_output_in_json()["id"]
+        self.kwargs.update({'profile_id': profile_id})
+
+        self.cmd('az stack-hci cluster create --cluster-name {cluster_name} -g {rg}')
+        self.cmd('az automanage configuration-profile-assignment cluster create -n default -g {rg} '
+                 '--cluster-name {cluster_name} --configuration-profile {profile_id}')
+        self.cmd('az automanage configuration-profile-assignment cluster show -n default -g {rg} '
+                 '--cluster-name {cluster_name}',
+                 checks=[JMESPathCheck('name', 'default'),
+                         JMESPathCheck('properties.configurationProfile', profile_id)])
+        self.cmd('az automanage configuration-profile-assignment list -g {rg}', checks=[JMESPathCheck('length(@)', 1)])
+
+        profile_id_2 = self.cmd('az automanage configuration-profile create -n {profile_name_2} -g {rg} '
+                                '--configuration {{\\\"Antimalware/Enable\\\":false}}').get_output_in_json()["id"]
+        self.kwargs.update({'profile_id_2': profile_id_2})
+        self.cmd('az automanage configuration-profile-assignment cluster update --n default -g {rg} '
+                 '--cluster-name {cluster_name} --configuration-profile {profile_id_2}',
+                 checks=[JMESPathCheck('properties.configurationProfile', profile_id_2)])
+        self.cmd('az automanage configuration-profile-assignment cluster delete -n default -g {rg} --cluster-name '
+                 '{cluster_name} -y')
+        self.cmd('az automanage configuration-profile-assignment list -g {rg}', checks=[JMESPathCheck('length(@)', 0)])
