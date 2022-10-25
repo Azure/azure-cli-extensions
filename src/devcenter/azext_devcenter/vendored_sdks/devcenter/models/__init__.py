@@ -31,6 +31,8 @@ try:
     from ._models_py3 import EnvironmentType
     from ._models_py3 import EnvironmentTypeListResult
     from ._models_py3 import EnvironmentTypeUpdate
+    from ._models_py3 import ErrorAdditionalInfo
+    from ._models_py3 import ErrorDetail
     from ._models_py3 import Gallery
     from ._models_py3 import GalleryListResult
     from ._models_py3 import GitCatalog
@@ -54,7 +56,7 @@ try:
     from ._models_py3 import OperationDisplay
     from ._models_py3 import OperationListResult
     from ._models_py3 import OperationStatus
-    from ._models_py3 import OperationStatusError
+    from ._models_py3 import OperationStatusResult
     from ._models_py3 import Pool
     from ._models_py3 import PoolListResult
     from ._models_py3 import PoolProperties
@@ -114,6 +116,8 @@ except (SyntaxError, ImportError):
     from ._models import EnvironmentType  # type: ignore
     from ._models import EnvironmentTypeListResult  # type: ignore
     from ._models import EnvironmentTypeUpdate  # type: ignore
+    from ._models import ErrorAdditionalInfo  # type: ignore
+    from ._models import ErrorDetail  # type: ignore
     from ._models import Gallery  # type: ignore
     from ._models import GalleryListResult  # type: ignore
     from ._models import GitCatalog  # type: ignore
@@ -137,7 +141,7 @@ except (SyntaxError, ImportError):
     from ._models import OperationDisplay  # type: ignore
     from ._models import OperationListResult  # type: ignore
     from ._models import OperationStatus  # type: ignore
-    from ._models import OperationStatusError  # type: ignore
+    from ._models import OperationStatusResult  # type: ignore
     from ._models import Pool  # type: ignore
     from ._models import PoolListResult  # type: ignore
     from ._models import PoolProperties  # type: ignore
@@ -175,6 +179,7 @@ except (SyntaxError, ImportError):
 
 from ._dev_center_enums import (
     ActionType,
+    CatalogSyncState,
     CreatedByType,
     DomainJoinType,
     EnableStatus,
@@ -215,6 +220,8 @@ __all__ = [
     'EnvironmentType',
     'EnvironmentTypeListResult',
     'EnvironmentTypeUpdate',
+    'ErrorAdditionalInfo',
+    'ErrorDetail',
     'Gallery',
     'GalleryListResult',
     'GitCatalog',
@@ -238,7 +245,7 @@ __all__ = [
     'OperationDisplay',
     'OperationListResult',
     'OperationStatus',
-    'OperationStatusError',
+    'OperationStatusResult',
     'Pool',
     'PoolListResult',
     'PoolProperties',
@@ -274,6 +281,7 @@ __all__ = [
     'UserAssignedIdentity',
     'UserRoleAssignmentValue',
     'ActionType',
+    'CatalogSyncState',
     'CreatedByType',
     'DomainJoinType',
     'EnableStatus',

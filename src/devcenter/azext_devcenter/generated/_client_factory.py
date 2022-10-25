@@ -12,8 +12,8 @@
 def cf_devcenter_cl(cli_ctx, *_):
     from azure.cli.core.commands.client_factory import get_mgmt_service_client
     from azext_devcenter.vendored_sdks.devcenter import DevCenter
-
-    return get_mgmt_service_client(cli_ctx, DevCenter)
+    return get_mgmt_service_client(cli_ctx,
+                                   DevCenter)
 
 
 def cf_dev_center(cli_ctx, *_):

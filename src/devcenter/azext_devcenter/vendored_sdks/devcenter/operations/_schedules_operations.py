@@ -58,7 +58,7 @@ class SchedulesOperations(object):
         # type: (...) -> Iterable["models.ScheduleListResult"]
         """Lists schedules for a pool.
 
-        :param resource_group_name: Name of the resource group within the Azure subscription.
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
         :param project_name: The name of the project.
         :type project_name: str
@@ -76,7 +76,7 @@ class SchedulesOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2022-09-01-preview"
+        api_version = "2022-10-12-preview"
         accept = "application/json"
 
         def prepare_request(next_link=None):
@@ -88,8 +88,8 @@ class SchedulesOperations(object):
                 # Construct URL
                 url = self.list_by_pool.metadata['url']  # type: ignore
                 path_format_arguments = {
-                    'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
-                    'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
+                    'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
+                    'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
                     'projectName': self._serialize.url("project_name", project_name, 'str'),
                     'poolName': self._serialize.url("pool_name", pool_name, 'str'),
                 }
@@ -143,7 +143,7 @@ class SchedulesOperations(object):
         # type: (...) -> "models.Schedule"
         """Gets a schedule resource.
 
-        :param resource_group_name: Name of the resource group within the Azure subscription.
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
         :param project_name: The name of the project.
         :type project_name: str
@@ -163,14 +163,14 @@ class SchedulesOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2022-09-01-preview"
+        api_version = "2022-10-12-preview"
         accept = "application/json"
 
         # Construct URL
         url = self.get.metadata['url']  # type: ignore
         path_format_arguments = {
-            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
+            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
             'projectName': self._serialize.url("project_name", project_name, 'str'),
             'poolName': self._serialize.url("pool_name", pool_name, 'str'),
             'scheduleName': self._serialize.url("schedule_name", schedule_name, 'str', max_length=100, min_length=1, pattern=r'^[-\w]+$'),
@@ -219,15 +219,15 @@ class SchedulesOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2022-09-01-preview"
+        api_version = "2022-10-12-preview"
         content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
 
         # Construct URL
         url = self._create_or_update_initial.metadata['url']  # type: ignore
         path_format_arguments = {
-            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
+            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
             'projectName': self._serialize.url("project_name", project_name, 'str'),
             'poolName': self._serialize.url("pool_name", pool_name, 'str'),
             'scheduleName': self._serialize.url("schedule_name", schedule_name, 'str', max_length=100, min_length=1, pattern=r'^[-\w]+$'),
@@ -252,11 +252,15 @@ class SchedulesOperations(object):
         pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
-        if response.status_code not in [201]:
+        if response.status_code not in [200, 201]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
-        deserialized = self._deserialize('Schedule', pipeline_response)
+        if response.status_code == 200:
+            deserialized = self._deserialize('Schedule', pipeline_response)
+
+        if response.status_code == 201:
+            deserialized = self._deserialize('Schedule', pipeline_response)
 
         if cls:
             return cls(pipeline_response, deserialized, {})
@@ -277,7 +281,7 @@ class SchedulesOperations(object):
         # type: (...) -> LROPoller["models.Schedule"]
         """Creates or updates a Schedule.
 
-        :param resource_group_name: Name of the resource group within the Azure subscription.
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
         :param project_name: The name of the project.
         :type project_name: str
@@ -329,8 +333,8 @@ class SchedulesOperations(object):
             return deserialized
 
         path_format_arguments = {
-            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
+            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
             'projectName': self._serialize.url("project_name", project_name, 'str'),
             'poolName': self._serialize.url("pool_name", pool_name, 'str'),
             'scheduleName': self._serialize.url("schedule_name", schedule_name, 'str', max_length=100, min_length=1, pattern=r'^[-\w]+$'),
@@ -360,21 +364,21 @@ class SchedulesOperations(object):
         top=None,  # type: Optional[int]
         **kwargs  # type: Any
     ):
-        # type: (...) -> None
-        cls = kwargs.pop('cls', None)  # type: ClsType[None]
+        # type: (...) -> Optional["models.Schedule"]
+        cls = kwargs.pop('cls', None)  # type: ClsType[Optional["models.Schedule"]]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2022-09-01-preview"
+        api_version = "2022-10-12-preview"
         content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
 
         # Construct URL
         url = self._update_initial.metadata['url']  # type: ignore
         path_format_arguments = {
-            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
+            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
             'projectName': self._serialize.url("project_name", project_name, 'str'),
             'poolName': self._serialize.url("pool_name", pool_name, 'str'),
             'scheduleName': self._serialize.url("schedule_name", schedule_name, 'str', max_length=100, min_length=1, pattern=r'^[-\w]+$'),
@@ -399,13 +403,18 @@ class SchedulesOperations(object):
         pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
-        if response.status_code not in [202]:
+        if response.status_code not in [200, 202]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
-        if cls:
-            return cls(pipeline_response, None, {})
+        deserialized = None
+        if response.status_code == 200:
+            deserialized = self._deserialize('Schedule', pipeline_response)
 
+        if cls:
+            return cls(pipeline_response, deserialized, {})
+
+        return deserialized
     _update_initial.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DevCenter/projects/{projectName}/pools/{poolName}/schedules/{scheduleName}'}  # type: ignore
 
     def begin_update(
@@ -418,10 +427,10 @@ class SchedulesOperations(object):
         top=None,  # type: Optional[int]
         **kwargs  # type: Any
     ):
-        # type: (...) -> LROPoller[None]
+        # type: (...) -> LROPoller["models.Schedule"]
         """Partially updates a Scheduled.
 
-        :param resource_group_name: Name of the resource group within the Azure subscription.
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
         :param project_name: The name of the project.
         :type project_name: str
@@ -439,12 +448,12 @@ class SchedulesOperations(object):
          polling object for personal polling strategy
         :paramtype polling: bool or ~azure.core.polling.PollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
-        :return: An instance of LROPoller that returns either None or the result of cls(response)
-        :rtype: ~azure.core.polling.LROPoller[None]
+        :return: An instance of LROPoller that returns either Schedule or the result of cls(response)
+        :rtype: ~azure.core.polling.LROPoller[~dev_center.models.Schedule]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         polling = kwargs.pop('polling', True)  # type: Union[bool, PollingMethod]
-        cls = kwargs.pop('cls', None)  # type: ClsType[None]
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.Schedule"]
         lro_delay = kwargs.pop(
             'polling_interval',
             self._config.polling_interval
@@ -466,12 +475,15 @@ class SchedulesOperations(object):
         kwargs.pop('content_type', None)
 
         def get_long_running_output(pipeline_response):
+            deserialized = self._deserialize('Schedule', pipeline_response)
+
             if cls:
-                return cls(pipeline_response, None, {})
+                return cls(pipeline_response, deserialized, {})
+            return deserialized
 
         path_format_arguments = {
-            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
+            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
             'projectName': self._serialize.url("project_name", project_name, 'str'),
             'poolName': self._serialize.url("pool_name", pool_name, 'str'),
             'scheduleName': self._serialize.url("schedule_name", schedule_name, 'str', max_length=100, min_length=1, pattern=r'^[-\w]+$'),
@@ -506,14 +518,14 @@ class SchedulesOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2022-09-01-preview"
+        api_version = "2022-10-12-preview"
         accept = "application/json"
 
         # Construct URL
         url = self._delete_initial.metadata['url']  # type: ignore
         path_format_arguments = {
-            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
+            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
             'projectName': self._serialize.url("project_name", project_name, 'str'),
             'poolName': self._serialize.url("pool_name", pool_name, 'str'),
             'scheduleName': self._serialize.url("schedule_name", schedule_name, 'str', max_length=100, min_length=1, pattern=r'^[-\w]+$'),
@@ -555,7 +567,7 @@ class SchedulesOperations(object):
         # type: (...) -> LROPoller[None]
         """Deletes a Scheduled.
 
-        :param resource_group_name: Name of the resource group within the Azure subscription.
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
         :param project_name: The name of the project.
         :type project_name: str
@@ -601,8 +613,8 @@ class SchedulesOperations(object):
                 return cls(pipeline_response, None, {})
 
         path_format_arguments = {
-            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
+            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
             'projectName': self._serialize.url("project_name", project_name, 'str'),
             'poolName': self._serialize.url("pool_name", pool_name, 'str'),
             'scheduleName': self._serialize.url("schedule_name", schedule_name, 'str', max_length=100, min_length=1, pattern=r'^[-\w]+$'),

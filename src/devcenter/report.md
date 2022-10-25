@@ -184,7 +184,7 @@ az devcenter attached-network list --project-name "{projectName}" --resource-gro
 ##### <a name="ParametersAttachedNetworksListByProject">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
 |------|----|-----------|----------|------------|
-|**--resource-group-name**|string|Name of the resource group within the Azure subscription.|resource_group_name|resourceGroupName|
+|**--resource-group-name**|string|The name of the resource group. The name is case insensitive.|resource_group_name|resourceGroupName|
 |**--project-name**|string|The name of the project.|project_name|projectName|
 |**--top**|integer|The maximum number of resources to return from the operation. Example: '$top=10'.|top|$top|
 
@@ -197,7 +197,7 @@ az devcenter attached-network list --dev-center-name "Contoso" --resource-group 
 ##### <a name="ParametersAttachedNetworksListByDevCenter">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
 |------|----|-----------|----------|------------|
-|**--resource-group-name**|string|Name of the resource group within the Azure subscription.|resource_group_name|resourceGroupName|
+|**--resource-group-name**|string|The name of the resource group. The name is case insensitive.|resource_group_name|resourceGroupName|
 |**--dev-center-name**|string|The name of the devcenter.|dev_center_name|devCenterName|
 |**--top**|integer|The maximum number of resources to return from the operation. Example: '$top=10'.|top|$top|
 
@@ -211,7 +211,7 @@ az devcenter attached-network show --attached-network-connection-name "network-u
 ##### <a name="ParametersAttachedNetworksGetByProject">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
 |------|----|-----------|----------|------------|
-|**--resource-group-name**|string|Name of the resource group within the Azure subscription.|resource_group_name|resourceGroupName|
+|**--resource-group-name**|string|The name of the resource group. The name is case insensitive.|resource_group_name|resourceGroupName|
 |**--project-name**|string|The name of the project.|project_name|projectName|
 |**--attached-network-connection-name**|string|The name of the attached NetworkConnection.|attached_network_connection_name|attachedNetworkConnectionName|
 
@@ -225,7 +225,7 @@ az devcenter attached-network show --attached-network-connection-name "network-u
 ##### <a name="ParametersAttachedNetworksGetByDevCenter">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
 |------|----|-----------|----------|------------|
-|**--resource-group-name**|string|Name of the resource group within the Azure subscription.|resource_group_name|resourceGroupName|
+|**--resource-group-name**|string|The name of the resource group. The name is case insensitive.|resource_group_name|resourceGroupName|
 |**--dev-center-name**|string|The name of the devcenter.|dev_center_name|devCenterName|
 |**--attached-network-connection-name**|string|The name of the attached NetworkConnection.|attached_network_connection_name|attachedNetworkConnectionName|
 
@@ -240,7 +240,7 @@ tions/network-uswest3" --dev-center-name "Contoso" --resource-group "rg1"
 ##### <a name="ParametersAttachedNetworksCreateOrUpdate#Create">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
 |------|----|-----------|----------|------------|
-|**--resource-group-name**|string|Name of the resource group within the Azure subscription.|resource_group_name|resourceGroupName|
+|**--resource-group-name**|string|The name of the resource group. The name is case insensitive.|resource_group_name|resourceGroupName|
 |**--dev-center-name**|string|The name of the devcenter.|dev_center_name|devCenterName|
 |**--attached-network-connection-name**|string|The name of the attached NetworkConnection.|attached_network_connection_name|attachedNetworkConnectionName|
 |**--network-connection-id**|string|The resource ID of the NetworkConnection you want to attach.|network_connection_id|networkConnectionId|
@@ -251,7 +251,7 @@ tions/network-uswest3" --dev-center-name "Contoso" --resource-group "rg1"
 ##### <a name="ParametersAttachedNetworksCreateOrUpdate#Update">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
 |------|----|-----------|----------|------------|
-|**--resource-group-name**|string|Name of the resource group within the Azure subscription.|resource_group_name|resourceGroupName|
+|**--resource-group-name**|string|The name of the resource group. The name is case insensitive.|resource_group_name|resourceGroupName|
 |**--dev-center-name**|string|The name of the devcenter.|dev_center_name|devCenterName|
 |**--attached-network-connection-name**|string|The name of the attached NetworkConnection.|attached_network_connection_name|attachedNetworkConnectionName|
 |**--network-connection-id**|string|The resource ID of the NetworkConnection you want to attach.|network_connection_id|networkConnectionId|
@@ -266,7 +266,7 @@ az devcenter attached-network delete --attached-network-connection-name "{attach
 ##### <a name="ParametersAttachedNetworksDelete">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
 |------|----|-----------|----------|------------|
-|**--resource-group-name**|string|Name of the resource group within the Azure subscription.|resource_group_name|resourceGroupName|
+|**--resource-group-name**|string|The name of the resource group. The name is case insensitive.|resource_group_name|resourceGroupName|
 |**--dev-center-name**|string|The name of the devcenter.|dev_center_name|devCenterName|
 |**--attached-network-connection-name**|string|The name of the attached NetworkConnection.|attached_network_connection_name|attachedNetworkConnectionName|
 
@@ -280,7 +280,7 @@ az devcenter catalog list --dev-center-name "Contoso" --resource-group "rg1"
 ##### <a name="ParametersCatalogsListByDevCenter">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
 |------|----|-----------|----------|------------|
-|**--resource-group-name**|string|Name of the resource group within the Azure subscription.|resource_group_name|resourceGroupName|
+|**--resource-group-name**|string|The name of the resource group. The name is case insensitive.|resource_group_name|resourceGroupName|
 |**--dev-center-name**|string|The name of the devcenter.|dev_center_name|devCenterName|
 |**--top**|integer|The maximum number of resources to return from the operation. Example: '$top=10'.|top|$top|
 
@@ -293,7 +293,7 @@ az devcenter catalog show --name "{catalogName}" --dev-center-name "Contoso" --r
 ##### <a name="ParametersCatalogsGet">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
 |------|----|-----------|----------|------------|
-|**--resource-group-name**|string|Name of the resource group within the Azure subscription.|resource_group_name|resourceGroupName|
+|**--resource-group-name**|string|The name of the resource group. The name is case insensitive.|resource_group_name|resourceGroupName|
 |**--dev-center-name**|string|The name of the devcenter.|dev_center_name|devCenterName|
 |**--catalog-name**|string|The name of the Catalog.|catalog_name|catalogName|
 
@@ -311,7 +311,7 @@ net/secrets/CentralRepoPat" uri="https://github.com/Contoso/centralrepo-fake.git
 ##### <a name="ParametersCatalogsCreateOrUpdate#Create">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
 |------|----|-----------|----------|------------|
-|**--resource-group-name**|string|Name of the resource group within the Azure subscription.|resource_group_name|resourceGroupName|
+|**--resource-group-name**|string|The name of the resource group. The name is case insensitive.|resource_group_name|resourceGroupName|
 |**--dev-center-name**|string|The name of the devcenter.|dev_center_name|devCenterName|
 |**--catalog-name**|string|The name of the Catalog.|catalog_name|catalogName|
 |**--git-hub**|object|Properties for a GitHub catalog type.|git_hub|gitHub|
@@ -327,7 +327,7 @@ az devcenter catalog update --git-hub path="/environments" --name "{catalogName}
 ##### <a name="ParametersCatalogsUpdate">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
 |------|----|-----------|----------|------------|
-|**--resource-group-name**|string|Name of the resource group within the Azure subscription.|resource_group_name|resourceGroupName|
+|**--resource-group-name**|string|The name of the resource group. The name is case insensitive.|resource_group_name|resourceGroupName|
 |**--dev-center-name**|string|The name of the devcenter.|dev_center_name|devCenterName|
 |**--catalog-name**|string|The name of the Catalog.|catalog_name|catalogName|
 |**--tags**|dictionary|Resource tags.|tags|tags|
@@ -343,7 +343,7 @@ az devcenter catalog delete --name "{catalogName}" --dev-center-name "Contoso" -
 ##### <a name="ParametersCatalogsDelete">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
 |------|----|-----------|----------|------------|
-|**--resource-group-name**|string|Name of the resource group within the Azure subscription.|resource_group_name|resourceGroupName|
+|**--resource-group-name**|string|The name of the resource group. The name is case insensitive.|resource_group_name|resourceGroupName|
 |**--dev-center-name**|string|The name of the devcenter.|dev_center_name|devCenterName|
 |**--catalog-name**|string|The name of the Catalog.|catalog_name|catalogName|
 
@@ -356,7 +356,7 @@ az devcenter catalog sync --name "{catalogName}" --dev-center-name "Contoso" --r
 ##### <a name="ParametersCatalogsSync">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
 |------|----|-----------|----------|------------|
-|**--resource-group-name**|string|Name of the resource group within the Azure subscription.|resource_group_name|resourceGroupName|
+|**--resource-group-name**|string|The name of the resource group. The name is case insensitive.|resource_group_name|resourceGroupName|
 |**--dev-center-name**|string|The name of the devcenter.|dev_center_name|devCenterName|
 |**--catalog-name**|string|The name of the Catalog.|catalog_name|catalogName|
 
@@ -370,7 +370,7 @@ az devcenter dev-box-definition list --dev-center-name "Contoso" --resource-grou
 ##### <a name="ParametersDevBoxDefinitionsListByDevCenter">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
 |------|----|-----------|----------|------------|
-|**--resource-group-name**|string|Name of the resource group within the Azure subscription.|resource_group_name|resourceGroupName|
+|**--resource-group-name**|string|The name of the resource group. The name is case insensitive.|resource_group_name|resourceGroupName|
 |**--dev-center-name**|string|The name of the devcenter.|dev_center_name|devCenterName|
 |**--top**|integer|The maximum number of resources to return from the operation. Example: '$top=10'.|top|$top|
 
@@ -383,7 +383,7 @@ az devcenter dev-box-definition list --project-name "ContosoProject" --resource-
 ##### <a name="ParametersDevBoxDefinitionsListByProject">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
 |------|----|-----------|----------|------------|
-|**--resource-group-name**|string|Name of the resource group within the Azure subscription.|resource_group_name|resourceGroupName|
+|**--resource-group-name**|string|The name of the resource group. The name is case insensitive.|resource_group_name|resourceGroupName|
 |**--project-name**|string|The name of the project.|project_name|projectName|
 |**--top**|integer|The maximum number of resources to return from the operation. Example: '$top=10'.|top|$top|
 
@@ -396,7 +396,7 @@ az devcenter dev-box-definition show --name "WebDevBox" --dev-center-name "Conto
 ##### <a name="ParametersDevBoxDefinitionsGet">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
 |------|----|-----------|----------|------------|
-|**--resource-group-name**|string|Name of the resource group within the Azure subscription.|resource_group_name|resourceGroupName|
+|**--resource-group-name**|string|The name of the resource group. The name is case insensitive.|resource_group_name|resourceGroupName|
 |**--dev-center-name**|string|The name of the devcenter.|dev_center_name|devCenterName|
 |**--dev-box-definition-name**|string|The name of the Dev Box definition.|dev_box_definition_name|devBoxDefinitionName|
 
@@ -409,7 +409,7 @@ az devcenter dev-box-definition show --name "WebDevBox" --project-name "ContosoP
 ##### <a name="ParametersDevBoxDefinitionsGetByProject">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
 |------|----|-----------|----------|------------|
-|**--resource-group-name**|string|Name of the resource group within the Azure subscription.|resource_group_name|resourceGroupName|
+|**--resource-group-name**|string|The name of the resource group. The name is case insensitive.|resource_group_name|resourceGroupName|
 |**--project-name**|string|The name of the project.|project_name|projectName|
 |**--dev-box-definition-name**|string|The name of the Dev Box definition.|dev_box_definition_name|devBoxDefinitionName|
 
@@ -425,7 +425,7 @@ az devcenter dev-box-definition create --location "centralus" --image-reference 
 ##### <a name="ParametersDevBoxDefinitionsCreateOrUpdate#Create">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
 |------|----|-----------|----------|------------|
-|**--resource-group-name**|string|Name of the resource group within the Azure subscription.|resource_group_name|resourceGroupName|
+|**--resource-group-name**|string|The name of the resource group. The name is case insensitive.|resource_group_name|resourceGroupName|
 |**--dev-center-name**|string|The name of the devcenter.|dev_center_name|devCenterName|
 |**--dev-box-definition-name**|string|The name of the Dev Box definition.|dev_box_definition_name|devBoxDefinitionName|
 |**--location**|string|The geo-location where the resource lives|location|location|
@@ -445,7 +445,7 @@ eGroups/Example/providers/Microsoft.DevCenter/devcenters/Contoso/galleries/conto
 ##### <a name="ParametersDevBoxDefinitionsUpdate">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
 |------|----|-----------|----------|------------|
-|**--resource-group-name**|string|Name of the resource group within the Azure subscription.|resource_group_name|resourceGroupName|
+|**--resource-group-name**|string|The name of the resource group. The name is case insensitive.|resource_group_name|resourceGroupName|
 |**--dev-center-name**|string|The name of the devcenter.|dev_center_name|devCenterName|
 |**--dev-box-definition-name**|string|The name of the Dev Box definition.|dev_box_definition_name|devBoxDefinitionName|
 |**--tags**|dictionary|Resource tags.|tags|tags|
@@ -463,7 +463,7 @@ az devcenter dev-box-definition delete --name "WebDevBox" --dev-center-name "Con
 ##### <a name="ParametersDevBoxDefinitionsDelete">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
 |------|----|-----------|----------|------------|
-|**--resource-group-name**|string|Name of the resource group within the Azure subscription.|resource_group_name|resourceGroupName|
+|**--resource-group-name**|string|The name of the resource group. The name is case insensitive.|resource_group_name|resourceGroupName|
 |**--dev-center-name**|string|The name of the devcenter.|dev_center_name|devCenterName|
 |**--dev-box-definition-name**|string|The name of the Dev Box definition.|dev_box_definition_name|devBoxDefinitionName|
 
@@ -477,7 +477,7 @@ az devcenter dev-center list --resource-group "rg1"
 ##### <a name="ParametersDevCentersListByResourceGroup">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
 |------|----|-----------|----------|------------|
-|**--resource-group-name**|string|Name of the resource group within the Azure subscription.|resource_group_name|resourceGroupName|
+|**--resource-group-name**|string|The name of the resource group. The name is case insensitive.|resource_group_name|resourceGroupName|
 |**--top**|integer|The maximum number of resources to return from the operation. Example: '$top=10'.|top|$top|
 
 #### <a name="DevCentersListBySubscription">Command `az devcenter dev-center list`</a>
@@ -500,7 +500,7 @@ az devcenter dev-center show --name "Contoso" --resource-group "rg1"
 ##### <a name="ParametersDevCentersGet">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
 |------|----|-----------|----------|------------|
-|**--resource-group-name**|string|Name of the resource group within the Azure subscription.|resource_group_name|resourceGroupName|
+|**--resource-group-name**|string|The name of the resource group. The name is case insensitive.|resource_group_name|resourceGroupName|
 |**--dev-center-name**|string|The name of the devcenter.|dev_center_name|devCenterName|
 
 #### <a name="DevCentersCreateOrUpdate#Create">Command `az devcenter dev-center create`</a>
@@ -515,7 +515,7 @@ az devcenter dev-center create --type "UserAssigned" --user-assigned-identities 
 ##### <a name="ParametersDevCentersCreateOrUpdate#Create">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
 |------|----|-----------|----------|------------|
-|**--resource-group-name**|string|Name of the resource group within the Azure subscription.|resource_group_name|resourceGroupName|
+|**--resource-group-name**|string|The name of the resource group. The name is case insensitive.|resource_group_name|resourceGroupName|
 |**--dev-center-name**|string|The name of the devcenter.|dev_center_name|devCenterName|
 |**--location**|string|The geo-location where the resource lives|location|location|
 |**--tags**|dictionary|Resource tags.|tags|tags|
@@ -531,7 +531,7 @@ az devcenter dev-center update --tags CostCode="12345" --name "Contoso" --resour
 ##### <a name="ParametersDevCentersUpdate">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
 |------|----|-----------|----------|------------|
-|**--resource-group-name**|string|Name of the resource group within the Azure subscription.|resource_group_name|resourceGroupName|
+|**--resource-group-name**|string|The name of the resource group. The name is case insensitive.|resource_group_name|resourceGroupName|
 |**--dev-center-name**|string|The name of the devcenter.|dev_center_name|devCenterName|
 |**--tags**|dictionary|Resource tags.|tags|tags|
 |**--location**|string|The geo-location where the resource lives|location|location|
@@ -547,7 +547,7 @@ az devcenter dev-center delete --name "Contoso" --resource-group "rg1"
 ##### <a name="ParametersDevCentersDelete">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
 |------|----|-----------|----------|------------|
-|**--resource-group-name**|string|Name of the resource group within the Azure subscription.|resource_group_name|resourceGroupName|
+|**--resource-group-name**|string|The name of the resource group. The name is case insensitive.|resource_group_name|resourceGroupName|
 |**--dev-center-name**|string|The name of the devcenter.|dev_center_name|devCenterName|
 
 ### group `az devcenter environment-type`
@@ -560,7 +560,7 @@ az devcenter environment-type list --dev-center-name "Contoso" --resource-group 
 ##### <a name="ParametersEnvironmentTypesListByDevCenter">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
 |------|----|-----------|----------|------------|
-|**--resource-group-name**|string|Name of the resource group within the Azure subscription.|resource_group_name|resourceGroupName|
+|**--resource-group-name**|string|The name of the resource group. The name is case insensitive.|resource_group_name|resourceGroupName|
 |**--dev-center-name**|string|The name of the devcenter.|dev_center_name|devCenterName|
 |**--top**|integer|The maximum number of resources to return from the operation. Example: '$top=10'.|top|$top|
 
@@ -573,7 +573,7 @@ az devcenter environment-type show --dev-center-name "Contoso" --name "{environm
 ##### <a name="ParametersEnvironmentTypesGet">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
 |------|----|-----------|----------|------------|
-|**--resource-group-name**|string|Name of the resource group within the Azure subscription.|resource_group_name|resourceGroupName|
+|**--resource-group-name**|string|The name of the resource group. The name is case insensitive.|resource_group_name|resourceGroupName|
 |**--dev-center-name**|string|The name of the devcenter.|dev_center_name|devCenterName|
 |**--environment-type-name**|string|The name of the environment type.|environment_type_name|environmentTypeName|
 
@@ -587,7 +587,7 @@ az devcenter environment-type create --tags Owner="superuser" --dev-center-name 
 ##### <a name="ParametersEnvironmentTypesCreateOrUpdate#Create">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
 |------|----|-----------|----------|------------|
-|**--resource-group-name**|string|Name of the resource group within the Azure subscription.|resource_group_name|resourceGroupName|
+|**--resource-group-name**|string|The name of the resource group. The name is case insensitive.|resource_group_name|resourceGroupName|
 |**--dev-center-name**|string|The name of the devcenter.|dev_center_name|devCenterName|
 |**--environment-type-name**|string|The name of the environment type.|environment_type_name|environmentTypeName|
 |**--tags**|dictionary|Resource tags.|tags|tags|
@@ -602,7 +602,7 @@ az devcenter environment-type update --tags Owner="superuser" --dev-center-name 
 ##### <a name="ParametersEnvironmentTypesUpdate">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
 |------|----|-----------|----------|------------|
-|**--resource-group-name**|string|Name of the resource group within the Azure subscription.|resource_group_name|resourceGroupName|
+|**--resource-group-name**|string|The name of the resource group. The name is case insensitive.|resource_group_name|resourceGroupName|
 |**--dev-center-name**|string|The name of the devcenter.|dev_center_name|devCenterName|
 |**--environment-type-name**|string|The name of the environment type.|environment_type_name|environmentTypeName|
 |**--tags**|dictionary|Resource tags.|tags|tags|
@@ -616,7 +616,7 @@ az devcenter environment-type delete --dev-center-name "Contoso" --name "{enviro
 ##### <a name="ParametersEnvironmentTypesDelete">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
 |------|----|-----------|----------|------------|
-|**--resource-group-name**|string|Name of the resource group within the Azure subscription.|resource_group_name|resourceGroupName|
+|**--resource-group-name**|string|The name of the resource group. The name is case insensitive.|resource_group_name|resourceGroupName|
 |**--dev-center-name**|string|The name of the devcenter.|dev_center_name|devCenterName|
 |**--environment-type-name**|string|The name of the environment type.|environment_type_name|environmentTypeName|
 
@@ -630,7 +630,7 @@ az devcenter gallery list --dev-center-name "Contoso" --resource-group "rg1"
 ##### <a name="ParametersGalleriesListByDevCenter">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
 |------|----|-----------|----------|------------|
-|**--resource-group-name**|string|Name of the resource group within the Azure subscription.|resource_group_name|resourceGroupName|
+|**--resource-group-name**|string|The name of the resource group. The name is case insensitive.|resource_group_name|resourceGroupName|
 |**--dev-center-name**|string|The name of the devcenter.|dev_center_name|devCenterName|
 |**--top**|integer|The maximum number of resources to return from the operation. Example: '$top=10'.|top|$top|
 
@@ -643,7 +643,7 @@ az devcenter gallery show --dev-center-name "Contoso" --name "{galleryName}" --r
 ##### <a name="ParametersGalleriesGet">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
 |------|----|-----------|----------|------------|
-|**--resource-group-name**|string|Name of the resource group within the Azure subscription.|resource_group_name|resourceGroupName|
+|**--resource-group-name**|string|The name of the resource group. The name is case insensitive.|resource_group_name|resourceGroupName|
 |**--dev-center-name**|string|The name of the devcenter.|dev_center_name|devCenterName|
 |**--gallery-name**|string|The name of the gallery.|gallery_name|galleryName|
 
@@ -657,7 +657,7 @@ ft.Compute/galleries/{galleryName}" --dev-center-name "Contoso" --name "{gallery
 ##### <a name="ParametersGalleriesCreateOrUpdate#Create">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
 |------|----|-----------|----------|------------|
-|**--resource-group-name**|string|Name of the resource group within the Azure subscription.|resource_group_name|resourceGroupName|
+|**--resource-group-name**|string|The name of the resource group. The name is case insensitive.|resource_group_name|resourceGroupName|
 |**--dev-center-name**|string|The name of the devcenter.|dev_center_name|devCenterName|
 |**--gallery-name**|string|The name of the gallery.|gallery_name|galleryName|
 |**--gallery-resource-id**|string|The resource ID of the backing Azure Compute Gallery.|gallery_resource_id|galleryResourceId|
@@ -668,7 +668,7 @@ ft.Compute/galleries/{galleryName}" --dev-center-name "Contoso" --name "{gallery
 ##### <a name="ParametersGalleriesCreateOrUpdate#Update">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
 |------|----|-----------|----------|------------|
-|**--resource-group-name**|string|Name of the resource group within the Azure subscription.|resource_group_name|resourceGroupName|
+|**--resource-group-name**|string|The name of the resource group. The name is case insensitive.|resource_group_name|resourceGroupName|
 |**--dev-center-name**|string|The name of the devcenter.|dev_center_name|devCenterName|
 |**--gallery-name**|string|The name of the gallery.|gallery_name|galleryName|
 |**--gallery-resource-id**|string|The resource ID of the backing Azure Compute Gallery.|gallery_resource_id|galleryResourceId|
@@ -682,7 +682,7 @@ az devcenter gallery delete --dev-center-name "Contoso" --name "{galleryName}" -
 ##### <a name="ParametersGalleriesDelete">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
 |------|----|-----------|----------|------------|
-|**--resource-group-name**|string|Name of the resource group within the Azure subscription.|resource_group_name|resourceGroupName|
+|**--resource-group-name**|string|The name of the resource group. The name is case insensitive.|resource_group_name|resourceGroupName|
 |**--dev-center-name**|string|The name of the devcenter.|dev_center_name|devCenterName|
 |**--gallery-name**|string|The name of the gallery.|gallery_name|galleryName|
 
@@ -696,7 +696,7 @@ az devcenter image list --dev-center-name "Contoso" --gallery-name "DevGallery" 
 ##### <a name="ParametersImagesListByGallery">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
 |------|----|-----------|----------|------------|
-|**--resource-group-name**|string|Name of the resource group within the Azure subscription.|resource_group_name|resourceGroupName|
+|**--resource-group-name**|string|The name of the resource group. The name is case insensitive.|resource_group_name|resourceGroupName|
 |**--dev-center-name**|string|The name of the devcenter.|dev_center_name|devCenterName|
 |**--gallery-name**|string|The name of the gallery.|gallery_name|galleryName|
 |**--top**|integer|The maximum number of resources to return from the operation. Example: '$top=10'.|top|$top|
@@ -710,7 +710,7 @@ az devcenter image list --dev-center-name "Contoso" --resource-group "rg1"
 ##### <a name="ParametersImagesListByDevCenter">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
 |------|----|-----------|----------|------------|
-|**--resource-group-name**|string|Name of the resource group within the Azure subscription.|resource_group_name|resourceGroupName|
+|**--resource-group-name**|string|The name of the resource group. The name is case insensitive.|resource_group_name|resourceGroupName|
 |**--dev-center-name**|string|The name of the devcenter.|dev_center_name|devCenterName|
 |**--top**|integer|The maximum number of resources to return from the operation. Example: '$top=10'.|top|$top|
 
@@ -724,7 +724,7 @@ az devcenter image show --dev-center-name "Contoso" --gallery-name "DefaultDevGa
 ##### <a name="ParametersImagesGet">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
 |------|----|-----------|----------|------------|
-|**--resource-group-name**|string|Name of the resource group within the Azure subscription.|resource_group_name|resourceGroupName|
+|**--resource-group-name**|string|The name of the resource group. The name is case insensitive.|resource_group_name|resourceGroupName|
 |**--dev-center-name**|string|The name of the devcenter.|dev_center_name|devCenterName|
 |**--gallery-name**|string|The name of the gallery.|gallery_name|galleryName|
 |**--image-name**|string|The name of the image.|image_name|imageName|
@@ -740,7 +740,7 @@ az devcenter image-version list --dev-center-name "Contoso" --gallery-name "Defa
 ##### <a name="ParametersImageVersionsListByImage">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
 |------|----|-----------|----------|------------|
-|**--resource-group-name**|string|Name of the resource group within the Azure subscription.|resource_group_name|resourceGroupName|
+|**--resource-group-name**|string|The name of the resource group. The name is case insensitive.|resource_group_name|resourceGroupName|
 |**--dev-center-name**|string|The name of the devcenter.|dev_center_name|devCenterName|
 |**--gallery-name**|string|The name of the gallery.|gallery_name|galleryName|
 |**--image-name**|string|The name of the image.|image_name|imageName|
@@ -755,7 +755,7 @@ az devcenter image-version show --dev-center-name "Contoso" --gallery-name "Defa
 ##### <a name="ParametersImageVersionsGet">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
 |------|----|-----------|----------|------------|
-|**--resource-group-name**|string|Name of the resource group within the Azure subscription.|resource_group_name|resourceGroupName|
+|**--resource-group-name**|string|The name of the resource group. The name is case insensitive.|resource_group_name|resourceGroupName|
 |**--dev-center-name**|string|The name of the devcenter.|dev_center_name|devCenterName|
 |**--gallery-name**|string|The name of the gallery.|gallery_name|galleryName|
 |**--image-name**|string|The name of the image.|image_name|imageName|
@@ -771,7 +771,7 @@ az devcenter network-connection list --resource-group "rg1"
 ##### <a name="ParametersNetworkConnectionsListByResourceGroup">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
 |------|----|-----------|----------|------------|
-|**--resource-group-name**|string|Name of the resource group within the Azure subscription.|resource_group_name|resourceGroupName|
+|**--resource-group-name**|string|The name of the resource group. The name is case insensitive.|resource_group_name|resourceGroupName|
 |**--top**|integer|The maximum number of resources to return from the operation. Example: '$top=10'.|top|$top|
 
 #### <a name="NetworkConnectionsListBySubscription">Command `az devcenter network-connection list`</a>
@@ -794,7 +794,7 @@ az devcenter network-connection show --name "uswest3network" --resource-group "r
 ##### <a name="ParametersNetworkConnectionsGet">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
 |------|----|-----------|----------|------------|
-|**--resource-group-name**|string|Name of the resource group within the Azure subscription.|resource_group_name|resourceGroupName|
+|**--resource-group-name**|string|The name of the resource group. The name is case insensitive.|resource_group_name|resourceGroupName|
 |**--network-connection-name**|string|Name of the Network Connection that can be applied to a Pool.|network_connection_name|networkConnectionName|
 
 #### <a name="NetworkConnectionsCreateOrUpdate#Create">Command `az devcenter network-connection create`</a>
@@ -810,7 +810,7 @@ ks/ExampleVNet/subnets/default" --name "uswest3network" --resource-group "rg1"
 ##### <a name="ParametersNetworkConnectionsCreateOrUpdate#Create">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
 |------|----|-----------|----------|------------|
-|**--resource-group-name**|string|Name of the resource group within the Azure subscription.|resource_group_name|resourceGroupName|
+|**--resource-group-name**|string|The name of the resource group. The name is case insensitive.|resource_group_name|resourceGroupName|
 |**--network-connection-name**|string|Name of the Network Connection that can be applied to a Pool.|network_connection_name|networkConnectionName|
 |**--location**|string|The geo-location where the resource lives|location|location|
 |**--tags**|dictionary|Resource tags.|tags|tags|
@@ -832,7 +832,7 @@ az devcenter network-connection update --domain-password "New Password value for
 ##### <a name="ParametersNetworkConnectionsUpdate">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
 |------|----|-----------|----------|------------|
-|**--resource-group-name**|string|Name of the resource group within the Azure subscription.|resource_group_name|resourceGroupName|
+|**--resource-group-name**|string|The name of the resource group. The name is case insensitive.|resource_group_name|resourceGroupName|
 |**--network-connection-name**|string|Name of the Network Connection that can be applied to a Pool.|network_connection_name|networkConnectionName|
 |**--tags**|dictionary|Resource tags.|tags|tags|
 |**--location**|string|The geo-location where the resource lives|location|location|
@@ -851,7 +851,7 @@ az devcenter network-connection delete --name "{networkConnectionName}" --resour
 ##### <a name="ParametersNetworkConnectionsDelete">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
 |------|----|-----------|----------|------------|
-|**--resource-group-name**|string|Name of the resource group within the Azure subscription.|resource_group_name|resourceGroupName|
+|**--resource-group-name**|string|The name of the resource group. The name is case insensitive.|resource_group_name|resourceGroupName|
 |**--network-connection-name**|string|Name of the Network Connection that can be applied to a Pool.|network_connection_name|networkConnectionName|
 
 #### <a name="NetworkConnectionsListHealthDetails">Command `az devcenter network-connection list-health-detail`</a>
@@ -863,7 +863,7 @@ az devcenter network-connection list-health-detail --name "uswest3network" --res
 ##### <a name="ParametersNetworkConnectionsListHealthDetails">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
 |------|----|-----------|----------|------------|
-|**--resource-group-name**|string|Name of the resource group within the Azure subscription.|resource_group_name|resourceGroupName|
+|**--resource-group-name**|string|The name of the resource group. The name is case insensitive.|resource_group_name|resourceGroupName|
 |**--top**|integer|The maximum number of resources to return from the operation. Example: '$top=10'.|top|$top|
 |**--network-connection-name**|string|Name of the Network Connection that can be applied to a Pool.|network_connection_name|networkConnectionName|
 
@@ -876,7 +876,7 @@ az devcenter network-connection run-health-check --name "uswest3network" --resou
 ##### <a name="ParametersNetworkConnectionsRunHealthChecks">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
 |------|----|-----------|----------|------------|
-|**--resource-group-name**|string|Name of the resource group within the Azure subscription.|resource_group_name|resourceGroupName|
+|**--resource-group-name**|string|The name of the resource group. The name is case insensitive.|resource_group_name|resourceGroupName|
 |**--network-connection-name**|string|Name of the Network Connection that can be applied to a Pool.|network_connection_name|networkConnectionName|
 
 #### <a name="NetworkConnectionsGetHealthDetails">Command `az devcenter network-connection show-health-detail`</a>
@@ -888,7 +888,7 @@ az devcenter network-connection show-health-detail --name "{networkConnectionNam
 ##### <a name="ParametersNetworkConnectionsGetHealthDetails">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
 |------|----|-----------|----------|------------|
-|**--resource-group-name**|string|Name of the resource group within the Azure subscription.|resource_group_name|resourceGroupName|
+|**--resource-group-name**|string|The name of the resource group. The name is case insensitive.|resource_group_name|resourceGroupName|
 |**--network-connection-name**|string|Name of the Network Connection that can be applied to a Pool.|network_connection_name|networkConnectionName|
 
 ### group `az devcenter operation-statuses`
@@ -914,7 +914,7 @@ az devcenter pool list --project-name "{projectName}" --resource-group "rg1"
 ##### <a name="ParametersPoolsListByProject">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
 |------|----|-----------|----------|------------|
-|**--resource-group-name**|string|Name of the resource group within the Azure subscription.|resource_group_name|resourceGroupName|
+|**--resource-group-name**|string|The name of the resource group. The name is case insensitive.|resource_group_name|resourceGroupName|
 |**--project-name**|string|The name of the project.|project_name|projectName|
 |**--top**|integer|The maximum number of resources to return from the operation. Example: '$top=10'.|top|$top|
 
@@ -927,7 +927,7 @@ az devcenter pool show --name "{poolName}" --project-name "{projectName}" --reso
 ##### <a name="ParametersPoolsGet">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
 |------|----|-----------|----------|------------|
-|**--resource-group-name**|string|Name of the resource group within the Azure subscription.|resource_group_name|resourceGroupName|
+|**--resource-group-name**|string|The name of the resource group. The name is case insensitive.|resource_group_name|resourceGroupName|
 |**--project-name**|string|The name of the project.|project_name|projectName|
 |**--pool-name**|string|Name of the pool.|pool_name|poolName|
 
@@ -941,7 +941,7 @@ az devcenter pool create --location "centralus" --dev-box-definition-name "WebDe
 ##### <a name="ParametersPoolsCreateOrUpdate#Create">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
 |------|----|-----------|----------|------------|
-|**--resource-group-name**|string|Name of the resource group within the Azure subscription.|resource_group_name|resourceGroupName|
+|**--resource-group-name**|string|The name of the resource group. The name is case insensitive.|resource_group_name|resourceGroupName|
 |**--project-name**|string|The name of the project.|project_name|projectName|
 |**--pool-name**|string|Name of the pool.|pool_name|poolName|
 |**--location**|string|The geo-location where the resource lives|location|location|
@@ -960,7 +960,7 @@ az devcenter pool update --dev-box-definition-name "WebDevBox2" --name "{poolNam
 ##### <a name="ParametersPoolsUpdate">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
 |------|----|-----------|----------|------------|
-|**--resource-group-name**|string|Name of the resource group within the Azure subscription.|resource_group_name|resourceGroupName|
+|**--resource-group-name**|string|The name of the resource group. The name is case insensitive.|resource_group_name|resourceGroupName|
 |**--project-name**|string|The name of the project.|project_name|projectName|
 |**--pool-name**|string|Name of the pool.|pool_name|poolName|
 |**--tags**|dictionary|Resource tags.|tags|tags|
@@ -978,7 +978,7 @@ az devcenter pool delete --name "poolName" --project-name "{projectName}" --reso
 ##### <a name="ParametersPoolsDelete">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
 |------|----|-----------|----------|------------|
-|**--resource-group-name**|string|Name of the resource group within the Azure subscription.|resource_group_name|resourceGroupName|
+|**--resource-group-name**|string|The name of the resource group. The name is case insensitive.|resource_group_name|resourceGroupName|
 |**--project-name**|string|The name of the project.|project_name|projectName|
 |**--pool-name**|string|Name of the pool.|pool_name|poolName|
 
@@ -992,7 +992,7 @@ az devcenter project list --resource-group "rg1"
 ##### <a name="ParametersProjectsListByResourceGroup">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
 |------|----|-----------|----------|------------|
-|**--resource-group-name**|string|Name of the resource group within the Azure subscription.|resource_group_name|resourceGroupName|
+|**--resource-group-name**|string|The name of the resource group. The name is case insensitive.|resource_group_name|resourceGroupName|
 |**--top**|integer|The maximum number of resources to return from the operation. Example: '$top=10'.|top|$top|
 
 #### <a name="ProjectsListBySubscription">Command `az devcenter project list`</a>
@@ -1015,7 +1015,7 @@ az devcenter project show --name "{projectName}" --resource-group "rg1"
 ##### <a name="ParametersProjectsGet">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
 |------|----|-----------|----------|------------|
-|**--resource-group-name**|string|Name of the resource group within the Azure subscription.|resource_group_name|resourceGroupName|
+|**--resource-group-name**|string|The name of the resource group. The name is case insensitive.|resource_group_name|resourceGroupName|
 |**--project-name**|string|The name of the project.|project_name|projectName|
 
 #### <a name="ProjectsCreateOrUpdate#Create">Command `az devcenter project create`</a>
@@ -1029,7 +1029,7 @@ CostCenter="R&D" --name "{projectName}" --resource-group "rg1"
 ##### <a name="ParametersProjectsCreateOrUpdate#Create">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
 |------|----|-----------|----------|------------|
-|**--resource-group-name**|string|Name of the resource group within the Azure subscription.|resource_group_name|resourceGroupName|
+|**--resource-group-name**|string|The name of the resource group. The name is case insensitive.|resource_group_name|resourceGroupName|
 |**--project-name**|string|The name of the project.|project_name|projectName|
 |**--location**|string|The geo-location where the resource lives|location|location|
 |**--tags**|dictionary|Resource tags.|tags|tags|
@@ -1046,7 +1046,7 @@ az devcenter project update --description "This is my first project." --tags Cos
 ##### <a name="ParametersProjectsUpdate">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
 |------|----|-----------|----------|------------|
-|**--resource-group-name**|string|Name of the resource group within the Azure subscription.|resource_group_name|resourceGroupName|
+|**--resource-group-name**|string|The name of the resource group. The name is case insensitive.|resource_group_name|resourceGroupName|
 |**--project-name**|string|The name of the project.|project_name|projectName|
 |**--tags**|dictionary|Resource tags.|tags|tags|
 |**--location**|string|The geo-location where the resource lives|location|location|
@@ -1062,7 +1062,7 @@ az devcenter project delete --name "{projectName}" --resource-group "rg1"
 ##### <a name="ParametersProjectsDelete">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
 |------|----|-----------|----------|------------|
-|**--resource-group-name**|string|Name of the resource group within the Azure subscription.|resource_group_name|resourceGroupName|
+|**--resource-group-name**|string|The name of the resource group. The name is case insensitive.|resource_group_name|resourceGroupName|
 |**--project-name**|string|The name of the project.|project_name|projectName|
 
 ### group `az devcenter project-allowed-environment-type`
@@ -1075,7 +1075,7 @@ az devcenter project-allowed-environment-type list --project-name "Contoso" --re
 ##### <a name="ParametersProjectAllowedEnvironmentTypesList">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
 |------|----|-----------|----------|------------|
-|**--resource-group-name**|string|Name of the resource group within the Azure subscription.|resource_group_name|resourceGroupName|
+|**--resource-group-name**|string|The name of the resource group. The name is case insensitive.|resource_group_name|resourceGroupName|
 |**--project-name**|string|The name of the project.|project_name|projectName|
 |**--top**|integer|The maximum number of resources to return from the operation. Example: '$top=10'.|top|$top|
 
@@ -1089,7 +1089,7 @@ az devcenter project-allowed-environment-type show --environment-type-name "{env
 ##### <a name="ParametersProjectAllowedEnvironmentTypesGet">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
 |------|----|-----------|----------|------------|
-|**--resource-group-name**|string|Name of the resource group within the Azure subscription.|resource_group_name|resourceGroupName|
+|**--resource-group-name**|string|The name of the resource group. The name is case insensitive.|resource_group_name|resourceGroupName|
 |**--project-name**|string|The name of the project.|project_name|projectName|
 |**--environment-type-name**|string|The name of the environment type.|environment_type_name|environmentTypeName|
 
@@ -1103,7 +1103,7 @@ az devcenter project-environment-type list --project-name "ContosoProj" --resour
 ##### <a name="ParametersProjectEnvironmentTypesList">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
 |------|----|-----------|----------|------------|
-|**--resource-group-name**|string|Name of the resource group within the Azure subscription.|resource_group_name|resourceGroupName|
+|**--resource-group-name**|string|The name of the resource group. The name is case insensitive.|resource_group_name|resourceGroupName|
 |**--project-name**|string|The name of the project.|project_name|projectName|
 |**--top**|integer|The maximum number of resources to return from the operation. Example: '$top=10'.|top|$top|
 
@@ -1117,7 +1117,7 @@ az devcenter project-environment-type show --environment-type-name "{environment
 ##### <a name="ParametersProjectEnvironmentTypesGet">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
 |------|----|-----------|----------|------------|
-|**--resource-group-name**|string|Name of the resource group within the Azure subscription.|resource_group_name|resourceGroupName|
+|**--resource-group-name**|string|The name of the resource group. The name is case insensitive.|resource_group_name|resourceGroupName|
 |**--project-name**|string|The name of the project.|project_name|projectName|
 |**--environment-type-name**|string|The name of the environment type.|environment_type_name|environmentTypeName|
 
@@ -1136,7 +1136,7 @@ ty/userAssignedIdentities/testidentity1\\":{}}" --roles "{\\"4cbf0b6c-e750-441c-
 ##### <a name="ParametersProjectEnvironmentTypesCreateOrUpdate#Create">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
 |------|----|-----------|----------|------------|
-|**--resource-group-name**|string|Name of the resource group within the Azure subscription.|resource_group_name|resourceGroupName|
+|**--resource-group-name**|string|The name of the resource group. The name is case insensitive.|resource_group_name|resourceGroupName|
 |**--project-name**|string|The name of the project.|project_name|projectName|
 |**--environment-type-name**|string|The name of the environment type.|environment_type_name|environmentTypeName|
 |**--tags**|dictionary|Resource tags.|tags|tags|
@@ -1162,7 +1162,7 @@ ty/userAssignedIdentities/testidentity1\\":{}}" --deployment-target-id "/subscri
 ##### <a name="ParametersProjectEnvironmentTypesUpdate">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
 |------|----|-----------|----------|------------|
-|**--resource-group-name**|string|Name of the resource group within the Azure subscription.|resource_group_name|resourceGroupName|
+|**--resource-group-name**|string|The name of the resource group. The name is case insensitive.|resource_group_name|resourceGroupName|
 |**--project-name**|string|The name of the project.|project_name|projectName|
 |**--environment-type-name**|string|The name of the environment type.|environment_type_name|environmentTypeName|
 |**--tags**|dictionary|Resource tags.|tags|tags|
@@ -1183,7 +1183,7 @@ az devcenter project-environment-type delete --environment-type-name "{environme
 ##### <a name="ParametersProjectEnvironmentTypesDelete">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
 |------|----|-----------|----------|------------|
-|**--resource-group-name**|string|Name of the resource group within the Azure subscription.|resource_group_name|resourceGroupName|
+|**--resource-group-name**|string|The name of the resource group. The name is case insensitive.|resource_group_name|resourceGroupName|
 |**--project-name**|string|The name of the project.|project_name|projectName|
 |**--environment-type-name**|string|The name of the environment type.|environment_type_name|environmentTypeName|
 
@@ -1197,7 +1197,7 @@ az devcenter schedule list --pool-name "DevPool" --project-name "TestProject" --
 ##### <a name="ParametersSchedulesListByPool">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
 |------|----|-----------|----------|------------|
-|**--resource-group-name**|string|Name of the resource group within the Azure subscription.|resource_group_name|resourceGroupName|
+|**--resource-group-name**|string|The name of the resource group. The name is case insensitive.|resource_group_name|resourceGroupName|
 |**--project-name**|string|The name of the project.|project_name|projectName|
 |**--pool-name**|string|Name of the pool.|pool_name|poolName|
 |**--top**|integer|The maximum number of resources to return from the operation. Example: '$top=10'.|top|$top|
@@ -1212,7 +1212,7 @@ az devcenter schedule show --pool-name "DevPool" --project-name "TestProject" --
 ##### <a name="ParametersSchedulesGet">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
 |------|----|-----------|----------|------------|
-|**--resource-group-name**|string|Name of the resource group within the Azure subscription.|resource_group_name|resourceGroupName|
+|**--resource-group-name**|string|The name of the resource group. The name is case insensitive.|resource_group_name|resourceGroupName|
 |**--project-name**|string|The name of the project.|project_name|projectName|
 |**--pool-name**|string|Name of the pool.|pool_name|poolName|
 |**--schedule-name**|string|The name of the schedule that uniquely identifies it.|schedule_name|scheduleName|
@@ -1228,7 +1228,7 @@ az devcenter schedule create --state "Enabled" --time "17:30" --time-zone "Ameri
 ##### <a name="ParametersSchedulesCreateOrUpdate#Create">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
 |------|----|-----------|----------|------------|
-|**--resource-group-name**|string|Name of the resource group within the Azure subscription.|resource_group_name|resourceGroupName|
+|**--resource-group-name**|string|The name of the resource group. The name is case insensitive.|resource_group_name|resourceGroupName|
 |**--project-name**|string|The name of the project.|project_name|projectName|
 |**--pool-name**|string|Name of the pool.|pool_name|poolName|
 |**--schedule-name**|string|The name of the schedule that uniquely identifies it.|schedule_name|scheduleName|
@@ -1247,7 +1247,7 @@ az devcenter schedule update --time "18:00" --pool-name "DevPool" --project-name
 ##### <a name="ParametersSchedulesUpdate">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
 |------|----|-----------|----------|------------|
-|**--resource-group-name**|string|Name of the resource group within the Azure subscription.|resource_group_name|resourceGroupName|
+|**--resource-group-name**|string|The name of the resource group. The name is case insensitive.|resource_group_name|resourceGroupName|
 |**--project-name**|string|The name of the project.|project_name|projectName|
 |**--pool-name**|string|Name of the pool.|pool_name|poolName|
 |**--schedule-name**|string|The name of the schedule that uniquely identifies it.|schedule_name|scheduleName|
@@ -1268,7 +1268,7 @@ az devcenter schedule delete --pool-name "DevPool" --project-name "TestProject" 
 ##### <a name="ParametersSchedulesDelete">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
 |------|----|-----------|----------|------------|
-|**--resource-group-name**|string|Name of the resource group within the Azure subscription.|resource_group_name|resourceGroupName|
+|**--resource-group-name**|string|The name of the resource group. The name is case insensitive.|resource_group_name|resourceGroupName|
 |**--project-name**|string|The name of the project.|project_name|projectName|
 |**--pool-name**|string|Name of the pool.|pool_name|poolName|
 |**--schedule-name**|string|The name of the schedule that uniquely identifies it.|schedule_name|scheduleName|

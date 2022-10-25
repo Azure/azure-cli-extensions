@@ -211,22 +211,6 @@ helps[
 """
 
 helps[
-    "devcenter dev dev-box wait"
-] = """
-    type: command
-    short-summary: Place the CLI in a waiting state until a condition of the devcenter dev-box is met.
-    examples:
-      - name: Pause executing next line of CLI script until the devcenter dev-box is successfully created.
-        text: |-
-               az devcenter dev dev-box wait --name "MyDevBox" --dev-center-name "{devCenterName}"  \
-               --project-name "{projectName}" --user-id "me" --created
-      - name: Pause executing next line of CLI script until the devcenter dev-box is successfully deleted.
-        text: |-
-               az devcenter dev dev-box wait --name "MyDevBox" --dev-center-name "{devCenterName}"  \
-               --project-name "{projectName}" --user-id "me" --deleted
-"""
-
-helps[
     "devcenter dev environment"
 ] = """
     type: group
@@ -312,7 +296,7 @@ helps[
         text: |-
               az devcenter dev environment custom-action --action-id "someCustomActionId" --parameters \
 "{\\"functionAppRuntime\\":\\"node\\",\\"storageAccountType\\":\\"Standard_LRS\\"}" --name "{environmentName}" \
---project-name "myProject" --user-id "me"
+--project-name "myProject" --user-id "me" --dev-center-name "{devCenterName}"
 """
 
 helps[
@@ -325,7 +309,7 @@ helps[
         text: |-
               az devcenter dev environment delete-action --action-id "delete" --parameters "{\\"functionAppRuntime\\":\\"n\
 ode\\",\\"storageAccountType\\":\\"Standard_LRS\\"}" --name "{environmentName}" --project-name "myProject" --user-id \
-"me"
+"me" --dev-center-name "{devCenterName}"
 """
 
 helps[
@@ -338,7 +322,7 @@ helps[
         text: |-
               az devcenter dev environment deploy-action --action-id "deploy" --parameters "{\\"functionAppRuntime\\":\\"n\
 ode\\",\\"storageAccountType\\":\\"Standard_LRS\\"}" --name "{environmentName}" --project-name "myProject" --user-id \
-"me"
+"me" --dev-center-name "{devCenterName}"
 """
 
 helps[
@@ -433,7 +417,7 @@ helps[
       - name: CatalogItems_Get
         text: |-
                az devcenter dev catalog-item show --dev-center-name "{devCenterName}" \
-               --project-name "{projectName}"
+               --project-name "{projectName}" --catalog-item-id "{catalogItemId}"
 """
 
 helps[
@@ -452,7 +436,7 @@ helps[
       - name: CatalogItemVersions_ListByProject
         text: |-
                az devcenter dev catalog-item-version list --dev-center-name "{devCenterName}"  \
-                --project-name "{projectName}"
+                --project-name "{projectName}" --catalog-item-id "{catalogItemId}"
 """
 
 helps[
@@ -464,7 +448,7 @@ helps[
       - name: CatalogItemVersion_Get
         text: |-
                az devcenter dev catalog-item-version show --dev-center-name "{devCenterName}"  \
-               --project-name "{projectName}"
+               --project-name "{projectName}" --catalog-item-id "{catalogItemId}"
 """
 
 helps[
@@ -491,7 +475,7 @@ helps[
     "devcenter"
 ] = """
     type: group
-    short-summary: Manage DevCenter
+    short-summary: Manage Microsoft Dev Box and Azure Deployment Environments
 """
 
 helps[
@@ -505,7 +489,7 @@ helps[
     "devcenter admin devcenter list"
 ] = """
     type: command
-    short-summary: "Lists all devcenters in a resource group. And Lists all devcenters in a subscription."
+    short-summary: "Lists all dev centers in a resource group or lists all dev centers in a subscription."
     examples:
       - name: DevCenters_ListByResourceGroup
         text: |-
@@ -538,9 +522,9 @@ helps[
 --resource-group "rg1"
       - name: DevCenters_CreateWithUserIdentity
         text: |-
-               az devcenter admin devcenter create --identity-type "UserAssigned" --user-assigned-identity \
-"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/identityGroup/providers/Microsoft.ManagedIdenti\
-ty/userAssignedIdentities/testidentity1" --location "eastus" --tags CostCode="12345" --name "Contoso" \
+               az devcenter admin devcenter create --identity-type "UserAssigned" --user-assigned-identities \
+"{\\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/identityGroup/providers/Microsoft.ManagedIdenti\
+ty/userAssignedIdentities/testidentity1\\":{}}" --location "eastus" --tags CostCode="12345" --name "Contoso" \
 --resource-group "rg1"
 """
 
@@ -594,7 +578,7 @@ helps[
     "devcenter admin project list"
 ] = """
     type: command
-    short-summary: "Lists all projects in the resource group. And Lists all projects in the subscription."
+    short-summary: "Lists all projects in the resource group or lists all projects in the subscription."
     examples:
       - name: Projects_ListByResourceGroup
         text: |-
@@ -623,7 +607,7 @@ helps[
     examples:
       - name: Projects_CreateOrUpdate
         text: |-
-               az devcenter admin project create --location "centralus" --description "This is my first project." \
+               az devcenter admin project create --location "eastus" --description "This is my first project." \
 --dev-center-id "/subscriptions/{subscriptionId}/resourceGroups/rg1/providers/Microsoft.DevCenter/devcenters/{devCenterNa\
 me}" --tags CostCenter="R&D" --name "{projectName}" --resource-group "rg1"
 """
@@ -679,7 +663,7 @@ helps[
     "devcenter admin attached-network list"
 ] = """
     type: command
-    short-summary: "Lists the attached NetworkConnections for a Project. And Lists the attached NetworkConnections for \
+    short-summary: "Lists the attached network connections for a project or lists the attached network connections for \
 a DevCenter."
     examples:
       - name: AttachedNetworks_ListByProject
@@ -694,7 +678,7 @@ helps[
     "devcenter admin attached-network show"
 ] = """
     type: command
-    short-summary: "Gets an attached NetworkConnection. And Gets an attached NetworkConnection."
+    short-summary: "Gets an attached network connection."
     examples:
       - name: AttachedNetworks_GetByProject
         text: |-
@@ -710,7 +694,7 @@ helps[
     "devcenter admin attached-network create"
 ] = """
     type: command
-    short-summary: "Create an attached NetworkConnection."
+    short-summary: "Create an attached network connection."
     examples:
       - name: AttachedNetworks_Create
         text: |-
@@ -723,14 +707,14 @@ helps[
     "devcenter admin attached-network update"
 ] = """
     type: command
-    short-summary: "Update an attached NetworkConnection."
+    short-summary: "Update an attached network connection."
 """
 
 helps[
     "devcenter admin attached-network delete"
 ] = """
     type: command
-    short-summary: "Un-attach a NetworkConnection."
+    short-summary: "Detach a network connection."
     examples:
       - name: AttachedNetworks_Delete
         text: |-
@@ -772,9 +756,6 @@ helps[
     short-summary: "Lists all environment types configured for this project. And Lists environment types for the \
 devcenter."
     examples:
-      - name: EnvironmentTypes_ListByProject
-        text: |-
-               az devcenter admin environment-type list --project-name "Contoso" --resource-group "rg1"
       - name: EnvironmentTypes_ListByDevCenter
         text: |-
                az devcenter admin environment-type list --dev-center-name "Contoso" --resource-group "rg1"
@@ -800,7 +781,7 @@ helps[
     examples:
       - name: EnvironmentTypes_CreateOrUpdate
         text: |-
-               az devcenter admin environment-type create --description "Developer/Testing environment" --dev-center-name \
+               az devcenter admin environment-type create --tags Owner="superuser" --dev-center-name \
 "Contoso" --name "{environmentTypeName}" --resource-group "rg1"
 """
 
@@ -812,7 +793,7 @@ helps[
     examples:
       - name: EnvironmentTypes_Update
         text: |-
-               az devcenter admin environment-type update --description "Updated description" --dev-center-name "Contoso" \
+               az devcenter admin environment-type update --tags Owner="superuser" --dev-center-name "Contoso" \
 --name "{environmentTypeName}" --resource-group "rg1"
 """
 
@@ -829,97 +810,69 @@ helps[
 """
 
 helps[
-    "devcenter admin environment-type wait"
-] = """
-    type: command
-    short-summary: Place the CLI in a waiting state until a condition of the devcenter environment-type is met.
-    examples:
-      - name: Pause executing next line of CLI script until the devcenter environment-type is successfully deleted.
-        text: |-
-               az devcenter admin environment-type wait --dev-center-name "Contoso" --name "{environmentTypeName}" \
---resource-group "rg1" --deleted
-"""
-
-helps[
     "devcenter admin project-environment-type"
 ] = """
     type: group
-    short-summary: Manage environment types for a given Project
+    short-summary: Manage environment types for a given project
 """
 
-helps[
-    "devcenter admin project-environment-type list"
-] = """
+helps['devcenter admin project-environment-type list'] = """
     type: command
-    short-summary: "Lists all environment types configured for this project."
+    short-summary: "Lists environment types for a project."
     examples:
-      - name: EnvironmentTypes_ListByProject
+      - name: ProjectEnvironmentTypes_List
         text: |-
-               az devcenter admin project-environment-type list --project-name "Contoso" --resource-group "rg1"
-      - name: EnvironmentTypes_ListByDevCenter
-        text: |-
-               az devcenter admin project-environment-type list --dev-center-name "Contoso" --resource-group "rg1"
+               az devcenter admin project-environment-type list --project-name "ContosoProj" --resource-group "rg1"
 """
 
-helps[
-    "devcenter admin project-environment-type show"
-] = """
+helps['devcenter admin project-environment-type show'] = """
     type: command
-    short-summary: "Gets an environment type for a Project."
+    short-summary: "Gets a project environment type."
     examples:
-      - name: EnvironmentTypes_Get
+      - name: ProjectEnvironmentTypes_Get
         text: |-
-               az devcenter admin project-environment-type show --dev-center-name "Contoso" --name "{environmentTypeName}" \
---resource-group "rg1"
+               az devcenter admin project-environment-type show --environment-type-name "{environmentTypeName}" \
+--project-name "ContosoProj" --resource-group "rg1"
 """
 
-helps[
-    "devcenter admin project-environment-type create"
-] = """
+helps['devcenter admin project-environment-type create'] = """
     type: command
-    short-summary: "Create an environment type for a Project."
+    short-summary: "Create a project environment type."
     examples:
       - name: ProjectEnvironmentTypes_CreateOrUpdate
         text: |-
-               az devcenter admin project-environment-type create --description "Developer/Testing environment" --dev-center-name \
-"Contoso" --name "{environmentTypeName}" --resource-group "rg1" --deployment-target-id "/subscriptions/00000000-0000-0000-0000-000000000000" \
---status Enabled --type SystemAssigned
-"""
-
-helps[
-    "devcenter admin project-environment-type update"
-] = """
-    type: command
-    short-summary: "Partially updates an environment type for a Project."
-    examples:
-      - name: ProjectEnvironmentTypes_Update
-        text: |-
-               az devcenter admin project-environment-type update --description "Updated description" --dev-center-name "Contoso" \
---name "{environmentTypeName}" --resource-group "rg1"
-"""
-
-helps[
-    "devcenter admin project-environment-type delete"
-] = """
-    type: command
-    short-summary: "Deletes an environment type in a Project."
-    examples:
-      - name: EnvironmentTypes_Delete
-        text: |-
-               az devcenter admin project-environment-type delete --dev-center-name "Contoso" --name "{environmentTypeName}" \
+               az devcenter admin project-environment-type create --identity-type "UserAssigned" --user-assigned-identities \
+"{\\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/identityGroup/providers/Microsoft.ManagedIdenti\
+ty/userAssignedIdentities/testidentity1\\":{}}" --roles "{\\"4cbf0b6c-e750-441c-98a7-10da8387e4d6\\":{}}" \
+--deployment-target-id "/subscriptions/00000000-0000-0000-0000-000000000000" --status "Enabled" \
+--user-role-assignments "{\\"e45e3m7c-176e-416a-b466-0c5ec8298f8a\\":{\\"roles\\":{\\"4cbf0b6c-e750-441c-98a7-10da8387e\
+4d6\\":{}}}}" --tags CostCenter="RnD" --environment-type-name "{environmentTypeName}" --project-name "ContosoProj" \
 --resource-group "rg1"
 """
 
-helps[
-    "devcenter admin project-environment-type wait"
-] = """
+helps['devcenter admin project-environment-type update'] = """
     type: command
-    short-summary: Place the CLI in a waiting state until a condition of the devcenter environment-type is met.
+    short-summary: "Partially updates a project environment type."
     examples:
-      - name: Pause executing next line of CLI script until the devcenter environment-type is successfully deleted.
+      - name: ProjectEnvironmentTypes_Update
         text: |-
-               az devcenter admin project-environment-type wait --dev-center-name "Contoso" --name "{environmentTypeName}" \
---resource-group "rg1" --deleted
+               az devcenter admin project-environment-type update --identity-type "UserAssigned" --user-assigned-identities \
+"{\\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/identityGroup/providers/Microsoft.ManagedIdenti\
+ty/userAssignedIdentities/testidentity1\\":{}}" --deployment-target-id "/subscriptions/00000000-0000-0000-0000-00000000\
+0000" --status "Enabled" --user-role-assignments "{\\"e45e3m7c-176e-416a-b466-0c5ec8298f8a\\":{\\"roles\\":{\\"4cbf0b6c\
+-e750-441c-98a7-10da8387e4d6\\":{}}}}" --tags CostCenter="RnD" --environment-type-name "{environmentTypeName}" \
+--project-name "ContosoProj" --resource-group "rg1"
+"""
+
+
+helps['devcenter admin project-environment-type delete'] = """
+    type: command
+    short-summary: "Deletes a project environment type."
+    examples:
+      - name: ProjectEnvironmentTypes_Delete
+        text: |-
+               az devcenter admin project-environment-type delete --environment-type-name "{environmentTypeName}" \
+--project-name "ContosoProj" --resource-group "rg1"
 """
 
 helps[
@@ -1103,27 +1056,30 @@ helps[
     short-summary: Manage dev box definition with devcenter
 """
 
-helps[
-    "devcenter admin devbox-definition list"
-] = """
+helps['devcenter admin devbox-definition list'] = """
     type: command
-    short-summary: "List dev box definitions for a devcenter."
+    short-summary: "List dev box definitions for a dev center or for a project."
     examples:
       - name: DevBoxDefinitions_ListByDevCenter
         text: |-
                az devcenter admin devbox-definition list --dev-center-name "Contoso" --resource-group "rg1"
+      - name: DevBoxDefinitions_ListByProject
+        text: |-
+               az devcenter admin devbox-definition list --project-name "ContosoProject" --resource-group "rg1"
 """
 
-helps[
-    "devcenter admin devbox-definition show"
-] = """
+helps['devcenter admin devbox-definition show'] = """
     type: command
-    short-summary: "Gets a dev box definition."
+    short-summary: "Gets a dev box definition for a dev center or for a project."
     examples:
       - name: DevBoxDefinitions_Get
         text: |-
                az devcenter admin devbox-definition show --name "WebDevBox" --dev-center-name "Contoso" --resource-group \
 "rg1"
+      - name: DevBoxDefinitions_GetByProject
+        text: |-
+               az devcenter admin devbox-definition show --name "WebDevBox" --project-name "ContosoProject" \
+--resource-group "rg1"
 """
 
 helps[
@@ -1137,18 +1093,30 @@ helps[
         long-summary: |
             Usage: --image-reference id=XX
 
-            id: Image resource ID.
+            id: Image ID, or Image version ID. When Image ID is provided, its latest version will be used.
+            publisher: The image publisher.
+            offer: The image offer.
+            sku: The image sku.
 
       - name: --sku
         short-summary: "Dev box Compute SKU to be used for dev boxes created with this definition."
         long-summary: |
-            Usage: --sku name=XX
+            Usage: --sku name=XX tier=XX size=XX family=XX capacity=XX
 
-            name: Name of the sku. The list of available SKU names can be retrieved using `az devcenter sku list`.
+            name: Required. The name of the SKU. Ex - P3. It is typically a letter+number code
+            tier: This field is required to be implemented by the Resource Provider if the service has more than one \
+tier, but is not required on a PUT.
+            size: The SKU size. When the name field is the combination of tier and some other value, this would be the \
+standalone code.
+            family: If the service has different generations of hardware, for the same SKU, then that can be captured \
+here.
+            capacity: If the SKU supports scale out/in then the capacity integer should be included. If scale out/in \
+is not possible for the resource this may be omitted.
+
     examples:
       - name: DevBoxDefinitions_Create
         text: |-
-               az devcenter admin devbox-definition create --location "centralus" --image-reference \
+               az devcenter admin devbox-definition create --location "eastus" --image-reference \
 id="/subscriptions/0ac520ee-14c0-480f-b6c9-0a90c58ffff/resourceGroups/Example/providers/Microsoft.DevCenter/galleries/con\
 tosogallery/images/exampleImage/version/1.0.0" --dev-box-definition-name "WebDevBox" --dev-center-name "Contoso" \
 --resource-group "rg1" --os-storage-type "ssd_1024gb" --sku name=general_a_8c32gb_v1
@@ -1163,16 +1131,26 @@ helps[
       - name: --image-reference
         short-summary: "Image reference information."
         long-summary: |
-            Usage: --image-reference
+            Usage: --image-reference id=XX publisher=XX offer=XX sku=XX
 
-            id: Image resource ID.
-
+            id: Image ID, or Image version ID. When Image ID is provided, its latest version will be used.
+            publisher: The image publisher.
+            offer: The image offer.
+            sku: The image sku.
       - name: --sku
-        short-summary: "Dev box Compute SKU to be used for dev boxes created with this definition."
+        short-summary: "The SKU for Dev Boxes created using this definition."
         long-summary: |
-            Usage: --sku name=XX
+            Usage: --sku name=XX tier=XX size=XX family=XX capacity=XX
 
-            name: Name of the sku. The list of available SKU names can be retrieved using `az devcenter sku list`.
+            name: Required. The name of the SKU. Ex - P3. It is typically a letter+number code
+            tier: This field is required to be implemented by the Resource Provider if the service has more than one \
+tier, but is not required on a PUT.
+            size: The SKU size. When the name field is the combination of tier and some other value, this would be the \
+standalone code.
+            family: If the service has different generations of hardware, for the same SKU, then that can be captured \
+here.
+            capacity: If the SKU supports scale out/in then the capacity integer should be included. If scale out/in \
+is not possible for the resource this may be omitted.
     examples:
       - name: DevBoxDefinitions_Patch
         text: |-
@@ -1228,26 +1206,37 @@ helps[
     examples:
       - name: listUsages
         text: |-
-               az devcenter usage list --location "westus"
+               az devcenter admin usage list --location "westus"
 """
 
-helps[
-    "devcenter admin sku"
-] = """
+helps['devcenter admin operation-statuses'] = """
+    type: group
+    short-summary: Manage operation statuses with devcenter
+"""
+
+helps['devcenter admin operation-statuses show'] = """
+    type: command
+    short-summary: "Gets the current status of an async operation."
+    examples:
+      - name: Get OperationStatus
+        text: |-
+               az devcenter admin operation-statuses show --operation-id "{operationId}" --location "{location}"
+"""
+
+helps['devcenter admin sku'] = """
     type: group
     short-summary: Manage sku with devcenter
 """
 
-helps[
-    "devcenter admin sku list"
-] = """
+helps['devcenter admin sku list'] = """
     type: command
-    short-summary: "Lists the Microsoft.SKUs available in a subscription."
+    short-summary: "Lists the Microsoft.DevCenter SKUs available in a subscription."
     examples:
       - name: Skus_ListBySubscription
         text: |-
                az devcenter admin sku list
 """
+
 
 helps[
     "devcenter admin pool"
@@ -1286,7 +1275,7 @@ helps[
     examples:
       - name: Pools_CreateOrUpdate
         text: |-
-               az devcenter pool create --location "centralus" --dev-box-definition-name "WebDevBox" \
+               az devcenter admin pool create --location "eastus" --devbox-definition-name "WebDevBox" \
 --network-connection-name "Network1-westus2" --pool-name "{poolName}" --project-name "{projectName}" --resource-group \
 "rg1" --license-type Windows_Client --local-administrator Enabled
 """
@@ -1299,7 +1288,7 @@ helps[
     examples:
       - name: Pools_Update
         text: |-
-               az devcenter pool update --dev-box-definition-name "WebDevBox2" --pool-name "{poolName}" --project-name \
+               az devcenter admin pool update --devbox-definition-name "WebDevBox2" --pool-name "{poolName}" --project-name \
 "{projectName}" --resource-group "rg1"
 """
 
@@ -1373,7 +1362,8 @@ helps[
       - name: Schedules_CreateDailyShutdownPoolSchedule
         text: |-
                az devcenter admin schedule create --state "Enabled" --time "17:30" --time-zone "America/Los_Angeles" \
---pool-name "DevPool" --project-name "DevProject" --resource-group "rg1" --name "autoShutdown"
+--pool-name "DevPool" --project-name "DevProject" --resource-group "rg1" --name "autoShutdown" --frequency Daily \
+--schedule-type StopDevBox
 """
 
 helps[
@@ -1425,14 +1415,14 @@ helps[
     "devcenter admin network-connection"
 ] = """
     type: group
-    short-summary: Manage network setting with devcenter
+    short-summary: Manage network connection with devcenter
 """
 
 helps[
     "devcenter admin network-connection list"
 ] = """
     type: command
-    short-summary: "Lists network settings in a resource group And Lists network settings in a subscription."
+    short-summary: "Lists network connection in a resource group or in a subscription."
     examples:
       - name: NetworkConnections_ListByResourceGroup
         text: |-
@@ -1446,7 +1436,7 @@ helps[
     "devcenter admin network-connection show"
 ] = """
     type: command
-    short-summary: "Gets a network settings resource."
+    short-summary: "Gets a network connection."
     examples:
       - name: NetworkConnections_Get
         text: |-
@@ -1457,18 +1447,18 @@ helps[
     "devcenter admin network-connection create"
 ] = """
     type: command
-    short-summary: "Create a Network Settings resource."
+    short-summary: "Create a network connection."
     examples:
       - name: NetworkConnections_CreateHybridJoined
         text: |-
-               az devcenter admin network-connection create --location "centralus" --domain-join-type "HybridAzureADJoin" \
+               az devcenter admin network-connection create --location "eastus" --domain-join-type "HybridAzureADJoin" \
 --domain-name "mydomaincontroller.local" --domain-password "Password value for user" --domain-username \
 "testuser@mydomaincontroller.local" --subnet-id "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ExampleRG/pr\
 oviders/Microsoft.Network/virtualNetworks/ExampleVNet/subnets/default" --name "{networkConnectionName}" --resource-group \
 "rg1"
       - name: NetworkConnections_CreateAzureJoined
         text: |-
-               az devcenter admin network-connection create --location "centralus" --domain-join-type "AzureADJoin" \
+               az devcenter admin network-connection create --location "eastus" --domain-join-type "AzureADJoin" \
 --networking-resource-group-name "NetworkInterfacesRG" --subnet-id "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ExampleRG/pr\
 oviders/Microsoft.Network/virtualNetworks/ExampleVNet/subnets/default" --name "{networkConnectionName}" --resource-group \
 "rg1"
@@ -1478,7 +1468,7 @@ helps[
     "devcenter admin network-connection update"
 ] = """
     type: command
-    short-summary: "Partially updates Network Settings."
+    short-summary: "Partially updates a network connection."
     examples:
       - name: NetworkConnections_Update
         text: |-
@@ -1490,11 +1480,20 @@ helps[
     "devcenter admin network-connection delete"
 ] = """
     type: command
-    short-summary: "Deletes a Network Settings resource."
+    short-summary: "Deletes a network connection."
     examples:
       - name: NetworkConnections_Delete
         text: |-
                az devcenter admin network-connection delete --name "{networkConnectionName}" --resource-group "rg1"
+"""
+
+helps['devcenter admin network-connection list-health-detail'] = """
+    type: command
+    short-summary: "Lists health check status details."
+    examples:
+      - name: NetworkConnections_ListHealthDetails
+        text: |-
+               az devcenter admin network-connection list-health-detail --network-connection-name "uswest3network" --resource-group "rg1"
 """
 
 helps[
@@ -1524,15 +1523,15 @@ helps[
     "devcenter admin network-connection wait"
 ] = """
     type: command
-    short-summary: Place the CLI in a waiting state until a condition of the devcenter network-setting is met.
+    short-summary: Place the CLI in a waiting state until a condition of the devcenter network-connection is met.
     examples:
-      - name: Pause executing next line of CLI script until the devcenter network-setting is successfully created.
+      - name: Pause executing next line of CLI script until the devcenter network-connection is successfully created.
         text: |-
                az devcenter admin network-connection wait --name "{networkConnectionName}" --resource-group "rg1" --created
-      - name: Pause executing next line of CLI script until the devcenter network-setting is successfully updated.
+      - name: Pause executing next line of CLI script until the devcenter network-connection is successfully updated.
         text: |-
                az devcenter admin network-connection wait --name "{networkConnectionName}" --resource-group "rg1" --updated
-      - name: Pause executing next line of CLI script until the devcenter network-setting is successfully deleted.
+      - name: Pause executing next line of CLI script until the devcenter network-connection is successfully deleted.
         text: |-
                az devcenter admin network-connection wait --name "{networkConnectionName}" --resource-group "rg1" --deleted
 """
@@ -1574,7 +1573,7 @@ helps[
     examples:
       - name: Galleries_CreateOrUpdate
         text: |-
-               az devcenter gallery create --gallery-resource-id "/subscriptions/{subscriptionId}/resourceGroups/rg1/prov\
+               az devcenter admin gallery create --gallery-resource-id "/subscriptions/{subscriptionId}/resourceGroups/rg1/prov\
 iders/Microsoft.Compute/galleries/{galleryName}" --dev-center-name "Contoso" --name "{galleryName}" --resource-group \
 "rg1"
 """
@@ -1594,7 +1593,7 @@ helps[
     examples:
       - name: Galleries_Delete
         text: |-
-               az devcenter gallery delete --dev-center-name "Contoso" --name "{galleryName}" --resource-group "rg1"
+               az devcenter admin gallery delete --dev-center-name "Contoso" --name "{galleryName}" --resource-group "rg1"
 """
 
 helps[
@@ -1605,15 +1604,15 @@ helps[
     examples:
       - name: Pause executing next line of CLI script until the devcenter gallery is successfully created.
         text: |-
-               az devcenter gallery wait --dev-center-name "Contoso" --name "{galleryName}" --resource-group "rg1" \
+               az devcenter admin gallery wait --dev-center-name "Contoso" --name "{galleryName}" --resource-group "rg1" \
 --created
       - name: Pause executing next line of CLI script until the devcenter gallery is successfully updated.
         text: |-
-               az devcenter gallery wait --dev-center-name "Contoso" --name "{galleryName}" --resource-group "rg1" \
+               az devcenter admin gallery wait --dev-center-name "Contoso" --name "{galleryName}" --resource-group "rg1" \
 --updated
       - name: Pause executing next line of CLI script until the devcenter gallery is successfully deleted.
         text: |-
-               az devcenter gallery wait --dev-center-name "Contoso" --name "{galleryName}" --resource-group "rg1" \
+               az devcenter admin gallery wait --dev-center-name "Contoso" --name "{galleryName}" --resource-group "rg1" \
 --deleted
 """
 
@@ -1632,10 +1631,10 @@ helps[
     examples:
       - name: Images_ListByGallery
         text: |-
-               az devcenter image list --dev-center-name "Contoso" --gallery-name "DevGallery" --resource-group "rg1"
+               az devcenter admin image list --dev-center-name "Contoso" --gallery-name "DevGallery" --resource-group "rg1"
       - name: Images_ListByDevCenter
         text: |-
-               az devcenter image list --dev-center-name "Contoso" --resource-group "rg1"
+               az devcenter admin image list --dev-center-name "Contoso" --resource-group "rg1"
 """
 
 helps[
@@ -1646,7 +1645,7 @@ helps[
     examples:
       - name: Images_Get
         text: |-
-               az devcenter image show --dev-center-name "Contoso" --gallery-name "DefaultDevGallery" --name \
+               az devcenter admin image show --dev-center-name "Contoso" --gallery-name "DefaultDevGallery" --name \
 "{imageName}" --resource-group "rg1"
 """
 
@@ -1665,7 +1664,7 @@ helps[
     examples:
       - name: ImageVersions_ListByImage
         text: |-
-               az devcenter image-version list --dev-center-name "Contoso" --gallery-name "DefaultDevGallery" \
+               az devcenter admin image-version list --dev-center-name "Contoso" --gallery-name "DefaultDevGallery" \
 --image-name "Win11" --resource-group "rg1"
 """
 
@@ -1677,6 +1676,6 @@ helps[
     examples:
       - name: Versions_Get
         text: |-
-               az devcenter image-version show --dev-center-name "Contoso" --gallery-name "DefaultDevGallery" \
+               az devcenter admin image-version show --dev-center-name "Contoso" --gallery-name "DefaultDevGallery" \
 --image-name "Win11" --resource-group "rg1" --version-name "{versionName}"
 """

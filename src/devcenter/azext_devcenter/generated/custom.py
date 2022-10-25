@@ -843,15 +843,14 @@ def devcenter_schedule_create(client,
                               project_name,
                               pool_name,
                               schedule_name,
-                              schedule_type,
-                              frequency,
+                              top=None,
                               time=None,
                               time_zone=None,
                               state=None,
                               no_wait=False):
     body = {}
-    body['type_properties_type'] = schedule_type
-    body['frequency'] = frequency
+    body['type_properties_type'] = "StopDevBox"
+    body['frequency'] = "Daily"
     if time is not None:
         body['time'] = time
     if time_zone is not None:
@@ -864,6 +863,7 @@ def devcenter_schedule_create(client,
                        project_name=project_name,
                        pool_name=pool_name,
                        schedule_name=schedule_name,
+                       top=top,
                        body=body)
 
 

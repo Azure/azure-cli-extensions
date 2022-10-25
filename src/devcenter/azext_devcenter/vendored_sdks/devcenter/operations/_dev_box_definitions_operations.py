@@ -57,7 +57,7 @@ class DevBoxDefinitionsOperations(object):
         # type: (...) -> Iterable["models.DevBoxDefinitionListResult"]
         """List Dev Box definitions for a devcenter.
 
-        :param resource_group_name: Name of the resource group within the Azure subscription.
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
         :param dev_center_name: The name of the devcenter.
         :type dev_center_name: str
@@ -73,7 +73,7 @@ class DevBoxDefinitionsOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2022-09-01-preview"
+        api_version = "2022-10-12-preview"
         accept = "application/json"
 
         def prepare_request(next_link=None):
@@ -85,8 +85,8 @@ class DevBoxDefinitionsOperations(object):
                 # Construct URL
                 url = self.list_by_dev_center.metadata['url']  # type: ignore
                 path_format_arguments = {
-                    'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
-                    'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
+                    'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
+                    'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
                     'devCenterName': self._serialize.url("dev_center_name", dev_center_name, 'str'),
                 }
                 url = self._client.format_url(url, **path_format_arguments)
@@ -137,7 +137,7 @@ class DevBoxDefinitionsOperations(object):
         # type: (...) -> "models.DevBoxDefinition"
         """Gets a Dev Box definition.
 
-        :param resource_group_name: Name of the resource group within the Azure subscription.
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
         :param dev_center_name: The name of the devcenter.
         :type dev_center_name: str
@@ -153,14 +153,14 @@ class DevBoxDefinitionsOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2022-09-01-preview"
+        api_version = "2022-10-12-preview"
         accept = "application/json"
 
         # Construct URL
         url = self.get.metadata['url']  # type: ignore
         path_format_arguments = {
-            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
+            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
             'devCenterName': self._serialize.url("dev_center_name", dev_center_name, 'str'),
             'devBoxDefinitionName': self._serialize.url("dev_box_definition_name", dev_box_definition_name, 'str'),
         }
@@ -204,15 +204,15 @@ class DevBoxDefinitionsOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2022-09-01-preview"
+        api_version = "2022-10-12-preview"
         content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
 
         # Construct URL
         url = self._create_or_update_initial.metadata['url']  # type: ignore
         path_format_arguments = {
-            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
+            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
             'devCenterName': self._serialize.url("dev_center_name", dev_center_name, 'str'),
             'devBoxDefinitionName': self._serialize.url("dev_box_definition_name", dev_box_definition_name, 'str'),
         }
@@ -261,7 +261,7 @@ class DevBoxDefinitionsOperations(object):
         # type: (...) -> LROPoller["models.DevBoxDefinition"]
         """Creates or updates a Dev Box definition.
 
-        :param resource_group_name: Name of the resource group within the Azure subscription.
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
         :param dev_center_name: The name of the devcenter.
         :type dev_center_name: str
@@ -307,8 +307,8 @@ class DevBoxDefinitionsOperations(object):
             return deserialized
 
         path_format_arguments = {
-            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
+            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
             'devCenterName': self._serialize.url("dev_center_name", dev_center_name, 'str'),
             'devBoxDefinitionName': self._serialize.url("dev_box_definition_name", dev_box_definition_name, 'str'),
         }
@@ -341,15 +341,15 @@ class DevBoxDefinitionsOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2022-09-01-preview"
+        api_version = "2022-10-12-preview"
         content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
 
         # Construct URL
         url = self._update_initial.metadata['url']  # type: ignore
         path_format_arguments = {
-            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
+            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
             'devCenterName': self._serialize.url("dev_center_name", dev_center_name, 'str'),
             'devBoxDefinitionName': self._serialize.url("dev_box_definition_name", dev_box_definition_name, 'str'),
         }
@@ -396,7 +396,7 @@ class DevBoxDefinitionsOperations(object):
         # type: (...) -> LROPoller["models.DevBoxDefinition"]
         """Partially updates a Dev Box definition.
 
-        :param resource_group_name: Name of the resource group within the Azure subscription.
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
         :param dev_center_name: The name of the devcenter.
         :type dev_center_name: str
@@ -442,8 +442,8 @@ class DevBoxDefinitionsOperations(object):
             return deserialized
 
         path_format_arguments = {
-            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
+            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
             'devCenterName': self._serialize.url("dev_center_name", dev_center_name, 'str'),
             'devBoxDefinitionName': self._serialize.url("dev_box_definition_name", dev_box_definition_name, 'str'),
         }
@@ -475,14 +475,14 @@ class DevBoxDefinitionsOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2022-09-01-preview"
+        api_version = "2022-10-12-preview"
         accept = "application/json"
 
         # Construct URL
         url = self._delete_initial.metadata['url']  # type: ignore
         path_format_arguments = {
-            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
+            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
             'devCenterName': self._serialize.url("dev_center_name", dev_center_name, 'str'),
             'devBoxDefinitionName': self._serialize.url("dev_box_definition_name", dev_box_definition_name, 'str'),
         }
@@ -519,7 +519,7 @@ class DevBoxDefinitionsOperations(object):
         # type: (...) -> LROPoller[None]
         """Deletes a Dev Box definition.
 
-        :param resource_group_name: Name of the resource group within the Azure subscription.
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
         :param dev_center_name: The name of the devcenter.
         :type dev_center_name: str
@@ -559,8 +559,8 @@ class DevBoxDefinitionsOperations(object):
                 return cls(pipeline_response, None, {})
 
         path_format_arguments = {
-            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
+            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
             'devCenterName': self._serialize.url("dev_center_name", dev_center_name, 'str'),
             'devBoxDefinitionName': self._serialize.url("dev_box_definition_name", dev_box_definition_name, 'str'),
         }
@@ -589,7 +589,7 @@ class DevBoxDefinitionsOperations(object):
         # type: (...) -> Iterable["models.DevBoxDefinitionListResult"]
         """List Dev Box definitions configured for a project.
 
-        :param resource_group_name: Name of the resource group within the Azure subscription.
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
         :param project_name: The name of the project.
         :type project_name: str
@@ -605,7 +605,7 @@ class DevBoxDefinitionsOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2022-09-01-preview"
+        api_version = "2022-10-12-preview"
         accept = "application/json"
 
         def prepare_request(next_link=None):
@@ -617,8 +617,8 @@ class DevBoxDefinitionsOperations(object):
                 # Construct URL
                 url = self.list_by_project.metadata['url']  # type: ignore
                 path_format_arguments = {
-                    'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
-                    'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
+                    'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
+                    'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
                     'projectName': self._serialize.url("project_name", project_name, 'str'),
                 }
                 url = self._client.format_url(url, **path_format_arguments)
@@ -669,7 +669,7 @@ class DevBoxDefinitionsOperations(object):
         # type: (...) -> "models.DevBoxDefinition"
         """Gets a Dev Box definition configured for a project.
 
-        :param resource_group_name: Name of the resource group within the Azure subscription.
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
         :param project_name: The name of the project.
         :type project_name: str
@@ -685,14 +685,14 @@ class DevBoxDefinitionsOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2022-09-01-preview"
+        api_version = "2022-10-12-preview"
         accept = "application/json"
 
         # Construct URL
         url = self.get_by_project.metadata['url']  # type: ignore
         path_format_arguments = {
-            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
+            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
             'projectName': self._serialize.url("project_name", project_name, 'str'),
             'devBoxDefinitionName': self._serialize.url("dev_box_definition_name", dev_box_definition_name, 'str'),
         }

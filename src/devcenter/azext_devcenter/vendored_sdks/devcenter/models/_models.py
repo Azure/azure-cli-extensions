@@ -274,6 +274,9 @@ class Catalog(Resource):
     :type ado_git: ~dev_center.models.GitCatalog
     :ivar provisioning_state: The provisioning state of the resource.
     :vartype provisioning_state: str
+    :ivar sync_state: The synchronization state of the catalog. Possible values include:
+     "Succeeded", "InProgress", "Failed", "Canceled".
+    :vartype sync_state: str or ~dev_center.models.CatalogSyncState
     :ivar last_sync_time: When the catalog was last synced.
     :vartype last_sync_time: ~datetime.datetime
     """
@@ -284,6 +287,7 @@ class Catalog(Resource):
         'type': {'readonly': True},
         'system_data': {'readonly': True},
         'provisioning_state': {'readonly': True},
+        'sync_state': {'readonly': True},
         'last_sync_time': {'readonly': True},
     }
 
@@ -295,6 +299,7 @@ class Catalog(Resource):
         'git_hub': {'key': 'properties.gitHub', 'type': 'GitCatalog'},
         'ado_git': {'key': 'properties.adoGit', 'type': 'GitCatalog'},
         'provisioning_state': {'key': 'properties.provisioningState', 'type': 'str'},
+        'sync_state': {'key': 'properties.syncState', 'type': 'str'},
         'last_sync_time': {'key': 'properties.lastSyncTime', 'type': 'iso-8601'},
     }
 
@@ -306,6 +311,7 @@ class Catalog(Resource):
         self.git_hub = kwargs.get('git_hub', None)
         self.ado_git = kwargs.get('ado_git', None)
         self.provisioning_state = None
+        self.sync_state = None
         self.last_sync_time = None
 
 
@@ -373,12 +379,16 @@ class CatalogProperties(CatalogUpdateProperties):
     :type ado_git: ~dev_center.models.GitCatalog
     :ivar provisioning_state: The provisioning state of the resource.
     :vartype provisioning_state: str
+    :ivar sync_state: The synchronization state of the catalog. Possible values include:
+     "Succeeded", "InProgress", "Failed", "Canceled".
+    :vartype sync_state: str or ~dev_center.models.CatalogSyncState
     :ivar last_sync_time: When the catalog was last synced.
     :vartype last_sync_time: ~datetime.datetime
     """
 
     _validation = {
         'provisioning_state': {'readonly': True},
+        'sync_state': {'readonly': True},
         'last_sync_time': {'readonly': True},
     }
 
@@ -386,6 +396,7 @@ class CatalogProperties(CatalogUpdateProperties):
         'git_hub': {'key': 'gitHub', 'type': 'GitCatalog'},
         'ado_git': {'key': 'adoGit', 'type': 'GitCatalog'},
         'provisioning_state': {'key': 'provisioningState', 'type': 'str'},
+        'sync_state': {'key': 'syncState', 'type': 'str'},
         'last_sync_time': {'key': 'lastSyncTime', 'type': 'iso-8601'},
     }
 
@@ -395,6 +406,7 @@ class CatalogProperties(CatalogUpdateProperties):
     ):
         super(CatalogProperties, self).__init__(**kwargs)
         self.provisioning_state = None
+        self.sync_state = None
         self.last_sync_time = None
 
 
@@ -1110,6 +1122,81 @@ class EnvironmentTypeUpdate(msrest.serialization.Model):
     ):
         super(EnvironmentTypeUpdate, self).__init__(**kwargs)
         self.tags = kwargs.get('tags', None)
+
+
+class ErrorAdditionalInfo(msrest.serialization.Model):
+    """The resource management error additional info.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar type: The additional info type.
+    :vartype type: str
+    :ivar info: The additional info.
+    :vartype info: object
+    """
+
+    _validation = {
+        'type': {'readonly': True},
+        'info': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'type': {'key': 'type', 'type': 'str'},
+        'info': {'key': 'info', 'type': 'object'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(ErrorAdditionalInfo, self).__init__(**kwargs)
+        self.type = None
+        self.info = None
+
+
+class ErrorDetail(msrest.serialization.Model):
+    """The error detail.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar code: The error code.
+    :vartype code: str
+    :ivar message: The error message.
+    :vartype message: str
+    :ivar target: The error target.
+    :vartype target: str
+    :ivar details: The error details.
+    :vartype details: list[~dev_center.models.ErrorDetail]
+    :ivar additional_info: The error additional info.
+    :vartype additional_info: list[~dev_center.models.ErrorAdditionalInfo]
+    """
+
+    _validation = {
+        'code': {'readonly': True},
+        'message': {'readonly': True},
+        'target': {'readonly': True},
+        'details': {'readonly': True},
+        'additional_info': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'code': {'key': 'code', 'type': 'str'},
+        'message': {'key': 'message', 'type': 'str'},
+        'target': {'key': 'target', 'type': 'str'},
+        'details': {'key': 'details', 'type': '[ErrorDetail]'},
+        'additional_info': {'key': 'additionalInfo', 'type': '[ErrorAdditionalInfo]'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(ErrorDetail, self).__init__(**kwargs)
+        self.code = None
+        self.message = None
+        self.target = None
+        self.details = None
+        self.additional_info = None
 
 
 class Gallery(Resource):
@@ -2086,36 +2173,93 @@ class OperationListResult(msrest.serialization.Model):
         self.next_link = None
 
 
-class OperationStatus(msrest.serialization.Model):
+class OperationStatusResult(msrest.serialization.Model):
+    """The current status of an async operation.
+
+    All required parameters must be populated in order to send to Azure.
+
+    :param id: Fully qualified ID for the async operation.
+    :type id: str
+    :param name: Name of the async operation.
+    :type name: str
+    :param status: Required. Operation status.
+    :type status: str
+    :param percent_complete: Percent of the operation that is complete.
+    :type percent_complete: float
+    :param start_time: The start time of the operation.
+    :type start_time: ~datetime.datetime
+    :param end_time: The end time of the operation.
+    :type end_time: ~datetime.datetime
+    :param operations: The operations list.
+    :type operations: list[~dev_center.models.OperationStatusResult]
+    :param error: If present, details of the operation error.
+    :type error: ~dev_center.models.ErrorDetail
+    """
+
+    _validation = {
+        'status': {'required': True},
+        'percent_complete': {'maximum': 100, 'minimum': 0},
+    }
+
+    _attribute_map = {
+        'id': {'key': 'id', 'type': 'str'},
+        'name': {'key': 'name', 'type': 'str'},
+        'status': {'key': 'status', 'type': 'str'},
+        'percent_complete': {'key': 'percentComplete', 'type': 'float'},
+        'start_time': {'key': 'startTime', 'type': 'iso-8601'},
+        'end_time': {'key': 'endTime', 'type': 'iso-8601'},
+        'operations': {'key': 'operations', 'type': '[OperationStatusResult]'},
+        'error': {'key': 'error', 'type': 'ErrorDetail'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(OperationStatusResult, self).__init__(**kwargs)
+        self.id = kwargs.get('id', None)
+        self.name = kwargs.get('name', None)
+        self.status = kwargs['status']
+        self.percent_complete = kwargs.get('percent_complete', None)
+        self.start_time = kwargs.get('start_time', None)
+        self.end_time = kwargs.get('end_time', None)
+        self.operations = kwargs.get('operations', None)
+        self.error = kwargs.get('error', None)
+
+
+class OperationStatus(OperationStatusResult):
     """The current status of an async operation.
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
-    :ivar id: Fully qualified ID for the operation status.
-    :vartype id: str
-    :ivar name: The operation id name.
-    :vartype name: str
-    :ivar status: Provisioning state of the resource.
-    :vartype status: str
-    :ivar start_time: The start time of the operation.
-    :vartype start_time: ~datetime.datetime
-    :ivar end_time: The end time of the operation.
-    :vartype end_time: ~datetime.datetime
-    :ivar percent_complete: Percent of the operation that is complete.
-    :vartype percent_complete: float
+    All required parameters must be populated in order to send to Azure.
+
+    :param id: Fully qualified ID for the async operation.
+    :type id: str
+    :param name: Name of the async operation.
+    :type name: str
+    :param status: Required. Operation status.
+    :type status: str
+    :param percent_complete: Percent of the operation that is complete.
+    :type percent_complete: float
+    :param start_time: The start time of the operation.
+    :type start_time: ~datetime.datetime
+    :param end_time: The end time of the operation.
+    :type end_time: ~datetime.datetime
+    :param operations: The operations list.
+    :type operations: list[~dev_center.models.OperationStatusResult]
+    :param error: If present, details of the operation error.
+    :type error: ~dev_center.models.ErrorDetail
+    :ivar resource_id: The id of the resource.
+    :vartype resource_id: str
     :ivar properties: Custom operation properties, populated only for a successful operation.
     :vartype properties: object
-    :param error: Operation Error message.
-    :type error: ~dev_center.models.OperationStatusError
     """
 
     _validation = {
-        'id': {'readonly': True},
-        'name': {'readonly': True},
-        'status': {'readonly': True},
-        'start_time': {'readonly': True},
-        'end_time': {'readonly': True},
-        'percent_complete': {'readonly': True, 'maximum': 100, 'minimum': 0},
+        'status': {'required': True},
+        'percent_complete': {'maximum': 100, 'minimum': 0},
+        'resource_id': {'readonly': True},
         'properties': {'readonly': True},
     }
 
@@ -2123,11 +2267,13 @@ class OperationStatus(msrest.serialization.Model):
         'id': {'key': 'id', 'type': 'str'},
         'name': {'key': 'name', 'type': 'str'},
         'status': {'key': 'status', 'type': 'str'},
+        'percent_complete': {'key': 'percentComplete', 'type': 'float'},
         'start_time': {'key': 'startTime', 'type': 'iso-8601'},
         'end_time': {'key': 'endTime', 'type': 'iso-8601'},
-        'percent_complete': {'key': 'percentComplete', 'type': 'float'},
+        'operations': {'key': 'operations', 'type': '[OperationStatusResult]'},
+        'error': {'key': 'error', 'type': 'ErrorDetail'},
+        'resource_id': {'key': 'resourceId', 'type': 'str'},
         'properties': {'key': 'properties', 'type': 'object'},
-        'error': {'key': 'error', 'type': 'OperationStatusError'},
     }
 
     def __init__(
@@ -2135,44 +2281,8 @@ class OperationStatus(msrest.serialization.Model):
         **kwargs
     ):
         super(OperationStatus, self).__init__(**kwargs)
-        self.id = None
-        self.name = None
-        self.status = None
-        self.start_time = None
-        self.end_time = None
-        self.percent_complete = None
+        self.resource_id = None
         self.properties = None
-        self.error = kwargs.get('error', None)
-
-
-class OperationStatusError(msrest.serialization.Model):
-    """Operation Error message.
-
-    Variables are only populated by the server, and will be ignored when sending a request.
-
-    :ivar code: The error code.
-    :vartype code: str
-    :ivar message: The error message.
-    :vartype message: str
-    """
-
-    _validation = {
-        'code': {'readonly': True},
-        'message': {'readonly': True},
-    }
-
-    _attribute_map = {
-        'code': {'key': 'code', 'type': 'str'},
-        'message': {'key': 'message', 'type': 'str'},
-    }
-
-    def __init__(
-        self,
-        **kwargs
-    ):
-        super(OperationStatusError, self).__init__(**kwargs)
-        self.code = None
-        self.message = None
 
 
 class Pool(TrackedResource):
