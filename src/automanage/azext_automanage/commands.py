@@ -13,8 +13,3 @@
 
 def load_command_table(self, _):  # pylint: disable=unused-argument
     pass
-    # with self.command_group('automanage configuration-profile') as g:
-    #     g.custom_command('create', 'create_configuration_profile')
-
-    # with self.command_group('automanage best-practice') as g:
-    #     g.custom_command('list', 'list_best_practice')

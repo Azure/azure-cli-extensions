@@ -11,12 +11,4 @@
 
 def load_arguments(self, _):  # pylint: disable=unused-argument
     pass
-    # with self.argument_context('automanage configuration-profile create') as c:
-    #     c.argument('configuration_profile_name',
-    #                options_list=('--configuration-profile-name', '--name', '-n'), required=True,
-    #                help='Name of the configuration profile.')
-    #     c.argument('resource_group', options_list=('--resource-group', '-g'), required=True,
-    #                help='Name of resource group. You can configure the default group using '
-    #                     '`az configure --defaults group=<name>`.')
-    #     c.extra('configuration',
-    #                help='configuration dictionary of the configuration profile.')
+
