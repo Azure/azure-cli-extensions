@@ -363,7 +363,7 @@ def _execute_recommend_commands(cmd, rec):
 def _execute_recommend_scenarios(cmd, rec):
     exec_idx = rec.get("executeIndex")
     for idx, nx_cmd in enumerate(rec["nextCommandSet"]):
-        cmd_active = exec_idx is None or idx in exec_idx
+        cmd_active = idx in exec_idx
         if not cmd_active:
             continue
         nx_param = []
@@ -420,7 +420,7 @@ def _show_details_for_e2e_scenario(cmd, rec):
         command_item = "az " + nx_cmd['command']
         if 'arguments' in nx_cmd and cmd.cli_ctx.config.getboolean('next', 'show_arguments', fallback=False):
             command_item = f"{command_item} {' '.join(nx_cmd['arguments'])}"
-        cmd_active = exec_idx is None or idx in exec_idx
+        cmd_active = idx in exec_idx
         styled_command = [(Style.ACTION, " > "), (Style.PRIMARY, command_item)]
         if not cmd_active:
             styled_command.append((Style.WARNING, " (executed)"))
