@@ -6,8 +6,9 @@
 
 # pylint: disable=line-too-long
 
-Distribution_Enum_Values = ["auto", "generic", "openshift", "rancher_rke", "kind", "k3s", "minikube", "gke", "eks", "aks", "aks_management", "aks_workload", "capz", "aks_engine", "tkg"]
+Distribution_Enum_Values = ["auto", "generic", "openshift", "rancher_rke", "kind", "k3s", "minikube", "gke", "eks", "aks", "aks_management", "aks_workload", "capz", "aks_engine", "tkg", "canonical", "karbon"]
 Infrastructure_Enum_Values = ["auto", "generic", "azure", "aws", "gcp", "azure_stack_hci", "azure_stack_hub", "azure_stack_edge", "vsphere", "windows_server"]
+AHB_Enum_Values = ["True", "False", "NotApplicable"]
 Feature_Values = ["cluster-connect", "azure-rbac", "custom-locations"]
 CRD_FOR_FORCE_DELETE = ["arccertificates.clusterconfig.azure.com", "azureclusteridentityrequests.clusterconfig.azure.com", "azureextensionidentities.clusterconfig.azure.com", "connectedclusters.arc.azure.com", "customlocationsettings.clusterconfig.azure.com", "extensionconfigs.clusterconfig.azure.com", "gitconfigs.clusterconfig.azure.com"]
 Custom_Locations_Provider_Namespace = 'Microsoft.ExtendedLocation'
@@ -57,7 +58,6 @@ Check_HelmInstallation_Fault_Type = 'check-helm-installed-error'
 Get_HelmRegistery_Path_Fault_Type = 'helm-registry-path-fetch-error'
 Pull_HelmChart_Fault_Type = 'helm-chart-pull-error'
 Export_HelmChart_Fault_Type = 'helm-chart-export-error'
-Get_Kubernetes_Version_Fault_Type = 'kubernetes-get-version-error'
 Get_Kubernetes_Distro_Fault_Type = 'kubernetes-get-distribution-error'
 Get_Kubernetes_Namespace_Fault_Type = 'kubernetes-get-namespace-error'
 Update_Agent_Success = 'Agents for Connected Cluster {} have been updated successfully'

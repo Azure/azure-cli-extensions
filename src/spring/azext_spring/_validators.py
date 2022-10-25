@@ -218,6 +218,12 @@ def validate_ingress_timeout(namespace):
         raise InvalidArgumentValueError("Invalid value: Ingress read timeout must be in the range [1,1800].")
 
 
+def validate_remote_debugging_port(namespace):
+    if namespace.remote_debugging_port is not None and (namespace.remote_debugging_port < 1024 or
+                                                        namespace.remote_debugging_port > 65535):
+        raise InvalidArgumentValueError("Invalid value: remote debugging port must be in the range [1024,65535].")
+
+
 def validate_ingress_send_timeout(namespace):
     if namespace.ingress_send_timeout is not None and (namespace.ingress_read_timeout < 1 or
                                                        namespace.ingress_read_timeout > 1800):
