@@ -12,19 +12,19 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "automation hrwg show",
+    "automation python3-package show",
 )
 class Show(AAZCommand):
-    """Get hybrid worker group
+    """Retrieve the python 3 package identified by package name.
 
-    :example: Get hybrid worker group
-        az automation hrwg show --automation-account-name accountName --resource-group groupName --name hybridrunbookworkergroupName
+    :example: Get Python3Package by Name
+        az automation python3-package show --automation-account-name "MyAutomationAccount" --resource-group "MyResourceGroup" --name "PackageName"
     """
 
     _aaz_info = {
         "version": "2022-08-08",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.automation/automationaccounts/{}/hybridrunbookworkergroups/{}", "2022-08-08"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.automation/automationaccounts/{}/python3packages/{}", "2022-08-08"],
         ]
     }
 
@@ -50,9 +50,9 @@ class Show(AAZCommand):
             required=True,
             id_part="name",
         )
-        _args_schema.hybrid_runbook_worker_group_name = AAZStrArg(
-            options=["-n", "--name", "--hybrid-runbook-worker-group-name"],
-            help="The hybrid runbook worker group name",
+        _args_schema.package_name = AAZStrArg(
+            options=["-n", "--name", "--package-name"],
+            help="The python package name.",
             required=True,
             id_part="child_name_1",
         )
@@ -63,7 +63,7 @@ class Show(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        self.HybridRunbookWorkerGroupGet(ctx=self.ctx)()
+        self.Python3PackageGet(ctx=self.ctx)()
         self.post_operations()
 
     # @register_callback
@@ -78,7 +78,7 @@ class Show(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class HybridRunbookWorkerGroupGet(AAZHttpOperation):
+    class Python3PackageGet(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -92,7 +92,7 @@ class Show(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Automation/automationAccounts/{automationAccountName}/hybridRunbookWorkerGroups/{hybridRunbookWorkerGroupName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Automation/automationAccounts/{automationAccountName}/python3Packages/{packageName}",
                 **self.url_parameters
             )
 
@@ -112,7 +112,7 @@ class Show(AAZCommand):
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "hybridRunbookWorkerGroupName", self.ctx.args.hybrid_runbook_worker_group_name,
+                    "packageName", self.ctx.args.package_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -163,57 +163,72 @@ class Show(AAZCommand):
             cls._schema_on_200 = AAZObjectType()
 
             _schema_on_200 = cls._schema_on_200
+            _schema_on_200.etag = AAZStrType()
             _schema_on_200.id = AAZStrType(
                 flags={"read_only": True},
             )
+            _schema_on_200.location = AAZStrType()
             _schema_on_200.name = AAZStrType(
                 flags={"read_only": True},
             )
             _schema_on_200.properties = AAZObjectType(
                 flags={"client_flatten": True},
             )
-            _schema_on_200.system_data = AAZObjectType(
-                serialized_name="systemData",
-                flags={"read_only": True},
-            )
+            _schema_on_200.tags = AAZDictType()
             _schema_on_200.type = AAZStrType(
                 flags={"read_only": True},
             )
 
             properties = cls._schema_on_200.properties
-            properties.credential = AAZObjectType()
-            properties.group_type = AAZStrType(
-                serialized_name="groupType",
+            properties.activity_count = AAZIntType(
+                serialized_name="activityCount",
+            )
+            properties.content_link = AAZObjectType(
+                serialized_name="contentLink",
+            )
+            properties.creation_time = AAZStrType(
+                serialized_name="creationTime",
+            )
+            properties.description = AAZStrType()
+            properties.error = AAZObjectType()
+            properties.is_composite = AAZBoolType(
+                serialized_name="isComposite",
+            )
+            properties.is_global = AAZBoolType(
+                serialized_name="isGlobal",
+            )
+            properties.last_modified_time = AAZStrType(
+                serialized_name="lastModifiedTime",
+            )
+            properties.provisioning_state = AAZStrType(
+                serialized_name="provisioningState",
+            )
+            properties.size_in_bytes = AAZIntType(
+                serialized_name="sizeInBytes",
+            )
+            properties.version = AAZStrType()
+
+            content_link = cls._schema_on_200.properties.content_link
+            content_link.content_hash = AAZObjectType(
+                serialized_name="contentHash",
+            )
+            content_link.uri = AAZStrType()
+            content_link.version = AAZStrType()
+
+            content_hash = cls._schema_on_200.properties.content_link.content_hash
+            content_hash.algorithm = AAZStrType(
+                flags={"required": True},
+            )
+            content_hash.value = AAZStrType(
+                flags={"required": True},
             )
 
-            credential = cls._schema_on_200.properties.credential
-            credential.name = AAZStrType()
+            error = cls._schema_on_200.properties.error
+            error.code = AAZStrType()
+            error.message = AAZStrType()
 
-            system_data = cls._schema_on_200.system_data
-            system_data.created_at = AAZStrType(
-                serialized_name="createdAt",
-                flags={"read_only": True},
-            )
-            system_data.created_by = AAZStrType(
-                serialized_name="createdBy",
-                flags={"read_only": True},
-            )
-            system_data.created_by_type = AAZStrType(
-                serialized_name="createdByType",
-                flags={"read_only": True},
-            )
-            system_data.last_modified_at = AAZStrType(
-                serialized_name="lastModifiedAt",
-                flags={"read_only": True},
-            )
-            system_data.last_modified_by = AAZStrType(
-                serialized_name="lastModifiedBy",
-                flags={"read_only": True},
-            )
-            system_data.last_modified_by_type = AAZStrType(
-                serialized_name="lastModifiedByType",
-                flags={"read_only": True},
-            )
+            tags = cls._schema_on_200.tags
+            tags.Element = AAZStrType()
 
             return cls._schema_on_200
 

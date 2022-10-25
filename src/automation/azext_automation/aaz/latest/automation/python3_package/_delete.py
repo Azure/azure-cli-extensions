@@ -12,19 +12,20 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "automation hrwg hrw move",
+    "automation python3-package delete",
+    confirmation="Are you sure you want to perform this operation?",
 )
-class Move(AAZCommand):
-    """Move a hybrid worker to a different group.
-    
-    :example: Move a hybrid runbook worker to a different hybrid runbook worker group
-        az automation hrwg hrw move --automation-account-name accountName --resource-group groupName --hybrid-runbook-worker-group-name hybridRunbookWorkerGroupName --target-hybrid-runbook-worker-group-name targetHybridWorkerGroupName --hybrid-runbook-worker-id hybridRunbookWorkerId
+class Delete(AAZCommand):
+    """Delete the python 3 package by name.
+
+    :example: Delete Python3 Package by Name
+        az automation python3-package delete --automation-account-name "MyAutomationAccount" --resource-group "MyResourceGroup" --name "PackageName"
     """
 
     _aaz_info = {
         "version": "2022-08-08",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.automation/automationaccounts/{}/hybridrunbookworkergroups/{}/hybridrunbookworkers/{}/move", "2022-08-08"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.automation/automationaccounts/{}/python3packages/{}", "2022-08-08"],
         ]
     }
 
@@ -48,16 +49,13 @@ class Move(AAZCommand):
             options=["--automation-account-name"],
             help="The name of the automation account.",
             required=True,
+            id_part="name",
         )
-        _args_schema.hybrid_runbook_worker_group_name = AAZStrArg(
-            options=["--hybrid-runbook-worker-group-name"],
-            help="The hybrid runbook worker group name",
+        _args_schema.package_name = AAZStrArg(
+            options=["-n", "--name", "--package-name"],
+            help="The python package name.",
             required=True,
-        )
-        _args_schema.hybrid_runbook_worker_id = AAZStrArg(
-            options=["--hybrid-runbook-worker-id"],
-            help="The hybrid runbook worker id",
-            required=True,
+            id_part="child_name_1",
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -66,7 +64,7 @@ class Move(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        self.HybridRunbookWorkersMove(ctx=self.ctx)()
+        self.Python3PackageDelete(ctx=self.ctx)()
         self.post_operations()
 
     # @register_callback
@@ -77,7 +75,7 @@ class Move(AAZCommand):
     def post_operations(self):
         pass
 
-    class HybridRunbookWorkersMove(AAZHttpOperation):
+    class Python3PackageDelete(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -85,19 +83,21 @@ class Move(AAZCommand):
             session = self.client.send_request(request=request, stream=False, **kwargs)
             if session.http_response.status_code in [200]:
                 return self.on_200(session)
+            if session.http_response.status_code in [204]:
+                return self.on_204(session)
 
             return self.on_error(session.http_response)
 
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Automation/automationAccounts/{automationAccountName}/hybridRunbookWorkerGroups/{hybridRunbookWorkerGroupName}/hybridRunbookWorkers/{hybridRunbookWorkerId}/move",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Automation/automationAccounts/{automationAccountName}/python3Packages/{packageName}",
                 **self.url_parameters
             )
 
         @property
         def method(self):
-            return "POST"
+            return "DELETE"
 
         @property
         def error_format(self):
@@ -111,11 +111,7 @@ class Move(AAZCommand):
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "hybridRunbookWorkerGroupName", self.ctx.args.hybrid_runbook_worker_group_name,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "hybridRunbookWorkerId", self.ctx.args.hybrid_runbook_worker_id,
+                    "packageName", self.ctx.args.package_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -139,28 +135,11 @@ class Move(AAZCommand):
             }
             return parameters
 
-        @property
-        def header_parameters(self):
-            parameters = {
-                **self.serialize_header_param(
-                    "Content-Type", "application/json",
-                ),
-            }
-            return parameters
-
-        @property
-        def content(self):
-            _content_value, _builder = self.new_content_builder(
-                self.ctx.args,
-                typ=AAZObjectType,
-                typ_kwargs={"flags": {"required": True, "client_flatten": True}}
-            )
-            _builder.set_prop("hybridRunbookWorkerGroupName", AAZStrType, ".hybrid_runbook_worker_group_name")
-
-            return self.serialize_content(_content_value)
-
         def on_200(self, session):
             pass
 
+        def on_204(self, session):
+            pass
 
-__all__ = ["Move"]
+
+__all__ = ["Delete"]

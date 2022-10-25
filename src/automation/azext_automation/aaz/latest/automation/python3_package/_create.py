@@ -12,19 +12,19 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "automation hrwg hrw create",
+    "automation python3-package create",
 )
 class Create(AAZCommand):
-    """Create a hybrid runbook worker.
+    """Create or Update the python 3 package identified by package name.
 
-    :example: Create a hybrid runbook worker
-        az automation hrwg hrw create --automation-account-name accountName --resource-group groupName --hybrid-runbook-worker-group-name hybridRunbookWorkerGroupName --hybrid-runbook-worker-id hybridRunbookWorkerId --vm-resource-id vmResourceId
+    :example: Add Python3 Package to automation account
+        az automation python3-package create --automation-account-name "MyAutomationAccount" --resource-group "MyResourceGroup" --name "PackageName" --content-link "uri=https://PackageUri.com"
     """
 
     _aaz_info = {
         "version": "2022-08-08",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.automation/automationaccounts/{}/hybridrunbookworkergroups/{}/hybridrunbookworkers/{}", "2022-08-08"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.automation/automationaccounts/{}/python3packages/{}", "2022-08-08"],
         ]
     }
 
@@ -50,35 +50,68 @@ class Create(AAZCommand):
             required=True,
             id_part="name",
         )
-        _args_schema.hybrid_runbook_worker_group_name = AAZStrArg(
-            options=["--hybrid-runbook-worker-group-name"],
-            help="The hybrid runbook worker group name",
+        _args_schema.package_name = AAZStrArg(
+            options=["-n", "--name", "--package-name"],
+            help="The name of python package.",
             required=True,
             id_part="child_name_1",
-        )
-        _args_schema.hybrid_runbook_worker_id = AAZStrArg(
-            options=["-n", "--name", "--hybrid-runbook-worker-id"],
-            help="The hybrid runbook worker id",
-            required=True,
-            id_part="child_name_2",
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
 
+        # define Arg Group "Parameters"
+
+        _args_schema = cls._args_schema
+        _args_schema.tags = AAZDictArg(
+            options=["--tags"],
+            arg_group="Parameters",
+            help="Gets or sets the tags attached to the resource.",
+        )
+
+        tags = cls._args_schema.tags
+        tags.Element = AAZStrArg()
+
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
-        _args_schema.vm_resource_id = AAZStrArg(
-            options=["--vm-resource-id"],
+        _args_schema.content_link = AAZObjectArg(
+            options=["--content-link"],
             arg_group="Properties",
-            help="Azure Resource Manager Id for a virtual machine.",
+            help="Gets or sets the module content link.",
+            required=True,
+        )
+
+        content_link = cls._args_schema.content_link
+        content_link.content_hash = AAZObjectArg(
+            options=["content-hash"],
+            help="Gets or sets the hash.",
+        )
+        content_link.uri = AAZStrArg(
+            options=["uri"],
+            help="Gets or sets the uri of the runbook content.",
+        )
+        content_link.version = AAZStrArg(
+            options=["version"],
+            help="Gets or sets the version of the content.",
+        )
+
+        content_hash = cls._args_schema.content_link.content_hash
+        content_hash.algorithm = AAZStrArg(
+            options=["algorithm"],
+            help="Gets or sets the content hash algorithm used to hash the content.",
+            required=True,
+        )
+        content_hash.value = AAZStrArg(
+            options=["value"],
+            help="Gets or sets expected hash value of the content.",
+            required=True,
         )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.HybridRunbookWorkersCreate(ctx=self.ctx)()
+        self.Python3PackageCreateOrUpdate(ctx=self.ctx)()
         self.post_operations()
 
     # @register_callback
@@ -93,7 +126,7 @@ class Create(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class HybridRunbookWorkersCreate(AAZHttpOperation):
+    class Python3PackageCreateOrUpdate(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -107,7 +140,7 @@ class Create(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Automation/automationAccounts/{automationAccountName}/hybridRunbookWorkerGroups/{hybridRunbookWorkerGroupName}/hybridRunbookWorkers/{hybridRunbookWorkerId}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Automation/automationAccounts/{automationAccountName}/python3Packages/{packageName}",
                 **self.url_parameters
             )
 
@@ -127,11 +160,7 @@ class Create(AAZCommand):
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "hybridRunbookWorkerGroupName", self.ctx.args.hybrid_runbook_worker_group_name,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "hybridRunbookWorkerId", self.ctx.args.hybrid_runbook_worker_id,
+                    "packageName", self.ctx.args.package_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -174,12 +203,27 @@ class Create(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
-            _builder.set_prop("name", AAZStrType, ".hybrid_runbook_worker_id")
             _builder.set_prop("properties", AAZObjectType, ".", typ_kwargs={"flags": {"required": True, "client_flatten": True}})
+            _builder.set_prop("tags", AAZDictType, ".tags")
 
             properties = _builder.get(".properties")
             if properties is not None:
-                properties.set_prop("vmResourceId", AAZStrType, ".vm_resource_id")
+                properties.set_prop("contentLink", AAZObjectType, ".content_link", typ_kwargs={"flags": {"required": True}})
+
+            content_link = _builder.get(".properties.contentLink")
+            if content_link is not None:
+                content_link.set_prop("contentHash", AAZObjectType, ".content_hash")
+                content_link.set_prop("uri", AAZStrType, ".uri")
+                content_link.set_prop("version", AAZStrType, ".version")
+
+            content_hash = _builder.get(".properties.contentLink.contentHash")
+            if content_hash is not None:
+                content_hash.set_prop("algorithm", AAZStrType, ".algorithm", typ_kwargs={"flags": {"required": True}})
+                content_hash.set_prop("value", AAZStrType, ".value", typ_kwargs={"flags": {"required": True}})
+
+            tags = _builder.get(".tags")
+            if tags is not None:
+                tags.set_elements(AAZStrType, ".")
 
             return self.serialize_content(_content_value)
 
@@ -201,66 +245,72 @@ class Create(AAZCommand):
             cls._schema_on_200_201 = AAZObjectType()
 
             _schema_on_200_201 = cls._schema_on_200_201
+            _schema_on_200_201.etag = AAZStrType()
             _schema_on_200_201.id = AAZStrType(
                 flags={"read_only": True},
             )
+            _schema_on_200_201.location = AAZStrType()
             _schema_on_200_201.name = AAZStrType(
                 flags={"read_only": True},
             )
             _schema_on_200_201.properties = AAZObjectType(
                 flags={"client_flatten": True},
             )
-            _schema_on_200_201.system_data = AAZObjectType(
-                serialized_name="systemData",
-                flags={"read_only": True},
-            )
+            _schema_on_200_201.tags = AAZDictType()
             _schema_on_200_201.type = AAZStrType(
                 flags={"read_only": True},
             )
 
             properties = cls._schema_on_200_201.properties
-            properties.ip = AAZStrType()
-            properties.last_seen_date_time = AAZStrType(
-                serialized_name="lastSeenDateTime",
+            properties.activity_count = AAZIntType(
+                serialized_name="activityCount",
             )
-            properties.registered_date_time = AAZStrType(
-                serialized_name="registeredDateTime",
+            properties.content_link = AAZObjectType(
+                serialized_name="contentLink",
             )
-            properties.vm_resource_id = AAZStrType(
-                serialized_name="vmResourceId",
+            properties.creation_time = AAZStrType(
+                serialized_name="creationTime",
             )
-            properties.worker_name = AAZStrType(
-                serialized_name="workerName",
+            properties.description = AAZStrType()
+            properties.error = AAZObjectType()
+            properties.is_composite = AAZBoolType(
+                serialized_name="isComposite",
             )
-            properties.worker_type = AAZStrType(
-                serialized_name="workerType",
+            properties.is_global = AAZBoolType(
+                serialized_name="isGlobal",
+            )
+            properties.last_modified_time = AAZStrType(
+                serialized_name="lastModifiedTime",
+            )
+            properties.provisioning_state = AAZStrType(
+                serialized_name="provisioningState",
+            )
+            properties.size_in_bytes = AAZIntType(
+                serialized_name="sizeInBytes",
+            )
+            properties.version = AAZStrType()
+
+            content_link = cls._schema_on_200_201.properties.content_link
+            content_link.content_hash = AAZObjectType(
+                serialized_name="contentHash",
+            )
+            content_link.uri = AAZStrType()
+            content_link.version = AAZStrType()
+
+            content_hash = cls._schema_on_200_201.properties.content_link.content_hash
+            content_hash.algorithm = AAZStrType(
+                flags={"required": True},
+            )
+            content_hash.value = AAZStrType(
+                flags={"required": True},
             )
 
-            system_data = cls._schema_on_200_201.system_data
-            system_data.created_at = AAZStrType(
-                serialized_name="createdAt",
-                flags={"read_only": True},
-            )
-            system_data.created_by = AAZStrType(
-                serialized_name="createdBy",
-                flags={"read_only": True},
-            )
-            system_data.created_by_type = AAZStrType(
-                serialized_name="createdByType",
-                flags={"read_only": True},
-            )
-            system_data.last_modified_at = AAZStrType(
-                serialized_name="lastModifiedAt",
-                flags={"read_only": True},
-            )
-            system_data.last_modified_by = AAZStrType(
-                serialized_name="lastModifiedBy",
-                flags={"read_only": True},
-            )
-            system_data.last_modified_by_type = AAZStrType(
-                serialized_name="lastModifiedByType",
-                flags={"read_only": True},
-            )
+            error = cls._schema_on_200_201.properties.error
+            error.code = AAZStrType()
+            error.message = AAZStrType()
+
+            tags = cls._schema_on_200_201.tags
+            tags.Element = AAZStrType()
 
             return cls._schema_on_200_201
 

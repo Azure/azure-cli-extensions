@@ -149,6 +149,9 @@ def load_command_table(self, _):
         g.custom_command('append-persistent-storage', 'app_append_persistent_storage')
         g.custom_command('append-loaded-public-certificate', 'app_append_loaded_public_certificate')
         g.custom_command('connect', 'app_connect')
+        g.custom_command('enable-remote-debugging', 'deployment_enable_remote_debugging', supports_no_wait=True)
+        g.custom_command('disable-remote-debugging', 'deployment_disable_remote_debugging', supports_no_wait=True)
+        g.custom_command('get-remote-debugging-config', 'deployment_get_remote_debugging')
 
     with self.command_group('spring app identity', custom_command_type=app_managed_identity_command,
                             exception_handler=handle_asc_exception) as g:
