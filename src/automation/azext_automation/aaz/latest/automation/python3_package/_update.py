@@ -12,19 +12,19 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "automation hrwg update",
+    "automation python3-package update",
 )
 class Update(AAZCommand):
-    """Update a hybrid runbook worker group.
+    """Create or Update the python 3 package identified by package name.
 
-    :example: Update hybrid worker group
-        az automation hrwg update --automation-account-name accountName --resource-group groupName --name hybridrunbookworkergroupName --credential "{name: credentialname}"
+    :example: Update Python3Package by Name
+        az automation python3-package update --automation-account-name "MyAutomationAccount" --resource-group "MyResourceGroup" --name "PackageName" --content-link "uri=https://PackageUri.com"
     """
 
     _aaz_info = {
         "version": "2022-08-08",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.automation/automationaccounts/{}/hybridrunbookworkergroups/{}", "2022-08-08"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.automation/automationaccounts/{}/python3packages/{}", "2022-08-08"],
         ]
     }
 
@@ -52,9 +52,9 @@ class Update(AAZCommand):
             required=True,
             id_part="name",
         )
-        _args_schema.hybrid_runbook_worker_group_name = AAZStrArg(
-            options=["-n", "--name", "--hybrid-runbook-worker-group-name"],
-            help="The hybrid runbook worker group name",
+        _args_schema.package_name = AAZStrArg(
+            options=["-n", "--name", "--package-name"],
+            help="The python package name.",
             required=True,
             id_part="child_name_1",
         )
@@ -62,32 +62,66 @@ class Update(AAZCommand):
             required=True,
         )
 
-        # define Arg Group "Properties"
+        # define Arg Group "Parameters"
 
         _args_schema = cls._args_schema
-        _args_schema.credential = AAZObjectArg(
-            options=["--credential"],
-            arg_group="Properties",
-            help="Sets the credential of a worker group.",
+        _args_schema.tags = AAZDictArg(
+            options=["--tags"],
+            arg_group="Parameters",
+            help="Gets or sets the tags attached to the resource.",
             nullable=True,
         )
 
-        credential = cls._args_schema.credential
-        credential.name = AAZStrArg(
-            options=["name"],
-            help="Gets or sets the name of the credential.",
+        tags = cls._args_schema.tags
+        tags.Element = AAZStrArg(
             nullable=True,
+        )
+
+        # define Arg Group "Properties"
+
+        _args_schema = cls._args_schema
+        _args_schema.content_link = AAZObjectArg(
+            options=["--content-link"],
+            arg_group="Properties",
+            help="Gets or sets the module content link.",
+        )
+
+        content_link = cls._args_schema.content_link
+        content_link.content_hash = AAZObjectArg(
+            options=["content-hash"],
+            help="Gets or sets the hash.",
+            nullable=True,
+        )
+        content_link.uri = AAZStrArg(
+            options=["uri"],
+            help="Gets or sets the uri of the runbook content.",
+            nullable=True,
+        )
+        content_link.version = AAZStrArg(
+            options=["version"],
+            help="Gets or sets the version of the content.",
+            nullable=True,
+        )
+
+        content_hash = cls._args_schema.content_link.content_hash
+        content_hash.algorithm = AAZStrArg(
+            options=["algorithm"],
+            help="Gets or sets the content hash algorithm used to hash the content.",
+        )
+        content_hash.value = AAZStrArg(
+            options=["value"],
+            help="Gets or sets expected hash value of the content.",
         )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.HybridRunbookWorkerGroupGet(ctx=self.ctx)()
+        self.Python3PackageGet(ctx=self.ctx)()
         self.pre_instance_update(self.ctx.vars.instance)
         self.InstanceUpdateByJson(ctx=self.ctx)()
         self.InstanceUpdateByGeneric(ctx=self.ctx)()
         self.post_instance_update(self.ctx.vars.instance)
-        self.HybridRunbookWorkerGroupCreate(ctx=self.ctx)()
+        self.Python3PackageCreateOrUpdate(ctx=self.ctx)()
         self.post_operations()
 
     # @register_callback
@@ -110,7 +144,7 @@ class Update(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class HybridRunbookWorkerGroupGet(AAZHttpOperation):
+    class Python3PackageGet(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -124,7 +158,7 @@ class Update(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Automation/automationAccounts/{automationAccountName}/hybridRunbookWorkerGroups/{hybridRunbookWorkerGroupName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Automation/automationAccounts/{automationAccountName}/python3Packages/{packageName}",
                 **self.url_parameters
             )
 
@@ -144,7 +178,7 @@ class Update(AAZCommand):
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "hybridRunbookWorkerGroupName", self.ctx.args.hybrid_runbook_worker_group_name,
+                    "packageName", self.ctx.args.package_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -193,11 +227,11 @@ class Update(AAZCommand):
                 return cls._schema_on_200
 
             cls._schema_on_200 = AAZObjectType()
-            _build_schema_hybrid_runbook_worker_group_read(cls._schema_on_200)
+            _build_schema_module_read(cls._schema_on_200)
 
             return cls._schema_on_200
 
-    class HybridRunbookWorkerGroupCreate(AAZHttpOperation):
+    class Python3PackageCreateOrUpdate(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -211,7 +245,7 @@ class Update(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Automation/automationAccounts/{automationAccountName}/hybridRunbookWorkerGroups/{hybridRunbookWorkerGroupName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Automation/automationAccounts/{automationAccountName}/python3Packages/{packageName}",
                 **self.url_parameters
             )
 
@@ -231,7 +265,7 @@ class Update(AAZCommand):
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "hybridRunbookWorkerGroupName", self.ctx.args.hybrid_runbook_worker_group_name,
+                    "packageName", self.ctx.args.package_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -292,7 +326,7 @@ class Update(AAZCommand):
                 return cls._schema_on_200_201
 
             cls._schema_on_200_201 = AAZObjectType()
-            _build_schema_hybrid_runbook_worker_group_read(cls._schema_on_200_201)
+            _build_schema_module_read(cls._schema_on_200_201)
 
             return cls._schema_on_200_201
 
@@ -307,16 +341,27 @@ class Update(AAZCommand):
                 value=instance,
                 typ=AAZObjectType
             )
-            _builder.set_prop("name", AAZStrType, ".hybrid_runbook_worker_group_name")
-            _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
+            _builder.set_prop("properties", AAZObjectType, ".", typ_kwargs={"flags": {"required": True, "client_flatten": True}})
+            _builder.set_prop("tags", AAZDictType, ".tags")
 
             properties = _builder.get(".properties")
             if properties is not None:
-                properties.set_prop("credential", AAZObjectType, ".credential")
+                properties.set_prop("contentLink", AAZObjectType, ".content_link", typ_kwargs={"flags": {"required": True}})
 
-            credential = _builder.get(".properties.credential")
-            if credential is not None:
-                credential.set_prop("name", AAZStrType, ".name")
+            content_link = _builder.get(".properties.contentLink")
+            if content_link is not None:
+                content_link.set_prop("contentHash", AAZObjectType, ".content_hash")
+                content_link.set_prop("uri", AAZStrType, ".uri")
+                content_link.set_prop("version", AAZStrType, ".version")
+
+            content_hash = _builder.get(".properties.contentLink.contentHash")
+            if content_hash is not None:
+                content_hash.set_prop("algorithm", AAZStrType, ".algorithm", typ_kwargs={"flags": {"required": True}})
+                content_hash.set_prop("value", AAZStrType, ".value", typ_kwargs={"flags": {"required": True}})
+
+            tags = _builder.get(".tags")
+            if tags is not None:
+                tags.set_elements(AAZStrType, ".")
 
             return _instance_value
 
@@ -329,79 +374,98 @@ class Update(AAZCommand):
             )
 
 
-_schema_hybrid_runbook_worker_group_read = None
+_schema_module_read = None
 
 
-def _build_schema_hybrid_runbook_worker_group_read(_schema):
-    global _schema_hybrid_runbook_worker_group_read
-    if _schema_hybrid_runbook_worker_group_read is not None:
-        _schema.id = _schema_hybrid_runbook_worker_group_read.id
-        _schema.name = _schema_hybrid_runbook_worker_group_read.name
-        _schema.properties = _schema_hybrid_runbook_worker_group_read.properties
-        _schema.system_data = _schema_hybrid_runbook_worker_group_read.system_data
-        _schema.type = _schema_hybrid_runbook_worker_group_read.type
+def _build_schema_module_read(_schema):
+    global _schema_module_read
+    if _schema_module_read is not None:
+        _schema.etag = _schema_module_read.etag
+        _schema.id = _schema_module_read.id
+        _schema.location = _schema_module_read.location
+        _schema.name = _schema_module_read.name
+        _schema.properties = _schema_module_read.properties
+        _schema.tags = _schema_module_read.tags
+        _schema.type = _schema_module_read.type
         return
 
-    _schema_hybrid_runbook_worker_group_read = AAZObjectType()
+    _schema_module_read = AAZObjectType()
 
-    hybrid_runbook_worker_group_read = _schema_hybrid_runbook_worker_group_read
-    hybrid_runbook_worker_group_read.id = AAZStrType(
+    module_read = _schema_module_read
+    module_read.etag = AAZStrType()
+    module_read.id = AAZStrType(
         flags={"read_only": True},
     )
-    hybrid_runbook_worker_group_read.name = AAZStrType(
+    module_read.location = AAZStrType()
+    module_read.name = AAZStrType(
         flags={"read_only": True},
     )
-    hybrid_runbook_worker_group_read.properties = AAZObjectType(
+    module_read.properties = AAZObjectType(
         flags={"client_flatten": True},
     )
-    hybrid_runbook_worker_group_read.system_data = AAZObjectType(
-        serialized_name="systemData",
-        flags={"read_only": True},
-    )
-    hybrid_runbook_worker_group_read.type = AAZStrType(
+    module_read.tags = AAZDictType()
+    module_read.type = AAZStrType(
         flags={"read_only": True},
     )
 
-    properties = _schema_hybrid_runbook_worker_group_read.properties
-    properties.credential = AAZObjectType()
-    properties.group_type = AAZStrType(
-        serialized_name="groupType",
+    properties = _schema_module_read.properties
+    properties.activity_count = AAZIntType(
+        serialized_name="activityCount",
+    )
+    properties.content_link = AAZObjectType(
+        serialized_name="contentLink",
+    )
+    properties.creation_time = AAZStrType(
+        serialized_name="creationTime",
+    )
+    properties.description = AAZStrType()
+    properties.error = AAZObjectType()
+    properties.is_composite = AAZBoolType(
+        serialized_name="isComposite",
+    )
+    properties.is_global = AAZBoolType(
+        serialized_name="isGlobal",
+    )
+    properties.last_modified_time = AAZStrType(
+        serialized_name="lastModifiedTime",
+    )
+    properties.provisioning_state = AAZStrType(
+        serialized_name="provisioningState",
+    )
+    properties.size_in_bytes = AAZIntType(
+        serialized_name="sizeInBytes",
+    )
+    properties.version = AAZStrType()
+
+    content_link = _schema_module_read.properties.content_link
+    content_link.content_hash = AAZObjectType(
+        serialized_name="contentHash",
+    )
+    content_link.uri = AAZStrType()
+    content_link.version = AAZStrType()
+
+    content_hash = _schema_module_read.properties.content_link.content_hash
+    content_hash.algorithm = AAZStrType(
+        flags={"required": True},
+    )
+    content_hash.value = AAZStrType(
+        flags={"required": True},
     )
 
-    credential = _schema_hybrid_runbook_worker_group_read.properties.credential
-    credential.name = AAZStrType()
+    error = _schema_module_read.properties.error
+    error.code = AAZStrType()
+    error.message = AAZStrType()
 
-    system_data = _schema_hybrid_runbook_worker_group_read.system_data
-    system_data.created_at = AAZStrType(
-        serialized_name="createdAt",
-        flags={"read_only": True},
-    )
-    system_data.created_by = AAZStrType(
-        serialized_name="createdBy",
-        flags={"read_only": True},
-    )
-    system_data.created_by_type = AAZStrType(
-        serialized_name="createdByType",
-        flags={"read_only": True},
-    )
-    system_data.last_modified_at = AAZStrType(
-        serialized_name="lastModifiedAt",
-        flags={"read_only": True},
-    )
-    system_data.last_modified_by = AAZStrType(
-        serialized_name="lastModifiedBy",
-        flags={"read_only": True},
-    )
-    system_data.last_modified_by_type = AAZStrType(
-        serialized_name="lastModifiedByType",
-        flags={"read_only": True},
-    )
+    tags = _schema_module_read.tags
+    tags.Element = AAZStrType()
 
-    _schema.id = _schema_hybrid_runbook_worker_group_read.id
-    _schema.name = _schema_hybrid_runbook_worker_group_read.name
-    _schema.properties = _schema_hybrid_runbook_worker_group_read.properties
-    _schema.system_data = _schema_hybrid_runbook_worker_group_read.system_data
-    _schema.type = _schema_hybrid_runbook_worker_group_read.type
+    _schema.etag = _schema_module_read.etag
+    _schema.id = _schema_module_read.id
+    _schema.location = _schema_module_read.location
+    _schema.name = _schema_module_read.name
+    _schema.properties = _schema_module_read.properties
+    _schema.tags = _schema_module_read.tags
+    _schema.type = _schema_module_read.type
 
 
 __all__ = ["Update"]

@@ -8,9 +8,16 @@
 # pylint: skip-file
 # flake8: noqa
 
-from .__cmd_group import *
-from ._create import *
-from ._delete import *
-from ._list import *
-from ._show import *
-from ._update import *
+from azure.cli.core.aaz import *
+
+
+@register_command_group(
+    "automation python3-package",
+)
+class __CMDGroup(AAZCommandGroup):
+    """python3-package
+    """
+    pass
+
+
+__all__ = ["__CMDGroup"]
