@@ -216,6 +216,21 @@ helps['spring app restart'] = """
     short-summary: Restart instances of the app, default to production deployment.
 """
 
+helps['spring app enable-remote-debugging'] = """
+    type: command
+    short-summary: Enable remote debugging for a deployment.
+"""
+
+helps['spring app disable-remote-debugging'] = """
+    type: command
+    short-summary: Disable remote debugging for a deployment.
+"""
+
+helps['spring app get-remote-debugging-config'] = """
+    type: command
+    short-summary: Get the remote debugging configuration of a deployment.
+"""
+
 helps['spring app deploy'] = """
     type: command
     short-summary: Deploy source code or pre-built binary to an app and update related configurations.
