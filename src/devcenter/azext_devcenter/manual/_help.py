@@ -211,22 +211,6 @@ helps[
 """
 
 helps[
-    "devcenter dev dev-box wait"
-] = """
-    type: command
-    short-summary: Place the CLI in a waiting state until a condition of the devcenter dev-box is met.
-    examples:
-      - name: Pause executing next line of CLI script until the devcenter dev-box is successfully created.
-        text: |-
-               az devcenter dev dev-box wait --name "MyDevBox" --dev-center-name "{devCenterName}"  \
-               --project-name "{projectName}" --user-id "me" --created
-      - name: Pause executing next line of CLI script until the devcenter dev-box is successfully deleted.
-        text: |-
-               az devcenter dev dev-box wait --name "MyDevBox" --dev-center-name "{devCenterName}"  \
-               --project-name "{projectName}" --user-id "me" --deleted
-"""
-
-helps[
     "devcenter dev environment"
 ] = """
     type: group
@@ -312,7 +296,7 @@ helps[
         text: |-
               az devcenter dev environment custom-action --action-id "someCustomActionId" --parameters \
 "{\\"functionAppRuntime\\":\\"node\\",\\"storageAccountType\\":\\"Standard_LRS\\"}" --name "{environmentName}" \
---project-name "myProject" --user-id "me"
+--project-name "myProject" --user-id "me" --dev-center-name "{devCenterName}"
 """
 
 helps[
@@ -325,7 +309,7 @@ helps[
         text: |-
               az devcenter dev environment delete-action --action-id "delete" --parameters "{\\"functionAppRuntime\\":\\"n\
 ode\\",\\"storageAccountType\\":\\"Standard_LRS\\"}" --name "{environmentName}" --project-name "myProject" --user-id \
-"me"
+"me" --dev-center-name "{devCenterName}"
 """
 
 helps[
@@ -338,7 +322,7 @@ helps[
         text: |-
               az devcenter dev environment deploy-action --action-id "deploy" --parameters "{\\"functionAppRuntime\\":\\"n\
 ode\\",\\"storageAccountType\\":\\"Standard_LRS\\"}" --name "{environmentName}" --project-name "myProject" --user-id \
-"me"
+"me" --dev-center-name "{devCenterName}"
 """
 
 helps[
@@ -433,7 +417,7 @@ helps[
       - name: CatalogItems_Get
         text: |-
                az devcenter dev catalog-item show --dev-center-name "{devCenterName}" \
-               --project-name "{projectName}"
+               --project-name "{projectName}" --catalog-item-id "{catalogItemId}"
 """
 
 helps[
@@ -452,7 +436,7 @@ helps[
       - name: CatalogItemVersions_ListByProject
         text: |-
                az devcenter dev catalog-item-version list --dev-center-name "{devCenterName}"  \
-                --project-name "{projectName}"
+                --project-name "{projectName}" --catalog-item-id "{catalogItemId}"
 """
 
 helps[
@@ -464,7 +448,7 @@ helps[
       - name: CatalogItemVersion_Get
         text: |-
                az devcenter dev catalog-item-version show --dev-center-name "{devCenterName}"  \
-               --project-name "{projectName}"
+               --project-name "{projectName}" --catalog-item-id "{catalogItemId}"
 """
 
 helps[
@@ -538,9 +522,9 @@ helps[
 --resource-group "rg1"
       - name: DevCenters_CreateWithUserIdentity
         text: |-
-               az devcenter admin devcenter create --identity-type "UserAssigned" --user-assigned-identity \
-"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/identityGroup/providers/Microsoft.ManagedIdenti\
-ty/userAssignedIdentities/testidentity1" --location "eastus" --tags CostCode="12345" --name "Contoso" \
+               az devcenter admin devcenter create --identity-type "UserAssigned" --user-assigned-identities \
+"{\\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/identityGroup/providers/Microsoft.ManagedIdenti\
+ty/userAssignedIdentities/testidentity1\\":{}}" --location "eastus" --tags CostCode="12345" --name "Contoso" \
 --resource-group "rg1"
 """
 
@@ -887,7 +871,7 @@ helps['devcenter admin project-environment-type delete'] = """
     examples:
       - name: ProjectEnvironmentTypes_Delete
         text: |-
-               az devcenter project-environment-type delete --environment-type-name "{environmentTypeName}" \
+               az devcenter admin project-environment-type delete --environment-type-name "{environmentTypeName}" \
 --project-name "ContosoProj" --resource-group "rg1"
 """
 
@@ -1236,7 +1220,7 @@ helps['devcenter admin operation-statuses show'] = """
     examples:
       - name: Get OperationStatus
         text: |-
-               az devcenter operation-statuses show --operation-id "{operationId}" --location "{location}"
+               az devcenter admin operation-statuses show --operation-id "{operationId}" --location "{location}"
 """
 
 helps['devcenter admin sku'] = """
@@ -1291,7 +1275,7 @@ helps[
     examples:
       - name: Pools_CreateOrUpdate
         text: |-
-               az devcenter admin pool create --location "eastus" --dev-box-definition-name "WebDevBox" \
+               az devcenter admin pool create --location "eastus" --devbox-definition-name "WebDevBox" \
 --network-connection-name "Network1-westus2" --pool-name "{poolName}" --project-name "{projectName}" --resource-group \
 "rg1" --license-type Windows_Client --local-administrator Enabled
 """
@@ -1304,7 +1288,7 @@ helps[
     examples:
       - name: Pools_Update
         text: |-
-               az devcenter admin pool update --dev-box-definition-name "WebDevBox2" --pool-name "{poolName}" --project-name \
+               az devcenter admin pool update --devbox-definition-name "WebDevBox2" --pool-name "{poolName}" --project-name \
 "{projectName}" --resource-group "rg1"
 """
 
@@ -1378,7 +1362,8 @@ helps[
       - name: Schedules_CreateDailyShutdownPoolSchedule
         text: |-
                az devcenter admin schedule create --state "Enabled" --time "17:30" --time-zone "America/Los_Angeles" \
---pool-name "DevPool" --project-name "DevProject" --resource-group "rg1" --name "autoShutdown"
+--pool-name "DevPool" --project-name "DevProject" --resource-group "rg1" --name "autoShutdown" --frequency Daily \
+--schedule-type StopDevBox
 """
 
 helps[
@@ -1508,7 +1493,7 @@ helps['devcenter admin network-connection list-health-detail'] = """
     examples:
       - name: NetworkConnections_ListHealthDetails
         text: |-
-               az devcenter admin network-connection list-health-detail --name "uswest3network" --resource-group "rg1"
+               az devcenter admin network-connection list-health-detail --network-connection-name "uswest3network" --resource-group "rg1"
 """
 
 helps[
@@ -1660,7 +1645,7 @@ helps[
     examples:
       - name: Images_Get
         text: |-
-               az devcenter image show --dev-center-name "Contoso" --gallery-name "DefaultDevGallery" --name \
+               az devcenter admin image show --dev-center-name "Contoso" --gallery-name "DefaultDevGallery" --name \
 "{imageName}" --resource-group "rg1"
 """
 

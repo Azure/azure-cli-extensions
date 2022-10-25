@@ -16,7 +16,7 @@ def devcenter_dev_center_create(
     location,
     tags=None,
     identity_type="SystemAssigned",
-    user_assigned_identity=None,
+    user_assigned_identities=None,
     no_wait=False,
 ):
     body = {}
@@ -26,9 +26,8 @@ def devcenter_dev_center_create(
     body["identity"] = {}
     if identity_type is not None:
         body["identity"]["type"] = identity_type
-    if user_assigned_identity is not None:
-        body["identity"]["user_assigned_identities"] = {}
-        body["identity"]["user_assigned_identities"][user_assigned_identity] = {}
+    if user_assigned_identities is not None:
+        body['identity']['user_assigned_identities'] = user_assigned_identities
     if len(body["identity"]) == 0:
         del body["identity"]
     return sdk_no_wait(
@@ -141,9 +140,9 @@ def devcenter_schedule_create(
 
 
 # dataplane commands
-def devcenter_project_list_dp(cmd, dev_center, filter_=None, top=None):
+def devcenter_project_list_dp(cmd, dev_center, top=None):
     cf_fidalgo = cf_devcenter_dataplane(cmd.cli_ctx, dev_center)
-    return cf_fidalgo.project.list_by_dev_center(filter=filter_, top=top)
+    return cf_fidalgo.project.list_by_dev_center(top=top)
 
 
 def devcenter_project_show_dp(cmd, dev_center, project_name):
@@ -151,9 +150,9 @@ def devcenter_project_show_dp(cmd, dev_center, project_name):
     return cf_fidalgo.project.get(project_name=project_name)
 
 
-def devcenter_pool_list_dp(cmd, dev_center, project_name, top=None, filter_=None):
+def devcenter_pool_list_dp(cmd, dev_center, project_name, top=None):
     cf_fidalgo = cf_devcenter_dataplane(cmd.cli_ctx, dev_center)
-    return cf_fidalgo.pool.list(top=top, filter=filter_, project_name=project_name)
+    return cf_fidalgo.pool.list(top=top, project_name=project_name)
 
 
 def devcenter_pool_show_dp(cmd, dev_center, project_name, pool_name):
@@ -162,11 +161,11 @@ def devcenter_pool_show_dp(cmd, dev_center, project_name, pool_name):
 
 
 def devcenter_schedule_list_dp(
-    cmd, dev_center, project_name, pool_name, top=None, filter_=None
+    cmd, dev_center, project_name, pool_name, top=None
 ):
     cf_fidalgo = cf_devcenter_dataplane(cmd.cli_ctx, dev_center)
     return cf_fidalgo.schedule.list(
-        top=top, filter=filter_, project_name=project_name, pool_name=pool_name
+        top=top, project_name=project_name, pool_name=pool_name
     )
 
 

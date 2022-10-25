@@ -205,7 +205,7 @@ def load_command_table(self, _):
         "devcenter dev project", devcenter_project_dp, client_factory=cf_project_dp
     ) as g:
         g.custom_command("list", "devcenter_project_list_dp")
-        g.custom_command("show", "devcenter_project_show_dp")
+        g.custom_show_command("show", "devcenter_project_show_dp")
 
     with self.command_group(
         "devcenter dev pool", devcenter_pool_dp, client_factory=cf_pool_dp
