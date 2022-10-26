@@ -411,6 +411,7 @@ def load_arguments(self, _):
         # managed cluster
         c.argument('http_proxy_config')
         c.argument('load_balancer_managed_outbound_ipv6_count', type=int)
+        c.argument('outbound_type', arg_type=get_enum_type(outbound_types))
         c.argument('enable_pod_security_policy', action='store_true')
         c.argument('disable_pod_security_policy', action='store_true')
         c.argument('enable_pod_identity', action='store_true')
