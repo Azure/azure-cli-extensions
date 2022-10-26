@@ -119,12 +119,9 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
     if enable_private_link is not None:
         client = cf_connected_cluster_prev_2022_05_01(cmd.cli_ctx, None)
 
-    # Setting the config dataplane endpoint
-    config_dp_endpoint = get_config_dp_endpoint(cmd, location)
-
     # Setting the release train default value to stable if not passed
     if release_train is None:
-        release_train = consts.Stable_Release_Train_Name 
+        release_train = consts.Stable_Release_Train_Name
 
     # Checking whether optional extra values file has been provided.
     values_file_provided, values_file = utils.get_values_file()
@@ -133,6 +130,10 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
     if cmd.cli_ctx.cloud.endpoints.resource_manager == consts.Dogfood_RMEndpoint:
         azure_cloud = consts.Azure_DogfoodCloudName
         config_dp_endpoint, release_train = validate_env_file_dogfood(values_file, values_file_provided)
+    else:
+        # Setting the config dataplane endpoint
+        config_dp_endpoint = get_config_dp_endpoint(cmd, location)
+
 
     # Loading the kubeconfig file in kubernetes client configuration
     load_kube_config(kube_config, kube_context)
@@ -234,7 +235,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
                 cc_response = create_cc_resource(client, resource_group_name, cluster_name, cc, no_wait).result()
                 # Disabling cluster-connect if private link is getting enabled
                 if enable_private_link is True:
-                    disable_cluster_connect(cmd, client, resource_group_name, cluster_name, kube_config, kube_context, values_file, values_file_provided, dp_endpoint_dogfood, release_train_dogfood, release_namespace, helm_client_location)
+                    disable_cluster_connect(cmd, client, resource_group_name, cluster_name, kube_config, kube_context, values_file, values_file_provided, config_dp_endpoint, release_train, release_namespace, helm_client_location)
                 return cc_response
             else:
                 telemetry.set_exception(exception='The kubernetes cluster is already onboarded', fault_type=consts.Cluster_Already_Onboarded_Fault_Type,
@@ -1097,15 +1098,23 @@ def upgrade_agents(cmd, client, resource_group_name, cluster_name, kube_config=N
     # Setting kubeconfig
     kube_config = set_kube_config(kube_config)
 
-    # Setting the config dataplane endpoint
-    config_dp_endpoint = get_config_dp_endpoint(cmd, connected_cluster.location)
-
+    helm_values = get_all_helm_values(release_namespace, kube_config, kube_context, helm_client_location)
+    
     # Checking whether optional extra values file has been provided.
     values_file_provided, values_file = utils.get_values_file()
 
     # Validate the helm environment file for Dogfood.
     if cmd.cli_ctx.cloud.endpoints.resource_manager == consts.Dogfood_RMEndpoint:
         config_dp_endpoint, release_train = validate_env_file_dogfood(values_file, values_file_provided)
+    else:
+        # Setting the config dataplane endpoint
+        config_dp_endpoint = get_config_dp_endpoint(cmd, connected_cluster.location)
+    
+    helm_values = get_all_helm_values(release_namespace, kube_config, kube_context, helm_client_location)
+    
+    if helm_values.get('global').get('isLeastPrivilegesMode') is True:
+        release_train  = consts.Least_Privilege_Release_Train_Name
+        logger.warning("Your cluster is running in least privileges mode. Please ensure you have met all the role requirements and pre-requisites before upgrading to a newer agent version. Please refer to this link for more details - <aka.ms/link> ")
 
     # Loading the kubeconfig file in kubernetes client configuration
     load_kube_config(kube_config, kube_context)
@@ -1379,15 +1388,23 @@ def enable_features(cmd, client, resource_group_name, cluster_name, features, ku
     # Setting kubeconfig
     kube_config = set_kube_config(kube_config)
 
-    # Setting the config dataplane endpoint
-    config_dp_endpoint = get_config_dp_endpoint(cmd, connected_cluster.location)
-
     # Checking whether optional extra values file has been provided.
     values_file_provided, values_file = utils.get_values_file()
 
     # Validate the helm environment file for Dogfood.
     if cmd.cli_ctx.cloud.endpoints.resource_manager == consts.Dogfood_RMEndpoint:
         config_dp_endpoint, release_train = validate_env_file_dogfood(values_file, values_file_provided)
+        if release_train is None:
+            release_train = consts.Dogfood_Release_Train_Name
+    else:
+        # Setting the config dataplane endpoint
+        config_dp_endpoint = get_config_dp_endpoint(cmd, connected_cluster.location)
+    
+    helm_values = get_all_helm_values(release_namespace, kube_config, kube_context, helm_client_location)
+    
+    if helm_values.get('global').get('isLeastPrivilegesMode') is True:
+        release_train  = consts.Least_Privilege_Release_Train_Name
+        logger.warning("Your cluster is running in least privileges mode. Please ensure you have met all the role requirements and pre-requisites before enabling new features. Please refer to this link for more details - <aka.ms/link> ")
 
     # Loading the kubeconfig file in kubernetes client configuration
     load_kube_config(kube_config, kube_context)
@@ -1500,15 +1517,22 @@ def disable_features(cmd, client, resource_group_name, cluster_name, features, k
     # Setting kubeconfig
     kube_config = set_kube_config(kube_config)
 
-    # Setting the config dataplane endpoint
-    config_dp_endpoint = get_config_dp_endpoint(cmd, connected_cluster.location)
-
     # Checking whether optional extra values file has been provided.
     values_file_provided, values_file = utils.get_values_file()
 
     # Validate the helm environment file for Dogfood.
     if cmd.cli_ctx.cloud.endpoints.resource_manager == consts.Dogfood_RMEndpoint:
-        config_dp_endpoint, release_train = validate_env_file_dogfood(values_file, values_file_provided) 
+        config_dp_endpoint, release_train = validate_env_file_dogfood(values_file, values_file_provided)
+    else:
+        # Setting the config dataplane endpoint
+        config_dp_endpoint = get_config_dp_endpoint(cmd, connected_cluster.location)
+    
+    helm_values = get_all_helm_values(release_namespace, kube_config, kube_context, helm_client_location)
+
+    if helm_values.get('global').get('isLeastPrivilegesMode') is True:
+        release_train  = consts.Least_Privilege_Release_Train_Name
+        logger.warning("Your cluster is running in least privileges mode. Please ensure you have met all the role requirements and pre-requisites before enabling new features. Please refer to this link for more details - <aka.ms/link> ")
+    
 
     # Loading the kubeconfig file in kubernetes client configuration
     load_kube_config(kube_config, kube_context)
