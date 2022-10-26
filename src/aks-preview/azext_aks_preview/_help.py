@@ -215,6 +215,12 @@ helps['aks create'] = """
               Using together with "azure" network plugin.
               Specify "azure" for Azure network policy manager and "calico" for calico network policy controller.
               Defaults to "" (network policy disabled).
+        - name: --enable-cilium-dataplane
+          type: bool
+          short-summary: Use Cilium as the networking dataplane for the Kubernetes cluster.
+          long-summary: |
+              Used together with the "azure" network plugin.
+              Requires either --pod-subnet-id or --network-plugin-mode=overlay.
         - name: --no-ssh-key -x
           type: string
           short-summary: Do not use or create a local SSH key.
@@ -479,6 +485,12 @@ helps['aks create'] = """
         - name: --enable-vpa
           type: bool
           short-summary: Enable vertical pod autoscaler for cluster.
+        - name: --nodepool-allowed-host-ports
+          type: string
+          short-summary: Expose host ports on the node pool. When specified, format should be a comma-separated list of ranges with protocol, eg. 80/TCP,443/TCP,4000-5000/TCP.
+        - name: --nodepool-asg-ids
+          type: string
+          short-summary: The IDs of the application security groups to which the node pool's network interface should belong. When specified, format should be a comma-separated list of IDs.
     examples:
         - name: Create a Kubernetes cluster with an existing SSH public key.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --ssh-key-value /path/to/publickey
@@ -882,6 +894,10 @@ helps['aks update'] = """
         - name: --cluster-snapshot-id
           type: string
           short-summary: The source cluster snapshot id is used to update existing cluster.
+        - name: --ssh-key-value
+          type: string
+          short-summary: Public key path or key contents to install on node VMs for SSH access. For example,
+                         'ssh-rsa AAAAB...snip...UcyupgH azureuser@linuxvm'.
     examples:
       - name: Reconcile the cluster back to its current state.
         text: az aks update -g MyResourceGroup -n MyManagedCluster
@@ -1269,6 +1285,15 @@ helps['aks nodepool add'] = """
         - name: --enable-custom-ca-trust
           type: bool
           short-summary: Enable Custom CA Trust on agent node pool.
+        - name: --disable-windows-outbound-nat
+          type: bool
+          short-summary: Disable Windows OutboundNAT on Windows agent node pool.
+        - name: --allowed-host-ports
+          type: string
+          short-summary: Expose host ports on the node pool. When specified, format should be a comma-separated list of ranges with protocol, eg. 80/TCP,443/TCP,4000-5000/TCP.
+        - name: --asg-ids
+          type: string
+          short-summary: The IDs of the application security groups to which the node pool's network interface should belong. When specified, format should be a comma-separated list of IDs.
     examples:
         - name: Create a nodepool in an existing AKS cluster with ephemeral os enabled.
           text: az aks nodepool add -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster --node-osdisk-type Ephemeral --node-osdisk-size 48
@@ -1360,6 +1385,12 @@ helps['aks nodepool update'] = """
         - name: --aks-custom-headers
           type: string
           short-summary: Send custom headers. When specified, format should be Key1=Value1,Key2=Value2
+        - name: --allowed-host-ports
+          type: string
+          short-summary: Expose host ports on the node pool. When specified, format should be a comma-separated list of ranges with protocol, eg. 80/TCP,443/TCP,4000-5000/TCP.
+        - name: --asg-ids
+          type: string
+          short-summary: The IDs of the application security groups to which the node pool's network interface should belong. When specified, format should be a comma-separated list of IDs.
     examples:
       - name: Reconcile the nodepool back to its current state.
         text: az aks nodepool update -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster

@@ -14,6 +14,7 @@ from knack.log import get_logger
 from azure.cli.command_modules.vm.custom import get_vm, _is_linux_os
 from azure.cli.command_modules.storage.storage_url_helpers import StorageResourceIdentifier
 from msrestazure.tools import parse_resource_id
+from .exceptions import SkuDoesNotSupportHyperV
 
 from .command_helper_class import command_helper
 from .repair_utils import (
@@ -39,13 +40,15 @@ from .repair_utils import (
     _select_distro_linux_gen2,
     _set_repair_map_url,
     _is_gen2,
+    _unlock_encrypted_vm_run,
+    _create_repair_vm,
     _check_n_start_vm
 )
 from .exceptions import AzCommandError, SkuNotAvailableError, UnmanagedDiskCopyError, WindowsOsNotAvailableError, RunScriptNotFoundForIdError, SkuDoesNotSupportHyperV, ScriptReturnsError, SupportingResourceNotFoundError, CommandCanceledByUserError
 logger = get_logger(__name__)
 
 
-def create(cmd, vm_name, resource_group_name, repair_password=None, repair_username=None, repair_vm_name=None, copy_disk_name=None, repair_group_name=None, unlock_encrypted_vm=False, enable_nested=False, associate_public_ip=False, distro='ubuntu'):
+def create(cmd, vm_name, resource_group_name, repair_password=None, repair_username=None, repair_vm_name=None, copy_disk_name=None, repair_group_name=None, unlock_encrypted_vm=False, enable_nested=False, associate_public_ip=False, distro='ubuntu', yes=False):
     # Init command helper object
     command = command_helper(logger, cmd, 'vm repair create')
     # Main command calling block
@@ -64,13 +67,12 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
         created_resources = []
 
         # Fetch OS image urn and set OS type for disk create
-        if is_linux:
+        if is_linux and _uses_managed_disk(source_vm):
             # os_image_urn = "UbuntuLTS"
             os_type = 'Linux'
             hyperV_generation_linux = _check_linux_hyperV_gen(source_vm)
             if hyperV_generation_linux == 'V2':
                 logger.info('Generation 2 VM detected, RHEL/Centos/Oracle 6 distros not available to be used for rescue VM ')
-                logger.debug('gen2 machine detected')
                 os_image_urn = _select_distro_linux_gen2(distro)
             else:
                 os_image_urn = _select_distro_linux(distro)
@@ -125,30 +127,30 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
             # Copy OS Disk
             logger.info('Copying OS disk of source VM...')
             copy_disk_id = _call_az_command(copy_disk_command).strip('\n')
-            # For Linux the disk gets not attached at VM creation time. To prevent an incorrect boot state it is required to attach the disk after the VM got created.
-            if not is_linux:
-                # Add copied OS Disk to VM creat command so that the VM is created with the disk attached
-                create_repair_vm_command += ' --attach-data-disks {id}'.format(id=copy_disk_id)
-            # Validate create vm create command to validate parameters before runnning copy disk command
-            validate_create_vm_command = create_repair_vm_command + ' --validate'
-            logger.info('Validating VM template before continuing...')
-            _call_az_command(validate_create_vm_command, secure_params=[repair_password, repair_username])
-            # Create repair VM
-            logger.info('Creating repair VM...')
-            _call_az_command(create_repair_vm_command, secure_params=[repair_password, repair_username])
 
-            if is_linux:
-                # Attach copied managed disk to new vm
+            # Create VM according to the two conditions: is_linux, unlock_encrypted_vm
+            # Only in the case of a Linux VM without encryption the data-disk gets attached after VM creation.
+            # This is required to prevent an incorrect boot due to an UUID mismatch
+            if not is_linux:
+                # windows
+                _create_repair_vm(copy_disk_id, create_repair_vm_command, repair_password, repair_username)
+
+            if not is_linux and unlock_encrypted_vm:
+                # windows with encryption
+                _create_repair_vm(copy_disk_id, create_repair_vm_command, repair_password, repair_username)
+                _unlock_encrypted_vm_run(repair_vm_name, repair_group_name, is_linux)
+
+            if is_linux and unlock_encrypted_vm:
+                # linux with encryption
+                _create_repair_vm(copy_disk_id, create_repair_vm_command, repair_password, repair_username)
+                _unlock_encrypted_vm_run(repair_vm_name, repair_group_name, is_linux)
+
+            if is_linux and (not unlock_encrypted_vm):
+                # linux without encryption
+                _create_repair_vm(copy_disk_id, create_repair_vm_command, repair_password, repair_username, fix_uuid=True)
                 logger.info('Attaching copied disk to repair VM as data disk...')
                 attach_disk_command = "az vm disk attach -g {g} --name {disk_id} --vm-name {vm_name} ".format(g=repair_group_name, disk_id=copy_disk_id, vm_name=repair_vm_name)
                 _call_az_command(attach_disk_command)
-
-            # Handle encrypted VM cases
-            if unlock_encrypted_vm:
-                stdout, stderr = _unlock_singlepass_encrypted_disk(repair_vm_name, repair_group_name, is_linux)
-                logger.debug('Unlock script STDOUT:\n%s', stdout)
-                if stderr:
-                    logger.warning('Encryption unlock script error was generated:\n%s', stderr)
 
         # UNMANAGED DISK
         else:

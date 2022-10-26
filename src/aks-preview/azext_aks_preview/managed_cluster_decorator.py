@@ -14,6 +14,7 @@ from azure.cli.command_modules.acs._consts import (
 from azure.cli.command_modules.acs._helpers import (
     check_is_msi_cluster,
     format_parameter_name_to_option_name,
+    safe_list_get,
     safe_lower,
 )
 from azure.cli.command_modules.acs._validators import (
@@ -49,6 +50,7 @@ from azext_aks_preview._consts import (
     CONST_LOAD_BALANCER_SKU_BASIC,
     CONST_PRIVATE_DNS_ZONE_NONE,
     CONST_PRIVATE_DNS_ZONE_SYSTEM,
+    CONST_EBPF_DATAPLANE_CILIUM,
 )
 from azext_aks_preview._helpers import (
     get_cluster_snapshot_by_snapshot_id,
@@ -320,6 +322,13 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         :return: str or None
         """
         return self.raw_param.get('network_plugin_mode')
+
+    def get_enable_cilium_dataplane(self) -> bool:
+        """Get the value of enable_cilium_dataplane
+
+        :return: bool
+        """
+        return bool(self.raw_param.get('enable_cilium_dataplane'))
 
     def get_load_balancer_managed_outbound_ipv6_count(self) -> Union[int, None]:
         """Obtain the expected count of IPv6 managed outbound IPs.
@@ -1940,9 +1949,9 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
                     "Cannot specify --enable-azuremonitormetrics and --enable-azuremonitormetrics at the same time."
                 )
             if not check_is_msi_cluster(self.mc):
-                    raise RequiredArgumentMissingError(
-                        "--enable-azuremonitormetrics can only be specified for clusters with managed identity enabled"
-                    )
+                raise RequiredArgumentMissingError(
+                    "--enable-azuremonitormetrics can only be specified for clusters with managed identity enabled"
+                )
         return enable_azure_monitor_metrics
 
     def get_enable_azure_monitor_metrics(self) -> bool:
@@ -2072,6 +2081,24 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         """
         return self._get_disable_vpa(enable_validation=True)
 
+    def get_ssh_key_value_for_update(self) -> Tuple[str, bool]:
+        """Obtain the value of ssh_key_value for "az aks update".
+
+        Note: no_ssh_key will not be decorated into the `mc` object.
+
+        If the user provides a string-like input for --ssh-key-value, the validator function "validate_ssh_key_for_update" will
+        check whether it is a file path, if so, read its content and return; if it is a valid public key, return it.
+        Otherwise, raise error.
+
+        :return: ssh_key_value of string type
+        """
+        # read the original value passed by the command
+        ssh_key_value = self.raw_param.get("ssh_key_value")
+
+        # this parameter does not need dynamic completion
+        # this parameter does not need validation
+        return ssh_key_value
+
 
 class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
     def __init__(
@@ -2159,6 +2186,9 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
             )
 
         network_profile.network_plugin_mode = self.context.get_network_plugin_mode()
+
+        if self.context.get_enable_cilium_dataplane():
+            network_profile.ebpf_dataplane = CONST_EBPF_DATAPLANE_CILIUM
 
         return mc
 
@@ -2977,6 +3007,27 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                 source_resource_id=snapshot_id
             )
             mc.creation_data = creation_data
+
+        return mc
+
+    def update_linux_profile(self, mc: ManagedCluster) -> ManagedCluster:
+        """Update Linux profile for the ManagedCluster object.
+
+        :return: the ManagedCluster object
+        """
+        self._ensure_mc(mc)
+
+        ssh_key_value = self.context.get_ssh_key_value_for_update()
+
+        if ssh_key_value:
+            mc.linux_profile.ssh = self.models.ContainerServiceSshConfiguration(
+                public_keys=[
+                    self.models.ContainerServiceSshPublicKey(
+                        key_data=ssh_key_value
+                    )
+                ]
+            )
+
         return mc
 
     def update_mc_profile_preview(self) -> ManagedCluster:
@@ -3021,5 +3072,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         mc = self.update_vpa(mc)
         # update creation data
         mc = self.update_creation_data(mc)
+        # update linux profile
+        mc = self.update_linux_profile(mc)
 
         return mc

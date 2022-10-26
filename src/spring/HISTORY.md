@@ -1,8 +1,14 @@
 Release History
 ===============
-1.1.11
+1.1.12
 ---
 * Add warning logs when editing builders and buildpack bindings.
+
+1.1.11
+---
+* Add command `az spring app deployment enable-remote-debugging`.
+* Add command `az spring app deployment disable-remote-debugging`.
+* Add command `az spring app deployment get-remote-debugging-config`.
 
 1.1.10
 ---
