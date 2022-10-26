@@ -29,8 +29,8 @@ def _update_default_build_agent_pool(cmd, client, resource_group, name, build_po
 
 def create_or_update_builder(cmd, client, resource_group, service, name, builder_json=None, builder_file=None, no_wait=False):
     logger.warning('Editing builder will regenerate images for all app deployments using this builder. These new images will ' +
-                       'be used after app restart either manually by yourself or automatically by Azure Spring Apps in regular maintenance tasks. ' +
-                       'Use CLI command --"az spring build-service builder show-deployments" to view the app deployment list of the builder.')
+                   'be used after app restart either manually by yourself or automatically by Azure Spring Apps in regular maintenance tasks. ' +
+                   'Use CLI command --"az spring build-service builder show-deployments" to view the app deployment list of the builder.')
     builder = _update_builder(builder_file, builder_json)
     builder_resource = models.BuilderResource(
         properties=builder
