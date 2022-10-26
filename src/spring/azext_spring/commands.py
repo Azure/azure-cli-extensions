@@ -311,7 +311,7 @@ def load_command_table(self, _):
         g.custom_command('set', 'create_or_update_buildpack_binding')
         g.custom_show_command('show', 'buildpack_binding_show')
         g.custom_command('list', 'buildpack_binding_list')
-        g.custom_command('delete', 'buildpack_binding_delete')
+        g.custom_command('delete', 'buildpack_binding_delete', confirmation=True)
 
     with self.command_group('spring build-service', exception_handler=handle_asc_exception):
         pass
