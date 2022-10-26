@@ -216,6 +216,21 @@ helps['spring app restart'] = """
     short-summary: Restart instances of the app, default to production deployment.
 """
 
+helps['spring app enable-remote-debugging'] = """
+    type: command
+    short-summary: Enable remote debugging for a deployment.
+"""
+
+helps['spring app disable-remote-debugging'] = """
+    type: command
+    short-summary: Disable remote debugging for a deployment.
+"""
+
+helps['spring app get-remote-debugging-config'] = """
+    type: command
+    short-summary: Get the remote debugging configuration of a deployment.
+"""
+
 helps['spring app deploy'] = """
     type: command
     short-summary: Deploy source code or pre-built binary to an app and update related configurations.
@@ -327,6 +342,11 @@ helps['spring app log'] = """
 helps['spring app logs'] = """
     type: command
     short-summary: Show logs of an app instance, logs will be streamed when setting '-f/--follow'.
+"""
+
+helps['spring app connect'] = """
+    type: command
+    short-summary: Connect to the interactive shell of an app instance for troubleshooting'.
 """
 
 helps['spring app deployment'] = """
@@ -663,6 +683,14 @@ helps['spring build-service builder show'] = """
     examples:
         - name: Show a builder.
           text: az spring build-service builder show --name my-builder --service clitest --resource-group cli
+"""
+
+helps['spring build-service builder show-deployments'] = """
+    type: command
+    short-summary: Show deployments.
+    examples:
+        - name: Show the list of deployments using this builder.
+          text: az spring build-service builder show-deployments --name my-builder --service clitest --resource-group cli
 """
 
 helps['spring build-service builder delete'] = """

@@ -143,7 +143,6 @@ def get_helm_registry(cmd, config_dp_endpoint, dp_endpoint_dogfood=None, release
             release_train = release_train_dogfood
     uri_parameters = ["releaseTrain={}".format(release_train)]
     resource = cmd.cli_ctx.cloud.endpoints.active_directory_resource_id
-
     # Sending request
     try:
         r = send_raw_request(cmd.cli_ctx, 'post', get_chart_location_url, uri_parameters=uri_parameters, resource=resource)
@@ -251,8 +250,8 @@ def get_values_file():
     return values_file_provided, values_file
 
 
-def ensure_namespace_cleanup(configuration):
-    api_instance = kube_client.CoreV1Api(kube_client.ApiClient(configuration))
+def ensure_namespace_cleanup():
+    api_instance = kube_client.CoreV1Api()
     timeout = time.time() + 180
     while True:
         if time.time() > timeout:
@@ -270,8 +269,11 @@ def ensure_namespace_cleanup(configuration):
                                          raise_error=False)
 
 
-def delete_arc_agents(release_namespace, kube_config, kube_context, configuration, helm_client_location):
-    cmd_helm_delete = [helm_client_location, "delete", "azure-arc", "--namespace", release_namespace]
+def delete_arc_agents(release_namespace, kube_config, kube_context, helm_client_location, no_hooks=False):
+    if(no_hooks):
+        cmd_helm_delete = [helm_client_location, "delete", "azure-arc", "--namespace", release_namespace, "--no-hooks"]
+    else:
+        cmd_helm_delete = [helm_client_location, "delete", "azure-arc", "--namespace", release_namespace]
     if kube_config:
         cmd_helm_delete.extend(["--kubeconfig", kube_config])
     if kube_context:
@@ -286,13 +288,14 @@ def delete_arc_agents(release_namespace, kube_config, kube_context, configuratio
         raise CLIInternalError("Error occured while cleaning up arc agents. " +
                                "Helm release deletion failed: " + error_helm_delete.decode("ascii") +
                                " Please run 'helm delete azure-arc' to ensure that the release is deleted.")
-    ensure_namespace_cleanup(configuration)
+    ensure_namespace_cleanup()
 
 
 def helm_install_release(chart_path, subscription_id, kubernetes_distro, kubernetes_infra, resource_group_name, cluster_name,
                          location, onboarding_tenant_id, http_proxy, https_proxy, no_proxy, proxy_cert, private_key_pem,
                          kube_config, kube_context, no_wait, values_file_provided, values_file, cloud_name, disable_auto_upgrade,
-                         enable_custom_locations, custom_locations_oid, helm_client_location, onboarding_timeout="600"):
+                         enable_custom_locations, custom_locations_oid, helm_client_location, enable_private_link, onboarding_timeout="600",
+                         container_log_path=None):
     cmd_helm_install = [helm_client_location, "upgrade", "--install", "azure-arc", chart_path,
                         "--set", "global.subscriptionId={}".format(subscription_id),
                         "--set", "global.kubernetesDistro={}".format(kubernetes_distro),
@@ -307,9 +310,12 @@ def helm_install_release(chart_path, subscription_id, kubernetes_distro, kuberne
                         "--set", "systemDefaultValues.clusterconnect-agent.enabled=true",
                         "--output", "json"]
     # Add custom-locations related params
-    if enable_custom_locations:
+    if enable_custom_locations and not enable_private_link:
         cmd_helm_install.extend(["--set", "systemDefaultValues.customLocations.enabled=true"])
         cmd_helm_install.extend(["--set", "systemDefaultValues.customLocations.oid={}".format(custom_locations_oid)])
+    # Disable cluster connect if private link is enabled
+    if enable_private_link is True:
+        cmd_helm_install.extend(["--set", "systemDefaultValues.clusterconnect-agent.enabled=false"])
     # To set some other helm parameters through file
     if values_file_provided:
         cmd_helm_install.extend(["-f", values_file])
@@ -326,6 +332,8 @@ def helm_install_release(chart_path, subscription_id, kubernetes_distro, kuberne
         cmd_helm_install.extend(["--set", "global.isCustomCert={}".format(True)])
     if https_proxy or http_proxy or no_proxy:
         cmd_helm_install.extend(["--set", "global.isProxyEnabled={}".format(True)])
+    if container_log_path is not None:
+        cmd_helm_install.extend(["--set", "systemDefaultValues.fluent-bit.containerLogPath={}".format(container_log_path)])
     if kube_config:
         cmd_helm_install.extend(["--kubeconfig", kube_config])
     if kube_context:
@@ -418,9 +426,9 @@ def check_provider_registrations(cli_ctx):
         logger.warning("Couldn't check the required provider's registration status. Error: {}".format(str(ex)))
 
 
-def can_create_clusterrolebindings(configuration):
+def can_create_clusterrolebindings():
     try:
-        api_instance = kube_client.AuthorizationV1Api(kube_client.ApiClient(configuration))
+        api_instance = kube_client.AuthorizationV1Api()
         access_review = kube_client.V1SelfSubjectAccessReview(spec={
             "resourceAttributes": {
                 "verb": "create",

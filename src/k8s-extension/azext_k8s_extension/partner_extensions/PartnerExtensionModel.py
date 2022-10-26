@@ -18,6 +18,7 @@ class PartnerExtensionModel(ABC):
         cluster_name: str,
         name: str,
         cluster_type: str,
+        cluster_rp: str,
         extension_type: str,
         scope: str,
         auto_upgrade_minor_version: bool,
@@ -57,6 +58,7 @@ class PartnerExtensionModel(ABC):
         cluster_name: str,
         name: str,
         cluster_type: str,
+        cluster_rp: str,
         yes: bool,
     ):
         pass

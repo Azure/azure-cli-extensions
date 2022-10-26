@@ -6,7 +6,7 @@
 # pylint: disable=wrong-import-order
 # pylint: disable=unused-argument, logging-format-interpolation, protected-access, wrong-import-order, too-many-lines
 from ._utils import (wait_till_end, _get_rg_location)
-from .vendored_sdks.appplatform.v2022_05_01_preview import models
+from .vendored_sdks.appplatform.v2022_09_01_preview import models
 from .custom import (_warn_enable_java_agent, _update_application_insights_asc_create)
 from ._build_service import _update_default_build_agent_pool
 from .buildpack_binding import create_default_buildpack_binding_for_application_insights
@@ -16,7 +16,7 @@ from ._tanzu_component import (create_application_configuration_service,
                                create_api_portal)
 
 
-from ._validators import (_parse_sku_name)
+from ._validators import (_parse_sku_name, validate_instance_not_existed)
 from knack.log import get_logger
 
 logger = get_logger(__name__)
@@ -38,6 +38,10 @@ class DefaultSpringCloud:
 
     def before_create(self, **kwargs):
         _warn_enable_java_agent(**kwargs)
+        validate_instance_not_existed(self.client,
+                                      self.resource_group,
+                                      self.name,
+                                      self.location)
 
     def after_create(self, **kwargs):
         _update_application_insights_asc_create(self.cmd,
@@ -52,6 +56,7 @@ class DefaultSpringCloud:
                        reserved_cidr_range=None,
                        service_runtime_network_resource_group=None,
                        app_network_resource_group=None,
+                       outbound_type=None,
                        enable_log_stream_public_endpoint=None,
                        zone_redundant=False,
                        sku=None,
@@ -75,7 +80,8 @@ class DefaultSpringCloud:
                 app_subnet_id=app_subnet,
                 service_cidr=reserved_cidr_range,
                 app_network_resource_group=app_network_resource_group,
-                service_runtime_network_resource_group=service_runtime_network_resource_group
+                service_runtime_network_resource_group=service_runtime_network_resource_group,
+                outbound_type=outbound_type
             )
 
         if ingress_read_timeout:
@@ -95,7 +101,10 @@ class DefaultSpringCloud:
 
 class EnterpriseSpringCloud(DefaultSpringCloud):
     def before_create(self, **_):
-        pass
+        validate_instance_not_existed(self.client,
+                                      self.resource_group,
+                                      self.name,
+                                      self.location)
 
     def after_create(self, no_wait=None, **kwargs):
         pollers = [
@@ -127,6 +136,7 @@ def spring_create(cmd, client, resource_group, name,
                   reserved_cidr_range=None,
                   service_runtime_network_resource_group=None,
                   app_network_resource_group=None,
+                  outbound_type=None,
                   app_insights_key=None,
                   app_insights=None,
                   sampling_rate=None,
@@ -156,6 +166,7 @@ def spring_create(cmd, client, resource_group, name,
         'reserved_cidr_range': reserved_cidr_range,
         'service_runtime_network_resource_group': service_runtime_network_resource_group,
         'app_network_resource_group': app_network_resource_group,
+        'outbound_type': outbound_type,
         'app_insights_key': app_insights_key,
         'app_insights': app_insights,
         'sampling_rate': sampling_rate,

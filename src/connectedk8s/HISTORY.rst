@@ -2,6 +2,48 @@
 
 Release History
 ===============
+1.3.5
+++++++
+
+* Added software assurance related changes for AKS HCI
+* Added parameter for overriding container log path
+* Updated kubernetes package dependency to 24.2.0
+
+1.3.4
+++++++
+
+* Fixed a proxy related bug in connectedk8s upgrade
+
+1.3.3
+++++++
+
+* Added a timeout in force delete's CRD deletion command
+
+1.3.2
+++++++
+
+* Added force delete command which is an added functionality in connectedk8s delete function
+
+1.3.1
+++++++
+
+* Updated min cli core version to 2.30.0
+
+1.3.0
+++++++
+
+* Added private link support
+
+1.2.11
+++++++
+
+* Increased the timeout of diagnoser job completion to 180 seconds
+
+1.2.10
+++++++
+
+* Added troubleshoot command which can be used to diagnose Arc enabled K8s clusters
+
 1.2.9
 ++++++
 

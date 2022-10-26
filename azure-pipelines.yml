@@ -16,7 +16,7 @@ jobs:
 - job: CredScan
   displayName: "Credential Scan"
   pool:
-    vmImage: "windows-2019"
+    name: 'pool-windows-2019'
   steps:
   - task: ms-codeanalysis.vss-microsoft-security-code-analysis-devops.build-task-credscan.CredScan@2
     displayName: 'Run Credential Scanner'
@@ -37,7 +37,7 @@ jobs:
 - job: CheckLicenseHeader
   displayName: "Check License"
   pool:
-    vmImage: 'ubuntu-20.04'
+    name: 'pool-ubuntu-2004'
   steps:
   - task: UsePythonVersion@0
     displayName: 'Use Python 3.10'
@@ -68,7 +68,7 @@ jobs:
 - job: StaticAnalysis
   displayName: "Static Analysis"
   pool:
-    vmImage: 'ubuntu-20.04'
+    name: 'pool-ubuntu-2004'
   steps:
     - task: UsePythonVersion@0
       displayName: 'Use Python 3.6'
@@ -82,7 +82,7 @@ jobs:
 - job: IndexVerify
   displayName: "Verify Extensions Index"
   pool:
-    vmImage: 'ubuntu-20.04'
+    name: 'pool-ubuntu-2004'
   steps:
   - task: UsePythonVersion@0
     displayName: 'Use Python 3.10'
@@ -99,11 +99,9 @@ jobs:
 - job: SourceTests
   displayName: "Integration Tests, Build Tests"
   pool:
-    vmImage: 'ubuntu-20.04'
+    name: 'pool-ubuntu-2004'
   strategy:
     matrix:
-      Python36:
-        python.version: '3.6'
       Python38:
         python.version: '3.8'
       Python39:
@@ -127,7 +125,7 @@ jobs:
   displayName: "CLI Linter on Modified Extensions"
   condition: and(succeeded(), eq(variables['Build.Reason'], 'PullRequest'))
   pool:
-    vmImage: 'ubuntu-20.04'
+    name: 'pool-ubuntu-2004'
   steps:
     - task: UsePythonVersion@0
       displayName: 'Use Python 3.10'
@@ -163,7 +161,7 @@ jobs:
 - job: IndexRefDocVerify
   displayName: "Verify Ref Docs"
   pool:
-    vmImage: 'ubuntu-20.04'
+    name: 'pool-ubuntu-2004'
   steps:
   - task: UsePythonVersion@0
     displayName: 'Use Python 3.10'

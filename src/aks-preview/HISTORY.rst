@@ -7,10 +7,151 @@ Guidance
 ++++++++
 If there is no rush to release a new version, please just add a description of the modification under the *Pending* section.
 
-To release a new version, please select a new version number (usually plus 1 to the minor of the current latest version number), and then add a new section named as the new version number in this file, the content should include the new modifications and everything from the *Pending* section. Finally, update the `VERSION` in `setup.py` with this new version number.
+To release a new version, please select a new version number (usually plus 1 to last patch version, X.Y.Z -> Major.Minor.Patch, more details in `\doc <https://semver.org/>`_), and then add a new section named as the new version number in this file, the content should include the new modifications and everything from the *Pending* section. Finally, update the `VERSION` variable in `setup.py` with this new version number.
 
 Pending
 +++++++
+
+0.5.111
++++++++
+
+* Support updating SSH public key with `az aks update --ssh-key-value`.
+
+0.5.110
++++++++
+
+* Add `--nodepool-asg-ids` and `--nodepool-allowed-host-ports` flags for enabling NSGControl. Related commands:
+  * `az aks create`
+  * `az aks nodepool add`
+  * `az aks nodepool update`
+
+0.5.109
++++++++
+
+* Add --enable-cilium-dataplane flag for creating a cluster that uses Cilium as the networking dataplane.
+
+0.5.108
++++++++
+
+* Update to use 2022-09-02-preview api version.
+
+0.5.107
++++++++
+
+* Add `--disable-windows-outbound-nat` for `az aks nodepool add` to add a Windows agent pool which the Windows OutboundNAT is disabled.
+
+0.5.106
++++++++
+
+* Add support for AzureMonitorMetrics Addon (managed prometheus metrics in public preview) for AKS
+
+0.5.105
++++++++
+
+* Add support to create cluster with kube-proxy configuration via `az aks create --kube-proxy-config file.json`
+* Update to use 2022-08-03-preview api version.
+
+0.5.104
++++++++
+
+* Add support to upgrade or update cluster with managed cluster snapshot. Command is
+    * `az aks upgrade --cluster-snapshot-id <snapshot-id>`
+    * `az aks update --cluster-snapshot-id <snapshot-id>`
+
+0.5.103
++++++++
+
+* Add load-balancer-backend-pool-type to create and update api.
+
+0.5.102
++++++++
+
+* Add --enable-vpa/--disable-vpa to enable/disable vertical pod autoscaler feature.
+
+0.5.101
++++++++
+
+* Fix `az aks draft` command crashed on windows during binary check, see issue `\#5336 <https://github.com/Azure/azure-cli-extensions/issues/5336>`_.
+* Update to use 2022-08-02-preview api version.
+
+0.5.100
++++++++
+
+* Remove unused import to avoid failure in Python3.6, see issue `\#5303 <https://github.com/Azure/azure-cli-extensions/issues/5303>`_.
+
+0.5.99
+++++++
+
+* Fix DRAFT CLI to 0.0.22.
+* Fix the URL for Download.
+
+0.5.98
+++++++
+
+* Fix auto download issue for Draft CLI.
+* Remove host and certificates as draft tools update command no longer uses it.
+
+0.5.97
+++++++
+
+* Add support for apiserver vnet integration public cluster.
+
+0.5.96
+++++++
+
+* Add support for enabling ImageCleaner with `--enable-image-cleaner` flag.
+* Add sub-command `operation-abort` for `az aks` and `az aks nodepool` to support canceling the previous operation.
+
+0.5.95
+++++++
+
+* Add `--enable-node-restriction`/`--disable-node-restriction` to enable/disable node restriction feature
+* Update the minimum required cli core version to `2.38.0` (actually since `0.5.92`).
+* Add new value `Mariner` for option `--os-sku` in `az aks create` and `az aks nodepool add`.
+
+0.5.94
+++++++
+
+* [BREAKING CHANGE] Since the service no longer supports updating source resource id for role binding, so remove --source-resource-id of `aks trustedaccess rolebinding update` command.
+* Change the acceptable values of the `--roles` option to comma-seperated.
+    * az aks trustedaccess rolebinding create
+    * az aks trustedaccess rolebinding update
+* Upgrade `az aks kollect` command to use Periscope version 0.0.10 supporting enhanced Windows log collection.
+* Update to use 2022-07-02-preview api version.
+
+0.5.93
+++++++
+
+* Fix for "'Namespace' object has no attribute 'nodepool_name' error" in command `az aks nodepool wait`, see issue `\#23468 <https://github.com/Azure/azure-cli/issues/23468>`_.
+
+0.5.92
+++++++
+
+* Move Azure KeyVault KMS to GA.
+* Support disabling Azure KeyVault KMS.
+* Update to use 2022-06-02-preview api version.
+
+0.5.91
+++++++
+
+* Fix compatibility issue when enabling Microsoft Defender via aks-preview.
+    * az aks create
+    * az aks update
+
+0.5.90 (NOT RELEASED)
++++++++++++++++++++++
+
+* Skip this version due to conflict.
+
+0.5.89
+++++++
+
+* Fix for the az aks addon list command to return enable:true, if virtual-node addon is enabled for the AKS cluster.
+
+0.5.88
+++++++
+
+* AKS Monitoring MSI Auth related code imported from Azure CLI to reuse the code between aks-preview and Azure CLI.
 
 0.5.87
 ++++++

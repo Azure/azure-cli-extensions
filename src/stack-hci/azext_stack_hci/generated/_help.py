@@ -49,6 +49,16 @@ helps['stack-hci arc-setting create'] = """
                az stack-hci arc-setting create --name "default" --cluster-name "myCluster" --resource-group "test-rg"
 """
 
+helps['stack-hci arc-setting update'] = """
+    type: command
+    short-summary: "Update ArcSettings for HCI cluster."
+    examples:
+      - name: Patch ArcSetting
+        text: |-
+               az stack-hci arc-setting update --connectivity-properties "{\\"enabled\\":true}" --name "default" \
+--cluster-name "myCluster" --resource-group "test-rg"
+"""
+
 helps['stack-hci arc-setting delete'] = """
     type: command
     short-summary: "Delete ArcSetting resource details of HCI Cluster."
@@ -56,6 +66,26 @@ helps['stack-hci arc-setting delete'] = """
       - name: Delete ArcSetting
         text: |-
                az stack-hci arc-setting delete --name "default" --cluster-name "myCluster" --resource-group "test-rg"
+"""
+
+helps['stack-hci arc-setting create-identity'] = """
+    type: command
+    short-summary: "Create Aad identity for arc settings."
+    examples:
+      - name: Create Arc Identity
+        text: |-
+               az stack-hci arc-setting create-identity --name "default" --cluster-name "myCluster" --resource-group \
+"test-rg"
+"""
+
+helps['stack-hci arc-setting generate-password'] = """
+    type: command
+    short-summary: "Generate password for arc settings."
+    examples:
+      - name: Generate Password
+        text: |-
+               az stack-hci arc-setting generate-password --name "default" --cluster-name "myCluster" --resource-group \
+"test-rg"
 """
 
 helps['stack-hci arc-setting wait'] = """
@@ -66,6 +96,10 @@ helps['stack-hci arc-setting wait'] = """
         text: |-
                az stack-hci arc-setting wait --name "default" --cluster-name "myCluster" --resource-group "test-rg" \
 --deleted
+      - name: Pause executing next line of CLI script until the stack-hci arc-setting is successfully created.
+        text: |-
+               az stack-hci arc-setting wait --name "default" --cluster-name "myCluster" --resource-group "test-rg" \
+--created
 """
 
 helps['stack-hci cluster'] = """
@@ -139,6 +173,27 @@ helps['stack-hci cluster delete'] = """
       - name: Delete cluster
         text: |-
                az stack-hci cluster delete --name "myCluster" --resource-group "test-rg"
+"""
+
+helps['stack-hci cluster create-identity'] = """
+    type: command
+    short-summary: "Create cluster identity."
+    examples:
+      - name: Create cluster Identity
+        text: |-
+               az stack-hci cluster create-identity --name "myCluster" --resource-group "test-rg"
+"""
+
+helps['stack-hci cluster wait'] = """
+    type: command
+    short-summary: Place the CLI in a waiting state until a condition of the stack-hci cluster is met.
+    examples:
+      - name: Pause executing next line of CLI script until the stack-hci cluster is successfully deleted.
+        text: |-
+               az stack-hci cluster wait --name "myCluster" --resource-group "test-rg" --deleted
+      - name: Pause executing next line of CLI script until the stack-hci cluster is successfully created.
+        text: |-
+               az stack-hci cluster wait --name "myCluster" --resource-group "test-rg" --created
 """
 
 helps['stack-hci extension'] = """

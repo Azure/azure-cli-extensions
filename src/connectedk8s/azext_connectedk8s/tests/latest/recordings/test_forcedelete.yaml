@@ -1,0 +1,2854 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -s -l -c --generate-ssh-keys
+      User-Agent:
+      - AZURECLI/2.41.0 (MSI) azsdk-python-azure-mgmt-resource/21.1.0b1 Python/3.7.7
+        (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/rohanazuregroup?api-version=2021-04-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rohanazuregroup","name":"rohanazuregroup","type":"Microsoft.Resources/resourceGroups","location":"eastus","tags":{"Created":"20220718"},"properties":{"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '257'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 18 Oct 2022 19:26:59 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "westeurope", "identity": {"type": "SystemAssigned"}, "properties":
+      {"kubernetesVersion": "", "dnsPrefix": "test-force-rohanazuregroup-1bfbb5",
+      "agentPoolProfiles": [{"count": 1, "vmSize": "Standard_B4ms", "osType": "Linux",
+      "type": "VirtualMachineScaleSets", "mode": "System", "enableNodePublicIP": false,
+      "scaleSetPriority": "Regular", "scaleSetEvictionPolicy": "Delete", "spotMaxPrice":
+      -1.0, "enableEncryptionAtHost": false, "enableUltraSSD": false, "enableFIPS":
+      false, "name": "nodepool1"}], "linuxProfile": {"adminUsername": "azureuser",
+      "ssh": {"publicKeys": [{"keyData": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDknmXRBGa/GuPCkpyydwCNedhfwINfrO674LWcBih2UjjJc5yULl9cD9LsYMWOzHVqM7H7RFxaONyq46h9vgxB/1XAeJUGc2jS8GS+vsS83bXX6vVrwa8wVeD380SJcF87oH3xf7/v2hlKv3drXi7xPE2JBjTHIOJJ6OxX+bAFXBqd1dPvnX1X7kEyX6vvjvuQrp7rFDbLq/eRpmng7kykodASQkUFZlt5+gH/U/z/a/DRoTocgzNqGl9RmesNtslQJs17Vn/JIJMM55qcRCEKoJ3Fq/Osnx3tHNA3G/vTs/+sVgh0tZmM6oIMRfTKzJskSZkMZOd8KtK/7ROCZO72izRmzwTFwFvRe/I7iHQ4PrjeKAqKDvgHJ/0LlaHmIYysZI21OTo6HcoX4HmA4RsIybNAM5SWeMMGiGe94/LYPk9sgB3o8aMv/nI/hr6vA28c2nso7itOuNcH1GZalAnbCObNv7QqVZ23FPlCjV9GXWCDCnQeCoIispJCrf68N5s=
+      fareast\\akkeshar@AkashLaptop\n"}]}}, "addonProfiles": {}, "enableRBAC": true,
+      "enablePodSecurityPolicy": false, "networkProfile": {"networkPlugin": "kubenet",
+      "podCidr": "10.244.0.0/16", "serviceCidr": "10.0.0.0/16", "dnsServiceIP": "10.0.0.10",
+      "dockerBridgeCidr": "172.17.0.1/16", "outboundType": "loadBalancer", "loadBalancerSku":
+      "standard"}, "disableLocalAccounts": false}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '1526'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -n -s -l -c --generate-ssh-keys
+      User-Agent:
+      - AZURECLI/2.41.0 (MSI) azsdk-python-azure-mgmt-containerservice/16.2.0 Python/3.7.7
+        (Windows-10-10.0.22621-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rohanazuregroup/providers/Microsoft.ContainerService/managedClusters/test-force-delete000001?api-version=2021-08-01
+  response:
+    body:
+      string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/rohanazuregroup/providers/Microsoft.ContainerService/managedClusters/test-force-delete000001\",\n
+        \ \"location\": \"westeurope\",\n  \"name\": \"test-force-delete000001\",\n
+        \ \"type\": \"Microsoft.ContainerService/ManagedClusters\",\n  \"properties\":
+        {\n   \"provisioningState\": \"Creating\",\n   \"powerState\": {\n    \"code\":
+        \"Running\"\n   },\n   \"kubernetesVersion\": \"1.23.12\",\n   \"dnsPrefix\":
+        \"test-force-rohanazuregroup-1bfbb5\",\n   \"fqdn\": \"test-force-rohanazuregroup-1bfbb5-4f0f44fc.hcp.westeurope.azmk8s.io\",\n
+        \  \"azurePortalFQDN\": \"test-force-rohanazuregroup-1bfbb5-4f0f44fc.portal.hcp.westeurope.azmk8s.io\",\n
+        \  \"agentPoolProfiles\": [\n    {\n     \"name\": \"nodepool1\",\n     \"count\":
+        1,\n     \"vmSize\": \"Standard_B4ms\",\n     \"osDiskSizeGB\": 128,\n     \"osDiskType\":
+        \"Managed\",\n     \"kubeletDiskType\": \"OS\",\n     \"maxPods\": 110,\n
+        \    \"type\": \"VirtualMachineScaleSets\",\n     \"provisioningState\": \"Creating\",\n
+        \    \"powerState\": {\n      \"code\": \"Running\"\n     },\n     \"orchestratorVersion\":
+        \"1.23.12\",\n     \"enableNodePublicIP\": false,\n     \"mode\": \"System\",\n
+        \    \"enableEncryptionAtHost\": false,\n     \"enableUltraSSD\": false,\n
+        \    \"osType\": \"Linux\",\n     \"osSKU\": \"Ubuntu\",\n     \"nodeImageVersion\":
+        \"AKSUbuntu-1804gen2containerd-2022.10.03\",\n     \"enableFIPS\": false\n
+        \   }\n   ],\n   \"linuxProfile\": {\n    \"adminUsername\": \"azureuser\",\n
+        \   \"ssh\": {\n     \"publicKeys\": [\n      {\n       \"keyData\": \"ssh-rsa
+        AAAAB3NzaC1yc2EAAAADAQABAAABgQDknmXRBGa/GuPCkpyydwCNedhfwINfrO674LWcBih2UjjJc5yULl9cD9LsYMWOzHVqM7H7RFxaONyq46h9vgxB/1XAeJUGc2jS8GS+vsS83bXX6vVrwa8wVeD380SJcF87oH3xf7/v2hlKv3drXi7xPE2JBjTHIOJJ6OxX+bAFXBqd1dPvnX1X7kEyX6vvjvuQrp7rFDbLq/eRpmng7kykodASQkUFZlt5+gH/U/z/a/DRoTocgzNqGl9RmesNtslQJs17Vn/JIJMM55qcRCEKoJ3Fq/Osnx3tHNA3G/vTs/+sVgh0tZmM6oIMRfTKzJskSZkMZOd8KtK/7ROCZO72izRmzwTFwFvRe/I7iHQ4PrjeKAqKDvgHJ/0LlaHmIYysZI21OTo6HcoX4HmA4RsIybNAM5SWeMMGiGe94/LYPk9sgB3o8aMv/nI/hr6vA28c2nso7itOuNcH1GZalAnbCObNv7QqVZ23FPlCjV9GXWCDCnQeCoIispJCrf68N5s=
+        fareast\\\\akkeshar@AkashLaptop\\n\"\n      }\n     ]\n    }\n   },\n   \"servicePrincipalProfile\":
+        {\n    \"clientId\": \"msi\"\n   },\n   \"nodeResourceGroup\": \"MC_rohanazuregroup_test-force-delete000001_westeurope\",\n
+        \  \"enableRBAC\": true,\n   \"enablePodSecurityPolicy\": false,\n   \"networkProfile\":
+        {\n    \"networkPlugin\": \"kubenet\",\n    \"loadBalancerSku\": \"standard\",\n
+        \   \"loadBalancerProfile\": {\n     \"managedOutboundIPs\": {\n      \"count\":
+        1\n     }\n    },\n    \"podCidr\": \"10.244.0.0/16\",\n    \"serviceCidr\":
+        \"10.0.0.0/16\",\n    \"dnsServiceIP\": \"10.0.0.10\",\n    \"dockerBridgeCidr\":
+        \"172.17.0.1/16\",\n    \"outboundType\": \"loadBalancer\"\n   },\n   \"maxAgentPools\":
+        100,\n   \"disableLocalAccounts\": false,\n   \"securityProfile\": {}\n  },\n
+        \ \"identity\": {\n   \"type\": \"SystemAssigned\",\n   \"principalId\": \"d6ba6cde-5447-4197-8b72-dc2ec99e93dc\",\n
+        \  \"tenantId\": \"72f988bf-86f1-41af-91ab-2d7cd011db47\"\n  },\n  \"sku\":
+        {\n   \"name\": \"Basic\",\n   \"tier\": \"Free\"\n  }\n }"
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/westeurope/operations/2f0666d4-9e2d-48b8-b6c5-7959bb27cc4e?api-version=2017-08-31
+      cache-control:
+      - no-cache
+      content-length:
+      - '2926'
+      content-type:
+      - application/json
+      date:
+      - Tue, 18 Oct 2022 19:27:13 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - nginx
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -s -l -c --generate-ssh-keys
+      User-Agent:
+      - AZURECLI/2.41.0 (MSI) azsdk-python-azure-mgmt-containerservice/16.2.0 Python/3.7.7
+        (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/westeurope/operations/2f0666d4-9e2d-48b8-b6c5-7959bb27cc4e?api-version=2017-08-31
+  response:
+    body:
+      string: "{\n  \"name\": \"d466062f-2d9e-b848-b6c5-7959bb27cc4e\",\n  \"status\":
+        \"InProgress\",\n  \"startTime\": \"2022-10-18T19:27:12.7997972Z\"\n }"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '126'
+      content-type:
+      - application/json
+      date:
+      - Tue, 18 Oct 2022 19:27:43 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - nginx
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -s -l -c --generate-ssh-keys
+      User-Agent:
+      - AZURECLI/2.41.0 (MSI) azsdk-python-azure-mgmt-containerservice/16.2.0 Python/3.7.7
+        (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/westeurope/operations/2f0666d4-9e2d-48b8-b6c5-7959bb27cc4e?api-version=2017-08-31
+  response:
+    body:
+      string: "{\n  \"name\": \"d466062f-2d9e-b848-b6c5-7959bb27cc4e\",\n  \"status\":
+        \"InProgress\",\n  \"startTime\": \"2022-10-18T19:27:12.7997972Z\"\n }"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '126'
+      content-type:
+      - application/json
+      date:
+      - Tue, 18 Oct 2022 19:28:14 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - nginx
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -s -l -c --generate-ssh-keys
+      User-Agent:
+      - AZURECLI/2.41.0 (MSI) azsdk-python-azure-mgmt-containerservice/16.2.0 Python/3.7.7
+        (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/westeurope/operations/2f0666d4-9e2d-48b8-b6c5-7959bb27cc4e?api-version=2017-08-31
+  response:
+    body:
+      string: "{\n  \"name\": \"d466062f-2d9e-b848-b6c5-7959bb27cc4e\",\n  \"status\":
+        \"InProgress\",\n  \"startTime\": \"2022-10-18T19:27:12.7997972Z\"\n }"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '126'
+      content-type:
+      - application/json
+      date:
+      - Tue, 18 Oct 2022 19:28:44 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - nginx
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -s -l -c --generate-ssh-keys
+      User-Agent:
+      - AZURECLI/2.41.0 (MSI) azsdk-python-azure-mgmt-containerservice/16.2.0 Python/3.7.7
+        (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/westeurope/operations/2f0666d4-9e2d-48b8-b6c5-7959bb27cc4e?api-version=2017-08-31
+  response:
+    body:
+      string: "{\n  \"name\": \"d466062f-2d9e-b848-b6c5-7959bb27cc4e\",\n  \"status\":
+        \"InProgress\",\n  \"startTime\": \"2022-10-18T19:27:12.7997972Z\"\n }"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '126'
+      content-type:
+      - application/json
+      date:
+      - Tue, 18 Oct 2022 19:29:15 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - nginx
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -s -l -c --generate-ssh-keys
+      User-Agent:
+      - AZURECLI/2.41.0 (MSI) azsdk-python-azure-mgmt-containerservice/16.2.0 Python/3.7.7
+        (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/westeurope/operations/2f0666d4-9e2d-48b8-b6c5-7959bb27cc4e?api-version=2017-08-31
+  response:
+    body:
+      string: "{\n  \"name\": \"d466062f-2d9e-b848-b6c5-7959bb27cc4e\",\n  \"status\":
+        \"InProgress\",\n  \"startTime\": \"2022-10-18T19:27:12.7997972Z\"\n }"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '126'
+      content-type:
+      - application/json
+      date:
+      - Tue, 18 Oct 2022 19:29:45 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - nginx
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -s -l -c --generate-ssh-keys
+      User-Agent:
+      - AZURECLI/2.41.0 (MSI) azsdk-python-azure-mgmt-containerservice/16.2.0 Python/3.7.7
+        (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/westeurope/operations/2f0666d4-9e2d-48b8-b6c5-7959bb27cc4e?api-version=2017-08-31
+  response:
+    body:
+      string: "{\n  \"name\": \"d466062f-2d9e-b848-b6c5-7959bb27cc4e\",\n  \"status\":
+        \"InProgress\",\n  \"startTime\": \"2022-10-18T19:27:12.7997972Z\"\n }"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '126'
+      content-type:
+      - application/json
+      date:
+      - Tue, 18 Oct 2022 19:30:16 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - nginx
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -s -l -c --generate-ssh-keys
+      User-Agent:
+      - AZURECLI/2.41.0 (MSI) azsdk-python-azure-mgmt-containerservice/16.2.0 Python/3.7.7
+        (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/westeurope/operations/2f0666d4-9e2d-48b8-b6c5-7959bb27cc4e?api-version=2017-08-31
+  response:
+    body:
+      string: "{\n  \"name\": \"d466062f-2d9e-b848-b6c5-7959bb27cc4e\",\n  \"status\":
+        \"InProgress\",\n  \"startTime\": \"2022-10-18T19:27:12.7997972Z\"\n }"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '126'
+      content-type:
+      - application/json
+      date:
+      - Tue, 18 Oct 2022 19:30:46 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - nginx
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -s -l -c --generate-ssh-keys
+      User-Agent:
+      - AZURECLI/2.41.0 (MSI) azsdk-python-azure-mgmt-containerservice/16.2.0 Python/3.7.7
+        (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/westeurope/operations/2f0666d4-9e2d-48b8-b6c5-7959bb27cc4e?api-version=2017-08-31
+  response:
+    body:
+      string: "{\n  \"name\": \"d466062f-2d9e-b848-b6c5-7959bb27cc4e\",\n  \"status\":
+        \"InProgress\",\n  \"startTime\": \"2022-10-18T19:27:12.7997972Z\"\n }"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '126'
+      content-type:
+      - application/json
+      date:
+      - Tue, 18 Oct 2022 19:31:16 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - nginx
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -s -l -c --generate-ssh-keys
+      User-Agent:
+      - AZURECLI/2.41.0 (MSI) azsdk-python-azure-mgmt-containerservice/16.2.0 Python/3.7.7
+        (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/westeurope/operations/2f0666d4-9e2d-48b8-b6c5-7959bb27cc4e?api-version=2017-08-31
+  response:
+    body:
+      string: "{\n  \"name\": \"d466062f-2d9e-b848-b6c5-7959bb27cc4e\",\n  \"status\":
+        \"InProgress\",\n  \"startTime\": \"2022-10-18T19:27:12.7997972Z\"\n }"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '126'
+      content-type:
+      - application/json
+      date:
+      - Tue, 18 Oct 2022 19:31:47 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - nginx
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -s -l -c --generate-ssh-keys
+      User-Agent:
+      - AZURECLI/2.41.0 (MSI) azsdk-python-azure-mgmt-containerservice/16.2.0 Python/3.7.7
+        (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/westeurope/operations/2f0666d4-9e2d-48b8-b6c5-7959bb27cc4e?api-version=2017-08-31
+  response:
+    body:
+      string: "{\n  \"name\": \"d466062f-2d9e-b848-b6c5-7959bb27cc4e\",\n  \"status\":
+        \"Succeeded\",\n  \"startTime\": \"2022-10-18T19:27:12.7997972Z\",\n  \"endTime\":
+        \"2022-10-18T19:32:07.4274835Z\"\n }"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '170'
+      content-type:
+      - application/json
+      date:
+      - Tue, 18 Oct 2022 19:32:16 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - nginx
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -s -l -c --generate-ssh-keys
+      User-Agent:
+      - AZURECLI/2.41.0 (MSI) azsdk-python-azure-mgmt-containerservice/16.2.0 Python/3.7.7
+        (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rohanazuregroup/providers/Microsoft.ContainerService/managedClusters/test-force-delete000001?api-version=2021-08-01
+  response:
+    body:
+      string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/rohanazuregroup/providers/Microsoft.ContainerService/managedClusters/test-force-delete000001\",\n
+        \ \"location\": \"westeurope\",\n  \"name\": \"test-force-delete000001\",\n
+        \ \"type\": \"Microsoft.ContainerService/ManagedClusters\",\n  \"properties\":
+        {\n   \"provisioningState\": \"Succeeded\",\n   \"powerState\": {\n    \"code\":
+        \"Running\"\n   },\n   \"kubernetesVersion\": \"1.23.12\",\n   \"dnsPrefix\":
+        \"test-force-rohanazuregroup-1bfbb5\",\n   \"fqdn\": \"test-force-rohanazuregroup-1bfbb5-4f0f44fc.hcp.westeurope.azmk8s.io\",\n
+        \  \"azurePortalFQDN\": \"test-force-rohanazuregroup-1bfbb5-4f0f44fc.portal.hcp.westeurope.azmk8s.io\",\n
+        \  \"agentPoolProfiles\": [\n    {\n     \"name\": \"nodepool1\",\n     \"count\":
+        1,\n     \"vmSize\": \"Standard_B4ms\",\n     \"osDiskSizeGB\": 128,\n     \"osDiskType\":
+        \"Managed\",\n     \"kubeletDiskType\": \"OS\",\n     \"maxPods\": 110,\n
+        \    \"type\": \"VirtualMachineScaleSets\",\n     \"provisioningState\": \"Succeeded\",\n
+        \    \"powerState\": {\n      \"code\": \"Running\"\n     },\n     \"orchestratorVersion\":
+        \"1.23.12\",\n     \"enableNodePublicIP\": false,\n     \"mode\": \"System\",\n
+        \    \"enableEncryptionAtHost\": false,\n     \"enableUltraSSD\": false,\n
+        \    \"osType\": \"Linux\",\n     \"osSKU\": \"Ubuntu\",\n     \"nodeImageVersion\":
+        \"AKSUbuntu-1804gen2containerd-2022.10.03\",\n     \"enableFIPS\": false\n
+        \   }\n   ],\n   \"linuxProfile\": {\n    \"adminUsername\": \"azureuser\",\n
+        \   \"ssh\": {\n     \"publicKeys\": [\n      {\n       \"keyData\": \"ssh-rsa
+        AAAAB3NzaC1yc2EAAAADAQABAAABgQDknmXRBGa/GuPCkpyydwCNedhfwINfrO674LWcBih2UjjJc5yULl9cD9LsYMWOzHVqM7H7RFxaONyq46h9vgxB/1XAeJUGc2jS8GS+vsS83bXX6vVrwa8wVeD380SJcF87oH3xf7/v2hlKv3drXi7xPE2JBjTHIOJJ6OxX+bAFXBqd1dPvnX1X7kEyX6vvjvuQrp7rFDbLq/eRpmng7kykodASQkUFZlt5+gH/U/z/a/DRoTocgzNqGl9RmesNtslQJs17Vn/JIJMM55qcRCEKoJ3Fq/Osnx3tHNA3G/vTs/+sVgh0tZmM6oIMRfTKzJskSZkMZOd8KtK/7ROCZO72izRmzwTFwFvRe/I7iHQ4PrjeKAqKDvgHJ/0LlaHmIYysZI21OTo6HcoX4HmA4RsIybNAM5SWeMMGiGe94/LYPk9sgB3o8aMv/nI/hr6vA28c2nso7itOuNcH1GZalAnbCObNv7QqVZ23FPlCjV9GXWCDCnQeCoIispJCrf68N5s=
+        fareast\\\\akkeshar@AkashLaptop\\n\"\n      }\n     ]\n    }\n   },\n   \"servicePrincipalProfile\":
+        {\n    \"clientId\": \"msi\"\n   },\n   \"nodeResourceGroup\": \"MC_rohanazuregroup_test-force-delete000001_westeurope\",\n
+        \  \"enableRBAC\": true,\n   \"enablePodSecurityPolicy\": false,\n   \"networkProfile\":
+        {\n    \"networkPlugin\": \"kubenet\",\n    \"loadBalancerSku\": \"Standard\",\n
+        \   \"loadBalancerProfile\": {\n     \"managedOutboundIPs\": {\n      \"count\":
+        1\n     },\n     \"effectiveOutboundIPs\": [\n      {\n       \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MC_rohanazuregroup_test-force-delete000001_westeurope/providers/Microsoft.Network/publicIPAddresses/566a7f34-3163-4b48-9b94-806026d4aec4\"\n
+        \     }\n     ]\n    },\n    \"podCidr\": \"10.244.0.0/16\",\n    \"serviceCidr\":
+        \"10.0.0.0/16\",\n    \"dnsServiceIP\": \"10.0.0.10\",\n    \"dockerBridgeCidr\":
+        \"172.17.0.1/16\",\n    \"outboundType\": \"loadBalancer\"\n   },\n   \"maxAgentPools\":
+        100,\n   \"identityProfile\": {\n    \"kubeletidentity\": {\n     \"resourceId\":
+        \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/MC_rohanazuregroup_test-force-delete000001_westeurope/providers/Microsoft.ManagedIdentity/userAssignedIdentities/test-force-delete000001-agentpool\",\n
+        \    \"clientId\": \"09e30c05-18bc-4655-b841-ed8680d5e0cf\",\n     \"objectId\":
+        \"ded816ab-034b-42fa-a3be-9444e324d153\"\n    }\n   },\n   \"disableLocalAccounts\":
+        false,\n   \"securityProfile\": {}\n  },\n  \"identity\": {\n   \"type\":
+        \"SystemAssigned\",\n   \"principalId\": \"d6ba6cde-5447-4197-8b72-dc2ec99e93dc\",\n
+        \  \"tenantId\": \"72f988bf-86f1-41af-91ab-2d7cd011db47\"\n  },\n  \"sku\":
+        {\n   \"name\": \"Basic\",\n   \"tier\": \"Free\"\n  }\n }"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '3615'
+      content-type:
+      - application/json
+      date:
+      - Tue, 18 Oct 2022 19:32:17 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - nginx
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks get-credentials
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -g -n -f
+      User-Agent:
+      - AZURECLI/2.41.0 (MSI) azsdk-python-azure-mgmt-containerservice/16.2.0 Python/3.7.7
+        (Windows-10-10.0.22621-SP0)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rohanazuregroup/providers/Microsoft.ContainerService/managedClusters/test-force-delete000001/listClusterUserCredential?api-version=2021-08-01
+  response:
+    body:
+      string: "{\n  \"kubeconfigs\": [\n   {\n    \"name\": \"clusterUser\",\n    \"value\":
+        \"YXBpVmVyc2lvbjogdjEKY2x1c3RlcnM6Ci0gY2x1c3RlcjoKICAgIGNlcnRpZmljYXRlLWF1dGhvcml0eS1kYXRhOiBMUzB0TFMxQ1JVZEpUaUJEUlZKVVNVWkpRMEZVUlMwdExTMHRDazFKU1VVMlJFTkRRWFJEWjBGM1NVSkJaMGxSU1hka1lsVTJVaXREY0RaNFNrTlhSVE51VW0xR2VrRk9RbWRyY1docmFVYzVkekJDUVZGelJrRkVRVTRLVFZGemQwTlJXVVJXVVZGRVJYZEthbGxVUVdkR2R6QjVUV3BGZDAxVVozaFBWRVUwVFZSR1lVZEJPSGxOUkZWNVRWUkJlRTlFUlRWTmFtZDRUVlp2ZHdwRVZFVk1UVUZyUjBFeFZVVkJlRTFEV1RKRmQyZG5TV2xOUVRCSFExTnhSMU5KWWpORVVVVkNRVkZWUVVFMFNVTkVkMEYzWjJkSlMwRnZTVU5CVVVOMUNsSmFSR2hCYm0wcmRrVnVPRlp2TkhaNU9XVlVXVE5UUVdkNWJXdDZkVmgxZVVkNWJVTmlTa0ozYjFOUWEzbGxjbmM0Y1U5QmJuVXlZbWd6V0RCMVUwa0tNVFY0VlRkeVpEWkpTbFJJWm1welowOUViV2R0TlU1R2JrbHBXVTlvVkhsR2RUTkZhblpOVkV0Q1VIQjFhbk5XUm1nMFExbFhZbEk0WVhSYWVFTkpPUXBVZDB0amVIWjVaV2RrZW5CVFRUaExTV3hFWTIwNVVVMTVhbWRxTDNRd1EzcFVSMUV3WjI1TU9IUmhPRGRTTm5ScU5FcDJRVU5qVG1OSVVuRkRNSHBGQ21FNWIxUjFZbE5qVFc1a1ppdHlVM05ETjJ4MFYzVklUazVqUlVJd0wxWk9kbUZYUm1ZelYyVTNiRXhQVTJwTlRUVmFhR3gySzFwT1RsZzVSM2wwWlZrS2JISkljSFJvVm10S2VsTndha1p0U1VOTVJsQjZTVmRGYW1KMVVHOVBLMXBwWXk4M2NWQm5hREpCUzNWcVdIbEhXRzFVZVhaUU9UUlBjVXRvV204eE5RcHJUMEZxUXpkblEzazJUWHBQUzJOelIybHRjVkIyVjFoSGFYVjVNVFZhUmt0SVpsSlljWGhGTVRKNFkxaHlVVXAwT0daemRrbFRjbGRaYWxKNFIweFdDamwxUTBFdmRYUXJUUzh2YTBGQk9WTlZMM0JJTlRGRFVWQk1ZeXQxVjJWb2JsTjZVSEZJV0ZCTE4zcFlTV2M0YzFWdE5HRkNTbHBFYzBkbFNWZFJWRWdLUjNvMGFTdFRiRmxsVjJNNFNYY3hRV3QyV204eFdITk9hbU5CVEdJdlVEWTFjSE5IWW01SlZsTlViMjg1ZWpkbVVuSjVZemhSTW5CT1FtVTVSbFZOUVFwV2FWaFRUM0o2VUVOdFdtTXhPWFpqTWpaVVp6SnRSSGM1UVZnemFGTk5ja3BDTlRKT1NtcE9jR3hEUm1ZemRWcGpObXQyZFZwalFtTmhjRVY2UTNGa0NrVk5UMFJJY1RSWk1ETXJOM1p3VDFWaU9UaHJNRFIyWTBOaldFNU9OR3hSTkZwVGIyUjRkSEZVTmpscmJtcFdRbk5oV1VKVk4wMU1helk0ZFhSVFlXWUthekF2V0dSYVFVa3lVRTF3UzIxMGExbDJibVpPY1RWS2NFMXVLM1JuVVdreWNVc3pWR2hFV21wM1NVUkJVVUZDYnpCSmQxRkVRVTlDWjA1V1NGRTRRZ3BCWmpoRlFrRk5RMEZ4VVhkRWQxbEVWbEl3VkVGUlNDOUNRVlYzUVhkRlFpOTZRV1JDWjA1V1NGRTBSVVpuVVZWcksxYzJZa3d4TTFNdlJFNUljak13Q2tGc2NHSnRPRlpYVWtKUmQwUlJXVXBMYjFwSmFIWmpUa0ZSUlV4Q1VVRkVaMmRKUWtGSlUzTlhLMmRHWkRZdlVXNXZSVEpxVkZwRlVVTlhPR2hCT0RJS2JqRklabmRIWm1sVGRHcHhSbkV3TURnd2EwTklTME5OZG5odk4wZHpka1EyTlhKaGRHNDJjeTlLV1ROaU0ydzFMM2hzTjJsa01XdFphek5YUzBGVU5ncFVOVVYyUkc1MmIzWnNRVXh0TDBWYU1WVlJWa2sxWm1kdlUyUmhSMEo2Y2taTFlsWmFjRTFuYUU5SVFYUmlUV0p2ZDJOQ1l6VTJjMlpETlV0T1kySk9Dazg0TkVSVVF6STBTR3BZU25Vd1JrNXRhRk00SzFwTVFVRXhjRVJoUjBKcFUzaG9ZbTh3U1dNclUxZG5WRXhEWTFkUFFYTkdaM2N2ZEVJd2NsTmpZak1LUzJWWVVFTlVTRklyWjNabVIwNUtObmx3TDFveVkzUlNWakp3ZFU5dWFFbDBkMk5VTldKVGRIaDZTVGxaV1ZwclZHcFZjVTR2T0M5d2FETmhOelJyVndwcmRFMDVRMFJNWjFGd00weDZUMGhYUjNveVZGWmhWalYxYURGSGQxYzFlRGw1Y0NzcmNsVmxWVlkzWXpWV2RUTnViU3RoTlVWRk9IUkdiR3BRWVN0Q0NqVjVhWEp1Ym5seFpXOXJaVzFaTUhoWFZURXZRVWRVYzNwU1kxRXpiVFl6WVM5bkwzVnNLMDFxVEVWdGFXVkdRMVptUWtzdmVrUTBVRnBFYW1kQ1dWRUtVRmxIUVU0NFowVTRhalZDYW5Gd1prSTVORWhuVG5BdlZIaHRaMFoyVkdoWmIyMVFNUzlVY2xOSVkwRnZNblZxZEM5eWMybEtNbU5HWm1SNlpYaDZUUXBaZVVzMmMzbFVabXB4YVdZdmRGb3lUV0ZUVUVGRmFVVnBXV3RuWmxodVREQldXa3hSUzFoc2R6RkNaV3N2TW5oVWFFVllVamh2ZWpWVlZ6WlJZMEZJQ2pjd1ZHVlROVUZaWWxGWlIwNXViamxrY21kdFdFWlhXbFpRU1VWa09FbDBRVzk0TDI0eGVsZFVaakJyY0hGM2JsWkJUMWxPZFdsbVQxUm9UbkJWVEVvS2R6RnpTR1JwYTBwUWNucElhemM1ZDJNdk9YUkVabGh4T0hWcmFHTnNUSEpUTkZoWGVqRndOVEl4WjFNelJWTTNaSGxvVEdsWmJHbHhXbTh3WTNGcFJBcFRTM1pvV1RKVWJISlZhaThyVFd4ekNpMHRMUzB0UlU1RUlFTkZVbFJKUmtsRFFWUkZMUzB0TFMwSwogICAgc2VydmVyOiBodHRwczovL3Rlc3QtZm9yY2Utcm9oYW5henVyZWdyb3VwLTFiZmJiNS00ZjBmNDRmYy5oY3Aud2VzdGV1cm9wZS5hem1rOHMuaW86NDQzCiAgbmFtZTogdGVzdC1mb3JjZS1kZWxldGUyZ2xhdHdpCmNvbnRleHRzOgotIGNvbnRleHQ6CiAgICBjbHVzdGVyOiB0ZXN0LWZvcmNlLWRlbGV0ZTJnbGF0d2kKICAgIHVzZXI6IGNsdXN0ZXJVc2VyX3JvaGFuYXp1cmVncm91cF90ZXN0LWZvcmNlLWRlbGV0ZTJnbGF0d2kKICBuYW1lOiB0ZXN0LWZvcmNlLWRlbGV0ZTJnbGF0d2kKY3VycmVudC1jb250ZXh0OiB0ZXN0LWZvcmNlLWRlbGV0ZTJnbGF0d2kKa2luZDogQ29uZmlnCnByZWZlcmVuY2VzOiB7fQp1c2VyczoKLSBuYW1lOiBjbHVzdGVyVXNlcl9yb2hhbmF6dXJlZ3JvdXBfdGVzdC1mb3JjZS1kZWxldGUyZ2xhdHdpCiAgdXNlcjoKICAgIGNsaWVudC1jZXJ0aWZpY2F0ZS1kYXRhOiBMUzB0TFMxQ1JVZEpUaUJEUlZKVVNVWkpRMEZVUlMwdExTMHRDazFKU1VaSWFrTkRRWGRoWjBGM1NVSkJaMGxTUVZCUVlrNVVVeTlIZVhsb1VVY3dRV1p6VEZSSFRHZDNSRkZaU2t0dldrbG9kbU5PUVZGRlRFSlJRWGNLUkZSRlRFMUJhMGRCTVZWRlFYaE5RMWt5UlhkSWFHTk9UV3BKZUUxRVJUUk5WR3Q0VDBSRmVGZG9ZMDVOYWxGNFRVUkZORTFVYTNsUFJFVjRWMnBCZHdwTlVtTjNSbEZaUkZaUlVVdEZkelY2WlZoT01GcFhNRFppVjBaNlpFZFdlV042UlZaTlFrMUhRVEZWUlVGNFRVMWlWMFo2WkVkV2VWa3llSEJhVnpVd0NrMUpTVU5KYWtGT1FtZHJjV2hyYVVjNWR6QkNRVkZGUmtGQlQwTkJaemhCVFVsSlEwTm5TME5CWjBWQmVVdE5TR1Z1VG5rd2FWQlhZMDgxVEhwQ2N6VUtLMlJNYkRGUlMxZHFVSEY2YjJOVE1HMTRTbUZrTVM5cmNVOVJOSHAyVDA1ek1GUnBUMGhQZDNWT1JUSTFRbE5NUVhaSE1WQjJNM1JQYjJoWllXSXlPQXA2Vm1vemVsQkpkMnMwVVZrcmNuaFpZWEkyWkZsMFpFTklVV1F6ZVhRNWEwVTBNRTVCYUZrclIxVXhjemR5Y1hvMmQyTndSak5RVUZkTU5scGlNelo1Q2pKUVVrcFZZa0ZUVkRGcllUUlhlRGxYVmxGaVRubE1WbVprWld4V2JTdFJSM2R3VDFVeVIzSk5UMVptVEdWemJGcDFla1p6UkU1bE9XSlRhbmhWVFhrS2NGZFlVVVpuU2pCalQwZ3JlRTFDU0ZsSWJVczRiak0yTkRoelpYTlVTMDFNY1hSQmExZFpVVk42UzNsRk1ITnJVblZDUVZOUk5qWTVhRVpJYUdsclFRcGlWazlYVEdsNllraGtiM041WW1ZcmNsZEpVekJsZUVoV2RETlpTMVE0TURRelVYbHRjMEpFY2s4emVtUlFTbXBKYUM4M1JFVnRZVkJVYmtGTFdERXpDbVJxTm1Ka1NTdG5iSHB6VWt0VldtdE5jMWN4YURCUlR6a3lkalJzUmxkeVVpOTBWR1JOWkN0MVRXRnFVakJ4YVc5SmNtWm5NM1pvTW1KS1p6aFNXVEVLZWtRdlpYVm5PWE1yTURjMldITmpkblVyY1RsdlRtUlViMHRsUkZsQ1EzWkJNbGR6WjFKWFlVVXlTRE5GTnpCNVoyVkRkMFFyYkc5dE9TOXVOMDkzU3dwSVQyeHhTWFZ5VjNFdmVTdFFPRFJPWTJ4b1JHUXdUWGt6UVRoQmIxRXdZVzlrVlZaM09UWlNZVk40VFRad1F6aHpSa015WkRaSGFWaDNZV2wwZWprNENqZEpSM1pEVjFKWVJFVmtNM0ZrZEZSV1NqbENWM0UyZGxKMmJpdElTSEZvVUhneGMyTjZjelpoTDIxc2QzZzBRWGRvU0d4R1NXNXViakZsV1hvMVZtTUtXalJFYkVvNFMzSnpjRzVFWVdrNVRXNDBUemM0U0dneWJYcDNNM294VVV3MU5UUkZjMEpNUzA4MFV6Vk9Ualp1THpWU1VsQkRVV3RoU1VrMlQzWnFaQXBMYlZWeU9HTXliVEJ6ZGpadFFuQkVhV2xIYVU5RU9FTkJkMFZCUVdGT1YwMUdVWGRFWjFsRVZsSXdVRUZSU0M5Q1FWRkVRV2RYWjAxQ1RVZEJNVlZrQ2twUlVVMU5RVzlIUTBOelIwRlJWVVpDZDAxRFRVRjNSMEV4VldSRmQwVkNMM2RSUTAxQlFYZElkMWxFVmxJd2FrSkNaM2RHYjBGVmF5dFhObUpNTVRNS1V5OUVUa2h5TXpCQmJIQmliVGhXVjFKQ1VYZEVVVmxLUzI5YVNXaDJZMDVCVVVWTVFsRkJSR2RuU1VKQlFpczRNamxWTldKM1JFOHhkVXh2YkRscGR3cG1OMFpqVjBoQldYTkJTRXh5YlRVNFYxaHllR1pqZFd4TVZrWkRUWFJzVWtGak5YRktkbFJvZEVJNU1pOUJkRGRoTDJkWVRrazJha0pLZFd0Q1JYWkxDa3BaY1RoaldUVnJZbFJvVlZWUVFXdHhXVU5yYVN0RE9HUXlRak5IUzI5S1NXTk5LMmgwVkhaUlpWZDNOVEptYURkSVZYSkdjREJpY0hadlkxVkNhRW9LU2tONmJEa3ZibTEyWjNnek1qTldVM0pUTDFsM2JtTkNaMVZPZFc1aE9IcG5ja1F4VWxWbFFVaEViRWhGUVZwMmFpdGtRa0ZZWTJwT1drcEpjMjQxS3dwbFUxUmlTWFJHYldocVYzRXhVRmxKVEUxM2RIWkdVbVJ1VWtOdGRsSTFXREZYY2pNek1qTmhSVzVaY3poR2VISndlbFp5WWpCemRUUm5PRnBPUjJKR0NuaGtVMWxPUlZOUmRIUXlWVUpGUVM5MVVXMURiWGxwTHpOYU1rTldkRXRIVjBNM1prMVRSR2xsYm1zMVUycHJZMlF3YjNGMk4yWXJjWEZIZVc4MFF6a0tVell6UWpFMmFqbFNNRGd3Y1VObmRTczVTMlpaYkROU1IwMVpPSEZDTWtZdlJVZFBUV1lyVGtKek0zSm9Ta2d6U0VFclpuRm9UMjFUYWtwWWJFZFFUd281WlhOTWMyNURWamhtYlZWV1ZVbG5iR3hTZWpOWGFtUlBSRkZ1VERSd2NsTmFNbmxOYm5wR05FTktVVFZtU1N0a2VHUnZXVmhJTnpkSk5XWlBlR3RtQ21wa2JtaE1NM1pNZUZvNE9TOVJXbmRtZW5aUFduWlNZa2hHUjFkQmJVUXZjR1ZoUVdNelIwOHZja1I0YVRaMGMyTmxTMVZyUTFaVVJGSkJVakl4VVZvS09EbFphSEp3UjFVNVdVNHdTMjlMUWtoV1ltMUxNRzR4YzBSb1ZVNWhlSGxYYkZKeE1sUjBTMWR0YmpGS1dVSnBlVEpLTDFOdmVVZExkakp1V2tGa01ncEJhV3BYUTNCeU1TdHJNMm8xWm5adlNuQlZkakJIYkM5Q2JVcG1ha2M0U0hoM2VIaHNTVmQyVVROcFl6bHpVM293T0V4ak9VZFBWbkpIZW05WlYxbENDbVZLVWpaYWNraFRXVEpFVlZORGJqUkpiRzlDZW5OU01nb3RMUzB0TFVWT1JDQkRSVkpVU1VaSlEwRlVSUzB0TFMwdENnPT0KICAgIGNsaWVudC1rZXktZGF0YTogTFMwdExTMUNSVWRKVGlCU1UwRWdVRkpKVmtGVVJTQkxSVmt0TFMwdExRcE5TVWxLUzFGSlFrRkJTME5CWjBWQmVVdE5TR1Z1VG5rd2FWQlhZMDgxVEhwQ2N6VXJaRXhzTVZGTFYycFFjWHB2WTFNd2JYaEtZV1F4TDJ0eFQxRTBDbnAyVDA1ek1GUnBUMGhQZDNWT1JUSTFRbE5NUVhaSE1WQjJNM1JQYjJoWllXSXlPSHBXYWpONlVFbDNhelJSV1N0eWVGbGhjalprV1hSa1EwaFJaRE1LZVhRNWEwVTBNRTVCYUZrclIxVXhjemR5Y1hvMmQyTndSak5RVUZkTU5scGlNelo1TWxCU1NsVmlRVk5VTVd0aE5GZDRPVmRXVVdKT2VVeFdabVJsYkFwV2JTdFJSM2R3VDFVeVIzSk5UMVptVEdWemJGcDFla1p6UkU1bE9XSlRhbmhWVFhsd1YxaFJSbWRLTUdOUFNDdDRUVUpJV1VodFN6aHVNelkwT0hObENuTlVTMDFNY1hSQmExZFpVVk42UzNsRk1ITnJVblZDUVZOUk5qWTVhRVpJYUdsclFXSldUMWRNYVhwaVNHUnZjM2xpWml0eVYwbFRNR1Y0U0ZaME0xa0tTMVE0TURRelVYbHRjMEpFY2s4emVtUlFTbXBKYUM4M1JFVnRZVkJVYmtGTFdERXpaR28yWW1SSksyZHNlbk5TUzFWYWEwMXpWekZvTUZGUE9USjJOQXBzUmxkeVVpOTBWR1JOWkN0MVRXRnFVakJ4YVc5SmNtWm5NM1pvTW1KS1p6aFNXVEY2UkM5bGRXYzVjeXN3TnpaWWMyTjJkU3R4T1c5T1pGUnZTMlZFQ2xsQ1EzWkJNbGR6WjFKWFlVVXlTRE5GTnpCNVoyVkRkMFFyYkc5dE9TOXVOMDkzUzBoUGJIRkpkWEpYY1M5NUsxQTRORTVqYkdoRVpEQk5lVE5CT0VFS2IxRXdZVzlrVlZaM09UWlNZVk40VFRad1F6aHpSa015WkRaSGFWaDNZV2wwZWprNE4wbEhka05YVWxoRVJXUXpjV1IwVkZaS09VSlhjVFoyVW5adUt3cElTSEZvVUhneGMyTjZjelpoTDIxc2QzZzBRWGRvU0d4R1NXNXViakZsV1hvMVZtTmFORVJzU2poTGNuTndia1JoYVRsTmJqUlBOemhJYURKdGVuY3pDbm94VVV3MU5UUkZjMEpNUzA4MFV6Vk9Ualp1THpWU1VsQkRVV3RoU1VrMlQzWnFaRXR0VlhJNFl6SnRNSE4yTm0xQ2NFUnBhVWRwVDBRNFEwRjNSVUVLUVZGTFEwRm5SVUZ2WjJGMVYyd3ZlbEZQY1RaSFdHTklaRk4zYW14TVIxRTRORlpyYVZST1NXSTBTa2xET1dNeFoyRlFTMG9yTkhWU2EzQXZhVEU0T0Fwb1ZGSkJZV1pDYVhOTGR6WlhjMVpTYUdrMVVVeDFNaXMwU2pObFdUaE1UMVYzTjJVeFlrcGxOMlJYSzFoWE0xUTRaV01yVGlzd05Dc3paVTR2VVM5NUNtbHNXRzFFYXpkMFozQnFOa0pRY0VOWUwwMW9XbXg0T1RCdlJuZzRlWHBOVEZKRVVYRkpNbVl6U2pOa1YwazVTV0o1TVU1V1dsRmFja2xVY0hwcWVIb0tXbTVxUVZrdmRFZzRka0Z5ZHpCUVFXNW1kazlYZDFKdVNWUXlWVWdyWm5CMFIzbEdSbXRuWW1zd05XOUdaWFo0Ym5OVVNVbE1PU3MyVFVOWFdHNVlhZ28zWTJWTWNuWTJaM1ZzTXpkVVRsWTJaRTFXVm1wTVVVWnROekYxTXpselduTXJOVGRuVlRoWmVtdHZkR1pHTVhkTU1rUjBaRFpSZFVaYWF6WnVPV3BPQ25GU1ZrNVZaRVJVZUVGVFpYUkJZelZ0VVVkNlkyNUJOVEZCWmtSMVUxTkRia1JtUkVwMVprTjNPVXN5VVNzM0wxUlFZbVUxZWk5NFZraGFOemN6SzFBS2JXNUpaRFF5UW5aVmJGWmhhV05CTDBwQlkxa3JUWGR5UjBNM1UyMHJRbmhFVVc4eGMzWXdVVmhvY2t4RWVIbzRkM0UzY0V0dWRVeFZZM1EyWlRnMldncE9kVll4ZVdoR2EwTnZlREZOV0ZSTFdtdG5TUzlrVUdzd05rOVNZamhJUTBsemNXOHdXVW8zZFdkTWFEWlRObXBJTUVSek1qTkdhRUpJWlZkSFpqVjRDaXRrTVZod2EzWTBUVUlyYWpSUFVpOVRUbW81WlUxcVdrWkVaVTR4Vm5sWVMyaE5hVzFEYmxGSFQwWmxjVGxwYVdwM1dtcFlSRUZ5VWpCQlNGZGxlVmtLTHpjMFlWTnFXWEJGZDNKSFdESnhkRTVFVVcxa1NTdG9hMnByVVM5Q2FVOWFVaXRKYVRabWVVWnJiRUUyT0VNelRsbGhPVXhtVFVjdmFVeERUMk5uTkFwdlNIZGtjMnB2YnpOMVowRjFVVmgyYjFadU9WZERaMDVZYnpoQ1RYVTFXRUkwUkRSSFNVNUNXRGM0Y2pkSVlYaHNlbXREWjJkRlFrRlFORms1WlUxd0NrZDZVMlpuTkVaaFVubzJRWFphZDA1bWVWWmxOekk0UWxFMEt5ODFLMng1VFdSaFkyYzRMMFZuWm04eGJteDBZVEp1WkZoUVlWcG5PR0ZFYUdveGJYVUtTMlIwS3psU01sRlVlVk5LWlVOcldsVkZNaTh6ZURsMlNuTmpOM2RoVUhoVlp6WnZMemxDY1ZRNFZYQk1jSE5wWkZGdE1FWTNhMlJYZHpWNlF6Qm1OUXBHVDB4cE1TdHZXSHB5V1V4aWEyc3ZiMUpXVG5OaldGcHRNbFJtZFZvdmRVNHJhaXRKVGxoRE5YSTNNbHBETlVkc05IaHlUR1pHUmxkV1FtVjBaa1VyQ2tJeVNHdEJRbEZOVnpsQmIwOWlVM2R3V1d4bWRWUldTSFl3YnpFeFptZE9ZMHgzUzJSRFZVMVRNMjFRVkRGcU5tSlNPRGxLWTJvM1JGcEdiMkp1U25BS1IxaFpkV3RsUkVobVVYSkVTRlZKTlV0Sk5EUktRbnBoTWtKRVowcHNha0ZGU3pZd1kzaFdLelYwU1ZCalNrRk1XbFJTV2xWVWNXZDRTV3cxVEVKck13bzNVbGN6TW5sc1lYUjNSWEpZVFhORFoyZEZRa0ZOYjJwdFV6aEdaRlJZVVdsaFMySjFja3AzVUN0TlZpOXBZWFYzUlVabEx5OU1TMVZsYWl0V04wRmhDa0pXZVcxMlZuaDRhbFYxU1dwT2F5dFNlSGxxTjBsMksyZ3dPRkUyT0dVNGJFMDNhVGMxU2preU5HZFFUMjRyVTBwc2FVSkdOMlZ0YnpoRWJqVlRLM2dLZFVwU05VOW5kVkYxTldkYWMweHpMMVZ5UjJkTU0ybHFaRkpXTWt4aVJHWmxTM2RLSzFWclJGTmhiSEU1WVROTloxRlZhbWRJTlU5aVZWZFFlR2RPYVFwVU1VUkphM0ZUWWpaaFRsTk1TV1kyYmxKVVJFNTZaMlpNU0ZSNVl6ZGtVbkZrU0ZnM2NFdEZXbkk0UmtOWVN6RXZSa3RyZVdKb09VNVpkbGRhUjFGSUNqSjJiblpWYUVSSVlsUm1hRUo0UWxCNGEydFJVVXhxYlVod2MzVjJTVmszTlZWamNYTlNaMmRDVEUxdVN6UjFWMjVOZDNaWWNtcEZSbGx0WlhkVFkwSUtTM1ZhYTJaR1dITmtSSHAyYTNOWlNFcDBWa0p5VDJKc1kwOU5kbGxCVUVGSmFDOVVWVkJJWVhRNU1FTm5aMFZCV2pCMVlWZG1hRklyVUdsSWNUQlJZUXBDYTNseWVVRTJjMmt6UzIxbU1HWlRVVlpRVVZsV1VuTTRhMDgyVTJaSmJYSkxTM3BrTkhaa2JDOXZPVTAyTDJoVGJtVnViMDUwZFZwTE5tUXdjVVJvQ25FMFlTczVSMWswUVZGT2NFaDNkeXRvVjNaRVkyNVJaREphZGxkTmRFZHNSVUVyU0hoTlZXcE5kMmxzVWtSdGN6Rkthbk5GZUhkek5ETmpORTEzTDNVS2JHODNZa1JMWm5wUloyWk9jSGhMY0ZkNk5tWTFWMWxuUlVoWFQzWTFaREV5YkdWeWNtbDRRVmN6VFU5M1JFSnBLMGx6YjBJMlVXaDFRMlpLTmtaNVJncDZiamh5ZUd0eGVGbE5SWEpPTXl0MFVXVjJWWGxtZDJOM2FsTXhkRzlJYWtKTk1pOW5abkEzT1dWRlZIaFVjRm8zTm5reWFWbG5NRTAxYTBjNFNYWnZDbEl3Unl0WFZHVklVbmh0U0doTWRIRmljVWhSZEU4clVGZEtXU3N5Y0ZFeVNGWnlkR1JaUmsxaFVsZFBUV1pyT1V4SE1qUkJZVUk0Ym5kSFdUbEtlazhLU0VsdFYwNVJTME5CVVVWQmRFdGtTMEZST0d0eFRIRXJUbnBvYzJrMGNuTllabmhMZW5KSFFrZDVkRmhJWkhGYWFEbDVMelkxTDJ4NVRqaDJMekF4ZHdwc1RpOTBNbFF6YVdWblRUWndaMk5PVlV0c2VuWXlaVmh4Y1hGQmNDOURXbGxoYTFObkt6ZFFTRWQzVEVWV1VEVndOamRaVld3M1NEaDBTRUpCV2sxU0NsSlRZelJ1Y2tKRFRFbE9XSGxpTlRCS2IwVmxOWEZPYVVOdlpFUmFia0p6ZUdRdlZYWTRXVEJVU3pWck5sQXdXV2haUjNZeU1XaHBVVWhXZUUxWVNYa0tVbGxrYzFOMk5qaHZiRU40Y1doUFlWQk5OWFZuY0dsWFdpOWtUM1pXTVdSSmFucFVTemxVWmswNVJWbG5lWGhNZW1KVlIzUmhkV0pzWVVoQlR6QlRkd3BLU3l0V1F6UjJkMVF4TkdGTFpWWnVNWGhNVnpWRVZHeG1WWFl6VWk5T1pHNHJkRk0zU1dKdWFsVnBUWEJDTmtOcVUwd3plSFU0ZUUxM1ZEbGFhVVpVQ2pWU00weHJMMWhUVXl0a1RrdHVTa2REU2xKUVowTnhXR3hOTDJJeVRIRTNaRkZMUTBGUlFVZHhaM0IzY2pSWFV6SjVRVnBYT0VGSVJtcERibkpQWjJjS1dGSnNNa3B6WXpZd1NGbG1VbmhDTmxoMFEwVmxSMGxsUlZwR2QzZFNiV0o2V1ZwTU0wUXlhSGM0UVRjeFNWWllkRlowYzBacWEybFhNWFEyWjBwclVncEdVRmxGWXpsSE5XTnVkVlJ6VVU1R2ExTjVjRlpYY3pNdmRYUkZNbTlaYW5oV1QxaGhjMlZvVVVoMGRqTkliRVIyWWs1NU1HSldjbFUwUjJOeFZtWkpDakJzVEhrMGRVeFliakYwUlRaemVHdzBiMkpUZGtFeVoycHlVMEZpU25WVlZubHRRakZPTmtrMmFrNUZkemRxUmxBd1VXZFlNbXhXWlhBM2RtWm1kaXNLTVVKdGJWUmhaVlppWXpKaVJWTlpjUzlIVTBkdWNYaGlkR3hvV1dNeFIxZGtjVkZPV1dwa1FTczBiMVp2WjAxdGJXcG9RV0ZwWW1kTGVVTkRiMGs0U2dwT1ExSmplR054YTJWVWIzUlJUbWxyYnpSWWNYUkpSa1IzVm1sMU5tdzVORTkyTDFOU00yZGlhbGxvV0UxNVJqRnpkMjFCV0M5cmJqaDFRbGdLTFMwdExTMUZUa1FnVWxOQklGQlNTVlpCVkVVZ1MwVlpMUzB0TFMwSwogICAgdG9rZW46IGM1MjVjZDRjYzJjZmFmYmIwNmI5NDAyMTE0MmQ5YWZmZDBjOTRiODg4ZWM0MDAyZDcxOGEyZDY2NTc5MDBkMWEwYjA3N2YyYWIwMmRlYzU5YWU0YzNlZTBiZGY0MGRkMDVkNmU5NmExMGVhOWIwMzA5OTc5NjlhZTU3YTM1ZDJlCg==\"\n
+        \  }\n  ]\n }"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '13160'
+      content-type:
+      - application/json
+      date:
+      - Tue, 18 Oct 2022 19:32:19 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - nginx
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - connectedk8s connect
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -l --tags --kube-config
+      User-Agent:
+      - AZURECLI/2.41.0 (MSI) azsdk-python-azure-mgmt-resource/21.1.0b1 Python/3.7.7
+        (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Kubernetes?api-version=2021-04-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Kubernetes","namespace":"Microsoft.Kubernetes","authorizations":[{"applicationId":"64b12d6e-6549-484c-8cc6-6281839ba394","roleDefinitionId":"1d1d44cf-68a1-4def-a2b6-cd7efc3515af"},{"applicationId":"359431ad-ece5-496b-8768-be4bbfd82f36","roleDefinitionId":"1b5c71b7-9814-4b40-b62a-23018af874d8"},{"applicationId":"0000dab9-8b21-4ba2-807f-1743968cef00","roleDefinitionId":"1b5c71b7-9814-4b40-b62a-23018af874d8"},{"applicationId":"8edd93e1-2103-40b4-bd70-6e34e586362d","roleDefinitionId":"eb67887a-31e8-4e4e-bf5b-14ff79351a6f"}],"resourceTypes":[{"resourceType":"connectedClusters","locations":["West
+        Europe","East US","West Central US","South Central US","Southeast Asia","UK
+        South","East US 2","West US 2","Australia East","North Europe","France Central","Central
+        US","West US","North Central US","Korea Central","Japan East","West US 3","East
+        Asia","Canada Central","East US 2 EUAP","Canada East"],"apiVersions":["2022-10-01-preview","2022-05-01-preview","2021-10-01","2021-04-01-preview","2021-03-01","2020-01-01-preview"],"capabilities":"SystemAssignedResourceIdentity,
+        SupportsTags, SupportsLocation"},{"resourceType":"locations","locations":[],"apiVersions":["2022-10-01-preview","2022-05-01-preview","2021-10-01","2021-04-01-preview","2021-03-01","2020-01-01-preview"],"capabilities":"None"},{"resourceType":"locations/operationStatuses","locations":["East
+        US 2 EUAP","West Europe","East US","West Central US","South Central US","Southeast
+        Asia","UK South","East US 2","West US 2","Australia East","North Europe","France
+        Central","Central US","West US","North Central US","Korea Central","Japan
+        East","East Asia","West US 3","Canada East","Canada Central"],"apiVersions":["2022-10-01-preview","2022-05-01-preview","2021-10-01","2021-04-01-preview","2021-03-01","2020-01-01-preview"],"capabilities":"None"},{"resourceType":"registeredSubscriptions","locations":[],"apiVersions":["2022-10-01-preview","2022-05-01-preview","2021-10-01","2021-04-01-preview","2021-03-01","2020-01-01-preview"],"capabilities":"None"},{"resourceType":"Operations","locations":[],"apiVersions":["2022-10-01-preview","2022-05-01-preview","2021-10-01","2021-04-01-preview","2021-03-01","2020-01-01-preview","2019-11-01-preview","2019-09-01-privatepreview"],"capabilities":"None"}],"registrationState":"Registered","registrationPolicy":"RegistrationRequired"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2416'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 18 Oct 2022 19:32:22 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - connectedk8s connect
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -l --tags --kube-config
+      User-Agent:
+      - AZURECLI/2.41.0 (MSI) azsdk-python-azure-mgmt-resource/21.1.0b1 Python/3.7.7
+        (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.KubernetesConfiguration?api-version=2021-04-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.KubernetesConfiguration","namespace":"Microsoft.KubernetesConfiguration","authorizations":[{"applicationId":"c699bf69-fb1d-4eaf-999b-99e6b2ae4d85","roleDefinitionId":"90155430-a360-410f-af5d-89dc284d85c6"},{"applicationId":"03db181c-e9d3-4868-9097-f0b728327182","roleDefinitionId":"DE2ADB97-42D8-49C8-8FCF-DBB53EF936AC"},{"applicationId":"a0f92522-89de-4c5e-9a75-0044ccf66efd","roleDefinitionId":"b3429810-7d5c-420e-8605-cf280f3099f2"},{"applicationId":"bd9b7cd5-dac1-495f-b013-ac871e98fa5f","roleDefinitionId":"0d44c8f0-08b9-44d4-9f59-e51c83f95200"},{"applicationId":"585fc3c3-9a59-4720-8319-53cce041a605","roleDefinitionId":"4a9ce2ee-6de2-43ba-a7bd-8f316de763a7"}],"resourceTypes":[{"resourceType":"sourceControlConfigurations","locations":["East
+        US","West Europe","West Central US","West US 2","West US 3","South Central
+        US","East US 2","North Europe","UK South","Southeast Asia","Australia East","France
+        Central","Central US","North Central US","West US","Korea Central","East Asia","Japan
+        East","Canada East","Canada Central","Norway East","Germany West Central","Sweden
+        Central","Switzerland North","Australia Southeast","Central India","South
+        India","Japan West","Uk West","France South","Korea South","South Africa North","East
+        US 2 EUAP","Central US EUAP"],"apiVersions":["2022-07-01","2022-03-01","2021-03-01","2020-10-01-preview","2020-07-01-preview","2019-11-01-preview"],"defaultApiVersion":"2022-03-01","capabilities":"SupportsExtension"},{"resourceType":"extensions","locations":["East
+        US","West Europe","West Central US","West US 2","West US 3","South Central
+        US","East US 2","North Europe","UK South","Southeast Asia","Australia East","France
+        Central","Central US","North Central US","West US","Korea Central","East Asia","Japan
+        East","Canada East","Canada Central","Norway East","Germany West Central","Sweden
+        Central","Switzerland North","Australia Southeast","Central India","South
+        India","Japan West","Uk West","France South","Korea South","South Africa North","East
+        US 2 EUAP","Central US EUAP"],"apiVersions":["2022-07-01","2022-04-02-preview","2022-03-01","2021-09-01","2021-05-01-preview","2020-07-01-preview"],"defaultApiVersion":"2022-07-01","capabilities":"SystemAssignedResourceIdentity,
+        SupportsExtension"},{"resourceType":"fluxConfigurations","locations":["East
+        US","West Europe","West Central US","West US 2","West US 3","South Central
+        US","East US 2","North Europe","UK South","Southeast Asia","Australia East","France
+        Central","Central US","North Central US","West US","Korea Central","East Asia","Japan
+        East","Canada East","Canada Central","Norway East","Germany West Central","Sweden
+        Central","Switzerland North","Australia Southeast","Central India","South
+        India","Japan West","Uk West","Korea South","France South","South Africa North","East
+        US 2 EUAP","Central US EUAP"],"apiVersions":["2022-07-01","2022-03-01","2022-01-01-preview","2021-11-01-preview","2021-06-01-preview"],"defaultApiVersion":"2022-07-01","capabilities":"SupportsExtension"},{"resourceType":"operations","locations":[],"apiVersions":["2022-03-01","2022-01-01-preview","2021-12-01-preview","2021-11-01-preview","2021-09-01","2021-06-01-preview","2021-05-01-preview","2021-03-01","2020-10-01-preview","2020-07-01-preview","2019-11-01-preview"],"capabilities":"None"},{"resourceType":"privateLinkScopes","locations":["East
+        US","West Europe","West Central US","West US 2","West US 3","South Central
+        US","East US 2","North Europe","UK South","Southeast Asia","Australia East","France
+        Central","Central US","North Central US","West US","Korea Central","East Asia","Japan
+        East","Canada East","Canada Central","Norway East","Germany West Central","Sweden
+        Central","Switzerland North","Australia Southeast","Central India","South
+        India","Japan West","Uk West","Korea South","France South","South Africa North","East
+        US 2 EUAP","Central US EUAP"],"apiVersions":["2022-04-02-preview"],"capabilities":"SupportsTags,
+        SupportsLocation"},{"resourceType":"privateLinkScopes/privateEndpointConnections","locations":["East
+        US","West Europe","West Central US","West US 2","West US 3","South Central
+        US","East US 2","North Europe","UK South","Southeast Asia","Australia East","France
+        Central","Central US","North Central US","West US","Korea Central","East Asia","Japan
+        East","Canada East","Canada Central","Norway East","Germany West Central","Sweden
+        Central","Switzerland North","Australia Southeast","Central India","South
+        India","Japan West","Uk West","France South","Korea South","South Africa North","East
+        US 2 EUAP","Central US EUAP"],"apiVersions":["2022-04-02-preview"],"capabilities":"None"},{"resourceType":"privateLinkScopes/privateEndpointConnectionProxies","locations":["East
+        US","West Europe","West Central US","West US 2","West US 3","South Central
+        US","East US 2","North Europe","UK South","Southeast Asia","Australia East","France
+        Central","Central US","North Central US","West US","Korea Central","East Asia","Japan
+        East","Canada East","Canada Central","Norway East","Germany West Central","Sweden
+        Central","Switzerland North","Australia Southeast","Central India","South
+        India","Japan West","Uk West","South Africa North","Korea South","France South","East
+        US 2 EUAP","Central US EUAP"],"apiVersions":["2022-04-02-preview"],"capabilities":"None"},{"resourceType":"namespaces","locations":["East
+        US 2 EUAP","West US 2","East US","West Europe","West Central US","West US
+        3","South Central US","East US 2","North Europe","UK South","Southeast Asia","Australia
+        East","France Central","Central US","North Central US","West US","Korea Central","East
+        Asia","Japan East","Canada Central","Canada East","Norway East","Germany West
+        Central","Switzerland North","Sweden Central","Central India","South India","Australia
+        Southeast","Japan West","Uk West","France South","Korea South","South Africa
+        North"],"apiVersions":["2021-12-01-preview"],"defaultApiVersion":"2021-12-01-preview","capabilities":"SupportsExtension"}],"registrationState":"Registered","registrationPolicy":"RegistrationRequired"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '6074'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 18 Oct 2022 19:32:22 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+      User-Agent:
+      - OpenAPI-Generator/24.2.0/python
+    method: GET
+    uri: https://test-force-rohanazuregroup-1bfbb5-4f0f44fc.hcp.westeurope.azmk8s.io/version/
+  response:
+    body:
+      string: "{\n  \"major\": \"1\",\n  \"minor\": \"23\",\n  \"gitVersion\": \"v1.23.12\",\n
+        \ \"gitCommit\": \"c6939792865ef0f70f92006081690d77411c8ed5\",\n  \"gitTreeState\":
+        \"clean\",\n  \"buildDate\": \"2022-09-21T21:46:35Z\",\n  \"goVersion\": \"go1.17.13\",\n
+        \ \"compiler\": \"gc\",\n  \"platform\": \"linux/amd64\"\n}"
+    headers:
+      audit-id:
+      - 9eabe44c-a8cf-4e95-9854-f677a60933aa
+      cache-control:
+      - no-cache, private
+      content-length:
+      - '265'
+      content-type:
+      - application/json
+      date:
+      - Tue, 18 Oct 2022 19:32:23 GMT
+      x-kubernetes-pf-flowschema-uid:
+      - 92b2ef8a-fcc8-4f73-a2ca-c1502b7b9250
+      x-kubernetes-pf-prioritylevel-uid:
+      - a1989c01-0e94-4e3b-a68c-18561b43277e
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+      User-Agent:
+      - OpenAPI-Generator/24.2.0/python
+    method: GET
+    uri: https://test-force-rohanazuregroup-1bfbb5-4f0f44fc.hcp.westeurope.azmk8s.io/api/v1/nodes
+  response:
+    body:
+      string: '{"kind":"NodeList","apiVersion":"v1","metadata":{"resourceVersion":"1487"},"items":[{"metadata":{"name":"aks-nodepool1-42371919-vmss000000","uid":"29bc844f-21b9-4d9c-9bbd-366b0fda8bbf","resourceVersion":"1106","creationTimestamp":"2022-10-18T19:30:09Z","labels":{"agentpool":"nodepool1","beta.kubernetes.io/arch":"amd64","beta.kubernetes.io/instance-type":"Standard_B4ms","beta.kubernetes.io/os":"linux","failure-domain.beta.kubernetes.io/region":"westeurope","failure-domain.beta.kubernetes.io/zone":"0","kubernetes.azure.com/agentpool":"nodepool1","kubernetes.azure.com/cluster":"MC_rohanazuregroup_test-force-delete000001_westeurope","kubernetes.azure.com/kubelet-identity-client-id":"09e30c05-18bc-4655-b841-ed8680d5e0cf","kubernetes.azure.com/mode":"system","kubernetes.azure.com/node-image-version":"AKSUbuntu-1804gen2containerd-2022.10.03","kubernetes.azure.com/os-sku":"Ubuntu","kubernetes.azure.com/role":"agent","kubernetes.azure.com/storageprofile":"managed","kubernetes.azure.com/storagetier":"Premium_LRS","kubernetes.io/arch":"amd64","kubernetes.io/hostname":"aks-nodepool1-42371919-vmss000000","kubernetes.io/os":"linux","kubernetes.io/role":"agent","node-role.kubernetes.io/agent":"","node.kubernetes.io/instance-type":"Standard_B4ms","storageprofile":"managed","storagetier":"Premium_LRS","topology.disk.csi.azure.com/zone":"","topology.kubernetes.io/region":"westeurope","topology.kubernetes.io/zone":"0"},"annotations":{"csi.volume.kubernetes.io/nodeid":"{\"disk.csi.azure.com\":\"aks-nodepool1-42371919-vmss000000\",\"file.csi.azure.com\":\"aks-nodepool1-42371919-vmss000000\"}","node.alpha.kubernetes.io/ttl":"0","volumes.kubernetes.io/controller-managed-attach-detach":"true"},"managedFields":[{"manager":"cloud-controller-manager","operation":"Update","apiVersion":"v1","time":"2022-10-18T19:30:09Z","fieldsType":"FieldsV1","fieldsV1":{"f:spec":{"f:podCIDR":{},"f:podCIDRs":{".":{},"v:\"10.244.0.0/24\"":{}}}}},{"manager":"kubelet","operation":"Update","apiVersion":"v1","time":"2022-10-18T19:30:09Z","fieldsType":"FieldsV1","fieldsV1":{"f:metadata":{"f:annotations":{".":{},"f:volumes.kubernetes.io/controller-managed-attach-detach":{}},"f:labels":{".":{},"f:agentpool":{},"f:beta.kubernetes.io/arch":{},"f:beta.kubernetes.io/os":{},"f:kubernetes.azure.com/agentpool":{},"f:kubernetes.azure.com/kubelet-identity-client-id":{},"f:kubernetes.azure.com/mode":{},"f:kubernetes.azure.com/node-image-version":{},"f:kubernetes.io/arch":{},"f:kubernetes.io/hostname":{},"f:kubernetes.io/os":{}}}}},{"manager":"kube-controller-manager","operation":"Update","apiVersion":"v1","time":"2022-10-18T19:30:20Z","fieldsType":"FieldsV1","fieldsV1":{"f:metadata":{"f:annotations":{"f:node.alpha.kubernetes.io/ttl":{}}}}},{"manager":"cloud-node-manager","operation":"Update","apiVersion":"v1","time":"2022-10-18T19:30:28Z","fieldsType":"FieldsV1","fieldsV1":{"f:metadata":{"f:labels":{"f:beta.kubernetes.io/instance-type":{},"f:failure-domain.beta.kubernetes.io/region":{},"f:failure-domain.beta.kubernetes.io/zone":{},"f:node.kubernetes.io/instance-type":{},"f:topology.kubernetes.io/region":{},"f:topology.kubernetes.io/zone":{}}},"f:spec":{"f:providerID":{}}}},{"manager":"cloud-node-manager","operation":"Update","apiVersion":"v1","time":"2022-10-18T19:30:28Z","fieldsType":"FieldsV1","fieldsV1":{"f:status":{"f:conditions":{"k:{\"type\":\"NetworkUnavailable\"}":{".":{},"f:type":{}}}}},"subresource":"status"},{"manager":"kubelet","operation":"Update","apiVersion":"v1","time":"2022-10-18T19:30:30Z","fieldsType":"FieldsV1","fieldsV1":{"f:metadata":{"f:annotations":{"f:csi.volume.kubernetes.io/nodeid":{}},"f:labels":{"f:topology.disk.csi.azure.com/zone":{}}},"f:status":{"f:allocatable":{"f:ephemeral-storage":{}},"f:capacity":{"f:ephemeral-storage":{}},"f:conditions":{"k:{\"type\":\"DiskPressure\"}":{"f:lastHeartbeatTime":{}},"k:{\"type\":\"MemoryPressure\"}":{"f:lastHeartbeatTime":{}},"k:{\"type\":\"PIDPressure\"}":{"f:lastHeartbeatTime":{}},"k:{\"type\":\"Ready\"}":{"f:lastHeartbeatTime":{},"f:lastTransitionTime":{},"f:message":{},"f:reason":{},"f:status":{}}},"f:images":{}}},"subresource":"status"},{"manager":"kubectl-label","operation":"Update","apiVersion":"v1","time":"2022-10-18T19:30:55Z","fieldsType":"FieldsV1","fieldsV1":{"f:metadata":{"f:labels":{"f:kubernetes.io/role":{},"f:node-role.kubernetes.io/agent":{}}}}},{"manager":"cloud-controller-manager","operation":"Update","apiVersion":"v1","time":"2022-10-18T19:31:10Z","fieldsType":"FieldsV1","fieldsV1":{"f:status":{"f:conditions":{"k:{\"type\":\"NetworkUnavailable\"}":{"f:lastHeartbeatTime":{},"f:lastTransitionTime":{},"f:message":{},"f:reason":{},"f:status":{}}}}},"subresource":"status"}]},"spec":{"podCIDR":"10.244.0.0/24","podCIDRs":["10.244.0.0/24"],"providerID":"azure:///subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mc_rohanazuregroup_test-force-delete000001_westeurope/providers/Microsoft.Compute/virtualMachineScaleSets/aks-nodepool1-42371919-vmss/virtualMachines/0"},"status":{"capacity":{"cpu":"4","ephemeral-storage":"129886128Ki","hugepages-1Gi":"0","hugepages-2Mi":"0","memory":"16393220Ki","pods":"110"},"allocatable":{"cpu":"3860m","ephemeral-storage":"119703055367","hugepages-1Gi":"0","hugepages-2Mi":"0","memory":"12899332Ki","pods":"110"},"conditions":[{"type":"NetworkUnavailable","status":"False","lastHeartbeatTime":"2022-10-18T19:31:10Z","lastTransitionTime":"2022-10-18T19:31:10Z","reason":"RouteCreated","message":"RouteController
+        created a route"},{"type":"MemoryPressure","status":"False","lastHeartbeatTime":"2022-10-18T19:30:19Z","lastTransitionTime":"2022-10-18T19:30:09Z","reason":"KubeletHasSufficientMemory","message":"kubelet
+        has sufficient memory available"},{"type":"DiskPressure","status":"False","lastHeartbeatTime":"2022-10-18T19:30:19Z","lastTransitionTime":"2022-10-18T19:30:09Z","reason":"KubeletHasNoDiskPressure","message":"kubelet
+        has no disk pressure"},{"type":"PIDPressure","status":"False","lastHeartbeatTime":"2022-10-18T19:30:19Z","lastTransitionTime":"2022-10-18T19:30:09Z","reason":"KubeletHasSufficientPID","message":"kubelet
+        has sufficient PID available"},{"type":"Ready","status":"True","lastHeartbeatTime":"2022-10-18T19:30:19Z","lastTransitionTime":"2022-10-18T19:30:19Z","reason":"KubeletReady","message":"kubelet
+        is posting ready status. AppArmor enabled"}],"addresses":[{"type":"InternalIP","address":"10.224.0.4"},{"type":"Hostname","address":"aks-nodepool1-42371919-vmss000000"}],"daemonEndpoints":{"kubeletEndpoint":{"Port":10250}},"nodeInfo":{"machineID":"e3ac926052b54fa6a11ec517ac10cb28","systemUUID":"bcb557bb-90ed-4fea-afaf-f1f1967feef7","bootID":"ec2d8170-135b-4eef-b756-25b27ac19ff2","kernelVersion":"5.4.0-1091-azure","osImage":"Ubuntu
+        18.04.6 LTS","containerRuntimeVersion":"containerd://1.5.11+azure-2","kubeletVersion":"v1.23.12","kubeProxyVersion":"v1.23.12","operatingSystem":"linux","architecture":"amd64"},"images":[{"names":["mcr.microsoft.com/azuremonitor/containerinsights/ciprod:ciprod08102022"],"sizeBytes":397844357},{"names":["mcr.microsoft.com/azuremonitor/containerinsights/ciprod:ciprod06272022-hotfix"],"sizeBytes":357023149},{"names":["mcr.microsoft.com/azuremonitor/containerinsights/ciprod/prometheus-collector/images:5.2.0-main-09-29-2022-ca064de1"],"sizeBytes":315250960},{"names":["mcr.microsoft.com/azuremonitor/containerinsights/ciprod/prometheus-collector/images:5.1.0-main-09-23-2022-df3e2703"],"sizeBytes":315037321},{"names":["mcr.microsoft.com/oss/kubernetes/ingress/nginx-ingress-controller:0.49.3"],"sizeBytes":287741913},{"names":["mcr.microsoft.com/oss/calico/cni:v3.23.1"],"sizeBytes":263014840},{"names":["mcr.microsoft.com/oss/calico/cni:v3.21.4"],"sizeBytes":236345866},{"names":["mcr.microsoft.com/oss/calico/cni:v3.21.6"],"sizeBytes":227829276},{"names":["mcr.microsoft.com/oss/calico/node:v3.23.1"],"sizeBytes":221560540},{"names":["mcr.microsoft.com/oss/calico/node:v3.21.4"],"sizeBytes":216363503},{"names":["mcr.microsoft.com/oss/calico/node:v3.21.6"],"sizeBytes":215379163},{"names":["mcr.microsoft.com/oss/tigera/operator:v1.23.8"],"sizeBytes":184105789},{"names":["mcr.microsoft.com/oss/cilium/cilium:1.12.2"],"sizeBytes":166611722},{"names":["mcr.microsoft.com/oss/kubernetes/ingress/nginx-ingress-controller:0.19.0"],"sizeBytes":166352383},{"names":["mcr.microsoft.com/aks/hcp/hcp-tunnel-front:master.220527.2"],"sizeBytes":146994488},{"names":null,"sizeBytes":138243950},{"names":["mcr.microsoft.com/oss/calico/kube-controllers:v3.23.1"],"sizeBytes":136078571},{"names":["mcr.microsoft.com/oss/calico/typha:v3.23.1"],"sizeBytes":131467121},{"names":null,"sizeBytes":129890505},{"names":["mcr.microsoft.com/oss/kubernetes/kube-proxy:v1.23.12-hotfix.20220922.1"],"sizeBytes":128992809},{"names":["mcr.microsoft.com/oss/tigera/operator:v1.24.2"],"sizeBytes":128711964},{"names":["mcr.microsoft.com/oss/calico/typha:v3.21.4"],"sizeBytes":128235133},{"names":["mcr.microsoft.com/oss/kubernetes-csi/azuredisk-csi:v1.2.2.5"],"sizeBytes":123925992},{"names":null,"sizeBytes":123549904},{"names":["mcr.microsoft.com/oss/calico/kube-controllers:v3.21.6"],"sizeBytes":123549280},{"names":["mcr.microsoft.com/oss/calico/typha:v3.21.6"],"sizeBytes":119713369},{"names":null,"sizeBytes":115909379},{"names":null,"sizeBytes":115897326},{"names":null,"sizeBytes":115677896},{"names":["mcr.microsoft.com/oss/kubernetes/ingress/nginx-ingress-controller:v1.2.1"],"sizeBytes":107169290},{"names":["mcr.microsoft.com/oss/calico/node:v3.8.9.5"],"sizeBytes":101794833},{"names":["mcr.microsoft.com/oss/kubernetes-csi/azuredisk-csi:v1.22.0.3"],"sizeBytes":99538753},{"names":["mcr.microsoft.com/aks/acc/sgx-attestation:3.1"],"sizeBytes":98058501},{"names":["mcr.microsoft.com/oss/kubernetes-csi/azuredisk-csi:v1.23.0"],"sizeBytes":95915873},{"names":["mcr.microsoft.com/oss/kubernetes/exechealthz:1.2_v0.0.5"],"sizeBytes":94348102},{"names":["mcr.microsoft.com/aks/hcp/tunnel-openvpn:master.220527.2"],"sizeBytes":92531564},{"names":["mcr.microsoft.com/containernetworking/azure-npm:v1.4.32"],"sizeBytes":90048618},{"names":["mcr.microsoft.com/containernetworking/azure-npm:v1.4.29"],"sizeBytes":89255513},{"names":["mcr.microsoft.com/oss/kubernetes-csi/azurefile-csi:v1.2.2"],"sizeBytes":88551490},{"names":["mcr.microsoft.com/oss/kubernetes-csi/azurefile-csi:v1.22.0"],"sizeBytes":83173887},{"names":["mcr.microsoft.com/aks/command/runtime:master.220211.1"],"sizeBytes":82792811},{"names":["mcr.microsoft.com/oss/kubernetes-csi/azurefile-csi:v1.21.0"],"sizeBytes":75345915},{"names":["mcr.microsoft.com/oss/nvidia/k8s-device-plugin:v0.9.0"],"sizeBytes":67291599},{"names":["mcr.microsoft.com/containernetworking/cni-dropgz:v0.0.2"],"sizeBytes":67202663},{"names":["mcr.microsoft.com/oss/kubernetes-csi/secrets-store/driver:v1.2.2.3"],"sizeBytes":64781810},{"names":["mcr.microsoft.com/oss/calico/cni:v3.8.9.3"],"sizeBytes":63581323},{"names":null,"sizeBytes":63271342},{"names":["mcr.microsoft.com/oss/kubernetes-csi/secrets-store/driver:v1.2.2.2"],"sizeBytes":56424516},{"names":["mcr.microsoft.com/oss/calico/kube-controllers:v3.21.4"],"sizeBytes":54638514},{"names":["mcr.microsoft.com/oss/azure/aad-pod-identity/nmi:v1.8.12.1"],"sizeBytes":46617098}]}}]}
+
+        '
+    headers:
+      audit-id:
+      - 702df8c3-b0a8-4feb-83c9-77d6c3c5fd55
+      cache-control:
+      - no-cache, private
+      content-type:
+      - application/json
+      date:
+      - Tue, 18 Oct 2022 19:32:24 GMT
+      transfer-encoding:
+      - chunked
+      x-kubernetes-pf-flowschema-uid:
+      - 92b2ef8a-fcc8-4f73-a2ca-c1502b7b9250
+      x-kubernetes-pf-prioritylevel-uid:
+      - a1989c01-0e94-4e3b-a68c-18561b43277e
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"spec": {"resourceAttributes": {"verb": "create", "resource": "clusterrolebindings",
+      "group": "rbac.authorization.k8s.io"}}}'
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+      User-Agent:
+      - OpenAPI-Generator/24.2.0/python
+    method: POST
+    uri: https://test-force-rohanazuregroup-1bfbb5-4f0f44fc.hcp.westeurope.azmk8s.io/apis/authorization.k8s.io/v1/selfsubjectaccessreviews
+  response:
+    body:
+      string: '{"kind":"SelfSubjectAccessReview","apiVersion":"authorization.k8s.io/v1","metadata":{"creationTimestamp":null,"managedFields":[{"manager":"OpenAPI-Generator","operation":"Update","apiVersion":"authorization.k8s.io/v1","time":"2022-10-18T19:32:24Z","fieldsType":"FieldsV1","fieldsV1":{"f:spec":{"f:resourceAttributes":{".":{},"f:group":{},"f:resource":{},"f:verb":{}}}}}]},"spec":{"resourceAttributes":{"verb":"create","group":"rbac.authorization.k8s.io","resource":"clusterrolebindings"}},"status":{"allowed":true}}
+
+        '
+    headers:
+      audit-id:
+      - a74da1cb-28a3-483a-a13a-0ac07bab8373
+      cache-control:
+      - no-cache, private
+      content-length:
+      - '516'
+      content-type:
+      - application/json
+      date:
+      - Tue, 18 Oct 2022 19:32:24 GMT
+      x-kubernetes-pf-flowschema-uid:
+      - 92b2ef8a-fcc8-4f73-a2ca-c1502b7b9250
+      x-kubernetes-pf-prioritylevel-uid:
+      - a1989c01-0e94-4e3b-a68c-18561b43277e
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - connectedk8s connect
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -l --tags --kube-config
+      User-Agent:
+      - AZURECLI/2.41.0 (MSI) azsdk-python-azure-mgmt-resource/21.1.0b1 Python/3.7.7
+        (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Kubernetes?api-version=2021-04-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Kubernetes","namespace":"Microsoft.Kubernetes","authorizations":[{"applicationId":"64b12d6e-6549-484c-8cc6-6281839ba394","roleDefinitionId":"1d1d44cf-68a1-4def-a2b6-cd7efc3515af"},{"applicationId":"359431ad-ece5-496b-8768-be4bbfd82f36","roleDefinitionId":"1b5c71b7-9814-4b40-b62a-23018af874d8"},{"applicationId":"0000dab9-8b21-4ba2-807f-1743968cef00","roleDefinitionId":"1b5c71b7-9814-4b40-b62a-23018af874d8"},{"applicationId":"8edd93e1-2103-40b4-bd70-6e34e586362d","roleDefinitionId":"eb67887a-31e8-4e4e-bf5b-14ff79351a6f"}],"resourceTypes":[{"resourceType":"connectedClusters","locations":["West
+        Europe","East US","West Central US","South Central US","Southeast Asia","UK
+        South","East US 2","West US 2","Australia East","North Europe","France Central","Central
+        US","West US","North Central US","Korea Central","Japan East","West US 3","East
+        Asia","Canada Central","East US 2 EUAP","Canada East"],"apiVersions":["2022-10-01-preview","2022-05-01-preview","2021-10-01","2021-04-01-preview","2021-03-01","2020-01-01-preview"],"capabilities":"SystemAssignedResourceIdentity,
+        SupportsTags, SupportsLocation"},{"resourceType":"locations","locations":[],"apiVersions":["2022-10-01-preview","2022-05-01-preview","2021-10-01","2021-04-01-preview","2021-03-01","2020-01-01-preview"],"capabilities":"None"},{"resourceType":"locations/operationStatuses","locations":["East
+        US 2 EUAP","West Europe","East US","West Central US","South Central US","Southeast
+        Asia","UK South","East US 2","West US 2","Australia East","North Europe","France
+        Central","Central US","West US","North Central US","Korea Central","Japan
+        East","East Asia","West US 3","Canada East","Canada Central"],"apiVersions":["2022-10-01-preview","2022-05-01-preview","2021-10-01","2021-04-01-preview","2021-03-01","2020-01-01-preview"],"capabilities":"None"},{"resourceType":"registeredSubscriptions","locations":[],"apiVersions":["2022-10-01-preview","2022-05-01-preview","2021-10-01","2021-04-01-preview","2021-03-01","2020-01-01-preview"],"capabilities":"None"},{"resourceType":"Operations","locations":[],"apiVersions":["2022-10-01-preview","2022-05-01-preview","2021-10-01","2021-04-01-preview","2021-03-01","2020-01-01-preview","2019-11-01-preview","2019-09-01-privatepreview"],"capabilities":"None"}],"registrationState":"Registered","registrationPolicy":"RegistrationRequired"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2416'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 18 Oct 2022 19:32:25 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - connectedk8s connect
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -l --tags --kube-config
+      User-Agent:
+      - AZURECLI/2.41.0 (MSI) azsdk-python-mgmt-hybridkubernetes/1.0.0b1 Python/3.7.7
+        (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/rohanazuregroup/providers/Microsoft.Kubernetes/connectedClusters/cc-000002?api-version=2021-10-01
+  response:
+    body:
+      string: '{"error":{"code":"ResourceNotFound","message":"The Resource ''Microsoft.Kubernetes/connectedClusters/cc-000002''
+        under resource group ''rohanazuregroup'' was not found. For more details please
+        go to https://aka.ms/ARMResourceNotFoundFix"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '238'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 18 Oct 2022 19:32:26 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-failure-cause:
+      - gateway
+    status:
+      code: 404
+      message: Not Found
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+      User-Agent:
+      - OpenAPI-Generator/24.2.0/python
+    method: GET
+    uri: https://test-force-rohanazuregroup-1bfbb5-4f0f44fc.hcp.westeurope.azmk8s.io/api/v1/namespaces
+  response:
+    body:
+      string: '{"kind":"NamespaceList","apiVersion":"v1","metadata":{"resourceVersion":"1500"},"items":[{"metadata":{"name":"default","uid":"25ab1bbd-5a66-49d3-bc5f-8a7ccc041184","resourceVersion":"205","creationTimestamp":"2022-10-18T19:28:56Z","labels":{"kubernetes.io/metadata.name":"default"},"managedFields":[{"manager":"kube-apiserver","operation":"Update","apiVersion":"v1","time":"2022-10-18T19:28:56Z","fieldsType":"FieldsV1","fieldsV1":{"f:metadata":{"f:labels":{".":{},"f:kubernetes.io/metadata.name":{}}}}}]},"spec":{"finalizers":["kubernetes"]},"status":{"phase":"Active"}},{"metadata":{"name":"kube-node-lease","uid":"33590637-ef44-4221-8093-ef1446b2f046","resourceVersion":"56","creationTimestamp":"2022-10-18T19:28:55Z","labels":{"kubernetes.io/metadata.name":"kube-node-lease"},"managedFields":[{"manager":"kube-apiserver","operation":"Update","apiVersion":"v1","time":"2022-10-18T19:28:55Z","fieldsType":"FieldsV1","fieldsV1":{"f:metadata":{"f:labels":{".":{},"f:kubernetes.io/metadata.name":{}}}}}]},"spec":{"finalizers":["kubernetes"]},"status":{"phase":"Active"}},{"metadata":{"name":"kube-public","uid":"4d4bd4d5-1503-494c-a816-2679a907c29d","resourceVersion":"51","creationTimestamp":"2022-10-18T19:28:55Z","labels":{"kubernetes.io/metadata.name":"kube-public"},"managedFields":[{"manager":"kube-apiserver","operation":"Update","apiVersion":"v1","time":"2022-10-18T19:28:55Z","fieldsType":"FieldsV1","fieldsV1":{"f:metadata":{"f:labels":{".":{},"f:kubernetes.io/metadata.name":{}}}}}]},"spec":{"finalizers":["kubernetes"]},"status":{"phase":"Active"}},{"metadata":{"name":"kube-system","uid":"9261f8df-725b-4c09-b82c-4db9561b6444","resourceVersion":"624","creationTimestamp":"2022-10-18T19:28:54Z","labels":{"addonmanager.kubernetes.io/mode":"Reconcile","control-plane":"true","kubernetes.io/cluster-service":"true","kubernetes.io/metadata.name":"kube-system"},"annotations":{"kubectl.kubernetes.io/last-applied-configuration":"{\"apiVersion\":\"v1\",\"kind\":\"Namespace\",\"metadata\":{\"annotations\":{},\"labels\":{\"addonmanager.kubernetes.io/mode\":\"Reconcile\",\"control-plane\":\"true\",\"kubernetes.io/cluster-service\":\"true\"},\"name\":\"kube-system\"}}\n"},"managedFields":[{"manager":"kube-apiserver","operation":"Update","apiVersion":"v1","time":"2022-10-18T19:28:54Z","fieldsType":"FieldsV1","fieldsV1":{"f:metadata":{"f:labels":{".":{},"f:kubernetes.io/metadata.name":{}}}}},{"manager":"kubectl-client-side-apply","operation":"Update","apiVersion":"v1","time":"2022-10-18T19:29:31Z","fieldsType":"FieldsV1","fieldsV1":{"f:metadata":{"f:annotations":{".":{},"f:kubectl.kubernetes.io/last-applied-configuration":{}},"f:labels":{"f:addonmanager.kubernetes.io/mode":{},"f:control-plane":{},"f:kubernetes.io/cluster-service":{}}}}}]},"spec":{"finalizers":["kubernetes"]},"status":{"phase":"Active"}}]}
+
+        '
+    headers:
+      audit-id:
+      - 00fcc19c-e084-4180-9c15-253bca5dc805
+      cache-control:
+      - no-cache, private
+      content-type:
+      - application/json
+      date:
+      - Tue, 18 Oct 2022 19:32:27 GMT
+      transfer-encoding:
+      - chunked
+      x-kubernetes-pf-flowschema-uid:
+      - 92b2ef8a-fcc8-4f73-a2ca-c1502b7b9250
+      x-kubernetes-pf-prioritylevel-uid:
+      - a1989c01-0e94-4e3b-a68c-18561b43277e
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - connectedk8s connect
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -l --tags --kube-config
+      User-Agent:
+      - AZURECLI/2.41.0 (MSI) azsdk-python-azure-mgmt-resource/21.1.0b1 Python/3.7.7
+        (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/rohanazuregroup?api-version=2021-04-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rohanazuregroup","name":"rohanazuregroup","type":"Microsoft.Resources/resourceGroups","location":"eastus","tags":{"Created":"20220718"},"properties":{"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '257'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 18 Oct 2022 19:32:27 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - connectedk8s connect
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -g -n -l --tags --kube-config
+      User-Agent:
+      - python/3.7.7 (Windows-10-10.0.22621-SP0) AZURECLI/2.41.0 (MSI)
+    method: POST
+    uri: https://eastus.dp.kubernetesconfiguration.azure.com/azure-arc-k8sagents/GetLatestHelmPackagePath?api-version=2019-11-01-preview&releaseTrain=stable
+  response:
+    body:
+      string: '{"repositoryPath":"mcr.microsoft.com/azurearck8s/batch1/stable/azure-arc-k8sagents:1.8.14"}'
+    headers:
+      api-supported-versions:
+      - 2019-11-01-Preview
+      connection:
+      - close
+      content-length:
+      - '91'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 18 Oct 2022 19:32:28 GMT
+      strict-transport-security:
+      - max-age=15724800; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"tags": {"foo": "doo"}, "location": "eastus", "identity": {"type": "SystemAssigned"},
+      "properties": {"agentPublicKeyCertificate": "MIICCgKCAgEAwSnivsiO8/tNEVsHHOTOLU8ia39n2OP0FWJMrG31RNZNxE1cnm+QpzzLjclFwLAjicHmh4f/dgTxiAXBfSKZIFqzXM1bhk5mynPkgO0ohPYgo3VtsOfWd9TZN8Gfyp19HauLRl2e6sSziWjVDaGGPdx+bxkLqTT6bzdVBxoti5rD37QRFtYA/dbvzynlxRaEglKD8O2jX5yO+wzv1/dQ0Gv7QotGXnuzIvqLQ8keGw2+jCsOUIX9M2olipK9I5BB6KoSxehL0n/A/d1BXO5Pmvch9w1estFwI4vqnjVvkHnSBsH375YIFlYLwS45ZFUZVIzulMQxLORYaSuTYzh5YYqTMT7ulP9FKqLM/qIB2SMp8/s0vTGoKRBVNKWYDgHrS9xqFhOsirA2aOxhvqusiV6/ezaEcjqyKkogOADXg7YyB4Um7TkB6mi3ailqlkx0j66ZeLvIkaAQXf5i+pv1BZQtxnOExrYCn8R34mjf6UIfwjrayi33GOrZF3khBsM2m+fo0FMVZickuU/JaF1qWPtVBDjG4kagD8wdAaICjSy9sn0Gk6C5M61vg2ivQD5SuwihpCgRXlxWUeq99qu/I0FrM66b3yWmDyQT6xNEAAhB5yKVyLhTAAj80PFAQuf8xXg2gKL6fywE9c5Z7CVLibQUDV2279jIQHSQfY/ED2kCAwEAAQ==",
+      "distribution": "aks", "infrastructure": "azure"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - connectedk8s connect
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '889'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -n -l --tags --kube-config
+      User-Agent:
+      - AZURECLI/2.41.0 (MSI) azsdk-python-mgmt-hybridkubernetes/1.0.0b1 Python/3.7.7
+        (Windows-10-10.0.22621-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/rohanazuregroup/providers/Microsoft.Kubernetes/connectedClusters/cc-000002?api-version=2021-10-01
+  response:
+    body:
+      string: '{"error":{"code":"SubscriptionRequestsThrottled","message":"Number
+        of requests for subscription ''1bfbb5d0-917e-4346-9026-1d3b344417f5'' and
+        operation ''PUT/SUBSCRIPTIONS/RESOURCEGROUPS/PROVIDERS/MICROSOFT.KUBERNETES/CONNECTEDCLUSTERS/''
+        exceeded the backend storage limit. Please try again after ''6'' seconds."}}'
+    headers:
+      cache-control:
+      - no-cache
+      connection:
+      - close
+      content-length:
+      - '308'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 18 Oct 2022 19:33:35 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 429
+      message: ''
+- request:
+    body: '{"tags": {"foo": "doo"}, "location": "eastus", "identity": {"type": "SystemAssigned"},
+      "properties": {"agentPublicKeyCertificate": "MIICCgKCAgEAwSnivsiO8/tNEVsHHOTOLU8ia39n2OP0FWJMrG31RNZNxE1cnm+QpzzLjclFwLAjicHmh4f/dgTxiAXBfSKZIFqzXM1bhk5mynPkgO0ohPYgo3VtsOfWd9TZN8Gfyp19HauLRl2e6sSziWjVDaGGPdx+bxkLqTT6bzdVBxoti5rD37QRFtYA/dbvzynlxRaEglKD8O2jX5yO+wzv1/dQ0Gv7QotGXnuzIvqLQ8keGw2+jCsOUIX9M2olipK9I5BB6KoSxehL0n/A/d1BXO5Pmvch9w1estFwI4vqnjVvkHnSBsH375YIFlYLwS45ZFUZVIzulMQxLORYaSuTYzh5YYqTMT7ulP9FKqLM/qIB2SMp8/s0vTGoKRBVNKWYDgHrS9xqFhOsirA2aOxhvqusiV6/ezaEcjqyKkogOADXg7YyB4Um7TkB6mi3ailqlkx0j66ZeLvIkaAQXf5i+pv1BZQtxnOExrYCn8R34mjf6UIfwjrayi33GOrZF3khBsM2m+fo0FMVZickuU/JaF1qWPtVBDjG4kagD8wdAaICjSy9sn0Gk6C5M61vg2ivQD5SuwihpCgRXlxWUeq99qu/I0FrM66b3yWmDyQT6xNEAAhB5yKVyLhTAAj80PFAQuf8xXg2gKL6fywE9c5Z7CVLibQUDV2279jIQHSQfY/ED2kCAwEAAQ==",
+      "distribution": "aks", "infrastructure": "azure"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - connectedk8s connect
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '889'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -n -l --tags --kube-config
+      User-Agent:
+      - AZURECLI/2.41.0 (MSI) azsdk-python-mgmt-hybridkubernetes/1.0.0b1 Python/3.7.7
+        (Windows-10-10.0.22621-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/rohanazuregroup/providers/Microsoft.Kubernetes/connectedClusters/cc-000002?api-version=2021-10-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rohanazuregroup/providers/Microsoft.Kubernetes/connectedClusters/cc-000002","name":"cc-000002","type":"microsoft.kubernetes/connectedclusters","location":"eastus","tags":{"foo":"doo"},"systemData":{"createdBy":"akkeshar@microsoft.com","createdByType":"User","createdAt":"2022-10-18T19:33:45.0468462Z","lastModifiedBy":"akkeshar@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-10-18T19:33:45.0468462Z"},"identity":{"principalId":"2fed9832-d6b9-4d78-a357-8dbe0cbf3832","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","type":"SystemAssigned"},"properties":{"provisioningState":"Accepted","connectivityStatus":"Connecting","agentPublicKeyCertificate":"MIICCgKCAgEAwSnivsiO8/tNEVsHHOTOLU8ia39n2OP0FWJMrG31RNZNxE1cnm+QpzzLjclFwLAjicHmh4f/dgTxiAXBfSKZIFqzXM1bhk5mynPkgO0ohPYgo3VtsOfWd9TZN8Gfyp19HauLRl2e6sSziWjVDaGGPdx+bxkLqTT6bzdVBxoti5rD37QRFtYA/dbvzynlxRaEglKD8O2jX5yO+wzv1/dQ0Gv7QotGXnuzIvqLQ8keGw2+jCsOUIX9M2olipK9I5BB6KoSxehL0n/A/d1BXO5Pmvch9w1estFwI4vqnjVvkHnSBsH375YIFlYLwS45ZFUZVIzulMQxLORYaSuTYzh5YYqTMT7ulP9FKqLM/qIB2SMp8/s0vTGoKRBVNKWYDgHrS9xqFhOsirA2aOxhvqusiV6/ezaEcjqyKkogOADXg7YyB4Um7TkB6mi3ailqlkx0j66ZeLvIkaAQXf5i+pv1BZQtxnOExrYCn8R34mjf6UIfwjrayi33GOrZF3khBsM2m+fo0FMVZickuU/JaF1qWPtVBDjG4kagD8wdAaICjSy9sn0Gk6C5M61vg2ivQD5SuwihpCgRXlxWUeq99qu/I0FrM66b3yWmDyQT6xNEAAhB5yKVyLhTAAj80PFAQuf8xXg2gKL6fywE9c5Z7CVLibQUDV2279jIQHSQfY/ED2kCAwEAAQ==","distribution":"aks","infrastructure":"azure"}}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/providers/Microsoft.Kubernetes/locations/EASTUS/operationStatuses/0c47cf1b-c103-4d28-a8fd-ce13e919b99a*4A811B08FC5020265FADFA7C448AB4B7508006C59187472731D1CD57E77833C1?api-version=2021-10-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '1501'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 18 Oct 2022 19:33:49 GMT
+      etag:
+      - '"19004808-0000-0100-0000-634eff9c0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1198'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - connectedk8s connect
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -l --tags --kube-config
+      User-Agent:
+      - AZURECLI/2.41.0 (MSI) azsdk-python-mgmt-hybridkubernetes/1.0.0b1 Python/3.7.7
+        (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.Kubernetes/locations/EASTUS/operationStatuses/0c47cf1b-c103-4d28-a8fd-ce13e919b99a*4A811B08FC5020265FADFA7C448AB4B7508006C59187472731D1CD57E77833C1?api-version=2021-10-01
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.Kubernetes/locations/EASTUS/operationStatuses/0c47cf1b-c103-4d28-a8fd-ce13e919b99a*4A811B08FC5020265FADFA7C448AB4B7508006C59187472731D1CD57E77833C1","name":"0c47cf1b-c103-4d28-a8fd-ce13e919b99a*4A811B08FC5020265FADFA7C448AB4B7508006C59187472731D1CD57E77833C1","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rohanazuregroup/providers/Microsoft.Kubernetes/connectedClusters/cc-000002","status":"Succeeded","startTime":"2022-10-18T19:33:47.7681838Z","endTime":"2022-10-18T19:33:54.3029766Z","properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '571'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 18 Oct 2022 19:34:20 GMT
+      etag:
+      - '"3f006483-0000-0100-0000-634effa20000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - connectedk8s connect
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -l --tags --kube-config
+      User-Agent:
+      - AZURECLI/2.41.0 (MSI) azsdk-python-mgmt-hybridkubernetes/1.0.0b1 Python/3.7.7
+        (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/rohanazuregroup/providers/Microsoft.Kubernetes/connectedClusters/cc-000002?api-version=2021-10-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rohanazuregroup/providers/Microsoft.Kubernetes/connectedClusters/cc-000002","name":"cc-000002","type":"microsoft.kubernetes/connectedclusters","location":"eastus","tags":{"foo":"doo"},"systemData":{"createdBy":"akkeshar@microsoft.com","createdByType":"User","createdAt":"2022-10-18T19:33:45.0468462Z","lastModifiedBy":"akkeshar@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-10-18T19:33:45.0468462Z"},"identity":{"principalId":"2fed9832-d6b9-4d78-a357-8dbe0cbf3832","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","type":"SystemAssigned"},"properties":{"provisioningState":"Succeeded","connectivityStatus":"Connecting","agentPublicKeyCertificate":"MIICCgKCAgEAwSnivsiO8/tNEVsHHOTOLU8ia39n2OP0FWJMrG31RNZNxE1cnm+QpzzLjclFwLAjicHmh4f/dgTxiAXBfSKZIFqzXM1bhk5mynPkgO0ohPYgo3VtsOfWd9TZN8Gfyp19HauLRl2e6sSziWjVDaGGPdx+bxkLqTT6bzdVBxoti5rD37QRFtYA/dbvzynlxRaEglKD8O2jX5yO+wzv1/dQ0Gv7QotGXnuzIvqLQ8keGw2+jCsOUIX9M2olipK9I5BB6KoSxehL0n/A/d1BXO5Pmvch9w1estFwI4vqnjVvkHnSBsH375YIFlYLwS45ZFUZVIzulMQxLORYaSuTYzh5YYqTMT7ulP9FKqLM/qIB2SMp8/s0vTGoKRBVNKWYDgHrS9xqFhOsirA2aOxhvqusiV6/ezaEcjqyKkogOADXg7YyB4Um7TkB6mi3ailqlkx0j66ZeLvIkaAQXf5i+pv1BZQtxnOExrYCn8R34mjf6UIfwjrayi33GOrZF3khBsM2m+fo0FMVZickuU/JaF1qWPtVBDjG4kagD8wdAaICjSy9sn0Gk6C5M61vg2ivQD5SuwihpCgRXlxWUeq99qu/I0FrM66b3yWmDyQT6xNEAAhB5yKVyLhTAAj80PFAQuf8xXg2gKL6fywE9c5Z7CVLibQUDV2279jIQHSQfY/ED2kCAwEAAQ==","distribution":"AKS","infrastructure":"azure"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1502'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 18 Oct 2022 19:34:20 GMT
+      etag:
+      - '"19006508-0000-0100-0000-634effa20000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - connectedk8s connect
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -l --tags --kube-config
+      User-Agent:
+      - AZURECLI/2.41.0 (MSI) azsdk-python-azure-mgmt-resource/21.1.0b1 Python/3.7.7
+        (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ExtendedLocation?api-version=2021-04-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ExtendedLocation","namespace":"Microsoft.ExtendedLocation","authorizations":[{"applicationId":"bc313c14-388c-4e7d-a58e-70017303ee3b","roleDefinitionId":"a775b938-2819-4dd0-8067-01f6e3b06392"},{"applicationId":"319f651f-7ddb-4fc6-9857-7aef9250bd05","roleDefinitionId":"0981f4e0-04a7-4e31-bd2b-b2ac2fc6ba4e"}],"resourceTypes":[{"resourceType":"locations","locations":[],"apiVersions":["2021-03-15-preview","2020-07-15-privatepreview"],"capabilities":"None"},{"resourceType":"customLocations","locations":["East
+        US","West Europe","North Europe","France Central","Southeast Asia","Australia
+        East","East US 2","West US 2","UK South","Central US","West Central US","West
+        US","North Central US","South Central US","Korea Central","Japan East","East
+        Asia","West US 3","Canada Central","East US 2 EUAP"],"apiVersions":["2021-08-31-preview","2021-08-15","2021-03-15-preview","2020-07-15-privatepreview"],"defaultApiVersion":"2021-08-15","capabilities":"SystemAssignedResourceIdentity,
+        SupportsTags, SupportsLocation"},{"resourceType":"customLocations/enabledResourceTypes","locations":["East
+        US","West Europe","North Europe","France Central","Southeast Asia","Australia
+        East","East US 2","West US 2","UK South","Central US","West Central US","West
+        US","North Central US","South Central US","Korea Central","Japan East","East
+        Asia","West US 3","Canada Central","East US 2 EUAP"],"apiVersions":["2021-08-31-preview","2021-08-15","2021-03-15-preview","2020-07-15-privatepreview"],"capabilities":"None"},{"resourceType":"customLocations/resourceSyncRules","locations":["East
+        US","West Europe","North Europe","France Central","Southeast Asia","Australia
+        East","East US 2","West US 2","UK South","Central US","West Central US","West
+        US","North Central US","South Central US","Korea Central","Japan East","East
+        Asia","West US 3","Canada Central","East US 2 EUAP"],"apiVersions":["2021-08-31-preview"],"defaultApiVersion":"2021-08-31-preview","capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SupportsTags, SupportsLocation"},{"resourceType":"locations/operationsstatus","locations":["East
+        US","West Europe","North Europe","France Central","Southeast Asia","Australia
+        East","East US 2","West US 2","UK South","Central US","West Central US","West
+        US","North Central US","South Central US","Korea Central","Japan East","East
+        Asia","West US 3","Canada Central","East US 2 Euap"],"apiVersions":["2021-03-15-preview","2020-07-15-privatepreview"],"capabilities":"None"},{"resourceType":"locations/operationresults","locations":["East
+        US","West Europe","North Europe","France Central","Southeast Asia","Australia
+        East","East US 2","West US 2","UK South","Central US","West Central US","West
+        US","North Central US","South Central US","Korea Central","Japan East","East
+        Asia","West US 3","Canada Central","East US 2 Euap"],"apiVersions":["2021-03-15-preview","2020-07-15-privatepreview"],"capabilities":"None"},{"resourceType":"operations","locations":[],"apiVersions":["2021-08-31-preview","2021-08-15","2021-03-15-preview","2020-07-15-privatepreview"],"capabilities":"None"}],"registrationState":"Registered","registrationPolicy":"RegistrationRequired"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '3236'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 18 Oct 2022 19:34:21 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - connectedk8s connect
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -l --tags --kube-config
+      User-Agent:
+      - python/3.7.7 (Windows-10-10.0.22621-SP0) msrest/0.7.1 msrest_azure/0.6.4 azure-graphrbac/0.60.0
+        Azure-SDK-For-Python AZURECLI/2.41.0 (MSI)
+      accept-language:
+      - en-US
+    method: GET
+    uri: https://graph.windows.net/00000000-0000-0000-0000-000000000000/servicePrincipals?$filter=displayName%20eq%20%27Custom%20Locations%20RP%27&api-version=1.6
+  response:
+    body:
+      string: '{"odata.metadata":"https://graph.windows.net/00000000-0000-0000-0000-000000000000/$metadata#directoryObjects","value":[{"odata.type":"Microsoft.DirectoryServices.ServicePrincipal","objectType":"ServicePrincipal","objectId":"51dfe1e8-70c6-4de5-a08e-e18aff23d815","deletionTimestamp":null,"accountEnabled":true,"addIns":[],"alternativeNames":[],"appDisplayName":"Custom
+        Locations RP","appId":"bc313c14-388c-4e7d-a58e-70017303ee3b","applicationTemplateId":null,"appOwnerTenantId":"f8cdef31-a31e-4b4a-93e4-5f571e91255a","appRoleAssignmentRequired":false,"appRoles":[],"displayName":"Custom
+        Locations RP","errorUrl":null,"homepage":null,"informationalUrls":{"termsOfService":null,"support":null,"privacy":null,"marketing":null},"keyCredentials":[],"logoutUrl":null,"notificationEmailAddresses":[],"oauth2Permissions":[],"passwordCredentials":[],"preferredSingleSignOnMode":null,"preferredTokenSigningKeyEndDateTime":null,"preferredTokenSigningKeyThumbprint":null,"publisherName":"Microsoft
+        Services","replyUrls":[],"samlMetadataUrl":null,"samlSingleSignOnSettings":null,"servicePrincipalNames":["bc313c14-388c-4e7d-a58e-70017303ee3b"],"servicePrincipalType":"Application","signInAudience":"AzureADMultipleOrgs","tags":[],"tokenEncryptionKeyId":null}]}'
+    headers:
+      access-control-allow-origin:
+      - '*'
+      cache-control:
+      - no-cache
+      content-length:
+      - '1246'
+      content-type:
+      - application/json; odata=minimalmetadata; streaming=true; charset=utf-8
+      dataserviceversion:
+      - 3.0;
+      date:
+      - Tue, 18 Oct 2022 19:34:21 GMT
+      duration:
+      - '1258515'
+      expires:
+      - '-1'
+      ocp-aad-diagnostics-server-name:
+      - JyeM+5eFzeTHbJ5JOsOk4ZavbV40VH6ifhSb7d1ws28=
+      ocp-aad-session-key:
+      - enQqG2e46fQSo8PX9si9trQHBwQrwEtn8Ofa9uagnnZIMDfjYjWm7vuE_QM1YQqymeFQZLEvetWopZQESE7LE_aHmhQ0va5bP0CEUWjVdbFl4ddHjZ1RkQDbdlTWci00.NLHVyyBxFWLy2ktv17NlF8iUOhgGnkHpqd3G8bMZhXs
+      pragma:
+      - no-cache
+      request-id:
+      - aba70e0e-3903-4074-a0e8-e71244aa10cd
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-aspnet-version:
+      - 4.0.30319
+      x-ms-dirapi-data-contract-version:
+      - '1.6'
+      x-ms-resource-unit:
+      - '1'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - connectedk8s show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n
+      User-Agent:
+      - AZURECLI/2.41.0 (MSI) azsdk-python-mgmt-hybridkubernetes/1.0.0b1 Python/3.7.7
+        (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/rohanazuregroup/providers/Microsoft.Kubernetes/connectedClusters/cc-000002?api-version=2022-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rohanazuregroup/providers/Microsoft.Kubernetes/connectedClusters/cc-000002","name":"cc-000002","type":"microsoft.kubernetes/connectedclusters","location":"eastus","tags":{"foo":"doo"},"systemData":{"createdBy":"akkeshar@microsoft.com","createdByType":"User","createdAt":"2022-10-18T19:33:45.0468462Z","lastModifiedBy":"64b12d6e-6549-484c-8cc6-6281839ba394","lastModifiedByType":"Application","lastModifiedAt":"2022-10-18T19:40:03.2790589Z"},"identity":{"principalId":"2fed9832-d6b9-4d78-a357-8dbe0cbf3832","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","type":"SystemAssigned"},"properties":{"provisioningState":"Succeeded","connectivityStatus":"Connected","privateLinkState":"Disabled","azureHybridBenefit":"NotApplicable","agentPublicKeyCertificate":"MIICCgKCAgEAwSnivsiO8/tNEVsHHOTOLU8ia39n2OP0FWJMrG31RNZNxE1cnm+QpzzLjclFwLAjicHmh4f/dgTxiAXBfSKZIFqzXM1bhk5mynPkgO0ohPYgo3VtsOfWd9TZN8Gfyp19HauLRl2e6sSziWjVDaGGPdx+bxkLqTT6bzdVBxoti5rD37QRFtYA/dbvzynlxRaEglKD8O2jX5yO+wzv1/dQ0Gv7QotGXnuzIvqLQ8keGw2+jCsOUIX9M2olipK9I5BB6KoSxehL0n/A/d1BXO5Pmvch9w1estFwI4vqnjVvkHnSBsH375YIFlYLwS45ZFUZVIzulMQxLORYaSuTYzh5YYqTMT7ulP9FKqLM/qIB2SMp8/s0vTGoKRBVNKWYDgHrS9xqFhOsirA2aOxhvqusiV6/ezaEcjqyKkogOADXg7YyB4Um7TkB6mi3ailqlkx0j66ZeLvIkaAQXf5i+pv1BZQtxnOExrYCn8R34mjf6UIfwjrayi33GOrZF3khBsM2m+fo0FMVZickuU/JaF1qWPtVBDjG4kagD8wdAaICjSy9sn0Gk6C5M61vg2ivQD5SuwihpCgRXlxWUeq99qu/I0FrM66b3yWmDyQT6xNEAAhB5yKVyLhTAAj80PFAQuf8xXg2gKL6fywE9c5Z7CVLibQUDV2279jIQHSQfY/ED2kCAwEAAQ==","distribution":"AKS","infrastructure":"azure","kubernetesVersion":"1.23.12","totalNodeCount":1,"agentVersion":"1.8.14","totalCoreCount":4,"lastConnectivityTime":"2022-10-18T19:39:51.418Z","managedIdentityCertificateExpirationTime":"2023-01-16T19:28:00Z"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1797'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 18 Oct 2022 19:41:07 GMT
+      etag:
+      - '"1900300e-0000-0100-0000-634f01130000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+      User-Agent:
+      - OpenAPI-Generator/24.2.0/python
+    method: GET
+    uri: https://test-force-rohanazuregroup-1bfbb5-4f0f44fc.hcp.westeurope.azmk8s.io/version/
+  response:
+    body:
+      string: "{\n  \"major\": \"1\",\n  \"minor\": \"23\",\n  \"gitVersion\": \"v1.23.12\",\n
+        \ \"gitCommit\": \"c6939792865ef0f70f92006081690d77411c8ed5\",\n  \"gitTreeState\":
+        \"clean\",\n  \"buildDate\": \"2022-09-21T21:46:35Z\",\n  \"goVersion\": \"go1.17.13\",\n
+        \ \"compiler\": \"gc\",\n  \"platform\": \"linux/amd64\"\n}"
+    headers:
+      audit-id:
+      - eb29f669-9a3f-4cc9-ac20-e50366659403
+      cache-control:
+      - no-cache, private
+      content-length:
+      - '265'
+      content-type:
+      - application/json
+      date:
+      - Tue, 18 Oct 2022 19:41:08 GMT
+      x-kubernetes-pf-flowschema-uid:
+      - 92b2ef8a-fcc8-4f73-a2ca-c1502b7b9250
+      x-kubernetes-pf-prioritylevel-uid:
+      - a1989c01-0e94-4e3b-a68c-18561b43277e
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - connectedk8s delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -g -n --kube-config --force -y
+      User-Agent:
+      - AZURECLI/2.41.0 (MSI) azsdk-python-mgmt-hybridkubernetes/1.0.0b1 Python/3.7.7
+        (Windows-10-10.0.22621-SP0)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/rohanazuregroup/providers/Microsoft.Kubernetes/connectedClusters/cc-000002?api-version=2021-10-01
+  response:
+    body:
+      string: 'null'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/providers/Microsoft.Kubernetes/locations/EASTUS/operationStatuses/4af07712-ea52-4c55-b865-a27d65f9e93d*4A811B08FC5020265FADFA7C448AB4B7508006C59187472731D1CD57E77833C1?api-version=2021-10-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '4'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 18 Oct 2022 19:41:12 GMT
+      etag:
+      - '"1900490f-0000-0100-0000-634f01580000"'
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/providers/Microsoft.Kubernetes/locations/EASTUS/operationStatuses/4af07712-ea52-4c55-b865-a27d65f9e93d*4A811B08FC5020265FADFA7C448AB4B7508006C59187472731D1CD57E77833C1?api-version=2021-10-01
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14999'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - connectedk8s delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --kube-config --force -y
+      User-Agent:
+      - AZURECLI/2.41.0 (MSI) azsdk-python-mgmt-hybridkubernetes/1.0.0b1 Python/3.7.7
+        (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.Kubernetes/locations/EASTUS/operationStatuses/4af07712-ea52-4c55-b865-a27d65f9e93d*4A811B08FC5020265FADFA7C448AB4B7508006C59187472731D1CD57E77833C1?api-version=2021-10-01
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.Kubernetes/locations/EASTUS/operationStatuses/4af07712-ea52-4c55-b865-a27d65f9e93d*4A811B08FC5020265FADFA7C448AB4B7508006C59187472731D1CD57E77833C1","name":"4af07712-ea52-4c55-b865-a27d65f9e93d*4A811B08FC5020265FADFA7C448AB4B7508006C59187472731D1CD57E77833C1","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rohanazuregroup/providers/Microsoft.Kubernetes/connectedClusters/cc-000002","status":"Succeeded","startTime":"2022-10-18T19:41:12.408117Z","endTime":"2022-10-18T19:41:17.0350374Z","properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '570'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 18 Oct 2022 19:41:42 GMT
+      etag:
+      - '"3f00e18a-0000-0100-0000-634f015d0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - connectedk8s delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --kube-config --force -y
+      User-Agent:
+      - AZURECLI/2.41.0 (MSI) azsdk-python-mgmt-hybridkubernetes/1.0.0b1 Python/3.7.7
+        (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.Kubernetes/locations/EASTUS/operationStatuses/4af07712-ea52-4c55-b865-a27d65f9e93d*4A811B08FC5020265FADFA7C448AB4B7508006C59187472731D1CD57E77833C1?api-version=2021-10-01
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.Kubernetes/locations/EASTUS/operationStatuses/4af07712-ea52-4c55-b865-a27d65f9e93d*4A811B08FC5020265FADFA7C448AB4B7508006C59187472731D1CD57E77833C1","name":"4af07712-ea52-4c55-b865-a27d65f9e93d*4A811B08FC5020265FADFA7C448AB4B7508006C59187472731D1CD57E77833C1","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rohanazuregroup/providers/Microsoft.Kubernetes/connectedClusters/cc-000002","status":"Succeeded","startTime":"2022-10-18T19:41:12.408117Z","endTime":"2022-10-18T19:41:17.0350374Z","properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '570'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 18 Oct 2022 19:41:42 GMT
+      etag:
+      - '"3f00e18a-0000-0100-0000-634f015d0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+      User-Agent:
+      - OpenAPI-Generator/24.2.0/python
+    method: GET
+    uri: https://test-force-rohanazuregroup-1bfbb5-4f0f44fc.hcp.westeurope.azmk8s.io/api/v1/namespaces?fieldSelector=metadata.name%3Dazure-arc
+  response:
+    body:
+      string: '{"kind":"NamespaceList","apiVersion":"v1","metadata":{"resourceVersion":"4349"},"items":[{"metadata":{"name":"azure-arc","uid":"2da97484-c129-468d-ba7e-6ba33eee09bb","resourceVersion":"4341","creationTimestamp":"2022-10-18T19:34:31Z","deletionTimestamp":"2022-10-18T19:42:05Z","labels":{"admission.policy.azure.com/ignore":"true","app.kubernetes.io/managed-by":"Helm","control-plane":"true","kubernetes.io/metadata.name":"azure-arc"},"annotations":{"meta.helm.sh/release-name":"azure-arc","meta.helm.sh/release-namespace":"default"},"managedFields":[{"manager":"helm","operation":"Update","apiVersion":"v1","time":"2022-10-18T19:34:31Z","fieldsType":"FieldsV1","fieldsV1":{"f:metadata":{"f:annotations":{".":{},"f:meta.helm.sh/release-name":{},"f:meta.helm.sh/release-namespace":{}},"f:labels":{".":{},"f:admission.policy.azure.com/ignore":{},"f:app.kubernetes.io/managed-by":{},"f:control-plane":{},"f:kubernetes.io/metadata.name":{}}}}}]},"spec":{"finalizers":["kubernetes"]},"status":{"phase":"Terminating"}}]}
+
+        '
+    headers:
+      audit-id:
+      - db6081c2-3dca-48b3-b189-db0a6210b4b9
+      cache-control:
+      - no-cache, private
+      content-length:
+      - '1014'
+      content-type:
+      - application/json
+      date:
+      - Tue, 18 Oct 2022 19:42:06 GMT
+      x-kubernetes-pf-flowschema-uid:
+      - 92b2ef8a-fcc8-4f73-a2ca-c1502b7b9250
+      x-kubernetes-pf-prioritylevel-uid:
+      - a1989c01-0e94-4e3b-a68c-18561b43277e
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+      User-Agent:
+      - OpenAPI-Generator/24.2.0/python
+    method: GET
+    uri: https://test-force-rohanazuregroup-1bfbb5-4f0f44fc.hcp.westeurope.azmk8s.io/api/v1/namespaces?fieldSelector=metadata.name%3Dazure-arc
+  response:
+    body:
+      string: '{"kind":"NamespaceList","apiVersion":"v1","metadata":{"resourceVersion":"4496"},"items":[{"metadata":{"name":"azure-arc","uid":"2da97484-c129-468d-ba7e-6ba33eee09bb","resourceVersion":"4341","creationTimestamp":"2022-10-18T19:34:31Z","deletionTimestamp":"2022-10-18T19:42:05Z","labels":{"admission.policy.azure.com/ignore":"true","app.kubernetes.io/managed-by":"Helm","control-plane":"true","kubernetes.io/metadata.name":"azure-arc"},"annotations":{"meta.helm.sh/release-name":"azure-arc","meta.helm.sh/release-namespace":"default"},"managedFields":[{"manager":"helm","operation":"Update","apiVersion":"v1","time":"2022-10-18T19:34:31Z","fieldsType":"FieldsV1","fieldsV1":{"f:metadata":{"f:annotations":{".":{},"f:meta.helm.sh/release-name":{},"f:meta.helm.sh/release-namespace":{}},"f:labels":{".":{},"f:admission.policy.azure.com/ignore":{},"f:app.kubernetes.io/managed-by":{},"f:control-plane":{},"f:kubernetes.io/metadata.name":{}}}}}]},"spec":{"finalizers":["kubernetes"]},"status":{"phase":"Terminating"}}]}
+
+        '
+    headers:
+      audit-id:
+      - 275c1eb9-29b5-4b33-8932-c8c4ae113e62
+      cache-control:
+      - no-cache, private
+      content-length:
+      - '1014'
+      content-type:
+      - application/json
+      date:
+      - Tue, 18 Oct 2022 19:42:11 GMT
+      x-kubernetes-pf-flowschema-uid:
+      - 92b2ef8a-fcc8-4f73-a2ca-c1502b7b9250
+      x-kubernetes-pf-prioritylevel-uid:
+      - a1989c01-0e94-4e3b-a68c-18561b43277e
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+      User-Agent:
+      - OpenAPI-Generator/24.2.0/python
+    method: GET
+    uri: https://test-force-rohanazuregroup-1bfbb5-4f0f44fc.hcp.westeurope.azmk8s.io/api/v1/namespaces?fieldSelector=metadata.name%3Dazure-arc
+  response:
+    body:
+      string: '{"kind":"NamespaceList","apiVersion":"v1","metadata":{"resourceVersion":"4568"},"items":[{"metadata":{"name":"azure-arc","uid":"2da97484-c129-468d-ba7e-6ba33eee09bb","resourceVersion":"4542","creationTimestamp":"2022-10-18T19:34:31Z","deletionTimestamp":"2022-10-18T19:42:05Z","labels":{"admission.policy.azure.com/ignore":"true","app.kubernetes.io/managed-by":"Helm","control-plane":"true","kubernetes.io/metadata.name":"azure-arc"},"annotations":{"meta.helm.sh/release-name":"azure-arc","meta.helm.sh/release-namespace":"default"},"managedFields":[{"manager":"helm","operation":"Update","apiVersion":"v1","time":"2022-10-18T19:34:31Z","fieldsType":"FieldsV1","fieldsV1":{"f:metadata":{"f:annotations":{".":{},"f:meta.helm.sh/release-name":{},"f:meta.helm.sh/release-namespace":{}},"f:labels":{".":{},"f:admission.policy.azure.com/ignore":{},"f:app.kubernetes.io/managed-by":{},"f:control-plane":{},"f:kubernetes.io/metadata.name":{}}}}},{"manager":"kube-controller-manager","operation":"Update","apiVersion":"v1","time":"2022-10-18T19:42:12Z","fieldsType":"FieldsV1","fieldsV1":{"f:status":{"f:conditions":{".":{},"k:{\"type\":\"NamespaceContentRemaining\"}":{".":{},"f:lastTransitionTime":{},"f:message":{},"f:reason":{},"f:status":{},"f:type":{}},"k:{\"type\":\"NamespaceDeletionContentFailure\"}":{".":{},"f:lastTransitionTime":{},"f:message":{},"f:reason":{},"f:status":{},"f:type":{}},"k:{\"type\":\"NamespaceDeletionDiscoveryFailure\"}":{".":{},"f:lastTransitionTime":{},"f:message":{},"f:reason":{},"f:status":{},"f:type":{}},"k:{\"type\":\"NamespaceDeletionGroupVersionParsingFailure\"}":{".":{},"f:lastTransitionTime":{},"f:message":{},"f:reason":{},"f:status":{},"f:type":{}},"k:{\"type\":\"NamespaceFinalizersRemaining\"}":{".":{},"f:lastTransitionTime":{},"f:message":{},"f:reason":{},"f:status":{},"f:type":{}}}}},"subresource":"status"}]},"spec":{"finalizers":["kubernetes"]},"status":{"phase":"Terminating","conditions":[{"type":"NamespaceDeletionDiscoveryFailure","status":"False","lastTransitionTime":"2022-10-18T19:42:12Z","reason":"ResourcesDiscovered","message":"All
+        resources successfully discovered"},{"type":"NamespaceDeletionGroupVersionParsingFailure","status":"False","lastTransitionTime":"2022-10-18T19:42:12Z","reason":"ParsedGroupVersions","message":"All
+        legacy kube types successfully parsed"},{"type":"NamespaceDeletionContentFailure","status":"False","lastTransitionTime":"2022-10-18T19:42:12Z","reason":"ContentDeleted","message":"All
+        content successfully deleted, may be waiting on finalization"},{"type":"NamespaceContentRemaining","status":"True","lastTransitionTime":"2022-10-18T19:42:12Z","reason":"SomeResourcesRemain","message":"Some
+        resources are remaining: pods. has 10 resource instances"},{"type":"NamespaceFinalizersRemaining","status":"False","lastTransitionTime":"2022-10-18T19:42:12Z","reason":"ContentHasNoFinalizers","message":"All
+        content-preserving finalizers finished"}]}}]}
+
+        '
+    headers:
+      audit-id:
+      - 6874e8ac-89b5-415c-a50e-087af5743115
+      cache-control:
+      - no-cache, private
+      content-type:
+      - application/json
+      date:
+      - Tue, 18 Oct 2022 19:42:17 GMT
+      transfer-encoding:
+      - chunked
+      x-kubernetes-pf-flowschema-uid:
+      - 92b2ef8a-fcc8-4f73-a2ca-c1502b7b9250
+      x-kubernetes-pf-prioritylevel-uid:
+      - a1989c01-0e94-4e3b-a68c-18561b43277e
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+      User-Agent:
+      - OpenAPI-Generator/24.2.0/python
+    method: GET
+    uri: https://test-force-rohanazuregroup-1bfbb5-4f0f44fc.hcp.westeurope.azmk8s.io/api/v1/namespaces?fieldSelector=metadata.name%3Dazure-arc
+  response:
+    body:
+      string: '{"kind":"NamespaceList","apiVersion":"v1","metadata":{"resourceVersion":"4586"},"items":[{"metadata":{"name":"azure-arc","uid":"2da97484-c129-468d-ba7e-6ba33eee09bb","resourceVersion":"4571","creationTimestamp":"2022-10-18T19:34:31Z","deletionTimestamp":"2022-10-18T19:42:05Z","labels":{"admission.policy.azure.com/ignore":"true","app.kubernetes.io/managed-by":"Helm","control-plane":"true","kubernetes.io/metadata.name":"azure-arc"},"annotations":{"meta.helm.sh/release-name":"azure-arc","meta.helm.sh/release-namespace":"default"},"managedFields":[{"manager":"helm","operation":"Update","apiVersion":"v1","time":"2022-10-18T19:34:31Z","fieldsType":"FieldsV1","fieldsV1":{"f:metadata":{"f:annotations":{".":{},"f:meta.helm.sh/release-name":{},"f:meta.helm.sh/release-namespace":{}},"f:labels":{".":{},"f:admission.policy.azure.com/ignore":{},"f:app.kubernetes.io/managed-by":{},"f:control-plane":{},"f:kubernetes.io/metadata.name":{}}}}},{"manager":"kube-controller-manager","operation":"Update","apiVersion":"v1","time":"2022-10-18T19:42:12Z","fieldsType":"FieldsV1","fieldsV1":{"f:status":{"f:conditions":{".":{},"k:{\"type\":\"NamespaceContentRemaining\"}":{".":{},"f:lastTransitionTime":{},"f:message":{},"f:reason":{},"f:status":{},"f:type":{}},"k:{\"type\":\"NamespaceDeletionContentFailure\"}":{".":{},"f:lastTransitionTime":{},"f:message":{},"f:reason":{},"f:status":{},"f:type":{}},"k:{\"type\":\"NamespaceDeletionDiscoveryFailure\"}":{".":{},"f:lastTransitionTime":{},"f:message":{},"f:reason":{},"f:status":{},"f:type":{}},"k:{\"type\":\"NamespaceDeletionGroupVersionParsingFailure\"}":{".":{},"f:lastTransitionTime":{},"f:message":{},"f:reason":{},"f:status":{},"f:type":{}},"k:{\"type\":\"NamespaceFinalizersRemaining\"}":{".":{},"f:lastTransitionTime":{},"f:message":{},"f:reason":{},"f:status":{},"f:type":{}}}}},"subresource":"status"}]},"spec":{"finalizers":["kubernetes"]},"status":{"phase":"Terminating","conditions":[{"type":"NamespaceDeletionDiscoveryFailure","status":"False","lastTransitionTime":"2022-10-18T19:42:12Z","reason":"ResourcesDiscovered","message":"All
+        resources successfully discovered"},{"type":"NamespaceDeletionGroupVersionParsingFailure","status":"False","lastTransitionTime":"2022-10-18T19:42:12Z","reason":"ParsedGroupVersions","message":"All
+        legacy kube types successfully parsed"},{"type":"NamespaceDeletionContentFailure","status":"False","lastTransitionTime":"2022-10-18T19:42:12Z","reason":"ContentDeleted","message":"All
+        content successfully deleted, may be waiting on finalization"},{"type":"NamespaceContentRemaining","status":"True","lastTransitionTime":"2022-10-18T19:42:12Z","reason":"SomeResourcesRemain","message":"Some
+        resources are remaining: pods. has 7 resource instances"},{"type":"NamespaceFinalizersRemaining","status":"False","lastTransitionTime":"2022-10-18T19:42:12Z","reason":"ContentHasNoFinalizers","message":"All
+        content-preserving finalizers finished"}]}}]}
+
+        '
+    headers:
+      audit-id:
+      - 37145431-e4bc-4643-be8b-696d2117bd77
+      cache-control:
+      - no-cache, private
+      content-type:
+      - application/json
+      date:
+      - Tue, 18 Oct 2022 19:42:22 GMT
+      transfer-encoding:
+      - chunked
+      x-kubernetes-pf-flowschema-uid:
+      - 92b2ef8a-fcc8-4f73-a2ca-c1502b7b9250
+      x-kubernetes-pf-prioritylevel-uid:
+      - a1989c01-0e94-4e3b-a68c-18561b43277e
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+      User-Agent:
+      - OpenAPI-Generator/24.2.0/python
+    method: GET
+    uri: https://test-force-rohanazuregroup-1bfbb5-4f0f44fc.hcp.westeurope.azmk8s.io/api/v1/namespaces?fieldSelector=metadata.name%3Dazure-arc
+  response:
+    body:
+      string: '{"kind":"NamespaceList","apiVersion":"v1","metadata":{"resourceVersion":"4605"},"items":[{"metadata":{"name":"azure-arc","uid":"2da97484-c129-468d-ba7e-6ba33eee09bb","resourceVersion":"4571","creationTimestamp":"2022-10-18T19:34:31Z","deletionTimestamp":"2022-10-18T19:42:05Z","labels":{"admission.policy.azure.com/ignore":"true","app.kubernetes.io/managed-by":"Helm","control-plane":"true","kubernetes.io/metadata.name":"azure-arc"},"annotations":{"meta.helm.sh/release-name":"azure-arc","meta.helm.sh/release-namespace":"default"},"managedFields":[{"manager":"helm","operation":"Update","apiVersion":"v1","time":"2022-10-18T19:34:31Z","fieldsType":"FieldsV1","fieldsV1":{"f:metadata":{"f:annotations":{".":{},"f:meta.helm.sh/release-name":{},"f:meta.helm.sh/release-namespace":{}},"f:labels":{".":{},"f:admission.policy.azure.com/ignore":{},"f:app.kubernetes.io/managed-by":{},"f:control-plane":{},"f:kubernetes.io/metadata.name":{}}}}},{"manager":"kube-controller-manager","operation":"Update","apiVersion":"v1","time":"2022-10-18T19:42:12Z","fieldsType":"FieldsV1","fieldsV1":{"f:status":{"f:conditions":{".":{},"k:{\"type\":\"NamespaceContentRemaining\"}":{".":{},"f:lastTransitionTime":{},"f:message":{},"f:reason":{},"f:status":{},"f:type":{}},"k:{\"type\":\"NamespaceDeletionContentFailure\"}":{".":{},"f:lastTransitionTime":{},"f:message":{},"f:reason":{},"f:status":{},"f:type":{}},"k:{\"type\":\"NamespaceDeletionDiscoveryFailure\"}":{".":{},"f:lastTransitionTime":{},"f:message":{},"f:reason":{},"f:status":{},"f:type":{}},"k:{\"type\":\"NamespaceDeletionGroupVersionParsingFailure\"}":{".":{},"f:lastTransitionTime":{},"f:message":{},"f:reason":{},"f:status":{},"f:type":{}},"k:{\"type\":\"NamespaceFinalizersRemaining\"}":{".":{},"f:lastTransitionTime":{},"f:message":{},"f:reason":{},"f:status":{},"f:type":{}}}}},"subresource":"status"}]},"spec":{"finalizers":["kubernetes"]},"status":{"phase":"Terminating","conditions":[{"type":"NamespaceDeletionDiscoveryFailure","status":"False","lastTransitionTime":"2022-10-18T19:42:12Z","reason":"ResourcesDiscovered","message":"All
+        resources successfully discovered"},{"type":"NamespaceDeletionGroupVersionParsingFailure","status":"False","lastTransitionTime":"2022-10-18T19:42:12Z","reason":"ParsedGroupVersions","message":"All
+        legacy kube types successfully parsed"},{"type":"NamespaceDeletionContentFailure","status":"False","lastTransitionTime":"2022-10-18T19:42:12Z","reason":"ContentDeleted","message":"All
+        content successfully deleted, may be waiting on finalization"},{"type":"NamespaceContentRemaining","status":"True","lastTransitionTime":"2022-10-18T19:42:12Z","reason":"SomeResourcesRemain","message":"Some
+        resources are remaining: pods. has 7 resource instances"},{"type":"NamespaceFinalizersRemaining","status":"False","lastTransitionTime":"2022-10-18T19:42:12Z","reason":"ContentHasNoFinalizers","message":"All
+        content-preserving finalizers finished"}]}}]}
+
+        '
+    headers:
+      audit-id:
+      - f4cea766-6263-4609-967d-12432e7d06b5
+      cache-control:
+      - no-cache, private
+      content-type:
+      - application/json
+      date:
+      - Tue, 18 Oct 2022 19:42:27 GMT
+      transfer-encoding:
+      - chunked
+      x-kubernetes-pf-flowschema-uid:
+      - 92b2ef8a-fcc8-4f73-a2ca-c1502b7b9250
+      x-kubernetes-pf-prioritylevel-uid:
+      - a1989c01-0e94-4e3b-a68c-18561b43277e
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+      User-Agent:
+      - OpenAPI-Generator/24.2.0/python
+    method: GET
+    uri: https://test-force-rohanazuregroup-1bfbb5-4f0f44fc.hcp.westeurope.azmk8s.io/api/v1/namespaces?fieldSelector=metadata.name%3Dazure-arc
+  response:
+    body:
+      string: '{"kind":"NamespaceList","apiVersion":"v1","metadata":{"resourceVersion":"4623"},"items":[{"metadata":{"name":"azure-arc","uid":"2da97484-c129-468d-ba7e-6ba33eee09bb","resourceVersion":"4571","creationTimestamp":"2022-10-18T19:34:31Z","deletionTimestamp":"2022-10-18T19:42:05Z","labels":{"admission.policy.azure.com/ignore":"true","app.kubernetes.io/managed-by":"Helm","control-plane":"true","kubernetes.io/metadata.name":"azure-arc"},"annotations":{"meta.helm.sh/release-name":"azure-arc","meta.helm.sh/release-namespace":"default"},"managedFields":[{"manager":"helm","operation":"Update","apiVersion":"v1","time":"2022-10-18T19:34:31Z","fieldsType":"FieldsV1","fieldsV1":{"f:metadata":{"f:annotations":{".":{},"f:meta.helm.sh/release-name":{},"f:meta.helm.sh/release-namespace":{}},"f:labels":{".":{},"f:admission.policy.azure.com/ignore":{},"f:app.kubernetes.io/managed-by":{},"f:control-plane":{},"f:kubernetes.io/metadata.name":{}}}}},{"manager":"kube-controller-manager","operation":"Update","apiVersion":"v1","time":"2022-10-18T19:42:12Z","fieldsType":"FieldsV1","fieldsV1":{"f:status":{"f:conditions":{".":{},"k:{\"type\":\"NamespaceContentRemaining\"}":{".":{},"f:lastTransitionTime":{},"f:message":{},"f:reason":{},"f:status":{},"f:type":{}},"k:{\"type\":\"NamespaceDeletionContentFailure\"}":{".":{},"f:lastTransitionTime":{},"f:message":{},"f:reason":{},"f:status":{},"f:type":{}},"k:{\"type\":\"NamespaceDeletionDiscoveryFailure\"}":{".":{},"f:lastTransitionTime":{},"f:message":{},"f:reason":{},"f:status":{},"f:type":{}},"k:{\"type\":\"NamespaceDeletionGroupVersionParsingFailure\"}":{".":{},"f:lastTransitionTime":{},"f:message":{},"f:reason":{},"f:status":{},"f:type":{}},"k:{\"type\":\"NamespaceFinalizersRemaining\"}":{".":{},"f:lastTransitionTime":{},"f:message":{},"f:reason":{},"f:status":{},"f:type":{}}}}},"subresource":"status"}]},"spec":{"finalizers":["kubernetes"]},"status":{"phase":"Terminating","conditions":[{"type":"NamespaceDeletionDiscoveryFailure","status":"False","lastTransitionTime":"2022-10-18T19:42:12Z","reason":"ResourcesDiscovered","message":"All
+        resources successfully discovered"},{"type":"NamespaceDeletionGroupVersionParsingFailure","status":"False","lastTransitionTime":"2022-10-18T19:42:12Z","reason":"ParsedGroupVersions","message":"All
+        legacy kube types successfully parsed"},{"type":"NamespaceDeletionContentFailure","status":"False","lastTransitionTime":"2022-10-18T19:42:12Z","reason":"ContentDeleted","message":"All
+        content successfully deleted, may be waiting on finalization"},{"type":"NamespaceContentRemaining","status":"True","lastTransitionTime":"2022-10-18T19:42:12Z","reason":"SomeResourcesRemain","message":"Some
+        resources are remaining: pods. has 7 resource instances"},{"type":"NamespaceFinalizersRemaining","status":"False","lastTransitionTime":"2022-10-18T19:42:12Z","reason":"ContentHasNoFinalizers","message":"All
+        content-preserving finalizers finished"}]}}]}
+
+        '
+    headers:
+      audit-id:
+      - 654565de-b323-4996-9f18-09745c490733
+      cache-control:
+      - no-cache, private
+      content-type:
+      - application/json
+      date:
+      - Tue, 18 Oct 2022 19:42:32 GMT
+      transfer-encoding:
+      - chunked
+      x-kubernetes-pf-flowschema-uid:
+      - 92b2ef8a-fcc8-4f73-a2ca-c1502b7b9250
+      x-kubernetes-pf-prioritylevel-uid:
+      - a1989c01-0e94-4e3b-a68c-18561b43277e
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+      User-Agent:
+      - OpenAPI-Generator/24.2.0/python
+    method: GET
+    uri: https://test-force-rohanazuregroup-1bfbb5-4f0f44fc.hcp.westeurope.azmk8s.io/api/v1/namespaces?fieldSelector=metadata.name%3Dazure-arc
+  response:
+    body:
+      string: '{"kind":"NamespaceList","apiVersion":"v1","metadata":{"resourceVersion":"4656"},"items":[{"metadata":{"name":"azure-arc","uid":"2da97484-c129-468d-ba7e-6ba33eee09bb","resourceVersion":"4571","creationTimestamp":"2022-10-18T19:34:31Z","deletionTimestamp":"2022-10-18T19:42:05Z","labels":{"admission.policy.azure.com/ignore":"true","app.kubernetes.io/managed-by":"Helm","control-plane":"true","kubernetes.io/metadata.name":"azure-arc"},"annotations":{"meta.helm.sh/release-name":"azure-arc","meta.helm.sh/release-namespace":"default"},"managedFields":[{"manager":"helm","operation":"Update","apiVersion":"v1","time":"2022-10-18T19:34:31Z","fieldsType":"FieldsV1","fieldsV1":{"f:metadata":{"f:annotations":{".":{},"f:meta.helm.sh/release-name":{},"f:meta.helm.sh/release-namespace":{}},"f:labels":{".":{},"f:admission.policy.azure.com/ignore":{},"f:app.kubernetes.io/managed-by":{},"f:control-plane":{},"f:kubernetes.io/metadata.name":{}}}}},{"manager":"kube-controller-manager","operation":"Update","apiVersion":"v1","time":"2022-10-18T19:42:12Z","fieldsType":"FieldsV1","fieldsV1":{"f:status":{"f:conditions":{".":{},"k:{\"type\":\"NamespaceContentRemaining\"}":{".":{},"f:lastTransitionTime":{},"f:message":{},"f:reason":{},"f:status":{},"f:type":{}},"k:{\"type\":\"NamespaceDeletionContentFailure\"}":{".":{},"f:lastTransitionTime":{},"f:message":{},"f:reason":{},"f:status":{},"f:type":{}},"k:{\"type\":\"NamespaceDeletionDiscoveryFailure\"}":{".":{},"f:lastTransitionTime":{},"f:message":{},"f:reason":{},"f:status":{},"f:type":{}},"k:{\"type\":\"NamespaceDeletionGroupVersionParsingFailure\"}":{".":{},"f:lastTransitionTime":{},"f:message":{},"f:reason":{},"f:status":{},"f:type":{}},"k:{\"type\":\"NamespaceFinalizersRemaining\"}":{".":{},"f:lastTransitionTime":{},"f:message":{},"f:reason":{},"f:status":{},"f:type":{}}}}},"subresource":"status"}]},"spec":{"finalizers":["kubernetes"]},"status":{"phase":"Terminating","conditions":[{"type":"NamespaceDeletionDiscoveryFailure","status":"False","lastTransitionTime":"2022-10-18T19:42:12Z","reason":"ResourcesDiscovered","message":"All
+        resources successfully discovered"},{"type":"NamespaceDeletionGroupVersionParsingFailure","status":"False","lastTransitionTime":"2022-10-18T19:42:12Z","reason":"ParsedGroupVersions","message":"All
+        legacy kube types successfully parsed"},{"type":"NamespaceDeletionContentFailure","status":"False","lastTransitionTime":"2022-10-18T19:42:12Z","reason":"ContentDeleted","message":"All
+        content successfully deleted, may be waiting on finalization"},{"type":"NamespaceContentRemaining","status":"True","lastTransitionTime":"2022-10-18T19:42:12Z","reason":"SomeResourcesRemain","message":"Some
+        resources are remaining: pods. has 7 resource instances"},{"type":"NamespaceFinalizersRemaining","status":"False","lastTransitionTime":"2022-10-18T19:42:12Z","reason":"ContentHasNoFinalizers","message":"All
+        content-preserving finalizers finished"}]}}]}
+
+        '
+    headers:
+      audit-id:
+      - f2e212d3-6f2b-44b2-b5c4-7f919ac081f4
+      cache-control:
+      - no-cache, private
+      content-type:
+      - application/json
+      date:
+      - Tue, 18 Oct 2022 19:42:37 GMT
+      transfer-encoding:
+      - chunked
+      x-kubernetes-pf-flowschema-uid:
+      - 92b2ef8a-fcc8-4f73-a2ca-c1502b7b9250
+      x-kubernetes-pf-prioritylevel-uid:
+      - a1989c01-0e94-4e3b-a68c-18561b43277e
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+      User-Agent:
+      - OpenAPI-Generator/24.2.0/python
+    method: GET
+    uri: https://test-force-rohanazuregroup-1bfbb5-4f0f44fc.hcp.westeurope.azmk8s.io/api/v1/namespaces?fieldSelector=metadata.name%3Dazure-arc
+  response:
+    body:
+      string: '{"kind":"NamespaceList","apiVersion":"v1","metadata":{"resourceVersion":"4683"},"items":[]}
+
+        '
+    headers:
+      audit-id:
+      - 543c4065-f830-4674-9e0e-44b0b06c24dc
+      cache-control:
+      - no-cache, private
+      content-length:
+      - '92'
+      content-type:
+      - application/json
+      date:
+      - Tue, 18 Oct 2022 19:42:43 GMT
+      x-kubernetes-pf-flowschema-uid:
+      - 92b2ef8a-fcc8-4f73-a2ca-c1502b7b9250
+      x-kubernetes-pf-prioritylevel-uid:
+      - a1989c01-0e94-4e3b-a68c-18561b43277e
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -g -n -y
+      User-Agent:
+      - AZURECLI/2.41.0 (MSI) azsdk-python-azure-mgmt-containerservice/20.3.0 Python/3.7.7
+        (Windows-10-10.0.22621-SP0)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rohanazuregroup/providers/Microsoft.ContainerService/managedClusters/test-force-delete000001?api-version=2022-07-01
+  response:
+    body:
+      string: ''
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/westeurope/operations/24629577-7711-4ef3-857f-1b28868ca8c2?api-version=2017-08-31
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Tue, 18 Oct 2022 19:42:47 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/westeurope/operationresults/24629577-7711-4ef3-857f-1b28868ca8c2?api-version=2017-08-31
+      pragma:
+      - no-cache
+      server:
+      - nginx
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14999'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -y
+      User-Agent:
+      - AZURECLI/2.41.0 (MSI) azsdk-python-azure-mgmt-containerservice/20.3.0 Python/3.7.7
+        (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/westeurope/operations/24629577-7711-4ef3-857f-1b28868ca8c2?api-version=2017-08-31
+  response:
+    body:
+      string: "{\n  \"name\": \"77956224-1177-f34e-857f-1b28868ca8c2\",\n  \"status\":
+        \"InProgress\",\n  \"startTime\": \"2022-10-18T19:42:47.4537864Z\"\n }"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '126'
+      content-type:
+      - application/json
+      date:
+      - Tue, 18 Oct 2022 19:43:17 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - nginx
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -y
+      User-Agent:
+      - AZURECLI/2.41.0 (MSI) azsdk-python-azure-mgmt-containerservice/20.3.0 Python/3.7.7
+        (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/westeurope/operations/24629577-7711-4ef3-857f-1b28868ca8c2?api-version=2017-08-31
+  response:
+    body:
+      string: "{\n  \"name\": \"77956224-1177-f34e-857f-1b28868ca8c2\",\n  \"status\":
+        \"InProgress\",\n  \"startTime\": \"2022-10-18T19:42:47.4537864Z\"\n }"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '126'
+      content-type:
+      - application/json
+      date:
+      - Tue, 18 Oct 2022 19:43:47 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - nginx
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -y
+      User-Agent:
+      - AZURECLI/2.41.0 (MSI) azsdk-python-azure-mgmt-containerservice/20.3.0 Python/3.7.7
+        (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/westeurope/operations/24629577-7711-4ef3-857f-1b28868ca8c2?api-version=2017-08-31
+  response:
+    body:
+      string: "{\n  \"name\": \"77956224-1177-f34e-857f-1b28868ca8c2\",\n  \"status\":
+        \"InProgress\",\n  \"startTime\": \"2022-10-18T19:42:47.4537864Z\"\n }"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '126'
+      content-type:
+      - application/json
+      date:
+      - Tue, 18 Oct 2022 19:44:18 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - nginx
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -y
+      User-Agent:
+      - AZURECLI/2.41.0 (MSI) azsdk-python-azure-mgmt-containerservice/20.3.0 Python/3.7.7
+        (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/westeurope/operations/24629577-7711-4ef3-857f-1b28868ca8c2?api-version=2017-08-31
+  response:
+    body:
+      string: "{\n  \"name\": \"77956224-1177-f34e-857f-1b28868ca8c2\",\n  \"status\":
+        \"InProgress\",\n  \"startTime\": \"2022-10-18T19:42:47.4537864Z\"\n }"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '126'
+      content-type:
+      - application/json
+      date:
+      - Tue, 18 Oct 2022 19:44:47 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - nginx
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -y
+      User-Agent:
+      - AZURECLI/2.41.0 (MSI) azsdk-python-azure-mgmt-containerservice/20.3.0 Python/3.7.7
+        (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/westeurope/operations/24629577-7711-4ef3-857f-1b28868ca8c2?api-version=2017-08-31
+  response:
+    body:
+      string: "{\n  \"name\": \"77956224-1177-f34e-857f-1b28868ca8c2\",\n  \"status\":
+        \"InProgress\",\n  \"startTime\": \"2022-10-18T19:42:47.4537864Z\"\n }"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '126'
+      content-type:
+      - application/json
+      date:
+      - Tue, 18 Oct 2022 19:45:18 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - nginx
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -y
+      User-Agent:
+      - AZURECLI/2.41.0 (MSI) azsdk-python-azure-mgmt-containerservice/20.3.0 Python/3.7.7
+        (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/westeurope/operations/24629577-7711-4ef3-857f-1b28868ca8c2?api-version=2017-08-31
+  response:
+    body:
+      string: "{\n  \"name\": \"77956224-1177-f34e-857f-1b28868ca8c2\",\n  \"status\":
+        \"InProgress\",\n  \"startTime\": \"2022-10-18T19:42:47.4537864Z\"\n }"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '126'
+      content-type:
+      - application/json
+      date:
+      - Tue, 18 Oct 2022 19:45:49 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - nginx
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -y
+      User-Agent:
+      - AZURECLI/2.41.0 (MSI) azsdk-python-azure-mgmt-containerservice/20.3.0 Python/3.7.7
+        (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/westeurope/operations/24629577-7711-4ef3-857f-1b28868ca8c2?api-version=2017-08-31
+  response:
+    body:
+      string: "{\n  \"name\": \"77956224-1177-f34e-857f-1b28868ca8c2\",\n  \"status\":
+        \"InProgress\",\n  \"startTime\": \"2022-10-18T19:42:47.4537864Z\"\n }"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '126'
+      content-type:
+      - application/json
+      date:
+      - Tue, 18 Oct 2022 19:46:20 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - nginx
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -y
+      User-Agent:
+      - AZURECLI/2.41.0 (MSI) azsdk-python-azure-mgmt-containerservice/20.3.0 Python/3.7.7
+        (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/westeurope/operations/24629577-7711-4ef3-857f-1b28868ca8c2?api-version=2017-08-31
+  response:
+    body:
+      string: "{\n  \"name\": \"77956224-1177-f34e-857f-1b28868ca8c2\",\n  \"status\":
+        \"InProgress\",\n  \"startTime\": \"2022-10-18T19:42:47.4537864Z\"\n }"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '126'
+      content-type:
+      - application/json
+      date:
+      - Tue, 18 Oct 2022 19:46:49 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - nginx
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -y
+      User-Agent:
+      - AZURECLI/2.41.0 (MSI) azsdk-python-azure-mgmt-containerservice/20.3.0 Python/3.7.7
+        (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/westeurope/operations/24629577-7711-4ef3-857f-1b28868ca8c2?api-version=2017-08-31
+  response:
+    body:
+      string: "{\n  \"name\": \"77956224-1177-f34e-857f-1b28868ca8c2\",\n  \"status\":
+        \"InProgress\",\n  \"startTime\": \"2022-10-18T19:42:47.4537864Z\"\n }"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '126'
+      content-type:
+      - application/json
+      date:
+      - Tue, 18 Oct 2022 19:47:20 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - nginx
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -y
+      User-Agent:
+      - AZURECLI/2.41.0 (MSI) azsdk-python-azure-mgmt-containerservice/20.3.0 Python/3.7.7
+        (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/westeurope/operations/24629577-7711-4ef3-857f-1b28868ca8c2?api-version=2017-08-31
+  response:
+    body:
+      string: "{\n  \"name\": \"77956224-1177-f34e-857f-1b28868ca8c2\",\n  \"status\":
+        \"InProgress\",\n  \"startTime\": \"2022-10-18T19:42:47.4537864Z\"\n }"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '126'
+      content-type:
+      - application/json
+      date:
+      - Tue, 18 Oct 2022 19:47:50 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - nginx
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -y
+      User-Agent:
+      - AZURECLI/2.41.0 (MSI) azsdk-python-azure-mgmt-containerservice/20.3.0 Python/3.7.7
+        (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/westeurope/operations/24629577-7711-4ef3-857f-1b28868ca8c2?api-version=2017-08-31
+  response:
+    body:
+      string: "{\n  \"name\": \"77956224-1177-f34e-857f-1b28868ca8c2\",\n  \"status\":
+        \"InProgress\",\n  \"startTime\": \"2022-10-18T19:42:47.4537864Z\"\n }"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '126'
+      content-type:
+      - application/json
+      date:
+      - Tue, 18 Oct 2022 19:48:20 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - nginx
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -y
+      User-Agent:
+      - AZURECLI/2.41.0 (MSI) azsdk-python-azure-mgmt-containerservice/20.3.0 Python/3.7.7
+        (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/westeurope/operations/24629577-7711-4ef3-857f-1b28868ca8c2?api-version=2017-08-31
+  response:
+    body:
+      string: "{\n  \"name\": \"77956224-1177-f34e-857f-1b28868ca8c2\",\n  \"status\":
+        \"InProgress\",\n  \"startTime\": \"2022-10-18T19:42:47.4537864Z\"\n }"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '126'
+      content-type:
+      - application/json
+      date:
+      - Tue, 18 Oct 2022 19:48:51 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - nginx
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -y
+      User-Agent:
+      - AZURECLI/2.41.0 (MSI) azsdk-python-azure-mgmt-containerservice/20.3.0 Python/3.7.7
+        (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/westeurope/operations/24629577-7711-4ef3-857f-1b28868ca8c2?api-version=2017-08-31
+  response:
+    body:
+      string: "{\n  \"name\": \"77956224-1177-f34e-857f-1b28868ca8c2\",\n  \"status\":
+        \"InProgress\",\n  \"startTime\": \"2022-10-18T19:42:47.4537864Z\"\n }"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '126'
+      content-type:
+      - application/json
+      date:
+      - Tue, 18 Oct 2022 19:49:22 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - nginx
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -y
+      User-Agent:
+      - AZURECLI/2.41.0 (MSI) azsdk-python-azure-mgmt-containerservice/20.3.0 Python/3.7.7
+        (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/westeurope/operations/24629577-7711-4ef3-857f-1b28868ca8c2?api-version=2017-08-31
+  response:
+    body:
+      string: "{\n  \"name\": \"77956224-1177-f34e-857f-1b28868ca8c2\",\n  \"status\":
+        \"InProgress\",\n  \"startTime\": \"2022-10-18T19:42:47.4537864Z\"\n }"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '126'
+      content-type:
+      - application/json
+      date:
+      - Tue, 18 Oct 2022 19:49:52 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - nginx
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -y
+      User-Agent:
+      - AZURECLI/2.41.0 (MSI) azsdk-python-azure-mgmt-containerservice/20.3.0 Python/3.7.7
+        (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/westeurope/operations/24629577-7711-4ef3-857f-1b28868ca8c2?api-version=2017-08-31
+  response:
+    body:
+      string: "{\n  \"name\": \"77956224-1177-f34e-857f-1b28868ca8c2\",\n  \"status\":
+        \"Succeeded\",\n  \"startTime\": \"2022-10-18T19:42:47.4537864Z\",\n  \"endTime\":
+        \"2022-10-18T19:50:04.8689661Z\"\n }"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '170'
+      content-type:
+      - application/json
+      date:
+      - Tue, 18 Oct 2022 19:50:22 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - nginx
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+version: 1
