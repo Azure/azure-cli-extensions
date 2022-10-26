@@ -4639,6 +4639,35 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         # fail on incomplete mc object (no network profile)
         with self.assertRaises(UnknownError):
             dec_9.update_load_balancer_profile(mc_9)
+    def test_update_outbound_type(self):
+        # default value in `aks_update`
+        dec_1 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "outbound_type": "managedNATGateway",
+                "nat_gateway_managed_outbound_ip_count": 2,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_1 = self.models.ManagedCluster(
+            location="test_location",
+            network_profile=self.models.ContainerServiceNetworkProfile(),
+        )
+        dec_1.context.attach_mc(mc_1)
+        # fail on passing the wrong mc object
+        with self.assertRaises(CLIInternalError):
+            dec_1.update_outbound_type_in_network_profile(None)
+        dec_mc_1 = dec_1.update_outbound_type_in_network_profile(mc_1)
+
+        ground_truth_mc_1 = self.models.ManagedCluster(
+            location="test_location",
+            network_profile=self.models.ContainerServiceNetworkProfile(),
+        )
+        ground_truth_mc_1.network_profile.outbound_type = "managedNATGateway"
+        self.assertEqual(dec_mc_1, ground_truth_mc_1)
+
+        
 
     def test_update_api_server_access_profile(self):
         dec_1 = AKSPreviewManagedClusterUpdateDecorator(

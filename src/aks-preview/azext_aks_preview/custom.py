@@ -768,6 +768,7 @@ def aks_update(
     # managed cluster
     http_proxy_config=None,
     load_balancer_managed_outbound_ipv6_count=None,
+    outbound_type=None,
     enable_pod_security_policy=False,
     disable_pod_security_policy=False,
     enable_pod_identity=False,
