@@ -32,12 +32,10 @@ def start_ssh_connection(op_info, delete_keys, delete_cert):
         # Redirecting stderr:
         # 1. Read SSH logs to determine if authentication was successful so credentials can be deleted
         # 2. Read SSHProxy error messages to print friendly error messages for well known errors.
-        # On Linux when connecting to a local user on a host with a banner, output gets messed up if stderr redirected.
+        # When connecting to a local user on a host with a banner, output gets messed up if stderr redirected.
         # If user expects logs to be printed, do not redirect logs. In some ocasions output gets messed up.
-        is_local_user_on_linux = (platform.system() != 'Windows' and not delete_cert)
         redirect_stderr = set(['-v', '-vv', '-vvv']).isdisjoint(ssh_arg_list) and \
-            (op_info.is_arc or delete_cert or op_info.delete_credentials) and \
-            not is_local_user_on_linux
+            (delete_cert or op_info.delete_credentials)
 
         if redirect_stderr:
             ssh_arg_list = ['-v'] + ssh_arg_list
