@@ -11,6 +11,9 @@
 from azure.cli.core.aaz import *
 
 
+@register_command(
+    "automanage configuration-profile version create",
+)
 class Create(AAZCommand):
     """Create a configuration profile version
     """

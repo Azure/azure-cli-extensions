@@ -11,6 +11,9 @@
 from azure.cli.core.aaz import *
 
 
+@register_command(
+    "automanage configuration-profile version update",
+)
 class Update(AAZCommand):
     """Update a configuration profile version
     """

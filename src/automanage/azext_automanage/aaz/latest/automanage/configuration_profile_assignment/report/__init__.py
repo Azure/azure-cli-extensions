@@ -9,7 +9,9 @@
 # flake8: noqa
 
 from .__cmd_group import *
-from ._list_for_arc import *
-from ._list_for_cluster_and_vm import *
-from ._show_for_arc import *
-from ._show_for_cluster_and_vm import *
+from ._list_arc import *
+from ._list_cluster import *
+from ._list_vm import *
+from ._show_arc import *
+from ._show_cluster import *
+from ._show_vm import *

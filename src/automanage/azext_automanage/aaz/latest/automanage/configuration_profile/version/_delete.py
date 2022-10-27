@@ -11,6 +11,10 @@
 from azure.cli.core.aaz import *
 
 
+@register_command(
+    "automanage configuration-profile version delete",
+    confirmation="Are you sure you want to perform this operation?",
+)
 class Delete(AAZCommand):
     """Delete a configuration profile version
     """

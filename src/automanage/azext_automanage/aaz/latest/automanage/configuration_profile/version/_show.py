@@ -11,6 +11,9 @@
 from azure.cli.core.aaz import *
 
 
+@register_command(
+    "automanage configuration-profile version show",
+)
 class Show(AAZCommand):
     """Get information about a configuration profile version
     """

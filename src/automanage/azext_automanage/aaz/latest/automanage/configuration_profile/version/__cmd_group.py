@@ -11,6 +11,9 @@
 from azure.cli.core.aaz import *
 
 
+@register_command_group(
+    "automanage configuration-profile version",
+)
 class __CMDGroup(AAZCommandGroup):
     """Manage configuration profile version
     """

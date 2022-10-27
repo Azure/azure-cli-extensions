@@ -12,16 +12,17 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "automanage configuration-profile version list",
+    "automanage configuration-profile-assignment report list-arc",
+    confirmation="",
 )
-class List(AAZCommand):
-    """List a list of configuration profile version for a configuration profile 
+class ListArc(AAZCommand):
+    """List a list of reports within a given configuration profile assignment
     """
 
     _aaz_info = {
         "version": "2022-05-04",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.automanage/configurationprofiles/{}/versions", "2022-05-04"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/machines/{}/providers/microsoft.automanage/configurationprofileassignments/{}/reports", "2022-05-04"],
         ]
     }
 
@@ -41,9 +42,14 @@ class List(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.configuration_profile_name = AAZStrArg(
-            options=["--configuration-profile-name"],
-            help="Name of the configuration profile.",
+        _args_schema.configuration_profile_assignment_name = AAZStrArg(
+            options=["--assignment-name", "--configuration-profile-assignment-name"],
+            help="The configuration profile assignment name.",
+            required=True,
+        )
+        _args_schema.machine_name = AAZStrArg(
+            options=["--machine-name"],
+            help="The name of the Arc machine.",
             required=True,
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
@@ -53,7 +59,7 @@ class List(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        self.ConfigurationProfilesVersionsListChildResources(ctx=self.ctx)()
+        self.HCRPReportsListByConfigurationProfileAssignments(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -68,7 +74,7 @@ class List(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance.value, client_flatten=True)
         return result
 
-    class ConfigurationProfilesVersionsListChildResources(AAZHttpOperation):
+    class HCRPReportsListByConfigurationProfileAssignments(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -82,7 +88,7 @@ class List(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Automanage/configurationProfiles/{configurationProfileName}/versions",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HybridCompute/machines/{machineName}/providers/Microsoft.Automanage/configurationProfileAssignments/{configurationProfileAssignmentName}/reports",
                 **self.url_parameters
             )
 
@@ -98,7 +104,11 @@ class List(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "configurationProfileName", self.ctx.args.configuration_profile_name,
+                    "configurationProfileAssignmentName", self.ctx.args.configuration_profile_assignment_name,
+                    required=True,
+                ),
+                **self.serialize_url_param(
+                    "machineName", self.ctx.args.machine_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -158,24 +168,72 @@ class List(AAZCommand):
             _element.id = AAZStrType(
                 flags={"read_only": True},
             )
-            _element.location = AAZStrType(
-                flags={"required": True},
-            )
             _element.name = AAZStrType(
                 flags={"read_only": True},
             )
-            _element.properties = AAZObjectType()
+            _element.properties = AAZObjectType(
+                flags={"client_flatten": True},
+            )
             _element.system_data = AAZObjectType(
                 serialized_name="systemData",
                 flags={"read_only": True},
             )
-            _element.tags = AAZDictType()
             _element.type = AAZStrType(
                 flags={"read_only": True},
             )
 
             properties = cls._schema_on_200.value.Element.properties
-            properties.configuration = AAZFreeFormDictType()
+            properties.configuration_profile = AAZStrType(
+                serialized_name="configurationProfile",
+                flags={"read_only": True},
+            )
+            properties.duration = AAZStrType(
+                flags={"read_only": True},
+            )
+            properties.end_time = AAZStrType(
+                serialized_name="endTime",
+            )
+            properties.error = AAZObjectType()
+            _build_schema_error_detail_read(properties.error)
+            properties.last_modified_time = AAZStrType(
+                serialized_name="lastModifiedTime",
+                flags={"read_only": True},
+            )
+            properties.report_format_version = AAZStrType(
+                serialized_name="reportFormatVersion",
+                flags={"read_only": True},
+            )
+            properties.resources = AAZListType(
+                flags={"read_only": True},
+            )
+            properties.start_time = AAZStrType(
+                serialized_name="startTime",
+            )
+            properties.status = AAZStrType(
+                flags={"read_only": True},
+            )
+            properties.type = AAZStrType(
+                flags={"read_only": True},
+            )
+
+            resources = cls._schema_on_200.value.Element.properties.resources
+            resources.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element.properties.resources.Element
+            _element.error = AAZObjectType()
+            _build_schema_error_detail_read(_element.error)
+            _element.id = AAZStrType(
+                flags={"read_only": True},
+            )
+            _element.name = AAZStrType(
+                flags={"read_only": True},
+            )
+            _element.status = AAZStrType(
+                flags={"read_only": True},
+            )
+            _element.type = AAZStrType(
+                flags={"read_only": True},
+            )
 
             system_data = cls._schema_on_200.value.Element.system_data
             system_data.created_at = AAZStrType(
@@ -197,10 +255,59 @@ class List(AAZCommand):
                 serialized_name="lastModifiedByType",
             )
 
-            tags = cls._schema_on_200.value.Element.tags
-            tags.Element = AAZStrType()
-
             return cls._schema_on_200
 
 
-__all__ = ["List"]
+_schema_error_detail_read = None
+
+
+def _build_schema_error_detail_read(_schema):
+    global _schema_error_detail_read
+    if _schema_error_detail_read is not None:
+        _schema.additional_info = _schema_error_detail_read.additional_info
+        _schema.code = _schema_error_detail_read.code
+        _schema.details = _schema_error_detail_read.details
+        _schema.message = _schema_error_detail_read.message
+        _schema.target = _schema_error_detail_read.target
+        return
+
+    _schema_error_detail_read = AAZObjectType()
+
+    error_detail_read = _schema_error_detail_read
+    error_detail_read.additional_info = AAZListType(
+        serialized_name="additionalInfo",
+        flags={"read_only": True},
+    )
+    error_detail_read.code = AAZStrType(
+        flags={"read_only": True},
+    )
+    error_detail_read.details = AAZListType(
+        flags={"read_only": True},
+    )
+    error_detail_read.message = AAZStrType(
+        flags={"read_only": True},
+    )
+    error_detail_read.target = AAZStrType(
+        flags={"read_only": True},
+    )
+
+    additional_info = _schema_error_detail_read.additional_info
+    additional_info.Element = AAZObjectType()
+
+    _element = _schema_error_detail_read.additional_info.Element
+    _element.type = AAZStrType(
+        flags={"read_only": True},
+    )
+
+    details = _schema_error_detail_read.details
+    details.Element = AAZObjectType()
+    _build_schema_error_detail_read(details.Element)
+
+    _schema.additional_info = _schema_error_detail_read.additional_info
+    _schema.code = _schema_error_detail_read.code
+    _schema.details = _schema_error_detail_read.details
+    _schema.message = _schema_error_detail_read.message
+    _schema.target = _schema_error_detail_read.target
+
+
+__all__ = ["ListArc"]

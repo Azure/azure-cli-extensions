@@ -12,16 +12,16 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "automanage configuration-profile-assignment report list-for-cluster-and-vm",
+    "automanage configuration-profile-assignment report list-vm",
+    confirmation="",
 )
-class ListForClusterAndVm(AAZCommand):
-    """List a list of reports within a given configuration profile assignment
+class ListVm(AAZCommand):
+    """List a list of VM reports within a given configuration profile assignment
     """
 
     _aaz_info = {
         "version": "2022-05-04",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.azurestackhci/clusters/{}/providers/microsoft.automanage/configurationprofileassignments/{}/reports", "2022-05-04"],
             ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.compute/virtualmachines/{}/providers/microsoft.automanage/configurationprofileassignments/{}/reports", "2022-05-04"],
         ]
     }
@@ -42,12 +42,8 @@ class ListForClusterAndVm(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.cluster_name = AAZStrArg(
-            options=["--cluster-name"],
-            help="The name of the Arc machine.",
-        )
         _args_schema.configuration_profile_assignment_name = AAZStrArg(
-            options=["--assignment-name", "--configuration-profile-assignment-name"],
+            options=["--configuration-profile-assignment-name"],
             help="The configuration profile assignment name.",
             required=True,
         )
@@ -57,17 +53,13 @@ class ListForClusterAndVm(AAZCommand):
         _args_schema.vm_name = AAZStrArg(
             options=["--vm-name"],
             help="The name of the virtual machine.",
+            required=True,
         )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        condition_0 = has_value(self.ctx.args.configuration_profile_assignment_name) and has_value(self.ctx.args.resource_group) and has_value(self.ctx.subscription_id) and has_value(self.ctx.args.vm_name)
-        condition_1 = has_value(self.ctx.args.cluster_name) and has_value(self.ctx.args.configuration_profile_assignment_name) and has_value(self.ctx.args.resource_group) and has_value(self.ctx.subscription_id)
-        if condition_0:
-            self.ReportsListByConfigurationProfileAssignments(ctx=self.ctx)()
-        if condition_1:
-            self.HCIReportsListByConfigurationProfileAssignments(ctx=self.ctx)()
+        self.VMreportsListByConfigurationProfileAssignments(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -82,7 +74,7 @@ class ListForClusterAndVm(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance.value, client_flatten=True)
         return result
 
-    class ReportsListByConfigurationProfileAssignments(AAZHttpOperation):
+    class VMreportsListByConfigurationProfileAssignments(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -125,189 +117,6 @@ class ListForClusterAndVm(AAZCommand):
                 ),
                 **self.serialize_url_param(
                     "vmName", self.ctx.args.vm_name,
-                    required=True,
-                ),
-            }
-            return parameters
-
-        @property
-        def query_parameters(self):
-            parameters = {
-                **self.serialize_query_param(
-                    "api-version", "2022-05-04",
-                    required=True,
-                ),
-            }
-            return parameters
-
-        @property
-        def header_parameters(self):
-            parameters = {
-                **self.serialize_header_param(
-                    "Accept", "application/json",
-                ),
-            }
-            return parameters
-
-        def on_200(self, session):
-            data = self.deserialize_http_content(session)
-            self.ctx.set_var(
-                "instance",
-                data,
-                schema_builder=self._build_schema_on_200
-            )
-
-        _schema_on_200 = None
-
-        @classmethod
-        def _build_schema_on_200(cls):
-            if cls._schema_on_200 is not None:
-                return cls._schema_on_200
-
-            cls._schema_on_200 = AAZObjectType()
-
-            _schema_on_200 = cls._schema_on_200
-            _schema_on_200.value = AAZListType()
-
-            value = cls._schema_on_200.value
-            value.Element = AAZObjectType()
-
-            _element = cls._schema_on_200.value.Element
-            _element.id = AAZStrType(
-                flags={"read_only": True},
-            )
-            _element.name = AAZStrType(
-                flags={"read_only": True},
-            )
-            _element.properties = AAZObjectType(
-                flags={"client_flatten": True},
-            )
-            _element.system_data = AAZObjectType(
-                serialized_name="systemData",
-                flags={"read_only": True},
-            )
-            _element.type = AAZStrType(
-                flags={"read_only": True},
-            )
-
-            properties = cls._schema_on_200.value.Element.properties
-            properties.configuration_profile = AAZStrType(
-                serialized_name="configurationProfile",
-                flags={"read_only": True},
-            )
-            properties.duration = AAZStrType(
-                flags={"read_only": True},
-            )
-            properties.end_time = AAZStrType(
-                serialized_name="endTime",
-            )
-            properties.error = AAZObjectType()
-            _build_schema_error_detail_read(properties.error)
-            properties.last_modified_time = AAZStrType(
-                serialized_name="lastModifiedTime",
-                flags={"read_only": True},
-            )
-            properties.report_format_version = AAZStrType(
-                serialized_name="reportFormatVersion",
-                flags={"read_only": True},
-            )
-            properties.resources = AAZListType(
-                flags={"read_only": True},
-            )
-            properties.start_time = AAZStrType(
-                serialized_name="startTime",
-            )
-            properties.status = AAZStrType(
-                flags={"read_only": True},
-            )
-            properties.type = AAZStrType(
-                flags={"read_only": True},
-            )
-
-            resources = cls._schema_on_200.value.Element.properties.resources
-            resources.Element = AAZObjectType()
-
-            _element = cls._schema_on_200.value.Element.properties.resources.Element
-            _element.error = AAZObjectType()
-            _build_schema_error_detail_read(_element.error)
-            _element.id = AAZStrType(
-                flags={"read_only": True},
-            )
-            _element.name = AAZStrType(
-                flags={"read_only": True},
-            )
-            _element.status = AAZStrType(
-                flags={"read_only": True},
-            )
-            _element.type = AAZStrType(
-                flags={"read_only": True},
-            )
-
-            system_data = cls._schema_on_200.value.Element.system_data
-            system_data.created_at = AAZStrType(
-                serialized_name="createdAt",
-            )
-            system_data.created_by = AAZStrType(
-                serialized_name="createdBy",
-            )
-            system_data.created_by_type = AAZStrType(
-                serialized_name="createdByType",
-            )
-            system_data.last_modified_at = AAZStrType(
-                serialized_name="lastModifiedAt",
-            )
-            system_data.last_modified_by = AAZStrType(
-                serialized_name="lastModifiedBy",
-            )
-            system_data.last_modified_by_type = AAZStrType(
-                serialized_name="lastModifiedByType",
-            )
-
-            return cls._schema_on_200
-
-    class HCIReportsListByConfigurationProfileAssignments(AAZHttpOperation):
-        CLIENT_TYPE = "MgmtClient"
-
-        def __call__(self, *args, **kwargs):
-            request = self.make_request()
-            session = self.client.send_request(request=request, stream=False, **kwargs)
-            if session.http_response.status_code in [200]:
-                return self.on_200(session)
-
-            return self.on_error(session.http_response)
-
-        @property
-        def url(self):
-            return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AzureStackHci/clusters/{clusterName}/providers/Microsoft.Automanage/configurationProfileAssignments/{configurationProfileAssignmentName}/reports",
-                **self.url_parameters
-            )
-
-        @property
-        def method(self):
-            return "GET"
-
-        @property
-        def error_format(self):
-            return "MgmtErrorFormat"
-
-        @property
-        def url_parameters(self):
-            parameters = {
-                **self.serialize_url_param(
-                    "clusterName", self.ctx.args.cluster_name,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "configurationProfileAssignmentName", self.ctx.args.configuration_profile_assignment_name,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "resourceGroupName", self.ctx.args.resource_group,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "subscriptionId", self.ctx.subscription_id,
                     required=True,
                 ),
             }
@@ -501,4 +310,4 @@ def _build_schema_error_detail_read(_schema):
     _schema.target = _schema_error_detail_read.target
 
 
-__all__ = ["ListForClusterAndVm"]
+__all__ = ["ListVm"]

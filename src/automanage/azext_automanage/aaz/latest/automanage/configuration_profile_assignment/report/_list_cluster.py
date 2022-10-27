@@ -12,16 +12,17 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "automanage configuration-profile-assignment report list-for-arc",
+    "automanage configuration-profile-assignment report list-cluster",
+    confirmation="",
 )
-class ListForArc(AAZCommand):
-    """List a list of reports within a given configuration profile assignment
+class ListCluster(AAZCommand):
+    """List a list of HCI reports within a given configuration profile assignment
     """
 
     _aaz_info = {
         "version": "2022-05-04",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/machines/{}/providers/microsoft.automanage/configurationprofileassignments/{}/reports", "2022-05-04"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.azurestackhci/clusters/{}/providers/microsoft.automanage/configurationprofileassignments/{}/reports", "2022-05-04"],
         ]
     }
 
@@ -41,14 +42,14 @@ class ListForArc(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.configuration_profile_assignment_name = AAZStrArg(
-            options=["--assignment-name", "--configuration-profile-assignment-name"],
-            help="The configuration profile assignment name.",
+        _args_schema.cluster_name = AAZStrArg(
+            options=["--cluster-name"],
+            help="The name of the Arc machine.",
             required=True,
         )
-        _args_schema.machine_name = AAZStrArg(
-            options=["--machine-name"],
-            help="The name of the Arc machine.",
+        _args_schema.configuration_profile_assignment_name = AAZStrArg(
+            options=["--configuration-profile-assignment-name"],
+            help="The configuration profile assignment name.",
             required=True,
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
@@ -58,7 +59,7 @@ class ListForArc(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        self.HCRPReportsListByConfigurationProfileAssignments(ctx=self.ctx)()
+        self.HCIReportsListByConfigurationProfileAssignments(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -73,7 +74,7 @@ class ListForArc(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance.value, client_flatten=True)
         return result
 
-    class HCRPReportsListByConfigurationProfileAssignments(AAZHttpOperation):
+    class HCIReportsListByConfigurationProfileAssignments(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -87,7 +88,7 @@ class ListForArc(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HybridCompute/machines/{machineName}/providers/Microsoft.Automanage/configurationProfileAssignments/{configurationProfileAssignmentName}/reports",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AzureStackHci/clusters/{clusterName}/providers/Microsoft.Automanage/configurationProfileAssignments/{configurationProfileAssignmentName}/reports",
                 **self.url_parameters
             )
 
@@ -103,11 +104,11 @@ class ListForArc(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "configurationProfileAssignmentName", self.ctx.args.configuration_profile_assignment_name,
+                    "clusterName", self.ctx.args.cluster_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "machineName", self.ctx.args.machine_name,
+                    "configurationProfileAssignmentName", self.ctx.args.configuration_profile_assignment_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -309,4 +310,4 @@ def _build_schema_error_detail_read(_schema):
     _schema.target = _schema_error_detail_read.target
 
 
-__all__ = ["ListForArc"]
+__all__ = ["ListCluster"]

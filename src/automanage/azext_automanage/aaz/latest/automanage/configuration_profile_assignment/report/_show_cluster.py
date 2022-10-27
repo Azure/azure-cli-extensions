@@ -12,16 +12,17 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "automanage configuration-profile-assignment report show-for-arc",
+    "automanage configuration-profile-assignment report show-cluster",
+    confirmation="",
 )
-class ShowForArc(AAZCommand):
-    """Get information about a report associated with a configuration profile assignment run
+class ShowCluster(AAZCommand):
+    """Get information about a HCI report associated with a configuration profile assignment run
     """
 
     _aaz_info = {
         "version": "2022-05-04",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/machines/{}/providers/microsoft.automanage/configurationprofileassignments/{}/reports/{}", "2022-05-04"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.azurestackhci/clusters/{}/providers/microsoft.automanage/configurationprofileassignments/{}/reports/{}", "2022-05-04"],
         ]
     }
 
@@ -41,17 +42,17 @@ class ShowForArc(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.configuration_profile_assignment_name = AAZStrArg(
-            options=["--assignment-name", "--configuration-profile-assignment-name"],
-            help="The configuration profile assignment name.",
-            required=True,
-            id_part="child_name_1",
-        )
-        _args_schema.machine_name = AAZStrArg(
-            options=["--machine-name"],
+        _args_schema.cluster_name = AAZStrArg(
+            options=["--cluster-name"],
             help="The name of the Arc machine.",
             required=True,
             id_part="name",
+        )
+        _args_schema.configuration_profile_assignment_name = AAZStrArg(
+            options=["--configuration-profile-assignment-name"],
+            help="The configuration profile assignment name.",
+            required=True,
+            id_part="child_name_1",
         )
         _args_schema.report_name = AAZStrArg(
             options=["-n", "--name", "--report-name"],
@@ -66,7 +67,7 @@ class ShowForArc(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        self.HCRPReportsGet(ctx=self.ctx)()
+        self.HCIReportsGet(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -81,7 +82,7 @@ class ShowForArc(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class HCRPReportsGet(AAZHttpOperation):
+    class HCIReportsGet(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -95,7 +96,7 @@ class ShowForArc(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HybridCompute/machines/{machineName}/providers/Microsoft.Automanage/configurationProfileAssignments/{configurationProfileAssignmentName}/reports/{reportName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AzureStackHci/clusters/{clusterName}/providers/Microsoft.Automanage/configurationProfileAssignments/{configurationProfileAssignmentName}/reports/{reportName}",
                 **self.url_parameters
             )
 
@@ -111,11 +112,11 @@ class ShowForArc(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "configurationProfileAssignmentName", self.ctx.args.configuration_profile_assignment_name,
+                    "clusterName", self.ctx.args.cluster_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "machineName", self.ctx.args.machine_name,
+                    "configurationProfileAssignmentName", self.ctx.args.configuration_profile_assignment_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -315,4 +316,4 @@ def _build_schema_error_detail_read(_schema):
     _schema.target = _schema_error_detail_read.target
 
 
-__all__ = ["ShowForArc"]
+__all__ = ["ShowCluster"]
