@@ -54,11 +54,11 @@ class Update(AAZCommand):
         _args_schema.identity_type = AAZStrArg(
             options=["--identity-type"],
             arg_group="Optional Parameters",
-            help="Type of managed service identity (where both SystemAssigned and UserAssigned types are allowed).",
+            help="Type of managed service identity. Accepted values: \"None\", \"SystemAssigned\", \"UserAssigned\" \"SystemAssigned,UserAssigned\"",
             enum={"None": "None", "SystemAssigned": "SystemAssigned", "SystemAssigned,UserAssigned": "SystemAssigned,UserAssigned", "UserAssigned": "UserAssigned"},
         )
-        _args_schema.user_assigned = AAZDictArg(
-            options=["--user-assigned"],
+        _args_schema.user_assigned_identities = AAZDictArg(
+            options=["--user-assigned-identities"],
             arg_group="Optional Parameters",
             help="The set of user assigned identities associated with the resource. The userAssignedIdentities dictionary keys will be ARM resource ids in the form: '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identityName}. The dictionary values can be empty objects ({}) in requests.",
             nullable=True,
@@ -98,8 +98,8 @@ class Update(AAZCommand):
             nullable=True,
         )
 
-        user_assigned = cls._args_schema.user_assigned
-        user_assigned.Element = AAZObjectArg(
+        user_assigned_identities = cls._args_schema.user_assigned_identities
+        user_assigned_identities.Element = AAZObjectArg(
             nullable=True,
             blank={},
         )
@@ -363,7 +363,7 @@ class Update(AAZCommand):
             identity = _builder.get(".identity")
             if identity is not None:
                 identity.set_prop("type", AAZStrType, ".identity_type", typ_kwargs={"flags": {"required": True}})
-                identity.set_prop("userAssignedIdentities", AAZDictType, ".user_assigned")
+                identity.set_prop("userAssignedIdentities", AAZDictType, ".user_assigned_identities")
 
             user_assigned_identities = _builder.get(".identity.userAssignedIdentities")
             if user_assigned_identities is not None:

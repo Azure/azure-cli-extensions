@@ -58,11 +58,12 @@ class Create(AAZCommand):
         _args_schema.identity_type = AAZStrArg(
             options=["--identity-type"],
             arg_group="Optional Parameters",
-            help="Type of managed service identity (where both SystemAssigned and UserAssigned types are allowed).",
+            help="Type of managed service identity. Accepted values: \"None\", \"SystemAssigned\", \"UserAssigned\" \"SystemAssigned,UserAssigned\"",
+            default="None",
             enum={"None": "None", "SystemAssigned": "SystemAssigned", "SystemAssigned,UserAssigned": "SystemAssigned,UserAssigned", "UserAssigned": "UserAssigned"},
         )
-        _args_schema.user_assigned = AAZDictArg(
-            options=["--user-assigned"],
+        _args_schema.user_assigned_identities = AAZDictArg(
+            options=["--user-assigned-identities"],
             arg_group="Optional Parameters",
             help="The set of user assigned identities associated with the resource. The userAssignedIdentities dictionary keys will be ARM resource ids in the form: '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identityName}. The dictionary values can be empty objects ({}) in requests.",
         )
@@ -96,8 +97,8 @@ class Create(AAZCommand):
             help="Space-separated tags: key[=value] [key[=value] ...]. Use \"\" to clear existing tags.",
         )
 
-        user_assigned = cls._args_schema.user_assigned
-        user_assigned.Element = AAZObjectArg(
+        user_assigned_identities = cls._args_schema.user_assigned_identities
+        user_assigned_identities.Element = AAZObjectArg(
             blank={},
         )
 
@@ -125,9 +126,12 @@ class Create(AAZCommand):
         return cls._args_schema
 
     def _execute_operations(self):
-        self.pre_operations()
-        yield self.LoadTestsCreateOrUpdate(ctx=self.ctx)()
-        self.post_operations()
+        try: 
+            self.pre_operations()
+            yield self.LoadTestsCreateOrUpdate(ctx=self.ctx)()
+            self.post_operations()
+        except (ValueError) as err:
+            raise err
 
     @register_callback
     def pre_operations(self):
@@ -238,7 +242,7 @@ class Create(AAZCommand):
             identity = _builder.get(".identity")
             if identity is not None:
                 identity.set_prop("type", AAZStrType, ".identity_type", typ_kwargs={"flags": {"required": True}})
-                identity.set_prop("userAssignedIdentities", AAZDictType, ".user_assigned")
+                identity.set_prop("userAssignedIdentities", AAZDictType, ".user_assigned_identities")
 
             user_assigned_identities = _builder.get(".identity.userAssignedIdentities")
             if user_assigned_identities is not None:
