@@ -1,13 +1,37 @@
 Release History
 ===============
+1.1.13
+---
+* Stop execution and throw exception when operation status is `Failed`.
+
+1.1.12
+---
+* Add warning logs when editing builders and buildpack bindings.
+
+1.1.11
+---
+* Add command `az spring app deployment enable-remote-debugging`.
+* Add command `az spring app deployment disable-remote-debugging`.
+* Add command `az spring app deployment get-remote-debugging-config`.
+
+1.1.10
+---
+* Remove `Preview` tag for user-assigned identities of apps.
+
+1.1.9
+---
+* Fix the crash in windows.
+
+1.1.8
+---
+* Add command `az spring app connect`.
+* Add the parameter `language_framework` for deploying the customer image app.
 
 1.1.7
 ---
+* Update `minCliCoreVersion` requirement from `2.30.0` to `2.38.0`.
 * Command `az spring create` and ` has new argument "--outboundType" to enable UDR for VNet instance.
 * Command `az spring app create` and `az spring app update` has new argument "--ingress-read-timeout", "--ingress-send-timeout", "--session-affinity", "--session-max-age", "--backend-protocol" to customize the ingress settings of user applications.
-
-1.1.6
----
 * Add a new command `az spring build-service builder show-deployments` to list the deployments under a builder.
 
 1.1.5

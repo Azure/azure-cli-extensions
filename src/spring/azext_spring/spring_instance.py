@@ -15,8 +15,8 @@ from ._tanzu_component import (create_application_configuration_service,
                                create_gateway,
                                create_api_portal)
 
-
 from ._validators import (_parse_sku_name, validate_instance_not_existed)
+from azure.cli.core.commands import LongRunningOperation
 from knack.log import get_logger
 
 logger = get_logger(__name__)
@@ -95,8 +95,7 @@ class DefaultSpringCloud:
         poller = self.client.services.begin_create_or_update(
             self.resource_group, self.name, resource)
         logger.warning(" - Creating Service ..")
-        wait_till_end(self.cmd, poller)
-        return poller
+        return LongRunningOperation(self.cmd.cli_ctx)(poller)
 
 
 class EnterpriseSpringCloud(DefaultSpringCloud):

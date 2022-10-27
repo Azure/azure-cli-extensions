@@ -224,7 +224,7 @@ def update_addons(cmd,  # pylint: disable=too-many-branches,too-many-statements
                 if addon_profile.enabled and check_enabled:
                     raise CLIError('The monitoring addon is already enabled for this managed cluster.\n'
                                    'To change monitoring configuration, run "az aks disable-addons -a monitoring"'
-                                   'before enabling it again.')
+                                   ' before enabling it again.')
                 if not workspace_resource_id:
                     workspace_resource_id = ensure_default_log_analytics_workspace_for_monitoring(
                         cmd,
