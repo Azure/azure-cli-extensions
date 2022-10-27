@@ -1979,9 +1979,9 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         if enable_validation:
             if enable_azure_monitor_metrics and self._get_disable_azure_monitor_metrics(False):
                 raise MutuallyExclusiveArgumentError(
-                    "Cannot specify --enable-azuremonitormetrics and --enable-azuremonitormetrics at the same time."
+                    "Cannot specify --enable-azuremonitormetrics and --disable-azuremonitormetrics at the same time."
                 )
-            if not check_is_msi_cluster(self.mc):
+            if enable_azure_monitor_metrics and not check_is_msi_cluster(self.mc):
                 raise RequiredArgumentMissingError(
                     "--enable-azuremonitormetrics can only be specified for clusters with managed identity enabled"
                 )
