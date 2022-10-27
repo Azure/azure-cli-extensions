@@ -13,11 +13,15 @@ Pending
 +++++++
 
 * Fix workload identity update error after oidc issure GA in azure-cli.
+0.5.113
++++++++
+
+* Fix `az aks update` command failing on SP-based cluster blocked by validation in AzureMonitorMetrics Addon, see issue `\#5336 <https://github.com/Azure/azure-cli-extensions/issues/5488>`_.
 
 0.5.112
 +++++++
 
-* Add --outbound-type to update managed cluster command.
+* Add `--outbound-type` to update managed cluster command.
 
 0.5.111
 +++++++
