@@ -604,16 +604,6 @@ helps['vmware workload-network'] = """
     short-summary: Commands to manage workload-networks in a private cloud.
 """
 
-helps['vmware workload-network list'] = """
-    type: command
-    short-summary: List of workload networks in a private cloud.
-"""
-
-helps['vmware workload-network show'] = """
-    type: command
-    short-summary: Show details for a private cloud workload network.
-"""
-
 helps['vmware workload-network dhcp'] = """
     type: group
     short-summary: Commands to manage a DHCP (Data Host Configuration Protocol) workload network.
