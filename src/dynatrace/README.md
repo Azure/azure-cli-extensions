@@ -100,18 +100,18 @@ az dynatrace monitor tag-rule delete -g rg --monitor-name monitor -n default -y
 
 ```
 
-#### dynatrace monitor single-sign-on-configurations ####
+#### dynatrace monitor sso-config ####
 ##### Create #####
 ```
-az dynatrace monitor single-sign-on-configurations create -g rg --monitor-name monitor -n default 
+az dynatrace monitor sso-config create -g rg --monitor-name monitor -n default 
 --aad-domains [\'mpliftrdt20210811outlook.onmicrosoft.com\'] --single-sign-on-url "https://www.dynatrace.io"
 
 ```
 ##### Show #####
 ```
-az dynatrace monitor single-sign-on-configurations show -g rg --monitor-name monitor -n default
+az dynatrace monitor sso-config show -g rg --monitor-name monitor -n default
 ```
 ##### List #####
 ```
-az dynatrace monitor single-sign-on-configurations list -g rg --monitor-name monitor
+az dynatrace monitor sso-config list -g rg --monitor-name monitor
 ```

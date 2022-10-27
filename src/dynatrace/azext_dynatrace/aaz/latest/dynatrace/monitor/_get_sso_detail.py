@@ -18,7 +18,7 @@ class GetSsoDetail(AAZCommand):
     """Get the SSO configuration details from the partner
 
     :example: Get the SSO configuration details
-        az dynatrace monitor single-sign-on-configurations list -g rg --monitor-name monitor
+        az dynatrace monitor sso-config list -g rg --monitor-name monitor
     """
 
     _aaz_info = {

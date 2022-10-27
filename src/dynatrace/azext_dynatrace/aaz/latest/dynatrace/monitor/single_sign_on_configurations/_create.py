@@ -12,13 +12,13 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "dynatrace monitor single-sign-on-configurations create",
+    "dynatrace monitor sso-config create",
 )
 class Create(AAZCommand):
     """Create a dynatrace single-sign-on resource
 
-    :example: Create a single-sign-on-configurations
-        az dynatrace monitor single-sign-on-configurations create -g rg --monitor-name monitor -n default --aad-domains [\'mpliftrdt20210811outlook.onmicrosoft.com\'] --single-sign-on-url "https://www.dynatrace.io"
+    :example: Create a sso-config
+        az dynatrace monitor sso-config create -g rg --monitor-name monitor -n default --aad-domains [\'mpliftrdt20210811outlook.onmicrosoft.com\'] --single-sign-on-url "https://www.dynatrace.io"
     """
 
     _aaz_info = {

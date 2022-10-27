@@ -82,15 +82,15 @@ class DynatraceScenario(ScenarioTest):
             'monitor': self.create_random_name('monitor', 15),
         })
         self.cmd('dynatrace monitor create -g {rg} -n {monitor} --user-info {{first-name:Alice,last-name:Bobab,email-address:agarwald@microsoft.com,phone-number:1234567890,country:US}} --plan-data {{usage-type:committed,billing-cycle:Monthly,plan-details:azureportalintegration_privatepreview@TIDhjdtn7tfnxcy,effective-date:2022-08-20}} --environment {{single-sign-on:{{aad-domains:[\'abc\']}}}}')
-        self.cmd('dynatrace monitor single-sign-on-configurations create -g {rg} --monitor-name {monitor} -n default --aad-domains [\'mpliftrdt20210811outlook.onmicrosoft.com\'] --single-sign-on-url "https://www.dynatrace.io"', checks=[
+        self.cmd('dynatrace monitor sso-config create -g {rg} --monitor-name {monitor} -n default --aad-domains [\'mpliftrdt20210811outlook.onmicrosoft.com\'] --single-sign-on-url "https://www.dynatrace.io"', checks=[
             self.check('aadDomains[0]', 'mpliftrdt20210811outlook.onmicrosoft.com'),
             self.check('singleSignOnUrl', 'https://www.dynatrace.io')
         ])
-        self.cmd('dynatrace monitor single-sign-on-configurations show -g {rg} --monitor-name {monitor} -n default', checks=[
+        self.cmd('dynatrace monitor sso-config show -g {rg} --monitor-name {monitor} -n default', checks=[
             self.check('aadDomains[0]', 'mpliftrdt20210811outlook.onmicrosoft.com'),
             self.check('singleSignOnUrl', 'https://www.dynatrace.io')
         ])
-        self.cmd('dynatrace monitor single-sign-on-configurations list -g {rg} --monitor-name {monitor}', checks=[
+        self.cmd('dynatrace monitor sso-config list -g {rg} --monitor-name {monitor}', checks=[
             self.check('[0].aadDomains[0]', 'mpliftrdt20210811outlook.onmicrosoft.com'),
             self.check('[0].singleSignOnUrl', 'https://www.dynatrace.io')
         ])

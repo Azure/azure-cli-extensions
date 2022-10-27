@@ -12,13 +12,13 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "dynatrace monitor single-sign-on-configurations show",
+    "dynatrace monitor sso-config show",
 )
 class Show(AAZCommand):
     """Show a dynatrace single-sign-on resource
 
-    :example: Show single-sign-on-configurations
-        az dynatrace monitor single-sign-on-configurations show -g rg --monitor-name monitor -n default
+    :example: Show sso-config
+        az dynatrace monitor sso-config show -g rg --monitor-name monitor -n default
     """
 
     _aaz_info = {
