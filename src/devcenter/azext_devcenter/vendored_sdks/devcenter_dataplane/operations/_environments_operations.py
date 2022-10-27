@@ -407,7 +407,7 @@ class EnvironmentsOperations(object):
             response_headers = {}
             response = pipeline_response.http_response
             response_headers['Operation-Location']=self._deserialize('str', response.headers.get('Operation-Location'))
-            deserialized = self._deserialize('Environment', pipeline_response)
+            deserialized = self._deserialize('LongRunningOperationStatus', pipeline_response)
 
             if cls:
                 return cls(pipeline_response, deserialized, response_headers)

@@ -494,7 +494,7 @@ class DevBoxOperations(object):
         kwargs.pop('content_type', None)
 
         def get_long_running_output(pipeline_response):
-            deserialized = self._deserialize('DevBox', pipeline_response)
+            deserialized = self._deserialize('LongRunningOperationStatus', pipeline_response)
 
             if cls:
                 return cls(pipeline_response, deserialized, {})

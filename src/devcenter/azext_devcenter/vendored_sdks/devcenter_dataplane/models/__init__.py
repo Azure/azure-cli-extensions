@@ -37,6 +37,8 @@ try:
     from ._models_py3 import ScheduleListResult
     from ._models_py3 import ScheduledTask
     from ._models_py3 import StorageProfile
+    from ._models_py3 import LongRunningOperationErrorDetails
+    from ._models_py3 import LongRunningOperationStatus
 except (SyntaxError, ImportError):
     from ._models import ActionRequest  # type: ignore
     from ._models import Artifact  # type: ignore
@@ -68,6 +70,8 @@ except (SyntaxError, ImportError):
     from ._models import ScheduleListResult  # type: ignore
     from ._models import ScheduledTask  # type: ignore
     from ._models import StorageProfile  # type: ignore
+    from ._models import LongRunningOperationErrorDetails  # type: ignore
+    from ._models import LongRunningOperationStatus  # type: ignore
 
 from ._dev_center_dataplane_client_enums import (
     ActionType,
@@ -121,4 +125,6 @@ __all__ = [
     'ScheduledFrequency',
     'ScheduledTaskType',
     'ScheduledType',
+    'LongRunningOperationErrorDetails',
+    'LongRunningOperationStatus'
 ]
