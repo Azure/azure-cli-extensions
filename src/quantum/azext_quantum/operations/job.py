@@ -235,34 +235,78 @@ def submit(cmd, program_args, resource_group_name, workspace_name, location, tar
     Submit a quantum program to run on Azure Quantum.
     """
     if job_input_format is not None:
-        if job_input_format.lower() == "qir.v1":
-            # Submit QIR
-            return _submit_qir_v1(cmd, program_args, resource_group_name, workspace_name, location, target_id,
-                                  job_name, shots, storage, job_params, target_capability,
-                                  # >>>>> TODO: Finalize these names <<<<<
-                                  # Peter's proposed param names:
-                                  job_input_source, job_output_format,
-                                  # Guen's proposed param names:
-                                  qir_payload, qir_endpoint, qir_param)
+        # # if job_input_format.lower() == "qir.v1":
+        # if "-ir.v" in job_input_format.lower():
+        #     # Submit QIR
+        #     return _submit_qir(cmd, program_args, resource_group_name, workspace_name, location, target_id,
+        #                           job_name, shots, storage, job_params, target_capability,
+        #                           # >>>>> TODO: Finalize these names <<<<<
+        #                           # Peter's proposed param names:
+        #                           job_input_source, job_input_format, job_output_format,
+        #                           # Guen's proposed param names:
+        #                           qir_payload, qir_endpoint, qir_param)
 
-        # Add elifs to handle new job_input_format values here
+        # Submit QIR
+        return _submit_qir(cmd, program_args, resource_group_name, workspace_name, location, target_id,
+                                job_name, shots, storage, job_params, target_capability,
+                                # >>>>> TODO: Finalize these names <<<<<
+                                # Peter's proposed param names:
+                                job_input_source, job_input_format, job_output_format,
+                                # Guen's proposed param names:
+                                qir_payload, qir_endpoint, qir_param)
 
-        elif job_input_format.lower() == "q#" or job_input_format.lower() == "qsharp":
-            pass    # Fall through, same as when job_input_format is None
+        # # Add elifs to handle new job_input_format values here
 
-        else:
-            raise InvalidArgumentValueError("Job input format not recognized: " + job_input_format, JOB_SUBMIT_DOC_LINK_MSG)
+        # elif job_input_format.lower() == "q#" or job_input_format.lower() == "qsharp":
+        #     pass    # Fall through, same as when job_input_format is None
+
+        # else:
+        #     raise InvalidArgumentValueError("Job input format not recognized: " + job_input_format, JOB_SUBMIT_DOC_LINK_MSG)
 
     # Submit a Q# project. (Do it the old way, for now.)
     return _submit_qsharp(cmd, program_args, resource_group_name, workspace_name, location, target_id,
                           project, job_name, shots, storage, no_build, job_params, target_capability)
 
 
-def _submit_qir_v1(cmd, program_args, resource_group_name, workspace_name, location, target_id,
+# # >>>>> This doesn't work -- It needs to generate JSON >>>>> >>>>> >>>>> 
+# def _generate_qir_submit_args(program_args, job_name, shots, job_params):
+#     """ Generates the list of arguments for submitting a QIR job """
+
+#     args = []
+
+#     if job_name:
+#         args.append("--job-name")
+#         args.append(job_name)
+
+#     if shots:
+#         args.append("--shots")
+#         args.append(shots)
+
+#     args.append("--user-agent")
+#     args.append("CLI")
+
+#     if job_params:
+#         args.append("--job-params")
+#         for k, v in job_params.items():
+#             if isinstance(v, str):
+#                 # If value is string type already, do not use json.dumps(), since it will add extra escapes to the string
+#                 args.append(f"{k}={v}")
+#             else:
+#                 args.append(f"{k}={json.dumps(v)}")
+
+#     args.extend(program_args)
+
+#     logger.debug("Submitting QIR job with the following arguments:")
+#     logger.debug(args)
+
+#     return args
+# # <<<<< <<<<< <<<<< <<<<<
+
+def _submit_qir(cmd, program_args, resource_group_name, workspace_name, location, target_id,
                    job_name, shots, storage, job_params, target_capability,
                    # >>>>> TODO: Finalize these names <<<<<
                    # Peter's proposed param names:
-                   job_input_source, job_output_format,
+                   job_input_source, job_input_format, job_output_format,
                    # Guen's proposed param names:
                    qir_payload, qir_endpoint, qir_param):
 
@@ -292,7 +336,8 @@ def _submit_qir_v1(cmd, program_args, resource_group_name, workspace_name, locat
 
     container_client = create_container(connection_string, container_name)
     blob_name = "inputData"
-    content_type = "qir.v1"
+    # content_type = "qir.v1"
+    content_type = job_input_format
     content_encoding = "utf-8"
     return_sas_token = True
 
@@ -301,7 +346,9 @@ def _submit_qir_v1(cmd, program_args, resource_group_name, workspace_name, locat
         blob_data = qir_file.read()
     blob_uri = upload_blob(container_client, blob_name, content_type, content_encoding, blob_data, return_sas_token)
 
-    # >>>>> What about "submit args"?
+    # Set the job parameters
+
+    # >>>>> What about "submit args"?  Where should we handle other command parameters?
     # >>>>> Code from old submit function, renamed _submit_qsharp, below. Where does this go? >>>>> 
     # ws = WorkspaceInfo(cmd, resource_group_name, workspace_name, location)
     # target = TargetInfo(cmd, target_id)
@@ -310,19 +357,34 @@ def _submit_qir_v1(cmd, program_args, resource_group_name, workspace_name, locat
     # args = _generate_submit_args(program_args, ws, target, token, project, job_name, shots, storage, job_params)
     # _set_cli_version()
     # <<<<<
+    #
+    # args = _generate_qir_submit_args(program_args, job_name, shots, job_params)
 
-    # Submit the job
     start_of_blob_name = blob_uri.find(blob_name)
     container_uri = blob_uri[0:start_of_blob_name - 1] + "?" + blob_uri.split('?')[1]
     ws_info = WorkspaceInfo(cmd, resource_group_name, workspace_name, location)
     target_info = TargetInfo(cmd, target_id)
+    # >>>>> Not sure what this line in the spec example was supposed to be.  The arguments[] syntax doesn't work >>>>> 
+    # input_params = {arguments[],'targetCapability':'FullComputation','entryPoint':'QuantumRNG__GenerateRandomBits','shots':'500'}
+    # input_params = {"arguments[]":"",'targetCapability':'FullComputation','entryPoint':'QuantumRNG__GenerateRandomBits','shots':'500'}
+    # input_params = {'targetCapability':'FullComputation','entryPoint':'QuantumRNG__GenerateRandomBits','shots':'500'}
+    input_params = {'targetCapability': target_capability, 'shots': shots}
+    # <<<<<
+
     job_id = str(uuid.uuid4())
     client = cf_jobs(cmd.cli_ctx, ws_info.subscription, ws_info.resource_group, ws_info.name, ws_info.location)
-    job_details = {'container_uri': container_uri,
-                   'input_data_format': 'irq.v1',
+    job_details = {'container_uri': container_uri,          # >>>>> See vendored_sdks\azure_quantum\models\_models_py3.py, line 132
+                   'input_data_format': job_input_format,
+                #    'input_data_format': 'application/x-microsoft.ionq-ir.v3',
+                #    'input_data_format': 'ionq-ir.v3',
+                #    'input_data_format': 'application/json',
                    'output_data_format': job_output_format,
+                   'inputParams': input_params,
+                #    'inputParams': args,
                    'provider_id': target_info.target_id.split('.')[0],
                    'target': target_info.target_id}
+
+    # Submit the job
     job = client.create(job_id, job_details)
 
     # >>>>>
