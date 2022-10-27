@@ -54,8 +54,8 @@ class Show(AAZCommand):
         # define Arg Group "Required Parameters"
 
         _args_schema = cls._args_schema
-        _args_schema.load_test_resource = AAZStrArg(
-            options=["--load-test-resource"],
+        _args_schema.resource_identifier = AAZStrArg(
+            options=["--resource-identifier"],
             arg_group="Required Parameters",
             help="Name or ARM id of the load test resource.",
             required=True,
@@ -110,7 +110,7 @@ class Show(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "loadTestName", self.ctx.args.load_test_resource,
+                    "loadTestName", self.ctx.args.resource_identifier,
                     required=True,
                 ),
                 **self.serialize_url_param(

@@ -126,12 +126,9 @@ class Create(AAZCommand):
         return cls._args_schema
 
     def _execute_operations(self):
-        try: 
-            self.pre_operations()
-            yield self.LoadTestsCreateOrUpdate(ctx=self.ctx)()
-            self.post_operations()
-        except (ValueError) as err:
-            raise err
+        self.pre_operations()
+        yield self.LoadTestsCreateOrUpdate(ctx=self.ctx)()
+        self.post_operations()
 
     @register_callback
     def pre_operations(self):
