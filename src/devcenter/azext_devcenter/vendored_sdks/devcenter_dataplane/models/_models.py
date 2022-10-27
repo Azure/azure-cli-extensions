@@ -1230,3 +1230,74 @@ class StorageProfile(msrest.serialization.Model):
     ):
         super(StorageProfile, self).__init__(**kwargs)
         self.os_disk = kwargs.get('os_disk', None)
+
+##amlim: This is a customization DO NOT DELETE
+class LongRunningOperationErrorDetails(msrest.serialization.Model):
+    """Image validation error details.
+
+    :param code: An identifier for the error.
+    :type code: str
+    :param message: A message describing the error.
+    :type message: str
+    """
+
+    _attribute_map = {
+        'code': {'key': 'code', 'type': 'str'},
+        'message': {'key': 'message', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(LongRunningOperationErrorDetails, self).__init__(**kwargs)
+        self.code = kwargs.get('code', None)
+        self.message = kwargs.get('message', None)
+
+
+class LongRunningOperationStatus(msrest.serialization.Model):
+    """Operation status from a LRO
+
+    :ivar status: The status of the operation.
+    :vartype status: str
+    :ivar id: The id of the operation.
+    :vartype id: str
+    :ivar start_time: Start time of operation.
+    :vartype start_time: ~datetime.datetime
+    :ivar end_time: End time of the operation.
+    :vartype end_time: ~datetime.datetime
+    :ivar name: The name of the operation
+    :vartype name: str
+    :ivar error: The error message of the opeartion.
+    :vartype error:  ~dev_center_dataplane_client.models.LongRunningOperationErrorDetails
+    """
+
+    _validation = {
+        'status': {'readonly': True},
+        'id': {'readonly': True},
+        'start_time': {'readonly': True},
+        'end_time': {'readonly': True},
+        'name': {'readonly': True},
+        'error': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'status': {'key': 'status', 'type': 'str'},
+        'id': {'key': 'id', 'type': 'str'},
+        'start_time': {'key': 'startTime', 'type': 'iso-8601'},
+        'end_time': {'key': 'endTime', 'type': 'iso-8601'},
+        'error': {'key': 'properties.error', 'type': 'LongRunningOperationErrorDetails'},
+        'name': {'key': 'name', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(LongRunningOperationStatus, self).__init__(**kwargs)
+        self.status = None
+        self.id = None
+        self.start_time = None
+        self.end_time = None
+        self.error = None
+        self.name = None
