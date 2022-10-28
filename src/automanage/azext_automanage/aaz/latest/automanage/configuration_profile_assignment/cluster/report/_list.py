@@ -12,17 +12,17 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "automanage configuration-profile-assignment report list-vm",
+    "automanage configuration-profile-assignment cluster report list",
     confirmation="",
 )
-class ListVm(AAZCommand):
-    """List a list of VM reports within a given configuration profile assignment
+class List(AAZCommand):
+    """List a list of reports within a given AzureStackHCI cluster configuration profile assignment
     """
 
     _aaz_info = {
         "version": "2022-05-04",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.compute/virtualmachines/{}/providers/microsoft.automanage/configurationprofileassignments/{}/reports", "2022-05-04"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.azurestackhci/clusters/{}/providers/microsoft.automanage/configurationprofileassignments/{}/reports", "2022-05-04"],
         ]
     }
 
@@ -42,6 +42,11 @@ class ListVm(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
+        _args_schema.cluster_name = AAZStrArg(
+            options=["--cluster-name"],
+            help="The name of the HCI cluster.",
+            required=True,
+        )
         _args_schema.configuration_profile_assignment_name = AAZStrArg(
             options=["--configuration-profile-assignment-name"],
             help="The configuration profile assignment name.",
@@ -50,16 +55,11 @@ class ListVm(AAZCommand):
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
-        _args_schema.vm_name = AAZStrArg(
-            options=["--vm-name"],
-            help="The name of the virtual machine.",
-            required=True,
-        )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.VMreportsListByConfigurationProfileAssignments(ctx=self.ctx)()
+        self.HCIReportsListByConfigurationProfileAssignments(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -74,7 +74,7 @@ class ListVm(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance.value, client_flatten=True)
         return result
 
-    class VMreportsListByConfigurationProfileAssignments(AAZHttpOperation):
+    class HCIReportsListByConfigurationProfileAssignments(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -88,7 +88,7 @@ class ListVm(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Compute/virtualMachines/{vmName}/providers/Microsoft.Automanage/configurationProfileAssignments/{configurationProfileAssignmentName}/reports",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AzureStackHci/clusters/{clusterName}/providers/Microsoft.Automanage/configurationProfileAssignments/{configurationProfileAssignmentName}/reports",
                 **self.url_parameters
             )
 
@@ -104,6 +104,10 @@ class ListVm(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
+                    "clusterName", self.ctx.args.cluster_name,
+                    required=True,
+                ),
+                **self.serialize_url_param(
                     "configurationProfileAssignmentName", self.ctx.args.configuration_profile_assignment_name,
                     required=True,
                 ),
@@ -113,10 +117,6 @@ class ListVm(AAZCommand):
                 ),
                 **self.serialize_url_param(
                     "subscriptionId", self.ctx.subscription_id,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "vmName", self.ctx.args.vm_name,
                     required=True,
                 ),
             }
@@ -308,4 +308,4 @@ def _build_schema_error_detail_read(_schema):
     _schema.target = _schema_error_detail_read.target
 
 
-__all__ = ["ListVm"]
+__all__ = ["List"]

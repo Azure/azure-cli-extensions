@@ -8,10 +8,16 @@
 # pylint: skip-file
 # flake8: noqa
 
-from .__cmd_group import *
-from ._list_arc import *
-from ._list_cluster import *
-from ._list_vm import *
-from ._show_arc import *
-from ._show_cluster import *
-from ._show_vm import *
+from azure.cli.core.aaz import *
+
+
+@register_command_group(
+    "automanage configuration-profile-assignment vm report",
+)
+class __CMDGroup(AAZCommandGroup):
+    """Manage report within a given VM configuration profile assignment
+    """
+    pass
+
+
+__all__ = ["__CMDGroup"]

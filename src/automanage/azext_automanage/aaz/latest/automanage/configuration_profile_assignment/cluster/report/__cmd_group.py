@@ -12,10 +12,10 @@ from azure.cli.core.aaz import *
 
 
 @register_command_group(
-    "automanage configuration-profile-assignment report",
+    "automanage configuration-profile-assignment cluster report",
 )
 class __CMDGroup(AAZCommandGroup):
-    """Manage report within a given configuration profile assignment
+    """Manage report within a given AzureStackHCI cluster configuration profile assignment
     """
     pass
 

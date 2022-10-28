@@ -12,17 +12,17 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "automanage configuration-profile-assignment report show-vm",
+    "automanage configuration-profile-assignment arc report list",
     confirmation="",
 )
-class ShowVm(AAZCommand):
-    """Get information about a VM report associated with a configuration profile assignment run
+class List(AAZCommand):
+    """List a list of reports within a given ARC machine configuration profile assignment
     """
 
     _aaz_info = {
         "version": "2022-05-04",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.compute/virtualmachines/{}/providers/microsoft.automanage/configurationprofileassignments/{}/reports/{}", "2022-05-04"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/machines/{}/providers/microsoft.automanage/configurationprofileassignments/{}/reports", "2022-05-04"],
         ]
     }
 
@@ -43,31 +43,23 @@ class ShowVm(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.configuration_profile_assignment_name = AAZStrArg(
-            options=["--configuration-profile-assignment-name"],
+            options=["--assignment-name", "--configuration-profile-assignment-name"],
             help="The configuration profile assignment name.",
             required=True,
-            id_part="child_name_1",
         )
-        _args_schema.report_name = AAZStrArg(
-            options=["-n", "--name", "--report-name"],
-            help="The report name.",
+        _args_schema.machine_name = AAZStrArg(
+            options=["--machine-name"],
+            help="The name of the Arc machine.",
             required=True,
-            id_part="child_name_2",
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
-        )
-        _args_schema.vm_name = AAZStrArg(
-            options=["--vm-name"],
-            help="The name of the virtual machine.",
-            required=True,
-            id_part="name",
         )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.VMreportsGet(ctx=self.ctx)()
+        self.HCRPReportsListByConfigurationProfileAssignments(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -79,10 +71,10 @@ class ShowVm(AAZCommand):
         pass
 
     def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
+        result = self.deserialize_output(self.ctx.vars.instance.value, client_flatten=True)
         return result
 
-    class VMreportsGet(AAZHttpOperation):
+    class HCRPReportsListByConfigurationProfileAssignments(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -96,7 +88,7 @@ class ShowVm(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Compute/virtualMachines/{vmName}/providers/Microsoft.Automanage/configurationProfileAssignments/{configurationProfileAssignmentName}/reports/{reportName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HybridCompute/machines/{machineName}/providers/Microsoft.Automanage/configurationProfileAssignments/{configurationProfileAssignmentName}/reports",
                 **self.url_parameters
             )
 
@@ -116,7 +108,7 @@ class ShowVm(AAZCommand):
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "reportName", self.ctx.args.report_name,
+                    "machineName", self.ctx.args.machine_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -125,10 +117,6 @@ class ShowVm(AAZCommand):
                 ),
                 **self.serialize_url_param(
                     "subscriptionId", self.ctx.subscription_id,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "vmName", self.ctx.args.vm_name,
                     required=True,
                 ),
             }
@@ -171,22 +159,28 @@ class ShowVm(AAZCommand):
             cls._schema_on_200 = AAZObjectType()
 
             _schema_on_200 = cls._schema_on_200
-            _schema_on_200.id = AAZStrType(
+            _schema_on_200.value = AAZListType()
+
+            value = cls._schema_on_200.value
+            value.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element
+            _element.id = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200.name = AAZStrType(
+            _element.name = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200.properties = AAZObjectType()
-            _schema_on_200.system_data = AAZObjectType(
+            _element.properties = AAZObjectType()
+            _element.system_data = AAZObjectType(
                 serialized_name="systemData",
                 flags={"read_only": True},
             )
-            _schema_on_200.type = AAZStrType(
+            _element.type = AAZStrType(
                 flags={"read_only": True},
             )
 
-            properties = cls._schema_on_200.properties
+            properties = cls._schema_on_200.value.Element.properties
             properties.configuration_profile = AAZStrType(
                 serialized_name="configurationProfile",
                 flags={"read_only": True},
@@ -220,10 +214,10 @@ class ShowVm(AAZCommand):
                 flags={"read_only": True},
             )
 
-            resources = cls._schema_on_200.properties.resources
+            resources = cls._schema_on_200.value.Element.properties.resources
             resources.Element = AAZObjectType()
 
-            _element = cls._schema_on_200.properties.resources.Element
+            _element = cls._schema_on_200.value.Element.properties.resources.Element
             _element.error = AAZObjectType()
             _build_schema_error_detail_read(_element.error)
             _element.id = AAZStrType(
@@ -239,7 +233,7 @@ class ShowVm(AAZCommand):
                 flags={"read_only": True},
             )
 
-            system_data = cls._schema_on_200.system_data
+            system_data = cls._schema_on_200.value.Element.system_data
             system_data.created_at = AAZStrType(
                 serialized_name="createdAt",
             )
@@ -314,4 +308,4 @@ def _build_schema_error_detail_read(_schema):
     _schema.target = _schema_error_detail_read.target
 
 
-__all__ = ["ShowVm"]
+__all__ = ["List"]

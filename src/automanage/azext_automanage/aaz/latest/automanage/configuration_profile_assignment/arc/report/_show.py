@@ -12,17 +12,17 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "automanage configuration-profile-assignment report list-arc",
+    "automanage configuration-profile-assignment arc report show",
     confirmation="",
 )
-class ListArc(AAZCommand):
-    """List a list of reports within a given configuration profile assignment
+class Show(AAZCommand):
+    """Get information about a report associated with an ARC machine configuration profile assignment run
     """
 
     _aaz_info = {
         "version": "2022-05-04",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/machines/{}/providers/microsoft.automanage/configurationprofileassignments/{}/reports", "2022-05-04"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/machines/{}/providers/microsoft.automanage/configurationprofileassignments/{}/reports/{}", "2022-05-04"],
         ]
     }
 
@@ -46,11 +46,19 @@ class ListArc(AAZCommand):
             options=["--assignment-name", "--configuration-profile-assignment-name"],
             help="The configuration profile assignment name.",
             required=True,
+            id_part="child_name_1",
         )
         _args_schema.machine_name = AAZStrArg(
             options=["--machine-name"],
             help="The name of the Arc machine.",
             required=True,
+            id_part="name",
+        )
+        _args_schema.report_name = AAZStrArg(
+            options=["-n", "--name", "--report-name"],
+            help="The report name.",
+            required=True,
+            id_part="child_name_2",
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -59,7 +67,7 @@ class ListArc(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        self.HCRPReportsListByConfigurationProfileAssignments(ctx=self.ctx)()
+        self.HCRPReportsGet(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -71,10 +79,10 @@ class ListArc(AAZCommand):
         pass
 
     def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.vars.instance.value, client_flatten=True)
+        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class HCRPReportsListByConfigurationProfileAssignments(AAZHttpOperation):
+    class HCRPReportsGet(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -88,7 +96,7 @@ class ListArc(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HybridCompute/machines/{machineName}/providers/Microsoft.Automanage/configurationProfileAssignments/{configurationProfileAssignmentName}/reports",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HybridCompute/machines/{machineName}/providers/Microsoft.Automanage/configurationProfileAssignments/{configurationProfileAssignmentName}/reports/{reportName}",
                 **self.url_parameters
             )
 
@@ -109,6 +117,10 @@ class ListArc(AAZCommand):
                 ),
                 **self.serialize_url_param(
                     "machineName", self.ctx.args.machine_name,
+                    required=True,
+                ),
+                **self.serialize_url_param(
+                    "reportName", self.ctx.args.report_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -159,28 +171,22 @@ class ListArc(AAZCommand):
             cls._schema_on_200 = AAZObjectType()
 
             _schema_on_200 = cls._schema_on_200
-            _schema_on_200.value = AAZListType()
-
-            value = cls._schema_on_200.value
-            value.Element = AAZObjectType()
-
-            _element = cls._schema_on_200.value.Element
-            _element.id = AAZStrType(
+            _schema_on_200.id = AAZStrType(
                 flags={"read_only": True},
             )
-            _element.name = AAZStrType(
+            _schema_on_200.name = AAZStrType(
                 flags={"read_only": True},
             )
-            _element.properties = AAZObjectType()
-            _element.system_data = AAZObjectType(
+            _schema_on_200.properties = AAZObjectType()
+            _schema_on_200.system_data = AAZObjectType(
                 serialized_name="systemData",
                 flags={"read_only": True},
             )
-            _element.type = AAZStrType(
+            _schema_on_200.type = AAZStrType(
                 flags={"read_only": True},
             )
 
-            properties = cls._schema_on_200.value.Element.properties
+            properties = cls._schema_on_200.properties
             properties.configuration_profile = AAZStrType(
                 serialized_name="configurationProfile",
                 flags={"read_only": True},
@@ -214,10 +220,10 @@ class ListArc(AAZCommand):
                 flags={"read_only": True},
             )
 
-            resources = cls._schema_on_200.value.Element.properties.resources
+            resources = cls._schema_on_200.properties.resources
             resources.Element = AAZObjectType()
 
-            _element = cls._schema_on_200.value.Element.properties.resources.Element
+            _element = cls._schema_on_200.properties.resources.Element
             _element.error = AAZObjectType()
             _build_schema_error_detail_read(_element.error)
             _element.id = AAZStrType(
@@ -233,7 +239,7 @@ class ListArc(AAZCommand):
                 flags={"read_only": True},
             )
 
-            system_data = cls._schema_on_200.value.Element.system_data
+            system_data = cls._schema_on_200.system_data
             system_data.created_at = AAZStrType(
                 serialized_name="createdAt",
             )
@@ -308,4 +314,4 @@ def _build_schema_error_detail_read(_schema):
     _schema.target = _schema_error_detail_read.target
 
 
-__all__ = ["ListArc"]
+__all__ = ["Show"]
