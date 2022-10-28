@@ -4986,7 +4986,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         mc.oidc_issuer_profile = self.models.ManagedClusterOIDCIssuerProfile(enabled=True)
         dec.context.attach_mc(mc)
         updated_mc = dec.update_oidc_issuer_profile(mc)
-        self.assertIsNone(updated_mc.oidc_issuer_profile)
+        self.assertTrue(updated_mc.oidc_issuer_profile.enabled)
 
     def test_update_oidc_issuer_profile__enabled(self):
         dec = AKSPreviewManagedClusterUpdateDecorator(

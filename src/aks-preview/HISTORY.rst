@@ -12,6 +12,8 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+* Fix workload identity update error after oidc issure GA in azure-cli.
+
 0.5.112
 +++++++
 

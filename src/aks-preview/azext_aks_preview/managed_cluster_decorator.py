@@ -2319,7 +2319,9 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         """
         self._ensure_mc(mc)
 
-        mc.oidc_issuer_profile = self.context.get_oidc_issuer_profile()
+        oidc_issuer_profile = self.context.get_oidc_issuer_profile()
+        if oidc_issuer_profile is not None:
+            mc.oidc_issuer_profile = oidc_issuer_profile
 
         return mc
 
@@ -2533,15 +2535,10 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         mc = self.set_up_pod_security_policy(mc)
         # set up pod identity profile
         mc = self.set_up_pod_identity_profile(mc)
-
-        # update workload identity & OIDC issuer settings
-        # NOTE: in current implementation, workload identity settings setup requires checking
-        #       previous OIDC issuer profile. However, the OIDC issuer settings setup will
-        #       overrides the previous OIDC issuer profile based on user input. Therefore, we have
-        #       to make sure the workload identity settings setup is done after OIDC issuer settings.
-        mc = self.set_up_workload_identity_profile(mc)
+        # set up oidc issuer profile, GA in 2.42.0
         mc = self.set_up_oidc_issuer_profile(mc)
-
+        # set up workload identity profile
+        mc = self.set_up_workload_identity_profile(mc)
         # set up azure keyvalut kms
         mc = self.set_up_azure_keyvault_kms(mc)
         # set up node restriction
@@ -2824,8 +2821,9 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         :return: the ManagedCluster object
         """
         self._ensure_mc(mc)
-
-        mc.oidc_issuer_profile = self.context.get_oidc_issuer_profile()
+        oidc_issuer_profile = self.context.get_oidc_issuer_profile()
+        if oidc_issuer_profile is not None:
+            mc.oidc_issuer_profile = oidc_issuer_profile
 
         return mc
 
@@ -3129,15 +3127,10 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         mc = self.update_pod_security_policy(mc)
         # update pod identity profile
         mc = self.update_pod_identity_profile(mc)
-
-        # update workload identity & OIDC issuer settings
-        # NOTE: in current implementation, workload identity settings setup requires checking
-        #       previous OIDC issuer profile. However, the OIDC issuer settings setup will
-        #       overrides the previous OIDC issuer profile based on user input. Therefore, we have
-        #       to make sure the workload identity settings setup is done after OIDC issuer settings.
-        mc = self.update_workload_identity_profile(mc)
+        # update oidc issure profile, GA in 2.42.0
         mc = self.update_oidc_issuer_profile(mc)
-
+        # update workload identity profile
+        mc = self.update_workload_identity_profile(mc)
         # update azure keyvalut kms
         mc = self.update_azure_keyvault_kms(mc)
         # update node restriction
