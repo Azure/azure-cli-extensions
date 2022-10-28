@@ -149,7 +149,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             self.check('networkProfile.outboundType', 'managedNATGateway'),
             self.check('networkProfile.natGatewayProfile.idleTimeoutInMinutes', 30),
             self.check('networkProfile.natGatewayProfile.managedOutboundIpProfile.count', 2),
-            self.not_exists('networkProfile.loadBalancerProfile'),
         ])
 
     @AllowLargeResponse()
