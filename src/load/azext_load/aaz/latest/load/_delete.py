@@ -19,8 +19,7 @@ class Delete(AAZCommand):
     """Delete a load test resource.
 
     :example: Delete load test resource
-        az load delete --load-test-resource /subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/microsoft.loadtestservice/loadtests/sample-resource
-        az load delete --load-test-resource sample-resource --resource-group sample-rg
+        az load delete --name sample-resource --resource-group sample-rg
     """
 
     _aaz_info = {
@@ -52,13 +51,13 @@ class Delete(AAZCommand):
             required=True,
         )
 
-        # define Arg Group "Required Parameters"
+        # define Arg Group "Optional Parameters"
 
         _args_schema = cls._args_schema
-        _args_schema.resource_identifier = AAZStrArg(
-            options=["--resource-identifier"],
-            arg_group="Required Parameters",
-            help="Name or ARM id of the load test resource.",
+        _args_schema.name = AAZStrArg(
+            options=["-n", "--name"],
+            arg_group="Optional Parameters",
+            help="Name of the load test resource.",
             required=True,
             id_part="name",
         )
@@ -132,7 +131,7 @@ class Delete(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "loadTestName", self.ctx.args.resource_identifier,
+                    "loadTestName", self.ctx.args.name,
                     required=True,
                 ),
                 **self.serialize_url_param(

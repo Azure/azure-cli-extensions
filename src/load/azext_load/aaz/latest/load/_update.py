@@ -97,6 +97,13 @@ class Update(AAZCommand):
             help="Space-separated tags: key[=value] [key[=value] ...]. Use \"\" to clear existing tags.",
             nullable=True,
         )
+        _args_schema.name = AAZStrArg(
+            options=["-n", "--name"],
+            arg_group="Optional Parameters",
+            help="Name of the load test resource.",
+            required=True,
+            id_part="name",
+        )
 
         user_assigned_identities = cls._args_schema.user_assigned_identities
         user_assigned_identities.Element = AAZObjectArg(
@@ -107,17 +114,6 @@ class Update(AAZCommand):
         tags = cls._args_schema.tags
         tags.Element = AAZStrArg(
             nullable=True,
-        )
-
-        # define Arg Group "Required Parameters"
-
-        _args_schema = cls._args_schema
-        _args_schema.resource_identifier = AAZStrArg(
-            options=["--resource-identifier"],
-            arg_group="Required Parameters",
-            help="Name or ARM id of the load test resource.",
-            required=True,
-            id_part="name",
         )
         return cls._args_schema
 
@@ -181,7 +177,7 @@ class Update(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "loadTestName", self.ctx.args.resource_identifier,
+                    "loadTestName", self.ctx.args.name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -280,7 +276,7 @@ class Update(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "loadTestName", self.ctx.args.resource_identifier,
+                    "loadTestName", self.ctx.args.name,
                     required=True,
                 ),
                 **self.serialize_url_param(

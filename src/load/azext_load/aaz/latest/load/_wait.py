@@ -40,9 +40,9 @@ class Wait(AAZWaitCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.resource_identifier = AAZStrArg(
-            options=["--resource-identifier"],
-            help="Name or ARM id of the load test resource.",
+        _args_schema.name = AAZStrArg(
+            options=["-n", "--name"],
+            help="Name of the load test resource.",
             required=True,
             id_part="name",
         )
@@ -99,7 +99,7 @@ class Wait(AAZWaitCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "loadTestName", self.ctx.args.resource_identifier,
+                    "loadTestName", self.ctx.args.name,
                     required=True,
                 ),
                 **self.serialize_url_param(
