@@ -12,8 +12,12 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+0.5.113
++++++++
+
 * Fix workload identity update error after oidc issure GA in azure-cli.
 * Fix `az aks update` command failing on SP-based cluster blocked by validation in AzureMonitorMetrics Addon, see issue `\#5336 <https://github.com/Azure/azure-cli-extensions/issues/5488>`_.
+* Fix `az aks update` command failing on changes not related to outbound type conversion, see issue `\#24430 https://github.com/Azure/azure-cli/issues/24430>`_.
 
 0.5.112
 +++++++
