@@ -364,23 +364,17 @@ def _submit_qir(cmd, program_args, resource_group_name, workspace_name, location
     container_uri = blob_uri[0:start_of_blob_name - 1] + "?" + blob_uri.split('?')[1]
     ws_info = WorkspaceInfo(cmd, resource_group_name, workspace_name, location)
     target_info = TargetInfo(cmd, target_id)
-    # >>>>> Not sure what this line in the spec example was supposed to be.  The arguments[] syntax doesn't work >>>>> 
-    # input_params = {arguments[],'targetCapability':'FullComputation','entryPoint':'QuantumRNG__GenerateRandomBits','shots':'500'}
-    # input_params = {"arguments[]":"",'targetCapability':'FullComputation','entryPoint':'QuantumRNG__GenerateRandomBits','shots':'500'}
-    # input_params = {'targetCapability':'FullComputation','entryPoint':'QuantumRNG__GenerateRandomBits','shots':'500'}
-    input_params = {'targetCapability': target_capability, 'shots': shots}
+    # >>>>>
+    # input_params = {'arguments':[], 'targetCapability': target_capability, 'shots': shots,'entryPoint':'Qrng__SampleQuantumRandomNumberGenerator'}
+    input_params = {'arguments':[], 'targetCapability': 'AdaptiveExecution', 'shots': 250,'entryPoint':'Qrng__SampleQuantumRandomNumberGenerator'}
     # <<<<<
 
     job_id = str(uuid.uuid4())
     client = cf_jobs(cmd.cli_ctx, ws_info.subscription, ws_info.resource_group, ws_info.name, ws_info.location)
     job_details = {'container_uri': container_uri,          # >>>>> See vendored_sdks\azure_quantum\models\_models_py3.py, line 132
                    'input_data_format': job_input_format,
-                #    'input_data_format': 'application/x-microsoft.ionq-ir.v3',
-                #    'input_data_format': 'ionq-ir.v3',
-                #    'input_data_format': 'application/json',
                    'output_data_format': job_output_format,
                    'inputParams': input_params,
-                #    'inputParams': args,
                    'provider_id': target_info.target_id.split('.')[0],
                    'target': target_info.target_id}
 
