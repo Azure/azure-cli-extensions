@@ -42,7 +42,7 @@ class Create(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.configuration_profile_name = AAZStrArg(
-            options=["--configuration-profile-name"],
+            options=["--profile-name", "--configuration-profile-name"],
             help="Name of the configuration profile.",
             required=True,
             id_part="name",

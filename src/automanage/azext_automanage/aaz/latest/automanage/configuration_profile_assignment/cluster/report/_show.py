@@ -49,7 +49,7 @@ class Show(AAZCommand):
             id_part="name",
         )
         _args_schema.configuration_profile_assignment_name = AAZStrArg(
-            options=["--configuration-profile-assignment-name"],
+            options=["--assignment-name", "--configuration-profile-assignment-name"],
             help="The configuration profile assignment name.",
             required=True,
             id_part="child_name_1",
