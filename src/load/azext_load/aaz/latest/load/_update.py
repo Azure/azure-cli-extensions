@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "load update",
 )
 class Update(AAZCommand):
-    """Update LoadTest resource.
+    """Update a loadtest resource.
     """
 
     _aaz_info = {
@@ -26,8 +26,6 @@ class Update(AAZCommand):
     }
 
     AZ_SUPPORT_NO_WAIT = True
-
-    AZ_SUPPORT_GENERIC_UPDATE = True
 
     def _handler(self, command_args):
         super()._handler(command_args)
@@ -45,6 +43,7 @@ class Update(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.resource_group = AAZResourceGroupNameArg(
+            help="Name of resource group. You can configure the default group using az configure --defaults group=<name>.",
             required=True,
         )
 
@@ -61,13 +60,11 @@ class Update(AAZCommand):
             options=["--user-assigned-identities"],
             arg_group="Optional Parameters",
             help="The set of user assigned identities associated with the resource. The userAssignedIdentities dictionary keys will be ARM resource ids in the form: '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identityName}. The dictionary values can be empty objects ({}) in requests.",
-            nullable=True,
         )
         _args_schema.description = AAZStrArg(
             options=["--description"],
             arg_group="Optional Parameters",
             help="Description of the resource.",
-            nullable=True,
             fmt=AAZStrArgFormat(
                 max_length=512,
             ),
@@ -75,27 +72,18 @@ class Update(AAZCommand):
         _args_schema.encryption_identity = AAZStrArg(
             options=["--encryption-identity"],
             arg_group="Optional Parameters",
-            help="user assigned identity to use for accessing key encryption key Url. Ex: /subscriptions/fa5fc227-a624-475e-b696-cdd604c735bc/resourceGroups/<resource group>/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myId",
-            nullable=True,
+            help="The managed identity for Customer-managed key settings defining which identity should be used to auth to Key Vault.",
         )
         _args_schema.encryption_identity_type = AAZStrArg(
             options=["--encryption-identity-type"],
             arg_group="Optional Parameters",
-            help="Managed identity type to use for accessing encryption key Url",
-            nullable=True,
+            help="Managed identity type to use for accessing encryption key Url.",
             enum={"SystemAssigned": "SystemAssigned", "UserAssigned": "UserAssigned"},
         )
         _args_schema.encryption_key = AAZStrArg(
             options=["--encryption-key"],
             arg_group="Optional Parameters",
-            help="key encryption key Url, versioned. Ex: https://contosovault.vault.azure.net/keys/contosokek/562a4bb76b524a1493a6afe8e536ee78 or https://contosovault.vault.azure.net/keys/contosokek.",
-            nullable=True,
-        )
-        _args_schema.tags = AAZDictArg(
-            options=["--tags"],
-            arg_group="Optional Parameters",
-            help="Space-separated tags: key[=value] [key[=value] ...]. Use \"\" to clear existing tags.",
-            nullable=True,
+            help="Encryption key URL, versioned. For example, https://contosovault.vault.azure.net/keys/contosokek/562a4bb76b524a1493a6afe8e536ee78.",
         )
         _args_schema.name = AAZStrArg(
             options=["-n", "--name"],
@@ -107,24 +95,13 @@ class Update(AAZCommand):
 
         user_assigned_identities = cls._args_schema.user_assigned_identities
         user_assigned_identities.Element = AAZObjectArg(
-            nullable=True,
             blank={},
-        )
-
-        tags = cls._args_schema.tags
-        tags.Element = AAZStrArg(
-            nullable=True,
         )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.LoadTestsGet(ctx=self.ctx)()
-        self.pre_instance_update(self.ctx.vars.instance)
-        self.InstanceUpdateByJson(ctx=self.ctx)()
-        self.InstanceUpdateByGeneric(ctx=self.ctx)()
-        self.post_instance_update(self.ctx.vars.instance)
-        yield self.LoadTestsCreateOrUpdate(ctx=self.ctx)()
+        yield self.LoadTestsUpdate(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -135,102 +112,11 @@ class Update(AAZCommand):
     def post_operations(self):
         pass
 
-    @register_callback
-    def pre_instance_update(self, instance):
-        pass
-
-    @register_callback
-    def post_instance_update(self, instance):
-        pass
-
     def _output(self, *args, **kwargs):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class LoadTestsGet(AAZHttpOperation):
-        CLIENT_TYPE = "MgmtClient"
-
-        def __call__(self, *args, **kwargs):
-            request = self.make_request()
-            session = self.client.send_request(request=request, stream=False, **kwargs)
-            if session.http_response.status_code in [200]:
-                return self.on_200(session)
-
-            return self.on_error(session.http_response)
-
-        @property
-        def url(self):
-            return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.LoadTestService/loadTests/{loadTestName}",
-                **self.url_parameters
-            )
-
-        @property
-        def method(self):
-            return "GET"
-
-        @property
-        def error_format(self):
-            return "MgmtErrorFormat"
-
-        @property
-        def url_parameters(self):
-            parameters = {
-                **self.serialize_url_param(
-                    "loadTestName", self.ctx.args.name,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "resourceGroupName", self.ctx.args.resource_group,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "subscriptionId", self.ctx.subscription_id,
-                    required=True,
-                ),
-            }
-            return parameters
-
-        @property
-        def query_parameters(self):
-            parameters = {
-                **self.serialize_query_param(
-                    "api-version", "2022-12-01",
-                    required=True,
-                ),
-            }
-            return parameters
-
-        @property
-        def header_parameters(self):
-            parameters = {
-                **self.serialize_header_param(
-                    "Accept", "application/json",
-                ),
-            }
-            return parameters
-
-        def on_200(self, session):
-            data = self.deserialize_http_content(session)
-            self.ctx.set_var(
-                "instance",
-                data,
-                schema_builder=self._build_schema_on_200
-            )
-
-        _schema_on_200 = None
-
-        @classmethod
-        def _build_schema_on_200(cls):
-            if cls._schema_on_200 is not None:
-                return cls._schema_on_200
-
-            cls._schema_on_200 = AAZObjectType()
-            _build_schema_load_test_resource_read(cls._schema_on_200)
-
-            return cls._schema_on_200
-
-    class LoadTestsCreateOrUpdate(AAZHttpOperation):
+    class LoadTestsUpdate(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -240,16 +126,16 @@ class Update(AAZCommand):
                 return self.client.build_lro_polling(
                     self.ctx.args.no_wait,
                     session,
-                    self.on_200_201,
+                    self.on_200,
                     self.on_error,
                     lro_options={"final-state-via": "azure-async-operation"},
                     path_format_arguments=self.url_parameters,
                 )
-            if session.http_response.status_code in [200, 201]:
+            if session.http_response.status_code in [200]:
                 return self.client.build_lro_polling(
                     self.ctx.args.no_wait,
                     session,
-                    self.on_200_201,
+                    self.on_200,
                     self.on_error,
                     lro_options={"final-state-via": "azure-async-operation"},
                     path_format_arguments=self.url_parameters,
@@ -266,7 +152,7 @@ class Update(AAZCommand):
 
         @property
         def method(self):
-            return "PUT"
+            return "PATCH"
 
         @property
         def error_format(self):
@@ -316,45 +202,11 @@ class Update(AAZCommand):
         def content(self):
             _content_value, _builder = self.new_content_builder(
                 self.ctx.args,
-                value=self.ctx.vars.instance,
-            )
-
-            return self.serialize_content(_content_value)
-
-        def on_200_201(self, session):
-            data = self.deserialize_http_content(session)
-            self.ctx.set_var(
-                "instance",
-                data,
-                schema_builder=self._build_schema_on_200_201
-            )
-
-        _schema_on_200_201 = None
-
-        @classmethod
-        def _build_schema_on_200_201(cls):
-            if cls._schema_on_200_201 is not None:
-                return cls._schema_on_200_201
-
-            cls._schema_on_200_201 = AAZObjectType()
-            _build_schema_load_test_resource_read(cls._schema_on_200_201)
-
-            return cls._schema_on_200_201
-
-    class InstanceUpdateByJson(AAZJsonInstanceUpdateOperation):
-
-        def __call__(self, *args, **kwargs):
-            self._update_instance(self.ctx.vars.instance)
-
-        def _update_instance(self, instance):
-            _instance_value, _builder = self.new_content_builder(
-                self.ctx.args,
-                value=instance,
-                typ=AAZObjectType
+                typ=AAZObjectType,
+                typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
             _builder.set_prop("identity", AAZObjectType)
             _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
-            _builder.set_prop("tags", AAZDictType, ".tags")
 
             identity = _builder.get(".identity")
             if identity is not None:
@@ -380,145 +232,124 @@ class Update(AAZCommand):
                 identity.set_prop("resourceId", AAZStrType, ".encryption_identity")
                 identity.set_prop("type", AAZStrType, ".encryption_identity_type")
 
-            tags = _builder.get(".tags")
-            if tags is not None:
-                tags.set_elements(AAZStrType, ".")
+            return self.serialize_content(_content_value)
 
-            return _instance_value
-
-    class InstanceUpdateByGeneric(AAZGenericInstanceUpdateOperation):
-
-        def __call__(self, *args, **kwargs):
-            self._update_instance_by_generic(
-                self.ctx.vars.instance,
-                self.ctx.generic_update_args
+        def on_200(self, session):
+            data = self.deserialize_http_content(session)
+            self.ctx.set_var(
+                "instance",
+                data,
+                schema_builder=self._build_schema_on_200
             )
 
+        _schema_on_200 = None
 
-_schema_load_test_resource_read = None
+        @classmethod
+        def _build_schema_on_200(cls):
+            if cls._schema_on_200 is not None:
+                return cls._schema_on_200
 
+            cls._schema_on_200 = AAZObjectType()
 
-def _build_schema_load_test_resource_read(_schema):
-    global _schema_load_test_resource_read
-    if _schema_load_test_resource_read is not None:
-        _schema.id = _schema_load_test_resource_read.id
-        _schema.identity = _schema_load_test_resource_read.identity
-        _schema.location = _schema_load_test_resource_read.location
-        _schema.name = _schema_load_test_resource_read.name
-        _schema.properties = _schema_load_test_resource_read.properties
-        _schema.system_data = _schema_load_test_resource_read.system_data
-        _schema.tags = _schema_load_test_resource_read.tags
-        _schema.type = _schema_load_test_resource_read.type
-        return
+            _schema_on_200 = cls._schema_on_200
+            _schema_on_200.id = AAZStrType(
+                flags={"read_only": True},
+            )
+            _schema_on_200.identity = AAZObjectType()
+            _schema_on_200.location = AAZStrType(
+                flags={"required": True},
+            )
+            _schema_on_200.name = AAZStrType(
+                flags={"read_only": True},
+            )
+            _schema_on_200.properties = AAZObjectType(
+                flags={"client_flatten": True},
+            )
+            _schema_on_200.system_data = AAZObjectType(
+                serialized_name="systemData",
+                flags={"read_only": True},
+            )
+            _schema_on_200.tags = AAZDictType()
+            _schema_on_200.type = AAZStrType(
+                flags={"read_only": True},
+            )
 
-    _schema_load_test_resource_read = AAZObjectType()
+            identity = cls._schema_on_200.identity
+            identity.principal_id = AAZStrType(
+                serialized_name="principalId",
+                flags={"read_only": True},
+            )
+            identity.tenant_id = AAZStrType(
+                serialized_name="tenantId",
+                flags={"read_only": True},
+            )
+            identity.type = AAZStrType(
+                flags={"required": True},
+            )
+            identity.user_assigned_identities = AAZDictType(
+                serialized_name="userAssignedIdentities",
+            )
 
-    load_test_resource_read = _schema_load_test_resource_read
-    load_test_resource_read.id = AAZStrType(
-        flags={"read_only": True},
-    )
-    load_test_resource_read.identity = AAZObjectType()
-    load_test_resource_read.location = AAZStrType(
-        flags={"required": True},
-    )
-    load_test_resource_read.name = AAZStrType(
-        flags={"read_only": True},
-    )
-    load_test_resource_read.properties = AAZObjectType(
-        flags={"client_flatten": True},
-    )
-    load_test_resource_read.system_data = AAZObjectType(
-        serialized_name="systemData",
-        flags={"read_only": True},
-    )
-    load_test_resource_read.tags = AAZDictType()
-    load_test_resource_read.type = AAZStrType(
-        flags={"read_only": True},
-    )
+            user_assigned_identities = cls._schema_on_200.identity.user_assigned_identities
+            user_assigned_identities.Element = AAZObjectType()
 
-    identity = _schema_load_test_resource_read.identity
-    identity.principal_id = AAZStrType(
-        serialized_name="principalId",
-        flags={"read_only": True},
-    )
-    identity.tenant_id = AAZStrType(
-        serialized_name="tenantId",
-        flags={"read_only": True},
-    )
-    identity.type = AAZStrType(
-        flags={"required": True},
-    )
-    identity.user_assigned_identities = AAZDictType(
-        serialized_name="userAssignedIdentities",
-    )
+            _element = cls._schema_on_200.identity.user_assigned_identities.Element
+            _element.client_id = AAZStrType(
+                serialized_name="clientId",
+                flags={"read_only": True},
+            )
+            _element.principal_id = AAZStrType(
+                serialized_name="principalId",
+                flags={"read_only": True},
+            )
 
-    user_assigned_identities = _schema_load_test_resource_read.identity.user_assigned_identities
-    user_assigned_identities.Element = AAZObjectType()
+            properties = cls._schema_on_200.properties
+            properties.data_plane_uri = AAZStrType(
+                serialized_name="dataPlaneURI",
+                flags={"read_only": True},
+            )
+            properties.description = AAZStrType()
+            properties.encryption = AAZObjectType()
+            properties.provisioning_state = AAZStrType(
+                serialized_name="provisioningState",
+            )
 
-    _element = _schema_load_test_resource_read.identity.user_assigned_identities.Element
-    _element.client_id = AAZStrType(
-        serialized_name="clientId",
-        flags={"read_only": True},
-    )
-    _element.principal_id = AAZStrType(
-        serialized_name="principalId",
-        flags={"read_only": True},
-    )
+            encryption = cls._schema_on_200.properties.encryption
+            encryption.identity = AAZObjectType()
+            encryption.key_url = AAZStrType(
+                serialized_name="keyUrl",
+            )
 
-    properties = _schema_load_test_resource_read.properties
-    properties.data_plane_uri = AAZStrType(
-        serialized_name="dataPlaneURI",
-        flags={"read_only": True},
-    )
-    properties.description = AAZStrType()
-    properties.encryption = AAZObjectType()
-    properties.provisioning_state = AAZStrType(
-        serialized_name="provisioningState",
-    )
+            identity = cls._schema_on_200.properties.encryption.identity
+            identity.resource_id = AAZStrType(
+                serialized_name="resourceId",
+            )
+            identity.type = AAZStrType()
 
-    encryption = _schema_load_test_resource_read.properties.encryption
-    encryption.identity = AAZObjectType()
-    encryption.key_url = AAZStrType(
-        serialized_name="keyUrl",
-    )
+            system_data = cls._schema_on_200.system_data
+            system_data.created_at = AAZStrType(
+                serialized_name="createdAt",
+            )
+            system_data.created_by = AAZStrType(
+                serialized_name="createdBy",
+            )
+            system_data.created_by_type = AAZStrType(
+                serialized_name="createdByType",
+            )
+            system_data.last_modified_at = AAZStrType(
+                serialized_name="lastModifiedAt",
+            )
+            system_data.last_modified_by = AAZStrType(
+                serialized_name="lastModifiedBy",
+            )
+            system_data.last_modified_by_type = AAZStrType(
+                serialized_name="lastModifiedByType",
+            )
 
-    identity = _schema_load_test_resource_read.properties.encryption.identity
-    identity.resource_id = AAZStrType(
-        serialized_name="resourceId",
-    )
-    identity.type = AAZStrType()
+            tags = cls._schema_on_200.tags
+            tags.Element = AAZStrType()
 
-    system_data = _schema_load_test_resource_read.system_data
-    system_data.created_at = AAZStrType(
-        serialized_name="createdAt",
-    )
-    system_data.created_by = AAZStrType(
-        serialized_name="createdBy",
-    )
-    system_data.created_by_type = AAZStrType(
-        serialized_name="createdByType",
-    )
-    system_data.last_modified_at = AAZStrType(
-        serialized_name="lastModifiedAt",
-    )
-    system_data.last_modified_by = AAZStrType(
-        serialized_name="lastModifiedBy",
-    )
-    system_data.last_modified_by_type = AAZStrType(
-        serialized_name="lastModifiedByType",
-    )
-
-    tags = _schema_load_test_resource_read.tags
-    tags.Element = AAZStrType()
-
-    _schema.id = _schema_load_test_resource_read.id
-    _schema.identity = _schema_load_test_resource_read.identity
-    _schema.location = _schema_load_test_resource_read.location
-    _schema.name = _schema_load_test_resource_read.name
-    _schema.properties = _schema_load_test_resource_read.properties
-    _schema.system_data = _schema_load_test_resource_read.system_data
-    _schema.tags = _schema_load_test_resource_read.tags
-    _schema.type = _schema_load_test_resource_read.type
+            return cls._schema_on_200
 
 
 __all__ = ["Update"]

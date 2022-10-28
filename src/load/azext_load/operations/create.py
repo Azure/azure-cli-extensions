@@ -1,16 +1,16 @@
-from ..aaz.latest.load._create import *
-from azure.cli.core.aaz import *
+from ..aaz.latest.load._create import Create
+from azure.cli.core.aaz import AAZListArg, AAZStrArg, has_value
 from msrestazure.tools import is_valid_resource_id
 from azure.core.exceptions import raise_with_traceback, ServiceRequestError
+
+
 class LoadTestCreate(Create):
-    
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
         args_schema = super()._build_arguments_schema(*args, **kwargs)
-        
         args_schema.user_assigned = AAZListArg(
             options=['--user-assigned'],
-            arg_group="Optional Parameters", 
+            arg_group="Optional Parameters",
             help="The list of user identities associated with the resource separated by spaces. The user identity will be ARM resource ids in the form: '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identityName}'"
         )
         args_schema.user_assigned.Element = AAZStrArg()
