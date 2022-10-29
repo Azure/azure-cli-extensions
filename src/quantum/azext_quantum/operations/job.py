@@ -11,6 +11,7 @@ import knack.log
 import os
 import uuid
 
+from azure.cli.command_modules.storage.operations.account import show_storage_account_connection_string
 from azure.cli.core.azclierror import (FileOperationError, AzureInternalError,
                                        InvalidArgumentValueError, AzureResponseError,
                                        RequiredArgumentMissingError)
@@ -27,6 +28,8 @@ from ..vendored_sdks.azure_quantum.operations import (
 )
 from ..vendored_sdks.azure_quantum.models import BlobDetails, JobStatus
 from ..vendored_sdks.azure_quantum.operations._jobs_operations import JobsOperations    # Was "import Job" in qdk-python
+
+# >>>>> >>>>> Import these functions from qdk-python and remove the local copy of storage.py <<<<< <<<<<
 from .storage import create_container, create_container_using_client, get_container_uri, ContainerClient, upload_blob
 
 
@@ -268,7 +271,7 @@ def submit(cmd, program_args, resource_group_name, workspace_name, location, tar
                           project, job_name, shots, storage, no_build, job_params, target_capability)
 
 
-# # >>>>> This doesn't work -- It needs to generate JSON >>>>> >>>>> >>>>> 
+# # >>>>> This doesn't work for submitting QIR -- It needs to generate JSON >>>>> >>>>> >>>>> 
 # def _generate_qir_submit_args(program_args, job_name, shots, job_params):
 #     """ Generates the list of arguments for submitting a QIR job """
 
@@ -327,22 +330,21 @@ def _submit_qir(cmd, program_args, resource_group_name, workspace_name, location
         raise RequiredArgumentMissingError("Failed to submit QIR job: No --job-input-source path was specified.", JOB_SUBMIT_DOC_LINK_MSG)
 
     # Upload the QIR file to the workspace's storage account
-    # knack_logger.warning("Uploading the QIR file the Azure Storage account...")
-    
-    # >>>>> Temporarily use a hard-coded connection string <<<<<
-    connection_string = <DELETED BEFORE PUSHING TO GITHUB>
-    
-    container_name = "cli-qir-job-" + str(uuid.uuid4())     # <<<<< Should this start with "quantum-job"? <<<<<
+    if storage is None:
+        # >>>>> Look up the storage account name here <<<<< 
+        storage = "vwjonesstorage2"
+        # <<<<<
 
+    connection_string_dict = show_storage_account_connection_string(cmd, resource_group_name, storage)
+    connection_string = connection_string_dict["connectionString"]
+    container_name = "cli-qir-job-" + str(uuid.uuid4())                      # <<<<< Should this start with "quantum-job"? <<<<<
     container_client = create_container(connection_string, container_name)
     blob_name = "inputData"
-    # content_type = "qir.v1"
-    content_type = job_input_format
-    content_encoding = "utf-8"
+    # content_type = job_input_format
+    content_type = "application/x-qir.v1"   # <<<<<< This is what a Q# executable sets for the inputData blob, but "qir.v1" is shown in the inputParams
+    content_encoding = None
     return_sas_token = True
-
-    # Open the QIR input file and upload it to a blob
-    with open(job_input_source, encoding="utf-8") as qir_file:
+    with open(job_input_source, "rb") as qir_file:
         blob_data = qir_file.read()
     blob_uri = upload_blob(container_client, blob_name, content_type, content_encoding, blob_data, return_sas_token)
 
