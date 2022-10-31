@@ -13,7 +13,8 @@ from ._validators import (validate_env, validate_cosmos_type, validate_resource_
                           validate_vnet, validate_vnet_required_parameters, validate_node_resource_group,
                           validate_tracing_parameters_asc_create, validate_tracing_parameters_asc_update,
                           validate_app_insights_parameters, validate_instance_count, validate_java_agent_parameters,
-                          validate_ingress_timeout, validate_jar, validate_ingress_send_timeout, validate_ingress_session_max_age)
+                          validate_ingress_timeout, validate_remote_debugging_port, validate_jar, validate_ingress_send_timeout,
+                          validate_ingress_session_max_age)
 from ._validators_enterprise import (only_support_enterprise, validate_builder_resource, validate_builder_create,
                                      validate_builder_update, validate_build_pool_size,
                                      validate_git_uri, validate_acs_patterns, validate_config_file_patterns,
@@ -287,6 +288,18 @@ def load_arguments(self, _):
             c.argument('deployment', options_list=[
                 '--deployment', '-d'], help='Name of an existing deployment of the app. Default to the production deployment if not specified.', validator=fulfill_deployment_param)
 
+    for scope in ['spring app disable-remote-debugging', 'spring app get-remote-debugging-config']:
+        with self.argument_context(scope) as c:
+            c.argument('deployment', options_list=[
+                '--deployment', '-d'], help='Name of an existing deployment of the app. Default to the production deployment if not specified.', validator=fulfill_deployment_param)
+
+    with self.argument_context('spring app enable-remote-debugging') as c:
+        c.argument('deployment', options_list=[
+            '--deployment', '-d'], help='Name of an existing deployment of the app. Default to the production deployment if not specified.', validator=fulfill_deployment_param)
+        c.argument('remote_debugging_port', options_list=['--port', '-p'], type=int, default=5005,
+                   help='Remote debugging port, the value should be from 1024 to 65536, default value is 5005',
+                   validator=validate_remote_debugging_port)
+
     with self.argument_context('spring app unset-deployment') as c:
         c.argument('name', name_type, help='Name of app.', validator=active_deployment_exist)
 
@@ -302,7 +315,6 @@ def load_arguments(self, _):
                    arg_type=get_three_state_flag(),
                    help="Enable system-assigned managed identity on an app.")
         c.argument('user_assigned',
-                   is_preview=True,
                    nargs='+',
                    help="Space-separated user-assigned managed identity resource IDs to assgin to an app.")
 
@@ -311,7 +323,6 @@ def load_arguments(self, _):
                    arg_type=get_three_state_flag(),
                    help="Remove system-assigned managed identity.")
         c.argument('user_assigned',
-                   is_preview=True,
                    nargs='*',
                    help="Space-separated user-assigned managed identity resource IDs to remove. If no ID is provided, remove ALL user-assigned managed identities.")
 

@@ -64,6 +64,20 @@ def validate_ssh_key(namespace):
     namespace.ssh_key_value = content
 
 
+def validate_ssh_key_for_update(namespace):
+    string_or_file = namespace.ssh_key_value
+    if not string_or_file:
+        return
+    content = string_or_file
+    if os.path.exists(string_or_file):
+        logger.info('Use existing SSH public key file: %s', string_or_file)
+        with open(string_or_file, 'r') as f:
+            content = f.read()
+    elif not keys.is_valid_ssh_rsa_public_key(content):
+        raise InvalidArgumentValueError('An RSA key file or key value must be supplied to SSH Key Value')
+    namespace.ssh_key_value = content
+
+
 def validate_create_parameters(namespace):
     if not namespace.name:
         raise CLIError('--name has no value')
@@ -316,7 +330,8 @@ def validate_load_balancer_idle_timeout(namespace):
 def validate_load_balancer_backend_pool_type(namespace):
     """validate load balancer backend pool type"""
     if namespace.load_balancer_backend_pool_type is not None:
-        if namespace.load_balancer_backend_pool_type not in [CONST_LOAD_BALANCER_BACKEND_POOL_TYPE_NODE_IP, CONST_LOAD_BALANCER_BACKEND_POOL_TYPE_NODE_IPCONFIGURATION]:
+        if namespace.load_balancer_backend_pool_type not in [CONST_LOAD_BALANCER_BACKEND_POOL_TYPE_NODE_IP,
+                                                             CONST_LOAD_BALANCER_BACKEND_POOL_TYPE_NODE_IPCONFIGURATION]:
             raise InvalidArgumentValueError(
                 f"Invalid Load Balancer Backend Pool Type {namespace.load_balancer_backend_pool_type}, supported values are nodeIP and nodeIPConfiguration")
 
@@ -639,6 +654,14 @@ def validate_enable_custom_ca_trust(namespace):
                 '--enable_custom_ca_trust can only be set for Linux nodepools')
 
 
+def validate_disable_windows_outbound_nat(namespace):
+    """Validates disable_windows_outbound_nat can only be used on Windows."""
+    if namespace.disable_windows_outbound_nat:
+        if hasattr(namespace, 'os_type') and str(namespace.os_type).lower() != "windows":
+            raise ArgumentUsageError(
+                '--disable-windows-outbound-nat can only be set for Windows nodepools')
+
+
 def validate_defender_config_parameter(namespace):
     if namespace.defender_config and not namespace.enable_defender:
         raise RequiredArgumentMissingError("Please specify --enable-defnder")
@@ -647,3 +670,119 @@ def validate_defender_config_parameter(namespace):
 def validate_defender_disable_and_enable_parameters(namespace):
     if namespace.disable_defender and namespace.enable_defender:
         raise ArgumentUsageError('Providing both --disable-defender and --enable-defender flags is invalid')
+
+
+def sanitize_resource_id(resource_id):
+    resource_id = resource_id.strip()
+    if not resource_id.startswith("/"):
+        resource_id = "/" + resource_id
+    if resource_id.endswith("/"):
+        resource_id = resource_id.rstrip("/")
+    return resource_id.lower()
+
+
+def validate_azuremonitorworkspaceresourceid(namespace):
+    resource_id = namespace.azure_monitor_workspace_resource_id
+    if resource_id is None:
+        return
+    resource_id = sanitize_resource_id(resource_id)
+    if (bool(re.match(r'/subscriptions/.*/resourcegroups/.*/providers/microsoft.monitor/accounts/.*', resource_id))) is False:
+        raise ArgumentUsageError("--azure-monitor-workspace-resource-id not in the correct format. It should match `/subscriptions/<subscriptionId>/resourceGroups/<resourceGroupName>/providers/microsoft.monitor/accounts/<resourceName>`")
+
+
+def validate_grafanaresourceid(namespace):
+    resource_id = namespace.grafana_resource_id
+    if resource_id is None:
+        return
+    resource_id = sanitize_resource_id(resource_id)
+    if (bool(re.match(r'/subscriptions/.*/resourcegroups/.*/providers/microsoft.dashboard/grafana/.*', resource_id))) is False:
+        raise ArgumentUsageError("--grafana-resource-id not in the correct format. It should match `/subscriptions/<subscriptionId>/resourceGroups/<resourceGroupName>/providers/microsoft.dashboard/grafana/<resourceName>`")
+
+
+def validate_ksm_parameter(ksmparam):
+    labelValueMap = {}
+    ksmStrLength = len(ksmparam)
+    EOF = -1
+    next = ""
+    name = ""
+    firstWordPos = 0
+    for i, v in enumerate(ksmparam):
+        if i + 1 == ksmStrLength:
+            next = EOF
+        else:
+            next = ord(ksmparam[i + 1])
+        if i - 1 >= 0:
+            previous = ord(ksmparam[i - 1])
+        else:
+            previous = v
+        if v == "=":
+            if previous == ord(",") or next != ord("["):
+                raise InvalidArgumentValueError("Please format --metric properly. For eg. : --ksm-metric-labels-allow-list \"=namespaces=[k8s-label-1,k8s-label-n,...],pods=[app],...)\" and --ksm-metric-annotations-allow-list \"namespaces=[kubernetes.io/team,...],pods=[kubernetes.io/team],...\"")
+            name = ksmparam[firstWordPos:i]
+            labelValueMap[name] = []
+            firstWordPos = i + 1
+        elif v == "[":
+            if previous != ord("="):
+                raise InvalidArgumentValueError("Please format --metric properly. For eg. : --ksm-metric-labels-allow-list \"=namespaces=[k8s-label-1,k8s-label-n,...],pods=[app],...)\" and --ksm-metric-annotations-allow-list \"namespaces=[kubernetes.io/team,...],pods=[kubernetes.io/team],...\"")
+            firstWordPos = i + 1
+        elif v == "]":
+            # if after metric group, has char not comma or end.
+            if next != EOF and next != ord(","):
+                raise InvalidArgumentValueError("Please format --metric properly. For eg. : --ksm-metric-labels-allow-list \"=namespaces=[k8s-label-1,k8s-label-n,...],pods=[app],...)\" and --ksm-metric-annotations-allow-list \"namespaces=[kubernetes.io/team,...],pods=[kubernetes.io/team],...\"")
+            if previous != ord("["):
+                labelValueMap[name].append(ksmparam[firstWordPos:i])
+            firstWordPos = i + 1
+        elif v == ",":
+            # if starts or ends with comma
+            if previous == v or next == EOF or next == ord("]"):
+                raise InvalidArgumentValueError("Please format --metric properly. For eg. : --ksm-metric-labels-allow-list \"=namespaces=[k8s-label-1,k8s-label-n,...],pods=[app],...)\" and --ksm-metric-annotations-allow-list \"namespaces=[kubernetes.io/team,...],pods=[kubernetes.io/team],...\"")
+            if previous != ord("]"):
+                labelValueMap[name].append(ksmparam[firstWordPos:i])
+            firstWordPos = i + 1
+    for label in labelValueMap:
+        if (bool(re.match(r'^[a-zA-Z_][A-Za-z0-9_]+$', label))) is False:
+            raise InvalidArgumentValueError("Please format --metric properly. For eg. : --ksm-metric-labels-allow-list \"=namespaces=[k8s-label-1,k8s-label-n,...],pods=[app],...)\" and --ksm-metric-annotations-allow-list \"namespaces=[kubernetes.io/team,...],pods=[kubernetes.io/team],...\"")
+
+
+def validate_ksm_labels(namespace):
+    if namespace.ksm_metric_labels_allow_list is None:
+        return
+    validate_ksm_parameter(namespace.ksm_metric_labels_allow_list)
+
+
+def validate_ksm_annotations(namespace):
+    if namespace.ksm_metric_annotations_allow_list is None:
+        return
+    validate_ksm_parameter(namespace.ksm_metric_annotations_allow_list)
+
+
+def validate_allowed_host_ports(namespace):
+    if hasattr(namespace, "nodepool_allowed_host_ports"):
+        host_ports = namespace.nodepool_allowed_host_ports
+    else:
+        host_ports = namespace.allowed_host_ports
+    if not host_ports:
+        return
+
+    regex = re.compile(r'^((\d+)|(\d+-\d+))/(tcp|udp)$')
+    for port_range in host_ports.split(","):
+        found = regex.findall(port_range)
+        if found:
+            continue
+        raise InvalidArgumentValueError(
+            "--allowed-host-ports must be a comma-separated list of port ranges in the format of <port-range>/<protocol>"
+        )
+
+
+def validate_application_security_groups(namespace):
+    if hasattr((namespace), "nodepool_asg_ids"):
+        asg_ids = namespace.nodepool_asg_ids
+    else:
+        asg_ids = namespace.asg_ids
+    if not asg_ids:
+        return
+
+    from msrestazure.tools import is_valid_resource_id
+    for asg in asg_ids.split(","):
+        if not is_valid_resource_id(asg):
+            raise InvalidArgumentValueError(asg + " is not a valid Azure resource ID.")

@@ -1,5 +1,22 @@
 Release History
 ===============
+1.1.13
+---
+* Stop execution and throw exception when operation status is `Failed`.
+
+1.1.12
+---
+* Add warning logs when editing builders and buildpack bindings.
+
+1.1.11
+---
+* Add command `az spring app deployment enable-remote-debugging`.
+* Add command `az spring app deployment disable-remote-debugging`.
+* Add command `az spring app deployment get-remote-debugging-config`.
+
+1.1.10
+---
+* Remove `Preview` tag for user-assigned identities of apps.
 
 1.1.9
 ---

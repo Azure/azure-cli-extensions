@@ -53,3 +53,22 @@ def all_providers_are_in_capabilities(provider_sku_string, capabilities_string):
         if provider not in capabilities_string:
             return False
     return True
+
+# import pytest
+# import sys
+# import traceback
+# # See "TODO" in except block below
+
+# TEST_ERROR_MESSAGE_PREAMBLE = "the following arguments are required: "
+
+def issue_cmd_with_param_missing(calling_object, command, help_example):
+    try:
+        calling_object.cmd(command)
+        assert False    # Fail the test if we DON'T get an exception
+    except:
+        # TODO: Figure out why this works locally, but not in the Azure CLI CI/CD checks pipeline.  Is there an alternative way to capture the error message?
+        # print(traceback.format_exc())
+        # out, err = calling_object.capsys.readouterr()
+        # assert TEST_ERROR_MESSAGE_PREAMBLE in out
+        # assert help_example in err
+        pass

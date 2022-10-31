@@ -231,6 +231,36 @@ class CustomImageTest(ScenarioTest):
             self.check('properties.source.customContainer.languageFramework', 'springboot'),
         ])
 
+
+class RemoteDebuggingTest(ScenarioTest):
+    def test_remote_debugging(self):
+        py_path = os.path.abspath(os.path.dirname(__file__))
+        file_path = os.path.join(py_path, 'files/test.jar').replace("\\", "/")
+        self.kwargs.update({
+            'app': 'test-remote-debugging',
+            'serviceName': 'cli-unittest',
+            'resourceGroup': 'cli',
+            'location': 'centralindia',
+            'deployment': 'default',
+            'file': file_path
+        })
+
+        self.cmd('spring app create -s {serviceName} -g {resourceGroup} -n {app}')
+
+        # remote debugging can only be supported for jar, here will throw exception for default banner
+        self.cmd(
+            'spring app enable-remote-debugging -n {app} -g {resourceGroup} -s {serviceName} -d {deployment}', expect_failure=True)
+
+        self.cmd(
+            'spring app disable-remote-debugging -n {app} -g {resourceGroup} -s {serviceName} -d {deployment}')
+
+        self.cmd(
+            'spring app get-remote-debugging-config -n {app} -g {resourceGroup} -s {serviceName} -d {deployment}',
+            checks=[
+                self.check('enabled', False)
+            ])
+
+
 class AppConnectTest(ScenarioTest):
 
     def test_app_connect(self):
