@@ -1,8 +1,12 @@
 Release History
 ===============
-1.1.14
+1.1.15
 ---
 * Support configure app level route in Spring Cloud Gateway route configs.
+
+1.1.14
+---
+* Add warn when update Config Server or Application Configuration Service with SSH auth.
 
 1.1.13
 ---
