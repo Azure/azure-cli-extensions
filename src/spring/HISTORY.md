@@ -1,5 +1,9 @@
 Release History
 ===============
+1.1.14
+---
+* Add warn when update Config Server or Application Configuration Service with SSH auth.
+
 1.1.13
 ---
 * Stop execution and throw exception when operation status is `Failed`.
