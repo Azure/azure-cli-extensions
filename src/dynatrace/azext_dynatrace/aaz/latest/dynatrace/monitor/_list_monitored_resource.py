@@ -13,9 +13,10 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "dynatrace monitor list-monitored-resource",
+    confirmation="",
 )
 class ListMonitoredResource(AAZCommand):
-    """List monitor resources by resource group
+    """List the resources currently being monitored by the dynatrace monitor resource
 
     :example: List-monitored-resource
         az dynatrace monitor list-monitored-resource -g rg --monitor-name monitor
@@ -58,11 +59,11 @@ class ListMonitoredResource(AAZCommand):
         self.MonitorsListMonitoredResources(ctx=self.ctx)()
         self.post_operations()
 
-    # @register_callback
+    @register_callback
     def pre_operations(self):
         pass
 
-    # @register_callback
+    @register_callback
     def post_operations(self):
         pass
 

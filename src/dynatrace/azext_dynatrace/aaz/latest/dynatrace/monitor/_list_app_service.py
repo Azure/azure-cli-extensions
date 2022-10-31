@@ -13,9 +13,10 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "dynatrace monitor list-app-service",
+    confirmation="",
 )
 class ListAppService(AAZCommand):
-    """Get list of App services with dynatrace PaaS oneagent enabled
+    """Get list of app services with dynatrace PaaS OneAgent enabled
 
     :example: List-app-service
         az dynatrace monitor list-app-service -g rg --monitor-name monitor
@@ -58,11 +59,11 @@ class ListAppService(AAZCommand):
         self.MonitorsListAppServices(ctx=self.ctx)()
         self.post_operations()
 
-    # @register_callback
+    @register_callback
     def pre_operations(self):
         pass
 
-    # @register_callback
+    @register_callback
     def post_operations(self):
         pass
 

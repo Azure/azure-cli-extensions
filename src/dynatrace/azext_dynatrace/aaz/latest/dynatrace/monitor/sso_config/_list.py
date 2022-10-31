@@ -12,22 +12,26 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "dynatrace monitor sso-config wait",
+    "dynatrace monitor sso-config list",
+    confirmation="",
 )
-class Wait(AAZWaitCommand):
-    """Place the CLI in a waiting state until a condition is met.
+class List(AAZCommand):
+    """List all dynatrace sso-config by monitor name
+
+    :example: List sso-config
+        az dynatrace monitor sso-config list -g rg --monitor-name monitor
     """
 
     _aaz_info = {
+        "version": "2021-09-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/dynatrace.observability/monitors/{}/singlesignonconfigurations/{}", "2021-09-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/dynatrace.observability/monitors/{}/singlesignonconfigurations", "2021-09-01"],
         ]
     }
 
     def _handler(self, command_args):
         super()._handler(command_args)
-        self._execute_operations()
-        return self._output()
+        return self.build_paging(self._execute_operations, self._output)
 
     _args_schema = None
 
@@ -40,17 +44,10 @@ class Wait(AAZWaitCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.configuration_name = AAZStrArg(
-            options=["-n", "--name", "--configuration-name"],
-            help="Single Sign On Configuration Name",
-            required=True,
-            id_part="child_name_1",
-        )
         _args_schema.monitor_name = AAZStrArg(
             options=["--monitor-name"],
             help="Monitor resource name",
             required=True,
-            id_part="name",
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -59,22 +56,23 @@ class Wait(AAZWaitCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        self.SingleSignOnGet(ctx=self.ctx)()
+        self.SingleSignOnList(ctx=self.ctx)()
         self.post_operations()
 
-    # @register_callback
+    @register_callback
     def pre_operations(self):
         pass
 
-    # @register_callback
+    @register_callback
     def post_operations(self):
         pass
 
     def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=False)
-        return result
+        result = self.deserialize_output(self.ctx.vars.instance.value, client_flatten=True)
+        next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
+        return result, next_link
 
-    class SingleSignOnGet(AAZHttpOperation):
+    class SingleSignOnList(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -88,7 +86,7 @@ class Wait(AAZWaitCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Dynatrace.Observability/monitors/{monitorName}/singleSignOnConfigurations/{configurationName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Dynatrace.Observability/monitors/{monitorName}/singleSignOnConfigurations",
                 **self.url_parameters
             )
 
@@ -103,10 +101,6 @@ class Wait(AAZWaitCommand):
         @property
         def url_parameters(self):
             parameters = {
-                **self.serialize_url_param(
-                    "configurationName", self.ctx.args.configuration_name,
-                    required=True,
-                ),
                 **self.serialize_url_param(
                     "monitorName", self.ctx.args.monitor_name,
                     required=True,
@@ -159,24 +153,35 @@ class Wait(AAZWaitCommand):
             cls._schema_on_200 = AAZObjectType()
 
             _schema_on_200 = cls._schema_on_200
-            _schema_on_200.id = AAZStrType(
+            _schema_on_200.next_link = AAZStrType(
+                serialized_name="nextLink",
+            )
+            _schema_on_200.value = AAZListType(
+                flags={"required": True},
+            )
+
+            value = cls._schema_on_200.value
+            value.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element
+            _element.id = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200.name = AAZStrType(
+            _element.name = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200.properties = AAZObjectType(
+            _element.properties = AAZObjectType(
                 flags={"required": True, "client_flatten": True},
             )
-            _schema_on_200.system_data = AAZObjectType(
+            _element.system_data = AAZObjectType(
                 serialized_name="systemData",
                 flags={"read_only": True},
             )
-            _schema_on_200.type = AAZStrType(
+            _element.type = AAZStrType(
                 flags={"read_only": True},
             )
 
-            properties = cls._schema_on_200.properties
+            properties = cls._schema_on_200.value.Element.properties
             properties.aad_domains = AAZListType(
                 serialized_name="aadDomains",
             )
@@ -185,7 +190,6 @@ class Wait(AAZWaitCommand):
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
-                flags={"read_only": True},
             )
             properties.single_sign_on_state = AAZStrType(
                 serialized_name="singleSignOnState",
@@ -194,36 +198,30 @@ class Wait(AAZWaitCommand):
                 serialized_name="singleSignOnUrl",
             )
 
-            aad_domains = cls._schema_on_200.properties.aad_domains
+            aad_domains = cls._schema_on_200.value.Element.properties.aad_domains
             aad_domains.Element = AAZStrType()
 
-            system_data = cls._schema_on_200.system_data
+            system_data = cls._schema_on_200.value.Element.system_data
             system_data.created_at = AAZStrType(
                 serialized_name="createdAt",
-                flags={"read_only": True},
             )
             system_data.created_by = AAZStrType(
                 serialized_name="createdBy",
-                flags={"read_only": True},
             )
             system_data.created_by_type = AAZStrType(
                 serialized_name="createdByType",
-                flags={"read_only": True},
             )
             system_data.last_modified_at = AAZStrType(
                 serialized_name="lastModifiedAt",
-                flags={"read_only": True},
             )
             system_data.last_modified_by = AAZStrType(
                 serialized_name="lastModifiedBy",
-                flags={"read_only": True},
             )
             system_data.last_modified_by_type = AAZStrType(
                 serialized_name="lastModifiedByType",
-                flags={"read_only": True},
             )
 
             return cls._schema_on_200
 
 
-__all__ = ["Wait"]
+__all__ = ["List"]

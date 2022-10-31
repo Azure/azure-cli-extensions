@@ -13,12 +13,13 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "dynatrace monitor tag-rule create",
+    confirmation="",
 )
 class Create(AAZCommand):
     """Create a tag rule
 
-    :example: Create a tag rule
-        az dynatrace monitor tag-rule create -g rg --monitor-name monitor -n default --log-rules {send-aad-logs:enabled,send-subscription-logs:enabled,send-activity-logs:enabled,filtering-tags:[{name:env,value:prod,action:include},{name:env,value:dev,action:exclude}] --metric-rules {{filtering-tags:[{{name:env,value:prod,action:include}}]}}
+    :example: Create tag-rule
+        az dynatrace monitor tag-rule create -g rg --monitor-name monitor -n default --log-rules "{send-aad-logs:enabled,send-subscription-logs:enabled,send-activity-logs:enabled,filtering-tags:[{name:env,value:prod,action:include},{name:env,value:dev,action:exclude}]}" --metric-rules "{filtering-tags:[{name:env,value:prod,action:include}]}"
     """
 
     _aaz_info = {
@@ -143,7 +144,17 @@ class Create(AAZCommand):
         _schema.value = cls._args_filtering_tag_create.value
 
     def _execute_operations(self):
+        self.pre_operations()
         yield self.TagRulesCreateOrUpdate(ctx=self.ctx)()
+        self.post_operations()
+
+    @register_callback
+    def pre_operations(self):
+        pass
+
+    @register_callback
+    def post_operations(self):
+        pass
 
     def _output(self, *args, **kwargs):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
@@ -314,7 +325,6 @@ class Create(AAZCommand):
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
-                flags={"read_only": True},
             )
 
             log_rules = cls._schema_on_200_201.properties.log_rules
@@ -347,27 +357,21 @@ class Create(AAZCommand):
             system_data = cls._schema_on_200_201.system_data
             system_data.created_at = AAZStrType(
                 serialized_name="createdAt",
-                flags={"read_only": True},
             )
             system_data.created_by = AAZStrType(
                 serialized_name="createdBy",
-                flags={"read_only": True},
             )
             system_data.created_by_type = AAZStrType(
                 serialized_name="createdByType",
-                flags={"read_only": True},
             )
             system_data.last_modified_at = AAZStrType(
                 serialized_name="lastModifiedAt",
-                flags={"read_only": True},
             )
             system_data.last_modified_by = AAZStrType(
                 serialized_name="lastModifiedBy",
-                flags={"read_only": True},
             )
             system_data.last_modified_by_type = AAZStrType(
                 serialized_name="lastModifiedByType",
-                flags={"read_only": True},
             )
 
             return cls._schema_on_200_201

@@ -16,9 +16,9 @@ from azure.cli.core.aaz import *
     confirmation="Are you sure you want to perform this operation?",
 )
 class Delete(AAZCommand):
-    """Delete a TagRule
+    """Delete a tag rule
 
-    :example: Delete a tag rule
+    :example: Delete tag-rule
         az dynatrace monitor tag-rule delete -g rg --monitor-name monitor -n default -y
     """
 
@@ -64,7 +64,17 @@ class Delete(AAZCommand):
         return cls._args_schema
 
     def _execute_operations(self):
+        self.pre_operations()
         yield self.TagRulesDelete(ctx=self.ctx)()
+        self.post_operations()
+
+    @register_callback
+    def pre_operations(self):
+        pass
+
+    @register_callback
+    def post_operations(self):
+        pass
 
     class TagRulesDelete(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"

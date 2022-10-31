@@ -77,7 +77,7 @@ az dynatrace monitor list-monitored-resource -g rg --monitor-name monitor
 ##### Create #####
 ```
 az dynatrace monitor tag-rule create -g rg --monitor-name monitor -n default 
---log-rules {send-aad-logs:enabled,send-subscription-logs:enabled,send-activity-logs:enabled,filtering-tags:[{name:env,value:prod,action:include},{name:env,value:dev,action:exclude}] 
+--log-rules {send-aad-logs:enabled,send-subscription-logs:enabled,send-activity-logs:enabled,filtering-tags:[{name:env,value:prod,action:include},{name:env,value:dev,action:exclude}]} 
 --metric-rules {{filtering-tags:[{{name:env,value:prod,action:include}}]}}
 
 ```
@@ -104,7 +104,7 @@ az dynatrace monitor tag-rule delete -g rg --monitor-name monitor -n default -y
 ##### Create #####
 ```
 az dynatrace monitor sso-config create -g rg --monitor-name monitor -n default 
---aad-domains [\'mpliftrdt20210811outlook.onmicrosoft.com\'] --single-sign-on-url "https://www.dynatrace.io"
+--aad-domains ”['mpliftrdt20210811outlook.onmicrosoft.com']“ --single-sign-on-url "https://www.dynatrace.io"
 
 ```
 ##### Show #####

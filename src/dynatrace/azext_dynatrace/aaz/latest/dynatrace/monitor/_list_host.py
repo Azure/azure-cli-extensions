@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "dynatrace monitor list-host",
+    confirmation="",
 )
 class ListHost(AAZCommand):
     """List the compute resources currently being monitored by the dynatrace resource
@@ -58,11 +59,11 @@ class ListHost(AAZCommand):
         self.MonitorsListHosts(ctx=self.ctx)()
         self.post_operations()
 
-    # @register_callback
+    @register_callback
     def pre_operations(self):
         pass
 
-    # @register_callback
+    @register_callback
     def post_operations(self):
         pass
 

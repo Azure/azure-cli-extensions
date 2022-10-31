@@ -17,8 +17,8 @@ from azure.cli.core.aaz import *
 class GetSsoDetail(AAZCommand):
     """Get the SSO configuration details from the partner
 
-    :example: Get the SSO configuration details
-        az dynatrace monitor sso-config list -g rg --monitor-name monitor
+    :example: Get-sso-detail
+        az dynatrace monitor get-sso-detail -g rg --monitor-name monitor  --user-principal Alice@microsoft.com
     """
 
     _aaz_info = {
@@ -60,12 +60,21 @@ class GetSsoDetail(AAZCommand):
             options=["--user-principal"],
             arg_group="Request",
             help="user principal id of the user",
-            required=True
         )
         return cls._args_schema
 
     def _execute_operations(self):
+        self.pre_operations()
         self.MonitorsGetSSODetails(ctx=self.ctx)()
+        self.post_operations()
+
+    @register_callback
+    def pre_operations(self):
+        pass
+
+    @register_callback
+    def post_operations(self):
+        pass
 
     def _output(self, *args, **kwargs):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)

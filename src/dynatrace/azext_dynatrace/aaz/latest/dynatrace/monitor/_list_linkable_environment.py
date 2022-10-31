@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "dynatrace monitor list-linkable-environment",
+    confirmation="",
 )
 class ListLinkableEnvironment(AAZCommand):
     """Get all the dynatrace environments that a user can link a azure resource to
@@ -77,11 +78,11 @@ class ListLinkableEnvironment(AAZCommand):
         self.MonitorsListLinkableEnvironments(ctx=self.ctx)()
         self.post_operations()
 
-    # @register_callback
+    @register_callback
     def pre_operations(self):
         pass
 
-    # @register_callback
+    @register_callback
     def post_operations(self):
         pass
 

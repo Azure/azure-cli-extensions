@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "dynatrace monitor show",
+    confirmation="",
 )
 class Show(AAZCommand):
     """Show a monitor resource
@@ -60,11 +61,11 @@ class Show(AAZCommand):
         self.MonitorsGet(ctx=self.ctx)()
         self.post_operations()
 
-    # @register_callback
+    @register_callback
     def pre_operations(self):
         pass
 
-    # @register_callback
+    @register_callback
     def post_operations(self):
         pass
 
@@ -210,7 +211,6 @@ class Show(AAZCommand):
             )
             properties.liftr_resource_category = AAZStrType(
                 serialized_name="liftrResourceCategory",
-                flags={"read_only": True},
             )
             properties.liftr_resource_preference = AAZIntType(
                 serialized_name="liftrResourcePreference",
@@ -227,7 +227,6 @@ class Show(AAZCommand):
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
-                flags={"read_only": True},
             )
             properties.user_info = AAZObjectType(
                 serialized_name="userInfo",
@@ -278,7 +277,6 @@ class Show(AAZCommand):
             )
             single_sign_on_properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
-                flags={"read_only": True},
             )
             single_sign_on_properties.single_sign_on_state = AAZStrType(
                 serialized_name="singleSignOnState",
@@ -322,27 +320,21 @@ class Show(AAZCommand):
             system_data = cls._schema_on_200.system_data
             system_data.created_at = AAZStrType(
                 serialized_name="createdAt",
-                flags={"read_only": True},
             )
             system_data.created_by = AAZStrType(
                 serialized_name="createdBy",
-                flags={"read_only": True},
             )
             system_data.created_by_type = AAZStrType(
                 serialized_name="createdByType",
-                flags={"read_only": True},
             )
             system_data.last_modified_at = AAZStrType(
                 serialized_name="lastModifiedAt",
-                flags={"read_only": True},
             )
             system_data.last_modified_by = AAZStrType(
                 serialized_name="lastModifiedBy",
-                flags={"read_only": True},
             )
             system_data.last_modified_by_type = AAZStrType(
                 serialized_name="lastModifiedByType",
-                flags={"read_only": True},
             )
 
             tags = cls._schema_on_200.tags

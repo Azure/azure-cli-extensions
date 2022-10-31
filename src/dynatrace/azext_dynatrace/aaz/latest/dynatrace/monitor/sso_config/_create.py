@@ -12,13 +12,14 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "dynatrace monitor sso-config show",
+    "dynatrace monitor sso-config create",
+    confirmation="",
 )
-class Show(AAZCommand):
-    """Show a dynatrace single-sign-on resource
+class Create(AAZCommand):
+    """Create a dynatrace sso-config resource
 
-    :example: Show sso-config
-        az dynatrace monitor sso-config show -g rg --monitor-name monitor -n default
+    :example: Create a sso-config
+        az dynatrace monitor sso-config create -g rg --monitor-name monitor -n default --aad-domains "['mpliftrdt20210811outlook.onmicrosoft.com']" --single-sign-on-url "https://www.dynatrace.io"
     """
 
     _aaz_info = {
@@ -28,10 +29,11 @@ class Show(AAZCommand):
         ]
     }
 
+    AZ_SUPPORT_NO_WAIT = True
+
     def _handler(self, command_args):
         super()._handler(command_args)
-        self._execute_operations()
-        return self._output()
+        return self.build_lro_poller(self._execute_operations, self._output)
 
     _args_schema = None
 
@@ -59,18 +61,46 @@ class Show(AAZCommand):
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
+
+        # define Arg Group "Properties"
+
+        _args_schema = cls._args_schema
+        _args_schema.aad_domains = AAZListArg(
+            options=["--aad-domains"],
+            arg_group="Properties",
+            help="array of Aad(azure active directory) domains",
+        )
+        _args_schema.enterprise_app_id = AAZStrArg(
+            options=["--enterprise-app-id"],
+            arg_group="Properties",
+            help="Version of the Dynatrace agent installed on the VM.",
+        )
+        _args_schema.single_sign_on_state = AAZStrArg(
+            options=["--single-sign-on-state"],
+            arg_group="Properties",
+            help="State of Single Sign On",
+            enum={"Disable": "Disable", "Enable": "Enable", "Existing": "Existing", "Initial": "Initial"},
+        )
+        _args_schema.single_sign_on_url = AAZStrArg(
+            options=["--single-sign-on-url"],
+            arg_group="Properties",
+            help="The login URL specific to this Dynatrace Environment",
+        )
+
+        aad_domains = cls._args_schema.aad_domains
+        aad_domains.Element = AAZStrArg()
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.SingleSignOnGet(ctx=self.ctx)()
+        yield self.SingleSignOnCreateOrUpdate(ctx=self.ctx)()
         self.post_operations()
 
-    # @register_callback
+    @register_callback
     def pre_operations(self):
         pass
 
-    # @register_callback
+    @register_callback
     def post_operations(self):
         pass
 
@@ -78,14 +108,30 @@ class Show(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class SingleSignOnGet(AAZHttpOperation):
+    class SingleSignOnCreateOrUpdate(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
             request = self.make_request()
             session = self.client.send_request(request=request, stream=False, **kwargs)
-            if session.http_response.status_code in [200]:
-                return self.on_200(session)
+            if session.http_response.status_code in [202]:
+                return self.client.build_lro_polling(
+                    self.ctx.args.no_wait,
+                    session,
+                    self.on_200_201,
+                    self.on_error,
+                    lro_options={"final-state-via": "azure-async-operation"},
+                    path_format_arguments=self.url_parameters,
+                )
+            if session.http_response.status_code in [200, 201]:
+                return self.client.build_lro_polling(
+                    self.ctx.args.no_wait,
+                    session,
+                    self.on_200_201,
+                    self.on_error,
+                    lro_options={"final-state-via": "azure-async-operation"},
+                    path_format_arguments=self.url_parameters,
+                )
 
             return self.on_error(session.http_response)
 
@@ -98,7 +144,7 @@ class Show(AAZCommand):
 
         @property
         def method(self):
-            return "GET"
+            return "PUT"
 
         @property
         def error_format(self):
@@ -140,47 +186,72 @@ class Show(AAZCommand):
         def header_parameters(self):
             parameters = {
                 **self.serialize_header_param(
+                    "Content-Type", "application/json",
+                ),
+                **self.serialize_header_param(
                     "Accept", "application/json",
                 ),
             }
             return parameters
 
-        def on_200(self, session):
+        @property
+        def content(self):
+            _content_value, _builder = self.new_content_builder(
+                self.ctx.args,
+                typ=AAZObjectType,
+                typ_kwargs={"flags": {"required": True, "client_flatten": True}}
+            )
+            _builder.set_prop("properties", AAZObjectType, ".", typ_kwargs={"flags": {"required": True, "client_flatten": True}})
+
+            properties = _builder.get(".properties")
+            if properties is not None:
+                properties.set_prop("aadDomains", AAZListType, ".aad_domains")
+                properties.set_prop("enterpriseAppId", AAZStrType, ".enterprise_app_id")
+                properties.set_prop("singleSignOnState", AAZStrType, ".single_sign_on_state")
+                properties.set_prop("singleSignOnUrl", AAZStrType, ".single_sign_on_url")
+
+            aad_domains = _builder.get(".properties.aadDomains")
+            if aad_domains is not None:
+                aad_domains.set_elements(AAZStrType, ".")
+
+            return self.serialize_content(_content_value)
+
+        def on_200_201(self, session):
             data = self.deserialize_http_content(session)
             self.ctx.set_var(
                 "instance",
                 data,
-                schema_builder=self._build_schema_on_200
+                schema_builder=self._build_schema_on_200_201
             )
 
-        _schema_on_200 = None
+        _schema_on_200_201 = None
 
         @classmethod
-        def _build_schema_on_200(cls):
-            if cls._schema_on_200 is not None:
-                return cls._schema_on_200
+        def _build_schema_on_200_201(cls):
+            if cls._schema_on_200_201 is not None:
+                return cls._schema_on_200_201
 
-            cls._schema_on_200 = AAZObjectType()
+            cls._schema_on_200_201 = AAZObjectType()
 
-            _schema_on_200 = cls._schema_on_200
-            _schema_on_200.id = AAZStrType(
+            _schema_on_200_201 = cls._schema_on_200_201
+            _schema_on_200_201.id = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200.name = AAZStrType(
+            _schema_on_200_201.name = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200.properties = AAZObjectType(
+            _schema_on_200_201.properties = AAZObjectType(
                 flags={"required": True, "client_flatten": True},
             )
-            _schema_on_200.system_data = AAZObjectType(
+            _schema_on_200_201.system_data = AAZObjectType(
                 serialized_name="systemData",
                 flags={"read_only": True},
             )
-            _schema_on_200.type = AAZStrType(
+            _schema_on_200_201.type = AAZStrType(
                 flags={"read_only": True},
             )
 
-            properties = cls._schema_on_200.properties
+            properties = cls._schema_on_200_201.properties
             properties.aad_domains = AAZListType(
                 serialized_name="aadDomains",
             )
@@ -189,7 +260,6 @@ class Show(AAZCommand):
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
-                flags={"read_only": True},
             )
             properties.single_sign_on_state = AAZStrType(
                 serialized_name="singleSignOnState",
@@ -198,36 +268,30 @@ class Show(AAZCommand):
                 serialized_name="singleSignOnUrl",
             )
 
-            aad_domains = cls._schema_on_200.properties.aad_domains
+            aad_domains = cls._schema_on_200_201.properties.aad_domains
             aad_domains.Element = AAZStrType()
 
-            system_data = cls._schema_on_200.system_data
+            system_data = cls._schema_on_200_201.system_data
             system_data.created_at = AAZStrType(
                 serialized_name="createdAt",
-                flags={"read_only": True},
             )
             system_data.created_by = AAZStrType(
                 serialized_name="createdBy",
-                flags={"read_only": True},
             )
             system_data.created_by_type = AAZStrType(
                 serialized_name="createdByType",
-                flags={"read_only": True},
             )
             system_data.last_modified_at = AAZStrType(
                 serialized_name="lastModifiedAt",
-                flags={"read_only": True},
             )
             system_data.last_modified_by = AAZStrType(
                 serialized_name="lastModifiedBy",
-                flags={"read_only": True},
             )
             system_data.last_modified_by_type = AAZStrType(
                 serialized_name="lastModifiedByType",
-                flags={"read_only": True},
             )
 
-            return cls._schema_on_200
+            return cls._schema_on_200_201
 
 
-__all__ = ["Show"]
+__all__ = ["Create"]

@@ -13,12 +13,13 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "dynatrace monitor tag-rule update",
+    confirmation="",
 )
 class Update(AAZCommand):
     """Update a tag rule
 
-    :example: Update a tag rule
-        az dynatrace monitor tag-rule update -g rg --monitor-name monitor -n default
+    :example: Update tag-rule
+        az dynatrace monitor tag-rule delete -g rg --monitor-name monitor -n default -y
     """
 
     _aaz_info = {
@@ -55,7 +56,7 @@ class Update(AAZCommand):
         )
         _args_schema.rule_set_name = AAZStrArg(
             options=["-n", "--name", "--rule-set-name"],
-            help="Monitor resource name",
+            help="Monitor rule set name",
             required=True,
             id_part="child_name_1",
         )
@@ -142,7 +143,17 @@ class Update(AAZCommand):
         _schema.value = cls._args_filtering_tag_update.value
 
     def _execute_operations(self):
+        self.pre_operations()
         self.TagRulesUpdate(ctx=self.ctx)()
+        self.post_operations()
+
+    @register_callback
+    def pre_operations(self):
+        pass
+
+    @register_callback
+    def post_operations(self):
+        pass
 
     def _output(self, *args, **kwargs):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
@@ -293,7 +304,6 @@ class Update(AAZCommand):
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
-                flags={"read_only": True},
             )
 
             log_rules = cls._schema_on_200.properties.log_rules
@@ -326,27 +336,21 @@ class Update(AAZCommand):
             system_data = cls._schema_on_200.system_data
             system_data.created_at = AAZStrType(
                 serialized_name="createdAt",
-                flags={"read_only": True},
             )
             system_data.created_by = AAZStrType(
                 serialized_name="createdBy",
-                flags={"read_only": True},
             )
             system_data.created_by_type = AAZStrType(
                 serialized_name="createdByType",
-                flags={"read_only": True},
             )
             system_data.last_modified_at = AAZStrType(
                 serialized_name="lastModifiedAt",
-                flags={"read_only": True},
             )
             system_data.last_modified_by = AAZStrType(
                 serialized_name="lastModifiedBy",
-                flags={"read_only": True},
             )
             system_data.last_modified_by_type = AAZStrType(
                 serialized_name="lastModifiedByType",
-                flags={"read_only": True},
             )
 
             return cls._schema_on_200

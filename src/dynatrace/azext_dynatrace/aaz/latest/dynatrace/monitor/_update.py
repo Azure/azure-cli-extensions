@@ -13,12 +13,13 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "dynatrace monitor update",
+    confirmation="",
 )
 class Update(AAZCommand):
     """Update a monitor resource
 
     :example: Update monitor
-        az dynatrace update create -g rg -n monitor --user-info "{first-name:Alice,last-name:Bobab,email-address:Alice@microsoft.com,phone-number:1234567890,country:US}" --plan-data "{usage-type:committed,billing-cycle:Monthly,plan-details:azureportalintegration_privatepreview@TIDhjdtn7tfnxcy,effective-date:2022-08-20}" environment "{single-sign-on:{aad-domains:['abc']}}"
+        az dynatrace monitor update -g {rg} -n {monitor} --tags {{env:dev}}
     """
 
     _aaz_info = {
@@ -68,7 +69,17 @@ class Update(AAZCommand):
         return cls._args_schema
 
     def _execute_operations(self):
+        self.pre_operations()
         self.MonitorsUpdate(ctx=self.ctx)()
+        self.post_operations()
+
+    @register_callback
+    def pre_operations(self):
+        pass
+
+    @register_callback
+    def post_operations(self):
+        pass
 
     def _output(self, *args, **kwargs):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
@@ -225,18 +236,17 @@ class Update(AAZCommand):
             )
 
             properties = cls._schema_on_200.properties
-            properties.environment = AAZObjectType(
+            properties.dynatrace_environment_properties = AAZObjectType(
                 serialized_name="dynatraceEnvironmentProperties",
             )
             properties.liftr_resource_category = AAZStrType(
                 serialized_name="liftrResourceCategory",
-                flags={"read_only": True},
             )
             properties.liftr_resource_preference = AAZIntType(
                 serialized_name="liftrResourcePreference",
                 flags={"read_only": True},
             )
-            properties.subscription_status = AAZStrType(
+            properties.marketplace_subscription_status = AAZStrType(
                 serialized_name="marketplaceSubscriptionStatus",
             )
             properties.monitoring_status = AAZStrType(
@@ -247,27 +257,26 @@ class Update(AAZCommand):
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
-                flags={"read_only": True},
             )
             properties.user_info = AAZObjectType(
                 serialized_name="userInfo",
             )
 
-            environment= cls._schema_on_200.properties.environment
-            environment.account_info = AAZObjectType(
+            dynatrace_environment_properties = cls._schema_on_200.properties.dynatrace_environment_properties
+            dynatrace_environment_properties.account_info = AAZObjectType(
                 serialized_name="accountInfo",
             )
-            environment.environment_info = AAZObjectType(
+            dynatrace_environment_properties.environment_info = AAZObjectType(
                 serialized_name="environmentInfo",
             )
-            environment.single_sign_on_properties = AAZObjectType(
+            dynatrace_environment_properties.single_sign_on_properties = AAZObjectType(
                 serialized_name="singleSignOnProperties",
             )
-            environment.user_id = AAZStrType(
+            dynatrace_environment_properties.user_id = AAZStrType(
                 serialized_name="userId",
             )
 
-            account_info = cls._schema_on_200.properties.environment.account_info
+            account_info = cls._schema_on_200.properties.dynatrace_environment_properties.account_info
             account_info.account_id = AAZStrType(
                 serialized_name="accountId",
             )
@@ -275,7 +284,7 @@ class Update(AAZCommand):
                 serialized_name="regionId",
             )
 
-            environment_info = cls._schema_on_200.properties.environment.environment_info
+            environment_info = cls._schema_on_200.properties.dynatrace_environment_properties.environment_info
             environment_info.environment_id = AAZStrType(
                 serialized_name="environmentId",
             )
@@ -289,7 +298,7 @@ class Update(AAZCommand):
                 serialized_name="logsIngestionEndpoint",
             )
 
-            single_sign_on_properties = cls._schema_on_200.properties.environment.single_sign_on_properties
+            single_sign_on_properties = cls._schema_on_200.properties.dynatrace_environment_properties.single_sign_on_properties
             single_sign_on_properties.aad_domains = AAZListType(
                 serialized_name="aadDomains",
             )
@@ -298,7 +307,6 @@ class Update(AAZCommand):
             )
             single_sign_on_properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
-                flags={"read_only": True},
             )
             single_sign_on_properties.single_sign_on_state = AAZStrType(
                 serialized_name="singleSignOnState",
@@ -307,7 +315,7 @@ class Update(AAZCommand):
                 serialized_name="singleSignOnUrl",
             )
 
-            aad_domains = cls._schema_on_200.properties.environment.single_sign_on_properties.aad_domains
+            aad_domains = cls._schema_on_200.properties.dynatrace_environment_properties.single_sign_on_properties.aad_domains
             aad_domains.Element = AAZStrType()
 
             plan_data = cls._schema_on_200.properties.plan_data
@@ -342,27 +350,21 @@ class Update(AAZCommand):
             system_data = cls._schema_on_200.system_data
             system_data.created_at = AAZStrType(
                 serialized_name="createdAt",
-                flags={"read_only": True},
             )
             system_data.created_by = AAZStrType(
                 serialized_name="createdBy",
-                flags={"read_only": True},
             )
             system_data.created_by_type = AAZStrType(
                 serialized_name="createdByType",
-                flags={"read_only": True},
             )
             system_data.last_modified_at = AAZStrType(
                 serialized_name="lastModifiedAt",
-                flags={"read_only": True},
             )
             system_data.last_modified_by = AAZStrType(
                 serialized_name="lastModifiedBy",
-                flags={"read_only": True},
             )
             system_data.last_modified_by_type = AAZStrType(
                 serialized_name="lastModifiedByType",
-                flags={"read_only": True},
             )
 
             tags = cls._schema_on_200.tags
