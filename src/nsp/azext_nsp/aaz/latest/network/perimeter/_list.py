@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class List(AAZCommand):
     """List all network security perimeters in a subscription.
+
+    :example: List Network Security Perimeters
+        az network perimeter list -g MyResourceGroup
     """
 
     _aaz_info = {

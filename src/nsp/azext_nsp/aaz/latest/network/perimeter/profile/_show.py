@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Show(AAZCommand):
     """Gets the specified NSP profile.
+
+    :example: Get NSP Profile
+        az network perimeter profile show --perimeter-name MyPerimeter -g MyResourceGroup -n MyProfile
     """
 
     _aaz_info = {

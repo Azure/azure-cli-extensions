@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Create(AAZCommand):
     """Creates or updates a network profile.
+
+    :example: Create NSP Profile
+        az network perimeter profile create -n MyProfile --perimeter-name MyPerimeter -g MyResourceGroup
     """
 
     _aaz_info = {

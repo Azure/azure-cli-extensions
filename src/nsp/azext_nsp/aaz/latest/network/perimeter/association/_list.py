@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class List(AAZCommand):
     """Lists the NSP resource associations.
+
+    :example: List NSP Associations inside a Perimeter
+        az network perimeter association list --perimeter-name MyPerimeter -g MyResourceGroup
     """
 
     _aaz_info = {

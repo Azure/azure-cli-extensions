@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Show(AAZCommand):
     """Gets the specified NSP access rule by name.
+
+    :example: Get NSP access rule
+        az network perimeter profile access-rule show -n MyAccessRule --profile-name MyProfile --perimeter-name MyPerimeter -g MyResourceGroup
     """
 
     _aaz_info = {

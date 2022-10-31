@@ -15,7 +15,10 @@ from azure.cli.core.aaz import *
     "network perimeter create",
 )
 class Create(AAZCommand):
-    """Creates or updates a Network Security Perimeter.
+    """Creates a Network Security Perimeter.
+
+    :example: Create a Network Security Perimeter
+        az network perimeter create -n MyPerimeter -g MyResourceGroup -l northcentralus
     """
 
     _aaz_info = {

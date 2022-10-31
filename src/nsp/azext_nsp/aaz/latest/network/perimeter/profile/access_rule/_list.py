@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class List(AAZCommand):
     """Lists the NSP access rules in the specified NSP profile.
+
+    :example: List access rules inside a Profile
+        az network perimeter profile access-rule list --profile-name MyProfile --perimeter-name MyPerimeter -g MyResourceGroup
     """
 
     _aaz_info = {

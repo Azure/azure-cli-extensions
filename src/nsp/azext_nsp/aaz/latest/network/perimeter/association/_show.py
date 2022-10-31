@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Show(AAZCommand):
     """Gets the specified NSP association by name.
+
+    :example: Get NSP Association
+        az network perimeter association show -n MyAssociation --perimeter-name MyPerimeter -g MyResourceGroup
     """
 
     _aaz_info = {

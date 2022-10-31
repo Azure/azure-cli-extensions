@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class Delete(AAZCommand):
     """Deletes an NSP access rule.
+
+    :example: Delete NSP access rule
+        az network perimeter profile access-rule delete -n MyAccessRule --profile-name MyProfile --perimeter-name MyPerimeter -g MyResourceGroup
     """
 
     _aaz_info = {

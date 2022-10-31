@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Update(AAZCommand):
     """Creates or updates a network access rule.
+
+    :example: Update access rule
+        az network perimeter profile access-rule update -n MyAccessRule --profile-name MyProfile --perimeter-name MyPerimeter -g MyResourceGroup --address-prefixes "[10.10.0.0/16]"
     """
 
     _aaz_info = {

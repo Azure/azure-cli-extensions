@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class Delete(AAZCommand):
     """Deletes an NSP association resource.
+
+    :example: Delete NSP Association
+        az network perimeter association delete -n MyAssociation --perimeter-name MyPerimeter -g MyResourceGroup
     """
 
     _aaz_info = {

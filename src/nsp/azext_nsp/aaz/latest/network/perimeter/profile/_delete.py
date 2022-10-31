@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class Delete(AAZCommand):
     """Deletes an NSP profile.
+
+    :example: Delete NSP Profile
+        az network perimeter profile delete -n MyProfile --perimeter-name MyPerimeter -g MyResourceGroup
     """
 
     _aaz_info = {

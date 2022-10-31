@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class List(AAZCommand):
     """Lists the NSP profiles in the specified network security perimeter.
+
+    :example: List NSP Profiles inside a Perimeter
+        az network perimeter profile list --perimeter-name MyPerimeter -g MyResourceGroup
     """
 
     _aaz_info = {

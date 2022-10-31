@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class List(AAZCommand):
     """Gets the list of resources that are onboarded with NSP. These resources can be associated with a network security perimeter.
+
+    :example: List NSP onboarded resources
+        az network perimeter onboarded-resources list -l northcentralus
     """
 
     _aaz_info = {

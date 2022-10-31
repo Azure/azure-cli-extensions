@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class Delete(AAZCommand):
     """Deletes a network security perimeter.
+
+    :example: Delete a Network Security Perimeter
+        az network perimeter delete -g MyResourceGroup -n MyPerimeter
     """
 
     _aaz_info = {

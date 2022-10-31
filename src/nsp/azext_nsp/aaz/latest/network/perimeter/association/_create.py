@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Create(AAZCommand):
     """Creates or updates a NSP resource association.
+
+    :example: Create NSP Association
+        az network perimeter association create -n MyAssociation --perimeter-name MyPerimeter -g MyResourceGroup --access-mode Learning --private-link-resource "{id:<PaaSArmID>}" --profile "{id:<ProfileArmID>}"
     """
 
     _aaz_info = {

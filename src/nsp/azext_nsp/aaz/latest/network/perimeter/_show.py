@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Show(AAZCommand):
     """Gets the specified network security perimeter by the name.
+
+    :example: Get the Network Security Perimeter
+        az network perimeter show -g MyResourceGroup -n MyPerimeter
     """
 
     _aaz_info = {
