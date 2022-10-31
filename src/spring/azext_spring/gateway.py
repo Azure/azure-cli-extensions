@@ -10,7 +10,7 @@ from azure.cli.core.util import sdk_no_wait
 from knack.log import get_logger
 
 from .custom import LOG_RUNNING_PROMPT
-from .vendored_sdks.appplatform.v2022_09_01_preview import models
+from .vendored_sdks.appplatform.v2022_11_01_preview import models
 
 logger = get_logger(__name__)
 DEFAULT_NAME = "default"
@@ -139,7 +139,7 @@ def gateway_route_config_create(cmd, client, resource_group, service, name,
                                 app_name=None,
                                 routes_json=None,
                                 routes_file=None):
-    _validate_route_config_exist(client, resource_group, service, name)
+    _validate_route_config_not_exist(client, resource_group, service, name)
     route_properties = models.GatewayRouteConfigProperties()
     return _create_or_update_gateway_route_configs(client, resource_group, service, name, route_properties,
                                                    app_name, routes_file, routes_json)
@@ -149,8 +149,8 @@ def gateway_route_config_update(cmd, client, resource_group, service, name,
                                 app_name=None,
                                 routes_json=None,
                                 routes_file=None):
-    route_properties = client.gateway_route_configs.get(
-        resource_group, service, DEFAULT_NAME, name).properties
+    _validate_route_config_exist(client, resource_group, service, name)
+    route_properties = models.GatewayRouteConfigProperties()
     return _create_or_update_gateway_route_configs(client, resource_group, service, name, route_properties,
                                                    app_name, routes_file, routes_json)
 
@@ -195,11 +195,18 @@ def _update_cors(existing, allowed_origins, allowed_methods, allowed_headers, ma
     return cors
 
 
-def _validate_route_config_exist(client, resource_group, service, name):
+def _validate_route_config_not_exist(client, resource_group, service, name):
     route_configs = client.gateway_route_configs.list(
         resource_group, service, DEFAULT_NAME)
     if name in (route_config.name for route_config in list(route_configs)):
         raise InvalidArgumentValueError("Route config " + name + " already exists")
+
+
+def _validate_route_config_exist(client, resource_group, service, name):
+    route_configs = client.gateway_route_configs.list(
+        resource_group, service, DEFAULT_NAME)
+    if not name in (route_config.name for route_config in list(route_configs)):
+        raise InvalidArgumentValueError("Route config " + name + " doesn't exist")
 
 
 def _create_or_update_gateway_route_configs(client, resource_group, service, name, route_properties,

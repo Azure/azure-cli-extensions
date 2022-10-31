@@ -1,5 +1,9 @@
 Release History
 ===============
+1.1.14
+---
+* Support configure app level route in Spring Cloud Gateway route configs.
+
 1.1.13
 ---
 * Stop execution and throw exception when operation status is `Failed`.
