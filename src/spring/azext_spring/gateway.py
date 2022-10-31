@@ -205,7 +205,7 @@ def _validate_route_config_not_exist(client, resource_group, service, name):
 def _validate_route_config_exist(client, resource_group, service, name):
     route_configs = client.gateway_route_configs.list(
         resource_group, service, DEFAULT_NAME)
-    if not name in (route_config.name for route_config in list(route_configs)):
+    if name not in (route_config.name for route_config in list(route_configs)):
         raise InvalidArgumentValueError("Route config " + name + " doesn't exist")
 
 
