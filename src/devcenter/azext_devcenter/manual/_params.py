@@ -2227,19 +2227,6 @@ def load_arguments(self, _):
             help="Name of the pool.",
             id_part="child_name_1",
         )
-        c.argument(
-            "schedule_name",
-            options_list=["--name", "-n", "--schedule-name"],
-            type=str,
-            help="The name of the " "schedule that uniquely identifies it.",
-            id_part="child_name_2",
-        )
-        c.argument(
-            "top",
-            type=int,
-            help="The maximum number of resources to return from the operation. Example: "
-            "'$top=10'.",
-        )
 
     with self.argument_context("devcenter admin schedule create") as c:
         c.argument("resource_group_name", resource_group_name_type)
@@ -2254,12 +2241,6 @@ def load_arguments(self, _):
             options_list=["--pool-name", "--pool"],
             type=str,
             help="Name of the pool.",
-        )
-        c.argument(
-            "schedule_name",
-            options_list=["--name", "-n", "--schedule-name"],
-            type=str,
-            help="The name of the schedule that uniquely identifies it.",
         )
         c.argument(
             "schedule_type",
@@ -2308,24 +2289,14 @@ def load_arguments(self, _):
             id_part="child_name_1",
         )
         c.argument(
-            "schedule_name",
-            options_list=["--name", "-n", "--schedule-name"],
-            type=str,
-            help="The name of the " "schedule that uniquely identifies it.",
-            id_part="child_name_2",
+            "schedule_type",
+            arg_type=get_enum_type(["StopDevBox"]),
+            help="The type of schedule.",
         )
         c.argument(
-            "top",
-            type=int,
-            help="The maximum number of resources to return from the operation. Example: "
-            "'$top=10'.",
-        )
-        c.argument("tags", tags_type)
-        c.argument(
-            "location",
-            arg_type=get_location_type(self.cli_ctx),
-            required=False,
-            validator=get_default_location_from_resource_group,
+            "frequency",
+            arg_type=get_enum_type(["Daily"]),
+            help="The frequency the schedule will execute.",
         )
         c.argument(
             "time",
@@ -2359,19 +2330,6 @@ def load_arguments(self, _):
             help="Name of the pool.",
             id_part="child_name_1",
         )
-        c.argument(
-            "schedule_name",
-            options_list=["--name", "-n", "--schedule-name"],
-            type=str,
-            help="The name of the " "schedule that uniquely identifies it.",
-            id_part="child_name_2",
-        )
-        c.argument(
-            "top",
-            type=int,
-            help="The maximum number of resources to return from the operation. Example: "
-            "'$top=10'.",
-        )
 
     with self.argument_context("devcenter admin schedule wait") as c:
         c.argument("resource_group_name", resource_group_name_type)
@@ -2388,19 +2346,6 @@ def load_arguments(self, _):
             type=str,
             help="Name of the pool.",
             id_part="child_name_1",
-        )
-        c.argument(
-            "schedule_name",
-            options_list=["--name", "-n", "--schedule-name"],
-            type=str,
-            help="The name of the " "schedule that uniquely identifies it.",
-            id_part="child_name_2",
-        )
-        c.argument(
-            "top",
-            type=int,
-            help="The maximum number of resources to return from the operation. Example: "
-            "'$top=10'.",
         )
 
     with self.argument_context("devcenter admin network-connection list") as c:

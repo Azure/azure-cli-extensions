@@ -106,12 +106,21 @@ def devcenter_pool_update(
     )
 
 
+def devcenter_schedule_show(client,
+                            resource_group_name,
+                            project_name,
+                            pool_name):
+    return client.get(resource_group_name=resource_group_name,
+                      project_name=project_name,
+                      pool_name=pool_name,
+                      schedule_name="default")
+
+
 def devcenter_schedule_create(
     client,
     resource_group_name,
     project_name,
     pool_name,
-    schedule_name,
     schedule_type,
     frequency,
     time=None,
@@ -134,9 +143,52 @@ def devcenter_schedule_create(
         resource_group_name=resource_group_name,
         project_name=project_name,
         pool_name=pool_name,
-        schedule_name=schedule_name,
+        schedule_name="default",
         body=body,
     )
+
+
+def devcenter_schedule_update(client,
+                              resource_group_name,
+                              project_name,
+                              pool_name,
+                              schedule_type=None,
+                              frequency=None,
+                              time=None,
+                              time_zone=None,
+                              state=None,
+                              no_wait=False):
+    body = {}
+    if schedule_type is not None:
+        body["type_properties_type"] = schedule_type  # "StopDevBox"
+    if frequency is not None:
+        body["frequency"] = frequency  # "Daily"
+    if time is not None:
+        body['time'] = time
+    if time_zone is not None:
+        body['time_zone'] = time_zone
+    if state is not None:
+        body['state'] = state
+    return sdk_no_wait(no_wait,
+                       client.begin_update,
+                       resource_group_name=resource_group_name,
+                       project_name=project_name,
+                       pool_name=pool_name,
+                       schedule_name="default",
+                       body=body)
+
+
+def devcenter_schedule_delete(client,
+                              resource_group_name,
+                              project_name,
+                              pool_name,
+                              no_wait=False):
+    return sdk_no_wait(no_wait,
+                       client.begin_delete,
+                       resource_group_name=resource_group_name,
+                       project_name=project_name,
+                       pool_name=pool_name,
+                       schedule_name="default")
 
 
 # dataplane commands

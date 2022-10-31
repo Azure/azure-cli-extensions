@@ -194,10 +194,13 @@ def load_command_table(self, _):
         client_factory=cf_usage,
     )
 
-    with self.command_group("devcenter dev", devcenter_project_dp):
+    with self.command_group("devcenter", is_experimental=True):
         pass
 
-    with self.command_group("devcenter admin", devcenter_project_dp):
+    with self.command_group("devcenter dev"):
+        pass
+
+    with self.command_group("devcenter admin"):
         pass
 
     # data plane
@@ -531,6 +534,3 @@ def load_command_table(self, _):
         "devcenter admin usage", devcenter_usage, client_factory=cf_usage
     ) as g:
         g.custom_command("list", "devcenter_usage_list")
-
-    with self.command_group("devcenter", is_experimental=True):
-        pass
