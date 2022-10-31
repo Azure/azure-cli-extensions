@@ -152,6 +152,7 @@ class AutomanageScenario(ScenarioTest):
                  '{arc_name} -y')
         self.cmd('az automanage configuration-profile-assignment list -g {rg}', checks=[JMESPathCheck('length(@)', 0)])
 
+    @record_only()
     @ResourceGroupPreparer(location='eastus2euap', name_prefix='clitest.rg.automanage.profileassignment.cluster.')
     def test_automanage_configuration_profile_assignment_cluster_scenarios(self):
         self.kwargs.update({
