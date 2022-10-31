@@ -1345,24 +1345,23 @@ helps[
     "devcenter admin schedule show"
 ] = """
     type: command
-    short-summary: "Gets a schedule resource."
+    short-summary: "Gets a schedule."
     examples:
       - name: Schedules_GetByPool
         text: |-
-               az devcenter admin schedule show --pool-name "DevPool" --project-name "TestProject" --resource-group "rg1" \
---name "autoShutdown"
+               az devcenter admin schedule show --pool-name "DevPool" --project-name "TestProject" --resource-group "rg1"
 """
 
 helps[
     "devcenter admin schedule create"
 ] = """
     type: command
-    short-summary: "Create a Schedule."
+    short-summary: "Create a schedule."
     examples:
       - name: Schedules_CreateDailyShutdownPoolSchedule
         text: |-
                az devcenter admin schedule create --state "Enabled" --time "17:30" --time-zone "America/Los_Angeles" \
---pool-name "DevPool" --project-name "DevProject" --resource-group "rg1" --name "autoShutdown" --frequency Daily \
+--pool-name "DevPool" --project-name "DevProject" --resource-group "rg1" --frequency Daily \
 --schedule-type StopDevBox
 """
 
@@ -1370,24 +1369,23 @@ helps[
     "devcenter admin schedule update"
 ] = """
     type: command
-    short-summary: "Partially updates a Scheduled."
+    short-summary: "Partially updates a schedule."
     examples:
       - name: Schedules_Update
         text: |-
                az devcenter admin schedule update --time "18:00" --pool-name "DevPool" --project-name "TestProject" \
---resource-group "rg1" --name "autoShutdown"
+--resource-group "rg1"
 """
 
 helps[
     "devcenter admin schedule delete"
 ] = """
     type: command
-    short-summary: "Deletes a Scheduled."
+    short-summary: "Deletes a schedule."
     examples:
       - name: Schedules_Delete
         text: |-
-               az devcenter admin schedule delete --pool-name "DevPool" --project-name "TestProject" --resource-group "rg1" \
---name "autoShutdown"
+               az devcenter admin schedule delete --pool-name "DevPool" --project-name "TestProject" --resource-group "rg1"
 """
 
 helps[
@@ -1399,15 +1397,15 @@ helps[
       - name: Pause executing next line of CLI script until the devcenter admin schedule is successfully created.
         text: |-
                az devcenter admin schedule wait --pool-name "DevPool" --project-name "TestProject" --resource-group "rg1" \
---name "autoShutdown" --created
+--created
       - name: Pause executing next line of CLI script until the devcenter admin schedule is successfully updated.
         text: |-
                az devcenter admin schedule wait --pool-name "DevPool" --project-name "TestProject" --resource-group "rg1" \
---name "autoShutdown" --updated
+--updated
       - name: Pause executing next line of CLI script until the devcenter admin schedule is successfully deleted.
         text: |-
                az devcenter admin schedule wait --pool-name "DevPool" --project-name "TestProject" --resource-group "rg1" \
---name "autoShutdown" --deleted
+--deleted
 """
 
 
