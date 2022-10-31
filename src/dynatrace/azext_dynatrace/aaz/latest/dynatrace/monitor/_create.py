@@ -12,8 +12,7 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "dynatrace monitor create",
-    confirmation="",
+    "dynatrace monitor create"
 )
 class Create(AAZCommand):
     """Create a monitor resource

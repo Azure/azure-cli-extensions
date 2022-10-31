@@ -12,8 +12,7 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "dynatrace monitor update",
-    confirmation="",
+    "dynatrace monitor update"
 )
 class Update(AAZCommand):
     """Update a monitor resource

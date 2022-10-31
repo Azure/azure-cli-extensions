@@ -12,8 +12,7 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "dynatrace monitor show",
-    confirmation="",
+    "dynatrace monitor show"
 )
 class Show(AAZCommand):
     """Show a monitor resource

@@ -12,8 +12,7 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "dynatrace monitor list-host",
-    confirmation="",
+    "dynatrace monitor list-host"
 )
 class ListHost(AAZCommand):
     """List the compute resources currently being monitored by the dynatrace resource

@@ -12,8 +12,7 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "dynatrace monitor tag-rule create",
-    confirmation="",
+    "dynatrace monitor tag-rule create"
 )
 class Create(AAZCommand):
     """Create a tag rule

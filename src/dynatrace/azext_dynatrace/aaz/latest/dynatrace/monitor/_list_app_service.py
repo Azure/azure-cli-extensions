@@ -12,8 +12,7 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "dynatrace monitor list-app-service",
-    confirmation="",
+    "dynatrace monitor list-app-service"
 )
 class ListAppService(AAZCommand):
     """Get list of app services with dynatrace PaaS OneAgent enabled

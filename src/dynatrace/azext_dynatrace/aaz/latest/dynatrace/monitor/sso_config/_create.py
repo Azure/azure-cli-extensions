@@ -12,8 +12,7 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "dynatrace monitor sso-config create",
-    confirmation="",
+    "dynatrace monitor sso-config create"
 )
 class Create(AAZCommand):
     """Create a dynatrace sso-config resource

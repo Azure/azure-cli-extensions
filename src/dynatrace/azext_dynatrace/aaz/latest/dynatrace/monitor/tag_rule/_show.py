@@ -12,8 +12,7 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "dynatrace monitor tag-rule show",
-    confirmation="",
+    "dynatrace monitor tag-rule show"
 )
 class Show(AAZCommand):
     """Show a tag rule

@@ -12,8 +12,7 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "dynatrace monitor sso-config list",
-    confirmation="",
+    "dynatrace monitor sso-config list"
 )
 class List(AAZCommand):
     """List all dynatrace sso-config by monitor name

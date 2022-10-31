@@ -12,8 +12,7 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "dynatrace monitor list-monitored-resource",
-    confirmation="",
+    "dynatrace monitor list-monitored-resource"
 )
 class ListMonitoredResource(AAZCommand):
     """List the resources currently being monitored by the dynatrace monitor resource

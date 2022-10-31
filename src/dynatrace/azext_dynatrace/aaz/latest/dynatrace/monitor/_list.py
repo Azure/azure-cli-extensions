@@ -12,8 +12,7 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "dynatrace monitor list",
-    confirmation="",
+    "dynatrace monitor list"
 )
 class List(AAZCommand):
     """List all monitor resource by monitor name in a resource group

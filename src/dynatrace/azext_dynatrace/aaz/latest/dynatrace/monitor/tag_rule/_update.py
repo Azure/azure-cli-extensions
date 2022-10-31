@@ -12,8 +12,7 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "dynatrace monitor tag-rule update",
-    confirmation="",
+    "dynatrace monitor tag-rule update"
 )
 class Update(AAZCommand):
     """Update a tag rule

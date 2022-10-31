@@ -12,8 +12,7 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "dynatrace monitor tag-rule list",
-    confirmation="",
+    "dynatrace monitor tag-rule list"
 )
 class List(AAZCommand):
     """List all tag rule by monitor name
