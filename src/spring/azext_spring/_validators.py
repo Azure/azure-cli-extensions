@@ -678,3 +678,13 @@ def _parse_jar_file(artifact_path):
     except Exception as err:  # pylint: disable=broad-except
         telemetry.set_exception("parse user jar file failed, " + str(err))
         return None
+
+
+def validate_config_server_ssh_or_warn(namespace):
+    private_key = namespace.private_key
+    host_key = namespace.host_key
+    host_key_algorithm = namespace.host_key_algorithm
+    strict_host_key_checking = namespace.strict_host_key_checking
+    if private_key or host_key or host_key_algorithm or strict_host_key_checking:
+        logger.warning("SSH authentication only supports SHA-1 signature under Config Server restriction. "
+                       "Please refer to https://aka.ms/asa-configserver-ssh to understand how to use SSH under this restriction.")

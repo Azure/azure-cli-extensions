@@ -131,11 +131,12 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
         create_cmd = 'aks create --resource-group={resource_group} --name={name} ' \
                      '--vm-set-type VirtualMachineScaleSets -c 1 ' \
-                     '--outbound-type=loadbalancer ' \
+                     '--outbound-type=loadbalancer  --load-balancer-managed-outbound-ip-count 2 ' \
                      '--ssh-key-value={ssh_key_value}'
         self.cmd(create_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
             self.check('networkProfile.outboundType', 'loadBalancer'),
+            self.check('networkProfile.loadBalancerProfile.managedOutboundIPs.count', 2),
         ])
 
         update_cmd = 'aks update --resource-group={resource_group} --name={name} ' \
@@ -146,10 +147,8 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         self.cmd(update_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
             self.check('networkProfile.outboundType', 'managedNATGateway'),
-            self.check(
-                'networkProfile.natGatewayProfile.idleTimeoutInMinutes', 30),
-            self.check(
-                'networkProfile.natGatewayProfile.managedOutboundIpProfile.count', 2),
+            self.check('networkProfile.natGatewayProfile.idleTimeoutInMinutes', 30),
+            self.check('networkProfile.natGatewayProfile.managedOutboundIpProfile.count', 2),
         ])
 
     @AllowLargeResponse()
@@ -1552,7 +1551,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             'aks delete -g {resource_group} -n {name} --yes --no-wait', checks=[self.is_empty()])
 
     @AllowLargeResponse()
-    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='eastus')
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='eastus', preserve_default_location=True)
     def test_aks_nodepool_add_with_disable_windows_outbound_nat(self, resource_group, resource_group_location):
         # reset the count so in replay mode the random names will start with 0
         self.test_resources_count = 0

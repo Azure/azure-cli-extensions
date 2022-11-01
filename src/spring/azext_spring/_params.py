@@ -13,8 +13,8 @@ from ._validators import (validate_env, validate_cosmos_type, validate_resource_
                           validate_vnet, validate_vnet_required_parameters, validate_node_resource_group,
                           validate_tracing_parameters_asc_create, validate_tracing_parameters_asc_update,
                           validate_app_insights_parameters, validate_instance_count, validate_java_agent_parameters,
-                          validate_ingress_timeout, validate_remote_debugging_port, validate_jar, validate_ingress_send_timeout,
-                          validate_ingress_session_max_age)
+                          validate_ingress_timeout, validate_jar, validate_ingress_send_timeout,
+                          validate_ingress_session_max_age, validate_config_server_ssh_or_warn, validate_remote_debugging_port)
 from ._validators_enterprise import (only_support_enterprise, validate_builder_resource, validate_builder_create,
                                      validate_builder_update, validate_build_pool_size,
                                      validate_git_uri, validate_acs_patterns, validate_config_file_patterns,
@@ -22,7 +22,8 @@ from ._validators_enterprise import (only_support_enterprise, validate_builder_r
                                      validate_api_portal_instance_count,
                                      validate_buildpack_binding_exist, validate_buildpack_binding_not_exist,
                                      validate_buildpack_binding_properties, validate_buildpack_binding_secrets,
-                                     validate_build_env, validate_target_module, validate_runtime_version)
+                                     validate_build_env, validate_target_module, validate_runtime_version,
+                                     validate_acs_ssh_or_warn)
 from ._app_validator import (fulfill_deployment_param, active_deployment_exist,
                              ensure_not_active_deployment, validate_deloy_path, validate_deloyment_create_path,
                              validate_cpu, validate_build_cpu, validate_memory, validate_build_memory,
@@ -540,7 +541,7 @@ def load_arguments(self, _):
             c.argument('host_key', help='Host key of the added config.')
             c.argument('host_key_algorithm',
                        help='Host key algorithm of the added config.')
-            c.argument('private_key', help='Private_key of the added config.')
+            c.argument('private_key', help='Private_key of the added config.', validator=validate_config_server_ssh_or_warn)
             c.argument('strict_host_key_checking',
                        options_list=['--strict-host-key-checking', '--host-key-check'],
                        help='Strict_host_key_checking of the added config.')
@@ -670,7 +671,7 @@ def load_arguments(self, _):
             c.argument('password', help='Password of the added config.')
             c.argument('host_key', help='Host key of the added config.')
             c.argument('host_key_algorithm', help='Host key algorithm of the added config.')
-            c.argument('private_key', help='Private_key of the added config.')
+            c.argument('private_key', help='Private_key of the added config.', validator=validate_acs_ssh_or_warn)
             c.argument('host_key_check', help='Strict host key checking of the added config which is used in SSH authentication. If false, ignore errors with host key.')
 
     for scope in ['add', 'update', 'remove']:

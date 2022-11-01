@@ -54,6 +54,8 @@ from azext_aks_preview._consts import (
     CONST_PRIVATE_DNS_ZONE_NONE,
     CONST_PRIVATE_DNS_ZONE_SYSTEM,
     CONST_EBPF_DATAPLANE_CILIUM,
+    CONST_OUTBOUND_TYPE_USER_ASSIGNED_NAT_GATEWAY,
+    CONST_OUTBOUND_TYPE_USER_DEFINED_ROUTING,
 )
 from azext_aks_preview._helpers import (
     get_cluster_snapshot_by_snapshot_id,
@@ -276,7 +278,12 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         # this parameter does not need validation
         return ip_families
 
-    def get_outbound_type(self, load_balancer_profile: ManagedClusterLoadBalancerProfile = None) -> Union[str, None]:
+    def _get_outbound_type(
+        self,
+        enable_validation: bool = False,
+        read_only: bool = False,
+        load_balancer_profile: ManagedClusterLoadBalancerProfile = None,
+    ) -> Union[str, None]:
         """Internal function to dynamically obtain the value of outbound_type according to the context.
 
         Note: All the external parameters involved in the validation are not verified in their own getters.
@@ -297,10 +304,91 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
 
         :return: string or None
         """
-        outbound_type = super().get_outbound_type(load_balancer_profile)
-        user_assigned_outbound_type = self.raw_param.get("outbound_type")
-        if user_assigned_outbound_type:
-            return user_assigned_outbound_type
+        # read the original value passed by the command
+        outbound_type = self.raw_param.get("outbound_type")
+        # In create mode, try to read the property value corresponding to the parameter from the `mc` object.
+        read_from_mc = False
+        if self.decorator_mode == DecoratorMode.CREATE:
+            if (
+                self.mc and
+                self.mc.network_profile and
+                self.mc.network_profile.outbound_type is not None
+            ):
+                outbound_type = self.mc.network_profile.outbound_type
+                read_from_mc = True
+
+        # skip dynamic completion & validation if option read_only is specified
+        if read_only:
+            return outbound_type
+
+        # dynamic completion
+        if (
+            self.decorator_mode == DecoratorMode.CREATE and
+            not read_from_mc and
+            outbound_type != CONST_OUTBOUND_TYPE_MANAGED_NAT_GATEWAY and
+            outbound_type != CONST_OUTBOUND_TYPE_USER_ASSIGNED_NAT_GATEWAY and
+            outbound_type != CONST_OUTBOUND_TYPE_USER_DEFINED_ROUTING
+        ):
+            outbound_type = CONST_OUTBOUND_TYPE_LOAD_BALANCER
+
+        # validation
+        # Note: The parameters involved in the validation are not verified in their own getters.
+        if enable_validation:
+            if outbound_type in [
+                CONST_OUTBOUND_TYPE_USER_DEFINED_ROUTING,
+                CONST_OUTBOUND_TYPE_MANAGED_NAT_GATEWAY,
+                CONST_OUTBOUND_TYPE_USER_ASSIGNED_NAT_GATEWAY,
+            ]:
+                if safe_lower(self._get_load_balancer_sku(enable_validation=False)) == CONST_LOAD_BALANCER_SKU_BASIC:
+                    raise InvalidArgumentValueError(
+                        f"{outbound_type} doesn't support basic load balancer sku"
+                    )
+
+                if outbound_type in [
+                    CONST_OUTBOUND_TYPE_USER_DEFINED_ROUTING,
+                    CONST_OUTBOUND_TYPE_USER_ASSIGNED_NAT_GATEWAY,
+                ]:
+                    if self.get_vnet_subnet_id() in ["", None]:
+                        raise RequiredArgumentMissingError(
+                            "--vnet-subnet-id must be specified for userDefinedRouting and it must "
+                            "be pre-configured with a route table with egress rules"
+                        )
+
+                if outbound_type == CONST_OUTBOUND_TYPE_USER_DEFINED_ROUTING:
+                    if load_balancer_profile:
+                        if (
+                            load_balancer_profile.managed_outbound_i_ps or
+                            load_balancer_profile.outbound_i_ps or
+                            load_balancer_profile.outbound_ip_prefixes
+                        ):
+                            raise MutuallyExclusiveArgumentError(
+                                "userDefinedRouting doesn't support customizing \
+                                a standard load balancer with IP addresses"
+                            )
+                    else:
+                        if (
+                            self.get_load_balancer_managed_outbound_ip_count() or
+                            self.get_load_balancer_outbound_ips() or
+                            self.get_load_balancer_outbound_ip_prefixes()
+                        ):
+                            raise MutuallyExclusiveArgumentError(
+                                "userDefinedRouting doesn't support customizing \
+                                a standard load balancer with IP addresses"
+                            )
+            if self.decorator_mode == DecoratorMode.UPDATE:
+                if outbound_type == CONST_OUTBOUND_TYPE_MANAGED_NAT_GATEWAY:
+                    if self.mc.agent_pool_profiles is not None and len(self.mc.agent_pool_profiles) > 1:
+                        multizoned = False
+                        for ap in self.mc.agent_pool_profiles:
+                            if ap.availability_zones:
+                                multizoned = True
+                        msg = (
+                            "\nWarning: this AKS cluster has multi-zonal nodepools, but NAT Gateway is not "
+                            "currently zone redundant. Migrating outbound connectivity to NAT Gateway could lead to "
+                            "a reduction in zone redundancy for this cluster. Continue?"
+                        )
+                        if multizoned and not self.get_yes() and not prompt_y_n(msg, default="n"):
+                            raise DecoratorEarlyExitException()
         return outbound_type
 
     def get_load_balancer_managed_outbound_ip_count(self) -> Union[int, None]:
@@ -1979,9 +2067,9 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         if enable_validation:
             if enable_azure_monitor_metrics and self._get_disable_azure_monitor_metrics(False):
                 raise MutuallyExclusiveArgumentError(
-                    "Cannot specify --enable-azuremonitormetrics and --enable-azuremonitormetrics at the same time."
+                    "Cannot specify --enable-azuremonitormetrics and --disable-azuremonitormetrics at the same time."
                 )
-            if not check_is_msi_cluster(self.mc):
+            if enable_azure_monitor_metrics and not check_is_msi_cluster(self.mc):
                 raise RequiredArgumentMissingError(
                     "--enable-azuremonitormetrics can only be specified for clusters with managed identity enabled"
                 )
@@ -2319,7 +2407,9 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         """
         self._ensure_mc(mc)
 
-        mc.oidc_issuer_profile = self.context.get_oidc_issuer_profile()
+        oidc_issuer_profile = self.context.get_oidc_issuer_profile()
+        if oidc_issuer_profile is not None:
+            mc.oidc_issuer_profile = oidc_issuer_profile
 
         return mc
 
@@ -2533,15 +2623,10 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         mc = self.set_up_pod_security_policy(mc)
         # set up pod identity profile
         mc = self.set_up_pod_identity_profile(mc)
-
-        # update workload identity & OIDC issuer settings
-        # NOTE: in current implementation, workload identity settings setup requires checking
-        #       previous OIDC issuer profile. However, the OIDC issuer settings setup will
-        #       overrides the previous OIDC issuer profile based on user input. Therefore, we have
-        #       to make sure the workload identity settings setup is done after OIDC issuer settings.
-        mc = self.set_up_workload_identity_profile(mc)
+        # set up oidc issuer profile, GA in 2.42.0
         mc = self.set_up_oidc_issuer_profile(mc)
-
+        # set up workload identity profile
+        mc = self.set_up_workload_identity_profile(mc)
         # set up azure keyvalut kms
         mc = self.set_up_azure_keyvault_kms(mc)
         # set up node restriction
@@ -2642,26 +2727,12 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                 raise RequiredArgumentMissingError(error_msg)
 
     def update_outbound_type_in_network_profile(self, mc: ManagedCluster) -> ManagedCluster:
-        """Set up network profile for the ManagedCluster object.
-        Build load balancer profile, verify outbound type and load balancer sku first, then set up network profile.
+        """Update outbound type of network profile for the ManagedCluster object.
+
         :return: the ManagedCluster object
         """
         self._ensure_mc(mc)
 
-        # verify outbound type
-        # Note: Validation internally depends on load_balancer_sku, which is a temporary value that is
-        # dynamically completed.
-        if not mc.network_profile:
-                raise UnknownError(
-                    "Unexpectedly get an empty network profile in the process of updating outbound type."
-                )
-        if mc.agent_pool_profiles is not None and len(mc.agent_pool_profiles) > 1:
-            multizoned = False
-            for ap in mc.agent_pool_profiles:
-                if ap.availability_zones:
-                    multizoned = True
-            if multizoned and not self.get_yes() and not prompt_y_n("\n" + CONST_OUTBOUND_MIGRATION_MULTIZONE_TO_NATGATEWAY_MSG, default="y"):
-                raise DecoratorEarlyExitException()
         outboundType = self.context.get_outbound_type()
         if outboundType:
             mc.network_profile.outbound_type = outboundType
@@ -2674,10 +2745,11 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         self._ensure_mc(mc)
 
         if not mc.network_profile:
-                raise UnknownError(
-                    "Unexpectedly get an empty network profile in the process of updating nat gateway profile."
-                )
-        if mc.network_profile.outbound_type != CONST_OUTBOUND_TYPE_MANAGED_NAT_GATEWAY:
+            raise UnknownError(
+                "Unexpectedly get an empty network profile in the process of updating nat gateway profile."
+            )
+        outbound_type = self.context.get_outbound_type()
+        if outbound_type and outbound_type != CONST_OUTBOUND_TYPE_MANAGED_NAT_GATEWAY:
             mc.network_profile.nat_gateway_profile = None
         else:
             mc.network_profile.nat_gateway_profile = _update_nat_gateway_profile(
@@ -2701,7 +2773,8 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
             raise UnknownError(
                 "Unexpectedly get an empty network profile in the process of updating load balancer profile."
             )
-        if mc.network_profile.outbound_type != CONST_OUTBOUND_TYPE_LOAD_BALANCER:
+        outbound_type = self.context.get_outbound_type()
+        if outbound_type and outbound_type != CONST_OUTBOUND_TYPE_LOAD_BALANCER:
             mc.network_profile.load_balancer_profile = None
         else:
             # In the internal function "_update_load_balancer_profile", it will check whether the provided parameters
@@ -2824,8 +2897,9 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         :return: the ManagedCluster object
         """
         self._ensure_mc(mc)
-
-        mc.oidc_issuer_profile = self.context.get_oidc_issuer_profile()
+        oidc_issuer_profile = self.context.get_oidc_issuer_profile()
+        if oidc_issuer_profile is not None:
+            mc.oidc_issuer_profile = oidc_issuer_profile
 
         return mc
 
@@ -3129,15 +3203,10 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         mc = self.update_pod_security_policy(mc)
         # update pod identity profile
         mc = self.update_pod_identity_profile(mc)
-
-        # update workload identity & OIDC issuer settings
-        # NOTE: in current implementation, workload identity settings setup requires checking
-        #       previous OIDC issuer profile. However, the OIDC issuer settings setup will
-        #       overrides the previous OIDC issuer profile based on user input. Therefore, we have
-        #       to make sure the workload identity settings setup is done after OIDC issuer settings.
-        mc = self.update_workload_identity_profile(mc)
+        # update oidc issure profile, GA in 2.42.0
         mc = self.update_oidc_issuer_profile(mc)
-
+        # update workload identity profile
+        mc = self.update_workload_identity_profile(mc)
         # update azure keyvalut kms
         mc = self.update_azure_keyvault_kms(mc)
         # update node restriction
@@ -3158,9 +3227,5 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         mc = self.update_linux_profile(mc)
         # update outbound type
         mc = self.update_outbound_type_in_network_profile(mc)
-        # update nat gateway profile
-        mc = self.update_nat_gateway_profile(mc)
-        # update load balancer profile
-        mc = self.update_load_balancer_profile(mc)
 
         return mc

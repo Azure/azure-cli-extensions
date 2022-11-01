@@ -7,15 +7,14 @@
 # Changes may cause incorrect behavior and will be lost if the code is
 # regenerated.
 # --------------------------------------------------------------------------
-# pylint: disable=wildcard-import
-# pylint: disable=unused-wildcard-import
 
-from .generated.custom import *  # noqa: F403
 
-try:
-    from .manual.custom import *  # noqa: F403
-except ImportError as e:
-    if e.name.endswith("manual.custom"):
-        pass
-    else:
-        raise e
+def cf_datafactory_cl(cli_ctx, *_):
+    from azure.cli.core.commands.client_factory import get_mgmt_service_client
+    from azext_datafactory.vendored_sdks.datafactory import DataFactoryManagementClient
+
+    return get_mgmt_service_client(cli_ctx, DataFactoryManagementClient)
+
+
+def cf_data_flow(cli_ctx, *_):
+    return cf_datafactory_cl(cli_ctx).data_flows
