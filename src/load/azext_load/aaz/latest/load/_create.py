@@ -46,11 +46,6 @@ class Create(AAZCommand):
 
         # define Arg Group ""
 
-        _args_schema = cls._args_schema
-        _args_schema.resource_group = AAZResourceGroupNameArg(
-            required=True,
-        )
-
         # define Arg Group "Optional Parameters"
 
         _args_schema = cls._args_schema
@@ -78,6 +73,7 @@ class Create(AAZCommand):
             options=["--encryption-identity"],
             arg_group="Optional Parameters",
             help="The managed identity for Customer-managed key settings defining which identity should be used to auth to Key Vault.",
+            nullable=True,
         )
         _args_schema.encryption_identity_type = AAZStrArg(
             options=["--encryption-identity-type"],
@@ -94,6 +90,11 @@ class Create(AAZCommand):
             options=["--tags"],
             arg_group="Optional Parameters",
             help="Space-separated tags: key[=value] [key[=value] ...]. Use \"\" to clear existing tags.",
+        )
+        _args_schema.resource_group = AAZResourceGroupNameArg(
+            arg_group="Optional Parameters",
+            help="Name of resource group. You can configure the default group using az configure --defaults group=<name>.",
+            required=True,
         )
 
         user_assigned_identities = cls._args_schema.user_assigned_identities
@@ -256,7 +257,7 @@ class Create(AAZCommand):
 
             identity = _builder.get(".properties.encryption.identity")
             if identity is not None:
-                identity.set_prop("resourceId", AAZStrType, ".encryption_identity")
+                identity.set_prop("resourceId", AAZStrType, ".encryption_identity", typ_kwargs={"nullable": True})
                 identity.set_prop("type", AAZStrType, ".encryption_identity_type")
 
             tags = _builder.get(".tags")
@@ -354,6 +355,7 @@ class Create(AAZCommand):
             identity = cls._schema_on_200_201.properties.encryption.identity
             identity.resource_id = AAZStrType(
                 serialized_name="resourceId",
+                nullable=True,
             )
             identity.type = AAZStrType()
 

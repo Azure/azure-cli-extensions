@@ -47,8 +47,13 @@ class List(AAZCommand):
 
         # define Arg Group ""
 
+        # define Arg Group "Optional Parameters"
+
         _args_schema = cls._args_schema
-        _args_schema.resource_group = AAZResourceGroupNameArg()
+        _args_schema.resource_group = AAZResourceGroupNameArg(
+            arg_group="Optional Parameters",
+            help="Name of resource group. You can configure the default group using az configure --defaults group=<name>.",
+        )
         return cls._args_schema
 
     def _execute_operations(self):
@@ -231,6 +236,7 @@ class List(AAZCommand):
             identity = cls._schema_on_200.value.Element.properties.encryption.identity
             identity.resource_id = AAZStrType(
                 serialized_name="resourceId",
+                nullable=True,
             )
             identity.type = AAZStrType()
 
@@ -412,6 +418,7 @@ class List(AAZCommand):
             identity = cls._schema_on_200.value.Element.properties.encryption.identity
             identity.resource_id = AAZStrType(
                 serialized_name="resourceId",
+                nullable=True,
             )
             identity.type = AAZStrType()
 

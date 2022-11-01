@@ -45,11 +45,6 @@ class Delete(AAZCommand):
 
         # define Arg Group ""
 
-        _args_schema = cls._args_schema
-        _args_schema.resource_group = AAZResourceGroupNameArg(
-            required=True,
-        )
-
         # define Arg Group "Optional Parameters"
 
         _args_schema = cls._args_schema
@@ -59,6 +54,11 @@ class Delete(AAZCommand):
             help="Name of the load test resource.",
             required=True,
             id_part="name",
+        )
+        _args_schema.resource_group = AAZResourceGroupNameArg(
+            arg_group="Optional Parameters",
+            help="Name of resource group. You can configure the default group using az configure --defaults group=<name>.",
+            required=True,
         )
         return cls._args_schema
 

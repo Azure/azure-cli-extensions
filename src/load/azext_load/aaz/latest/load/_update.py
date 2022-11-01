@@ -13,9 +13,10 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "load update",
+    confirmation="",
 )
 class Update(AAZCommand):
-    """Update a loadtest resource.
+    """Update a load test resource.
     """
 
     _aaz_info = {
@@ -40,12 +41,6 @@ class Update(AAZCommand):
         cls._args_schema = super()._build_arguments_schema(*args, **kwargs)
 
         # define Arg Group ""
-
-        _args_schema = cls._args_schema
-        _args_schema.resource_group = AAZResourceGroupNameArg(
-            help="Name of resource group. You can configure the default group using az configure --defaults group=<name>.",
-            required=True,
-        )
 
         # define Arg Group "Optional Parameters"
 
@@ -73,17 +68,24 @@ class Update(AAZCommand):
             options=["--encryption-identity"],
             arg_group="Optional Parameters",
             help="The managed identity for Customer-managed key settings defining which identity should be used to auth to Key Vault.",
+            nullable=True,
         )
         _args_schema.encryption_identity_type = AAZStrArg(
             options=["--encryption-identity-type"],
             arg_group="Optional Parameters",
-            help="Managed identity type to use for accessing encryption key Url.",
+            help="Managed identity type to use for accessing encryption key Url",
             enum={"SystemAssigned": "SystemAssigned", "UserAssigned": "UserAssigned"},
         )
         _args_schema.encryption_key = AAZStrArg(
             options=["--encryption-key"],
             arg_group="Optional Parameters",
-            help="Encryption key URL, versioned. For example, https://contosovault.vault.azure.net/keys/contosokek/562a4bb76b524a1493a6afe8e536ee78.",
+            help="Encryption key URL, versioned. For example, https://contosovault.vault.azure.net/keys/contosokek/562a4bb76b524a1493a6afe8e536ee78",
+        )
+        _args_schema.tags = AAZDictArg(
+            options=["--tags"],
+            arg_group="Optional Parameters",
+            help="Space-separated tags: key[=value] [key[=value] ...]. Use \"\" to clear existing tags.",
+            nullable=True,
         )
         _args_schema.name = AAZStrArg(
             options=["-n", "--name"],
@@ -92,11 +94,19 @@ class Update(AAZCommand):
             required=True,
             id_part="name",
         )
+        _args_schema.resource_group = AAZResourceGroupNameArg(
+            arg_group="Optional Parameters",
+            help="Name of resource group. You can configure the default group using az configure --defaults group=<name>.",
+            required=True,
+        )
 
         user_assigned_identities = cls._args_schema.user_assigned_identities
         user_assigned_identities.Element = AAZObjectArg(
             blank={},
         )
+
+        tags = cls._args_schema.tags
+        tags.Element = AAZStrArg()
         return cls._args_schema
 
     def _execute_operations(self):
@@ -207,6 +217,7 @@ class Update(AAZCommand):
             )
             _builder.set_prop("identity", AAZObjectType)
             _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
+            _builder.set_prop("tags", AAZDictType, ".tags", typ_kwargs={"nullable": True})
 
             identity = _builder.get(".identity")
             if identity is not None:
@@ -229,8 +240,12 @@ class Update(AAZCommand):
 
             identity = _builder.get(".properties.encryption.identity")
             if identity is not None:
-                identity.set_prop("resourceId", AAZStrType, ".encryption_identity")
+                identity.set_prop("resourceId", AAZStrType, ".encryption_identity", typ_kwargs={"nullable": True})
                 identity.set_prop("type", AAZStrType, ".encryption_identity_type")
+
+            tags = _builder.get(".tags")
+            if tags is not None:
+                tags.set_elements(AAZStrType, ".")
 
             return self.serialize_content(_content_value)
 
@@ -323,6 +338,7 @@ class Update(AAZCommand):
             identity = cls._schema_on_200.properties.encryption.identity
             identity.resource_id = AAZStrType(
                 serialized_name="resourceId",
+                nullable=True,
             )
             identity.type = AAZStrType()
 
