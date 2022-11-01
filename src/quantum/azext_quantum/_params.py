@@ -53,16 +53,11 @@ def load_arguments(self, _):
     provider_sku_list_type = CLIArgumentType(options_list=['--provider-sku-list', '-r'], help='Comma separated list of Provider/SKU pairs. Separate the Provider and SKU with a slash. Enclose the entire list in quotes. Values from `az quantum offerings list -l <location> -o table`')
     auto_accept_type = CLIArgumentType(help='If specified, provider terms are accepted without an interactive Y/N prompt.')
     autoadd_only_type = CLIArgumentType(help='If specified, only the plans flagged "autoAdd" are displayed.')
-    # >>>>> TODO: Finalize these names <<<<<
-    # Peter's proposed param names:
-    job_input_source_type = CLIArgumentType(help='The location of the input file to submit. Path defaults to current folder. Default filename extension based on --job-input-type')
+    # job_input_source_type = CLIArgumentType(help='The location of the input file to submit. Path defaults to current folder. Default filename extension is based on --job-input-type')
+    job_input_file_type = CLIArgumentType(help='The location of the input file to submit. Path defaults to current folder. Default filename extension is based on --job-input-type')
     job_input_format_type = CLIArgumentType(help='The format of the file to submit. Defaults to Q# project.')
     job_output_format_type = CLIArgumentType(help='The expected job output format.')
-    # Guen's proposed param names:
-    qir_payload_type = CLIArgumentType(help='The pathname of the QIR input file to submit.')
-    qir_endpoint_type = CLIArgumentType(help='The URI of the QIR endpoint.')
-    qir_param_type = CLIArgumentType(help='A QIR parameter. May be repeated.')
-    # <<<<<
+    entry_point_type = CLIArgumentType(help='The entry point for the QIR program or circuit. Required for QIR. Ignored for Q# projects.')
 
     with self.argument_context('quantum workspace') as c:
         c.argument('workspace_name', workspace_name_type)
@@ -94,16 +89,11 @@ def load_arguments(self, _):
     with self.argument_context('quantum job submit') as c:
         c.argument('job_params', job_params_type)
         c.argument('target_capability', target_capability_type)
-        # >>>>> TODO: Finalize these names <<<<<
-        # Peter's proposed param names:
-        c.argument('job_input_source', job_input_source_type)
+        # c.argument('job_input_source', job_input_source_type)
+        c.argument('job_input_file', job_input_file_type)
         c.argument('job_input_format', job_input_format_type)
         c.argument('job_output_format', job_output_format_type)
-        # Guen's proposed param names:
-        c.argument('qir_payload', qir_payload_type)
-        c.argument('qir_endpoint', qir_endpoint_type)
-        c.argument('qir_param', qir_param_type)
-        # <<<<<
+        c.argument('entry_point', entry_point_type)
         c.positional('program_args', program_args_type)
 
     with self.argument_context('quantum execute') as c:
@@ -116,16 +106,11 @@ def load_arguments(self, _):
         c.argument('no_build', no_build_type)
         c.argument('job_params', job_params_type)
         c.argument('target_capability', target_capability_type)
-        # >>>>> TODO: Finalize these names <<<<<
-        # Peter's proposed param names:
-        c.argument('job_input_source', job_input_source_type)
+        # c.argument('job_input_source', job_input_source_type)
+        c.argument('job_input_file', job_input_file_type)
         c.argument('job_input_format', job_input_format_type)
         c.argument('job_output_format', job_output_format_type)
-        # Guen's proposed param names:
-        c.argument('qir_payload', qir_payload_type)
-        c.argument('qir_endpoint', qir_endpoint_type)
-        c.argument('qir_param', qir_param_type)
-        # <<<<<
+        c.argument('entry_point', entry_point_type)
         c.positional('program_args', program_args_type)
 
     with self.argument_context('quantum run') as c:
@@ -138,16 +123,11 @@ def load_arguments(self, _):
         c.argument('no_build', no_build_type)
         c.argument('job_params', job_params_type)
         c.argument('target_capability', target_capability_type)
-        # >>>>> TODO: Finalize these names <<<<<
-        # Peter's proposed param names:
-        c.argument('job_input_source', job_input_source_type)
+        # c.argument('job_input_source', job_input_source_type)
+        c.argument('job_input_file', job_input_file_type)
         c.argument('job_input_format', job_input_format_type)
         c.argument('job_output_format', job_output_format_type)
-        # Guen's proposed param names:
-        c.argument('qir_payload', qir_payload_type)
-        c.argument('qir_endpoint', qir_endpoint_type)
-        c.argument('qir_param', qir_param_type)
-        # <<<<<
+        c.argument('entry_point', entry_point_type)
         c.positional('program_args', program_args_type)
 
     with self.argument_context('quantum offerings') as c:

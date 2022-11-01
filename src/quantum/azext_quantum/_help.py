@@ -87,10 +87,6 @@ helps['quantum job submit'] = """
         text: |-
             az quantum job submit -g MyResourceGroup -w MyWorkspace -l MyLocation \\
                -t MyTarget --job-name MyJob
-      - name: Submit a QIR program or circuit from the current folder.
-        text: |-
-            az quantum job submit -g MyResourceGroup -w MyWorkspace -l MyLocation \\
-               -t MyTarget --job-name MyJob --job-input-format qir.v1
       - name: Submit a Q# program from the current folder with job parameters for a target.
         text: |-
             az quantum job submit -g MyResourceGroup -w MyWorkspace -l MyLocation \\
@@ -103,6 +99,10 @@ helps['quantum job submit'] = """
         text: |-
             az quantum job submit -g MyResourceGroup -w MyWorkspace -l MyLocation -t MyTarget \\
                 --target-capability MyTargetCapability
+      - name: Submit QIR bitcode from the current folder.
+        text: |-
+            az quantum job submit -g MyResourceGroup -w MyWorkspace -l MyLocation \\
+               -t MyTarget --job-name MyJob --job-input-format qir.v1 --entry-point MyQirEntryPoint
 """
 
 helps['quantum job wait'] = """
