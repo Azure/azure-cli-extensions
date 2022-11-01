@@ -515,7 +515,6 @@ def load_command_table(self, _):
     with self.command_group(
         "devcenter admin schedule", devcenter_schedule, client_factory=cf_schedule
     ) as g:
-        g.custom_command("list", "devcenter_schedule_list")
         g.custom_show_command("show", "devcenter_schedule_show")
         g.custom_command("create", "devcenter_schedule_create", supports_no_wait=True)
         g.custom_command("update", "devcenter_schedule_update", supports_no_wait=True)

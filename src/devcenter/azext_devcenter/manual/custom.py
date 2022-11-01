@@ -9,6 +9,13 @@ from ._client_factory import cf_devcenter_dataplane
 # customized control plane commands (these will override the generated as they are imported second)
 
 
+def devcenter_dev_center_list(client,
+                              resource_group_name=None):
+    if resource_group_name:
+        return client.list_by_resource_group(resource_group_name=resource_group_name)
+    return client.list_by_subscription()
+
+
 def devcenter_dev_center_create(
     client,
     resource_group_name,
@@ -37,6 +44,107 @@ def devcenter_dev_center_create(
         dev_center_name=dev_center_name,
         body=body,
     )
+
+
+def devcenter_project_list(client,
+                           resource_group_name=None):
+    if resource_group_name:
+        return client.list_by_resource_group(resource_group_name=resource_group_name)
+    return client.list_by_subscription()
+
+
+def devcenter_attached_network_list(client,
+                                    resource_group_name,
+                                    project_name=None,
+                                    dev_center_name=None):
+    if resource_group_name and project_name is not None:
+        return client.list_by_project(resource_group_name=resource_group_name,
+                                      project_name=project_name)
+    return client.list_by_dev_center(resource_group_name=resource_group_name,
+                                     dev_center_name=dev_center_name)
+
+
+def devcenter_gallery_list(client,
+                           resource_group_name,
+                           dev_center_name):
+    return client.list_by_dev_center(resource_group_name=resource_group_name,
+                                     dev_center_name=dev_center_name)
+
+
+def devcenter_image_list(client,
+                         resource_group_name,
+                         dev_center_name,
+                         gallery_name=None):
+    if resource_group_name and dev_center_name is not None and gallery_name is not None:
+        return client.list_by_gallery(resource_group_name=resource_group_name,
+                                      dev_center_name=dev_center_name,
+                                      gallery_name=gallery_name)
+    return client.list_by_dev_center(resource_group_name=resource_group_name,
+                                     dev_center_name=dev_center_name)
+
+
+def devcenter_catalog_list(client,
+                           resource_group_name,
+                           dev_center_name):
+    return client.list_by_dev_center(resource_group_name=resource_group_name,
+                                     dev_center_name=dev_center_name)
+
+
+def devcenter_environment_type_list(client,
+                                    resource_group_name,
+                                    dev_center_name):
+    return client.list_by_dev_center(resource_group_name=resource_group_name,
+                                     dev_center_name=dev_center_name)
+
+
+def devcenter_project_allowed_environment_type_list(client,
+                                                    resource_group_name,
+                                                    project_name):
+    return client.list(resource_group_name=resource_group_name,
+                       project_name=project_name)
+
+
+def devcenter_project_environment_type_list(client,
+                                            resource_group_name,
+                                            project_name):
+    return client.list(resource_group_name=resource_group_name,
+                       project_name=project_name)
+
+
+def devcenter_dev_box_definition_list(client,
+                                      resource_group_name,
+                                      dev_center_name=None,
+                                      project_name=None):
+    if resource_group_name and dev_center_name is not None:
+        return client.list_by_dev_center(resource_group_name=resource_group_name,
+                                         dev_center_name=dev_center_name)
+    return client.list_by_project(resource_group_name=resource_group_name,
+                                  project_name=project_name)
+
+
+def devcenter_sku_list(client):
+    return client.list_by_subscription()
+
+
+def devcenter_pool_list(client,
+                        resource_group_name,
+                        project_name):
+    return client.list_by_project(resource_group_name=resource_group_name,
+                                  project_name=project_name)
+
+
+def devcenter_network_connection_list(client,
+                                      resource_group_name=None):
+    if resource_group_name:
+        return client.list_by_resource_group(resource_group_name=resource_group_name)
+    return client.list_by_subscription()
+
+
+def devcenter_network_connection_list_health_detail(client,
+                                                    resource_group_name,
+                                                    network_connection_name):
+    return client.list_health_details(resource_group_name=resource_group_name,
+                                      network_connection_name=network_connection_name)
 
 
 def devcenter_pool_create(
@@ -192,9 +300,9 @@ def devcenter_schedule_delete(client,
 
 
 # dataplane commands
-def devcenter_project_list_dp(cmd, dev_center, top=None):
+def devcenter_project_list_dp(cmd, dev_center):
     cf_fidalgo = cf_devcenter_dataplane(cmd.cli_ctx, dev_center)
-    return cf_fidalgo.project.list_by_dev_center(top=top)
+    return cf_fidalgo.project.list_by_dev_center()
 
 
 def devcenter_project_show_dp(cmd, dev_center, project_name):
@@ -202,9 +310,9 @@ def devcenter_project_show_dp(cmd, dev_center, project_name):
     return cf_fidalgo.project.get(project_name=project_name)
 
 
-def devcenter_pool_list_dp(cmd, dev_center, project_name, top=None):
+def devcenter_pool_list_dp(cmd, dev_center, project_name):
     cf_fidalgo = cf_devcenter_dataplane(cmd.cli_ctx, dev_center)
-    return cf_fidalgo.pool.list(top=top, project_name=project_name)
+    return cf_fidalgo.pool.list(project_name=project_name)
 
 
 def devcenter_pool_show_dp(cmd, dev_center, project_name, pool_name):
@@ -213,11 +321,11 @@ def devcenter_pool_show_dp(cmd, dev_center, project_name, pool_name):
 
 
 def devcenter_schedule_list_dp(
-    cmd, dev_center, project_name, pool_name, top=None
+    cmd, dev_center, project_name, pool_name
 ):
     cf_fidalgo = cf_devcenter_dataplane(cmd.cli_ctx, dev_center)
     return cf_fidalgo.schedule.list(
-        top=top, project_name=project_name, pool_name=pool_name
+        project_name=project_name, pool_name=pool_name
     )
 
 
@@ -229,16 +337,16 @@ def devcenter_schedule_show_dp(cmd, dev_center, project_name, pool_name, schedul
 
 
 def devcenter_dev_box_list(
-    cmd, dev_center, filter_=None, top=None, project_name=None, user_id=None
+    cmd, dev_center, filter_=None, project_name=None, user_id=None
 ):
     cf_fidalgo = cf_devcenter_dataplane(cmd.cli_ctx, dev_center)
     if project_name is not None and user_id is not None:
         return cf_fidalgo.dev_box.list_by_project(
-            filter=filter_, top=top, project_name=project_name, user_id=user_id
+            filter=filter_, project_name=project_name, user_id=user_id
         )
     if user_id is not None:
-        return cf_fidalgo.dev_box.list_by_user(filter=filter_, top=top, user_id=user_id)
-    return cf_fidalgo.dev_box.list(filter=filter_, top=top)
+        return cf_fidalgo.dev_box.list_by_user(filter=filter_, user_id=user_id)
+    return cf_fidalgo.dev_box.list(filter=filter_)
 
 
 def devcenter_dev_box_show(cmd, dev_center, project_name, user_id, dev_box_name):
@@ -312,9 +420,9 @@ def devcenter_dev_box_stop(
     )
 
 
-def devcenter_environment_list(cmd, dev_center, project_name, top=None):
+def devcenter_environment_list(cmd, dev_center, project_name):
     cf_fidalgo = cf_devcenter_dataplane(cmd.cli_ctx, dev_center)
-    return cf_fidalgo.environments.list_by_project(top=top, project_name=project_name)
+    return cf_fidalgo.environments.list_by_project(project_name=project_name)
 
 
 def devcenter_environment_show(
@@ -494,11 +602,11 @@ def devcenter_environment_deploy_action(
 
 
 def devcenter_environment_list_by_project(
-    cmd, dev_center, project_name, user_id, top=None
+    cmd, dev_center, project_name, user_id
 ):
     cf_fidalgo = cf_devcenter_dataplane(cmd.cli_ctx, dev_center)
     return cf_fidalgo.environments.list_by_project_by_user(
-        top=top, project_name=project_name, user_id=user_id
+        project_name=project_name, user_id=user_id
     )
 
 
@@ -523,43 +631,42 @@ def devcenter_artifact_list(
     )
 
 
-def devcenter_catalog_item_list(cmd, dev_center, project_name, top=None):
+def devcenter_catalog_item_list(cmd, dev_center, project_name):
     cf_fidalgo = cf_devcenter_dataplane(cmd.cli_ctx, dev_center)
-    return cf_fidalgo.catalog_item.list_by_project(project_name=project_name, top=top)
+    return cf_fidalgo.catalog_item.list_by_project(project_name=project_name)
 
 
 def devcenter_catalog_item_show(
-    cmd, dev_center, project_name, catalog_item_id, top=None
+    cmd, dev_center, project_name, catalog_item_id
 ):
     cf_fidalgo = cf_devcenter_dataplane(cmd.cli_ctx, dev_center)
     return cf_fidalgo.catalog_item.get(
-        project_name=project_name, top=top, catalog_item_id=catalog_item_id
+        project_name=project_name, catalog_item_id=catalog_item_id
     )
 
 
 def devcenter_catalog_item_version_list(
-    cmd, dev_center, project_name, catalog_item_id, top=None
+    cmd, dev_center, project_name, catalog_item_id
 ):
     cf_fidalgo = cf_devcenter_dataplane(cmd.cli_ctx, dev_center)
     return cf_fidalgo.catalog_item_versions.list_by_project(
-        project_name=project_name, top=top, catalog_item_id=catalog_item_id
+        project_name=project_name, catalog_item_id=catalog_item_id
     )
 
 
 def devcenter_catalog_item_version_show(
-    cmd, dev_center, project_name, catalog_item_id, version, top=None
+    cmd, dev_center, project_name, catalog_item_id, version,
 ):
     cf_fidalgo = cf_devcenter_dataplane(cmd.cli_ctx, dev_center)
     return cf_fidalgo.catalog_item_versions.get(
         project_name=project_name,
-        top=top,
         catalog_item_id=catalog_item_id,
         version=version,
     )
 
 
-def devcenter_environment_type_list_dp(cmd, dev_center, project_name, top=None):
+def devcenter_environment_type_list_dp(cmd, dev_center, project_name):
     cf_fidalgo = cf_devcenter_dataplane(cmd.cli_ctx, dev_center)
     return cf_fidalgo.environment_type.list_by_project(
-        project_name=project_name, top=top
+        project_name=project_name
     )
