@@ -16,19 +16,19 @@ interactions:
       - AZURECLI/2.41.0 (PIP) azsdk-python-azure-mgmt-resource/21.1.0b1 Python/3.9.6
         (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg.automanage.profileassignment.cluster.000001?api-version=2021-04-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/rgtestautomanage?api-version=2021-04-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.automanage.profileassignment.cluster.000001","name":"clitest.rg.automanage.profileassignment.cluster.000001","type":"Microsoft.Resources/resourceGroups","location":"eastus2euap","tags":{"product":"azurecli","cause":"automation","date":"2022-10-31T06:31:21Z"},"properties":{"provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage","name":"rgtestautomanage","type":"Microsoft.Resources/resourceGroups","location":"eastus2euap","properties":{"provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '391'
+      - '234'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 31 Oct 2022 06:31:26 GMT
+      - Tue, 01 Nov 2022 02:14:29 GMT
       expires:
       - '-1'
       pragma:
@@ -63,23 +63,23 @@ interactions:
       User-Agent:
       - AZURECLI/2.41.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.9.6 (Windows-10-10.0.19044-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.automanage.profileassignment.cluster.000001/providers/Microsoft.Automanage/configurationProfiles/profile000002?api-version=2022-05-04
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.Automanage/configurationProfiles/profile000001?api-version=2022-05-04
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.automanage.profileassignment.cluster.000001/providers/Microsoft.Automanage/configurationProfiles/profile000002","name":"profile000002","type":"Microsoft.Automanage/configurationProfiles","location":"eastus2euap","properties":{"configuration":{"Antimalware/Enable":true}},"systemData":{"createdAt":"2022-10-31T06:31:31.4750528+00:00","createdBy":"zhiyihuang@microsoft.com","createdByType":"User","lastModifiedAt":"2022-10-31T06:31:31.4750528+00:00","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.Automanage/configurationProfiles/profile000001","name":"profile000001","type":"Microsoft.Automanage/configurationProfiles","location":"eastus2euap","properties":{"configuration":{"Antimalware/Enable":true}},"systemData":{"createdAt":"2022-11-01T02:14:34.6003927+00:00","createdBy":"zhiyihuang@microsoft.com","createdByType":"User","lastModifiedAt":"2022-11-01T02:14:34.6003927+00:00","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '606'
+      - '568'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 31 Oct 2022 06:31:33 GMT
+      - Tue, 01 Nov 2022 02:14:36 GMT
       expires:
       - '-1'
       location:
-      - /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.automanage.profileassignment.cluster.000001/providers/Microsoft.Automanage/configurationProfiles/profile000002
+      - /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.Automanage/configurationProfiles/profile000001
       pragma:
       - no-cache
       request-context:
@@ -96,109 +96,7 @@ interactions:
       code: 201
       message: Created
 - request:
-    body: null
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - stack-hci cluster create
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - --cluster-name -g
-      User-Agent:
-      - AZURECLI/2.41.0 (PIP) azsdk-python-azure-mgmt-resource/21.1.0b1 Python/3.9.6
-        (Windows-10-10.0.19044-SP0)
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg.automanage.profileassignment.cluster.000001?api-version=2021-04-01
-  response:
-    body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.automanage.profileassignment.cluster.000001","name":"clitest.rg.automanage.profileassignment.cluster.000001","type":"Microsoft.Resources/resourceGroups","location":"eastus2euap","tags":{"product":"azurecli","cause":"automation","date":"2022-10-31T06:31:21Z"},"properties":{"provisioningState":"Succeeded"}}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '391'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Mon, 31 Oct 2022 06:31:34 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-    status:
-      code: 200
-      message: OK
-- request:
-    body: '{"location": "eastus2euap"}'
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - stack-hci cluster create
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '27'
-      Content-Type:
-      - application/json
-      ParameterSetName:
-      - --cluster-name -g
-      User-Agent:
-      - AZURECLI/2.41.0 (PIP) azsdk-python-mgmt-azurestackhci/1.0.0b1 Python/3.9.6
-        (Windows-10-10.0.19044-SP0)
-    method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.automanage.profileassignment.cluster.000001/providers/Microsoft.AzureStackHCI/clusters/cluster1?api-version=2022-05-01
-  response:
-    body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.automanage.profileassignment.cluster.000001/providers/Microsoft.AzureStackHCI/clusters/cluster1","name":"cluster1","type":"microsoft.azurestackhci/clusters","location":"eastus2euap","systemData":{"createdBy":"zhiyihuang@microsoft.com","createdByType":"User","createdAt":"2022-10-31T06:31:37.7566045Z","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-10-31T06:31:37.7566045Z"},"properties":{"provisioningState":"Succeeded","status":"NotYetRegistered","cloudId":"615a345e-8ed1-422e-bd0b-e0ff80df917b","desiredProperties":{"windowsServerSubscription":"Disabled","diagnosticLevel":"Basic"},"trialDaysRemaining":60,"billingModel":"Trial","serviceEndpoint":"https://dp.stackhci.azure.com/eastus2euap/"}}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '828'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Mon, 31 Oct 2022 06:31:40 GMT
-      etag:
-      - '"01007792-0000-3400-0000-635f6bcb0000"'
-      expires:
-      - '-1'
-      mise-correlation-id:
-      - 428e258e-63fa-4881-9b8f-fdd220058191
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding,Accept-Encoding
-      x-content-type-options:
-      - nosniff
-      x-ms-providerhub-traffic:
-      - 'True'
-      x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
-      x-powered-by:
-      - ASP.NET
-    status:
-      code: 200
-      message: OK
-- request:
-    body: '{"properties": {"configurationProfile": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.automanage.profileassignment.cluster.000001/providers/Microsoft.Automanage/configurationProfiles/profile000002"}}'
+    body: '{"properties": {"configurationProfile": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.Automanage/configurationProfiles/profile000001"}}'
     headers:
       Accept:
       - application/json
@@ -209,7 +107,7 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '232'
+      - '194'
       Content-Type:
       - application/json
       ParameterSetName:
@@ -217,23 +115,21 @@ interactions:
       User-Agent:
       - AZURECLI/2.41.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.9.6 (Windows-10-10.0.19044-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.automanage.profileassignment.cluster.000001/providers/Microsoft.AzureStackHci/clusters/cluster1/providers/Microsoft.Automanage/configurationProfileAssignments/default?api-version=2022-05-04
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.AzureStackHci/clusters/cluster1/providers/Microsoft.Automanage/configurationProfileAssignments/default?api-version=2022-05-04
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.automanage.profileassignment.cluster.000001/providers/Microsoft.AzureStackHci/clusters/cluster1/providers/Microsoft.Automanage/configurationProfileAssignments/default","name":"default","type":"Microsoft.Automanage/configurationProfileAssignments","properties":{"targetId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.automanage.profileassignment.cluster.000001/providers/Microsoft.AzureStackHci/clusters/cluster1","configurationProfile":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.automanage.profileassignment.cluster.000001/providers/Microsoft.Automanage/configurationProfiles/profile000002","status":"New"},"systemData":{"createdAt":"2022-10-31T06:31:41.534827+00:00","createdBy":"zhiyihuang@microsoft.com","createdByType":"User","lastModifiedAt":"2022-10-31T06:31:41.534827+00:00","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.AzureStackHci/clusters/cluster1/providers/Microsoft.Automanage/configurationProfileAssignments/default","name":"default","type":"Microsoft.Automanage/configurationProfileAssignments","properties":{"targetId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.AzureStackHci/clusters/cluster1","configurationProfile":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.Automanage/configurationProfiles/profile000001","status":"Error"},"systemData":{"createdAt":"2022-11-01T02:14:37.649469+00:00","createdBy":"zhiyihuang@microsoft.com","createdByType":"User","lastModifiedAt":"2022-11-01T02:14:37.649469+00:00","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1011'
+      - '899'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 31 Oct 2022 06:31:44 GMT
+      - Tue, 01 Nov 2022 02:14:39 GMT
       expires:
       - '-1'
-      location:
-      - /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.automanage.profileassignment.cluster.000001/providers/Microsoft.AzureStackHci/clusters/cluster1/providers/Microsoft.Automanage/configurationProfileAssignments/default
       pragma:
       - no-cache
       request-context:
@@ -242,13 +138,17 @@ interactions:
       - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
       - '1199'
     status:
-      code: 201
-      message: Created
+      code: 200
+      message: OK
 - request:
     body: null
     headers:
@@ -265,19 +165,19 @@ interactions:
       User-Agent:
       - AZURECLI/2.41.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.9.6 (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.automanage.profileassignment.cluster.000001/providers/Microsoft.AzureStackHci/clusters/cluster1/providers/Microsoft.Automanage/configurationProfileAssignments/default?api-version=2022-05-04
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.AzureStackHci/clusters/cluster1/providers/Microsoft.Automanage/configurationProfileAssignments/default?api-version=2022-05-04
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.automanage.profileassignment.cluster.000001/providers/Microsoft.AzureStackHci/clusters/cluster1/providers/Microsoft.Automanage/configurationProfileAssignments/default","name":"default","type":"Microsoft.Automanage/configurationProfileAssignments","properties":{"targetId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.automanage.profileassignment.cluster.000001/providers/Microsoft.AzureStackHci/clusters/cluster1","configurationProfile":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.automanage.profileassignment.cluster.000001/providers/Microsoft.Automanage/configurationProfiles/profile000002","status":"InProgress"},"systemData":{"createdAt":"2022-10-31T06:31:46.495453+00:00","createdBy":"d828acde-4b48-47f5-a6e8-52460104a052","createdByType":"Application","lastModifiedAt":"2022-10-31T06:31:46.495453+00:00","lastModifiedBy":"d828acde-4b48-47f5-a6e8-52460104a052","lastModifiedByType":"Application"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.AzureStackHci/clusters/cluster1/providers/Microsoft.Automanage/configurationProfileAssignments/default","name":"default","type":"Microsoft.Automanage/configurationProfileAssignments","properties":{"targetId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.AzureStackHci/clusters/cluster1","configurationProfile":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.Automanage/configurationProfiles/profile000001","status":"Error"},"systemData":{"createdAt":"2022-11-01T02:14:37.649469+00:00","createdBy":"zhiyihuang@microsoft.com","createdByType":"User","lastModifiedAt":"2022-11-01T02:14:37.649469+00:00","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1056'
+      - '899'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 31 Oct 2022 06:31:46 GMT
+      - Tue, 01 Nov 2022 02:14:42 GMT
       expires:
       - '-1'
       pragma:
@@ -313,19 +213,19 @@ interactions:
       User-Agent:
       - AZURECLI/2.41.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.9.6 (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.automanage.profileassignment.cluster.000001/providers/Microsoft.Automanage/configurationProfileAssignments?api-version=2022-05-04
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.Automanage/configurationProfileAssignments?api-version=2022-05-04
   response:
     body:
-      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.automanage.profileassignment.cluster.000001/providers/Microsoft.AzureStackHci/clusters/cluster1/providers/Microsoft.Automanage/configurationProfileAssignments/default","name":"default","type":"Microsoft.Automanage/configurationProfileAssignments","properties":{"targetId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.automanage.profileassignment.cluster.000001/providers/Microsoft.AzureStackHci/clusters/cluster1","configurationProfile":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.automanage.profileassignment.cluster.000001/providers/Microsoft.Automanage/configurationProfiles/profile000002","status":"Error"},"systemData":{"createdAt":"2022-10-31T06:31:48.230468+00:00","createdBy":"d828acde-4b48-47f5-a6e8-52460104a052","createdByType":"Application","lastModifiedAt":"2022-10-31T06:31:48.230468+00:00","lastModifiedBy":"d828acde-4b48-47f5-a6e8-52460104a052","lastModifiedByType":"Application"}}]}'
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.AzureStackHci/clusters/cluster1/providers/Microsoft.Automanage/configurationProfileAssignments/default","name":"default","type":"Microsoft.Automanage/configurationProfileAssignments","properties":{"targetId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.AzureStackHci/clusters/cluster1","configurationProfile":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.Automanage/configurationProfiles/profile000001","status":"Error"},"systemData":{"createdAt":"2022-11-01T02:14:37.649469+00:00","createdBy":"zhiyihuang@microsoft.com","createdByType":"User","lastModifiedAt":"2022-11-01T02:14:37.649469+00:00","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User"}}]}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1063'
+      - '911'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 31 Oct 2022 06:31:47 GMT
+      - Tue, 01 Nov 2022 02:14:44 GMT
       expires:
       - '-1'
       pragma:
@@ -365,19 +265,19 @@ interactions:
       - AZURECLI/2.41.0 (PIP) azsdk-python-azure-mgmt-resource/21.1.0b1 Python/3.9.6
         (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg.automanage.profileassignment.cluster.000001?api-version=2021-04-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/rgtestautomanage?api-version=2021-04-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.automanage.profileassignment.cluster.000001","name":"clitest.rg.automanage.profileassignment.cluster.000001","type":"Microsoft.Resources/resourceGroups","location":"eastus2euap","tags":{"product":"azurecli","cause":"automation","date":"2022-10-31T06:31:21Z"},"properties":{"provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage","name":"rgtestautomanage","type":"Microsoft.Resources/resourceGroups","location":"eastus2euap","properties":{"provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '391'
+      - '234'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 31 Oct 2022 06:31:48 GMT
+      - Tue, 01 Nov 2022 02:14:45 GMT
       expires:
       - '-1'
       pragma:
@@ -412,23 +312,23 @@ interactions:
       User-Agent:
       - AZURECLI/2.41.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.9.6 (Windows-10-10.0.19044-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.automanage.profileassignment.cluster.000001/providers/Microsoft.Automanage/configurationProfiles/profile000003?api-version=2022-05-04
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.Automanage/configurationProfiles/profile000002?api-version=2022-05-04
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.automanage.profileassignment.cluster.000001/providers/Microsoft.Automanage/configurationProfiles/profile000003","name":"profile000003","type":"Microsoft.Automanage/configurationProfiles","location":"eastus2euap","properties":{"configuration":{"Antimalware/Enable":false}},"systemData":{"createdAt":"2022-10-31T06:31:53.9151252+00:00","createdBy":"zhiyihuang@microsoft.com","createdByType":"User","lastModifiedAt":"2022-10-31T06:31:53.9151252+00:00","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.Automanage/configurationProfiles/profile000002","name":"profile000002","type":"Microsoft.Automanage/configurationProfiles","location":"eastus2euap","properties":{"configuration":{"Antimalware/Enable":false}},"systemData":{"createdAt":"2022-11-01T02:14:50.3879812+00:00","createdBy":"zhiyihuang@microsoft.com","createdByType":"User","lastModifiedAt":"2022-11-01T02:14:50.3879812+00:00","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '607'
+      - '569'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 31 Oct 2022 06:31:55 GMT
+      - Tue, 01 Nov 2022 02:14:52 GMT
       expires:
       - '-1'
       location:
-      - /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.automanage.profileassignment.cluster.000001/providers/Microsoft.Automanage/configurationProfiles/profile000003
+      - /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.Automanage/configurationProfiles/profile000002
       pragma:
       - no-cache
       request-context:
@@ -460,19 +360,19 @@ interactions:
       User-Agent:
       - AZURECLI/2.41.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.9.6 (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.automanage.profileassignment.cluster.000001/providers/Microsoft.AzureStackHci/clusters/cluster1/providers/Microsoft.Automanage/configurationProfileAssignments/default?api-version=2022-05-04
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.AzureStackHci/clusters/cluster1/providers/Microsoft.Automanage/configurationProfileAssignments/default?api-version=2022-05-04
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.automanage.profileassignment.cluster.000001/providers/Microsoft.AzureStackHci/clusters/cluster1/providers/Microsoft.Automanage/configurationProfileAssignments/default","name":"default","type":"Microsoft.Automanage/configurationProfileAssignments","properties":{"targetId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.automanage.profileassignment.cluster.000001/providers/Microsoft.AzureStackHci/clusters/cluster1","configurationProfile":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.automanage.profileassignment.cluster.000001/providers/Microsoft.Automanage/configurationProfiles/profile000002","status":"Error"},"systemData":{"createdAt":"2022-10-31T06:31:48.230468+00:00","createdBy":"d828acde-4b48-47f5-a6e8-52460104a052","createdByType":"Application","lastModifiedAt":"2022-10-31T06:31:48.230468+00:00","lastModifiedBy":"d828acde-4b48-47f5-a6e8-52460104a052","lastModifiedByType":"Application"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.AzureStackHci/clusters/cluster1/providers/Microsoft.Automanage/configurationProfileAssignments/default","name":"default","type":"Microsoft.Automanage/configurationProfileAssignments","properties":{"targetId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.AzureStackHci/clusters/cluster1","configurationProfile":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.Automanage/configurationProfiles/profile000001","status":"Error"},"systemData":{"createdAt":"2022-11-01T02:14:37.649469+00:00","createdBy":"zhiyihuang@microsoft.com","createdByType":"User","lastModifiedAt":"2022-11-01T02:14:37.649469+00:00","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1051'
+      - '899'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 31 Oct 2022 06:31:58 GMT
+      - Tue, 01 Nov 2022 02:14:54 GMT
       expires:
       - '-1'
       pragma:
@@ -493,7 +393,7 @@ interactions:
       code: 200
       message: OK
 - request:
-    body: '{"properties": {"configurationProfile": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.automanage.profileassignment.cluster.000001/providers/Microsoft.Automanage/configurationProfiles/profile000003"}}'
+    body: '{"properties": {"configurationProfile": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.Automanage/configurationProfiles/profile000002"}}'
     headers:
       Accept:
       - application/json
@@ -504,7 +404,7 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '232'
+      - '194'
       Content-Type:
       - application/json
       ParameterSetName:
@@ -512,19 +412,19 @@ interactions:
       User-Agent:
       - AZURECLI/2.41.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.9.6 (Windows-10-10.0.19044-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.automanage.profileassignment.cluster.000001/providers/Microsoft.AzureStackHci/clusters/cluster1/providers/Microsoft.Automanage/configurationProfileAssignments/default?api-version=2022-05-04
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.AzureStackHci/clusters/cluster1/providers/Microsoft.Automanage/configurationProfileAssignments/default?api-version=2022-05-04
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.automanage.profileassignment.cluster.000001/providers/Microsoft.AzureStackHci/clusters/cluster1/providers/Microsoft.Automanage/configurationProfileAssignments/default","name":"default","type":"Microsoft.Automanage/configurationProfileAssignments","properties":{"targetId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.automanage.profileassignment.cluster.000001/providers/Microsoft.AzureStackHci/clusters/cluster1","configurationProfile":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.automanage.profileassignment.cluster.000001/providers/Microsoft.Automanage/configurationProfiles/profile000003","status":"Error"},"systemData":{"createdAt":"2022-10-31T06:31:59.3172504+00:00","createdBy":"zhiyihuang@microsoft.com","createdByType":"User","lastModifiedAt":"2022-10-31T06:31:59.3172504+00:00","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.AzureStackHci/clusters/cluster1/providers/Microsoft.Automanage/configurationProfileAssignments/default","name":"default","type":"Microsoft.Automanage/configurationProfileAssignments","properties":{"targetId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.AzureStackHci/clusters/cluster1","configurationProfile":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.Automanage/configurationProfiles/profile000002","status":"Error"},"systemData":{"createdAt":"2022-11-01T02:14:54.8657221+00:00","createdBy":"zhiyihuang@microsoft.com","createdByType":"User","lastModifiedAt":"2022-11-01T02:14:54.8657221+00:00","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1015'
+      - '901'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 31 Oct 2022 06:31:59 GMT
+      - Tue, 01 Nov 2022 02:14:55 GMT
       expires:
       - '-1'
       pragma:
@@ -542,7 +442,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1198'
+      - '1199'
     status:
       code: 200
       message: OK
@@ -562,20 +462,23 @@ interactions:
       User-Agent:
       - AZURECLI/2.41.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.9.6 (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.automanage.profileassignment.cluster.000001/providers/Microsoft.AzureStackHci/clusters/cluster1/providers/Microsoft.Automanage/configurationProfileAssignments/default/reports?api-version=2022-05-04
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.AzureStackHci/clusters/cluster1/providers/Microsoft.Automanage/configurationProfileAssignments/default/reports?api-version=2022-05-04
   response:
     body:
-      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.automanage.profileassignment.cluster.000001/providers/Microsoft.AzureStackHci/clusters/cluster1/providers/Microsoft.Automanage/configurationProfileAssignments/default/reports/c78babe5-975b-43a7-8cc7-5c54f30c8630","name":"c78babe5-975b-43a7-8cc7-5c54f30c8630","type":"Microsoft.Automanage/configurationProfileAssignments/reports","properties":{"startTime":"2022-10-31T06:31:46.6750077Z","endTime":"2022-10-31T06:31:47.962032Z","lastModifiedTime":"2022-10-31T06:31:47.9620318Z","duration":"PT1.2870243S","type":"Initial","status":"Error","configurationProfile":null,"resources":[],"error":{"code":null,"message":"Response
-        status code does not indicate success: PreconditionFailed (Precondition Failed).","target":null,"details":null,"additionalInfo":null},"reportFormatVersion":null},"systemData":{"createdAt":"2022-10-31T06:31:48.4837804+00:00","createdBy":"d828acde-4b48-47f5-a6e8-52460104a052","createdByType":"Application","lastModifiedAt":"2022-10-31T06:31:48.4837804+00:00","lastModifiedBy":"d828acde-4b48-47f5-a6e8-52460104a052","lastModifiedByType":"Application"}}]}'
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.AzureStackHci/clusters/cluster1/providers/Microsoft.Automanage/configurationProfileAssignments/default/reports/0be38054-8c25-4f9e-9bb5-60258c9178d9","name":"0be38054-8c25-4f9e-9bb5-60258c9178d9","type":"Microsoft.Automanage/configurationProfileAssignments/reports","properties":{"startTime":"2022-11-01T02:12:50.4556879Z","endTime":"2022-11-01T02:12:51.0938884Z","lastModifiedTime":"2022-11-01T02:12:51.0938882Z","duration":"PT0.6382005S","type":"Consistency","status":"Error","configurationProfile":null,"resources":[],"error":{"code":null,"message":"Response
+        status code does not indicate success: PreconditionFailed (Precondition Failed).","target":null,"details":null,"additionalInfo":null},"reportFormatVersion":null},"systemData":{"createdAt":"2022-11-01T02:12:51.303787+00:00","createdBy":"d828acde-4b48-47f5-a6e8-52460104a052","createdByType":"Application","lastModifiedAt":"2022-11-01T02:12:51.303787+00:00","lastModifiedBy":"d828acde-4b48-47f5-a6e8-52460104a052","lastModifiedByType":"Application"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.AzureStackHci/clusters/cluster1/providers/Microsoft.Automanage/configurationProfileAssignments/default/reports/5b8bceb4-bda1-45d3-be68-8a572e217d77","name":"5b8bceb4-bda1-45d3-be68-8a572e217d77","type":"Microsoft.Automanage/configurationProfileAssignments/reports","properties":{"startTime":"2022-11-01T02:14:55.8983725Z","endTime":"2022-11-01T02:14:57.2769793Z","lastModifiedTime":"2022-11-01T02:14:57.2769792Z","duration":"PT1.3786068S","type":"Consistency","status":"Error","configurationProfile":null,"resources":[],"error":{"code":null,"message":"Response
+        status code does not indicate success: PreconditionFailed (Precondition Failed).","target":null,"details":null,"additionalInfo":null},"reportFormatVersion":null},"systemData":{"createdAt":"2022-11-01T02:14:57.8618955+00:00","createdBy":"d828acde-4b48-47f5-a6e8-52460104a052","createdByType":"Application","lastModifiedAt":"2022-11-01T02:14:57.8618955+00:00","lastModifiedBy":"d828acde-4b48-47f5-a6e8-52460104a052","lastModifiedByType":"Application"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.AzureStackHci/clusters/cluster1/providers/Microsoft.Automanage/configurationProfileAssignments/default/reports/9e1c806e-058e-4b10-bc4e-0b0b76b7d86a","name":"9e1c806e-058e-4b10-bc4e-0b0b76b7d86a","type":"Microsoft.Automanage/configurationProfileAssignments/reports","properties":{"startTime":"2022-11-01T02:11:07.5196026Z","endTime":"2022-11-01T02:11:12.4285318Z","lastModifiedTime":"2022-11-01T02:11:12.4285317Z","duration":"PT4.9089292S","type":"Initial","status":"Error","configurationProfile":null,"resources":[],"error":{"code":null,"message":"Response
+        status code does not indicate success: PreconditionFailed (Precondition Failed).","target":null,"details":null,"additionalInfo":null},"reportFormatVersion":null},"systemData":{"createdAt":"2022-11-01T02:11:12.7434062+00:00","createdBy":"d828acde-4b48-47f5-a6e8-52460104a052","createdByType":"Application","lastModifiedAt":"2022-11-01T02:11:12.7434062+00:00","lastModifiedBy":"d828acde-4b48-47f5-a6e8-52460104a052","lastModifiedByType":"Application"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.AzureStackHci/clusters/cluster1/providers/Microsoft.Automanage/configurationProfileAssignments/default/reports/fc574dbd-32a9-4e2f-8e06-a2c526eb2bd4","name":"fc574dbd-32a9-4e2f-8e06-a2c526eb2bd4","type":"Microsoft.Automanage/configurationProfileAssignments/reports","properties":{"startTime":"2022-11-01T02:11:17.1933223Z","endTime":"2022-11-01T02:11:17.7524386Z","lastModifiedTime":"2022-11-01T02:11:17.7524385Z","duration":"PT0.5591163S","type":"Consistency","status":"Error","configurationProfile":null,"resources":[],"error":{"code":null,"message":"Response
+        status code does not indicate success: PreconditionFailed (Precondition Failed).","target":null,"details":null,"additionalInfo":null},"reportFormatVersion":null},"systemData":{"createdAt":"2022-11-01T02:11:18.0818039+00:00","createdBy":"d828acde-4b48-47f5-a6e8-52460104a052","createdByType":"Application","lastModifiedAt":"2022-11-01T02:11:18.0818039+00:00","lastModifiedBy":"d828acde-4b48-47f5-a6e8-52460104a052","lastModifiedByType":"Application"}}]}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1167'
+      - '4497'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 31 Oct 2022 06:32:11 GMT
+      - Tue, 01 Nov 2022 02:15:16 GMT
       expires:
       - '-1'
       pragma:
@@ -611,20 +514,20 @@ interactions:
       User-Agent:
       - AZURECLI/2.41.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.9.6 (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.automanage.profileassignment.cluster.000001/providers/Microsoft.AzureStackHci/clusters/cluster1/providers/Microsoft.Automanage/configurationProfileAssignments/default/reports/c78babe5-975b-43a7-8cc7-5c54f30c8630?api-version=2022-05-04
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.AzureStackHci/clusters/cluster1/providers/Microsoft.Automanage/configurationProfileAssignments/default/reports/0be38054-8c25-4f9e-9bb5-60258c9178d9?api-version=2022-05-04
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.automanage.profileassignment.cluster.000001/providers/Microsoft.AzureStackHci/clusters/cluster1/providers/Microsoft.Automanage/configurationProfileAssignments/default/reports/c78babe5-975b-43a7-8cc7-5c54f30c8630","name":"c78babe5-975b-43a7-8cc7-5c54f30c8630","type":"Microsoft.Automanage/configurationProfileAssignments/reports","properties":{"startTime":"2022-10-31T06:31:46.6750077Z","endTime":"2022-10-31T06:31:47.962032Z","lastModifiedTime":"2022-10-31T06:31:47.9620318Z","duration":"PT1.2870243S","type":"Initial","status":"Error","configurationProfile":null,"resources":[],"error":{"code":null,"message":"Response
-        status code does not indicate success: PreconditionFailed (Precondition Failed).","target":null,"details":null,"additionalInfo":null},"reportFormatVersion":null},"systemData":{"createdAt":"2022-10-31T06:31:48.4837804+00:00","createdBy":"d828acde-4b48-47f5-a6e8-52460104a052","createdByType":"Application","lastModifiedAt":"2022-10-31T06:31:48.4837804+00:00","lastModifiedBy":"d828acde-4b48-47f5-a6e8-52460104a052","lastModifiedByType":"Application"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.AzureStackHci/clusters/cluster1/providers/Microsoft.Automanage/configurationProfileAssignments/default/reports/0be38054-8c25-4f9e-9bb5-60258c9178d9","name":"0be38054-8c25-4f9e-9bb5-60258c9178d9","type":"Microsoft.Automanage/configurationProfileAssignments/reports","properties":{"startTime":"2022-11-01T02:12:50.4556879Z","endTime":"2022-11-01T02:12:51.0938884Z","lastModifiedTime":"2022-11-01T02:12:51.0938882Z","duration":"PT0.6382005S","type":"Consistency","status":"Error","configurationProfile":null,"resources":[],"error":{"code":null,"message":"Response
+        status code does not indicate success: PreconditionFailed (Precondition Failed).","target":null,"details":null,"additionalInfo":null},"reportFormatVersion":null},"systemData":{"createdAt":"2022-11-01T02:12:51.303787+00:00","createdBy":"d828acde-4b48-47f5-a6e8-52460104a052","createdByType":"Application","lastModifiedAt":"2022-11-01T02:12:51.303787+00:00","lastModifiedBy":"d828acde-4b48-47f5-a6e8-52460104a052","lastModifiedByType":"Application"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1155'
+      - '1120'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 31 Oct 2022 06:32:14 GMT
+      - Tue, 01 Nov 2022 02:15:18 GMT
       expires:
       - '-1'
       pragma:
@@ -662,7 +565,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.41.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.9.6 (Windows-10-10.0.19044-SP0)
     method: DELETE
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.automanage.profileassignment.cluster.000001/providers/Microsoft.AzureStackHci/clusters/cluster1/providers/Microsoft.Automanage/configurationProfileAssignments/default?api-version=2022-05-04
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.AzureStackHci/clusters/cluster1/providers/Microsoft.Automanage/configurationProfileAssignments/default?api-version=2022-05-04
   response:
     body:
       string: ''
@@ -672,7 +575,7 @@ interactions:
       content-length:
       - '0'
       date:
-      - Mon, 31 Oct 2022 06:32:15 GMT
+      - Tue, 01 Nov 2022 02:15:22 GMT
       expires:
       - '-1'
       pragma:
@@ -706,7 +609,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.41.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.9.6 (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.automanage.profileassignment.cluster.000001/providers/Microsoft.Automanage/configurationProfileAssignments?api-version=2022-05-04
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.Automanage/configurationProfileAssignments?api-version=2022-05-04
   response:
     body:
       string: '{"value":[]}'
@@ -718,7 +621,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 31 Oct 2022 06:32:17 GMT
+      - Tue, 01 Nov 2022 02:15:23 GMT
       expires:
       - '-1'
       pragma:

@@ -116,6 +116,9 @@ class AutomanageScenario(ScenarioTest):
         self.cmd('az automanage configuration-profile-assignment list -g {rg}', checks=[JMESPathCheck('length(@)', 0)])
 
     @record_only()
+    # need to first run：
+    # az group create -l eastus2euap -g rgtestautomanage
+    # Connect-AzConnectedMachine -ResourceGroupName rgtestautomanage -Name arc1 -Location eastus2euap
     def test_automanage_configuration_profile_assignment_arc_scenarios(self):
         self.kwargs.update({
             'profile_name': self.create_random_name(prefix='profile', length=24),
@@ -153,10 +156,13 @@ class AutomanageScenario(ScenarioTest):
         self.cmd('az automanage configuration-profile-assignment list -g {rg}', checks=[JMESPathCheck('length(@)', 0)])
 
     @record_only()
-    @ResourceGroupPreparer(location='eastus2euap', name_prefix='clitest.rg.automanage.profileassignment.cluster.')
+    # need to first run：
+    # az group create -l eastus2euap -g rgtestautomanage
+    # az stack-hci cluster create --cluster-name cluster1 -g rgtestautomanage
     def test_automanage_configuration_profile_assignment_cluster_scenarios(self):
         self.kwargs.update({
             'profile_name': self.create_random_name(prefix='profile', length=24),
+            'rg': 'rgtestautomanage',
             'cluster_name': 'cluster1',
             'profile_name_2': self.create_random_name(prefix='profile', length=24),
         })
@@ -164,7 +170,6 @@ class AutomanageScenario(ScenarioTest):
                               '--configuration {{\\\"Antimalware/Enable\\\":true}}').get_output_in_json()["id"]
         self.kwargs.update({'profile_id': profile_id})
 
-        self.cmd('az stack-hci cluster create --cluster-name {cluster_name} -g {rg}')
         self.cmd('az automanage configuration-profile-assignment cluster create -n default -g {rg} '
                  '--cluster-name {cluster_name} --configuration-profile {profile_id}')
         self.cmd('az automanage configuration-profile-assignment cluster show -n default -g {rg} '
@@ -180,7 +185,7 @@ class AutomanageScenario(ScenarioTest):
                  '--cluster-name {cluster_name} --configuration-profile {profile_id_2}',
                  checks=[JMESPathCheck('properties.configurationProfile', profile_id_2)])
 
-        sleep(10)
+        sleep(20)
         report_name = self.cmd('az automanage configuration-profile-assignment cluster report list --assignment-name '
                                'default -g {rg} --cluster-name {cluster_name}').get_output_in_json()[0]["name"]
         self.kwargs.update({'report_name': report_name})
