@@ -2,6 +2,10 @@
 Release History
 ===============
 
+0.4.8
+++++++
+Fix for encrypted vm's and fixing test cases
+
 0.4.7
 ++++++
 Setting subscription account for reset-nic

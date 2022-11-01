@@ -34,6 +34,7 @@ logger = get_logger(__name__)
 # type variables
 AgentPool = TypeVar("AgentPool")
 AgentPoolsOperations = TypeVar("AgentPoolsOperations")
+PortRange = TypeVar("PortRange")
 
 
 # pylint: disable=too-few-public-methods
@@ -233,6 +234,76 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
         """
         return self._get_disable_custom_ca_trust(enable_validation=True)
 
+    def _get_disable_windows_outbound_nat(self) -> bool:
+        """Internal function to obtain the value of disable_windows_outbound_nat.
+
+        :return: bool
+        """
+        # read the original value passed by the command
+        disable_windows_outbound_nat = self.raw_param.get("disable_windows_outbound_nat")
+        # In create mode, try to read the property value corresponding to the parameter from the `agentpool` object
+        if self.decorator_mode == DecoratorMode.CREATE:
+            if (
+                self.agentpool and
+                self.agentpool.windows_profile and
+                self.agentpool.windows_profile.disable_windows_outbound_nat is not None
+            ):
+                disable_windows_outbound_nat = self.agentpool.windows_profile.disable_windows_outbound_nat
+
+        # this parameter does not need dynamic completion
+        # this parameter does not need validation
+        return disable_windows_outbound_nat
+
+    def get_disable_windows_outbound_nat(self) -> bool:
+        """Obtain the value of disable_windows_outbound_nat.
+
+        :return: bool
+        """
+        return self._get_disable_windows_outbound_nat()
+
+    def get_asg_ids(self) -> Union[List[str], None]:
+        if self.agentpool_decorator_mode == AgentPoolDecoratorMode.MANAGED_CLUSTER:
+            asg_ids = self.raw_param.get('nodepool_asg_ids')
+        else:
+            asg_ids = self.raw_param.get('asg_ids')
+
+        if asg_ids is None:
+            return None
+        if asg_ids == '':
+            return []
+
+        return asg_ids.split(',')
+
+    def get_allowed_host_ports(self) -> Union[List[PortRange], None]:
+        if self.agentpool_decorator_mode == AgentPoolDecoratorMode.MANAGED_CLUSTER:
+            ports = self.raw_param.get('nodepool_allowed_host_ports')
+        else:
+            ports = self.raw_param.get('allowed_host_ports')
+
+        if ports is None:
+            return None
+        if ports == '':
+            return []
+
+        ports = ports.split(',')
+        port_ranges = []
+        import re
+        regex = re.compile(r'^((\d+)|((\d+)-(\d+)))/(tcp|udp)$')
+        for port in ports:
+            r = regex.findall(port)
+            if r[0][1] != '':
+                # single port
+                port_start, port_end = int(r[0][1]), int(r[0][1])
+            else:
+                # port range
+                port_start, port_end = int(r[0][3]), int(r[0][4])
+            port_ranges.append(self.models.PortRange(
+                port_start=port_start,
+                port_end=port_end,
+                protocol=r[0][5].upper(),
+            ))
+        return port_ranges
+
 
 class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
     def __init__(
@@ -309,6 +380,35 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
         agentpool.enable_custom_ca_trust = self.context.get_enable_custom_ca_trust()
         return agentpool
 
+    def set_up_agentpool_windows_profile(self, agentpool: AgentPool) -> AgentPool:
+        """Set up windows profile for the AgentPool object.
+
+        :return: the AgentPool object
+        """
+        self._ensure_agentpool(agentpool)
+
+        disable_windows_outbound_nat = self.context.get_disable_windows_outbound_nat()
+
+        # Construct AgentPoolWindowsProfile if one of the fields has been set
+        if disable_windows_outbound_nat:
+            agentpool.windows_profile = self.models.AgentPoolWindowsProfile(
+                disable_outbound_nat=disable_windows_outbound_nat
+            )
+
+        return agentpool
+
+    def set_up_agentpool_network_profile(self, agentpool: AgentPool) -> AgentPool:
+        self._ensure_agentpool(agentpool)
+
+        asg_ids = self.context.get_asg_ids()
+        allowed_host_ports = self.context.get_allowed_host_ports()
+        if asg_ids and allowed_host_ports:
+            agentpool.network_profile = self.models.AgentPoolNetworkProfile(
+                application_security_groups=asg_ids,
+                allowed_host_ports=allowed_host_ports,
+            )
+        return agentpool
+
     def construct_agentpool_profile_preview(self) -> AgentPool:
         """The overall controller used to construct the preview AgentPool profile.
 
@@ -328,6 +428,10 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
         agentpool = self.set_up_gpu_properties(agentpool)
         # set up custom ca trust
         agentpool = self.set_up_custom_ca_trust(agentpool)
+        # set up agentpool windows profile
+        agentpool = self.set_up_agentpool_windows_profile(agentpool)
+        # set up agentpool network profile
+        agentpool = self.set_up_agentpool_network_profile(agentpool)
 
         # DO NOT MOVE: keep this at the bottom, restore defaults
         agentpool = self._restore_defaults_in_agentpool(agentpool)
@@ -381,6 +485,19 @@ class AKSPreviewAgentPoolUpdateDecorator(AKSAgentPoolUpdateDecorator):
             agentpool.enable_custom_ca_trust = False
         return agentpool
 
+    def update_network_profile(self, agentpool: AgentPool) -> AgentPool:
+        self._ensure_agentpool(agentpool)
+
+        asg_ids = self.context.get_asg_ids()
+        allowed_host_ports = self.context.get_allowed_host_ports()
+        if asg_ids or allowed_host_ports:
+            agentpool.network_profile = self.models.AgentPoolNetworkProfile()
+        if asg_ids is not None:
+            agentpool.network_profile.application_security_groups = asg_ids
+        if allowed_host_ports is not None:
+            agentpool.network_profile.allowed_host_ports = allowed_host_ports
+        return agentpool
+
     def update_agentpool_profile_preview(self, agentpools: List[AgentPool] = None) -> AgentPool:
         """The overall controller used to update the preview AgentPool profile.
 
@@ -394,4 +511,8 @@ class AKSPreviewAgentPoolUpdateDecorator(AKSAgentPoolUpdateDecorator):
 
         # update custom ca trust
         agentpool = self.update_custom_ca_trust(agentpool)
+
+        # update network profile
+        agentpool = self.update_network_profile(agentpool)
+
         return agentpool

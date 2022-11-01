@@ -627,6 +627,8 @@ def aks_create(
     node_count=3,
     nodepool_tags=None,
     nodepool_labels=None,
+    nodepool_allowed_host_ports=None,
+    nodepool_asg_ids=None,
     node_osdisk_type=None,
     node_osdisk_size=0,
     vm_set_type=None,
@@ -673,6 +675,7 @@ def aks_create(
     enable_keda=False,
     enable_node_restriction=False,
     enable_vpa=False,
+    enable_cilium_dataplane=False,
     # nodepool
     host_group_id=None,
     crg_id=None,
@@ -765,6 +768,7 @@ def aks_update(
     # managed cluster
     http_proxy_config=None,
     load_balancer_managed_outbound_ipv6_count=None,
+    outbound_type=None,
     enable_pod_security_policy=False,
     disable_pod_security_policy=False,
     enable_pod_identity=False,
@@ -807,6 +811,7 @@ def aks_update(
     enable_vpa=False,
     disable_vpa=False,
     cluster_snapshot_id=None,
+    ssh_key_value=None,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
@@ -1170,6 +1175,9 @@ def aks_agentpool_add(
     workload_runtime=None,
     gpu_instance_profile=None,
     enable_custom_ca_trust=False,
+    disable_windows_outbound_nat=False,
+    allowed_host_ports=None,
+    asg_ids=None,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
@@ -1217,6 +1225,8 @@ def aks_agentpool_update(
     # extensions
     enable_custom_ca_trust=False,
     disable_custom_ca_trust=False,
+    allowed_host_ports=None,
+    asg_ids=None,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
