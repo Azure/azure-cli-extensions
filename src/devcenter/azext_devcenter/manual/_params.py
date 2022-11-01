@@ -33,12 +33,6 @@ def load_arguments(self, _):
             required=True,
             help="The DevCenter to operate on.",
         )
-        c.argument(
-            "top",
-            type=int,
-            help="The maximum number of resources to return from the operation. Example: "
-            "'$top=10'.",
-        )
 
     with self.argument_context("devcenter dev project show") as c:
         c.argument(
@@ -62,12 +56,6 @@ def load_arguments(self, _):
             type=str,
             required=True,
             help="The DevCenter to operate on.",
-        )
-        c.argument(
-            "top",
-            type=int,
-            help="The maximum number of resources to return from the operation. Example: "
-            "'$top=10'.",
         )
         c.argument(
             "project_name",
@@ -115,12 +103,6 @@ def load_arguments(self, _):
             type=str,
             required=True,
             help="The DevCenter to operate on.",
-        )
-        c.argument(
-            "top",
-            type=int,
-            help="The maximum number of resources to return from the operation. Example: "
-            "'$top=10'.",
         )
         c.argument(
             "project_name",
@@ -183,12 +165,6 @@ def load_arguments(self, _):
             options_list=["--filter"],
             type=str,
             help="An OData $filter clause to apply to the " "operation.",
-        )
-        c.argument(
-            "top",
-            type=int,
-            help="The maximum number of resources to return from the operation. Example: "
-            "'$top=10'.",
         )
         c.argument(
             "project_name",
@@ -410,12 +386,6 @@ def load_arguments(self, _):
             help="The DevCenter to operate on.",
         )
         c.argument(
-            "top",
-            type=int,
-            help="The maximum number of resources to return from the operation. Example: "
-            "'$top=10'.",
-        )
-        c.argument(
             "project_name",
             options_list=["--project-name", "--project"],
             type=str,
@@ -583,12 +553,6 @@ def load_arguments(self, _):
             type=str,
             required=True,
             help="The DevCenter to operate on.",
-        )
-        c.argument(
-            "top",
-            type=int,
-            help="The maximum number of resources to return from the operation. Example: "
-            "'$top=10'.",
         )
         c.argument(
             "project_name",
@@ -766,12 +730,6 @@ def load_arguments(self, _):
             type=str,
             help="The DevCenter Project upon which to execute operations.",
         )
-        c.argument(
-            "top",
-            type=int,
-            help="The maximum number of resources to return from the operation. Example: "
-            "'$top=10'.",
-        )
 
     with self.argument_context("devcenter dev catalog-item show") as c:
         c.argument(
@@ -786,12 +744,6 @@ def load_arguments(self, _):
             options_list=["--project-name", "--project"],
             type=str,
             help="The DevCenter Project upon which to execute operations.",
-        )
-        c.argument(
-            "top",
-            type=int,
-            help="The maximum number of resources to return from the operation. Example: "
-            "'$top=10'.",
         )
         c.argument(
             "catalog_item_id", type=str, help="The unique id of the catalog item."
@@ -810,12 +762,6 @@ def load_arguments(self, _):
             options_list=["--project-name", "--project"],
             type=str,
             help="The DevCenter Project upon which to execute operations.",
-        )
-        c.argument(
-            "top",
-            type=int,
-            help="The maximum number of resources to return from the operation. Example: "
-            "'$top=10'.",
         )
         c.argument(
             "catalog_item_id", type=str, help="The unique id of the catalog item."
@@ -837,12 +783,6 @@ def load_arguments(self, _):
             help="The DevCenter Project upon which to execute operations.",
         )
         c.argument(
-            "top",
-            type=int,
-            help="The maximum number of resources to return from the operation. Example: "
-            "'$top=10'.",
-        )
-        c.argument(
             "catalog_item_id", type=str, help="The unique id of the catalog item."
         )
         c.argument("version", type=str, help="The version of the catalog item.")
@@ -861,22 +801,10 @@ def load_arguments(self, _):
             type=str,
             help="The DevCenter Project upon which to execute operations.",
         )
-        c.argument(
-            "top",
-            type=int,
-            help="The maximum number of resources to return from the operation. Example: "
-            "'$top=10'.",
-        )
 
     # control plane
     with self.argument_context("devcenter admin devcenter list") as c:
         c.argument("resource_group_name", resource_group_name_type)
-        c.argument(
-            "top",
-            type=int,
-            help="The maximum number of resources to return from the operation. Example: "
-            "'$top=10'.",
-        )
 
     with self.argument_context("devcenter admin devcenter show") as c:
         c.argument("resource_group_name", resource_group_name_type)
@@ -990,12 +918,6 @@ def load_arguments(self, _):
 
     with self.argument_context("devcenter admin project list") as c:
         c.argument("resource_group_name", resource_group_name_type)
-        c.argument(
-            "top",
-            type=int,
-            help="The maximum number of resources to return from the operation. Example: "
-            "'$top=10'.",
-        )
 
     with self.argument_context("devcenter admin project show") as c:
         c.argument("resource_group_name", resource_group_name_type)
@@ -1081,12 +1003,6 @@ def load_arguments(self, _):
             options_list=["--project-name", "--project"],
             type=str,
             help="The name of the project.",
-        )
-        c.argument(
-            "top",
-            type=int,
-            help="The maximum number of resources to return from the operation. Example: "
-            "'$top=10'.",
         )
         c.argument(
             "dev_center_name",
@@ -1207,12 +1123,6 @@ def load_arguments(self, _):
             help="The name of the project.",
         )
         c.argument(
-            "top",
-            type=int,
-            help="The maximum number of resources to return from the operation. Example: "
-            "'$top=10'.",
-        )
-        c.argument(
             "dev_center_name",
             options_list=["--dev-center-name", "--dev-center", "-d"],
             type=str,
@@ -1316,12 +1226,6 @@ def load_arguments(self, _):
             type=str,
             help="The name of the project.",
         )
-        c.argument(
-            "top",
-            type=int,
-            help="The maximum number of resources to return from the operation. Example: "
-            "'$top=10'.",
-        )
 
     with self.argument_context(
         "devcenter admin project-allowed-environment-type show"
@@ -1348,12 +1252,6 @@ def load_arguments(self, _):
             options_list=["--project-name", "--project"],
             type=str,
             help="The name of the project.",
-        )
-        c.argument(
-            "top",
-            type=int,
-            help="The maximum number of resources to return from the operation. Example: "
-            "'$top=10'.",
         )
 
     with self.argument_context("devcenter admin project-environment-type show") as c:
@@ -1529,12 +1427,6 @@ def load_arguments(self, _):
             type=str,
             help="The name of the devcenter.",
         )
-        c.argument(
-            "top",
-            type=int,
-            help="The maximum number of resources to return from the operation. Example: "
-            "'$top=10'.",
-        )
 
     with self.argument_context("devcenter admin gallery show") as c:
         c.argument("resource_group_name", resource_group_name_type)
@@ -1640,12 +1532,6 @@ def load_arguments(self, _):
             help="The name of the devcenter.",
         )
         c.argument("gallery_name", type=str, help="The name of the gallery.")
-        c.argument(
-            "top",
-            type=int,
-            help="The maximum number of resources to return from the operation. Example: "
-            "'$top=10'.",
-        )
 
     with self.argument_context("devcenter admin image show") as c:
         c.argument("resource_group_name", resource_group_name_type)
@@ -1716,12 +1602,6 @@ def load_arguments(self, _):
             options_list=["--dev-center-name", "--dev-center", "-d"],
             type=str,
             help="The name of the devcenter.",
-        )
-        c.argument(
-            "top",
-            type=int,
-            help="The maximum number of resources to return from the operation. Example: "
-            "'$top=10'.",
         )
 
     with self.argument_context("devcenter admin catalog show") as c:
@@ -1865,12 +1745,6 @@ def load_arguments(self, _):
             options_list=["--project-name", "--project"],
             type=str,
             help="The name of the project.",
-        )
-        c.argument(
-            "top",
-            type=int,
-            help="The maximum number of resources to return from the operation. Example: "
-            "'$top=10'.",
         )
 
     with self.argument_context(
@@ -2024,14 +1898,6 @@ def load_arguments(self, _):
             id_part="child_name_1",
         )
 
-    with self.argument_context("devcenter admin sku list") as c:
-        c.argument(
-            "top",
-            type=int,
-            help="The maximum number of resources to return from the operation. Example: "
-            "'$top=10'.",
-        )
-
     with self.argument_context("devcenter admin pool list") as c:
         c.argument("resource_group_name", resource_group_name_type)
         c.argument(
@@ -2039,12 +1905,6 @@ def load_arguments(self, _):
             options_list=["--project-name", "--project"],
             type=str,
             help="The name of the project.",
-        )
-        c.argument(
-            "top",
-            type=int,
-            help="The maximum number of resources to return from the operation. Example: "
-            "'$top=10'.",
         )
 
     with self.argument_context("devcenter admin pool show") as c:
@@ -2190,27 +2050,6 @@ def load_arguments(self, _):
             id_part="child_name_1",
         )
 
-    with self.argument_context("devcenter admin schedule list") as c:
-        c.argument("resource_group_name", resource_group_name_type)
-        c.argument(
-            "project_name",
-            options_list=["--project-name", "--project"],
-            type=str,
-            help="The name of the project.",
-        )
-        c.argument(
-            "pool_name",
-            options_list=["--pool-name", "--pool"],
-            type=str,
-            help="Name of the pool.",
-        )
-        c.argument(
-            "top",
-            type=int,
-            help="The maximum number of resources to return from the operation. Example: "
-            "'$top=10'.",
-        )
-
     with self.argument_context("devcenter admin schedule show") as c:
         c.argument("resource_group_name", resource_group_name_type)
         c.argument(
@@ -2350,12 +2189,6 @@ def load_arguments(self, _):
 
     with self.argument_context("devcenter admin network-connection list") as c:
         c.argument("resource_group_name", resource_group_name_type)
-        c.argument(
-            "top",
-            type=int,
-            help="The maximum number of resources to return from the operation. Example: "
-            "'$top=10'.",
-        )
 
     with self.argument_context("devcenter admin network-connection show") as c:
         c.argument("resource_group_name", resource_group_name_type)
@@ -2501,13 +2334,18 @@ def load_arguments(self, _):
             help="Name of the Network Connection that can be applied to a Pool.",
             id_part="name",
         )
-    with self.argument_context('devcenter admin network-connection list-health-detail') as c:
-        c.argument('resource_group_name', resource_group_name_type)
-        c.argument('top', type=int, help='The maximum number of resources to return from the operation. Example: '
-                   '\'$top=10\'.')
-        c.argument('network_connection_name', options_list=['--name', '-n', '--network-connection-name'], type=str,
-                   help='Name of the Network Connection that can be applied to a Pool.')
+    with self.argument_context("devcenter admin network-connection list-health-detail") as c:
+        c.argument("resource_group_name", resource_group_name_type)
+        c.argument(
+            "network_connection_name",
+            options_list=["--name", "-n", "--network-connection-name"],
+            type=str,
+            help="Name of the Network Connection that can be applied to a Pool.")
 
-    with self.argument_context('devcenter admin operation-statuses show') as c:
-        c.argument('location', arg_type=get_location_type(self.cli_ctx), id_part='name')
-        c.argument('operation_id', type=str, help='The ID of an ongoing async operation', id_part='child_name_1')
+    with self.argument_context("devcenter admin operation-statuses show") as c:
+        c.argument("location", arg_type=get_location_type(self.cli_ctx), id_part="name")
+        c.argument(
+            "operation_id",
+            type=str,
+            help="The ID of an ongoing async operation",
+            id_part="child_name_1")

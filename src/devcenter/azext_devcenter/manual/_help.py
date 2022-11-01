@@ -1331,17 +1331,6 @@ helps[
 """
 
 helps[
-    "devcenter admin schedule list"
-] = """
-    type: command
-    short-summary: "Lists schedules for a pool."
-    examples:
-      - name: Schedules_ListByPool
-        text: |-
-               az devcenter admin schedule list --pool-name "DevPool" --project-name "TestProject" --resource-group "rg1"
-"""
-
-helps[
     "devcenter admin schedule show"
 ] = """
     type: command
