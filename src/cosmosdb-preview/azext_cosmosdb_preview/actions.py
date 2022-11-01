@@ -138,6 +138,7 @@ class AddCassandraTableAction(argparse._AppendAction):
         else:
             namespace.cassandra_table = cassandra_table
 
+
 class AddMongoCollectionAction(argparse._AppendAction):
     def __call__(self, parser, namespace, values, option_string=None):
         if not values:
