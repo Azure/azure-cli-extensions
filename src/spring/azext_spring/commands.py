@@ -7,7 +7,8 @@
 from azure.cli.core.commands import CliCommandType
 from azext_spring._utils import handle_asc_exception
 
-from ._client_factory import (cf_spring_20220901preview,
+from ._client_factory import (cf_spring_20221101preview,
+                              cf_spring_20220901preview,
                               cf_spring_20220501preview,
                               cf_spring_20220301preview,
                               cf_spring_20220101preview,
