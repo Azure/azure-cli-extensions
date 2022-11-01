@@ -237,3 +237,14 @@ class QuantumJobsScenarioTest(ScenarioTest):
             assert False
         except InvalidArgumentValueError as e:
             assert str(e) == "--max-poll-wait-secs parameter is not valid: foobar"
+
+    def test_submit_qir(self)
+        # set current workspace:
+        self.cmd(f'az quantum workspace set -g {get_test_resource_group()} -w {get_test_workspace()} -l {get_test_workspace_location()}')
+
+        # submit a QIR job
+        self.cmd("az quantum job submit --shots 100 --job-input-format qir.v1 --job-input-file 'src\\quantum\\azext_quantum\\tests\\latest\\source_for_build_test\\Qrng.bc --entry-point Qrng__SampleQuantumRandomNumberGenerator")
+
+
+
+
