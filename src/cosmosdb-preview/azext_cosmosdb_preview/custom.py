@@ -1110,8 +1110,8 @@ def cosmosdb_data_transfer_copy_job(client,
                                     dest_cassandra_table=None,
                                     source_sql_container=None,
                                     dest_sql_container=None,
-                                    source_mongo_collection=None,
-                                    dest_mongo_collection=None,
+                                    source_mongo=None,
+                                    dest_mongo=None,
                                     worker_count=0,
                                     job_name=None):
     job_create_properties = {}
@@ -1127,10 +1127,10 @@ def cosmosdb_data_transfer_copy_job(client,
             raise CLIError('Invalid input: multiple source components')
         source = source_sql_container
 
-    if source_mongo_collection is not None:
+    if source_mongo is not None:
         if source is not None:
             raise CLIError('Invalid input: multiple source components')
-        source = source_mongo_collection
+        source = source_mongo
 
     if source is None:
         raise CLIError('source component is missing')
@@ -1147,10 +1147,10 @@ def cosmosdb_data_transfer_copy_job(client,
             raise CLIError('Invalid input: multiple destination components')
         destination = dest_sql_container
 
-    if dest_mongo_collection is not None:
+    if dest_mongo is not None:
         if destination is not None:
             raise CLIError('Invalid input: multiple destination components')
-        destination = dest_mongo_collection
+        destination = dest_mongo
 
     if destination is None:
         raise CLIError('destination component is missing')

@@ -169,10 +169,10 @@ class AddMongoCollectionAction(argparse._AppendAction):
 
         mongo_collection = CosmosMongoDataTransferDataSourceSink(database_name=database_name, collection_name=collection_name)
 
-        if option_string == "--source-mongo-collection":
-            namespace.source_mongo_collection = mongo_collection
-        elif option_string == "--dest-mongo-collection":
-            namespace.dest_mongo_collection = mongo_collection
+        if option_string == "--source-mongo":
+            namespace.source_mongo = mongo_collection
+        elif option_string == "--dest-mongo":
+            namespace.dest_mongo = mongo_collection
         else:
             namespace.mongo_collection = mongo_collection
 

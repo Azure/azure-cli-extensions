@@ -567,16 +567,16 @@ helps['cosmosdb dts copy'] = """
             Usage: --dest-sql-container database=XX container=XX'
             database: Database name of CosmosDB Sql.
             container: Container name of CosmosDB Sql.
-      - name: --source-mongo-collection
+      - name: --source-mongo
         short-summary: "Source mongo collection"
         long-summary: |
-            Usage: --source-mongo-collection database=XX collection=XX'
+            Usage: --source-mongo database=XX collection=XX'
             database: Database name of CosmosDB Mongo.
             collection: Collection name of CosmosDB Mongo.
-      - name: --dest-mongo-collection
+      - name: --dest-mongo
         short-summary: "Destination mongo collection"
         long-summary: |
-            Usage: --dest-mongo-collection database=XX collection=XX'
+            Usage: --dest-mongo database=XX collection=XX'
             database: Database name of CosmosDB Mongo.
             collection: Collection name of CosmosDB Mongo.
 
@@ -589,7 +589,7 @@ helps['cosmosdb dts copy'] = """
           az cosmosdb dts copy -g "rg1" --job-name "j1" --account-name "db1" --source-cassandra-table keyspace=k1 table=t1 --dest-cassandra-table keyspace=k2 table=t2
       - name: Copy mongo collection
         text: |-
-          az cosmosdb dts copy -g "rg1" --job-name "j1" --account-name "db1" --source-mongo-collection database=d1 collection=c1 --dest-mongo-collection database=d2 collection=c2
+          az cosmosdb dts copy -g "rg1" --job-name "j1" --account-name "db1" --source-mongo database=d1 collection=c1 --dest-mongo database=d2 collection=c2
 """
 
 helps['cosmosdb dts'] = """
