@@ -4,6 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 import json
+import re
 
 from azure.cli.core.azclierror import InvalidArgumentValueError
 from azure.cli.core.util import sdk_no_wait
@@ -150,7 +151,8 @@ def gateway_route_config_update(cmd, client, resource_group, service, name,
                                 routes_json=None,
                                 routes_file=None):
     _validate_route_config_exist(client, resource_group, service, name)
-    route_properties = models.GatewayRouteConfigProperties()
+    route_properties = client.gateway_route_configs.get(
+        resource_group, service, DEFAULT_NAME, name).properties
     return _create_or_update_gateway_route_configs(client, resource_group, service, name, route_properties,
                                                    app_name, routes_file, routes_json)
 
@@ -232,6 +234,7 @@ def _create_or_update_routes_properties(routes_file, routes_json, route_properti
     if routes_file is None and routes_json is None:
         return route_properties
 
+    route_properties = models.GatewayRouteConfigProperties()
     if routes_file is not None:
         with open(routes_file, 'r') as json_file:
             raw_json = json.load(json_file)
@@ -242,5 +245,21 @@ def _create_or_update_routes_properties(routes_file, routes_json, route_properti
     if isinstance(raw_json, list):
         route_properties.routes = raw_json
     else:
+        raw_json = _route_config_property_convert(raw_json)
         route_properties = models.GatewayRouteConfigProperties(**raw_json)
     return route_properties
+
+
+# Convert camelCase to snake_case to align with backend
+def _route_config_property_convert(raw_json):
+    if raw_json is None:
+        return raw_json
+
+    convert_raw_json = {}
+    for key in raw_json:
+        if key == "routes":
+            convert_raw_json[key] = list(map(lambda v: _route_config_property_convert(v), raw_json[key]))
+        else:
+            replaced_key = re.sub('(?<!^)(?=[A-Z])', '_', key).lower()
+            convert_raw_json[replaced_key] = raw_json[key]
+    return convert_raw_json
