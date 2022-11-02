@@ -39,6 +39,14 @@ helps['spring create'] = """
         az spring create -n MyService -g MyResourceGroup --sku Enterprise --enable-application-configuration-service --enable-service-registry --enable-gateway --enable-api-portal
 """
 
+helps['spring list-marketplace-plan'] = """
+    type: command
+    short-summary: (Enterprise Tier Only) List Marketplace plan to be purchased.
+    examples:
+    - name: List all plans.
+      text: az spring list-marketplace-plan -o table
+"""
+
 helps['spring update'] = """
     type: command
     short-summary: Update an Azure Spring Apps.

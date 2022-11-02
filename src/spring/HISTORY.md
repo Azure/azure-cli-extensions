@@ -1,8 +1,9 @@
 Release History
 ===============
-1.1.15
+1.2.0
 ---
-* Support configure app level route in Spring Cloud Gateway route configs.
+* Add command `az spring list-marketplace-plan` to list all supported VMware product. For more detail, see https://learn.microsoft.com/en-us/azure/spring-apps/how-to-enterprise-marketplace-offer.
+* Add argument `--marketplace-plan-id` in command `az spring create` to support purchasing different VMware product plan when creating Enterprise sku Spring resource.
 
 1.1.14
 ---
