@@ -29,7 +29,7 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
             'kubeconfigpls': "%s" % (_get_test_data_file('pls-config.yaml')),
             'managed_cluster_name': managed_cluster_name
         })
-        self.cmd('aks create -g akkeshar -n {} -s Standard_B2s -l westeurope -c 1 --generate-ssh-keys'.format(managed_cluster_name))
+        self.cmd('aks create -g akkeshar -n {} -s Standard_B4ms -l westeurope -c 1 --generate-ssh-keys'.format(managed_cluster_name))
         self.cmd('aks get-credentials -g akkeshar -n {managed_cluster_name} -f {kubeconfig}')
         self.cmd('connectedk8s connect -g akkeshar -n {name} -l eastus --tags foo=doo --kube-config {kubeconfig}', checks=[
             self.check('tags.foo', 'doo'),
@@ -41,14 +41,25 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
             self.check('tags.foo', 'doo')
         ])
         self.cmd('connectedk8s delete -g akkeshar -n {name} --kube-config {kubeconfig} -y')
+
+        # Test 2022-10-01-preview api properties
+        self.cmd('connectedk8s connect -g akkeshar -n {name} -l eastus --distribution aks_management --infrastructure azure_stack_hci --distribution-version 1.0 --tags foo=doo --kube-config {kubeconfig}', checks=[
+            self.check('distributionVersion', '1.0'),
+            self.check('name', '{name}')
+        ])
+        self.cmd('connectedk8s update -g akkeshar -n {name} --azure-hybrid-benefit true --kube-config {kubeconfig} --yes', checks=[
+            self.check('azureHybridBenefit', 'True'),
+            self.check('name', '{name}')
+        ])
+
         self.cmd('aks delete -g akkeshar -n {} -y'.format(managed_cluster_name))
 
         # delete the kube config
         os.remove("%s" % (_get_test_data_file(managed_cluster_name + '-config.yaml')))
 
         # Private link test
-        self.cmd('aks get-credentials -g akkeshar -n akkeshar -f {kubeconfigpls}')
-        self.cmd('connectedk8s connect -g akkeshar -n cliplscc -l eastus --tags foo=doo --kube-config {kubeconfigpls} --enable-private-link true --pls-arm-id /subscriptions/1bfbb5d0-917e-4346-9026-1d3b344417f5/resourceGroups/akkeshar-pls/providers/Microsoft.HybridCompute/privateLinkScopes/testpls', checks=[
+        self.cmd('aks get-credentials -g akkeshar -n tempaks -f {kubeconfigpls}')
+        self.cmd('connectedk8s connect -g akkeshar -n cliplscc -l eastus2euap --tags foo=doo --kube-config {kubeconfigpls} --enable-private-link true --pls-arm-id /subscriptions/1bfbb5d0-917e-4346-9026-1d3b344417f5/resourceGroups/akkeshar/providers/Microsoft.HybridCompute/privateLinkScopes/temppls --yes', checks=[
             self.check('name', 'cliplscc')
         ])
         self.cmd('connectedk8s delete -g akkeshar -n cliplscc --kube-config {kubeconfigpls} -y')
@@ -66,7 +77,7 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
             'managed_cluster_name': managed_cluster_name
         })
 
-        self.cmd('aks create -g rohanazuregroup -n {} -s Standard_B2s -l westeurope -c 1 --generate-ssh-keys'.format(managed_cluster_name))
+        self.cmd('aks create -g rohanazuregroup -n {} -s Standard_B4ms -l westeurope -c 1 --generate-ssh-keys'.format(managed_cluster_name))
         self.cmd('aks get-credentials -g rohanazuregroup -n {managed_cluster_name} -f {kubeconfig}')
         self.cmd('connectedk8s connect -g rohanazuregroup -n {name} -l eastus --tags foo=doo --kube-config {kubeconfig}', checks=[
             self.check('tags.foo', 'doo'),

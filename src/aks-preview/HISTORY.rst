@@ -12,6 +12,57 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+0.5.113
++++++++
+
+* Fix workload identity update error after oidc issure GA in azure-cli.
+* Fix `az aks update` command failing on SP-based cluster blocked by validation in AzureMonitorMetrics Addon, see issue `\#5336 <https://github.com/Azure/azure-cli-extensions/issues/5488>`_.
+* Fix `az aks update` command failing on changes not related to outbound type conversion, see issue `\#24430 https://github.com/Azure/azure-cli/issues/24430>`_.
+
+0.5.112
++++++++
+
+* Add `--outbound-type` to update managed cluster command.
+
+0.5.111
++++++++
+
+* Support updating SSH public key with `az aks update --ssh-key-value`.
+
+0.5.110
++++++++
+
+* Add `--nodepool-asg-ids` and `--nodepool-allowed-host-ports` flags for enabling NSGControl. Related commands:
+  * `az aks create`
+  * `az aks nodepool add`
+  * `az aks nodepool update`
+
+0.5.109
++++++++
+
+* Add --enable-cilium-dataplane flag for creating a cluster that uses Cilium as the networking dataplane.
+
+0.5.108
++++++++
+
+* Update to use 2022-09-02-preview api version.
+
+0.5.107
++++++++
+
+* Add `--disable-windows-outbound-nat` for `az aks nodepool add` to add a Windows agent pool which the Windows OutboundNAT is disabled.
+
+0.5.106
++++++++
+
+* Add support for AzureMonitorMetrics Addon (managed prometheus metrics in public preview) for AKS
+
+0.5.105
++++++++
+
+* Add support to create cluster with kube-proxy configuration via `az aks create --kube-proxy-config file.json`
+* Update to use 2022-08-03-preview api version.
+
 0.5.104
 +++++++
 

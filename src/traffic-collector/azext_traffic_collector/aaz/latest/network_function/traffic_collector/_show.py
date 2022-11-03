@@ -22,9 +22,9 @@ class Show(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2022-08-01",
+        "version": "2022-11-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkfunction/azuretrafficcollectors/{}", "2022-08-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkfunction/azuretrafficcollectors/{}", "2022-11-01"],
         ]
     }
 
@@ -56,7 +56,17 @@ class Show(AAZCommand):
         return cls._args_schema
 
     def _execute_operations(self):
+        self.pre_operations()
         self.AzureTrafficCollectorsGet(ctx=self.ctx)()
+        self.post_operations()
+
+    # @register_callback
+    def pre_operations(self):
+        pass
+
+    # @register_callback
+    def post_operations(self):
+        pass
 
     def _output(self, *args, **kwargs):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
@@ -110,7 +120,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-08-01",
+                    "api-version", "2022-11-01",
                     required=True,
                 ),
             }
@@ -170,6 +180,7 @@ class Show(AAZCommand):
             properties = cls._schema_on_200.properties
             properties.collector_policies = AAZListType(
                 serialized_name="collectorPolicies",
+                flags={"read_only": True},
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
@@ -177,115 +188,15 @@ class Show(AAZCommand):
             )
             properties.virtual_hub = AAZObjectType(
                 serialized_name="virtualHub",
+                flags={"read_only": True},
             )
+            _build_schema_resource_reference_read(properties.virtual_hub)
 
             collector_policies = cls._schema_on_200.properties.collector_policies
-            collector_policies.Element = AAZObjectType()
-
-            _element = cls._schema_on_200.properties.collector_policies.Element
-            _element.etag = AAZStrType(
+            collector_policies.Element = AAZObjectType(
                 flags={"read_only": True},
             )
-            _element.id = AAZStrType(
-                flags={"read_only": True},
-            )
-            _element.location = AAZStrType(
-                flags={"required": True},
-            )
-            _element.name = AAZStrType(
-                flags={"read_only": True},
-            )
-            _element.properties = AAZObjectType(
-                flags={"client_flatten": True},
-            )
-            _element.system_data = AAZObjectType(
-                serialized_name="systemData",
-                flags={"read_only": True},
-            )
-            _element.tags = AAZDictType()
-            _element.type = AAZStrType(
-                flags={"read_only": True},
-            )
-
-            properties = cls._schema_on_200.properties.collector_policies.Element.properties
-            properties.emission_policies = AAZListType(
-                serialized_name="emissionPolicies",
-            )
-            properties.ingestion_policy = AAZObjectType(
-                serialized_name="ingestionPolicy",
-            )
-            properties.provisioning_state = AAZStrType(
-                serialized_name="provisioningState",
-                flags={"read_only": True},
-            )
-
-            emission_policies = cls._schema_on_200.properties.collector_policies.Element.properties.emission_policies
-            emission_policies.Element = AAZObjectType()
-
-            _element = cls._schema_on_200.properties.collector_policies.Element.properties.emission_policies.Element
-            _element.emission_destinations = AAZListType(
-                serialized_name="emissionDestinations",
-            )
-            _element.emission_type = AAZStrType(
-                serialized_name="emissionType",
-            )
-
-            emission_destinations = cls._schema_on_200.properties.collector_policies.Element.properties.emission_policies.Element.emission_destinations
-            emission_destinations.Element = AAZObjectType()
-
-            _element = cls._schema_on_200.properties.collector_policies.Element.properties.emission_policies.Element.emission_destinations.Element
-            _element.destination_type = AAZStrType(
-                serialized_name="destinationType",
-            )
-
-            ingestion_policy = cls._schema_on_200.properties.collector_policies.Element.properties.ingestion_policy
-            ingestion_policy.ingestion_sources = AAZListType(
-                serialized_name="ingestionSources",
-            )
-            ingestion_policy.ingestion_type = AAZStrType(
-                serialized_name="ingestionType",
-            )
-
-            ingestion_sources = cls._schema_on_200.properties.collector_policies.Element.properties.ingestion_policy.ingestion_sources
-            ingestion_sources.Element = AAZObjectType()
-
-            _element = cls._schema_on_200.properties.collector_policies.Element.properties.ingestion_policy.ingestion_sources.Element
-            _element.resource_id = AAZStrType(
-                serialized_name="resourceId",
-            )
-            _element.source_type = AAZStrType(
-                serialized_name="sourceType",
-            )
-
-            system_data = cls._schema_on_200.properties.collector_policies.Element.system_data
-            system_data.created_at = AAZStrType(
-                serialized_name="createdAt",
-                flags={"read_only": True},
-            )
-            system_data.created_by = AAZStrType(
-                serialized_name="createdBy",
-                flags={"read_only": True},
-            )
-            system_data.created_by_type = AAZStrType(
-                serialized_name="createdByType",
-                flags={"read_only": True},
-            )
-            system_data.last_modified_by = AAZStrType(
-                serialized_name="lastModifiedBy",
-                flags={"read_only": True},
-            )
-            system_data.last_modified_by_type = AAZStrType(
-                serialized_name="lastModifiedByType",
-                flags={"read_only": True},
-            )
-
-            tags = cls._schema_on_200.properties.collector_policies.Element.tags
-            tags.Element = AAZStrType()
-
-            virtual_hub = cls._schema_on_200.properties.virtual_hub
-            virtual_hub.id = AAZStrType(
-                flags={"read_only": True},
-            )
+            _build_schema_resource_reference_read(collector_policies.Element)
 
             system_data = cls._schema_on_200.system_data
             system_data.created_at = AAZStrType(
@@ -313,6 +224,27 @@ class Show(AAZCommand):
             tags.Element = AAZStrType()
 
             return cls._schema_on_200
+
+
+_schema_resource_reference_read = None
+
+
+def _build_schema_resource_reference_read(_schema):
+    global _schema_resource_reference_read
+    if _schema_resource_reference_read is not None:
+        _schema.id = _schema_resource_reference_read.id
+        return
+
+    _schema_resource_reference_read = AAZObjectType(
+        flags={"read_only": True}
+    )
+
+    resource_reference_read = _schema_resource_reference_read
+    resource_reference_read.id = AAZStrType(
+        flags={"read_only": True},
+    )
+
+    _schema.id = _schema_resource_reference_read.id
 
 
 __all__ = ["Show"]

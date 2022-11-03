@@ -12,7 +12,9 @@
 from knack.help_files import helps
 
 
-helps['datafactory create'] = """
+helps[
+    "datafactory create"
+] = """
     type: command
     short-summary: "Create a factory."
     parameters:
@@ -50,7 +52,9 @@ collaboration-branch=XX root-folder=XX last-commit-id=XX
 "exampleResourceGroup"
 """
 
-helps['datafactory configure-factory-repo'] = """
+helps[
+    "datafactory configure-factory-repo"
+] = """
     type: command
     short-summary: "Updates a factory's repo information."
     parameters:
@@ -88,4 +92,106 @@ collaboration-branch=XX root-folder=XX last-commit-id=XX
 5678abc/resourceGroups/exampleResourceGroup/providers/Microsoft.DataFactory/factories/exampleFactoryName" \
 --factory-vsts-configuration account-name="ADF" collaboration-branch="master" last-commit-id="" project-name="project" \
 repository-name="repo" root-folder="/" tenant-id="" --location "East US"
+"""
+
+helps[
+    "datafactory data-flow"
+] = """
+    type: group
+    short-summary: Managing and configuring Data Flows in Azure Data Factory
+"""
+
+helps[
+    "datafactory data-flow create"
+] = """
+    type: command
+    short-summary: "Creates a data flow within a factory"
+    parameters:
+      - name: --properties
+        short-summary: "Specified properties for the dataflow. Expected value: \
+          json-string/json-file/@json-file."
+        long-summary: |
+            Usage: (if inline JSON)
+            --properties \"{\\\"name\\\": \\\"hello\\\", \\\"description\\\": \\\"Example \
+description\\\", \\\"folder\\\": \\\"sub-folder\\\", \\\"annotations\\\": \
+\\\" , typeProperties:{...} }\"
+
+            - name: Name of the data flow. (Avoid hyphens.)
+            - description: (optional) Description for the data flow.
+            - folder: (optional) Folder the data flow will be organized under.
+            - annotations: (optional) Annotations for the data flow.
+            - typeProperties: (optional) If none provided, a generic and empty definition \
+is created. Including the definitions is best done by copying the JSON from within \
+the Data Factory Studio in the Azure Portal.
+    examples:
+      - name: Factories_DataFlowCreate
+        text: |-
+               az datafactory data-flow create -g example-resource-group \
+-f example-data-factory -n example-data-flow \
+-t "Flowlet" --properties example-properties.json
+"""
+
+helps[
+    "datafactory data-flow update"
+] = """
+    type: command
+    short-summary: "Updates a specified data flow within a factory"
+    parameters:
+      - name: --properties
+        short-summary: "Specified properties for the dataflow. Expected value: \
+          json-string/json-file/@json-file."
+        long-summary: |
+            Usage: (if inline JSON)
+            --properties \"{ \\\"description\\\": \\\"Example \
+description\\\", \\\"folder\\\": \\\"sub-folder\\\", \\\"annotations\\\": \
+\\\" , typeProperties:{...} }\"
+
+            - description: (optional) Description for the data flow.
+            - folder: (optional) Folder the data flow will be organized under.
+            - annotations: (optional) Annotations for the data flow.
+            - typeProperties: (optional) If none provided, a generic and empty definition \
+is created. Including the definitions is best done by copying the JSON from within \
+the Data Factory Studio in the Azure Portal.
+    examples:
+      - name: Factories_DataFlowUpdate
+        text: |-
+               az datafactory data-flow update -g example-resource-group \
+-f example-data-factory -n example-data-flow \
+--properties example-properties.json
+"""
+
+helps[
+    "datafactory data-flow show"
+] = """
+    type: command
+    short-summary: "Show information about the specified data flow"
+    examples:
+      - name: Factories_DataFlowShow
+        text: |-
+               az datafactory data-flow show -g example-resource-group \
+-f example-data-factory -n example-data-flow
+"""
+
+helps[
+    "datafactory data-flow list"
+] = """
+    type: command
+    short-summary: "List data flows within a provided factory"
+    examples:
+      - name: Factories_DataFlowList
+        text: |-
+               az datafactory data-flow list -g example-resource-group \
+-f example-data-factory
+"""
+
+helps[
+    "datafactory data-flow delete"
+] = """
+    type: command
+    short-summary: "Delete a specific data flow in a given factory"
+    examples:
+      - name: Factories_DataFlowDelete
+        text: |-
+               az datafactory data-flow delete -g example-resource-group \
+-f example-data-factory -n example-data-flow
 """
