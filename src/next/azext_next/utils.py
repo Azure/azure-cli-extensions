@@ -255,9 +255,9 @@ def print_successful_styled_text(message):
     from azure.cli.core.style import (Style, is_modern_terminal,
                                       print_styled_text)
 
-    prefix_text = '\nDone: '
+    prefix_text = 'Done: '
     if is_modern_terminal():
-        prefix_text = '\n(✓)Done: '
+        prefix_text = '(✓)Done: '
     print_styled_text([(Style.SUCCESS, prefix_text), (Style.PRIMARY, message)])
 
 

@@ -270,6 +270,7 @@ def _execute_nx_cmd(cmd, nx_cmd, nx_param, catch_exception=False):
 
     if output_format == 'status' and exit_code == 0:
         from .utils import print_successful_styled_text
+        print()
         print_successful_styled_text('command completed\n')
 
     return exit_code
@@ -396,12 +397,16 @@ def _execute_recommend_scenarios(cmd, rec):
                 if run_option == 1:
                     execute_result = _execute_nx_cmd(cmd, nx_cmd['command'], nx_param, catch_exception=True)
                 elif run_option == 2:
+                    print()
                     break
                 else:
+                    print()
                     return
         elif run_option == 2:
+            print()
             continue
         else:
+            print()
             break
 
     from .utils import print_successful_styled_text
