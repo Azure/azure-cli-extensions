@@ -18,64 +18,22 @@ from azure.cli.core.azclierror import (FileOperationError, AzureInternalError,
 
 from .._client_factory import cf_jobs, _get_data_credentials
 from .workspace import WorkspaceInfo
-# from .workspace import WorkspaceInfo, get
 from .target import TargetInfo
 
-# from ..vendored_sdks.azure_quantum import QuantumClient
-# from ..vendored_sdks.azure_quantum.operations import (
-#     JobsOperations,
-#     StorageOperations,
-#     QuotasOperations
-# )
 from ..vendored_sdks.azure_quantum.models import BlobDetails, JobStatus
 from ..vendored_sdks.azure_quantum.operations._jobs_operations import JobsOperations    # Was "import Job" in qdk-python
 
 # >>>>> >>>>> Import these functions from qdk-python and remove the local copy of storage.py <<<<< <<<<<
-# from .storage import create_container, create_container_using_client, get_container_uri, ContainerClient, upload_blob
-from .storage import create_container, upload_blob
+# from .storage import create_container, upload_blob
+from azure.quantum.storage import create_container, upload_blob
 
 
 MINIMUM_MAX_POLL_WAIT_SECS = 1
 JOB_SUBMIT_DOC_LINK_MSG = "See https://learn.microsoft.com/en-us/cli/azure/quantum/job?view=azure-cli-latest#az-quantum-job-submit"
+DEFAULT_SHOTS = 500
 
 logger = logging.getLogger(__name__)
 knack_logger = knack.log.get_logger(__name__)
-
-# >>>>> >>>>>
-# >>>>> Code from top of qdk-python\azure-quantum\azure\quantum\workspace.py
-# >>>>> qdk-python AutoREST client imports
-# >>>>>
-# from typing import Any, Dict, Iterable, List, Optional, TYPE_CHECKING, Tuple, Union
-# from deprecated import deprecated
-
-# # Temporarily replacing the DefaultAzureCredential with
-# # a custom _DefaultAzureCredential
-# #   from azure.identity import DefaultAzureCredential
-# from azure.quantum._authentication import _DefaultAzureCredential
-
-# from azure.quantum._client import QuantumClient
-# from azure.quantum._client.operations import (
-#     JobsOperations,
-#     StorageOperations,
-#     QuotasOperations
-# )
-# from azure.quantum._client.models import BlobDetails, JobStatus
-# from azure.quantum import Job
-# from azure.quantum.storage import create_container_using_client, get_container_uri, ContainerClient
-
-# from .version import __version__
-
-# if TYPE_CHECKING:
-#     from azure.quantum._client.models import TargetStatus
-#     from azure.quantum.target import Target
-
-# logger = logging.getLogger(__name__)
-
-# __all__ = ["Workspace"]
-
-# DEFAULT_CONTAINER_NAME_FORMAT = "job-{job_id}"
-# USER_AGENT_APPID_ENV_VAR_NAME = "AZURE_QUANTUM_PYTHON_APPID"
-# <<<<< <<<<<
 
 
 def list(cmd, resource_group_name, workspace_name, location):
@@ -242,12 +200,13 @@ def submit(cmd, program_args, resource_group_name, workspace_name, location, tar
             # Submit QIR
             return _submit_qir(cmd, program_args, resource_group_name, workspace_name, location, target_id,
                                     job_name, shots, storage, job_params, target_capability,
-                                    # job_input_source, job_input_format, job_output_format,
                                     job_input_file, job_input_format, job_output_format,
                                     entry_point)
-
+        #
         # Add elifs here to handle new job_input_format values
+        #
 
+        # >>>>> Do we want to allow this?
         elif job_input_format.lower() == "q#" or job_input_format.lower() == "qsharp":
             pass    # Fall through, same as when job_input_format is None
 
@@ -271,7 +230,6 @@ def _submit_qir(cmd, program_args, resource_group_name, workspace_name, location
     if job_output_format is None:
         job_output_format = "microsoft.quantum-results.v1"
 
-    # if job_input_source is None:
     if job_input_file is None:
         # If no pathname was specified, look for a QIR bitcode file in the current folder
         path = os.path.abspath(os.curdir)
@@ -280,8 +238,6 @@ def _submit_qir(cmd, program_args, resource_group_name, workspace_name, location
                 # job_input_source = os.path.join(path, file_name)
                 job_input_file = os.path.join(path, file_name)
                 break
-    # if job_input_source is None:
-    #     raise RequiredArgumentMissingError("Failed to submit QIR job: No --job-input-source path was specified.", JOB_SUBMIT_DOC_LINK_MSG)
     if job_input_file is None:
         raise RequiredArgumentMissingError("Failed to submit QIR job: No --job-input-source path was specified.", JOB_SUBMIT_DOC_LINK_MSG)
 
@@ -312,8 +268,9 @@ def _submit_qir(cmd, program_args, resource_group_name, workspace_name, location
     ws_info = WorkspaceInfo(cmd, resource_group_name, workspace_name, location)
     target_info = TargetInfo(cmd, target_id)
 
-    # Convert the --shots string to an integer
-    if shots is not None:
+    if shots is None:
+        shots = DEFAULT_SHOTS
+    else:
         error_msg = "--shots value is not valid."
         recommendation = "Enter a positive integer."
         try:
@@ -322,6 +279,9 @@ def _submit_qir(cmd, program_args, resource_group_name, workspace_name, location
                 raise InvalidArgumentValueError(error_msg, recommendation)
         except:
             raise InvalidArgumentValueError(error_msg, recommendation)
+
+    if target_capability is None:
+        target_capability = "AdaptiveExecution"
 
     # >>>>>
     # >>>>> Get more of these parameters from the command line >>>>>

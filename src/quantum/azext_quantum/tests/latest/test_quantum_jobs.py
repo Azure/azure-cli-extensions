@@ -44,16 +44,16 @@ class QuantumJobsScenarioTest(ScenarioTest):
         issue_cmd_with_param_missing(self, "az quantum job wait", "az quantum job wait -g MyResourceGroup -w MyWorkspace -l MyLocation -j yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy --max-poll-wait-secs 60 -o table\nWait for completion of a job, check at 60 second intervals.")
 
     def test_build(self):
-        result = build(self, target_id='ionq.simulator', project='src\\quantum\\azext_quantum\\tests\\latest\\source_for_build_test\\QuantumRNG.csproj', target_capability='BasicQuantumFunctionality')
+        result = build(self, target_id='ionq.simulator', project='src\\quantum\\azext_quantum\\tests\\latest\\input_data\\QuantumRNG.csproj', target_capability='BasicQuantumFunctionality')
         assert result == {'result': 'ok'}
 
-        self.testfile = open(os.path.join(os.path.dirname(__file__), 'source_for_build_test/obj/qsharp/config/qsc.rsp'))
+        self.testfile = open(os.path.join(os.path.dirname(__file__), 'input_data/obj/qsharp/config/qsc.rsp'))
         self.testdata = self.testfile.read()
         self.assertIn('TargetCapability:BasicQuantumFunctionality', self.testdata)
         self.testfile.close()
 
         try:
-            build(self, target_id='ionq.simulator', project='src\\quantum\\azext_quantum\\tests\\latest\\source_for_build_test\\QuantumRNG.csproj', target_capability='BogusQuantumFunctionality')
+            build(self, target_id='ionq.simulator', project='src\\quantum\\azext_quantum\\tests\\latest\\input_data\\QuantumRNG.csproj', target_capability='BogusQuantumFunctionality')
             assert False
         except AzureInternalError as e:
             assert str(e) == "Failed to compile program."
@@ -238,9 +238,12 @@ class QuantumJobsScenarioTest(ScenarioTest):
         except InvalidArgumentValueError as e:
             assert str(e) == "--max-poll-wait-secs parameter is not valid: foobar"
 
-    # def test_submit_qir(self)
-    #     # set current workspace:
-    #     self.cmd(f'az quantum workspace set -g {get_test_resource_group()} -w {get_test_workspace()} -l {get_test_workspace_location()}')
+    @live_only()
+    def test_submit_qir(self)
+        # set current workspace:
+        # self.cmd(f"az quantum workspace set -g {get_test_resource_group()} -w {get_test_workspace_qci()} -l {get_test_workspace_location()}")
+        self.cmd("az quantum target set -t qci.simulator")
 
-    #     # submit a QIR job
-    #     job_submit_results = self.cmd("az quantum job submit --shots 100 --job-input-format qir.v1 --job-input-file 'src\\quantum\\azext_quantum\\tests\\latest\\input_data\\Qrng.bc --entry-point Qrng__SampleQuantumRandomNumberGenerator")
+        # submit a QIR job
+        # job_submit_results = self.cmd("az quantum job submit --shots 100 --job-input-format qir.v1 --job-input-file 'src\\quantum\\azext_quantum\\tests\\latest\\input_data\\Qrng.bc --entry-point Qrng__SampleQuantumRandomNumberGenerator")
+        # >>>>> Validate results <<<<<
