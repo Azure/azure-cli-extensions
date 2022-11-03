@@ -18,6 +18,7 @@ from azure.cli.core.azclierror import (FileOperationError, AzureInternalError,
 
 from .._client_factory import cf_jobs, _get_data_credentials
 from .workspace import WorkspaceInfo
+# from .workspace import WorkspaceInfo, get
 from .target import TargetInfo
 
 # from ..vendored_sdks.azure_quantum import QuantumClient
@@ -286,9 +287,11 @@ def _submit_qir(cmd, program_args, resource_group_name, workspace_name, location
 
     # Upload the QIR file to the workspace's storage account
     if storage is None:
-        # >>>>> Look up the storage account name here     <<<<< <<<<< <<<<< <<<<< <<<<< <<<<< <<<<<
-        storage = "vwjonesstorage2"
-        # <<<<< <<<<< <<<<< <<<<< <<<<< <<<<< <<<<< <<<<< <<<<< <<<<< <<<<< <<<<< <<<<< <<<<< <<<<<
+        from .workspace import get as ws_get
+        ws = ws_get(cmd)
+        storage = ws.storage_account.split('/')[-1]
+        # knack_logger.warning(f"storage = {storage}")
+        # return
 
     connection_string_dict = show_storage_account_connection_string(cmd, resource_group_name, storage)
     connection_string = connection_string_dict["connectionString"]
