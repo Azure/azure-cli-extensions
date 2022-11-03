@@ -185,6 +185,7 @@ def _give_recommend_commands(cmd, idx, rec):
         reason = _get_cmd_help_from_ctx(rec['command'], "")
         if 'usage_condition' in rec and rec['usage_condition']:
             reason = reason + " (" + rec['usage_condition'] + ")"
+    reason = reason.rstrip(".")
 
     if reason:
         space_padding = re.sub('.', ' ', index_str)
@@ -201,6 +202,7 @@ def _give_recommend_scenarios(idx, rec):
         reason = rec['reason'].split('. ')[0]
     else:
         reason = "This is a set of commands that may help you complete this scenario."
+    reason = reason.rstrip(".")
 
     if reason:
         space_padding = re.sub('.', ' ', index_str)
@@ -394,16 +396,12 @@ def _execute_recommend_scenarios(cmd, rec):
                 if run_option == 1:
                     execute_result = _execute_nx_cmd(cmd, nx_cmd['command'], nx_param, catch_exception=True)
                 elif run_option == 2:
-                    print()
                     break
                 else:
-                    print()
                     return
         elif run_option == 2:
-            print()
             continue
         else:
-            print()
             break
 
     from .utils import print_successful_styled_text
@@ -411,8 +409,8 @@ def _execute_recommend_scenarios(cmd, rec):
 
 
 def _show_details_for_e2e_scenario(cmd, rec):
-    print_styled_text([(Style.PRIMARY, rec['scenario']),
-                       (Style.ACTION, " contains the following commands:\n")])
+    print_styled_text([(Style.WARNING, rec['scenario']),
+                       (Style.PRIMARY, " contains the following commands:\n")])
 
     nx_cmd_set = rec["nextCommandSet"]
     exec_idx = rec.get("executeIndex")
