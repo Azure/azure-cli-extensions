@@ -96,29 +96,35 @@ class TestSpringAppsCreateWithApplicationLiveView(BasicTest):
     def __init__(self, methodName: str = ...):
         super().__init__(methodName=methodName)
         self.alv_resource = None
+        self.dev_tool = None
 
     def _execute(self, resource_group, name, **kwargs):
         client = kwargs.pop('client', None) or _get_basic_mock_client()
         super()._execute(resource_group, name, client=client, **kwargs)
         call_args = client.application_live_views.begin_create_or_update.call_args_list
         self.alv_resource = call_args[0][0][3] if call_args else None
-
+        call_args = client.dev_tool_portals.begin_create_or_update.call_args_list
+        self.dev_tool = call_args[0][0][3] if call_args else None
 
     def test_asa_enterprise_with_alv(self):
         self._execute('rg', 'asc', sku=self._get_sku('Enterprise'), enable_application_live_view=True, disable_app_insights=True)
         self.assertIsNotNone(self.alv_resource)
+        self.assertIsNotNone(self.dev_tool)
 
     def test_asa_enterprise_without_alv(self):
         self._execute('rg', 'asc', sku=self._get_sku('Enterprise'), enable_application_live_view=False, disable_app_insights=True)
         self.assertIsNone(self.alv_resource)
+        self.assertIsNone(self.dev_tool)
     
     def test_asa_standard_with_alv(self):
         self._execute('rg', 'asc', sku=self._get_sku('Standard'), enable_application_live_view=True, disable_app_insights=True)
         self.assertIsNone(self.alv_resource)
+        self.assertIsNone(self.dev_tool)
 
     def test_asa_basic_with_alv(self):
         self._execute('rg', 'asc', sku=self._get_sku('Basic'), enable_application_live_view=True, disable_app_insights=True)
         self.assertIsNone(self.alv_resource)
+        self.assertIsNone(self.dev_tool)
 
 
 class TestSpringCloudCreateWithAI(BasicTest):

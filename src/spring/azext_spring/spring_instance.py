@@ -12,6 +12,7 @@ from ._build_service import _update_default_build_agent_pool
 from .buildpack_binding import create_default_buildpack_binding_for_application_insights
 from ._tanzu_component import (create_application_configuration_service,
                                create_application_live_view,
+                               create_dev_tool_portal,
                                create_service_registry,
                                create_gateway,
                                create_api_portal)
@@ -124,6 +125,7 @@ class EnterpriseSpringCloud(DefaultSpringCloud):
             _enable_app_insights(self.cmd, self.client, self.resource_group, self.name, self.location, **kwargs),
             create_application_configuration_service(self.cmd, self.client, self.resource_group, self.name, **kwargs),
             create_application_live_view(self.cmd, self.client, self.resource_group, self.name, **kwargs),
+            create_dev_tool_portal(self.cmd, self.client, self.resource_group, self.name, **kwargs),
             create_service_registry(self.cmd, self.client, self.resource_group, self.name, **kwargs),
             create_gateway(self.cmd, self.client, self.resource_group, self.name, **kwargs),
             create_api_portal(self.cmd, self.client, self.resource_group, self.name, **kwargs)
