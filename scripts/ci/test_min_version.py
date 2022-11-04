@@ -61,7 +61,9 @@ def get_all_tests():
         if pkg_name and test_dir:
             # [('azext_healthcareapis', '/mnt/vss/_work/1/s/src/healthcareapis')]
             ALL_TESTS.append((pkg_name, src_d_full))
+            # azext_healthcareapis
             EXTENSION_NAME = ALL_TESTS[0][0]
+            # healthcareapis
             _, ORIGINAL_EXTENSION_NAME = EXTENSION_NAME.split('_', 1)
         else:
             logger.error(f'can not any test in {test_dir}')
@@ -86,7 +88,7 @@ def get_min_version():
         sys.exit(0)
 
 
-def checkout_to_min_version(min_version):
+def prepare_for_min_version(min_version):
     az_min_version = 'azure-cli-' + min_version
     azure_cli_path = os.path.join(os.path.abspath(os.path.dirname(os.path.dirname(SRC_PATH))), 'azure-cli')
     logger.info(f'azure_cli_path: {azure_cli_path}')
@@ -98,6 +100,9 @@ def checkout_to_min_version(min_version):
     testsdk_path = os.path.join(azure_cli_path, 'src', 'azure-cli-testsdk')
     cmd = ['python', 'setup.py', 'install']
     run_command(cmd, check_return_code=True, cwd=testsdk_path)
+    # azdev add extensions
+    cmd = ['azdev', 'extension', 'add', ORIGINAL_EXTENSION_NAME]
+    run_command(cmd, check_return_code=True)
 
 
 def run_command(cmd, check_return_code=False, cwd=None):
@@ -120,7 +125,7 @@ def run_tests():
 def main():
     get_all_tests()
     min_version = get_min_version()
-    checkout_to_min_version(min_version)
+    prepare_for_min_version(min_version)
     sys.exit(1) if run_tests() else sys.exit(0)
 
 
