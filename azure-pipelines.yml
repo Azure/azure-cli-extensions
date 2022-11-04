@@ -134,9 +134,11 @@ jobs:
       Python310:
         python.version: '3.10'
   steps:
+    - task: UsePythonVersion@0
+      displayName: 'Use Python $(python.version)'
+      inputs:
+        versionSpec: '$(python.version)'
     - template: .azure-pipelines/templates/azdev_setup.yml
-      parameters:
-        pythonVersion: '$(python.version)'
     - bash: pip install wheel==0.30.0
       displayName: 'Install wheel==0.30.0'
     - bash: python ./azure-cli-extensions/scripts/ci/test_min_version.py
