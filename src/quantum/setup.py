@@ -34,6 +34,7 @@ CLASSIFIERS = [
 ]
 
 DEPENDENCIES = [
+    'azure-quantum~=0.27.238334'
 ]
 
 with open('README.rst', 'r', encoding='utf-8') as f:
