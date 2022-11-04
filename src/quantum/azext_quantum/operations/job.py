@@ -3,7 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-# pylint: disable=redefined-builtin,bare-except,inconsistent-return-statements
+# pylint: disable=line-too-long,redefined-builtin,bare-except,inconsistent-return-statements
 
 import logging
 import json
@@ -15,17 +15,10 @@ from azure.cli.command_modules.storage.operations.account import show_storage_ac
 from azure.cli.core.azclierror import (FileOperationError, AzureInternalError,
                                        InvalidArgumentValueError, AzureResponseError,
                                        RequiredArgumentMissingError)
-
+from azure.quantum.storage import create_container, upload_blob
 from .._client_factory import cf_jobs, _get_data_credentials
 from .workspace import WorkspaceInfo
 from .target import TargetInfo
-
-from ..vendored_sdks.azure_quantum.models import BlobDetails, JobStatus
-from ..vendored_sdks.azure_quantum.operations._jobs_operations import JobsOperations    # Was "import Job" in qdk-python
-
-# >>>>> >>>>> Import these functions from qdk-python and remove the local copy of storage.py <<<<< <<<<<
-# from .storage import create_container, upload_blob
-from azure.quantum.storage import create_container, upload_blob
 
 
 MINIMUM_MAX_POLL_WAIT_SECS = 1
@@ -176,7 +169,6 @@ def _set_cli_version():
     # before support for the --user-agent parameter is added. We'll rely on the environment
     # variable before the stand alone executable submits to the service.
     try:
-        import os
         from .._client_factory import get_appid
         os.environ["USER_AGENT"] = get_appid()
     except:
@@ -189,9 +181,7 @@ def _has_completed(job):
 
 def submit(cmd, program_args, resource_group_name, workspace_name, location, target_id,
            project=None, job_name=None, shots=None, storage=None, no_build=False, job_params=None, target_capability=None,
-           # job_input_source=None, job_input_format=None, job_output_format=None,
-           job_input_file=None, job_input_format=None, job_output_format=None,
-           entry_point=None):
+           job_input_file=None, job_input_format=None, job_output_format=None, entry_point=None):
     """
     Submit a quantum program to run on Azure Quantum.
     """
@@ -199,14 +189,13 @@ def submit(cmd, program_args, resource_group_name, workspace_name, location, tar
         if job_input_format.lower() == "qir.v1":
             # Submit QIR
             return _submit_qir(cmd, program_args, resource_group_name, workspace_name, location, target_id,
-                                    job_name, shots, storage, job_params, target_capability,
-                                    job_input_file, job_input_format, job_output_format,
-                                    entry_point)
+                               job_name, shots, storage, job_params, target_capability,
+                               job_input_file, job_input_format, job_output_format, entry_point)
         #
         # Add elifs here to handle new job_input_format values
         #
 
-        # >>>>> Do we want to allow this?
+        # >>>>> Do we want to provide this?
         elif job_input_format.lower() == "q#" or job_input_format.lower() == "qsharp":
             pass    # Fall through, same as when job_input_format is None
 
@@ -219,10 +208,8 @@ def submit(cmd, program_args, resource_group_name, workspace_name, location, tar
 
 
 def _submit_qir(cmd, program_args, resource_group_name, workspace_name, location, target_id,
-                   job_name, shots, storage, job_params, target_capability,
-                   # job_input_source, job_input_format, job_output_format,
-                   job_input_file, job_input_format, job_output_format,
-                   entry_point):
+                job_name, shots, storage, job_params, target_capability,
+                job_input_file, job_input_format, job_output_format, entry_point):
 
     """
     Submit QIR bitcode for a quantum program or circuit to run on Azure Quantum.
@@ -281,12 +268,12 @@ def _submit_qir(cmd, program_args, resource_group_name, workspace_name, location
             raise InvalidArgumentValueError(error_msg, recommendation)
 
     if target_capability is None:
-        target_capability = "AdaptiveExecution"
+        target_capability = "AdaptiveExecution"     # <<<<< Cesar said to use this for QCI. Does it apply to other providers?
 
     # >>>>>
-    # >>>>> Get more of these parameters from the command line >>>>>
+    # >>>>> TODO: Get more parameters from the command line <<<<<
     # >>>>>
-    input_params = {'arguments':[], 'targetCapability': target_capability, 'shots': shots,'entryPoint': entry_point}
+    input_params = {'arguments': [], 'name': job_name, 'targetCapability': target_capability, 'shots': shots, 'entryPoint': entry_point}
 
     job_id = str(uuid.uuid4())
     client = cf_jobs(cmd.cli_ctx, ws_info.subscription, ws_info.resource_group, ws_info.name, ws_info.location)
@@ -369,8 +356,8 @@ def output(cmd, job_id, resource_group_name, workspace_name, location):
     Get the results of running a Q# job.
     """
     import tempfile
-    import json
-    import os
+    # import json
+    # import os
     from azure.cli.command_modules.storage._client_factory import blob_data_service_factory
 
     path = os.path.join(tempfile.gettempdir(), job_id)
@@ -481,21 +468,13 @@ def job_show(cmd, job_id, resource_group_name, workspace_name, location):
 
 def run(cmd, program_args, resource_group_name, workspace_name, location, target_id,
         project=None, job_name=None, shots=None, storage=None, no_build=False, job_params=None, target_capability=None,
-        # >>>>> TODO: Finalize these names <<<<<
-        # Peter's proposed param names:
-        job_input_source=None, job_input_format=None, job_output_format=None,
-        # Guen's proposed param names:
-        qir_payload=None, qir_endpoint=None, qir_param=None):
+        job_input_file=None, job_input_format=None, job_output_format=None, entry_point=None):
     """
     Submit a job to run on Azure Quantum, and wait for the result.
     """
     job = submit(cmd, program_args, resource_group_name, workspace_name, location, target_id,
                  project, job_name, shots, storage, no_build, job_params, target_capability,
-                 # >>>>> TODO: Finalize these names <<<<<
-                 # Peter's proposed param names:
-                 job_input_source, job_input_format, job_output_format,
-                 # Guen's proposed param names:
-                 qir_payload, qir_endpoint, qir_param)
+                 job_input_file, job_input_format, job_output_format, entry_point)
     logger.warning("Job id: %s", job.id)
     logger.debug(job)
 

@@ -239,11 +239,11 @@ class QuantumJobsScenarioTest(ScenarioTest):
             assert str(e) == "--max-poll-wait-secs parameter is not valid: foobar"
 
     @live_only()
-    def test_submit_qir(self)
+    def test_submit_qir(self):
         # set current workspace:
         # self.cmd(f"az quantum workspace set -g {get_test_resource_group()} -w {get_test_workspace_qci()} -l {get_test_workspace_location()}")
         self.cmd("az quantum target set -t qci.simulator")
 
         # submit a QIR job
-        # job_submit_results = self.cmd("az quantum job submit --shots 100 --job-input-format qir.v1 --job-input-file 'src\\quantum\\azext_quantum\\tests\\latest\\input_data\\Qrng.bc --entry-point Qrng__SampleQuantumRandomNumberGenerator")
+        # results = self.cmd("az quantum job run --shots 100 --job-input-format qir.v1 --job-input-file 'src\\quantum\\azext_quantum\\tests\\latest\\input_data\\Qrng.bc --entry-point Qrng__SampleQuantumRandomNumberGenerator")
         # >>>>> Validate results <<<<<
