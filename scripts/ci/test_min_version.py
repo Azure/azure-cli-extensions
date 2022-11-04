@@ -85,7 +85,7 @@ def get_min_version():
 
 
 def checkout_to_min_version(min_version):
-    azure_cli_path = os.path.join(os.path.abspath(os.path.dirname(os.path.dirname(__file__))), 'azure-cli')
+    azure_cli_path = os.path.join(os.path.abspath(os.path.dirname(os.path.dirname(SRC_PATH))), 'azure-cli')
     logger.info(f'azure_cli_path: {azure_cli_path}')
     cmd = ['git', 'checkout' , min_version]
     run_command(cmd, cwd=azure_cli_path)
