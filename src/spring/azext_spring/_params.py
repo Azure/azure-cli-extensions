@@ -132,6 +132,11 @@ def load_arguments(self, _):
                    action='store_true',
                    options_list=['--enable-application-configuration-service', '--enable-acs'],
                    help='(Enterprise Tier Only) Enable Application Configuration Service.')
+        c.argument('enable_application_live_view',
+                   action='store_true',
+                   is_preview=True,
+                   options_list=['--enable-application-live-view', '--enable-alv'],
+                   help='(Enterprise Tier Only) Enable Application Live View.')
         c.argument('enable_service_registry',
                    action='store_true',
                    options_list=['--enable-service-registry', '--enable-sr'],
@@ -645,7 +650,7 @@ def load_arguments(self, _):
             c.argument('name', help="The builder name.")
 
     for scope in ['application-configuration-service', 'service-registry',
-                  'gateway', 'api-portal']:
+                  'gateway', 'api-portal', 'application-live-view']:
         with self.argument_context('spring {}'.format(scope)) as c:
             c.argument('service', service_name_type, validator=only_support_enterprise)
 

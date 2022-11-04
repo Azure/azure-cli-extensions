@@ -709,6 +709,26 @@ helps['spring build-service builder delete'] = """
           text: az spring build-service builder delete --name my-builder --service clitest --resource-group cli
 """
 
+helps['spring application-live-view'] = """
+    type: group
+    short-summary: (Enterprise Tier Only) Commands to manage Application Live View in Azure Spring Apps. Application Live View presents application instance metrics, and makes it easy for developers to monitor application runtimes.
+"""
+
+helps['spring application-live-view show'] = """
+    type: command
+    short-summary: Show the provisioning state, running status and settings of Application Live View.
+"""
+
+helps['spring application-live-view enable'] = """
+    type: command
+    short-summary: Enable Application Live View.
+"""
+
+helps['spring application-live-view disable'] = """
+    type: command
+    short-summary: Disable Application Live View.
+"""
+
 helps['spring application-configuration-service'] = """
     type: group
     short-summary: (Enterprise Tier Only) Commands to manage Application Configuration Service in Azure Spring Apps.

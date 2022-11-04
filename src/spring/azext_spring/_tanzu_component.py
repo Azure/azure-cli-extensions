@@ -8,12 +8,19 @@
 from azure.cli.core.commands.client_factory import get_subscription_id
 from knack.log import get_logger
 from msrestazure.tools import resource_id
+from .application_live_view import create as application_live_view_create
 
-from .vendored_sdks.appplatform.v2022_01_01_preview import models
+from .vendored_sdks.appplatform.v2022_11_01_preview import models
 
 GATEWAY_RESOURCE_TYPE = "gateways"
 DEFAULT_NAME = "default"
 logger = get_logger(__name__)
+
+
+def create_application_live_view(cmd, client, resource_group, service, enable_application_live_view, **_):
+    if enable_application_live_view:
+        logger.warning('- Creating Application Live View ..')
+        return application_live_view_create(cmd, client, resource_group, service)
 
 
 def create_application_configuration_service(cmd, client, resource_group, service, enable_application_configuration_service, **_):

@@ -22,6 +22,7 @@ from ._transformers import (transform_spring_table_output,
                             transform_application_configuration_service_output,
                             transform_service_registry_output,
                             transform_spring_cloud_gateway_output,
+                            transform_live_view_output,
                             transform_api_portal_output)
 from ._validators import validate_app_insights_command_not_supported_tier
 from ._marketplace import (transform_marketplace_plan_output)
@@ -34,7 +35,7 @@ from ._app_managed_identity_validator import (validate_app_identity_remove_or_wa
 def load_command_table(self, _):
     spring_routing_util = CliCommandType(
         operations_tmpl='azext_spring.spring_instance#{}',
-        client_factory=cf_spring_20220901preview
+        client_factory=cf_spring_20221101preview
     )
 
     app_command = CliCommandType(
@@ -65,6 +66,11 @@ def load_command_table(self, _):
     application_configuration_service_cmd_group = CliCommandType(
         operations_tmpl='azext_spring.application_configuration_service#{}',
         client_factory=cf_spring_20220101preview
+    )
+
+    application_live_view_cmd_group = CliCommandType(
+        operations_tmpl='azext_spring.application_live_view#{}',
+        client_factory=cf_spring_20221101preview
     )
 
     gateway_cmd_group = CliCommandType(
@@ -240,6 +246,14 @@ def load_command_table(self, _):
                               table_transformer=transform_service_registry_output)
         g.custom_command('bind', 'service_registry_bind')
         g.custom_command('unbind', 'service_registry_unbind')
+
+    with self.command_group('spring application-live-view', is_preview=True,
+                            custom_command_type=application_live_view_cmd_group,
+                            exception_handler=handle_asc_exception) as g:
+        g.custom_show_command('show', 'show',
+                              table_transformer=transform_live_view_output)
+        g.custom_command('enable', 'create', table_transformer=transform_live_view_output)
+        g.custom_command('disable', 'delete')
 
     with self.command_group('spring application-configuration-service',
                             custom_command_type=application_configuration_service_cmd_group,
