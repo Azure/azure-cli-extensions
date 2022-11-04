@@ -93,7 +93,7 @@ def checkout_to_min_version(min_version):
     logger.info(f'azure_cli_path: {azure_cli_path}')
     cmd = ['git', 'checkout', az_min_version]
     run_command(cmd, cwd=azure_cli_path)
-    cmd = ['az', 'version']
+    cmd = ['az', '--version']
     run_command(cmd)
     # install old testsdk
     testsdk_path = os.path.join(azure_cli_path, 'src', 'azure-cli-testsdk')

@@ -141,7 +141,7 @@ jobs:
     - template: .azure-pipelines/templates/azdev_setup.yml
     - bash: pip install wheel==0.30.0
       displayName: 'Install wheel==0.30.0'
-    - bash: python ./scripts/ci/test_min_version.py
+    - bash: python ./scripts/ci/test_min_version.sh
 
       displayName: 'Run min version test'
       env:
