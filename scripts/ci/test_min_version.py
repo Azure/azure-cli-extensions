@@ -60,7 +60,7 @@ def get_all_tests():
         # Find the package and check it has tests
         test_dir = os.path.isdir(os.path.join(src_d_full, pkg_name, 'tests'))
         if pkg_name and test_dir:
-            # [('azext_dataprotection', '/mnt/vss/_work/1/s/azure-cli-extensions/src/dataprotection')]
+            # [('azext_healthcareapis', '/mnt/vss/_work/1/s/src/healthcareapis')]
             ALL_TESTS.append((pkg_name, src_d_full))
             EXTENSION_NAME = ALL_TESTS[0][0]
             _, ORIGINAL_EXTENSION_NAME = EXTENSION_NAME.split('_', 1)
@@ -85,22 +85,23 @@ def get_min_version():
 
 
 def checkout_to_min_version(min_version):
+    azure_cli_path = os.path.join(os.path.abspath(os.path.dirname(os.path.dirname(__file__))), 'azure-cli')
+    logger.info(f'azure_cli_path: {azure_cli_path}')
     cmd = ['git', 'checkout' , min_version]
-    run_command(cmd)
-    cmd = ['az', '--version']
+    run_command(cmd, cwd=azure_cli_path)
+    cmd = ['az', 'version']
     run_command(cmd)
     # install old testsdk
-    azure_cli_path = os.path.join(SRC_PATH, 'azure-cli')
     testsdk_path = os.path.join(azure_cli_path, 'src', 'azure-cli-testsdk', 'setup.py')
     cmd = ['python', testsdk_path, 'install']
     run_command(cmd)
 
 
-def run_command(cmd, check_return_code=False):
+def run_command(cmd, check_return_code=False, cwd=None):
     error_flag = False
     logger.info(cmd)
     try:
-        out = subprocess.run(cmd, check=True, shell=True)
+        out = subprocess.run(cmd, check=True, shell=True, cwd=cwd)
         if check_return_code and out.returncode:
             raise RuntimeError(f"{cmd} failed")
     except subprocess.CalledProcessError:
