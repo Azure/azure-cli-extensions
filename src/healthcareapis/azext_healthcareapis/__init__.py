@@ -8,6 +8,7 @@
 # regenerated.
 # --------------------------------------------------------------------------
 # pylint: disable=unused-import
+# trigger
 
 import azext_healthcareapis._help
 from azure.cli.core import AzCommandsLoader
