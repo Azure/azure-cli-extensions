@@ -5727,23 +5727,33 @@ class ManagedClusterStorageProfileDiskCSIDriver(_serialization.Model):
     :vartype enabled: bool
     :ivar version: The version of AzureDisk CSI Driver. The default value is v1.
     :vartype version: str
+    :ivar enableMountReplicas: Whether to enable the mount replica feature for faster
+     pod failover. Defaults to false. If the driver version is "v1" and this
+     value is true, the request will fail with an error.
+    :vartype version: bool
     """
 
     _attribute_map = {
         "enabled": {"key": "enabled", "type": "bool"},
         "version": {"key": "version", "type": "str"},
+        "enableMountReplicas": {"key": "enableMountReplicas", "type": "bool"},
     }
 
-    def __init__(self, *, enabled: Optional[bool] = None, version: Optional[str] = None, **kwargs):
+    def __init__(self, *, enabled: Optional[bool] = None, version: Optional[str] = None, enableMountReplicas: Optional[bool] = None, **kwargs):
         """
         :keyword enabled: Whether to enable AzureDisk CSI Driver. The default value is true.
         :paramtype enabled: bool
         :keyword version: The version of AzureDisk CSI Driver. The default value is v1.
         :paramtype version: str
+        :keyword enableMountReplicas: Whether to enable the mount replica feature for faster
+         pod failover. Defaults to false. If the driver version is "v1" and this
+         value is true, the request will fail with an error.
+        :paramtype version: str
         """
         super().__init__(**kwargs)
         self.enabled = enabled
         self.version = version
+        self.enableMountReplicas = enableMountReplicas
 
 
 class ManagedClusterStorageProfileFileCSIDriver(_serialization.Model):

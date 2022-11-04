@@ -1263,8 +1263,9 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         enable_disk_driver = self.raw_param.get("enable_disk_driver")
         disable_disk_driver = self.raw_param.get("disable_disk_driver")
         disk_driver_version = self.raw_param.get("disk_driver_version")
+        enable_mount_replicas = self.raw_param.get("enable_mount_replicas")
 
-        if not enable_disk_driver and not disable_disk_driver and not disk_driver_version:
+        if not enable_disk_driver and not disable_disk_driver and not disk_driver_version and not enable_mount_replicas:
             return None
         profile = self.models.ManagedClusterStorageProfileDiskCSIDriver()
 
@@ -1279,7 +1280,22 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
                 "The parameter --disable-disk-driver cannot be used "
                 "when --disk-driver-version is specified.")
 
+        if disable_disk_driver and enable_mount_replicas:
+            raise ArgumentUsageError(
+                "The parameter --enable-mount-replicas cannot be used "
+                "when --disable-disk-driver is specified.")
+
+        if enable_mount_replicas and disk_driver_version != "v2":
+            raise ArgumentUsageError(
+                "The parameter --enable-mount-replicas cannot be used "
+                "when --disk-driver-version is 'v1'.")
+
         if self.decorator_mode == DecoratorMode.UPDATE and disk_driver_version and not enable_disk_driver:
+            raise ArgumentUsageError(
+                "Parameter --enable-disk-driver is required "
+                "when --disk-driver-version is specified during update.")
+
+        if self.decorator_mode == DecoratorMode.UPDATE and enable_mount_replicas and not enable_disk_driver:
             raise ArgumentUsageError(
                 "Parameter --enable-disk-driver is required "
                 "when --disk-driver-version is specified during update.")
@@ -1291,12 +1307,20 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
                 profile.enabled = True
                 if disk_driver_version:
                     profile.version = disk_driver_version
+                if enable_mount_replicas:
+                    profile.enableMountReplicas = True
+                else:
+                    profile.enableMountReplicas = False
 
         if self.decorator_mode == DecoratorMode.UPDATE:
             if enable_disk_driver:
                 profile.enabled = True
                 if disk_driver_version:
                     profile.version = disk_driver_version
+                if enable_mount_replicas:
+                    profile.enableMountReplicas = True
+                else:
+                    profile.enableMountReplicas = False
             elif disable_disk_driver:
                 msg = "Please make sure there are no existing PVs and PVCs that are used by AzureDisk CSI driver before disabling."
                 if not self.get_yes() and not prompt_y_n(msg, default="n"):

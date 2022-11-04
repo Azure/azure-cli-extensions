@@ -1849,6 +1849,7 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
             self.models.ManagedClusterStorageProfileDiskCSIDriver(
                 enabled=True,
                 version="v2",
+                enableMountReplicas=False
             )
         )
         self.assertEqual(
@@ -1908,7 +1909,7 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         )
         ground_truth_disk_csi_driver_6 = (
             self.models.ManagedClusterStorageProfileDiskCSIDriver(
-                enabled=False,
+                enabled=False
             )
         )
         self.assertEqual(
@@ -1927,10 +1928,185 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
             self.models.ManagedClusterStorageProfileDiskCSIDriver(
                 enabled=True,
                 version=CONST_DISK_DRIVER_V2,
+                enableMountReplicas=False
             )
         )
         self.assertEqual(
             ctx_7.get_disk_driver(), ground_truth_disk_csi_driver_7
+        )
+
+        # fail with enable-disk-driver as false and enable-mount-replicas as true
+        ctx_8 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({
+                "enable_mount_replicas": True
+            }),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        # fail on argument usage error
+        with self.assertRaises(ArgumentUsageError):
+            ctx_8.get_disk_driver()
+        
+        # fail with disk-driver-version set as v1 and enable-mount-replicas as true
+        ctx_9 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({
+                "enable_mount_replicas": True,
+                "disk_driver_version": "v1"
+            }),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        # fail on argument usage error
+        with self.assertRaises(ArgumentUsageError):
+            ctx_9.get_disk_driver()
+
+        # fail with enable-disk-driver as false and enable-mount-replicas as true
+        ctx_10 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({
+                "enable_mount_replicas": True,
+            }),
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        # fail on argument usage error
+        with self.assertRaises(ArgumentUsageError):
+            ctx_10.get_disk_driver()
+        
+        ctx_11 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({
+                "disk_driver_version": "v2",
+                "enable_mount_replicas": True,
+            }),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        ground_truth_disk_csi_driver_11 = (
+            self.models.ManagedClusterStorageProfileDiskCSIDriver(
+                enabled=True,
+                version="v2",
+                enableMountReplicas=True
+            )
+        )
+        self.assertEqual(
+            ctx_11.get_disk_driver(), ground_truth_disk_csi_driver_11
+        )
+
+        ctx_12 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict(
+                {
+                    "enable_disk_driver": True,
+                    "disk_driver_version": "v2",
+                    "disable_disk_driver": False,
+                    "enable_mount_replicas": True
+                }
+            ),
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        storage_profile_12 = self.models.ManagedClusterStorageProfile(
+            disk_csi_driver=self.models.ManagedClusterStorageProfileDiskCSIDriver(
+                enabled=False,
+                version=None,
+                enableMountReplicas=False
+            ),
+            file_csi_driver=None,
+            snapshot_controller=None,
+        )
+        mc_12 = self.models.ManagedCluster(
+            location="test_location",
+            storage_profile=storage_profile_12,
+        )
+        ctx_12.attach_mc(mc_12)
+        ground_truth_disk_csi_driver_12 = (
+            self.models.ManagedClusterStorageProfileDiskCSIDriver(
+                enabled=True,
+                version="v2",
+                enableMountReplicas=True
+            )
+        )
+        self.assertEqual(
+            ctx_12.get_disk_driver(), ground_truth_disk_csi_driver_12
+        )
+
+        ctx_13 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict(
+                {
+                    "enable_disk_driver": True,
+                    "disk_driver_version": "v2",
+                    "disable_disk_driver": False,
+                    "enable_mount_replicas": True
+                }
+            ),
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        storage_profile_13 = self.models.ManagedClusterStorageProfile(
+            disk_csi_driver=self.models.ManagedClusterStorageProfileDiskCSIDriver(
+                enabled=True,
+                version="v1",
+                enableMountReplicas=False
+            ),
+            file_csi_driver=None,
+            snapshot_controller=None,
+        )
+        mc_13 = self.models.ManagedCluster(
+            location="test_location",
+            storage_profile=storage_profile_13,
+        )
+        ctx_13.attach_mc(mc_13)
+        ground_truth_disk_csi_driver_13 = (
+            self.models.ManagedClusterStorageProfileDiskCSIDriver(
+                enabled=True,
+                version="v2",
+                enableMountReplicas=True
+            )
+        )
+        self.assertEqual(
+            ctx_13.get_disk_driver(), ground_truth_disk_csi_driver_13
+        )
+
+        ctx_14 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict(
+                {
+                    "enable_disk_driver": True,
+                    "disk_driver_version": "v2",
+                    "disable_disk_driver": False,
+                    "enable_mount_replicas": True
+                }
+            ),
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        storage_profile_14 = self.models.ManagedClusterStorageProfile(
+            disk_csi_driver=self.models.ManagedClusterStorageProfileDiskCSIDriver(
+                enabled=True,
+                version="v2",
+                enableMountReplicas=False
+            ),
+            file_csi_driver=None,
+            snapshot_controller=None,
+        )
+        mc_14 = self.models.ManagedCluster(
+            location="test_location",
+            storage_profile=storage_profile_14,
+        )
+        ctx_14.attach_mc(mc_14)
+        ground_truth_disk_csi_driver_14 = (
+            self.models.ManagedClusterStorageProfileDiskCSIDriver(
+                enabled=True,
+                version="v2",
+                enableMountReplicas=True
+            )
+        )
+        self.assertEqual(
+            ctx_14.get_disk_driver(), ground_truth_disk_csi_driver_14
         )
 
     def test_get_file_driver(self):

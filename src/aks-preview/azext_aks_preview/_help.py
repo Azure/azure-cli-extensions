@@ -376,6 +376,11 @@ helps['aks create'] = """
         - name: --disable-disk-driver
           type: bool
           short-summary: Disable AzureDisk CSI Driver.
+        - name: --enable-mount-replicas
+          type: bool
+          short-summary: Enable the mount replica feature for faster pod failover.
+          long-summary: |-
+             Must set --disk-driver-version="v2" when specifying this feature
         - name: --disk-driver-version
           type: string
           short-summary: Specify AzureDisk CSI Driver version.
@@ -730,6 +735,11 @@ helps['aks update'] = """
         - name: --enable-disk-driver
           type: bool
           short-summary: Enable AzureDisk CSI Driver.
+        - name: --enable-mount-replicas
+          type: bool
+          short-summary: Enable the mount replica feature for faster pod failover.
+          long-summary: |-
+             Must set --disk-driver-version="v2" when specifying this feature
         - name: --disk-driver-version
           type: string
           short-summary: Specify AzureDisk CSI Driver version.

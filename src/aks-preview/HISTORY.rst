@@ -12,6 +12,11 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+0.5.114
++++++++
+
+* Add support to pass csi `enable-mount-replicas` for `az aks create` and `az aks update`.
+
 0.5.113
 +++++++
 
