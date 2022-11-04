@@ -142,6 +142,7 @@ jobs:
     - bash: pip install wheel==0.30.0
       displayName: 'Install wheel==0.30.0'
     - bash: |
+        #!/usr/bin/env bash
         set -ev
 
         source env/bin/activate
