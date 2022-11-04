@@ -92,20 +92,20 @@ def checkout_to_min_version(min_version):
     azure_cli_path = os.path.join(os.path.abspath(os.path.dirname(os.path.dirname(SRC_PATH))), 'azure-cli')
     logger.info(f'azure_cli_path: {azure_cli_path}')
     cmd = ['git', 'checkout', az_min_version]
-    run_command(cmd, cwd=azure_cli_path)
+    run_command(cmd, check_return_code=True, cwd=azure_cli_path)
     cmd = ['az', '--version']
-    run_command(cmd)
+    run_command(cmd, check_return_code=True)
     # install old testsdk
     testsdk_path = os.path.join(azure_cli_path, 'src', 'azure-cli-testsdk')
     cmd = ['python', 'setup.py', 'install']
-    run_command(cmd, cwd=testsdk_path)
+    run_command(cmd, check_return_code=True, cwd=testsdk_path)
 
 
 def run_command(cmd, check_return_code=False, cwd=None):
     error_flag = False
     logger.info(cmd)
     try:
-        out = subprocess.run(cmd, check=True, shell=True, cwd=cwd)
+        out = subprocess.run(cmd, check=True, cwd=cwd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         if check_return_code and out.returncode:
             raise RuntimeError(f"{cmd} failed")
     except subprocess.CalledProcessError:
@@ -115,7 +115,7 @@ def run_command(cmd, check_return_code=False, cwd=None):
 
 def run_tests():
     cmd = ['azdev', 'test', ORIGINAL_EXTENSION_NAME, '--no-exitfirst', '--verbose']
-    return run_command(cmd)
+    return run_command(cmd, check_return_code=True)
 
 
 def main():
