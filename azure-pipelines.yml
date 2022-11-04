@@ -142,11 +142,11 @@ jobs:
     - bash: pip install wheel==0.30.0
       displayName: 'Install wheel==0.30.0'
     - bash: |
-      set -ev
+        set -ev
 
-      source env/bin/activate
-      az --version
-      python scripts/ci/test_min_version.py -v
+        source env/bin/activate
+        az --version
+        python scripts/ci/test_min_version.py -v
       displayName: 'Run min version test'
       env:
         ADO_PULL_REQUEST_LATEST_COMMIT: HEAD
