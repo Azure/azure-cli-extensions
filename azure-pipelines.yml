@@ -134,7 +134,7 @@ jobs:
       Python310:
         python.version: '3.10'
   steps:
-    - template: .azure-pipelines/templates/automation_test.yml
+    - template: .azure-pipelines/templates/azdev_setup.yml
       parameters:
         pythonVersion: '$(python.version)'
     - bash: pip install wheel==0.30.0
